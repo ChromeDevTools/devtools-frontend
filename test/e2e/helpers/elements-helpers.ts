@@ -251,9 +251,7 @@ export const assertGutterDecorationForDomNodeExists = async () => {
   await waitFor('.elements-gutter-decoration');
 };
 
-export const getAriaLabelSelectorFromPropertiesSelector = (selectorForProperties: string) =>
-    `[aria-label="${selectorForProperties}, css selector"]`;
-
+export const getStyleRuleSelector = (selector: string) => `[aria-label="${selector}, css selector"]`;
 
 export const waitForStyleRule = async (expectedSelector: string) => {
   await waitForFunction(async () => {
@@ -287,7 +285,7 @@ export const getDisplayedCSSPropertyNames = async (propertiesSection: puppeteer.
 };
 
 export const getStyleRule = (selector: string) => {
-  return waitFor(`[aria-label="${selector}, css selector"]`);
+  return waitFor(getStyleRuleSelector(selector));
 };
 
 export const getCSSPropertySwatchStyle = async (ruleSection: puppeteer.ElementHandle<Element>) => {
@@ -306,7 +304,9 @@ export const getCSSPropertyInRule = async (ruleSection: puppeteer.ElementHandle<
   for (const node of propertyNames) {
     const parent =
         await node.evaluateHandle((node, name) => (name === node.textContent) ? node.parentNode : undefined, name);
-    if (parent) {
+    // Note that evaluateHandle always returns a handle, even if it points to an undefined remote object, so we need to
+    // check it's defined here or continue iterating.
+    if (await parent.evaluate(n => !!n)) {
       return parent;
     }
   }
@@ -326,6 +326,20 @@ export async function editCSSProperty(selector: string, propertyName: string, ne
   const {frontend} = getBrowserAndPages();
   await frontend.keyboard.type(newValue);
   await frontend.keyboard.press('Enter');
+}
+
+export async function waitForPropertyToHighlight(ruleSelector: string, propertyName: string) {
+  await waitForFunction(async () => {
+    const rule = await getStyleRule(ruleSelector);
+    const property = await getCSSPropertyInRule(rule, propertyName);
+    if (!property) {
+      assert.fail(`Could not find property ${propertyName} in rule ${ruleSelector}`);
+    }
+    // StylePropertyHighlighter temporarily highlights the property using the Web Animations API, so the only way to
+    // know it's happening is by listing all animations.
+    const animationCount = await property.evaluate(node => node.getAnimations().length);
+    return animationCount > 0;
+  });
 }
 
 export const getBreadcrumbsTextContent = async () => {

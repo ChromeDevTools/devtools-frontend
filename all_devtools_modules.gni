@@ -217,6 +217,8 @@ all_typescript_module_sources = [
   "inline_editor/BezierUI.js",
   "inline_editor/CSSShadowEditor.js",
   "inline_editor/CSSShadowModel.js",
+  "inline_editor/CSSVarSwatch.js",
+  "inline_editor/CSSVarSwatch_bridge.js",
   "inline_editor/ColorSwatch.js",
   "inline_editor/SwatchPopoverHelper.js",
   "input/InputModel.js",

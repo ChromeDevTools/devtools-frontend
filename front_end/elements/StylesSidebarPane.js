@@ -97,8 +97,10 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
     this._swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
     this._linkifier = new Components.Linkifier.Linkifier(_maxLinkLength, /* useLinkDecorator */ true);
-    /** @type {?StylePropertyHighlighter} */
-    this._decorator = null;
+    /** @type {!StylePropertyHighlighter} */
+    this._decorator = new StylePropertyHighlighter(this);
+    /** @type {?SDK.CSSProperty.CSSProperty} */
+    this._lastRevealedProperty = null;
     this._userOperation = false;
     this._isEditingStyle = false;
     /** @type {?RegExp} */
@@ -256,9 +258,13 @@ export class StylesSidebarPane extends ElementsSidebarPane {
    * @param {!SDK.CSSProperty.CSSProperty} cssProperty
    */
   revealProperty(cssProperty) {
-    this._decorator = new StylePropertyHighlighter(this, cssProperty);
-    this._decorator.perform();
+    this._decorator.highlightProperty(cssProperty);
+    this._lastRevealedProperty = cssProperty;
     this.update();
+  }
+
+  jumpToProperty(propertyName) {
+    this._decorator.findAndHighlightPropertyName(propertyName);
   }
 
   forceUpdate() {
@@ -645,9 +651,9 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     }
 
     this._nodeStylesUpdatedForTest(/** @type {!SDK.DOMModel.DOMNode} */ (node), true);
-    if (this._decorator) {
-      this._decorator.perform();
-      this._decorator = null;
+    if (this._lastRevealedProperty) {
+      this._decorator.highlightProperty(this._lastRevealedProperty);
+      this._lastRevealedProperty = null;
     }
 
     // Record the elements tool load time after the sidepane has loaded.

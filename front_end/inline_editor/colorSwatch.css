@@ -26,10 +26,11 @@
   height: 100%;
   display: inline-block;
   border: 1px solid rgb(128 128 128 / 60%);
+  box-sizing: border-box;
   cursor: default;
 }
 
-.color-swatch-inner:hover {
+.color-swatch:not(.read-only) .color-swatch-inner:hover {
   border: 1px solid rgb(64 64 64 / 80%);
 }
 

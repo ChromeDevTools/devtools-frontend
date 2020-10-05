@@ -560,6 +560,8 @@ grd_files_debug_sources = [
   "front_end/inline_editor/BezierUI.js",
   "front_end/inline_editor/CSSShadowEditor.js",
   "front_end/inline_editor/CSSShadowModel.js",
+  "front_end/inline_editor/CSSVarSwatch.js",
+  "front_end/inline_editor/CSSVarSwatch_bridge.js",
   "front_end/inline_editor/ColorSwatch.js",
   "front_end/inline_editor/SwatchPopoverHelper.js",
   "front_end/input/InputModel.js",

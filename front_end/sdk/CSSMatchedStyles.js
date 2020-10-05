@@ -507,6 +507,17 @@ export class CSSMatchedStyles {
   }
 
   /**
+   * Same as computeValue, but to be used for `var(--name [,...])` values only
+   * @param {!CSSStyleDeclaration} style
+   * @param {string} cssVariableValue
+   * @return {?{computedValue: ?string, fromFallback: boolean}}
+   */
+  computeSingleVariableValue(style, cssVariableValue) {
+    const domCascade = this._styleToDOMCascade.get(style) || null;
+    return domCascade ? domCascade.computeSingleVariableValue(style, cssVariableValue) : null;
+  }
+
+  /**
    * @param {!CSSStyleDeclaration} style
    * @return {boolean}
    */
@@ -668,6 +679,37 @@ class DOMInheritanceCascade {
   }
 
   /**
+   * @param {!CSSStyleDeclaration} style
+   * @param {string} cssVariableValue
+   * @return {?{computedValue: ?string, fromFallback: boolean}}
+   */
+  computeSingleVariableValue(style, cssVariableValue) {
+    const nodeCascade = this._styleToNodeCascade.get(style);
+    if (!nodeCascade) {
+      return null;
+    }
+    this._ensureInitialized();
+    const availableCSSVariables = this._availableCSSVariables.get(nodeCascade);
+    const computedCSSVariables = this._computedCSSVariables.get(nodeCascade);
+    if (!availableCSSVariables || !computedCSSVariables) {
+      return null;
+    }
+    const computedValue = this._innerComputeValue(availableCSSVariables, computedCSSVariables, cssVariableValue);
+    const {variableName} = this._getCSSVariableNameAndFallback(cssVariableValue);
+
+    return {computedValue, fromFallback: !!variableName && !availableCSSVariables.has(variableName)};
+  }
+
+  /**
+   * @param {string} cssVariableValue
+   * @return {{variableName: ?string, fallback: ?string}}
+   */
+  _getCSSVariableNameAndFallback(cssVariableValue) {
+    const match = cssVariableValue.match(/^var\((--[a-zA-Z0-9-_]+)[,]?\s*(.*)\)$/);
+    return {variableName: match && match[1], fallback: match && match[2]};
+  }
+
+  /**
    * @param {!Map<string, string>} availableCSSVariables
    * @param {!Map<string, ?string>} computedCSSVariables
    * @param {string} variableName
@@ -706,22 +748,21 @@ class DOMInheritanceCascade {
         continue;
       }
       // process var() function
-      const regexMatch = result.value.match(/^var\((--[a-zA-Z0-9-_]+)[,]?\s*(.*)\)$/);
-      if (!regexMatch) {
+      const {variableName, fallback} = this._getCSSVariableNameAndFallback(result.value);
+      if (!variableName) {
         return null;
       }
-      const cssVariable = regexMatch[1];
-      const computedValue = this._innerComputeCSSVariable(availableCSSVariables, computedCSSVariables, cssVariable);
-      if (computedValue === null && !regexMatch[2]) {
+      const computedValue = this._innerComputeCSSVariable(availableCSSVariables, computedCSSVariables, variableName);
+      if (computedValue === null && !fallback) {
         return null;
       }
       if (computedValue === null) {
-        tokens.push(regexMatch[2]);
+        tokens.push(fallback);
       } else {
         tokens.push(computedValue);
       }
     }
-    return tokens.map(token => token.trim()).join(' ');
+    return tokens.map(token => token ? token.trim() : '').join(' ');
   }
 
   /**

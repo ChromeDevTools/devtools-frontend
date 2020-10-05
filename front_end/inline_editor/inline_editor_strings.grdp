@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_2134e3ae0c489ce87a007a082d6a9a29" desc="Text in CSSShadow Editor of the inline editor in the Styles tab">
     X offset
   </message>
+  <message name="IDS_DEVTOOLS_4ceccbff9f302a6f42425eb6d409093f" desc="Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles pane when the custom property in this function does not exist. The parameter is the name of the property.">
+    <ph name="VARIABLENAME">$1s<ex>--my-custom-property-name</ex></ph> is not defined
+  </message>
   <message name="IDS_DEVTOOLS_575ed851c8964c290e73055ffdc085a6" desc="Text in CSSShadow Editor of the inline editor in the Styles tab">
     Y offset
   </message>
@@ -17,6 +20,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b56d315e49178ba86341ff3b4e337c6b" desc="Inset button text content in CSSShadow Editor of the inline editor in the Styles tab">
     Inset
+  </message>
+  <message name="IDS_DEVTOOLS_bfa0731f918a0e2ee23021896e388b38" desc="Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles pane, to jump to where the custom property in the function is defined">
+    Jump to definition
   </message>
   <message name="IDS_DEVTOOLS_d65b5983f317c42c6f6dff5678e628ca" desc="Icon element title in Color Swatch of the inline editor in the Styles tab">
     Shift-click to change color format

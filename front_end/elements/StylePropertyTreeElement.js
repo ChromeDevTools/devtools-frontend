@@ -161,30 +161,18 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
    * @return {!Node}
    */
   _processVar(text) {
-    const computedValue = this._matchedStyles.computeValue(this._style, text);
-    if (!computedValue) {
-      return createTextNode(text);
-    }
-    const color = Common.Color.Color.parse(computedValue);
-    if (!color) {
-      const node = createElement('span');
-      node.textContent = text;
-      node.title = computedValue;
-      return node;
-    }
-    if (!this._editable()) {
-      const swatch = InlineEditor.ColorSwatch.ColorSwatch.create();
-      swatch.setText(text, computedValue);
-      swatch.setColor(color);
-      return swatch;
-    }
+    const swatch = InlineEditor.CSSVarSwatch.createCSSVarSwatch();
+    swatch.createTextChild(text);
 
-    const swatch = InlineEditor.ColorSwatch.ColorSwatch.create();
-    swatch.setColor(color);
-    swatch.setFormat(Common.Settings.detectColorFormat(swatch.color()));
-    swatch.setText(text, computedValue);
-    this._addColorContrastInfo(swatch);
+    const {computedValue, fromFallback} = this._matchedStyles.computeSingleVariableValue(this._style, text);
+    swatch.data = {text, computedValue, fromFallback, onLinkClick: this._handleVarDefinitionClick.bind(this)};
+
     return swatch;
+  }
+
+  _handleVarDefinitionClick(variableName, event) {
+    this._parentPane.jumpToProperty(variableName);
+    event.consume(true);
   }
 
   /**

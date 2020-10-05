@@ -2,10 +2,14 @@ import("../../../../third_party/typescript/typescript.gni")
 
 ts_library("inline_editor") {
   testonly = true
-  sources = [ "BezierUI_test.ts" ]
+  sources = [
+    "BezierUI_test.ts",
+    "CSSVarSwatch_test.ts",
+  ]
 
   deps = [
     "../../../../front_end/inline_editor:bundle",
     "../../../../front_end/ui:bundle",
+    "../helpers",
   ]
 }

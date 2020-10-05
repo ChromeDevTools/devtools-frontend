@@ -29,12 +29,12 @@ generate_ci_configs(
         ),
         config_section(
             name = "beta",
-            branch = "refs/heads/chromium/4240",
+            branch = "refs/heads/chromium/4280",
             notifiers = ["devtools notifier"],
         ),
         config_section(
             name = "stable",
-            branch = "refs/heads/chromium/4183",
+            branch = "refs/heads/chromium/4240",
             notifiers = ["devtools notifier"],
         )
     ],

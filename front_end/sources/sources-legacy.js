@@ -89,6 +89,8 @@ Sources.InplaceFormatterEditorAction = SourcesModule.InplaceFormatterEditorActio
 Sources.JavaScriptBreakpointsSidebarPane =
     SourcesModule.JavaScriptBreakpointsSidebarPane.JavaScriptBreakpointsSidebarPane;
 
+Sources.JavaScriptBreakpointsSidebarPane.retrieveLocationForElement =
+    SourcesModule.JavaScriptBreakpointsSidebarPane.retrieveLocationForElement;
 Sources.JavaScriptBreakpointsSidebarPane._locationSymbol =
     SourcesModule.JavaScriptBreakpointsSidebarPane.locationSymbol;
 Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol =

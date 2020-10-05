@@ -524,6 +524,12 @@ class BreakpointItem {
 }
 
 export const locationSymbol = Symbol('location');
+/**
+ * @param {!Element} element
+ */
+export function retrieveLocationForElement(element) {
+  return element[locationSymbol];
+}
 export const checkboxLabelSymbol = Symbol('checkbox-label');
 export const snippetElementSymbol = Symbol('snippet-element');
 export const breakpointLocationsSymbol = Symbol('locations');

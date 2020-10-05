@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
@@ -75,6 +72,7 @@ export class ShortcutRegistry {
    * @return {!Array.<!Action>}
    */
   _applicableActions(key, handlers = {}) {
+    /** @type {!Array<string>} */
     let actions = [];
     const keyMap = this._activePrefixKey || this._keyMap;
     const keyNode = keyMap.getNode(key);
@@ -107,6 +105,7 @@ export class ShortcutRegistry {
    * @param {!Array.<!Descriptor>} descriptors
    */
   actionsForDescriptors(descriptors) {
+    /** @type {?ShortcutTreeNode} */
     let keyMapNode = this._keyMap;
     for (const {key} of descriptors) {
       if (!keyMapNode) {
@@ -160,10 +159,10 @@ export class ShortcutRegistry {
    * @return {string|undefined}
    */
   shortcutTitleForAction(actionId) {
-    const shortcuts = this._actionToShortcut.get(actionId);
-    if (shortcuts.size) {
-      return shortcuts.firstValue().title();
+    for (const shortcut of this._actionToShortcut.get(actionId)) {
+      return shortcut.title();
     }
+    return undefined;
   }
 
   /**
@@ -197,12 +196,9 @@ export class ShortcutRegistry {
 
     element.addEventListener('keydown', event => {
       const key = KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
-      let keyMap = allowlistKeyMap;
-      if (this._activePrefixKey) {
-        keyMap = keyMap.getNode(this._activePrefixKey.key());
-        if (!keyMap) {
-          return;
-        }
+      const keyMap = this._activePrefixKey ? allowlistKeyMap.getNode(this._activePrefixKey.key()) : allowlistKeyMap;
+      if (!keyMap) {
+        return;
       }
       if (keyMap.getNode(key)) {
         this.handleShortcut(/** @type {!KeyboardEvent} */ (event), handlers);
@@ -251,7 +247,7 @@ export class ShortcutRegistry {
         this._activePrefixTimeout = null;
         await maybeExecuteActionForKey.call(this);
       };
-      this._activePrefixTimeout = setTimeout(this._consumePrefix, KeyTimeout);
+      this._activePrefixTimeout = window.setTimeout(this._consumePrefix, KeyTimeout);
     } else {
       await maybeExecuteActionForKey.call(this);
     }
@@ -400,21 +396,23 @@ export class ShortcutRegistry {
     const extensions = Root.Runtime.Runtime.instance().extensions('action');
     this._disabledDefaultShortcutsForAction.clear();
     this._devToolsDefaultShortcutActions.clear();
+    /** @type {!Array<!{keyCode: number, modifiers: number}>} */
     const forwardedKeys = [];
-    if (Root.Runtime.experiments.isEnabled('keyboardShortcutEditor')) {
+    if (!Root.Runtime.experiments.isEnabled('keyboardShortcutEditor')) {
+      /** @type {!Array<!{action: string, descriptors: !Array.<!Descriptor>, type: !Type}>} */
       const userShortcuts = this._userShortcutsSetting.get();
-      userShortcuts.forEach(userShortcut => {
+      for (const userShortcut of userShortcuts) {
         const shortcut = KeyboardShortcut.createShortcutFromSettingObject(userShortcut);
         if (shortcut.type === Type.DisabledDefault) {
           this._disabledDefaultShortcutsForAction.set(shortcut.action, shortcut);
         } else {
           if (ForwardedActions.has(shortcut.action)) {
             forwardedKeys.push(
-                shortcut.descriptors.map(descriptor => KeyboardShortcut.keyCodeAndModifiersFromKey(descriptor.key)));
+                ...shortcut.descriptors.map(descriptor => KeyboardShortcut.keyCodeAndModifiersFromKey(descriptor.key)));
           }
           this._registerShortcut(shortcut);
         }
-      }, this);
+      }
     }
     extensions.forEach(registerExtension, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setWhitelistedShortcuts(JSON.stringify(forwardedKeys));
@@ -487,6 +485,10 @@ export class ShortcutRegistry {
     }
   }
 
+  /**
+   * @param {!Array<!{key: number, name: string}>} shortcutDescriptors
+   * @param {string} action
+   */
   _isDisabledDefault(shortcutDescriptors, action) {
     const disabledDefaults = this._disabledDefaultShortcutsForAction.get(action);
     for (const disabledDefault of disabledDefaults) {

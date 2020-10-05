@@ -196,26 +196,18 @@ export class KeyboardShortcut {
 
   /**
    * @param {string} shortcut
-   * @return {?Descriptor}
+   * @return {!Descriptor}
    */
   static makeDescriptorFromBindingShortcut(shortcut) {
-    const parts = shortcut.split(/\+(?!$)/);
+    const [keyString, ...modifierStrings] = shortcut.split(/\+(?!$)/).reverse();
     let modifiers = 0;
-    let keyString;
-    for (let i = 0; i < parts.length; ++i) {
-      if (typeof Modifiers[parts[i]] !== 'undefined') {
-        modifiers |= Modifiers[parts[i]];
-        continue;
-      }
+    for (const modifierString of modifierStrings) {
+      const modifier = Modifiers[modifierString];
       console.assert(
-          i === parts.length - 1, 'Only one key other than modifier is allowed in shortcut <' + shortcut + '>');
-      keyString = parts[i];
-      break;
+          typeof modifier !== 'undefined', `Only one key other than modifier is allowed in shortcut <${shortcut}>`);
+      modifiers |= modifier;
     }
-    console.assert(keyString, 'Modifiers-only shortcuts are not allowed (encountered <' + shortcut + '>)');
-    if (!keyString) {
-      return null;
-    }
+    console.assert(keyString, `Modifiers-only shortcuts are not allowed (encountered <${shortcut}>)`);
 
     const key = Keys[keyString] || KeyBindings[keyString];
     if (key && key.shiftKey) {

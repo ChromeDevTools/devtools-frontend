@@ -563,6 +563,10 @@ export class ToolbarButton extends ToolbarItem {
     this._title = '';
   }
 
+  focus() {
+    this.element.focus();
+  }
+
   /**
    * @param {string} text
    */
@@ -1010,7 +1014,7 @@ export class ToolbarComboBox extends ToolbarItem {
   }
 
   /**
-   * @return {?Element}
+   * @return {?HTMLOptionElement}
    */
   selectedOption() {
     if (this._selectElement.selectedIndex >= 0) {

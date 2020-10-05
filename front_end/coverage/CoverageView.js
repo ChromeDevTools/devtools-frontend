@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
@@ -48,7 +45,7 @@ export class CoverageView extends UI.Widget.VBox {
       },
     ];
     for (const type of coverageTypes) {
-      this._coverageTypeComboBox.addOption(this._coverageTypeComboBox.createOption(type.label, type.value));
+      this._coverageTypeComboBox.addOption(this._coverageTypeComboBox.createOption(type.label, `${type.value}`));
     }
     this._coverageTypeComboBoxSetting =
         Common.Settings.Settings.instance().createSetting('coverageViewCoverageType', 0);
@@ -56,9 +53,8 @@ export class CoverageView extends UI.Widget.VBox {
     this._coverageTypeComboBox.setEnabled(true);
     toolbar.appendToolbarItem(this._coverageTypeComboBox);
 
-    this._toggleRecordAction =
-        /** @type {!UI.Action.Action }*/ (
-            UI.ActionRegistry.ActionRegistry.instance().action('coverage.toggle-recording'));
+    /** @type {!UI.Action.Action} */
+    this._toggleRecordAction = (UI.ActionRegistry.ActionRegistry.instance().action('coverage.toggle-recording'));
     this._toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction);
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
@@ -115,7 +111,7 @@ export class CoverageView extends UI.Widget.VBox {
       },
     ];
     for (const option of options) {
-      this._filterByTypeComboBox.addOption(this._filterByTypeComboBox.createOption(option.label, option.value));
+      this._filterByTypeComboBox.addOption(this._filterByTypeComboBox.createOption(option.label, `${option.value}`));
     }
 
     this._filterByTypeComboBox.setSelectedIndex(0);
@@ -198,7 +194,8 @@ export class CoverageView extends UI.Widget.VBox {
    * @return {boolean}
    */
   isBlockCoverageSelected() {
-    const coverageType = Number(this._coverageTypeComboBox.selectedOption().value);
+    const option = this._coverageTypeComboBox.selectedOption();
+    const coverageType = Number(option ? option.value : Number.NaN);
     // Check that Coverage.CoverageType.JavaScriptPerFunction is not present.
     return coverageType === CoverageType.JavaScript;
   }
@@ -250,15 +247,18 @@ export class CoverageView extends UI.Widget.VBox {
     if (!this._model || reload) {
       this._model = mainTarget.model(CoverageModel);
     }
+    if (!this._model) {
+      return;
+    }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CoverageStarted);
     if (jsCoveragePerBlock) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CoverageStartedPerBlock);
     }
-    const success = await this._model.start(jsCoveragePerBlock);
+    const success = await this._model.start(!!jsCoveragePerBlock);
     if (!success) {
       return;
     }
-    this._selectCoverageType(jsCoveragePerBlock);
+    this._selectCoverageType(!!jsCoveragePerBlock);
 
     this._model.addEventListener(Events.CoverageUpdated, this._onCoverageDataReceived, this);
     this._resourceTreeModel = /** @type {?SDK.ResourceTreeModel.ResourceTreeModel} */ (
@@ -276,7 +276,7 @@ export class CoverageView extends UI.Widget.VBox {
       this._toggleRecordButton.setEnabled(true);
       this._toggleRecordButton.setVisible(true);
       if (reloadButtonFocused) {
-        this._toggleRecordButton.element.focus();
+        this._toggleRecordButton.focus();
       }
     }
     this._coverageTypeComboBox.setEnabled(false);
@@ -315,8 +315,10 @@ export class CoverageView extends UI.Widget.VBox {
       this._listView.focus();
     }
     // Stopping the model triggers one last poll to get the final data.
-    await this._model.stop();
-    this._model.removeEventListener(Events.CoverageUpdated, this._onCoverageDataReceived, this);
+    if (this._model) {
+      await this._model.stop();
+      this._model.removeEventListener(Events.CoverageUpdated, this._onCoverageDataReceived, this);
+    }
     this._toggleRecordAction.setToggled(false);
     this._coverageTypeComboBox.setEnabled(true);
     if (this._startWithReloadButton) {
@@ -329,14 +331,14 @@ export class CoverageView extends UI.Widget.VBox {
   }
 
   processBacklog() {
-    this._model.processJSBacklog();
+    this._model && this._model.processJSBacklog();
   }
 
   _onMainFrameNavigated() {
-    this._model.reset();
-    this._decorationManager.reset();
+    this._model && this._model.reset();
+    this._decorationManager && this._decorationManager.reset();
     this._listView.reset();
-    this._model.startPolling();
+    this._model && this._model.startPolling();
   }
 
   /**
@@ -344,9 +346,9 @@ export class CoverageView extends UI.Widget.VBox {
    */
   _updateViews(updatedEntries) {
     this._updateStats();
-    this._listView.update(this._model.entries());
-    this._saveButton.setEnabled(this._model.entries().length > 0);
-    this._decorationManager.update(updatedEntries);
+    this._listView.update(this._model && this._model.entries() || []);
+    this._saveButton.setEnabled(!!this._model && this._model.entries().length > 0);
+    this._decorationManager && this._decorationManager.update(updatedEntries);
   }
 
   _updateStats() {
@@ -399,8 +401,9 @@ export class CoverageView extends UI.Widget.VBox {
 
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CoverageReportFiltered);
 
-    const type = this._filterByTypeComboBox.selectedOption().value;
-    this._typeFilterValue = parseInt(type, 10) || null;
+    const option = this._filterByTypeComboBox.selectedOption();
+    const type = option && option.value;
+    this._typeFilterValue = parseInt(type || '', 10) || null;
     this._listView.updateFilterAndHighlight(this._textFilterRegExp);
     this._updateStats();
   }
@@ -432,7 +435,7 @@ export class CoverageView extends UI.Widget.VBox {
     if (!accepted) {
       return;
     }
-    this._model.exportReport(fos);
+    this._model && this._model.exportReport(fos);
   }
 
   /**
@@ -459,8 +462,11 @@ export class ActionDelegate {
     const coverageViewId = 'coverage';
     UI.ViewManager.ViewManager.instance()
         .showView(coverageViewId, /** userGesture= */ false, /** omitFocus= */ true)
-        .then(() => UI.ViewManager.ViewManager.instance().view(coverageViewId).widget())
-        .then(widget => this._innerHandleAction(/** @type !CoverageView} */ (widget), actionId));
+        .then(() => {
+          const view = UI.ViewManager.ViewManager.instance().view(coverageViewId);
+          return view && view.widget();
+        })
+        .then(widget => this._innerHandleAction(/** @type {!CoverageView} */ (widget), actionId));
 
     return true;
   }
@@ -549,11 +555,14 @@ export class LineDecorator {
       const coverageViewId = 'coverage';
       UI.ViewManager.ViewManager.instance()
           .showView(coverageViewId)
-          .then(() => UI.ViewManager.ViewManager.instance().view(coverageViewId).widget())
+          .then(() => {
+            const view = UI.ViewManager.ViewManager.instance().view(coverageViewId);
+            return view && view.widget();
+          })
           .then(widget => {
             const matchFormattedSuffix = url.match(/(.*):formatted$/);
             const urlWithoutFormattedSuffix = (matchFormattedSuffix && matchFormattedSuffix[1]) || url;
-            widget.selectCoverageItemByUrl(urlWithoutFormattedSuffix);
+            /** @type {!CoverageView} */ (widget).selectCoverageItemByUrl(urlWithoutFormattedSuffix);
           });
     }
     return handleGutterClick;

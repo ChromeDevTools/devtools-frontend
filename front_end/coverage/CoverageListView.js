@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Formatter from '../formatter/formatter.js';
@@ -44,7 +41,8 @@ export class CoverageListView extends UI.Widget.VBox {
     /** @type {?RegExp} */
     this._highlightRegExp = null;
     this.registerRequiredCSS('coverage/coverageListView.css');
-    const columns = [
+    /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */
+    const columns = ([
       {id: 'url', title: ls`URL`, width: '250px', fixedWidth: false, sortable: true},
       {id: 'type', title: ls`Type`, width: '45px', fixedWidth: true, sortable: true}, {
         id: 'size',
@@ -64,8 +62,14 @@ export class CoverageListView extends UI.Widget.VBox {
         sort: DataGrid.DataGrid.Order.Descending
       },
       {id: 'bars', title: ls`Usage Visualization`, width: '250px', fixedWidth: false, sortable: true}
-    ];
-    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({displayName: ls`Code Coverage`, columns});
+    ]);
+    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
+      displayName: ls`Code Coverage`,
+      columns,
+      editCallback: undefined,
+      refreshCallback: undefined,
+      deleteCallback: undefined
+    });
     this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
     this._dataGrid.element.classList.add('flex-auto');
     this._dataGrid.element.addEventListener('keydown', this._onKeyDown.bind(this), false);

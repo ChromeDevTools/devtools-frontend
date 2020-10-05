@@ -11,6 +11,7 @@ devtools_module("test_runner") {
   deps = [
     "../common:bundle",
     "../protocol_client:bundle",
+    "../ui:bundle",
     "../workspace:bundle",
   ]
 }

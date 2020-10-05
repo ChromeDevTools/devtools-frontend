@@ -754,7 +754,7 @@ export class ConsoleViewport {
     this.setStickToBottom(false);
     this._rebuildCumulativeHeightsIfNeeded();
     this.element.scrollTop = index > 0 ? this._cumulativeHeights[index - 1] : 0;
-    if (this.element.isScrolledToBottom()) {
+    if (UI.UIUtils.isScrolledToBottom(this.element)) {
       this.setStickToBottom(true);
     }
     this.refresh();
@@ -770,7 +770,7 @@ export class ConsoleViewport {
     this.setStickToBottom(false);
     this._rebuildCumulativeHeightsIfNeeded();
     this.element.scrollTop = this._cumulativeHeights[index] - this._visibleHeight();
-    if (this.element.isScrolledToBottom()) {
+    if (UI.UIUtils.isScrolledToBottom(this.element)) {
       this.setStickToBottom(true);
     }
     this.refresh();

@@ -5,6 +5,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Platform from '../platform/platform.js';
+import * as UI from '../ui/ui.js';
 
 import {DataGridImpl, DataGridNode, Parameters} from './DataGrid.js';  // eslint-disable-line no-unused-vars
 
@@ -95,7 +96,7 @@ export class ViewportDataGrid extends DataGridImpl {
    * @param {?Event} event
    */
   _onScroll(event) {
-    this._stickToBottom = this.scrollContainer.isScrolledToBottom();
+    this._stickToBottom = UI.UIUtils.isScrolledToBottom(this.scrollContainer);
     if (this._lastScrollTop !== this.scrollContainer.scrollTop) {
       this.scheduleUpdate(true);
     }
@@ -113,7 +114,7 @@ export class ViewportDataGrid extends DataGridImpl {
    */
   scheduleUpdate(isFromUser) {
     if (this._stickToBottom && isFromUser) {
-      this._stickToBottom = this.scrollContainer.isScrolledToBottom();
+      this._stickToBottom = UI.UIUtils.isScrolledToBottom(this.scrollContainer);
     }
     this._updateIsFromUser = this._updateIsFromUser || isFromUser;
     if (this._updateAnimationFrameId) {

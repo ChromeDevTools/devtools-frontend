@@ -1923,3 +1923,17 @@ export let Options;
  * }}
  */
 export let HighlightChange;
+
+
+/**
+ * @param {!Element} element
+ * @return {boolean}
+ */
+export const isScrolledToBottom = element => {
+  // This code works only for 0-width border.
+  // The scrollTop, clientHeight and scrollHeight are computed in double values internally.
+  // However, they are exposed to javascript differently, each being either rounded (via
+  // round, ceil or floor functions) or left intouch.
+  // This adds up a total error up to 2.
+  return Math.abs(element.scrollTop + element.clientHeight - element.scrollHeight) <= 2;
+};

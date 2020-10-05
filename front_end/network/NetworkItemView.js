@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -79,8 +76,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       const previewView = new RequestPreviewView(request);
       this.appendTab(
           Tabs.Preview, Common.UIString.UIString('Preview'), previewView, Common.UIString.UIString('Response preview'));
-      if (request.signedExchangeInfo() && request.signedExchangeInfo().errors &&
-          request.signedExchangeInfo().errors.length) {
+      const signedExchangeInfo = request.signedExchangeInfo();
+      if (signedExchangeInfo && signedExchangeInfo.errors && signedExchangeInfo.errors.length) {
         const icon = UI.Icon.Icon.create('smallicon-error');
         icon.title = Common.UIString.UIString('SignedExchange error');
         this.setTabIcon(Tabs.Preview, icon);
@@ -127,7 +124,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   }
 
   _maybeAppendCookiesPanel() {
-    const cookiesPresent = this._request.hasRequestCookies() || this._request.responseCookies.length;
+    const cookiesPresent = this._request.hasRequestCookies() || this._request.responseCookies.length > 0;
     console.assert(cookiesPresent || !this._cookiesView, 'Cookies were introduced in headers and then removed!');
     if (cookiesPresent && !this._cookiesView) {
       this._cookiesView = new RequestCookiesView(this._request);
@@ -146,6 +143,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
   }
 
+  /** @param {!{data: *}} event */
   _tabSelected(event) {
     if (!event.data.isUserGesture) {
       return;
@@ -162,7 +160,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
   /**
    * @param {number=} line
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async revealResponseBody(line) {
     this._selectTab(Tabs.Response);

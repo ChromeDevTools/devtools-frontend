@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
@@ -21,7 +18,9 @@ export class JsMainImpl extends Common.ObjectWrapper.ObjectWrapper {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSDirectly);
     SDK.Connections.initMainConnection(() => {
       const target = SDK.SDKModel.TargetManager.instance().createTarget('main', ls`Main`, SDK.SDKModel.Type.Node, null);
-      target.runtimeAgent().runIfWaitingForDebugger();
+      target.runtimeAgent().invoke_runIfWaitingForDebugger();
+      return Promise.resolve();
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
+    return Promise.resolve();
   }
 }

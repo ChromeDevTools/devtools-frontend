@@ -337,7 +337,7 @@ export class ParallelConnection {
 }
 
 /**
- * @param {function():!Promise<undefined>} createMainTarget
+ * @param {function():!Promise<void>} createMainTarget
  * @param {function():void} websocketConnectionLost
  * @return {!Promise<void>}
  */

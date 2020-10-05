@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -17,8 +14,8 @@ export class WorkerMainImpl extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @override
    */
-  run() {
-    SDK.Connections.initMainConnection(() => {
+  async run() {
+    SDK.Connections.initMainConnection(async () => {
       SDK.SDKModel.TargetManager.instance().createTarget('main', ls`Main`, SDK.SDKModel.Type.ServiceWorker, null);
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
     new MobileThrottling.NetworkPanelIndicator.NetworkPanelIndicator();

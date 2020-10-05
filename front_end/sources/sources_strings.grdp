@@ -438,9 +438,6 @@
   <message name="IDS_DEVTOOLS_b918846bd0a77b2051d8c4019201315f" desc="Text in Java Script Breakpoints Sidebar Pane of the Sources panel">
     Remove other breakpoints
   </message>
-  <message name="IDS_DEVTOOLS_b9947e230aa5ac451e3b0649bdb1c7fc" desc="Event return value in Sources View of the Sources panel">
-    <ph name="LOCKED_1">DevTools</ph> have unsaved changes that will be permanently lost.
-  </message>
   <message name="IDS_DEVTOOLS_bceac9ba5f9e73f46255c5056368fd00" desc="Text in Debugger Plugin of the Sources panel">
     Enable all breakpoints in line
   </message>

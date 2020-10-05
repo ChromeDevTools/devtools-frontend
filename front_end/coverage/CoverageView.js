@@ -519,7 +519,7 @@ export class LineDecorator {
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor
-   * @param {!Array<boolean>} lineUsage
+   * @param {!Array<boolean|undefined>} lineUsage
    */
   _innerDecorate(uiSourceCode, textEditor, lineUsage) {
     const gutterType = LineDecorator._gutterType;

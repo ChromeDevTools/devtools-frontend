@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as WasmDis from '../third_party/wasmparser/package/dist/esm/WasmDis.js';
 import * as WasmParser from '../third_party/wasmparser/package/dist/esm/WasmParser.js';
@@ -59,10 +56,14 @@ class BinaryReaderWithProgress extends WasmParser.BinaryReader {
   }
 }
 
+/**
+ *
+ * @param {!{data: !{method:string, params: !{content: string}}}} event
+ */
 self.onmessage = async function(event) {
-  const method = /** @type {string} */ (event.data.method);
-  const params = /** @type !{content: string} */ (event.data.params);
-  if (!method || method !== 'disassemble') {
+  const method = (event.data.method);
+  const params = (event.data.params);
+  if (method !== 'disassemble') {
     return;
   }
 
@@ -113,9 +114,3 @@ self.onmessage = async function(event) {
 
   this.postMessage({method: 'disassemble', result: {source, offsets, functionBodyOffsets}});
 };
-
-/* Legacy exported object */
-self.WasmParserWorker = self.WasmParserWorker || {};
-
-/* Legacy exported object */
-WasmParserWorker = WasmParserWorker || {};

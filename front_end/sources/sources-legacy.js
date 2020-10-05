@@ -91,14 +91,6 @@ Sources.JavaScriptBreakpointsSidebarPane =
 
 Sources.JavaScriptBreakpointsSidebarPane.retrieveLocationForElement =
     SourcesModule.JavaScriptBreakpointsSidebarPane.retrieveLocationForElement;
-Sources.JavaScriptBreakpointsSidebarPane._locationSymbol =
-    SourcesModule.JavaScriptBreakpointsSidebarPane.locationSymbol;
-Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol =
-    SourcesModule.JavaScriptBreakpointsSidebarPane.checkboxLabelSymbol;
-Sources.JavaScriptBreakpointsSidebarPane._snippetElementSymbol =
-    SourcesModule.JavaScriptBreakpointsSidebarPane.snippetElementSymbol;
-Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol =
-    SourcesModule.JavaScriptBreakpointsSidebarPane.breakpointLocationsSymbol;
 
 /** @constructor */
 Sources.JavaScriptCompilerPlugin = SourcesModule.JavaScriptCompilerPlugin.JavaScriptCompilerPlugin;

@@ -292,11 +292,6 @@ export class ThemeSupport {
       return;
     }
 
-    // Don't operate on CSS variables.
-    if (/^var\(.*\)$/.test(value)) {
-      return;
-    }
-
     if (selectorText.indexOf('-theme-') !== -1) {
       return;
     }
@@ -311,9 +306,14 @@ export class ThemeSupport {
 
     output.push(name);
     output.push(':');
-    const items = value.replace(Common.Color.Regex, '\0$1\0').split('\0');
-    for (let i = 0; i < items.length; ++i) {
-      output.push(this.patchColorText(items[i], /** @type {!ThemeSupport.ColorUsage} */ (colorUsage)));
+    if (/^var\(.*\)$/.test(value)) {
+      // Don't translate CSS variables.
+      output.push(value);
+    } else {
+      const items = value.replace(Common.Color.Regex, '\0$1\0').split('\0');
+      for (const item of items) {
+        output.push(this.patchColorText(item, /** @type {!ThemeSupport.ColorUsage} */ (colorUsage)));
+      }
     }
     if (style.getPropertyPriority(name)) {
       output.push(' !important');

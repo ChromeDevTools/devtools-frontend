@@ -398,7 +398,7 @@ export class ShortcutRegistry {
     this._devToolsDefaultShortcutActions.clear();
     /** @type {!Array<!{keyCode: number, modifiers: number}>} */
     const forwardedKeys = [];
-    if (!Root.Runtime.experiments.isEnabled('keyboardShortcutEditor')) {
+    if (Root.Runtime.experiments.isEnabled('keyboardShortcutEditor')) {
       /** @type {!Array<!{action: string, descriptors: !Array.<!Descriptor>, type: !Type}>} */
       const userShortcuts = this._userShortcutsSetting.get();
       for (const userShortcut of userShortcuts) {

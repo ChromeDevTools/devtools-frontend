@@ -133,7 +133,8 @@ describe('Sources Tab', async function() {
     assert.deepEqual(await getBreakpointDecorators(frontend), [0x023]);
   });
 
-  it('is able to step with state', async () => {
+  // Skip until naming fix in v8 is landed.
+  it.skip('[crbug.com/1134531] is able to step with state', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await step('navigate to a page and open the Sources tab', async () => {
@@ -232,7 +233,8 @@ describe('Sources Tab', async function() {
     await checkBreakpointDidNotActivate();
   });
 
-  it('is able to step with state in multi-threaded code in main thread', async () => {
+  // Skip until naming fix in v8 is landed.
+  it.skip('[crbug.com/1134531] is able to step with state in multi-threaded code in main thread', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await step('navigate to a page and open the Sources tab', async () => {

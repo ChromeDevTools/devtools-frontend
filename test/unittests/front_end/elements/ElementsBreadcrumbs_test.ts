@@ -4,7 +4,7 @@
 
 import {ElementsBreadcrumbs} from '../../../../front_end/elements/ElementsBreadcrumbs.js';
 import {crumbsToRender, determineElementTitle, DOMNode} from '../../../../front_end/elements/ElementsBreadcrumbsUtils.js';
-import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, renderElementIntoDOM, waitForScrollLeft} from '../helpers/DOMHelpers.js';
+import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, doubleRaf, renderElementIntoDOM, waitForScrollLeft} from '../helpers/DOMHelpers.js';
 import {withNoMutations} from '../helpers/MutationHelpers.js';
 
 const {assert} = chai;
@@ -348,6 +348,70 @@ describe('ElementsBreadcrumbs', () => {
           await waitForScrollLeft(scrollWrapper, 170);
           assert.isTrue(rightButton.disabled);
         });
+      });
+
+      it('hides the overflow buttons should the user resize the window to be large enough', async () => {
+        const thinWrapper = document.createElement('div');
+        thinWrapper.style.width = '400px';
+
+        const component = new ElementsBreadcrumbs();
+        thinWrapper.appendChild(component);
+
+        renderElementIntoDOM(thinWrapper);
+
+        component.data = {
+          crumbs: [divCrumb, bodyCrumb],
+          selectedNode: bodyCrumb,
+        };
+
+        assertShadowRoot(component.shadowRoot);
+
+        const leftButton = component.shadowRoot.querySelector('button.overflow.left');
+        assertElement(leftButton, HTMLButtonElement);
+        const rightButton = component.shadowRoot.querySelector('button.overflow.right');
+        assertElement(rightButton, HTMLButtonElement);
+
+        assert.isFalse(leftButton.classList.contains('hidden'));
+        assert.isFalse(rightButton.classList.contains('hidden'));
+
+        thinWrapper.style.width = '800px';
+        // So the browser has time to paint
+        await doubleRaf();
+
+        assert.isTrue(leftButton.classList.contains('hidden'));
+        assert.isTrue(rightButton.classList.contains('hidden'));
+      });
+
+      it('shows the overflow buttons should the user resize the window down to be small', async () => {
+        const thinWrapper = document.createElement('div');
+        thinWrapper.style.width = '800px';
+
+        const component = new ElementsBreadcrumbs();
+        thinWrapper.appendChild(component);
+
+        renderElementIntoDOM(thinWrapper);
+
+        component.data = {
+          crumbs: [divCrumb, bodyCrumb],
+          selectedNode: bodyCrumb,
+        };
+
+        assertShadowRoot(component.shadowRoot);
+
+        const leftButton = component.shadowRoot.querySelector('button.overflow.left');
+        assertElement(leftButton, HTMLButtonElement);
+        const rightButton = component.shadowRoot.querySelector('button.overflow.right');
+        assertElement(rightButton, HTMLButtonElement);
+
+        assert.isTrue(leftButton.classList.contains('hidden'));
+        assert.isTrue(rightButton.classList.contains('hidden'));
+
+        thinWrapper.style.width = '400px';
+        // So the browser has time to paint
+        await doubleRaf();
+
+        assert.isFalse(leftButton.classList.contains('hidden'));
+        assert.isFalse(rightButton.classList.contains('hidden'));
       });
     });
 

@@ -130,3 +130,7 @@ export function dispatchClickEvent<T extends Element>(element: T, options: Mouse
     assert.fail('Failed to trigger click event successfully.');
   }
 }
+
+export async function doubleRaf() {
+  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+}

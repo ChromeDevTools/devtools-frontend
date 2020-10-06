@@ -17,17 +17,19 @@ export interface ElementsBreadcrumbsData {
 }
 export class ElementsBreadcrumbs extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private readonly resizeObserver = new ResizeObserver(() => this.update());
+  private readonly resizeObserver = new ResizeObserver(() => this.checkForOverflowOnResize());
 
   private crumbsData: ReadonlyArray<DOMNode> = [];
   private selectedDOMNode: Readonly<DOMNode>|null = null;
   private overflowing = false;
   private userScrollPosition: UserScrollPosition = 'start';
   private isObservingResize = false;
+  private userHasManuallyScrolled = false;
 
   set data(data: ElementsBreadcrumbsData) {
     this.selectedDOMNode = data.selectedNode;
     this.crumbsData = data.crumbs;
+    this.userHasManuallyScrolled = false;
     this.update();
   }
 
@@ -41,6 +43,34 @@ export class ElementsBreadcrumbs extends HTMLElement {
       event.preventDefault();
       this.dispatchEvent(new NodeSelectedEvent(node));
     };
+  }
+
+  /*
+   * When the window is resized, we need to check if we either:
+   * 1) overflowing, and now the window is big enough that we don't need to
+   * 2) not overflowing, and now the window is small and we do need to
+   *
+   * If either of these are true, we toggle the overflowing state accordingly and trigger a re-render.
+   */
+  private checkForOverflowOnResize() {
+    const wrappingElement = this.shadow.querySelector('.crumbs');
+    const crumbs = this.shadow.querySelector('.crumbs-scroll-container');
+    if (!wrappingElement || !crumbs) {
+      return;
+    }
+
+    const totalContainingWidth = wrappingElement.clientWidth;
+    const totalCrumbsWidth = crumbs.clientWidth;
+
+    if (totalCrumbsWidth >= totalContainingWidth && this.overflowing === false) {
+      this.overflowing = true;
+      this.userScrollPosition = 'start';
+      this.render();
+    } else if (totalCrumbsWidth < totalContainingWidth && this.overflowing === true) {
+      this.overflowing = false;
+      this.userScrollPosition = 'start';
+      this.render();
+    }
   }
 
   private update() {
@@ -157,6 +187,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
 
   private onOverflowClick(direction: 'left'|'right') {
     return () => {
+      this.userHasManuallyScrolled = true;
       const scrollWindow = this.shadow.querySelector('.crumbs-window');
 
       if (!scrollWindow) {
@@ -309,14 +340,26 @@ export class ElementsBreadcrumbs extends HTMLElement {
   }
 
   private ensureSelectedNodeIsVisible() {
-    if (!this.selectedDOMNode || !this.shadow || !this.overflowing) {
+    /*
+     * If the user has manually scrolled the crumbs in either direction, we
+     * effectively hand control over the scrolling down to them. This is to
+     * prevent the user manually scrolling to the end, and then us scrolling
+     * them back to the selected node. The moment they click either scroll
+     * button we set userHasManuallyScrolled, and we reset it when we get new
+     * data in. This means if the user clicks on a different element in the
+     * tree, we will auto-scroll that element into view, because we'll get new
+     * data and hence the flag will be reset.
+     */
+    if (!this.selectedDOMNode || !this.shadow || !this.overflowing || this.userHasManuallyScrolled) {
       return;
     }
     const activeCrumbId = this.selectedDOMNode.id;
     const activeCrumb = this.shadow.querySelector(`.crumb[data-node-id="${activeCrumbId}"]`);
 
     if (activeCrumb) {
-      activeCrumb.scrollIntoView();
+      activeCrumb.scrollIntoView({
+        behavior: 'smooth',
+      });
     }
   }
 }

@@ -440,34 +440,27 @@ export class ConsoleViewport {
    * @param {?Selection} selection
    */
   _restoreSelection(selection) {
-    let anchorElement = null;
-    let anchorOffset;
-    if (this._firstActiveIndex <= this._anchorSelection.item && this._anchorSelection.item <= this._lastActiveIndex) {
-      anchorElement = this._anchorSelection.node;
-      anchorOffset = this._anchorSelection.offset;
-    } else {
-      if (this._anchorSelection.item < this._firstActiveIndex) {
-        anchorElement = this._topGapElement;
-      } else if (this._anchorSelection.item > this._lastActiveIndex) {
-        anchorElement = this._bottomGapElement;
-      }
-      anchorOffset = this._selectionIsBackward ? 1 : 0;
+    if (!selection || !this._anchorSelection || !this._headSelection) {
+      return;
     }
 
-    let headElement = null;
-    let headOffset;
-    if (this._firstActiveIndex <= this._headSelection.item && this._headSelection.item <= this._lastActiveIndex) {
-      headElement = this._headSelection.node;
-      headOffset = this._headSelection.offset;
-    } else {
-      if (this._headSelection.item < this._firstActiveIndex) {
-        headElement = this._topGapElement;
-      } else if (this._headSelection.item > this._lastActiveIndex) {
-        headElement = this._bottomGapElement;
+    /**
+     * @param {!{item: number, node: !Node, offset: number}} selection
+     * @param {boolean} isSelectionBackwards
+     * @return {!{element: !Node, offset: number}}
+     */
+    const clampSelection = (selection, isSelectionBackwards) => {
+      if (this._firstActiveIndex <= selection.item && selection.item <= this._lastActiveIndex) {
+        return {element: selection.node, offset: selection.offset};
       }
-      headOffset = this._selectionIsBackward ? 0 : 1;
-    }
 
+      const element = selection.item < this._firstActiveIndex ? this._topGapElement : this._bottomGapElement;
+      return {element, offset: isSelectionBackwards ? 1 : 0};
+    };
+
+    const {element: anchorElement, offset: anchorOffset} =
+        clampSelection(this._anchorSelection, !!this._selectionIsBackward);
+    const {element: headElement, offset: headOffset} = clampSelection(this._headSelection, !this._selectionIsBackward);
     selection.setBaseAndExtent(anchorElement, anchorOffset, headElement, headOffset);
   }
 

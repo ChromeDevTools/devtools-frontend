@@ -266,8 +266,10 @@ export class Linkifier {
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
         .createLiveLocation(rawLocation, this._updateAnchor.bind(this, anchor), pool)
         .then(liveLocation => {
-          info.liveLocation = liveLocation;
-          this._onLiveLocationUpdate();
+          if (liveLocation) {
+            info.liveLocation = liveLocation;
+            this._onLiveLocationUpdate();
+          }
         });
 
     const anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(rawLocation.debuggerModel.target()));

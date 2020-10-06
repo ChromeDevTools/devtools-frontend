@@ -139,10 +139,13 @@ export class DebuggerWorkspaceBinding {
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @param {function(!LiveLocation)} updateDelegate
    * @param {!LiveLocationPool} locationPool
-   * @return {!Promise<!Location>}
+   * @return {!Promise<?Location>}
    */
   createLiveLocation(rawLocation, updateDelegate, locationPool) {
     const modelData = this._debuggerModelToData.get(rawLocation.script().debuggerModel);
+    if (!modelData) {
+      return Promise.resolve(null);
+    }
     const liveLocationPromise = modelData._createLiveLocation(rawLocation, updateDelegate, locationPool);
     this._recordLiveLocationChange(liveLocationPromise);
     return liveLocationPromise;
@@ -177,6 +180,9 @@ export class DebuggerWorkspaceBinding {
     const liveLocationPromise = this.createLiveLocation(location, updateDelegate, locationPool);
     this._recordLiveLocationChange(liveLocationPromise);
     const liveLocation = await liveLocationPromise;
+    if (!liveLocation) {
+      return null;
+    }
     this._registerCallFrameLiveLocation(debuggerModel, liveLocation);
     return liveLocation;
   }

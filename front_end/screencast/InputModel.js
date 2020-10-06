@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
 
 export class InputModel extends SDK.SDKModel.SDKModel {
@@ -38,18 +35,19 @@ export class InputModel extends SDK.SDKModel.SDKModel {
       default:
         return;
     }
-
-    const text = event.type === 'keypress' ? String.fromCharCode(event.charCode) : undefined;
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    const text = event.type === 'keypress' ? String.fromCharCode(keyboardEvent.charCode) : undefined;
     this._inputAgent.invoke_dispatchKeyEvent({
       type: type,
-      modifiers: this._modifiersForEvent(event),
+      modifiers: this._modifiersForEvent(keyboardEvent),
       text: text,
       unmodifiedText: text ? text.toLowerCase() : undefined,
-      keyIdentifier: event.keyIdentifier,
-      code: event.code,
-      key: event.key,
-      windowsVirtualKeyCode: event.keyCode,
-      nativeVirtualKeyCode: event.keyCode,
+      // TODO: keyIdentifier is non-standard deprecated event property https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyIdentifier.
+      keyIdentifier: /** @type {*} */ (keyboardEvent).keyIdentifier,
+      code: keyboardEvent.code,
+      key: keyboardEvent.key,
+      windowsVirtualKeyCode: keyboardEvent.keyCode,
+      nativeVirtualKeyCode: keyboardEvent.keyCode,
       autoRepeat: false,
       isKeypad: false,
       isSystemKey: false
@@ -62,38 +60,49 @@ export class InputModel extends SDK.SDKModel.SDKModel {
    * @param {number} zoom
    */
   emitTouchFromMouseEvent(event, offsetTop, zoom) {
-    const buttons = {0: 'none', 1: 'left', 2: 'middle', 3: 'right'};
-    const types = {
-      'mousedown': 'mousePressed',
-      'mouseup': 'mouseReleased',
-      'mousemove': 'mouseMoved',
-      'mousewheel': 'mouseWheel'
-    };
-    if (!(event.type in types) || !(event.which in buttons)) {
-      return;
-    }
-    if (event.type !== 'mousewheel' && buttons[event.which] === 'none') {
+    const buttons = /** @type {!Array<!Protocol.Input.MouseButton>} */ (['none', 'left', 'middle', 'right']);
+    const types = /** @type {*} */
+        ({
+          mousedown: 'mousePressed',
+          mouseup: 'mouseReleased',
+          mousemove: 'mouseMoved',
+          mousewheel: 'mouseWheel',
+        });
+    const eventType = /** @type {string} */ (event.type);
+    if (!(eventType in types)) {
       return;
     }
 
-    if (event.type === 'mousedown' || this._activeTouchOffsetTop === null) {
+    const mouseEvent = /** @type {!MouseEvent} */ (event);
+
+    if (!(mouseEvent.which in buttons)) {
+      return;
+    }
+    if (eventType !== 'mousewheel' && buttons[mouseEvent.which] === 'none') {
+      return;
+    }
+
+    if (eventType === 'mousedown' || this._activeTouchOffsetTop === null) {
       this._activeTouchOffsetTop = offsetTop;
     }
 
-    const x = Math.round(event.offsetX / zoom);
-    let y = Math.round(event.offsetY / zoom);
+    const x = Math.round(mouseEvent.offsetX / zoom);
+    let y = Math.round(mouseEvent.offsetY / zoom);
     y = Math.round(y - this._activeTouchOffsetTop);
+    /** @type {!Protocol.Input.EmulateTouchFromMouseEventRequest} */
     const params = {
-      type: types[event.type],
+      type: types[eventType],
       x: x,
       y: y,
-      modifiers: this._modifiersForEvent(event),
-      button: buttons[event.which],
-      clickCount: 0
+      modifiers: 0,
+      button: buttons[mouseEvent.which],
+      clickCount: 0,
     };
     if (event.type === 'mousewheel') {
-      params.deltaX = event.wheelDeltaX / zoom;
-      params.deltaY = event.wheelDeltaY / zoom;
+      // TODO: MouseWheelEvent is a deprecated non-standard event.
+      const mouseWheelEvent = /** @type {*} */ (mouseEvent);
+      params.deltaX = mouseWheelEvent.wheelDeltaX / zoom;
+      params.deltaY = mouseWheelEvent.wheelDeltaY / zoom;
     } else {
       this._activeTouchParams = params;
     }
@@ -107,13 +116,13 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     if (this._activeTouchParams !== null) {
       const params = this._activeTouchParams;
       this._activeTouchParams = null;
-      params.type = 'mouseReleased';
+      params.type = /** @type {!Protocol.Input.EmulateTouchFromMouseEventRequestType} */ ('mouseReleased');
       this._inputAgent.invoke_emulateTouchFromMouseEvent(params);
     }
   }
 
   /**
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    * @return {number}
    */
   _modifiersForEvent(event) {

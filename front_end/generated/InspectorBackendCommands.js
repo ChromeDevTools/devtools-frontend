@@ -2869,7 +2869,8 @@ export function registerCommands(inspectorBackend) {
       'Runtime.addBinding',
       [
         {'name': 'name', 'type': 'string', 'optional': false},
-        {'name': 'executionContextId', 'type': 'number', 'optional': true}
+        {'name': 'executionContextId', 'type': 'number', 'optional': true},
+        {'name': 'executionContextName', 'type': 'string', 'optional': true}
       ],
       []);
   inspectorBackend.registerCommand(

@@ -6784,6 +6784,11 @@ declare namespace Protocol {
        * module) (0-based).
        */
       lineNumber?: number;
+      /**
+       * Initiator column number, set for Parser type or for Script type (when script is importing
+       * module) (0-based).
+       */
+      columnNumber?: number;
     }
 
     /**
@@ -12040,6 +12045,12 @@ declare namespace Protocol {
        */
       hasUserVerification?: boolean;
       /**
+       * If set to true, the authenticator will support the largeBlob extension.
+       * https://w3c.github.io/webauthn#largeBlob
+       * Defaults to false.
+       */
+      hasLargeBlob?: boolean;
+      /**
        * If set to true, tests of user presence will succeed immediately.
        * Otherwise, they will not be resolved. Defaults to true.
        */
@@ -14552,7 +14563,21 @@ declare namespace Protocol {
 
     export interface AddBindingRequest {
       name: string;
+      /**
+       * If specified, the binding would only be exposed to the specified
+       * execution context. If omitted and `executionContextName` is not set,
+       * the binding is exposed to all execution contexts of the target.
+       * This parameter is mutually exclusive with `executionContextName`.
+       */
       executionContextId?: ExecutionContextId;
+      /**
+       * If specified, the binding is exposed to the executionContext with
+       * matching name, even for contexts created after the binding is added.
+       * See also `ExecutionContext.name` and `worldName` parameter to
+       * `Page.addScriptToEvaluateOnNewDocument`.
+       * This parameter is mutually exclusive with `executionContextId`.
+       */
+      executionContextName?: string;
     }
 
     export interface RemoveBindingRequest {

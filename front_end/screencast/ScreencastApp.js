@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -70,7 +67,9 @@ export class ScreencastApp {
     this._screenCaptureModel = screenCaptureModel;
     this._toggleButton.setEnabled(true);
     this._screencastView = new ScreencastView(screenCaptureModel);
-    this._rootSplitWidget.setMainWidget(this._screencastView);
+    if (this._rootSplitWidget) {
+      this._rootSplitWidget.setMainWidget(this._screencastView);
+    }
     this._screencastView.initialize();
     this._onScreencastEnabledChanged();
   }
@@ -85,8 +84,10 @@ export class ScreencastApp {
     }
     delete this._screenCaptureModel;
     this._toggleButton.setEnabled(false);
-    this._screencastView.detach();
-    delete this._screencastView;
+    if (this._screencastView) {
+      this._screencastView.detach();
+      delete this._screencastView;
+    }
     this._onScreencastEnabledChanged();
   }
 

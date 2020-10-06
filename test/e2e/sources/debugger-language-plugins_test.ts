@@ -62,27 +62,6 @@ type EvaluatorModule = {
   constantValue?: VariableValue
 };
 
-interface EvalBase {
-  rootType: TypeInfo;
-  payload: unknown;
-}
-
-interface FieldInfo {
-  name?: string;
-  offset: number;
-  typeId: unknown;
-}
-
-interface TypeInfo {
-  typeNames: string[];
-  typeId: unknown;
-  members: FieldInfo[];
-  alignment: number;
-  arraySize: number;
-  size: number;
-  canExpand: boolean;
-  hasValue: boolean;
-}
 type FunctionInfo = {
   name?: string
 };
@@ -100,10 +79,6 @@ interface TestPluginImpl {
 
   evaluateVariable?(name: string, location: RawLocation): Promise<EvaluatorModule|null>;
 
-  getTypeInfo?(expression: string, context: RawLocation): Promise<{typeInfos: TypeInfo[], base: EvalBase}|null>;
-
-  getFormatter?(expressionOrField: string|{base: EvalBase, field: FieldInfo[]}, context: RawLocation):
-      Promise<{js: string}|null>;
   getFunctionInfo?(rawLocation: RawLocation): Promise<{frames: Array<FunctionInfo>}|null>;
 
   dispose?(): void;
@@ -338,9 +313,9 @@ describe('The Debugger Language Plugins', async () => {
     await waitFor(RESUME_BUTTON);
 
     const locals = await getValuesForScope('LOCAL');
-    assert.deepEqual(locals, ['localX: undefined']);
+    assert.deepEqual(locals, ['localX: int']);
     const globals = await getValuesForScope('GLOBAL', 2);
-    assert.deepEqual(globals, ['n1: namespace', 'n2: namespace', 'globalY: undefined']);
+    assert.deepEqual(globals, ['n1: namespace', 'n2: namespace', 'globalY: float']);
   });
 
   it('shows inline frames', async () => {
@@ -416,17 +391,17 @@ describe('The Debugger Language Plugins', async () => {
         ['unreachable.ll:6', 'unreachable.ll:11', 'unreachable.ll:16', 'unreachable.html:27', 'unreachable.html:30']);
 
     // We see variables for innermost frame.
-    assert.deepEqual(await getValuesForScope('LOCAL'), ['localX0: undefined']);
+    assert.deepEqual(await getValuesForScope('LOCAL'), ['localX0: int']);
 
     // Switching frames affects what variables we see.
     await switchToCallFrame(2);
-    assert.deepEqual(await getValuesForScope('LOCAL'), ['localX1: undefined']);
+    assert.deepEqual(await getValuesForScope('LOCAL'), ['localX1: int']);
 
     await switchToCallFrame(3);
-    assert.deepEqual(await getValuesForScope('LOCAL'), ['localX2: undefined']);
+    assert.deepEqual(await getValuesForScope('LOCAL'), ['localX2: int']);
   });
 
-  it('shows variable values with JS formatters', async () => {
+  it('shows constant variable value', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
@@ -454,72 +429,24 @@ describe('The Debugger Language Plugins', async () => {
               return [];
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             async listVariablesInScope(rawLocation: RawLocation) {
-              return [{scope: 'LOCAL', name: 'local', type: 'TestType'}];
+              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return [{scope: 'LOCAL', name: 'local', type: 'int'}];
+              }
+              return [];
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            async getTypeInfo(expression: string, context: RawLocation):
-                Promise<{typeInfos: TypeInfo[], base: EvalBase}|null> {
-              if (expression === 'local') {
-                const typeInfos = [
-                  {
-                    typeNames: ['TestType'],
-                    typeId: 'TestType',
-                    members: [{name: 'member', offset: 1, typeId: 'TestTypeMember'}],
-                    alignment: 0,
-                    arraySize: 0,
-                    size: 4,
-                    canExpand: true,
-                    hasValue: false,
-                  },
-                  {
-                    typeNames: ['TestTypeMember'],
-                    typeId: 'TestTypeMember',
-                    members: [{name: 'member2', offset: 1, typeId: 'TestTypeMember2'}],
-                    alignment: 0,
-                    arraySize: 0,
-                    size: 3,
-                    canExpand: true,
-                    hasValue: false,
-                  },
-                  {
-                    typeNames: ['TestTypeMember2'],
-                    typeId: 'TestTypeMember2',
-                    members: [],
-                    alignment: 0,
-                    arraySize: 0,
-                    size: 2,
-                    canExpand: false,
-                    hasValue: true,
-                  },
-                ];
-                const base = {rootType: typeInfos[0], payload: 28};
-
-                return {typeInfos, base};
+            async evaluateVariable(name: string, location: RawLocation) {
+              const {rawLocationRange} = this._modules.get(location.rawModuleId) || {};
+              if (rawLocationRange && rawLocationRange.startOffset <= location.codeOffset &&
+                  location.codeOffset < rawLocationRange.endOffset && name === 'local') {
+                return {constantValue: {value: '23', js_type: 'number', type: 'int', name: 'local'}};
               }
               return null;
             }
-
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            async getFormatter(expressionOrField: string|{base: EvalBase, field: FieldInfo[]}, context: RawLocation):
-                Promise<{js: string}|null> {
-              if (typeof expressionOrField === 'string') {
-                return null;
-              }
-
-              const {base, field} = expressionOrField;
-              if (typeof base.payload !== 'number' || base.payload !== 28 || field.length !== 2 ||
-                  field[0].name !== 'member' || field[0].offset !== 1 || field[0].typeId !== 'TestTypeMember' ||
-                  field[1].name !== 'member2' || field[1].offset !== 1 || field[1].typeId !== 'TestTypeMember2') {
-                return null;
-              }
-
-              return {js: '26'};
-            }
           }
-
 
           RegisterExtension(
               extensionAPI, new VariableListingPlugin(), 'Location Mapping',
@@ -532,8 +459,8 @@ describe('The Debugger Language Plugins', async () => {
     await waitFor(RESUME_BUTTON);
 
 
-    const locals = await getValuesForScope('LOCAL', 2, 3);
-    assert.deepEqual(locals, ['local: TestType', 'member: TestTypeMember', 'member2: 26']);
+    const locals = await getValuesForScope('LOCAL', 1, 2);
+    assert.deepEqual(locals, ['local: int', 'value: 23']);
   });
 
   it('shows variable value in popover', async () => {
@@ -585,33 +512,6 @@ describe('The Debugger Language Plugins', async () => {
                 return {constantValue: {value: '23', js_type: 'number', type: 'int', name: 'unreachable'}};
               }
               return null;
-            }
-
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            async getTypeInfo(expression: string, context: RawLocation):
-                Promise<{typeInfos: TypeInfo[], base: EvalBase}|null> {
-              if (expression === 'unreachable') {
-                const typeInfos = [{
-                  typeNames: ['int'],
-                  typeId: 'int',
-                  members: [],
-                  alignment: 0,
-                  arraySize: 0,
-                  size: 4,
-                  canExpand: false,
-                  hasValue: true,
-                }];
-                const base = {rootType: typeInfos[0], payload: 28};
-
-                return {typeInfos, base};
-              }
-              return null;
-            }
-
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            async getFormatter(expressionOrField: string|{base: EvalBase, field: FieldInfo[]}, context: RawLocation):
-                Promise<{js: string}|null> {
-              return {js: '23'};
             }
           }
 

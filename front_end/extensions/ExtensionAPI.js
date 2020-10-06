@@ -95,8 +95,6 @@ export function defineCommonExtensionSymbols(apiPrivate) {
     RawLocationToSourceLocation: 'rawLocationToSourceLocation',
     ListVariablesInScope: 'listVariablesInScope',
     EvaluateVariable: 'evaluateVariable',
-    GetTypeInfo: 'getTypeInfo',
-    GetFormatter: 'getFormatter',
     GetFunctionInfo: 'getFunctionInfo'
   };
 }
@@ -406,10 +404,6 @@ self.injectedExtensionAPI = function(
             return plugin.listVariablesInScope(parameters.rawLocation);
           case languageExtensionPluginCommands.EvaluateVariable:
             return plugin.evaluateVariable(parameters.name, parameters.location);
-          case languageExtensionPluginCommands.GetTypeInfo:
-            return plugin.getTypeInfo(parameters.expression, parameters.context);
-          case languageExtensionPluginCommands.GetFormatter:
-            return plugin.getFormatter(parameters.expressionOrField, parameters.context);
           case languageExtensionPluginCommands.GetFunctionInfo:
             return plugin.getFunctionInfo(parameters.rawLocation);
         }

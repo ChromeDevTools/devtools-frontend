@@ -123,7 +123,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     if (endpoint) {
       const reportingEndpointPrefix = field.createChild('span', 'inline-name');
       reportingEndpointPrefix.textContent = ls`reporting to`;
-      const reportingEndpointName = field.createChild('span', 'copyable');
+      const reportingEndpointName = field.createChild('span');
       reportingEndpointName.textContent = endpoint;
     }
   }

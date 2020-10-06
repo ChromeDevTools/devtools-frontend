@@ -8,13 +8,15 @@
   flex: 0 0 200px;
 }
 
-.report-field .copyable {
+.report-field-value {
   user-select: text;
+  display: flex;
 }
 
 .report-field .inline-name {
   color: #888;
   padding-left: 2ex;
+  user-select: none;
 }
 
 .report-field .inline-name::after {
@@ -55,8 +57,4 @@
   max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.report-field-value {
-  display: flex;
 }

@@ -369,30 +369,25 @@ export class ConsoleViewport {
    */
   _updateSelectionModel(selection) {
     const range = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
-    if (!range || selection.isCollapsed || !this.element.hasSelection()) {
+    if (!range || (!selection || selection.isCollapsed) || !this.element.hasSelection()) {
       this._headSelection = null;
       this._anchorSelection = null;
       return false;
     }
 
-    let firstSelected = Number.MAX_VALUE;
-    let lastSelected = -1;
+    let firstSelectedIndex = Number.MAX_VALUE;
+    let lastSelectedIndex = -1;
 
     let hasVisibleSelection = false;
     for (let i = 0; i < this._renderedItems.length; ++i) {
       if (range.intersectsNode(this._renderedItems[i].element())) {
         const index = i + this._firstActiveIndex;
-        firstSelected = Math.min(firstSelected, index);
-        lastSelected = Math.max(lastSelected, index);
+        firstSelectedIndex = Math.min(firstSelectedIndex, index);
+        lastSelectedIndex = Math.max(lastSelectedIndex, index);
         hasVisibleSelection = true;
       }
     }
-    if (hasVisibleSelection) {
-      firstSelected =
-          this._createSelectionModel(firstSelected, /** @type {!Node} */ (range.startContainer), range.startOffset);
-      lastSelected =
-          this._createSelectionModel(lastSelected, /** @type {!Node} */ (range.endContainer), range.endOffset);
-    }
+
     const topOverlap = range.intersectsNode(this._topGapElement) && this._topGapElement._active;
     const bottomOverlap = range.intersectsNode(this._bottomGapElement) && this._bottomGapElement._active;
     if (!topOverlap && !bottomOverlap && !hasVisibleSelection) {
@@ -410,9 +405,17 @@ export class ConsoleViewport {
     const isBackward = this._isSelectionBackwards(selection);
     const startSelection = this._selectionIsBackward ? this._headSelection : this._anchorSelection;
     const endSelection = this._selectionIsBackward ? this._anchorSelection : this._headSelection;
+    let firstSelected = null;
+    let lastSelected = null;
+    if (hasVisibleSelection) {
+      firstSelected = this._createSelectionModel(
+          firstSelectedIndex, /** @type {!Node} */ (range.startContainer), range.startOffset);
+      lastSelected =
+          this._createSelectionModel(lastSelectedIndex, /** @type {!Node} */ (range.endContainer), range.endOffset);
+    }
     if (topOverlap && bottomOverlap && hasVisibleSelection) {
-      firstSelected = firstSelected.item < startSelection.item ? firstSelected : startSelection;
-      lastSelected = lastSelected.item > endSelection.item ? lastSelected : endSelection;
+      firstSelected = (firstSelected && firstSelected.item < startSelection.item) ? firstSelected : startSelection;
+      lastSelected = (lastSelected && lastSelected.item > endSelection.item) ? lastSelected : endSelection;
     } else if (!hasVisibleSelection) {
       firstSelected = startSelection;
       lastSelected = endSelection;

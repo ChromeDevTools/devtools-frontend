@@ -192,14 +192,6 @@ function analyzeGetLocalizedStringNode(node, filePath) {
     addError(`${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
         localizationUtils.getLocationMessage(node.loc)}: first argument should be 'str_'`);
   }
-  const secondArg = node.arguments[1];
-  const isCallingUIStringsObject = (secondArg.object && secondArg.object.name === 'UIStrings');
-  const isPropertyAnIdentifier = (secondArg.property && secondArg.property.type === espreeTypes.IDENTIFIER);
-  if (secondArg.type !== espreeTypes.MEMBER_EXPR || !isCallingUIStringsObject || !isPropertyAnIdentifier) {
-    addError(`${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
-        localizationUtils.getLocationMessage(
-            node.loc)}: second argument should reference an identifier in UIStrings object`);
-  }
 }
 
 function auditGrdpFile(filePath, fileContent) {

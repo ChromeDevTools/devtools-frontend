@@ -22,8 +22,8 @@ async function checkUIStrings(shouldAutoFix) {
   const errorMap = new Map();
   for (const [filePath, uiStringsEntries] of uiStringsMap.entries()) {
     let errorList;
-    if (filePath.endsWith('moduleUIStrings.js')) {
-      const newFilePath = filePath.replace('moduleUIStrings.js', 'module.json');
+    if (filePath.endsWith('ModuleUIStrings.js')) {
+      const newFilePath = filePath.replace('ModuleUIStrings.js', 'module.json');
       const stringIdSet = getStringIdsFromCallSites(localizationCallsMap.get(newFilePath));
       errorList = checkStringEntries(uiStringsEntries, stringIdSet, true);
     } else {

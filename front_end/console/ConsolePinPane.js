@@ -169,7 +169,7 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     <div class='console-pin'>
       ${deletePinIcon}
       <div class='console-pin-name' $='name'></div>
-      <div class='console-pin-preview' $='preview'>${ls`not available`}</div>
+      <div class='console-pin-preview' $='preview'>${''}</div>
     </div>`;
     this._pinElement = fragment.element();
     this._pinPreview = fragment.$('preview');

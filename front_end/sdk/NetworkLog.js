@@ -247,7 +247,8 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
       if (initiator.type === Protocol.Network.InitiatorType.Parser) {
         type = InitiatorType.Parser;
         url = initiator.url ? initiator.url : url;
-        lineNumber = initiator.lineNumber ? initiator.lineNumber : lineNumber;
+        lineNumber = typeof initiator.lineNumber === 'number' ? initiator.lineNumber : lineNumber;
+        columnNumber = typeof initiator.columnNumber === 'number' ? initiator.columnNumber : columnNumber;
       } else if (initiator.type === Protocol.Network.InitiatorType.Script) {
         for (let stack = initiator.stack; stack;) {
           const topFrame = stack.callFrames.length ? stack.callFrames[0] : null;

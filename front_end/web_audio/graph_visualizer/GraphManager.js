@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../../common/common.js';  // eslint-disable-line no-unused-vars
 
 import {Events as ViewEvents, GraphView} from './GraphView.js';
@@ -38,10 +35,17 @@ export class GraphManager extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     const graph = this._graphMapByContextId.get(contextId);
+    if (!graph) {
+      return;
+    }
+
     graph.removeEventListener(ViewEvents.ShouldRedraw, this._notifyShouldRedraw, this);
     this._graphMapByContextId.delete(contextId);
   }
 
+  /**
+   * @param {string} contextId
+   */
   hasContext(contextId) {
     return this._graphMapByContextId.has(contextId);
   }
@@ -58,7 +62,7 @@ export class GraphManager extends Common.ObjectWrapper.ObjectWrapper {
    * @return {?GraphView}
    */
   getGraph(contextId) {
-    return this._graphMapByContextId.get(contextId);
+    return this._graphMapByContextId.get(contextId) || null;
   }
 
   /**

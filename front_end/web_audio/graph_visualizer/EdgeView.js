@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {NodeParamConnectionData, NodesConnectionData} from './GraphStyle.js';  // eslint-disable-line no-unused-vars
 import {generateInputPortId, generateOutputPortId, generateParamPortId} from './NodeView.js';
 
@@ -16,7 +13,12 @@ export class EdgeView {
    * @param {!EdgeTypes} type
    */
   constructor(data, type) {
-    const {edgeId, sourcePortId, destinationPortId} = generateEdgePortIdsByData(data, type);
+    const edgePortsIds = generateEdgePortIdsByData(data, type);
+    if (!edgePortsIds) {
+      throw new Error('Unable to generate edge port IDs');
+    }
+
+    const {edgeId, sourcePortId, destinationPortId} = edgePortsIds;
 
     this.id = edgeId;
     this.type = type;
@@ -56,12 +58,14 @@ export const generateEdgePortIdsByData = (data, type) => {
    */
   function getDestinationPortId(data, type) {
     if (type === EdgeTypes.NodeToNode) {
-      return generateInputPortId(data.destinationId, data.destinationInputIndex);
+      const portData = /** @type {!NodesConnectionData} */ (data);
+      return generateInputPortId(data.destinationId, portData.destinationInputIndex);
     }
     if (type === EdgeTypes.NodeToParam) {
-      return generateParamPortId(data.destinationId, data.destinationParamId);
+      const portData = /** @type {!NodeParamConnectionData} */ (data);
+      return generateParamPortId(data.destinationId, portData.destinationParamId);
     }
-    console.error(`Unknown edge type: ${type}`);
+    console.error(`Unknown edge type: ${type.toString()}`);
     return '';
   }
 };

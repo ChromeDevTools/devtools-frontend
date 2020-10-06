@@ -17,6 +17,7 @@ devtools_module("web_audio_graph_visualizer") {
 
   deps = [
     "../../common:bundle",
+    "../../platform:bundle",
     "../../ui:bundle",
   ]
 }

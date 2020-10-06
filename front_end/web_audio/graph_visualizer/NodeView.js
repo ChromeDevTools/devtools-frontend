@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as UI from '../../ui/ui.js';
 
 import {BottomPaddingWithoutParam, BottomPaddingWithParam, LeftMarginOfText, LeftSideTopPadding, NodeCreationData, NodeLabelFontStyle, NodeLayout, ParamLabelFontStyle, Port, PortTypes, RightMarginOfText, TotalInputPortHeight, TotalOutputPortHeight, TotalParamPortHeight} from './GraphStyle.js';  // eslint-disable-line no-unused-vars
@@ -27,6 +24,9 @@ export class NodeView {
     this.size = {width: 0, height: 0};
     // Position of the center. If null, it means the graph layout has not been computed
     // and this node should not be rendered. It will be set after layouting.
+    /**
+     * @type {?Object}
+     */
     this.position = null;
 
     /** @type {!NodeLayout} */
@@ -83,6 +83,9 @@ export class NodeView {
    * @return {!Array<!Port>}
    */
   getPortsByType(type) {
+    /**
+     * @type {!Array<!Port>}
+     */
     const result = [];
     this.ports.forEach(port => {
       if (port.type === type) {
@@ -151,12 +154,7 @@ export class NodeView {
   _setupInputPorts() {
     for (let i = 0; i < this.numberOfInputs; i++) {
       const {x, y} = calculateInputPortXY(i);
-      this._addPort({
-        id: generateInputPortId(this.id, i),
-        type: PortTypes.In,
-        x,
-        y,
-      });
+      this._addPort({id: generateInputPortId(this.id, i), type: PortTypes.In, x, y, label: undefined});
     }
   }
 
@@ -168,15 +166,14 @@ export class NodeView {
       if (this.ports.has(portId)) {
         // Update y value of an existing output port.
         const port = this.ports.get(portId);
+        if (!port) {
+          throw new Error(`Unable to find port with id ${portId}`);
+        }
+
         port.x = x;
         port.y = y;
       } else {
-        this._addPort({
-          id: portId,
-          type: PortTypes.Out,
-          x,
-          y,
-        });
+        this._addPort({id: portId, type: PortTypes.Out, x, y, label: undefined});
       }
     }
   }
@@ -242,6 +239,9 @@ export class NodeLabelGenerator {
   }
 }
 
+/**
+ * @type {!CanvasRenderingContext2D}
+ */
 let _contextForFontTextMeasuring;
 
 /**
@@ -252,12 +252,20 @@ let _contextForFontTextMeasuring;
  */
 export const measureTextWidth = (text, fontStyle) => {
   if (!_contextForFontTextMeasuring) {
-    _contextForFontTextMeasuring = createElement('canvas').getContext('2d');
+    const context = document.createElement('canvas').getContext('2d');
+    if (!context) {
+      throw new Error('Unable to create canvas context.');
+    }
+
+    _contextForFontTextMeasuring = context;
   }
 
   const context = _contextForFontTextMeasuring;
   context.save();
-  context.font = fontStyle;
+  if (fontStyle) {
+    context.font = fontStyle;
+  }
+
   const width = UI.UIUtils.measureTextWidth(context, text);
   context.restore();
   return width;

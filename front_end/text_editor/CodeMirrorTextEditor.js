@@ -405,7 +405,6 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
   }
 
   /**
-   * @protected
    * @return {!CodeMirror}
    */
   codeMirror() {

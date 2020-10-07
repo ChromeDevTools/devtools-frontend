@@ -1408,6 +1408,24 @@ export class DevToolsIconLabel extends HTMLSpanElement {
   }
 }
 
+export class DevToolsSmallBubble extends HTMLSpanElement {
+  constructor() {
+    super();
+    const root = createShadowRootWithCoreStyles(this, 'ui/smallBubble.css');
+    this._textElement = root.createChild('div');
+    this._textElement.className = 'info';
+    this._textElement.createChild('slot');
+  }
+
+  /**
+     * @param {string} type
+     * @this {Element}
+     */
+  set type(type) {
+    this._textElement.className = type;
+  }
+}
+
 (function() {
 let labelId = 0;
 registerCustomElement('span', 'dt-radio', class extends HTMLSpanElement {
@@ -1467,23 +1485,7 @@ registerCustomElement('span', 'dt-slider', class extends HTMLSpanElement {
   }
 });
 
-registerCustomElement('span', 'dt-small-bubble', class extends HTMLSpanElement {
-  constructor() {
-    super();
-    const root = createShadowRootWithCoreStyles(this, 'ui/smallBubble.css');
-    this._textElement = root.createChild('div');
-    this._textElement.className = 'info';
-    this._textElement.createChild('slot');
-  }
-
-  /**
-     * @param {string} type
-     * @this {Element}
-     */
-  set type(type) {
-    this._textElement.className = type;
-  }
-});
+registerCustomElement('span', 'dt-small-bubble', DevToolsSmallBubble);
 
 registerCustomElement('div', 'dt-close-button', class extends HTMLDivElement {
   constructor() {

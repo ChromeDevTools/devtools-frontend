@@ -58,6 +58,7 @@ declare class AnchorBox {
   y: number;
   width: number;
   height: number;
+  constructor(x: number, y: number, width: number, height: number);
   contains(x: number, y: number): boolean;
   relativeToElement(element: Element): AnchorBox;
 }

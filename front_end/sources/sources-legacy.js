@@ -280,10 +280,6 @@ Sources.ThreadsSidebarPane = SourcesModule.ThreadsSidebarPane.ThreadsSidebarPane
 /** @constructor */
 Sources.UISourceCodeFrame = SourcesModule.UISourceCodeFrame.UISourceCodeFrame;
 
-Sources.UISourceCodeFrame._iconClassPerLevel = SourcesModule.UISourceCodeFrame.iconClassPerLevel;
-Sources.UISourceCodeFrame._bubbleTypePerLevel = SourcesModule.UISourceCodeFrame.bubbleTypePerLevel;
-Sources.UISourceCodeFrame._lineClassPerLevel = SourcesModule.UISourceCodeFrame.lineClassPerLevel;
-
 /** @constructor */
 Sources.UISourceCodeFrame.RowMessage = SourcesModule.UISourceCodeFrame.RowMessage;
 

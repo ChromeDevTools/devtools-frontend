@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as SourceFrame from '../source_frame/source_frame.js';
@@ -81,20 +78,20 @@ export class RequestResponseView extends UI.Widget.VBox {
    * @return {!Promise<?UI.Widget.Widget>}
    */
   static async sourceViewForRequest(request) {
-    let sourceView = request[_sourceViewSymbol];
+    let sourceView = requestToSourceView.get(request);
     if (sourceView !== undefined) {
       return sourceView;
     }
 
     const contentData = await request.contentData();
     if (!RequestResponseView._hasTextContent(request, contentData)) {
-      request[_sourceViewSymbol] = null;
+      requestToSourceView.delete(request);
       return null;
     }
 
     const highlighterType = request.resourceType().canonicalMimeType() || request.mimeType;
     sourceView = SourceFrame.ResourceSourceFrame.ResourceSourceFrame.createSearchableView(request, highlighterType);
-    request[_sourceViewSymbol] = sourceView;
+    requestToSourceView.set(request, sourceView);
     return sourceView;
   }
 
@@ -153,4 +150,5 @@ export class RequestResponseView extends UI.Widget.VBox {
   }
 }
 
-export const _sourceViewSymbol = Symbol('RequestResponseSourceView');
+/** @type {!WeakMap<!SDK.NetworkRequest.NetworkRequest, !UI.Widget.Widget>} */
+const requestToSourceView = new WeakMap();

@@ -456,7 +456,7 @@ export class TreeElement {
     this._boundOnBlur = this._onBlur.bind(this);
 
     this._listItemNode = /** @type {!HTMLLIElement} */ (createElement('li'));
-    /** @protected */
+
     this.titleElement = this._listItemNode.createChild('span', 'tree-element-title');
     this._listItemNode.treeElement = this;
     if (title) {

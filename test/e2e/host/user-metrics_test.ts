@@ -8,7 +8,7 @@ import * as puppeteer from 'puppeteer';
 import {$, click, enableExperiment, getBrowserAndPages, goToResource, platform, reloadDevTools, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToCssOverviewTab} from '../helpers/css-overview-helpers.js';
-import {expandSelectedNodeRecursively, INACTIVE_GRID_ADORNER_SELECTOR, navigateToSidePane, openLayoutPane, toggleElementCheckboxInLayoutPane, toggleGroupComputedProperties, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
+import {expandSelectedNodeRecursively, focusElementsTree, INACTIVE_GRID_ADORNER_SELECTOR, navigateToSidePane, openLayoutPane, toggleElementCheckboxInLayoutPane, toggleGroupComputedProperties, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 import {clickToggleButton, selectDualScreen, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
 import {closeSecurityTab, navigateToSecurityTab} from '../helpers/security-helpers.js';
 import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
@@ -695,6 +695,34 @@ describe('User Metrics for Grid Overlay', () => {
 
   afterEach(async () => {
     const {frontend} = getBrowserAndPages();
+    await endCatchEvents(frontend);
+  });
+});
+
+describe('User Metrics for CSS custom properties in the Styles pane', () => {
+  beforeEach(async () => {
+    await goToResource('elements/css-variables.html');
+    await navigateToSidePane('Styles');
+    await waitForElementsStyleSection();
+    await waitForContentOfSelectedElementsNode('<body>\u200B');
+    await focusElementsTree();
+  });
+
+  it('dispatch events when capture overview button hit', async () => {
+    const {frontend} = getBrowserAndPages();
+    await frontend.keyboard.press('ArrowRight');
+    await waitForContentOfSelectedElementsNode('<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
+
+    await beginCatchEvents(frontend);
+
+    await click('.css-var-link');
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.ActionTaken',
+        value: 47,  // CustomPropertyLinkClicked
+      },
+    ]);
+
     await endCatchEvents(frontend);
   });
 });

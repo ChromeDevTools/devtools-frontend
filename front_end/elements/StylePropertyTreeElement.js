@@ -171,6 +171,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   _handleVarDefinitionClick(variableName, event) {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
     this._parentPane.jumpToProperty(variableName);
     event.consume(true);
   }

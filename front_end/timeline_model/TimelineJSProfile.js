@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
@@ -53,9 +51,12 @@ export class TimelineJSProfileProcessor {
 
   /**
    * @param {!Array<!SDK.TracingModel.Event>} events
+   * @param {{showAllEvents: boolean,
+   *          showRuntimeCallStats: boolean,
+   *          showNativeFunctions: boolean}} config
    * @return {!Array<!SDK.TracingModel.Event>}
    */
-  static generateJSFrameEvents(events) {
+  static generateJSFrameEvents(events, config) {
     /**
      * @param {!Protocol.Runtime.CallFrame} frame1
      * @param {!Protocol.Runtime.CallFrame} frame2
@@ -92,10 +93,7 @@ export class TimelineJSProfileProcessor {
     const lockedJsStackDepth = [];
     let ordinal = 0;
     let fakeJSInvocation = false;
-    const showAllEvents = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
-    const showRuntimeCallStats = Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats');
-    const showNativeFunctions =
-        Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get();
+    const {showAllEvents, showRuntimeCallStats, showNativeFunctions} = config;
 
     /**
      * @param {!SDK.TracingModel.Event} e

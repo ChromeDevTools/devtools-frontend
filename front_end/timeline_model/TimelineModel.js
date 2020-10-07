@@ -32,6 +32,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
@@ -667,7 +668,11 @@ export class TimelineModelImpl {
       events = events.mergeOrdered(jsSamples, SDK.TracingModel.Event.orderedCompareStartTime);
     }
     if (jsSamples || events.some(e => e.name === RecordType.JSSample)) {
-      const jsFrameEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events);
+      const jsFrameEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, {
+        showAllEvents: Root.Runtime.experiments.isEnabled('timelineShowAllEvents'),
+        showRuntimeCallStats: Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats'),
+        showNativeFunctions: Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get(),
+      });
       if (jsFrameEvents && jsFrameEvents.length) {
         events = jsFrameEvents.mergeOrdered(events, SDK.TracingModel.Event.orderedCompareStartTime);
       }

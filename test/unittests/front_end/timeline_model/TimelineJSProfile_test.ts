@@ -5,9 +5,7 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../front_end/sdk/sdk.js';
-import * as Common from '../../../../front_end/common/common.js';
 
-import {resetSettingsStorage} from '../common/SettingsHelper.js';
 import {TimelineJSProfileProcessor} from '../../../../front_end/timeline_model/TimelineJSProfile.js';
 
 describe('TimelineJSProfile', () => {
@@ -15,24 +13,21 @@ describe('TimelineJSProfile', () => {
   let process: SDK.TracingModel.Process;
   let thread: SDK.TracingModel.Thread;
 
+  const config = {
+    showAllEvents: false,
+    showRuntimeCallStats: false,
+    showNativeFunctions: false,
+  };
+
   before(() => {
     tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
     process = new SDK.TracingModel.Process(tracingModel, 1);
     thread = new SDK.TracingModel.Thread(process, 1);
   });
 
-  beforeEach(() => {
-    const settings = resetSettingsStorage();
-    // TODO(petermarshall): Avoid reaching into settings internals just to make module settings work.
-    settings._moduleSettings.set(
-        'showNativeFunctionsInJSProfile',
-        settings.createSetting('showNativeFunctionsInJSProfile', true, Common.Settings.SettingStorageType.Global));
-  });
-  afterEach(resetSettingsStorage);
-
   it('generateJSFrameEvents returns an empty array for an empty input', () => {
     const events: SDK.TracingModel.Event[] = [];
-    const returnedEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events);
+    const returnedEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
     assert.deepEqual(returnedEvents, []);
   });
 
@@ -43,7 +38,7 @@ describe('TimelineJSProfile', () => {
     sampleEvent.addArgs({data: {stackTrace: [{callFrame: {}}]}});
     const events = [callEvent, sampleEvent];
 
-    const returnedEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events);
+    const returnedEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
     assert.strictEqual(returnedEvents.length, 1);
     assert.strictEqual(returnedEvents[0].name, 'JSFrame');
     assert.strictEqual(returnedEvents[0].startTime, 5);
@@ -55,7 +50,7 @@ describe('TimelineJSProfile', () => {
     sampleEvent.addArgs({data: {stackTrace: [{callFrame: {}}]}});
     const events = [sampleEvent];
 
-    const returnedEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events);
+    const returnedEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
     assert.strictEqual(returnedEvents.length, 1);
     assert.strictEqual(returnedEvents[0].name, 'JSFrame');
     assert.strictEqual(returnedEvents[0].startTime, 5);
@@ -77,7 +72,7 @@ describe('TimelineJSProfile', () => {
     sampleEvent5.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
     const events = [sampleEvent1, sampleEvent2, sampleEvent3, callEvent, sampleEvent4, sampleEvent5];
 
-    const returnedEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events);
+    const returnedEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
     assert.strictEqual(returnedEvents.length, 2);
     assert.strictEqual(returnedEvents[0].name, 'JSFrame');
     assert.strictEqual(returnedEvents[0].startTime, 5);

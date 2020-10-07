@@ -4,8 +4,5 @@ ts_library("timeline_model") {
   testonly = true
   sources = [ "TimelineJSProfile_test.ts" ]
 
-  deps = [
-    "../../../../front_end/timeline_model:bundle",
-    "../common",
-  ]
+  deps = [ "../../../../front_end/timeline_model:bundle" ]
 }

@@ -6,6 +6,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
@@ -89,6 +90,7 @@ export class TimelineJSProfileProcessor {
     const jsFramesStack = [];
     const lockedJsStackDepth = [];
     let ordinal = 0;
+    let fakeJSInvocation = false;
     const showAllEvents = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
     const showRuntimeCallStats = Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats');
     const showNativeFunctions =
@@ -98,6 +100,10 @@ export class TimelineJSProfileProcessor {
      * @param {!SDK.TracingModel.Event} e
      */
     function onStartEvent(e) {
+      if (fakeJSInvocation) {
+        truncateJSStack(lockedJsStackDepth.pop(), e.startTime);
+        fakeJSInvocation = false;
+      }
       e.ordinal = ++ordinal;
       extractStackTrace(e);
       // For the duration of the event we cannot go beyond the stack associated with it.
@@ -110,8 +116,16 @@ export class TimelineJSProfileProcessor {
      */
     function onInstantEvent(e, parent) {
       e.ordinal = ++ordinal;
-      if (parent && isJSInvocationEvent(parent)) {
+      if ((parent && isJSInvocationEvent(parent)) || fakeJSInvocation) {
         extractStackTrace(e);
+      } else if (e.name === RecordType.JSSample && jsFramesStack.length === 0) {
+        // Force JS Samples to show up even if we are not inside a JS invocation event, because we
+        // can be missing the start of JS invocation events if we start tracing half-way through.
+        // Pretend we have a top-level JS invocation event.
+        fakeJSInvocation = true;
+        const stackDepthBefore = jsFramesStack.length;
+        extractStackTrace(e);
+        lockedJsStackDepth.push(stackDepthBefore);
       }
     }
 

@@ -74,7 +74,7 @@ export class Dialog extends GlassPane {
 
   /**
    * @override
-   * @param {!Document|!Element=} where
+   * @param {(!Document|!Element)=} where
    */
   show(where) {
     const document = /** @type {!Document} */ (

@@ -1242,7 +1242,7 @@ export function createTextButton(text, clickHandler, className, primary) {
 /**
  * @param {string=} className
  * @param {string=} type
- * @return {!Element}
+ * @return {!HTMLInputElement}
  */
 export function createInput(className, type) {
   const element = document.createElement('input');
@@ -1254,7 +1254,7 @@ export function createInput(className, type) {
   if (type) {
     element.type = type;
   }
-  return element;
+  return /** @type {!HTMLInputElement} */ (element);
 }
 
 /**

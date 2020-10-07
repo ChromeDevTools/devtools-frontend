@@ -256,7 +256,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
 
 /** @return {!Common.Settings.Setting<boolean>} */
 export function getLoadThroughTargetSetting() {
-  return Common.Settings.Settings.instance().createSetting('loadThroughTarget', false);
+  return Common.Settings.Settings.instance().createSetting('loadThroughTarget', true);
 }
 
 /** @enum {symbol} */

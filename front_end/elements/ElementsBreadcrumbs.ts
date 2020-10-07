@@ -4,7 +4,6 @@
 
 import './NodeText.js';
 
-import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 import {crumbsToRender, DOMNode, NodeSelectedEvent, UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
@@ -293,12 +292,12 @@ export class ElementsBreadcrumbs extends HTMLElement {
           color: inherit;
         }
 
-        ${ComponentHelpers.GetStylesheet.DARK_MODE_CLASS} .overflow:not(:disabled) {
+        :host-context(.-theme-with-dark-background) .overflow:not(:disabled) {
           color: #fff;
         }
       </style>
 
-      <nav class=${`crumbs ${ComponentHelpers.GetStylesheet.applyDarkModeClassIfNeeded()}`}>
+      <nav class="crumbs">
         ${this.renderOverflowButton('left', this.userScrollPosition === 'start')}
 
         <div class="crumbs-window" @scroll=${this.onCrumbsWindowScroll}>

@@ -44,29 +44,6 @@ export function getStyleSheets(path: string, {patchThemeSupport = false} = {}): 
   return [originalStylesheet, patchedStyleSheet];
 }
 
-/**
- * The combination of these gives components a way to toggle styling for dark
- * mode. It's not enough to just just the media query because the user may have
- * their OS level set to light mode but have turned on the dark theme via
- * settings.
- *
- * See ElementsBreadcrumbs.ts for an example of how this is used.
- */
-export const DARK_MODE_CLASS = '.component-in-dark-mode';
-
-export function isInDarkMode() {
-  return document.documentElement.classList.contains('-theme-with-dark-background') ||
-      window.matchMedia('prefers-color-scheme: dark').matches;
-}
-
-export function applyDarkModeClassIfNeeded() {
-  if (isInDarkMode()) {
-    return DARK_MODE_CLASS.slice(1);
-  }
-
-  return '';
-}
-
 /*
  * The getStylesheet helper in components reads styles out of the runtime cache.
  * In a proper build this is populated but in test runs because we don't load

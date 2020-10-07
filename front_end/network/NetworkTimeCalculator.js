@@ -28,9 +28,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';             // eslint-disable-line no-unused-vars
@@ -62,6 +59,7 @@ export class NetworkTimeBoundary {
  * @unrestricted
  */
 export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
+  /** @param {boolean} startAtZero */
   constructor(startAtZero) {
     super();
     this.startAtZero = startAtZero;
@@ -91,7 +89,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
    * @return {number}
    */
   computePosition(time) {
-    return (time - this.minimumBoundary()) / this.boundarySpan() * this._workingArea;
+    return (time - this.minimumBoundary()) / this.boundarySpan() * (this._workingArea || 0);
   }
 
   /**
@@ -152,7 +150,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @return {number}
    */
-  _value(item) {
+  _value() {
     return 0;
   }
 
@@ -222,16 +220,9 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _boundaryChanged() {
-    this._boundryChangedEventThrottler.schedule(dispatchEvent.bind(this));
-
-    /**
-     * @return {!Promise.<undefined>}
-     * @this {NetworkTimeCalculator}
-     */
-    function dispatchEvent() {
+    this._boundryChangedEventThrottler.schedule(async () => {
       this.dispatchEventToListeners(Events.BoundariesChanged);
-      return Promise.resolve();
-    }
+    });
   }
 
   /**
@@ -262,7 +253,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
     const leftLabel = hasLatency ? Number.secondsToString(request.latency) : rightLabel;
 
     if (request.timing) {
-      return {left: leftLabel, right: rightLabel};
+      return {left: leftLabel, right: rightLabel, tooltip: undefined};
     }
 
     let tooltip;

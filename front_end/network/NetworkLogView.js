@@ -122,7 +122,7 @@ export class NetworkLogView extends UI.Widget.VBox {
     /** @type {?NetworkRequestNode} */
     this._highlightedNode = null;
 
-    this.linkifier = new Components.Linkifier.Linkifier();
+    this._linkifier = new Components.Linkifier.Linkifier();
 
     this._recording = false;
     this._needsRefresh = false;
@@ -677,6 +677,14 @@ export class NetworkLogView extends UI.Widget.VBox {
             SDK.ResourceTreeModel.Events.DOMContentLoaded, this._domContentLoadedEventFired, this);
       }
     }
+  }
+
+  /**
+   * @override
+   * @return {!Components.Linkifier.Linkifier}
+   */
+  linkifier() {
+    return this._linkifier;
   }
 
   /**
@@ -1284,7 +1292,7 @@ export class NetworkLogView extends UI.Widget.VBox {
     this._calculator.reset();
 
     this._timeCalculator.setWindow(null);
-    this.linkifier.reset();
+    this._linkifier.reset();
 
     if (this._activeGroupLookup) {
       this._activeGroupLookup.reset();

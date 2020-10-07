@@ -28,9 +28,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
@@ -53,7 +50,6 @@ export const Events = {
 
 /**
  * @interface
- * @extends {SDK.SDKModel.SDKModelObserver<!SDK.NetworkManager.NetworkManager>}
  * @extends {Common.EventTarget.EventTarget}
  */
 export class NetworkLogViewInterface {
@@ -62,6 +58,7 @@ export class NetworkLogViewInterface {
    * @return {boolean}
    */
   static HTTPRequestsFilter(request) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -75,12 +72,14 @@ export class NetworkLogViewInterface {
    * @return {?NetworkRequestNode}
    */
   nodeForRequest(request) {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {number}
    */
   headerHeight() {
+    throw new Error('not implemented');
   }
 
   /**
@@ -106,6 +105,7 @@ export class NetworkLogViewInterface {
    * @return {?NetworkNode}
    */
   hoveredNode() {
+    throw new Error('not implemented');
   }
 
   scheduleRefresh() {
@@ -130,12 +130,14 @@ export class NetworkLogViewInterface {
    * @return {!NetworkTimeCalculator}
    */
   timeCalculator() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {!NetworkTimeCalculator}
    */
   calculator() {
+    throw new Error('not implemented');
   }
 
   /**
@@ -148,6 +150,7 @@ export class NetworkLogViewInterface {
    * @return {!Array<!NetworkNode>}
    */
   flatNodesList() {
+    throw new Error('not implemented');
   }
 
   updateNodeBackground() {
@@ -172,6 +175,7 @@ export class NetworkLogViewInterface {
    * @return {number}
    */
   rowHeight() {
+    throw new Error('not implemented');
   }
 
   /**
@@ -209,12 +213,31 @@ export class NetworkLogViewInterface {
    * @return {string}
    */
   static getDCLEventColor() {
+    throw new Error('not implemented');
   }
 
   /**
    * @return {string}
    */
   static getLoadEventColor() {
+    throw new Error('not implemented');
+  }
+
+  /**
+   * @param {!SDK.NetworkManager.NetworkManager} model
+   */
+  modelAdded(model) {
+  }
+
+  /**
+   * @param {!SDK.NetworkManager.NetworkManager} model
+   */
+  modelRemoved(model) {
+  }
+
+  /** @return {!Components.Linkifier.Linkifier} */
+  linkifier() {
+    throw new Error('not implemented');
   }
 }
 
@@ -310,7 +333,7 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
   }
 
   updateBackgroundColor() {
-    const element = this.existingElement();
+    const element = /** @type {?HTMLElement} */ (this.existingElement());
     if (!element) {
       return;
     }
@@ -441,7 +464,6 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
   }
 
   /**
-   * @protected
    * @return {?SDK.NetworkRequest.NetworkRequest}
    */
   requestOrFirstKnownChildRequest() {
@@ -455,7 +477,7 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
     }
 
     let firstChildRequest = null;
-    const flatChildren = this.flatChildren();
+    const flatChildren = /** @type {!Array<!NetworkNode>} */ (this.flatChildren());
     for (let i = 0; i < flatChildren.length; i++) {
       request = flatChildren[i].request();
       if (!firstChildRequest || (request && request.issueTime() < firstChildRequest.issueTime())) {
@@ -603,11 +625,21 @@ export class NetworkRequestNode extends NetworkNode {
     if (!aRequest || !bRequest) {
       return !aRequest ? -1 : 1;
     }
-    if (!a._initiatorCell || !b._initiatorCell) {
-      return !a._initiatorCell ? -1 : 1;
+    const aHasInitiatorCell = a instanceof NetworkRequestNode && a._initiatorCell;
+    const bHasInitiatorCell = b instanceof NetworkRequestNode && b._initiatorCell;
+    if (!aHasInitiatorCell || !bHasInitiatorCell) {
+      return !aHasInitiatorCell ? -1 : 1;
     }
-    const aText = a._linkifiedInitiatorAnchor ? a._linkifiedInitiatorAnchor.textContent : a._initiatorCell.title;
-    const bText = b._linkifiedInitiatorAnchor ? b._linkifiedInitiatorAnchor.textContent : b._initiatorCell.title;
+    // `a` and `b` are guaranteed NetworkRequestNodes with present initiatorCell elements.
+    const networkRequestNodeA = /** @type {!NetworkRequestNode} */ (a);
+    const networkRequestNodeB = /** @type {!NetworkRequestNode} */ (b);
+
+    const aText = networkRequestNodeA._linkifiedInitiatorAnchor ?
+        networkRequestNodeA._linkifiedInitiatorAnchor.textContent || '' :
+        /** @type {!HTMLElement} */ (networkRequestNodeA._initiatorCell).title;
+    const bText = networkRequestNodeB._linkifiedInitiatorAnchor ?
+        networkRequestNodeB._linkifiedInitiatorAnchor.textContent || '' :
+        /** @type {!HTMLElement} */ (networkRequestNodeB._initiatorCell).title;
     return aText.localeCompare(bText);
   }
 
@@ -675,8 +707,8 @@ export class NetworkRequestNode extends NetworkNode {
    * @return {number}
    */
   static RequestPropertyComparator(propertyName, a, b) {
-    const aRequest = a.requestOrFirstKnownChildRequest();
-    const bRequest = b.requestOrFirstKnownChildRequest();
+    const aRequest = /** @type {*} */ (a.requestOrFirstKnownChildRequest());
+    const bRequest = /** @type {*} */ (b.requestOrFirstKnownChildRequest());
     if (!aRequest || !bRequest) {
       return !aRequest ? -1 : 1;
     }
@@ -738,12 +770,10 @@ export class NetworkRequestNode extends NetworkNode {
     if (!aRequest || !bRequest) {
       return !aRequest ? -1 : 1;
     }
-    const aValue = (aRequest.responseHeaderValue(propertyName) !== undefined) ?
-        parseFloat(aRequest.responseHeaderValue(propertyName)) :
-        -Infinity;
-    const bValue = (bRequest.responseHeaderValue(propertyName) !== undefined) ?
-        parseFloat(bRequest.responseHeaderValue(propertyName)) :
-        -Infinity;
+    const aRawValue = aRequest.responseHeaderValue(propertyName);
+    const aValue = (aRawValue !== undefined) ? parseFloat(aRawValue) : -Infinity;
+    const bRawValue = bRequest.responseHeaderValue(propertyName);
+    const bValue = (bRawValue !== undefined) ? parseFloat(bRawValue) : -Infinity;
     if (aValue === bValue) {
       return aRequest.identityCompare(bRequest);
     }
@@ -909,7 +939,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
-   * @param {!Element} element
+   * @param {!HTMLElement} element
    * @param {string} text
    */
   _setTextAndTitle(element, text) {
@@ -918,10 +948,10 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
-   * @param {!Element} element
+   * @param {!HTMLElement} element
    * @param {string} cellText
    * @param {string} linkText
-   * @param {function()} handler
+   * @param {function():void} handler
    */
   _setTextAndTitleAndLink(element, cellText, linkText, handler) {
     element.createTextChild(cellText);
@@ -936,10 +966,11 @@ export class NetworkRequestNode extends NetworkNode {
 
   /**
    * @override
-   * @param {!Element} cell
+   * @param {!Element} c
    * @param {string} columnId
    */
-  renderCell(cell, columnId) {
+  renderCell(c, columnId) {
+    const cell = /** @type {!HTMLElement} */ (c);
     switch (columnId) {
       case 'name': {
         this._renderPrimaryCell(cell, columnId);
@@ -1022,7 +1053,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
-   * @param {?Array} array
+   * @param {?Array<?>} array
    * @return {string}
    */
   _arrayLength(array) {
@@ -1035,7 +1066,8 @@ export class NetworkRequestNode extends NetworkNode {
    */
   select(supressSelectedEvent) {
     super.select(supressSelectedEvent);
-    this.parentView().dispatchEventToListeners(Events.RequestSelected, this._request);
+    /** @type {!Common.EventTarget.EventTarget} */ (/** @type {*} */ (this.parentView()))
+        .dispatchEventToListeners(Events.RequestSelected, this._request);
   }
 
   /**
@@ -1043,15 +1075,16 @@ export class NetworkRequestNode extends NetworkNode {
    * @return {!Array.<!Object>}
    */
   highlightMatchedSubstring(regexp) {
-    if (!regexp) {
+    if (!regexp || !this._nameCell || this._nameCell.textContent === null) {
       return [];
     }
     // Ensure element is created.
     this.element();
+    /** @type {!Array<!Object>} */
     const domChanges = [];
     const matchInfo = this._nameCell.textContent.match(regexp);
     if (matchInfo) {
-      UI.UIUtils.highlightSearchResult(this._nameCell, matchInfo.index, matchInfo[0].length, domChanges);
+      UI.UIUtils.highlightSearchResult(this._nameCell, matchInfo.index || 0, matchInfo[0].length, domChanges);
     }
     return domChanges;
   }
@@ -1065,17 +1098,19 @@ export class NetworkRequestNode extends NetworkNode {
    * @return {boolean}
    */
   _isFailed() {
+    const signedExchangeInfo = this._request.signedExchangeInfo();
     return (this._request.failed && !this._request.statusCode) || (this._request.statusCode >= 400) ||
-        (!!this._request.signedExchangeInfo() && !!this._request.signedExchangeInfo().errors);
+        (!!signedExchangeInfo && !!signedExchangeInfo.errors);
   }
 
   /**
-   * @param {!Element} cell
+   * @param {!HTMLElement} cell
    * @param {string} columnId
    * @param {string=} text
    */
   _renderPrimaryCell(cell, columnId, text) {
-    const columnIndex = this.dataGrid.indexOfVisibleColumn(columnId);
+    const columnIndex =
+        /** @type {!DataGrid.DataGrid.DataGridImpl<?>} */ (this.dataGrid).indexOfVisibleColumn(columnId);
     const isFirstCell = (columnIndex === 0);
     if (isFirstCell) {
       const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
@@ -1083,7 +1118,8 @@ export class NetworkRequestNode extends NetworkNode {
       this._nameCell = cell;
       cell.addEventListener('dblclick', this._openInNewTab.bind(this), false);
       cell.addEventListener('click', () => {
-        this.parentView().dispatchEventToListeners(Events.RequestActivated, {showPanel: true});
+        /** @type {!Common.EventTarget.EventTarget} */ (/** @type {*} */ (this.parentView()))
+            .dispatchEventToListeners(Events.RequestActivated, {showPanel: true});
       });
       let iconElement;
       if (this._request.resourceType() === Common.ResourceType.resourceTypes.Image) {
@@ -1118,7 +1154,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
-   * @param {!Element} cell
+   * @param {!HTMLElement} cell
    */
   _renderStatusCell(cell) {
     cell.classList.toggle(
@@ -1192,8 +1228,8 @@ export class NetworkRequestNode extends NetworkNode {
       }
       if (displayShowHeadersLink) {
         this._setTextAndTitleAndLink(cell, Common.UIString.UIString('(blocked:%s)', reason), 'View Headers', () => {
-          this.parentView().dispatchEventToListeners(
-              Events.RequestActivated, {showPanel: true, tab: NetworkItemViewTabs.Headers});
+          /** @type {!Common.EventTarget.EventTarget} */ (/** @type {*} */ (this.parentView()))
+              .dispatchEventToListeners(Events.RequestActivated, {showPanel: true, tab: NetworkItemViewTabs.Headers});
         });
       } else {
         this._setTextAndTitle(cell, Common.UIString.UIString('(blocked:%s)', reason));
@@ -1206,7 +1242,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
-   * @param {!Element} cell
+   * @param {!HTMLElement} cell
    */
   _renderInitiatorCell(cell) {
     this._initiatorCell = cell;
@@ -1215,17 +1251,18 @@ export class NetworkRequestNode extends NetworkNode {
 
     const timing = request.timing;
     if (timing && timing.pushStart) {
-      cell.appendChild(createTextNode(Common.UIString.UIString('Push / ')));
+      cell.appendChild(document.createTextNode(Common.UIString.UIString('Push / ')));
     }
     switch (initiator.type) {
       case SDK.NetworkRequest.InitiatorType.Parser: {
         cell.title = initiator.url + ':' + (initiator.lineNumber + 1);
         const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(initiator.url);
-        cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url, {
-          text: uiSourceCode ? uiSourceCode.displayName() : undefined,
-          lineNumber: initiator.lineNumber,
-          columnNumber: initiator.columnNumber
-        }));
+        cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(
+            initiator.url, /** @type {!Components.Linkifier.LinkifyURLOptions} */ ({
+              text: uiSourceCode ? uiSourceCode.displayName() : undefined,
+              lineNumber: initiator.lineNumber,
+              columnNumber: initiator.columnNumber
+            })));
         this._appendSubtitle(cell, Common.UIString.UIString('Parser'));
         break;
       }
@@ -1233,7 +1270,7 @@ export class NetworkRequestNode extends NetworkNode {
       case SDK.NetworkRequest.InitiatorType.Redirect: {
         cell.title = initiator.url;
         const redirectSource = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (request.redirectSource());
-        console.assert(redirectSource);
+        console.assert(redirectSource !== null);
         if (this.parentView().nodeForRequest(redirectSource)) {
           cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
               redirectSource, Bindings.ResourceUtils.displayNameForURL(redirectSource.url())));
@@ -1246,31 +1283,30 @@ export class NetworkRequestNode extends NetworkNode {
 
       case SDK.NetworkRequest.InitiatorType.Script: {
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
-        /**
-         * @type {!Components.Linkifier.Linkifier}
-         * @suppress {checkTypes}
-         */
-        const linkifier = this.parentView().linkifier;
+        if (!networkManager) {
+          return;
+        }
+
+        const linkifier = this.parentView().linkifier();
         if (initiator.stack) {
           this._linkifiedInitiatorAnchor =
               linkifier.linkifyStackTraceTopFrame(networkManager.target(), initiator.stack);
         } else {
           this._linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(
               networkManager.target(), initiator.scriptId, initiator.url, initiator.lineNumber,
-              {columnNumber: initiator.columnNumber});
+              {columnNumber: initiator.columnNumber, className: undefined, tabStop: undefined});
         }
-        this._linkifiedInitiatorAnchor.title = '';
+        /** @type {!HTMLElement} */ (this._linkifiedInitiatorAnchor).title = '';
         cell.appendChild(this._linkifiedInitiatorAnchor);
         this._appendSubtitle(cell, Common.UIString.UIString('Script'));
         cell.classList.add('network-script-initiated');
-        cell.request = request;
         break;
       }
 
       case SDK.NetworkRequest.InitiatorType.Preload: {
         cell.title = Common.UIString.UIString('Preload');
         cell.classList.add('network-dim-cell');
-        cell.appendChild(createTextNode(Common.UIString.UIString('Preload')));
+        cell.appendChild(document.createTextNode(Common.UIString.UIString('Preload')));
         break;
       }
 
@@ -1283,16 +1319,17 @@ export class NetworkRequestNode extends NetworkNode {
       default: {
         cell.title = Common.UIString.UIString('Other');
         cell.classList.add('network-dim-cell');
-        cell.appendChild(createTextNode(Common.UIString.UIString('Other')));
+        cell.appendChild(document.createTextNode(Common.UIString.UIString('Other')));
       }
     }
   }
 
   /**
-   * @param {!Element} cell
+   * @param {!HTMLElement} cell
    */
   _renderSizeCell(cell) {
     const resourceSize = Platform.NumberUtilities.bytesToString(this._request.resourceSize);
+    const redirectSource = this._request.redirectSource();
 
     if (this._request.cachedInMemory()) {
       cell.createTextChild(ls`(memory cache)`);
@@ -1303,8 +1340,8 @@ export class NetworkRequestNode extends NetworkNode {
       cell.title = ls`Served from ServiceWorker, resource size: ${resourceSize}`;
       cell.classList.add('network-dim-cell');
     } else if (
-        this._request.redirectSource() && this._request.redirectSource().signedExchangeInfo() &&
-        !this._request.redirectSource().signedExchangeInfo().errors) {
+        redirectSource && redirectSource.signedExchangeInfo() &&
+        !/** @type {!Protocol.Network.SignedExchangeInfo} */ (redirectSource.signedExchangeInfo()).errors) {
       cell.createTextChild(ls`(signed-exchange)`);
       cell.title = ls`Served from Signed HTTP Exchange, resource size: ${resourceSize}`;
       cell.classList.add('network-dim-cell');
@@ -1325,7 +1362,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   /**
-   * @param {!Element} cell
+   * @param {!HTMLElement} cell
    */
   _renderTimeCell(cell) {
     if (this._request.duration > 0) {
@@ -1343,7 +1380,7 @@ export class NetworkRequestNode extends NetworkNode {
    * @param {boolean=} showInlineWhenSelected
    */
   _appendSubtitle(cellElement, subtitleText, showInlineWhenSelected = false) {
-    const subtitleElement = createElement('div');
+    const subtitleElement = document.createElement('div');
     subtitleElement.classList.add('network-cell-subtitle');
     if (showInlineWhenSelected) {
       subtitleElement.classList.add('network-cell-subtitle-show-inline-when-selected');
@@ -1361,7 +1398,7 @@ export class NetworkGroupNode extends NetworkNode {
    */
   createCells(element) {
     super.createCells(element);
-    const primaryColumn = this.dataGrid.visibleColumnsArray[0];
+    const primaryColumn = /** @type {!DataGrid.DataGrid.DataGridImpl<?>} */ (this.dataGrid).visibleColumnsArray[0];
     const localizedTitle = ls`${primaryColumn.title}`;
     const localizedLevel = ls`level 1`;
     this.nodeAccessibleText =
@@ -1370,16 +1407,18 @@ export class NetworkGroupNode extends NetworkNode {
 
   /**
    * @override
-   * @param {!Element} cell
+   * @param {!Element} c
    * @param {string} columnId
    */
-  renderCell(cell, columnId) {
-    const columnIndex = this.dataGrid.indexOfVisibleColumn(columnId);
+  renderCell(c, columnId) {
+    const columnIndex =
+        /** @type {!DataGrid.DataGrid.DataGridImpl<?>} */ (this.dataGrid).indexOfVisibleColumn(columnId);
     if (columnIndex === 0) {
+      const cell = /** @type {!HTMLElement} */ (c);
       const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
       cell.style.setProperty('padding-left', leftPadding);
       cell.classList.add('disclosure');
-      this.setCellAccessibleName(cell.textContent, cell, columnId);
+      this.setCellAccessibleName(cell.textContent || '', cell, columnId);
     }
   }
 
@@ -1389,9 +1428,10 @@ export class NetworkGroupNode extends NetworkNode {
    */
   select(supressSelectedEvent) {
     super.select(supressSelectedEvent);
-    const firstChildNode = this.traverseNextNode(false, undefined, true);
+    const firstChildNode = /** @type {!NetworkNode} */ (this.traverseNextNode(false, undefined, true));
     if (firstChildNode && firstChildNode.request()) {
-      this.parentView().dispatchEventToListeners(Events.RequestSelected, firstChildNode.request());
+      /** @type {!Common.EventTarget.EventTarget} */ (/** @type {*} */ (this.parentView()))
+          .dispatchEventToListeners(Events.RequestSelected, firstChildNode.request());
     }
   }
 }

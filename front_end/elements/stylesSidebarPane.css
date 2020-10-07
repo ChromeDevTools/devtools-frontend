@@ -213,7 +213,7 @@
 }
 
 .sidebar-separator > span.monospace {
-  max-width: 90px;
+  max-width: 180px;
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;

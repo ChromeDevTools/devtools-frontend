@@ -374,6 +374,13 @@ export class LiveLocation extends LiveLocationWithPool {
   }
 
   /**
+   * @return {?SDK.CSSStyleSheetHeader.CSSStyleSheetHeader}
+   */
+  header() {
+    return this._header;
+  }
+
+  /**
    * @override
    * @return {!Promise<?Workspace.UISourceCode.UILocation>}
    */

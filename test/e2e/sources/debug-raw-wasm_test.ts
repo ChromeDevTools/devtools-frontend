@@ -133,8 +133,7 @@ describe('Sources Tab', async function() {
     assert.deepEqual(await getBreakpointDecorators(frontend), [0x023]);
   });
 
-  // Skip until naming fix in v8 is landed.
-  it.skip('[crbug.com/1134531] is able to step with state', async () => {
+  it('is able to step with state', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await step('navigate to a page and open the Sources tab', async () => {
@@ -180,7 +179,7 @@ describe('Sources Tab', async function() {
         const local_scope_values = await localScopeView.evaluate(element => {
           return (element as HTMLElement).innerText;
         });
-        return local_scope_values === '"": 42';
+        return local_scope_values === 'var0: 42\nvar1: 8\nvar2: 5';
       });
     });
 
@@ -221,7 +220,7 @@ describe('Sources Tab', async function() {
         const local_scope_values = await localScopeView.evaluate(element => {
           return (element as HTMLElement).innerText;
         });
-        return local_scope_values === '"": 50';
+        return local_scope_values === 'var0: 50\nvar1: 5';
       });
     });
 
@@ -233,8 +232,7 @@ describe('Sources Tab', async function() {
     await checkBreakpointDidNotActivate();
   });
 
-  // Skip until naming fix in v8 is landed.
-  it.skip('[crbug.com/1134531] is able to step with state in multi-threaded code in main thread', async () => {
+  it('is able to step with state in multi-threaded code in main thread', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await step('navigate to a page and open the Sources tab', async () => {
@@ -284,7 +282,7 @@ describe('Sources Tab', async function() {
         const local_scope_values = await localScopeView.evaluate(element => {
           return (element as HTMLElement).innerText;
         });
-        return local_scope_values === '"": 42';
+        return local_scope_values === 'var0: 42\nvar1: 8\nvar2: 5';
       });
     });
 
@@ -333,7 +331,7 @@ describe('Sources Tab', async function() {
         const local_scope_values = await localScopeView.evaluate(element => {
           return (element as HTMLElement).innerText;
         });
-        return local_scope_values === '"": 50';
+        return local_scope_values === 'var0: 50\nvar1: 5';
       });
     });
 

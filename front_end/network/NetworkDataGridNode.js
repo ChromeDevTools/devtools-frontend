@@ -1329,7 +1329,6 @@ export class NetworkRequestNode extends NetworkNode {
    */
   _renderSizeCell(cell) {
     const resourceSize = Platform.NumberUtilities.bytesToString(this._request.resourceSize);
-    const redirectSource = this._request.redirectSource();
 
     if (this._request.cachedInMemory()) {
       cell.createTextChild(ls`(memory cache)`);
@@ -1339,9 +1338,7 @@ export class NetworkRequestNode extends NetworkNode {
       cell.createTextChild(ls`(ServiceWorker)`);
       cell.title = ls`Served from ServiceWorker, resource size: ${resourceSize}`;
       cell.classList.add('network-dim-cell');
-    } else if (
-        redirectSource && redirectSource.signedExchangeInfo() &&
-        !/** @type {!Protocol.Network.SignedExchangeInfo} */ (redirectSource.signedExchangeInfo()).errors) {
+    } else if (this._request.redirectSourceSignedExchangeInfoHasNoErrors()) {
       cell.createTextChild(ls`(signed-exchange)`);
       cell.title = ls`Served from Signed HTTP Exchange, resource size: ${resourceSize}`;
       cell.classList.add('network-dim-cell');

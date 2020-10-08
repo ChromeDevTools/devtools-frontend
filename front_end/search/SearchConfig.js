@@ -260,6 +260,7 @@ export class SearchScope {
    * @param {!Common.Progress.Progress} progress
    * @param {function(!SearchResult):void} searchResultCallback
    * @param {function(boolean):void} searchFinishedCallback
+   * @return {void|!Promise<void>}
    */
   performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {
   }

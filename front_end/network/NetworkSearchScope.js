@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';           // eslint-disable-line no-unused-vars
 import * as Search from '../search/search.js';  // eslint-disable-line no-unused-vars
@@ -26,9 +23,9 @@ export class NetworkSearchScope {
    * @override
    * @param {!Search.SearchConfig.SearchConfig} searchConfig
    * @param {!Common.Progress.Progress} progress
-   * @param {function(!Search.SearchConfig.SearchResult)} searchResultCallback
-   * @param {function(boolean)} searchFinishedCallback
-   * @return {?}
+   * @param {function(!Search.SearchConfig.SearchResult):void} searchResultCallback
+   * @param {function(boolean):void} searchFinishedCallback
+   * @return {!Promise<void>}
    */
   async performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {
     const promises = [];
@@ -39,7 +36,8 @@ export class NetworkSearchScope {
       const promise = this._searchRequest(searchConfig, request, progress);
       promises.push(promise);
     }
-    const results = await Promise.all(promises);
+    const resultsWithNull = await Promise.all(promises);
+    const results = /** @type {!Array<!NetworkSearchResult>} */ (resultsWithNull.filter(result => result !== null));
     if (progress.isCanceled()) {
       searchFinishedCallback(false);
       return;
@@ -60,6 +58,7 @@ export class NetworkSearchScope {
    * @return {!Promise<?NetworkSearchResult>}
    */
   async _searchRequest(searchConfig, request, progress) {
+    /** @type {!Array<!TextUtils.ContentProvider.SearchMatch>} */
     let bodyMatches = [];
     if (request.contentType().isTextType()) {
       bodyMatches =
@@ -106,7 +105,7 @@ export class NetworkSearchScope {
       let pos = 0;
       for (const regExp of regExps) {
         const match = string.substr(pos).match(regExp);
-        if (!match) {
+        if (!match || !match.index) {
           return false;
         }
         pos += match.index + match[0].length;
@@ -225,7 +224,7 @@ export class NetworkSearchResult {
     if (header) {
       return header.value;
     }
-    return location.searchMatch.lineContent;
+    return /** @type {!TextUtils.ContentProvider.SearchMatch} */ (location.searchMatch).lineContent;
   }
 
   /**
@@ -251,6 +250,6 @@ export class NetworkSearchResult {
     if (header) {
       return `${header.name}:`;
     }
-    return location.searchMatch.lineNumber + 1;
+    return /** @type {!TextUtils.ContentProvider.SearchMatch} */ (location.searchMatch).lineNumber + 1;
   }
 }

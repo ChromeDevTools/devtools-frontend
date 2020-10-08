@@ -87,7 +87,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
 
   /**
    * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!DataGrid.SortableDataGrid.SortableDataGridNode<!EventSourceMessageNode>} node
+   * @param {!DataGrid.ViewportDataGrid.ViewportDataGridNode<!DataGrid.SortableDataGrid.SortableDataGridNode<!EventSourceMessageNode>>} node
    */
   _onRowContextMenu(contextMenu, node) {
     contextMenu.clipboardSection().appendItem(

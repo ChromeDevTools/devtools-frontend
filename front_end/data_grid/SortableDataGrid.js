@@ -152,7 +152,7 @@ export class SortableDataGrid extends ViewportDataGrid {
   sortNodes(comparator, reverseMode) {
     this._sortingFunction = SortableDataGrid.Comparator.bind(null, comparator, reverseMode);
     this.rootNode().recalculateSiblings(0);
-    this.rootNode()._sortChildren();
+    (/** @type {!SortableDataGridNode<!NODE_TYPE>} */ (this.rootNode()))._sortChildren();
     this.scheduleUpdateStructure();
   }
 }
@@ -177,7 +177,10 @@ export class SortableDataGridNode extends ViewportDataGridNode {
   insertChildOrdered(node) {
     const dataGrid = /** @type {?SortableDataGrid<!NODE_TYPE>} */ (this.dataGrid);
     if (dataGrid) {
-      this.insertChild(node, this.children.upperBound(node, dataGrid._sortingFunction));
+      this.insertChild(
+          node,
+          (/** @type {!Array<!SortableDataGridNode<!NODE_TYPE>>} */ (this.children))
+              .upperBound(node, dataGrid._sortingFunction));
     }
   }
 
@@ -186,7 +189,7 @@ export class SortableDataGridNode extends ViewportDataGridNode {
     if (!dataGrid) {
       return;
     }
-    this.children.sort(dataGrid._sortingFunction);
+    (/** @type {!Array<!SortableDataGridNode<!NODE_TYPE>>} */ (this.children)).sort(dataGrid._sortingFunction);
     for (let i = 0; i < this.children.length; ++i) {
       const child = /** @type {!SortableDataGridNode<!NODE_TYPE>} */ (this.children[i]);
       child.recalculateSiblings(i);

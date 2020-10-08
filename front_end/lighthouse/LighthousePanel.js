@@ -33,6 +33,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._startView = new StartView(this._controller);
     this._statusView = new StatusView(this._controller);
 
+    this._warningText = null;
     this._unauditableExplanation = null;
     this._cachedRenderedReports = new Map();
 
@@ -41,6 +42,7 @@ export class LighthousePanel extends UI.Panel.Panel {
         this._handleDrop.bind(this));
 
     this._controller.addEventListener(Events.PageAuditabilityChanged, this._refreshStartAuditUI.bind(this));
+    this._controller.addEventListener(Events.PageWarningsChanged, this._refreshWarningsUI.bind(this));
     this._controller.addEventListener(Events.AuditProgressChanged, this._refreshStatusUI.bind(this));
     this._controller.addEventListener(Events.RequestLighthouseStart, event => {
       this._startLighthouse(event);
@@ -54,6 +56,23 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._renderStartView();
 
     this._controller.recomputePageAuditability();
+  }
+
+  static getEvents() {
+    return Events;
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} evt
+   */
+  _refreshWarningsUI(evt) {
+    // PageWarningsChanged fires multiple times during an audit, which we want to ignore.
+    if (this._isLHAttached) {
+      return;
+    }
+
+    this._warningText = evt.data.warning;
+    this._startView.setWarningText(evt.data.warning);
   }
 
   /**
@@ -149,6 +168,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     if (!this._unauditableExplanation) {
       this._startView.focusStartButton();
     }
+    this._startView.setWarningText(this._warningText);
 
     this._newButton.setEnabled(false);
     this._refreshToolbarUI();

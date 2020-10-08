@@ -208,9 +208,6 @@ table is empty.
   <message name="IDS_DEVTOOLS_673eb027e9c056f57140322807351dd5" desc="Text in Application Panel Sidebar of the Application panel">
     unique
   </message>
-  <message name="IDS_DEVTOOLS_6827a85b76e967f6a129e08f9272e76d" desc="Text in Application Panel Sidebar of the Application panel">
-    Local Storage
-  </message>
   <message name="IDS_DEVTOOLS_6b2bfcecfdc437d73d756be2f262945d" desc="Manifest installability error in the Application panel">
     The Play Store app URL and Play Store ID do not match
   </message>
@@ -399,9 +396,6 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_b5dc9b0e6beecb1e80f6f1b5b3050f12" desc="The UI destination when right clicking an item that can be revealed">
     Application panel
   </message>
-  <message name="IDS_DEVTOOLS_b66b856833f34a841b51c7207dbc601f" desc="Text in Application Panel Sidebar of the Application panel">
-    IndexedDB
-  </message>
   <message name="IDS_DEVTOOLS_b704442a84076f1139cd70604553e8dc" desc="Tooltip text that appears when hovering over the largeicon clear button in the Indexed DBViews of the Application panel">
     Clear object store
   </message>
@@ -557,9 +551,6 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_ebfabf3434ab96d355274e76214e61ed" desc="Manifest installability error in the Application panel">
     Manifest does not contain a &apos;<ph name="LOCKED_1">name</ph>&apos; or &apos;<ph name="LOCKED_2">short_name</ph>&apos; field
-  </message>
-  <message name="IDS_DEVTOOLS_ec1e074d56484165315c26a9baebaebd" desc="Text in Application Panel Sidebar of the Application panel">
-    Web SQL
   </message>
   <message name="IDS_DEVTOOLS_ec3c33fb128aab90f46c922f8f7098f1" desc="Title of an action under the Background Services category that can be invoked through the Command Menu">
     Start recording events

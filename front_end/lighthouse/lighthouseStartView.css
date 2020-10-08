@@ -122,3 +122,16 @@ input[type="radio"]:focus {
   font-weight: bold;
   padding-left: 10px;
 }
+
+.lighthouse-warning-text {
+  text-align: left;
+  color: darkorange;
+  font-weight: bold;
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
+.lighthouse-warning-text::before {
+  content: '⚠';
+  margin-right: 10px;
+}

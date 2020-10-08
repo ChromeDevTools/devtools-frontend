@@ -298,6 +298,9 @@
   <message name="IDS_DEVTOOLS_65b4c7424dd695c30efa73da8396c90c" desc="Title of the Profiler tool">
     Profiler
   </message>
+  <message name="IDS_DEVTOOLS_6827a85b76e967f6a129e08f9272e76d" desc="Text in Application Panel Sidebar of the Application panel">
+    Local Storage
+  </message>
   <message name="IDS_DEVTOOLS_686155af75a60a0f6e9d80c1f7edd3e9" desc="Text in Timeline Tree View of the Performance panel">
     JavaScript
   </message>
@@ -544,6 +547,9 @@
   <message name="IDS_DEVTOOLS_b6434258c743f8673997b5aeb3721c27" desc="Text that refers to the network request method">
     Request Method
   </message>
+  <message name="IDS_DEVTOOLS_b66b856833f34a841b51c7207dbc601f" desc="Text in Application Panel Sidebar of the Application panel">
+    IndexedDB
+  </message>
   <message name="IDS_DEVTOOLS_b7ad6a024765bbfbff22dedf9afe0d17" desc="Text in the Shortcuts page to explain a keyboard shortcut (jump to previous editing location in text editor)">
     Jump to previous editing location
   </message>
@@ -690,6 +696,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ebd9bec4d70abc789d439c1f136b0538" desc="Text in Timeline UIUtils of the Performance panel">
     Layout
+  </message>
+  <message name="IDS_DEVTOOLS_ec1e074d56484165315c26a9baebaebd" desc="Text in Application Panel Sidebar of the Application panel">
+    Web SQL
   </message>
   <message name="IDS_DEVTOOLS_ec211f7c20af43e742bf2570c3cb84f9" desc="Text to add something">
     Add

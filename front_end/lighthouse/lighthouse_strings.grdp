@@ -171,11 +171,17 @@
   <message name="IDS_DEVTOOLS_d88946b678e4c2f251d4e292e8142291" desc="Text in Lighthouse Controller">
     SEO
   </message>
+  <message name="IDS_DEVTOOLS_da56165412f9d591c86c0d3d5b9d230f" desc="Text when stored data in multiple locations may affect lighthouse run">
+    There may be stored data affecting loading performance in these locations: <ph name="LOCATIONS_JOIN______">$1s<ex>IndexedDB, WebSQL</ex></ph>. Audit this page in an incognito window to prevent those resources from affecting your scores.
+  </message>
   <message name="IDS_DEVTOOLS_deeacee140c7d3a451440dd0e206e256" desc="Text in Lighthouse Start View">
     Identify and fix common problems that affect your site&apos;s performance, accessibility, and user experience.
   </message>
   <message name="IDS_DEVTOOLS_e339ef3bcd3e92466fa83dc21e690a5b" desc="Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel">
     As the number of elements on a page increases from 400 to 6,000, the probability of conversion drops 95%. [Source: <ph name="LOCKED_1">Think with Google</ph>]
+  </message>
+  <message name="IDS_DEVTOOLS_e7abfdd2618ffdaa7cb0fa4528c7f89f" desc="Text when stored data in one location may affect lighthouse run">
+    There may be stored data affecting loading performance in this location: <ph name="LOCATIONS_JOIN______">$1s<ex>IndexedDB</ex></ph>. Audit this page in an incognito window to prevent those resources from affecting your scores.
   </message>
   <message name="IDS_DEVTOOLS_ea60ba1496b05c6a5816fb75d0665c8d" desc="Text of a DOM element in Lighthouse Status View">
     If this issue is reproducible, please report it at the <ph name="LOCKED_1">Lighthouse</ph> <ph name="LOCKED_2">GitHub</ph> repo.

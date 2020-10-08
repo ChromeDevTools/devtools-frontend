@@ -1145,7 +1145,7 @@ export class ConsoleView extends UI.Widget.VBox {
     if (!exceptionDetails) {
       message = new SDK.ConsoleModel.ConsoleMessage(
           result.runtimeModel(), SDK.ConsoleModel.MessageSource.JS, level, '', SDK.ConsoleModel.MessageType.Result,
-          undefined, undefined, undefined, [/** @type {*} */ (result)]);
+          undefined, undefined, undefined, [result]);
     } else {
       message = SDK.ConsoleModel.ConsoleMessage.fromException(
           result.runtimeModel(), exceptionDetails, SDK.ConsoleModel.MessageType.Result, undefined, undefined);

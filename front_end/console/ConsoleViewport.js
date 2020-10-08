@@ -43,7 +43,7 @@ export class ConsoleViewport {
    * @param {!ConsoleViewportProvider} provider
    */
   constructor(provider) {
-    this.element = document.createElement('div');
+    this.element = /** @type {!HTMLElement} */ (document.createElement('div'));
     this.element.style.overflow = 'auto';
     this._topGapElement = this.element.createChild('div');
     this._topGapElement.style.height = '0px';
@@ -709,7 +709,7 @@ export class ConsoleViewport {
   }
 
   /**
-   * @return {?Element}
+   * @return {?HTMLElement}
    */
   renderedElementAt(index) {
     if (index === -1 || index < this._firstActiveIndex || index > this._lastActiveIndex) {
@@ -829,8 +829,12 @@ export class ConsoleViewportElement {
   }
 
   /**
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   element() {
+    throw new Error('Unimplemented method');
+  }
+
+  focusLastChildOrSelf() {
   }
 }

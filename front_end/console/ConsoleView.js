@@ -1607,11 +1607,11 @@ export class ConsoleViewFilter {
 export class ConsoleCommand extends ConsoleViewMessage {
   /**
    * @override
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   contentElement() {
     if (!this._contentElement) {
-      this._contentElement = document.createElement('div');
+      this._contentElement = /** @type {!HTMLElement} */ (document.createElement('div'));
       this._contentElement.classList.add('console-user-command');
       const icon = UI.Icon.Icon.create('smallicon-user-command', 'command-result-icon');
       this._contentElement.appendChild(icon);
@@ -1647,7 +1647,7 @@ export class ConsoleCommand extends ConsoleViewMessage {
 class ConsoleCommandResult extends ConsoleViewMessage {
   /**
    * @override
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   contentElement() {
     const element = super.contentElement();

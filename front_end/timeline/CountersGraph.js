@@ -27,8 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
@@ -52,6 +50,8 @@ export class CountersGraph extends UI.Widget.VBox {
 
     this._delegate = delegate;
     this._calculator = new Calculator();
+    /** @type {?PerformanceModel} */
+    this._model;
 
     // Create selectors
     this._header = new UI.Widget.HBox();
@@ -67,7 +67,8 @@ export class CountersGraph extends UI.Widget.VBox {
     this._createCurrentValuesBar();
     this._canvasContainer = canvasWidget.element;
     this._canvasContainer.id = 'memory-graphs-canvas-container';
-    this._canvas = this._canvasContainer.createChild('canvas');
+    this._canvas = /** @type {!HTMLCanvasElement} */ (document.createElement('canvas'));
+    this._canvasContainer.appendChild(this._canvas);
     this._canvas.id = 'memory-counters-graph';
 
     this._canvasContainer.addEventListener('mouseover', this._onMouseMove.bind(this), true);
@@ -78,23 +79,35 @@ export class CountersGraph extends UI.Widget.VBox {
     this._timelineGrid = new PerfUI.TimelineGrid.TimelineGrid();
     this._canvasContainer.appendChild(this._timelineGrid.dividersElement);
 
+    /** @type {!Array<!Counter>} */
     this._counters = [];
+    /** @type {!Array<!CounterUI>} */
     this._counterUI = [];
 
-    this._countersByName = {};
-    this._countersByName['jsHeapSizeUsed'] = this._createCounter(
-        Common.UIString.UIString('JS Heap'), Common.UIString.UIString('JS Heap: %s'), 'hsl(220, 90%, 43%)',
-        Platform.NumberUtilities.bytesToString);
-    this._countersByName['documents'] = this._createCounter(
-        Common.UIString.UIString('Documents'), Common.UIString.UIString('Documents: %s'), 'hsl(0, 90%, 43%)');
-    this._countersByName['nodes'] = this._createCounter(
-        Common.UIString.UIString('Nodes'), Common.UIString.UIString('Nodes: %s'), 'hsl(120, 90%, 43%)');
-    this._countersByName['jsEventListeners'] = this._createCounter(
-        Common.UIString.UIString('Listeners'), Common.UIString.UIString('Listeners: %s'), 'hsl(38, 90%, 43%)');
+    /** @type {!Map<string, !Counter>} */
+    this._countersByName = new Map();
+    this._countersByName.set(
+        'jsHeapSizeUsed',
+        this._createCounter(
+            Common.UIString.UIString('JS Heap'), Common.UIString.UIString('JS Heap: %s'), 'hsl(220, 90%, 43%)',
+            Platform.NumberUtilities.bytesToString));
+    this._countersByName.set(
+        'documents',
+        this._createCounter(
+            Common.UIString.UIString('Documents'), Common.UIString.UIString('Documents: %s'), 'hsl(0, 90%, 43%)'));
+    this._countersByName.set(
+        'nodes',
+        this._createCounter(
+            Common.UIString.UIString('Nodes'), Common.UIString.UIString('Nodes: %s'), 'hsl(120, 90%, 43%)'));
+    this._countersByName.set(
+        'jsEventListeners',
+        this._createCounter(
+            Common.UIString.UIString('Listeners'), Common.UIString.UIString('Listeners: %s'), 'hsl(38, 90%, 43%)'));
+
     this._gpuMemoryCounter = this._createCounter(
         Common.UIString.UIString('GPU Memory'), Common.UIString.UIString('GPU Memory [KB]: %s'), 'hsl(300, 90%, 43%)',
         Platform.NumberUtilities.bytesToString);
-    this._countersByName['gpuMemoryUsedKB'] = this._gpuMemoryCounter;
+    this._countersByName.set('gpuMemoryUsedKB', this._gpuMemoryCounter);
   }
 
   /**
@@ -133,7 +146,7 @@ export class CountersGraph extends UI.Widget.VBox {
         return;
       }
       for (const name in counters) {
-        const counter = this._countersByName[name];
+        const counter = this._countersByName.get(name);
         if (counter) {
           counter.appendSample(event.startTime, counters[name]);
         }
@@ -173,7 +186,7 @@ export class CountersGraph extends UI.Widget.VBox {
   }
 
   _resize() {
-    const parentElement = this._canvas.parentElement;
+    const parentElement = /** @type {!HTMLElement} */ (this._canvas.parentElement);
     this._canvas.width = parentElement.clientWidth * window.devicePixelRatio;
     this._canvas.height = parentElement.clientHeight * window.devicePixelRatio;
     this._calculator.setDisplayWidth(this._canvas.width);
@@ -208,7 +221,7 @@ export class CountersGraph extends UI.Widget.VBox {
    * @param {!Event} event
    */
   _onClick(event) {
-    const x = event.x - this._canvasContainer.totalOffsetLeft();
+    const x = /** @type {!MouseEvent} */ (event).x - this._canvasContainer.totalOffsetLeft();
     let minDistance = Infinity;
     let bestTime;
     for (const counterUI of this._counterUI) {
@@ -222,7 +235,7 @@ export class CountersGraph extends UI.Widget.VBox {
         bestTime = counterUI.counter.times[index];
       }
     }
-    if (bestTime !== undefined) {
+    if (bestTime !== undefined && this._track) {
       this._delegate.selectEntryAtTime(
           this._track.events.length ? this._track.events : this._track.asyncEvents, bestTime);
     }
@@ -246,7 +259,7 @@ export class CountersGraph extends UI.Widget.VBox {
    * @param {!Event} event
    */
   _onMouseMove(event) {
-    const x = event.x - this._canvasContainer.totalOffsetLeft();
+    const x = /** @type {!MouseEvent} */ (event).x - this._canvasContainer.totalOffsetLeft();
     this._markerXPosition = x;
     this._refreshCurrentValues();
   }
@@ -268,6 +281,9 @@ export class CountersGraph extends UI.Widget.VBox {
 
   _clear() {
     const ctx = this._canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('Unable to get canvas context');
+    }
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
 }
@@ -277,8 +293,16 @@ export class CountersGraph extends UI.Widget.VBox {
  */
 export class Counter {
   constructor() {
+    /** @type {!Array<number>} */
     this.times = [];
+    /** @type {!Array<number>} */
     this.values = [];
+    /** @type {!Array<number>} */
+    this.x = [];
+    this._minimumIndex = 0;
+    this._maximumIndex = 0;
+    this._maxTime = 0;
+    this._minTime = 0;
   }
 
   /**
@@ -387,19 +411,27 @@ export class CounterUI {
     this._setting.setTitle(title);
     this._filter = new UI.Toolbar.ToolbarSettingCheckbox(this._setting, title);
     this._filter.inputElement.classList.add('-theme-preserve-input');
-    const color = Common.Color.Color.parse(graphColor).setAlpha(0.5).asString(Common.Color.Format.RGBA);
-    if (color) {
-      this._filter.element.backgroundColor = color;
-      this._filter.element.borderColor = 'transparent';
+    const parsedColor = Common.Color.Color.parse(graphColor);
+    if (parsedColor) {
+      const colorWithAlpha = parsedColor.setAlpha(0.5).asString(Common.Color.Format.RGBA);
+      const htmlElement = /** @type {!HTMLElement} */ (this._filter.element);
+      if (colorWithAlpha) {
+        htmlElement.style.backgroundColor = colorWithAlpha;
+      }
+      htmlElement.style.borderColor = 'transparent';
     }
     this._filter.inputElement.addEventListener('click', this._toggleCounterGraph.bind(this));
     countersPane._toolbar.appendToolbarItem(this._filter);
     this._range = this._filter.element.createChild('span', 'range');
 
-    this._value = countersPane._currentValuesBar.createChild('span', 'memory-counter-value');
+    this._value =
+        /** @type {!HTMLElement} */ (countersPane._currentValuesBar).createChild('span', 'memory-counter-value');
     this._value.style.color = graphColor;
     this.graphColor = graphColor;
-    this.limitColor = Common.Color.Color.parse(graphColor).setAlpha(0.3).asString(Common.Color.Format.RGBA);
+    if (parsedColor) {
+      this.limitColor = parsedColor.setAlpha(0.3).asString(Common.Color.Format.RGBA);
+    }
+    /** @type {!Array<number>} */
     this.graphYValues = [];
     this._verticalPadding = 10;
 
@@ -437,7 +469,7 @@ export class CounterUI {
    */
   _recordIndexAt(x) {
     return this.counter.x.upperBound(
-               x * window.devicePixelRatio, null, this.counter._minimumIndex + 1, this.counter._maximumIndex + 1) -
+               x * window.devicePixelRatio, undefined, this.counter._minimumIndex + 1, this.counter._maximumIndex + 1) -
         1;
   }
 
@@ -467,6 +499,9 @@ export class CounterUI {
    */
   _drawGraph(canvas) {
     const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('Unable to get canvas context');
+    }
     const width = canvas.width;
     const height = canvas.height - 2 * this._verticalPadding;
     if (height <= 0) {
@@ -523,7 +558,9 @@ export class CounterUI {
       const limitLineY = Math.round(originY + height - (counter._limitValue - minValue) * yFactor);
       ctx.moveTo(0, limitLineY);
       ctx.lineTo(width, limitLineY);
-      ctx.strokeStyle = this.limitColor;
+      if (this.limitColor) {
+        ctx.strokeStyle = this.limitColor;
+      }
       ctx.stroke();
     }
     ctx.closePath();
@@ -543,6 +580,12 @@ export class CounterUI {
  * @unrestricted
  */
 export class Calculator {
+  constructor() {
+    this._minimumBoundary = 0;
+    this._maximumBoundary = 0;
+    this._workingArea = 0;
+    this._zeroTime = 0;
+  }
   /**
    * @param {number} time
    */
@@ -559,6 +602,11 @@ export class Calculator {
     return (time - this._minimumBoundary) / this.boundarySpan() * this._workingArea;
   }
 
+  /**
+   *
+   * @param {number} minimumBoundary
+   * @param {number} maximumBoundary
+   */
   setWindow(minimumBoundary, maximumBoundary) {
     this._minimumBoundary = minimumBoundary;
     this._maximumBoundary = maximumBoundary;

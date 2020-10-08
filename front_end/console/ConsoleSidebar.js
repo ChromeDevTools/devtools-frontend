@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
@@ -27,12 +24,13 @@ export class ConsoleSidebar extends UI.Widget.VBox {
     this._selectedTreeElement = null;
     /** @type {!Array<!FilterTreeElement>} */
     this._treeElements = [];
+    /** @type {!Common.Settings.Setting<string>} */
     const selectedFilterSetting =
         Common.Settings.Settings.instance().createSetting('console.sidebarSelectedFilter', null);
 
     const Levels = SDK.ConsoleModel.MessageLevel;
     const consoleAPIParsedFilters =
-        [{key: FilterType.Source, text: SDK.ConsoleModel.MessageSource.ConsoleAPI, negative: false}];
+        [{key: FilterType.Source, text: SDK.ConsoleModel.MessageSource.ConsoleAPI, negative: false, regex: undefined}];
     this._appendGroup(
         _groupName.All, [], ConsoleFilter.allLevelsFilterValue(), UI.Icon.Icon.create('mediumicon-list'),
         selectedFilterSetting);
@@ -61,8 +59,8 @@ export class ConsoleSidebar extends UI.Widget.VBox {
    * @param {string} name
    * @param {!Array<!TextUtils.TextUtils.ParsedFilter>} parsedFilters
    * @param {!Object<string, boolean>} levelsMask
-   * @param {!Element} icon
-   * @param {!Common.Settings.Setting} selectedFilterSetting
+   * @param {!UI.Icon.Icon} icon
+   * @param {!Common.Settings.Setting<string>} selectedFilterSetting
    */
   _appendGroup(name, parsedFilters, levelsMask, icon, selectedFilterSetting) {
     const filter = new ConsoleFilter(name, parsedFilters, null, levelsMask);
@@ -91,10 +89,10 @@ export class ConsoleSidebar extends UI.Widget.VBox {
    * @return {boolean}
    */
   shouldBeVisible(viewMessage) {
-    if (!this._selectedTreeElement) {
-      return true;
+    if (this._selectedTreeElement instanceof ConsoleSidebarTreeElement) {
+      return this._selectedTreeElement.filter().shouldBeVisible(viewMessage);
     }
-    return this._selectedTreeElement._filter.shouldBeVisible(viewMessage);
+    return true;
   }
 
   /**
@@ -111,13 +109,27 @@ export const Events = {
   FilterSelected: Symbol('FilterSelected')
 };
 
-export class URLGroupTreeElement extends UI.TreeOutline.TreeElement {
+class ConsoleSidebarTreeElement extends UI.TreeOutline.TreeElement {
+  /**
+   * @param {string|!Node} title
+   * @param {!ConsoleFilter} filter
+   */
+  constructor(title, filter) {
+    super(title);
+    this._filter = filter;
+  }
+
+  filter() {
+    return this._filter;
+  }
+}
+
+export class URLGroupTreeElement extends ConsoleSidebarTreeElement {
   /**
    * @param {!ConsoleFilter} filter
    */
   constructor(filter) {
-    super(filter.name);
-    this._filter = filter;
+    super(filter.name, filter);
     this._countElement = this.listItemElement.createChild('span', 'count');
     const leadingIcons = [UI.Icon.Icon.create('largeicon-navigator-file')];
     this.setLeadingIcons(leadingIcons);
@@ -126,19 +138,18 @@ export class URLGroupTreeElement extends UI.TreeOutline.TreeElement {
 
   incrementAndUpdateCounter() {
     this._messageCount++;
-    this._countElement.textContent = this._messageCount;
+    this._countElement.textContent = `${this._messageCount}`;
   }
 }
 
-export class FilterTreeElement extends UI.TreeOutline.TreeElement {
+export class FilterTreeElement extends ConsoleSidebarTreeElement {
   /**
    * @param {!ConsoleFilter} filter
-   * @param {!Element} icon
-   * @param {!Common.Settings.Setting} selectedFilterSetting
+   * @param {!UI.Icon.Icon} icon
+   * @param {!Common.Settings.Setting<string>} selectedFilterSetting
    */
   constructor(filter, icon, selectedFilterSetting) {
-    super(filter.name);
-    this._filter = filter;
+    super(filter.name, filter);
     this._selectedFilterSetting = selectedFilterSetting;
     /** @type {!Map<?string, !URLGroupTreeElement>} */
     this._urlTreeElements = new Map();
@@ -173,11 +184,12 @@ export class FilterTreeElement extends UI.TreeOutline.TreeElement {
 
   _updateCounter() {
     if (!this._messageCount) {
-      this.title = _groupNoMessageTitleMap.get(this._filter.name);
+      this.title = _groupNoMessageTitleMap.get(this._filter.name) || '';
     } else if (this._messageCount === 1) {
-      this.title = _groupSingularTitleMap.get(this._filter.name);
+      this.title = _groupSingularTitleMap.get(this._filter.name) || '';
     } else {
-      this.title = Platform.StringUtilities.sprintf(_groupPluralTitleMap.get(this._filter.name), this._messageCount);
+      this.title =
+          Platform.StringUtilities.sprintf(_groupPluralTitleMap.get(this._filter.name) || '', this._messageCount);
     }
 
     this.setExpandable(!!this.childCount());
@@ -217,7 +229,7 @@ export class FilterTreeElement extends UI.TreeOutline.TreeElement {
     } else {
       filter.name = Common.UIString.UIString('<other>');
     }
-    filter.parsedFilters.push({key: FilterType.Url, text: urlValue, negative: false});
+    filter.parsedFilters.push({key: FilterType.Url, text: urlValue, negative: false, regex: undefined});
     child = new URLGroupTreeElement(filter);
     if (urlValue) {
       child.tooltip = urlValue;

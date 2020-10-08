@@ -111,6 +111,8 @@ def main():
     tsconfig['compilerOptions']['typeRoots'] = opts.test_only and [
         get_relative_path_from_output_directory(TYPES_NODE_MODULES_DIRECTORY)
     ] or []
+    if opts.test_only:
+        tsconfig['compilerOptions']['moduleResolution'] = 'node'
     tsconfig['compilerOptions']['outDir'] = '.'
     tsconfig['compilerOptions']['tsBuildInfoFile'] = tsbuildinfo_name
     tsconfig['compilerOptions']['lib'] = ['esnext'] + (

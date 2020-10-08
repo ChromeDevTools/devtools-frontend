@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
+import * as DataGrid from '../data_grid/data_grid.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -74,15 +72,16 @@ export class FrameGroupNode extends NetworkGroupNode {
    * @param {!Element} cell
    * @param {string} columnId
    */
-  renderCell(cell, columnId) {
+  renderCell(/** @type {!HTMLElement} */ cell, columnId) {
     super.renderCell(cell, columnId);
-    const columnIndex = this.dataGrid.indexOfVisibleColumn(columnId);
+    const columnIndex =
+        /** @type {!DataGrid.DataGrid.DataGridImpl<?>} */ (this.dataGrid).indexOfVisibleColumn(columnId);
     if (columnIndex === 0) {
       const name = this.displayName();
       cell.appendChild(UI.Icon.Icon.create('largeicon-navigator-frame', 'network-frame-group-icon'));
       cell.createTextChild(name);
       cell.title = name;
-      this.setCellAccessibleName(cell.textContent, cell, columnId);
+      this.setCellAccessibleName(cell.textContent || '', cell, columnId);
     }
   }
 }

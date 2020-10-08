@@ -341,7 +341,6 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
       url: script ? script.contentURL() : '',
       lineNumber: scriptLocation.lineNumber,
       columnNumber: scriptLocation.columnNumber || 0,
-      callFrames: []
     }];
     this.addMessage(new ConsoleMessage(
         cpuProfilerModel.runtimeModel(), MessageSource.ConsoleAPI, MessageLevel.Info, messageText, type, undefined,

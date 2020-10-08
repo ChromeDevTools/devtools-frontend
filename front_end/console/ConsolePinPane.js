@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Root from '../root/root.js';
@@ -12,7 +9,9 @@ import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
-const _PinSymbol = Symbol('pinSymbol');
+
+/** @type {!WeakMap<!Element, !ConsolePin>} */
+const elementToConsolePin = new WeakMap();
 
 export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
   /**
@@ -57,10 +56,12 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     if (target) {
       const targetPinElement = target.enclosingNodeOrSelfWithClass('console-pin');
       if (targetPinElement) {
-        const targetPin = targetPinElement[_PinSymbol];
-        contextMenu.editSection().appendItem(ls`Edit expression`, targetPin.focus.bind(targetPin));
-        contextMenu.editSection().appendItem(ls`Remove expression`, this._removePin.bind(this, targetPin));
-        targetPin.appendToContextMenu(contextMenu);
+        const targetPin = elementToConsolePin.get(targetPinElement);
+        if (targetPin) {
+          contextMenu.editSection().appendItem(ls`Edit expression`, targetPin.focus.bind(targetPin));
+          contextMenu.editSection().appendItem(ls`Remove expression`, this._removePin.bind(this, targetPin));
+          targetPin.appendToContextMenu(contextMenu);
+        }
       }
     }
     contextMenu.editSection().appendItem(ls`Remove all expressions`, this._removeAllPins.bind(this));
@@ -84,7 +85,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     if (newFocusedPin) {
       newFocusedPin.focus();
     } else {
-      this._liveExpressionButton.element.focus();
+      this._liveExpressionButton.focus();
     }
   }
 
@@ -151,7 +152,8 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
    */
   constructor(expression, pinPane) {
     super();
-    const deletePinIcon = document.createElement('div', {is: 'dt-close-button'});
+    const deletePinIcon =
+        /** @type {!UI.UIUtils.DevToolsCloseButton} */ (document.createElement('div', {is: 'dt-close-button'}));
     deletePinIcon.gray = true;
     deletePinIcon.classList.add('close-button');
     deletePinIcon.setTabbable(true);
@@ -172,10 +174,11 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
       <div class='console-pin-preview' $='preview'></div>
     </div>`;
     this._pinElement = fragment.element();
-    this._pinPreview = fragment.$('preview');
-    const nameElement = fragment.$('name');
+    /** @type {!HTMLElement} */
+    this._pinPreview = /** @type {!HTMLElement} */ (fragment.$('preview'));
+    const nameElement = /** @type {!HTMLElement} */ (fragment.$('name'));
     nameElement.title = expression;
-    this._pinElement[_PinSymbol] = this;
+    elementToConsolePin.set(this._pinElement, this);
 
     /** @type {?SDK.RuntimeModel.EvaluationResult} */
     this._lastResult = null;
@@ -190,54 +193,74 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
 
     this._pinPreview.addEventListener('mouseenter', this.setHovered.bind(this, true), false);
     this._pinPreview.addEventListener('mouseleave', this.setHovered.bind(this, false), false);
-    this._pinPreview.addEventListener('click', event => {
+    this._pinPreview.addEventListener('click', /** @param {!Event} event */ event => {
       if (this._lastNode) {
         Common.Revealer.reveal(this._lastNode);
         event.consume();
       }
     }, false);
 
+    /**
+    * @param {!UI.TextEditor.TextEditorFactory} factory
+    * @return {!UI.TextEditor.TextEditor}
+    */
+    const createTextEditor = factory => {
+      this._editor = factory.createEditor({
+        devtoolsAccessibleName: ls`Live expression editor`,
+        lineNumbers: false,
+        lineWrapping: true,
+        mimeType: 'javascript',
+        autoHeight: true,
+        placeholder: ls`Expression`,
+        bracketMatchingSetting: undefined,
+        lineWiseCopyCut: undefined,
+        maxHighlightLength: undefined,
+        padBottom: undefined
+      });
+      this._editor.configureAutocomplete(
+          ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
+      this._editor.widget().show(nameElement);
+      this._editor.widget().element.classList.add('console-pin-editor');
+      this._editor.widget().element.tabIndex = -1;
+      this._editor.setText(expression);
+      this._editor.widget().element.addEventListener('keydown', event => {
+        if (!this._editor) {
+          return;
+        }
+        if (event.key === 'Tab' && !this._editor.text()) {
+          event.consume();
+          return;
+        }
+        if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
+          this._editor.setText(this._committedExpression);
+        }
+      }, true);
+      this._editor.widget().element.addEventListener('focusout', event => {
+        if (!this._editor) {
+          return;
+        }
+        const text = this._editor.text();
+        const trimmedText = text.trim();
+        if (text.length !== trimmedText.length) {
+          this._editor.setText(trimmedText);
+        }
+        this._committedExpression = trimmedText;
+        pinPane._savePins();
+        if (this._committedExpression.length) {
+          deletePinIcon.setAccessibleName(ls`Remove expression: ${this._committedExpression}`);
+        } else {
+          deletePinIcon.setAccessibleName(ls`Remove blank expression`);
+        }
+        this._editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
+      });
+      return this._editor;
+    };
+
+    const extension = /** @type {!Root.Runtime.Extension} */ (
+        Root.Runtime.Runtime.instance().extension(UI.TextEditor.TextEditorFactory));
+
     this._editorPromise =
-        Root.Runtime.Runtime.instance().extension(UI.TextEditor.TextEditorFactory).instance().then(factory => {
-          this._editor = factory.createEditor({
-            devtoolsAccessibleName: ls`Live expression editor`,
-            lineNumbers: false,
-            lineWrapping: true,
-            mimeType: 'javascript',
-            autoHeight: true,
-            placeholder: ls`Expression`
-          });
-          this._editor.configureAutocomplete(
-              ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
-          this._editor.widget().show(nameElement);
-          this._editor.widget().element.classList.add('console-pin-editor');
-          this._editor.widget().element.tabIndex = -1;
-          this._editor.setText(expression);
-          this._editor.widget().element.addEventListener('keydown', event => {
-            if (event.key === 'Tab' && !this._editor.text()) {
-              event.consume();
-              return;
-            }
-            if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
-              this._editor.setText(this._committedExpression);
-            }
-          }, true);
-          this._editor.widget().element.addEventListener('focusout', event => {
-            const text = this._editor.text();
-            const trimmedText = text.trim();
-            if (text.length !== trimmedText.length) {
-              this._editor.setText(trimmedText);
-            }
-            this._committedExpression = trimmedText;
-            pinPane._savePins();
-            if (this._committedExpression.length) {
-              deletePinIcon.setAccessibleName(ls`Remove expression: ${this._committedExpression}`);
-            } else {
-              deletePinIcon.setAccessibleName(ls`Remove blank expression`);
-            }
-            this._editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
-          });
-        });
+        extension.instance().then(obj => createTextEditor(/** @type {!UI.TextEditor.TextEditorFactory} */ (obj)));
   }
 
   /**
@@ -268,16 +291,16 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   async focus() {
-    await this._editorPromise;
-    this._editor.widget().focus();
-    this._editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
+    const editor = await this._editorPromise;
+    editor.widget().focus();
+    editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
   }
 
   /**
    * @param {!UI.ContextMenu.ContextMenu} contextMenu
    */
   appendToContextMenu(contextMenu) {
-    if (this._lastResult && this._lastResult.object) {
+    if (this._lastResult && !('error' in this._lastResult) && this._lastResult.object) {
       contextMenu.appendApplicableItems(this._lastResult.object);
       // Prevent result from being released manually. It will release along with 'console' group.
       this._lastResult = null;
@@ -285,7 +308,7 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async updatePreview() {
     if (!this._editor) {
@@ -308,7 +331,8 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     if (!previewText || previewText !== this._pinPreview.deepTextContent()) {
       this._pinPreview.removeChildren();
       if (result && SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
-        const sideEffectLabel = this._pinPreview.createChild('span', 'object-value-calculate-value-button');
+        const sideEffectLabel =
+            /** @type {!HTMLElement} */ (this._pinPreview.createChild('span', 'object-value-calculate-value-button'));
         sideEffectLabel.textContent = '(…)';
         sideEffectLabel.title = ls`Evaluate, allowing side effects`;
       } else if (previewText) {
@@ -320,7 +344,7 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     let node = null;
-    if (result && result.object && result.object.type === 'object' && result.object.subtype === 'node') {
+    if (result && !('error' in result) && result.object.type === 'object' && result.object.subtype === 'node') {
       node = result.object;
     }
     if (this._hovered) {
@@ -332,7 +356,8 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     }
     this._lastNode = node || null;
 
-    const isError = result && result.exceptionDetails && !SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result);
+    const isError = result && !('error' in result) && result.exceptionDetails &&
+        !SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result);
     this._pinElement.classList.toggle('error-level', !!isError);
   }
 }

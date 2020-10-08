@@ -222,7 +222,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
 
   /**
    * @param {!Event} event
-   * @return {?UI.PopoverRequest}
+   * @return {?UI.PopoverHelper.PopoverRequest}
    */
   _getPopoverRequest(event) {
     const element = event.target;

@@ -675,7 +675,7 @@ export class NetworkLogViewColumns {
 
   /**
    * @param {!Event} event
-   * @return {?UI.PopoverRequest}
+   * @return {?UI.PopoverHelper.PopoverRequest}
    */
   _getPopoverRequest(event) {
     if (!this._gridMode) {

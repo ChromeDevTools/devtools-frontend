@@ -476,7 +476,7 @@ export class DebuggerPlugin extends Plugin {
 
   /**
    * @param {!MouseEvent} event
-   * @return {?UI.PopoverRequest}
+   * @return {?UI.PopoverHelper.PopoverRequest}
    */
   _getPopoverRequest(event) {
     if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(event)) {

@@ -541,7 +541,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
 
   /**
    * @param {!Event} event
-   * @return {?UI.PopoverRequest}
+   * @return {?UI.PopoverHelper.PopoverRequest}
    */
   _getErrorPopoverContent(event) {
     const mouseEvent = /** @type {!MouseEvent} */ (event);

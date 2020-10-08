@@ -670,6 +670,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.AnimationApi}
+   */
+  animationAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.ApplicationCacheApi}
    */
   applicationCacheAgent() {
@@ -860,6 +867,12 @@ export class TargetBase {
 
 
   // Dispatcher registration, keep alphabetically sorted.
+  /**
+   * @param {!ProtocolProxyApi.AnimationDispatcher} dispatcher
+   */
+  registerAnimationDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
 
   /**
    * @param {!ProtocolProxyApi.ApplicationCacheDispatcher} dispatcher

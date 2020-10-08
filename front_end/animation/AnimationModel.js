@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
 
 /**
@@ -67,9 +64,13 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
     }
 
     const animation = AnimationImpl.parsePayload(this, payload);
+    if (!animation) {
+      return;
+    }
 
     // Ignore Web Animations custom effects & groups.
-    if (animation.type() === 'WebAnimation' && animation.source().keyframesRule().keyframes().length === 0) {
+    const keyframesRule = animation.source().keyframesRule();
+    if (animation.type() === 'WebAnimation' && keyframesRule && keyframesRule.keyframes().length === 0) {
       this._pendingAnimations.delete(animation.id());
     } else {
       this._animationsById.set(animation.id(), animation);
@@ -119,16 +120,20 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
    * @return {!AnimationGroup}
    */
   _createGroupFromPendingAnimations() {
-    console.assert(this._pendingAnimations.size);
+    console.assert(this._pendingAnimations.size > 0);
     const firstAnimationId = this._pendingAnimations.values().next().value;
     this._pendingAnimations.delete(firstAnimationId);
 
     const firstAnimation = this._animationsById.get(firstAnimationId);
+    if (!firstAnimation) {
+      throw new Error('Unable to locate first animation');
+    }
+
     const groupedAnimations = [firstAnimation];
     const groupStartTime = firstAnimation.startTime();
     const remainingAnimations = new Set();
     for (const id of this._pendingAnimations) {
-      const anim = this._animationsById.get(id);
+      const anim = /** @type {!AnimationImpl} */ (this._animationsById.get(id));
       if (anim.startTime() === groupStartTime) {
         groupedAnimations.push(anim);
       } else {
@@ -144,41 +149,41 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
    */
   setPlaybackRate(playbackRate) {
     this._playbackRate = playbackRate;
-    this._agent.setPlaybackRate(playbackRate);
+    this._agent.invoke_setPlaybackRate({playbackRate});
   }
 
   /**
    * @param {!Array.<string>} animations
    */
   _releaseAnimations(animations) {
-    this._agent.releaseAnimations(animations);
+    this._agent.invoke_releaseAnimations({animations});
   }
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
-  suspendModel() {
+  async suspendModel() {
     this._reset();
-    return this._agent.disable();
+    await this._agent.invoke_disable();
   }
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
-  resumeModel() {
+  async resumeModel() {
     if (!this._enabled) {
-      return Promise.resolve();
+      return;
     }
-    return this._agent.enable();
+    await this._agent.invoke_enable();
   }
 
-  ensureEnabled() {
+  async ensureEnabled() {
     if (this._enabled) {
       return;
     }
-    this._agent.enable();
+    await this._agent.invoke_enable();
     this._enabled = true;
   }
 }
@@ -330,10 +335,15 @@ export class AnimationImpl {
    * @param {number} delay
    */
   setTiming(duration, delay) {
-    this._source.node().then(this._updateNodeStyle.bind(this, duration, delay));
+    this._source.node().then(node => {
+      if (!node) {
+        throw new Error('Unable to find node');
+      }
+      this._updateNodeStyle(duration, delay, node);
+    });
     this._source._duration = duration;
     this._source._delay = delay;
-    this._animationModel._agent.setTiming(this.id(), duration, delay);
+    this._animationModel._agent.invoke_setTiming({animationId: this.id(), duration, delay});
   }
 
   /**
@@ -351,6 +361,10 @@ export class AnimationImpl {
       return;
     }
 
+    if (!node.id) {
+      throw new Error('Node has no id');
+    }
+
     const cssModel = node.domModel().cssModel();
     cssModel.setEffectivePropertyValueForNode(node.id, animationPrefix + 'duration', duration + 'ms');
     cssModel.setEffectivePropertyValueForNode(node.id, animationPrefix + 'delay', delay + 'ms');
@@ -359,9 +373,13 @@ export class AnimationImpl {
   /**
    * @return {!Promise<?SDK.RemoteObject.RemoteObject>}
    */
-  remoteObjectPromise() {
-    return this._animationModel._agent.resolveAnimation(this.id()).then(
-        payload => payload && this._animationModel._runtimeModel.createRemoteObject(payload));
+  async remoteObjectPromise() {
+    const payload = await this._animationModel._agent.invoke_resolveAnimation({animationId: this.id()});
+    if (!payload) {
+      return null;
+    }
+
+    return this._animationModel._runtimeModel.createRemoteObject(payload.remoteObject);
   }
 
   /**
@@ -451,7 +469,7 @@ export class AnimationEffect {
   }
 
   /**
-   * @return {!Promise.<!SDK.DOMModel.DOMNode>}
+   * @return {!Promise.<?SDK.DOMModel.DOMNode>}
    */
   node() {
     if (!this._deferredNode) {
@@ -478,7 +496,7 @@ export class AnimationEffect {
    * @return {?KeyframesRule}
    */
   keyframesRule() {
-    return this._keyframesRule;
+    return this._keyframesRule || null;
   }
 
   /**
@@ -582,7 +600,14 @@ export class AnimationGroup {
     this._id = id;
     this._animations = animations;
     this._paused = false;
+    /**
+     * @type {!Array<string>}
+     */
     this._screenshots = [];
+
+    /**
+     * @type {!Array<!HTMLImageElement>}
+     */
     this._screenshotImages = [];
   }
 
@@ -642,7 +667,7 @@ export class AnimationGroup {
    * @param {number} currentTime
    */
   seekTo(currentTime) {
-    this._animationModel._agent.seekAnimations(this._animationIds(), currentTime);
+    this._animationModel._agent.invoke_seekAnimations({animations: this._animationIds(), currentTime});
   }
 
   /**
@@ -660,7 +685,7 @@ export class AnimationGroup {
       return;
     }
     this._paused = paused;
-    this._animationModel._agent.setPaused(this._animationIds(), paused);
+    this._animationModel._agent.invoke_setPaused({animations: this._animationIds(), paused});
   }
 
   /**
@@ -673,7 +698,12 @@ export class AnimationGroup {
         longestAnim = anim;
       }
     }
-    return this._animationModel._agent.getCurrentTime(longestAnim.id()).then(currentTime => currentTime || 0);
+    if (!longestAnim) {
+      throw new Error('No longest animation found');
+    }
+
+    return this._animationModel._agent.invoke_getCurrentTime({id: longestAnim.id()})
+        .then(({currentTime}) => currentTime || 0);
   }
 
   /**
@@ -714,7 +744,7 @@ export class AnimationGroup {
   }
 
   /**
-   * @return {!Array.<!Image>}
+   * @return {!Array.<!HTMLImageElement>}
    */
   screenshots() {
     for (let i = 0; i < this._screenshots.length; ++i) {
@@ -728,36 +758,46 @@ export class AnimationGroup {
 }
 
 /**
- * @implements {Protocol.AnimationDispatcher}
+ * @implements {ProtocolProxyApi.AnimationDispatcher}
  * @unrestricted
  */
 export class AnimationDispatcher {
+  /**
+   * @param {!AnimationModel} animationModel
+   */
   constructor(animationModel) {
     this._animationModel = animationModel;
   }
 
   /**
    * @override
-   * @param {string} id
+   * @param {!Protocol.Animation.AnimationCreatedEvent} event
    */
-  animationCreated(id) {
+  animationCreated({id}) {
     this._animationModel.animationCreated(id);
   }
 
   /**
    * @override
-   * @param {string} id
+   * @param {!Protocol.Animation.AnimationCanceledEvent} event
    */
-  animationCanceled(id) {
+  animationCanceled({id}) {
     this._animationModel._animationCanceled(id);
   }
 
   /**
    * @override
-   * @param {!Protocol.Animation.Animation} payload
+   * @param {!Protocol.Animation.AnimationStartedEvent} event
    */
-  animationStarted(payload) {
-    this._animationModel.animationStarted(payload);
+  animationStarted({animation}) {
+    this._animationModel.animationStarted(animation);
+  }
+
+  /**
+   * @return {!Protocol.UsesObjectNotation}
+   */
+  usesObjectNotation() {
+    return true;
   }
 }
 
@@ -788,7 +828,7 @@ export class ScreenshotCapture {
 
     if (!this._endTime || endTime > this._endTime) {
       clearTimeout(this._stopTimer);
-      this._stopTimer = setTimeout(this._stopScreencast.bind(this), screencastDuration);
+      this._stopTimer = window.setTimeout(this._stopScreencast.bind(this), screencastDuration);
       this._endTime = endTime;
     }
 
@@ -841,4 +881,5 @@ export class ScreenshotCapture {
 SDK.SDKModel.SDKModel.register(AnimationModel, SDK.SDKModel.Capability.DOM, false);
 
 /** @typedef {{ endTime: number, screenshots: !Array.<string>}} */
+// @ts-ignore Typedef
 export let Request;

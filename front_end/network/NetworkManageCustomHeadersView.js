@@ -2,14 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
 /**
- * @implements {UI.ListWidget.Delegate}
+ * @implements {UI.ListWidget.Delegate<!{header: string}>}
  * @unrestricted
  */
 export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
@@ -26,6 +23,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
     this.contentElement.classList.add('custom-headers-wrapper');
     this.contentElement.createChild('div', 'header').textContent = Common.UIString.UIString('Manage Header Columns');
 
+    /** @type {!UI.ListWidget.ListWidget<!{header: string}>} */
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('custom-headers-list');
     this._list.registerRequiredCSS('network/networkManageCustomHeadersView.css');
@@ -67,7 +65,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
 
   /**
    * @override
-   * @param {*} item
+   * @param {!{header:string}} item
    * @param {boolean} editable
    * @return {!Element}
    */
@@ -82,7 +80,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
 
   /**
    * @override
-   * @param {*} item
+   * @param {!{header:string}} item
    * @param {number} index
    */
   removeItemRequested(item, index) {
@@ -93,8 +91,8 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
 
   /**
    * @override
-   * @param {*} item
-   * @param {!UI.ListWidget.Editor} editor
+   * @param {!{header:string}} item
+   * @param {!UI.ListWidget.Editor<?>} editor
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
@@ -118,8 +116,8 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
 
   /**
    * @override
-   * @param {*} item
-   * @return {!UI.ListWidget.Editor}
+   * @param {!{header:string}} item
+   * @return {!UI.ListWidget.Editor<?>}
    */
   beginEdit(item) {
     const editor = this._createEditor();
@@ -128,7 +126,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
   }
 
   /**
-   * @return {!UI.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor<?>}
    */
   _createEditor() {
     if (this._editor) {
@@ -149,7 +147,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
     return editor;
 
     /**
-     * @param {*} item
+     * @param {!{header:string}} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @this {NetworkManageCustomHeadersView}
@@ -161,7 +159,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
       if (this._columnConfigs.has(headerId) && item.header !== headerId) {
         valid = false;
       }
-      return {valid};
+      return {valid, errorMessage: undefined};
     }
   }
 }

@@ -51,7 +51,7 @@ interface Int32Array {
   lowerBound(object: number, comparator?: {(a: number, b: number): number}, left?: number, right?: number): number;
 }
 
-declare let ls: (template: ITemplateArray, ...args: any[]) => string;
+declare let ls: (template: ITemplateArray|string, ...args: any[]) => string;
 
 declare class AnchorBox {
   x: number;

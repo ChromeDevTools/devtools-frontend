@@ -165,7 +165,8 @@ class SettingsRuntimeExtensionDescriptor extends  // eslint-disable-line no-unus
      * @type {!Array<{
       *   text: string,
       *   value: *,
-      *   raw: (boolean|undefined)
+      *   raw: (boolean|undefined),
+      *   title: string,
       * }>|undefined}
       */
     this.options;

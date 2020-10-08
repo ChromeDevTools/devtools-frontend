@@ -559,8 +559,36 @@ export class RuntimeExtensionDescriptor {
 
     /** @type {string|null} */
     this.decoratorType;
+
+    /** @type {string|null} */
+    this.category;
+
+    /** @type {string|null} */
+    this.tags;
+
+    /** @type {boolean|null|undefined} */
+    this.reloadRequired;
+
+    /** @type {string} */
+    this.id;
+
+    /** @type {string|null} */
+    this.location;
+
+    /** @type {!Array<!Option>|undefined} */
+    this.options;
   }
 }
+
+/**
+ * @typedef {{
+ *  title: string,
+ *  value: (string|boolean),
+ *  raw: (boolean|undefined),
+ * }}
+ */
+// @ts-ignore typedef
+export let Option;
 
 /**
  * @unrestricted

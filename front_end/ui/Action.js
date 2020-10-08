@@ -32,10 +32,11 @@ class ActionRuntimeExtensionDescriptor extends  // eslint-disable-line no-unused
     this.toggleable;
 
     /**
-     * @type {?Array<{
+     * @type {!Array<{
      *   value: boolean,
      *   title: string,
-     * }>}
+     *   raw: undefined,
+     * }>|undefined}
      */
     this.options;
   }

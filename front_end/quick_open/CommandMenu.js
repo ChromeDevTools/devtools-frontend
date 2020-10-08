@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';
 import * as Host from '../host/host.js';
@@ -19,6 +16,7 @@ import {QuickOpenImpl} from './QuickOpen.js';
  */
 export class CommandMenu {
   constructor() {
+    /** @type {!Array<!Command>} */
     this._commands = [];
     this._loadCommands();
   }
@@ -74,6 +72,7 @@ export class CommandMenu {
         }
       },
       availableHandler,
+      userActionCode: undefined,
     });
 
     /**
@@ -99,6 +98,7 @@ export class CommandMenu {
       shortcut,
       executeHandler: action.execute.bind(action),
       userActionCode,
+      availableHandler: undefined,
     });
   }
 
@@ -118,6 +118,7 @@ export class CommandMenu {
       executeHandler: UI.ViewManager.ViewManager.instance().showView.bind(
           UI.ViewManager.ViewManager.instance(), viewId, /* userGesture */ true),
       userActionCode,
+      availableHandler: undefined
     });
   }
 
@@ -169,6 +170,7 @@ export class CommandMenu {
  *   userActionCode: (!Host.UserMetrics.Action|undefined),
  * }}
  */
+// @ts-ignore typedef
 export let ActionCommandOptions;
 
 /**
@@ -178,6 +180,7 @@ export let ActionCommandOptions;
  *   userActionCode: (!Host.UserMetrics.Action|undefined)
  * }}
  */
+// @ts-ignore typedef
 export let RevealViewCommandOptions;
 
 /**
@@ -186,16 +189,18 @@ export let RevealViewCommandOptions;
  *   keys: string,
  *   title: string,
  *   shortcut: string,
- *   executeHandler: !function(),
- *   availableHandler: (!function()|undefined),
+ *   executeHandler: !function():*,
+ *   availableHandler: ((!function():boolean)|undefined),
  *   userActionCode: (!Host.UserMetrics.Action|undefined)
  * }}
  */
+// @ts-ignore typedef
 export let CreateCommandOptions;
 
 export class CommandMenuProvider extends Provider {
   constructor() {
     super();
+    /** @type {!Array<!Command>} */
     this._commands = [];
   }
 
@@ -214,7 +219,7 @@ export class CommandMenuProvider extends Provider {
       }
 
       /** @type {!ActionCommandOptions} */
-      const options = {action};
+      const options = {action, userActionCode: undefined};
       this._commands.push(CommandMenu.createActionCommand(options));
     }
 
@@ -228,7 +233,7 @@ export class CommandMenuProvider extends Provider {
 
     /**
      * @param {!Command} left
-     * @param {!QuickOpen.CommandMenu.Command} right
+     * @param {!Command} right
      * @return {number}
      */
     function commandComparator(left, right) {
@@ -291,7 +296,7 @@ export class CommandMenuProvider extends Provider {
   renderItem(itemIndex, query, titleElement, subtitleElement) {
     const command = this._commands[itemIndex];
     titleElement.removeChildren();
-    const tagElement = titleElement.createChild('span', 'tag');
+    const tagElement = /** @type {!HTMLElement} */ (titleElement.createChild('span', 'tag'));
     const index = String.hashCode(command.category()) % MaterialPaletteColors.length;
     tagElement.style.backgroundColor = MaterialPaletteColors[index];
     tagElement.textContent = command.category();
@@ -336,7 +341,7 @@ export class Command {
    * @param {string} title
    * @param {string} key
    * @param {string} shortcut
-   * @param {function()} executeHandler
+   * @param {function():*} executeHandler
    * @param {function()=} availableHandler
    */
   constructor(category, title, key, shortcut, executeHandler, availableHandler) {

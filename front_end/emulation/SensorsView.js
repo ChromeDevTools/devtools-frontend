@@ -39,6 +39,8 @@ export class SensorsView extends UI.Widget.VBox {
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     this._appendIdleEmulator();
+
+    this.contentElement.createChild('div').classList.add('panel-section-separator');
   }
 
   /**

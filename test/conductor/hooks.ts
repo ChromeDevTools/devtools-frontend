@@ -48,7 +48,8 @@ const envChromeBinary = process.env['CHROME_BIN'];
 
 function launchChrome() {
   // Use port 0 to request any free port.
-  const launchArgs = ['--remote-debugging-port=0', '--enable-experimental-web-platform-features'];
+  const launchArgs =
+      ['--remote-debugging-port=0', '--enable-experimental-web-platform-features', '--enable-logging=stderr', '--v=1'];
   const opts: puppeteer.LaunchOptions = {
     headless,
     executablePath: envChromeBinary,
@@ -82,6 +83,25 @@ async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
   const chromeDebugPort = getDebugPort(browser);
   console.log(`Opened chrome with debug port: ${chromeDebugPort}`);
 
+  let stdout = '', stderr = '';
+
+  const process = browser.process();
+  if (process) {
+    if (process.stderr) {
+      process.stderr.setEncoding('utf8');
+      process.stderr.on('data', data => {
+        stderr += data;
+      });
+    }
+
+    if (process.stdout) {
+      process.stdout.setEncoding('utf8');
+      process.stdout.on('data', data => {
+        stdout += data;
+      });
+    }
+  }
+
   // Load the target page.
   const srcPage = await browser.newPage();
   await srcPage.goto(EMPTY_PAGE);
@@ -109,6 +129,12 @@ async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
   await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
 
   frontend.on('error', error => {
+    console.log('STDOUT:');
+    console.log(stdout);
+    console.log();
+    console.log('STDERR:');
+    console.log(stderr);
+    console.log();
     throw new Error(`Error in Frontend: ${error}`);
   });
 

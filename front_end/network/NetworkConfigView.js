@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as SDK from '../sdk/sdk.js';
@@ -25,18 +22,20 @@ export class NetworkConfigView extends UI.Widget.VBox {
 
   /**
    * @param {string} title
-   * @return {{select: !Element, input: !Element, error: !Element}}
+   * @return {{select: !HTMLSelectElement, input: !HTMLInputElement, error: !HTMLElement}}
    */
   static createUserAgentSelectAndInput(title) {
     const userAgentSetting = Common.Settings.Settings.instance().createSetting('customUserAgent', '');
-    const userAgentSelectElement = createElement('select');
+    /** @type {!HTMLSelectElement} */
+    const userAgentSelectElement = /** @type {!HTMLSelectElement} */ (document.createElement('select'));
     UI.ARIAUtils.setAccessibleName(userAgentSelectElement, title);
 
     const customOverride = {title: Common.UIString.UIString('Custom...'), value: 'custom'};
     userAgentSelectElement.appendChild(new Option(customOverride.title, customOverride.value));
 
     for (const userAgentDescriptor of userAgentGroups) {
-      const groupElement = userAgentSelectElement.createChild('optgroup');
+      /** @type {!HTMLOptGroupElement} */
+      const groupElement = /** @type {!HTMLOptGroupElement} */ (userAgentSelectElement.createChild('optgroup'));
       groupElement.label = userAgentDescriptor.title;
       for (const userAgentVersion of userAgentDescriptor.values) {
         const userAgentValue =
@@ -54,7 +53,8 @@ export class NetworkConfigView extends UI.Widget.VBox {
     otherUserAgentElement.required = true;
     UI.ARIAUtils.setAccessibleName(otherUserAgentElement, otherUserAgentElement.placeholder);
 
-    const errorElement = document.createElement('div');
+    /** @type {!HTMLElement} */
+    const errorElement = /** @type {!HTMLElement} */ (document.createElement('div'));
     errorElement.classList.add('network-config-input-validation-error');
     UI.ARIAUtils.markAsAlert(errorElement);
     if (!otherUserAgentElement.value) {

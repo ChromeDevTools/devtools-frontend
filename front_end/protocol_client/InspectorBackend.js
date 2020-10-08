@@ -910,6 +910,13 @@ export class TargetBase {
   }
 
   /**
+   * @param {!ProtocolProxyApi.LayerTreeDispatcher} dispatcher
+   */
+  registerLayerTreeDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @param {!ProtocolProxyApi.LogDispatcher} dispatcher
    */
   registerLogDispatcher(dispatcher) {

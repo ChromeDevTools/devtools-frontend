@@ -76,10 +76,10 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
 
   /**
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
-   * @return {!Array<!SDK.DebuggerModel.Scope>}
+   * @return {!Array<!SDK.DebuggerModel.ScopeChainEntry>}
    */
   _getScopeChain(callFrame) {
-    return /** @type {?Array<!SDK.DebuggerModel.Scope>} */ (callFrame.sourceScopeChain) || callFrame.scopeChain();
+    return callFrame.sourceScopeChain || callFrame.scopeChain();
   }
 
   _update() {
@@ -130,7 +130,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!SDK.DebuggerModel.Scope} scope
+   * @param {!SDK.DebuggerModel.ScopeChainEntry} scope
    * @param {!Array.<!SDK.RemoteObject.RemoteObjectProperty>} extraProperties
    * @return {!ObjectUI.ObjectPropertiesSection.RootElement}
    */
@@ -173,7 +173,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!SDK.DebuggerModel.Scope} scope
+   * @param {!SDK.DebuggerModel.ScopeChainEntry} scope
    * @param {!SDK.DebuggerModel.DebuggerPausedDetails} details
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
    * @param {?SDK.RemoteObject.RemoteObject} thisObject

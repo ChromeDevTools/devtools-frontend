@@ -31,7 +31,7 @@ export class Identifier {
 }
 
 /**
- * @param {!SDK.DebuggerModel.Scope} scope
+ * @param {!SDK.DebuggerModel.ScopeChainEntry} scope
  * @return {!Promise<!Array<!Identifier>>}
  */
 export const scopeIdentifiers = function(scope) {
@@ -92,7 +92,7 @@ export const scopeIdentifiers = function(scope) {
 };
 
 /**
- * @param {!SDK.DebuggerModel.Scope} scope
+ * @param {!SDK.DebuggerModel.ScopeChainEntry} scope
  * @return {!Promise.<!Map<string, string>>}
  */
 export const resolveScope = function(scope) {
@@ -374,7 +374,7 @@ export const resolveThisObject = function(callFrame) {
 };
 
 /**
- * @param {!SDK.DebuggerModel.Scope} scope
+ * @param {!SDK.DebuggerModel.ScopeChainEntry} scope
  * @return {!SDK.RemoteObject.RemoteObject}
  */
 export const resolveScopeInObject = function(scope) {
@@ -395,7 +395,7 @@ export const resolveScopeInObject = function(scope) {
  */
 export class RemoteObject extends SDK.RemoteObject.RemoteObject {
   /**
-   * @param {!SDK.DebuggerModel.Scope} scope
+   * @param {!SDK.DebuggerModel.ScopeChainEntry} scope
    */
   constructor(scope) {
     super();

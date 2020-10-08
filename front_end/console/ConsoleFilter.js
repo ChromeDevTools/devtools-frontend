@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
@@ -28,6 +25,9 @@ export class ConsoleFilter {
    * @return {!Object<string, boolean>}
    */
   static allLevelsFilterValue() {
+    /**
+     * @type {!Object<string, boolean>}
+     */
     const result = {};
     for (const name of Object.values(SDK.ConsoleModel.MessageLevel)) {
       result[name] = true;
@@ -49,6 +49,9 @@ export class ConsoleFilter {
    * @return {!Object<string, boolean>}
    */
   static singleLevelMask(level) {
+    /**
+     * @type {!Object<string, boolean>}
+     */
     const result = {};
     result[level] = true;
     return result;

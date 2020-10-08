@@ -26,9 +26,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -69,7 +66,7 @@ export class ConsolePanel extends UI.Panel.Panel {
    */
   wasShown() {
     super.wasShown();
-    const wrapper = WrapperView._instance;
+    const wrapper = wrapperViewInstance;
     if (wrapper && wrapper.isShowing()) {
       UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
@@ -85,8 +82,8 @@ export class ConsolePanel extends UI.Panel.Panel {
     // The minimized drawer has 0 height, and showing Console inside may set
     // Console's scrollTop to 0. Unminimize before calling show to avoid this.
     UI.InspectorView.InspectorView.instance().setDrawerMinimized(false);
-    if (WrapperView._instance) {
-      WrapperView._instance._showViewInWrapper();
+    if (wrapperViewInstance) {
+      wrapperViewInstance._showViewInWrapper();
     }
     ConsolePanel._updateContextFlavor();
   }
@@ -100,15 +97,15 @@ export class ConsolePanel extends UI.Panel.Panel {
   }
 }
 
-/**
- * @unrestricted
- */
+/** @type {?WrapperView} */
+let wrapperViewInstance = null;
+
 export class WrapperView extends UI.Widget.VBox {
   constructor() {
     super();
     this.element.classList.add('console-view-wrapper');
 
-    WrapperView._instance = this;
+    wrapperViewInstance = this;
 
     this._view = ConsoleView.instance();
   }
@@ -140,21 +137,19 @@ export class WrapperView extends UI.Widget.VBox {
 
 /**
  * @implements {Common.Revealer.Revealer}
- * @unrestricted
  */
 export class ConsoleRevealer {
   /**
    * @override
    * @param {!Object} object
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
-  reveal(object) {
+  async reveal(object) {
     const consoleView = ConsoleView.instance();
     if (consoleView.isShowing()) {
       consoleView.focus();
-      return Promise.resolve();
+      return;
     }
-    UI.ViewManager.ViewManager.instance().showView('console-view');
-    return Promise.resolve();
+    await UI.ViewManager.ViewManager.instance().showView('console-view');
   }
 }

@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
@@ -13,7 +10,7 @@ import * as UI from '../ui/ui.js';
 
 import {NetworkNode} from './NetworkDataGridNode.js';              // eslint-disable-line no-unused-vars
 import {NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
-import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
+import {RequestTimeRange, RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';  // eslint-disable-line no-unused-vars
 
 export class NetworkWaterfallColumn extends UI.Widget.VBox {
   /**
@@ -24,7 +21,8 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     super(false);
     this.registerRequiredCSS('network/networkWaterfallColumn.css');
 
-    this._canvas = this.contentElement.createChild('canvas');
+    /** @type {!HTMLCanvasElement} */
+    this._canvas = /** @type {!HTMLCanvasElement} */ (this.contentElement.createChild('canvas'));
     this._canvas.tabIndex = -1;
     this.setDefaultFocusedElement(this._canvas);
     this._canvasPosition = this._canvas.getBoundingClientRect();
@@ -81,7 +79,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     const baseLineColor =
         ThemeSupport.ThemeSupport.instance().patchColorText('#a5a5a5', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     /** @type {!_LayerStyle} */
-    this._wiskerStyle = {borderColor: baseLineColor, lineWidth: 1};
+    this._wiskerStyle = {borderColor: baseLineColor, lineWidth: 1, fillStyle: undefined};
     /** @type {!_LayerStyle} */
     this._hoverDetailsStyle = {fillStyle: baseLineColor, lineWidth: 1, borderColor: baseLineColor};
 
@@ -139,9 +137,11 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
       if (!color) {
         color = baseResourceTypeColors.get('other');
       }
-      const borderColor = toBorderColor(color);
+      const borderColor = toBorderColor(/** @type {string} */ (color));
 
-      waitingStyleMap.set(resourceType, {fillStyle: toWaitingColor(color), lineWidth: 1, borderColor: borderColor});
+      waitingStyleMap.set(
+          resourceType,
+          {fillStyle: toWaitingColor(/** @type {string} */ (color)), lineWidth: 1, borderColor: borderColor});
       downloadingStyleMap.set(resourceType, {fillStyle: color, lineWidth: 1, borderColor: borderColor});
     }
     return [waitingStyleMap, downloadingStyleMap];
@@ -151,6 +151,9 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
      */
     function toBorderColor(color) {
       const parsedColor = Common.Color.Color.parse(color);
+      if (!parsedColor) {
+        return '';
+      }
       const hsla = parsedColor.hsla();
       hsla[1] /= 2;
       hsla[2] -= Math.min(hsla[2], 0.2);
@@ -162,6 +165,9 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
      */
     function toWaitingColor(color) {
       const parsedColor = Common.Color.Color.parse(color);
+      if (!parsedColor) {
+        return '';
+      }
       const hsla = parsedColor.hsla();
       hsla[2] *= 1.1;
       return parsedColor.asString(null);
@@ -194,14 +200,14 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   /**
    * @param {!Event} event
    */
-  _onMouseMove(event) {
+  _onMouseMove(/** @type {!MouseEvent} */ event) {
     this._setHoveredNode(this.getNodeFromPoint(event.offsetX, event.offsetY), event.shiftKey);
   }
 
   /**
    * @param {!Event} event
    */
-  _onClick(event) {
+  _onClick(/** @type {!MouseEvent} */ event) {
     const handled = this._setSelectedNode(this.getNodeFromPoint(event.offsetX, event.offsetY));
     if (handled) {
       event.consume(true);
@@ -209,7 +215,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!MouseEvent} event
    * @return {?UI.PopoverRequest}
    */
   _getPopoverRequest(event) {
@@ -228,8 +234,8 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     if (useTimingBars) {
       range = RequestTimingView.calculateRequestTimeRanges(request, 0)
                   .find(data => data.name === RequestTimeRangeNames.Total);
-      start = this._timeToPosition(range.start);
-      end = this._timeToPosition(range.end);
+      start = this._timeToPosition(/** @type {!RequestTimeRange} */ (range).start);
+      end = this._timeToPosition(/** @type {!RequestTimeRange} */ (range).end);
     } else {
       range = this._getSimplifiedBarRange(request, 0);
       start = range.start;
@@ -247,7 +253,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     }
 
     const rowIndex = this._nodes.findIndex(node => node.hovered());
-    const barHeight = this._getBarHeight(range.name);
+    const barHeight = this._getBarHeight(/** @type {!RequestTimeRange} */ (range).name);
     const y = this._headerHeight + (this._rowHeight * rowIndex - this._scrollTop) + ((this._rowHeight - barHeight) / 2);
 
     if (event.clientY < this._canvasPosition.top + y || event.clientY > this._canvasPosition.top + y + barHeight) {
@@ -262,12 +268,14 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
 
     return {
       box: anchorBox,
+      /** @param {!UI.GlassPane.GlassPane} popover */
       show: popover => {
         const content = RequestTimingView.createTimingTable(
             /** @type {!SDK.NetworkRequest.NetworkRequest} */ (request), this._calculator);
         popover.contentElement.appendChild(content);
         return Promise.resolve(true);
-      }
+      },
+      hide: undefined
     };
   }
 
@@ -423,7 +431,11 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     const useTimingBars = !Common.Settings.Settings.instance().moduleSetting('networkColorCodeResourceTypes').get() &&
         !this._calculator.startAtZero;
     const nodes = this._nodes;
-    const context = this._canvas.getContext('2d');
+    /** @type {?CanvasRenderingContext2D} */
+    const context = /** @type {?CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
+    if (!context) {
+      return;
+    }
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     context.translate(0, this._headerHeight);
@@ -436,6 +448,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
       const rowOffset = this._rowHeight * i;
       const node = nodes[i];
       this._decorateRow(context, node, rowOffset - this._scrollTop);
+      /** @type {!Array<!NetworkNode>} */
       let drawNodes = [];
       if (node.hasChildren() && !node.expanded) {
         drawNodes = /** @type {!Array<!NetworkNode>} */ (node.flatChildren());
@@ -484,7 +497,9 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
       context.beginPath();
       if (style.lineWidth) {
         context.lineWidth = style.lineWidth;
-        context.strokeStyle = style.borderColor;
+        if (style.borderColor) {
+          context.strokeStyle = style.borderColor;
+        }
         context.stroke(path);
       }
       if (style.fillStyle) {
@@ -503,7 +518,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     context.lineWidth = 1;
     for (const color of this._eventDividers.keys()) {
       context.strokeStyle = color;
-      for (const time of this._eventDividers.get(color)) {
+      for (const time of this._eventDividers.get(color) || []) {
         context.beginPath();
         const x = this._timeToPosition(time);
         context.moveTo(x, 0);
@@ -566,13 +581,14 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     const height = this._getBarHeight();
     y += Math.floor(this._rowHeight / 2 - height / 2 + borderWidth) - borderWidth / 2;
 
-    const waitingStyle = this._styleForWaitingResourceType.get(request.resourceType());
-    const waitingPath = this._pathForStyle.get(waitingStyle);
+    const waitingStyle = /** @type {!_LayerStyle} */ (this._styleForWaitingResourceType.get(request.resourceType()));
+    const waitingPath = /** @type {!Path2D} */ (this._pathForStyle.get(waitingStyle));
     waitingPath.rect(ranges.start, y, ranges.mid - ranges.start, height - borderWidth);
 
     const barWidth = Math.max(2, ranges.end - ranges.mid);
-    const downloadingStyle = this._styleForDownloadingResourceType.get(request.resourceType());
-    const downloadingPath = this._pathForStyle.get(downloadingStyle);
+    const downloadingStyle =
+        /** @type {!_LayerStyle} */ (this._styleForDownloadingResourceType.get(request.resourceType()));
+    const downloadingPath = /** @type {!Path2D} */ (this._pathForStyle.get(downloadingStyle));
     downloadingPath.rect(ranges.mid, y, barWidth, height - borderWidth);
 
     /** @type {?{left: string, right: string, tooltip: (string|undefined)}} */
@@ -582,7 +598,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
       const barDotLineLength = 10;
       const leftLabelWidth = context.measureText(labels.left).width;
       const rightLabelWidth = context.measureText(labels.right).width;
-      const hoverLinePath = this._pathForStyle.get(this._hoverDetailsStyle);
+      const hoverLinePath = /** @type {!Path2D} */ (this._pathForStyle.get(this._hoverDetailsStyle));
 
       if (leftLabelWidth < ranges.mid - ranges.start) {
         const midBarX = ranges.start + (ranges.mid - ranges.start - leftLabelWidth) / 2;
@@ -610,15 +626,16 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     }
 
     if (!this._calculator.startAtZero) {
-      const queueingRange = RequestTimingView.calculateRequestTimeRanges(request, 0)
-                                .find(data => data.name === RequestTimeRangeNames.Total);
+      const queueingRange =
+          /** @type {!RequestTimeRange} */ (RequestTimingView.calculateRequestTimeRanges(request, 0)
+                                                .find(data => data.name === RequestTimeRangeNames.Total));
       const leftLabelWidth = labels ? context.measureText(labels.left).width : 0;
       const leftTextPlacedInBar = leftLabelWidth < ranges.mid - ranges.start;
       const wiskerTextPadding = 13;
       const textOffset = (labels && !leftTextPlacedInBar) ? leftLabelWidth + wiskerTextPadding : 0;
       const queueingStart = this._timeToPosition(queueingRange.start);
       if (ranges.start - textOffset > queueingStart) {
-        const wiskerPath = this._pathForStyle.get(this._wiskerStyle);
+        const wiskerPath = /** @type {!Path2D} */ (this._pathForStyle.get(this._wiskerStyle));
         wiskerPath.moveTo(queueingStart, y + Math.floor(height / 2));
         wiskerPath.lineTo(ranges.start - textOffset, y + Math.floor(height / 2));
 
@@ -646,8 +663,8 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
         continue;
       }
 
-      const style = this._styleForTimeRangeName.get(range.name);
-      const path = this._pathForStyle.get(style);
+      const style = /** @type {!_LayerStyle} */ (this._styleForTimeRangeName.get(range.name));
+      const path = /** @type {!Path2D} */ (this._pathForStyle.get(style));
       const lineWidth = style.lineWidth || 0;
       const height = this._getBarHeight(range.name);
       const middleBarY = y + Math.floor(this._rowHeight / 2 - height / 2) + lineWidth / 2;
@@ -674,7 +691,9 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
 }
 
 /** @typedef {!{x: number, y: number, text: string}} */
+// @ts-ignore typedef
 export let _TextLayer;
 
 /** @typedef {!{fillStyle: (string|undefined), lineWidth: (number|undefined), borderColor: (string|undefined)}} */
+// @ts-ignore typedef
 export let _LayerStyle;

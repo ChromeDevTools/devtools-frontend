@@ -39,7 +39,7 @@ import {Linkifier} from './Linkifier.js';
  * @param {?SDK.SDKModel.Target} target
  * @param {!Linkifier} linkifier
  * @param {!Options=} options
- * @return {{element: !Element, links: !Array<!Element>}}
+ * @return {{element: !HTMLElement, links: !Array<!HTMLElement>}}
  */
 export function buildStackTracePreviewContents(target, linkifier, options = {
   stackTrace: undefined,
@@ -47,14 +47,14 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
   tabStops: undefined
 }) {
   const {stackTrace, contentUpdated, tabStops} = options;
-  const element = document.createElement('span');
+  const element = /** @type {!HTMLElement} */ (document.createElement('span'));
   element.classList.add('monospace');
   element.style.display = 'inline-block';
   const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(element, 'components/jsUtils.css');
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
   let totalHiddenCallFramesCount = 0;
   let totalCallFramesCount = 0;
-  /** @type {!Array<!Element>} */
+  /** @type {!Array<!HTMLElement>} */
   const links = [];
 
   /**

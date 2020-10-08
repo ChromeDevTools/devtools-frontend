@@ -753,10 +753,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
    * @param {?SDK.RemoteObject.RemoteObject} object
    * @param {!Array.<string>} propertyPath
    * @param {function(!SDK.RemoteObject.CallFunctionResult)} callback
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   static createRemoteObjectAccessorPropertySpan(object, propertyPath, callback) {
-    const rootElement = createElement('span');
+    const rootElement = /** @type {!HTMLElement} */ (createElement('span'));
     const element = rootElement.createChild('span');
     element.textContent = Common.UIString.UIString('(...)');
     if (!object) {

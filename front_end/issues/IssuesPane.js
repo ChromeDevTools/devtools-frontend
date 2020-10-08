@@ -1285,13 +1285,6 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     this._issuesTree.contentElement.classList.add('issues');
     this.contentElement.appendChild(this._issuesTree.element);
 
-    // Setting the default focused element to the issuesTree container which
-    // will delegate focus to either the first issue in the pane or the checkbox
-    // if no issue is available. We add an event listener to delegate focus
-    // since issues and the checkbox are not populated at this point.
-    this.setDefaultFocusedElement(this._issuesTree.contentElement);
-    this._issuesTree.contentElement.addEventListener('focus', this._selectFirstChildOrCheckbox.bind(this), false);
-
     this._noIssuesMessageDiv = document.createElement('div');
     this._noIssuesMessageDiv.classList.add('issues-pane-no-issues');
     this.contentElement.appendChild(this._noIssuesMessageDiv);
@@ -1340,6 +1333,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
         thirdPartySetting, ls`Include cookie Issues caused by third-party sites`,
         ls`Include third-party cookie issues`);
     rightToolbar.appendToolbarItem(this._showThirdPartyCheckbox);
+    this.setDefaultFocusedElement(this._showThirdPartyCheckbox.inputElement);
 
     rightToolbar.appendSeparator();
     const toolbarWarnings = document.createElement('div');
@@ -1459,8 +1453,16 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     if (issuesCount > 0) {
       this._issuesTree.element.hidden = false;
       this._noIssuesMessageDiv.style.display = 'none';
+      const firstChild = this._issuesTree.firstChild();
+      if (firstChild) {
+        firstChild.select(/** omitFocus= */ true);
+        this.setDefaultFocusedElement(firstChild.listItemElement);
+      }
     } else {
       this._issuesTree.element.hidden = true;
+      if (this._showThirdPartyCheckbox) {
+        this.setDefaultFocusedElement(this._showThirdPartyCheckbox.inputElement);
+      }
       // We alreay know that issesCount is zero here.
       const hasOnlyThirdPartyIssues = this._issuesManager.numberOfAllStoredIssues() > 0;
       this._noIssuesMessageDiv.textContent =
@@ -1477,15 +1479,6 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     if (issueView) {
       issueView.expand();
       issueView.reveal();
-    }
-  }
-
-  _selectFirstChildOrCheckbox() {
-    const firstChild = this._issuesTree.firstChild();
-    if (firstChild) {
-      firstChild.select();
-    } else if (this._showThirdPartyCheckbox) {
-      this._showThirdPartyCheckbox.inputElement.focus();
     }
   }
 }

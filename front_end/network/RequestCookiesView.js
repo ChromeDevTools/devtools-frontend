@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as CookieTable from '../cookie_table/cookie_table.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
@@ -58,9 +55,9 @@ export class RequestCookiesView extends UI.Widget.Widget {
     titleText.textContent = ls`Request Cookies`;
     titleText.title = ls`Cookies that were sent to the server in the 'cookie' header of the request`;
 
-    const requestCookiesCheckbox = UI.SettingsUI.createSettingCheckbox(
+    const requestCookiesCheckbox = /** @type {!UI.UIUtils.CheckboxLabel} */ (UI.SettingsUI.createSettingCheckbox(
         ls`show filtered out request cookies`, this._showFilteredOutCookiesSetting,
-        /* omitParagraphElement */ true);
+        /* omitParagraphElement */ true));
     requestCookiesCheckbox.checkboxElement.addEventListener('change', () => {
       this._refreshRequestCookiesView();
     });
@@ -125,6 +122,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     const malformedResponseCookies = [];
 
     if (this._request.responseCookies.length) {
+      /** @type {!Array<?string>} */
       const blockedCookieLines = this._request.blockedResponseCookies().map(blockedCookie => blockedCookie.cookieLine);
       responseCookies = this._request.responseCookies.filter(cookie => {
         // remove the regular cookies that would overlap with blocked cookies
@@ -138,13 +136,16 @@ export class RequestCookiesView extends UI.Widget.Widget {
 
       for (const blockedCookie of this._request.blockedResponseCookies()) {
         const parsedCookies = SDK.CookieParser.CookieParser.parseSetCookie(blockedCookie.cookieLine);
-        if (!parsedCookies.length ||
+        if (parsedCookies && !parsedCookies.length ||
             blockedCookie.blockedReasons.includes(Protocol.Network.SetCookieBlockedReason.SyntaxError)) {
           malformedResponseCookies.push(blockedCookie);
           continue;
         }
 
-        const cookie = blockedCookie.cookie || parsedCookies[0];
+        let cookie = blockedCookie.cookie;
+        if (!cookie && parsedCookies) {
+          cookie = parsedCookies[0];
+        }
         if (cookie) {
           responseCookieToBlockedReasons.set(cookie, blockedCookie.blockedReasons.map(blockedReason => {
             return {

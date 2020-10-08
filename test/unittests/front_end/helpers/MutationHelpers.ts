@@ -164,9 +164,9 @@ const DEFAULT_MAX_MUTATIONS_LIMIT = 10;
  * when testing a component to ensure it's updating the DOM performantly and not
  * unnecessarily.
  */
-export const withMutations = async(
-    expectedMutations: ExpectedMutation[], shadowRoot: ShadowRoot|Element,
-    functionToObserve: (shadowRoot: ShadowRoot|Element) => void): Promise<void> => {
+export const withMutations = async<T extends Node>(
+    expectedMutations: ExpectedMutation[], shadowRoot: T,
+    functionToObserve: (shadowRoot: T) => void): Promise<void> => {
   const observedMutations: ObservedMutation[] = [];
   const mutationObserver = new MutationObserver(entries => {
     storeRelevantMutationEntries(entries, observedMutations);
@@ -237,7 +237,6 @@ export const withMutations = async(
  * element and a callback, it will execute th e callback function and ensure
  * afterwards that a MutatonObserver saw no changes.
  */
-export const withNoMutations =
-    async(element: ShadowRoot|Element, fn: (shadowRoot: ShadowRoot|Element) => void): Promise<void> => {
+export const withNoMutations = async<T extends Node>(element: T, fn: (shadowRoot: T) => void): Promise<void> => {
   return await withMutations([], element, fn);
 };

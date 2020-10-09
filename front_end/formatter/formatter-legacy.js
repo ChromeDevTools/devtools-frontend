@@ -23,6 +23,3 @@ Formatter.FormatterSourceMapping = FormatterModule.ScriptFormatter.FormatterSour
 
 /** @constructor */
 Formatter.SourceFormatter = FormatterModule.SourceFormatter.SourceFormatter;
-
-/** @type {!Formatter.SourceFormatter} */
-Formatter.sourceFormatter = FormatterModule.sourceFormatter;

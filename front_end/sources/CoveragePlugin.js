@@ -23,7 +23,8 @@ export class CoveragePlugin extends Plugin {
     this._uiSourceCode = uiSourceCode;
 
     /** @type {!Workspace.UISourceCode.UISourceCode} */
-    this._originalSourceCode = Formatter.sourceFormatter.getOriginalUISourceCode(this._uiSourceCode);
+    this._originalSourceCode =
+        Formatter.SourceFormatter.SourceFormatter.instance().getOriginalUISourceCode(this._uiSourceCode);
 
     this._text = new UI.Toolbar.ToolbarButton(ls`Click to show Coverage Panel`);
     this._text.setSecondary();

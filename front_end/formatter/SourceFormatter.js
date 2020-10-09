@@ -39,6 +39,9 @@ export class SourceFormatData {
 
 SourceFormatData._formatDataSymbol = Symbol('formatData');
 
+/** @type {?SourceFormatter} */
+let sourceFormatterInstance = null;
+
 export class SourceFormatter {
   constructor() {
     this._projectId = 'formatter:';
@@ -54,6 +57,16 @@ export class SourceFormatter {
         Workspace.Workspace.Events.UISourceCodeRemoved, event => {
           this._onUISourceCodeRemoved(event);
         }, this);
+  }
+
+  /**
+   * @return {!SourceFormatter}
+   */
+  static instance() {
+    if (!sourceFormatterInstance) {
+      sourceFormatterInstance = new SourceFormatter();
+    }
+    return sourceFormatterInstance;
   }
 
   /**
@@ -201,7 +214,7 @@ class ScriptMapping {
       // but `rawLocation` will always use locations wrt. the containing document, because that is what the back-end is
       // sending. This is a hack, because what we are really doing here is deciding the location based on /how/ the
       // script is displayed, which is really something this layer cannot and should not have to decide: The
-      // SourceFormatter should not have to know wether a script is displayed inline (in its containing document) or
+      // SourceFormatter should not have to know whether a script is displayed inline (in its containing document) or
       // stand-alone.
       const [relativeLineNumber, relativeColumnNumber] = script.toRelativeLocation(rawLocation);
       const [formattedLineNumber, formattedColumnNumber] =

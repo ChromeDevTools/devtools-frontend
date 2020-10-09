@@ -16,9 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Host from '../host/host.js';
@@ -57,7 +54,13 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
       {id: 'time', title: Common.UIString.UIString('Time'), sortable: true, weight: 7}
     ]);
 
-    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({displayName: ls`Web Socket Frame`, columns});
+    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
+      displayName: ls`Web Socket Frame`,
+      columns,
+      editCallback: undefined,
+      deleteCallback: undefined,
+      refreshCallback: undefined
+    });
     this._dataGrid.setRowContextMenuCallback(onRowContextMenu.bind(this));
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.setCellClass('websocket-frame-view-td');
@@ -109,7 +112,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
     /**
      * @param {!UI.ContextMenu.ContextMenu} contextMenu
-     * @param {!DataGrid.DataGrid.DataGridNode} genericNode
+     * @param {!DataGrid.DataGrid.DataGridNode<?>} genericNode
      * @this {ResourceWebSocketFrameView}
      */
     function onRowContextMenu(contextMenu, genericNode) {
@@ -179,13 +182,13 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
   _clearFrames() {
     // TODO(allada): actially remove frames from request.
-    this._request[_clearFrameOffsetSymbol] = this._request.frames().length;
+    _clearFrameOffsets.set(this._request, this._request.frames().length);
     this.refresh();
   }
 
   _updateFilterSetting() {
     const text = this._filterTextInput.value();
-    const type = this._filterTypeCombobox.selectedOption().value;
+    const type = /** @type {!HTMLOptionElement} */ (this._filterTypeCombobox.selectedOption()).value;
     this._filterRegex = text ? new RegExp(text, 'i') : null;
     this._filterType = type === 'all' ? null : type;
     this.refresh();
@@ -228,7 +231,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
     const url = this._request.url();
     let frames = this._request.frames();
-    const offset = this._request[_clearFrameOffsetSymbol] || 0;
+    const offset = _clearFrameOffsets.get(this._request) || 0;
     frames = frames.slice(offset);
     frames = frames.filter(this._frameFilter.bind(this));
     frames.forEach(frame => this._dataGrid.insertChild(new ResourceWebSocketFrameNode(url, frame)));
@@ -264,13 +267,14 @@ export const opCodeDescriptions = (function() {
 
 /** @type {!Array<!UI.FilterBar.Item>} */
 export const _filterTypes = [
-  {name: 'all', label: Common.UIString.UIString('All')},
-  {name: 'send', label: Common.UIString.UIString('Send')},
-  {name: 'receive', label: Common.UIString.UIString('Receive')},
+  {name: 'all', label: Common.UIString.UIString('All'), title: undefined},
+  {name: 'send', label: Common.UIString.UIString('Send'), title: undefined},
+  {name: 'receive', label: Common.UIString.UIString('Receive'), title: undefined},
 ];
 
 /**
  * @unrestricted
+ * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<?>}
  */
 export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   /**
@@ -278,11 +282,11 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
    * @param {!SDK.NetworkRequest.WebSocketFrame} frame
    */
   constructor(url, frame) {
-    let length = frame.text.length;
+    let length = String(frame.text.length);
     const time = new Date(frame.time * 1000);
     const timeText = ('0' + time.getHours()).substr(-2) + ':' + ('0' + time.getMinutes()).substr(-2) + ':' +
         ('0' + time.getSeconds()).substr(-2) + '.' + ('00' + time.getMilliseconds()).substr(-3);
-    const timeNode = createElement('div');
+    const timeNode = document.createElement('div');
     timeNode.createTextChild(timeText);
     timeNode.title = time.toLocaleString();
 
@@ -311,6 +315,9 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
     this._frame = frame;
     this._isTextFrame = isTextFrame;
     this._dataText = dataText;
+
+    /** @type {?BinaryResourceView} */
+    this._binaryView = null;
   }
 
   /**
@@ -376,4 +383,5 @@ export function ResourceWebSocketFrameNodeTimeComparator(a, b) {
   return a._frame.time - b._frame.time;
 }
 
-export const _clearFrameOffsetSymbol = Symbol('ClearFrameOffset');
+/** @type {!WeakMap<!SDK.NetworkRequest.NetworkRequest, number>} */
+const _clearFrameOffsets = new WeakMap();

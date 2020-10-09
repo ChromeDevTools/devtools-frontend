@@ -161,6 +161,7 @@ interface Node {
   window(): Window;
 }
 
+declare function base64ToSize(content: string|null): number;
 declare function isEnterKey(event: Event): boolean;
 declare function isEnterOrSpaceKey(event: Event): boolean;
 declare function isEscKey(event: Event): boolean;

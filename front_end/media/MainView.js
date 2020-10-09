@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -68,11 +65,16 @@ export class TriggerDispatcher {
  */
 class PlayerDataCollection {
   constructor() {
-    // Map<Protocol.Media.PlayerProperty>
-    this._properties = {};
+    /** @type {!Map<string, string>} */
+    this._properties = new Map();
 
+    /** @type {!Array<!Protocol.Media.PlayerMessage>} */
     this._messages = [];
+
+    /** @type {!Array<!PlayerEvent>} */
     this._events = [];
+
+    /** @type {!Array<!Protocol.Media.PlayerError>} */
     this._errors = [];
   }
 
@@ -81,7 +83,7 @@ class PlayerDataCollection {
    * @param {!Protocol.Media.PlayerProperty} property
    */
   onProperty(property) {
-    this._properties[property.name] = property.value;
+    this._properties.set(property.name, property.value);
   }
 
   /**
@@ -117,10 +119,15 @@ class PlayerDataCollection {
  */
 class PlayerDataDownloadManager {
   constructor() {
-    // Map<string, PlayerDataCollection>
+    /**
+     * @type {!Map<string, !PlayerDataCollection>}
+     */
     this._playerDataCollection = new Map();
   }
 
+  /**
+   * @param {string} playerID
+   */
   addPlayer(playerID) {
     this._playerDataCollection.set(playerID, new PlayerDataCollection());
   }
@@ -131,7 +138,12 @@ class PlayerDataDownloadManager {
    * @param {!Protocol.Media.PlayerProperty} property
    */
   onProperty(playerID, property) {
-    this._playerDataCollection.get(playerID).onProperty(property);
+    const playerProperty = this._playerDataCollection.get(playerID);
+    if (!playerProperty) {
+      return;
+    }
+
+    playerProperty.onProperty(property);
   }
 
   /**
@@ -140,7 +152,12 @@ class PlayerDataDownloadManager {
    * @param {!Protocol.Media.PlayerError} error
    */
   onError(playerID, error) {
-    this._playerDataCollection.get(playerID).onError(error);
+    const playerProperty = this._playerDataCollection.get(playerID);
+    if (!playerProperty) {
+      return;
+    }
+
+    playerProperty.onError(error);
   }
 
   /**
@@ -149,7 +166,12 @@ class PlayerDataDownloadManager {
    * @param {!Protocol.Media.PlayerMessage} message
    */
   onMessage(playerID, message) {
-    this._playerDataCollection.get(playerID).onMessage(message);
+    const playerProperty = this._playerDataCollection.get(playerID);
+    if (!playerProperty) {
+      return;
+    }
+
+    playerProperty.onMessage(message);
   }
 
   /**
@@ -158,21 +180,36 @@ class PlayerDataDownloadManager {
    * @param {!PlayerEvent} event
    */
   onEvent(playerID, event) {
-    this._playerDataCollection.get(playerID).onEvent(event);
+    const playerProperty = this._playerDataCollection.get(playerID);
+    if (!playerProperty) {
+      return;
+    }
+
+    playerProperty.onEvent(event);
   }
 
+  /**
+   * @param {string} playerID
+   */
   exportPlayerData(playerID) {
-    return this._playerDataCollection.get(playerID).export();
+    const playerProperty = this._playerDataCollection.get(playerID);
+    if (!playerProperty) {
+      throw new Error('Unable to find player');
+    }
+
+    return playerProperty.export();
   }
 
+  /**
+   * @param {string} playerID
+   */
   deletePlayer(playerID) {
     this._playerDataCollection.delete(playerID);
   }
 }
 
 /**
- * @implements {SDK.SDKModel.SDKModelObserver<!Media.MediaModel>}
- * @implements TriggerDispatcher
+ * @implements {SDK.SDKModel.SDKModelObserver<!MediaModel>}
  */
 export class MainView extends UI.Panel.PanelWithSidebar {
   constructor() {
@@ -200,7 +237,10 @@ export class MainView extends UI.Panel.PanelWithSidebar {
     if (!this._detailPanels.has(playerID)) {
       return;
     }
-    this.splitWidget().mainWidget().detachChildWidgets();
+    const mainWidget = this.splitWidget().mainWidget();
+    if (mainWidget) {
+      mainWidget.detachChildWidgets();
+    }
     this._detailPanels.get(playerID).show(this.mainElement());
   }
 
@@ -225,24 +265,24 @@ export class MainView extends UI.Panel.PanelWithSidebar {
 
   /**
    * @override
-   * @param {!Media.MediaModel} mediaModel
+   * @param {!MediaModel} model
    */
-  modelAdded(mediaModel) {
+  modelAdded(model) {
     if (this.isShowing()) {
-      this._addEventListeners(mediaModel);
+      this._addEventListeners(model);
     }
   }
 
   /**
    * @override
-   * @param {!Media.MediaModel} mediaModel
+   * @param {!MediaModel} model
    */
-  modelRemoved(mediaModel) {
-    this._removeEventListeners(mediaModel);
+  modelRemoved(model) {
+    this._removeEventListeners(model);
   }
 
   /**
-   * @param {!Media.MediaModel} mediaModel
+   * @param {!MediaModel} mediaModel
    */
   _addEventListeners(mediaModel) {
     mediaModel.ensureEnabled();
@@ -254,7 +294,7 @@ export class MainView extends UI.Panel.PanelWithSidebar {
   }
 
   /**
-   * @param {!Media.MediaModel} mediaModel
+   * @param {!MediaModel} mediaModel
    */
   _removeEventListeners(mediaModel) {
     mediaModel.removeEventListener(ProtocolTriggers.PlayerPropertiesChanged, this._propertiesChanged, this);
@@ -318,7 +358,6 @@ export class MainView extends UI.Panel.PanelWithSidebar {
   }
 
   /**
-   * @override
    * @param {string} playerID
    * @param {!Protocol.Media.PlayerProperty} property
    */
@@ -332,7 +371,6 @@ export class MainView extends UI.Panel.PanelWithSidebar {
   }
 
   /**
-   * @override
    * @param {string} playerID
    * @param {!Protocol.Media.PlayerError} error
    */
@@ -346,7 +384,6 @@ export class MainView extends UI.Panel.PanelWithSidebar {
   }
 
   /**
-   * @override
    * @param {string} playerID
    * @param {!Protocol.Media.PlayerMessage} message
    */
@@ -360,7 +397,6 @@ export class MainView extends UI.Panel.PanelWithSidebar {
   }
 
   /**
-   * @override
    * @param {string} playerID
    * @param {!PlayerEvent} event
    */
@@ -394,6 +430,9 @@ export class MainView extends UI.Panel.PanelWithSidebar {
     this._downloadStore.deletePlayer(playerID);
   }
 
+  /**
+   * @param {string} playerID
+   */
   markOtherPlayersForDeletion(playerID) {
     for (const keyID of this._detailPanels.keys()) {
       if (keyID !== playerID) {
@@ -402,6 +441,9 @@ export class MainView extends UI.Panel.PanelWithSidebar {
     }
   }
 
+  /**
+   * @param {string} playerID
+   */
   exportPlayerData(playerID) {
     const dump = this._downloadStore.exportPlayerData(playerID);
     const uriContent = 'data:application/octet-stream,' + encodeURIComponent(JSON.stringify(dump, null, 2));

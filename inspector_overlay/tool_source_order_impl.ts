@@ -28,7 +28,7 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {Bounds, createChild, Overlay, ResetData} from './common.js';
+import {Bounds, createChild, Overlay} from './common.js';
 import {buildPath, emptyBounds, PathBounds} from './highlight_common.js';
 
 interface Path {
@@ -44,16 +44,7 @@ interface SourceOrderHighlight {
 export class SourceOrderOverlay extends Overlay {
   private sourceOrderContainer = document.createElement('div');
 
-  reset(resetData: ResetData) {
-    super.reset(resetData);
-    if (this.sourceOrderContainer) {
-      this.sourceOrderContainer.textContent = '';
-    }
-  }
-
-  setPlatform(platform: string) {
-    super.setPlatform(platform);
-
+  install() {
     this.document.body.classList.add('fill');
 
     const canvas = this.document.createElement('canvas');
@@ -67,6 +58,14 @@ export class SourceOrderOverlay extends Overlay {
     this.sourceOrderContainer = sourceOrderContainer;
 
     this.setCanvas(canvas);
+
+    super.install();
+  }
+
+  uninstall() {
+    this.document.body.classList.remove('fill');
+    this.document.body.innerHTML = '';
+    super.uninstall();
   }
 
   drawSourceOrder(highlight: SourceOrderHighlight) {

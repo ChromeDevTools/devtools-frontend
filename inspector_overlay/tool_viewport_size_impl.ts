@@ -8,14 +8,20 @@ const darkGridColor = 'rgba(0,0,0,0.7)';
 const gridBackgroundColor = 'rgba(255, 255, 255, 0.8)';
 
 export class ViewportSizeOverlay extends Overlay {
-  setPlatform(platform: string) {
-    super.setPlatform(platform);
+  install() {
     this.document.body.classList.add('fill');
     const canvas = this.document.createElement('canvas');
     canvas.id = 'canvas';
     canvas.classList.add('fill');
     this.document.body.append(canvas);
     this.setCanvas(canvas);
+    super.install();
+  }
+
+  uninstall() {
+    this.document.body.classList.remove('fill');
+    this.document.body.innerHTML = '';
+    super.uninstall();
   }
 
   drawViewSize() {

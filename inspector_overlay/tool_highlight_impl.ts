@@ -85,9 +85,7 @@ export class HighlightOverlay extends Overlay {
     }
   }
 
-  setPlatform(platform: string) {
-    super.setPlatform(platform);
-
+  install() {
     this.document.body.classList.add('fill');
 
     const canvas = this.document.createElement('canvas');
@@ -105,6 +103,15 @@ export class HighlightOverlay extends Overlay {
     this.gridOverlay.setCanvas(canvas);
 
     this.setCanvas(canvas);
+
+    super.install();
+  }
+
+  uninstall() {
+    this.document.body.classList.remove('fill');
+    this.document.body.innerHTML = '';
+
+    super.uninstall();
   }
 
   drawHighlight(highlight: Highlight) {

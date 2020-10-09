@@ -42,3 +42,18 @@ generated modules and notify you if they are too big.
 ## Tests
 
 Overlay modules can be unit tested like other parts of DevTools. For an example, see `test/unittests/front_end/inspector_overlay/common_test.ts`.
+
+## Lifecycle of the overlay
+
+When the backend installs an overlay bundle, it installs a global `InspectorOverlayHost` object that
+allows the overlay to communicate with the backend. Then it makes the following calls in order:
+
+- `setPlatform('windows'|'mac'|'linux'|'other')` to notify the overlay about the current platform.
+- `setOverlay(toolName)` to notify the overlay about what tool is currently enabled.
+
+Then when the overlay is being painted, the following calls are made by the backend:
+
+- `reset(params)` to notify the overlay about actual params of the page such as viewport size, device scale factor and others.
+- Invokes tool-specific methods such as `drawHighlight`.
+
+In the overlay code, these calls are received through a global `dispatch(methodName, ...args)` function.

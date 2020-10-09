@@ -28,7 +28,7 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {Overlay, ResetData} from './common.js';
+import {Overlay} from './common.js';
 import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
 
 export class HighlightGridOverlay extends Overlay {
@@ -39,14 +39,14 @@ export class HighlightGridOverlay extends Overlay {
 
   private gridLabels!: HTMLElement;
 
-  reset(resetData: ResetData) {
-    super.reset(resetData);
-    this.gridLabels.innerHTML = '';
+  renderGridMarkup() {
+    const gridLabels = this.document.createElement('div');
+    gridLabels.id = 'grid-label-container';
+    this.document.body.append(gridLabels);
+    this.gridLabels = gridLabels;
   }
 
-  setPlatform(platform: string) {
-    super.setPlatform(platform);
-
+  install() {
     this.document.body.classList.add('fill');
 
     const canvas = this.document.createElement('canvas');
@@ -57,13 +57,14 @@ export class HighlightGridOverlay extends Overlay {
     this.renderGridMarkup();
 
     this.setCanvas(canvas);
+
+    super.install();
   }
 
-  renderGridMarkup() {
-    const gridLabels = this.document.createElement('div');
-    gridLabels.id = 'grid-label-container';
-    this.document.body.append(gridLabels);
-    this.gridLabels = gridLabels;
+  uninstall() {
+    this.document.body.classList.remove('fill');
+    this.document.body.innerHTML = '';
+    super.uninstall();
   }
 
   drawGridHighlight(highlight: GridHighlight) {

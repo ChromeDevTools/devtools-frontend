@@ -56,6 +56,7 @@ export class Overlay {
   private _window?: Window;
   private _document?: Document;
   private _context?: CanvasRenderingContext2D|null;
+  private _installed = false;
 
   constructor(window: Window, style: CSSStyleSheet[] = []) {
     this._window = window;
@@ -69,6 +70,20 @@ export class Overlay {
   setCanvas(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this._context = canvas.getContext('2d');
+  }
+
+  install() {
+    for (const style of this.style) {
+      adoptStyleSheet(style);
+    }
+    this._installed = true;
+  }
+
+  uninstall() {
+    for (const style of this.style) {
+      document.adoptedStyleSheets = document.adoptedStyleSheets.filter(s => s !== style);
+    }
+    this._installed = false;
   }
 
   reset(resetData?: ResetData) {
@@ -101,11 +116,11 @@ export class Overlay {
   }
 
   setPlatform(platform: string) {
-    for (const style of this.style) {
-      adoptStyleSheet(style);
-    }
     this.platform = platform;
     this.document.body.classList.add('platform-' + platform);
+    if (!this._installed) {
+      this.install();
+    }
   }
 
   dispatch(message: unknown[]) {
@@ -137,6 +152,10 @@ export class Overlay {
       throw new Error('Window object is missing');
     }
     return this._window;
+  }
+
+  get installed(): boolean {
+    return this._installed;
   }
 }
 

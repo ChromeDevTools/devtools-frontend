@@ -54,8 +54,7 @@ export class DistancesOverlay extends Overlay {
     this.context.restore();
   }
 
-  setPlatform(platform: string) {
-    super.setPlatform(platform);
+  install() {
     this.document.body.classList.add('fill');
 
     const canvas = this.document.createElement('canvas');
@@ -64,6 +63,14 @@ export class DistancesOverlay extends Overlay {
     this.document.body.append(canvas);
 
     this.setCanvas(canvas);
+
+    super.install();
+  }
+
+  uninstall() {
+    this.document.body.classList.remove('fill');
+    this.document.body.innerHTML = '';
+    super.uninstall();
   }
 }
 

@@ -36,6 +36,7 @@ python2_action("build_inspector_overlay") {
     "$target_gen_dir/tool_source_order.js",
     "$target_gen_dir/tool_viewport_size_impl.js",
     "$target_gen_dir/tool_viewport_size.js",
+    "$target_gen_dir/main.js",
   ]
 
   outputs = [
@@ -57,15 +58,17 @@ python2_action("build_inspector_overlay") {
     "tool_highlight_grid.js",
     "70000",  # max_size in bytes
     "tool_distances.js",
-    "5000",  # max_size in bytes
+    "5100",  # max_size in bytes
     "tool_paused.js",
     "10000",  # max_size in bytes
     "tool_screenshot.js",
-    "5000",  # max_size in bytes
+    "5100",  # max_size in bytes
     "tool_viewport_size.js",
-    "5000",  # max_size in bytes
+    "5100",  # max_size in bytes
     "tool_source_order.js",
     "11000",  # max_size in bytes
+    "main.js",
+    "110000",  # max_size in bytes
     "--input_path",
     rebase_path(target_gen_dir, root_build_dir),
     "--output_path",
@@ -104,6 +107,7 @@ ts_library("inspector_overlay") {
     "css_grid_label_helpers.ts",
     "highlight_common.ts",
     "highlight_grid_common.ts",
+    "main.ts",
     "tool_distances.ts",
     "tool_distances_impl.ts",
     "tool_highlight.ts",

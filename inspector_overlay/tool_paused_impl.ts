@@ -13,8 +13,20 @@ declare global {
 export class PausedOverlay extends Overlay {
   private container!: HTMLElement;
 
-  setPlatform(platform: string) {
-    super.setPlatform(platform);
+  constructor(window: Window, style: CSSStyleSheet[] = []) {
+    super(window, style);
+    this.onKeyDown = this.onKeyDown.bind(this);
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'F8' || this.eventHasCtrlOrMeta(event) && event.key === '\\') {
+      this.window.InspectorOverlayHost.send('resume');
+    } else if (event.key === 'F10' || this.eventHasCtrlOrMeta(event) && event.key === '\'') {
+      this.window.InspectorOverlayHost.send('stepOver');
+    }
+  }
+
+  install() {
     const controlsLine = this.document.createElement('div');
     controlsLine.classList.add('controls-line');
 
@@ -46,23 +58,21 @@ export class PausedOverlay extends Overlay {
 
     this.document.body.append(controlsLine);
 
-    this.initListeners();
+    this.document.addEventListener('keydown', this.onKeyDown);
 
     resumeButton.addEventListener('click', () => this.window.InspectorOverlayHost.send('resume'));
     stepOverButton.addEventListener('click', () => this.window.InspectorOverlayHost.send('stepOver'));
+
+    super.install();
+  }
+
+  uninstall() {
+    this.document.body.innerHTML = '';
+    this.document.removeEventListener('keydown', this.onKeyDown);
+    super.uninstall();
   }
 
   drawPausedInDebuggerMessage(message: string) {
     this.container.textContent = message;
-  }
-
-  initListeners() {
-    this.document.addEventListener('keydown', event => {
-      if (event.key === 'F8' || this.eventHasCtrlOrMeta(event) && event.keyCode === 220 /* backslash */) {
-        this.window.InspectorOverlayHost.send('resume');
-      } else if (event.key === 'F10' || this.eventHasCtrlOrMeta(event) && event.keyCode === 222 /* single quote */) {
-        this.window.InspectorOverlayHost.send('stepOver');
-      }
-    });
   }
 }

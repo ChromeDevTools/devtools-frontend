@@ -160,6 +160,7 @@ interface Node {
   traverseNextNode(stayWithin?: Node): Node|null;
   deepTextContent(): string
   window(): Window;
+  childTextNodes(): Node[];
 }
 
 declare function base64ToSize(content: string|null): number;

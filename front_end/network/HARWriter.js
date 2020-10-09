@@ -28,9 +28,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
@@ -40,16 +37,16 @@ export class HARWriter {
    * @param {!Common.StringOutputStream.OutputStream} stream
    * @param {!Array.<!SDK.NetworkRequest.NetworkRequest>} requests
    * @param {!Common.Progress.Progress} progress
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   static async write(stream, requests, progress) {
     const compositeProgress = new Common.Progress.CompositeProgress(progress);
 
     const content = await HARWriter._harStringForRequests(requests, compositeProgress);
     if (progress.isCanceled()) {
-      return Promise.resolve();
+      return;
     }
-    return HARWriter._writeToStream(stream, compositeProgress, content);
+    await HARWriter._writeToStream(stream, compositeProgress, content);
   }
 
   /**
@@ -77,13 +74,15 @@ export class HARWriter {
     }
     return JSON.stringify({log: harLog}, null, _jsonIndent);
 
-    function isValidCharacter(code_point) {
+    /** @param {number} codePoint */
+    function isValidCharacter(codePoint) {
       // Excludes non-characters (U+FDD0..U+FDEF, and all codepoints ending in
       // 0xFFFE or 0xFFFF) from the set of valid code points.
-      return code_point < 0xD800 || (code_point >= 0xE000 && code_point < 0xFDD0) ||
-          (code_point > 0xFDEF && code_point <= 0x10FFFF && (code_point & 0xFFFE) !== 0xFFFE);
+      return codePoint < 0xD800 || (codePoint >= 0xE000 && codePoint < 0xFDD0) ||
+          (codePoint > 0xFDEF && codePoint <= 0x10FFFF && (codePoint & 0xFFFE) !== 0xFFFE);
     }
 
+    /** @param {string} content */
     function needsEncoding(content) {
       for (let i = 0; i < content.length; i++) {
         if (!isValidCharacter(content.charCodeAt(i))) {
@@ -94,7 +93,7 @@ export class HARWriter {
     }
 
     /**
-     * @param {!Object} entry
+     * @param {!SDK.HARLog.EntryDTO} entry
      * @param {!SDK.NetworkRequest.ContentData} contentData
      */
     function contentLoaded(entry, contentData) {
@@ -118,7 +117,7 @@ export class HARWriter {
    * @param {!Common.StringOutputStream.OutputStream} stream
    * @param {!Common.Progress.CompositeProgress} compositeProgress
    * @param {string} fileContent
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   static async _writeToStream(stream, compositeProgress, fileContent) {
     const progress = compositeProgress.createSubProgress();

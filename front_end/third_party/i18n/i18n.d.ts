@@ -83,6 +83,13 @@
   * @param {Object} [values]
   */
  declare function getMessageInstanceIdFn(icuMessage: string, values: Object | null): string;
+
+ /**
+ * Throws an error with the given icuMessage id.
+ * @param {string} icuMessage
+ */
+declare function idNotInMainDictionaryException(icuMessage: string): void;
+
  declare var i18n: {
    _formatPathAsString: typeof _formatPathAsString;
    _ICUMsgNotFoundMsg: string;
@@ -96,5 +103,6 @@
    isIcuMessage: typeof isIcuMessage;
    collectAllCustomElementsFromICU: typeof collectAllCustomElementsFromICU;
    registerLocaleData: typeof registerLocaleData;
+   idNotInMainDictionaryException: typeof idNotInMainDictionaryException;
  };
  export default i18n;

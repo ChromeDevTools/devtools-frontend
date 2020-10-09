@@ -63,7 +63,7 @@ async function main() {
  */
 async function bundleI18n(shouldMinify, outputPath, i18nPath) {
   console.log('i18n Bundler: Bundling i18n...');
-  const normalizedOutputPath = path.normalize(path.join(outputPath, 'i18n-bundle.js'));
+  const normalizedOutputPath = path.normalize(path.join(outputPath, 'i18n.js'));
   const options = {
     input: i18nPath,
     output: {

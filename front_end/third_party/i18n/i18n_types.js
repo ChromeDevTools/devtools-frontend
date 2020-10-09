@@ -111,6 +111,12 @@ export function lookupLocale(locale){return ""};
  */
  export function getMessageInstanceIdFn(icuMessage , values){};
 
+ /**
+ * Throws an error with the given icuMessage id.
+ * @param {string} icuMessage
+ */
+export function idNotInMainDictionaryException(icuMessage) {}
+
  var i18n =  {
   _formatPathAsString,
   lookupLocale,
@@ -122,7 +128,8 @@ export function lookupLocale(locale){return ""};
   replaceIcuMessageInstanceIds,
   isIcuMessage,
   collectAllCustomElementsFromICU,
-  registerLocaleData
+  registerLocaleData,
+  idNotInMainDictionaryException
 };
 
 export default i18n;

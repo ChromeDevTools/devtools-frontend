@@ -4109,12 +4109,10 @@ function getRendererFormattedStrings(locale) {
   const localeMessages = locales[locale];
   if (!localeMessages) throw new Error(`Unsupported locale '${locale}'`);
 
-  const icuMessageIds = Object.keys(localeMessages).filter(f => f.includes('core/report/html/'));
+  const icuMessageIds = Object.keys(localeMessages).filter(f => f.includes('ModuleUIStrings'));
   const strings = /** @type {LH.I18NRendererStrings} */ ({});
   for (const icuMessageId of icuMessageIds) {
     const [filename, varName] = icuMessageId.split(' | ');
-    if (!filename.endsWith('util.js')) throw new Error(`Unexpected message: ${icuMessageId}`);
-
     const key = /** @type {keyof LH.I18NRendererStrings} */ (varName);
     strings[key] = localeMessages[icuMessageId].message;
   }
@@ -4139,7 +4137,7 @@ function createMessageInstanceIdFn(filename, fileStrings) {
    * */
   const getMessageInstanceIdFn = (icuMessage, values) => {
     const keyname = Object.keys(fileStrings).find(key => fileStrings[key] === icuMessage);
-    if (!keyname) throw new Error(`Could not locate: ${icuMessage}`);
+    if (!keyname) throw new idNotInMainDictionaryException(icuMessage);
 
     const unixStyleFilename = filename.replace(/\\/g, '/');
     const icuMessageId = `${unixStyleFilename} | ${keyname}`;
@@ -4310,6 +4308,15 @@ function lookupClosestLocale(locale, available) {
     localeParts.pop();
   }
 }
+/**
+ * Throws an error with the given icuMessage id.
+ * @param {string} icuMessage
+ */
+function idNotInMainDictionaryException(icuMessage) {
+  this.message = `Could not locate: ${icuMessage}`;
+}
+idNotInMainDictionaryException.prototype = new Error;
+
 var i18n = {
   _formatPathAsString,
   _ICUMsgNotFoundMsg,
@@ -4323,6 +4330,7 @@ var i18n = {
   isIcuMessage,
   collectAllCustomElementsFromICU,
   registerLocaleData,
+  idNotInMainDictionaryException,
 };
 
 export default i18n;

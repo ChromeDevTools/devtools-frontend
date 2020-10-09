@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as UI from '../ui/ui.js';
 
 import {ExtensionServer} from './ExtensionServer.js';  // eslint-disable-line no-unused-vars
@@ -55,7 +52,7 @@ export class ExtensionView extends UI.Widget.Widget {
 
     this._server = server;
     this._id = id;
-    this._iframe = createElement('iframe');
+    this._iframe = document.createElement('iframe');
     this._iframe.addEventListener('load', this._onLoad.bind(this), false);
     this._iframe.src = src;
     this._iframe.className = className;

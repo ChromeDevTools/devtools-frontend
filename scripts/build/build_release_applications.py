@@ -131,9 +131,19 @@ class ReleaseBuilder(object):
                 # Resources are already baked into _module.
                 del module['resources']
                 if not module_type == 'autostart':
+                    # We load the entrypoint of a module no matter what.
+                    # Therefore, we don't need to declare any files for
+                    # the default case. However, if a module still has
+                    # a legacy file, the Runtime performs an array
+                    # contains check and will load that instead.
+                    module_files_to_load = []
+                    declared_module_files = module.get('modules', [])
+                    legacyFileName = name + '-legacy.js'
+                    if legacyFileName in declared_module_files:
+                        module_files_to_load += [legacyFileName]
                     # Non-autostart modules are vulcanized.
-                    module['modules'] = [name + '_module.js'] + module.get(
-                        'modules', [])
+                    module['modules'] = [name + '_module.js'
+                                         ] + module_files_to_load
             result.append(module)
         return json.dumps(result)
 

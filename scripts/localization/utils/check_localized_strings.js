@@ -279,6 +279,11 @@ async function parseLocalizableStrings(devtoolsFiles) {
 
 async function parseLocalizableStringsFromFile(filePath) {
   const fileContent = await localizationUtils.parseFileContent(filePath);
+  if (hasUIStrings(fileContent)) {
+    const dirName = path.basename(path.dirname(filePath));
+    migratedDirsSet.add(dirName);
+  }
+
   if (path.basename(filePath) === 'module.json') {
     return parseLocalizableStringFromModuleJson(fileContent, filePath);
   }
@@ -300,12 +305,6 @@ async function parseLocalizableStringsFromFile(filePath) {
   }
 
   let ast;
-
-  if (hasUIStrings(fileContent)) {
-    const relativeFilePath = localizationUtils.getRelativeFilePathFromFrontEnd(filePath);
-    const dirName = relativeFilePath.slice(0, relativeFilePath.indexOf('\\'));
-    migratedDirsSet.add(dirName);
-  }
 
   try {
     ast = espree.parse(fileContent, {ecmaVersion: 11, sourceType: 'module', range: true, loc: true});
@@ -359,8 +358,10 @@ function parseLocalizableStringFromModuleJson(fileContent, filePath) {
 }
 
 function handleModuleJsonString(str, code, filePath) {
-  // add string for Loc V1
-  addString(str, code, filePath);
+  if (!isInMigratedDirectory(filePath)) {
+    // add string for Loc V1
+    addString(str, code, filePath);
+  }
 
   // add to map for Loc V2
   addToLocAPICallsMap(filePath, str, code);
@@ -567,8 +568,7 @@ function addString(str, code, filePath, location, argumentNodes) {
  * Check if the file is in a directory that has been migrated to V2
  */
 function isInMigratedDirectory(filePath) {
-  const relativeFilePath = localizationUtils.getRelativeFilePathFromFrontEnd(filePath);
-  const dirName = relativeFilePath.slice(0, relativeFilePath.indexOf('\\'));
+  const dirName = path.basename(path.dirname(filePath));
   return migratedDirsSet.has(dirName);
 }
 

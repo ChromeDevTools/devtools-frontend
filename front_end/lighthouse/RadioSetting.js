@@ -2,26 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 export class RadioSetting {
   /**
    * @param {!Array<!{value: string, label: string}>} options
-   * @param {!Common.Settings.Setting} setting
+   * @param {!Common.Settings.Setting<string>} setting
    * @param {string} description
    */
   constructor(options, setting, description) {
     this._setting = setting;
     this._options = options;
 
-    this.element = createElement('div');
+    this.element = document.createElement('div');
     UI.ARIAUtils.setDescription(this.element, description);
     UI.ARIAUtils.markAsRadioGroup(this.element);
 
+    /**
+     * @type {!Array<!HTMLInputElement>}
+     */
     this._radioElements = [];
     for (const option of this._options) {
       const fragment = UI.Fragment.Fragment.build`
@@ -36,7 +36,7 @@ export class RadioSetting {
         UI.Tooltip.Tooltip.install(fragment.$('input'), description);
         UI.Tooltip.Tooltip.install(fragment.$('span'), description);
       }
-      const radioElement = fragment.$('input');
+      const radioElement = /** @type {!HTMLInputElement} */ (fragment.$('input'));
       radioElement.addEventListener('change', this._valueChanged.bind(this));
       this._radioElements.push(radioElement);
     }
@@ -69,6 +69,9 @@ export class RadioSetting {
     }
 
     const selectedRadio = this._radioElements.find(radio => radio.checked);
+    if (!selectedRadio) {
+      return;
+    }
     this._setting.set(selectedRadio.value);
   }
 }

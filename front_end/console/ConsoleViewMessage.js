@@ -1212,6 +1212,24 @@ export class ConsoleViewMessage {
   }
 
   /**
+   * @protected
+   * @param {!HTMLElement} element
+   */
+  setContentElement(element) {
+    console.assert(!this._contentElement, 'Cannot set content element twice');
+    this._contentElement = element;
+  }
+
+
+  /**
+   * @protected
+   * @return {?HTMLElement}
+   */
+  getContentElement() {
+    return this._contentElement;
+  }
+
+  /**
    * @return {!HTMLElement}
    */
   contentElement() {

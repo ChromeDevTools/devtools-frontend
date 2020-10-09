@@ -218,7 +218,12 @@ export class ConsoleView extends UI.Widget.VBox {
 
     this._viewportThrottler = new Common.Throttler.Throttler(50);
     this._pendingBatchResize = false;
-    this._onMessageResizedBound = this._onMessageResized.bind(this);
+    /**
+     * @param {!Common.EventTarget.EventTargetEvent} e
+     */
+    this._onMessageResizedBound = e => {
+      this._onMessageResized(e);
+    };
 
     this._topGroup = ConsoleGroup.createTopGroup();
     this._currentGroup = this._topGroup;
@@ -1601,39 +1606,51 @@ export class ConsoleViewFilter {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ConsoleCommand extends ConsoleViewMessage {
+  /**
+   * @param {!SDK.ConsoleModel.ConsoleMessage} consoleMessage
+   * @param {!Components.Linkifier.Linkifier} linkifier
+   * @param {number} nestingLevel
+   * @param {function(!Common.EventTarget.EventTargetEvent):void} onResize
+   */
+  constructor(consoleMessage, linkifier, nestingLevel, onResize) {
+    super(consoleMessage, linkifier, nestingLevel, onResize);
+    /** @type {?HTMLElement} */
+    this._formattedCommand = null;
+  }
+
   /**
    * @override
    * @return {!HTMLElement}
    */
   contentElement() {
-    if (!this._contentElement) {
-      this._contentElement = /** @type {!HTMLElement} */ (document.createElement('div'));
-      this._contentElement.classList.add('console-user-command');
-      const icon = UI.Icon.Icon.create('smallicon-user-command', 'command-result-icon');
-      this._contentElement.appendChild(icon);
-
-      // @ts-expect-error We can't convert this to a Weakmap, as it comes from `ConsoleViewMessage` instead.
-      this._contentElement.message = this;
-
-      this._formattedCommand = document.createElement('span');
-      this._formattedCommand.classList.add('source-code');
-      this._formattedCommand.textContent = Platform.StringUtilities.replaceControlCharacters(this.text);
-      this._contentElement.appendChild(this._formattedCommand);
-
-      if (this._formattedCommand.textContent.length < MaxLengthToIgnoreHighlighter) {
-        const javascriptSyntaxHighlighter = new UI.SyntaxHighlighter.SyntaxHighlighter('text/javascript', true);
-        javascriptSyntaxHighlighter.syntaxHighlightNode(this._formattedCommand).then(this._updateSearch.bind(this));
-      } else {
-        this._updateSearch();
-      }
-
-      this.updateTimestamp();
+    const contentElement = this.getContentElement();
+    if (contentElement) {
+      return contentElement;
     }
-    return this._contentElement;
+    const newContentElement = /** @type {!HTMLElement} */ (document.createElement('div'));
+    this.setContentElement(newContentElement);
+    newContentElement.classList.add('console-user-command');
+    const icon = UI.Icon.Icon.create('smallicon-user-command', 'command-result-icon');
+    newContentElement.appendChild(icon);
+
+    // @ts-expect-error We can't convert this to a Weakmap, as it comes from `ConsoleViewMessage` instead.
+    newContentElement.message = this;
+
+    this._formattedCommand = /** @type {!HTMLElement} */ (document.createElement('span'));
+    this._formattedCommand.classList.add('source-code');
+    this._formattedCommand.textContent = Platform.StringUtilities.replaceControlCharacters(this.text);
+    newContentElement.appendChild(this._formattedCommand);
+
+    if (this._formattedCommand.textContent.length < MaxLengthToIgnoreHighlighter) {
+      const javascriptSyntaxHighlighter = new UI.SyntaxHighlighter.SyntaxHighlighter('text/javascript', true);
+      javascriptSyntaxHighlighter.syntaxHighlightNode(this._formattedCommand).then(this._updateSearch.bind(this));
+    } else {
+      this._updateSearch();
+    }
+
+    this.updateTimestamp();
+    return newContentElement;
   }
 
   _updateSearch() {

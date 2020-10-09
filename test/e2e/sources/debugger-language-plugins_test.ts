@@ -62,6 +62,12 @@ type EvaluatorModule = {
   constantValue?: VariableValue
 };
 
+type ScopeInfo = {
+  type: string,
+  typeName: string,
+  icon?: string
+};
+
 type FunctionInfo = {
   name?: string
 };
@@ -74,6 +80,8 @@ interface TestPluginImpl {
   sourceLocationToRawLocation?(sourceLocation: SourceLocation): Promise<Array<RawLocationRange>>;
 
   rawLocationToSourceLocation?(rawLocation: RawLocation): Promise<Array<SourceLocation>>;
+
+  getScopeInfo?(type: string): Promise<ScopeInfo>;
 
   listVariablesInScope?(rawLocation: RawLocation): Promise<Array<Variable>>;
 
@@ -99,7 +107,7 @@ describe('The Debugger Language Plugins', async () => {
       globalThis.installExtensionPlugin = function(
           registerPluginCallback: (extensionServerClient: unknown, extensionAPI: unknown) => void) {
         const extensionServer = globalThis.Extensions.ExtensionServer.instance();
-        /** @type {!{startPage: string, name: string, exposeExperimentalAPIs: boolean}} */
+        /** @type {!{startPage: string, name: string}} */
         const extensionInfo = {
           startPage: `${resourcePath}/sources/language_extensions.html`,
           name: 'TestExtension',
@@ -289,6 +297,10 @@ describe('The Debugger Language Plugins', async () => {
               return [];
             }
 
+            async getScopeInfo(type: string) {
+              return {type, typeName: type};
+            }
+
             async listVariablesInScope(rawLocation: RawLocation) {
               const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
@@ -357,6 +369,10 @@ describe('The Debugger Language Plugins', async () => {
                 return {frames: [{name: 'inner_inline_func'}, {name: 'outer_inline_func'}, {name: 'Main'}]};
               }
               return null;
+            }
+
+            async getScopeInfo(type: string) {
+              return {type, typeName: type};
             }
 
             async listVariablesInScope(rawLocation: RawLocation) {
@@ -429,6 +445,10 @@ describe('The Debugger Language Plugins', async () => {
               return [];
             }
 
+            async getScopeInfo(type: string) {
+              return {type, typeName: type};
+            }
+
             async listVariablesInScope(rawLocation: RawLocation) {
               const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
@@ -489,6 +509,10 @@ describe('The Debugger Language Plugins', async () => {
                 return [sourceLocation];
               }
               return [];
+            }
+
+            async getScopeInfo(type: string) {
+              return {type, typeName: type};
             }
 
             async listVariablesInScope(rawLocation: RawLocation) {

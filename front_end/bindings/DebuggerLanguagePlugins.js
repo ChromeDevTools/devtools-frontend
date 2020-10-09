@@ -271,12 +271,16 @@ export class SourceScope {
   /**
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
    * @param {string} type
+   * @param {string} typeName
+   * @param {string|undefined} icon
    * @param {!DebuggerLanguagePlugin} plugin
    * @param {!RawLocation} location
    */
-  constructor(callFrame, type, plugin, location) {
+  constructor(callFrame, type, typeName, icon, plugin, location) {
     this._callFrame = callFrame;
     this._type = type;
+    this._typeName = typeName;
+    this._icon = icon;
     this._object = new SourceScopeRemoteObject(callFrame, plugin, location);
     this._name = type;
     /** @type {?SDK.DebuggerModel.Location} */
@@ -335,16 +339,15 @@ export class SourceScope {
    * @return {string}
    */
   typeName() {
-    return this.type();
+    return this._typeName;
   }
-
 
   /**
    * @override
    * @return {string|undefined}
    */
   name() {
-    return this._name;
+    return undefined;
   }
 
   /**
@@ -376,7 +379,14 @@ export class SourceScope {
    * @return {string}
    */
   description() {
-    return this.type();
+    return '';
+  }
+
+  /**
+   * @override
+   */
+  icon() {
+    return this._icon;
   }
 }
 
@@ -734,7 +744,8 @@ export class DebuggerLanguagePluginManager {
       for (const variable of variables || []) {
         let scope = scopes.get(variable.scope);
         if (!scope) {
-          scope = new SourceScope(callFrame, variable.scope, plugin, location);
+          const {type, typeName, icon} = await plugin.getScopeInfo(variable.scope);
+          scope = new SourceScope(callFrame, type, typeName, icon, plugin, location);
           scopes.set(variable.scope, scope);
         }
         scope.object().variables.push(variable);
@@ -874,6 +885,16 @@ export let VariableValue;
 // @ts-ignore typedef
 export let EvaluatorModule;
 
+/** Description of a scope
+ * @typedef {{
+ *            type: string,
+ *            typeName: string,
+ *            icon: (string|undefined)
+ *          }}
+ */
+// @ts-ignore typedef
+export let ScopeInfo;
+
 /** Either the code of an evaluator module or a constant representation of a variable
  * @typedef {{
  *            name: string
@@ -920,6 +941,14 @@ export class DebuggerLanguagePlugin {
    * @return {!Promise<!Array<!SourceLocation>>}
   */
   async rawLocationToSourceLocation(rawLocation) {
+    throw new Error('Not implemented yet');
+  }
+
+  /** Return detailed information about a scope
+   * @param {string} type
+   * @return {!Promise<!ScopeInfo>}
+   */
+  async getScopeInfo(type) {
     throw new Error('Not implemented yet');
   }
 

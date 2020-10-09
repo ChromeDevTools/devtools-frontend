@@ -107,6 +107,14 @@ export class LanguageExtensionEndpoint {
         this._sendRequest(this._commands.RawLocationToSourceLocation, {rawLocation}));
   }
 
+  /**
+   * @override
+   */
+  getScopeInfo(type) {
+    return /** @type {!Promise<!Bindings.DebuggerLanguagePlugins.ScopeInfo>} */ (
+        this._sendRequest(this._commands.GetScopeInfo, {type}));
+  }
+
   /** List all variables in lexical scope at a given location in a raw module
    * @override
    * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} rawLocation

@@ -8,6 +8,11 @@
   flex: auto;
 }
 
+.scope-chain-sidebar-pane-section-icon {
+  float: left;
+  margin-right: 5px;
+}
+
 .scope-chain-sidebar-pane-section-subtitle {
   float: right;
   margin-left: 5px;

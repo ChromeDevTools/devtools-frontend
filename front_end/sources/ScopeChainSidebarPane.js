@@ -154,10 +154,17 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
     if (!title || title === subtitle) {
       subtitle = null;
     }
+    const icon = scope.icon();
 
     const titleElement = document.createElement('div');
     titleElement.classList.add('scope-chain-sidebar-pane-section-header');
     titleElement.classList.add('tree-element-title');
+    if (icon) {
+      const iconElement = document.createElement('img');
+      iconElement.classList.add('scope-chain-sidebar-pane-section-icon');
+      iconElement.src = icon;
+      titleElement.appendChild(iconElement);
+    }
     titleElement.createChild('div', 'scope-chain-sidebar-pane-section-subtitle').textContent = subtitle;
     titleElement.createChild('div', 'scope-chain-sidebar-pane-section-title').textContent = title;
 

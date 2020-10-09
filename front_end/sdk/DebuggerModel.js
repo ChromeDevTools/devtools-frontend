@@ -1747,6 +1747,13 @@ export class ScopeChainEntry {
   description() {
     throw new Error('not implemented');
   }
+
+  /**
+   * @return {string|undefined}
+   */
+  icon() {
+    throw new Error('not implemented');
+  }
 }
 
 /**
@@ -1870,6 +1877,13 @@ export class Scope {
     const declarativeScope =
         this._type !== Protocol.Debugger.ScopeType.With && this._type !== Protocol.Debugger.ScopeType.Global;
     return declarativeScope ? '' : (this._payload.object.description || '');
+  }
+
+  /**
+   * @override
+   */
+  icon() {
+    return undefined;
   }
 }
 

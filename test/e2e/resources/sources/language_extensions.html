@@ -55,6 +55,17 @@ class ExtensionPluginBase {
     return Promise.resolve([]);
   }
 
+  /** Return detailed information about a scope
+   * @param {string} type
+   * @return {!Promise<!ScopeInfo>}
+   */
+  /*async*/ getScopeInfo(type) {
+    if (this._impl.getScopeInfo) {
+      return this._impl.getScopeInfo(type);
+    }
+    return Promise.reject(new Error('getScopeInfo() not implemented'));
+  }
+
   /** List all variables in lexical scope at a given location in a raw module
    * @param {!RawLocation} rawLocation
    * @return {!Promise<!Array<!*>>}

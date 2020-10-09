@@ -72,7 +72,7 @@ export class SearchView extends UI.Widget.VBox {
     refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._onAction.bind(this));
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this._resetSearch();
-      this._onSearchInputClear();
+
     });
 
     const searchStatusBarElement = this.contentElement.createChild('div', 'search-toolbar-summary');
@@ -269,6 +269,13 @@ export class SearchView extends UI.Widget.VBox {
     this._stopSearch();
     this._showPane(null);
     this._searchResultsPane = null;
+    this._onSearchInputClear();
+    this._clearSearchMessage();
+  }
+
+  _clearSearchMessage() {
+    this._searchMessageElement.textContent = '';
+    this._searchResultsMessageElement.textContent = '';
   }
 
   _stopSearch() {

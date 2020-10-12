@@ -67,50 +67,54 @@ self.onmessage = async function(event) {
     return;
   }
 
-  const NAME_GENERATOR_WEIGHT = 30;
-  const DISASSEMBLY_WEIGHT = 69;
-  const FINALIZATION_WEIGHT = NAME_GENERATOR_WEIGHT + DISASSEMBLY_WEIGHT;
+  try {
+    const NAME_GENERATOR_WEIGHT = 30;
+    const DISASSEMBLY_WEIGHT = 69;
+    const FINALIZATION_WEIGHT = NAME_GENERATOR_WEIGHT + DISASSEMBLY_WEIGHT;
 
-  const buffer = Common.Base64.decode(params.content);
+    const buffer = Common.Base64.decode(params.content);
 
-  let parser = new BinaryReaderWithProgress(percentage => {
-    this.postMessage({event: 'progress', params: {percentage: percentage * (NAME_GENERATOR_WEIGHT / 100)}});
-  });
-  parser.setData(buffer, 0, buffer.byteLength);
-  const nameGenerator = new WasmDis.DevToolsNameGenerator();
-  nameGenerator.read(parser);
+    let parser = new BinaryReaderWithProgress(percentage => {
+      this.postMessage({event: 'progress', params: {percentage: percentage * (NAME_GENERATOR_WEIGHT / 100)}});
+    });
+    parser.setData(buffer, 0, buffer.byteLength);
+    const nameGenerator = new WasmDis.DevToolsNameGenerator();
+    nameGenerator.read(parser);
 
-  const dis = new WasmDis.WasmDisassembler();
-  dis.addOffsets = true;
-  dis.exportMetadata = nameGenerator.getExportMetadata();
-  dis.nameResolver = nameGenerator.getNameResolver();
-  parser = new BinaryReaderWithProgress(percentage => {
-    this.postMessage(
-        {event: 'progress', params: {percentage: NAME_GENERATOR_WEIGHT + percentage * (DISASSEMBLY_WEIGHT / 100)}});
-  });
-  parser.setData(buffer, 0, buffer.byteLength);
-  dis.disassembleChunk(parser);
-  const {lines, offsets, functionBodyOffsets} = dis.getResult();
+    const dis = new WasmDis.WasmDisassembler();
+    dis.addOffsets = true;
+    dis.exportMetadata = nameGenerator.getExportMetadata();
+    dis.nameResolver = nameGenerator.getNameResolver();
+    parser = new BinaryReaderWithProgress(percentage => {
+      this.postMessage(
+          {event: 'progress', params: {percentage: NAME_GENERATOR_WEIGHT + percentage * (DISASSEMBLY_WEIGHT / 100)}});
+    });
+    parser.setData(buffer, 0, buffer.byteLength);
+    dis.disassembleChunk(parser);
+    const {lines, offsets, functionBodyOffsets} = dis.getResult();
 
-  // Truncate the output to 1M lines, because CodeMirror gets glitchy above that.
-  // TODO(bmeurer): This is not very performant and we also risk running out of
-  // memory in the worker (seems to work for the cases that we know about for now),
-  // so we should look into using the chunked disassembly to implement this in a
-  // more reasonable fashion.
-  const MAX_LINES = 1000 * 1000;
-  if (lines.length > MAX_LINES) {
-    lines[MAX_LINES] = ';; .... text is truncated due to size';
-    lines.splice(MAX_LINES + 1);
-    if (offsets) {
-      offsets.splice(MAX_LINES + 1);
+    // Truncate the output to 1M lines, because CodeMirror gets glitchy above that.
+    // TODO(bmeurer): This is not very performant and we also risk running out of
+    // memory in the worker (seems to work for the cases that we know about for now),
+    // so we should look into using the chunked disassembly to implement this in a
+    // more reasonable fashion.
+    const MAX_LINES = 1000 * 1000;
+    if (lines.length > MAX_LINES) {
+      lines[MAX_LINES] = ';; .... text is truncated due to size';
+      lines.splice(MAX_LINES + 1);
+      if (offsets) {
+        offsets.splice(MAX_LINES + 1);
+      }
     }
+
+    this.postMessage({event: 'progress', params: {percentage: FINALIZATION_WEIGHT}});
+
+    const source = lines.join('\n');
+
+    this.postMessage({event: 'progress', params: {percentage: 100}});
+
+    this.postMessage({method: 'disassemble', result: {source, offsets, functionBodyOffsets}});
+  } catch (error) {
+    this.postMessage({method: 'disassemble', error});
   }
-
-  this.postMessage({event: 'progress', params: {percentage: FINALIZATION_WEIGHT}});
-
-  const source = lines.join('\n');
-
-  this.postMessage({event: 'progress', params: {percentage: 100}});
-
-  this.postMessage({method: 'disassemble', result: {source, offsets, functionBodyOffsets}});
 };

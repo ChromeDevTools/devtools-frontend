@@ -318,7 +318,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
       progressIndicator.setTotalWork(100);
       this._progressToolbarItem.element.appendChild(progressIndicator.element);
 
-      const {content, error} = (await this._lazyContent());
+      let {content, error} = (await this._lazyContent());
       this._rawContent = error || content || '';
 
       progressIndicator.setWorked(1);
@@ -337,7 +337,11 @@ export class SourceFrameImpl extends UI.View.SimpleView {
             } else if ('method' in data) {
               switch (data.method) {
                 case 'disassemble':
-                  resolve(data.result);
+                  if ('error' in data) {
+                    reject(data.error);
+                  } else {
+                    resolve(data.result);
+                  }
                   break;
               }
             }
@@ -345,10 +349,15 @@ export class SourceFrameImpl extends UI.View.SimpleView {
           worker.onerror = reject;
         });
         worker.postMessage({method: 'disassemble', params: {content}});
-        const {source, offsets, functionBodyOffsets} = await promise;
-        worker.terminate();
-        this._rawContent = source;
-        this._wasmDisassembly = new Common.WasmDisassembly.WasmDisassembly(offsets, functionBodyOffsets);
+        try {
+          const {source, offsets, functionBodyOffsets} = await promise;
+          this._rawContent = content = source;
+          this._wasmDisassembly = new Common.WasmDisassembly.WasmDisassembly(offsets, functionBodyOffsets);
+        } catch (e) {
+          this._rawContent = content = error = e.message;
+        } finally {
+          worker.terminate();
+        }
       }
 
       progressIndicator.setWorked(100);

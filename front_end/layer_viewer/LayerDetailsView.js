@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
@@ -53,7 +50,49 @@ export class LayerDetailsView extends UI.Widget.Widget {
     this._layerViewHost.registerView(this);
     this._emptyWidget = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Select a layer to see its details'));
     this._layerSnapshotMap = this._layerViewHost.getLayerSnapshotMap();
+
+    /**
+     * @type {!HTMLElement}
+     */
+    this._tableElement;
+    /**
+     * @type {!HTMLElement}
+     */
+    this._tbodyElement;
+    /**
+     * @type {!HTMLElement}
+     */
+    this._sizeCell;
+    /**
+     * @type {!HTMLElement}
+     */
+    this._compositingReasonsCell;
+    /**
+     * @type {!HTMLElement}
+     */
+    this._memoryEstimateCell;
+    /**
+     * @type {!HTMLElement}
+     */
+    this._paintCountCell;
+    /**
+     * @type {!HTMLElement}
+     */
+    this._scrollRectsCell;
+    /**
+     * @type {!HTMLElement}
+     */
+    this._stickyPositionConstraintCell;
+    /**
+     * @type {!HTMLElement}
+     */
+    this._paintProfilerLink;
+
     this._buildContent();
+    /**
+     * @type {?Selection}
+     */
+    this._selection = null;
   }
 
   /**
@@ -94,13 +133,19 @@ export class LayerDetailsView extends UI.Widget.Widget {
    * @param {!Event} event
    */
   _onScrollRectClicked(index, event) {
-    if (event.which !== 1) {
+    if (/** @type {!KeyboardEvent} */ (event).which !== 1) {
+      return;
+    }
+    if (!this._selection) {
       return;
     }
     this._layerViewHost.selectObject(new ScrollRectSelection(this._selection.layer(), index));
   }
 
   _invokeProfilerLink() {
+    if (!this._selection) {
+      return;
+    }
     const snapshotSelection = this._selection.type() === Type.Snapshot ?
         this._selection :
         this._layerSnapshotMap.get(this._selection.layer());
@@ -118,7 +163,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
       this._scrollRectsCell.createTextChild(', ');
     }
     const element = this._scrollRectsCell.createChild('span', 'scroll-rect');
-    if (this._selection.scrollRectIndex === index) {
+    if (this._selection && /** @type {!ScrollRectSelection} */ (this._selection).scrollRectIndex === index) {
       element.classList.add('active');
     }
     element.textContent = Common.UIString.UIString(
@@ -198,14 +243,16 @@ export class LayerDetailsView extends UI.Widget.Widget {
     this.contentElement.appendChild(this._paintProfilerLink);
     this._sizeCell.textContent =
         Common.UIString.UIString('%d × %d (at %d,%d)', layer.width(), layer.height(), layer.offsetX(), layer.offsetY());
-    this._paintCountCell.parentElement.classList.toggle('hidden', !layer.paintCount());
-    this._paintCountCell.textContent = layer.paintCount();
+    if (this._paintCountCell.parentElement) {
+      this._paintCountCell.parentElement.classList.toggle('hidden', !layer.paintCount());
+    }
+    this._paintCountCell.textContent = String(layer.paintCount());
     this._memoryEstimateCell.textContent = Platform.NumberUtilities.bytesToString(layer.gpuMemoryUsage());
     layer.requestCompositingReasonIds().then(this._updateCompositingReasons.bind(this));
     this._scrollRectsCell.removeChildren();
     layer.scrollRects().forEach(this._createScrollRectElement.bind(this));
     this._populateStickyPositionConstraintCell(layer.stickyPositionConstraint());
-    const snapshot = this._selection.type() === Type.Snapshot ?
+    const snapshot = this._selection && this._selection.type() === Type.Snapshot ?
         /** @type {!SnapshotSelection} */ (this._selection).snapshot() :
         null;
 
@@ -213,15 +260,16 @@ export class LayerDetailsView extends UI.Widget.Widget {
   }
 
   _buildContent() {
-    this._tableElement = this.contentElement.createChild('table');
-    this._tbodyElement = this._tableElement.createChild('tbody');
+    this._tableElement = /** @type {!HTMLElement} */ (this.contentElement.createChild('table'));
+    this._tbodyElement = /** @type {!HTMLElement} */ (this._tableElement.createChild('tbody'));
     this._sizeCell = this._createRow(Common.UIString.UIString('Size'));
     this._compositingReasonsCell = this._createRow(Common.UIString.UIString('Compositing Reasons'));
     this._memoryEstimateCell = this._createRow(Common.UIString.UIString('Memory estimate'));
     this._paintCountCell = this._createRow(Common.UIString.UIString('Paint count'));
     this._scrollRectsCell = this._createRow(Common.UIString.UIString('Slow scroll regions'));
     this._stickyPositionConstraintCell = this._createRow(Common.UIString.UIString('Sticky position constraint'));
-    this._paintProfilerLink = this.contentElement.createChild('span', 'hidden devtools-link link-margin');
+    this._paintProfilerLink =
+        /** @type {!HTMLElement} */ (this.contentElement.createChild('span', 'hidden devtools-link link-margin'));
     UI.ARIAUtils.markAsLink(this._paintProfilerLink);
     this._paintProfilerLink.textContent = ls`Paint Profiler`;
     this._paintProfilerLink.tabIndex = 0;

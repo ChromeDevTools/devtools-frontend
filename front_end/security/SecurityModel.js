@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
 
 /**
@@ -19,7 +16,7 @@ export class SecurityModel extends SDK.SDKModel.SDKModel {
     this._dispatcher = new SecurityDispatcher(this);
     this._securityAgent = target.securityAgent();
     target.registerSecurityDispatcher(this._dispatcher);
-    this._securityAgent.enable();
+    this._securityAgent.invoke_enable();
   }
 
   /**
@@ -43,30 +40,36 @@ export class SecurityModel extends SDK.SDKModel.SDKModel {
    * @return {number}
    */
   static SecurityStateComparator(a, b) {
-    let securityStateMap;
-    if (SecurityModel._symbolicToNumericSecurityState) {
-      securityStateMap = SecurityModel._symbolicToNumericSecurityState;
-    } else {
-      securityStateMap = new Map();
-      const ordering = [
-        Protocol.Security.SecurityState.Info, Protocol.Security.SecurityState.InsecureBroken,
-        Protocol.Security.SecurityState.Insecure, Protocol.Security.SecurityState.Neutral,
-        Protocol.Security.SecurityState.Secure,
-        // Unknown is max so that failed/cancelled requests don't overwrite the origin security state for successful requests,
-        // and so that failed/cancelled requests appear at the bottom of the origins list.
-        Protocol.Security.SecurityState.Unknown
-      ];
-      for (let i = 0; i < ordering.length; i++) {
-        securityStateMap.set(ordering[i], i + 1);
-      }
-      SecurityModel._symbolicToNumericSecurityState = securityStateMap;
-    }
+    const securityStateMap = getOrCreateSecurityStateOrdinalMap();
     const aScore = securityStateMap.get(a) || 0;
     const bScore = securityStateMap.get(b) || 0;
 
     return aScore - bScore;
   }
 }
+/** @type {?Map<!Protocol.Security.SecurityState, number>} */
+let securityStateToOrdinal = null;
+
+/**
+ * @return {!Map<!Protocol.Security.SecurityState, number>}
+ */
+const getOrCreateSecurityStateOrdinalMap = () => {
+  if (!securityStateToOrdinal) {
+    securityStateToOrdinal = new Map();
+    const ordering = [
+      Protocol.Security.SecurityState.Info, Protocol.Security.SecurityState.InsecureBroken,
+      Protocol.Security.SecurityState.Insecure, Protocol.Security.SecurityState.Neutral,
+      Protocol.Security.SecurityState.Secure,
+      // Unknown is max so that failed/cancelled requests don't overwrite the origin security state for successful requests,
+      // and so that failed/cancelled requests appear at the bottom of the origins list.
+      Protocol.Security.SecurityState.Unknown
+    ];
+    for (let i = 0; i < ordering.length; i++) {
+      securityStateToOrdinal.set(ordering[i], i + 1);
+    }
+  }
+  return securityStateToOrdinal;
+};
 
 SDK.SDKModel.SDKModel.register(SecurityModel, SDK.SDKModel.Capability.Security, false);
 
@@ -85,9 +88,7 @@ export const SummaryMessages = {
   [Protocol.Security.SecurityState.InsecureBroken]: ls`This page is not secure (broken HTTPS).`
 };
 
-/**
- * @unrestricted
- */
+
 export class PageSecurityState {
   /**
    * @param {!Protocol.Security.SecurityState} securityState
@@ -101,10 +102,13 @@ export class PageSecurityState {
   }
 }
 
-/**
- * @unrestricted
- */
 export class PageVisibleSecurityState {
+  /**
+   * @param {!Protocol.Security.SecurityState} securityState
+   * @param {?Protocol.Security.CertificateSecurityState} certificateSecurityState
+   * @param {?Protocol.Security.SafetyTipInfo} safetyTipInfo
+   * @param {!Array<string>} securityStateIssueIds
+   */
   constructor(securityState, certificateSecurityState, safetyTipInfo, securityStateIssueIds) {
     this.securityState = securityState;
     this.certificateSecurityState =
@@ -161,7 +165,7 @@ export class CertificateSecurityState {
    * @return {boolean}
    */
   isCertificateExpiringSoon() {
-    const expiryDate = new Date(this.validTo * 1000);
+    const expiryDate = new Date(this.validTo * 1000).getTime();
     return (expiryDate < new Date(Date.now()).setHours(48)) && (expiryDate > Date.now());
   }
 
@@ -184,6 +188,9 @@ export class CertificateSecurityState {
 }
 
 class SafetyTipInfo {
+  /**
+   * @param {!Protocol.Security.SafetyTipInfo} safetyTipInfo
+   */
   constructor(safetyTipInfo) {
     /** @type {string} */
     this.safetyTipStatus = safetyTipInfo.safetyTipStatus;
@@ -216,32 +223,37 @@ export class SecurityStyleExplanation {
 }
 
 /**
- * @implements {Protocol.SecurityDispatcher}
- * @unrestricted
+ * @implements {ProtocolProxyApi.SecurityDispatcher}
  */
 class SecurityDispatcher {
+  /**
+   * @param {!SecurityModel} model
+   */
   constructor(model) {
     this._model = model;
   }
 
   /**
-   * @override
-   * @param {!Protocol.Security.SecurityState} securityState
-   * @param {boolean} schemeIsCryptographic
-   * @param {!Array<!Protocol.Security.SecurityStateExplanation>} explanations
-   * @param {!Protocol.Security.InsecureContentStatus} insecureContentStatus
-   * @param {?string=} summary
+   * @return {!Protocol.UsesObjectNotation}
    */
-  securityStateChanged(securityState, schemeIsCryptographic, explanations, insecureContentStatus, summary) {
+  usesObjectNotation() {
+    return true;
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.Security.SecurityStateChangedEvent} event
+   */
+  securityStateChanged({securityState, schemeIsCryptographic, explanations, insecureContentStatus, summary}) {
     const pageSecurityState = new PageSecurityState(securityState, explanations, summary || null);
     this._model.dispatchEventToListeners(Events.SecurityStateChanged, pageSecurityState);
   }
 
   /**
    * @override
-   * @param {!Protocol.Security.VisibleSecurityState} visibleSecurityState
+   * @param {!Protocol.Security.VisibleSecurityStateChangedEvent} event
    */
-  visibleSecurityStateChanged(visibleSecurityState) {
+  visibleSecurityStateChanged({visibleSecurityState}) {
     const pageVisibleSecurityState = new PageVisibleSecurityState(
         visibleSecurityState.securityState, visibleSecurityState.certificateSecurityState || null,
         visibleSecurityState.safetyTipInfo || null, visibleSecurityState.securityStateIssueIds);
@@ -250,10 +262,8 @@ class SecurityDispatcher {
 
   /**
    * @override
-   * @param {number} eventId
-   * @param {string} errorType
-   * @param {string} requestURL
+   * @param {!Protocol.Security.CertificateErrorEvent} event
    */
-  certificateError(eventId, errorType, requestURL) {
+  certificateError({eventId, errorType, requestURL}) {
   }
 }

@@ -93,6 +93,13 @@ class HARBase {
     }
     return Array.isArray(value) ? value : undefined;
   }
+
+  /**
+   * @return {!HARInitiator|undefined}
+   */
+  customInitiator() {
+    return this._custom.get('initiator');
+  }
 }
 
 export class HARRoot extends HARBase {

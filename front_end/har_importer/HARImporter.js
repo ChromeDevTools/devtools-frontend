@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 
@@ -22,31 +19,36 @@ export class Importer {
       pages.set(page.id, page);
     }
 
-    log.entries.sort((a, b) => a.startedDateTime - b.startedDateTime);
+    log.entries.sort((a, b) => a.startedDateTime.valueOf() - b.startedDateTime.valueOf());
 
     /** @type {!Map<string, !SDK.NetworkLog.PageLoad>} */
     const pageLoads = new Map();
     /** @type {!Array<!SDK.NetworkRequest.NetworkRequest>} */
     const requests = [];
     for (const entry of log.entries) {
-      let pageLoad = pageLoads.get(entry.pageref);
+      const pageref = entry.pageref;
+      if (pageref === undefined) {
+        continue;
+      }
+      let pageLoad = pageLoads.get(pageref);
       const documentURL = pageLoad ? pageLoad.mainRequest.url() : entry.request.url;
 
       let initiator = null;
-      if (entry._initiator) {
+      const initiatorEntry = entry.customInitiator();
+      if (initiatorEntry) {
         initiator = {
-          type: entry._initiator.type,
-          url: entry._initiator.url,
-          lineNumber: entry._initiator.lineNumber
+          type: /** @type{!Protocol.Network.InitiatorType} **/ (initiatorEntry.type),
+          url: initiatorEntry.url,
+          lineNumber: initiatorEntry.lineNumber,
         };
       }
 
       const request = new SDK.NetworkRequest.NetworkRequest(
           'har-' + requests.length, entry.request.url, documentURL, '', '', initiator);
-      const page = pages.get(entry.pageref);
+      const page = pages.get(pageref);
       if (!pageLoad && page) {
         pageLoad = Importer._buildPageLoad(page, request);
-        pageLoads.set(entry.pageref, pageLoad);
+        pageLoads.set(pageref, pageLoad);
       }
       Importer._fillRequestFromHAREntry(request, entry, pageLoad);
       if (pageLoad) {
@@ -64,16 +66,16 @@ export class Importer {
    */
   static _buildPageLoad(page, mainRequest) {
     const pageLoad = new SDK.NetworkLog.PageLoad(mainRequest);
-    pageLoad.startTime = page.startedDateTime;
-    pageLoad.contentLoadTime = page.pageTimings.onContentLoad * 1000;
-    pageLoad.loadTime = page.pageTimings.onLoad * 1000;
+    pageLoad.startTime = page.startedDateTime.valueOf();
+    pageLoad.contentLoadTime = Number(page.pageTimings.onContentLoad) * 1000;
+    pageLoad.loadTime = Number(page.pageTimings.onLoad) * 1000;
     return pageLoad;
   }
 
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {!HAREntry} entry
-   * @param {?SDK.NetworkLog.PageLoad} pageLoad
+   * @param {!SDK.NetworkLog.PageLoad|undefined} pageLoad
    */
   static _fillRequestFromHAREntry(request, entry, pageLoad) {
     // Request data.
@@ -121,10 +123,12 @@ export class Importer {
       request.setFromDiskCache();
     }
 
-    const contentData = {error: null, content: null, encoded: entry.response.content.encoding === 'base64'};
-    if (entry.response.content.text !== undefined) {
-      contentData.content = entry.response.content.text;
-    }
+    const contentText = entry.response.content.text;
+    const contentData = {
+      error: null,
+      content: contentText ? contentText : null,
+      encoded: entry.response.content.encoding === 'base64'
+    };
     request.setContentDataProvider(async () => contentData);
 
     // Timing data.
@@ -135,7 +139,7 @@ export class Importer {
     request.setResourceType(Importer._getResourceType(request, entry, pageLoad));
 
     const priority = entry.customAsString('priority');
-    if (Protocol.Network.ResourcePriority.hasOwnProperty(priority)) {
+    if (priority && Protocol.Network.ResourcePriority.hasOwnProperty(priority)) {
       request.setPriority(/** @type {!Protocol.Network.ResourcePriority} */ (priority));
     }
 
@@ -167,7 +171,7 @@ export class Importer {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {!HAREntry} entry
-   * @param {?SDK.NetworkLog.PageLoad} pageLoad
+   * @param {!SDK.NetworkLog.PageLoad|undefined} pageLoad
    * @return {!Common.ResourceType.ResourceType}
    */
   static _getResourceType(request, entry, pageLoad) {
@@ -214,29 +218,29 @@ export class Importer {
       lastEntry += timing;
       return lastEntry;
     }
-    let lastEntry = timings.blocked >= 0 ? timings.blocked : 0;
+    let lastEntry = timings.blocked && (timings.blocked >= 0) ? timings.blocked : 0;
 
     const proxy = timings.customAsNumber('blocked_proxy') || -1;
     const queueing = timings.customAsNumber('blocked_queueing') || -1;
 
     // SSL is part of connect for both HAR and Chrome's format so subtract it here.
-    const ssl = timings.ssl >= 0 ? timings.ssl : 0;
-    if (timings.connect > 0) {
+    const ssl = timings.ssl && (timings.ssl >= 0) ? timings.ssl : 0;
+    if (timings.connect && (timings.connect > 0)) {
       timings.connect -= ssl;
     }
     const timing = {
       proxyStart: proxy > 0 ? lastEntry - proxy : -1,
       proxyEnd: proxy > 0 ? lastEntry : -1,
       requestTime: issueTime + (queueing > 0 ? queueing : 0) / 1000,
-      dnsStart: timings.dns >= 0 ? lastEntry : -1,
+      dnsStart: timings.dns && (timings.dns >= 0) ? lastEntry : -1,
       dnsEnd: accumulateTime(timings.dns),
 
       // Add ssl to end time without modifying lastEntry (see comment above).
-      connectStart: timings.connect >= 0 ? lastEntry : -1,
+      connectStart: timings.connect && (timings.connect >= 0) ? lastEntry : -1,
       connectEnd: accumulateTime(timings.connect) + ssl,
 
       // Now update lastEntry to add ssl timing back in (see comment above).
-      sslStart: timings.ssl >= 0 ? lastEntry : -1,
+      sslStart: timings.ssl && (timings.ssl >= 0) ? lastEntry : -1,
       sslEnd: accumulateTime(timings.ssl),
 
       workerStart: -1,

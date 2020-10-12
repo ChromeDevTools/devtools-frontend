@@ -734,9 +734,9 @@ export class DebuggerModel extends SDKModel {
 
     if (!await this._setDebuggerPausedDetails(pausedDetails)) {
       if (this._autoStepOver) {
-        this._agent.invoke_stepOver({});
+        this.stepOver();
       } else {
-        this._agent.invoke_stepInto({breakOnAsyncCall: false});
+        this.stepInto();
       }
     }
 

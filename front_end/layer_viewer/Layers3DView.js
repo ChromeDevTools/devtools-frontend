@@ -59,7 +59,7 @@ export class Layers3DView extends UI.Widget.VBox {
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
 
-    this._transformController = new TransformController(this.contentElement);
+    this._transformController = new TransformController(/** @type {!HTMLElement} */ (this.contentElement));
     this._transformController.addEventListener(TransformControllerEvents.TransformChanged, this._update, this);
     this._initToolbar();
 

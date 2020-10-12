@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
@@ -14,12 +11,28 @@ import * as UI from '../ui/ui.js';
  */
 export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
   /**
-   * @param {!Element} element
+   * @param {!HTMLElement} element
    * @param {boolean=} disableRotate
    */
   constructor(element, disableRotate) {
     super();
+    /**
+     * @type {!Object.<number, function(!Event=):(boolean|void)>}
+     */
     this._shortcuts = {};
+    /**
+     * @type {!Modes}
+     */
+    this._mode;
+    this._scale = 1;
+    this._offsetX = 0;
+    this._offsetY = 0;
+    this._rotateX = 0;
+    this._rotateY = 0;
+    this._oldRotateX = 0;
+    this._oldRotateY = 0;
+    this._originX = 0;
+    this._originY = 0;
     this.element = element;
     this._registerShortcuts();
     UI.UIUtils.installDragHandle(
@@ -61,14 +74,23 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     return this._controlPanelToolbar;
   }
 
+  /**
+   * @param {!Event} event
+   */
   _onKeyDown(event) {
-    const shortcutKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEventIgnoringModifiers(event);
+    const shortcutKey =
+        UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEventIgnoringModifiers(/** @type {!KeyboardEvent} */ (event));
     const handler = this._shortcuts[shortcutKey];
     if (handler && handler(event)) {
       event.consume();
     }
   }
 
+  /**
+   *
+   * @param {!Array<!{key: number}>} keys
+   * @param {function(!Event=):(boolean|void)} handler
+   */
   _addShortcuts(keys, handler) {
     for (let i = 0; i < keys.length; ++i) {
       this._shortcuts[keys[i].key] = handler;
@@ -252,23 +274,26 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     const zoomFactor = 1.1;
     /** @const */
     const mouseWheelZoomSpeed = 1 / 120;
-    const scaleFactor = Math.pow(zoomFactor, event.wheelDeltaY * mouseWheelZoomSpeed);
+    const mouseEvent = /** @type {*} */ (event);
+    const scaleFactor = Math.pow(zoomFactor, mouseEvent.wheelDeltaY * mouseWheelZoomSpeed);
     this._onScale(
-        scaleFactor, event.clientX - this.element.totalOffsetLeft(), event.clientY - this.element.totalOffsetTop());
+        scaleFactor, mouseEvent.clientX - this.element.totalOffsetLeft(),
+        mouseEvent.clientY - this.element.totalOffsetTop());
   }
 
   /**
    * @param {!Event} event
    */
   _onDrag(event) {
+    const {clientX, clientY} = /** @type {!MouseEvent} */ (event);
     if (this._mode === Modes.Rotate) {
       this._onRotate(
-          this._oldRotateX + (this._originY - event.clientY) / this.element.clientHeight * 180,
-          this._oldRotateY - (this._originX - event.clientX) / this.element.clientWidth * 180);
+          this._oldRotateX + (this._originY - clientY) / this.element.clientHeight * 180,
+          this._oldRotateY - (this._originX - clientX) / this.element.clientWidth * 180);
     } else {
-      this._onPan(event.clientX - this._originX, event.clientY - this._originY);
-      this._originX = event.clientX;
-      this._originY = event.clientY;
+      this._onPan(clientX - this._originX, clientY - this._originY);
+      this._originX = clientX;
+      this._originY = clientY;
     }
   }
 
@@ -285,10 +310,10 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _onDragEnd() {
-    delete this._originX;
-    delete this._originY;
-    delete this._oldRotateX;
-    delete this._oldRotateY;
+    this._originX = 0;
+    this._originY = 0;
+    this._oldRotateX = 0;
+    this._oldRotateY = 0;
   }
 }
 

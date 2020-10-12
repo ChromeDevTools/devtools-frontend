@@ -211,7 +211,7 @@ export class UserMetrics {
     }
 
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.IssuesPanelResourceOpened, value, size);
-    Common.EventTarget.fireEvent(EnumeratedHistogram.IssuesPanelIssueExpanded, {value});
+    Common.EventTarget.fireEvent(EnumeratedHistogram.IssuesPanelResourceOpened, {value});
   }
 
   /**

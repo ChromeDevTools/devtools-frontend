@@ -173,7 +173,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._secureContext.textContent = booleanToYesNo(this._frame.isSecureContext());
     const secureContextExplanation = this._explanationFromSecureContextType(this._frame.getSecureContextType());
     if (secureContextExplanation) {
-      const secureContextType = this._secureContext.createChild('span');
+      const secureContextType = this._secureContext.createChild('span', 'inline-span');
       secureContextType.textContent = secureContextExplanation;
     }
   }

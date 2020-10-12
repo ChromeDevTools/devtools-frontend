@@ -36,6 +36,10 @@
   content: ")";
 }
 
+.report-field .inline-span {
+  padding-left: 1ex;
+}
+
 .report-field-value-link {
   display: inline-block;
 }

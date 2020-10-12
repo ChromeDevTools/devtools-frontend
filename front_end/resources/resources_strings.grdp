@@ -393,8 +393,14 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_b29728d72d14907bdf5618db1f12b322" desc="Manifest installability error in the Application panel">
     Page has no manifest &lt;link&gt; URL
   </message>
+  <message name="IDS_DEVTOOLS_b43943424bcb8365929e3db3c25e994c" desc="Text in Frames View of the Application panel">
+    Workers
+  </message>
   <message name="IDS_DEVTOOLS_b5dc9b0e6beecb1e80f6f1b5b3050f12" desc="The UI destination when right clicking an item that can be revealed">
     Application panel
+  </message>
+  <message name="IDS_DEVTOOLS_b61822e8357dcaff77eaaccf348d9134" desc="Default name for worker">
+    worker
   </message>
   <message name="IDS_DEVTOOLS_b704442a84076f1139cd70604553e8dc" desc="Tooltip text that appears when hovering over the largeicon clear button in the Indexed DBViews of the Application panel">
     Clear object store

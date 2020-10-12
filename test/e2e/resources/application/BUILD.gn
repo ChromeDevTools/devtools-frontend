@@ -7,6 +7,8 @@ import("../../../../scripts/build/ninja/copy.gni")
 copy_to_gen("application") {
   sources = [
     "cookies.html",
+    "dedicated-worker.js",
+    "frame-tree.html",
     "session-storage.html",
     "websql-database.html",
   ]

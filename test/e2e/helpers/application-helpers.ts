@@ -33,3 +33,8 @@ export async function getDataGridData(selector: string, columns: string[]) {
 
   return dataGridRowValues;
 }
+
+export async function getReportValues() {
+  const fields = await $$('.report-field-value');
+  return Promise.all(fields.map(node => node.evaluate(e => e.textContent)));
+}

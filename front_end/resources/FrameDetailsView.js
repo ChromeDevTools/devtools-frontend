@@ -318,3 +318,20 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     this._targetInfo = targetInfo;
   }
 }
+
+export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
+  /**
+   * @param {!Protocol.Target.TargetInfo} targetInfo
+   */
+  constructor(targetInfo) {
+    super();
+    this._targetInfo = targetInfo;
+    this._reportView = new UI.ReportView.ReportView(this._targetInfo.title || this._targetInfo.url || ls`worker`);
+    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css');
+    this._reportView.show(this.contentElement);
+
+    this._documentSection = this._reportView.appendSection(ls`Document`);
+    this._URLFieldValue = this._documentSection.appendField(ls`URL`);
+    this._URLFieldValue.textContent = this._targetInfo.url;
+  }
+}

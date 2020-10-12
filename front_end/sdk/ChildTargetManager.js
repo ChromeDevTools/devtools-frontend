@@ -251,5 +251,5 @@ export class ChildTargetManager extends SDKModel {
 export const Events = {
   TargetCreated: Symbol('TargetCreated'),
   TargetDestroyed: Symbol('TargetDestroyed'),
-  TargetInfoChanged: Symbol('TargetInforChanged'),
+  TargetInfoChanged: Symbol('TargetInfoChanged'),
 };

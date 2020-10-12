@@ -48,7 +48,7 @@ import {Database as DatabaseModelDatabase, DatabaseModel, Events as DatabaseMode
 import {DatabaseQueryView, Events as DatabaseQueryViewEvents} from './DatabaseQueryView.js';
 import {DatabaseTableView} from './DatabaseTableView.js';
 import {DOMStorage, DOMStorageModel, Events as DOMStorageModelEvents} from './DOMStorageModel.js';  // eslint-disable-line no-unused-vars
-import {FrameDetailsView, OpenedWindowDetailsView} from './FrameDetailsView.js';
+import {FrameDetailsView, OpenedWindowDetailsView, WorkerDetailsView} from './FrameDetailsView.js';
 import {Database as IndexedDBModelDatabase, DatabaseId, Events as IndexedDBModelEvents, Index, IndexedDBModel, ObjectStore} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars
 import {IDBDatabaseView, IDBDataView} from './IndexedDBViews.js';
 import {ServiceWorkerCacheView} from './ServiceWorkerCacheViews.js';
@@ -2020,6 +2020,9 @@ export class StorageCategoryView extends UI.Widget.VBox {
   }
 }
 
+/**
+ * @implements {SDK.SDKModel.Observer}
+ */
 export class ResourcesSection {
   /**
    * @param {!UI.Panel.PanelWithSidebar} storagePanel
@@ -2053,6 +2056,8 @@ export class ResourcesSection {
         SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TargetDestroyed, this._windowDestroyed,
         this);
 
+    SDK.SDKModel.TargetManager.instance().observeTargets(this);
+
     for (const frame of frameManager.getAllFrames()) {
       if (!this._treeElementForFrameId.get(frame.id)) {
         this._addFrameAndParents(frame);
@@ -2062,6 +2067,37 @@ export class ResourcesSection {
         this._windowOpened({data: {targetInfo}});
       }
     }
+  }
+
+  /**
+   * @override
+   * @param {!SDK.SDKModel.Target} target
+   */
+  targetAdded(target) {
+    if (target.type() === 'worker') {
+      this._workerAdded(target);
+    }
+  }
+
+  /**
+   * @param {!SDK.SDKModel.Target} target
+   * @return {!Promise<void>}
+   */
+  async _workerAdded(target) {
+    const parentTargetId = target.parentTarget().id();
+    const frameTreeElement = this._treeElementForTargetId.get(parentTargetId);
+    const targetInfo =
+        (await target.parentTarget().targetAgent().invoke_getTargetInfo({targetId: target.id()})).targetInfo;
+    if (frameTreeElement && targetInfo) {
+      frameTreeElement.workerCreated(targetInfo);
+    }
+  }
+
+  /**
+   * @override
+   * @param {!SDK.SDKModel.Target} target
+   */
+  targetRemoved(target) {
   }
 
   /**
@@ -2131,6 +2167,10 @@ export class ResourcesSection {
 
     const frameTreeElement = new FrameTreeElement(this, frame);
     this._treeElementForFrameId.set(frame.id, frameTreeElement);
+    const targetId = frame.resourceTreeModel().target().id();
+    if (!this._treeElementForTargetId.get(targetId)) {
+      this._treeElementForTargetId.set(targetId, frameTreeElement);
+    }
     parentTreeElement.appendChild(frameTreeElement);
 
     for (const resource of frame.resources()) {
@@ -2238,7 +2278,7 @@ export class FrameTreeElement extends BaseStorageTreeElement {
     this._categoryElements = new Map();
     /** @type {!Map<string, !FrameResourceTreeElement>} */
     this._treeElementForResource = new Map();
-    /** @type {!Map<string, !FrameWindowTreeElement>} */
+    /** @type {!Map<string, !BaseStorageTreeElement>} */
     this._treeElementForWindow = new Map();
     this.setExpandable(true);
     this.frameNavigated(frame);
@@ -2270,6 +2310,7 @@ export class FrameTreeElement extends BaseStorageTreeElement {
     this._frameId = frame.id;
     if (this.title !== frame.displayName()) {
       this.title = frame.displayName();
+      UI.ARIAUtils.setAccessibleName(this.listItemElement, this.title);
       if (this.parent) {
         const parent = this.parent;
         // Insert frame at new position to preserve correct alphabetical order
@@ -2370,6 +2411,24 @@ export class FrameTreeElement extends BaseStorageTreeElement {
       const windowTreeElement = new FrameWindowTreeElement(this._section._panel, targetInfo);
       categoryElement.appendChild(windowTreeElement);
       this._treeElementForWindow.set(targetInfo.targetId, windowTreeElement);
+    }
+  }
+
+  /**
+   * @param {!Protocol.Target.TargetInfo} targetInfo
+   */
+  workerCreated(targetInfo) {
+    const categoryKey = 'Workers';
+    let categoryElement = this._categoryElements.get(categoryKey);
+    if (!categoryElement) {
+      categoryElement = new StorageCategoryTreeElement(this._section._panel, ls`Workers`, categoryKey);
+      this._categoryElements.set(categoryKey, categoryElement);
+      this.appendChild(categoryElement, FrameTreeElement._presentationOrderCompare);
+    }
+    if (!this._treeElementForWindow.get(targetInfo.targetId)) {
+      const workerTreeElement = new WorkerTreeElement(this._section._panel, targetInfo);
+      categoryElement.appendChild(workerTreeElement);
+      this._treeElementForWindow.set(targetInfo.targetId, workerTreeElement);
     }
   }
 
@@ -2603,6 +2662,36 @@ class FrameWindowTreeElement extends BaseStorageTreeElement {
     super.onselect(selectedByUser);
     if (!this._view) {
       this._view = new OpenedWindowDetailsView(this._targetInfo, this._isWindowClosed);
+    } else {
+      this._view.update();
+    }
+    this.showView(this._view);
+    return false;
+  }
+}
+
+class WorkerTreeElement extends BaseStorageTreeElement {
+  /**
+   * @param {!UI.Panel.PanelWithSidebar} storagePanel
+   * @param {!Protocol.Target.TargetInfo} targetInfo
+   */
+  constructor(storagePanel, targetInfo) {
+    super(storagePanel, targetInfo.title || targetInfo.url || ls`worker`, false);
+    this._targetInfo = targetInfo;
+    this._view = null;
+    const icon = UI.Icon.Icon.create('mediumicon-service-worker', 'navigator-file-tree-item');
+    this.setLeadingIcons([icon]);
+  }
+
+  /**
+   * @override
+   * @param {boolean=} selectedByUser
+   * @return {boolean}
+   */
+  onselect(selectedByUser) {
+    super.onselect(selectedByUser);
+    if (!this._view) {
+      this._view = new WorkerDetailsView(this._targetInfo);
     } else {
       this._view.update();
     }

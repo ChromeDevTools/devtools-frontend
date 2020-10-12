@@ -8,7 +8,7 @@ import * as puppeteer from 'puppeteer';
 import {$, click, enableExperiment, getBrowserAndPages, goToResource, platform, reloadDevTools, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToCssOverviewTab} from '../helpers/css-overview-helpers.js';
-import {expandSelectedNodeRecursively, focusElementsTree, INACTIVE_GRID_ADORNER_SELECTOR, navigateToSidePane, openLayoutPane, toggleElementCheckboxInLayoutPane, toggleGroupComputedProperties, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
+import {editCSSProperty, expandSelectedNodeRecursively, focusElementsTree, INACTIVE_GRID_ADORNER_SELECTOR, navigateToSidePane, openLayoutPane, toggleElementCheckboxInLayoutPane, toggleGroupComputedProperties, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 import {clickToggleButton, selectDualScreen, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
 import {closeSecurityTab, navigateToSecurityTab} from '../helpers/security-helpers.js';
 import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
@@ -720,6 +720,25 @@ describe('User Metrics for CSS custom properties in the Styles pane', () => {
       {
         name: 'DevTools.ActionTaken',
         value: 47,  // CustomPropertyLinkClicked
+      },
+    ]);
+
+    await endCatchEvents(frontend);
+  });
+
+  it('dispatch events when a custom property value is edited', async () => {
+    const {frontend} = getBrowserAndPages();
+    await beginCatchEvents(frontend);
+
+    await editCSSProperty('body, body', '--color', '#f06');
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.ActionTaken',
+        value: 14,  // StyleRuleEdited
+      },
+      {
+        name: 'DevTools.ActionTaken',
+        value: 48,  // CustomPropertyEdited
       },
     ]);
 

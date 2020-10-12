@@ -5,10 +5,11 @@ import {assert} from 'chai';
 import {performance} from 'perf_hooks';
 import * as puppeteer from 'puppeteer';
 
-import {$$, click, getBrowserAndPages, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, $$, click, getBrowserAndPages, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
+const CSS_PROPERTY_VALUE_SELECTOR = '.value';
 const CSS_PROPERTY_SWATCH_SELECTOR = '.color-swatch-inner';
 const CSS_STYLE_RULE_SELECTOR = '[aria-label*="css selector"]';
 const COMPUTED_PROPERTY_SELECTOR = 'devtools-computed-style-property';
@@ -299,7 +300,11 @@ export const getStyleSectionSubtitles = async () => {
   return Promise.all(subtitles.map(node => node.evaluate(n => n.textContent)));
 };
 
-export const getCSSPropertyInRule = async (ruleSection: puppeteer.ElementHandle<Element>, name: string) => {
+export const getCSSPropertyInRule = async (ruleSection: puppeteer.ElementHandle<Element>|string, name: string) => {
+  if (typeof ruleSection === 'string') {
+    ruleSection = await getStyleRule(ruleSection);
+  }
+
   const propertyNames = await $$(CSS_PROPERTY_NAME_SELECTOR, ruleSection);
   for (const node of propertyNames) {
     const parent =
@@ -315,23 +320,41 @@ export const getCSSPropertyInRule = async (ruleSection: puppeteer.ElementHandle<
 
 export const focusCSSPropertyValue = async (selector: string, propertyName: string) => {
   await waitForStyleRule(selector);
-  const rule = await getStyleRule(selector);
-  const property = await getCSSPropertyInRule(rule, propertyName);
-  await click('.value', {root: property});
+  const property = await getCSSPropertyInRule(selector, propertyName);
+  await click(CSS_PROPERTY_VALUE_SELECTOR, {root: property});
 };
 
+/**
+ * Edit a CSS property value in a given rule
+ * @param selector The selector of the rule to be updated. Note that because of the way the Styles populates, it is
+ * important to provide a rule selector that is unique here, to avoid editing a property in the wrong rule.
+ * @param propertyName The name of the property to be found and edited. If several properties have the same names, the
+ * first one is edited.
+ * @param newValue The new value to be used.
+ */
 export async function editCSSProperty(selector: string, propertyName: string, newValue: string) {
   await focusCSSPropertyValue(selector, propertyName);
 
   const {frontend} = getBrowserAndPages();
-  await frontend.keyboard.type(newValue);
+  await frontend.keyboard.type(newValue, {delay: 100});
   await frontend.keyboard.press('Enter');
+
+  await waitForFunction(async () => {
+    // Wait until the value element is not a text-prompt anymore.
+    const property = await getCSSPropertyInRule(selector, propertyName);
+    const value = await $(CSS_PROPERTY_VALUE_SELECTOR, property);
+    if (!value) {
+      assert.fail(`Could not find property ${propertyName} in rule ${selector}`);
+    }
+    return await value.evaluate(node => {
+      return !node.classList.contains('text-prompt') && !node.hasAttribute('contenteditable');
+    });
+  });
 }
 
 export async function waitForPropertyToHighlight(ruleSelector: string, propertyName: string) {
   await waitForFunction(async () => {
-    const rule = await getStyleRule(ruleSelector);
-    const property = await getCSSPropertyInRule(rule, propertyName);
+    const property = await getCSSPropertyInRule(ruleSelector, propertyName);
     if (!property) {
       assert.fail(`Could not find property ${propertyName} in rule ${ruleSelector}`);
     }

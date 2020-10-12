@@ -174,6 +174,9 @@ export class CSSProperty {
 
     if (majorChange) {
       HostModule.userMetrics.actionTaken(HostModule.UserMetrics.Action.StyleRuleEdited);
+      if (this.name.startsWith('--')) {
+        HostModule.userMetrics.actionTaken(HostModule.UserMetrics.Action.CustomPropertyEdited);
+      }
     }
 
     if (overwrite && propertyText === this.propertyText) {

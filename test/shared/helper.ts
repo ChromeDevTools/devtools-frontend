@@ -438,4 +438,16 @@ export const selectOption = async (select: puppeteer.JSHandle<HTMLSelectElement>
   }, value);
 };
 
+export const scrollElementIntoView = async (selector: string, root?: puppeteer.JSHandle) => {
+  const element = await $(selector, root);
+
+  if (!element) {
+    throw new Error(`Unable to find element with selector "${selector}"`);
+  }
+
+  await element.evaluate(el => {
+    el.scrollIntoView();
+  });
+};
+
 export {getBrowserAndPages, getHostedModeServerPort, reloadDevTools};

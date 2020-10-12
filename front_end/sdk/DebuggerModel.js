@@ -362,7 +362,9 @@ export class DebuggerModel extends SDKModel {
   }
 
   scheduleStepIntoAsync() {
-    this._agent.invoke_stepInto({breakOnAsyncCall: true});
+    this._computeAutoStepSkipList().then(skipList => {
+      this._agent.invoke_stepInto({breakOnAsyncCall: true, skipList: skipList.map(x => x.payload())});
+    });
   }
 
   resume() {

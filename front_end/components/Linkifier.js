@@ -200,7 +200,7 @@ export class Linkifier {
    * @param {?SDK.SDKModel.Target} target
    * @param {?string} scriptId
    * @param {string} sourceURL
-   * @param {number} lineNumber
+   * @param {number|undefined} lineNumber
    * @param {!LinkifyOptions=} options
    * @return {?HTMLElement}
    */
@@ -230,10 +230,10 @@ export class Linkifier {
 
     let rawLocation;
     if (scriptId) {
-      rawLocation = debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber);
+      rawLocation = debuggerModel.createRawLocationByScriptId(scriptId, lineNumber || 0, columnNumber);
     }
     if (!rawLocation) {
-      rawLocation = debuggerModel.createRawLocationByURL(sourceURL, lineNumber, columnNumber);
+      rawLocation = debuggerModel.createRawLocationByURL(sourceURL, lineNumber || 0, columnNumber);
     }
 
     if (!rawLocation) {
@@ -281,7 +281,7 @@ export class Linkifier {
    * @param {?SDK.SDKModel.Target} target
    * @param {?string} scriptId
    * @param {string} sourceURL
-   * @param {number} lineNumber
+   * @param {number|undefined} lineNumber
    * @param {!LinkifyOptions=} options
    * @return {!HTMLElement}
    */

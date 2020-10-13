@@ -497,7 +497,11 @@ export declare const enum LinkingType {
 export declare const enum NameType {
     Module = 0,
     Function = 1,
-    Local = 2
+    Local = 2,
+    Type = 4,
+    Table = 5,
+    Memory = 6,
+    Global = 7
 }
 export declare const enum BinaryReaderState {
     ERROR = -1,
@@ -617,6 +621,18 @@ export interface ILocalName {
 export interface ILocalNameEntry extends INameEntry {
     funcs: ILocalName[];
 }
+export interface ITypeNameEntry extends INameEntry {
+    names: INaming[];
+}
+export interface ITableNameEntry extends INameEntry {
+    names: INaming[];
+}
+export interface IMemoryNameEntry extends INameEntry {
+    names: INaming[];
+}
+export interface IGlobalNameEntry extends INameEntry {
+    names: INaming[];
+}
 export interface ILinkingEntry {
     type: LinkingType;
     index?: number;
@@ -723,6 +739,7 @@ export declare class BinaryReader {
     private readVarInt64;
     private readStringBytes;
     private readBytes;
+    private skipBytes;
     private hasStringBytes;
     private hasSectionPayload;
     private readFuncType;

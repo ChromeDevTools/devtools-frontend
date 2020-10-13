@@ -25,11 +25,13 @@ import {
   IFunctionInformation,
   IFunctionNameEntry,
   IFunctionType,
+  IGlobalNameEntry,
   IGlobalType,
   IGlobalVariable,
   IImportEntry,
   ILocalNameEntry,
   IMemoryAddress,
+  IMemoryNameEntry,
   IMemoryType,
   INameEntry,
   INaming,
@@ -39,7 +41,9 @@ import {
   ISectionInformation,
   IStartEntry,
   isTypeIndex,
+  ITableNameEntry,
   ITableType,
+  ITypeNameEntry,
   NameType,
   NULL_FUNCTION_INDEX,
   OperatorCode,
@@ -343,68 +347,6 @@ class DevToolsExportMetadata implements IExportMetadata {
 
   public getTableExportNames(index: number) {
     return this._tableExportNames[index] ?? EMPTY_STRING_ARRAY;
-  }
-}
-
-export class DevToolsNameResolver extends DefaultNameResolver {
-  private readonly _functionNames: string[];
-  private readonly _localNames: string[][];
-  private readonly _memoryNames: string[];
-  private readonly _tableNames: string[];
-  private readonly _globalNames: string[];
-
-  constructor(
-    functionNames: string[],
-    localNames: string[][],
-    memoryNames: string[],
-    tableNames: string[],
-    globalNames: string[]
-  ) {
-    super();
-    this._functionNames = functionNames;
-    this._localNames = localNames;
-    this._memoryNames = memoryNames;
-    this._tableNames = tableNames;
-    this._globalNames = globalNames;
-  }
-
-  public getTableName(index: number, isRef: boolean): string {
-    const name = this._tableNames[index];
-    if (!name) return super.getTableName(index, isRef);
-    return isRef ? `$${name}` : `$${name} (;${index};)`;
-  }
-
-  public getMemoryName(index: number, isRef: boolean): string {
-    const name = this._memoryNames[index];
-    if (!name) return super.getMemoryName(index, isRef);
-    return isRef ? `$${name}` : `$${name} (;${index};)`;
-  }
-
-  public getGlobalName(index: number, isRef: boolean): string {
-    const name = this._globalNames[index];
-    if (!name) return super.getGlobalName(index, isRef);
-    return isRef ? `$${name}` : `$${name} (;${index};)`;
-  }
-
-  public getFunctionName(
-    index: number,
-    isImport: boolean,
-    isRef: boolean
-  ): string {
-    const name = this._functionNames[index];
-    if (!name) return super.getFunctionName(index, isImport, isRef);
-    return isRef ? `$${name}` : `$${name} (;${index};)`;
-  }
-
-  public getVariableName(
-    funcIndex: number,
-    index: number,
-    isRef: boolean
-  ): string {
-    const name =
-      this._localNames[funcIndex] && this._localNames[funcIndex][index];
-    if (!name) return super.getVariableName(funcIndex, index, isRef);
-    return isRef ? `$${name}` : `$${name} (;${index};)`;
   }
 }
 
@@ -1428,22 +1370,69 @@ export class WasmDisassembler {
 const UNKNOWN_FUNCTION_PREFIX = "unknown";
 
 class NameSectionNameResolver extends DefaultNameResolver {
-  private _names: string[];
-  private _localNames: string[][];
+  protected readonly _functionNames: string[];
+  protected readonly _localNames: string[][];
+  protected readonly _typeNames: string[];
+  protected readonly _tableNames: string[];
+  protected readonly _memoryNames: string[];
+  protected readonly _globalNames: string[];
 
-  constructor(names: string[], localNames: string[][]) {
+  constructor(
+    functionNames: string[],
+    localNames: string[][],
+    typeNames: string[],
+    tableNames: string[],
+    memoryNames: string[],
+    globalNames: string[]
+  ) {
     super();
-    this._names = names;
+    this._functionNames = functionNames;
     this._localNames = localNames;
+    this._typeNames = typeNames;
+    this._tableNames = tableNames;
+    this._memoryNames = memoryNames;
+    this._globalNames = globalNames;
   }
 
-  getFunctionName(index: number, isImport: boolean, isRef: boolean): string {
-    const name = this._names[index];
+  public getTypeName(index: number, isRef: boolean): string {
+    const name = this._typeNames[index];
+    if (!name) return super.getTypeName(index, isRef);
+    return isRef ? `$${name}` : `$${name} (;${index};)`;
+  }
+
+  public getTableName(index: number, isRef: boolean): string {
+    const name = this._tableNames[index];
+    if (!name) return super.getTableName(index, isRef);
+    return isRef ? `$${name}` : `$${name} (;${index};)`;
+  }
+
+  public getMemoryName(index: number, isRef: boolean): string {
+    const name = this._memoryNames[index];
+    if (!name) return super.getMemoryName(index, isRef);
+    return isRef ? `$${name}` : `$${name} (;${index};)`;
+  }
+
+  public getGlobalName(index: number, isRef: boolean): string {
+    const name = this._globalNames[index];
+    if (!name) return super.getGlobalName(index, isRef);
+    return isRef ? `$${name}` : `$${name} (;${index};)`;
+  }
+
+  public getFunctionName(
+    index: number,
+    isImport: boolean,
+    isRef: boolean
+  ): string {
+    const name = this._functionNames[index];
     if (!name) return `$${UNKNOWN_FUNCTION_PREFIX}${index}`;
     return isRef ? `$${name}` : `$${name} (;${index};)`;
   }
 
-  getVariableName(funcIndex: number, index: number, isRef: boolean): string {
+  public getVariableName(
+    funcIndex: number,
+    index: number,
+    isRef: boolean
+  ): string {
     const name =
       this._localNames[funcIndex] && this._localNames[funcIndex][index];
     if (!name) return super.getVariableName(funcIndex, index, isRef);
@@ -1452,21 +1441,16 @@ class NameSectionNameResolver extends DefaultNameResolver {
 }
 
 export class NameSectionReader {
-  private _done: boolean;
-  private _functionsCount: number;
-  private _functionImportsCount: number;
-  private _functionNames: string[];
-  private _functionLocalNames: string[][];
-  private _hasNames: boolean;
-
-  constructor() {
-    this._done = false;
-    this._functionsCount = 0;
-    this._functionImportsCount = 0;
-    this._functionNames = null;
-    this._functionLocalNames = null;
-    this._hasNames = false;
-  }
+  private _done = false;
+  private _functionsCount = 0;
+  private _functionImportsCount = 0;
+  private _functionNames: string[] = null;
+  private _functionLocalNames: string[][] = null;
+  private _typeNames: string[] = null;
+  private _tableNames: string[] = null;
+  private _memoryNames: string[] = null;
+  private _globalNames: string[] = null;
+  private _hasNames = false;
 
   public read(reader: BinaryReader): boolean {
     if (this._done)
@@ -1489,6 +1473,10 @@ export class NameSectionReader {
           this._functionImportsCount = 0;
           this._functionNames = [];
           this._functionLocalNames = [];
+          this._typeNames = [];
+          this._tableNames = [];
+          this._memoryNames = [];
+          this._globalNames = [];
           this._hasNames = false;
           break;
         case BinaryReaderState.END_SECTION:
@@ -1518,22 +1506,44 @@ export class NameSectionReader {
           this._functionsCount++;
           break;
         case BinaryReaderState.NAME_SECTION_ENTRY:
-          var nameInfo = <INameEntry>reader.result;
+          const nameInfo = <INameEntry>reader.result;
           if (nameInfo.type === NameType.Function) {
-            var functionNameInfo = <IFunctionNameEntry>nameInfo;
-            functionNameInfo.names.forEach((naming: INaming) => {
-              this._functionNames[naming.index] = bytesToString(naming.name);
+            const { names } = <IFunctionNameEntry>nameInfo;
+            names.forEach(({ index, name }) => {
+              this._functionNames[index] = bytesToString(name);
             });
             this._hasNames = true;
           } else if (nameInfo.type === NameType.Local) {
-            var localNameInfo = <ILocalNameEntry>nameInfo;
-            localNameInfo.funcs.forEach((localName) => {
-              this._functionLocalNames[localName.index] = [];
-              localName.locals.forEach((naming: INaming) => {
-                this._functionLocalNames[localName.index][
-                  naming.index
-                ] = bytesToString(naming.name);
+            const { funcs } = <ILocalNameEntry>nameInfo;
+            funcs.forEach(({ index, locals }) => {
+              const localNames = (this._functionLocalNames[index] = []);
+              locals.forEach(({ index, name }) => {
+                localNames[index] = bytesToString(name);
               });
+            });
+            this._hasNames = true;
+          } else if (nameInfo.type === NameType.Type) {
+            const { names } = <ITypeNameEntry>nameInfo;
+            names.forEach(({ index, name }) => {
+              this._typeNames[index] = bytesToString(name);
+            });
+            this._hasNames = true;
+          } else if (nameInfo.type === NameType.Table) {
+            const { names } = <ITableNameEntry>nameInfo;
+            names.forEach(({ index, name }) => {
+              this._tableNames[index] = bytesToString(name);
+            });
+            this._hasNames = true;
+          } else if (nameInfo.type === NameType.Memory) {
+            const { names } = <IMemoryNameEntry>nameInfo;
+            names.forEach(({ index, name }) => {
+              this._memoryNames[index] = bytesToString(name);
+            });
+            this._hasNames = true;
+          } else if (nameInfo.type === NameType.Global) {
+            const { names } = <IGlobalNameEntry>nameInfo;
+            names.forEach(({ index, name }) => {
+              this._globalNames[index] = bytesToString(name);
             });
             this._hasNames = true;
           }
@@ -1575,7 +1585,44 @@ export class NameSectionReader {
       usedNameAt[name] = i;
     }
 
-    return new NameSectionNameResolver(functionNames, this._functionLocalNames);
+    return new NameSectionNameResolver(
+      functionNames,
+      this._functionLocalNames,
+      this._typeNames,
+      this._tableNames,
+      this._memoryNames,
+      this._globalNames
+    );
+  }
+}
+
+export class DevToolsNameResolver extends NameSectionNameResolver {
+  constructor(
+    functionNames: string[],
+    localNames: string[][],
+    typeNames: string[],
+    tableNames: string[],
+    memoryNames: string[],
+    globalNames: string[]
+  ) {
+    super(
+      functionNames,
+      localNames,
+      typeNames,
+      tableNames,
+      memoryNames,
+      globalNames
+    );
+  }
+
+  public getFunctionName(
+    index: number,
+    isImport: boolean,
+    isRef: boolean
+  ): string {
+    const name = this._functionNames[index];
+    if (!name) return isImport ? `$import${index}` : `$func${index}`;
+    return isRef ? `$${name}` : `$${name} (;${index};)`;
   }
 }
 
@@ -1589,6 +1636,7 @@ export class DevToolsNameGenerator {
   private _functionNames: string[] = null;
   private _functionLocalNames: string[][] = null;
   private _memoryNames: string[] = null;
+  private _typeNames: string[] = null;
   private _tableNames: string[] = null;
   private _globalNames: string[] = null;
 
@@ -1646,6 +1694,7 @@ export class DevToolsNameGenerator {
           this._functionNames = [];
           this._functionLocalNames = [];
           this._memoryNames = [];
+          this._typeNames = [];
           this._tableNames = [];
           this._globalNames = [];
           this._functionExportNames = [];
@@ -1716,26 +1765,54 @@ export class DevToolsNameGenerator {
           }
           break;
         case BinaryReaderState.NAME_SECTION_ENTRY:
-          var nameInfo = <INameEntry>reader.result;
+          const nameInfo = <INameEntry>reader.result;
           if (nameInfo.type === NameType.Function) {
-            var functionNameInfo = <IFunctionNameEntry>nameInfo;
-            functionNameInfo.names.forEach((naming: INaming) => {
+            const { names } = <IFunctionNameEntry>nameInfo;
+            names.forEach(({ index, name }) => {
               this._setName(
                 this._functionNames,
-                naming.index,
-                bytesToString(naming.name),
+                index,
+                bytesToString(name),
                 true
               );
             });
           } else if (nameInfo.type === NameType.Local) {
-            var localNameInfo = <ILocalNameEntry>nameInfo;
-            localNameInfo.funcs.forEach((localName) => {
-              this._functionLocalNames[localName.index] = [];
-              localName.locals.forEach((naming: INaming) => {
-                this._functionLocalNames[localName.index][
-                  naming.index
-                ] = bytesToString(naming.name);
+            const { funcs } = <ILocalNameEntry>nameInfo;
+            funcs.forEach(({ index, locals }) => {
+              const localNames = (this._functionLocalNames[index] = []);
+              locals.forEach(({ index, name }) => {
+                localNames[index] = bytesToString(name);
               });
+            });
+          } else if (nameInfo.type === NameType.Type) {
+            const { names } = <ITypeNameEntry>nameInfo;
+            names.forEach(({ index, name }) => {
+              this._setName(this._typeNames, index, bytesToString(name), true);
+            });
+          } else if (nameInfo.type === NameType.Table) {
+            const { names } = <ITableNameEntry>nameInfo;
+            names.forEach(({ index, name }) => {
+              this._setName(this._tableNames, index, bytesToString(name), true);
+            });
+          } else if (nameInfo.type === NameType.Memory) {
+            const { names } = <IMemoryNameEntry>nameInfo;
+            names.forEach(({ index, name }) => {
+              this._setName(
+                this._memoryNames,
+                index,
+                bytesToString(name),
+                true
+              );
+            });
+          } else if (nameInfo.type === NameType.Global) {
+            const { names } = <IGlobalNameEntry>nameInfo;
+            names.forEach(({ index, name }) => {
+              this._setName(
+                this._globalNames,
+                index,
+                bytesToString(name),
+                true
+              );
             });
           }
           break;
@@ -1818,8 +1895,9 @@ export class DevToolsNameGenerator {
     return new DevToolsNameResolver(
       this._functionNames,
       this._functionLocalNames,
-      this._memoryNames,
+      this._typeNames,
       this._tableNames,
+      this._memoryNames,
       this._globalNames
     );
   }

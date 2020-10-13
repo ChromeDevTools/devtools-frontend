@@ -1144,6 +1144,10 @@ var NameType;
     NameType[NameType["Module"] = 0] = "Module";
     NameType[NameType["Function"] = 1] = "Function";
     NameType[NameType["Local"] = 2] = "Local";
+    NameType[NameType["Type"] = 4] = "Type";
+    NameType[NameType["Table"] = 5] = "Table";
+    NameType[NameType["Memory"] = 6] = "Memory";
+    NameType[NameType["Global"] = 7] = "Global";
 })(NameType = exports.NameType || (exports.NameType = {}));
 var BinaryReaderState;
 (function (BinaryReaderState) {
@@ -1450,6 +1454,9 @@ var BinaryReader = /** @class */ (function () {
         var result = this._data.subarray(this._pos, this._pos + length);
         this._pos += length;
         return new Uint8Array(result); // making a clone of the data
+    };
+    BinaryReader.prototype.skipBytes = function (length) {
+        this._pos += length;
     };
     BinaryReader.prototype.hasStringBytes = function () {
         if (!this.hasVarIntBytes())
@@ -1784,6 +1791,10 @@ var BinaryReader = /** @class */ (function () {
                 };
                 break;
             case 1 /* Function */:
+            case 4 /* Type */:
+            case 5 /* Table */:
+            case 6 /* Memory */:
+            case 7 /* Global */:
                 result = {
                     type: type,
                     names: this.readNameMap(),
@@ -1805,9 +1816,10 @@ var BinaryReader = /** @class */ (function () {
                 };
                 break;
             default:
-                this.error = new Error("Bad name entry type: " + type);
-                this.state = -1 /* ERROR */;
-                return true;
+                // Skip this unknown name subsection (as per specification,
+                // custom section errors shouldn't cause Wasm parsing to fail).
+                this.skipBytes(payloadLength);
+                return this.read();
         }
         this.state = 19 /* NAME_SECTION_ENTRY */;
         this.result = result;
@@ -1923,7 +1935,10 @@ var BinaryReader = /** @class */ (function () {
         return true;
     };
     BinaryReader.prototype.readCodeOperator_0xfc = function () {
-        var code = this._data[this._pos++] | 0xfc00;
+        if (!this.hasVarIntBytes()) {
+            return false;
+        }
+        var code = this.readVarUint32() | 0xfc00;
         var reserved, segmentIndex, destinationIndex, tableIndex;
         switch (code) {
             case 64512 /* i32_trunc_sat_f32_s */:
@@ -1992,6 +2007,9 @@ var BinaryReader = /** @class */ (function () {
         var MAX_CODE_OPERATOR_0XFD_SIZE = 17;
         var pos = this._pos;
         if (!this._eof && pos + MAX_CODE_OPERATOR_0XFD_SIZE > this._length) {
+            return false;
+        }
+        if (!this.hasVarIntBytes()) {
             return false;
         }
         var code = this.readVarUint32() | 0xfd00;
@@ -2179,7 +2197,10 @@ var BinaryReader = /** @class */ (function () {
         if (!this._eof && pos + MAX_CODE_OPERATOR_0XFE_SIZE > this._length) {
             return false;
         }
-        var code = this._data[this._pos++] | 0xfe00;
+        if (!this.hasVarIntBytes()) {
+            return false;
+        }
+        var code = this.readVarUint32() | 0xfe00;
         var memoryAddress;
         switch (code) {
             case 65024 /* atomic_notify */:

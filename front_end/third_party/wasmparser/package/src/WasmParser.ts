@@ -1148,6 +1148,10 @@ export const enum NameType {
   Module = 0,
   Function = 1,
   Local = 2,
+  Type = 4,
+  Table = 5,
+  Memory = 6,
+  Global = 7,
 }
 export const enum BinaryReaderState {
   ERROR = -1,
@@ -1287,6 +1291,18 @@ export interface ILocalName {
 }
 export interface ILocalNameEntry extends INameEntry {
   funcs: ILocalName[];
+}
+export interface ITypeNameEntry extends INameEntry {
+  names: INaming[];
+}
+export interface ITableNameEntry extends INameEntry {
+  names: INaming[];
+}
+export interface IMemoryNameEntry extends INameEntry {
+  names: INaming[];
+}
+export interface IGlobalNameEntry extends INameEntry {
+  names: INaming[];
 }
 export interface ILinkingEntry {
   type: LinkingType;
@@ -1604,6 +1620,9 @@ export class BinaryReader {
     var result = this._data.subarray(this._pos, this._pos + length);
     this._pos += length;
     return new Uint8Array(result); // making a clone of the data
+  }
+  private skipBytes(length: number) {
+    this._pos += length;
   }
   private hasStringBytes(): boolean {
     if (!this.hasVarIntBytes()) return false;
@@ -1927,17 +1946,28 @@ export class BinaryReader {
       this._pos = pos;
       return false;
     }
-    var result: IModuleNameEntry | IFunctionNameEntry | ILocalNameEntry;
+    var result:
+      | IModuleNameEntry
+      | IFunctionNameEntry
+      | ILocalNameEntry
+      | ITypeNameEntry
+      | ITableNameEntry
+      | IMemoryNameEntry
+      | IGlobalNameEntry;
     switch (type) {
       case NameType.Module:
         result = {
-          type: type,
+          type,
           moduleName: this.readStringBytes(),
         };
         break;
       case NameType.Function:
+      case NameType.Type:
+      case NameType.Table:
+      case NameType.Memory:
+      case NameType.Global:
         result = {
-          type: type,
+          type,
           names: this.readNameMap(),
         };
         break;
@@ -1952,14 +1982,15 @@ export class BinaryReader {
           });
         }
         result = {
-          type: type,
+          type,
           funcs: funcs,
         };
         break;
       default:
-        this.error = new Error(`Bad name entry type: ${type}`);
-        this.state = BinaryReaderState.ERROR;
-        return true;
+        // Skip this unknown name subsection (as per specification,
+        // custom section errors shouldn't cause Wasm parsing to fail).
+        this.skipBytes(payloadLength);
+        return this.read();
     }
     this.state = BinaryReaderState.NAME_SECTION_ENTRY;
     this.result = result;
@@ -2073,7 +2104,10 @@ export class BinaryReader {
   }
 
   private readCodeOperator_0xfc(): boolean {
-    var code = this._data[this._pos++] | 0xfc00;
+    if (!this.hasVarIntBytes()) {
+      return false;
+    }
+    var code = this.readVarUint32() | 0xfc00;
     var reserved, segmentIndex, destinationIndex, tableIndex;
     switch (code) {
       case OperatorCode.i32_trunc_sat_f32_s:
@@ -2143,6 +2177,9 @@ export class BinaryReader {
     const MAX_CODE_OPERATOR_0XFD_SIZE = 17;
     var pos = this._pos;
     if (!this._eof && pos + MAX_CODE_OPERATOR_0XFD_SIZE > this._length) {
+      return false;
+    }
+    if (!this.hasVarIntBytes()) {
       return false;
     }
     var code = this.readVarUint32() | 0xfd00;
@@ -2331,7 +2368,10 @@ export class BinaryReader {
     if (!this._eof && pos + MAX_CODE_OPERATOR_0XFE_SIZE > this._length) {
       return false;
     }
-    var code = this._data[this._pos++] | 0xfe00;
+    if (!this.hasVarIntBytes()) {
+      return false;
+    }
+    var code = this.readVarUint32() | 0xfe00;
     var memoryAddress;
     switch (code) {
       case OperatorCode.atomic_notify:

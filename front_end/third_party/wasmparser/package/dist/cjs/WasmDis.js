@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DevToolsNameGenerator = exports.NameSectionReader = exports.WasmDisassembler = exports.LabelMode = exports.NumericNameResolver = exports.DevToolsNameResolver = exports.DefaultNameResolver = void 0;
+exports.DevToolsNameGenerator = exports.DevToolsNameResolver = exports.NameSectionReader = exports.WasmDisassembler = exports.LabelMode = exports.NumericNameResolver = exports.DefaultNameResolver = void 0;
 /* Copyright 2016 Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -292,50 +292,6 @@ var DevToolsExportMetadata = /** @class */ (function () {
     };
     return DevToolsExportMetadata;
 }());
-var DevToolsNameResolver = /** @class */ (function (_super) {
-    __extends(DevToolsNameResolver, _super);
-    function DevToolsNameResolver(functionNames, localNames, memoryNames, tableNames, globalNames) {
-        var _this = _super.call(this) || this;
-        _this._functionNames = functionNames;
-        _this._localNames = localNames;
-        _this._memoryNames = memoryNames;
-        _this._tableNames = tableNames;
-        _this._globalNames = globalNames;
-        return _this;
-    }
-    DevToolsNameResolver.prototype.getTableName = function (index, isRef) {
-        var name = this._tableNames[index];
-        if (!name)
-            return _super.prototype.getTableName.call(this, index, isRef);
-        return isRef ? "$" + name : "$" + name + " (;" + index + ";)";
-    };
-    DevToolsNameResolver.prototype.getMemoryName = function (index, isRef) {
-        var name = this._memoryNames[index];
-        if (!name)
-            return _super.prototype.getMemoryName.call(this, index, isRef);
-        return isRef ? "$" + name : "$" + name + " (;" + index + ";)";
-    };
-    DevToolsNameResolver.prototype.getGlobalName = function (index, isRef) {
-        var name = this._globalNames[index];
-        if (!name)
-            return _super.prototype.getGlobalName.call(this, index, isRef);
-        return isRef ? "$" + name : "$" + name + " (;" + index + ";)";
-    };
-    DevToolsNameResolver.prototype.getFunctionName = function (index, isImport, isRef) {
-        var name = this._functionNames[index];
-        if (!name)
-            return _super.prototype.getFunctionName.call(this, index, isImport, isRef);
-        return isRef ? "$" + name : "$" + name + " (;" + index + ";)";
-    };
-    DevToolsNameResolver.prototype.getVariableName = function (funcIndex, index, isRef) {
-        var name = this._localNames[funcIndex] && this._localNames[funcIndex][index];
-        if (!name)
-            return _super.prototype.getVariableName.call(this, funcIndex, index, isRef);
-        return isRef ? "$" + name : "$" + name + " (;" + index + ";)";
-    };
-    return DevToolsNameResolver;
-}(DefaultNameResolver));
-exports.DevToolsNameResolver = DevToolsNameResolver;
 var NumericNameResolver = /** @class */ (function () {
     function NumericNameResolver() {
     }
@@ -1245,14 +1201,42 @@ exports.WasmDisassembler = WasmDisassembler;
 var UNKNOWN_FUNCTION_PREFIX = "unknown";
 var NameSectionNameResolver = /** @class */ (function (_super) {
     __extends(NameSectionNameResolver, _super);
-    function NameSectionNameResolver(names, localNames) {
+    function NameSectionNameResolver(functionNames, localNames, typeNames, tableNames, memoryNames, globalNames) {
         var _this = _super.call(this) || this;
-        _this._names = names;
+        _this._functionNames = functionNames;
         _this._localNames = localNames;
+        _this._typeNames = typeNames;
+        _this._tableNames = tableNames;
+        _this._memoryNames = memoryNames;
+        _this._globalNames = globalNames;
         return _this;
     }
+    NameSectionNameResolver.prototype.getTypeName = function (index, isRef) {
+        var name = this._typeNames[index];
+        if (!name)
+            return _super.prototype.getTypeName.call(this, index, isRef);
+        return isRef ? "$" + name : "$" + name + " (;" + index + ";)";
+    };
+    NameSectionNameResolver.prototype.getTableName = function (index, isRef) {
+        var name = this._tableNames[index];
+        if (!name)
+            return _super.prototype.getTableName.call(this, index, isRef);
+        return isRef ? "$" + name : "$" + name + " (;" + index + ";)";
+    };
+    NameSectionNameResolver.prototype.getMemoryName = function (index, isRef) {
+        var name = this._memoryNames[index];
+        if (!name)
+            return _super.prototype.getMemoryName.call(this, index, isRef);
+        return isRef ? "$" + name : "$" + name + " (;" + index + ";)";
+    };
+    NameSectionNameResolver.prototype.getGlobalName = function (index, isRef) {
+        var name = this._globalNames[index];
+        if (!name)
+            return _super.prototype.getGlobalName.call(this, index, isRef);
+        return isRef ? "$" + name : "$" + name + " (;" + index + ";)";
+    };
     NameSectionNameResolver.prototype.getFunctionName = function (index, isImport, isRef) {
-        var name = this._names[index];
+        var name = this._functionNames[index];
         if (!name)
             return "$" + UNKNOWN_FUNCTION_PREFIX + index;
         return isRef ? "$" + name : "$" + name + " (;" + index + ";)";
@@ -1272,6 +1256,10 @@ var NameSectionReader = /** @class */ (function () {
         this._functionImportsCount = 0;
         this._functionNames = null;
         this._functionLocalNames = null;
+        this._typeNames = null;
+        this._tableNames = null;
+        this._memoryNames = null;
+        this._globalNames = null;
         this._hasNames = false;
     }
     NameSectionReader.prototype.read = function (reader) {
@@ -1295,6 +1283,10 @@ var NameSectionReader = /** @class */ (function () {
                     this._functionImportsCount = 0;
                     this._functionNames = [];
                     this._functionLocalNames = [];
+                    this._typeNames = [];
+                    this._tableNames = [];
+                    this._memoryNames = [];
+                    this._globalNames = [];
                     this._hasNames = false;
                     break;
                 case 4 /* END_SECTION */:
@@ -1322,19 +1314,54 @@ var NameSectionReader = /** @class */ (function () {
                 case 19 /* NAME_SECTION_ENTRY */:
                     var nameInfo = reader.result;
                     if (nameInfo.type === 1 /* Function */) {
-                        var functionNameInfo = nameInfo;
-                        functionNameInfo.names.forEach(function (naming) {
-                            _this._functionNames[naming.index] = WasmParser_js_1.bytesToString(naming.name);
+                        var names = nameInfo.names;
+                        names.forEach(function (_a) {
+                            var index = _a.index, name = _a.name;
+                            _this._functionNames[index] = WasmParser_js_1.bytesToString(name);
                         });
                         this._hasNames = true;
                     }
                     else if (nameInfo.type === 2 /* Local */) {
-                        var localNameInfo = nameInfo;
-                        localNameInfo.funcs.forEach(function (localName) {
-                            _this._functionLocalNames[localName.index] = [];
-                            localName.locals.forEach(function (naming) {
-                                _this._functionLocalNames[localName.index][naming.index] = WasmParser_js_1.bytesToString(naming.name);
+                        var funcs = nameInfo.funcs;
+                        funcs.forEach(function (_a) {
+                            var index = _a.index, locals = _a.locals;
+                            var localNames = (_this._functionLocalNames[index] = []);
+                            locals.forEach(function (_a) {
+                                var index = _a.index, name = _a.name;
+                                localNames[index] = WasmParser_js_1.bytesToString(name);
                             });
+                        });
+                        this._hasNames = true;
+                    }
+                    else if (nameInfo.type === 4 /* Type */) {
+                        var names = nameInfo.names;
+                        names.forEach(function (_a) {
+                            var index = _a.index, name = _a.name;
+                            _this._typeNames[index] = WasmParser_js_1.bytesToString(name);
+                        });
+                        this._hasNames = true;
+                    }
+                    else if (nameInfo.type === 5 /* Table */) {
+                        var names = nameInfo.names;
+                        names.forEach(function (_a) {
+                            var index = _a.index, name = _a.name;
+                            _this._tableNames[index] = WasmParser_js_1.bytesToString(name);
+                        });
+                        this._hasNames = true;
+                    }
+                    else if (nameInfo.type === 6 /* Memory */) {
+                        var names = nameInfo.names;
+                        names.forEach(function (_a) {
+                            var index = _a.index, name = _a.name;
+                            _this._memoryNames[index] = WasmParser_js_1.bytesToString(name);
+                        });
+                        this._hasNames = true;
+                    }
+                    else if (nameInfo.type === 7 /* Global */) {
+                        var names = nameInfo.names;
+                        names.forEach(function (_a) {
+                            var index = _a.index, name = _a.name;
+                            _this._globalNames[index] = WasmParser_js_1.bytesToString(name);
                         });
                         this._hasNames = true;
                     }
@@ -1372,11 +1399,25 @@ var NameSectionReader = /** @class */ (function () {
             }
             usedNameAt[name_1] = i;
         }
-        return new NameSectionNameResolver(functionNames, this._functionLocalNames);
+        return new NameSectionNameResolver(functionNames, this._functionLocalNames, this._typeNames, this._tableNames, this._memoryNames, this._globalNames);
     };
     return NameSectionReader;
 }());
 exports.NameSectionReader = NameSectionReader;
+var DevToolsNameResolver = /** @class */ (function (_super) {
+    __extends(DevToolsNameResolver, _super);
+    function DevToolsNameResolver(functionNames, localNames, typeNames, tableNames, memoryNames, globalNames) {
+        return _super.call(this, functionNames, localNames, typeNames, tableNames, memoryNames, globalNames) || this;
+    }
+    DevToolsNameResolver.prototype.getFunctionName = function (index, isImport, isRef) {
+        var name = this._functionNames[index];
+        if (!name)
+            return isImport ? "$import" + index : "$func" + index;
+        return isRef ? "$" + name : "$" + name + " (;" + index + ";)";
+    };
+    return DevToolsNameResolver;
+}(NameSectionNameResolver));
+exports.DevToolsNameResolver = DevToolsNameResolver;
 var DevToolsNameGenerator = /** @class */ (function () {
     function DevToolsNameGenerator() {
         this._done = false;
@@ -1387,6 +1428,7 @@ var DevToolsNameGenerator = /** @class */ (function () {
         this._functionNames = null;
         this._functionLocalNames = null;
         this._memoryNames = null;
+        this._typeNames = null;
         this._tableNames = null;
         this._globalNames = null;
         this._functionExportNames = null;
@@ -1439,6 +1481,7 @@ var DevToolsNameGenerator = /** @class */ (function () {
                     this._functionNames = [];
                     this._functionLocalNames = [];
                     this._memoryNames = [];
+                    this._typeNames = [];
                     this._tableNames = [];
                     this._globalNames = [];
                     this._functionExportNames = [];
@@ -1486,18 +1529,49 @@ var DevToolsNameGenerator = /** @class */ (function () {
                 case 19 /* NAME_SECTION_ENTRY */:
                     var nameInfo = reader.result;
                     if (nameInfo.type === 1 /* Function */) {
-                        var functionNameInfo = nameInfo;
-                        functionNameInfo.names.forEach(function (naming) {
-                            _this._setName(_this._functionNames, naming.index, WasmParser_js_1.bytesToString(naming.name), true);
+                        var names = nameInfo.names;
+                        names.forEach(function (_a) {
+                            var index = _a.index, name = _a.name;
+                            _this._setName(_this._functionNames, index, WasmParser_js_1.bytesToString(name), true);
                         });
                     }
                     else if (nameInfo.type === 2 /* Local */) {
-                        var localNameInfo = nameInfo;
-                        localNameInfo.funcs.forEach(function (localName) {
-                            _this._functionLocalNames[localName.index] = [];
-                            localName.locals.forEach(function (naming) {
-                                _this._functionLocalNames[localName.index][naming.index] = WasmParser_js_1.bytesToString(naming.name);
+                        var funcs = nameInfo.funcs;
+                        funcs.forEach(function (_a) {
+                            var index = _a.index, locals = _a.locals;
+                            var localNames = (_this._functionLocalNames[index] = []);
+                            locals.forEach(function (_a) {
+                                var index = _a.index, name = _a.name;
+                                localNames[index] = WasmParser_js_1.bytesToString(name);
                             });
+                        });
+                    }
+                    else if (nameInfo.type === 4 /* Type */) {
+                        var names = nameInfo.names;
+                        names.forEach(function (_a) {
+                            var index = _a.index, name = _a.name;
+                            _this._setName(_this._typeNames, index, WasmParser_js_1.bytesToString(name), true);
+                        });
+                    }
+                    else if (nameInfo.type === 5 /* Table */) {
+                        var names = nameInfo.names;
+                        names.forEach(function (_a) {
+                            var index = _a.index, name = _a.name;
+                            _this._setName(_this._tableNames, index, WasmParser_js_1.bytesToString(name), true);
+                        });
+                    }
+                    else if (nameInfo.type === 6 /* Memory */) {
+                        var names = nameInfo.names;
+                        names.forEach(function (_a) {
+                            var index = _a.index, name = _a.name;
+                            _this._setName(_this._memoryNames, index, WasmParser_js_1.bytesToString(name), true);
+                        });
+                    }
+                    else if (nameInfo.type === 7 /* Global */) {
+                        var names = nameInfo.names;
+                        names.forEach(function (_a) {
+                            var index = _a.index, name = _a.name;
+                            _this._setName(_this._globalNames, index, WasmParser_js_1.bytesToString(name), true);
                         });
                     }
                     break;
@@ -1534,7 +1608,7 @@ var DevToolsNameGenerator = /** @class */ (function () {
         return new DevToolsExportMetadata(this._functionExportNames, this._globalExportNames, this._memoryExportNames, this._tableExportNames);
     };
     DevToolsNameGenerator.prototype.getNameResolver = function () {
-        return new DevToolsNameResolver(this._functionNames, this._functionLocalNames, this._memoryNames, this._tableNames, this._globalNames);
+        return new DevToolsNameResolver(this._functionNames, this._functionLocalNames, this._typeNames, this._tableNames, this._memoryNames, this._globalNames);
     };
     return DevToolsNameGenerator;
 }());

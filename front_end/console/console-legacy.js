@@ -83,16 +83,6 @@ Console.ConsoleViewMessage.setLongStringVisibleLength = ConsoleModule.ConsoleVie
  */
 Console.ConsoleGroupViewMessage = ConsoleModule.ConsoleViewMessage.ConsoleGroupViewMessage;
 
-Object.defineProperty(Console.ConsoleViewMessage, '_MaxTokenizableStringLength', {
-  get: ConsoleModule.ConsoleViewMessage.getMaxTokenizableStringLength,
-  set: ConsoleModule.ConsoleViewMessage.setMaxTokenizableStringLength,
-});
-
-Object.defineProperty(Console.ConsoleViewMessage, '_LongStringVisibleLength', {
-  get: ConsoleModule.ConsoleViewMessage.getLongStringVisibleLength,
-  set: ConsoleModule.ConsoleViewMessage.setLongStringVisibleLength,
-});
-
 /**
  * @constructor
  */

@@ -143,17 +143,17 @@ class QuickPickProvider extends Provider {
     const item = this._items[itemIndex];
     titleElement.removeChildren();
     const labelElement = titleElement.createChild('span');
-    labelElement.createTextChild(item.label);
+    UI.UIUtils.createTextChild(labelElement, item.label);
     FilteredListWidget.highlightRanges(titleElement, query, true);
     if (item.description) {
       const descriptionElement = titleElement.createChild('span', 'quickpick-description');
-      descriptionElement.createTextChild(item.description);
+      UI.UIUtils.createTextChild(descriptionElement, item.description);
       if (this._matchOnDescription) {
         FilteredListWidget.highlightRanges(descriptionElement, query, true);
       }
     }
     if (item.detail) {
-      subtitleElement.createTextChild(item.detail);
+      UI.UIUtils.createTextChild(subtitleElement, item.detail);
       if (this._matchOnDetail) {
         FilteredListWidget.highlightRanges(subtitleElement, query, true);
       }

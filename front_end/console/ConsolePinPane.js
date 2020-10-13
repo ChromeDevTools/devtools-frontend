@@ -338,7 +338,7 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
       } else if (previewText) {
         this._pinPreview.appendChild(preview);
       } else if (!isEditing) {
-        this._pinPreview.createTextChild(ls`not available`);
+        UI.UIUtils.createTextChild(this._pinPreview, ls`not available`);
       }
       this._pinPreview.title = previewText;
     }

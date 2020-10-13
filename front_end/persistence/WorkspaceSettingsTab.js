@@ -21,7 +21,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     this.registerRequiredCSS('persistence/workspaceSettingsTab.css');
 
     const header = this.element.createChild('header');
-    header.createChild('h1').createTextChild(Common.UIString.UIString('Workspace'));
+    UI.UIUtils.createTextChild(header.createChild('h1'), Common.UIString.UIString('Workspace'));
 
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
                                 .createChild('div', 'settings-tab settings-content settings-container');
@@ -37,7 +37,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     this.containerElement.appendChild(folderExcludePatternInput);
 
     const div = this.containerElement.createChild('div', 'settings-info-message');
-    div.createTextChild(Common.UIString.UIString('Mappings are inferred automatically.'));
+    UI.UIUtils.createTextChild(div, Common.UIString.UIString('Mappings are inferred automatically.'));
 
     this._fileSystemsListContainer = this.containerElement.createChild('div', '');
 

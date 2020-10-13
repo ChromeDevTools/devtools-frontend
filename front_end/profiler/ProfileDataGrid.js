@@ -189,7 +189,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
           warningIcon.title = Common.UIString.UIString('Not optimized: %s', this._deoptReason);
           cell.appendChild(warningIcon);
         }
-        cell.createTextChild(this.functionName);
+        UI.UIUtils.createTextChild(cell, this.functionName);
         if (this.profileNode.scriptId === '0') {
           return cell;
         }

@@ -14,6 +14,7 @@ import {ContextMenu} from './ContextMenu.js';  // eslint-disable-line no-unused-
 import {Icon} from './Icon.js';
 import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import {Toolbar, ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
+import {createTextChild} from './UIUtils.js';
 import {ProvidedView, TabbedViewLocation, View, ViewLocation, ViewLocationResolver, widgetSymbol,} from './View.js';  // eslint-disable-line no-unused-vars
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
@@ -321,7 +322,7 @@ export class _ExpandableContainerWidget extends VBox {
     this._titleExpandIcon = Icon.create('smallicon-triangle-right', 'title-expand-icon');
     this._titleElement.appendChild(this._titleExpandIcon);
     const titleText = view.title();
-    this._titleElement.createTextChild(titleText);
+    createTextChild(this._titleElement, titleText);
     ARIAUtils.setAccessibleName(this._titleElement, titleText);
     ARIAUtils.setExpanded(this._titleElement, false);
     this._titleElement.tabIndex = 0;

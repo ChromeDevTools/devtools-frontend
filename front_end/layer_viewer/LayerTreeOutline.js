@@ -264,7 +264,7 @@ export class LayerTreeElement extends UI.TreeOutline.TreeElement {
   _update() {
     const node = this._layer.nodeForSelfOrAncestor();
     const title = createDocumentFragment();
-    title.createTextChild(node ? node.simpleSelector() : '#' + this._layer.id());
+    UI.UIUtils.createTextChild(title, node ? node.simpleSelector() : '#' + this._layer.id());
     const details = title.createChild('span', 'dimmed');
     details.textContent = Common.UIString.UIString(' (%d × %d)', this._layer.width(), this._layer.height());
     this.title = title;

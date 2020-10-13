@@ -253,11 +253,12 @@ export class StatusView {
     this._progressBar.classList.add('errored');
 
     this._commitTextChange('');
-    this._statusText.createChild('p').createTextChild(Common.UIString.UIString('Ah, sorry! We ran into an error.'));
+    UI.UIUtils.createTextChild(
+        this._statusText.createChild('p'), Common.UIString.UIString('Ah, sorry! We ran into an error.'));
     if (KnownBugPatterns.some(pattern => pattern.test(err.message))) {
       const message = Common.UIString.UIString(
           'Try to navigate to the URL in a fresh Chrome profile without any other tabs or extensions open and try again.');
-      this._statusText.createChild('p').createTextChild(message);
+      UI.UIUtils.createTextChild(this._statusText.createChild('p'), message);
     } else {
       this._renderBugReportBody(err, this._inspectedURL);
     }
@@ -296,9 +297,10 @@ Chrome Version: ${navigator.userAgent.match(/Chrome\/(\S+)/)[1]}
 Stack Trace: ${err.stack}
 \`\`\`
 `;
-    this._statusText.createChild('p').createTextChild(
+    UI.UIUtils.createTextChild(
+        this._statusText.createChild('p'),
         ls`If this issue is reproducible, please report it at the Lighthouse GitHub repo.`);
-    this._statusText.createChild('code', 'monospace').createTextChild(issueBody.trim());
+    UI.UIUtils.createTextChild(this._statusText.createChild('code', 'monospace'), issueBody.trim());
   }
 }
 

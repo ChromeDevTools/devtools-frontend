@@ -300,7 +300,7 @@ export class CommandMenuProvider extends Provider {
     const index = String.hashCode(command.category()) % MaterialPaletteColors.length;
     tagElement.style.backgroundColor = MaterialPaletteColors[index];
     tagElement.textContent = command.category();
-    titleElement.createTextChild(command.title());
+    UI.UIUtils.createTextChild(titleElement, command.title());
     FilteredListWidget.highlightRanges(titleElement, query, true);
     subtitleElement.textContent = command.shortcut();
   }

@@ -312,7 +312,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
             'dblclick', this.startEditing.bind(this, heightElement, 'height', 'height', style), false);
 
         boxElement.appendChild(widthElement);
-        boxElement.createTextChild(' × ');
+        UI.UIUtils.createTextChild(boxElement, ' × ');
         boxElement.appendChild(heightElement);
       } else {
         const suffix = (name === 'border' ? '-width' : '');

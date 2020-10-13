@@ -124,7 +124,6 @@ interface HTMLElement {
 interface Element {
   boxInWindow(targetWindow?: Window): AnchorBox;
   createChild(tagName: string, className?: string, content?: string): Element;
-  createTextChild(text: string): Text;
   hasFocus(): boolean;
   positionAt(x: (number|undefined), y: (number|undefined), relativeTo?: Element): void;
   removeChildren(): void;
@@ -135,7 +134,6 @@ interface Element {
 
 interface DocumentFragment {
   createChild(tagName: string, className?: string, content?: string): Element;
-  createTextChild(text: string): Text;
 }
 
 interface Event {

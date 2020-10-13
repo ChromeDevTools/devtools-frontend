@@ -1123,11 +1123,11 @@ export class DebuggerPlugin extends Plugin {
           continue;
         }  // Only render name once in the given continuous block.
         if (renderedNameCount) {
-          widget.createTextChild(', ');
+          UI.UIUtils.createTextChild(widget, ', ');
         }
         const nameValuePair = widget.createChild('span');
         widget.__nameToToken.set(name, nameValuePair);
-        nameValuePair.createTextChild(name + ' = ');
+        UI.UIUtils.createTextChild(nameValuePair, name + ' = ');
         const value = valuesMap.get(name);
         const propertyCount = value.preview ? value.preview.properties.length : 0;
         const entryCount = value.preview && value.preview.entries ? value.preview.entries.length : 0;

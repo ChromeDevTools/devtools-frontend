@@ -79,7 +79,7 @@ export class FrameGroupNode extends NetworkGroupNode {
     if (columnIndex === 0) {
       const name = this.displayName();
       cell.appendChild(UI.Icon.Icon.create('largeicon-navigator-frame', 'network-frame-group-icon'));
-      cell.createTextChild(name);
+      UI.UIUtils.createTextChild(cell, name);
       cell.title = name;
       this.setCellAccessibleName(cell.textContent || '', cell, columnId);
     }

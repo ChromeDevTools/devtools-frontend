@@ -28,7 +28,7 @@ export const decorateNodeLabel = function(node, parentElement, tooltipContent) {
     const idElement = parentElement.createChild('span', 'node-label-id');
     const part = '#' + idAttribute;
     title += part;
-    idElement.createTextChild(part);
+    UI.UIUtils.createTextChild(idElement, part);
 
     // Mark the name as extra, since the ID is more important.
     nameElement.classList.add('extra');
@@ -45,7 +45,7 @@ export const decorateNodeLabel = function(node, parentElement, tooltipContent) {
         if (className && !foundClasses.has(className)) {
           const part = '.' + className;
           title += part;
-          classesElement.createTextChild(part);
+          UI.UIUtils.createTextChild(classesElement, part);
           foundClasses.add(className);
         }
       }
@@ -55,7 +55,7 @@ export const decorateNodeLabel = function(node, parentElement, tooltipContent) {
   if (isPseudo) {
     const pseudoElement = parentElement.createChild('span', 'extra node-label-pseudo');
     const pseudoText = '::' + originalNode.pseudoType();
-    pseudoElement.createTextChild(pseudoText);
+    UI.UIUtils.createTextChild(pseudoElement, pseudoText);
     title += pseudoText;
   }
   parentElement.title = tooltipContent || title;

@@ -211,7 +211,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
         const listItem = this._malformedResponseCookiesList.createChild('span', 'cookie-line source-code');
         const icon = UI.Icon.Icon.create('smallicon-error', 'cookie-warning-icon');
         listItem.appendChild(icon);
-        listItem.createTextChild(malformedCookie.cookieLine);
+        UI.UIUtils.createTextChild(listItem, malformedCookie.cookieLine);
         listItem.title =
             SDK.NetworkRequest.setCookieBlockedReasonToUiString(Protocol.Network.SetCookieBlockedReason.SyntaxError);
       }

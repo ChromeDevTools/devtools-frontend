@@ -131,7 +131,7 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper {
           elementForItem.firstChild.remove();
         }
         if (elementForItem && key & this._bitFieldValue) {
-          elementForItem.createChild('div').createTextChild('✓');
+          UI.UIUtils.createTextChild(elementForItem.createChild('div'), '✓');
         } else {
           this._hiddenLevels.push(item.stringValue);
         }
@@ -181,7 +181,7 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper {
     const checkBox =
         /** @type {!HTMLElement} */ (container.createChild('div', 'media-messages-level-dropdown-checkbox'));
     const text = container.createChild('span', 'media-messages-level-dropdown-text');
-    text.createTextChild(item.title);
+    UI.UIUtils.createTextChild(text, item.title);
     this.elementsForItems.set(item, checkBox);
     this._itemMap.set(item.value, item);
     this._updateCheckMarks();
@@ -323,6 +323,6 @@ export class PlayerMessagesView extends UI.Widget.VBox {
   addMessage(message) {
     const container =
         this._bodyPanel.createChild('div', 'media-messages-message-container media-message-' + message.level);
-    container.createTextChild(message.message);
+    UI.UIUtils.createTextChild(container, message.message);
   }
 }

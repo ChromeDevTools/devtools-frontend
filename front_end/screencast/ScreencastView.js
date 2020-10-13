@@ -126,10 +126,10 @@ export class ScreencastView extends UI.Widget.VBox {
     this._tagNameElement = /** @type {!HTMLElement} */ (this._titleElement.createChild('span', 'screencast-tag-name'));
     this._attributeElement =
         /** @type {!HTMLElement} */ (this._titleElement.createChild('span', 'screencast-attribute'));
-    this._titleElement.createTextChild(' ');
+    UI.UIUtils.createTextChild(this._titleElement, ' ');
     const dimension = /** @type {!HTMLElement} */ (this._titleElement.createChild('span', 'screencast-dimension'));
     this._nodeWidthElement = /** @type {!HTMLElement} */ (dimension.createChild('span'));
-    dimension.createTextChild(' × ');
+    UI.UIUtils.createTextChild(dimension, ' × ');
     this._nodeHeightElement = /** @type {!HTMLElement} */ (dimension.createChild('span'));
     this._titleElement.style.top = '0';
     this._titleElement.style.left = '0';

@@ -1732,7 +1732,7 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
     title.textContent = '\u21AA ' + text;
 
     const link = linkifyDeferredNodeReference(nodeShortcut.deferredNode);
-    this.listItemElement.createTextChild(' ');
+    UI.UIUtils.createTextChild(this.listItemElement, ' ');
     link.classList.add('elements-tree-shortcut-link');
     link.textContent = Common.UIString.UIString('reveal');
     this.listItemElement.appendChild(link);

@@ -91,7 +91,7 @@ export class FontView extends UI.View.SimpleView {
       if (i > 0) {
         fontPreview.createChild('br');
       }
-      fontPreview.createTextChild(_fontPreviewLines[i]);
+      UI.UIUtils.createTextChild(fontPreview, _fontPreviewLines[i]);
     }
     this.fontPreviewElement = fontPreview.cloneNode(true);
     UI.ARIAUtils.markAsHidden(this.fontPreviewElement);

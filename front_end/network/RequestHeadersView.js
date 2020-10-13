@@ -333,7 +333,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
 
     paramsTreeElement.listItemElement.removeChildren();
     paramsTreeElement.listItemElement.createChild('div', 'selection fill');
-    paramsTreeElement.listItemElement.createTextChild(title);
+    UI.UIUtils.createTextChild(paramsTreeElement.listItemElement, title);
 
     const headerCount = document.createElement('span');
     headerCount.classList.add('header-count');
@@ -475,7 +475,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     const rootListItemElement = rootListItem.listItemElement;
     rootListItemElement.removeChildren();
     rootListItemElement.createChild('div', 'selection fill');
-    rootListItemElement.createTextChild(this._requestPayloadCategory.title.toString());
+    UI.UIUtils.createTextChild(rootListItemElement, this._requestPayloadCategory.title.toString());
 
     const shouldViewSource = viewSourceForItems.add(rootListItem);
     if (shouldViewSource) {
@@ -729,7 +729,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
   _refreshHeadersTitle(title, headersTreeElement, headersLength) {
     headersTreeElement.listItemElement.removeChildren();
     headersTreeElement.listItemElement.createChild('div', 'selection fill');
-    headersTreeElement.listItemElement.createTextChild(title);
+    UI.UIUtils.createTextChild(headersTreeElement.listItemElement, title);
 
     const headerCount = Common.UIString.UIString('\xA0(%d)', headersLength);
     headersTreeElement.listItemElement.createChild('span', 'header-count').textContent = headerCount;
@@ -810,7 +810,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
             ls`Active client experiment variation IDs that trigger server-side behavior.`);
         const wrapper = document.createElement('div');
         wrapper.classList.add('x-client-data-details');
-        wrapper.createTextChild(ls`Decoded:`);
+        UI.UIUtils.createTextChild(wrapper, ls`Decoded:`);
         const div = wrapper.createChild('div');
         div.classList.add('source-code');
         div.textContent = output;

@@ -838,7 +838,7 @@ export class NodeUI {
    */
   nodeResolved(node) {
     if (!node) {
-      this._description.createTextChild('<node>');
+      UI.UIUtils.createTextChild(this._description, '<node>');
       return;
     }
     this._node = node;

@@ -58,7 +58,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     const contrastValueRow = this._element.createChild('div');
     contrastValueRow.addEventListener('click', this._topRowClicked.bind(this));
     const contrastValueRowContents = contrastValueRow.createChild('div', 'container');
-    contrastValueRowContents.createTextChild(Common.UIString.UIString('Contrast ratio'));
+    UI.UIUtils.createTextChild(contrastValueRowContents, Common.UIString.UIString('Contrast ratio'));
 
     this._contrastValueBubble = contrastValueRowContents.createChild('span', 'contrast-details-value');
     this._contrastValue = this._contrastValueBubble.createChild('span');

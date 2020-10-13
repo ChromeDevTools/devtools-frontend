@@ -239,10 +239,10 @@ export class RequestTimingView extends UI.Widget.VBox {
     /** @type {!HTMLTableCellElement} */
     const startedCell = /** @type {!HTMLTableCellElement} */ (startTimeHeader.createChild('tr').createChild('td'));
     queuedCell.colSpan = startedCell.colSpan = 3;
-    queuedCell.createTextChild(
-        Common.UIString.UIString('Queued at %s', calculator.formatValue(request.issueTime(), 2)));
-    startedCell.createTextChild(
-        Common.UIString.UIString('Started at %s', calculator.formatValue(request.startTime, 2)));
+    UI.UIUtils.createTextChild(
+        queuedCell, Common.UIString.UIString('Queued at %s', calculator.formatValue(request.issueTime(), 2)));
+    UI.UIUtils.createTextChild(
+        startedCell, Common.UIString.UIString('Started at %s', calculator.formatValue(request.startTime, 2)));
 
     let right;
     for (let i = 0; i < timeRanges.length; ++i) {
@@ -278,7 +278,7 @@ export class RequestTimingView extends UI.Widget.VBox {
 
       const tr = tableElement.createChild('tr');
       const timingBarTitleEement = tr.createChild('td');
-      timingBarTitleEement.createTextChild(RequestTimingView._timeRangeTitle(rangeName));
+      UI.UIUtils.createTextChild(timingBarTitleEement, RequestTimingView._timeRangeTitle(rangeName));
 
       const row = tr.createChild('td').createChild('div', 'network-timing-row');
       const bar = row.createChild('span', 'network-timing-bar ' + rangeName);
@@ -303,7 +303,7 @@ export class RequestTimingView extends UI.Widget.VBox {
       /** @type {!HTMLTableCellElement} */
       const cell = /** @type {!HTMLTableCellElement} */ (tableElement.createChild('tr').createChild('td', 'caution'));
       cell.colSpan = 3;
-      cell.createTextChild(Common.UIString.UIString('CAUTION: request is not finished yet!'));
+      UI.UIUtils.createTextChild(cell, Common.UIString.UIString('CAUTION: request is not finished yet!'));
     }
 
     const footer = tableElement.createChild('tr', 'network-timing-footer');
@@ -313,7 +313,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     note.appendChild(UI.UIUtils.createDocumentationLink(
         'network-performance/reference#timing-explanation', Common.UIString.UIString('Explanation')));
     footer.createChild('td');
-    footer.createChild('td').createTextChild(Number.secondsToString(totalDuration, true));
+    UI.UIUtils.createTextChild(footer.createChild('td'), Number.secondsToString(totalDuration, true));
 
     const serverTimings = request.serverTimings;
 
@@ -326,9 +326,9 @@ export class RequestTimingView extends UI.Widget.VBox {
     breakElement.createChild('hr', 'break');
 
     const serverHeader = tableElement.createChild('tr', 'network-timing-table-header');
-    serverHeader.createChild('td').createTextChild(Common.UIString.UIString('Server Timing'));
+    UI.UIUtils.createTextChild(serverHeader.createChild('td'), Common.UIString.UIString('Server Timing'));
     serverHeader.createChild('td');
-    serverHeader.createChild('td').createTextChild(Common.UIString.UIString('TIME'));
+    UI.UIUtils.createTextChild(serverHeader.createChild('td'), Common.UIString.UIString('TIME'));
 
     if (!serverTimings) {
       const informationRow = tableElement.createChild('tr');
@@ -361,7 +361,7 @@ export class RequestTimingView extends UI.Widget.VBox {
       const tr = tableElement.createChild('tr', isTotal ? 'network-timing-footer' : '');
       const metric = tr.createChild('td', 'network-timing-metric');
       const description = serverTiming.description || serverTiming.metric;
-      metric.createTextChild(description);
+      UI.UIUtils.createTextChild(metric, description);
       metric.title = description;
       const row = tr.createChild('td').createChild('div', 'network-timing-row');
 
@@ -389,10 +389,10 @@ export class RequestTimingView extends UI.Widget.VBox {
     function createHeader(title) {
       const dataHeader = tableElement.createChild('tr', 'network-timing-table-header');
       const headerCell = dataHeader.createChild('td');
-      headerCell.createTextChild(title);
+      UI.UIUtils.createTextChild(headerCell, title);
       UI.ARIAUtils.markAsHeading(headerCell, 2);
-      dataHeader.createChild('td').createTextChild('');
-      dataHeader.createChild('td').createTextChild(ls`DURATION`);
+      UI.UIUtils.createTextChild(dataHeader.createChild('td'), '');
+      UI.UIUtils.createTextChild(dataHeader.createChild('td'), ls`DURATION`);
       return dataHeader;
     }
   }

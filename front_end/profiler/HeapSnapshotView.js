@@ -1884,8 +1884,10 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
 
     if (!frames) {
       const stackDiv = this.element.createChild('div', 'no-heap-allocation-stack');
-      stackDiv.createTextChild(Common.UIString.UIString(
-          'Stack was not recorded for this object because it had been allocated before this profile recording started.'));
+      UI.UIUtils.createTextChild(
+          stackDiv,
+          Common.UIString.UIString(
+              'Stack was not recorded for this object because it had been allocated before this profile recording started.'));
       return;
     }
 

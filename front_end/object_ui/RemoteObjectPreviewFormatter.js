@@ -6,8 +6,8 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
-
 import * as SDK from '../sdk/sdk.js';
+import * as UI from '../ui/ui.js';
 
 /**
  * @unrestricted
@@ -74,7 +74,7 @@ export class RemoteObjectPreviewFormatter {
     }
 
     const propertiesElement = parentElement.createChild('span', 'object-properties-preview');
-    propertiesElement.createTextChild(isArrayOrTypedArray ? '[' : '{');
+    UI.UIUtils.createTextChild(propertiesElement, isArrayOrTypedArray ? '[' : '{');
     if (preview.entries) {
       this._appendEntriesPreview(propertiesElement, preview);
     } else if (isArrayOrTypedArray) {
@@ -86,7 +86,7 @@ export class RemoteObjectPreviewFormatter {
       const ellipsisText = propertiesElement.textContent.length > 1 ? ',\xA0…' : '…';
       propertiesElement.createChild('span').textContent = ellipsisText;
     }
-    propertiesElement.createTextChild(isArrayOrTypedArray ? ']' : '}');
+    UI.UIUtils.createTextChild(propertiesElement, isArrayOrTypedArray ? ']' : '}');
   }
 
   /**
@@ -111,7 +111,7 @@ export class RemoteObjectPreviewFormatter {
                            .sort(RemoteObjectPreviewFormatter._objectPropertyComparator);
     for (let i = 0; i < properties.length; ++i) {
       if (i > 0) {
-        parentElement.createTextChild(', ');
+        UI.UIUtils.createTextChild(parentElement, ', ');
       }
 
       const property = properties[i];
@@ -122,7 +122,7 @@ export class RemoteObjectPreviewFormatter {
         const nextProperty = i + 1 < properties.length ? properties[i + 1] : null;
         if (nextProperty && nextProperty.name === internalName.PromiseResult) {
           if (property.value !== 'pending') {
-            parentElement.createTextChild(': ');
+            UI.UIUtils.createTextChild(parentElement, ': ');
             parentElement.appendChild(this._renderPropertyPreviewOrAccessor([nextProperty]));
           }
           i++;
@@ -133,7 +133,7 @@ export class RemoteObjectPreviewFormatter {
         parentElement.appendChild(this._renderPropertyPreviewOrAccessor([property]));
       } else {
         parentElement.appendChild(this._renderDisplayName(name));
-        parentElement.createTextChild(': ');
+        UI.UIUtils.createTextChild(parentElement, ': ');
         parentElement.appendChild(this._renderPropertyPreviewOrAccessor([property]));
       }
     }
@@ -176,18 +176,18 @@ export class RemoteObjectPreviewFormatter {
     let elementsAdded = false;
     for (let i = 0; i < indexProperties.length; ++i) {
       if (elementsAdded) {
-        parentElement.createTextChild(', ');
+        UI.UIUtils.createTextChild(parentElement, ', ');
       }
 
       const property = indexProperties[i];
       const index = toArrayIndex(property.name);
       if (canShowGaps && index - lastNonEmptyArrayIndex > 1) {
         appendUndefined(index);
-        parentElement.createTextChild(', ');
+        UI.UIUtils.createTextChild(parentElement, ', ');
       }
       if (!canShowGaps && i !== index) {
         parentElement.appendChild(this._renderDisplayName(property.name));
-        parentElement.createTextChild(': ');
+        UI.UIUtils.createTextChild(parentElement, ': ');
       }
       parentElement.appendChild(this._renderPropertyPreviewOrAccessor([property]));
       lastNonEmptyArrayIndex = index;
@@ -196,19 +196,19 @@ export class RemoteObjectPreviewFormatter {
 
     if (canShowGaps && arrayLength - lastNonEmptyArrayIndex > 1) {
       if (elementsAdded) {
-        parentElement.createTextChild(', ');
+        UI.UIUtils.createTextChild(parentElement, ', ');
       }
       appendUndefined(arrayLength);
     }
 
     for (let i = 0; i < otherProperties.length; ++i) {
       if (elementsAdded) {
-        parentElement.createTextChild(', ');
+        UI.UIUtils.createTextChild(parentElement, ', ');
       }
 
       const property = otherProperties[i];
       parentElement.appendChild(this._renderDisplayName(property.name));
-      parentElement.createTextChild(': ');
+      UI.UIUtils.createTextChild(parentElement, ': ');
       parentElement.appendChild(this._renderPropertyPreviewOrAccessor([property]));
       elementsAdded = true;
     }
@@ -232,13 +232,13 @@ export class RemoteObjectPreviewFormatter {
   _appendEntriesPreview(parentElement, preview) {
     for (let i = 0; i < preview.entries.length; ++i) {
       if (i > 0) {
-        parentElement.createTextChild(', ');
+        UI.UIUtils.createTextChild(parentElement, ', ');
       }
 
       const entry = preview.entries[i];
       if (entry.key) {
         this.appendObjectPreview(parentElement, entry.key, true /* isEntry */);
-        parentElement.createTextChild(' => ');
+        UI.UIUtils.createTextChild(parentElement, ' => ');
       }
       this.appendObjectPreview(parentElement, entry.value, true /* isEntry */);
     }
@@ -293,7 +293,7 @@ export class RemoteObjectPreviewFormatter {
     }
 
     if (type === 'string') {
-      span.createTextChildren('"', description.replace(/\n/g, '\u21B5'), '"');
+      UI.UIUtils.createTextChildren(span, '"', description.replace(/\n/g, '\u21B5'), '"');
       return span;
     }
 

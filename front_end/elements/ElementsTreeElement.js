@@ -516,9 +516,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       }
       const nodeName = matchResult[1];
       tag.textContent = '';
-      tag.createTextChild('<' + nodeName);
+      UI.UIUtils.createTextChild(tag, '<' + nodeName);
       tag.appendChild(node);
-      tag.createTextChild('>');
+      UI.UIUtils.createTextChild(tag, '>');
     }
   }
 
@@ -1548,7 +1548,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     attrNameElement.textContent = name;
 
     if (hasText) {
-      attrSpanElement.createTextChild('=\u200B"');
+      UI.UIUtils.createTextChild(attrSpanElement, '=\u200B"');
     }
 
     const attrValueElement = attrSpanElement.createChild('span', 'webkit-html-attribute-value');
@@ -1600,7 +1600,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     if (hasText) {
-      attrSpanElement.createTextChild('"');
+      UI.UIUtils.createTextChild(attrSpanElement, '"');
     }
 
     /**
@@ -1620,7 +1620,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       let i = 0;
       while (value.length) {
         if (i++ > 0) {
-          fragment.createTextChild(' ');
+          UI.UIUtils.createTextChild(fragment, ' ');
         }
         value = value.trim();
         // The url and descriptor may end with a separating comma.
@@ -1645,13 +1645,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           // Up to one trailing comma should be removed from `url`.
           if (url.endsWith(',')) {
             fragment.appendChild(linkifyValue.call(this, url.substring(0, url.length - 1)));
-            fragment.createTextChild(',');
+            UI.UIUtils.createTextChild(fragment, ',');
           } else {
             fragment.appendChild(linkifyValue.call(this, url));
           }
         }
         if (descriptor) {
-          fragment.createTextChild(descriptor);
+          UI.UIUtils.createTextChild(fragment, descriptor);
         }
         value = value.substring(url.length + descriptor.length);
       }
@@ -1668,7 +1668,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   _buildPseudoElementDOM(parentElement, pseudoElementName) {
     const pseudoElement = parentElement.createChild('span', 'webkit-html-pseudo-element');
     pseudoElement.textContent = '::' + pseudoElementName;
-    parentElement.createTextChild('\u200B');
+    UI.UIUtils.createTextChild(parentElement, '\u200B');
   }
 
   /**
@@ -1685,7 +1685,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       classes.push('close');
     }
     const tagElement = parentElement.createChild('span', classes.join(' '));
-    tagElement.createTextChild('<');
+    UI.UIUtils.createTextChild(tagElement, '<');
     const tagNameElement =
         tagElement.createChild('span', isClosingTag ? 'webkit-html-close-tag-name' : 'webkit-html-tag-name');
     tagNameElement.textContent = (isClosingTag ? '/' : '') + tagName;
@@ -1696,7 +1696,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         const attributes = node.attributes();
         for (let i = 0; i < attributes.length; ++i) {
           const attr = attributes[i];
-          tagElement.createTextChild(' ');
+          UI.UIUtils.createTextChild(tagElement, ' ');
           this._buildAttributeDOM(tagElement, attr.name, attr.value, updateRecord, false, node);
         }
       }
@@ -1709,8 +1709,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       }
     }
 
-    tagElement.createTextChild('>');
-    parentElement.createTextChild('\u200B');
+    UI.UIUtils.createTextChild(tagElement, '>');
+    UI.UIUtils.createTextChild(parentElement, '\u200B');
   }
 
   /**
@@ -1775,7 +1775,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           if (!this.expanded) {
             const textNodeElement = titleDOM.createChild('span', 'webkit-html-text-node bogus');
             textNodeElement.textContent = '…';
-            titleDOM.createTextChild('\u200B');
+            UI.UIUtils.createTextChild(titleDOM, '\u200B');
             this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
           }
           break;
@@ -1786,7 +1786,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           const result = this._convertWhitespaceToEntities(node.firstChild.nodeValue());
           textNodeElement.textContent = result.text;
           UI.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
-          titleDOM.createTextChild('\u200B');
+          UI.UIUtils.createTextChild(titleDOM, '\u200B');
           this._buildTagDOM(titleDOM, tagName, true, false, updateRecord);
           if (updateRecord && updateRecord.hasChangedChildren()) {
             UI.UIUtils.runCSSAnimationOnce(textNodeElement, 'dom-update-highlight');
@@ -1819,12 +1819,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           const cssSyntaxHighlighter = new UI.SyntaxHighlighter.SyntaxHighlighter('text/css', true);
           cssSyntaxHighlighter.syntaxHighlightNode(newNode).then(updateSearchHighlight);
         } else {
-          titleDOM.createTextChild('"');
+          UI.UIUtils.createTextChild(titleDOM, '"');
           const textNodeElement = titleDOM.createChild('span', 'webkit-html-text-node');
           const result = this._convertWhitespaceToEntities(node.nodeValue());
           textNodeElement.textContent = result.text;
           UI.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
-          titleDOM.createTextChild('"');
+          UI.UIUtils.createTextChild(titleDOM, '"');
           if (updateRecord && updateRecord.isCharDataModified()) {
             UI.UIUtils.runCSSAnimationOnce(textNodeElement, 'dom-update-highlight');
           }
@@ -1833,33 +1833,33 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
       case Node.COMMENT_NODE: {
         const commentElement = titleDOM.createChild('span', 'webkit-html-comment');
-        commentElement.createTextChild('<!--' + node.nodeValue() + '-->');
+        UI.UIUtils.createTextChild(commentElement, '<!--' + node.nodeValue() + '-->');
         break;
       }
 
       case Node.DOCUMENT_TYPE_NODE: {
         const docTypeElement = titleDOM.createChild('span', 'webkit-html-doctype');
-        docTypeElement.createTextChild('<!DOCTYPE ' + node.nodeName());
+        UI.UIUtils.createTextChild(docTypeElement, '<!DOCTYPE ' + node.nodeName());
         if (node.publicId) {
-          docTypeElement.createTextChild(' PUBLIC "' + node.publicId + '"');
+          UI.UIUtils.createTextChild(docTypeElement, ' PUBLIC "' + node.publicId + '"');
           if (node.systemId) {
-            docTypeElement.createTextChild(' "' + node.systemId + '"');
+            UI.UIUtils.createTextChild(docTypeElement, ' "' + node.systemId + '"');
           }
         } else if (node.systemId) {
-          docTypeElement.createTextChild(' SYSTEM "' + node.systemId + '"');
+          UI.UIUtils.createTextChild(docTypeElement, ' SYSTEM "' + node.systemId + '"');
         }
 
         if (node.internalSubset) {
-          docTypeElement.createTextChild(' [' + node.internalSubset + ']');
+          UI.UIUtils.createTextChild(docTypeElement, ' [' + node.internalSubset + ']');
         }
 
-        docTypeElement.createTextChild('>');
+        UI.UIUtils.createTextChild(docTypeElement, '>');
         break;
       }
 
       case Node.CDATA_SECTION_NODE: {
         const cdataElement = titleDOM.createChild('span', 'webkit-html-text-node');
-        cdataElement.createTextChild('<![CDATA[' + node.nodeValue() + ']]>');
+        UI.UIUtils.createTextChild(cdataElement, '<![CDATA[' + node.nodeValue() + ']]>');
         break;
       }
 
@@ -1871,7 +1871,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
       default: {
         const nameWithSpaceCollapsed = Platform.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase());
-        titleDOM.createTextChild(nameWithSpaceCollapsed);
+        UI.UIUtils.createTextChild(titleDOM, nameWithSpaceCollapsed);
       }
     }
 

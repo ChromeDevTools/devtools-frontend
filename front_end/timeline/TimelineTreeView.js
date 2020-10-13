@@ -404,7 +404,7 @@ export class TimelineTreeView extends UI.Widget.VBox {
       return;
     }
     const banner = this._detailsView.element.createChild('div', 'full-widget-dimmed-banner');
-    banner.createTextChild(Common.UIString.UIString('Select item for details.'));
+    UI.UIUtils.createTextChild(banner, Common.UIString.UIString('Select item for details.'));
   }
 
   /**

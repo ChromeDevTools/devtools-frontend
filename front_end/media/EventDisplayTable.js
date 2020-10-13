@@ -55,7 +55,7 @@ export class EventNode extends DataGrid.DataGrid.DataGridNode {
       this._expandableElement.show(enclosed);
     } else {
       cell.classList.add('event-display-table-basic-text-table-entry');
-      cell.createTextChild(cellData);
+      UI.UIUtils.createTextChild(cell, cellData);
     }
     return cell;
   }

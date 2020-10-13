@@ -105,7 +105,7 @@ export class ObjectPopoverHelper {
     valueElement.style.whiteSpace = 'pre';
 
     if (result.type === 'string') {
-      valueElement.createTextChildren(`"${description}"`);
+      UI.UIUtils.createTextChildren(valueElement, `"${description}"`);
     } else if (result.type !== 'function') {
       valueElement.textContent = description;
     }

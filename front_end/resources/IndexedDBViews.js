@@ -200,26 +200,26 @@ export class IDBDataView extends UI.View.SimpleView {
    */
   _keyColumnHeaderFragment(prefix, keyPath) {
     const keyColumnHeaderFragment = createDocumentFragment();
-    keyColumnHeaderFragment.createTextChild(prefix);
+    UI.UIUtils.createTextChild(keyColumnHeaderFragment, prefix);
     if (keyPath === null) {
       return keyColumnHeaderFragment;
     }
 
-    keyColumnHeaderFragment.createTextChild(' (' + Common.UIString.UIString('Key path: '));
+    UI.UIUtils.createTextChild(keyColumnHeaderFragment, ' (' + Common.UIString.UIString('Key path: '));
     if (Array.isArray(keyPath)) {
-      keyColumnHeaderFragment.createTextChild('[');
+      UI.UIUtils.createTextChild(keyColumnHeaderFragment, '[');
       for (let i = 0; i < keyPath.length; ++i) {
         if (i !== 0) {
-          keyColumnHeaderFragment.createTextChild(', ');
+          UI.UIUtils.createTextChild(keyColumnHeaderFragment, ', ');
         }
         keyColumnHeaderFragment.appendChild(this._keyPathStringFragment(keyPath[i]));
       }
-      keyColumnHeaderFragment.createTextChild(']');
+      UI.UIUtils.createTextChild(keyColumnHeaderFragment, ']');
     } else {
       const keyPathString = /** @type {string} */ (keyPath);
       keyColumnHeaderFragment.appendChild(this._keyPathStringFragment(keyPathString));
     }
-    keyColumnHeaderFragment.createTextChild(')');
+    UI.UIUtils.createTextChild(keyColumnHeaderFragment, ')');
     return keyColumnHeaderFragment;
   }
 
@@ -229,10 +229,10 @@ export class IDBDataView extends UI.View.SimpleView {
    */
   _keyPathStringFragment(keyPathString) {
     const keyPathStringFragment = createDocumentFragment();
-    keyPathStringFragment.createTextChild('"');
+    UI.UIUtils.createTextChild(keyPathStringFragment, '"');
     const keyPathSpan = keyPathStringFragment.createChild('span', 'source-code indexed-db-key-path');
     keyPathSpan.textContent = keyPathString;
-    keyPathStringFragment.createTextChild('"');
+    UI.UIUtils.createTextChild(keyPathStringFragment, '"');
     return keyPathStringFragment;
   }
 

@@ -700,11 +700,11 @@ export class TimelineUIUtils {
       case recordType.FunctionCall:
       case recordType.JSFrame: {
         details = createElement('span');
-        details.createTextChild(TimelineUIUtils.frameDisplayName(eventData));
+        UI.UIUtils.createTextChild(details, TimelineUIUtils.frameDisplayName(eventData));
         const location = linkifyLocation(
             eventData['scriptId'], eventData['url'], eventData['lineNumber'], eventData['columnNumber']);
         if (location) {
-          details.createTextChild(' @ ');
+          UI.UIUtils.createTextChild(details, ' @ ');
           details.appendChild(location);
         }
         break;
@@ -2175,7 +2175,7 @@ export class TimelineUIUtils {
       case warnings.V8Deopt: {
         span.appendChild(UI.XLink.XLink.create(
             'https://github.com/GoogleChrome/devtools-docs/issues/53', Common.UIString.UIString('Not optimized')));
-        span.createTextChild(Common.UIString.UIString(': %s', eventData['deoptReason']));
+        UI.UIUtils.createTextChild(span, Common.UIString.UIString(': %s', eventData['deoptReason']));
         break;
       }
 
@@ -2291,12 +2291,12 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     const first = this._invalidations[0];
     if (first.cause.stackTrace) {
       const stack = content.createChild('div');
-      stack.createTextChild(ls`Stack trace:`);
+      UI.UIUtils.createTextChild(stack, ls`Stack trace:`);
       this._contentHelper.createChildStackTraceElement(
           stack, TimelineUIUtils._stackTraceFromCallFrames(first.cause.stackTrace));
     }
 
-    content.createTextChild(this._invalidations.length !== 1 ? ls`Nodes:` : ls`Node:`);
+    UI.UIUtils.createTextChild(content, this._invalidations.length !== 1 ? ls`Nodes:` : ls`Node:`);
     const nodeList = content.createChild('div', 'node-list');
     let firstNode = true;
     for (let i = 0; i < this._invalidations.length; i++) {
@@ -2304,7 +2304,7 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
       const invalidationNode = this._createInvalidationNode(invalidation, true);
       if (invalidationNode) {
         if (!firstNode) {
-          nodeList.createTextChild(ls`, `);
+          UI.UIUtils.createTextChild(nodeList, ls`, `);
         }
         firstNode = false;
 
@@ -2312,19 +2312,21 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
 
         const extraData = invalidation.extraData ? ', ' + invalidation.extraData : '';
         if (invalidation.changedId) {
-          nodeList.createTextChild(
-              Common.UIString.UIString('(changed id to "%s"%s)', invalidation.changedId, extraData));
+          UI.UIUtils.createTextChild(
+              nodeList, Common.UIString.UIString('(changed id to "%s"%s)', invalidation.changedId, extraData));
         } else if (invalidation.changedClass) {
-          nodeList.createTextChild(
-              Common.UIString.UIString('(changed class to "%s"%s)', invalidation.changedClass, extraData));
+          UI.UIUtils.createTextChild(
+              nodeList, Common.UIString.UIString('(changed class to "%s"%s)', invalidation.changedClass, extraData));
         } else if (invalidation.changedAttribute) {
-          nodeList.createTextChild(
+          UI.UIUtils.createTextChild(
+              nodeList,
               Common.UIString.UIString('(changed attribute to "%s"%s)', invalidation.changedAttribute, extraData));
         } else if (invalidation.changedPseudo) {
-          nodeList.createTextChild(
-              Common.UIString.UIString('(changed pesudo to "%s"%s)', invalidation.changedPseudo, extraData));
+          UI.UIUtils.createTextChild(
+              nodeList, Common.UIString.UIString('(changed pesudo to "%s"%s)', invalidation.changedPseudo, extraData));
         } else if (invalidation.selectorPart) {
-          nodeList.createTextChild(Common.UIString.UIString('(changed "%s"%s)', invalidation.selectorPart, extraData));
+          UI.UIUtils.createTextChild(
+              nodeList, Common.UIString.UIString('(changed "%s"%s)', invalidation.selectorPart, extraData));
         }
       }
     }
@@ -2385,7 +2387,7 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     }
     if (showUnknownNodes) {
       const nodeSpan = createElement('span');
-      return nodeSpan.createTextChild(Common.UIString.UIString('[ unknown node ]'));
+      return UI.UIUtils.createTextChild(nodeSpan, Common.UIString.UIString('[ unknown node ]'));
     }
   }
 }
@@ -2479,7 +2481,7 @@ export class TimelinePopupContentHelper {
    */
   _createCell(content, styleName) {
     const text = createElement('label');
-    text.createTextChild(String(content));
+    UI.UIUtils.createTextChild(text, String(content));
     const cell = createElement('td');
     cell.className = 'timeline-details';
     if (styleName) {
@@ -2513,7 +2515,7 @@ export class TimelinePopupContentHelper {
     if (content instanceof Node) {
       cell.appendChild(content);
     } else {
-      cell.createTextChild(content || '');
+      UI.UIUtils.createTextChild(cell, content || '');
     }
     row.appendChild(cell);
     this._contentTable.appendChild(row);
@@ -2558,7 +2560,7 @@ export class TimelineDetailsContentHelper {
       if (swatchColor) {
         titleElement.createChild('div').style.backgroundColor = swatchColor;
       }
-      titleElement.createTextChild(title);
+      UI.UIUtils.createTextChild(titleElement, title);
     }
 
     this._tableElement = this.element.createChild('div', 'vbox timeline-details-chip-body');
@@ -2602,7 +2604,7 @@ export class TimelineDetailsContentHelper {
     if (content instanceof Node) {
       valueElement.appendChild(content);
     } else {
-      valueElement.createTextChild(content || '');
+      UI.UIUtils.createTextChild(valueElement, content || '');
     }
   }
 
@@ -2640,7 +2642,8 @@ export class TimelineDetailsContentHelper {
       return;
     }
     locationContent.appendChild(link);
-    locationContent.createTextChild(Platform.StringUtilities.sprintf(' [%s…%s]', startLine + 1, endLine + 1 || ''));
+    UI.UIUtils.createTextChild(
+        locationContent, Platform.StringUtilities.sprintf(' [%s…%s]', startLine + 1, endLine + 1 || ''));
     this.appendElementRow(title, locationContent);
   }
 

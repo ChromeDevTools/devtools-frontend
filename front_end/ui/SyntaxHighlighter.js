@@ -31,6 +31,8 @@
 import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 
+import {createTextChild} from './UIUtils.js';
+
 export class SyntaxHighlighter {
   /**
    * @param {string} mimeType
@@ -52,7 +54,7 @@ export class SyntaxHighlighter {
     if (this._stripExtraWhitespace && className !== 'whitespace') {
       content = content.replace(/^[\n\r]*/, '').replace(/\s*$/, '');
     }
-    span.createTextChild(content);
+    createTextChild(span, content);
     return span;
   }
 
@@ -87,10 +89,10 @@ export class SyntaxHighlighter {
         tokenize(line, processToken.bind(this));
         if (plainTextStart < line.length) {
           const plainText = line.substring(plainTextStart, line.length);
-          node.createTextChild(plainText);
+          createTextChild(node, plainText);
         }
         if (i < lines.length - 1) {
-          node.createTextChild('\n');
+          createTextChild(node, '\n');
         }
       }
     }
@@ -109,7 +111,7 @@ export class SyntaxHighlighter {
 
       if (column > plainTextStart) {
         const plainText = line.substring(plainTextStart, column);
-        node.createTextChild(plainText);
+        createTextChild(node, plainText);
       }
       node.appendChild(this.createSpan(token, tokenType));
       plainTextStart = newColumn;

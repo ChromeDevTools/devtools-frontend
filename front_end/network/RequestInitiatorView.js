@@ -53,7 +53,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     const icon = UI.Icon.Icon.create('smallicon-triangle-right');
     const clickableElement = section.createChild('div', 'request-initiator-view-section-title');
     clickableElement.appendChild(icon);
-    clickableElement.createTextChild(title);
+    UI.UIUtils.createTextChild(clickableElement, title);
     clickableElement.tabIndex = 0;
     sectionContent.classList.add('hidden', 'request-initiator-view-section-content');
     section.appendChild(sectionContent);

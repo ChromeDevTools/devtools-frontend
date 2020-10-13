@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Root from '../root/root.js';
+import * as UI from '../ui/ui.js';
 
 import {Provider} from './FilteredListWidget.js';
 import {QuickOpenImpl} from './QuickOpen.js';
@@ -62,7 +63,7 @@ export class HelpQuickOpen extends Provider {
     const provider = this._providers[itemIndex];
     const prefixElement = titleElement.createChild('span', 'monospace');
     prefixElement.textContent = (provider.prefix || '…') + ' ';
-    titleElement.createTextChild(provider.title);
+    UI.UIUtils.createTextChild(titleElement, provider.title);
   }
 
   /**

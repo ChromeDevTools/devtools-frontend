@@ -550,7 +550,7 @@ export class LogTreeElement extends UI.TreeOutline.TreeElement {
 
   _update() {
     const title = createDocumentFragment();
-    title.createTextChild(this._logItem.method + '(' + this._paramsToString(this._logItem.params) + ')');
+    UI.UIUtils.createTextChild(title, this._logItem.method + '(' + this._paramsToString(this._logItem.params) + ')');
     this.title = title;
   }
 }

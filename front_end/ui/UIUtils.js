@@ -1216,6 +1216,27 @@ export function beautifyFunctionName(name) {
 }
 
 /**
+ * @param {!Element|!DocumentFragment} element
+ * @param {string} text
+ * @return {!Text}
+ */
+export const createTextChild = (element, text) => {
+  const textNode = element.ownerDocument.createTextNode(text);
+  element.appendChild(textNode);
+  return textNode;
+};
+
+/**
+ * @param {!Element|!DocumentFragment} element
+ * @param {...string} childrenText
+ */
+export const createTextChildren = (element, ...childrenText) => {
+  for (const child of childrenText) {
+    createTextChild(element, child);
+  }
+};
+
+/**
  * @param {string} text
  * @param {function(!Event):*=} clickHandler
  * @param {string=} className
@@ -1286,7 +1307,7 @@ export function createRadioLabel(name, title, checked) {
   const element = createElement('span', 'dt-radio');
   element.radioElement.name = name;
   element.radioElement.checked = !!checked;
-  element.labelElement.createTextChild(title);
+  createTextChild(element.labelElement, title);
   return element;
 }
 

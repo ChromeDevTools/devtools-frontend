@@ -943,7 +943,7 @@ export class NetworkRequestNode extends NetworkNode {
    * @param {string} text
    */
   _setTextAndTitle(element, text) {
-    element.createTextChild(text);
+    UI.UIUtils.createTextChild(element, text);
     element.title = text;
   }
 
@@ -954,7 +954,7 @@ export class NetworkRequestNode extends NetworkNode {
    * @param {function():void} handler
    */
   _setTextAndTitleAndLink(element, cellText, linkText, handler) {
-    element.createTextChild(cellText);
+    UI.UIUtils.createTextChild(element, cellText);
     element.createChild('span', 'separator-in-cell');
     const link = document.createElement('span');
     link.classList.add('devtools-link');
@@ -1144,11 +1144,11 @@ export class NetworkRequestNode extends NetworkNode {
     if (columnId === 'name') {
       const name = this._request.name().trimMiddle(100);
       const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this._request);
-      cell.createTextChild(networkManager ? networkManager.target().decorateLabel(name) : name);
+      UI.UIUtils.createTextChild(cell, networkManager ? networkManager.target().decorateLabel(name) : name);
       this._appendSubtitle(cell, this._request.path());
       cell.title = this._request.url();
     } else if (text) {
-      cell.createTextChild(text);
+      UI.UIUtils.createTextChild(cell, text);
       cell.title = text;
     }
   }
@@ -1163,14 +1163,14 @@ export class NetworkRequestNode extends NetworkNode {
     if (this._request.failed && !this._request.canceled && !this._request.wasBlocked()) {
       const failText = Common.UIString.UIString('(failed)');
       if (this._request.localizedFailDescription) {
-        cell.createTextChild(failText);
+        UI.UIUtils.createTextChild(cell, failText);
         this._appendSubtitle(cell, this._request.localizedFailDescription, true);
         cell.title = failText + ' ' + this._request.localizedFailDescription;
       } else {
         this._setTextAndTitle(cell, failText);
       }
     } else if (this._request.statusCode) {
-      cell.createTextChild('' + this._request.statusCode);
+      UI.UIUtils.createTextChild(cell, '' + this._request.statusCode);
       this._appendSubtitle(cell, this._request.statusText);
       cell.title = this._request.statusCode + ' ' + this._request.statusText;
     } else if (this._request.parsedURL.isDataURL()) {
@@ -1331,28 +1331,28 @@ export class NetworkRequestNode extends NetworkNode {
     const resourceSize = Platform.NumberUtilities.bytesToString(this._request.resourceSize);
 
     if (this._request.cachedInMemory()) {
-      cell.createTextChild(ls`(memory cache)`);
+      UI.UIUtils.createTextChild(cell, ls`(memory cache)`);
       cell.title = ls`Served from memory cache, resource size: ${resourceSize}`;
       cell.classList.add('network-dim-cell');
     } else if (this._request.fetchedViaServiceWorker) {
-      cell.createTextChild(ls`(ServiceWorker)`);
+      UI.UIUtils.createTextChild(cell, ls`(ServiceWorker)`);
       cell.title = ls`Served from ServiceWorker, resource size: ${resourceSize}`;
       cell.classList.add('network-dim-cell');
     } else if (this._request.redirectSourceSignedExchangeInfoHasNoErrors()) {
-      cell.createTextChild(ls`(signed-exchange)`);
+      UI.UIUtils.createTextChild(cell, ls`(signed-exchange)`);
       cell.title = ls`Served from Signed HTTP Exchange, resource size: ${resourceSize}`;
       cell.classList.add('network-dim-cell');
     } else if (this._request.fromPrefetchCache()) {
-      cell.createTextChild(ls`(prefetch cache)`);
+      UI.UIUtils.createTextChild(cell, ls`(prefetch cache)`);
       cell.title = ls`Served from prefetch cache, resource size: ${resourceSize}`;
       cell.classList.add('network-dim-cell');
     } else if (this._request.cached()) {
-      cell.createTextChild(ls`(disk cache)`);
+      UI.UIUtils.createTextChild(cell, ls`(disk cache)`);
       cell.title = ls`Served from disk cache, resource size: ${resourceSize}`;
       cell.classList.add('network-dim-cell');
     } else {
       const transferSize = Platform.NumberUtilities.bytesToString(this._request.transferSize);
-      cell.createTextChild(transferSize);
+      UI.UIUtils.createTextChild(cell, transferSize);
       cell.title = `${transferSize} transferred over network, resource size: ${resourceSize}`;
     }
     this._appendSubtitle(cell, resourceSize);

@@ -585,12 +585,12 @@ export class Section {
   _updateClientInfo(element, targetInfo) {
     if (targetInfo.type !== 'page' && targetInfo.type === 'iframe') {
       const clientString = element.createChild('span', 'service-worker-client-string');
-      clientString.createTextChild(ls`Worker: ${targetInfo.url}`);
+      UI.UIUtils.createTextChild(clientString, ls`Worker: ${targetInfo.url}`);
       return;
     }
     element.removeChildren();
     const clientString = element.createChild('span', 'service-worker-client-string');
-    clientString.createTextChild(targetInfo.url);
+    UI.UIUtils.createTextChild(clientString, targetInfo.url);
     this._createLink(
         element, ls`focus`, this._activateTarget.bind(this, targetInfo.targetId), 'service-worker-client-focus-link');
   }

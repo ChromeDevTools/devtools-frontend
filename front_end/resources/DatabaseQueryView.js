@@ -281,7 +281,7 @@ export class DatabaseQueryView extends UI.Widget.VBox {
     const resultElement = this._appendQueryResult(query);
     resultElement.classList.add('error');
     resultElement.appendChild(UI.Icon.Icon.create('smallicon-error', 'prompt-icon'));
-    resultElement.createTextChild(errorText);
+    UI.UIUtils.createTextChild(resultElement, errorText);
 
     this._scrollResultIntoView();
   }

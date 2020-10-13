@@ -475,9 +475,9 @@ export class NetworkLogViewColumns {
    */
   _makeHeaderFragment(title, subtitle) {
     const fragment = createDocumentFragment();
-    fragment.createTextChild(title);
+    UI.UIUtils.createTextChild(fragment, title);
     const subtitleDiv = fragment.createChild('div', 'network-header-subtitle');
-    subtitleDiv.createTextChild(subtitle);
+    UI.UIUtils.createTextChild(subtitleDiv, subtitle);
     return fragment;
   }
 

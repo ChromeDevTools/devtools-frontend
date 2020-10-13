@@ -34,7 +34,7 @@ import * as Host from '../host/host.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {Descriptor, KeyboardShortcut, Keys, Modifiers} from './KeyboardShortcut.js';  // eslint-disable-line no-unused-vars
 import {ShortcutRegistry} from './ShortcutRegistry.js';
-import {createDocumentationLink} from './UIUtils.js';
+import {createDocumentationLink, createTextChild} from './UIUtils.js';
 import {Widget} from './Widget.js';
 
 /** @type {!ShortcutsScreen} */
@@ -288,7 +288,7 @@ export class ShortcutsScreen {
     const widget = new Widget();
 
     widget.element.className = 'settings-tab-container';  // Override
-    widget.element.createChild('header').createChild('h1').createTextChild(ls`Shortcuts`);
+    createTextChild(widget.element.createChild('header').createChild('h1'), ls`Shortcuts`);
     const scrollPane = widget.element.createChild('div', 'settings-container-wrapper');
     const container = scrollPane.createChild('div');
     container.className = 'settings-content settings-container';

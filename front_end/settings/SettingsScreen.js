@@ -209,7 +209,7 @@ class SettingsTab extends UI.Widget.VBox {
       this.element.id = id;
     }
     const header = this.element.createChild('header');
-    header.createChild('h1').createTextChild(name);
+    UI.UIUtils.createTextChild(header.createChild('h1'), name);
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
                                 .createChild('div', 'settings-tab settings-content settings-container');
   }
@@ -377,7 +377,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
     const subsection = createElement('div');
     const warning = subsection.createChild('span', 'settings-experiments-warning-subsection-warning');
     warning.textContent = Common.UIString.UIString('WARNING:');
-    subsection.createTextChild(' ');
+    UI.UIUtils.createTextChild(subsection, ' ');
     const message = subsection.createChild('span', 'settings-experiments-warning-subsection-message');
     message.textContent = warningMessage;
     return subsection;

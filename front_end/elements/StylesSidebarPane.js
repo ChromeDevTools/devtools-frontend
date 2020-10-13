@@ -987,7 +987,7 @@ export class SectionBlock {
   static async _createInheritedNodeBlock(node) {
     const separatorElement = createElement('div');
     separatorElement.className = 'sidebar-separator';
-    separatorElement.createTextChild(ls`Inherited from${' '}`);
+    UI.UIUtils.createTextChild(separatorElement, ls`Inherited from${' '}`);
     const link = await Common.Linkifier.Linkifier.linkify(node, {preventKeyboardFocus: true});
     separatorElement.appendChild(link);
     return new SectionBlock(separatorElement);
@@ -1716,7 +1716,7 @@ export class StylePropertiesSection {
     const fragment = createDocumentFragment();
     for (let i = 0; i < selectors.length; ++i) {
       if (i) {
-        fragment.createTextChild(', ');
+        UI.UIUtils.createTextChild(fragment, ', ');
       }
       fragment.appendChild(this._createSelectorElement(selectors[i], matchingSelectors[i], i));
     }
@@ -2798,7 +2798,7 @@ export class StylesSidebarPropertyRenderer {
       url = url.substring(1, url.length - 1);
     }
     const container = createDocumentFragment();
-    container.createTextChild('url(');
+    UI.UIUtils.createTextChild(container, 'url(');
     let hrefUrl = null;
     if (this._rule && this._rule.resourceURL()) {
       hrefUrl = Common.ParsedURL.ParsedURL.completeURL(this._rule.resourceURL(), url);
@@ -2817,7 +2817,7 @@ export class StylesSidebarPropertyRenderer {
         }),
         hrefUrl || url);
     container.appendChild(link);
-    container.createTextChild(')');
+    UI.UIUtils.createTextChild(container, ')');
     return container;
   }
 }

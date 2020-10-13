@@ -789,10 +789,10 @@ export class JavaScriptAutocompleteConfig {
         if (i === argumentIndex || (i < argumentIndex && args[i].startsWith('...'))) {
           argumentsElement.appendChild(UI.Fragment.html`<b>${args[i]}</b>`);
         } else {
-          argumentsElement.createTextChild(args[i]);
+          UI.UIUtils.createTextChild(argumentsElement, args[i]);
         }
         if (i < args.length - 1) {
-          argumentsElement.createTextChild(', ');
+          UI.UIUtils.createTextChild(argumentsElement, ', ');
         }
       }
       tooltip.appendChild(UI.Fragment.html`<div class='source-code'>\u0192(${argumentsElement})</div>`);

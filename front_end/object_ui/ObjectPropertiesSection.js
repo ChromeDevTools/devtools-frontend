@@ -271,9 +271,9 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         valueElement.createChild('span', 'object-value-function-prefix').textContent = prefix + ' ';
       }
       if (includePreview) {
-        valueElement.createTextChild(body.trim().trimEndWithMaxLength(maxFunctionBodyLength));
+        UI.UIUtils.createTextChild(valueElement, body.trim().trimEndWithMaxLength(maxFunctionBodyLength));
       } else {
-        valueElement.createTextChild(abbreviation.replace(/\n/g, ' '));
+        UI.UIUtils.createTextChild(valueElement, abbreviation.replace(/\n/g, ' '));
       }
     }
   }
@@ -379,7 +379,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
           (self.ObjectUI.ObjectPropertiesSection._maxRenderableStringLength || maxRenderableStringLength)) {
         propertyValue = new ExpandableTextPropertyValue(valueElement, text, 50);
       } else {
-        valueElement.createTextChild(text);
+        UI.UIUtils.createTextChild(valueElement, text);
         propertyValue = new ObjectPropertyValue(valueElement);
         valueElement.title = description || '';
       }

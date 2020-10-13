@@ -241,9 +241,9 @@ export class ConsoleContextSelector {
     const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(element, 'console/consoleContextSelector.css');
     const title = shadowRoot.createChild('div', 'title');
-    title.createTextChild(this.titleFor(item).trimEndWithMaxLength(100));
+    UI.UIUtils.createTextChild(title, this.titleFor(item).trimEndWithMaxLength(100));
     const subTitle = shadowRoot.createChild('div', 'subtitle');
-    subTitle.createTextChild(this._subtitleFor(item));
+    UI.UIUtils.createTextChild(subTitle, this._subtitleFor(item));
     element.style.paddingLeft = (8 + this._depthFor(item) * 15) + 'px';
     return element;
   }

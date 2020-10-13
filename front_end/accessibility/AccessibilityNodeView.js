@@ -477,10 +477,10 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
 
     if (this._source.attributeValue) {
       this.appendValueElement(this._source.attributeValue);
-      this.listItemElement.createTextChild('\xA0');
+      UI.UIUtils.createTextChild(this.listItemElement, '\xA0');
     } else if (this._source.nativeSourceValue) {
       this.appendValueElement(this._source.nativeSourceValue);
-      this.listItemElement.createTextChild('\xA0');
+      UI.UIUtils.createTextChild(this.listItemElement, '\xA0');
       if (this._source.value) {
         this.appendValueElement(this._source.value);
       }
@@ -569,7 +569,7 @@ export class AXRelatedNodeElement {
     } else if (this._idref) {
       element.classList.add('invalid');
       const valueElement = AXNodePropertyTreeElement.createExclamationMark(ls`No node with this ID.`);
-      valueElement.createTextChild(this._idref);
+      UI.UIUtils.createTextChild(valueElement, this._idref);
       element.appendChild(valueElement);
     }
 

@@ -428,29 +428,6 @@ Element.prototype.createChild = function(elementName, className, customElementTy
 DocumentFragment.prototype.createChild = Element.prototype.createChild;
 
 /**
- * @param {string} text
- * @return {!Text}
- */
-Element.prototype.createTextChild = function(text) {
-  const element = this.ownerDocument.createTextNode(text);
-  this.appendChild(element);
-  return element;
-};
-
-DocumentFragment.prototype.createTextChild = Element.prototype.createTextChild;
-
-/**
- * @param {...string} var_args
- */
-Element.prototype.createTextChildren = function(var_args) {
-  for (let i = 0, n = arguments.length; i < n; ++i) {
-    this.createTextChild(arguments[i]);
-  }
-};
-
-DocumentFragment.prototype.createTextChildren = Element.prototype.createTextChildren;
-
-/**
  * @return {number}
  */
 Element.prototype.totalOffsetLeft = function() {

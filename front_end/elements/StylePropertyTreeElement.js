@@ -162,7 +162,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
    */
   _processVar(text) {
     const swatch = InlineEditor.CSSVarSwatch.createCSSVarSwatch();
-    swatch.createTextChild(text);
+    UI.UIUtils.createTextChild(swatch, text);
 
     const {computedValue, fromFallback} = this._matchedStyles.computeSingleVariableValue(this._style, text);
     swatch.data = {text, computedValue, fromFallback, onLinkClick: this._handleVarDefinitionClick.bind(this)};
@@ -481,8 +481,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
-    this.listItemElement.createChild('span', 'styles-clipboard-only')
-        .createTextChild(indent + (this.property.disabled ? '/* ' : ''));
+    UI.UIUtils.createTextChild(
+        this.listItemElement.createChild('span', 'styles-clipboard-only'),
+        indent + (this.property.disabled ? '/* ' : ''));
     this.listItemElement.appendChild(this.nameElement);
     const lineBreakValue = this.valueElement.firstElementChild && this.valueElement.firstElementChild.tagName === 'BR';
     const separator = lineBreakValue ? ':' : ': ';
@@ -491,9 +492,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.listItemElement.appendChild(this._expandElement);
     }
     this.listItemElement.appendChild(this.valueElement);
-    this.listItemElement.createTextChild(';');
+    UI.UIUtils.createTextChild(this.listItemElement, ';');
     if (this.property.disabled) {
-      this.listItemElement.createChild('span', 'styles-clipboard-only').createTextChild(' */');
+      UI.UIUtils.createTextChild(this.listItemElement.createChild('span', 'styles-clipboard-only'), ' */');
     }
 
     if (!this.property.parsedOk) {

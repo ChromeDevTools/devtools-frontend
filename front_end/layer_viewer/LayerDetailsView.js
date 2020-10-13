@@ -160,7 +160,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
    */
   _createScrollRectElement(scrollRect, index) {
     if (index) {
-      this._scrollRectsCell.createTextChild(', ');
+      UI.UIUtils.createTextChild(this._scrollRectsCell, ', ');
     }
     const element = this._scrollRectsCell.createChild('span', 'scroll-rect');
     if (this._selection && /** @type {!ScrollRectSelection} */ (this._selection).scrollRectIndex === index) {
@@ -196,7 +196,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
       return;
     }
 
-    this._stickyPositionConstraintCell.createTextChild(', ');
+    UI.UIUtils.createTextChild(this._stickyPositionConstraintCell, ', ');
     const child = this._stickyPositionConstraintCell.createChild('span');
     child.textContent = this._formatStickyAncestorLayer(title, layer);
   }
@@ -215,7 +215,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
     stickyBoxRectElement.textContent = Common.UIString.UIString(
         'Sticky Box %d × %d (at %d, %d)', stickyBoxRect.width, stickyBoxRect.height, stickyBoxRect.x, stickyBoxRect.y);
 
-    this._stickyPositionConstraintCell.createTextChild(', ');
+    UI.UIUtils.createTextChild(this._stickyPositionConstraintCell, ', ');
 
     const containingBlockRect = constraint.containingBlockRect();
     const containingBlockRectElement = this._stickyPositionConstraintCell.createChild('span');

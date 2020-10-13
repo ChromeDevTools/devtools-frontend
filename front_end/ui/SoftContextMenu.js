@@ -37,7 +37,7 @@ import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior, SizeBehavior,} from './GlassPane.js';  // eslint-disable-line no-unused-vars
 import {Icon} from './Icon.js';
-import {ElementFocusRestorer} from './UIUtils.js';
+import {createTextChild, ElementFocusRestorer} from './UIUtils.js';
 
 /**
  * @unrestricted
@@ -162,7 +162,7 @@ export class SoftContextMenu {
     if (!item.enabled) {
       menuItemElement.classList.add('soft-context-menu-disabled');
     }
-    menuItemElement.createTextChild(item.label);
+    createTextChild(menuItemElement, item.label);
     menuItemElement.createChild('span', 'soft-context-menu-shortcut').textContent = item.shortcut;
 
     menuItemElement.addEventListener('mousedown', this._menuItemMouseDown.bind(this), false);
@@ -206,7 +206,7 @@ export class SoftContextMenu {
     menuItemElement.appendChild(checkMarkElement);
     checkMarkElement.style.opacity = '0';
 
-    menuItemElement.createTextChild(item.label);
+    createTextChild(menuItemElement, item.label);
     ARIAUtils.setExpanded(menuItemElement, false);
 
     if (Host.Platform.isMac() && !ThemeSupport.ThemeSupport.instance().hasTheme()) {

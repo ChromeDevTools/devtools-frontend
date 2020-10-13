@@ -23,7 +23,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     this.registerRequiredCSS('emulation/devicesSettingsTab.css');
 
     const header = this.element.createChild('header');
-    header.createChild('h1').createTextChild(ls`Emulated Devices`);
+    UI.UIUtils.createTextChild(header.createChild('h1'), ls`Emulated Devices`);
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
                                 .createChild('div', 'settings-tab settings-content settings-container');
 

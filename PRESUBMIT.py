@@ -417,7 +417,7 @@ def _CheckComponentBridgesUpToDate(input_api, output_api):
     results = []
 
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                         'scripts', 'component_bridges', 'gen',
+                                         'scripts', 'component_bridges',
                                          'regenerate-all-bridges.js')
 
     tsc_arguments = ['-p', 'scripts/component_bridges/tsconfig.json']

@@ -1,9 +1,13 @@
 {
-  "extends": "../../../../scripts/component_bridges/tsconfig.json",
+  "extends": "../../../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./gen"
+    "module": "commonjs",
+    "moduleResolution": "node",
   },
+  "references": [
+    { "path": "../../../../scripts/component_bridges"}
+  ],
   "include": [
-    "*_test.ts"
+    "*.ts",
   ]
 }

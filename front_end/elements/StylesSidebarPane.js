@@ -1181,7 +1181,7 @@ export class StylePropertiesSection {
 
     const header = rule.styleSheetId ? matchedStyles.cssModel().styleSheetHeaderForId(rule.styleSheetId) : null;
 
-    if (header && header.isMutable) {
+    if (header && header.isMutable && !header.isViaInspector()) {
       const label = header.isConstructed ? Common.UIString.UIString('constructed stylesheet') : '<style>';
       if (header.ownerNode) {
         const link = linkifyDeferredNodeReference(header.ownerNode);

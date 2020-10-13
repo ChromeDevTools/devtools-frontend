@@ -2,15 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/ui.js';
 
-import {ApplicationPanelSidebar, StorageCategoryView} from './ApplicationPanelSidebar.js';
+import {ApplicationPanelSidebar, CookieTreeElement, StorageCategoryView} from './ApplicationPanelSidebar.js';  // eslint-disable-line no-unused-vars
 import {CookieItemsView} from './CookieItemsView.js';
 import {DatabaseQueryView} from './DatabaseQueryView.js';
 import {DatabaseTableView} from './DatabaseTableView.js';
@@ -228,7 +225,7 @@ export class ResourceRevealer {
   /**
    * @override
    * @param {!Object} resource
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async reveal(resource) {
     if (!(resource instanceof SDK.Resource.Resource)) {
@@ -247,7 +244,7 @@ export class CookieReferenceRevealer {
   /**
    * @override
    * @param {!Object} cookie
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async reveal(cookie) {
     if (!(cookie instanceof SDK.Cookie.CookieReference)) {
@@ -273,7 +270,8 @@ export class CookieReferenceRevealer {
    * @returns {!Promise<boolean>}
    */
   async _revealByDomain(sidebar, domain) {
-    const item = sidebar.cookieListTreeElement.children().find(c => c._cookieDomain.endsWith(domain));
+    const item = sidebar.cookieListTreeElement.children().find(
+        c => /** @type {!CookieTreeElement} */ (c).cookieDomain().endsWith(domain));
     if (item) {
       await item.revealAndSelect();
       return true;

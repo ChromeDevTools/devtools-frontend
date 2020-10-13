@@ -1864,6 +1864,10 @@ export class CookieTreeElement extends BaseStorageTreeElement {
     return 'cookies://' + this._cookieDomain;
   }
 
+  cookieDomain() {
+    return this._cookieDomain;
+  }
+
   /**
    * @override
    */

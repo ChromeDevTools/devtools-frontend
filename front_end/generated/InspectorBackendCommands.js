@@ -1390,6 +1390,9 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Network.ServiceWorkerResponseSource',
       {CacheStorage: 'cache-storage', HttpCache: 'http-cache', FallbackCode: 'fallback-code', Network: 'network'});
+  inspectorBackend.registerEnum('Network.TrustTokenParamsRefreshPolicy', {UseCached: 'UseCached', Refresh: 'Refresh'});
+  inspectorBackend.registerEnum(
+      'Network.TrustTokenOperationType', {Issuance: 'Issuance', Redemption: 'Redemption', Signing: 'Signing'});
   inspectorBackend.registerEnum(
       'Network.InitiatorType',
       {Parser: 'parser', Script: 'script', Preload: 'preload', SignedExchange: 'SignedExchange', Other: 'other'});

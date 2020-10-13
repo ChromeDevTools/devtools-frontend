@@ -76,7 +76,7 @@ export class SortableDataGrid extends ViewportDataGrid {
 
   /**
    * @param {!Array.<string>} columnNames
-   * @param {!Array.<string>} values
+   * @param {!Array.<*>} values
    * @param {string} displayName
    * @return {?SortableDataGrid<!SortableDataGridNode<!NODE_TYPE>>}
    * @template NODE_TYPE
@@ -95,7 +95,7 @@ export class SortableDataGrid extends ViewportDataGrid {
 
     const nodes = [];
     for (let i = 0; i < values.length / numColumns; ++i) {
-      /** @type {!Object<number, string>} */
+      /** @type {!Object<number, *>} */
       const data = {};
       for (let j = 0; j < columnNames.length; ++j) {
         data[j] = values[numColumns * i + j];

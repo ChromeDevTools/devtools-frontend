@@ -613,9 +613,9 @@ export class ConsoleViewMessage {
   _formatParameterAsValue(obj) {
     const result = /** @type {!HTMLElement} */ (document.createElement('span'));
     const description = obj.description || '';
-    if (description.length > Console.ConsoleViewMessage._MaxTokenizableStringLength) {
+    if (description.length > getMaxTokenizableStringLength()) {
       const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue(
-          document.createElement('span'), description, Console.ConsoleViewMessage._LongStringVisibleLength);
+          document.createElement('span'), description, getLongStringVisibleLength());
       result.appendChild(propertyValue.element);
     } else {
       UI.UIUtils.createTextChild(result, description);
@@ -1638,9 +1638,9 @@ export class ConsoleViewMessage {
    * @suppress {accessControls}
    */
   _linkifyWithCustomLinkifier(string, linkifier) {
-    if (string.length > Console.ConsoleViewMessage._MaxTokenizableStringLength) {
+    if (string.length > getMaxTokenizableStringLength()) {
       const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue(
-          document.createElement('span'), string, Console.ConsoleViewMessage._LongStringVisibleLength);
+          document.createElement('span'), string, getLongStringVisibleLength());
       const fragment = createDocumentFragment();
       fragment.appendChild(propertyValue.element);
       return fragment;
@@ -1693,7 +1693,7 @@ export class ConsoleViewMessage {
    */
   static _tokenizeMessageText(string) {
     const {tokenizerRegexes, tokenizerTypes} = getOrCreateTokenizers();
-    if (string.length > Console.ConsoleViewMessage._MaxTokenizableStringLength) {
+    if (string.length > getMaxTokenizableStringLength()) {
       return [{text: string, type: undefined}];
     }
     const results = TextUtils.TextUtils.Utils.splitStringByRegexes(string, tokenizerRegexes);
@@ -1860,5 +1860,27 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
  */
 export const MaxLengthForLinks = 40;
 
-export const _MaxTokenizableStringLength = 10000;
-export const _LongStringVisibleLength = 5000;
+let _MaxTokenizableStringLength = 10000;
+let _LongStringVisibleLength = 5000;
+
+export const getMaxTokenizableStringLength = () => {
+  return _MaxTokenizableStringLength;
+};
+
+/**
+ * @param {number} length
+ */
+export const setMaxTokenizableStringLength = length => {
+  _MaxTokenizableStringLength = length;
+};
+
+export const getLongStringVisibleLength = () => {
+  return _LongStringVisibleLength;
+};
+
+/**
+ * @param {number} length
+ */
+export const setLongStringVisibleLength = length => {
+  _LongStringVisibleLength = length;
+};

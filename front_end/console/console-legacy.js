@@ -68,14 +68,30 @@ Console.ConsoleGroup = ConsoleModule.ConsoleView.ConsoleGroup;
 Console.ConsoleViewMessage = ConsoleModule.ConsoleViewMessage.ConsoleViewMessage;
 
 /**
+ * @type {function(number):void}
+ */
+Console.ConsoleViewMessage.setMaxTokenizableStringLength =
+    ConsoleModule.ConsoleViewMessage.setMaxTokenizableStringLength;
+
+/**
+ * @type {function(number):void}
+ */
+Console.ConsoleViewMessage.setLongStringVisibleLength = ConsoleModule.ConsoleViewMessage.setLongStringVisibleLength;
+
+/**
  * @constructor
  */
 Console.ConsoleGroupViewMessage = ConsoleModule.ConsoleViewMessage.ConsoleGroupViewMessage;
 
-/** @suppress {accessControls} */
-Console.ConsoleViewMessage._MaxTokenizableStringLength = ConsoleModule.ConsoleViewMessage._MaxTokenizableStringLength;
-/** @suppress {accessControls} */
-Console.ConsoleViewMessage._LongStringVisibleLength = ConsoleModule.ConsoleViewMessage._LongStringVisibleLength;
+Object.defineProperty(Console.ConsoleViewMessage, '_MaxTokenizableStringLength', {
+  get: ConsoleModule.ConsoleViewMessage.getMaxTokenizableStringLength,
+  set: ConsoleModule.ConsoleViewMessage.setMaxTokenizableStringLength,
+});
+
+Object.defineProperty(Console.ConsoleViewMessage, '_LongStringVisibleLength', {
+  get: ConsoleModule.ConsoleViewMessage.getLongStringVisibleLength,
+  set: ConsoleModule.ConsoleViewMessage.setLongStringVisibleLength,
+});
 
 /**
  * @constructor

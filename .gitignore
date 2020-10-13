@@ -27,6 +27,9 @@ npm-debug.log
 /buildtools
 /out
 /third_party/*
+!/third_party/emscripten-releases/
+/third_party/emscripten-releases/*
+!/third_party/emscripten-releases/.emscripten
 !/third_party/blink
 !/third_party/i18n
 !/third_party/pyjson5

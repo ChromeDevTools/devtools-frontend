@@ -28,11 +28,10 @@ DOWNLOAD_URL = "https://storage.googleapis.com/webassembly/emscripten-releases-b
 
 
 def check_stamp_file(options):
-    try:
-        with open(os.path.join(options.dest, STAMP_FILE)) as f:
-            return options.tag == f.read().strip()
-    except Exception:
+    if not os.path.isfile(options.dest):
         return False
+    with open(os.path.join(options.dest, STAMP_FILE)) as f:
+        return options.tag == f.read().strip()
 
 
 def write_stamp_file(options):
@@ -67,14 +66,12 @@ def script_main(args):
     url = DOWNLOAD_URL % (os_name, options.tag,
                           'zip' if os_name == 'win' else 'tbz2')
 
-    download_size = 0
     try:
         filename, _ = urlretrieve(url)
 
         unzip(os_name, filename, options.dest)
 
         write_stamp_file(options)
-
     except Exception as e:
         sys.stderr.write('Error Downloading URL "{url}": {e}\n'.format(url=url,
                                                                        e=e))

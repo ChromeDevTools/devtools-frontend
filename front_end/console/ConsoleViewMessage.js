@@ -75,6 +75,8 @@ export class ConsoleViewMessage {
     this._expandTrace = null;
     /** @type {?HTMLElement} */
     this._anchorElement = null;
+    /** @type {!Array<!UI.UIUtils.HighlightChange>} */
+    this._searchHighlightNodeChanges = [];
   }
 
   /**
@@ -1462,12 +1464,12 @@ export class ConsoleViewMessage {
    * @param {?RegExp} regex
    */
   setSearchRegex(regex) {
-    if (this._searchHiglightNodeChanges && this._searchHiglightNodeChanges.length) {
-      UI.UIUtils.revertDomChanges(this._searchHiglightNodeChanges);
+    if (this._searchHighlightNodeChanges && this._searchHighlightNodeChanges.length) {
+      UI.UIUtils.revertDomChanges(this._searchHighlightNodeChanges);
     }
     this._searchRegex = regex;
     this._searchHighlightNodes = [];
-    this._searchHiglightNodeChanges = [];
+    this._searchHighlightNodeChanges = [];
     if (!this._searchRegex) {
       return;
     }
@@ -1482,7 +1484,7 @@ export class ConsoleViewMessage {
 
     if (sourceRanges.length) {
       this._searchHighlightNodes =
-          UI.UIUtils.highlightSearchResults(this.contentElement(), sourceRanges, this._searchHiglightNodeChanges);
+          UI.UIUtils.highlightSearchResults(this.contentElement(), sourceRanges, this._searchHighlightNodeChanges);
     }
   }
 

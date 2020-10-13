@@ -85,6 +85,9 @@
   <message name="IDS_DEVTOOLS_17ef39d79c395cc2274bf685b1d70b2c" desc="Name of a color vision deficiency that can be emulated via the Rendering drawer">
     Achromatopsia
   </message>
+  <message name="IDS_DEVTOOLS_1802bfd2aff1089bead71f8ad11c716f" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
+    This cookie was blocked because it had the &quot;SameSite=Lax&quot; attribute but the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.
+  </message>
   <message name="IDS_DEVTOOLS_18253f5cc6e0814eb6f9bc2fb560ce82" desc="The kind of resolution for a mixed content issue">
     automatically upgraded
   </message>
@@ -144,6 +147,9 @@
   </message>
   <message name="IDS_DEVTOOLS_242dd6b02f1ff7db7cbba7f7226abb4a" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Do not emulate CSS prefers-color-scheme
+  </message>
+  <message name="IDS_DEVTOOLS_266bd94230e7c7d11ab8b04c755f99c0" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
+    This Set-Cookie was blocked because it had the &quot;SameSite=Strict&quot; attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.
   </message>
   <message name="IDS_DEVTOOLS_28e486be4b3bad598b6e9eaa34ebec76" desc="Text in Network Manager">
     Set-Cookie header is ignored in response from url: <ph name="RESPONSE_URL">$1s<ex>https://example.com</ex></ph>. Cookie length should be less than or equal to 4096 characters.
@@ -250,6 +256,9 @@
   <message name="IDS_DEVTOOLS_62c98a40c9549eded0914ba9f5de51ce" desc="Bullet point about resolving CSP inline violations">
     adding the hash or nonce of the inline script to your CSP header.
   </message>
+  <message name="IDS_DEVTOOLS_70bb729781edf4d84d0d9448ea286e19" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
+    This Set-Cookie was blocked because it had the &quot;SameSite=Lax&quot; attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.
+  </message>
   <message name="IDS_DEVTOOLS_7aca5a3302ffbed606fd7701315b1c45" desc="Title of a setting that turns on grid extension lines">
     Extend grid lines
   </message>
@@ -259,11 +268,17 @@
   <message name="IDS_DEVTOOLS_87d9ba4d9f1c832fff7132d0855229b4" desc="Resolution for a SameSiteCookie issue">
     Resolve this issue by migrating your site (as defined by the eTLD+1) entirely to HTTPS. It is also recommended to mark the cookie with the |Secure| attribute if that is not already the case.
   </message>
+  <message name="IDS_DEVTOOLS_880e498d5a62f26071be2f50f12deb4d" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
+    This cookie didn&apos;t specify a &quot;SameSite&quot; attribute when it was stored, was defaulted to &quot;SameSite=Lax&quot;, and was blocked because the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.
+  </message>
   <message name="IDS_DEVTOOLS_9182eda0635ccdc88276ba9e013c5c1b" desc="Title of a Rendering setting that can be invoked through the Command Menu">
     Do not emulate a focused page
   </message>
   <message name="IDS_DEVTOOLS_9485d0acccd869b51a96f2b35fd0b620" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Do not emulate CSS prefers-reduced-data
+  </message>
+  <message name="IDS_DEVTOOLS_96a5cc95cb5e6812861254286a5764af" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
+    This Set-Cookie didn&apos;t specify a &quot;SameSite&quot; attribute, was defaulted to &quot;SameSite=Lax&quot;, and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.
   </message>
   <message name="IDS_DEVTOOLS_9915b8ef9885af8c4381daed280b5248" desc="Title for CSS Grid tooling option">
     Do not show grid track sizes
@@ -284,6 +299,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ad6cd0dc14b9f610f20d88d5596ead7b" desc="Title for a SameSiteCookie issue">
     Migrate entirely to HTTPS to allow cookies to be set by same-site subresources
+  </message>
+  <message name="IDS_DEVTOOLS_adebfaed8be7365a6da10b3a82308388" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
+    This cookie was blocked because it had the &quot;SameSite=Strict&quot; attribute but the request was cross-site. This includes top-level navigation requests initiated by other sites. This request is considered cross-site because the URL has a different scheme than the current site.
   </message>
   <message name="IDS_DEVTOOLS_b40b37431c71726db1bd4e1bc44cbfac" desc="Error message for canceled source map loads">
     Load canceled due to reload of inspected page

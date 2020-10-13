@@ -966,6 +966,13 @@ export class TargetBase {
   }
 
   /**
+   * @param {!ProtocolProxyApi.RuntimeDispatcher} dispatcher
+   */
+  registerRuntimeDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @param {!ProtocolProxyApi.SecurityDispatcher} dispatcher
    */
   registerSecurityDispatcher(dispatcher) {

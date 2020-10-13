@@ -85,7 +85,8 @@ export class ConsoleContextSelector {
    */
   titleFor(executionContext) {
     const target = executionContext.target();
-    let label = executionContext.label() ? target.decorateLabel(executionContext.label()) : '';
+    const maybeLabel = executionContext.label();
+    let label = maybeLabel ? target.decorateLabel(maybeLabel) : '';
     if (executionContext.frameId) {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       const frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);

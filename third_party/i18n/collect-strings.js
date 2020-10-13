@@ -171,7 +171,7 @@ function _processPlaceholderMarkdownCode(icu) {
       // Backtick replacement looks unreadable here, so .join() instead.
       icu.message += '$' + placeholderName + '$';
       icu.placeholders[placeholderName] = {
-        content: '`' + segment.text + '`',
+        content: segment.text,
         example: segment.text,
       };
     } else {

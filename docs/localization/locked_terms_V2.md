@@ -1,6 +1,7 @@
 ## How to prevent a term being localized?
-If a string contains some terms that should not be localized, convert them to placeholders
-For example, if the `robots.txt` in string `Requesting for robots.txt ...` should not be translated:
+
+Any text within the backticks will not be translated.
+For example, if the 'robots.txt' in string 'Requesting for robots.txt ...' should not be translated:
 
 ```javascript
 // in example.js file
@@ -9,13 +10,16 @@ import * as i18n from '../i18n/i18n.js';
 const UIStrings = {
   /**
    * @description Example description. Note: "robots.txt" is a canonical filename and should not be translated.
-   * @example {robots.txt} PH1
    */
-  requestMessage: 'Requesting for {PH1} ...',
+  requestMessage: 'Requesting for `robots.txt` ...',
 };
 const str_ = i18n.i18n.registerUIStrings('example.js', UIStrings);
 
-const message = i18n.i18n.getLocalizedString(str_, UIStrings.requestMessage, {PH1: 'robots.txt'});
+const message = i18n.i18n.getLocalizedString(str_, UIStrings.requestMessage);
+```
+The string will rendered with robots.txt not translated and without the backticks around it
+```javascript
+  'Requesting for robots.txt ...'
 ```
 
 ## What should not be localized?

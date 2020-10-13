@@ -55,45 +55,45 @@ Code example:
    1. Do not assume word order by using concatenation. Use the whole string.
       ❌
       ```javascript
-      `Add` + `breakpoint`
+      'Add' + 'breakpoint'
       ```
       ✔️
       ```javascript
-      `Add breakpoint`
+      'Add breakpoint'
       ```
       or
       ❌
       ```javascript
-      let description = `first part`
+      let description = 'first part'
       if (condition)
-        description += ` second part`
+        description += ' second part'
       ```
       ✔️
       ```javascript
       let description
       if (condition)
-        description = `first part second part`
+        description = 'first part second part'
       else
-        description = `first part`
+        description = 'first part'
       ```
    2. Use placeholder over concatenation. This is so that the translators can adjust variable order based on what works in another language. For example:
       ❌
       ```javascript
-      `Check ` + title + ` for more information.`
+      'Check ' + title + ' for more information.'
       ```
       ✔️
       ```javascript
-      `Check {PH1} for more information.`, {PH1: title}
+      'Check {PH1} for more information.', {PH1: title}
       ```
    3. If your string contains <b>leading or trailing white space</b>, it's usually an indication that it's half of a sentence. This decreases localizability as it's essentially concatenating. Modify it so that it doesn't contain leading or trailing white space anymore if you can.
-   4. Check if there are something should not be localized (see [locked_terms](locked_terms_V2.md)) for more details.
+   4. <b>Backticks</b> are only used for the text that should not be localized. They cannot be escaped as part of the string. Check if there are something should not be localized (see [locked_terms](locked_terms_V2.md) for more details).
 
-      ❌
+      ❌ Not localized
 
       - Numbers: 1, 1.23, 1.2e3, etc.
       - Application data: error codes, enums, database names, rgba, urls, etc.
 
-      ✔️
+      ✔️ Can be localized
 
       - Words and sentences
       - Punctuation

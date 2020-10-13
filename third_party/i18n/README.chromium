@@ -15,3 +15,4 @@ Local Modifications:
 3. Port in the only two functions(_splitMarkdownCodeSpans, _splitMarkdownLink) that are needed from Util
 4. Remove pruneObsoleteLhlMessages() and check collisions step
 5. Implement getToken() to avoid requiring the exportVars (liveUIStrings) due to ESM limitation in collectAllStringsInDir()
+6. Remove backtick for locked term after converting it to placeholder in ctc.json

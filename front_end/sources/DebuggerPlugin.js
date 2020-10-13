@@ -725,9 +725,6 @@ export class DebuggerPlugin extends Plugin {
    * @param {!Event} event
    */
   _onBlur(event) {
-    if (this._textEditor.element.isAncestor(/** @type {!Node} */ (event.target))) {
-      return;
-    }
     this._clearControlDown();
   }
 

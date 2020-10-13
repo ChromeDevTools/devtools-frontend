@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Root from '../root/root.js';
 
 /**
@@ -12,15 +9,18 @@ import * as Root from '../root/root.js';
  */
 class Service {
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   dispose() {
+    throw new Error('Not implemented');
   }
 
   /**
-   * @return {function(string)}
+   * @param {function(string, {id: string}):void} notify
    */
-  setNotify(notify) {}
+  setNotify(notify) {
+    throw new Error('Not implemented');
+  }
 }
 
 /**
@@ -31,7 +31,7 @@ class ServiceDispatcher {
    * @param {!ServicePort} port
    */
   constructor(port) {
-    /** @type {!Map<string, !Object>} */
+    /** @type {!Map<string, !Service>} */
     this._objects = new Map();
     this._lastObjectId = 1;
     this._port = port;
@@ -56,7 +56,7 @@ class ServiceDispatcher {
   }
 
   /**
-   * @param {!Object} message
+   * @param {{method: string, id: string, params: {id: string}}} message
    */
   _dispatchMessage(message) {
     const domainAndMethod = message['method'].split('.');
@@ -71,9 +71,10 @@ class ServiceDispatcher {
         return;
       }
       extensions[0].instance().then(object => {
+        const service = /** @type {!Service} */ (object);
         const id = String(this._lastObjectId++);
-        object.setNotify(this._notify.bind(this, id, serviceName));
-        this._objects.set(id, object);
+        service.setNotify(this._notify.bind(this, id, serviceName));
+        this._objects.set(id, service);
         this._sendResponse(message['id'], {id: id});
       });
     } else if (method === 'dispose') {
@@ -94,11 +95,15 @@ class ServiceDispatcher {
         console.error('Could not look up object with id for ' + JSON.stringify(message));
         return;
       }
+
+      // @ts-ignore Dynamic lookup on implementer of Service.
       const handler = object[method];
       if (!(handler instanceof Function)) {
         console.error('Handler for \'' + method + '\' is missing.');
         return;
       }
+
+      // @ts-ignore Dynamic lookup on implementer of Service.
       object[method](message['params']).then(result => this._sendResponse(message['id'], result));
     }
   }
@@ -114,7 +119,7 @@ class ServiceDispatcher {
    * @param {string} objectId
    * @param {string} serviceName
    * @param {string} method
-   * @param {!Object} params
+   * @param {{id: string}} params
    */
   _notify(objectId, serviceName, method, params) {
     params['id'] = objectId;
@@ -147,7 +152,7 @@ class ServiceDispatcher {
  */
 class WorkerServicePort {
   /**
-   * @param {!Port|!Worker} port
+   * @param {!Worker} port
    */
   constructor(port) {
     this._port = port;
@@ -157,8 +162,8 @@ class WorkerServicePort {
 
   /**
    * @override
-   * @param {function(string)} messageHandler
-   * @param {function(string)} closeHandler
+   * @param {function(string):void} messageHandler
+   * @param {function(string):void} closeHandler
    */
   setHandlers(messageHandler, closeHandler) {
     this._messageHandler = messageHandler;
@@ -168,26 +173,30 @@ class WorkerServicePort {
   /**
    * @override
    * @param {string} data
-   * @return {!Promise}
+   * @return {!Promise<boolean>}
    */
   send(data) {
     this._port.postMessage(data);
-    return Promise.resolve();
+    return Promise.resolve(true);
   }
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<boolean>}
    */
   close() {
-    return Promise.resolve();
+    return Promise.resolve(true);
   }
 
   /**
    * @param {!MessageEvent} event
    */
   _onMessage(event) {
-    this._messageHandler(event.data);
+    if (this._messageHandler) {
+      this._messageHandler(event.data);
+    } else {
+      console.warn('No message handler');
+    }
   }
 }
 
@@ -197,4 +206,5 @@ const worker = /** @type {!Object} */ (self);
 const servicePort = new WorkerServicePort(/** @type {!Worker} */ (worker));
 dispatchers.push(new ServiceDispatcher(servicePort));
 
+// @ts-ignore Side-effect.
 self.Service = Service;

@@ -1688,36 +1688,16 @@ export class ConsoleViewMessage {
 
   /**
    * @param {string} string
-   * @return {!Array<{type: string, text: (string|undefined)}>}
+   * @return {!Array<{type: (string|undefined), text: string}>}
    * @suppress {accessControls}
    */
   static _tokenizeMessageText(string) {
-    if (!ConsoleViewMessage._tokenizerRegexes) {
-      const controlCodes = '\\u0000-\\u0020\\u007f-\\u009f';
-      const linkStringRegex = new RegExp(
-          '(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\\/\\/|data:|www\\.)[^\\s' + controlCodes + '"]{2,}[^\\s' + controlCodes +
-              '"\')}\\],:;.!?]',
-          'u');
-      const pathLineRegex = /(?:\/[\w\.-]*)+\:[\d]+/;
-      const timeRegex = /took [\d]+ms/;
-      const eventRegex = /'\w+' event/;
-      const milestoneRegex = /\sM[6-7]\d/;
-      const autofillRegex = /\(suggested: \"[\w-]+\"\)/;
-      const handlers = new Map();
-      handlers.set(linkStringRegex, 'url');
-      handlers.set(pathLineRegex, 'url');
-      handlers.set(timeRegex, 'time');
-      handlers.set(eventRegex, 'event');
-      handlers.set(milestoneRegex, 'milestone');
-      handlers.set(autofillRegex, 'autofill');
-      ConsoleViewMessage._tokenizerRegexes = Array.from(handlers.keys());
-      ConsoleViewMessage._tokenizerTypes = Array.from(handlers.values());
-    }
+    const {tokenizerRegexes, tokenizerTypes} = getOrCreateTokenizers();
     if (string.length > Console.ConsoleViewMessage._MaxTokenizableStringLength) {
       return [{text: string, type: undefined}];
     }
-    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(string, ConsoleViewMessage._tokenizerRegexes);
-    return results.map(result => ({text: result.value, type: ConsoleViewMessage._tokenizerTypes[result.regexIndex]}));
+    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(string, tokenizerRegexes);
+    return results.map(result => ({text: result.value, type: tokenizerTypes[result.regexIndex]}));
   }
 
   /**
@@ -1752,6 +1732,41 @@ export class ConsoleViewMessage {
     }, '');
     return result.replace(/[%]o/g, '');
   }
+}
+
+/** @type {?Array<!RegExp>} */
+let tokenizerRegexes = null;
+/** @type {?Array<string>} */
+let tokenizerTypes = null;
+
+/**
+ * @return {!{tokenizerRegexes:!Array<!RegExp>, tokenizerTypes:Array<string>}}
+ */
+function getOrCreateTokenizers() {
+  if (!tokenizerRegexes || !tokenizerTypes) {
+    const controlCodes = '\\u0000-\\u0020\\u007f-\\u009f';
+    const linkStringRegex = new RegExp(
+        '(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\\/\\/|data:|www\\.)[^\\s' + controlCodes + '"]{2,}[^\\s' + controlCodes +
+            '"\')}\\],:;.!?]',
+        'u');
+    const pathLineRegex = /(?:\/[\w\.-]*)+\:[\d]+/;
+    const timeRegex = /took [\d]+ms/;
+    const eventRegex = /'\w+' event/;
+    const milestoneRegex = /\sM[6-7]\d/;
+    const autofillRegex = /\(suggested: \"[\w-]+\"\)/;
+    /** @type {!Map<!RegExp, string>} */
+    const handlers = new Map();
+    handlers.set(linkStringRegex, 'url');
+    handlers.set(pathLineRegex, 'url');
+    handlers.set(timeRegex, 'time');
+    handlers.set(eventRegex, 'event');
+    handlers.set(milestoneRegex, 'milestone');
+    handlers.set(autofillRegex, 'autofill');
+    tokenizerRegexes = Array.from(handlers.keys());
+    tokenizerTypes = Array.from(handlers.values());
+    return {tokenizerRegexes, tokenizerTypes};
+  }
+  return {tokenizerRegexes, tokenizerTypes};
 }
 
 /**

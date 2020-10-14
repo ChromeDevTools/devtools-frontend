@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
@@ -26,12 +23,12 @@ export class NetworkLogViewColumns {
    * @param {!NetworkLogView} networkLogView
    * @param {!NetworkTransferTimeCalculator} timeCalculator
    * @param {!NetworkTransferDurationCalculator} durationCalculator
-   * @param {!Common.Settings.Setting} networkLogLargeRowsSetting
+   * @param {!Common.Settings.Setting<number>} networkLogLargeRowsSetting
    */
   constructor(networkLogView, timeCalculator, durationCalculator, networkLogLargeRowsSetting) {
     this._networkLogView = networkLogView;
 
-    /** @type {!Common.Settings.Setting} */
+    /** @type {!Common.Settings.Setting<!Object<string, !{visible:boolean, title:string}>>} */
     this._persistantSettings = Common.Settings.Settings.instance().createSetting('networkLogColumns', {});
 
     this._networkLogLargeRowsSetting = networkLogLargeRowsSetting;
@@ -59,6 +56,39 @@ export class NetworkLogViewColumns {
 
     this._lastWheelTime = 0;
 
+    // The following properties are set by the setupDataGrid and setupWaterfall
+    // methods and are guaranteed to be non-null.
+
+    /** @type {!DataGrid.SortableDataGrid.SortableDataGrid<!NetworkNode>} */
+    this._dataGrid;
+
+    /** @type {!UI.SplitWidget.SplitWidget} */
+    this._splitWidget;
+
+    /** @type {!NetworkWaterfallColumn} */
+    this._waterfallColumn;
+
+    /** @type {!Element} */
+    this._activeScroller;
+
+    /** @type {!HTMLElement} */
+    this._dataGridScroller;
+
+    /** @type {!HTMLElement} */
+    this._waterfallScroller;
+
+    /** @type {!HTMLDivElement} */
+    this._waterfallScrollerContent;
+
+    /** @type {!HTMLElement} */
+    this._waterfallHeaderElement;
+
+    /** @type {!UI.Icon.Icon} */
+    this._waterfallColumnSortIcon;
+
+    /** @type {string} */
+    this._activeWaterfallSortId;
+
     this._setupDataGrid();
     this._setupWaterfall();
   }
@@ -84,7 +114,9 @@ export class NetworkLogViewColumns {
   }
 
   willHide() {
-    this._popoverHelper.hidePopover();
+    if (this._popoverHelper) {
+      this._popoverHelper.hidePopover();
+    }
   }
 
   reset() {
@@ -115,16 +147,17 @@ export class NetworkLogViewColumns {
     this._popoverHelper.setHasPadding(true);
     this._popoverHelper.setTimeout(300, 300);
 
-    /** @type {!DataGrid.SortableDataGrid.SortableDataGrid<!NetworkNode>} */
-    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid(
-        {displayName: ls`Network Log`, columns: this._columns.map(NetworkLogViewColumns._convertToDataGridDescriptor)});
+    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid(/** @type {!DataGrid.DataGrid.Parameters} */ ({
+      displayName: ls`Network Log`,
+      columns: this._columns.map(NetworkLogViewColumns._convertToDataGridDescriptor)
+    }));
     this._dataGrid.element.addEventListener('mousedown', event => {
       if (!this._dataGrid.selectedNode && event.button) {
         event.consume();
       }
     }, true);
 
-    this._dataGridScroller = this._dataGrid.scrollContainer;
+    this._dataGridScroller = /** @type {!HTMLDivElement} */ (this._dataGrid.scrollContainer);
 
     this._updateColumns();
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortHandler, this);
@@ -153,8 +186,10 @@ export class NetworkLogViewColumns {
     this._dataGridScroller.addEventListener('touchmove', this._onTouchMove.bind(this));
     this._dataGridScroller.addEventListener('touchend', this._onTouchEnd.bind(this));
 
-    this._waterfallScroller = this._waterfallColumn.contentElement.createChild('div', 'network-waterfall-v-scroll');
-    this._waterfallScrollerContent = this._waterfallScroller.createChild('div', 'network-waterfall-v-scroll-content');
+    this._waterfallScroller = /** @type {!HTMLDivElement} */ (
+        this._waterfallColumn.contentElement.createChild('div', 'network-waterfall-v-scroll'));
+    this._waterfallScrollerContent = /** @type {!HTMLDivElement} */ (
+        this._waterfallScroller.createChild('div', 'network-waterfall-v-scroll-content'));
 
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.PaddingChanged, () => {
       this._waterfallScrollerWidthIsStale = true;
@@ -172,10 +207,11 @@ export class NetworkLogViewColumns {
     this.switchViewMode(false);
 
     /**
-     * @param {!Event} event
+     * @param {!Event} ev
      * @this {NetworkLogViewColumns}
      */
-    function handleContextMenu(event) {
+    function handleContextMenu(ev) {
+      const event = /** @type {!MouseEvent} */ (ev);
       const node = this._waterfallColumn.getNodeFromPoint(event.offsetX, event.offsetY);
       if (!node) {
         return;
@@ -192,38 +228,44 @@ export class NetworkLogViewColumns {
 
   /**
    * @param {boolean} shouldConsume
-   * @param {!Event} event
+   * @param {!Event} ev
    */
-  _onMouseWheel(shouldConsume, event) {
+  _onMouseWheel(shouldConsume, ev) {
     if (shouldConsume) {
-      event.consume(true);
+      ev.consume(true);
     }
+    const event = /** @type {!WheelEvent} */ (ev);
     const hasRecentWheel = Date.now() - this._lastWheelTime < 80;
-    this._activeScroller.scrollBy({top: -event.wheelDeltaY, behavior: hasRecentWheel ? 'instant' : 'smooth'});
+    // TODO(crbug.com/1011811): Remove cast once Closure is gone. Closure doesn't know about `Element#scrollBy`.
+    /** @type {*} */ (this._activeScroller)
+        .scrollBy({top: -event.deltaY, behavior: hasRecentWheel ? 'auto' : 'smooth'});
     this._syncScrollers();
     this._lastWheelTime = Date.now();
   }
 
   /**
-   * @param {!Event} event
+   * @param {!Event} ev
    */
-  _onTouchStart(event) {
+  _onTouchStart(ev) {
+    const event = /** @type {!TouchEvent} */ (ev);
     this._hasScrollerTouchStarted = true;
     this._scrollerTouchStartPos = event.changedTouches[0].pageY;
   }
 
   /**
-   * @param {!Event} event
+   * @param {!Event} ev
    */
-  _onTouchMove(event) {
+  _onTouchMove(ev) {
     if (!this._hasScrollerTouchStarted) {
       return;
     }
 
+    const event = /** @type {!TouchEvent} */ (ev);
     const currentPos = event.changedTouches[0].pageY;
-    const delta = this._scrollerTouchStartPos - currentPos;
+    const delta = /** @type {number} */ (this._scrollerTouchStartPos) - currentPos;
 
-    this._activeScroller.scrollBy({top: delta, behavior: 'instant'});
+    // TODO(crbug.com/1011811): Remove cast once Closure is gone. Closure doesn't know about `Element#scrollBy`.
+    /** @type {*} */ (this._activeScroller).scrollBy({top: delta, behavior: 'auto'});
     this._syncScrollers();
 
     this._scrollerTouchStartPos = currentPos;
@@ -263,7 +305,8 @@ export class NetworkLogViewColumns {
   }
 
   _createWaterfallHeader() {
-    this._waterfallHeaderElement = this._waterfallColumn.contentElement.createChild('div', 'network-waterfall-header');
+    this._waterfallHeaderElement = /** @type {!HTMLElement} */ (
+        this._waterfallColumn.contentElement.createChild('div', 'network-waterfall-header'));
     this._waterfallHeaderElement.addEventListener('click', waterfallHeaderClicked.bind(this));
     this._waterfallHeaderElement.addEventListener(
         'contextmenu', event => this._innerHeaderContextMenu(new UI.ContextMenu.ContextMenu(event)));
@@ -442,6 +485,7 @@ export class NetworkLogViewColumns {
   }
 
   _saveColumnsSettings() {
+    /** @type {!Object<string, ?>} */
     const saveableSettings = {};
     for (const columnConfig of this._columns) {
       saveableSettings[columnConfig.id] = {visible: columnConfig.visible, title: columnConfig.title};
@@ -457,12 +501,12 @@ export class NetworkLogViewColumns {
       const setting = savedSettings[columnId];
       let columnConfig = this._columns.find(columnConfig => columnConfig.id === columnId);
       if (!columnConfig) {
-        columnConfig = this._addCustomHeader(setting.title, columnId);
+        columnConfig = this._addCustomHeader(setting.title, columnId) || undefined;
       }
-      if (columnConfig.hideable && typeof setting.visible === 'boolean') {
+      if (columnConfig && columnConfig.hideable && typeof setting.visible === 'boolean') {
         columnConfig.visible = !!setting.visible;
       }
-      if (typeof setting.title === 'string') {
+      if (columnConfig && typeof setting.title === 'string') {
         columnConfig.title = setting.title;
       }
     }
@@ -474,7 +518,7 @@ export class NetworkLogViewColumns {
    * @return {!DocumentFragment}
    */
   _makeHeaderFragment(title, subtitle) {
-    const fragment = createDocumentFragment();
+    const fragment = document.createDocumentFragment();
     UI.UIUtils.createTextChild(fragment, title);
     const subtitleDiv = fragment.createChild('div', 'network-header-subtitle');
     UI.UIUtils.createTextChild(subtitleDiv, subtitle);
@@ -499,11 +543,13 @@ export class NetworkLogViewColumns {
         nonResponseHeadersWithoutGroup.push(columnConfig);
       } else {
         const name = columnConfig.hideableGroup;
-        if (!hideableGroups.has(name)) {
-          hideableGroups.set(name, []);
+        let hideableGroup = hideableGroups.get(name);
+        if (!hideableGroup) {
+          hideableGroup = [];
+          hideableGroups.set(name, hideableGroup);
         }
 
-        hideableGroups.get(name).push(columnConfig);
+        hideableGroup.push(columnConfig);
       }
     }
 
@@ -567,7 +613,7 @@ export class NetworkLogViewColumns {
       if (sortId === waterfallSortIds.Duration || sortId === waterfallSortIds.Latency) {
         calculator = this._calculatorsMap.get(_calculatorTypes.Duration);
       }
-      this._networkLogView.setCalculator(calculator);
+      this._networkLogView.setCalculator(/** @type {!NetworkTimeCalculator} */ (calculator));
 
       this._activeWaterfallSortId = sortId;
       this._dataGrid.markColumnAsSortedBy('waterfall', DataGrid.DataGrid.Order.Ascending);
@@ -588,6 +634,10 @@ export class NetworkLogViewColumns {
     const dialog = new UI.Dialog.Dialog();
     manageCustomHeaders.show(dialog.contentElement);
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    // @ts-ignore
+    // TypeScript somehow tries to appy the `WidgetElement` class to the
+    // `Document` type of the (Document|Element) union. WidgetElement inherits
+    // from HTMLElement so its valid to be passed here.
     dialog.show(this._networkLogView.element);
   }
 
@@ -682,11 +732,11 @@ export class NetworkLogViewColumns {
       return null;
     }
     const hoveredNode = this._networkLogView.hoveredNode();
-    if (!hoveredNode) {
+    if (!hoveredNode || !event.target) {
       return null;
     }
 
-    const anchor = event.target.enclosingNodeOrSelfWithClass('network-script-initiated');
+    const anchor = /** @type {!HTMLElement} */ (event.target).enclosingNodeOrSelfWithClass('network-script-initiated');
     if (!anchor) {
       return null;
     }
@@ -696,6 +746,7 @@ export class NetworkLogViewColumns {
     }
     return {
       box: anchor.boxInWindow(),
+      /** @param {!UI.GlassPane.GlassPane} popover */
       show: async popover => {
         this._popupLinkifier.setLiveLocationUpdateCallback(() => {
           popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
@@ -783,10 +834,7 @@ export const _defaultColumnConfig = {
   allowInSortByEvenWhenHidden: false
 };
 
-/**
- * @type {!Array.<!Descriptor>} column
- */
-export const _defaultColumns = [
+const _temporaryDefaultColumns = [
   {
     id: 'name',
     title: Common.UIString.UIString('Name'),
@@ -953,6 +1001,9 @@ export const _defaultColumns = [
   {id: 'waterfall', title: ls`Waterfall`, visible: false, hideable: false, allowInSortByEvenWhenHidden: true}
 ];
 
+/** @type {!Array<!Descriptor>} */
+const _defaultColumns = /** @type {!Array<!Descriptor>} */ (/** @type {*} */ (_temporaryDefaultColumns));
+
 export const _filmStripDividerColor = '#fccc49';
 
 /**
@@ -985,4 +1036,5 @@ export const WaterfallSortIds = {
  *     allowInSortByEvenWhenHidden: boolean
  * }}
  */
+// @ts-ignore typedef
 export let Descriptor;

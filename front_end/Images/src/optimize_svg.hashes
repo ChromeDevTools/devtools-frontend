@@ -1,13 +1,15 @@
 {
     "securityIcons.svg": "27676f7c1f1542659c7c49a8052259dc",
     "accelerometer-back.svg": "342973eb940ef43b409b28c2c6b0d520",
+    "accelerometer-front.svg": "a4dcdac47131aa923346c15e01bc644a",
     "checkboxCheckmark.svg": "f039bf85cee42ad5c30ca3bfdce7912a",
     "errorWave.svg": "e183fa242a22ed4784a92f6becbc2c45",
     "smallIcons.svg": "73b56bbbefad2a744a3d22ea7c402e62",
     "mediumIcons.svg": "48b445b58e3de54e42556835e55c9daf",
     "largeIcons.svg": "7661039eafdefbeb6190069ff8594f8f",
+    "node_search_icon.svg": "7f39df0e58eb7146f5270a54dfa8033d",
     "lighthouse_logo.svg": "b889aaf8631e71e3427eb96d3433e319",
     "chevrons.svg": "79b4b527771e30b6388ce664077b3409",
-    "accelerometer-front.svg": "a4dcdac47131aa923346c15e01bc644a",
+    "breaking_change_icon.svg": "8106678156bfc2a3d88b36972ebc12c0",
     "treeoutlineTriangles.svg": "aa6c8f8df9ae7c50f14397131808e764"
 }

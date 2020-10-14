@@ -6,6 +6,7 @@ group("component_docs") {
     "./computed_style_property",
     "./computed_style_trace",
     "./elements_breadcrumbs",
+    "./icon_component",
     "./layout_pane",
     "./perf_piechart",
   ]

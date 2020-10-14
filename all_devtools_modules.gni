@@ -145,6 +145,8 @@ all_typescript_module_sources = [
   "elements/ElementsTreeElementHighlighter.js",
   "elements/ElementsTreeOutline.js",
   "elements/EventListenersWidget.js",
+  "elements/Icon.js",
+  "elements/Icon_bridge.js",
   "elements/ImagePreviewPopover.js",
   "elements/InspectElementModeController.js",
   "elements/LayoutPane.js",

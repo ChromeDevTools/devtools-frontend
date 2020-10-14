@@ -1,0 +1,77 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Element explore icon example</title>
+    <style>
+        #icon-overview {
+          width: 80%;
+        }
+
+        td, th {
+          text-align: left;
+          width: 50%;
+          height: 50px;
+        }
+    </style>
+  </head>
+  <body>
+
+    <table id='icon-overview'>
+      <tr>
+        <th>Icon name</th>
+        <th>Icon</th>
+      </tr>
+    </table>
+
+    <script type="module">
+      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+      import {Icon} from '../../elements/Icon.js';
+
+      ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent())
+
+      const renderComponent = () => {
+        const iconTable = document.getElementById('icon-overview');
+
+        const row1 = document.createElement('tr');
+        const iconName1 = document.createElement('td');
+        iconName1.textContent = 'node_search_icon';
+        row1.appendChild(iconName1);
+
+        const icon = new Icon();
+        const name = 'node_search_icon';
+        icon.data = {iconName: name, color: 'rgb(110, 110, 110)', width: '24px'};
+        const icon1 = document.createElement('td');
+        icon1.appendChild(icon);
+        row1.appendChild(icon1);
+
+        iconTable.appendChild(row1);
+
+        icon.onclick = async () => {
+            // Change of colour through a data-setter, which rerenders the component. Getting the data first in order not to specify the data fields all over again
+            icon.data = { ...icon.data,color: 'blue'};
+        };
+
+        const row2 = document.createElement('tr');
+        const iconName2 = document.createElement('td');
+        iconName2.textContent = 'breaking_change_icon';
+        row2.appendChild(iconName2);
+
+        const otherIcon = new Icon();
+        const otherPath = 'http://localhost:8090/Images/breaking_change_icon.svg';
+        otherIcon.data = {iconPath: otherPath, width:'24px', height: '27px'};
+        const icon2 = document.createElement('td');
+        icon2.appendChild(otherIcon);
+        row2.appendChild(icon2);
+
+        iconTable.appendChild(row2);
+      }
+
+    </script>
+  </body>
+</html>

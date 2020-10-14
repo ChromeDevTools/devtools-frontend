@@ -40,6 +40,7 @@ import * as ElementsTreeElement from './ElementsTreeElement.js';
 import * as ElementsTreeElementHighlighter from './ElementsTreeElementHighlighter.js';
 import * as ElementsTreeOutline from './ElementsTreeOutline.js';
 import * as EventListenersWidget from './EventListenersWidget.js';
+import * as Icon from './Icon_bridge.js';
 import * as InspectElementModeController from './InspectElementModeController.js';
 import * as LayoutSidebarPane from './LayoutSidebarPane.js';
 import * as MarkerDecorator from './MarkerDecorator.js';
@@ -67,6 +68,7 @@ export {
   ElementsTreeElementHighlighter,
   ElementsTreeOutline,
   EventListenersWidget,
+  Icon,
   InspectElementModeController,
   LayoutSidebarPane,
   MarkerDecorator,

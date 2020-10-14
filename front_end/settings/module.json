@@ -122,7 +122,8 @@
     }
   ],
   "dependencies": [
-    "components"
+    "components",
+    "i18n"
   ],
   "modules": [
     "settings.js",

@@ -733,6 +733,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.DOMStorageApi}
+   */
+  domstorageAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.HeapProfilerApi}
    */
   heapProfilerAgent() {
@@ -906,6 +913,13 @@ export class TargetBase {
    * @param {!ProtocolProxyApi.DOMDispatcher} dispatcher
    */
   registerDOMDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
+   * @param {!ProtocolProxyApi.DOMStorageDispatcher} dispatcher
+   */
+  registerDOMStorageDispatcher(dispatcher) {
     throw new Error('Implemented in InspectorBackend.js');
   }
 

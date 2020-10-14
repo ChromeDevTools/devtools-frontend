@@ -66,6 +66,9 @@ def builder(
     properties = dict(kvargs.pop("properties", {}))
     properties.update(builder_group = builder_group)
     properties.update(goma_rbe_prod_default)
+    properties["$recipe_engine/isolated"] = {
+        "server": "https://isolateserver.appspot.com",
+    }
     kvargs["properties"] = properties
 
     kvargs["executable"] = recipe(recipe_name)

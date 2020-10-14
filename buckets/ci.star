@@ -36,7 +36,7 @@ generate_ci_configs(
             name = "stable",
             branch = "refs/heads/chromium/4240",
             notifiers = ["devtools notifier"],
-        )
+        ),
     ],
     builders = [
         builder_descriptor(

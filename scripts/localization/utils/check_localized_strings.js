@@ -268,7 +268,7 @@ async function parseLocalizableResourceMapsHelper() {
 
 /**
  * The following functions parse localizable strings (wrapped in Common.UIString,
- * Common.UIStringFormat, UI.formatLocalized, ls``, i18n.getLocalizedString,
+ * Common.UIStringFormat, UI.formatLocalized, ls``, i18nString,
  * i18n.getFormatLocalizedString) from devtools frontend files.
  */
 
@@ -414,7 +414,13 @@ function parseLocalizableStringFromNode(parentNode, node, filePath) {
       handleTemplateLiteral(node.quasi, code, filePath);
       break;
     }
-    case 'i18n.i18n.getLocalizedString':
+    case 'i18nString': {
+      checkLocalizability.analyzeI18nStringNode(parentNode, filePath);
+      if (parentNode.arguments !== undefined && parentNode.arguments[0] !== undefined) {
+        handleI18nStringNode(filePath, parentNode);
+      }
+      break;
+    }
     case 'i18n.i18n.getFormatLocalizedString': {
       checkLocalizability.analyzeGetLocalizedStringNode(node, filePath);
       if (node.arguments !== undefined && node.arguments[1] !== undefined) {
@@ -497,13 +503,23 @@ function handleUIStringsDeclarationNode(filePath, node) {
 }
 
 /**
- * Handle the node that is `i18n.getLocalizedString()` or `i18n.getFormatLocalizedString` call.
+ * Handle the node that is `i18n.getFormatLocalizedString` call.
  */
 function handleGetLocalizedStringNode(filePath, node) {
   const stringIdNode = node.arguments[1];
   const argumentNodes = node.arguments[2];
   if (stringIdNode.property && stringIdNode.property.name && stringIdNode.property.type === espreeTypes.IDENTIFIER) {
     addToLocAPICallsMap(filePath, stringIdNode.property.name, escodegen.generate(node), node.loc, argumentNodes);
+  }
+}
+
+/**
+ * Handle the node that is `i18nString` call.
+ */
+function handleI18nStringNode(filePath, node) {
+  const stringIdNode = node.arguments[0];
+  if (stringIdNode.property && stringIdNode.property.name && stringIdNode.property.type === espreeTypes.IDENTIFIER) {
+    addToLocAPICallsMap(filePath, stringIdNode.property.name, escodegen.generate(node), node.loc);
   }
 }
 

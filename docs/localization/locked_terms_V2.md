@@ -15,7 +15,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('example.js', UIStrings);
 
-const message = i18n.i18n.getLocalizedString(str_, UIStrings.requestMessage);
+const message = i18nString(UIStrings.requestMessage);
 ```
 The string will rendered with robots.txt not translated and without the backticks around it
 ```javascript

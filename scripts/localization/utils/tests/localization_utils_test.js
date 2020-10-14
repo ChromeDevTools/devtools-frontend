@@ -49,9 +49,9 @@ describe('isLocalizationCall', () => {
 });
 
 describe('isLocalizationV2Call', () => {
-  it('is true for a call to i18n.i18n.getLocalizedString', () => {
-    const ast = parseCode('i18n.i18n.getLocalizedString(_str, UIStrings.fakeID)');
-    assert.isTrue(isLocalizationV2Call(ast.body[0].expression));
+  it('is true for a call to i18nString', () => {
+    const ast = parseCode('i18nString(UIStrings.fakeID)');
+    assert.isTrue(isLocalizationV2Call(ast.body[0].expression.callee));
   });
 
   it('is true for a call to i18n.i18n.getFormatLocalizedString', () => {
@@ -106,11 +106,10 @@ describe('getLocalizationCaseAndVersion', () => {
     assert.deepStrictEqual(
         getLocalizationCaseAndVersion(ast.body[0].expression), {locCase: 'Platform.UIString', locVersion: 1});
   });
-  it('returns {locCase: "i18n.i18n.getLocalizedString", locVersion: 2} for i18n.i18n.getLocalizedString', () => {
-    const ast = parseCode('i18n.i18n.getLocalizedString(_str, UIStrings.fakeID)');
+  it('returns {locCase: "i18nString", locVersion: 2} for i18nString', () => {
+    const ast = parseCode('i18nString(UIStrings.fakeID)');
     assert.deepStrictEqual(
-        getLocalizationCaseAndVersion(ast.body[0].expression),
-        {locCase: 'i18n.i18n.getLocalizedString', locVersion: 2});
+        getLocalizationCaseAndVersion(ast.body[0].expression.callee), {locCase: 'i18nString', locVersion: 2});
   });
   it('returns locCase: "i18n.i18n.getFormatLocalizedString", locVersion: 2} for i18n.i18n.getFormatLocalizedString',
      () => {

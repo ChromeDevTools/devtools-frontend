@@ -112,6 +112,10 @@ function isNodeUIStringDirectCall(node) {
   return node.type === espreeTypes.CALL_EXPR && node.callee.type === 'Identifier' && node.callee.name === 'UIString';
 }
 
+function isNodeI18nStringsCall(node) {
+  return node.type === espreeTypes.IDENTIFIER && node.name === 'i18nString';
+}
+
 function isNodeCommonUIStringFormat(node) {
   return node && node.type === espreeTypes.NEW_EXPR &&
       (verifyCallExpressionCallee(node.callee, 'Common', 'UIStringFormat') ||
@@ -129,7 +133,7 @@ function isNodelsTaggedTemplateExpression(node) {
 }
 
 function isNodeGetLocalizedStringCall(node) {
-  return isNodeCallOnNestedObject(node, 'i18n', 'i18n', 'getLocalizedString');
+  return isNodeI18nStringsCall(node);
 }
 
 function isNodeGetFormatLocalizedStringCall(node) {
@@ -178,7 +182,7 @@ function getLocalizationCaseAndVersion(node) {
     return {locCase: 'Platform.UIString', locVersion: 1};
   }
   if (isNodeGetLocalizedStringCall(node)) {
-    return {locCase: 'i18n.i18n.getLocalizedString', locVersion: 2};
+    return {locCase: 'i18nString', locVersion: 2};
   }
   if (isNodeGetFormatLocalizedStringCall(node)) {
     return {locCase: 'i18n.i18n.getFormatLocalizedString', locVersion: 2};

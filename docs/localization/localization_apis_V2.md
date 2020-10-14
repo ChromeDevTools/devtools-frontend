@@ -1,10 +1,9 @@
 Localizable strings in the DevTools frontend need to be wrapped in localization calls. There are two different calls.
 
-## i18n.i18n.getLocalizedString
+## i18nString
 The basic API to make a string (with or without placeholder) localizable.
-The first argument is the UIString instance function `str_`.
-The second argument is the string reference in `UIStrings`
-The third argument is an object for placeholders (if any)
+The first argument is the string reference in `UIStrings`
+The second argument is an object for placeholders (if any)
 
 ```javascript
 // at the top of example.js file, after import statements
@@ -18,7 +17,7 @@ const UIStrings = {
   addAnotherString: 'Another new string I want to add, with {PH1} and {PH2}',
 };
 
-message = i18n.i18n.getLocalizedString(str_, UIStrings.addAnotherString, {PH1: 'a placeholder', PH2: 'another placeholder'});
+message = i18nString(UIStrings.addAnotherString, {PH1: 'a placeholder', PH2: 'another placeholder'});
 ```
 
 ## i18n.i18n.getFormatLocalizedString

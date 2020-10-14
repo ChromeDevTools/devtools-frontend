@@ -43,6 +43,14 @@ export class ScriptOriginPlugin extends Plugin {
       return [new UI.Toolbar.ToolbarItem(item)];
     }
 
+    const originScript =
+        Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager.uiSourceCodeOriginScript(this._uiSourceCode);
+    if (originScript && originScript.hasSourceURL) {
+      const item = UI.UIUtils.formatLocalized(
+          '(provided via debug info by %s)', [Components.Linkifier.Linkifier.linkifyURL(originScript.sourceURL)]);
+      return [new UI.Toolbar.ToolbarItem(item)];
+    }
+
     // Handle anonymous scripts with an originStackTrace.
     const script = await ScriptOriginPlugin._script(this._uiSourceCode);
     if (!script || !script.originStackTrace) {

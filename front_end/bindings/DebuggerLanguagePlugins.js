@@ -10,6 +10,9 @@ import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {NetworkProject} from './NetworkProject.js';
 
+/** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !SDK.Script.Script>} */
+const uiSourceCodeToScriptMap = new WeakMap();
+
 class SourceVariable extends SDK.RemoteObject.RemoteObjectImpl {
   /**
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
@@ -642,6 +645,7 @@ export class DebuggerLanguagePluginManager {
     } else {
       this._uiSourceCodes.set(uiSourceCode, [{sourceFileURL, script}]);
     }
+    uiSourceCodeToScriptMap.set(uiSourceCode, script);
   }
 
   /**
@@ -649,6 +653,7 @@ export class DebuggerLanguagePluginManager {
    * @param {!SDK.Script.Script} deletedScript
    */
   _unbindUISourceCode(uiSourceCode, deletedScript) {
+    uiSourceCodeToScriptMap.delete(uiSourceCode);
     const entry = this._uiSourceCodes.get(uiSourceCode);
     if (!entry) {
       return;
@@ -659,6 +664,14 @@ export class DebuggerLanguagePluginManager {
       this._project.removeFile(uiSourceCode.url());
       this._uiSourceCodes.delete(uiSourceCode);
     }
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {?SDK.Script.Script}
+   */
+  static uiSourceCodeOriginScript(uiSourceCode) {
+    return uiSourceCodeToScriptMap.get(uiSourceCode) || null;
   }
 
   /**

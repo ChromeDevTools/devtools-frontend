@@ -267,6 +267,9 @@
   <message name="IDS_DEVTOOLS_6f92b50cf0c9932b9359e4cfa2a6473b" desc="A context menu item in the Call Stack Sidebar Pane of the Sources panel">
     Restart frame
   </message>
+  <message name="IDS_DEVTOOLS_6ff4b3a0bf9a2b8c9e9cf4163ea5e64c" desc="Text in Script Origin Plugin of the Sources panel">
+    (provided via debug info by <ph name="COMPONENTS_LINKIFIER_LINKIFIER_LINKIFYURL_ORIGINSCRIPT_SOURCEURL_">$1s<ex>http://localhost/file.wasm</ex></ph>)
+  </message>
   <message name="IDS_DEVTOOLS_7129472c5eb598faf47e4e877f2618fd" desc="Text in Breakpoint Edit Dialog of the Sources panel">
     Breakpoint
   </message>

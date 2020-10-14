@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
@@ -61,7 +58,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
    * @return {!Element}
    */
   _createFolderExcludePatternInput() {
-    const p = createElement('p');
+    const p = document.createElement('p');
     const labelElement = p.createChild('label');
     labelElement.textContent = ls`Folder exclude pattern`;
     const inputElement = UI.UIUtils.createInput('', 'text');
@@ -86,7 +83,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
       } catch (e) {
       }
       const valid = !!regex;
-      return {valid};
+      return {valid, errorMessage: undefined};
     }
   }
 

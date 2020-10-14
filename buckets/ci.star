@@ -50,6 +50,12 @@ generate_ci_configs(
             excluded_from = ["chromium"],
         ),
         builder_descriptor(
+            name = "Stand-alone Win",
+            recipe_name = "devtools/devtools-frontend",
+            excluded_from = ["chromium"],
+            dims = dimensions.win10,
+        ),
+        builder_descriptor(
             name = "Linux Compile Debug",
             recipe_name = "devtools/devtools-frontend",
             excluded_from = ["chromium"],

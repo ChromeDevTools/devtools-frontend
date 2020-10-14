@@ -1,0 +1,19 @@
+import os
+import platform
+import sys
+
+emscripten_releases = os.path.abspath(os.path.dirname(
+    os.path.dirname(os.path.dirname(sys.argv[0]))))
+NODE_JS = os.path.join(
+    os.path.dirname(emscripten_releases), 'node', *{
+        'Darwin': ('mac', 'node-darwin-x64', 'bin', 'node'),
+        'Linux': ('linux', 'node-linux-x64', 'bin', 'node'),
+        'Windows': ('win', 'node.exe'),
+    }[platform.system()])
+
+LLVM_ROOT = os.path.join(emscripten_releases, 'install', 'bin')
+BINARYEN_ROOT = os.path.join(emscripten_releases, 'install')
+EMSCRIPTEN_ROOT = os.path.join(emscripten_releases, 'install', 'emscripten')
+TEMP_DIR = os.path.join(emscripten_releases, 'tmp')
+COMPILER_ENGINE = NODE_JS
+JS_ENGINES = [NODE_JS]

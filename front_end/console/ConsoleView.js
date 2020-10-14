@@ -42,7 +42,7 @@ import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
 import {ConsolePinPane} from './ConsolePinPane.js';
 import {ConsolePrompt, Events as ConsolePromptEvents} from './ConsolePrompt.js';
 import {ConsoleSidebar, Events} from './ConsoleSidebar.js';
-import {ConsoleGroupViewMessage, ConsoleViewMessage, MaxLengthForLinks} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
+import {ConsoleCommand, ConsoleCommandResult, ConsoleGroupViewMessage, ConsoleViewMessage, getMessageForElement, MaxLengthForLinks} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
 import {ConsoleViewport, ConsoleViewportElement, ConsoleViewportProvider} from './ConsoleViewport.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!ConsoleView} */
@@ -863,10 +863,8 @@ export class ConsoleView extends UI.Widget.VBox {
     }
 
     const sourceElement = eventTarget.enclosingNodeOrSelfWithClass('console-message-wrapper');
-    const consoleMessage = (sourceElement && 'message' in sourceElement) ?
-        // @ts-expect-error We can't convert this to a Weakmap, as it comes from `ConsoleViewMessage` instead.
-        /** @type {!ConsoleViewMessage} */ (sourceElement.message).consoleMessage() :
-        null;
+    const consoleViewMessage = sourceElement && getMessageForElement(sourceElement);
+    const consoleMessage = consoleViewMessage ? consoleViewMessage.consoleMessage() : null;
 
     if (consoleMessage && consoleMessage.url) {
       const menuTitle = ls`Hide messages from ${new Common.ParsedURL.ParsedURL(consoleMessage.url).displayName}`;
@@ -1606,79 +1604,6 @@ export class ConsoleViewFilter {
   }
 }
 
-export class ConsoleCommand extends ConsoleViewMessage {
-  /**
-   * @param {!SDK.ConsoleModel.ConsoleMessage} consoleMessage
-   * @param {!Components.Linkifier.Linkifier} linkifier
-   * @param {number} nestingLevel
-   * @param {function(!Common.EventTarget.EventTargetEvent):void} onResize
-   */
-  constructor(consoleMessage, linkifier, nestingLevel, onResize) {
-    super(consoleMessage, linkifier, nestingLevel, onResize);
-    /** @type {?HTMLElement} */
-    this._formattedCommand = null;
-  }
-
-  /**
-   * @override
-   * @return {!HTMLElement}
-   */
-  contentElement() {
-    const contentElement = this.getContentElement();
-    if (contentElement) {
-      return contentElement;
-    }
-    const newContentElement = /** @type {!HTMLElement} */ (document.createElement('div'));
-    this.setContentElement(newContentElement);
-    newContentElement.classList.add('console-user-command');
-    const icon = UI.Icon.Icon.create('smallicon-user-command', 'command-result-icon');
-    newContentElement.appendChild(icon);
-
-    // @ts-expect-error We can't convert this to a Weakmap, as it comes from `ConsoleViewMessage` instead.
-    newContentElement.message = this;
-
-    this._formattedCommand = /** @type {!HTMLElement} */ (document.createElement('span'));
-    this._formattedCommand.classList.add('source-code');
-    this._formattedCommand.textContent = Platform.StringUtilities.replaceControlCharacters(this.text);
-    newContentElement.appendChild(this._formattedCommand);
-
-    if (this._formattedCommand.textContent.length < MaxLengthToIgnoreHighlighter) {
-      const javascriptSyntaxHighlighter = new UI.SyntaxHighlighter.SyntaxHighlighter('text/javascript', true);
-      javascriptSyntaxHighlighter.syntaxHighlightNode(this._formattedCommand).then(this._updateSearch.bind(this));
-    } else {
-      this._updateSearch();
-    }
-
-    this.updateTimestamp();
-    return newContentElement;
-  }
-
-  _updateSearch() {
-    this.setSearchRegex(this.searchRegex());
-  }
-}
-
-/**
- * @unrestricted
- */
-class ConsoleCommandResult extends ConsoleViewMessage {
-  /**
-   * @override
-   * @return {!HTMLElement}
-   */
-  contentElement() {
-    const element = super.contentElement();
-    if (!element.classList.contains('console-user-command-result')) {
-      element.classList.add('console-user-command-result');
-      if (this.consoleMessage().level === SDK.ConsoleModel.MessageLevel.Info) {
-        const icon = UI.Icon.Icon.create('smallicon-command-result', 'command-result-icon');
-        element.insertBefore(icon, element.firstChild);
-      }
-    }
-    return element;
-  }
-}
-
 /**
  * @unrestricted
  */
@@ -1758,13 +1683,6 @@ export class ActionDelegate {
 const messagesSortedBySymbol = new WeakMap();
 /** @type {!WeakMap<!SDK.ConsoleModel.ConsoleMessage, !ConsoleViewMessage>} */
 const consoleMessageToViewMessage = new WeakMap();
-
-/**
- * The maximum length before strings are considered too long for syntax highlighting.
- * @const
- * @type {number}
- */
-const MaxLengthToIgnoreHighlighter = 10000;
 
 /**
  * @typedef {{messageIndex: number, matchIndex: number}}

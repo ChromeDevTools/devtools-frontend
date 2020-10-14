@@ -28,7 +28,7 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {Bounds, createChild, Overlay} from './common.js';
+import {Bounds, createChild, Overlay, ResetData} from './common.js';
 import {buildPath, emptyBounds, PathBounds} from './highlight_common.js';
 
 interface Path {
@@ -42,7 +42,12 @@ interface SourceOrderHighlight {
 }
 
 export class SourceOrderOverlay extends Overlay {
-  private sourceOrderContainer = document.createElement('div');
+  private sourceOrderContainer!: HTMLElement;
+
+  reset(resetData: ResetData) {
+    super.reset(resetData);
+    this.sourceOrderContainer.textContent = '';
+  }
 
   install() {
     this.document.body.classList.add('fill');

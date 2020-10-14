@@ -10,12 +10,13 @@
   <title>Debug</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="/out/Default/resources/inspector_overlay/common.css">
-  <script type="module" src="/out/Default/resources/inspector_overlay/tool_screenshot.js"></script>
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
 </head>
 <body>
   <script type="module">
     function test() {
       dispatch(["setPlatform", "mac"]);
+      dispatch(["setOverlay", "screenshot"]);
       dispatch(["reset"]);
     }
     test();

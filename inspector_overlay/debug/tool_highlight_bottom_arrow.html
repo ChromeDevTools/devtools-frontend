@@ -10,11 +10,12 @@ found in the LICENSE file.
   <title>Debug</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="/out/Default/resources/inspector_overlay/common.css">
-  <script type="module" src="/out/Default/resources/inspector_overlay/tool_highlight.js"></script>
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
 </head>
 <body>
   <script type="module">
     dispatch(["setPlatform", "mac"]);
+    dispatch(["setOverlay", "highlight"]);
     dispatch(["reset"]);
     dispatch(["drawHighlight", {"paths":[{"path":["M",321.5,164,"L",593.5,164,"L",593.5,256,"L",321.5,256,"Z"],"fillColor":"rgba(111, 168, 220, 0.658823529411765)","name":"content"},{"path":["M",321.5,164,"L",593.5,164,"L",593.5,256,"L",321.5,256,"Z"],"fillColor":"rgba(147, 196, 125, 0.549019607843137)","name":"padding"},{"path":["M",321.5,164,"L",593.5,164,"L",593.5,256,"L",321.5,256,"Z"],"fillColor":"rgba(255, 229, 153, 0.658823529411765)","name":"border"},{"path":["M",321.5,164,"L",593.5,164,"L",593.5,256,"L",321.5,256,"Z"],"fillColor":"rgba(246, 178, 107, 0.658823529411765)","name":"margin"}],"showRulers":false,"showExtensionLines":false,"colorFormat":"hex","elementInfo":{"tagName":"div","idValue":"logo-default","className":".show-logo","nodeWidth":"272","nodeHeight":"92","showAccessibilityInfo":true,"isKeyboardFocusable":false,"accessibleName":"Google","accessibleRole":"generic","style":{"padding":"0px","margin":"0px","background-color":"#00000000"}}}])
   </script>

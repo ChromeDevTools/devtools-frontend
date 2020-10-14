@@ -10,11 +10,12 @@ found in the LICENSE file.
   <title>Debug</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="/out/Default/resources/inspector_overlay/common.css">
-  <script type="module" src="/out/Default/resources/inspector_overlay/tool_highlight.js"></script>
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
 </head>
 <body>
   <script type="module">
     dispatch(["setPlatform", "mac"]);
+    dispatch(["setOverlay", "highlight"]);
     dispatch(["reset", {
       viewportSize: {
         width: document.documentElement.clientWidth,

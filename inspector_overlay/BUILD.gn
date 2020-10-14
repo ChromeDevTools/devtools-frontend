@@ -18,55 +18,28 @@ python2_action("build_inspector_overlay") {
     "$target_gen_dir/highlight_common.js",
     "$target_gen_dir/highlight_grid_common.js",
     "$target_gen_dir/tool_distances_impl.js",
-    "$target_gen_dir/tool_distances.js",
     "$target_gen_dir/tool_highlight_grid_impl.js",
     "$target_gen_dir/tool_highlight_grid.css",
-    "$target_gen_dir/tool_highlight_grid.js",
     "$target_gen_dir/tool_highlight_impl.js",
     "$target_gen_dir/tool_highlight.css",
-    "$target_gen_dir/tool_highlight.js",
     "$target_gen_dir/tool_paused_impl.js",
     "$target_gen_dir/tool_paused.css",
-    "$target_gen_dir/tool_paused.js",
     "$target_gen_dir/tool_screenshot_impl.js",
     "$target_gen_dir/tool_screenshot.css",
-    "$target_gen_dir/tool_screenshot.js",
     "$target_gen_dir/tool_source_order_impl.js",
     "$target_gen_dir/tool_source_order.css",
-    "$target_gen_dir/tool_source_order.js",
     "$target_gen_dir/tool_viewport_size_impl.js",
-    "$target_gen_dir/tool_viewport_size.js",
     "$target_gen_dir/main.js",
   ]
 
   outputs = [
     "$resources_out_dir/common.css",
-    "$resources_out_dir/tool_distances.js",
-    "$resources_out_dir/tool_highlight_grid.js",
-    "$resources_out_dir/tool_highlight.js",
-    "$resources_out_dir/tool_paused.js",
-    "$resources_out_dir/tool_screenshot.js",
-    "$resources_out_dir/tool_source_order.js",
-    "$resources_out_dir/tool_viewport_size.js",
+    "$resources_out_dir/main.js",
   ]
 
   args = [
     "common.css",
     "1200",  # max_size in bytes
-    "tool_highlight.js",
-    "90500",  # max_size in bytes
-    "tool_highlight_grid.js",
-    "70000",  # max_size in bytes
-    "tool_distances.js",
-    "5100",  # max_size in bytes
-    "tool_paused.js",
-    "10000",  # max_size in bytes
-    "tool_screenshot.js",
-    "5100",  # max_size in bytes
-    "tool_viewport_size.js",
-    "5100",  # max_size in bytes
-    "tool_source_order.js",
-    "11000",  # max_size in bytes
     "main.js",
     "110000",  # max_size in bytes
     "--input_path",
@@ -108,19 +81,12 @@ ts_library("inspector_overlay") {
     "highlight_common.ts",
     "highlight_grid_common.ts",
     "main.ts",
-    "tool_distances.ts",
     "tool_distances_impl.ts",
-    "tool_highlight.ts",
-    "tool_highlight_grid.ts",
     "tool_highlight_grid_impl.ts",
     "tool_highlight_impl.ts",
-    "tool_paused.ts",
     "tool_paused_impl.ts",
-    "tool_screenshot.ts",
     "tool_screenshot_impl.ts",
-    "tool_source_order.ts",
     "tool_source_order_impl.ts",
-    "tool_viewport_size.ts",
     "tool_viewport_size_impl.ts",
   ]
 

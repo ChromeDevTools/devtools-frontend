@@ -10,15 +10,17 @@ found in the LICENSE file.
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Debug</title>
   <link rel="stylesheet" type="text/css" href="/out/Default/resources/inspector_overlay/common.css">
-  <script type="module" src="/out/Default/resources/inspector_overlay/tool_source_order.js"></script>
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
 </head>
 <body>
   <script type="module">
     function test() {
         dispatch(["setPlatform", "mac"]);
+        dispatch(["setOverlay", "sourceOrder"]);
         dispatch(["reset"]);
         dispatch(["drawSourceOrder", {"paths":[{"path":["M",122,133.796875,"L",750,133.796875,"L",750,208.796875,"L",122,208.796875,"Z"], "outlineColor":"rgba(244, 90, 183, 1)","name":"content"},],
         "sourceOrder": 0, colorFormat: "hsl"}]);
+        dispatch(["reset"]);
         dispatch(["drawSourceOrder", {"paths":[{"path":["M",300,133.796875,"L",600,133.796875,"L",600,208.796875,"L",300,208.796875,"Z"], "outlineColor":"rgba(0, 120, 212, 1)","name":"content"},],
         "sourceOrder": 1, colorFormat: "hsl"}]);
     }

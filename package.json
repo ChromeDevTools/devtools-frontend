@@ -37,7 +37,7 @@
     "debug-unittest": "DEBUG=1 npm run unittest",
     "e2etest": "python scripts/test/run_test_suite.py --test-suite=e2e",
     "eslint-test": "mocha \"./scripts/eslint_rules/tests/*_test.js\"",
-    "generate-bridge-file": "tsc -p scripts/component_bridges/tsconfig.json && third_party/node/node.py --output scripts/component_bridges/gen/cli.js",
+    "generate-bridge-file": "tsc -p scripts/component_bridges/tsconfig.json && third_party/node/node.py --output scripts/component_bridges/cli.js",
     "generate-bridges-test": "tsc -b test/unittests/scripts/component_bridges/tsconfig.json && mocha test/unittests/scripts/component_bridges/**/*_test.js",
     "generate-protocol-resources": "python scripts/deps/generate_protocol_resources.py && git cl format --js",
     "grdp-utils-test": "mocha \"./scripts/localization/utils/tests/*_test.js\"",

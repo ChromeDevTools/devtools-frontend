@@ -38,3 +38,9 @@ export const openSettingsTab = async (tabTitle: string) => {
   await click(settingsMenuSelector);
   await waitFor(panelSelector);
 };
+
+export const togglePreferenceInSettingsTab = async (label: string) => {
+  await openSettingsTab('Preferences');
+  await click(`[aria-label="${label}"`);
+  await click('.dialog-close-button');
+};

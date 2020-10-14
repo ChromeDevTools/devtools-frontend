@@ -22,6 +22,7 @@ const CLS_PANE_SELECTOR = '.styles-sidebar-toolbar-pane';
 const CLS_BUTTON_SELECTOR = '[aria-label="Element Classes"]';
 const CLS_INPUT_SELECTOR = '[aria-placeholder="Add new class"]';
 const LAYOUT_PANE_TAB_SELECTOR = '[aria-label="Layout"]';
+const LAYOUT_PANE_TABPANEL_SELECTOR = '[aria-label="Layout panel"]';
 const ADORNER_SELECTOR = 'devtools-adorner';
 export const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Enable grid mode"]';
 export const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
@@ -31,6 +32,9 @@ export const openLayoutPane = async () => {
   await step('Open Layout pane', async () => {
     await waitFor(LAYOUT_PANE_TAB_SELECTOR);
     await click(LAYOUT_PANE_TAB_SELECTOR);
+
+    const panel = await waitFor(LAYOUT_PANE_TABPANEL_SELECTOR);
+    await waitFor('.elements', panel);
   });
 };
 
@@ -65,6 +69,18 @@ export const toggleElementCheckboxInLayoutPane = async () => {
   await step('Click element checkbox in Layout pane', async () => {
     await waitFor(ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR);
     await click(ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR);
+  });
+};
+
+export const getGridsInLayoutPane = async () => {
+  const panel = await waitFor(LAYOUT_PANE_TABPANEL_SELECTOR);
+  return await $$('.elements .element', panel);
+};
+
+export const waitForSomeGridsInLayoutPane = async (minimumGridCount: number) => {
+  await waitForFunction(async () => {
+    const grids = await getGridsInLayoutPane();
+    return grids.length >= minimumGridCount;
   });
 };
 

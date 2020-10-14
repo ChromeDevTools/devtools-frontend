@@ -62,6 +62,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this._layoutPane = createLayoutPane();
     this.contentElement.appendChild(this._layoutPane);
     this._settings = ['showGridLineLabels', 'showGridTrackSizes', 'showGridAreas', 'extendGridLines'];
+    this._uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM');
     this._boundOnSettingChanged = this.onSettingChanged.bind(this);
     this._domModels = [];
   }
@@ -87,13 +88,18 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   async _fetchGridNodes() {
+    const showUAShadowDOM = this._uaShadowDOMSetting.get();
+
     const nodes = [];
     for (const domModel of this._domModels) {
       const nodeIds = await domModel.getNodesByStyle(
           [{name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'}], true /* pierce */);
 
-      nodes.push(...nodeIds.map(id => domModel.nodeForId(id)).filter(node => node !== null));
+      nodes.push(...nodeIds.map(id => domModel.nodeForId(id)).filter(node => {
+        return node && (showUAShadowDOM || !node.ancestorUserAgentShadowRoot());
+      }));
     }
+
     return nodes;
   }
 
@@ -153,6 +159,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this._domModels = [];
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
+    this._uaShadowDOMSetting.addChangeListener(this.update, this);
     this.update();
   }
 
@@ -166,5 +173,6 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this._layoutPane.removeEventListener('setting-changed', this._boundOnSettingChanged);
     SDK.SDKModel.TargetManager.instance().unobserveModels(SDK.DOMModel.DOMModel, this);
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
+    this._uaShadowDOMSetting.removeChangeListener(this.update, this);
   }
 }

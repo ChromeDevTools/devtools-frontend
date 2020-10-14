@@ -10,6 +10,7 @@ group("front_end") {
   public_deps = [
     ":entrypoint_copy",
     ":html_entrypoints",
+    ":legacy_entrypoints",
     ":ts_library-verification",
     "accessibility:bundle",
     "animation:bundle",
@@ -145,6 +146,10 @@ group("legacy_css") {
     "persistence:legacy_css",
     "ui:legacy_css",
   ]
+}
+
+group("legacy_entrypoints") {
+  public_deps = [ "common:legacy" ]
 }
 
 copy_sources_to_resources("entrypoint_copy") {

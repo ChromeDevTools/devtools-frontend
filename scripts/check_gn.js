@@ -70,6 +70,9 @@ function checkDevtoolsModuleEntrypoints() {
   return checkGNVariable(
       'devtools_module_entrypoints', 'devtools_module_entrypoint_sources',
       (moduleJSON, folderName) => {
+        if (moduleJSON.pre_generates_legacy) {
+          return [];
+        }
         return (moduleJSON.modules || []).filter(fileName => {
           return fileName === `${folderName}-legacy.js`;
         });

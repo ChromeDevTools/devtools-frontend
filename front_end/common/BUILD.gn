@@ -47,3 +47,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":common" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "common-legacy.js"
+
+  deps = [ ":bundle" ]
+}

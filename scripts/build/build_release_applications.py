@@ -176,7 +176,9 @@ class ReleaseBuilder(object):
                 if len(non_autostart_deps):
                     bail_error(
                         'Non-autostart dependencies specified for the autostarted module "%s": %s' % (name, non_autostart_deps))
-                self._rollup_module(name, desc.get('modules', []))
+                modules = desc.get('modules')
+                if modules and not desc.get('pre_generates_legacy'):
+                    self._rollup_module(name, modules)
             else:
                 non_autostart.add(name)
 
@@ -202,7 +204,7 @@ class ReleaseBuilder(object):
         if resources:
             output.write("import * as RootModule from '../root/root.js';")
             self._write_module_resources(resources, output)
-        if modules:
+        if modules and not module.get('pre_generates_legacy'):
             self._rollup_module(module_name, modules)
         output_file_path = concatenated_module_filename(module_name, self.output_dir)
         write_file(output_file_path, minify_js(output.getvalue()))

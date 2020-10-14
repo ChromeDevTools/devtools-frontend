@@ -35,14 +35,14 @@ export class SecurityModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!Protocol.Security.SecurityState} a
-   * @param {!Protocol.Security.SecurityState} b
+   * @param {?Protocol.Security.SecurityState} a
+   * @param {?Protocol.Security.SecurityState} b
    * @return {number}
    */
   static SecurityStateComparator(a, b) {
     const securityStateMap = getOrCreateSecurityStateOrdinalMap();
-    const aScore = securityStateMap.get(a) || 0;
-    const bScore = securityStateMap.get(b) || 0;
+    const aScore = a && securityStateMap.get(a) || 0;
+    const bScore = b && securityStateMap.get(b) || 0;
 
     return aScore - bScore;
   }

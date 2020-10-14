@@ -23,16 +23,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as UI from '../ui/ui.js';
+
+import {Database} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
 export class DatabaseQueryView extends UI.Widget.VBox {
+  /**
+   * @param {!Database} database
+   */
   constructor(database) {
     super();
 
@@ -42,16 +44,16 @@ export class DatabaseQueryView extends UI.Widget.VBox {
     this.element.addEventListener('selectstart', this._selectStart.bind(this), false);
 
     this._queryWrapper = this.element.createChild('div', 'database-query-group-messages');
-    this._queryWrapper.addEventListener('focusin', this._onFocusIn.bind(this));
-    this._queryWrapper.addEventListener('focusout', this._onFocusOut.bind(this));
-    this._queryWrapper.addEventListener('keydown', this._onKeyDown.bind(this));
+    this._queryWrapper.addEventListener('focusin', /** @type {!EventListener} */ (this._onFocusIn.bind(this)));
+    this._queryWrapper.addEventListener('focusout', /** @type {!EventListener} */ (this._onFocusOut.bind(this)));
+    this._queryWrapper.addEventListener('keydown', /** @type {!EventListener} */ (this._onKeyDown.bind(this)));
     this._queryWrapper.tabIndex = -1;
 
     this._promptContainer = this.element.createChild('div', 'database-query-prompt-container');
     this._promptContainer.appendChild(UI.Icon.Icon.create('smallicon-text-prompt', 'prompt-icon'));
     this._promptElement = this._promptContainer.createChild('div');
     this._promptElement.className = 'database-query-prompt';
-    this._promptElement.addEventListener('keydown', this._promptKeyDown.bind(this));
+    this._promptElement.addEventListener('keydown', /** @type {!EventListener} */ (this._promptKeyDown.bind(this)));
 
     this._prompt = new UI.TextPrompt.TextPrompt();
     this._prompt.initialize(this.completions.bind(this), ' ');
@@ -59,7 +61,7 @@ export class DatabaseQueryView extends UI.Widget.VBox {
 
     this.element.addEventListener('click', this._messagesClicked.bind(this), true);
 
-    /** @type {!Array<!Element>} */
+    /** @type {!Array<!HTMLElement>} */
     this._queryResults = [];
     this._virtualSelectedIndex = -1;
     /** @type {?Element} */
@@ -76,7 +78,7 @@ export class DatabaseQueryView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    */
   _onKeyDown(event) {
     if (UI.UIUtils.isEditing() || !this._queryResults.length || event.shiftKey) {
@@ -111,7 +113,7 @@ export class DatabaseQueryView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!FocusEvent} event
    */
   _onFocusIn(event) {
     // Make default selection when moving from external (e.g. prompt) to the container.
@@ -123,7 +125,7 @@ export class DatabaseQueryView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!FocusEvent} event
    */
   _onFocusOut(event) {
     // Remove selection when focus moves to external location (e.g. prompt).
@@ -183,9 +185,12 @@ export class DatabaseQueryView extends UI.Widget.VBox {
     return tableNames.map(name => name + ' ')
         .concat(SQL_BUILT_INS)
         .filter(proposal => proposal.toLowerCase().startsWith(prefix))
-        .map(completion => ({text: completion}));
+        .map(completion => (/** @type {!UI.SuggestBox.Suggestion} */ ({text: completion})));
   }
 
+  /**
+   * @param {!Event} event
+   */
   _selectStart(event) {
     if (this._selectionTimeout) {
       clearTimeout(this._selectionTimeout);
@@ -197,16 +202,19 @@ export class DatabaseQueryView extends UI.Widget.VBox {
      * @this {DatabaseQueryView}
      */
     function moveBackIfOutside() {
-      delete this._selectionTimeout;
+      this._selectionTimeout = 0;
       if (!this._prompt.isCaretInsidePrompt() && !this.element.hasSelection()) {
         this._prompt.moveCaretToEndOfPrompt();
       }
       this._prompt.autoCompleteSoon();
     }
 
-    this._selectionTimeout = setTimeout(moveBackIfOutside.bind(this), 100);
+    this._selectionTimeout = window.setTimeout(moveBackIfOutside.bind(this), 100);
   }
 
+  /**
+   * @param {!KeyboardEvent} event
+   */
   _promptKeyDown(event) {
     if (isEnterKey(event)) {
       this._enterKeyPressed(event);
@@ -214,6 +222,9 @@ export class DatabaseQueryView extends UI.Widget.VBox {
     }
   }
 
+  /**
+   * @param {!KeyboardEvent} event
+   */
   async _enterKeyPressed(event) {
     event.consume(true);
 
@@ -239,8 +250,15 @@ export class DatabaseQueryView extends UI.Widget.VBox {
     this._prompt.focus();
   }
 
+  /**
+   *
+   * @param {string} query
+   * @param {?Array<string>} columnNames
+   * @param {?Array<*>} values
+   */
   _queryFinished(query, columnNames, values) {
-    const dataGrid = DataGrid.SortableDataGrid.SortableDataGrid.create(columnNames, values, ls`Database Query`);
+    const dataGrid =
+        DataGrid.SortableDataGrid.SortableDataGrid.create(columnNames || [], values || [], ls`Database Query`);
     const trimmedQuery = query.trim();
 
     let view = null;
@@ -295,7 +313,7 @@ export class DatabaseQueryView extends UI.Widget.VBox {
    * @param {string} query
    */
   _appendQueryResult(query) {
-    const element = createElement('div');
+    const element = /** @type {!HTMLElement} */ (document.createElement('div'));
     element.className = 'database-user-query';
     element.tabIndex = -1;
 
@@ -305,12 +323,12 @@ export class DatabaseQueryView extends UI.Widget.VBox {
 
     element.appendChild(UI.Icon.Icon.create('smallicon-user-command', 'prompt-icon'));
 
-    const commandTextElement = createElement('span');
+    const commandTextElement = document.createElement('span');
     commandTextElement.className = 'database-query-text';
     commandTextElement.textContent = query;
     element.appendChild(commandTextElement);
 
-    const resultElement = createElement('div');
+    const resultElement = document.createElement('div');
     resultElement.className = 'database-query-result';
     element.appendChild(resultElement);
 

@@ -446,7 +446,9 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     if (!result) {
       result = this._acceptSuggestionInternal();
     }
-
+    if (result) {
+      this.autoCompleteSoon();
+    }
     return result;
   }
 

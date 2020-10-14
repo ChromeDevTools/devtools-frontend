@@ -313,6 +313,7 @@ export function registerCommands(inspectorBackend) {
     ProtectedMediaIdentifier: 'protectedMediaIdentifier',
     Sensors: 'sensors',
     VideoCapture: 'videoCapture',
+    VideoCapturePanTiltZoom: 'videoCapturePanTiltZoom',
     IdleDetection: 'idleDetection',
     WakeLockScreen: 'wakeLockScreen',
     WakeLockSystem: 'wakeLockSystem'
@@ -1408,7 +1409,10 @@ export function registerCommands(inspectorBackend) {
     OverwriteSecure: 'OverwriteSecure',
     InvalidDomain: 'InvalidDomain',
     InvalidPrefix: 'InvalidPrefix',
-    UnknownError: 'UnknownError'
+    UnknownError: 'UnknownError',
+    SchemefulSameSiteStrict: 'SchemefulSameSiteStrict',
+    SchemefulSameSiteLax: 'SchemefulSameSiteLax',
+    SchemefulSameSiteUnspecifiedTreatedAsLax: 'SchemefulSameSiteUnspecifiedTreatedAsLax'
   });
   inspectorBackend.registerEnum('Network.CookieBlockedReason', {
     SecureOnly: 'SecureOnly',
@@ -1419,7 +1423,10 @@ export function registerCommands(inspectorBackend) {
     SameSiteUnspecifiedTreatedAsLax: 'SameSiteUnspecifiedTreatedAsLax',
     SameSiteNoneInsecure: 'SameSiteNoneInsecure',
     UserPreferences: 'UserPreferences',
-    UnknownError: 'UnknownError'
+    UnknownError: 'UnknownError',
+    SchemefulSameSiteStrict: 'SchemefulSameSiteStrict',
+    SchemefulSameSiteLax: 'SchemefulSameSiteLax',
+    SchemefulSameSiteUnspecifiedTreatedAsLax: 'SchemefulSameSiteUnspecifiedTreatedAsLax'
   });
   inspectorBackend.registerEnum('Network.AuthChallengeSource', {Server: 'Server', Proxy: 'Proxy'});
   inspectorBackend.registerEnum(

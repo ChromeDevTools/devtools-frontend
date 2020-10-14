@@ -1679,6 +1679,7 @@
                         "protectedMediaIdentifier",
                         "sensors",
                         "videoCapture",
+                        "videoCapturePanTiltZoom",
                         "idleDetection",
                         "wakeLockScreen",
                         "wakeLockSystem"
@@ -1720,6 +1721,12 @@
                         {
                             "name": "allowWithoutSanitization",
                             "description": "For \"clipboard\" permission, may specify allowWithoutSanitization.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "panTiltZoom",
+                            "description": "For \"camera\" permission, may specify panTiltZoom.",
                             "optional": true,
                             "type": "boolean"
                         }
@@ -10125,7 +10132,10 @@
                         "OverwriteSecure",
                         "InvalidDomain",
                         "InvalidPrefix",
-                        "UnknownError"
+                        "UnknownError",
+                        "SchemefulSameSiteStrict",
+                        "SchemefulSameSiteLax",
+                        "SchemefulSameSiteUnspecifiedTreatedAsLax"
                     ]
                 },
                 {
@@ -10142,7 +10152,10 @@
                         "SameSiteUnspecifiedTreatedAsLax",
                         "SameSiteNoneInsecure",
                         "UserPreferences",
-                        "UnknownError"
+                        "UnknownError",
+                        "SchemefulSameSiteStrict",
+                        "SchemefulSameSiteLax",
+                        "SchemefulSameSiteUnspecifiedTreatedAsLax"
                     ]
                 },
                 {

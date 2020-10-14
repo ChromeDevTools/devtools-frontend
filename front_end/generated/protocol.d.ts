@@ -1148,6 +1148,7 @@ declare namespace Protocol {
       ProtectedMediaIdentifier = 'protectedMediaIdentifier',
       Sensors = 'sensors',
       VideoCapture = 'videoCapture',
+      VideoCapturePanTiltZoom = 'videoCapturePanTiltZoom',
       IdleDetection = 'idleDetection',
       WakeLockScreen = 'wakeLockScreen',
       WakeLockSystem = 'wakeLockSystem',
@@ -1182,6 +1183,10 @@ declare namespace Protocol {
        * For "clipboard" permission, may specify allowWithoutSanitization.
        */
       allowWithoutSanitization?: boolean;
+      /**
+       * For "camera" permission, may specify panTiltZoom.
+       */
+      panTiltZoom?: boolean;
     }
 
     /**
@@ -6891,6 +6896,9 @@ declare namespace Protocol {
       InvalidDomain = 'InvalidDomain',
       InvalidPrefix = 'InvalidPrefix',
       UnknownError = 'UnknownError',
+      SchemefulSameSiteStrict = 'SchemefulSameSiteStrict',
+      SchemefulSameSiteLax = 'SchemefulSameSiteLax',
+      SchemefulSameSiteUnspecifiedTreatedAsLax = 'SchemefulSameSiteUnspecifiedTreatedAsLax',
     }
 
     /**
@@ -6906,6 +6914,9 @@ declare namespace Protocol {
       SameSiteNoneInsecure = 'SameSiteNoneInsecure',
       UserPreferences = 'UserPreferences',
       UnknownError = 'UnknownError',
+      SchemefulSameSiteStrict = 'SchemefulSameSiteStrict',
+      SchemefulSameSiteLax = 'SchemefulSameSiteLax',
+      SchemefulSameSiteUnspecifiedTreatedAsLax = 'SchemefulSameSiteUnspecifiedTreatedAsLax',
     }
 
     /**

@@ -219,7 +219,7 @@
   <message name="IDS_DEVTOOLS_82a9b801e28c4dec617b1cabc329f5bd" desc="Title of an action in the emulation tool to capture screenshot">
     Capture screenshot
   </message>
-  <message name="IDS_DEVTOOLS_8394f0347c184cf156ac5924dccb773b" desc="Text in Locations Settings Tab of the Device Toolbar">
+  <message name="IDS_DEVTOOLS_8394f0347c184cf156ac5924dccb773b" desc="Abbreviation of longitude in Locations Settings Tab of the Device Toolbar">
     Long
   </message>
   <message name="IDS_DEVTOOLS_89e755205b0e07c218525b9ee9aa7cdd" desc="Error message in the Devices settings pane that declares the maximum length of the device name input">
@@ -330,7 +330,7 @@
   <message name="IDS_DEVTOOLS_c107e6e26d3b1b5eadbf9e842f6c0e05" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Add device type
   </message>
-  <message name="IDS_DEVTOOLS_c23fc6f13afcbcd7dee750fe4f074421" desc="Text in Locations Settings Tab of the Device Toolbar">
+  <message name="IDS_DEVTOOLS_c23fc6f13afcbcd7dee750fe4f074421" desc="Abbreviation of latitude in Locations Settings Tab of the Device Toolbar">
     Lat
   </message>
   <message name="IDS_DEVTOOLS_8b1f9e8e994eb2e2d2b1bde0401c5c40" desc="Text in Locations Settings Tab of the Device Toolbar">

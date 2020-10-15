@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
@@ -18,9 +15,9 @@ export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @override
    */
-  run() {
+  async run() {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
-    SDK.Connections.initMainConnection(() => {
+    SDK.Connections.initMainConnection(async () => {
       const target = SDK.SDKModel.TargetManager.instance().createTarget(
           'main', Common.UIString.UIString('Main'), SDK.SDKModel.Type.Browser, null);
       target.setInspectedURL('Node.js');
@@ -29,7 +26,7 @@ export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper {
 }
 
 /**
- * @implements {Protocol.TargetDispatcher}
+ * @implements {ProtocolProxyApi.TargetDispatcher}
  */
 export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
   /**
@@ -46,12 +43,20 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
     this._childConnections = new Map();
 
     parentTarget.registerTargetDispatcher(this);
-    this._targetAgent.setDiscoverTargets(true);
+    this._targetAgent.invoke_setDiscoverTargets({discover: true});
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setDevicesUpdatesEnabled(false);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setDevicesUpdatesEnabled(true);
+  }
+
+  /**
+   * @override
+   * @return {!Protocol.UsesObjectNotation}
+   */
+  usesObjectNotation() {
+    return true;
   }
 
   /**
@@ -67,7 +72,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
         locations.push({host: parts[0], port: port});
       }
     }
-    this._targetAgent.setRemoteLocations(locations);
+    this._targetAgent.invoke_setRemoteLocations({locations});
   }
 
   /**
@@ -78,73 +83,77 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
         Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
 
     for (const sessionId of this._childTargets.keys()) {
-      this.detachedFromTarget(sessionId, undefined);
+      this.detachedFromTarget({sessionId});
     }
   }
 
   /**
    * @override
-   * @param {!Protocol.Target.TargetInfo} targetInfo
+   * @param {!Protocol.Target.TargetCreatedEvent} event
    */
-  targetCreated(targetInfo) {
+  targetCreated({targetInfo}) {
     if (targetInfo.type === 'node' && !targetInfo.attached) {
-      this._targetAgent.attachToTarget(targetInfo.targetId, false /* flatten */);
+      this._targetAgent.invoke_attachToTarget({targetId: targetInfo.targetId, flatten: false});
     }
   }
 
   /**
    * @override
-   * @param {!Protocol.Target.TargetInfo} targetInfo
+   * @param {!Protocol.Target.TargetInfoChangedEvent} event
    */
-  targetInfoChanged(targetInfo) {
+  targetInfoChanged(event) {
   }
 
   /**
    * @override
-   * @param {string} targetId
+   * @param {!Protocol.Target.TargetDestroyedEvent} event
    */
-  targetDestroyed(targetId) {
+  targetDestroyed(event) {
   }
 
   /**
    * @override
-   * @param {string} sessionId
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   * @param {boolean} waitingForDebugger
+   * @param {!Protocol.Target.AttachedToTargetEvent} event
    */
-  attachedToTarget(sessionId, targetInfo, waitingForDebugger) {
+  attachedToTarget({sessionId, targetInfo}) {
     const name = ls`Node.js: ${targetInfo.url}`;
     const connection = new NodeConnection(this._targetAgent, sessionId);
     this._childConnections.set(sessionId, connection);
     const target = this._targetManager.createTarget(
         targetInfo.targetId, name, SDK.SDKModel.Type.Node, this._parentTarget, undefined, undefined, connection);
     this._childTargets.set(sessionId, target);
-    target.runtimeAgent().runIfWaitingForDebugger();
+    target.runtimeAgent().invoke_runIfWaitingForDebugger();
   }
 
   /**
    * @override
-   * @param {string} sessionId
-   * @param {string=} childTargetId
+   * @param {!Protocol.Target.DetachedFromTargetEvent} event
    */
-  detachedFromTarget(sessionId, childTargetId) {
-    this._childTargets.get(sessionId).dispose('target terminated');
+  detachedFromTarget({sessionId}) {
+    const childTarget = this._childTargets.get(sessionId);
+    if (childTarget) {
+      childTarget.dispose('target terminated');
+    }
     this._childTargets.delete(sessionId);
     this._childConnections.delete(sessionId);
   }
 
   /**
    * @override
-   * @param {string} sessionId
-   * @param {string} message
-   * @param {string=} childTargetId
+   * @param {!Protocol.Target.ReceivedMessageFromTargetEvent} event
    */
-  receivedMessageFromTarget(sessionId, message, childTargetId) {
+  receivedMessageFromTarget({sessionId, message}) {
     const connection = this._childConnections.get(sessionId);
     const onMessage = connection ? connection._onMessage : null;
     if (onMessage) {
       onMessage.call(null, message);
     }
+  }
+
+  /**
+   * @param {!Protocol.Target.TargetCrashedEvent} event
+   */
+  targetCrashed(event) {
   }
 }
 
@@ -153,7 +162,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
  */
 export class NodeConnection {
   /**
-   * @param {!Protocol.TargetAgent} targetAgent
+   * @param {!ProtocolProxyApi.TargetApi} targetAgent
    * @param {string} sessionId
    */
   constructor(targetAgent, sessionId) {
@@ -165,7 +174,7 @@ export class NodeConnection {
 
   /**
    * @override
-   * @param {function((!Object|string))} onMessage
+   * @param {function((!Object|string)):void} onMessage
    */
   setOnMessage(onMessage) {
     this._onMessage = onMessage;
@@ -173,7 +182,7 @@ export class NodeConnection {
 
   /**
    * @override
-   * @param {function(string)} onDisconnect
+   * @param {function(string):void} onDisconnect
    */
   setOnDisconnect(onDisconnect) {
     this._onDisconnect = onDisconnect;
@@ -184,20 +193,20 @@ export class NodeConnection {
    * @param {string} message
    */
   sendRawMessage(message) {
-    this._targetAgent.sendMessageToTarget(message, this._sessionId);
+    this._targetAgent.invoke_sendMessageToTarget({message, sessionId: this._sessionId});
   }
 
   /**
    * @override
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
-  disconnect() {
+  async disconnect() {
     if (this._onDisconnect) {
       this._onDisconnect.call(null, 'force disconnect');
     }
     this._onDisconnect = null;
     this._onMessage = null;
-    return this._targetAgent.detachFromTarget(this._sessionId);
+    await this._targetAgent.invoke_detachFromTarget({sessionId: this._sessionId});
   }
 }
 

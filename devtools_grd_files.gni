@@ -810,6 +810,7 @@ grd_files_debug_sources = [
   "front_end/services/ServiceManager.js",
   "front_end/settings/FrameworkBlackboxSettingsTab.js",
   "front_end/settings/KeybindsSettingsTab.js",
+  "front_end/settings/ModuleUIStrings.js",
   "front_end/settings/SettingsScreen.js",
   "front_end/snippets/ScriptSnippetFileSystem.js",
   "front_end/snippets/SnippetsQuickOpen.js",

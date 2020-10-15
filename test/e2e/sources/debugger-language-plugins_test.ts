@@ -417,6 +417,70 @@ describe('The Debugger Language Plugins', async () => {
     assert.deepEqual(await getValuesForScope('LOCAL'), ['localX2: int']);
   });
 
+  it('falls back to wasm function names when inline info not present', async () => {
+    const {frontend} = getBrowserAndPages();
+    await frontend.evaluateHandle(
+        () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
+          class InliningPlugin {
+            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocations?: SourceLocation[]}>;
+            constructor() {
+              this._modules = new Map();
+            }
+
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+              const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
+              this._modules.set(rawModuleId, {
+                rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
+                sourceLocations: [
+                  {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
+                ],
+              });
+              return [sourceFileURL];
+            }
+
+            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+              const {rawLocationRange, sourceLocations} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && sourceLocations && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return [sourceLocations[rawLocation.inlineFrameIndex || 0]];
+              }
+              return [];
+            }
+
+            async getFunctionInfo(rawLocation: RawLocation) {
+              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return {frames: []};
+              }
+              return null;
+            }
+
+            async getScopeInfo(type: string) {
+              return {type, typeName: type};
+            }
+
+            async listVariablesInScope(_rawLocation: RawLocation) {
+              return [];
+            }
+          }
+
+          RegisterExtension(
+              extensionAPI, new InliningPlugin(), 'Inlining', {language: 'WebAssembly', symbol_types: ['None']});
+        }));
+
+    await openSourcesPanel();
+    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await goToResource('sources/wasm/unreachable.html');
+    await waitFor(RESUME_BUTTON);
+
+    // Call stack shows inline function names and source locations.
+    const funcNames = await getCallFrameNames();
+    assert.deepEqual(funcNames, ['Main', 'go', 'await in go (async)', '(anonymous)']);
+    const sourceLocations = await getCallFrameLocations();
+    assert.deepEqual(sourceLocations, ['unreachable.ll:6', 'unreachable.html:27', 'unreachable.html:30']);
+  });
+
   it('shows constant variable value', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluateHandle(

@@ -138,10 +138,10 @@ export class LanguageExtensionEndpoint {
   /** List all variables in lexical scope at a given location in a raw module
    * @override
    * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} rawLocation
-   * @return {!Promise<?{frames: !Array<!Bindings.DebuggerLanguagePlugins.FunctionInfo>}>}
+   * @return {!Promise<!{frames: !Array<!Bindings.DebuggerLanguagePlugins.FunctionInfo>}>}
   */
   getFunctionInfo(rawLocation) {
-    return /** @type {!Promise<?{frames: !Array<!Bindings.DebuggerLanguagePlugins.FunctionInfo>}>} */ (
+    return /** @type {!Promise<!{frames: !Array<!Bindings.DebuggerLanguagePlugins.FunctionInfo>}>} */ (
         this._sendRequest(this._commands.GetFunctionInfo, {rawLocation}));
   }
 

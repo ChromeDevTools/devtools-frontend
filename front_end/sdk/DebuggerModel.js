@@ -656,7 +656,7 @@ export class DebuggerModel extends SDKModel {
         const newFrames = [];
         for (const callFrame of debuggerPausedDetails.callFrames) {
           const functionInfos = await pluginManager.getFunctionInfo(callFrame);
-          if (functionInfos) {
+          if (functionInfos.frames.length) {
             for (let i = 0; i < functionInfos.frames.length; i++) {
               newFrames.push(callFrame.createVirtualCallFrame(i, functionInfos.frames[i].name));
             }

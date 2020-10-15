@@ -2,6 +2,7 @@
   "dependencies": [
     "platform"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "ContentProvider.js",
     "StaticContentProvider.js",

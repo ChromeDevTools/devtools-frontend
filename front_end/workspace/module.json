@@ -4,6 +4,7 @@
     "host",
     "platform"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "workspace.js",
     "workspace-legacy.js",

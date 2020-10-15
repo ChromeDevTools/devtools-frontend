@@ -26,3 +26,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":input" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "input-legacy.js"
+
+  deps = [ ":bundle" ]
+}

@@ -22,3 +22,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":workspace_diff" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "workspace_diff-legacy.js"
+
+  deps = [ ":bundle" ]
+}

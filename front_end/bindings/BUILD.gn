@@ -41,3 +41,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":bindings" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "bindings-legacy.js"
+
+  deps = [ ":bundle" ]
+}

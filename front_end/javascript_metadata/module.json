@@ -5,6 +5,7 @@
       "className": "JavaScriptMetadata.JavaScriptMetadata"
     }
   ],
+  "pre_generates_legacy": true,
   "dependencies": [
     "common"
   ],

@@ -4,6 +4,7 @@
     "browser_sdk",
     "common"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "extensions.js",
     "extensions-legacy.js",

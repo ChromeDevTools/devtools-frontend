@@ -29,3 +29,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":text_utils" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "text_utils-legacy.js"
+
+  deps = [ ":bundle" ]
+}

@@ -4,6 +4,7 @@
     "diff",
     "persistence"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "workspace_diff.js",
     "workspace_diff-legacy.js",

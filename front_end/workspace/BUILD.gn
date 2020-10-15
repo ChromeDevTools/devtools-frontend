@@ -25,3 +25,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":workspace" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "workspace-legacy.js"
+
+  deps = [ ":bundle" ]
+}

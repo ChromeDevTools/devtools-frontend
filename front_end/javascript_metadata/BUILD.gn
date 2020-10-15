@@ -19,3 +19,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":javascript_metadata" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "javascript_metadata-legacy.js"
+
+  deps = [ ":bundle" ]
+}

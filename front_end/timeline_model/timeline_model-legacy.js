@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// @ts-nocheck
+
 import * as TimelineModelModule from './timeline_model.js';
 
 self.TimelineModel = self.TimelineModel || {};

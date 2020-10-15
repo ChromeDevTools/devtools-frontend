@@ -5,6 +5,7 @@
     "components",
     "sdk"
   ],
+  "pre_generates_legacy": true,
   "extensions": [
     {
       "type": "view",

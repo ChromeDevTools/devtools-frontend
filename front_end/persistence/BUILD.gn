@@ -45,3 +45,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":persistence" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "persistence-legacy.js"
+
+  deps = [ ":bundle" ]
+}

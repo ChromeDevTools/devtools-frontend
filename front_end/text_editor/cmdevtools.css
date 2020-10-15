@@ -628,6 +628,11 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   background-color: #454545;
 }
 
+.-theme-with-dark-background span.CodeMirror-selectedtext,
+:host-context(.-theme-with-dark-background) span.CodeMirror-selectedtext {
+  background: #000;
+}
+
 .CodeMirror .auto-complete-text {
   color: rgb(128 128 128);
 }

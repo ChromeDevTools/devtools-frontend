@@ -556,7 +556,12 @@ export class DeviceModeToolbar {
 
     Host.userMetrics.dualScreenDeviceEmulated(Host.UserMetrics.DualScreenDeviceEmulated.SpanButtonClicked);
     const scale = this._autoAdjustScaleSetting.get() ? undefined : this._model.scaleSetting().get();
-    const newMode = device.getSpanPartner(this._model.mode());
+    const mode = this._model.mode();
+    if (!mode) {
+      return;
+    }
+
+    const newMode = device.getSpanPartner(mode);
     if (!newMode) {
       return;
     }
@@ -590,7 +595,16 @@ export class DeviceModeToolbar {
     if ((device.isDualScreen || device.modes.length === 2) &&
         device.modes[0].orientation !== device.modes[1].orientation) {
       const scale = autoAdjustScaleSetting.get() ? undefined : model.scaleSetting().get();
-      model.emulate(model.type(), model.device(), device.getRotationPartner(model.mode()), scale);
+      const mode = model.mode();
+      if (!mode) {
+        return;
+      }
+      const rotationPartner = device.getRotationPartner(mode);
+      if (!rotationPartner) {
+        return;
+      }
+
+      model.emulate(model.type(), model.device(), rotationPartner, scale);
       return;
     }
 

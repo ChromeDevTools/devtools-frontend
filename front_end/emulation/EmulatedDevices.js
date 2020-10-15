@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
@@ -331,6 +328,10 @@ export class EmulatedDevice {
     return result;
   }
 
+  /**
+   * @param {!Mode} mode
+   * @return {(!Mode|undefined)}
+   */
   getSpanPartner(mode) {
     switch (mode.orientation) {
       case Vertical:
@@ -344,6 +345,10 @@ export class EmulatedDevice {
     }
   }
 
+  /**
+   * @param {!Mode} mode
+   * @return {?Mode}
+   */
   getRotationPartner(mode) {
     switch (mode.orientation) {
       case HorizontalSpanned:
@@ -367,29 +372,36 @@ export class EmulatedDevice {
     json['user-agent'] = this.userAgent;
     json['capabilities'] = this.capabilities;
 
-    json['screen'] = {};
-    json['screen']['device-pixel-ratio'] = this.deviceScaleFactor;
-    json['screen']['vertical'] = this._orientationToJSON(this.vertical);
-    json['screen']['horizontal'] = this._orientationToJSON(this.horizontal);
+    /** @type {{'device-pixel-ratio': number, vertical: object, horizontal: object, 'vertical-spanned': (object|undefined), 'horizontal-spanned': (object|undefined)}} */
+    json['screen'] = {
+      'device-pixel-ratio': this.deviceScaleFactor,
+      vertical: this._orientationToJSON(this.vertical),
+      horizontal: this._orientationToJSON(this.horizontal),
+      'vertical-spanned': undefined,
+      'horizontal-spanned': undefined,
+    };
 
     if (this.isDualScreen) {
       json['screen']['vertical-spanned'] = this._orientationToJSON(this.verticalSpanned);
       json['screen']['horizontal-spanned'] = this._orientationToJSON(this.horizontalSpanned);
     }
 
+
+    /** @type {!Array.<!JSONMode>} */
     json['modes'] = [];
     for (let i = 0; i < this.modes.length; ++i) {
-      const mode = {};
-      mode['title'] = this.modes[i].title;
-      mode['orientation'] = this.modes[i].orientation;
-      mode['insets'] = {};
-      mode['insets']['left'] = this.modes[i].insets.left;
-      mode['insets']['top'] = this.modes[i].insets.top;
-      mode['insets']['right'] = this.modes[i].insets.right;
-      mode['insets']['bottom'] = this.modes[i].insets.bottom;
-      if (this.modes[i].image) {
-        mode['image'] = this.modes[i].image;
-      }
+      /** @type {!JSONMode} */
+      const mode = {
+        'title': this.modes[i].title,
+        'orientation': this.modes[i].orientation,
+        'insets': {
+          'left': this.modes[i].insets.left,
+          'top': this.modes[i].insets.top,
+          'right': this.modes[i].insets.right,
+          'bottom': this.modes[i].insets.bottom,
+        },
+        image: this.modes[i].image || undefined,
+      };
       json['modes'].push(mode);
     }
 
@@ -409,33 +421,44 @@ export class EmulatedDevice {
     json['width'] = orientation.width;
     json['height'] = orientation.height;
     if (orientation.outlineInsets) {
-      json['outline'] = {};
-      json['outline']['insets'] = {};
-      json['outline']['insets']['left'] = orientation.outlineInsets.left;
-      json['outline']['insets']['top'] = orientation.outlineInsets.top;
-      json['outline']['insets']['right'] = orientation.outlineInsets.right;
-      json['outline']['insets']['bottom'] = orientation.outlineInsets.bottom;
-      json['outline']['image'] = orientation.outlineImage;
+      /** @type {!{image: ?string, insets: {left: number, right: number, top: number, bottom: number}}} */
+      json.outline = {
+        insets: {
+          'left': orientation.outlineInsets.left,
+          'top': orientation.outlineInsets.top,
+          'right': orientation.outlineInsets.right,
+          'bottom': orientation.outlineInsets.bottom,
+        },
+        image: orientation.outlineImage
+      };
     }
     if (orientation.hinge) {
-      json['hinge'] = {};
-      json['hinge']['width'] = orientation.hinge.width;
-      json['hinge']['height'] = orientation.hinge.height;
-      json['hinge']['x'] = orientation.hinge.x;
-      json['hinge']['y'] = orientation.hinge.y;
+      /** @type {!{width: number, height: number, x: number, y: number,   contentColor: (!{r:number,g:number,b:number,a:number}|undefined),  outlineColor: (!{r:number,g:number,b:number,a:number}|undefined)
+       * }} */
+      json.hinge = {
+        'width': orientation.hinge.width,
+        'height': orientation.hinge.height,
+        'x': orientation.hinge.x,
+        'y': orientation.hinge.y,
+        contentColor: undefined,
+        outlineColor: undefined,
+      };
+
       if (orientation.hinge.contentColor) {
-        json['hinge']['contentColor'] = {};
-        json['hinge']['contentColor']['r'] = orientation.hinge.contentColor.r;
-        json['hinge']['contentColor']['g'] = orientation.hinge.contentColor.g;
-        json['hinge']['contentColor']['b'] = orientation.hinge.contentColor.b;
-        json['hinge']['contentColor']['a'] = orientation.hinge.contentColor.a;
+        json.hinge.contentColor = {
+          'r': orientation.hinge.contentColor.r,
+          'g': orientation.hinge.contentColor.g,
+          'b': orientation.hinge.contentColor.b,
+          'a': orientation.hinge.contentColor.a,
+        };
       }
       if (orientation.hinge.outlineColor) {
-        json['hinge']['outlineColor'] = {};
-        json['hinge']['outlineColor']['r'] = orientation.hinge.outlineColor.r;
-        json['hinge']['outlineColor']['g'] = orientation.hinge.outlineColor.g;
-        json['hinge']['outlineColor']['b'] = orientation.hinge.outlineColor.b;
-        json['hinge']['outlineColor']['a'] = orientation.hinge.outlineColor.a;
+        json.hinge.outlineColor = {
+          'r': orientation.hinge.outlineColor.r,
+          'g': orientation.hinge.outlineColor.g,
+          'b': orientation.hinge.outlineColor.b,
+          'a': orientation.hinge.outlineColor.a,
+        };
       }
     }
     return json;
@@ -559,14 +582,14 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
 
-    /** @type {!Common.Settings.Setting} */
+    /** @type {!Common.Settings.Setting<!Array<?>>} */
     this._standardSetting = Common.Settings.Settings.instance().createSetting('standardEmulatedDeviceList', []);
     /** @type {!Set.<!EmulatedDevice>} */
     this._standard = new Set();
     this._listFromJSONV1(this._standardSetting.get(), this._standard);
     this._updateStandardDevices();
 
-    /** @type {!Common.Settings.Setting} */
+    /** @type {!Common.Settings.Setting<!Array<?>>} */
     this._customSetting = Common.Settings.Settings.instance().createSetting('customEmulatedDeviceList', []);
     /** @type {!Set.<!EmulatedDevice>} */
     this._custom = new Set();
@@ -586,12 +609,15 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _updateStandardDevices() {
+    /** @type {!Set<!EmulatedDevice>} */
     const devices = new Set();
     const extensions = Root.Runtime.Runtime.instance().extensions('emulated-device');
     for (const extension of extensions) {
-      const device = EmulatedDevice.fromJSONV1(extension.descriptor()['device']);
-      device.setExtension(extension);
-      devices.add(device);
+      const device = EmulatedDevice.fromJSONV1(extension.descriptor().device);
+      if (device) {
+        device.setExtension(extension);
+        devices.add(device);
+      }
     }
     this._copyShowValues(this._standard, devices);
     this._standard = devices;
@@ -660,6 +686,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   saveCustomDevices() {
+    /** @type {!Array<?>} */
     const json = [];
     this._custom.forEach(device => json.push(device._toJSON()));
 
@@ -668,6 +695,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   saveStandardDevices() {
+    /** @type {!Array<?>} */
     const json = [];
     this._standard.forEach(device => json.push(device._toJSON()));
 
@@ -701,7 +729,13 @@ export const Events = {
 };
 
 /** @typedef {!{title: string, orientation: string, insets: !UI.Geometry.Insets, image: ?string}} */
+// @ts-ignore typedef
 export let Mode;
 
 /** @typedef {!{width: number, height: number, outlineInsets: ?UI.Geometry.Insets, outlineImage: ?string, hinge: ?SDK.OverlayModel.Hinge}} */
+// @ts-ignore typedef
 export let Orientation;
+
+/** @typedef {!{title: string, orientation: string, image: (string|undefined), insets: {left: number, right: number, top: number, bottom: number}}} */
+// @ts-ignore typedef
+export let JSONMode;  // eslint-disable-line no-unused-vars

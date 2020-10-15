@@ -22,3 +22,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":har_importer" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "har_importer-legacy.js"
+
+  deps = [ ":bundle" ]
+}

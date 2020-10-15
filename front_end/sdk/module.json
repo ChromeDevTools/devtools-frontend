@@ -6,6 +6,7 @@
     "protocol_client",
     "text_utils"
   ],
+  "pre_generates_legacy": true,
   "extensions": [
     {
       "type": "setting",

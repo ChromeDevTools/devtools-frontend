@@ -25,3 +25,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":host" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "host-legacy.js"
+
+  deps = [ ":bundle" ]
+}

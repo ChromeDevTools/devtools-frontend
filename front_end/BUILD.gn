@@ -149,7 +149,16 @@ group("legacy_css") {
 }
 
 group("legacy_entrypoints") {
-  public_deps = [ "common:legacy" ]
+  public_deps = [
+    "common:legacy",
+    "formatter:legacy",
+    "har_importer:legacy",
+    "host:legacy",
+    "protocol_client:legacy",
+    "root:legacy",
+    "sdk:legacy",
+    "services:legacy",
+  ]
 }
 
 copy_sources_to_resources("entrypoint_copy") {

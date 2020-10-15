@@ -21,7 +21,6 @@
     }
   ],  "modules": [
     "browser_sdk.js",
-    "browser_sdk-legacy.js",
     "LogManager.js",
     "IssuesManager.js",
     "RelatedIssue.js"

@@ -23,3 +23,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":protocol_client" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "protocol_client-legacy.js"
+
+  deps = [ ":bundle" ]
+}

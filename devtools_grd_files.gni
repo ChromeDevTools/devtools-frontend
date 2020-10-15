@@ -82,7 +82,6 @@ grd_files_release_sources = [
   "front_end/browser_debugger/browser_debugger-legacy.js",
   "front_end/browser_debugger/browser_debugger.js",
   "front_end/browser_debugger/browser_debugger_module.js",
-  "front_end/browser_sdk/browser_sdk-legacy.js",
   "front_end/browser_sdk/browser_sdk.js",
   "front_end/changes/changes-legacy.js",
   "front_end/changes/changes.js",

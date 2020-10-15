@@ -27,3 +27,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":formatter" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "formatter-legacy.js"
+
+  deps = [ ":bundle" ]
+}

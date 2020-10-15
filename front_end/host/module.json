@@ -3,6 +3,7 @@
     "common",
     "platform"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "host.js",
     "host-legacy.js",

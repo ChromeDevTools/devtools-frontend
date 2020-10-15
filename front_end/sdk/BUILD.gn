@@ -88,3 +88,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":sdk" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "sdk-legacy.js"
+
+  deps = [ ":bundle" ]
+}

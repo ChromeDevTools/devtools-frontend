@@ -2,6 +2,7 @@
   "dependencies": [
     "common"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "formatter.js",
     "formatter-legacy.js",

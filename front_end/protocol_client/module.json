@@ -3,6 +3,7 @@
     "common",
     "host"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "../generated/InspectorBackendCommands.js",
     "protocol_client.js",

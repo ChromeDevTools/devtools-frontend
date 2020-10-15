@@ -3,6 +3,7 @@
     "common",
     "browser_sdk"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "har_importer.js",
     "har_importer-legacy.js",

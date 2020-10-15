@@ -145,6 +145,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_3f80ff94f029e6a0d990eb528b9a3e29" desc="Text in App Manifest View of the Application panel">
     Icon <ph name="ICONURL">$1s<ex>>https://example.com</ex></ph> dimensions should be square
   </message>
+  <message name="IDS_DEVTOOLS_3fe657bc615d0d1c37f1d6d5f8b5587e" desc="Description for the 'Access to Opener' field">
+    Shows whether the opened window is able to access its opener and vice versa
+  </message>
   <message name="IDS_DEVTOOLS_44323440df1f92dfd551c7efc0aece80" desc="Data grid name for DOM Storage Items data grids">
     DOM Storage Items
   </message>
@@ -309,6 +312,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_9350cbb84e8ab827898a783d8f724951" desc="Text in Service Workers View of the Application panel">
     inspect
+  </message>
+  <message name="IDS_DEVTOOLS_93ca868aee99565902f13a75d4b6af74" desc="Label for link to Opener Frame in Detail View for Opened Window">
+    Opener Frame
   </message>
   <message name="IDS_DEVTOOLS_94aa6cfa461998abe42d53963f1344c3" desc="Error msg element text content in Database Table View of the Application panel">
     An error occurred trying to

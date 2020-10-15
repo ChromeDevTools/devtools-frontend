@@ -36,8 +36,6 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     const originFieldValue = this._generalSection.appendField(ls`Origin`);
     this._originStringElement = originFieldValue.createChild('div', 'text-ellipsis');
     this._ownerFieldValue = this._generalSection.appendField(ls`Owner Element`);
-    /** @type {?SDK.DOMModel.DOMNode} */
-    this._ownerDomNode = null;
     this._adStatus = this._generalSection.appendField(ls`Ad Status`);
 
     this._isolationSection = this._reportView.appendSection(ls`Security & Isolation`);
@@ -58,7 +56,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._urlFieldValue.appendChild(this._urlStringElement);
     if (!this._frame.unreachableUrl()) {
       const sourceCode = this.uiSourceCodeForFrame(this._frame);
-      const revealSource = FrameDetailsView.linkifyIcon(
+      const revealSource = linkifyIcon(
           'mediumicon-sources-panel', ls`Click to reveal in Sources panel`, () => Common.Revealer.reveal(sourceCode));
       this._urlFieldValue.appendChild(revealSource);
     }
@@ -71,17 +69,11 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     } else {
       this._generalSection.setFieldVisible(ls`Origin`, false);
     }
-    this._ownerDomNode = await this._frame.getOwnerDOMNodeOrDocument();
     this._updateAdStatus();
     this._ownerFieldValue.removeChildren();
-    if (this._ownerDomNode) {
-      const revealElement = FrameDetailsView.linkifyIcon(
-          'mediumicon-elements-panel', ls`Click to reveal in Elements panel`,
-          () => Common.Revealer.reveal(this._ownerDomNode));
-      const elementLabel = document.createElement('span');
-      elementLabel.textContent = `<${this._ownerDomNode.nodeName().toLocaleLowerCase()}>`;
-      revealElement.insertBefore(elementLabel, revealElement.firstChild);
-      this._ownerFieldValue.appendChild(revealElement);
+    const linkElement = await maybeCreateLinkToElementsPanel(this._frame);
+    if (linkElement) {
+      this._ownerFieldValue.appendChild(linkElement);
     }
     await this._updateCoopCoepStatus();
     this._updateContextStatus();
@@ -179,35 +171,13 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   /**
-   * @param {string} iconType
-   * @param {string} title
-   * @param {function():(void|!Promise<void>)} eventHandler
-   * @return {!Element}
-   */
-  static linkifyIcon(iconType, title, eventHandler) {
-    const icon = UI.Icon.Icon.create(iconType, 'icon-link devtools-link');
-    const span = document.createElement('span');
-    span.title = title;
-    span.classList.add('devtools-link');
-    span.tabIndex = 0;
-    span.appendChild(icon);
-    span.addEventListener('click', () => eventHandler());
-    span.addEventListener('keydown', event => {
-      if (isEnterKey(event)) {
-        eventHandler();
-      }
-    });
-    return span;
-  }
-
-  /**
    * @param {!Element} element
    * @param {?SDK.Resource.Resource} resource
    */
   static maybeAppendLinkToRequest(element, resource) {
     if (resource && resource.request) {
       const request = resource.request;
-      const revealRequest = FrameDetailsView.linkifyIcon(
+      const revealRequest = linkifyIcon(
           'mediumicon-network-panel', ls`Click to reveal in Network panel`,
           () => Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, Network.NetworkItemView.Tabs.Headers));
       element.appendChild(revealRequest);
@@ -226,7 +196,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
       return;
     }
 
-    const revealRequest = FrameDetailsView.linkifyIcon(
+    const revealRequest = linkifyIcon(
         'mediumicon-network-panel', ls`Click to reveal in Network panel (might require page reload)`, () => {
           Network.NetworkPanel.NetworkPanel.revealAndFilter([
             {
@@ -261,6 +231,64 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   }
 }
 
+/**
+ * @param {string} iconType
+ * @param {string} title
+ * @param {function():(void|!Promise<void>)} eventHandler
+ * @return {!Element}
+ */
+function linkifyIcon(iconType, title, eventHandler) {
+  const icon = UI.Icon.Icon.create(iconType, 'icon-link devtools-link');
+  const span = document.createElement('span');
+  span.title = title;
+  span.classList.add('devtools-link');
+  span.tabIndex = 0;
+  span.appendChild(icon);
+  span.addEventListener('click', () => eventHandler());
+  span.addEventListener('keydown', event => {
+    if (isEnterKey(event)) {
+      eventHandler();
+    }
+  });
+  return span;
+}
+
+/**
+ * @param {!SDK.ResourceTreeModel.ResourceTreeFrame|!Protocol.Page.FrameId|undefined} opener
+ * @return {!Promise<?Element>}
+ */
+async function maybeCreateLinkToElementsPanel(opener) {
+  /** @type {?SDK.ResourceTreeModel.ResourceTreeFrame} */
+  let openerFrame = null;
+  if (opener instanceof SDK.ResourceTreeModel.ResourceTreeFrame) {
+    openerFrame = opener;
+  } else if (opener) {
+    openerFrame = SDK.FrameManager.FrameManager.instance().getFrame(opener);
+  }
+  if (!openerFrame) {
+    return null;
+  }
+  const linkTargetDOMNode = await openerFrame.getOwnerDOMNodeOrDocument();
+  if (!linkTargetDOMNode) {
+    return null;
+  }
+  const linkElement = linkifyIcon(
+      'mediumicon-elements-panel', ls`Click to reveal in Elements panel`,
+      () => Common.Revealer.reveal(linkTargetDOMNode));
+  const label = document.createElement('span');
+  label.textContent = `<${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>`;
+  linkElement.insertBefore(label, linkElement.firstChild);
+  linkElement.addEventListener('mouseenter', () => {
+    if (openerFrame) {
+      openerFrame.highlight();
+    }
+  });
+  linkElement.addEventListener('mouseleave', () => {
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+  });
+  return linkElement;
+}
+
 export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   /**
    * @param {!Protocol.Target.TargetInfo} targetInfo
@@ -278,8 +306,10 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     this._URLFieldValue = this._documentSection.appendField(ls`URL`);
 
     this._securitySection = this._reportView.appendSection(ls`Security`);
+    this._openerElementField = this._securitySection.appendField(ls`Opener Frame`);
+    this._securitySection.setFieldVisible(ls`Opener Frame`, false);
     this._hasDOMAccessValue = this._securitySection.appendField(ls`Access to opener`);
-
+    this._hasDOMAccessValue.title = ls`Shows whether the opened window is able to access its opener and vice versa`;
     this.update();
   }
 
@@ -291,6 +321,18 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     this._reportView.setTitle(this.buildTitle());
     this._URLFieldValue.textContent = this._targetInfo.url;
     this._hasDOMAccessValue.textContent = booleanToYesNo(this._targetInfo.canAccessOpener);
+    this.maybeDisplayOpenerFrame();
+  }
+
+  async maybeDisplayOpenerFrame() {
+    this._openerElementField.removeChildren();
+    const linkElement = await maybeCreateLinkToElementsPanel(this._targetInfo.openerFrameId);
+    if (linkElement) {
+      this._openerElementField.append(linkElement);
+      this._securitySection.setFieldVisible(ls`Opener Frame`, true);
+      return;
+    }
+    this._securitySection.setFieldVisible(ls`Opener Frame`, false);
   }
 
   /**

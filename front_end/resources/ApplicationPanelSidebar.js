@@ -1492,9 +1492,8 @@ export class IDBDatabaseTreeElement extends BaseStorageTreeElement {
   update(database, entriesUpdated) {
     this._database = database;
     const objectStoreNames = {};
-    const objectStoreNamesSorted = Object.keys(this._database.objectStores).sort();
-    for (const objectStoreName of objectStoreNamesSorted) {
-      const objectStore = this._database.objectStores[objectStoreName];
+    for (const objectStoreName of [...this._database.objectStores.keys()].sort()) {
+      const objectStore = this._database.objectStores.get(objectStoreName);
       objectStoreNames[objectStore.name] = true;
       if (!this._idbObjectStoreTreeElements[objectStore.name]) {
         const idbObjectStoreTreeElement =
@@ -1627,8 +1626,7 @@ export class IDBObjectStoreTreeElement extends BaseStorageTreeElement {
     this._objectStore = objectStore;
 
     const indexNames = {};
-    for (const indexName in this._objectStore.indexes) {
-      const index = this._objectStore.indexes[indexName];
+    for (const index of this._objectStore.indexes.values()) {
       indexNames[index.name] = true;
       if (!this._idbIndexTreeElements[index.name]) {
         const idbIndexTreeElement = new IDBIndexTreeElement(

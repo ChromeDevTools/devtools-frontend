@@ -78,7 +78,7 @@ export class IDBDatabaseView extends UI.Widget.VBox {
   _refreshDatabase() {
     this._securityOriginElement.textContent = this._database.databaseId.securityOrigin;
     this._versionElement.textContent = this._database.version;
-    this._objectStoreCountElement.textContent = Object.keys(this._database.objectStores).length;
+    this._objectStoreCountElement.textContent = this._database.objectStores.size;
   }
 
   _refreshDatabaseButtonClicked() {

@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
@@ -19,7 +16,7 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 export class MediaQueryInspector extends UI.Widget.Widget {
   /**
    * @param {function():number} getWidthCallback
-   * @param {function(number)} setWidthCallback
+   * @param {function(number):void} setWidthCallback
    */
   constructor(getWidthCallback, setWidthCallback) {
     super(true);
@@ -32,6 +29,11 @@ export class MediaQueryInspector extends UI.Widget.Widget {
     this._getWidthCallback = getWidthCallback;
     this._setWidthCallback = setWidthCallback;
     this._scale = 1;
+
+    /** @type {!WeakMap<!Element, !MediaQueryUIModel>} */
+    this.elementsToMediaQueryModel = new WeakMap();
+    /** @type {!WeakMap<!Element, !Array<!SDK.CSSModel.CSSLocation>>} */
+    this.elementsToCSSLocations = new WeakMap();
 
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.CSSModel.CSSModel, this);
     UI.ZoomManager.ZoomManager.instance().addEventListener(
@@ -86,25 +88,31 @@ export class MediaQueryInspector extends UI.Widget.Widget {
    * @param {!Event} event
    */
   _onMediaQueryClicked(event) {
-    const mediaQueryMarker = event.target.enclosingNodeOrSelfWithClass('media-inspector-bar');
+    const mediaQueryMarker = /** @type {!Node} */ (event.target).enclosingNodeOrSelfWithClass('media-inspector-bar');
     if (!mediaQueryMarker) {
       return;
     }
 
-    const model = mediaQueryMarker._model;
+    const model = this.elementsToMediaQueryModel.get(mediaQueryMarker);
+    if (!model) {
+      return;
+    }
+    const modelMaxWidth = model.maxWidthExpression();
+    const modelMinWidth = model.minWidthExpression();
+
     if (model.section() === Section.Max) {
-      this._setWidthCallback(model.maxWidthExpression().computedLength());
+      this._setWidthCallback(modelMaxWidth ? modelMaxWidth.computedLength() || 0 : 0);
       return;
     }
     if (model.section() === Section.Min) {
-      this._setWidthCallback(model.minWidthExpression().computedLength());
+      this._setWidthCallback(modelMinWidth ? modelMinWidth.computedLength() || 0 : 0);
       return;
     }
     const currentWidth = this._getWidthCallback();
-    if (currentWidth !== model.minWidthExpression().computedLength()) {
-      this._setWidthCallback(model.minWidthExpression().computedLength());
+    if (modelMinWidth && currentWidth !== modelMinWidth.computedLength()) {
+      this._setWidthCallback(modelMinWidth.computedLength() || 0);
     } else {
-      this._setWidthCallback(model.maxWidthExpression().computedLength());
+      this._setWidthCallback(modelMaxWidth ? modelMaxWidth.computedLength() || 0 : 0);
     }
   }
 
@@ -116,12 +124,12 @@ export class MediaQueryInspector extends UI.Widget.Widget {
       return;
     }
 
-    const mediaQueryMarker = event.target.enclosingNodeOrSelfWithClass('media-inspector-bar');
+    const mediaQueryMarker = /** @type {!Node} */ (event.target).enclosingNodeOrSelfWithClass('media-inspector-bar');
     if (!mediaQueryMarker) {
       return;
     }
 
-    const locations = mediaQueryMarker._locations;
+    const locations = this.elementsToCSSLocations.get(mediaQueryMarker) || [];
     const uiLocations = new Map();
     for (let i = 0; i < locations.length; ++i) {
       const uiLocation =
@@ -208,7 +216,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
 
     let allEqual = this._cachedQueryModels && this._cachedQueryModels.length === queryModels.length;
     for (let i = 0; allEqual && i < queryModels.length; ++i) {
-      allEqual = allEqual && this._cachedQueryModels[i].equals(queryModels[i]);
+      allEqual = allEqual && this._cachedQueryModels && this._cachedQueryModels[i].equals(queryModels[i]);
     }
     if (allEqual) {
       return;
@@ -260,9 +268,12 @@ export class MediaQueryInspector extends UI.Widget.Widget {
       }
       const marker = markers[i];
       const bar = this._createElementFromMediaQueryModel(marker.model);
-      bar._model = marker.model;
-      bar._locations = marker.locations;
+      this.elementsToMediaQueryModel.set(bar, marker.model);
+      this.elementsToCSSLocations.set(bar, marker.locations);
       bar.classList.toggle('media-inspector-marker-inactive', !marker.active);
+      if (!container) {
+        throw new Error('Could not find container to render media queries into.');
+      }
       container.appendChild(bar);
     }
   }
@@ -287,8 +298,10 @@ export class MediaQueryInspector extends UI.Widget.Widget {
    */
   _createElementFromMediaQueryModel(model) {
     const zoomFactor = this._zoomFactor();
-    const minWidthValue = model.minWidthExpression() ? model.minWidthExpression().computedLength() / zoomFactor : 0;
-    const maxWidthValue = model.maxWidthExpression() ? model.maxWidthExpression().computedLength() / zoomFactor : 0;
+    const minWidthExpression = model.minWidthExpression();
+    const maxWidthExpression = model.maxWidthExpression();
+    const minWidthValue = minWidthExpression ? (minWidthExpression.computedLength() || 0) / zoomFactor : 0;
+    const maxWidthValue = maxWidthExpression ? (maxWidthExpression.computedLength() || 0) / zoomFactor : 0;
     const result = document.createElement('div');
     result.classList.add('media-inspector-bar');
 
@@ -330,7 +343,18 @@ export class MediaQueryInspector extends UI.Widget.Widget {
       appendLabel(rightElement, model.minWidthExpression(), true, true);
     }
 
+    /**
+     *
+     * @param {!Element} marker
+     * @param {?SDK.CSSMedia.CSSMediaQueryExpression} expression
+     * @param {boolean} atLeft
+     * @param {boolean} leftAlign
+     */
     function appendLabel(marker, expression, atLeft, leftAlign) {
+      if (!expression) {
+        return;
+      }
+
       marker
           .createChild(
               'div',
@@ -390,6 +414,10 @@ export class MediaQueryUIModel {
     let minWidthExpression = null;
     let minWidthPixels = Number.MIN_VALUE;
     const expressions = mediaQuery.expressions();
+    if (!expressions) {
+      return null;
+    }
+
     for (let i = 0; i < expressions.length; ++i) {
       const expression = expressions[i];
       const feature = expression.feature();
@@ -397,10 +425,10 @@ export class MediaQueryUIModel {
         continue;
       }
       const pixels = expression.computedLength();
-      if (feature.startsWith('max-') && pixels < maxWidthPixels) {
+      if (feature.startsWith('max-') && pixels && pixels < maxWidthPixels) {
         maxWidthExpression = expression;
         maxWidthPixels = pixels;
-      } else if (feature.startsWith('min-') && pixels > minWidthPixels) {
+      } else if (feature.startsWith('min-') && pixels && pixels > minWidthPixels) {
         minWidthExpression = expression;
         minWidthPixels = pixels;
       }
@@ -425,11 +453,19 @@ export class MediaQueryUIModel {
    * @return {boolean}
    */
   dimensionsEqual(other) {
+    const thisMinWidthExpression = this.minWidthExpression();
+    const otherMinWidthExpression = other.minWidthExpression();
+
+    const thisMaxWidthExpression = this.maxWidthExpression();
+    const otherMaxWidthExpression = other.maxWidthExpression();
+
     return this.section() === other.section() &&
-        (!this.minWidthExpression() ||
-         (this.minWidthExpression().computedLength() === other.minWidthExpression().computedLength())) &&
-        (!this.maxWidthExpression() ||
-         (this.maxWidthExpression().computedLength() === other.maxWidthExpression().computedLength()));
+        (!thisMinWidthExpression ||
+         (thisMinWidthExpression.computedLength() ===
+          (otherMinWidthExpression ? otherMinWidthExpression.computedLength() : null)) &&
+             (!thisMaxWidthExpression ||
+              (thisMaxWidthExpression.computedLength() ===
+               (otherMaxWidthExpression ? otherMaxWidthExpression.computedLength() : null))));
   }
 
   /**
@@ -455,17 +491,35 @@ export class MediaQueryUIModel {
       if (this.active() !== other.active()) {
         return this.active() ? -1 : 1;
       }
+
+      if (!myLocation || !otherLocation) {
+        // This conditional never uns, because it's dealt with above, but
+        // TypeScript can't follow that by this point both myLocation and
+        // otherLocation must exist.
+        return 0;
+      }
+
       return myLocation.url.compareTo(otherLocation.url) || myLocation.lineNumber - otherLocation.lineNumber ||
           myLocation.columnNumber - otherLocation.columnNumber;
     }
+
+    const thisMaxWidthExpression = this.maxWidthExpression();
+    const otherMaxWidthExpression = other.maxWidthExpression();
+    const thisMaxLength = thisMaxWidthExpression ? thisMaxWidthExpression.computedLength() || 0 : 0;
+    const otherMaxLength = otherMaxWidthExpression ? otherMaxWidthExpression.computedLength() || 0 : 0;
+
+    const thisMinWidthExpression = this.minWidthExpression();
+    const otherMinWidthExpression = other.minWidthExpression();
+    const thisMinLength = thisMinWidthExpression ? thisMinWidthExpression.computedLength() || 0 : 0;
+    const otherMinLength = otherMinWidthExpression ? otherMinWidthExpression.computedLength() || 0 : 0;
+
     if (this.section() === Section.Max) {
-      return other.maxWidthExpression().computedLength() - this.maxWidthExpression().computedLength();
+      return otherMaxLength - thisMaxLength;
     }
     if (this.section() === Section.Min) {
-      return this.minWidthExpression().computedLength() - other.minWidthExpression().computedLength();
+      return thisMinLength - otherMinLength;
     }
-    return this.minWidthExpression().computedLength() - other.minWidthExpression().computedLength() ||
-        other.maxWidthExpression().computedLength() - this.maxWidthExpression().computedLength();
+    return thisMinLength - otherMinLength || otherMaxLength - thisMaxLength;
   }
 
   /**
@@ -479,7 +533,7 @@ export class MediaQueryUIModel {
    * @return {string}
    */
   mediaText() {
-    return this._cssMedia.text;
+    return this._cssMedia.text || '';
   }
 
   /**

@@ -85,5 +85,31 @@ ${paragraphText}
       assert.strictEqual(listItems.length, 2);
       assert.deepStrictEqual(listItems.map(item => item.textContent), listItemTexts);
     });
+
+    // Angle brackets are escaped twice
+    it.skip('[crbug.com/1138302] renders basic escaped html', () => {
+      const component = new MarkdownView();
+      renderElementIntoDOM(component);
+
+      component.data = {tokens: Marked.Marked.lexer('<123>')};
+
+      assertShadowRoot(component.shadowRoot);
+
+      const paragraph = Array.from(component.shadowRoot.querySelectorAll('p'))[0];
+      assert.strictEqual(paragraph.innerHTML, '<!----><!----><!---->&lt;123&gt;<!----><!----><!---->');
+    });
+
+    // Angle brackets are escaped twice
+    it.skip('[crbug.com/1138302] renders basic escaped html inside codespan', () => {
+      const component = new MarkdownView();
+      renderElementIntoDOM(component);
+
+      component.data = {tokens: Marked.Marked.lexer('`<meta>`')};
+
+      assertShadowRoot(component.shadowRoot);
+
+      const codeBlock = Array.from(component.shadowRoot.querySelectorAll('code'))[0];
+      assert.strictEqual(codeBlock.innerHTML, '<!---->&lt;meta&gt;<!---->');
+    });
   });
 });

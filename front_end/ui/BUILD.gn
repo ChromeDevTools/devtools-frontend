@@ -128,3 +128,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":ui" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "ui-legacy.js"
+
+  deps = [ ":bundle" ]
+}

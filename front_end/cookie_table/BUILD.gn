@@ -23,3 +23,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":cookie_table" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "cookie_table-legacy.js"
+
+  deps = [ ":bundle" ]
+}

@@ -46,3 +46,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":perf_ui" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "perf_ui-legacy.js"
+
+  deps = [ ":bundle" ]
+}

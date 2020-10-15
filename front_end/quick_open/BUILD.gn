@@ -30,3 +30,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":quick_open" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "quick_open-legacy.js"
+
+  deps = [ ":bundle" ]
+}

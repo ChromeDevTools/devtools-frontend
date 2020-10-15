@@ -4,6 +4,7 @@
     "sdk",
     "data_grid"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "cookie_table.js",
     "cookie_table-legacy.js",

@@ -39,3 +39,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":inline_editor" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "inline_editor-legacy.js"
+
+  deps = [ ":bundle" ]
+}

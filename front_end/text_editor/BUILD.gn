@@ -37,3 +37,9 @@ devtools_entrypoint("bundle") {
     "../third_party/codemirror",
   ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "text_editor-legacy.js"
+
+  deps = [ ":bundle" ]
+}

@@ -41,3 +41,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":object_ui" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "object_ui-legacy.js"
+
+  deps = [ ":bundle" ]
+}

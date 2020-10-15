@@ -39,3 +39,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":source_frame" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "source_frame-legacy.js"
+
+  deps = [ ":bundle" ]
+}

@@ -27,3 +27,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":color_picker" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "color_picker-legacy.js"
+
+  deps = [ ":bundle" ]
+}

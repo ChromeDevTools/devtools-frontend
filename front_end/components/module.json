@@ -3,7 +3,9 @@
     "bindings",
     "platform",
     "ui"
-  ],  "modules": [
+  ],
+  "pre_generates_legacy": true,
+  "modules": [
     "components.js",
     "components-legacy.js",
     "JSPresentationUtils.js",

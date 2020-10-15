@@ -65,7 +65,8 @@ Emulation.LocationsSettingsTab = EmulationModule.LocationsSettingsTab.LocationsS
  */
 Emulation.InspectedPagePlaceholder = EmulationModule.InspectedPagePlaceholder.InspectedPagePlaceholder;
 
-Emulation.InspectedPagePlaceholder.instance = EmulationModule.InspectedPagePlaceholder.instance;
+Emulation.InspectedPagePlaceholder.instance =
+    EmulationModule.InspectedPagePlaceholder.InspectedPagePlaceholder.instance;
 
 /**
  * @constructor

@@ -405,7 +405,7 @@ export class LighthousePanel extends UI.Panel.Panel {
       delete this._stateBefore;
     }
 
-    Emulation.InspectedPagePlaceholder.instance().update(true);
+    Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder.instance().update(true);
 
     const resourceTreeModel =
         SDK.SDKModel.TargetManager.instance().mainTarget().model(SDK.ResourceTreeModel.ResourceTreeModel);

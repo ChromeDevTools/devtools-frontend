@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Network from '../network/network.js';
@@ -40,7 +37,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     this._preview = null;
 
     this._cache = cache;
-    /** @type {?DataGrid.DataGrid.DataGridImpl} */
+    /** @type {?DataGrid.DataGrid.DataGridImpl<!DataGridNode>} */
     this._dataGrid = null;
     this._refreshThrottler = new Common.Throttler.Throttler(300);
     this._refreshButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Refresh'), 'largeicon-refresh');
@@ -67,7 +64,8 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
     this._returnCount = /** @type {?number} */ (null);
     this._summaryBarElement = /** @type {?Element} */ (null);
-    this._loadingPromise = /** @type {?Promise} */ (null);
+    /** @type {?Promise<!{entries: !Array<!Protocol.CacheStorage.DataEntry>, returnCount: number}>} */
+    this._loadingPromise = null;
 
     this.update(cache);
   }
@@ -117,7 +115,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   }
 
   /**
-   * @return {!DataGrid.DataGrid.DataGridImpl}
+   * @return {!DataGrid.DataGrid.DataGridImpl<!DataGridNode>}
    */
   _createDataGrid() {
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
@@ -144,7 +142,8 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       displayName: ls`Service Worker Cache`,
       columns,
       deleteCallback: this._deleteButtonClicked.bind(this),
-      refreshCallback: this._updateData.bind(this, true)
+      refreshCallback: this._updateData.bind(this, true),
+      editCallback: undefined,
     });
 
     dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
@@ -161,8 +160,11 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       return;
     }
 
-    const accending = this._dataGrid.isSortOrderAscending();
-    const columnId = this._dataGrid.sortColumnId();
+    const dataGrid = this._dataGrid;
+
+    const accending = dataGrid.isSortOrderAscending();
+    const columnId = dataGrid.sortColumnId();
+    /** @type {function(!DataGridNode, !DataGridNode): number} */
     let comparator;
     if (columnId === 'name') {
       comparator = (a, b) => a._name.localeCompare(b._name);
@@ -176,17 +178,17 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       comparator = (a, b) => a._responseType.localeCompare(b._responseType);
     }
 
-    const children = this._dataGrid.rootNode().children.slice();
-    this._dataGrid.rootNode().removeChildren();
+    const children = dataGrid.rootNode().children.slice();
+    dataGrid.rootNode().removeChildren();
     children.sort((a, b) => {
       const result = comparator(a, b);
       return accending ? result : -result;
     });
-    children.forEach(child => this._dataGrid.rootNode().appendChild(child));
+    children.forEach(child => dataGrid.rootNode().appendChild(child));
   }
 
   /**
-   * @param {?DataGrid.DataGrid.DataGridNode} node
+   * @param {?DataGrid.DataGrid.DataGridNode<!DataGridNode>} node
    */
   async _deleteButtonClicked(node) {
     if (!node) {
@@ -229,13 +231,16 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
    * @this {ServiceWorkerCacheView}
    */
   _updateDataCallback(skipCount, entries, returnCount) {
+    if (!this._dataGrid) {
+      return;
+    }
     const selected = this._dataGrid.selectedNode && this._dataGrid.selectedNode.data.url();
     this._refreshButton.setEnabled(true);
     this._entriesForTest = entries;
     this._returnCount = returnCount;
     this._updateSummaryBar();
 
-    /** @type {!Map<string, !DataGrid.DataGrid.DataGridNode>} */
+    /** @type {!Map<string, !DataGridNode>} */
     const oldEntries = new Map();
     const rootNode = this._dataGrid.rootNode();
     for (const node of rootNode.children) {
@@ -280,13 +285,14 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
     this._loadingPromise = new Promise(resolve => {
       this._model.loadAllCacheData(this._cache, this._entryPathFilter, (entries, returnCount) => {
-        resolve([entries, returnCount]);
+        resolve({entries, returnCount});
       });
     });
 
-    const [entries, returnCount] = await this._loadingPromise;
+    const {entries, returnCount} = await this._loadingPromise;
     this._updateDataCallback(0, entries, returnCount);
     this._loadingPromise = null;
+    return;
   }
 
   /**
@@ -311,14 +317,14 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
    * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   async _previewCachedResponse(request) {
-    let preview = request[ServiceWorkerCacheView._previewSymbol];
+    let preview = networkRequestToPreview.get(request);
     if (!preview) {
       preview = new RequestView(request);
-      request[ServiceWorkerCacheView._previewSymbol] = preview;
+      networkRequestToPreview.set(request, preview);
     }
 
     // It is possible that table selection changes before the preview opens.
-    if (request === this._dataGrid.selectedNode.data) {
+    if (this._dataGrid && this._dataGrid.selectedNode && request === this._dataGrid.selectedNode.data) {
       this._showPreview(preview);
     }
   }
@@ -344,7 +350,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     request.mimeType = /** @type {!SDK.NetworkRequest.MIME_TYPE} */ (contentType);
 
     header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-length');
-    request.resourceSize = (header && header.value) | 0;
+    request.resourceSize = (header && Number(header.value)) || 0;
 
     let resourceType = Common.ResourceType.ResourceType.fromMimeType(contentType);
     if (!resourceType) {
@@ -362,6 +368,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
    */
   async _requestContent(request) {
     const isText = request.resourceType().isTextType();
+    /** @type {!SDK.NetworkRequest.ContentData} */
     const contentData = {error: null, content: null, encoded: !isText};
     const response = await this._cache.requestCachedResponse(request.url(), request.requestHeaders());
     if (response) {
@@ -374,8 +381,14 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   }
 }
 
+/** @type {!WeakMap<!SDK.NetworkRequest.NetworkRequest, !RequestView>} */
+const networkRequestToPreview = new WeakMap();
+
 ServiceWorkerCacheView._previewSymbol = Symbol('preview');
 
+/**
+ * @extends {DataGrid.DataGrid.DataGridNode<!DataGridNode>}
+ */
 export class DataGridNode extends DataGrid.DataGrid.DataGridNode {
   /**
    * @param {number} number
@@ -461,11 +474,14 @@ export class RequestView extends UI.Widget.VBox {
     if (!tabId) {
       tabId = this._resourceViewTabSetting.get();
     }
-    if (!this._tabbedPane.selectTab(tabId)) {
+    if (tabId && !this._tabbedPane.selectTab(tabId)) {
       this._tabbedPane.selectTab('headers');
     }
   }
 
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
   _tabSelected(event) {
     if (!event.data.isUserGesture) {
       return;

@@ -26,11 +26,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
-import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 
 /**
@@ -91,18 +87,18 @@ export class Database {
    * @return {!Promise<!Array<string>>}
    */
   async tableNames() {
-    const names = await this._model._agent.getDatabaseTableNames(this._id) || [];
-    return names.sort();
+    const {tableNames} = await this._model._agent.invoke_getDatabaseTableNames({databaseId: this._id}) || [];
+    return tableNames.sort();
   }
 
   /**
    * @param {string} query
-   * @param {function(!Array.<string>=, !Array.<*>=)} onSuccess
-   * @param {function(string)} onError
+   * @param {function(!Array.<string>=, !Array.<*>=):void} onSuccess
+   * @param {function(string):void} onError
    */
   async executeSql(query, onSuccess, onError) {
     const response = await this._model._agent.invoke_executeSQL({'databaseId': this._id, 'query': query});
-    const error = response[ProtocolClient.InspectorBackend.ProtocolError];
+    const error = response.getError() || null;
     if (error) {
       onError(error);
       return;
@@ -134,6 +130,7 @@ export class DatabaseModel extends SDK.SDKModel.SDKModel {
   constructor(target) {
     super(target);
 
+    /** @type {!Array<!Database>} */
     this._databases = [];
     this._agent = target.databaseAgent();
     this.target().registerDatabaseDispatcher(new DatabaseDispatcher(this));
@@ -143,7 +140,7 @@ export class DatabaseModel extends SDK.SDKModel.SDKModel {
     if (this._enabled) {
       return;
     }
-    this._agent.enable();
+    this._agent.invoke_enable();
     this._enabled = true;
   }
 
@@ -153,7 +150,7 @@ export class DatabaseModel extends SDK.SDKModel.SDKModel {
     }
     this._enabled = false;
     this._databases = [];
-    this._agent.disable();
+    this._agent.invoke_disable();
     this.dispatchEventToListeners(Events.DatabasesRemoved);
   }
 
@@ -186,7 +183,7 @@ export const Events = {
 };
 
 /**
- * @implements {Protocol.DatabaseDispatcher}
+ * @implements {ProtocolProxyApi.DatabaseDispatcher}
  * @unrestricted
  */
 export class DatabaseDispatcher {
@@ -199,9 +196,16 @@ export class DatabaseDispatcher {
 
   /**
    * @override
-   * @param {!Protocol.Database.Database} payload
+   * @param {!Protocol.Database.AddDatabaseEvent} event
    */
-  addDatabase(payload) {
-    this._model._addDatabase(new Database(this._model, payload.id, payload.domain, payload.name, payload.version));
+  addDatabase({database}) {
+    this._model._addDatabase(new Database(this._model, database.id, database.domain, database.name, database.version));
+  }
+
+  /**
+   * @return {!Protocol.UsesObjectNotation}
+   */
+  usesObjectNotation() {
+    return true;
   }
 }

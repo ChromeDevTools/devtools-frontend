@@ -705,6 +705,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.DatabaseApi}
+   */
+  databaseAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.DebuggerApi}
    */
   debuggerAgent() {
@@ -899,6 +906,13 @@ export class TargetBase {
    * @param {!ProtocolProxyApi.AuditsDispatcher} dispatcher
    */
   registerAuditsDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
+   * @param {!ProtocolProxyApi.DatabaseDispatcher} dispatcher
+   */
+  registerDatabaseDispatcher(dispatcher) {
     throw new Error('Implemented in InspectorBackend.js');
   }
 

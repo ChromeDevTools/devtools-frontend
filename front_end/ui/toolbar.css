@@ -362,6 +362,10 @@ input[is=history-input]:not(:placeholder-shown) {
   background: hsl(0deg 100% 95%);
 }
 
+devtools-icon.breaking-change {
+  margin: 5px 7px 0 7px;
+}
+
 @media (forced-colors: active) {
   .toolbar-button:disabled {
     opacity: 100%;

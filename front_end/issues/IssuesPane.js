@@ -209,8 +209,9 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     const frameCell = /** @type {!HTMLElement} */ (document.createElement('td'));
     frameCell.classList.add('affected-resource-cell');
     if (frame) {
-      const icon = UI.Icon.Icon.create('mediumicon-elements-panel', 'icon');
-      icon.classList.add('link');
+      const icon = Elements.Icon.createIcon();
+      icon.data = {iconName: 'elements_panel_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
+      icon.classList.add('link', 'elements-panel');
       icon.onclick = async () => {
         Host.userMetrics.issuesPanelResourceOpened(issue.getCategory(), AffectedItem.Element);
         const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
@@ -244,7 +245,9 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     let filename = url ? extractShortPath(url) : '';
     const requestCell = /** @type {!HTMLElement} */ (document.createElement('td'));
     requestCell.classList.add('affected-resource-cell');
-    const icon = UI.Icon.Icon.create('mediumicon-network-panel', 'icon');
+    const icon = Elements.Icon.createIcon();
+    icon.data = {iconName: 'network_panel_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
+    icon.classList.add('network-panel');
     requestCell.appendChild(icon);
 
     const requests = this._resolveRequestId(request.requestId);
@@ -1152,7 +1155,9 @@ class IssueView extends UI.TreeOutline.TreeElement {
   _appendHeader() {
     const header = document.createElement('div');
     header.classList.add('header');
-    const icon = UI.Icon.Icon.create('largeicon-breaking-change', 'icon');
+    const icon = Elements.Icon.createIcon();
+    icon.data = {iconName: 'breaking_change_icon', color: '', width: '16px', height: '16px'};
+    icon.classList.add('breaking-change');
     this._aggregatedIssuesCount = /** @type {!HTMLElement} */ (document.createElement('span'));
     const countAdorner = Elements.Adorner.Adorner.create(this._aggregatedIssuesCount, 'countWrapper');
     countAdorner.classList.add('aggregated-issues-count');
@@ -1233,7 +1238,9 @@ class IssueView extends UI.TreeOutline.TreeElement {
       // TODO(crbug.com/1108501): Allow x-link elements to subscribe to the events 'click' and 'keydown' if the key
       //       is the 'Enter' key, or add some mechanism that allows to add telemetry to this element.
       const link = UI.XLink.XLink.create(description.link, ls`Learn more: ${description.linkTitle}`, 'link');
-      const linkIcon = UI.Icon.Icon.create('largeicon-link', 'link');
+      const linkIcon = Elements.Icon.createIcon();
+      linkIcon.data = {iconName: 'link_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
+      linkIcon.classList.add('link-icon');
       link.prepend(linkIcon);
 
       const linkListItem = linkList.createChild('li');
@@ -1338,7 +1345,9 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     rightToolbar.appendSeparator();
     const toolbarWarnings = document.createElement('div');
     toolbarWarnings.classList.add('toolbar-warnings');
-    const breakingChangeIcon = UI.Icon.Icon.create('largeicon-breaking-change');
+    const breakingChangeIcon = Elements.Icon.createIcon();
+    breakingChangeIcon.data = {iconName: 'breaking_change_icon', color: '', width: '16px', height: '16px'};
+    breakingChangeIcon.classList.add('breaking-change');
     toolbarWarnings.appendChild(breakingChangeIcon);
     const toolbarIssuesCount = toolbarWarnings.createChild('span', 'warnings-count-label');
     const toolbarIssuesItem = new UI.Toolbar.ToolbarItem(toolbarWarnings);

@@ -144,6 +144,10 @@ p {
   width: 2px;
 }
 
+devtools-icon.breaking-change {
+  margin: 5px 7px 0 7px;
+}
+
 .message {
   line-height: 20px;
   font-size: 14px;
@@ -412,4 +416,18 @@ ul > li.plain-enum::before {
   color: var(--issue-gray);
   padding: 2px;
   text-align: left;
+}
+
+devtools-icon.link-icon {
+  width: 28px;
+  height: 24px;
+  text-align: center;
+  vertical-align: sub;
+}
+
+devtools-icon.elements-panel,
+devtools-icon.network-panel {
+  margin-right: 0.5ex;
+  vertical-align: sub;
+  height: 14px;
 }

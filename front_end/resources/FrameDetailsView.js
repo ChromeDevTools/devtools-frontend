@@ -298,9 +298,12 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     super();
     this._targetInfo = targetInfo;
     this._isWindowClosed = isWindowClosed;
+    this.registerRequiredCSS('resources/frameDetailsReportView.css');
+    this.contentElement.classList.add('frame-details-container');
     this._reportView = new UI.ReportView.ReportView(this.buildTitle());
     this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css');
     this._reportView.show(this.contentElement);
+    this._reportView.element.classList.add('frame-details-report-container');
 
     this._documentSection = this._reportView.appendSection(ls`Document`);
     this._URLFieldValue = this._documentSection.appendField(ls`URL`);
@@ -368,9 +371,12 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   constructor(targetInfo) {
     super();
     this._targetInfo = targetInfo;
+    this.registerRequiredCSS('resources/frameDetailsReportView.css');
+    this.contentElement.classList.add('frame-details-container');
     this._reportView = new UI.ReportView.ReportView(this._targetInfo.title || this._targetInfo.url || ls`worker`);
     this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css');
     this._reportView.show(this.contentElement);
+    this._reportView.element.classList.add('frame-details-report-container');
 
     this._documentSection = this._reportView.appendSection(ls`Document`);
     this._URLFieldValue = this._documentSection.appendField(ls`URL`);

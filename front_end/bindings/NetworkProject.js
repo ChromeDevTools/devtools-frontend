@@ -27,12 +27,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+
+/** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !Map<string, !{frame: !SDK.ResourceTreeModel.ResourceTreeFrame, count: number}>>} */
+const uiSourceCodeToAttributionMap = new WeakMap();
+/** @type {!WeakMap<!Workspace.Workspace.Project, !SDK.SDKModel.Target>} */
+const projectToTargetMap = new WeakMap();
 
 /**
  * @type {!NetworkProjectManager}
@@ -90,7 +93,7 @@ export class NetworkProject {
     /** @type {!Map<string, !{frame: !SDK.ResourceTreeModel.ResourceTreeFrame, count: number}>} */
     const attribution = new Map();
     attribution.set(frameId, {frame: frame, count: 1});
-    uiSourceCode[_frameAttributionSymbol] = attribution;
+    uiSourceCodeToAttributionMap.set(uiSourceCode, attribution);
   }
 
   /**
@@ -98,17 +101,19 @@ export class NetworkProject {
    * @param {!Workspace.UISourceCode.UISourceCode} toUISourceCode
    */
   static cloneInitialFrameAttribution(fromUISourceCode, toUISourceCode) {
-    const fromAttribution = fromUISourceCode[_frameAttributionSymbol];
+    const fromAttribution = uiSourceCodeToAttributionMap.get(fromUISourceCode);
     if (!fromAttribution) {
       return;
     }
     /** @type {!Map<string, !{frame: !SDK.ResourceTreeModel.ResourceTreeFrame, count: number}>} */
     const toAttribution = new Map();
-    toUISourceCode[_frameAttributionSymbol] = toAttribution;
     for (const frameId of fromAttribution.keys()) {
       const value = fromAttribution.get(frameId);
-      toAttribution.set(frameId, {frame: value.frame, count: value.count});
+      if (typeof value !== 'undefined') {
+        toAttribution.set(frameId, {frame: value.frame, count: value.count});
+      }
     }
+    uiSourceCodeToAttributionMap.set(toUISourceCode, toAttribution);
   }
 
   /**
@@ -120,7 +125,10 @@ export class NetworkProject {
     if (!frame) {
       return;
     }
-    const frameAttribution = uiSourceCode[_frameAttributionSymbol];
+    const frameAttribution = uiSourceCodeToAttributionMap.get(uiSourceCode);
+    if (!frameAttribution) {
+      return;
+    }
     const attributionInfo = frameAttribution.get(frameId) || {frame: frame, count: 0};
     attributionInfo.count += 1;
     frameAttribution.set(frameId, attributionInfo);
@@ -137,12 +145,12 @@ export class NetworkProject {
    * @param {string} frameId
    */
   static removeFrameAttribution(uiSourceCode, frameId) {
-    const frameAttribution = uiSourceCode[_frameAttributionSymbol];
+    const frameAttribution = uiSourceCodeToAttributionMap.get(uiSourceCode);
     if (!frameAttribution) {
       return;
     }
     const attributionInfo = frameAttribution.get(frameId);
-    console.assert(attributionInfo, 'Failed to remove frame attribution for url: ' + uiSourceCode.url());
+    console.assert(!!attributionInfo, 'Failed to remove frame attribution for url: ' + uiSourceCode.url());
     if (!attributionInfo) {
       return;
     }
@@ -160,7 +168,7 @@ export class NetworkProject {
    * @return {?SDK.SDKModel.Target} target
    */
   static targetForUISourceCode(uiSourceCode) {
-    return uiSourceCode.project()[_targetSymbol] || null;
+    return projectToTargetMap.get(uiSourceCode.project()) || null;
   }
 
   /**
@@ -168,7 +176,7 @@ export class NetworkProject {
    * @param {!SDK.SDKModel.Target} target
    */
   static setTargetForProject(project, target) {
-    project[_targetSymbol] = target;
+    projectToTargetMap.set(project, target);
   }
 
   /**
@@ -176,7 +184,7 @@ export class NetworkProject {
    * @return {?SDK.SDKModel.Target}
    */
   static getTargetForProject(project) {
-    return project[_targetSymbol] || null;
+    return projectToTargetMap.get(project) || null;
   }
 
   /**
@@ -186,14 +194,11 @@ export class NetworkProject {
   static framesForUISourceCode(uiSourceCode) {
     const target = NetworkProject.targetForUISourceCode(uiSourceCode);
     const resourceTreeModel = target && target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    const attribution = uiSourceCode[_frameAttributionSymbol];
+    const attribution = uiSourceCodeToAttributionMap.get(uiSourceCode);
     if (!resourceTreeModel || !attribution) {
       return [];
     }
     const frames = Array.from(attribution.keys()).map(frameId => resourceTreeModel.frameForId(frameId));
-    return frames.filter(frame => !!frame);
+    return /** @type {!Array<!SDK.ResourceTreeModel.ResourceTreeFrame>} */ (frames.filter(frame => !!frame));
   }
 }
-
-const _targetSymbol = Symbol('target');
-const _frameAttributionSymbol = Symbol('_frameAttributionSymbol');

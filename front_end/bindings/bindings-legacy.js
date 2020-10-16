@@ -80,9 +80,6 @@ Bindings.PresentationConsoleMessage = BindingsModule.PresentationConsoleMessageH
 /** @constructor */
 Bindings.ResourceMapping = BindingsModule.ResourceMapping.ResourceMapping;
 
-Bindings.ResourceMapping._symbol = BindingsModule.ResourceMapping.symbol;
-Bindings.ResourceMapping._offsetSymbol = BindingsModule.ResourceMapping.offsetSymbol;
-
 /** @constructor */
 Bindings.ResourceScriptFile = BindingsModule.ResourceScriptMapping.ResourceScriptFile;
 

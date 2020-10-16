@@ -26,17 +26,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
-/**
- * @unrestricted
- */
 export class FontView extends UI.View.SimpleView {
   /**
    * @param {string} mimeType
@@ -51,6 +45,14 @@ export class FontView extends UI.View.SimpleView {
     this._mimeType = mimeType;
     this._contentProvider = contentProvider;
     this._mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
+    /** @type {?HTMLElement} */
+    this.fontPreviewElement;
+    /** @type {?HTMLElement} */
+    this._dummyElement;
+    /** @type {?HTMLStyleElement} */
+    this.fontStyleElement;
+    /** @type {?boolean} */
+    this._inResize;
   }
 
   /**
@@ -68,6 +70,9 @@ export class FontView extends UI.View.SimpleView {
   _onFontContentLoaded(uniqueFontName, deferredContent) {
     const {content} = deferredContent;
     const url = content ? TextUtils.ContentProvider.contentAsDataURL(content, this._mimeType, true) : this._url;
+    if (!this.fontStyleElement) {
+      return;
+    }
     this.fontStyleElement.textContent =
         Platform.StringUtilities.sprintf('@font-face { font-family: "%s"; src: url(%s); }', uniqueFontName, url);
     this.updateFontPreviewSize();
@@ -80,20 +85,24 @@ export class FontView extends UI.View.SimpleView {
 
     const uniqueFontName = 'WebInspectorFontPreview' + (++_fontId);
 
-    this.fontStyleElement = createElement('style');
+    this.fontStyleElement = /** @type {!HTMLStyleElement} */ (document.createElement('style'));
     this._contentProvider.requestContent().then(deferredContent => {
       this._onFontContentLoaded(uniqueFontName, deferredContent);
     });
     this.element.appendChild(this.fontStyleElement);
 
-    const fontPreview = createElement('div');
+    const fontPreview = /** @type {!HTMLDivElement} */ (document.createElement('div'));
     for (let i = 0; i < _fontPreviewLines.length; ++i) {
       if (i > 0) {
         fontPreview.createChild('br');
       }
       UI.UIUtils.createTextChild(fontPreview, _fontPreviewLines[i]);
     }
-    this.fontPreviewElement = fontPreview.cloneNode(true);
+
+    this.fontPreviewElement = /** @type {!HTMLDivElement} */ (fontPreview.cloneNode(true));
+    if (!this.fontPreviewElement) {
+      return;
+    }
     UI.ARIAUtils.markAsHidden(this.fontPreviewElement);
     this.fontPreviewElement.style.overflow = 'hidden';
     this.fontPreviewElement.style.setProperty('font-family', uniqueFontName);
@@ -131,11 +140,14 @@ export class FontView extends UI.View.SimpleView {
     try {
       this.updateFontPreviewSize();
     } finally {
-      delete this._inResize;
+      this._inResize = null;
     }
   }
 
   _measureElement() {
+    if (!this._dummyElement) {
+      throw new Error('No font preview loaded');
+    }
     this.element.appendChild(this._dummyElement);
     const result = {width: this._dummyElement.offsetWidth, height: this._dummyElement.offsetHeight};
     this.element.removeChild(this._dummyElement);
@@ -167,7 +179,7 @@ export class FontView extends UI.View.SimpleView {
     const heightRatio = containerHeight / height;
     const finalFontSize = Math.floor(_measureFontSize * Math.min(widthRatio, heightRatio)) - 2;
 
-    this.fontPreviewElement.style.setProperty('font-size', finalFontSize + 'px', null);
+    this.fontPreviewElement.style.setProperty('font-size', finalFontSize + 'px', undefined);
   }
 }
 

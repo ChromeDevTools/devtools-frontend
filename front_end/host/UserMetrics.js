@@ -610,7 +610,6 @@ export const DevtoolsExperiments = {
   'sourceOrderViewer': 20,
   'spotlight': 21,
   'webauthnPane': 22,
-  'customKeyboardShortcuts': 23,
   'timelineEventInitiators': 24,
   'timelineFlowEvents': 25,
   'timelineInvalidationTracking': 26,

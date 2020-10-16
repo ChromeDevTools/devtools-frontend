@@ -37,10 +37,6 @@ export class ShortcutRegistry {
     /** @type {!Platform.Multimap.<string, !KeyboardShortcut>} */
     this._disabledDefaultShortcutsForAction = new Platform.Multimap();
     this._keybindSetSetting = Common.Settings.Settings.instance().moduleSetting('activeKeybindSet');
-    if (!Root.Runtime.experiments.isEnabled('customKeyboardShortcuts') &&
-        this._keybindSetSetting.get() !== DefaultShortcutSetting) {
-      this._keybindSetSetting.set(DefaultShortcutSetting);
-    }
     this._keybindSetSetting.addChangeListener(event => {
       Host.userMetrics.keybindSetSettingChanged(event.data);
       this._registerBindings();

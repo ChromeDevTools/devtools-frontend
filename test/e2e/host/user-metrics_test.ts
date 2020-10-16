@@ -365,9 +365,6 @@ describe('User Metrics', () => {
 
   it('dispatches an event when the keybindSet setting is changed', async () => {
     const {frontend} = getBrowserAndPages();
-    await enableExperiment('customKeyboardShortcuts');
-    // enableExperiment reloads the DevTools and removes our listeners
-    await beginCatchEvents(frontend);
 
     await frontend.keyboard.press('F1');
     await waitFor('.settings-window-main');

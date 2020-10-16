@@ -21,5 +21,5 @@
    - Update the `grd_files_release_sources` list in `devtools_grd_files.gni`.
 
 6. Use Icon component:
-   - Visit go/icon-component-how-to for more information on that.
+   - Visit https://docs.google.com/document/d/1EA--IokG6YW51y7unS8dIKUx6EtyjETT0uglmvIpfsg/edit#heading=h.xgjl2srtytjt for more information on that.
 

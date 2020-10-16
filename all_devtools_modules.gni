@@ -466,7 +466,6 @@ all_typescript_module_sources = [
   "services/ServiceManager.js",
   "settings/FrameworkBlackboxSettingsTab.js",
   "settings/KeybindsSettingsTab.js",
-  "settings/ModuleUIStrings.js",
   "settings/SettingsScreen.js",
   "snippets/ScriptSnippetFileSystem.js",
   "snippets/SnippetsQuickOpen.js",

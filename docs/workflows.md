@@ -228,7 +228,7 @@ After building content shell as part of Chromium, we can also run layout tests t
 
 ```bash
 autoninja -C out/Default content_shell
-third_party/blink/tools/run_web_tests.py http/tests/devtools
+third_party/blink/tools/run_web_tests.py -t Default http/tests/devtools
 ```
 
 ## Creating a change

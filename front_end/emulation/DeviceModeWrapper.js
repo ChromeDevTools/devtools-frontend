@@ -2,11 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as ProtocolClient from '../protocol_client/protocol_client.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -14,28 +11,49 @@ import {DeviceModeModel} from './DeviceModeModel.js';
 import {DeviceModeView} from './DeviceModeView.js';
 import {InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';  // eslint-disable-line no-unused-vars
 
+
+/** @type {!DeviceModeWrapper} */
+let deviceModeWrapperInstance;
+
 /**
  * @unrestricted
  */
 export class DeviceModeWrapper extends UI.Widget.VBox {
   /**
    * @param {!InspectedPagePlaceholder} inspectedPagePlaceholder
+   * @private
    */
   constructor(inspectedPagePlaceholder) {
     super();
-    DeviceModeView.wrapperInstance = this;
     this._inspectedPagePlaceholder = inspectedPagePlaceholder;
     /** @type {?DeviceModeView} */
     this._deviceModeView = null;
     this._toggleDeviceModeAction = UI.ActionRegistry.ActionRegistry.instance().action('emulation.toggle-device-mode');
-    const model = self.singleton(DeviceModeModel);
+    const model = DeviceModeModel.instance();
     this._showDeviceModeSetting = model.enabledSetting();
-    this._showDeviceModeSetting.setRequiresUserAction(!!Root.Runtime.queryParam('hasOtherClients'));
+    this._showDeviceModeSetting.setRequiresUserAction(!!Root.Runtime.Runtime.queryParam('hasOtherClients'));
     this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.ScreenshotRequested,
         this._screenshotRequestedFromOverlay, this);
     this._update(true);
+  }
+
+  /**
+   * @param {{forceNew: ?boolean, inspectedPagePlaceholder: ?InspectedPagePlaceholder}} opts
+   */
+  static instance(opts = {forceNew: null, inspectedPagePlaceholder: null}) {
+    const {forceNew, inspectedPagePlaceholder} = opts;
+    if (!deviceModeWrapperInstance || forceNew) {
+      if (!inspectedPagePlaceholder) {
+        throw new Error(
+            `Unable to create DeviceModeWrapper: inspectedPagePlaceholder must be provided: ${new Error().stack}`);
+      }
+
+      deviceModeWrapperInstance = new DeviceModeWrapper(inspectedPagePlaceholder);
+    }
+
+    return deviceModeWrapperInstance;
   }
 
   _toggleDeviceMode() {
@@ -74,7 +92,9 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
    * @param {boolean} force
    */
   _update(force) {
-    this._toggleDeviceModeAction.setToggled(this._showDeviceModeSetting.get());
+    if (this._toggleDeviceModeAction) {
+      this._toggleDeviceModeAction.setToggled(this._showDeviceModeSetting.get());
+    }
     if (!force) {
       const showing = this._deviceModeView && this._deviceModeView.isShowing();
       if (this._showDeviceModeSetting.get() === showing) {
@@ -112,10 +132,10 @@ export class ActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    if (DeviceModeView.wrapperInstance) {
+    if (DeviceModeWrapper.instance()) {
       switch (actionId) {
         case 'emulation.capture-screenshot':
-          return DeviceModeView.wrapperInstance._captureScreenshot();
+          return DeviceModeWrapper.instance()._captureScreenshot();
 
         case 'emulation.capture-node-screenshot': {
           const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
@@ -123,10 +143,17 @@ export class ActionDelegate {
             return true;
           }
           async function captureClip() {
+            if (!node) {
+              return;
+            }
+
             const object = await node.resolveToObject();
+            if (!object) {
+              return;
+            }
             const result = await object.callFunction(function() {
-              const rect = this.getBoundingClientRect();
-              const docRect = this.ownerDocument.documentElement.getBoundingClientRect();
+              const rect = /** @type {!Element} */ (this).getBoundingClientRect();
+              const docRect = /** @type {!Element} */ (this).ownerDocument.documentElement.getBoundingClientRect();
               return JSON.stringify({
                 x: rect.left - docRect.left,
                 y: rect.top - docRect.top,
@@ -135,26 +162,29 @@ export class ActionDelegate {
                 scale: 1
               });
             });
+            if (!result.object) {
+              throw new Error('Clipping error: could not get object data.');
+            }
             const clip =
                 /** @type {!Protocol.Page.Viewport} */ (JSON.parse(/** @type {string} */ (result.object.value)));
-            const response = await node.domModel().target().pageAgent().invoke_getLayoutMetrics({});
-            const page_zoom =
-                !response[ProtocolClient.InspectorBackend.ProtocolError] && response.visualViewport.zoom || 1;
+            const response = await node.domModel().target().pageAgent().invoke_getLayoutMetrics();
+            const error = response.getError();
+            const page_zoom = !error && response.visualViewport.zoom || 1;
             clip.x *= page_zoom;
             clip.y *= page_zoom;
             clip.width *= page_zoom;
             clip.height *= page_zoom;
-            DeviceModeView.wrapperInstance._captureScreenshot(false, clip);
+            DeviceModeWrapper.instance()._captureScreenshot(false, clip);
           }
           captureClip();
           return true;
         }
 
         case 'emulation.capture-full-height-screenshot':
-          return DeviceModeView.wrapperInstance._captureScreenshot(true);
+          return DeviceModeWrapper.instance()._captureScreenshot(true);
 
         case 'emulation.toggle-device-mode':
-          DeviceModeView.wrapperInstance._toggleDeviceMode();
+          DeviceModeWrapper.instance()._toggleDeviceMode();
           return true;
       }
     }

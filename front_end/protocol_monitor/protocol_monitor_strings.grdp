@@ -6,9 +6,6 @@
   <message name="IDS_DEVTOOLS_2448f896f98bcda2db043a999a00e1d2" desc="Cell text content in Protocol Monitor of the Protocol Monitor tab">
     <ph name="THIS_DATA_COLUMNID_">$1s<ex>30</ex></ph> ms
   </message>
-  <message name="IDS_DEVTOOLS_5b6cf869265c13af8566f192b4ab3d2a" desc="Text for the documentation of something">
-    Documentation
-  </message>
   <message name="IDS_DEVTOOLS_77e6c641749cdfc5fca06f603422e7f5" desc="Data grid name for Protocol Monitor data grids">
     Protocol Monitor
   </message>

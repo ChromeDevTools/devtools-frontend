@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_0b18903e47498fe0b4f2ad1a16ae56ff" desc="Label for a button in the settings pane that removes a keyboard shortcut.">
+    Remove shortcut
+  </message>
+  <message name="IDS_DEVTOOLS_0f653ae68147586eb189d7baf37a696a" desc="Text of button in Settings Screen of the Settings">
+    Restore defaults and reload
+  </message>
+  <message name="IDS_DEVTOOLS_2cce43a6505a5d1bdf7ea98bf7fd1bc8" desc="Blackbox label in Framework Blackbox Settings Tab of the Settings">
+    Blackbox
+  </message>
+  <message name="IDS_DEVTOOLS_331f303e56b067dd84abf94c3bd349c4" desc="Header text content in Framework Blackbox Settings Tab of the Settings">
+    Framework Blackboxing
+  </message>
+  <message name="IDS_DEVTOOLS_34fbf59db640eda5a3c07d59333f1d18" desc="Error message in Framework Blackbox settings pane that declares pattern must not be empty">
+    Pattern cannot be empty
+  </message>
+  <message name="IDS_DEVTOOLS_4829262cecb9828817b33e0f9c907f91" desc="Text in Settings Screen of the Settings">
+    Experiments
+  </message>
+  <message name="IDS_DEVTOOLS_4a3aaf1edf15288e9ff3994088e2277a" desc="Pattern title in Framework Blackbox Settings Tab of the Settings">
+    Blackbox scripts whose names match &apos;<ph name="ITEM_PATTERN">$1s<ex>ad.*?</ex></ph>&apos;
+  </message>
+  <message name="IDS_DEVTOOLS_57391192dfa1f247ad015a0fe2eca48e" desc="Aria accessible name in Framework Blackbox Settings Tab of the Settings">
+    Pattern
+  </message>
+  <message name="IDS_DEVTOOLS_57c69dec9f5b9b3f413fa34e66493589" desc="Label for a button in the settings pane that edits a keyboard shortcut">
+    Edit shortcut
+  </message>
+  <message name="IDS_DEVTOOLS_5fc5205a5450ccfb41faeda43663d589" desc="Message shown in the experiments panel to warn users about any possible unstable features.">
+    These experiments could be unstable or unreliable and may require you to restart DevTools.
+  </message>
+  <message name="IDS_DEVTOOLS_6d507b9a707831f7702af21fa5dec071" desc="Label for a button in the settings pane that confirms changes to a keyboard shortcut">
+    Confirm changes
+  </message>
+  <message name="IDS_DEVTOOLS_78a2d21769b961c903a0c2bfe998d0fc" desc="Screen reader label for an icon denoting a shortcut that has been changed from its default">
+    Shortcut modified
+  </message>
+  <message name="IDS_DEVTOOLS_7ab792e440250e15b2a2066eaeee3563" desc="Aria accessible name in Framework Blackbox Settings Tab of the Settings">
+    Add filename pattern
+  </message>
+  <message name="IDS_DEVTOOLS_7c3ebe810fd87afa74649e8230167a75" desc="Message text content in Settings Screen of the Settings">
+    These experiments are particularly unstable. Enable at your own risk.
+  </message>
+  <message name="IDS_DEVTOOLS_856d3924ec1295aa3215e89d83d0499a" desc="Screen reader label for an empty shortcut cell in custom shortcuts settings tab">
+    No shortcut for action
+  </message>
+  <message name="IDS_DEVTOOLS_87ae3156c118350d6b13cdebc37485e9" desc="Error message in Framework Blackbox settings pane that declares pattern must be a valid regular expression">
+    Pattern must be a valid regular expression
+  </message>
+  <message name="IDS_DEVTOOLS_89bacc9715d030658f2602ce65426a7f" desc="Warning text content in Settings Screen of the Settings">
+    WARNING:
+  </message>
+  <message name="IDS_DEVTOOLS_8d8b60173c13cf082880028b50ed4c5b" desc="Message shown in settings when the user inputs a modifier-only shortcut such as Ctrl+Shift.">
+    Shortcuts cannot contain only modifier keys.
+  </message>
+  <message name="IDS_DEVTOOLS_8ef2494e10ba96444744adaecb2ceddd" desc="Text appearing before a select control offering users their choice of keyboard shortcut presets.">
+    Match shortcuts from preset
+  </message>
+  <message name="IDS_DEVTOOLS_98313f623bb6f464b9a154eca0b99bf3" desc="Label for a button in the settings pane that discards changes to the shortcut being edited">
+    Discard changes
+  </message>
+  <message name="IDS_DEVTOOLS_a89b8b9966ec3e3321ae2d3135e238e3" desc="Label for a button in the settings pane that resets all shortcuts to defaults">
+    Restore default shortcuts
+  </message>
+  <message name="IDS_DEVTOOLS_aa67d07f58dbd8660eb21376b3e59830" desc="Link text in the settings pane to add another shortcut for an action">
+    Add a shortcut
+  </message>
+  <message name="IDS_DEVTOOLS_ae25bc3ceebf44be4b59d0ade0e53f0b" desc="Placeholder text content in Framework Blackbox Settings Tab of the Settings">
+    No blackboxed patterns
+  </message>
+  <message name="IDS_DEVTOOLS_b39a035a995fc6597c8eb942210d1527" desc="Aria accessible name in Framework Blackbox Settings Tab of the Settings">
+    Behavior
+  </message>
+  <message name="IDS_DEVTOOLS_b791f463c10f80e87e887e1f863f6209" desc="Text of the add pattern button in Framework Blackbox Settings Tab of the Settings">
+    Add pattern...
+  </message>
+  <message name="IDS_DEVTOOLS_c745d3ac390f120535d734cd14e2f6aa" desc="Blackbox content scripts title in Framework Blackbox Settings Tab of the Settings">
+    Blackbox content scripts (extension scripts in the page)
+  </message>
+  <message name="IDS_DEVTOOLS_c9deece3e6de26d07ef6409b96f21fd0" desc="Title of Blackboxing settings">
+    Blackboxing
+  </message>
+  <message name="IDS_DEVTOOLS_d0834fcec6337785ee749c8f5464f6f6" desc="Text in Settings Screen of the Settings">
+    Preferences
+  </message>
+  <message name="IDS_DEVTOOLS_d2ef7dcdede23820e315ca1c3425ba4f" desc="Text in Framework Blackbox Settings Tab of the Settings">
+    Debugger will skip through the scripts and will not stop on exceptions thrown by them.
+  </message>
+  <message name="IDS_DEVTOOLS_dd08f9d5ae3e9ba421754fd31db1a44a" desc="Error message in Framework Blackbox settings pane that declares pattern already exits">
+    Pattern already exists
+  </message>
+  <message name="IDS_DEVTOOLS_eafc5915e8d8dd2a8c5aa30581f08ba5" desc="Messages shown in shortcuts settings when the user inputs a shortcut that is already in use.">
+      This shortcut is in use by <ph name="ACTION_TITLE__">$1s<ex>Start/stop recording</ex></ph>.
+  </message>
+  <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="Name of the Settings view">
+    Settings
+  </message>
+  <message name="IDS_DEVTOOLS_fcaed535ee8943a22adbffb02ab12586" desc="Screen reader label for list of keyboard shortcuts in settings">
+    Keyboard shortcuts list
+  </message>
+  <message name="IDS_DEVTOOLS_ffebb5ad32e2b253aa418b8d7a70028e" desc="Text in Framework Blackbox Settings Tab of the Settings">
+    Blackbox content scripts
+  </message>
+</grit-part>

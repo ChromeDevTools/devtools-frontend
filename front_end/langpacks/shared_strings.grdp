@@ -103,6 +103,9 @@
   <message name="IDS_DEVTOOLS_29296fcb28eb4edf5d0049b6cac7bbd1" desc="Text for a percentage value">
     <ph name="SCALE">$1.0f<ex>13.0</ex></ph>%%
   </message>
+  <message name="IDS_DEVTOOLS_29e9d8e295b1d5b3002d2d3d5baa4c37" desc="Text for keyboard shortcuts">
+    Shortcuts
+  </message>
   <message name="IDS_DEVTOOLS_2ab5656e27a0ed871c8de44368f807c6" desc="Title of the styles side pane in Elements panel">
     Styles Pane
   </message>
@@ -261,6 +264,9 @@
   </message>
   <message name="IDS_DEVTOOLS_5a0a64ecca63ba9a006b6397cbdc2b8c" desc="Text to go to a given line">
     Go to line
+  </message>
+  <message name="IDS_DEVTOOLS_5b6cf869265c13af8566f192b4ab3d2a" desc="Text for the documentation of something">
+    Documentation
   </message>
   <message name="IDS_DEVTOOLS_5de39fa1bce4bbf9232597a2120bc4d4" desc="Text to open the cubic bezier editor">
     Open cubic bezier editor.

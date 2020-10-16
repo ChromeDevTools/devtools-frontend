@@ -45,9 +45,6 @@
   <message name="IDS_DEVTOOLS_21e2320215eb46d452e7494f3dd1c798" desc="Text in the Shortcuts page to explain a keyboard shortcut (navigation in Styles pane)">
     Next/previous property
   </message>
-  <message name="IDS_DEVTOOLS_29e9d8e295b1d5b3002d2d3d5baa4c37" desc="Text for keyboard shortcuts">
-    Shortcuts
-  </message>
   <message name="IDS_DEVTOOLS_2c0924faed417c521b57d553c678ec21" desc="Text in the Shortcuts page to explain a keyboard shortcut (step into a function in debugger)">
     Step into
   </message>

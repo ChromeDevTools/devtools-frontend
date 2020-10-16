@@ -9,7 +9,6 @@ devtools_module("settings") {
   sources = [
     "FrameworkBlackboxSettingsTab.js",
     "KeybindsSettingsTab.js",
-    "ModuleUIStrings.js",
     "SettingsScreen.js",
   ]
 
@@ -17,7 +16,6 @@ devtools_module("settings") {
     "../common:bundle",
     "../components:bundle",
     "../host:bundle",
-    "../i18n:bundle",
     "../ui:bundle",
   ]
 }

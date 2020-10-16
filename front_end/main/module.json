@@ -539,7 +539,6 @@
   "dependencies": [
     "extensions",
     "host",
-    "i18n",
     "platform",
     "sdk",
     "persistence"

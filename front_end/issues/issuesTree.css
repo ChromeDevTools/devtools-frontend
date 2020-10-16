@@ -226,11 +226,6 @@ devtools-icon.breaking-change {
   top: -1px;
 }
 
-.link-list li {
-  display: list-item;
-  margin-top: 4px;
-}
-
 .resolutions-list li {
   display: list-item;
 }
@@ -416,6 +411,10 @@ ul > li.plain-enum::before {
   color: var(--issue-gray);
   padding: 2px;
   text-align: left;
+}
+
+.devtools-link {
+  padding-top: 4px;
 }
 
 devtools-icon.link-icon {

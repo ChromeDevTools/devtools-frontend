@@ -15,6 +15,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
 import {BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper} from './ColorSwatchPopoverIcon.js';
+import {createCSSAngle} from './CSSAngle_bridge.js';
 import {CSSPropertyPrompt, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer,} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
@@ -272,6 +273,37 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return container;
   }
 
+  _processAngle(propertyValue) {
+    if (!this._editable()) {
+      return createTextNode(propertyValue);
+    }
+    const cssAngle = createCSSAngle();
+    const valueElement = document.createElement('span');
+    valueElement.textContent = propertyValue;
+    cssAngle.data = {
+      propertyText: propertyValue,
+      containingPane:
+          /** @type {!HTMLElement} */ (this._parentPane.element.enclosingNodeOrSelfWithClass('style-panes-wrapper')),
+    };
+    cssAngle.append(valueElement);
+
+    cssAngle.addEventListener('popover-toggled', event => {
+      const section = this.section();
+      if (!section) {
+        return;
+      }
+      section.element.classList.toggle('has-open-popover', event.data.open);
+      this._parentPane.setEditingStyle(event.data.open);
+    });
+
+    cssAngle.addEventListener('value-changed', event => {
+      valueElement.textContent = event.data.value;
+      this.applyStyleText(this.renderedPropertyText(), false);
+    });
+
+    return cssAngle;
+  }
+
   _updateState() {
     if (!this.listItemElement) {
       return;
@@ -468,6 +500,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       propertyRenderer.setBezierHandler(this._processBezier.bind(this));
       propertyRenderer.setShadowHandler(this._processShadow.bind(this));
       propertyRenderer.setGridHandler(this._processGrid.bind(this));
+      propertyRenderer.setAngleHandler(this._processAngle.bind(this));
     }
 
     this.listItemElement.removeChildren();

@@ -40,6 +40,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
 import {ComputedStyleModel} from './ComputedStyleModel.js';
+import {CSSAngleRegex} from './CSSAngleRegex.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
@@ -2689,6 +2690,8 @@ export class StylesSidebarPropertyRenderer {
     this._gridHandler = null;
     /** @type {?function(string):!Node} */
     this._varHandler = createTextNode;
+    /** @type {?function(string):!Node} */
+    this._angleHandler = null;
   }
 
   /**
@@ -2724,6 +2727,13 @@ export class StylesSidebarPropertyRenderer {
    */
   setVarHandler(handler) {
     this._varHandler = handler;
+  }
+
+  /**
+   * @param {function(string):!Node} handler
+   */
+  setAngleHandler(handler) {
+    this._angleHandler = handler;
   }
 
   /**
@@ -2775,6 +2785,11 @@ export class StylesSidebarPropertyRenderer {
     if (this._colorHandler && metadata.isColorAwareProperty(this._propertyName)) {
       regexes.push(Common.Color.Regex);
       processors.push(this._colorHandler);
+    }
+    if (this._angleHandler && metadata.isAngleAwareProperty(this._propertyName)) {
+      // TODO(changhaohan): crbug.com/1138628 refactor this to handle unitless 0 cases
+      regexes.push(CSSAngleRegex);
+      processors.push(this._angleHandler);
     }
     const results = TextUtils.TextUtils.Utils.splitStringByRegexes(this._propertyValue, regexes);
     for (let i = 0; i < results.length; i++) {

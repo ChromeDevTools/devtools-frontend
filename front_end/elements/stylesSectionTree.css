@@ -229,3 +229,7 @@ ol.expanded {
     color: HighlightText;
   }
 }
+
+devtools-css-angle {
+  display: inline-block;
+}

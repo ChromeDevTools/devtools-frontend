@@ -202,6 +202,15 @@ export class CSSMetadata {
   }
 
   /**
+ * @param {string} propertyName
+ * @return {boolean}
+ */
+  isAngleAwareProperty(propertyName) {
+    const lowerCasedName = propertyName.toLowerCase();
+    return _colorAwareProperties.has(lowerCasedName) || _valuePresets.has(lowerCasedName);
+  }
+
+  /**
    * @param {string} propertyName
    * @return {boolean}
    */

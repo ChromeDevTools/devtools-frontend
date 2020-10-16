@@ -4,14 +4,14 @@
 
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-interface IconWithPath {
+export interface IconWithPath {
   iconPath: string;
   color: string;
   width?: string;
   height?: string;
 }
 
-interface IconWithName {
+export interface IconWithName {
   iconName: string;
   color: string;
   width?: string;

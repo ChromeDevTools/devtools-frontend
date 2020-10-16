@@ -22,11 +22,6 @@ export class HeapProfilerPanel extends ProfilesPanel {
     const registry = instance;
     const profileTypes =
         [registry.heapSnapshotProfileType, registry.trackingHeapSnapshotProfileType, registry.samplingHeapProfileType];
-    if (Root.Runtime.experiments.isEnabled('nativeHeapProfiler')) {
-      profileTypes.push(registry.samplingNativeHeapProfileType);
-      profileTypes.push(registry.samplingNativeHeapSnapshotRendererType);
-      profileTypes.push(registry.samplingNativeHeapSnapshotBrowserType);
-    }
     super('heap_profiler', profileTypes, 'profiler.heap-toggle-recording');
   }
 

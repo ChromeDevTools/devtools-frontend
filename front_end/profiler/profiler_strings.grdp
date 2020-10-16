@@ -24,14 +24,8 @@
   <message name="IDS_DEVTOOLS_072601db05446105324a952ed068aa6c" desc="A context menu item in the Heap Profiler Panel of a profiler tool">
     Reveal object &apos;<ph name="MATCH_GROUPS_OBJECTNAME">$1s<ex>SomeClassConstructor</ex></ph>&apos; with id @<ph name="MATCH_GROUPS_SNAPSHOTNODEID">$2s<ex>12345</ex></ph> in Summary view
   </message>
-  <message name="IDS_DEVTOOLS_07b20ae970048fc2002d756f27acc863" desc="Text in Heap Profile View of a profiler tool">
-    Renderer
-  </message>
   <message name="IDS_DEVTOOLS_07d2bff541ce0f9ec4389e93a97997ee" desc="Title in Heap Snapshot View of a profiler tool">
     Objects allocated between <ph name="LIST_I______TITLE">$1s<ex>Profile 1</ex></ph> and <ph name="LIST_I__TITLE">$2s<ex>Profile 2</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_0a63e0039bb8cb9846ad74ace8e1e5de" desc="Text in Profile View of a profiler tool">
-    Call tree
   </message>
   <message name="IDS_DEVTOOLS_0aa6f4210bf373c95eda00232e93cd98" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Distance
@@ -69,9 +63,6 @@
   <message name="IDS_DEVTOOLS_27c0ad7a8ff8f9df8e13bb2d974c95d0" desc="Text in Heap Snapshot View of a profiler tool">
     Allocation
   </message>
-  <message name="IDS_DEVTOOLS_2d7b69664bc4226fb198124fb707e57c" desc="Text in Heap Profile View of a profiler tool">
-    Snapshot <ph name="THIS_NEXTPROFILEUID__">$1s<ex>1</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_2db1f9be46028cfdf9b8f96a0110e637" desc="Text in CPUProfile View of a profiler tool">
     <ph name="VALUE">$1.2f<ex>21.33</ex></ph> %%
   </message>
@@ -99,9 +90,6 @@
   <message name="IDS_DEVTOOLS_3a9619400e054970a7ab8b67c4ce5109" desc="Tooltip text that appears when hovering over the largeicon refresh button in the Profile View of a profiler tool">
     Restore all functions
   </message>
-  <message name="IDS_DEVTOOLS_3ae3895607d1203d8e73e18dd4c4551c" desc="Text in Heap Profile View of a profiler tool">
-    Allocation profiles show sampled native memory allocations from the renderer process.
-  </message>
   <message name="IDS_DEVTOOLS_3b6077563702806850baeddff55ee1c6" desc="Text in Heap Snapshot Grid Nodes of a profiler tool">
     Preview is not available
   </message>
@@ -119,9 +107,6 @@
   </message>
   <message name="IDS_DEVTOOLS_42db600672cae99246e499a23827146b" desc="Text in Heap Snapshot View of a profiler tool">
     Heap snapshot profiles show memory distribution among your page&apos;s JavaScript objects and related DOM nodes.
-  </message>
-  <message name="IDS_DEVTOOLS_4307cf6e92b003765b9f493109f8fa51" desc="Text in Heap Profile View of a profiler tool">
-    Native memory allocation sampling
   </message>
   <message name="IDS_DEVTOOLS_43190a68dbd847e2f98a7ddd04b2eec5" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Live Size
@@ -147,12 +132,6 @@
   <message name="IDS_DEVTOOLS_4d4d76db5d9ef72b504f83d89af5b6dd" desc="Text in Heap Profile View of a profiler tool">
     Selected size: <ph name="NUMBER_BYTESTOSTRING_EVENT_DATA_SIZE_">$1s<ex>3 MB</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_4d8aa0a7e336e08bad365b81a197f184" desc="Text in Heap Profile View of a profiler tool">
-    NATIVE SAMPLING PROFILES
-  </message>
-  <message name="IDS_DEVTOOLS_4daace4b0bc45c13739427cfc06cf7b7" desc="Text in Profile View of a profiler tool">
-    Text (Top Down)
-  </message>
   <message name="IDS_DEVTOOLS_5209fac92c957988ce1453bb139790ce" desc="Text in Profile View of a profiler tool">
     Failed to read file
   </message>
@@ -171,24 +150,14 @@
   <message name="IDS_DEVTOOLS_5e0ebd581894697a7ae357bea6b7e590" desc="Text in CPUProfile View of a profiler tool">
     Start CPU profiling
   </message>
-  <message name="IDS_DEVTOOLS_60dcffb26f0ed1b0c73f8cea5d5d9772" desc="Text in Heap Profile View of a profiler tool">
-    Native memory allocation snapshot (<ph name="PROCESSTYPE">$1s<ex>Renderer</ex></ph>)
-  </message>
   <message name="IDS_DEVTOOLS_610de28d957d1148614ecc6b2ec48443" desc="Text in Live Heap Profile View of a profiler tool">
     URL of the script source
-  </message>
-  <message name="IDS_DEVTOOLS_61b4b76027d49142c386737a0e94cedb" desc="Text in Heap Profile View of a profiler tool">
-    NATIVE SNAPSHOTS
   </message>
   <message name="IDS_DEVTOOLS_678d0a4421b60dc59999ac02837496a6" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Constructor
   </message>
   <message name="IDS_DEVTOOLS_6a5084781ea4e6bf97a2dcd0cda17a1a" desc="Title of an action under the Performance category that can be invoked through the Command Menu">
     Start recording heap allocations
-  </message>
-  <message name="IDS_DEVTOOLS_6b59ba1fcfd868474cae169876f9cbfa" desc="Text in Heap Profile View of a profiler tool">
-    Native memory snapshots show sampled native allocations in the renderer process since start up.
-              <ph name="LOCKED_1">Chrome</ph> has to be started with <ph name="LOCKED_2">--memlog=all</ph> flag. Check flags at <ph name="LOCKED_1">chrome://flags</ph>
   </message>
   <message name="IDS_DEVTOOLS_6d27e30b2f09c2a451a6d123c1a35805" desc="Text in Profiles Panel of a profiler tool">
     Run <ph name="_">$1d<ex>2</ex></ph>
@@ -426,9 +395,6 @@
   </message>
   <message name="IDS_DEVTOOLS_eec806d119a5eddd61e2ccd21bfd9b20" desc="Text in CPUProfile View of a profiler tool">
     Aggregated total time
-  </message>
-  <message name="IDS_DEVTOOLS_ef15fd2f45e6bb5ce57587895ba64f93" desc="Text in Heap Profile View of a profiler tool">
-    Browser
   </message>
   <message name="IDS_DEVTOOLS_f3e40bc520cf1f22e4d36d5c5f8d2618" desc="Text in Heap Snapshot Grid Nodes of a profiler tool">
     User object reachable from window

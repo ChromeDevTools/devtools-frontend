@@ -88,96 +88,6 @@ export class HeapProfilerModel extends SDKModel {
   }
 
   /**
-   * @returns {!Promise<boolean>}
-   */
-  async startNativeSampling() {
-    const samplingInterval = 65536;
-    const response = await this._memoryAgent.invoke_startSampling({samplingInterval});
-    return !!response.getError();
-  }
-
-  /**
-   * @return {!Promise<?NativeHeapProfile>}
-   */
-  async stopNativeSampling() {
-    const response = await this._memoryAgent.invoke_getSamplingProfile();
-    // Try to stop sampling independent of an error in `getSamplingProfile`.
-    await this._memoryAgent.invoke_stopSampling();
-    if (response.getError()) {
-      return null;
-    }
-    return this._convertNativeProfile(response.profile);
-  }
-
-  /**
-   * @return {!Promise<?NativeHeapProfile>}
-   */
-  async takeNativeSnapshot() {
-    const response = await this._memoryAgent.invoke_getAllTimeSamplingProfile();
-    if (response.getError()) {
-      return null;
-    }
-    return this._convertNativeProfile(response.profile);
-  }
-
-  /**
-   * @return {!Promise<?NativeHeapProfile>}
-   */
-  async takeNativeBrowserSnapshot() {
-    const response = await this._memoryAgent.invoke_getBrowserSamplingProfile();
-    if (response.getError()) {
-      return null;
-    }
-    return this._convertNativeProfile(response.profile);
-  }
-
-  /**
-   * @param {!Protocol.Memory.SamplingProfile} rawProfile
-   * @return {!NativeHeapProfile}
-   */
-  _convertNativeProfile(rawProfile) {
-    /** @type {!NodeForConstruction}} */
-    const head = (({
-      childMap: new Map(),
-      selfSize: 0,
-      callFrame: {functionName: '(root)', url: '', scriptId: '', lineNumber: -1, columnNumber: -1}
-    }));
-    for (const sample of rawProfile.samples) {
-      const node = sample.stack.reverse().reduce((node, name) => {
-        let child = node.childMap.get(name);
-        if (child) {
-          return child;
-        }
-        const namespace = /^([^:]*)::/.exec(name);
-
-        // The native profile doesn't have scriptId and line/column numbers, so we need to pass undefined to
-        // not have them displayed.
-        const callFrame = /** @type {!NativeProfilerCallFrame} */ ({
-          functionName: name,
-          url: namespace && namespace[1] || '',
-          scriptId: undefined,
-          lineNumber: undefined,
-          columnNumber: undefined,
-        });
-        child = {childMap: new Map(), callFrame, selfSize: 0};
-        node.childMap.set(name, child);
-        return child;
-      }, head);
-      node.selfSize += sample.total;
-    }
-
-    /**
-     * @param {!NodeForConstruction} node
-     * @return {!CommonHeapProfileNode}
-     */
-    function convertChildren(node) {
-      const children = Array.from(node.childMap.values()).map(convertChildren);
-      return {selfSize: node.selfSize, callFrame: node.callFrame, children, id: -1};
-    }
-    return new NativeHeapProfile(convertChildren(head), rawProfile.modules);
-  }
-
-  /**
    * @return {!Promise<boolean>}
    */
   async collectGarbage() {
@@ -304,21 +214,6 @@ export let CommonHeapProfileNode;  // eslint-disable-line no-unused-vars
 /** @typedef {!{head:!CommonHeapProfileNode, modules:!Array<!Protocol.Memory.Module>}} */
 // @ts-ignore typedef
 export let CommonHeapProfile;  // eslint-disable-line no-unused-vars
-
-/**
- * TODO(chromium:1011811): Change this to implements once we are TypeScript-only.
- * @extends {CommonHeapProfile}
- */
-class NativeHeapProfile {
-  /**
-   * @param {!CommonHeapProfileNode} head
-   * @param {!Array<!Protocol.Memory.Module>} modules
-   */
-  constructor(head, modules) {
-    this.head = head;
-    this.modules = modules;
-  }
-}
 
 /**
  * @implements {ProtocolProxyApi.HeapProfilerDispatcher}

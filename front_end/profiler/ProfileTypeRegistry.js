@@ -6,7 +6,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import {CPUProfileType} from './CPUProfileView.js';
-import {SamplingHeapProfileType, SamplingNativeHeapProfileType, SamplingNativeHeapSnapshotBrowserType, SamplingNativeHeapSnapshotRendererType,} from './HeapProfileView.js';
+import {SamplingHeapProfileType} from './HeapProfileView.js';
 import {HeapSnapshotProfileType, TrackingHeapSnapshotProfileType} from './HeapSnapshotView.js';
 
 /**
@@ -17,9 +17,6 @@ export class ProfileTypeRegistry {
     this.cpuProfileType = new CPUProfileType();
     this.heapSnapshotProfileType = new HeapSnapshotProfileType();
     this.samplingHeapProfileType = new SamplingHeapProfileType();
-    this.samplingNativeHeapProfileType = new SamplingNativeHeapProfileType();
-    this.samplingNativeHeapSnapshotBrowserType = new SamplingNativeHeapSnapshotBrowserType();
-    this.samplingNativeHeapSnapshotRendererType = new SamplingNativeHeapSnapshotRendererType();
     this.trackingHeapSnapshotProfileType = new TrackingHeapSnapshotProfileType();
   }
 }

@@ -600,7 +600,6 @@ export const DevtoolsExperiments = {
   'emptySourceMapAutoStepping': 9,
   'inputEventsOnTimelineOverview': 10,
   'liveHeapProfile': 11,
-  'nativeHeapProfiler': 12,
   'protocolMonitor': 13,
   'developerResourcesView': 15,
   'recordCoverageWithPerformanceTracing': 16,

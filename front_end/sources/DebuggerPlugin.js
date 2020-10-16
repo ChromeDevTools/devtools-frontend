@@ -521,6 +521,17 @@ export class DebuggerPlugin extends Plugin {
       editorLineNumber = textSelection.startLine;
       startHighlight = textSelection.startColumn;
       endHighlight = textSelection.endColumn - 1;
+    } else if (this._uiSourceCode.mimeType() === 'application/wasm') {
+      const token = this._textEditor.tokenAtTextPosition(textPosition.startLine, textPosition.startColumn);
+      if (!token || token.type !== 'variable-2') {
+        return null;
+      }
+      const leftCorner = this._textEditor.cursorPositionToCoordinates(textPosition.startLine, token.startColumn);
+      const rightCorner = this._textEditor.cursorPositionToCoordinates(textPosition.startLine, token.endColumn - 1);
+      anchorBox = new AnchorBox(leftCorner.x, leftCorner.y, rightCorner.x - leftCorner.x, leftCorner.height);
+      editorLineNumber = textPosition.startLine;
+      startHighlight = token.startColumn;
+      endHighlight = token.endColumn - 1;
     } else {
       const token = this._textEditor.tokenAtTextPosition(textPosition.startLine, textPosition.startColumn);
       if (!token || !token.type) {

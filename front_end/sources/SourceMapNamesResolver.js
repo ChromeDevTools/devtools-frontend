@@ -250,6 +250,12 @@ export const allVariablesInCallFrame = function(callFrame) {
  */
 export const resolveExpression = function(
     callFrame, originalText, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber) {
+  if (uiSourceCode.mimeType() === 'application/wasm') {
+    // For WebAssembly disassembly, lookup the different possiblities.
+    return Promise.resolve(
+        `memories["${originalText}"] ?? locals["${originalText}"] ?? tables["${originalText}"] ?? functions["${
+            originalText}"] ?? globals["${originalText}"] ?? imports["${originalText}"] ?? exports["${originalText}"]`);
+  }
   if (!uiSourceCode.contentType().isFromSourceMap()) {
     return Promise.resolve('');
   }

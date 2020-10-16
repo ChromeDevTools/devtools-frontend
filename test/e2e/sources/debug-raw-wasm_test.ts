@@ -116,6 +116,50 @@ describe('Sources Tab', async function() {
     });
   });
 
+  it('shows variable value in popover', async function() {
+    const {target, frontend} = getBrowserAndPages();
+
+    await step('navigate to a page and open the Sources tab', async () => {
+      await openSourceCodeEditorForFile('add.wasm', 'wasm/call-to-add-wasm.html');
+    });
+
+    const numberOfLines = 7;
+
+    await step('wait for all the source code to appear', async () => {
+      await waitForSourceCodeLines(numberOfLines);
+    });
+    await step('add a breakpoint to line No.3', async () => {
+      await addBreakpointForLine(frontend, 3);
+    });
+
+    await step('reload the page', async () => {
+      await target.reload();
+      // FIXME(crbug/1112692): Refactor test to remove the timeout.
+      await timeout(100);
+    });
+
+    await step('wait for all the source code to appear', async () => {
+      await waitForSourceCodeLines(numberOfLines);
+    });
+
+    await step('hover over the $var0 in line No.3', async () => {
+      const pausedPosition = await waitForFunction(async () => {
+        const element = await $('.cm-variable-2.cm-execution-line-tail');
+        if (element && await element.evaluate(e => e.isConnected)) {
+          return element;
+        }
+        return undefined;
+      });
+      await pausedPosition.hover();
+    });
+
+    await step('check that popover with value 0 appears', async () => {
+      const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
+      const value = await waitFor('.object-value-number', popover).then(e => e.evaluate(node => node.textContent));
+      assert.strictEqual(value, '0');
+    });
+  });
+
   it('cannot set a breakpoint on non-breakable line in raw wasm', async () => {
     const {frontend} = getBrowserAndPages();
 

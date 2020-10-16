@@ -26,3 +26,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":snippets" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "snippets-legacy.js"
+
+  deps = [ ":bundle" ]
+}

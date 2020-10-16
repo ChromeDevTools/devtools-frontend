@@ -22,3 +22,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":webauthn" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "webauthn-legacy.js"
+
+  deps = [ ":bundle" ]
+}

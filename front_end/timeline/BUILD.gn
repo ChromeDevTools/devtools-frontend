@@ -49,3 +49,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":timeline" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "timeline-legacy.js"
+
+  deps = [ ":bundle" ]
+}

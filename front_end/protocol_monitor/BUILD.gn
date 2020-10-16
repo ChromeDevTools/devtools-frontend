@@ -24,3 +24,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":protocol_monitor" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "protocol_monitor-legacy.js"
+
+  deps = [ ":bundle" ]
+}

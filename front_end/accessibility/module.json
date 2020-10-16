@@ -13,6 +13,7 @@
   "dependencies": [
     "elements"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "../generated/ARIAProperties.js",
     "accessibility.js",

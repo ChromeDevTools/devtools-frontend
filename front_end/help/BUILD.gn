@@ -28,3 +28,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":help" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "help-legacy.js"
+
+  deps = [ ":bundle" ]
+}

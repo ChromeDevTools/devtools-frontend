@@ -27,3 +27,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":browser_debugger" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "browser_debugger-legacy.js"
+
+  deps = [ ":bundle" ]
+}

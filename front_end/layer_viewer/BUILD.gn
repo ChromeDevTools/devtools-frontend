@@ -29,3 +29,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":layer_viewer" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "layer_viewer-legacy.js"
+
+  deps = [ ":bundle" ]
+}

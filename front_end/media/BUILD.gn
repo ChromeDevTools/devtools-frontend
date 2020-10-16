@@ -35,3 +35,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":media" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "media-legacy.js"
+
+  deps = [ ":bundle" ]
+}

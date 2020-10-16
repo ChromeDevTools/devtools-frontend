@@ -49,3 +49,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":console" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "console-legacy.js"
+
+  deps = [ ":bundle" ]
+}

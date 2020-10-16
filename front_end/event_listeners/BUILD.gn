@@ -25,3 +25,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":event_listeners" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "event_listeners-legacy.js"
+
+  deps = [ ":bundle" ]
+}

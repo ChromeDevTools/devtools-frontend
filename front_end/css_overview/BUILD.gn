@@ -34,3 +34,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":css_overview" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "css_overview-legacy.js"
+
+  deps = [ ":bundle" ]
+}

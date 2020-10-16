@@ -25,3 +25,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":settings" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "settings-legacy.js"
+
+  deps = [ ":bundle" ]
+}

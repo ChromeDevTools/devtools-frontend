@@ -10,6 +10,7 @@
       "experiment": "cssOverview"
     }
   ],
+  "pre_generates_legacy": true,
   "dependencies": [
     "elements",
     "ui",

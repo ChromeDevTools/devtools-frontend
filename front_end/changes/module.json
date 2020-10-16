@@ -17,6 +17,7 @@
       "className": "Changes.ChangesView.DiffUILocationRevealer"
     }
   ],
+  "pre_generates_legacy": true,
   "dependencies": [
     "workspace_diff",
     "text_editor",

@@ -2,6 +2,7 @@
   "dependencies": [
     "common"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "diff.js",
     "diff-legacy.js",

@@ -11,6 +11,7 @@
       "experiment": "protocolMonitor"
     }
   ],
+  "pre_generates_legacy": true,
   "dependencies": [
     "platform",
     "ui",

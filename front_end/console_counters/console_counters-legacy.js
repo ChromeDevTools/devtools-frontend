@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// @ts-nocheck
+
 import * as ConsoleCountersModule from './console_counters.js';
 
 self.ConsoleCounters = self.ConsoleCounters || {};

@@ -1,4 +1,5 @@
 {
+  "pre_generates_legacy": true,
   "extensions": [
     {
       "type": "action",

@@ -51,3 +51,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":profiler" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "profiler-legacy.js"
+
+  deps = [ ":bundle" ]
+}

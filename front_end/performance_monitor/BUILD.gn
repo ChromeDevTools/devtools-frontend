@@ -23,3 +23,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":performance_monitor" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "performance_monitor-legacy.js"
+
+  deps = [ ":bundle" ]
+}

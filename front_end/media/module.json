@@ -11,6 +11,7 @@
       "tags": "media, video"
     }
   ],
+  "pre_generates_legacy": true,
   "dependencies": [
     "components",
     "sdk",

@@ -51,3 +51,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":emulation" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "emulation-legacy.js"
+
+  deps = [ ":bundle" ]
+}

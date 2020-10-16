@@ -26,3 +26,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":web_audio" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "web_audio-legacy.js"
+
+  deps = [ ":bundle" ]
+}

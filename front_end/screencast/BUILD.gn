@@ -25,3 +25,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":screencast" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "screencast-legacy.js"
+
+  deps = [ ":bundle" ]
+}

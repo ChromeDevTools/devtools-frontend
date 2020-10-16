@@ -11,6 +11,7 @@
       "tags": "performance, system monitor, monitor, activity, metrics"
     }
   ],
+  "pre_generates_legacy": true,
   "dependencies": [
     "sdk",
     "ui"

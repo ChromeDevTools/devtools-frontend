@@ -64,3 +64,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":network" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "network-legacy.js"
+
+  deps = [ ":bundle" ]
+}

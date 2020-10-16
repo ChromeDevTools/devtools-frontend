@@ -5,6 +5,7 @@
       "className": "JsMain.JsMain"
     }
   ],
+  "pre_generates_legacy": true,
   "dependencies": [
     "components"
   ],

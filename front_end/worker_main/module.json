@@ -5,6 +5,7 @@
       "className": "WorkerMain.WorkerMain"
     }
   ],
+  "pre_generates_legacy": true,
   "dependencies": [
     "components",
     "mobile_throttling"

@@ -6,6 +6,7 @@
     "ui",
     "perf_ui"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "layer_viewer.js",
     "layer_viewer-legacy.js",

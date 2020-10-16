@@ -32,3 +32,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":mobile_throttling" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "mobile_throttling-legacy.js"
+
+  deps = [ ":bundle" ]
+}

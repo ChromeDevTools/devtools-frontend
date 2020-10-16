@@ -10,6 +10,7 @@
       "className": "Layers.LayersPanel"
     }
   ],
+  "pre_generates_legacy": true,
   "dependencies": [
     "layer_viewer"
   ],

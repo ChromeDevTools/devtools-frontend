@@ -19,3 +19,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":diff" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "diff-legacy.js"
+
+  deps = [ ":bundle" ]
+}

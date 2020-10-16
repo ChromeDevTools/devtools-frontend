@@ -28,3 +28,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":heap_snapshot_worker" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "heap_snapshot_worker-legacy.js"
+
+  deps = [ ":bundle" ]
+}

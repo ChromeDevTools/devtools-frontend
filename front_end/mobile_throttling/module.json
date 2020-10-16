@@ -50,6 +50,7 @@
       ]
     }
   ],
+  "pre_generates_legacy": true,
   "dependencies": [
     "common",
     "sdk",

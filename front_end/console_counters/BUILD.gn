@@ -26,3 +26,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":console_counters" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "console_counters-legacy.js"
+
+  deps = [ ":bundle" ]
+}

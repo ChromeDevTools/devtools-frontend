@@ -10,7 +10,9 @@
       "className": "DeveloperResources.DeveloperResourcesView",
       "experiment": "developerResourcesView"
     }
-  ],  "dependencies": [
+  ],
+  "pre_generates_legacy": true,
+  "dependencies": [
     "common",
     "platform",
     "ui",

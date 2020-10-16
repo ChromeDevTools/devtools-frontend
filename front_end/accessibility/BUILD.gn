@@ -32,3 +32,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":accessibility" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "accessibility-legacy.js"
+
+  deps = [ ":bundle" ]
+}

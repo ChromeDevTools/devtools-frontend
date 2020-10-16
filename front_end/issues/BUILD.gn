@@ -35,3 +35,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":issues" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "issues-legacy.js"
+
+  deps = [ ":bundle" ]
+}

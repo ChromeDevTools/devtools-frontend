@@ -13,6 +13,7 @@
   "dependencies": [
     "elements"
   ],
+  "pre_generates_legacy": true,
   "modules": [
     "animation.js",
     "animation-legacy.js",

@@ -93,3 +93,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":elements" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "elements-legacy.js"
+
+  deps = [ ":bundle" ]
+}

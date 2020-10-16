@@ -39,3 +39,9 @@ devtools_entrypoint("bundle") {
     "../third_party/lighthouse",
   ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "lighthouse-legacy.js"
+
+  deps = [ ":bundle" ]
+}

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+// @ts-nocheck
 
 import * as CoverageModule from './coverage.js';
 

@@ -26,3 +26,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":search" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "search-legacy.js"
+
+  deps = [ ":bundle" ]
+}

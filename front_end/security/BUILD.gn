@@ -25,3 +25,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":security" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "security-legacy.js"
+
+  deps = [ ":bundle" ]
+}

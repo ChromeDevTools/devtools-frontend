@@ -33,3 +33,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":coverage" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "coverage-legacy.js"
+
+  deps = [ ":bundle" ]
+}

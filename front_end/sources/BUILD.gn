@@ -75,3 +75,9 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":sources" ]
 }
+
+devtools_entrypoint("legacy") {
+  entrypoint = "sources-legacy.js"
+
+  deps = [ ":bundle" ]
+}

@@ -1301,14 +1301,14 @@ export function createLabel(title, className, associatedControl) {
  * @param {string} name
  * @param {string} title
  * @param {boolean=} checked
- * @return {!Element}
+ * @return {!DevToolsRadioButton}
  */
 export function createRadioLabel(name, title, checked) {
   const element = createElement('span', 'dt-radio');
   element.radioElement.name = name;
   element.radioElement.checked = !!checked;
   createTextChild(element.labelElement, title);
-  return element;
+  return /** @type {!DevToolsRadioButton} */ (element);
 }
 
 /**
@@ -1431,10 +1431,10 @@ export class DevToolsIconLabel extends HTMLSpanElement {
 
 let labelId = 0;
 
-class DevToolsRadioButton extends HTMLSpanElement {
+export class DevToolsRadioButton extends HTMLSpanElement {
   constructor() {
     super();
-    this.radioElement = this.createChild('input', 'dt-radio-button');
+    this.radioElement = /** @type {!HTMLInputElement} */ (this.createChild('input', 'dt-radio-button'));
     this.labelElement = this.createChild('label');
 
     const id = 'dt-radio-button-id' + (++labelId);

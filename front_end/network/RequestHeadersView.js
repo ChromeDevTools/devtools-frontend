@@ -477,8 +477,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     rootListItemElement.createChild('div', 'selection fill');
     UI.UIUtils.createTextChild(rootListItemElement, this._requestPayloadCategory.title.toString());
 
-    const shouldViewSource = viewSourceForItems.add(rootListItem);
-    if (shouldViewSource) {
+    if (viewSourceForItems.has(rootListItem)) {
       this._appendJSONPayloadSource(rootListItem, parsedObject, sourceText);
     } else {
       this._appendJSONPayloadParsed(rootListItem, parsedObject, sourceText);

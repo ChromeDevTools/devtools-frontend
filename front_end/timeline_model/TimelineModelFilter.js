@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
@@ -38,6 +35,7 @@ export class TimelineVisibleEventsFilter extends TimelineModelFilter {
   }
 
   /**
+   * @param {!SDK.TracingModel.Event} event
    * @return {!RecordType}
    */
   static _eventType(event) {
@@ -50,7 +48,7 @@ export class TimelineVisibleEventsFilter extends TimelineModelFilter {
     if (event.hasCategory(TimelineModelImpl.Category.LatencyInfo)) {
       return RecordType.LatencyInfo;
     }
-    return /** @type !RecordType */ (event.name);
+    return /** @type {!RecordType} */ (event.name);
   }
 }
 

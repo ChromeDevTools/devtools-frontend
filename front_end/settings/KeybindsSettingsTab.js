@@ -36,7 +36,13 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
     this.registerRequiredCSS('settings/keybindsSettingsTab.css');
     this.contentElement.appendChild(this._list.element);
     UI.ARIAUtils.setAccessibleName(this._list.element, ls`Keyboard shortcuts list`);
-    this.contentElement.appendChild(UI.UIUtils.createTextButton(ls`Restore default shortcuts`, () => {
+    const footer = this.contentElement.createChild('div');
+    footer.classList.add('keybinds-footer');
+    const docsLink = UI.UIUtils.createDocumentationLink(
+        'iterate/inspect-styles/shortcuts', ls`Full list of DevTools keyboard shortcuts and gestures`);
+    docsLink.classList.add('docs-link');
+    footer.appendChild(docsLink);
+    footer.appendChild(UI.UIUtils.createTextButton(ls`Restore default shortcuts`, () => {
       userShortcutsSetting.set([]);
       keybindsSetSetting.set(UI.ShortcutRegistry.DefaultShortcutSetting);
     }));

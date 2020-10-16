@@ -123,9 +123,6 @@
   <message name="IDS_DEVTOOLS_650654cb12c12b00e68b4384e0aede82" desc="Aria alert to read the suggestion for the suggestion box when typing in text editor">
     <ph name="THIS__ONLYCOMPLETION_TEXT">$1s<ex>name</ex></ph>, suggestion
   </message>
-  <message name="IDS_DEVTOOLS_678b7bbae3b9b67cee8bce1fac3067d7" desc="Text for a hyperlink to the shortcut documentation in Shortcuts page">
-    Full list of <ph name="LOCKED_1">DevTools</ph> keyboard shortcuts and gestures
-  </message>
   <message name="IDS_DEVTOOLS_6e0e121820384f135321cb766273f4da" desc="Text in the Shortcuts page to explain a keyboard shortcut (soft undo in text editor)">
     Soft undo
   </message>

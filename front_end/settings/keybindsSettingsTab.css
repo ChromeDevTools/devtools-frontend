@@ -167,10 +167,24 @@ h1 {
 }
 
 button.text-button {
-  margin-top: 4px;
+  margin-top: -4px;
   width: fit-content;
+  align-self: flex-end;
 }
 
 .keybinds-list-text input {
   margin: 0 2px;
+}
+
+.docs-link.devtools-link {
+  align-self: flex-start;
+  height: 24px;
+  line-height: 24px;
+}
+
+.keybinds-footer {
+  display: flex;
+  justify-content: space-between;
+  min-height: fit-content;
+  margin-top: 10px;
 }

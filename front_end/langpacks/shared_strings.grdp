@@ -298,6 +298,9 @@
   <message name="IDS_DEVTOOLS_65b4c7424dd695c30efa73da8396c90c" desc="Title of the Profiler tool">
     Profiler
   </message>
+  <message name="IDS_DEVTOOLS_678b7bbae3b9b67cee8bce1fac3067d7" desc="Text for a hyperlink to the shortcut documentation in Shortcuts page">
+    Full list of <ph name="LOCKED_1">DevTools</ph> keyboard shortcuts and gestures
+  </message>
   <message name="IDS_DEVTOOLS_6827a85b76e967f6a129e08f9272e76d" desc="Text in Application Panel Sidebar of the Application panel">
     Local Storage
   </message>

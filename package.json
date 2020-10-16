@@ -45,7 +45,7 @@
     "interactive-screenshottest": "INTERACTIVE=1 python scripts/test/run_test_suite.py --test-suite=screenshots",
     "optimize-svg-images": "python scripts/optimize_svg_images.py",
     "perf": "python scripts/test/run_test_suite.py --test-suite=perf",
-    "regenerate-all-component-bridges": "tsc -p scripts/component_bridges/tsconfig.json && third_party/node/node.py --output scripts/component_bridges/gen/regenerate-all-bridges.js",
+    "regenerate-all-component-bridges": "tsc -p scripts/component_bridges/tsconfig.json && third_party/node/node.py --output scripts/component_bridges/regenerate-all-bridges.js",
     "screenshottest": "python scripts/test/run_test_suite.py --test-suite=screenshots",
     "server": "third_party/node/node.py --output scripts/hosted_mode/server.js",
     "setup-dtrun": "cd scripts/devtools_run && npm link",

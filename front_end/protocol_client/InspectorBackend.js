@@ -768,6 +768,13 @@ export class TargetBase {
   }
 
   /**
+   * @return {!ProtocolProxyApi.InspectorApi}
+   */
+  inspectorAgent() {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @return {!ProtocolProxyApi.LayerTreeApi}
    */
   layerTreeAgent() {
@@ -943,7 +950,12 @@ export class TargetBase {
   registerHeapProfilerDispatcher(dispatcher) {
     throw new Error('Implemented in InspectorBackend.js');
   }
-
+  /**
+   * @param {!ProtocolProxyApi.InspectorDispatcher} dispatcher
+   */
+  registerInspectorDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
   /**
    * @param {!ProtocolProxyApi.LayerTreeDispatcher} dispatcher
    */

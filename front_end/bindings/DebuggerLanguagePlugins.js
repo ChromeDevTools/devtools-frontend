@@ -802,6 +802,84 @@ export class DebuggerLanguagePluginManager {
   }
 
   /**
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @return {!Promise<!Array<!{start: !SDK.DebuggerModel.Location, end: !SDK.DebuggerModel.Location}>>} Returns an empty list if this manager does not have a plugin for it.
+   */
+  async getInlinedFunctionRanges(rawLocation) {
+    const script = rawLocation.script();
+    if (!script) {
+      return [];
+    }
+    const plugin = await this._getPluginForScript(script);
+    if (!plugin) {
+      return [];
+    }
+
+    const pluginLocation = {
+      rawModuleId: script.sourceURL,
+      // RawLocation.columnNumber is the byte offset in the full raw wasm module. Plugins expect the offset in the code
+      // section, so subtract the offset of the code section in the module here.
+      codeOffset: rawLocation.columnNumber - (script.codeOffset() || 0),
+      // TODO(crbug.com/1134110): Once closure->typescript migration is complete, delete this and
+      // change type definition to show that this field is optional.
+      'inlineFrameIndex': undefined
+    };
+
+    try {
+      const locations = await plugin.getInlinedFunctionRanges(pluginLocation);
+      return locations.map(
+          m => ({
+            start: new SDK.DebuggerModel.Location(
+                this._debuggerModel, script.scriptId, 0, Number(m.startOffset) + (script.codeOffset() || 0)),
+            end: new SDK.DebuggerModel.Location(
+                this._debuggerModel, script.scriptId, 0, Number(m.endOffset) + (script.codeOffset() || 0))
+          }));
+    } catch (error) {
+      Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message}`);
+      return [];
+    }
+  }
+
+  /**
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @return {!Promise<!Array<!{start: !SDK.DebuggerModel.Location, end: !SDK.DebuggerModel.Location}>>} Returns an empty list if this manager does not have a plugin for it.
+   */
+  async getInlinedCalleesRanges(rawLocation) {
+    const script = rawLocation.script();
+    if (!script) {
+      return [];
+    }
+    const plugin = await this._getPluginForScript(script);
+    if (!plugin) {
+      return [];
+    }
+
+    const pluginLocation = {
+      rawModuleId: script.sourceURL,
+      // RawLocation.columnNumber is the byte offset in the full raw wasm module. Plugins expect the offset in the code
+      // section, so subtract the offset of the code section in the module here.
+      codeOffset: rawLocation.columnNumber - (script.codeOffset() || 0),
+      // TODO(crbug.com/1134110): Once closure->typescript migration is complete, delete this and
+      // change type definition to show that this field is optional.
+      'inlineFrameIndex': undefined
+    };
+
+    try {
+      const locations = await plugin.getInlinedCalleesRanges(pluginLocation);
+      return locations.map(
+          m => ({
+            start: new SDK.DebuggerModel.Location(
+                this._debuggerModel, script.scriptId, 0, Number(m.startOffset) + (script.codeOffset() || 0)),
+            end: new SDK.DebuggerModel.Location(
+                this._debuggerModel, script.scriptId, 0, Number(m.endOffset) + (script.codeOffset() || 0))
+          }));
+    } catch (error) {
+      Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message}`);
+      return [];
+    }
+  }
+
+  /**
    * @param {!SDK.Script.Script} script
    * @return {!Promise<void>}
    */
@@ -997,6 +1075,25 @@ export class DebuggerLanguagePlugin {
    * @return {!Promise<!{frames: !Array<!FunctionInfo>}>}
   */
   async getFunctionInfo(rawLocation) {
+    throw new Error('Not implemented yet');
+  }
+
+  /** Find locations in raw modules corresponding to the inline function
+   *  that rawLocation is in. Used for stepping out of an inline function.
+   * @param {!RawLocation} rawLocation
+   * @return {!Promise<!Array<!RawLocationRange>>}
+  */
+  async getInlinedFunctionRanges(rawLocation) {
+    throw new Error('Not implemented yet');
+  }
+
+  /** Find locations in raw modules corresponding to inline functions
+   *  called by the function or inline frame that rawLocation is in.
+   *  Used for stepping over inline functions.
+   * @param {!RawLocation} rawLocation
+   * @return {!Promise<!Array<!RawLocationRange>>}
+  */
+  async getInlinedCalleesRanges(rawLocation) {
     throw new Error('Not implemented yet');
   }
 }

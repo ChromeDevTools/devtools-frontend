@@ -71,7 +71,7 @@ export class LanguageExtensionEndpoint {
    * @param {string} symbolsURL - URL of a file providing the debug symbols for this module
    * @param {!Bindings.DebuggerLanguagePlugins.RawModule} rawModule
    * @return {!Promise<!Array<string>>} - An array of URLs for the source files for the raw module
-  */
+   */
   addRawModule(rawModuleId, symbolsURL, rawModule) {
     return /** @type {!Promise<!Array<string>>} */ (
         this._sendRequest(this._commands.AddRawModule, {rawModuleId, symbolsURL, rawModule}));
@@ -91,7 +91,7 @@ export class LanguageExtensionEndpoint {
    * @override
    * @param {!Bindings.DebuggerLanguagePlugins.SourceLocation} sourceLocation
    * @return {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>}
-  */
+   */
   sourceLocationToRawLocation(sourceLocation) {
     return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>} */ (
         this._sendRequest(this._commands.SourceLocationToRawLocation, {sourceLocation}));
@@ -101,7 +101,7 @@ export class LanguageExtensionEndpoint {
    * @override
    * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} rawLocation
    * @return {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.SourceLocation>>}
-  */
+   */
   rawLocationToSourceLocation(rawLocation) {
     return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.SourceLocation>>} */ (
         this._sendRequest(this._commands.RawLocationToSourceLocation, {rawLocation}));
@@ -119,7 +119,7 @@ export class LanguageExtensionEndpoint {
    * @override
    * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} rawLocation
    * @return {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.Variable>>}
-  */
+   */
   listVariablesInScope(rawLocation) {
     return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.Variable>>} */ (
         this._sendRequest(this._commands.ListVariablesInScope, {rawLocation}));
@@ -130,21 +130,43 @@ export class LanguageExtensionEndpoint {
    * @param {string} name
    * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} location
    * @return {!Promise<?Bindings.DebuggerLanguagePlugins.EvaluatorModule>}
-  */
+   */
   evaluateVariable(name, location) {
     return /** @type {!Promise<?Bindings.DebuggerLanguagePlugins.EvaluatorModule>}*/ (
         this._sendRequest(this._commands.EvaluateVariable, {name, location}));
   }
-  /** List all variables in lexical scope at a given location in a raw module
+
+  /** List all function names (including inlined frames) at location
    * @override
    * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} rawLocation
    * @return {!Promise<!{frames: !Array<!Bindings.DebuggerLanguagePlugins.FunctionInfo>}>}
-  */
+   */
   getFunctionInfo(rawLocation) {
     return /** @type {!Promise<!{frames: !Array<!Bindings.DebuggerLanguagePlugins.FunctionInfo>}>} */ (
         this._sendRequest(this._commands.GetFunctionInfo, {rawLocation}));
   }
 
+  /** Find locations in raw modules corresponding to the inline function
+   *  that rawLocation is in.
+   * @override
+   * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} rawLocation
+   * @return {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>}
+   */
+  getInlinedFunctionRanges(rawLocation) {
+    return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>} */ (
+        this._sendRequest(this._commands.GetInlinedFunctionRanges, {rawLocation}));
+  }
+
+  /** Find locations in raw modules corresponding to inline functions
+   *  called by the function or inline frame that rawLocation is in.
+   * @override
+   * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} rawLocation
+   * @return {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>}
+   */
+  getInlinedCalleesRanges(rawLocation) {
+    return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>} */ (
+        this._sendRequest(this._commands.GetInlinedCalleesRanges, {rawLocation}));
+  }
   /**
    * @override
    */

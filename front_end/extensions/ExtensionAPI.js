@@ -96,7 +96,9 @@ export function defineCommonExtensionSymbols(apiPrivate) {
     GetScopeInfo: 'getScopeInfo',
     ListVariablesInScope: 'listVariablesInScope',
     EvaluateVariable: 'evaluateVariable',
-    GetFunctionInfo: 'getFunctionInfo'
+    GetFunctionInfo: 'getFunctionInfo',
+    GetInlinedFunctionRanges: 'getInlinedFunctionRanges',
+    GetInlinedCalleesRanges: 'getInlinedCalleesRanges'
   };
 }
 
@@ -409,6 +411,10 @@ self.injectedExtensionAPI = function(
             return plugin.evaluateVariable(parameters.name, parameters.location);
           case languageExtensionPluginCommands.GetFunctionInfo:
             return plugin.getFunctionInfo(parameters.rawLocation);
+          case languageExtensionPluginCommands.GetInlinedFunctionRanges:
+            return plugin.getInlinedFunctionRanges(parameters.rawLocation);
+          case languageExtensionPluginCommands.GetInlinedCalleesRanges:
+            return plugin.getInlinedCalleesRanges(parameters.rawLocation);
         }
         throw new Error(`Unknown language plugin method ${method}`);
       }

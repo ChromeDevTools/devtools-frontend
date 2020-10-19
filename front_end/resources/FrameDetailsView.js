@@ -43,6 +43,12 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._crossOriginIsolatedContext = this._isolationSection.appendField(ls`Cross-Origin Isolated`);
     this._coepPolicy = this._isolationSection.appendField(ls`Cross-Origin Embedder Policy`);
     this._coopPolicy = this._isolationSection.appendField(ls`Cross-Origin Opener Policy`);
+
+    this._apiAvailability = this._reportView.appendSection(ls`API availablity`);
+    const summaryRow = this._apiAvailability.appendRow();
+    const summaryText = ls`Availability of certain APIs depends on the document being cross-origin isolated.`;
+    const link = 'https://web.dev/why-coop-coep/';
+    summaryRow.appendChild(UI.Fragment.html`<div>${summaryText} ${UI.XLink.XLink.create(link, ls`Learn more`)}</div>`);
     this.update();
   }
 

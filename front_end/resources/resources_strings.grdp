@@ -229,6 +229,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_6e72748dc2f2224dfabb374ca0cc988f" desc="Text in Service Workers View of the Application panel">
     #<ph name="REDUNDANT_ID">$1s<ex>2</ex></ph> is redundant
   </message>
+  <message name="IDS_DEVTOOLS_7091ed290cfa49f60364af4d4b3c42b9" desc="Section header in the Frame Details view">
+    API availablity
+  </message>
   <message name="IDS_DEVTOOLS_76c18f2b1e4155961e10434e3d83317f" desc="Text in Indexed DBViews of the Application panel">
     Key generator value: <ph name="STRING_METADATA_KEYGENERATORVALUE_">$1s<ex>2</ex></ph>
   </message>
@@ -404,6 +407,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_b5dc9b0e6beecb1e80f6f1b5b3050f12" desc="The UI destination when right clicking an item that can be revealed">
     Application panel
+  </message>
+  <message name="IDS_DEVTOOLS_b5fe7aadbe7c788efe43546218ddd341" desc="Section explanatory text in the Frame Details view">
+    Availability of certain APIs depends on the document being cross-origin isolated.
   </message>
   <message name="IDS_DEVTOOLS_b61822e8357dcaff77eaaccf348d9134" desc="Default name for worker">
     worker

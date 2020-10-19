@@ -39,6 +39,10 @@ interface String {
   trimMiddle(maxLength: number): string;
 }
 
+interface RegExp {
+  __fromRegExpQuery: boolean;
+}
+
 interface NumberConstructor {
   withThousandsSeparator(num: number): string;
   toFixedIfFloating(value: string): string;

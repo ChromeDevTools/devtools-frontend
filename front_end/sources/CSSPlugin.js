@@ -70,12 +70,9 @@ export class CSSPlugin extends Plugin {
         SourceFrame.SourcesTextEditor.Events.ScrollChanged, this._textEditorScrolled, this);
     this._textEditor.addEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
     this._updateSwatches(0, this._textEditor.linesCount - 1);
+    this._boundHandleKeyDown = null;
 
-    /** @type {!Map<number, function():boolean>} */
-    this._shortcuts = new Map();
     this._registerShortcuts();
-    this._boundHandleKeyDown = this._handleKeyDown.bind(this);
-    this._textEditor.element.addEventListener('keydown', this._boundHandleKeyDown, false);
   }
 
   /**
@@ -88,30 +85,13 @@ export class CSSPlugin extends Plugin {
   }
 
   _registerShortcuts() {
-    const shortcutKeys = UI.ShortcutsScreen.SourcesPanelShortcuts;
-    for (const descriptor of shortcutKeys.IncreaseCSSUnitByOne) {
-      this._shortcuts.set(descriptor.key, this._handleUnitModification.bind(this, 1));
-    }
-    for (const descriptor of shortcutKeys.DecreaseCSSUnitByOne) {
-      this._shortcuts.set(descriptor.key, this._handleUnitModification.bind(this, -1));
-    }
-    for (const descriptor of shortcutKeys.IncreaseCSSUnitByTen) {
-      this._shortcuts.set(descriptor.key, this._handleUnitModification.bind(this, 10));
-    }
-    for (const descriptor of shortcutKeys.DecreaseCSSUnitByTen) {
-      this._shortcuts.set(descriptor.key, this._handleUnitModification.bind(this, -10));
-    }
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _handleKeyDown(event) {
-    const shortcutKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
-    const handler = this._shortcuts.get(shortcutKey);
-    if (handler && handler()) {
-      event.consume(true);
-    }
+    this._boundHandleKeyDown =
+        UI.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(this._textEditor.element, {
+          'sources.increment-css': this._handleUnitModification.bind(this, 1),
+          'sources.increment-css-by-ten': this._handleUnitModification.bind(this, 10),
+          'sources.decrement-css': this._handleUnitModification.bind(this, -1),
+          'sources.decrement-css-by-ten': this._handleUnitModification.bind(this, -10)
+        });
   }
 
   _textEditorScrolled() {
@@ -136,9 +116,9 @@ export class CSSPlugin extends Plugin {
 
   /**
    * @param {number} change
-   * @return {boolean}
+   * @return {!Promise.<boolean>}
    */
-  _handleUnitModification(change) {
+  async _handleUnitModification(change) {
     const selection = this._textEditor.selection().normalize();
     let token = this._textEditor.tokenAtTextPosition(selection.startLine, selection.startColumn);
     if (!token) {
@@ -471,7 +451,7 @@ export class CSSPlugin extends Plugin {
         SourceFrame.SourcesTextEditor.Events.ScrollChanged, this._textEditorScrolled, this);
     this._textEditor.removeEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
     this._textEditor.bookmarks(this._textEditor.fullRange(), SwatchBookmark).forEach(marker => marker.clear());
-    this._textEditor.element.removeEventListener('keydown', this._boundHandleKeyDown, false);
+    this._textEditor.element.removeEventListener('keydown', /** @type {!EventListener} */ (this._boundHandleKeyDown));
   }
 }
 

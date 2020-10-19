@@ -40,6 +40,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
 
     this._isolationSection = this._reportView.appendSection(ls`Security & Isolation`);
     this._secureContext = this._isolationSection.appendField(ls`Secure Context`);
+    this._crossOriginIsolatedContext = this._isolationSection.appendField(ls`Cross-Origin Isolated`);
     this._coepPolicy = this._isolationSection.appendField(ls`Cross-Origin Embedder Policy`);
     this._coopPolicy = this._isolationSection.appendField(ls`Cross-Origin Opener Policy`);
     this.update();
@@ -159,15 +160,19 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   _updateContextStatus() {
     if (this._frame.unreachableUrl()) {
       this._isolationSection.setFieldVisible(ls`Secure Context`, false);
+      this._isolationSection.setFieldVisible(ls`Cross-Origin Isolated`, false);
       return;
     }
     this._isolationSection.setFieldVisible(ls`Secure Context`, true);
+    this._isolationSection.setFieldVisible(ls`Cross-Origin Isolated`, true);
+
     this._secureContext.textContent = booleanToYesNo(this._frame.isSecureContext());
     const secureContextExplanation = this._explanationFromSecureContextType(this._frame.getSecureContextType());
     if (secureContextExplanation) {
-      const secureContextType = this._secureContext.createChild('span', 'inline-span');
+      const secureContextType = this._secureContext.createChild('span', 'inline-comment');
       secureContextType.textContent = secureContextExplanation;
     }
+    this._crossOriginIsolatedContext.textContent = booleanToYesNo(this._frame.isCrossOriginIsolated());
   }
 
   /**

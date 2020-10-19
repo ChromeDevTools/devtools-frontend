@@ -423,6 +423,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_bd0c1dbb1b437cd840dbc57852fb8ec6" desc="Link text for more information on maskable icons in App Manifest view of the Application panel">
     documentation on maskable icons
   </message>
+  <message name="IDS_DEVTOOLS_bde29cba351697b187057928a827ffe5" desc="Row title for in the Frame Details view">
+    Cross-Origin Isolated
+  </message>
   <message name="IDS_DEVTOOLS_bebc9b50966d8d2bd1913a3c25b707d4" desc="Text in Indexed DBViews of the Application panel">
     Data may be stale
   </message>

@@ -25,6 +25,7 @@ describe('The Application Tab', async () => {
         '<#document>',
         '',
         'YesLocalhost is always a secure context',
+        'No',
         'None',
         'UnsafeNone',
       ];

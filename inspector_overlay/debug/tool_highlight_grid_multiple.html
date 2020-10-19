@@ -1,0 +1,49 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Debug</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
+</head>
+<body>
+  <script type="module">
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+
+    dispatch(["setPlatform", "mac"]);
+    dispatch(["setOverlay", "highlight"]);
+    dispatch(["reset", {
+      viewportSize: {
+        width: viewportWidth,
+        height: viewportHeight,
+      },
+      deviceScaleFactor: 1,
+      pageScaleFactor: 1,
+      pageZoomFactor: 1,
+      emulationScaleFactor: 1,
+      scrollX: 0,
+      scrollY: 0,
+    }]);
+
+    dispatch(["drawHighlight", {
+      "paths":[],
+      "gridInfo":[
+        {"rotationAngle":0,"writingMode":"horizontal-tb","columnTrackSizes":[{"x":1002.5,"y":116,"computedSize":540,"authoredSize":"1fr"},{"x":1542.5,"y":116,"computedSize":540,"authoredSize":"1fr"}],"rowTrackSizes":[{"x":732.5,"y":424,"computedSize":616}],"rows":["M",732.5,116,"L",1812.5,116,"M",1812.5,732,"L",732.5,732],"rowGaps":[],"columns":["M",732.5,116,"L",732.5,732,"M",1272.5,116,"L",1272.5,732,"M",1812.5,732,"L",1812.5,116],"columnGaps":["M",1272.5,116,"L",1272.5,116,"L",1272.5,732,"L",1272.5,732,"Z"],"areaNames":{},"rowLineNameOffsets":[],"columnLineNameOffsets":[],"gridBorder":["M",732.5,116,"L",1812.5,116,"L",1812.5,732,"L",732.5,732,"Z"],"gridHighlightConfig":{"gridBorderDash":false,"rowLineDash":true,"columnLineDash":true,"showGridExtensionLines":true,"showPositiveLineNumbers":false,"showNegativeLineNumbers":false,"showAreaNames":true,"showLineNames":true,"gridBorderColor":"#eb94cf","rowLineColor":"#eb94cf","columnLineColor":"#eb94cf","rowGapColor":"rgba(235, 148, 207, 0.298039215686275)","columnGapColor":"rgba(235, 148, 207, 0.298039215686275)","rowHatchColor":"rgba(235, 148, 207, 0.8)","columnHatchColor":"rgba(235, 148, 207, 0.8)","areaBorderColor":"#eb94cf","gridBackgroundColor":"rgba(235, 148, 207, 0.0980392156862745)"},"isPrimaryGrid":true},
+      ]
+    }]);
+
+    dispatch(["drawHighlight", {
+      "paths":[],
+      "gridInfo":[
+        {"rotationAngle":0,"writingMode":"horizontal-tb","columnTrackSizes":[{"x":1002.5,"y":116,"computedSize":540}],"rowTrackSizes":[{"x":732.5,"y":311.5,"computedSize":391},{"x":732.5,"y":595,"computedSize":112},{"x":732.5,"y":707.5,"computedSize":49}],"rows":["M",732.5,116,"L",1272.5,116,"M",1272.5,507,"L",732.5,507,"M",732.5,539,"L",1272.5,539,"M",1272.5,651,"L",732.5,651,"M",732.5,683,"L",1272.5,683,"M",1272.5,732,"L",732.5,732],"rowGaps":["M",732.5,507,"L",1272.5,507,"L",1272.5,539,"L",732.5,539,"Z","M",732.5,651,"L",1272.5,651,"L",1272.5,683,"L",732.5,683,"Z"],"columns":["M",732.5,116,"L",732.5,732,"M",1272.5,732,"L",1272.5,116],"columnGaps":[],"areaNames":{},"rowLineNameOffsets":[],"columnLineNameOffsets":[],"gridBorder":["M",732.5,116,"L",1272.5,116,"L",1272.5,732,"L",732.5,732,"Z"],"gridHighlightConfig":{"gridBorderDash":false,"rowLineDash":true,"columnLineDash":true,"showGridExtensionLines":true,"showPositiveLineNumbers":false,"showNegativeLineNumbers":false,"showAreaNames":true,"showLineNames":true,"gridBorderColor":"#f59794","rowLineColor":"#f59794","columnLineColor":"#f59794","rowGapColor":"rgba(245, 151, 148, 0.298039215686275)","columnGapColor":"rgba(245, 151, 148, 0.298039215686275)","rowHatchColor":"rgba(245, 151, 148, 0.8)","columnHatchColor":"rgba(245, 151, 148, 0.8)","areaBorderColor":"#f59794","gridBackgroundColor":"rgba(245, 151, 148, 0.0980392156862745)"},"isPrimaryGrid":true}
+      ]
+    }]);
+  </script>
+</body>
+</html>

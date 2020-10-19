@@ -152,7 +152,7 @@ export function drawGridLabels(
   // Find and clear the layer for the node specified in the config, or the default layer:
   // Each node has a layer for grid labels in order to draw multiple grid highlights
   // at once.
-  const labelContainerId = labelState.gridLayerCounter ? `grid-${labelState.gridLayerCounter++}-labels` : 'grid-labels';
+  const labelContainerId = `grid-${labelState.gridLayerCounter++}-labels`;
   let labelContainerForNode = document.getElementById(labelContainerId);
   if (!labelContainerForNode) {
     const mainLabelLayerContainer = document.getElementById('grid-label-container');

@@ -1328,23 +1328,13 @@ class _DispatcherPrototype {
       return;
     }
 
-    const params = [];
-    if (messageObject.params) {
-      const paramNames = this._eventArgs[messageObject.method];
-      for (let i = 0; i < paramNames.length; ++i) {
-        params.push(messageObject.params[paramNames[i]]);
-      }
-    }
+    const messageArgument = {...messageObject.params};
 
     for (let index = 0; index < this._dispatchers.length; ++index) {
       const dispatcher = this._dispatchers[index];
 
       if (functionName in dispatcher) {
-        if (dispatcher.usesObjectNotation && dispatcher.usesObjectNotation()) {
-          dispatcher[functionName].call(dispatcher, {...messageObject.params});
-        } else {
-          dispatcher[functionName].apply(dispatcher, params);
-        }
+        dispatcher[functionName].call(dispatcher, messageArgument);
       }
     }
   }

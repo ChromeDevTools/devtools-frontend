@@ -272,30 +272,11 @@ def generate_protocol_externs(output_path, file1, file2):
                     output_file.write(
                         "\n/** @typedef {%s} */\nProtocol.%s.%s;\n" % (type_traits[type["type"]], domain_name, type["id"]))
 
-        if domain_name in ["Runtime", "Debugger", "HeapProfiler"]:
-            output_file.write("/** @constructor */\n")
-        else:
-            output_file.write("/** @interface */\n")
-        output_file.write("Protocol.%sDispatcher = function() {};\n" % domain_name)
         output_file.write("/** @interface */\n")
         output_file.write("ProtocolProxyApi.%sDispatcher = function() {};\n" %
                           domain_name)
         if "events" in domain:
             for event in domain["events"]:
-                params = []
-                if ("parameters" in event):
-                    output_file.write("/**\n")
-                    for param in event["parameters"]:
-                        if ("optional" in param):
-                            params.append("opt_%s" % param["name"])
-                            output_file.write(" * @param {%s=} opt_%s\n" % (param_type(domain_name, param), param["name"]))
-                        else:
-                            params.append(param["name"])
-                            output_file.write(" * @param {%s} %s\n" % (param_type(domain_name, param), param["name"]))
-                    output_file.write(" */\n")
-                output_file.write(
-                    "Protocol.%sDispatcher.prototype.%s = function(%s) {};\n" % (domain_name, event["name"], ", ".join(params)))
-
                 # Generate a Event typedef that is used in dispatchers
                 if ("parameters" in event):
                     output_file.write("/**\n")
@@ -334,8 +315,8 @@ def generate_protocol_externs(output_path, file1, file2):
                           (domain_name[:uppercase_length].lower() + domain_name[uppercase_length:] + "Agent"))
 
         output_file.write(
-            "/**\n * @param {!Protocol.%sDispatcher|!ProtocolProxyApi.%sDispatcher} dispatcher\n */\n"
-            % (domain_name, domain_name))
+            "/**\n * @param {!ProtocolProxyApi.%sDispatcher} dispatcher\n */\n"
+            % (domain_name))
         output_file.write("ProtocolClient.TargetBase.prototype.register%sDispatcher = function(dispatcher) {}\n" % domain_name)
 
     output_file.close()

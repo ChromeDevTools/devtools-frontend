@@ -27,8 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
@@ -39,6 +37,9 @@ import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {SourceMapping} from './CSSWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {NetworkProject} from './NetworkProject.js';
 import {metadataForURL} from './ResourceUtils.js';
+
+/** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !StyleFile>} */
+const uiSourceCodeToStyleMap = new WeakMap();
 
 /**
  * @implements {SourceMapping}
@@ -80,10 +81,16 @@ export class StylesSourceMapping {
       return null;
     }
     let lineNumber = rawLocation.lineNumber;
+    /** @type {number|undefined} */
     let columnNumber = rawLocation.columnNumber;
     if (header.isInline && header.hasSourceURL) {
       lineNumber -= header.lineNumberInSource(0);
-      columnNumber -= header.columnNumberInSource(lineNumber, 0);
+      const headerColumnNumber = header.columnNumberInSource(lineNumber, 0);
+      if (typeof headerColumnNumber === 'undefined') {
+        columnNumber = headerColumnNumber;
+      } else {
+        columnNumber -= headerColumnNumber;
+      }
     }
     return styleFile._uiSourceCode.uiLocation(lineNumber, columnNumber);
   }
@@ -94,16 +101,17 @@ export class StylesSourceMapping {
    * @return {!Array<!SDK.CSSModel.CSSLocation>}
    */
   uiLocationToRawLocations(uiLocation) {
-    const styleFile = uiLocation.uiSourceCode[StyleFile._symbol];
+    const styleFile = uiSourceCodeToStyleMap.get(uiLocation.uiSourceCode);
     if (!styleFile) {
       return [];
     }
     const rawLocations = [];
     for (const header of styleFile._headers) {
       let lineNumber = uiLocation.lineNumber;
+      /** @type {number|undefined} */
       let columnNumber = uiLocation.columnNumber;
       if (header.isInline && header.hasSourceURL) {
-        columnNumber = header.columnNumberInSource(lineNumber, columnNumber);
+        columnNumber = header.columnNumberInSource(lineNumber, uiLocation.columnNumber);
         lineNumber = header.lineNumberInSource(lineNumber);
       }
       rawLocations.push(new SDK.CSSModel.CSSLocation(header, lineNumber, columnNumber));
@@ -156,11 +164,13 @@ export class StylesSourceMapping {
     }
     const url = header.resourceURL();
     const styleFile = this._styleFiles.get(url);
-    if (styleFile._headers.size === 1) {
-      styleFile.dispose();
-      this._styleFiles.delete(url);
-    } else {
-      styleFile.removeHeader(header);
+    if (styleFile) {
+      if (styleFile._headers.size === 1) {
+        styleFile.dispose();
+        this._styleFiles.delete(url);
+      } else {
+        styleFile.removeHeader(header);
+      }
     }
   }
 
@@ -173,7 +183,9 @@ export class StylesSourceMapping {
       return;
     }
     const styleFile = this._styleFiles.get(header.resourceURL());
-    styleFile._styleSheetChanged(header);
+    if (styleFile) {
+      styleFile._styleSheetChanged(header);
+    }
   }
 
   dispose() {
@@ -208,7 +220,7 @@ export class StyleFile {
     const metadata = metadataForURL(target, header.frameId, url);
 
     this._uiSourceCode = this._project.createUISourceCode(url, header.contentType());
-    this._uiSourceCode[StyleFile._symbol] = this;
+    uiSourceCodeToStyleMap.set(this._uiSourceCode, this);
     NetworkProject.setInitialFrameAttribution(this._uiSourceCode, header.frameId);
     this._project.addUISourceCodeWithProvider(this._uiSourceCode, this, metadata, 'text/css');
 
@@ -275,7 +287,7 @@ export class StyleFile {
   /**
    * @param {!TextUtils.ContentProvider.ContentProvider} fromProvider
    * @param {boolean} majorChange
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async _mirrorContent(fromProvider, majorChange) {
     if (this._terminated) {
@@ -333,7 +345,8 @@ export class StyleFile {
    * @return {string}
    */
   contentURL() {
-    return this._headers.firstValue().originalContentProvider().contentURL();
+    console.assert(this._headers.size > 0);
+    return this._headers.values().next().value.originalContentProvider().contentURL();
   }
 
   /**
@@ -341,7 +354,8 @@ export class StyleFile {
    * @return {!Common.ResourceType.ResourceType}
    */
   contentType() {
-    return this._headers.firstValue().originalContentProvider().contentType();
+    console.assert(this._headers.size > 0);
+    return this._headers.values().next().value.originalContentProvider().contentType();
   }
 
   /**
@@ -349,7 +363,8 @@ export class StyleFile {
    * @return {!Promise<boolean>}
    */
   contentEncoded() {
-    return this._headers.firstValue().originalContentProvider().contentEncoded();
+    console.assert(this._headers.size > 0);
+    return this._headers.values().next().value.originalContentProvider().contentEncoded();
   }
 
   /**
@@ -357,7 +372,8 @@ export class StyleFile {
    * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   requestContent() {
-    return this._headers.firstValue().originalContentProvider().requestContent();
+    console.assert(this._headers.size > 0);
+    return this._headers.values().next().value.originalContentProvider().requestContent();
   }
 
   /**
@@ -368,10 +384,9 @@ export class StyleFile {
    * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
    */
   searchInContent(query, caseSensitive, isRegex) {
-    return this._headers.firstValue().originalContentProvider().searchInContent(query, caseSensitive, isRegex);
+    console.assert(this._headers.size > 0);
+    return this._headers.values().next().value.originalContentProvider().searchInContent(query, caseSensitive, isRegex);
   }
 }
-
-StyleFile._symbol = Symbol('Bindings.StyleFile._symbol');
 
 StyleFile.updateTimeout = 200;

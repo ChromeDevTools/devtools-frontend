@@ -17,7 +17,7 @@ import * as Workspace from '../workspace/workspace.js';
  * @return {string}
  */
 function escapeSnippetName(name) {
-  return encodeURIComponent(name);
+  return escape(name);
 }
 
 /**
@@ -25,7 +25,7 @@ function escapeSnippetName(name) {
  * @return {string}
  */
 function unescapeSnippetName(name) {
-  return decodeURIComponent(name);
+  return unescape(name);
 }
 
 class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSystem {

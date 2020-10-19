@@ -32,14 +32,9 @@ python2_action("build_inspector_overlay") {
     "$target_gen_dir/main.js",
   ]
 
-  outputs = [
-    "$resources_out_dir/common.css",
-    "$resources_out_dir/main.js",
-  ]
+  outputs = [ "$resources_out_dir/main.js" ]
 
   args = [
-    "common.css",
-    "1200",  # max_size in bytes
     "main.js",
     "110000",  # max_size in bytes
     "--input_path",

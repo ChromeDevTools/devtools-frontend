@@ -2,13 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
 
 /**
- * @implements {Protocol.BackgroundServiceDispatcher}
+ * @implements {ProtocolProxyApi.BackgroundServiceDispatcher}
  * @unrestricted
  */
 export class BackgroundServiceModel extends SDK.SDKModel.SDKModel {
@@ -25,53 +22,59 @@ export class BackgroundServiceModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!Protocol.BackgroundService.ServiceName} serviceName
+   * @param {!Protocol.BackgroundService.ServiceName} service
    */
-  enable(serviceName) {
-    this._events.set(serviceName, []);
-    this._backgroundServiceAgent.startObserving(serviceName);
+  enable(service) {
+    this._events.set(service, []);
+    this._backgroundServiceAgent.invoke_startObserving({service});
   }
 
   /**
    * @param {boolean} shouldRecord
-   * @param {!Protocol.BackgroundService.ServiceName} serviceName
+   * @param {!Protocol.BackgroundService.ServiceName} service
    */
-  setRecording(shouldRecord, serviceName) {
-    this._backgroundServiceAgent.setRecording(shouldRecord, serviceName);
+  setRecording(shouldRecord, service) {
+    this._backgroundServiceAgent.invoke_setRecording({shouldRecord, service});
   }
 
   /**
-   * @param {!Protocol.BackgroundService.ServiceName} serviceName
+   * @param {!Protocol.BackgroundService.ServiceName} service
    */
-  clearEvents(serviceName) {
-    this._events.set(serviceName, []);
-    this._backgroundServiceAgent.clearEvents(serviceName);
+  clearEvents(service) {
+    this._events.set(service, []);
+    this._backgroundServiceAgent.invoke_clearEvents({service});
   }
 
   /**
-   * @param {!Protocol.BackgroundService.ServiceName} serviceName
+   * @param {!Protocol.BackgroundService.ServiceName} service
    * @return {!Array<!Protocol.BackgroundService.BackgroundServiceEvent>}
    */
-  getEvents(serviceName) {
-    return this._events.get(serviceName) || [];
+  getEvents(service) {
+    return this._events.get(service) || [];
   }
 
   /**
    * @override
-   * @param {boolean} isRecording
-   * @param {!Protocol.BackgroundService.ServiceName} serviceName
+   * @param {!Protocol.BackgroundService.RecordingStateChangedEvent} event
    */
-  recordingStateChanged(isRecording, serviceName) {
-    this.dispatchEventToListeners(Events.RecordingStateChanged, {isRecording, serviceName});
+  recordingStateChanged({isRecording, service}) {
+    this.dispatchEventToListeners(Events.RecordingStateChanged, {isRecording, serviceName: service});
   }
 
   /**
    * @override
-   * @param {!Protocol.BackgroundService.BackgroundServiceEvent} backgroundServiceEvent
+   * @param {!Protocol.BackgroundService.BackgroundServiceEventReceivedEvent} event
    */
-  backgroundServiceEventReceived(backgroundServiceEvent) {
+  backgroundServiceEventReceived({backgroundServiceEvent}) {
     this._events.get(backgroundServiceEvent.service).push(backgroundServiceEvent);
     this.dispatchEventToListeners(Events.BackgroundServiceEventReceived, backgroundServiceEvent);
+  }
+
+  /**
+   * @return {!Protocol.UsesObjectNotation}
+   */
+  usesObjectNotation() {
+    return true;
   }
 }
 

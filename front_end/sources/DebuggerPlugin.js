@@ -648,7 +648,9 @@ export class DebuggerPlugin extends Plugin {
    * @param {!KeyboardEvent} event
    */
   async _onKeyDown(event) {
-    this._clearControlDown();
+    if (!event.ctrlKey || (!event.metaKey && Host.Platform.isMac())) {
+      this._clearControlDown();
+    }
 
     if (event.key === 'Escape') {
       if (this._popoverHelper.isPopoverVisible()) {
@@ -850,7 +852,6 @@ export class DebuggerPlugin extends Plugin {
     function renderLocations(locations) {
       this._clearContinueToLocationsNoRestore();
       this._textEditor.hideExecutionLineBackground();
-      this._clearValueWidgets();
       this._continueToLocationDecorations = new Map();
       locations = locations.reverse();
       let previousCallLine = -1;

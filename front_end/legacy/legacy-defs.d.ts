@@ -150,6 +150,7 @@ interface Node {
   hasSameShadowRoot(other: Node): boolean;
   hasSelection(): boolean;
   isAncestor(node: Node|null): boolean;
+  isDescendant(node: Node|null): boolean;
   isSelfOrAncestor(node: Node|null): boolean;
   isSelfOrDescendant(node: Node|null): boolean;
   parentElementOrShadowHost(): Element|null;

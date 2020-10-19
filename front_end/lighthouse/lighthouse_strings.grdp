@@ -87,6 +87,9 @@
   <message name="IDS_DEVTOOLS_8cae4d24054ecacd0dc3abaff429dab9" desc="Label for view trace button when simulated throttling is enabled">
     View Original Trace
   </message>
+  <message name="IDS_DEVTOOLS_084badbad25e33878839805e757d7487" desc="Text in Lighthouse Status View">
+    Lighthouse is loading the page.
+  </message>
   <message name="IDS_DEVTOOLS_c919bc809db2475992927aebf39eeb7d" desc="Tooltip text that appears when hovering over the 'Simulated Throttling' checkbox in the settings pane opened by clicking the setting cog in the start view of the audits panel">
     Simulate a slower page load, based on data from an initial unthrottled load. If disabled, the page is actually slowed with applied throttling.
   </message>

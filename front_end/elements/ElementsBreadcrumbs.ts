@@ -73,8 +73,6 @@ export class ElementsBreadcrumbs extends HTMLElement {
   }
 
   private update() {
-    this.overflowing = false;
-    this.userScrollPosition = 'start';
     this.render();
     this.engageResizeObserver();
     this.ensureSelectedNodeIsVisible();

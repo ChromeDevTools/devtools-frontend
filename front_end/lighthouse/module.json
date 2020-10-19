@@ -10,7 +10,6 @@
       "tags": "lighthouse, pwa"
     }
   ],
-  "pre_generates_legacy": true,
   "dependencies": [
     "components",
     "emulation",

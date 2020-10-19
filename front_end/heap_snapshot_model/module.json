@@ -1,6 +1,5 @@
 {
   "dependencies": [],
-  "pre_generates_legacy": true,
   "modules": [
     "heap_snapshot_model.js",
     "heap_snapshot_model-legacy.js",

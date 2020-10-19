@@ -5,7 +5,6 @@
     "services",
     "workspace"
   ],
-  "pre_generates_legacy": true,
   "modules": [
     "bindings.js",
     "bindings-legacy.js",

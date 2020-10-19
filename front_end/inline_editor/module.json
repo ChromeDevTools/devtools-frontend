@@ -2,7 +2,6 @@
   "dependencies": [
     "ui"
   ],
-  "pre_generates_legacy": true,
   "modules": [
     "inline_editor.js",
     "inline_editor-legacy.js",

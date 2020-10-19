@@ -2,7 +2,6 @@
   "dependencies": [
     "platform"
   ],
-  "pre_generates_legacy": true,
   "modules": [
     "common.js",
     "common-legacy.js",

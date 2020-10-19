@@ -8,7 +8,6 @@
     "HeapSnapshotWorkerDispatcher.js",
     "HeapSnapshotWorker.js"
   ],
-  "pre_generates_legacy": true,
   "dependencies": [
     "heap_snapshot_model",
     "platform",

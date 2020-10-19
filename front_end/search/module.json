@@ -2,7 +2,6 @@
   "dependencies": [
     "components"
   ],
-  "pre_generates_legacy": true,
   "modules": [
     "search.js",
     "search-legacy.js",

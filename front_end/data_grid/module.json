@@ -2,7 +2,6 @@
   "dependencies": [
     "ui"
   ],
-  "pre_generates_legacy": true,
   "resources": [
     "dataGrid.css"
   ],

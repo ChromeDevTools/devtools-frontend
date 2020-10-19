@@ -3,7 +3,6 @@
     "ui",
     "sdk"
   ],
-  "pre_generates_legacy": true,
   "modules": [
     "color_picker.js",
     "color_picker-legacy.js",

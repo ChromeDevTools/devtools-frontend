@@ -8,7 +8,6 @@
       "className": "ObjectUI.ObjectPropertiesSection.Renderer"
     }
   ],
-  "pre_generates_legacy": true,
   "dependencies": [
     "ui",
     "sdk",

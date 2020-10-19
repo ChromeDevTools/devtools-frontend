@@ -1,5 +1,4 @@
 {
-  "pre_generates_legacy": true,
   "modules": [
     "root-legacy.js",
     "root.js",

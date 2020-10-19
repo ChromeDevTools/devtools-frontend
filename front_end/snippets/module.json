@@ -7,7 +7,6 @@
       "className": "Snippets.SnippetsQuickOpen"
     }
   ],
-  "pre_generates_legacy": true,
   "dependencies": [
     "bindings",
     "quick_open",

@@ -93,9 +93,6 @@
     },
     "experiment": {
       "type": "string"
-    },
-    "pre_generates_legacy": {
-      "type": "boolean"
     }
   },
   "definitions": {

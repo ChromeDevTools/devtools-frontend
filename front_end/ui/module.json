@@ -5,7 +5,6 @@
     "common",
     "host"
   ],
-  "pre_generates_legacy": true,
   "modules": [
     "ui-legacy.js",
     "Action.js",

@@ -4,7 +4,6 @@
     "platform",
     "ui"
   ],
-  "pre_generates_legacy": true,
   "modules": [
     "components.js",
     "components-legacy.js",

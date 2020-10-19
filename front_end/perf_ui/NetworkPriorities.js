@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 
 /**
@@ -15,17 +12,18 @@ export function uiLabelForNetworkPriority(priority) {
   return priorityUILabelMap().get(priority) || '';
 }
 
+/** @type {!Map<string, !Protocol.Network.ResourcePriority>} */
+const uiLabelToPriorityMapInstance = new Map();
+
 /**
  * @param {string} priorityLabel
  * @return {string}
  */
 export function uiLabelToNetworkPriority(priorityLabel) {
-  if (!PerfUI._uiLabelToPriorityMapInstance) {
-    /** @type {!Map<string, !Protocol.Network.ResourcePriority>} */
-    PerfUI._uiLabelToPriorityMapInstance = new Map();
-    priorityUILabelMap().forEach((value, key) => PerfUI._uiLabelToPriorityMapInstance.set(value, key));
+  if (uiLabelToPriorityMapInstance.size === 0) {
+    priorityUILabelMap().forEach((value, key) => uiLabelToPriorityMapInstance.set(value, key));
   }
-  return PerfUI._uiLabelToPriorityMapInstance.get(priorityLabel) || '';
+  return uiLabelToPriorityMapInstance.get(priorityLabel) || '';
 }
 
 /** @type {!Map<!Protocol.Network.ResourcePriority, string>} */
@@ -50,20 +48,20 @@ export function priorityUILabelMap() {
   return map;
 }
 
+/** @type {!Map<!Protocol.Network.ResourcePriority, number>} */
+const networkPriorityWeights = new Map();
+
 /**
  * @param {!Protocol.Network.ResourcePriority} priority
  * @return {number}
  */
 export function networkPriorityWeight(priority) {
-  if (!PerfUI._networkPriorityWeights) {
-    /** @type {!Map<!Protocol.Network.ResourcePriority, number>} */
-    const priorityMap = new Map();
-    priorityMap.set(Protocol.Network.ResourcePriority.VeryLow, 1);
-    priorityMap.set(Protocol.Network.ResourcePriority.Low, 2);
-    priorityMap.set(Protocol.Network.ResourcePriority.Medium, 3);
-    priorityMap.set(Protocol.Network.ResourcePriority.High, 4);
-    priorityMap.set(Protocol.Network.ResourcePriority.VeryHigh, 5);
-    PerfUI._networkPriorityWeights = priorityMap;
+  if (networkPriorityWeights.size === 0) {
+    networkPriorityWeights.set(Protocol.Network.ResourcePriority.VeryLow, 1);
+    networkPriorityWeights.set(Protocol.Network.ResourcePriority.Low, 2);
+    networkPriorityWeights.set(Protocol.Network.ResourcePriority.Medium, 3);
+    networkPriorityWeights.set(Protocol.Network.ResourcePriority.High, 4);
+    networkPriorityWeights.set(Protocol.Network.ResourcePriority.VeryHigh, 5);
   }
-  return PerfUI._networkPriorityWeights.get(priority) || 0;
+  return networkPriorityWeights.get(priority) || 0;
 }

@@ -1040,7 +1040,6 @@ grd_files_debug_sources = [
   "front_end/ui/SegmentedButton.js",
   "front_end/ui/SettingsUI.js",
   "front_end/ui/ShortcutRegistry.js",
-  "front_end/ui/ShortcutsScreen.js",
   "front_end/ui/SoftContextMenu.js",
   "front_end/ui/SoftDropDown.js",
   "front_end/ui/SplitWidget.js",

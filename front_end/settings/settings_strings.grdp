@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_0f653ae68147586eb189d7baf37a696a" desc="Text of button in Settings Screen of the Settings">
     Restore defaults and reload
   </message>
+  <message name="IDS_DEVTOOLS_29e9d8e295b1d5b3002d2d3d5baa4c37" desc="Text for keyboard shortcuts">
+    Shortcuts
+  </message>
   <message name="IDS_DEVTOOLS_2cce43a6505a5d1bdf7ea98bf7fd1bc8" desc="Blackbox label in Framework Blackbox Settings Tab of the Settings">
     Blackbox
   </message>
@@ -29,6 +32,9 @@
   </message>
   <message name="IDS_DEVTOOLS_5fc5205a5450ccfb41faeda43663d589" desc="Message shown in the experiments panel to warn users about any possible unstable features.">
     These experiments could be unstable or unreliable and may require you to restart DevTools.
+  </message>
+  <message name="IDS_DEVTOOLS_678b7bbae3b9b67cee8bce1fac3067d7" desc="Text for a hyperlink to the shortcut documentation in Shortcuts page">
+    Full list of <ph name="LOCKED_1">DevTools</ph> keyboard shortcuts and gestures
   </message>
   <message name="IDS_DEVTOOLS_6d507b9a707831f7702af21fa5dec071" desc="Label for a button in the settings pane that confirms changes to a keyboard shortcut">
     Confirm changes

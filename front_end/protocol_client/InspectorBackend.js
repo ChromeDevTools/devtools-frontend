@@ -353,7 +353,7 @@ export class SessionRouter {
       return;
     }
     for (const callback of session.callbacks.values()) {
-      SessionRouter.dispatchConnectionError(callback);
+      SessionRouter.dispatchUnregisterSessionError(callback);
     }
     this._sessions.delete(sessionId);
   }
@@ -560,10 +560,23 @@ export class SessionRouter {
 
   /**
    * @param {!_Callback} callback
+   * @param {string} method
    */
-  static dispatchConnectionError(callback) {
+  static dispatchConnectionError(callback, method) {
     const error = {
-      message: 'Connection is closed, can\'t dispatch pending call',
+      message: `Connection is closed, can\'t dispatch pending call to ${method}`,
+      code: _ConnectionClosedErrorCode,
+      data: null
+    };
+    setTimeout(() => callback(error, null), 0);
+  }
+
+  /**
+   * @param {!_Callback} callback
+   */
+  static dispatchUnregisterSessionError(callback) {
+    const error = {
+      message: 'Session is unregistering, can\'t dispatch pending call',
       code: _ConnectionClosedErrorCode,
       data: null
     };
@@ -1223,7 +1236,7 @@ class _AgentPrototype {
       };
 
       if (!this._target._router) {
-        SessionRouter.dispatchConnectionError(callback);
+        SessionRouter.dispatchConnectionError(callback, method);
       } else {
         this._target._router.sendMessage(this._target._sessionId, this._domain, method, params, callback);
       }
@@ -1266,7 +1279,7 @@ class _AgentPrototype {
       };
 
       if (!this._target._router) {
-        SessionRouter.dispatchConnectionError(callback);
+        SessionRouter.dispatchConnectionError(callback, method);
       } else {
         this._target._router.sendMessage(this._target._sessionId, this._domain, method, request, callback);
       }

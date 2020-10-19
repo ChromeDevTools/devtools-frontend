@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
@@ -34,6 +31,7 @@ export class Node {
     /** @type {string} */
     this._groupId = '';
     this._isGroupNode = false;
+    this._depth = 0;
   }
 
   /**
@@ -47,6 +45,13 @@ export class Node {
    * @return {boolean}
    */
   hasChildren() {
+    throw 'Not implemented';
+  }
+
+  /**
+   * @param {boolean} value
+   */
+  setHasChildren(value) {
     throw 'Not implemented';
   }
 
@@ -99,6 +104,14 @@ export class TopDownNode extends Node {
 
   /**
    * @override
+   * @param {boolean} value
+   */
+  setHasChildren(value) {
+    this._hasChildren = value;
+  }
+
+  /**
+   * @override
    * @return {!ChildrenCache}
    */
   children() {
@@ -111,7 +124,7 @@ export class TopDownNode extends Node {
   _buildChildren() {
     /** @type {!Array<!TopDownNode>} */
     const path = [];
-    for (let node = this; node.parent && !node._isGroupNode; node = node.parent) {
+    for (let node = /** @type {!TopDownNode} */ (this); node.parent && !node._isGroupNode; node = node.parent) {
       path.push(/** @type {!TopDownNode} */ (node));
     }
     path.reverse();
@@ -119,6 +132,10 @@ export class TopDownNode extends Node {
     const children = new Map();
     const self = this;
     const root = this._root;
+    if (!root) {
+      this._children = children;
+      return this._children;
+    }
     const startTime = root._startTime;
     const endTime = root._endTime;
     const instantEventCallback = root._doNotAggregate ? onInstantEvent : undefined;
@@ -126,6 +143,9 @@ export class TopDownNode extends Node {
     const eventGroupIdCallback = root._eventGroupIdCallback;
     let depth = 0;
     let matchedDepth = 0;
+    /**
+     * @type {?Node}
+     */
     let currentDirectChild = null;
     TimelineModelImpl.forEachEvent(
         root._events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime, root._filter);
@@ -141,7 +161,8 @@ export class TopDownNode extends Node {
       if (!matchPath(e)) {
         return;
       }
-      const duration = Math.min(endTime, e.endTime) - Math.max(startTime, e.startTime);
+      const actualEndTime = e.endTime !== undefined ? Math.min(e.endTime, endTime) : endTime;
+      const duration = actualEndTime - Math.max(startTime, e.startTime);
       if (duration < 0) {
         console.error('Negative event duration');
       }
@@ -165,7 +186,10 @@ export class TopDownNode extends Node {
      */
     function processEvent(e, duration) {
       if (depth === path.length + 2) {
-        currentDirectChild._hasChildren = true;
+        if (!currentDirectChild) {
+          return;
+        }
+        currentDirectChild.setHasChildren(true);
         currentDirectChild.selfTime -= duration;
         return;
       }
@@ -250,6 +274,9 @@ export class TopDownRootNode extends TopDownNode {
     super('', null, null);
     this._root = this;
     this._events = events;
+    /**
+     * @param {!SDK.TracingModel.Event} e
+     */
     this._filter = e => filters.every(f => f.accept(e));
     this._startTime = startTime;
     this._endTime = endTime;
@@ -297,7 +324,7 @@ export class BottomUpRootNode extends Node {
   /**
    * @param {!Array<!SDK.TracingModel.Event>} events
    * @param {!TimelineModelFilter} textFilter
-   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
+   * @param {!Array<!TimelineModelFilter>} filters
    * @param {number} startTime
    * @param {number} endTime
    * @param {?function(!SDK.TracingModel.Event):string} eventGroupIdCallback
@@ -308,6 +335,9 @@ export class BottomUpRootNode extends Node {
     this._children = null;
     this._events = events;
     this._textFilter = textFilter;
+    /**
+     * @param {!SDK.TracingModel.Event} e
+     */
     this._filter = e => filters.every(f => f.accept(e));
     this._startTime = startTime;
     this._endTime = endTime;
@@ -368,7 +398,8 @@ export class BottomUpRootNode extends Node {
      * @param {!SDK.TracingModel.Event} e
      */
     function onStartEvent(e) {
-      const duration = Math.min(e.endTime, endTime) - Math.max(e.startTime, startTime);
+      const actualEndTime = e.endTime !== undefined ? Math.min(e.endTime, endTime) : endTime;
+      const duration = actualEndTime - Math.max(e.startTime, startTime);
       selfTimeStack[selfTimeStack.length - 1] -= duration;
       selfTimeStack.push(duration);
       const id = _eventId(e);
@@ -389,17 +420,17 @@ export class BottomUpRootNode extends Node {
         node = new BottomUpNode(root, id, e, false, root);
         nodeById.set(id, node);
       }
-      node.selfTime += selfTimeStack.pop();
+      node.selfTime += selfTimeStack.pop() || 0;
       if (firstNodeStack.pop()) {
-        node.totalTime += totalTimeById.get(id);
+        node.totalTime += totalTimeById.get(id) || 0;
         totalTimeById.delete(id);
       }
       if (firstNodeStack.length) {
-        node.setHasChildren();
+        node.setHasChildren(true);
       }
     }
 
-    this.selfTime = selfTimeStack.pop();
+    this.selfTime = selfTimeStack.pop() || 0;
     for (const pair of nodeById) {
       if (pair[1].selfTime <= 0) {
         nodeById.delete(/** @type {string} */ (pair[0]));
@@ -490,16 +521,20 @@ export class BottomUpNode extends Node {
     this._hasChildren = hasChildren;
   }
 
-  setHasChildren() {
-    this._hasChildren = true;
-  }
-
   /**
    * @override
    * @return {boolean}
    */
   hasChildren() {
     return this._hasChildren;
+  }
+
+  /**
+   * @override
+   * @param {boolean} value
+   */
+  setHasChildren(value) {
+    this._hasChildren = value;
   }
 
   /**
@@ -529,7 +564,8 @@ export class BottomUpNode extends Node {
      * @param {!SDK.TracingModel.Event} e
      */
     function onStartEvent(e) {
-      const duration = Math.min(e.endTime, endTime) - Math.max(e.startTime, startTime);
+      const actualEndTime = e.endTime !== undefined ? Math.min(e.endTime, endTime) : endTime;
+      const duration = actualEndTime - Math.max(e.startTime, startTime);
       if (duration < 0) {
         console.assert(false, 'Negative duration of an event');
       }
@@ -564,10 +600,11 @@ export class BottomUpNode extends Node {
         node = new BottomUpNode(self._root, childId, event, hasChildren, self);
         nodeById.set(childId, node);
       }
-      const totalTime = Math.min(e.endTime, endTime) - Math.max(e.startTime, lastTimeMarker);
-      node.selfTime += selfTime;
+      const actualEndTime = e.endTime !== undefined ? Math.min(e.endTime, endTime) : endTime;
+      const totalTime = actualEndTime - Math.max(e.startTime, lastTimeMarker);
+      node.selfTime += selfTime || 0;
       node.totalTime += totalTime;
-      lastTimeMarker = Math.min(e.endTime, endTime);
+      lastTimeMarker = actualEndTime;
     }
 
     this._cachedChildren = this._root._filterChildren(nodeById);
@@ -604,7 +641,8 @@ export function eventURL(event) {
     if (url) {
       return url;
     }
-    frame = frame.parent;
+    // TODO(crbug.com/1011811): Runtime.CallFrame does not seem to have .parent at all.
+    frame = /** @type {?Protocol.Runtime.CallFrame} */ (/** @type {*} */ (frame).parent);
   }
   return null;
 }
@@ -643,4 +681,5 @@ export function _eventId(event) {
 /**
  * @typedef {Map<string|symbol, !Node>}
  */
+// @ts-ignore typedef
 export let ChildrenCache;

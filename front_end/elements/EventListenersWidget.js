@@ -27,9 +27,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as EventListeners from '../event_listeners/event_listeners.js';
 import * as SDK from '../sdk/sdk.js';
@@ -151,7 +148,8 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget {
    * @param {!Event} event
    */
   _onDispatchFilterTypeChanged(event) {
-    this._dispatchFilterBySetting.set(event.target.value);
+    const filter = /** @type {!HTMLInputElement} */ (event.target);
+    this._dispatchFilterBySetting.set(filter.value);
   }
 
   _showFrameworkListenersChanged() {
@@ -168,7 +166,7 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget {
    */
   _windowObjectInNodeContext(node) {
     const executionContexts = node.domModel().runtimeModel().executionContexts();
-    let context = null;
+    let context = executionContexts[0];
     if (node.frameId()) {
       for (let i = 0; i < executionContexts.length; ++i) {
         const executionContext = executionContexts[i];
@@ -176,9 +174,8 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget {
           context = executionContext;
         }
       }
-    } else {
-      context = executionContexts[0];
     }
+
     return context
         .evaluate(
             {
@@ -187,11 +184,21 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget {
               includeCommandLineAPI: false,
               silent: true,
               returnByValue: false,
-              generatePreview: false
+              generatePreview: false,
+              throwOnSideEffect: undefined,
+              timeout: undefined,
+              disableBreaks: undefined,
+              replMode: undefined,
+              allowUnsafeEvalBlockedByCSP: undefined,
             },
             /* userGesture */ false,
             /* awaitPromise */ false)
-        .then(result => result.object || null);
+        .then(result => {
+          if ('object' in result) {
+            return result.object;
+          }
+          return null;
+        });
   }
 
   _eventListenersArrivedForTest() {

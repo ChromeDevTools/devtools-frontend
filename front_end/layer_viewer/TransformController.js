@@ -17,6 +17,10 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
   constructor(element, disableRotate) {
     super();
     /**
+     * @type {!Object.<number, function(!Event=):(boolean|void)>}
+     */
+    this._shortcuts = {};
+    /**
      * @type {!Modes}
      */
     this._mode;
@@ -33,6 +37,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     this._registerShortcuts();
     UI.UIUtils.installDragHandle(
         element, this._onDragStart.bind(this), this._onDrag.bind(this), this._onDragEnd.bind(this), 'move', null);
+    element.addEventListener('keydown', this._onKeyDown.bind(this), false);
     element.addEventListener('mousewheel', this._onMouseWheel.bind(this), false);
     this._minScale = 0;
     this._maxScale = Infinity;
@@ -69,28 +74,41 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     return this._controlPanelToolbar;
   }
 
+  /**
+   * @param {!Event} event
+   */
+  _onKeyDown(event) {
+    const shortcutKey =
+        UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEventIgnoringModifiers(/** @type {!KeyboardEvent} */ (event));
+    const handler = this._shortcuts[shortcutKey];
+    if (handler && handler(event)) {
+      event.consume();
+    }
+  }
+
+  /**
+   *
+   * @param {!Array<!{key: number}>} keys
+   * @param {function(!Event=):(boolean|void)} handler
+   */
+  _addShortcuts(keys, handler) {
+    for (let i = 0; i < keys.length; ++i) {
+      this._shortcuts[keys[i].key] = handler;
+    }
+  }
+
   _registerShortcuts() {
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.ResetView, this.resetAndNotify.bind(this));
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.PanMode, this._setMode.bind(this, Modes.Pan));
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.RotateMode, this._setMode.bind(this, Modes.Rotate));
     const zoomFactor = 1.1;
-    UI.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(this.element, {
-      'layers.reset-view': async () => {
-        this.resetAndNotify();
-        return true;
-      },
-      'layers.pan-mode': async () => {
-        this._setMode(Modes.Pan);
-        return true;
-      },
-      'layers.rotate-mode': async () => {
-        this._setMode(Modes.Rotate);
-        return true;
-      },
-      'layers.zoom-in': this._onKeyboardZoom.bind(this, zoomFactor),
-      'layers.zoom-out': this._onKeyboardZoom.bind(this, 1 / zoomFactor),
-      'layers.up': this._onKeyboardPanOrRotate.bind(this, 0, -1),
-      'layers.down': this._onKeyboardPanOrRotate.bind(this, 0, 1),
-      'layers.left': this._onKeyboardPanOrRotate.bind(this, -1, 0),
-      'layers.right': this._onKeyboardPanOrRotate.bind(this, 1, 0),
-    });
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.ZoomIn, this._onKeyboardZoom.bind(this, zoomFactor));
+    this._addShortcuts(
+        UI.ShortcutsScreen.LayersPanelShortcuts.ZoomOut, this._onKeyboardZoom.bind(this, 1 / zoomFactor));
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.Up, this._onKeyboardPanOrRotate.bind(this, 0, -1));
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.Down, this._onKeyboardPanOrRotate.bind(this, 0, 1));
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.Left, this._onKeyboardPanOrRotate.bind(this, -1, 0));
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.Right, this._onKeyboardPanOrRotate.bind(this, 1, 0));
   }
 
   _postChangeEvent() {
@@ -226,19 +244,16 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {number} zoomFactor
-   * @return {!Promise.<boolean>}
    */
-  async _onKeyboardZoom(zoomFactor) {
+  _onKeyboardZoom(zoomFactor) {
     this._onScale(zoomFactor, this.element.clientWidth / 2, this.element.clientHeight / 2);
-    return true;
   }
 
   /**
    * @param {number} xMultiplier
    * @param {number} yMultiplier
-   * @return {!Promise.<boolean>}
    */
-  async _onKeyboardPanOrRotate(xMultiplier, yMultiplier) {
+  _onKeyboardPanOrRotate(xMultiplier, yMultiplier) {
     const panStepInPixels = 6;
     const rotateStepInDegrees = 5;
 
@@ -249,7 +264,6 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     } else {
       this._onPan(xMultiplier * panStepInPixels, yMultiplier * panStepInPixels);
     }
-    return true;
   }
 
   /**

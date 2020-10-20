@@ -34,9 +34,6 @@
   <message name="IDS_DEVTOOLS_0eaadb4fcb48a0a0ed7bc9868be9fbaa" desc="Text to indicate an item is a warning">
     Warning
   </message>
-  <message name="IDS_DEVTOOLS_0f8854fb5bc175b0cd33a1e8518b366f" desc="Text in the Shortcuts page to explain a keyboard shortcut (switch to pan in Layers Panel)">
-    Switch to pan mode
-  </message>
   <message name="IDS_DEVTOOLS_105078d294d30c978ca2badf7f376934" desc="The action to scroll">
     Scroll
   </message>
@@ -66,9 +63,6 @@
   </message>
   <message name="IDS_DEVTOOLS_16f78b9465f03f7ec5a03c24918fbde3" desc="Status code of an event">
     Status Code
-  </message>
-  <message name="IDS_DEVTOOLS_17d440bf27df66479f0fb39cb4f4ad09" desc="Text in the Shortcuts page to explain a keyboard shortcut (reset view in Layers Panel)">
-    Reset view
   </message>
   <message name="IDS_DEVTOOLS_193cfc9be3b995831c6af2fea6650e60" desc="Text that refers to one or a group of webpages">
     Page
@@ -111,6 +105,9 @@
   </message>
   <message name="IDS_DEVTOOLS_29e9d8e295b1d5b3002d2d3d5baa4c37" desc="Text for keyboard shortcuts">
     Shortcuts
+  </message>
+  <message name="IDS_DEVTOOLS_2ab5656e27a0ed871c8de44368f807c6" desc="Title of the styles side pane in Elements panel">
+    Styles Pane
   </message>
   <message name="IDS_DEVTOOLS_2ae207ddfe5cd256a768769d93a879e5" desc="Title of the paint profiler, old name of the performance pane">
     Paint Profiler
@@ -250,9 +247,6 @@
   <message name="IDS_DEVTOOLS_52ebc26c2921d5b84fc670dff9891821" desc="Text in the Shortcuts page to explain a keyboard shortcut (zoom out)">
     Zoom out
   </message>
-  <message name="IDS_DEVTOOLS_5372591390f99dcf8e0467c671abbc23" desc="Text in the Shortcuts page to explain a keyboard shortcut (switch to rotate mode in Layers Panel)">
-    Switch to rotate mode
-  </message>
   <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Text for the execution stack trace">
     Stack Trace
   </message>
@@ -340,23 +334,20 @@
   <message name="IDS_DEVTOOLS_72507d307327a430052f9fcd914dfaee" desc="Title of an action that reloads the DevTools">
     Reload DevTools
   </message>
-  <message name="IDS_DEVTOOLS_728618db1e2c850d3f7363ff2768d6b6" desc="Text in the Shortcuts page to explain a keyboard shortcut (increment CSS unit by 10 in Styles pane)">
-    Increment CSS unit by 10
-  </message>
   <message name="IDS_DEVTOOLS_74421a69b1bc40c166be4de5caf0b036" desc="Text of a DOM element in Contrast Details of the Color Picker">
     Contrast ratio
   </message>
   <message name="IDS_DEVTOOLS_74540c79e377bea903e1023a46df5574" desc="Text to open a file">
     Open file
   </message>
-  <message name="IDS_DEVTOOLS_75cfe68daf4ccd62d15e9e0fb5ec1097" desc="Text in the Shortcuts page to explain a keyboard shortcut (increment CSS unit by 1 in Styles pane)">
-    Increment CSS unit by 1
-  </message>
   <message name="IDS_DEVTOOLS_76c3e002d3c052bd6a909366a8dc3845" desc="Text that appears on a button for the manifest resource type filter.">
     Manifest
   </message>
   <message name="IDS_DEVTOOLS_76f8c7ad696be0b330b46afe79ac279d" desc="Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)">
     Start/stop recording
+  </message>
+  <message name="IDS_DEVTOOLS_787ae37366b7a8c53f381abfd315c647" desc="Text that refers to the Elements Panel">
+    Elements Panel
   </message>
   <message name="IDS_DEVTOOLS_7a1920d61156abc05a60135aefe8bc67" desc="A context menu item in the Console View of the Console panel">
     Default
@@ -456,9 +447,6 @@
   </message>
   <message name="IDS_DEVTOOLS_96e9bc575b5d3ed541113a249da8bd24" desc="Text to take screenshots">
     Capture screenshots
-  </message>
-  <message name="IDS_DEVTOOLS_96ec2a08daf01bc10adc6e4ac4c76ceb" desc="Text in the Shortcuts page to explain a keyboard shortcut (decrement CSS unit by 10 in Styles pane)">
-    Decrement CSS unit by 10
   </message>
   <message name="IDS_DEVTOOLS_9841bdc50c4226cb6ec5db76494249e6" desc="Title of the 'Coverage' tool in the bottom drawer">
     Coverage
@@ -606,9 +594,6 @@
   </message>
   <message name="IDS_DEVTOOLS_c3fe109bf99ade2d76a55e5737015e3e" desc="Text to stop preventing the debugger from stepping into library code">
     Stop blackboxing
-  </message>
-  <message name="IDS_DEVTOOLS_c449b64ade0e464abfc5cb5368775233" desc="Text in the Shortcuts page to explain a keyboard shortcut (decrement CSS unit by 1 in Styles pane)">
-    Decrement CSS unit by 1
   </message>
   <message name="IDS_DEVTOOLS_c74ea6dbff701bfa23819583c52ebd97" desc="Text to show less content">
     Show less

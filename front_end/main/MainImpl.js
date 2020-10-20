@@ -251,6 +251,13 @@ export class MainImpl {
     SDK.SDKModel.TargetManager.instance().addEventListener(
         SDK.SDKModel.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
 
+    self.UI.shortcutsScreen = UI.ShortcutsScreen.ShortcutsScreen.instance({forceNew: true});
+    // set order of some sections explicitly
+    UI.ShortcutsScreen.ShortcutsScreen.instance().section(Common.UIString.UIString('Elements Panel'));
+    UI.ShortcutsScreen.ShortcutsScreen.instance().section(Common.UIString.UIString('Styles Pane'));
+    UI.ShortcutsScreen.ShortcutsScreen.instance().section(Common.UIString.UIString('Debugger'));
+    UI.ShortcutsScreen.ShortcutsScreen.instance().section(Common.UIString.UIString('Console'));
+
     self.Workspace.fileManager = Workspace.FileManager.FileManager.instance({forceNew: true});
     self.Workspace.workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
@@ -304,6 +311,7 @@ export class MainImpl {
     self.UI.actionRegistry = actionRegistryInstance;
     self.UI.shortcutRegistry =
         UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+    UI.ShortcutsScreen.ShortcutsScreen.registerShortcuts();
     this._registerMessageSinkListener();
 
     MainImpl.timeEnd('Main._createAppUI');
@@ -368,6 +376,7 @@ export class MainImpl {
 
   _lateInitialization() {
     MainImpl.time('Main._lateInitialization');
+    this._registerShortcuts();
     Extensions.ExtensionServer.ExtensionServer.instance().initializeExtensions();
     const extensions = Root.Runtime.Runtime.instance().extensions('late-initialization');
     const promises = [];
@@ -443,6 +452,56 @@ export class MainImpl {
 
     Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
         Workspace.Workspace.Events.UISourceCodeAdded, listener);
+  }
+
+  _registerShortcuts() {
+    const shortcut = UI.KeyboardShortcut.KeyboardShortcut;
+    const section = UI.ShortcutsScreen.ShortcutsScreen.instance().section(Common.UIString.UIString('All Panels'));
+    let keys = [
+      shortcut.makeDescriptor('[', UI.KeyboardShortcut.Modifiers.CtrlOrMeta),
+      shortcut.makeDescriptor(']', UI.KeyboardShortcut.Modifiers.CtrlOrMeta)
+    ];
+    section.addRelatedKeys(keys, Common.UIString.UIString('Go to the panel to the left/right'));
+
+    const toggleConsoleLabel = Common.UIString.UIString('Show console');
+    section.addKey(
+        shortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Tilde, UI.KeyboardShortcut.Modifiers.Ctrl),
+        toggleConsoleLabel);
+    section.addKey(shortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Esc), Common.UIString.UIString('Toggle drawer'));
+    if (UI.DockController.DockController.instance().canDock()) {
+      section.addKey(
+          shortcut.makeDescriptor('M', UI.KeyboardShortcut.Modifiers.CtrlOrMeta | UI.KeyboardShortcut.Modifiers.Shift),
+          Common.UIString.UIString('Toggle device mode'));
+      section.addKey(
+          shortcut.makeDescriptor('D', UI.KeyboardShortcut.Modifiers.CtrlOrMeta | UI.KeyboardShortcut.Modifiers.Shift),
+          Common.UIString.UIString('Toggle dock side'));
+    }
+    section.addKey(
+        shortcut.makeDescriptor('f', UI.KeyboardShortcut.Modifiers.CtrlOrMeta), Common.UIString.UIString('Search'));
+
+    const advancedSearchShortcutModifier = Host.Platform.isMac() ?
+        UI.KeyboardShortcut.Modifiers.Meta | UI.KeyboardShortcut.Modifiers.Alt :
+        UI.KeyboardShortcut.Modifiers.Ctrl | UI.KeyboardShortcut.Modifiers.Shift;
+    const advancedSearchShortcut = shortcut.makeDescriptor('f', advancedSearchShortcutModifier);
+    section.addKey(advancedSearchShortcut, Common.UIString.UIString('Search across all sources'));
+
+    const inspectElementModeShortcuts =
+        UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutDescriptorsForAction('elements.toggle-element-search');
+    if (inspectElementModeShortcuts.length) {
+      section.addKey(inspectElementModeShortcuts[0], Common.UIString.UIString('Select node to inspect'));
+    }
+
+    const openResourceShortcut =
+        UI.KeyboardShortcut.KeyboardShortcut.makeDescriptor('p', UI.KeyboardShortcut.Modifiers.CtrlOrMeta);
+    section.addKey(openResourceShortcut, Common.UIString.UIString('Go to source'));
+
+    if (Host.Platform.isMac()) {
+      keys = [
+        shortcut.makeDescriptor('g', UI.KeyboardShortcut.Modifiers.Meta),
+        shortcut.makeDescriptor('g', UI.KeyboardShortcut.Modifiers.Meta | UI.KeyboardShortcut.Modifiers.Shift)
+      ];
+      section.addRelatedKeys(keys, Common.UIString.UIString('Find next/previous'));
+    }
   }
 
   _postDocumentKeyDown(event) {

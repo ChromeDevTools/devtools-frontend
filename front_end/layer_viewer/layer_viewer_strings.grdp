@@ -132,9 +132,6 @@
   <message name="IDS_DEVTOOLS_75893b2ef64010fc5951006215729adf" desc="Compositing reason description displayed in the Layer Details View of the Layers panel">
     Layer was separately composited because it could not be squashed.
   </message>
-  <message name="IDS_DEVTOOLS_77fe0dbeed065612ac451047173135e7" desc="Description of a shortcut that pans or rotates the layer viewer down">
-    Pan or rotate down
-  </message>
   <message name="IDS_DEVTOOLS_82505980aa6b0cabf4cb8013a8a43b62" desc="Text in Layer Details View of the Layers panel">
     Non fast scrollable
   </message>
@@ -143,9 +140,6 @@
   </message>
   <message name="IDS_DEVTOOLS_8389d3e2c360ed506d460e7b78d6310c" desc="Compositing reason description displayed in the Layer Details View of the Layers panel">
     Is a position:fixed element with composited descendants.
-  </message>
-  <message name="IDS_DEVTOOLS_84bc213afb34c9df34ea8ba383b90053" desc="Description of a shortcut that pans or rotates the layer viewer left">
-    Pan or rotate left
   </message>
   <message name="IDS_DEVTOOLS_86ee74baff479d85d18f2cda9f8a9518" desc="Text in Paint Profiler View of the Layers panel">
     Bitmap
@@ -243,9 +237,6 @@
   <message name="IDS_DEVTOOLS_e7ee6a7ae0e6f824f5609c7bdac34375" desc="Text in Paint Profiler View of the Layers panel">
     Shapes
   </message>
-  <message name="IDS_DEVTOOLS_eb9342e5d9390d3705ab1a52429be939" desc="Description of a shortcut that pans or rotates the layer viewer up">
-    Pan or rotate up
-  </message>
   <message name="IDS_DEVTOOLS_ed3a481889f16ef0aab2349f5d8b5f12" desc="Containing block rect element text content in Layer Details View of the Layers panel">
     Containing Block <ph name="CONTAININGBLOCKRECT_WIDTH">$1d<ex>10</ex></ph> × <ph name="CONTAININGBLOCKRECT_HEIGHT">$2d<ex>10</ex></ph> (at <ph name="CONTAININGBLOCKRECT_X">$3d<ex>10</ex></ph>, <ph name="CONTAININGBLOCKRECT_Y">$4d<ex>10</ex></ph>)
   </message>
@@ -263,9 +254,6 @@
   </message>
   <message name="IDS_DEVTOOLS_f23f930083952a91508255ad4b3e6001" desc="Compositing reason description displayed in the Layer Details View of the Layers panel">
     Has an active accelerated transform animation or transition.
-  </message>
-  <message name="IDS_DEVTOOLS_f49601019e2e2f09c8c9e417363b719f" desc="Description of a shortcut that pans or rotates the layer viewer right">
-    Pan or rotate right
   </message>
   <message name="IDS_DEVTOOLS_f72888c5d3fb270908f7df94007b5e03" desc="Compositing reason description displayed in the Layer Details View of the Layers panel">
     Is an accelerated iFrame.

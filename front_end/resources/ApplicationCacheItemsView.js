@@ -23,20 +23,21 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
-import {CHECKING, DOWNLOADING, IDLE, OBSOLETE, UNCACHED, UPDATEREADY} from './ApplicationCacheModel.js';
+import {ApplicationCacheModel, CHECKING, DOWNLOADING, IDLE, OBSOLETE, UNCACHED, UPDATEREADY} from './ApplicationCacheModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
 export class ApplicationCacheItemsView extends UI.View.SimpleView {
+  /**
+   * @param {!ApplicationCacheModel} model
+   * @param {!Protocol.Page.FrameId} frameId
+   */
   constructor(model, frameId) {
     super(Common.UIString.UIString('AppCache'));
 
@@ -48,9 +49,11 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
     this._deleteButton.setVisible(false);
     this._deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._deleteButtonClicked, this);
 
-    this._connectivityIcon = createElement('span', 'dt-icon-label');
+    this._connectivityIcon =
+        /** @type {!UI.UIUtils.DevToolsIconLabel} */ (document.createElement('span', {is: 'dt-icon-label'}));
     this._connectivityIcon.style.margin = '0 2px 0 5px';
-    this._statusIcon = createElement('span', 'dt-icon-label');
+    this._statusIcon =
+        /** @type {!UI.UIUtils.DevToolsIconLabel} */ (document.createElement('span', {is: 'dt-icon-label'}));
     this._statusIcon.style.margin = '0 2px 0 5px';
 
     this._frameId = frameId;
@@ -67,7 +70,10 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
 
     // FIXME: Status bar items don't work well enough yet, so they are being hidden.
     // http://webkit.org/b/41637 Web Inspector: Give Semantics to "Refresh" and "Delete" Buttons in ApplicationCache DataGrid
-    this._deleteButton.element.style.display = 'none';
+    (/** @type {!HTMLElement} */ (this._deleteButton.element)).style.display = 'none';
+
+    /** @type {!WeakMap<!DataGrid.DataGrid.DataGridNode<*>, !Protocol.ApplicationCache.ApplicationCacheResource>} */
+    this._nodeResources = new WeakMap();
   }
 
   /**
@@ -115,19 +121,20 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
     const oldStatus = this._status;
     this._status = status;
 
-    const statusInformation = {};
-    // We should never have UNCACHED status, since we remove frames with UNCACHED application cache status from the tree.
-    statusInformation[UNCACHED] = {type: 'smallicon-red-ball', text: 'UNCACHED'};
-    statusInformation[IDLE] = {type: 'smallicon-green-ball', text: 'IDLE'};
-    statusInformation[CHECKING] = {type: 'smallicon-orange-ball', text: 'CHECKING'};
-    statusInformation[DOWNLOADING] = {type: 'smallicon-orange-ball', text: 'DOWNLOADING'};
-    statusInformation[UPDATEREADY] = {type: 'smallicon-green-ball', text: 'UPDATEREADY'};
-    statusInformation[OBSOLETE] = {type: 'smallicon-red-ball', text: 'OBSOLETE'};
-
-    const info = statusInformation[status] || statusInformation[UNCACHED];
-
-    this._statusIcon.type = info.type;
-    this._statusIcon.textContent = info.text;
+    const statusInformation = new Map([
+      // We should never have UNCACHED status, since we remove frames with UNCACHED application cache status from the tree.
+      [UNCACHED, {type: 'smallicon-red-ball', text: 'UNCACHED'}],
+      [IDLE, {type: 'smallicon-green-ball', text: 'IDLE'}],
+      [CHECKING, {type: 'smallicon-orange-ball', text: 'CHECKING'}],
+      [DOWNLOADING, {type: 'smallicon-orange-ball', text: 'DOWNLOADING'}],
+      [UPDATEREADY, {type: 'smallicon-green-ball', text: 'UPDATEREADY'}],
+      [OBSOLETE, {type: 'smallicon-red-ball', text: 'OBSOLETE'}],
+    ]);
+    const info = statusInformation.get(status) || statusInformation.get(UNCACHED);
+    if (info) {
+      this._statusIcon.type = info.type;
+      this._statusIcon.textContent = info.text;
+    }
 
     if (this.isShowing() && this._status === IDLE && (oldStatus === UPDATEREADY || !this._resources)) {
       this._markDirty();
@@ -177,8 +184,10 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
     }
 
     this._populateDataGrid();
-    this._dataGrid.autoSizeColumns(20, 80);
-    this._dataGrid.element.classList.remove('hidden');
+    if (this._dataGrid) {
+      this._dataGrid.autoSizeColumns(20, 80);
+      this._dataGrid.element.classList.remove('hidden');
+    }
     this._emptyWidget.detach();
     this._deleteButton.setVisible(true);
 
@@ -198,21 +207,46 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
       {id: 'type', title: Common.UIString.UIString('Type'), sortable: true},
       {id: 'size', title: Common.UIString.UIString('Size'), align: DataGrid.DataGrid.Align.Right, sortable: true}
     ]);
-    this._dataGrid = new DataGrid.DataGrid.DataGridImpl({displayName: ls`Application Cache`, columns});
+    /** @type {!DataGrid.DataGrid.Parameters} */
+    const parameters = {
+      displayName: ls`Application Cache`,
+      columns,
+      editCallback: undefined,
+      deleteCallback: undefined,
+      refreshCallback: undefined
+    };
+    this._dataGrid = new DataGrid.DataGrid.DataGridImpl(parameters);
     this._dataGrid.setStriped(true);
     this._dataGrid.asWidget().show(this.element);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._populateDataGrid, this);
   }
 
   _populateDataGrid() {
-    const selectedResource = this._dataGrid.selectedNode ? this._dataGrid.selectedNode.resource : null;
+    if (!this._dataGrid) {
+      return;
+    }
+    /** @type {?Protocol.ApplicationCache.ApplicationCacheResource} */
+    const selectedResource =
+        (this._dataGrid.selectedNode ? this._nodeResources.get(this._dataGrid.selectedNode) : null) || null;
     const sortDirection = this._dataGrid.isSortOrderAscending() ? 1 : -1;
 
+    /**
+     * @param {string} field
+     * @param {!Protocol.ApplicationCache.ApplicationCacheResource} resource1
+     * @param {!Protocol.ApplicationCache.ApplicationCacheResource} resource2
+     */
     function numberCompare(field, resource1, resource2) {
-      return sortDirection * (resource1[field] - resource2[field]);
+      return sortDirection * (/** @type {*} */ (resource1)[field] - /** @type {*} */ (resource2)[field]);
     }
+
+    /**
+     * @param {string} field
+     * @param {!Protocol.ApplicationCache.ApplicationCacheResource} resource1
+     * @param {!Protocol.ApplicationCache.ApplicationCacheResource} resource2
+     */
     function localeCompare(field, resource1, resource2) {
-      return sortDirection * (resource1[field] + '').localeCompare(resource2[field] + '');
+      return sortDirection *
+          (/** @type {*} */ (resource1)[field] + '').localeCompare(/** @type {*} */ (resource2)[field] + '');
     }
 
     let comparator;
@@ -230,8 +264,11 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
         localeCompare.bind(null, 'resource');  // FIXME: comparator = ?
     }
 
-    this._resources.sort(comparator);
     this._dataGrid.rootNode().removeChildren();
+    if (!this._resources) {
+      return;
+    }
+    this._resources.sort(comparator);
 
     let nodeToSelect;
     for (let i = 0; i < this._resources.length; ++i) {
@@ -241,7 +278,7 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
       data.type = resource.type;
       data.size = Platform.NumberUtilities.bytesToString(resource.size);
       const node = new DataGrid.DataGrid.DataGridNode(data);
-      node.resource = resource;
+      this._nodeResources.set(node, resource);
       node.selectable = true;
       this._dataGrid.rootNode().appendChild(node);
       if (resource === selectedResource) {
@@ -267,6 +304,9 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
     this._deleteCallback(this._dataGrid.selectedNode);
   }
 
+  /**
+   * @param {!DataGrid.DataGrid.DataGridNode<*>} node
+   */
   _deleteCallback(node) {
     // FIXME: Should we delete a single (selected) resource or all resources?
     // ProtocolClient.inspectorBackend.deleteCachedResource(...)

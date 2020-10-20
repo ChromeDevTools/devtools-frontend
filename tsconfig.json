@@ -15,6 +15,7 @@
     "test/"
   ],
   "exclude": [
-    "front_end/externs.js"
+    "front_end/externs.js",
+    "front_end/**/*-legacy.js"
   ]
 }

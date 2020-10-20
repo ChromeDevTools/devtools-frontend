@@ -49,6 +49,73 @@ import {ConsoleViewport, ConsoleViewportElement, ConsoleViewportProvider} from '
 let consoleViewInstance;
 
 /**
+ * This is a proper `ConsoleViewportElement` for the issue banner which can be inserted into the
+ * `ConsoleViewport`. To make it play nicely, it is fakes being {ConsoleViewMessage} by implementing
+ * `fastHeight` and `toExportString`.
+ * @implements {ConsoleViewportElement}
+ */
+class IssueMessage {
+  constructor() {
+    this._cachedIssueBarHeight = 0;
+    /** @type {?UI.Infobar.Infobar} */
+    this._issueBar = null;
+  }
+
+  /**
+   * @override
+   */
+  willHide() {
+    this._cachedIssueBarHeight = this._issueBar && this._issueBar.element.offsetHeight || 0;
+  }
+
+  /**
+   * @override
+   */
+  wasShown() {
+  }
+
+  /**
+   * @override
+   */
+  element() {
+    if (!this._issueBar) {
+      const issueBarAction = /** @type {!UI.Infobar.InfobarAction} */ ({
+        text: ls`View issues`,
+        highlight: false,
+        delegate: () => {
+          Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.ConsoleInfoBar);
+          UI.ViewManager.ViewManager.instance().showView('issues-pane');
+        },
+        dismiss: false,
+      });
+      this._issueBar = new UI.Infobar.Infobar(
+          UI.Infobar.Type.Issue, ls`Some messages have been moved to the Issues panel.`, [issueBarAction]);
+      this._issueBar.element.tabIndex = -1;
+      this._issueBar.element.classList.add('console-message-wrapper');
+    }
+    return this._issueBar.element;
+  }
+
+  /**
+   * @override
+   */
+  focusLastChildOrSelf() {
+    if (!this._issueBar) {
+      return;
+    }
+    this._issueBar.element.focus();
+  }
+
+  fastHeight() {
+    return this._cachedIssueBarHeight || 37;
+  }
+
+  toExportString() {
+    return ls`Some messages have been moved to the Issues panel.`;
+  }
+}
+
+/**
  * @implements {UI.SearchableView.Searchable}
  * @implements {ConsoleViewportProvider}
  * @unrestricted
@@ -298,6 +365,8 @@ export class ConsoleView extends UI.Widget.VBox {
         SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated, this._executionContextCreated,
         this);
 
+    /** @type {!IssueMessage|undefined} */
+    this._issueMessage = undefined;
     const issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
     issuesManager.addEventListener(
         BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._onIssuesCountChanged.bind(this));
@@ -308,39 +377,13 @@ export class ConsoleView extends UI.Widget.VBox {
 
   _onIssuesCountChanged() {
     if (BrowserSDK.IssuesManager.IssuesManager.instance().numberOfIssues() === 0) {
-      if (this._issueBarDiv) {
-        this._issueBarDiv.element().remove();
-        this._issueBarDiv = null;
+      if (this._issueMessage) {
+        this._issueMessage.element().remove();
+        this._issueMessage = undefined;
         this._scheduleViewportRefresh();
       }
-    } else if (!this._issueBarDiv) {
-      const issueBarAction = /** @type {!UI.Infobar.InfobarAction} */ ({
-        text: ls`View issues`,
-        highlight: false,
-        delegate: () => {
-          Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.ConsoleInfoBar);
-          UI.ViewManager.ViewManager.instance().showView('issues-pane');
-        },
-        dismiss: false,
-      });
-      const issueBar = new UI.Infobar.Infobar(
-          UI.Infobar.Type.Issue, ls`Some messages have been moved to the Issues panel.`, [issueBarAction]);
-      issueBar.element.tabIndex = -1;
-      issueBar.element.classList.add('console-message-wrapper');
-      // This is a fake {ConsoleViewportElement} so the issue banner can be inserted into the {ConsoleViewport}.
-      this._issueBarDiv = {
-        willHide() {
-          this._cachedIssueBarHeight = issueBar.element.offsetHeight;
-        },
-        wasShown() {},
-        element: () => issueBar.element,
-        focusLastChildOrSelf: () => issueBar.element.focus(),
-        fastHeight() {
-          return this._cachedIssueBarHeight || 37;
-        },
-        toExportString: () => ls`Some messages have been moved to the Issues panel.`,
-        _cachedIssueBarHeight: 0
-      };
+    } else if (!this._issueMessage) {
+      this._issueMessage = new IssueMessage();
       this._scheduleViewportRefresh();
     }
   }
@@ -357,9 +400,9 @@ export class ConsoleView extends UI.Widget.VBox {
 
   static clearConsole() {
     const consoleView = ConsoleView.instance();
-    if (consoleView._issueBarDiv) {
-      consoleView._issueBarDiv.element().remove();
-      consoleView._issueBarDiv = null;
+    if (consoleView._issueMessage) {
+      consoleView._issueMessage.element().remove();
+      consoleView._issueMessage = undefined;
       consoleView._scheduleViewportRefresh();
     }
     SDK.ConsoleModel.ConsoleModel.instance().requestClearMessages();
@@ -404,7 +447,7 @@ export class ConsoleView extends UI.Widget.VBox {
    * @return {number}
    */
   itemCount() {
-    if (this._issueBarDiv) {
+    if (this._issueMessage) {
       return this._visibleViewMessages.length + 1;
     }
     return this._visibleViewMessages.length;
@@ -416,10 +459,10 @@ export class ConsoleView extends UI.Widget.VBox {
    * @return {?ConsoleViewportElement}
    */
   itemElement(index) {
-    const issueBar = this._issueBarDiv;
-    if (issueBar) {
+    const issueMessage = this._issueMessage;
+    if (issueMessage) {
       if (index === 0) {
-        return /** @type {!ConsoleViewportElement} */ (issueBar);
+        return issueMessage;
       }
       return this._visibleViewMessages[index - 1];
     }
@@ -432,10 +475,10 @@ export class ConsoleView extends UI.Widget.VBox {
    * @return {number}
    */
   fastHeight(index) {
-    const issueBar = this._issueBarDiv;
-    if (issueBar) {
+    const issueMessage = this._issueMessage;
+    if (issueMessage) {
       if (index === 0) {
-        return issueBar.fastHeight() || 37;
+        return issueMessage.fastHeight() || 37;
       }
       return this._visibleViewMessages[index - 1].fastHeight();
     }
@@ -1332,7 +1375,7 @@ export class ConsoleView extends UI.Widget.VBox {
     const message = this._visibleViewMessages[matchRange.messageIndex];
     const highlightNode = message.searchHighlightNode(matchRange.matchIndex);
     highlightNode.classList.add(UI.UIUtils.highlightedCurrentSearchResultClassName);
-    const notifyOffset = this._issueBarDiv ? 1 : 0;
+    const notifyOffset = this._issueMessage ? 1 : 0;
     this._viewport.scrollItemIntoView(matchRange.messageIndex + notifyOffset);
     highlightNode.scrollIntoViewIfNeeded();
   }

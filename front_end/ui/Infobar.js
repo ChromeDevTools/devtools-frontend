@@ -22,7 +22,7 @@ export class Infobar {
    * @param {!Common.Settings.Setting<*>=} disableSetting
    */
   constructor(type, text, actions, disableSetting) {
-    this.element = document.createElement('div');
+    this.element = /** @type {!HTMLElement} */ (document.createElement('div'));
     this.element.classList.add('flex-none');
     this._shadowRoot = createShadowRootWithCoreStyles(this.element, 'ui/infobar.css');
     /** @type {!HTMLDivElement} */

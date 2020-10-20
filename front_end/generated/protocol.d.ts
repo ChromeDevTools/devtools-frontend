@@ -902,6 +902,7 @@ declare namespace Protocol {
        * Specific directive that is violated, causing the CSP issue.
        */
       violatedDirective: string;
+      isReportOnly: boolean;
       contentSecurityPolicyViolationType: ContentSecurityPolicyViolationType;
       frameAncestor?: AffectedFrame;
       sourceCodeLocation?: SourceCodeLocation;

@@ -1288,6 +1288,10 @@
                             "type": "string"
                         },
                         {
+                            "name": "isReportOnly",
+                            "type": "boolean"
+                        },
+                        {
                             "name": "contentSecurityPolicyViolationType",
                             "$ref": "ContentSecurityPolicyViolationType"
                         },

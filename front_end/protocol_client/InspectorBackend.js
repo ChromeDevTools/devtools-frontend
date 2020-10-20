@@ -305,7 +305,7 @@ export class SessionRouter {
     this._pendingLongPollingMessageIds = new Set();
     this._domainToLogger = new Map();
 
-    /** @type {!Map<string, {target: !TargetBase, callbacks: !Map<number, !_Callback>, proxyConnection: (?Connection|undefined)}>} */
+    /** @type {!Map<string, {target: !TargetBase, callbacks: !Map<number, !_CallbackWithDebugInfo>, proxyConnection: (?Connection|undefined)}>} */
     this._sessions = new Map();
 
     /** @type {!Array<function():void>} */
@@ -423,7 +423,7 @@ export class SessionRouter {
     if (!session) {
       return;
     }
-    session.callbacks.set(messageId, callback);
+    session.callbacks.set(messageId, {callback, method});
     this._connection.sendRawMessage(JSON.stringify(messageObject));
   }
 
@@ -500,7 +500,7 @@ export class SessionRouter {
         return;
       }
 
-      callback(messageObject.error, messageObject.result);
+      callback.callback(messageObject.error, messageObject.result);
       --this._pendingResponsesCount;
       this._pendingLongPollingMessageIds.delete(messageObject.id);
 
@@ -572,11 +572,11 @@ export class SessionRouter {
   }
 
   /**
-   * @param {!_Callback} callback
+   * @param {!_CallbackWithDebugInfo} callbackWithDebugInfo
    */
-  static dispatchUnregisterSessionError(callback) {
+  static dispatchUnregisterSessionError({callback, method}) {
     const error = {
-      message: 'Session is unregistering, can\'t dispatch pending call',
+      message: `Session is unregistering, can\'t dispatch pending call to ${method}`,
       code: _ConnectionClosedErrorCode,
       data: null
     };
@@ -1346,5 +1346,12 @@ class _DispatcherPrototype {
  */
 // @ts-ignore typedef
 export let _Callback;
+
+/**
+ * Takes error and result.
+ * @typedef {!{callback: function(?Object, ?Object):void, method: string}}
+ */
+// @ts-ignore typedef
+export let _CallbackWithDebugInfo;
 
 export const inspectorBackend = new InspectorBackend();

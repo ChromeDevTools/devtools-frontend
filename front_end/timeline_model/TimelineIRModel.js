@@ -2,28 +2,43 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 
 import {RecordType} from './TimelineModel.js';
 
 /**
+ * @type {!WeakMap<!SDK.TracingModel.Event, !Phases>}
+ */
+const eventToPhase = new WeakMap();
+
+/**
  * @unrestricted
  */
 export class TimelineIRModel {
   constructor() {
+    // Attributes below are guaranteed to be set by reset();
+
+    /** @type {!Array<!Common.SegmentedRange.Segment>} */
+    this._segments;
+    /** @type {!Common.SegmentedRange.SegmentedRange} */
+    this._drags;
+    /** @type {!Common.SegmentedRange.SegmentedRange} */
+    this._cssAnimations;
+    /** @type {!Common.SegmentedRange.SegmentedRange} */
+    this._responses;
+    /** @type {!Common.SegmentedRange.SegmentedRange} */
+    this._scrolls;
+
     this.reset();
   }
 
   /**
    * @param {!SDK.TracingModel.Event} event
-   * @return {!Phases}
+   * @return {(!Phases|undefined)}
    */
   static phaseForEvent(event) {
-    return event[TimelineIRModel._eventIRPhase];
+    return eventToPhase.get(event);
   }
 
   /**
@@ -131,7 +146,7 @@ export class TimelineIRModel {
             break;
           }
           touchStart = event;
-          event.steps[0][TimelineIRModel._eventIRPhase] = phases.Response;
+          this._setPhaseForEvent(event, phases.Response);
           firstTouchMove = null;
           break;
 
@@ -191,6 +206,9 @@ export class TimelineIRModel {
      * @return {boolean}
      */
     function canMerge(threshold, first, second) {
+      if (first.endTime === undefined) {
+        return false;
+      }
       return first.endTime < second.startTime && second.startTime < first.endTime + threshold;
     }
   }
@@ -211,7 +229,8 @@ export class TimelineIRModel {
    */
   _segmentForEvent(event, phase) {
     this._setPhaseForEvent(event, phase);
-    return new Common.SegmentedRange.Segment(event.startTime, event.endTime, phase);
+    return new Common.SegmentedRange.Segment(
+        event.startTime, event.endTime !== undefined ? event.endTime : Number.MAX_SAFE_INTEGER, phase);
   }
 
   /**
@@ -223,7 +242,8 @@ export class TimelineIRModel {
   _segmentForEventRange(startEvent, endEvent, phase) {
     this._setPhaseForEvent(startEvent, phase);
     this._setPhaseForEvent(endEvent, phase);
-    return new Common.SegmentedRange.Segment(startEvent.startTime, endEvent.endTime, phase);
+    return new Common.SegmentedRange.Segment(
+        startEvent.startTime, startEvent.endTime !== undefined ? startEvent.endTime : Number.MAX_SAFE_INTEGER, phase);
   }
 
   /**
@@ -231,7 +251,7 @@ export class TimelineIRModel {
    * @param {!Phases} phase
    */
   _setPhaseForEvent(asyncEvent, phase) {
-    asyncEvent.steps[0][TimelineIRModel._eventIRPhase] = phase;
+    eventToPhase.set(asyncEvent.steps[0], phase);
   }
 
   /**

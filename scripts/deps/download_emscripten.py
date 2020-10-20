@@ -28,9 +28,10 @@ DOWNLOAD_URL = "https://storage.googleapis.com/webassembly/emscripten-releases-b
 
 
 def check_stamp_file(options):
-    if not os.path.isfile(options.dest):
+    file_name = os.path.join(options.dest, STAMP_FILE)
+    if not os.path.isfile(file_name):
         return False
-    with open(os.path.join(options.dest, STAMP_FILE)) as f:
+    with open(file_name) as f:
         return options.tag == f.read().strip()
 
 

@@ -8,7 +8,7 @@ import * as puppeteer from 'puppeteer';
 import {$, click, enableExperiment, getBrowserAndPages, goToResource, platform, reloadDevTools, scrollElementIntoView, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToCssOverviewTab} from '../helpers/css-overview-helpers.js';
-import {editCSSProperty, expandSelectedNodeRecursively, focusElementsTree, INACTIVE_GRID_ADORNER_SELECTOR, navigateToSidePane, openLayoutPane, toggleElementCheckboxInLayoutPane, toggleGroupComputedProperties, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
+import {editCSSProperty, expandSelectedNodeRecursively, focusElementsTree, INACTIVE_GRID_ADORNER_SELECTOR, navigateToSidePane, openLayoutPane, toggleElementCheckboxInLayoutPane, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 import {clickToggleButton, selectDualScreen, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
 import {closeSecurityTab, navigateToSecurityTab} from '../helpers/security-helpers.js';
 import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
@@ -44,7 +44,6 @@ declare global {
     __experimentDisabled: (evt: Event) => void;
     __experimentEnabled: (evt: Event) => void;
     __colorFixed: (evt: Event) => void;
-    __computedStyleGrouping: (evt: Event) => void;
     __issuesPanelIssueExpanded: (evt: Event) => void;
     __issuesPanelResourceOpened: (evt: Event) => void;
     __gridOverlayOpenedFrom: (evt: Event) => void;
@@ -116,11 +115,6 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.__caughtEvents.push({name: 'DevTools.ColorPicker.FixedColor', value: customEvt.detail.value});
     };
 
-    window.__computedStyleGrouping = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.ComputedStyleGrouping', value: customEvt.detail.value});
-    };
-
     window.__issuesPanelIssueExpanded = (evt: Event) => {
       const customEvt = evt as CustomEvent;
       window.__caughtEvents.push({name: 'DevTools.IssuesPanelIssueExpanded', value: customEvt.detail.value});
@@ -150,7 +144,6 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.addEventListener('DevTools.ExperimentDisabled', window.__experimentDisabled);
       window.addEventListener('DevTools.ExperimentEnabled', window.__experimentEnabled);
       window.addEventListener('DevTools.ColorPicker.FixedColor', window.__colorFixed);
-      window.addEventListener('DevTools.ComputedStyleGrouping', window.__computedStyleGrouping);
       window.addEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
       window.addEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
       window.addEventListener('DevTools.GridOverlayOpenedFrom', window.__gridOverlayOpenedFrom);
@@ -169,7 +162,6 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.removeEventListener('DevTools.ExperimentDisabled', window.__experimentDisabled);
       window.removeEventListener('DevTools.ExperimentEnabled', window.__experimentEnabled);
       window.removeEventListener('DevTools.ColorPicker.FixedColor', window.__colorFixed);
-      window.removeEventListener('DevTools.ComputedStyleGrouping', window.__computedStyleGrouping);
       window.removeEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
       window.removeEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
       window.removeEventListener('DevTools.GridOverlayOpenedFrom', window.__gridOverlayOpenedFrom);
@@ -594,35 +586,6 @@ describe('User Metrics for sidebar panes', () => {
   it('should not dispatch sidebar panes events for navigating to the same pane', async () => {
     await navigateToSidePane('Styles');
     await assertCapturedEvents([]);
-  });
-});
-
-describe('User Metrics for Computed Styles grouping', () => {
-  beforeEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await beginCatchEvents(frontend);
-  });
-
-  it('dispatch grouping state change when toggling', async () => {
-    await navigateToSidePane('Computed');
-    await toggleGroupComputedProperties();
-    await toggleGroupComputedProperties();
-
-    await assertEventsHaveBeenFired([
-      {
-        name: 'DevTools.ComputedStyleGrouping',
-        value: 0,  // enabled
-      },
-      {
-        name: 'DevTools.ComputedStyleGrouping',
-        value: 1,  // disabled
-      },
-    ]);
-  });
-
-  afterEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await endCatchEvents(frontend);
   });
 });
 

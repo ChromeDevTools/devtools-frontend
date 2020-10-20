@@ -293,16 +293,6 @@ export class UserMetrics {
   }
 
   /**
-   * @param {boolean} isEnabled
-   */
-  computedStyleGrouping(isEnabled) {
-    const size = Object.keys(ComputedStyleGroupingState).length + 1;
-    const code = isEnabled ? ComputedStyleGroupingState.enabled : ComputedStyleGroupingState.disabled;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.ComputedStyleGrouping, code, size);
-    Common.EventTarget.fireEvent(EnumeratedHistogram.ComputedStyleGrouping, {value: code});
-  }
-
-  /**
    * @param {!GridOverlayOpener} gridOverlayOpener
    */
   gridOverlayOpenedFrom(gridOverlayOpener) {
@@ -621,12 +611,6 @@ export const DevtoolsExperiments = {
   'cssGridFeatures': 33,
   'keyboardShortcutEditor': 35,
   '__lastValidEnumPosition': 35,
-};
-
-/** @type {!Object<string, number>} */
-export const ComputedStyleGroupingState = {
-  'enabled': 0,
-  'disabled': 1,
 };
 
 /** @type {!Object<string, number>} */

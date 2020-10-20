@@ -29,7 +29,6 @@
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
-import * as Host from '../host/host.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -172,8 +171,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     this._showInheritedComputedStylePropertiesSetting.addChangeListener(this.update.bind(this));
 
     this._groupComputedStylesSetting = Common.Settings.Settings.instance().createSetting('groupComputedStyles', false);
-    this._groupComputedStylesSetting.addChangeListener(event => {
-      Host.userMetrics.computedStyleGrouping(event.data);
+    this._groupComputedStylesSetting.addChangeListener(() => {
       this.update();
     });
 

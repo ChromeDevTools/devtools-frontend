@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Components from '../components/components.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -63,7 +60,7 @@ export class ObjectPopoverHelper {
    * @return {!Promise<?ObjectPopoverHelper>}
    */
   static async buildObjectPopover(result, popover) {
-    const description = result.description.trimEndWithMaxLength(MaxPopoverTextLength);
+    const description = (result.description || '').trimEndWithMaxLength(MaxPopoverTextLength);
     let popoverContentElement = null;
     if (result.type === 'object') {
       let linkifier = null;
@@ -97,7 +94,7 @@ export class ObjectPopoverHelper {
       return new ObjectPopoverHelper(linkifier, resultHighlightedAsDOM);
     }
 
-    popoverContentElement = createElement('span');
+    popoverContentElement = document.createElement('span');
     popoverContentElement.dataset.stableNameForTest = 'object-popover-content';
     UI.Utils.appendStyle(popoverContentElement, 'object_ui/objectValue.css');
     UI.Utils.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
@@ -129,7 +126,8 @@ export class ObjectPopoverHelper {
 
     const rawLocation = response.location;
     const linkContainer = title.createChild('div', 'function-title-link-container');
-    const sourceURL = rawLocation && rawLocation.script() && rawLocation.script().sourceURL;
+    const script = rawLocation && rawLocation.script();
+    const sourceURL = script && script.sourceURL;
     let linkifier = null;
     if (sourceURL) {
       linkifier = new Components.Linkifier.Linkifier(undefined, undefined, popover.positionContent.bind(popover));

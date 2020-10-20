@@ -99,6 +99,9 @@
   <message name="IDS_DEVTOOLS_1afebac41b13cf486a322ed28cf14d8d" desc="Title for the CSP eval link">
     Learn more: Content Security Policy - Eval
   </message>
+  <message name="IDS_DEVTOOLS_1b6164cca79eeac4716c6b056dae437a" desc="Suggestion for resolution of MixedContentIssue">
+    To resolve this issue load all resources over a secure HTTPS connection.
+  </message>
   <message name="IDS_DEVTOOLS_1ccfb518c1eb59a48fa9b2c578073557" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     redundant
   </message>
@@ -146,6 +149,9 @@
   </message>
   <message name="IDS_DEVTOOLS_2d4f58197f03de72c0472189fd18c162" desc="Title of a setting under the Rendering drawer">
     Emulate vision deficiencies
+  </message>
+  <message name="IDS_DEVTOOLS_301c6a898ab412749bfb0e72381d91d2" desc="Title for the MixedContentIssue issue code">
+    Mixed content: load all resources via HTTPS to improve the security of your site
   </message>
   <message name="IDS_DEVTOOLS_323d4eb70b252acb4a04eaf9e0882597" desc="Title for a group of cities">
     Geolocation
@@ -512,6 +518,9 @@
   </message>
   <message name="IDS_DEVTOOLS_acd03ba2ec36eef79177aa99a71caf5e" desc="Resource limit for Heavy Ads issue description">
     Uses more than 4 megabytes of network bandwidth (Network limit)
+  </message>
+  <message name="IDS_DEVTOOLS_ae40945c5cb26d80b9e396ea9e333ee9" desc="Message for the MixedContentIssue issue code">
+    Even though the initial HTML page is loaded over a secure HTTPS connection, some resources like images, stylesheets or scripts are being accessed over an insecure HTTP connection. Usage of insecure resources is restricted to strengthen the security of your entire site.
   </message>
   <message name="IDS_DEVTOOLS_aec445acc1539341cf9a79c3a336131d" desc="Tooltip to explain why a cookie was blocked">
     This cookie was blocked due to user preferences.

@@ -244,7 +244,6 @@ all_devtools_files = [
   "front_end/issues/descriptions/cspEvalViolation.md",
   "front_end/issues/descriptions/cspInlineViolation.md",
   "front_end/issues/descriptions/cspURLViolation.md",
-  "front_end/issues/descriptions/mixedContent.md",
   "front_end/issues/issuesPane.css",
   "front_end/issues/issuesTree.css",
   "front_end/developer_resources/module.json",

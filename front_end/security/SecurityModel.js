@@ -234,13 +234,6 @@ class SecurityDispatcher {
   }
 
   /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
-  /**
    * @override
    * @param {!Protocol.Security.SecurityStateChangedEvent} event
    */

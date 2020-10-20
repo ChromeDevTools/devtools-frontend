@@ -106,13 +106,6 @@ export class OverlayModel extends SDKModel {
   }
 
   /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
-  /**
    * @param {!RemoteObject} object
    */
   static highlightObjectAsDOMNode(object) {

@@ -69,11 +69,6 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel {
       this._hideCrashedDialog = null;
     }
   }
-
-  /** @return {!Protocol.UsesObjectNotation} */
-  usesObjectNotation() {
-    return true;
-  }
 }
 
 SDK.SDKModel.SDKModel.register(TargetDetachedDialog, SDK.SDKModel.Capability.Inspector, true);

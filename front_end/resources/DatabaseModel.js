@@ -201,11 +201,4 @@ export class DatabaseDispatcher {
   addDatabase({database}) {
     this._model._addDatabase(new Database(this._model, database.id, database.domain, database.name, database.version));
   }
-
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
 }

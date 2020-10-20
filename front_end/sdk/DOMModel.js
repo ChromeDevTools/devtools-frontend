@@ -1840,13 +1840,6 @@ class DOMDispatcher {
   }
 
   /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
-  /**
    * @override
    */
   documentUpdated() {

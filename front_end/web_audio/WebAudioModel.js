@@ -32,13 +32,6 @@ export class WebAudioModel extends SDK.SDKModel.SDKModel {
         this);
   }
 
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
   _flushContexts() {
     this.dispatchEventToListeners(Events.ModelReset);
   }

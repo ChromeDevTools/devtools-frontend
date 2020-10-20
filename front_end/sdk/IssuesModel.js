@@ -31,13 +31,6 @@ export class IssuesModel extends SDKModel {
     this._disposed = false;
   }
 
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
   ensureEnabled() {
     if (this._enabled) {
       return;

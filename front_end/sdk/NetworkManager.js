@@ -311,13 +311,6 @@ export class NetworkDispatcher {
   }
 
   /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
-  /**
    * @param {!Protocol.Network.Headers} headersMap
    * @return {!Array.<!NameValue>}
    */

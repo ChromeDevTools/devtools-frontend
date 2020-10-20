@@ -348,11 +348,4 @@ export class DOMStorageDispatcher {
   domStorageItemUpdated({storageId, key, oldValue, newValue}) {
     this._model._domStorageItemUpdated(storageId, key, oldValue, newValue);
   }
-
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
 }

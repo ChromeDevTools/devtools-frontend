@@ -176,13 +176,6 @@ export class CPUProfilerModel extends SDKModel {
       this._preciseCoverageDeltaUpdateCallback(timestamp, occassion, result);
     }
   }
-
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
 }
 
 /** @enum {symbol} */

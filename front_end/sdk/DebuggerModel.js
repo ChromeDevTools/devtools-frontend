@@ -1209,13 +1209,6 @@ class DebuggerDispatcher {
   }
 
   /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
-  /**
    * @override
    * @param {!Protocol.Debugger.PausedEvent} event
    */

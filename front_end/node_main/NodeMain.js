@@ -52,14 +52,6 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @override
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
-  /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _devicesDiscoveryConfigChanged(event) {

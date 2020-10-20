@@ -23,13 +23,6 @@ export class ScreenCaptureModel extends SDKModel {
   }
 
   /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
-  /**
    * @param {!Protocol.Page.StartScreencastRequestFormat} format
    * @param {number} quality
    * @param {number|undefined} maxWidth

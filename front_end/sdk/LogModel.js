@@ -44,13 +44,6 @@ export class LogModel extends SDKModel {
   requestClear() {
     this._logAgent.invoke_clear();
   }
-
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
 }
 
 /** @enum {symbol} */

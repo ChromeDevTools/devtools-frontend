@@ -645,11 +645,4 @@ class LayerTreeDispatcher {
   layerPainted({layerId, clip}) {
     this._layerTreeModel._layerPainted(layerId, clip);
   }
-
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
 }

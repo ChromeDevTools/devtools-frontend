@@ -34,13 +34,6 @@ export class ServiceWorkerCacheModel extends SDKModel {
     this._enabled = false;
   }
 
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
   enable() {
     if (this._enabled) {
       return;

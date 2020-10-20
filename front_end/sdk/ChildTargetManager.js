@@ -48,13 +48,6 @@ export class ChildTargetManager extends SDKModel {
   }
 
   /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
-  /**
    * @param {function({target: !Target, waitingForDebugger: boolean}):!Promise<?>=} attachCallback
    */
   static install(attachCallback) {

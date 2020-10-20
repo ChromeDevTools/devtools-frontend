@@ -69,13 +69,6 @@ export class BackgroundServiceModel extends SDK.SDKModel.SDKModel {
     this._events.get(backgroundServiceEvent.service).push(backgroundServiceEvent);
     this.dispatchEventToListeners(Events.BackgroundServiceEventReceived, backgroundServiceEvent);
   }
-
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
 }
 
 SDK.SDKModel.SDKModel.register(BackgroundServiceModel, SDK.SDKModel.Capability.Browser, false);

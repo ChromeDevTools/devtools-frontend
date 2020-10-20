@@ -986,13 +986,6 @@ class CSSDispatcher {
   styleSheetRemoved({styleSheetId}) {
     this._cssModel._styleSheetRemoved(styleSheetId);
   }
-
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
 }
 
 

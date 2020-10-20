@@ -224,13 +224,6 @@ export class ApplicationCacheDispatcher {
   }
 
   /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
-  /**
    * @override
    * @param {!Protocol.ApplicationCache.ApplicationCacheStatusUpdatedEvent} event
    */

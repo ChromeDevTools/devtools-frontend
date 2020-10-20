@@ -128,10 +128,6 @@ def generate_protocol_externs(output_path, file1, file2):
         output_file.write("/** @typedef {%s} */\n" % closureName)
         output_file.write("Protocol.%s;\n" % protocolName)
 
-    # Used for enforcing whether a dispatcher uses an object or not
-    output_file.write("/** @typedef {boolean} */\n")
-    output_file.write("Protocol.UsesObjectNotation;\n")
-
     for domain in domains:
         domain_name = domain["domain"]
         if "types" in domain:

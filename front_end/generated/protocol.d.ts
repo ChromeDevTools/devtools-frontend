@@ -14,11 +14,6 @@ declare namespace Protocol {
     /** Returns an error message if the request failed. */
     getError(): string|undefined;
   }
-  export type UsesObjectNotation = true;
-  export interface Dispatcher {
-    /** This dispatcher requires objects as parameters, rather than multiple arguments */
-    usesObjectNotation(): UsesObjectNotation;
-  }
 
   export namespace Accessibility {
 

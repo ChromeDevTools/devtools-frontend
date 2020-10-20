@@ -163,13 +163,6 @@ class TracingDispatcher {
   tracingComplete() {
     this._tracingManager._tracingComplete();
   }
-
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
 }
 
 SDKModel.register(TracingManager, Capability.Tracing, false);

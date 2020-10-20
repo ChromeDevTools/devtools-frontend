@@ -1022,13 +1022,6 @@ export class PageDispatcher {
   }
 
   /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
-  /**
    * @override
    * @param {!Protocol.Page.DomContentEventFiredEvent} event
    */

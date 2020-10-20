@@ -56,13 +56,6 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
-  /**
    * @param {*} idbKey
    * @return {(!Protocol.IndexedDB.Key|undefined)}
    */

@@ -792,13 +792,6 @@ export class AnimationDispatcher {
   animationStarted({animation}) {
     this._animationModel.animationStarted(animation);
   }
-
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
 }
 
 /**

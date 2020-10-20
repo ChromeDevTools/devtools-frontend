@@ -305,11 +305,6 @@ class ServiceWorkerDispatcher {
     this._manager = manager;
   }
 
-  /** @return {!Protocol.UsesObjectNotation} */
-  usesObjectNotation() {
-    return true;
-  }
-
   /**
    * @override
    * @param {!Protocol.ServiceWorker.WorkerRegistrationUpdatedEvent} event

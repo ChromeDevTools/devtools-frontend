@@ -96,13 +96,6 @@ export class MediaModel extends SDK.SDKModel.SDKModel {
   playersCreated({players}) {
     this.dispatchEventToListeners(ProtocolTriggers.PlayersCreated, players);
   }
-
-  /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
 }
 
 SDK.SDKModel.SDKModel.register(MediaModel, SDK.SDKModel.Capability.DOM, false);

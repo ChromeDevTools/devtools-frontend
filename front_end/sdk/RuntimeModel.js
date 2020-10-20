@@ -577,13 +577,6 @@ class RuntimeDispatcher {
   }
 
   /**
-   * @return {!Protocol.UsesObjectNotation}
-   */
-  usesObjectNotation() {
-    return true;
-  }
-
-  /**
    * @override
    * @param {!Protocol.Runtime.ExecutionContextCreatedEvent} context
    */

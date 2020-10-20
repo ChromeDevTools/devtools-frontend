@@ -165,6 +165,7 @@ all_devtools_files = [
   "front_end/javascript_metadata/module.json",
   "front_end/js_main/module.json",
   "front_end/js_profiler/module.json",
+  "front_end/linear_memory_inspector/module.json",
   "front_end/layer_viewer/layerDetailsView.css",
   "front_end/layer_viewer/layers3DView.css",
   "front_end/layer_viewer/module.json",

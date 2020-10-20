@@ -143,6 +143,7 @@ generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/layer_viewer/layer_viewer_module.js",
   "$resources_out_dir/layers/layers_module.js",
   "$resources_out_dir/lighthouse/lighthouse_module.js",
+  "$resources_out_dir/linear_memory_inspector/linear_memory_inspector_module.js",
   "$resources_out_dir/marked/marked_module.js",
   "$resources_out_dir/media/media_module.js",
   "$resources_out_dir/network/network_module.js",

@@ -131,6 +131,18 @@ export function dispatchClickEvent<T extends Element>(element: T, options: Mouse
   }
 }
 
+/**
+ * Listens to an event of an element and returns a Promise that resolves to the
+ * specified event type.
+ */
+export function getEventPromise<T extends Event>(element: HTMLElement, eventName: string): Promise<T> {
+  return new Promise<T>(resolve => {
+    element.addEventListener(eventName, (event: Event) => {
+      resolve(event as T);
+    });
+  });
+}
+
 export async function doubleRaf() {
   await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 }

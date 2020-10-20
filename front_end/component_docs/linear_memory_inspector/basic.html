@@ -1,0 +1,52 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Linear Memory Inspector Example</title>
+    <style>
+      #container {
+        width: 500px;
+        height: 400px;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+    </div>
+    <script type="module">
+      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+      import {LinearMemoryInspector} from '../../linear_memory_inspector/LinearMemoryInspector.js';
+
+      ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent())
+
+      const renderComponent = () => {
+        const array = [];
+        const string = "Hello this is a string from the memory buffer!";
+
+        for (var i = 0; i < string.length; ++i) {
+          array.push(string.charCodeAt(i));
+        }
+
+        for (var i = 0; i < 1000; ++i) {
+          array.push(i);
+        }
+
+        const memory = new Uint8Array(array);
+        const memoryInspector = new LinearMemoryInspector();
+        document.getElementById('container').appendChild(memoryInspector);
+
+        memoryInspector.data = {
+          memory: memory,
+          address: 0
+        };
+      }
+    </script>
+  </body>
+</html>

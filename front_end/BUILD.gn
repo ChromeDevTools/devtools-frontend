@@ -57,6 +57,7 @@ group("front_end") {
     "layers:bundle",
     "lighthouse:bundle",
     "lighthouse_worker:bundle",
+    "linear_memory_inspector:bundle",
     "main:bundle",
     "media:bundle",
     "mobile_throttling:bundle",

@@ -16,6 +16,7 @@ group("front_end") {
     "formatter_worker",
     "inline_editor",
     "issues",
+    "linear_memory_inspector",
     "media",
     "perf_ui",
     "persistence",

@@ -504,6 +504,7 @@ const builtInTypeScriptTypes = new Set([
   'HTMLSelectElement',
   'HTMLOptionElement',
   'HTMLCanvasElement',
+  'Uint8Array',
 ]);
 
 export const walkTree = (startNode: ts.SourceFile, resolvedFilePath: string): WalkerState => {

@@ -8,6 +8,7 @@ group("component_docs") {
     "./elements_breadcrumbs",
     "./icon_component",
     "./layout_pane",
+    "./linear_memory_inspector",
     "./perf_piechart",
   ]
 }

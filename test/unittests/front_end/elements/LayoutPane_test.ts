@@ -4,7 +4,7 @@
 
 import {LayoutPane, SettingChangedEvent} from '../../../../front_end/elements/LayoutPane.js';
 import {SettingType} from '../../../../front_end/elements/LayoutPaneUtils.js';
-import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertElement, assertShadowRoot, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
@@ -98,11 +98,7 @@ describe('LayoutPane', () => {
     const input = component.shadowRoot.querySelector('[data-input]');
     assertElement(input, HTMLInputElement);
 
-    const eventPromise = new Promise<SettingChangedEvent>(resolve => {
-      component.addEventListener('setting-changed', (event: Event) => {
-        resolve(event as SettingChangedEvent);
-      }, false);
-    });
+    const eventPromise = getEventPromise<SettingChangedEvent>(component, 'setting-changed');
 
     input.click();
 

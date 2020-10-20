@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Basic profiling of wasm functions</title>
+  <script>
+    function getTime() {
+      return BigInt(Date.now());
+    }
+
+    (async () => {
+      const importObject = { imports: { getTime } };
+      let instance = await WebAssembly.instantiateStreaming(fetch('profiling.wasm'), importObject);
+      console.log(instance.instance.exports.mainWasm());
+    })().catch(console.error);
+  </script>
+</head>
+<body>
+  <h1></h1>
+  <p>
+    This tests that we can successfully profile a wasm application and view the file, the accumulated time as well as the call tree.
+  </p>
+  <h2>Steps</h2>
+  <p>
+    <ol>
+      <li>Open DevTools</li>
+      <li>Open the Performance Tab</li>
+      <li>Click the record button</li>
+      <li>Reload the page and wait for application to finish (console output appears)</li>
+      <li>Stop the recording</li>
+      <li>Check if the performance tab reflects the correct info:</li>
+      Check "Summary" tab:
+      <ol>
+        <li>Search for "mainWasm" (CMD/CTRL-F)</li>
+        <li>The "Summary" tab shows a non-zero total time for "mainWasm"</li>
+        <li>Clicking on the function link should redirect to the "profiling.wasm" file in the Sources tab</li>
+      </ol>
+      Check "Bottom Up" tab:
+      <ol>
+        <li>Search for "mainWasm" (CMD/CTRL-F)</li>
+        <li>Click on the "Bottom Up" Tab</li>
+        <li>Expand the tree for "mainWasm"; it should show: "mainWasm", "js-to-wasm:.*", "(anonymous)", "Run Microtasks</li>
+      </ol>
+      Check "Call Tree" tab:
+      <ol>
+        <li>Search for "mainWasm" (CMD/CTRL-F)</li>
+        <li>Click on the "Call Tree" tab</li>
+        <li>Expand the tree for "Run Microtasks"; it should show: "Run Microtasks", "(anonymous)", "js-to-wasm:.*", "mainWasm", "getTime"</li>
+        <li>Clear the profile</li>
+      </ol>
+    </ol>
+  </p>
+</body>
+</html>

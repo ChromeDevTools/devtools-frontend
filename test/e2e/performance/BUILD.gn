@@ -5,7 +5,10 @@
 import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("performance") {
-  sources = [ "recording_test.ts" ]
+  sources = [
+    "recording_test.ts",
+    "wasm/performance_profiling_test.ts",
+  ]
 
   deps = [
     "../../shared",

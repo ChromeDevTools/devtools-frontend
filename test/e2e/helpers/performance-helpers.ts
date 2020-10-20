@@ -2,10 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, goToResource, waitFor} from '../../shared/helper.js';
+import * as puppeteer from 'puppeteer';
 
-const RECORD_BUTTON_SELECTOR = '[aria-label="Record"]';
-const STOP_BUTTON_SELECTOR = '[aria-label="Stop"]';
+import {$$, click, goToResource, waitFor} from '../../shared/helper.js';
+
+export const RECORD_BUTTON_SELECTOR = '[aria-label="Record"]';
+export const STOP_BUTTON_SELECTOR = '[aria-label="Stop"]';
+export const SUMMARY_TAB_SELECTOR = '[aria-label="Summary"]';
+export const BOTTOM_UP_SELECTOR = '[aria-label="Bottom-Up"]';
+export const CALL_TREE_SELECTOR = '[aria-label="Call Tree"]';
+export const ACTIVITY_COLUMN_SELECTOR = '.activity-column.disclosure';
+export const TOTAL_TIME_SELECTOR =
+    'div:nth-child(1) > div.vbox.timeline-details-chip-body > div:nth-child(1) > div.timeline-details-view-row-value';
 
 export async function navigateToPerformanceTab(testName?: string) {
   if (testName) {
@@ -17,6 +25,26 @@ export async function navigateToPerformanceTab(testName?: string) {
 
   // Make sure the landing page is shown.
   await waitFor('.timeline-landing-page');
+}
+
+export async function searchForComponent(frontend: puppeteer.Page, searchEntry: string) {
+  await frontend.keyboard.down('Control');
+  await frontend.keyboard.press('KeyF');
+  await frontend.keyboard.up('Control');
+  await frontend.keyboard.type(searchEntry);
+  await frontend.keyboard.press('Enter');
+}
+
+export async function navigateToSummaryTab() {
+  await click(SUMMARY_TAB_SELECTOR);
+}
+
+export async function navigateToBottomUpTab() {
+  await click(BOTTOM_UP_SELECTOR);
+}
+
+export async function navigateToCallTreeTab() {
+  await click(CALL_TREE_SELECTOR);
 }
 
 export async function startRecording() {
@@ -41,6 +69,16 @@ export async function getTotalTimeFromSummary(): Promise<number> {
   return parseInt(totalText, 10);
 }
 
+export async function retrieveSelectedAndExpandedActivityItems(frontend: puppeteer.Page) {
+  const tree_items = await frontend.$$('.expanded > td.activity-column,.selected > td.activity-column');
+  const tree = [];
+  for (const item of tree_items) {
+    tree.push(await frontend.evaluate(el => el.innerText.split('\n')[0], item));
+  }
+
+  return tree;
+}
+
 export async function navigateToPerformanceSidebarTab(tabName: string) {
   await click(`[aria-label="${tabName}"]`);
 }
@@ -49,4 +87,25 @@ export async function waitForSourceLinkAndFollowIt() {
   const link = await waitFor('.devtools-link');
   await click(link);
   await waitFor('.panel[aria-label="sources"]');
+}
+
+export async function clickOnFunctionLink() {
+  const link = await waitFor('.timeline-details.devtools-link');
+  await click(link);
+}
+
+export async function retrieveActivity(frontend: puppeteer.Page, activity_name: string) {
+  const acts = await $$(ACTIVITY_COLUMN_SELECTOR);
+  let act_idx;
+  for (let idx = 0; idx < acts.length; idx++) {
+    const result = await frontend.evaluate(act => act.innerText, acts[idx]);
+    if (result.includes(activity_name)) {
+      act_idx = idx;
+      break;
+    }
+  }
+  if (act_idx) {
+    return acts[act_idx];
+  }
+  return;
 }

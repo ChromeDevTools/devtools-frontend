@@ -324,6 +324,10 @@ ul > li.plain-enum::before {
   color: red;
 }
 
+.affected-resource-report-only-status {
+  color: var(--issue-warning);
+}
+
 .affected-resource-cookie-info {
   color: var(--issue-gray);
   padding: 2px;

@@ -4,7 +4,7 @@
 
 import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
 
-import {Issue, IssueCategory, IssueDescription, IssueKind} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
 
 export class MixedContentIssue extends Issue {
   /**
@@ -52,15 +52,11 @@ export class MixedContentIssue extends Issue {
 
   /**
    * @override
-   * @returns {!IssueDescription}
+   * @returns {!MarkdownIssueDescription}
    */
   getDescription() {
     return {
-      title: ls`Mixed content: load all resources via HTTPS to improve the security of your site`,
-      message: () => paragraphedMessage([
-        ls`Even though the initial HTML page is loaded over a secure HTTPS connection, some resources like images, stylesheets or scripts are being accessed over an insecure HTTP connection. Usage of insecure resources is restricted to strengthen the security of your entire site.`,
-        ls`To resolve this issue load all resources over a secure HTTPS connection.`
-      ]),
+      file: 'issues/descriptions/mixedContent.md',
       issueKind: IssueKind.BreakingChange,
       links: [{
         link: 'https://developers.google.com/web/fundamentals/security/prevent-mixed-content/fixing-mixed-content',
@@ -75,22 +71,6 @@ export class MixedContentIssue extends Issue {
   primaryKey() {
     return JSON.stringify(this._issueDetails);
   }
-}
-
-/**
- * @param {!Array<string>} paragraphs
- * @return {!Element}
- */
-function paragraphedMessage(paragraphs) {
-  const message = document.createElement('div');
-  message.classList.add('message');
-
-  for (const paragraph of paragraphs) {
-    const paragraphElement = document.createElement('p');
-    paragraphElement.textContent = paragraph;
-    message.appendChild(paragraphElement);
-  }
-  return message;
 }
 
 /** @type {!Map<string, string>} */

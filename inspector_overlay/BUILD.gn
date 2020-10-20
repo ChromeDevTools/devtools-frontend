@@ -36,7 +36,7 @@ python2_action("build_inspector_overlay") {
 
   args = [
     "main.js",
-    "110000",  # max_size in bytes
+    "78000",  # max_size in bytes
     "--input_path",
     rebase_path(target_gen_dir, root_build_dir),
     "--output_path",

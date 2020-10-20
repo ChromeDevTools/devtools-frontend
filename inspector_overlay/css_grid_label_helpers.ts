@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {Color, Format} from '../front_end/common/Color.js';
-import {luminance} from '../front_end/common/ColorUtils.js';
-
 import {AreaBounds, Bounds, createChild, Position} from './common.js';  // eslint-disable-line no-unused-vars
 import {applyMatrixToPoint} from './highlight_common.js';
 
@@ -162,11 +159,16 @@ export function drawGridLabels(
     labelContainerForNode = createChild(mainLabelLayerContainer, 'div');
     labelContainerForNode.id = labelContainerId;
 
-    const labelColor = getLabelColors(config);
-    labelContainerForNode.style.setProperty('--row-label-color', labelColor.rowBackground);
-    labelContainerForNode.style.setProperty('--column-label-color', labelColor.columnBackground);
-    labelContainerForNode.style.setProperty('--row-label-text-color', labelColor.rowText);
-    labelContainerForNode.style.setProperty('--column-label-text-color', labelColor.columnText);
+    labelContainerForNode.style.setProperty(
+        '--row-label-color',
+        config.gridHighlightConfig && config.gridHighlightConfig.rowLineColor ?
+            config.gridHighlightConfig.rowLineColor :
+            defaultLabelColor);
+    labelContainerForNode.style.setProperty(
+        '--column-label-color',
+        config.gridHighlightConfig && config.gridHighlightConfig.columnLineColor ?
+            config.gridHighlightConfig.columnLineColor :
+            defaultLabelColor);
   }
 
   labelContainerForNode.innerText = '';
@@ -200,36 +202,6 @@ export function drawGridLabels(
     drawGridTrackSizes(
         trackSizesContainer, config.rowTrackSizes, 'row', canvasSize, writingModeMatrix, config.writingMode);
   }
-}
-
-function getLabelColors(config: GridHighlightConfig) {
-  const rowLineColor = config.gridHighlightConfig && config.gridHighlightConfig.rowLineColor ?
-      config.gridHighlightConfig.rowLineColor :
-      defaultLabelColor;
-  const columnLineColor = config.gridHighlightConfig && config.gridHighlightConfig.columnLineColor ?
-      config.gridHighlightConfig.columnLineColor :
-      defaultLabelColor;
-  // Use semi-transparent white to create a label background color from the line color.
-  const white = (new Color([1, 1, 1], Format.RGB)).setAlpha(.2);
-  const rowBackground = Color.parse(rowLineColor)!.blendWith(white);
-  const columnBackground = Color.parse(columnLineColor)!.blendWith(white);
-
-  // Decide the text color between white and black, by comparing the luminance with the label background color,
-  // using WCAG's color contrast's formula: https://www.w3.org/TR/WCAG20/#contrast-ratiodef
-  const rowL = luminance(rowBackground.rgba());
-  const rowContrastForBlack = (rowL + 0.05) / 0.05;
-  const rowContrastForWhite = 1.05 / (rowL + 0.05);
-
-  const columnL = luminance(columnBackground.rgba());
-  const columnContrastForBlack = (columnL + 0.05) / 0.05;
-  const columnContrastForWhite = 1.05 / (columnL + 0.05);
-
-  return {
-    rowBackground: rowBackground.asString(),
-    columnBackground: columnBackground.asString(),
-    rowText: rowContrastForBlack > rowContrastForWhite ? '#121212' : 'white',
-    columnText: columnContrastForBlack > columnContrastForWhite ? '#121212' : 'white',
-  };
 }
 
 /**

@@ -59,12 +59,12 @@ export const gridStyle = `
 
 .grid-label-content[data-direction=row] {
   background-color: var(--row-label-color, #1A73E8);
-  color: var(--row-label-text-color, #FFFFFF);
+  color: #121212;
 }
 
 .grid-label-content[data-direction=column] {
   background-color: var(--column-label-color, #1A73E8);
-  color: var(--column-label-text-color, #FFFFFF);
+  color: #121212;
 }
 
 .line-names ul,

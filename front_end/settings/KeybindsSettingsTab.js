@@ -314,22 +314,20 @@ export class ShortcutListItem {
 
     this._errorMessageElement = this.element.createChild('div', 'keybinds-info keybinds-error hidden');
     UI.ARIAUtils.markAsAlert(this._errorMessageElement);
-    this._confirmButton = this.element.createChild('button', 'keybinds-confirm-button');
-    this._confirmButton.appendChild(UI.Icon.Icon.create('largeicon-checkmark'));
-    this._confirmButton.addEventListener(
-        'click', () => this._settingsTab.commitChanges(this._item, this._editedShortcuts));
-    UI.ARIAUtils.setAccessibleName(this._confirmButton, ls`Confirm changes`);
-    const cancelButton = this.element.createChild('button', 'keybinds-cancel-button');
-    cancelButton.appendChild(UI.Icon.Icon.create('largeicon-delete'));
-    cancelButton.addEventListener('click', () => this._settingsTab.stopEditing(this._item));
+    this._confirmButton = this._createIconButton(
+        ls`Confirm changes`, 'largeicon-checkmark', 'keybinds-confirm-button',
+        () => this._settingsTab.commitChanges(this._item, this._editedShortcuts));
+    this.element.appendChild(this._confirmButton);
+    const cancelButton = this._createIconButton(
+        ls`Discard changes`, 'largeicon-delete', 'keybinds-cancel-button',
+        () => this._settingsTab.stopEditing(this._item));
+    this.element.appendChild(cancelButton);
     this.element.addEventListener('keydown', event => {
       if (isEscKey(event)) {
         this._settingsTab.stopEditing(this._item);
         event.consume(true);
       }
     });
-    UI.ARIAUtils.setAccessibleName(cancelButton, ls`Discard changes`);
-
 
     self.onInvokeElement(addShortcutLink, () => {
       const shortcut =
@@ -364,19 +362,17 @@ export class ShortcutListItem {
       }
       shortcutInput.value = shortcut.title();
       shortcutInput.addEventListener('keydown', this._onShortcutInputKeyDown.bind(this, shortcut, shortcutInput));
-      const deleteButton = shortcutElement.createChild('button');
-      deleteButton.classList.add('keybinds-delete-button');
-      deleteButton.appendChild(UI.Icon.Icon.create('largeicon-trash-bin'));
-      deleteButton.addEventListener('click', () => {
-        this.element.removeChild(shortcutElement);
-        if (icon) {
-          this.element.removeChild(icon);
-        }
-        this._shortcutInputs.delete(shortcut);
-        this._editedShortcuts.set(shortcut, null);
-        this._validateInputs();
-      });
-      UI.ARIAUtils.setAccessibleName(deleteButton, ls`Remove shortcut`);
+      const deleteButton =
+          this._createIconButton(ls`Remove shortcut`, 'largeicon-trash-bin', 'keybinds-delete-button', () => {
+            this.element.removeChild(shortcutElement);
+            if (icon) {
+              this.element.removeChild(icon);
+            }
+            this._shortcutInputs.delete(shortcut);
+            this._editedShortcuts.set(shortcut, null);
+            this._validateInputs();
+          });
+      shortcutElement.appendChild(deleteButton);
     } else {
       const keys = shortcut.descriptors.flatMap(descriptor => descriptor.name.split(' + '));
       keys.forEach(key => {
@@ -392,12 +388,26 @@ export class ShortcutListItem {
     * @return {!Element}
     */
   _createEditButton() {
-    const editButton = document.createElement('button');
-    editButton.classList.add('keybinds-edit-button');
-    editButton.appendChild(UI.Icon.Icon.create('largeicon-edit'));
-    editButton.addEventListener('click', () => this._settingsTab.startEditing(this._item));
-    UI.ARIAUtils.setAccessibleName(editButton, ls`Edit shortcut`);
-    return editButton;
+    return this._createIconButton(
+        ls`Edit shortcut`, 'largeicon-edit', 'keybinds-edit-button', () => this._settingsTab.startEditing(this._item));
+  }
+
+  /**
+   * @param {string} label
+   * @param {string} iconName
+   * @param {string} className
+   * @param {!Function} listener
+   * @return {!Element}
+   */
+  _createIconButton(label, iconName, className, listener) {
+    const button = document.createElement('button');
+    button.appendChild(UI.Icon.Icon.create(iconName));
+    button.addEventListener('click', listener);
+    UI.ARIAUtils.setAccessibleName(button, label);
+    if (className) {
+      button.classList.add(className);
+    }
+    return button;
   }
 
   /**

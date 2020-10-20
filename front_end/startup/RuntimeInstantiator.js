@@ -28,20 +28,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Make sure that global references to Runtime still exist, which is
-// necessary for entrypoints such as the workers.
-import './root/root-legacy.js';
+import * as RootModule from '../root/root.js';
 
-import * as RootModule from './root/root.js';
-
+// Legacy runtime namespace definitions
+// @ts-ignore
 self.Runtime = self.Runtime || {};
+// @ts-ignore
 Runtime = Runtime || {};
-
-self.Root = self.Root || {};
-Root = Root || {};
-
 // The following two variables are initialized in `build_release_applications`
+// @ts-ignore
 Root.allDescriptors = Root.allDescriptors || [];
+// @ts-ignore
 Root.applicationDescriptor = Root.applicationDescriptor || undefined;
 
 /** @type {Function} */
@@ -81,7 +78,7 @@ export async function startApplication(appName) {
     moduleDescriptors[i].condition = configuration[i]['condition'];
   }
   const runtimeInstance = RootModule.Runtime.Runtime.instance({forceNew: true, moduleDescriptors});
-  // Exposed for legacy layout tests
+  // @ts-ignore Exposed for legacy layout tests
   self.runtime = runtimeInstance;
   if (coreModuleNames) {
     await runtimeInstance.loadAutoStartModules(coreModuleNames);

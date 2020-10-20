@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './RuntimeInstantiator.js';
-import './platform/platform.js';
+import './startup/startup.js';
 import './worker_service/worker_service.js';
 import './lighthouse_worker/lighthouse_worker.js';
 
-import {startWorker} from './RuntimeInstantiator.js';
+import * as Startup from './startup/startup.js';
 
-startWorker('lighthouse_worker');
+Startup.RuntimeInstantiator.startWorker('lighthouse_worker');

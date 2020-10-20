@@ -4,10 +4,7 @@
 
 import("./scripts/build/ninja/vars.gni")
 
-devtools_module_entrypoint_sources = [
-  "RuntimeInstantiator.js",
-  "root.js",
-]
+devtools_module_entrypoint_sources = []
 
 front_end_devtools_module_entrypoint_sources = []
 generated_devtools_module_entrypoint_sources = []
@@ -151,6 +148,7 @@ generated_typescript_entrypoint_sources = [
   "$resources_out_dir/source_frame/source_frame.js",
   "$resources_out_dir/sources/sources-legacy.js",
   "$resources_out_dir/sources/sources.js",
+  "$resources_out_dir/startup/startup.js",
   "$resources_out_dir/test_runner/test_runner.js",
   "$resources_out_dir/text_editor/text_editor-legacy.js",
   "$resources_out_dir/text_editor/text_editor.js",

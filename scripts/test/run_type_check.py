@@ -81,8 +81,10 @@ JS_PROTOCOL_PATH = path.join(ROOT_PATH, 'v8', 'include', 'js_protocol.pdl')
 DEVTOOLS_FRONTEND_PATH = path.join(DEVTOOLS_PATH, 'front_end')
 GLOBAL_EXTERNS_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'externs.js'))
 DEFAULT_PROTOCOL_EXTERNS_FILE = path.join(DEVTOOLS_FRONTEND_PATH, 'protocol_externs.js')
-RUNTIME_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'RuntimeInstantiator.js'))
-ROOT_MODULE_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'root.js'))
+RUNTIME_FILE = to_platform_path(
+    path.join(DEVTOOLS_FRONTEND_PATH, 'startup', 'RuntimeInstantiator.js'))
+ROOT_MODULE_FILE = to_platform_path(
+    path.join(DEVTOOLS_FRONTEND_PATH, 'startup', 'startup.js'))
 
 CLOSURE_COMPILER_JAR = to_platform_path(path.join(SCRIPTS_PATH, 'closure', 'compiler.jar'))
 CLOSURE_RUNNER_JAR = to_platform_path(path.join(SCRIPTS_PATH, 'closure', 'closure_runner', 'closure_runner.jar'))

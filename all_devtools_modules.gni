@@ -513,6 +513,7 @@ all_typescript_module_sources = [
   "sources/ThreadsSidebarPane.js",
   "sources/UISourceCodeFrame.js",
   "sources/WatchExpressionsSidebarPane.js",
+  "startup/RuntimeInstantiator.js",
   "test_runner/TestRunner.js",
   "text_editor/CodeMirrorTextEditor.js",
   "text_editor/CodeMirrorUtils.js",

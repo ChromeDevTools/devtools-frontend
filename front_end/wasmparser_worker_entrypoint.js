@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './RuntimeInstantiator.js';
-import './platform/platform.js';
+import './startup/startup.js';
 import './wasmparser_worker/wasmparser_worker.js';
 
-import {startWorker} from './RuntimeInstantiator.js';
+import * as Startup from './startup/startup.js';
 
-startWorker('wasmparser_worker_entrypoint');
+Startup.RuntimeInstantiator.startWorker('wasmparser_worker_entrypoint');

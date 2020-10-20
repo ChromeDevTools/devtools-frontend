@@ -58,13 +58,6 @@ def main(argv):
         builder = ReleaseBuilder(app, descriptors, input_path, output_path, use_rollup)
         builder.build_app()
 
-    def copy_file(file_name):
-        write_file(join(output_path, file_name), minify_js(read_file(join(input_path, file_name))))
-
-    copy_file('root.js')
-    copy_file('RuntimeInstantiator.js')
-
-
 
 def resource_source_url(url):
     return '\n/*# sourceURL=' + url + ' */'

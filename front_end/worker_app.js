@@ -2,6 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import './shell.js';
-import {startApplication} from './RuntimeInstantiator.js';
+import * as Startup from './startup/startup.js';
 
-startApplication('worker_app');
+Startup.RuntimeInstantiator.startApplication('worker_app');

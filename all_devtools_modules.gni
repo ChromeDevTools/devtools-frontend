@@ -694,6 +694,7 @@ all_typescript_module_sources = [
   "ui/SegmentedButton.js",
   "ui/SettingsUI.js",
   "ui/ShortcutRegistry.js",
+  "ui/ShortcutsScreen.js",
   "ui/SoftContextMenu.js",
   "ui/SoftDropDown.js",
   "ui/SplitWidget.js",

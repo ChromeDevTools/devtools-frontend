@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_00618c7a664449da0ec12190348c685a" desc="Text in the Shortcuts page to explain a keyboard shortcut (for editor)">
+    Switch between files with the same name and different extensions.
+  </message>
   <message name="IDS_DEVTOOLS_0118d8300f0ad71843ef9f47acca779f" desc="Text on a menu option to close other drawers when right click on a drawer title">
     Close others
   </message>
+  <message name="IDS_DEVTOOLS_03342349032c8ef8f5898c49a088de55" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut in the Console Section">
+    Accept suggestion
+  </message>
+  <message name="IDS_DEVTOOLS_0c89face91afb1a048a34349404d11c0" desc="Text in the Shortcuts page to explain a keyboard shortcut (add the selected variable to watch in debugger)">
+    Add selection to watch
+  </message>
   <message name="IDS_DEVTOOLS_0cbca9a34ab68b4be10dd4d09dd61bfd" desc="Text on a button to search previous instance for the ctrl+F search bar">
     Search previous
+  </message>
+  <message name="IDS_DEVTOOLS_0d76841780a2811f3c24a4f8faf129d0" desc="Text in the Shortcuts page to explain a keyboard shortcut (show previous/next performance recording)">
+    Show previous/next recording
   </message>
   <message name="IDS_DEVTOOLS_0ebe6df8a3ac338e0512acc741823fdb" desc="Text on a button to replace one instance with input text for the ctrl+F search bar">
     Replace
@@ -12,8 +24,26 @@
   <message name="IDS_DEVTOOLS_103e6e056329361a5d169154f52771d0" desc="Text in UIUtils">
     <ph name="DESCRIPTION">$1s<ex>Promise</ex></ph> (async)
   </message>
+  <message name="IDS_DEVTOOLS_142329f312b9f9a97f9726342813dec2" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut in the Console Section">
+    Next/previous line
+  </message>
+  <message name="IDS_DEVTOOLS_16d0b9499edfdb8274382a91686ae1ae" desc="Title of a shortcuts category for Performance panel in Shortcut page">
+    Performance Panel
+  </message>
   <message name="IDS_DEVTOOLS_1886cc68b0d9c0a0f4a9436258cf11e1" desc="Days format in UIUtils">
     <ph name="PH1">$1.1f<ex>2.2</ex></ph> days
+  </message>
+  <message name="IDS_DEVTOOLS_1d5f9d3b8b2be8824c18022f024a43a0" desc="Text in the Shortcuts page to explain a keyboard shortcut (decrement value in Styles pane)">
+    Decrement value
+  </message>
+  <message name="IDS_DEVTOOLS_21e2320215eb46d452e7494f3dd1c798" desc="Text in the Shortcuts page to explain a keyboard shortcut (navigation in Styles pane)">
+    Next/previous property
+  </message>
+  <message name="IDS_DEVTOOLS_2ab5656e27a0ed871c8de44368f807c6" desc="Title of the styles side pane in Elements panel">
+    Styles Pane
+  </message>
+  <message name="IDS_DEVTOOLS_2c0924faed417c521b57d553c678ec21" desc="Text in the Shortcuts page to explain a keyboard shortcut (step into a function in debugger)">
+    Step into
   </message>
   <message name="IDS_DEVTOOLS_2d56db467b153fe19f6f059f7f29be97" desc="Hours format in UIUtils">
     <ph name="PH1">$1.1f<ex>2.2</ex></ph> hrs
@@ -27,11 +57,23 @@
   <message name="IDS_DEVTOOLS_3b41735478b3a3fd8bcc06f6c7a6b56c" desc="label to copy link address">
     Copy link address
   </message>
+  <message name="IDS_DEVTOOLS_3b5f1c7ab5345e75ee764983f8091933" desc="Text in the Shortcuts page to explain a keyboard shortcut (Pan or rotate up/down in Layers Panel)">
+    Pan or rotate up/down
+  </message>
+  <message name="IDS_DEVTOOLS_3b9dc6454ee96394b3d853e8d597ebc6" desc="Text in the Shortcuts page to explain a keyboard shortcut (increment value in Styles pane)">
+    Increment value
+  </message>
   <message name="IDS_DEVTOOLS_727b701bcc5f26422461f10c07a58d48" desc="Text for context menu action to move a tab to the main panel">
     Move to top
   </message>
   <message name="IDS_DEVTOOLS_3dc4bfdcf1b17a60979e2872cdd0922a" desc="Text on a button to close the infobar and never show the infobar in the future">
     Don&apos;t show again
+  </message>
+  <message name="IDS_DEVTOOLS_3f0b6654f9648ab6331823837c2b9f73" desc="Text in the Shortcuts page to explain a keyboard shortcut (step over to the next statement in debugger)">
+    Step over
+  </message>
+  <message name="IDS_DEVTOOLS_3f9eccbca028a6949c39933d13f82e56" desc="Text in the Shortcuts page to explain a keyboard shortcut (step out of a function in debugger)">
+    Step out
   </message>
   <message name="IDS_DEVTOOLS_44ac014b674d7d86a04702e6fd1fa858" desc="Text in a dialog box showing how to reconnect to DevTools when remote debugging has been terminated">
     Reconnect when ready by reopening <ph name="LOCKED_1">DevTools</ph>.
@@ -39,11 +81,26 @@
   <message name="IDS_DEVTOOLS_45b471827af8ba9628e1914afbb13980" desc="Minutes format in UIUtils">
     <ph name="PH1">$1.1f<ex>2.2</ex></ph> min
   </message>
+  <message name="IDS_DEVTOOLS_47df0ee8f6dc4f553c907c49e686216c" desc="Title of a shortcuts category for Memory panel in Shortcut page ">
+    Memory Panel
+  </message>
   <message name="IDS_DEVTOOLS_47e0270ab1827aab8faa1c85d89bd48f" desc="Text that appears when hover over the All button in the Network tool">
     <ph name="UI_KEYBOARDSHORTCUT_SHORTCUTTOSTRING_____UI_KEYBOARDSHORTCUT_MODIFIERS_CTRLORMETA_">$1s<ex>Ctrl + </ex></ph>Click to select multiple types
   </message>
   <message name="IDS_DEVTOOLS_48f12760504bf8e958a4bdde56d4fa46" desc="Text to indicate search result for the ctrl+F search bar">
     1 match
+  </message>
+  <message name="IDS_DEVTOOLS_4c4306efb0e40e97e5f8693613b1fcfd" desc="Text in the Shortcuts page to explain a keyboard shortcut (go to matching bracket in text editor)">
+    Go to matching bracket
+  </message>
+  <message name="IDS_DEVTOOLS_4f348d8d1f134f0980102a4a6508cd5e" desc="Text in the Shortcuts page to explain a keyboard shortcut (Pan or rotate left/right in Layers Panel)">
+    Pan or rotate left/right
+  </message>
+  <message name="IDS_DEVTOOLS_4f9afe303d0e8c68e3518756e1734924" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut in the Console Section">
+    Clear console prompt
+  </message>
+  <message name="IDS_DEVTOOLS_50071e5690f1fa19ea303c55302ce167" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut in the Debugger Section">
+    Open breakpoint editor
   </message>
   <message name="IDS_DEVTOOLS_56797cefb1efc9130f7c48a7d1db0f0c" desc="The aria label for main tabbed pane that contains Panels">
     Panels
@@ -51,11 +108,20 @@
   <message name="IDS_DEVTOOLS_5ccb2f9327ce0aba7567b62e9e1d15a5" desc="Text on a menu option to close the drawer to the right when right click on a drawer title">
     Close tabs to the right
   </message>
+  <message name="IDS_DEVTOOLS_5d3d95cb74ad59528ab385023f8a2a39" desc="Text in the Shortcuts page to explain a keyboard shortcut (save performance profile)">
+    Save profile
+  </message>
   <message name="IDS_DEVTOOLS_63e29f78b2e7788d9234a5790897fa71" desc="Text in dialog box when the target page crashed">
     <ph name="LOCKED_1">DevTools</ph> was disconnected from the page.
   </message>
   <message name="IDS_DEVTOOLS_650654cb12c12b00e68b4384e0aede82" desc="Aria alert to read the suggestion for the suggestion box when typing in text editor">
     <ph name="THIS__ONLYCOMPLETION_TEXT">$1s<ex>name</ex></ph>, suggestion
+  </message>
+  <message name="IDS_DEVTOOLS_6e0e121820384f135321cb766273f4da" desc="Text in the Shortcuts page to explain a keyboard shortcut (soft undo in text editor)">
+    Soft undo
+  </message>
+  <message name="IDS_DEVTOOLS_6ed5ccb02cd39be4a7a98739f5696d43" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut in the Performance Section">
+    Record page reload
   </message>
   <message name="IDS_DEVTOOLS_70e8cfcb06bc768ce53af9757940cb67" desc="Micros format in UIUtils">
     <ph name="PH1">$1.0f<ex>2</ex></ph> μs
@@ -63,8 +129,17 @@
   <message name="IDS_DEVTOOLS_7102e4c0bf381bdbaa934e3dccb5b283" desc="Text for the name of anonymous functions">
     (anonymous)
   </message>
+  <message name="IDS_DEVTOOLS_71fc9f874ad2b8e691e9e797eda7d353" desc="Text in the Shortcuts page to explain a keyboard shortcut (expand or collaps elements in Elements Panel) ">
+    Expand/collapse
+  </message>
   <message name="IDS_DEVTOOLS_7423ba80f2fff2568d2c642c6be84ede" desc="Text that appears when hovor over the close button on the drawer view">
     Close drawer
+  </message>
+  <message name="IDS_DEVTOOLS_787ae37366b7a8c53f381abfd315c647" desc="Text that refers to the Elements Panel">
+    Elements Panel
+  </message>
+  <message name="IDS_DEVTOOLS_79fb17b82d0adb283dc78efc0d7f73e8" desc="Text in the Shortcuts page to explain a keyboard shortcut (Temporarily toggle pan/rotate mode while held in Layers Panel)">
+    Temporarily toggle pan/rotate mode while held
   </message>
   <message name="IDS_DEVTOOLS_7cf206a681131cf4d86fc190f2d9ad27" desc="Text on a button to reconnect Devtools when remote debugging terminated">
     Reconnect <ph name="LOCKED_1">DevTools</ph>
@@ -81,6 +156,9 @@
   <message name="IDS_DEVTOOLS_84e1d403df34bad00840ee636021698c" desc="Text in Tabbed Pane">
     Close <ph name="THIS_TITLE">$1s<ex>tab</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_860429066968657205b314b6b4143da7" desc="Title of a shortcuts category for Layers panel in Shortcut page">
+    Layers Panel
+  </message>
   <message name="IDS_DEVTOOLS_86e8f8f8327d28b74e5bd3ab581f77ee" desc="Text that appears when hover over the filter bar in the Network tool">
     e.g. <ph name="LOCKED_1">/small[\d]+/ url:a.com/b</ph>
   </message>
@@ -96,23 +174,59 @@
   <message name="IDS_DEVTOOLS_925f3a6eef3896d617fc0ab413f9c123" desc="Text to indicate search result for the ctrl+F search bar">
     <ph name="MATCHES">$1d<ex>2</ex></ph> matches
   </message>
+  <message name="IDS_DEVTOOLS_92d347b9338f3ffaa227ee482078bbb7" desc="Text in the Shortcuts page to explain a keyboard shortcut (toggle comment in text editor)">
+    Toggle comment
+  </message>
+  <message name="IDS_DEVTOOLS_966f6f045ff62d8c920c755930f4fd7b" desc="Text in the Shortcuts page to explain a keyboard shortcut (toggle edit elements as HTML in Elements Panel)">
+    Toggle edit as HTML
+  </message>
   <message name="IDS_DEVTOOLS_96fb9e0d650af5b1fc4ec6c7bc11b49b" desc="Title of more tabs button in inspector view">
     More Tools
+  </message>
+  <message name="IDS_DEVTOOLS_988aa266ba49ce9da4c7e10f4b477ec4" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut in the Console Section">
+    Next/previous command
+  </message>
+  <message name="IDS_DEVTOOLS_9f52d2760e4266c7904c59fd9d3e7321" desc="Text in the Shortcuts page to explain a keyboard shortcut (pick a performance recording from history)">
+    Pick a recording from history
   </message>
   <message name="IDS_DEVTOOLS_a169aab715858133b50d2e72ece74f14" desc="Accessibility label for checkable SoftContextMenuItems with shortcuts">
     <ph name="ITEM_LABEL">$1s<ex>Open File</ex></ph>, <ph name="ITEM_SHORTCUT">$2s<ex>Ctrl + P</ex></ph>, <ph name="CHECKEDSTATE">$3s<ex>checked</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_a7659dc1b20557ca85c11efc57ace59f" desc="Text in the Shortcuts page to explain a keyboard shortcut (toggle all breakpoints in debugger)">
+    Toggle all breakpoints
+  </message>
   <message name="IDS_DEVTOOLS_a950da8e902568f9a6879abe4313efe7" desc="Text content of content element">
     Once page is reloaded, <ph name="LOCKED_1">DevTools</ph> will automatically reconnect.
   </message>
+  <message name="IDS_DEVTOOLS_b014fff4db17dba07ddb6ea5efafd32e" desc="Text in the Shortcuts page to explain a keyboard shortcut (jump to previous/next in performance profile)">
+    Jump to previous/next frame
+  </message>
+  <message name="IDS_DEVTOOLS_b1402575685f74c0c38dabac64e95cc0" desc="Text in the Shortcuts page to explain a keyboard shortcut (navigate up and down through elements in Elements Panel)">
+    Navigate elements
+  </message>
+  <message name="IDS_DEVTOOLS_b228e7bd736e688236ab3aa37996bf8f" desc="Text in the Shortcuts page to explain a keyboard shortcut (decrement value by a number in Styles pane) in the Shortcuts page">
+    Decrement by <ph name="__">$1f<ex>2.12</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_b6da8d6392710f305d7176a134971514" desc="Text in UIUtils">
     Promise rejected (async)
+  </message>
+  <message name="IDS_DEVTOOLS_b79165bf6163186253ed04568e1aee11" desc="Text in the Shortcuts page to explain a keyboard shortcut (pause or continue the debugger)">
+    Pause/ Continue
   </message>
   <message name="IDS_DEVTOOLS_b79f0c59be8253d3acb4515071312bda" desc="Text on a button to hide sidebar">
     Hide <ph name="THIS__SHOWHIDESIDEBARBUTTONTITLE">$1s<ex>Setting</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_b94d1b250ba62f06dadf0edc4a947f5c" desc="Text in UIUtils">
     Promise resolved (async)
+  </message>
+  <message name="IDS_DEVTOOLS_bb63b17b21e67aa2cc30cf01bae36695" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut">
+    Execute command
+  </message>
+  <message name="IDS_DEVTOOLS_bc39d641a1e16fb73f2ce5520d250ed0" desc="Text in the Shortcuts page to explain a keyboard shortcut (go to a member in text editor)">
+    Go to member
+  </message>
+  <message name="IDS_DEVTOOLS_bd474df0d4b1bb32aac1b31560b962fb" desc="Text in the Shortcuts page to explain a keyboard shortcut (go to the next/previous call frame in debugger)">
+    Next/previous call frame
   </message>
   <message name="IDS_DEVTOOLS_c486d3222f16146af0711d84a14b62fb" desc="Sub millis format in UIUtils">
     <ph name="PH1">$1.2f<ex>2.14</ex></ph> ms
@@ -123,11 +237,26 @@
   <message name="IDS_DEVTOOLS_d916eea6390ddc39ee5fbc5c984e940c" desc="Seconds format in UIUtils">
     <ph name="PH1">$1.2f<ex>2.14</ex></ph> s
   </message>
+  <message name="IDS_DEVTOOLS_d9f57fb1f634a4e047fd69b574434c7f" desc="Text in the Shortcuts page to explain a keyboard shortcut (evaluate the selected expression in console)">
+    Evaluate selection in console
+  </message>
   <message name="IDS_DEVTOOLS_e0aa021e21dddbd6d8cecec71e9cf564" desc="Text on a button for message dialog">
     OK
   </message>
+  <message name="IDS_DEVTOOLS_e0f1691bdb67d9859e5a6a8d7c26e6a1" desc="Title of a shortcuts category for the text editor in Shortcut page">
+    Text Editor
+  </message>
+  <message name="IDS_DEVTOOLS_e118bd20c49240fd8387f3bd901cb4f1" desc="Text in the Shortcuts page to explain a keyboard shortcut (load performance profile)">
+    Load profile
+  </message>
   <message name="IDS_DEVTOOLS_e6290b661dba9591e4c505fb50257d0c" desc="Text on a button to search next instance for the ctrl+F search bar">
     Search next
+  </message>
+  <message name="IDS_DEVTOOLS_e7a555523728cc11719011fa5a7e77ba" desc="Text in the Shortcuts page to explain a keyboard shortcut (select next occurence in text editor)">
+    Select next occurrence
+  </message>
+  <message name="IDS_DEVTOOLS_e81c4e4f2b7b93b481e13a8553c2ae1b" desc="Text in the Shortcuts page descriptions for alternate keys">
+    or
   </message>
   <message name="IDS_DEVTOOLS_e9947a82726be2fb77368eb27c082402" desc="Placeholder text in Soft Drop Down">
     (no item selected)
@@ -135,8 +264,14 @@
   <message name="IDS_DEVTOOLS_ad2ac1967f0165ebf04a84bc1819e0de" desc="Text for context menu action to move a tab to the drawer">
     Move to bottom
   </message>
+  <message name="IDS_DEVTOOLS_f6c46678b34ad4b4c0241c9487a26b59" desc="Text in the Shortcuts page to explain a keyboard shortcut (increment value by a number in Styles pane) ">
+    Increment by <ph name="__">$1f<ex>2.4</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_f8fbc6412a360fc4f854f34a776e2af2" desc="label for the profiler control button">
     Another profiler is already active
+  </message>
+  <message name="IDS_DEVTOOLS_fa66e32280e1ee04b8e8cd36626b65f0" desc="Text in the Shortcuts page to explain a keyboard shortcut (close an editor tab)">
+    Close editor tab
   </message>
   <message name="IDS_DEVTOOLS_fbbbb283efc814825613301c22951ba7" desc="Text on a menu option to close all the drawers except Console when right click on a drawer title">
     Close all

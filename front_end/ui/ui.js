@@ -39,6 +39,7 @@ import * as SearchableView from './SearchableView.js';
 import * as SegmentedButton from './SegmentedButton.js';
 import * as SettingsUI from './SettingsUI.js';
 import * as ShortcutRegistry from './ShortcutRegistry.js';
+import * as ShortcutsScreen from './ShortcutsScreen.js';
 import * as SoftContextMenu from './SoftContextMenu.js';
 import * as SoftDropDown from './SoftDropDown.js';
 import * as SplitWidget from './SplitWidget.js';
@@ -100,6 +101,7 @@ export {
   SegmentedButton,
   SettingsUI,
   ShortcutRegistry,
+  ShortcutsScreen,
   SoftContextMenu,
   SoftDropDown,
   SplitWidget,

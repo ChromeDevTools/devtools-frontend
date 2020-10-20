@@ -129,14 +129,8 @@
   <message name="IDS_DEVTOOLS_4ca94080ccbd5784f5fe296bf1ae3e12" desc="Title of the 'Event Listeners' tool in the sidebar of the elements tool">
     Event Listeners
   </message>
-  <message name="IDS_DEVTOOLS_4cf8e5f6ffbb182b5d480cbabae6a028" desc="Text to modify the attribute of an item">
-    Edit attribute
-  </message>
   <message name="IDS_DEVTOOLS_4d9468d79ef34f71ba78a28688fa5d31" desc="Alternative title text of a setting in Event Listeners Widget of the Elements panel">
     Ancestors
-  </message>
-  <message name="IDS_DEVTOOLS_5134111907df828fc575c69e22480c1e" desc="Text to hide an element">
-    Hide element
   </message>
   <message name="IDS_DEVTOOLS_581b87189d0bd86aa707e42553032a3e" desc="Element text content in Elements Tree Element of the Elements panel">
     Children:

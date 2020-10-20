@@ -174,9 +174,6 @@
   <message name="IDS_DEVTOOLS_4b3812a22a58f04fb5a0598658a3bd27" desc="Title of the Filtered List WidgetProvider of Quick Open">
     Go to symbol
   </message>
-  <message name="IDS_DEVTOOLS_4b50fa6fd1a6a30c9b16f71dd2600574" desc="Text in the Shortcuts page to explain a keyboard shortcut (jump to next editing location in text editor)">
-    Jump to next editing location
-  </message>
   <message name="IDS_DEVTOOLS_4ba67b3e9f4bf3135a50fa54c133fba6" desc="Text in Breakpoint Edit Dialog of the Sources panel">
     Conditional breakpoint
   </message>
@@ -192,9 +189,6 @@
   <message name="IDS_DEVTOOLS_520d0db389f362bf79ef56ca0af3dcab" desc="Tooltip text that appears when hovering over the largeicon pretty print button in the Inplace Formatter Editor Action of the Sources panel">
     Format
   </message>
-  <message name="IDS_DEVTOOLS_52b3bc5e77aa070243c36cd40a4d6b6d" desc="Text for autocompletion">
-    Autocompletion
-  </message>
   <message name="IDS_DEVTOOLS_58943fa26a94bc86f7f45106080e4496" desc="Title of an action under the Debugger category that can be invoked through the Command Menu">
     Resume script execution
   </message>
@@ -203,9 +197,6 @@
   </message>
   <message name="IDS_DEVTOOLS_59fe6bacadef75366d20976814bd7e78" desc="Label of a button in the Sources panel to pretty-print the current file">
     Pretty-print
-  </message>
-  <message name="IDS_DEVTOOLS_5a0a64ecca63ba9a006b6397cbdc2b8c" desc="Text to go to a given line">
-    Go to line
   </message>
   <message name="IDS_DEVTOOLS_5bcc1f50ed61246502d37ce93368dda8" desc="Text in Debugger Paused Message of the Sources panel">
     Paused on XHR or fetch
@@ -282,9 +273,6 @@
   <message name="IDS_DEVTOOLS_7129472c5eb598faf47e4e877f2618fd" desc="Text in Breakpoint Edit Dialog of the Sources panel">
     Breakpoint
   </message>
-  <message name="IDS_DEVTOOLS_728618db1e2c850d3f7363ff2768d6b6" desc="Text in the Shortcuts page to explain a keyboard shortcut (increment CSS unit by 10 in Styles pane)">
-    Increment CSS unit by 10
-  </message>
   <message name="IDS_DEVTOOLS_74313a1b4f28fd0980e0c7677b38373c" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Show all whitespace characters
   </message>
@@ -299,9 +287,6 @@
   </message>
   <message name="IDS_DEVTOOLS_74ff4bad28abee3489bd8ca138b80bb6" desc="Text in Filtered UISource Code List Provider of the Sources panel">
     No files found
-  </message>
-  <message name="IDS_DEVTOOLS_75cfe68daf4ccd62d15e9e0fb5ec1097" desc="Text in the Shortcuts page to explain a keyboard shortcut (increment CSS unit by 1 in Styles pane)">
-    Increment CSS unit by 1
   </message>
   <message name="IDS_DEVTOOLS_77898d40c8a26a07d05eedb991359804" desc="Text in Script Origin Plugin of the Sources panel">
     (source mapped from <ph name="COMPONENTS_LINKIFIER_LINKIFYURL_ORIGINURL_">$1s<ex>example.com</ex></ph>)
@@ -342,9 +327,6 @@
   <message name="IDS_DEVTOOLS_88da81657234efcab8a23679d2e97b8e" desc="Text in the GoToLine dialog of the Sources pane that describes the current line number, file line number range, and use of the GoToLine dialog">
     Current line: <ph name="CURRENTLINENUMBER">$1s<ex>1</ex></ph>. Type a line number between 1 and <ph name="LINESCOUNT">$2s<ex>100</ex></ph> to navigate to.
   </message>
-  <message name="IDS_DEVTOOLS_89345110b204ed302eddff2ddbd0f4d9" desc="Text in the Shortcuts page to explain a keyboard shortcut (enable toggle breakpoint shortcut in debugger)">
-    Toggle breakpoint enabled
-  </message>
   <message name="IDS_DEVTOOLS_904a8304056d77e4547744781b7ceb50" desc="Title of a sources panel action that renames a file">
     Rename
   </message>
@@ -359,9 +341,6 @@
   </message>
   <message name="IDS_DEVTOOLS_965736c9a9576d4fe2e03e9c0df0fcf1" desc="Title of a setting under the Sources category in Settings">
     Disallow scrolling past end of file
-  </message>
-  <message name="IDS_DEVTOOLS_96ec2a08daf01bc10adc6e4ac4c76ceb" desc="Text in the Shortcuts page to explain a keyboard shortcut (decrement CSS unit by 10 in Styles pane)">
-    Decrement CSS unit by 10
   </message>
   <message name="IDS_DEVTOOLS_9757132fffae1fe86f7c3329dc189e8d" desc="Text in Debugger Paused Message of the Sources panel">
     Paused on exception
@@ -453,9 +432,6 @@
   <message name="IDS_DEVTOOLS_b55fd1bae7b054568efa40f60f5b6c43" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Enable CSS source maps
   </message>
-  <message name="IDS_DEVTOOLS_b7ad6a024765bbfbff22dedf9afe0d17" desc="Text in the Shortcuts page to explain a keyboard shortcut (jump to previous editing location in text editor)">
-    Jump to previous editing location
-  </message>
   <message name="IDS_DEVTOOLS_b7e7eecbc4a9a1151ccae2f9c5aa7b14" desc="A drop-down menu option to show trailing whitespace characters">
     Trailing
   </message>
@@ -483,9 +459,6 @@
   <message name="IDS_DEVTOOLS_c42094126c68a61cc5359460681e1d90" desc="Text in Snippets Plugin of the Sources panel">
     ⌘+Enter
   </message>
-  <message name="IDS_DEVTOOLS_c449b64ade0e464abfc5cb5368775233" desc="Text in the Shortcuts page to explain a keyboard shortcut (decrement CSS unit by 1 in Styles pane)">
-    Decrement CSS unit by 1
-  </message>
   <message name="IDS_DEVTOOLS_c5301693c4e792bcd5a479ef38fb8f8d" desc="A context menu item in the Sources Navigator of the Sources panel">
     Run
   </message>
@@ -494,9 +467,6 @@
   </message>
   <message name="IDS_DEVTOOLS_c79e1cbadc868bad54f2eabe113c06f0" desc="Text in Debugger Plugin of the Sources panel">
     Enable breakpoint
-  </message>
-  <message name="IDS_DEVTOOLS_dd92c3884d43902407a4c2f0d8cc0eb1" desc="Text in the Shortcuts page to explain a keyboard shortcut (toggle breakpoint in debugger)">
-    Toggle breakpoint
   </message>
   <message name="IDS_DEVTOOLS_dda50e5f6a9416e8778324ac542b3f3a" desc="Text for link in the Filesystem Side View in Sources Panel">
     Learn more about Workspaces

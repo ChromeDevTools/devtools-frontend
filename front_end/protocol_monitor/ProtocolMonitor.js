@@ -161,7 +161,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
   /**
    * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!DataGrid.ViewportDataGrid.ViewportDataGridNode<!DataGrid.SortableDataGrid.SortableDataGridNode<!ProtocolNode>>} node
+   * @param {!DataGrid.DataGrid.DataGridNode<!DataGrid.ViewportDataGrid.ViewportDataGridNode<!DataGrid.SortableDataGrid.SortableDataGridNode<!ProtocolNode>>>} node
    */
   _innerRowContextMenu(contextMenu, node) {
     contextMenu.defaultSection().appendItem(ls`Filter`, () => {

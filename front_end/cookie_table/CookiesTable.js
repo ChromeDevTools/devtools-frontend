@@ -125,6 +125,7 @@ export class CookiesTable extends UI.Widget.VBox {
     ]);
 
     if (editable) {
+      /** @type {!DataGrid.DataGrid.DataGridImpl<!DataGridNode>} */
       this._dataGrid = new DataGrid.DataGrid.DataGridImpl({
         displayName: ls`Editable Cookies`,
         columns,
@@ -197,7 +198,7 @@ export class CookiesTable extends UI.Widget.VBox {
    * @return {?SDK.Cookie.Cookie}
    */
   selectedCookie() {
-    const node = this._dataGrid.selectedNode;
+    const node = /** @type {?DataGridNode} */ (this._dataGrid.selectedNode);
     return node ? node.cookie : null;
   }
 
@@ -205,9 +206,9 @@ export class CookiesTable extends UI.Widget.VBox {
    * @return {{current: ?SDK.Cookie.Cookie, neighbor: ?SDK.Cookie.Cookie}}
    */
   _getSelectionCookies() {
-    const node = this._dataGrid.selectedNode;
-    const nextNeighbor = node && node.traverseNextNode(true);
-    const previousNeighbor = node && node.traversePreviousNode(true);
+    const node = /** @type {?DataGridNode} */ (this._dataGrid.selectedNode);
+    const nextNeighbor = node && /** @type {?DataGridNode} */ (node.traverseNextNode(true));
+    const previousNeighbor = node && /** @type {?DataGridNode} */ (node.traversePreviousNode(true));
 
     return {
       current: node && node.cookie,
@@ -278,7 +279,8 @@ export class CookiesTable extends UI.Widget.VBox {
         groupData[SDK.Cookie.Attributes.SameSite] = '';
         groupData[SDK.Cookie.Attributes.Priority] = '';
 
-        const groupNode = /** @type {!DataGridNode} */ (new DataGrid.DataGrid.DataGridNode(groupData));
+        const groupNode = /** @type {!DataGrid.DataGrid.DataGridNode<!DataGridNode>} */ (
+            new DataGrid.DataGrid.DataGridNode(groupData));
         groupNode.selectable = true;
         this._dataGrid.rootNode().appendChild(groupNode);
         groupNode.element().classList.add('row-group');
@@ -297,7 +299,7 @@ export class CookiesTable extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!DataGridNode} parentNode
+   * @param {!DataGrid.DataGrid.DataGridNode<!DataGridNode>} parentNode
    * @param {?Array.<!SDK.Cookie.Cookie>} cookies
    * @param {?SDK.Cookie.Cookie} selectedCookie
    * @param {?string} lastEditedColumnId
@@ -323,7 +325,7 @@ export class CookiesTable extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!DataGridNode} parentNode
+   * @param {!DataGrid.DataGrid.DataGridNode<!DataGridNode>} parentNode
    * @param {!SDK.Cookie.Cookie} cookie
    * @param {?string} editedColumnId
    */
@@ -631,10 +633,10 @@ export class CookiesTable extends UI.Widget.VBox {
 
   /**
    * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!DataGridNode} gridNode
+   * @param {!DataGrid.DataGrid.DataGridNode<!DataGridNode>} gridNode
    */
   _populateContextMenu(contextMenu, gridNode) {
-    const maybeCookie = /** @type {?SDK.Cookie.Cookie} */ (gridNode.cookie);
+    const maybeCookie = /** @type {!DataGridNode} */ (gridNode).cookie;
     if (!maybeCookie) {
       return;
     }

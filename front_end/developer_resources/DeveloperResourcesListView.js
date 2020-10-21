@@ -62,7 +62,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
 
   /**
    * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!DataGrid.ViewportDataGrid.ViewportDataGridNode<!DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>>} gridNode
+   * @param {!DataGrid.DataGrid.DataGridNode<!DataGrid.ViewportDataGrid.ViewportDataGridNode<!DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>>>} gridNode
    */
   _populateContextMenu(contextMenu, gridNode) {
     const item = (/** @type {!GridNode} */ (gridNode)).item;

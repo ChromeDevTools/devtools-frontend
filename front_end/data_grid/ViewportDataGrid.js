@@ -39,6 +39,14 @@ export class ViewportDataGrid extends DataGridImpl {
   }
 
   /**
+   * @return {!ViewportDataGridNode<!NODE_TYPE>}
+   * @override
+   */
+  rootNode() {
+    return /** @type {!ViewportDataGridNode<!NODE_TYPE>} */ (super.rootNode());
+  }
+
+  /**
    * @param {boolean} striped
    * @override
    */
@@ -357,8 +365,7 @@ export class ViewportDataGridNode extends DataGridNode {
     }
     /** @type {!Array<!ViewportDataGridNode<!NODE_TYPE>>} */
     const flatNodes = [];
-    /** @type {!Array<!Array<!ViewportDataGridNode<!NODE_TYPE>>>} */
-    const children = [this.children];
+    const children = /** @type {!Array<!Array<!ViewportDataGridNode<!NODE_TYPE>>>} */ ([this.children]);
     /** @type {!Array<number>} */
     const counters = [0];
     let depth = 0;
@@ -371,7 +378,7 @@ export class ViewportDataGridNode extends DataGridNode {
       flatNodes.push(node);
       if (node.expanded && node.children.length) {
         depth++;
-        children[depth] = node.children;
+        children[depth] = /** @type {!Array<!ViewportDataGridNode<!NODE_TYPE>>} */ (node.children);
         counters[depth] = 0;
       }
     }
@@ -382,7 +389,7 @@ export class ViewportDataGridNode extends DataGridNode {
 
   /**
    * @override
-   * @param {!ViewportDataGridNode<!NODE_TYPE>} child
+   * @param {!DataGridNode<!ViewportDataGridNode<!NODE_TYPE>>} child
    * @param {number} index
    */
   insertChild(child, index) {
@@ -414,7 +421,7 @@ export class ViewportDataGridNode extends DataGridNode {
 
   /**
    * @override
-   * @param {!ViewportDataGridNode<!NODE_TYPE>} child
+   * @param {!DataGridNode<!ViewportDataGridNode<!NODE_TYPE>>} child
    */
   removeChild(child) {
     this.clearFlatNodes();
@@ -432,7 +439,7 @@ export class ViewportDataGridNode extends DataGridNode {
     }
 
     Platform.ArrayUtilities.removeElement(this.children, child, true);
-    child._unlink();
+    (/** @type {!ViewportDataGridNode<!NODE_TYPE>} */ (child))._unlink();
 
     if (!this.children.length) {
       this.setHasChildren(false);
@@ -451,7 +458,7 @@ export class ViewportDataGridNode extends DataGridNode {
       this.dataGrid.updateSelectionBeforeRemoval(this, true);
     }
     for (let i = 0; i < this.children.length; ++i) {
-      this.children[i]._unlink();
+      /** @type {!ViewportDataGridNode<!NODE_TYPE>} */ (this.children[i])._unlink();
     }
 
     this.children = /** @type {!Array<!ViewportDataGridNode<!NODE_TYPE>>} */ ([]);

@@ -125,11 +125,11 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 
     /** @type {boolean} */
     this._editing = false;
-    /** @type {?NODE_TYPE} */
+    /** @type {?DataGridNode<!NODE_TYPE>} */
     this.selectedNode = null;
     /** @type {boolean} */
     this.expandNodesWhenArrowing = false;
-    this.setRootNode(/** @type {!NODE_TYPE} */ (new DataGridNode()));
+    this.setRootNode(/** @type {!DataGridNode<!NODE_TYPE>} */ (new DataGridNode()));
 
     this.setHasSelection(false);
 
@@ -146,12 +146,12 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 
     /** @type {?function(!UI.ContextMenu.SubMenu)} */
     this._headerContextMenuCallback = null;
-    /** @type {?function(!UI.ContextMenu.ContextMenu, !NODE_TYPE)} */
+    /** @type {?function(!UI.ContextMenu.ContextMenu, !DataGridNode<!NODE_TYPE>)} */
     this._rowContextMenuCallback = null;
   }
 
   /**
-   * @return {!NODE_TYPE}
+   * @return {?DataGridNode<!NODE_TYPE>|undefined}
    */
   _firstSelectableNode() {
     let firstSelectableNode = this._rootNode;
@@ -162,7 +162,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {!NODE_TYPE}
+   * @return {!DataGridNode<!NODE_TYPE>}
    */
   _lastSelectableNode() {
     let lastSelectableNode = this._rootNode;
@@ -419,7 +419,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!NODE_TYPE} rootNode
+   * @param {!DataGridNode<!NODE_TYPE>} rootNode
    * @protected
    */
   setRootNode(rootNode) {
@@ -428,7 +428,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
       this._rootNode.dataGrid = null;
       this._rootNode._isRoot = false;
     }
-    /** @type {!NODE_TYPE} */
+    /** @type {!DataGridNode<!NODE_TYPE>} */
     this._rootNode = rootNode;
     rootNode._isRoot = true;
     rootNode.setHasChildren(false);
@@ -439,7 +439,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {!NODE_TYPE}
+   * @return {!DataGridNode<!NODE_TYPE>}
    */
   rootNode() {
     return this._rootNode;
@@ -461,12 +461,12 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!DataGridNode} node
+   * @param {!DataGridNode<!NODE_TYPE>} node
    * @param {number} cellIndex
    */
   _startEditingColumnOfDataGridNode(node, cellIndex) {
     this._editing = true;
-    /** @type {?DataGridNode} */
+    /** @type {?DataGridNode<!NODE_TYPE>} */
     this._editingNode = node;
     this._editingNode.select();
 
@@ -524,7 +524,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!DataGridNode} node
+   * @param {!DataGridNode<!NODE_TYPE>} node
    * @param {string} columnIdentifier
    */
   startEditingNextEditableColumnOfDataGridNode(node, columnIdentifier) {
@@ -605,7 +605,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 
     /**
      * @param {boolean} wasChange
-     * @this {DataGridImpl}
+     * @this {DataGridImpl<!NODE_TYPE>}
      */
     function moveToNextIfNeeded(wasChange) {
       if (!moveDirection) {
@@ -819,10 +819,10 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!DataGridNode} rootNode
-   * @param {!Array<!DataGridNode>} result
+   * @param {!DataGridNode<!NODE_TYPE>} rootNode
+   * @param {!Array<!DataGridNode<!NODE_TYPE>>} result
    * @param {number} maxLevel
-   * @return {!Array<!NODE_TYPE>}
+   * @return {!Array<!DataGridNode<!NODE_TYPE>>}
    */
   _enumerateChildren(rootNode, result, maxLevel) {
     if (!rootNode._isRoot) {
@@ -1151,7 +1151,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {?NODE_TYPE} root
+   * @param {?DataGridNode<!NODE_TYPE>} root
    * @param {boolean} onlyAffectsSubtree
    */
   updateSelectionBeforeRemoval(root, onlyAffectsSubtree) {
@@ -1191,7 +1191,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Node} target
-   * @return {?NODE_TYPE}
+   * @return {?DataGridNode<!NODE_TYPE>}
    */
   dataGridNodeFromNode(target) {
     const rowElement = target.enclosingNodeOrSelfWithNodeName('tr');
@@ -1298,7 +1298,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {?function(!UI.ContextMenu.ContextMenu, !NODE_TYPE)} callback
+   * @param {?function(!UI.ContextMenu.ContextMenu, !DataGridNode<!NODE_TYPE>)} callback
    */
   setRowContextMenuCallback(callback) {
     this._rowContextMenuCallback = callback;
@@ -1618,7 +1618,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this._revealed;
     /** @type {boolean} */
     this._attached = false;
-    /** @type {?{parent: !NODE_TYPE, index: number}} */
+    /** @type {?{parent: !DataGridNode<!NODE_TYPE>, index: number}} */
     this._savedPosition = null;
     /** @type {boolean} */
     this._shouldRefreshChildren = true;
@@ -1626,15 +1626,15 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this._data = data || {};
     /** @type {boolean} */
     this._hasChildren = hasChildren || false;
-    /** @type {!Array.<!NODE_TYPE>} */
+    /** @type {!Array.<!DataGridNode<!NODE_TYPE>>} */
     this.children = [];
-    /** @type {?DataGridImpl} */
+    /** @type {?DataGridImpl<!NODE_TYPE>} */
     this.dataGrid = null;
-    /** @type {?NODE_TYPE} */
+    /** @type {?DataGridNode<!NODE_TYPE>} */
     this.parent = null;
-    /** @type {?NODE_TYPE} */
+    /** @type {?DataGridNode<!NODE_TYPE>} */
     this.previousSibling = null;
-    /** @type {?NODE_TYPE} */
+    /** @type {?DataGridNode<!NODE_TYPE>} */
     this.nextSibling = null;
     /** @type {number} */
     this.disclosureToggleWidth = 10;
@@ -1683,10 +1683,10 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     if (this.revealed) {
       this._element.classList.add('revealed');
     }
-    if (this.dirty) {
+    if (this._dirty) {
       this._element.classList.add('dirty');
     }
-    if (this.inactive) {
+    if (this._inactive) {
       this._element.classList.add('inactive');
     }
     return this._element;
@@ -2027,7 +2027,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!NODE_TYPE} child
+   * @param {!DataGridNode<!NODE_TYPE>} child
    */
   appendChild(child) {
     this.insertChild(child, this.children.length);
@@ -2057,7 +2057,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!NODE_TYPE} child
+   * @param {!DataGridNode<!NODE_TYPE>} child
    * @param {number} index
    */
   insertChild(child, index) {
@@ -2112,7 +2112,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!NODE_TYPE} child
+   * @param {!DataGridNode<!NODE_TYPE>} child
    */
   removeChild(child) {
     if (!child) {
@@ -2326,10 +2326,10 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {boolean} skipHidden
-   * @param {?NODE_TYPE=} stayWithin
+   * @param {?DataGridNode<!NODE_TYPE>=} stayWithin
    * @param {boolean=} dontPopulate
    * @param {!Object=} info
-   * @return {?NODE_TYPE}
+   * @return {?DataGridNode<!NODE_TYPE>}
    */
   traverseNextNode(skipHidden, stayWithin, dontPopulate, info) {
     if (!dontPopulate && this._hasChildren) {
@@ -2376,7 +2376,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {boolean} skipHidden
    * @param {boolean=} dontPopulate
-   * @return {?NODE_TYPE}
+   * @return {?DataGridNode<!NODE_TYPE>}
    */
   traversePreviousNode(skipHidden, dontPopulate) {
     let node = (!skipHidden || this.revealed) ? this.previousSibling : null;

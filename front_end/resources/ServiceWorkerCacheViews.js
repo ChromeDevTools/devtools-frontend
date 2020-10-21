@@ -181,7 +181,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     const children = dataGrid.rootNode().children.slice();
     dataGrid.rootNode().removeChildren();
     children.sort((a, b) => {
-      const result = comparator(a, b);
+      const result = comparator(/** @type {!DataGridNode} */ (a), /** @type {!DataGridNode} */ (b));
       return accending ? result : -result;
     });
     children.forEach(child => dataGrid.rootNode().appendChild(child));
@@ -244,7 +244,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     const oldEntries = new Map();
     const rootNode = this._dataGrid.rootNode();
     for (const node of rootNode.children) {
-      oldEntries.set(node.data.url, node);
+      oldEntries.set(node.data.url, /** @type {!DataGridNode} */ (node));
     }
     rootNode.removeChildren();
     let selectedNode = null;

@@ -28,14 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
+
+import {KeybindsSettingsTab} from './KeybindsSettingsTab.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!SettingsScreen} */
 let settingsScreenInstance;
@@ -55,7 +55,7 @@ export class SettingsScreen extends UI.Widget.VBox {
     this.contentElement.classList.add('settings-window-main');
     this.contentElement.classList.add('vbox');
 
-    const settingsLabelElement = createElement('div');
+    const settingsLabelElement = document.createElement('div');
     const settingsTitleElement =
         UI.Utils.createShadowRootWithCoreStyles(settingsLabelElement, 'settings/settingsScreen.css')
             .createChild('div', 'settings-window-title');
@@ -69,10 +69,12 @@ export class SettingsScreen extends UI.Widget.VBox {
     tabbedPane.leftToolbar().appendToolbarItem(new UI.Toolbar.ToolbarItem(settingsLabelElement));
     tabbedPane.setShrinkableTabs(false);
     tabbedPane.makeVerticalTabLayout();
-
-    UI.ViewManager.ViewManager.instance().view('keybinds').widget().then(widget => {
-      this._keybindsTab = widget;
-    });
+    const keyBindsView = UI.ViewManager.ViewManager.instance().view('keybinds');
+    if (keyBindsView) {
+      keyBindsView.widget().then(widget => {
+        this._keybindsTab = /** @type {!KeybindsSettingsTab} */ (widget);
+      });
+    }
     tabbedPane.show(this.contentElement);
     tabbedPane.selectTab('preferences');
     tabbedPane.addEventListener(UI.TabbedPane.Events.TabInvoked, this._tabInvoked, this);
@@ -109,15 +111,20 @@ export class SettingsScreen extends UI.Widget.VBox {
     dialog.setOutsideTabIndexBehavior(UI.Dialog.OutsideTabIndexBehavior.PreserveMainViewTabIndex);
     settingsScreen.show(dialog.contentElement);
     dialog.setEscapeKeyCallback(settingsScreen._onEscapeKeyPressed.bind(settingsScreen));
+
+    // UI.Dialog extends GlassPane and overrides the `show` method with a wider
+    // accepted type. However, TypeScript uses the supertype declaration to
+    // determine the full type, which requires a `!Document`.
+    // @ts-ignore
     dialog.show();
 
     return settingsScreen;
   }
 
   /**
-   * @param {{name: (string|undefined), focusTabHeader: (boolean|undefined)}=} options
+   * @param {!ShowSettingsScreenOptions=} options
    */
-  static async _showSettingsScreen(options = {}) {
+  static async _showSettingsScreen(options = {name: undefined, focusTabHeader: undefined}) {
     const {name, focusTabHeader} = options;
     const settingsScreen = SettingsScreen._revealSettingsScreen();
 
@@ -277,7 +284,11 @@ export class GenericSettingsTab extends SettingsTab {
     if (!GenericSettingsTab.isSettingVisible(extension)) {
       return;
     }
-    const sectionElement = this._sectionElement(extension.descriptor()['category']);
+    const extensionCategory = extension.descriptor()['category'];
+    if (!extensionCategory) {
+      return;
+    }
+    const sectionElement = this._sectionElement(extensionCategory);
     if (!sectionElement) {
       return;
     }
@@ -368,7 +379,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
    * @return {!Element} element
    */
   _createExperimentsWarningSubsection(warningMessage) {
-    const subsection = createElement('div');
+    const subsection = document.createElement('div');
     const warning = subsection.createChild('span', 'settings-experiments-warning-subsection-warning');
     warning.textContent = Common.UIString.UIString('WARNING:');
     UI.UIUtils.createTextChild(subsection, ' ');
@@ -377,6 +388,9 @@ export class ExperimentsSettingsTab extends SettingsTab {
     return subsection;
   }
 
+  /**
+   * @param {*} experiment
+   */
   _createExperimentCheckbox(experiment) {
     const label = UI.UIUtils.CheckboxLabel.create(Common.UIString.UIString(experiment.title), experiment.isEnabled());
     const input = label.checkboxElement;
@@ -389,7 +403,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
     }
     input.addEventListener('click', listener, false);
 
-    const p = createElement('p');
+    const p = document.createElement('p');
     p.className = experiment.unstable && !experiment.isEnabled() ? 'settings-experiment-unstable' : '';
     p.appendChild(label);
     return p;
@@ -410,7 +424,7 @@ export class ActionDelegate {
   handleAction(context, actionId) {
     switch (actionId) {
       case 'settings.show':
-        SettingsScreen._showSettingsScreen({focusTabHeader: true});
+        SettingsScreen._showSettingsScreen(/** @type {!ShowSettingsScreenOptions}*/ ({focusTabHeader: true}));
         return true;
       case 'settings.documentation':
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
@@ -432,11 +446,11 @@ export class Revealer {
   /**
    * @override
    * @param {!Object} object
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   reveal(object) {
     console.assert(object instanceof Common.Settings.Setting);
-    const setting = /** @type {!Common.Settings.Setting} */ (object);
+    const setting = /** @type {!Common.Settings.Setting<*>} */ (object);
     let success = false;
 
     Root.Runtime.Runtime.instance().extensions('setting').forEach(revealModuleSetting);
@@ -479,12 +493,23 @@ export class Revealer {
       if (location !== 'settings-view') {
         return;
       }
-      const settings = extension.descriptor()['settings'];
+      const descriptor = extension.descriptor();
+      const settings = descriptor['settings'];
       if (settings && settings.indexOf(setting.name) !== -1) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
-        SettingsScreen._showSettingsScreen({name: extension.descriptor()['id']});
+        SettingsScreen._showSettingsScreen(
+            /** @type {!ShowSettingsScreenOptions}*/ ({name: extension.descriptor()['id']}));
         success = true;
       }
     }
   }
 }
+
+/**
+ * @typedef {{
+  *     name: (string|undefined),
+  *     focusTabHeader: (boolean|undefined)
+  * }}
+  */
+// @ts-ignore typedef
+export let ShowSettingsScreenOptions;

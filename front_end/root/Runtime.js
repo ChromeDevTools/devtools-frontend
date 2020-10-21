@@ -578,6 +578,9 @@ export class RuntimeExtensionDescriptor {
     /** @type {!Array<!Option>|undefined} */
     this.options;
 
+    /** @type {!Array<string>|undefined} */
+    this.settings;
+
     // This is an EmulatedDevice, but typing it as such introduces a
     // circular dep between emulation and root.
     /** @type {?} */

@@ -180,6 +180,7 @@ export class ShortcutRegistry {
   /**
    * @param {!Element} element
    * @param {!Object.<string, function():Promise.<boolean>>} handlers
+   * @return {function(!Event): void}
    */
   addShortcutListener(element, handlers) {
     // We only want keys for these specific actions to get handled this
@@ -190,7 +191,10 @@ export class ShortcutRegistry {
       allowlistKeyMap.addKeyMapping(shortcut.descriptors.map(descriptor => descriptor.key), shortcut.action);
     });
 
-    element.addEventListener('keydown', event => {
+    /**
+     * @param {!Event} event
+     */
+    const listener = event => {
       const key = KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
       const keyMap = this._activePrefixKey ? allowlistKeyMap.getNode(this._activePrefixKey.key()) : allowlistKeyMap;
       if (!keyMap) {
@@ -199,7 +203,9 @@ export class ShortcutRegistry {
       if (keyMap.getNode(key)) {
         this.handleShortcut(/** @type {!KeyboardEvent} */ (event), handlers);
       }
-    });
+    };
+    element.addEventListener('keydown', listener);
+    return listener;
   }
 
   /**

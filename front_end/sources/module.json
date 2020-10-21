@@ -1077,6 +1077,50 @@
       "type": "context-menu-item",
       "location": "mainMenu/default",
       "actionId": "sources.search"
+    },
+    {
+      "type": "action",
+      "actionId": "sources.increment-css",
+      "category": "Sources",
+      "title": "Increment CSS unit by 1",
+      "bindings": [
+        {
+          "shortcut": "Alt+Up"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "sources.increment-css-by-ten",
+      "title": "Increment CSS unit by 10",
+      "category": "Sources",
+      "bindings": [
+        {
+          "shortcut": "Alt+PageUp"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "sources.decrement-css",
+      "category": "Sources",
+      "title": "Decrement CSS unit by 1",
+      "bindings": [
+        {
+          "shortcut": "Alt+Down"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "sources.decrement-css-by-ten",
+      "category": "Sources",
+      "title": "Decrement CSS unit by 10",
+      "bindings": [
+        {
+          "shortcut": "Alt+PageDown"
+        }
+      ]
     }
   ],
   "dependencies": [

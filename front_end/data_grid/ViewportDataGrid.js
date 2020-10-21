@@ -241,7 +241,7 @@ export class ViewportDataGrid extends DataGridImpl {
 
     for (let i = 0; i < visibleNodes.length; ++i) {
       const node = visibleNodes[i];
-      const element = node.element();
+      const element = /** @type {!HTMLElement} */ (node.element());
       node.setStriped((offset + i) % 2 === 0);
       if (element !== previousElement.nextSibling) {
         tBody.insertBefore(element, previousElement.nextSibling);

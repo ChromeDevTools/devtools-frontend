@@ -3758,6 +3758,7 @@
                         "marker",
                         "backdrop",
                         "selection",
+                        "target-text",
                         "first-line-inherited",
                         "scrollbar",
                         "scrollbar-thumb",
@@ -15692,12 +15693,35 @@
                             "type": "number"
                         },
                         {
+                            "name": "overrideActive",
+                            "description": "Whether or not the origin has an active storage quota override",
+                            "type": "boolean"
+                        },
+                        {
                             "name": "usageBreakdown",
                             "description": "Storage usage per type (bytes).",
                             "type": "array",
                             "items": {
                                 "$ref": "UsageForType"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "overrideQuotaForOrigin",
+                    "description": "Override quota for the specified origin",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "origin",
+                            "description": "Security origin.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "quotaSize",
+                            "description": "The quota size (in bytes) to override the original quota with.\nIf this is called multiple times, the overriden quota will be equal to\nthe quotaSize provided in the final call. If this is called without\nspecifying a quotaSize, the quota will be reset to the default value for\nthe specified origin. If this is called multiple times with different\norigins, the override will be maintained for each origin until it is\ndisabled (called without a quotaSize).",
+                            "optional": true,
+                            "type": "number"
                         }
                     ]
                 },

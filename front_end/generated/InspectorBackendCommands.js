@@ -538,6 +538,7 @@ export function registerCommands(inspectorBackend) {
     Marker: 'marker',
     Backdrop: 'backdrop',
     Selection: 'selection',
+    TargetText: 'target-text',
     FirstLineInherited: 'first-line-inherited',
     Scrollbar: 'scrollbar',
     ScrollbarThumb: 'scrollbar-thumb',
@@ -2137,7 +2138,14 @@ export function registerCommands(inspectorBackend) {
       'Storage.clearCookies', [{'name': 'browserContextId', 'type': 'string', 'optional': true}], []);
   inspectorBackend.registerCommand(
       'Storage.getUsageAndQuota', [{'name': 'origin', 'type': 'string', 'optional': false}],
-      ['usage', 'quota', 'usageBreakdown']);
+      ['usage', 'quota', 'overrideActive', 'usageBreakdown']);
+  inspectorBackend.registerCommand(
+      'Storage.overrideQuotaForOrigin',
+      [
+        {'name': 'origin', 'type': 'string', 'optional': false},
+        {'name': 'quotaSize', 'type': 'number', 'optional': true}
+      ],
+      []);
   inspectorBackend.registerCommand(
       'Storage.trackCacheStorageForOrigin', [{'name': 'origin', 'type': 'string', 'optional': false}], []);
   inspectorBackend.registerCommand(

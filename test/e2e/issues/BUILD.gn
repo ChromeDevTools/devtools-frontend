@@ -5,7 +5,10 @@
 import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("issues") {
-  sources = [ "group-by-categories_test.ts" ]
+  sources = [
+    "group-by-categories_test.ts",
+    "report-only_test.ts",
+  ]
 
   deps = [
     "../../shared",

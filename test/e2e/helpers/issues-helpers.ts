@@ -15,6 +15,8 @@ export const AFFECTED_ELEMENT_ICON = '.affected-resource-csp-info-node';
 export const ELEMENT_REVEAL_ICON = '.element-reveal-icon';
 export const ELEMENTS_PANEL_SELECTOR = '.panel[aria-label="elements"]';
 export const SOURCES_LINK = '.affected-source-location > span';
+export const BLOCKED_STATUS = '.affected-resource-blocked-status';
+export const REPORT_ONLY_STATUS = '.affected-resource-report-only-status';
 
 export async function navigateToIssuesTab() {
   await openPanelViaMoreTools('Issues');
@@ -30,6 +32,13 @@ export async function assertIssueTitle(issueMessage: string) {
   const issueMessageElement = await waitFor(ISSUE_TITLE);
   const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
   assert.strictEqual(selectedIssueMessage, issueMessage);
+}
+
+export async function assertStatus(status: 'blocked'|'report-only') {
+  const classStatus = status === 'blocked' ? BLOCKED_STATUS : REPORT_ONLY_STATUS;
+  const issueMessageElement = await waitFor(classStatus);
+  const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
+  assert.strictEqual(selectedIssueMessage, status);
 }
 
 export async function expandCategory() {

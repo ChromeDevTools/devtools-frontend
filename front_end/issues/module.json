@@ -46,6 +46,7 @@
     "descriptions/cspEvalViolation.md",
     "descriptions/cspInlineViolation.md",
     "descriptions/cspURLViolation.md",
+    "descriptions/mixedContent.md",
     "issuesPane.css",
     "issuesTree.css"
   ]

@@ -69,6 +69,14 @@ export class TracingModel {
   }
 
   /**
+   * @param {string} phase
+   * @return {boolean}
+   */
+  static isCompletePhase(phase) {
+    return phase === 'X';
+  }
+
+  /**
    * @param {!Event} event
    * @return {boolean}
    */

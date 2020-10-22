@@ -27,6 +27,7 @@ group("front_end") {
     "sources",
     "test_setup",
     "text_utils",
+    "timeline",
     "timeline_model",
     "ui",
   ]

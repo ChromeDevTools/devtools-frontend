@@ -159,6 +159,7 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'showOptionToNotTreatGlobalObjectsAsRoots',
         'Show option to take heap snapshot where globals are not treated as root');
+    Root.Runtime.experiments.register('showWebVitalsInPerformancePanel', 'Show WebVitals in Performance Panel', true);
     Root.Runtime.experiments.register('sourceDiff', 'Source diff');
     Root.Runtime.experiments.register('sourceOrderViewer', 'Source order viewer');
     Root.Runtime.experiments.register('spotlight', 'Spotlight', true);

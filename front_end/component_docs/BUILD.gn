@@ -10,5 +10,6 @@ group("component_docs") {
     "./layout_pane",
     "./linear_memory_inspector",
     "./perf_piechart",
+    "./webvitals",
   ]
 }

@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
@@ -38,11 +35,21 @@ import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 /**
+ * @type {?Object.<string, !PaintProfilerCategory>}
+ */
+let categories = null;
+
+/**
+ * @type {?Object.<string, !PaintProfilerCategory>}
+ */
+let logItemCategoriesMap = null;
+
+/**
  * @unrestricted
  */
 export class PaintProfilerView extends UI.Widget.HBox {
   /**
-   * @param {function(string=)} showImageCallback
+   * @param {function(string=):void} showImageCallback
    */
   constructor(showImageCallback) {
     super(true);
@@ -58,8 +65,11 @@ export class PaintProfilerView extends UI.Widget.HBox {
 
     this._showImageCallback = showImageCallback;
 
-    this._canvas = this._canvasContainer.createChild('canvas', 'fill');
-    this._context = this._canvas.getContext('2d');
+    /**
+     * @type {!HTMLCanvasElement}
+     */
+    this._canvas = /** @type {!HTMLCanvasElement} */ (this._canvasContainer.createChild('canvas', 'fill'));
+    this._context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
     this._selectionWindow = new PerfUI.OverviewGrid.Window(this._canvasContainer);
     this._selectionWindow.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
 
@@ -69,80 +79,87 @@ export class PaintProfilerView extends UI.Widget.HBox {
     this._outerBarWidth = this._innerBarWidth + this._barPaddingWidth;
     this._pendingScale = 1;
     this._scale = this._pendingScale;
+    this._samplesPerBar = 0;
+    /**
+     * @type {!Array.<!SDK.PaintProfiler.PaintProfilerLogItem>}
+     */
+    this._log = [];
 
     this._reset();
   }
+
 
   /**
    * @return {!Object.<string, !PaintProfilerCategory>}
    */
   static categories() {
-    if (PaintProfilerView._categories) {
-      return PaintProfilerView._categories;
+    if (!categories) {
+      categories = {
+        shapes: new PaintProfilerCategory('shapes', Common.UIString.UIString('Shapes'), 'rgb(255, 161, 129)'),
+        bitmap: new PaintProfilerCategory('bitmap', Common.UIString.UIString('Bitmap'), 'rgb(136, 196, 255)'),
+        text: new PaintProfilerCategory('text', Common.UIString.UIString('Text'), 'rgb(180, 255, 137)'),
+        misc: new PaintProfilerCategory('misc', Common.UIString.UIString('Misc'), 'rgb(206, 160, 255)')
+      };
     }
-    PaintProfilerView._categories = {
-      shapes: new PaintProfilerCategory('shapes', Common.UIString.UIString('Shapes'), 'rgb(255, 161, 129)'),
-      bitmap: new PaintProfilerCategory('bitmap', Common.UIString.UIString('Bitmap'), 'rgb(136, 196, 255)'),
-      text: new PaintProfilerCategory('text', Common.UIString.UIString('Text'), 'rgb(180, 255, 137)'),
-      misc: new PaintProfilerCategory('misc', Common.UIString.UIString('Misc'), 'rgb(206, 160, 255)')
-    };
-    return PaintProfilerView._categories;
+    return categories;
   }
 
   /**
    * @return {!Object.<string, !PaintProfilerCategory>}
    */
   static _initLogItemCategories() {
-    if (PaintProfilerView._logItemCategoriesMap) {
-      return PaintProfilerView._logItemCategoriesMap;
+    if (!logItemCategoriesMap) {
+      const categories = PaintProfilerView.categories();
+
+      /**
+       * @type {!Object.<string, !PaintProfilerCategory>}
+       */
+      const logItemCategories = {};
+      logItemCategories['Clear'] = categories['misc'];
+      logItemCategories['DrawPaint'] = categories['misc'];
+      logItemCategories['DrawData'] = categories['misc'];
+      logItemCategories['SetMatrix'] = categories['misc'];
+      logItemCategories['PushCull'] = categories['misc'];
+      logItemCategories['PopCull'] = categories['misc'];
+      logItemCategories['Translate'] = categories['misc'];
+      logItemCategories['Scale'] = categories['misc'];
+      logItemCategories['Concat'] = categories['misc'];
+      logItemCategories['Restore'] = categories['misc'];
+      logItemCategories['SaveLayer'] = categories['misc'];
+      logItemCategories['Save'] = categories['misc'];
+      logItemCategories['BeginCommentGroup'] = categories['misc'];
+      logItemCategories['AddComment'] = categories['misc'];
+      logItemCategories['EndCommentGroup'] = categories['misc'];
+      logItemCategories['ClipRect'] = categories['misc'];
+      logItemCategories['ClipRRect'] = categories['misc'];
+      logItemCategories['ClipPath'] = categories['misc'];
+      logItemCategories['ClipRegion'] = categories['misc'];
+      logItemCategories['DrawPoints'] = categories['shapes'];
+      logItemCategories['DrawRect'] = categories['shapes'];
+      logItemCategories['DrawOval'] = categories['shapes'];
+      logItemCategories['DrawRRect'] = categories['shapes'];
+      logItemCategories['DrawPath'] = categories['shapes'];
+      logItemCategories['DrawVertices'] = categories['shapes'];
+      logItemCategories['DrawDRRect'] = categories['shapes'];
+      logItemCategories['DrawBitmap'] = categories['bitmap'];
+      logItemCategories['DrawBitmapRectToRect'] = categories['bitmap'];
+      logItemCategories['DrawBitmapMatrix'] = categories['bitmap'];
+      logItemCategories['DrawBitmapNine'] = categories['bitmap'];
+      logItemCategories['DrawSprite'] = categories['bitmap'];
+      logItemCategories['DrawPicture'] = categories['bitmap'];
+      logItemCategories['DrawText'] = categories['text'];
+      logItemCategories['DrawPosText'] = categories['text'];
+      logItemCategories['DrawPosTextH'] = categories['text'];
+      logItemCategories['DrawTextOnPath'] = categories['text'];
+
+      logItemCategoriesMap = logItemCategories;
     }
 
-    const categories = PaintProfilerView.categories();
-
-    const logItemCategories = {};
-    logItemCategories['Clear'] = categories['misc'];
-    logItemCategories['DrawPaint'] = categories['misc'];
-    logItemCategories['DrawData'] = categories['misc'];
-    logItemCategories['SetMatrix'] = categories['misc'];
-    logItemCategories['PushCull'] = categories['misc'];
-    logItemCategories['PopCull'] = categories['misc'];
-    logItemCategories['Translate'] = categories['misc'];
-    logItemCategories['Scale'] = categories['misc'];
-    logItemCategories['Concat'] = categories['misc'];
-    logItemCategories['Restore'] = categories['misc'];
-    logItemCategories['SaveLayer'] = categories['misc'];
-    logItemCategories['Save'] = categories['misc'];
-    logItemCategories['BeginCommentGroup'] = categories['misc'];
-    logItemCategories['AddComment'] = categories['misc'];
-    logItemCategories['EndCommentGroup'] = categories['misc'];
-    logItemCategories['ClipRect'] = categories['misc'];
-    logItemCategories['ClipRRect'] = categories['misc'];
-    logItemCategories['ClipPath'] = categories['misc'];
-    logItemCategories['ClipRegion'] = categories['misc'];
-    logItemCategories['DrawPoints'] = categories['shapes'];
-    logItemCategories['DrawRect'] = categories['shapes'];
-    logItemCategories['DrawOval'] = categories['shapes'];
-    logItemCategories['DrawRRect'] = categories['shapes'];
-    logItemCategories['DrawPath'] = categories['shapes'];
-    logItemCategories['DrawVertices'] = categories['shapes'];
-    logItemCategories['DrawDRRect'] = categories['shapes'];
-    logItemCategories['DrawBitmap'] = categories['bitmap'];
-    logItemCategories['DrawBitmapRectToRect'] = categories['bitmap'];
-    logItemCategories['DrawBitmapMatrix'] = categories['bitmap'];
-    logItemCategories['DrawBitmapNine'] = categories['bitmap'];
-    logItemCategories['DrawSprite'] = categories['bitmap'];
-    logItemCategories['DrawPicture'] = categories['bitmap'];
-    logItemCategories['DrawText'] = categories['text'];
-    logItemCategories['DrawPosText'] = categories['text'];
-    logItemCategories['DrawPosTextH'] = categories['text'];
-    logItemCategories['DrawTextOnPath'] = categories['text'];
-
-    PaintProfilerView._logItemCategoriesMap = logItemCategories;
-    return logItemCategories;
+    return logItemCategoriesMap;
   }
 
   /**
-   * @param {!Object} logItem
+   * @param {!SDK.PaintProfiler.PaintProfilerLogItem} logItem
    * @return {!PaintProfilerCategory}
    */
   static _categoryForLogItem(logItem) {
@@ -178,12 +195,13 @@ export class PaintProfilerView extends UI.Widget.HBox {
     this._log = log;
     this._logCategories = this._log.map(PaintProfilerView._categoryForLogItem);
 
-    if (!this._snapshot) {
+    if (!snapshot) {
       this._update();
       this._populatePieChart(0, []);
       this._selectionWindow.setEnabled(false);
       return;
     }
+
     this._selectionWindow.setEnabled(true);
     this._progressBanner.classList.remove('hidden');
     this._updateImage();
@@ -212,7 +230,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
     this._canvas.width = this._canvasContainer.clientWidth * window.devicePixelRatio;
     this._canvas.height = this._canvasContainer.clientHeight * window.devicePixelRatio;
     this._samplesPerBar = 0;
-    if (!this._profiles || !this._profiles.length) {
+    if (!this._profiles || !this._profiles.length || !this._logCategories) {
       return;
     }
 
@@ -223,6 +241,9 @@ export class PaintProfilerView extends UI.Widget.HBox {
     let maxBarTime = 0;
     const barTimes = [];
     const barHeightByCategory = [];
+    /**
+     * @type {!Object.<string, number>}
+     */
     let heightByCategory = {};
     for (let i = 0, lastBarIndex = 0, lastBarTime = 0; i < sampleCount;) {
       let categoryName = (this._logCategories[i] && this._logCategories[i].name) || 'misc';
@@ -296,12 +317,18 @@ export class PaintProfilerView extends UI.Widget.HBox {
     this._populatePieChart(total, slices);
   }
 
+  /**
+   * @return {!{total: number, slices: !Array<!{value: number, color: string, title: string}>}}
+   */
   _calculatePieChart() {
     const window = this.selectionWindow();
     if (!this._profiles || !this._profiles.length || !window) {
-      return;
+      return {total: 0, slices: []};
     }
     let totalTime = 0;
+    /**
+     * @type {!Object.<string, number>}
+     */
     const timeByCategory = {};
     for (let i = window.left; i < window.right; ++i) {
       const logEntry = this._log[i];
@@ -352,8 +379,8 @@ export class PaintProfilerView extends UI.Widget.HBox {
       return null;
     }
 
-    const screenLeft = this._selectionWindow.windowLeft * this._canvas.width;
-    const screenRight = this._selectionWindow.windowRight * this._canvas.width;
+    const screenLeft = (this._selectionWindow.windowLeft || 0) * this._canvas.width;
+    const screenRight = (this._selectionWindow.windowRight || 0) * this._canvas.width;
     const barLeft = Math.floor(screenLeft / this._outerBarWidth);
     const barRight = Math.floor((screenRight + this._innerBarWidth - this._barPaddingWidth / 2) / this._outerBarWidth);
     const stepLeft = Platform.NumberUtilities.clamp(barLeft * this._samplesPerBar, 0, this._log.length - 1);
@@ -372,6 +399,9 @@ export class PaintProfilerView extends UI.Widget.HBox {
       right = this._log[window.right - 1].commandIndex;
     }
     const scale = this._pendingScale;
+    if (!this._snapshot) {
+      return;
+    }
     this._snapshot.replay(scale, left, right).then(image => {
       if (!image) {
         return;
@@ -411,7 +441,12 @@ export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWid
     this.element.appendChild(this._treeOutline.element);
     this.setDefaultFocusedElement(this._treeOutline.contentElement);
 
+    /**
+     * @type {!Array.<!SDK.PaintProfiler.PaintProfilerLogItem>}
+     */
     this._log = [];
+    /** @type {!Map<!SDK.PaintProfiler.PaintProfilerLogItem, !LogTreeElement>} */
+    this._treeItemCache = new Map();
   }
 
   /**
@@ -419,8 +454,7 @@ export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWid
    */
   setCommandLog(log) {
     this._log = log;
-    /** @type {!Map<!SDK.PaintProfiler.PaintProfilerLogItem>} */
-    this._treeItemCache = new Map();
+
     this.updateWindow({left: 0, right: this._log.length});
   }
 
@@ -457,14 +491,14 @@ export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWid
     }
     const root = this._treeOutline.rootElement();
     for (;;) {
-      const child = root.firstChild();
+      const child = /** @type {!LogTreeElement} */ (root.firstChild());
       if (!child || child._logItem.commandIndex >= this._selectionWindow.left) {
         break;
       }
       root.removeChildAtIndex(0);
     }
     for (;;) {
-      const child = root.lastChild();
+      const child = /** @type {!LogTreeElement} */ (root.lastChild());
       if (!child || child._logItem.commandIndex < this._selectionWindow.right) {
         break;
       }
@@ -501,7 +535,7 @@ export class LogTreeElement extends UI.TreeOutline.TreeElement {
 
   /**
    * @override
-   * @returns {!Promise}
+   * @returns {!Promise<void>}
    */
   async onpopulate() {
     for (const param in this._logItem.params) {
@@ -549,7 +583,7 @@ export class LogTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   _update() {
-    const title = createDocumentFragment();
+    const title = document.createDocumentFragment();
     UI.UIUtils.createTextChild(title, this._logItem.method + '(' + this._paramsToString(this._logItem.params) + ')');
     this.title = title;
   }
@@ -560,7 +594,7 @@ export class LogTreeElement extends UI.TreeOutline.TreeElement {
  */
 export class LogPropertyTreeElement extends UI.TreeOutline.TreeElement {
   /**
-   * @param {!{name: string, value}} property
+   * @param {!{name: string, value: *}} property
    */
   constructor(property) {
     super();
@@ -586,7 +620,7 @@ export class LogPropertyTreeElement extends UI.TreeOutline.TreeElement {
    * @override
    */
   onattach() {
-    const title = createDocumentFragment();
+    const title = document.createDocumentFragment();
     const nameElement = title.createChild('span', 'name');
     nameElement.textContent = this._property.name;
     const separatorElement = title.createChild('span', 'separator');

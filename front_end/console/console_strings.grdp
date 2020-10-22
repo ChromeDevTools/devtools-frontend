@@ -153,6 +153,9 @@
   <message name="IDS_DEVTOOLS_97b0da743d68f96933d990003383ccf1" desc="Text in Console Sidebar of the Console panel to show that there is 1 warning">
     1 warning
   </message>
+  <message name="IDS_DEVTOOLS_9aae9fe27dbf2db0ad90762b5b59d3a7" desc="Text to clear the console">
+    Clear console
+  </message>
   <message name="IDS_DEVTOOLS_a092483ed730ed040e5df5776dca49e5" desc="Title of a setting under the Console category in Settings">
     Log XMLHttpRequests
   </message>

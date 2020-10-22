@@ -128,18 +128,6 @@ export class ShortcutRegistry {
   }
 
   /**
-   * @deprecated this function is obsolete and will be removed in the
-   * future along with the legacy shortcuts settings tab
-   * crbug.com/174309
-   *
-   * @param {string} actionId
-   * @return {!Array.<!Descriptor>}
-   */
-  shortcutDescriptorsForAction(actionId) {
-    return [...this._actionToShortcut.get(actionId)].map(shortcut => shortcut.descriptors[0]);
-  }
-
-  /**
    * @param {!Array.<string>} actionIds
    * @return {!Array.<number>}
    */

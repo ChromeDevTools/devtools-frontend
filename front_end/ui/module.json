@@ -63,7 +63,6 @@
     "TabbedPane.js",
     "UIUtils.js",
     "ZoomManager.js",
-    "ShortcutsScreen.js",
     "Geometry.js",
     "XLink.js",
     "XWidget.js",

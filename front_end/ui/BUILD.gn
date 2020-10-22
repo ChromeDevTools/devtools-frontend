@@ -44,7 +44,6 @@ devtools_module("ui") {
     "SegmentedButton.js",
     "SettingsUI.js",
     "ShortcutRegistry.js",
-    "ShortcutsScreen.js",
     "SoftContextMenu.js",
     "SoftDropDown.js",
     "SplitWidget.js",

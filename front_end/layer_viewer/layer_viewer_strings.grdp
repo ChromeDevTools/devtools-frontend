@@ -15,6 +15,12 @@
   <message name="IDS_DEVTOOLS_0dcec78482c19af86250648b72a31a89" desc="Compositing reason description displayed in the Layer Details View of the Layers panel">
     Has a filter effect that needs to be known by compositor because of composited descendants.
   </message>
+  <message name="IDS_DEVTOOLS_0f8854fb5bc175b0cd33a1e8518b366f" desc="Text in the Shortcuts page to explain a keyboard shortcut (switch to pan in Layers Panel)">
+    Switch to pan mode
+  </message>
+  <message name="IDS_DEVTOOLS_17d440bf27df66479f0fb39cb4f4ad09" desc="Text in the Shortcuts page to explain a keyboard shortcut (reset view in Layers Panel)">
+    Reset view
+  </message>
   <message name="IDS_DEVTOOLS_1a0e379e9f0723a7bbc86cde00b832b1" desc="Compositing reason description displayed in the Layer Details View of the Layers panel">
     Has a mask that needs to be known by compositor because of composited descendants.
   </message>
@@ -80,6 +86,9 @@
   </message>
   <message name="IDS_DEVTOOLS_50590a72acb1ad5f2454d50a3bc74451" desc="Compositing reason description displayed in the Layer Details View of the Layers panel">
     Has a 3d transform.
+  </message>
+  <message name="IDS_DEVTOOLS_5372591390f99dcf8e0467c671abbc23" desc="Text in the Shortcuts page to explain a keyboard shortcut (switch to rotate mode in Layers Panel)">
+    Switch to rotate mode
   </message>
   <message name="IDS_DEVTOOLS_551b5a42667f46d2d15db25ebfcf9f6d" desc="Compositing reason description displayed in the Layer Details View of the Layers panel">
     Has a reflection that needs to be known by compositor because of composited descendants.

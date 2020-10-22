@@ -189,6 +189,9 @@
   <message name="IDS_DEVTOOLS_76eaf94c0f9441b72e66efc162487aee" desc="Data grid name for Heap Snapshot Diff data grids">
     Heap Snapshot Diff
   </message>
+  <message name="IDS_DEVTOOLS_76f8c7ad696be0b330b46afe79ac279d" desc="Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)">
+    Start/stop recording
+  </message>
   <message name="IDS_DEVTOOLS_7806c2199c12b018327832bcb3ae20ce" desc="Text in Heap Snapshot Grid Nodes of a profiler tool">
     Detached from DOM tree
   </message>

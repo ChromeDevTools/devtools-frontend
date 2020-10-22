@@ -358,7 +358,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   async _setupEmulationAndProtocolConnection() {
     const flags = this._controller.getFlags();
 
-    const emulationModel = self.singleton(Emulation.DeviceModeModel.DeviceModeModel);
+    const emulationModel = Emulation.DeviceModeModel.DeviceModeModel.instance();
     this._stateBefore = {
       emulation: {
         enabled: emulationModel.enabledSetting().get(),
@@ -396,7 +396,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     await this._protocolService.detach();
 
     if (this._stateBefore) {
-      const emulationModel = self.singleton(Emulation.DeviceModeModel.DeviceModeModel);
+      const emulationModel = Emulation.DeviceModeModel.DeviceModeModel.instance();
       emulationModel.enabledSetting().set(this._stateBefore.emulation.enabled);
       emulationModel.deviceOutlineSetting().set(this._stateBefore.emulation.outlineEnabled);
       emulationModel.toolbarControlsEnabledSetting().set(this._stateBefore.emulation.toolbarControlsEnabled);

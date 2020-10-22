@@ -21,6 +21,9 @@ let deviceModeModelInstance;
  * @unrestricted
  */
 export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
+  /**
+   * @private
+   */
   constructor() {
     super();
     this._screenRect = new UI.Geometry.Rect(0, 0, 1, 1);

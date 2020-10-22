@@ -29,7 +29,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     this.registerRequiredCSS('emulation/deviceModeView.css');
     UI.Tooltip.Tooltip.addNativeOverrideContainer(this.contentElement);
 
-    this._model = self.singleton(DeviceModeModel);
+    this._model = DeviceModeModel.instance();
     this._model.addEventListener(Events.Updated, this._updateUI, this);
     this._mediaInspector =
         new MediaQueryInspector(() => this._model.appliedDeviceSize().width, this._model.setWidth.bind(this._model));

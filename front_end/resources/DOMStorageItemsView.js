@@ -24,9 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
@@ -66,7 +63,7 @@ export class DOMStorageItemsView extends StorageItemsView {
       refreshCallback: this.refreshItems.bind(this)
     });
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, event => {
-      this._previewEntry(/** @type {!DataGrid.DataGrid.DataGridNode} */ (event.data));
+      this._previewEntry(/** @type {!DataGrid.DataGrid.DataGridNode<?>} */ (event.data));
     });
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, event => {
       this._previewEntry(null);
@@ -94,6 +91,7 @@ export class DOMStorageItemsView extends StorageItemsView {
 
     this._showPreview(null, null);
 
+    /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
     this._eventListeners = [];
     this.setStorage(domStorage);
   }
@@ -176,7 +174,8 @@ export class DOMStorageItemsView extends StorageItemsView {
     }
 
     const storageData = event.data;
-    const childNode = this._dataGrid.rootNode().children.find(child => child.data.key === storageData.key);
+    const childNode = this._dataGrid.rootNode().children.find(
+        /** @param {!DataGrid.DataGrid.DataGridNode<?>} child */ child => child.data.key === storageData.key);
     if (!childNode || childNode.data.value === storageData.value) {
       return;
     }
@@ -205,7 +204,7 @@ export class DOMStorageItemsView extends StorageItemsView {
     }
     rootNode.removeChildren();
     let selectedNode = null;
-    const filteredItems = item => `${item[0]} ${item[1]}`;
+    const filteredItems = /** @param {!Array<string>} item */ item => `${item[0]} ${item[1]}`;
     for (const item of this.filter(items, filteredItems)) {
       const key = item[0];
       const value = item[1];
@@ -250,6 +249,12 @@ export class DOMStorageItemsView extends StorageItemsView {
     this._domStorageItemsCleared();
   }
 
+  /**
+   * @param {!DataGrid.DataGrid.DataGridNode<?>} editingNode
+   * @param {string} columnIdentifier
+   * @param {string} oldText
+   * @param {string} newText
+   */
   _editingCallback(editingNode, columnIdentifier, oldText, newText) {
     const domStorage = this._domStorage;
     if (columnIdentifier === 'key') {
@@ -264,7 +269,7 @@ export class DOMStorageItemsView extends StorageItemsView {
   }
 
   /**
-   * @param {!DataGrid.DataGrid.DataGridNode} masterNode
+   * @param {!DataGrid.DataGrid.DataGridNode<?>} masterNode
    */
   _removeDupes(masterNode) {
     const rootNode = this._dataGrid.rootNode();
@@ -277,6 +282,9 @@ export class DOMStorageItemsView extends StorageItemsView {
     }
   }
 
+  /**
+   * @param {!DataGrid.DataGrid.DataGridNode<?>} node
+   */
   _deleteCallback(node) {
     if (!node || node.isCreationNode) {
       return;
@@ -307,23 +315,22 @@ export class DOMStorageItemsView extends StorageItemsView {
   }
 
   /**
-   * @param {?DataGrid.DataGrid.DataGridNode} entry
+   * @param {?DataGrid.DataGrid.DataGridNode<?>} entry
    */
   async _previewEntry(entry) {
     const value = entry && entry.data && entry.data.value;
-    if (!value) {
+    if (entry && entry.data && entry.data.value) {
+      const protocol = this._domStorage.isLocalStorage ? 'localstorage' : 'sessionstorage';
+      const url = `${protocol}://${entry.key}`;
+      const provider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+          url, Common.ResourceType.resourceTypes.XHR, /** @type {string} */ (value));
+      const preview = await SourceFrame.PreviewFactory.PreviewFactory.createPreview(provider, 'text/plain');
+      // Selection could've changed while the preview was loaded
+      if (entry.selected) {
+        this._showPreview(preview, value);
+      }
+    } else {
       this._showPreview(null, value);
-      return;
     }
-    const protocol = this._domStorage.isLocalStorage ? 'localstorage' : 'sessionstorage';
-    const url = `${protocol}://${entry.key}`;
-    const provider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
-        url, Common.ResourceType.resourceTypes.XHR, /** @type {string} */ (value));
-    const preview = await SourceFrame.PreviewFactory.PreviewFactory.createPreview(provider, 'text/plain');
-    // Selection could've changed while the preview was loaded
-    if (!entry.selected) {
-      return;
-    }
-    this._showPreview(preview, value);
   }
 }

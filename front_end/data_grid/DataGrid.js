@@ -1736,6 +1736,8 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     this.nodeAccessibleText = '';
     /** @type {!Map<string, string>}} */
     this.cellAccessibleTextMap = new Map();
+    /** @type {boolean} */
+    this.isCreationNode = false;
   }
 
   /**

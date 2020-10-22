@@ -132,6 +132,7 @@ interface Element {
   positionAt(x: (number|undefined), y: (number|undefined), relativeTo?: Element): void;
   removeChildren(): void;
   scrollIntoViewIfNeeded(center?: boolean): void;
+  selectionLeftOffset(): (number|null);
   totalOffsetTop(): number;
   totalOffsetLeft(): number;
 }

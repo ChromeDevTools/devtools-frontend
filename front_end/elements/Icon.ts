@@ -20,22 +20,7 @@ export interface IconWithName {
 
 type IconData = IconWithPath|IconWithName;
 
-interface ColouredIconStyles {
-  webkitMaskImage: string;
-  webkitMaskPosition: string;
-  webkitMaskRepeat: string;
-  webkitMaskSize: string;
-  backgroundColor: string;
-}
-
-interface IconStyles {
-  backgroundImage: string;
-  backgroundPosition: string;
-  backgroundRepeat: string;
-  backgroundSize: string;
-}
-
-type Styles = ColouredIconStyles|IconStyles;
+const isString = (value: string|undefined): value is string => value !== undefined;
 
 export class Icon extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
@@ -44,51 +29,62 @@ export class Icon extends HTMLElement {
   private color: Readonly<string> = 'rgb(110 110 110)';
   private width: Readonly<string> = '100%';
   private height: Readonly<string> = '100%';
-  private styles: Readonly<Styles> = {
-    webkitMaskImage: 'url(' + this.iconPath + ')',
-    webkitMaskPosition: 'center',
-    webkitMaskRepeat: 'no-repeat',
-    webkitMaskSize: 'contain',
-    backgroundColor: this.color,
-  };
+  private iconName?: Readonly<string>;
 
+  set data(data: IconData) {
+    const {width, height} = data;
+    this.color = data.color;
+    this.width = isString(width) ? width : (isString(height) ? height : this.width);
+    this.height = isString(height) ? height : (isString(width) ? width : this.height);
+    this.iconPath = 'iconPath' in data ? data.iconPath : `Images/${data.iconName}.svg`;
+    if ('iconName' in data) {
+      this.iconName = data.iconName;
+    }
+    this.render();
+  }
 
   get data(): IconData {
-    return {
-      iconPath: this.iconPath,
+    const commonData = {
       color: this.color,
       width: this.width,
       height: this.height,
     };
+    if (this.iconName) {
+      return {
+        ...commonData,
+        iconName: this.iconName,
+      };
+    }
+    return {
+      ...commonData,
+      iconPath: this.iconPath,
+    };
   }
 
-  set data(data: IconData) {
-    this.iconPath =
-        'iconPath' in data ? data.iconPath : 'Images/' + ('iconName' in data ? data.iconName : 'some_icon') + '.svg';
-    this.color = data.color;
-    this.width = data.width ? data.width : (data.height ? data.height : this.width);
-    this.height = data.height ? data.height : (data.width ? data.width : this.height);
-    this.setStyles(data.color);
-    this.render();
-  }
-
-  private setStyles(color: string) {
+  private getStyles() {
+    const {iconPath, width, height, color} = this;
+    const commonStyles = {
+      width,
+      height,
+      display: 'inline-block',
+    };
     if (color) {
-      this.styles = {
-        webkitMaskImage: `url(${this.iconPath})`,
+      return {
+        ...commonStyles,
+        webkitMaskImage: `url(${iconPath})`,
         webkitMaskPosition: 'center',
         webkitMaskRepeat: 'no-repeat',
         webkitMaskSize: '100%',
-        backgroundColor: this.color,
-      };
-    } else {
-      this.styles = {
-        backgroundImage: `url(${this.iconPath})`,
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: '100%',
+        backgroundColor: `var(--icon-color, ${color})`,
       };
     }
+    return {
+      ...commonStyles,
+      backgroundImage: `url(${iconPath})`,
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: '100%',
+    };
   }
 
   private render() {
@@ -99,14 +95,8 @@ export class Icon extends HTMLElement {
           display: inline-block;
           white-space: nowrap;
         }
-
-        .icon-basic {
-          display: inline-block;
-          width: ${this.width};
-          height: ${this.height};
-        }
       </style>
-      <span class="icon-basic" style=${LitHtml.Directives.styleMap(this.styles)}></span>
+      <span class="icon-basic" style=${LitHtml.Directives.styleMap(this.getStyles())}></span>
     `, this.shadow);
     // clang-format on
   }

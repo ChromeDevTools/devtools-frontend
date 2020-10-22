@@ -18,6 +18,10 @@
           width: 50%;
           height: 50px;
         }
+
+        .custom-color {
+          --icon-color: blue;
+        }
     </style>
   </head>
   <body>
@@ -70,6 +74,20 @@
         row2.appendChild(icon2);
 
         iconTable.appendChild(row2);
+
+        const row3 = document.createElement('tr');
+        const iconName3 = document.createElement('td');
+        iconName3.textContent = 'breaking_change_icon';
+        row3.appendChild(iconName3);
+
+        const otherIcon2 = new Icon();
+        otherIcon2.classList.add('custom-color');
+        otherIcon2.data = {iconName: 'node_search_icon', width:'24px', height: '24px', color: 'black'};
+        const icon3 = document.createElement('td');
+        icon3.appendChild(otherIcon2);
+        row3.appendChild(icon3);
+
+        iconTable.appendChild(row3);
       }
 
     </script>

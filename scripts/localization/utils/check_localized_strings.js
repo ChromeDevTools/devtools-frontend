@@ -104,7 +104,7 @@ let devtoolsFrontendDirs;
 // During migration process, we will update this when a directory is migrated
 // e.g. const migratedDirsSet = new Set(['settings', 'console']);
 // TODO(crbug.com/941561): Remove once localization V1 is no longer used.
-const migratedDirsSet = new Set([]);
+const migratedDirsSet = new Set(['settings']);
 const locV1CallsInMigratedFiles = new Set();
 
 /**
@@ -279,10 +279,6 @@ async function parseLocalizableStrings(devtoolsFiles) {
 
 async function parseLocalizableStringsFromFile(filePath) {
   const fileContent = await localizationUtils.parseFileContent(filePath);
-  if (hasUIStrings(fileContent)) {
-    const dirName = path.basename(path.dirname(filePath));
-    migratedDirsSet.add(dirName);
-  }
 
   if (path.basename(filePath) === 'module.json') {
     return parseLocalizableStringFromModuleJson(fileContent, filePath);
@@ -586,14 +582,6 @@ function addString(str, code, filePath, location, argumentNodes) {
 function isInMigratedDirectory(filePath) {
   const dirName = path.basename(path.dirname(filePath));
   return migratedDirsSet.has(dirName);
-}
-
-/**
- * Check if UIStrings presents in the file
- */
-function hasUIStrings(content) {
-  const sourceFile = ts.createSourceFile('', content, ts.ScriptTarget.ESNext, true);
-  return (findUIStringsNode(sourceFile) !== null);
 }
 
 /**

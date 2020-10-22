@@ -1,1 +1,134 @@
-{}
+{
+  "settings/FrameworkBlackboxSettingsTab.js | addFilenamePattern": {
+    "message": "Add filename pattern"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | addPattern": {
+    "message": "Add pattern..."
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | behavior": {
+    "message": "Behavior"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | blackbox": {
+    "message": "Blackbox"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | blackboxContentScripts": {
+    "message": "Blackbox content scripts"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | blackboxContentScriptsExtension": {
+    "message": "Blackbox content scripts (extension scripts in the page)"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | blackboxScriptsWhoseNamesMatchS": {
+    "message": "Blackbox scripts whose names match '{PH1}'"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | debuggerWillSkipThroughThe": {
+    "message": "Debugger will skip through the scripts and will not stop on exceptions thrown by them."
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | disabled": {
+    "message": "Disabled"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | frameworkBlackboxing": {
+    "message": "Framework Blackboxing"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | noBlackboxedPatterns": {
+    "message": "No blackboxed patterns"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | pattern": {
+    "message": "Pattern"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | patternAlreadyExists": {
+    "message": "Pattern already exists"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | patternCannotBeEmpty": {
+    "message": "Pattern cannot be empty"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | patternMustBeAValidRegular": {
+    "message": "Pattern must be a valid regular expression"
+  },
+  "settings/KeybindsSettingsTab.js | addAShortcut": {
+    "message": "Add a shortcut"
+  },
+  "settings/KeybindsSettingsTab.js | confirmChanges": {
+    "message": "Confirm changes"
+  },
+  "settings/KeybindsSettingsTab.js | discardChanges": {
+    "message": "Discard changes"
+  },
+  "settings/KeybindsSettingsTab.js | editShortcut": {
+    "message": "Edit shortcut"
+  },
+  "settings/KeybindsSettingsTab.js | FullListOfDevtoolsKeyboard": {
+    "message": "Full list of DevTools keyboard shortcuts and gestures"
+  },
+  "settings/KeybindsSettingsTab.js | keyboardShortcutsList": {
+    "message": "Keyboard shortcuts list"
+  },
+  "settings/KeybindsSettingsTab.js | matchShortcutsFromPreset": {
+    "message": "Match shortcuts from preset"
+  },
+  "settings/KeybindsSettingsTab.js | noShortcutForAction": {
+    "message": "No shortcut for action"
+  },
+  "settings/KeybindsSettingsTab.js | removeShortcut": {
+    "message": "Remove shortcut"
+  },
+  "settings/KeybindsSettingsTab.js | RestoreDefaultShortcuts": {
+    "message": "Restore default shortcuts"
+  },
+  "settings/KeybindsSettingsTab.js | shortcutModified": {
+    "message": "Shortcut modified"
+  },
+  "settings/KeybindsSettingsTab.js | shortcuts": {
+    "message": "Shortcuts"
+  },
+  "settings/KeybindsSettingsTab.js | shortcutsCannotContainOnly": {
+    "message": "Shortcuts cannot contain only modifier keys."
+  },
+  "settings/KeybindsSettingsTab.js | thisShortcutIsInUseByS": {
+    "message": "This shortcut is in use by {PH1}."
+  },
+  "settings/ModuleUIStrings.js | blackboxing": {
+    "message": "Blackboxing"
+  },
+  "settings/ModuleUIStrings.js | documentation": {
+    "message": "Documentation"
+  },
+  "settings/ModuleUIStrings.js | experiments": {
+    "message": "Experiments"
+  },
+  "settings/ModuleUIStrings.js | preferences": {
+    "message": "Preferences"
+  },
+  "settings/ModuleUIStrings.js | settings": {
+    "message": "Settings"
+  },
+  "settings/ModuleUIStrings.js | shortcuts": {
+    "message": "Shortcuts"
+  },
+  "settings/SettingsScreen.js | experiments": {
+    "message": "Experiments"
+  },
+  "settings/SettingsScreen.js | oneOrMoreSettingsHaveChanged": {
+    "message": "One or more settings have changed which requires a reload to take effect."
+  },
+  "settings/SettingsScreen.js | preferences": {
+    "message": "Preferences"
+  },
+  "settings/SettingsScreen.js | restoreDefaultsAndReload": {
+    "message": "Restore defaults and reload"
+  },
+  "settings/SettingsScreen.js | settings": {
+    "message": "Settings"
+  },
+  "settings/SettingsScreen.js | shortcuts": {
+    "message": "Shortcuts"
+  },
+  "settings/SettingsScreen.js | theseExperimentsAreParticularly": {
+    "message": "These experiments are particularly unstable. Enable at your own risk."
+  },
+  "settings/SettingsScreen.js | theseExperimentsCouldBeUnstable": {
+    "message": "These experiments could be unstable or unreliable and may require you to restart DevTools."
+  },
+  "settings/SettingsScreen.js | warning": {
+    "message": "WARNING:"
+  }
+}

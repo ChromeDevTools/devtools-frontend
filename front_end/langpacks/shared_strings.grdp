@@ -109,9 +109,6 @@
   <message name="IDS_DEVTOOLS_29296fcb28eb4edf5d0049b6cac7bbd1" desc="Text for a percentage value">
     <ph name="SCALE">$1.0f<ex>13.0</ex></ph>%%
   </message>
-  <message name="IDS_DEVTOOLS_29e9d8e295b1d5b3002d2d3d5baa4c37" desc="Text for keyboard shortcuts">
-    Shortcuts
-  </message>
   <message name="IDS_DEVTOOLS_2ae207ddfe5cd256a768769d93a879e5" desc="Title of the paint profiler, old name of the performance pane">
     Paint Profiler
   </message>
@@ -271,9 +268,6 @@
   <message name="IDS_DEVTOOLS_5a0a64ecca63ba9a006b6397cbdc2b8c" desc="Text to go to a given line">
     Go to line
   </message>
-  <message name="IDS_DEVTOOLS_5b6cf869265c13af8566f192b4ab3d2a" desc="Text for the documentation of something">
-    Documentation
-  </message>
   <message name="IDS_DEVTOOLS_5de39fa1bce4bbf9232597a2120bc4d4" desc="Text to open the cubic bezier editor">
     Open cubic bezier editor.
   </message>
@@ -303,9 +297,6 @@
   </message>
   <message name="IDS_DEVTOOLS_65b4c7424dd695c30efa73da8396c90c" desc="Title of the Profiler tool">
     Profiler
-  </message>
-  <message name="IDS_DEVTOOLS_678b7bbae3b9b67cee8bce1fac3067d7" desc="Text for a hyperlink to the shortcut documentation in Shortcuts page">
-    Full list of <ph name="LOCKED_1">DevTools</ph> keyboard shortcuts and gestures
   </message>
   <message name="IDS_DEVTOOLS_6827a85b76e967f6a129e08f9272e76d" desc="Text in Application Panel Sidebar of the Application panel">
     Local Storage

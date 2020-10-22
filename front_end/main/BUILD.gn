@@ -18,6 +18,7 @@ devtools_module("main") {
     "../components:bundle",
     "../extensions:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../persistence:bundle",
     "../platform:bundle",
     "../protocol_client:bundle",

@@ -39,6 +39,9 @@
   <message name="IDS_DEVTOOLS_21e2320215eb46d452e7494f3dd1c798" desc="Text in the Shortcuts page to explain a keyboard shortcut (navigation in Styles pane)">
     Next/previous property
   </message>
+  <message name="IDS_DEVTOOLS_29e9d8e295b1d5b3002d2d3d5baa4c37" desc="Text for keyboard shortcuts">
+    Shortcuts
+  </message>
   <message name="IDS_DEVTOOLS_2ab5656e27a0ed871c8de44368f807c6" desc="Title of the styles side pane in Elements panel">
     Styles Pane
   </message>
@@ -62,6 +65,9 @@
   </message>
   <message name="IDS_DEVTOOLS_3b9dc6454ee96394b3d853e8d597ebc6" desc="Text in the Shortcuts page to explain a keyboard shortcut (increment value in Styles pane)">
     Increment value
+  </message>
+  <message name="IDS_DEVTOOLS_678b7bbae3b9b67cee8bce1fac3067d7" desc="Text for a hyperlink to the shortcut documentation in Shortcuts page">
+    Full list of <ph name="LOCKED_1">DevTools</ph> keyboard shortcuts and gestures
   </message>
   <message name="IDS_DEVTOOLS_727b701bcc5f26422461f10c07a58d48" desc="Text for context menu action to move a tab to the main panel">
     Move to top

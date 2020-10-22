@@ -3,9 +3,6 @@
   <message name="IDS_DEVTOOLS_412dac8227bbaf752fecaad8826f20e6" desc="Text in Resource Script Mapping">
     LiveEdit failed: <ph name="ERROR">$1s<ex>warning</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_580a14d3aff485e853e036d34a664725" desc="Error message that is displayed when evaluation returns an invalid JS type">
-    Invalid JS type on the evaluation result: <ph name="VALUE_JS_TYPE">$1s<ex>TYPE</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_5e2c3eac46d298d72b51f1500601d7be" desc="Error message that is displayed in the Sources panel when can't be loaded.">
     Unknown error loading file
   </message>

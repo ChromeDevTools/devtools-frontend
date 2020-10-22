@@ -169,6 +169,28 @@ export class LanguageExtensionEndpoint {
   }
   /**
    * @override
+   * @param {string} expression
+   * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} context
+   * @return {!Promise<?{typeInfos: !Array<!Bindings.DebuggerLanguagePlugins.TypeInfo>, base: !Bindings.DebuggerLanguagePlugins.EvalBase}>}
+   */
+  getTypeInfo(expression, context) {
+    return /** @type {!Promise<?{typeInfos: !Array<!Bindings.DebuggerLanguagePlugins.TypeInfo>, base: !Bindings.DebuggerLanguagePlugins.EvalBase}>} */ (
+        this._sendRequest(this._commands.GetTypeInfo, {expression, context}));
+  }
+
+  /**
+   * @override
+   * @param {string|{base: !Bindings.DebuggerLanguagePlugins.EvalBase, field: !Array<!Bindings.DebuggerLanguagePlugins.FieldInfo>}} expressionOrField
+   * @param {!Bindings.DebuggerLanguagePlugins.RawLocation} context
+   * @return {!Promise<!{js: string}>}
+   */
+  getFormatter(expressionOrField, context) {
+    return /** @type {!Promise<!{js: string}>} */ (
+        this._sendRequest(this._commands.GetFormatter, {expressionOrField, context}));
+  }
+
+  /**
+   * @override
    */
   dispose() {
   }

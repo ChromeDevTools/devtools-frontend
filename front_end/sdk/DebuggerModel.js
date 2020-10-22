@@ -1680,6 +1680,17 @@ export class CallFrame {
       return {error: 'Side-effect checks not supported by backend.'};
     }
 
+    if (this._script && this._script.isWasm()) {
+      // @ts-ignore
+      const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this.debuggerModel);
+      if (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging') && pluginManager) {
+        const result = await pluginManager.evaluateExpression(options.expression, this);
+        if (result) {
+          return result;
+        }
+      }
+    }
+
     const response = await this.debuggerModel._agent.invoke_evaluateOnCallFrame({
       callFrameId: this.id,
       expression: options.expression,

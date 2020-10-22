@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$$, getBrowserAndPages, step, waitFor, waitForFunction} from '../../../shared/helper.js';
+import {getBrowserAndPages, step, waitFor, waitForFunction} from '../../../shared/helper.js';
 import {describe, it} from '../../../shared/mocha-extensions.js';
 import {ACTIVITY_COLUMN_SELECTOR, navigateToCallTreeTab} from '../../helpers/performance-helpers.js';
 import {clickOnFunctionLink, getTotalTimeFromSummary, navigateToBottomUpTab, navigateToPerformanceTab, retrieveActivity, searchForComponent, startRecording, stopRecording} from '../../helpers/performance-helpers.js';
@@ -14,13 +14,10 @@ async function expandAndCheckActivityTree(frontend: puppeteer.Page, expectedActi
   let index = 0;
   do {
     await waitForFunction(async () => {
-      const expandedActivities = await $$('.data-grid-data-grid-node.selected.revealed');
-      return expandedActivities.length === 1;
+      const tree_item = await waitFor('.data-grid-data-grid-node.selected.revealed .activity-name');
+      const tree_item_text = await frontend.evaluate(el => el.innerText, tree_item);
+      return expectedActivities[index] === tree_item_text;
     });
-    const tree_item = await frontend.$('.data-grid-data-grid-node.selected.revealed .activity-name');
-    assert.strictEqual(
-        await frontend.evaluate(el => el.innerText, tree_item), expectedActivities[index],
-        'tree does not display the values correctly');
     index++;
     await frontend.keyboard.press('ArrowRight');
     await frontend.keyboard.press('ArrowRight');
@@ -28,6 +25,9 @@ async function expandAndCheckActivityTree(frontend: puppeteer.Page, expectedActi
 }
 
 describe('The Performance panel', async function() {
+  // These tests have lots of waiting which might take more time to execute
+  this.timeout(20000);
+
   beforeEach(async () => {
     const {target, frontend} = getBrowserAndPages();
 

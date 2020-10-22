@@ -28,11 +28,6 @@
   flex: 0 0 150px;
 }
 
-.animation-node-description:focus-visible {
-  overflow: auto;
-  box-shadow: 0 0 0 2px var(--accent-color) inset;
-}
-
 .animation-node-description > * {
   flex: 0 0 auto;
 }

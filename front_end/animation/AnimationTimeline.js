@@ -934,15 +934,7 @@ export class NodeUI {
     }
     this._node = node;
     this._nodeChanged();
-    Common.Linkifier.Linkifier.linkify(node, {tooltip: undefined, preventKeyboardFocus: true}).then(link => {
-      this._description.appendChild(link);
-      this._description.addEventListener('keydown', event => {
-        if (isEnterOrSpaceKey(event) && this._node) {
-          Common.Revealer.reveal(node, false);
-          event.consume(true);
-        }
-      });
-    });
+    Common.Linkifier.Linkifier.linkify(node).then(link => this._description.appendChild(link));
     if (!node.ownerDocument) {
       this.nodeRemoved();
     }

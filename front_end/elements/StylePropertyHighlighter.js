@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
@@ -62,7 +59,7 @@ export class StylePropertyHighlighter {
     let result = null;
     for (const section of this._styleSidebarPane.allSections()) {
       let treeElement = section.propertiesTreeOutline.firstChild();
-      while (treeElement && !result) {
+      while (treeElement && !result && (treeElement instanceof StylePropertyTreeElement)) {
         if (compareCb(treeElement)) {
           result = treeElement;
           break;
@@ -73,11 +70,6 @@ export class StylePropertyHighlighter {
         break;
       }
     }
-
-    if (!result) {
-      return null;
-    }
-
     return result;
   }
 

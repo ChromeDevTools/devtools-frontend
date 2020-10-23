@@ -585,6 +585,9 @@ export class RuntimeExtensionDescriptor {
     // circular dep between emulation and root.
     /** @type {?} */
     this.device;
+
+    /** @type {string|null} */
+    this.viewId;
   }
 }
 

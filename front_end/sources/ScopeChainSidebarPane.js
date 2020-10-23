@@ -76,10 +76,10 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
 
   /**
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
-   * @return {!Array<!SDK.DebuggerModel.ScopeChainEntry>}
+   * @return {!Promise<!Array<!SDK.DebuggerModel.ScopeChainEntry>>}
    */
-  _getScopeChain(callFrame) {
-    return callFrame.sourceScopeChain || callFrame.scopeChain();
+  async _getScopeChain(callFrame) {
+    return (await callFrame.sourceScopeChain) || callFrame.scopeChain();
   }
 
   _update() {
@@ -94,7 +94,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
    * @param {?SDK.DebuggerModel.CallFrame} callFrame
    * @param {?SDK.RemoteObject.RemoteObject} thisObject
    */
-  _innerUpdate(details, callFrame, thisObject) {
+  async _innerUpdate(details, callFrame, thisObject) {
     this._treeOutline.removeChildren();
     this.contentElement.removeChildren();
 
@@ -105,7 +105,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
 
     this.contentElement.appendChild(this._treeOutline.element);
     let foundLocalScope = false;
-    const scopeChain = this._getScopeChain(callFrame);
+    const scopeChain = await this._getScopeChain(callFrame);
     for (let i = 0; i < scopeChain.length; ++i) {
       const scope = scopeChain[i];
       const extraProperties = this._extraPropertiesForScope(scope, details, callFrame, thisObject, i === 0);

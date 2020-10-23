@@ -588,16 +588,18 @@ export class DebuggerPlugin extends Plugin {
      * @return {!Promise<?EvaluationResult>}
      */
     async function evaluate(uiSourceCode, evaluationText) {
-      if (selectedCallFrame.script.isWasm() && selectedCallFrame.sourceScopeChain) {
-        for (const scopeChain of selectedCallFrame.sourceScopeChain) {
-          const value = await /** @type {!Bindings.DebuggerLanguagePlugins.SourceScope}*/ (scopeChain)
-                            .getVariableValue(evaluationText);
-          if (value) {
-            return {object: value};
+      if (selectedCallFrame.script.isWasm()) {
+        const sourceScopeChain = await selectedCallFrame.sourceScopeChain;
+        if (sourceScopeChain) {
+          for (const scopeChain of sourceScopeChain) {
+            const object = await /** @type {!Bindings.DebuggerLanguagePlugins.SourceScope}*/ (scopeChain)
+                               .getVariableValue(evaluationText);
+            if (object) {
+              return {object};
+            }
           }
+          return null;
         }
-
-        return null;
       }
 
       const resolvedText = await resolveExpression(

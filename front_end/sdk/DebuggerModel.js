@@ -677,24 +677,16 @@ export class DebuggerModel extends SDKModel {
       // @ts-ignore
       const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this);
       if (pluginManager) {
-        /** @type {!Array<!CallFrame>} */
-        const newFrames = [];
-        for (const callFrame of debuggerPausedDetails.callFrames) {
-          const functionInfos = await pluginManager.getFunctionInfo(callFrame);
-          if (functionInfos.frames.length) {
-            for (let i = 0; i < functionInfos.frames.length; i++) {
-              newFrames.push(callFrame.createVirtualCallFrame(i, functionInfos.frames[i].name));
-            }
-          } else {
-            // Leave unchanged.
-            newFrames.push(callFrame);
-          }
-        }
-        for (const callFrame of newFrames) {
-          // @ts-ignore
-          callFrame.sourceScopeChain = await pluginManager.resolveScopeChain(callFrame);
-        }
-        debuggerPausedDetails.callFrames = newFrames;
+        debuggerPausedDetails.callFrames =
+            (await Promise.all(debuggerPausedDetails.callFrames.map(async callFrame => {
+              const {frames} = await pluginManager.getFunctionInfo(callFrame);
+              if (frames.length) {
+                return frames.map(
+                    (/** @type {!{name: string}} */ {name}, /** @type {number} */ index) =>
+                        callFrame.createVirtualCallFrame(index, name));
+              }
+              return callFrame;
+            }))).flat();
       }
       this._isPausing = false;
       this._debuggerPausedDetails = debuggerPausedDetails;
@@ -1525,8 +1517,8 @@ export class CallFrame {
    */
   constructor(debuggerModel, script, payload, inlineFrameIndex, functionName) {
     this.debuggerModel = debuggerModel;
-    /** @type {?Array<!ScopeChainEntry>} */
-    this.sourceScopeChain = null;
+    /** @type {?Promise<?Array<!ScopeChainEntry>>} */
+    this._sourceScopeChain = null;
     this._script = script;
     this._payload = payload;
     this._location = Location.fromPayload(debuggerModel, payload.location, inlineFrameIndex);
@@ -1547,6 +1539,20 @@ export class CallFrame {
     }
     this._returnValue =
         payload.returnValue ? this.debuggerModel._runtimeModel.createRemoteObject(payload.returnValue) : null;
+  }
+
+  /**
+   * @return {!Promise<?Array<!ScopeChainEntry>>}
+   */
+  get sourceScopeChain() {
+    if (this._sourceScopeChain) {
+      return this._sourceScopeChain;
+    }
+    // @ts-ignore
+    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this.debuggerModel);
+    const sourceScopeChain = pluginManager ? pluginManager.resolveScopeChain(this) : Promise.resolve(null);
+    this._sourceScopeChain = sourceScopeChain;
+    return sourceScopeChain;
   }
 
   /**

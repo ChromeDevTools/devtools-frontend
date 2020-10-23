@@ -932,7 +932,7 @@
           MobileThrottling.networkPresets[1],
           [
             'online event: online = true',
-            'connection change event: type = cellular; downlinkMax = 0.390625; effectiveType = 2g'
+            'connection change event: type = cellular; downlinkMax = 0.3814697265625; effectiveType = 2g'
           ],
           step3);
     }
@@ -940,7 +940,7 @@
     function step3() {
       testPreset(
           MobileThrottling.networkPresets[0],
-          ['connection change event: type = cellular; downlinkMax = 1.4400000000000002; effectiveType = 3g'],
+          ['connection change event: type = cellular; downlinkMax = 1.373291015625; effectiveType = 3g'],
           test.releaseControl.bind(test));
     }
   };

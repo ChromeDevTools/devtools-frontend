@@ -105,7 +105,7 @@ export class CountersGraph extends UI.Widget.VBox {
             Common.UIString.UIString('Listeners'), Common.UIString.UIString('Listeners: %s'), 'hsl(38, 90%, 43%)'));
 
     this._gpuMemoryCounter = this._createCounter(
-        Common.UIString.UIString('GPU Memory'), Common.UIString.UIString('GPU Memory [KB]: %s'), 'hsl(300, 90%, 43%)',
+        Common.UIString.UIString('GPU Memory'), Common.UIString.UIString('GPU Memory: %s'), 'hsl(300, 90%, 43%)',
         Platform.NumberUtilities.bytesToString);
     this._countersByName.set('gpuMemoryUsedKB', this._gpuMemoryCounter);
   }

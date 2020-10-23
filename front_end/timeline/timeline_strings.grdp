@@ -16,7 +16,7 @@
     Show recent timeline sessions
   </message>
   <message name="IDS_DEVTOOLS_01da20cf88fba2246309c541bddac1b1" desc="Text in Counters Graph of the Performance panel">
-    Documents: <ph name="PH1">$1s<ex>hsl(0, 90%, 43%)</ex></ph>
+    Documents: <ph name="NUMBER_OF_DOCUMENTS">$1s<ex>17</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_01ea16e89d02c33ef2a6a5db67665e0a" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Main — <ph name="TRACK_URL">$1s<ex>example.com</ex></ph>
@@ -119,7 +119,7 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
     Finish Loading
   </message>
   <message name="IDS_DEVTOOLS_1b01d1ef7772f8e0c0e0427e4faad653" desc="Text in Counters Graph of the Performance panel">
-    Listeners: <ph name="PH1">$1s<ex>hsl(38, 90%, 43%)</ex></ph>
+    Listeners: <ph name="NUMBER_OF_LISTENERS">$1s<ex>17</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_1b2c363066d5912ae8b27a1527f3d45e" desc="Text in Timeline Tree View of the Performance panel">
     Group by Domain
@@ -212,7 +212,7 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
     Compilation cache status
   </message>
   <message name="IDS_DEVTOOLS_2f3e2f48b161c9cadd45dcdffd726c79" desc="Text in Counters Graph of the Performance panel">
-    JS Heap: <ph name="PH1">$1s<ex>hsl(220, 90%, 43%)</ex></ph>
+    JS Heap: <ph name="HEAP_SIZE">$1s<ex>900 kB</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_2f709c2af7d47a610e3c48a87d1ec429" desc="Text in Timeline UIUtils of the Performance panel">
     Invalidate Layout
@@ -430,6 +430,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_5fe7053d3a0e35c2a3242996e690e160" desc="Text in Timeline UIUtils of the Performance panel">
     Update Layer
   </message>
+  <message name="IDS_DEVTOOLS_60c175e4a42c04b61d215fe43d093d46" desc="Text in Counters Graph of the Performance panel">
+    GPU Memory: <ph name="MEMORY_SIZE">$1s<ex>900 kB</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_60c21f78ce2dcd2da001fa3221c8ca15" desc="Text in Timeline UIUtils of the Performance panel">
     Nodes:
   </message>
@@ -574,9 +577,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_871646cb17b6936aa29df33b8d550051" desc="Text in Timeline UIUtils of the Performance panel">
     Update Layer Tree
   </message>
-  <message name="IDS_DEVTOOLS_87644f7e0957c4bf2990aedfe046b71e" desc="Text in Counters Graph of the Performance panel">
-    GPU Memory [KB]: <ph name="PH1">$1s<ex>hsl(300, 90%, 43%)</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_8767b19ee08e463a7355033924ea7112" desc="Accessible label for the timeline session selection menu">
     Select Timeline Session
   </message>
@@ -610,7 +610,7 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
     Request Idle Callback
   </message>
   <message name="IDS_DEVTOOLS_8d98af06b412f3f2455c2786e88aabdb" desc="Text in Counters Graph of the Performance panel">
-    Nodes: <ph name="PH1">$1s<ex>hsl(120, 90%, 43%)</ex></ph>
+    Nodes: <ph name="NUMBER_OF_NODES">$1s<ex>17</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_8dc1f1afb0dcd5282b146c8cf5d758e1" desc="Title in Timeline Flame Chart Data Provider of the Performance panel">
     Unexpected entryIndex <ph name="ENTRYINDEX">$1d<ex>2</ex></ph>

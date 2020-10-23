@@ -349,7 +349,10 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     if (bytes === '') {
       return '0 bytes';
     }
-    const power = Math.floor(Math.log(bytes) / Math.log(1024));
+    if (bytes < 1000) {
+      return `${bytes} bytes`;
+    }
+    const power = Math.floor(Math.log10(bytes) / 3);
     const suffix = ['bytes', 'kB', 'MB', 'GB', 'TB'][power];
     const bytesDecimal = (bytes / Math.pow(1000, power)).toFixed(2);
     return `${bytesDecimal} ${suffix}`;

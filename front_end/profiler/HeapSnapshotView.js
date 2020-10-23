@@ -1786,7 +1786,7 @@ export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
    * @return {string}
    */
   static _valueFormatter(value) {
-    return Common.UIString.UIString('%s KB', Number.withThousandsSeparator(Math.round(value / 1024)));
+    return Common.UIString.UIString('%s kB', Number.withThousandsSeparator(Math.round(value / 1000)));
   }
 
   /**

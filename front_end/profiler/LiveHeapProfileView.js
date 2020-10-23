@@ -313,7 +313,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         break;
       case 'size':
         cell.textContent = Number.withThousandsSeparator(Math.round(this._size / 1e3));
-        cell.createChild('span', 'size-units').textContent = ls`KB`;
+        cell.createChild('span', 'size-units').textContent = ls`kB`;
         break;
       case 'isolates':
         cell.textContent = `${this._isolateCount}`;

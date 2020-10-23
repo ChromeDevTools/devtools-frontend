@@ -24,12 +24,6 @@
   <message name="IDS_DEVTOOLS_3602f195c0823b75591b5546c3d5df00" desc="Icon title in Network Panel Indicator of the Network panel">
     Requests may be rewritten by local overrides
   </message>
-  <message name="IDS_DEVTOOLS_37234a1bcbabe4e8e7448f4bbcf5c2b4" desc="Text in Throttling Settings Tab of the Network panel">
-    <ph name="THROUGHPUTINKBPS">$1d<ex>25</ex></ph><ph name="DELIMITER">$2s<ex>''' '''</ex></ph>kb/s
-  </message>
-  <message name="IDS_DEVTOOLS_38c8cb828795cd6ff1cddda9b4ffcfa8" desc="Text in Throttling Settings Tab of the Network panel">
-    <ph name="THROUGHPUTINKBPS___________">$1d<ex>25</ex></ph><ph name="DELIMITER">$2s<ex>''' '''</ex></ph>Mb/s
-  </message>
   <message name="IDS_DEVTOOLS_3e3f8a3abd60f2389b744ca8ed0aa4d9" desc="Text for no network throttling">
     No throttling
   </message>
@@ -41,6 +35,9 @@
   </message>
   <message name="IDS_DEVTOOLS_56d7a17ecb7d30faf8daf8a6eb57e3bb" desc="Title of an action in the network conditions tool to network offline">
     Go offline
+  </message>
+  <message name="IDS_DEVTOOLS_60668fa2e502b9296e2584245f95adf8" desc="Text in Throttling Settings Tab of the Network panel">
+    <ph name="THROUGHPUTINKBPS">$1d<ex>25</ex></ph><ph name="DELIMITER">$2s<ex> </ex></ph>kB/s
   </message>
   <message name="IDS_DEVTOOLS_66f359f361974efb1b18d69784d45b95" desc="Error message for Latency input in Throttling pane of the Settings">
     Latency must be an integer between <ph name="MINLATENCY">$1s<ex>0</ex></ph>ms to <ph name="MAXLATENCY">$2s<ex>1000000</ex></ph>ms inclusive
@@ -62,6 +59,9 @@
   </message>
   <message name="IDS_DEVTOOLS_9b6545e4cea9b4ad4979d41bb9170e2b" desc="Text in Mobile Throttling Selector of the Network panel">
     Advanced
+  </message>
+  <message name="IDS_DEVTOOLS_9cbb5fca21d445b1807679fad99add41" desc="Text in Throttling Settings Tab of the Network panel">
+    <ph name="THROUGHPUTINKBPS___________">$1d<ex>25</ex></ph><ph name="DELIMITER">$2s<ex> </ex></ph>MB/s
   </message>
   <message name="IDS_DEVTOOLS_a808cbcba081a943f4faedda831298b5" desc="Text in Throttling Settings Tab of the Network panel">
     kb/s
@@ -87,11 +87,11 @@
   <message name="IDS_DEVTOOLS_cb67c2b6640235af7393ca5970c1e887" desc="Text in Throttling Manager of the Network panel">
     <ph name="RATE">$1d<ex>2</ex></ph>× slowdown
   </message>
-  <message name="IDS_DEVTOOLS_d33468989239f9d3c708d05dcd7824f3" desc="Text in Throttling Settings Tab of the Network panel">
-    <ph name="THROUGHPUTINKBPS_______">$1.1f<ex>25.4</ex></ph><ph name="DELIMITER">$2s<ex>''' '''</ex></ph>Mb/s
-  </message>
   <message name="IDS_DEVTOOLS_d49429dd3e92758c218f94ed0219d620" desc="Icon title in Throttling Manager of the Network panel">
     CPU throttling is enabled
+  </message>
+  <message name="IDS_DEVTOOLS_d56595e4df1227e581dcb40cc7eaa9cf" desc="Text in Throttling Settings Tab of the Network panel">
+    <ph name="THROUGHPUTINKBPS_______">$1.1f<ex>25.4</ex></ph><ph name="DELIMITER">$2s<ex> </ex></ph>MB/s
   </message>
   <message name="IDS_DEVTOOLS_d57c24f3fe52d16e7169b912dd647f0d" desc="Text in Throttling Settings Tab of the Network panel">
     optional

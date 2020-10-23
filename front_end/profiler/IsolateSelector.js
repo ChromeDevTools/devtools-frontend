@@ -146,7 +146,7 @@ export class IsolateSelector extends UI.Widget.VBox {
    */
   static _formatTrendElement(trendValueMs, element) {
     const changeRateBytesPerSecond = trendValueMs * 1e3;
-    const changeRateThresholdBytesPerSecond = 1024;
+    const changeRateThresholdBytesPerSecond = 1000;
     if (Math.abs(changeRateBytesPerSecond) < changeRateThresholdBytesPerSecond) {
       return;
     }

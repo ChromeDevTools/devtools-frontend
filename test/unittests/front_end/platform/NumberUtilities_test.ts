@@ -42,13 +42,13 @@ describe('NumberUtilities', () => {
     });
 
     it('formats for < 100 megabytes', () => {
-      const oneAndAHalfMegabytes = 1524 * 1024;
-      assert.deepEqual(NumberUtilities.bytesToString(oneAndAHalfMegabytes), '1.6\xA0MB');
+      const oneAndAHalfMegabytes = 1500 * 1000;
+      assert.deepEqual(NumberUtilities.bytesToString(oneAndAHalfMegabytes), '1.5\xA0MB');
     });
 
     it('formats for > 100 megabytes', () => {
-      const oneMegabyte = 1024 * 1024;
-      const twoHundredAndTenMegabytes = oneMegabyte * 200;
+      const oneMegabyte = 1000 * 1000;
+      const twoHundredAndTenMegabytes = oneMegabyte * 210;
       assert.deepEqual(NumberUtilities.bytesToString(twoHundredAndTenMegabytes), '210\xA0MB');
     });
   });

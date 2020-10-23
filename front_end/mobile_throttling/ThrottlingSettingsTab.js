@@ -100,9 +100,9 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
   commitEdit(conditions, editor, isNew) {
     conditions.title = editor.control('title').value.trim();
     const download = editor.control('download').value.trim();
-    conditions.download = download ? parseInt(download, 10) * (1024 / 8) : -1;
+    conditions.download = download ? parseInt(download, 10) * (1000 / 8) : -1;
     const upload = editor.control('upload').value.trim();
-    conditions.upload = upload ? parseInt(upload, 10) * (1024 / 8) : -1;
+    conditions.upload = upload ? parseInt(upload, 10) * (1000 / 8) : -1;
     const latency = editor.control('latency').value.trim();
     conditions.latency = latency ? parseInt(latency, 10) : 0;
 
@@ -121,8 +121,8 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
   beginEdit(conditions) {
     const editor = this._createEditor();
     editor.control('title').value = conditions.title;
-    editor.control('download').value = conditions.download <= 0 ? '' : String(conditions.download / (1024 / 8));
-    editor.control('upload').value = conditions.upload <= 0 ? '' : String(conditions.upload / (1024 / 8));
+    editor.control('download').value = conditions.download <= 0 ? '' : String(conditions.download / (1000 / 8));
+    editor.control('upload').value = conditions.upload <= 0 ? '' : String(conditions.upload / (1000 / 8));
     editor.control('latency').value = conditions.latency ? String(conditions.latency) : '';
     return editor;
   }
@@ -259,13 +259,13 @@ export function throughputText(throughput, plainText) {
   if (throughput < 0) {
     return '';
   }
-  const throughputInKbps = throughput / (1024 / 8);
+  const throughputInKbps = throughput / (1000 / 8);
   const delimiter = plainText ? '' : ' ';
-  if (throughputInKbps < 1024) {
-    return Common.UIString.UIString('%d%skb/s', throughputInKbps, delimiter);
+  if (throughputInKbps < 1000) {
+    return Common.UIString.UIString('%d%skB/s', throughputInKbps, delimiter);
   }
-  if (throughputInKbps < 1024 * 10) {
-    return Common.UIString.UIString('%.1f%sMb/s', throughputInKbps / 1024, delimiter);
+  if (throughputInKbps < 1000 * 10) {
+    return Common.UIString.UIString('%.1f%sMB/s', throughputInKbps / 1000, delimiter);
   }
-  return Common.UIString.UIString('%d%sMb/s', (throughputInKbps / 1024) | 0, delimiter);
+  return Common.UIString.UIString('%d%sMB/s', (throughputInKbps / 1000) | 0, delimiter);
 }

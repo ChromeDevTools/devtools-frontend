@@ -563,7 +563,7 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
    * @return {string}
    */
   formatValue(value, precision) {
-    return Common.UIString.UIString('%s\xa0KB', Number.withThousandsSeparator(value / 1e3));
+    return Common.UIString.UIString('%s\xa0kB', Number.withThousandsSeparator(value / 1e3));
   }
 
   /**

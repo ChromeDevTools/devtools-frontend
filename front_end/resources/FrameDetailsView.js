@@ -5,6 +5,7 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Network from '../network/network.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -20,6 +21,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
    */
   constructor(frame) {
     super();
+    this._protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
     this.registerRequiredCSS('resources/frameDetailsReportView.css');
     this._frame = frame;
     this.contentElement.classList.add('frame-details-container');
@@ -49,6 +51,15 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     const summaryText = ls`Availability of certain APIs depends on the document being cross-origin isolated.`;
     const link = 'https://web.dev/why-coop-coep/';
     summaryRow.appendChild(UI.Fragment.html`<div>${summaryText} ${UI.XLink.XLink.create(link, ls`Learn more`)}</div>`);
+
+    if (this._protocolMonitorExperimentEnabled) {
+      this._additionalInfo = this._reportView.appendSection(ls`Additional Information`);
+      this._additionalInfo.setTitle(
+          ls`Additional Information`,
+          ls`This additional (debugging) information is shown because the 'Protocol Monitor' experiment is enabled.`);
+      const frameIDField = this._additionalInfo.appendField(ls`Frame ID`);
+      frameIDField.textContent = frame.id;
+    }
     this.update();
   }
 

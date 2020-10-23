@@ -21,6 +21,9 @@
   <message name="IDS_DEVTOOLS_06933067aafd48425d67bcb01bba5cb6" desc="Text in Service Workers View of the Application panel">
     Update
   </message>
+  <message name="IDS_DEVTOOLS_092bf78f9c97ba171b8232ddff585392" desc="Section header in the Frame Details view">
+    Additional Information
+  </message>
   <message name="IDS_DEVTOOLS_09428a9282bbb3ffcf3caa7826f0bf83" desc="Message in Database Model of the Application panel">
     An unexpected error <ph name="SQLERROR_CODE">$1s<ex>-197</ex></ph> occurred.
   </message>
@@ -41,6 +44,9 @@
   </message>
   <message name="IDS_DEVTOOLS_10a77618ffc0466753fde85f9bec01fd" desc="Text for button in Service Workers View of the Application panel that dispatches a periodicsync event">
     Periodic Sync
+  </message>
+  <message name="IDS_DEVTOOLS_123e28518a0abb1e9e3675f9ac67152d" desc="Explanation for why the additional information section is being shown">
+    This additional (debugging) information is shown because the &apos;Protocol Monitor&apos; experiment is enabled.
   </message>
   <message name="IDS_DEVTOOLS_1351a3eaa0f925dad980e83905bc1230" desc="Text of a DOM element in Service Workers View of the Application panel">
     Worker: <ph name="TARGETINFO_URL">$1s<ex>example.com</ex></ph>
@@ -192,6 +198,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_5e76cbfe956a74b7dda68e1e2e0dd716" desc="Title for ad frame type field">
     Ad Status
+  </message>
+  <message name="IDS_DEVTOOLS_61ae82d095f7c723d2f7963ab5181b5f" desc="Label for subtitle of frame details view">
+    Frame ID
   </message>
   <message name="IDS_DEVTOOLS_625bee64c286ac3018d57e87162f44e9" desc="Text of button in Indexed DBViews of the Application panel">
     Delete database

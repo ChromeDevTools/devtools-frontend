@@ -146,11 +146,13 @@ export class Section extends VBox {
 
   /**
    * @param {string} title
+   * @param {string=} tooltip
    */
-  setTitle(title) {
+  setTitle(title, tooltip) {
     if (this._titleElement.textContent !== title) {
       this._titleElement.textContent = title;
     }
+    this._titleElement.title = tooltip || '';
     this._titleElement.classList.toggle('hidden', !this._titleElement.textContent);
   }
 

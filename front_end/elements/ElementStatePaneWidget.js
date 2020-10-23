@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -24,46 +21,54 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     table.classList.add('source-code');
     UI.ARIAUtils.markAsPresentation(table);
 
+    /** @type {!Array<!HTMLInputElement>} */
     const inputs = [];
     this._inputs = inputs;
 
+    /** @type {!WeakMap<!HTMLInputElement,string>} */
+    this._inputStates = new WeakMap();
+
     /**
-     * @param {!Event} event
+     * @param {!MouseEvent} event
      */
-    function clickListener(event) {
+    const clickListener = event => {
       const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
-      if (!node) {
+      if (!node || !(event.target instanceof HTMLInputElement)) {
         return;
       }
-      node.domModel().cssModel().forcePseudoState(node, event.target.state, event.target.checked);
-    }
+      const state = this._inputStates.get(event.target);
+      if (!state) {
+        return;
+      }
+      node.domModel().cssModel().forcePseudoState(node, state, event.target.checked);
+    };
 
     /**
      * @param {string} state
      * @return {!Element}
      */
-    function createCheckbox(state) {
-      const td = createElement('td');
+    const createCheckbox = state => {
+      const td = document.createElement('td');
       const label = UI.UIUtils.CheckboxLabel.create(':' + state);
       const input = label.checkboxElement;
-      input.state = state;
-      input.addEventListener('click', clickListener, false);
+      this._inputStates.set(input, state);
+      input.addEventListener('click', /** @type {!EventListener} */ (clickListener), false);
       inputs.push(input);
       td.appendChild(label);
       return td;
-    }
+    };
 
     let tr = table.createChild('tr');
-    tr.appendChild(createCheckbox.call(null, 'active'));
-    tr.appendChild(createCheckbox.call(null, 'hover'));
+    tr.appendChild(createCheckbox('active'));
+    tr.appendChild(createCheckbox('hover'));
 
     tr = table.createChild('tr');
-    tr.appendChild(createCheckbox.call(null, 'focus'));
-    tr.appendChild(createCheckbox.call(null, 'visited'));
+    tr.appendChild(createCheckbox('focus'));
+    tr.appendChild(createCheckbox('visited'));
 
     tr = table.createChild('tr');
-    tr.appendChild(createCheckbox.call(null, 'focus-within'));
-    tr.appendChild(createCheckbox.call(null, 'focus-visible'));
+    tr.appendChild(createCheckbox('focus-within'));
+    tr.appendChild(createCheckbox('focus-visible'));
 
     this.contentElement.appendChild(table);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._update, this);
@@ -79,6 +84,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     if (this._cssModel) {
       this._cssModel.removeEventListener(SDK.CSSModel.Events.PseudoStateForced, this._update, this);
     }
+    /** @type {?SDK.CSSModel.CSSModel} */
     this._cssModel = cssModel;
     if (this._cssModel) {
       this._cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this._update, this);
@@ -107,7 +113,8 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       const nodePseudoState = node.domModel().cssModel().pseudoState(node);
       for (const input of this._inputs) {
         input.disabled = !!node.pseudoType();
-        input.checked = nodePseudoState.indexOf(input.state) >= 0;
+        const state = this._inputStates.get(input);
+        input.checked = nodePseudoState && state !== undefined ? nodePseudoState.indexOf(state) >= 0 : false;
       }
     } else {
       for (const input of this._inputs) {

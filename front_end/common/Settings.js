@@ -462,7 +462,7 @@ export class RegExpSetting extends Setting {
   }
 
   /**
-   * @return {!Array.<{pattern: string, disabled: (boolean|undefined)}>}
+   * @return {!Array.<!RegExpSettingItem>}
    */
   getAsArray() {
     return super.get();
@@ -478,7 +478,7 @@ export class RegExpSetting extends Setting {
   }
 
   /**
-   * @param {!Array.<{pattern: string, disabled: (boolean|undefined)}>} value
+   * @param {!Array.<!RegExpSettingItem>} value
    */
   setAsArray(value) {
     delete this._regex;
@@ -1072,3 +1072,7 @@ export function detectColorFormat(color) {
 
   return format;
 }
+
+/** @typedef {{pattern: string, disabled: (boolean|undefined)}} */
+// @ts-ignore typedef
+export let RegExpSettingItem;

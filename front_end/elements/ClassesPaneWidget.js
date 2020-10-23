@@ -382,7 +382,8 @@ export class ClassNamePrompt extends UI.TextPrompt.TextPrompt {
                                                                                 isSecondary: undefined,
                                                                                 subtitleRenderer: undefined,
                                                                                 selectionRange: undefined,
-                                                                                hideGhostText: undefined
+                                                                                hideGhostText: undefined,
+                                                                                iconElement: undefined,
                                                                               }));
     });
   }

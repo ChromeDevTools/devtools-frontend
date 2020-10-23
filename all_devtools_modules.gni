@@ -127,6 +127,7 @@ all_typescript_module_sources = [
   "elements/CSSAngleRegex.js",
   "elements/CSSAngleUtils.js",
   "elements/CSSAngle_bridge.js",
+  "elements/CSSPropertyIconResolver.js",
   "elements/ClassesPaneWidget.js",
   "elements/ColorSwatchPopoverIcon.js",
   "elements/ComputedStyleModel.js",

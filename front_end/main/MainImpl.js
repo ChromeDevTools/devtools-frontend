@@ -200,6 +200,9 @@ export class MainImpl {
         'cssGridFeatures',
         'Enable new CSS Grid debugging features (configuration options available in Layout sidebar pane in Elements after restart)');
 
+    // CSS Flexbox
+    Root.Runtime.experiments.register('cssFlexboxFeatures', 'Enable new CSS Flexbox debugging features');
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'cssGridFeatures',
     ]);

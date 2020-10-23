@@ -24,6 +24,7 @@ devtools_image_files = [
   "cssoverview_icons_2x.png",
   "elements_panel_icon.svg",
   "errorWave.svg",
+  "flex-direction-icon.svg",
   "ic_info_black_18dp.svg",
   "ic_page_next_16x16_icon.svg",
   "ic_page_prev_16x16_icon.svg",

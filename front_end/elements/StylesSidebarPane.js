@@ -35,14 +35,17 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
 import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {CSSAngleRegex} from './CSSAngleRegex.js';
+import {findIcon} from './CSSPropertyIconResolver.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
+import * as Icon from './Icon_bridge.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
@@ -2430,6 +2433,11 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       }
     }
 
+    /**
+     * Computed styles cache populated by cssFlexboxFeatures experiment.
+     * @type {?Map<string, string>}
+     */
+    this._selectedNodeComputedStyles = null;
     this._treeElement = treeElement;
     this._isEditingName = isEditingName;
     this._cssVariables = treeElement.matchedStyles().availableCSSVariables(treeElement.property.ownerStyle);
@@ -2568,7 +2576,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
    * @param {boolean=} force
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  _buildPropertyCompletions(expression, query, force) {
+  async _buildPropertyCompletions(expression, query, force) {
     const lowerQuery = query.toLowerCase();
     const editingVariable = !this._isEditingName && expression.trim().endsWith('var(');
     if (!query && !force && !editingVariable && (this._isEditingName || expression)) {
@@ -2601,11 +2609,12 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         }
       }
     }
-    results.forEach(result => {
+
+    for (const result of results) {
       if (editingVariable) {
         result.title = result.text;
         result.text += ')';
-        return;
+        continue;
       }
       const valuePreset = SDK.CSSMetadata.cssMetadata().getValuePreset(this._treeElement.name, result.text);
       if (!this._isEditingName && valuePreset) {
@@ -2613,7 +2622,42 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         result.text = valuePreset.text;
         result.selectionRange = {startColumn: valuePreset.startColumn, endColumn: valuePreset.endColumn};
       }
-    });
+    }
+
+    if (Root.Runtime.experiments.isEnabled('cssFlexboxFeatures')) {
+      const node = this._treeElement.node();
+
+      const getComputedStyle = async () => {
+        if (!this._selectedNodeComputedStyles) {
+          this._selectedNodeComputedStyles = await node.domModel().cssModel().computedStylePromise(node.id);
+        }
+        return this._selectedNodeComputedStyles;
+      };
+
+      for (const result of results) {
+        const iconInfo = findIcon(
+            this._isEditingName ? result.text : `${this._treeElement.property.name}: ${result.text}`,
+            await getComputedStyle());
+        if (!iconInfo) {
+          continue;
+        }
+        const icon = Icon.createIcon();
+        const width = '13px';
+        const height = '13px';
+        icon.data = {
+          iconName: iconInfo.iconName,
+          width,
+          height,
+          color: 'black',
+        };
+        icon.style.transform =
+            `rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX * 1.1}, ${iconInfo.scaleY * 1.1})`;
+        icon.style.maxHeight = height;
+        icon.style.maxWidth = width;
+        result.iconElement = icon;
+      }
+    }
+
     if (this._isColorAware && !this._isEditingName) {
       results.sort((a, b) => {
         if (!!a.subtitleRenderer === !!b.subtitleRenderer) {

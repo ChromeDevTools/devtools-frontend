@@ -240,6 +240,9 @@ export class SuggestBox {
       const subtitleElement = element.createChild('span', 'suggestion-subtitle');
       subtitleElement.textContent = item.subtitle.trimEndWithMaxLength(maxTextLength - displayText.length);
     }
+    if (item.iconElement) {
+      element.appendChild(item.iconElement);
+    }
     return element;
   }
 
@@ -405,7 +408,8 @@ export class SuggestBox {
   *      isSecondary: (boolean|undefined),
   *      subtitleRenderer: ((function():!Element)|undefined),
   *      selectionRange: ({startColumn: number, endColumn: number}|undefined),
-  *      hideGhostText: (boolean|undefined)
+  *      hideGhostText: (boolean|undefined),
+  *      iconElement: (!HTMLElement|undefined),
   * }}
   */
 // @ts-ignore typedef

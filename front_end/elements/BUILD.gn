@@ -13,6 +13,7 @@ devtools_module("elements") {
     "CSSAngleRegex.js",
     "CSSAngleUtils.ts",
     "CSSAngle_bridge.js",
+    "CSSPropertyIconResolver.js",
     "ClassesPaneWidget.js",
     "ColorSwatchPopoverIcon.js",
     "ComputedStyleModel.js",

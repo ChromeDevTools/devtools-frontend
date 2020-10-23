@@ -316,6 +316,7 @@
     "Adorner.js",
     "CSSAngleRegex.js",
     "CSSAngle_bridge.js",
+    "CSSPropertyIconResolver.js",
     "DOMLinkifier.js",
     "DOMPath.js",
     "ElementsSidebarPane.js",

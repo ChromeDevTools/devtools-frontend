@@ -1923,7 +1923,7 @@ export class DebuggerPausedDetails {
    * @param {!DebuggerModel} debuggerModel
    * @param {!Array.<!Protocol.Debugger.CallFrame>} callFrames
    * @param {string} reason
-   * @param {!Object|undefined} auxData
+   * @param {!Object.<string, *>|undefined} auxData
    * @param {!Array.<string>} breakpointIds
    * @param {!Protocol.Runtime.StackTrace=} asyncStackTrace
    * @param {!Protocol.Runtime.StackTraceId=} asyncStackTraceId

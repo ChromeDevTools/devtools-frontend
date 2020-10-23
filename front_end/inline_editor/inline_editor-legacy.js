@@ -32,13 +32,10 @@ InlineEditor.CSSShadowModel = InlineEditorModule.CSSShadowModel.CSSShadowModel;
 InlineEditor.CSSLength = InlineEditorModule.CSSShadowModel.CSSLength;
 
 /** @constructor */
-InlineEditor.ColorSwatch = InlineEditorModule.ColorSwatch.ColorSwatch;
+InlineEditor.BezierSwatch = InlineEditorModule.Swatches.BezierSwatch;
 
 /** @constructor */
-InlineEditor.BezierSwatch = InlineEditorModule.ColorSwatch.BezierSwatch;
-
-/** @constructor */
-InlineEditor.CSSShadowSwatch = InlineEditorModule.ColorSwatch.CSSShadowSwatch;
+InlineEditor.CSSShadowSwatch = InlineEditorModule.Swatches.CSSShadowSwatch;
 
 /** @constructor */
 InlineEditor.SwatchPopoverHelper = InlineEditorModule.SwatchPopoverHelper.SwatchPopoverHelper;

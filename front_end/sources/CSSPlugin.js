@@ -210,30 +210,29 @@ export class CSSPlugin extends Plugin {
 
   /**
    * @param {string} text
-   * @return {?InlineEditor.ColorSwatch.ColorSwatch}
+   * @return {?HTMLElement}
    */
   _createColorSwatch(text) {
     const color = Common.Color.Color.parse(text);
     if (!color) {
       return null;
     }
-    const swatch = InlineEditor.ColorSwatch.ColorSwatch.create();
-    swatch.setColor(color);
-    swatch.iconElement().title = Common.UIString.UIString('Open color picker.');
-    swatch.iconElement().addEventListener('click', this._swatchIconClicked.bind(this, swatch), false);
-    swatch.hideText(true);
+    const swatch = InlineEditor.ColorSwatch.createColorSwatch();
+    swatch.renderColor(color, false, Common.UIString.UIString('Open color picker.'));
+    const hiddenText = swatch.createChild('span');
+    hiddenText.slot = 'color-text';
     return swatch;
   }
 
   /**
    * @param {string} text
-   * @return {?InlineEditor.ColorSwatch.BezierSwatch}
+   * @return {?InlineEditor.Swatches.BezierSwatch}
    */
   _createBezierSwatch(text) {
     if (!UI.Geometry.CubicBezier.parse(text)) {
       return null;
     }
-    const swatch = InlineEditor.ColorSwatch.BezierSwatch.create();
+    const swatch = InlineEditor.Swatches.BezierSwatch.create();
     swatch.setBezierText(text);
     swatch.iconElement().title = Common.UIString.UIString('Open cubic bezier editor.');
     swatch.iconElement().addEventListener('click', this._swatchIconClicked.bind(this, swatch), false);
@@ -264,15 +263,15 @@ export class CSSPlugin extends Plugin {
     }
     this._currentSwatch = swatch;
 
-    if (swatch instanceof InlineEditor.ColorSwatch.ColorSwatch) {
+    if (swatch instanceof InlineEditor.ColorSwatch.ColorSwatchClosureInterface) {
       this._showSpectrum(swatch);
-    } else if (swatch instanceof InlineEditor.ColorSwatch.BezierSwatch) {
+    } else if (swatch instanceof InlineEditor.Swatches.BezierSwatch) {
       this._showBezierEditor(swatch);
     }
   }
 
   /**
-   * @param {!InlineEditor.ColorSwatch.ColorSwatch} swatch
+   * @param {!InlineEditor.ColorSwatch.ColorSwatchClosureInterface} swatch
    */
   _showSpectrum(swatch) {
     if (!this._spectrum) {
@@ -280,8 +279,8 @@ export class CSSPlugin extends Plugin {
       this._spectrum.addEventListener(ColorPicker.Spectrum.Events.SizeChanged, this._spectrumResized, this);
       this._spectrum.addEventListener(ColorPicker.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
     }
-    this._spectrum.setColor(swatch.color(), swatch.format());
-    this._swatchPopoverHelper.show(this._spectrum, swatch.iconElement(), this._swatchPopoverHidden.bind(this));
+    this._spectrum.setColor(/** @type {!Common.Color.Color} */ (swatch.color), swatch.format || '');
+    this._swatchPopoverHelper.show(this._spectrum, swatch, this._swatchPopoverHidden.bind(this));
   }
 
   /**
@@ -300,14 +299,14 @@ export class CSSPlugin extends Plugin {
     if (!color || !this._currentSwatch) {
       return;
     }
-    if (this._currentSwatch instanceof InlineEditor.ColorSwatch.ColorSwatch) {
-      this._currentSwatch.setColor(color);
+    if (this._currentSwatch instanceof InlineEditor.ColorSwatch.ColorSwatchClosureInterface) {
+      this._currentSwatch.renderColor(color);
     }
     this._changeSwatchText(colorString);
   }
 
   /**
-   * @param {!InlineEditor.ColorSwatch.BezierSwatch} swatch
+   * @param {!InlineEditor.Swatches.BezierSwatch} swatch
    */
   _showBezierEditor(swatch) {
     if (!this._bezierEditor) {
@@ -328,7 +327,7 @@ export class CSSPlugin extends Plugin {
    */
   _bezierChanged(event) {
     const bezierString = /** @type {string} */ (event.data);
-    if (this._currentSwatch instanceof InlineEditor.ColorSwatch.BezierSwatch) {
+    if (this._currentSwatch instanceof InlineEditor.Swatches.BezierSwatch) {
       this._currentSwatch.setBezierText(bezierString);
     }
     this._changeSwatchText(bezierString);

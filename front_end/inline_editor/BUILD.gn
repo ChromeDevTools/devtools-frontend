@@ -14,8 +14,10 @@ devtools_module("inline_editor") {
     "CSSShadowModel.js",
     "CSSVarSwatch.ts",
     "CSSVarSwatch_bridge.js",
-    "ColorSwatch.js",
+    "ColorSwatch.ts",
+    "ColorSwatch_bridge.js",
     "SwatchPopoverHelper.js",
+    "Swatches.js",
   ]
 
   deps = [
@@ -28,6 +30,8 @@ devtools_module("inline_editor") {
     "../third_party/lit-html:bundle",
     "../ui:bundle",
   ]
+
+  visibility = [ "../component_docs/*" ]
 }
 
 copy_to_gen("legacy_css") {

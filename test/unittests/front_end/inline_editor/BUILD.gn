@@ -5,6 +5,7 @@ ts_library("inline_editor") {
   sources = [
     "BezierUI_test.ts",
     "CSSVarSwatch_test.ts",
+    "ColorSwatch_test.ts",
   ]
 
   deps = [

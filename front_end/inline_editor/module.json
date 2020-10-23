@@ -7,11 +7,12 @@
     "inline_editor-legacy.js",
     "BezierEditor.js",
     "BezierUI.js",
-    "ColorSwatch.js",
+    "ColorSwatch_bridge.js",
     "CSSShadowEditor.js",
-    "SwatchPopoverHelper.js",
     "CSSShadowModel.js",
-    "CSSVarSwatch_bridge.js"
+    "CSSVarSwatch_bridge.js",
+    "Swatches.js",
+    "SwatchPopoverHelper.js"
   ],
   "resources": [
     "bezierEditor.css",

@@ -101,13 +101,9 @@ const createTraceElement = (node, property, isPropertyOverloaded, matchedStyles,
  * @return {!Node}
  */
 const processColor = text => {
-  const color = Common.Color.Color.parse(text);
-  if (!color) {
-    return document.createTextNode(text);
-  }
-  const swatch = InlineEditor.ColorSwatch.ColorSwatch.create();
-  swatch.setColor(color);
-  swatch.setFormat(Common.Settings.detectColorFormat(color));
+  const swatch = InlineEditor.ColorSwatch.createColorSwatch();
+  swatch.renderColor(text, true);
+  swatch.createChild('span').textContent = text;
   return swatch;
 };
 
@@ -116,16 +112,10 @@ const processColor = text => {
  * @return {!Node}
  */
 const processComputedColor = text => {
-  const color = Common.Color.Color.parse(text);
-  if (!color) {
-    return document.createTextNode(text);
-  }
-  const swatch = InlineEditor.ColorSwatch.ColorSwatch.create();
-  // Computed styles don't provide the original format, so
-  // switch to RGB.
-  color.setFormat(Common.Color.Format.RGB);
-  swatch.setColor(color);
-  swatch.setFormat(Common.Color.Format.RGB);
+  const swatch = InlineEditor.ColorSwatch.createColorSwatch();
+  // Computed styles don't provide the original format, so switch to RGB.
+  swatch.renderColor(text, Common.Color.Format.RGB);
+  swatch.createChild('span').textContent = text;
   return swatch;
 };
 

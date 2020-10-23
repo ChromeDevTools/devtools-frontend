@@ -142,7 +142,8 @@ Node.prototype.traverseNextTextNode = function(stayWithin) {
     return null;
   }
   const nonTextTags = {'STYLE': 1, 'SCRIPT': 1};
-  while (node && (node.nodeType !== Node.TEXT_NODE || nonTextTags[node.parentElement.nodeName])) {
+  while (node &&
+         (node.nodeType !== Node.TEXT_NODE || nonTextTags[node.parentElement ? node.parentElement.nodeName : ''])) {
     node = node.traverseNextNode(stayWithin);
   }
 
@@ -602,7 +603,7 @@ Node.prototype.childTextNodes = function() {
   const result = [];
   const nonTextTags = {'STYLE': 1, 'SCRIPT': 1};
   while (node) {
-    if (!nonTextTags[node.parentElement.nodeName]) {
+    if (!nonTextTags[node.parentElement ? node.parentElement.nodeName : '']) {
       result.push(node);
     }
     node = node.traverseNextTextNode(this);

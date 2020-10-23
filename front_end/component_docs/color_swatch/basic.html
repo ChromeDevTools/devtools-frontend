@@ -1,0 +1,64 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Color Swatch example</title>
+    <style>
+      #container {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+        padding: 0;
+      }
+      #container > li {
+        padding: .5rem;
+        border: 1px solid;
+        margin: 0 .5rem;
+        list-style: none;
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="container">
+    </ul>
+    <script type="module">
+      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+      import {ColorSwatch} from '../../inline_editor/ColorSwatch.js';
+
+      function appendExample(swatch) {
+        const li = document.createElement('li');
+        li.appendChild(swatch);
+        document.querySelector('#container').appendChild(li);
+      }
+
+      ComponentHelpers.ComponentServerSetup.setup().then(() => {
+        // Simple
+        let component = new ColorSwatch();
+        component.renderColor('#f06');
+        appendExample(component);
+
+        // No text next to the swatch
+        component = new ColorSwatch();
+        component.renderColor('gold');
+        let content = document.createElement('span');
+        content.textContent = '';
+        component.appendChild(content);
+        appendExample(component);
+
+        // Custom content
+        component = new ColorSwatch();
+        component.renderColor('rebeccapurple');
+        content = document.createElement('span');
+        content.textContent = 'custom content';
+        component.appendChild(content);
+        appendExample(component);
+      });
+    </script>
+  </body>
+</html>

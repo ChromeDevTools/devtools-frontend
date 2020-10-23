@@ -1,0 +1,43 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Color Swatch picker example</title>
+    <style>
+      #picker {
+        visibility: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <input type="color" id="picker">
+    </div>
+    <script type="module">
+      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+      import {ColorSwatch} from '../../inline_editor/ColorSwatch.js';
+
+      const container = document.querySelector("#container");
+      const picker = document.querySelector("#picker");
+
+      ComponentHelpers.ComponentServerSetup.setup().then(() => {
+        const component = new ColorSwatch();
+        document.getElementById('container').appendChild(component);
+        component.renderColor('#f06');
+        container.insertBefore(component, picker);
+
+        picker.addEventListener('input', e => {
+          component.renderColor(e.target.value);
+        });
+
+        component.addEventListener('swatch-click', () => picker.click());
+      });
+    </script>
+  </body>
+</html>

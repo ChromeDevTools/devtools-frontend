@@ -50,11 +50,11 @@ export class AppManifestView extends UI.Widget.VBox {
     this._startURLField = this._presentationSection.appendField(Common.UIString.UIString('Start URL'));
 
     const themeColorField = this._presentationSection.appendField(Common.UIString.UIString('Theme color'));
-    this._themeColorSwatch = InlineEditor.ColorSwatch.ColorSwatch.create();
+    this._themeColorSwatch = InlineEditor.ColorSwatch.createColorSwatch();
     themeColorField.appendChild(this._themeColorSwatch);
 
     const backgroundColorField = this._presentationSection.appendField(Common.UIString.UIString('Background color'));
-    this._backgroundColorSwatch = InlineEditor.ColorSwatch.ColorSwatch.create();
+    this._backgroundColorSwatch = InlineEditor.ColorSwatch.createColorSwatch();
     backgroundColorField.appendChild(this._backgroundColorSwatch);
 
     this._orientationField = this._presentationSection.appendField(Common.UIString.UIString('Orientation'));
@@ -172,13 +172,15 @@ export class AppManifestView extends UI.Widget.VBox {
     this._themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));
     const themeColor =
         Common.Color.Color.parse(stringProperty('theme_color') || 'white') || Common.Color.Color.parse('white');
-    this._themeColorSwatch.setColor(/** @type {!Common.Color.Color} */ (themeColor));
-    this._themeColorSwatch.setFormat(Common.Settings.detectColorFormat(this._themeColorSwatch.color()));
+    if (themeColor) {
+      this._themeColorSwatch.renderColor(themeColor, true);
+    }
     this._backgroundColorSwatch.classList.toggle('hidden', !stringProperty('background_color'));
     const backgroundColor =
         Common.Color.Color.parse(stringProperty('background_color') || 'white') || Common.Color.Color.parse('white');
-    this._backgroundColorSwatch.setColor(/** @type {!Common.Color.Color} */ (backgroundColor));
-    this._backgroundColorSwatch.setFormat(Common.Settings.detectColorFormat(this._backgroundColorSwatch.color()));
+    if (backgroundColor) {
+      this._backgroundColorSwatch.renderColor(backgroundColor, true);
+    }
 
     this._orientationField.textContent = stringProperty('orientation');
     const displayType = stringProperty('display');

@@ -94,6 +94,16 @@ function memoryAddressToString(address, code) {
     var defaultAlignFlags;
     switch (code) {
         case 64768 /* v128_load */:
+        case 64769 /* i16x8_load8x8_s */:
+        case 64770 /* i16x8_load8x8_u */:
+        case 64771 /* i32x4_load16x4_s */:
+        case 64772 /* i32x4_load16x4_u */:
+        case 64773 /* i64x2_load32x2_s */:
+        case 64774 /* i64x2_load32x2_u */:
+        case 64775 /* v8x16_load_splat */:
+        case 64776 /* v16x8_load_splat */:
+        case 64777 /* v32x4_load_splat */:
+        case 64778 /* v64x2_load_splat */:
         case 64779 /* v128_store */:
             defaultAlignFlags = 4;
             break;
@@ -111,6 +121,7 @@ function memoryAddressToString(address, code) {
         case 65083 /* i64_atomic_rmw_xor */:
         case 65090 /* i64_atomic_rmw_xchg */:
         case 65097 /* i64_atomic_rmw_cmpxchg */:
+        case 65021 /* v128_load64_zero */:
             defaultAlignFlags = 3;
             break;
         case 40 /* i32_load */:
@@ -140,6 +151,7 @@ function memoryAddressToString(address, code) {
         case 65095 /* i64_atomic_rmw32_xchg_u */:
         case 65096 /* i32_atomic_rmw_cmpxchg */:
         case 65102 /* i64_atomic_rmw32_cmpxchg_u */:
+        case 65020 /* v128_load32_zero */:
             defaultAlignFlags = 2;
             break;
         case 46 /* i32_load16_s */:
@@ -622,7 +634,19 @@ export class WasmDisassembler {
             case 65101 /* i64_atomic_rmw16_cmpxchg_u */:
             case 65102 /* i64_atomic_rmw32_cmpxchg_u */:
             case 64768 /* v128_load */:
+            case 64769 /* i16x8_load8x8_s */:
+            case 64770 /* i16x8_load8x8_u */:
+            case 64771 /* i32x4_load16x4_s */:
+            case 64772 /* i32x4_load16x4_u */:
+            case 64773 /* i64x2_load32x2_s */:
+            case 64774 /* i64x2_load32x2_u */:
+            case 64775 /* v8x16_load_splat */:
+            case 64776 /* v16x8_load_splat */:
+            case 64777 /* v32x4_load_splat */:
+            case 64778 /* v64x2_load_splat */:
             case 64779 /* v128_store */:
+            case 65020 /* v128_load32_zero */:
+            case 65021 /* v128_load64_zero */:
                 var memoryAddress = memoryAddressToString(operator.memoryAddress, operator.code);
                 if (memoryAddress !== null) {
                     this.appendBuffer(" ");
@@ -647,7 +671,7 @@ export class WasmDisassembler {
             case 64780 /* v128_const */:
                 this.appendBuffer(` i32x4 ${formatI32Array(operator.literal, 4)}`);
                 break;
-            case 64781 /* v8x16_shuffle */:
+            case 64781 /* i8x16_shuffle */:
                 this.appendBuffer(` ${formatI8Array(operator.lines, 16)}`);
                 break;
             case 64789 /* i8x16_extract_lane_s */:

@@ -132,6 +132,16 @@ function memoryAddressToString(
   var defaultAlignFlags;
   switch (code) {
     case OperatorCode.v128_load:
+    case OperatorCode.i16x8_load8x8_s:
+    case OperatorCode.i16x8_load8x8_u:
+    case OperatorCode.i32x4_load16x4_s:
+    case OperatorCode.i32x4_load16x4_u:
+    case OperatorCode.i64x2_load32x2_s:
+    case OperatorCode.i64x2_load32x2_u:
+    case OperatorCode.v8x16_load_splat:
+    case OperatorCode.v16x8_load_splat:
+    case OperatorCode.v32x4_load_splat:
+    case OperatorCode.v64x2_load_splat:
     case OperatorCode.v128_store:
       defaultAlignFlags = 4;
       break;
@@ -149,6 +159,7 @@ function memoryAddressToString(
     case OperatorCode.i64_atomic_rmw_xor:
     case OperatorCode.i64_atomic_rmw_xchg:
     case OperatorCode.i64_atomic_rmw_cmpxchg:
+    case OperatorCode.v128_load64_zero:
       defaultAlignFlags = 3;
       break;
     case OperatorCode.i32_load:
@@ -178,6 +189,7 @@ function memoryAddressToString(
     case OperatorCode.i64_atomic_rmw32_xchg_u:
     case OperatorCode.i32_atomic_rmw_cmpxchg:
     case OperatorCode.i64_atomic_rmw32_cmpxchg_u:
+    case OperatorCode.v128_load32_zero:
       defaultAlignFlags = 2;
       break;
     case OperatorCode.i32_load16_s:
@@ -765,7 +777,19 @@ export class WasmDisassembler {
       case OperatorCode.i64_atomic_rmw16_cmpxchg_u:
       case OperatorCode.i64_atomic_rmw32_cmpxchg_u:
       case OperatorCode.v128_load:
+      case OperatorCode.i16x8_load8x8_s:
+      case OperatorCode.i16x8_load8x8_u:
+      case OperatorCode.i32x4_load16x4_s:
+      case OperatorCode.i32x4_load16x4_u:
+      case OperatorCode.i64x2_load32x2_s:
+      case OperatorCode.i64x2_load32x2_u:
+      case OperatorCode.v8x16_load_splat:
+      case OperatorCode.v16x8_load_splat:
+      case OperatorCode.v32x4_load_splat:
+      case OperatorCode.v64x2_load_splat:
       case OperatorCode.v128_store:
+      case OperatorCode.v128_load32_zero:
+      case OperatorCode.v128_load64_zero:
         var memoryAddress = memoryAddressToString(
           operator.memoryAddress,
           operator.code
@@ -793,7 +817,7 @@ export class WasmDisassembler {
       case OperatorCode.v128_const:
         this.appendBuffer(` i32x4 ${formatI32Array(operator.literal, 4)}`);
         break;
-      case OperatorCode.v8x16_shuffle:
+      case OperatorCode.i8x16_shuffle:
         this.appendBuffer(` ${formatI8Array(operator.lines, 16)}`);
         break;
       case OperatorCode.i8x16_extract_lane_s:

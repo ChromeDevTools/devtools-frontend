@@ -7,7 +7,6 @@ export {
   NumericNameResolver,
   WasmDisassembler,
 } from "./WasmDis.js";
-export { Emitter } from "./WasmEmitter.js";
 export {
   BinaryReader,
   BinaryReaderState,
@@ -54,5 +53,4 @@ export {
   SectionCode,
   Type,
 } from "./WasmParser.js";
-export { BinaryReaderTransform } from "./WasmParserTransform.js";
 

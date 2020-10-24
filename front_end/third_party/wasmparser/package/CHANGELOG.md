@@ -1,3 +1,19 @@
+# [3.3.0](https://github.com/wasdk/wasmparser/compare/v3.2.1...v3.3.0) (2020-10-24)
+
+
+### Features
+
+* add support for i32x4.dot_i16x8_s ([ebd88d6](https://github.com/wasdk/wasmparser/commit/ebd88d65be345b55170c047231845d964123d46d))
+* add support for pmin/pmax ([2f03191](https://github.com/wasdk/wasmparser/commit/2f03191e3df7329d6a44b1de4192f1a1b724744e))
+* add support for v128.load32_zero and v128.load64_zero ([51f00f5](https://github.com/wasdk/wasmparser/commit/51f00f5d2b874198b6c057c0dbbe769a7eac1703))
+
+## [3.2.1](https://github.com/wasdk/wasmparser/compare/v3.2.0...v3.2.1) (2020-10-23)
+
+
+### Bug Fixes
+
+* print opcodes in errors in hexadecimal form ([687ba47](https://github.com/wasdk/wasmparser/commit/687ba47c0cafb5cec040d1bee7796d37f9627071))
+
 # [3.2.0](https://github.com/wasdk/wasmparser/compare/v3.1.3...v3.2.0) (2020-10-13)
 
 

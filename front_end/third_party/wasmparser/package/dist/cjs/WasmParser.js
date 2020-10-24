@@ -321,9 +321,11 @@ var OperatorCode;
     OperatorCode[OperatorCode["v32x4_load_splat"] = 64777] = "v32x4_load_splat";
     OperatorCode[OperatorCode["v64x2_load_splat"] = 64778] = "v64x2_load_splat";
     OperatorCode[OperatorCode["v128_store"] = 64779] = "v128_store";
+    OperatorCode[OperatorCode["v128_load32_zero"] = 65020] = "v128_load32_zero";
+    OperatorCode[OperatorCode["v128_load64_zero"] = 65021] = "v128_load64_zero";
     OperatorCode[OperatorCode["v128_const"] = 64780] = "v128_const";
-    OperatorCode[OperatorCode["v8x16_shuffle"] = 64781] = "v8x16_shuffle";
-    OperatorCode[OperatorCode["v8x16_swizzle"] = 64782] = "v8x16_swizzle";
+    OperatorCode[OperatorCode["i8x16_shuffle"] = 64781] = "i8x16_shuffle";
+    OperatorCode[OperatorCode["i8x16_swizzle"] = 64782] = "i8x16_swizzle";
     OperatorCode[OperatorCode["i8x16_splat"] = 64783] = "i8x16_splat";
     OperatorCode[OperatorCode["i16x8_splat"] = 64784] = "i16x8_splat";
     OperatorCode[OperatorCode["i32x4_splat"] = 64785] = "i32x4_splat";
@@ -396,17 +398,18 @@ var OperatorCode;
     OperatorCode[OperatorCode["i8x16_neg"] = 64865] = "i8x16_neg";
     OperatorCode[OperatorCode["i8x16_any_true"] = 64866] = "i8x16_any_true";
     OperatorCode[OperatorCode["i8x16_all_true"] = 64867] = "i8x16_all_true";
+    OperatorCode[OperatorCode["i8x16_bitmask"] = 64868] = "i8x16_bitmask";
     OperatorCode[OperatorCode["i8x16_narrow_i16x8_s"] = 64869] = "i8x16_narrow_i16x8_s";
     OperatorCode[OperatorCode["i8x16_narrow_i16x8_u"] = 64870] = "i8x16_narrow_i16x8_u";
     OperatorCode[OperatorCode["i8x16_shl"] = 64875] = "i8x16_shl";
     OperatorCode[OperatorCode["i8x16_shr_s"] = 64876] = "i8x16_shr_s";
     OperatorCode[OperatorCode["i8x16_shr_u"] = 64877] = "i8x16_shr_u";
     OperatorCode[OperatorCode["i8x16_add"] = 64878] = "i8x16_add";
-    OperatorCode[OperatorCode["i8x16_add_saturate_s"] = 64879] = "i8x16_add_saturate_s";
-    OperatorCode[OperatorCode["i8x16_add_saturate_u"] = 64880] = "i8x16_add_saturate_u";
+    OperatorCode[OperatorCode["i8x16_add_sat_s"] = 64879] = "i8x16_add_sat_s";
+    OperatorCode[OperatorCode["i8x16_add_sat_u"] = 64880] = "i8x16_add_sat_u";
     OperatorCode[OperatorCode["i8x16_sub"] = 64881] = "i8x16_sub";
-    OperatorCode[OperatorCode["i8x16_sub_saturate_s"] = 64882] = "i8x16_sub_saturate_s";
-    OperatorCode[OperatorCode["i8x16_sub_saturate_u"] = 64883] = "i8x16_sub_saturate_u";
+    OperatorCode[OperatorCode["i8x16_sub_sat_s"] = 64882] = "i8x16_sub_sat_s";
+    OperatorCode[OperatorCode["i8x16_sub_sat_u"] = 64883] = "i8x16_sub_sat_u";
     OperatorCode[OperatorCode["i8x16_min_s"] = 64886] = "i8x16_min_s";
     OperatorCode[OperatorCode["i8x16_min_u"] = 64887] = "i8x16_min_u";
     OperatorCode[OperatorCode["i8x16_max_s"] = 64888] = "i8x16_max_s";
@@ -416,6 +419,7 @@ var OperatorCode;
     OperatorCode[OperatorCode["i16x8_neg"] = 64897] = "i16x8_neg";
     OperatorCode[OperatorCode["i16x8_any_true"] = 64898] = "i16x8_any_true";
     OperatorCode[OperatorCode["i16x8_all_true"] = 64899] = "i16x8_all_true";
+    OperatorCode[OperatorCode["i16x8_bitmask"] = 64900] = "i16x8_bitmask";
     OperatorCode[OperatorCode["i16x8_narrow_i32x4_s"] = 64901] = "i16x8_narrow_i32x4_s";
     OperatorCode[OperatorCode["i16x8_narrow_i32x4_u"] = 64902] = "i16x8_narrow_i32x4_u";
     OperatorCode[OperatorCode["i16x8_widen_low_i8x16_s"] = 64903] = "i16x8_widen_low_i8x16_s";
@@ -426,11 +430,11 @@ var OperatorCode;
     OperatorCode[OperatorCode["i16x8_shr_s"] = 64908] = "i16x8_shr_s";
     OperatorCode[OperatorCode["i16x8_shr_u"] = 64909] = "i16x8_shr_u";
     OperatorCode[OperatorCode["i16x8_add"] = 64910] = "i16x8_add";
-    OperatorCode[OperatorCode["i16x8_add_saturate_s"] = 64911] = "i16x8_add_saturate_s";
-    OperatorCode[OperatorCode["i16x8_add_saturate_u"] = 64912] = "i16x8_add_saturate_u";
+    OperatorCode[OperatorCode["i16x8_add_sat_s"] = 64911] = "i16x8_add_sat_s";
+    OperatorCode[OperatorCode["i16x8_add_sat_u"] = 64912] = "i16x8_add_sat_u";
     OperatorCode[OperatorCode["i16x8_sub"] = 64913] = "i16x8_sub";
-    OperatorCode[OperatorCode["i16x8_sub_saturate_s"] = 64914] = "i16x8_sub_saturate_s";
-    OperatorCode[OperatorCode["i16x8_sub_saturate_u"] = 64915] = "i16x8_sub_saturate_u";
+    OperatorCode[OperatorCode["i16x8_sub_sat_s"] = 64914] = "i16x8_sub_sat_s";
+    OperatorCode[OperatorCode["i16x8_sub_sat_u"] = 64915] = "i16x8_sub_sat_u";
     OperatorCode[OperatorCode["i16x8_mul"] = 64917] = "i16x8_mul";
     OperatorCode[OperatorCode["i16x8_min_s"] = 64918] = "i16x8_min_s";
     OperatorCode[OperatorCode["i16x8_min_u"] = 64919] = "i16x8_min_u";
@@ -441,6 +445,7 @@ var OperatorCode;
     OperatorCode[OperatorCode["i32x4_neg"] = 64929] = "i32x4_neg";
     OperatorCode[OperatorCode["i32x4_any_true"] = 64930] = "i32x4_any_true";
     OperatorCode[OperatorCode["i32x4_all_true"] = 64931] = "i32x4_all_true";
+    OperatorCode[OperatorCode["i32x4_bitmask"] = 64932] = "i32x4_bitmask";
     OperatorCode[OperatorCode["i32x4_widen_low_i16x8_s"] = 64935] = "i32x4_widen_low_i16x8_s";
     OperatorCode[OperatorCode["i32x4_widen_high_i16x8_s"] = 64936] = "i32x4_widen_high_i16x8_s";
     OperatorCode[OperatorCode["i32x4_widen_low_i16x8_u"] = 64937] = "i32x4_widen_low_i16x8_u";
@@ -455,6 +460,7 @@ var OperatorCode;
     OperatorCode[OperatorCode["i32x4_min_u"] = 64951] = "i32x4_min_u";
     OperatorCode[OperatorCode["i32x4_max_s"] = 64952] = "i32x4_max_s";
     OperatorCode[OperatorCode["i32x4_max_u"] = 64953] = "i32x4_max_u";
+    OperatorCode[OperatorCode["i32x4_dot_i16x8_s"] = 64954] = "i32x4_dot_i16x8_s";
     OperatorCode[OperatorCode["i64x2_neg"] = 64961] = "i64x2_neg";
     OperatorCode[OperatorCode["i64x2_shl"] = 64971] = "i64x2_shl";
     OperatorCode[OperatorCode["i64x2_shr_s"] = 64972] = "i64x2_shr_s";
@@ -471,6 +477,8 @@ var OperatorCode;
     OperatorCode[OperatorCode["f32x4_div"] = 64999] = "f32x4_div";
     OperatorCode[OperatorCode["f32x4_min"] = 65000] = "f32x4_min";
     OperatorCode[OperatorCode["f32x4_max"] = 65001] = "f32x4_max";
+    OperatorCode[OperatorCode["f32x4_pmin"] = 65002] = "f32x4_pmin";
+    OperatorCode[OperatorCode["f32x4_pmax"] = 65003] = "f32x4_pmax";
     OperatorCode[OperatorCode["f64x2_abs"] = 65004] = "f64x2_abs";
     OperatorCode[OperatorCode["f64x2_neg"] = 65005] = "f64x2_neg";
     OperatorCode[OperatorCode["f64x2_sqrt"] = 65007] = "f64x2_sqrt";
@@ -480,6 +488,8 @@ var OperatorCode;
     OperatorCode[OperatorCode["f64x2_div"] = 65011] = "f64x2_div";
     OperatorCode[OperatorCode["f64x2_min"] = 65012] = "f64x2_min";
     OperatorCode[OperatorCode["f64x2_max"] = 65013] = "f64x2_max";
+    OperatorCode[OperatorCode["f64x2_pmin"] = 65014] = "f64x2_pmin";
+    OperatorCode[OperatorCode["f64x2_pmax"] = 65015] = "f64x2_pmax";
     OperatorCode[OperatorCode["i32x4_trunc_sat_f32x4_s"] = 65016] = "i32x4_trunc_sat_f32x4_s";
     OperatorCode[OperatorCode["i32x4_trunc_sat_f32x4_u"] = 65017] = "i32x4_trunc_sat_f32x4_u";
     OperatorCode[OperatorCode["f32x4_convert_i32x4_s"] = 65018] = "f32x4_convert_i32x4_s";
@@ -779,8 +789,8 @@ exports.OperatorCodeNames = [
     "v64x2.load_splat",
     "v128.store",
     "v128.const",
-    "v8x16.shuffle",
-    "v8x16.swizzle",
+    "i8x16.shuffle",
+    "i8x16.swizzle",
     "i8x16.splat",
     "i16x8.splat",
     "i32x4.splat",
@@ -866,7 +876,7 @@ exports.OperatorCodeNames = [
     "i8x16.neg",
     "i8x16.any_true",
     "i8x16.all_true",
-    undefined,
+    "i8x16.bitmask",
     "i8x16.narrow_i16x8_s",
     "i8x16.narrow_i16x8_u",
     undefined,
@@ -877,11 +887,11 @@ exports.OperatorCodeNames = [
     "i8x16.shr_s",
     "i8x16.shr_u",
     "i8x16.add",
-    "i8x16.add_saturate_s",
-    "i8x16.add_saturate_u",
+    "i8x16.add_sat_s",
+    "i8x16.add_sat_u",
     "i8x16.sub",
-    "i8x16.sub_saturate_s",
-    "i8x16.sub_saturate_u",
+    "i8x16.sub_sat_s",
+    "i8x16.sub_sat_u",
     undefined,
     undefined,
     "i8x16.min_s",
@@ -898,7 +908,7 @@ exports.OperatorCodeNames = [
     "i16x8.neg",
     "i16x8.any_true",
     "i16x8.all_true",
-    undefined,
+    "i16x8.bitmask",
     "i16x8.narrow_i32x4_s",
     "i16x8.narrow_i32x4_u",
     "i16x8.widen_low_i8x16_s",
@@ -909,11 +919,11 @@ exports.OperatorCodeNames = [
     "i16x8.shr_s",
     "i16x8.shr_u",
     "i16x8.add",
-    "i16x8.add_saturate_s",
-    "i16x8.add_saturate_u",
+    "i16x8.add_sat_s",
+    "i16x8.add_sat_u",
     "i16x8.sub",
-    "i16x8.sub_saturate_s",
-    "i16x8.sub_saturate_u",
+    "i16x8.sub_sat_s",
+    "i16x8.sub_sat_u",
     undefined,
     "i16x8.mul",
     "i16x8.min_s",
@@ -930,7 +940,7 @@ exports.OperatorCodeNames = [
     "i32x4.neg",
     "i32x4.any_true",
     "i32x4.all_true",
-    undefined,
+    "i32x4.bitmask",
     undefined,
     undefined,
     "i32x4.widen_low_i16x8_s",
@@ -952,7 +962,7 @@ exports.OperatorCodeNames = [
     "i32x4.min_u",
     "i32x4.max_s",
     "i32x4.max_u",
-    undefined,
+    "i32x4.dot_i16x8_s",
     undefined,
     undefined,
     undefined,
@@ -1000,8 +1010,8 @@ exports.OperatorCodeNames = [
     "f32x4.div",
     "f32x4.min",
     "f32x4.max",
-    undefined,
-    undefined,
+    "f32x4.pmin",
+    "f32x4.pmax",
     "f64x2.abs",
     "f64x2.neg",
     undefined,
@@ -1012,12 +1022,14 @@ exports.OperatorCodeNames = [
     "f64x2.div",
     "f64x2.min",
     "f64x2.max",
-    undefined,
-    undefined,
+    "f64x2.pmin",
+    "f64x2.pmax",
     "i32x4.trunc_sat_f32x4_s",
     "i32x4.trunc_sat_f32x4_u",
     "f32x4.convert_i32x4_s",
     "f32x4.convert_i32x4_u",
+    "v128.load32_zero",
+    "v128.load64_zero",
 ].forEach(function (s, i) {
     exports.OperatorCodeNames[0xfd00 | i] = s;
 });
@@ -1750,10 +1762,6 @@ var BinaryReader = /** @class */ (function () {
         var offset = this.readVarUint32() >>> 0;
         return { flags: flags, offset: offset };
     };
-    BinaryReader.prototype.readLineIndex = function (max) {
-        var index = this.readUint8();
-        return index;
-    };
     BinaryReader.prototype.readNameMap = function () {
         var count = this.readVarUint32();
         var result = [];
@@ -1980,7 +1988,7 @@ var BinaryReader = /** @class */ (function () {
                 segmentIndex = this.readVarUint32() >>> 0;
                 break;
             default:
-                this.error = new Error("Unknown operator: " + code);
+                this.error = new Error("Unknown operator: 0x" + code.toString(16).padStart(4, "0"));
                 this.state = -1 /* ERROR */;
                 return true;
         }
@@ -2019,39 +2027,47 @@ var BinaryReader = /** @class */ (function () {
         var lines;
         switch (code) {
             case 64768 /* v128_load */:
+            case 64769 /* i16x8_load8x8_s */:
+            case 64770 /* i16x8_load8x8_u */:
+            case 64771 /* i32x4_load16x4_s */:
+            case 64772 /* i32x4_load16x4_u */:
+            case 64773 /* i64x2_load32x2_s */:
+            case 64774 /* i64x2_load32x2_u */:
+            case 64775 /* v8x16_load_splat */:
+            case 64776 /* v16x8_load_splat */:
+            case 64777 /* v32x4_load_splat */:
+            case 64778 /* v64x2_load_splat */:
             case 64779 /* v128_store */:
+            case 65020 /* v128_load32_zero */:
+            case 65021 /* v128_load64_zero */:
                 memoryAddress = this.readMemoryImmediate();
                 break;
             case 64780 /* v128_const */:
                 literal = this.readBytes(16);
                 break;
-            case 64781 /* v8x16_shuffle */:
+            case 64781 /* i8x16_shuffle */:
                 lines = new Uint8Array(16);
-                for (var i = 0; i < lines.length; i++)
-                    lines[i] = this.readLineIndex(32);
+                for (var i = 0; i < lines.length; i++) {
+                    lines[i] = this.readUint8();
+                }
                 break;
             case 64789 /* i8x16_extract_lane_s */:
             case 64790 /* i8x16_extract_lane_u */:
             case 64791 /* i8x16_replace_lane */:
-                lineIndex = this.readLineIndex(16);
-                break;
             case 64792 /* i16x8_extract_lane_s */:
             case 64793 /* i16x8_extract_lane_u */:
             case 64794 /* i16x8_replace_lane */:
-                lineIndex = this.readLineIndex(8);
-                break;
             case 64795 /* i32x4_extract_lane */:
             case 64796 /* i32x4_replace_lane */:
-            case 64799 /* f32x4_extract_lane */:
-            case 64800 /* f32x4_replace_lane */:
-                lineIndex = this.readLineIndex(4);
-                break;
             case 64797 /* i64x2_extract_lane */:
             case 64798 /* i64x2_replace_lane */:
+            case 64799 /* f32x4_extract_lane */:
+            case 64800 /* f32x4_replace_lane */:
             case 64801 /* f64x2_extract_lane */:
             case 64802 /* f64x2_replace_lane */:
-                lineIndex = this.readLineIndex(2);
+                lineIndex = this.readUint8();
                 break;
+            case 64782 /* i8x16_swizzle */:
             case 64783 /* i8x16_splat */:
             case 64784 /* i16x8_splat */:
             case 64785 /* i32x4_splat */:
@@ -2102,49 +2118,85 @@ var BinaryReader = /** @class */ (function () {
             case 64844 /* f64x2_ge */:
             case 64845 /* v128_not */:
             case 64846 /* v128_and */:
+            case 64847 /* v128_andnot */:
             case 64848 /* v128_or */:
             case 64849 /* v128_xor */:
             case 64850 /* v128_bitselect */:
+            case 64864 /* i8x16_abs */:
             case 64865 /* i8x16_neg */:
             case 64866 /* i8x16_any_true */:
             case 64867 /* i8x16_all_true */:
+            case 64868 /* i8x16_bitmask */:
+            case 64869 /* i8x16_narrow_i16x8_s */:
+            case 64870 /* i8x16_narrow_i16x8_u */:
             case 64875 /* i8x16_shl */:
             case 64876 /* i8x16_shr_s */:
             case 64877 /* i8x16_shr_u */:
             case 64878 /* i8x16_add */:
-            case 64879 /* i8x16_add_saturate_s */:
-            case 64880 /* i8x16_add_saturate_u */:
+            case 64879 /* i8x16_add_sat_s */:
+            case 64880 /* i8x16_add_sat_u */:
             case 64881 /* i8x16_sub */:
-            case 64882 /* i8x16_sub_saturate_s */:
-            case 64883 /* i8x16_sub_saturate_u */:
+            case 64882 /* i8x16_sub_sat_s */:
+            case 64883 /* i8x16_sub_sat_u */:
+            case 64886 /* i8x16_min_s */:
+            case 64887 /* i8x16_min_u */:
+            case 64888 /* i8x16_max_s */:
+            case 64889 /* i8x16_max_u */:
+            case 64891 /* i8x16_avgr_u */:
+            case 64896 /* i16x8_abs */:
             case 64897 /* i16x8_neg */:
             case 64898 /* i16x8_any_true */:
             case 64899 /* i16x8_all_true */:
+            case 64900 /* i16x8_bitmask */:
+            case 64901 /* i16x8_narrow_i32x4_s */:
+            case 64902 /* i16x8_narrow_i32x4_u */:
+            case 64903 /* i16x8_widen_low_i8x16_s */:
+            case 64904 /* i16x8_widen_high_i8x16_s */:
+            case 64905 /* i16x8_widen_low_i8x16_u */:
+            case 64906 /* i16x8_widen_high_i8x16_u */:
             case 64907 /* i16x8_shl */:
             case 64908 /* i16x8_shr_s */:
             case 64909 /* i16x8_shr_u */:
             case 64910 /* i16x8_add */:
-            case 64911 /* i16x8_add_saturate_s */:
-            case 64912 /* i16x8_add_saturate_u */:
+            case 64911 /* i16x8_add_sat_s */:
+            case 64912 /* i16x8_add_sat_u */:
             case 64913 /* i16x8_sub */:
-            case 64914 /* i16x8_sub_saturate_s */:
-            case 64915 /* i16x8_sub_saturate_u */:
+            case 64914 /* i16x8_sub_sat_s */:
+            case 64915 /* i16x8_sub_sat_u */:
             case 64917 /* i16x8_mul */:
+            case 64918 /* i16x8_min_s */:
+            case 64919 /* i16x8_min_u */:
+            case 64920 /* i16x8_max_s */:
+            case 64921 /* i16x8_max_u */:
+            case 64923 /* i16x8_avgr_u */:
+            case 64928 /* i32x4_abs */:
             case 64929 /* i32x4_neg */:
             case 64930 /* i32x4_any_true */:
             case 64931 /* i32x4_all_true */:
+            case 64932 /* i32x4_bitmask */:
+            case 64935 /* i32x4_widen_low_i16x8_s */:
+            case 64936 /* i32x4_widen_high_i16x8_s */:
+            case 64937 /* i32x4_widen_low_i16x8_u */:
+            case 64938 /* i32x4_widen_high_i16x8_u */:
             case 64939 /* i32x4_shl */:
             case 64940 /* i32x4_shr_s */:
             case 64941 /* i32x4_shr_u */:
             case 64942 /* i32x4_add */:
             case 64945 /* i32x4_sub */:
             case 64949 /* i32x4_mul */:
+            case 64950 /* i32x4_min_s */:
+            case 64951 /* i32x4_min_u */:
+            case 64952 /* i32x4_max_s */:
+            case 64953 /* i32x4_max_u */:
+            case 64954 /* i32x4_dot_i16x8_s */:
             case 64961 /* i64x2_neg */:
             case 64971 /* i64x2_shl */:
             case 64972 /* i64x2_shr_s */:
             case 64973 /* i64x2_shr_u */:
             case 64974 /* i64x2_add */:
             case 64977 /* i64x2_sub */:
+            case 64981 /* i64x2_mul */:
+            case 64992 /* f32x4_abs */:
             case 64992 /* f32x4_abs */:
             case 64993 /* f32x4_neg */:
             case 64995 /* f32x4_sqrt */:
@@ -2154,6 +2206,8 @@ var BinaryReader = /** @class */ (function () {
             case 64999 /* f32x4_div */:
             case 65000 /* f32x4_min */:
             case 65001 /* f32x4_max */:
+            case 65002 /* f32x4_pmin */:
+            case 65003 /* f32x4_pmax */:
             case 65004 /* f64x2_abs */:
             case 65005 /* f64x2_neg */:
             case 65007 /* f64x2_sqrt */:
@@ -2163,13 +2217,15 @@ var BinaryReader = /** @class */ (function () {
             case 65011 /* f64x2_div */:
             case 65012 /* f64x2_min */:
             case 65013 /* f64x2_max */:
+            case 65014 /* f64x2_pmin */:
+            case 65015 /* f64x2_pmax */:
             case 65016 /* i32x4_trunc_sat_f32x4_s */:
             case 65017 /* i32x4_trunc_sat_f32x4_u */:
             case 65018 /* f32x4_convert_i32x4_s */:
             case 65019 /* f32x4_convert_i32x4_u */:
                 break;
             default:
-                this.error = new Error("Unknown operator: " + code);
+                this.error = new Error("Unknown operator: 0x" + code.toString(16).padStart(4, "0"));
                 this.state = -1 /* ERROR */;
                 return true;
         }
@@ -2281,7 +2337,7 @@ var BinaryReader = /** @class */ (function () {
                 break;
             }
             default:
-                this.error = new Error("Unknown operator: " + code);
+                this.error = new Error("Unknown operator: 0x" + code.toString(16).padStart(4, "0"));
                 this.state = -1 /* ERROR */;
                 return true;
         }
@@ -2573,7 +2629,7 @@ var BinaryReader = /** @class */ (function () {
             case 209 /* ref_is_null */:
                 break;
             default:
-                this.error = new Error("Unknown operator: " + code);
+                this.error = new Error("Unknown operator: 0x" + code.toString(16).padStart(2, "0"));
                 this.state = -1 /* ERROR */;
                 return true;
         }

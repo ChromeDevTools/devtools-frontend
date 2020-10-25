@@ -387,6 +387,12 @@ declare namespace ProtocolProxyApi {
      * Set dock tile details, platform-specific.
      */
     invoke_setDockTile(params: Protocol.Browser.SetDockTileRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Invoke custom browser commands used by telemetry.
+     */
+    invoke_executeBrowserCommand(params: Protocol.Browser.ExecuteBrowserCommandRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
   }
   export interface BrowserDispatcher {}
 
@@ -1780,9 +1786,9 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Specifies whether to sned a debug header to all outgoing requests.
+     * Specifies whether to attach a page script stack id in requests
      */
-    invoke_setAttachDebugHeader(params: Protocol.Network.SetAttachDebugHeaderRequest):
+    invoke_setAttachDebugStack(params: Protocol.Network.SetAttachDebugStackRequest):
         Promise<Protocol.ProtocolResponseWithError>;
 
     /**

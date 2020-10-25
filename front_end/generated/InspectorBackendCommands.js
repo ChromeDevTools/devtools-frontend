@@ -319,6 +319,7 @@ export function registerCommands(inspectorBackend) {
     WakeLockSystem: 'wakeLockSystem'
   });
   inspectorBackend.registerEnum('Browser.PermissionSetting', {Granted: 'granted', Denied: 'denied', Prompt: 'prompt'});
+  inspectorBackend.registerEnum('Browser.BrowserCommandId', {OpenTabSearch: 'openTabSearch'});
   inspectorBackend.registerCommand(
       'Browser.setPermission',
       [
@@ -381,6 +382,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'image', 'type': 'string', 'optional': true}
       ],
       []);
+  inspectorBackend.registerCommand(
+      'Browser.executeBrowserCommand', [{'name': 'commandId', 'type': 'string', 'optional': false}], []);
 
   // CSS.
   inspectorBackend.registerEnum(
@@ -1138,7 +1141,11 @@ export function registerCommands(inspectorBackend) {
         {'name': 'timestamp', 'type': 'number', 'optional': true},
         {'name': 'button', 'type': 'string', 'optional': true}, {'name': 'buttons', 'type': 'number', 'optional': true},
         {'name': 'clickCount', 'type': 'number', 'optional': true},
-        {'name': 'deltaX', 'type': 'number', 'optional': true}, {'name': 'deltaY', 'type': 'number', 'optional': true},
+        {'name': 'force', 'type': 'number', 'optional': true},
+        {'name': 'tangentialPressure', 'type': 'number', 'optional': true},
+        {'name': 'tiltX', 'type': 'number', 'optional': true}, {'name': 'tiltY', 'type': 'number', 'optional': true},
+        {'name': 'twist', 'type': 'number', 'optional': true}, {'name': 'deltaX', 'type': 'number', 'optional': true},
+        {'name': 'deltaY', 'type': 'number', 'optional': true},
         {'name': 'pointerType', 'type': 'string', 'optional': true}
       ],
       []);
@@ -1580,7 +1587,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Network.setExtraHTTPHeaders', [{'name': 'headers', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
-      'Network.setAttachDebugHeader', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], []);
+      'Network.setAttachDebugStack', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Network.setRequestInterception', [{'name': 'patterns', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
@@ -2374,6 +2381,7 @@ export function registerCommands(inspectorBackend) {
 
   // WebAuthn.
   inspectorBackend.registerEnum('WebAuthn.AuthenticatorProtocol', {U2f: 'u2f', Ctap2: 'ctap2'});
+  inspectorBackend.registerEnum('WebAuthn.Ctap2Version', {Ctap2_0: 'ctap2_0', Ctap2_1: 'ctap2_1'});
   inspectorBackend.registerEnum(
       'WebAuthn.AuthenticatorTransport', {Usb: 'usb', Nfc: 'nfc', Ble: 'ble', Cable: 'cable', Internal: 'internal'});
   inspectorBackend.registerCommand('WebAuthn.enable', [], []);

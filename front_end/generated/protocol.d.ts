@@ -1186,6 +1186,13 @@ declare namespace Protocol {
     }
 
     /**
+     * Browser command ids used by executeBrowserCommand.
+     */
+    export enum BrowserCommandId {
+      OpenTabSearch = 'openTabSearch',
+    }
+
+    /**
      * Chrome histogram bucket.
      */
     export interface Bucket {
@@ -1408,6 +1415,10 @@ declare namespace Protocol {
        * Png encoded image.
        */
       image?: binary;
+    }
+
+    export interface ExecuteBrowserCommandRequest {
+      commandId: BrowserCommandId;
     }
   }
 
@@ -5294,6 +5305,22 @@ declare namespace Protocol {
        */
       force?: number;
       /**
+       * The normalized tangential pressure, which has a range of [-1,1] (default: 0).
+       */
+      tangentialPressure?: number;
+      /**
+       * The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0)
+       */
+      tiltX?: integer;
+      /**
+       * The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
+       */
+      tiltY?: integer;
+      /**
+       * The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
+       */
+      twist?: integer;
+      /**
        * Identifier used to track touch sources between events, must be unique within an event.
        */
       id?: number;
@@ -5451,6 +5478,26 @@ declare namespace Protocol {
        * Number of times the mouse button was clicked (default: 0).
        */
       clickCount?: integer;
+      /**
+       * The normalized pressure, which has a range of [0,1] (default: 0).
+       */
+      force?: number;
+      /**
+       * The normalized tangential pressure, which has a range of [-1,1] (default: 0).
+       */
+      tangentialPressure?: number;
+      /**
+       * The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0).
+       */
+      tiltX?: integer;
+      /**
+       * The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
+       */
+      tiltY?: integer;
+      /**
+       * The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
+       */
+      twist?: integer;
       /**
        * X delta in CSS pixels for mouse wheel event (default: 0).
        */
@@ -7603,9 +7650,9 @@ declare namespace Protocol {
       headers: Headers;
     }
 
-    export interface SetAttachDebugHeaderRequest {
+    export interface SetAttachDebugStackRequest {
       /**
-       * Whether to send a debug header.
+       * Whether to attach a page script stack for debugging purpose.
        */
       enabled: boolean;
     }
@@ -12088,6 +12135,11 @@ declare namespace Protocol {
       Ctap2 = 'ctap2',
     }
 
+    export enum Ctap2Version {
+      Ctap2_0 = 'ctap2_0',
+      Ctap2_1 = 'ctap2_1',
+    }
+
     export enum AuthenticatorTransport {
       Usb = 'usb',
       Nfc = 'nfc',
@@ -12098,6 +12150,10 @@ declare namespace Protocol {
 
     export interface VirtualAuthenticatorOptions {
       protocol: AuthenticatorProtocol;
+      /**
+       * Defaults to ctap2_0. Ignored if |protocol| == u2f.
+       */
+      ctap2Version?: Ctap2Version;
       transport: AuthenticatorTransport;
       /**
        * Defaults to false.
@@ -12148,6 +12204,11 @@ declare namespace Protocol {
        * See https://w3c.github.io/webauthn/#signature-counter
        */
       signCount: integer;
+      /**
+       * The large blob associated with the credential.
+       * See https://w3c.github.io/webauthn/#sctn-large-blob-extension
+       */
+      largeBlob?: binary;
     }
 
     export interface AddVirtualAuthenticatorRequest {

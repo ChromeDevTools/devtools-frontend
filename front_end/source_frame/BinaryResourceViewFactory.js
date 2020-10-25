@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';             // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';                         // eslint-disable-line no-unused-vars
 
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
 
@@ -22,7 +21,7 @@ export class BinaryResourceViewFactory {
     this._resourceType = resourceType;
     /** @type {?Promise<!Uint8Array>} */
     this._arrayPromise = null;
-    /** @type {?Promise<string>} */
+    /** @type {?Promise<!TextUtils.ContentProvider.DeferredContent>} */
     this._hexPromise = null;
     /** @type {?Promise<!TextUtils.ContentProvider.DeferredContent>} */
     this._utf8Promise = null;
@@ -43,11 +42,9 @@ export class BinaryResourceViewFactory {
    */
   async hex() {
     if (!this._hexPromise) {
-      this._hexPromise = new Promise(async resolve => {
         const content = await this._fetchContentAsArray();
         const hexString = BinaryResourceViewFactory.uint8ArrayToHexString(content);
-        resolve({content: hexString, isEncoded: false});
-      });
+        return {content: hexString, isEncoded: false};
     }
 
     return this._hexPromise;
@@ -82,7 +79,7 @@ export class BinaryResourceViewFactory {
     return new ResourceSourceFrame(
         TextUtils.StaticContentProvider.StaticContentProvider.fromString(
             this._contentUrl, this._resourceType, this._base64content),
-        /* autoPrettyPrint */ false, {lineNumbers: false, lineWrapping: true});
+        /* autoPrettyPrint */ false, /** @type {!UI.TextEditor.Options} */ ({lineNumbers: false, lineWrapping: true}));
   }
 
   /**
@@ -97,7 +94,7 @@ export class BinaryResourceViewFactory {
         });
     return new ResourceSourceFrame(
         hexViewerContentProvider,
-        /* autoPrettyPrint */ false, {lineNumbers: false, lineWrapping: false});
+        /* autoPrettyPrint */ false, /** @type {!UI.TextEditor.Options} */ ({lineNumbers: false, lineWrapping: false}));
   }
 
   /**
@@ -109,7 +106,7 @@ export class BinaryResourceViewFactory {
         new TextUtils.StaticContentProvider.StaticContentProvider(this._contentUrl, this._resourceType, utf8fn);
     return new ResourceSourceFrame(
         utf8ContentProvider,
-        /* autoPrettyPrint */ false, {lineNumbers: true, lineWrapping: true});
+        /* autoPrettyPrint */ false, /** @type {!UI.TextEditor.Options} */ ({lineNumbers: true, lineWrapping: true}));
   }
 
   /**

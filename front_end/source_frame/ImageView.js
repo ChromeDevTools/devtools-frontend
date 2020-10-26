@@ -26,9 +26,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
@@ -67,7 +64,9 @@ export class ImageView extends UI.View.SimpleView {
     this._dimensionsLabel = new UI.Toolbar.ToolbarText();
     this._mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
     this._container = this.element.createChild('div', 'image');
-    this._imagePreviewElement = this._container.createChild('img', 'resource-image-view');
+    /** @type {!HTMLImageElement} */
+    this._imagePreviewElement =
+        /** @type {!HTMLImageElement} */ (this._container.createChild('img', 'resource-image-view'));
     this._imagePreviewElement.addEventListener('contextmenu', this._contextMenu.bind(this), true);
   }
 
@@ -110,6 +109,7 @@ export class ImageView extends UI.View.SimpleView {
     }
 
     const contentEncoded = await this._contentProvider.contentEncoded();
+    /** @type {?string} */
     this._cachedContent = content;
     let imageSrc = TextUtils.ContentProvider.contentAsDataURL(content, this._mimeType, contentEncoded);
     if (content === null) {
@@ -118,7 +118,9 @@ export class ImageView extends UI.View.SimpleView {
     const loadPromise = new Promise(x => {
       this._imagePreviewElement.onload = x;
     });
-    this._imagePreviewElement.src = imageSrc;
+    if (imageSrc) {
+      this._imagePreviewElement.src = imageSrc;
+    }
     this._imagePreviewElement.alt = ls`Image from ${this._url}`;
     const size = content && !contentEncoded ? content.length : base64ToSize(content);
     this._sizeLabel.setText(Platform.NumberUtilities.bytesToString(size));
@@ -127,6 +129,9 @@ export class ImageView extends UI.View.SimpleView {
         '%d × %d', this._imagePreviewElement.naturalWidth, this._imagePreviewElement.naturalHeight));
   }
 
+  /**
+   * @param {!Event} event
+   */
   _contextMenu(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (!this._parsedURL.isDataURL()) {
@@ -153,7 +158,7 @@ export class ImageView extends UI.View.SimpleView {
   }
 
   _saveImage() {
-    const link = createElement('a');
+    const link = document.createElement('a');
     link.download = this._parsedURL.displayName;
     link.href = this._url;
     link.click();
@@ -174,7 +179,10 @@ export class ImageView extends UI.View.SimpleView {
 
     const entry = items[0].webkitGetAsEntry();
     const encoded = !entry.name.endsWith('.svg');
-    entry.file(file => {
+    /**
+     * @param {!Blob} file
+     */
+    const fileCallback = file => {
       const reader = new FileReader();
       reader.onloadend = () => {
         let result;
@@ -184,7 +192,7 @@ export class ImageView extends UI.View.SimpleView {
           result = null;
           console.error('Can\'t read file: ' + e);
         }
-        if (typeof result !== 'string') {
+        if (typeof result !== 'string' || !this._uiSourceCode) {
           return;
         }
         this._uiSourceCode.setContent(encoded ? btoa(result) : result, encoded);
@@ -194,6 +202,7 @@ export class ImageView extends UI.View.SimpleView {
       } else {
         reader.readAsText(file);
       }
-    });
+    };
+    entry.file(fileCallback);
   }
 }

@@ -333,10 +333,11 @@ export class OverlayModel extends SDKModel {
 
   /**
    * @param {number} nodeId
+   * @return {boolean}
    */
   isHighlightedGridInPersistentOverlay(nodeId) {
     if (!this._persistentGridHighlighter) {
-      return;
+      return false;
     }
     return this._persistentGridHighlighter.isHighlighted(nodeId);
   }

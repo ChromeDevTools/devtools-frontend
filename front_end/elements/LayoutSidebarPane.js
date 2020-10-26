@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
@@ -20,13 +17,14 @@ import {createLayoutPane, LayoutElement} from './LayoutPane_bridge.js';  // esli
 const gridNodesToElements = nodes => {
   return nodes.map(node => {
     const className = node.getAttribute('class');
+    const nodeId = node.id;
     return {
-      id: node.id,
-      color: node.domModel().overlayModel().colorOfGridInPersistentOverlay(node.id),
+      id: nodeId,
+      color: node.domModel().overlayModel().colorOfGridInPersistentOverlay(nodeId) || '#000',
       name: node.localName(),
       domId: node.getAttribute('id'),
-      domClasses: className ? className.split(/\s+/).filter(s => !!s) : null,
-      enabled: node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(node.id),
+      domClasses: className ? className.split(/\s+/).filter(s => !!s) : undefined,
+      enabled: node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(nodeId),
       reveal: () => {
         ElementsPanel.instance().revealAndSelectNode(node, true, true);
         node.scrollIntoView();
@@ -40,14 +38,14 @@ const gridNodesToElements = nodes => {
       toggle: value => {
         if (value) {
           node.domModel().overlayModel().highlightGridInPersistentOverlay(
-              node.id, Host.UserMetrics.GridOverlayOpener.LayoutPane);
+              nodeId, Host.UserMetrics.GridOverlayOpener.LayoutPane);
         } else {
-          node.domModel().overlayModel().hideGridInPersistentOverlay(node.id);
+          node.domModel().overlayModel().hideGridInPersistentOverlay(nodeId);
         }
       },
       setColor(value) {
         this.color = value;
-        node.domModel().overlayModel().setColorOfGridInPersistentOverlay(node.id, value);
+        node.domModel().overlayModel().setColorOfGridInPersistentOverlay(nodeId, value);
       },
     };
   });
@@ -64,6 +62,9 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this._settings = ['showGridLineLabels', 'showGridTrackSizes', 'showGridAreas', 'extendGridLines'];
     this._uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM');
     this._boundOnSettingChanged = this.onSettingChanged.bind(this);
+    /**
+     * @type {!Array<!SDK.DOMModel.DOMModel>}
+     */
     this._domModels = [];
   }
 
@@ -94,36 +95,39 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     for (const domModel of this._domModels) {
       const nodeIds = await domModel.getNodesByStyle(
           [{name: 'display', value: 'grid'}, {name: 'display', value: 'inline-grid'}], true /* pierce */);
-
-      nodes.push(...nodeIds.map(id => domModel.nodeForId(id)).filter(node => {
-        return node && (showUAShadowDOM || !node.ancestorUserAgentShadowRoot());
-      }));
+      for (const nodeId of nodeIds) {
+        const node = domModel.nodeForId(nodeId);
+        if (node !== null && (showUAShadowDOM || !node.ancestorUserAgentShadowRoot())) {
+          nodes.push(node);
+        }
+      }
     }
 
     return nodes;
   }
 
   _mapSettings() {
-    return this._settings
-        .map(settingName => {
-          const setting = Common.Settings.Settings.instance().moduleSetting(settingName);
-          const ext = setting.extension();
-          if (!ext) {
-            return null;
-          }
-          const descriptor = ext.descriptor();
-          return {
-            type: descriptor.settingType,
-            name: descriptor.settingName,
-            title: ls(descriptor.title),
-            value: setting.get(),
-            options: descriptor.options.map(opt => ({
-                                              title: ls(opt.title),
-                                              value: opt.value,
-                                            }))
-          };
-        })
-        .filter(descriptor => descriptor !== null);
+    const settings = [];
+    for (const settingName of this._settings) {
+      const setting = Common.Settings.Settings.instance().moduleSetting(settingName);
+      const ext = setting.extension();
+      if (!ext) {
+        continue;
+      }
+      const descriptor = ext.descriptor();
+      settings.push({
+        type: /** @type {string} */ (descriptor.settingType),
+        name: descriptor.settingName,
+        title: descriptor.title ? ls(descriptor.title) : '',
+        value: setting.get(),
+        options: descriptor.options ? descriptor.options.map(opt => ({
+                                                               title: ls(opt.title),
+                                                               value: /** @type {string} */ (opt.value),
+                                                             })) :
+                                      []
+      });
+    }
+    return settings;
   }
 
   /**

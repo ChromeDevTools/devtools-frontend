@@ -575,6 +575,9 @@ export class RuntimeExtensionDescriptor {
     /** @type {string|null} */
     this.location;
 
+    /** @type {?string} */
+    this.title;
+
     /** @type {!Array<!Option>|undefined} */
     this.options;
 

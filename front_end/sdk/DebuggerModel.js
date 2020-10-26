@@ -149,8 +149,6 @@ export class DebuggerModel extends SDKModel {
       this._enableDebugger();
     }
 
-    /** @type {!Map<string, string>} */
-    this._stringMap = new Map();
     this._sourceMapManager.setEnabled(Common.Settings.Settings.instance().moduleSetting('jsSourceMapsEnabled').get());
     Common.Settings.Settings.instance()
         .moduleSetting('jsSourceMapsEnabled')
@@ -570,7 +568,6 @@ export class DebuggerModel extends SDKModel {
 
     this._scripts.clear();
     this._scriptsBySourceURL.clear();
-    this._stringMap.clear();
     this._discardableScripts = [];
     this._autoStepOver = false;
   }
@@ -799,11 +796,10 @@ export class DebuggerModel extends SDKModel {
     if (executionContextAuxData && ('isDefault' in executionContextAuxData)) {
       isContentScript = !executionContextAuxData['isDefault'];
     }
-    sourceURL = this._internString(sourceURL);
     const script = new Script(
-        this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId,
-        this._internString(hash), isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length,
-        originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName);
+        this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
+        isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length, originStackTrace, codeOffset,
+        scriptLanguage, debugSymbols, embedderName);
     this._registerScript(script);
     this.dispatchEventToListeners(Events.ParsedScriptSource, script);
 
@@ -1153,19 +1149,6 @@ export class DebuggerModel extends SDKModel {
    */
   async resumeModel() {
     await this._enableDebugger();
-  }
-
-  /**
-   * @param {string} string
-   * @return {string} string
-   */
-  _internString(string) {
-    const internedString = this._stringMap.get(string);
-    if (internedString === undefined) {
-      this._stringMap.set(string, string);
-      return string;
-    }
-    return internedString;
   }
 }
 

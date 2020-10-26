@@ -219,8 +219,11 @@ export class CSSPlugin extends Plugin {
     }
     const swatch = InlineEditor.ColorSwatch.createColorSwatch();
     swatch.renderColor(color, false, Common.UIString.UIString('Open color picker.'));
-    const hiddenText = swatch.createChild('span');
-    hiddenText.slot = 'color-text';
+    const value = swatch.createChild('span');
+    value.textContent = text;
+    value.setAttribute('hidden', 'true');
+
+    swatch.addEventListener('swatch-click', this._swatchIconClicked.bind(this, swatch), false);
     return swatch;
   }
 
@@ -263,8 +266,8 @@ export class CSSPlugin extends Plugin {
     }
     this._currentSwatch = swatch;
 
-    if (swatch instanceof InlineEditor.ColorSwatch.ColorSwatchClosureInterface) {
-      this._showSpectrum(swatch);
+    if (swatch.localName === 'devtools-color-swatch') {
+      this._showSpectrum(/** @type {!InlineEditor.ColorSwatch.ColorSwatchClosureInterface} */ (swatch));
     } else if (swatch instanceof InlineEditor.Swatches.BezierSwatch) {
       this._showBezierEditor(swatch);
     }
@@ -299,8 +302,10 @@ export class CSSPlugin extends Plugin {
     if (!color || !this._currentSwatch) {
       return;
     }
-    if (this._currentSwatch instanceof InlineEditor.ColorSwatch.ColorSwatchClosureInterface) {
-      this._currentSwatch.renderColor(color);
+
+    if (this._currentSwatch.localName === 'devtools-color-swatch') {
+      const swatch = /** @type {!InlineEditor.ColorSwatch.ColorSwatchClosureInterface} */ (this._currentSwatch);
+      swatch.renderColor(color);
     }
     this._changeSwatchText(colorString);
   }

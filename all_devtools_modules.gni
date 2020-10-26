@@ -264,6 +264,7 @@ all_typescript_module_sources = [
   "linear_memory_inspector/LinearMemoryInspectorUtils.js",
   "linear_memory_inspector/LinearMemoryInspector_bridge.js",
   "linear_memory_inspector/LinearMemoryNavigator.js",
+  "linear_memory_inspector/LinearMemoryViewer.js",
   "main/ExecutionContextSelector.js",
   "main/MainImpl.js",
   "main/SimpleApp.js",

@@ -5,6 +5,7 @@ ts_library("linear_memory_inspector") {
   sources = [
     "LinearMemoryInspector_test.ts",
     "LinearMemoryNavigator_test.ts",
+    "LinearMemoryViewer_test.ts",
   ]
 
   deps = [

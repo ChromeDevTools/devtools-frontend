@@ -11,6 +11,7 @@ devtools_module("linear_memory_inspector") {
     "LinearMemoryInspectorUtils.ts",
     "LinearMemoryInspector_bridge.js",
     "LinearMemoryNavigator.ts",
+    "LinearMemoryViewer.ts",
   ]
 
   deps = [

@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -14,7 +11,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
    * @param {number} editorLineNumber
    * @param {string} oldCondition
    * @param {boolean} preferLogpoint
-   * @param {function({committed: boolean, condition: string})} onFinish
+   * @param {function({committed: boolean, condition: string}): !Promise<void>} onFinish
    */
   constructor(editorLineNumber, oldCondition, preferLogpoint, onFinish) {
     super(true);
@@ -44,27 +41,41 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this._typeSelector.select(this._isLogpoint ? logpointOption : conditionalOption);
     toolbar.appendToolbarItem(this._typeSelector);
 
-    Root.Runtime.Runtime.instance().extension(UI.TextEditor.TextEditorFactory).instance().then(factory => {
-      const editorOptions = {lineNumbers: false, lineWrapping: true, mimeType: 'javascript', autoHeight: true};
-      this._editor = factory.createEditor(editorOptions);
-      this._updatePlaceholder();
-      this._editor.widget().element.classList.add('condition-editor');
-      this._editor.configureAutocomplete(
-          ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
-      if (oldCondition) {
-        this._editor.setText(oldCondition);
-      }
-      this._editor.widget().markAsExternallyManaged();
-      this._editor.widget().show(this.contentElement);
-      this._editor.setSelection(this._editor.fullRange());
-      this._editor.widget().focus();
-      this._editor.widget().element.addEventListener('keydown', this._onKeyDown.bind(this), true);
-      this.element.addEventListener('blur', event => {
-        if (event.relatedTarget && !event.relatedTarget.isSelfOrDescendant(this.element)) {
-          this._finishEditing(true);
+    const extension = Root.Runtime.Runtime.instance().extension(UI.TextEditor.TextEditorFactory);
+    if (extension) {
+      extension.instance().then(factory => {
+        const editorOptions = {
+          lineNumbers: false,
+          lineWrapping: true,
+          mimeType: 'javascript',
+          autoHeight: true,
+          bracketMatchingSetting: undefined,
+          devtoolsAccessibleName: undefined,
+          padBottom: undefined,
+          maxHighlightLength: undefined,
+          placeholder: undefined,
+          lineWiseCopyCut: undefined,
+        };
+        this._editor = /** @type {!UI.TextEditor.TextEditorFactory} */ (factory).createEditor(editorOptions);
+        this._updatePlaceholder();
+        this._editor.widget().element.classList.add('condition-editor');
+        this._editor.configureAutocomplete(
+            ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
+        if (oldCondition) {
+          this._editor.setText(oldCondition);
         }
-      }, true);
-    });
+        this._editor.widget().markAsExternallyManaged();
+        this._editor.widget().show(this.contentElement);
+        this._editor.setSelection(this._editor.fullRange());
+        this._editor.widget().focus();
+        this._editor.widget().element.addEventListener('keydown', this._onKeyDown.bind(this), true);
+        this.element.addEventListener('blur', event => {
+          if (event.relatedTarget && !/** @type {!Node} */ (event.relatedTarget).isSelfOrDescendant(this.element)) {
+            this._finishEditing(true);
+          }
+        }, true);
+      });
+    }
   }
 
   /**
@@ -76,7 +87,11 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   }
 
   _onTypeChanged() {
-    const value = this._typeSelector.selectedOption().value;
+    const option = this._typeSelector.selectedOption();
+    if (!option || !this._editor) {
+      return;
+    }
+    const value = option.value;
     this._isLogpoint = value === BreakpointType.Logpoint;
     this._updatePlaceholder();
     if (value === BreakpointType.Breakpoint) {
@@ -86,13 +101,17 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   }
 
   _updatePlaceholder() {
-    const selectedValue = this._typeSelector.selectedOption().value;
+    const option = this._typeSelector.selectedOption();
+    if (!option || !this._editor) {
+      return;
+    }
+    const selectedValue = option.value;
     if (selectedValue === BreakpointType.Conditional) {
       this._editor.setPlaceholder(ls`Expression to check before pausing, e.g. x > 5`);
-      this._typeSelector.element.title = ls`Pause only when the condition is true`;
+      /** @type {!HTMLSpanElement} */ (this._typeSelector.element).title = ls`Pause only when the condition is true`;
     } else if (selectedValue === BreakpointType.Logpoint) {
       this._editor.setPlaceholder(ls`Log message, e.g. 'x is', x`);
-      this._typeSelector.element.title = ls`Log a message to Console, do not break`;
+      /** @type {!HTMLSpanElement} */ (this._typeSelector.element).title = ls`Log a message to Console, do not break`;
     }
   }
 
@@ -104,6 +123,9 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       return;
     }
     this._finished = true;
+    if (!this._editor) {
+      return;
+    }
     this._editor.widget().detach();
     let condition = this._editor.text();
     if (this._isLogpoint) {
@@ -116,6 +138,9 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
    * @param {!Event} event
    */
   async _onKeyDown(event) {
+    if (!(event instanceof KeyboardEvent) || !this._editor) {
+      return;
+    }
     if (isEnterKey(event) && !event.shiftKey) {
       event.consume(true);
       const expression = this._editor.text();

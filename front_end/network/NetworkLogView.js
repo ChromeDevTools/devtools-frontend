@@ -2100,7 +2100,7 @@ export class NetworkLogView extends UI.Widget.VBox {
       ignoredHeaders.add('content-length');
       inferredMethod = 'POST';
     } else if (formData) {
-      data.push('--data-binary ' + escapeString(formData));
+      data.push('--data-raw ' + escapeString(formData));
       ignoredHeaders.add('content-length');
       inferredMethod = 'POST';
     }

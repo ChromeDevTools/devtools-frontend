@@ -284,6 +284,25 @@ export class DebuggerWorkspaceBinding {
   }
 
   /**
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {!Array<!SDK.Script.Script>}
+   */
+  scriptsForUISourceCode(uiSourceCode) {
+    const scripts = new Set();
+    for (const modelData of this._debuggerModelToData.values()) {
+      if (modelData._pluginManager) {
+        modelData._pluginManager.scriptsForUISourceCode(uiSourceCode).forEach(script => scripts.add(script));
+      }
+      const resourceScriptFile = modelData._resourceMapping.scriptFile(uiSourceCode);
+      if (resourceScriptFile && resourceScriptFile._script) {
+        scripts.add(resourceScriptFile._script);
+      }
+      modelData._compilerMapping.scriptsForUISourceCode(uiSourceCode).forEach(script => scripts.add(script));
+    }
+    return [...scripts];
+  }
+
+  /**
    * @param {!SDK.Script.Script} script
    * @return {?SDK.SourceMap.SourceMap}
    */

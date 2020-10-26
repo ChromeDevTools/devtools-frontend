@@ -848,6 +848,12 @@ export class SourcesPanel extends UI.Panel.Panel {
     const uiLocation = /** @type {!Workspace.UISourceCode.UILocation} */ (object);
     const uiSourceCode = uiLocation.uiSourceCode;
 
+    if (!Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+             .scriptsForUISourceCode(uiSourceCode)
+             .every(script => script.isJavaScript())) {
+      // Blackboxing and 'Continue to here' currently only works for JavaScript debugging.
+      return;
+    }
     const contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
       const target = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);

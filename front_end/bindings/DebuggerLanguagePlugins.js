@@ -699,6 +699,18 @@ export class DebuggerLanguagePluginManager {
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {!Array<!SDK.Script.Script>}
+   */
+  scriptsForUISourceCode(uiSourceCode) {
+    const scripts = new Set();
+    for (const {script} of this._uiSourceCodes.get(uiSourceCode) || []) {
+      scripts.add(script);
+    }
+    return [...scripts];
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {?SDK.Script.Script}
    */
   static uiSourceCodeOriginScript(uiSourceCode) {

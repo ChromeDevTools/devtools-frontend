@@ -149,6 +149,13 @@ export class Script {
   /**
    * @return {boolean}
    */
+  isJavaScript() {
+    return this._language === Protocol.Debugger.ScriptLanguage.JavaScript;
+  }
+
+  /**
+   * @return {boolean}
+   */
   isWasm() {
     return this._language === Protocol.Debugger.ScriptLanguage.WebAssembly;
   }

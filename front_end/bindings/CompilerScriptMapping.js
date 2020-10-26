@@ -291,6 +291,15 @@ export class CompilerScriptMapping {
   }
 
   /**
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {!Array<!SDK.Script.Script>}
+   */
+  scriptsForUISourceCode(uiSourceCode) {
+    const sourceMap = uiSourceCodeToSourceMap.get(uiSourceCode);
+    return sourceMap ? this._sourceMapManager.clientsForSourceMap(sourceMap) : [];
+  }
+
+  /**
    * @param {?SDK.SourceMap.SourceMap} sourceMap
    */
   _sourceMapAttachedForTest(sourceMap) {

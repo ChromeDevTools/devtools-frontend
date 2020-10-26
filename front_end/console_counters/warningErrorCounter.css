@@ -8,7 +8,7 @@
   margin-left: 6px;
 }
 
-button {
+.toolbar-counter-button {
   cursor: pointer;
   background-color: #f3f3f3;
   border: 1px solid #d0d0d0;
@@ -17,15 +17,15 @@ button {
   margin-right: 2px;
 }
 
-button:hover,
-button:focus-visible {
+.toolbar-counter-button:hover,
+.toolbar-counter-button:focus-visible {
   background-color: #eaeaea;
 }
 
-.counter-item {
+.toolbar-counter-item {
   margin-left: 6px;
 }
 
-.counter-item.counter-item-first {
+.toolbar-counter-item.toolbar-counter-item-first {
   margin-left: 0;
 }

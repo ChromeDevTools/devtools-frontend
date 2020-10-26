@@ -63,7 +63,7 @@ all_devtools_files = [
   "front_end/components/imagePreview.css",
   "front_end/components/jsUtils.css",
   "front_end/components/module.json",
-  "front_end/console_counters/errorWarningCounter.css",
+  "front_end/console_counters/warningErrorCounter.css",
   "front_end/console_counters/module.json",
   "front_end/console_test_runner/console_test_runner.js",
   "front_end/console_test_runner/module.json",

@@ -98,7 +98,7 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'components/jsUtils.css',
   'persistence/editFileSystemView.css',
   'persistence/workspaceSettingsTab.css',
-  'console_counters/errorWarningCounter.css',
+  'console_counters/warningErrorCounter.css',
   'mobile_throttling/throttlingSettingsTab.css',
   'emulation/deviceModeToolbar.css',
   'emulation/deviceModeView.css',

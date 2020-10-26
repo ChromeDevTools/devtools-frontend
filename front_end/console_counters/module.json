@@ -20,6 +20,6 @@
     "WarningErrorCounter.js"
   ],
   "resources": [
-    "errorWarningCounter.css"
+    "warningErrorCounter.css"
   ]
 }

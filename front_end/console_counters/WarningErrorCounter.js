@@ -28,9 +28,10 @@ export class WarningErrorCounter {
      */
     function createCounter(parent, delegate) {
       const container = parent.createChild('div');
-      const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(container, 'console_counters/errorWarningCounter.css');
+      container.classList.add('main-toolbar-counter');
+      const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(container, 'console_counters/warningErrorCounter.css');
       const button = shadowRoot.createChild('button');
-      button.classList.add('hidden');
+      button.classList.add('toolbar-counter-button', 'hidden');
       button.addEventListener('click', delegate, false);
       return button;
     }
@@ -90,7 +91,7 @@ export class WarningErrorCounter {
    */
   _createItem(shadowRoot, iconType) {
     const item = document.createElement('span');
-    item.classList.add('counter-item');
+    item.classList.add('toolbar-counter-item');
     UI.ARIAUtils.markAsHidden(item);
     const icon = /** @type {!UI.UIUtils.DevToolsIconLabel} */ (item.createChild('span', '', 'dt-icon-label'));
     icon.type = iconType;
@@ -106,7 +107,7 @@ export class WarningErrorCounter {
    */
   _updateItem(item, count, first) {
     item.item.classList.toggle('hidden', !count);
-    item.item.classList.toggle('counter-item-first', first);
+    item.item.classList.toggle('toolbar-counter-item-first', first);
     item.text.textContent = String(count);
   }
 

@@ -18,7 +18,7 @@ devtools_module("console_counters") {
 }
 
 copy_to_gen("legacy_css") {
-  sources = [ "errorWarningCounter.css" ]
+  sources = [ "warningErrorCounter.css" ]
 }
 
 devtools_entrypoint("bundle") {

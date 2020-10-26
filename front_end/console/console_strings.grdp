@@ -144,9 +144,6 @@
   <message name="IDS_DEVTOOLS_93977f1310f482395375a9950b512462" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Eagerly evaluate console prompt text
   </message>
-  <message name="IDS_DEVTOOLS_95c74dafb449d894014c2eb1d80ded01" desc="A context menu item in the Console Pin Pane of the Console panel">
-    Edit expression
-  </message>
   <message name="IDS_DEVTOOLS_97a85fee9bf3c13b66286331fa81e9ca" desc="Alert message for screen readers when the console is cleared">
     Console cleared
   </message>

@@ -58,7 +58,6 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
       if (targetPinElement) {
         const targetPin = elementToConsolePin.get(targetPinElement);
         if (targetPin) {
-          contextMenu.editSection().appendItem(ls`Edit expression`, targetPin.focus.bind(targetPin));
           contextMenu.editSection().appendItem(ls`Remove expression`, this._removePin.bind(this, targetPin));
           targetPin.appendToContextMenu(contextMenu);
         }

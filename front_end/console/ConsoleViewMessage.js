@@ -52,7 +52,6 @@ export const getMessageForElement = element => {
 
 /**
  * @implements {ConsoleViewportElement}
- * @unrestricted
  */
 export class ConsoleViewMessage {
   /**
@@ -70,6 +69,8 @@ export class ConsoleViewMessage {
     /** @type {!Array<{element: !HTMLElement, forceSelect: function():void}>} */
     this._selectableChildren = [];
     this._messageResized = onResize;
+    /** @type {?HTMLElement} */
+    this._element = null;
 
     /** @type {?DataGrid.SortableDataGrid.SortableDataGrid<?>} */
     this._dataGrid = null;
@@ -90,6 +91,18 @@ export class ConsoleViewMessage {
     this._searchHighlightNodes = [];
     /** @type {!Array<!UI.UIUtils.HighlightChange>} */
     this._searchHighlightNodeChanges = [];
+    this._isVisible = false;
+    this._cachedHeight = 0;
+    this._messagePrefix = '';
+    /** @type {?HTMLElement} */
+    this._timestampElement = null;
+    this._inSimilarGroup = false;
+    /** @type {?HTMLElement} */
+    this._similarGroupMarker = null;
+    this._lastInSimilarGroup = false;
+    this._groupKey = '';
+    /** @type {?UI.UIUtils.DevToolsSmallBubble} */
+    this._repeatCountElement = null;
   }
 
   /**
@@ -1106,7 +1119,7 @@ export class ConsoleViewMessage {
 
     if (Common.Settings.Settings.instance().moduleSetting('consoleTimestampsEnabled').get()) {
       if (!this._timestampElement) {
-        this._timestampElement = document.createElement('span');
+        this._timestampElement = /** @type {!HTMLElement} */ (document.createElement('span'));
         this._timestampElement.classList.add('console-timestamp');
       }
       this._timestampElement.textContent = UI.UIUtils.formatTimestamp(this._message.timestamp, false) + ' ';
@@ -1114,7 +1127,7 @@ export class ConsoleViewMessage {
       this._contentElement.insertBefore(this._timestampElement, this._contentElement.firstChild);
     } else if (this._timestampElement) {
       this._timestampElement.remove();
-      delete this._timestampElement;
+      this._timestampElement = null;
     }
   }
 
@@ -1136,7 +1149,7 @@ export class ConsoleViewMessage {
       this._similarGroupMarker.remove();
       this._similarGroupMarker = null;
     } else if (this._element && !this._similarGroupMarker && inSimilarGroup) {
-      this._similarGroupMarker = document.createElement('div');
+      this._similarGroupMarker = /** @type {!HTMLElement} */ (document.createElement('div'));
       this._similarGroupMarker.classList.add('nesting-level-marker');
       this._element.insertBefore(this._similarGroupMarker, this._element.firstChild);
       this._similarGroupMarker.classList.toggle('group-closed', this._lastInSimilarGroup);
@@ -1370,7 +1383,7 @@ export class ConsoleViewMessage {
       this._element.classList.add('console-from-api');
     }
     if (this._inSimilarGroup) {
-      this._similarGroupMarker = this._element.createChild('div', 'nesting-level-marker');
+      this._similarGroupMarker = /** @type {!HTMLElement} */ (this._element.createChild('div', 'nesting-level-marker'));
       this._similarGroupMarker.classList.toggle('group-closed', this._lastInSimilarGroup);
     }
 
@@ -1461,7 +1474,7 @@ export class ConsoleViewMessage {
     if (this._contentElement) {
       this._contentElement.classList.remove('repeated-message');
     }
-    delete this._repeatCountElement;
+    this._repeatCountElement = null;
   }
 
   incrementRepeatCount() {
@@ -1850,9 +1863,6 @@ function getOrCreateTokenizers() {
   return {tokenizerRegexes, tokenizerTypes};
 }
 
-/**
- * @unrestricted
- */
 export class ConsoleGroupViewMessage extends ConsoleViewMessage {
   /**
    * @param {!SDK.ConsoleModel.ConsoleMessage} consoleMessage

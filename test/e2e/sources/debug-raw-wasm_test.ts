@@ -5,13 +5,18 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$, click, getBrowserAndPages, goToResource, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, goToResource, installEventListener, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, checkBreakpointDidNotActivate, checkBreakpointIsActive, checkBreakpointIsNotActive, clearSourceFilesAdded, getBreakpointDecorators, getNonBreakableLines, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, SCOPE_LOCAL_VALUES_SELECTOR, SELECTED_THREAD_SELECTOR, sourceLineNumberSelector, stepThroughTheCode, TURNED_OFF_PAUSE_BUTTON_SELECTOR, waitForAdditionalSourceFiles, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, checkBreakpointDidNotActivate, checkBreakpointIsActive, checkBreakpointIsNotActive, clearSourceFilesAdded, DEBUGGER_PAUSED_EVENT, getBreakpointDecorators, getNonBreakableLines, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, SCOPE_LOCAL_VALUES_SELECTOR, SELECTED_THREAD_SELECTOR, sourceLineNumberSelector, stepThroughTheCode, TURNED_OFF_PAUSE_BUTTON_SELECTOR, waitForAdditionalSourceFiles, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', async function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
   this.timeout(10000);
+
+  beforeEach(async () => {
+    const {frontend} = getBrowserAndPages();
+    installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
+  });
 
   // Disabled to the Chromium binary -> DevTools roller working again.
   it('shows the correct wasm source on load and reload', async () => {

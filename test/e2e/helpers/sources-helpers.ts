@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$$, click, getBrowserAndPages, getHostedModeServerPort, goToResource, pressKey, step, timeout, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, getHostedModeServerPort, getPendingEvents, goToResource, pressKey, step, timeout, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
 import {AsyncScope} from '../../shared/mocha-extensions.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
@@ -19,6 +19,7 @@ export const SCOPE_LOCAL_VALUES_SELECTOR = 'li[aria-label="Local"] + ol';
 export const SELECTED_THREAD_SELECTOR = 'div.thread-item.selected > div.thread-item-title';
 export const TURNED_OFF_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-off';
 export const TURNED_ON_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-on';
+export const DEBUGGER_PAUSED_EVENT = 'DevTools.DebuggerPaused';
 
 export async function doubleClickSourceTreeItem(selector: string) {
   const item = await waitFor(selector);
@@ -332,8 +333,7 @@ export async function expandFileTree(selectors: NestedFileSelector) {
 export async function stepThroughTheCode() {
   const {frontend} = getBrowserAndPages();
   await frontend.keyboard.press('F9');
-  // FIXME(crbug/1112692): Refactor test to remove the timeout.
-  await timeout(50);
+  await waitForFunction(() => getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
   await waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 

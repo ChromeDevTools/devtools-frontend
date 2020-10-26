@@ -12,7 +12,7 @@
 import './CSSAngle.js';
 /**
 * @typedef {{
-* propertyText:string,
+* angleText:string,
 * containingPane:!HTMLElement,
 * }}
 */

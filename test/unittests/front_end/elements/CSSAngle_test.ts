@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {CSSAngle, CSSAngleData, PopoverToggledEvent} from '../../../../front_end/elements/CSSAngle.js';
-import {AngleUnit, getAngleFromDegree, parseText, roundAngleByUnit} from '../../../../front_end/elements/CSSAngleUtils.js';
+import {AngleUnit, getAngleFromDegrees, parseText, roundAngleByUnit} from '../../../../front_end/elements/CSSAngleUtils.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -28,7 +28,7 @@ const togglePopover = (root: ShadowRoot) => {
 };
 
 const initialData: CSSAngleData = {
-  propertyText: '45deg',
+  angleText: '45deg',
   containingPane: document.createElement('div'),
 };
 
@@ -101,10 +101,10 @@ describe('CSSAngle', () => {
     });
 
     it('converts angles in degree to other units correctly', () => {
-      assert.strictEqual(getAngleFromDegree(45, AngleUnit.Grad), 50);
-      assert.strictEqual(getAngleFromDegree(45, AngleUnit.Rad), 0.7853981633974483);
-      assert.strictEqual(getAngleFromDegree(45, AngleUnit.Turn), 0.125);
-      assert.strictEqual(getAngleFromDegree(45, AngleUnit.Deg), 45);
+      assert.strictEqual(getAngleFromDegrees(45, AngleUnit.Grad), 50);
+      assert.strictEqual(getAngleFromDegrees(45, AngleUnit.Rad), 0.7853981633974483);
+      assert.strictEqual(getAngleFromDegrees(45, AngleUnit.Turn), 0.125);
+      assert.strictEqual(getAngleFromDegrees(45, AngleUnit.Deg), 45);
     });
 
     it('rounds angles by units correctly', () => {

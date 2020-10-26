@@ -312,7 +312,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const valueElement = document.createElement('span');
     valueElement.textContent = propertyValue;
     cssAngle.data = {
-      propertyText: propertyValue,
+      angleText: propertyValue,
       containingPane:
           /** @type {!HTMLElement} */ (this._parentPane.element.enclosingNodeOrSelfWithClass('style-panes-wrapper')),
     };

@@ -295,7 +295,7 @@ export class JSONView extends UI.Widget.VBox {
     this._updateSearchCount(this._currentSearchTreeElements.length);
 
     if (!this._currentSearchTreeElements.length) {
-      this._updateSearchIndex(0);
+      this._updateSearchIndex(-1);
       return;
     }
     newIndex = Platform.NumberUtilities.mod(newIndex, this._currentSearchTreeElements.length);

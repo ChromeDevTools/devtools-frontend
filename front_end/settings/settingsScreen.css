@@ -144,6 +144,7 @@ fieldset {
   bottom: 0;
   overflow: auto;
   padding-top: 9px;
+  border-top: 1px solid #eee;
 }
 
 .settings-tab.settings-content {
@@ -158,7 +159,6 @@ fieldset {
 
 .settings-tab-container header {
   padding: 0 0 6px;
-  border-bottom: 1px solid #eee;
 }
 
 #experiments-tab-content .settings-container {

@@ -82,6 +82,8 @@
 
 .suggest-box-content-item devtools-icon {
   --icon-color: #000;
+
+  margin-right: 1px;
 }
 
 .suggest-box-content-item .query {

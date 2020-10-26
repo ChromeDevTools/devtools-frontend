@@ -2642,8 +2642,8 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
           continue;
         }
         const icon = Icon.createIcon();
-        const width = '13px';
-        const height = '13px';
+        const width = '12.5px';
+        const height = '12.5px';
         icon.data = {
           iconName: iconInfo.iconName,
           width,

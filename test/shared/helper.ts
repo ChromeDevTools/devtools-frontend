@@ -10,6 +10,12 @@ import {reloadDevTools} from '../conductor/hooks.js';
 import {getBrowserAndPages, getHostedModeServerPort} from '../conductor/puppeteer-state.js';
 import {AsyncScope} from './mocha-extensions.js';
 
+declare global {
+  interface Window {
+    __pendingEvents: Map<string, Event[]>;
+  }
+}
+
 export let platform: string;
 switch (os.platform()) {
   case 'darwin':
@@ -448,6 +454,33 @@ export const scrollElementIntoView = async (selector: string, root?: puppeteer.J
   await element.evaluate(el => {
     el.scrollIntoView();
   });
+};
+
+export const installEventListener = function(frontend: puppeteer.Page, eventType: string) {
+  return frontend.evaluate(eventType => {
+    if (!('__pendingEvents' in window)) {
+      window.__pendingEvents = new Map();
+    }
+    window.addEventListener(eventType, (e: Event) => {
+      let events = window.__pendingEvents.get(eventType);
+      if (!events) {
+        events = [];
+        window.__pendingEvents.set(eventType, events);
+      }
+      events.push(e);
+    });
+  }, eventType);
+};
+
+export const getPendingEvents = function(frontend: puppeteer.Page, eventType: string) {
+  return frontend.evaluate(eventType => {
+    if (!('__pendingEvents' in window)) {
+      return [];
+    }
+    const pendingEvents = window.__pendingEvents.get(eventType);
+    window.__pendingEvents.set(eventType, []);
+    return pendingEvents || [];
+  }, eventType);
 };
 
 export {getBrowserAndPages, getHostedModeServerPort, reloadDevTools};

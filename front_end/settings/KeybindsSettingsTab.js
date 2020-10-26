@@ -67,7 +67,11 @@ export const UIStrings = {
   /**
   *@description Message shown in settings to show the full list of keyboard shortcuts.
   */
-  FullListOfDevtoolsKeyboard: 'Full list of DevTools keyboard shortcuts and gestures'
+  FullListOfDevtoolsKeyboard: 'Full list of DevTools keyboard shortcuts and gestures',
+  /**
+   *@description Label for a button in the shortcut editor that resets all shortcuts for the current action.
+  */
+  ResetShortcutsForAction: 'Reset shortcuts for action',
 };
 const str_ = i18n.i18n.registerUIStrings('settings/KeybindsSettingsTab.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -387,6 +391,9 @@ export class ShortcutListItem {
 
     this._errorMessageElement = this.element.createChild('div', 'keybinds-info keybinds-error hidden');
     UI.ARIAUtils.markAsAlert(this._errorMessageElement);
+    this.element.appendChild(this._createIconButton(
+        i18nString(UIStrings.ResetShortcutsForAction), 'largeicon-undo', '',
+        this._resetShortcutsToDefaults.bind(this)));
     this._confirmButton = this._createIconButton(
         i18nString(UIStrings.confirmChanges), 'largeicon-checkmark', 'keybinds-confirm-button',
         () => this._settingsTab.commitChanges(this._item, this._editedShortcuts));
@@ -433,15 +440,17 @@ export class ShortcutListItem {
         this._elementToFocus = shortcutInput;
       }
       shortcutInput.value = shortcut.title();
-      const editedShortcut = this._editedShortcuts.get(shortcut);
-      if (editedShortcut) {
-        shortcutInput.value = this._shortcutInputTextForDescriptor(...editedShortcut);
+      const userDescriptors = this._editedShortcuts.get(shortcut);
+      if (userDescriptors) {
+        shortcutInput.value = userDescriptors.map(this._shortcutInputTextForDescriptor.bind(this)).join(' ');
       }
       shortcutInput.addEventListener('keydown', this._onShortcutInputKeyDown.bind(this, shortcut, shortcutInput));
       shortcutElement.appendChild(this._createIconButton(
           i18nString(UIStrings.removeShortcut), 'largeicon-trash-bin', 'keybinds-delete-button', () => {
             const index = this._shortcuts.indexOf(shortcut);
-            this._shortcuts.splice(index, 1);
+            if (!shortcut.isDefault()) {
+              this._shortcuts.splice(index, 1);
+            }
             this._editedShortcuts.set(shortcut, null);
             this._update();
             this.focus();
@@ -512,6 +521,25 @@ export class ShortcutListItem {
       return descriptor.name.slice(0, descriptor.name.lastIndexOf('+'));
     }
     return descriptor.name;
+  }
+
+  _resetShortcutsToDefaults() {
+    this._editedShortcuts.clear();
+    for (const shortcut of this._shortcuts) {
+      if (shortcut.type === UI.KeyboardShortcut.Type.UnsetShortcut) {
+        const index = this._shortcuts.indexOf(shortcut);
+        this._shortcuts.splice(index, 1);
+      } else if (shortcut.type === UI.KeyboardShortcut.Type.UserShortcut) {
+        this._editedShortcuts.set(shortcut, null);
+      }
+    }
+    const disabledDefaults = UI.ShortcutRegistry.ShortcutRegistry.instance().disabledDefaultsForAction(this._item.id());
+    disabledDefaults.forEach(shortcut => {
+      this._shortcuts.push(shortcut);
+      this._editedShortcuts.set(shortcut, shortcut.descriptors);
+    });
+    this._update();
+    this.focus();
   }
 
   /**

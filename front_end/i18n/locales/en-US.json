@@ -71,6 +71,9 @@
   "settings/KeybindsSettingsTab.js | removeShortcut": {
     "message": "Remove shortcut"
   },
+  "settings/KeybindsSettingsTab.js | ResetShortcutsForAction": {
+    "message": "Reset shortcuts for action"
+  },
   "settings/KeybindsSettingsTab.js | RestoreDefaultShortcuts": {
     "message": "Restore default shortcuts"
   },

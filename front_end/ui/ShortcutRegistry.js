@@ -351,6 +351,14 @@ export class ShortcutRegistry {
   }
 
   /**
+   * @param {string} actionId
+   * @return {!Set.<!KeyboardShortcut>}
+   */
+  disabledDefaultsForAction(actionId) {
+    return this._disabledDefaultShortcutsForAction.get(actionId);
+  }
+
+  /**
    * @param {!KeyboardShortcut} shortcut
    */
   _addShortcutToSetting(shortcut) {

@@ -59,7 +59,7 @@ export class KeyboardShortcut {
   * @return {boolean}
   */
   isDefault() {
-    return this.type === Type.DefaultShortcut ||
+    return this.type === Type.DefaultShortcut || this.type === Type.DisabledDefault ||
         (this.type === Type.KeybindSetShortcut && this.keybindSets.has(DefaultShortcutSetting));
   }
 

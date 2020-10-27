@@ -1,8 +1,6 @@
 // Copyright 2017 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
@@ -11,6 +9,9 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {FormatterInterface, FormatterSourceMapping} from './ScriptFormatter.js';  // eslint-disable-line no-unused-vars
+
+/** @type {!WeakMap<!Object, !SourceFormatData>} */
+const objectToFormattingResult = new WeakMap();
 
 export class SourceFormatData {
   /**
@@ -33,11 +34,9 @@ export class SourceFormatData {
    * @return {?SourceFormatData}
    */
   static _for(object) {
-    return object[SourceFormatData._formatDataSymbol];
+    return objectToFormattingResult.get(object) || null;
   }
 }
-
-SourceFormatData._formatDataSymbol = Symbol('formatData');
 
 /** @type {?SourceFormatter} */
 let sourceFormatterInstance = null;
@@ -99,7 +98,7 @@ export class SourceFormatter {
    * @param {!SourceFormatData} formatData
    */
   async _discardFormatData(formatData) {
-    delete formatData.formattedSourceCode[SourceFormatData._formatDataSymbol];
+    objectToFormattingResult.delete(formatData.formattedSourceCode);
     await this._scriptMapping._setSourceMappingEnabled(formatData, false);
     this._styleMapping._setSourceMappingEnabled(formatData, false);
     this._project.removeFile(formatData.formattedSourceCode.url());
@@ -118,8 +117,7 @@ export class SourceFormatter {
    * @return {!Workspace.UISourceCode.UISourceCode}
    */
   getOriginalUISourceCode(uiSourceCode) {
-    const formatData =
-        /** @type {?SourceFormatData} */ (uiSourceCode[SourceFormatData._formatDataSymbol]);
+    const formatData = objectToFormattingResult.get(uiSourceCode);
     if (!formatData) {
       return uiSourceCode;
     }
@@ -136,57 +134,54 @@ export class SourceFormatter {
       return cacheEntry.promise;
     }
 
-    let fulfillFormatPromise;
-    const resultPromise = new Promise(fulfill => {
-      fulfillFormatPromise = fulfill;
-    });
-    this._formattedSourceCodes.set(uiSourceCode, {promise: resultPromise, formatData: null});
-    const {content} = await uiSourceCode.requestContent();
-    // ------------ ASYNC ------------
-    FormatterInterface.format(
-        uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '', formatDone.bind(this));
-    return resultPromise;
-
     /**
-     * @this SourceFormatter
-     * @param {string} formattedContent
-     * @param {!FormatterSourceMapping} formatterMapping
+     * @type {!Promise<!SourceFormatData>}
      */
-    async function formatDone(formattedContent, formatterMapping) {
-      const cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
-      if (!cacheEntry || cacheEntry.promise !== resultPromise) {
-        return;
-      }
-      let formattedURL;
-      let count = 0;
-      let suffix = '';
-      do {
-        formattedURL = `${uiSourceCode.url()}:formatted${suffix}`;
-        suffix = `:${count++}`;
-      } while (this._project.uiSourceCodeForURL(formattedURL));
-      const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
-          formattedURL, uiSourceCode.contentType(), formattedContent);
-      const formattedUISourceCode = this._project.createUISourceCode(formattedURL, contentProvider.contentType());
-      const formatData = new SourceFormatData(uiSourceCode, formattedUISourceCode, formatterMapping);
-      formattedUISourceCode[SourceFormatData._formatDataSymbol] = formatData;
-      this._project.addUISourceCodeWithProvider(
-          formattedUISourceCode, contentProvider, /* metadata */ null, uiSourceCode.mimeType());
-      await this._scriptMapping._setSourceMappingEnabled(formatData, true);
-      await this._styleMapping._setSourceMappingEnabled(formatData, true);
-      cacheEntry.formatData = formatData;
+    const resultPromise = new Promise(async resolve => {
+      const {content} = await uiSourceCode.requestContent();
 
-      for (const decoration of uiSourceCode.allDecorations()) {
-        const range = decoration.range();
-        const startLocation = formatterMapping.originalToFormatted(range.startLine, range.startColumn);
-        const endLocation = formatterMapping.originalToFormatted(range.endLine, range.endColumn);
+      FormatterInterface.format(
+          uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '',
+          async (formattedContent, formatterMapping) => {
+            const cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
+            if (!cacheEntry || cacheEntry.promise !== resultPromise) {
+              return;
+            }
+            let formattedURL;
+            let count = 0;
+            let suffix = '';
+            do {
+              formattedURL = `${uiSourceCode.url()}:formatted${suffix}`;
+              suffix = `:${count++}`;
+            } while (this._project.uiSourceCodeForURL(formattedURL));
+            const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
+                formattedURL, uiSourceCode.contentType(), formattedContent);
+            const formattedUISourceCode = this._project.createUISourceCode(formattedURL, contentProvider.contentType());
+            const formatData = new SourceFormatData(uiSourceCode, formattedUISourceCode, formatterMapping);
+            objectToFormattingResult.set(formattedUISourceCode, formatData);
+            this._project.addUISourceCodeWithProvider(
+                formattedUISourceCode, contentProvider, /* metadata */ null, uiSourceCode.mimeType());
+            await this._scriptMapping._setSourceMappingEnabled(formatData, true);
+            await this._styleMapping._setSourceMappingEnabled(formatData, true);
+            cacheEntry.formatData = formatData;
 
-        formattedUISourceCode.addDecoration(
-            new TextUtils.TextRange.TextRange(startLocation[0], startLocation[1], endLocation[0], endLocation[1]),
-            /** @type {string} */ (decoration.type()), decoration.data());
-      }
+            for (const decoration of uiSourceCode.allDecorations()) {
+              const range = decoration.range();
+              const startLocation = formatterMapping.originalToFormatted(range.startLine, range.startColumn);
+              const endLocation = formatterMapping.originalToFormatted(range.endLine, range.endColumn);
 
-      fulfillFormatPromise(formatData);
-    }
+              formattedUISourceCode.addDecoration(
+                  new TextUtils.TextRange.TextRange(startLocation[0], startLocation[1], endLocation[0], endLocation[1]),
+                  /** @type {string} */ (decoration.type()), decoration.data());
+            }
+
+            resolve(formatData);
+          });
+    });
+
+    this._formattedSourceCodes.set(uiSourceCode, {promise: resultPromise, formatData: null});
+
+    return resultPromise;
   }
 }
 
@@ -206,7 +201,7 @@ class ScriptMapping {
   rawLocationToUILocation(rawLocation) {
     const script = rawLocation.script();
     const formatData = script && SourceFormatData._for(script);
-    if (!formatData) {
+    if (!formatData || !script) {
       return null;
     }
     if (script.isInlineScriptWithSourceURL()) {
@@ -260,7 +255,8 @@ class ScriptMapping {
                             .filter(script => script.isInlineScript() && !script.hasSourceURL);
         // Here we have an inline script, which was formatted together with the containing document, so we must not
         // translate locations as they are relative to the start of the document.
-        const locations = scripts.map(script => script.rawLocation(originalLine, originalColumn)).filter(l => !!l);
+        const locations = /** @type {!Array<!SDK.DebuggerModel.Location>} */ (
+            scripts.map(script => script.rawLocation(originalLine, originalColumn)).filter(l => !!l));
         console.assert(locations.every(l => l && !!l.script()));
         return locations;
       }
@@ -279,11 +275,11 @@ class ScriptMapping {
     }
     if (enabled) {
       for (const script of scripts) {
-        script[SourceFormatData._formatDataSymbol] = formatData;
+        objectToFormattingResult.set(script, formatData);
       }
     } else {
       for (const script of scripts) {
-        delete script[SourceFormatData._formatDataSymbol];
+        objectToFormattingResult.delete(script);
       }
     }
     const updatePromises = scripts.map(
@@ -306,16 +302,18 @@ class ScriptMapping {
       }
     }
     if (uiSourceCode.contentType().isScript()) {
-      console.assert(
-          !uiSourceCode[SourceFormatData._formatDataSymbol] ||
-          uiSourceCode[SourceFormatData._formatDataSymbol] === uiSourceCode);
+      console.assert(!objectToFormattingResult.has(uiSourceCode));
       const rawLocations = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                                .uiLocationToRawLocationsForUnformattedJavaScript(uiSourceCode, 0, 0);
-      return rawLocations.map(location => location.script()).filter(script => !!script);
+      return /** @type {!Array<!SDK.Script.Script>} */ (
+          rawLocations.map(location => location.script()).filter(script => !!script));
     }
     return [];
   }
 }
+
+/** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !Array<!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>>} */
+const sourceCodeToHeaders = new WeakMap();
 
 /**
  * @implements {Bindings.CSSWorkspaceBinding.SourceMapping}
@@ -354,8 +352,13 @@ class StyleMapping {
     }
     const [originalLine, originalColumn] =
         formatData.mapping.formattedToOriginal(uiLocation.lineNumber, uiLocation.columnNumber);
-    const headers = formatData.originalSourceCode[this._headersSymbol].filter(
-        header => header.containsLocation(originalLine, originalColumn));
+    const allHeaders = sourceCodeToHeaders.get(formatData.originalSourceCode);
+
+    if (!allHeaders) {
+      return [];
+    }
+
+    const headers = allHeaders.filter(header => header.containsLocation(originalLine, originalColumn));
     return headers.map(header => new SDK.CSSModel.CSSLocation(header, originalLine, originalColumn));
   }
 
@@ -367,13 +370,15 @@ class StyleMapping {
     const original = formatData.originalSourceCode;
     const headers = this._headersForUISourceCode(original);
     if (enable) {
-      original[this._headersSymbol] = headers;
+      sourceCodeToHeaders.set(original, headers);
       headers.forEach(header => {
-        header[SourceFormatData._formatDataSymbol] = formatData;
+        objectToFormattingResult.set(header, formatData);
       });
     } else {
-      original[this._headersSymbol] = null;
-      headers.forEach(header => delete header[SourceFormatData._formatDataSymbol]);
+      sourceCodeToHeaders.delete(original);
+      headers.forEach(header => {
+        objectToFormattingResult.delete(header);
+      });
     }
     const updatePromises =
         headers.map(header => Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().updateLocations(header));
@@ -395,7 +400,8 @@ class StyleMapping {
     } else if (uiSourceCode.contentType().isStyleSheet()) {
       const rawLocations = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().uiLocationToRawLocations(
           uiSourceCode.uiLocation(0, 0));
-      return rawLocations.map(rawLocation => rawLocation.header()).filter(header => !!header);
+      return /** @type {!Array<!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>} */ (
+          rawLocations.map(rawLocation => rawLocation.header()).filter(header => !!header));
     }
     return [];
   }

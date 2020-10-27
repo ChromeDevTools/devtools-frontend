@@ -175,6 +175,7 @@ fieldset {
   font-weight: normal;
   margin: 0;
   padding-bottom: 3px;
+  white-space: nowrap;
 }
 
 .settings-tab .settings-section-title {

@@ -1381,7 +1381,7 @@ export class TimelineUIUtils {
     contentHelper.addSection(ls`Network request`, color);
 
     if (request.url) {
-      contentHelper.appendElementRow(ls`URL`, Components.Linkifier.Linkifier.linkifyURL(request.url));
+      contentHelper.appendElementRow(ls`URL`, Components.Linkifier.Linkifier.linkifyURL(request.url, {tabStop: true}));
     }
 
     // The time from queueing the request until resource processing is finished.

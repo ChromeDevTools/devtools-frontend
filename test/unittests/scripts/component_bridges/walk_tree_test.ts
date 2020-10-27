@@ -76,6 +76,37 @@ describe('walkTree', () => {
     assert.deepEqual(foundInterfaceNames, ['Person', 'Dog']);
   });
 
+  it('recognises when Common is used as an interface and stores it', () => {
+    const code = `import * as Common from '../common/common.js';
+
+    class Foo extends HTMLElement {
+      public update(x: Common.Color.Color): void {
+
+      }
+    }`;
+
+    const source = createTypeScriptSourceFile(code);
+    const result = walkTree(source, 'test.ts');
+
+    assert.strictEqual(result.foundInterfaces.size, 0);
+    assert.isTrue(result.legacyInterfaceReferences.has('common'));
+  });
+
+  it('errors when finding another deeply nested interface', () => {
+    const code = `import * as LegacyThing from '../legacy/legacy.js';
+
+    class Foo extends HTMLElement {
+      public update(x: LegacyThing.Foo.Bar): void {
+
+      }
+    }`;
+
+    const source = createTypeScriptSourceFile(code);
+    assert.throws(() => {
+      walkTree(source, 'test.ts');
+    }, 'Found deeply nested interface, starting with `LegacyThing`.');
+  });
+
   describe('it enforces the .data as X pattern in lit-html html calls', () => {
     it('errors with LitHtml.html`` if the .data object has no "as X" declared', () => {
       const code = 'LitHtml.html\`<node-text .data=${{title: \'Jack\'}}></node-text>\`';

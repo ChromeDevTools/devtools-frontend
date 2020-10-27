@@ -10,26 +10,25 @@
 */
 
 import './ColorSwatch.js';
-
 import * as Common from '../common/common.js';
-
 // eslint-disable-next-line no-unused-vars
 export class ColorSwatchClosureInterface extends HTMLElement {
   /**
   * @param {!Common.Color.Color|string} color
-  * @param {(string|boolean)=} formatOrUseUserSetting
-  * @param {string=} tooltip
+  * @param {(string|boolean|undefined)=} formatOrUseUserSetting
+  * @param {(string|undefined)=} tooltip
+  * @return {void}
   */
   renderColor(color, formatOrUseUserSetting, tooltip) {
   }
   /**
-  * @return {!Common.Color.Color|null}
+  * @return {?Common.Color.Color}
   */
   get color() {
     throw new Error('Not implemented in _bridge.js');
   }
   /**
-  * @return {string|null}
+  * @return {?string}
   */
   get format() {
     throw new Error('Not implemented in _bridge.js');

@@ -31,6 +31,7 @@ export const writeToDisk = (inputFilePath: string, generatedCode: GeneratedCode)
                     .join('\n');
   const classDeclaration = generatedCode.closureClass.join('\n');
   const creatorFunction = generatedCode.creatorFunction.join('\n');
+  const imports = generatedCode.moduleImports.join('\n');
 
   /*
    * We replace any `\` with `/` here because the PRESUBMIT check rebuilds all
@@ -51,8 +52,14 @@ export const writeToDisk = (inputFilePath: string, generatedCode: GeneratedCode)
 `;
 
   // extra \n to ensure ending with a linebreak at end of file
-  const finalCode =
-      [chromeLicense, byHandWarning, importStatement, types, classDeclaration, creatorFunction].join('\n') + '\n';
+  const finalCode = [chromeLicense, byHandWarning, importStatement, imports, types, classDeclaration, creatorFunction]
+                        .filter(x => {
+                          // Filter out any of the previous parts that were empty, to avoid
+                          // tonnes of blank lines in the bridge output.
+                          return !!x;
+                        })
+                        .join('\n') +
+      '\n';
 
   fs.writeFileSync(outputFileName, finalCode, {encoding: 'utf8'});
 

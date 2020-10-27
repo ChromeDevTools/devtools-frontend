@@ -560,10 +560,27 @@ const generateEnumOutput = (enumDeclaration: ts.EnumDeclaration): string[] => {
   return enumOutput;
 };
 
+export const generateImports = (state: WalkerState): string[] => {
+  const imports: string[] = [];
+
+  const allImports = Array.from(state.imports);
+  state.legacyInterfaceReferences.forEach(legacyReference => {
+    const matchingImport = allImports.find(imp => {
+      return 'namespace' in imp && imp.namespace.toLowerCase() === legacyReference;
+    });
+    if (matchingImport && 'namespace' in matchingImport) {
+      imports.push(`import * as ${matchingImport.namespace} from '${matchingImport.filePath}';`);
+    }
+  });
+
+  return imports;
+};
+
 export interface GeneratedCode {
   types: string[][];
   closureClass: string[];
   creatorFunction: string[];
+  moduleImports: string[];
 }
 
 export const generateClosureBridge = (state: WalkerState): GeneratedCode => {
@@ -571,6 +588,7 @@ export const generateClosureBridge = (state: WalkerState): GeneratedCode => {
     types: generateTypeReferences(state),
     closureClass: generateClosureClass(state),
     creatorFunction: generateCreatorFunction(state),
+    moduleImports: generateImports(state),
   };
 
   return result;

@@ -70,6 +70,10 @@ describe('bridges CLI fixture tests', () => {
     runFixtureTestAndAssertMatch('complex-types-imported');
   });
 
+  it('deals with Common.X interface references', () => {
+    runFixtureTestAndAssertMatch('common-interface');
+  });
+
   it('will refuse to regenerate a bridge with a MANUALLY_EDITED_BRIDGE comment', () => {
     const fixtureName = 'manually-edited-bridge-component';
     const sourcePath = pathForFixture(`${fixtureName}.ts`);

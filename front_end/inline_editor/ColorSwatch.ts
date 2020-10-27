@@ -26,8 +26,8 @@ export class ColorSwatch extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private tooltip: string = ls`Shift-click to change color format`;
   private text: string|null = null;
-  color: Common.Color.Color|null = null;
-  format: string|null = null;
+  private _color: Common.Color.Color|null = null;
+  private _format: string|null = null;
 
   constructor() {
     super();
@@ -36,6 +36,13 @@ export class ColorSwatch extends HTMLElement {
     ];
   }
 
+  get color(): Common.Color.Color|null {
+    return this._color;
+  }
+
+  get format(): string|null {
+    return this._format;
+  }
   /**
    * Render this swatch given a color object or text to be parsed as a color.
    * @param color The color object or string to use for this swatch.
@@ -44,25 +51,25 @@ export class ColorSwatch extends HTMLElement {
    */
   renderColor(color: Common.Color.Color|string, formatOrUseUserSetting?: string|boolean, tooltip?: string): void {
     if (typeof color === 'string') {
-      this.color = Common.Color.Color.parse(color);
+      this._color = Common.Color.Color.parse(color);
       this.text = color;
-      if (!this.color) {
+      if (!this._color) {
         this.renderTextOnly();
         return;
       }
     } else {
-      this.color = color;
+      this._color = color;
     }
 
     if (typeof formatOrUseUserSetting === 'boolean' && formatOrUseUserSetting) {
-      this.format = Common.Settings.detectColorFormat(this.color);
+      this._format = Common.Settings.detectColorFormat(this._color);
     } else if (typeof formatOrUseUserSetting === 'string') {
-      this.format = formatOrUseUserSetting;
+      this._format = formatOrUseUserSetting;
     } else {
-      this.format = this.color.format();
+      this._format = this._color.format();
     }
 
-    this.text = this.color.asString(this.format);
+    this.text = this._color.asString(this._format);
 
     if (tooltip) {
       this.tooltip = tooltip;
@@ -110,21 +117,21 @@ export class ColorSwatch extends HTMLElement {
   }
 
   private toggleNextFormat() {
-    if (!this.color || !this.format) {
+    if (!this._color || !this._format) {
       return;
     }
 
     let currentValue;
     do {
-      this.format = nextColorFormat(this.color, this.format);
-      currentValue = this.color.asString(this.format);
+      this._format = nextColorFormat(this._color, this._format);
+      currentValue = this._color.asString(this._format);
     } while (currentValue === this.text);
 
     if (currentValue) {
       this.text = currentValue;
       this.render();
 
-      this.dispatchEvent(new FormatChangedEvent(this.format, this.text));
+      this.dispatchEvent(new FormatChangedEvent(this._format, this.text));
     }
   }
 }

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import {assert} from 'chai';
 
-import {generateClosureBridge, generateClosureClass, generateCreatorFunction, generateTypeReferences} from '../../../../scripts/component_bridges/generate_closure.js';
+import {generateClosureBridge, generateClosureClass, generateCreatorFunction, generateImports, generateTypeReferences} from '../../../../scripts/component_bridges/generate_closure.js';
 import {WalkerState, walkTree} from '../../../../scripts/component_bridges/walk_tree.js';
 
 import {createTypeScriptSourceFile} from './test_utils.js';
@@ -331,6 +331,24 @@ describe('generateClosure', () => {
   * @param {?Person} person
   * @return {void}
   */`);
+    });
+
+    it('outputs Common.X interface references', () => {
+      const state = parseCode(`interface Person {
+        name: string
+        age: number
+      }
+      class Breadcrumbs extends HTMLElement {
+        public update(p: Person, x: Common.Color.Color):void {
+        }
+      }`);
+
+      const classOutput = generateClosureClass(state);
+
+      assert.include(classOutput.join('\n'), `
+  * @param {!Person} p
+  * @param {!Common.Color.Color} x
+  `);
     });
 
     it('parses getter functions', () => {
@@ -1462,6 +1480,44 @@ export let Person`);
 
         assert.throws(() => generateTypeReferences(state), 'Error: type Person has string literal key name: "jack"');
       });
+    });
+  });
+
+  describe('generateImports', () => {
+    it('adds an import if Common is referred to as an interface', () => {
+      const state = parseCode(`import * as Common from '../common/common.js'
+
+      interface Person {
+        name: string
+        age: number
+      }
+      class Breadcrumbs extends HTMLElement {
+        public update(p: Person, x: Common.Color.Color):void {
+        }
+      }`);
+
+      const importsOutput = generateImports(state);
+
+      assert.include(importsOutput.join('\n'), 'import * as Common from \'../common/common.js\';');
+    });
+
+    it('does not add an import if Common is not used as an interface', () => {
+      const state = parseCode(`import * as Common from '../common/common.js'
+
+      interface Person {
+        name: string
+        age: number
+      }
+
+      const ls = Common.ls;
+      class Breadcrumbs extends HTMLElement {
+        public update(p: Person):void {
+        }
+      }`);
+
+      const importsOutput = generateImports(state);
+
+      assert.notInclude(importsOutput.join('\n'), 'import * as Common from \'../common/common.js\';');
     });
   });
 });

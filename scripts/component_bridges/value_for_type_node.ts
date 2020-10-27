@@ -61,6 +61,21 @@ export const valueForTypeNode = (node: ts.TypeNode, isFunctionParam: boolean = f
       }
     } else if (ts.isIdentifier(node.typeName.left)) {
       value = node.typeName.left.escapedText.toString();
+    } else if (ts.isQualifiedName(node.typeName.left)) {
+      /** This means it's a deeply nested name, such as Common.Color.Color
+       * walk_tree.ts will allow this for only Common.X, and error for any others.
+       * So all we have to do here is parse the node to find X, Y and Z of X.Y.Z and output them.
+       */
+      // This is a Node with {left: X, right: Y}
+      const firstParts = node.typeName.left;
+      const firstPart = firstParts.left;     // This is X
+      const middlePart = firstParts.right;   // This is Y
+      const lastPart = node.typeName.right;  // This is Z
+      if (!ts.isIdentifier(firstPart) || !ts.isIdentifier(middlePart) || !ts.isIdentifier(lastPart)) {
+        throw new Error('Found deeply structured reference node with unexpected structure.');
+      }
+
+      return [firstPart, middlePart, lastPart].map(part => part.escapedText.toString()).join('.');
     } else {
       throw new Error('Internal error: cannot map a node to value.');
     }

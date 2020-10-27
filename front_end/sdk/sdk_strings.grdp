@@ -12,9 +12,6 @@
   <message name="IDS_DEVTOOLS_044b149f2d31de7a7f43518045f61642" desc="Title of a media query that can be emulated via the Rendering drawer">
     prefers-reduced-data: reduce
   </message>
-  <message name="IDS_DEVTOOLS_04a8e1d4d35de0097dba4846b17f1c97" desc="Title for CSP inline issue link">
-    Learn more: Content Security Policy - Inline Code
-  </message>
   <message name="IDS_DEVTOOLS_05dfd3a2f7eebfad702620a4a7e182eb" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie was blocked because it had the &quot;SameSite=Strict&quot; attribute but came from a cross-site response which was not the response to a top-level navigation.
   </message>
@@ -95,9 +92,6 @@
   </message>
   <message name="IDS_DEVTOOLS_1985576209a186984f171efd81e91e3d" desc="Text in Network Log">
     &lt;anonymous&gt;
-  </message>
-  <message name="IDS_DEVTOOLS_1afebac41b13cf486a322ed28cf14d8d" desc="Title for the CSP eval link">
-    Learn more: Content Security Policy - Eval
   </message>
   <message name="IDS_DEVTOOLS_1ccfb518c1eb59a48fa9b2c578073557" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     redundant
@@ -249,6 +243,12 @@
   </message>
   <message name="IDS_DEVTOOLS_adebfaed8be7365a6da10b3a82308388" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
     This cookie was blocked because it had the &quot;SameSite=Strict&quot; attribute but the request was cross-site. This includes top-level navigation requests initiated by other sites. This request is considered cross-site because the URL has a different scheme than the current site.
+  </message>
+  <message name="IDS_DEVTOOLS_ae356ff81a018e6d1469671482fe27b9" desc="Title for the CSP eval link">
+    Content Security Policy - Eval
+  </message>
+  <message name="IDS_DEVTOOLS_b36857343b1291522b00bfce8e3b347c" desc="Title for CSP inline issue link">
+    Content Security Policy - Inline Code
   </message>
   <message name="IDS_DEVTOOLS_b40b37431c71726db1bd4e1bc44cbfac" desc="Error message for canceled source map loads">
     Load canceled due to reload of inspected page

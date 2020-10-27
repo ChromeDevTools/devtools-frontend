@@ -82,7 +82,7 @@ const cspInlineViolation = {
   issueKind: IssueKind.BreakingChange,
   links: [{
     link: 'https://developers.google.com/web/fundamentals/security/csp#inline_code_is_considered_harmful',
-    linkTitle: ls`Learn more: Content Security Policy - Inline Code`
+    linkTitle: ls`Content Security Policy - Inline Code`
   }],
 };
 
@@ -91,7 +91,7 @@ const cspEvalViolation = {
   issueKind: IssueKind.BreakingChange,
   links: [{
     link: 'https://developers.google.com/web/fundamentals/security/csp#eval_too',
-    linkTitle: ls`Learn more: Content Security Policy - Eval`
+    linkTitle: ls`Content Security Policy - Eval`
   }],
 };
 

@@ -42,7 +42,7 @@ import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
 import {ConsolePinPane} from './ConsolePinPane.js';
 import {ConsolePrompt, Events as ConsolePromptEvents} from './ConsolePrompt.js';
 import {ConsoleSidebar, Events} from './ConsoleSidebar.js';
-import {ConsoleCommand, ConsoleCommandResult, ConsoleGroupViewMessage, ConsoleViewMessage, getMessageForElement, MaxLengthForLinks} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
+import {ConsoleCommand, ConsoleCommandResult, ConsoleGroupViewMessage, ConsoleTableMessageView, ConsoleViewMessage, getMessageForElement, MaxLengthForLinks} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
 import {ConsoleViewport, ConsoleViewportElement, ConsoleViewportProvider} from './ConsoleViewport.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!ConsoleView} */
@@ -849,6 +849,8 @@ export class ConsoleView extends UI.Widget.VBox {
       case SDK.ConsoleModel.MessageType.StartGroup:
         return new ConsoleGroupViewMessage(
             message, this._linkifier, nestingLevel, this._updateMessageList.bind(this), this._onMessageResizedBound);
+      case SDK.ConsoleModel.MessageType.Table:
+        return new ConsoleTableMessageView(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
       default:
         return new ConsoleViewMessage(message, this._linkifier, nestingLevel, this._onMessageResizedBound);
     }

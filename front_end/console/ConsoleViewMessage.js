@@ -50,6 +50,31 @@ export const getMessageForElement = element => {
   return elementToMessage.get(element);
 };
 
+// This value reflects the 18px min-height of .console-message, plus the
+// 1px border of .console-message-wrapper. Keep in sync with consoleView.css.
+const defaultConsoleRowHeight = 19;
+
+/**
+ * @param {?SDK.RuntimeModel.RuntimeModel} runtimeModel
+ */
+const parameterToRemoteObject = runtimeModel =>
+    /**
+     * @param {!SDK.RemoteObject.RemoteObject|!Protocol.Runtime.RemoteObject|string|undefined} parameter
+     * @return {!SDK.RemoteObject.RemoteObject}
+     */
+    parameter => {
+      if (parameter instanceof SDK.RemoteObject.RemoteObject) {
+        return parameter;
+      }
+      if (!runtimeModel) {
+        return SDK.RemoteObject.RemoteObject.fromLocalObject(parameter);
+      }
+      if (typeof parameter === 'object') {
+        return runtimeModel.createRemoteObject(parameter);
+      }
+      return runtimeModel.createRemoteObjectFromPrimitiveValue(parameter);
+    };
+
 /**
  * @implements {ConsoleViewportElement}
  */
@@ -72,8 +97,6 @@ export class ConsoleViewMessage {
     /** @type {?HTMLElement} */
     this._element = null;
 
-    /** @type {?DataGrid.SortableDataGrid.SortableDataGrid<?>} */
-    this._dataGrid = null;
     this._previewFormatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
     this._searchRegex = null;
     /** @type {?UI.Icon.Icon} */
@@ -117,19 +140,10 @@ export class ConsoleViewMessage {
    * @override
    */
   wasShown() {
-    if (this._dataGrid) {
-      this._dataGrid.updateWidths();
-    }
     this._isVisible = true;
   }
 
   onResize() {
-    if (!this._isVisible) {
-      return;
-    }
-    if (this._dataGrid) {
-      this._dataGrid.onResize();
-    }
   }
 
   /**
@@ -140,6 +154,10 @@ export class ConsoleViewMessage {
     this._cachedHeight = this.element().offsetHeight;
   }
 
+  isVisible() {
+    return this._isVisible;
+  }
+
   /**
    * @return {number}
    */
@@ -147,15 +165,10 @@ export class ConsoleViewMessage {
     if (this._cachedHeight) {
       return this._cachedHeight;
     }
-    // This value reflects the 18px min-height of .console-message, plus the
-    // 1px border of .console-message-wrapper. Keep in sync with consoleView.css.
-    const defaultConsoleRowHeight = 19;
-    if (this._message.type === SDK.ConsoleModel.MessageType.Table) {
-      const table = this._message.parameters && this._message.parameters[0];
-      if (table && typeof table !== 'string' && table.preview) {
-        return defaultConsoleRowHeight * table.preview.properties.length;
-      }
-    }
+    return this.approximateFastHeight();
+  }
+
+  approximateFastHeight() {
     return defaultConsoleRowHeight;
   }
 
@@ -164,97 +177,6 @@ export class ConsoleViewMessage {
    */
   consoleMessage() {
     return this._message;
-  }
-
-  /**
-   * @return {!HTMLElement}
-   */
-  _buildTableMessage() {
-    const formattedMessage = /** @type {!HTMLElement} */ (document.createElement('span'));
-    formattedMessage.classList.add('source-code');
-    this._anchorElement = this._buildMessageAnchor();
-    if (this._anchorElement) {
-      formattedMessage.appendChild(this._anchorElement);
-    }
-
-    const table = this._message.parameters && this._message.parameters.length ? this._message.parameters[0] : null;
-    if (!table) {
-      return this._buildMessage();
-    }
-    const actualTable = this._parameterToRemoteObject(table);
-    if (!actualTable || !actualTable.preview) {
-      return this._buildMessage();
-    }
-
-    const rawValueColumnSymbol = Symbol('rawValueColumn');
-    /** @type {!Array<string|symbol>} */
-    const columnNames = [];
-    const preview = actualTable.preview;
-    const rows = [];
-    for (let i = 0; i < preview.properties.length; ++i) {
-      const rowProperty = preview.properties[i];
-      /** @type {!Array<!Protocol.Runtime.PropertyPreview|!{name:(string|symbol), type: !Protocol.Runtime.PropertyPreviewType, value: (string|undefined)}>} */
-      let rowSubProperties;
-      if (rowProperty.valuePreview) {
-        rowSubProperties = rowProperty.valuePreview.properties;
-      } else if (rowProperty.value) {
-        rowSubProperties = [{name: rawValueColumnSymbol, type: rowProperty.type, value: rowProperty.value}];
-      } else {
-        continue;
-      }
-
-      /** @type {!Map<string|symbol, !HTMLElement>} */
-      const rowValue = new Map();
-      const maxColumnsToRender = 20;
-      for (let j = 0; j < rowSubProperties.length; ++j) {
-        const cellProperty = rowSubProperties[j];
-        let columnRendered = columnNames.indexOf(cellProperty.name) !== -1;
-        if (!columnRendered) {
-          if (columnNames.length === maxColumnsToRender) {
-            continue;
-          }
-          columnRendered = true;
-          columnNames.push(cellProperty.name);
-        }
-
-        if (columnRendered) {
-          const cellElement =
-              this._renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty]);
-          cellElement.classList.add('console-message-nowrap-below');
-          rowValue.set(cellProperty.name, cellElement);
-        }
-      }
-      rows.push({rowName: rowProperty.name, rowValue});
-    }
-
-    const flatValues = [];
-    for (const {rowName, rowValue} of rows) {
-      flatValues.push(rowName);
-      for (let j = 0; j < columnNames.length; ++j) {
-        flatValues.push(rowValue.get(columnNames[j]));
-      }
-    }
-    columnNames.unshift(Common.UIString.UIString('(index)'));
-    const columnDisplayNames =
-        columnNames.map(name => name === rawValueColumnSymbol ? Common.UIString.UIString('Value') : name.toString());
-
-    if (flatValues.length) {
-      this._dataGrid = DataGrid.SortableDataGrid.SortableDataGrid.create(columnDisplayNames, flatValues, ls`Console`);
-      if (this._dataGrid) {
-        this._dataGrid.setStriped(true);
-        this._dataGrid.setFocusable(false);
-
-        const formattedResult = document.createElement('span');
-        formattedResult.classList.add('console-message-text');
-        const tableElement = formattedResult.createChild('div', 'console-message-formatted-table');
-        const dataGridContainer = tableElement.createChild('span');
-        tableElement.appendChild(this._formatParameter(actualTable, true, false));
-        dataGridContainer.appendChild(this._dataGrid.element);
-        formattedMessage.appendChild(formattedResult);
-        this._dataGrid.renderInline();
-      }
-    }
-    return formattedMessage;
   }
 
   /**
@@ -516,24 +438,6 @@ export class ConsoleViewMessage {
   }
 
   /**
-   * @param {!SDK.RemoteObject.RemoteObject|!Protocol.Runtime.RemoteObject|string|undefined} parameter
-   * @return {!SDK.RemoteObject.RemoteObject}
-   */
-  _parameterToRemoteObject(parameter) {
-    if (parameter instanceof SDK.RemoteObject.RemoteObject) {
-      return parameter;
-    }
-    const runtimeModel = this._message.runtimeModel();
-    if (!runtimeModel) {
-      return SDK.RemoteObject.RemoteObject.fromLocalObject(parameter);
-    }
-    if (typeof parameter === 'object') {
-      return runtimeModel.createRemoteObject(parameter);
-    }
-    return runtimeModel.createRemoteObjectFromPrimitiveValue(parameter);
-  }
-
-  /**
    * @param {!Array.<!Protocol.Runtime.RemoteObject | !SDK.RemoteObject.RemoteObject | string | undefined>} rawParameters
    * @return {!HTMLElement}
    */
@@ -550,7 +454,7 @@ export class ConsoleViewMessage {
     // Formatting code below assumes that parameters are all wrappers whereas frontend console
     // API allows passing arbitrary values as messages (strings, numbers, etc.). Wrap them here.
     // FIXME: Only pass runtime wrappers here.
-    let parameters = rawParameters.map(this._parameterToRemoteObject.bind(this));
+    let parameters = rawParameters.map(parameterToRemoteObject(this._message.runtimeModel()));
 
     // There can be string log and string eval result. We distinguish between them based on message type.
     const shouldFormatMessage =
@@ -1343,8 +1247,6 @@ export class ConsoleViewMessage {
          this._message.type === SDK.ConsoleModel.MessageType.Trace);
     if (runtimeModel && shouldIncludeTrace) {
       formattedMessage = this._buildMessageWithStackTrace(runtimeModel);
-    } else if (this._message.type === SDK.ConsoleModel.MessageType.Table) {
-      formattedMessage = this._buildTableMessage();
     } else {
       formattedMessage = this._buildMessage();
     }
@@ -2013,6 +1915,168 @@ export class ConsoleCommandResult extends ConsoleViewMessage {
       }
     }
     return element;
+  }
+}
+
+export class ConsoleTableMessageView extends ConsoleViewMessage {
+  /**
+   * @param {!SDK.ConsoleModel.ConsoleMessage} consoleMessage
+   * @param {!Components.Linkifier.Linkifier} linkifier
+   * @param {number} nestingLevel
+   * @param {function(!Common.EventTarget.EventTargetEvent): void} onResize
+   */
+  constructor(consoleMessage, linkifier, nestingLevel, onResize) {
+    super(consoleMessage, linkifier, nestingLevel, onResize);
+    console.assert(consoleMessage.type === SDK.ConsoleModel.MessageType.Table);
+    /** @type {?DataGrid.SortableDataGrid.SortableDataGrid<?>} */
+    this._dataGrid = null;
+  }
+
+  /**
+   * @override
+   */
+  wasShown() {
+    if (this._dataGrid) {
+      this._dataGrid.updateWidths();
+    }
+    super.wasShown();
+  }
+
+  /**
+   * @override
+   */
+  onResize() {
+    if (!this.isVisible()) {
+      return;
+    }
+    if (this._dataGrid) {
+      this._dataGrid.onResize();
+    }
+  }
+
+  /**
+   * @override
+   * @return {!HTMLElement}
+   */
+  contentElement() {
+    const contentElement = this.getContentElement();
+    if (contentElement) {
+      return contentElement;
+    }
+
+    const newContentElement = /** @type {!HTMLElement} */ (document.createElement('div'));
+    newContentElement.classList.add('console-message');
+    if (this._messageLevelIcon) {
+      newContentElement.appendChild(this._messageLevelIcon);
+    }
+    this.setContentElement(newContentElement);
+
+    newContentElement.appendChild(this._buildTableMessage());
+    this.updateTimestamp();
+    return newContentElement;
+  }
+
+  /**
+   * @return {!HTMLElement}
+   */
+  _buildTableMessage() {
+    const formattedMessage = /** @type {!HTMLElement} */ (document.createElement('span'));
+    formattedMessage.classList.add('source-code');
+    this._anchorElement = this._buildMessageAnchor();
+    if (this._anchorElement) {
+      formattedMessage.appendChild(this._anchorElement);
+    }
+
+    const table = this._message.parameters && this._message.parameters.length ? this._message.parameters[0] : null;
+    if (!table) {
+      return this._buildMessage();
+    }
+    const actualTable = parameterToRemoteObject(this._message.runtimeModel())(table);
+    if (!actualTable || !actualTable.preview) {
+      return this._buildMessage();
+    }
+
+    const rawValueColumnSymbol = Symbol('rawValueColumn');
+    /** @type {!Array<string|symbol>} */
+    const columnNames = [];
+    const preview = actualTable.preview;
+    const rows = [];
+    for (let i = 0; i < preview.properties.length; ++i) {
+      const rowProperty = preview.properties[i];
+      /** @type {!Array<!Protocol.Runtime.PropertyPreview|!{name:(string|symbol), type: !Protocol.Runtime.PropertyPreviewType, value: (string|undefined)}>} */
+      let rowSubProperties;
+      if (rowProperty.valuePreview) {
+        rowSubProperties = rowProperty.valuePreview.properties;
+      } else if (rowProperty.value) {
+        rowSubProperties = [{name: rawValueColumnSymbol, type: rowProperty.type, value: rowProperty.value}];
+      } else {
+        continue;
+      }
+
+      /** @type {!Map<string|symbol, !HTMLElement>} */
+      const rowValue = new Map();
+      const maxColumnsToRender = 20;
+      for (let j = 0; j < rowSubProperties.length; ++j) {
+        const cellProperty = rowSubProperties[j];
+        let columnRendered = columnNames.indexOf(cellProperty.name) !== -1;
+        if (!columnRendered) {
+          if (columnNames.length === maxColumnsToRender) {
+            continue;
+          }
+          columnRendered = true;
+          columnNames.push(cellProperty.name);
+        }
+
+        if (columnRendered) {
+          const cellElement =
+              this._renderPropertyPreviewOrAccessor(actualTable, cellProperty, [rowProperty, cellProperty]);
+          cellElement.classList.add('console-message-nowrap-below');
+          rowValue.set(cellProperty.name, cellElement);
+        }
+      }
+      rows.push({rowName: rowProperty.name, rowValue});
+    }
+
+    const flatValues = [];
+    for (const {rowName, rowValue} of rows) {
+      flatValues.push(rowName);
+      for (let j = 0; j < columnNames.length; ++j) {
+        flatValues.push(rowValue.get(columnNames[j]));
+      }
+    }
+    columnNames.unshift(Common.UIString.UIString('(index)'));
+    const columnDisplayNames =
+        columnNames.map(name => name === rawValueColumnSymbol ? Common.UIString.UIString('Value') : name.toString());
+
+    if (flatValues.length) {
+      this._dataGrid = DataGrid.SortableDataGrid.SortableDataGrid.create(columnDisplayNames, flatValues, ls`Console`);
+      if (this._dataGrid) {
+        this._dataGrid.setStriped(true);
+        this._dataGrid.setFocusable(false);
+
+        const formattedResult = document.createElement('span');
+        formattedResult.classList.add('console-message-text');
+        const tableElement = formattedResult.createChild('div', 'console-message-formatted-table');
+        const dataGridContainer = tableElement.createChild('span');
+        tableElement.appendChild(this._formatParameter(actualTable, true, false));
+        dataGridContainer.appendChild(this._dataGrid.element);
+        formattedMessage.appendChild(formattedResult);
+        this._dataGrid.renderInline();
+      }
+    }
+    return formattedMessage;
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  approximateFastHeight() {
+    const table = this._message.parameters && this._message.parameters[0];
+    if (table && typeof table !== 'string' && table.preview) {
+      return defaultConsoleRowHeight * table.preview.properties.length;
+    }
+    return defaultConsoleRowHeight;
   }
 }
 

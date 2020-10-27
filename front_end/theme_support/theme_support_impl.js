@@ -29,9 +29,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
@@ -137,13 +134,13 @@ export class ThemeSupport {
     if (!content) {
       console.error(cssFile + ' not preloaded. Check module.json');
     }
-    let styleElement = createElement('style');
+    let styleElement = document.createElement('style');
     styleElement.textContent = content;
     node.appendChild(styleElement);
 
     const themeStyleSheet = ThemeSupport.instance().themeStyleSheet(cssFile, content);
     if (themeStyleSheet) {
-      styleElement = createElement('style');
+      styleElement = document.createElement('style');
       styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.Runtime.resolveSourceURL(cssFile + '.theme');
       node.appendChild(styleElement);
     }
@@ -193,7 +190,7 @@ export class ThemeSupport {
       if (!href) {
         continue;
       }
-      result.push(this._patchForTheme(href, styleSheets[i]));
+      result.push(this._patchForTheme(href, /** @type {!CSSStyleSheet} */ (styleSheets[i])));
     }
     result.push('/*# sourceURL=inspector.css.theme */');
 
@@ -231,7 +228,7 @@ export class ThemeSupport {
 
   /**
    * @param {string} id
-   * @param {!StyleSheet} styleSheet
+   * @param {!CSSStyleSheet} styleSheet
    * @return {string}
    */
   _patchForTheme(id, styleSheet) {
@@ -244,19 +241,25 @@ export class ThemeSupport {
       const rules = styleSheet.cssRules;
       const result = [];
       for (let j = 0; j < rules.length; ++j) {
-        if (rules[j] instanceof CSSImportRule) {
-          result.push(this._patchForTheme(rules[j].styleSheet.href, rules[j].styleSheet));
+        const rule = rules[j];
+        if (rule instanceof CSSImportRule) {
+          result.push(this._patchForTheme(rule.styleSheet.href || '', rule.styleSheet));
           continue;
         }
+
+        if (!(rule instanceof CSSStyleRule)) {
+          throw new Error('Expected CSSStyleRule');
+        }
+
         /** @type {!Array<string>} */
         const output = [];
-        const style = rules[j].style;
-        const selectorText = rules[j].selectorText;
+        const style = rule.style;
+        const selectorText = rule.selectorText;
         for (let i = 0; style && i < style.length; ++i) {
           this._patchProperty(selectorText, style, style[i], output);
         }
         if (output.length) {
-          result.push(rules[j].selectorText + '{' + output.join('') + '}');
+          result.push(rule.selectorText + '{' + output.join('') + '}');
         }
       }
 

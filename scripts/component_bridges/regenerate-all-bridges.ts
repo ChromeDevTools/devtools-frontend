@@ -22,7 +22,9 @@ const regenerateBridge = (pathToBridge: string): string|null => {
       return relativePath;
     }
   } catch (e) {
-    console.error(`ERROR regenerating bridge: ${e.message}`);
+    console.error(`ERROR regenerating bridge (${path.relative(process.cwd(), pathToBridge)}):`);
+    console.log(e.stack);
+    process.exit(1);
   }
   return null;
 };

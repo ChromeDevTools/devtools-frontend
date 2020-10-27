@@ -27,8 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Platform from '../platform/platform.js';
@@ -44,7 +42,7 @@ export class FormatterInterface {}
  * @param {!Common.ResourceType.ResourceType} contentType
  * @param {string} mimeType
  * @param {string} content
- * @param {function(string, !FormatterSourceMapping)} callback
+ * @param {function(string, !FormatterSourceMapping):!Promise<void>} callback
  */
 FormatterInterface.format = function(contentType, mimeType, content, callback) {
   if (contentType.isDocumentOrScriptOrStyleSheet()) {
@@ -88,7 +86,7 @@ export class ScriptFormatter {
   /**
    * @param {string} mimeType
    * @param {string} content
-   * @param {function(string, !FormatterSourceMapping)} callback
+   * @param {function(string, !FormatterSourceMapping):!Promise<void>} callback
    */
   constructor(mimeType, content, callback) {
     this._mimeType = mimeType;
@@ -131,7 +129,7 @@ class ScriptIdentityFormatter {
   /**
    * @param {string} mimeType
    * @param {string} content
-   * @param {function(string, !FormatterSourceMapping)} callback
+   * @param {function(string, !FormatterSourceMapping):!Promise<void>} callback
    */
   constructor(mimeType, content, callback) {
     callback(content, new IdentityFormatterSourceMapping());
@@ -148,6 +146,7 @@ export class FormatterSourceMapping {
    * @return {!Array.<number>}
    */
   originalToFormatted(lineNumber, columnNumber) {
+    throw new Error('Not implemented yet.');
   }
 
   /**
@@ -155,7 +154,9 @@ export class FormatterSourceMapping {
    * @param {number=} columnNumber
    * @return {!Array.<number>}
    */
-  formattedToOriginal(lineNumber, columnNumber) {}
+  formattedToOriginal(lineNumber, columnNumber) {
+    throw new Error('Not implemented yet.');
+  }
 }
 
 /**

@@ -407,9 +407,10 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._formattedContentPromise = new Promise(x => {
       fulfill = x;
     });
-    new Formatter.ScriptFormatter.ScriptFormatter(this._highlighterType, this._rawContent || '', (content, map) => {
-      fulfill({content, map});
-    });
+    new Formatter.ScriptFormatter.ScriptFormatter(
+        this._highlighterType, this._rawContent || '', async (content, map) => {
+          fulfill({content, map});
+        });
     return this._formattedContentPromise;
   }
 

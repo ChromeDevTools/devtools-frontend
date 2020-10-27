@@ -19,6 +19,7 @@ const AffectedItem = {
   Cookie: 'Cookie',
   Directive: 'Directive',
   Element: 'Element',
+  LearnMore: 'LearnMore',
   Request: 'Request',
   Source: 'Source'
 };
@@ -292,7 +293,7 @@ class AffectedElementsView extends AffectedResourcesView {
     this._issue = issue;
   }
 
-  _sendTelmetry() {
+  _sendTelemetry() {
     Host.userMetrics.issuesPanelResourceOpened(this._issue.getCategory(), AffectedItem.Element);
   }
 
@@ -316,10 +317,10 @@ class AffectedElementsView extends AffectedResourcesView {
     const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(mainTarget, backendNodeId);
     const anchorElement = await Common.Linkifier.Linkifier.linkify(deferredDOMNode);
     anchorElement.textContent = nodeName;
-    anchorElement.addEventListener('click', this._sendTelmetry);
+    anchorElement.addEventListener('click', this._sendTelemetry);
     anchorElement.addEventListener('keydown', event => {
       if (isEnterKey(event)) {
-        this._sendTelmetry();
+        this._sendTelemetry();
       }
     });
     const cellElement = document.createElement('td');
@@ -1255,13 +1256,21 @@ class IssueView extends UI.TreeOutline.TreeElement {
 
     const linkList = linkWrapper.listItemElement.createChild('ul', 'link-list');
     for (const description of this._description.links) {
-      // TODO(crbug.com/1108501): Allow x-link elements to subscribe to the events 'click' and 'keydown' if the key
-      //       is the 'Enter' key, or add some mechanism that allows to add telemetry to this element.
-      const link = UI.XLink.XLink.create(description.link, ls`Learn more: ${description.linkTitle}`, 'link');
+      const link = UI.Fragment.html
+      `<a class="link devtools-link" role="link" tabindex="0" href=${description.link}>${
+          ls`Learn more: ${description.linkTitle}`}</a>`;
       const linkIcon = Elements.Icon.createIcon();
       linkIcon.data = {iconName: 'link_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
       linkIcon.classList.add('link-icon');
       link.prepend(linkIcon);
+      self.onInvokeElement(link, event => {
+        Host.userMetrics.issuesPanelResourceOpened(this._issue.getCategory(), AffectedItem.LearnMore);
+        const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+        if (mainTarget) {
+          mainTarget.targetAgent().invoke_createTarget({url: description.link});
+        }
+        event.consume(true);
+      });
 
       const linkListItem = linkList.createChild('li');
       linkListItem.appendChild(link);

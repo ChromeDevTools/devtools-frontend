@@ -610,7 +610,7 @@ describe('User Metrics for Issue Panel', () => {
     ]);
   });
 
-  it('dispatch events when a link to an element is click', async () => {
+  it('dispatch events when a link to an element is clicked', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
     await waitFor('.issue');
     await click('.issue');
@@ -627,6 +627,27 @@ describe('User Metrics for Issue Panel', () => {
       {
         name: 'DevTools.IssuesPanelResourceOpened',
         value: 7,  // ContentSecurityPolicyElement
+      },
+    ]);
+  });
+
+  it('dispatch events when a "Learn More" link is clicked', async () => {
+    await goToResource('elements/element-reveal-inline-issue.html');
+    await waitFor('.issue');
+    await click('.issue');
+
+    await waitFor('.link-list a');
+    await scrollElementIntoView('.link-list a');
+    await click('.link-list a');
+
+    await assertCapturedEvents([
+      {
+        name: 'DevTools.IssuesPanelIssueExpanded',
+        value: 4,  // ContentSecurityPolicy
+      },
+      {
+        name: 'DevTools.IssuesPanelResourceOpened',
+        value: 12,  // ContentSecurityPolicyLearnMore
       },
     ]);
   });

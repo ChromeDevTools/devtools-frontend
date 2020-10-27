@@ -543,4 +543,46 @@ describe('boundsForTransformedPoints', () => {
     assert.strictEqual(result.minY, 2, 'minY was calculated incorrectly');
     assert.strictEqual(result.maxY, 8, 'maxY was calculated incorrectly');
   });
+
+  describe('degreesToRadians', () => {
+    it('converts degrees to radians correctly', () => {
+      assert.strictEqual(UI.Geometry.degreesToRadians(45), 0.7853981633974483);
+      assert.strictEqual(UI.Geometry.degreesToRadians(180), 3.141592653589793);
+    });
+  });
+
+  describe('degreesToGradians', () => {
+    it('converts degrees to gradians correctly', () => {
+      assert.strictEqual(UI.Geometry.degreesToGradians(45), 50);
+      assert.strictEqual(UI.Geometry.degreesToGradians(180), 200);
+    });
+  });
+
+  describe('degreesToTurns', () => {
+    it('converts degrees to turns correctly', () => {
+      assert.strictEqual(UI.Geometry.degreesToTurns(45), 0.125);
+      assert.strictEqual(UI.Geometry.degreesToTurns(180), 0.5);
+    });
+  });
+
+  describe('radiansToDegrees', () => {
+    it('converts radians to degrees correctly', () => {
+      assert.strictEqual(UI.Geometry.radiansToDegrees(1), 57.29577951308232);
+      assert.strictEqual(UI.Geometry.radiansToDegrees(1.5), 85.94366926962348);
+    });
+  });
+
+  describe('gradiansToRadians', () => {
+    it('converts gradians to radians correctly', () => {
+      assert.strictEqual(UI.Geometry.gradiansToRadians(50), 0.7853981633974483);
+      assert.strictEqual(UI.Geometry.gradiansToRadians(200), 3.141592653589793);
+    });
+  });
+
+  describe('turnsToRadians', () => {
+    it('converts turns to radians correctly', () => {
+      assert.strictEqual(UI.Geometry.gradiansToRadians(0.5), 0.007853981633974483);
+      assert.strictEqual(UI.Geometry.gradiansToRadians(1), 0.015707963267948967);
+    });
+  });
 });

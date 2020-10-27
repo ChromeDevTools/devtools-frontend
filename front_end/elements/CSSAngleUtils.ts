@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../ui/ui.js';
+
 import {CSSAngleRegex} from './CSSAngleRegex.js';
 
 export const enum AngleUnit {
@@ -23,21 +25,14 @@ export const parseText = (text: string): {value: number, unit: AngleUnit}|null =
   };
 };
 
-export const degreesToGradians = (deg: number): number => deg / 9 * 10;
-export const degreesToRadians = (deg: number): number => deg / 180 * Math.PI;
-export const degreesToTurns = (deg: number): number => deg / 360;
-
-export const gradiansToRadians = (grad: number): number => grad * Math.PI / 200;
-export const turnsToRadians = (turns: number): number => turns * 2 * Math.PI;
-
 export const getAngleFromDegrees = (deg: number, targetUnit: AngleUnit): number => {
   switch (targetUnit) {
     case AngleUnit.Grad:
-      return degreesToGradians(deg);
+      return UI.Geometry.degreesToGradians(deg);
     case AngleUnit.Rad:
-      return degreesToRadians(deg);
+      return UI.Geometry.degreesToRadians(deg);
     case AngleUnit.Turn:
-      return degreesToTurns(deg);
+      return UI.Geometry.degreesToTurns(deg);
   }
 
   return deg;
@@ -46,11 +41,11 @@ export const getAngleFromDegrees = (deg: number, targetUnit: AngleUnit): number 
 export const getRadiansFromAngle = (angle: number, unit: AngleUnit): number => {
   switch (unit) {
     case AngleUnit.Deg:
-      return degreesToRadians(angle);
+      return UI.Geometry.degreesToRadians(angle);
     case AngleUnit.Grad:
-      return gradiansToRadians(angle);
+      return UI.Geometry.gradiansToRadians(angle);
     case AngleUnit.Turn:
-      return turnsToRadians(angle);
+      return UI.Geometry.turnsToRadians(angle);
   }
 
   return angle;

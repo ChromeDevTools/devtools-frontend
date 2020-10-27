@@ -299,11 +299,43 @@ export const degreesToRadians = function(deg) {
 };
 
 /**
+ * @param {number} deg
+ * @return {number}
+ */
+export const degreesToGradians = function(deg) {
+  return deg / 9 * 10;
+};
+
+/**
+ * @param {number} deg
+ * @return {number}
+ */
+export const degreesToTurns = function(deg) {
+  return deg / 360;
+};
+
+/**
  * @param {number} rad
  * @return {number}
  */
 export const radiansToDegrees = function(rad) {
   return rad * 180 / Math.PI;
+};
+
+/**
+ * @param {number} grad
+ * @return {number}
+ */
+export const gradiansToRadians = function(grad) {
+  return grad * Math.PI / 200;
+};
+
+/**
+ * @param {number} turns
+ * @return {number}
+ */
+export const turnsToRadians = function(turns) {
+  return turns * 2 * Math.PI;
 };
 
 /**

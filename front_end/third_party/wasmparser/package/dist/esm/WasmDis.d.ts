@@ -10,6 +10,7 @@ export interface INameResolver {
     getTableName(index: number, isRef: boolean): string;
     getMemoryName(index: number, isRef: boolean): string;
     getGlobalName(index: number, isRef: boolean): string;
+    getElementName(index: number, isRef: boolean): string;
     getFunctionName(index: number, isImport: boolean, isRef: boolean): string;
     getVariableName(funcIndex: number, index: number, isRef: boolean): string;
     getLabel(index: number): string;
@@ -19,6 +20,7 @@ export declare class DefaultNameResolver implements INameResolver {
     getTableName(index: number, isRef: boolean): string;
     getMemoryName(index: number, isRef: boolean): string;
     getGlobalName(index: number, isRef: boolean): string;
+    getElementName(index: number, isRef: boolean): string;
     getFunctionName(index: number, isImport: boolean, isRef: boolean): string;
     getVariableName(funcIndex: number, index: number, isRef: boolean): string;
     getLabel(index: number): string;
@@ -28,6 +30,7 @@ export declare class NumericNameResolver implements INameResolver {
     getTableName(index: number, isRef: boolean): string;
     getMemoryName(index: number, isRef: boolean): string;
     getGlobalName(index: number, isRef: boolean): string;
+    getElementName(index: number, isRef: boolean): string;
     getFunctionName(index: number, isImport: boolean, isRef: boolean): string;
     getVariableName(funcIndex: number, index: number, isRef: boolean): string;
     getLabel(index: number): string;
@@ -58,7 +61,8 @@ export declare class WasmDisassembler {
     private _globalCount;
     private _memoryCount;
     private _tableCount;
-    private _initExpression;
+    private _elementCount;
+    private _expression;
     private _backrefLabels;
     private _labelIndex;
     private _indent;
@@ -72,6 +76,7 @@ export declare class WasmDisassembler {
     private _labelMode;
     private _functionBodyOffsets;
     private _currentFunctionBodyOffset;
+    private _currentSectionId;
     private _logFirstInstruction;
     constructor();
     private _reset;
@@ -92,6 +97,7 @@ export declare class WasmDisassembler {
     private printFuncType;
     private printBlockType;
     private printString;
+    private printExpression;
     private useLabel;
     private printOperator;
     private printImportSource;

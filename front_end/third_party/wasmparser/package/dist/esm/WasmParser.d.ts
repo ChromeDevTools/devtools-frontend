@@ -486,8 +486,8 @@ export declare const enum Type {
     f32 = -3,
     f64 = -4,
     v128 = -5,
-    anyfunc = -16,
-    anyref = -17,
+    funcref = -16,
+    externref = -17,
     func = -32,
     empty_block_type = -64
 }
@@ -553,14 +553,20 @@ export declare const enum BinaryReaderState {
     END_GLOBAL_SECTION_ENTRY = 40,
     RELOC_SECTION_HEADER = 41,
     RELOC_SECTION_ENTRY = 42,
-    SOURCE_MAPPING_URL = 43
+    SOURCE_MAPPING_URL = 43,
+    BEGIN_OFFSET_EXPRESSION_BODY = 44,
+    OFFSET_EXPRESSION_OPERATOR = 45,
+    END_OFFSET_EXPRESSION_BODY = 46
 }
-export declare const enum SegmentFlags {
-    IsPassive = 1,
-    HasTableIndex = 2,
-    FunctionsAsElements = 4
+export declare const enum DataMode {
+    Active = 0,
+    Passive = 1
 }
-export declare const NULL_FUNCTION_INDEX = 4294967295;
+export declare const enum ElementMode {
+    Active = 0,
+    Passive = 1,
+    Declarative = 2
+}
 export interface IModuleHeader {
     magicNumber: number;
     version: number;
@@ -585,15 +591,15 @@ export interface IGlobalVariable {
     type: IGlobalType;
 }
 export interface IElementSegment {
-    index: number;
+    mode: ElementMode;
+    tableIndex?: number;
 }
 export interface IElementSegmentBody {
-    elements: Uint32Array;
-    elementType: number;
-    asElements: boolean;
+    elementType: Type;
 }
 export interface IDataSegment {
-    index: number;
+    mode: DataMode;
+    memoryIndex?: number;
 }
 export interface IDataSegmentBody {
     data: Uint8Array;
@@ -689,6 +695,7 @@ export interface IMemoryAddress {
 export interface IOperatorInformation {
     code: OperatorCode;
     blockType?: number;
+    refType?: number;
     brDepth?: number;
     brTable?: Array<number>;
     funcIndex?: number;
@@ -720,26 +727,22 @@ export declare class BinaryReader {
     state: BinaryReaderState;
     result: BinaryReaderResult;
     error: Error;
-    get currentSection(): ISectionInformation;
-    get currentFunction(): IFunctionInformation;
     private _sectionEntriesLeft;
     private _sectionId;
     private _sectionRange;
     private _functionRange;
-    private _segmentFlags;
+    private _segmentType;
+    private _segmentEntriesLeft;
     get data(): Uint8Array;
     get position(): number;
     get length(): number;
-    constructor();
     setData(buffer: ArrayBuffer, pos: number, length: number, eof?: boolean): void;
     private hasBytes;
     hasMoreBytes(): boolean;
     private readUint8;
-    private readUint16;
     private readInt32;
     private readUint32;
     private peekInt32;
-    private peekUint32;
     private hasVarIntBytes;
     private readVarUint1;
     private readVarInt7;
@@ -769,6 +772,7 @@ export declare class BinaryReader {
     private readDataEntry;
     private readDataEntryBody;
     private readInitExpressionBody;
+    private readOffsetExpressionBody;
     private readMemoryImmediate;
     private readNameMap;
     private readNameEntry;

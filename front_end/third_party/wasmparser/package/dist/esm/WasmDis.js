@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { bytesToString, isTypeIndex, NULL_FUNCTION_INDEX, OperatorCodeNames, } from "./WasmParser.js";
+import { bytesToString, isTypeIndex, OperatorCodeNames, } from "./WasmParser.js";
 
 const NAME_SECTION_NAME = "name";
 const INVALID_NAME_SYMBOLS_REGEX = /[^0-9A-Za-z!#$%&'*+.:<=>?@^_`|~\/\-]/;
@@ -29,10 +29,10 @@ function typeToString(type) {
             return "f64";
         case -5 /* v128 */:
             return "v128";
-        case -16 /* anyfunc */:
-            return "anyfunc";
-        case -17 /* anyref */:
-            return "anyref";
+        case -16 /* funcref */:
+            return "funcref";
+        case -17 /* externref */:
+            return "externref";
         default:
             throw new Error(`Unexpected type ${type}`);
     }
@@ -249,6 +249,9 @@ export class DefaultNameResolver {
     getGlobalName(index, isRef) {
         return "$global" + index;
     }
+    getElementName(index, isRef) {
+        return `$elem${index}`;
+    }
     getFunctionName(index, isImport, isRef) {
         return (isImport ? "$import" : "$func") + index;
     }
@@ -297,6 +300,9 @@ export class NumericNameResolver {
     getGlobalName(index, isRef) {
         return isRef ? "" + index : `(;${index};)`;
     }
+    getElementName(index, isRef) {
+        return isRef ? "" + index : `(;${index};)`;
+    }
     getFunctionName(index, isImport, isRef) {
         return isRef ? "" + index : `(;${index};)`;
     }
@@ -329,6 +335,7 @@ export class WasmDisassembler {
         this._labelMode = LabelMode.WhenUsed;
         this._functionBodyOffsets = [];
         this._currentFunctionBodyOffset = null;
+        this._currentSectionId = -1 /* Unknown */;
         this._logFirstInstruction = false;
         this._reset();
     }
@@ -340,7 +347,8 @@ export class WasmDisassembler {
         this._globalCount = 0;
         this._memoryCount = 0;
         this._tableCount = 0;
-        this._initExpression = [];
+        this._elementCount = 0;
+        this._expression = [];
         this._backrefLabels = null;
         this._labelIndex = 0;
     }
@@ -455,6 +463,13 @@ export class WasmDisassembler {
         }
         this.appendBuffer('"');
     }
+    printExpression(expression) {
+        for (const operator of expression) {
+            this.appendBuffer("(");
+            this.printOperator(operator);
+            this.appendBuffer(")");
+        }
+    }
     useLabel(depth) {
         if (!this._backrefLabels) {
             return "" + depth;
@@ -524,8 +539,21 @@ export class WasmDisassembler {
                     this.appendBuffer(this.useLabel(operator.brTable[i]));
                 }
                 break;
+            case 208 /* ref_null */:
+                switch (operator.refType) {
+                    case -16 /* funcref */:
+                        this.appendBuffer(" func");
+                        break;
+                    case -17 /* externref */:
+                        this.appendBuffer(" extern");
+                        break;
+                    default:
+                        throw new Error(`Unknown refedtype ${operator.refType}`);
+                }
+                break;
             case 16 /* call */:
             case 18 /* return_call */:
+            case 210 /* ref_func */:
                 var funcName = this._nameResolver.getFunctionName(operator.funcIndex, operator.funcIndex < this._importCount, true);
                 this.appendBuffer(` ${funcName}`);
                 break;
@@ -692,8 +720,11 @@ export class WasmDisassembler {
                 break;
             case 64520 /* memory_init */:
             case 64521 /* data_drop */:
-            case 64525 /* elem_drop */:
                 this.appendBuffer(` ${operator.segmentIndex}`);
+                break;
+            case 64525 /* elem_drop */:
+                const elementName = this._nameResolver.getElementName(operator.segmentIndex, true);
+                this.appendBuffer(` ${elementName}`);
                 break;
             case 38 /* table_set */:
             case 37 /* table_get */:
@@ -704,21 +735,21 @@ export class WasmDisassembler {
             }
             case 64526 /* table_copy */: {
                 // Table index might be omitted and defaults to 0.
-                if (operator.tableIndex === 0 && operator.destinationIndex === 0)
-                    break;
-                const tableName = this._nameResolver.getTableName(operator.tableIndex, true);
-                const destinationName = this._nameResolver.getTableName(operator.destinationIndex, true);
-                this.appendBuffer(` ${destinationName} ${tableName}`);
+                if (operator.tableIndex !== 0 || operator.destinationIndex !== 0) {
+                    const tableName = this._nameResolver.getTableName(operator.tableIndex, true);
+                    const destinationName = this._nameResolver.getTableName(operator.destinationIndex, true);
+                    this.appendBuffer(` ${destinationName} ${tableName}`);
+                }
                 break;
             }
             case 64524 /* table_init */: {
                 // Table index might be omitted and defaults to 0.
-                if (operator.tableIndex === 0) {
-                    this.appendBuffer(` ${operator.segmentIndex}`);
-                    break;
+                if (operator.tableIndex !== 0) {
+                    const tableName = this._nameResolver.getTableName(operator.tableIndex, true);
+                    this.appendBuffer(` ${tableName}`);
                 }
-                const tableName = this._nameResolver.getTableName(operator.tableIndex, true);
-                this.appendBuffer(` ${operator.segmentIndex} ${tableName}`);
+                const elementName = this._nameResolver.getElementName(operator.segmentIndex, true);
+                this.appendBuffer(` ${elementName}`);
                 break;
             }
         }
@@ -829,6 +860,7 @@ export class WasmDisassembler {
                     this.newLine();
                     break;
                 case 4 /* END_SECTION */:
+                    this._currentSectionId = -1 /* Unknown */;
                     break;
                 case 3 /* BEGIN_SECTION */:
                     var sectionInfo = reader.result;
@@ -844,6 +876,7 @@ export class WasmDisassembler {
                         case 11 /* Data */:
                         case 4 /* Table */:
                         case 9 /* Element */:
+                            this._currentSectionId = sectionInfo.id;
                             break; // reading known section;
                         default:
                             reader.skipSection();
@@ -983,8 +1016,23 @@ export class WasmDisassembler {
                     this.newLine();
                     break;
                 case 33 /* BEGIN_ELEMENT_SECTION_ENTRY */:
-                    var elementSegmentInfo = reader.result;
-                    this.appendBuffer("  (elem ");
+                    var elementSegment = reader.result;
+                    var elementIndex = this._elementCount++;
+                    var elementName = this._nameResolver.getElementName(elementIndex, false);
+                    this.appendBuffer(`  (elem ${elementName}`);
+                    switch (elementSegment.mode) {
+                        case 0 /* Active */:
+                            if (elementSegment.tableIndex !== 0) {
+                                const tableName = this._nameResolver.getTableName(elementSegment.tableIndex, false);
+                                this.appendBuffer(` (table ${tableName})`);
+                            }
+                            break;
+                        case 1 /* Passive */:
+                            break;
+                        case 2 /* Declarative */:
+                            this.appendBuffer(" declare");
+                            break;
+                    }
                     break;
                 case 35 /* END_ELEMENT_SECTION_ENTRY */:
                     this.appendBuffer(")");
@@ -992,25 +1040,7 @@ export class WasmDisassembler {
                     break;
                 case 34 /* ELEMENT_SECTION_ENTRY_BODY */:
                     const elementSegmentBody = reader.result;
-                    if (elementSegmentBody.elementType != 0 /* unspecified */) {
-                        const typeName = typeToString(elementSegmentBody.elementType);
-                        this.appendBuffer(` ${typeName}`);
-                    }
-                    elementSegmentBody.elements.forEach((funcIndex) => {
-                        if (elementSegmentBody.asElements) {
-                            if (funcIndex == NULL_FUNCTION_INDEX) {
-                                this.appendBuffer(" (ref.null)");
-                            }
-                            else {
-                                const funcName = this._nameResolver.getFunctionName(funcIndex, funcIndex < this._importCount, true);
-                                this.appendBuffer(` (ref.func ${funcName})`);
-                            }
-                        }
-                        else {
-                            const funcName = this._nameResolver.getFunctionName(funcIndex, funcIndex < this._importCount, true);
-                            this.appendBuffer(` ${funcName}`);
-                        }
-                    });
+                    this.appendBuffer(` ${typeToString(elementSegmentBody.elementType)}`);
                     break;
                 case 39 /* BEGIN_GLOBAL_SECTION_ENTRY */:
                     var globalInfo = reader.result;
@@ -1022,7 +1052,7 @@ export class WasmDisassembler {
                             this.appendBuffer(` (export "${exportName}")`);
                         }
                     }
-                    this.appendBuffer(` ${globalTypeToString(globalInfo.type)} `);
+                    this.appendBuffer(` ${globalTypeToString(globalInfo.type)}`);
                     break;
                 case 40 /* END_GLOBAL_SECTION_ENTRY */:
                     this.appendBuffer(")");
@@ -1047,7 +1077,7 @@ export class WasmDisassembler {
                     this.newLine();
                     break;
                 case 36 /* BEGIN_DATA_SECTION_ENTRY */:
-                    this.appendBuffer("  (data ");
+                    this.appendBuffer("  (data");
                     break;
                 case 37 /* DATA_SECTION_ENTRY_BODY */:
                     var body = reader.result;
@@ -1059,24 +1089,40 @@ export class WasmDisassembler {
                     this.newLine();
                     break;
                 case 25 /* BEGIN_INIT_EXPRESSION_BODY */:
+                case 44 /* BEGIN_OFFSET_EXPRESSION_BODY */:
+                    this._expression = [];
                     break;
                 case 26 /* INIT_EXPRESSION_OPERATOR */:
-                    this._initExpression.push(reader.result);
+                case 45 /* OFFSET_EXPRESSION_OPERATOR */:
+                    var operator = reader.result;
+                    if (operator.code !== 11 /* end */) {
+                        this._expression.push(operator);
+                    }
+                    break;
+                case 46 /* END_OFFSET_EXPRESSION_BODY */:
+                    if (this._expression.length > 1) {
+                        this.appendBuffer(" (offset ");
+                        this.printExpression(this._expression);
+                        this.appendBuffer(")");
+                    }
+                    else {
+                        this.appendBuffer(" ");
+                        this.printExpression(this._expression);
+                    }
+                    this._expression = [];
                     break;
                 case 27 /* END_INIT_EXPRESSION_BODY */:
-                    this.appendBuffer("(");
-                    // TODO fix printing when more that one operator is used.
-                    this._initExpression.forEach((op, index) => {
-                        if (op.code === 11 /* end */) {
-                            return; // do not print end
-                        }
-                        if (index > 0) {
-                            this.appendBuffer(" ");
-                        }
-                        this.printOperator(op);
-                    });
-                    this.appendBuffer(")");
-                    this._initExpression.length = 0;
+                    if (this._expression.length > 1 &&
+                        this._currentSectionId === 9 /* Element */) {
+                        this.appendBuffer(" (item ");
+                        this.printExpression(this._expression);
+                        this.appendBuffer(")");
+                    }
+                    else {
+                        this.appendBuffer(" ");
+                        this.printExpression(this._expression);
+                    }
+                    this._expression = [];
                     break;
                 case 13 /* FUNCTION_SECTION_ENTRY */:
                     this._funcTypes.push(reader.result.typeIndex);

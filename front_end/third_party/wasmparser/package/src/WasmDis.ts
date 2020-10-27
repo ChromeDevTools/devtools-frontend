@@ -16,6 +16,7 @@ import {
   BinaryReader,
   BinaryReaderState,
   bytesToString,
+  ElementMode,
   ExternalKind,
   IDataSegmentBody,
   IElementSegment,
@@ -34,7 +35,6 @@ import {
   IMemoryNameEntry,
   IMemoryType,
   INameEntry,
-  INaming,
   Int64,
   IOperatorInformation,
   IResizableLimits,
@@ -45,7 +45,6 @@ import {
   ITableType,
   ITypeNameEntry,
   NameType,
-  NULL_FUNCTION_INDEX,
   OperatorCode,
   OperatorCodeNames,
   SectionCode,
@@ -71,10 +70,10 @@ function typeToString(type: number): string {
       return "f64";
     case Type.v128:
       return "v128";
-    case Type.anyfunc:
-      return "anyfunc";
-    case Type.anyref:
-      return "anyref";
+    case Type.funcref:
+      return "funcref";
+    case Type.externref:
+      return "externref";
     default:
       throw new Error(`Unexpected type ${type}`);
   }
@@ -289,6 +288,7 @@ export interface INameResolver {
   getTableName(index: number, isRef: boolean): string;
   getMemoryName(index: number, isRef: boolean): string;
   getGlobalName(index: number, isRef: boolean): string;
+  getElementName(index: number, isRef: boolean): string;
   getFunctionName(index: number, isImport: boolean, isRef: boolean): string;
   getVariableName(funcIndex: number, index: number, isRef: boolean): string;
   getLabel(index: number): string;
@@ -305,6 +305,9 @@ export class DefaultNameResolver implements INameResolver {
   }
   public getGlobalName(index: number, isRef: boolean): string {
     return "$global" + index;
+  }
+  public getElementName(index: number, isRef: boolean): string {
+    return `$elem${index}`;
   }
   public getFunctionName(
     index: number,
@@ -375,6 +378,9 @@ export class NumericNameResolver implements INameResolver {
   public getGlobalName(index: number, isRef: boolean): string {
     return isRef ? "" + index : `(;${index};)`;
   }
+  public getElementName(index: number, isRef: boolean): string {
+    return isRef ? "" + index : `(;${index};)`;
+  }
   public getFunctionName(
     index: number,
     isImport: boolean,
@@ -424,7 +430,8 @@ export class WasmDisassembler {
   private _globalCount: number;
   private _memoryCount: number;
   private _tableCount: number;
-  private _initExpression: Array<IOperatorInformation>;
+  private _elementCount: number;
+  private _expression: Array<IOperatorInformation>;
   private _backrefLabels: Array<{
     line: number;
     position: number;
@@ -443,6 +450,7 @@ export class WasmDisassembler {
   private _labelMode: LabelMode;
   private _functionBodyOffsets: Array<IFunctionBodyOffset>;
   private _currentFunctionBodyOffset: IFunctionBodyOffset;
+  private _currentSectionId: SectionCode;
   private _logFirstInstruction: boolean;
   constructor() {
     this._lines = [];
@@ -457,6 +465,7 @@ export class WasmDisassembler {
     this._labelMode = LabelMode.WhenUsed;
     this._functionBodyOffsets = [];
     this._currentFunctionBodyOffset = null;
+    this._currentSectionId = SectionCode.Unknown;
     this._logFirstInstruction = false;
 
     this._reset();
@@ -469,11 +478,12 @@ export class WasmDisassembler {
     this._globalCount = 0;
     this._memoryCount = 0;
     this._tableCount = 0;
-    this._initExpression = [];
+    this._elementCount = 0;
+    this._expression = [];
     this._backrefLabels = null;
     this._labelIndex = 0;
   }
-  public get addOffsets() {
+  public get addOffsets(): boolean {
     return this._addOffsets;
   }
   public set addOffsets(value: boolean) {
@@ -481,7 +491,7 @@ export class WasmDisassembler {
       throw new Error("Cannot switch addOffsets during processing.");
     this._addOffsets = value;
   }
-  public get skipTypes() {
+  public get skipTypes(): boolean {
     return this._skipTypes;
   }
   public set skipTypes(skipTypes: boolean) {
@@ -489,7 +499,7 @@ export class WasmDisassembler {
       throw new Error("Cannot switch skipTypes during processing.");
     this._skipTypes = skipTypes;
   }
-  public get labelMode() {
+  public get labelMode(): LabelMode {
     return this._labelMode;
   }
   public set labelMode(value: LabelMode) {
@@ -497,7 +507,7 @@ export class WasmDisassembler {
       throw new Error("Cannot switch labelMode during processing.");
     this._labelMode = value;
   }
-  public get exportMetadata() {
+  public get exportMetadata(): IExportMetadata {
     return this._exportMetadata;
   }
   public set exportMetadata(exportMetadata: IExportMetadata) {
@@ -505,7 +515,7 @@ export class WasmDisassembler {
       throw new Error("Cannot switch exportMetadata during processing.");
     this._exportMetadata = exportMetadata;
   }
-  public get nameResolver() {
+  public get nameResolver(): INameResolver {
     return this._nameResolver;
   }
   public set nameResolver(resolver: INameResolver) {
@@ -585,6 +595,13 @@ export class WasmDisassembler {
     }
     this.appendBuffer('"');
   }
+  private printExpression(expression: IOperatorInformation[]): void {
+    for (const operator of expression) {
+      this.appendBuffer("(");
+      this.printOperator(operator);
+      this.appendBuffer(")");
+    }
+  }
   private useLabel(depth: number): string {
     if (!this._backrefLabels) {
       return "" + depth;
@@ -656,8 +673,21 @@ export class WasmDisassembler {
           this.appendBuffer(this.useLabel(operator.brTable[i]));
         }
         break;
+      case OperatorCode.ref_null:
+        switch (operator.refType) {
+          case Type.funcref:
+            this.appendBuffer(" func");
+            break;
+          case Type.externref:
+            this.appendBuffer(" extern");
+            break;
+          default:
+            throw new Error(`Unknown refedtype ${operator.refType}`);
+        }
+        break;
       case OperatorCode.call:
       case OperatorCode.return_call:
+      case OperatorCode.ref_func:
         var funcName = this._nameResolver.getFunctionName(
           operator.funcIndex,
           operator.funcIndex < this._importCount,
@@ -838,8 +868,14 @@ export class WasmDisassembler {
         break;
       case OperatorCode.memory_init:
       case OperatorCode.data_drop:
-      case OperatorCode.elem_drop:
         this.appendBuffer(` ${operator.segmentIndex}`);
+        break;
+      case OperatorCode.elem_drop:
+        const elementName = this._nameResolver.getElementName(
+          operator.segmentIndex,
+          true
+        );
+        this.appendBuffer(` ${elementName}`);
         break;
       case OperatorCode.table_set:
       case OperatorCode.table_get:
@@ -853,29 +889,33 @@ export class WasmDisassembler {
       }
       case OperatorCode.table_copy: {
         // Table index might be omitted and defaults to 0.
-        if (operator.tableIndex === 0 && operator.destinationIndex === 0) break;
-        const tableName = this._nameResolver.getTableName(
-          operator.tableIndex,
-          true
-        );
-        const destinationName = this._nameResolver.getTableName(
-          operator.destinationIndex,
-          true
-        );
-        this.appendBuffer(` ${destinationName} ${tableName}`);
+        if (operator.tableIndex !== 0 || operator.destinationIndex !== 0) {
+          const tableName = this._nameResolver.getTableName(
+            operator.tableIndex,
+            true
+          );
+          const destinationName = this._nameResolver.getTableName(
+            operator.destinationIndex,
+            true
+          );
+          this.appendBuffer(` ${destinationName} ${tableName}`);
+        }
         break;
       }
       case OperatorCode.table_init: {
         // Table index might be omitted and defaults to 0.
-        if (operator.tableIndex === 0) {
-          this.appendBuffer(` ${operator.segmentIndex}`);
-          break;
+        if (operator.tableIndex !== 0) {
+          const tableName = this._nameResolver.getTableName(
+            operator.tableIndex,
+            true
+          );
+          this.appendBuffer(` ${tableName}`);
         }
-        const tableName = this._nameResolver.getTableName(
-          operator.tableIndex,
+        const elementName = this._nameResolver.getElementName(
+          operator.segmentIndex,
           true
         );
-        this.appendBuffer(` ${operator.segmentIndex} ${tableName}`);
+        this.appendBuffer(` ${elementName}`);
         break;
       }
     }
@@ -985,6 +1025,7 @@ export class WasmDisassembler {
           this.newLine();
           break;
         case BinaryReaderState.END_SECTION:
+          this._currentSectionId = SectionCode.Unknown;
           break;
         case BinaryReaderState.BEGIN_SECTION:
           var sectionInfo = <ISectionInformation>reader.result;
@@ -1000,6 +1041,7 @@ export class WasmDisassembler {
             case SectionCode.Data:
             case SectionCode.Table:
             case SectionCode.Element:
+              this._currentSectionId = sectionInfo.id;
               break; // reading known section;
             default:
               reader.skipSection();
@@ -1185,8 +1227,29 @@ export class WasmDisassembler {
           this.newLine();
           break;
         case BinaryReaderState.BEGIN_ELEMENT_SECTION_ENTRY:
-          var elementSegmentInfo = <IElementSegment>reader.result;
-          this.appendBuffer("  (elem ");
+          var elementSegment = <IElementSegment>reader.result;
+          var elementIndex = this._elementCount++;
+          var elementName = this._nameResolver.getElementName(
+            elementIndex,
+            false
+          );
+          this.appendBuffer(`  (elem ${elementName}`);
+          switch (elementSegment.mode) {
+            case ElementMode.Active:
+              if (elementSegment.tableIndex !== 0) {
+                const tableName = this._nameResolver.getTableName(
+                  elementSegment.tableIndex,
+                  false
+                );
+                this.appendBuffer(` (table ${tableName})`);
+              }
+              break;
+            case ElementMode.Passive:
+              break;
+            case ElementMode.Declarative:
+              this.appendBuffer(" declare");
+              break;
+          }
           break;
         case BinaryReaderState.END_ELEMENT_SECTION_ENTRY:
           this.appendBuffer(")");
@@ -1194,31 +1257,7 @@ export class WasmDisassembler {
           break;
         case BinaryReaderState.ELEMENT_SECTION_ENTRY_BODY:
           const elementSegmentBody = <IElementSegmentBody>reader.result;
-          if (elementSegmentBody.elementType != Type.unspecified) {
-            const typeName = typeToString(elementSegmentBody.elementType);
-            this.appendBuffer(` ${typeName}`);
-          }
-          elementSegmentBody.elements.forEach((funcIndex) => {
-            if (elementSegmentBody.asElements) {
-              if (funcIndex == NULL_FUNCTION_INDEX) {
-                this.appendBuffer(" (ref.null)");
-              } else {
-                const funcName = this._nameResolver.getFunctionName(
-                  funcIndex,
-                  funcIndex < this._importCount,
-                  true
-                );
-                this.appendBuffer(` (ref.func ${funcName})`);
-              }
-            } else {
-              const funcName = this._nameResolver.getFunctionName(
-                funcIndex,
-                funcIndex < this._importCount,
-                true
-              );
-              this.appendBuffer(` ${funcName}`);
-            }
-          });
+          this.appendBuffer(` ${typeToString(elementSegmentBody.elementType)}`);
           break;
         case BinaryReaderState.BEGIN_GLOBAL_SECTION_ENTRY:
           var globalInfo = <IGlobalVariable>reader.result;
@@ -1232,7 +1271,7 @@ export class WasmDisassembler {
               this.appendBuffer(` (export "${exportName}")`);
             }
           }
-          this.appendBuffer(` ${globalTypeToString(globalInfo.type)} `);
+          this.appendBuffer(` ${globalTypeToString(globalInfo.type)}`);
           break;
         case BinaryReaderState.END_GLOBAL_SECTION_ENTRY:
           this.appendBuffer(")");
@@ -1261,7 +1300,7 @@ export class WasmDisassembler {
           this.newLine();
           break;
         case BinaryReaderState.BEGIN_DATA_SECTION_ENTRY:
-          this.appendBuffer("  (data ");
+          this.appendBuffer("  (data");
           break;
         case BinaryReaderState.DATA_SECTION_ENTRY_BODY:
           var body = <IDataSegmentBody>reader.result;
@@ -1273,24 +1312,40 @@ export class WasmDisassembler {
           this.newLine();
           break;
         case BinaryReaderState.BEGIN_INIT_EXPRESSION_BODY:
+        case BinaryReaderState.BEGIN_OFFSET_EXPRESSION_BODY:
+          this._expression = [];
           break;
         case BinaryReaderState.INIT_EXPRESSION_OPERATOR:
-          this._initExpression.push(<IOperatorInformation>reader.result);
+        case BinaryReaderState.OFFSET_EXPRESSION_OPERATOR:
+          var operator = <IOperatorInformation>reader.result;
+          if (operator.code !== OperatorCode.end) {
+            this._expression.push(operator);
+          }
+          break;
+        case BinaryReaderState.END_OFFSET_EXPRESSION_BODY:
+          if (this._expression.length > 1) {
+            this.appendBuffer(" (offset ");
+            this.printExpression(this._expression);
+            this.appendBuffer(")");
+          } else {
+            this.appendBuffer(" ");
+            this.printExpression(this._expression);
+          }
+          this._expression = [];
           break;
         case BinaryReaderState.END_INIT_EXPRESSION_BODY:
-          this.appendBuffer("(");
-          // TODO fix printing when more that one operator is used.
-          this._initExpression.forEach((op, index) => {
-            if (op.code === OperatorCode.end) {
-              return; // do not print end
-            }
-            if (index > 0) {
-              this.appendBuffer(" ");
-            }
-            this.printOperator(op);
-          });
-          this.appendBuffer(")");
-          this._initExpression.length = 0;
+          if (
+            this._expression.length > 1 &&
+            this._currentSectionId === SectionCode.Element
+          ) {
+            this.appendBuffer(" (item ");
+            this.printExpression(this._expression);
+            this.appendBuffer(")");
+          } else {
+            this.appendBuffer(" ");
+            this.printExpression(this._expression);
+          }
+          this._expression = [];
           break;
         case BinaryReaderState.FUNCTION_SECTION_ENTRY:
           this._funcTypes.push((<IFunctionEntry>reader.result).typeIndex);

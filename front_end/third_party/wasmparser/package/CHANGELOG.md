@@ -1,3 +1,10 @@
+## [3.3.1](https://github.com/wasdk/wasmparser/compare/v3.3.0...v3.3.1) (2020-10-27)
+
+
+### Bug Fixes
+
+* update data section support ([1dc9f39](https://github.com/wasdk/wasmparser/commit/1dc9f392551153a7f2a45aac280b6af1552c8509))
+
 # [3.3.0](https://github.com/wasdk/wasmparser/compare/v3.2.1...v3.3.0) (2020-10-24)
 
 

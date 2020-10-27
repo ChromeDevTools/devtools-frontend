@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 // See https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md
 const WASM_MAGIC_NUMBER = 0x6d736100;
 const WASM_SUPPORTED_EXPERIMENTAL_VERSION = 0xd;
@@ -1042,9 +1043,9 @@ export const OperatorCodeNames = [
 });
 
 [
-  "memory.atomic.notify",
-  "memory.atomic.wait32",
-  "memory.atomic.wait64",
+  "atomic.notify",
+  "i32.atomic.wait",
+  "i64.atomic.wait",
   "atomic.fence",
   undefined,
   undefined,
@@ -1138,8 +1139,8 @@ export const enum Type {
   f32 = -0x03,
   f64 = -0x04,
   v128 = -0x05,
-  anyfunc = -0x10,
-  anyref = -0x11,
+  funcref = -0x10,
+  externref = -0x11,
   func = -0x20,
   empty_block_type = -0x40,
 }
@@ -1214,13 +1215,73 @@ export const enum BinaryReaderState {
   RELOC_SECTION_ENTRY = 42,
 
   SOURCE_MAPPING_URL = 43,
+
+  BEGIN_OFFSET_EXPRESSION_BODY = 44,
+  OFFSET_EXPRESSION_OPERATOR = 45,
+  END_OFFSET_EXPRESSION_BODY = 46,
 }
-export const enum SegmentFlags {
-  IsPassive = 1,
-  HasTableIndex = 2,
-  FunctionsAsElements = 4,
+
+const enum DataSegmentType {
+  Active = 0x00,
+  Passive = 0x01,
+  ActiveWithMemoryIndex = 0x02,
 }
-export const NULL_FUNCTION_INDEX = 0xffffffff;
+
+function isActiveDataSegmentType(segmentType: number): boolean {
+  switch (segmentType) {
+    case DataSegmentType.Active:
+    case DataSegmentType.ActiveWithMemoryIndex:
+      return true;
+    default:
+      return false;
+  }
+}
+
+export const enum DataMode {
+  Active,
+  Passive,
+}
+
+const enum ElementSegmentType {
+  LegacyActiveFuncrefExternval = 0x00,
+  PassiveExternval = 0x01,
+  ActiveExternval = 0x02,
+  DeclaredExternval = 0x03,
+  LegacyActiveFuncrefElemexpr = 0x04,
+  PassiveElemexpr = 0x05,
+  ActiveElemexpr = 0x06,
+  DeclaredElemexpr = 0x07,
+}
+
+function isActiveElementSegmentType(segmentType: number): boolean {
+  switch (segmentType) {
+    case ElementSegmentType.LegacyActiveFuncrefExternval:
+    case ElementSegmentType.ActiveExternval:
+    case ElementSegmentType.LegacyActiveFuncrefElemexpr:
+    case ElementSegmentType.ActiveElemexpr:
+      return true;
+    default:
+      return false;
+  }
+}
+
+function isExternvalElementSegmentType(segmentType: number): boolean {
+  switch (segmentType) {
+    case ElementSegmentType.LegacyActiveFuncrefExternval:
+    case ElementSegmentType.PassiveExternval:
+    case ElementSegmentType.ActiveExternval:
+    case ElementSegmentType.DeclaredExternval:
+      return true;
+    default:
+      return false;
+  }
+}
+
+export const enum ElementMode {
+  Active,
+  Passive,
+  Declarative,
+}
 
 class DataRange {
   start: number;
@@ -1258,15 +1319,15 @@ export interface IGlobalVariable {
   type: IGlobalType;
 }
 export interface IElementSegment {
-  index: number;
+  mode: ElementMode;
+  tableIndex?: number;
 }
 export interface IElementSegmentBody {
-  elements: Uint32Array;
-  elementType: number;
-  asElements: boolean;
+  elementType: Type;
 }
 export interface IDataSegment {
-  index: number;
+  mode: DataMode;
+  memoryIndex?: number;
 }
 export interface IDataSegmentBody {
   data: Uint8Array;
@@ -1362,6 +1423,7 @@ export interface IMemoryAddress {
 export interface IOperatorInformation {
   code: OperatorCode;
   blockType?: number;
+  refType?: number;
   brDepth?: number;
   brTable?: Array<number>;
   funcIndex?: number;
@@ -1472,24 +1534,19 @@ export type BinaryReaderResult =
   | IStartEntry
   | Uint8Array;
 export class BinaryReader {
-  private _data: Uint8Array;
-  private _pos: number;
-  private _length: number;
-  private _eof: boolean;
-  public state: BinaryReaderState;
-  public result: BinaryReaderResult;
-  public error: Error;
-  public get currentSection(): ISectionInformation {
-    return <ISectionInformation>this.result; // TODO remove currentSection()
-  }
-  public get currentFunction(): IFunctionInformation {
-    return <IFunctionInformation>this.result; // TODO remove currentFunction()
-  }
-  private _sectionEntriesLeft: number;
-  private _sectionId: SectionCode;
-  private _sectionRange: DataRange;
-  private _functionRange: DataRange;
-  private _segmentFlags: number;
+  private _data: Uint8Array = null;
+  private _pos = 0;
+  private _length = 0;
+  private _eof = false;
+  public state: BinaryReaderState = BinaryReaderState.INITIAL;
+  public result: BinaryReaderResult = null;
+  public error: Error = null;
+  private _sectionEntriesLeft = 0;
+  private _sectionId: SectionCode = SectionCode.Unknown;
+  private _sectionRange: DataRange = null;
+  private _functionRange: DataRange = null;
+  private _segmentType: DataSegmentType | ElementSegmentType = 0;
+  private _segmentEntriesLeft = 0;
   public get data(): Uint8Array {
     return this._data;
   }
@@ -1498,19 +1555,6 @@ export class BinaryReader {
   }
   public get length(): number {
     return this._length;
-  }
-  constructor() {
-    this._data = null;
-    this._pos = 0;
-    this._length = 0;
-    this._eof = false;
-    this.state = BinaryReaderState.INITIAL;
-    this.result = null;
-    this.error = null;
-    this._sectionEntriesLeft = 0;
-    this._sectionId = SectionCode.Unknown;
-    this._sectionRange = null;
-    this._functionRange = null;
   }
   public setData(
     buffer: ArrayBuffer,
@@ -1535,11 +1579,6 @@ export class BinaryReader {
   private readUint8(): number {
     return this._data[this._pos++];
   }
-  private readUint16(): number {
-    var b1 = this._data[this._pos++];
-    var b2 = this._data[this._pos++];
-    return b1 | (b2 << 8);
-  }
   private readInt32(): number {
     var b1 = this._data[this._pos++];
     var b2 = this._data[this._pos++];
@@ -1556,9 +1595,6 @@ export class BinaryReader {
     var b3 = this._data[this._pos + 2];
     var b4 = this._data[this._pos + 3];
     return b1 | (b2 << 8) | (b3 << 16) | (b4 << 24);
-  }
-  private peekUint32(): number {
-    return this.peekInt32();
   }
   private hasVarIntBytes(): boolean {
     var pos = this._pos;
@@ -1807,83 +1843,74 @@ export class BinaryReader {
       this.skipSection();
       return this.read();
     }
-    if (!this.hasVarIntBytes()) {
+    const pos = this._pos;
+    if (!this.hasMoreBytes()) {
       this.state = BinaryReaderState.ELEMENT_SECTION_ENTRY;
       return false;
     }
-    const flags = this.readVarUint7();
-    let tableIndex = 0;
-    if (flags & SegmentFlags.HasTableIndex) {
-      tableIndex = this.readVarUint32();
+    const segmentType = this.readUint8();
+    let mode, tableIndex;
+    switch (segmentType) {
+      case ElementSegmentType.LegacyActiveFuncrefExternval:
+      case ElementSegmentType.LegacyActiveFuncrefElemexpr:
+        mode = ElementMode.Active;
+        tableIndex = 0;
+        break;
+      case ElementSegmentType.PassiveExternval:
+      case ElementSegmentType.PassiveElemexpr:
+        mode = ElementMode.Passive;
+        break;
+      case ElementSegmentType.ActiveExternval:
+      case ElementSegmentType.ActiveElemexpr:
+        mode = ElementMode.Active;
+        if (!this.hasVarIntBytes()) {
+          this.state = BinaryReaderState.ELEMENT_SECTION_ENTRY;
+          this._pos = pos;
+          return false;
+        }
+        tableIndex = this.readVarUint32();
+        break;
+      case ElementSegmentType.DeclaredExternval:
+      case ElementSegmentType.DeclaredElemexpr:
+        mode = ElementMode.Declarative;
+        break;
+      default:
+        throw new Error(`Unsupported element segment type ${segmentType}`);
     }
-
     this.state = BinaryReaderState.BEGIN_ELEMENT_SECTION_ENTRY;
-    this.result = { index: tableIndex };
+    this.result = { mode, tableIndex };
     this._sectionEntriesLeft--;
-    this._segmentFlags = flags;
+    this._segmentType = segmentType;
     return true;
   }
   private readElementEntryBody(): boolean {
-    let funcType = Type.unspecified;
-    const pos = this._pos;
-    if (
-      this._segmentFlags &
-      (SegmentFlags.IsPassive | SegmentFlags.HasTableIndex)
-    ) {
-      if (!this.hasMoreBytes()) return false;
-      funcType = this.readVarInt7();
-    }
-    if (!this.hasVarIntBytes()) {
-      this._pos = pos;
-      return false;
-    }
-    const numElemements = this.readVarUint32();
-    const elements = new Uint32Array(numElemements);
-    for (let i = 0; i < numElemements; i++) {
-      if (this._segmentFlags & SegmentFlags.FunctionsAsElements) {
-        if (!this.hasMoreBytes()) {
-          this._pos = pos;
-          return false;
-        }
-        // Read initializer expression, which must either be null ref or func ref
-        let operator = this.readUint8();
-        if (operator == OperatorCode.ref_null) {
-          elements[i] = NULL_FUNCTION_INDEX;
-        } else if (operator == OperatorCode.ref_func) {
-          if (!this.hasVarIntBytes()) {
-            this._pos = pos;
-            return false;
-          }
-          elements[i] = this.readVarInt32();
-        } else {
-          this.error = new Error("Invalid initializer expression for element");
-          return true;
-        }
-        if (!this.hasMoreBytes()) {
-          this._pos = pos;
-          return false;
-        }
-        operator = this.readUint8();
-        if (operator != OperatorCode.end) {
-          this.error = new Error(
-            "Expected end of initializer expression for element"
-          );
-          return true;
-        }
-      } else {
-        if (!this.hasVarIntBytes()) {
-          this._pos = pos;
-          return false;
-        }
-        elements[i] = this.readVarUint32();
-      }
+    let elementType = Type.funcref;
+    switch (this._segmentType) {
+      case ElementSegmentType.PassiveExternval:
+      case ElementSegmentType.ActiveExternval:
+      case ElementSegmentType.DeclaredExternval:
+        if (!this.hasMoreBytes()) return false;
+        // We just skip the 0x00 byte, the `elemkind` byte
+        // is reserved for future versions of WebAssembly.
+        this.skipBytes(1);
+        break;
+      case ElementSegmentType.PassiveElemexpr:
+      case ElementSegmentType.ActiveElemexpr:
+      case ElementSegmentType.DeclaredElemexpr:
+        if (!this.hasMoreBytes()) return false;
+        elementType = this.readVarInt7();
+        break;
+      case ElementSegmentType.LegacyActiveFuncrefExternval:
+      case ElementSegmentType.LegacyActiveFuncrefElemexpr:
+        // The element type is implicitly `funcref`.
+        break;
+      default:
+        throw new Error(
+          `Unsupported element segment type ${this._segmentType}`
+        );
     }
     this.state = BinaryReaderState.ELEMENT_SECTION_ENTRY_BODY;
-    this.result = {
-      elements: elements,
-      elementType: funcType,
-      asElements: !!(this._segmentFlags & SegmentFlags.FunctionsAsElements),
-    };
+    this.result = { elementType };
     return true;
   }
   private readDataEntry(): boolean {
@@ -1891,20 +1918,37 @@ export class BinaryReader {
       this.skipSection();
       return this.read();
     }
+    const pos = this._pos;
     if (!this.hasVarIntBytes()) {
+      this.state = BinaryReaderState.DATA_SECTION_ENTRY;
       return false;
     }
-
-    this._segmentFlags = this.readVarUint32();
-    let index = 0;
-    if (this._segmentFlags == SegmentFlags.HasTableIndex) {
-      index = this.readVarUint32();
+    const segmentType = this.readVarUint32();
+    let mode, memoryIndex;
+    switch (segmentType) {
+      case DataSegmentType.Active:
+        mode = DataMode.Active;
+        memoryIndex = 0;
+        break;
+      case DataSegmentType.Passive:
+        mode = DataMode.Passive;
+        break;
+      case DataSegmentType.ActiveWithMemoryIndex:
+        mode = DataMode.Active;
+        if (!this.hasVarIntBytes()) {
+          this._pos = pos;
+          this.state = BinaryReaderState.DATA_SECTION_ENTRY;
+          return false;
+        }
+        memoryIndex = this.readVarUint32();
+        break;
+      default:
+        throw new Error(`Unsupported data segment type ${segmentType}`);
     }
     this.state = BinaryReaderState.BEGIN_DATA_SECTION_ENTRY;
-    this.result = {
-      index: index,
-    };
+    this.result = { mode, memoryIndex };
     this._sectionEntriesLeft--;
+    this._segmentType = segmentType;
     return true;
   }
   private readDataEntryBody(): boolean {
@@ -1919,6 +1963,11 @@ export class BinaryReader {
   }
   private readInitExpressionBody(): boolean {
     this.state = BinaryReaderState.BEGIN_INIT_EXPRESSION_BODY;
+    this.result = null;
+    return true;
+  }
+  private readOffsetExpressionBody(): boolean {
+    this.state = BinaryReaderState.BEGIN_OFFSET_EXPRESSION_BODY;
     this.result = null;
     return true;
   }
@@ -2538,28 +2587,37 @@ export class BinaryReader {
   }
 
   private readCodeOperator(): boolean {
-    if (
-      this.state === BinaryReaderState.CODE_OPERATOR &&
-      this._pos >= this._functionRange.end
-    ) {
-      this.skipFunctionBody();
-      return this.read();
-    } else if (
-      this.state === BinaryReaderState.INIT_EXPRESSION_OPERATOR &&
-      this.result &&
-      (<IOperatorInformation>this.result).code === OperatorCode.end
-    ) {
-      this.state = BinaryReaderState.END_INIT_EXPRESSION_BODY;
-      this.result = null;
-      return true;
+    switch (this.state) {
+      case BinaryReaderState.CODE_OPERATOR:
+        if (this._pos >= this._functionRange.end) {
+          this.skipFunctionBody();
+          return this.read();
+        }
+        break;
+      case BinaryReaderState.INIT_EXPRESSION_OPERATOR:
+        if (
+          this.result &&
+          (<IOperatorInformation>this.result).code === OperatorCode.end
+        ) {
+          this.state = BinaryReaderState.END_INIT_EXPRESSION_BODY;
+          this.result = null;
+          return true;
+        }
+        break;
+      case BinaryReaderState.OFFSET_EXPRESSION_OPERATOR:
+        if (
+          this.result &&
+          (<IOperatorInformation>this.result).code === OperatorCode.end
+        ) {
+          this.state = BinaryReaderState.END_OFFSET_EXPRESSION_BODY;
+          this.result = null;
+          return true;
+        }
+        break;
     }
-    const MAX_CODE_OPERATOR_SIZE = 11; // i64.const or load/store
-    var pos = this._pos;
-    if (!this._eof && pos + MAX_CODE_OPERATOR_SIZE > this._length) {
-      return false;
-    }
-    var code = this._data[this._pos++];
-    var blockType,
+    var code,
+      blockType,
+      refType,
       brDepth,
       brTable,
       funcIndex,
@@ -2570,280 +2628,307 @@ export class BinaryReader {
       memoryAddress,
       literal,
       reserved;
-    switch (code) {
-      case OperatorCode.block:
-      case OperatorCode.loop:
-      case OperatorCode.if:
-        blockType = this.readVarInt7();
-        break;
-      case OperatorCode.br:
-      case OperatorCode.br_if:
-        brDepth = this.readVarUint32() >>> 0;
-        break;
-      case OperatorCode.br_table:
-        var tableCount = this.readVarUint32() >>> 0;
-        if (!this.hasBytes(tableCount + 1)) {
-          // We need at least (tableCount + 1) bytes
-          this._pos = pos;
-          return false;
-        }
-        brTable = [];
-        for (var i = 0; i <= tableCount; i++) {
-          // including default
-          if (!this.hasVarIntBytes()) {
+    if (
+      this.state === BinaryReaderState.INIT_EXPRESSION_OPERATOR &&
+      this._sectionId === SectionCode.Element &&
+      isExternvalElementSegmentType(this._segmentType)
+    ) {
+      // We are reading a `vec(funcidx)` here, which is a dense encoding
+      // for a sequence of `((ref.func y) end)` instructions.
+      if (
+        this.result &&
+        (<IOperatorInformation>this.result).code === OperatorCode.ref_func
+      ) {
+        code = OperatorCode.end;
+      } else {
+        if (!this.hasVarIntBytes()) return false;
+        code = OperatorCode.ref_func;
+        funcIndex = this.readVarUint32();
+      }
+    } else {
+      const MAX_CODE_OPERATOR_SIZE = 11; // i64.const or load/store
+      var pos = this._pos;
+      if (!this._eof && pos + MAX_CODE_OPERATOR_SIZE > this._length) {
+        return false;
+      }
+      code = this._data[this._pos++];
+      switch (code) {
+        case OperatorCode.block:
+        case OperatorCode.loop:
+        case OperatorCode.if:
+          blockType = this.readVarInt7();
+          break;
+        case OperatorCode.br:
+        case OperatorCode.br_if:
+          brDepth = this.readVarUint32() >>> 0;
+          break;
+        case OperatorCode.br_table:
+          var tableCount = this.readVarUint32() >>> 0;
+          if (!this.hasBytes(tableCount + 1)) {
+            // We need at least (tableCount + 1) bytes
             this._pos = pos;
             return false;
           }
-          brTable.push(this.readVarUint32() >>> 0);
-        }
-        break;
-      case OperatorCode.call:
-      case OperatorCode.return_call:
-      case OperatorCode.ref_func:
-        funcIndex = this.readVarUint32() >>> 0;
-        break;
-      case OperatorCode.call_indirect:
-      case OperatorCode.return_call_indirect:
-        typeIndex = this.readVarUint32() >>> 0;
-        reserved = this.readVarUint1();
-        break;
-      case OperatorCode.local_get:
-      case OperatorCode.local_set:
-      case OperatorCode.local_tee:
-        localIndex = this.readVarUint32() >>> 0;
-        break;
-      case OperatorCode.global_get:
-      case OperatorCode.global_set:
-        globalIndex = this.readVarUint32() >>> 0;
-        break;
-      case OperatorCode.table_get:
-      case OperatorCode.table_set:
-        tableIndex = this.readVarUint32() >>> 0;
-        break;
-      case OperatorCode.i32_load:
-      case OperatorCode.i64_load:
-      case OperatorCode.f32_load:
-      case OperatorCode.f64_load:
-      case OperatorCode.i32_load8_s:
-      case OperatorCode.i32_load8_u:
-      case OperatorCode.i32_load16_s:
-      case OperatorCode.i32_load16_u:
-      case OperatorCode.i64_load8_s:
-      case OperatorCode.i64_load8_u:
-      case OperatorCode.i64_load16_s:
-      case OperatorCode.i64_load16_u:
-      case OperatorCode.i64_load32_s:
-      case OperatorCode.i64_load32_u:
-      case OperatorCode.i32_store:
-      case OperatorCode.i64_store:
-      case OperatorCode.f32_store:
-      case OperatorCode.f64_store:
-      case OperatorCode.i32_store8:
-      case OperatorCode.i32_store16:
-      case OperatorCode.i64_store8:
-      case OperatorCode.i64_store16:
-      case OperatorCode.i64_store32:
-        memoryAddress = this.readMemoryImmediate();
-        break;
-      case OperatorCode.current_memory:
-      case OperatorCode.grow_memory:
-        reserved = this.readVarUint1();
-        break;
-      case OperatorCode.i32_const:
-        literal = this.readVarInt32();
-        break;
-      case OperatorCode.i64_const:
-        literal = this.readVarInt64();
-        break;
-      case OperatorCode.f32_const:
-        literal = new DataView(
-          this._data.buffer,
-          this._data.byteOffset
-        ).getFloat32(this._pos, true);
-        this._pos += 4;
-        break;
-      case OperatorCode.f64_const:
-        literal = new DataView(
-          this._data.buffer,
-          this._data.byteOffset
-        ).getFloat64(this._pos, true);
-        this._pos += 8;
-        break;
-      case OperatorCode.prefix_0xfc:
-        if (this.readCodeOperator_0xfc()) {
+          brTable = [];
+          for (var i = 0; i <= tableCount; i++) {
+            // including default
+            if (!this.hasVarIntBytes()) {
+              this._pos = pos;
+              return false;
+            }
+            brTable.push(this.readVarUint32() >>> 0);
+          }
+          break;
+        case OperatorCode.ref_null:
+          refType = this.readVarInt7();
+          break;
+        case OperatorCode.call:
+        case OperatorCode.return_call:
+        case OperatorCode.ref_func:
+          funcIndex = this.readVarUint32() >>> 0;
+          break;
+        case OperatorCode.call_indirect:
+        case OperatorCode.return_call_indirect:
+          typeIndex = this.readVarUint32() >>> 0;
+          reserved = this.readVarUint1();
+          break;
+        case OperatorCode.local_get:
+        case OperatorCode.local_set:
+        case OperatorCode.local_tee:
+          localIndex = this.readVarUint32() >>> 0;
+          break;
+        case OperatorCode.global_get:
+        case OperatorCode.global_set:
+          globalIndex = this.readVarUint32() >>> 0;
+          break;
+        case OperatorCode.table_get:
+        case OperatorCode.table_set:
+          tableIndex = this.readVarUint32() >>> 0;
+          break;
+        case OperatorCode.i32_load:
+        case OperatorCode.i64_load:
+        case OperatorCode.f32_load:
+        case OperatorCode.f64_load:
+        case OperatorCode.i32_load8_s:
+        case OperatorCode.i32_load8_u:
+        case OperatorCode.i32_load16_s:
+        case OperatorCode.i32_load16_u:
+        case OperatorCode.i64_load8_s:
+        case OperatorCode.i64_load8_u:
+        case OperatorCode.i64_load16_s:
+        case OperatorCode.i64_load16_u:
+        case OperatorCode.i64_load32_s:
+        case OperatorCode.i64_load32_u:
+        case OperatorCode.i32_store:
+        case OperatorCode.i64_store:
+        case OperatorCode.f32_store:
+        case OperatorCode.f64_store:
+        case OperatorCode.i32_store8:
+        case OperatorCode.i32_store16:
+        case OperatorCode.i64_store8:
+        case OperatorCode.i64_store16:
+        case OperatorCode.i64_store32:
+          memoryAddress = this.readMemoryImmediate();
+          break;
+        case OperatorCode.current_memory:
+        case OperatorCode.grow_memory:
+          reserved = this.readVarUint1();
+          break;
+        case OperatorCode.i32_const:
+          literal = this.readVarInt32();
+          break;
+        case OperatorCode.i64_const:
+          literal = this.readVarInt64();
+          break;
+        case OperatorCode.f32_const:
+          literal = new DataView(
+            this._data.buffer,
+            this._data.byteOffset
+          ).getFloat32(this._pos, true);
+          this._pos += 4;
+          break;
+        case OperatorCode.f64_const:
+          literal = new DataView(
+            this._data.buffer,
+            this._data.byteOffset
+          ).getFloat64(this._pos, true);
+          this._pos += 8;
+          break;
+        case OperatorCode.prefix_0xfc:
+          if (this.readCodeOperator_0xfc()) {
+            return true;
+          }
+          this._pos = pos;
+          return false;
+        case OperatorCode.prefix_0xfd:
+          if (this.readCodeOperator_0xfd()) {
+            return true;
+          }
+          this._pos = pos;
+          return false;
+        case OperatorCode.prefix_0xfe:
+          if (this.readCodeOperator_0xfe()) {
+            return true;
+          }
+          this._pos = pos;
+          return false;
+        case OperatorCode.unreachable:
+        case OperatorCode.nop:
+        case OperatorCode.else:
+        case OperatorCode.end:
+        case OperatorCode.return:
+        case OperatorCode.drop:
+        case OperatorCode.select:
+        case OperatorCode.i32_eqz:
+        case OperatorCode.i32_eq:
+        case OperatorCode.i32_ne:
+        case OperatorCode.i32_lt_s:
+        case OperatorCode.i32_lt_u:
+        case OperatorCode.i32_gt_s:
+        case OperatorCode.i32_gt_u:
+        case OperatorCode.i32_le_s:
+        case OperatorCode.i32_le_u:
+        case OperatorCode.i32_ge_s:
+        case OperatorCode.i32_ge_u:
+        case OperatorCode.i64_eqz:
+        case OperatorCode.i64_eq:
+        case OperatorCode.i64_ne:
+        case OperatorCode.i64_lt_s:
+        case OperatorCode.i64_lt_u:
+        case OperatorCode.i64_gt_s:
+        case OperatorCode.i64_gt_u:
+        case OperatorCode.i64_le_s:
+        case OperatorCode.i64_le_u:
+        case OperatorCode.i64_ge_s:
+        case OperatorCode.i64_ge_u:
+        case OperatorCode.f32_eq:
+        case OperatorCode.f32_ne:
+        case OperatorCode.f32_lt:
+        case OperatorCode.f32_gt:
+        case OperatorCode.f32_le:
+        case OperatorCode.f32_ge:
+        case OperatorCode.f64_eq:
+        case OperatorCode.f64_ne:
+        case OperatorCode.f64_lt:
+        case OperatorCode.f64_gt:
+        case OperatorCode.f64_le:
+        case OperatorCode.f64_ge:
+        case OperatorCode.i32_clz:
+        case OperatorCode.i32_ctz:
+        case OperatorCode.i32_popcnt:
+        case OperatorCode.i32_add:
+        case OperatorCode.i32_sub:
+        case OperatorCode.i32_mul:
+        case OperatorCode.i32_div_s:
+        case OperatorCode.i32_div_u:
+        case OperatorCode.i32_rem_s:
+        case OperatorCode.i32_rem_u:
+        case OperatorCode.i32_and:
+        case OperatorCode.i32_or:
+        case OperatorCode.i32_xor:
+        case OperatorCode.i32_shl:
+        case OperatorCode.i32_shr_s:
+        case OperatorCode.i32_shr_u:
+        case OperatorCode.i32_rotl:
+        case OperatorCode.i32_rotr:
+        case OperatorCode.i64_clz:
+        case OperatorCode.i64_ctz:
+        case OperatorCode.i64_popcnt:
+        case OperatorCode.i64_add:
+        case OperatorCode.i64_sub:
+        case OperatorCode.i64_mul:
+        case OperatorCode.i64_div_s:
+        case OperatorCode.i64_div_u:
+        case OperatorCode.i64_rem_s:
+        case OperatorCode.i64_rem_u:
+        case OperatorCode.i64_and:
+        case OperatorCode.i64_or:
+        case OperatorCode.i64_xor:
+        case OperatorCode.i64_shl:
+        case OperatorCode.i64_shr_s:
+        case OperatorCode.i64_shr_u:
+        case OperatorCode.i64_rotl:
+        case OperatorCode.i64_rotr:
+        case OperatorCode.f32_abs:
+        case OperatorCode.f32_neg:
+        case OperatorCode.f32_ceil:
+        case OperatorCode.f32_floor:
+        case OperatorCode.f32_trunc:
+        case OperatorCode.f32_nearest:
+        case OperatorCode.f32_sqrt:
+        case OperatorCode.f32_add:
+        case OperatorCode.f32_sub:
+        case OperatorCode.f32_mul:
+        case OperatorCode.f32_div:
+        case OperatorCode.f32_min:
+        case OperatorCode.f32_max:
+        case OperatorCode.f32_copysign:
+        case OperatorCode.f64_abs:
+        case OperatorCode.f64_neg:
+        case OperatorCode.f64_ceil:
+        case OperatorCode.f64_floor:
+        case OperatorCode.f64_trunc:
+        case OperatorCode.f64_nearest:
+        case OperatorCode.f64_sqrt:
+        case OperatorCode.f64_add:
+        case OperatorCode.f64_sub:
+        case OperatorCode.f64_mul:
+        case OperatorCode.f64_div:
+        case OperatorCode.f64_min:
+        case OperatorCode.f64_max:
+        case OperatorCode.f64_copysign:
+        case OperatorCode.i32_wrap_i64:
+        case OperatorCode.i32_trunc_f32_s:
+        case OperatorCode.i32_trunc_f32_u:
+        case OperatorCode.i32_trunc_f64_s:
+        case OperatorCode.i32_trunc_f64_u:
+        case OperatorCode.i64_extend_i32_s:
+        case OperatorCode.i64_extend_i32_u:
+        case OperatorCode.i64_trunc_f32_s:
+        case OperatorCode.i64_trunc_f32_u:
+        case OperatorCode.i64_trunc_f64_s:
+        case OperatorCode.i64_trunc_f64_u:
+        case OperatorCode.f32_convert_i32_s:
+        case OperatorCode.f32_convert_i32_u:
+        case OperatorCode.f32_convert_i64_s:
+        case OperatorCode.f32_convert_i64_u:
+        case OperatorCode.f32_demote_f64:
+        case OperatorCode.f64_convert_i32_s:
+        case OperatorCode.f64_convert_i32_u:
+        case OperatorCode.f64_convert_i64_s:
+        case OperatorCode.f64_convert_i64_u:
+        case OperatorCode.f64_promote_f32:
+        case OperatorCode.i32_reinterpret_f32:
+        case OperatorCode.i64_reinterpret_f64:
+        case OperatorCode.f32_reinterpret_i32:
+        case OperatorCode.f64_reinterpret_i64:
+        case OperatorCode.i32_extend8_s:
+        case OperatorCode.i32_extend16_s:
+        case OperatorCode.i64_extend8_s:
+        case OperatorCode.i64_extend16_s:
+        case OperatorCode.i64_extend32_s:
+        case OperatorCode.ref_is_null:
+        case OperatorCode.ref_null:
+          break;
+        default:
+          this.error = new Error(`Unknown operator: ${code}`);
+          this.state = BinaryReaderState.ERROR;
           return true;
-        }
-        this._pos = pos;
-        return false;
-      case OperatorCode.prefix_0xfd:
-        if (this.readCodeOperator_0xfd()) {
-          return true;
-        }
-        this._pos = pos;
-        return false;
-      case OperatorCode.prefix_0xfe:
-        if (this.readCodeOperator_0xfe()) {
-          return true;
-        }
-        this._pos = pos;
-        return false;
-      case OperatorCode.unreachable:
-      case OperatorCode.nop:
-      case OperatorCode.else:
-      case OperatorCode.end:
-      case OperatorCode.return:
-      case OperatorCode.drop:
-      case OperatorCode.select:
-      case OperatorCode.i32_eqz:
-      case OperatorCode.i32_eq:
-      case OperatorCode.i32_ne:
-      case OperatorCode.i32_lt_s:
-      case OperatorCode.i32_lt_u:
-      case OperatorCode.i32_gt_s:
-      case OperatorCode.i32_gt_u:
-      case OperatorCode.i32_le_s:
-      case OperatorCode.i32_le_u:
-      case OperatorCode.i32_ge_s:
-      case OperatorCode.i32_ge_u:
-      case OperatorCode.i64_eqz:
-      case OperatorCode.i64_eq:
-      case OperatorCode.i64_ne:
-      case OperatorCode.i64_lt_s:
-      case OperatorCode.i64_lt_u:
-      case OperatorCode.i64_gt_s:
-      case OperatorCode.i64_gt_u:
-      case OperatorCode.i64_le_s:
-      case OperatorCode.i64_le_u:
-      case OperatorCode.i64_ge_s:
-      case OperatorCode.i64_ge_u:
-      case OperatorCode.f32_eq:
-      case OperatorCode.f32_ne:
-      case OperatorCode.f32_lt:
-      case OperatorCode.f32_gt:
-      case OperatorCode.f32_le:
-      case OperatorCode.f32_ge:
-      case OperatorCode.f64_eq:
-      case OperatorCode.f64_ne:
-      case OperatorCode.f64_lt:
-      case OperatorCode.f64_gt:
-      case OperatorCode.f64_le:
-      case OperatorCode.f64_ge:
-      case OperatorCode.i32_clz:
-      case OperatorCode.i32_ctz:
-      case OperatorCode.i32_popcnt:
-      case OperatorCode.i32_add:
-      case OperatorCode.i32_sub:
-      case OperatorCode.i32_mul:
-      case OperatorCode.i32_div_s:
-      case OperatorCode.i32_div_u:
-      case OperatorCode.i32_rem_s:
-      case OperatorCode.i32_rem_u:
-      case OperatorCode.i32_and:
-      case OperatorCode.i32_or:
-      case OperatorCode.i32_xor:
-      case OperatorCode.i32_shl:
-      case OperatorCode.i32_shr_s:
-      case OperatorCode.i32_shr_u:
-      case OperatorCode.i32_rotl:
-      case OperatorCode.i32_rotr:
-      case OperatorCode.i64_clz:
-      case OperatorCode.i64_ctz:
-      case OperatorCode.i64_popcnt:
-      case OperatorCode.i64_add:
-      case OperatorCode.i64_sub:
-      case OperatorCode.i64_mul:
-      case OperatorCode.i64_div_s:
-      case OperatorCode.i64_div_u:
-      case OperatorCode.i64_rem_s:
-      case OperatorCode.i64_rem_u:
-      case OperatorCode.i64_and:
-      case OperatorCode.i64_or:
-      case OperatorCode.i64_xor:
-      case OperatorCode.i64_shl:
-      case OperatorCode.i64_shr_s:
-      case OperatorCode.i64_shr_u:
-      case OperatorCode.i64_rotl:
-      case OperatorCode.i64_rotr:
-      case OperatorCode.f32_abs:
-      case OperatorCode.f32_neg:
-      case OperatorCode.f32_ceil:
-      case OperatorCode.f32_floor:
-      case OperatorCode.f32_trunc:
-      case OperatorCode.f32_nearest:
-      case OperatorCode.f32_sqrt:
-      case OperatorCode.f32_add:
-      case OperatorCode.f32_sub:
-      case OperatorCode.f32_mul:
-      case OperatorCode.f32_div:
-      case OperatorCode.f32_min:
-      case OperatorCode.f32_max:
-      case OperatorCode.f32_copysign:
-      case OperatorCode.f64_abs:
-      case OperatorCode.f64_neg:
-      case OperatorCode.f64_ceil:
-      case OperatorCode.f64_floor:
-      case OperatorCode.f64_trunc:
-      case OperatorCode.f64_nearest:
-      case OperatorCode.f64_sqrt:
-      case OperatorCode.f64_add:
-      case OperatorCode.f64_sub:
-      case OperatorCode.f64_mul:
-      case OperatorCode.f64_div:
-      case OperatorCode.f64_min:
-      case OperatorCode.f64_max:
-      case OperatorCode.f64_copysign:
-      case OperatorCode.i32_wrap_i64:
-      case OperatorCode.i32_trunc_f32_s:
-      case OperatorCode.i32_trunc_f32_u:
-      case OperatorCode.i32_trunc_f64_s:
-      case OperatorCode.i32_trunc_f64_u:
-      case OperatorCode.i64_extend_i32_s:
-      case OperatorCode.i64_extend_i32_u:
-      case OperatorCode.i64_trunc_f32_s:
-      case OperatorCode.i64_trunc_f32_u:
-      case OperatorCode.i64_trunc_f64_s:
-      case OperatorCode.i64_trunc_f64_u:
-      case OperatorCode.f32_convert_i32_s:
-      case OperatorCode.f32_convert_i32_u:
-      case OperatorCode.f32_convert_i64_s:
-      case OperatorCode.f32_convert_i64_u:
-      case OperatorCode.f32_demote_f64:
-      case OperatorCode.f64_convert_i32_s:
-      case OperatorCode.f64_convert_i32_u:
-      case OperatorCode.f64_convert_i64_s:
-      case OperatorCode.f64_convert_i64_u:
-      case OperatorCode.f64_promote_f32:
-      case OperatorCode.i32_reinterpret_f32:
-      case OperatorCode.i64_reinterpret_f64:
-      case OperatorCode.f32_reinterpret_i32:
-      case OperatorCode.f64_reinterpret_i64:
-      case OperatorCode.i32_extend8_s:
-      case OperatorCode.i32_extend16_s:
-      case OperatorCode.i64_extend8_s:
-      case OperatorCode.i64_extend16_s:
-      case OperatorCode.i64_extend32_s:
-      case OperatorCode.ref_null:
-      case OperatorCode.ref_is_null:
-        break;
-      default:
-        this.error = new Error(
-          `Unknown operator: 0x${code.toString(16).padStart(2, "0")}`
-        );
-        this.state = BinaryReaderState.ERROR;
-        return true;
+      }
     }
     this.result = {
-      code: code,
-      blockType: blockType,
-      brDepth: brDepth,
-      brTable: brTable,
-      tableIndex: tableIndex,
-      funcIndex: funcIndex,
-      typeIndex: typeIndex,
-      localIndex: localIndex,
-      globalIndex: globalIndex,
-      memoryAddress: memoryAddress,
-      literal: literal,
+      code,
+      blockType,
+      refType,
+      brDepth,
+      brTable,
+      tableIndex,
+      funcIndex,
+      typeIndex,
+      localIndex,
+      globalIndex,
+      memoryAddress,
+      literal,
       segmentIndex: undefined,
       destinationIndex: undefined,
       lines: undefined,
@@ -2994,7 +3079,6 @@ export class BinaryReader {
       case SectionCode.Data:
         if (!this.hasVarIntBytes()) return false;
         this._sectionEntriesLeft = this.readVarUint32() >>> 0;
-        this.state = BinaryReaderState.DATA_SECTION_ENTRY;
         return this.readDataEntry();
       case SectionCode.Custom:
         var customSectionName = bytesToString(currentSection.name);
@@ -3093,23 +3177,30 @@ export class BinaryReader {
       case BinaryReaderState.END_ELEMENT_SECTION_ENTRY:
         return this.readElementEntry();
       case BinaryReaderState.BEGIN_ELEMENT_SECTION_ENTRY:
-        if (this._segmentFlags & SegmentFlags.IsPassive) {
-          return this.readElementEntryBody();
+        if (isActiveElementSegmentType(this._segmentType)) {
+          return this.readOffsetExpressionBody();
         } else {
-          return this.readInitExpressionBody();
+          // passive or declared element segment
+          return this.readElementEntryBody();
         }
       case BinaryReaderState.ELEMENT_SECTION_ENTRY_BODY:
-        this.state = BinaryReaderState.END_ELEMENT_SECTION_ENTRY;
-        this.result = null;
-        return true;
+        if (!this.hasVarIntBytes()) return false;
+        this._segmentEntriesLeft = this.readVarUint32();
+        if (this._segmentEntriesLeft === 0) {
+          this.state = BinaryReaderState.END_ELEMENT_SECTION_ENTRY;
+          this.result = null;
+          return true;
+        }
+        return this.readInitExpressionBody();
       case BinaryReaderState.DATA_SECTION_ENTRY:
       case BinaryReaderState.END_DATA_SECTION_ENTRY:
         return this.readDataEntry();
       case BinaryReaderState.BEGIN_DATA_SECTION_ENTRY:
-        if (this._segmentFlags & SegmentFlags.IsPassive) {
-          return this.readDataEntryBody();
+        if (isActiveDataSegmentType(this._segmentType)) {
+          return this.readOffsetExpressionBody();
         } else {
-          return this.readInitExpressionBody();
+          // passive data segment
+          return this.readDataEntryBody();
         }
       case BinaryReaderState.DATA_SECTION_ENTRY_BODY:
         this.state = BinaryReaderState.END_DATA_SECTION_ENTRY;
@@ -3120,14 +3211,23 @@ export class BinaryReader {
           case SectionCode.Global:
             this.state = BinaryReaderState.END_GLOBAL_SECTION_ENTRY;
             return true;
-          case SectionCode.Data:
-            return this.readDataEntryBody();
           case SectionCode.Element:
-            return this.readElementEntryBody();
+            if (--this._segmentEntriesLeft > 0) {
+              return this.readInitExpressionBody();
+            }
+            this.state = BinaryReaderState.END_ELEMENT_SECTION_ENTRY;
+            this.result = null;
+            return true;
         }
         this.error = new Error(`Unexpected section type: ${this._sectionId}`);
         this.state = BinaryReaderState.ERROR;
         return true;
+      case BinaryReaderState.END_OFFSET_EXPRESSION_BODY:
+        if (this._sectionId === SectionCode.Data) {
+          return this.readDataEntryBody();
+        } else {
+          return this.readElementEntryBody();
+        }
       case BinaryReaderState.NAME_SECTION_ENTRY:
         return this.readNameEntry();
       case BinaryReaderState.RELOC_SECTION_HEADER:
@@ -3151,8 +3251,12 @@ export class BinaryReader {
       case BinaryReaderState.BEGIN_INIT_EXPRESSION_BODY:
         this.state = BinaryReaderState.INIT_EXPRESSION_OPERATOR;
         return this.readCodeOperator();
+      case BinaryReaderState.BEGIN_OFFSET_EXPRESSION_BODY:
+        this.state = BinaryReaderState.OFFSET_EXPRESSION_OPERATOR;
+        return this.readCodeOperator();
       case BinaryReaderState.CODE_OPERATOR:
       case BinaryReaderState.INIT_EXPRESSION_OPERATOR:
+      case BinaryReaderState.OFFSET_EXPRESSION_OPERATOR:
         return this.readCodeOperator();
       case BinaryReaderState.READING_SECTION_RAW_DATA:
         return this.readSectionRawData();

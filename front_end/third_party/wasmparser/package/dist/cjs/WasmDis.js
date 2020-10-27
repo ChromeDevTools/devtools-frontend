@@ -44,10 +44,10 @@ function typeToString(type) {
             return "f64";
         case -5 /* v128 */:
             return "v128";
-        case -16 /* anyfunc */:
-            return "anyfunc";
-        case -17 /* anyref */:
-            return "anyref";
+        case -16 /* funcref */:
+            return "funcref";
+        case -17 /* externref */:
+            return "externref";
         default:
             throw new Error("Unexpected type " + type);
     }
@@ -266,6 +266,9 @@ var DefaultNameResolver = /** @class */ (function () {
     DefaultNameResolver.prototype.getGlobalName = function (index, isRef) {
         return "$global" + index;
     };
+    DefaultNameResolver.prototype.getElementName = function (index, isRef) {
+        return "$elem" + index;
+    };
     DefaultNameResolver.prototype.getFunctionName = function (index, isImport, isRef) {
         return (isImport ? "$import" : "$func") + index;
     };
@@ -319,6 +322,9 @@ var NumericNameResolver = /** @class */ (function () {
     NumericNameResolver.prototype.getGlobalName = function (index, isRef) {
         return isRef ? "" + index : "(;" + index + ";)";
     };
+    NumericNameResolver.prototype.getElementName = function (index, isRef) {
+        return isRef ? "" + index : "(;" + index + ";)";
+    };
     NumericNameResolver.prototype.getFunctionName = function (index, isImport, isRef) {
         return isRef ? "" + index : "(;" + index + ";)";
     };
@@ -353,6 +359,7 @@ var WasmDisassembler = /** @class */ (function () {
         this._labelMode = LabelMode.WhenUsed;
         this._functionBodyOffsets = [];
         this._currentFunctionBodyOffset = null;
+        this._currentSectionId = -1 /* Unknown */;
         this._logFirstInstruction = false;
         this._reset();
     }
@@ -364,7 +371,8 @@ var WasmDisassembler = /** @class */ (function () {
         this._globalCount = 0;
         this._memoryCount = 0;
         this._tableCount = 0;
-        this._initExpression = [];
+        this._elementCount = 0;
+        this._expression = [];
         this._backrefLabels = null;
         this._labelIndex = 0;
     };
@@ -499,6 +507,14 @@ var WasmDisassembler = /** @class */ (function () {
         }
         this.appendBuffer('"');
     };
+    WasmDisassembler.prototype.printExpression = function (expression) {
+        for (var _i = 0, expression_1 = expression; _i < expression_1.length; _i++) {
+            var operator = expression_1[_i];
+            this.appendBuffer("(");
+            this.printOperator(operator);
+            this.appendBuffer(")");
+        }
+    };
     WasmDisassembler.prototype.useLabel = function (depth) {
         if (!this._backrefLabels) {
             return "" + depth;
@@ -568,8 +584,21 @@ var WasmDisassembler = /** @class */ (function () {
                     this.appendBuffer(this.useLabel(operator.brTable[i]));
                 }
                 break;
+            case 208 /* ref_null */:
+                switch (operator.refType) {
+                    case -16 /* funcref */:
+                        this.appendBuffer(" func");
+                        break;
+                    case -17 /* externref */:
+                        this.appendBuffer(" extern");
+                        break;
+                    default:
+                        throw new Error("Unknown refedtype " + operator.refType);
+                }
+                break;
             case 16 /* call */:
             case 18 /* return_call */:
+            case 210 /* ref_func */:
                 var funcName = this._nameResolver.getFunctionName(operator.funcIndex, operator.funcIndex < this._importCount, true);
                 this.appendBuffer(" " + funcName);
                 break;
@@ -736,8 +765,11 @@ var WasmDisassembler = /** @class */ (function () {
                 break;
             case 64520 /* memory_init */:
             case 64521 /* data_drop */:
-            case 64525 /* elem_drop */:
                 this.appendBuffer(" " + operator.segmentIndex);
+                break;
+            case 64525 /* elem_drop */:
+                var elementName = this._nameResolver.getElementName(operator.segmentIndex, true);
+                this.appendBuffer(" " + elementName);
                 break;
             case 38 /* table_set */:
             case 37 /* table_get */:
@@ -748,21 +780,21 @@ var WasmDisassembler = /** @class */ (function () {
             }
             case 64526 /* table_copy */: {
                 // Table index might be omitted and defaults to 0.
-                if (operator.tableIndex === 0 && operator.destinationIndex === 0)
-                    break;
-                var tableName = this._nameResolver.getTableName(operator.tableIndex, true);
-                var destinationName = this._nameResolver.getTableName(operator.destinationIndex, true);
-                this.appendBuffer(" " + destinationName + " " + tableName);
+                if (operator.tableIndex !== 0 || operator.destinationIndex !== 0) {
+                    var tableName = this._nameResolver.getTableName(operator.tableIndex, true);
+                    var destinationName = this._nameResolver.getTableName(operator.destinationIndex, true);
+                    this.appendBuffer(" " + destinationName + " " + tableName);
+                }
                 break;
             }
             case 64524 /* table_init */: {
                 // Table index might be omitted and defaults to 0.
-                if (operator.tableIndex === 0) {
-                    this.appendBuffer(" " + operator.segmentIndex);
-                    break;
+                if (operator.tableIndex !== 0) {
+                    var tableName = this._nameResolver.getTableName(operator.tableIndex, true);
+                    this.appendBuffer(" " + tableName);
                 }
-                var tableName = this._nameResolver.getTableName(operator.tableIndex, true);
-                this.appendBuffer(" " + operator.segmentIndex + " " + tableName);
+                var elementName_1 = this._nameResolver.getElementName(operator.segmentIndex, true);
+                this.appendBuffer(" " + elementName_1);
                 break;
             }
         }
@@ -851,34 +883,34 @@ var WasmDisassembler = /** @class */ (function () {
         return result;
     };
     WasmDisassembler.prototype.disassembleChunk = function (reader, offsetInModule) {
-        var _this = this;
         if (offsetInModule === void 0) { offsetInModule = 0; }
         if (this._done)
             throw new Error("Invalid state: disassembly process was already finished.");
-        var _loop_1 = function () {
-            this_1._currentPosition = reader.position + offsetInModule;
+        while (true) {
+            this._currentPosition = reader.position + offsetInModule;
             if (!reader.read())
-                return { value: false };
+                return false;
             switch (reader.state) {
                 case 2 /* END_WASM */:
-                    this_1.appendBuffer(")");
-                    this_1.newLine();
-                    this_1._reset();
+                    this.appendBuffer(")");
+                    this.newLine();
+                    this._reset();
                     if (!reader.hasMoreBytes()) {
-                        this_1._done = true;
-                        return { value: true };
+                        this._done = true;
+                        return true;
                     }
                     break;
                 case -1 /* ERROR */:
                     throw reader.error;
                 case 1 /* BEGIN_WASM */:
-                    this_1.appendBuffer("(module");
-                    this_1.newLine();
+                    this.appendBuffer("(module");
+                    this.newLine();
                     break;
                 case 4 /* END_SECTION */:
+                    this._currentSectionId = -1 /* Unknown */;
                     break;
                 case 3 /* BEGIN_SECTION */:
-                    sectionInfo = reader.result;
+                    var sectionInfo = reader.result;
                     switch (sectionInfo.id) {
                         case 1 /* Type */:
                         case 2 /* Import */:
@@ -891,6 +923,7 @@ var WasmDisassembler = /** @class */ (function () {
                         case 11 /* Data */:
                         case 4 /* Table */:
                         case 9 /* Element */:
+                            this._currentSectionId = sectionInfo.id;
                             break; // reading known section;
                         default:
                             reader.skipSection();
@@ -898,325 +931,332 @@ var WasmDisassembler = /** @class */ (function () {
                     }
                     break;
                 case 15 /* MEMORY_SECTION_ENTRY */:
-                    memoryInfo = reader.result;
-                    memoryIndex = this_1._memoryCount++;
-                    memoryName = this_1._nameResolver.getMemoryName(memoryIndex, false);
-                    this_1.appendBuffer("  (memory " + memoryName);
-                    if (this_1._exportMetadata !== null) {
-                        for (var _i = 0, _a = this_1._exportMetadata.getMemoryExportNames(memoryIndex); _i < _a.length; _i++) {
+                    var memoryInfo = reader.result;
+                    var memoryIndex = this._memoryCount++;
+                    var memoryName = this._nameResolver.getMemoryName(memoryIndex, false);
+                    this.appendBuffer("  (memory " + memoryName);
+                    if (this._exportMetadata !== null) {
+                        for (var _i = 0, _a = this._exportMetadata.getMemoryExportNames(memoryIndex); _i < _a.length; _i++) {
                             var exportName = _a[_i];
-                            this_1.appendBuffer(" (export \"" + exportName + "\")");
+                            this.appendBuffer(" (export \"" + exportName + "\")");
                         }
                     }
-                    this_1.appendBuffer(" " + limitsToString(memoryInfo.limits));
+                    this.appendBuffer(" " + limitsToString(memoryInfo.limits));
                     if (memoryInfo.shared) {
-                        this_1.appendBuffer(" shared");
+                        this.appendBuffer(" shared");
                     }
-                    this_1.appendBuffer(")");
-                    this_1.newLine();
+                    this.appendBuffer(")");
+                    this.newLine();
                     break;
                 case 14 /* TABLE_SECTION_ENTRY */:
-                    tableInfo = reader.result;
-                    tableIndex = this_1._tableCount++;
-                    tableName = this_1._nameResolver.getTableName(tableIndex, false);
-                    this_1.appendBuffer("  (table " + tableName);
-                    if (this_1._exportMetadata !== null) {
-                        for (var _b = 0, _c = this_1._exportMetadata.getTableExportNames(tableIndex); _b < _c.length; _b++) {
+                    var tableInfo = reader.result;
+                    var tableIndex = this._tableCount++;
+                    var tableName = this._nameResolver.getTableName(tableIndex, false);
+                    this.appendBuffer("  (table " + tableName);
+                    if (this._exportMetadata !== null) {
+                        for (var _b = 0, _c = this._exportMetadata.getTableExportNames(tableIndex); _b < _c.length; _b++) {
                             var exportName = _c[_b];
-                            this_1.appendBuffer(" (export \"" + exportName + "\")");
+                            this.appendBuffer(" (export \"" + exportName + "\")");
                         }
                     }
-                    this_1.appendBuffer(" " + limitsToString(tableInfo.limits) + " " + typeToString(tableInfo.elementType) + ")");
-                    this_1.newLine();
+                    this.appendBuffer(" " + limitsToString(tableInfo.limits) + " " + typeToString(tableInfo.elementType) + ")");
+                    this.newLine();
                     break;
                 case 17 /* EXPORT_SECTION_ENTRY */:
                     // Skip printing exports here when we have export metadata
                     // which we can use to print export information inline.
-                    if (this_1._exportMetadata === null) {
-                        exportInfo = reader.result;
-                        this_1.appendBuffer("  (export ");
-                        this_1.printString(exportInfo.field);
-                        this_1.appendBuffer(" ");
+                    if (this._exportMetadata === null) {
+                        var exportInfo = reader.result;
+                        this.appendBuffer("  (export ");
+                        this.printString(exportInfo.field);
+                        this.appendBuffer(" ");
                         switch (exportInfo.kind) {
                             case 0 /* Function */:
-                                funcName = this_1._nameResolver.getFunctionName(exportInfo.index, exportInfo.index < this_1._importCount, true);
-                                this_1.appendBuffer("(func " + funcName + ")");
+                                var funcName = this._nameResolver.getFunctionName(exportInfo.index, exportInfo.index < this._importCount, true);
+                                this.appendBuffer("(func " + funcName + ")");
                                 break;
                             case 1 /* Table */:
-                                tableName = this_1._nameResolver.getTableName(exportInfo.index, true);
-                                this_1.appendBuffer("(table " + tableName + ")");
+                                var tableName = this._nameResolver.getTableName(exportInfo.index, true);
+                                this.appendBuffer("(table " + tableName + ")");
                                 break;
                             case 2 /* Memory */:
-                                memoryName = this_1._nameResolver.getMemoryName(exportInfo.index, true);
-                                this_1.appendBuffer("(memory " + memoryName + ")");
+                                var memoryName = this._nameResolver.getMemoryName(exportInfo.index, true);
+                                this.appendBuffer("(memory " + memoryName + ")");
                                 break;
                             case 3 /* Global */:
-                                globalName = this_1._nameResolver.getGlobalName(exportInfo.index, true);
-                                this_1.appendBuffer("(global " + globalName + ")");
+                                var globalName = this._nameResolver.getGlobalName(exportInfo.index, true);
+                                this.appendBuffer("(global " + globalName + ")");
                                 break;
                             default:
                                 throw new Error("Unsupported export " + exportInfo.kind);
                         }
-                        this_1.appendBuffer(")");
-                        this_1.newLine();
+                        this.appendBuffer(")");
+                        this.newLine();
                     }
                     break;
                 case 12 /* IMPORT_SECTION_ENTRY */:
-                    importInfo = reader.result;
+                    var importInfo = reader.result;
                     switch (importInfo.kind) {
                         case 0 /* Function */:
-                            this_1._importCount++;
-                            funcIndex = this_1._funcIndex++;
-                            funcName = this_1._nameResolver.getFunctionName(funcIndex, true, false);
-                            this_1.appendBuffer("  (func " + funcName);
-                            if (this_1._exportMetadata !== null) {
-                                for (var _d = 0, _e = this_1._exportMetadata.getFunctionExportNames(funcIndex); _d < _e.length; _d++) {
+                            this._importCount++;
+                            var funcIndex = this._funcIndex++;
+                            var funcName = this._nameResolver.getFunctionName(funcIndex, true, false);
+                            this.appendBuffer("  (func " + funcName);
+                            if (this._exportMetadata !== null) {
+                                for (var _d = 0, _e = this._exportMetadata.getFunctionExportNames(funcIndex); _d < _e.length; _d++) {
                                     var exportName = _e[_d];
-                                    this_1.appendBuffer(" (export \"" + exportName + "\")");
+                                    this.appendBuffer(" (export \"" + exportName + "\")");
                                 }
                             }
-                            this_1.appendBuffer(" (import ");
-                            this_1.printImportSource(importInfo);
-                            this_1.appendBuffer(")");
-                            this_1.printFuncType(importInfo.funcTypeIndex);
-                            this_1.appendBuffer(")");
+                            this.appendBuffer(" (import ");
+                            this.printImportSource(importInfo);
+                            this.appendBuffer(")");
+                            this.printFuncType(importInfo.funcTypeIndex);
+                            this.appendBuffer(")");
                             break;
                         case 3 /* Global */:
-                            globalImportInfo = importInfo.type;
-                            globalIndex = this_1._globalCount++;
-                            globalName = this_1._nameResolver.getGlobalName(globalIndex, false);
-                            this_1.appendBuffer("  (global " + globalName);
-                            if (this_1._exportMetadata !== null) {
-                                for (var _f = 0, _g = this_1._exportMetadata.getGlobalExportNames(globalIndex); _f < _g.length; _f++) {
+                            var globalImportInfo = importInfo.type;
+                            var globalIndex = this._globalCount++;
+                            var globalName = this._nameResolver.getGlobalName(globalIndex, false);
+                            this.appendBuffer("  (global " + globalName);
+                            if (this._exportMetadata !== null) {
+                                for (var _f = 0, _g = this._exportMetadata.getGlobalExportNames(globalIndex); _f < _g.length; _f++) {
                                     var exportName = _g[_f];
-                                    this_1.appendBuffer(" (export \"" + exportName + "\")");
+                                    this.appendBuffer(" (export \"" + exportName + "\")");
                                 }
                             }
-                            this_1.appendBuffer(" (import ");
-                            this_1.printImportSource(importInfo);
-                            this_1.appendBuffer(") " + globalTypeToString(globalImportInfo) + ")");
+                            this.appendBuffer(" (import ");
+                            this.printImportSource(importInfo);
+                            this.appendBuffer(") " + globalTypeToString(globalImportInfo) + ")");
                             break;
                         case 2 /* Memory */:
-                            memoryImportInfo = importInfo.type;
-                            memoryIndex = this_1._memoryCount++;
-                            memoryName = this_1._nameResolver.getMemoryName(memoryIndex, false);
-                            this_1.appendBuffer("  (memory " + memoryName);
-                            if (this_1._exportMetadata !== null) {
-                                for (var _h = 0, _j = this_1._exportMetadata.getMemoryExportNames(memoryIndex); _h < _j.length; _h++) {
+                            var memoryImportInfo = importInfo.type;
+                            var memoryIndex = this._memoryCount++;
+                            var memoryName = this._nameResolver.getMemoryName(memoryIndex, false);
+                            this.appendBuffer("  (memory " + memoryName);
+                            if (this._exportMetadata !== null) {
+                                for (var _h = 0, _j = this._exportMetadata.getMemoryExportNames(memoryIndex); _h < _j.length; _h++) {
                                     var exportName = _j[_h];
-                                    this_1.appendBuffer(" (export \"" + exportName + "\")");
+                                    this.appendBuffer(" (export \"" + exportName + "\")");
                                 }
                             }
-                            this_1.appendBuffer(" (import ");
-                            this_1.printImportSource(importInfo);
-                            this_1.appendBuffer(") " + limitsToString(memoryImportInfo.limits));
+                            this.appendBuffer(" (import ");
+                            this.printImportSource(importInfo);
+                            this.appendBuffer(") " + limitsToString(memoryImportInfo.limits));
                             if (memoryImportInfo.shared) {
-                                this_1.appendBuffer(" shared");
+                                this.appendBuffer(" shared");
                             }
-                            this_1.appendBuffer(")");
+                            this.appendBuffer(")");
                             break;
                         case 1 /* Table */:
-                            tableImportInfo = importInfo.type;
-                            tableIndex = this_1._tableCount++;
-                            tableName = this_1._nameResolver.getTableName(tableIndex, false);
-                            this_1.appendBuffer("  (table " + tableName);
-                            if (this_1._exportMetadata !== null) {
-                                for (var _k = 0, _l = this_1._exportMetadata.getTableExportNames(tableIndex); _k < _l.length; _k++) {
+                            var tableImportInfo = importInfo.type;
+                            var tableIndex = this._tableCount++;
+                            var tableName = this._nameResolver.getTableName(tableIndex, false);
+                            this.appendBuffer("  (table " + tableName);
+                            if (this._exportMetadata !== null) {
+                                for (var _k = 0, _l = this._exportMetadata.getTableExportNames(tableIndex); _k < _l.length; _k++) {
                                     var exportName = _l[_k];
-                                    this_1.appendBuffer(" (export \"" + exportName + "\")");
+                                    this.appendBuffer(" (export \"" + exportName + "\")");
                                 }
                             }
-                            this_1.appendBuffer(" (import ");
-                            this_1.printImportSource(importInfo);
-                            this_1.appendBuffer(") " + limitsToString(tableImportInfo.limits) + " " + typeToString(tableImportInfo.elementType) + ")");
+                            this.appendBuffer(" (import ");
+                            this.printImportSource(importInfo);
+                            this.appendBuffer(") " + limitsToString(tableImportInfo.limits) + " " + typeToString(tableImportInfo.elementType) + ")");
                             break;
                         default:
                             throw new Error("NYI other import types: " + importInfo.kind);
                     }
-                    this_1.newLine();
+                    this.newLine();
                     break;
                 case 33 /* BEGIN_ELEMENT_SECTION_ENTRY */:
-                    elementSegmentInfo = reader.result;
-                    this_1.appendBuffer("  (elem ");
+                    var elementSegment = reader.result;
+                    var elementIndex = this._elementCount++;
+                    var elementName = this._nameResolver.getElementName(elementIndex, false);
+                    this.appendBuffer("  (elem " + elementName);
+                    switch (elementSegment.mode) {
+                        case 0 /* Active */:
+                            if (elementSegment.tableIndex !== 0) {
+                                var tableName_1 = this._nameResolver.getTableName(elementSegment.tableIndex, false);
+                                this.appendBuffer(" (table " + tableName_1 + ")");
+                            }
+                            break;
+                        case 1 /* Passive */:
+                            break;
+                        case 2 /* Declarative */:
+                            this.appendBuffer(" declare");
+                            break;
+                    }
                     break;
                 case 35 /* END_ELEMENT_SECTION_ENTRY */:
-                    this_1.appendBuffer(")");
-                    this_1.newLine();
+                    this.appendBuffer(")");
+                    this.newLine();
                     break;
                 case 34 /* ELEMENT_SECTION_ENTRY_BODY */:
-                    var elementSegmentBody_1 = reader.result;
-                    if (elementSegmentBody_1.elementType != 0 /* unspecified */) {
-                        var typeName_1 = typeToString(elementSegmentBody_1.elementType);
-                        this_1.appendBuffer(" " + typeName_1);
-                    }
-                    elementSegmentBody_1.elements.forEach(function (funcIndex) {
-                        if (elementSegmentBody_1.asElements) {
-                            if (funcIndex == WasmParser_js_1.NULL_FUNCTION_INDEX) {
-                                _this.appendBuffer(" (ref.null)");
-                            }
-                            else {
-                                var funcName_1 = _this._nameResolver.getFunctionName(funcIndex, funcIndex < _this._importCount, true);
-                                _this.appendBuffer(" (ref.func " + funcName_1 + ")");
-                            }
-                        }
-                        else {
-                            var funcName_2 = _this._nameResolver.getFunctionName(funcIndex, funcIndex < _this._importCount, true);
-                            _this.appendBuffer(" " + funcName_2);
-                        }
-                    });
+                    var elementSegmentBody = reader.result;
+                    this.appendBuffer(" " + typeToString(elementSegmentBody.elementType));
                     break;
                 case 39 /* BEGIN_GLOBAL_SECTION_ENTRY */:
-                    globalInfo = reader.result;
-                    globalIndex = this_1._globalCount++;
-                    globalName = this_1._nameResolver.getGlobalName(globalIndex, false);
-                    this_1.appendBuffer("  (global " + globalName);
-                    if (this_1._exportMetadata !== null) {
-                        for (var _m = 0, _o = this_1._exportMetadata.getGlobalExportNames(globalIndex); _m < _o.length; _m++) {
+                    var globalInfo = reader.result;
+                    var globalIndex = this._globalCount++;
+                    var globalName = this._nameResolver.getGlobalName(globalIndex, false);
+                    this.appendBuffer("  (global " + globalName);
+                    if (this._exportMetadata !== null) {
+                        for (var _m = 0, _o = this._exportMetadata.getGlobalExportNames(globalIndex); _m < _o.length; _m++) {
                             var exportName = _o[_m];
-                            this_1.appendBuffer(" (export \"" + exportName + "\")");
+                            this.appendBuffer(" (export \"" + exportName + "\")");
                         }
                     }
-                    this_1.appendBuffer(" " + globalTypeToString(globalInfo.type) + " ");
+                    this.appendBuffer(" " + globalTypeToString(globalInfo.type));
                     break;
                 case 40 /* END_GLOBAL_SECTION_ENTRY */:
-                    this_1.appendBuffer(")");
-                    this_1.newLine();
+                    this.appendBuffer(")");
+                    this.newLine();
                     break;
                 case 11 /* TYPE_SECTION_ENTRY */:
-                    funcType = reader.result;
-                    typeIndex = this_1._types.length;
-                    this_1._types.push(funcType);
-                    if (!this_1._skipTypes) {
-                        typeName = this_1._nameResolver.getTypeName(typeIndex, false);
-                        this_1.appendBuffer("  (type " + typeName + " (func");
-                        this_1.printFuncType(typeIndex);
-                        this_1.appendBuffer("))");
-                        this_1.newLine();
+                    var funcType = reader.result;
+                    var typeIndex = this._types.length;
+                    this._types.push(funcType);
+                    if (!this._skipTypes) {
+                        var typeName = this._nameResolver.getTypeName(typeIndex, false);
+                        this.appendBuffer("  (type " + typeName + " (func");
+                        this.printFuncType(typeIndex);
+                        this.appendBuffer("))");
+                        this.newLine();
                     }
                     break;
                 case 22 /* START_SECTION_ENTRY */:
-                    startEntry = reader.result;
-                    funcName = this_1._nameResolver.getFunctionName(startEntry.index, startEntry.index < this_1._importCount, true);
-                    this_1.appendBuffer("  (start " + funcName + ")");
-                    this_1.newLine();
+                    var startEntry = reader.result;
+                    var funcName = this._nameResolver.getFunctionName(startEntry.index, startEntry.index < this._importCount, true);
+                    this.appendBuffer("  (start " + funcName + ")");
+                    this.newLine();
                     break;
                 case 36 /* BEGIN_DATA_SECTION_ENTRY */:
-                    this_1.appendBuffer("  (data ");
+                    this.appendBuffer("  (data");
                     break;
                 case 37 /* DATA_SECTION_ENTRY_BODY */:
-                    body = reader.result;
-                    this_1.appendBuffer(" ");
-                    this_1.printString(body.data);
+                    var body = reader.result;
+                    this.appendBuffer(" ");
+                    this.printString(body.data);
                     break;
                 case 38 /* END_DATA_SECTION_ENTRY */:
-                    this_1.appendBuffer(")");
-                    this_1.newLine();
+                    this.appendBuffer(")");
+                    this.newLine();
                     break;
                 case 25 /* BEGIN_INIT_EXPRESSION_BODY */:
+                case 44 /* BEGIN_OFFSET_EXPRESSION_BODY */:
+                    this._expression = [];
                     break;
                 case 26 /* INIT_EXPRESSION_OPERATOR */:
-                    this_1._initExpression.push(reader.result);
+                case 45 /* OFFSET_EXPRESSION_OPERATOR */:
+                    var operator = reader.result;
+                    if (operator.code !== 11 /* end */) {
+                        this._expression.push(operator);
+                    }
+                    break;
+                case 46 /* END_OFFSET_EXPRESSION_BODY */:
+                    if (this._expression.length > 1) {
+                        this.appendBuffer(" (offset ");
+                        this.printExpression(this._expression);
+                        this.appendBuffer(")");
+                    }
+                    else {
+                        this.appendBuffer(" ");
+                        this.printExpression(this._expression);
+                    }
+                    this._expression = [];
                     break;
                 case 27 /* END_INIT_EXPRESSION_BODY */:
-                    this_1.appendBuffer("(");
-                    // TODO fix printing when more that one operator is used.
-                    this_1._initExpression.forEach(function (op, index) {
-                        if (op.code === 11 /* end */) {
-                            return; // do not print end
-                        }
-                        if (index > 0) {
-                            _this.appendBuffer(" ");
-                        }
-                        _this.printOperator(op);
-                    });
-                    this_1.appendBuffer(")");
-                    this_1._initExpression.length = 0;
+                    if (this._expression.length > 1 &&
+                        this._currentSectionId === 9 /* Element */) {
+                        this.appendBuffer(" (item ");
+                        this.printExpression(this._expression);
+                        this.appendBuffer(")");
+                    }
+                    else {
+                        this.appendBuffer(" ");
+                        this.printExpression(this._expression);
+                    }
+                    this._expression = [];
                     break;
                 case 13 /* FUNCTION_SECTION_ENTRY */:
-                    this_1._funcTypes.push(reader.result.typeIndex);
+                    this._funcTypes.push(reader.result.typeIndex);
                     break;
                 case 28 /* BEGIN_FUNCTION_BODY */:
-                    func = reader.result;
-                    type = this_1._types[this_1._funcTypes[this_1._funcIndex - this_1._importCount]];
-                    this_1.appendBuffer("  (func ");
-                    this_1.appendBuffer(this_1._nameResolver.getFunctionName(this_1._funcIndex, false, false));
-                    if (this_1._exportMetadata !== null) {
-                        for (var _p = 0, _q = this_1._exportMetadata.getFunctionExportNames(this_1._funcIndex); _p < _q.length; _p++) {
+                    var func = reader.result;
+                    var type = this._types[this._funcTypes[this._funcIndex - this._importCount]];
+                    this.appendBuffer("  (func ");
+                    this.appendBuffer(this._nameResolver.getFunctionName(this._funcIndex, false, false));
+                    if (this._exportMetadata !== null) {
+                        for (var _p = 0, _q = this._exportMetadata.getFunctionExportNames(this._funcIndex); _p < _q.length; _p++) {
                             var exportName = _q[_p];
-                            this_1.appendBuffer(" (export \"" + exportName + "\")");
+                            this.appendBuffer(" (export \"" + exportName + "\")");
                         }
                     }
                     for (var i = 0; i < type.params.length; i++) {
-                        paramName = this_1._nameResolver.getVariableName(this_1._funcIndex, i, false);
-                        this_1.appendBuffer(" (param " + paramName + " " + typeToString(type.params[i]) + ")");
+                        var paramName = this._nameResolver.getVariableName(this._funcIndex, i, false);
+                        this.appendBuffer(" (param " + paramName + " " + typeToString(type.params[i]) + ")");
                     }
                     for (var i = 0; i < type.returns.length; i++) {
-                        this_1.appendBuffer(" (result " + typeToString(type.returns[i]) + ")");
+                        this.appendBuffer(" (result " + typeToString(type.returns[i]) + ")");
                     }
-                    this_1.newLine();
-                    localIndex = type.params.length;
+                    this.newLine();
+                    var localIndex = type.params.length;
                     if (func.locals.length > 0) {
-                        this_1.appendBuffer("   ");
+                        this.appendBuffer("   ");
                         for (var _r = 0, _s = func.locals; _r < _s.length; _r++) {
                             var l = _s[_r];
                             for (var i = 0; i < l.count; i++) {
-                                paramName = this_1._nameResolver.getVariableName(this_1._funcIndex, localIndex++, false);
-                                this_1.appendBuffer(" (local " + paramName + " " + typeToString(l.type) + ")");
+                                var paramName = this._nameResolver.getVariableName(this._funcIndex, localIndex++, false);
+                                this.appendBuffer(" (local " + paramName + " " + typeToString(l.type) + ")");
                             }
                         }
-                        this_1.newLine();
+                        this.newLine();
                     }
-                    this_1._indent = "    ";
-                    this_1._indentLevel = 0;
-                    this_1._labelIndex = 0;
-                    this_1._backrefLabels = this_1._labelMode === LabelMode.Depth ? null : [];
-                    this_1._logFirstInstruction = true;
+                    this._indent = "    ";
+                    this._indentLevel = 0;
+                    this._labelIndex = 0;
+                    this._backrefLabels = this._labelMode === LabelMode.Depth ? null : [];
+                    this._logFirstInstruction = true;
                     break;
                 case 30 /* CODE_OPERATOR */:
-                    if (this_1._logFirstInstruction) {
-                        this_1.logStartOfFunctionBodyOffset();
-                        this_1._logFirstInstruction = false;
+                    if (this._logFirstInstruction) {
+                        this.logStartOfFunctionBodyOffset();
+                        this._logFirstInstruction = false;
                     }
-                    operator = reader.result;
-                    if (operator.code == 11 /* end */ && this_1._indentLevel == 0) {
+                    var operator = reader.result;
+                    if (operator.code == 11 /* end */ && this._indentLevel == 0) {
                         // reached of the function, closing function body
-                        this_1.appendBuffer("  )");
-                        this_1.newLine();
+                        this.appendBuffer("  )");
+                        this.newLine();
                         break;
                     }
                     switch (operator.code) {
                         case 11 /* end */:
                         case 5 /* else */:
-                            this_1.decreaseIndent();
+                            this.decreaseIndent();
                             break;
                     }
-                    this_1.appendBuffer(this_1._indent);
-                    this_1.printOperator(operator);
-                    this_1.newLine();
+                    this.appendBuffer(this._indent);
+                    this.printOperator(operator);
+                    this.newLine();
                     switch (operator.code) {
                         case 4 /* if */:
                         case 2 /* block */:
                         case 3 /* loop */:
                         case 5 /* else */:
-                            this_1.increaseIndent();
+                            this.increaseIndent();
                             break;
                     }
                     break;
                 case 31 /* END_FUNCTION_BODY */:
-                    this_1._funcIndex++;
-                    this_1._backrefLabels = null;
-                    this_1.logEndOfFunctionBodyOffset();
+                    this._funcIndex++;
+                    this._backrefLabels = null;
+                    this.logEndOfFunctionBodyOffset();
                     // See case BinaryReaderState.CODE_OPERATOR for closing of body
                     break;
                 default:
                     throw new Error("Expectected state: " + reader.state);
             }
-        };
-        var this_1 = this, sectionInfo, memoryInfo, memoryIndex, memoryName, tableInfo, tableIndex, tableName, exportInfo, funcName, tableName, memoryName, globalName, importInfo, funcIndex, funcName, globalImportInfo, globalIndex, globalName, memoryImportInfo, memoryIndex, memoryName, tableImportInfo, tableIndex, tableName, elementSegmentInfo, globalInfo, globalIndex, globalName, funcType, typeIndex, typeName, startEntry, funcName, body, func, type, paramName, localIndex, paramName, operator;
-        while (true) {
-            var state_1 = _loop_1();
-            if (typeof state_1 === "object")
-                return state_1.value;
         }
     };
     return WasmDisassembler;

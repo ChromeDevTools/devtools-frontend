@@ -17,12 +17,12 @@ class SourceType {
   /**
    * @param {!TypeInfo} typeInfo
    * @param {!Array<!SourceType>} members
+   * @param {!Map<*, !SourceType>} typeMap
    */
-  constructor(typeInfo, members) {
-    /** @type {!TypeInfo} */
+  constructor(typeInfo, members, typeMap) {
     this.typeInfo = typeInfo;
-    /** @type {!Array<!SourceType>} */
     this.members = members;
+    this.typeMap = typeMap;
   }
 
   /** Create a type graph
@@ -36,7 +36,7 @@ class SourceType {
     /** @type Map<*, !SourceType> */
     const typeMap = new Map();
     for (const typeInfo of typeInfos) {
-      typeMap.set(typeInfo.typeId, new SourceType(typeInfo, []));
+      typeMap.set(typeInfo.typeId, new SourceType(typeInfo, [], typeMap));
     }
 
     for (const sourceType of typeMap.values()) {
@@ -66,15 +66,134 @@ function getRawLocation(callFrame) {
   };
 }
 
+/**
+ * @param {!SDK.DebuggerModel.CallFrame} callFrame
+ * @param {!SDK.RemoteObject.RemoteObject} object
+ * @return {!Promise<*>}
+ */
+async function resolveRemoteObject(callFrame, object) {
+  if (typeof object.value !== 'undefined') {
+    return object.value;
+  }
+
+  const response = await callFrame.debuggerModel.target().runtimeAgent().invoke_callFunctionOn(
+      {functionDeclaration: 'function() { return this; }', objectId: object.objectId, returnByValue: true});
+  const {result} = response;
+  if (!result) {
+    return undefined;
+  }
+  return result.value;
+}
+
+class EvalNodeBase extends SDK.RemoteObject.RemoteObjectImpl {
+  /**
+   * @param {!SDK.DebuggerModel.CallFrame} callFrame
+   * @param {!DebuggerLanguagePlugin} plugin
+   * @param {!SourceType} sourceType
+   * @param {!Protocol.Runtime.RemoteObject} object
+   * @param {?{className: string, symbol: string }} formatterTag
+   */
+  constructor(callFrame, sourceType, plugin, object, formatterTag) {
+    super(
+        callFrame.debuggerModel.runtimeModel(), object.objectId, object.type, object.subtype, object.value,
+        object.unserializableValue, object.description, object.preview, object.customPreview, object.className);
+
+    this._plugin = plugin;
+    this._sourceType = sourceType;
+    this._callFrame = callFrame;
+
+    /** @type {?{className: string, symbol: string }} */
+    this.formatterTag = formatterTag;
+  }
+
+  /**
+   * @param {...string} properties
+   * @return {!Promise<!Object<string, !EvalNodeBase|undefined>>}
+   */
+  async findProperties(...properties) {
+    /** @type {!Object<string, !EvalNodeBase|undefined>} */
+    const result = {};
+    for (const prop of (await this.getOwnProperties(false)).properties || []) {
+      if (properties.indexOf(prop.name) >= 0) {
+        if (prop.value) {
+          result[prop.name] = /** @type {!EvalNodeBase|undefined} */ (prop.value);
+        }
+      }
+    }
+    return result;
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.Runtime.RemoteObject} newObject
+   */
+  async _createRemoteObject(newObject) {
+    const base = await this._getEvalBaseFromObject(newObject);
+    if (!base) {
+      return new EvalNodeBase(this._callFrame, this._sourceType, this._plugin, newObject, this.formatterTag);
+    }
+    const newSourceType = this._sourceType.typeMap.get(base.rootType.typeId);
+    if (!newSourceType) {
+      throw new Error('Unknown typeId in eval base');
+    }
+    if (base.rootType.hasValue && !base.rootType.canExpand && base) {
+      return EvalNode.evaluate(this._callFrame, this._plugin, newSourceType, base, []);
+    }
+
+    return new EvalNode(this._callFrame, this._plugin, newSourceType, base, []);
+  }
+
+  /**
+   * @param {!Protocol.Runtime.RemoteObject} object
+   */
+  async _getEvalBaseFromObject(object) {
+    const {objectId} = object;
+    if (!object || !this.formatterTag) {
+      return null;
+    }
+
+    const {className, symbol} = this.formatterTag;
+    if (className !== object.className) {
+      return null;
+    }
+
+    const response = await this.debuggerModel().target().runtimeAgent().invoke_callFunctionOn(
+        {functionDeclaration: 'function(sym) { return this[sym]; }', objectId, arguments: [{objectId: symbol}]});
+    const {result} = response;
+    if (!result || result.type === 'undefined') {
+      return null;
+    }
+
+    const baseObject = new EvalNodeBase(this._callFrame, this._sourceType, this._plugin, result, null);
+    const {payload, rootType} = await baseObject.findProperties('payload', 'rootType');
+    if (typeof payload === 'undefined' || typeof rootType === 'undefined') {
+      return null;
+    }
+    const value = await resolveRemoteObject(this._callFrame, payload);
+    const {typeId} = await rootType.findProperties('typeId', 'rootType');
+    if (typeof value === 'undefined' || typeof typeId === 'undefined') {
+      return null;
+    }
+
+    const newSourceType = this._sourceType.typeMap.get(typeId.value);
+    if (!newSourceType) {
+      return null;
+    }
+
+    return {payload: value, rootType: newSourceType.typeInfo};
+  }
+}
+
 class EvalNode extends SDK.RemoteObject.RemoteObjectImpl {
   /**
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
    * @param {!DebuggerLanguagePlugin} plugin
+   * @param {!SourceType} sourceType
    * @param {!EvalBase} base
    * @param {!Array<!FieldInfo>} field
    * @return {!Promise<!SDK.RemoteObject.RemoteObject>}
    */
-  static async evaluate(callFrame, plugin, base, field) {
+  static async evaluate(callFrame, plugin, sourceType, base, field) {
     const location = getRawLocation(callFrame);
 
     let evalCode = await plugin.getFormatter({base, field}, location);
@@ -84,14 +203,46 @@ class EvalNode extends SDK.RemoteObject.RemoteObjectImpl {
     const response = await callFrame.debuggerModel.target().debuggerAgent().invoke_evaluateOnCallFrame({
       callFrameId: callFrame.id,
       expression: evalCode.js,
-      generatePreview: true,
+      generatePreview: false,
       includeCommandLineAPI: true,
       objectGroup: 'console',
       returnByValue: false,
       silent: false
     });
 
-    return callFrame.debuggerModel.runtimeModel().createRemoteObject(response.result);
+
+    const {result} = response;
+    const object = new EvalNodeBase(callFrame, sourceType, plugin, result, null);
+    const unpackedResultObject = await unpackResultObject(object);
+    const node = unpackedResultObject || object;
+
+    if (typeof node.value === 'undefined') {
+      node.description = sourceType.typeInfo.typeNames[0];
+    }
+
+    return node;
+
+    /**
+		 * @param {!EvalNodeBase} object
+		 * @return {!Promise<?EvalNodeBase>}
+		 */
+    async function unpackResultObject(object) {
+      const {tag, value} = await object.findProperties('tag', 'value');
+      if (!tag || !value) {
+        return null;
+      }
+      const {className, symbol} = await tag.findProperties('className', 'symbol');
+      if (!className || !symbol) {
+        return null;
+      }
+      const resolvedClassName = className.value;
+      if (typeof resolvedClassName !== 'string' || typeof symbol.objectId === 'undefined') {
+        return null;
+      }
+
+      value.formatterTag = {symbol: symbol.objectId, className: resolvedClassName};
+      return value;
+    }
   }
 
   /**
@@ -113,7 +264,7 @@ class EvalNode extends SDK.RemoteObject.RemoteObjectImpl {
       return new SDK.RemoteObject.LocalJSONObject(undefined);
     }
     if (sourceType.typeInfo.hasValue && !sourceType.typeInfo.canExpand && base) {
-      return EvalNode.evaluate(callFrame, plugin, base, []);
+      return EvalNode.evaluate(callFrame, plugin, sourceType, base, []);
     }
 
     return new EvalNode(callFrame, plugin, sourceType, base, []);
@@ -130,10 +281,11 @@ class EvalNode extends SDK.RemoteObject.RemoteObjectImpl {
     const typeName = sourceType.typeInfo.typeNames[0] || '<anonymous>';
     const variableType = 'object';
     super(
-        callFrame.debuggerModel.runtimeModel(), /* objectId=*/ undefined,
+        callFrame.debuggerModel.runtimeModel(),
+        /* objectId=*/ undefined,
         /* type=*/ variableType,
         /* subtype=*/ undefined, /* value=*/ null, /* unserializableValue=*/ undefined,
-        /* description=*/ typeName);
+        /* description=*/ typeName, /* preview=*/ undefined, /* customPreview=*/ undefined, /* className=*/ typeName);
     this._variableType = variableType;
     this._callFrame = callFrame;
     this._plugin = plugin;
@@ -159,7 +311,8 @@ class EvalNode extends SDK.RemoteObject.RemoteObjectImpl {
    */
   async _expandMember(sourceType, fieldInfo) {
     if (sourceType.typeInfo.hasValue && !sourceType.typeInfo.canExpand && this._base) {
-      return EvalNode.evaluate(this._callFrame, this._plugin, this._base, this._fieldChain.concat(fieldInfo));
+      return EvalNode.evaluate(
+          this._callFrame, this._plugin, sourceType, this._base, this._fieldChain.concat(fieldInfo));
     }
     return new EvalNode(this._callFrame, this._plugin, sourceType, this._base, this._fieldChain.concat(fieldInfo));
   }

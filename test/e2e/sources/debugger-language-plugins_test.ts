@@ -578,6 +578,16 @@ describe('The Debugger Language Plugins', async () => {
                     canExpand: false,
                     hasValue: true,
                   },
+                  {
+                    typeNames: ['int'],
+                    typeId: 'int',
+                    members: [],
+                    alignment: 0,
+                    arraySize: 0,
+                    size: 4,
+                    canExpand: false,
+                    hasValue: true,
+                  },
                 ];
                 const base = {rootType: typeInfos[0], payload: 28};
 
@@ -589,18 +599,44 @@ describe('The Debugger Language Plugins', async () => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             async getFormatter(expressionOrField: string|{base: EvalBase, field: FieldInfo[]}, context: RawLocation):
                 Promise<{js: string}|null> {
+              function format() {
+                const sym = Symbol('sym');
+
+                class $tag {
+                  [sym]: EvalBase;
+                  constructor() {
+                    const rootType = {
+                      typeNames: ['int'],
+                      typeId: 'int',
+                      members: [],
+                      alignment: 0,
+                      arraySize: 0,
+                      size: 4,
+                      canExpand: false,
+                      hasValue: true,
+                    };
+                    this[sym] = {payload: {value: 19}, rootType};
+                  }
+                }
+
+                const value = {value: 26, recurse: new $tag()};
+                return {tag: {className: '$tag', symbol: sym}, value};
+              }
+
               if (typeof expressionOrField === 'string') {
                 return null;
               }
 
               const {base, field} = expressionOrField;
-              if (typeof base.payload !== 'number' || base.payload !== 28 || field.length !== 2 ||
-                  field[0].name !== 'member' || field[0].offset !== 1 || field[0].typeId !== 'TestTypeMember' ||
-                  field[1].name !== 'member2' || field[1].offset !== 1 || field[1].typeId !== 'TestTypeMember2') {
-                return null;
+              if (base.payload === 28 && field.length === 2 && field[0].name === 'member' && field[0].offset === 1 &&
+                  field[0].typeId === 'TestTypeMember' && field[1].name === 'member2' && field[1].offset === 1 &&
+                  field[1].typeId === 'TestTypeMember2') {
+                return {js: `${format.toString()} format()`};
               }
-
-              return {js: '26'};
+              if ((base.payload as {value: number}).value === 19 && field.length === 0) {
+                return {js: '27'};
+              }
+              return null;
             }
           }
 
@@ -615,9 +651,15 @@ describe('The Debugger Language Plugins', async () => {
     await goToResource('sources/wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
 
-
-    const locals = await getValuesForScope('LOCAL', 2, 3);
-    assert.deepEqual(locals, ['local: TestType', 'member: TestTypeMember', 'member2: 26']);
+    const locals = await getValuesForScope('LOCAL', 3, 5);
+    assert.deepEqual(locals, [
+      'local: TestType',
+      'member: TestTypeMember',
+      'member2: TestTypeMember2',
+      'recurse: 27',
+      'value: 26',
+      '__proto__: Object',
+    ]);
   });
 
   it('shows variable value in popover', async () => {

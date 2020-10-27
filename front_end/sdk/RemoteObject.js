@@ -29,7 +29,7 @@
  */
 
 import {DebuggerModel, FunctionDetails} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
-import {RuntimeModel} from './RuntimeModel.js';    // eslint-disable-line no-unused-vars
+import {RuntimeModel} from './RuntimeModel.js';                     // eslint-disable-line no-unused-vars
 
 export class RemoteObject {
   /**
@@ -229,6 +229,11 @@ export class RemoteObject {
 
   /** @return {string|undefined} */
   get description() {
+    throw 'Not implemented';
+  }
+
+  /** @param {string|undefined} description*/
+  set description(description) {
     throw 'Not implemented';
   }
 
@@ -454,6 +459,14 @@ export class RemoteObjectImpl extends RemoteObject {
 
   /**
    * @override
+   * @param {string|undefined} description
+   */
+  set description(description) {
+    this._description = description;
+  }
+
+  /**
+   * @override
    * @return {boolean}
    */
   get hasChildren() {
@@ -496,6 +509,13 @@ export class RemoteObjectImpl extends RemoteObject {
   }
 
   /**
+   * @param {!Protocol.Runtime.RemoteObject} object
+   */
+  _createRemoteObject(object) {
+    return Promise.resolve(this._runtimeModel.createRemoteObject(object));
+  }
+
+  /**
    * @param {boolean} ownProperties
    * @param {boolean} accessorPropertiesOnly
    * @param {boolean} generatePreview
@@ -518,7 +538,7 @@ export class RemoteObjectImpl extends RemoteObject {
     const {result: properties = [], internalProperties = [], privateProperties = []} = response;
     const result = [];
     for (const property of properties) {
-      const propertyValue = property.value ? this._runtimeModel.createRemoteObject(property.value) : null;
+      const propertyValue = property.value ? await this._createRemoteObject(property.value) : null;
       const propertySymbol = property.symbol ? this._runtimeModel.createRemoteObject(property.symbol) : null;
       const remoteProperty = new RemoteObjectProperty(
           property.name, propertyValue, !!property.enumerable, !!property.writable, !!property.isOwn,

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 export const PUPPETEER_REVISIONS = {
-    chromium: '782078',
+    chromium: '809590',
     firefox: 'latest',
 };

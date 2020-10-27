@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Viewport } from '../common/PuppeteerViewport.js';
 /**
  * Launcher options that only apply to Chrome.
  *
@@ -39,14 +38,5 @@ export interface LaunchOptions {
     dumpio?: boolean;
     env?: Record<string, string | undefined>;
     pipe?: boolean;
-}
-/**
- * Generic browser options that can be passed when launching any browser.
- * @public
- */
-export interface BrowserOptions {
-    ignoreHTTPSErrors?: boolean;
-    defaultViewport?: Viewport;
-    slowMo?: number;
 }
 //# sourceMappingURL=LaunchOptions.d.ts.map

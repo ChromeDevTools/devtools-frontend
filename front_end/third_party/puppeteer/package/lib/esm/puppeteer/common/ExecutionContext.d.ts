@@ -48,7 +48,10 @@ export declare class ExecutionContext {
      * @internal
      */
     _world: DOMWorld;
-    private _contextId;
+    /**
+     * @internal
+     */
+    _contextId: number;
     /**
      * @internal
      */

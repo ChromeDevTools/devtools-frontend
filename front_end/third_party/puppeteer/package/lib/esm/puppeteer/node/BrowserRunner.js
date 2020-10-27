@@ -23,7 +23,7 @@ import { Connection } from '../common/Connection.js';
 import { debug } from '../common/Debug.js';
 import { TimeoutError } from '../common/Errors.js';
 import { debugError , helper} from '../common/helper.js';
-import { WebSocketTransport } from '../common/WebSocketTransport.js';
+import { NodeWebSocketTransport as WebSocketTransport } from '../node/NodeWebSocketTransport.js';
 
 import { PipeTransport } from './PipeTransport.js';
 

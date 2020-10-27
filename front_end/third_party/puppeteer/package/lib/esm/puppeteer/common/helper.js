@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as fs from 'fs';
-import { promisify } from 'util';
+import { isNode } from '../environment.js';
 
 import { assert } from './assert.js';
 import { debug } from './Debug.js';
 import { TimeoutError } from './Errors.js';
 
-const openAsync = promisify(fs.open);
-const writeAsync = promisify(fs.write);
-const closeAsync = promisify(fs.close);
 export const debugError = debug('puppeteer:error');
 function getExceptionMessage(exceptionDetails) {
     if (exceptionDetails.exception)
@@ -131,6 +127,78 @@ function evaluationString(fun, ...args) {
     }
     return `(${fun})(${args.map(serializeArgument).join(',')})`;
 }
+function pageBindingInitString(type, name) {
+    function addPageBinding(type, bindingName) {
+        /* Cast window to any here as we're about to add properties to it
+         * via win[bindingName] which TypeScript doesn't like.
+         */
+        const win = window;
+        const binding = win[bindingName];
+        win[bindingName] = (...args) => {
+            const me = window[bindingName];
+            let callbacks = me.callbacks;
+            if (!callbacks) {
+                callbacks = new Map();
+                me.callbacks = callbacks;
+            }
+            const seq = (me.lastSeq || 0) + 1;
+            me.lastSeq = seq;
+            const promise = new Promise((resolve, reject) => callbacks.set(seq, { resolve, reject }));
+            binding(JSON.stringify({ type, name: bindingName, seq, args }));
+            return promise;
+        };
+    }
+    return evaluationString(addPageBinding, type, name);
+}
+function pageBindingDeliverResultString(name, seq, result) {
+    function deliverResult(name, seq, result) {
+        window[name].callbacks.get(seq).resolve(result);
+        window[name].callbacks.delete(seq);
+    }
+    return evaluationString(deliverResult, name, seq, result);
+}
+function pageBindingDeliverErrorString(name, seq, message, stack) {
+    function deliverError(name, seq, message, stack) {
+        const error = new Error(message);
+        error.stack = stack;
+        window[name].callbacks.get(seq).reject(error);
+        window[name].callbacks.delete(seq);
+    }
+    return evaluationString(deliverError, name, seq, message, stack);
+}
+function pageBindingDeliverErrorValueString(name, seq, value) {
+    function deliverErrorValue(name, seq, value) {
+        window[name].callbacks.get(seq).reject(value);
+        window[name].callbacks.delete(seq);
+    }
+    return evaluationString(deliverErrorValue, name, seq, value);
+}
+function makePredicateString(predicate, predicateQueryHandler) {
+    function checkWaitForOptions(node, waitForVisible, waitForHidden) {
+        if (!node)
+            return waitForHidden;
+        if (!waitForVisible && !waitForHidden)
+            return node;
+        const element = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+        const style = window.getComputedStyle(element);
+        const isVisible = style && style.visibility !== 'hidden' && hasVisibleBoundingBox();
+        const success = waitForVisible === isVisible || waitForHidden === !isVisible;
+        return success ? node : null;
+        function hasVisibleBoundingBox() {
+            const rect = element.getBoundingClientRect();
+            return !!(rect.top || rect.bottom || rect.width || rect.height);
+        }
+    }
+    const predicateQueryHandlerDef = predicateQueryHandler
+        ? `const predicateQueryHandler = ${predicateQueryHandler};`
+        : '';
+    return `
+    (() => {
+      ${predicateQueryHandlerDef}
+      const checkWaitForOptions = ${checkWaitForOptions};
+      return (${predicate})(...args)
+    })() `;
+}
 async function waitWithTimeout(promise, taskName, timeout) {
     let reject;
     const timeoutError = new TimeoutError(`waiting for ${taskName} failed: timeout ${timeout}ms exceeded`);
@@ -147,21 +215,27 @@ async function waitWithTimeout(promise, taskName, timeout) {
     }
 }
 async function readProtocolStream(client, handle, path) {
+    if (!isNode && path) {
+        throw new Error('Cannot write to a path outside of Node.js environment.');
+    }
+    const fs = isNode ? await import('fs') : null;
     let eof = false;
-    let file;
-    if (path)
-        file = await openAsync(path, 'w');
+    let fileHandle;
+    if (path && fs) {
+        fileHandle = await fs.promises.open(path, 'w');
+    }
     const bufs = [];
     while (!eof) {
         const response = await client.send('IO.read', { handle });
         eof = response.eof;
         const buf = Buffer.from(response.data, response.base64Encoded ? 'base64' : undefined);
         bufs.push(buf);
-        if (path)
-            await writeAsync(file, buf);
+        if (path && fs) {
+            await fs.promises.writeFile(fileHandle, buf);
+        }
     }
     if (path)
-        await closeAsync(file);
+        await fileHandle.close();
     await client.send('IO.close', { handle });
     let resultBuffer = null;
     try {
@@ -173,6 +247,11 @@ async function readProtocolStream(client, handle, path) {
 }
 export const helper = {
     evaluationString,
+    pageBindingInitString,
+    pageBindingDeliverResultString,
+    pageBindingDeliverErrorString,
+    pageBindingDeliverErrorValueString,
+    makePredicateString,
     readProtocolStream,
     waitWithTimeout,
     waitForEvent,

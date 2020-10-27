@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -28,6 +25,11 @@ export class ElementsTreeElementHighlighter {
         SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.HighlightNodeRequested, this._highlightNode, this);
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.InspectModeWillBeToggled, this._clearState, this);
+
+    this._currentHighlightedElement = null;
+    this._alreadyExpandedParentElement = null;
+    this._pendingHighlightNode = null;
+    this._isModifyingTreeOutline = false;
   }
 
   /**
@@ -40,18 +42,12 @@ export class ElementsTreeElementHighlighter {
 
     const domNode = /** @type {!SDK.DOMModel.DOMNode} */ (event.data);
 
-    this._throttler.schedule(callback.bind(this));
+    this._throttler.schedule(async () => {
+      this._highlightNodeInternal(this._pendingHighlightNode);
+      this._pendingHighlightNode = null;
+    });
     this._pendingHighlightNode =
         this._treeOutline === ElementsTreeOutline.forDOMModel(domNode.domModel()) ? domNode : null;
-
-    /**
-     * @this {ElementsTreeElementHighlighter}
-     */
-    function callback() {
-      this._highlightNodeInternal(this._pendingHighlightNode);
-      delete this._pendingHighlightNode;
-      return Promise.resolve();
-    }
   }
 
   /**
@@ -72,14 +68,20 @@ export class ElementsTreeElementHighlighter {
       }
     }
 
-    delete this._currentHighlightedElement;
-    delete this._alreadyExpandedParentElement;
+    this._currentHighlightedElement = null;
+    this._alreadyExpandedParentElement = null;
     if (node) {
       let deepestExpandedParent = node;
       const treeElementByNode = this._treeOutline.treeElementByNode;
-      while (
-          deepestExpandedParent &&
-          (!treeElementByNode.has(deepestExpandedParent) || !treeElementByNode.get(deepestExpandedParent).expanded)) {
+
+      /**
+       * @param {!SDK.DOMModel.DOMNode} deepestExpandedParent
+       */
+      const treeIsNotExpanded = deepestExpandedParent => {
+        const element = treeElementByNode.get(deepestExpandedParent);
+        return element ? !element.expanded : true;
+      };
+      while (deepestExpandedParent && treeIsNotExpanded(deepestExpandedParent)) {
         deepestExpandedParent = deepestExpandedParent.parentNode;
       }
 
@@ -102,8 +104,8 @@ export class ElementsTreeElementHighlighter {
       return;
     }
 
-    delete this._currentHighlightedElement;
-    delete this._alreadyExpandedParentElement;
-    delete this._pendingHighlightNode;
+    this._currentHighlightedElement = null;
+    this._alreadyExpandedParentElement = null;
+    this._pendingHighlightNode = null;
   }
 }

@@ -403,7 +403,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this._residentKeyCheckbox = this._residentKeyCheckboxLabel.checkboxElement;
     this._residentKeyCheckbox.checked = false;
     this._residentKeyCheckbox.classList.add('authenticator-option-checkbox');
-    residentKeyGroup.appendChild(this._residentKeyCheckbox);
+    residentKeyGroup.appendChild(this._residentKeyCheckboxLabel);
 
     this._userVerificationCheckboxLabel = UI.UIUtils.CheckboxLabel.create('Supports user verification', false);
     this._userVerificationCheckboxLabel.textElement.classList.add('authenticator-option-label');
@@ -411,7 +411,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this._userVerificationCheckbox = this._userVerificationCheckboxLabel.checkboxElement;
     this._userVerificationCheckbox.checked = false;
     this._userVerificationCheckbox.classList.add('authenticator-option-checkbox');
-    userVerificationGroup.appendChild(this._userVerificationCheckbox);
+    userVerificationGroup.appendChild(this._userVerificationCheckboxLabel);
 
     this._addAuthenticatorButton =
         UI.UIUtils.createTextButton(ls`Add`, this._handleAddAuthenticatorButton.bind(this), '');

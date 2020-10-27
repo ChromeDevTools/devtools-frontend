@@ -306,7 +306,8 @@ export class Editor {
     const buttonsRow = this.element.createChild('div', 'editor-buttons');
     this._commitButton = createTextButton('', this._commitClicked.bind(this), '', true /* primary */);
     buttonsRow.appendChild(this._commitButton);
-    this._cancelButton = createTextButton(Common.UIString.UIString('Cancel'), this._cancelClicked.bind(this));
+    this._cancelButton = createTextButton(
+        Common.UIString.UIString('Cancel'), this._cancelClicked.bind(this), '', true /* primary */, 'mousedown');
     this._cancelButton.addEventListener(
         'keydown', onKeyDown.bind(null, isEnterKey, this._cancelClicked.bind(this)), false);
     buttonsRow.appendChild(this._cancelButton);

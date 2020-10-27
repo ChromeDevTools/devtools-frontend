@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
@@ -42,6 +39,7 @@ export class AppManifestView extends UI.Widget.VBox {
 
     this._presentationSection = this._reportView.appendSection(Common.UIString.UIString('Presentation'));
     this._iconsSection = this._reportView.appendSection(Common.UIString.UIString('Icons'), 'report-section-icons');
+    /** @type {!Array<!UI.ReportView.Section>} */
     this._shortcutSections = [];
 
     this._nameField = this._identitySection.appendField(Common.UIString.UIString('Name'));
@@ -62,6 +60,8 @@ export class AppManifestView extends UI.Widget.VBox {
 
     this._throttler = new Common.Throttler.Throttler(1000);
     SDK.SDKModel.TargetManager.instance().observeTargets(this);
+    /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
+    this._registeredListeners = [];
   }
 
   /**
@@ -115,6 +115,9 @@ export class AppManifestView extends UI.Widget.VBox {
    * @param {boolean} immediately
    */
   async _updateManifest(immediately) {
+    if (!this._resourceTreeModel) {
+      return;
+    }
     const {url, data, errors} = await this._resourceTreeModel.fetchAppManifest();
     const installabilityErrors = await this._resourceTreeModel.getInstallabilityErrors();
     const manifestIcons = await this._resourceTreeModel.getManifestIcons();
@@ -128,6 +131,7 @@ export class AppManifestView extends UI.Widget.VBox {
    * @param {?string} data
    * @param {!Array<!Protocol.Page.AppManifestError>} errors
    * @param {!Array<!Protocol.Page.InstallabilityError>} installabilityErrors
+   * @param {!{primaryIcon: ?string}} manifestIcons
    */
   async _renderManifest(url, data, errors, installabilityErrors, manifestIcons) {
     if (!data && !errors.length) {
@@ -164,7 +168,8 @@ export class AppManifestView extends UI.Widget.VBox {
     const startURL = stringProperty('start_url');
     if (startURL) {
       const completeURL = /** @type {string} */ (Common.ParsedURL.ParsedURL.completeURL(url, startURL));
-      const link = Components.Linkifier.Linkifier.linkifyURL(completeURL, {text: startURL});
+      const link = Components.Linkifier.Linkifier.linkifyURL(
+          completeURL, /** @type {!Components.Linkifier.LinkifyURLOptions} */ ({text: startURL}));
       link.tabIndex = 0;
       this._startURLField.appendChild(link);
     }
@@ -209,9 +214,9 @@ export class AppManifestView extends UI.Widget.VBox {
         UI.UIUtils.formatLocalized('Need help? Read our %s.', [documentationLink]));
 
     if (manifestIcons && manifestIcons.primaryIcon) {
-      const wrapper = createElement('div');
+      const wrapper = document.createElement('div');
       wrapper.classList.add('image-wrapper');
-      const image = createElement('img');
+      const image = document.createElement('img');
       image.style.maxWidth = '200px';
       image.style.maxHeight = '200px';
       image.src = 'data:image/png;base64,' + manifestIcons.primaryIcon;
@@ -241,7 +246,8 @@ export class AppManifestView extends UI.Widget.VBox {
       }
       const urlField = shortcutSection.appendFlexedField('URL');
       const shortcutUrl = /** @type {string} */ (Common.ParsedURL.ParsedURL.completeURL(url, shortcut.url));
-      const link = Components.Linkifier.Linkifier.linkifyURL(shortcutUrl, {text: shortcut.url});
+      const link = Components.Linkifier.Linkifier.linkifyURL(
+          shortcutUrl, /** @type {!Components.Linkifier.LinkifyURLOptions} */ ({text: shortcut.url}));
       link.tabIndex = 0;
       urlField.appendChild(link);
 
@@ -388,7 +394,7 @@ export class AppManifestView extends UI.Widget.VBox {
           console.error(`Installability error id '${installabilityError.errorId}' is not recognized`);
           break;
       }
-      if (errorMessages) {
+      if (errorMessage) {
         errorMessages.push(errorMessage);
       }
     }
@@ -396,13 +402,13 @@ export class AppManifestView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {?string} url
-   * @return {!Promise<?{image: !Element, wrapper: !Element}>}
+   * @param {string} url
+   * @return {!Promise<?{image: !HTMLImageElement, wrapper: !Element}>}
    */
   async _loadImage(url) {
-    const wrapper = createElement('div');
+    const wrapper = document.createElement('div');
     wrapper.classList.add('image-wrapper');
-    const image = createElement('img');
+    const image = /** @type {!HTMLImageElement} */ (document.createElement('img'));
     const result = new Promise((resolve, reject) => {
       image.onload = resolve;
       image.onerror = reject;
@@ -431,6 +437,10 @@ export class AppManifestView extends UI.Widget.VBox {
       return iconErrors;
     }
     const iconUrl = Common.ParsedURL.ParsedURL.completeURL(baseUrl, icon['src']);
+    if (!iconUrl) {
+      iconErrors.push(ls`Icon URL '${icon['src']}' failed to parse`);
+      return iconErrors;
+    }
     const result = await this._loadImage(iconUrl);
     if (!result) {
       iconErrors.push(ls`Icon ${iconUrl} failed to load`);
@@ -445,7 +455,7 @@ export class AppManifestView extends UI.Widget.VBox {
     } else if (!/^\d+x\d+$/.test(icon.sizes)) {
       iconErrors.push(ls`Icon ${iconUrl} should specify its size as \`{width}x{height}\``);
     } else {
-      const [width, height] = icon.sizes.split('x').map(x => parseInt(x, 10));
+      const [width, height] = icon.sizes.split('x').map(/** @param {*} x*/ x => parseInt(x, 10));
       if (width !== height) {
         iconErrors.push(ls`Icon ${iconUrl} dimensions should be square`);
       } else if (image.naturalWidth !== width && image.naturalHeight !== height) {

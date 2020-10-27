@@ -5,7 +5,7 @@
 import {click, reloadDevTools, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToConsoleTab, navigateToIssuesPanelViaInfoBar, waitForConsoleMessageAndClickOnLink} from '../helpers/console-helpers.js';
-import {clickOnContextMenuItemFromTab, prepareForCrossToolScenario, tabExistsInDrawer, tabExistsInMainPanel} from '../helpers/cross-tool-helper.js';
+import {clickOnContextMenuItemFromTab, MOVE_TO_DRAWER_SELECTOR, MOVE_TO_MAIN_PANEL_SELECTOR, prepareForCrossToolScenario, tabExistsInDrawer, tabExistsInMainPanel} from '../helpers/cross-tool-helper.js';
 import {clickOnFirstLinkInStylesPanel, navigateToElementsTab} from '../helpers/elements-helpers.js';
 import {LAYERS_TAB_SELECTOR} from '../helpers/layers-helpers.js';
 import {MEMORY_TAB_ID, navigateToMemoryTab} from '../helpers/memory-helpers.js';
@@ -55,9 +55,6 @@ describe('A user can navigate across', async function() {
     await waitForSourceLinkAndFollowIt();
   });
 });
-
-const MOVE_TO_DRAWER_SELECTOR = '[aria-label="Move to bottom"]';
-const MOVE_TO_MAIN_PANEL_SELECTOR = '[aria-label="Move to top"]';
 
 describe('A user can move tabs', async function() {
   this.timeout(10000);

@@ -9,6 +9,9 @@ copy_to_gen("application") {
     "cookies.html",
     "dedicated-worker.js",
     "frame-tree.html",
+    "main.css",
+    "service-worker-network.html",
+    "service-worker.js",
     "session-storage.html",
     "websql-database.html",
   ]

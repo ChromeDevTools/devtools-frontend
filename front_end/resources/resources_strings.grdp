@@ -555,6 +555,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_e00a7ac13697ba51e098449fd644935b" desc="Text in Background Service View of the Application panel">
     Show events from other domains
   </message>
+  <message name="IDS_DEVTOOLS_e10ca128af873836494b45103d8638e2" desc="Button label for service worker network requests">
+    Network requests
+  </message>
   <message name="IDS_DEVTOOLS_e1368a2ca1f3c8fdac8b79b539cba5f7" desc="Aria text for table selected in WebSQL DatabaseQueryView in Application panel">
     Query: <ph name="QUERY">$1s<ex>"SELECT * FROM LOGS"</ex></ph>
   </message>

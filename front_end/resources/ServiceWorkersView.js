@@ -8,6 +8,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import * as Network from '../network/network.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -71,6 +72,16 @@ export class ServiceWorkersView extends UI.Widget.VBox {
     this._eventListeners = new Map();
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.ServiceWorkerManager.ServiceWorkerManager, this);
     this._updateListVisibility();
+
+    document.body.addEventListener(UI.InspectorView.Events.DrawerChange, event => {
+      const {detail: {isDrawerOpen}} = event;
+      if (!isDrawerOpen && this._manager.serviceWorkerNetworkRequestsPanelOpen) {
+        const networkLocation = UI.ViewManager.ViewManager.instance().locationNameForViewId('network');
+        UI.ViewManager.ViewManager.instance().showViewInLocation('network', networkLocation, false);
+        Network.NetworkPanel.NetworkPanel.revealAndFilter([]);
+        this._manager.serviceWorkerNetworkRequestsPanelOpen = false;
+      }
+    });
   }
 
   /**
@@ -114,7 +125,6 @@ export class ServiceWorkersView extends UI.Widget.VBox {
     this._manager = null;
     this._securityOriginManager = null;
   }
-
 
   /**
    * @param {!SDK.ServiceWorkerManager.ServiceWorkerRegistration} registration
@@ -309,6 +319,10 @@ export class Section {
 
     this._toolbar = section.createToolbar();
     this._toolbar.renderAsLinks();
+    this._networkRequests = new UI.Toolbar.ToolbarButton(
+        Common.UIString.UIString('Network requests'), undefined, Common.UIString.UIString('Network requests'));
+    this._networkRequests.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._networkRequestsClicked, this);
+    this._toolbar.appendToolbarItem(this._networkRequests);
     this._updateButton =
         new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Update'), undefined, Common.UIString.UIString('Update'));
     this._updateButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._updateButtonClicked, this);
@@ -540,6 +554,39 @@ export class Section {
    */
   _updateButtonClicked(event) {
     this._manager.updateRegistration(this._registration.id);
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _networkRequestsClicked(event) {
+    const applicationTabLocation = UI.ViewManager.ViewManager.instance().locationNameForViewId('resources');
+    const networkTabLocation = applicationTabLocation === 'drawer-view' ? 'panel' : 'drawer-view';
+    UI.ViewManager.ViewManager.instance().showViewInLocation('network', networkTabLocation);
+
+    Network.NetworkPanel.NetworkPanel.revealAndFilter([
+      {
+        filterType: Network.NetworkLogView.FilterType.Is,
+        filterValue: Network.NetworkLogView.IsFilterType.ServiceWorkerIntercepted,
+      },
+    ]);
+
+    const requests = SDK.NetworkLog.NetworkLog.instance().requests();
+    const lastRequest = Array.isArray(requests) && requests.reduce((acc, request) => {
+      if (!acc && request.fetchedViaServiceWorker) {
+        return request;
+      }
+      if (request.fetchedViaServiceWorker && acc.responseReceivedTime < request.responseReceivedTime) {
+        return request;
+      }
+      return acc;
+    }, null);
+    if (lastRequest) {
+      Network.NetworkPanel.NetworkPanel.selectAndShowRequest(
+          lastRequest, Network.NetworkItemView.Tabs.Timing, {clearFilter: false});
+    }
+
+    this._manager.serviceWorkerNetworkRequestsPanelOpen = true;
   }
 
   /**

@@ -227,10 +227,11 @@ export class NetworkPanel extends UI.Panel.Panel {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {!NetworkItemViewTabs} tab
+   * @param {!FilterOptions=} options - Optional parameters to change filter behavior
    */
-  static async selectAndShowRequest(request, tab) {
+  static async selectAndShowRequest(request, tab, options) {
     const panel = NetworkPanel._instance();
-    await panel.selectAndActivateRequest(request, tab);
+    await panel.selectAndActivateRequest(request, tab, options);
   }
 
   /**
@@ -529,11 +530,12 @@ export class NetworkPanel extends UI.Panel.Panel {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
    * @param {!NetworkItemViewTabs=} shownTab
+   * @param {!FilterOptions=} options - Optional parameters to change filter behavior
    * @return {!Promise<?NetworkItemView>}
    */
-  async selectAndActivateRequest(request, shownTab) {
+  async selectAndActivateRequest(request, shownTab, options) {
     await UI.ViewManager.ViewManager.instance().showView('network');
-    this._networkLogView.selectRequest(request);
+    this._networkLogView.selectRequest(request, options);
     this._showRequestPanel(shownTab);
     return this._networkItemView;
   }
@@ -1008,3 +1010,11 @@ export class SearchNetworkView extends Search.SearchView.SearchView {
     return new NetworkSearchScope();
   }
 }
+
+/**
+ * @typedef {{
+ *    clearFilter: boolean,
+ * }}
+ */
+// @ts-ignore typedef
+export let FilterOptions;

@@ -89,8 +89,11 @@ export class ViewManager {
    * Moves a view to a new location
    * @param {string} viewId
    * @param {string} locationName
+   * @param {{shouldSelectTab: (boolean), overrideSaving: (boolean)}=} options - Optional parameters for selecting tab and override saving
    */
-  moveView(viewId, locationName) {
+  moveView(viewId, locationName, options) {
+    const defaultOptions = {shouldSelectTab: true, overrideSaving: false};
+    const {shouldSelectTab, overrideSaving} = options || defaultOptions;
     if (!viewId || !locationName) {
       return;
     }
@@ -100,13 +103,15 @@ export class ViewManager {
       return;
     }
 
-    // Update the inner map of locations
-    this._locationNameByViewId.set(viewId, locationName);
+    if (!overrideSaving) {
+      // Update the inner map of locations
+      this._locationNameByViewId.set(viewId, locationName);
 
-    // Update the settings of location overwrites
-    const locations = this._locationOverrideSetting.get();
-    locations[viewId] = locationName;
-    this._locationOverrideSetting.set(locations);
+      // Update the settings of location overwrites
+      const locations = this._locationOverrideSetting.get();
+      locations[viewId] = locationName;
+      this._locationOverrideSetting.set(locations);
+    }
 
     // Find new location and show view there
     this.resolveLocation(locationName).then(location => {
@@ -114,7 +119,7 @@ export class ViewManager {
         throw new Error('Move view: Could not resolve location for view: ' + viewId);
       }
       location._reveal();
-      return location.showView(view, undefined, true /* userGesture*/);
+      return location.showView(view, undefined, /* userGesture*/ true, /* omitFocus*/ false, shouldSelectTab);
     });
   }
 
@@ -129,6 +134,19 @@ export class ViewManager {
     }
     location._reveal();
     return location.showView(view);
+  }
+
+  /**
+   * Show view in location
+   * @param {string} viewId
+   * @param {string} locationName
+   * @param {boolean=} shouldSelectTab
+   */
+  showViewInLocation(viewId, locationName, shouldSelectTab = true) {
+    this.moveView(viewId, locationName, {
+      shouldSelectTab,
+      overrideSaving: true,
+    });
   }
 
   /**
@@ -678,11 +696,14 @@ export class _TabbedLocation extends _Location {
    * @param {?View=} insertBefore
    * @param {boolean=} userGesture
    * @param {boolean=} omitFocus
+   * @param {boolean=} shouldSelectTab
    * @return {!Promise<*>}
    */
-  showView(view, insertBefore, userGesture, omitFocus) {
+  showView(view, insertBefore, userGesture, omitFocus, shouldSelectTab = true) {
     this.appendView(view, insertBefore);
-    this._tabbedPane.selectTab(view.viewId(), userGesture);
+    if (shouldSelectTab) {
+      this._tabbedPane.selectTab(view.viewId(), userGesture);
+    }
     if (!omitFocus) {
       this._tabbedPane.focus();
     }

@@ -58,10 +58,7 @@ export class MixedContentIssue extends Issue {
     return {
       file: 'issues/descriptions/mixedContent.md',
       issueKind: IssueKind.BreakingChange,
-      links: [{
-        link: 'https://developers.google.com/web/fundamentals/security/prevent-mixed-content/fixing-mixed-content',
-        linkTitle: ls`Preventing mixed content`
-      }],
+      links: [{link: 'https://web.dev/what-is-mixed-content/', linkTitle: ls`Preventing mixed content`}],
     };
   }
 

@@ -80,6 +80,7 @@ export class HighlightOverlay extends Overlay {
   reset(resetData: ResetData) {
     super.reset(resetData);
     this.tooltip.innerHTML = '';
+    this.gridLabelState.gridLayerCounter = 0;
     if (this.gridOverlay) {
       this.gridOverlay.reset(resetData);
     }

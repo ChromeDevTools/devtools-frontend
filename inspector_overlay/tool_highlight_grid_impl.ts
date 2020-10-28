@@ -28,7 +28,7 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {Overlay} from './common.js';
+import {Overlay, ResetData} from './common.js';
 import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
 
 export class HighlightGridOverlay extends Overlay {
@@ -38,6 +38,11 @@ export class HighlightGridOverlay extends Overlay {
   }
 
   private gridLabels!: HTMLElement;
+
+  reset(data: ResetData) {
+    super.reset(data);
+    this.gridLabelState.gridLayerCounter = 0;
+  }
 
   renderGridMarkup() {
     const gridLabels = this.document.createElement('div');

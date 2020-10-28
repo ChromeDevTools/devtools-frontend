@@ -39,7 +39,8 @@ export class HistoryEntry {
     throw new Error('not implemented');
   }
 
-  reveal() {}
+  reveal() {
+  }
 }
 
 /**
@@ -53,6 +54,10 @@ export class SimpleHistoryManager {
     /** @type {!Array<!HistoryEntry>} */
     this._entries = [];
     this._activeEntryIndex = -1;
+
+    // Lock is used to make sure that reveal() does not
+    // make any changes to the history while we are
+    // rolling back or rolling over.
     this._coalescingReadonly = 0;
     this._historyDepth = historyDepth;
   }

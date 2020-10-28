@@ -28,6 +28,7 @@ devtools_module("common") {
     "Runnable.js",
     "SegmentedRange.js",
     "Settings.js",
+    "SimpleHistoryManager.js",
     "StringOutputStream.js",
     "TextDictionary.js",
     "Throttler.js",

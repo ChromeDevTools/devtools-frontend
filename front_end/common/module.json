@@ -30,6 +30,7 @@
     "Revealer.js",
     "Runnable.js",
     "StringOutputStream.js",
+    "SimpleHistoryManager.js",
     "CharacterIdMap.js",
     "Lazy.js",
     "Base64.js"

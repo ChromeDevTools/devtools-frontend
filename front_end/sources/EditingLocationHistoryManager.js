@@ -33,7 +33,6 @@ import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';    // eslint-disable-line no-unused-vars
 
-import {HistoryEntry, SimpleHistoryManager} from './SimpleHistoryManager.js';  // eslint-disable-line no-unused-vars
 import {SourcesView} from './SourcesView.js';                                  // eslint-disable-line no-unused-vars
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';                      // eslint-disable-line no-unused-vars
 
@@ -47,7 +46,7 @@ export class EditingLocationHistoryManager {
    */
   constructor(sourcesView, currentSourceFrameCallback) {
     this._sourcesView = sourcesView;
-    this._historyManager = new SimpleHistoryManager(HistoryDepth);
+    this._historyManager = new Common.SimpleHistoryManager.SimpleHistoryManager(HistoryDepth);
     this._currentSourceFrameCallback = currentSourceFrameCallback;
   }
 
@@ -137,7 +136,7 @@ export class EditingLocationHistoryManager {
 export const HistoryDepth = 20;
 
 /**
- * @implements {HistoryEntry}
+ * @implements {Common.SimpleHistoryManager.HistoryEntry}
  * @unrestricted
  */
 export class EditingLocationHistoryEntry {

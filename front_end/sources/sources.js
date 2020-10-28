@@ -25,7 +25,6 @@ import * as ScopeChainSidebarPane from './ScopeChainSidebarPane.js';
 import * as ScriptFormatterEditorAction from './ScriptFormatterEditorAction.js';
 import * as ScriptOriginPlugin from './ScriptOriginPlugin.js';
 import * as SearchSourcesView from './SearchSourcesView.js';
-import * as SimpleHistoryManager from './SimpleHistoryManager.js';
 import * as SnippetsPlugin from './SnippetsPlugin.js';
 import * as SourceMapNamesResolver from './SourceMapNamesResolver.js';
 import * as SourcesNavigator from './SourcesNavigator.js';
@@ -61,7 +60,6 @@ export {
   ScriptFormatterEditorAction,
   ScriptOriginPlugin,
   SearchSourcesView,
-  SimpleHistoryManager,
   SnippetsPlugin,
   SourceMapNamesResolver,
   SourcesNavigator,

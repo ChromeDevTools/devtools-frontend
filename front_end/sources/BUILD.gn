@@ -30,7 +30,6 @@ devtools_module("sources") {
     "ScriptFormatterEditorAction.js",
     "ScriptOriginPlugin.js",
     "SearchSourcesView.js",
-    "SimpleHistoryManager.js",
     "SnippetsPlugin.js",
     "SourceMapNamesResolver.js",
     "SourcesNavigator.js",

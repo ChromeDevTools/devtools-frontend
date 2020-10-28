@@ -25,6 +25,7 @@ import * as Revealer from './Revealer.js';
 import * as Runnable from './Runnable.js';
 import * as SegmentedRange from './SegmentedRange.js';
 import * as Settings from './Settings.js';
+import * as SimpleHistoryManager from './SimpleHistoryManager.js';
 import * as StringOutputStream from './StringOutputStream.js';
 import * as TextDictionary from './TextDictionary.js';
 import * as Throttler from './Throttler.js';
@@ -69,6 +70,7 @@ export {
   Runnable,
   SegmentedRange,
   Settings,
+  SimpleHistoryManager,
   StringOutputStream,
   TextDictionary,
   Throttler,

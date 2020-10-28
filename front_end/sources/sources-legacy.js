@@ -151,12 +151,6 @@ Sources.SearchSourcesView = SourcesModule.SearchSourcesView.SearchSourcesView;
 Sources.SearchSourcesView.ActionDelegate = SourcesModule.SearchSourcesView.ActionDelegate;
 
 /** @constructor */
-Sources.SimpleHistoryManager = SourcesModule.SimpleHistoryManager.SimpleHistoryManager;
-
-/** @interface */
-Sources.HistoryEntry = SourcesModule.SimpleHistoryManager.HistoryEntry;
-
-/** @constructor */
 Sources.SnippetsPlugin = SourcesModule.SnippetsPlugin.SnippetsPlugin;
 
 Sources.SourceMapNamesResolver = {};

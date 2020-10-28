@@ -1145,7 +1145,6 @@
     "BreakpointEditDialog.js",
     "CallStackSidebarPane.js",
     "DebuggerPausedMessage.js",
-    "SimpleHistoryManager.js",
     "EditingLocationHistoryManager.js",
     "FilePathScoreFunction.js",
     "FilteredUISourceCodeListProvider.js",

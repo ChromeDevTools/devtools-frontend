@@ -122,7 +122,6 @@ interface Document {
 
 interface HTMLElement {
   createChild(tagName: string, className?: string, content?: string): HTMLElement;
-  createSVGChild(childType: string, className?: string): HTMLElement;
 }
 
 interface Element {

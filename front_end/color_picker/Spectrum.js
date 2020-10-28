@@ -50,10 +50,10 @@ export class Spectrum extends UI.Widget.VBox {
      * @param {!Element} parentElement
      */
     function appendSwitcherIcon(parentElement) {
-      const icon = parentElement.createSVGChild('svg');
+      const icon = UI.UIUtils.createSVGChild(parentElement, 'svg');
       icon.setAttribute('height', 16);
       icon.setAttribute('width', 16);
-      const path = icon.createSVGChild('path');
+      const path = UI.UIUtils.createSVGChild(icon, 'path');
       path.setAttribute('d', 'M5,6 L11,6 L8,2 Z M5,10 L11,10 L8,14 Z');
       return icon;
     }

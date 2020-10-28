@@ -439,17 +439,6 @@ Element.prototype.totalOffset = function() {
 };
 
 /**
- * @param {string} childType
- * @param {string=} className
- * @return {!Element}
- */
-Element.prototype.createSVGChild = function(childType, className) {
-  const child = this.ownerDocument.createSVGElement(childType, className);
-  this.appendChild(child);
-  return child;
-};
-
-/**
  * @unrestricted
  */
 self.AnchorBox = class {

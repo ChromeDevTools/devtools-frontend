@@ -33,11 +33,11 @@ export class AnimationUI {
     this._nameElement = /** @type {!HTMLElement} */ (parentElement.createChild('div', 'animation-name'));
     this._nameElement.textContent = this._animation.name();
 
-    this._svg = /** @type {!HTMLElement} */ (parentElement).createSVGChild('svg', 'animation-ui');
+    this._svg = UI.UIUtils.createSVGChild(parentElement, 'svg', 'animation-ui');
     this._svg.setAttribute('height', Options.AnimationSVGHeight.toString());
-    this._svg.style.marginLeft = '-' + Options.AnimationMargin + 'px';
+    /** @type {!HTMLElement} */ (this._svg).style.marginLeft = '-' + Options.AnimationMargin + 'px';
     this._svg.addEventListener('contextmenu', this._onContextMenu.bind(this));
-    this._activeIntervalGroup = this._svg.createSVGChild('g');
+    this._activeIntervalGroup = UI.UIUtils.createSVGChild(this._svg, 'g');
     UI.UIUtils.installDragHandle(
         this._activeIntervalGroup, this._mouseDown.bind(this, Events.AnimationDrag, null), this._mouseMove.bind(this),
         this._mouseUp.bind(this), '-webkit-grabbing', '-webkit-grab');
@@ -95,11 +95,11 @@ export class AnimationUI {
    * @param {string} className
    */
   _createLine(parentElement, className) {
-    const line = parentElement.createSVGChild('line', className);
+    const line = UI.UIUtils.createSVGChild(parentElement, 'line', className);
     line.setAttribute('x1', Options.AnimationMargin.toString());
     line.setAttribute('y1', Options.AnimationHeight.toString());
     line.setAttribute('y2', Options.AnimationHeight.toString());
-    line.style.stroke = this._color;
+    /** @type {!HTMLElement} */ (line).style.stroke = this._color;
     return line;
   }
 
@@ -110,8 +110,12 @@ export class AnimationUI {
   _drawAnimationLine(iteration, parentElement) {
     const cache = this._cachedElements[iteration];
     if (!cache.animationLine) {
-      cache.animationLine = this._createLine(parentElement, 'animation-line');
+      cache.animationLine = /** @type {!HTMLElement} */ (this._createLine(parentElement, 'animation-line'));
     }
+    if (!cache.animationLine) {
+      return;
+    }
+
     cache.animationLine.setAttribute(
         'x2', (this._duration() * this._timeline.pixelMsRatio() + Options.AnimationMargin).toFixed(2));
   }
@@ -134,7 +138,7 @@ export class AnimationUI {
     const leftMargin = Math.min(
         this._timeline.width(),
         (this._delay() + this._duration() * this._animation.source().iterations()) * this._timeline.pixelMsRatio());
-    this._endDelayLine.style.transform = 'translateX(' + leftMargin.toFixed(2) + 'px)';
+    /** @type {!HTMLElement} */ (this._endDelayLine).style.transform = 'translateX(' + leftMargin.toFixed(2) + 'px)';
     this._endDelayLine.setAttribute('x1', margin.toString());
     this._endDelayLine.setAttribute(
         'x2', forwardsFill ? (this._timeline.width() - leftMargin + margin).toFixed(2) :
@@ -154,9 +158,9 @@ export class AnimationUI {
       return;
     }
 
-    const circle =
-        /** @type {!HTMLElement} */ (parentElement)
-            .createSVGChild('circle', keyframeIndex <= 0 ? 'animation-endpoint' : 'animation-keyframe-point');
+    /** @type {!HTMLElement} */
+    const circle = /** @type {!HTMLElement} */ (UI.UIUtils.createSVGChild(
+        parentElement, 'circle', keyframeIndex <= 0 ? 'animation-endpoint' : 'animation-keyframe-point'));
     circle.setAttribute('cx', x.toFixed(2));
     circle.setAttribute('cy', Options.AnimationHeight.toString());
     circle.style.stroke = this._color;
@@ -205,7 +209,8 @@ export class AnimationUI {
      * @param {string} strokeColor
      */
     function createStepLine(parentElement, x, strokeColor) {
-      const line = parentElement.createSVGChild('line');
+      /** @type {!HTMLElement} */
+      const line = /** @type {!HTMLElement} */ (UI.UIUtils.createSVGChild(parentElement, 'line'));
       line.setAttribute('x1', x.toString());
       line.setAttribute('x2', x.toString());
       line.setAttribute('y1', Options.AnimationMargin.toString());
@@ -216,9 +221,9 @@ export class AnimationUI {
     const bezier = UI.Geometry.CubicBezier.parse(easing);
     const cache = this._cachedElements[iteration].keyframeRender;
     if (!cache[keyframeIndex]) {
-      cache[keyframeIndex] = /** @type {!HTMLElement} */ (
-          bezier ? parentElement.createSVGChild('path', 'animation-keyframe') :
-                   parentElement.createSVGChild('g', 'animation-keyframe-step'));
+      const svg = bezier ? UI.UIUtils.createSVGChild(parentElement, 'path', 'animation-keyframe') :
+                           UI.UIUtils.createSVGChild(parentElement, 'g', 'animation-keyframe-step');
+      cache[keyframeIndex] = /** @type {!HTMLElement} */ (svg);
     }
     const group = cache[keyframeIndex];
     group.tabIndex = 0;
@@ -251,7 +256,7 @@ export class AnimationUI {
     const maxWidth = this._timeline.width() - Options.AnimationMargin;
 
     this._svg.setAttribute('width', (maxWidth + 2 * Options.AnimationMargin).toFixed(2));
-    this._activeIntervalGroup.style.transform =
+    /** @type {!HTMLElement} */ (this._activeIntervalGroup).style.transform =
         'translateX(' + (this._delay() * this._timeline.pixelMsRatio()).toFixed(2) + 'px)';
 
     this._nameElement.style.transform =
@@ -266,7 +271,7 @@ export class AnimationUI {
 
     this._renderIteration(this._activeIntervalGroup, 0);
     if (!this._tailGroup) {
-      this._tailGroup = this._activeIntervalGroup.createSVGChild('g', 'animation-tail-iterations');
+      this._tailGroup = UI.UIUtils.createSVGChild(this._activeIntervalGroup, 'g', 'animation-tail-iterations');
     }
     const iterationWidth = this._duration() * this._timeline.pixelMsRatio();
     let iteration;
@@ -303,9 +308,12 @@ export class AnimationUI {
    */
   _renderIteration(parentElement, iteration) {
     if (!this._cachedElements[iteration]) {
-      const group = /** @type {!HTMLElement} */ (parentElement).createSVGChild('g');
-      this._cachedElements[iteration] =
-          {animationLine: null, keyframePoints: {}, keyframeRender: {}, group: /** @type {!HTMLElement} */ (group)};
+      this._cachedElements[iteration] = {
+        animationLine: null,
+        keyframePoints: {},
+        keyframeRender: {},
+        group: /** @type {!HTMLElement} */ (UI.UIUtils.createSVGChild(parentElement, 'g'))
+      };
     }
     const group = this._cachedElements[iteration].group;
     if (!group) {

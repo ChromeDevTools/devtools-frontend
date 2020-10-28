@@ -72,7 +72,7 @@ export class BezierUI {
    * @param {number} y2
    */
   _drawLine(parentElement, className, x1, y1, x2, y2) {
-    const line = parentElement.createSVGChild('line', className);
+    const line = UI.UIUtils.createSVGChild(parentElement, 'line', className);
     line.setAttribute('x1', x1 + this.radius);
     line.setAttribute('y1', y1 + this.radius + this.marginTop);
     line.setAttribute('x2', x2 + this.radius);
@@ -88,7 +88,7 @@ export class BezierUI {
    */
   _drawControlPoints(parentElement, startX, startY, controlX, controlY) {
     this._drawLine(parentElement, 'bezier-control-line', startX, startY, controlX, controlY);
-    const circle = parentElement.createSVGChild('circle', 'bezier-control-circle');
+    const circle = UI.UIUtils.createSVGChild(parentElement, 'circle', 'bezier-control-circle');
     circle.setAttribute('cx', controlX + this.radius);
     circle.setAttribute('cy', controlY + this.radius + this.marginTop);
     circle.setAttribute('r', this.radius);
@@ -107,13 +107,13 @@ export class BezierUI {
     svg.setAttribute('width', this.width);
     svg.setAttribute('height', this.height);
     svg.removeChildren();
-    const group = svg.createSVGChild('g');
+    const group = UI.UIUtils.createSVGChild(svg, 'g');
 
     if (this.linearLine) {
       this._drawLine(group, 'linear-line', 0, height, width, 0);
     }
 
-    const curve = group.createSVGChild('path', 'bezier-path');
+    const curve = UI.UIUtils.createSVGChild(group, 'path', 'bezier-path');
     const curvePoints = [
       new UI.Geometry.Point(
           bezier.controlPoints[0].x * width + this.radius,

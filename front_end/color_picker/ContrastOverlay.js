@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as UI from '../ui/ui.js';
 
 import {ContrastInfo, Events} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
 
@@ -17,12 +18,13 @@ export class ContrastOverlay {
 
     this._visible = false;
 
-    this._contrastRatioSVG =
-        /** @type {!HTMLElement} */ (colorElement).createSVGChild('svg', 'spectrum-contrast-container fill');
+    this._contrastRatioSVG = UI.UIUtils.createSVGChild(colorElement, 'svg', 'spectrum-contrast-container fill');
     /** @type {!Map<string, !Element>} */
     this._contrastRatioLines = new Map();
-    this._contrastRatioLines.set('aa', this._contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line'));
-    this._contrastRatioLines.set('aaa', this._contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line'));
+    this._contrastRatioLines.set(
+        'aa', UI.UIUtils.createSVGChild(this._contrastRatioSVG, 'path', 'spectrum-contrast-line'));
+    this._contrastRatioLines.set(
+        'aaa', UI.UIUtils.createSVGChild(this._contrastRatioSVG, 'path', 'spectrum-contrast-line'));
 
     this._width = 0;
     this._height = 0;

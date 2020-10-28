@@ -1965,3 +1965,15 @@ export const isScrolledToBottom = element => {
   // This adds up a total error up to 2.
   return Math.abs(element.scrollTop + element.clientHeight - element.scrollHeight) <= 2;
 };
+
+/**
+ * @param {!Element} element
+ * @param {string} childType
+ * @param {string=} className
+ * @return {!Element}
+ */
+export function createSVGChild(element, childType, className) {
+  const child = element.ownerDocument.createSVGElement(childType, className);
+  element.appendChild(child);
+  return child;
+}

@@ -41,7 +41,7 @@ export class BezierEditor extends UI.Widget.VBox {
 
     // Curve UI
     this._curveUI = new BezierUI(150, 250, 50, 7, true);
-    this._curve = this._outerContainer.createSVGChild('svg', 'bezier-curve');
+    this._curve = UI.UIUtils.createSVGChild(this._outerContainer, 'svg', 'bezier-curve');
     UI.UIUtils.installDragHandle(
         this._curve, this._dragStart.bind(this), this._dragMove.bind(this), this._dragEnd.bind(this), 'default');
 
@@ -162,7 +162,7 @@ export class BezierEditor extends UI.Widget.VBox {
   _createCategory(presetGroup) {
     const presetElement = document.createElement('div');
     presetElement.classList.add('bezier-preset-category');
-    const iconElement = presetElement.createSVGChild('svg', 'bezier-preset monospace');
+    const iconElement = UI.UIUtils.createSVGChild(presetElement, 'svg', 'bezier-preset monospace');
     const category = {presets: presetGroup, presetIndex: 0, icon: presetElement};
     this._presetUI.drawCurve(UI.Geometry.CubicBezier.parse(category.presets[0].value), iconElement);
     iconElement.addEventListener('click', this._presetCategorySelected.bind(this, category));
@@ -176,10 +176,10 @@ export class BezierEditor extends UI.Widget.VBox {
    * @return {!Element}
    */
   _createPresetModifyIcon(parentElement, className, drawPath) {
-    const icon = parentElement.createSVGChild('svg', 'bezier-preset-modify ' + className);
+    const icon = UI.UIUtils.createSVGChild(parentElement, 'svg', 'bezier-preset-modify ' + className);
     icon.setAttribute('width', 20);
     icon.setAttribute('height', 20);
-    const path = icon.createSVGChild('path');
+    const path = UI.UIUtils.createSVGChild(icon, 'path');
     path.setAttribute('d', drawPath);
     return icon;
   }

@@ -29,7 +29,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this.registerRequiredCSS('animation/animationTimeline.css');
     this.element.classList.add('animations-timeline');
 
-    this._grid = this.contentElement.createSVGChild('svg', 'animation-timeline-grid');
+    this._grid = UI.UIUtils.createSVGChild(this.contentElement, 'svg', 'animation-timeline-grid');
 
     this._playbackRate = 1;
     this._allPaused = false;
@@ -690,7 +690,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._grid.removeChildren();
     let lastDraw = undefined;
     for (let time = 0; time < this.duration(); time += gridSize) {
-      const line = this._grid.createSVGChild('rect', 'animation-timeline-grid-line');
+      const line = UI.UIUtils.createSVGChild(this._grid, 'rect', 'animation-timeline-grid-line');
       line.setAttribute('x', (time * this.pixelMsRatio() + 10).toString());
       line.setAttribute('y', '23');
       line.setAttribute('height', '100%');
@@ -700,7 +700,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
       const gridWidth = time * this.pixelMsRatio();
       if (lastDraw === undefined || gridWidth - lastDraw > 50) {
         lastDraw = gridWidth;
-        const label = this._grid.createSVGChild('text', 'animation-timeline-grid-label');
+        const label = UI.UIUtils.createSVGChild(this._grid, 'text', 'animation-timeline-grid-label');
         label.textContent = Number.millisToString(time);
         label.setAttribute('x', (gridWidth + 10).toString());
         label.setAttribute('y', '16');

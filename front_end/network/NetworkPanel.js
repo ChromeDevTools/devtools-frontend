@@ -172,10 +172,19 @@ export class NetworkPanel extends UI.Panel.Panel {
 
     this._preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log');
 
+    this._toggleRecordSetting = Common.Settings.Settings.instance().moduleSetting('network.toggle-recording-setting');
+    this._toggleRecordSetting.addChangeListener(({data}) => {
+      if (data !== this._toggleRecordAction.toggled()) {
+        this._toggleRecord(data);
+      }
+    });
+
     this._throttlingSelect = this._createThrottlingConditionsSelect();
     this._setupToolbarButtons(splitWidget);
 
-    this._toggleRecord(true);
+    if (this._toggleRecordSetting.get()) {
+      this._toggleRecord(true);
+    }
     this._toggleShowOverview();
     this._toggleLargerRequests();
     this._toggleRecordFilmStrip();
@@ -353,22 +362,19 @@ export class NetworkPanel extends UI.Panel.Panel {
     return toolbarItem;
   }
 
-  _toggleRecording() {
-    if (!this._preserveLogSetting.get() && !this._toggleRecordAction.toggled()) {
-      SDK.NetworkLog.NetworkLog.instance().reset();
-    }
-    this._toggleRecord(!this._toggleRecordAction.toggled());
-  }
-
   /**
    * @param {boolean} toggled
    */
   _toggleRecord(toggled) {
+    if (!this._preserveLogSetting.get() && !this._toggleRecordAction.toggled() && toggled) {
+      SDK.NetworkLog.NetworkLog.instance().reset();
+    }
     this._toggleRecordAction.setToggled(toggled);
     this._networkLogView.setRecording(toggled);
     if (!toggled && this._filmStripRecorder) {
       this._filmStripRecorder.stopRecording(this._filmStripAvailable.bind(this));
     }
+    this._toggleRecordSetting.set(toggled);
     // TODO(einbinder) This should be moved to a setting/action that NetworkLog owns but NetworkPanel controls, but
     // always be present in the command menu.
     SDK.NetworkLog.NetworkLog.instance().setIsRecording(toggled);
@@ -415,7 +421,6 @@ export class NetworkPanel extends UI.Panel.Panel {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _willReloadPage(event) {
-    this._toggleRecord(true);
     if (this._pendingStopTimer) {
       clearTimeout(this._pendingStopTimer);
       delete this._pendingStopTimer;
@@ -911,7 +916,7 @@ export class ActionDelegate {
     }
     switch (actionId) {
       case 'network.toggle-recording': {
-        panel._toggleRecording();
+        panel._toggleRecord(!panel._toggleRecordSetting.get());
         return true;
       }
       case 'network.hide-request-details': {

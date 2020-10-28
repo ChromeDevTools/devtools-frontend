@@ -71,6 +71,15 @@
       ]
     },
     {
+      "type": "setting",
+      "category": "Network",
+      "title": "Record network log",
+      "settingName": "network.toggle-recording-setting",
+      "settingType": "boolean",
+      "storageType": "session",
+      "defaultValue": true
+    },
+    {
       "type": "action",
       "actionId": "network.toggle-recording",
       "category": "Network",

@@ -21,11 +21,11 @@ export class ConsoleMessage {
     /**
      * @public
      */
-    constructor(type, text, args, stackTraceLocations) {
+    constructor(type, text, args, location = {}) {
         this._type = type;
         this._text = text;
         this._args = args;
-        this._stackTraceLocations = stackTraceLocations;
+        this._location = location;
     }
     /**
      * @returns The type of the console message.
@@ -49,12 +49,6 @@ export class ConsoleMessage {
      * @returns The location of the console message.
      */
     location() {
-        return this._stackTraceLocations.length ? this._stackTraceLocations[0] : {};
-    }
-    /**
-     * @returns The array of locations on the stack of the console message.
-     */
-    stackTrace() {
-        return this._stackTraceLocations;
+        return this._location;
     }
 }

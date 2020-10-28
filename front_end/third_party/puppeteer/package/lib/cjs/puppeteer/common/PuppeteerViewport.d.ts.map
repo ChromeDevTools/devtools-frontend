@@ -1,0 +1,1 @@
+{"version":3,"file":"PuppeteerViewport.d.ts","sourceRoot":"","sources":["../../../../src/common/PuppeteerViewport.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;GAcG;AACH,MAAM,WAAW,QAAQ;IACvB,KAAK,EAAE,MAAM,CAAC;IACd,MAAM,EAAE,MAAM,CAAC;IACf,iBAAiB,CAAC,EAAE,MAAM,CAAC;IAC3B,QAAQ,CAAC,EAAE,OAAO,CAAC;IACnB,WAAW,CAAC,EAAE,OAAO,CAAC;IACtB,QAAQ,CAAC,EAAE,OAAO,CAAC;CACpB"}

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$$, click, getBrowserAndPages, platform, typeText, waitFor} from '../../shared/helper.js';
+import {$$, getBrowserAndPages, platform, typeText, waitFor} from '../../shared/helper.js';
 
 const QUICK_OPEN_SELECTOR = '[aria-label="Quick open"]';
 
@@ -55,9 +55,3 @@ export async function getAvailableSnippets() {
   const snippets = await Promise.all(snippetsDOMElements.map(elem => elem.evaluate(elem => elem.textContent)));
   return snippets;
 }
-
-export const closeDrawer = async () => {
-  const closeButtonSelector = '[aria-label="Close drawer"]';
-  await waitFor(closeButtonSelector);
-  await click(closeButtonSelector);
-};

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { isNode } from '../environment.js';
+
 import { assert } from './assert.js';
 import { debugError , helper} from './helper.js';
 import { getQueryHandlerAndSelector } from './QueryHandler.js';
@@ -263,10 +265,9 @@ export class ElementHandle extends JSHandle {
                 element.scrollIntoView({
                     block: 'center',
                     inline: 'center',
-                    // Chrome still supports behavior: instant but it's not in the spec
-                    // so TS shouts We don't want to make this breaking change in
-                    // Puppeteer yet so we'll ignore the line.
-                    // @ts-ignore
+                    // @ts-expect-error Chrome still supports behavior: instant but
+                    // it's not in the spec so TS shouts We don't want to make this
+                    // breaking change in Puppeteer yet so we'll ignore the line.
                     behavior: 'instant',
                 });
                 return false;
@@ -282,10 +283,9 @@ export class ElementHandle extends JSHandle {
                 element.scrollIntoView({
                     block: 'center',
                     inline: 'center',
-                    // Chrome still supports behavior: instant but it's not in the spec
-                    // so TS shouts We don't want to make this breaking change in
-                    // Puppeteer yet so we'll ignore the line.
-                    // @ts-ignore
+                    // @ts-expect-error Chrome still supports behavior: instant but
+                    // it's not in the spec so TS shouts We don't want to make this
+                    // breaking change in Puppeteer yet so we'll ignore the line.
                     behavior: 'instant',
                 });
             }
@@ -416,20 +416,18 @@ export class ElementHandle extends JSHandle {
     async uploadFile(...filePaths) {
         const isMultiple = await this.evaluate((element) => element.multiple);
         assert(filePaths.length <= 1 || isMultiple, 'Multiple file uploads only work with <input type=file multiple>');
+        if (!isNode) {
+            throw new Error(`JSHandle#uploadFile can only be used in Node environments.`);
+        }
         // This import is only needed for `uploadFile`, so keep it scoped here to avoid paying
         // the cost unnecessarily.
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const path = require('path');
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const fs = require('fs');
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const { promisify } = require('util');
-        const access = promisify(fs.access);
+        const path = await import('path');
+        const fs = await helper.importFSModule();
         // Locate all files and confirm that they exist.
         const files = await Promise.all(filePaths.map(async (filePath) => {
             const resolvedPath = path.resolve(filePath);
             try {
-                await access(resolvedPath, fs.constants.R_OK);
+                await fs.promises.access(resolvedPath, fs.constants.R_OK);
             }
             catch (error) {
                 if (error.code === 'ENOENT')
@@ -598,12 +596,7 @@ export class ElementHandle extends JSHandle {
      */
     async $(selector) {
         const { updatedSelector, queryHandler } = getQueryHandlerAndSelector(selector);
-        const handle = await this.evaluateHandle(queryHandler.queryOne, updatedSelector);
-        const element = handle.asElement();
-        if (element)
-            return element;
-        await handle.dispose();
-        return null;
+        return queryHandler.queryOne(this, updatedSelector);
     }
     /**
      * Runs `element.querySelectorAll` within the page. If no elements match the selector,
@@ -611,16 +604,7 @@ export class ElementHandle extends JSHandle {
      */
     async $$(selector) {
         const { updatedSelector, queryHandler } = getQueryHandlerAndSelector(selector);
-        const handles = await this.evaluateHandle(queryHandler.queryAll, updatedSelector);
-        const properties = await handles.getProperties();
-        await handles.dispose();
-        const result = [];
-        for (const property of properties.values()) {
-            const elementHandle = property.asElement();
-            if (elementHandle)
-                result.push(elementHandle);
-        }
-        return result;
+        return queryHandler.queryAll(this, updatedSelector);
     }
     /**
      * This method runs `document.querySelector` within the element and passes it as
@@ -678,8 +662,7 @@ export class ElementHandle extends JSHandle {
      */
     async $$eval(selector, pageFunction, ...args) {
         const { updatedSelector, queryHandler } = getQueryHandlerAndSelector(selector);
-        const queryHandlerToArray = Function('element', 'selector', `return Array.from((${queryHandler.queryAll})(element, selector));`);
-        const arrayHandle = await this.evaluateHandle(queryHandlerToArray, updatedSelector);
+        const arrayHandle = await queryHandler.queryAllArray(this, updatedSelector);
         const result = await arrayHandle.evaluate(pageFunction, ...args);
         await arrayHandle.dispose();
         /* This `as` exists for the same reason as the `as` in $eval above.

@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as fs from 'fs';
-import * as mime from 'mime';
-import { promisify } from 'util';
+import { isNode } from '../environment.js';
 
 import { Accessibility } from './Accessibility.js';
 import { assert } from './assert.js';
@@ -36,7 +34,6 @@ import { TimeoutSettings } from './TimeoutSettings.js';
 import { Tracing } from './Tracing.js';
 import { WebWorker } from './WebWorker.js';
 
-const writeFileAsync = promisify(fs.writeFile);
 class ScreenshotTaskQueue {
     constructor() {
         this._chain = Promise.resolve(undefined);
@@ -274,7 +271,7 @@ export class Page extends EventEmitter {
         if (args)
             args.map((arg) => helper.releaseObject(this._client, arg));
         if (source !== 'worker')
-            this.emit("console" /* Console */, new ConsoleMessage(level, text, [], { url, lineNumber }));
+            this.emit("console" /* Console */, new ConsoleMessage(level, text, [], [{ url, lineNumber }]));
     }
     /**
      * @returns The page's main frame.
@@ -640,32 +637,12 @@ export class Page extends EventEmitter {
         if (this._pageBindings.has(name))
             throw new Error(`Failed to add page binding with name ${name}: window['${name}'] already exists!`);
         this._pageBindings.set(name, puppeteerFunction);
-        const expression = helper.evaluationString(addPageBinding, name);
+        const expression = helper.pageBindingInitString('exposedFun', name);
         await this._client.send('Runtime.addBinding', { name: name });
         await this._client.send('Page.addScriptToEvaluateOnNewDocument', {
             source: expression,
         });
         await Promise.all(this.frames().map((frame) => frame.evaluate(expression).catch(debugError)));
-        function addPageBinding(bindingName) {
-            /* Cast window to any here as we're about to add properties to it
-             * via win[bindingName] which TypeScript doesn't like.
-             */
-            const win = window;
-            const binding = win[bindingName];
-            win[bindingName] = (...args) => {
-                const me = window[bindingName];
-                let callbacks = me['callbacks'];
-                if (!callbacks) {
-                    callbacks = new Map();
-                    me['callbacks'] = callbacks;
-                }
-                const seq = (me['lastSeq'] || 0) + 1;
-                me['lastSeq'] = seq;
-                const promise = new Promise((resolve, reject) => callbacks.set(seq, { resolve, reject }));
-                binding(JSON.stringify({ name: bindingName, seq, args }));
-                return promise;
-            };
-        }
     }
     async authenticate(credentials) {
         return this._frameManager.networkManager().authenticate(credentials);
@@ -722,17 +699,28 @@ export class Page extends EventEmitter {
         this._addConsoleMessage(event.type, values, event.stackTrace);
     }
     async _onBindingCalled(event) {
-        const { name, seq, args } = JSON.parse(event.payload);
+        let payload;
+        try {
+            payload = JSON.parse(event.payload);
+        }
+        catch {
+            // The binding was either called by something in the page or it was
+            // called before our wrapper was initialized.
+            return;
+        }
+        const { type, name, seq, args } = payload;
+        if (type !== 'exposedFun' || !this._pageBindings.has(name))
+            return;
         let expression = null;
         try {
             const result = await this._pageBindings.get(name)(...args);
-            expression = helper.evaluationString(deliverResult, name, seq, result);
+            expression = helper.pageBindingDeliverResultString(name, seq, result);
         }
         catch (error) {
             if (error instanceof Error)
-                expression = helper.evaluationString(deliverError, name, seq, error.message, error.stack);
+                expression = helper.pageBindingDeliverErrorString(name, seq, error.message, error.stack);
             else
-                expression = helper.evaluationString(deliverErrorValue, name, seq, error);
+                expression = helper.pageBindingDeliverErrorValueString(name, seq, error);
         }
         this._client
             .send('Runtime.evaluate', {
@@ -740,20 +728,6 @@ export class Page extends EventEmitter {
             contextId: event.executionContextId,
         })
             .catch(debugError);
-        function deliverResult(name, seq, result) {
-            window[name]['callbacks'].get(seq).resolve(result);
-            window[name]['callbacks'].delete(seq);
-        }
-        function deliverError(name, seq, message, stack) {
-            const error = new Error(message);
-            error.stack = stack;
-            window[name]['callbacks'].get(seq).reject(error);
-            window[name]['callbacks'].delete(seq);
-        }
-        function deliverErrorValue(name, seq, value) {
-            window[name]['callbacks'].get(seq).reject(value);
-            window[name]['callbacks'].delete(seq);
-        }
     }
     _addConsoleMessage(type, args, stackTrace) {
         if (!this.listenerCount("console" /* Console */)) {
@@ -768,14 +742,17 @@ export class Page extends EventEmitter {
             else
                 textTokens.push(helper.valueFromRemoteObject(remoteObject));
         }
-        const location = stackTrace && stackTrace.callFrames.length
-            ? {
-                url: stackTrace.callFrames[0].url,
-                lineNumber: stackTrace.callFrames[0].lineNumber,
-                columnNumber: stackTrace.callFrames[0].columnNumber,
+        const stackTraceLocations = [];
+        if (stackTrace) {
+            for (const callFrame of stackTrace.callFrames) {
+                stackTraceLocations.push({
+                    url: callFrame.url,
+                    lineNumber: callFrame.lineNumber,
+                    columnNumber: callFrame.columnNumber,
+                });
             }
-            : {};
-        const message = new ConsoleMessage(type, textTokens.join(' '), args, location);
+        }
+        const message = new ConsoleMessage(type, textTokens.join(' '), args, stackTraceLocations);
         this.emit("console" /* Console */, message);
     }
     _onDialog(event) {
@@ -909,6 +886,64 @@ export class Page extends EventEmitter {
             throw error;
         }
     }
+    /**
+     * Emulates the idle state.
+     * If no arguments set, clears idle state emulation.
+     *
+     * @example
+     * ```js
+     * // set idle emulation
+     * await page.emulateIdleState({isUserActive: true, isScreenUnlocked: false});
+     *
+     * // do some checks here
+     * ...
+     *
+     * // clear idle emulation
+     * await page.emulateIdleState();
+     * ```
+     *
+     * @param overrides Mock idle state. If not set, clears idle overrides
+     * @param isUserActive Mock isUserActive
+     * @param isScreenUnlocked Mock isScreenUnlocked
+     */
+    async emulateIdleState(overrides) {
+        if (overrides) {
+            await this._client.send('Emulation.setIdleOverride', {
+                isUserActive: overrides.isUserActive,
+                isScreenUnlocked: overrides.isScreenUnlocked,
+            });
+        }
+        else {
+            await this._client.send('Emulation.clearIdleOverride');
+        }
+    }
+    /**
+     * Simulates the given vision deficiency on the page.
+     *
+     * @example
+     * ```js
+     * const puppeteer = require('puppeteer');
+     *
+     * (async () => {
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   await page.goto('https://v8.dev/blog/10-years');
+     *
+     *   await page.emulateVisionDeficiency('achromatopsia');
+     *   await page.screenshot({ path: 'achromatopsia.png' });
+     *
+     *   await page.emulateVisionDeficiency('deuteranopia');
+     *   await page.screenshot({ path: 'deuteranopia.png' });
+     *
+     *   await page.emulateVisionDeficiency('blurredVision');
+     *   await page.screenshot({ path: 'blurred-vision.png' });
+     *
+     *   await browser.close();
+     * })();
+     * ```
+     *
+     * @param type - the type of deficiency to simulate, or `'none'` to reset.
+     */
     async emulateVisionDeficiency(type) {
         const visionDeficiencies = new Set([
             'none',
@@ -1007,12 +1042,15 @@ export class Page extends EventEmitter {
             screenshotType = options.type;
         }
         else if (options.path) {
-            const mimeType = mime.getType(options.path);
-            if (mimeType === 'image/png')
+            const filePath = options.path;
+            const extension = filePath
+                .slice(filePath.lastIndexOf('.') + 1)
+                .toLowerCase();
+            if (extension === 'png')
                 screenshotType = 'png';
-            else if (mimeType === 'image/jpeg')
+            else if (extension === 'jpg' || extension === 'jpeg')
                 screenshotType = 'jpeg';
-            assert(screenshotType, 'Unsupported screenshot mime type: ' + mimeType);
+            assert(screenshotType, `Unsupported screenshot type for extension \`.${extension}\``);
         }
         if (!screenshotType)
             screenshotType = 'png';
@@ -1081,8 +1119,12 @@ export class Page extends EventEmitter {
         const buffer = options.encoding === 'base64'
             ? result.data
             : Buffer.from(result.data, 'base64');
+        if (!isNode && options.path) {
+            throw new Error('Screenshots can only be written to a file path in a Node environment.');
+        }
+        const fs = await helper.importFSModule();
         if (options.path)
-            await writeFileAsync(options.path, buffer);
+            await fs.promises.writeFile(options.path, buffer);
         return buffer;
         function processClip(clip) {
             const x = Math.round(clip.x);
@@ -1188,8 +1230,55 @@ export class Page extends EventEmitter {
     type(selector, text, options) {
         return this.mainFrame().type(selector, text, options);
     }
+    /**
+     * @remarks
+     *
+     * This method behaves differently depending on the first parameter. If it's a
+     * `string`, it will be treated as a `selector` or `xpath` (if the string
+     * starts with `//`). This method then is a shortcut for
+     * {@link Page.waitForSelector} or {@link Page.waitForXPath}.
+     *
+     * If the first argument is a function this method is a shortcut for
+     * {@link Page.waitForFunction}.
+     *
+     * If the first argument is a `number`, it's treated as a timeout in
+     * milliseconds and the method returns a promise which resolves after the
+     * timeout.
+     *
+     * @param selectorOrFunctionOrTimeout - a selector, predicate or timeout to
+     * wait for.
+     * @param options - optional waiting parameters.
+     * @param args - arguments to pass to `pageFunction`.
+     *
+     * @deprecated Don't use this method directly. Instead use the more explicit
+     * methods available: {@link Page.waitForSelector},
+     * {@link Page.waitForXPath}, {@link Page.waitForFunction} or
+     * {@link Page.waitForTimeout}.
+     */
     waitFor(selectorOrFunctionOrTimeout, options = {}, ...args) {
         return this.mainFrame().waitFor(selectorOrFunctionOrTimeout, options, ...args);
+    }
+    /**
+     * Causes your script to wait for the given number of milliseconds.
+     *
+     * @remarks
+     *
+     * It's generally recommended to not wait for a number of seconds, but instead
+     * use {@link Page.waitForSelector}, {@link Page.waitForXPath} or
+     * {@link Page.waitForFunction} to wait for exactly the conditions you want.
+     *
+     * @example
+     *
+     * Wait for 1 second:
+     *
+     * ```
+     * await page.waitForTimeout(1000);
+     * ```
+     *
+     * @param milliseconds - the number of milliseconds to wait.
+     */
+    waitForTimeout(milliseconds) {
+        return this.mainFrame().waitForTimeout(milliseconds);
     }
     waitForSelector(selector, options = {}) {
         return this.mainFrame().waitForSelector(selector, options);

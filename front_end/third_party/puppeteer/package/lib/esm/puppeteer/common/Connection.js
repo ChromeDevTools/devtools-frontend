@@ -70,9 +70,9 @@ export class Connection extends EventEmitter {
     }
     _rawSend(message) {
         const id = ++this._lastId;
-        message = JSON.stringify(Object.assign({}, message, { id }));
-        debugProtocolSend(message);
-        this._transport.send(message);
+        const stringifiedMessage = JSON.stringify(Object.assign({}, message, { id }));
+        debugProtocolSend(stringifiedMessage);
+        this._transport.send(stringifiedMessage);
         return id;
     }
     async _onMessage(message) {

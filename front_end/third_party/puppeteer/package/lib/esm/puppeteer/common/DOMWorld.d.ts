@@ -45,9 +45,11 @@ export declare class DOMWorld {
      * internal
      */
     _waitTasks: Set<WaitTask>;
+    private _boundFunctions;
+    private _ctxBindings;
     constructor(frameManager: FrameManager, frame: Frame, timeoutSettings: TimeoutSettings);
     frame(): Frame;
-    _setContext(context?: ExecutionContext): void;
+    _setContext(context?: ExecutionContext): Promise<void>;
     _hasContext(): boolean;
     _detach(): void;
     executionContext(): Promise<ExecutionContext>;
@@ -107,15 +109,31 @@ export declare class DOMWorld {
         delay: number;
     }): Promise<void>;
     waitForSelector(selector: string, options: WaitForSelectorOptions): Promise<ElementHandle | null>;
+    private _settingUpBinding;
+    /**
+     * @internal
+     */
+    addBindingToContext(name: string): any;
+    /**
+     * @internal
+     */
+    addBinding(name: string, puppeteerFunction: Function): Promise<void>;
+    private _onBindingCalled;
+    /**
+     * @internal
+     */
+    waitForSelectorInPage(queryOne: Function, selector: string, options: WaitForSelectorOptions): Promise<ElementHandle | null>;
     waitForXPath(xpath: string, options: WaitForSelectorOptions): Promise<ElementHandle | null>;
     waitForFunction(pageFunction: Function | string, options?: {
         polling?: string | number;
         timeout?: number;
     }, ...args: SerializableOrJSHandle[]): Promise<JSHandle>;
     title(): Promise<string>;
-    private _waitForSelectorOrXPath;
 }
-declare class WaitTask {
+/**
+ * @internal
+ */
+export declare class WaitTask {
     _domWorld: DOMWorld;
     _polling: string | number;
     _timeout: number;
@@ -127,10 +145,9 @@ declare class WaitTask {
     _reject: (x: Error) => void;
     _timeoutTimer?: NodeJS.Timeout;
     _terminated: boolean;
-    constructor(domWorld: DOMWorld, predicateBody: Function | string, predicateQueryHandlerBody: Function | string | undefined, title: string, polling: string | number, timeout: number, ...args: SerializableOrJSHandle[]);
+    constructor(domWorld: DOMWorld, predicateBody: Function | string, title: string, polling: string | number, timeout: number, ...args: SerializableOrJSHandle[]);
     terminate(error: Error): void;
     rerun(): Promise<void>;
     _cleanup(): void;
 }
-export {};
 //# sourceMappingURL=DOMWorld.d.ts.map

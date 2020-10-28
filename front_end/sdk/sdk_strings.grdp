@@ -194,6 +194,9 @@
   <message name="IDS_DEVTOOLS_4cbb2bdce4db02a995cdd7a237a63d69" desc="Title of a setting under the Grid category that turns CSS Grid Area highlighting on">
     Show grid named areas
   </message>
+  <message name="IDS_DEVTOOLS_5662edf029fe42e222f435fbc9ae73a2" desc="Title for Trusted Types policy violation issue link">
+    Trusted Types - Fix violations
+  </message>
   <message name="IDS_DEVTOOLS_68379f916c7ed8dd3ab30adaa20635fe" desc="Title of a setting that turns on grid line number labels">
     Show line numbers
   </message>
@@ -240,6 +243,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ad6cd0dc14b9f610f20d88d5596ead7b" desc="Title for a SameSiteCookie issue">
     Migrate entirely to HTTPS to allow cookies to be set by same-site subresources
+  </message>
+  <message name="IDS_DEVTOOLS_ad8c8653a0bd48a9b9f84d84b9639f61" desc="Title for Trusted Types policy violation issue link">
+    Trusted Types - Policy violation
   </message>
   <message name="IDS_DEVTOOLS_adebfaed8be7365a6da10b3a82308388" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
     This cookie was blocked because it had the &quot;SameSite=Strict&quot; attribute but the request was cross-site. This includes top-level navigation requests initiated by other sites. This request is considered cross-site because the URL has a different scheme than the current site.

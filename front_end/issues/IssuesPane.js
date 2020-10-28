@@ -524,6 +524,13 @@ class AffectedDirectivesView extends AffectedResourcesView {
       this._appendSourceCodeColumnTitle(header);
       this._appendDirectiveColumnTitle(header);
       this._appendStatusColumnTitle(header);
+    } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
+      this._appendSourceCodeColumnTitle(header);
+      this._appendStatusColumnTitle(header);
+    } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
+      this._appendSourceCodeColumnTitle(header);
+      this._appendDirectiveColumnTitle(header);
+      this._appendStatusColumnTitle(header);
     } else {
       this.updateAffectedResourceCount(0);
       return;
@@ -557,6 +564,13 @@ class AffectedDirectivesView extends AffectedResourcesView {
       this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this._appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.evalViolationCode) {
+      this._appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
+      this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
+      this._appendStatus(element, cspIssueDetails.isReportOnly);
+    } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
+      this._appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
+      this._appendStatus(element, cspIssueDetails.isReportOnly);
+    } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
       this._appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
       this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this._appendStatus(element, cspIssueDetails.isReportOnly);

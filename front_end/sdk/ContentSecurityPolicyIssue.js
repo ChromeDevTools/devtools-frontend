@@ -95,6 +95,18 @@ const cspEvalViolation = {
   }],
 };
 
+const cspTrustedTypesSinkViolation = {
+  file: 'issues/descriptions/cspTrustedTypesSinkViolation.md',
+  issueKind: IssueKind.BreakingChange,
+  links: [{link: 'https://web.dev/trusted-types/#fix-the-violations', linkTitle: ls`Trusted Types - Fix violations`}],
+};
+
+const cspTrustedTypesPolicyViolation = {
+  file: 'issues/descriptions/cspTrustedTypesPolicyViolation.md',
+  issueKind: IssueKind.BreakingChange,
+  links: [{link: 'https://web.dev/trusted-types/', linkTitle: ls`Trusted Types - Policy violation`}],
+};
+
 /** @type {string} */
 export const urlViolationCode = [
   Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
@@ -113,10 +125,24 @@ export const evalViolationCode = [
   Protocol.Audits.ContentSecurityPolicyViolationType.KEvalViolation
 ].join('::');
 
+/** @type {string} */
+export const trustedTypesSinkViolationCode = [
+  Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
+  Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesSinkViolation
+].join('::');
+
+/** @type {string} */
+export const trustedTypesPolicyViolationCode = [
+  Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
+  Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation
+].join('::');
+
 // TODO(crbug.com/1082628): Add handling of other CSP violation types later as they'll need more work.
 /** @type {!Map<!Protocol.Audits.ContentSecurityPolicyViolationType, !MarkdownIssueDescription>} */
 const issueDescriptions = new Map([
   [Protocol.Audits.ContentSecurityPolicyViolationType.KURLViolation, cspURLViolation],
   [Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation, cspInlineViolation],
   [Protocol.Audits.ContentSecurityPolicyViolationType.KEvalViolation, cspEvalViolation],
+  [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesSinkViolation, cspTrustedTypesSinkViolation],
+  [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation, cspTrustedTypesPolicyViolation],
 ]);

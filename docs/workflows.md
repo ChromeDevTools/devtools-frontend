@@ -55,9 +55,11 @@ This works with Chromium 79 or later.
 <path-to-chrome>/chrome --custom-devtools-frontend=file://$(realpath out/Default/resources/inspector)
 ```
 
-Note that `(realpath out/Default/resources/inspector)` expands to the absolute path to build artifacts for DevTools frontend.
+Note that `$(realpath out/Default/resources/inspector)` expands to the absolute path to build artifacts for DevTools frontend.
 
 Open DevTools via F12 on Windows/Linux or Cmd+Option+I on Mac.
+
+If you get errors along the line of `Uncaught TypeError: Cannot read property 'setInspectedTabId'` you probably specified an incorrect path - the path has to be absolute. On Mac and Linux, the file url will start with __three__ slashes: `file:///Users/...`.
 
 Tip: You can inspect DevTools with DevTools by undocking DevTools and then opening a second instance of DevTools (F12 on Windows/Linux, Cmd+Option+I on Mac).
 

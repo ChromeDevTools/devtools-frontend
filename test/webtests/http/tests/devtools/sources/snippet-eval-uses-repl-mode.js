@@ -12,7 +12,7 @@
     TestRunner.addResult('Value of \'replMode\': ' + args.replMode);
   });
 
-  const uiSourceCode = await Snippets.project.createFile('', null, '');
+  const uiSourceCode = await Snippets.ScriptSnippetFileSystem.findSnippetsProject().createFile('', null, '');
   await uiSourceCode.rename('Snippet1');
   uiSourceCode.setWorkingCopy('let a = 1; let a = 2;');
 

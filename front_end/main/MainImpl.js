@@ -46,6 +46,7 @@ import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
+import * as Snippets from '../snippets/snippets.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -301,6 +302,8 @@ export class MainImpl {
     new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
         Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(),
         Workspace.Workspace.WorkspaceImpl.instance());
+    Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addPlatformFileSystem(
+        'snippet://', new Snippets.ScriptSnippetFileSystem.SnippetFileSystem());
     self.Persistence.persistence = Persistence.Persistence.PersistenceImpl.instance({
       forceNew: true,
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),

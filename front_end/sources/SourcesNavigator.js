@@ -269,7 +269,7 @@ export class SnippetsNavigatorView extends NavigatorView {
     const newButton =
         new UI.Toolbar.ToolbarButton(ls`New snippet`, 'largeicon-add', Common.UIString.UIString('New snippet'));
     newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
-      this.create(Snippets.project, '');
+      this.create(Snippets.ScriptSnippetFileSystem.findSnippetsProject(), '');
     });
     toolbar.appendToolbarItem(newButton);
     this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
@@ -290,7 +290,8 @@ export class SnippetsNavigatorView extends NavigatorView {
    */
   handleContextMenu(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.headerSection().appendItem(ls`Create new snippet`, () => this.create(Snippets.project, ''));
+    contextMenu.headerSection().appendItem(
+        ls`Create new snippet`, () => this.create(Snippets.ScriptSnippetFileSystem.findSnippetsProject(), ''));
     contextMenu.show();
   }
 
@@ -336,7 +337,9 @@ export class ActionDelegate {
   handleAction(context, actionId) {
     switch (actionId) {
       case 'sources.create-snippet':
-        Snippets.project.createFile('', null, '').then(uiSourceCode => Common.Revealer.reveal(uiSourceCode));
+        Snippets.ScriptSnippetFileSystem.findSnippetsProject()
+            .createFile('', null, '')
+            .then(uiSourceCode => Common.Revealer.reveal(uiSourceCode));
         return true;
       case 'sources.add-folder-to-workspace':
         Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();

@@ -5,8 +5,6 @@
 import * as ScriptSnippetFileSystem from './ScriptSnippetFileSystem.js';
 import * as SnippetsQuickOpen from './SnippetsQuickOpen.js';
 
-export const project = ScriptSnippetFileSystem.project;
-
 export {
   ScriptSnippetFileSystem,
   SnippetsQuickOpen,

@@ -25,8 +25,8 @@
 
   async function setup() {
     // Add snippets
-    await Snippets.project.createFile('s1', null, '');
-    await Snippets.project.createFile('s2', null, '');
+    await Snippets.ScriptSnippetFileSystem.findSnippetsProject().createFile('s1', null, '');
+    await Snippets.ScriptSnippetFileSystem.findSnippetsProject().createFile('s2', null, '');
   }
 
   async function testA11yForView(ruleSet) {

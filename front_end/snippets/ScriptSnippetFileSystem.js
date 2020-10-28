@@ -26,7 +26,7 @@ function unescapeSnippetName(name) {
   return unescape(name);
 }
 
-class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSystem {
+export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSystem {
   constructor() {
     super('snippet://', 'snippets');
     this._lastSnippetIdentifierSetting =
@@ -256,16 +256,23 @@ export function isSnippetsProject(project) {
       Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) === 'snippets';
 }
 
-Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addPlatformFileSystem(
-    'snippet://', new SnippetFileSystem());
+/**
+ * @return {!Workspace.Workspace.Project}
+ */
+export function findSnippetsProject() {
+  const workspaceProject =
+      Workspace.Workspace.WorkspaceImpl.instance()
+          .projectsForType(Workspace.Workspace.projectTypes.FileSystem)
+          .find(
+              project => Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) ===
+                  'snippets');
 
-/** @type {!Workspace.Workspace.Project} */
-export const project =
-    (Workspace.Workspace.WorkspaceImpl.instance()
-         .projectsForType(Workspace.Workspace.projectTypes.FileSystem)
-         .find(
-             project => Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) ===
-                 'snippets'));
+  if (!workspaceProject) {
+    throw new Error('Unable to find workspace project for the snippets file system');
+  }
+
+  return workspaceProject;
+}
 
 /**
 * @typedef {{

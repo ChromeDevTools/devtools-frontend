@@ -30,8 +30,6 @@ QuickOpen.CommandMenu.ShowActionDelegate = QuickOpenModule.CommandMenu.ShowActio
 QuickOpen.CommandMenuProvider = QuickOpenModule.CommandMenu.CommandMenuProvider;
 QuickOpen.CommandMenuProvider.MaterialPaletteColors = QuickOpenModule.CommandMenu.MaterialPaletteColors;
 
-QuickOpen.commandMenu = QuickOpenModule.CommandMenu.commandMenu;
-
 /**
  * @constructor
  */

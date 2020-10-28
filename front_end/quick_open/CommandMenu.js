@@ -11,14 +11,25 @@ import * as UI from '../ui/ui.js';
 import {FilteredListWidget, Provider} from './FilteredListWidget.js';
 import {QuickOpenImpl} from './QuickOpen.js';
 
+/** @type {!CommandMenu} */
+let commandMenuInstance;
+
 /**
  * @unrestricted
  */
 export class CommandMenu {
+  /** @private */
   constructor() {
     /** @type {!Array<!Command>} */
     this._commands = [];
     this._loadCommands();
+  }
+
+  static instance() {
+    if (!commandMenuInstance) {
+      commandMenuInstance = new CommandMenu();
+    }
+    return commandMenuInstance;
   }
 
   /**
@@ -208,7 +219,7 @@ export class CommandMenuProvider extends Provider {
    * @override
    */
   attach() {
-    const allCommands = commandMenu.commands();
+    const allCommands = CommandMenu.instance().commands();
 
     // Populate allowlisted actions.
     const actions = UI.ActionRegistry.ActionRegistry.instance().availableActions();
@@ -410,6 +421,3 @@ export class ShowActionDelegate {
     return true;
   }
 }
-
-/** @type {!CommandMenu} */
-export const commandMenu = new CommandMenu();

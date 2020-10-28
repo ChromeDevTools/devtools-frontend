@@ -98,11 +98,12 @@ export class JavaScriptREPL {
     }
 
     const formatter = new RemoteObjectPreviewFormatter();
-    const {preview, type, subtype, description} = result.object;
-    if (preview && type === 'object' && subtype !== 'node') {
+    const {preview, type, subtype, className, description} = result.object;
+    if (preview && type === 'object' && subtype !== 'node' && subtype !== 'trustedtype') {
       formatter.appendObjectPreview(fragment, preview, false /* isEntry */);
     } else {
-      const nonObjectPreview = formatter.renderPropertyPreview(type, subtype, description.trimEndWithMaxLength(400));
+      const nonObjectPreview =
+          formatter.renderPropertyPreview(type, subtype, className, description.trimEndWithMaxLength(400));
       fragment.appendChild(nonObjectPreview);
     }
     return fragment;

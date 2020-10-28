@@ -17,6 +17,7 @@ node_ts_library("console") {
     "console-message-format_test.ts",
     "console-repl-mode_test.ts",
     "console-trim-long-traces_test.ts",
+    "console-trusted-types_test.ts",
     "issues-toolbar_test.ts",
   ]
 

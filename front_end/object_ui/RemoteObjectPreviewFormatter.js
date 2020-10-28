@@ -51,9 +51,10 @@ export class RemoteObjectPreviewFormatter {
    */
   appendObjectPreview(parentElement, preview, isEntry) {
     const description = preview.description;
-    const subTypesWithoutValuePreview = new Set(['null', 'regexp', 'error', 'internal#entry']);
+    const subTypesWithoutValuePreview = new Set(['null', 'regexp', 'error', 'internal#entry', 'trustedtype']);
     if (preview.type !== 'object' || subTypesWithoutValuePreview.has(preview.subtype) || isEntry) {
-      parentElement.appendChild(this.renderPropertyPreview(preview.type, preview.subtype, description));
+      parentElement.appendChild(
+          this.renderPropertyPreview(preview.type, preview.subtype, preview.className, description));
       return;
     }
     const isArrayOrTypedArray = preview.subtype === 'array' || preview.subtype === 'typedarray';
@@ -262,16 +263,18 @@ export class RemoteObjectPreviewFormatter {
    */
   _renderPropertyPreviewOrAccessor(propertyPath) {
     const property = propertyPath.peekLast();
-    return this.renderPropertyPreview(property.type, /** @type {string} */ (property.subtype), property.value);
+    return this.renderPropertyPreview(
+        property.type, /** @type {string} */ (property.subtype), property.className, property.value);
   }
 
   /**
    * @param {string} type
    * @param {string=} subtype
    * @param {string=} description
+   * @param {(?string|undefined)=} className
    * @return {!HTMLElement}
    */
-  renderPropertyPreview(type, subtype, description) {
+  renderPropertyPreview(type, subtype, className, description) {
     const span = /** @type {!HTMLElement} */ (document.createElement('span'));
     span.classList.add('object-value-' + (subtype || type));
     description = description || '';
@@ -284,6 +287,11 @@ export class RemoteObjectPreviewFormatter {
 
     if (type === 'function') {
       span.textContent = '\u0192';
+      return span;
+    }
+
+    if (type === 'object' && subtype === 'trustedtype' && className) {
+      createSpanForTrustedType(span, description, className);
       return span;
     }
 
@@ -333,4 +341,17 @@ export const createSpansForNodeTitle = function(container, nodeTitle) {
   if (match[3]) {
     container.createChild('span', 'webkit-html-attribute-name').textContent = match[3];
   }
+};
+
+/**
+ * @param {!Element} span
+ * @param {string} description
+ * @param {string} className
+ */
+export const createSpanForTrustedType = function(span, description, className) {
+  UI.UIUtils.createTextChildren(span, `${className} `);
+  const trustedContentSpan = document.createElement('span');
+  trustedContentSpan.classList.add('object-value-string');
+  UI.UIUtils.createTextChildren(trustedContentSpan, '"', description.replace(/\n/g, '\u21B5'), '"');
+  span.appendChild(trustedContentSpan);
 };

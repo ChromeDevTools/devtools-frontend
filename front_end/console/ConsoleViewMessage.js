@@ -499,9 +499,9 @@ export class ConsoleViewMessage {
       return /** @type {!HTMLElement} */ ((new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(output)).element);
     }
 
-    const type = forceObjectFormat ? 'object' : (output.subtype || output.type);
+    const outputType = forceObjectFormat ? 'object' : (output.subtype || output.type);
     let element;
-    switch (type) {
+    switch (outputType) {
       case 'error':
         element = this._formatParameterAsError(output);
         break;
@@ -527,6 +527,9 @@ export class ConsoleViewMessage {
       case 'node':
         element = output.isNode() ? this._formatParameterAsNode(output) : this._formatParameterAsObject(output, false);
         break;
+      case 'trustedtype':
+        element = this._formatParameterAsObject(output, false);
+        break;
       case 'string':
         element = this._formatParameterAsString(output);
         break;
@@ -542,9 +545,9 @@ export class ConsoleViewMessage {
         break;
       default:
         element = this._formatParameterAsValue(output);
-        console.error('Tried to format remote object of unknown type.');
+        console.error(`Tried to format remote object of unknown type ${outputType}.`);
     }
-    element.classList.add('object-value-' + type);
+    element.classList.add(`object-value-${outputType}`);
     element.classList.add('source-code');
     return element;
   }
@@ -572,6 +575,21 @@ export class ConsoleViewMessage {
 
   /**
    * @param {!SDK.RemoteObject.RemoteObject} obj
+   * @return {!HTMLElement}
+   * @suppress {accessControls}
+   */
+  _formatParameterAsTrustedType(obj) {
+    const result = /** @type {!HTMLElement} */ (document.createElement('span'));
+    const trustedContentSpan = document.createElement('span');
+    trustedContentSpan.appendChild(this._formatParameterAsString(obj));
+    trustedContentSpan.classList.add('object-value-string');
+    result.appendChild(trustedContentSpan);
+    result.innerHTML = `${obj.className} ${result.innerHTML}`;
+    return result;
+  }
+
+  /**
+   * @param {!SDK.RemoteObject.RemoteObject} obj
    * @param {boolean=} includePreview
    * @return {!HTMLElement}
    */
@@ -585,6 +603,8 @@ export class ConsoleViewMessage {
       const functionElement = titleElement.createChild('span');
       ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.formatObjectAsFunction(obj, functionElement, false);
       titleElement.classList.add('object-value-function');
+    } else if (obj.subtype === 'trustedtype') {
+      titleElement.appendChild(this._formatParameterAsTrustedType(obj));
     } else {
       UI.UIUtils.createTextChild(titleElement, obj.description || '');
     }
@@ -663,7 +683,7 @@ export class ConsoleViewMessage {
       return this._formatAsAccessorProperty(object, propertyPath.map(property => property.name.toString()), false);
     }
     return this._previewFormatter.renderPropertyPreview(
-        property.type, 'subtype' in property ? property.subtype : undefined, property.value);
+        property.type, 'subtype' in property ? property.subtype : undefined, null, property.value);
   }
 
   /**
@@ -734,7 +754,8 @@ export class ConsoleViewMessage {
    * @return {!HTMLElement}
    */
   _formatAsArrayEntry(output) {
-    return this._previewFormatter.renderPropertyPreview(output.type, output.subtype, output.description);
+    return this._previewFormatter.renderPropertyPreview(
+        output.type, output.subtype, output.className, output.description);
   }
 
   /**
@@ -772,13 +793,14 @@ export class ConsoleViewMessage {
         const subtype = object.subtype;
         let description = '';
         if (type !== 'function' && object.description) {
-          if (type === 'string' || subtype === 'regexp') {
+          if (type === 'string' || subtype === 'regexp' || subtype === 'trustedtype') {
             description = object.description.trimMiddle(maxLength);
           } else {
             description = object.description.trimEndWithMaxLength(maxLength);
           }
         }
-        rootElement.appendChild(this._previewFormatter.renderPropertyPreview(type, subtype, description));
+        rootElement.appendChild(
+            this._previewFormatter.renderPropertyPreview(type, subtype, object.className, description));
       }
     }
 

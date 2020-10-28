@@ -7,6 +7,11 @@ import {assertElement, assertElements, assertShadowRoot, getEventPromise, render
 
 const {assert} = chai;
 
+export const NAVIGATOR_ADDRESS_SELECTOR = '[data-input]';
+export const NAVIGATOR_PAGE_BUTTON_SELECTOR = '[data-button=pageNavigation]';
+export const NAVIGATOR_HISTORY_BUTTON_SELECTOR = '[data-button=historyNavigation]';
+export const NAVIGATOR_REFRESH_BUTTON_SELECTOR = '[data-button=refresh]';
+
 describe('LinearMemoryNavigator', () => {
   let component: LinearMemoryNavigator;
 
@@ -42,7 +47,7 @@ describe('LinearMemoryNavigator', () => {
   it('renders navigator address', async () => {
     const shadowRoot = component.shadowRoot;
     assertShadowRoot(shadowRoot);
-    const input = shadowRoot.querySelector('[data-input]');
+    const input = shadowRoot.querySelector(NAVIGATOR_ADDRESS_SELECTOR);
     assertElement(input, HTMLInputElement);
     assert.strictEqual(input.value, '0x00000014');
   });
@@ -54,7 +59,7 @@ describe('LinearMemoryNavigator', () => {
 
     const shadowRoot = component.shadowRoot;
     assertShadowRoot(shadowRoot);
-    const input = shadowRoot.querySelector('[data-input]');
+    const input = shadowRoot.querySelector(NAVIGATOR_ADDRESS_SELECTOR);
     assertElement(input, HTMLInputElement);
     assert.strictEqual(input.value, '0x00000010');
   });
@@ -64,7 +69,7 @@ describe('LinearMemoryNavigator', () => {
 
     const shadowRoot = component.shadowRoot;
     assertShadowRoot(shadowRoot);
-    const refreshButton = shadowRoot.querySelector('[data-button=refresh]');
+    const refreshButton = shadowRoot.querySelector(NAVIGATOR_REFRESH_BUTTON_SELECTOR);
     assertElement(refreshButton, HTMLButtonElement);
     refreshButton.click();
 
@@ -72,10 +77,10 @@ describe('LinearMemoryNavigator', () => {
   });
 
   it('sends events when clicking previous and next page', async () => {
-    await assertNavigationEvents('history-navigation');
+    await assertNavigationEvents('historyNavigation');
   });
 
   it('sends events when clicking undo and redo', async () => {
-    await assertNavigationEvents('page-navigation');
+    await assertNavigationEvents('pageNavigation');
   });
 });

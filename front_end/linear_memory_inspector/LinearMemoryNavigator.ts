@@ -20,7 +20,7 @@ export class PageNavigationEvent extends Event {
   data: Navigation
 
   constructor(navigation: Navigation) {
-    super('page-navigation', {});
+    super('pageNavigation', {});
     this.data = navigation;
   }
 }
@@ -29,7 +29,7 @@ export class HistoryNavigationEvent extends Event {
   data: Navigation
 
   constructor(navigation: Navigation) {
-    super('history-navigation', {});
+    super('historyNavigation', {});
     this.data = navigation;
   }
 }

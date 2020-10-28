@@ -5,20 +5,43 @@
 import './LinearMemoryNavigator.js';
 import './LinearMemoryViewer.js';
 
+import * as Common from '../common/common.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 const {render, html} = LitHtml;
 
-import type {LinearMemoryNavigatorData} from './LinearMemoryNavigator.js';
-import {LinearMemoryViewerData} from './LinearMemoryViewer.js';
+import {HistoryNavigationEvent, LinearMemoryNavigatorData, Navigation, PageNavigationEvent} from './LinearMemoryNavigator.js';
+import {ByteSelectedEvent, LinearMemoryViewer, LinearMemoryViewerData} from './LinearMemoryViewer.js';
 
 export interface LinearMemoryInspectorData {
   memory: Uint8Array;
   address: number;
 }
 
+class AddressHistoryEntry implements Common.SimpleHistoryManager.HistoryEntry {
+  private address = 0;
+  private callback;
+
+  constructor(address: number, callback: (x: number) => void) {
+    if (address < 0) {
+      throw new Error('Address should be a greater or equal to zero');
+    }
+    this.address = address;
+    this.callback = callback;
+  }
+
+  valid() {
+    return true;
+  }
+
+  reveal() {
+    this.callback(this.address);
+  }
+}
+
 export class LinearMemoryInspector extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
+  private readonly history = new Common.SimpleHistoryManager.SimpleHistoryManager(10);
   private memory = new Uint8Array();
   private address = 0;
 
@@ -52,13 +75,42 @@ export class LinearMemoryInspector extends HTMLElement {
         }
       </style>
       <div class="memory-inspector">
-        <devtools-linear-memory-inspector-navigator .data=${{address: this.address} as LinearMemoryNavigatorData}></devtools-linear-memory-inspector-navigator>
-        <devtools-linear-memory-inspector-viewer .data=${{memory: this.memory, address: this.address} as LinearMemoryViewerData}></devtools-linear-memory-inspector-viewer>
+        <devtools-linear-memory-inspector-navigator
+          .data=${{address: this.address} as LinearMemoryNavigatorData}
+          @pageNavigation=${this.navigatePage}
+          @historyNavigation=${this.navigateHistory}></devtools-linear-memory-inspector-navigator>
+        <devtools-linear-memory-inspector-viewer
+          .data=${{memory: this.memory, address: this.address} as LinearMemoryViewerData}
+          @byteSelected=${(e: ByteSelectedEvent) => this.jumpToAddress(e.data)}></devtools-linear-memory-inspector-viewer>
       </div>
       `, this.shadow, {
       eventContext: this,
     });
     // clang-format on
+  }
+
+  private navigateHistory(e: HistoryNavigationEvent) {
+    return e.data === Navigation.Forward ? this.history.rollover() : this.history.rollback();
+  }
+
+  private navigatePage(e: PageNavigationEvent) {
+    const viewer = this.shadow.querySelector<LinearMemoryViewer>('devtools-linear-memory-inspector-viewer');
+    if (!viewer) {
+      return;
+    }
+
+    const newAddress = e.data === Navigation.Forward ?
+        Math.min(this.address + viewer.getNumBytesPerPage(), this.memory.length - 1) :
+        Math.max(this.address - viewer.getNumBytesPerPage(), 0);
+    this.jumpToAddress(newAddress);
+  }
+
+  private jumpToAddress(address: number) {
+    const historyEntry = new AddressHistoryEntry(address, x => this.jumpToAddress(x));
+    this.history.push(historyEntry);
+
+    this.address = address;
+    this.render();
   }
 }
 

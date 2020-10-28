@@ -91,6 +91,22 @@ export function assertElements<T extends Element>(
   nodeList.forEach(e => assert.instanceOf(e, elementClass));
 }
 
+export function getElementWithinComponent<T extends HTMLElement, V extends Element>(
+    component: T, selector: string, elementClass: Constructor<V>) {
+  assertShadowRoot(component.shadowRoot);
+  const element = component.shadowRoot.querySelector(selector);
+  assertElement(element, elementClass);
+  return element;
+}
+
+export function getElementsWithinComponent<T extends HTMLElement, V extends Element>(
+    component: T, selector: string, elementClass: Constructor<V>) {
+  assertShadowRoot(component.shadowRoot);
+  const elements = component.shadowRoot.querySelectorAll(selector);
+  assertElements(elements, elementClass);
+  return elements;
+}
+
 /* Waits for the given element to have a scrollLeft property of at least desiredScrollLeft */
 export function waitForScrollLeft<T extends Element>(element: T, desiredScrollLeft: number): Promise<void> {
   let lastScrollLeft = -1;

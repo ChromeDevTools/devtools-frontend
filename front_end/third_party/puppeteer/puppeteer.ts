@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {Browser} from './package/lib/esm/puppeteer/common/Browser.js';
 import {Connection} from './package/lib/esm/puppeteer/common/Connection.js';
 
 export {
-  Connection
+  Browser,
+  Connection,
 };

@@ -886,7 +886,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     const remoteObject = /** @type {!SDK.RemoteObject.RemoteObject} */ (target);
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     contextMenu.debugSection().appendItem(
-        ls`Store as global variable`,
+        ls`Store ${remoteObject.type} as global variable`,
         () => SDK.ConsoleModel.ConsoleModel.instance().saveToTempVariable(executionContext, remoteObject));
     if (remoteObject.type === 'function') {
       contextMenu.debugSection().appendItem(

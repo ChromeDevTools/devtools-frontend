@@ -93,6 +93,9 @@
   <message name="IDS_DEVTOOLS_27cd6a52dd9de75342d5115dc6bca6ba" desc="Text in Debugger Plugin of the Sources panel">
     Associated files are available via file tree or <ph name="UI_SHORTCUTREGISTRY_SHORTCUTTITLEFORACTION__QUICKOPEN_SHOW__">$1s<ex>Ctrl+P Ctrl+O</ex></ph>.
   </message>
+  <message name="IDS_DEVTOOLS_2a7465e1c9bb68e86a204cab633b27fb" desc="A context menu item in the Console that stores selection as a temporary global variable">
+    Store <ph name="REMOTEOBJECT_TYPE">$1s<ex>string</ex></ph> as global variable
+  </message>
   <message name="IDS_DEVTOOLS_30af0d86fe286708503f94e65c4da3f6" desc="Text in Debugger Paused Message of the Sources panel">
     Paused on breakpoint
   </message>

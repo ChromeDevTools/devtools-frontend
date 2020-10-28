@@ -1314,10 +1314,10 @@ export function createRadioLabel(name, title, checked) {
 /**
  * @param {string} title
  * @param {string} iconClass
- * @return {!Element}
+ * @return {!HTMLElement}
  */
 export function createIconLabel(title, iconClass) {
-  const element = createElement('span', 'dt-icon-label');
+  const element = /** @type {!HTMLElement} */ (createElement('span', 'dt-icon-label'));
   element.createChild('span').textContent = title;
   element.type = iconClass;
   return element;

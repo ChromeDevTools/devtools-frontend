@@ -13,7 +13,7 @@
   const scriptURL = 'http://127.0.0.1:8000/devtools/service-workers/resources/service-worker-empty.js';
   const scope1 = 'http://127.0.0.1:8000/devtools/service-workers/resources/scope1/';
   const scope2 = 'http://127.0.0.1:8000/devtools/service-workers/resources/scope2/';
-  Resources.ServiceWorkersView._noThrottle = true;
+  Resources.ServiceWorkersView.setThrottleDisabledForDebugging = true;
 
   UI.panels.resources._sidebar.serviceWorkersTreeElement.select();
   ApplicationTestRunner.registerServiceWorker(scriptURL, scope1);

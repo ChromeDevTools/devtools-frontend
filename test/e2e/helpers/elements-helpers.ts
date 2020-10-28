@@ -10,7 +10,7 @@ import {$, $$, click, getBrowserAndPages, step, timeout, waitFor, waitForFunctio
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
 const CSS_PROPERTY_VALUE_SELECTOR = '.value';
-const CSS_PROPERTY_SWATCH_SELECTOR = '.color-swatch-inner';
+const COLOR_SWATCH_SELECTOR = '.color-swatch-inner';
 const CSS_STYLE_RULE_SELECTOR = '[aria-label*="css selector"]';
 const COMPUTED_PROPERTY_SELECTOR = 'devtools-computed-style-property';
 const COMPUTED_STYLES_PANEL_SELECTOR = '[aria-label="Computed panel"]';
@@ -190,6 +190,25 @@ export const getAllPropertiesFromComputedPane = async () => {
       .filter(prop => !!prop);
 };
 
+export const getPropertyFromComputedPane = async (name: string) => {
+  const properties = await $$(COMPUTED_PROPERTY_SELECTOR);
+  for (const property of properties) {
+    const matchingProperty = await property.evaluateHandle((node, name) => {
+      const nameEl = node.querySelector('[slot="property-name"]');
+      if (nameEl && nameEl.textContent === name) {
+        return node;
+      }
+      return undefined;
+    }, name);
+    // Note that evaluateHandle always returns a handle, even if it points to an undefined remote object, so we need to
+    // check it's defined here or continue iterating.
+    if (await matchingProperty.evaluate(n => !!n)) {
+      return matchingProperty as puppeteer.ElementHandle;
+    }
+  }
+  return undefined;
+};
+
 export const expandSelectedNodeRecursively = async () => {
   const EXPAND_RECURSIVELY = '[aria-label="Expand recursively"]';
 
@@ -305,10 +324,22 @@ export const getStyleRule = (selector: string) => {
   return waitFor(getStyleRuleSelector(selector));
 };
 
-export const getCSSPropertySwatchStyle = async (ruleSection: puppeteer.ElementHandle<Element>) => {
-  const swatches = await $$(CSS_PROPERTY_SWATCH_SELECTOR, ruleSection);
-  const style = await swatches[0].evaluate(node => node.getAttribute('style'));
-  return (swatches.length, style);
+export const getColorSwatch = async (parent: puppeteer.ElementHandle<Element>, index: number) => {
+  const swatches = await $$(COLOR_SWATCH_SELECTOR, parent);
+  return swatches[index];
+};
+
+export const getColorSwatchColor = async (parent: puppeteer.ElementHandle<Element>, index: number) => {
+  const swatch = await getColorSwatch(parent, index);
+  return await swatch.evaluate(node => (node as HTMLElement).style.backgroundColor);
+};
+
+export const shiftClickColorSwatch = async (ruleSection: puppeteer.ElementHandle<Element>, index: number) => {
+  const swatch = await getColorSwatch(ruleSection, index);
+  const {frontend} = getBrowserAndPages();
+  await frontend.keyboard.down('Shift');
+  await click(swatch);
+  await frontend.keyboard.up('Shift');
 };
 
 export const getStyleSectionSubtitles = async () => {
@@ -328,7 +359,7 @@ export const getCSSPropertyInRule = async (ruleSection: puppeteer.ElementHandle<
     // Note that evaluateHandle always returns a handle, even if it points to an undefined remote object, so we need to
     // check it's defined here or continue iterating.
     if (await parent.evaluate(n => !!n)) {
-      return parent;
+      return parent as puppeteer.ElementHandle;
     }
   }
   return undefined;
@@ -365,6 +396,22 @@ export async function editCSSProperty(selector: string, propertyName: string, ne
     return await value.evaluate(node => {
       return !node.classList.contains('text-prompt') && !node.hasAttribute('contenteditable');
     });
+  });
+}
+
+export async function waitForCSSPropertyValue(selector: string, name: string, value: string) {
+  await waitForFunction(async () => {
+    const propertyHandle = await getCSSPropertyInRule(selector, name);
+    if (!propertyHandle) {
+      return false;
+    }
+
+    const valueHandle = await $(CSS_PROPERTY_VALUE_SELECTOR, propertyHandle);
+    if (!valueHandle) {
+      return false;
+    }
+
+    return await valueHandle.evaluate((node, value) => node.textContent === value, value);
   });
 }
 

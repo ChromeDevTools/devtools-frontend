@@ -144,9 +144,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   /**
    * @param {string} text
+   * @param {?Node=} valueChild
    * @return {!Node}
    */
-  _processColor(text) {
+  _processColor(text, valueChild) {
     const useUserSettingFormat = this._editable();
     const shiftClickMessage = Common.UIString.UIString('Shift + Click to change color format.');
     const tooltip =
@@ -154,13 +155,18 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const swatch = InlineEditor.ColorSwatch.createColorSwatch();
     swatch.renderColor(text, useUserSettingFormat, tooltip);
-    const value = swatch.createChild('span');
-    value.textContent = swatch.color ? swatch.color.asString(swatch.format) : text;
+
+    if (!valueChild) {
+      valueChild = swatch.createChild('span');
+      valueChild.textContent = swatch.color ? swatch.color.asString(swatch.format) : text;
+    }
+    swatch.appendChild(valueChild);
 
     /** @param {!Event} event */
     const onFormatchanged = event => {
       const {data} = /** @type {*} */ (event);
-      value.textContent = data.text;
+      swatch.firstElementChild && swatch.firstElementChild.remove();
+      swatch.createChild('span').textContent = data.text;
     };
 
     swatch.addEventListener('format-changed', onFormatchanged);
@@ -177,17 +183,21 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
    * @return {!Node}
    */
   _processVar(text) {
-    const swatch = InlineEditor.CSSVarSwatch.createCSSVarSwatch();
-    UI.UIUtils.createTextChild(swatch, text);
-
     const computedSingleValue = this._matchedStyles.computeSingleVariableValue(this._style, text);
     if (!computedSingleValue) {
       throw new Error('Unable to compute single value');
     }
     const {computedValue, fromFallback} = computedSingleValue;
-    swatch.data = {text, computedValue, fromFallback, onLinkClick: this._handleVarDefinitionClick.bind(this)};
 
-    return swatch;
+    const varSwatch = InlineEditor.CSSVarSwatch.createCSSVarSwatch();
+    UI.UIUtils.createTextChild(varSwatch, text);
+    varSwatch.data = {text, computedValue, fromFallback, onLinkClick: this._handleVarDefinitionClick.bind(this)};
+
+    if (!computedValue || !Common.Color.Color.parse(computedValue)) {
+      return varSwatch;
+    }
+
+    return this._processColor(computedValue, varSwatch);
   }
 
   /**

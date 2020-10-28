@@ -103,43 +103,4 @@ describe('CSSVarSwatch', () => {
       hasColorSwatch: false,
     });
   });
-
-  it('renders a color swatch for properties that compute to valid colors', () => {
-    const component = new CSSVarSwatch();
-    renderElementIntoDOM(component);
-    component.data = {
-      text: 'var(--main-color)',
-      computedValue: '#f06',
-      fromFallback: false,
-      onLinkClick: () => {},
-    };
-
-    assertSwatch(component, {
-      valueTooltip: '#f06',
-      linkTooltip: 'Jump to definition',
-      isDefined: true,
-      varText: '--main-color',
-      hasColorSwatch: true,
-      parsedColor: 'rgb(255, 0, 102)',
-    });
-  });
-
-  it('doesn\'t get confused with properties that look like colors', () => {
-    const component = new CSSVarSwatch();
-    renderElementIntoDOM(component);
-    component.data = {
-      text: 'var(--fake-color)',
-      computedValue: '#12345',
-      fromFallback: false,
-      onLinkClick: () => {},
-    };
-
-    assertSwatch(component, {
-      valueTooltip: '#12345',
-      linkTooltip: 'Jump to definition',
-      isDefined: true,
-      varText: '--fake-color',
-      hasColorSwatch: false,
-    });
-  });
 });

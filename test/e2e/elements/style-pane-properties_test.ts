@@ -7,7 +7,7 @@ import * as puppeteer from 'puppeteer';
 
 import {$$, click, getBrowserAndPages, goToResource, timeout, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getComputedStylesForDomNode, getCSSPropertySwatchStyle, getDisplayedCSSPropertyNames, getDisplayedStyleRules, getStyleRule, getStyleSectionSubtitles, waitForContentOfSelectedElementsNode, waitForElementsStyleSection, waitForPropertyToHighlight, waitForStyleRule} from '../helpers/elements-helpers.js';
+import {getComputedStylesForDomNode, getDisplayedCSSPropertyNames, getDisplayedStyleRules, getStyleRule, getStyleSectionSubtitles, waitForContentOfSelectedElementsNode, waitForElementsStyleSection, waitForPropertyToHighlight, waitForStyleRule} from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
 const PROPERTIES_TO_INSPECT_SELECTOR = '#properties-to-inspect';
@@ -62,19 +62,6 @@ describe('The Styles pane', async () => {
     assert.deepEqual(
         h2Rules[1], {selectorText: 'h2', propertyNames: ['background-color', 'color']},
         'The correct rule is displayed');
-  });
-
-  it('can display CSS variables properly', async () => {
-    const {frontend} = getBrowserAndPages();
-    await goToResourceAndWaitForStyleSection('elements/css-variables.html');
-
-    // Select div that we will inspect the CSS variables for
-    await frontend.keyboard.press('ArrowRight');
-    await waitForContentOfSelectedElementsNode('<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
-
-    const propertiesSection = await getStyleRule(PROPERTIES_TO_INSPECT_SELECTOR);
-    const swatchStyle = await getCSSPropertySwatchStyle(propertiesSection);
-    assert.deepEqual(swatchStyle, 'background-color:black;', 'The swatch has incorrect style');
   });
 
   it('can jump to a CSS variable definition', async () => {

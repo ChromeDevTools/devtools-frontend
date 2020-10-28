@@ -3,12 +3,10 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 const {render, html, Directives} = LitHtml;
 const ls = Common.ls;
-const getStyleSheets = ComponentHelpers.GetStylesheet.getStyleSheets;
 
 const VARIABLE_FUNCTION_REGEX = /(var\()(--[^,)]+)(.*)/;
 
@@ -28,27 +26,15 @@ interface ParsedVariableFunction {
 export class CSSVarSwatch extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private text: string = '';
-  private color: Common.Color.Color|null = null;
   private computedValue: string|null = null;
   private fromFallback: boolean = false;
   private onLinkClick: (varialeName: string, event: Event) => void = () => undefined;
-
-  constructor() {
-    super();
-    this.shadow.adoptedStyleSheets = [
-      ...getStyleSheets('inline_editor/colorSwatch.css', {patchThemeSupport: false}),
-    ];
-  }
 
   set data(data: SwatchRenderData) {
     this.text = data.text;
     this.computedValue = data.computedValue;
     this.fromFallback = data.fromFallback;
     this.onLinkClick = data.onLinkClick;
-
-    if (this.computedValue) {
-      this.color = Common.Color.Color.parse(this.computedValue);
-    }
 
     this.render();
   }
@@ -88,19 +74,6 @@ export class CSSVarSwatch extends HTMLElement {
         variableName}</span>`;
   }
 
-  private renderColorSwatch() {
-    if (!this.color) {
-      return '';
-    }
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`<span class="color-swatch read-only">
-      <span class="color-swatch-inner" style="background-color:${this.color.asString()};"></span>
-    </span>`;
-    // clang-format on
-  }
-
   private render() {
     const functionParts = this.parseVariableFunctionParts();
     if (!functionParts) {
@@ -109,7 +82,6 @@ export class CSSVarSwatch extends HTMLElement {
     }
 
     const link = this.renderLink(functionParts.name);
-    const colorSwatch = this.renderColorSwatch();
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -119,7 +91,7 @@ export class CSSVarSwatch extends HTMLElement {
         cursor: pointer;
         text-decoration: underline;
       }
-      </style><span title="${this.computedValue || ''}">${colorSwatch}${functionParts.pre}${link}${functionParts.post}</span>`,
+      </style><span title="${this.computedValue || ''}">${functionParts.pre}${link}${functionParts.post}</span>`,
       this.shadow, { eventContext: this });
     // clang-format on
   }

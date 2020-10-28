@@ -214,14 +214,15 @@ export class ColorSwatchPopoverIcon {
     if (!color) {
       return;
     }
-    this._swatch.renderColor(color);
-    const value = this._swatch.querySelector('span');
-    if (value) {
-      value.textContent = color.asString();
-    }
+
     const colorName = this._spectrum ? this._spectrum.colorName() : undefined;
-    if (colorName && colorName.startsWith('--')) {
-      this._swatch.childNodes[0].textContent = `var(${colorName})`;
+    const text = colorName && colorName.startsWith('--') ? `var(${colorName})` : color.asString();
+
+    this._swatch.renderColor(color);
+    const value = this._swatch.firstElementChild;
+    if (value) {
+      value.remove();
+      this._swatch.createChild('span').textContent = text;
     }
 
     this._treeElement.applyStyleText(this._treeElement.renderedPropertyText(), false);

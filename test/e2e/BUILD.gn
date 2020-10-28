@@ -25,6 +25,7 @@ node_ts_library("tests") {
     "elements",
     "emulation",
     "host",
+    "inline_editor",
     "issues",
     "layers",
     "lighthouse",

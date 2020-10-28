@@ -28,6 +28,8 @@ const togglePopover = (root: ShadowRoot) => {
 };
 
 const initialData: CSSAngleData = {
+  propertyName: 'background',
+  propertyValue: 'linear-gradient(45deg, red, green)',
   angleText: '45deg',
   containingPane: document.createElement('div'),
 };

@@ -12,6 +12,8 @@
 import './CSSAngle.js';
 /**
 * @typedef {{
+* propertyName:string,
+* propertyValue:string,
 * angleText:string,
 * containingPane:!HTMLElement,
 * }}
@@ -29,6 +31,13 @@ export class CSSAngleClosureInterface extends HTMLElement {
   * @return {void}
   */
   minify() {
+  }
+  /**
+  * @param {string} name
+  * @param {string} value
+  * @return {void}
+  */
+  updateProperty(name, value) {
   }
   /**
   * @param {!CSSAngleData} data

@@ -12,6 +12,7 @@ const styleMap = LitHtml.Directives.styleMap;
 
 const MiniIconWidth = 11;
 const ClockDialLength = 6;
+const ContextAwareProperties = new Set(['color', 'background', 'background-color']);
 
 export class PopoverToggledEvent extends Event {
   data: {open: boolean};
@@ -32,6 +33,8 @@ export class ValueChangedEvent extends Event {
 }
 
 export interface CSSAngleData {
+  propertyName: string;
+  propertyValue: string;
   angleText: string;
   containingPane: HTMLElement;
 }
@@ -40,8 +43,10 @@ export class CSSAngle extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private angle = 0;
   private unit = AngleUnit.Deg;
-  private mousemoveThrottler = new Common.Throttler.Throttler(16.67 /* 60fps */);
+  private propertyName = '';
+  private propertyValue = '';
   private containingPane?: HTMLElement;
+  private mousemoveThrottler = new Common.Throttler.Throttler(16.67 /* 60fps */);
   private popoverOpen = false;
   private popoverStyleTop = '';
   private clockRadius = 77 / 2;  // By default the clock is 77 * 77.
@@ -55,8 +60,9 @@ export class CSSAngle extends HTMLElement {
     }
     this.angle = parsedResult.value;
     this.unit = parsedResult.unit;
+    this.propertyName = data.propertyName;
+    this.propertyValue = data.propertyValue;
     this.containingPane = data.containingPane;
-    // TODO(changhaohan): crbug.com/1138633 render based on the type of the property value
     this.render();
   }
 
@@ -102,6 +108,12 @@ export class CSSAngle extends HTMLElement {
     this.render();
   }
 
+  updateProperty(name: string, value: string): void {
+    this.propertyName = name;
+    this.propertyValue = value;
+    this.render();
+  }
+
   private onMiniIconClick(event: Event): void {
     event.stopPropagation();
     this.popoverOpen ? this.minify() : this.popover();
@@ -136,7 +148,6 @@ export class CSSAngle extends HTMLElement {
     const degree = -Math.atan2(mouseX - clockCenterX, mouseY - clockCenterY) * 180 / Math.PI + 180;
     const rawAngle = getAngleFromDegrees(degree, this.unit);
     this.angle = roundAngleByUnit(rawAngle, this.unit);
-    this.render();
     this.dispatchEvent(new ValueChangedEvent(`${this.angle}${this.unit}`));
   }
 
@@ -225,15 +236,19 @@ export class CSSAngle extends HTMLElement {
           bottom: 0;
         }
 
+        .center, .hand {
+          box-shadow: 0 0 2px hsl(0 0% 0% / 20%);
+        }
+
+        :host-context(.-theme-with-dark-background) .center,
+        :host-context(.-theme-with-dark-background) .hand {
+          box-shadow: 0 0 2px hsl(0 0% 0% / 60%);
+        }
+
         .center {
           width: 0.7em;
           height: 0.7em;
           border-radius: 10px;
-          box-shadow: 0 0 2px hsl(0 0% 0% / 20%);
-        }
-
-        :host-context(.-theme-with-dark-background) .center {
-          box-shadow: 0 0 2px hsl(0 0% 0% / 60%);
         }
 
         .dial {
@@ -247,7 +262,6 @@ export class CSSAngle extends HTMLElement {
           height: 50%;
           width: 0.3em;
           background: var(--accent-fg-color);
-          box-shadow: var(--drop-shadow);
         }
 
         .hand::before {
@@ -294,6 +308,15 @@ export class CSSAngle extends HTMLElement {
   }
 
   private renderPopover() {
+    const clockStyles = {
+      background: '',
+    };
+    // TODO(crbug.com/1143010): for now we ignore values with "url"; when we refactor
+    // CSS value parsing we should properly apply atomic contextual background.
+    if (ContextAwareProperties.has(this.propertyName) && !this.propertyValue.match(/url\(.*\)/i)) {
+      clockStyles.background = this.propertyValue;
+    }
+
     const {translateX, translateY} = get2DTranslationsForAngle(this.angle, this.unit, this.clockRadius / 2);
     const handStyles = {
       transform: `translate(${translateX}px, ${translateY}px) rotate(${this.angle}${this.unit})`,
@@ -305,6 +328,7 @@ export class CSSAngle extends HTMLElement {
         <span class="pointer"></span>
         <div
           class="clock"
+          style=${styleMap(clockStyles)}
           @mousedown=${this.onMouseDown}
           @mousemove=${this.onMouseMove}>
           ${this.renderDials()}

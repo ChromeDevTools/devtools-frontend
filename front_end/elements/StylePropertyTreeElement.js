@@ -312,17 +312,20 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   /**
-   * @param {string} propertyValue
+   * @param {string} angleText
    */
-  _processAngle(propertyValue) {
+  _processAngle(angleText) {
     if (!this._editable()) {
-      return document.createTextNode(propertyValue);
+      return document.createTextNode(angleText);
     }
     const cssAngle = createCSSAngle();
     const valueElement = document.createElement('span');
-    valueElement.textContent = propertyValue;
+    valueElement.textContent = angleText;
+    const computedPropertyValue = this._matchedStyles.computeValue(this.property.ownerStyle, this.property.value) || '';
     cssAngle.data = {
-      angleText: propertyValue,
+      propertyName: this.property.name,
+      propertyValue: computedPropertyValue,
+      angleText,
       containingPane:
           /** @type {!HTMLElement} */ (this._parentPane.element.enclosingNodeOrSelfWithClass('style-panes-wrapper')),
     };
@@ -331,7 +334,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     /**
      * @param {!Event} event
      */
-    const popOverToggled = event => {
+    const popoverToggled = event => {
       const section = this.section();
       if (!section) {
         return;
@@ -346,14 +349,17 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     /**
      * @param {!Event} event
      */
-    const valueChanged = event => {
+    const valueChanged = async event => {
       const {data} = /** @type {*} */ (event);
 
       valueElement.textContent = data.value;
-      this.applyStyleText(this.renderedPropertyText(), false);
+      await this.applyStyleText(this.renderedPropertyText(), false);
+      const computedPropertyValue =
+          this._matchedStyles.computeValue(this.property.ownerStyle, this.property.value) || '';
+      cssAngle.updateProperty(this.property.name, computedPropertyValue);
     };
 
-    cssAngle.addEventListener('popover-toggled', popOverToggled);
+    cssAngle.addEventListener('popover-toggled', popoverToggled);
     cssAngle.addEventListener('value-changed', valueChanged);
 
     return cssAngle;

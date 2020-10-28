@@ -33,7 +33,6 @@ node_ts_library("tests") {
     "network",
     "performance",
     "profiler",
-    "puppeteer",
     "rendering",
     "search",
     "security",

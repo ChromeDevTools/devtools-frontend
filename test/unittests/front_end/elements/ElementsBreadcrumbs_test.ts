@@ -16,6 +16,7 @@ interface MakeCrumbOptions extends Partial<DOMNode> {
 const makeCrumb = (overrides: MakeCrumbOptions = {}) => {
   const attributes = overrides.attributes || {};
   const newCrumb: DOMNode = {
+    parentNode: null,
     nodeType: Node.ELEMENT_NODE,
     id: 1,
     pseudoType: '',

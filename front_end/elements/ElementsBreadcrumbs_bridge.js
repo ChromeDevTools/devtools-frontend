@@ -20,7 +20,7 @@ import './ElementsBreadcrumbs.js';
 export let ElementsBreadcrumbsData;
 /**
 * @typedef {{
-* parentNode:(!DOMNode|undefined),
+* parentNode:?DOMNode,
 * id:number,
 * nodeType:number,
 * pseudoType:(string|undefined),

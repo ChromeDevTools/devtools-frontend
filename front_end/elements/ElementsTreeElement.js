@@ -1318,7 +1318,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           this._node.shadowRootType()) {
         this.childrenListElement.classList.add('shadow-root');
         let depth = 4;
-        for (let node = this._node; depth && node; node = node.parentNode) {
+        for (let node = /** @type {?SDK.DOMModel.DOMNode} */ (this._node); depth && node; node = node.parentNode) {
           if (node.nodeType() === Node.DOCUMENT_FRAGMENT_NODE) {
             depth--;
           }
@@ -1783,7 +1783,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
         if (ElementsTreeElement.canShowInlineText(node)) {
           const textNodeElement = titleDOM.createChild('span', 'webkit-html-text-node');
-          const result = this._convertWhitespaceToEntities(node.firstChild.nodeValue());
+          const firstChild = node.firstChild;
+          if (!firstChild) {
+            throw new Error('ElementsTreeElement._nodeTitleInfo expects node.firstChild to be defined.');
+          }
+          const result = this._convertWhitespaceToEntities(firstChild.nodeValue());
           textNodeElement.textContent = result.text;
           UI.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
           UI.UIUtils.createTextChild(titleDOM, '\u200B');

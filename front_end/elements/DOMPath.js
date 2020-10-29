@@ -27,7 +27,7 @@ export const cssPath = function(node, optimized) {
   }
 
   const steps = [];
-  let contextNode = node;
+  let contextNode = /** @type {?SDK.DOMModel.DOMNode} */ (node);
   while (contextNode) {
     const step = _cssPathStep(contextNode, !!optimized, contextNode === node);
     if (!step) {
@@ -152,7 +152,7 @@ export const _cssPathStep = function(node, optimized, isTargetNode) {
   let ownIndex = -1;
   let elementIndex = -1;
   const siblings = parent.children();
-  for (let i = 0; (ownIndex === -1 || !needsNthChild) && i < siblings.length; ++i) {
+  for (let i = 0; siblings && (ownIndex === -1 || !needsNthChild) && i < siblings.length; ++i) {
     const sibling = siblings[i];
     if (sibling.nodeType() !== Node.ELEMENT_NODE) {
       continue;
@@ -216,7 +216,7 @@ export const xPath = function(node, optimized) {
   }
 
   const steps = [];
-  let contextNode = node;
+  let contextNode = /** @type {?SDK.DOMModel.DOMNode} */ (node);
   while (contextNode) {
     const step = _xPathValue(contextNode, optimized);
     if (!step) {

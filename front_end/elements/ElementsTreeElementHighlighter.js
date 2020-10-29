@@ -71,7 +71,7 @@ export class ElementsTreeElementHighlighter {
     this._currentHighlightedElement = null;
     this._alreadyExpandedParentElement = null;
     if (node) {
-      let deepestExpandedParent = node;
+      let deepestExpandedParent = /** @type {?SDK.DOMModel.DOMNode} */ (node);
       const treeElementByNode = this._treeOutline.treeElementByNode;
 
       /**

@@ -5,7 +5,7 @@
 import {ls} from '../platform/platform.js';
 
 export interface DOMNode {
-  parentNode?: DOMNode;
+  parentNode: DOMNode|null;
   id: number;
   nodeType: number;
   pseudoType?: string;

@@ -52,7 +52,7 @@ import {Events as StylesSidebarPaneEvents, StylesSidebarPane} from './StylesSide
  */
 const legacyNodeToNewBreadcrumbsNode = node => {
   return {
-    parentNode: node.parentNode,
+    parentNode: node.parentNode ? legacyNodeToNewBreadcrumbsNode(node.parentNode) : null,
     id: /** @type {number} */ (node.id),
     nodeType: node.nodeType(),
     pseudoType: node.pseudoType(),

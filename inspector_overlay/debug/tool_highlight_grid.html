@@ -108,22 +108,16 @@ found in the LICENSE file.
       }
     ];
 
-    dispatch(["setPlatform", "mac"]);
-    dispatch(["reset", {
-      viewportSize: {
-        width: viewportWidth,
-        height: viewportHeight,
-      },
-      deviceScaleFactor: 1,
-      pageScaleFactor: 1,
-      pageZoomFactor: 1,
-      emulationScaleFactor: 1,
-      scrollX: 0,
-      scrollY: 0,
-    }]);
+    setPlatform("mac");
+
+    window.viewportSize = {
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight
+    };
+    reset(window);
 
     for (const {gridInfo} of gridInfos) {
-      dispatch(["drawGridHighlight", gridInfo]);
+      drawGridHighlight(gridInfo);
     }
   </script>
 </body>

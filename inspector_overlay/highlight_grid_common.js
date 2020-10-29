@@ -216,7 +216,7 @@ export const gridStyle = `
   }
 }`;
 
-export function drawLayoutGridHighlight(highlight, context, deviceScaleFactor, canvasWidth, canvasHeight) {
+export function drawLayoutGridHighlight(highlight, context) {
   const gridBounds = emptyBounds();
   const gridPath = buildPath(highlight.gridBorder, gridBounds);
 
@@ -260,18 +260,15 @@ export function drawLayoutGridHighlight(highlight, context, deviceScaleFactor, c
 
   // The rest of the overlay is drawn without the writing-mode transformation, but we keep the matrix to transform relevant points.
   const writingModeMatrix = context.getTransform();
-  writingModeMatrix.scaleSelf(1 / deviceScaleFactor);
+  writingModeMatrix.scaleSelf(1 / window.deviceScaleFactor);
   context.restore();
 
   if (highlight.gridHighlightConfig.showGridExtensionLines) {
     if (rowBounds) {
-      _drawExtendedGridLines(
-          context, rowBounds, highlight.gridHighlightConfig.rowLineDash, writingModeMatrix, canvasWidth, canvasHeight);
+      _drawExtendedGridLines(context, rowBounds, highlight.gridHighlightConfig.rowLineDash, writingModeMatrix);
     }
     if (columnBounds) {
-      _drawExtendedGridLines(
-          context, columnBounds, highlight.gridHighlightConfig.columnLineDash, writingModeMatrix, canvasWidth,
-          canvasHeight);
+      _drawExtendedGridLines(context, columnBounds, highlight.gridHighlightConfig.columnLineDash, writingModeMatrix);
     }
   }
 
@@ -333,7 +330,7 @@ function _drawGridLines(context, highlight, direction) {
   return bounds;
 }
 
-function _drawExtendedGridLines(context, bounds, dash, writingModeMatrix, canvasWidth, canvasHeight) {
+function _drawExtendedGridLines(context, bounds, dash, writingModeMatrix) {
   context.save();
   context.strokeStyle = DEFAULT_EXTENDED_LINE_COLOR;
   context.lineWidth = 1;

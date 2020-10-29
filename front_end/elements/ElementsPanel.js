@@ -116,7 +116,7 @@ export class ElementsPanel extends UI.Panel.Panel {
 
     crumbsContainer.appendChild(this._breadcrumbs);
 
-    this._stylesWidget = new StylesSidebarPane();
+    this._stylesWidget = StylesSidebarPane.instance();
     this._computedStyleWidget = new ComputedStyleWidget();
     this._metricsWidget = new MetricsSidebarPane();
 

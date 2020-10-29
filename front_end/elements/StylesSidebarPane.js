@@ -68,7 +68,23 @@ const HIGHLIGHTABLE_PROPERTIES = [
   {property: 'grid-template-rows', mode: 'grid-template-rows'},
 ];
 
+/** @type {!StylesSidebarPane} */
+let _stylesSidebarPaneInstance;
+
 export class StylesSidebarPane extends ElementsSidebarPane {
+  /**
+   * @return {!StylesSidebarPane}
+   */
+  static instance() {
+    if (!_stylesSidebarPaneInstance) {
+      _stylesSidebarPaneInstance = new StylesSidebarPane();
+    }
+    return _stylesSidebarPaneInstance;
+  }
+
+  /**
+   * @private
+   */
   constructor() {
     super(true /* delegatesFocus */);
     this.setMinimumSize(96, 26);
@@ -98,6 +114,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     this._sectionsContainer.addEventListener('keydown', this._sectionsContainerKeyDown.bind(this), false);
     this._sectionsContainer.addEventListener('focusin', this._sectionsContainerFocusChanged.bind(this), false);
     this._sectionsContainer.addEventListener('focusout', this._sectionsContainerFocusChanged.bind(this), false);
+    /** @type {!WeakMap<!Node, !StylePropertiesSection>} */
+    this.sectionByElement = new WeakMap();
 
     this._swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
     this._linkifier = new Components.Linkifier.Linkifier(_maxLinkLength, /* useLinkDecorator */ true);
@@ -119,7 +137,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     /** @type {?IdleCallbackManager} */
     this._idleCallbackManager = null;
     this._needsForceUpdate = false;
-    StylesSidebarPane._instance = this;
+    _stylesSidebarPaneInstance = this;
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.forceUpdate, this);
     this.contentElement.addEventListener('copy', this._clipboardCopy.bind(this));
     this._resizeThrottler = new Common.Throttler.Throttler(100);
@@ -153,7 +171,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
    * @return {!Element}
    */
   static createExclamationMark(property, title) {
-    const exclamationElement = createElement('span', 'dt-icon-label');
+    const exclamationElement =
+        /** @type {!UI.UIUtils.DevToolsIconLabel} */ (document.createElement('span', {is: 'dt-icon-label'}));
     exclamationElement.className = 'exclamation-mark';
     if (!StylesSidebarPane.ignoreErrorsForProperty(property)) {
       exclamationElement.type = 'smallicon-warning';
@@ -216,7 +235,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
   /**
    * @param {string} placeholder
    * @param {!Element} container
-   * @param {function(?RegExp)} filterCallback
+   * @param {function(?RegExp):void} filterCallback
    * @return {!Element}
    */
   static createPropertyFilterElement(placeholder, container, filterCallback) {
@@ -235,26 +254,15 @@ export class StylesSidebarPane extends ElementsSidebarPane {
      * @param {!Event} event
      */
     function keydownHandler(event) {
-      if (event.key !== 'Escape' || !input.value) {
+      const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+      if (keyboardEvent.key !== 'Escape' || !input.value) {
         return;
       }
-      event.consume(true);
+      keyboardEvent.consume(true);
       input.value = '';
       searchHandler();
     }
     input.addEventListener('keydown', keydownHandler, false);
-
-    input.setFilterValue = setFilterValue;
-
-    /**
-     * @param {string} value
-     */
-    function setFilterValue(value) {
-      input.value = value;
-      input.focus();
-      searchHandler();
-    }
-
     return input;
   }
 
@@ -267,6 +275,9 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     this.update();
   }
 
+  /**
+   * @param {string} propertyName
+   */
   jumpToProperty(propertyName) {
     this._decorator.findAndHighlightPropertyName(propertyName);
   }
@@ -286,7 +297,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     if (!activeElement) {
       return;
     }
-    const section = activeElement._section;
+    const section = this.sectionByElement.get(activeElement);
     if (!section) {
       return;
     }
@@ -967,7 +978,7 @@ export class SectionBlock {
    * @return {!SectionBlock}
    */
   static createPseudoTypeBlock(pseudoType) {
-    const separatorElement = createElement('div');
+    const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
     separatorElement.textContent = Common.UIString.UIString('Pseudo ::%s element', pseudoType);
     return new SectionBlock(separatorElement);
@@ -978,7 +989,7 @@ export class SectionBlock {
    * @return {!SectionBlock}
    */
   static createKeyframesBlock(keyframesName) {
-    const separatorElement = createElement('div');
+    const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
     separatorElement.textContent = `@keyframes ${keyframesName}`;
     return new SectionBlock(separatorElement);
@@ -989,7 +1000,7 @@ export class SectionBlock {
    * @return {!Promise<!SectionBlock>}
    */
   static async _createInheritedNodeBlock(node) {
-    const separatorElement = createElement('div');
+    const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
     UI.UIUtils.createTextChild(separatorElement, ls`Inherited from${' '}`);
     const link = await Common.Linkifier.Linkifier.linkify(node, {preventKeyboardFocus: true});
@@ -1087,7 +1098,7 @@ export class StylePropertiesSection {
     this.element.tabIndex = -1;
     UI.ARIAUtils.markAsTreeitem(this.element);
     this.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
-    this.element._section = this;
+    parentPane.sectionByElement.set(this.element, this);
     this._innerElement = this.element.createChild('div');
 
     this._titleElement = this._innerElement.createChild('div', 'styles-section-title ' + (rule ? 'styles-selector' : ''));
@@ -1102,7 +1113,7 @@ export class StylePropertiesSection {
     this._showAllButton = UI.UIUtils.createTextButton('', this._showAllItems.bind(this), 'styles-show-all');
     this._innerElement.appendChild(this._showAllButton);
 
-    const selectorContainer = createElement('div');
+    const selectorContainer = document.createElement('div');
     this._selectorElement = document.createElement('span');
     this._selectorElement.classList.add('selector');
     this._selectorElement.textContent = this._headerText();
@@ -1397,8 +1408,9 @@ export class StylePropertiesSection {
 
     let childElement = parent.firstChild;
     while (childElement) {
-      if (childElement._section) {
-        return childElement._section;
+      const childSection = this._parentPane.sectionByElement.get(childElement);
+      if (childSection) {
+        return childSection;
       }
       childElement = childElement.nextSibling;
     }
@@ -1417,8 +1429,9 @@ export class StylePropertiesSection {
 
     let childElement = parent.lastChild;
     while (childElement) {
-      if (childElement._section) {
-        return childElement._section;
+      const childSection = this._parentPane.sectionByElement.get(childElement);
+      if (childSection) {
+        return childSection;
       }
       childElement = childElement.previousSibling;
     }
@@ -1427,27 +1440,33 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @return {?StylePropertiesSection}
+   * @return {!StylePropertiesSection|undefined}
    */
   nextSibling() {
     let curElement = this.element;
     do {
       curElement = curElement.nextSibling;
-    } while (curElement && !curElement._section);
+    } while (curElement && !this._parentPane.sectionByElement.has(curElement));
 
-    return curElement ? curElement._section : null;
+    if (curElement) {
+      return this._parentPane.sectionByElement.get(curElement);
+    }
+    return;
   }
 
   /**
-   * @return {?StylePropertiesSection}
+   * @return {!StylePropertiesSection|undefined}
    */
   previousSibling() {
     let curElement = this.element;
     do {
       curElement = curElement.previousSibling;
-    } while (curElement && !curElement._section);
+    } while (curElement && !this._parentPane.sectionByElement.has(curElement));
 
-    return curElement ? curElement._section : null;
+    if (curElement) {
+      return this._parentPane.sectionByElement.get(curElement);
+    }
+    return;
   }
 
   /**
@@ -2783,7 +2802,7 @@ export class StylesSidebarPropertyRenderer {
    * @return {!Element}
    */
   renderName() {
-    const nameElement = createElement('span');
+    const nameElement = document.createElement('span');
     nameElement.className = 'webkit-css-property';
     nameElement.textContent = this._propertyName;
     nameElement.normalize();
@@ -2794,7 +2813,7 @@ export class StylesSidebarPropertyRenderer {
    * @return {!Element}
    */
   renderValue() {
-    const valueElement = createElement('span');
+    const valueElement = document.createElement('span');
     valueElement.className = 'value';
     if (!this._propertyValue) {
       return valueElement;
@@ -2908,14 +2927,14 @@ export class ButtonProvider {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _clicked(event) {
-    StylesSidebarPane._instance._createNewRuleInViaInspectorStyleSheet();
+    StylesSidebarPane.instance()._createNewRuleInViaInspectorStyleSheet();
   }
 
   /**
    * @param {!Event} event
    */
   _longClicked(event) {
-    StylesSidebarPane._instance._onAddButtonLongClick(event);
+    StylesSidebarPane.instance()._onAddButtonLongClick(event);
   }
 
   /**

@@ -118,9 +118,13 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
    *
    * @param {!HTMLElement} field
    * @param {function((!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue)):boolean} isEnabled
-   * @param {!Protocol.Network.CrossOriginEmbedderPolicyStatus|!Protocol.Network.CrossOriginOpenerPolicyStatus} info
+   * @param {?Protocol.Network.CrossOriginEmbedderPolicyStatus|?Protocol.Network.CrossOriginOpenerPolicyStatus} info
    */
   static fillCrossOriginPolicy(field, isEnabled, info) {
+    if (!info) {
+      field.textContent = '';
+      return;
+    }
     const enabled = isEnabled(info.value);
     field.textContent = enabled ? info.value : info.reportOnlyValue;
     if (!enabled && isEnabled(info.reportOnlyValue)) {
@@ -145,15 +149,18 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
       return;
     }
     /**
-    * @param {!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue} value
-    */
+     * @param {!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue} value
+     */
     const coepIsEnabled = value => value !== Protocol.Network.CrossOriginEmbedderPolicyValue.None;
     FrameDetailsView.fillCrossOriginPolicy(this._coepPolicy, coepIsEnabled, info.coep);
+    this._isolationSection.setFieldVisible(ls`Cross-Origin Embedder Policy`, !!info.coep);
+
     /**
-    * @param {!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue} value
-    */
+     * @param {!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue} value
+     */
     const coopIsEnabled = value => value !== Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone;
     FrameDetailsView.fillCrossOriginPolicy(this._coopPolicy, coopIsEnabled, info.coop);
+    this._isolationSection.setFieldVisible(ls`Cross-Origin Opener Policy`, !!info.coop);
   }
 
   /**

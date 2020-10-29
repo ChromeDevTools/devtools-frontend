@@ -137,7 +137,6 @@ cq_master_experiment_builders = [
     # Quarantine a builder here
     # This will make them experiment 100%
     "dtf_linux_experiments",
-    "devtools_frontend_linux_dbg",
 ]
 
 def experiment_builder(builder):

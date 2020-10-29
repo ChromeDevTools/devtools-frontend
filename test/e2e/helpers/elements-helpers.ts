@@ -209,6 +209,18 @@ export const getPropertyFromComputedPane = async (name: string) => {
   return undefined;
 };
 
+export const waitForPropertyValueInComputedPane = async (name: string, value: string) => {
+  await waitForFunction(async () => {
+    const properties = await getAllPropertiesFromComputedPane();
+    for (const property of properties) {
+      if (property && property.name === name && property.value === value) {
+        return true;
+      }
+    }
+    return false;
+  });
+};
+
 export const expandSelectedNodeRecursively = async () => {
   const EXPAND_RECURSIVELY = '[aria-label="Expand recursively"]';
 

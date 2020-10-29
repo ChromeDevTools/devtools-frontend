@@ -5,5 +5,8 @@
 import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("inline_editor") {
-  sources = [ "default.html" ]
+  sources = [
+    "default.html",
+    "var-chain.html",
+  ]
 }

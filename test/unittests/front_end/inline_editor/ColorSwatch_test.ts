@@ -140,20 +140,58 @@ describe('ColorSwatch', () => {
     const swatch = createSwatch('red');
     const target = getClickTarget(swatch);
 
-    const clickEventsReceived: Event[] = [];
+    const swatchClickEventsReceived: Event[] = [];
     const onClick = (e: Event) => {
-      clickEventsReceived.push(e);
+      swatchClickEventsReceived.push(e);
     };
     swatch.addEventListener('swatch-click', onClick);
 
     dispatchClickEvent(target);
     dispatchClickEvent(target);
     dispatchClickEvent(target);
-    assert.strictEqual(clickEventsReceived.length, 3, 'The right click events were received');
+    assert.strictEqual(swatchClickEventsReceived.length, 3, 'The right click events were received');
 
     swatch.removeEventListener('swatch-click', onClick);
 
     dispatchClickEvent(target);
-    assert.strictEqual(clickEventsReceived.length, 3, 'No more click events received after removing listener');
+    assert.strictEqual(swatchClickEventsReceived.length, 3, 'No more click events received after removing listener');
+  });
+
+  it('does not dispatch a swatch-click event on shift-click', () => {
+    const swatch = createSwatch('red');
+    const target = getClickTarget(swatch);
+
+    const swatchClickEventsReceived: Event[] = [];
+    const onClick = (e: Event) => {
+      swatchClickEventsReceived.push(e);
+    };
+    swatch.addEventListener('swatch-click', onClick);
+
+    dispatchClickEvent(target, {shiftKey: true});
+    dispatchClickEvent(target, {shiftKey: true});
+    dispatchClickEvent(target, {shiftKey: true});
+
+    assert.strictEqual(swatchClickEventsReceived.length, 0, 'No swatch-click events are received on shift-click');
+
+    swatch.removeEventListener('swatch-click', onClick);
+  });
+
+  it('does not dispatch a format-changed event on click', () => {
+    const swatch = createSwatch('red');
+    const target = getClickTarget(swatch);
+
+    const formatChangedEventsReceived: Event[] = [];
+    const onClick = (e: Event) => {
+      formatChangedEventsReceived.push(e);
+    };
+    swatch.addEventListener('format-changed', onClick);
+
+    dispatchClickEvent(target);
+    dispatchClickEvent(target);
+    dispatchClickEvent(target);
+
+    assert.strictEqual(formatChangedEventsReceived.length, 0, 'No format-changed events are received on click');
+
+    swatch.removeEventListener('format-changed', onClick);
   });
 });

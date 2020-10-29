@@ -7,12 +7,12 @@ import * as puppeteer from 'puppeteer';
 
 import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getColorSwatch, getColorSwatchColor, getCSSPropertyInRule, getPropertyFromComputedPane, navigateToSidePane, shiftClickColorSwatch, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsComputedSection} from '../helpers/elements-helpers.js';
+import {editCSSProperty, getColorSwatch, getColorSwatchColor, getCSSPropertyInRule, getPropertyFromComputedPane, navigateToSidePane, shiftClickColorSwatch, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsComputedSection, waitForPropertyValueInComputedPane} from '../helpers/elements-helpers.js';
 
-async function goToTestPageAndSelectTestElement() {
+async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/default.html') {
   const {frontend} = getBrowserAndPages();
 
-  await goToResource('inline_editor/default.html');
+  await goToResource(path);
   await waitForContentOfSelectedElementsNode('<body>\u200B');
 
   await frontend.keyboard.press('ArrowDown');
@@ -75,13 +75,31 @@ describe('The color swatch', async () => {
     await assertNoColorSwatch(property);
   });
 
+  it('is not displayed for color properties that have color-looking values in the Styles pane', async () => {
+    await goToTestPageAndSelectTestElement();
+
+    await waitForCSSPropertyValue('#inspected', 'background', 'url(red green blue.jpg)');
+    const property = await getCSSPropertyInRule('#inspected', 'background');
+
+    await assertNoColorSwatch(property);
+  });
+
   it('is displayed for var() functions that compute to colors in the Styles pane', async () => {
     await goToTestPageAndSelectTestElement();
 
-    await waitForCSSPropertyValue('#inspected', 'background', 'var(--variable)');
-    const property = await getCSSPropertyInRule('#inspected', 'background');
+    await waitForCSSPropertyValue('#inspected', 'background-color', 'var(--variable)');
+    const property = await getCSSPropertyInRule('#inspected', 'background-color');
     await assertColorSwatch(property, 'blue');
   });
+
+  it('is not displayed for var() functions that have color-looking names but do not compute to colors in the Styles pane',
+     async () => {
+       await goToTestPageAndSelectTestElement();
+
+       await waitForCSSPropertyValue('#inspected', 'border-color', 'var(--red)');
+       const property = await getCSSPropertyInRule('#inspected', 'border-color');
+       await assertNoColorSwatch(property);
+     });
 
   it('is displayed for color-looking custom properties in the Styles pane', async () => {
     await goToTestPageAndSelectTestElement();
@@ -91,7 +109,7 @@ describe('The color swatch', async () => {
     await assertColorSwatch(property, 'blue');
   });
 
-  it('supports shift-clicking for color properties', async () => {
+  it('supports shift-clicking for color properties in the Styles pane', async () => {
     await goToTestPageAndSelectTestElement();
 
     await waitForCSSPropertyValue('#inspected', 'color', 'red');
@@ -104,16 +122,64 @@ describe('The color swatch', async () => {
     await waitForCSSPropertyValue('#inspected', 'color', 'rgb(255 0 0)');
   });
 
-  it('supports shift-clicking for colors next to var() functions', async () => {
+  it('supports shift-clicking for color properties in the Computed pane', async () => {
     await goToTestPageAndSelectTestElement();
+    await navigateToSidePane('Computed');
+    await waitForElementsComputedSection();
 
-    await waitForCSSPropertyValue('#inspected', 'background', 'var(--variable)');
-    const property = await getCSSPropertyInRule('#inspected', 'background');
+    const property = await getPropertyFromComputedPane('color');
     if (!property) {
       assert.fail('Property not found');
     }
     await shiftClickColorSwatch(property, 0);
 
-    await waitForCSSPropertyValue('#inspected', 'background', 'rgb(0 0 255)');
+    await waitForPropertyValueInComputedPane('color', 'rgb(255, 0, 0)');
+  });
+
+  it('supports shift-clicking for colors next to var() functions', async () => {
+    await goToTestPageAndSelectTestElement();
+
+    await waitForCSSPropertyValue('#inspected', 'background-color', 'var(--variable)');
+    const property = await getCSSPropertyInRule('#inspected', 'background-color');
+    if (!property) {
+      assert.fail('Property not found');
+    }
+    await shiftClickColorSwatch(property, 0);
+
+    await waitForCSSPropertyValue('#inspected', 'background-color', 'rgb(0 0 255)');
+  });
+
+  it('is updated when the color value is updated in the Styles pane', async () => {
+    await goToTestPageAndSelectTestElement();
+
+    await waitForCSSPropertyValue('#inspected', 'color', 'red');
+    let property = await getCSSPropertyInRule('#inspected', 'color');
+    await assertColorSwatch(property, 'red');
+
+    await editCSSProperty('#inspected', 'color', 'blue');
+
+    await waitForCSSPropertyValue('#inspected', 'color', 'blue');
+    property = await getCSSPropertyInRule('#inspected', 'color');
+    await assertColorSwatch(property, 'blue');
+  });
+
+  it('is updated for a var() function when the customer property value changes in the Styles pane', async () => {
+    await goToTestPageAndSelectTestElement('inline_editor/var-chain.html');
+
+    await waitForCSSPropertyValue('#inspected', '--bar', 'var(--baz)');
+    await waitForCSSPropertyValue('#inspected', 'color', 'var(--bar)');
+
+    let barProperty = await getCSSPropertyInRule('#inspected', '--bar');
+    let colorProperty = await getCSSPropertyInRule('#inspected', 'color');
+    await assertColorSwatch(barProperty, 'red');
+    await assertColorSwatch(colorProperty, 'red');
+
+    await editCSSProperty('#inspected', '--baz', 'blue');
+    await waitForCSSPropertyValue('#inspected', '--baz', 'blue');
+
+    barProperty = await getCSSPropertyInRule('#inspected', '--bar');
+    colorProperty = await getCSSPropertyInRule('#inspected', 'color');
+    await assertColorSwatch(barProperty, 'blue');
+    await assertColorSwatch(colorProperty, 'blue');
   });
 });

@@ -164,7 +164,11 @@ SourcesTestRunner.dumpSwatchPositions = function(sourceFrame, bookmarkType) {
 
   for (let i = 0; i < markers.length; i++) {
     const position = markers[i].position();
-    const text = markers[i]._marker.widgetNode.firstChild.textContent;
+    const swatch = markers[i]._marker.widgetNode.firstChild;
+    let text = swatch.textContent;
+    if (swatch.localName === 'devtools-color-swatch') {
+      text = swatch.color.asString(swatch.format);
+    }
     TestRunner.addResult('Line ' + position.startLine + ', Column ' + position.startColumn + ': ' + text);
   }
 };

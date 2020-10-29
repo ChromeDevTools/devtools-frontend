@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 
@@ -58,20 +55,23 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.closeWindow.bind(
             Host.InspectorFrontendHost.InspectorFrontendHostInstance));
 
+    this._currentDockStateSetting = Common.Settings.Settings.instance().moduleSetting('currentDockState');
+    this._lastDockStateSetting = Common.Settings.Settings.instance().createSetting('lastDockState', 'bottom');
+
+    /** @type {string} */
+    this._dockSide;
+
     if (!canDock) {
       this._dockSide = State.Undocked;
       this._closeButton.setVisible(false);
       return;
     }
 
-    this._states = [State.DockedToRight, State.DockedToBottom, State.DockedToLeft, State.Undocked];
-    this._currentDockStateSetting = Common.Settings.Settings.instance().moduleSetting('currentDockState');
     this._currentDockStateSetting.addChangeListener(this._dockSideChanged, this);
-    this._lastDockStateSetting = Common.Settings.Settings.instance().createSetting('lastDockState', 'bottom');
-    if (this._states.indexOf(this._currentDockStateSetting.get()) === -1) {
+    if (states.indexOf(this._currentDockStateSetting.get()) === -1) {
       this._currentDockStateSetting.set('right');
     }
-    if (this._states.indexOf(this._lastDockStateSetting.get()) === -1) {
+    if (states.indexOf(this._lastDockStateSetting.get()) === -1) {
       this._currentDockStateSetting.set('bottom');
     }
   }
@@ -131,8 +131,8 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
    * @suppressGlobalPropertiesCheck
    */
   setDockSide(dockSide) {
-    if (this._states.indexOf(dockSide) === -1) {
-      dockSide = this._states[0];
+    if (states.indexOf(dockSide) === -1) {
+      dockSide = states[0];
     }
 
     if (this._dockSide === dockSide) {
@@ -161,15 +161,15 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
   _setIsDockedResponse(eventData) {
     this.dispatchEventToListeners(Events.AfterDockSideChanged, eventData);
     if (this._savedFocus) {
-      this._savedFocus.focus();
+      /** @type {!HTMLElement} */ (this._savedFocus).focus();
       this._savedFocus = null;
     }
   }
 
   _toggleDockSide() {
     if (this._lastDockStateSetting.get() === this._currentDockStateSetting.get()) {
-      const index = this._states.indexOf(this._currentDockStateSetting.get()) || 0;
-      this._lastDockStateSetting.set(this._states[(index + 1) % this._states.length]);
+      const index = states.indexOf(this._currentDockStateSetting.get()) || 0;
+      this._lastDockStateSetting.set(states[(index + 1) % states.length]);
     }
     this.setDockSide(this._lastDockStateSetting.get());
   }
@@ -181,6 +181,8 @@ export const State = {
   DockedToLeft: 'left',
   Undocked: 'undocked'
 };
+
+const states = [State.DockedToRight, State.DockedToBottom, State.DockedToLeft, State.Undocked];
 
 // Use BeforeDockSideChanged to do something before all the UI bits are updated,
 // DockSideChanged to update UI, and AfterDockSideChanged to perform actions

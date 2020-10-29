@@ -501,6 +501,42 @@
     },
     {
       "type": "setting",
+      "category": "Rendering",
+      "settingName": "avifFormatDisabled",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Disable AVIF format"
+        },
+        {
+          "value": false,
+          "title": "Enable AVIF format"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
+      "settingName": "webpFormatDisabled",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Disable WebP format"
+        },
+        {
+          "value": false,
+          "title": "Enable WebP format"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
       "category": "Console",
       "title": "Enable custom formatters",
       "settingName": "customFormatters",

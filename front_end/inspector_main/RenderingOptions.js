@@ -106,6 +106,16 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         Common.Settings.Settings.instance().moduleSetting('emulatedVisionDeficiency'));
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
+
+    this._appendCheckbox(
+        ls`Disable AVIF image format`, ls`Requires a page reload to apply and disables caching for image requests.`,
+        Common.Settings.Settings.instance().moduleSetting('avifFormatDisabled'));
+
+    this._appendCheckbox(
+        ls`Disable WebP image format`, ls`Requires a page reload to apply and disables caching for image requests.`,
+        Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled'));
+
+    this.contentElement.createChild('div').classList.add('panel-section-separator');
   }
 
   /**

@@ -105,6 +105,9 @@
   <message name="IDS_DEVTOOLS_1f769bf7b4375ba458ccabdd16289396" desc="Title for SameSiteCookie issue">
     Indicate whether a cookie is intended to be set in cross-site context by specifying its SameSite attribute
   </message>
+  <message name="IDS_DEVTOOLS_1f9cd56f386166b8cd66e7ca5100a878" desc="Title of a setting that enables WebP format">
+    Enable WebP format
+  </message>
   <message name="IDS_DEVTOOLS_21070fd87b02611a5426d726a70a5502" desc="Text in Server Timing">
     No value found for parameter &quot;<ph name="PARAMNAME">$1s<ex>https</ex></ph>&quot;.
   </message>
@@ -128,6 +131,9 @@
   </message>
   <message name="IDS_DEVTOOLS_266bd94230e7c7d11ab8b04c755f99c0" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
     This Set-Cookie was blocked because it had the &quot;SameSite=Strict&quot; attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.
+  </message>
+  <message name="IDS_DEVTOOLS_27a940a4cc62c1cc7cba471eb0776920" desc="Title of a setting that disables AVIF format">
+    Disable AVIF format
   </message>
   <message name="IDS_DEVTOOLS_28e486be4b3bad598b6e9eaa34ebec76" desc="Text in Network Manager">
     Set-Cookie header is ignored in response from url: <ph name="RESPONSE_URL">$1s<ex>https://example.com</ex></ph>. Cookie length should be less than or equal to 4096 characters.
@@ -223,6 +229,9 @@
   </message>
   <message name="IDS_DEVTOOLS_9485d0acccd869b51a96f2b35fd0b620" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Do not emulate CSS prefers-reduced-data
+  </message>
+  <message name="IDS_DEVTOOLS_9696d05ebc70b0e74183e8c81250f3c5" desc="Title of a setting that enables AVIF format">
+    Enable AVIF format
   </message>
   <message name="IDS_DEVTOOLS_96a5cc95cb5e6812861254286a5764af" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
     This Set-Cookie didn&apos;t specify a &quot;SameSite&quot; attribute, was defaulted to &quot;SameSite=Lax&quot;, and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.
@@ -540,6 +549,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b711d25c13ec723bbe0b9b18526bbc95" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Disable network request blocking
+  </message>
+  <message name="IDS_DEVTOOLS_b7a4b52eeeae23b8e483989ad9459f1a" desc="Title of a setting that disables WebP format">
+    Disable WebP format
   </message>
   <message name="IDS_DEVTOOLS_b9a5a0162829cba9db8b77daa75ec604" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide layout shift regions

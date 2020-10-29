@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_3d3410cb399085b4a2912c9b3b4780a2" desc="Subtitle for checkboxes that disable WebP and AVIF formats in the Rendering panel">
+    Requires a page reload to apply and disables caching for image requests.
+  </message>
+  <message name="IDS_DEVTOOLS_4064ba4fc5cefa7ae1e4a3c7d4394837" desc="Title for a checkbox in the Rendering panel">
+    Disable AVIF image format
+  </message>
   <message name="IDS_DEVTOOLS_79eabc5ef01281e5513568fb4f8674d2" desc="Text in Rendering Options">
     Frame Rendering Stats
   </message>
@@ -110,6 +116,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e99c5958dd97b67bea019c65ddb0d971" desc="Accessibility subtitle for checkbox in Rendering tool">
     Emulates a focused page.
+  </message>
+  <message name="IDS_DEVTOOLS_6ee3313644e1b7cc6200e5f5a10f4c06" desc="Title for a checkbox in the Rendering panel">
+    Disable WebP image format
   </message>
   <message name="IDS_DEVTOOLS_f23c9ba06e7123f0b4c906de90fbcc9f" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
     Auto-open <ph name="LOCKED_1">DevTools</ph> for popups

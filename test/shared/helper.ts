@@ -235,6 +235,18 @@ export const waitForElementsWithTextContent =
                              }, asyncScope));
     };
 
+export const waitForNoElementsWithTextContent =
+    (textContent: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+      return asyncScope.exec(() => waitForFunction(async () => {
+                               const elems = await $$textContent(textContent, root);
+                               if (elems && elems.length === 0) {
+                                 return true;
+                               }
+
+                               return false;
+                             }, asyncScope));
+    };
+
 export const waitForFunction = async<T>(fn: () => Promise<T|undefined>, asyncScope = new AsyncScope()): Promise<T> => {
   return await asyncScope.exec(async () => {
     while (true) {

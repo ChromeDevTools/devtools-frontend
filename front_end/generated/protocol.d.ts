@@ -6620,6 +6620,41 @@ declare namespace Protocol {
     }
 
     /**
+     * The reason why request was blocked.
+     */
+    export enum CorsError {
+      DisallowedByMode = 'DisallowedByMode',
+      InvalidResponse = 'InvalidResponse',
+      WildcardOriginNotAllowed = 'WildcardOriginNotAllowed',
+      MissingAllowOriginHeader = 'MissingAllowOriginHeader',
+      MultipleAllowOriginValues = 'MultipleAllowOriginValues',
+      InvalidAllowOriginValue = 'InvalidAllowOriginValue',
+      AllowOriginMismatch = 'AllowOriginMismatch',
+      InvalidAllowCredentials = 'InvalidAllowCredentials',
+      CorsDisabledScheme = 'CorsDisabledScheme',
+      PreflightInvalidStatus = 'PreflightInvalidStatus',
+      PreflightDisallowedRedirect = 'PreflightDisallowedRedirect',
+      PreflightWildcardOriginNotAllowed = 'PreflightWildcardOriginNotAllowed',
+      PreflightMissingAllowOriginHeader = 'PreflightMissingAllowOriginHeader',
+      PreflightMultipleAllowOriginValues = 'PreflightMultipleAllowOriginValues',
+      PreflightInvalidAllowOriginValue = 'PreflightInvalidAllowOriginValue',
+      PreflightAllowOriginMismatch = 'PreflightAllowOriginMismatch',
+      PreflightInvalidAllowCredentials = 'PreflightInvalidAllowCredentials',
+      PreflightMissingAllowExternal = 'PreflightMissingAllowExternal',
+      PreflightInvalidAllowExternal = 'PreflightInvalidAllowExternal',
+      InvalidAllowMethodsPreflightResponse = 'InvalidAllowMethodsPreflightResponse',
+      InvalidAllowHeadersPreflightResponse = 'InvalidAllowHeadersPreflightResponse',
+      MethodDisallowedByPreflightResponse = 'MethodDisallowedByPreflightResponse',
+      HeaderDisallowedByPreflightResponse = 'HeaderDisallowedByPreflightResponse',
+      RedirectContainsCredentials = 'RedirectContainsCredentials',
+    }
+
+    export interface CorsErrorStatus {
+      corsError: CorsError;
+      failedParameter: string;
+    }
+
+    /**
      * Source of serviceworker response.
      */
     export enum ServiceWorkerResponseSource {
@@ -7790,6 +7825,10 @@ declare namespace Protocol {
        * The reason why loading was blocked, if any.
        */
       blockedReason?: BlockedReason;
+      /**
+       * The reason why loading was blocked by CORS, if any.
+       */
+      corsErrorStatus?: CorsErrorStatus;
     }
 
     /**

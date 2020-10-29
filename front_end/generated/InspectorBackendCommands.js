@@ -1396,6 +1396,32 @@ export function registerCommands(inspectorBackend) {
     CorpNotSameOriginAfterDefaultedToSameOriginByCoep: 'corp-not-same-origin-after-defaulted-to-same-origin-by-coep',
     CorpNotSameSite: 'corp-not-same-site'
   });
+  inspectorBackend.registerEnum('Network.CorsError', {
+    DisallowedByMode: 'DisallowedByMode',
+    InvalidResponse: 'InvalidResponse',
+    WildcardOriginNotAllowed: 'WildcardOriginNotAllowed',
+    MissingAllowOriginHeader: 'MissingAllowOriginHeader',
+    MultipleAllowOriginValues: 'MultipleAllowOriginValues',
+    InvalidAllowOriginValue: 'InvalidAllowOriginValue',
+    AllowOriginMismatch: 'AllowOriginMismatch',
+    InvalidAllowCredentials: 'InvalidAllowCredentials',
+    CorsDisabledScheme: 'CorsDisabledScheme',
+    PreflightInvalidStatus: 'PreflightInvalidStatus',
+    PreflightDisallowedRedirect: 'PreflightDisallowedRedirect',
+    PreflightWildcardOriginNotAllowed: 'PreflightWildcardOriginNotAllowed',
+    PreflightMissingAllowOriginHeader: 'PreflightMissingAllowOriginHeader',
+    PreflightMultipleAllowOriginValues: 'PreflightMultipleAllowOriginValues',
+    PreflightInvalidAllowOriginValue: 'PreflightInvalidAllowOriginValue',
+    PreflightAllowOriginMismatch: 'PreflightAllowOriginMismatch',
+    PreflightInvalidAllowCredentials: 'PreflightInvalidAllowCredentials',
+    PreflightMissingAllowExternal: 'PreflightMissingAllowExternal',
+    PreflightInvalidAllowExternal: 'PreflightInvalidAllowExternal',
+    InvalidAllowMethodsPreflightResponse: 'InvalidAllowMethodsPreflightResponse',
+    InvalidAllowHeadersPreflightResponse: 'InvalidAllowHeadersPreflightResponse',
+    MethodDisallowedByPreflightResponse: 'MethodDisallowedByPreflightResponse',
+    HeaderDisallowedByPreflightResponse: 'HeaderDisallowedByPreflightResponse',
+    RedirectContainsCredentials: 'RedirectContainsCredentials'
+  });
   inspectorBackend.registerEnum(
       'Network.ServiceWorkerResponseSource',
       {CacheStorage: 'cache-storage', HttpCache: 'http-cache', FallbackCode: 'fallback-code', Network: 'network'});
@@ -1460,7 +1486,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent(
       'Network.eventSourceMessageReceived', ['requestId', 'timestamp', 'eventName', 'eventId', 'data']);
   inspectorBackend.registerEvent(
-      'Network.loadingFailed', ['requestId', 'timestamp', 'type', 'errorText', 'canceled', 'blockedReason']);
+      'Network.loadingFailed',
+      ['requestId', 'timestamp', 'type', 'errorText', 'canceled', 'blockedReason', 'corsErrorStatus']);
   inspectorBackend.registerEvent(
       'Network.loadingFinished', ['requestId', 'timestamp', 'encodedDataLength', 'shouldReportCorbBlocking']);
   inspectorBackend.registerEvent('Network.requestIntercepted', [

@@ -9808,6 +9808,51 @@
                     ]
                 },
                 {
+                    "id": "CorsError",
+                    "description": "The reason why request was blocked.",
+                    "type": "string",
+                    "enum": [
+                        "DisallowedByMode",
+                        "InvalidResponse",
+                        "WildcardOriginNotAllowed",
+                        "MissingAllowOriginHeader",
+                        "MultipleAllowOriginValues",
+                        "InvalidAllowOriginValue",
+                        "AllowOriginMismatch",
+                        "InvalidAllowCredentials",
+                        "CorsDisabledScheme",
+                        "PreflightInvalidStatus",
+                        "PreflightDisallowedRedirect",
+                        "PreflightWildcardOriginNotAllowed",
+                        "PreflightMissingAllowOriginHeader",
+                        "PreflightMultipleAllowOriginValues",
+                        "PreflightInvalidAllowOriginValue",
+                        "PreflightAllowOriginMismatch",
+                        "PreflightInvalidAllowCredentials",
+                        "PreflightMissingAllowExternal",
+                        "PreflightInvalidAllowExternal",
+                        "InvalidAllowMethodsPreflightResponse",
+                        "InvalidAllowHeadersPreflightResponse",
+                        "MethodDisallowedByPreflightResponse",
+                        "HeaderDisallowedByPreflightResponse",
+                        "RedirectContainsCredentials"
+                    ]
+                },
+                {
+                    "id": "CorsErrorStatus",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "corsError",
+                            "$ref": "CorsError"
+                        },
+                        {
+                            "name": "failedParameter",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "id": "ServiceWorkerResponseSource",
                     "description": "Source of serviceworker response.",
                     "type": "string",
@@ -11505,6 +11550,12 @@
                             "description": "The reason why loading was blocked, if any.",
                             "optional": true,
                             "$ref": "BlockedReason"
+                        },
+                        {
+                            "name": "corsErrorStatus",
+                            "description": "The reason why loading was blocked by CORS, if any.",
+                            "optional": true,
+                            "$ref": "CorsErrorStatus"
                         }
                     ]
                 },

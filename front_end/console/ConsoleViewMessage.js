@@ -583,8 +583,8 @@ export class ConsoleViewMessage {
     const trustedContentSpan = document.createElement('span');
     trustedContentSpan.appendChild(this._formatParameterAsString(obj));
     trustedContentSpan.classList.add('object-value-string');
+    UI.UIUtils.createTextChild(result, `${obj.className} `);
     result.appendChild(trustedContentSpan);
-    result.innerHTML = `${obj.className} ${result.innerHTML}`;
     return result;
   }
 

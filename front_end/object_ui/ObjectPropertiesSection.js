@@ -39,6 +39,8 @@ import {CustomPreviewComponent} from './CustomPreviewComponent.js';
 import {JavaScriptREPL} from './JavaScriptREPL.js';
 import {createSpansForNodeTitle, RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
 
+const EXPANDABLE_MAX_LENGTH = 50;
+
 /**
  * @unrestricted
  */
@@ -341,7 +343,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       } else if (
           description.length >
           (self.ObjectUI.ObjectPropertiesSection._maxRenderableStringLength || maxRenderableStringLength)) {
-        propertyValue = new ExpandableTextPropertyValue(valueElement, description, 50);
+        propertyValue = new ExpandableTextPropertyValue(valueElement, description, EXPANDABLE_MAX_LENGTH);
       } else {
         propertyValue = new ObjectPropertyValue(valueElement);
         propertyValue.element.textContent = description;
@@ -380,7 +382,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       valueElement.createChild('span', 'object-value-string-quote').textContent = '"';
       if (description.length >
           (self.ObjectUI.ObjectPropertiesSection._maxRenderableStringLength || maxRenderableStringLength)) {
-        propertyValue = new ExpandableTextPropertyValue(valueElement, text, 50);
+        propertyValue = new ExpandableTextPropertyValue(valueElement, text, EXPANDABLE_MAX_LENGTH);
       } else {
         UI.UIUtils.createTextChild(valueElement, text);
         propertyValue = new ObjectPropertyValue(valueElement);
@@ -400,7 +402,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       let propertyValue;
       if (text.length >
           (self.ObjectUI.ObjectPropertiesSection._maxRenderableStringLength || maxRenderableStringLength)) {
-        propertyValue = new ExpandableTextPropertyValue(valueElement, text, 50);
+        propertyValue = new ExpandableTextPropertyValue(valueElement, text, EXPANDABLE_MAX_LENGTH);
       } else {
         const contentString = createStringElement();
         UI.UIUtils.createTextChild(valueElement, `${className} `);

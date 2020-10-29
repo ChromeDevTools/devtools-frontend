@@ -270,8 +270,8 @@ export class RemoteObjectPreviewFormatter {
   /**
    * @param {string} type
    * @param {string=} subtype
-   * @param {string=} description
    * @param {(?string|undefined)=} className
+   * @param {string=} description
    * @return {!HTMLElement}
    */
   renderPropertyPreview(type, subtype, className, description) {

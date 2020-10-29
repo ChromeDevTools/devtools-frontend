@@ -15,9 +15,9 @@
 <body>
   <script type="module">
     function test() {
-      dispatch(["setPlatform", "mac"]);
-      dispatch(["reset"]);
-      dispatch(["drawPausedInDebuggerMessage", "test text"]);
+      setPlatform("mac");
+      reset(window);
+      drawPausedInDebuggerMessage("test text");
     }
     test();
   </script>

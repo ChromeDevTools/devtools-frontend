@@ -5,10 +5,22 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
-import {ViewportSizeOverlay} from './tool_viewport_size_impl.js';
+import {dispatch, reset, setPlatform} from './common.js';
+import {drawViewSize} from './tool_viewport_size_impl.js';
 
-const overlay = new ViewportSizeOverlay(window);
+window.setPlatform = function(platform) {
+  document.body.classList.add('fill');
 
-window.dispatch = message => {
-  overlay.dispatch(message);
+  const canvas = document.createElement('canvas');
+  canvas.id = 'canvas';
+  canvas.classList.add('fill');
+  document.body.append(canvas);
+
+  setPlatform(platform);
 };
+
+window.reset = function(data) {
+  reset(data);
+};
+window.drawViewSize = drawViewSize;
+window.dispatch = dispatch;

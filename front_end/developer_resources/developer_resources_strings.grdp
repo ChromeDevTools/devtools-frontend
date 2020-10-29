@@ -18,6 +18,12 @@
   <message name="IDS_DEVTOOLS_7ca43724ef59a5fc969e742179e84f78" desc="Text for a checkbox in the toolbar of the developer resources view">
     Enable loading through target
   </message>
+  <message name="IDS_DEVTOOLS_832e506a71f4a57ed15ecbcd771f9247" desc="Text in Coverage List View of the Coverage tab">
+    Total Bytes
+  </message>
+  <message name="IDS_DEVTOOLS_9066c4d254b4c8ab67e107a1b59e925d" desc="Accessible text for a file size of 1 byte">
+    1 byte
+  </message>
   <message name="IDS_DEVTOOLS_9de711d6eb379d46caa26e86cdafa0e9" desc="Text for a context menu entry">
     Copy URL
   </message>

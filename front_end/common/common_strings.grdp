@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_21133d71a056222fa2096906538e4e04" desc="Text that appears on a button for the image resource type filter.">
     Img
   </message>
+  <message name="IDS_DEVTOOLS_2c56c360580420d293172f42d85dfbed" desc="Text that appears on a button for the css resource type filter.">
+    CSS
+  </message>
   <message name="IDS_DEVTOOLS_375c9558f2166cab6515a7ab774c1735" desc="Name of a network resource type">
     TextTrack
   </message>

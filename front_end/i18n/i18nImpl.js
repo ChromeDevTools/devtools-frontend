@@ -86,10 +86,10 @@ export function registerUIStrings(path, stringStructure) {
  * Returns a span element that may contains other DOM element as placeholders
  * @param {function(string, ?Object):string} str_
  * @param {string} stringId
- * @param {!ArrayLike<?Object>} placeholders
+ * @param {!Object<string, *>} placeholders
  * @return {!Element} the localized result
  */
-export function getFormatLocalizedString(str_, stringId, placeholders = []) {
+export function getFormatLocalizedString(str_, stringId, placeholders) {
   const icuMessage = str_(stringId, placeholders);
   const formatter = i18nBundle.getFormatter(icuMessage, registeredLocale);
 

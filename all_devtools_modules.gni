@@ -105,6 +105,7 @@ all_typescript_module_sources = [
   "coverage/CoverageListView.js",
   "coverage/CoverageModel.js",
   "coverage/CoverageView.js",
+  "coverage/ModuleUIStrings.js",
   "css_overview/CSSOverviewCompletedView.js",
   "css_overview/CSSOverviewController.js",
   "css_overview/CSSOverviewModel.js",

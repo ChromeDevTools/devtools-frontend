@@ -5,12 +5,120 @@
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Formatter from '../formatter/formatter.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {CoverageType, URLCoverageInfo} from './CoverageModel.js';  // eslint-disable-line no-unused-vars
+
+export const UIStrings = {
+  /**
+  *@description Text that appears on a button for the css resource type filter.
+  */
+  css: 'CSS',
+  /**
+  *@description Text in Coverage List View of the Coverage tab
+  */
+  jsPerFunction: 'JS (per function)',
+  /**
+  *@description Text in Coverage List View of the Coverage tab
+  */
+  jsPerBlock: 'JS (per block)',
+  /**
+  *@description Text for web URLs
+  */
+  url: 'URL',
+  /**
+  *@description Text that refers to some types
+  */
+  type: 'Type',
+  /**
+  *@description Text in Coverage List View of the Coverage tab
+  */
+  totalBytes: 'Total Bytes',
+  /**
+  *@description Text in Coverage List View of the Coverage tab
+  */
+  unusedBytes: 'Unused Bytes',
+  /**
+  *@description Text in the Coverage List View of the Coverage Tab
+  */
+  usageVisualization: 'Usage Visualization',
+  /**
+  *@description Data grid name for Coverage data grids
+  */
+  codeCoverage: 'Code Coverage',
+  /**
+  *@description Cell title in Coverage List View of the Coverage tab
+  */
+  jsCoverageWithPerFunction:
+      'JS coverage with per function granularity: Once a function was executed, the whole function is marked as covered.',
+  /**
+  *@description Cell title in Coverage List View of the Coverage tab
+  */
+  jsCoverageWithPerBlock:
+      'JS coverage with per block granularity: Once a block of JavaScript was executed, that block is marked as covered.',
+  /**
+  *@description Accessible text for a file size of 1 byte
+  */
+  Byte: '1 byte',
+  /**
+  *@description Accessible text for the value in bytes in memory allocation or coverage view.
+  *@example {12345} PH1
+  */
+  sBytes: '{PH1} bytes',
+  /**
+  *@description Message in Coverage View of the Coverage tab
+  *@example {12.34} PH1
+  */
+  sPercent: '{PH1} %',
+  /**
+  *@description Accessible text for the amount of unused code in a file
+  *@example {20 %} PH1
+  */
+  ByteS: '1 byte, {PH1}',
+  /**
+  *@description Accessible text for the unused bytes column in the coverage tool that describes the total unused bytes and percentage of the file unused.
+  *@example {100000} PH1
+  *@example {88%} PH2
+  */
+  sBytesS: '{PH1} bytes, {PH2}',
+  /**
+  *@description Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.
+  *@example {1000} PH1
+  *@example {12.34} PH2
+  */
+  sBytesSBelongToFunctionsThatHave: '{PH1} bytes ({PH2} %) belong to functions that have not (yet) been executed.',
+  /**
+  *@description Tooltip text for the bar in the coverage list view of the coverage tool that illustrates the relation between used and unused bytes.
+  *@example {1000} PH1
+  *@example {12.34} PH2
+  */
+  sBytesSBelongToBlocksOf: '{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have not (yet) been executed.',
+  /**
+  *@description Message in Coverage View of the Coverage tab
+  *@example {1000} PH1
+  *@example {12.34} PH2
+  */
+  sBytesSBelongToFunctionsThatHaveExecuted:
+      '{PH1} bytes ({PH2} %) belong to functions that have executed at least once.',
+  /**
+  *@description Message in Coverage View of the Coverage tab
+  *@example {1000} PH1
+  *@example {12.34} PH2
+  */
+  sBytesSBelongToBlocksOfJavascript:
+      '{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have executed at least once.',
+  /**
+  *@description Accessible text for the visualization column of coverage tool. Contains percentage of unused bytes to used bytes.
+  *@example {12.3} PH1
+  *@example {12.3} PH2
+  */
+  sOfFileUnusedSOfFileUsed: '{PH1} % of file unused, {PH2} % of file used',
+};
+const str_ = i18n.i18n.registerUIStrings('coverage/CoverageListView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @param {!CoverageType} type
@@ -19,12 +127,12 @@ import {CoverageType, URLCoverageInfo} from './CoverageModel.js';  // eslint-dis
 export function coverageTypeToString(type) {
   const types = [];
   if (type & CoverageType.CSS) {
-    types.push(ls`CSS`);
+    types.push(i18nString(UIStrings.css));
   }
   if (type & CoverageType.JavaScriptPerFunction) {
-    types.push(ls`JS (per function)`);
+    types.push(i18nString(UIStrings.jsPerFunction));
   } else if (type & CoverageType.JavaScript) {
-    types.push(ls`JS (per block)`);
+    types.push(i18nString(UIStrings.jsPerBlock));
   }
   return types.join('+');
 }
@@ -43,10 +151,10 @@ export class CoverageListView extends UI.Widget.VBox {
     this.registerRequiredCSS('coverage/coverageListView.css', {enableLegacyPatching: true});
     /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */
     const columns = ([
-      {id: 'url', title: ls`URL`, width: '250px', fixedWidth: false, sortable: true},
-      {id: 'type', title: ls`Type`, width: '45px', fixedWidth: true, sortable: true}, {
+      {id: 'url', title: i18nString(UIStrings.url), width: '250px', fixedWidth: false, sortable: true},
+      {id: 'type', title: i18nString(UIStrings.type), width: '45px', fixedWidth: true, sortable: true}, {
         id: 'size',
-        title: ls`Total Bytes`,
+        title: i18nString(UIStrings.totalBytes),
         width: '60px',
         fixedWidth: true,
         sortable: true,
@@ -54,17 +162,17 @@ export class CoverageListView extends UI.Widget.VBox {
       },
       {
         id: 'unusedSize',
-        title: ls`Unused Bytes`,
+        title: i18nString(UIStrings.unusedBytes),
         width: '100px',
         fixedWidth: true,
         sortable: true,
         align: DataGrid.DataGrid.Align.Right,
         sort: DataGrid.DataGrid.Order.Descending
       },
-      {id: 'bars', title: ls`Usage Visualization`, width: '250px', fixedWidth: false, sortable: true}
+      {id: 'bars', title: i18nString(UIStrings.usageVisualization), width: '250px', fixedWidth: false, sortable: true}
     ]);
     this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
-      displayName: ls`Code Coverage`,
+      displayName: i18nString(UIStrings.codeCoverage),
       columns,
       editCallback: undefined,
       refreshCallback: undefined,
@@ -271,19 +379,18 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
       case 'type': {
         cell.textContent = coverageTypeToString(this._coverageInfo.type());
         if (this._coverageInfo.type() & CoverageType.JavaScriptPerFunction) {
-          cell.title = ls
-          `JS coverage with per function granularity: Once a function was executed, the whole function is marked as covered.`;
+          cell.title = i18nString(UIStrings.jsCoverageWithPerFunction);
         } else if (this._coverageInfo.type() & CoverageType.JavaScript) {
-          cell.title = ls
-          `JS coverage with per block granularity: Once a block of JavaScript was executed, that block is marked as covered.`;
+          cell.title = i18nString(UIStrings.jsCoverageWithPerBlock);
         }
         break;
       }
       case 'size': {
         const sizeSpan = cell.createChild('span');
         sizeSpan.textContent = Number.withThousandsSeparator(this._coverageInfo.size() || 0);
-        const sizeAccessibleName =
-            (this._coverageInfo.size() === 1) ? ls`1 byte` : ls`${this._coverageInfo.size() || 0} bytes`;
+        const sizeAccessibleName = (this._coverageInfo.size() === 1) ?
+            i18nString(UIStrings.Byte) :
+            i18nString(UIStrings.sBytes, {PH1: this._coverageInfo.size() || 0});
         this.setCellAccessibleName(sizeAccessibleName, cell, columnId);
         break;
       }
@@ -292,10 +399,12 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         const unusedSizeSpan = cell.createChild('span');
         const unusedPercentsSpan = cell.createChild('span', 'percent-value');
         unusedSizeSpan.textContent = Number.withThousandsSeparator(unusedSize);
-        const unusedPercentFormatted = ls`${this._percentageString(this._coverageInfo.unusedPercentage())} %`;
+        const unusedPercentFormatted =
+            i18nString(UIStrings.sPercent, {PH1: this._percentageString(this._coverageInfo.unusedPercentage())});
         unusedPercentsSpan.textContent = unusedPercentFormatted;
-        const unusedAccessibleName = (unusedSize === 1) ? ls`1 byte, ${unusedPercentFormatted}` :
-                                                          ls`${unusedSize} bytes, ${unusedPercentFormatted}`;
+        const unusedAccessibleName = (unusedSize === 1) ?
+            i18nString(UIStrings.ByteS, {PH1: unusedPercentFormatted}) :
+            i18nString(UIStrings.sBytesS, {PH1: unusedSize, PH2: unusedPercentFormatted});
         this.setCellAccessibleName(unusedAccessibleName, cell, columnId);
         break;
       }
@@ -307,26 +416,27 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
           const unusedSizeBar = barContainer.createChild('div', 'bar bar-unused-size');
           unusedSizeBar.style.width = ((this._coverageInfo.unusedSize() / this._maxSize) * 100 || 0) + '%';
           if (this._coverageInfo.type() & CoverageType.JavaScriptPerFunction) {
-            unusedSizeBar.title = ls`${this._coverageInfo.unusedSize()} bytes (${
-                unusedPercent} %) belong to functions that have not (yet) been executed.`;
+            unusedSizeBar.title = i18nString(
+                UIStrings.sBytesSBelongToFunctionsThatHave, {PH1: this._coverageInfo.unusedSize(), PH2: unusedPercent});
           } else if (this._coverageInfo.type() & CoverageType.JavaScript) {
-            unusedSizeBar.title = ls`${this._coverageInfo.unusedSize()} bytes (${
-                unusedPercent} %) belong to blocks of JavaScript that have not (yet) been executed.`;
+            unusedSizeBar.title = i18nString(
+                UIStrings.sBytesSBelongToBlocksOf, {PH1: this._coverageInfo.unusedSize(), PH2: unusedPercent});
           }
         }
         if (this._coverageInfo.usedSize() > 0) {
           const usedSizeBar = barContainer.createChild('div', 'bar bar-used-size');
           usedSizeBar.style.width = ((this._coverageInfo.usedSize() / this._maxSize) * 100 || 0) + '%';
           if (this._coverageInfo.type() & CoverageType.JavaScriptPerFunction) {
-            usedSizeBar.title = ls`${this._coverageInfo.usedSize()} bytes (${
-                usedPercent} %) belong to functions that have executed at least once.`;
+            usedSizeBar.title = i18nString(
+                UIStrings.sBytesSBelongToFunctionsThatHaveExecuted,
+                {PH1: this._coverageInfo.usedSize(), PH2: usedPercent});
           } else if (this._coverageInfo.type() & CoverageType.JavaScript) {
-            usedSizeBar.title = ls`${this._coverageInfo.usedSize()} bytes (${
-                usedPercent} %) belong to blocks of JavaScript that have executed at least once.`;
+            usedSizeBar.title = i18nString(
+                UIStrings.sBytesSBelongToBlocksOfJavascript, {PH1: this._coverageInfo.usedSize(), PH2: usedPercent});
           }
         }
         this.setCellAccessibleName(
-            ls`${unusedPercent} % of file unused, ${usedPercent} % of file used`, cell, columnId);
+            i18nString(UIStrings.sOfFileUnusedSOfFileUsed, {PH1: unusedPercent, PH2: usedPercent}), cell, columnId);
       }
     }
     return cell;

@@ -49,6 +49,7 @@
     "data_grid",
     "formatter",
     "host",
+    "i18n",
     "platform",
     "sdk",
     "source_frame",

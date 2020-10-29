@@ -1,4 +1,130 @@
 {
+  "coverage/CoverageListView.js | Byte": {
+    "message": "1 byte"
+  },
+  "coverage/CoverageListView.js | ByteS": {
+    "message": "1 byte, {PH1}"
+  },
+  "coverage/CoverageListView.js | codeCoverage": {
+    "message": "Code Coverage"
+  },
+  "coverage/CoverageListView.js | css": {
+    "message": "CSS"
+  },
+  "coverage/CoverageListView.js | jsCoverageWithPerBlock": {
+    "message": "JS coverage with per block granularity: Once a block of JavaScript was executed, that block is marked as covered."
+  },
+  "coverage/CoverageListView.js | jsCoverageWithPerFunction": {
+    "message": "JS coverage with per function granularity: Once a function was executed, the whole function is marked as covered."
+  },
+  "coverage/CoverageListView.js | jsPerBlock": {
+    "message": "JS (per block)"
+  },
+  "coverage/CoverageListView.js | jsPerFunction": {
+    "message": "JS (per function)"
+  },
+  "coverage/CoverageListView.js | sBytes": {
+    "message": "{PH1} bytes"
+  },
+  "coverage/CoverageListView.js | sBytesS": {
+    "message": "{PH1} bytes, {PH2}"
+  },
+  "coverage/CoverageListView.js | sBytesSBelongToBlocksOf": {
+    "message": "{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have not (yet) been executed."
+  },
+  "coverage/CoverageListView.js | sBytesSBelongToBlocksOfJavascript": {
+    "message": "{PH1} bytes ({PH2} %) belong to blocks of JavaScript that have executed at least once."
+  },
+  "coverage/CoverageListView.js | sBytesSBelongToFunctionsThatHave": {
+    "message": "{PH1} bytes ({PH2} %) belong to functions that have not (yet) been executed."
+  },
+  "coverage/CoverageListView.js | sBytesSBelongToFunctionsThatHaveExecuted": {
+    "message": "{PH1} bytes ({PH2} %) belong to functions that have executed at least once."
+  },
+  "coverage/CoverageListView.js | sOfFileUnusedSOfFileUsed": {
+    "message": "{PH1} % of file unused, {PH2} % of file used"
+  },
+  "coverage/CoverageListView.js | sPercent": {
+    "message": "{PH1} %"
+  },
+  "coverage/CoverageListView.js | totalBytes": {
+    "message": "Total Bytes"
+  },
+  "coverage/CoverageListView.js | type": {
+    "message": "Type"
+  },
+  "coverage/CoverageListView.js | unusedBytes": {
+    "message": "Unused Bytes"
+  },
+  "coverage/CoverageListView.js | url": {
+    "message": "URL"
+  },
+  "coverage/CoverageListView.js | usageVisualization": {
+    "message": "Usage Visualization"
+  },
+  "coverage/CoverageView.js | all": {
+    "message": "All"
+  },
+  "coverage/CoverageView.js | chooseCoverageGranularityPer": {
+    "message": "Choose coverage granularity: Per function has low overhead, per block has significant overhead."
+  },
+  "coverage/CoverageView.js | clearAll": {
+    "message": "Clear all"
+  },
+  "coverage/CoverageView.js | clickTheRecordButtonSToStart": {
+    "message": "Click the record button {PH1} to start capturing coverage."
+  },
+  "coverage/CoverageView.js | clickTheReloadButtonSToReloadAnd": {
+    "message": "Click the reload button {PH1} to reload and start capturing coverage."
+  },
+  "coverage/CoverageView.js | contentScripts": {
+    "message": "Content scripts"
+  },
+  "coverage/CoverageView.js | css": {
+    "message": "CSS"
+  },
+  "coverage/CoverageView.js | export": {
+    "message": "Export..."
+  },
+  "coverage/CoverageView.js | filterCoverageByType": {
+    "message": "Filter coverage by type"
+  },
+  "coverage/CoverageView.js | filteredSTotalS": {
+    "message": "Filtered: {PH1}  Total: {PH2}"
+  },
+  "coverage/CoverageView.js | includeExtensionContentScripts": {
+    "message": "Include extension content scripts"
+  },
+  "coverage/CoverageView.js | javascript": {
+    "message": "JavaScript"
+  },
+  "coverage/CoverageView.js | perBlock": {
+    "message": "Per block"
+  },
+  "coverage/CoverageView.js | perFunction": {
+    "message": "Per function"
+  },
+  "coverage/CoverageView.js | sOfSSUsedSoFarSUnused": {
+    "message": "{PH1} of {PH2} ({PH3}%) used so far,\n        {PH4} unused."
+  },
+  "coverage/CoverageView.js | urlFilter": {
+    "message": "URL filter"
+  },
+  "coverage/ModuleUIStrings.js | coverage": {
+    "message": "Coverage"
+  },
+  "coverage/ModuleUIStrings.js | instrumentCoverage": {
+    "message": "Instrument coverage"
+  },
+  "coverage/ModuleUIStrings.js | performance": {
+    "message": "Performance"
+  },
+  "coverage/ModuleUIStrings.js | startInstrumentingCoverageAnd": {
+    "message": "Start instrumenting coverage and reload page"
+  },
+  "coverage/ModuleUIStrings.js | stopInstrumentingCoverageAndShow": {
+    "message": "Stop instrumenting coverage and show results"
+  },
   "settings/FrameworkBlackboxSettingsTab.js | addFilenamePattern": {
     "message": "Add filename pattern"
   },

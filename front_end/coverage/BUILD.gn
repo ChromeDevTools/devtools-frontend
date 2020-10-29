@@ -11,6 +11,7 @@ devtools_module("coverage") {
     "CoverageListView.js",
     "CoverageModel.js",
     "CoverageView.js",
+    "ModuleUIStrings.js",
   ]
 
   deps = [
@@ -19,6 +20,7 @@ devtools_module("coverage") {
     "../data_grid:bundle",
     "../formatter:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../platform:bundle",
     "../sdk:bundle",
     "../source_frame:bundle",

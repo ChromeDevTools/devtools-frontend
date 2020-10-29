@@ -9,6 +9,9 @@
   <message name="IDS_DEVTOOLS_30d67fd6c32c9a9ff5ecb4472b44ed54" desc="Input element container text content in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel">
     Break when URL contains:
   </message>
+  <message name="IDS_DEVTOOLS_340641a167ad6da1bcb4016357f4695d" desc="Title for a type of source files">
+    Content scripts
+  </message>
   <message name="IDS_DEVTOOLS_39c145d69ad05e44e74017346c116251" desc="A context menu item in the DOMBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel">
     Remove all DOM breakpoints
   </message>

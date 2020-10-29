@@ -25,7 +25,6 @@
       <part file="../console/console_strings.grdp" />
       <part file="../console_counters/console_counters_strings.grdp" />
       <part file="../cookie_table/cookie_table_strings.grdp" />
-      <part file="../coverage/coverage_strings.grdp" />
       <part file="../css_overview/css_overview_strings.grdp" />
       <part file="../data_grid/data_grid_strings.grdp" />
       <part file="../devices/devices_strings.grdp" />
@@ -62,7 +61,6 @@
       <part file="../sdk/sdk_strings.grdp" />
       <part file="../search/search_strings.grdp" />
       <part file="../security/security_strings.grdp" />
-      <part file="../settings/settings_strings.grdp" />
       <part file="../snippets/snippets_strings.grdp" />
       <part file="../source_frame/source_frame_strings.grdp" />
       <part file="../sources/sources_strings.grdp" />

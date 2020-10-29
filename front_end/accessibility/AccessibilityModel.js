@@ -213,7 +213,7 @@ export class AccessibilityNode {
       return false;
     }
 
-    return !this._childIds.some(id => this._accessibilityModel.axNodeForId(id) !== undefined);
+    return !this._childIds.some(id => this._accessibilityModel.axNodeForId(id) !== null);
   }
 }
 

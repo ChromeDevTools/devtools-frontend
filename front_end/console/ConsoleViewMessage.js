@@ -617,7 +617,7 @@ export class ConsoleViewMessage {
     if (this._message.type === SDK.ConsoleModel.MessageType.QueryObjectResult) {
       note.title = ls`This value will not be collected until console is cleared.`;
     } else {
-      note.title = ls`Value below was evaluated just now.`;
+      note.title = ls`This value was evaluated just now and may have changed since output to console.`;
     }
 
     const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(obj, titleElement, this._linkifier);

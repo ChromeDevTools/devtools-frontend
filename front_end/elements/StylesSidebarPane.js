@@ -117,6 +117,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     this.sectionByElement = new WeakMap();
 
     this._swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
+    this._swatchPopoverHelper.addEventListener(
+        InlineEditor.SwatchPopoverHelper.Events.WillShowPopover, this.hideAllPopovers, this);
     this._linkifier = new Components.Linkifier.Linkifier(_maxLinkLength, /* useLinkDecorator */ true);
     /** @type {!StylePropertyHighlighter} */
     this._decorator = new StylePropertyHighlighter(this);
@@ -148,6 +150,9 @@ export class StylesSidebarPane extends ElementsSidebarPane {
       }
       return null;
     }, () => this.node());
+
+    /** @type {?InlineEditor.CSSAngle.CSSAngleClosureInterface} */
+    this.activeCSSAngle = null;
   }
 
   /**
@@ -826,9 +831,17 @@ export class StylesSidebarPane extends ElementsSidebarPane {
    * @override
    */
   willHide() {
+    this.hideAllPopovers();
+    super.willHide();
+  }
+
+  hideAllPopovers() {
     this._swatchPopoverHelper.hide();
     this._imagePreviewPopover.hide();
-    super.willHide();
+    if (this.activeCSSAngle) {
+      this.activeCSSAngle.minify();
+      this.activeCSSAngle = null;
+    }
   }
 
   /**

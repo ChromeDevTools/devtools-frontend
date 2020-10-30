@@ -81,7 +81,7 @@ export class CSSAngle extends HTMLElement {
     if (!miniIcon || !this.containingPane) {
       return;
     }
-    this.popoverOpen = true;
+
     this.dispatchEvent(new PopoverToggledEvent(true));
     document.addEventListener('mousedown', this.onMinifyingAction);
     this.containingPane.addEventListener('scroll', this.onMinifyingAction);
@@ -95,10 +95,16 @@ export class CSSAngle extends HTMLElement {
       const topElementOffset = this.containingPane.getBoundingClientRect().top;
       this.popoverStyleTop = `${miniIconBottom - topElementOffset}px`;
     }
+
+    this.popoverOpen = true;
     this.render();
   }
 
   minify(): void {
+    if (this.popoverOpen === false) {
+      return;
+    }
+
     this.popoverOpen = false;
     this.dispatchEvent(new PopoverToggledEvent(false));
     document.removeEventListener('mousedown', this.onMinifyingAction);

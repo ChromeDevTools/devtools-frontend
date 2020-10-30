@@ -59,6 +59,8 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
       this.hide(true);
     }
 
+    this.dispatchEventToListeners(Events.WillShowPopover);
+
     this._isHidden = false;
     this._anchorElement = anchorElement;
     this._view = view;
@@ -140,3 +142,8 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 }
+
+/** @enum {symbol} */
+export const Events = {
+  WillShowPopover: Symbol('WillShowPopover'),
+};

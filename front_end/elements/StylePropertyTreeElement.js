@@ -340,6 +340,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
 
       const {data} = /** @type {*} */ (event);
+      if (data.open) {
+        this._parentPane.hideAllPopovers();
+        this._parentPane.activeCSSAngle = cssAngle;
+      }
 
       section.element.classList.toggle('has-open-popover', data.open);
       this._parentPane.setEditingStyle(data.open);

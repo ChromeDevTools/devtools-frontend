@@ -18,8 +18,10 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     this._defaultScores = null;
     this._scorer = new FilePathScoreFunction('');
 
-    /** @type {!Array.<!Workspace.UISourceCode.UISourceCode>} */
+    /** @type {!Array<!Workspace.UISourceCode.UISourceCode>} */
     this._uiSourceCodes = [];
+    /** @type {!Set<string>} */
+    this._uiSourceCodeUrls = new Set();
 
     /** @type {string} */
     this._query;
@@ -39,13 +41,16 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
    */
   _populate(skipProject) {
     this._uiSourceCodes = [];
-    const projects = Workspace.Workspace.WorkspaceImpl.instance().projects().filter(this.filterProject.bind(this));
-    for (let i = 0; i < projects.length; ++i) {
-      if (skipProject && projects[i] === skipProject) {
-        continue;
+    this._uiSourceCodeUrls.clear();
+    for (const project of Workspace.Workspace.WorkspaceImpl.instance().projects()) {
+      if (project !== skipProject && this.filterProject(project)) {
+        for (const uiSourceCode of project.uiSourceCodes()) {
+          if (this._filterUISourceCode(uiSourceCode)) {
+            this._uiSourceCodes.push(uiSourceCode);
+            this._uiSourceCodeUrls.add(uiSourceCode.url());
+          }
+        }
       }
-      const uiSourceCodes = projects[i].uiSourceCodes().filter(this._filterUISourceCode.bind(this));
-      this._uiSourceCodes = this._uiSourceCodes.concat(uiSourceCodes);
     }
   }
 
@@ -54,6 +59,9 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
    * @return {boolean}
    */
   _filterUISourceCode(uiSourceCode) {
+    if (this._uiSourceCodeUrls.has(uiSourceCode.url())) {
+      return false;
+    }
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     return !binding || binding.fileSystem === uiSourceCode;
   }
@@ -229,6 +237,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
       return;
     }
     this._uiSourceCodes.push(uiSourceCode);
+    this._uiSourceCodeUrls.add(uiSourceCode.url());
     this.refresh();
   }
 

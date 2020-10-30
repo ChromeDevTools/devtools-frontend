@@ -12,6 +12,7 @@ devtools_module("lighthouse") {
     "LighthouseProtocolService.js",
     "LighthouseReportRenderer.js",
     "LighthouseReportSelector.js",
+    "LighthouseReporterTypes.js",
     "LighthouseStartView.js",
     "LighthouseStatusView.js",
     "RadioSetting.js",

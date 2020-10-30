@@ -16,12 +16,14 @@ import * as Timeline from '../timeline/timeline.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
+import * as ReportRenderer from './LighthouseReporterTypes.js';  // eslint-disable-line no-unused-vars
+
 const MaxLengthForLinks = 40;
 
 /**
  * @override
  */
-export class LighthouseReportRenderer extends ReportRenderer {
+export class LighthouseReportRenderer extends self.ReportRenderer {
   /**
    * @param {!Element} el Parent element to render the report into.
    * @param {!ReportRenderer.RunnerResultArtifacts=} artifacts
@@ -63,7 +65,7 @@ export class LighthouseReportRenderer extends ReportRenderer {
     const domModel = mainTarget.model(SDK.DOMModel.DOMModel);
 
     for (const origElement of el.getElementsByClassName('lh-node')) {
-      /** @type {!DetailsRenderer.NodeDetailsJSON} */
+      /** @type {!ReportRenderer.NodeDetailsJSON} */
       const detailsItem = origElement.dataset;
       if (!detailsItem.path) {
         continue;
@@ -91,7 +93,7 @@ export class LighthouseReportRenderer extends ReportRenderer {
    */
   static async linkifySourceLocationDetails(el) {
     for (const origElement of el.getElementsByClassName('lh-source-location')) {
-      /** @type {!DetailsRenderer.SourceLocationDetailsJSON} */
+      /** @type {!ReportRenderer.SourceLocationDetailsJSON} */
       const detailsItem = origElement.dataset;
       if (!detailsItem.sourceUrl || !detailsItem.sourceLine || !detailsItem.sourceColumn) {
         continue;
@@ -120,7 +122,7 @@ export class LighthouseReportRenderer extends ReportRenderer {
 /**
  * @override
  */
-export class LighthouseReportUIFeatures extends ReportUIFeatures {
+export class LighthouseReportUIFeatures extends self.ReportUIFeatures {
   /**
    * @param {!DOM} dom
    */

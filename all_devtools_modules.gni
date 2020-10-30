@@ -258,6 +258,7 @@ all_typescript_module_sources = [
   "lighthouse/LighthouseProtocolService.js",
   "lighthouse/LighthouseReportRenderer.js",
   "lighthouse/LighthouseReportSelector.js",
+  "lighthouse/LighthouseReporterTypes.js",
   "lighthouse/LighthouseStartView.js",
   "lighthouse/LighthouseStatusView.js",
   "lighthouse/RadioSetting.js",

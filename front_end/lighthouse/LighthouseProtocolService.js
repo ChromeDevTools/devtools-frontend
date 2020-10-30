@@ -9,6 +9,8 @@ import * as Common from '../common/common.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 
+import * as ReportRenderer from './LighthouseReporterTypes.js';  // eslint-disable-line no-unused-vars
+
 export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();

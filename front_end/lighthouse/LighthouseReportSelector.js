@@ -8,6 +8,8 @@
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
+import * as ReportRenderer from './LighthouseReporterTypes.js';  // eslint-disable-line no-unused-vars
+
 export class ReportSelector {
   constructor(renderNewLighthouseView) {
     this._renderNewLighthouseView = renderNewLighthouseView;

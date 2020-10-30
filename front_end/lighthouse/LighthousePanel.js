@@ -14,6 +14,7 @@ import * as UI from '../ui/ui.js';
 
 import {Events, LighthouseController} from './LighthouseController.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
+import * as ReportRenderer from './LighthouseReporterTypes.js';  // eslint-disable-line no-unused-vars
 import {LighthouseReportRenderer, LighthouseReportUIFeatures} from './LighthouseReportRenderer.js';
 import {Item, ReportSelector} from './LighthouseReportSelector.js';
 import {StartView} from './LighthouseStartView.js';

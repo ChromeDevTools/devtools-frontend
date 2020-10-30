@@ -32,7 +32,8 @@
     "LighthouseReportRenderer.js",
     "LighthouseStartView.js",
     "LighthouseStatusView.js",
-    "LighthouseProtocolService.js"
+    "LighthouseProtocolService.js",
+    "LighthouseReporterTypes.js"
   ],
   "resources": [
     "../third_party/lighthouse/report-assets/template.html",

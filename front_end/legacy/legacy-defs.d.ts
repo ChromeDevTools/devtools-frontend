@@ -11,6 +11,10 @@ interface Window {
   UI: {themeSupport: unknown}
 }
 
+declare class DOM {
+  constructor(doc: Document);
+}
+
 interface Array<T> {
   peekLast(): T | undefined;
   intersectOrdered(array: T[], comparator: (a: T, b: T) => number): T[];

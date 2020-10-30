@@ -9,7 +9,7 @@ import * as LighthouseModule from './lighthouse.js';
 self.Lighthouse = self.Lighthouse || {};
 Lighthouse = Lighthouse || {};
 
-/** @type {!LighthouseReportGenerator} */
+/** @type {!LighthouseModule.LighthouseReporterTypes.LighthouseReportGenerator} */
 Lighthouse.ReportGenerator;
 
 /**

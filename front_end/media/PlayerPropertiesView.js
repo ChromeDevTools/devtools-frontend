@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
@@ -38,6 +35,9 @@ export const PlayerPropertyKeys = {
  * @unrestricted
  */
 export class PropertyRenderer extends UI.Widget.VBox {
+  /**
+   * @param {string} title
+   */
   constructor(title) {
     super();
     this.contentElement.classList.add('media-property-renderer');
@@ -45,18 +45,23 @@ export class PropertyRenderer extends UI.Widget.VBox {
     this._contents = this.contentElement.createChild('span', 'media-property-renderer-contents');
     UI.UIUtils.createTextChild(this._title, title);
     this._title = title;
+    /** @type {?string} */
     this._value = null;
     this._pseudo_color_protection_element = null;
     this.contentElement.classList.add('media-property-renderer-hidden');
   }
 
+  /**
+   * @param {string} propname
+   * @param {string} propvalue
+   */
   updateData(propname, propvalue) {
     // convert all empty possibilities into nulls for easier handling.
     if (propvalue === '' || propvalue === null) {
       return this._updateData(propname, null);
     }
     try {
-      propvalue = JSON.parse(propvalue);
+      propvalue = /** @type {string} */ (JSON.parse(propvalue));
     } catch (err) {
       // TODO(tmathmeyer) typecheck the type of propvalue against
       // something defined or sourced from the c++ definitions.
@@ -65,6 +70,10 @@ export class PropertyRenderer extends UI.Widget.VBox {
     return this._updateData(propname, propvalue);
   }
 
+  /**
+   * @param {string} propname
+   * @param {?string} propvalue
+   */
   _updateData(propname, propvalue) {
     if (propvalue === null) {
       this.changeContents(null);
@@ -76,6 +85,9 @@ export class PropertyRenderer extends UI.Widget.VBox {
     }
   }
 
+  /**
+   * @param {?string} value
+   */
   changeContents(value) {
     if (value === null) {
       this.contentElement.classList.add('media-property-renderer-hidden');
@@ -83,7 +95,8 @@ export class PropertyRenderer extends UI.Widget.VBox {
         this._pseudo_color_protection_element = document.createElement('div');
         this._pseudo_color_protection_element.classList.add('media-property-renderer');
         this._pseudo_color_protection_element.classList.add('media-property-renderer-hidden');
-        this.contentElement.parentNode.insertBefore(this._pseudo_color_protection_element, this.contentElement);
+        /** @type {!HTMLElement} */ (this.contentElement.parentNode)
+            .insertBefore(this._pseudo_color_protection_element, this.contentElement);
       }
     } else {
       if (this._pseudo_color_protection_element !== null) {
@@ -92,7 +105,7 @@ export class PropertyRenderer extends UI.Widget.VBox {
       }
       this.contentElement.classList.remove('media-property-renderer-hidden');
       this._contents.removeChildren();
-      const spanElement = createElement('span');
+      const spanElement = document.createElement('span');
       spanElement.textContent = value;
       this._contents.appendChild(spanElement);
     }
@@ -100,6 +113,10 @@ export class PropertyRenderer extends UI.Widget.VBox {
 }
 
 export class FormattedPropertyRenderer extends PropertyRenderer {
+  /**
+   * @param {string} title
+   * @param {function(string):string} formatfunction
+   */
   constructor(title, formatfunction) {
     super(Common.UIString.UIString(title));
     this._formatfunction = formatfunction;
@@ -107,6 +124,8 @@ export class FormattedPropertyRenderer extends PropertyRenderer {
 
   /**
    * @override
+   * @param {string} propname
+   * @param {?string} propvalue
    */
   _updateData(propname, propvalue) {
     if (propvalue === null) {
@@ -121,6 +140,10 @@ export class FormattedPropertyRenderer extends PropertyRenderer {
  * @unrestricted
  */
 export class DefaultPropertyRenderer extends PropertyRenderer {
+  /**
+   * @param {string} title
+   * @param {string} default_text
+   */
   constructor(title, default_text) {
     super(Common.UIString.UIString(title));
     this.changeContents(default_text);
@@ -131,6 +154,9 @@ export class DefaultPropertyRenderer extends PropertyRenderer {
  * @unrestricted
  */
 export class DimensionPropertyRenderer extends PropertyRenderer {
+  /**
+   * @param {string} title
+   */
   constructor(title) {
     super(Common.UIString.UIString(title));
     this._width = 0;
@@ -139,15 +165,17 @@ export class DimensionPropertyRenderer extends PropertyRenderer {
 
   /**
    * @override
+   * @param {string} propname
+   * @param {?string} propvalue
    */
   _updateData(propname, propvalue) {
     let needsUpdate = false;
-    if (propname === 'width' && propvalue !== this._width) {
-      this._width = propvalue;
+    if (propname === 'width' && Number(propvalue) !== this._width) {
+      this._width = Number(propvalue);
       needsUpdate = true;
     }
-    if (propname === 'height' && propvalue !== this._height) {
-      this._height = propvalue;
+    if (propname === 'height' && Number(propvalue) !== this._height) {
+      this._height = Number(propvalue);
       needsUpdate = true;
     }
     // If both properties arent set, don't bother updating, since
@@ -164,6 +192,9 @@ export class DimensionPropertyRenderer extends PropertyRenderer {
  * @unrestricted
  */
 export class AttributesView extends UI.Widget.VBox {
+  /**
+   * @param {!Array<!UI.Widget.Widget>} elements
+   */
   constructor(elements) {
     super();
     this.contentElement.classList.add('media-attributes-view');
@@ -174,16 +205,23 @@ export class AttributesView extends UI.Widget.VBox {
 }
 
 export class TrackManager {
+  /**
+   * @param {!PlayerPropertiesView} propertiesView
+   * @param {string} type
+   */
   constructor(propertiesView, type) {
     this._type = type;
     this._view = propertiesView;
-    this._previousTabs = [];
   }
 
+  /**
+   * @param {string} name
+   * @param {string} value
+   */
   updateData(name, value) {
     const tabs = this._view.GetTabs(this._type);
 
-    const newTabs = /** @type {!Array.<!Object>} */ (JSON.parse(value));
+    const newTabs = /** @type {!Array.<!Object<string, *>>} */ (JSON.parse(value));
     let enumerate = 1;
     for (const tabData of newTabs) {
       this.addNewTab(tabs, tabData, enumerate);
@@ -191,6 +229,11 @@ export class TrackManager {
     }
   }
 
+  /**
+   * @param {(!GenericTrackMenu|!NoTracksPlaceholderMenu)} tabs
+   * @param {!Object<string, string>} tabData
+   * @param {number} tabNumber
+   */
   addNewTab(tabs, tabData, tabNumber) {
     const tabElements = [];
     for (const [name, data] of Object.entries(tabData)) {
@@ -203,18 +246,27 @@ export class TrackManager {
 }
 
 export class VideoTrackManager extends TrackManager {
+  /**
+   * @param {!PlayerPropertiesView} propertiesView
+   */
   constructor(propertiesView) {
     super(propertiesView, 'video');
   }
 }
 
 export class TextTrackManager extends TrackManager {
+  /**
+   * @param {!PlayerPropertiesView} propertiesView
+   */
   constructor(propertiesView) {
     super(propertiesView, 'text');
   }
 }
 
 export class AudioTrackManager extends TrackManager {
+  /**
+   * @param {!PlayerPropertiesView} propertiesView
+   */
   constructor(propertiesView) {
     super(propertiesView, 'audio');
   }
@@ -228,12 +280,20 @@ const TrackTypeLocalized = {
 
 
 class GenericTrackMenu extends UI.TabbedPane.TabbedPane {
+  /**
+   * @param {string} decoderName
+   * @param {string} trackName
+   */
   constructor(decoderName, trackName = ls`Track`) {
     super();
     this._decoderName = decoderName;
     this._trackName = trackName;
   }
 
+  /**
+   * @param {number} trackNumber
+   * @param {!UI.Widget.Widget} element
+   */
   addNewTab(trackNumber, element) {
     const localizedTrackLower = Common.UIString.UIString('track');
     this.appendTab(
@@ -243,6 +303,10 @@ class GenericTrackMenu extends UI.TabbedPane.TabbedPane {
 }
 
 class DecoderTrackMenu extends GenericTrackMenu {
+  /**
+   * @param {string} decoderName
+   * @param {!UI.Widget.Widget} informationalElement
+   */
   constructor(decoderName, informationalElement) {
     super(decoderName);
 
@@ -255,6 +319,10 @@ class DecoderTrackMenu extends GenericTrackMenu {
 }
 
 class NoTracksPlaceholderMenu extends UI.Widget.VBox {
+  /**
+   * @param {!GenericTrackMenu} wrapping
+   * @param {string} placeholder_text
+   */
   constructor(wrapping, placeholder_text) {
     super();
     this._isPlaceholder = true;
@@ -263,6 +331,10 @@ class NoTracksPlaceholderMenu extends UI.Widget.VBox {
     this._wrapping.show(this.contentElement);
   }
 
+  /**
+   * @param {number} trackNumber
+   * @param {!UI.Widget.Widget} element
+   */
   addNewTab(trackNumber, element) {
     if (this._isPlaceholder) {
       this._wrapping.closeTab('_placeholder');
@@ -280,6 +352,17 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     super();
     this.contentElement.classList.add('media-properties-frame');
     this.registerRequiredCSS('media/playerPropertiesView.css');
+    /** @type {!Array<!PropertyRenderer>} */
+    this._mediaElements = [];
+    /** @type {!Array<!PropertyRenderer>} */
+    this._videoDecoderElements = [];
+    /** @type {!Array<!PropertyRenderer>} */
+    this._audioDecoderElements = [];
+    /** @type {!Array<!PropertyRenderer>} */
+    this._textTrackElements = [];
+    /** @type {!Map<string, (!PropertyRenderer|!TrackManager)>} */
+    this._attributeMap = new Map();
+
     this.populateAttributesAndElements();
     this._videoProperties = new AttributesView(this._mediaElements);
     this._videoDecoderProperties = new AttributesView(this._videoDecoderElements);
@@ -291,18 +374,30 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     this._audioDecoderTabs = new DecoderTrackMenu(TrackTypeLocalized.Audio, this._audioDecoderProperties);
     this._audioDecoderTabs.show(this.contentElement);
 
+    /**
+     * @type {(?GenericTrackMenu|?NoTracksPlaceholderMenu)}
+     */
     this._textTrackTabs = null;
   }
 
+  /**
+   * @return {(!GenericTrackMenu|!NoTracksPlaceholderMenu)}
+   */
   _lazyCreateTrackTabs() {
-    if (this._textTrackTabs === null) {
+    let textTracksTabs = this._textTrackTabs;
+    if (textTracksTabs === null) {
       const textTracks = new GenericTrackMenu(ls`Text track`);
-      this._textTrackTabs = new NoTracksPlaceholderMenu(textTracks, ls`No text tracks`);
-      this._textTrackTabs.show(this.contentElement);
+      textTracksTabs = new NoTracksPlaceholderMenu(textTracks, ls`No text tracks`);
+      textTracksTabs.show(this.contentElement);
+      this._textTracksTabs = textTracksTabs;
     }
-    return this._textTrackTabs;
+    return textTracksTabs;
   }
 
+  /**
+   * @param {string} type
+   * @return {(!GenericTrackMenu|!NoTracksPlaceholderMenu)}
+   */
   GetTabs(type) {
     if (type === 'audio') {
       return this._audioDecoderTabs;
@@ -328,46 +423,47 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     renderer.updateData(property.name, property.value);
   }
 
+  /**
+   * @param {string|number} bitsPerSecond
+   */
   formatKbps(bitsPerSecond) {
     if (bitsPerSecond === '') {
       return '0 kbps';
     }
-    const kbps = Math.floor(bitsPerSecond / 1000);
+    const kbps = Math.floor(Number(bitsPerSecond) / 1000);
     return `${kbps} kbps`;
   }
 
+  /**
+   * @param {string|number} seconds
+   */
   formatTime(seconds) {
     if (seconds === '') {
       return '0:00';
     }
-    const date = new Date(null);
-    date.setSeconds(seconds);
+    const date = new Date('');
+    date.setSeconds(Number(seconds));
     return date.toISOString().substr(11, 8);
   }
 
+  /**
+   * @param {string} bytes
+   */
   formatFileSize(bytes) {
     if (bytes === '') {
       return '0 bytes';
     }
-    if (bytes < 1000) {
+    const actualBytes = Number(bytes);
+    if (actualBytes < 1000) {
       return `${bytes} bytes`;
     }
-    const power = Math.floor(Math.log10(bytes) / 3);
+    const power = Math.floor(Math.log10(actualBytes) / 3);
     const suffix = ['bytes', 'kB', 'MB', 'GB', 'TB'][power];
-    const bytesDecimal = (bytes / Math.pow(1000, power)).toFixed(2);
+    const bytesDecimal = (actualBytes / Math.pow(1000, power)).toFixed(2);
     return `${bytesDecimal} ${suffix}`;
   }
 
   populateAttributesAndElements() {
-    // Lists of Media.PropertyRenderer
-    this._mediaElements = [];
-    this._videoDecoderElements = [];
-    this._audioDecoderElements = [];
-    this._textTrackElements = [];
-
-    // Map from incoming change_id => Media.PropertyRenderer
-    this._attributeMap = new Map();
-
     /* Media properties */
     const resolution = new PropertyRenderer(ls`Resolution`);
     this._mediaElements.push(resolution);

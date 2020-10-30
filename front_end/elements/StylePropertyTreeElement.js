@@ -13,7 +13,6 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
 import {BezierPopoverIcon, ColorSwatchPopoverIcon, ShadowSwatchPopoverHelper} from './ColorSwatchPopoverIcon.js';
-import {createCSSAngle} from './CSSAngle_bridge.js';
 import {CSSPropertyPrompt, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer,} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!WeakMap<!StylesSidebarPane, !StylePropertyTreeElement>} */
@@ -318,7 +317,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (!this._editable()) {
       return document.createTextNode(angleText);
     }
-    const cssAngle = createCSSAngle();
+    const cssAngle = InlineEditor.CSSAngle.createCSSAngle();
     const valueElement = document.createElement('span');
     valueElement.textContent = angleText;
     const computedPropertyValue = this._matchedStyles.computeValue(this.property.ownerStyle, this.property.value) || '';

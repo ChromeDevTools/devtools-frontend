@@ -4,6 +4,7 @@ ts_library("inline_editor") {
   testonly = true
   sources = [
     "BezierUI_test.ts",
+    "CSSAngle_test.ts",
     "CSSVarSwatch_test.ts",
     "ColorSwatch_test.ts",
   ]

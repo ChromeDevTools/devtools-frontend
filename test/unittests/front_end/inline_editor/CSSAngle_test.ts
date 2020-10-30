@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {CSSAngle, CSSAngleData, PopoverToggledEvent} from '../../../../front_end/elements/CSSAngle.js';
-import {AngleUnit, get2DTranslationsForAngle, getAngleFromDegrees, getRadiansFromAngle, parseText, roundAngleByUnit} from '../../../../front_end/elements/CSSAngleUtils.js';
+import {CSSAngle, CSSAngleData, PopoverToggledEvent} from '../../../../front_end/inline_editor/CSSAngle.js';
+import {AngleUnit, get2DTranslationsForAngle, getAngleFromDegrees, getRadiansFromAngle, parseText, roundAngleByUnit} from '../../../../front_end/inline_editor/CSSAngleUtils.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;

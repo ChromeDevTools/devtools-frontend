@@ -8,6 +8,8 @@
     "BezierEditor.js",
     "BezierUI.js",
     "ColorSwatch_bridge.js",
+    "CSSAngleRegex.js",
+    "CSSAngle_bridge.js",
     "CSSShadowEditor.js",
     "CSSShadowModel.js",
     "CSSVarSwatch_bridge.js",

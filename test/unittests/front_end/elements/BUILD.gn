@@ -4,7 +4,6 @@ ts_library("elements") {
   testonly = true
   sources = [
     "Adorner_test.ts",
-    "CSSAngle_test.ts",
     "CSSPropertyIconResolver_test.ts",
     "ComputedStyleProperty_test.ts",
     "ComputedStyleTrace_test.ts",

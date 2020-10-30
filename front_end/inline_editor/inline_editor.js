@@ -5,6 +5,8 @@
 import * as BezierEditor from './BezierEditor.js';
 import * as BezierUI from './BezierUI.js';
 import * as ColorSwatch from './ColorSwatch_bridge.js';
+import * as CSSAngle from './CSSAngle_bridge.js';
+import * as CSSAngleRegex from './CSSAngleRegex.js';
 import * as CSSShadowEditor from './CSSShadowEditor.js';
 import * as CSSShadowModel from './CSSShadowModel.js';
 import * as CSSVarSwatch from './CSSVarSwatch_bridge.js';
@@ -15,6 +17,8 @@ export {
   BezierEditor,
   BezierUI,
   ColorSwatch,
+  CSSAngle,
+  CSSAngleRegex,
   CSSShadowEditor,
   CSSShadowModel,
   CSSVarSwatch,

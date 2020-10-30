@@ -314,8 +314,6 @@
     "ColorSwatchPopoverIcon.js",
     "ComputedStyleModel.js",
     "Adorner.js",
-    "CSSAngleRegex.js",
-    "CSSAngle_bridge.js",
     "CSSPropertyIconResolver.js",
     "DOMLinkifier.js",
     "DOMPath.js",

@@ -10,6 +10,10 @@ devtools_module("inline_editor") {
   sources = [
     "BezierEditor.js",
     "BezierUI.js",
+    "CSSAngle.ts",
+    "CSSAngleRegex.js",
+    "CSSAngleUtils.ts",
+    "CSSAngle_bridge.js",
     "CSSShadowEditor.js",
     "CSSShadowModel.js",
     "CSSVarSwatch.ts",

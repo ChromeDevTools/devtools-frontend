@@ -9,10 +9,6 @@ import("../../third_party/typescript/typescript.gni")
 devtools_module("elements") {
   sources = [
     "Adorner.js",
-    "CSSAngle.ts",
-    "CSSAngleRegex.js",
-    "CSSAngleUtils.ts",
-    "CSSAngle_bridge.js",
     "CSSPropertyIconResolver.js",
     "ClassesPaneWidget.js",
     "ColorSwatchPopoverIcon.js",

@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_2046d43f4cc1f59c06f764da2ca2355a" desc="Status text in the Lighthouse panel">
     The print popup window is open. Please close it to continue.
   </message>
+  <message name="IDS_DEVTOOLS_223ab60aebd6edaa26b1d6a5c752c2e2" desc="Text in Lighthouse Controller">
+    Apply mobile emulation
+  </message>
   <message name="IDS_DEVTOOLS_24e8ca2483129261096ba8ba0fbcd247" desc="Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel">
     70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: <ph name="LOCKED_1">Think with Google</ph>]
   </message>

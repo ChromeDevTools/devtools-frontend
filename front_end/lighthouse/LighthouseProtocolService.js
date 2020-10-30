@@ -60,7 +60,7 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   *  @param {function (string): undefined} callback
+   *  @param {function (string): void} callback
    */
   registerStatusCallback(callback) {
     this._status = callback;

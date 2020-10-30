@@ -155,8 +155,13 @@ Sources.SnippetsPlugin = SourcesModule.SnippetsPlugin.SnippetsPlugin;
 
 Sources.SourceMapNamesResolver = {};
 
+Sources.SourceMapNamesResolver.setScopeResolvedForTest = SourcesModule.SourceMapNamesResolver.setScopeResolvedForTest;
+
 // Tests can override this global symbol and therefore can't be exported
-Sources.SourceMapNamesResolver._scopeResolvedForTest = function() {};
+Object.defineProperty(Sources.SourceMapNamesResolver, '_scopeResolvedForTest', {
+  get: SourcesModule.SourceMapNamesResolver.getScopeResolvedForTest,
+  set: SourcesModule.SourceMapNamesResolver.setScopeResolvedForTest,
+});
 
 Sources.SourceMapNamesResolver._cachedMapSymbol = SourcesModule.SourceMapNamesResolver.cachedMapSymbol;
 Sources.SourceMapNamesResolver._cachedIdentifiersSymbol = SourcesModule.SourceMapNamesResolver.cachedIdentifiersSymbol;

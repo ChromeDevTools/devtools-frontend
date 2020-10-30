@@ -41,6 +41,22 @@ import {changeObjectToEditOperation, toPos, toRange} from './CodeMirrorUtils.js'
 import {TextEditorAutocompleteController} from './TextEditorAutocompleteController.js';
 
 /**
+ * @typedef {{
+*   startColumn: number,
+*   endColumn: number,
+*   type: string
+* }}
+*/
+// @ts-ignore typedef
+export let Token;
+
+/**
+ * @typedef {{x: number, y: number, height: number}}
+  */
+// @ts-ignore typedef
+export let Coordinates;
+
+/**
  * @implements {UI.TextEditor.TextEditor}
  * @unrestricted
  */
@@ -661,7 +677,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
   /**
    * @param {number} lineNumber
    * @param {number} column
-   * @return {?{x: number, y: number, height: number}}
+   * @return {?Coordinates}
    */
   cursorPositionToCoordinates(lineNumber, column) {
     if (lineNumber >= this._codeMirror.lineCount() || lineNumber < 0 || column < 0 ||
@@ -706,7 +722,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
    * @override
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?{startColumn: number, endColumn: number, type: string}}
+   * @return {?Token}
    */
   tokenAtTextPosition(lineNumber, columnNumber) {
     if (lineNumber < 0 || lineNumber >= this._codeMirror.lineCount()) {

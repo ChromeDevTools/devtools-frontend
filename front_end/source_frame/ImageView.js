@@ -75,6 +75,7 @@ export class ImageView extends UI.View.SimpleView {
    * @return {!Promise<!Array<!UI.Toolbar.ToolbarItem>>}
    */
   async toolbarItems() {
+    await this._updateContentIfNeeded();
     return [
       this._sizeLabel, new UI.Toolbar.ToolbarSeparator(), this._dimensionsLabel, new UI.Toolbar.ToolbarSeparator(),
       this._mimeTypeLabel

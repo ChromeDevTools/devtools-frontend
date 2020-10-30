@@ -346,6 +346,7 @@ all_typescript_module_sources = [
   "platform/UIString.js",
   "platform/array-utilities.js",
   "platform/date-utilities.js",
+  "platform/map-utilities.js",
   "platform/number-utilities.js",
   "platform/set-utilities.js",
   "platform/string-utilities.js",

@@ -7,6 +7,7 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Formatter from '../formatter/formatter.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
@@ -350,7 +351,7 @@ export const resolveThisObject = function(callFrame) {
    * @return {!Promise<?SDK.RemoteObject.RemoteObject>}
    */
   function onScopeResolved(namesMapping) {
-    const thisMappings = namesMapping.inverse().get('this');
+    const thisMappings = Platform.MapUtilities.inverse(namesMapping).get('this');
     if (!thisMappings || thisMappings.size !== 1) {
       return Promise.resolve(callFrame.thisObject());
     }

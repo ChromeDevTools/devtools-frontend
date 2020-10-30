@@ -707,6 +707,7 @@ grd_files_debug_sources = [
   "front_end/platform/UIString.js",
   "front_end/platform/array-utilities.js",
   "front_end/platform/date-utilities.js",
+  "front_end/platform/map-utilities.js",
   "front_end/platform/number-utilities.js",
   "front_end/platform/set-utilities.js",
   "front_end/platform/string-utilities.js",

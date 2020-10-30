@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {findIcon, getPhysicalFlexDirections, PhysicalFlexDirection, reverseDirection, rotateFlexDirectionIcon} from '../../../../front_end/elements/CSSPropertyIconResolver.js';
+import {findIcon, getPhysicalFlexDirections, PhysicalFlexDirection, reverseDirection, rotateFlexAlignContentIcon, rotateFlexDirectionIcon} from '../../../../front_end/elements/CSSPropertyIconResolver.js';
 
 const {assert} = chai;
 
@@ -286,6 +286,80 @@ describe('CSSPropertyIconResolver', () => {
           findIcon('flex-direction: column-reverse', mapFromStyle(test.style)),
           rotateFlexDirectionIcon(reverseDirection(test.expected)),
           `Test 'flex-direction: column-reverse'(${JSON.stringify(test.style)}) failed.`);
+    }
+  });
+
+  it('can rotate an icon for align-content', () => {
+    const iconName = 'iconName';
+    assert.deepEqual(rotateFlexAlignContentIcon(iconName, PhysicalFlexDirection.LEFT_TO_RIGHT), {
+      iconName,
+      rotate: -90,
+      scaleX: 1,
+      scaleY: 1,
+    });
+    assert.deepEqual(rotateFlexAlignContentIcon(iconName, PhysicalFlexDirection.RIGHT_TO_LEFT), {
+      iconName,
+      rotate: 90,
+      scaleX: 1,
+      scaleY: 1,
+    });
+    assert.deepEqual(rotateFlexAlignContentIcon(iconName, PhysicalFlexDirection.TOP_TO_BOTTOM), {
+      iconName,
+      rotate: 0,
+      scaleX: 1,
+      scaleY: 1,
+    });
+    assert.deepEqual(rotateFlexAlignContentIcon(iconName, PhysicalFlexDirection.BOTTOM_TO_TOP), {
+      iconName,
+      rotate: 0,
+      scaleX: 1,
+      scaleY: 1,
+    });
+  });
+
+  it('can find an icon for align-content properties', () => {
+    const tests = [
+      {
+        style: {
+          'flex-direction': 'row',
+          'align-content': 'center',
+        },
+        iconName: 'flex-align-content-center-icon',
+        expected: PhysicalFlexDirection.TOP_TO_BOTTOM,
+      },
+      {
+        style: {
+          'flex-direction': 'column',
+          'align-content': 'center',
+        },
+        iconName: 'flex-align-content-center-icon',
+        expected: PhysicalFlexDirection.LEFT_TO_RIGHT,
+      },
+      {
+        style: {
+          'flex-direction': 'row',
+          'align-content': 'center',
+          'writing-mode': 'vertical-rl',
+        },
+        iconName: 'flex-align-content-center-icon',
+        expected: PhysicalFlexDirection.RIGHT_TO_LEFT,
+      },
+      {
+        style: {
+          'flex-direction': 'row',
+          'align-content': 'center',
+          'writing-mode': 'vertical-lr',
+        },
+        iconName: 'flex-align-content-center-icon',
+        expected: PhysicalFlexDirection.LEFT_TO_RIGHT,
+      },
+    ];
+
+    for (const test of tests) {
+      assert.deepEqual(
+          findIcon(`align-content: ${test.style['align-content']}`, mapFromStyle(test.style)),
+          rotateFlexAlignContentIcon(test.iconName, test.expected),
+          `Test align-content(${JSON.stringify(test.style)}) failed.`);
     }
   });
 });

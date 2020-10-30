@@ -113,6 +113,22 @@ export function rotateFlexDirectionIcon(direction) {
 }
 
 /**
+ * @param {string} iconName
+ * @param {!PhysicalFlexDirection} direction
+ * @return {!IconInfo}
+ */
+export function rotateFlexAlignContentIcon(iconName, direction) {
+  return {
+    iconName,
+    rotate: direction === PhysicalFlexDirection.RIGHT_TO_LEFT ?
+        90 :
+        (direction === PhysicalFlexDirection.LEFT_TO_RIGHT ? -90 : 0),
+    scaleX: 1,
+    scaleY: 1,
+  };
+}
+
+/**
  *
  * @param {string} value
  * @return {function(!Map<string, string>):!IconInfo}
@@ -130,6 +146,24 @@ function flexDirectionIcon(value) {
 }
 
 /**
+ *
+ * @param {string} iconName
+ * @return {function(!Map<string, string>):!IconInfo}
+ */
+function flexAlignContentIcon(iconName) {
+  /**
+   * @param {!Map<string, string>} computedStyles
+   * @return {!IconInfo}
+   */
+  function getIcon(computedStyles) {
+    const directions = getPhysicalFlexDirections(computedStyles);
+    return rotateFlexAlignContentIcon(
+        iconName, computedStyles.get('flex-direction') === 'column' ? directions.row : directions.column);
+  }
+  return getIcon;
+}
+
+/**
  * @type {!Map<string, function(!Map<string, string>):!IconInfo>}
  */
 const textToIconResolver = new Map();
@@ -141,6 +175,13 @@ textToIconResolver.set('flex-direction: row-reverse', flexDirectionIcon('row-rev
 textToIconResolver.set('flex-direction: initial', flexDirectionIcon('row'));
 textToIconResolver.set('flex-direction: unset', flexDirectionIcon('row'));
 textToIconResolver.set('flex-direction: revert', flexDirectionIcon('row'));
+textToIconResolver.set('align-content: center', flexAlignContentIcon('flex-align-content-center-icon'));
+textToIconResolver.set('align-content: space-around', flexAlignContentIcon('flex-align-content-space-around-icon'));
+textToIconResolver.set('align-content: space-between', flexAlignContentIcon('flex-align-content-space-between-icon'));
+textToIconResolver.set('align-content: stretch', flexAlignContentIcon('flex-align-content-stretch-icon'));
+textToIconResolver.set('align-content: space-evenly', flexAlignContentIcon('flex-align-content-space-evenly-icon'));
+textToIconResolver.set('align-content: flex-end', flexAlignContentIcon('flex-align-content-end-icon'));
+textToIconResolver.set('align-content: flex-start', flexAlignContentIcon('flex-align-content-start-icon'));
 
 /**
  * @param {string} text

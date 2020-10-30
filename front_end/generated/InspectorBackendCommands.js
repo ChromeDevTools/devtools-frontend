@@ -901,6 +901,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Emulation.VirtualTimePolicy',
       {Advance: 'advance', Pause: 'pause', PauseIfNetworkFetchesPending: 'pauseIfNetworkFetchesPending'});
+  inspectorBackend.registerEnum('Emulation.DisabledImageType', {Avif: 'avif', Webp: 'webp'});
   inspectorBackend.registerEvent('Emulation.virtualTimeBudgetExpired', []);
   inspectorBackend.registerCommand('Emulation.canEmulate', [], ['result']);
   inspectorBackend.registerCommand('Emulation.clearDeviceMetricsOverride', [], []);
@@ -1001,6 +1002,8 @@ export function registerCommands(inspectorBackend) {
       'Emulation.setVisibleSize',
       [{'name': 'width', 'type': 'number', 'optional': false}, {'name': 'height', 'type': 'number', 'optional': false}],
       []);
+  inspectorBackend.registerCommand(
+      'Emulation.setDisabledImageTypes', [{'name': 'imageTypes', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Emulation.setUserAgentOverride',
       [

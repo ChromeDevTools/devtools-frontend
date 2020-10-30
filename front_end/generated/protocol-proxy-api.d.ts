@@ -1281,6 +1281,9 @@ declare namespace ProtocolProxyApi {
     invoke_setVisibleSize(params: Protocol.Emulation.SetVisibleSizeRequest):
         Promise<Protocol.ProtocolResponseWithError>;
 
+    invoke_setDisabledImageTypes(params: Protocol.Emulation.SetDisabledImageTypesRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
     /**
      * Allows overriding user agent with the given string.
      */

@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -30,13 +27,16 @@ export class XMLView extends UI.Widget.Widget {
     this._searchableView;
     /** @type {number} */
     this._currentSearchFocusIndex = 0;
-    /** @type {!Array.<!UI.TreeOutline.TreeElement>} */
+    /** @type {!Array.<!XMLViewNode>} */
     this._currentSearchTreeElements = [];
     /** @type {?UI.SearchableView.SearchConfig} */
     this._searchConfig;
 
     XMLViewNode.populate(this._treeOutline, parsedXML, this);
-    this._treeOutline.firstChild().select(true /* omitFocus */, false /* selectedByUser */);
+    const firstChild = this._treeOutline.firstChild();
+    if (firstChild) {
+      firstChild.select(true /* omitFocus */, false /* selectedByUser */);
+    }
   }
 
   /**
@@ -60,11 +60,18 @@ export class XMLView extends UI.Widget.Widget {
   static parseXML(text, mimeType) {
     let parsedXML;
     try {
-      parsedXML = (new DOMParser()).parseFromString(text, mimeType);
+      switch (mimeType) {
+        case 'application/xhtml+xml':
+        case 'application/xml':
+        case 'image/svg+xml':
+        case 'text/html':
+        case 'text/xml':
+          parsedXML = (new DOMParser()).parseFromString(text, mimeType);
+      }
     } catch (e) {
       return null;
     }
-    if (parsedXML.body) {
+    if (!parsedXML || parsedXML.body) {
       return null;
     }
     return parsedXML;
@@ -131,7 +138,8 @@ export class XMLView extends UI.Widget.Widget {
     this._currentSearchTreeElements = [];
     const regex = this._searchConfig.toSearchRegex(true);
 
-    for (let element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
+    for (let element = /** @type {?UI.TreeOutline.TreeElement} */ (this._treeOutline.rootElement()); element;
+         element = element.traverseNextTreeElement(false)) {
       if (!(element instanceof XMLViewNode)) {
         continue;
       }
@@ -160,7 +168,8 @@ export class XMLView extends UI.Widget.Widget {
   }
 
   _innerSearchCanceled() {
-    for (let element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
+    for (let element = /** @type {?UI.TreeOutline.TreeElement} */ (this._treeOutline.rootElement()); element;
+         element = element.traverseNextTreeElement(false)) {
       if (!(element instanceof XMLViewNode)) {
         continue;
       }
@@ -239,16 +248,16 @@ export class XMLView extends UI.Widget.Widget {
  */
 export class XMLViewNode extends UI.TreeOutline.TreeElement {
   /**
-   * @param {!Node} node
+   * @param {!Node|!ParentNode} node
    * @param {boolean} closeTag
    * @param {!XMLView} xmlView
    */
   constructor(node, closeTag, xmlView) {
-    super('', !closeTag && !!node.childElementCount);
+    super('', !closeTag && 'childElementCount' in node && !!node.childElementCount);
     this._node = node;
     this._closeTag = closeTag;
     this.selectable = true;
-    /** @type {!Array.<!Object>} */
+    /** @type {!Array.<!UI.UIUtils.HighlightChange>} */
     this._highlightChanges = [];
     this._xmlView = xmlView;
     this._updateTitle();
@@ -256,17 +265,20 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
 
   /**
    * @param {!UI.TreeOutline.TreeOutline|!UI.TreeOutline.TreeElement} root
-   * @param {!Node} xmlNode
+   * @param {!Node|!ParentNode} xmlNode
    * @param {!XMLView} xmlView
    */
   static populate(root, xmlNode, xmlView) {
+    if (!(xmlNode instanceof Node)) {
+      return;
+    }
     let node = xmlNode.firstChild;
     while (node) {
       const currentNode = node;
       node = node.nextSibling;
       const nodeType = currentNode.nodeType;
       // ignore empty TEXT
-      if (nodeType === 3 && currentNode.nodeValue.match(/\s+/)) {
+      if (nodeType === 3 && currentNode.nodeValue && currentNode.nodeValue.match(/\s+/)) {
         continue;
       }
       // ignore ATTRIBUTE, ENTITY_REFERENCE, ENTITY, DOCUMENT, DOCUMENT_TYPE, DOCUMENT_FRAGMENT, NOTATION
@@ -295,6 +307,9 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
     if (additionalCssClassName) {
       cssClasses += ' ' + additionalCssClassName;
     }
+    if (!this.listItemElement.textContent) {
+      return false;
+    }
     const content = this.listItemElement.textContent.replace(/\xA0/g, ' ');
     let match = regex.exec(content);
     const ranges = [];
@@ -315,50 +330,66 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
 
   _updateTitle() {
     const node = this._node;
+    if (!('nodeType' in node)) {
+      return;
+    }
     switch (node.nodeType) {
       case 1: {  // ELEMENT
-        const tag = node.tagName;
-        if (this._closeTag) {
-          this._setTitle(['</' + tag + '>', 'shadow-xml-view-tag']);
+        if (node instanceof Element) {
+          const tag = node.tagName;
+          if (this._closeTag) {
+            this._setTitle(['</' + tag + '>', 'shadow-xml-view-tag']);
+            return;
+          }
+          const titleItems = ['<' + tag, 'shadow-xml-view-tag'];
+          const attributes = node.attributes;
+          for (let i = 0; i < attributes.length; ++i) {
+            const attributeNode = attributes.item(i);
+            if (!attributeNode) {
+              return;
+            }
+            titleItems.push(
+                '\xA0', 'shadow-xml-view-tag', attributeNode.name, 'shadow-xml-view-attribute-name', '="',
+                'shadow-xml-view-tag', attributeNode.value, 'shadow-xml-view-attribute-value', '"',
+                'shadow-xml-view-tag');
+          }
+          if (!this.expanded) {
+            if (node.childElementCount) {
+              titleItems.push(
+                  '>', 'shadow-xml-view-tag', '…', 'shadow-xml-view-comment', '</' + tag, 'shadow-xml-view-tag');
+            } else if (node.textContent) {
+              titleItems.push(
+                  '>', 'shadow-xml-view-tag', node.textContent, 'shadow-xml-view-text', '</' + tag,
+                  'shadow-xml-view-tag');
+            } else {
+              titleItems.push(' /', 'shadow-xml-view-tag');
+            }
+          }
+          titleItems.push('>', 'shadow-xml-view-tag');
+          this._setTitle(titleItems);
           return;
         }
-        const titleItems = ['<' + tag, 'shadow-xml-view-tag'];
-        const attributes = node.attributes;
-        for (let i = 0; i < attributes.length; ++i) {
-          const attributeNode = attributes.item(i);
-          titleItems.push(
-              '\xA0', 'shadow-xml-view-tag', attributeNode.name, 'shadow-xml-view-attribute-name', '="',
-              'shadow-xml-view-tag', attributeNode.value, 'shadow-xml-view-attribute-value', '"',
-              'shadow-xml-view-tag');
-        }
-        if (!this.expanded) {
-          if (node.childElementCount) {
-            titleItems.push(
-                '>', 'shadow-xml-view-tag', '…', 'shadow-xml-view-comment', '</' + tag, 'shadow-xml-view-tag');
-          } else if (this._node.textContent) {
-            titleItems.push(
-                '>', 'shadow-xml-view-tag', node.textContent, 'shadow-xml-view-text', '</' + tag,
-                'shadow-xml-view-tag');
-          } else {
-            titleItems.push(' /', 'shadow-xml-view-tag');
-          }
-        }
-        titleItems.push('>', 'shadow-xml-view-tag');
-        this._setTitle(titleItems);
         return;
       }
       case 3: {  // TEXT
-        this._setTitle([node.nodeValue, 'shadow-xml-view-text']);
+        if (node.nodeValue) {
+          this._setTitle([node.nodeValue, 'shadow-xml-view-text']);
+        }
         return;
       }
       case 4: {  // CDATA
-        this._setTitle([
-          '<![CDATA[', 'shadow-xml-view-cdata', node.nodeValue, 'shadow-xml-view-text', ']]>', 'shadow-xml-view-cdata'
-        ]);
+        if (node.nodeValue) {
+          this._setTitle([
+            '<![CDATA[', 'shadow-xml-view-cdata', node.nodeValue, 'shadow-xml-view-text', ']]>', 'shadow-xml-view-cdata'
+          ]);
+        }
         return;
       }
       case 7: {  // PROCESSING_INSTRUCTION
-        this._setTitle(['<?' + node.nodeName + ' ' + node.nodeValue + '?>', 'shadow-xml-view-processing-instruction']);
+        if (node.nodeValue) {
+          this._setTitle(
+              ['<?' + node.nodeName + ' ' + node.nodeValue + '?>', 'shadow-xml-view-processing-instruction']);
+        }
         return;
       }
       case 8: {  // COMMENT
@@ -372,7 +403,7 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
    * @param {!Array.<string>} items
    */
   _setTitle(items) {
-    const titleFragment = createDocumentFragment();
+    const titleFragment = document.createDocumentFragment();
     for (let i = 0; i < items.length; i += 2) {
       titleFragment.createChild('span', items[i + 1]).textContent = items[i];
     }
@@ -403,7 +434,7 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
 
   /**
    * @override
-   * @returns {!Promise}
+   * @returns {!Promise<void>}
    */
   async onpopulate() {
     XMLViewNode.populate(this, this._node, this._xmlView);

@@ -1032,28 +1032,9 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Object.<string, boolean>} columnsVisibility
-   */
-  setColumnsVisiblity(columnsVisibility) {
-    this.visibleColumnsArray = [];
-    for (let i = 0; i < this._columnsArray.length; ++i) {
-      const column = this._columnsArray[i];
-      if (columnsVisibility[column.id]) {
-        this.visibleColumnsArray.push(column);
-      }
-    }
-    this._refreshHeader();
-    this._applyColumnWeights();
-    const nodes = this._enumerateChildren(this.rootNode(), [], -1);
-    for (let i = 0; i < nodes.length; ++i) {
-      nodes[i].refresh();
-    }
-  }
-
-  /**
    * @param {!Set<string>} columnsVisibility
    */
-  setColumnsVisiblitySet(columnsVisibility) {
+  setColumnsVisiblity(columnsVisibility) {
     this.visibleColumnsArray = [];
     for (const column of this._columnsArray) {
       if (columnsVisibility.has(column.id)) {

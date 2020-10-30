@@ -184,9 +184,9 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
   }
 
   _updateColumnVisibility() {
-    const visibleColumns = /** @type {!Object.<string, boolean>} */ ({});
+    const visibleColumns = new Set();
     for (const columnConfig of this._columns) {
-      visibleColumns[columnConfig.id] = columnConfig.visible;
+      visibleColumns.add(columnConfig.id);
     }
     this._dataGrid.setColumnsVisiblity(visibleColumns);
   }

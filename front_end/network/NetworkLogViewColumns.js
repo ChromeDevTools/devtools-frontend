@@ -428,21 +428,21 @@ export class NetworkLogViewColumns {
     if (!this._dataGrid) {
       return;
     }
-    const visibleColumns = /** @type {!Object.<string, boolean>} */ ({});
+    const visibleColumns = new Set();
     if (this._gridMode) {
       for (const columnConfig of this._columns) {
-        visibleColumns[columnConfig.id] = columnConfig.visible;
+        visibleColumns.add(columnConfig.id);
       }
     } else {
       // Find the first visible column from the path group
       const visibleColumn = this._columns.find(c => c.hideableGroup === 'path' && c.visible);
       if (visibleColumn) {
-        visibleColumns[visibleColumn.id] = true;
+        visibleColumns.add(visibleColumn.id);
       } else {
         // This should not happen because inside a hideableGroup
         // there should always be at least one column visible
         // This is just in case.
-        visibleColumns.name = true;
+        visibleColumns.add('name');
       }
     }
     this._dataGrid.setColumnsVisiblity(visibleColumns);

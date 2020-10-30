@@ -147,7 +147,7 @@ export class DatabaseTableView extends UI.View.SimpleView {
     const visibleColumnsRegistry = this._visibleColumnsSetting.get();
     visibleColumnsRegistry[this.tableName] = text;
     this._visibleColumnsSetting.set(visibleColumnsRegistry);
-    this._dataGrid.setColumnsVisiblitySet(columnsVisibility);
+    this._dataGrid.setColumnsVisiblity(columnsVisibility);
     this._lastVisibleColumns = newVisibleColumns;
   }
 

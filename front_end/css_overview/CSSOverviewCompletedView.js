@@ -873,15 +873,14 @@ export class ElementDetailsView extends UI.Widget.Widget {
     }
 
     const [firstItem] = data;
-    const visibility = {
-      'nodeId': !!firstItem.nodeId,
-      'declaration': !!firstItem.declaration,
-      'sourceURL': !!firstItem.sourceURL,
-      'contrastRatio': !!firstItem.contrastRatio,
-    };
+    const visibility = new Set();
+    firstItem.nodeId && visibility.add('nodeId');
+    firstItem.declaration && visibility.add('declaration');
+    firstItem.sourceURL && visibility.add('sourceURL');
+    firstItem.contrastRatio && visibility.add('contrastRatio');
 
     let relatedNodesMap;
-    if (visibility.nodeId) {
+    if (visibility.has('nodeId')) {
       // Grab the nodes from the frontend, but only those that have not been
       // retrieved already.
       const nodeIds = /** @type {!Set<number>} */ (data.reduce((prev, curr) => {
@@ -896,7 +895,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
     }
 
     for (const item of data) {
-      if (visibility.nodeId) {
+      if (visibility.has('nodeId')) {
         if (!relatedNodesMap) {
           continue;
         }

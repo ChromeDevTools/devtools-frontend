@@ -248,7 +248,7 @@ export class ThemeSupport {
         }
 
         if (!(rule instanceof CSSStyleRule)) {
-          throw new Error('Expected CSSStyleRule');
+          continue;
         }
 
         /** @type {!Array<string>} */

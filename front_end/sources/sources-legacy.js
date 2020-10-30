@@ -163,8 +163,6 @@ Object.defineProperty(Sources.SourceMapNamesResolver, '_scopeResolvedForTest', {
   set: SourcesModule.SourceMapNamesResolver.setScopeResolvedForTest,
 });
 
-Sources.SourceMapNamesResolver._cachedMapSymbol = SourcesModule.SourceMapNamesResolver.cachedMapSymbol;
-Sources.SourceMapNamesResolver._cachedIdentifiersSymbol = SourcesModule.SourceMapNamesResolver.cachedIdentifiersSymbol;
 Sources.SourceMapNamesResolver._scopeIdentifiers = SourcesModule.SourceMapNamesResolver.scopeIdentifiers;
 Sources.SourceMapNamesResolver._resolveScope = SourcesModule.SourceMapNamesResolver.resolveScope;
 Sources.SourceMapNamesResolver._allVariablesInCallFrame = SourcesModule.SourceMapNamesResolver.allVariablesInCallFrame;

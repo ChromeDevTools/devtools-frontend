@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Bindings from '../bindings/bindings.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as Platform from '../platform/platform.js';
@@ -12,9 +9,11 @@ import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
-export const cachedMapSymbol = Symbol('cache');
-export const cachedIdentifiersSymbol = Symbol('cachedIdentifiers');
+/** @type {!WeakMap<!SDK.DebuggerModel.ScopeChainEntry, !Promise<!Map<string, string>>>} */
+const scopeToCachedIdentifiersMap = new WeakMap();
 
+/** @type {!WeakMap<!SDK.DebuggerModel.CallFrame, !Map<string,string>>} */
+const cachedMapBycallFrame = new WeakMap();
 /**
  * @unrestricted
  */
@@ -38,22 +37,20 @@ export class Identifier {
 export const scopeIdentifiers = function(scope) {
   const startLocation = scope.startLocation();
   const endLocation = scope.endLocation();
-
-  if (scope.type() === Protocol.Debugger.ScopeType.Global || !startLocation || !endLocation ||
-      !startLocation.script() || !startLocation.script().sourceMapURL ||
-      (startLocation.script() !== endLocation.script())) {
+  const startLocationScript = startLocation ? startLocation.script() : null;
+  if (scope.type() === Protocol.Debugger.ScopeType.Global || !startLocationScript || !endLocation ||
+      !startLocationScript.sourceMapURL || (startLocationScript !== endLocation.script())) {
     return Promise.resolve(/** @type {!Array<!Identifier>}*/ ([]));
   }
 
-  const script = startLocation.script();
-  return script.requestContent().then(onContent);
+  return startLocationScript.requestContent().then(onContent);
 
   /**
    * @param {!TextUtils.ContentProvider.DeferredContent} deferredContent
    * @return {!Promise<!Array<!Identifier>>}
    */
   function onContent(deferredContent) {
-    if (!deferredContent.content) {
+    if (!deferredContent.content || !startLocation || !endLocation) {
       return Promise.resolve(/** @type {!Array<!Identifier>}*/ ([]));
     }
 
@@ -97,7 +94,7 @@ export const scopeIdentifiers = function(scope) {
  * @return {!Promise.<!Map<string, string>>}
  */
 export const resolveScope = function(scope) {
-  let identifiersPromise = scope[cachedIdentifiersSymbol];
+  let identifiersPromise = scopeToCachedIdentifiersMap.get(scope);
   if (identifiersPromise) {
     return identifiersPromise;
   }
@@ -111,7 +108,7 @@ export const resolveScope = function(scope) {
   /** @type {!Map<string, !TextUtils.Text.Text>} */
   const textCache = new Map();
   identifiersPromise = scopeIdentifiers(scope).then(onIdentifiers);
-  scope[cachedIdentifiersSymbol] = identifiersPromise;
+  scopeToCachedIdentifiersMap.set(scope, identifiersPromise);
   return identifiersPromise;
 
   /**
@@ -123,6 +120,9 @@ export const resolveScope = function(scope) {
     // Extract as much as possible from SourceMap.
     for (let i = 0; i < identifiers.length; ++i) {
       const id = identifiers[i];
+      if (!sourceMap) {
+        continue;
+      }
       const entry = sourceMap.findEntry(id.lineNumber, id.columnNumber);
       if (entry && entry.name) {
         namesMapping.set(id.name, entry.name);
@@ -159,8 +159,8 @@ export const resolveScope = function(scope) {
    * @return {!Promise<?string>}
    */
   function resolveSourceName(id) {
-    const startEntry = sourceMap.findEntry(id.lineNumber, id.columnNumber);
-    const endEntry = sourceMap.findEntry(id.lineNumber, id.columnNumber + id.name.length);
+    const startEntry = sourceMap ? sourceMap.findEntry(id.lineNumber, id.columnNumber) : null;
+    const endEntry = sourceMap ? sourceMap.findEntry(id.lineNumber, id.columnNumber + id.name.length) : null;
     if (!startEntry || !endEntry || !startEntry.sourceURL || startEntry.sourceURL !== endEntry.sourceURL ||
         !startEntry.sourceLineNumber || !startEntry.sourceColumnNumber || !endEntry.sourceLineNumber ||
         !endEntry.sourceColumnNumber) {
@@ -206,7 +206,7 @@ export const resolveScope = function(scope) {
  * @return {!Promise.<!Map<string, string>>}
  */
 export const allVariablesInCallFrame = function(callFrame) {
-  const cached = callFrame[cachedMapSymbol];
+  const cached = cachedMapBycallFrame.get(callFrame);
   if (cached) {
     return Promise.resolve(cached);
   }
@@ -224,16 +224,17 @@ export const allVariablesInCallFrame = function(callFrame) {
    * @return {!Map<string, string>}
    */
   function mergeVariables(nameMappings) {
+    /** @type {!Map<string, string>} */
     const reverseMapping = new Map();
     for (const map of nameMappings) {
       for (const compiledName of map.keys()) {
         const originalName = map.get(compiledName);
-        if (!reverseMapping.has(originalName)) {
+        if (originalName && !reverseMapping.has(originalName)) {
           reverseMapping.set(originalName, compiledName);
         }
       }
     }
-    callFrame[cachedMapSymbol] = reverseMapping;
+    cachedMapBycallFrame.set(callFrame, reverseMapping);
     return reverseMapping;
   }
 };
@@ -352,20 +353,24 @@ export const resolveThisObject = function(callFrame) {
    */
   function onScopeResolved(namesMapping) {
     const thisMappings = Platform.MapUtilities.inverse(namesMapping).get('this');
+    if (!callFrame) {
+      return Promise.resolve(null);
+    }
+
     if (!thisMappings || thisMappings.size !== 1) {
       return Promise.resolve(callFrame.thisObject());
     }
 
     const thisMapping = thisMappings.values().next().value;
     return callFrame
-        .evaluate({
+        .evaluate(/** @type {!SDK.RuntimeModel.EvaluationOptions} */ ({
           expression: thisMapping,
           objectGroup: 'backtrace',
           includeCommandLineAPI: false,
           silent: true,
           returnByValue: false,
           generatePreview: true
-        })
+        }))
         .then(onEvaluated);
   }
 
@@ -374,7 +379,10 @@ export const resolveThisObject = function(callFrame) {
    * @return {?SDK.RemoteObject.RemoteObject}
    */
   function onEvaluated(result) {
-    return !result.exceptionDetails && result.object ? result.object : callFrame.thisObject();
+    if ('exceptionDetails' in result && callFrame) {
+      return !result.exceptionDetails && result.object ? result.object : callFrame.thisObject();
+    }
+    return null;
   }
 };
 
@@ -385,10 +393,10 @@ export const resolveThisObject = function(callFrame) {
 export const resolveScopeInObject = function(scope) {
   const startLocation = scope.startLocation();
   const endLocation = scope.endLocation();
+  const startLocationScript = startLocation ? startLocation.script() : null;
 
-  if (scope.type() === Protocol.Debugger.ScopeType.Global || !startLocation || !endLocation ||
-      !startLocation.script() || !startLocation.script().sourceMapURL ||
-      startLocation.script() !== endLocation.script()) {
+  if (scope.type() === Protocol.Debugger.ScopeType.Global || !startLocationScript || !endLocation ||
+      !startLocationScript.sourceMapURL || startLocationScript !== endLocation.script()) {
     return scope.object();
   }
 
@@ -505,6 +513,9 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
       for (let i = 0; i < properties.length; ++i) {
         const property = properties[i];
         const name = namesMapping.get(property.name) || properties[i].name;
+        if (!property.value) {
+          continue;
+        }
         newProperties.push(new SDK.RemoteObject.RemoteObjectProperty(
             name, property.value, property.enumerable, property.writable, property.isOwn, property.wasThrown,
             property.symbol, property.synthetic));
@@ -550,9 +561,10 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
 
   /**
    * @override
-   * @param {function(this:Object, ...)} functionDeclaration
+   * @param {function(this:Object, ...?):T} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @return {!Promise<!SDK.RemoteObject.CallFunctionResult>}
+   * @template T
    */
   callFunction(functionDeclaration, args) {
     return this._object.callFunction(functionDeclaration, args);
@@ -561,7 +573,7 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
 
   /**
    * @override
-   * @param {function(this:Object, ...):T} functionDeclaration
+   * @param {function(this:Object, ...?):T} functionDeclaration
    * @param {!Array<!Protocol.Runtime.CallArgument>|undefined} args
    * @return {!Promise<T>}
    * @template T

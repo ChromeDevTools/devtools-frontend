@@ -642,8 +642,15 @@ export class NetworkDispatcher {
    * @override
    * @param {!Protocol.Network.LoadingFailedEvent} request
    */
-  loadingFailed(
-      {requestId, timestamp: time, type: resourceType, errorText: localizedDescription, canceled, blockedReason}) {
+  loadingFailed({
+    requestId,
+    timestamp: time,
+    type: resourceType,
+    errorText: localizedDescription,
+    canceled,
+    blockedReason,
+    corsErrorStatus
+  }) {
     const networkRequest = this._inflightRequestsById.get(requestId);
     if (!networkRequest) {
       return;
@@ -659,6 +666,9 @@ export class NetworkDispatcher {
         this._manager.dispatchEventToListeners(
             Events.MessageGenerated, {message: message, requestId: requestId, warning: true});
       }
+    }
+    if (corsErrorStatus) {
+      networkRequest.setCorsErrorStatus(corsErrorStatus);
     }
     networkRequest.localizedFailDescription = localizedDescription;
     this._getExtraInfoBuilder(requestId).finished();

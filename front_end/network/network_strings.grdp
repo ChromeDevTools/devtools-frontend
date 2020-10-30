@@ -435,8 +435,14 @@
   <message name="IDS_DEVTOOLS_a1725c50b8a42b8b7af43912a64eb7d2" desc="Tooltip to explain lack of raw headers for a particular network request">
     Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers.
   </message>
+  <message name="IDS_DEVTOOLS_85456468f5810641fba6ec7ee35aba75" desc="Tooltip providing the cors error code">
+    Cross-Origin Resource Sharing error: <ph name="CORSERRORSTATUS_CORSERROR">$1s<ex>PreflightDisallowedRedirect</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_a65043efa3ffbf89834b6d9c362d56a8" desc="Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel">
     Active client experiment variation IDs.
+  </message>
+  <message name="IDS_DEVTOOLS_2995fcc60be8c8c4525af76b7adc34bd" desc="Text in Network Data Grid Node of the Network panel">
+    CORS error
   </message>
   <message name="IDS_DEVTOOLS_bb9fd331bd610fd877425ceff23708a7" desc="Time at which a response was retrieved">
     Retrieval Time: <ph name="THIS__REQUEST_RESPONSERETRIEVALTIME">$1s<ex>Fri Apr 10 2020 17:20:27 GMT-0700 (Pacific Daylight Time)</ex></ph>

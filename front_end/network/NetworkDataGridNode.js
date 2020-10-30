@@ -941,10 +941,11 @@ export class NetworkRequestNode extends NetworkNode {
   /**
    * @param {!HTMLElement} element
    * @param {string} text
+   * @param {string=} title
    */
-  _setTextAndTitle(element, text) {
+  _setTextAndTitle(element, text, title) {
     UI.UIUtils.createTextChild(element, text);
-    element.title = text;
+    element.title = title || text;
   }
 
   /**
@@ -1160,7 +1161,8 @@ export class NetworkRequestNode extends NetworkNode {
     cell.classList.toggle(
         'network-dim-cell', !this._isFailed() && (this._request.cached() || !this._request.statusCode));
 
-    if (this._request.failed && !this._request.canceled && !this._request.wasBlocked()) {
+    const corsErrorStatus = this._request.corsErrorStatus();
+    if (this._request.failed && !this._request.canceled && !this._request.wasBlocked() && !corsErrorStatus) {
       const failText = Common.UIString.UIString('(failed)');
       if (this._request.localizedFailDescription) {
         UI.UIUtils.createTextChild(cell, failText);
@@ -1234,6 +1236,10 @@ export class NetworkRequestNode extends NetworkNode {
       } else {
         this._setTextAndTitle(cell, Common.UIString.UIString('(blocked:%s)', reason));
       }
+    } else if (corsErrorStatus) {
+      this._setTextAndTitle(
+          cell, Common.UIString.UIString('CORS error'),
+          ls`Cross-Origin Resource Sharing error: ${corsErrorStatus.corsError}`);
     } else if (this._request.finished) {
       this._setTextAndTitle(cell, Common.UIString.UIString('Finished'));
     } else {

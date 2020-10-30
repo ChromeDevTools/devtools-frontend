@@ -99,6 +99,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     this._endTime = -1;
     /** @type {!Protocol.Network.BlockedReason|undefined} */
     this._blockedReason = undefined;
+    /** @type {!Protocol.Network.CorsErrorStatus|undefined} */
+    this._corsErrorStatus = undefined;
 
     this.statusCode = 0;
     this.statusText = '';
@@ -577,6 +579,20 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    */
   setBlockedReason(reason) {
     this._blockedReason = reason;
+  }
+
+  /**
+   * @return {!Protocol.Network.CorsErrorStatus|undefined}
+   */
+  corsErrorStatus() {
+    return this._corsErrorStatus;
+  }
+
+  /**
+   * @param {!Protocol.Network.CorsErrorStatus} corsErrorStatus
+   */
+  setCorsErrorStatus(corsErrorStatus) {
+    this._corsErrorStatus = corsErrorStatus;
   }
 
   /**

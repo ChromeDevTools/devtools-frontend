@@ -1674,7 +1674,7 @@ export class NetworkLogView extends UI.Widget.VBox {
         !BrowserSDK.RelatedIssue.hasIssueOfCategory(request, SDK.Issue.IssueCategory.SameSiteCookie)) {
       return false;
     }
-    if (this._onlyBlockedRequestsUI.checked() && !request.wasBlocked()) {
+    if (this._onlyBlockedRequestsUI.checked() && !request.wasBlocked() && !request.corsErrorStatus()) {
       return false;
     }
     if (request.statusText === 'Service Worker Fallback Required') {

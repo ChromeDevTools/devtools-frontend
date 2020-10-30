@@ -22,8 +22,11 @@ export async function clickOnContextMenuItemFromTab(tabId: string, menuItemSelec
   await click(menuItemSelector);
 }
 
-const MAIN_PANEL_SELECTOR = 'div[class*="main-tabbed-pane"][slot*="insertion-point-main"]';
-const DRAWER_PANEL_SELECTOR = 'div[class*="drawer-tabbed-pane"][slot*="insertion-point-sidebar"]';
+export const MOVE_TO_DRAWER_SELECTOR = '[aria-label="Move to bottom"]';
+export const MOVE_TO_MAIN_PANEL_SELECTOR = '[aria-label="Move to top"]';
+export const MAIN_PANEL_SELECTOR = 'div[class*="main-tabbed-pane"][slot*="insertion-point-main"]';
+export const DRAWER_PANEL_SELECTOR = 'div[class*="drawer-tabbed-pane"][slot*="insertion-point-sidebar"]';
+export const TAB_HEADER_SELECTOR = 'div[class*="tabbed-pane-header"]';
 
 export async function tabExistsInMainPanel(tabId: string) {
   const mainPanel = await waitFor(MAIN_PANEL_SELECTOR);
@@ -34,3 +37,31 @@ export async function tabExistsInDrawer(tabId: string) {
   const drawer = await waitFor(DRAWER_PANEL_SELECTOR);
   await waitFor(tabId, drawer);
 }
+
+export const checkIfTabExistsInMainPanel = async (tabId: string) => {
+  const mainPanel = await waitFor(MAIN_PANEL_SELECTOR);
+  const header = await waitFor(TAB_HEADER_SELECTOR, mainPanel);
+  const tab = await header.$(tabId);
+  return !!tab;
+};
+
+export const checkIfTabExistsInDrawer = async (tabId: string) => {
+  const drawer = await waitFor(DRAWER_PANEL_SELECTOR);
+  const header = await waitFor(TAB_HEADER_SELECTOR, drawer);
+  const tab = await header.$(tabId);
+  return !!tab;
+};
+
+export const moveTabToDrawer = async (tabId: string) => {
+  if (!checkIfTabExistsInMainPanel(tabId)) {
+    return;
+  }
+  await clickOnContextMenuItemFromTab(tabId, MOVE_TO_DRAWER_SELECTOR);
+};
+
+export const moveTabToMainPanel = async (tabId: string) => {
+  if (!checkIfTabExistsInDrawer(tabId)) {
+    return;
+  }
+  await clickOnContextMenuItemFromTab(tabId, MOVE_TO_MAIN_PANEL_SELECTOR);
+};

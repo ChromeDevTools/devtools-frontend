@@ -46,6 +46,7 @@ import {HARWriter} from './HARWriter.js';
 import {Events, NetworkGroupNode, NetworkLogViewInterface, NetworkNode, NetworkRequestNode} from './NetworkDataGridNode.js';  // eslint-disable-line no-unused-vars
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
 import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
+import {FilterOptions} from './NetworkPanel.js';  // eslint-disable-line no-unused-vars
 import {NetworkTimeBoundary, NetworkTimeCalculator, NetworkTransferDurationCalculator, NetworkTransferTimeCalculator,} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -1851,9 +1852,14 @@ export class NetworkLogView extends UI.Widget.VBox {
   /**
    * @override
    * @param {!SDK.NetworkRequest.NetworkRequest} request
+   * @param {!FilterOptions=} options - Optional parameters to change filter behavior
    */
-  selectRequest(request) {
-    this.setTextFilterValue('');
+  selectRequest(request, options) {
+    const defaultOptions = {clearFilter: true};
+    const {clearFilter} = options || defaultOptions;
+    if (clearFilter) {
+      this.setTextFilterValue('');
+    }
     const node = this._reveal(request);
     if (node) {
       node.select();

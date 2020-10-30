@@ -2,18 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
 import * as ReportRenderer from './LighthouseReporterTypes.js';  // eslint-disable-line no-unused-vars
 
 export class ReportSelector {
+  /**
+   * @param {function():void} renderNewLighthouseView
+   */
   constructor(renderNewLighthouseView) {
     this._renderNewLighthouseView = renderNewLighthouseView;
-    this._newLighthouseItem = createElement('option');
+    this._newLighthouseItem = document.createElement('option');
     this._comboBox = new UI.Toolbar.ToolbarComboBox(this._handleChange.bind(this), ls`Reports`, 'lighthouse-report');
     this._comboBox.setMaxWidth(180);
     this._comboBox.setMinWidth(140);
@@ -25,7 +25,7 @@ export class ReportSelector {
     this._comboBox.selectElement().removeChildren();
 
     this._comboBox.setEnabled(false);
-    this._newLighthouseItem = createElement('option');
+    this._newLighthouseItem = document.createElement('option');
     this._newLighthouseItem.label = Common.UIString.UIString('(new report)');
     this._comboBox.selectElement().appendChild(this._newLighthouseItem);
     this._comboBox.select(this._newLighthouseItem);
@@ -107,8 +107,8 @@ export class ReportSelector {
 export class Item {
   /**
    * @param {!ReportRenderer.ReportJSON} lighthouseResult
-   * @param {function()} renderReport
-   * @param {function()} showLandingCallback
+   * @param {function():void} renderReport
+   * @param {function():void} showLandingCallback
    */
   constructor(lighthouseResult, renderReport, showLandingCallback) {
     this._lighthouseResult = lighthouseResult;
@@ -117,7 +117,7 @@ export class Item {
 
     const url = new Common.ParsedURL.ParsedURL(lighthouseResult.finalUrl);
     const timestamp = lighthouseResult.fetchTime;
-    this._element = createElement('option');
+    this._element = document.createElement('option');
     this._element.label = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;
   }
 

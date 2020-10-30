@@ -463,6 +463,24 @@
     }
 
     /**
+     * @override
+     * @param {string} trigger
+     * @param {function(!InspectorFrontendHostAPI.ShowSurveyResult): void} callback
+     */
+    showSurvey(trigger, callback) {
+      DevToolsAPI.sendMessageToEmbedder('showSurvey', [trigger], /** @type {function(?Object)} */ (callback));
+    }
+
+    /**
+     * @override
+     * @param {string} trigger
+     * @param {function(!InspectorFrontendHostAPI.CanShowSurveyResult): void} callback
+     */
+    canShowSurvey(trigger, callback) {
+      DevToolsAPI.sendMessageToEmbedder('canShowSurvey', [trigger], /** @type {function(?Object)} */ (callback));
+    }
+
+    /**
      * Requests inspected page to be placed atop of the inspector frontend with specified bounds.
      * @override
      * @param {{x: number, y: number, width: number, height: number}} bounds
@@ -483,7 +501,7 @@
      * @param {string} url
      * @param {string} headers
      * @param {number} streamId
-     * @param {function(!InspectorFrontendHostAPI.LoadNetworkResourceResult)} callback
+     * @param {function(!InspectorFrontendHostAPI.LoadNetworkResourceResult): void} callback
      */
     loadNetworkResource(url, headers, streamId, callback) {
       DevToolsAPI.sendMessageToEmbedder(

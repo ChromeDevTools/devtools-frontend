@@ -93,7 +93,7 @@ export class Database {
 
   /**
    * @param {string} query
-   * @param {function(!Array.<string>=, !Array.<*>=):void} onSuccess
+   * @param {function(!Array.<string>, !Array.<*>):void} onSuccess
    * @param {function(string):void} onError
    */
   async executeSql(query, onSuccess, onError) {
@@ -105,7 +105,8 @@ export class Database {
     }
     const sqlError = response.sqlError;
     if (!sqlError) {
-      onSuccess(response.columnNames, response.values);
+      // We know from the back-end that if there is no error, neither columnNames nor values can be undefined.
+      onSuccess(response.columnNames || [], response.values || []);
       return;
     }
     let message;

@@ -253,12 +253,11 @@ export class DatabaseQueryView extends UI.Widget.VBox {
   /**
    *
    * @param {string} query
-   * @param {?Array<string>} columnNames
-   * @param {?Array<*>} values
+   * @param {!Array<string>} columnNames
+   * @param {!Array<*>} values
    */
   _queryFinished(query, columnNames, values) {
-    const dataGrid =
-        DataGrid.SortableDataGrid.SortableDataGrid.create(columnNames || [], values || [], ls`Database Query`);
+    const dataGrid = DataGrid.SortableDataGrid.SortableDataGrid.create(columnNames, values, ls`Database Query`);
     const trimmedQuery = query.trim();
 
     let view = null;

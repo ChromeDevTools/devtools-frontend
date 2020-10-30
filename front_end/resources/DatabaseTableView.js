@@ -23,22 +23,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as UI from '../ui/ui.js';
+import {Database, DatabaseModel, Events as DatabaseModelEvents} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
  */
 export class DatabaseTableView extends UI.View.SimpleView {
+  /**
+   * @param {!Database} database
+   * @param {string} tableName
+   */
   constructor(database, tableName) {
     super(Common.UIString.UIString('Database'));
 
     this.database = database;
     this.tableName = tableName;
+    this._lastVisibleColumns = '';
+    /** @type {!Map<string, string>} */
+    this._columnsMap = new Map();
 
     this.element.classList.add('storage-view', 'table');
 
@@ -51,8 +56,8 @@ export class DatabaseTableView extends UI.View.SimpleView {
     this._visibleColumnsInput.addEventListener(
         UI.Toolbar.ToolbarInput.Event.TextChanged, this._onVisibleColumnsChanged, this);
 
-    /** @type {?DataGrid.DataGrid.DataGridImpl} */
-    this._dataGrid;
+    /** @type {?DataGrid.SortableDataGrid.SortableDataGrid<!DataGrid.SortableDataGrid.SortableDataGridNode<*>>} */
+    this._dataGrid = null;
   }
 
   /**
@@ -84,6 +89,11 @@ export class DatabaseTableView extends UI.View.SimpleView {
         this._queryError.bind(this));
   }
 
+  /**
+   *
+   * @param {!Array<string>} columnNames
+   * @param {!Array<*>} values
+   */
   _queryFinished(columnNames, values) {
     this.detachChildWidgets();
     this.element.removeChildren();
@@ -99,7 +109,7 @@ export class DatabaseTableView extends UI.View.SimpleView {
     this._dataGrid.asWidget().show(this.element);
     this._dataGrid.autoSizeColumns(5);
 
-    this._columnsMap = new Map();
+    this._columnsMap.clear();
     for (let i = 1; i < columnNames.length; ++i) {
       this._columnsMap.set(columnNames[i], String(i));
     }
@@ -116,19 +126,19 @@ export class DatabaseTableView extends UI.View.SimpleView {
     const text = this._visibleColumnsInput.value();
     const parts = text.split(/[\s,]+/);
     const matches = new Set();
-    const columnsVisibility = {};
-    columnsVisibility['0'] = true;
-    for (let i = 0; i < parts.length; ++i) {
-      const part = parts[i];
-      if (this._columnsMap.has(part)) {
+    const columnsVisibility = new Set();
+    columnsVisibility.add('0');
+    for (const part of parts) {
+      const mappedColumn = this._columnsMap.get(part);
+      if (mappedColumn !== undefined) {
         matches.add(part);
-        columnsVisibility[this._columnsMap.get(part)] = true;
+        columnsVisibility.add(mappedColumn);
       }
     }
     const newVisibleColumns = [...matches].sort().join(', ');
     if (newVisibleColumns.length === 0) {
       for (const v of this._columnsMap.values()) {
-        columnsVisibility[v] = true;
+        columnsVisibility.add(v);
       }
     }
     if (newVisibleColumns === this._lastVisibleColumns) {
@@ -137,15 +147,15 @@ export class DatabaseTableView extends UI.View.SimpleView {
     const visibleColumnsRegistry = this._visibleColumnsSetting.get();
     visibleColumnsRegistry[this.tableName] = text;
     this._visibleColumnsSetting.set(visibleColumnsRegistry);
-    this._dataGrid.setColumnsVisiblity(columnsVisibility);
+    this._dataGrid.setColumnsVisiblitySet(columnsVisibility);
     this._lastVisibleColumns = newVisibleColumns;
   }
 
-  _queryError(error) {
+  _queryError() {
     this.detachChildWidgets();
     this.element.removeChildren();
 
-    const errorMsgElement = createElement('div');
+    const errorMsgElement = document.createElement('div');
     errorMsgElement.className = 'storage-table-error';
     errorMsgElement.textContent = ls`An error occurred trying to\nread the "${this.tableName}" table.`;
     this.element.appendChild(errorMsgElement);

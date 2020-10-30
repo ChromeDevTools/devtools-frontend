@@ -145,7 +145,8 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     let asyncStackTrace = details.asyncStackTrace;
     if (!asyncStackTrace && details.asyncStackTraceId) {
       if (details.asyncStackTraceId.debuggerId) {
-        debuggerModel = SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(details.asyncStackTraceId.debuggerId);
+        debuggerModel = await SDK.DebuggerModel.DebuggerModel.modelForDebuggerIdResyncIfNecessary(
+            details.asyncStackTraceId.debuggerId);
       }
       asyncStackTrace = debuggerModel ? await debuggerModel.fetchAsyncStackTrace(details.asyncStackTraceId) : null;
     }
@@ -172,7 +173,8 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
         asyncStackTrace = asyncStackTrace.parent;
       } else if (asyncStackTrace.parentId) {
         if (asyncStackTrace.parentId.debuggerId) {
-          debuggerModel = SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(asyncStackTrace.parentId.debuggerId);
+          debuggerModel = await SDK.DebuggerModel.DebuggerModel.modelForDebuggerIdResyncIfNecessary(
+              asyncStackTrace.parentId.debuggerId);
         }
         asyncStackTrace = debuggerModel ? await debuggerModel.fetchAsyncStackTrace(asyncStackTrace.parentId) : null;
       } else {

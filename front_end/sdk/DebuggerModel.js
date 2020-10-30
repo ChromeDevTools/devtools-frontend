@@ -216,6 +216,14 @@ export class DebuggerModel extends SDKModel {
     await enablePromise;
   }
 
+  async syncDebuggerId() {
+    const isRemoteFrontend = Root.Runtime.Runtime.queryParam('remoteFrontend') || Root.Runtime.Runtime.queryParam('ws');
+    const maxScriptsCacheSize = isRemoteFrontend ? 10e6 : 100e6;
+    const enablePromise = this._agent.invoke_enable({maxScriptsCacheSize});
+    enablePromise.then(this._registerDebugger.bind(this));
+    return enablePromise;
+  }
+
   /**
    * @param {!Protocol.Debugger.EnableResponse} response
    */
@@ -240,8 +248,23 @@ export class DebuggerModel extends SDKModel {
    * @param {string} debuggerId
    * @return {?DebuggerModel}
    */
-  static modelForDebuggerId(debuggerId) {
+  static _modelForDebuggerId(debuggerId) {
     return _debuggerIdToModel.get(debuggerId) || null;
+  }
+
+  /**
+   * @param {string} debuggerId
+   * @return {!Promise<?DebuggerModel>}
+   */
+  static async modelForDebuggerIdResyncIfNecessary(debuggerId) {
+    const model = DebuggerModel._modelForDebuggerId(debuggerId);
+    if (!model) {
+      const dbgModels = _debuggerIdToModel.values();
+      for (const dbgModel of dbgModels) {
+        await dbgModel.syncDebuggerId();
+      }
+    }
+    return DebuggerModel._modelForDebuggerId(debuggerId);
   }
 
   /**

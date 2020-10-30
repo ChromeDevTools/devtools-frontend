@@ -64,6 +64,7 @@ export class NetworkManager extends SDKModel {
     }
 
     this._networkAgent.invoke_enable({maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH});
+    this._networkAgent.invoke_setAttachDebugStack({enabled: true});
 
     this._bypassServiceWorkerSetting = Common.Settings.Settings.instance().createSetting('bypassServiceWorker', false);
     if (this._bypassServiceWorkerSetting.get()) {

@@ -2,18 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
 
-/**
- * @unrestricted
- */
 export class CustomPreviewSection {
   /**
    * @param {!SDK.RemoteObject.RemoteObject} object
@@ -23,8 +17,15 @@ export class CustomPreviewSection {
     this._sectionElement.classList.add('custom-expandable-section');
     this._object = object;
     this._expanded = false;
+    /**
+     * @type {?Node}
+     */
     this._cachedContent = null;
     const customPreview = object.customPreview();
+
+    if (!customPreview) {
+      return;
+    }
 
     let headerJSON;
     try {
@@ -39,8 +40,10 @@ export class CustomPreviewSection {
       return;
     }
 
-    if (customPreview.hasBody || customPreview.bodyGetterId) {
-      this._header.classList.add('custom-expandable-section-header');
+    if (customPreview.bodyGetterId) {
+      if (this._header instanceof Element) {
+        this._header.classList.add('custom-expandable-section-header');
+      }
       this._header.addEventListener('click', this._onClick.bind(this), false);
       this._expandIcon = UI.Icon.Icon.create('smallicon-triangle-right', 'custom-expand-icon');
       this._header.insertBefore(this._expandIcon, this._header.firstChild);
@@ -62,7 +65,7 @@ export class CustomPreviewSection {
    */
   _renderJSONMLTag(jsonML) {
     if (!Array.isArray(jsonML)) {
-      return createTextNode(jsonML + '');
+      return document.createTextNode(jsonML + '');
     }
 
     const array = /** @type {!Array.<*>} */ (jsonML);
@@ -78,9 +81,9 @@ export class CustomPreviewSection {
     const tagName = object.shift();
     if (!CustomPreviewSection._allowedTags.has(tagName)) {
       Common.Console.Console.instance().error('Broken formatter: element ' + tagName + ' is not allowed!');
-      return createElement('span');
+      return document.createElement('span');
     }
-    const element = createElement(/** @type {string} */ (tagName));
+    const element = document.createElement(/** @type {string} */ (tagName));
     if ((typeof object[0] === 'object') && !Array.isArray(object[0])) {
       const attributes = object.shift();
       for (const key in attributes) {
@@ -139,85 +142,31 @@ export class CustomPreviewSection {
 
   _toggleExpand() {
     this._expanded = !this._expanded;
-    this._header.classList.toggle('expanded', this._expanded);
-    this._cachedContent.classList.toggle('hidden', !this._expanded);
-    if (this._expanded) {
-      this._expandIcon.setIconType('smallicon-triangle-down');
-    } else {
-      this._expandIcon.setIconType('smallicon-triangle-right');
+    if (this._header instanceof Element) {
+      this._header.classList.toggle('expanded', this._expanded);
+    }
+    if (this._cachedContent instanceof Element) {
+      this._cachedContent.classList.toggle('hidden', !this._expanded);
+    }
+    if (this._expandIcon) {
+      if (this._expanded) {
+        this._expandIcon.setIconType('smallicon-triangle-down');
+      } else {
+        this._expandIcon.setIconType('smallicon-triangle-right');
+      }
     }
   }
 
-  _loadBody() {
-    /**
-     * @suppressReceiverCheck
-     * @suppressGlobalPropertiesCheck
-     * @suppress {undefinedVars}
-     * @this {Object}
-     * @param {function(!Object, *):*} bindRemoteObject
-     * @param {*=} formatter
-     * @param {*=} config
-     */
-    function load(bindRemoteObject, formatter, config) {
-      /**
-       * @param {*} jsonMLObject
-       * @throws {string} error message
-       */
-      function substituteObjectTagsInCustomPreview(jsonMLObject) {
-        if (!jsonMLObject || (typeof jsonMLObject !== 'object') || (typeof jsonMLObject.splice !== 'function')) {
-          return;
-        }
-
-        const obj = jsonMLObject.length;
-        if (!(typeof obj === 'number' && obj >>> 0 === obj && (obj > 0 || 1 / obj > 0))) {
-          return;
-        }
-
-        let startIndex = 1;
-        if (jsonMLObject[0] === 'object') {
-          const attributes = jsonMLObject[1];
-          const originObject = attributes['object'];
-          const config = attributes['config'];
-          if (typeof originObject === 'undefined') {
-            throw 'Illegal format: obligatory attribute "object" isn\'t specified';
-          }
-
-          jsonMLObject[1] = bindRemoteObject(originObject, config);
-          startIndex = 2;
-        }
-        for (let i = startIndex; i < jsonMLObject.length; ++i) {
-          substituteObjectTagsInCustomPreview(jsonMLObject[i]);
-        }
-      }
-
-      try {
-        const body = formatter.body(this, config);
-        substituteObjectTagsInCustomPreview(body);
-        return body;
-      } catch (e) {
-        console.error('Custom Formatter Failed: ' + e);
-        return null;
-      }
-    }
-
+  async _loadBody() {
     const customPreview = this._object.customPreview();
-    if (customPreview.bindRemoteObjectFunctionId && customPreview.formatterObjectId) {
-      // Support for V8 version < 7.3.
-      const args = [{objectId: customPreview.bindRemoteObjectFunctionId}, {objectId: customPreview.formatterObjectId}];
-      if (customPreview.configObjectId) {
-        args.push({objectId: customPreview.configObjectId});
-      }
-      this._object.callFunctionJSON(load, args).then(onBodyLoaded.bind(this));
-    } else if (customPreview.bodyGetterId) {
-      this._object.callFunctionJSON(bodyGetter => bodyGetter(), [{objectId: customPreview.bodyGetterId}])
-          .then(onBodyLoaded.bind(this));
+
+    if (!customPreview) {
+      return;
     }
 
-    /**
-     * @param {*} bodyJsonML
-     * @this {CustomPreviewSection}
-     */
-    function onBodyLoaded(bodyJsonML) {
+    if (customPreview.bodyGetterId) {
+      const bodyJsonML = await this._object.callFunctionJSON(
+          bodyGetter => /** @type {function():*} */ (bodyGetter)(), [{objectId: customPreview.bodyGetterId}]);
       if (!bodyJsonML) {
         return;
       }
@@ -238,6 +187,7 @@ export class CustomPreviewComponent {
    */
   constructor(object) {
     this._object = object;
+    /** @type {?CustomPreviewSection} */
     this._customPreviewSection = new CustomPreviewSection(object);
     this.element = document.createElement('span');
     this.element.classList.add('source-code');
@@ -247,8 +197,8 @@ export class CustomPreviewComponent {
   }
 
   expandIfPossible() {
-    if ((this._object.customPreview().hasBody || this._object.customPreview().bodyGetterId) &&
-        this._customPreviewSection) {
+    const customPreview = this._object.customPreview();
+    if (customPreview && customPreview.bodyGetterId && this._customPreviewSection) {
       this._customPreviewSection._loadBody();
     }
   }
@@ -267,9 +217,11 @@ export class CustomPreviewComponent {
   }
 
   _disassemble() {
-    this.element.shadowRoot.textContent = '';
-    this._customPreviewSection = null;
-    this.element.shadowRoot.appendChild(ObjectPropertiesSection.defaultObjectPresentation(this._object));
+    if (this.element.shadowRoot) {
+      this.element.shadowRoot.textContent = '';
+      this._customPreviewSection = null;
+      this.element.shadowRoot.appendChild(ObjectPropertiesSection.defaultObjectPresentation(this._object));
+    }
   }
 }
 

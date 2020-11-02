@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
@@ -22,6 +19,7 @@ export class CSSShadowModel {
     this._offsetY = CSSLength.zero();
     this._blurRadius = CSSLength.zero();
     this._spreadRadius = CSSLength.zero();
+    /** @type {!Common.Color.Color} */
     this._color = /** @type {!Common.Color.Color} */ (Common.Color.Color.parse('black'));
     this._format = [_Part.OffsetX, _Part.OffsetY];
   }

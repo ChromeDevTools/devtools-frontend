@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as UI from '../ui/ui.js';
 
 /**
@@ -73,10 +70,10 @@ export class BezierUI {
    */
   _drawLine(parentElement, className, x1, y1, x2, y2) {
     const line = UI.UIUtils.createSVGChild(parentElement, 'line', className);
-    line.setAttribute('x1', x1 + this.radius);
-    line.setAttribute('y1', y1 + this.radius + this.marginTop);
-    line.setAttribute('x2', x2 + this.radius);
-    line.setAttribute('y2', y2 + this.radius + this.marginTop);
+    line.setAttribute('x1', String(x1 + this.radius));
+    line.setAttribute('y1', String(y1 + this.radius + this.marginTop));
+    line.setAttribute('x2', String(x2 + this.radius));
+    line.setAttribute('y2', String(y2 + this.radius + this.marginTop));
   }
 
   /**
@@ -89,9 +86,9 @@ export class BezierUI {
   _drawControlPoints(parentElement, startX, startY, controlX, controlY) {
     this._drawLine(parentElement, 'bezier-control-line', startX, startY, controlX, controlY);
     const circle = UI.UIUtils.createSVGChild(parentElement, 'circle', 'bezier-control-circle');
-    circle.setAttribute('cx', controlX + this.radius);
-    circle.setAttribute('cy', controlY + this.radius + this.marginTop);
-    circle.setAttribute('r', this.radius);
+    circle.setAttribute('cx', String(controlX + this.radius));
+    circle.setAttribute('cy', String(controlY + this.radius + this.marginTop));
+    circle.setAttribute('r', String(this.radius));
   }
 
   /**
@@ -104,8 +101,8 @@ export class BezierUI {
     }
     const width = this.curveWidth();
     const height = this.curveHeight();
-    svg.setAttribute('width', this.width);
-    svg.setAttribute('height', this.height);
+    svg.setAttribute('width', String(this.width));
+    svg.setAttribute('height', String(this.height));
     svg.removeChildren();
     const group = UI.UIUtils.createSVGChild(svg, 'g');
 

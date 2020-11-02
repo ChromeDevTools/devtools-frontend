@@ -1796,10 +1796,10 @@ export function loadImageFromData(data) {
 
 /**
  * @param {function(!File):*} callback
- * @return {!Node}
+ * @return {!HTMLInputElement}
  */
 export function createFileSelectorElement(callback) {
-  const fileSelectorElement = createElement('input');
+  const fileSelectorElement = /** @type {!HTMLInputElement} */ (createElement('input'));
   fileSelectorElement.type = 'file';
   fileSelectorElement.style.display = 'none';
   fileSelectorElement.setAttribute('tabindex', -1);

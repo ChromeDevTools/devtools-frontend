@@ -34,7 +34,7 @@ import {DataDisplayDelegate,            // eslint-disable-line no-unused-vars
         Events as ProfileHeaderEvents,  // eslint-disable-line no-unused-vars
         ProfileEvents as ProfileTypeEvents, ProfileHeader, ProfileType,} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
 import {Events as ProfileLauncherEvents, ProfileLauncherView} from './ProfileLauncherView.js';
-import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';  // eslint-disable-line no-unused-vars
+import {ProfileSidebarTreeElement, setSharedFileSelectorElement} from './ProfileSidebarTreeElement.js';  // eslint-disable-line no-unused-vars
 import {instance} from './ProfileTypeRegistry.js';
 
 /**
@@ -150,7 +150,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
       this.element.removeChild(this._fileSelectorElement);
     }
     this._fileSelectorElement = UI.UIUtils.createFileSelectorElement(this._loadFromFile.bind(this));
-    ProfilesPanel._fileSelectorElement = this._fileSelectorElement;
+    setSharedFileSelectorElement(this._fileSelectorElement);
     this.element.appendChild(this._fileSelectorElement);
   }
 

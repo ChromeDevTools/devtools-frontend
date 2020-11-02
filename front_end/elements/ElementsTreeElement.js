@@ -95,11 +95,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       /** @type {!Common.Throttler.Throttler} */
       this._adornersThrottler = new Common.Throttler.Throttler(100);
 
-      if (Root.Runtime.experiments.isEnabled('cssGridFeatures')) {
-        // This flag check is put here because currently the only style adorner is Grid;
-        // we will refactor this logic when we have more style-related adorners
-        this.updateStyleAdorners();
-      }
+      this.updateStyleAdorners();
+
       if (node.isAdFrameNode()) {
         const adorner = this.adornText('Ad', AdornerCategories.Security);
         adorner.title = ls`This frame was identified as an ad frame`;
@@ -2092,6 +2089,14 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   async updateStyleAdorners() {
+    // Avoid doing any work if flex and grid features are turned off. This section needs
+    // to be removed when those experiments graduate.
+    const gridFeaturesEnabled = Root.Runtime.experiments.isEnabled('cssGridFeatures');
+    const flexFeaturesEnabled = Root.Runtime.experiments.isEnabled('cssFlexboxFeatures');
+    if (!gridFeaturesEnabled && !flexFeaturesEnabled) {
+      return;
+    }
+
     if (this._isClosingTag) {
       return;
     }
@@ -2113,38 +2118,72 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const display = styles.get('display');
-    if (display === 'grid' || display === 'inline-grid') {
-      const gridAdorner = this.adornText('grid', AdornerCategories.Layout);
-      gridAdorner.classList.add('grid');
-      const onClick = /** @type {!EventListener} */ (() => {
-        if (gridAdorner.isActive()) {
-          node.domModel().overlayModel().highlightGridInPersistentOverlay(
-              nodeId, Host.UserMetrics.GridOverlayOpener.Adorner);
-        } else {
-          node.domModel().overlayModel().hideGridInPersistentOverlay(nodeId);
-        }
-      });
-      gridAdorner.addInteraction(onClick, {
-        isToggle: true,
-        shouldPropagateOnKeydown: false,
-        ariaLabelDefault: ls`Enable grid mode`,
-        ariaLabelActive: ls`Disable grid mode`,
-      });
+    const isGrid = gridFeaturesEnabled && (display === 'grid' || display === 'inline-grid');
+    const isFlex = flexFeaturesEnabled && (display === 'flex' || display === 'inline-flex');
 
-      this._styleAdorners.push(gridAdorner);
-
-      node.domModel().overlayModel().addEventListener(SDK.OverlayModel.Events.PersistentGridOverlayCleared, () => {
-        gridAdorner.toggle(false /* force inactive state */);
-      });
-      node.domModel().overlayModel().addEventListener(
-          SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, event => {
-            const {nodeId: eventNodeId, enabled} = event.data;
-            if (eventNodeId !== nodeId) {
-              return;
-            }
-            gridAdorner.toggle(enabled);
-          });
+    let adorner;
+    if (isGrid) {
+      adorner = this.createGridAdorner();
     }
+    if (isFlex) {
+      adorner = this.createFlexAdorner();
+    }
+
+    if (adorner) {
+      this._styleAdorners.push(adorner);
+    }
+  }
+
+  /**
+   * @return {?Adorner}
+   */
+  createGridAdorner() {
+    const node = this.node();
+    const nodeId = node.id;
+    if (!nodeId) {
+      return null;
+    }
+
+    const adorner = this.adornText('grid', AdornerCategories.Layout);
+    adorner.classList.add('grid');
+
+    const onClick = /** @type {!EventListener} */ (() => {
+      if (adorner.isActive()) {
+        node.domModel().overlayModel().highlightGridInPersistentOverlay(
+            nodeId, Host.UserMetrics.GridOverlayOpener.Adorner);
+      } else {
+        node.domModel().overlayModel().hideGridInPersistentOverlay(nodeId);
+      }
+    });
+    adorner.addInteraction(onClick, {
+      isToggle: true,
+      shouldPropagateOnKeydown: false,
+      ariaLabelDefault: ls`Enable grid mode`,
+      ariaLabelActive: ls`Disable grid mode`,
+    });
+
+    node.domModel().overlayModel().addEventListener(SDK.OverlayModel.Events.PersistentGridOverlayCleared, () => {
+      adorner.toggle(false /* force inactive state */);
+    });
+    node.domModel().overlayModel().addEventListener(
+        SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, event => {
+          const {nodeId: eventNodeId, enabled} = event.data;
+          if (eventNodeId !== nodeId) {
+            return;
+          }
+          adorner.toggle(enabled);
+        });
+
+    return adorner;
+  }
+
+  /**
+   * @return {!Adorner}
+   */
+  createFlexAdorner() {
+    const adorner = this.adornText('flex', AdornerCategories.Layout);
+    adorner.classList.add('flex');
+    return adorner;
   }
 }
 

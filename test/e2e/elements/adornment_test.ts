@@ -12,9 +12,26 @@ const prepareElementsTab = async () => {
   await expandSelectedNodeRecursively();
 };
 
-describe('Adornment in the Elements Tab', async () => {
+describe('Adornment in the Elements Tab', async function() {
+  // This test relies on the context menu which takes a while to appear, so we bump the timeout a bit.
+  this.timeout(10000);
+
+  it('displays grid and flex adorners', async () => {
+    await goToResource('elements/adornment.html');
+    await enableExperiment('cssGridFeatures');
+    await enableExperiment('cssFlexboxFeatures');
+    await prepareElementsTab();
+
+    await waitForAdorners([
+      {textContent: 'grid', isActive: false},
+      {textContent: 'grid', isActive: false},
+      {textContent: 'flex', isActive: false},
+      {textContent: 'flex', isActive: false},
+    ]);
+  });
+
   // Flaky test
-  it.skip('[crbug.com/1134593] displays Grid adorners and they can be toggled', async () => {
+  it.skip('[crbug.com/1134593] can toggle adorners', async () => {
     await goToResource('elements/adornment.html');
     await enableExperiment('cssGridFeatures');
     await prepareElementsTab();
@@ -34,13 +51,15 @@ describe('Adornment in the Elements Tab', async () => {
     ]);
   });
 
-  it('does not display adorners on shadow roots when their parents are grids', async () => {
+  it('does not display adorners on shadow roots when their parents are grid or flex containers', async () => {
     await goToResource('elements/adornment-shadow.html');
     await enableExperiment('cssGridFeatures');
+    await enableExperiment('cssFlexboxFeatures');
     await prepareElementsTab();
 
     await waitForAdorners([
       {textContent: 'grid', isActive: false},
+      {textContent: 'flex', isActive: false},
     ]);
   });
 });

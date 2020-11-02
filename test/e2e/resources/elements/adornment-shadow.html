@@ -8,9 +8,13 @@
   .grid {
     display: inline-grid;
   }
+  .flex {
+    display: flex;
+  }
 </style>
 <div class="grid"></div>
+<div class="flex"></div>
 <script>
-const el = document.querySelector(".grid");
-const shadowRoot = el.attachShadow({mode: 'open'});
+document.querySelector(".grid").attachShadow({mode: 'open'});
+document.querySelector(".flex").attachShadow({mode: 'open'});
 </script>

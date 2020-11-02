@@ -43,6 +43,8 @@ export const waitForAdorners = async (expectedAdorners: {textContent: string, is
     const actualAdorners = await $$(ADORNER_SELECTOR);
     const actualAdornersStates = await Promise.all(actualAdorners.map(n => {
       return n.evaluate((node, activeSelector: string) => {
+        // TODO for now only the grid adorner that can be active. When the flex (or other) adorner can be activated
+        // too we should change the selector passed here crbug.com/1144090.
         return {textContent: node.textContent, isActive: node.matches(activeSelector)};
       }, ACTIVE_GRID_ADORNER_SELECTOR);
     }));

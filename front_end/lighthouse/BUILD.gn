@@ -26,6 +26,7 @@ devtools_module("lighthouse") {
     "../platform:bundle",
     "../protocol_client:bundle",
     "../sdk:bundle",
+    "../services:bundle",
     "../timeline:bundle",
     "../ui:bundle",
     "../workspace:bundle",

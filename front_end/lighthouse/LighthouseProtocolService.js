@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
+import * as Services from '../services/services.js';  // eslint-disable-line no-unused-vars
 
 import * as ReportRenderer from './LighthouseReporterTypes.js';  // eslint-disable-line no-unused-vars
 
@@ -18,19 +16,25 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
     this._rawConnection = null;
     /** @type {?Services.ServiceManager.Service} */
     this._backend = null;
-    /** @type {?Promise} */
+    /** @type {?Promise<void>} */
     this._backendPromise = null;
-    /** @type {?function(string)} */
+    /** @type {?function(string):void} */
     this._status = null;
   }
 
   /**
-   * @return {!Promise<undefined>}
+   * @return {!Promise<void>}
    */
   async attach() {
     await SDK.SDKModel.TargetManager.instance().suspendAllTargets();
-    const childTargetManager =
-        SDK.SDKModel.TargetManager.instance().mainTarget().model(SDK.ChildTargetManager.ChildTargetManager);
+    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    if (!mainTarget) {
+      throw new Error('Unable to find main target required for LightHouse');
+    }
+    const childTargetManager = mainTarget.model(SDK.ChildTargetManager.ChildTargetManager);
+    if (!childTargetManager) {
+      throw new Error('Unable to find child target manager required for LightHouse');
+    }
     this._rawConnection = await childTargetManager.createParallelConnection(this._dispatchProtocolMessage.bind(this));
   }
 
@@ -50,14 +54,18 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {!Promise<undefined>}
+   * @return {!Promise<void>}
    */
   async detach() {
     await this._send('stop');
-    await this._backend.dispose();
-    delete this._backend;
-    delete this._backendPromise;
-    await this._rawConnection.disconnect();
+    if (this._backend) {
+      await this._backend.dispose();
+      this._backend = null;
+    }
+    this._backendPromise = null;
+    if (this._rawConnection) {
+      await this._rawConnection.disconnect();
+    }
     await SDK.SDKModel.TargetManager.instance().resumeAllTargets();
   }
 
@@ -76,34 +84,63 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _initWorker() {
-    this._backendPromise =
+    const backendPromise =
         Services.serviceManager.createAppService('lighthouse_worker', 'LighthouseService').then(backend => {
           if (this._backend) {
             return;
           }
           this._backend = backend;
-          this._backend.on('statusUpdate', result => this._status(result.message));
-          this._backend.on('sendProtocolMessage', result => this._sendProtocolMessage(result.message));
+          if (backend) {
+            backend.on(
+                'statusUpdate',
+                /**
+                 * @param {?=} result
+                 */
+                result => {
+                  if (this._status && result && 'message' in result) {
+                    this._status(result.message);
+                  }
+                });
+            backend.on(
+                'sendProtocolMessage',
+                /**
+                 * @param {?=} result
+                 */
+                result => {
+                  if (result && 'message' in result) {
+                    this._sendProtocolMessage(result.message);
+                  }
+                });
+          }
         });
+    this._backendPromise = backendPromise;
+    return backendPromise;
   }
 
   /**
    * @param {string} message
    */
   _sendProtocolMessage(message) {
-    this._rawConnection.sendRawMessage(message);
+    if (this._rawConnection) {
+      this._rawConnection.sendRawMessage(message);
+    }
   }
 
   /**
    * @param {string} method
-   * @param {!Object=} params
+   * @param {!Object<string,*>=} params
    * @return {!Promise<!ReportRenderer.RunnerResult>}
    */
-  _send(method, params) {
-    if (!this._backendPromise) {
-      this._initWorker();
+  async _send(method, params) {
+    let backendPromise = this._backendPromise;
+    if (!backendPromise) {
+      backendPromise = this._initWorker();
     }
 
-    return this._backendPromise.then(_ => this._backend.send(method, params));
+    await backendPromise;
+    if (!this._backend) {
+      throw new Error('Backend is missing to send LightHouse message to');
+    }
+    return /** @type {!Promise<!ReportRenderer.RunnerResult>} */ (this._backend.send(method, params));
   }
 }

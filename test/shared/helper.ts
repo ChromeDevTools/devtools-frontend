@@ -154,19 +154,19 @@ export const pasteText = async (text: string) => {
   await frontend.keyboard.sendCharacter(text);
 };
 
-// Get a single element handle, across Shadow DOM boundaries.
-export const $ = async (selector: string, root?: puppeteer.JSHandle) => {
+// Get a single element handle. Uses `pierce` handler per default for piercing Shadow DOM.
+export const $ = async (selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root as puppeteer.ElementHandle : frontend;
-  const element = await rootElement.$('pierce/' + selector);
+  const element = await rootElement.$(`${handler}/${selector}`);
   return element;
 };
 
-// Get multiple element handles, across Shadow DOM boundaries.
-export const $$ = async (selector: string, root?: puppeteer.JSHandle) => {
+// Get multiple element handles. Uses `pierce` handler per default for piercing Shadow DOM.
+export const $$ = async (selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root.asElement() || frontend : frontend;
-  const elements = await rootElement.$$('pierce/' + selector);
+  const elements = await rootElement.$$(`${handler}/${selector}`);
   return elements;
 };
 
@@ -177,10 +177,7 @@ export const $$ = async (selector: string, root?: puppeteer.JSHandle) => {
  * @param root The root of the search.
  */
 export const $textContent = async (textContent: string, root?: puppeteer.JSHandle) => {
-  const {frontend} = getBrowserAndPages();
-  const rootElement = root ? root as puppeteer.ElementHandle : frontend;
-  const element = await rootElement.$('pierceShadowText/' + textContent);
-  return element;
+  return $(textContent, root, 'pierceShadowText');
 };
 
 /**
@@ -190,24 +187,23 @@ export const $textContent = async (textContent: string, root?: puppeteer.JSHandl
  * @param root The root of the search.
  */
 export const $$textContent = async (textContent: string, root?: puppeteer.JSHandle) => {
-  const {frontend} = getBrowserAndPages();
-  const rootElement = root ? root as puppeteer.ElementHandle : frontend;
-  const element = await rootElement.$$('pierceShadowText/' + textContent);
-  return element;
+  return $$(textContent, root, 'pierceShadowText');
 };
 
 export const timeout = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
 
-export const waitFor = async (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+export const waitFor =
+    async (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
-                                 const element = await $(selector, root);
+                                 const element = await $(selector, root, handler);
                                  return (element || undefined);
                                }, asyncScope));
 };
 
-export const waitForNone = async (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+export const waitForNone =
+    async (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
-                                 const elements = await $$(selector, root);
+                                 const elements = await $$(selector, root, handler);
                                  if (elements.length === 0) {
                                    return true;
                                  }
@@ -217,10 +213,7 @@ export const waitForNone = async (selector: string, root?: puppeteer.JSHandle, a
 
 export const waitForElementWithTextContent =
     (textContent: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
-      return asyncScope.exec(() => waitForFunction(async () => {
-                               const elem = await $textContent(textContent, root);
-                               return elem || undefined;
-                             }, asyncScope));
+      return waitFor(textContent, root, asyncScope, 'pierceShadowText');
     };
 
 export const waitForElementsWithTextContent =

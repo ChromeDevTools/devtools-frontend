@@ -47,8 +47,7 @@ import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import * as Icon from './Icon_bridge.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
-import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
-import {Context} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
+import {Context, StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
 
 // Highlightable properties are those that can be hovered in the sidebar to trigger a specific
 // highlighting mode on the current element.
@@ -306,29 +305,39 @@ export class StylesSidebarPane extends ElementsSidebarPane {
       return;
     }
 
-    switch (event.key) {
+    switch (/** @type {!KeyboardEvent} */ (event).key) {
       case 'ArrowUp':
       case 'ArrowLeft': {
         const sectionToFocus = section.previousSibling() || section.lastSibling();
-        sectionToFocus.element.focus();
-        event.consume(true);
+        if (sectionToFocus) {
+          sectionToFocus.element.focus();
+          event.consume(true);
+        }
         break;
       }
       case 'ArrowDown':
       case 'ArrowRight': {
         const sectionToFocus = section.nextSibling() || section.firstSibling();
-        sectionToFocus.element.focus();
-        event.consume(true);
+        if (sectionToFocus) {
+          sectionToFocus.element.focus();
+          event.consume(true);
+        }
         break;
       }
       case 'Home': {
-        section.firstSibling().element.focus();
-        event.consume(true);
+        const sectionToFocus = section.firstSibling();
+        if (sectionToFocus) {
+          sectionToFocus.element.focus();
+          event.consume(true);
+        }
         break;
       }
       case 'End': {
-        section.lastSibling().element.focus();
-        event.consume(true);
+        const sectionToFocus = section.lastSibling();
+        if (sectionToFocus) {
+          sectionToFocus.element.focus();
+          event.consume(true);
+        }
         break;
       }
     }
@@ -356,13 +365,12 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     }
     const headers = cssModel.styleSheetHeaders().filter(styleSheetResourceHeader);
 
-    /** @type {!Array.<{text: string, handler: function()}>} */
+    /** @type {!Array.<{text: string, handler: function():Promise<void>}>} */
     const contextMenuDescriptors = [];
     for (let i = 0; i < headers.length; ++i) {
       const header = headers[i];
       const handler = this._createNewRuleInStyleSheet.bind(this, header);
-      contextMenuDescriptors.push(
-          {text: Bindings.ResourceUtils.displayNameForURL(header.resourceURL()), handler: handler});
+      contextMenuDescriptors.push({text: Bindings.ResourceUtils.displayNameForURL(header.resourceURL()), handler});
     }
 
     contextMenuDescriptors.sort(compareDescriptors);
@@ -377,8 +385,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     contextMenu.show();
 
     /**
-     * @param {!{text: string, handler: function()}} descriptor1
-     * @param {!{text: string, handler: function()}} descriptor2
+     * @param {!{text: string, handler: function():Promise<void>}} descriptor1
+     * @param {!{text: string, handler: function():Promise<void>}} descriptor2
      * @return {number}
      */
     function compareDescriptors(descriptor1, descriptor2) {
@@ -409,7 +417,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
   _refreshUpdate(editedSection, editedTreeElement) {
     if (editedTreeElement) {
       for (const section of this.allSections()) {
-        if (section.isBlank) {
+        if (section instanceof BlankStylePropertiesSection && section.isBlank) {
           continue;
         }
         section._updateVarFunctions(editedTreeElement);
@@ -425,7 +433,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     }
 
     for (const section of this.allSections()) {
-      if (section.isBlank) {
+      if (section instanceof BlankStylePropertiesSection && section.isBlank) {
         continue;
       }
       section.update(section === editedSection);
@@ -471,7 +479,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   _innerResize() {
     const width = this.contentElement.getBoundingClientRect().width + 'px';
@@ -482,8 +490,9 @@ export class StylesSidebarPane extends ElementsSidebarPane {
   }
 
   _resetCache() {
-    if (this.cssModel()) {
-      this.cssModel().discardCachedMatchedCascade();
+    const cssModel = this.cssModel();
+    if (cssModel) {
+      cssModel.discardCachedMatchedCascade();
     }
   }
 
@@ -496,7 +505,11 @@ export class StylesSidebarPane extends ElementsSidebarPane {
       return Promise.resolve(/** @type {?SDK.CSSMatchedStyles.CSSMatchedStyles} */ (null));
     }
 
-    return this.cssModel().cachedMatchedCascadeForNode(node).then(validateStyles.bind(this));
+    const cssModel = this.cssModel();
+    if (!cssModel) {
+      return Promise.resolve(null);
+    }
+    return cssModel.cachedMatchedCascadeForNode(node).then(validateStyles.bind(this));
 
     /**
      * @param {?SDK.CSSMatchedStyles.CSSMatchedStyles} matchedStyles
@@ -544,7 +557,11 @@ export class StylesSidebarPane extends ElementsSidebarPane {
       if (!treeElement.name.startsWith(property)) {
         continue;
       }
-      this.node().domModel().overlayModel().highlightInOverlay(
+      const node = this.node();
+      if (!node) {
+        continue;
+      }
+      node.domModel().overlayModel().highlightInOverlay(
           {node: /** @type {!SDK.DOMModel.DOMNode} */ (this.node()), selectorList}, mode);
       this._isActivePropertyHighlighted = true;
       break;
@@ -595,7 +612,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
   continueEditingElement(sectionIndex, propertyIndex) {
     const section = this.allSections()[sectionIndex];
     if (section) {
-      const element = section.closestPropertyForEditing(propertyIndex);
+      const element = /** @type {?StylePropertyTreeElement} */ (section.closestPropertyForEditing(propertyIndex));
       if (!element) {
         section.element.focus();
         return;
@@ -606,7 +623,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
   /**
    * @param {?SDK.CSSMatchedStyles.CSSMatchedStyles} matchedStyles
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async _innerRebuildUpdate(matchedStyles) {
     // ElementsSidebarPane's throttler schedules this method. Usually,
@@ -709,10 +726,12 @@ export class StylesSidebarPane extends ElementsSidebarPane {
       }
 
       const lastBlock = blocks.peekLast();
-      this._idleCallbackManager.schedule(() => {
-        const section = new StylePropertiesSection(this, matchedStyles, style);
-        lastBlock.sections.push(section);
-      });
+      if (lastBlock) {
+        this._idleCallbackManager.schedule(() => {
+          const section = new StylePropertiesSection(this, matchedStyles, style);
+          lastBlock.sections.push(section);
+        });
+      }
     }
 
     let pseudoTypes = [];
@@ -822,7 +841,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
   _updateFilter() {
     let hasAnyVisibleBlock = false;
     for (const block of this._sectionBlocks) {
-      hasAnyVisibleBlock |= block.updateFilter();
+      hasAnyVisibleBlock = block.updateFilter() || hasAnyVisibleBlock;
     }
     this._noMatchesElement.classList.toggle('hidden', !!hasAnyVisibleBlock);
   }
@@ -848,6 +867,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
    * @return {!Array<!StylePropertiesSection>}
    */
   allSections() {
+    /** @type {!Array<!StylePropertiesSection>} */
     let sections = [];
     for (const block of this._sectionBlocks) {
       sections = sections.concat(block.sections);
@@ -863,7 +883,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
   }
 
   /**
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   _createStylesSidebarToolbar() {
     const container = this.contentElement.createChild('div', 'styles-sidebar-pane-toolbar-container');
@@ -878,7 +898,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     toolbar.appendItemsAtLocation('styles-sidebarpane-toolbar');
     this._toolbar = toolbar;
     const toolbarPaneContainer = container.createChild('div', 'styles-sidebar-toolbar-pane-container');
-    const toolbarPaneContent = toolbarPaneContainer.createChild('div', 'styles-sidebar-toolbar-pane');
+    const toolbarPaneContent =
+        /** @type {!HTMLElement} */ (toolbarPaneContainer.createChild('div', 'styles-sidebar-toolbar-pane'));
 
     return toolbarPaneContent;
   }
@@ -982,6 +1003,7 @@ export class SectionBlock {
    */
   constructor(titleElement) {
     this._titleElement = titleElement;
+    /** @type {!Array<!StylePropertiesSection>} */
     this.sections = [];
   }
 
@@ -1015,7 +1037,10 @@ export class SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
     UI.UIUtils.createTextChild(separatorElement, ls`Inherited from${' '}`);
-    const link = await Common.Linkifier.Linkifier.linkify(node, {preventKeyboardFocus: true});
+    const link = await Common.Linkifier.Linkifier.linkify(node, {
+      preventKeyboardFocus: true,
+      tooltip: undefined,
+    });
     separatorElement.appendChild(link);
     return new SectionBlock(separatorElement);
   }
@@ -1026,7 +1051,7 @@ export class SectionBlock {
   updateFilter() {
     let hasAnyVisibleSection = false;
     for (const section of this.sections) {
-      hasAnyVisibleSection |= section._updateFilter();
+      hasAnyVisibleSection = section._updateFilter() || hasAnyVisibleSection;
     }
     if (this._titleElement) {
       this._titleElement.classList.toggle('hidden', !hasAnyVisibleSection);
@@ -1201,7 +1226,7 @@ export class StylePropertiesSection {
    */
   static createRuleOriginNode(matchedStyles, linkifier, rule) {
     if (!rule) {
-      return createTextNode('');
+      return document.createTextNode('');
     }
 
     const ruleLocation = this._getRuleLocationFromCSSRule(rule);
@@ -1215,7 +1240,7 @@ export class StylePropertiesSection {
         link.textContent = label;
         return link;
       }
-      return createTextNode(label);
+      return document.createTextNode(label);
     }
 
     if (ruleLocation && rule.styleSheetId && header && !header.isAnonymousInlineStyleSheet()) {
@@ -1224,13 +1249,13 @@ export class StylePropertiesSection {
     }
 
     if (rule.isUserAgent()) {
-      return createTextNode(Common.UIString.UIString('user agent stylesheet'));
+      return document.createTextNode(Common.UIString.UIString('user agent stylesheet'));
     }
     if (rule.isInjected()) {
-      return createTextNode(Common.UIString.UIString('injected stylesheet'));
+      return document.createTextNode(Common.UIString.UIString('injected stylesheet'));
     }
     if (rule.isViaInspector()) {
-      return createTextNode(Common.UIString.UIString('via inspector'));
+      return document.createTextNode(Common.UIString.UIString('via inspector'));
     }
 
     if (header && header.ownerNode) {
@@ -1239,7 +1264,7 @@ export class StylePropertiesSection {
       return link;
     }
 
-    return createTextNode('');
+    return document.createTextNode('');
   }
 
   /**
@@ -1304,18 +1329,20 @@ export class StylePropertiesSection {
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    if (UI.UIUtils.isEditing() || !this.editable || event.altKey || event.ctrlKey || event.metaKey) {
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    if (UI.UIUtils.isEditing() || !this.editable || keyboardEvent.altKey || keyboardEvent.ctrlKey ||
+        keyboardEvent.metaKey) {
       return;
     }
-    switch (event.key) {
+    switch (keyboardEvent.key) {
       case 'Enter':
       case ' ':
         this._startEditingAtFirstPosition();
-        event.consume(true);
+        keyboardEvent.consume(true);
         break;
       default:
         // Filter out non-printable key strokes.
-        if (event.key.length === 1) {
+        if (keyboardEvent.key.length === 1) {
           this.addNewBlankProperty(0).startEditing();
         }
         break;
@@ -1355,7 +1382,8 @@ export class StylePropertiesSection {
     } else {
       this._parentPane._setActiveProperty(null);
     }
-    if (!this._selectedSinceMouseDown && this.element.getComponentSelection().toString()) {
+    const selection = this.element.getComponentSelection();
+    if (!this._selectedSinceMouseDown && selection && selection.toString()) {
       this._selectedSinceMouseDown = true;
     }
   }
@@ -1455,6 +1483,7 @@ export class StylePropertiesSection {
    * @return {!StylePropertiesSection|undefined}
    */
   nextSibling() {
+    /** @type {?Node} */
     let curElement = this.element;
     do {
       curElement = curElement.nextSibling;
@@ -1470,6 +1499,7 @@ export class StylePropertiesSection {
    * @return {!StylePropertiesSection|undefined}
    */
   previousSibling() {
+    /** @type {?Node} */
     let curElement = this.element;
     do {
       curElement = curElement.previousSibling;
@@ -1902,7 +1932,10 @@ export class StylePropertiesSection {
         this._editingMediaBlurHandler.bind(this));
     UI.InplaceEditor.InplaceEditor.startEditing(element, config);
 
-    element.getComponentSelection().selectAllChildren(element);
+    const selection = element.getComponentSelection();
+    if (selection) {
+      selection.selectAllChildren(element);
+    }
     this._parentPane.setEditingStyle(true);
     const parentMediaElement = element.enclosingNodeOrSelfWithClass('media');
     parentMediaElement.classList.add('editing-media');
@@ -1927,7 +1960,10 @@ export class StylePropertiesSection {
     // Mark the selectors in group if necessary.
     // This is overridden by BlankStylePropertiesSection.
     this._markSelectorMatches();
-    element.getComponentSelection().collapse(element, 0);
+    const selection = element.getComponentSelection();
+    if (selection) {
+      selection.collapse(element, 0);
+    }
   }
 
   /**
@@ -2046,13 +2082,19 @@ export class StylePropertiesSection {
 
     element.scrollIntoViewIfNeeded(false);
     // Reset selector marks in group, and normalize whitespace.
-    element.textContent = element.textContent.replace(/\s+/g, ' ').trim();
+    const textContent = element.textContent;
+    if (textContent !== null) {
+      element.textContent = textContent.replace(/\s+/g, ' ').trim();
+    }
 
     const config =
         new UI.InplaceEditor.Config(this.editingSelectorCommitted.bind(this), this.editingSelectorCancelled.bind(this));
     UI.InplaceEditor.InplaceEditor.startEditing(this._selectorElement, config);
 
-    element.getComponentSelection().selectAllChildren(element);
+    const selection = element.getComponentSelection();
+    if (selection) {
+      selection.selectAllChildren(element);
+    }
     this._parentPane.setEditingStyle(true);
     if (element.classList.contains('simple-selector')) {
       this._navigateToSelectorSource(0, false);
@@ -2129,13 +2171,13 @@ export class StylePropertiesSection {
   /**
    * @param {!SDK.CSSRule.CSSRule} rule
    * @param {string} newContent
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   _setHeaderText(rule, newContent) {
     /**
      * @param {!SDK.CSSRule.CSSStyleRule} rule
      * @param {boolean} success
-     * @return {!Promise}
+     * @return {!Promise<void>}
      * @this {StylePropertiesSection}
      */
     function onSelectorsUpdated(rule, success) {
@@ -2270,7 +2312,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
 
     /**
      * @param {?SDK.CSSRule.CSSStyleRule} newRule
-     * @return {!Promise}
+     * @return {!Promise<void>}
      * @this {BlankStylePropertiesSection}
      */
     function onRuleAdded(newRule) {
@@ -2368,7 +2410,7 @@ export class KeyframePropertiesSection extends StylePropertiesSection {
    * @override
    * @param {!SDK.CSSRule.CSSRule} rule
    * @param {string} newContent
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   _setHeaderText(rule, newContent) {
     /**
@@ -2501,27 +2543,28 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
    * @param {!Event} event
    */
   onKeyDown(event) {
-    switch (event.key) {
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    switch (keyboardEvent.key) {
       case 'ArrowUp':
       case 'ArrowDown':
       case 'PageUp':
       case 'PageDown':
-        if (!this.isSuggestBoxVisible() && this._handleNameOrValueUpDown(event)) {
-          event.preventDefault();
+        if (!this.isSuggestBoxVisible() && this._handleNameOrValueUpDown(keyboardEvent)) {
+          keyboardEvent.preventDefault();
           return;
         }
         break;
       case 'Enter':
-        if (event.shiftKey) {
+        if (keyboardEvent.shiftKey) {
           return;
         }
         // Accept any available autocompletions and advance to the next field.
         this.tabKeyPressed();
-        event.preventDefault();
+        keyboardEvent.preventDefault();
         return;
     }
 
-    super.onKeyDown(event);
+    super.onKeyDown(keyboardEvent);
   }
 
   /**
@@ -2659,6 +2702,9 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       const node = this._treeElement.node();
 
       const getComputedStyle = async () => {
+        if (!node) {
+          return null;
+        }
         if (!this._selectedNodeComputedStyles) {
           this._selectedNodeComputedStyles = await node.domModel().cssModel().computedStylePromise(node.id);
         }
@@ -2763,7 +2809,7 @@ export class StylesSidebarPropertyRenderer {
     /** @type {?function(string, string):!Node} */
     this._gridHandler = null;
     /** @type {?function(string):!Node} */
-    this._varHandler = createTextNode;
+    this._varHandler = document.createTextNode.bind(document);
     /** @type {?function(string):!Node} */
     this._angleHandler = null;
   }
@@ -2868,7 +2914,8 @@ export class StylesSidebarPropertyRenderer {
     const results = TextUtils.TextUtils.Utils.splitStringByRegexes(this._propertyValue, regexes);
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
-      const processor = result.regexIndex === -1 ? createTextNode : processors[result.regexIndex];
+      const processor =
+          result.regexIndex === -1 ? document.createTextNode.bind(document) : processors[result.regexIndex];
       valueElement.appendChild(processor(result.value));
     }
     valueElement.normalize();

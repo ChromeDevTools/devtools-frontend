@@ -28,11 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
@@ -54,7 +52,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
 
     /** @type {!Map<string, !PlatformFileSystem>} */
     this._fileSystems = new Map();
-    /** @type {!Map<number, function(!Array.<string>)>} */
+    /** @type {!Map<number, function(!Array.<string>):void>} */
     this._callbacks = new Map();
     /** @type {!Map<number, !Common.Progress.Progress>} */
     this._progresses = new Map();
@@ -76,9 +74,30 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SearchCompleted, this._onSearchCompleted, this);
 
-    this._initExcludePatterSetting();
+    // Initialize exclude pattern settings
+    const defaultCommonExcludedFolders = [
+      '/node_modules/', '/bower_components/', '/\\.devtools', '/\\.git/', '/\\.sass-cache/', '/\\.hg/', '/\\.idea/',
+      '/\\.svn/', '/\\.cache/', '/\\.project/'
+    ];
+    const defaultWinExcludedFolders = ['/Thumbs.db$', '/ehthumbs.db$', '/Desktop.ini$', '/\\$RECYCLE.BIN/'];
+    const defaultMacExcludedFolders = [
+      '/\\.DS_Store$', '/\\.Trashes$', '/\\.Spotlight-V100$', '/\\.AppleDouble$', '/\\.LSOverride$', '/Icon$',
+      '/\\._.*$'
+    ];
+    const defaultLinuxExcludedFolders = ['/.*~$'];
+    let defaultExcludedFolders = defaultCommonExcludedFolders;
+    if (Host.Platform.isWin()) {
+      defaultExcludedFolders = defaultExcludedFolders.concat(defaultWinExcludedFolders);
+    } else if (Host.Platform.isMac()) {
+      defaultExcludedFolders = defaultExcludedFolders.concat(defaultMacExcludedFolders);
+    } else {
+      defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
+    }
+    const defaultExcludedFoldersPattern = defaultExcludedFolders.join('|');
+    this._workspaceFolderExcludePatternSetting = Common.Settings.Settings.instance().createRegExpSetting(
+        'workspaceFolderExcludePattern', defaultExcludedFoldersPattern, Host.Platform.isWin() ? 'i' : '');
 
-    /** @type {?function(?IsolatedFileSystem)} */
+    /** @type {?function(?IsolatedFileSystem):void} */
     this._fileSystemRequestResolve = null;
     this._fileSystemsLoadedPromise = this._requestFileSystems();
   }
@@ -99,6 +118,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
    * @return {!Promise<!Array<!IsolatedFileSystem>>}
    */
   _requestFileSystems() {
+    /** @type {function(*):void} */
     let fulfill;
     const promise = new Promise(f => {
       fulfill = f;
@@ -167,7 +187,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     return promise.then(storeFileSystem.bind(this));
 
     /**
-     * @param {?PlatformFileSystem} fileSystem
+     * @param {?IsolatedFileSystem} fileSystem
      * @this {IsolatedFileSystemManager}
      */
     function storeFileSystem(fileSystem) {
@@ -249,11 +269,13 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
      * @this {IsolatedFileSystemManager}
      */
     function groupFilePathsIntoFileSystemPaths(embedderPaths) {
+      /** @type {!Platform.Multimap.<string, string>} */
       const paths = new Platform.Multimap();
       for (const embedderPath of embedderPaths) {
         const filePath = Common.ParsedURL.ParsedURL.platformPathToURL(embedderPath);
         for (const fileSystemPath of this._fileSystems.keys()) {
-          if (this._fileSystems.get(fileSystemPath).isFileExcluded(embedderPath)) {
+          const fileSystem = this._fileSystems.get(fileSystemPath);
+          if (fileSystem && fileSystem.isFileExcluded(embedderPath)) {
             continue;
           }
           const pathPrefix = fileSystemPath.endsWith('/') ? fileSystemPath : fileSystemPath + '/';
@@ -268,7 +290,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   /**
-   * @return {!Array<!IsolatedFileSystem>}
+   * @return {!Array<!PlatformFileSystem>}
    */
   fileSystems() {
     return [...this._fileSystems.values()];
@@ -282,39 +304,15 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     return this._fileSystems.get(fileSystemPath) || null;
   }
 
-  _initExcludePatterSetting() {
-    const defaultCommonExcludedFolders = [
-      '/node_modules/', '/bower_components/', '/\\.devtools', '/\\.git/', '/\\.sass-cache/', '/\\.hg/', '/\\.idea/',
-      '/\\.svn/', '/\\.cache/', '/\\.project/'
-    ];
-    const defaultWinExcludedFolders = ['/Thumbs.db$', '/ehthumbs.db$', '/Desktop.ini$', '/\\$RECYCLE.BIN/'];
-    const defaultMacExcludedFolders = [
-      '/\\.DS_Store$', '/\\.Trashes$', '/\\.Spotlight-V100$', '/\\.AppleDouble$', '/\\.LSOverride$', '/Icon$',
-      '/\\._.*$'
-    ];
-    const defaultLinuxExcludedFolders = ['/.*~$'];
-    let defaultExcludedFolders = defaultCommonExcludedFolders;
-    if (Host.Platform.isWin()) {
-      defaultExcludedFolders = defaultExcludedFolders.concat(defaultWinExcludedFolders);
-    } else if (Host.Platform.isMac()) {
-      defaultExcludedFolders = defaultExcludedFolders.concat(defaultMacExcludedFolders);
-    } else {
-      defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
-    }
-    const defaultExcludedFoldersPattern = defaultExcludedFolders.join('|');
-    this._workspaceFolderExcludePatternSetting = Common.Settings.Settings.instance().createRegExpSetting(
-        'workspaceFolderExcludePattern', defaultExcludedFoldersPattern, Host.Platform.isWin() ? 'i' : '');
-  }
-
   /**
-   * @return {!Common.Settings.Setting}
+   * @return {!Common.Settings.Setting<*>}
    */
   workspaceFolderExcludePatternSetting() {
     return this._workspaceFolderExcludePatternSetting;
   }
 
   /**
-   * @param {function(!Array.<string>)} callback
+   * @param {function(!Array.<string>):void} callback
    * @return {number}
    */
   registerCallback(callback) {
@@ -407,4 +405,5 @@ export const Events = {
 let _lastRequestId = 0;
 
 /** @typedef {!{type: string, fileSystemName: string, rootURL: string, fileSystemPath: string}} */
+// @ts-ignore typedef
 export let FileSystem;

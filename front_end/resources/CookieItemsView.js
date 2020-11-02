@@ -27,9 +27,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as CookieTable from '../cookie_table/cookie_table.js';
@@ -104,10 +101,12 @@ export class CookieItemsView extends StorageItemsView {
     this.refreshItems();
     Common.EventTarget.EventTarget.removeEventListeners(this._eventDescriptors);
     const networkManager = model.target().model(SDK.NetworkManager.NetworkManager);
-    this._eventDescriptors = [
-      networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
-      networkManager.addEventListener(SDK.NetworkManager.Events.LoadingFinished, this._onLoadingFinished, this),
-    ];
+    if (networkManager) {
+      this._eventDescriptors = [
+        networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
+        networkManager.addEventListener(SDK.NetworkManager.Events.LoadingFinished, this._onLoadingFinished, this),
+      ];
+    }
 
     this._showPreview(null, null);
   }
@@ -161,8 +160,12 @@ export class CookieItemsView extends StorageItemsView {
     function handleDblClickOnCookieValue() {
       const range = document.createRange();
       range.selectNode(value);
-      window.getSelection().removeAllRanges();
-      window.getSelection().addRange(range);
+      const selection = window.getSelection();
+      if (!selection) {
+        return;
+      }
+      selection.removeAllRanges();
+      selection.addRange(range);
     }
   }
 

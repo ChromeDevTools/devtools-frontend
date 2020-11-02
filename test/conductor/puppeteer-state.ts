@@ -15,7 +15,7 @@ declare module 'puppeteer' {
   function clearCustomQueryHandlers(): void;
 }
 
-import {querySelectorShadowAll, querySelectorShadowOne, querySelectorShadowTextAll, querySelectorShadowTextOne} from './custom-query-handlers.js';
+import {querySelectorShadowTextAll, querySelectorShadowTextOne} from './custom-query-handlers.js';
 
 let target: puppeteer.Page;
 let frontend: puppeteer.Page;
@@ -77,10 +77,6 @@ export const getHostedModeServerPort = () => {
 };
 
 export const registerHandlers = () => {
-  puppeteer.registerCustomQueryHandler('pierceShadow', {
-    queryOne: querySelectorShadowOne,
-    queryAll: querySelectorShadowAll,
-  });
   puppeteer.registerCustomQueryHandler('pierceShadowText', {
     queryOne: querySelectorShadowTextOne,
     queryAll: querySelectorShadowTextAll,

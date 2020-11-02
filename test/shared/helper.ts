@@ -158,7 +158,7 @@ export const pasteText = async (text: string) => {
 export const $ = async (selector: string, root?: puppeteer.JSHandle) => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root as puppeteer.ElementHandle : frontend;
-  const element = await rootElement.$('pierceShadow/' + selector);
+  const element = await rootElement.$('pierce/' + selector);
   return element;
 };
 
@@ -166,7 +166,7 @@ export const $ = async (selector: string, root?: puppeteer.JSHandle) => {
 export const $$ = async (selector: string, root?: puppeteer.JSHandle) => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root.asElement() || frontend : frontend;
-  const elements = await rootElement.$$('pierceShadow/' + selector);
+  const elements = await rootElement.$$('pierce/' + selector);
   return elements;
 };
 

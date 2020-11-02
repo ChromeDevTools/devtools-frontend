@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -53,13 +50,15 @@ export class JavaScriptREPL {
    * @return {!Promise<!{preview: !DocumentFragment, result: ?SDK.RuntimeModel.EvaluationResult}>}
    */
   static async evaluateAndBuildPreview(text, throwOnSideEffect, timeout, allowErrors, objectGroup) {
+    const globalObject = /** @type {?} */ (window);
+    const replInstance = globalObject.ObjectUI.JavaScriptREPL;
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
-    const maxLength = typeof self.ObjectUI.JavaScriptREPL._MaxLengthForEvaluation !== 'undefined' ?
-        self.ObjectUI.JavaScriptREPL._MaxLengthForEvaluation :
+    const maxLength = typeof replInstance._MaxLengthForEvaluation !== 'undefined' ?
+        /** @type {number} */ (replInstance._MaxLengthForEvaluation) :
         MaxLengthForEvaluation;
     const isTextLong = text.length > maxLength;
     if (!text || !executionContext || (throwOnSideEffect && isTextLong)) {
-      return {preview: createDocumentFragment(), result: null};
+      return {preview: document.createDocumentFragment(), result: null};
     }
 
     const expression = JavaScriptREPL.preprocessExpression(text);
@@ -71,7 +70,10 @@ export class JavaScriptREPL {
       timeout: timeout,
       objectGroup: objectGroup,
       disableBreaks: true,
-      replMode: true
+      replMode: true,
+      silent: undefined,
+      returnByValue: undefined,
+      allowUnsafeEvalBlockedByCSP: undefined
     };
     const result = await executionContext.evaluate(options, false /* userGesture */, false /* awaitPromise */);
     const preview = JavaScriptREPL._buildEvaluationPreview(result, allowErrors);
@@ -84,8 +86,8 @@ export class JavaScriptREPL {
    * @return {!DocumentFragment}
    */
   static _buildEvaluationPreview(result, allowErrors) {
-    const fragment = createDocumentFragment();
-    if (result.error) {
+    const fragment = document.createDocumentFragment();
+    if ('error' in result) {
       return fragment;
     }
 
@@ -103,7 +105,7 @@ export class JavaScriptREPL {
       formatter.appendObjectPreview(fragment, preview, false /* isEntry */);
     } else {
       const nonObjectPreview =
-          formatter.renderPropertyPreview(type, subtype, className, description.trimEndWithMaxLength(400));
+          formatter.renderPropertyPreview(type, subtype, className, (description || '').trimEndWithMaxLength(400));
       fragment.appendChild(nonObjectPreview);
     }
     return fragment;

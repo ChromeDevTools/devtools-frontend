@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Product } from '../common/Product.js';
 /**
  * Supported platforms.
  * @public
  */
 export declare type Platform = 'linux' | 'mac' | 'win32' | 'win64';
-/**
- * Supported products.
- * @public
- */
-export declare type Product = 'chrome' | 'firefox';
 /**
  * @public
  */

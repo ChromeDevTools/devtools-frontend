@@ -1927,6 +1927,29 @@
                             "type": "integer"
                         }
                     ]
+                },
+                {
+                    "id": "RuntimeCallCounterInfo",
+                    "description": "Runtime call counter information.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "description": "Counter name.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "value",
+                            "description": "Counter value.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "time",
+                            "description": "Counter time in seconds.",
+                            "type": "number"
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -2054,6 +2077,31 @@
                     ]
                 },
                 {
+                    "name": "enableCounters",
+                    "description": "Enable counters collection.",
+                    "experimental": true
+                },
+                {
+                    "name": "disableCounters",
+                    "description": "Disable counters collection.",
+                    "experimental": true
+                },
+                {
+                    "name": "getCounters",
+                    "description": "Retrieve counters.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "result",
+                            "description": "Collected counters information.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "CounterInfo"
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "enableRuntimeCallStats",
                     "description": "Enable run time call stats collection.",
                     "experimental": true
@@ -2070,10 +2118,10 @@
                     "returns": [
                         {
                             "name": "result",
-                            "description": "Collected counter information.",
+                            "description": "Collected runtime call counter information.",
                             "type": "array",
                             "items": {
-                                "$ref": "CounterInfo"
+                                "$ref": "RuntimeCallCounterInfo"
                             }
                         }
                     ]

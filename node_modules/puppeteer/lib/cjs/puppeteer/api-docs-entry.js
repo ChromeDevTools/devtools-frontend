@@ -30,8 +30,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * for. It is used by API Extractor to determine what parts of the system to
  * document.
  *
- * We also have src/api.ts. This is used in `index.js` and by the legacy DocLint
- * system. src/api-docs-entry.ts is ONLY used by API Extractor.
+ * The legacy DocLint system and the unit test coverage system use the list of
+ * modules defined in coverage-utils.js. src/api-docs-entry.ts is ONLY used by
+ * API Extractor.
  *
  * Once we have migrated to API Extractor and removed DocLint we can remove the
  * duplication and use this file.
@@ -39,6 +40,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./common/Accessibility.js"), exports);
 __exportStar(require("./common/Browser.js"), exports);
 __exportStar(require("./node/BrowserFetcher.js"), exports);
+__exportStar(require("./node/Puppeteer.js"), exports);
 __exportStar(require("./common/Connection.js"), exports);
 __exportStar(require("./common/ConsoleMessage.js"), exports);
 __exportStar(require("./common/Coverage.js"), exports);
@@ -52,9 +54,11 @@ __exportStar(require("./common/FileChooser.js"), exports);
 __exportStar(require("./common/FrameManager.js"), exports);
 __exportStar(require("./common/Input.js"), exports);
 __exportStar(require("./common/Page.js"), exports);
+__exportStar(require("./common/Product.js"), exports);
 __exportStar(require("./common/Puppeteer.js"), exports);
-__exportStar(require("./node/LaunchOptions.js"), exports);
+__exportStar(require("./common/BrowserConnector.js"), exports);
 __exportStar(require("./node/Launcher.js"), exports);
+__exportStar(require("./node/LaunchOptions.js"), exports);
 __exportStar(require("./common/HTTPRequest.js"), exports);
 __exportStar(require("./common/HTTPResponse.js"), exports);
 __exportStar(require("./common/SecurityDetails.js"), exports);
@@ -68,4 +72,5 @@ __exportStar(require("./common/EvalTypes.js"), exports);
 __exportStar(require("./common/PDFOptions.js"), exports);
 __exportStar(require("./common/TimeoutSettings.js"), exports);
 __exportStar(require("./common/LifecycleWatcher.js"), exports);
+__exportStar(require("./common/QueryHandler.js"), exports);
 __exportStar(require("devtools-protocol/types/protocol"), exports);

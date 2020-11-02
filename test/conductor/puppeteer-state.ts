@@ -4,15 +4,15 @@
 
 import * as puppeteer from 'puppeteer';
 declare module 'puppeteer' {
-  interface QueryHandler {
+  interface CustomQueryHandler {
     queryOne?: (element: Element|Document, selector: string) => Element | null;
     queryAll?: (element: Element|Document, selector: string) => Element[] | NodeListOf<Element>;
   }
 
-  function __experimental_registerCustomQueryHandler(name: string, queryHandler: QueryHandler): void;
-  function __experimental_unregisterCustomQueryHandler(name: string): void;
-  function __experimental_customQueryHandlers(): Map<string, QueryHandler>;
-  function __experimental_clearQueryHandlers(): void;
+  function registerCustomQueryHandler(name: string, queryHandler: CustomQueryHandler): void;
+  function unregisterCustomQueryHandler(name: string): void;
+  function customQueryHandlerNames(): string[];
+  function clearCustomQueryHandlers(): void;
 }
 
 import {querySelectorShadowAll, querySelectorShadowOne, querySelectorShadowTextAll, querySelectorShadowTextOne} from './custom-query-handlers.js';
@@ -77,11 +77,11 @@ export const getHostedModeServerPort = () => {
 };
 
 export const registerHandlers = () => {
-  puppeteer.__experimental_registerCustomQueryHandler('pierceShadow', {
+  puppeteer.registerCustomQueryHandler('pierceShadow', {
     queryOne: querySelectorShadowOne,
     queryAll: querySelectorShadowAll,
   });
-  puppeteer.__experimental_registerCustomQueryHandler('pierceShadowText', {
+  puppeteer.registerCustomQueryHandler('pierceShadowText', {
     queryOne: querySelectorShadowTextOne,
     queryAll: querySelectorShadowTextAll,
   });

@@ -16,6 +16,7 @@
 export * from './common/Accessibility.js';
 export * from './common/Browser.js';
 export * from './node/BrowserFetcher.js';
+export * from './node/Puppeteer.js';
 export * from './common/Connection.js';
 export * from './common/ConsoleMessage.js';
 export * from './common/Coverage.js';
@@ -29,9 +30,11 @@ export * from './common/FileChooser.js';
 export * from './common/FrameManager.js';
 export * from './common/Input.js';
 export * from './common/Page.js';
+export * from './common/Product.js';
 export * from './common/Puppeteer.js';
-export * from './node/LaunchOptions.js';
+export * from './common/BrowserConnector.js';
 export * from './node/Launcher.js';
+export * from './node/LaunchOptions.js';
 export * from './common/HTTPRequest.js';
 export * from './common/HTTPResponse.js';
 export * from './common/SecurityDetails.js';
@@ -45,5 +48,6 @@ export * from './common/EvalTypes.js';
 export * from './common/PDFOptions.js';
 export * from './common/TimeoutSettings.js';
 export * from './common/LifecycleWatcher.js';
+export * from './common/QueryHandler.js';
 export * from 'devtools-protocol/types/protocol';
 //# sourceMappingURL=api-docs-entry.d.ts.map

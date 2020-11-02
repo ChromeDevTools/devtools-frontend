@@ -44,7 +44,7 @@ const childProcess = __importStar(require("child_process"));
 const assert_js_1 = require("../common/assert.js");
 const helper_js_1 = require("../common/helper.js");
 const Connection_js_1 = require("../common/Connection.js");
-const WebSocketTransport_js_1 = require("../common/WebSocketTransport.js");
+const NodeWebSocketTransport_js_1 = require("../node/NodeWebSocketTransport.js");
 const PipeTransport_js_1 = require("./PipeTransport.js");
 const readline = __importStar(require("readline"));
 const Errors_js_1 = require("../common/Errors.js");
@@ -160,7 +160,7 @@ class BrowserRunner {
         const { usePipe, timeout, slowMo, preferredRevision } = options;
         if (!usePipe) {
             const browserWSEndpoint = await waitForWSEndpoint(this.proc, timeout, preferredRevision);
-            const transport = await WebSocketTransport_js_1.WebSocketTransport.create(browserWSEndpoint);
+            const transport = await NodeWebSocketTransport_js_1.NodeWebSocketTransport.create(browserWSEndpoint);
             this.connection = new Connection_js_1.Connection(browserWSEndpoint, transport, slowMo);
         }
         else {

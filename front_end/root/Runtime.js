@@ -18,7 +18,7 @@ let runtimePlatform = '';
 /** @type {function(string):string} */
 let l10nCallback;
 
-/** @type {!Runtime} */
+/** @type {!Runtime|undefined} */
 let runtimeInstance;
 
 export function getRemoteBase(location = self.location.toString()) {
@@ -80,6 +80,10 @@ export class Runtime {
     }
 
     return runtimeInstance;
+  }
+
+  static removeInstance() {
+    runtimeInstance = undefined;
   }
 
   /**

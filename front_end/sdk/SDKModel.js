@@ -356,7 +356,7 @@ export const Type = {
 };
 
 /**
- * @type {!TargetManager}
+ * @type {!TargetManager|undefined}
  */
 let targetManagerInstance;
 
@@ -386,6 +386,10 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     return targetManagerInstance;
+  }
+
+  static removeInstance() {
+    targetManagerInstance = undefined;
   }
 
   /**

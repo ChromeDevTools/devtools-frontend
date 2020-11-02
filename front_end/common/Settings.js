@@ -36,7 +36,7 @@ import {EventDescriptor, EventTargetEvent} from './EventTarget.js';  // eslint-d
 import {ObjectWrapper} from './Object.js';
 
 /**
- * @type {!Settings}
+ * @type {!Settings|undefined}
  */
 let settingsInstance;
 
@@ -80,6 +80,10 @@ export class Settings {
     }
 
     return settingsInstance;
+  }
+
+  static removeInstance() {
+    settingsInstance = undefined;
   }
 
   /**

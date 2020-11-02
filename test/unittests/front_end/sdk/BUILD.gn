@@ -4,6 +4,7 @@ ts_library("sdk") {
   testonly = true
   sources = [
     "CSSPropertyParser_test.ts",
+    "CookieModel_test.ts",
     "CookieParser_test.ts",
     "Cookie_test.ts",
     "DebuggerModel_test.ts",
@@ -21,5 +22,6 @@ ts_library("sdk") {
   deps = [
     "../../../../front_end/protocol_client:bundle",
     "../../../../front_end/sdk:bundle",
+    "../helpers",
   ]
 }

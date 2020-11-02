@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
@@ -41,8 +38,9 @@ export const ColdColorScheme = ['#7400b8', '#6930c3', '#5e60ce', '#5390d9', '#4e
  * @return {string}
  */
 function calculateFontColor(backgroundColor) {
+  const parsedColor = Common.Color.Color.parse(backgroundColor);
   // Dark background needs a light font.
-  if (Common.Color.Color.parse(backgroundColor).hsla()[2] < 0.5) {
+  if (parsedColor && parsedColor.hsla()[2] < 0.5) {
     return '#eee';
   }
   return '#444';
@@ -52,8 +50,8 @@ function calculateFontColor(backgroundColor) {
 /**
  * @typedef {{
  *     setLive: (!function(number):number),
- *     setComplete: (!function(number):undefined),
- *     updateMaxTime: (!function(number):undefined)
+ *     setComplete: (!function(number):void),
+ *     updateMaxTime: (!function(number):void)
  * }}
  */
 let EventHandlers;  // eslint-disable-line no-unused-vars
@@ -69,6 +67,7 @@ let EventHandlers;  // eslint-disable-line no-unused-vars
  *     hoverData: (Object|undefined|null)
  * }}
  */
+// @ts-ignore typedef
 export let EventProperties;  // eslint-disable-line no-unused-vars
 
 /**
@@ -76,7 +75,14 @@ export let EventProperties;  // eslint-disable-line no-unused-vars
  * @unrestricted
  */
 export class Event {
-  constructor(timelineData, eventHandlers, eventProperties = {}) {
+  /**
+   * @param {*} timelineData
+   * @param {!EventHandlers} eventHandlers
+   * @param {!EventProperties=} eventProperties
+   */
+  constructor(
+      timelineData, eventHandlers,
+      eventProperties = {color: undefined, duration: undefined, hoverData: {}, level: 0, name: '', startTime: 0}) {
     // These allow the event to privately change it's own data in the timeline.
     this._timelineData = timelineData;
     this._setLive = eventHandlers.setLive;
@@ -222,7 +228,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
     super();
 
     // set to update once per second _while the tab is active_
-    this._intervalTimer = null;
+    this._intervalTimer = 0;
     this._lastTimestamp = 0;
     this._canTick = true;
     this._ticking = false;
@@ -250,7 +256,9 @@ export class TickingFlameChart extends UI.Widget.VBox {
     this._chart.disableRangeSelection();
 
     // Scrolling should change the current bounds, and repaint the chart.
-    this._chart.bindCanvasEvent('wheel', this._onScroll.bind(this));
+    this._chart.bindCanvasEvent('wheel', e => {
+      this._onScroll(/** @type {!WheelEvent} */ (e));
+    });
 
     // Add the chart.
     this._chart.show(this.contentElement);
@@ -294,17 +302,23 @@ export class TickingFlameChart extends UI.Widget.VBox {
     this._dataProvider.addGroup(name, depth);
   }
 
+  /**
+   * @param {number} time
+   */
   _updateMaxTime(time) {
     if (this._bounds.pushMaxAtLeastTo(time)) {
       this._updateRender();
     }
   }
 
+  /**
+   * @param {!WheelEvent} e
+   */
   _onScroll(e) {
     // TODO: is this a good divisor? does it account for high presicision scroll wheels?
     // low precisision scroll wheels?
     const scrollTickCount = Math.round(e.deltaY / 50);
-    const scrollPositionRatio = e.offsetX / e.srcElement.clientWidth;
+    const scrollPositionRatio = e.offsetX / /** @type {!HTMLElement} */ (e.srcElement).clientWidth;
     if (scrollTickCount > 0) {
       this._bounds.zoomOut(scrollTickCount, scrollPositionRatio);
     } else {
@@ -351,17 +365,17 @@ export class TickingFlameChart extends UI.Widget.VBox {
     if (this._lastTimestamp === 0) {
       this._lastTimestamp = Date.now();
     }
-    if (this._intervalTimer !== null || this._stoppedPermanently) {
+    if (this._intervalTimer !== 0 || this._stoppedPermanently) {
       return;
     }
     // 16 ms is roughly 60 fps.
-    this._intervalTimer = setInterval(this._updateRender.bind(this), 16);
+    this._intervalTimer = window.setInterval(this._updateRender.bind(this), 16);
     this._ticking = true;
   }
 
   _stop(permanently = false) {
-    clearInterval(this._intervalTimer);
-    this._intervalTimer = null;
+    window.clearInterval(this._intervalTimer);
+    this._intervalTimer = 0;
     if (permanently) {
       this._stoppedPermanently = true;
     }
@@ -421,6 +435,10 @@ class TickingFlameChartDelegate {
  * @implements {PerfUI.FlameChart.FlameChartDataProvider}
  */
 class TickingFlameChartDataProvider {
+  /**
+   * @param {!Bounds} initialBounds
+   * @param {function(number):void} updateMaxTime
+   */
   constructor(initialBounds, updateMaxTime) {
     // do _not_ call this method from within this class - only for passing to events.
     this._updateMaxTimeHandle = updateMaxTime;
@@ -448,8 +466,10 @@ class TickingFlameChartDataProvider {
    * @param {number} depth
    */
   addGroup(name, depth) {
-    this._timelineData.groups.push(
-        {name: name, startLevel: this._maxLevel, expanded: true, selectable: false, style: DefaultStyle});
+    if (this._timelineData.groups) {
+      this._timelineData.groups.push(
+          {name: name, startLevel: this._maxLevel, expanded: true, selectable: false, style: DefaultStyle});
+    }
     this._maxLevel += depth;
   }
 
@@ -487,6 +507,7 @@ class TickingFlameChartDataProvider {
 
   /**
    * @param {number} index
+   * @return {void}
    */
   _setComplete(index) {
     this._liveEvents.delete(index);
@@ -604,7 +625,7 @@ class TickingFlameChartDataProvider {
    * @return {?Element}
    */
   prepareHighlightedEntryInfo(index) {
-    const element = createElement('div');
+    const element = document.createElement('div');
     this._eventMap.get(index).decorate(element);
     return element;
   }

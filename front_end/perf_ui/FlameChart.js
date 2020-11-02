@@ -634,7 +634,7 @@ export class FlameChart extends UI.Widget.VBox {
 
   /**
    * @param {string} eventName
-   * @param {function(!Event):undefined} onEvent
+   * @param {function(!Event):void} onEvent
    */
   bindCanvasEvent(eventName, onEvent) {
     this._canvas.addEventListener(eventName, onEvent);

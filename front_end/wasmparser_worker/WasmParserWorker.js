@@ -32,35 +32,10 @@ import * as Common from '../common/common.js';
 import * as WasmDis from '../third_party/wasmparser/package/dist/esm/WasmDis.js';
 import * as WasmParser from '../third_party/wasmparser/package/dist/esm/WasmParser.js';
 
-class BinaryReaderWithProgress extends WasmParser.BinaryReader {
-  /**
-   * @param {!function(number):void} progressCallback
-   */
-  constructor(progressCallback) {
-    super();
-    /** @type {number} */
-    this._percentage = 0;
-    this._progressCallback = progressCallback;
-  }
-
-  read() {
-    if (!super.read()) {
-      return false;
-    }
-    const percentage = Math.floor((this.position / this.length) * 100);
-    if (this._percentage !== percentage) {
-      this._progressCallback.call(undefined, percentage);
-      this._percentage = percentage;
-    }
-    return true;
-  }
-}
-
 /**
- *
  * @param {!{data: !{method:string, params: !{content: string}}}} event
  */
-self.onmessage = async function(event) {
+self.onmessage = function(event) {
   const method = (event.data.method);
   const params = (event.data.params);
   if (method !== 'disassemble') {
@@ -68,46 +43,87 @@ self.onmessage = async function(event) {
   }
 
   try {
-    const NAME_GENERATOR_WEIGHT = 30;
-    const DISASSEMBLY_WEIGHT = 69;
-    const FINALIZATION_WEIGHT = NAME_GENERATOR_WEIGHT + DISASSEMBLY_WEIGHT;
+    const dataBuffer = Common.Base64.decode(params.content);
 
-    const buffer = Common.Base64.decode(params.content);
-
-    let parser = new BinaryReaderWithProgress(percentage => {
-      this.postMessage({event: 'progress', params: {percentage: percentage * (NAME_GENERATOR_WEIGHT / 100)}});
-    });
-    parser.setData(buffer, 0, buffer.byteLength);
+    let parser = new WasmParser.BinaryReader();
+    parser.setData(dataBuffer, 0, dataBuffer.byteLength);
     const nameGenerator = new WasmDis.DevToolsNameGenerator();
     nameGenerator.read(parser);
 
+    const data = new Uint8Array(dataBuffer);
+    parser = new WasmParser.BinaryReader();
     const dis = new WasmDis.WasmDisassembler();
     dis.addOffsets = true;
     dis.exportMetadata = nameGenerator.getExportMetadata();
     dis.nameResolver = nameGenerator.getNameResolver();
-    parser = new BinaryReaderWithProgress(percentage => {
-      this.postMessage(
-          {event: 'progress', params: {percentage: NAME_GENERATOR_WEIGHT + percentage * (DISASSEMBLY_WEIGHT / 100)}});
-    });
-    parser.setData(buffer, 0, buffer.byteLength);
-    dis.disassembleChunk(parser);
-    const {lines, offsets, functionBodyOffsets} = dis.getResult();
-
-    // Truncate the output to 1M lines, because CodeMirror gets glitchy above that.
-    // TODO(bmeurer): This is not very performant and we also risk running out of
-    // memory in the worker (seems to work for the cases that we know about for now),
-    // so we should look into using the chunked disassembly to implement this in a
-    // more reasonable fashion.
+    const lines = [];
+    const offsets = [];
+    const functionBodyOffsets = [];
     const MAX_LINES = 1000 * 1000;
-    if (lines.length > MAX_LINES) {
-      lines[MAX_LINES] = ';; .... text is truncated due to size';
-      lines.splice(MAX_LINES + 1);
-      if (offsets) {
-        offsets.splice(MAX_LINES + 1);
+    let chunkSize = 128 * 1024;
+    let buffer = new Uint8Array(chunkSize);
+    let pendingSize = 0;
+    let offsetInModule = 0;
+    for (let i = 0; i < data.length;) {
+      if (chunkSize > data.length - i) {
+        chunkSize = data.length - i;
       }
+      const bufferSize = pendingSize + chunkSize;
+      if (buffer.byteLength < bufferSize) {
+        const newBuffer = new Uint8Array(bufferSize);
+        newBuffer.set(buffer);
+        buffer = newBuffer;
+      }
+      while (pendingSize < bufferSize) {
+        buffer[pendingSize++] = data[i++];
+      }
+      parser.setData(buffer.buffer, 0, bufferSize, i === data.length);
+
+      // The disassemble will attemp to fetch the data as much as possible.
+      const finished = dis.disassembleChunk(parser, offsetInModule);
+
+      const result =
+          /** @type {!{lines: !Array<string>, offsets: !Array<number>, functionBodyOffsets: !Array<!{start:number, end:number}>}} */
+          (dis.getResult());
+      for (const line of result.lines) {
+        lines.push(line);
+      }
+      for (const offset of result.offsets) {
+        offsets.push(offset);
+      }
+      for (const functionBodyOffset of result.functionBodyOffsets) {
+        functionBodyOffsets.push(functionBodyOffset);
+      }
+
+      if (lines.length > MAX_LINES) {
+        lines[MAX_LINES] = ';; .... text is truncated due to size';
+        lines.splice(MAX_LINES + 1);
+        if (offsets) {
+          offsets.splice(MAX_LINES + 1);
+        }
+        break;
+      }
+      if (finished) {
+        break;
+      }
+
+      if (parser.position === 0) {
+        // Parser did not consume anything, needs more data.
+        pendingSize = bufferSize;
+        continue;
+      }
+
+      // Shift the data to the beginning of the buffer.
+      const pending = parser.data.subarray(parser.position, parser.length);
+      pendingSize = pending.length;
+      buffer.set(pending);
+      offsetInModule += parser.position;
+
+      const percentage = Math.floor((offsetInModule / data.length) * 100);
+      this.postMessage({event: 'progress', params: {percentage}});
     }
 
-    this.postMessage({event: 'progress', params: {percentage: FINALIZATION_WEIGHT}});
+    this.postMessage({event: 'progress', params: {percentage: 99}});
 
     const source = lines.join('\n');
 

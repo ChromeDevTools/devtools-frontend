@@ -43,12 +43,9 @@ export class BezierPopoverIcon {
       return;
     }
 
-    this._bezierEditor = new InlineEditor.BezierEditor.BezierEditor();
-    let cubicBezier = UI.Geometry.CubicBezier.parse(this._swatch.bezierText());
-    if (!cubicBezier) {
-      cubicBezier =
-          /** @type {!UI.Geometry.CubicBezier} */ (UI.Geometry.CubicBezier.parse('linear'));
-    }
+    const cubicBezier = UI.Geometry.CubicBezier.parse(this._swatch.bezierText()) ||
+        /** @type {!UI.Geometry.CubicBezier} */ (UI.Geometry.CubicBezier.parse('linear'));
+    this._bezierEditor = new InlineEditor.BezierEditor.BezierEditor(cubicBezier);
     this._bezierEditor.setBezier(cubicBezier);
     this._bezierEditor.addEventListener(InlineEditor.BezierEditor.Events.BezierChanged, this._boundBezierChanged);
     this._swatchPopoverHelper.show(this._bezierEditor, this._swatch.iconElement(), this._onPopoverHidden.bind(this));

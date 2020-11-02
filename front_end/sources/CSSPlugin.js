@@ -314,16 +314,14 @@ export class CSSPlugin extends Plugin {
    * @param {!InlineEditor.Swatches.BezierSwatch} swatch
    */
   _showBezierEditor(swatch) {
+    const cubicBezier = UI.Geometry.CubicBezier.parse(swatch.bezierText()) ||
+        /** @type {!UI.Geometry.CubicBezier} */ (UI.Geometry.CubicBezier.parse('linear'));
     if (!this._bezierEditor) {
-      this._bezierEditor = new InlineEditor.BezierEditor.BezierEditor();
+      this._bezierEditor = new InlineEditor.BezierEditor.BezierEditor(cubicBezier);
       this._bezierEditor.addEventListener(InlineEditor.BezierEditor.Events.BezierChanged, this._bezierChanged, this);
+    } else {
+      this._bezierEditor.setBezier(cubicBezier);
     }
-    let cubicBezier = UI.Geometry.CubicBezier.parse(swatch.bezierText());
-    if (!cubicBezier) {
-      cubicBezier =
-          /** @type {!UI.Geometry.CubicBezier} */ (UI.Geometry.CubicBezier.parse('linear'));
-    }
-    this._bezierEditor.setBezier(cubicBezier);
     this._swatchPopoverHelper.show(this._bezierEditor, swatch.iconElement(), this._swatchPopoverHidden.bind(this));
   }
 

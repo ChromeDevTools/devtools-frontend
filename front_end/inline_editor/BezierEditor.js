@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
@@ -15,8 +12,10 @@ import {BezierUI} from './BezierUI.js';
  * @unrestricted
  */
 export class BezierEditor extends UI.Widget.VBox {
-  constructor() {
+  /** @param {!UI.Geometry.CubicBezier} bezier */
+  constructor(bezier) {
     super(true);
+    this._bezier = bezier;
     this.registerRequiredCSS('inline_editor/bezierEditor.css');
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
@@ -31,6 +30,8 @@ export class BezierEditor extends UI.Widget.VBox {
     this._outerContainer = this.contentElement.createChild('div', 'bezier-container');
 
     // Presets UI
+    /** @type{?PresetCategory} */
+    this._selectedCategory = null;
     this._presetsContainer = this._outerContainer.createChild('div', 'bezier-presets');
     this._presetUI = new BezierUI(40, 40, 0, 2, false);
     this._presetCategories = [];
@@ -54,7 +55,7 @@ export class BezierEditor extends UI.Widget.VBox {
   }
 
   /**
-   * @param {?UI.Geometry.CubicBezier} bezier
+   * @param {!UI.Geometry.CubicBezier} bezier
    */
   setBezier(bezier) {
     if (!bezier) {
@@ -104,7 +105,7 @@ export class BezierEditor extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!MouseEvent} event
    * @return {boolean}
    */
   _dragStart(event) {
@@ -131,6 +132,10 @@ export class BezierEditor extends UI.Widget.VBox {
    * @param {number} mouseY
    */
   _updateControlPosition(mouseX, mouseY) {
+    if (this._mouseDownPosition === undefined || this._controlPosition === undefined ||
+        this._selectedPoint === undefined) {
+      return;
+    }
     const deltaX = (mouseX - this._mouseDownPosition.x) / this._curveUI.curveWidth();
     const deltaY = (mouseY - this._mouseDownPosition.y) / this._curveUI.curveHeight();
     const newPosition = new UI.Geometry.Point(
@@ -139,7 +144,7 @@ export class BezierEditor extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!MouseEvent} event
    */
   _dragMove(event) {
     this._updateControlPosition(event.x, event.y);
@@ -147,7 +152,7 @@ export class BezierEditor extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!MouseEvent} event
    */
   _dragEnd(event) {
     this._updateControlPosition(event.x, event.y);
@@ -177,8 +182,8 @@ export class BezierEditor extends UI.Widget.VBox {
    */
   _createPresetModifyIcon(parentElement, className, drawPath) {
     const icon = UI.UIUtils.createSVGChild(parentElement, 'svg', 'bezier-preset-modify ' + className);
-    icon.setAttribute('width', 20);
-    icon.setAttribute('height', 20);
+    icon.setAttribute('width', '20');
+    icon.setAttribute('height', '20');
     const path = UI.UIUtils.createSVGChild(icon, 'path');
     path.setAttribute('d', drawPath);
     return icon;
@@ -188,7 +193,7 @@ export class BezierEditor extends UI.Widget.VBox {
     for (const category of this._presetCategories) {
       category.icon.classList.remove('bezier-preset-selected');
     }
-    delete this._selectedCategory;
+    this._selectedCategory = null;
     this._header.classList.remove('bezier-header-active');
   }
 
@@ -204,9 +209,12 @@ export class BezierEditor extends UI.Widget.VBox {
     this._header.classList.add('bezier-header-active');
     this._selectedCategory = category;
     this._selectedCategory.icon.classList.add('bezier-preset-selected');
-    this.setBezier(UI.Geometry.CubicBezier.parse(category.presets[category.presetIndex].value));
-    this._onchange();
-    this._startPreviewAnimation();
+    const newBezier = UI.Geometry.CubicBezier.parse(category.presets[category.presetIndex].value);
+    if (newBezier) {
+      this.setBezier(newBezier);
+      this._onchange();
+      this._startPreviewAnimation();
+    }
     if (event) {
       event.consume(true);
     }
@@ -217,16 +225,19 @@ export class BezierEditor extends UI.Widget.VBox {
    * @param {!Event} event
    */
   _presetModifyClicked(intensify, event) {
-    if (!this._selectedCategory) {
+    if (this._selectedCategory === null) {
       return;
     }
 
     const length = this._selectedCategory.presets.length;
     this._selectedCategory.presetIndex = (this._selectedCategory.presetIndex + (intensify ? 1 : -1) + length) % length;
-    this.setBezier(
-        UI.Geometry.CubicBezier.parse(this._selectedCategory.presets[this._selectedCategory.presetIndex].value));
-    this._onchange();
-    this._startPreviewAnimation();
+    const newBezier =
+        UI.Geometry.CubicBezier.parse(this._selectedCategory.presets[this._selectedCategory.presetIndex].value);
+    if (newBezier) {
+      this.setBezier(newBezier);
+      this._onchange();
+      this._startPreviewAnimation();
+    }
   }
 
   _startPreviewAnimation() {
@@ -285,4 +296,5 @@ export const Presets = [
 ];
 
 /** @typedef {{presets: !Array.<{name: string, value: string}>, icon: !Element, presetIndex: number}} */
+// @ts-ignore typedef
 export let PresetCategory;

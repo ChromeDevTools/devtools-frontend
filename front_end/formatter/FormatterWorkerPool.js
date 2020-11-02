@@ -4,7 +4,7 @@
 
 import * as Common from '../common/common.js';
 
-const MaxWorkers = 2;
+const MAX_WORKERS = Math.min(2, navigator.hardwareConcurrency - 1);
 
 /** @type {!FormatterWorkerPool} */
 let formatterWorkerPoolInstance;
@@ -47,7 +47,7 @@ export class FormatterWorkerPool {
     }
 
     let freeWorker = [...this._workerTasks.keys()].find(worker => !this._workerTasks.get(worker));
-    if (!freeWorker && this._workerTasks.size < MaxWorkers) {
+    if (!freeWorker && this._workerTasks.size < MAX_WORKERS) {
       freeWorker = this._createWorker();
     }
     if (!freeWorker) {

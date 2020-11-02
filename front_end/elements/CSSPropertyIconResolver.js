@@ -117,13 +117,29 @@ export function rotateFlexDirectionIcon(direction) {
  * @param {!PhysicalFlexDirection} direction
  * @return {!IconInfo}
  */
-export function rotateFlexAlignContentIcon(iconName, direction) {
+export function rotateAlignContentIcon(iconName, direction) {
   return {
     iconName,
     rotate: direction === PhysicalFlexDirection.RIGHT_TO_LEFT ?
         90 :
         (direction === PhysicalFlexDirection.LEFT_TO_RIGHT ? -90 : 0),
     scaleX: 1,
+    scaleY: 1,
+  };
+}
+
+/**
+ * @param {string} iconName
+ * @param {!PhysicalFlexDirection} direction
+ * @return {!IconInfo}
+ */
+export function rotateJustifyContentIcon(iconName, direction) {
+  return {
+    iconName,
+    rotate: direction === PhysicalFlexDirection.TOP_TO_BOTTOM ?
+        90 :
+        (direction === PhysicalFlexDirection.BOTTOM_TO_TOP ? -90 : 0),
+    scaleX: direction === PhysicalFlexDirection.RIGHT_TO_LEFT ? -1 : 1,
     scaleY: 1,
   };
 }
@@ -157,8 +173,38 @@ function flexAlignContentIcon(iconName) {
    */
   function getIcon(computedStyles) {
     const directions = getPhysicalFlexDirections(computedStyles);
-    return rotateFlexAlignContentIcon(
-        iconName, computedStyles.get('flex-direction') === 'column' ? directions.row : directions.column);
+    /**
+     * @type {!Map<string, !PhysicalFlexDirection>}
+     */
+    const flexDirectionToPhysicalDirection = new Map([
+      ['column', directions.row],
+      ['row', directions.column],
+      ['column-reverse', directions['row-reverse']],
+      ['row-reverse', directions['column-reverse']],
+    ]);
+    const computedFlexDirection = computedStyles.get('flex-direction') || 'row';
+    const iconDirection = flexDirectionToPhysicalDirection.get(computedFlexDirection);
+    if (!iconDirection) {
+      throw new Error('Unknown direction for flex-align icon');
+    }
+    return rotateAlignContentIcon(iconName, iconDirection);
+  }
+  return getIcon;
+}
+
+/**
+ *
+ * @param {string} iconName
+ * @return {function(!Map<string, string>):!IconInfo}
+ */
+function flexJustifyContentIcon(iconName) {
+  /**
+   * @param {!Map<string, string>} computedStyles
+   * @return {!IconInfo}
+   */
+  function getIcon(computedStyles) {
+    const directions = getPhysicalFlexDirections(computedStyles);
+    return rotateJustifyContentIcon(iconName, directions[computedStyles.get('flex-direction') || 'row']);
   }
   return getIcon;
 }
@@ -182,6 +228,15 @@ textToIconResolver.set('align-content: stretch', flexAlignContentIcon('flex-alig
 textToIconResolver.set('align-content: space-evenly', flexAlignContentIcon('flex-align-content-space-evenly-icon'));
 textToIconResolver.set('align-content: flex-end', flexAlignContentIcon('flex-align-content-end-icon'));
 textToIconResolver.set('align-content: flex-start', flexAlignContentIcon('flex-align-content-start-icon'));
+textToIconResolver.set('justify-content: center', flexJustifyContentIcon('flex-justify-content-center-icon'));
+textToIconResolver.set(
+    'justify-content: space-around', flexJustifyContentIcon('flex-justify-content-space-around-icon'));
+textToIconResolver.set(
+    'justify-content: space-between', flexJustifyContentIcon('flex-justify-content-space-between-icon'));
+textToIconResolver.set(
+    'justify-content: space-evenly', flexJustifyContentIcon('flex-justify-content-space-evenly-icon'));
+textToIconResolver.set('justify-content: flex-end', flexJustifyContentIcon('flex-justify-content-flex-end-icon'));
+textToIconResolver.set('justify-content: flex-start', flexJustifyContentIcon('flex-justify-content-flex-start-icon'));
 
 /**
  * @param {string} text

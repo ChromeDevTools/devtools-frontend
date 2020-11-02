@@ -702,7 +702,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
         statusText += ' ' + ls`(from memory cache)`;
         statusTextElement.classList.add('status-from-cache');
       } else if (this._request.fetchedViaServiceWorker) {
-        statusText += ' ' + ls`(from ServiceWorker)`;
+        statusText += ' ' + ls`(from service worker)`;
         statusTextElement.classList.add('status-from-cache');
       } else if (this._request.redirectSourceSignedExchangeInfoHasNoErrors()) {
         statusText += ' ' + ls`(from signed-exchange)`;

@@ -100,7 +100,7 @@ export const releaseNoteText = [
         link: 'https://developers.google.com/web/updates/2020/08/devtools#lighthouse',
       },
       {
-        title: 'Deprecation of Service Workers “other origins” listing',
+        title: 'Deprecation of service workers “other origins” listing',
         subtitle: 'View “other origins” listing in chrome://serviceworker-internals/?devtools instead.',
         link: 'https://developers.google.com/web/updates/2020/08/devtools#deprecate-sw-other-origins',
       },

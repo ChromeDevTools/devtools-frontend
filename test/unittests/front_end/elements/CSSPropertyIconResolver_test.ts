@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {findIcon, getPhysicalFlexDirections, PhysicalFlexDirection, reverseDirection, rotateAlignContentIcon, rotateFlexDirectionIcon, rotateJustifyContentIcon} from '../../../../front_end/elements/CSSPropertyIconResolver.js';
+import {findIcon, getPhysicalFlexDirections, PhysicalFlexDirection, reverseDirection, rotateAlignContentIcon, rotateAlignItemsIcon, rotateFlexDirectionIcon, rotateJustifyContentIcon} from '../../../../front_end/elements/CSSPropertyIconResolver.js';
 
 const {assert} = chai;
 
@@ -443,6 +443,89 @@ describe('CSSPropertyIconResolver', () => {
           findIcon(`justify-content: ${test.style['justify-content']}`, mapFromStyle(test.style)),
           rotateJustifyContentIcon(test.iconName, test.expected),
           `Test justify-content(${JSON.stringify(test.style)}) failed.`);
+    }
+  });
+
+  it('can rotate an icon for align-items', () => {
+    const iconName = 'iconName';
+    assert.deepEqual(rotateAlignItemsIcon(iconName, PhysicalFlexDirection.LEFT_TO_RIGHT), {
+      iconName,
+      rotate: -90,
+      scaleX: 1,
+      scaleY: 1,
+    });
+    assert.deepEqual(rotateAlignItemsIcon(iconName, PhysicalFlexDirection.RIGHT_TO_LEFT), {
+      iconName,
+      rotate: 90,
+      scaleX: 1,
+      scaleY: 1,
+    });
+    assert.deepEqual(rotateAlignItemsIcon(iconName, PhysicalFlexDirection.TOP_TO_BOTTOM), {
+      iconName,
+      rotate: 0,
+      scaleX: 1,
+      scaleY: 1,
+    });
+    assert.deepEqual(rotateAlignItemsIcon(iconName, PhysicalFlexDirection.BOTTOM_TO_TOP), {
+      iconName,
+      rotate: 0,
+      scaleX: 1,
+      scaleY: 1,
+    });
+  });
+
+
+  it('can find an icon for align-items properties', () => {
+    const tests = [
+      {
+        style: {
+          'flex-direction': 'row',
+          'align-items': 'flex-start',
+        },
+        iconName: 'flex-align-items-flex-start-icon',
+        expected: PhysicalFlexDirection.TOP_TO_BOTTOM,
+      },
+      {
+        style: {
+          'flex-direction': 'column',
+          'align-items': 'flex-start',
+        },
+        iconName: 'flex-align-items-flex-start-icon',
+        expected: PhysicalFlexDirection.LEFT_TO_RIGHT,
+      },
+      {
+        style: {
+          'flex-direction': 'row',
+          'align-items': 'flex-start',
+          'writing-mode': 'vertical-rl',
+        },
+        iconName: 'flex-align-items-flex-start-icon',
+        expected: PhysicalFlexDirection.RIGHT_TO_LEFT,
+      },
+      {
+        style: {
+          'flex-direction': 'row',
+          'align-items': 'flex-start',
+          'writing-mode': 'vertical-lr',
+        },
+        iconName: 'flex-align-items-flex-start-icon',
+        expected: PhysicalFlexDirection.LEFT_TO_RIGHT,
+      },
+      {
+        style: {
+          'flex-direction': 'column-reverse',
+          'align-items': 'flex-start',
+        },
+        iconName: 'flex-align-items-flex-start-icon',
+        expected: PhysicalFlexDirection.LEFT_TO_RIGHT,
+      },
+    ];
+
+    for (const test of tests) {
+      assert.deepEqual(
+          findIcon(`align-items: ${test.style['align-items']}`, mapFromStyle(test.style)),
+          rotateAlignItemsIcon(test.iconName, test.expected),
+          `Test align-items(${JSON.stringify(test.style)}) failed.`);
     }
   });
 });

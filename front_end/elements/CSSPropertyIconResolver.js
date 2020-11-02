@@ -145,6 +145,22 @@ export function rotateJustifyContentIcon(iconName, direction) {
 }
 
 /**
+ * @param {string} iconName
+ * @param {!PhysicalFlexDirection} direction
+ * @return {!IconInfo}
+ */
+export function rotateAlignItemsIcon(iconName, direction) {
+  return {
+    iconName,
+    rotate: direction === PhysicalFlexDirection.RIGHT_TO_LEFT ?
+        90 :
+        (direction === PhysicalFlexDirection.LEFT_TO_RIGHT ? -90 : 0),
+    scaleX: 1,
+    scaleY: 1,
+  };
+}
+
+/**
  *
  * @param {string} value
  * @return {function(!Map<string, string>):!IconInfo}
@@ -210,6 +226,37 @@ function flexJustifyContentIcon(iconName) {
 }
 
 /**
+ *
+ * @param {string} iconName
+ * @return {function(!Map<string, string>):!IconInfo}
+ */
+function flexAlignItemsIcon(iconName) {
+  /**
+   * @param {!Map<string, string>} computedStyles
+   * @return {!IconInfo}
+   */
+  function getIcon(computedStyles) {
+    const directions = getPhysicalFlexDirections(computedStyles);
+    /**
+     * @type {!Map<string, !PhysicalFlexDirection>}
+     */
+    const flexDirectionToPhysicalDirection = new Map([
+      ['column', directions.row],
+      ['row', directions.column],
+      ['column-reverse', directions.row],
+      ['row-reverse', directions.column],
+    ]);
+    const computedFlexDirection = computedStyles.get('flex-direction') || 'row';
+    const iconDirection = flexDirectionToPhysicalDirection.get(computedFlexDirection);
+    if (!iconDirection) {
+      throw new Error('Unknown direction for flex-align icon');
+    }
+    return rotateAlignItemsIcon(iconName, iconDirection);
+  }
+  return getIcon;
+}
+
+/**
  * @type {!Map<string, function(!Map<string, string>):!IconInfo>}
  */
 const textToIconResolver = new Map();
@@ -237,6 +284,9 @@ textToIconResolver.set(
     'justify-content: space-evenly', flexJustifyContentIcon('flex-justify-content-space-evenly-icon'));
 textToIconResolver.set('justify-content: flex-end', flexJustifyContentIcon('flex-justify-content-flex-end-icon'));
 textToIconResolver.set('justify-content: flex-start', flexJustifyContentIcon('flex-justify-content-flex-start-icon'));
+textToIconResolver.set('align-items: stretch', flexAlignItemsIcon('flex-align-items-stretch-icon'));
+textToIconResolver.set('align-items: flex-end', flexAlignItemsIcon('flex-align-items-flex-end-icon'));
+textToIconResolver.set('align-items: flex-start', flexAlignItemsIcon('flex-align-items-flex-start-icon'));
 
 /**
  * @param {string} text

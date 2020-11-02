@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as DataGrid from '../data_grid/data_grid.js';
@@ -61,22 +58,35 @@ export class BackgroundServiceView extends UI.Widget.VBox {
 
     /** @const {?SDK.SecurityOriginManager.SecurityOriginManager} */
     this._securityOriginManager = this._model.target().model(SDK.SecurityOriginManager.SecurityOriginManager);
+    if (!this._securityOriginManager) {
+      throw new Error('SecurityOriginManager instance is missing');
+    }
     this._securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, () => this._onOriginChanged());
 
 
-    /** @const {!UI.Action.Action} */
+    /** @type {!UI.Action.Action} */
     this._recordAction =
         /** @type {!UI.Action.Action} */ (
             UI.ActionRegistry.ActionRegistry.instance().action('background-service.toggle-recording'));
-    /** @type {?UI.Toolbar.ToolbarButton} */
-    this._recordButton = null;
 
-    /** @type {?UI.Toolbar.ToolbarCheckbox} */
-    this._originCheckbox = null;
+    /**
+     * Initialised in the _setupToolbar() call below.
+     * @type {!UI.Toolbar.ToolbarToggle}
+     */
+    this._recordButton;
 
-    /** @type {?UI.Toolbar.ToolbarButton} */
-    this._saveButton = null;
+    /**
+     * Initialised in the _setupToolbar() call below.
+     * @type {!UI.Toolbar.ToolbarCheckbox}
+     */
+    this._originCheckbox;
+
+    /**
+     * Initialised in the _setupToolbar() call below.
+     * @type {!UI.Toolbar.ToolbarButton}
+     */
+    this._saveButton;
 
     /** @const {!UI.Toolbar.Toolbar} */
     this._toolbar = new UI.Toolbar.Toolbar('background-service-toolbar', this.contentElement);
@@ -112,7 +122,8 @@ export class BackgroundServiceView extends UI.Widget.VBox {
    * Creates the toolbar UI element.
    */
   async _setupToolbar() {
-    this._recordButton = UI.Toolbar.Toolbar.createActionButton(this._recordAction);
+    this._recordButton =
+        /** @type {!UI.Toolbar.ToolbarToggle} */ (UI.Toolbar.Toolbar.createActionButton(this._recordAction));
     this._toolbar.appendToolbarItem(this._recordButton);
 
     const clearButton = new UI.Toolbar.ToolbarButton(ls`Clear`, 'largeicon-clear');
@@ -228,7 +239,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   }
 
   /**
-   * @return {!DataGrid.DataGrid.DataGridImpl}
+   * @return {!DataGrid.DataGrid.DataGridImpl<!Object<string, string|number>>}
    */
   _createDataGrid() {
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
@@ -239,7 +250,13 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       {id: 'swScope', title: ls`SW Scope`, weight: 2},
       {id: 'instanceId', title: ls`Instance ID`, weight: 10},
     ]);
-    const dataGrid = new DataGrid.DataGrid.DataGridImpl({displayName: ls`Background Services`, columns});
+    const dataGrid = new DataGrid.DataGrid.DataGridImpl({
+      displayName: ls`Background Services`,
+      columns,
+      editCallback: undefined,
+      refreshCallback: undefined,
+      deleteCallback: undefined
+    });
     dataGrid.setStriped(true);
 
     dataGrid.addEventListener(
@@ -257,7 +274,9 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     let swScope = '';
 
     // Try to get the scope of the Service Worker registration to be more user-friendly.
-    const registration = this._serviceWorkerManager.registrations().get(serviceEvent.serviceWorkerRegistrationId);
+    const registration = this._serviceWorkerManager ?
+        this._serviceWorkerManager.registrations().get(serviceEvent.serviceWorkerRegistrationId) :
+        undefined;
     if (registration) {
       swScope = registration.scopeURL.substr(registration.securityOrigin.length);
     }
@@ -390,9 +409,12 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   }
 }
 
+/**
+ * @extends {DataGrid.DataGrid.DataGridNode<!Object<string, string|number>>}
+ */
 export class EventDataNode extends DataGrid.DataGrid.DataGridNode {
   /**
-   * @param {!Object<string, string>} data
+   * @param {!Object<string, string|number>} data
    * @param {!Array<!Protocol.BackgroundService.EventMetadata>} eventMetadata
    */
   constructor(data, eventMetadata) {
@@ -447,9 +469,13 @@ export class ActionDelegate {
   handleAction(context, actionId) {
     const view = context.flavor(BackgroundServiceView);
     switch (actionId) {
-      case 'background-service.toggle-recording':
+      case 'background-service.toggle-recording': {
+        if (!view) {
+          throw new Error('BackgroundServiceView instance is missing');
+        }
         view._toggleRecording();
         return true;
+      }
     }
     return false;
   }
@@ -458,6 +484,7 @@ export class ActionDelegate {
 /**
  * @typedef {!{isRecording: boolean, serviceName: !Protocol.BackgroundService.ServiceName}}
  */
+// @ts-ignore typedef
 export let RecordingState;
 
 /**
@@ -470,4 +497,5 @@ export let RecordingState;
  *    instanceId: string,
  * }}
  */
+// @ts-ignore typedef
 export let EventData;

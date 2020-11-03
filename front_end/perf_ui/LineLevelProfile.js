@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
@@ -45,10 +42,14 @@ export class Performance {
    */
   _appendLegacyCPUProfile(profile) {
     const target = profile.target();
+
+    /** @type {!Array.<!SDK.CPUProfileDataModel.CPUProfileNode>} */
     const nodesToGo = [profile.profileHead];
     const sampleDuration = (profile.profileEndTime - profile.profileStartTime) / profile.totalHitCount;
     while (nodesToGo.length) {
-      const nodes = nodesToGo.pop().children;
+      /** @type {!Array.<!SDK.CPUProfileDataModel.CPUProfileNode>} */
+      const nodes =
+          /** @type {*} */ (nodesToGo.pop()).children;  // Cast to any because runtime checks assert the props.
       for (let i = 0; i < nodes.length; ++i) {
         const node = nodes[i];
         nodesToGo.push(node);
@@ -75,12 +76,19 @@ export class Performance {
       return;
     }
     const target = profile.target();
+    if (!profile.samples) {
+      return;
+    }
+
     for (let i = 1; i < profile.samples.length; ++i) {
       const line = profile.lines[i];
       if (!line) {
         continue;
       }
       const node = profile.nodeByIndex(i);
+      if (!node) {
+        continue;
+      }
       const scriptIdOrUrl = node.scriptId || node.url;
       if (!scriptIdOrUrl) {
         continue;
@@ -155,6 +163,9 @@ export class Helper {
     this._locationPool = new Bindings.LiveLocation.LiveLocationPool();
     this._updateTimer = null;
     this.reset();
+
+    /** @type {!Map<?SDK.SDKModel.Target, !Map<string|number, !Map<number, number>>>} */
+    this._lineData;
   }
 
   reset() {
@@ -220,11 +231,13 @@ export class Helper {
             uiSourceCode.addLineDecoration(line, this._type, data);
             continue;
           }
-          const rawLocation = typeof scriptIdOrUrl === 'string' ?
-              debuggerModel.createRawLocationByURL(scriptIdOrUrl, line, 0) :
-              debuggerModel.createRawLocationByScriptId(String(scriptIdOrUrl), line, 0);
-          if (rawLocation) {
-            new Presentation(rawLocation, this._type, data, this._locationPool);
+          if (debuggerModel) {
+            const rawLocation = typeof scriptIdOrUrl === 'string' ?
+                debuggerModel.createRawLocationByURL(scriptIdOrUrl, line, 0) :
+                debuggerModel.createRawLocationByScriptId(String(scriptIdOrUrl), line, 0);
+            if (rawLocation) {
+              new Presentation(rawLocation, this._type, data, this._locationPool);
+            }
           }
         }
       }

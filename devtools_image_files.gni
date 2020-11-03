@@ -87,6 +87,7 @@ devtools_image_files = [
   "touchCursor.png",
   "treeoutlineTriangles.svg",
   "whatsnew.png",
+  "feedback_thin_16x16_icon.svg",
 ]
 
 front_end_image_files = []

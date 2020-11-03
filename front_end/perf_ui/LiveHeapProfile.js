@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
@@ -19,6 +16,7 @@ export class LiveHeapProfile {
   constructor() {
     this._running = false;
     this._sessionId = 0;
+    /** @type {function(?Function=):void} */
     this._loadEventCallback = () => {};
     this._setting = Common.Settings.Settings.instance().moduleSetting('memoryLiveHeapProfile');
     this._setting.addChangeListener(event => event.data ? this._startProfiling() : this._stopProfiling());
@@ -31,6 +29,7 @@ export class LiveHeapProfile {
    * @override
    */
   run() {
+    return Promise.resolve();
   }
 
   /**
@@ -67,9 +66,12 @@ export class LiveHeapProfile {
       }
       Memory.instance().reset();
       for (let i = 0; i < profiles.length; ++i) {
-        if (profiles[i]) {
-          Memory.instance().appendHeapProfile(profiles[i], models[i].target());
+        const profile = profiles[i];
+        if (!profile) {
+          continue;
         }
+
+        Memory.instance().appendHeapProfile(profile, models[i].target());
       }
       await Promise.race([
         new Promise(r => setTimeout(r, Host.InspectorFrontendHost.isUnderTest() ? 10 : 5000)), new Promise(r => {
@@ -91,7 +93,7 @@ export class LiveHeapProfile {
     if (!this._running) {
       return;
     }
-    this._running = 0;
+    this._running = false;
     this._sessionId++;
   }
 

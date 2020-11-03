@@ -28,14 +28,12 @@
     "marked",
     "network",
     "browser_sdk"
-  ],  "modules": [
-    "issues.js",
-    "issues-legacy.js",
-    "IssuesPane.js",
-    "IssueRevealer.js",
-    "IssueAggregator.js",
-    "MarkdownIssueDescription.js",
-    "MarkdownView_bridge.js"
+  ],
+  "modules": [
+    "issues-legacy.js"
+  ],
+  "skip_compilation": [
+    "issues-legacy.js"
   ],
   "resources": [
     "descriptions/CoepCoopSandboxedIframeCannotNavigateToCoopPage.md",

@@ -31,7 +31,7 @@ devtools_module("issues") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "issues.js"
+  entrypoint = "issues.ts"
 
   deps = [ ":issues" ]
 }

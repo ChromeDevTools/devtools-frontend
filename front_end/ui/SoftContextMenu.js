@@ -213,8 +213,6 @@ export class SoftContextMenu {
     menuItemElement._subItems = item.subItems;
     menuItemElement.tabIndex = -1;
     ARIAUtils.markAsMenuItemSubMenu(menuItemElement);
-    // TODO: Once we have AOM, remove the explicit aria-label and use document.queryByAccessibleName
-    ARIAUtils.setAccessibleName(menuItemElement, item.label || '');
 
     // Occupy the same space on the left in all items.
     const checkMarkElement = Icon.create('smallicon-checkmark', 'soft-context-menu-item-checkmark');
@@ -225,8 +223,10 @@ export class SoftContextMenu {
     createTextChild(menuItemElement, item.label || '');
     ARIAUtils.setExpanded(menuItemElement, false);
 
+    // TODO: Consider removing this branch and use the same icon on all platforms.
     if (Host.Platform.isMac() && !ThemeSupport.ThemeSupport.instance().hasTheme()) {
       const subMenuArrowElement = menuItemElement.createChild('span', 'soft-context-menu-item-submenu-arrow');
+      ARIAUtils.markAsHidden(subMenuArrowElement);
       subMenuArrowElement.textContent = '\u25B6';  // BLACK RIGHT-POINTING TRIANGLE
     } else {
       const subMenuArrowElement = Icon.create('smallicon-triangle-right', 'soft-context-menu-item-submenu-arrow');

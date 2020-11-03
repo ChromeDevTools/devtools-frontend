@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, step, waitFor, waitForAria} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToNetworkTab, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
@@ -23,18 +23,29 @@ describe('The Network Tab', async () => {
 
   // Flaky test
   it.skip('[crbug.com/1066813] shows Last-Modified', async () => {
-    const {frontend} = getBrowserAndPages();
+    const {frontend, target} = getBrowserAndPages();
     await navigateToNetworkTab('last-modified.html');
 
-    // Open the contextmenu for all network column
-    await click('.name-column', {clickOptions: {button: 'right'}});
+    // Reload to populate network request table
+    await target.reload();
 
-    // Enable the Last-Modified column in the network datagrid
-    await click('[aria-label="Response Headers"]');
-    await click('[aria-label="Last-Modified, unchecked"]');
+    await step('Wait for the column to show up and populate its values', async () => {
+      await waitForSomeRequestsToAppear(2);
+    });
 
-    // Wait for the column to show up and populate its values
-    await waitForSomeRequestsToAppear(3);
+    await step('Open the contextmenu for all network column', async () => {
+      await click('.name-column', {clickOptions: {button: 'right'}});
+    });
+
+    await step('Click "Response Headers" submenu', async () => {
+      const responseHeaders = await waitForAria('Response Headers');
+      await click(responseHeaders);
+    });
+
+    await step('Enable the Last-Modified column in the network datagrid', async () => {
+      const lastModified = await waitForAria('Last-Modified, unchecked');
+      await click(lastModified);
+    });
 
     const lastModifiedColumnValues = await frontend.evaluate(() => {
       return Array.from(document.querySelectorAll('.last-modified-column')).map(message => message.textContent);

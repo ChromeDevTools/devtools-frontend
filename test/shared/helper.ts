@@ -211,6 +211,10 @@ export const waitForNone =
                                }, asyncScope));
 };
 
+export const waitForAria = (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+  return waitFor(selector, root, asyncScope, 'aria');
+};
+
 export const waitForElementWithTextContent =
     (textContent: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
       return waitFor(textContent, root, asyncScope, 'pierceShadowText');

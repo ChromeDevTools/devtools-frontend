@@ -2,27 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, getBrowserAndPages, getElementPosition, waitFor} from '../../shared/helper.js';
+import {click, waitFor, waitForAria} from '../../shared/helper.js';
 
 export const openPanelViaMoreTools = async (panelTitle: string) => {
-  const {frontend} = getBrowserAndPages();
-
-  const moreToolsSelector = '[aria-label="More tools"]';
-  const contextMenuItemSelector = `.soft-context-menu-item[aria-label="${panelTitle}"]`;
-  const panelSelector = `.view-container[aria-label="${panelTitle} panel"]`;
 
   // Head to the triple dot menu.
-  await click('.toolbar-button[aria-label="Customize and control DevTools"]');
+  const tripleDotMenu = await waitForAria('Customize and control DevTools');
+  await click(tripleDotMenu);
 
-  // Hover over the “More Tools” option.
-  const moreTools = await getElementPosition(moreToolsSelector);
-  await frontend.mouse.move(moreTools.x, moreTools.y);
+  // Open the “More Tools” option.
+  const moreTools = await waitForAria('More tools[role="menuitem"]');
+  await moreTools.hover();
 
-  // Choose the desired menu item and wait for the corresponding panel
-  // to appear.
-  await waitFor(contextMenuItemSelector);
-  await click(contextMenuItemSelector);
-  await waitFor(panelSelector);
+  // Click the desired menu item
+  const menuItem = await waitForAria(`${panelTitle}[role="menuitem"]`);
+  await click(menuItem);
+
+  // Wait for the corresponding panel to appear.
+  await waitForAria(`${panelTitle} panel[role="tabpanel"]`);
 };
 
 export const openSettingsTab = async (tabTitle: string) => {

@@ -92,13 +92,32 @@ const renderChildTokens = (token: any) => {
   return token.tokens.map(renderToken);
 };
 
+const unescape = (text: string): string => {
+  // Unescape will get rid of the escaping done by Marked to avoid double escaping due to escaping it also with Lit-html
+  // Table taken from: front_end/third_party/marked/package/src/helpers.js
+  /** @type {Map<string,string>} */
+  const escapeReplacements = new Map<string, string>([
+    ['&amp;', '&'],
+    ['&lt;', '<'],
+    ['&gt;', '>'],
+    ['&quot;', '"'],
+    ['&#39;', '\''],
+  ]);
+  return text.replace(/&(amp|lt|gt|quot|#39);/g, (matchedString: string) => {
+    const replacement = escapeReplacements.get(matchedString);
+    return replacement ? replacement : matchedString;
+  });
+};
 // TODO(crbug.com/1108699): Fix types when they are available.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const renderText = (token: any) => {
   if (token.tokens && token.tokens.length > 0) {
     return html`${renderChildTokens(token)}`;
   }
-  return html`${token.text}`;
+  // Due to unescaping, unescaped html entities (see escapeReplacements' keys) will be rendered
+  // as their corresponding symbol while the rest will be rendered as verbatim.
+  // Marked's escape function can be found in front_end/third_party/marked/package/src/helpers.js
+  return html`${unescape(token.text)}`;
 };
 
 // TODO(crbug.com/1108699): Fix types when they are available.
@@ -108,7 +127,7 @@ const tokenRenderers = new Map<string, (token: any) => LitHtml.TemplateResult>([
   ['list', token => html`<ul>${token.items.map(renderToken)}</ul>`],
   ['list_item', token => html`<li>${renderChildTokens(token)}</li>`],
   ['text', renderText],
-  ['codespan', token => html`<code>${token.text}</code>`],
+  ['codespan', token => html`<code>${unescape(token.text)}</code>`],
   ['space', () => html``],
 ]);
 

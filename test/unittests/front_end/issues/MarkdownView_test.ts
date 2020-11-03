@@ -85,31 +85,36 @@ ${paragraphText}
       assert.strictEqual(listItems.length, 2);
       assert.deepStrictEqual(listItems.map(item => item.textContent), listItemTexts);
     });
+  });
 
-    // Angle brackets are escaped twice
-    it.skip('[crbug.com/1138302] renders basic escaped html', () => {
-      const component = new MarkdownView();
-      renderElementIntoDOM(component);
+  const renderString = (string: string, selector: 'p'|'code'): HTMLElement => {
+    const component = new MarkdownView();
+    renderElementIntoDOM(component);
+    component.data = {tokens: Marked.Marked.lexer(string)};
+    assertShadowRoot(component.shadowRoot);
+    const element = component.shadowRoot.querySelector(selector);
+    return element ? element : document.createElement('span');
+  };
 
-      component.data = {tokens: Marked.Marked.lexer('<123>')};
-
-      assertShadowRoot(component.shadowRoot);
-
-      const paragraph = Array.from(component.shadowRoot.querySelectorAll('p'))[0];
-      assert.strictEqual(paragraph.innerHTML, '<!----><!----><!---->&lt;123&gt;<!----><!----><!---->');
+  describe('escaping', () => {
+    it('renders basic escaped non-html tag', () => {
+      const paragraph = renderString('<123>', 'p');
+      assert.strictEqual(paragraph.innerText, '<123>');
     });
 
-    // Angle brackets are escaped twice
-    it.skip('[crbug.com/1138302] renders basic escaped html inside codespan', () => {
-      const component = new MarkdownView();
-      renderElementIntoDOM(component);
+    it('renders all unescaped chars', () => {
+      const paragraph = renderString('<>&\'"', 'p');
+      assert.strictEqual(paragraph.innerText, '<>&\'"');
+    });
 
-      component.data = {tokens: Marked.Marked.lexer('`<meta>`')};
+    it('renders all escaped chars', () => {
+      const paragraph = renderString('&lt;&gt;&amp;&#39;&quot;', 'p');
+      assert.strictEqual(paragraph.innerText, '<>&\'"');
+    });
 
-      assertShadowRoot(component.shadowRoot);
-
-      const codeBlock = Array.from(component.shadowRoot.querySelectorAll('code'))[0];
-      assert.strictEqual(codeBlock.innerHTML, '<!---->&lt;meta&gt;<!---->');
+    it('renders basic escaped tag inside codespan', () => {
+      const codeBlock = renderString('`<123>`', 'code');
+      assert.strictEqual(codeBlock.innerText, '<123>');
     });
   });
 });

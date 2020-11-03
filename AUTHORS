@@ -1,38 +1,49 @@
-# Below is a list of people and organizations that have contributed
-# to the Chrome DevTools project. Names should be added to the list
-# like so:
+# Names should be added to this file with this pattern:
 #
-#   Name/Organization <email address>
+# For individuals:
+#   Name <email address>
+#
+# For organizations:
+#   Organization <fnmatch pattern>
+#
+# See python fnmatch module documentation for more information.
+#
+# Please keep the list sorted.
 
-Google Inc. <*@google.com>
-The Chromium Authors <*@chromium.org>
+# BEGIN individuals section.
+Alexander Stammbach <alexander@stammbach.io>
+Ankit Mishra <ankit.mishra131990@gmail.com>
+Anna Agoha <annaagoha@gmail.com>
+Anthony Xie <anthonyxie64@gmail.com>
+Carl Espe <carl@cpespe.com>
+Danny Eldridge <me@heardanieljames.com>
+Edward Trist <edwardtrist@gmail.com>
+Ergün Erdoğmuş <erdogmusergun@gmail.com>
+Eric Rannaud <eric.rannaud@gmail.com>
+Gabriel Luong <gabriel.luong@gmail.com>
+Gautham Banasandra <gautham.bangalore@gmail.com>
+Jake Mulhern <mulherje@gmail.com>
+Jeffrey Chen <jeffreyca16@gmail.com>
+Jesper van den Ende <jespertheend@gmail.com>
+Julian Geppert <spctstr@gmail.com>
+Karntino Areros <karntino.c.areros@gmail.com>
+Krishnal Ciccolella <ciccolella.krishnal@gmail.com>
+Luke Swiderski <luke.swiderski@gmail.com>
+Per-Olov Jernberg <possan@possan.se>
+PhistucK <phistuck@gmail.com>
+Rajasekar Murugan <rajasekar89be@gmail.com>
+Tony Kostowny <tonykostowny@gmail.com>
+Varun Varada <varuncvarada@gmail.com>
+Will Hernandez <w.hernandez.code@gmail.com>
+# Please DO NOT APPEND here. See comments at the top of the file.
+# END individuals section.
+
+# BEGIN organizations section.
 Cloudflare, Inc. <*@cloudflare.com>
+Google Inc. <*@google.com>
 Igalia, S.L. <*@igalia.com>
 Microsoft <*@microsoft.com>
 Samsung <*@samsung.com>
-
-Alexander Stammbach <alexander@stammbach.io>
-Ergün Erdoğmuş <erdogmusergun@gmail.com>
-Eric Rannaud <eric.rannaud@gmail.com>
-Gautham Banasandra <gautham.bangalore@gmail.com>
-Jeffrey Chen <jeffreyca16@gmail.com>
-PhistucK <phistuck@gmail.com>
-Varun Varada <varuncvarada@gmail.com>
-Rajasekar Murugan <rajasekar89be@gmail.com>
-Gabriel Luong <gabriel.luong@gmail.com>
-Alex Rudenko <alexei.rudenko@gmail.com>
-Ankit Mishra <ankit.mishra131990@gmail.com>
-Julian Geppert <spctstr@gmail.com>
-Edward Trist <edwardtrist@gmail.com>
-Jesper van den Ende <jespertheend@gmail.com>
-Per-Olov Jernberg <possan@possan.se>
-Jake Mulhern <mulherje@gmail.com>
-Tony Kostowny <tonykostowny@gmail.com>
-Carl Espe <carl@cpespe.com>
-Anna Agoha <annaagoha@gmail.com>
-Karntino Areros <karntino.c.areros@gmail.com>
-Luke Swiderski <luke.swiderski@gmail.com>
-Anthony Xie <anthonyxie64@gmail.com>
-Krishnal Ciccolella <ciccolella.krishnal@gmail.com>
-Will Hernandez‬ <w.hernandez.code@gmail.com>
-Danny Eldridge <me@heardanieljames.com>
+The Chromium Authors <*@chromium.org>
+# Please DO NOT APPEND here. See comments at the top of the file.
+# END organizations section.

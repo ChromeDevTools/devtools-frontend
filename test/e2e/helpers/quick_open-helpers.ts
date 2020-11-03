@@ -4,7 +4,9 @@
 
 import {$$, click, getBrowserAndPages, platform, typeText, waitFor} from '../../shared/helper.js';
 
-const QUICK_OPEN_SELECTOR = '[aria-label="Quick open"]';
+export const QUICK_OPEN_SELECTOR = '[aria-label="Quick open"]';
+const QUICK_OPEN_ITEMS_SELECTOR = '.filtered-list-widget-item';
+const QUICK_OPEN_SELECTED_ITEM_SELECTOR = `${QUICK_OPEN_ITEMS_SELECTOR}.selected`;
 
 export const openCommandMenu = async () => {
   const {frontend} = getBrowserAndPages();
@@ -51,7 +53,7 @@ export const showSnippetsAutocompletion = async () => {
 
 export async function getAvailableSnippets() {
   const quickOpenElement = await waitFor(QUICK_OPEN_SELECTOR);
-  const snippetsDOMElements = await $$('.filtered-list-widget-item', quickOpenElement);
+  const snippetsDOMElements = await $$(QUICK_OPEN_ITEMS_SELECTOR, quickOpenElement);
   const snippets = await Promise.all(snippetsDOMElements.map(elem => elem.evaluate(elem => elem.textContent)));
   return snippets;
 }
@@ -60,4 +62,10 @@ export const closeDrawer = async () => {
   const closeButtonSelector = '[aria-label="Close drawer"]';
   await waitFor(closeButtonSelector);
   await click(closeButtonSelector);
+};
+
+export const getSelectedItemText = async () => {
+  const quickOpenElement = await waitFor(QUICK_OPEN_SELECTOR);
+  const selectedRow = await waitFor(QUICK_OPEN_SELECTED_ITEM_SELECTOR, quickOpenElement);
+  return await (await selectedRow.getProperty('textContent')).jsonValue();
 };

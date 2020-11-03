@@ -39,6 +39,7 @@ node_ts_library("tests") {
     "search",
     "security",
     "sensors",
+    "settings",
     "snippets",
     "sources",
     "webaudio",

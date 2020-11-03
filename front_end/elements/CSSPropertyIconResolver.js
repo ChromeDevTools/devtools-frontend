@@ -257,6 +257,22 @@ function flexAlignItemsIcon(iconName) {
 }
 
 /**
+ * The baseline icon contains the letter A to indicate that we're aligning based on where the text baseline is.
+ * Therefore we're not rotating this icon like the others, as this would become confusing. Plus baseline alignment
+ * is likely only really useful in horizontal flow cases.
+ *
+ * @return {!IconInfo}
+ */
+function baselineIcon() {
+  return {
+    iconName: 'baseline-icon',
+    rotate: 0,
+    scaleX: 1,
+    scaleY: 1,
+  };
+}
+
+/**
  * @type {!Map<string, function(!Map<string, string>):!IconInfo>}
  */
 const textToIconResolver = new Map();
@@ -287,6 +303,9 @@ textToIconResolver.set('justify-content: flex-start', flexJustifyContentIcon('fl
 textToIconResolver.set('align-items: stretch', flexAlignItemsIcon('flex-align-items-stretch-icon'));
 textToIconResolver.set('align-items: flex-end', flexAlignItemsIcon('flex-align-items-flex-end-icon'));
 textToIconResolver.set('align-items: flex-start', flexAlignItemsIcon('flex-align-items-flex-start-icon'));
+textToIconResolver.set('align-items: baseline', baselineIcon);
+textToIconResolver.set('align-self: baseline', baselineIcon);
+textToIconResolver.set('align-content: baseline', baselineIcon);
 
 /**
  * @param {string} text

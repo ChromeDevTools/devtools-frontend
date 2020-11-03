@@ -528,4 +528,24 @@ describe('CSSPropertyIconResolver', () => {
           `Test align-items(${JSON.stringify(test.style)}) failed.`);
     }
   });
+
+  it('can find baseline icons', () => {
+    const baselineIconInfo = {
+      iconName: 'baseline-icon',
+      rotate: 0,
+      scaleX: 1,
+      scaleY: 1,
+    };
+    assert.deepEqual(
+        findIcon('align-items: baseline', mapFromStyle({})), baselineIconInfo,
+        'Assertion for the \'align-items: baseline\' icon failed.');
+
+    assert.deepEqual(
+        findIcon('align-self: baseline', mapFromStyle({})), baselineIconInfo,
+        'Assertion for the \'align-self: baseline\' icon failed.');
+
+    assert.deepEqual(
+        findIcon('align-content: baseline', mapFromStyle({})), baselineIconInfo,
+        'Assertion for the \'align-content: baseline\' icon failed.');
+  });
 });

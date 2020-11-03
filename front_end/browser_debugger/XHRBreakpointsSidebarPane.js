@@ -25,7 +25,7 @@ const breakpointEntryToCheckbox = new WeakMap();
 export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('browser_debugger/xhrBreakpointsSidebarPane.css');
+    this.registerRequiredCSS('browser_debugger/xhrBreakpointsSidebarPane.css', {enableLegacyPatching: true});
 
     /** @type {!UI.ListModel.ListModel<string>} */
     this._breakpoints = new UI.ListModel.ListModel();

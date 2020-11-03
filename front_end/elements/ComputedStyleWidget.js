@@ -151,7 +151,7 @@ const propertySorter = (propA, propB) => {
 export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true);
-    this.registerRequiredCSS('elements/computedStyleSidebarPane.css');
+    this.registerRequiredCSS('elements/computedStyleSidebarPane.css', {enableLegacyPatching: true});
 
     this._computedStyleModel = new ComputedStyleModel();
     this._computedStyleModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
@@ -187,7 +187,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     this._propertiesOutline.hideOverflow();
     this._propertiesOutline.setShowSelectionOnKeyboardFocus(true);
     this._propertiesOutline.setFocusable(true);
-    this._propertiesOutline.registerRequiredCSS('elements/computedStyleWidgetTree.css');
+    this._propertiesOutline.registerRequiredCSS('elements/computedStyleWidgetTree.css', {enableLegacyPatching: true});
     this._propertiesOutline.element.classList.add('monospace', 'computed-properties');
     this._propertiesOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._onTreeElementToggled, this);
     this._propertiesOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._onTreeElementToggled, this);

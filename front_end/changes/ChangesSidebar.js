@@ -16,7 +16,7 @@ export class ChangesSidebar extends UI.Widget.Widget {
     super();
     this._treeoutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeoutline.setFocusable(false);
-    this._treeoutline.registerRequiredCSS('changes/changesSidebar.css');
+    this._treeoutline.registerRequiredCSS('changes/changesSidebar.css', {enableLegacyPatching: true});
     this._treeoutline.setComparator((a, b) => a.titleAsText().compareTo(b.titleAsText()));
     this._treeoutline.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged, this);
     UI.ARIAUtils.markAsTablist(this._treeoutline.contentElement);

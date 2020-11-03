@@ -351,7 +351,7 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   constructor() {
     super();
     this.contentElement.classList.add('media-properties-frame');
-    this.registerRequiredCSS('media/playerPropertiesView.css');
+    this.registerRequiredCSS('media/playerPropertiesView.css', {enableLegacyPatching: true});
     /** @type {!Array<!PropertyRenderer>} */
     this._mediaElements = [];
     /** @type {!Array<!PropertyRenderer>} */

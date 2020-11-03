@@ -15,7 +15,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
    */
   constructor(editorLineNumber, oldCondition, preferLogpoint, onFinish) {
     super(true);
-    this.registerRequiredCSS('sources/breakpointEditDialog.css');
+    this.registerRequiredCSS('sources/breakpointEditDialog.css', {enableLegacyPatching: true});
     this._onFinish = onFinish;
     this._finished = false;
     /** @type {?UI.TextEditor.TextEditor} */

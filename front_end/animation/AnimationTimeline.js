@@ -26,7 +26,7 @@ const playbackRates = new WeakMap();
 export class AnimationTimeline extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('animation/animationTimeline.css');
+    this.registerRequiredCSS('animation/animationTimeline.css', {enableLegacyPatching: true});
     this.element.classList.add('animations-timeline');
 
     this._grid = UI.UIUtils.createSVGChild(this.contentElement, 'svg', 'animation-timeline-grid');

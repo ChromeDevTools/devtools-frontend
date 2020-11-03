@@ -40,7 +40,7 @@ export class CoverageListView extends UI.Widget.VBox {
     this._isVisibleFilter = isVisibleFilter;
     /** @type {?RegExp} */
     this._highlightRegExp = null;
-    this.registerRequiredCSS('coverage/coverageListView.css');
+    this.registerRequiredCSS('coverage/coverageListView.css', {enableLegacyPatching: true});
     /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */
     const columns = ([
       {id: 'url', title: ls`URL`, width: '250px', fixedWidth: false, sortable: true},

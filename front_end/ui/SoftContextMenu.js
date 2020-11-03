@@ -70,7 +70,7 @@ export class SoftContextMenu {
     this._glassPane = new GlassPane();
     this._glassPane.setPointerEventsBehavior(
         this._parentMenu ? PointerEventsBehavior.PierceGlassPane : PointerEventsBehavior.BlockedByGlassPane);
-    this._glassPane.registerRequiredCSS('ui/softContextMenu.css');
+    this._glassPane.registerRequiredCSS('ui/softContextMenu.css', {enableLegacyPatching: true});
     this._glassPane.setContentAnchorBox(anchorBox);
     this._glassPane.setSizeBehavior(SizeBehavior.MeasureContent);
     this._glassPane.setMarginBehavior(MarginBehavior.NoMargin);

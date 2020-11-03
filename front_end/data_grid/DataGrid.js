@@ -60,7 +60,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     const {displayName, columns: columnsArray, editCallback, deleteCallback, refreshCallback} = dataGridParameters;
     this.element = document.createElement('div');
     this.element.classList.add('data-grid');
-    UI.Utils.appendStyle(this.element, 'data_grid/dataGrid.css');
+    UI.Utils.appendStyle(this.element, 'data_grid/dataGrid.css', {enableLegacyPatching: true});
     this.element.tabIndex = 0;
     this.element.addEventListener('keydown', this._keyDown.bind(this), false);
     this.element.addEventListener('contextmenu', this._contextMenu.bind(this), true);

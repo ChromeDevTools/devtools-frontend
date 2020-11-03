@@ -10,7 +10,7 @@ import * as UI from '../ui/ui.js';
 export class NetworkConfigView extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('network/networkConfigView.css');
+    this.registerRequiredCSS('network/networkConfigView.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('network-config');
 
     this._createCacheSection();

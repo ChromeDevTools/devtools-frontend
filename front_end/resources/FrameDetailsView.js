@@ -22,12 +22,12 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   constructor(frame) {
     super();
     this._protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
-    this.registerRequiredCSS('resources/frameDetailsReportView.css');
+    this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: true});
     this._frame = frame;
     this.contentElement.classList.add('frame-details-container');
 
     this._reportView = new UI.ReportView.ReportView(frame.displayName());
-    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css');
+    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: true});
     this._reportView.show(this.contentElement);
     this._reportView.element.classList.add('frame-details-report-container');
 
@@ -327,10 +327,10 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     super();
     this._targetInfo = targetInfo;
     this._isWindowClosed = isWindowClosed;
-    this.registerRequiredCSS('resources/frameDetailsReportView.css');
+    this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('frame-details-container');
     this._reportView = new UI.ReportView.ReportView(this.buildTitle());
-    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css');
+    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: true});
     this._reportView.show(this.contentElement);
     this._reportView.element.classList.add('frame-details-report-container');
 
@@ -400,10 +400,10 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   constructor(targetInfo) {
     super();
     this._targetInfo = targetInfo;
-    this.registerRequiredCSS('resources/frameDetailsReportView.css');
+    this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('frame-details-container');
     this._reportView = new UI.ReportView.ReportView(this._targetInfo.title || this._targetInfo.url || ls`worker`);
-    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css');
+    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: true});
     this._reportView.show(this.contentElement);
     this._reportView.element.classList.add('frame-details-report-container');
 

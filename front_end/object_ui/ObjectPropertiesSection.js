@@ -78,8 +78,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     }
 
     this.element._section = this;
-    this.registerRequiredCSS('object_ui/objectValue.css');
-    this.registerRequiredCSS('object_ui/objectPropertiesSection.css');
+    this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
     this.rootElement().childrenListElement.classList.add('source-code', 'object-properties-section');
   }
 
@@ -548,8 +548,8 @@ export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutl
    */
   constructor(options) {
     super();
-    this.registerRequiredCSS('object_ui/objectValue.css');
-    this.registerRequiredCSS('object_ui/objectPropertiesSection.css');
+    this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
     this._editable = !(options && options.readOnly);
     this.contentElement.classList.add('source-code');
     this.contentElement.classList.add('object-properties-section');

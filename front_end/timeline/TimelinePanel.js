@@ -65,7 +65,7 @@ let timelinePanelInstance;
 export class TimelinePanel extends UI.Panel.Panel {
   constructor() {
     super('timeline');
-    this.registerRequiredCSS('timeline/timelinePanel.css');
+    this.registerRequiredCSS('timeline/timelinePanel.css', {enableLegacyPatching: true});
     this.element.addEventListener('contextmenu', this._contextMenu.bind(this), false);
     this._dropTarget = new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI],
@@ -1203,7 +1203,7 @@ export class StatusPane extends UI.Widget.VBox {
    */
   constructor(options, buttonCallback) {
     super(true);
-    this.registerRequiredCSS('timeline/timelineStatusDialog.css');
+    this.registerRequiredCSS('timeline/timelineStatusDialog.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('timeline-status-dialog');
 
     const statusLine = this.contentElement.createChild('div', 'status-dialog-line status');

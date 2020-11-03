@@ -11,7 +11,7 @@ import {DeveloperResourcesListView} from './DeveloperResourcesListView.js';
 export class DeveloperResourcesView extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('developer_resources/developerResourcesView.css');
+    this.registerRequiredCSS('developer_resources/developerResourcesView.css', {enableLegacyPatching: true});
 
     const toolbarContainer = this.contentElement.createChild('div', 'developer-resource-view-toolbar-container');
     const toolbar = new UI.Toolbar.Toolbar('developer-resource-view-toolbar', toolbarContainer);

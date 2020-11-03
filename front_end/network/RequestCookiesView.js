@@ -39,7 +39,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
    */
   constructor(request) {
     super();
-    this.registerRequiredCSS('network/requestCookiesView.css');
+    this.registerRequiredCSS('network/requestCookiesView.css', {enableLegacyPatching: true});
     this.element.classList.add('request-cookies-view');
 
     /** @type {!SDK.NetworkRequest.NetworkRequest} */

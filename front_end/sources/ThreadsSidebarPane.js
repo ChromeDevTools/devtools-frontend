@@ -13,7 +13,7 @@ import * as UI from '../ui/ui.js';
 export class ThreadsSidebarPane extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('sources/threadsSidebarPane.css');
+    this.registerRequiredCSS('sources/threadsSidebarPane.css', {enableLegacyPatching: true});
 
     /** @type {!UI.ListModel.ListModel<!SDK.DebuggerModel.DebuggerModel>} */
     this._items = new UI.ListModel.ListModel();

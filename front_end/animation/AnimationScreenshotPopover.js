@@ -14,7 +14,7 @@ export class AnimationScreenshotPopover extends UI.Widget.VBox {
   constructor(images) {
     super(true);
     console.assert(images.length > 0);
-    this.registerRequiredCSS('animation/animationScreenshotPopover.css');
+    this.registerRequiredCSS('animation/animationScreenshotPopover.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('animation-screenshot-popover');
     this._frames = images;
     for (const image of images) {

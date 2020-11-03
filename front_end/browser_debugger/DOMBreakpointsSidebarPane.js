@@ -40,7 +40,7 @@ import * as UI from '../ui/ui.js';
 export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('browser_debugger/domBreakpointsSidebarPane.css');
+    this.registerRequiredCSS('browser_debugger/domBreakpointsSidebarPane.css', {enableLegacyPatching: true});
 
     /** @type {!WeakMap<!Element, !HTMLInputElement>} */
     this.elementToCheckboxes = new WeakMap();

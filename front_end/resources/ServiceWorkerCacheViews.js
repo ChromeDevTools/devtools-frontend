@@ -16,7 +16,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
    */
   constructor(model, cache) {
     super(Common.UIString.UIString('Cache'));
-    this.registerRequiredCSS('resources/serviceWorkerCacheViews.css');
+    this.registerRequiredCSS('resources/serviceWorkerCacheViews.css', {enableLegacyPatching: true});
 
     this._model = model;
     this._entriesForTest = null;

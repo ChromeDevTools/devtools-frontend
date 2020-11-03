@@ -49,7 +49,7 @@ export class ChartViewport extends UI.Widget.VBox {
    */
   constructor(delegate) {
     super();
-    this.registerRequiredCSS('perf_ui/chartViewport.css');
+    this.registerRequiredCSS('perf_ui/chartViewport.css', {enableLegacyPatching: true});
 
     this._delegate = delegate;
 

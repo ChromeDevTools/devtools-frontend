@@ -20,7 +20,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     this._isVisibleFilter = isVisibleFilter;
     /** @type {?RegExp} */
     this._highlightRegExp = null;
-    this.registerRequiredCSS('developer_resources/developerResourcesListView.css');
+    this.registerRequiredCSS('developer_resources/developerResourcesListView.css', {enableLegacyPatching: true});
 
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'status', title: ls`Status`, width: '60px', fixedWidth: true, sortable: true},

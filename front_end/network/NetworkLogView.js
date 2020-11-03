@@ -62,7 +62,7 @@ export class NetworkLogView extends UI.Widget.VBox {
   constructor(filterBar, progressBarContainer, networkLogLargeRowsSetting) {
     super();
     this.setMinimumSize(50, 64);
-    this.registerRequiredCSS('network/networkLogView.css');
+    this.registerRequiredCSS('network/networkLogView.css', {enableLegacyPatching: true});
 
     this.element.id = 'network-container';
     this.element.classList.add('no-node-selected');

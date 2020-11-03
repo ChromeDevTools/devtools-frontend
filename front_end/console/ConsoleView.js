@@ -124,8 +124,8 @@ export class ConsoleView extends UI.Widget.VBox {
   constructor() {
     super();
     this.setMinimumSize(0, 35);
-    this.registerRequiredCSS('console/consoleView.css');
-    this.registerRequiredCSS('object_ui/objectValue.css');
+    this.registerRequiredCSS('console/consoleView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
 
     this._searchableView = new UI.SearchableView.SearchableView(this);
     this._searchableView.element.classList.add('console-searchable-view');

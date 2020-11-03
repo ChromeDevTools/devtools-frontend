@@ -14,7 +14,7 @@ import {ElementsPanel} from './ElementsPanel.js';
 export class ElementStatePaneWidget extends UI.Widget.Widget {
   constructor() {
     super(true);
-    this.registerRequiredCSS('elements/elementStatePaneWidget.css');
+    this.registerRequiredCSS('elements/elementStatePaneWidget.css', {enableLegacyPatching: true});
     this.contentElement.className = 'styles-element-state-pane';
     UI.UIUtils.createTextChild(this.contentElement.createChild('div'), Common.UIString.UIString('Force element state'));
     const table = document.createElement('table');

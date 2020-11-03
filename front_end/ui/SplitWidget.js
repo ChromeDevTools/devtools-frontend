@@ -53,7 +53,7 @@ export class SplitWidget extends Widget {
   constructor(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip) {
     super(true);
     this.element.classList.add('split-widget');
-    this.registerRequiredCSS('ui/splitWidget.css');
+    this.registerRequiredCSS('ui/splitWidget.css', {enableLegacyPatching: true});
 
     this.contentElement.classList.add('shadow-split-widget');
     this._sidebarElement =

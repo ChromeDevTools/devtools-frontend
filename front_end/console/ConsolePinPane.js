@@ -20,8 +20,8 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
   constructor(liveExpressionButton) {
     super(true, 250);
     this._liveExpressionButton = liveExpressionButton;
-    this.registerRequiredCSS('console/consolePinPane.css');
-    this.registerRequiredCSS('object_ui/objectValue.css');
+    this.registerRequiredCSS('console/consolePinPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('console-pins', 'monospace');
     this.contentElement.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
 

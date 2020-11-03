@@ -17,7 +17,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
    */
   constructor(request) {
     super();
-    this.registerRequiredCSS('network/eventSourceMessagesView.css');
+    this.registerRequiredCSS('network/eventSourceMessagesView.css', {enableLegacyPatching: true});
     this.element.classList.add('event-source-messages-view');
     this._request = request;
 

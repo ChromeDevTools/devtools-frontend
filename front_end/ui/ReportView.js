@@ -15,7 +15,7 @@ export class ReportView extends VBox {
    */
   constructor(title) {
     super(true);
-    this.registerRequiredCSS('ui/reportView.css');
+    this.registerRequiredCSS('ui/reportView.css', {enableLegacyPatching: true});
 
     this._contentBox = this.contentElement.createChild('div', 'report-content-box');
     this._headerElement = this._contentBox.createChild('div', 'report-header vbox');

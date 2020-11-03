@@ -18,7 +18,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
    */
   constructor(columnData, addHeaderColumnCallback, changeHeaderColumnCallback, removeHeaderColumnCallback) {
     super(true);
-    this.registerRequiredCSS('network/networkManageCustomHeadersView.css');
+    this.registerRequiredCSS('network/networkManageCustomHeadersView.css', {enableLegacyPatching: true});
 
     this.contentElement.classList.add('custom-headers-wrapper');
     this.contentElement.createChild('div', 'header').textContent = Common.UIString.UIString('Manage Header Columns');
@@ -26,7 +26,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
     /** @type {!UI.ListWidget.ListWidget<!{header: string}>} */
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('custom-headers-list');
-    this._list.registerRequiredCSS('network/networkManageCustomHeadersView.css');
+    this._list.registerRequiredCSS('network/networkManageCustomHeadersView.css', {enableLegacyPatching: true});
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('custom-headers-list-list-empty');

@@ -424,9 +424,10 @@ export class TreeOutlineInShadow extends TreeOutline {
 
   /**
    * @param {string} cssFile
+  * @param {!{enableLegacyPatching:boolean}} options
    */
-  registerRequiredCSS(cssFile) {
-    appendStyle(this._shadowRoot, cssFile);
+  registerRequiredCSS(cssFile, options) {
+    appendStyle(this._shadowRoot, cssFile, options);
   }
 
   hideOverflow() {

@@ -114,9 +114,9 @@ export class ThemeSupport {
    */
   injectHighlightStyleSheets(element) {
     this._injectingStyleSheet = true;
-    this._appendStyle(element, 'ui/inspectorSyntaxHighlight.css');
+    this._appendStyle(element, 'ui/inspectorSyntaxHighlight.css', {enableLegacyPatching: true});
     if (this._themeName === 'dark') {
-      this._appendStyle(element, 'ui/inspectorSyntaxHighlightDark.css');
+      this._appendStyle(element, 'ui/inspectorSyntaxHighlightDark.css', {enableLegacyPatching: true});
     }
     this._injectingStyleSheet = false;
   }
@@ -127,9 +127,10 @@ export class ThemeSupport {
    *
    * @param {!Node} node
    * @param {string} cssFile
+   * @param {!{enableLegacyPatching:boolean}} options
    * @suppressGlobalPropertiesCheck
    */
-  _appendStyle(node, cssFile) {
+  _appendStyle(node, cssFile, options = {enableLegacyPatching: false}) {
     const content = Root.Runtime.cachedResources.get(cssFile) || '';
     if (!content) {
       console.error(cssFile + ' not preloaded. Check module.json');
@@ -138,11 +139,17 @@ export class ThemeSupport {
     styleElement.textContent = content;
     node.appendChild(styleElement);
 
-    const themeStyleSheet = ThemeSupport.instance().themeStyleSheet(cssFile, content);
-    if (themeStyleSheet) {
-      styleElement = document.createElement('style');
-      styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.Runtime.resolveSourceURL(cssFile + '.theme');
-      node.appendChild(styleElement);
+    /**
+   * We are incrementally removing patching support in favour of CSS variables for supporting dark mode.
+   * See https://docs.google.com/document/d/1QrSSRsJRzaQBY3zz73ZL84bTcFUV60yMtE5cuu6ED14 for details.
+   */
+    if (options.enableLegacyPatching) {
+      const themeStyleSheet = ThemeSupport.instance().themeStyleSheet(cssFile, content);
+      if (themeStyleSheet) {
+        styleElement = document.createElement('style');
+        styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.Runtime.resolveSourceURL(cssFile + '.theme');
+        node.appendChild(styleElement);
+      }
     }
   }
 

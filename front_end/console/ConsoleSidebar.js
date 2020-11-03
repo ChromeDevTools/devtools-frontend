@@ -17,7 +17,7 @@ export class ConsoleSidebar extends UI.Widget.VBox {
     this.setMinimumSize(125, 0);
 
     this._tree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._tree.registerRequiredCSS('console/consoleSidebar.css');
+    this._tree.registerRequiredCSS('console/consoleSidebar.css', {enableLegacyPatching: true});
     this._tree.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged.bind(this));
     this.contentElement.appendChild(this._tree.element);
     /** @type {?UI.TreeOutline.TreeElement} */

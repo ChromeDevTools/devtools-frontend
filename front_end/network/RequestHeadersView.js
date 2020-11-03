@@ -42,7 +42,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
    */
   constructor(request) {
     super();
-    this.registerRequiredCSS('network/requestHeadersView.css');
+    this.registerRequiredCSS('network/requestHeadersView.css', {enableLegacyPatching: true});
     this.element.classList.add('request-headers-view');
 
     this._request = request;
@@ -59,9 +59,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this._highlightedElement = null;
 
     const root = new UI.TreeOutline.TreeOutlineInShadow();
-    root.registerRequiredCSS('object_ui/objectValue.css');
-    root.registerRequiredCSS('object_ui/objectPropertiesSection.css');
-    root.registerRequiredCSS('network/requestHeadersTree.css');
+    root.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
+    root.registerRequiredCSS('object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
+    root.registerRequiredCSS('network/requestHeadersTree.css', {enableLegacyPatching: true});
     root.element.classList.add('request-headers-tree');
     root.makeDense();
     this.element.appendChild(root.element);

@@ -20,7 +20,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
    */
   constructor(getWidthCallback, setWidthCallback) {
     super(true);
-    this.registerRequiredCSS('emulation/mediaQueryInspector.css');
+    this.registerRequiredCSS('emulation/mediaQueryInspector.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('media-inspector-view');
     this.contentElement.addEventListener('click', this._onMediaQueryClicked.bind(this), false);
     this.contentElement.addEventListener('contextmenu', this._onContextMenu.bind(this), false);

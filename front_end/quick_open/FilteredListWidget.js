@@ -35,7 +35,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     const listener = /** @type {function(!Event):void} */ (this._onKeyDown.bind(this));
     this.contentElement.addEventListener('keydown', listener, true);
     UI.ARIAUtils.markAsCombobox(this.contentElement);
-    this.registerRequiredCSS('quick_open/filteredListWidget.css');
+    this.registerRequiredCSS('quick_open/filteredListWidget.css', {enableLegacyPatching: true});
 
     this._promptElement = this.contentElement.createChild('div', 'filtered-list-widget-input');
     UI.ARIAUtils.setAccessibleName(this._promptElement, ls`Quick open prompt`);

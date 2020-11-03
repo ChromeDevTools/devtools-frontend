@@ -16,7 +16,7 @@ export class BezierEditor extends UI.Widget.VBox {
   constructor(bezier) {
     super(true);
     this._bezier = bezier;
-    this.registerRequiredCSS('inline_editor/bezierEditor.css');
+    this.registerRequiredCSS('inline_editor/bezierEditor.css', {enableLegacyPatching: true});
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
 

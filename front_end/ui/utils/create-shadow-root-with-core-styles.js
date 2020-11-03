@@ -19,7 +19,7 @@ export function createShadowRootWithCoreStyles(element, cssFile, delegatesFocus)
   const shadowRoot = element.attachShadow({mode: 'open', delegatesFocus});
   injectCoreStyles(shadowRoot);
   if (cssFile) {
-    appendStyle(shadowRoot, cssFile);
+    appendStyle(shadowRoot, cssFile, {enableLegacyPatching: true});
   }
   shadowRoot.addEventListener('focus', focusChanged.bind(UI), true);
   return shadowRoot;

@@ -39,9 +39,9 @@ import {resolveScopeInObject, resolveThisObject} from './SourceMapNamesResolver.
 export class ScopeChainSidebarPane extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('sources/scopeChainSidebarPane.css');
+    this.registerRequiredCSS('sources/scopeChainSidebarPane.css', {enableLegacyPatching: true});
     this._treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
-    this._treeOutline.registerRequiredCSS('sources/scopeChainSidebarPane.css');
+    this._treeOutline.registerRequiredCSS('sources/scopeChainSidebarPane.css', {enableLegacyPatching: true});
     this._treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this._expandController =
         new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this._treeOutline);

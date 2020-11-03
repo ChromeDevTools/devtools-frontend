@@ -50,9 +50,9 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
   constructor(name, profileTypes, recordingActionId) {
     super(name);
     this._profileTypes = profileTypes;
-    this.registerRequiredCSS('profiler/heapProfiler.css');
-    this.registerRequiredCSS('profiler/profilesPanel.css');
-    this.registerRequiredCSS('object_ui/objectValue.css');
+    this.registerRequiredCSS('profiler/heapProfiler.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('profiler/profilesPanel.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
 
     const mainContainer = new UI.Widget.VBox();
     this.splitWidget().setMainWidget(mainContainer);
@@ -60,7 +60,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
     this.profilesItemTreeElement = new ProfilesSidebarTreeElement(this);
 
     this._sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._sidebarTree.registerRequiredCSS('profiler/profilesSidebarTree.css');
+    this._sidebarTree.registerRequiredCSS('profiler/profilesSidebarTree.css', {enableLegacyPatching: true});
     this._sidebarTree.element.classList.add('profiles-sidebar-tree-box');
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 

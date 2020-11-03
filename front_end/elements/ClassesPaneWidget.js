@@ -15,7 +15,7 @@ import {ElementsPanel} from './ElementsPanel.js';
 export class ClassesPaneWidget extends UI.Widget.Widget {
   constructor() {
     super(true);
-    this.registerRequiredCSS('elements/classesPaneWidget.css');
+    this.registerRequiredCSS('elements/classesPaneWidget.css', {enableLegacyPatching: true});
     this.contentElement.className = 'styles-element-classes-pane';
     const container = this.contentElement.createChild('div', 'title-container');
     this._input = container.createChild('div', 'new-class-input monospace');

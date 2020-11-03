@@ -36,7 +36,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
    */
   constructor(request) {
     super();
-    this.registerRequiredCSS('network/webSocketFrameView.css');
+    this.registerRequiredCSS('network/webSocketFrameView.css', {enableLegacyPatching: true});
     this.element.classList.add('websocket-frame-view');
     this._request = request;
 

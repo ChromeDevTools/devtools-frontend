@@ -39,7 +39,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       {id: 'target', title: ls`Target`, visible: false, sortable: true, hideable: true, weight: 30}
     ];
 
-    this.registerRequiredCSS('protocol_monitor/protocolMonitor.css');
+    this.registerRequiredCSS('protocol_monitor/protocolMonitor.css', {enableLegacyPatching: true});
     const topToolbar = new UI.Toolbar.Toolbar('protocol-monitor-toolbar', this.contentElement);
     const recordButton =
         new UI.Toolbar.ToolbarToggle(ls`Record`, 'largeicon-start-recording', 'largeicon-stop-recording');

@@ -19,7 +19,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   constructor(calculator) {
     // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets moved into NetworkLogViewColumns.
     super(false);
-    this.registerRequiredCSS('network/networkWaterfallColumn.css');
+    this.registerRequiredCSS('network/networkWaterfallColumn.css', {enableLegacyPatching: true});
 
     /** @type {!HTMLCanvasElement} */
     this._canvas = /** @type {!HTMLCanvasElement} */ (this.contentElement.createChild('canvas'));

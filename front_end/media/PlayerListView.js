@@ -96,7 +96,7 @@ export class PlayerListView extends UI.Widget.VBox {
     // The parent tree for storing sections
     this._sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
     this.contentElement.appendChild(this._sidebarTree.element);
-    this._sidebarTree.registerRequiredCSS('media/playerListView.css');
+    this._sidebarTree.registerRequiredCSS('media/playerListView.css', {enableLegacyPatching: true});
 
     // Players active in this tab.
     this._playerList = this._addListSection(Common.UIString.UIString('Players'));

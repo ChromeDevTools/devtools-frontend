@@ -39,7 +39,7 @@ import * as UI from '../ui/ui.js';
 export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true /* isWebComponent */);
-    this.registerRequiredCSS('elements/propertiesWidget.css');
+    this.registerRequiredCSS('elements/propertiesWidget.css', {enableLegacyPatching: true});
 
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this._onNodeChange, this);

@@ -45,7 +45,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
    */
   constructor() {
     super(Common.UIString.UIString('Call Stack'), true);
-    this.registerRequiredCSS('sources/callStackSidebarPane.css');
+    this.registerRequiredCSS('sources/callStackSidebarPane.css', {enableLegacyPatching: true});
 
     this._blackboxedMessageElement = this._createBlackboxedMessageElement();
     this.contentElement.appendChild(this._blackboxedMessageElement);

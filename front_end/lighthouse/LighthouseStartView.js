@@ -20,7 +20,7 @@ export class StartView extends UI.Widget.Widget {
    */
   constructor(controller) {
     super();
-    this.registerRequiredCSS('lighthouse/lighthouseStartView.css');
+    this.registerRequiredCSS('lighthouse/lighthouseStartView.css', {enableLegacyPatching: true});
     this._controller = controller;
     this._settingsToolbar = new UI.Toolbar.Toolbar('');
     this._render();

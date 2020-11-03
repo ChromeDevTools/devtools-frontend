@@ -12,7 +12,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
     this._popover = new UI.GlassPane.GlassPane();
-    this._popover.registerRequiredCSS('inline_editor/swatchPopover.css');
+    this._popover.registerRequiredCSS('inline_editor/swatchPopover.css', {enableLegacyPatching: true});
     this._popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     this._popover.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
     this._popover.element.addEventListener('mousedown', e => e.consume(), false);

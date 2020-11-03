@@ -56,7 +56,7 @@ let networkPanelInstance;
 export class NetworkPanel extends UI.Panel.Panel {
   constructor() {
     super('network');
-    this.registerRequiredCSS('network/networkPanel.css');
+    this.registerRequiredCSS('network/networkPanel.css', {enableLegacyPatching: true});
 
     this._networkLogShowOverviewSetting =
         Common.Settings.Settings.instance().createSetting('networkLogShowOverview', true);

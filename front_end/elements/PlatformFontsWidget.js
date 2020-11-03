@@ -46,7 +46,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
    */
   constructor(sharedModel) {
     super(true);
-    this.registerRequiredCSS('elements/platformFontsWidget.css');
+    this.registerRequiredCSS('elements/platformFontsWidget.css', {enableLegacyPatching: true});
 
     this._sharedModel = sharedModel;
     this._sharedModel.addEventListener(Events.ComputedStyleChanged, this.update, this);

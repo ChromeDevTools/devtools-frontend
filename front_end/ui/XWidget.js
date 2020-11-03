@@ -65,9 +65,10 @@ export class XWidget extends XElement {
 
   /**
    * @param {string} cssFile
+   * @param {!{enableLegacyPatching:boolean}} options
    */
-  registerRequiredCSS(cssFile) {
-    appendStyle(this._shadowRoot || this, cssFile);
+  registerRequiredCSS(cssFile, options) {
+    appendStyle(this._shadowRoot || this, cssFile, options);
   }
 
   /**

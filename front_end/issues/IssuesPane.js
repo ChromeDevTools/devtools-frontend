@@ -1304,7 +1304,7 @@ export function getGroupIssuesByCategorySetting() {
 export class IssuesPaneImpl extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('issues/issuesPane.css');
+    this.registerRequiredCSS('issues/issuesPane.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('issues-pane');
 
     this._categoryViews = new Map();
@@ -1316,7 +1316,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     this._updateToolbarIssuesCount = updateToolbarIssuesCount;
 
     this._issuesTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._issuesTree.registerRequiredCSS('issues/issuesTree.css');
+    this._issuesTree.registerRequiredCSS('issues/issuesTree.css', {enableLegacyPatching: true});
     this._issuesTree.setShowSelectionOnKeyboardFocus(true);
     this._issuesTree.contentElement.classList.add('issues');
     this.contentElement.appendChild(this._issuesTree.element);

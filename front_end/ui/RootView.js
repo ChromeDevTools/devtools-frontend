@@ -13,7 +13,7 @@ export class RootView extends VBox {
     super();
     this.markAsRoot();
     this.element.classList.add('root-view');
-    this.registerRequiredCSS('ui/rootView.css');
+    this.registerRequiredCSS('ui/rootView.css', {enableLegacyPatching: true});
     this.element.setAttribute('spellcheck', 'false');
   }
 

@@ -79,7 +79,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css');
+    this.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css', {enableLegacyPatching: true});
 
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.frameworkBlackboxing);
@@ -97,7 +97,7 @@ export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('blackbox-list');
-    this._list.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css');
+    this._list.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css', {enableLegacyPatching: true});
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('blackbox-list-empty');

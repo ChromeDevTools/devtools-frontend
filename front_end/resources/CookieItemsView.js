@@ -43,7 +43,7 @@ export class CookieItemsView extends StorageItemsView {
   constructor(model, cookieDomain) {
     super(Common.UIString.UIString('Cookies'), 'cookiesPanel');
 
-    this.registerRequiredCSS('resources/cookieItemsView.css');
+    this.registerRequiredCSS('resources/cookieItemsView.css', {enableLegacyPatching: true});
     this.element.classList.add('storage-view');
 
     /** @type {!SDK.CookieModel.CookieModel} */

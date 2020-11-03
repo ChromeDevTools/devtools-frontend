@@ -11,7 +11,7 @@ export class TargetCrashedScreen extends VBox {
    */
   constructor(hideCallback) {
     super(true);
-    this.registerRequiredCSS('ui/targetCrashedScreen.css');
+    this.registerRequiredCSS('ui/targetCrashedScreen.css', {enableLegacyPatching: true});
     this.contentElement.createChild('div', 'message').textContent =
         Common.UIString.UIString('DevTools was disconnected from the page.');
     this.contentElement.createChild('div', 'message').textContent =

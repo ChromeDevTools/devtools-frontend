@@ -125,7 +125,7 @@ export class IDBDataView extends UI.View.SimpleView {
    */
   constructor(model, databaseId, objectStore, index, refreshObjectStoreCallback) {
     super(Common.UIString.UIString('IDB'));
-    this.registerRequiredCSS('resources/indexedDBViews.css');
+    this.registerRequiredCSS('resources/indexedDBViews.css', {enableLegacyPatching: true});
 
     this._model = model;
     this._databaseId = databaseId;

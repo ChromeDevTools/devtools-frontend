@@ -68,8 +68,8 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
     super();
     this._options = options;
 
-    this.registerRequiredCSS('cm/codemirror.css');
-    this.registerRequiredCSS('text_editor/cmdevtools.css');
+    this.registerRequiredCSS('cm/codemirror.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('text_editor/cmdevtools.css', {enableLegacyPatching: true});
 
     const {indentWithTabs, indentUnit} = CodeMirrorTextEditor._getIndentation(
         Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get());

@@ -89,7 +89,7 @@ export class SearchableContainer extends UI.Widget.VBox {
    */
   constructor(resource, highlighterType, autoPrettyPrint) {
     super(true);
-    this.registerRequiredCSS('source_frame/resourceSourceFrame.css');
+    this.registerRequiredCSS('source_frame/resourceSourceFrame.css', {enableLegacyPatching: true});
     const sourceFrame = new ResourceSourceFrame(resource, autoPrettyPrint);
     this._sourceFrame = sourceFrame;
     sourceFrame.setHighlighterType(highlighterType);

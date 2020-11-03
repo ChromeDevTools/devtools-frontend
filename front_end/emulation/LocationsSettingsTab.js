@@ -12,7 +12,7 @@ import * as UI from '../ui/ui.js';
 export class LocationsSettingsTab extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('emulation/locationsSettingsTab.css');
+    this.registerRequiredCSS('emulation/locationsSettingsTab.css', {enableLegacyPatching: true});
 
     this.contentElement.createChild('div', 'header').textContent = Common.UIString.UIString('Custom locations');
 
@@ -22,7 +22,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('locations-list');
-    this._list.registerRequiredCSS('emulation/locationsSettingsTab.css');
+    this._list.registerRequiredCSS('emulation/locationsSettingsTab.css', {enableLegacyPatching: true});
     this._list.show(this.contentElement);
 
     this._customSetting = Common.Settings.Settings.instance().moduleSetting('emulation.locations');

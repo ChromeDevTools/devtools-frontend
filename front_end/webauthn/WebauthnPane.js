@@ -99,7 +99,7 @@ class EmptyDataGridNode extends DataGrid.DataGrid.DataGridNode {
 export class WebauthnPaneImpl extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('webauthn/webauthnPane.css');
+    this.registerRequiredCSS('webauthn/webauthnPane.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('webauthn-pane');
     this._enabled = false;
     this._activeAuthId = null;

@@ -17,7 +17,7 @@ import * as Workspace from '../workspace/workspace.js';
 export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true);
-    this.registerRequiredCSS('sources/javaScriptBreakpointsSidebarPane.css');
+    this.registerRequiredCSS('sources/javaScriptBreakpointsSidebarPane.css', {enableLegacyPatching: true});
 
     this._breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
     this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointAdded, this.update, this);

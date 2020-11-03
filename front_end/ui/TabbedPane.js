@@ -46,7 +46,7 @@ import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 export class TabbedPane extends VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('ui/tabbedPane.css');
+    this.registerRequiredCSS('ui/tabbedPane.css', {enableLegacyPatching: true});
     this.element.classList.add('tabbed-pane');
     this.contentElement.classList.add('tabbed-pane-shadow');
     this.contentElement.tabIndex = -1;

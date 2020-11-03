@@ -504,12 +504,13 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {string} cssFile
+ * @param {!{enableLegacyPatching:boolean}} options
    */
-  registerRequiredCSS(cssFile) {
+  registerRequiredCSS(cssFile, options) {
     if (this._isWebComponent) {
-      appendStyle(/** @type {!DocumentFragment} */ (this._shadowRoot), cssFile);
+      appendStyle(/** @type {!DocumentFragment} */ (this._shadowRoot), cssFile, options);
     } else {
-      appendStyle(this.element, cssFile);
+      appendStyle(this.element, cssFile, options);
     }
   }
 

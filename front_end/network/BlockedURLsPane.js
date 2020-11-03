@@ -15,7 +15,7 @@ export let _instance = null;
 export class BlockedURLsPane extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('network/blockedURLsPane.css');
+    this.registerRequiredCSS('network/blockedURLsPane.css', {enableLegacyPatching: true});
 
     _instance = this;
     this._manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
@@ -39,7 +39,7 @@ export class BlockedURLsPane extends UI.Widget.VBox {
     /** @type {!UI.ListWidget.ListWidget<!SDK.NetworkManager.BlockedPattern>} */
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('blocked-urls');
-    this._list.registerRequiredCSS('network/blockedURLsPane.css');
+    this._list.registerRequiredCSS('network/blockedURLsPane.css', {enableLegacyPatching: true});
     this._list.setEmptyPlaceholder(this._createEmptyPlaceholder());
     this._list.show(this.contentElement);
 

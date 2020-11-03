@@ -13,7 +13,7 @@ import * as UI from '../ui/ui.js';
 export class ThrottlingSettingsTab extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css');
+    this.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css', {enableLegacyPatching: true});
 
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = ls`Network Throttling Profiles`;
@@ -25,7 +25,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('conditions-list');
-    this._list.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css');
+    this._list.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css', {enableLegacyPatching: true});
     this._list.show(this.contentElement);
 
     this._customSetting = Common.Settings.Settings.instance().moduleSetting('customNetworkConditions');

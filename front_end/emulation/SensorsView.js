@@ -18,7 +18,7 @@ let _instanceObject = null;
 export class SensorsView extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('emulation/sensors.css');
+    this.registerRequiredCSS('emulation/sensors.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('sensors-view');
 
     this._LocationSetting = Common.Settings.Settings.instance().createSetting('emulation.locationOverride', '');

@@ -81,7 +81,7 @@ export class FlameChart extends UI.Widget.VBox {
    */
   constructor(dataProvider, flameChartDelegate, groupExpansionSetting) {
     super(true);
-    this.registerRequiredCSS('perf_ui/flameChart.css');
+    this.registerRequiredCSS('perf_ui/flameChart.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('flame-chart-main-pane');
     this._groupExpansionSetting = groupExpansionSetting;
     this._groupExpansionState = groupExpansionSetting && groupExpansionSetting.get() || {};

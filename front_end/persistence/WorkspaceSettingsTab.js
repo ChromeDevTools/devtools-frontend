@@ -15,7 +15,7 @@ import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-l
 export class WorkspaceSettingsTab extends UI.Widget.VBox {
   constructor() {
     super();
-    this.registerRequiredCSS('persistence/workspaceSettingsTab.css');
+    this.registerRequiredCSS('persistence/workspaceSettingsTab.css', {enableLegacyPatching: true});
 
     const header = this.element.createChild('header');
     UI.UIUtils.createTextChild(header.createChild('h1'), Common.UIString.UIString('Workspace'));

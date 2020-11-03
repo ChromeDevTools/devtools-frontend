@@ -48,7 +48,7 @@ const supportsPrefersReducedData = () => {
 export class RenderingOptionsView extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('inspector_main/renderingOptions.css');
+    this.registerRequiredCSS('inspector_main/renderingOptions.css', {enableLegacyPatching: true});
 
     this._appendCheckbox(
         ls`Paint flashing`,

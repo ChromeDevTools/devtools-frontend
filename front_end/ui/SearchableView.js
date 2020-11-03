@@ -51,7 +51,7 @@ export class SearchableView extends VBox {
    */
   constructor(searchable, settingName) {
     super(true);
-    this.registerRequiredCSS('ui/searchableView.css');
+    this.registerRequiredCSS('ui/searchableView.css', {enableLegacyPatching: true});
     this.element[_symbol] = this;
 
     this._searchProvider = searchable;

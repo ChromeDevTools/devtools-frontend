@@ -19,7 +19,7 @@ import * as UI from '../ui/ui.js';
 export class PerformanceMonitorImpl extends UI.Widget.HBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('performance_monitor/performanceMonitor.css');
+    this.registerRequiredCSS('performance_monitor/performanceMonitor.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('perfmon-pane');
     /** @type {!Array<!{timestamp: number, metrics: !Map<string, number>}>} */
     this._metricsBuffer = [];

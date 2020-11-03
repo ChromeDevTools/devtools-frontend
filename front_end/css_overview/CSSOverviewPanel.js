@@ -22,7 +22,7 @@ import {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';  // eslint
 export class CSSOverviewPanel extends UI.Panel.Panel {
   constructor() {
     super('css_overview');
-    this.registerRequiredCSS('css_overview/cssOverview.css');
+    this.registerRequiredCSS('css_overview/cssOverview.css', {enableLegacyPatching: true});
     this.element.classList.add('css-overview-panel');
 
     const [model] = SDK.SDKModel.TargetManager.instance().models(CSSOverviewModel);

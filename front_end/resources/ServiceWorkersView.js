@@ -23,7 +23,7 @@ export const setThrottleDisabledForDebugging = enable => {
 export class ServiceWorkersView extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('resources/serviceWorkersView.css');
+    this.registerRequiredCSS('resources/serviceWorkersView.css', {enableLegacyPatching: true});
 
     this._currentWorkersView = new UI.ReportView.ReportView(Common.UIString.UIString('Service Workers'));
     this._currentWorkersView.setBodyScrollable(false);
@@ -717,7 +717,7 @@ export class Section {
    */
   _wrapWidget(container) {
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(container);
-    UI.Utils.appendStyle(shadowRoot, 'resources/serviceWorkersView.css');
+    UI.Utils.appendStyle(shadowRoot, 'resources/serviceWorkersView.css', {enableLegacyPatching: true});
     const contentElement = document.createElement('div');
     shadowRoot.appendChild(contentElement);
     return contentElement;

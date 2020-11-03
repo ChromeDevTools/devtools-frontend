@@ -12,8 +12,8 @@ import {appendStyle} from './append-style.js';
  * @param {!Element|!ShadowRoot} root
  */
 export function injectCoreStyles(root) {
-  appendStyle(root, 'ui/inspectorCommon.css');
-  appendStyle(root, 'ui/textButton.css');
+  appendStyle(root, 'ui/inspectorCommon.css', {enableLegacyPatching: true});
+  appendStyle(root, 'ui/textButton.css', {enableLegacyPatching: true});
   ThemeSupport.ThemeSupport.instance().injectHighlightStyleSheets(root);
   ThemeSupport.ThemeSupport.instance().injectCustomStyleSheets(root);
 }

@@ -12,7 +12,8 @@ export class EventListenerBreakpointsSidebarPane extends UI.Widget.VBox {
   constructor() {
     super(true);
     this._categoriesTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this._categoriesTreeOutline.registerRequiredCSS('browser_debugger/eventListenerBreakpoints.css');
+    this._categoriesTreeOutline.registerRequiredCSS(
+        'browser_debugger/eventListenerBreakpoints.css', {enableLegacyPatching: true});
     this._categoriesTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.contentElement.appendChild(this._categoriesTreeOutline.element);
 

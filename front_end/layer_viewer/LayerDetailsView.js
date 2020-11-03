@@ -45,7 +45,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
    */
   constructor(layerViewHost) {
     super(true);
-    this.registerRequiredCSS('layer_viewer/layerDetailsView.css');
+    this.registerRequiredCSS('layer_viewer/layerDetailsView.css', {enableLegacyPatching: true});
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
     this._emptyWidget = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Select a layer to see its details'));

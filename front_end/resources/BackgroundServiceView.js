@@ -41,8 +41,8 @@ export class BackgroundServiceView extends UI.Widget.VBox {
    */
   constructor(serviceName, model) {
     super(true);
-    this.registerRequiredCSS('resources/backgroundServiceView.css');
-    this.registerRequiredCSS('ui/emptyWidget.css');
+    this.registerRequiredCSS('resources/backgroundServiceView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/emptyWidget.css', {enableLegacyPatching: true});
 
     /** @const {!Protocol.BackgroundService.ServiceName} */
     this._serviceName = serviceName;

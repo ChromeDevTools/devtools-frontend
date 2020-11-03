@@ -53,7 +53,7 @@ export class ScreencastView extends UI.Widget.VBox {
     this._inputModel = screenCaptureModel.target().model(InputModel);
 
     this.setMinimumSize(150, 150);
-    this.registerRequiredCSS('screencast/screencastView.css');
+    this.registerRequiredCSS('screencast/screencastView.css', {enableLegacyPatching: true});
 
     this._shortcuts = /** @type {!Object.<number, function(!Event=):boolean>} */ ({});
     this._scrollOffsetX = 0;

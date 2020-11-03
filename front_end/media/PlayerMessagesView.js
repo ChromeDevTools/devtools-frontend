@@ -221,7 +221,7 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper {
 export class PlayerMessagesView extends UI.Widget.VBox {
   constructor() {
     super();
-    this.registerRequiredCSS('media/playerMessagesView.css');
+    this.registerRequiredCSS('media/playerMessagesView.css', {enableLegacyPatching: true});
 
     this._headerPanel = this.contentElement.createChild('div', 'media-messages-header');
     this._bodyPanel = this.contentElement.createChild('div', 'media-messages-body');

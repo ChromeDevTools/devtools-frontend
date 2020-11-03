@@ -50,12 +50,12 @@ import {SearchSourcesView} from './SearchSourcesView.js';
 export class NavigatorView extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('sources/navigatorView.css');
+    this.registerRequiredCSS('sources/navigatorView.css', {enableLegacyPatching: true});
 
     /** @type {?UI.Widget.Widget} */
     this._placeholder = null;
     this._scriptsTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this._scriptsTree.registerRequiredCSS('sources/navigatorTree.css');
+    this._scriptsTree.registerRequiredCSS('sources/navigatorTree.css', {enableLegacyPatching: true});
     this._scriptsTree.setComparator(NavigatorView._treeElementsCompare);
     this._scriptsTree.setFocusable(false);
     this.contentElement.appendChild(this._scriptsTree.element);

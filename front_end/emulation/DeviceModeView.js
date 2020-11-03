@@ -27,7 +27,7 @@ export class DeviceModeView extends UI.Widget.VBox {
 
     this.setMinimumSize(150, 150);
     this.element.classList.add('device-mode-view');
-    this.registerRequiredCSS('emulation/deviceModeView.css');
+    this.registerRequiredCSS('emulation/deviceModeView.css', {enableLegacyPatching: true});
     UI.Tooltip.Tooltip.addNativeOverrideContainer(this.contentElement);
 
     this._model = DeviceModeModel.instance();

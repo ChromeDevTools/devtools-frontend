@@ -16,7 +16,7 @@ import * as UI from '../ui/ui.js';
 export class FilmStripView extends UI.Widget.HBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('perf_ui/filmStripView.css');
+    this.registerRequiredCSS('perf_ui/filmStripView.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('film-strip-view');
     this._statusLabel = this.contentElement.createChild('div', 'label');
     this.reset();

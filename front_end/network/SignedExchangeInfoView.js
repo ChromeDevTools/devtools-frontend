@@ -18,11 +18,11 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
     /** @type {!Protocol.Network.SignedExchangeInfo} */
     const signedExchangeInfo = /** @type {!Protocol.Network.SignedExchangeInfo} */ (request.signedExchangeInfo());
 
-    this.registerRequiredCSS('network/signedExchangeInfoView.css');
+    this.registerRequiredCSS('network/signedExchangeInfoView.css', {enableLegacyPatching: true});
     this.element.classList.add('signed-exchange-info-view');
 
     const root = new UI.TreeOutline.TreeOutlineInShadow();
-    root.registerRequiredCSS('network/signedExchangeInfoTree.css');
+    root.registerRequiredCSS('network/signedExchangeInfoTree.css', {enableLegacyPatching: true});
     root.element.classList.add('signed-exchange-info-tree');
     root.setFocusable(false);
     root.makeDense();

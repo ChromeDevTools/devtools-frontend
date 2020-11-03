@@ -214,7 +214,7 @@ class PlayerDataDownloadManager {
 export class MainView extends UI.Panel.PanelWithSidebar {
   constructor() {
     super('Media');
-    this.registerRequiredCSS('media/mediaView.css');
+    this.registerRequiredCSS('media/mediaView.css', {enableLegacyPatching: true});
 
     // Map<PlayerDetailView>
     this._detailPanels = new Map();

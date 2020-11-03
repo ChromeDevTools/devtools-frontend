@@ -14,7 +14,7 @@ export class RemoteDebuggingTerminatedScreen extends VBox {
    */
   constructor(reason) {
     super(true);
-    this.registerRequiredCSS('ui/remoteDebuggingTerminatedScreen.css');
+    this.registerRequiredCSS('ui/remoteDebuggingTerminatedScreen.css', {enableLegacyPatching: true});
     const message = this.contentElement.createChild('div', 'message');
     const reasonElement = message.createChild('span', 'reason');
     reasonElement.textContent = reason;

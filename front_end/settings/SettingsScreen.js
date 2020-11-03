@@ -93,7 +93,7 @@ export class SettingsScreen extends UI.Widget.VBox {
    */
   constructor() {
     super(true);
-    this.registerRequiredCSS('settings/settingsScreen.css');
+    this.registerRequiredCSS('settings/settingsScreen.css', {enableLegacyPatching: true});
 
     this.contentElement.classList.add('settings-window-main');
     this.contentElement.classList.add('vbox');

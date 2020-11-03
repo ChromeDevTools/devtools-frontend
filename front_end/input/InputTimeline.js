@@ -21,7 +21,7 @@ import {InputModel} from './InputModel.js';
 export class InputTimeline extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('input/inputTimeline.css');
+    this.registerRequiredCSS('input/inputTimeline.css', {enableLegacyPatching: true});
     this.element.classList.add('inputs-timeline');
 
     this._tracingClient = null;

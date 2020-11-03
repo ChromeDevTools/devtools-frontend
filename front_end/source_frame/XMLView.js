@@ -17,10 +17,10 @@ export class XMLView extends UI.Widget.Widget {
    */
   constructor(parsedXML) {
     super(true);
-    this.registerRequiredCSS('source_frame/xmlView.css');
+    this.registerRequiredCSS('source_frame/xmlView.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this._treeOutline.registerRequiredCSS('source_frame/xmlTree.css');
+    this._treeOutline.registerRequiredCSS('source_frame/xmlTree.css', {enableLegacyPatching: true});
     this.contentElement.appendChild(this._treeOutline.element);
 
     /** @type {?UI.SearchableView.SearchableView} */

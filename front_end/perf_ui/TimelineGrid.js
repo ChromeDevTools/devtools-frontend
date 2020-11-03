@@ -41,7 +41,7 @@ import * as UI from '../ui/ui.js';
 export class TimelineGrid {
   constructor() {
     this.element = createElement('div');
-    UI.Utils.appendStyle(this.element, 'perf_ui/timelineGrid.css');
+    UI.Utils.appendStyle(this.element, 'perf_ui/timelineGrid.css', {enableLegacyPatching: true});
 
     this._dividersElement = this.element.createChild('div', 'resources-dividers');
 

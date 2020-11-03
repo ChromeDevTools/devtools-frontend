@@ -11,9 +11,12 @@ import * as ThemeSupport from '../../theme_support/theme_support.js';
 /**
  * @param {!Node} node
  * @param {string} cssFile
+ * @param {!{enableLegacyPatching:boolean}} options
  * @suppressGlobalPropertiesCheck
  */
-export function appendStyle(node, cssFile) {
+export function appendStyle(node, cssFile, options = {
+  enableLegacyPatching: false
+}) {
   const content = Root.Runtime.cachedResources.get(cssFile) || '';
   if (!content) {
     console.error(cssFile + ' not preloaded. Check module.json');
@@ -22,10 +25,16 @@ export function appendStyle(node, cssFile) {
   styleElement.textContent = content;
   node.appendChild(styleElement);
 
-  const themeStyleSheet = ThemeSupport.ThemeSupport.instance().themeStyleSheet(cssFile, content);
-  if (themeStyleSheet) {
-    styleElement = createElement('style');
-    styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.Runtime.resolveSourceURL(cssFile + '.theme');
-    node.appendChild(styleElement);
+  /**
+   * We are incrementally removing patching support in favour of CSS variables for supporting dark mode.
+   * See https://docs.google.com/document/d/1QrSSRsJRzaQBY3zz73ZL84bTcFUV60yMtE5cuu6ED14 for details.
+   */
+  if (options.enableLegacyPatching) {
+    const themeStyleSheet = ThemeSupport.ThemeSupport.instance().themeStyleSheet(cssFile, content);
+    if (themeStyleSheet) {
+      styleElement = createElement('style');
+      styleElement.textContent = themeStyleSheet + '\n' + Root.Runtime.Runtime.resolveSourceURL(cssFile + '.theme');
+      node.appendChild(styleElement);
+    }
   }
 }

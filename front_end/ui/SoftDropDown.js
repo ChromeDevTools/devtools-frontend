@@ -31,7 +31,7 @@ export class SoftDropDown {
 
     this.element = document.createElement('button');
     this.element.classList.add('soft-dropdown');
-    appendStyle(this.element, 'ui/softDropDownButton.css');
+    appendStyle(this.element, 'ui/softDropDownButton.css', {enableLegacyPatching: true});
     this._titleElement = this.element.createChild('span', 'title');
     const dropdownArrowIcon = Icon.create('smallicon-triangle-down');
     this.element.appendChild(dropdownArrowIcon);

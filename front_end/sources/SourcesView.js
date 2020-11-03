@@ -27,7 +27,7 @@ export class SourcesView extends UI.Widget.VBox {
    */
   constructor() {
     super();
-    this.registerRequiredCSS('sources/sourcesView.css');
+    this.registerRequiredCSS('sources/sourcesView.css', {enableLegacyPatching: true});
     this.element.id = 'sources-panel-sources-view';
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
 

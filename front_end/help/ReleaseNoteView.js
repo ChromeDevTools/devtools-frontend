@@ -10,7 +10,7 @@ import {latestReleaseNote, ReleaseNote, releaseNoteViewId} from './HelpImpl.js';
 export class ReleaseNoteView extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('help/releaseNote.css');
+    this.registerRequiredCSS('help/releaseNote.css', {enableLegacyPatching: true});
     this._releaseNoteElement = this._createReleaseNoteElement(latestReleaseNote());
     const topSection = this.contentElement.createChild('div', 'release-note-top-section');
     topSection.textContent = ls`${latestReleaseNote().header}`;

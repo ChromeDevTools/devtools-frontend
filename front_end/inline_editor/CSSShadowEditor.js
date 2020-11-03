@@ -23,7 +23,7 @@ const canvasSize = 88;
 export class CSSShadowEditor extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('inline_editor/cssShadowEditor.css');
+    this.registerRequiredCSS('inline_editor/cssShadowEditor.css', {enableLegacyPatching: true});
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
 

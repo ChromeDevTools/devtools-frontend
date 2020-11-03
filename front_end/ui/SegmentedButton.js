@@ -12,7 +12,7 @@ export class SegmentedButton extends HBox {
 
     /** @type {?string} */
     this._selected = null;
-    this.registerRequiredCSS('ui/segmentedButton.css');
+    this.registerRequiredCSS('ui/segmentedButton.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('segmented-button');
   }
 

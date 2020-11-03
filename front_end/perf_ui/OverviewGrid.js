@@ -175,7 +175,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
 
     this._parentElement.addEventListener('mousewheel', this._onMouseWheel.bind(this), true);
     this._parentElement.addEventListener('dblclick', this._resizeWindowMaximum.bind(this), true);
-    UI.Utils.appendStyle(this._parentElement, 'perf_ui/overviewGrid.css');
+    UI.Utils.appendStyle(this._parentElement, 'perf_ui/overviewGrid.css', {enableLegacyPatching: true});
 
     this._leftResizeElement = parentElement.createChild('div', 'overview-grid-window-resizer');
     UI.UIUtils.installDragHandle(

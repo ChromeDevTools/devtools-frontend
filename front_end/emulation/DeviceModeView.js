@@ -289,11 +289,14 @@ export class DeviceModeView extends UI.Widget.VBox {
       this._cachedCssVisiblePageRect = cssVisiblePageRect;
     }
 
-    const outlineRect = this._model.outlineRect().scale(1 / zoomFactor);
-    if (!this._cachedOutlineRect || !outlineRect.isEqual(this._cachedOutlineRect)) {
-      applyRect(this._outlineImage, outlineRect);
-      callDoResize = true;
-      this._cachedOutlineRect = outlineRect;
+    const outlineRectFromModel = this._model.outlineRect();
+    if (outlineRectFromModel) {
+      const outlineRect = outlineRectFromModel.scale(1 / zoomFactor);
+      if (!this._cachedOutlineRect || !outlineRect.isEqual(this._cachedOutlineRect)) {
+        applyRect(this._outlineImage, outlineRect);
+        callDoResize = true;
+        this._cachedOutlineRect = outlineRect;
+      }
     }
     this._contentClip.classList.toggle('device-mode-outline-visible', !!this._model.outlineImage());
 
@@ -474,7 +477,11 @@ export class DeviceModeView extends UI.Widget.VBox {
     pageImage.src = 'data:image/png;base64,' + screenshot;
     pageImage.onload = async () => {
       const scale = pageImage.naturalWidth / this._model.screenRect().width;
-      const outlineRect = this._model.outlineRect().scale(scale);
+      const outlineRectFromModel = this._model.outlineRect();
+      if (!outlineRectFromModel) {
+        throw new Error('Unable to take screenshot: no outlineRect available.');
+      }
+      const outlineRect = outlineRectFromModel.scale(scale);
       const screenRect = this._model.screenRect().scale(scale);
       const visiblePageRect = this._model.visiblePageRect().scale(scale);
       const contentLeft = screenRect.left + visiblePageRect.left - outlineRect.left;

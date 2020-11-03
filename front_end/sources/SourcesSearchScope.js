@@ -109,7 +109,8 @@ export class SourcesSearchScope {
       if (project.type() === Workspace.Workspace.projectTypes.Service) {
         return false;
       }
-      if (!searchInAnonymousAndContentScripts && project.isServiceProject()) {
+      if (!searchInAnonymousAndContentScripts && project.isServiceProject() &&
+          project.type() !== Workspace.Workspace.projectTypes.Formatter) {
         return false;
       }
       if (!searchInAnonymousAndContentScripts && project.type() === Workspace.Workspace.projectTypes.ContentScripts) {

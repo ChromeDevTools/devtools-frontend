@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import './LinearMemoryNavigator.js';
+import './LinearMemoryValueInterpreter.js';
 import './LinearMemoryViewer.js';
 
 import * as Common from '../common/common.js';
@@ -11,7 +12,9 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 const {render, html} = LitHtml;
 
 import {HistoryNavigationEvent, LinearMemoryNavigatorData, Navigation, PageNavigationEvent} from './LinearMemoryNavigator.js';
+import {LinearMemoryValueInterpreterData} from './LinearMemoryValueInterpreter.js';
 import {ByteSelectedEvent, LinearMemoryViewer, LinearMemoryViewerData} from './LinearMemoryViewer.js';
+import {VALUE_INTEPRETER_MAX_NUM_BYTES, ValueType, Endianness} from './ValueInterpreterDisplayUtils.js';
 
 export interface LinearMemoryInspectorData {
   memory: Uint8Array;
@@ -62,9 +65,9 @@ export class LinearMemoryInspector extends HTMLElement {
         }
 
         .memory-inspector {
+          width: 100%;
           display: flex;
           flex: auto;
-          flex-wrap: wrap;
           flex-direction: column;
           font-family: monospace;
           padding: 9px 12px 9px 7px;
@@ -83,6 +86,11 @@ export class LinearMemoryInspector extends HTMLElement {
           .data=${{memory: this.memory, address: this.address} as LinearMemoryViewerData}
           @byteSelected=${(e: ByteSelectedEvent) => this.jumpToAddress(e.data)}></devtools-linear-memory-inspector-viewer>
       </div>
+        <devtools-linear-memory-inspector-interpreter .data=${{
+            value: this.memory.slice(this.address, this.address + VALUE_INTEPRETER_MAX_NUM_BYTES).buffer,
+            valueTypes: [ValueType.Int8, ValueType.Int16, ValueType.Int64],
+            endianness: Endianness.Little } as LinearMemoryValueInterpreterData}>
+        </devtools-linear-memory-inspector-interpreter/>
       `, this.shadow, {
       eventContext: this,
     });

@@ -5,6 +5,7 @@
 import {LinearMemoryInspector} from '../../../../front_end/linear_memory_inspector/LinearMemoryInspector.js';
 import {toHexString} from '../../../../front_end/linear_memory_inspector/LinearMemoryInspectorUtils.js';
 import {LinearMemoryNavigator} from '../../../../front_end/linear_memory_inspector/LinearMemoryNavigator.js';
+import {LinearMemoryValueInterpreter} from '../../../../front_end/linear_memory_inspector/LinearMemoryValueInterpreter.js';
 import {ByteSelectedEvent, LinearMemoryViewer} from '../../../../front_end/linear_memory_inspector/LinearMemoryViewer.js';
 import {getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
@@ -15,6 +16,7 @@ const {assert} = chai;
 
 const NAVIGATOR_SELECTOR = 'devtools-linear-memory-inspector-navigator';
 const VIEWER_SELECTOR = 'devtools-linear-memory-inspector-viewer';
+const INTERPRETER_SELECTOR = 'devtools-linear-memory-inspector-interpreter';
 
 describe('LinearMemoryInspector', () => {
   function getViewer(component: LinearMemoryInspector) {
@@ -23,6 +25,10 @@ describe('LinearMemoryInspector', () => {
 
   function getNavigator(component: LinearMemoryInspector) {
     return getElementWithinComponent(component, NAVIGATOR_SELECTOR, LinearMemoryNavigator);
+  }
+
+  function getValueInterpreter(component: LinearMemoryInspector) {
+    return getElementWithinComponent(component, INTERPRETER_SELECTOR, LinearMemoryValueInterpreter);
   }
 
   function setUpComponent() {
@@ -59,6 +65,12 @@ describe('LinearMemoryInspector', () => {
     const {component} = setUpComponent();
     const viewer = getViewer(component);
     assert.isNotNull(viewer);
+  });
+
+  it('renders the interpreter component', async () => {
+    const {component} = setUpComponent();
+    const interpreter = getValueInterpreter(component);
+    assert.isNotNull(interpreter);
   });
 
   it('can navigate addresses back and forth in history', async () => {

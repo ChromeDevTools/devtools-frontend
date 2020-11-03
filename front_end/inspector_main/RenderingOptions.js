@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -121,7 +118,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
   /**
    * @param {string} label
    * @param {string} subtitle
-   * @param {!Common.Settings.Setting} setting
+   * @param {!Common.Settings.Setting<boolean>} setting
    */
   _appendCheckbox(label, subtitle, setting) {
     const checkboxLabel = UI.UIUtils.CheckboxLabel.create(label, false, subtitle);
@@ -131,7 +128,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
   /**
    * @param {string} label
-   * @param {!Common.Settings.Setting} setting
+   * @param {!Common.Settings.Setting<*>} setting
    */
   _appendSelect(label, setting) {
     const control = UI.SettingsUI.createControlForSetting(setting, label);

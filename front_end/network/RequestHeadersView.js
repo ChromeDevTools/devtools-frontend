@@ -128,6 +128,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
       const decodedValue = decodeURIComponent(value);
       const copyDecodedValueHandler = () => {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(decodedValue);
       };
       contextMenu.clipboardSection().appendItem(ls`Copy value`, copyDecodedValueHandler);

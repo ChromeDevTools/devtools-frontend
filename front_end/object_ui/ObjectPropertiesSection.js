@@ -1074,8 +1074,11 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       if (this.property.parentObject instanceof SDK.RemoteObject.LocalJSONObject) {
         const {value: {value}} = this.property;
         const propertyValue = typeof value === 'object' ? JSON.stringify(value, null, 2) : value;
-        const copyValueHandler = Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
-            Host.InspectorFrontendHost.InspectorFrontendHostInstance, /** @type {string|undefined} */ (propertyValue));
+        const copyValueHandler = () => {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(
+              /** @type {string|undefined} */ (propertyValue));
+        };
         contextMenu.clipboardSection().appendItem(ls`Copy value`, copyValueHandler);
       }
     }

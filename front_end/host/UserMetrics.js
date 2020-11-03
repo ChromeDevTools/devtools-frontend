@@ -358,6 +358,10 @@ export const Action = {
   ShortcutModified: 46,
   CustomPropertyLinkClicked: 47,
   CustomPropertyEdited: 48,
+  ServiceWorkerNetworkRequestClicked: 49,
+  ServiceWorkerNetworkRequestClosedQuickly: 50,
+  NetworkPanelServiceWorkerRespondWith: 51,
+  NetworkPanelCopyValue: 52,
 };
 
 /** @type {!Object<string, number>} */

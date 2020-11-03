@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -491,6 +492,9 @@ export class RequestTimingView extends UI.Widget.VBox {
 
     const target = /** @type {!Element} */ (event.target);
     if (target.classList.contains('network-fetch-timing-bar-clickable')) {
+      if (fetchDetailsElement.classList.contains('network-fetch-timing-bar-details-collapsed')) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelServiceWorkerRespondWith);
+      }
       const expanded = target.getAttribute('aria-checked') === 'true';
       target.setAttribute('aria-checked', String(!expanded));
 

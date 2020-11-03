@@ -58,7 +58,10 @@ export class ServiceWorkerManager extends SDKModel {
     new ServiceWorkerContextNamer(target, this);
 
     /** Status of service worker network requests panel */
-    this.serviceWorkerNetworkRequestsPanelOpen = false;
+    this.serviceWorkerNetworkRequestsPanelStatus = {
+      isOpen: false,
+      openedAt: 0,
+    };
   }
 
   async enable() {

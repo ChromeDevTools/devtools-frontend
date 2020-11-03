@@ -1775,7 +1775,7 @@ export function addReferrerToURLIfNecessary(url) {
 
 /**
  * @param {string} url
- * @return {!Promise<?Image>}
+ * @return {!Promise<?HTMLImageElement>}
  */
 export function loadImage(url) {
   return new Promise(fulfill => {

@@ -18,6 +18,137 @@ import {createTextChild} from './UIUtils.js';
 import {ProvidedView, TabbedViewLocation, View, ViewLocation, ViewLocationResolver, widgetSymbol,} from './View.js';  // eslint-disable-line no-unused-vars
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
+/** @type {!Array<!PreRegisteredView>} */
+const registeredViewExtensions = [];
+
+/** @enum {string} */
+export const ViewPersistence = {
+  CLOSEABLE: 'closeable',
+  PERMANENT: 'permanent',
+  TRANSIENT: 'transient',
+};
+
+/** @enum {string} */
+export const ViewLocationValues = {
+  PANEL: 'panel',
+  SETTINGS_VIEW: 'settings-view',
+};
+
+/**
+ * @typedef {{
+ *  title: string,
+ *  persistence: !ViewPersistence,
+ *  id: string,
+ *  location: !ViewLocationValues,
+ *  hasToolbar: boolean,
+ *  loadView: function():!Promise<!Widget>,
+ *  order: number,
+ *  settings: !Array<string>,
+ *  tags: string,
+ * }}
+ */
+// @ts-ignore typedef
+export let ViewRegistration;
+
+/**
+ * @implements {View}
+ */
+class PreRegisteredView {
+  /**
+   * @param {!ViewRegistration} viewRegistration
+   */
+  constructor(viewRegistration) {
+    /** @type {!ViewRegistration} */
+    this._viewRegistration = viewRegistration;
+    this._widgetRequested = false;
+  }
+
+  /**
+   * @override
+   */
+  title() {
+    return this._viewRegistration.title;
+  }
+
+  /**
+   * @override
+   */
+  isCloseable() {
+    return this._viewRegistration.persistence === ViewPersistence.CLOSEABLE;
+  }
+
+  /**
+   * @override
+   */
+  isTransient() {
+    return this._viewRegistration.persistence === ViewPersistence.TRANSIENT;
+  }
+
+  /**
+   * @override
+   */
+  viewId() {
+    return this._viewRegistration.id;
+  }
+
+  location() {
+    return this._viewRegistration.location;
+  }
+
+  order() {
+    return this._viewRegistration.order;
+  }
+
+  settings() {
+    return this._viewRegistration.settings;
+  }
+
+  tags() {
+    return this._viewRegistration.tags;
+  }
+
+  /**
+   * @override
+   */
+  async toolbarItems() {
+    return [];
+  }
+
+  /**
+   * @override
+   */
+  async widget() {
+    this._widgetRequested = true;
+    return this._viewRegistration.loadView();
+  }
+
+  /**
+   * @override
+   */
+  async disposeView() {
+    if (!this._widgetRequested) {
+      return;
+    }
+
+    const widget = await this.widget();
+    widget.ownerViewDisposed();
+  }
+}
+
+/**
+ * @param {!ViewRegistration} registration
+ */
+export function registerViewExtension(registration) {
+  registeredViewExtensions.push(new PreRegisteredView(registration));
+}
+
+/**
+ * @return {!Array<!PreRegisteredView>}
+ */
+export function getRegisteredViewExtensions() {
+  return registeredViewExtensions;
+}
+
 /**
  * @type {!ViewManager}
  */
@@ -40,13 +171,34 @@ export class ViewManager {
     this._locationOverrideSetting = Common.Settings.Settings.instance().createSetting('viewsLocationOverride', {});
     const preferredExtensionLocations = this._locationOverrideSetting.get();
 
-    for (const extension of Root.Runtime.Runtime.instance().extensions('view')) {
-      const descriptor = extension.descriptor();
-      const descriptorId = descriptor['id'];
-      this._views.set(descriptorId, new ProvidedView(extension));
+    /** @type {!Array<{viewId: string, view: (!ProvidedView|!PreRegisteredView), location: string}>} */
+    const unionOfViewExtensions = [
+      // TODO(crbug.com/1134103): Remove this call when all views are migrated
+      ...Root.Runtime.Runtime.instance().extensions('view').map(extension => {
+        return {
+          viewId: extension.descriptor().id,
+          location: extension.descriptor()['location'],
+          view: new ProvidedView(extension),
+        };
+      }),
+      ...registeredViewExtensions.map(registeredView => {
+        return {
+          viewId: registeredView.viewId(),
+          location: registeredView.location(),
+          view: registeredView,
+        };
+      }),
+    ];
+
+    // All views define their initial ordering. When the user has not reordered, we use the
+    // default ordering as defined by the views themselves.
+    unionOfViewExtensions.sort((firstView, secondView) => firstView.view.order() - secondView.view.order());
+
+    for (const {viewId, view, location} of unionOfViewExtensions) {
+      this._views.set(viewId, view);
       // Use the preferred user location if available
-      const locationName = preferredExtensionLocations[descriptorId] || descriptor['location'];
-      this._locationNameByViewId.set(descriptorId, locationName);
+      const locationName = preferredExtensionLocations[viewId] || location;
+      this._locationNameByViewId.set(viewId, locationName);
     }
   }
 

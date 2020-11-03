@@ -191,6 +191,10 @@ export class ProvidedView {
     return this._extension.title();
   }
 
+  order() {
+    return this._descriptor().order;
+  }
+
   /**
    * @override
    * @return {boolean}

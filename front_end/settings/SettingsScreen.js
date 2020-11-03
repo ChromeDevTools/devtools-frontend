@@ -496,8 +496,21 @@ export class Revealer {
 
     Root.Runtime.Runtime.instance().extensions('setting').forEach(revealModuleSetting);
     Root.Runtime.Runtime.instance().extensions(UI.SettingsUI.SettingUI).forEach(revealSettingUI);
-    Root.Runtime.Runtime.instance().extensions('view').forEach(revealSettingsView);
+    const unionOfSettingsExtension = [
+      // TODO(crbug.com/1134103): Remove this call when all views are migrated
+      ...Root.Runtime.Runtime.instance().extensions('view').map(extension => {
+        return {
+          location: extension.descriptor().location,
+          settings: extension.descriptor().settings,
+          id: extension.descriptor().id
+        };
+      }),
+      ...UI.ViewManager.getRegisteredViewExtensions().map(view => {
+        return {location: view.location(), settings: view.settings(), id: view.viewId()};
+      }),
+    ];
 
+    unionOfSettingsExtension.forEach(revealSettingsView);
     return success ? Promise.resolve() : Promise.reject();
 
     /**
@@ -527,19 +540,18 @@ export class Revealer {
     }
 
     /**
-     * @param {!Root.Runtime.Extension} extension
+     * @param {!{settings: (!Array<string>|undefined), location: ?UI.ViewManager.ViewLocationValues, id: string}} extension
      */
     function revealSettingsView(extension) {
-      const location = extension.descriptor()['location'];
-      if (location !== 'settings-view') {
+      const location = extension.location;
+      if (location !== UI.ViewManager.ViewLocationValues.SETTINGS_VIEW) {
         return;
       }
-      const descriptor = extension.descriptor();
-      const settings = descriptor['settings'];
+      const settings = extension.settings;
       if (settings && settings.indexOf(setting.name) !== -1) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
         SettingsScreen._showSettingsScreen(
-            /** @type {!ShowSettingsScreenOptions}*/ ({name: extension.descriptor()['id']}));
+            /** @type {!ShowSettingsScreenOptions}*/ ({name: extension.id}));
         success = true;
       }
     }

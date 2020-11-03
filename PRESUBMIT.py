@@ -158,8 +158,9 @@ def _CheckDevtoolsLocalization(input_api, output_api, check_all_files=False):  #
         args = ['--autofix', '--all']
     else:
         devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
-        affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], ['D'],
-                                                     ['.js', '.grdp', '.grd', 'module.json'])
+        affected_front_end_files = _getAffectedFiles(
+            input_api, [devtools_front_end], ['D'],
+            ['.ts', '.js', '.grdp', '.grd', 'module.json'])
 
         if len(affected_front_end_files) == 0:
             return [

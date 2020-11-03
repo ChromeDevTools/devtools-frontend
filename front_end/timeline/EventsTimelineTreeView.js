@@ -28,8 +28,8 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     this._filtersControl.addEventListener(Filters.Events.FilterChanged, this._onFilterChanged, this);
     this.init();
     this._delegate = delegate;
-    this._dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
-    this._splitWidget.showBoth();
+    this.dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
+    this.splitWidget.showBoth();
   }
 
   /**
@@ -152,8 +152,8 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     if (!traceEvent) {
       return false;
     }
-    TimelineUIUtils.buildTraceEventDetails(traceEvent, this.model().timelineModel(), this._linkifier, false)
-        .then(fragment => this._detailsView.element.appendChild(fragment));
+    TimelineUIUtils.buildTraceEventDetails(traceEvent, this.model().timelineModel(), this.linkifier, false)
+        .then(fragment => this.detailsView.element.appendChild(fragment));
     return true;
   }
 

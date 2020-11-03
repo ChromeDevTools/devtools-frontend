@@ -13,7 +13,12 @@ export const enum AngleUnit {
   Turn = 'turn',
 }
 
-export const parseText = (text: string): {value: number, unit: AngleUnit}|null => {
+export interface Angle {
+  value: number;
+  unit: AngleUnit;
+}
+
+export const parseText = (text: string): Angle|null => {
   const result = text.match(CSSAngleRegex);
   if (!result || !result.groups) {
     return null;
@@ -25,54 +30,81 @@ export const parseText = (text: string): {value: number, unit: AngleUnit}|null =
   };
 };
 
-export const getAngleFromDegrees = (deg: number, targetUnit: AngleUnit): number => {
+export const getAngleFromRadians = (rad: number, targetUnit: AngleUnit): Angle => {
+  let value = rad;
   switch (targetUnit) {
     case AngleUnit.Grad:
-      return UI.Geometry.degreesToGradians(deg);
-    case AngleUnit.Rad:
-      return UI.Geometry.degreesToRadians(deg);
-    case AngleUnit.Turn:
-      return UI.Geometry.degreesToTurns(deg);
-  }
-
-  return deg;
-};
-
-export const getRadiansFromAngle = (angle: number, unit: AngleUnit): number => {
-  switch (unit) {
+      value = UI.Geometry.radiansToGradians(rad);
+      break;
     case AngleUnit.Deg:
-      return UI.Geometry.degreesToRadians(angle);
-    case AngleUnit.Grad:
-      return UI.Geometry.gradiansToRadians(angle);
+      value = UI.Geometry.radiansToDegrees(rad);
+      break;
     case AngleUnit.Turn:
-      return UI.Geometry.turnsToRadians(angle);
+      value = UI.Geometry.radiansToTurns(rad);
+      break;
   }
 
-  return angle;
+  return {
+    value,
+    unit: targetUnit,
+  };
 };
 
-export const get2DTranslationsForAngle =
-    (angle: number, unit: AngleUnit, radius: number): {translateX: number, translateY: number} => {
-      const angleInRadians = getRadiansFromAngle(angle, unit);
-      return {
-        translateX: Math.sin(angleInRadians) * radius,
-        translateY: -Math.cos(angleInRadians) * radius,
-      };
-    };
+export const getRadiansFromAngle = (angle: Angle): number => {
+  switch (angle.unit) {
+    case AngleUnit.Deg:
+      return UI.Geometry.degreesToRadians(angle.value);
+    case AngleUnit.Grad:
+      return UI.Geometry.gradiansToRadians(angle.value);
+    case AngleUnit.Turn:
+      return UI.Geometry.turnsToRadians(angle.value);
+  }
 
-export const roundAngleByUnit = (angle: number, unit: AngleUnit): number => {
-  switch (unit) {
+  return angle.value;
+};
+
+export const get2DTranslationsForAngle = (angle: Angle, radius: number): {translateX: number, translateY: number} => {
+  const radian = getRadiansFromAngle(angle);
+  return {
+    translateX: Math.sin(radian) * radius,
+    translateY: -Math.cos(radian) * radius,
+  };
+};
+
+export const roundAngleByUnit = (angle: Angle): Angle => {
+  let roundedValue = angle.value;
+
+  switch (angle.unit) {
     case AngleUnit.Deg:
     case AngleUnit.Grad:
       // Round to nearest whole unit.
-      return Math.round(angle);
+      roundedValue = Math.round(angle.value);
+      break;
     case AngleUnit.Rad:
       // Allow up to 4 decimals.
-      return Math.round(angle * 10000) / 10000;
+      roundedValue = Math.round(angle.value * 10000) / 10000;
+      break;
     case AngleUnit.Turn:
       // Allow up to 2 decimals.
-      return Math.round(angle * 100) / 100;
+      roundedValue = Math.round(angle.value * 100) / 100;
+      break;
+  }
+
+  return {
+    value: roundedValue,
+    unit: angle.unit,
+  };
+};
+
+export const getNextUnit = (currentUnit: AngleUnit): AngleUnit => {
+  switch (currentUnit) {
+    case AngleUnit.Deg:
+      return AngleUnit.Grad;
+    case AngleUnit.Grad:
+      return AngleUnit.Rad;
+    case AngleUnit.Rad:
+      return AngleUnit.Turn;
     default:
-      return angle;
+      return AngleUnit.Deg;
   }
 };

@@ -572,6 +572,20 @@ describe('boundsForTransformedPoints', () => {
     });
   });
 
+  describe('radiansToGradians', () => {
+    it('converts radians to gradians correctly', () => {
+      assert.strictEqual(UI.Geometry.radiansToGradians(1), 63.66197723675813);
+      assert.strictEqual(UI.Geometry.radiansToGradians(1.5), 95.4929658551372);
+    });
+  });
+
+  describe('radiansToTurns', () => {
+    it('converts radians to turns correctly', () => {
+      assert.strictEqual(UI.Geometry.radiansToTurns(1), 0.15915494309189535);
+      assert.strictEqual(UI.Geometry.radiansToTurns(1.5), 0.238732414637843);
+    });
+  });
+
   describe('gradiansToRadians', () => {
     it('converts gradians to radians correctly', () => {
       assert.strictEqual(UI.Geometry.gradiansToRadians(50), 0.7853981633974483);

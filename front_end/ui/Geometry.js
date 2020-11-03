@@ -323,6 +323,22 @@ export const radiansToDegrees = function(rad) {
 };
 
 /**
+ * @param {number} rad
+ * @return {number}
+ */
+export const radiansToGradians = function(rad) {
+  return rad * 200 / Math.PI;
+};
+
+/**
+ * @param {number} rad
+ * @return {number}
+ */
+export const radiansToTurns = function(rad) {
+  return rad / (2 * Math.PI);
+};
+
+/**
  * @param {number} grad
  * @return {number}
  */

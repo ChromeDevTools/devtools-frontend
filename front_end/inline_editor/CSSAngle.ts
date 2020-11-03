@@ -5,7 +5,7 @@
 import * as Common from '../common/common.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {AngleUnit, get2DTranslationsForAngle, getAngleFromDegrees, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
+import {Angle, AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNextUnit, getRadiansFromAngle, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
 
 const {render, html} = LitHtml;
 const styleMap = LitHtml.Directives.styleMap;
@@ -41,8 +41,10 @@ export interface CSSAngleData {
 
 export class CSSAngle extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private angle = 0;
-  private unit = AngleUnit.Deg;
+  private angle: Angle = {
+    value: 0,
+    unit: AngleUnit.Rad,
+  };
   private propertyName = '';
   private propertyValue = '';
   private containingPane?: HTMLElement;
@@ -58,8 +60,7 @@ export class CSSAngle extends HTMLElement {
     if (!parsedResult) {
       return;
     }
-    this.angle = parsedResult.value;
-    this.unit = parsedResult.unit;
+    this.angle = parsedResult;
     this.propertyName = data.propertyName;
     this.propertyValue = data.propertyValue;
     this.containingPane = data.containingPane;
@@ -67,10 +68,7 @@ export class CSSAngle extends HTMLElement {
   }
 
   disconnectedCallback() {
-    document.removeEventListener('mousedown', this.onMinifyingAction);
-    if (this.containingPane) {
-      this.containingPane.removeEventListener('scroll', this.onMinifyingAction);
-    }
+    this.unbindMinifyingAction();
   }
 
   // We bind and unbind mouse event listeners upon popping over and minifying,
@@ -83,8 +81,7 @@ export class CSSAngle extends HTMLElement {
     }
 
     this.dispatchEvent(new PopoverToggledEvent(true));
-    document.addEventListener('mousedown', this.onMinifyingAction);
-    this.containingPane.addEventListener('scroll', this.onMinifyingAction);
+    this.bindMinifyingAction();
 
     const miniIconBottom = miniIcon.getBoundingClientRect().bottom;
     if (miniIconBottom) {
@@ -107,10 +104,7 @@ export class CSSAngle extends HTMLElement {
 
     this.popoverOpen = false;
     this.dispatchEvent(new PopoverToggledEvent(false));
-    document.removeEventListener('mousedown', this.onMinifyingAction);
-    if (this.containingPane) {
-      this.containingPane.removeEventListener('scroll', this.onMinifyingAction);
-    }
+    this.unbindMinifyingAction();
     this.render();
   }
 
@@ -120,29 +114,18 @@ export class CSSAngle extends HTMLElement {
     this.render();
   }
 
-  private onMiniIconClick(event: Event): void {
-    event.stopPropagation();
-    this.popoverOpen ? this.minify() : this.popover();
+  private updateAngle(angle: Angle): void {
+    this.angle = roundAngleByUnit(angle);
+    this.dispatchEvent(new ValueChangedEvent(`${this.angle.value}${this.angle.unit}`));
   }
 
-  private onMouseDown(event: MouseEvent): void {
-    event.stopPropagation();
-    this.updateAngleFromMousePosition(event.pageX, event.pageY);
+  private updateAngleWithNewUnit(newUnit: AngleUnit): void {
+    // We use radian as the canonical unit to convert back and forth.
+    const radian = getRadiansFromAngle(this.angle);
+    this.updateAngle(getAngleFromRadians(radian, newUnit));
   }
 
-  private onMouseMove(event: MouseEvent): void {
-    const isPressed = event.buttons === 1;
-    if (!isPressed) {
-      return;
-    }
-
-    this.mousemoveThrottler.schedule(() => {
-      this.updateAngleFromMousePosition(event.pageX, event.pageY);
-      return Promise.resolve();
-    });
-  }
-
-  private updateAngleFromMousePosition(mouseX: number, mouseY: number): void {
+  private updateAngleFromMousePosition(mouseX: number, mouseY: number, shouldSnapToMultipleOf15Degrees: boolean): void {
     const clock = this.shadow.querySelector('.clock');
     if (!clock) {
       return;
@@ -151,16 +134,113 @@ export class CSSAngle extends HTMLElement {
     this.clockRadius = (right - left) / 2;
     const clockCenterX = (left + right) / 2;
     const clockCenterY = (bottom + top) / 2;
-    const degree = -Math.atan2(mouseX - clockCenterX, mouseY - clockCenterY) * 180 / Math.PI + 180;
-    const rawAngle = getAngleFromDegrees(degree, this.unit);
-    this.angle = roundAngleByUnit(rawAngle, this.unit);
-    this.dispatchEvent(new ValueChangedEvent(`${this.angle}${this.unit}`));
+    const radian = -Math.atan2(mouseX - clockCenterX, mouseY - clockCenterY) + Math.PI;
+    if (shouldSnapToMultipleOf15Degrees) {
+      const multipleInRadian = getRadiansFromAngle({
+        value: 15,
+        unit: AngleUnit.Deg,
+      });
+      const closestMultipleOf15Degrees = Math.round(radian / multipleInRadian) * multipleInRadian;
+      this.updateAngle(getAngleFromRadians(closestMultipleOf15Degrees, this.angle.unit));
+    } else {
+      this.updateAngle(getAngleFromRadians(radian, this.angle.unit));
+    }
+  }
+
+  private bindMinifyingAction(): void {
+    document.addEventListener('mousedown', this.onMinifyingAction);
+    if (this.containingPane) {
+      this.containingPane.addEventListener('scroll', this.onMinifyingAction);
+    }
+  }
+
+  private unbindMinifyingAction(): void {
+    document.removeEventListener('mousedown', this.onMinifyingAction);
+    if (this.containingPane) {
+      this.containingPane.removeEventListener('scroll', this.onMinifyingAction);
+    }
+  }
+
+  private onMiniIconClick(event: MouseEvent): void {
+    event.stopPropagation();
+    if (event.shiftKey) {
+      this.updateAngleWithNewUnit(getNextUnit(this.angle.unit));
+      return;
+    }
+    this.popoverOpen ? this.minify() : this.popover();
+  }
+
+  private onPopoverMousedown(event: MouseEvent): void {
+    event.stopPropagation();
+    this.updateAngleFromMousePosition(event.pageX, event.pageY, event.shiftKey);
+  }
+
+  private onPopoverMousemove(event: MouseEvent): void {
+    const isPressed = event.buttons === 1;
+    if (!isPressed) {
+      return;
+    }
+
+    this.mousemoveThrottler.schedule(() => {
+      this.updateAngleFromMousePosition(event.pageX, event.pageY, event.shiftKey);
+      return Promise.resolve();
+    });
+  }
+
+  private onPopoverWheel(event: WheelEvent): void {
+    if (!this.popoverOpen || (event.deltaY === 0 && event.deltaX === 0)) {
+      return;
+    }
+
+    let diff = Math.PI / 180;
+    // TODO(changhaohan): we can try exposing UIUtils' _valueModificationDirection
+    // logic and reuse it in this component
+    if (event.deltaY > 0 || event.deltaX > 0) {
+      diff *= -1;
+    }
+    if (event.shiftKey) {
+      diff *= 10;
+    }
+
+    const radian = getRadiansFromAngle(this.angle);
+    this.updateAngle(getAngleFromRadians(radian + diff, this.angle.unit));
+    event.preventDefault();
+  }
+
+  private onKeydown(event: KeyboardEvent): void {
+    if (!this.popoverOpen) {
+      return;
+    }
+
+    switch (event.key) {
+      case 'Escape':
+        event.stopPropagation();
+        this.minify();
+        this.blur();
+        break;
+      case 'ArrowUp':
+      case 'ArrowDown': {
+        // +/- current angle by 1 degree equivalent. Since we are using
+        // radian as our canonical unit, we plus π/180 radian, which is 1 degree.
+        let diff = Math.PI / 180;
+        if (event.key === 'ArrowDown') {
+          diff *= -1;
+        }
+        if (event.shiftKey) {
+          diff *= 10;
+        }
+
+        const radian = getRadiansFromAngle(this.angle);
+        this.updateAngle(getAngleFromRadians(radian + diff, this.angle.unit));
+        break;
+      }
+    }
   }
 
   private render() {
-    const {translateX, translateY} = get2DTranslationsForAngle(this.angle, this.unit, MiniIconWidth / 4);
+    const {translateX, translateY} = get2DTranslationsForAngle(this.angle, MiniIconWidth / 4);
     const miniHandStyle = {
-      transform: `translate(${translateX}px, ${translateY}px) rotate(${this.angle}${this.unit})`,
+      transform: `translate(${translateX}px, ${translateY}px) rotate(${this.angle.value}${this.angle.unit})`,
     };
 
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -170,6 +250,7 @@ export class CSSAngle extends HTMLElement {
         .css-type {
           display: inline-block;
           position: relative;
+          outline: none;
         }
 
         .preview {
@@ -261,7 +342,7 @@ export class CSSAngle extends HTMLElement {
           width: 2px;
           height: ${ClockDialLength}px;
           background-color: var(--dial-color);
-          border-radius: 2px;
+          border-radius: 1px;
         }
 
         .hand {
@@ -298,7 +379,7 @@ export class CSSAngle extends HTMLElement {
         }
       </style>
 
-      <div class="css-type">
+      <div class="css-type" @keydown=${this.onKeydown} tabindex="-1">
         <div class="preview">
           <div class="mini-icon" @mousedown=${this.onMiniIconClick}>
             <span class="mini-hand" style=${styleMap(miniHandStyle)}></span>
@@ -323,9 +404,9 @@ export class CSSAngle extends HTMLElement {
       clockStyles.background = this.propertyValue;
     }
 
-    const {translateX, translateY} = get2DTranslationsForAngle(this.angle, this.unit, this.clockRadius / 2);
+    const {translateX, translateY} = get2DTranslationsForAngle(this.angle, this.clockRadius / 2);
     const handStyles = {
-      transform: `translate(${translateX}px, ${translateY}px) rotate(${this.angle}${this.unit})`,
+      transform: `translate(${translateX}px, ${translateY}px) rotate(${this.angle.value}${this.angle.unit})`,
     };
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -335,8 +416,9 @@ export class CSSAngle extends HTMLElement {
         <div
           class="clock"
           style=${styleMap(clockStyles)}
-          @mousedown=${this.onMouseDown}
-          @mousemove=${this.onMouseMove}>
+          @mousedown=${this.onPopoverMousedown}
+          @mousemove=${this.onPopoverMousemove}
+          @wheel=${this.onPopoverWheel}>
           ${this.renderDials()}
           <div class="hand" style=${styleMap(handStyles)}></div>
           <span class="center"></span>
@@ -352,7 +434,10 @@ export class CSSAngle extends HTMLElement {
       // clang-format off
       this.dialTemplates = [0, 45, 90, 135, 180, 225, 270, 315].map(deg => {
         const radius = this.clockRadius - ClockDialLength - 3 /* clock border */;
-        const {translateX, translateY} = get2DTranslationsForAngle(deg, AngleUnit.Deg, radius);
+        const {translateX, translateY} = get2DTranslationsForAngle({
+          value: deg,
+          unit: AngleUnit.Deg,
+        }, radius);
         const dialStyles = {
           transform: `translate(${translateX}px, ${translateY}px) rotate(${deg}deg)`,
         };

@@ -23,9 +23,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
@@ -97,7 +94,6 @@ export class CPUProfileType extends ProfileType {
     super(CPUProfileType.TypeId, Common.UIString.UIString('Record JavaScript CPU Profile'));
     this._recording = false;
 
-    CPUProfileType.instance = this;
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.CPUProfilerModel.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileFinished,
         this._consoleProfileFinished, this);
@@ -191,14 +187,17 @@ export class CPUProfileType extends ProfileType {
 
   async _stopRecordingProfile() {
     this._recording = false;
-    if (!this.profileBeingRecorded() || !this.profileBeingRecorded()._cpuProfilerModel) {
+    const profileBeingRecorded = this.profileBeingRecorded();
+    if (!profileBeingRecorded || !profileBeingRecorded._cpuProfilerModel) {
       return;
     }
 
-    const profile = await this.profileBeingRecorded()._cpuProfilerModel.stopRecording();
+    const profile = await profileBeingRecorded._cpuProfilerModel.stopRecording();
     const recordedProfile = this.profileBeingRecorded();
     if (recordedProfile) {
-      console.assert(profile);
+      if (!profile) {
+        throw new Error('Expected profile to be non-null');
+      }
       recordedProfile.setProtocolProfile(profile);
       recordedProfile.updateStatus('');
       this.setProfileBeingRecorded(null);
@@ -253,6 +252,9 @@ export class CPUProfileHeader extends WritableProfileHeader {
    * @return {!Protocol.Profiler.Profile}
    */
   protocolProfile() {
+    if (!this._protocolProfile) {
+      throw new Error('Expected _protocolProfile to be available');
+    }
     return this._protocolProfile;
   }
 
@@ -260,6 +262,9 @@ export class CPUProfileHeader extends WritableProfileHeader {
    * @return {!SDK.CPUProfileDataModel.CPUProfileDataModel}
    */
   profileModel() {
+    if (!this._profileModel) {
+      throw new Error('Expected _profileModel to be available');
+    }
     return this._profileModel;
   }
 
@@ -310,8 +315,14 @@ export class NodeFormatter {
    * @return {string}
    */
   formatPercent(value, node) {
-    return node.profileNode === this._profileView.profile().idleNode ? '' :
-                                                                       Common.UIString.UIString('%.2f\xa0%%', value);
+    if (this._profileView) {
+      const profile = this._profileView.profile();
+      if (profile &&
+          node.profileNode !== /** @type {!SDK.CPUProfileDataModel.CPUProfileDataModel} */ (profile).idleNode) {
+        return Common.UIString.UIString('%.2f\xa0%%', value);
+      }
+    }
+    return '';
   }
 
   /**
@@ -322,7 +333,7 @@ export class NodeFormatter {
   linkifyNode(node) {
     const cpuProfilerModel = this._profileView._profileHeader._cpuProfilerModel;
     const target = cpuProfilerModel ? cpuProfilerModel.target() : null;
-    const options = {className: 'profile-node-file'};
+    const options = {className: 'profile-node-file', columnNumber: undefined, tabStop: undefined};
     return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(target, node.profileNode.callFrame, options);
   }
 }
@@ -366,7 +377,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
      * @param {number} selfTime
      */
     function onCloseFrame(depth, node, startTime, totalTime, selfTime) {
-      const index = stack.pop();
+      const index = /** @type {number} */ (stack.pop());
       entries[index] = new CPUFlameChartDataProvider.ChartEntry(depth, totalTime, startTime, selfTime, node);
       maxDepth = Math.max(maxDepth, depth);
     }
@@ -381,6 +392,9 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
 
     for (let i = 0; i < entries.length; ++i) {
       const entry = entries[i];
+      if (!entry) {
+        continue;
+      }
       entryNodes[i] = entry.node;
       entryLevels[i] = entry.depth;
       entryTotalTimes[i] = entry.duration;
@@ -405,12 +419,16 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
    * @return {?Element}
    */
   prepareHighlightedEntryInfo(entryIndex) {
+    if (!this._entryNodes) {
+      return null;
+    }
     const timelineData = this._timelineData;
     const node = this._entryNodes[entryIndex];
     if (!node) {
       return null;
     }
 
+    /** @type {!Array<!{title: string, value: string}>} */
     const entryInfo = [];
     /**
      * @param {string} title
@@ -434,15 +452,16 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
     }
     const name = UI.UIUtils.beautifyFunctionName(node.functionName);
     pushEntryInfoRow(ls`Name`, name);
-    const selfTime = millisecondsToString(this._entrySelfTimes[entryIndex]);
-    const totalTime = millisecondsToString(timelineData.entryTotalTimes[entryIndex]);
+    const selfTime = millisecondsToString(/** @type {!Float32Array} */ (this._entrySelfTimes)[entryIndex]);
+    const totalTime =
+        millisecondsToString(/** @type {!PerfUI.FlameChart.TimelineData} */ (timelineData).entryTotalTimes[entryIndex]);
     pushEntryInfoRow(ls`Self time`, selfTime);
     pushEntryInfoRow(ls`Total time`, totalTime);
     const linkifier = new Components.Linkifier.Linkifier();
     const link = linkifier.maybeLinkifyConsoleCallFrame(
         this._cpuProfilerModel && this._cpuProfilerModel.target(), node.callFrame);
     if (link) {
-      pushEntryInfoRow(ls`URL`, link.textContent);
+      pushEntryInfoRow(ls`URL`, link.textContent || '');
     }
     linkifier.dispose();
     pushEntryInfoRow(ls`Aggregated self time`, Number.secondsToString(node.self / 1000, true));

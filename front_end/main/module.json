@@ -545,10 +545,9 @@
     "persistence"
   ],
   "modules": [
-    "main.js",
-    "main-legacy.js",
-    "SimpleApp.js",
-    "ExecutionContextSelector.js",
-    "MainImpl.js"
+    "main-legacy.js"
+  ],
+  "skip_compilation": [
+    "main-legacy.js"
   ]
 }

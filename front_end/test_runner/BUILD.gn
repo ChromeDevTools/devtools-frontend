@@ -9,6 +9,7 @@ devtools_module("test_runner") {
   sources = [ "TestRunner.js" ]
 
   deps = [
+    "../bindings:bundle",
     "../common:bundle",
     "../protocol_client:bundle",
     "../ui:bundle",

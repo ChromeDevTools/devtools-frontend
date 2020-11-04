@@ -5,7 +5,8 @@
     "ui",
     "host",
     "main"
-  ],  "modules": [
+  ],
+  "modules": [
     "test_runner.js",
     "TestRunner.js"
   ]

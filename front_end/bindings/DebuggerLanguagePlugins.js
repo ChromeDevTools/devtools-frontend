@@ -585,6 +585,7 @@ export class DebuggerLanguagePluginManager {
    * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
+   * @suppress {missingProperties}
    */
   constructor(debuggerModel, workspace, debuggerWorkspaceBinding) {
     this._sourceMapManager = debuggerModel.sourceMapManager();

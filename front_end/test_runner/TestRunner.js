@@ -5,6 +5,7 @@
 // @ts-nocheck
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
+import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as ProtocolClientModule from '../protocol_client/protocol_client.js';
 import * as UI from '../ui/ui.js';
@@ -250,7 +251,7 @@ export async function loadModule(module) {
  * @return {!Promise.<?UI.Panel.Panel>}
  */
 export function showPanel(panel) {
-  return self.UI.viewManager.showView(panel);
+  return UI.ViewManager.ViewManager.instance().showView(panel);
 }
 
 /**
@@ -1217,7 +1218,7 @@ export function clearSpecificInfoFromStackFrames(text) {
 }
 
 export function hideInspectorView() {
-  self.UI.inspectorView.element.setAttribute('style', 'display:none !important');
+  UI.InspectorView.InspectorView.instance().element.setAttribute('style', 'display:none !important');
 }
 
 /**
@@ -1441,8 +1442,8 @@ export async function dumpInspectedPageElementText(querySelector) {
  * once all currently-pending updates (at call time) are completed.
  */
 export async function waitForPendingLiveLocationUpdates() {
-  await self.Bindings.debuggerWorkspaceBinding.pendingLiveLocationChangesPromise();
-  await self.Bindings.cssWorkspaceBinding.pendingLiveLocationChangesPromise();
+  await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pendingLiveLocationChangesPromise();
+  await Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().pendingLiveLocationChangesPromise();
 }
 
 /** @type {!{logToStderr: function(), navigateSecondaryWindow: function(string), notifyDone: function()}|undefined} */

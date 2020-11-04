@@ -26,6 +26,14 @@ interface Array<T> {
       sortWindowRight: number): T[];
 }
 
+interface Uint8Array {
+  upperBound(value: number, comparator?: {(a: number, b: number): number}, left?: number, right?: number): number;
+}
+
+interface Uint32Array {
+  upperBound(value: number, comparator?: {(a: number, b: number): number}, left?: number, right?: number): number;
+}
+
 // Type alias for the Closure-supported ITemplateArray which is equivalent
 // to TemplateStringsArray in TypeScript land
 type ITemplateArray = TemplateStringsArray

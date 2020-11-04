@@ -99,7 +99,7 @@ export class InputModel extends SDK.SDKModel.SDKModel {
       clickCount: 0,
     };
     if (event.type === 'mousewheel') {
-      // TODO: MouseWheelEvent is a deprecated non-standard event.
+      // TODO(crbug.com/1145518) Remove usage of MouseWheelEvent.
       const mouseWheelEvent = /** @type {*} */ (mouseEvent);
       params.deltaX = mouseWheelEvent.wheelDeltaX / zoom;
       params.deltaY = mouseWheelEvent.wheelDeltaY / zoom;

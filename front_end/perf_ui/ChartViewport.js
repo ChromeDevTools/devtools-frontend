@@ -210,6 +210,7 @@ export class ChartViewport extends UI.Widget.VBox {
    * @param {!Event} e
    */
   _onMouseWheel(e) {
+    // TODO(crbug.com/1145518) Remove usage of MouseWheelEvent.
     const doZoomInstead =
         e.shiftKey ^ (Common.Settings.Settings.instance().moduleSetting('flamechartMouseWheelAction').get() === 'zoom');
     const panVertically = !doZoomInstead && (e.wheelDeltaY || Math.abs(e.wheelDeltaX) === 120);

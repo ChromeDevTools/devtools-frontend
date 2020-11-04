@@ -261,6 +261,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     /** @const */
     const mouseWheelZoomSpeed = 1 / 120;
     const mouseEvent = /** @type {*} */ (event);
+    // TODO(crbug.com/1145518) Remove usage of MouseWheelEvent.
     const scaleFactor = Math.pow(zoomFactor, mouseEvent.wheelDeltaY * mouseWheelZoomSpeed);
     this._onScale(
         scaleFactor, mouseEvent.clientX - this.element.totalOffsetLeft(),

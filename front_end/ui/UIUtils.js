@@ -351,6 +351,7 @@ export const StyleValueDelimiters = ' \xA0\t\n"\':;,/()';
  */
 function _valueModificationDirection(event) {
   let direction = null;
+  // TODO(crbug.com/1145518) Remove usage of MouseWheelEvent.
   if (event.type === 'mousewheel') {
     // When shift is pressed while spinning mousewheel, delta comes as wheelDeltaX.
     if (event.wheelDeltaY > 0 || event.wheelDeltaX > 0) {

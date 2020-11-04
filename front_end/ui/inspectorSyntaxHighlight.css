@@ -85,7 +85,7 @@
 
 .webkit-html-pseudo-element {
   /* This one is non-standard. */
-  color: brown;
+  color: rgb(17 85 204);
 }
 
 .webkit-html-js-node,

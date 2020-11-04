@@ -412,12 +412,9 @@ export class DeviceModeView extends UI.Widget.VBox {
     const rect = this._contentArea.getBoundingClientRect();
     const availableSize =
         new UI.Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
-    if (!this._handleHeight || !this._handleWidth) {
-      return;
-    }
     const preferredSize = new UI.Geometry.Size(
-        Math.max((rect.width - 2 * this._handleWidth) * zoomFactor, 1),
-        Math.max((rect.height - this._handleHeight) * zoomFactor, 1));
+        Math.max((rect.width - 2 * (this._handleWidth || 0)) * zoomFactor, 1),
+        Math.max((rect.height - (this._handleHeight || 0)) * zoomFactor, 1));
     this._model.setAvailableSize(availableSize, preferredSize);
   }
 

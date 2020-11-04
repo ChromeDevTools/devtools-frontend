@@ -469,7 +469,6 @@ export class WritableProfileHeader extends ProfileHeader {
   constructor(debuggerModel, type, title) {
     super(type, title || Common.UIString.UIString('Profile %d', type.nextProfileUid()));
     this._debuggerModel = debuggerModel;
-    this._tempFile = null;
   }
 
   /**
@@ -541,10 +540,10 @@ export class WritableProfileHeader extends ProfileHeader {
     }
 
     const accepted = await fileOutputStream.open(this._fileName);
-    if (!accepted || !this._tempFile) {
+    if (!accepted || !this.tempFile) {
       return;
     }
-    const data = await this._tempFile.read();
+    const data = await this.tempFile.read();
     if (data) {
       await fileOutputStream.write(data);
     }
@@ -591,8 +590,8 @@ export class WritableProfileHeader extends ProfileHeader {
   setProtocolProfile(profile) {
     this.setProfile(profile);
     this._protocolProfile = profile;
-    this._tempFile = new Bindings.TempFile.TempFile();
-    this._tempFile.write([JSON.stringify(profile)]);
+    this.tempFile = new Bindings.TempFile.TempFile();
+    this.tempFile.write([JSON.stringify(profile)]);
     if (this.canSaveToFile()) {
       this.dispatchEventToListeners(Events.ProfileReceived);
     }

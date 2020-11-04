@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
+import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-unused-vars
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
@@ -22,6 +20,9 @@ export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper {
     this.title = title;
     this.uid = profileType.incrementProfileUid();
     this._fromFile = false;
+
+    /** @type {?Bindings.TempFile.TempFile} */
+    this.tempFile = null;
   }
 
   /**
@@ -65,8 +66,8 @@ export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   removeTempFile() {
-    if (this._tempFile) {
-      this._tempFile.remove();
+    if (this.tempFile) {
+      this.tempFile.remove();
     }
   }
 
@@ -380,6 +381,7 @@ export class DataDisplayDelegate {
    * @return {?UI.Widget.Widget}
    */
   showProfile(profile) {
+    throw new Error('not implemented');
   }
 
   /**
@@ -394,5 +396,6 @@ export class DataDisplayDelegate {
    * @return {!Promise<?Element>}
    */
   async linkifyObject(nodeIndex) {
+    throw new Error('not implemented');
   }
 }

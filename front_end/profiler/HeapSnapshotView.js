@@ -1536,8 +1536,6 @@ export class HeapProfileHeader extends ProfileHeader {
     });
     this._totalNumberOfChunks = 0;
     this._bufferedWriter = null;
-    /** @type {?Bindings.TempFile.TempFile} */
-    this._tempFile = null;
   }
 
   /**
@@ -1599,7 +1597,7 @@ export class HeapProfileHeader extends ProfileHeader {
       }
       return;
     }
-    this._tempFile = tempFile;
+    this.tempFile = tempFile;
     if (!tempFile) {
       this._failedToCreateTempFile = true;
     }
@@ -1722,8 +1720,8 @@ export class HeapProfileHeader extends ProfileHeader {
         fileOutputStream.close();
         return;
       }
-      if (this._tempFile) {
-        const error = await this._tempFile.copyToOutputStream(fileOutputStream, this._onChunkTransferred.bind(this));
+      if (this.tempFile) {
+        const error = await this.tempFile.copyToOutputStream(fileOutputStream, this._onChunkTransferred.bind(this));
         if (error) {
           Common.Console.Console.instance().error('Failed to read heap snapshot from temp file: ' + error.message);
         }

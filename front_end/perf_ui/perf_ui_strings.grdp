@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_05749a736c8cdc6b2bfb051e0cab6b16" desc="Label for left window resizer for Overview grids">
     Left Resizer
   </message>
+  <message name="IDS_DEVTOOLS_0fa201ee97156080351cfc31f3f6dad7" desc="Aria label for captured screenshots in network panel.">
+    Screenshot for <ph name="FRAMETIME">$1s<ex>3ms</ex></ph> - select to view preceding requests.
+  </message>
   <message name="IDS_DEVTOOLS_19adc2af5b53a592831e2516b777a821" desc="Label for the window for Overview grids">
     Overview grid window
   </message>

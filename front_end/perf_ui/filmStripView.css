@@ -45,7 +45,8 @@
   border: 2px solid transparent;
 }
 
-.film-strip-view .frame:hover .thumbnail {
+.film-strip-view .frame:hover .thumbnail,
+.film-strip-view .frame:focus .thumbnail {
   border-color: #fbca46;
 }
 
@@ -59,6 +60,7 @@
   flex: 0 0 auto;
 }
 
-.film-strip-view .frame:hover .thumbnail img {
+.film-strip-view .frame:hover .thumbnail img,
+.film-strip-view .frame:focus .thumbnail img {
   box-shadow: none;
 }

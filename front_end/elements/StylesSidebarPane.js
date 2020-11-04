@@ -791,7 +791,10 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     const text = (await styleSheetHeader.requestContent()).content || '';
     const lines = text.split('\n');
     const range = TextUtils.TextRange.TextRange.createFromLocation(lines.length - 1, lines[lines.length - 1].length);
-    this._addBlankSection(this._sectionBlocks[0].sections[0], styleSheetHeader.id, range);
+
+    if (this._sectionBlocks && this._sectionBlocks.length > 0) {
+      this._addBlankSection(this._sectionBlocks[0].sections[0], styleSheetHeader.id, range);
+    }
   }
 
   /**

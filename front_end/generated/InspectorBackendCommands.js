@@ -1423,7 +1423,8 @@ export function registerCommands(inspectorBackend) {
     InvalidAllowHeadersPreflightResponse: 'InvalidAllowHeadersPreflightResponse',
     MethodDisallowedByPreflightResponse: 'MethodDisallowedByPreflightResponse',
     HeaderDisallowedByPreflightResponse: 'HeaderDisallowedByPreflightResponse',
-    RedirectContainsCredentials: 'RedirectContainsCredentials'
+    RedirectContainsCredentials: 'RedirectContainsCredentials',
+    InsecurePrivateNetwork: 'InsecurePrivateNetwork'
   });
   inspectorBackend.registerEnum(
       'Network.ServiceWorkerResponseSource',
@@ -1755,6 +1756,12 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Page.CrossOriginIsolatedContextType',
       {Isolated: 'Isolated', NotIsolated: 'NotIsolated', NotIsolatedFeatureDisabled: 'NotIsolatedFeatureDisabled'});
+  inspectorBackend.registerEnum('Page.GatedAPIFeatures', {
+    SharedArrayBuffers: 'SharedArrayBuffers',
+    SharedArrayBuffersTransferAllowed: 'SharedArrayBuffersTransferAllowed',
+    PerformanceMeasureMemory: 'PerformanceMeasureMemory',
+    PerformanceProfile: 'PerformanceProfile'
+  });
   inspectorBackend.registerEnum('Page.TransitionType', {
     Link: 'link',
     Typed: 'typed',
@@ -2292,6 +2299,8 @@ export function registerCommands(inspectorBackend) {
   });
   inspectorBackend.registerEnum('Tracing.StreamFormat', {Json: 'json', Proto: 'proto'});
   inspectorBackend.registerEnum('Tracing.StreamCompression', {None: 'none', Gzip: 'gzip'});
+  inspectorBackend.registerEnum(
+      'Tracing.MemoryDumpLevelOfDetail', {Background: 'background', Light: 'light', Detailed: 'detailed'});
   inspectorBackend.registerEvent('Tracing.bufferUsage', ['percentFull', 'eventCount', 'value']);
   inspectorBackend.registerEvent('Tracing.dataCollected', ['value']);
   inspectorBackend.registerEvent(
@@ -2301,7 +2310,11 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Tracing.recordClockSyncMarker', [{'name': 'syncId', 'type': 'string', 'optional': false}], []);
   inspectorBackend.registerCommand(
-      'Tracing.requestMemoryDump', [{'name': 'deterministic', 'type': 'boolean', 'optional': true}],
+      'Tracing.requestMemoryDump',
+      [
+        {'name': 'deterministic', 'type': 'boolean', 'optional': true},
+        {'name': 'levelOfDetail', 'type': 'string', 'optional': true}
+      ],
       ['dumpGuid', 'success']);
   inspectorBackend.registerEnum(
       'Tracing.StartRequestTransferMode', {ReportEvents: 'ReportEvents', ReturnAsStream: 'ReturnAsStream'});

@@ -41,12 +41,6 @@ Root.allDescriptors = Root.allDescriptors || [];
 // @ts-ignore
 Root.applicationDescriptor = Root.applicationDescriptor || undefined;
 
-/** @type {Function} */
-let appStartedPromiseCallback;
-Runtime.appStarted = new Promise(fulfil => {
-  appStartedPromiseCallback = fulfil;
-});
-
 /**
  * @param {string} appName
  * @return {!Promise.<void>}
@@ -83,7 +77,7 @@ export async function startApplication(appName) {
   if (coreModuleNames) {
     await runtimeInstance.loadAutoStartModules(coreModuleNames);
   }
-  appStartedPromiseCallback();
+  RootModule.Runtime.appStartedPromiseCallback();
 }
 
 /**

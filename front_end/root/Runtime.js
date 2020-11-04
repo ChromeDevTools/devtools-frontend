@@ -591,6 +591,13 @@ export class RuntimeExtensionDescriptor {
 
     /** @type {string|null} */
     this.viewId;
+
+    /** @type {?string} */
+    this.persistence;
+    /** @type {?string} */
+    this.setting;
+    /** @type {?string} */
+    this.name;
   }
 }
 
@@ -1141,3 +1148,10 @@ export const cachedResources = new Map();
 // Do not use this global in DevTools' implementation.
 // TODO(crbug.com/1127292): remove this global
 globalThis.EXPORTED_CACHED_RESOURCES_ONLY_FOR_LIGHTHOUSE = cachedResources;
+
+/** @type {function():void} */
+export let appStartedPromiseCallback;
+/** @type {!Promise<void>} */
+export const appStarted = new Promise(fulfill => {
+  appStartedPromiseCallback = fulfill;
+});

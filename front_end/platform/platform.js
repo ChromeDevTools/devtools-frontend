@@ -43,5 +43,5 @@ import * as UIString from './UIString.js';
  */
 export const {ls} = UIString;
 
-export {Multimap} from './utilities.js';
+export {Multimap, runOnWindowLoad} from './utilities.js';
 export {ArrayUtilities, DateUtilities, MapUtilities, NumberUtilities, SetUtilities, StringUtilities, UIString};

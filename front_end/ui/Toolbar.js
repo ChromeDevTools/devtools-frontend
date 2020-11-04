@@ -441,7 +441,8 @@ export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
    */
   constructor(element) {
     super();
-    this.element = element;
+    /** @type {!HTMLElement} */
+    this.element = /** @type {!HTMLElement} */ (element);
     this.element.classList.add('toolbar-item');
     this._visible = true;
     this._enabled = true;

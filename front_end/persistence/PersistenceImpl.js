@@ -42,7 +42,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {{forceNew: ?boolean}} opts
+   * @param {{forceNew: ?boolean, workspace: ?Workspace.Workspace.WorkspaceImpl, breakpointManager: ?Bindings.BreakpointManager.BreakpointManager}} opts
    */
   static instance(opts = {forceNew: null, workspace: null, breakpointManager: null}) {
     const {forceNew, workspace, breakpointManager} = opts;

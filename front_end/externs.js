@@ -870,12 +870,6 @@ const createPlainTextSearchRegex = function(query, flags) {};
 const suppressUnused = function(value) {};
 
 /**
- * TODO: move into its own module
- * @param {function()} callback
- */
-const runOnWindowLoad = function(callback) {};
-
-/**
  * @template T
  * @param {function(new:T, ...)} constructorFunction
  * @return {!T}

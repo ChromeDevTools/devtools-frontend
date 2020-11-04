@@ -7,5 +7,5 @@ import("../../scripts/build/ninja/devtools_entrypoint.gni")
 devtools_entrypoint("bundle") {
   entrypoint = "toolbox_bootstrap.js"
 
-  deps = []
+  deps = [ "../platform:bundle" ]
 }

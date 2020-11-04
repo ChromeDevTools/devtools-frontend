@@ -584,25 +584,23 @@ self.setImmediate = function(callback) {
 };
 
 /**
- * TODO: move into its own module
- * @param {function()} callback
- * @suppressGlobalPropertiesCheck
+ * @param {function():void} callback
  */
-self.runOnWindowLoad = function(callback) {
+export function runOnWindowLoad(callback) {
   /**
    * @suppressGlobalPropertiesCheck
    */
   function windowLoaded() {
-    self.removeEventListener('DOMContentLoaded', windowLoaded, false);
+    window.removeEventListener('DOMContentLoaded', windowLoaded, false);
     callback();
   }
 
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
     callback();
   } else {
-    self.addEventListener('DOMContentLoaded', windowLoaded, false);
+    window.addEventListener('DOMContentLoaded', windowLoaded, false);
   }
-};
+}
 
 const _singletonSymbol = Symbol('singleton');
 

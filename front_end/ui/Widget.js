@@ -60,7 +60,11 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
       this.element = /** @type {!WidgetElement} */ (document.createElement('div'));
       this.element.classList.add('vbox');
       this.element.classList.add('flex-auto');
-      this._shadowRoot = createShadowRootWithCoreStyles(this.element, undefined, delegatesFocus);
+      this._shadowRoot = createShadowRootWithCoreStyles(this.element, {
+        cssFile: undefined,
+        enableLegacyPatching: true,
+        delegatesFocus,
+      });
       this._shadowRoot.appendChild(this.contentElement);
     } else {
       this.element = /** @type {!WidgetElement} */ (this.contentElement);

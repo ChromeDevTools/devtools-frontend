@@ -55,7 +55,9 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     /** @type {!WeakMap<!SDK.DOMModel.DOMNode, !ElementsTreeElement>} */
     this.treeElementByNode = new WeakMap();
     const shadowContainer = createElement('div');
-    this._shadowRoot = UI.Utils.createShadowRootWithCoreStyles(shadowContainer, 'elements/elementsTreeOutline.css');
+    this._shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
+        shadowContainer,
+        {cssFile: 'elements/elementsTreeOutline.css', enableLegacyPatching: true, delegatesFocus: undefined});
     const outlineDisclosureElement = this._shadowRoot.createChild('div', 'elements-disclosure');
 
     this._element = this.element;

@@ -105,7 +105,8 @@ export class FocusDebuggeeActionDelegate {
 export class NodeIndicator {
   constructor() {
     const element = createElement('div');
-    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(element, 'inspector_main/nodeIcon.css');
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
+        element, {cssFile: 'inspector_main/nodeIcon.css', enableLegacyPatching: true, delegatesFocus: undefined});
     this._element = shadowRoot.createChild('div', 'node-icon');
     element.addEventListener(
         'click', () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openNodeFrontend(), false);

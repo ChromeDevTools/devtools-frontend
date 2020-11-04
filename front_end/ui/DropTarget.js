@@ -78,7 +78,8 @@ export class DropTarget {
       return;
     }
     this._dragMaskElement = this._element.createChild('div', '');
-    const shadowRoot = createShadowRootWithCoreStyles(this._dragMaskElement, 'ui/dropTarget.css');
+    const shadowRoot = createShadowRootWithCoreStyles(
+        this._dragMaskElement, {cssFile: 'ui/dropTarget.css', enableLegacyPatching: true, delegatesFocus: undefined});
     shadowRoot.createChild('div', 'drop-target-message').textContent = this._messageText;
     this._dragMaskElement.addEventListener('drop', this._onDrop.bind(this), true);
     this._dragMaskElement.addEventListener('dragleave', this._onDragLeave.bind(this), true);

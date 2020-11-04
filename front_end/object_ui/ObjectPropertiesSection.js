@@ -109,7 +109,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
   static defaultObjectPropertiesSection(object, linkifier, skipProto, readOnly) {
     const titleElement = document.createElement('span');
     titleElement.classList.add('source-code');
-    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(titleElement, 'object_ui/objectValue.css');
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
+        titleElement, {cssFile: 'object_ui/objectValue.css', enableLegacyPatching: true, delegatesFocus: undefined});
     const propertyValue =
         ObjectPropertiesSection.createPropertyValue(object, /* wasThrown */ false, /* showPreview */ true);
     shadowRoot.appendChild(propertyValue.element);

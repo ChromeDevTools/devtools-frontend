@@ -551,7 +551,10 @@ export class OverviewInfo {
     this._glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     this._visible = false;
     this._element =
-        UI.Utils.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'perf_ui/timelineOverviewInfo.css')
+        UI.Utils
+            .createShadowRootWithCoreStyles(
+                this._glassPane.contentElement,
+                {cssFile: 'perf_ui/timelineOverviewInfo.css', enableLegacyPatching: true, delegatesFocus: undefined})
             .createChild('div', 'overview-info');
   }
 

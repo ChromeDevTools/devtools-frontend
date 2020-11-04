@@ -18,7 +18,8 @@ import {CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-u
 export class BezierSwatch extends HTMLSpanElement {
   constructor() {
     super();
-    const root = UI.Utils.createShadowRootWithCoreStyles(this, 'inline_editor/bezierSwatch.css');
+    const root = UI.Utils.createShadowRootWithCoreStyles(
+        this, {cssFile: 'inline_editor/bezierSwatch.css', enableLegacyPatching: true, delegatesFocus: undefined});
     this._iconElement = UI.Icon.Icon.create('smallicon-bezier', 'bezier-swatch-icon');
     root.appendChild(this._iconElement);
     this._textElement = this.createChild('span');
@@ -72,7 +73,8 @@ export class BezierSwatch extends HTMLSpanElement {
 export class CSSShadowSwatch extends HTMLSpanElement {
   constructor() {
     super();
-    const root = UI.Utils.createShadowRootWithCoreStyles(this, 'inline_editor/cssShadowSwatch.css');
+    const root = UI.Utils.createShadowRootWithCoreStyles(
+        this, {cssFile: 'inline_editor/cssShadowSwatch.css', enableLegacyPatching: true, delegatesFocus: undefined});
     this._iconElement = UI.Icon.Icon.create('smallicon-shadow', 'shadow-swatch-icon');
     root.appendChild(this._iconElement);
     root.createChild('slot');

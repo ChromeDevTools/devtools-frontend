@@ -734,7 +734,8 @@ export class Section {
    * @return {!Element}
    */
   _wrapWidget(container) {
-    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(container);
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
+        container, {cssFile: undefined, enableLegacyPatching: true, delegatesFocus: undefined});
     UI.Utils.appendStyle(shadowRoot, 'resources/serviceWorkersView.css', {enableLegacyPatching: true});
     const contentElement = document.createElement('div');
     shadowRoot.appendChild(contentElement);

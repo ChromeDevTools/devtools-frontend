@@ -39,7 +39,8 @@ export class ProgressIndicator {
   constructor() {
     this.element = document.createElement('div');
     this.element.classList.add('progress-indicator');
-    this._shadowRoot = createShadowRootWithCoreStyles(this.element, 'ui/progressIndicator.css');
+    this._shadowRoot = createShadowRootWithCoreStyles(
+        this.element, {cssFile: 'ui/progressIndicator.css', enableLegacyPatching: true, delegatesFocus: undefined});
     this._contentElement = this._shadowRoot.createChild('div', 'progress-indicator-shadow-container');
 
     this._labelElement = this._contentElement.createChild('div', 'title');

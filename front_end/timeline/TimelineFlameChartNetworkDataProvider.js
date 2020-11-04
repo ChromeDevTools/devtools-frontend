@@ -339,7 +339,9 @@ export class TimelineFlameChartNetworkDataProvider {
       return null;
     }
     const element = document.createElement('div');
-    const root = UI.Utils.createShadowRootWithCoreStyles(element, 'timeline/timelineFlamechartPopover.css');
+    const root = UI.Utils.createShadowRootWithCoreStyles(
+        element,
+        {cssFile: 'timeline/timelineFlamechartPopover.css', enableLegacyPatching: true, delegatesFocus: undefined});
     const contents = root.createChild('div', 'timeline-flamechart-popover');
     const startTime = request.getStartTime();
     const duration = request.endTime - startTime;

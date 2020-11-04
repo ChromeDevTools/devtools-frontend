@@ -46,8 +46,11 @@ export class SoftDropDown {
     this._list.element.classList.add('item-list');
     this._rowHeight = 36;
     this._width = 315;
-    createShadowRootWithCoreStyles(this._glassPane.contentElement, 'ui/softDropDown.css')
-        .appendChild(this._list.element);
+    createShadowRootWithCoreStyles(this._glassPane.contentElement, {
+      cssFile: 'ui/softDropDown.css',
+      enableLegacyPatching: true,
+      delegatesFocus: undefined
+    }).appendChild(this._list.element);
     ARIAUtils.markAsMenu(this._list.element);
 
     this._listWasShowing200msAgo = false;

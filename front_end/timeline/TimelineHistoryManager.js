@@ -305,8 +305,9 @@ export class DropDown {
     this._glassPane.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
     this._glassPane.element.addEventListener('blur', () => this._close(null));
 
-    const shadowRoot =
-        UI.Utils.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'timeline/timelineHistoryManager.css');
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
+        this._glassPane.contentElement,
+        {cssFile: 'timeline/timelineHistoryManager.css', enableLegacyPatching: true, delegatesFocus: undefined});
     const contentElement = shadowRoot.createChild('div', 'drop-down');
 
     const listModel = new UI.ListModel.ListModel();

@@ -21,7 +21,8 @@ export class Tooltip {
    */
   constructor(doc) {
     this.element = doc.body.createChild('div');
-    this._shadowRoot = createShadowRootWithCoreStyles(this.element, 'ui/tooltip.css');
+    this._shadowRoot = createShadowRootWithCoreStyles(
+        this.element, {cssFile: 'ui/tooltip.css', enableLegacyPatching: true, delegatesFocus: undefined});
 
     this._tooltipElement = this._shadowRoot.createChild('div', 'tooltip');
     doc.addEventListener('mousemove', this._mouseMove.bind(this), true);

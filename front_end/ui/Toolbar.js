@@ -63,7 +63,8 @@ export class Toolbar {
     this.element.className = className;
     this.element.classList.add('toolbar');
     this._enabled = true;
-    this._shadowRoot = createShadowRootWithCoreStyles(this.element, 'ui/toolbar.css');
+    this._shadowRoot = createShadowRootWithCoreStyles(
+        this.element, {cssFile: 'ui/toolbar.css', enableLegacyPatching: true, delegatesFocus: undefined});
     this._contentElement = this._shadowRoot.createChild('div', 'toolbar-shadow');
     this._insertionPoint = this._contentElement.createChild('slot');
   }

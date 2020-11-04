@@ -100,7 +100,10 @@ export class SettingsScreen extends UI.Widget.VBox {
 
     const settingsLabelElement = document.createElement('div');
     const settingsTitleElement =
-        UI.Utils.createShadowRootWithCoreStyles(settingsLabelElement, 'settings/settingsScreen.css')
+        UI.Utils
+            .createShadowRootWithCoreStyles(
+                settingsLabelElement,
+                {cssFile: 'settings/settingsScreen.css', enableLegacyPatching: true, delegatesFocus: undefined})
             .createChild('div', 'settings-window-title');
 
     UI.ARIAUtils.markAsHeading(settingsTitleElement, 1);

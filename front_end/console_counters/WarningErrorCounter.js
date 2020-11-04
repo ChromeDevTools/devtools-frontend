@@ -29,7 +29,9 @@ export class WarningErrorCounter {
     function createCounter(parent, delegate) {
       const container = parent.createChild('div');
       container.classList.add('main-toolbar-counter');
-      const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(container, 'console_counters/warningErrorCounter.css');
+      const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
+          container,
+          {cssFile: 'console_counters/warningErrorCounter.css', enableLegacyPatching: true, delegatesFocus: undefined});
       const button = shadowRoot.createChild('button');
       button.classList.add('toolbar-counter-button', 'hidden');
       button.addEventListener('click', delegate, false);

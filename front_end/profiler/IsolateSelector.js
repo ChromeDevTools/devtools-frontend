@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
@@ -68,7 +65,10 @@ export class IsolateSelector extends UI.Widget.VBox {
   isolateAdded(isolate) {
     this._list.element.tabIndex = 0;
     const item = new ListItem(isolate);
-    const index = item.model().target() === SDK.SDKModel.TargetManager.instance().mainTarget() ? 0 : this._items.length;
+    const index = /** @type {!SDK.RuntimeModel.RuntimeModel} */ (item.model()).target() ===
+            SDK.SDKModel.TargetManager.instance().mainTarget() ?
+        0 :
+        this._items.length;
     this._items.insert(index, item);
     this._itemByIsolate.set(isolate, item);
     if (this._items.length === 1 || isolate.isMainThread()) {
@@ -83,7 +83,9 @@ export class IsolateSelector extends UI.Widget.VBox {
    */
   isolateChanged(isolate) {
     const item = this._itemByIsolate.get(isolate);
-    item.updateTitle();
+    if (item) {
+      item.updateTitle();
+    }
     this._update();
   }
 
@@ -93,7 +95,9 @@ export class IsolateSelector extends UI.Widget.VBox {
    */
   isolateRemoved(isolate) {
     const item = this._itemByIsolate.get(isolate);
-    this._items.remove(this._items.indexOf(item));
+    if (item) {
+      this._items.remove(this._items.indexOf(item));
+    }
     this._itemByIsolate.delete(isolate);
     if (this._items.length === 0) {
       this._list.element.tabIndex = -1;
@@ -187,6 +191,8 @@ export class IsolateSelector extends UI.Widget.VBox {
    * @return {number}
    */
   heightForItem(item) {
+    console.assert(false, 'should not be called');
+    return 0;
   }
 
   /**

@@ -27,8 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as Coverage from '../coverage/coverage.js';
@@ -39,7 +37,7 @@ import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as UI from '../ui/ui.js';
 
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
-import {EventDispatchTypeDescriptor, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
+import {EventDispatchTypeDescriptor, TimelineCategory, TimelineRecordStyle, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -128,6 +126,9 @@ export class TimelineEventOverviewInput extends TimelineEventOverview {
           if (!descriptor || descriptor.priority !== priority) {
             continue;
           }
+          if (event.endTime === undefined) {
+            continue;
+          }
           const start =
               Platform.NumberUtilities.clamp(Math.floor((event.startTime - timeOffset) * scale), 0, canvasWidth);
           const end = Platform.NumberUtilities.clamp(Math.ceil((event.endTime - timeOffset) * scale), 0, canvasWidth);
@@ -182,13 +183,17 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
   }
 }
 
+/** @type {!WeakMap<!TimelineCategory, number>} */
+const categoryToIndex = new WeakMap();
+
 /**
  * @unrestricted
  */
 export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   constructor() {
     super('cpu-activity', Common.UIString.UIString('CPU'));
-    this._backgroundCanvas = this.element.createChild('canvas', 'fill background');
+    /** @type {!HTMLCanvasElement} */
+    this._backgroundCanvas = /** @type {!HTMLCanvasElement} */ (this.element.createChild('canvas', 'fill background'));
   }
 
   /**
@@ -223,10 +228,13 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     const idleIndex = 0;
     console.assert(idleIndex === categoryOrder.indexOf('idle'));
     for (let i = idleIndex + 1; i < categoryOrder.length; ++i) {
-      categories[categoryOrder[i]]._overviewIndex = i;
+      categoryToIndex.set(categories[categoryOrder[i]], i);
     }
 
-    const backgroundContext = this._backgroundCanvas.getContext('2d');
+    const backgroundContext = /** @type {?CanvasRenderingContext2D} */ (this._backgroundCanvas.getContext('2d'));
+    if (!backgroundContext) {
+      throw new Error('Could not find 2d canvas');
+    }
     for (const track of timelineModel.tracks()) {
       if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame) {
         drawThreadEvents(this.context(), track.events);
@@ -243,8 +251,11 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     function drawThreadEvents(ctx, events) {
       const quantizer = new Quantizer(timeOffset, quantTime, drawSample);
       let x = 0;
+      /** @type {!Array<number>} */
       const categoryIndexStack = [];
+      /** @type {!Array<!Path2D>} */
       const paths = [];
+      /** @type {!Array<number>} */
       const lastY = [];
       for (let i = 0; i < categoryOrder.length; ++i) {
         paths[i] = new Path2D();
@@ -271,15 +282,18 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
        */
       function onEventStart(e) {
         const index = categoryIndexStack.length ? categoryIndexStack.peekLast() : idleIndex;
-        quantizer.appendInterval(e.startTime, index);
-        categoryIndexStack.push(TimelineUIUtils.eventStyle(e).category._overviewIndex || otherIndex);
+        quantizer.appendInterval(e.startTime, /** @type {number} */ (index));
+        categoryIndexStack.push(categoryToIndex.get(TimelineUIUtils.eventStyle(e).category) || otherIndex);
       }
 
       /**
        * @param {!SDK.TracingModel.Event} e
        */
       function onEventEnd(e) {
-        quantizer.appendInterval(e.endTime, categoryIndexStack.pop());
+        const lastCategoryIndex = categoryIndexStack.pop();
+        if (e.endTime !== undefined && lastCategoryIndex) {
+          quantizer.appendInterval(e.endTime, lastCategoryIndex);
+        }
       }
 
       TimelineModel.TimelineModel.TimelineModelImpl.forEachEvent(events, onEventStart, onEventEnd);
@@ -331,8 +345,7 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
     const timeSpan = this._model.timelineModel().maximumRecordTime() - timeOffset;
     const scale = this.width() / timeSpan;
     const frames = this._model.frames();
-    // This is due to usage of new signatures of fill() and storke() that closure compiler does not recognize.
-    const ctx = /** @type {!Object} */ (this.context());
+    const ctx = this.context();
     const fillPath = new Path2D();
     const markersPath = new Path2D();
     for (let i = 0; i < frames.length; ++i) {
@@ -349,7 +362,10 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
         if (!TimelineModel.TimelineModel.TimelineData.forEvent(events[i]).warning) {
           continue;
         }
-        paintWarningDecoration(events[i].startTime, events[i].duration);
+        const duration = events[i].duration;
+        if (duration !== undefined) {
+          paintWarningDecoration(events[i].startTime, duration);
+        }
       }
     }
 
@@ -379,6 +395,12 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
 export class TimelineFilmStripOverview extends TimelineEventOverview {
   constructor() {
     super('filmstrip', null);
+    /** @type {!Map<!SDK.FilmStripModel.Frame,!Promise<!HTMLImageElement>>} */
+    this._frameToImagePromise = new Map();
+    /** @type {?SDK.FilmStripModel.Frame} */
+    this._lastFrame = null;
+    /** @type {?Element} */
+    this._lastElement = null;
     this.reset();
   }
 
@@ -413,11 +435,13 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
    * @param {!SDK.FilmStripModel.Frame} frame
    * @return {!Promise<?HTMLImageElement>}
    */
-  _imageByFrame(frame) {
+  async _imageByFrame(frame) {
+    /** @type {(!Promise<?HTMLImageElement>|undefined)} */
     let imagePromise = this._frameToImagePromise.get(frame);
     if (!imagePromise) {
-      imagePromise = frame.imageDataPromise().then(data => UI.UIUtils.loadImageFromData(data));
-      this._frameToImagePromise.set(frame, imagePromise);
+      const data = await frame.imageDataPromise();
+      imagePromise = UI.UIUtils.loadImageFromData(data);
+      this._frameToImagePromise.set(frame, /** @type {!Promise<!HTMLImageElement>} */ (imagePromise));
     }
     return imagePromise;
   }
@@ -474,41 +498,37 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
    * @param {number} x
    * @return {!Promise<?Element>}
    */
-  overviewInfoPromise(x) {
+  async overviewInfoPromise(x) {
     if (!this._model || !this._model.filmStripModel().frames().length) {
-      return Promise.resolve(/** @type {?Element} */ (null));
+      return null;
     }
 
-    const time = this.calculator().positionToTime(x);
+    const calculator = this.calculator();
+    if (!calculator) {
+      return null;
+    }
+    const time = calculator.positionToTime(x);
     const frame = this._model.filmStripModel().frameByTimestamp(time);
     if (frame === this._lastFrame) {
-      return Promise.resolve(this._lastElement);
+      return this._lastElement;
     }
     const imagePromise = frame ? this._imageByFrame(frame) : Promise.resolve(this._emptyImage);
-    return imagePromise.then(createFrameElement.bind(this));
-
-    /**
-     * @this {TimelineFilmStripOverview}
-     * @param {?HTMLImageElement} image
-     * @return {?Element}
-     */
-    function createFrameElement(image) {
-      const element = document.createElement('div');
-      element.classList.add('frame');
-      if (image) {
-        element.createChild('div', 'thumbnail').appendChild(image);
-      }
+    const image = await imagePromise;
+    const element = document.createElement('div');
+    element.classList.add('frame');
+    if (image) {
+      element.createChild('div', 'thumbnail').appendChild(image);
+    }
       this._lastFrame = frame;
       this._lastElement = element;
       return element;
-    }
   }
 
   /**
    * @override
    */
   reset() {
-    this._lastFrame = undefined;
+    this._lastFrame = null;
     this._lastElement = null;
     /** @type {!Map<!SDK.FilmStripModel.Frame,!Promise<!HTMLImageElement>>} */
     this._frameToImagePromise = new Map();
@@ -567,7 +587,9 @@ export class TimelineEventOverviewFrames extends TimelineEventOverview {
       ctx.lineTo(x, y);
     }
     const lastFrame = frames.peekLast();
-    x = Math.round((lastFrame.startTime + lastFrame.duration - timeOffset) * scale) + offset;
+    if (lastFrame) {
+      x = Math.round((lastFrame.startTime + lastFrame.duration - timeOffset) * scale) + offset;
+    }
     ctx.lineTo(x, y);
     ctx.lineTo(x, bottomY);
     ctx.fillStyle = 'hsl(110, 50%, 88%)';
@@ -714,12 +736,13 @@ export class Quantizer {
   /**
    * @param {number} startTime
    * @param {number} quantDuration
-   * @param {function(!Array<number>)} callback
+   * @param {function(!Array<number>):void} callback
    */
   constructor(startTime, quantDuration, callback) {
     this._lastTime = startTime;
     this._quantDuration = quantDuration;
     this._callback = callback;
+    /** @type {!Array<number>} */
     this._counters = [];
     this._remainder = quantDuration;
   }
@@ -771,8 +794,11 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
    */
   setModel(model) {
     super.setModel(model);
-    if (this._model) {
-      this._coverageModel = model.mainTarget().model(Coverage.CoverageModel.CoverageModel);
+    if (model) {
+      const mainTarget = model.mainTarget();
+      if (mainTarget) {
+        this._coverageModel = mainTarget.model(Coverage.CoverageModel.CoverageModel);
+      }
     }
   }
 
@@ -789,9 +815,9 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
 
     let total = 0;
     let total_used = 0;
-    /** @type {!Map<!Coverage.CoverageModel.CoverageInfo>} */
+    /** @type {!Map<number, number>} */
     const usedByTimestamp = new Map();
-    /** @type {!Map<!Coverage.CoverageModel.CoverageInfo>} */
+    /** @type {!Map<number, !Set<!Coverage.CoverageModel.CoverageInfo>>} */
     const totalByTimestamp = new Map();
     for (const urlInfo of this._coverageModel.entries()) {
       for (const info of urlInfo.entries()) {
@@ -799,15 +825,20 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
         for (const [stamp, used] of info.usedByTimestamp()) {
           total_used += used;
 
-          if (!totalByTimestamp.has(stamp)) {
-            totalByTimestamp.set(stamp, new Set());
-          }
-          totalByTimestamp.get(stamp).add(info);
+          let uniqueTimestamps = totalByTimestamp.get(stamp);
 
-          if (!usedByTimestamp.has(stamp)) {
+          if (uniqueTimestamps === undefined) {
+            uniqueTimestamps = new Set();
+            totalByTimestamp.set(stamp, uniqueTimestamps);
+          }
+          uniqueTimestamps.add(info);
+
+          const previousCount = usedByTimestamp.get(stamp);
+
+          if (previousCount === undefined) {
             usedByTimestamp.set(stamp, used);
           } else {
-            usedByTimestamp.set(stamp, usedByTimestamp.get(stamp) + used);
+            usedByTimestamp.set(stamp, previousCount + used);
           }
         }
       }
@@ -829,7 +860,7 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
         seen.add(info);
         sumTotal += info.size();
       }
-      sumUsed += usedByTimestamp.get(stamp);
+      sumUsed += usedByTimestamp.get(stamp) || 0;
       coverageByTimestamp.set(stamp, sumUsed / sumTotal);
     }
 
@@ -837,6 +868,9 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
     const lowerOffset = 3 * ratio;
 
     const millisecondsPerSecond = 1000;
+    if (!this._model) {
+      return;
+    }
     const minTime = this._model.timelineModel().minimumRecordTime() / millisecondsPerSecond;
     const maxTime = this._model.timelineModel().maximumRecordTime() / millisecondsPerSecond;
 
@@ -857,6 +891,7 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
 
     let previous = null;
     for (const stamp of this._coverageModel.coverageUpdateTimes()) {
+      /** @type {?number} */
       const coverage = coverageByTimestamp.get(stamp) || previous;
       previous = coverage;
       if (!coverage) {
@@ -885,6 +920,7 @@ export class TimelineEventOverviewCoverage extends TimelineEventOverview {
 
     previous = null;
     for (const stamp of this._coverageModel.coverageUpdateTimes()) {
+      /** @type {?number} */
       const coverage = coverageByTimestamp.get(stamp) || previous;
       previous = coverage;
       if (!coverage) {

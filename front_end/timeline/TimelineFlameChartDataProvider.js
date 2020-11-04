@@ -210,7 +210,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this._asyncColorByInteractionPhase = new Map();
     /** @type {!Array<!{title: string, model: !SDK.TracingModel.TracingModel}>} */
     this._extensionInfo = [];
-    /** @type {!Map<!SDK.FilmStripModel.Frame, ?Image>} */
+    /** @type {!Map<!SDK.FilmStripModel.Frame, ?HTMLImageElement>} */
     this._screenshotImageCache = new Map();
   }
 

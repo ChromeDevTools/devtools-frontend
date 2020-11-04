@@ -848,6 +848,7 @@ export class CoverageInfo {
     this._contentProvider = contentProvider;
     this._size = size;
     this._usedSize = 0;
+    /** @type {!Map<number, number>} */
     this._statsByTimestamp = new Map();
     this._lineOffset = lineOffset;
     this._columnOffset = columnOffset;
@@ -914,14 +915,15 @@ export class CoverageInfo {
 
     let last = 0;
     for (const segment of this._segments) {
-      if (!this._statsByTimestamp.has(segment.stamp)) {
-        this._statsByTimestamp.set(segment.stamp, 0);
+      let previousCount = this._statsByTimestamp.get(segment.stamp);
+      if (previousCount === undefined) {
+        previousCount = 0;
       }
 
       if (segment.count) {
         const used = segment.end - last;
         this._usedSize += used;
-        this._statsByTimestamp.set(segment.stamp, this._statsByTimestamp.get(segment.stamp) + used);
+        this._statsByTimestamp.set(segment.stamp, previousCount + used);
       }
       last = segment.end;
     }

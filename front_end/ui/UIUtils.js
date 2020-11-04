@@ -1799,7 +1799,7 @@ export function loadImage(url) {
 
 /**
  * @param {?string} data
- * @return {!Promise<?Image>}
+ * @return {!Promise<?HTMLImageElement>}
  */
 export function loadImageFromData(data) {
   return data ? loadImage('data:image/jpg;base64,' + data) : Promise.resolve(null);

@@ -56,7 +56,7 @@ CPUProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
   const profilesPanel = UI.panels.js_profiler;
 
   if (profilesPanel.visibleView && profilesPanel.visibleView.profile &&
-      profilesPanel.visibleView._profileHeader.title === title) {
+      profilesPanel.visibleView.profileHeader.title === title) {
     callback(profilesPanel.visibleView);
   } else {
     CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback = {title: title, callback: callback};
@@ -65,7 +65,7 @@ CPUProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
 
 CPUProfilerTestRunner._profileViewRefresh = function() {
   if (CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback &&
-      CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback.title === this._profileHeader.title) {
+      CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback.title === this.profileHeader.title) {
     const callback = CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback;
     delete CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback;
     callback.callback(this);

@@ -29,7 +29,7 @@ export class HeapProfileView extends ProfileView {
   constructor(profileHeader) {
     super();
 
-    this._profileHeader = profileHeader;
+    this.profileHeader = profileHeader;
     this._profileType = profileHeader.profileType();
     this.initialize(new NodeFormatter(this));
     const profile = new SamplingHeapProfileModel(profileHeader._profile || profileHeader.protocolProfile());
@@ -76,8 +76,8 @@ export class HeapProfileView extends ProfileView {
    * @param {number} maxId
    */
   _setSelectionRange(minId, maxId) {
-    const profile = new SamplingHeapProfileModel(
-        this._profileHeader._profile || this._profileHeader.protocolProfile(), minId, maxId);
+    const profile =
+        new SamplingHeapProfileModel(this.profileHeader._profile || this.profileHeader.protocolProfile(), minId, maxId);
     this.adjustedTotal = profile.total;
     this.setProfile(profile);
   }
@@ -144,7 +144,7 @@ export class HeapProfileView extends ProfileView {
    */
   createFlameChartDataProvider() {
     return new HeapFlameChartDataProvider(
-        /** @type {!SamplingHeapProfileModel} */ (this.profile()), this._profileHeader.heapProfilerModel());
+        /** @type {!SamplingHeapProfileModel} */ (this.profile()), this.profileHeader.heapProfilerModel());
   }
 
 }
@@ -519,7 +519,7 @@ export class NodeFormatter {
    * @return {?Element}
    */
   linkifyNode(node) {
-    const heapProfilerModel = this._profileView._profileHeader.heapProfilerModel();
+    const heapProfilerModel = this._profileView.profileHeader.heapProfilerModel();
     const target = heapProfilerModel ? heapProfilerModel.target() : null;
     const options = {className: 'profile-node-file'};
     return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(target, node.profileNode.callFrame, options);

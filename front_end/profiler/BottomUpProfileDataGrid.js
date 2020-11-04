@@ -252,6 +252,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
 
   /**
    * When focusing, we keep the entire callstack up to this ancestor.
+   * @override
    * @param {!ProfileDataGridNode} profileDataGridNode
    */
   focus(profileDataGridNode) {
@@ -280,6 +281,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
   }
 
   /**
+   * @override
    * @param {!ProfileDataGridNode} profileDataGridNode
    */
   exclude(profileDataGridNode) {

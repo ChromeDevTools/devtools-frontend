@@ -416,6 +416,14 @@ export class ProfileDataGridTree {
     this.insertChild(child, this.children.length);
   }
 
+  /** @param {!ProfileDataGridNode} profileDataGridNode */
+  focus(profileDataGridNode) {
+  }
+
+  /** @param {!ProfileDataGridNode} profileDataGridNode */
+  exclude(profileDataGridNode) {
+  }
+
   insertChild(child, index) {
     this.children.splice(index, 0, child);
     this.childrenByCallUID.set(child.callUID, child);

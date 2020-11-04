@@ -112,6 +112,7 @@ export class TopDownProfileDataGridTree extends ProfileDataGridTree {
   }
 
   /**
+   * @override
    * @param {!ProfileDataGridNode} profileDataGridNode
    */
   focus(profileDataGridNode) {
@@ -127,6 +128,7 @@ export class TopDownProfileDataGridTree extends ProfileDataGridTree {
   }
 
   /**
+   * @override
    * @param {!ProfileDataGridNode} profileDataGridNode
    */
   exclude(profileDataGridNode) {

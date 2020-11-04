@@ -548,4 +548,67 @@ describe('CSSPropertyIconResolver', () => {
         findIcon('align-content: baseline', mapFromStyle({})), baselineIconInfo,
         'Assertion for the \'align-content: baseline\' icon failed.');
   });
+
+  it('can find an icon for align-self properties', () => {
+    const tests = [
+      {
+        style: {
+          'align-self': 'flex-start',
+        },
+        parentStyle: {
+          'flex-direction': 'row',
+        },
+        iconName: 'flex-align-self-flex-start-icon',
+        expected: PhysicalFlexDirection.TOP_TO_BOTTOM,
+      },
+      {
+        style: {
+          'align-self': 'flex-start',
+        },
+        parentStyle: {
+          'flex-direction': 'column',
+        },
+        iconName: 'flex-align-self-flex-start-icon',
+        expected: PhysicalFlexDirection.LEFT_TO_RIGHT,
+      },
+      {
+        style: {
+          'align-self': 'flex-start',
+        },
+        parentStyle: {
+          'flex-direction': 'row',
+          'writing-mode': 'vertical-rl',
+        },
+        iconName: 'flex-align-self-flex-start-icon',
+        expected: PhysicalFlexDirection.RIGHT_TO_LEFT,
+      },
+      {
+        style: {
+          'align-self': 'flex-start',
+        },
+        parentStyle: {
+          'writing-mode': 'vertical-lr',
+          'flex-direction': 'row',
+        },
+        iconName: 'flex-align-self-flex-start-icon',
+        expected: PhysicalFlexDirection.LEFT_TO_RIGHT,
+      },
+      {
+        style: {
+          'align-self': 'flex-start',
+        },
+        parentStyle: {
+          'flex-direction': 'column-reverse',
+        },
+        iconName: 'flex-align-self-flex-start-icon',
+        expected: PhysicalFlexDirection.LEFT_TO_RIGHT,
+      },
+    ];
+
+    for (const test of tests) {
+      assert.deepEqual(
+          findIcon(`align-self: ${test.style['align-self']}`, mapFromStyle(test.style), mapFromStyle(test.parentStyle)),
+          rotateAlignItemsIcon(test.iconName, test.expected), `Test align-self(${JSON.stringify(test.style)}) failed.`);
+    }
+  });
 });

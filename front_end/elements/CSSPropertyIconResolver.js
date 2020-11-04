@@ -273,7 +273,24 @@ function baselineIcon() {
 }
 
 /**
- * @type {!Map<string, function(!Map<string, string>):!IconInfo>}
+ *
+ * @param {string} iconName
+ * @return {function(!Map<string, string>,!Map<string, string>)}):!IconInfo}
+ */
+function flexAlignSelfIcon(iconName) {
+  /**
+   * @param {!Map<string, string>} computedStyles
+   * @param {!Map<string, string>} parentComputedStyles
+   * @return {!IconInfo}
+   */
+  function getIcon(computedStyles, parentComputedStyles) {
+    return flexAlignItemsIcon(iconName)(parentComputedStyles);
+  }
+  return getIcon;
+}
+
+/**
+ * @type {!Map<string, function(!Map<string, string>, !Map<string, string>):!IconInfo>}
  */
 const textToIconResolver = new Map();
 
@@ -304,18 +321,23 @@ textToIconResolver.set('align-items: stretch', flexAlignItemsIcon('flex-align-it
 textToIconResolver.set('align-items: flex-end', flexAlignItemsIcon('flex-align-items-flex-end-icon'));
 textToIconResolver.set('align-items: flex-start', flexAlignItemsIcon('flex-align-items-flex-start-icon'));
 textToIconResolver.set('align-items: baseline', baselineIcon);
-textToIconResolver.set('align-self: baseline', baselineIcon);
 textToIconResolver.set('align-content: baseline', baselineIcon);
+textToIconResolver.set('align-self: baseline', baselineIcon);
+textToIconResolver.set('align-self: center', flexAlignSelfIcon('flex-align-self-center-icon'));
+textToIconResolver.set('align-self: flex-start', flexAlignSelfIcon('flex-align-self-flex-start-icon'));
+textToIconResolver.set('align-self: flex-end', flexAlignSelfIcon('flex-align-self-flex-end-icon'));
+textToIconResolver.set('align-self: stretch', flexAlignSelfIcon('flex-align-self-stretch-icon'));
 
 /**
  * @param {string} text
- * @param {!Map<string, string>} computedStyles
+ * @param {?Map<string, string>} computedStyles
+ * @param {?Map<string, string>=} parentComputedStyles
  * @return {?IconInfo}
  */
-export function findIcon(text, computedStyles) {
+export function findIcon(text, computedStyles, parentComputedStyles) {
   const resolver = textToIconResolver.get(text);
   if (resolver) {
-    return resolver(computedStyles);
+    return resolver(computedStyles || new Map(), parentComputedStyles || new Map());
   }
   return null;
 }

@@ -2511,6 +2511,11 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
      * @type {?Map<string, string>}
      */
     this._selectedNodeComputedStyles = null;
+    /**
+     * Computed styles cache populated by cssFlexboxFeatures experiment.
+     * @type {?Map<string, string>}
+     */
+    this._parentNodeComputedStyles = null;
     this._treeElement = treeElement;
     this._isEditingName = isEditingName;
     this._cssVariables = treeElement.matchedStyles().availableCSSVariables(treeElement.property.ownerStyle);
@@ -2701,20 +2706,30 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     if (Root.Runtime.experiments.isEnabled('cssFlexboxFeatures')) {
       const node = this._treeElement.node();
 
-      const getComputedStyle = async () => {
-        if (!node) {
-          return null;
+      const ensureComputedStyles = async () => {
+        if (!node || this._selectedNodeComputedStyles) {
+          return;
         }
-        if (!this._selectedNodeComputedStyles) {
-          this._selectedNodeComputedStyles = await node.domModel().cssModel().computedStylePromise(node.id);
+        this._selectedNodeComputedStyles = await node.domModel().cssModel().computedStylePromise(node.id);
+        const parentNode = node.parentNode;
+        if (parentNode) {
+          this._parentNodeComputedStyles = await parentNode.domModel().cssModel().computedStylePromise(node.id);
         }
-        return this._selectedNodeComputedStyles;
       };
 
       for (const result of results) {
+        await ensureComputedStyles();
+        // Using parent node's computed styles does not work in all cases. For example:
+        //
+        // <div id="container" style="display:flex">
+        //  <div id="useless" style="display:contents">
+        //    <div id="item">item</div>
+        //  </div>
+        // </div>
+        // TODO(crbug/1139945): Find a better way to get the flex container styles.
         const iconInfo = findIcon(
             this._isEditingName ? result.text : `${this._treeElement.property.name}: ${result.text}`,
-            await getComputedStyle());
+            this._selectedNodeComputedStyles, this._parentNodeComputedStyles);
         if (!iconInfo) {
           continue;
         }

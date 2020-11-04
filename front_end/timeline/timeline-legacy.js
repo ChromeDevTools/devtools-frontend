@@ -179,8 +179,6 @@ Timeline.TimelinePanel.StatusPane = TimelineModule.TimelinePanel.StatusPane;
 /** @constructor */
 Timeline.TimelinePanel.ActionDelegate = TimelineModule.TimelinePanel.ActionDelegate;
 
-Timeline.TimelinePanel._traceProviderSettingSymbol = TimelineModule.TimelinePanel.traceProviderSettingSymbol;
-
 /** @constructor */
 Timeline.TimelineSelection = TimelineModule.TimelinePanel.TimelineSelection;
 

@@ -431,7 +431,9 @@ export class NetworkLogViewColumns {
     const visibleColumns = new Set();
     if (this._gridMode) {
       for (const columnConfig of this._columns) {
-        visibleColumns.add(columnConfig.id);
+        if (columnConfig.visible) {
+          visibleColumns.add(columnConfig.id);
+        }
       }
     } else {
       // Find the first visible column from the path group

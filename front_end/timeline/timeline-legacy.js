@@ -131,10 +131,6 @@ Timeline.TimelineFlameChartMarker = TimelineModule.TimelineFlameChartView.Timeli
 /** @constructor */
 Timeline.TimelineHistoryManager = TimelineModule.TimelineHistoryManager.TimelineHistoryManager;
 
-Timeline.TimelineHistoryManager._maxRecordings = TimelineModule.TimelineHistoryManager.maxRecordings;
-Timeline.TimelineHistoryManager._previewWidth = TimelineModule.TimelineHistoryManager.previewWidth;
-Timeline.TimelineHistoryManager._previewDataSymbol = TimelineModule.TimelineHistoryManager.previewDataSymbol;
-
 /** @constructor */
 Timeline.TimelineHistoryManager.DropDown = TimelineModule.TimelineHistoryManager.DropDown;
 

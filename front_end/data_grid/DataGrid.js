@@ -1539,7 +1539,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     // Constrain the dragpoint to be within the space made up by the
     // column directly to the left and the column directly to the right.
     let leftCellIndex = elementToIndexMap.get(resizer);
-    if (!leftCellIndex) {
+    if (leftCellIndex === undefined) {
       return;
     }
     let rightCellIndex = leftCellIndex + 1;

@@ -167,7 +167,6 @@ h1 {
 }
 
 button.text-button {
-  margin-top: -4px;
   width: fit-content;
   align-self: flex-end;
 }
@@ -184,6 +183,7 @@ button.text-button {
 
 .keybinds-footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   min-height: fit-content;
   margin-top: 10px;

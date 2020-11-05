@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
@@ -13,7 +10,7 @@ import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 
 /**
- * @implements {SDK.SDKModel.SDKModelObserver}
+ * @implements {SDK.SDKModel.SDKModelObserver<!SDK.PerformanceMetricsModel.PerformanceMetricsModel>}
  * @unrestricted
  */
 export class PerformanceMonitorImpl extends UI.Widget.HBox {
@@ -35,6 +32,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
         'rgba(0, 0, 0, 0.08)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     this._controlPane = new ControlPane(this.contentElement);
     const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
+    /** @type {!HTMLCanvasElement} */
     this._canvas = /** @type {!HTMLCanvasElement} */ (chartContainer.createChild('canvas'));
     this._canvas.tabIndex = -1;
     UI.ARIAUtils.setAccessibleName(
@@ -43,6 +41,12 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
         Common.UIString.UIString('Paused');
     this._controlPane.addEventListener(Events.MetricChanged, this._recalcChartHeight, this);
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.PerformanceMetricsModel.PerformanceMetricsModel, this);
+    /** @type {number} */
+    this._animationId;
+    /** @type {number} */
+    this._width;
+    /** @type {number} */
+    this._height;
   }
 
   /**
@@ -111,26 +115,27 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
 
   _startPolling() {
     this._startTimestamp = 0;
-    this._pollTimer = setInterval(() => this._poll(), this._pollIntervalMs);
+    this._pollTimer = window.setInterval(() => this._poll(), this._pollIntervalMs);
     this.onResize();
-    animate.call(this);
-
-    /**
-     * @this {PerformanceMonitorImpl}
-     */
-    function animate() {
+    const animate = () => {
       this._draw();
-      this._animationId = this.contentElement.window().requestAnimationFrame(animate.bind(this));
-    }
+      this._animationId = this.contentElement.window().requestAnimationFrame(() => {
+        animate();
+      });
+    };
+    animate();
   }
 
   _stopPolling() {
-    clearInterval(this._pollTimer);
+    window.clearInterval(this._pollTimer);
     this.contentElement.window().cancelAnimationFrame(this._animationId);
     this._metricsBuffer = [];
   }
 
   async _poll() {
+    if (!this._model) {
+      return;
+    }
     const data = await this._model.requestMetrics();
     const timestamp = data.timestamp;
     const metrics = data.metrics;
@@ -215,15 +220,21 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     }
     const backgroundColor = Common.Color.Color.parse(
         ThemeSupport.ThemeSupport.instance().patchColorText('white', ThemeSupport.ThemeSupport.ColorUsage.Background));
-    for (const path of paths.reverse()) {
-      const color = path.color;
-      ctx.save();
-      ctx.fillStyle = backgroundColor.blendWith(Common.Color.Color.parse(color).setAlpha(0.2)).asString(null);
-      ctx.fill(path.path);
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 0.5;
-      ctx.stroke(path.path);
-      ctx.restore();
+    if (backgroundColor) {
+      for (const path of paths.reverse()) {
+        const color = path.color;
+        ctx.save();
+        const parsedColor = Common.Color.Color.parse(color);
+        if (!parsedColor) {
+          continue;
+        }
+        ctx.fillStyle = backgroundColor.blendWith(parsedColor.setAlpha(0.2)).asString(null) || '';
+        ctx.fill(path.path);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 0.5;
+        ctx.stroke(path.path);
+        ctx.restore();
+      }
     }
     ctx.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
         'rgba(0, 0, 0, 0.55)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
@@ -248,7 +259,9 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
       for (let i = this._metricsBuffer.length - 1; i >= 0; --i) {
         const metrics = this._metricsBuffer[i];
         const value = metrics.metrics.get(metricInfo.name);
-        max = Math.max(max, value);
+        if (value !== undefined) {
+          max = Math.max(max, value);
+        }
         if (metrics.timestamp < startTime) {
           break;
         }
@@ -341,14 +354,16 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
       x = (this._metricsBuffer[0].timestamp - startTime) * pixelsPerMs;
       path.moveTo(x, calcY(0));
       path.lineTo(this._width + 5, calcY(0));
-      lastY = calcY(this._metricsBuffer.peekLast().metrics.get(metricName));
+      lastY = calcY(
+          /** @type {!{metrics: !Map<string, number>}} */ (this._metricsBuffer.peekLast()).metrics.get(metricName) ||
+          0);
       lastX = this._width + 5;
       path.lineTo(lastX, lastY);
     }
     for (let i = this._metricsBuffer.length - 1; i >= 0; --i) {
       const metrics = this._metricsBuffer[i];
       const timestamp = metrics.timestamp;
-      let value = metrics.metrics.get(metricName);
+      let value = metrics.metrics.get(metricName) || 0;
       if (stackedChartBaseLandscape) {
         value += stackedChartBaseLandscape.get(timestamp) || 0;
         value = Platform.NumberUtilities.clamp(value, 0, 1);
@@ -423,9 +438,19 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
     this._enabledCharts = new Set(this._enabledChartsSetting.get());
     const format = Format;
 
+    const defaults = {
+      color: undefined,
+      format: undefined,
+      currentMax: undefined,
+      max: undefined,
+      smooth: undefined,
+      stacked: undefined,
+    };
+
     /** @type {!Array<!ChartInfo>} */
     this._chartsInfo = [
       {
+        ...defaults,
         title: Common.UIString.UIString('CPU usage'),
         metrics: [
           {name: 'TaskDuration', color: '#999'}, {name: 'ScriptDuration', color: 'orange'},
@@ -435,22 +460,33 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
         smooth: true,
         stacked: true,
         color: 'red',
-        max: 1
+        max: 1,
+        currentMax: undefined,
       },
       {
+        ...defaults,
         title: Common.UIString.UIString('JS heap size'),
         metrics: [{name: 'JSHeapTotalSize', color: '#99f'}, {name: 'JSHeapUsedSize', color: 'blue'}],
         format: format.Bytes,
-        color: 'blue'
+        color: 'blue',
       },
-      {title: Common.UIString.UIString('DOM Nodes'), metrics: [{name: 'Nodes', color: 'green'}]}, {
+      {...defaults, title: Common.UIString.UIString('DOM Nodes'), metrics: [{name: 'Nodes', color: 'green'}]}, {
+        ...defaults,
         title: Common.UIString.UIString('JS event listeners'),
         metrics: [{name: 'JSEventListeners', color: 'yellowgreen'}]
       },
-      {title: Common.UIString.UIString('Documents'), metrics: [{name: 'Documents', color: 'darkblue'}]},
-      {title: Common.UIString.UIString('Document Frames'), metrics: [{name: 'Frames', color: 'darkcyan'}]},
-      {title: Common.UIString.UIString('Layouts / sec'), metrics: [{name: 'LayoutCount', color: 'hotpink'}]},
-      {title: Common.UIString.UIString('Style recalcs / sec'), metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}]}
+      {...defaults, title: Common.UIString.UIString('Documents'), metrics: [{name: 'Documents', color: 'darkblue'}]},
+      {...defaults, title: Common.UIString.UIString('Document Frames'), metrics: [{name: 'Frames', color: 'darkcyan'}]},
+      {
+        ...defaults,
+        title: Common.UIString.UIString('Layouts / sec'),
+        metrics: [{name: 'LayoutCount', color: 'hotpink'}]
+      },
+      {
+        ...defaults,
+        title: Common.UIString.UIString('Style recalcs / sec'),
+        metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}]
+      }
     ];
     for (const info of this._chartsInfo) {
       if (info.color) {
@@ -507,8 +543,12 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
    */
   updateMetrics(metrics) {
     for (const name of this._indicators.keys()) {
-      if (metrics.has(name)) {
-        this._indicators.get(name).setValue(metrics.get(name));
+      const metric = metrics.get(name);
+      if (metric !== undefined) {
+        const indicator = this._indicators.get(name);
+        if (indicator) {
+          indicator.setValue(metric);
+        }
       }
     }
   }
@@ -519,24 +559,31 @@ export const Events = {
   MetricChanged: Symbol('MetricChanged')
 };
 
+/** @type {!Intl.NumberFormat} */
+let numberFormatter;
+/** @type {!Intl.NumberFormat} */
+let percentFormatter;
+
 export class MetricIndicator {
   /**
    * @param {!Element} parent
    * @param {!ChartInfo} info
    * @param {boolean} active
-   * @param {function(boolean)} onToggle
+   * @param {function(boolean):void} onToggle
    */
   constructor(parent, info, active, onToggle) {
     const color = info.color || info.metrics[0].color;
     this._info = info;
     this._active = active;
     this._onToggle = onToggle;
-    this.element = parent.createChild('div', 'perfmon-indicator');
+    /** @type {!HTMLElement} */
+    this.element = /** @type {!HTMLElement} */ (parent.createChild('div', 'perfmon-indicator'));
     this._swatchElement = UI.Icon.Icon.create('smallicon-checkmark-square', 'perfmon-indicator-swatch');
     this._swatchElement.style.backgroundColor = color;
     this.element.appendChild(this._swatchElement);
     this.element.createChild('div', 'perfmon-indicator-title').textContent = info.title;
-    this._valueElement = this.element.createChild('div', 'perfmon-indicator-value');
+    /** @type {!HTMLElement} */
+    this._valueElement = /** @type {!HTMLElement} */ (this.element.createChild('div', 'perfmon-indicator-value'));
     this._valueElement.style.color = color;
     this.element.addEventListener('click', () => this._toggleIndicator());
     this.element.addEventListener('keypress', event => this._handleKeypress(event));
@@ -552,17 +599,17 @@ export class MetricIndicator {
    * @return {string}
    */
   static _formatNumber(value, info) {
-    if (!MetricIndicator._numberFormatter) {
-      MetricIndicator._numberFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
-      MetricIndicator._percentFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1, style: 'percent'});
+    if (!numberFormatter) {
+      numberFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
+      percentFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1, style: 'percent'});
     }
     switch (info.format) {
       case Format.Percent:
-        return MetricIndicator._percentFormatter.format(value);
+        return percentFormatter.format(value);
       case Format.Bytes:
         return Platform.NumberUtilities.bytesToString(value);
       default:
-        return MetricIndicator._numberFormatter.format(value);
+        return numberFormatter.format(value);
     }
   }
 
@@ -599,6 +646,7 @@ export const format = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1})
  *   color: string
  * }}
  */
+// @ts-ignore typedef
 export let MetricInfo;
 
 /**
@@ -609,7 +657,9 @@ export let MetricInfo;
  *   currentMax: (number|undefined),
  *   format: (!Format|undefined),
  *   smooth: (boolean|undefined),
- *   color: (string|undefined)
+ *   color: (string|undefined),
+ *   stacked: (boolean|undefined),
  * }}
  */
+// @ts-ignore typedef
 export let ChartInfo;

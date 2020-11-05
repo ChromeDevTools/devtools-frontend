@@ -139,7 +139,6 @@ circle.animation-keyframe-point:active {
 
 .animation-grid-header {
   flex: 1 0 auto;
-  z-index: 1;
   cursor: text;
 }
 
@@ -181,12 +180,13 @@ circle.animation-keyframe-point:active {
 .animation-scrubber {
   opacity: 100%;
   position: absolute;
-  left: 150px;
-  height: calc(100% - 103px);
-  width: calc(100% - 150px);
-  top: 103px;
+  left: 10px;
+  height: 100%;
+  width: 100%;
+  top: 28px;
   border-left: 1px solid hsl(4deg 90% 58% / 100%);
-  z-index: 1;
+  z-index: 2;
+  cursor: col-resize;
 }
 
 .animation-scrubber-line {
@@ -197,7 +197,7 @@ circle.animation-keyframe-point:active {
   height: 28px;
   left: -6px;
   padding: 0 5px;
-  z-index: 2;
+  z-index: 3;
 }
 
 .animation-scrubber-head {
@@ -208,13 +208,23 @@ circle.animation-keyframe-point:active {
   position: absolute;
   left: 2px;
   top: 1px;
+  z-index: 4;
+}
+
+.grid-overflow-wrapper {
+  position: absolute;
+  left: 140px;
+  top: 76px;
+  z-index: 1;
+  overflow: hidden;
 }
 
 svg.animation-timeline-grid {
   position: absolute;
-  left: 140px;
-  top: 76px;
-  z-index: 0;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
 }
 
 rect.animation-timeline-grid-line {

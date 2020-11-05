@@ -29,7 +29,8 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this.registerRequiredCSS('animation/animationTimeline.css', {enableLegacyPatching: true});
     this.element.classList.add('animations-timeline');
 
-    this._grid = UI.UIUtils.createSVGChild(this.contentElement, 'svg', 'animation-timeline-grid');
+    this._gridWrapper = this.contentElement.createChild('div', 'grid-overflow-wrapper');
+    this._grid = UI.UIUtils.createSVGChild(this._gridWrapper, 'svg', 'animation-timeline-grid');
 
     this._playbackRate = 1;
     this._allPaused = false;
@@ -209,7 +210,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     UI.UIUtils.installDragHandle(
         gridHeader, this._repositionScrubber.bind(this), this._scrubberDragMove.bind(this),
         this._scrubberDragEnd.bind(this), 'text');
-    container.appendChild(this._createScrubber());
+    this._gridWrapper.appendChild(this._createScrubber());
 
     if (this._timelineScrubberLine) {
       UI.UIUtils.installDragHandle(
@@ -684,8 +685,13 @@ export class AnimationTimeline extends UI.Widget.VBox {
 
   _renderGrid() {
     /** @const */ const gridSize = 250;
-    this._grid.setAttribute('width', (this.width() + 10).toString());
-    this._grid.setAttribute('height', ((this._cachedTimelineHeight || 0) + 30).toString());
+    const gridWidth = (this.width() + 10).toString();
+    const gridHeight = ((this._cachedTimelineHeight || 0) + 30).toString();
+
+    this._gridWrapper.style.width = gridWidth + 'px';
+    this._gridWrapper.style.height = gridHeight.toString() + 'px';
+    this._grid.setAttribute('width', gridWidth);
+    this._grid.setAttribute('height', gridHeight.toString());
     this._grid.setAttribute('shape-rendering', 'crispEdges');
     this._grid.removeChildren();
     let lastDraw = undefined;

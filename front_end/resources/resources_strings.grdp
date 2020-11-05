@@ -124,9 +124,6 @@ table is empty.
   <message name="IDS_DEVTOOLS_36e256f915286539621b57d8c80f0105" desc="Text in Context menu for expanding objects in IndexedDB tables">
     Expand Recursively
   </message>
-  <message name="IDS_DEVTOOLS_37acadd70183e7ed00222ff38248a6ff" desc="Quota row text content in Clear Storage View of the Application panel">
-    <ph name="NUMBER_BYTESTOSTRING_RESPONSE_USAGE_">$1s<ex>30 MB</ex></ph> used out of <ph name="NUMBER_BYTESTOSTRING_RESPONSE_QUOTA_">$2s<ex>100 MB</ex></ph> storage quota. '''
-  </message>
   <message name="IDS_DEVTOOLS_3a6d7a7e2cbc0a4086fae047697fa3e4" desc="Explanatory text in the Frame Details view">
     A frame ancestor is an insecure context
   </message>
@@ -147,6 +144,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_3eab5d12656f2f4462f6594019e77355" desc="Text in Database Table View of the Application panel">
     Visible columns
+  </message>
+  <message name="IDS_DEVTOOLS_3eb024d65ebcd0dacebcac561ad62b56" desc="Text for error message in Application Quota Override">
+    Number must be non-negative
   </message>
   <message name="IDS_DEVTOOLS_3f80ff94f029e6a0d990eb528b9a3e29" desc="Text in App Manifest View of the Application panel">
     Icon <ph name="ICONURL">$1s<ex>>https://example.com</ex></ph> dimensions should be square
@@ -256,8 +256,8 @@ table is empty.
   <message name="IDS_DEVTOOLS_7a06b1cc41f027f75bc7be8ee937c344" desc="Message in Database Model of the Application panel">
     Database no longer has expected version.
   </message>
-  <message name="IDS_DEVTOOLS_7adc295d89feec026fbcee16448c31d8" desc="Text in Clear Storage View of the Application panel">
-    <ph name="UNREACHABLEMAINORIGIN">$1s<ex>https://example.com</ex></ph> (failed to load)
+  <message name="IDS_DEVTOOLS_7adc295d89feec026fbcee16448c31d8" desc="Text in Storage View of Application panel">
+    <ph name="UNREACHABLEMAINORIGIN">$1s<ex>https://www.example.com</ex></ph> (failed to load)
   </message>
   <message name="IDS_DEVTOOLS_7d52bfc51222e4122623057310cba1ce" desc="Tooltip text that appears when hovering over the largeicon play back button in the Indexed DBViews of the Application panel">
     Show previous page
@@ -295,6 +295,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_86befdf33863a849060cf9f6d2425cdb" desc="Text in Indexed DBViews of the Application panel">
     Security origin
   </message>
+  <message name="IDS_DEVTOOLS_8739913e0cc85c6b8692b7135120b16d" desc="Text for error message in Application Quota Override">
+    Please enter a number
+  </message>
   <message name="IDS_DEVTOOLS_87e059dc2492bd5041581f05daef12f7" desc="Text in Service Worker Cache Views of the Application panel">
     Filter by Path
   </message>
@@ -315,6 +318,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_8f67973007158337346584551b093be8" desc="Text in App Manifest View of the Application panel">
     Icons
+  </message>
+  <message name="IDS_DEVTOOLS_8f8913c1f755436db84ae169e37c61f9" desc="Text for error message in Application Quota Override">
+    Internal error
   </message>
   <message name="IDS_DEVTOOLS_90e4c7584668933aebe8cf1cbccfe82d" desc="Text in Indexed DBViews of the Application panel">
     Please confirm delete of &quot;<ph name="THIS__DATABASE_DATABASEID_NAME">$1s<ex>msb</ex></ph>&quot; database.

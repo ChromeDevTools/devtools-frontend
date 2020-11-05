@@ -125,6 +125,15 @@
   "coverage/ModuleUIStrings.js | stopInstrumentingCoverageAndShow": {
     "message": "Stop instrumenting coverage and show results"
   },
+  "resources/ClearStorageView.js | storageQuotaUsed": {
+    "message": "{PH1} used out of {PH2} storage quota"
+  },
+  "resources/ClearStorageView.js | storageQuotaUsedWithBytes": {
+    "message": "{PH1} bytes used out of {PH2} bytes storage quota"
+  },
+  "resources/ClearStorageView.js | storageWithCustomMarker": {
+    "message": "{PH1} (custom)"
+  },
   "settings/FrameworkBlackboxSettingsTab.js | addFilenamePattern": {
     "message": "Add filename pattern"
   },

@@ -37,6 +37,7 @@ devtools_module("resources") {
     "../cookie_table:bundle",
     "../data_grid:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../inline_editor:bundle",
     "../mobile_throttling:bundle",
     "../network:bundle",

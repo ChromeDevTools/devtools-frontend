@@ -24,6 +24,31 @@
   display: inline;
 }
 
+.quota-override-editor-with-button {
+  align-items: baseline;
+  display: flex;
+}
+
+.quota-override-notification-editor {
+  border: solid 1px #d8d8d8;
+  display: flex;
+  flex: auto;
+  margin-right: 4px;
+  max-width: 200px;
+  min-width: 50px;
+  min-height: 24px;
+  padding-left: 4px;
+}
+
+.quota-override-notification-editor:focus {
+  border: solid 1px #4285f4;
+}
+
+.quota-override-error {
+  padding-top: 10px;
+  color: red;
+}
+
 .usage-breakdown-row {
   min-width: fit-content;
 }

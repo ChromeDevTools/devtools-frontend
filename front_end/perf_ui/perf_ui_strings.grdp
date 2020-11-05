@@ -45,9 +45,6 @@
   <message name="IDS_DEVTOOLS_87f8a6ab85c9ced3702b4ea641ad4bb5" desc="Text in Network Priorities of the Performance panel">
     Medium
   </message>
-  <message name="IDS_DEVTOOLS_8d8fcc1abd550c5f25dbfaa57d59cb67" desc="Units in Line Level Profile of the Performance panel">
-    MB
-  </message>
   <message name="IDS_DEVTOOLS_9033a3ec0d5878d8181cfafca376b978" desc="Text for screen reader to announce a selected group.">
     <ph name="GROUPNAME">$1s<ex>Network</ex></ph> selected
   </message>

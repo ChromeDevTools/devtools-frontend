@@ -77,7 +77,8 @@
     "mobile_throttling",
     "network",
     "sources",
-    "browser_sdk"
+    "browser_sdk",
+    "i18n"
   ],
   "modules": [
     "resources.js",

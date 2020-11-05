@@ -1252,8 +1252,8 @@ export class ClearStorageTreeElement extends BaseStorageTreeElement {
    * @param {!UI.Panel.PanelWithSidebar} storagePanel
    */
   constructor(storagePanel) {
-    super(storagePanel, Common.UIString.UIString('Clear storage'), false);
-    const icon = UI.Icon.Icon.create('mediumicon-clear-storage', 'resource-tree-item');
+    super(storagePanel, Common.UIString.UIString('Storage'), false);
+    const icon = UI.Icon.Icon.create('mediumicon-database', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
 

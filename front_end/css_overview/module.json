@@ -19,16 +19,10 @@
     "color_picker"
   ],
   "modules": [
-    "css_overview.js",
-    "css_overview-legacy.js",
-    "CSSOverviewController.js",
-    "CSSOverviewUnusedDeclarations.js",
-    "CSSOverviewModel.js",
-    "CSSOverviewStartView.js",
-    "CSSOverviewProcessingView.js",
-    "CSSOverviewCompletedView.js",
-    "CSSOverviewSidebarPanel.js",
-    "CSSOverviewPanel.js"
+    "css_overview-legacy.js"
+  ],
+  "skip_compilation": [
+    "css_overview-legacy.js"
   ],
   "resources": [
     "cssOverview.css",

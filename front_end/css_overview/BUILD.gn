@@ -30,7 +30,7 @@ devtools_module("css_overview") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "css_overview.js"
+  entrypoint = "css_overview.ts"
 
   deps = [ ":css_overview" ]
 }

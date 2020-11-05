@@ -12200,6 +12200,42 @@
                     ]
                 },
                 {
+                    "id": "FlexContainerHighlightConfig",
+                    "description": "Configuration data for the highlighting of Flex container elements.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "containerBorder",
+                            "description": "The style of the container border",
+                            "optional": true,
+                            "$ref": "LineStyle"
+                        }
+                    ]
+                },
+                {
+                    "id": "LineStyle",
+                    "description": "Style information for drawing a line.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "color",
+                            "description": "The color of the line (default: transparent)",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "pattern",
+                            "description": "The line pattern (default: solid)",
+                            "optional": true,
+                            "type": "string",
+                            "enum": [
+                                "dashed",
+                                "dotted"
+                            ]
+                        }
+                    ]
+                },
+                {
                     "id": "HighlightConfig",
                     "description": "Configuration data for the highlighting of page elements.",
                     "type": "object",
@@ -12293,6 +12329,12 @@
                             "description": "The grid layout highlight configuration (default: all transparent).",
                             "optional": true,
                             "$ref": "GridHighlightConfig"
+                        },
+                        {
+                            "name": "flexContainerHighlightConfig",
+                            "description": "The flex container highlight configuration (default: all transparent).",
+                            "optional": true,
+                            "$ref": "FlexContainerHighlightConfig"
                         }
                     ]
                 },

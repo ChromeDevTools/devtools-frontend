@@ -22,7 +22,7 @@ devtools_module("developer_resources") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "developer_resources.js"
+  entrypoint = "developer_resources.ts"
 
   deps = [ ":developer_resources" ]
 }

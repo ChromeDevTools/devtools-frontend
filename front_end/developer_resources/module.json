@@ -22,10 +22,10 @@
     "browser_sdk"
   ],
   "modules": [
-    "developer_resources.js",
-    "developer_resources-legacy.js",
-    "DeveloperResourcesView.js",
-    "DeveloperResourcesListView.js"
+    "developer_resources-legacy.js"
+  ],
+  "skip_compilation": [
+    "developer_resources-legacy.js"
   ],
   "resources": [
     "developerResourcesView.css",

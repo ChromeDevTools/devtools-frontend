@@ -138,9 +138,6 @@
   <message name="IDS_DEVTOOLS_7c1e3c25af10fa5d8046dff929148280" desc="Text in Console Sidebar of the Console panel to show that there is 1 info">
     1 info
   </message>
-  <message name="IDS_DEVTOOLS_86da67b73408a72de554034d9e12ca62" desc="Note title in Console View Message of the Console panel">
-    This value was evaluated just now and may have changed since output to console.
-  </message>
   <message name="IDS_DEVTOOLS_93977f1310f482395375a9950b512462" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Eagerly evaluate console prompt text
   </message>
@@ -257,6 +254,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e1dd1b8e32626f508bd3a5612a60ab97" desc="Title of an action in the console tool to create pin">
     Create live expression
+  </message>
+  <message name="IDS_DEVTOOLS_e3951a5d9f5fdfae4ccd5469ff230eae" desc="Note title in Console View Message of the Console panel">
+    This value was evaluated upon first expanding. It may have changed since then.
   </message>
   <message name="IDS_DEVTOOLS_e6009dd637bf0d330cc5316cd67d9533" desc="Text in Console Sidebar of the Console panel to show that there are more than 1 info">
     <ph name="PH1">$1d<ex>2</ex></ph> info

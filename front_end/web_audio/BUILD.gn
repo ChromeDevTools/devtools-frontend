@@ -22,7 +22,7 @@ devtools_module("web_audio") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "web_audio.js"
+  entrypoint = "web_audio.ts"
 
   deps = [ ":web_audio" ]
 }

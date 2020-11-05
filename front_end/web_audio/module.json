@@ -17,18 +17,10 @@
     "ui"
   ],
   "modules": [
-    "web_audio.js",
-    "web_audio-legacy.js",
-    "graph_visualizer/GraphStyle.js",
-    "graph_visualizer/GraphManager.js",
-    "graph_visualizer/NodeRendererUtility.js",
-    "graph_visualizer/NodeView.js",
-    "graph_visualizer/EdgeView.js",
-    "graph_visualizer/GraphView.js",
-    "WebAudioModel.js",
-    "AudioContextSelector.js",
-    "AudioContextContentBuilder.js",
-    "WebAudioView.js"
+    "web_audio-legacy.js"
+  ],
+  "skip_compilation": [
+    "web_audio-legacy.js"
   ],
   "resources": [
     "webAudio.css",

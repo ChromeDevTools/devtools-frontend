@@ -34,5 +34,5 @@ export {
   NodeRendererUtility,
   NodeView,
   WebAudioModel,
-  WebAudioView
+  WebAudioView,
 };

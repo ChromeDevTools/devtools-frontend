@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// @ts-nocheck File doesn't need to be checked by TS.
+
 const path = require('path');
 const glob = require('glob');
 const fs = require('fs');
@@ -98,15 +100,13 @@ module.exports = function(config) {
 
     preprocessors: {
       '**/*.{js,mjs}': ['sourcemap'],
-      [path.join(GEN_DIRECTORY, 'front_end/**/*.{js,mjs}')]: [...coveragePreprocessors],
+      [path.join(GEN_DIRECTORY, 'front_end/!(third_party)/**/!(wasm_source_map).{js,mjs}')]: [...coveragePreprocessors],
     },
 
     proxies: {'/Images': 'front_end/Images'},
 
-    coverageReporter: {
-      dir: 'karma-coverage',
-      reporters: istanbulReportOutputs,
-    },
+    coverageReporter:
+        {dir: 'karma-coverage', reporters: istanbulReportOutputs, exclude: ['out', 'front_end/third_party']},
 
     singleRun: !DEBUG_ENABLED,
   };

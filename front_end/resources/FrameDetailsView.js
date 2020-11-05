@@ -304,9 +304,13 @@ function linkifyIcon(iconType, title, eventHandler) {
   span.classList.add('devtools-link');
   span.tabIndex = 0;
   span.appendChild(icon);
-  span.addEventListener('click', () => eventHandler());
+  span.addEventListener('click', event => {
+    event.consume(true);
+    eventHandler();
+  });
   span.addEventListener('keydown', event => {
     if (isEnterKey(event)) {
+      event.consume(true);
       eventHandler();
     }
   });

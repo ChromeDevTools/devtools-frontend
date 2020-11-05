@@ -23,7 +23,7 @@ devtools_module("browser_debugger") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "browser_debugger.js"
+  entrypoint = "browser_debugger.ts"
 
   deps = [ ":browser_debugger" ]
 }

@@ -117,13 +117,12 @@
     "elements",
     "sources",
     "console"
-  ],  "modules": [
-    "browser_debugger.js",
-    "browser_debugger-legacy.js",
-    "DOMBreakpointsSidebarPane.js",
-    "EventListenerBreakpointsSidebarPane.js",
-    "ObjectEventListenersSidebarPane.js",
-    "XHRBreakpointsSidebarPane.js"
+  ],
+  "modules": [
+    "browser_debugger-legacy.js"
+  ],
+  "skip_compilation": [
+    "browser_debugger-legacy.js"
   ],
   "resources": [
     "domBreakpointsSidebarPane.css",

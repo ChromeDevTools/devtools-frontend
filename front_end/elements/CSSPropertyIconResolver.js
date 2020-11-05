@@ -195,8 +195,8 @@ function flexAlignContentIcon(iconName) {
     const flexDirectionToPhysicalDirection = new Map([
       ['column', directions.row],
       ['row', directions.column],
-      ['column-reverse', directions['row-reverse']],
-      ['row-reverse', directions['column-reverse']],
+      ['column-reverse', directions.row],
+      ['row-reverse', directions.column],
     ]);
     const computedFlexDirection = computedStyles.get('flex-direction') || 'row';
     const iconDirection = flexDirectionToPhysicalDirection.get(computedFlexDirection);
@@ -308,6 +308,9 @@ textToIconResolver.set('align-content: stretch', flexAlignContentIcon('flex-alig
 textToIconResolver.set('align-content: space-evenly', flexAlignContentIcon('flex-align-content-space-evenly-icon'));
 textToIconResolver.set('align-content: flex-end', flexAlignContentIcon('flex-align-content-end-icon'));
 textToIconResolver.set('align-content: flex-start', flexAlignContentIcon('flex-align-content-start-icon'));
+textToIconResolver.set('align-content: start', flexAlignContentIcon('flex-align-content-start-icon'));
+// TODO(crbug.com/1139945): end property should use the flex-align-content-end-icon icon once Chromium supports it.
+textToIconResolver.set('align-content: end', flexAlignContentIcon('flex-align-content-start-icon'));
 textToIconResolver.set('justify-content: center', flexJustifyContentIcon('flex-justify-content-center-icon'));
 textToIconResolver.set(
     'justify-content: space-around', flexJustifyContentIcon('flex-justify-content-space-around-icon'));

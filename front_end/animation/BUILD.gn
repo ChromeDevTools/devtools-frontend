@@ -25,7 +25,7 @@ devtools_module("animation") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "animation.js"
+  entrypoint = "animation.ts"
 
   deps = [ ":animation" ]
 }

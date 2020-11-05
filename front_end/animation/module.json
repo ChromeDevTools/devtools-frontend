@@ -14,13 +14,10 @@
     "elements"
   ],
   "modules": [
-    "animation.js",
-    "animation-legacy.js",
-    "AnimationModel.js",
-    "AnimationGroupPreviewUI.js",
-    "AnimationScreenshotPopover.js",
-    "AnimationTimeline.js",
-    "AnimationUI.js"
+    "animation-legacy.js"
+  ],
+  "skip_compilation": [
+    "animation-legacy.js"
   ],
   "resources": [
     "animationScreenshotPopover.css",

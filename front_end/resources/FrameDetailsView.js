@@ -51,6 +51,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     const summaryText = ls`Availability of certain APIs depends on the document being cross-origin isolated.`;
     const link = 'https://web.dev/why-coop-coep/';
     summaryRow.appendChild(UI.Fragment.html`<div>${summaryText} ${UI.XLink.XLink.create(link, ls`Learn more`)}</div>`);
+    this._apiSharedArrayBuffer = this._apiAvailability.appendField(ls`Shared Array Buffers`);
 
     if (this._protocolMonitorExperimentEnabled) {
       this._additionalInfo = this._reportView.appendSection(ls`Additional Information`);
@@ -95,6 +96,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     }
     await this._updateCoopCoepStatus();
     this._updateContextStatus();
+    this._updateApiAvailability();
   }
 
   /**
@@ -198,6 +200,35 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     }
     this._crossOriginIsolatedContext.textContent = booleanToYesNo(this._frame.isCrossOriginIsolated());
   }
+
+  _updateApiAvailability() {
+    const features = this._frame.getGatedAPIFeatures();
+    this._apiAvailability.setFieldVisible(ls`Shared Array Buffers`, !!features);
+
+    if (!features) {
+      return;
+    }
+    const sabAvailable = features.includes(Protocol.Page.GatedAPIFeatures.SharedArrayBuffers);
+    if (sabAvailable) {
+      const sabTransferAvailable = features.includes(Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed);
+      this._apiSharedArrayBuffer.textContent =
+          sabTransferAvailable ? ls`available, transferable` : ls`available, not transferable`;
+      this._apiSharedArrayBuffer.title = sabTransferAvailable ?
+          ls`SharedArrayBuffer constructor is available and SABs can be transferred via postMessage` :
+          ls`SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage`;
+      if (!this._frame.isCrossOriginIsolated()) {
+        const reasonHint = this._apiSharedArrayBuffer.createChild('span', 'inline-span');
+        reasonHint.textContent = ls`⚠️ will require cross-origin isolated context in the future`;
+      }
+    } else {
+      this._apiSharedArrayBuffer.textContent = ls`unavailable`;
+      if (!this._frame.isCrossOriginIsolated()) {
+        const reasonHint = this._apiSharedArrayBuffer.createChild('span', 'inline-comment');
+        reasonHint.textContent = ls`requires cross-origin isolated context`;
+      }
+    }
+  }
+
 
   /**
    * @param {!Element} element

@@ -28,6 +28,7 @@ describe('The Application Tab', async () => {
         'No',
         'None',
         'UnsafeNone',
+        'available, transferable⚠️ will require cross-origin isolated context in the future',
       ];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });

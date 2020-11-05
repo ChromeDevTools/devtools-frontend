@@ -14,7 +14,8 @@ export async function navigateToApplicationTab(target: puppeteer.Page, testName:
 }
 
 export async function doubleClickSourceTreeItem(selector: string) {
-  await waitFor(selector);
+  const element = await waitFor(selector);
+  element.evaluate(el => el.scrollIntoView(true));
   await click(selector, {clickOptions: {clickCount: 2}});
 }
 

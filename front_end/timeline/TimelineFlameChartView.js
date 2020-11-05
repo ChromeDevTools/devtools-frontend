@@ -23,24 +23,38 @@ import {AggregatedTimelineTreeView} from './TimelineTreeView.js';
 import {TimelineMarkerStyle, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 import {WebVitalsIntegrator} from './WebVitalsTimelineUtils.js';
 
-class MainWidget extends UI.Widget.VBox {
-  constructor(mainFlameChart, model, delegate) {
-    super();
-    this._model = model;
-    this._webVitals = this.getWebVitalsIntegratorWhenTheExperimentIsEnabled(model, delegate);
-    if (this._webVitals) {
-      this._webVitals.show(this.contentElement);
-    }
-    mainFlameChart.show(this.contentElement);
+class MainSplitWidget extends UI.SplitWidget.SplitWidget {
+  /**
+   * @param {boolean} isVertical
+   * @param {boolean} secondIsSidebar
+   * @param {string=} settingName
+   * @param {number=} defaultSidebarWidth
+   * @param {number=} defaultSidebarHeight
+   * @param {boolean=} constraintsInDip
+   */
+  constructor(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip) {
+    super(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip);
+
+    /** @type {!WebVitalsIntegrator} */
+    this._webVitals;
+
+    /** @type {?PerformanceModel} */
+    this._model;
   }
 
-  getWebVitalsIntegratorWhenTheExperimentIsEnabled(model, delegate) {
-    if (Root.Runtime.experiments.isEnabled('showWebVitalsInPerformancePanel')) {
-      return new WebVitalsIntegrator(delegate, model);
-    }
-    return null;
+  /**
+   * @param {!WebVitalsIntegrator} webVitals
+   */
+  setWebVitals(webVitals) {
+    /** @type {!WebVitalsIntegrator} */
+    this._webVitals = webVitals;
   }
 
+  /**
+   * @param {number} left
+   * @param {number} right
+   * @param {boolean} animate
+   */
   setWindowTimes(left, right, animate) {
     if (!this._webVitals) {
       return;
@@ -53,7 +67,7 @@ class MainWidget extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!PerformanceModel} model
+   * @param {?PerformanceModel} model
    */
   setModelAndUpdateBoundaries(model) {
     this._model = model;
@@ -124,6 +138,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._eventListeners = [];
 
     this._showMemoryGraphSetting = Common.Settings.Settings.instance().createSetting('timelineShowMemory', false);
+    this._showWebVitalsSetting = Common.Settings.Settings.instance().createSetting('timelineWebVitals', false);
 
     // Create main and network flamecharts.
     this._networkSplitWidget = new UI.SplitWidget.SplitWidget(false, false, 'timelineFlamechartMainView', 150);
@@ -153,9 +168,20 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._networkSplitWidget.hideDefaultResizer(true);
     this._networkSplitWidget.installResizer(this._splitResizer);
 
-    this._mainWidget = new MainWidget(this._mainFlameChart, this._model, this);
+    this._webVitals = new WebVitalsIntegrator(this);
 
-    this._networkSplitWidget.setMainWidget(this._mainWidget);
+    this._mainSplitWidget = new MainSplitWidget(false, false, 'timelineFlamechartMainAndVitalsView', undefined, 120);
+    this._mainSplitWidget.setWebVitals(this._webVitals);
+    this._mainSplitWidget.setMainWidget(this._mainFlameChart);
+    this._mainSplitWidget.setSidebarWidget(this._webVitals);
+
+    if (this._showWebVitalsSetting.get()) {
+      this._mainSplitWidget.showBoth();
+    } else {
+      this._mainSplitWidget.hideSidebar();
+    }
+
+    this._networkSplitWidget.setMainWidget(this._mainSplitWidget);
     this._networkSplitWidget.setSidebarWidget(this._networkPane);
 
     // Create counters chart splitter.
@@ -195,6 +221,14 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._updateColorMapper();
   }
 
+  toggleWebVitalsLane() {
+    if (this._showWebVitalsSetting.get()) {
+      this._mainSplitWidget.showBoth();
+    } else {
+      this._mainSplitWidget.hideSidebar();
+    }
+  }
+
   _updateColorMapper() {
     /** @type {!Map<string, string>} */
     this._urlToColorCache = new Map();
@@ -214,7 +248,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._mainFlameChart.setWindowTimes(window.left, window.right, animate);
     this._networkFlameChart.setWindowTimes(window.left, window.right, animate);
     this._networkDataProvider.setWindowTimes(window.left, window.right);
-    this._mainWidget.setWindowTimes(window.left, window.right, animate);
+    this._mainSplitWidget.setWindowTimes(window.left, window.right, animate);
     this._updateSearchResults(false, false);
   }
 
@@ -272,7 +306,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
       this._mainFlameChart.setWindowTimes(window.left, window.right);
       this._networkFlameChart.setWindowTimes(window.left, window.right);
       this._networkDataProvider.setWindowTimes(window.left, window.right);
-      this._mainWidget.setModelAndUpdateBoundaries(model);
+      this._mainSplitWidget.setModelAndUpdateBoundaries(model);
       this._updateSearchResults(false, false);
     }
     this._updateColorMapper();

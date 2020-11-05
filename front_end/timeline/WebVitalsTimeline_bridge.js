@@ -14,12 +14,12 @@ import './WebVitalsTimeline.js';
 * @typedef {{
 * startTime:number,
 * duration:number,
-* fcps:!Array.<!WebVitalsFCPEvent>,
-* lcps:!Array.<!WebVitalsLCPEvent>,
-* layoutShifts:!Array.<!WebVitalsLayoutShiftEvent>,
-* longTasks:!Array.<!WebVitalsTimelineTask>,
-* mainFrameNavigations:!Array.<number>,
-* maxDuration:number,
+* fcps:(!Array.<!WebVitalsFCPEvent>|undefined),
+* lcps:(!Array.<!WebVitalsLCPEvent>|undefined),
+* layoutShifts:(!Array.<!WebVitalsLayoutShiftEvent>|undefined),
+* longTasks:(!Array.<!WebVitalsTimelineTask>|undefined),
+* mainFrameNavigations:(!Array.<number>|undefined),
+* maxDuration:(number|undefined),
 * }}
 */
 // @ts-ignore we export this for Closure not TS

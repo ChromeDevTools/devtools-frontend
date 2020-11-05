@@ -113,6 +113,10 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._showMemorySetting.setTitle(Common.UIString.UIString('Memory'));
     this._showMemorySetting.addChangeListener(this._onModeChanged, this);
 
+    this._showWebVitalsSetting = Common.Settings.Settings.instance().createSetting('timelineWebVitals', false);
+    this._showWebVitalsSetting.setTitle(ls`Web Vitals`);
+    this._showWebVitalsSetting.addChangeListener(this._onWebVitalsChanged, this);
+
     const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
     this._panelToolbar = new UI.Toolbar.Toolbar('timeline-main-toolbar', timelineToolbarContainer);
     this._panelRightToolbar = new UI.Toolbar.Toolbar('', timelineToolbarContainer);
@@ -149,6 +153,7 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._searchableView.hideWidget();
 
     this._onModeChanged();
+    this._onWebVitalsChanged();
     this._populateToolbar();
     this._showLandingPage();
     this._updateTimelineControls();
@@ -300,6 +305,9 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._showMemoryToolbarCheckbox =
         this._createSettingCheckbox(this._showMemorySetting, Common.UIString.UIString('Show memory timeline'));
     this._panelToolbar.appendToolbarItem(this._showMemoryToolbarCheckbox);
+
+    this._showWebVitalsToolbarCheckbox = this._createSettingCheckbox(this._showWebVitalsSetting, ls`Show Web Vitals`);
+    this._panelToolbar.appendToolbarItem(this._showWebVitalsToolbarCheckbox);
 
     if (Root.Runtime.experiments.isEnabled('recordCoverageWithPerformanceTracing')) {
       this._startCoverageCheckbox =
@@ -530,6 +538,10 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._updateOverviewControls();
     this.doResize();
     this.select(null);
+  }
+
+  _onWebVitalsChanged() {
+    this._flameChart.toggleWebVitalsLane();
   }
 
   _updateSettingsPaneVisibility() {

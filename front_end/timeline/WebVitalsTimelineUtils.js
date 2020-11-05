@@ -15,11 +15,9 @@ export class WebVitalsIntegrator extends UI.Widget.VBox {
   /**
    *
    * @param {!PerfUI.FlameChart.FlameChartDelegate} delegate
-   * @param {!PerformanceModel} model
    */
-  constructor(delegate, model) {
+  constructor(delegate) {
     super(true, true);
-    this.model = model;
     this.delegate = delegate;
 
     this.element.style.height = '120px';

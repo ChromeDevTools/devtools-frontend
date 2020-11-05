@@ -41,12 +41,12 @@ interface WebVitalsTimelineTask {
 interface WebVitalsTimelineData {
   startTime: number;
   duration: number;
-  fcps: WebVitalsFCPEvent[];
-  lcps: WebVitalsLCPEvent[];
-  layoutShifts: WebVitalsLayoutShiftEvent[];
-  longTasks: WebVitalsTimelineTask[];
-  mainFrameNavigations: number[];
-  maxDuration: number;
+  fcps?: WebVitalsFCPEvent[];
+  lcps?: WebVitalsLCPEvent[];
+  layoutShifts?: WebVitalsLayoutShiftEvent[];
+  longTasks?: WebVitalsTimelineTask[];
+  mainFrameNavigations?: number[];
+  maxDuration?: number;
 }
 
 export interface Marker {
@@ -109,7 +109,6 @@ export class WebVitalsTimeline extends HTMLElement {
 
   constructor() {
     super();
-
 
     this.canvas = document.createElement('canvas');
     this.canvas.style.width = '100%';
@@ -303,10 +302,10 @@ export class WebVitalsTimeline extends HTMLElement {
     // Render the WebVitals label.
     this.context.save();
     this.context.font = '11px ' + Host.Platform.fontFamily();
-    const text = this.context.measureText('WebVitals');
+    const text = this.context.measureText('Web Vitals');
     const height = text.actualBoundingBoxAscent - text.actualBoundingBoxDescent;
     this.context.fillStyle = '#202124';
-    this.context.fillText('WebVitals', 6, 4 + height);
+    this.context.fillText('Web Vitals', 6, 4 + height);
     this.context.restore();
 
     // Render all the lanes.

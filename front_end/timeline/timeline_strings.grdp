@@ -606,6 +606,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
 Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$1s<ex>Ctrl + U</ex></ph> keys.
 <ph name="LEARNMORENODE">$2s<ex>Learn more</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_8cc81f395b990e2bb6ace75e4faac16c" desc="Text in Timeline for the Web Vitals lane checkbox">
+    Show Web Vitals
+  </message>
   <message name="IDS_DEVTOOLS_8cd016d3ad1e59b37133d6c993455d70" desc="Call site stack label in Timeline UIUtils of the Performance panel">
     Timer Installed
   </message>
@@ -635,6 +638,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_920fd776137a582939eac4fc07808754" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="NUMBER_MILLISTOSTRING_FRAME_ENDTIME___FRAME_STARTTIME__TRUE_">$1s<ex>10ms</ex></ph> (at <ph name="NUMBER_MILLISTOSTRING_FRAME_STARTTIMEOFFSET__TRUE_">$2s<ex>10ms</ex></ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_921c11d658dc903d1f58c736cd758d4c" desc="Text in Timeline for the Web Vitals lane">
+    Web Vitals
   </message>
   <message name="IDS_DEVTOOLS_92f0ea95e53565026335b840b8788bf4" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     <ph name="NUMBER_MILLISTOSTRING_TOTALTIME__TRUE_">$1s<ex>10ms</ex></ph> (self <ph name="NUMBER_MILLISTOSTRING_SELFTIME__TRUE_">$2s<ex>10ms</ex></ph>)

@@ -6,7 +6,7 @@ import * as Marked from '../marked/marked.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 
-import {createMarkdownView} from './MarkdownView_bridge.js';
+import {MarkdownView} from './MarkdownView.js';
 
 /**
  * @param {!SDK.Issue.MarkdownIssueDescription} description
@@ -43,7 +43,7 @@ export function createIssueDescriptionFromRawMarkdown(markdown, description) {
     throw new Error('Markdown issue descriptions must start with a heading');
   }
 
-  const markdownComponent = createMarkdownView();
+  const markdownComponent = new MarkdownView();
   markdownComponent.data = {tokens: markdownAst.slice(1)};
   return {
     title,

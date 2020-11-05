@@ -12,7 +12,6 @@ devtools_module("issues") {
     "IssuesPane.js",
     "MarkdownIssueDescription.js",
     "MarkdownView.ts",
-    "MarkdownView_bridge.js",
   ]
 
   deps = [

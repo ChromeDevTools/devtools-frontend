@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
@@ -63,7 +60,8 @@ export class StartView extends UI.Widget.Widget {
     const control = new UI.Toolbar.ToolbarSettingCheckbox(runtimeSetting.setting, runtimeSetting.description);
     toolbar.appendToolbarItem(control);
     if (runtimeSetting.learnMore) {
-      const link = UI.XLink.XLink.create(runtimeSetting.learnMore, ls`Learn more`, 'lighthouse-learn-more');
+      const link = /** @type {!HTMLElement} */ (
+          UI.XLink.XLink.create(runtimeSetting.learnMore, ls`Learn more`, 'lighthouse-learn-more'));
       link.style.padding = '5px';
       control.element.appendChild(link);
     }
@@ -160,6 +158,9 @@ export class StartView extends UI.Widget.Widget {
   onResize() {
     const useNarrowLayout = this.contentElement.offsetWidth < 560;
     const startViewEl = this.contentElement.querySelector('.lighthouse-start-view');
+    if (!startViewEl) {
+      return;
+    }
     startViewEl.classList.toggle('hbox', !useNarrowLayout);
     startViewEl.classList.toggle('vbox', useNarrowLayout);
   }

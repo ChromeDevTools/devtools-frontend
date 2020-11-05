@@ -171,6 +171,10 @@ body {
   background-image: url('data:image/svg+xml,<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="2.5" width="4" height="4" stroke="%231A73E8"/><rect x="9.5" y="2.5" width="4" height="4" stroke="%231A73E8"/><rect x="9.5" y="9.5" width="4" height="4" stroke="%231A73E8"/><rect x="2.5" y="9.5" width="4" height="4" stroke="%231A73E8"/></svg>');
 }
 
+.element-layout-type.flex {
+  background-image: url('data:image/svg+xml,<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="2.5" width="5.5" height="4" stroke="%231A73E8"/><rect x="11" y="2.5" width="2.5" height="4" stroke="%231A73E8"/><rect x="8" y="9.5" width="5.5" height="4" stroke="%231A73E8"/><rect x="2.5" y="9.5" width="2.5" height="4" stroke="%231A73E8"/></svg>');
+}
+
 .element-description {
   flex: 1 1;
   font-weight: bold;

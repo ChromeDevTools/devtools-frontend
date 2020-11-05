@@ -1,0 +1,53 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Debug</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
+</head>
+<body>
+  <script type="module">
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+
+    dispatch(["setPlatform", "mac"]);
+    dispatch(["setOverlay", "highlight"]);
+    dispatch(["reset", {
+      viewportSize: {
+        width: viewportWidth,
+        height: viewportHeight,
+      },
+      deviceScaleFactor: 1,
+      pageScaleFactor: 1,
+      pageZoomFactor: 1,
+      emulationScaleFactor: 1,
+      scrollX: 0,
+      scrollY: 0,
+    }]);
+
+    dispatch(["drawHighlight", {
+      "paths": [
+        { "path": [ "M", 8, 8, "L", 1272, 8, "L", 1272, 26.666667938232422, "L", 8, 26.666667938232422, "Z" ], "fillColor": "rgba(111, 168, 220, .66)", "name": "content" },
+        { "path": [ "M", 8, 8, "L", 1272, 8, "L", 1272, 26.666667938232422, "L", 8, 26.666667938232422, "Z" ], "fillColor": "rgba(147, 196, 125, .55)", "name": "padding" },
+        { "path": [ "M", 8, 8, "L", 1272, 8, "L", 1272, 26.666667938232422, "L", 8, 26.666667938232422, "Z" ], "fillColor": "rgba(255, 229, 153, .66)", "name": "border" },
+        { "path": [ "M", 8, 8, "L", 1272, 8, "L", 1272, 26.666667938232422, "L", 8, 26.666667938232422, "Z" ], "fillColor": "rgba(246, 178, 107, .66)", "name": "margin" }
+      ],
+      "flexInfo": [{
+        "containerBorder": [ "M", 8, 8, "L", 1272, 8, "L", 1272, 26.666667938232422, "L", 8, 26.666667938232422, "Z" ],
+        "flexContainerHighlightConfig": {
+          "border": {
+            "color": "rgba(255, 0, 0, 1)",
+            "dotted": true,
+          }
+        }
+      }]
+    }]);
+  </script>
+</body>
+</html>

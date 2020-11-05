@@ -58,6 +58,7 @@ export class OverlayModel extends SDKModel {
 
     this._inspectModeEnabled = false;
     this._gridFeaturesExperimentEnabled = Root.Runtime.experiments.isEnabled('cssGridFeatures');
+    this._flexFeaturesExperimentEnabled = Root.Runtime.experiments.isEnabled('cssFlexboxFeatures');
 
     this._hideHighlightTimeout = null;
     /** @type {!Highlighter} */
@@ -491,6 +492,15 @@ export class OverlayModel extends SDKModel {
         rowLineDash: true,
         columnLineDash: true,
       };
+
+      if (this._flexFeaturesExperimentEnabled) {
+        highlightConfig.flexContainerHighlightConfig = {
+          containerBorder: {
+            color: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA(),
+            pattern: Protocol.Overlay.LineStylePattern.Dashed,
+          }
+        };
+      }
     }
 
     if (mode.endsWith('gap') && this._gridFeaturesExperimentEnabled) {

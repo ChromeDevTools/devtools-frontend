@@ -14,18 +14,10 @@
     "elements"
   ],
   "modules": [
-    "../generated/ARIAProperties.js",
-    "accessibility.js",
-    "accessibility-legacy.js",
-    "AccessibilityModel.js",
-    "AccessibilitySidebarView.js",
-    "AccessibilityNodeView.js",
-    "AccessibilityStrings.js",
-    "AccessibilitySubPane.js",
-    "ARIAAttributesView.js",
-    "ARIAMetadata.js",
-    "AXBreadcrumbsPane.js",
-    "SourceOrderView.js"
+    "accessibility-legacy.js"
+  ],
+  "skip_compilation": [
+    "accessibility-legacy.js"
   ],
   "resources": [
     "accessibilityNode.css",

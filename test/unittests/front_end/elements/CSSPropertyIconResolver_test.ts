@@ -362,14 +362,6 @@ describe('CSSPropertyIconResolver', () => {
         iconName: 'flex-align-content-center-icon',
         expected: PhysicalFlexDirection.RIGHT_TO_LEFT,
       },
-      {
-        style: {
-          'flex-direction': 'row',
-          'align-content': 'start',
-        },
-        iconName: 'flex-align-content-start-icon',
-        expected: PhysicalFlexDirection.TOP_TO_BOTTOM,
-      },
     ];
 
     for (const test of tests) {

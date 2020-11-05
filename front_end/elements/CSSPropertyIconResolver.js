@@ -308,9 +308,13 @@ textToIconResolver.set('align-content: stretch', flexAlignContentIcon('flex-alig
 textToIconResolver.set('align-content: space-evenly', flexAlignContentIcon('flex-align-content-space-evenly-icon'));
 textToIconResolver.set('align-content: flex-end', flexAlignContentIcon('flex-align-content-end-icon'));
 textToIconResolver.set('align-content: flex-start', flexAlignContentIcon('flex-align-content-start-icon'));
-textToIconResolver.set('align-content: start', flexAlignContentIcon('flex-align-content-start-icon'));
-// TODO(crbug.com/1139945): end property should use the flex-align-content-end-icon icon once Chromium supports it.
-textToIconResolver.set('align-content: end', flexAlignContentIcon('flex-align-content-start-icon'));
+// TODO(crbug.com/1139945): Start & end should be enabled once Chromium supports them for flexbox.
+// textToIconResolver.set('align-content: start', flexAlignContentIcon('flex-align-content-start-icon'));
+// textToIconResolver.set('align-content: end', flexAlignContentIcon('flex-align-content-end-icon'));
+textToIconResolver.set('align-content: normal', flexAlignContentIcon('flex-align-content-stretch-icon'));
+textToIconResolver.set('align-content: revert', flexAlignContentIcon('flex-align-content-stretch-icon'));
+textToIconResolver.set('align-content: unset', flexAlignContentIcon('flex-align-content-stretch-icon'));
+textToIconResolver.set('align-content: initial', flexAlignContentIcon('flex-align-content-stretch-icon'));
 textToIconResolver.set('justify-content: center', flexJustifyContentIcon('flex-justify-content-center-icon'));
 textToIconResolver.set(
     'justify-content: space-around', flexJustifyContentIcon('flex-justify-content-space-around-icon'));

@@ -21,7 +21,7 @@ devtools_module("layers") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "layers.js"
+  entrypoint = "layers.ts"
 
   deps = [ ":layers" ]
 }

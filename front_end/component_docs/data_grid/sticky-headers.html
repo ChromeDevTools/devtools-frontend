@@ -1,0 +1,69 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Sticky headers data grid</title>
+    <style>
+      #container {
+        width: 80%;
+        border: 1px solid black;
+        padding: 20px;
+        height: 150px;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+
+    <p>Every 2 seconds a new row is added to the grid below.</p>
+    <div id="container">
+    </div>
+
+    <script type="module">
+      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+      import * as Components from '../../ui/components/components.js';
+
+      ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent())
+
+      const renderComponent = () => {
+        const component = new Components.DataGrid.DataGrid();
+
+        component.data = {
+          columns: [
+            { id: 'key', title: 'Key', sortable: true, widthWeighting: 1 },
+            { id: 'value', title: 'Value', sortable: false, widthWeighting: 1 },
+          ],
+          rows: [
+            // Each key is the ID of a column, and the value is the value for that column
+            {cells:[{ columnId: 'key', value: 'Bravo'}, { columnId: 'value', value: 'foobar'}]},
+            {cells:[{ columnId: 'key', value: 'Alpha'}, { columnId: 'value', value: 'bazbar'}]},
+            {cells:[{ columnId: 'key', value: 'Charlie'}, { columnId: 'value', value: 'bazbar'}]},
+            {cells:[{ columnId: 'key', value: 'Delta'}, { columnId: 'value', value: 'bazbar'}]},
+            {cells:[{ columnId: 'key', value: 'Echo'}, { columnId: 'value', value: 'bazbar'}]},
+            {cells:[{ columnId: 'key', value: 'Foxtrot'}, { columnId: 'value', value: 'bazbar'}]},
+          ]
+        }
+
+        document.getElementById('container').appendChild(component)
+
+        window.setInterval(() => {
+          const randomDataRow = { cells: [
+            { columnId: 'key', value: `Key: ${Math.floor(Math.random() * 10)}`},
+            { columnId: 'value', value: `Value: ${Math.floor(Math.random() * 10)}`},
+          ] }
+          component.data = {
+            ...component.data,
+            rows: [...component.data.rows, randomDataRow]
+          }
+        }, 2000)
+      }
+
+    </script>
+  </body>
+</html>

@@ -165,6 +165,7 @@ generated_typescript_entrypoint_sources = [
   "$resources_out_dir/timeline_model/timeline_model-legacy.js",
   "$resources_out_dir/timeline_model/timeline_model.js",
   "$resources_out_dir/toolbox_bootstrap/toolbox_bootstrap.js",
+  "$resources_out_dir/ui/components/components.js",
   "$resources_out_dir/ui/ui-legacy.js",
   "$resources_out_dir/ui/ui.js",
   "$resources_out_dir/ui/utils/utils.js",

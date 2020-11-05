@@ -148,6 +148,17 @@ export function dispatchClickEvent<T extends Element>(element: T, options: Mouse
 }
 
 /**
+ * Dispatches a keydown event. Errors if the event was not dispatched successfully.
+ */
+export function dispatchKeyDownEvent<T extends Element>(element: T, options: KeyboardEventInit = {}) {
+  const clickEvent = new KeyboardEvent('keydown', options);
+  const success = element.dispatchEvent(clickEvent);
+  if (!success) {
+    assert.fail('Failed to trigger keydown event successfully.');
+  }
+}
+
+/**
  * Listens to an event of an element and returns a Promise that resolves to the
  * specified event type.
  */

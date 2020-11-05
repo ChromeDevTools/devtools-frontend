@@ -1,0 +1,70 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Adding data example</title>
+    <style>
+      #container {
+        width: 80%;
+        border: 1px solid black;
+        padding: 20px;
+      }
+
+      button {
+        margin-bottom: 20px;
+      }
+
+    </style>
+  </head>
+  <body>
+
+
+    <div id="container">
+      <button id="add">Add</button>
+    </div>
+
+    <script type="module">
+      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+      import * as Components from '../../ui/components/components.js';
+
+      ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent())
+
+      const renderComponent = () => {
+        const component = new Components.DataGrid.DataGrid();
+
+        component.data = {
+          columns: [
+            { id: 'key', title: 'Key', sortable: true, widthWeighting: 1 },
+            { id: 'value', title: 'Value', sortable: false, widthWeighting: 1 },
+          ],
+          rows: [
+            {cells:[{ columnId: 'key', value: 'foo'}, { columnId: 'value', value: 'bar'}]}
+          ]
+        }
+
+        document.getElementById('container').appendChild(component)
+
+        document.querySelector('#add').addEventListener('click', (event) => {
+          event.preventDefault();
+
+          const randomDataRow = {cells:[
+            { columnId: 'key', value: `Key: ${Math.floor(Math.random() * 10)}`},
+            { columnId: 'value', value: `Value: ${Math.floor(Math.random() * 10)}`},
+          ]}
+
+          component.data = {
+            ...component.data,
+            rows: [...component.data.rows, randomDataRow]
+          }
+        })
+      }
+
+    </script>
+  </body>
+</html>

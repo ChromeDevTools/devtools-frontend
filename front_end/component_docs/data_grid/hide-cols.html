@@ -1,0 +1,74 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Hiding columns Data grid example</title>
+    <style>
+      #container {
+        width: 80%;
+        border: 1px solid black;
+        padding: 20px;
+      }
+
+      button {
+        font-size: 18px;
+        padding: 10px;
+        margin-bottom: 20px;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div id="container">
+      <button>Toggle visibility of 'Value' column</button>
+    </div>
+
+    <script type="module">
+      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+      import * as Components from '../../ui/components/components.js';
+
+      ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent())
+
+      const renderComponent = () => {
+        const component = new Components.DataGrid.DataGrid();
+
+        component.data = {
+          columns: [
+            { id: 'key', title: 'Key', sortable: true, widthWeighting: 2 },
+            { id: 'value', title: 'Value', sortable: false, widthWeighting: 2},
+            { id: 'number', title: 'Number', sortable: false, widthWeighting: 1},
+          ],
+          rows: [
+            { cells: [{ columnId: 'key', value: 'Bravo'}, { columnId: 'value', value: 'foobar'}, { columnId: 'number', value: '1'}]},
+            { cells: [{ columnId: 'key', value: 'Alpha'}, { columnId: 'value', value: 'bazbar'}, { columnId: 'number', value: '2'}]},
+            { cells: [{ columnId: 'key', value: 'Charlie'}, { columnId: 'value', value: 'bazbar'}, { columnId: 'number', value: '3'}]},
+          ]
+        }
+
+        document.getElementById('container').appendChild(component)
+
+        const btn = document.querySelector('button');
+        btn.addEventListener('click', () => {
+          const {columns} = component.data
+          const isHidden = columns[1].hidden === true;
+
+          const newColumns = [...columns];
+          newColumns[1].hidden = !isHidden;
+
+          component.data = {
+            columns: newColumns,
+            rows: component.data.rows,
+          }
+        })
+      }
+
+    </script>
+  </body>
+</html>

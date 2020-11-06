@@ -10,6 +10,7 @@ group("component_docs") {
     "./data_grid_controller",
     "./elements_breadcrumbs",
     "./icon_component",
+    "./issue_survey_link",
     "./layout_pane",
     "./linear_memory_inspector",
     "./perf_piechart",

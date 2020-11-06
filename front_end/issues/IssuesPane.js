@@ -12,6 +12,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {AggregatedIssue, Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
+import {IssueSurveyLink} from './IssueSurveyLink.js';
 import {createIssueDescriptionFromMarkdown} from './MarkdownIssueDescription.js';
 
 /** @enum {string} */
@@ -1112,6 +1113,14 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
   }
 }
 
+// TODO(petermarshall, 1112738): Add survey triggers here.
+/** @type {!Map<!SDK.Issue.IssueCategory, string|null>} */
+const issueSurveyTriggers = new Map([
+  [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, null], [SDK.Issue.IssueCategory.MixedContent, null],
+  [SDK.Issue.IssueCategory.SameSiteCookie, null], [SDK.Issue.IssueCategory.HeavyAd, null],
+  [SDK.Issue.IssueCategory.ContentSecurityPolicy, null], [SDK.Issue.IssueCategory.Other, null]
+]);
+
 class IssueView extends UI.TreeOutline.TreeElement {
   /**
    *
@@ -1247,9 +1256,6 @@ class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   _createReadMoreLinks() {
-    if (this._description.links.length === 0) {
-      return;
-    }
     const linkWrapper = new UI.TreeOutline.TreeElement();
     linkWrapper.setCollapsible(false);
     linkWrapper.listItemElement.classList.add('link-wrapper');
@@ -1276,6 +1282,18 @@ class IssueView extends UI.TreeOutline.TreeElement {
       linkListItem.appendChild(link);
     }
     this.appendChild(linkWrapper);
+
+    const surveyTrigger = issueSurveyTriggers.get(this._issue.getCategory());
+    if (surveyTrigger) {
+      // This part of the UI is async so be careful relying on it being available.
+      const surveyLink = new IssueSurveyLink();
+      surveyLink.data = {
+        trigger: surveyTrigger,
+        canShowSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.canShowSurvey,
+        showSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.showSurvey
+      };
+      linkList.createChild('li').appendChild(surveyLink);
+    }
   }
 
   update() {

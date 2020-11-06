@@ -60,8 +60,14 @@
   <message name="IDS_DEVTOOLS_7232b2cfdea953afe7f0087a11712c9b" desc="Category title for a group of content security policy (CSP) issues">
     Content Security Policy
   </message>
+  <message name="IDS_DEVTOOLS_7f7208f102493356f51e7eb55dd157a1" desc="Text displayed instead of the survey link after the survey link is clicked, if the survey was shown successfully, in the issue view">
+    Thank you for your feedback
+  </message>
   <message name="IDS_DEVTOOLS_8e2dcfd7e7e24b1ca76c1193f645902b" desc="Singular label for number of affected element resource indication in issue view">
     element
+  </message>
+  <message name="IDS_DEVTOOLS_8c83906ca63318aa18a820cbb91176a1" desc="Link text for opening a survey in the expended view of an Issue in the issue view">
+    Is this issue message helpful to you?
   </message>
   <message name="IDS_DEVTOOLS_965667e5913ece6c999a54b2a167fc15" desc="Tooltip for button linking to the Elements panel">
     Click to reveal the frame&apos;s DOM node in the Elements panel
@@ -114,6 +120,9 @@
   <message name="IDS_DEVTOOLS_d09fde8cce3e04fe6dfc89c15e3c449f" desc="Title for a column in an issue view">
     Blocked Resource
   </message>
+  <message name="IDS_DEVTOOLS_d47d1a9538df32f314e56fd640ddc754" desc="Text displayed instead of the survey link after the survey link is clicked, if the survey was not shown successfully, in the issue view">
+    An error occurred with the survey
+  </message>
   <message name="IDS_DEVTOOLS_d4cfcb4d43733c39d7b1b802fe2fc235" desc="Category title for a group of cross origin embedder policy (COEP) issues">
     Cross Origin Embedder Policy
   </message>
@@ -137,5 +146,8 @@
   </message>
   <message name="IDS_DEVTOOLS_fae3520ad615b90014c2f2991ff32edf" desc="Reason for a Heavy Ad being flagged in issue view">
     CPU total limit
+  </message>
+  <message name="IDS_DEVTOOLS_fb5f2364eb32a3ea2051c7a7792569a3" desc="Text shown when the link to open a survey is clicked but the survey has not yet appeared">
+    Opening survey …
   </message>
 </grit-part>

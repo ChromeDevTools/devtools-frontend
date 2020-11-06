@@ -92,10 +92,6 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!Element} */
     this._dataTable = this._scrollContainer.createChild('table', 'data');
 
-    /** @type {!Element} */
-    this._ariaLiveLabel = this.element.createChild('div', 'aria-live-label');
-    UI.ARIAUtils.markAsPoliteLiveRegion(this._ariaLiveLabel, false);
-
     // FIXME: Add a createCallback which is different from editCallback and has different
     // behavior when creating a new node.
     if (editCallback) {
@@ -274,7 +270,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   updateGridAccessibleName(text) {
     // Update the label with the provided text or the current selected node
     const accessibleText = (this.selectedNode && this.selectedNode.existingElement()) ? this.selectedNode.nodeAccessibleText : '';
-    this._ariaLiveLabel.textContent = text ? text : accessibleText;
+    UI.ARIAUtils.alert(text ? text : accessibleText, this.element);
   }
 
   updateGridAccessibleNameOnFocus() {
@@ -298,7 +294,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
       accessibleText = ls`${
           this._displayName} ${items}, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.`;
     }
-    this._ariaLiveLabel.textContent = accessibleText;
+    UI.ARIAUtils.alert(accessibleText, this.element);
   }
 
   /**

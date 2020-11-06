@@ -7,6 +7,7 @@
 const path = require('path');
 const glob = require('glob');
 const fs = require('fs');
+const rimraf = require('rimraf');
 
 // false by default
 const DEBUG_ENABLED = !!process.env['DEBUG'];
@@ -14,6 +15,17 @@ const COVERAGE_ENABLED = !!process.env['COVERAGE'];
 
 // true by default
 const TEXT_COVERAGE_ENABLED = COVERAGE_ENABLED && !process.env['NO_TEXT_COVERAGE'];
+const COVERAGE_OUTPUT_DIRECTORY = 'karma-coverage';
+
+if (COVERAGE_ENABLED) {
+  /* Clear out the old coverage directory so you can't accidentally open old,
+   * out of date coverage output.
+   */
+  const fullPathToDirectory = path.resolve(process.cwd(), COVERAGE_OUTPUT_DIRECTORY);
+  if (fs.existsSync(fullPathToDirectory)) {
+    rimraf.sync(fullPathToDirectory);
+  }
+}
 
 const GEN_DIRECTORY = path.join(__dirname, '..', '..');
 const ROOT_DIRECTORY = path.join(GEN_DIRECTORY, '..', '..', '..');
@@ -106,7 +118,7 @@ module.exports = function(config) {
     proxies: {'/Images': 'front_end/Images'},
 
     coverageReporter:
-        {dir: 'karma-coverage', reporters: istanbulReportOutputs, exclude: ['out', 'front_end/third_party']},
+        {dir: COVERAGE_OUTPUT_DIRECTORY, reporters: istanbulReportOutputs, exclude: ['out', 'front_end/third_party']},
 
     singleRun: !DEBUG_ENABLED,
   };

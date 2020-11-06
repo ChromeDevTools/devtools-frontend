@@ -10,6 +10,13 @@ import * as puppeteer from 'puppeteer';
 
 import {getBrowserAndPages, registerHandlers, setBrowserAndPages, setHostedModeServerPort} from './puppeteer-state.js';
 
+// Workaround for mismatching versions of puppeteer types and puppeteer library.
+declare module 'puppeteer' {
+  interface ConsoleMessage {
+    stackTrace(): ConsoleMessageLocation[];
+  }
+}
+
 const HOSTED_MODE_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', 'hosted_mode', 'server.js');
 const EMPTY_PAGE = 'data:text/html,';
 const DEFAULT_TAB = {
@@ -157,12 +164,11 @@ async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
   frontend.on('console', msg => {
     const logLevel = logLevels[msg.type() as keyof typeof logLevels] as string;
     if (logLevel) {
-      let filename = '<unknown>';
-      if (msg.location() && msg.location().url) {
-        filename = msg.location()!.url!.replace(/^.*\//, '');
-      }
-      const message = `${logLevel}> ${filename}:${msg.location().lineNumber}: ${msg.text()}`;
       if (logLevel === 'E') {
+        let message = `${logLevel}> ${msg.text()}`;
+        for (const frame of msg.stackTrace()) {
+          message += '\n' + formatStackFrame(frame);
+        }
         if (ALLOWED_ASSERTION_FAILURES.includes(msg.text())) {
           expectedErrors.push(message);
           console.log('(expected) ' + message);
@@ -171,12 +177,20 @@ async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
           console.error(message);
         }
       } else {
-        console.log(message);
+        console.log(`${logLevel}> ${formatStackFrame(msg.location())}: ${msg.text()}`);
       }
     }
   });
 
   setBrowserAndPages({target: srcPage, frontend, browser});
+}
+
+function formatStackFrame(stackFrame: puppeteer.ConsoleMessageLocation): string {
+  if (!stackFrame) {
+    return '<unknown>';
+  }
+  const filename = stackFrame!.url!.replace(/^.*\//, '');
+  return `${filename}:${stackFrame.lineNumber}:${stackFrame.columnNumber}`;
 }
 
 export async function resetPages() {

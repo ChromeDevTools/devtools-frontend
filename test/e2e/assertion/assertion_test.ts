@@ -25,7 +25,10 @@ describe('Assertions', async function() {
     const {frontend} = getBrowserAndPages();
     await step('Check the evaluation results from console', async () => {
       frontend.evaluate(() => {
-        console.error('expected failure 2');
+        function foo() {
+          console.error('expected failure 2');
+        }
+        foo();
       });
     });
     await goToResource('cross_tool/default.html');

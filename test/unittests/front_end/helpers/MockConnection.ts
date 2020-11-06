@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../../front_end/common/common.js';
 import {ProtocolMapping} from '../../../../front_end/generated/protocol-mapping.js';
 import * as ProtocolClient from '../../../../front_end/protocol_client/protocol_client.js';
-import * as Root from '../../../../front_end/root/root.js';
-import * as SDK from '../../../../front_end/sdk/sdk.js';
+
+import {deinitializeGlobalVars, initializeGlobalVars} from './EnvironmentHelpers.js';
 
 type ProtocolCommand = keyof ProtocolMapping.Commands;
 type ProtocolCommandParams<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['paramsType'];
@@ -15,18 +14,11 @@ type ProtocolCommandHandler<C extends ProtocolCommand> = (params: ProtocolComman
     Omit<ProtocolResponse<C>, 'getError'>;
 type MessageCallback = (result: string|Object) => void;
 
-let targetManager: SDK.SDKModel.TargetManager;
-export function createTarget({id = 'test', name = 'test', type = SDK.SDKModel.Type.Node} = {}) {
-  if (!targetManager) {
-    throw new Error('Please call enable before creating a target');
-  }
-  return targetManager.createTarget(id, name, type, null);
-}
-
 // Note that we can't set the Function to the correct handler on the basis
 // that we don't know which ProtocolCommand will be stored.
 const responseMap = new Map<ProtocolCommand, Function>();
-export function setResponseHandler<C extends ProtocolCommand>(command: C, handler: ProtocolCommandHandler<C>) {
+export function setMockConnectionResponseHandler<C extends ProtocolCommand>(
+    command: C, handler: ProtocolCommandHandler<C>) {
   if (responseMap.get(command)) {
     throw new Error(`Response handler already set for ${command}`);
   }
@@ -34,15 +26,15 @@ export function setResponseHandler<C extends ProtocolCommand>(command: C, handle
   responseMap.set(command, handler);
 }
 
-export function getResponseHandler(method: ProtocolCommand) {
+export function getMockConnectionResponseHandler(method: ProtocolCommand) {
   return responseMap.get(method);
 }
 
-export function clearResponseHandler(method: ProtocolCommand) {
+export function clearMockConnectionResponseHandler(method: ProtocolCommand) {
   responseMap.delete(method);
 }
 
-function enable(reset = true) {
+function enable({reset = true} = {}) {
   if (reset) {
     responseMap.clear();
   }
@@ -50,7 +42,7 @@ function enable(reset = true) {
   // The DevTools frontend code expects certain things to be in place
   // before it can run. This function will ensure those things are
   // minimally there.
-  initializeGlobalVars();
+  initializeGlobalVars({reset});
 
   let messageCallback: MessageCallback;
   ProtocolClient.InspectorBackend.Connection.setFactory(() => {
@@ -98,91 +90,11 @@ function disable() {
   ProtocolClient.InspectorBackend.Connection.setFactory(undefined);
 }
 
-function initializeGlobalVars() {
-  // SDK.ResourceTree model has to exist to avoid a circular dependency, thus it
-  // needs to be placed on the global if it is not already there.
-  const globalObject = (globalThis as unknown as {SDK: {ResourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel}});
-  globalObject.SDK = globalObject.SDK || {};
-  globalObject.SDK.ResourceTreeModel = globalObject.SDK.ResourceTreeModel || SDK.ResourceTreeModel.ResourceTreeModel;
-
-  // Create the target manager.
-  targetManager = SDK.SDKModel.TargetManager.instance({forceNew: true});
-
-  // Create the appropriate settings needed to boot.
-  const settingValues = [
-    {
-      'category': 'Console',
-      'settingName': 'customFormatters',
-      'defaultValue': 'false',
-    },
-    {
-      'category': 'Debugger',
-      'settingName': 'pauseOnCaughtException',
-      'defaultValue': 'false',
-    },
-    {
-      'category': 'Debugger',
-      'settingName': 'pauseOnExceptionEnabled',
-      'defaultValue': 'false',
-    },
-    {
-      'category': 'Debugger',
-      'settingName': 'disableAsyncStackTraces',
-      'defaultValue': 'false',
-    },
-    {
-      'category': 'Debugger',
-      'settingName': 'breakpointsActive',
-      'defaultValue': 'true',
-    },
-    {
-      'category': 'Sources',
-      'settingName': 'jsSourceMapsEnabled',
-      'defaultValue': 'true',
-    },
-  ];
-
-  const extensions: Root.Runtime.RuntimeExtensionDescriptor[] = settingValues.map(setting => {
-    return {...setting, type: 'setting', settingType: 'boolean'} as Root.Runtime.RuntimeExtensionDescriptor;
-  });
-
-  // Instantiate the runtime.
-  Root.Runtime.Runtime.instance({
-    forceNew: true,
-    moduleDescriptors: [{
-      name: 'Test',
-      extensions,
-      dependencies: [],
-      modules: [],
-      scripts: [],
-      resources: [],
-      condition: '',
-      experiment: '',
-    }],
-  });
-
-  // Instantiate the storage.
-  const storageVals = new Map<string, string>();
-  const storage = new Common.Settings.SettingsStorage(
-      {}, (key, value) => storageVals.set(key, value), key => storageVals.delete(key), () => storageVals.clear(),
-      'test');
-  Common.Settings.Settings.instance({forceNew: true, globalStorage: storage, localStorage: storage});
-}
-
-function deinitializeGlobalVars() {
-  // Remove the global SDK.
-  const globalObject = (globalThis as unknown as {SDK?: {}});
-  delete globalObject.SDK;
-
-  // Remove instances.
-  SDK.SDKModel.TargetManager.removeInstance();
-  Root.Runtime.Runtime.removeInstance();
-  Common.Settings.Settings.removeInstance();
-}
-
-export function describeWithMockConnection(title: string, fn: (this: Mocha.Suite) => void, {reset = true} = {}) {
+export function describeWithMockConnection(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {
+  reset: true,
+}) {
   return describe(`mock-${title}`, () => {
-    beforeEach(() => enable(reset));
+    beforeEach(() => enable(opts));
     afterEach(disable);
     describe(title, fn);
   });

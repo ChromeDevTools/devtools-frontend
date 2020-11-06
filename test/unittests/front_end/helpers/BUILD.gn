@@ -8,6 +8,7 @@ ts_library("helpers") {
   testonly = true
   sources = [
     "DOMHelpers.ts",
+    "EnvironmentHelpers.ts",
     "InspectorOverlayHelpers.ts",
     "MockConnection.ts",
     "MutationHelpers.ts",

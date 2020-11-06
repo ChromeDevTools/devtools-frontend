@@ -4,14 +4,15 @@
 
 const {assert} = chai;
 
-import * as MockConnection from '../helpers/MockConnection.js';
+import {createTarget} from '../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../helpers/MockConnection.js';
 import {Protocol} from '../../../../front_end/protocol_client/protocol_client.js';
 import {CookieModel} from '../../../../front_end/sdk/CookieModel.js';
 
-MockConnection.describeWithMockConnection('CookieModel', () => {
+describeWithMockConnection('CookieModel', () => {
   it('can retrieve cookies', async () => {
     // CDP Connection mock: for Network.getCookies, respond with a single cookie.
-    MockConnection.setResponseHandler('Network.getCookies', () => {
+    setMockConnectionResponseHandler('Network.getCookies', () => {
       return {
         cookies: [{
           domain: '.example.com',
@@ -28,7 +29,7 @@ MockConnection.describeWithMockConnection('CookieModel', () => {
       };
     });
 
-    const target = MockConnection.createTarget();
+    const target = createTarget();
     const model = new CookieModel(target);
     const cookies = await model.getCookies(['https://www.google.com']);
     assert.isArray(cookies);

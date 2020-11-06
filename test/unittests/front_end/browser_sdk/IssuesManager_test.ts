@@ -7,11 +7,11 @@ const {assert} = chai;
 import * as SDK from '../../../../front_end/sdk/sdk.js';
 import * as BrowserSDK from '../../../../front_end/browser_sdk/browser_sdk.js';
 
-import {resetSettingsStorage} from '../common/SettingsHelper.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {StubIssue, ThirdPartyStubIssue} from '../sdk/StubIssue.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
 
-describe('IssuesManager', () => {
+describeWithEnvironment('IssuesManager', () => {
   it('collects issues from am issues model', () => {
     const issue1 = new StubIssue('StubIssue1', ['id1', 'id2'], []);
     const issue2 = new StubIssue('StubIssue2', ['id1', 'id2'], []);
@@ -36,9 +36,6 @@ describe('IssuesManager', () => {
     const issueCodes = Array.from(issuesManager.issues()).map(r => r.code());
     assert.deepStrictEqual(issueCodes, ['StubIssue2', 'StubIssue2']);
   });
-
-  beforeEach(resetSettingsStorage);
-  afterEach(resetSettingsStorage);
 
   it('filters third-party issues when the third-party issues setting is false, includes them otherwise', () => {
     const issues = [

@@ -6,9 +6,13 @@ import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("devices") {
-  sources = [ "DevicesView.js" ]
+  sources = [
+    "DevicesView.js",
+    "ModuleUIStrings.js",
+  ]
 
   deps = [
+    "../i18n:bundle",
     "../sdk:bundle",
     "../ui:bundle",
   ]

@@ -15,6 +15,7 @@
     "platform",
     "ui",
     "host",
+    "i18n",
     "components"
   ],
   "modules": [

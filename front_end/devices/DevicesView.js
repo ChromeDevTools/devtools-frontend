@@ -2,8 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
+
+export const UIStrings = {
+  /**
+  *@description Deprecation notice for the Remote Devices tool
+  *@example {chrome://inspect/#devices} PH1
+  */
+  thisPanelHasBeenDeprecatedIn:
+      'This panel has been deprecated in favor of the {PH1} interface, which has equivalent functionality.',
+};
+const str_ = i18n.i18n.registerUIStrings('devices/DevicesView.js', UIStrings);
 
 Devices.DevicesView = class extends UI.Widget.VBox {
   constructor() {
@@ -22,9 +33,8 @@ Devices.DevicesView = class extends UI.Widget.VBox {
     });
 
     deprecationMessage.style.padding = '5px';
-    deprecationMessage.appendChild(UI.UIUtils.formatLocalized(
-        'This panel has been deprecated in favor of the %s interface, which has equivalent functionality.',
-        [documentationLink]));
+    deprecationMessage.appendChild(
+        i18n.i18n.getFormatLocalizedString(str_, UIStrings.thisPanelHasBeenDeprecatedIn, {PH1: documentationLink}));
 
     this.setDefaultFocusedElement(documentationLink);
   }

@@ -206,8 +206,8 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
     if (fromElement) {
       fromElement.tabIndex = -1;
     }
-    if (toElement && this._editingRow) {
-      if (to === this._editingItem) {
+    if (toElement) {
+      if (to === this._editingItem && this._editingRow) {
         this._editingRow.focus();
       } else {
         toElement.tabIndex = 0;

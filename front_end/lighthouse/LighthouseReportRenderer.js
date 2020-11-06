@@ -2,12 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
-import * as HostModule from '../host/host.js';
+import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
@@ -22,7 +19,9 @@ const MaxLengthForLinks = 40;
 
 /**
  * @override
+ * @extends {ReportRenderer.ReportRenderer}
  */
+// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
 export class LighthouseReportRenderer extends self.ReportRenderer {
   /**
    * @param {!DOM} dom
@@ -41,6 +40,9 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
 
     const simulated = artifacts.settings.throttlingMethod === 'simulate';
     const container = el.querySelector('.lh-audit-group');
+    if (!container) {
+      return;
+    }
     const disclaimerEl = container.querySelector('.lh-metrics__disclaimer');
     // If it was a PWA-only run, we'd have a trace but no perf category to add the button to
     if (!disclaimerEl) {
@@ -57,7 +59,7 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
     container.insertBefore(timelineButton, disclaimerEl.nextSibling);
 
     async function onViewTraceClick() {
-      HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseViewTrace);
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseViewTrace);
       await UI.InspectorView.InspectorView.instance().showPanel('timeline');
       Timeline.TimelinePanel.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
     }
@@ -68,11 +70,17 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
    */
   static async linkifyNodeDetails(el) {
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    if (!mainTarget) {
+      return;
+    }
     const domModel = mainTarget.model(SDK.DOMModel.DOMModel);
+    if (!domModel) {
+      return;
+    }
 
     for (const origElement of el.getElementsByClassName('lh-node')) {
-      /** @type {!ReportRenderer.NodeDetailsJSON} */
-      const detailsItem = origElement.dataset;
+      const origHTMLElement = /** @type {!HTMLElement} */ (origElement);
+      const detailsItem = /** @type {!ReportRenderer.NodeDetailsJSON} */ (origHTMLElement.dataset);
       if (!detailsItem.path) {
         continue;
       }
@@ -87,10 +95,11 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
         continue;
       }
 
-      const element = await Common.Linkifier.Linkifier.linkify(node, {tooltip: detailsItem.snippet});
-      origElement.title = '';
-      origElement.textContent = '';
-      origElement.appendChild(element);
+      const element = await Common.Linkifier.Linkifier.linkify(
+          node, {tooltip: detailsItem.snippet, preventKeyboardFocus: undefined});
+      origHTMLElement.title = '';
+      origHTMLElement.textContent = '';
+      origHTMLElement.appendChild(element);
     }
   }
 
@@ -99,19 +108,27 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
    */
   static async linkifySourceLocationDetails(el) {
     for (const origElement of el.getElementsByClassName('lh-source-location')) {
-      /** @type {!ReportRenderer.SourceLocationDetailsJSON} */
-      const detailsItem = origElement.dataset;
+      const origHTMLElement = /** @type {!HTMLElement} */ (origElement);
+      const detailsItem = /** @type {!ReportRenderer.SourceLocationDetailsJSON} */ (origHTMLElement.dataset);
       if (!detailsItem.sourceUrl || !detailsItem.sourceLine || !detailsItem.sourceColumn) {
         continue;
       }
       const url = detailsItem.sourceUrl;
       const line = Number(detailsItem.sourceLine);
       const column = Number(detailsItem.sourceColumn);
-      const element = await Components.Linkifier.Linkifier.linkifyURL(
-          url, {lineNumber: line, column, maxLength: MaxLengthForLinks});
-      origElement.title = '';
-      origElement.textContent = '';
-      origElement.appendChild(element);
+      const element = await Components.Linkifier.Linkifier.linkifyURL(url, {
+        lineNumber: line,
+        columnNumber: column,
+        maxLength: MaxLengthForLinks,
+        bypassURLTrimming: undefined,
+        className: undefined,
+        preventClick: undefined,
+        tabStop: undefined,
+        text: undefined
+      });
+      origHTMLElement.title = '';
+      origHTMLElement.textContent = '';
+      origHTMLElement.appendChild(element);
     }
   }
 
@@ -127,7 +144,9 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
 
 /**
  * @override
+ * @extends {ReportRenderer.ReportUIFeatures}
  */
+// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
 export class LighthouseReportUIFeatures extends self.ReportUIFeatures {
   /**
    * @param {!DOM} dom
@@ -161,6 +180,7 @@ export class LighthouseReportUIFeatures extends self.ReportUIFeatures {
    */
   getReportHtml() {
     this.resetUIState();
+    // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
     return Lighthouse.ReportGenerator.generateReportHtml(this.json);
   }
 
@@ -180,14 +200,17 @@ export class LighthouseReportUIFeatures extends self.ReportUIFeatures {
 
   async _print() {
     const document = this.getDocument();
-    const clonedReport = document.querySelector('.lh-root').cloneNode(true /* deep */);
+    const clonedReport = /** @type {!HTMLElement} */ (document.querySelector('.lh-root')).cloneNode(true /* deep */);
     const printWindow = window.open('', '_blank', 'channelmode=1,status=1,resizable=1');
+    if (!printWindow) {
+      return;
+    }
     const style = printWindow.document.createElement('style');
-    style.textContent = Root.Runtime.cachedResources.get('third_party/lighthouse/report-assets/report.css');
+    style.textContent = Root.Runtime.cachedResources.get('third_party/lighthouse/report-assets/report.css') || '';
     printWindow.document.head.appendChild(style);
     printWindow.document.body.replaceWith(clonedReport);
     // Linkified nodes are shadow elements, which aren't exposed via `cloneNode`.
-    await LighthouseReportRenderer.linkifyNodeDetails(clonedReport);
+    await LighthouseReportRenderer.linkifyNodeDetails(/** @type {!HTMLElement} */ (clonedReport));
 
     if (this._beforePrint) {
       this._beforePrint();

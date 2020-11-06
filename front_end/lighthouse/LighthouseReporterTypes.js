@@ -191,6 +191,7 @@ export let DetailsJSON;
 /**
  * @typedef {{
  *     traces: {defaultPass: {traceEvents: !Array<?>}},
+ *     settings: {throttlingMethod: string},
  * }}
  */
 // @ts-ignore typedef

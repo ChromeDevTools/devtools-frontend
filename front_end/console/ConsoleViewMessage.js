@@ -2027,7 +2027,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
       const rowProperty = preview.properties[i];
       /** @type {!Array<!Protocol.Runtime.PropertyPreview|!{name:(string|symbol), type: !Protocol.Runtime.PropertyPreviewType, value: (string|undefined)}>} */
       let rowSubProperties;
-      if (rowProperty.valuePreview) {
+      if (rowProperty.valuePreview && rowProperty.valuePreview.properties.length) {
         rowSubProperties = rowProperty.valuePreview.properties;
       } else if (rowProperty.value) {
         rowSubProperties = [{name: rawValueColumnSymbol, type: rowProperty.type, value: rowProperty.value}];

@@ -26,6 +26,15 @@ const headless = !process.env['DEBUG'];
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
 
+// TODO: move this into a file
+const ALLOWED_ASSERTION_FAILURES = [
+  // Failure during shutdown. crbug.com/1145969
+  'Session is unregistering, can\'t dispatch pending call to Debugger.setBlackboxPatterns',
+  // Expected failures in assertion_test.ts
+  'expected failure 1',
+  'expected failure 2',
+];
+
 const logLevels = {
   log: 'I',
   info: 'I',
@@ -154,8 +163,13 @@ async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
       }
       const message = `${logLevel}> ${filename}:${msg.location().lineNumber}: ${msg.text()}`;
       if (logLevel === 'E') {
-        console.error(message);
-        fatalErrors.push(message);
+        if (ALLOWED_ASSERTION_FAILURES.includes(msg.text())) {
+          expectedErrors.push(message);
+          console.log('(expected) ' + message);
+        } else {
+          fatalErrors.push(message);
+          console.error(message);
+        }
       } else {
         console.log(message);
       }
@@ -273,9 +287,12 @@ export async function globalTeardown() {
   console.log('Stopping hosted mode server');
   hostedModeServer.kill();
 
+  console.log('Expected errors: ' + expectedErrors.length);
+  console.log('   Fatal errors: ' + fatalErrors.length);
   if (fatalErrors.length) {
     throw new Error('Fatal errors logged:\n' + fatalErrors.join('\n'));
   }
 }
 
 export const fatalErrors: string[] = [];
+export const expectedErrors: string[] = [];

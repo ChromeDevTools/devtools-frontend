@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {fatalErrors} from '../../conductor/hooks.js';
+import {expectedErrors} from '../../conductor/hooks.js';
 import {getBrowserAndPages, goToResource, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 
@@ -17,8 +17,8 @@ describe('Assertions', async function() {
       });
     });
     await goToResource('cross_tool/default.html');
-    assert.strictEqual(fatalErrors.length, 1);
-    assert.ok(fatalErrors[0].includes('expected failure 1'));
+    assert.strictEqual(expectedErrors.length, 1);
+    assert.ok(expectedErrors[0].includes('expected failure 1'));
   });
 
   it('console.error', async () => {
@@ -29,12 +29,7 @@ describe('Assertions', async function() {
       });
     });
     await goToResource('cross_tool/default.html');
-    assert.strictEqual(fatalErrors.length, 1);
-    assert.ok(fatalErrors[0].includes('expected failure 2'));
-  });
-
-  this.afterEach(() => {
-    // Clear logged fatal errors so that we end up passing this test.
-    fatalErrors.length = 0;
+    assert.strictEqual(expectedErrors.length, 2);
+    assert.ok(expectedErrors[1].includes('expected failure 2'));
   });
 });

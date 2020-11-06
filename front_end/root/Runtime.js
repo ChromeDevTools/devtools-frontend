@@ -537,7 +537,7 @@ export class RuntimeExtensionDescriptor {
     /** @type {string|null} */
     this.settingType;
 
-    /** @type {string} */
+    /** @type {*} */
     this.defaultValue;
 
     /** @type {string|null} */

@@ -19,49 +19,46 @@ function initializeTargetManagerIfNecessary() {
   targetManager = targetManager || SDK.SDKModel.TargetManager.instance({forceNew: true});
 }
 
-export function createTarget({id = 'test', name = 'test', type = SDK.SDKModel.Type.Node} = {}) {
+export function createTarget({id = 'test', name = 'test', type = SDK.SDKModel.Type.Frame} = {}) {
   initializeTargetManagerIfNecessary();
   return targetManager.createTarget(id, name, type, null);
 }
 
+function createSettingValue(category: string, settingName: string, defaultValue: unknown, settingType = 'boolean') {
+  return {type: 'setting', category, settingName, defaultValue, settingType} as Root.Runtime.RuntimeExtensionDescriptor;
+}
+
 export function initializeGlobalVars({reset = true} = {}) {
   // Create the appropriate settings needed to boot.
-  const settingValues = [
-    {
-      'category': 'Console',
-      'settingName': 'customFormatters',
-      'defaultValue': 'false',
-    },
-    {
-      'category': 'Debugger',
-      'settingName': 'pauseOnCaughtException',
-      'defaultValue': 'false',
-    },
-    {
-      'category': 'Debugger',
-      'settingName': 'pauseOnExceptionEnabled',
-      'defaultValue': 'false',
-    },
-    {
-      'category': 'Debugger',
-      'settingName': 'disableAsyncStackTraces',
-      'defaultValue': 'false',
-    },
-    {
-      'category': 'Debugger',
-      'settingName': 'breakpointsActive',
-      'defaultValue': 'true',
-    },
-    {
-      'category': 'Sources',
-      'settingName': 'jsSourceMapsEnabled',
-      'defaultValue': 'true',
-    },
+  const extensions = [
+    createSettingValue('Appearance', 'disablePausedStateOverlay', false),
+    createSettingValue('Console', 'customFormatters', false),
+    createSettingValue('Debugger', 'pauseOnCaughtException', false),
+    createSettingValue('Debugger', 'pauseOnExceptionEnabled', false),
+    createSettingValue('Debugger', 'disableAsyncStackTraces', false),
+    createSettingValue('Debugger', 'breakpointsActive', true),
+    createSettingValue('Debugger', 'javaScriptDisabled', false),
+    createSettingValue('Network', 'cacheDisabled', false),
+    createSettingValue('Rendering', 'avifFormatDisabled', false),
+    createSettingValue('Rendering', 'emulatedCSSMedia', '', 'enum'),
+    createSettingValue('Rendering', 'emulatedCSSMediaFeaturePrefersColorScheme', '', 'enum'),
+    createSettingValue('Rendering', 'emulatedCSSMediaFeaturePrefersReducedMotion', '', 'enum'),
+    createSettingValue('Rendering', 'emulatedCSSMediaFeaturePrefersReducedData', '', 'enum'),
+    createSettingValue('Rendering', 'emulatedVisionDeficiency', '', 'enum'),
+    createSettingValue('Rendering', 'localFontsDisabled', false),
+    createSettingValue('Rendering', 'showPaintRects', false),
+    createSettingValue('Rendering', 'showLayoutShiftRegions', false),
+    createSettingValue('Rendering', 'showAdHighlights', false),
+    createSettingValue('Rendering', 'showDebugBorders', false),
+    createSettingValue('Rendering', 'showFPSCounter', false),
+    createSettingValue('Rendering', 'showScrollBottleneckRects', false),
+    createSettingValue('Rendering', 'showHitTestBorders', false),
+    createSettingValue('Rendering', 'webpFormatDisabled', false),
+    createSettingValue('Sources', 'cssSourceMapsEnabled', true),
+    createSettingValue('Sources', 'jsSourceMapsEnabled', true),
+    createSettingValue('Emulation', 'emulation.touch', '', 'enum'),
+    createSettingValue('Emulation', 'emulation.idleDetection', '', 'enum'),
   ];
-
-  const extensions: Root.Runtime.RuntimeExtensionDescriptor[] = settingValues.map(setting => {
-    return {...setting, type: 'setting', settingType: 'boolean'} as Root.Runtime.RuntimeExtensionDescriptor;
-  });
 
   // Instantiate the runtime.
   Root.Runtime.Runtime.instance({

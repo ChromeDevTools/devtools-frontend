@@ -1446,6 +1446,23 @@ export class NetworkLogView extends UI.Widget.VBox {
             Common.UIString.UIString('Copy response'), NetworkLogView._copyResponse.bind(null, request));
       }
 
+      const initiator = request.initiator();
+
+      if (initiator) {
+        const stack = initiator.stack;
+        if (stack) {
+          // We proactively compute the stacktrace text, as we can't determine whether the stacktrace
+          // has any context solely based on the top frame. Sometimes, the top frame does not have
+          // any callFrames, but its parent frames do.
+          const stackTraceText = computeStackTraceText(stack);
+          if (stackTraceText !== '') {
+            copyMenu.defaultSection().appendItem(Common.UIString.UIString('Copy stacktrace'), () => {
+              Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(stackTraceText);
+            });
+          }
+        }
+      }
+
       const disableIfBlob = request.isBlobRequest();
       if (Host.Platform.isWin()) {
         footerSection.appendItem(
@@ -2229,6 +2246,21 @@ export class NetworkLogView extends UI.Widget.VBox {
     return ThemeSupport.ThemeSupport.instance().patchColorText(
         '#B31412', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
   }
+}
+
+/**
+ * @param {!Protocol.Runtime.StackTrace} stackTrace
+ */
+export function computeStackTraceText(stackTrace) {
+  let stackTraceText = '';
+  for (const frame of stackTrace.callFrames) {
+    const functionName = UI.UIUtils.beautifyFunctionName(frame.functionName);
+    stackTraceText += `${functionName} @ ${frame.url}:${frame.lineNumber + 1}\n`;
+  }
+  if (stackTrace.parent) {
+    stackTraceText += computeStackTraceText(stackTrace.parent);
+  }
+  return stackTraceText;
 }
 
 /** @type {!WeakSet<!NetworkRequestNode>} */

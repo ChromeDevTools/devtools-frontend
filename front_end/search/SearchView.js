@@ -41,9 +41,6 @@ export class SearchView extends UI.Widget.VBox {
     this.contentElement.classList.add('search-view');
 
     this._searchPanelElement = this.contentElement.createChild('div', 'search-drawer-header');
-    this._searchPanelElement.addEventListener(
-        'keydown', event => this._onKeyDown(/** @type {!KeyboardEvent} */ (event)), false);
-
     this._searchResultsElement = this.contentElement.createChild('div');
     this._searchResultsElement.className = 'search-results';
 
@@ -52,6 +49,9 @@ export class SearchView extends UI.Widget.VBox {
     searchContainer.style.justifyContent = 'start';
     searchContainer.style.maxWidth = '300px';
     this._search = UI.HistoryInput.HistoryInput.create();
+    this._search.addEventListener('keydown', event => {
+      this._onKeyDown(/** @type {!KeyboardEvent} */ (event));
+    });
     searchContainer.appendChild(this._search);
     this._search.placeholder = Common.UIString.UIString('Search');
     this._search.setAttribute('type', 'text');
@@ -69,7 +69,7 @@ export class SearchView extends UI.Widget.VBox {
     const clearButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Clear'), 'largeicon-clear');
     toolbar.appendToolbarItem(refreshButton);
     toolbar.appendToolbarItem(clearButton);
-    refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._onAction.bind(this));
+    refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this._onAction());
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this._resetSearch();
       this._onSearchInputClear();

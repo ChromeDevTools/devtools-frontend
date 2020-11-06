@@ -24,7 +24,7 @@ const togglePopover = (root: ShadowRoot) => {
     assert.fail('mini icon was not rendered');
     return;
   }
-  miniIcon.dispatchEvent(new Event('mousedown'));
+  miniIcon.dispatchEvent(new Event('click'));
 };
 
 const initialData: CSSAngleData = {

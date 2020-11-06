@@ -2700,6 +2700,14 @@ class WorkerTreeElement extends BaseStorageTreeElement {
     this.showView(this._view);
     return false;
   }
+
+
+  /**
+   * @return {string}
+   */
+  get itemURL() {
+    return 'dedicated-workers://';
+  }
 }
 
 FrameResourceTreeElement._symbol = Symbol('treeElement');

@@ -445,5 +445,34 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._documentSection = this._reportView.appendSection(ls`Document`);
     this._URLFieldValue = this._documentSection.appendField(ls`URL`);
     this._URLFieldValue.textContent = this._targetInfo.url;
+
+    this._isolationSection = this._reportView.appendSection(ls`Security & Isolation`);
+    this._coepPolicy = this._isolationSection.appendField(ls`Cross-Origin Embedder Policy`);
+    this.update();
+  }
+
+  async _updateCoopCoepStatus() {
+    const target = SDK.SDKModel.TargetManager.instance().targetById(this._targetInfo.targetId);
+    if (!target) {
+      return;
+    }
+    const model = target.model(SDK.NetworkManager.NetworkManager);
+    const info = model && await model.getSecurityIsolationStatus('');
+    if (!info) {
+      return;
+    }
+    /**
+    * @param {!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue} value
+    */
+    const coepIsEnabled = value => value !== Protocol.Network.CrossOriginEmbedderPolicyValue.None;
+    FrameDetailsView.fillCrossOriginPolicy(this._coepPolicy, coepIsEnabled, info.coep);
+  }
+
+  /**
+   * @override
+   * @return {!Promise<?>}
+   */
+  async doUpdate() {
+    await this._updateCoopCoepStatus();
   }
 }

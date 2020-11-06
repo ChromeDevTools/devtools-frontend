@@ -49,7 +49,7 @@ describe('The Application Tab', async () => {
     await waitForFunction(async () => {
       const fieldValues = await getReportValues();
       const expected =
-          [`http://localhost:${getHostedModeServerPort()}/test/e2e/resources/application/dedicated-worker.js`];
+          [`http://localhost:${getHostedModeServerPort()}/test/e2e/resources/application/dedicated-worker.js`, 'None'];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });
   });

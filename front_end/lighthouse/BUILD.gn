@@ -34,7 +34,7 @@ devtools_module("lighthouse") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "lighthouse.js"
+  entrypoint = "lighthouse.ts"
 
   deps = [
     ":lighthouse",

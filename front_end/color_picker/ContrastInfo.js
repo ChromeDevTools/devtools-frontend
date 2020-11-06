@@ -19,6 +19,8 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     this._fgColor = null;
     /** @type {?Common.Color.Color} */
     this._bgColor = null;
+    /** @type {string|undefined} */
+    this._colorFormat;
 
     if (!contrastInfo) {
       return;
@@ -49,11 +51,20 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Common.Color.Color} fgColor
+   * @param {string=} colorFormat
    */
-  setColor(fgColor) {
+  setColor(fgColor, colorFormat) {
     this._fgColor = fgColor;
+    this._colorFormat = colorFormat;
     this._updateContrastRatio();
     this.dispatchEventToListeners(Events.ContrastInfoUpdated);
+  }
+
+  /**
+   * @return {string|undefined}
+   */
+  colorFormat() {
+    return this._colorFormat;
   }
 
   /**

@@ -153,10 +153,15 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Common.Color.Color} suggestedColor
    */
   _createFixColorButton(parent, suggestedColor) {
-    const fgColor = this._contrastInfo.color();
     const button = /** @type {!HTMLElement} */ (parent.createChild('button', 'contrast-fix-button'));
-    const suggestedColorString = `${suggestedColor.asString(fgColor ? fgColor.format() : undefined)}`;
-    const label = ls`Use suggested color ${suggestedColorString} to fix low contrast`;
+    const originalColorFormat = this._contrastInfo.colorFormat();
+    const colorFormat = originalColorFormat && originalColorFormat !== Common.Color.Format.Nickname &&
+            originalColorFormat !== Common.Color.Format.Original ?
+        originalColorFormat :
+        Common.Color.Format.HEXA;
+    const formattedColor = suggestedColor.asString(colorFormat);
+    const suggestedColorString = formattedColor ? formattedColor + ' ' : '';
+    const label = ls`Use suggested color ${suggestedColorString}to fix low contrast`;
     UI.ARIAUtils.setAccessibleName(button, label);
     button.title = label;
     button.tabIndex = 0;

@@ -30,9 +30,6 @@
   <message name="IDS_DEVTOOLS_704c5365ab9b8fb8d8be5f08b8c0f19c" desc="Aria label for alpha slider in Color Picker">
     Change alpha
   </message>
-  <message name="IDS_DEVTOOLS_78e8ce0d9ebcd8c91e2b7fc105224b57" desc="Text of a button in Contrast Details of the Color Picker">
-    Use suggested color <ph name="SUGGESTEDCOLORSTRING">$1s<ex>rgba(0 0 0 / 100%)</ex></ph> to fix low contrast
-  </message>
   <message name="IDS_DEVTOOLS_8ddbf32368d9216105c893235f8f634e" desc="Aria label for color format switcher button in Color Picker">
     Change color format
   </message>
@@ -62,5 +59,8 @@
   </message>
   <message name="IDS_DEVTOOLS_df5b49c2e7eb48841103d5bec2d12ffd" desc="Aria label for RGBA and HSLA color format inputs in Color Picker">
     <ph name="THIS__TEXTLABELS_TEXTCONTENT_CHARAT_I_">$1s<ex>R</ex></ph> in <ph name="THIS__TEXTLABELS_TEXTCONTENT">$2s<ex>RGBA</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_f55a8f9faa49e7ce6e3efe41a465d8ff" desc="Text of a button in Contrast Details of the Color Picker">
+    Use suggested color <ph name="SUGGESTEDCOLORSTRING">$1s<ex>rgba(0 0 0 / 100%) </ex></ph>to fix low contrast
   </message>
 </grit-part>

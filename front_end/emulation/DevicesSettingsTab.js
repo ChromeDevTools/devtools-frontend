@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
@@ -12,7 +9,7 @@ import {DeviceModeModel, MaxDeviceNameLength, UA} from './DeviceModeModel.js';
 import {Capability, EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Vertical,} from './EmulatedDevices.js';
 
 /**
- * @implements {UI.ListWidget.Delegate}
+ * @implements {UI.ListWidget.Delegate<!EmulatedDevice>}
  * @unrestricted
  */
 export class DevicesSettingsTab extends UI.Widget.VBox {
@@ -107,15 +104,14 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
 
   /**
    * @override
-   * @param {*} item
+   * @param {!EmulatedDevice} device
    * @param {boolean} editable
    * @return {!Element}
    */
-  renderItem(item, editable) {
-    const device = /** @type {!EmulatedDevice} */ (item);
+  renderItem(device, editable) {
     const label = document.createElement('label');
     label.classList.add('devices-list-item');
-    const checkbox = label.createChild('input', 'devices-list-checkbox');
+    const checkbox = /** @type {!HTMLInputElement}*/ (label.createChild('input', 'devices-list-checkbox'));
     checkbox.type = 'checkbox';
     checkbox.checked = device.show();
     checkbox.addEventListener('click', onItemClicked.bind(this), false);
@@ -145,12 +141,11 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
 
   /**
    * @override
-   * @param {*} item
-   * @param {!UI.ListWidget.Editor} editor
+   * @param {!EmulatedDevice} device
+   * @param {!UI.ListWidget.Editor<!EmulatedDevice>} editor
    * @param {boolean} isNew
    */
-  commitEdit(item, editor, isNew) {
-    const device = /** @type {!EmulatedDevice} */ (item);
+  commitEdit(device, editor, isNew) {
     device.title = editor.control('title').value.trim();
     device.vertical.width = editor.control('width').value ? parseInt(editor.control('width').value, 10) : 0;
     device.vertical.height = editor.control('height').value ? parseInt(editor.control('height').value, 10) : 0;
@@ -180,11 +175,10 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
 
   /**
    * @override
-   * @param {*} item
-   * @return {!UI.ListWidget.Editor}
+   * @param {!EmulatedDevice} device
+   * @return {!UI.ListWidget.Editor<!EmulatedDevice>}
    */
-  beginEdit(item) {
-    const device = /** @type {!EmulatedDevice} */ (item);
+  beginEdit(device) {
     const editor = this._createEditor();
     editor.control('title').value = device.title;
     editor.control('width').value = this._toNumericInputValue(device.vertical.width);
@@ -202,7 +196,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
   }
 
   /**
-   * @return {!UI.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor<!EmulatedDevice>}
    */
   _createEditor() {
     if (this._editor) {
@@ -223,11 +217,11 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     screen.appendChild(dpr);
     const ua = fields.createChild('div', 'hbox');
     ua.appendChild(editor.createInput('user-agent', 'text', ls`User agent string`, () => {
-      return {valid: true};
+      return {valid: true, errorMessage: undefined};
     }));
     const uaTypeOptions = [UA.Mobile, UA.MobileNoTouch, UA.Desktop, UA.DesktopTouch];
     const uaType = editor.createSelect('ua-type', uaTypeOptions, () => {
-      return {valid: true};
+      return {valid: true, errorMessage: undefined};
     }, ls`User agent type`);
     uaType.classList.add('device-edit-fixed');
     ua.appendChild(uaType);

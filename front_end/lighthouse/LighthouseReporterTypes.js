@@ -54,6 +54,17 @@ export class ReportUIFeatures {
 
   _resetUIState() {
   }
+  /**
+   * @param {?function():void} beforePrint
+   */
+  setBeforePrint(beforePrint) {
+  }
+
+  /**
+   * @param {?function():void} afterPrint
+   */
+  setAfterPrint(afterPrint) {
+  }
 }
 
 /** @type {function(new:ReportUIFeatures)} */
@@ -190,7 +201,9 @@ export let RunnerResultArtifacts;
  *     lhr: !ReportJSON,
  *     artifacts: RunnerResultArtifacts,
  *     report: string,
- *     stack: string
+ *     stack: string,
+ *     fatal: boolean,
+ *     message: (string|undefined),
  * }}
  */
 // @ts-ignore typedef

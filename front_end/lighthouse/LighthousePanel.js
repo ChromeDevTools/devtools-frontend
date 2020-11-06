@@ -2,12 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Emulation from '../emulation/emulation.js';  // eslint-disable-line no-unused-vars
-import * as HostModule from '../host/host.js';
+import * as Host from '../host/host.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -57,6 +54,31 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._renderStartView();
 
     this._controller.recomputePageAuditability();
+
+    /**
+     * @type {!UI.Toolbar.ToolbarButton}
+     */
+    this._clearButton;
+    /**
+     * @type {!UI.Toolbar.ToolbarButton}
+     */
+    this._newButton;
+    /**
+     * @type {!ReportSelector}
+     */
+    this._reportSelector;
+    /**
+     * @type {!UI.Widget.Widget}
+     */
+    this._settingsPane;
+    /**
+     * @type {!UI.Toolbar.Toolbar}
+     */
+    this._rightToolbar;
+    /**
+     * @type {!Common.Settings.Setting<boolean>}
+     */
+    this._showSettingsPaneSetting;
   }
 
   static getEvents() {
@@ -218,9 +240,12 @@ export class LighthousePanel extends UI.Panel.Panel {
     const reportContainer = this._auditResultsElement.createChild('div', 'lh-vars lh-root lh-devtools');
 
     const dom = new DOM(/** @type {!Document} */ (this._auditResultsElement.ownerDocument));
-    const renderer = new LighthouseReportRenderer(dom);
+    const renderer = /** @type {!ReportRenderer.ReportRenderer} */ (new LighthouseReportRenderer(dom));
 
     const templatesHTML = Root.Runtime.cachedResources.get('third_party/lighthouse/report-assets/templates.html');
+    if (!templatesHTML) {
+      return;
+    }
     const templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
     if (!templatesDOM) {
       return;
@@ -238,7 +263,8 @@ export class LighthousePanel extends UI.Panel.Panel {
     });
     LighthouseReportRenderer.handleDarkMode(el);
 
-    const features = new LighthouseReportUIFeatures(dom);
+    const features =
+        /** @type {!ReportRenderer.ReportUIFeatures} */ (/** @type {*} */ (new LighthouseReportUIFeatures(dom)));
     features.setBeforePrint(this._beforePrint.bind(this));
     features.setAfterPrint(this._afterPrint.bind(this));
     features.setTemplateContext(templatesDOM);
@@ -247,9 +273,15 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._cachedRenderedReports.set(lighthouseResult, reportContainer);
   }
 
-  _waitForMainTargetLoad() {
+  async _waitForMainTargetLoad() {
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    if (!mainTarget) {
+      return;
+    }
     const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    if (!resourceTreeModel) {
+      return;
+    }
     return resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
   }
 
@@ -283,11 +315,15 @@ export class LighthousePanel extends UI.Panel.Panel {
       if (!entry.isFile) {
         return;
       }
-      entry.file(file => {
-        const reader = new FileReader();
-        reader.onload = () => this._loadedFromFile(/** @type {string} */ (reader.result));
-        reader.readAsText(file);
-      });
+      entry.file(
+          /**
+           * @param {!Blob} file
+           */
+          file => {
+            const reader = new FileReader();
+            reader.onload = () => this._loadedFromFile(/** @type {string} */ (reader.result));
+            reader.readAsText(file);
+          });
     }
   }
 
@@ -306,7 +342,7 @@ export class LighthousePanel extends UI.Panel.Panel {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   async _startLighthouse(event) {
-    HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseStarted);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseStarted);
 
     try {
       const inspectedURL = await this._controller.getInspectedURL({force: true});
@@ -329,7 +365,7 @@ export class LighthousePanel extends UI.Panel.Panel {
         throw new Error('Auditing failed to produce a result');
       }
 
-      HostModule.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseFinished);
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseFinished);
 
       await this._resetEmulationAndProtocolConnection();
       this._buildReportUI(lighthouseResponse.lhr, lighthouseResponse.artifacts);
@@ -370,7 +406,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     };
 
     emulationModel.toolbarControlsEnabledSetting().set(false);
-    if (flags.emulatedFormFactor === 'desktop') {
+    if ('emulatedFormFactor' in flags && flags.emulatedFormFactor === 'desktop') {
       emulationModel.enabledSetting().set(false);
       emulationModel.emulate(Emulation.DeviceModeModel.Type.None, null, null);
     } else if (flags.emulatedFormFactor === 'mobile') {
@@ -408,8 +444,14 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder.instance().update(true);
 
-    const resourceTreeModel =
-        SDK.SDKModel.TargetManager.instance().mainTarget().model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    if (!mainTarget) {
+      return;
+    }
+    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    if (!resourceTreeModel) {
+      return;
+    }
     // reload to reset the page state
     const inspectedURL = await this._controller.getInspectedURL();
     await resourceTreeModel.navigate(inspectedURL);

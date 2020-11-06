@@ -25,6 +25,12 @@ const MaxLengthForLinks = 40;
  */
 export class LighthouseReportRenderer extends self.ReportRenderer {
   /**
+   * @param {!DOM} dom
+   */
+  constructor(dom) {
+    super(dom);
+  }
+  /**
    * @param {!Element} el Parent element to render the report into.
    * @param {!ReportRenderer.RunnerResultArtifacts=} artifacts
    */
@@ -133,14 +139,16 @@ export class LighthouseReportUIFeatures extends self.ReportUIFeatures {
   }
 
   /**
-   * @param {?function()} beforePrint
+   * @override
+   * @param {?function():void} beforePrint
    */
   setBeforePrint(beforePrint) {
     this._beforePrint = beforePrint;
   }
 
   /**
-   * @param {?function()} afterPrint
+   * @override
+   * @param {?function():void} afterPrint
    */
   setAfterPrint(afterPrint) {
     this._afterPrint = afterPrint;

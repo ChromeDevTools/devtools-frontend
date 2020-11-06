@@ -199,7 +199,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {!Object}
+   * @return {{internalDisableDeviceScreenEmulation: boolean, emulatedFormFactor: (string|undefined)}}
    */
   getFlags() {
     const flags = {
@@ -209,7 +209,8 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
     for (const runtimeSetting of RuntimeSettings) {
       runtimeSetting.setFlags(flags, runtimeSetting.setting.get());
     }
-    return flags;
+    return /** @type {{internalDisableDeviceScreenEmulation: boolean, emulatedFormFactor: (string|undefined)}} */ (
+        flags);
   }
 
   /**

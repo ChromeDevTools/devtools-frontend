@@ -33,7 +33,7 @@ import {contrastRatio, rgbaToHsla} from '../front_end/common/ColorUtils.js';
 import {Bounds, constrainNumber, createChild, createElement, createTextChild, ellipsify, Overlay, ResetData} from './common.js';
 import {buildPath, emptyBounds, PathBounds} from './highlight_common.js';
 import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
-import {HighlightGridOverlay} from './tool_highlight_grid_impl.js';
+import {HighlightGridOverlay} from './tool_grid.js';
 
 interface Path {
   path: Array<string|number>, outlineColor: string;

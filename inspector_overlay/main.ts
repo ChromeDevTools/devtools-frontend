@@ -8,18 +8,18 @@
 import commonStyle from './common.css';
 import {adoptStyleSheet} from './common.js';
 import {gridStyle} from './highlight_grid_common.js';
-import {DistancesOverlay} from './tool_distances_impl.js';
+import {DistancesOverlay} from './tool_distances.js';
+import highlightGridStyle from './tool_grid.css';
+import {HighlightGridOverlay} from './tool_grid.js';
 import highlightStyle from './tool_highlight.css';
-import highlightGridStyle from './tool_highlight_grid.css';
-import {HighlightGridOverlay} from './tool_highlight_grid_impl.js';
-import {HighlightOverlay} from './tool_highlight_impl.js';
+import {HighlightOverlay} from './tool_highlight.js';
 import pausedStyle from './tool_paused.css';
-import {PausedOverlay} from './tool_paused_impl.js';
+import {PausedOverlay} from './tool_paused.js';
 import screenshotStyle from './tool_screenshot.css';
-import {ScreenshotOverlay} from './tool_screenshot_impl.js';
+import {ScreenshotOverlay} from './tool_screenshot.js';
 import sourceOrderStyle from './tool_source_order.css';
-import {SourceOrderOverlay} from './tool_source_order_impl.js';
-import {ViewportSizeOverlay} from './tool_viewport_size_impl.js';
+import {SourceOrderOverlay} from './tool_source_order.js';
+import {ViewportSizeOverlay} from './tool_viewport_size.js';
 
 adoptStyleSheet(commonStyle);
 

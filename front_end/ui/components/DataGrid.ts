@@ -4,7 +4,7 @@
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
-import {calculateColumnWidthPercentageFromWeighting, CellPosition, Column, getRowEntryForColumnId, handleArrowKeyNavigation, keyIsArrowKey, Row, SortDirection, SortState} from './DataGridUtils.js';
+import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, CellPosition, Column, getRowEntryForColumnId, handleArrowKeyNavigation, keyIsArrowKey, Row, SortDirection, SortState} from './DataGridUtils.js';
 
 export interface DataGridData {
   columns: Column[];
@@ -80,25 +80,25 @@ export class DataGrid extends HTMLElement {
      * user has focused a cell, this logic will reset it.
      */
     if (!this.hasRenderedAtLeastOnce) {
-      const someColumnsSortable = this.columns.some(col => col.sortable === true);
-      const focusableRowIndex = someColumnsSortable ? 0 : this.rows.findIndex(row => !row.hidden) + 1;
-      const focusableColIndex = this.columns.findIndex(col => !col.hidden);
-
-      this.focusableCell = [focusableColIndex, focusableRowIndex];
+      this.focusableCell = calculateFirstFocusableCell({columns: this.columns, rows: this.rows});
     }
 
     if (this.hasRenderedAtLeastOnce) {
-      // TODO: if this is not first render, and the focused cell is not out of
-      // bounds, move it to back in bounds.
       const [selectedColIndex, selectedRowIndex] = this.focusableCell;
       const columnOutOfBounds = selectedColIndex > this.columns.length;
       const rowOutOfBounds = selectedRowIndex > this.rows.length;
 
+      /** If the row or column was removed, so the user is out of bounds, we
+       * move them to the last focusable cell, which should be close to where
+       * they were. */
       if (columnOutOfBounds || rowOutOfBounds) {
         this.focusableCell = [
           columnOutOfBounds ? this.columns.length : selectedColIndex,
           rowOutOfBounds ? this.rows.length : selectedRowIndex,
         ];
+      } else {
+        /** If the user was on some cell that is now hidden, the logic to figure out the best cell to move them to is complex. We're deferring this for now and instead reset them back to the first focusable cell. */
+        this.focusableCell = calculateFirstFocusableCell({columns: this.columns, rows: this.rows});
       }
     }
 

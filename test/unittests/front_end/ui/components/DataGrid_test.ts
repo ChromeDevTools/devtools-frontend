@@ -322,6 +322,56 @@ describe('DataGrid', () => {
       focusTableCell(component.shadowRoot);
       assertCurrentFocusedCellIs(component.shadowRoot, {column: 0, row: 2});
     });
+
+    it('re-adjusts the focused cell if a re-render puts that cell out of bounds', () => {
+      const component = renderDataGrid({rows: createRows(), columns: columnsWithNoneSortable});
+      assertShadowRoot(component.shadowRoot);
+      focusTableCell(component.shadowRoot);
+      emulateUserKeyboardNavigation(component.shadowRoot, 'ArrowDown');
+      emulateUserKeyboardNavigation(component.shadowRoot, 'ArrowDown');
+      assertCurrentFocusedCellIs(component.shadowRoot, {column: 0, row: 3});
+      const rowsWithLastRemoved = createRows();
+      rowsWithLastRemoved.splice(2);
+      component.data = {
+        columns: columnsWithNoneSortable,
+        rows: rowsWithLastRemoved,
+        activeSort: null,
+      };
+      assertCurrentFocusedCellIs(component.shadowRoot, {column: 0, row: 2});
+    });
+
+    it('resets the user to the first focusable cell if their row is hidden', () => {
+      const component = renderDataGrid({rows: createRows(), columns: columnsWithNoneSortable});
+      assertShadowRoot(component.shadowRoot);
+      focusTableCell(component.shadowRoot);
+      emulateUserKeyboardNavigation(component.shadowRoot, 'ArrowDown');
+      emulateUserKeyboardNavigation(component.shadowRoot, 'ArrowDown');
+      assertCurrentFocusedCellIs(component.shadowRoot, {column: 0, row: 3});
+      const rowsWithLastHidden = createRows();
+      rowsWithLastHidden[2].hidden = true;
+      component.data = {
+        columns: columnsWithNoneSortable,
+        rows: rowsWithLastHidden,
+        activeSort: null,
+      };
+      assertCurrentFocusedCellIs(component.shadowRoot, {column: 0, row: 1});
+    });
+
+    it('resets the user to the first focusable cell if their column is hidden', () => {
+      const component = renderDataGrid({rows: createRows(), columns: columnsWithNoneSortable});
+      assertShadowRoot(component.shadowRoot);
+      focusTableCell(component.shadowRoot);
+      emulateUserKeyboardNavigation(component.shadowRoot, 'ArrowRight');
+      assertCurrentFocusedCellIs(component.shadowRoot, {column: 1, row: 1});
+      const columnsWithFirstHidden = createColumns();
+      columnsWithFirstHidden[0].hidden = true;
+      component.data = {
+        columns: columnsWithFirstHidden,
+        rows: createRows(),
+        activeSort: null,
+      };
+      assertCurrentFocusedCellIs(component.shadowRoot, {column: 1, row: 0});
+    });
   });
 
   it('emits an event when the user clicks a column header', async () => {
@@ -773,6 +823,24 @@ describe('DataGrid', () => {
           rows: rowsWithFirstAndSecondHidden,
         });
         assert.deepEqual(newFocusedCell, [0, 1]);
+      });
+
+      it('leaves the user where they are if no body rows are visible', () => {
+        const rowsAllHidden = makeRows().map(row => {
+          row.hidden = true;
+          return row;
+        });
+        const sortableColumns = makeColumns().map(col => {
+          col.sortable = true;
+          return col;
+        });
+        const newFocusedCell = handleArrowKeyNavigation({
+          key: ArrowKey.DOWN,
+          currentFocusedCell: [0, 0],
+          columns: sortableColumns,
+          rows: rowsAllHidden,
+        });
+        assert.deepEqual(newFocusedCell, [0, 0]);
       });
 
       it('does not let the user move down if they are on the last row', () => {

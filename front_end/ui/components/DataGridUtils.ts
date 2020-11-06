@@ -222,3 +222,13 @@ export function handleArrowKeyNavigation(options: HandleArrowKeyOptions): CellPo
     }
   }
 }
+
+export const calculateFirstFocusableCell =
+    (options: {columns: readonly Column[], rows: readonly Row[]}): [colIndex: number, rowIndex: number] => {
+      const {columns, rows} = options;
+      const someColumnsSortable = columns.some(col => col.sortable === true);
+      const focusableRowIndex = someColumnsSortable ? 0 : rows.findIndex(row => !row.hidden) + 1;
+      const focusableColIndex = columns.findIndex(col => !col.hidden);
+
+      return [focusableColIndex, focusableRowIndex];
+    };

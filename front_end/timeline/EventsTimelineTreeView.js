@@ -1,8 +1,6 @@
 // Copyright 2017 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
@@ -30,6 +28,9 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     this._delegate = delegate;
     this.dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
     this.splitWidget.showBoth();
+
+    /** @type {!TimelineModel.TimelineProfileTree.Node} */
+    this._currentTree;
   }
 
   /**
@@ -71,7 +72,8 @@ export class EventsTimelineTreeView extends TimelineTreeView {
   }
 
   _onFilterChanged() {
-    const selectedEvent = this.lastSelectedNode() && this.lastSelectedNode().event;
+    const lastSelectedNode = this.lastSelectedNode();
+    const selectedEvent = lastSelectedNode && lastSelectedNode.event;
     this.refreshTree();
     if (selectedEvent) {
       this._selectEvent(selectedEvent, false);
@@ -86,6 +88,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     const iterators = [this._currentTree.children().values()];
 
     while (iterators.length) {
+      // @ts-ignore crbug.com/1011811 there is no common iterator type between Closure and TypeScript
       const iterator = iterators.peekLast().next();
       if (iterator.done) {
         iterators.pop();
@@ -111,7 +114,10 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     }
     this.selectProfileNode(node, false);
     if (expand) {
-      this.dataGridNodeForTreeNode(node).expand();
+      const dataGridNode = this.dataGridNodeForTreeNode(node);
+      if (dataGridNode) {
+        dataGridNode.expand();
+      }
     }
   }
 
@@ -120,13 +126,13 @@ export class EventsTimelineTreeView extends TimelineTreeView {
    * @param {!Array<!DataGrid.DataGrid.ColumnDescriptor>} columns
    */
   populateColumns(columns) {
-    columns.push({
+    columns.push(/** @type {!DataGrid.DataGrid.ColumnDescriptor} */ ({
       id: 'startTime',
       title: Common.UIString.UIString('Start Time'),
       width: '80px',
       fixedWidth: true,
-      sortable: true
-    });
+      sortable: true,
+    }));
     super.populateColumns(columns);
     columns.filter(c => c.fixedWidth).forEach(c => {
       c.width = '80px';
@@ -152,7 +158,11 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     if (!traceEvent) {
       return false;
     }
-    TimelineUIUtils.buildTraceEventDetails(traceEvent, this.model().timelineModel(), this.linkifier, false)
+    const model = this.model();
+    if (!model) {
+      return false;
+    }
+    TimelineUIUtils.buildTraceEventDetails(traceEvent, model.timelineModel(), this.linkifier, false)
         .then(fragment => this.detailsView.element.appendChild(fragment));
     return true;
   }
@@ -196,7 +206,8 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
     }
     toolbar.appendToolbarItem(durationFilterUI);
 
-    const categoryFiltersUI = {};
+    /** @type {!Map<string, !UI.Toolbar.ToolbarCheckbox>} */
+    const categoryFiltersUI = new Map();
     const categories = TimelineUIUtils.categories();
     for (const categoryName in categories) {
       const category = categories[categoryName];
@@ -207,7 +218,7 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
           new UI.Toolbar.ToolbarCheckbox(category.title, undefined, categoriesFilterChanged.bind(this, categoryName));
       checkbox.setChecked(true);
       checkbox.inputElement.style.backgroundColor = category.color;
-      categoryFiltersUI[category.name] = checkbox;
+      categoryFiltersUI.set(category.name, checkbox);
       toolbar.appendToolbarItem(checkbox);
     }
 
@@ -215,7 +226,7 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
      * @this {Filters}
      */
     function durationFilterChanged() {
-      const duration = durationFilterUI.selectedOption().value;
+      const duration = /** @type {!HTMLOptionElement} */ (durationFilterUI.selectedOption()).value;
       const minimumRecordDuration = parseInt(duration, 10);
       this._durationFilter.setMinimumRecordDuration(minimumRecordDuration);
       this._notifyFiltersChanged();
@@ -227,7 +238,8 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
      */
     function categoriesFilterChanged(name) {
       const categories = TimelineUIUtils.categories();
-      categories[name].hidden = !categoryFiltersUI[name].checked();
+      const checkBox = categoryFiltersUI.get(name);
+      categories[name].hidden = !checkBox || !checkBox.checked();
       this._notifyFiltersChanged();
     }
   }

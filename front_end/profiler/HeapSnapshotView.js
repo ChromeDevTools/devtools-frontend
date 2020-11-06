@@ -696,11 +696,17 @@ export class HeapSnapshotView extends UI.View.SimpleView {
   _getPopoverRequest(event) {
     const span = event.target.enclosingNodeOrSelfWithNodeName('span');
     const row = event.target.enclosingNodeOrSelfWithNodeName('tr');
-    const heapProfilerModel = this._profile.heapProfilerModel();
-    if (!row || !span || !heapProfilerModel) {
+    if (!row) {
       return null;
     }
-    const node = row._dataGridNode;
+    const node = this._dataGrid.dataGridNodeFromNode(row) || this._containmentDataGrid.dataGridNodeFromNode(row) ||
+        this._constructorsDataGrid.dataGridNodeFromNode(row) || this._diffDataGrid.dataGridNodeFromNode(row) ||
+        (this._allocationDataGrid && this._allocationDataGrid.dataGridNodeFromNode(row)) ||
+        this._retainmentDataGrid.dataGridNodeFromNode(row);
+    const heapProfilerModel = this._profile.heapProfilerModel();
+    if (!node || !span || !heapProfilerModel) {
+      return null;
+    }
     let objectPopoverHelper;
     return {
       box: span.boxInWindow(),

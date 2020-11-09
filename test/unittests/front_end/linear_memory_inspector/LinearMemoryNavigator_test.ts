@@ -8,8 +8,8 @@ import {assertElement, assertElements, assertShadowRoot, getEventPromise, render
 const {assert} = chai;
 
 export const NAVIGATOR_ADDRESS_SELECTOR = '[data-input]';
-export const NAVIGATOR_PAGE_BUTTON_SELECTOR = '[data-button=pageNavigation]';
-export const NAVIGATOR_HISTORY_BUTTON_SELECTOR = '[data-button=historyNavigation]';
+export const NAVIGATOR_PAGE_BUTTON_SELECTOR = '[data-button=page-navigation]';
+export const NAVIGATOR_HISTORY_BUTTON_SELECTOR = '[data-button=history-navigation]';
 export const NAVIGATOR_REFRESH_BUTTON_SELECTOR = '[data-button=refresh]';
 
 describe('LinearMemoryNavigator', () => {
@@ -77,10 +77,10 @@ describe('LinearMemoryNavigator', () => {
   });
 
   it('sends events when clicking previous and next page', async () => {
-    await assertNavigationEvents('historyNavigation');
+    await assertNavigationEvents('history-navigation');
   });
 
   it('sends events when clicking undo and redo', async () => {
-    await assertNavigationEvents('pageNavigation');
+    await assertNavigationEvents('page-navigation');
   });
 });

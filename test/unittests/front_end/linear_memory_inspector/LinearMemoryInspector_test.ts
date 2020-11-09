@@ -87,7 +87,7 @@ describe('LinearMemoryInspector', () => {
     const historyLength = Math.min(byteCells.length, 10);
 
     for (let i = 0; i < historyLength; ++i) {
-      const byteSelectedPromise = getEventPromise<ByteSelectedEvent>(viewer, 'byteSelected');
+      const byteSelectedPromise = getEventPromise<ByteSelectedEvent>(viewer, 'byte-selected');
       byteCells[i].click();
       const byteSelectedEvent = await byteSelectedPromise;
       visitedByteValue.push(byteSelectedEvent.data);

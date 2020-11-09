@@ -182,7 +182,7 @@ describe('LinearMemoryViewer', () => {
       const byte = component.shadowRoot.querySelector(VIEWER_BYTE_CELL_SELECTOR);
       assertElement(byte, HTMLSpanElement);
 
-      const eventPromise = getEventPromise<ByteSelectedEvent>(component, 'byteSelected');
+      const eventPromise = getEventPromise<ByteSelectedEvent>(component, 'byte-selected');
       byte.click();
       const {data: address} = await eventPromise;
       assert.strictEqual(address, data.address);

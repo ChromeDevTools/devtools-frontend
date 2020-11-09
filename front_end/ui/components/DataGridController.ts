@@ -140,7 +140,7 @@ export class DataGridController extends HTMLElement {
           rows: this.rows,
           activeSort: this.sortState,
         } as DataGridData}
-        @columnHeaderClick=${this.onColumnHeaderClick}
+        @column-header-click=${this.onColumnHeaderClick}
       ></devtools-data-grid>
     `, this.shadow, {
       eventContext: this,

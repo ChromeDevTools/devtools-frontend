@@ -19,7 +19,7 @@ export class ColumnHeaderClickEvent extends Event {
   }
 
   constructor(column: Column, columnIndex: number) {
-    super('columnHeaderClick');
+    super('column-header-click');
     this.data = {
       column,
       columnIndex,

@@ -80,11 +80,11 @@ export class LinearMemoryInspector extends HTMLElement {
       <div class="memory-inspector">
         <devtools-linear-memory-inspector-navigator
           .data=${{address: this.address} as LinearMemoryNavigatorData}
-          @pageNavigation=${this.navigatePage}
-          @historyNavigation=${this.navigateHistory}></devtools-linear-memory-inspector-navigator>
+          @page-navigation=${this.navigatePage}
+          @history-navigation=${this.navigateHistory}></devtools-linear-memory-inspector-navigator>
         <devtools-linear-memory-inspector-viewer
           .data=${{memory: this.memory, address: this.address} as LinearMemoryViewerData}
-          @byteSelected=${(e: ByteSelectedEvent) => this.jumpToAddress(e.data)}></devtools-linear-memory-inspector-viewer>
+          @byte-selected=${(e: ByteSelectedEvent) => this.jumpToAddress(e.data)}></devtools-linear-memory-inspector-viewer>
       </div>
         <devtools-linear-memory-inspector-interpreter .data=${{
             value: this.memory.slice(this.address, this.address + VALUE_INTEPRETER_MAX_NUM_BYTES).buffer,

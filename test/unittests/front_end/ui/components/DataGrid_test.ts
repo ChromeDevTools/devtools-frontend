@@ -379,7 +379,7 @@ describe('DataGrid', () => {
     renderElementIntoDOM(component);
     assertShadowRoot(component.shadowRoot);
 
-    const columnHeaderClickEvent = getEventPromise<ColumnHeaderClickEvent>(component, 'columnHeaderClick');
+    const columnHeaderClickEvent = getEventPromise<ColumnHeaderClickEvent>(component, 'column-header-click');
     const cityColumn = getHeaderCellForColumnId(component.shadowRoot, 'city');
     dispatchClickEvent(cityColumn);
 
@@ -392,7 +392,7 @@ describe('DataGrid', () => {
     renderElementIntoDOM(component);
     assertShadowRoot(component.shadowRoot);
 
-    const columnHeaderClickEvent = getEventPromise<ColumnHeaderClickEvent>(component, 'columnHeaderClick');
+    const columnHeaderClickEvent = getEventPromise<ColumnHeaderClickEvent>(component, 'column-header-click');
     const focusableCell = getFocusableCell(component.shadowRoot);
     focusableCell.focus();
     const table = component.shadowRoot.querySelector('table');

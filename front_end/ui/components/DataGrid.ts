@@ -259,6 +259,7 @@ export class DataGrid extends HTMLElement {
         /* Ensure that text properly cuts off if horizontal space is too narrow */
         white-space: nowrap;
         text-overflow: ellipsis;
+        overflow: hidden;
       }
       /* There is no divider before the first cell */
       td.firstVisibleColumn, th.firstVisibleColumn {
@@ -330,6 +331,7 @@ export class DataGrid extends HTMLElement {
                   this.focusCell([columnIndex, 0]);
                   this.onColumnHeaderClick(col, columnIndex);
                 }}
+                title=${col.title}
                 aria-sort=${LitHtml.Directives.ifDefined(this.ariaSortForHeader(col))}
                 aria-colindex=${columnIndex + 1}
                 data-row-index='0'
@@ -368,6 +370,7 @@ export class DataGrid extends HTMLElement {
                 const cellIsFocusableCell = columnIndex === this.focusableCell[0] && tableRowIndex === this.focusableCell[1];
                 return LitHtml.html`<td
                   class=${cellClasses}
+                  title=${entryForRow.value}
                   tabindex=${cellIsFocusableCell ? '0' : '-1'}
                   aria-colindex=${columnIndex + 1}
                   data-row-index=${tableRowIndex}

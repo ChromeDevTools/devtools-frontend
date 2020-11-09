@@ -42,6 +42,7 @@ devtools_image_files = [
   "flex-align-items-flex-start-icon.svg",
   "flex-align-items-flex-end-icon.svg",
   "flex-align-items-stretch-icon.svg",
+  "flex-align-items-center-icon.svg",
   "flex-align-self-center-icon.svg",
   "flex-align-self-flex-end-icon.svg",
   "flex-align-self-flex-start-icon.svg",

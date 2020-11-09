@@ -40,6 +40,7 @@ grd_files_release_sources = [
   "front_end/Images/flex-align-content-space-evenly-icon.svg",
   "front_end/Images/flex-align-content-start-icon.svg",
   "front_end/Images/flex-align-content-stretch-icon.svg",
+  "front_end/Images/flex-align-items-center-icon.svg",
   "front_end/Images/flex-align-items-flex-end-icon.svg",
   "front_end/Images/flex-align-items-flex-start-icon.svg",
   "front_end/Images/flex-align-items-stretch-icon.svg",

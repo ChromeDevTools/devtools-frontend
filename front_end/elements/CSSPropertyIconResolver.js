@@ -327,6 +327,7 @@ textToIconResolver.set('justify-content: flex-start', flexJustifyContentIcon('fl
 textToIconResolver.set('align-items: stretch', flexAlignItemsIcon('flex-align-items-stretch-icon'));
 textToIconResolver.set('align-items: flex-end', flexAlignItemsIcon('flex-align-items-flex-end-icon'));
 textToIconResolver.set('align-items: flex-start', flexAlignItemsIcon('flex-align-items-flex-start-icon'));
+textToIconResolver.set('align-items: center', flexAlignItemsIcon('flex-align-items-center-icon'));
 textToIconResolver.set('align-items: baseline', baselineIcon);
 textToIconResolver.set('align-content: baseline', baselineIcon);
 textToIconResolver.set('align-self: baseline', baselineIcon);

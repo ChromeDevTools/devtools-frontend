@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -22,8 +19,12 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
    */
   constructor(workspace) {
     super();
-    this._bindingSymbol = Symbol('NetworkPersistenceBinding');
-    this._originalResponseContentPromiseSymbol = Symbol('OriginalResponsePromise');
+    /** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !PersistenceBinding>} */
+    this._bindings = new WeakMap();
+    /** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !Promise<?string>>} */
+    this._originalResponseContentPromises = new WeakMap();
+    /** @type {!WeakSet<!Workspace.UISourceCode.UISourceCode>} */
+    this._savingForOverrides = new WeakSet();
     this._savingSymbol = Symbol('SavingForOverrides');
 
     this._enabledSetting = Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled');
@@ -93,11 +94,12 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
    * @return {?Promise<?string>}
    */
   originalContentForUISourceCode(uiSourceCode) {
-    if (!uiSourceCode[this._bindingSymbol]) {
+    const binding = this._bindings.get(uiSourceCode);
+    if (!binding) {
       return null;
     }
-    const fileSystemUISourceCode = uiSourceCode[this._bindingSymbol].fileSystem;
-    return fileSystemUISourceCode[this._originalResponseContentPromiseSymbol] || null;
+    const fileSystemUISourceCode = binding.fileSystem;
+    return this._originalResponseContentPromises.get(fileSystemUISourceCode) || null;
   }
 
   async _enabledChanged() {
@@ -165,7 +167,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       return;
     }
 
-    if (this._active) {
+    if (this._active && this._project) {
       await Promise.all(
           this._project.uiSourceCodes().map(uiSourceCode => this._filesystemUISourceCodeAdded(uiSourceCode)));
 
@@ -187,7 +189,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
    * @return {string}
    */
   _encodedPathFromUrl(url) {
-    if (!this._active) {
+    if (!this._active || !this._project) {
       return '';
     }
     let urlPath = Common.ParsedURL.ParsedURL.urlWithoutHash(url.replace(/^https?:\/\//, ''));
@@ -271,10 +273,10 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   async _unbind(uiSourceCode) {
-    const binding = uiSourceCode[this._bindingSymbol];
+    const binding = this._bindings.get(uiSourceCode);
     if (binding) {
-      delete binding.network[this._bindingSymbol];
-      delete binding.fileSystem[this._bindingSymbol];
+      this._bindings.delete(binding.network);
+      this._bindings.delete(binding.fileSystem);
       await PersistenceImpl.instance().removeBinding(binding);
     }
   }
@@ -284,20 +286,21 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
    * @param {!Workspace.UISourceCode.UISourceCode} fileSystemUISourceCode
    */
   async _bind(networkUISourceCode, fileSystemUISourceCode) {
-    if (networkUISourceCode[this._bindingSymbol]) {
+    if (this._bindings.has(networkUISourceCode)) {
       await this._unbind(networkUISourceCode);
     }
-    if (fileSystemUISourceCode[this._bindingSymbol]) {
+    if (this._bindings.has(fileSystemUISourceCode)) {
       await this._unbind(fileSystemUISourceCode);
     }
     const binding = new PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
-    networkUISourceCode[this._bindingSymbol] = binding;
-    fileSystemUISourceCode[this._bindingSymbol] = binding;
+    this._bindings.set(networkUISourceCode, binding);
+    this._bindings.set(fileSystemUISourceCode, binding);
     await PersistenceImpl.instance().addBinding(binding);
-    const uiSourceCodeOfTruth = networkUISourceCode[this._savingSymbol] ? networkUISourceCode : fileSystemUISourceCode;
+    const uiSourceCodeOfTruth =
+        this._savingForOverrides.has(networkUISourceCode) ? networkUISourceCode : fileSystemUISourceCode;
     const [{content}, encoded] =
         await Promise.all([uiSourceCodeOfTruth.requestContent(), uiSourceCodeOfTruth.contentEncoded()]);
-    PersistenceImpl.instance().syncContent(uiSourceCodeOfTruth, content, encoded);
+    PersistenceImpl.instance().syncContent(uiSourceCodeOfTruth, content || '', encoded);
   }
 
   /**
@@ -312,7 +315,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
    */
   canSaveUISourceCodeForOverrides(uiSourceCode) {
     return this._active && uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&
-        !uiSourceCode[this._bindingSymbol] && !uiSourceCode[this._savingSymbol];
+        !this._bindings.has(uiSourceCode) && !this._savingForOverrides.has(uiSourceCode);
   }
 
   /**
@@ -322,16 +325,18 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     if (!this.canSaveUISourceCodeForOverrides(uiSourceCode)) {
       return;
     }
-    uiSourceCode[this._savingSymbol] = true;
+    this._savingForOverrides.add(uiSourceCode);
     let encodedPath = this._encodedPathFromUrl(uiSourceCode.url());
     const content = (await uiSourceCode.requestContent()).content || '';
     const encoded = await uiSourceCode.contentEncoded();
     const lastIndexOfSlash = encodedPath.lastIndexOf('/');
     const encodedFileName = encodedPath.substr(lastIndexOfSlash + 1);
     encodedPath = encodedPath.substr(0, lastIndexOfSlash);
-    await this._project.createFile(encodedPath, encodedFileName, content, encoded);
+    if (this._project) {
+      await this._project.createFile(encodedPath, encodedFileName, content, encoded);
+    }
     this._fileCreatedForTest(encodedPath, encodedFileName);
-    uiSourceCode[this._savingSymbol] = false;
+    this._savingForOverrides.delete(uiSourceCode);
   }
 
   /**
@@ -382,8 +387,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     const url = Common.ParsedURL.ParsedURL.urlWithoutHash(uiSourceCode.url());
     this._networkUISourceCodeForEncodedPath.set(this._encodedPathFromUrl(url), uiSourceCode);
 
-    const fileSystemUISourceCode = this._project.uiSourceCodeForURL(
-        /** @type {!FileSystem} */ (this._project).fileSystemPath() + '/' + this._encodedPathFromUrl(url));
+    const project = /** @type {!FileSystem} */ (this._project);
+    const fileSystemUISourceCode =
+        project.uiSourceCodeForURL(project.fileSystemPath() + '/' + this._encodedPathFromUrl(url));
     if (fileSystemUISourceCode) {
       await this._bind(uiSourceCode, fileSystemUISourceCode);
     }
@@ -410,10 +416,10 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
     /**
      * @this {NetworkPersistenceManager}
-     * @return {!Promise}
+     * @return {!Promise<void>}
      */
     function innerUpdateInterceptionPatterns() {
-      if (!this._active) {
+      if (!this._active || !this._project) {
         return SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(
             [], this._interceptionHandlerBound);
       }
@@ -461,10 +467,11 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       return;
     }
     this._updateInterceptionPatterns();
-    delete uiSourceCode[this._originalResponseContentPromiseSymbol];
+    this._originalResponseContentPromises.delete(uiSourceCode);
     await this._unbind(uiSourceCode);
   }
 
+  /** @param {?Workspace.Workspace.Project} project */
   async _setProject(project) {
     if (project === this._project) {
       return;
@@ -516,16 +523,16 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
   /**
    * @param {!SDK.NetworkManager.InterceptedRequest} interceptedRequest
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async _interceptionHandler(interceptedRequest) {
     const method = interceptedRequest.request.method;
     if (!this._active || (method !== 'GET' && method !== 'POST')) {
       return;
     }
-    const path = /** @type {!FileSystem} */ (this._project).fileSystemPath() + '/' +
-        this._encodedPathFromUrl(interceptedRequest.request.url);
-    const fileSystemUISourceCode = this._project.uiSourceCodeForURL(path);
+    const proj = /** @type {!FileSystem} */ (this._project);
+    const path = proj.fileSystemPath() + '/' + this._encodedPathFromUrl(interceptedRequest.request.url);
+    const fileSystemUISourceCode = proj.uiSourceCodeForURL(path);
     if (!fileSystemUISourceCode) {
       return;
     }
@@ -547,16 +554,18 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     const project =
         /** @type {!FileSystem} */ (fileSystemUISourceCode.project());
 
-    fileSystemUISourceCode[this._originalResponseContentPromiseSymbol] =
-        interceptedRequest.responseBody().then(response => {
+    this._originalResponseContentPromises.set(
+        fileSystemUISourceCode, interceptedRequest.responseBody().then(response => {
           if (response.error || response.content === null) {
             return null;
           }
           return response.encoded ? atob(response.content) : response.content;
-        });
+        }));
 
     const blob = await project.requestFileBlob(fileSystemUISourceCode);
-    interceptedRequest.continueRequestWithContent(new Blob([blob], {type: mimeType}));
+    if (blob) {
+      interceptedRequest.continueRequestWithContent(new Blob([blob], {type: mimeType}));
+    }
   }
 }
 

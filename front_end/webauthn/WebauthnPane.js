@@ -472,7 +472,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     saveName.setVisible(false);
 
     const nameField = /** @type {!HTMLInputElement} */ (titleElement.createChild('input', 'authenticator-name-field'));
-    nameField.setAttribute('readOnly', 'true');
+    nameField.disabled = true;
     const userFriendlyName = authenticatorId.slice(-5);  // User friendly name defaults to last 5 chars of UUID.
     nameField.value = ls`Authenticator ${userFriendlyName}`;
     this._updateActiveLabelTitle(activeLabel, nameField.value);
@@ -572,12 +572,12 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
 
   /**
    * @param {!Element} titleElement
-   * @param {!HTMLElement} nameField
+   * @param {!HTMLInputElement} nameField
    * @param {!UI.Toolbar.ToolbarButton} editName
    * @param {!UI.Toolbar.ToolbarButton} saveName
    */
   _handleEditNameButton(titleElement, nameField, editName, saveName) {
-    nameField.removeAttribute('readonly');
+    nameField.disabled = false;
     titleElement.classList.add('editing-name');
     nameField.focus();
     saveName.setVisible(true);
@@ -592,7 +592,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
    * @param {!UI.UIUtils.DevToolsRadioButton} activeLabel
    */
   _handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel) {
-    nameField.setAttribute('readonly', '');
+    nameField.disabled = true;
     titleElement.classList.remove('editing-name');
     editName.setVisible(true);
     saveName.setVisible(false);

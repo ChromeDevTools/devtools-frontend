@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ComputedStyleProperty} from '../../../../front_end/elements/ComputedStyleProperty.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -13,9 +13,11 @@ const initialData = {
   onNavigateToSource: () => {},
 };
 
-describe('ComputedStyleProperty', () => {
+describeWithEnvironment('ComputedStyleProperty', async () => {
+  const Elements = await import('../../../../front_end/elements/elements.js');
+
   it('renders inherited property correctly', () => {
-    const component = new ComputedStyleProperty();
+    const component = new Elements.ComputedStyleProperty.ComputedStyleProperty();
     renderElementIntoDOM(component);
     const data = {
       ...initialData,
@@ -37,7 +39,7 @@ describe('ComputedStyleProperty', () => {
   });
 
   it('renders a clickable goto icon that calls onNavigateToSource when it contains traces', () => {
-    const component = new ComputedStyleProperty();
+    const component = new Elements.ComputedStyleProperty.ComputedStyleProperty();
     renderElementIntoDOM(component);
     let isOnNavigateToSourceCalled = false;
     const data = {

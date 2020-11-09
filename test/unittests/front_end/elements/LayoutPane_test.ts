@@ -2,14 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {LayoutPane, SettingChangedEvent} from '../../../../front_end/elements/LayoutPane.js';
+import type {SettingChangedEvent} from '../../../../front_end/elements/LayoutPane.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {SettingType} from '../../../../front_end/elements/LayoutPaneUtils.js';
 import {assertElement, assertShadowRoot, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
-describe('LayoutPane', () => {
-  function queryLabels(component: LayoutPane, selector: string) {
+describeWithEnvironment('LayoutPane', async () => {
+  const Elements = await import('../../../../front_end/elements/elements.js');
+
+  function queryLabels(component: HTMLElement, selector: string) {
     assertShadowRoot(component.shadowRoot);
     return Array.from(component.shadowRoot.querySelectorAll(selector)).map(label => {
       return {
@@ -20,7 +23,7 @@ describe('LayoutPane', () => {
   }
 
   it('renders settings', async () => {
-    const component = new LayoutPane();
+    const component = new Elements.LayoutPane.LayoutPane();
     renderElementIntoDOM(component);
 
     component.data = {
@@ -68,7 +71,7 @@ describe('LayoutPane', () => {
   });
 
   it('sends event when a setting is changed', async () => {
-    const component = new LayoutPane();
+    const component = new Elements.LayoutPane.LayoutPane();
     renderElementIntoDOM(component);
 
     component.data = {
@@ -107,7 +110,7 @@ describe('LayoutPane', () => {
   });
 
   it('renders grid elements', async () => {
-    const component = new LayoutPane();
+    const component = new Elements.LayoutPane.LayoutPane();
     renderElementIntoDOM(component);
 
     component.data = {
@@ -157,7 +160,7 @@ describe('LayoutPane', () => {
   });
 
   it('send an event when an element overlay is toggled', async () => {
-    const component = new LayoutPane();
+    const component = new Elements.LayoutPane.LayoutPane();
     renderElementIntoDOM(component);
 
     let called = 0;
@@ -190,7 +193,7 @@ describe('LayoutPane', () => {
   });
 
   it('send an event when an element’s Show element button is pressed', async () => {
-    const component = new LayoutPane();
+    const component = new Elements.LayoutPane.LayoutPane();
     let called = 0;
     component.data = {
       gridElements: [

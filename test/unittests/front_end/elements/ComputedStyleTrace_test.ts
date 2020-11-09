@@ -2,14 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ComputedStyleTrace} from '../../../../front_end/elements/ComputedStyleTrace.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
-describe('ComputedStyleTrace', () => {
+describeWithEnvironment('ComputedStyleTrace', async () => {
+  const Elements = await import('../../../../front_end/elements/elements.js');
+
   it('renders ComputedStyleTrace selector correctly', () => {
-    const component = new ComputedStyleTrace();
+    const component = new Elements.ComputedStyleTrace.ComputedStyleTrace();
     renderElementIntoDOM(component);
     const selector = '#id';
     const data = {
@@ -29,7 +31,7 @@ describe('ComputedStyleTrace', () => {
   });
 
   it('has a clickable goto icon and trace value', () => {
-    const component = new ComputedStyleTrace();
+    const component = new Elements.ComputedStyleTrace.ComputedStyleTrace();
     renderElementIntoDOM(component);
     let clickCounter = 0;
     const data = {

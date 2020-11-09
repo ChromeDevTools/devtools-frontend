@@ -344,6 +344,9 @@
     "LayoutSidebarPane.js",
     "LayoutPane_bridge.js"
   ],
+  "skip_compilation": [
+    "NodeText.js"
+  ],
   "resources": [
     "classesPaneWidget.css",
     "computedStyleSidebarPane.css",

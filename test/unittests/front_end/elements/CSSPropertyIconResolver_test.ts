@@ -2,11 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {findIcon, getPhysicalFlexDirections, PhysicalFlexDirection, reverseDirection, rotateAlignContentIcon, rotateAlignItemsIcon, rotateFlexDirectionIcon, rotateJustifyContentIcon} from '../../../../front_end/elements/CSSPropertyIconResolver.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
-describe('CSSPropertyIconResolver', () => {
+describeWithEnvironment('CSSPropertyIconResolver', async () => {
+  const Elements = await import('../../../../front_end/elements/elements.js');
+  const {
+    findIcon,
+    getPhysicalFlexDirections,
+    PhysicalFlexDirection,
+    reverseDirection,
+    rotateAlignContentIcon,
+    rotateAlignItemsIcon,
+    rotateFlexDirectionIcon,
+    rotateJustifyContentIcon,
+  } = Elements.CSSPropertyIconResolver;
   function mapFromStyle(style: {[key: string]: string|undefined}) {
     const result = new Map();
     for (const key of Object.keys(style)) {
@@ -14,7 +25,6 @@ describe('CSSPropertyIconResolver', () => {
     }
     return result;
   }
-
 
   it('can computed actual directions for row and column', () => {
     const tests = [

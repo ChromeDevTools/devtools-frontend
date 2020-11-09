@@ -4,18 +4,23 @@
 
 const {assert} = chai;
 
-import {Adorner, AdornerCategories} from '../../../../front_end/elements/Adorner.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const ADORNER_TAG_NAME = 'DEVTOOLS-ADORNER';
 const ADORNER_NAME = 'grid';
 
-function assertIsAdorner(element: HTMLElement) {
-  assert.strictEqual(element.tagName, ADORNER_TAG_NAME, `element tag name is not ${ADORNER_TAG_NAME}`);
-  assert.isTrue(element instanceof Adorner, 'element is not an instance of Adorner');
-  assert.strictEqual(Object.getPrototypeOf(element), Adorner.prototype, 'element is not on Adorner\'s prototype chain');
-}
+describeWithEnvironment('Adorner', async () => {
+  const Elements = await import('../../../../front_end/elements/elements.js');
+  const {Adorner, AdornerCategories} = Elements.Adorner;
 
-describe('Adorner', () => {
+  function assertIsAdorner(element: HTMLElement) {
+    assert.strictEqual(element.tagName, ADORNER_TAG_NAME, `element tag name is not ${ADORNER_TAG_NAME}`);
+    assert.isTrue(element instanceof Adorner, 'element is not an instance of Adorner');
+    assert.strictEqual(
+        Object.getPrototypeOf(element), Adorner.prototype, 'element is not on Adorner\'s prototype chain');
+  }
+
+
   it('can be created by document.createElement', () => {
     const adorner = document.createElement('devtools-adorner');
     assertIsAdorner(adorner);

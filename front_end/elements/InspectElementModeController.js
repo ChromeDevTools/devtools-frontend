@@ -32,6 +32,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -176,4 +177,4 @@ export class ToggleSearchActionDelegate {
 
 /** @type {?InspectElementModeController} */
 export const inspectElementModeController =
-    Root.Runtime.queryParam('isSharedWorker') ? null : new InspectElementModeController();
+    Root.Runtime.Runtime.queryParam('isSharedWorker') ? null : new InspectElementModeController();

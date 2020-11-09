@@ -55,6 +55,7 @@ export function initializeGlobalVars({reset = true} = {}) {
     createSettingValue('Debugger', 'disableAsyncStackTraces', false),
     createSettingValue('Debugger', 'breakpointsActive', true),
     createSettingValue('Debugger', 'javaScriptDisabled', false),
+    createSettingValue('Elements', 'showDetailedInspectTooltip', true),
     createSettingValue('Network', 'cacheDisabled', false),
     createSettingValue('Rendering', 'avifFormatDisabled', false),
     createSettingValue('Rendering', 'emulatedCSSMedia', '', 'enum'),

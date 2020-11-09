@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -32,7 +30,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!Map<string, number>} */
     this._filePathPrefixesToBindingCount = new Map();
 
-    /** @type {!Platform.Multimap<!Workspace.UISourceCode.UISourceCode, function()>} */
+    /** @type {!Platform.Multimap<!Workspace.UISourceCode.UISourceCode, function():void>} */
     this._subscribedBindingEventListeners = new Platform.Multimap();
 
     const linkDecorator = new LinkDecorator(this);
@@ -99,8 +97,8 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!PersistenceBinding} binding
    */
   async _innerAddBinding(binding) {
-    binding.network[_binding] = binding;
-    binding.fileSystem[_binding] = binding;
+    bindings.set(binding.network, binding);
+    bindings.set(binding.fileSystem, binding);
 
     binding.fileSystem.forceLoadOnCheckContent();
 
@@ -136,15 +134,15 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!PersistenceBinding} binding
    */
   async _innerRemoveBinding(binding) {
-    if (binding.network[_binding] !== binding) {
+    if (bindings.get(binding.network) !== binding) {
       return;
     }
     console.assert(
-        binding.network[_binding] === binding.fileSystem[_binding],
+        bindings.get(binding.network) === bindings.get(binding.fileSystem),
         'ERROR: inconsistent binding for networkURL ' + binding.network.url());
 
-    binding.network[_binding] = null;
-    binding.fileSystem[_binding] = null;
+    bindings.delete(binding.network);
+    bindings.delete(binding.fileSystem);
 
     binding.network.removeEventListener(
         Workspace.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
@@ -169,7 +167,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
    */
   async _onStatusAdded(status) {
     const binding = new PersistenceBinding(status.network, status.fileSystem);
-    status[_binding] = binding;
+    statusBindings.set(status, binding);
     await this._innerAddBinding(binding);
   }
 
@@ -178,7 +176,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Promise<void>}
    */
   async _onStatusRemoved(status) {
-    const binding = /** @type {!PersistenceBinding} */ (status[_binding]);
+    const binding = /** @type {!PersistenceBinding} */ (statusBindings.get(status));
     await this._innerRemoveBinding(binding);
   }
 
@@ -194,21 +192,21 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
   _syncWorkingCopy(uiSourceCode) {
-    const binding = uiSourceCode[_binding];
-    if (!binding || binding[_muteWorkingCopy]) {
+    const binding = bindings.get(uiSourceCode);
+    if (!binding || mutedWorkingCopies.has(binding)) {
       return;
     }
     const other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
     if (!uiSourceCode.isDirty()) {
-      binding[_muteWorkingCopy] = true;
+      mutedWorkingCopies.add(binding);
       other.resetWorkingCopy();
-      binding[_muteWorkingCopy] = false;
+      mutedWorkingCopies.delete(binding);
       this._contentSyncedForTest();
       return;
     }
 
     const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(binding.network);
-    if (target.type() === SDK.SDKModel.Type.Node) {
+    if (target && target.type() === SDK.SDKModel.Type.Node) {
       const newContent = uiSourceCode.workingCopy();
       other.requestContent().then(() => {
         const nodeJSContent = PersistenceImpl.rewrapNodeJSContent(other, other.workingCopy(), newContent);
@@ -224,9 +222,13 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
      * @this {PersistenceImpl}
      */
     function setWorkingCopy(workingCopyGetter) {
-      binding[_muteWorkingCopy] = true;
+      if (binding) {
+        mutedWorkingCopies.add(binding);
+      }
       other.setWorkingCopyGetter(workingCopyGetter);
-      binding[_muteWorkingCopy] = false;
+      if (binding) {
+        mutedWorkingCopies.delete(binding);
+      }
       this._contentSyncedForTest();
     }
   }
@@ -246,15 +248,15 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @param {boolean} encoded
    */
   syncContent(uiSourceCode, newContent, encoded) {
-    const binding = uiSourceCode[_binding];
-    if (!binding || binding[_muteCommit]) {
+    const binding = bindings.get(uiSourceCode);
+    if (!binding || mutedCommits.has(binding)) {
       return;
     }
     const other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
     const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(binding.network);
-    if (target.type() === SDK.SDKModel.Type.Node) {
+    if (target && target.type() === SDK.SDKModel.Type.Node) {
       other.requestContent().then(currentContent => {
-        const nodeJSContent = PersistenceImpl.rewrapNodeJSContent(other, currentContent.content, newContent);
+        const nodeJSContent = PersistenceImpl.rewrapNodeJSContent(other, currentContent.content || '', newContent);
         setContent.call(this, nodeJSContent);
       });
       return;
@@ -266,9 +268,13 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
      * @this {PersistenceImpl}
      */
     function setContent(newContent) {
-      binding[_muteCommit] = true;
+      if (binding) {
+        mutedCommits.add(binding);
+      }
       other.setContent(newContent, encoded);
-      binding[_muteCommit] = false;
+      if (binding) {
+        mutedCommits.delete(binding);
+      }
       this._contentSyncedForTest();
     }
   }
@@ -326,7 +332,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
     if (uiSourceCode.project().canSetFileContent()) {
       return false;
     }
-    if (uiSourceCode[_binding]) {
+    if (bindings.has(uiSourceCode)) {
       return false;
     }
     return !!uiSourceCode.hasCommits();
@@ -337,12 +343,12 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @return {?PersistenceBinding}
    */
   binding(uiSourceCode) {
-    return uiSourceCode[_binding] || null;
+    return bindings.get(uiSourceCode) || null;
   }
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {function()} listener
+   * @param {function():void} listener
    */
   subscribeForBindingEvent(uiSourceCode, listener) {
     this._subscribedBindingEventListeners.set(uiSourceCode, listener);
@@ -350,7 +356,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {function()} listener
+   * @param {function():void} listener
    */
   unsubscribeFromBindingEvent(uiSourceCode, listener) {
     this._subscribedBindingEventListeners.delete(uiSourceCode, listener);
@@ -409,7 +415,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
       const count = this._filePathPrefixesToBindingCount.get(relative);
       if (count === 1) {
         this._filePathPrefixesToBindingCount.delete(relative);
-      } else {
+      } else if (count !== undefined) {
         this._filePathPrefixesToBindingCount.set(relative, count - 1);
       }
     }
@@ -427,9 +433,17 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-const _binding = Symbol('Persistence.Binding');
-const _muteCommit = Symbol('Persistence.MuteCommit');
-const _muteWorkingCopy = Symbol('Persistence.MuteWorkingCopy');
+/** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !PersistenceBinding>} */
+const bindings = new WeakMap();
+/** @type {!WeakMap<!AutomappingStatus, !PersistenceBinding>} */
+const statusBindings = new WeakMap();
+
+/** @type {!WeakSet<!PersistenceBinding>} */
+const mutedCommits = new WeakSet();
+
+/** @type {!WeakSet<!PersistenceBinding>} */
+const mutedWorkingCopies = new WeakSet();
+
 export const NodePrefix = '(function (exports, require, module, __filename, __dirname) { ';
 export const NodeSuffix = '\n});';
 export const NodeShebang = '#!/usr/bin/env node';

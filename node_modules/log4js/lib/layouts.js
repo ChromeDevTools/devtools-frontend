@@ -1,11 +1,7 @@
-'use strict';
-
 const dateFormat = require('date-format');
 const os = require('os');
 const util = require('util');
 const path = require('path');
-
-const eol = os.EOL || '\n';
 
 const styles = {
   // styles
@@ -71,10 +67,7 @@ function basicLayout(loggingEvent) {
  * same as basicLayout, but with colours.
  */
 function colouredLayout(loggingEvent) {
-  return timestampLevelAndCategory(
-    loggingEvent,
-    loggingEvent.level.colour
-  ) + util.format(...loggingEvent.data);
+  return timestampLevelAndCategory(loggingEvent, loggingEvent.level.colour) + util.format(...loggingEvent.data);
 }
 
 function messagePassThroughLayout(loggingEvent) {
@@ -89,6 +82,12 @@ function dummyLayout(loggingEvent) {
  * PatternLayout
  * Format for specifiers is %[padding].[truncation][field]{[format]}
  * e.g. %5.10p - left pad the log level by 5 characters, up to a max of 10
+ * both padding and truncation can be negative.
+ * Negative truncation = trunc from end of string
+ * Positive truncation = trunc from start of string
+ * Negative padding = pad right
+ * Positive padding = pad left
+ *
  * Fields can be any of:
  *  - %r time in toLocaleTimeString format
  *  - %p log level
@@ -124,7 +123,7 @@ function dummyLayout(loggingEvent) {
  */
 function patternLayout(pattern, tokens) {
   const TTCC_CONVERSION_PATTERN = '%r %p %c - %m%n';
-  const regex = /%(-?[0-9]+)?(\.?[0-9]+)?([[\]cdhmnprzxXyflos%])(\{([^}]+)\})?|([^%]+)/;
+  const regex = /%(-?[0-9]+)?(\.?-?[0-9]+)?([[\]cdhmnprzxXyflos%])(\{([^}]+)\})?|([^%]+)/;
 
   pattern = pattern || TTCC_CONVERSION_PATTERN;
 
@@ -168,7 +167,7 @@ function patternLayout(pattern, tokens) {
   }
 
   function endOfLine() {
-    return eol;
+    return os.EOL;
   }
 
   function logLevel(loggingEvent) {
@@ -234,11 +233,11 @@ function patternLayout(pattern, tokens) {
   }
 
   function lineNumber(loggingEvent) {
-    return loggingEvent.lineNumber || '';
+    return loggingEvent.lineNumber ? `${loggingEvent.lineNumber}` : '';
   }
 
   function columnNumber(loggingEvent) {
-    return loggingEvent.columnNumber || '';
+    return loggingEvent.columnNumber ? `${loggingEvent.columnNumber}` : '';
   }
 
   function callStack(loggingEvent) {
@@ -247,24 +246,24 @@ function patternLayout(pattern, tokens) {
 
   /* eslint quote-props:0 */
   const replacers = {
-    'c': categoryName,
-    'd': formatAsDate,
-    'h': hostname,
-    'm': formatMessage,
-    'n': endOfLine,
-    'p': logLevel,
-    'r': startTime,
+    c: categoryName,
+    d: formatAsDate,
+    h: hostname,
+    m: formatMessage,
+    n: endOfLine,
+    p: logLevel,
+    r: startTime,
     '[': startColour,
     ']': endColour,
-    'y': clusterInfo,
-    'z': pid,
+    y: clusterInfo,
+    z: pid,
     '%': percent,
-    'x': userDefined,
-    'X': contextDefined,
-    'f': fileName,
-    'l': lineNumber,
-    'o': columnNumber,
-    's': callStack,
+    x: userDefined,
+    X: contextDefined,
+    f: fileName,
+    l: lineNumber,
+    o: columnNumber,
+    s: callStack
   };
 
   function replaceToken(conversionCharacter, loggingEvent, specifier) {
@@ -275,7 +274,8 @@ function patternLayout(pattern, tokens) {
     let len;
     if (truncation) {
       len = parseInt(truncation.substr(1), 10);
-      return toTruncate.substring(0, len);
+      // negative truncate length means truncate from end of string
+      return len > 0 ? toTruncate.slice(0, len) : toTruncate.slice(len);
     }
 
     return toTruncate;
@@ -338,22 +338,22 @@ function patternLayout(pattern, tokens) {
 }
 
 const layoutMakers = {
-  messagePassThrough: function () {
+  messagePassThrough () {
     return messagePassThroughLayout;
   },
-  basic: function () {
+  basic () {
     return basicLayout;
   },
-  colored: function () {
+  colored () {
     return colouredLayout;
   },
-  coloured: function () {
+  coloured () {
     return colouredLayout;
   },
-  pattern: function (config) {
+  pattern (config) {
     return patternLayout(config && config.pattern, config && config.tokens);
   },
-  dummy: function () {
+  dummy () {
     return dummyLayout;
   }
 };
@@ -365,10 +365,10 @@ module.exports = {
   colouredLayout,
   coloredLayout: colouredLayout,
   dummyLayout,
-  addLayout: function (name, serializerGenerator) {
+  addLayout (name, serializerGenerator) {
     layoutMakers[name] = serializerGenerator;
   },
-  layout: function (name, config) {
+  layout (name, config) {
     return layoutMakers[name] && layoutMakers[name](config);
   }
 };

@@ -1,4 +1,4 @@
-'use strict';
+
 
 const configuration = require('./configuration');
 
@@ -21,7 +21,7 @@ class Level {
 
   /**
    * converts given String to corresponding Level
-   * @param {Level|String} sArg -- String value of Level OR Log4js.Level
+   * @param {(Level|string)} sArg -- String value of Level OR Log4js.Level
    * @param {Level} [defaultLevel] -- default Level, if no String representation
    * @return {Level}
    */
@@ -39,11 +39,7 @@ class Level {
       sArg = sArg.levelStr;
     }
 
-    if (typeof sArg === 'string') {
-      return Level[sArg.toUpperCase()] || defaultLevel;
-    }
-
-    return Level.getLevel(sArg.toString());
+    return Level[sArg.toString().toUpperCase()] || defaultLevel;
   }
 
   static addLevels(customLevels) {

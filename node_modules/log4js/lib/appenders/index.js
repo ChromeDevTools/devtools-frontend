@@ -16,6 +16,7 @@ coreAppenders.set('categoryFilter', require('./categoryFilter'));
 coreAppenders.set('noLogFilter', require('./noLogFilter'));
 coreAppenders.set('file', require('./file'));
 coreAppenders.set('dateFile', require('./dateFile'));
+coreAppenders.set('fileSync', require('./fileSync'));
 
 const appenders = new Map();
 
@@ -40,6 +41,22 @@ const loadAppenderModule = (type, config) => coreAppenders.get(type)
   || (require.main && tryLoading(path.join(path.dirname(require.main.filename), type), config))
   || tryLoading(path.join(process.cwd(), type), config);
 
+const appendersLoading = new Set();
+
+const getAppender = (name, config) => {
+  if (appenders.has(name)) return appenders.get(name);
+  if (!config.appenders[name]) return false;
+  if (appendersLoading.has(name)) throw new Error(`Dependency loop detected for appender ${name}.`);
+  appendersLoading.add(name);
+
+  debug(`Creating appender ${name}`);
+  // eslint-disable-next-line no-use-before-define
+  const appender = createAppender(name, config);
+  appendersLoading.delete(name);
+  appenders.set(name, appender);
+  return appender;
+};
+
 const createAppender = (name, config) => {
   const appenderConfig = config.appenders[name];
   const appenderModule = appenderConfig.type.configure
@@ -63,22 +80,29 @@ const createAppender = (name, config) => {
     return appenderModule.configure(
       adapters.modifyConfig(appenderConfig),
       layouts,
-      appender => appenders.get(appender),
+      appender => getAppender(appender, config),
       levels
     );
-  }, () => {});
+  }, () => { });
 };
 
 const setup = (config) => {
   appenders.clear();
-
+  appendersLoading.clear();
+  const usedAppenders = [];
+  Object.values(config.categories).forEach(category => {
+    usedAppenders.push(...category.appenders)
+  });
   Object.keys(config.appenders).forEach((name) => {
-    debug(`Creating appender ${name}`);
-    appenders.set(name, createAppender(name, config));
+    // dodgy hard-coding of special case for tcp-server which may not have
+    // any categories associated with it, but needs to be started up anyway
+    if (usedAppenders.includes(name) || config.appenders[name].type === 'tcp-server') {
+      getAppender(name, config);
+    }
   });
 };
 
-setup({ appenders: { out: { type: 'stdout' } } });
+setup({ appenders: { out: { type: 'stdout' } }, categories: { default: { appenders: ['out'], level: 'trace' } } });
 
 configuration.addListener((config) => {
   configuration.throwExceptionIf(

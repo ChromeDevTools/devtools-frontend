@@ -1,11 +1,9 @@
-'use strict';
-
 const debug = require('debug')('log4js:file');
 const path = require('path');
 const streams = require('streamroller');
 const os = require('os');
 
-const eol = os.EOL || '\n';
+const eol = os.EOL;
 
 function openTheStream(file, fileSize, numFiles, options) {
   const stream = new streams.RollingFileStream(
@@ -16,6 +14,9 @@ function openTheStream(file, fileSize, numFiles, options) {
   );
   stream.on('error', (err) => {
     console.error('log4js.fileAppender - Writing to file %s, error happened ', file, err); //eslint-disable-line
+  });
+  stream.on('drain', () => {
+    process.emit("log4js:pause", false);
   });
   return stream;
 }
@@ -52,7 +53,17 @@ function fileAppender(file, layout, logSize, numBackups, options, timezoneOffset
   let writer = openTheStream(file, logSize, numBackups, options);
 
   const app = function (loggingEvent) {
-    writer.write(layout(loggingEvent, timezoneOffset) + eol, 'utf8');
+    if (options.removeColor === true) {
+      // eslint-disable-next-line no-control-regex
+      const regex = /\x1b[[0-9;]*m/g;
+      loggingEvent.data = loggingEvent.data.map(d => {
+        if (typeof d === 'string') return d.replace(regex, '')
+        return d
+      })
+    }
+    if (!writer.write(layout(loggingEvent, timezoneOffset) + eol, "utf8")) {
+      process.emit('log4js:pause', true);
+    }
   };
 
   app.reopen = function () {
@@ -66,9 +77,7 @@ function fileAppender(file, layout, logSize, numBackups, options, timezoneOffset
 
   app.shutdown = function (complete) {
     process.removeListener('SIGHUP', app.sighupHandler);
-    writer.write('', 'utf-8', () => {
-      writer.end(complete);
-    });
+    writer.end('', 'utf-8', complete);
   };
 
   // On SIGHUP, close and reopen all files. This allows this appender to work with

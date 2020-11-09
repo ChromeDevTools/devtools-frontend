@@ -34,11 +34,13 @@ https://cdn.jsdelivr.net/gh/jshttp/mime-db@master/db.json
 
 ## Usage
 
+<!-- eslint-disable no-unused-vars -->
+
 ```js
-var db = require('mime-db');
+var db = require('mime-db')
 
 // grab data on .js files
-var data = db['application/javascript'];
+var data = db['application/javascript']
 ```
 
 ## Data Structure

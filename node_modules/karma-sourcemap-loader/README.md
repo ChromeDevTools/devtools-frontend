@@ -22,16 +22,16 @@ Hello.js.map.
 
 ## Installation
 
-Just write `karma-sourcemap-loader` as a devDependency in your `package.json`.
+Just add `karma-sourcemap-loader` as a devDependency in your `package.json`.
 ```json
 {
   "devDependencies": {
-    "karma-sourcemap-loader": "~0.2"
+    "karma-sourcemap-loader": "~0.3"
   }
 }
 ```
 
-Or just issue the following command:
+Or issue the following command:
 ```bash
 npm install karma-sourcemap-loader --save-dev
 ```
@@ -49,7 +49,3 @@ module.exports = function(config) {
   });
 };
 ```
-
-## Credits
-
-Thanks to @goldibex for adding inline source maps support.

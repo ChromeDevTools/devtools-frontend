@@ -1,9 +1,7 @@
 require("should");
 
-const _ = require("lodash");
 const path = require("path");
 const zlib = require("zlib");
-const async = require("async");
 const stream = require("stream");
 const fs = require("fs-extra");
 const proxyquire = require("proxyquire").noPreserveCache();
@@ -18,7 +16,7 @@ const mockFs = require("fs-extra");
 const oldStatSync = mockFs.statSync;
 mockFs.statSync = fd => {
   const result = oldStatSync(fd);
-  result.birthtime = fakedFsDate;
+  result.mtime = fakedFsDate;
   return result;
 };
 
@@ -95,8 +93,7 @@ describe("RollingFileWriteStream", () => {
     });
 
     after(() => {
-      s.end();
-      fs.removeSync(fileObj.dir);
+      s.end(() => fs.removeSync(fileObj.dir));
     });
 
     it("should take a filename and options, return Writable", () => {
@@ -120,22 +117,28 @@ describe("RollingFileWriteStream", () => {
     const fileObj = generateTestFile("noExtension");
     let s;
 
-    before(done => {
+    before(async () => {
       fakeNow = new Date(2012, 8, 12, 10, 37, 11);
       s = new RollingFileWriteStream(fileObj.path, {
         pattern: "yyyy-MM-dd",
         maxSize: 5
       });
-      const flows = Array.from(Array(38).keys()).map(i => cb => {
+      const flows = Array.from(Array(38).keys()).map(i => () => {
         fakeNow = new Date(2012, 8, 12 + parseInt(i / 5, 10), 10, 37, 11);
-        s.write(i.toString(), "utf8", cb);
+        return new Promise(resolve => {
+          s.write(i.toString(), "utf8", () => resolve());
+        });
       });
-      async.waterfall(flows, () => done());
+      for (let i = 0; i < flows.length; i += 1) {
+        await flows[i]();
+      }
     });
 
     after(done => {
-      fs.removeSync(fileObj.dir);
-      done();
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should rotate using filename with no extension", () => {
@@ -162,7 +165,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("353637");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-12.1"
           })
         )
@@ -171,7 +174,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("01234");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-13.1"
           })
         )
@@ -180,7 +183,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("56789");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-14.2"
           })
         )
@@ -189,7 +192,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("101112");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-14.1"
           })
         )
@@ -198,7 +201,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("1314");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-15.2"
           })
         )
@@ -207,7 +210,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("151617");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-15.1"
           })
         )
@@ -216,7 +219,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("1819");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-16.2"
           })
         )
@@ -225,7 +228,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("202122");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-16.1"
           })
         )
@@ -234,7 +237,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("2324");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-17.2"
           })
         )
@@ -243,7 +246,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("252627");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-17.1"
           })
         )
@@ -252,7 +255,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("2829");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-18.2"
           })
         )
@@ -261,7 +264,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("303132");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-18.1"
           })
         )
@@ -275,13 +278,16 @@ describe("RollingFileWriteStream", () => {
     const fileObj = generateTestFile();
     let s;
 
-    before(done => {
-      const flows = Array.from(Array(3).keys()).map(() => cb => {
+    before(async () => {
+      const flows = Array.from(Array(3).keys()).map(() => () => {
         s = new RollingFileWriteStream(fileObj.path);
-        s.write("abc", "utf8", cb);
-        s.end();
+        return new Promise(resolve => {
+          s.end("abc", "utf8", () => resolve());
+        });
       });
-      async.waterfall(flows, () => done());
+      for (let i = 0; i < flows.length; i += 1) {
+        await flows[i]();
+      }
     });
 
     after(() => {
@@ -295,7 +301,7 @@ describe("RollingFileWriteStream", () => {
       files.length.should.equal(expectedFileList.length);
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base
           })
         )
@@ -309,22 +315,28 @@ describe("RollingFileWriteStream", () => {
     const fileObj = generateTestFile("withExtension.log");
     let s;
 
-    before(done => {
+    before(async () => {
       fakeNow = new Date(2012, 8, 12, 10, 37, 11);
       s = new RollingFileWriteStream(fileObj.path, {
         pattern: "yyyy-MM-dd",
         maxSize: 5
       });
-      const flows = Array.from(Array(38).keys()).map(i => cb => {
+      const flows = Array.from(Array(38).keys()).map(i => () => {
         fakeNow = new Date(2012, 8, 12 + parseInt(i / 10, 10), 10, 37, 11);
-        s.write(i.toString(), "utf8", cb);
+        return new Promise(resolve => {
+          s.write(i.toString(), "utf8", () => resolve());
+        });
       });
-      async.waterfall(flows, () => done());
+      for (let i = 0; i < flows.length; i += 1) {
+        await flows[i]();
+      }
     });
 
     after(done => {
-      fs.removeSync(fileObj.dir);
-      done();
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      })
     });
 
     it("should rotate files within the day, and when the day changes", () => {
@@ -351,7 +363,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("3637");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-12.2"
           })
         )
@@ -360,7 +372,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("01234");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-12.1"
           })
         )
@@ -369,7 +381,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("56789");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-13.4"
           })
         )
@@ -378,7 +390,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("101112");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-13.3"
           })
         )
@@ -387,7 +399,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("131415");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-13.2"
           })
         )
@@ -396,7 +408,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("161718");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-13.1"
           })
         )
@@ -405,7 +417,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("19");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-14.4"
           })
         )
@@ -414,7 +426,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("202122");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-14.3"
           })
         )
@@ -423,7 +435,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("232425");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-14.2"
           })
         )
@@ -432,7 +444,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("262728");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-14.1"
           })
         )
@@ -441,7 +453,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("29");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-15.2"
           })
         )
@@ -450,7 +462,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("303132");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-15.1"
           })
         )
@@ -464,22 +476,28 @@ describe("RollingFileWriteStream", () => {
     const fileObj = generateTestFile();
     let s;
 
-    before(done => {
+    before(async () => {
       fakeNow = new Date(2012, 8, 12, 10, 37, 11);
       s = new RollingFileWriteStream(fileObj.path, {
         maxSize: 5,
         numToKeep: 3
       });
-      const flows = Array.from(Array(38).keys()).map(i => cb => {
+      const flows = Array.from(Array(38).keys()).map(i => () => {
         fakeNow = new Date(2012, 8, 12 + parseInt(i / 5), 10, 37, 11);
-        s.write(i.toString(), "utf8", cb);
+        return new Promise(resolve => {
+          s.write(i.toString(), "utf8", () => resolve());
+        });
       });
-      async.waterfall(flows, () => done());
+      for (let i = 0; i < flows.length; i += 1) {
+        await flows[i]();
+      }
     });
 
-    after(() => {
-      s.end();
-      fs.removeSync(fileObj.dir);
+    after(done => {
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should rotate with at most 3 backup files not including the hot one", () => {
@@ -497,7 +515,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("37");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".1"
           })
         )
@@ -506,7 +524,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("343536");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2"
           })
         )
@@ -515,7 +533,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("313233");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".3"
           })
         )
@@ -529,23 +547,29 @@ describe("RollingFileWriteStream", () => {
     const fileObj = generateTestFile();
     let s;
 
-    before(done => {
+    before(async () => {
       fakeNow = new Date(2012, 8, 12, 10, 37, 11);
       s = new RollingFileWriteStream(fileObj.path, {
         maxSize: 5,
         pattern: "yyyy-MM-dd",
         numToKeep: 3
       });
-      const flows = Array.from(Array(38).keys()).map(i => cb => {
+      const flows = Array.from(Array(38).keys()).map(i => () => {
         fakeNow = new Date(2012, 8, 12 + parseInt(i / 10), 10, 37, 11);
-        s.write(i.toString(), "utf8", cb);
+        return new Promise(resolve => {
+          s.write(i.toString(), "utf8", () => resolve());
+        });
       });
-      async.waterfall(flows, () => done());
+      for (let i = 0; i < flows.length; i += 1) {
+        await flows[i]();
+      }
     });
 
-    after(() => {
-      s.end();
-      fs.removeSync(fileObj.dir);
+    after(done => {
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should rotate with at most 3 backup files not including the hot one", () => {
@@ -563,7 +587,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("3637");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-15.1"
           })
         )
@@ -572,7 +596,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("333435");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-15.2"
           })
         )
@@ -581,7 +605,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("303132");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-14.1"
           })
         )
@@ -595,17 +619,21 @@ describe("RollingFileWriteStream", () => {
     const fileObj = generateTestFile();
     let s;
 
-    before(done => {
+    before(async () => {
       fakeNow = new Date(2012, 8, 12, 10, 37, 11);
       s = new RollingFileWriteStream(fileObj.path, {
         maxSize: 5,
         pattern: "dd-MM-yyyy"
       });
-      const flows = Array.from(Array(8).keys()).map(i => cb => {
+      const flows = Array.from(Array(8).keys()).map(i => () => {
         fakeNow = new Date(2012, 8, 12 + parseInt(i / 5, 10), 10, 37, 11);
-        s.write(i.toString(), "utf8", cb);
+        return new Promise(resolve => {
+          s.write(i.toString(), "utf8", () => resolve());
+        });
       });
-      async.waterfall(flows, () => done());
+      for (let i = 0; i < flows.length; i += 1) {
+        await flows[i]();
+      }
     });
 
     after(done => {
@@ -624,7 +652,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("567");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".12-09-2012.1"
           })
         )
@@ -638,23 +666,29 @@ describe("RollingFileWriteStream", () => {
     const fileObj = generateTestFile();
     let s;
 
-    before(done => {
+    before(async () => {
       fakeNow = new Date(2012, 8, 12, 10, 37, 11);
       s = new RollingFileWriteStream(fileObj.path, {
         maxSize: 5,
         pattern: "yyyy-MM-dd",
         compress: true
       });
-      const flows = Array.from(Array(8).keys()).map(i => cb => {
+      const flows = Array.from(Array(8).keys()).map(i => () => {
         fakeNow = new Date(2012, 8, 12 + parseInt(i / 5, 10), 10, 37, 11);
-        s.write(i.toString(), "utf8", cb);
+        return new Promise(resolve => {
+          s.write(i.toString(), "utf8", () => resolve());
+        });
       });
-      async.waterfall(flows, () => done());
+      for (let i = 0; i < flows.length; i += 1) {
+        await flows[i]();
+      }
     });
 
-    after(() => {
-      s.end();
-      fs.removeSync(fileObj.dir);
+    after(done => {
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should rotate with gunzip", () => {
@@ -671,7 +705,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("567");
       const content = fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.base + ".2012-09-12.1.gz"
           })
         )
@@ -687,24 +721,29 @@ describe("RollingFileWriteStream", () => {
     const fileObj = generateTestFile("keepFileExt.log");
     let s;
 
-    before(done => {
+    before(async () => {
       fakeNow = new Date(2012, 8, 12, 10, 37, 11);
       s = new RollingFileWriteStream(fileObj.path, {
         pattern: "yyyy-MM-dd",
         maxSize: 5,
         keepFileExt: true
       });
-      const flows = Array.from(Array(8).keys()).map(i => cb => {
+      const flows = Array.from(Array(8).keys()).map(i => () => {
         fakeNow = new Date(2012, 8, 12 + parseInt(i / 5, 10), 10, 37, 11);
-        s.write(i.toString(), "utf8", cb);
+        return new Promise(resolve => {
+          s.write(i.toString(), "utf8", () => resolve());
+        });
       });
-      async.waterfall(flows, () => done());
+      for (let i = 0; i < flows.length; i += 1) {
+        await flows[i]();
+      }
     });
 
     after(done => {
-      s.end();
-      fs.removeSync(fileObj.dir);
-      done();
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should rotate with the same extension", () => {
@@ -734,7 +773,7 @@ describe("RollingFileWriteStream", () => {
     const fileObj = generateTestFile("keepFileExt.log");
     let s;
 
-    before(done => {
+    before(async () => {
       fakeNow = new Date(2012, 8, 12, 10, 37, 11);
       s = new RollingFileWriteStream(fileObj.path, {
         maxSize: 5,
@@ -742,17 +781,22 @@ describe("RollingFileWriteStream", () => {
         keepFileExt: true,
         compress: true
       });
-      const flows = Array.from(Array(8).keys()).map(i => cb => {
+      const flows = Array.from(Array(8).keys()).map(i => () => {
         fakeNow = new Date(2012, 8, 12 + parseInt(i / 5, 10), 10, 37, 11);
-        s.write(i.toString(), "utf8", cb);
+        return new Promise(resolve => {
+          s.write(i.toString(), "utf8", () => resolve());
+        });
       });
-      async.waterfall(flows, () => done());
+      for (let i = 0; i < flows.length; i += 1) {
+        await flows[i]();
+      }
     });
 
     after(done => {
-      s.end();
-      fs.removeSync(fileObj.dir);
-      done();
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should rotate with the same extension", () => {
@@ -769,7 +813,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("567");
       const content = fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.name + ".2012-09-12.1.log.gz"
           })
         )
@@ -785,7 +829,7 @@ describe("RollingFileWriteStream", () => {
     const fileObj = generateTestFile("keepFileExt.log");
     let s;
 
-    before(done => {
+    before(async () => {
       fakeNow = new Date(2012, 8, 12, 10, 37, 11);
       s = new RollingFileWriteStream(fileObj.path, {
         maxSize: 5,
@@ -793,17 +837,22 @@ describe("RollingFileWriteStream", () => {
         keepFileExt: true,
         alwaysIncludePattern: true
       });
-      const flows = Array.from(Array(8).keys()).map(i => cb => {
+      const flows = Array.from(Array(8).keys()).map(i => () => {
         fakeNow = new Date(2012, 8, 12 + parseInt(i / 5, 10), 10, 37, 11);
-        s.write(i.toString(), "utf8", cb);
+        return new Promise(resolve => {
+          s.write(i.toString(), "utf8", () => resolve());
+        });
       });
-      async.waterfall(flows, () => done());
+      for (let i = 0; i < flows.length; i += 1) {
+        await flows[i]();
+      }
     });
 
     after(done => {
-      s.end();
-      fs.removeSync(fileObj.dir);
-      done();
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should rotate with the same extension and keep date in the filename", () => {
@@ -816,7 +865,7 @@ describe("RollingFileWriteStream", () => {
       files.length.should.equal(expectedFileList.length);
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.name + ".2012-09-13.log"
           })
         )
@@ -825,7 +874,7 @@ describe("RollingFileWriteStream", () => {
         .should.equal("567");
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.name + ".2012-09-12.1.log"
           })
         )
@@ -839,7 +888,7 @@ describe("RollingFileWriteStream", () => {
     const fileObj = generateTestFile("keepFileExt.log");
     let s;
 
-    before(done => {
+    before(async () => {
       fakeNow = new Date(2012, 8, 12, 10, 37, 11);
       s = new RollingFileWriteStream(fileObj.path, {
         maxSize: 5,
@@ -848,17 +897,22 @@ describe("RollingFileWriteStream", () => {
         alwaysIncludePattern: true,
         pattern: "yyyy-MM-dd"
       });
-      const flows = Array.from(Array(38).keys()).map(i => cb => {
+      const flows = Array.from(Array(38).keys()).map(i => () => {
         fakeNow = new Date(2012, 8, 12 + parseInt(i / 5, 10), 10, 37, 11);
-        s.write(i.toString(), "utf8", cb);
+        return new Promise(resolve => {
+          s.write(i.toString(), "utf8", () => resolve());
+        });
       });
-      async.waterfall(flows, () => done());
+      for (let i = 0; i < flows.length; i += 1) {
+        await flows[i]();
+      }
     });
 
     after(done => {
-      s.end();
-      fs.removeSync(fileObj.dir);
-      done();
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should rotate every day", () => {
@@ -882,7 +936,7 @@ describe("RollingFileWriteStream", () => {
       files.length.should.equal(expectedFileList.length);
       fs.readFileSync(
         path.format(
-          _.assign({}, fileObj, {
+          Object.assign({}, fileObj, {
             base: fileObj.name + ".2012-09-19.log"
           })
         )
@@ -893,7 +947,7 @@ describe("RollingFileWriteStream", () => {
         .gunzipSync(
           fs.readFileSync(
             path.format(
-              _.assign({}, fileObj, {
+              Object.assign({}, fileObj, {
                 base: fileObj.name + ".2012-09-18.1.log.gz"
               })
             )
@@ -905,7 +959,7 @@ describe("RollingFileWriteStream", () => {
         .gunzipSync(
           fs.readFileSync(
             path.format(
-              _.assign({}, fileObj, {
+              Object.assign({}, fileObj, {
                 base: fileObj.name + ".2012-09-18.2.log.gz"
               })
             )
@@ -917,7 +971,7 @@ describe("RollingFileWriteStream", () => {
         .gunzipSync(
           fs.readFileSync(
             path.format(
-              _.assign({}, fileObj, {
+              Object.assign({}, fileObj, {
                 base: fileObj.name + ".2012-09-17.1.log.gz"
               })
             )
@@ -929,7 +983,7 @@ describe("RollingFileWriteStream", () => {
         .gunzipSync(
           fs.readFileSync(
             path.format(
-              _.assign({}, fileObj, {
+              Object.assign({}, fileObj, {
                 base: fileObj.name + ".2012-09-17.2.log.gz"
               })
             )
@@ -941,7 +995,7 @@ describe("RollingFileWriteStream", () => {
         .gunzipSync(
           fs.readFileSync(
             path.format(
-              _.assign({}, fileObj, {
+              Object.assign({}, fileObj, {
                 base: fileObj.name + ".2012-09-16.1.log.gz"
               })
             )
@@ -953,7 +1007,7 @@ describe("RollingFileWriteStream", () => {
         .gunzipSync(
           fs.readFileSync(
             path.format(
-              _.assign({}, fileObj, {
+              Object.assign({}, fileObj, {
                 base: fileObj.name + ".2012-09-16.2.log.gz"
               })
             )
@@ -965,7 +1019,7 @@ describe("RollingFileWriteStream", () => {
         .gunzipSync(
           fs.readFileSync(
             path.format(
-              _.assign({}, fileObj, {
+              Object.assign({}, fileObj, {
                 base: fileObj.name + ".2012-09-15.1.log.gz"
               })
             )
@@ -977,7 +1031,7 @@ describe("RollingFileWriteStream", () => {
         .gunzipSync(
           fs.readFileSync(
             path.format(
-              _.assign({}, fileObj, {
+              Object.assign({}, fileObj, {
                 base: fileObj.name + ".2012-09-15.2.log.gz"
               })
             )
@@ -989,7 +1043,7 @@ describe("RollingFileWriteStream", () => {
         .gunzipSync(
           fs.readFileSync(
             path.format(
-              _.assign({}, fileObj, {
+              Object.assign({}, fileObj, {
                 base: fileObj.name + ".2012-09-14.1.log.gz"
               })
             )
@@ -1001,7 +1055,7 @@ describe("RollingFileWriteStream", () => {
         .gunzipSync(
           fs.readFileSync(
             path.format(
-              _.assign({}, fileObj, {
+              Object.assign({}, fileObj, {
                 base: fileObj.name + ".2012-09-14.2.log.gz"
               })
             )
@@ -1013,7 +1067,7 @@ describe("RollingFileWriteStream", () => {
         .gunzipSync(
           fs.readFileSync(
             path.format(
-              _.assign({}, fileObj, {
+              Object.assign({}, fileObj, {
                 base: fileObj.name + ".2012-09-13.1.log.gz"
               })
             )
@@ -1025,7 +1079,7 @@ describe("RollingFileWriteStream", () => {
         .gunzipSync(
           fs.readFileSync(
             path.format(
-              _.assign({}, fileObj, {
+              Object.assign({}, fileObj, {
                 base: fileObj.name + ".2012-09-12.1.log.gz"
               })
             )
@@ -1048,9 +1102,11 @@ describe("RollingFileWriteStream", () => {
       s.write("now", "utf8", done);
     });
 
-    after(() => {
-      s.end();
-      fs.removeSync(fileObj.dir);
+    after(done => {
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should use write in the old file if not reach the maxSize limit", () => {
@@ -1079,9 +1135,50 @@ describe("RollingFileWriteStream", () => {
       s.write("three\n", "utf8", done); // this should be in a new file.
     });
 
-    after(() => {
-      s.end();
-      fs.removeSync(fileObj.dir);
+    after(done => {
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
+    });
+
+    it("should respect the existing file size", () => {
+      const files = fs.readdirSync(fileObj.dir);
+      const expectedFileList = [fileObj.base, fileObj.base + ".1"];
+      files.should.containDeep(expectedFileList);
+      files.length.should.equal(expectedFileList.length);
+
+      fs.readFileSync(path.format(fileObj))
+        .toString()
+        .should.equal("three\n");
+      fs.readFileSync(path.join(fileObj.dir, fileObj.base + ".1"))
+        .toString()
+        .should.equal("This is exactly 30 bytes long\none\ntwo\n");
+    });
+  });
+
+  describe("when old files exist with contents and the flag is a+", () => {
+    const fileObj = generateTestFile();
+    let s;
+
+    before(done => {
+      fakeNow = new Date(2012, 8, 12, 10, 37, 11);
+      fs.ensureFileSync(fileObj.path);
+      fs.writeFileSync(fileObj.path, "This is exactly 30 bytes long\n");
+      s = new RollingFileWriteStream(fileObj.path, {
+        maxSize: 35,
+        flags: "a+"
+      });
+      s.write("one\n", "utf8"); //34
+      s.write("two\n", "utf8"); //38 - file should be rotated next time
+      s.write("three\n", "utf8", done); // this should be in a new file.
+    });
+
+    after(done => {
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should respect the existing file size", () => {
@@ -1119,9 +1216,11 @@ describe("RollingFileWriteStream", () => {
       s.write("three\n", "utf8", done); // base.3 -> base.4, base.2 -> base.3, base.1 -> base.2, base -> base.1
     });
 
-    after(() => {
-      s.end();
-      fs.removeSync(fileObj.dir);
+    after(done => {
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should rotate the old file indices", () => {
@@ -1169,9 +1268,11 @@ describe("RollingFileWriteStream", () => {
       s.write("It is now Sept 13, 2012.\n", "utf8", done); // this should be in a new file.
     });
 
-    after(() => {
-      s.end();
-      fs.removeSync(fileObj.dir);
+    after(done => {
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should respect the existing file date", () => {
@@ -1201,9 +1302,11 @@ describe("RollingFileWriteStream", () => {
       s.write("there should only be this\n", "utf8", done);
     });
 
-    after(() => {
-      s.end();
-      fs.removeSync(fileObj.dir);
+    after(done => {
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should ignore the existing file size", () => {
@@ -1231,9 +1334,11 @@ describe("RollingFileWriteStream", () => {
       s.write("test", "utf8", done);
     });
 
-    after(() => {
-      s.end();
-      fs.removeSync(fileObj.dir);
+    after(done => {
+      s.end(() => {
+        fs.removeSync(fileObj.dir);
+        done();
+      });
     });
 
     it("should create the dir", () => {
@@ -1255,9 +1360,11 @@ describe("RollingFileWriteStream", () => {
       s.write("this should not cause any problems", "utf8", done);
     });
 
-    after(() => {
-      s.end();
-      fs.removeSync("test.log");
+    after(done => {
+      s.end(() => {
+        fs.removeSync("test.log");
+        done();
+      });
     });
 
     it("should use process.cwd() as the dir", () => {
@@ -1294,9 +1401,11 @@ describe("RollingFileWriteStream", () => {
       s.write("this should not cause any problems", "utf8", done);
     });
 
-    after(() => {
-      s.end();
-      fs.removeSync("test-events.log");
+    after(done => {
+      s.end(() => {
+        fs.removeSync("test-events.log");
+        done();
+      });
     });
 
     it("should emit the error event of the underlying stream", done => {
@@ -1306,5 +1415,27 @@ describe("RollingFileWriteStream", () => {
       });
       s.currentFileStream.emit("error", new Error("oh no"));
     });
+  });
+
+  describe("when deleting old files and there is an error", () => {
+    before(done => {
+      fs.ensureDir('/tmp/delete-test/logfile.log.2', done);
+    });
+
+    it("should not let errors bubble up", done => {
+      const s = new RollingFileWriteStream("/tmp/delete-test/logfile.log", {
+        maxSize: 10,
+        numToKeep: 1
+      });
+
+      s.write("length is 10", "utf8", () => {
+        // if there's an error during deletion, then done never gets called
+        s.write("length is 10", "utf8", done);
+      });
+    });
+
+    after(done => {
+      fs.remove('/tmp/delete-test', done);
+    })
   });
 });

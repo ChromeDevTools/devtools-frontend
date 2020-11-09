@@ -29,23 +29,21 @@ describe('date_format', function() {
 
     it('should provide a ISO8601 with timezone offset format', function() {
         var tzDate = createFixedDate();
-        tzDate.setMinutes(tzDate.getMinutes() - tzDate.getTimezoneOffset() - 660);
         tzDate.getTimezoneOffset = function () {
             return -660;
         };
 
-        // when tz offset is in the pattern, the date should be in UTC
+        // when tz offset is in the pattern, the date should be in local time
         dateFormat.asString(dateFormat.ISO8601_WITH_TZ_OFFSET_FORMAT, tzDate)
-            .should.eql('2010-01-11T03:31:30.005+1100');
+            .should.eql('2010-01-11T14:31:30.005+1100');
 
         tzDate = createFixedDate();
-        tzDate.setMinutes((tzDate.getMinutes() - tzDate.getTimezoneOffset()) + 120);
         tzDate.getTimezoneOffset = function () {
             return 120;
         };
 
         dateFormat.asString(dateFormat.ISO8601_WITH_TZ_OFFSET_FORMAT, tzDate)
-            .should.eql('2010-01-11T16:31:30.005-0200');
+            .should.eql('2010-01-11T14:31:30.005-0200');
     });
 
     it('should provide a just-the-time format', function() {
@@ -54,11 +52,10 @@ describe('date_format', function() {
 
     it('should provide a custom format', function() {
         var customDate = createFixedDate();
-        customDate.setMinutes((customDate.getMinutes() - customDate.getTimezoneOffset()) + 120);
         customDate.getTimezoneOffset = function () {
             return 120;
         };
 
-        dateFormat.asString('O.SSS.ss.mm.hh.dd.MM.yy', customDate).should.eql('-0200.005.30.31.16.11.01.10');
+        dateFormat.asString('O.SSS.ss.mm.hh.dd.MM.yy', customDate).should.eql('-0200.005.30.31.14.11.01.10');
     });
 });

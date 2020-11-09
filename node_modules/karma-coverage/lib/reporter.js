@@ -218,58 +218,77 @@ var CoverageReporter = function (rootConfig, helper, logger, emitter) {
     coverageMap.merge(result.coverage)
   }
 
-  this.onRunComplete = async function (browsers, results) {
-    const checkedCoverage = {}
+  let checkedCoverage = {}
+  let promiseComplete = null
 
-    for (const reporterConfig of reporters) {
-      await Promise.all(browsers.map(async (browser) => {
-        const coverageMap = coverageMaps[browser.id]
-        if (!coverageMap) {
-          return
-        }
-
-        const mainDir = reporterConfig.dir || config.dir
-        const subDir = reporterConfig.subdir || config.subdir
-        const outputPath = generateOutputPath(basePath, browser.name, mainDir, subDir)
-        const remappedCoverageMap = await sourceMapStore.transformCoverage(coverageMap)
-
-        const options = helper.merge(config, reporterConfig, {
-          dir: outputPath,
-          subdir: '',
-          browser: browser,
-          emitter: emitter,
-          coverageMap: remappedCoverageMap
-        })
-
-        // If config.check is defined, check coverage levels for each browser
-        if (hasOwnProperty.call(config, 'check') && !checkedCoverage[browser.id]) {
-          checkedCoverage[browser.id] = true
-          var coverageFailed = checkCoverage(browser, remappedCoverageMap)
-          if (coverageFailed && results) {
-            results.exitCode = 1
-          }
-        }
-
-        const context = istanbulLibReport.createContext(options)
-        const report = reports.create(reporterConfig.type || 'html', options)
-
-        // // If reporting to console or in-memory skip directory creation
-        const toDisk = !reporterConfig.type || !reporterConfig.type.match(/^(text|text-summary|in-memory)$/)
-
-        if (!toDisk && reporterConfig.file === undefined) {
-          report.execute(context)
-          return
-        }
-
-        helper.mkdirIfNotExists(outputPath, function () {
-          log.debug('Writing coverage to %s', outputPath)
-          report.execute(context)
-        })
-      }))
+  this.executeReport = async function (reporterConfig, browser) {
+    const results = { exitCode: 0 }
+    const coverageMap = coverageMaps[browser.id]
+    if (!coverageMap) {
+      return
     }
+
+    const mainDir = reporterConfig.dir || config.dir
+    const subDir = reporterConfig.subdir || config.subdir
+    const outputPath = generateOutputPath(basePath, browser.name, mainDir, subDir)
+    const remappedCoverageMap = await sourceMapStore.transformCoverage(coverageMap)
+
+    const options = helper.merge(config, reporterConfig, {
+      dir: outputPath,
+      subdir: '',
+      browser: browser,
+      emitter: emitter,
+      coverageMap: remappedCoverageMap
+    })
+
+    // If config.check is defined, check coverage levels for each browser
+    if (hasOwnProperty.call(config, 'check') && !checkedCoverage[browser.id]) {
+      checkedCoverage[browser.id] = true
+      var coverageFailed = checkCoverage(browser, remappedCoverageMap)
+      if (coverageFailed && results) {
+        results.exitCode = 1
+      }
+    }
+
+    const context = istanbulLibReport.createContext(options)
+    const report = reports.create(reporterConfig.type || 'html', options)
+
+    // // If reporting to console or in-memory skip directory creation
+    const toDisk = !reporterConfig.type || !reporterConfig.type.match(/^(text|text-summary|in-memory)$/)
+
+    if (!toDisk && reporterConfig.file === undefined) {
+      report.execute(context)
+      return
+    }
+
+    helper.mkdirIfNotExists(outputPath, function () {
+      log.debug('Writing coverage to %s', outputPath)
+      report.execute(context)
+    })
+    return results
   }
 
-  this.onExit = function (done) {
+  this.onRunComplete = function (browsers) {
+    checkedCoverage = {}
+    let results = { exitCode: 0 }
+
+    const promiseCollection = reporters.map(reporterConfig =>
+      Promise.all(browsers.map(async (browser) => {
+        const res = await this.executeReport(reporterConfig, browser)
+        if (res && res.exitCode === 1) {
+          results = res
+        }
+      })))
+    promiseComplete = Promise.all(promiseCollection).then(() => results)
+    return promiseComplete
+  }
+
+  this.onExit = async function (done) {
+    const results = await promiseComplete
+    if (results && results.exitCode === 1) {
+      done(results.exitCode)
+      return
+    }
     if (typeof config._onExit === 'function') {
       config._onExit(done)
     } else {

@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';  // eslint-disable-line no-unused-vars
 
@@ -41,14 +38,14 @@ import {ChildrenProvider} from './ChildrenProvider.js';  // eslint-disable-line 
  */
 export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper {
   /**
-   * @param {function(string, *)} eventHandler
+   * @param {function(string, *):void} eventHandler
    */
   constructor(eventHandler) {
     super();
     this._eventHandler = eventHandler;
     this._nextObjectId = 1;
     this._nextCallId = 1;
-    /** @type {!Map<number, function(*)>} */
+    /** @type {!Map<number, function(*):void>} */
     this._callbacks = new Map();
     /** @type {!Set<number>} */
     this._previousCallbacks = new Set();
@@ -58,7 +55,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
 
   /**
    * @param {number} profileUid
-   * @param {function(!HeapSnapshotProxy)} snapshotReceivedCallback
+   * @param {function(!HeapSnapshotProxy):void} snapshotReceivedCallback
    * @return {!HeapSnapshotLoaderProxy}
    */
   createLoader(profileUid, snapshotReceivedCallback) {
@@ -80,10 +77,17 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
     }
   }
 
+  /**
+   * @param {number} objectId
+   */
   disposeObject(objectId) {
     this._postMessage({callId: this._nextCallId++, disposition: 'dispose', objectId: objectId});
   }
 
+  /**
+   * @param {string} script
+   * @param {function(*):void} callback
+   */
   evaluateForTest(script, callback) {
     const callId = this._nextCallId++;
     this._callbacks.set(callId, callback);
@@ -91,7 +95,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
   }
 
   /**
-   * @param {?function(...?)} callback
+   * @param {?function(...?):void} callback
    * @param {string} objectId
    * @param {string} methodName
    * @param {function(new:T, ...?)} proxyConstructor
@@ -103,15 +107,10 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
     const methodArguments = Array.prototype.slice.call(arguments, 4);
     const newObjectId = this._nextObjectId++;
 
-    /**
-     * @this {HeapSnapshotWorkerProxy}
-     */
-    function wrapCallback(remoteResult) {
-      callback(remoteResult ? new proxyConstructor(this, newObjectId) : null);
-    }
-
     if (callback) {
-      this._callbacks.set(callId, wrapCallback.bind(this));
+      this._callbacks.set(callId, remoteResult => {
+        callback(remoteResult ? new proxyConstructor(this, newObjectId) : null);
+      });
       this._postMessage({
         callId: callId,
         disposition: 'factory',
@@ -134,7 +133,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
   }
 
   /**
-   * @param {function(*)} callback
+   * @param {function(*):void} callback
    * @param {string} objectId
    * @param {string} methodName
    */
@@ -194,14 +193,17 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
       this._callbacks.delete(data.callId);
       return;
     }
-    if (!this._callbacks.has(data.callId)) {
+    const callback = this._callbacks.get(data.callId);
+    if (!callback) {
       return;
     }
-    const callback = this._callbacks.get(data.callId);
     this._callbacks.delete(data.callId);
     callback(data.result);
   }
 
+  /**
+   * @param {*} message
+   */
   _postMessage(message) {
     this._worker.postMessage(message);
   }
@@ -230,7 +232,11 @@ export class HeapSnapshotProxyObject {
    */
   _callWorker(workerMethodName, args) {
     args.splice(1, 0, this._objectId);
-    return this._worker[workerMethodName].apply(this._worker, args);
+    const worker = /** @type {*} */ (this._worker)[workerMethodName];
+    if (!worker) {
+      throw new Error(`Could not find worker with name ${workerMethodName}.`);
+    }
+    return worker.apply(this._worker, args);
   }
 
   dispose() {
@@ -242,24 +248,24 @@ export class HeapSnapshotProxyObject {
   }
 
   /**
-   * @param {?function(...?)} callback
+   * @param {?function(...?):void} callback
    * @param {string} methodName
    * @param {function (new:T, ...?)} proxyConstructor
    * @param {...*} var_args
    * @return {!T}
    * @template T
    */
-  callFactoryMethod(callback, methodName, proxyConstructor, var_args) {
+  callFactoryMethod(callback, methodName, proxyConstructor, ...var_args) {
     return this._callWorker('callFactoryMethod', Array.prototype.slice.call(arguments, 0));
   }
 
   /**
    * @param {string} methodName
    * @param {...*} var_args
-   * @return {!Promise.<?T>}
+   * @return {!Promise.<!T>}
    * @template T
    */
-  _callMethodPromise(methodName, var_args) {
+  _callMethodPromise(methodName, ...var_args) {
     const args = Array.prototype.slice.call(arguments);
     return new Promise(resolve => this._callWorker('callMethod', [resolve, ...args]));
   }
@@ -274,7 +280,7 @@ export class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject {
    * @param {!HeapSnapshotWorkerProxy} worker
    * @param {number} objectId
    * @param {number} profileUid
-   * @param {function(!HeapSnapshotProxy)} snapshotReceivedCallback
+   * @param {function(!HeapSnapshotProxy):void} snapshotReceivedCallback
    */
   constructor(worker, objectId, profileUid, snapshotReceivedCallback) {
     super(worker, objectId);
@@ -285,10 +291,10 @@ export class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject {
   /**
    * @override
    * @param {string} chunk
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
-  write(chunk) {
-    return this._callMethodPromise('write', chunk);
+  async write(chunk) {
+    await this._callMethodPromise('write', chunk);
   }
 
   /**
@@ -443,15 +449,21 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
   }
 
   get nodeCount() {
+    if (!this._staticData) {
+      return 0;
+    }
     return this._staticData.nodeCount;
   }
 
   get rootNodeIndex() {
+    if (!this._staticData) {
+      return 0;
+    }
     return this._staticData.rootNodeIndex;
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async updateStaticData() {
     this._staticData = await this._callMethodPromise('updateStaticData');
@@ -480,6 +492,9 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
   }
 
   get totalSize() {
+    if (!this._staticData) {
+      return 0;
+    }
     return this._staticData.totalSize;
   }
 
@@ -487,6 +502,9 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this._profileUid;
   }
 
+  /**
+   * @param {string} profileUid
+   */
   setProfileUid(profileUid) {
     this._profileUid = profileUid;
   }
@@ -495,6 +513,9 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
    * @return {number}
    */
   maxJSObjectId() {
+    if (!this._staticData) {
+      return 0;
+    }
     return this._staticData.maxJSObjectId;
   }
 }
@@ -542,9 +563,9 @@ export class HeapSnapshotProviderProxy extends HeapSnapshotProxyObject {
   /**
    * @override
    * @param {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig} comparator
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
-  sortAndRewind(comparator) {
-    return this._callMethodPromise('sortAndRewind', comparator);
+  async sortAndRewind(comparator) {
+    await this._callMethodPromise('sortAndRewind', comparator);
   }
 }

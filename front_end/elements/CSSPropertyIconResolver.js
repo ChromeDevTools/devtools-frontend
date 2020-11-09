@@ -292,49 +292,46 @@ function flexAlignSelfIcon(iconName) {
 /**
  * @type {!Map<string, function(!Map<string, string>, !Map<string, string>):!IconInfo>}
  */
-const textToIconResolver = new Map();
-
-textToIconResolver.set('flex-direction: row', flexDirectionIcon('row'));
-textToIconResolver.set('flex-direction: column', flexDirectionIcon('column'));
-textToIconResolver.set('flex-direction: column-reverse', flexDirectionIcon('column-reverse'));
-textToIconResolver.set('flex-direction: row-reverse', flexDirectionIcon('row-reverse'));
-textToIconResolver.set('flex-direction: initial', flexDirectionIcon('row'));
-textToIconResolver.set('flex-direction: unset', flexDirectionIcon('row'));
-textToIconResolver.set('flex-direction: revert', flexDirectionIcon('row'));
-textToIconResolver.set('align-content: center', flexAlignContentIcon('flex-align-content-center-icon'));
-textToIconResolver.set('align-content: space-around', flexAlignContentIcon('flex-align-content-space-around-icon'));
-textToIconResolver.set('align-content: space-between', flexAlignContentIcon('flex-align-content-space-between-icon'));
-textToIconResolver.set('align-content: stretch', flexAlignContentIcon('flex-align-content-stretch-icon'));
-textToIconResolver.set('align-content: space-evenly', flexAlignContentIcon('flex-align-content-space-evenly-icon'));
-textToIconResolver.set('align-content: flex-end', flexAlignContentIcon('flex-align-content-end-icon'));
-textToIconResolver.set('align-content: flex-start', flexAlignContentIcon('flex-align-content-start-icon'));
-// TODO(crbug.com/1139945): Start & end should be enabled once Chromium supports them for flexbox.
-// textToIconResolver.set('align-content: start', flexAlignContentIcon('flex-align-content-start-icon'));
-// textToIconResolver.set('align-content: end', flexAlignContentIcon('flex-align-content-end-icon'));
-textToIconResolver.set('align-content: normal', flexAlignContentIcon('flex-align-content-stretch-icon'));
-textToIconResolver.set('align-content: revert', flexAlignContentIcon('flex-align-content-stretch-icon'));
-textToIconResolver.set('align-content: unset', flexAlignContentIcon('flex-align-content-stretch-icon'));
-textToIconResolver.set('align-content: initial', flexAlignContentIcon('flex-align-content-stretch-icon'));
-textToIconResolver.set('justify-content: center', flexJustifyContentIcon('flex-justify-content-center-icon'));
-textToIconResolver.set(
-    'justify-content: space-around', flexJustifyContentIcon('flex-justify-content-space-around-icon'));
-textToIconResolver.set(
-    'justify-content: space-between', flexJustifyContentIcon('flex-justify-content-space-between-icon'));
-textToIconResolver.set(
-    'justify-content: space-evenly', flexJustifyContentIcon('flex-justify-content-space-evenly-icon'));
-textToIconResolver.set('justify-content: flex-end', flexJustifyContentIcon('flex-justify-content-flex-end-icon'));
-textToIconResolver.set('justify-content: flex-start', flexJustifyContentIcon('flex-justify-content-flex-start-icon'));
-textToIconResolver.set('align-items: stretch', flexAlignItemsIcon('flex-align-items-stretch-icon'));
-textToIconResolver.set('align-items: flex-end', flexAlignItemsIcon('flex-align-items-flex-end-icon'));
-textToIconResolver.set('align-items: flex-start', flexAlignItemsIcon('flex-align-items-flex-start-icon'));
-textToIconResolver.set('align-items: center', flexAlignItemsIcon('flex-align-items-center-icon'));
-textToIconResolver.set('align-items: baseline', baselineIcon);
-textToIconResolver.set('align-content: baseline', baselineIcon);
-textToIconResolver.set('align-self: baseline', baselineIcon);
-textToIconResolver.set('align-self: center', flexAlignSelfIcon('flex-align-self-center-icon'));
-textToIconResolver.set('align-self: flex-start', flexAlignSelfIcon('flex-align-self-flex-start-icon'));
-textToIconResolver.set('align-self: flex-end', flexAlignSelfIcon('flex-align-self-flex-end-icon'));
-textToIconResolver.set('align-self: stretch', flexAlignSelfIcon('flex-align-self-stretch-icon'));
+const textToIconResolver = new Map([
+  ['flex-direction: row', flexDirectionIcon('row')],
+  ['flex-direction: column', flexDirectionIcon('column')],
+  ['flex-direction: column-reverse', flexDirectionIcon('column-reverse')],
+  ['flex-direction: row-reverse', flexDirectionIcon('row-reverse')],
+  ['flex-direction: initial', flexDirectionIcon('row')],
+  ['flex-direction: unset', flexDirectionIcon('row')],
+  ['flex-direction: revert', flexDirectionIcon('row')],
+  ['align-content: center', flexAlignContentIcon('flex-align-content-center-icon')],
+  ['align-content: space-around', flexAlignContentIcon('flex-align-content-space-around-icon')],
+  ['align-content: space-between', flexAlignContentIcon('flex-align-content-space-between-icon')],
+  ['align-content: stretch', flexAlignContentIcon('flex-align-content-stretch-icon')],
+  ['align-content: space-evenly', flexAlignContentIcon('flex-align-content-space-evenly-icon')],
+  ['align-content: flex-end', flexAlignContentIcon('flex-align-content-end-icon')],
+  ['align-content: flex-start', flexAlignContentIcon('flex-align-content-start-icon')],
+  // TODO(crbug.com/1139945): Start & end should be enabled once Chromium supports them for flexbox.
+  // ['align-content: start', flexAlignContentIcon('flex-align-content-start-icon')],
+  // ['align-content: end', flexAlignContentIcon('flex-align-content-end-icon')],
+  ['align-content: normal', flexAlignContentIcon('flex-align-content-stretch-icon')],
+  ['align-content: revert', flexAlignContentIcon('flex-align-content-stretch-icon')],
+  ['align-content: unset', flexAlignContentIcon('flex-align-content-stretch-icon')],
+  ['align-content: initial', flexAlignContentIcon('flex-align-content-stretch-icon')],
+  ['justify-content: center', flexJustifyContentIcon('flex-justify-content-center-icon')],
+  ['justify-content: space-around', flexJustifyContentIcon('flex-justify-content-space-around-icon')],
+  ['justify-content: space-between', flexJustifyContentIcon('flex-justify-content-space-between-icon')],
+  ['justify-content: space-evenly', flexJustifyContentIcon('flex-justify-content-space-evenly-icon')],
+  ['justify-content: flex-end', flexJustifyContentIcon('flex-justify-content-flex-end-icon')],
+  ['justify-content: flex-start', flexJustifyContentIcon('flex-justify-content-flex-start-icon')],
+  ['align-items: stretch', flexAlignItemsIcon('flex-align-items-stretch-icon')],
+  ['align-items: flex-end', flexAlignItemsIcon('flex-align-items-flex-end-icon')],
+  ['align-items: flex-start', flexAlignItemsIcon('flex-align-items-flex-start-icon')],
+  ['align-items: center', flexAlignItemsIcon('flex-align-items-center-icon')],
+  ['align-items: baseline', baselineIcon],
+  ['align-content: baseline', baselineIcon],
+  ['align-self: baseline', baselineIcon],
+  ['align-self: center', flexAlignSelfIcon('flex-align-self-center-icon')],
+  ['align-self: flex-start', flexAlignSelfIcon('flex-align-self-flex-start-icon')],
+  ['align-self: flex-end', flexAlignSelfIcon('flex-align-self-flex-end-icon')],
+  ['align-self: stretch', flexAlignSelfIcon('flex-align-self-stretch-icon')],
+]);
 
 /**
  * @param {string} text

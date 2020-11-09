@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+.report-content-box {
+  overflow: initial;
+}
+
 .report-field-name {
   flex: 0 0 200px;
 }
@@ -17,6 +21,7 @@
   color: #888;
   padding-left: 2ex;
   user-select: none;
+  white-space: pre-line;
 }
 
 .report-field .inline-name::after {
@@ -26,6 +31,7 @@
 .report-field .inline-comment {
   color: #555;
   padding-left: 1ex;
+  white-space: pre-line;
 }
 
 .report-field .inline-comment::before {
@@ -39,6 +45,7 @@
 .report-field .inline-span {
   color: #555;
   padding-left: 1ex;
+  white-space: pre-line;
 }
 
 .report-field-value-link {

@@ -8,20 +8,13 @@ import * as SDK from '../sdk/sdk.js';
 
 import {MarkdownView} from './MarkdownView.js';
 
-/**
- * @param {!SDK.Issue.MarkdownIssueDescription} description
- * @return {!SDK.Issue.IssueDescription}
- */
-export function createIssueDescriptionFromMarkdown(description) {
+export function createIssueDescriptionFromMarkdown(description: SDK.Issue.MarkdownIssueDescription):
+    SDK.Issue.IssueDescription {
   const rawMarkdown = getMarkdownFileContent(description.file);
   return createIssueDescriptionFromRawMarkdown(rawMarkdown, description);
 }
 
-/**
- * @param {string} filename
- * @return {string}
- */
-function getMarkdownFileContent(filename) {
+function getMarkdownFileContent(filename: string): string {
   const rawMarkdown = Root.Runtime.cachedResources.get(filename);
   if (!rawMarkdown) {
     throw new Error(`Markdown file ${filename} not found. Declare it as a resource in the module.json file`);
@@ -30,13 +23,10 @@ function getMarkdownFileContent(filename) {
 }
 
 /**
- * @param {string} markdown
- * @param {!SDK.Issue.MarkdownIssueDescription} description
- * @return {!SDK.Issue.IssueDescription}
- *
  * This function is exported separately for unit testing.
  */
-export function createIssueDescriptionFromRawMarkdown(markdown, description) {
+export function createIssueDescriptionFromRawMarkdown(
+    markdown: string, description: SDK.Issue.MarkdownIssueDescription): SDK.Issue.IssueDescription {
   const markdownAst = Marked.Marked.lexer(markdown);
   const title = findTitleFromMarkdownAst(markdownAst);
   if (!title) {
@@ -49,15 +39,13 @@ export function createIssueDescriptionFromRawMarkdown(markdown, description) {
     title,
     message: () => markdownComponent,
     issueKind: SDK.Issue.IssueKind.BreakingChange,
-    links: description.links
+    links: description.links,
   };
 }
 
-/**
- * @param {!Array<*>} markdownAst
- * @return {?string}
- */
-function findTitleFromMarkdownAst(markdownAst) {
+// TODO(crbug.com/1108699): Fix types when they are available.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function findTitleFromMarkdownAst(markdownAst: any[]): string|null {
   if (markdownAst.length === 0 || markdownAst[0].type !== 'heading' || markdownAst[0].depth !== 1) {
     return null;
   }

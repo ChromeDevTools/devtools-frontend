@@ -11,7 +11,7 @@ devtools_module("issues") {
     "IssueRevealer.js",
     "IssueSurveyLink.ts",
     "IssuesPane.js",
-    "MarkdownIssueDescription.js",
+    "MarkdownIssueDescription.ts",
     "MarkdownView.ts",
   ]
 

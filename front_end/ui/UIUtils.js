@@ -1994,3 +1994,29 @@ export function createSVGChild(element, childType, className) {
   element.appendChild(child);
   return child;
 }
+
+
+/**
+ * @param {!Node} initialNode
+ * @param {!Array<string>} nameArray
+ * @return {?Node}
+ */
+export const enclosingNodeOrSelfWithNodeNameInArray = (initialNode, nameArray) => {
+  for (let node = initialNode; node && node !== initialNode.ownerDocument; node = node.parentNodeOrShadowHost()) {
+    for (let i = 0; i < nameArray.length; ++i) {
+      if (node.nodeName.toLowerCase() === nameArray[i].toLowerCase()) {
+        return node;
+      }
+    }
+  }
+  return null;
+};
+
+/**
+ * @param {!Node} node
+ * @param {string} nodeName
+ * @return {?Node}
+ */
+export const enclosingNodeOrSelfWithNodeName = function(node, nodeName) {
+  return enclosingNodeOrSelfWithNodeNameInArray(node, [nodeName]);
+};

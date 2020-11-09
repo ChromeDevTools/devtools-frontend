@@ -104,7 +104,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
           return link;
         },
         link => {
-          const listItem = link.enclosingNodeOrSelfWithNodeName('li');
+          const listItem = UI.UIUtils.enclosingNodeOrSelfWithNodeName(link, 'li');
           if (!listItem) {
             return null;
           }

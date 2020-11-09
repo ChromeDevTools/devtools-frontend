@@ -697,7 +697,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
       return;
     }
 
-    const listNode = nodeUnderMouse.enclosingNodeOrSelfWithNodeName('li');
+    const listNode = UI.UIUtils.enclosingNodeOrSelfWithNodeName(nodeUnderMouse, 'li');
     if (!listNode) {
       return;
     }

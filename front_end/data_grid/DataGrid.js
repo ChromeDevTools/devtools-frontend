@@ -584,7 +584,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Node} target
    */
   _startEditing(target) {
-    const element = /** @type {?Element} */ (target.enclosingNodeOrSelfWithNodeName('td'));
+    const element = /** @type {?Element} */ (UI.UIUtils.enclosingNodeOrSelfWithNodeName(target, 'td'));
     if (!element) {
       return;
     }
@@ -1265,7 +1265,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @return {?DataGridNode<!NODE_TYPE>}
    */
   dataGridNodeFromNode(target) {
-    const rowElement = target.enclosingNodeOrSelfWithNodeName('tr');
+    const rowElement = UI.UIUtils.enclosingNodeOrSelfWithNodeName(target, 'tr');
     return (rowElement && this.elementToDataGridNode.get(rowElement)) || null;
   }
 
@@ -1274,7 +1274,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @return {?string}
    */
   columnIdFromNode(target) {
-    const cellElement = target.enclosingNodeOrSelfWithNodeName('td');
+    const cellElement = UI.UIUtils.enclosingNodeOrSelfWithNodeName(target, 'td');
     return (cellElement && nodeToColumnIdMap.get(cellElement)) || null;
   }
 
@@ -1282,7 +1282,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Event} event
    */
   _clickInHeaderCell(event) {
-    const cell = (/** @type {!Node} */ (event.target)).enclosingNodeOrSelfWithNodeName('th');
+    const cell = UI.UIUtils.enclosingNodeOrSelfWithNodeName(/** @type {!Node} */ (event.target), 'th');
     if (!cell) {
       return;
     }
@@ -2505,7 +2505,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     if (!this._hasChildren) {
       return false;
     }
-    const cell = /** @type {!Node} */ (event.target).enclosingNodeOrSelfWithNodeName('td');
+    const cell = UI.UIUtils.enclosingNodeOrSelfWithNodeName(/** @type {!Node} */ (event.target), 'td');
     if (!cell || !(cell instanceof HTMLElement) || !cell.classList.contains('disclosure')) {
       return false;
     }

@@ -472,13 +472,7 @@ HeapProfilerTestRunner.clickColumn = function(column, callback) {
   callback = TestRunner.safeWrap(callback);
   const cell = this._currentGrid()._headerTableHeaders[column.id];
 
-  const event = {
-    target: {
-      enclosingNodeOrSelfWithNodeName: function() {
-        return cell;
-      }
-    }
-  };
+  const event = {target: cell};
 
   function sortingComplete() {
     HeapProfilerTestRunner._currentGrid().removeEventListener(
@@ -501,15 +495,7 @@ HeapProfilerTestRunner.clickColumn = function(column, callback) {
 HeapProfilerTestRunner.clickRowAndGetRetainers = function(row, callback) {
   callback = TestRunner.safeWrap(callback);
 
-  const event = {
-    target: {
-      enclosingNodeOrSelfWithNodeName: function() {
-        return row._element;
-      },
-
-      selectedNode: row
-    }
-  };
+  const event = {target: row._element};
 
   this._currentGrid()._mouseDownInDataTable(event);
   const rootNode = HeapProfilerTestRunner.currentProfileView()._retainmentDataGrid.rootNode();

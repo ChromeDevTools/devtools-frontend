@@ -694,8 +694,8 @@ export class HeapSnapshotView extends UI.View.SimpleView {
    * @return {?UI.PopoverHelper.PopoverRequest}
    */
   _getPopoverRequest(event) {
-    const span = event.target.enclosingNodeOrSelfWithNodeName('span');
-    const row = event.target.enclosingNodeOrSelfWithNodeName('tr');
+    const span = UI.UIUtils.enclosingNodeOrSelfWithNodeName(/** @type {!Node} */ (event.target), 'span');
+    const row = UI.UIUtils.enclosingNodeOrSelfWithNodeName(/** @type {!Node} */ (event.target), 'row');
     if (!row) {
       return null;
     }

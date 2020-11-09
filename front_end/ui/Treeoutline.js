@@ -39,7 +39,7 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {Icon} from './Icon.js';                            // eslint-disable-line no-unused-vars
 import {Config, InplaceEditor} from './InplaceEditor.js';  // eslint-disable-line no-unused-vars
 import {Keys} from './KeyboardShortcut.js';
-import {isEditing} from './UIUtils.js';
+import {enclosingNodeOrSelfWithNodeNameInArray, isEditing} from './UIUtils.js';
 import {appendStyle} from './utils/append-style.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 
@@ -152,7 +152,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
       return null;
     }
 
-    const listNode = node.enclosingNodeOrSelfWithNodeNameInArray(['ol', 'li']);
+    const listNode = enclosingNodeOrSelfWithNodeNameInArray(node, ['ol', 'li']);
     if (listNode) {
       return listNode.parentTreeElement || listNode.treeElement;
     }

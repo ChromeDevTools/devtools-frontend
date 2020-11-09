@@ -181,29 +181,6 @@ Element.prototype.positionAt = function(x, y, relativeTo) {
 };
 
 /**
- * @param {!Array.<string>} nameArray
- * @return {?Node}
- */
-Node.prototype.enclosingNodeOrSelfWithNodeNameInArray = function(nameArray) {
-  for (let node = this; node && node !== this.ownerDocument; node = node.parentNodeOrShadowHost()) {
-    for (let i = 0; i < nameArray.length; ++i) {
-      if (node.nodeName.toLowerCase() === nameArray[i].toLowerCase()) {
-        return node;
-      }
-    }
-  }
-  return null;
-};
-
-/**
- * @param {string} nodeName
- * @return {?Node}
- */
-Node.prototype.enclosingNodeOrSelfWithNodeName = function(nodeName) {
-  return this.enclosingNodeOrSelfWithNodeNameInArray([nodeName]);
-};
-
-/**
  * @param {string} className
  * @param {!Element=} stayWithin
  * @return {?Element}

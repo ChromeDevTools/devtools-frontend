@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {CSSAngle, CSSAngleData, PopoverToggledEvent} from '../../../../front_end/inline_editor/CSSAngle.js';
+import {CSSAngle, CSSAngleData, PopoverToggledEvent, ValueChangedEvent} from '../../../../front_end/inline_editor/CSSAngle.js';
 import {AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNextUnit, getRadiansFromAngle, parseText, roundAngleByUnit} from '../../../../front_end/inline_editor/CSSAngleUtils.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
@@ -18,13 +18,18 @@ const assertPopoverClosed = (root: ShadowRoot) => {
   assert.notExists(popover);
 };
 
-const togglePopover = (root: ShadowRoot) => {
-  const miniIcon = root.querySelector<HTMLElement>('.mini-icon');
-  if (!miniIcon) {
-    assert.fail('mini icon was not rendered');
+const assertAndGetSwatch = (root: ShadowRoot) => {
+  const swatch = root.querySelector<HTMLElement>('devtools-css-angle-swatch');
+  if (!swatch) {
+    assert.fail('swatch was not rendered');
     return;
   }
-  miniIcon.dispatchEvent(new Event('click'));
+  return swatch;
+};
+
+const togglePopover = (root: ShadowRoot) => {
+  const swatch = assertAndGetSwatch(root);
+  swatch?.click();
 };
 
 const initialData: CSSAngleData = {
@@ -69,6 +74,57 @@ describe('CSSAngle', () => {
     togglePopover(component.shadowRoot);
     assertPopoverClosed(component.shadowRoot);
     assert.isFalse(isPopoverOpen, 'external isPopoverOpen flag not synced');
+  });
+
+  it('can change unit when the swatch is shift-clicked upon', () => {
+    const component = new CSSAngle();
+    renderElementIntoDOM(component);
+    component.data = initialData;
+
+    assertShadowRoot(component.shadowRoot);
+
+    let cssAngleText = initialData.angleText;
+    component.addEventListener('value-changed', (event: Event) => {
+      const {data} = event as ValueChangedEvent;
+      cssAngleText = data.value;
+    });
+
+    const swatch = assertAndGetSwatch(component.shadowRoot);
+    if (!swatch) {
+      return;
+    }
+    const shiftClick = new MouseEvent('click', {shiftKey: true});
+    swatch.dispatchEvent(shiftClick);
+    assert.strictEqual(cssAngleText, '50grad', 'angle unit should change to Grad from Deg');
+  });
+
+  it('can +/- angle values when pressing UP or DOWN keys', () => {
+    const component = new CSSAngle();
+    renderElementIntoDOM(component);
+    component.data = initialData;
+
+    assertShadowRoot(component.shadowRoot);
+
+    let cssAngleText = initialData.angleText;
+    component.addEventListener('value-changed', (event: Event) => {
+      const {data} = event as ValueChangedEvent;
+      cssAngleText = data.value;
+    });
+
+    togglePopover(component.shadowRoot);
+    const angleContainer = component.shadowRoot.querySelector('.css-angle');
+    if (!angleContainer) {
+      assert.fail('angle container was not rendered');
+      return;
+    }
+
+    const arrowUp = new KeyboardEvent('keydown', {key: 'ArrowUp'});
+    angleContainer.dispatchEvent(arrowUp);
+    assert.strictEqual(cssAngleText, '46deg', 'angle value should increase by 1 when ArrowUp is pressed');
+
+    const arrowDownShift = new KeyboardEvent('keydown', {key: 'ArrowDown', shiftKey: true});
+    angleContainer.dispatchEvent(arrowDownShift);
+    assert.strictEqual(cssAngleText, '36deg', 'angle value should increase by 1 when ArrowUp is pressed');
   });
 
   describe('#CSSAngleUtils', () => {

@@ -136,7 +136,9 @@ export class ColorSwatch extends HTMLElement {
   }
 }
 
-customElements.define('devtools-color-swatch', ColorSwatch);
+if (!customElements.get('devtools-color-swatch')) {
+  customElements.define('devtools-color-swatch', ColorSwatch);
+}
 
 declare global {
   interface HTMLElementTagNameMap {

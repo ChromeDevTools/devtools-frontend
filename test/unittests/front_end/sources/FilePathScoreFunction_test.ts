@@ -4,14 +4,15 @@
 
 const {assert} = chai;
 
-import {FilePathScoreFunction} from '../../../../front_end/sources/FilePathScoreFunction.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
+import * as Sources from '../../../../front_end/sources/sources.js';
 
-describe('FilePathScoreFunction', () => {
+describeWithEnvironment('FilePathScoreFunction', () => {
   describe('score', () => {
-    let filePathScoreFunction: FilePathScoreFunction;
+    let filePathScoreFunction: Sources.FilePathScoreFunction.FilePathScoreFunction;
 
     beforeEach(() => {
-      filePathScoreFunction = new FilePathScoreFunction('App');
+      filePathScoreFunction = new Sources.FilePathScoreFunction.FilePathScoreFunction('App');
     });
 
     it('should prefer filename match over path match', () => {
@@ -149,7 +150,7 @@ describe('FilePathScoreFunction', () => {
 
       for (let i = 0; i < testQueries.length; ++i) {
         const highlights = new Array<number>();
-        const filePathScoreFunction = new FilePathScoreFunction(testQueries[i][0]);
+        const filePathScoreFunction = new Sources.FilePathScoreFunction.FilePathScoreFunction(testQueries[i][0]);
         const score = filePathScoreFunction.score(testQueries[i][1], highlights);
         assert.strictEqual(score, expectedResults[i][1]);
         assert.deepEqual(highlights, expectedResults[i][0]);
@@ -158,7 +159,7 @@ describe('FilePathScoreFunction', () => {
 
     it('should return correct scores', () => {
       // ported from third_party/blink/web_tests/http/tests/devtools/components/file-path-scoring.js
-      const filePathScoreFunction = new FilePathScoreFunction('execontext');
+      const filePathScoreFunction = new Sources.FilePathScoreFunction.FilePathScoreFunction('execontext');
       const score = filePathScoreFunction.score('execution_context/ExecutionContext.cpp', null);
 
       const lowerScores = [

@@ -457,7 +457,9 @@ export class CSSAngle extends HTMLElement {
   }
 }
 
-customElements.define('devtools-css-angle', CSSAngle);
+if (!customElements.get('devtools-css-angle')) {
+  customElements.define('devtools-css-angle', CSSAngle);
+}
 
 declare global {
   interface HTMLElementTagNameMap {

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../front_end/common/common.js';
+import * as i18n from '../../../../front_end/i18n/i18n.js';
 import * as Root from '../../../../front_end/root/root.js';
 import * as SDK from '../../../../front_end/sdk/sdk.js';
 
@@ -16,6 +17,9 @@ function exposeLSIfNecessary() {
 // Initially expose the ls function so that imports that assume its existence
 // don't fail. This side-effect will be undone as part of the deinitialize.
 exposeLSIfNecessary();
+
+// Expose the locale.
+i18n.i18n.registerLocale('en-US');
 
 let targetManager: SDK.SDKModel.TargetManager;
 

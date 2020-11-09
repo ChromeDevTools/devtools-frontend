@@ -8,5 +8,8 @@ ts_library("sources") {
   testonly = true
   sources = [ "FilePathScoreFunction_test.ts" ]
 
-  deps = [ "../../../../front_end/sources:bundle" ]
+  deps = [
+    "../../../../front_end/sources:bundle",
+    "../helpers",
+  ]
 }

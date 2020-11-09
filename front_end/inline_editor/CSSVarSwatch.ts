@@ -97,7 +97,9 @@ export class CSSVarSwatch extends HTMLElement {
   }
 }
 
-customElements.define('devtools-css-var-swatch', CSSVarSwatch);
+if (!customElements.get('devtools-css-var-swatch')) {
+  customElements.define('devtools-css-var-swatch', CSSVarSwatch);
+}
 
 declare global {
   interface HTMLElementTagNameMap {

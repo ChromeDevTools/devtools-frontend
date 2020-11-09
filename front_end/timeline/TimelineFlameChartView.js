@@ -174,12 +174,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
     this._mainSplitWidget.setWebVitals(this._webVitals);
     this._mainSplitWidget.setMainWidget(this._mainFlameChart);
     this._mainSplitWidget.setSidebarWidget(this._webVitals);
-
-    if (this._showWebVitalsSetting.get()) {
-      this._mainSplitWidget.showBoth();
-    } else {
-      this._mainSplitWidget.hideSidebar();
-    }
+    this.toggleWebVitalsLane();
 
     this._networkSplitWidget.setMainWidget(this._mainSplitWidget);
     this._networkSplitWidget.setSidebarWidget(this._networkPane);
@@ -224,6 +219,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
   toggleWebVitalsLane() {
     if (this._showWebVitalsSetting.get()) {
       this._mainSplitWidget.showBoth();
+      this._mainSplitWidget.setSidebarSize(120);
+      this._mainSplitWidget.setResizable(false);
+      this._mainSplitWidget.hideDefaultResizer(true);
     } else {
       this._mainSplitWidget.hideSidebar();
     }

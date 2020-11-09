@@ -7,7 +7,7 @@ import * as Common from '../common/common.js';
 import {ls} from '../platform/platform.js';
 
 import {FrameManager} from './FrameManager.js';
-import {Issue, IssueCategory, IssueDescription, IssueKind} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {Issue, IssueCategory, IssueDescription, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {ResourceTreeFrame} from './ResourceTreeModel.js';                      // eslint-disable-line no-unused-vars
 
 export class SameSiteCookieIssue extends Issue {
@@ -159,7 +159,7 @@ export class SameSiteCookieIssue extends Issue {
 
   /**
    * @override
-   * @returns {?IssueDescription}
+   * @returns {(?IssueDescription|?MarkdownIssueDescription)}
    */
   getDescription() {
     const description = issueDescriptions.get(this.code());
@@ -320,42 +320,29 @@ const resolutionsSet = [
 const resolveBySentence = ls`Resolve this issue by updating the attributes of the cookie:`;
 
 const sameSiteUnspecifiedErrorRead = {
-  title: ls`Indicate whether to send a cookie in a cross-site request by specifying its SameSite attribute`,
-  message: () => textMessageWithResolutions(
-      ls`Because a cookie's |SameSite| attribute was not set or is invalid, it defaults to |SameSite=Lax|, which prevents the cookie from being sent in a cross-site request.
-       This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.`,
-      resolveBySentence, resolutionsRead),
+  file: 'issues/descriptions/SameSiteUnspecifiedTreatedAsLaxRead.md',
+  substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
   links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteUnspecifiedErrorSet = {
-  title:
-      ls`Indicate whether a cookie is intended to be set in a cross-site context by specifying its SameSite attribute`,
-  message: () => textMessageWithResolutions(
-      ls`Because a cookie's |SameSite| attribute  was not set or is invalid, it defaults to |SameSite=Lax|, which prevents the cookie from being set in a cross-site context.
-       This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.`,
-      resolveBySentence, resolutionsSet),
+  file: 'issues/descriptions/SameSiteUnspecifiedTreatedAsLaxSet.md',
+  substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
   links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteUnspecifiedWarnRead = {
-  title: ls`Indicate whether to send a cookie in a cross-site request by specifying its SameSite attribute`,
-  message: () => textMessageWithResolutions(
-      ls`Because a cookie's |SameSite| attribute was not set or is invalid, it defaults to |SameSite=Lax|, which will prevent the cookie from being sent in a cross-site request in a future version of the browser.
-       This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.`,
-      resolveBySentence, resolutionsRead),
+  file: 'issues/descriptions/SameSiteUnspecifiedLaxAllowUnsafeRead.md',
+  substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
   links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteUnspecifiedWarnSet = {
-  title: ls`Indicate whether a cookie is intended to be set in cross-site context by specifying its SameSite attribute`,
-  message: () => textMessageWithResolutions(
-      ls`Because a cookie's |SameSite| attribute was not set or is invalid, it defaults to |SameSite=Lax|, which will prevents the cookie from being set in a cross-site context in a future version of the browser.
-       This behavior protects user data from accidentally leaking to third parties and cross-site request forgery.`,
-      resolveBySentence, resolutionsSet),
+  file: 'issues/descriptions/SameSiteUnspecifiedLaxAllowUnsafeSet.md',
+  substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
   links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
@@ -519,19 +506,12 @@ function sameSiteExcludeContextDowngradeSet(isSecure) {
   };
 }
 
-/** @type {!Map<string, !IssueDescription>} */
+/** @type {!Map<string, (!IssueDescription|!MarkdownIssueDescription)>} */
 const issueDescriptions = new Map([
-  ['SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', sameSiteUnspecifiedErrorRead],
-  ['SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', sameSiteUnspecifiedErrorSet],
-  // These two don't have a deprecation date yet, but they need to be fixed eventually.
-  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie', sameSiteUnspecifiedWarnRead],
-  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::SetCookie', sameSiteUnspecifiedWarnSet],
   ['SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureErrorRead],
   ['SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureErrorSet],
   ['SameSiteCookieIssue::WarnSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureWarnRead],
   ['SameSiteCookieIssue::WarnSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureWarnSet],
-  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie', sameSiteUnspecifiedWarnRead],
-  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie', sameSiteUnspecifiedWarnSet],
   ['SameSiteCookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Secure', sameSiteWarnStrictLaxDowngradeStrict(true)],
   ['SameSiteCookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Insecure', sameSiteWarnStrictLaxDowngradeStrict(false)],
   ['SameSiteCookieIssue::WarnCrossDowngrade::ReadCookie::Secure', sameSiteWarnCrossDowngradeRead(true)],
@@ -547,3 +527,17 @@ const issueDescriptions = new Map([
   ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Secure', sameSiteExcludeContextDowngradeSet(true)],
   ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Insecure', sameSiteExcludeContextDowngradeSet(false)]
 ]);
+
+issueDescriptions.set(
+    'SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', sameSiteUnspecifiedErrorRead);
+issueDescriptions.set(
+    'SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', sameSiteUnspecifiedErrorSet);
+// These two don't have a deprecation date yet, but they need to be fixed eventually.
+issueDescriptions.set(
+    'SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie', sameSiteUnspecifiedWarnRead);
+issueDescriptions.set(
+    'SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::SetCookie', sameSiteUnspecifiedWarnSet);
+issueDescriptions.set(
+    'SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie', sameSiteUnspecifiedWarnRead);
+issueDescriptions.set(
+    'SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie', sameSiteUnspecifiedWarnSet);

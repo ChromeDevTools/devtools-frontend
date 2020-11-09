@@ -47,6 +47,10 @@
     "descriptions/cspTrustedTypesSinkViolation.md",
     "descriptions/cspTrustedTypesPolicyViolation.md",
     "descriptions/mixedContent.md",
+    "descriptions/SameSiteUnspecifiedLaxAllowUnsafeRead.md",
+    "descriptions/SameSiteUnspecifiedLaxAllowUnsafeSet.md",
+    "descriptions/SameSiteUnspecifiedTreatedAsLaxRead.md",
+    "descriptions/SameSiteUnspecifiedTreatedAsLaxSet.md",
     "issuesPane.css",
     "issuesTree.css"
   ]

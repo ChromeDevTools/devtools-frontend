@@ -4,5 +4,8 @@ ts_library("coverage") {
   testonly = true
   sources = [ "Segments_test.ts" ]
 
-  deps = [ "../../../../front_end/coverage:bundle" ]
+  deps = [
+    "../../../../front_end/coverage:bundle",
+    "../helpers",
+  ]
 }

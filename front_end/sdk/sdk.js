@@ -72,11 +72,6 @@ import * as TracingManager from './TracingManager.js';
 import * as TracingModel from './TracingModel.js';
 import * as WebAuthnModel from './WebAuthnModel.js';
 
-// We need to force creation of the FrameManager early to make sure no issues are missed.
-FrameManager.FrameManager.instance();
-// We need to force creation of the NetworkLog early to make sure no requests are missed.
-NetworkLog.NetworkLog.instance();
-
 export {
   ChildTargetManager,
   CompilerSourceMappingContentProvider,

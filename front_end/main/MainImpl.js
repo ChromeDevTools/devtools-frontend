@@ -270,6 +270,12 @@ export class MainImpl {
     UI.ContextMenu.ContextMenu.initialize();
     UI.ContextMenu.ContextMenu.installHandler(document);
     UI.Tooltip.Tooltip.installHandler(document);
+
+    // We need to force creation of the FrameManager early to make sure no issues are missed.
+    SDK.FrameManager.FrameManager.instance();
+    // We need to force creation of the NetworkLog early to make sure no requests are missed.
+    SDK.NetworkLog.NetworkLog.instance();
+
     // @ts-ignore layout test global
     self.SDK.consoleModel = SDK.ConsoleModel.ConsoleModel.instance();
     // @ts-ignore layout test global

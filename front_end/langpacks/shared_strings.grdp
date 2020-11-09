@@ -292,6 +292,9 @@
   <message name="IDS_DEVTOOLS_6bb61b1a929f2a0186f2671cd8258bd9" desc="Text to show something is not optimized">
     Not optimized: <ph name="REASON">$1s<ex>Optimized too many times</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_6e68a529a38966508d348e9f65d7ea31" desc="Title of an action in the network tool to toggle recording">
+    Record network log
+  </message>
   <message name="IDS_DEVTOOLS_6f6cb72d544962fa333e2e34ce64f719" desc="Text for the size of something">
     Size
   </message>

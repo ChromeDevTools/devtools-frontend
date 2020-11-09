@@ -66,6 +66,15 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!WeakMap<!NetworkRequest, !InitiatorData>} */
     this._initiatorData = new WeakMap();
     TargetManager.instance().observeModels(NetworkManager, this);
+    /** @type {!Common.Settings.Setting<*>} */
+    const recordLogSetting = Common.Settings.Settings.instance().moduleSetting('network_log.record-log');
+    recordLogSetting.addChangeListener(() => {
+      const preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log');
+      if (!preserveLogSetting.get() && recordLogSetting.get()) {
+        this.reset();
+      }
+      this.setIsRecording(/** @type{boolean} */ (recordLogSetting.get()));
+    }, this);
   }
 
   /**

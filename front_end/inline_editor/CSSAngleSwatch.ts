@@ -74,7 +74,9 @@ export class CSSAngleSwatch extends HTMLElement {
   }
 }
 
-customElements.define('devtools-css-angle-swatch', CSSAngleSwatch);
+if (!customElements.get('devtools-css-angle-swatch')) {
+  customElements.define('devtools-css-angle-swatch', CSSAngleSwatch);
+}
 
 declare global {
   interface HTMLElementTagNameMap {

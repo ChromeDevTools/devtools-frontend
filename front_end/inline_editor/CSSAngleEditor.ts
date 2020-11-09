@@ -242,7 +242,9 @@ export class CSSAngleEditor extends HTMLElement {
   }
 }
 
-customElements.define('devtools-css-angle-editor', CSSAngleEditor);
+if (!customElements.get('devtools-css-angle-editor')) {
+  customElements.define('devtools-css-angle-editor', CSSAngleEditor);
+}
 
 declare global {
   interface HTMLElementTagNameMap {

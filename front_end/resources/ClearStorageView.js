@@ -214,6 +214,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
     const editorString = this._quotaOverrideEditor.value;
     if (editorString === '') {
       await this._clearQuotaForOrigin(this._target, this._securityOrigin);
+      this._previousOverrideFieldValue = '';
       return;
     }
     const quota = parseFloat(editorString);

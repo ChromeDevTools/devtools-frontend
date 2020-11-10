@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {CSSVarSwatch} from '../../../../front_end/inline_editor/CSSVarSwatch.js';
+import * as InlineEditor from '../../../../front_end/inline_editor/inline_editor.js';
+import type {CSSVarSwatch} from '../../../../front_end/inline_editor/CSSVarSwatch.js';
 import {assertNotNull, assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -41,14 +42,14 @@ function assertSwatch(swatch: CSSVarSwatch, expected: {
 
 describe('CSSVarSwatch', () => {
   it('can be instantiated successfully', () => {
-    const component = new CSSVarSwatch();
+    const component = new InlineEditor.CSSVarSwatchImpl.CSSVarSwatch();
     renderElementIntoDOM(component);
 
     assert.instanceOf(component, HTMLElement, 'The swatch is an instance of HTMLElement');
   });
 
   it('renders a simple var function', () => {
-    const component = new CSSVarSwatch();
+    const component = new InlineEditor.CSSVarSwatchImpl.CSSVarSwatch();
     renderElementIntoDOM(component);
     component.data = {
       text: 'var(--test)',
@@ -67,7 +68,7 @@ describe('CSSVarSwatch', () => {
   });
 
   it('renders a var function with an undefined property', () => {
-    const component = new CSSVarSwatch();
+    const component = new InlineEditor.CSSVarSwatchImpl.CSSVarSwatch();
     renderElementIntoDOM(component);
     component.data = {
       text: 'var(--undefined)',
@@ -86,7 +87,7 @@ describe('CSSVarSwatch', () => {
   });
 
   it('renders a var function with an undefined property but a fallback value', () => {
-    const component = new CSSVarSwatch();
+    const component = new InlineEditor.CSSVarSwatchImpl.CSSVarSwatch();
     renderElementIntoDOM(component);
     component.data = {
       text: 'var(--undefined, 3px)',

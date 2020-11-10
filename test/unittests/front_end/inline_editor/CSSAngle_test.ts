@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {CSSAngle, CSSAngleData, PopoverToggledEvent, ValueChangedEvent} from '../../../../front_end/inline_editor/CSSAngle.js';
+import * as InlineEditor from '../../../../front_end/inline_editor/inline_editor.js';
+import type {CSSAngleData, PopoverToggledEvent, ValueChangedEvent} from '../../../../front_end/inline_editor/CSSAngle.js';
 import {Angle, AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNewAngleFromEvent, getNextUnit, getRadiansFromAngle, parseText, roundAngleByUnit} from '../../../../front_end/inline_editor/CSSAngleUtils.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
@@ -52,7 +53,7 @@ const initialData: CSSAngleData = {
 
 describe('CSSAngle', () => {
   it('can open and close a popover', () => {
-    const component = new CSSAngle();
+    const component = new InlineEditor.CSSAngleImpl.CSSAngle();
     renderElementIntoDOM(component);
     component.data = initialData;
 
@@ -66,7 +67,7 @@ describe('CSSAngle', () => {
   });
 
   it('can fire events when toggling the popover', () => {
-    const component = new CSSAngle();
+    const component = new InlineEditor.CSSAngleImpl.CSSAngle();
     renderElementIntoDOM(component);
     let isPopoverOpen = false;
     component.data = initialData;
@@ -88,7 +89,7 @@ describe('CSSAngle', () => {
   });
 
   it('can change unit when the swatch is shift-clicked upon', () => {
-    const component = new CSSAngle();
+    const component = new InlineEditor.CSSAngleImpl.CSSAngle();
     renderElementIntoDOM(component);
     component.data = initialData;
 
@@ -110,7 +111,7 @@ describe('CSSAngle', () => {
   });
 
   it('can +/- angle values when pressing UP or DOWN keys', () => {
-    const component = new CSSAngle();
+    const component = new InlineEditor.CSSAngleImpl.CSSAngle();
     renderElementIntoDOM(component);
     component.data = initialData;
 
@@ -140,7 +141,7 @@ describe('CSSAngle', () => {
 
   describe('#CSSAngleUtils', () => {
     it('can fire PopoverToggledEvent when toggling the popover', () => {
-      const component = new CSSAngle();
+      const component = new InlineEditor.CSSAngleImpl.CSSAngle();
       renderElementIntoDOM(component);
       let shouldPopoverEventBeOpen = false;
       component.data = initialData;

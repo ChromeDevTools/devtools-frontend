@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../front_end/common/common.js';
-import {ColorSwatch, FormatChangedEvent} from '../../../../front_end/inline_editor/ColorSwatch.js';
+import * as InlineEditor from '../../../../front_end/inline_editor/inline_editor.js';
+import type {ColorSwatch, FormatChangedEvent} from '../../../../front_end/inline_editor/ColorSwatch.js';
 import {assertElement, assertNotNull, assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -32,7 +33,7 @@ function assertSwatch(
 }
 
 function createSwatch(color: Common.Color.Color|string, formatOrUseUserSetting?: string|boolean, tooltip?: string) {
-  const swatch = new ColorSwatch();
+  const swatch = new InlineEditor.ColorSwatchImpl.ColorSwatch();
   renderElementIntoDOM(swatch);
   swatch.renderColor(color, formatOrUseUserSetting, tooltip);
   return swatch;

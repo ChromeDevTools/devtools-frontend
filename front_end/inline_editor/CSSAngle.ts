@@ -7,7 +7,7 @@ import './CSSAngleSwatch.js';
 
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {Angle, AngleUnit, getAngleFromRadians, getNextUnit, getRadiansFromAngle, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
+import {Angle, AngleUnit, getAngleFromRadians, getNewAngleFromEvent, getNextUnit, getRadiansFromAngle, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
 
 import type {CSSAngleEditorData} from './CSSAngleEditor.js';
 import type {CSSAngleSwatchData} from './CSSAngleSwatch.js';
@@ -169,18 +169,10 @@ export class CSSAngle extends HTMLElement {
         break;
       case 'ArrowUp':
       case 'ArrowDown': {
-        // +/- current angle by 1 degree equivalent. Since we are using
-        // radian as our canonical unit, we plus π/180 radian, which is 1 degree.
-        let diff = Math.PI / 180;
-        if (event.key === 'ArrowDown') {
-          diff *= -1;
+        const newAngle = getNewAngleFromEvent(this.angle, event);
+        if (newAngle) {
+          this.updateAngle(newAngle);
         }
-        if (event.shiftKey) {
-          diff *= 10;
-        }
-
-        const radian = getRadiansFromAngle(this.angle);
-        this.updateAngle(getAngleFromRadians(radian + diff, this.angle.unit));
         break;
       }
     }

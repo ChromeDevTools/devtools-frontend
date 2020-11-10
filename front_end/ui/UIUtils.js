@@ -349,7 +349,7 @@ export const StyleValueDelimiters = ' \xA0\t\n"\':;,/()';
  * @param {!Event} event
  * @return {?string}
  */
-function _valueModificationDirection(event) {
+export function getValueModificationDirection(event) {
   let direction = null;
   // TODO(crbug.com/1145518) Remove usage of MouseWheelEvent.
   if (event.type === 'mousewheel') {
@@ -357,6 +357,13 @@ function _valueModificationDirection(event) {
     if (event.wheelDeltaY > 0 || event.wheelDeltaX > 0) {
       direction = 'Up';
     } else if (event.wheelDeltaY < 0 || event.wheelDeltaX < 0) {
+      direction = 'Down';
+    }
+  } else if (event.type === 'wheel') {
+    // When shift is pressed while spinning mousewheel, delta comes as wheelDeltaX.
+    if (event.deltaY > 0 || event.deltaX > 0) {
+      direction = 'Up';
+    } else if (event.deltaY < 0 || event.deltaX < 0) {
       direction = 'Down';
     }
   } else {
@@ -375,7 +382,7 @@ function _valueModificationDirection(event) {
  * @return {?string}
  */
 function _modifiedHexValue(hexString, event) {
-  const direction = _valueModificationDirection(event);
+  const direction = getValueModificationDirection(event);
   if (!direction) {
     return null;
   }
@@ -436,7 +443,7 @@ function _modifiedHexValue(hexString, event) {
  * @return {?number}
  */
 function _modifiedFloatNumber(number, event, modifierMultiplier) {
-  const direction = _valueModificationDirection(event);
+  const direction = getValueModificationDirection(event);
   if (!direction) {
     return null;
   }

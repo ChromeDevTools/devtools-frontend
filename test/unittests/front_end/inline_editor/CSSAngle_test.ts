@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {CSSAngle, CSSAngleData, PopoverToggledEvent, ValueChangedEvent} from '../../../../front_end/inline_editor/CSSAngle.js';
-import {AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNextUnit, getRadiansFromAngle, parseText, roundAngleByUnit} from '../../../../front_end/inline_editor/CSSAngleUtils.js';
+import {Angle, AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNewAngleFromEvent, getNextUnit, getRadiansFromAngle, parseText, roundAngleByUnit} from '../../../../front_end/inline_editor/CSSAngleUtils.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -30,6 +30,17 @@ const assertAndGetSwatch = (root: ShadowRoot) => {
 const togglePopover = (root: ShadowRoot) => {
   const swatch = assertAndGetSwatch(root);
   swatch?.click();
+};
+
+const assertNewAngleFromEvent = (angle: Angle, event: KeyboardEvent|MouseEvent, approximateNewValue: number) => {
+  const newAngle = getNewAngleFromEvent(angle, event);
+  if (!newAngle) {
+    assert.fail('should create a new angle');
+    return;
+  }
+
+  assert.strictEqual(newAngle.unit, angle.unit);
+  assert.approximately(newAngle.value, approximateNewValue, 0.1);
 };
 
 const initialData: CSSAngleData = {
@@ -280,6 +291,26 @@ describe('CSSAngle', () => {
       assert.strictEqual(getNextUnit(AngleUnit.Grad), AngleUnit.Rad);
       assert.strictEqual(getNextUnit(AngleUnit.Rad), AngleUnit.Turn);
       assert.strictEqual(getNextUnit(AngleUnit.Turn), AngleUnit.Deg);
+    });
+
+    it('gets new angles from events correctly', () => {
+      const originalAngle = {
+        value: 45,
+        unit: AngleUnit.Deg,
+      };
+
+      const arrowDown = new KeyboardEvent('keydown', {key: 'ArrowDown'});
+      const arrowUpShift = new KeyboardEvent('keydown', {key: 'ArrowUp', shiftKey: true});
+      const wheelUp = new WheelEvent('wheel', {deltaY: 1});
+      const wheelDownShift = new WheelEvent('wheel', {deltaX: -1, shiftKey: true});
+
+      assertNewAngleFromEvent(originalAngle, arrowDown, 44);
+      assertNewAngleFromEvent(originalAngle, arrowUpShift, 55);
+      assertNewAngleFromEvent(originalAngle, wheelUp, 46);
+      assertNewAngleFromEvent(originalAngle, wheelDownShift, 35);
+
+      const otherEvent = new MouseEvent('mousedown');
+      assert.notExists(getNewAngleFromEvent(originalAngle, otherEvent));
     });
   });
 });

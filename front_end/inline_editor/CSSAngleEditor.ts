@@ -5,7 +5,7 @@
 import * as Common from '../common/common.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {Angle, AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getRadiansFromAngle} from './CSSAngleUtils.js';
+import {Angle, AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNewAngleFromEvent, getRadiansFromAngle} from './CSSAngleUtils.js';
 
 const {render, html} = LitHtml;
 const styleMap = LitHtml.Directives.styleMap;
@@ -78,22 +78,15 @@ export class CSSAngleEditor extends HTMLElement {
   }
 
   private onEditorWheel(event: WheelEvent): void {
-    if (!this.onAngleUpdate || (event.deltaY === 0 && event.deltaX === 0)) {
+    if (!this.onAngleUpdate) {
       return;
     }
 
-    let diff = Math.PI / 180;
-    // TODO(changhaohan): we can try exposing UIUtils' _valueModificationDirection
-    // logic and reuse it in this component
-    if (event.deltaY > 0 || event.deltaX > 0) {
-      diff *= -1;
-    }
-    if (event.shiftKey) {
-      diff *= 10;
+    const newAngle = getNewAngleFromEvent(this.angle, event);
+    if (newAngle) {
+      this.onAngleUpdate(newAngle);
     }
 
-    const radian = getRadiansFromAngle(this.angle);
-    this.onAngleUpdate(getAngleFromRadians(radian + diff, this.angle.unit));
     event.preventDefault();
   }
 

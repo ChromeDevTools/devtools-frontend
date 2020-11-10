@@ -20,9 +20,10 @@
     "source_frame"
   ],
   "modules": [
-    "protocol_monitor.js",
-    "protocol_monitor-legacy.js",
-    "ProtocolMonitor.js"
+    "protocol_monitor-legacy.js"
+  ],
+  "skip_compilation": [
+    "protocol_monitor-legacy.js"
   ],
   "resources": [
     "protocolMonitor.css"

@@ -110,6 +110,7 @@ function setupWorkerThreadWorker(script, WorkerThreads) {
 
   worker.kill = function() {
     this.terminate();
+    return true;
   };
 
   worker.disconnect = function() {
@@ -234,10 +235,6 @@ function WorkerHandler(script, _options) {
   // reject all running tasks on worker error
   function onError(error) {
     me.terminated = true;
-    if (me.terminating && me.terminationHandler) {
-      me.terminationHandler(me);
-    }
-    me.terminating = false;
 
     for (var id in me.processing) {
       if (me.processing[id] !== undefined) {
@@ -328,21 +325,23 @@ WorkerHandler.prototype.exec = function(method, params, resolver) {
 
   // on cancellation, force the worker to terminate
   var me = this;
-  resolver.promise
-    .catch(function (error) {
-      if (error instanceof Promise.CancellationError || error instanceof Promise.TimeoutError) {
-        // remove this task from the queue. It is already rejected (hence this
-        // catch event), and else it will be rejected again when terminating
-        delete me.processing[id];
+  return resolver.promise.catch(function (error) {
+    if (error instanceof Promise.CancellationError || error instanceof Promise.TimeoutError) {
+      // remove this task from the queue. It is already rejected (hence this
+      // catch event), and else it will be rejected again when terminating
+      delete me.processing[id];
 
-        // terminate worker
-        me.terminate(true);
-      } else {
-        throw error;
-      }
-    });
-
-  return resolver.promise;
+      // terminate worker
+      return me.terminateAndNotify(true)
+        .then(function() {
+          throw error;
+        }, function(err) { 
+          throw err; 
+        });
+    } else {
+      throw error;
+    }
+  })
 };
 
 /**
@@ -362,6 +361,7 @@ WorkerHandler.prototype.busy = function () {
  * @param {function} [callback=null] If provided, will be called when process terminates.
  */
 WorkerHandler.prototype.terminate = function (force, callback) {
+  var me = this;
   if (force) {
     // cancel all tasks in progress
     for (var id in this.processing) {
@@ -377,23 +377,39 @@ WorkerHandler.prototype.terminate = function (force, callback) {
   }
   if (!this.busy()) {
     // all tasks are finished. kill the worker
+    var cleanup = function(err) {
+      me.terminated = true;
+      me.worker = null;
+      me.terminating = false;
+      if (me.terminationHandler) {
+        me.terminationHandler(err, me);
+      } else if (err) {
+        throw err;
+      }
+    }
+
     if (this.worker) {
       if (typeof this.worker.kill === 'function') {
-        this.worker.kill();  // child process
+        // child process
+        if (!this.worker.killed && !this.worker.kill()) {
+          cleanup(new Error('Failed to send SIGTERM to worker'));
+        } else {          
+          // cleanup once the child process has exited
+          this.worker.once('exit', function() {
+            cleanup();
+          });
+        }
+        return;
       }
       else if (typeof this.worker.terminate === 'function') {
         this.worker.terminate(); // web worker
+        this.worker.killed = true;
       }
       else {
         throw new Error('Failed to terminate worker');
       }
-      this.worker = null;
     }
-    this.terminating = false;
-    this.terminated = true;
-    if (this.terminationHandler) {
-      this.terminationHandler(this);
-    }
+    cleanup();
   }
   else {
     // we can't terminate immediately, there are still tasks being executed
@@ -416,8 +432,12 @@ WorkerHandler.prototype.terminateAndNotify = function (force, timeout) {
   if (timeout) {
     resolver.promise.timeout = timeout;
   }
-  this.terminate(force, function(worker) {
-    resolver.resolve(worker);
+  this.terminate(force, function(err, worker) {
+    if (err) {
+      resolver.reject(err);
+    } else {
+      resolver.resolve(worker);
+    }
   });
   return resolver.promise;
 };

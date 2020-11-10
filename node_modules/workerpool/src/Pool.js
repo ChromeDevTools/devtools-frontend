@@ -207,10 +207,9 @@ Pool.prototype._next = function () {
           .catch(function () {
             // if the worker crashed and terminated, remove it from the pool
             if (worker.terminated) {
-              me._removeWorker(worker);
-              // If minWorkers set, spin up new workers to replace the crashed ones
-              me._ensureMinWorkers();
+              return me._removeWorker(worker);
             }
+          }).then(function() {
             me._next(); // trigger next task in the queue
           });
 
@@ -256,16 +255,29 @@ Pool.prototype._getWorker = function() {
 };
 
 /**
- * Remove a worker from the pool. For example after a worker terminated for
- * whatever reason
+ * Remove a worker from the pool. 
+ * Attempts to terminate worker if not already terminated, and ensures the minimum
+ * pool size is met.
  * @param {WorkerHandler} worker
+ * @return {Promise<WorkerHandler>}
  * @protected
  */
 Pool.prototype._removeWorker = function(worker) {
-  DEBUG_PORT_ALLOCATOR.releasePort(worker.debugPort)
-  // terminate the worker (if not already terminated)
-  worker.terminate();
+  DEBUG_PORT_ALLOCATOR.releasePort(worker.debugPort);
+  // _removeWorker will call this, but we need it to be removed synchronously
   this._removeWorkerFromList(worker);
+  // If minWorkers set, spin up new workers to replace the crashed ones
+  this._ensureMinWorkers();
+  // terminate the worker (if not already terminated)
+  return new Promise(function(resolve, reject) {
+    worker.terminate(false, function(err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(worker);
+      }
+    });
+  });
 };
 
 /**

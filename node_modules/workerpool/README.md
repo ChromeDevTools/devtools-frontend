@@ -198,6 +198,8 @@ The following options are available:
   - In case of `'process'`, `child_process` will be used. Only available in a node.js environment.
   - In case of `'thread'`, `worker_threads` will be used. If `worker_threads` are not available, an error is thrown. Only available in a node.js environment.
 
+> Important note on `'workerType'`: when sending and receiving primitive data types (plain JSON) from and to a worker, the different worker types (`'web'`, `'process'`, `'thread'`) can be used interchangeably. However, when using more advanced data types like buffers, the API and returned results can vary. In these cases, it is best not to use the `'auto'` setting but have a fixed `'workerType'` and good unit testing in place.
+
 A worker pool contains the following functions:
 
 - `Pool.exec(method: Function | string, params: Array | null) : Promise.<*, Error>`<br>

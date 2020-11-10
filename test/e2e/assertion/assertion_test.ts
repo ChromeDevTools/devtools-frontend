@@ -17,12 +17,10 @@ describe('Assertions', async function() {
       });
     });
     await goToResource('cross_tool/default.html');
-    assert.strictEqual(expectedErrors.length, 1);
-    assert.ok(expectedErrors[0].includes('expected failure 1'));
+    assert.ok(expectedErrors.some(error => error.includes('expected failure 1')));
   });
 
-  // Suspected flaky console.errors are persisting from previous e2e-tests
-  it.skip('[crbug.com/1145969]: console.error', async () => {
+  it('[crbug.com/1145969]: console.error', async () => {
     const {frontend} = getBrowserAndPages();
     await step('Check the evaluation results from console', async () => {
       frontend.evaluate(() => {
@@ -33,7 +31,6 @@ describe('Assertions', async function() {
       });
     });
     await goToResource('cross_tool/default.html');
-    assert.strictEqual(expectedErrors.length, 2);
-    assert.ok(expectedErrors[1].includes('expected failure 2'));
+    assert.ok(expectedErrors.some(error => error.includes('expected failure 2')));
   });
 });

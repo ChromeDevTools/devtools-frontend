@@ -214,7 +214,8 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
         bracketMatchingSetting: undefined,
         lineWiseCopyCut: undefined,
         maxHighlightLength: undefined,
-        padBottom: undefined
+        padBottom: undefined,
+        inputStyle: undefined,
       });
       this._editor.configureAutocomplete(
           ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));

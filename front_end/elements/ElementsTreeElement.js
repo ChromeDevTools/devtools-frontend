@@ -1005,6 +1005,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         maxHighlightLength: undefined,
         placeholder: undefined,
         lineWiseCopyCut: undefined,
+        inputStyle: undefined,
       });
       this._editing = {commit: commit.bind(this), cancel: dispose.bind(this), editor, resize: resize.bind(this)};
       resize.call(this);

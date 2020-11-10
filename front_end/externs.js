@@ -482,6 +482,9 @@ CodeMirror.prototype = {
   undo: function() {},
   unlinkDoc: function(other) {}
 };
+CodeMirror.Editor = class extends CodeMirror {};
+CodeMirror.Doc = class extends CodeMirror {};
+CodeMirror.LineHandle = class {};
 /** @type {!{cursorDiv: Element, lineSpace: Element, gutters: Element}} */
 CodeMirror.prototype.display;
 /** @type {!{devtoolsAccessibleName: string, mode: string, lineWrapping: boolean}} */
@@ -499,7 +502,10 @@ CodeMirror.startState = function(mode) {};
 CodeMirror.copyState = function(mode, state) {};
 CodeMirror.inputStyles = {};
 CodeMirror.inputStyles.textarea = class {
-  constructor() {
+  /**
+   * @param {!CodeMirror.Editor} codeMirror
+   */
+  constructor(codeMirror) {
     /** @type {!HTMLTextAreaElement} */
     this.textarea;
     this.prevInput = '';

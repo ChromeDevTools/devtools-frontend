@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as TextEditor from '../text_editor/text_editor.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
@@ -24,6 +21,9 @@ export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     this.codeMirror().setOption('extraKeys', {
       Enter: false,
       Space: false,
+      /**
+       * @param {!CodeMirror.Editor} cm
+       */
       Left: function(cm) {
         const scrollInfo = cm.getScrollInfo();
         // Left edge check required due to bug where line numbers would disappear when attempting to scroll left when the scrollbar is at the leftmost point.
@@ -32,6 +32,9 @@ export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
           cm.scrollTo(scrollInfo.left - Math.round(scrollInfo.clientWidth / 6), null);
         }
       },
+      /**
+       * @param {!CodeMirror.Editor} cm
+       */
       Right: function(cm) {
         const scrollInfo = cm.getScrollInfo();
         cm.scrollTo(scrollInfo.left + Math.round(scrollInfo.clientWidth / 6), null);
@@ -43,7 +46,7 @@ export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
    * @param {!Array<!Row>} diffRows
    */
   updateDiffGutter(diffRows) {
-    this.codeMirror().eachLine(line => {
+    this.codeMirror().eachLine(/** @param {!CodeMirror.LineHandle} line */ line => {
       const lineNumber = this.codeMirror().getLineNumber(line);
       const row = diffRows[lineNumber];
       let gutterMarker;
@@ -65,18 +68,20 @@ export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
   }
 }
 
-export class DevToolsAccessibleDiffTextArea extends CodeMirror.inputStyles.devToolsAccessibleTextArea {
+export class DevToolsAccessibleDiffTextArea extends TextEditor.CodeMirrorTextEditor.DevToolsAccessibleTextArea {
   /**
   * @override
   * @param {boolean=} typing - whether the user is currently typing
   */
   reset(typing) {
     super.reset(typing);
-    if (this.textAreaBusy(!!typing) || !(typeof this.cm.doc.modeOption === 'object')) {
+    // TODO(crbug.com/1011811): Update CodeMirror typings to include this property
+    const doc = /** @type {!CodeMirror.Doc} */ (/** @type {*} */ (this.cm).doc);
+    if (this.textAreaBusy(!!typing) || !(typeof doc.modeOption === 'object')) {
       return;
     }
 
-    const diffRows = this.cm.doc.modeOption.diffRows;
+    const diffRows = doc.modeOption.diffRows;
     const lineNumber = this.cm.getCursor().line;
     const rowType = diffRows[lineNumber].type;
 
@@ -94,4 +99,5 @@ export class DevToolsAccessibleDiffTextArea extends CodeMirror.inputStyles.devTo
 /**
  * @constructor
  */
+// @ts-ignore CodeMirror integration with externals, not yet part of codemirror-legacy.d.ts
 CodeMirror.inputStyles.devToolsAccessibleDiffTextArea = DevToolsAccessibleDiffTextArea;

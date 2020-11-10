@@ -142,7 +142,8 @@ export const Events = {
   *  padBottom: (boolean|undefined),
   *  maxHighlightLength: (number|undefined),
   *  placeholder: (string|undefined),
-  *  lineWiseCopyCut: (boolean|undefined)
+  *  lineWiseCopyCut: (boolean|undefined),
+  *  inputStyle: (string|undefined),
   * }}
   */
 // @ts-ignore typedef

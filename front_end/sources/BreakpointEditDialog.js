@@ -55,6 +55,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
           maxHighlightLength: undefined,
           placeholder: undefined,
           lineWiseCopyCut: undefined,
+          inputStyle: undefined,
         };
         this._editor = /** @type {!UI.TextEditor.TextEditorFactory} */ (factory).createEditor(editorOptions);
         this._updatePlaceholder();

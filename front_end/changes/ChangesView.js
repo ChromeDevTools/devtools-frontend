@@ -53,6 +53,7 @@ export class ChangesView extends UI.Widget.VBox {
       maxHighlightLength: Infinity,  // Avoid CodeMirror bailing out of highlighting big diffs.
       placeholder: undefined,
       lineWiseCopyCut: undefined,
+      inputStyle: undefined,
     });
     this._editor.setReadOnly(true);
     const editorContainer = mainWidget.element.createChild('div', 'editor-container');

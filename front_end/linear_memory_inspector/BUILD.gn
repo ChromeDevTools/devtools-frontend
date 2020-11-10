@@ -31,7 +31,7 @@ devtools_module("linear_memory_inspector") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "linear_memory_inspector.js"
+  entrypoint = "linear_memory_inspector.ts"
 
   deps = [ ":linear_memory_inspector" ]
 }

@@ -1,6 +1,3 @@
 {
-  "modules": [
-    "linear_memory_inspector.js",
-    "LinearMemoryInspector_bridge.js"
-  ]
+  "modules": []
 }

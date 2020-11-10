@@ -18,19 +18,12 @@
     "data_grid",
     "source_frame",
     "perf_ui"
-  ],  "modules": [
-    "media.js",
-    "media-legacy.js",
-    "EventDisplayTable.js",
-    "MainView.js",
-    "PlayerDetailView.js",
-    "PlayerListView.js",
-    "PlayerMessagesView.js",
-    "PlayerPropertiesView.js",
-    "MediaModel.js",
-    "EventTimelineView.js",
-    "TickingFlameChart.js",
-    "TickingFlameChartHelpers.js"
+  ],
+  "modules": [
+    "media-legacy.js"
+  ],
+  "skip_compilation": [
+    "media-legacy.js"
   ],
   "resources": [
     "eventDisplayTable.css",

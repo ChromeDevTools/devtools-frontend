@@ -343,7 +343,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
                 case 'disassemble':
                   if ('error' in data) {
                     reject(data.error);
-                  } else {
+                  } else if ('result' in data) {
                     resolve(data.result);
                   }
                   break;

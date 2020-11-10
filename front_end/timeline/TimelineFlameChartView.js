@@ -48,6 +48,7 @@ class MainSplitWidget extends UI.SplitWidget.SplitWidget {
   setWebVitals(webVitals) {
     /** @type {!WebVitalsIntegrator} */
     this._webVitals = webVitals;
+    this._webVitals.setMinimumSize(0, 120);
   }
 
   /**
@@ -142,6 +143,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
 
     // Create main and network flamecharts.
     this._networkSplitWidget = new UI.SplitWidget.SplitWidget(false, false, 'timelineFlamechartMainView', 150);
+
+    // Ensure that the network panel & resizer appears above the web vitals / main thread.
+    this._networkSplitWidget.sidebarElement().style.zIndex = 120;
 
     const mainViewGroupExpansionSetting =
         Common.Settings.Settings.instance().createSetting('timelineFlamechartMainViewGroupExpansion', {});

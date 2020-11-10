@@ -226,6 +226,13 @@ export class SplitWidget extends Widget {
   }
 
   /**
+   * @return {!HTMLElement}
+   */
+  sidebarElement() {
+    return /** @type {!HTMLElement} */ (this._sidebarElement);
+  }
+
+  /**
    * @override
    * @param {!Widget} widget
    */

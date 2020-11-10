@@ -112,7 +112,7 @@ export class WebVitalsTimeline extends HTMLElement {
 
     this.canvas = document.createElement('canvas');
     this.canvas.style.width = '100%';
-    this.canvas.style.height = LINE_HEIGHT * NUMBER_OF_LANES + 'px';
+    this.canvas.style.height = `${Math.max(LINE_HEIGHT * NUMBER_OF_LANES, 120)}px`;
     this.shadow.appendChild(this.canvas);
     this.canvas.addEventListener('pointermove', this.handlePointerMove.bind(this));
     this.canvas.addEventListener('pointerout', this.handlePointerOut.bind(this));
@@ -217,7 +217,8 @@ export class WebVitalsTimeline extends HTMLElement {
     const scale = window.devicePixelRatio;
 
     this.width = width;
-    this.height = height;
+    this.height = Math.max(height, 120);
+
     this.canvas.width = Math.floor(this.width * scale);
     this.canvas.height = Math.floor(this.height * scale);
     this.context.scale(scale, scale);

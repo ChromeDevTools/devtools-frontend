@@ -25,7 +25,6 @@
     "host",
     "components",
     "sdk",
-    "marked",
     "network",
     "browser_sdk"
   ],

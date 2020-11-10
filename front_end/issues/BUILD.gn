@@ -20,10 +20,10 @@ devtools_module("issues") {
     "../common:bundle",
     "../components:bundle",
     "../elements:bundle",
-    "../marked:bundle",
     "../network:bundle",
     "../sdk:bundle",
     "../third_party/lit-html:bundle",
+    "../third_party/marked:bundle",
     "../ui:bundle",
   ]
 

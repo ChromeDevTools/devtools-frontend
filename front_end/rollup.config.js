@@ -99,6 +99,7 @@ export default {
               // would therefore not match the path of `__dirname`.
               if (importedFileDirectory.includes(path.join('front_end', 'third_party')) &&
                   !importedFileDirectory.includes(path.join('front_end', 'third_party', 'lit-html')) &&
+                  !importedFileDirectory.includes(path.join('front_end', 'third_party', 'marked')) &&
                   // Note that we have to include the path.sep for `acorn`, as there are multiple packages
                   // in `third_party` that start with `acorn-`
                   !importedFileDirectory.includes(

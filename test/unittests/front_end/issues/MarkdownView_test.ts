@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import {MarkdownView, renderToken} from '../../../../front_end/issues/MarkdownView.js';
-import * as Marked from '../../../../front_end/marked/marked.js';
 import {TemplateResult} from '../../../../front_end/third_party/lit-html/lit-html.js';
+import * as Marked from '../../../../front_end/third_party/marked/marked.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;

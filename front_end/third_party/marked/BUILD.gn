@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_pre_built("marked") {
@@ -10,4 +11,10 @@ devtools_pre_built("marked") {
     "package/lib/marked.esm.d.ts",
     "package/lib/marked.esm.js",
   ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "marked.ts"
+
+  deps = [ ":marked" ]
 }

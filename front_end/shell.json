@@ -37,7 +37,6 @@
     { "name": "input"},
     { "name": "javascript_metadata" },
     { "name": "linear_memory_inspector" },
-    { "name": "marked" },
     { "name": "object_ui" },
     { "name": "perf_ui" },
     { "name": "profiler" },

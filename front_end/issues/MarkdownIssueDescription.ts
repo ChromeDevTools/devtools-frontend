@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Marked from '../marked/marked.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
+import * as Marked from '../third_party/marked/marked.js';
 
 import {MarkdownView} from './MarkdownView.js';
 

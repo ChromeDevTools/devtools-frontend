@@ -12,8 +12,8 @@ ts_library("issues") {
   deps = [
     "../../../../front_end/host:bundle",
     "../../../../front_end/issues",
-    "../../../../front_end/marked:bundle",
     "../../../../front_end/sdk:bundle",
+    "../../../../front_end/third_party/marked:bundle",
     "../helpers",
     "../sdk",
   ]

@@ -1893,7 +1893,7 @@ export class StylePropertiesSection {
       event.consume();
       return;
     }
-    const deepTarget = event.deepElementFromPoint();
+    const deepTarget = UI.UIUtils.deepElementFromEvent(event);
     if (deepTarget.treeElement) {
       this.addNewBlankProperty(deepTarget.treeElement.property.index + 1).startEditing();
     } else {

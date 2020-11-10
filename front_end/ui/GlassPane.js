@@ -7,6 +7,7 @@ import * as Platform from '../platform/platform.js';
 
 import {Size} from './Geometry.js';  // eslint-disable-line no-unused-vars
 import {Icon} from './Icon.js';
+import {deepElementFromEvent} from './UIUtils.js';
 import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
 import {Widget} from './Widget.js';
 
@@ -170,7 +171,7 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
     if (!this._onClickOutsideCallback) {
       return;
     }
-    const node = event.deepElementFromPoint();
+    const node = deepElementFromEvent(event);
     if (!node || this.contentElement.isSelfOrAncestor(node)) {
       return;
     }

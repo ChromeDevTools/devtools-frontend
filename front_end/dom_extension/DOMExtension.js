@@ -712,40 +712,6 @@ Node.prototype.setTextContentTruncatedIfNeeded = function(text, placeholder) {
 };
 
 /**
- * @return {?Node}
- */
-Event.prototype.deepElementFromPoint = function() {
-  // Some synthetic events have zero coordinates which lead to a wrong element. Better return nothing in this case.
-  if (!this.which && !this.pageX && !this.pageY && !this.clientX && !this.clientY && !this.movementX &&
-      !this.movementY) {
-    return null;
-  }
-  const root = this.target && this.target.getComponentRoot();
-  return root ? root.deepElementFromPoint(this.pageX, this.pageY) : null;
-};
-
-/**
- * @param {number} x
- * @param {number} y
- * @return {?Node}
- */
-Document.prototype.deepElementFromPoint = function(x, y) {
-  let container = this;
-  let node = null;
-  while (container) {
-    const innerNode = container.elementFromPoint(x, y);
-    if (!innerNode || node === innerNode) {
-      break;
-    }
-    node = innerNode;
-    container = node.shadowRoot;
-  }
-  return node;
-};
-
-DocumentFragment.prototype.deepElementFromPoint = Document.prototype.deepElementFromPoint;
-
-/**
  * @return {?Element}
  */
 Document.prototype.deepActiveElement = function() {

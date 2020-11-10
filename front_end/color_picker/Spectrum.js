@@ -565,7 +565,7 @@ export class Spectrum extends UI.Widget.VBox {
    * @return {boolean}
    */
   _paletteDragStart(e) {
-    const element = e.deepElementFromPoint();
+    const element = UI.UIUtils.deepElementFromEvent(e);
     if (!element || !element.__mutable) {
       return false;
     }

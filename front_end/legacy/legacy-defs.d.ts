@@ -154,7 +154,6 @@ interface DocumentFragment {
 
 interface Event {
   consume(preventDefault?: boolean): void;
-  deepElementFromPoint(): Node|null;
   handled: boolean|undefined;
   isMetaOrCtrlForTest: boolean;
 }

@@ -52,7 +52,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
    */
   _contextMenuEventFired(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const target = event.deepElementFromPoint();
+    const target = UI.UIUtils.deepElementFromEvent(event);
     if (target) {
       const targetPinElement = target.enclosingNodeOrSelfWithClass('console-pin');
       if (targetPinElement) {

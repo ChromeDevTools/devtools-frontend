@@ -38,6 +38,7 @@ import * as Root from '../root/root.js';
 import {ActionRegistry} from './ActionRegistry.js';
 import {ShortcutRegistry} from './ShortcutRegistry.js';
 import {SoftContextMenu} from './SoftContextMenu.js';
+import {deepElementFromEvent} from './UIUtils.js';
 
 /**
  * @unrestricted
@@ -391,7 +392,7 @@ export class ContextMenu extends SubMenu {
     this._handlers = {};
     this._id = 0;
 
-    const target = event.deepElementFromPoint();
+    const target = deepElementFromEvent(event);
     if (target) {
       this.appendApplicableItems(/** @type {!Object} */ (target));
     }

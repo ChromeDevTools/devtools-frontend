@@ -575,7 +575,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
           Common.UIString.UIString('Copy value'), this._copyValueButtonClicked.bind(this));
     }
 
-    const target = event.deepElementFromPoint();
+    const target = UI.UIUtils.deepElementFromEvent(event);
     if (target && this._valueElement.isSelfOrAncestor(target) && this._result) {
       contextMenu.appendApplicableItems(this._result);
     }

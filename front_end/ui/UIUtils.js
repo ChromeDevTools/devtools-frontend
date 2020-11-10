@@ -2027,3 +2027,37 @@ export const enclosingNodeOrSelfWithNodeNameInArray = (initialNode, nameArray) =
 export const enclosingNodeOrSelfWithNodeName = function(node, nodeName) {
   return enclosingNodeOrSelfWithNodeNameInArray(node, [nodeName]);
 };
+
+/**
+ * @param {null|undefined|!Document|!DocumentFragment} document
+ * @param {number} x
+ * @param {number} y
+ * @return {?Node}
+ */
+export const deepElementFromPoint = (document, x, y) => {
+  let container = document;
+  let node = null;
+  while (container) {
+    const innerNode = container.elementFromPoint(x, y);
+    if (!innerNode || node === innerNode) {
+      break;
+    }
+    node = innerNode;
+    container = node.shadowRoot;
+  }
+  return node;
+};
+
+/**
+ * @param {!Event} event
+ * @return {?Node}
+ */
+export const deepElementFromEvent = event => {
+  // Some synthetic events have zero coordinates which lead to a wrong element. Better return nothing in this case.
+  if (!event.which && !event.pageX && !event.pageY && !event.clientX && !event.clientY && !event.movementX &&
+      !event.movementY) {
+    return null;
+  }
+  const root = event.target && event.target.getComponentRoot();
+  return root ? deepElementFromPoint(root, event.pageX, event.pageY) : null;
+};

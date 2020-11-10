@@ -362,8 +362,17 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       cssAngle.updateProperty(this.property.name, computedPropertyValue);
     };
 
+    /**
+     * @param {!Event} event
+     */
+    const unitChanged = async event => {
+      const {data} = /** @type {*} */ (event);
+      valueElement.textContent = data.value;
+    };
+
     cssAngle.addEventListener('popover-toggled', popoverToggled);
     cssAngle.addEventListener('value-changed', valueChanged);
+    cssAngle.addEventListener('unit-changed', unitChanged);
 
     return cssAngle;
   }

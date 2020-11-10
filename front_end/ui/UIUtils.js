@@ -361,9 +361,10 @@ export function getValueModificationDirection(event) {
     }
   } else if (event.type === 'wheel') {
     // When shift is pressed while spinning mousewheel, delta comes as wheelDeltaX.
-    if (event.deltaY > 0 || event.deltaX > 0) {
+    // WheelEvent's deltaY is inverse from MouseWheelEvent.
+    if (event.deltaY < 0 || event.deltaX < 0) {
       direction = 'Up';
-    } else if (event.deltaY < 0 || event.deltaX < 0) {
+    } else if (event.deltaY > 0 || event.deltaX > 0) {
       direction = 'Down';
     }
   } else {
@@ -373,6 +374,7 @@ export function getValueModificationDirection(event) {
       direction = 'Down';
     }
   }
+
   return direction;
 }
 

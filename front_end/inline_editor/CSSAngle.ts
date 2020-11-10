@@ -7,7 +7,7 @@ import './CSSAngleSwatch.js';
 
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {Angle, AngleUnit, getAngleFromRadians, getNewAngleFromEvent, getNextUnit, getRadiansFromAngle, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
+import {Angle, AngleUnit, convertAngleUnit, getNewAngleFromEvent, getNextUnit, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
 
 import type {CSSAngleEditorData} from './CSSAngleEditor.js';
 import type {CSSAngleSwatchData} from './CSSAngleSwatch.js';
@@ -35,6 +35,15 @@ export class ValueChangedEvent extends Event {
   }
 }
 
+export class UnitChangedEvent extends Event {
+  data: {value: string};
+
+  constructor(value: string) {
+    super('unit-changed', {});
+    this.data = {value};
+  }
+}
+
 export interface CSSAngleData {
   propertyName: string;
   propertyValue: string;
@@ -42,12 +51,15 @@ export interface CSSAngleData {
   containingPane: HTMLElement;
 }
 
+const DefaultAngle = {
+  value: 0,
+  unit: AngleUnit.Rad,
+};
+
 export class CSSAngle extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private angle: Angle = {
-    value: 0,
-    unit: AngleUnit.Rad,
-  };
+  private angle: Angle = DefaultAngle;
+  private displayedAngle: Angle = DefaultAngle;
   private propertyName = '';
   private propertyValue = '';
   private containingPane?: HTMLElement;
@@ -62,6 +74,7 @@ export class CSSAngle extends HTMLElement {
       return;
     }
     this.angle = parsedResult;
+    this.displayedAngle = {...parsedResult};
     this.propertyName = data.propertyName;
     this.propertyValue = data.propertyValue;
     this.containingPane = data.containingPane;
@@ -116,14 +129,15 @@ export class CSSAngle extends HTMLElement {
   }
 
   private updateAngle(angle: Angle): void {
-    this.angle = roundAngleByUnit(angle);
+    this.displayedAngle = roundAngleByUnit(convertAngleUnit(angle, this.displayedAngle.unit));
+    this.angle = this.displayedAngle;
     this.dispatchEvent(new ValueChangedEvent(`${this.angle.value}${this.angle.unit}`));
   }
 
-  private updateAngleWithNewUnit(newUnit: AngleUnit): void {
-    // We use radian as the canonical unit to convert back and forth.
-    const radian = getRadiansFromAngle(this.angle);
-    this.updateAngle(getAngleFromRadians(radian, newUnit));
+  private displayNextUnit(): void {
+    const nextUnit = getNextUnit(this.displayedAngle.unit);
+    this.displayedAngle = roundAngleByUnit(convertAngleUnit(this.angle, nextUnit));
+    this.dispatchEvent(new UnitChangedEvent(`${this.displayedAngle.value}${this.displayedAngle.unit}`));
   }
 
   private bindMinifyingAction(): void {
@@ -143,7 +157,7 @@ export class CSSAngle extends HTMLElement {
   private onMiniIconClick(event: MouseEvent): void {
     event.stopPropagation();
     if (event.shiftKey) {
-      this.updateAngleWithNewUnit(getNextUnit(this.angle.unit));
+      this.displayNextUnit();
       return;
     }
     this.popoverOpen ? this.minify() : this.popover();

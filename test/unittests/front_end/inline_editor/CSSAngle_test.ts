@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as InlineEditor from '../../../../front_end/inline_editor/inline_editor.js';
-import type {CSSAngleData, PopoverToggledEvent, ValueChangedEvent} from '../../../../front_end/inline_editor/CSSAngle.js';
-import {Angle, AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNewAngleFromEvent, getNextUnit, getRadiansFromAngle, parseText, roundAngleByUnit} from '../../../../front_end/inline_editor/CSSAngleUtils.js';
+import type {CSSAngleData, PopoverToggledEvent, UnitChangedEvent, ValueChangedEvent} from '../../../../front_end/inline_editor/CSSAngle.js';
+import {Angle, AngleUnit, convertAngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNewAngleFromEvent, getNextUnit, getRadiansFromAngle, parseText, roundAngleByUnit} from '../../../../front_end/inline_editor/CSSAngleUtils.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -96,8 +96,8 @@ describe('CSSAngle', () => {
     assertShadowRoot(component.shadowRoot);
 
     let cssAngleText = initialData.angleText;
-    component.addEventListener('value-changed', (event: Event) => {
-      const {data} = event as ValueChangedEvent;
+    component.addEventListener('unit-changed', (event: Event) => {
+      const {data} = event as UnitChangedEvent;
       cssAngleText = data.value;
     });
 
@@ -294,6 +294,44 @@ describe('CSSAngle', () => {
       assert.strictEqual(getNextUnit(AngleUnit.Turn), AngleUnit.Deg);
     });
 
+    it('converts angle units correctly', () => {
+      assert.deepEqual(
+          convertAngleUnit(
+              {
+                value: 45,
+                unit: AngleUnit.Deg,
+              },
+              AngleUnit.Grad),
+          {
+            value: 50,
+            unit: AngleUnit.Grad,
+          });
+
+      assert.deepEqual(
+          convertAngleUnit(
+              {
+                value: Math.PI / 180,
+                unit: AngleUnit.Rad,
+              },
+              AngleUnit.Deg),
+          {
+            value: 1,
+            unit: AngleUnit.Deg,
+          });
+
+      assert.deepEqual(
+          convertAngleUnit(
+              {
+                value: 1,
+                unit: AngleUnit.Turn,
+              },
+              AngleUnit.Deg),
+          {
+            value: 360,
+            unit: AngleUnit.Deg,
+          });
+    });
+
     it('gets new angles from events correctly', () => {
       const originalAngle = {
         value: 45,
@@ -307,8 +345,8 @@ describe('CSSAngle', () => {
 
       assertNewAngleFromEvent(originalAngle, arrowDown, 44);
       assertNewAngleFromEvent(originalAngle, arrowUpShift, 55);
-      assertNewAngleFromEvent(originalAngle, wheelUp, 46);
-      assertNewAngleFromEvent(originalAngle, wheelDownShift, 35);
+      assertNewAngleFromEvent(originalAngle, wheelUp, 44);
+      assertNewAngleFromEvent(originalAngle, wheelDownShift, 55);
 
       const otherEvent = new MouseEvent('mousedown');
       assert.notExists(getNewAngleFromEvent(originalAngle, otherEvent));

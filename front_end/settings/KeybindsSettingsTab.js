@@ -342,6 +342,8 @@ export class ShortcutListItem {
     this._addShortcutLinkContainer = null;
     /** @type {?Element} */
     this._errorMessageElement = null;
+    /** @type {?number} */
+    this._secondKeyTimeout = null;
 
     this._update();
   }
@@ -455,6 +457,12 @@ export class ShortcutListItem {
         shortcutInput.value = userDescriptors.map(this._shortcutInputTextForDescriptor.bind(this)).join(' ');
       }
       shortcutInput.addEventListener('keydown', this._onShortcutInputKeyDown.bind(this, shortcut, shortcutInput));
+      shortcutInput.addEventListener('blur', () => {
+        if (this._secondKeyTimeout !== null) {
+          clearTimeout(this._secondKeyTimeout);
+          this._secondKeyTimeout = null;
+        }
+      });
       shortcutElement.appendChild(this._createIconButton(
           i18nString(UIStrings.removeShortcut), 'largeicon-trash-bin', 'keybinds-delete-button', () => {
             const index = this._shortcuts.indexOf(shortcut);
@@ -511,15 +519,44 @@ export class ShortcutListItem {
    */
   _onShortcutInputKeyDown(shortcut, shortcutInput, event) {
     if (/** @type {!KeyboardEvent} */ (event).key !== 'Tab') {
-      const userKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
-      const codeAndModifiers = UI.KeyboardShortcut.KeyboardShortcut.keyCodeAndModifiersFromKey(userKey);
-      const userDescriptor = UI.KeyboardShortcut.KeyboardShortcut.makeDescriptor(
-          {code: userKey, name: /** @type {!KeyboardEvent} */ (event).key}, codeAndModifiers.modifiers);
-      shortcutInput.value = this._shortcutInputTextForDescriptor(userDescriptor);
-      this._editedShortcuts.set(shortcut, [userDescriptor]);
+      const eventDescriptor = this._descriptorForEvent(event);
+      const userDescriptors = this._editedShortcuts.get(shortcut) || [];
+      this._editedShortcuts.set(shortcut, userDescriptors);
+      const isLastKeyOfShortcut =
+          userDescriptors.length === 2 && UI.KeyboardShortcut.KeyboardShortcut.isModifier(userDescriptors[1].key);
+      const shouldClearOldShortcut = userDescriptors.length === 2 && !isLastKeyOfShortcut;
+      if (shouldClearOldShortcut) {
+        userDescriptors.splice(0, 2);
+      }
+
+      if (this._secondKeyTimeout) {
+        clearTimeout(this._secondKeyTimeout);
+        this._secondKeyTimeout = null;
+        userDescriptors.push(eventDescriptor);
+      } else if (isLastKeyOfShortcut) {
+        userDescriptors[1] = eventDescriptor;
+      } else if (!UI.KeyboardShortcut.KeyboardShortcut.isModifier(eventDescriptor.key)) {
+        userDescriptors[0] = eventDescriptor;
+        this._secondKeyTimeout = window.setTimeout(() => {
+          this._secondKeyTimeout = null;
+        }, UI.ShortcutRegistry.KeyTimeout);
+      } else {
+        userDescriptors[0] = eventDescriptor;
+      }
+      shortcutInput.value = userDescriptors.map(this._shortcutInputTextForDescriptor).join(' ');
       this._validateInputs();
       event.consume(true);
     }
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _descriptorForEvent(event) {
+    const userKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
+    const codeAndModifiers = UI.KeyboardShortcut.KeyboardShortcut.keyCodeAndModifiersFromKey(userKey);
+    return UI.KeyboardShortcut.KeyboardShortcut.makeDescriptor(
+        {code: userKey, name: /** @type {!KeyboardEvent} */ (event).key}, codeAndModifiers.modifiers);
   }
 
   /**
@@ -580,7 +617,7 @@ export class ShortcutListItem {
       if (!userDescriptors) {
         return;
       }
-      if (UI.KeyboardShortcut.KeyboardShortcut.isModifier(userDescriptors[0].key)) {
+      if (userDescriptors.some(descriptor => UI.KeyboardShortcut.KeyboardShortcut.isModifier(descriptor.key))) {
         confirmButton.disabled = true;
         shortcutInput.classList.add('error-input');
         UI.ARIAUtils.setInvalid(shortcutInput, true);

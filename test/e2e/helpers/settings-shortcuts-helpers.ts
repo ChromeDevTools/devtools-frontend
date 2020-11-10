@@ -14,14 +14,18 @@ const SHORTCUT_DISPLAY_SELECTOR = '.keybinds-shortcut';
 const SHORTCUT_INPUT_SELECTOR = '.keybinds-editing input';
 const SHORTCUT_SELECT_TEXT = 'DevTools (Default)Visual Studio Code';
 export const ADD_SHORTCUT_LINK_TEXT = 'Add a shortcut';
+export const SHORTCUT_CHORD_TIMEOUT = 1000;
 
 export let VS_CODE_SHORTCUTS_SHORTCUTS = ['CtrlKCtrlS'];
 export let VS_CODE_SETTINGS_SHORTCUTS = ['Shift?', 'Ctrl,'];
 export let VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT = 'SettingsShortcutsCtrl + K Ctrl + S';
 export let VS_CODE_PAUSE_SHORTCUTS = ['Ctrl\\', 'F5', 'ShiftF5'];
 export let CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT = ['Ctrl + 1', 'Ctrl + 2'];
+export let CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT = ['Ctrl + 1 Ctrl + 2'];
 export let CONTROL_2_SHORTCUT_INPUT_TEXT = ['Ctrl + 2'];
 export let CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT = ['Ctrl1', 'Ctrl2'];
+export let CONTROL_1_CONTROL_2_CHORD_DISPLAY_TEXT = ['Ctrl1Ctrl2'];
+export let CONTROL_2_SHORTCUT_DISPLAY_TEXT = ['Ctrl2'];
 export let CONSOLE_SHORTCUT_INPUT_TEXT = ['Ctrl + `'];
 export let CONSOLE_SHORTCUT_DISPLAY_TEXT = ['Ctrl`'];
 if (platform === 'mac') {
@@ -30,8 +34,11 @@ if (platform === 'mac') {
   VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT = 'SettingsShortcuts⌘ K ⌘ S';
   VS_CODE_PAUSE_SHORTCUTS = ['F5', '⇧ F5', '⌘ \\'];
   CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT = ['Ctrl 1', 'Ctrl 2'];
+  CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT = ['Ctrl 1 Ctrl 2'];
   CONTROL_2_SHORTCUT_INPUT_TEXT = ['Ctrl 2'];
   CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT = CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT;
+  CONTROL_1_CONTROL_2_CHORD_DISPLAY_TEXT = ['Ctrl 1Ctrl 2'];
+  CONTROL_2_SHORTCUT_DISPLAY_TEXT = CONTROL_2_SHORTCUT_INPUT_TEXT;
   CONSOLE_SHORTCUT_INPUT_TEXT = ['Ctrl `'];
   CONSOLE_SHORTCUT_DISPLAY_TEXT = CONSOLE_SHORTCUT_INPUT_TEXT;
 }

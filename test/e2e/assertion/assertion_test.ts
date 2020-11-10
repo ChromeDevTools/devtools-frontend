@@ -21,7 +21,8 @@ describe('Assertions', async function() {
     assert.ok(expectedErrors[0].includes('expected failure 1'));
   });
 
-  it('console.error', async () => {
+  // Suspected flaky console.errors are persisting from previous e2e-tests
+  it.skip('[crbug.com/1145969]: console.error', async () => {
     const {frontend} = getBrowserAndPages();
     await step('Check the evaluation results from console', async () => {
       frontend.evaluate(() => {

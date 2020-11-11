@@ -33,6 +33,9 @@
   <message name="IDS_DEVTOOLS_2dac8a7ec30b19fa5861a79d178d354a" desc="Place holder text stating that there are no text tracks on this player.">
     No text tracks
   </message>
+  <message name="IDS_DEVTOOLS_d928d8098a117772494521c159acec1d" desc="A score describing how choppy the video playback is.">
+    Video freezing score
+  </message>
   <message name="IDS_DEVTOOLS_e6818a215084646ac80a1a07561ecf35" desc="A device that converts media files into playable streams of audio or video.">
     Decoder
   </message>

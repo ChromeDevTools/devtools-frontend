@@ -29,6 +29,7 @@ export const PlayerPropertyKeys = {
   kVideoTracks: 'kVideoTracks',
   kFramerate: 'kFramerate',
   kVideoPlaybackRoughness: 'kVideoPlaybackRoughness',
+  kVideoPlaybackFreezing: 'kVideoPlaybackFreezing',
 };
 
 /**
@@ -441,7 +442,7 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     if (seconds === '') {
       return '0:00';
     }
-    const date = new Date('');
+    const date = new Date();
     date.setSeconds(Number(seconds));
     return date.toISOString().substr(11, 8);
   }
@@ -512,6 +513,10 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     const roughness = new PropertyRenderer(ls`Video playback roughness`);
     this._mediaElements.push(roughness);
     this._attributeMap.set(PlayerPropertyKeys.kVideoPlaybackRoughness, roughness);
+
+    const freezingScore = new PropertyRenderer(ls`Video freezing score`);
+    this._mediaElements.push(freezingScore);
+    this._attributeMap.set(PlayerPropertyKeys.kVideoPlaybackFreezing, freezingScore);
 
     /* Video Decoder Properties */
     const decoderName = new DefaultPropertyRenderer(ls`Decoder name`, ls`No decoder`);

@@ -1023,7 +1023,7 @@ export class NetworkRequestNode extends NetworkNode {
         break;
       }
       case 'connectionid': {
-        this._setTextAndTitle(cell, this._request.connectionId);
+        this._setTextAndTitle(cell, this._request.connectionId === '0' ? '' : this._request.connectionId);
         break;
       }
       case 'type': {

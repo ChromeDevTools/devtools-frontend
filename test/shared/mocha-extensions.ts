@@ -3,13 +3,7 @@
 // found in the LICENSE file.
 
 import * as Mocha from 'mocha';
-
-const {beforeEach, describe} = Mocha;
-
-export {
-  beforeEach,
-  describe,
-};
+export {beforeEach, describe} from 'mocha';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function timeoutHook(done: Mocha.Done|undefined, err?: any) {

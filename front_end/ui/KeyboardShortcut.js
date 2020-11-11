@@ -222,6 +222,9 @@ export class KeyboardShortcut {
    * @return {string}
    */
   static shortcutToString(key, modifiers) {
+    if (typeof key !== 'string' && KeyboardShortcut.isModifier(key.code)) {
+      return KeyboardShortcut._modifiersToString(modifiers);
+    }
     return KeyboardShortcut._modifiersToString(modifiers) + KeyboardShortcut._keyName(key);
   }
 
@@ -306,24 +309,60 @@ export const Modifiers = {
   ShiftOrOption: Host.Platform.isMac() ? 4 /* Alt */ : 1 /* Shift */,
 };
 
+const leftKey = {
+  code: 37,
+  name: '←'
+};
+const upKey = {
+  code: 38,
+  name: '↑'
+};
+const rightKey = {
+  code: 39,
+  name: '→'
+};
+const downKey = {
+  code: 40,
+  name: '↓'
+};
+const ctrlKey = {
+  code: 17,
+  name: 'Ctrl'
+};
+const escKey = {
+  code: 27,
+  name: 'Esc'
+};
+const spaceKey = {
+  code: 32,
+  name: 'Space'
+};
+
 /** @type {!Object.<string, !Key>} */
 export const Keys = {
   Backspace: {code: 8, name: '\u21a4'},
   Tab: {code: 9, name: {mac: '\u21e5', other: 'Tab'}},
   Enter: {code: 13, name: {mac: '\u21a9', other: 'Enter'}},
   Shift: {code: 16, name: {mac: '\u21e7', other: 'Shift'}},
-  Ctrl: {code: 17, name: 'Ctrl'},
+  Ctrl: ctrlKey,
+  Control: ctrlKey,
   Alt: {code: 18, name: 'Alt'},
-  Esc: {code: 27, name: 'Esc'},
-  Space: {code: 32, name: 'Space'},
+  Esc: escKey,
+  Escape: escKey,
+  Space: spaceKey,
+  ' ': spaceKey,
   PageUp: {code: 33, name: {mac: '\u21de', other: 'PageUp'}},      // also NUM_NORTH_EAST
   PageDown: {code: 34, name: {mac: '\u21df', other: 'PageDown'}},  // also NUM_SOUTH_EAST
   End: {code: 35, name: {mac: '\u2197', other: 'End'}},            // also NUM_SOUTH_WEST
   Home: {code: 36, name: {mac: '\u2196', other: 'Home'}},          // also NUM_NORTH_WEST
-  Left: {code: 37, name: '\u2190'},                                // also NUM_WEST
-  Up: {code: 38, name: '\u2191'},                                  // also NUM_NORTH
-  Right: {code: 39, name: '\u2192'},                               // also NUM_EAST
-  Down: {code: 40, name: '\u2193'},                                // also NUM_SOUTH
+  Left: leftKey,                                                   // also NUM_WEST
+  Up: upKey,                                                       // also NUM_NORTH
+  Right: rightKey,                                                 // also NUM_EAST
+  Down: downKey,                                                   // also NUM_SOUTH
+  ArrowLeft: leftKey,
+  ArrowUp: upKey,
+  ArrowRight: rightKey,
+  ArrowDown: downKey,
   Delete: {code: 46, name: 'Del'},
   Zero: {code: 48, name: '0'},
   H: {code: 72, name: 'H'},
@@ -373,6 +412,7 @@ export const Type = {
   KeybindSetShortcut: 'KeybindSetShortcut',
 };
 
+/** @type {!Object.<string, !Key>} */
 export const KeyBindings = {};
 
 (function() {

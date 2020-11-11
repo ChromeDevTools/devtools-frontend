@@ -455,7 +455,7 @@ export class ShortcutListItem {
       shortcutInput.value = shortcut.title();
       const userDescriptors = this._editedShortcuts.get(shortcut);
       if (userDescriptors) {
-        shortcutInput.value = userDescriptors.map(this._shortcutInputTextForDescriptor.bind(this)).join(' ');
+        shortcutInput.value = this._shortcutInputTextForDescriptors(userDescriptors);
       }
       shortcutInput.addEventListener('keydown', this._onShortcutInputKeyDown.bind(this, shortcut, shortcutInput));
       shortcutInput.addEventListener('blur', () => {
@@ -520,7 +520,7 @@ export class ShortcutListItem {
    */
   _onShortcutInputKeyDown(shortcut, shortcutInput, event) {
     if (/** @type {!KeyboardEvent} */ (event).key !== 'Tab') {
-      const eventDescriptor = this._descriptorForEvent(event);
+      const eventDescriptor = this._descriptorForEvent(/** @type {!KeyboardEvent} */ (event));
       const userDescriptors = this._editedShortcuts.get(shortcut) || [];
       this._editedShortcuts.set(shortcut, userDescriptors);
       const isLastKeyOfShortcut =
@@ -544,31 +544,28 @@ export class ShortcutListItem {
       } else {
         userDescriptors[0] = eventDescriptor;
       }
-      shortcutInput.value = userDescriptors.map(this._shortcutInputTextForDescriptor).join(' ');
+      shortcutInput.value = this._shortcutInputTextForDescriptors(userDescriptors);
       this._validateInputs();
       event.consume(true);
     }
   }
 
   /**
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    */
   _descriptorForEvent(event) {
     const userKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
     const codeAndModifiers = UI.KeyboardShortcut.KeyboardShortcut.keyCodeAndModifiersFromKey(userKey);
-    return UI.KeyboardShortcut.KeyboardShortcut.makeDescriptor(
-        {code: userKey, name: /** @type {!KeyboardEvent} */ (event).key}, codeAndModifiers.modifiers);
+    const key = UI.KeyboardShortcut.Keys[event.key] || UI.KeyboardShortcut.KeyBindings[event.key];
+    return UI.KeyboardShortcut.KeyboardShortcut.makeDescriptor(key || event.key, codeAndModifiers.modifiers);
   }
 
   /**
-   * @param {!UI.KeyboardShortcut.Descriptor} descriptor
+   * @param {!Array.<!UI.KeyboardShortcut.Descriptor>} descriptors
    * @return {string}
    */
-  _shortcutInputTextForDescriptor(descriptor) {
-    if (UI.KeyboardShortcut.KeyboardShortcut.isModifier(descriptor.key)) {
-      return descriptor.name.slice(0, descriptor.name.lastIndexOf('+'));
-    }
-    return descriptor.name;
+  _shortcutInputTextForDescriptors(descriptors) {
+    return descriptors.map(descriptor => descriptor.name).join(' ');
   }
 
   _resetShortcutsToDefaults() {

@@ -326,7 +326,7 @@ export class CSSStyleDeclaration {
    * @return {!Array.<!CSSProperty>}
    */
   longhandProperties(name) {
-    const longhands = cssMetadata().longhands(name);
+    const longhands = cssMetadata().longhands(name.toLowerCase());
     const result = [];
     for (let i = 0; longhands && i < longhands.length; ++i) {
       const property = this._activePropertyMap.get(longhands[i]);

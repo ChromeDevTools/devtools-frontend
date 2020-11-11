@@ -298,15 +298,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
    * @param {boolean} enabled
    */
   _updateVisibility(enabled) {
-    if (enabled) {
-      if (this._newAuthenticatorSection) {
-        this._newAuthenticatorSection.style.visibility = 'visible';
-      }
-    } else {
-      if (this._newAuthenticatorSection) {
-        this._newAuthenticatorSection.style.visibility = 'hidden';
-      }
-    }
+    this.contentElement.classList.toggle('enabled', enabled);
   }
 
   _removeAuthenticatorSections() {
@@ -372,6 +364,14 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
   }
 
   _createNewAuthenticatorSection() {
+    this._learnMoreView = this.contentElement.createChild('div', 'learn-more');
+    this._learnMoreView.appendChild(UI.Fragment.html`
+      <div>
+        ${ls`Use WebAuthn for phishing-resistant authentication`}<br /><br />
+        ${UI.XLink.XLink.create('https://developers.google.com/web/updates/2018/05/webauthn', ls`Learn more`)}
+      </div>
+    `);
+
     this._newAuthenticatorSection = this.contentElement.createChild('div', 'new-authenticator-container');
     const newAuthenticatorTitle = UI.UIUtils.createLabel(ls`New authenticator`, 'new-authenticator-title');
     this._newAuthenticatorSection.appendChild(newAuthenticatorTitle);

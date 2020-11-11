@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_2daf1cb573c2c61422faf64610cf9402" desc="Title for the table that holds the credentials that a authenticator has registered.">
     Credentials
   </message>
+  <message name="IDS_DEVTOOLS_2fb1f63da2b79a2c92b8b2a995e191f6" desc="Label for the learn more link that is shown before the virtual environment is enabled.">
+    Use WebAuthn for phishing-resistant authentication
+  </message>
   <message name="IDS_DEVTOOLS_3272155e5b1271268330f4c22a1741a2" desc="Label for checkbox that toggles resident key support on virtual authenticators.">
     Supports resident keys
   </message>

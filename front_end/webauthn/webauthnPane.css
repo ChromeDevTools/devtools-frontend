@@ -5,7 +5,6 @@
  */
 
 .webauthn-pane {
-  display: block;
   overflow: auto;
   min-width: 500px;
 }
@@ -24,7 +23,12 @@
 
 .authenticators-view {
   margin: 0 10px;
-  padding: 10px 0;
+  min-height: auto;
+  display: none;
+}
+
+.webauthn-pane.enabled .authenticators-view {
+  display: block;
 }
 
 /* New Authenticator Section */
@@ -35,8 +39,12 @@
 }
 
 .new-authenticator-container {
-  display: block;
+  display: none;
   margin: 10px 10px;
+}
+
+.webauthn-pane.enabled .new-authenticator-container {
+  display: block;
 }
 
 .new-authenticator-form {
@@ -53,7 +61,7 @@
 /* Active Authenticator Section */
 .authenticator-section {
   display: block;
-  margin: 10px 0;
+  padding: 16px 0;
   border-bottom: 1px solid rgb(230 230 230);
 }
 
@@ -165,4 +173,16 @@ td .text-button {
 
 .code {
   font-family: monospace;
+}
+
+.learn-more {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+}
+
+.webauthn-pane.enabled .learn-more {
+  display: none;
 }

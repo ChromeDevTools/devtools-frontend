@@ -35,3 +35,9 @@ it('is able to calculate the contrast ratio between two colors', () => {
       Common.ColorUtils.contrastRatio(firstColor, secondColor), 2.148936170212766,
       'contrast ratio was not calculated correctly');
 });
+
+it('is able to calculate the contrast ratio (APCA) between two colors', () => {
+  assert.closeTo(Common.ColorUtils.contrastRatioAPCA([1, 0, 0, 1], [0, 0, 1, 1]), -39.66, 0.01);
+
+  assert.closeTo(Common.ColorUtils.contrastRatioAPCA([0.2, 0.2, 0.2, 1], [0.267, 0.267, 0.267, 1]), 18.30, 0.01);
+});

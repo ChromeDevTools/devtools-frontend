@@ -84,3 +84,47 @@ export function contrastRatio(fgRGBA, bgRGBA) {
   const contrastRatio = (Math.max(fgLuminance, bgLuminance) + 0.05) / (Math.min(fgLuminance, bgLuminance) + 0.05);
   return contrastRatio;
 }
+
+/**
+ * Calculate the contrast ratio between a foreground and a background color.
+ * Returns the percentage of the predicted visual contrast.
+ * See resources at https://w3c.github.io/silver/guidelines/methods/Method-font-characteristic-contrast.html
+ *
+ * @param {!Array<number>} fgRGBA
+ * @param {!Array<number>} bgRGBA
+ * @return {number}
+ */
+export function contrastRatioAPCA(fgRGBA, bgRGBA) {
+  fgRGBA = [...fgRGBA];
+  bgRGBA = [...bgRGBA];
+  // Linearize the gamma encoded RGB channels by applying a simple exponent.
+  for (let i = 0; i <= 2; i++) {
+    fgRGBA[i] = Math.pow(fgRGBA[i], 2.218);
+    bgRGBA[i] = Math.pow(bgRGBA[i], 2.218);
+  }
+
+  // Find relative luminance.
+  // TODO(alexrudenko): it appears to be a different kind of luminance compared to one in luminance().
+  let bgLuminance = 0.2126 * bgRGBA[0] + 0.7156 * bgRGBA[1] + 0.0722 * bgRGBA[2];
+  let fgLuminance = 0.2126 * fgRGBA[0] + 0.7156 * fgRGBA[1] + 0.0722 * fgRGBA[2];
+
+  // Constants for basic APCA version.
+  const normBgExp = 0.38;
+  const normFgExp = 0.43;
+  const revBgExp = 0.5;
+  const revFgExp = 0.43;
+  const blkThrs = 0.02;
+  const blkClmp = 1.75;
+
+  if (bgLuminance > fgLuminance) {
+    fgLuminance =
+        (fgLuminance > blkThrs) ? fgLuminance : fgLuminance + Math.pow(Math.abs(fgLuminance - blkThrs), blkClmp);
+    const result = (Math.pow(bgLuminance, normBgExp) - Math.pow(fgLuminance, normFgExp)) * 161.8;
+    return result >= 15 ? result : 0;
+  }
+
+  bgLuminance =
+      (bgLuminance > blkThrs) ? bgLuminance : bgLuminance + Math.pow(Math.abs(bgLuminance - blkThrs), blkClmp);
+  const result = (Math.pow(bgLuminance, revBgExp) - Math.pow(fgLuminance, revFgExp)) * 161.8;
+  return result <= -15 ? result : 0;
+}

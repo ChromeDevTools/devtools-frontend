@@ -75,6 +75,9 @@
   <message name="IDS_DEVTOOLS_ef1e313a589a406cf35afebfba156df5" desc="Error message when reading a remote blob">
     Blob could not be loaded.
   </message>
+  <message name="IDS_DEVTOOLS_f731d3159e0551ef6deb043b9147f045" desc="Context menu item for saving an image">
+    Save image
+  </message>
   <message name="IDS_DEVTOOLS_fddede572fa09e1b1bb28504d8c43343" desc="Text in Edit File System View of the Workspace settings in Settings">
     Folder path
   </message>

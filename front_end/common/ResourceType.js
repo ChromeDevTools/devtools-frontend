@@ -195,6 +195,13 @@ export class ResourceType {
   /**
    * @return {boolean}
    */
+  isImage() {
+    return this._name === 'image';
+  }
+
+  /**
+   * @return {boolean}
+   */
   isFromSourceMap() {
     return this._name.startsWith('sm-');
   }

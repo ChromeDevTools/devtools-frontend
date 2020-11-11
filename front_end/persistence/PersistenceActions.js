@@ -4,8 +4,9 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
-import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+import * as UI from '../ui/ui.js';                         // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';
 
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
@@ -24,6 +25,7 @@ export class ContextMenuProvider {
    */
   appendApplicableItems(event, contextMenu, target) {
     const contentProvider = /** @type {!TextUtils.ContentProvider.ContentProvider} */ (target);
+
     async function saveAs() {
       if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
         /** @type {!Workspace.UISourceCode.UISourceCode} */ (contentProvider).commitWorkingCopy();
@@ -37,8 +39,19 @@ export class ContextMenuProvider {
       Workspace.FileManager.FileManager.instance().close(url);
     }
 
+    async function saveImage() {
+      const targetObject = /** @type {!SDK.Resource.Resource} */ (contentProvider);
+      const content = (await targetObject.requestContent()).content || '';
+      const link = document.createElement('a');
+      link.download = targetObject.displayName;
+      link.href = 'data:' + targetObject.mimeType + ';base64,' + content;
+      link.click();
+    }
+
     if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet()) {
       contextMenu.saveSection().appendItem(Common.UIString.UIString('Save as...'), saveAs);
+    } else if (contentProvider instanceof SDK.Resource.Resource && contentProvider.contentType().isImage()) {
+      contextMenu.saveSection().appendItem(Common.UIString.UIString('Save image'), saveImage);
     }
 
     // Retrieve uiSourceCode by URL to pick network resources everywhere.

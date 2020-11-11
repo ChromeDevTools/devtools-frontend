@@ -319,10 +319,10 @@ export class DebuggerPlugin extends Plugin {
       if (hasOnlyJavaScript) {
         contextMenu.debugSection().appendItem(
             Common.UIString.UIString('Add conditional breakpoint…'),
-            () => this._editBreakpointCondition.bind(this, editorLineNumber, null, null, false /* preferLogpoint */));
+            this._editBreakpointCondition.bind(this, editorLineNumber, null, null, false /* preferLogpoint */));
         contextMenu.debugSection().appendItem(
             ls`Add logpoint…`,
-            () => this._editBreakpointCondition.bind(this, editorLineNumber, null, null, true /* preferLogpoint */));
+            this._editBreakpointCondition.bind(this, editorLineNumber, null, null, true /* preferLogpoint */));
         contextMenu.debugSection().appendItem(
             Common.UIString.UIString('Never pause here'),
             this._createNewBreakpoint.bind(this, editorLineNumber, 'false', true));

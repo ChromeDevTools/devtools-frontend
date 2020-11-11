@@ -573,7 +573,9 @@ export class TimelineModelImpl {
       if (trackEvent.name === RecordType.LayoutShift) {
         const eventData = trackEvent.args['data'] || trackEvent.args['beginData'] || {};
         const timelineData = TimelineData.forEvent(trackEvent);
-        timelineData.backendNodeId = eventData['impacted_nodes'][0]['node_id'];
+        timelineData.backendNodeId = eventData['impacted_nodes'] && eventData['impacted_nodes'].length > 0 ?
+            eventData['impacted_nodes'][0]['node_id'] :
+            0;
       }
     }
   }

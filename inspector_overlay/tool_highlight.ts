@@ -35,8 +35,10 @@ import {buildPath, emptyBounds, PathBounds} from './highlight_common.js';
 import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
 import {HighlightGridOverlay} from './tool_grid.js';
 
+type PathCommands = Array<string|number>;
+
 interface Path {
-  path: Array<string|number>, outlineColor: string;
+  path: PathCommands, outlineColor: string;
   fillColor: string;
   name: string;
 }
@@ -64,9 +66,9 @@ interface ElementInfo {
 }
 
 enum LinePattern {
-  Solid,
-  Dotted,
-  Dashed
+  Solid = 'solid',
+  Dotted = 'dotted',
+  Dashed = 'dashed'
 }
 
 interface LineStyle {
@@ -75,8 +77,9 @@ interface LineStyle {
 }
 
 interface FlexContainerHighlight {
-  containerBorder: Array<string|number>;
-  flexContainerHighlightConfig: {containerBorder?: LineStyle;}
+  containerBorder: PathCommands;
+  lines: Array<Array<PathCommands>>;
+  flexContainerHighlightConfig: {containerBorder?: LineStyle; lineSeparator?: LineStyle; itemSeparator?: LineStyle;};
 }
 
 interface Highlight {
@@ -628,7 +631,7 @@ function _drawElementTitle(
 }
 
 function drawPath(
-    context: CanvasRenderingContext2D, commands: Array<string|number>, fillColor: string|undefined,
+    context: CanvasRenderingContext2D, commands: PathCommands, fillColor: string|undefined,
     outlineColor: string|undefined, bounds: PathBounds, emulationScaleFactor: number) {
   context.save();
   const path = buildPath(commands, bounds, emulationScaleFactor);
@@ -701,19 +704,35 @@ function drawLayoutFlexContainerHighlight(
   const config = highlight.flexContainerHighlightConfig;
   const bounds = emptyBounds();
   const borderPath = buildPath(highlight.containerBorder, bounds, emulationScaleFactor);
+  drawPathWithLineStyle(context, borderPath, config.containerBorder);
 
-  if (config.containerBorder && config.containerBorder.color) {
+  // If there are no lines, bail out now.
+  if (!highlight.lines || !highlight.lines.length) {
+    return;
+  }
+
+  for (const line of highlight.lines) {
+    for (const item of line) {
+      const bounds = emptyBounds();
+      const linePath = buildPath(item, bounds, emulationScaleFactor);
+      drawPathWithLineStyle(context, linePath, config.itemSeparator);
+    }
+  }
+}
+
+function drawPathWithLineStyle(context: CanvasRenderingContext2D, path: Path2D, lineStyle?: LineStyle) {
+  if (lineStyle && lineStyle.color) {
     context.save();
     context.translate(0.5, 0.5);
     context.lineWidth = 1;
-    if (config.containerBorder.pattern === LinePattern.Dashed) {
+    if (lineStyle.pattern === LinePattern.Dashed) {
       context.setLineDash([3, 3]);
     }
-    if (config.containerBorder.pattern === LinePattern.Dotted) {
+    if (lineStyle.pattern === LinePattern.Dotted) {
       context.setLineDash([2, 2]);
     }
-    context.strokeStyle = config.containerBorder.color;
-    context.stroke(borderPath);
+    context.strokeStyle = lineStyle.color;
+    context.stroke(path);
     context.restore();
   }
 }

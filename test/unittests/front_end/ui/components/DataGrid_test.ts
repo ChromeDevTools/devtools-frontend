@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as LitHtml from '../../../../../front_end/third_party/lit-html/lit-html.js';
 import {ColumnHeaderClickEvent, DataGrid, DataGridData} from '../../../../../front_end/ui/components/DataGrid.js';
+import * as DataGridRenderers from '../../../../../front_end/ui/components/DataGridRenderers.js';
 import {ArrowKey, calculateColumnWidthPercentageFromWeighting, Column, handleArrowKeyNavigation, Row, SortDirection} from '../../../../../front_end/ui/components/DataGridUtils.js';
 import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, getEventPromise, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {withMutations} from '../../helpers/MutationHelpers.js';
 
-import {assertCurrentFocusedCellIs, emulateUserFocusingCellAt, emulateUserKeyboardNavigation, focusTableCell, getFocusableCell, getHeaderCellForColumnId, getHeaderCells, getValuesOfAllBodyRows, getValuesOfBodyRowByAriaIndex} from './DataGridHelpers.js';
+import {assertCurrentFocusedCellIs, emulateUserFocusingCellAt, emulateUserKeyboardNavigation, focusTableCell, getCellByIndexes, getFocusableCell, getHeaderCellForColumnId, getHeaderCells, getValuesOfAllBodyRows, getValuesOfBodyRowByAriaIndex} from './DataGridHelpers.js';
 
 const {assert} = chai;
 
@@ -120,6 +122,48 @@ describe('DataGrid', () => {
         ['Munich', 'Germany', '1.47m'],
         ['Barcelona', 'Spain', '1.62m'],
       ]);
+    });
+  });
+
+  describe('data-grid renderers', () => {
+    /**
+     * It's useful to use innerHTML in the tests to have full confidence in the
+     * renderer output, but LitHtml uses comment nodes to split dynamic from
+     * static parts of a template, and we don't want our tests full of noise
+     * from those.
+     */
+    const stripLitHtmlCommentNodes = (text: string) => text.replaceAll('<!---->', '');
+
+    it('uses the string renderer by default', () => {
+      const columns: Column[] = [{id: 'key', title: 'Key', widthWeighting: 1}];
+      const rows: Row[] = [{cells: [{columnId: 'key', value: 'Hello World'}]}];
+      const component = renderDataGrid({columns, rows});
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      const cell = getCellByIndexes(component.shadowRoot, {column: 0, row: 1});
+      assert.deepEqual(stripLitHtmlCommentNodes(cell.innerHTML), 'Hello World');
+    });
+
+    it('can use the code block render to render text in a <code> tag', () => {
+      const columns: Column[] = [{id: 'key', title: 'Key', widthWeighting: 1}];
+      const rows: Row[] =
+          [{cells: [{columnId: 'key', value: 'Hello World', renderer: DataGridRenderers.codeBlockRenderer}]}];
+      const component = renderDataGrid({columns, rows});
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      const cell = getCellByIndexes(component.shadowRoot, {column: 0, row: 1});
+      assert.deepEqual(stripLitHtmlCommentNodes(cell.innerHTML), '<code>Hello World</code>');
+    });
+
+    it('accepts any custom renderer', () => {
+      const columns: Column[] = [{id: 'key', title: 'Key', widthWeighting: 1}];
+      const rows: Row[] =
+          [{cells: [{columnId: 'key', value: 'Hello World', renderer: value => LitHtml.html`<p>foo: ${value}</p>`}]}];
+      const component = renderDataGrid({columns, rows});
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      const cell = getCellByIndexes(component.shadowRoot, {column: 0, row: 1});
+      assert.deepEqual(stripLitHtmlCommentNodes(cell.innerHTML), '<p>foo: Hello World</p>');
     });
   });
 

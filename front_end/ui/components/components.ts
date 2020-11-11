@@ -4,8 +4,10 @@
 
 import * as DataGrid from './DataGrid.js';
 import * as DataGridController from './DataGridController.js';
+import * as DataGridRenderers from './DataGridRenderers.js';
 
 export {
   DataGrid,
   DataGridController,
+  DataGridRenderers,
 };

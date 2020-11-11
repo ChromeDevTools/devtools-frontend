@@ -4,7 +4,7 @@
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
-import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, CellPosition, Column, getRowEntryForColumnId, handleArrowKeyNavigation, keyIsArrowKey, Row, SortDirection, SortState} from './DataGridUtils.js';
+import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, CellPosition, Column, getRowEntryForColumnId, handleArrowKeyNavigation, keyIsArrowKey, renderCellValue, Row, SortDirection, SortState, stringValueForCell} from './DataGridUtils.js';
 
 export interface DataGridData {
   columns: Column[];
@@ -368,9 +368,11 @@ export class DataGrid extends HTMLElement {
                   firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
                 });
                 const cellIsFocusableCell = columnIndex === this.focusableCell[0] && tableRowIndex === this.focusableCell[1];
+                const cellTextValue = stringValueForCell(entryForRow);
+                const cellOutput = renderCellValue(entryForRow);
                 return LitHtml.html`<td
                   class=${cellClasses}
-                  title=${entryForRow.value}
+                  title=${cellTextValue}
                   tabindex=${cellIsFocusableCell ? '0' : '-1'}
                   aria-colindex=${columnIndex + 1}
                   data-row-index=${tableRowIndex}
@@ -379,7 +381,7 @@ export class DataGrid extends HTMLElement {
                   @click=${() => {
                     this.focusCell([columnIndex, tableRowIndex]);
                   }}
-                >${entryForRow.value}</td>`;
+                >${cellOutput}</td>`;
               })}
             `;
           })}

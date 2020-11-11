@@ -9,6 +9,7 @@ devtools_module("components") {
   sources = [
     "DataGrid.ts",
     "DataGridController.ts",
+    "DataGridRenderers.ts",
     "DataGridUtils.ts",
   ]
   deps = [ "../../third_party/lit-html:bundle" ]

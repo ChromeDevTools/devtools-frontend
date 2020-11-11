@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
@@ -127,7 +124,9 @@ export class InspectElementModeController {
     for (const overlayModel of SDK.SDKModel.TargetManager.instance().models(SDK.OverlayModel.OverlayModel)) {
       overlayModel.setInspectMode(mode, this._showDetailedInspectTooltipSetting.get());
     }
-    this._toggleSearchAction.setToggled(this._isInInspectElementMode());
+    if (this._toggleSearchAction) {
+      this._toggleSearchAction.setToggled(this._isInInspectElementMode());
+    }
   }
 
   _suspendStateChanged() {
@@ -136,7 +135,9 @@ export class InspectElementModeController {
     }
 
     this._mode = Protocol.Overlay.InspectMode.None;
-    this._toggleSearchAction.setToggled(false);
+    if (this._toggleSearchAction) {
+      this._toggleSearchAction.setToggled(false);
+    }
   }
 
   /**

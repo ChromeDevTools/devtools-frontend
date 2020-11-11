@@ -90,6 +90,7 @@ export class CSSVarSwatch extends HTMLElement {
       .css-var-link:not(.undefined) {
         cursor: pointer;
         text-decoration: underline;
+        text-underline-position: under;
       }
       </style><span title="${this.computedValue || ''}">${functionParts.pre}${link}${functionParts.post}</span>`,
       this.shadow, { eventContext: this });

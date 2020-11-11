@@ -440,7 +440,10 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
       availableAuthenticators.push({authenticatorId, ...options});
       this._availableAuthenticatorSetting.set(
           availableAuthenticators.map(a => ({...a, active: a.authenticatorId === authenticatorId})));
-      this._addAuthenticatorSection(authenticatorId, options);
+      const section = await this._addAuthenticatorSection(authenticatorId, options);
+      const mediaQueryList = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const prefersReducedMotion = mediaQueryList.matches;
+      section.scrollIntoView({block: 'start', behavior: prefersReducedMotion ? 'auto' : 'smooth'});
     }
   }
 
@@ -452,8 +455,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     const section = document.createElement('div');
     section.classList.add('authenticator-section');
     section.setAttribute('data-authenticator-id', authenticatorId);
-    this._authenticatorsView.insertAdjacentElement(
-        'afterbegin', section);  // JS trick to insert as first element of parent.
+    this._authenticatorsView.appendChild(section);
 
     const headerElement = section.createChild('div', 'authenticator-section-header');
     const titleElement = headerElement.createChild('div', 'authenticator-section-title');
@@ -511,6 +513,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     dataGrid.asWidget().show(section);
 
     this._updateCredentials(authenticatorId);
+
+    return section;
   }
 
   /**

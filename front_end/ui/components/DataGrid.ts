@@ -203,9 +203,21 @@ export class DataGrid extends HTMLElement {
     return undefined;
   }
 
+  private renderEmptyRow() {
+    const visibleColumns = this.columns.filter(col => !col.hidden);
+    const emptyCells = visibleColumns.map((col, colIndex) => {
+      const emptyCellClasses = LitHtml.Directives.classMap({
+        firstVisibleColumn: colIndex === 0,
+      });
+      return LitHtml.html`<td class=${emptyCellClasses}></td>`;
+    });
+    return LitHtml.html`<tr>${emptyCells}</tr>`;
+  }
+
   private render() {
     const indexOfFirstVisibleColumn = this.columns.findIndex(col => !col.hidden);
     const anyColumnsSortable = this.columns.some(col => col.sortable === true);
+    const visibleRowsCount = this.rows.filter(row => !row.hidden).length;
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
@@ -231,6 +243,7 @@ export class DataGrid extends HTMLElement {
       table {
         border-spacing: 0;
         width: 100%;
+        height: 100%;
         /* To make sure that we properly hide overflowing text
            when horizontal space is too narrow. */
         table-layout: fixed;
@@ -342,7 +355,7 @@ export class DataGrid extends HTMLElement {
           </tr>
         </thead>
         <tbody>
-          ${this.rows.map((row, rowIndex) => {
+          ${visibleRowsCount === 0 ? this.renderEmptyRow() : this.rows.map((row, rowIndex) => {
             const focusableCell = this.getCurrentlyFocusableCell();
             const [,focusableCellRowIndex] = this.focusableCell;
 

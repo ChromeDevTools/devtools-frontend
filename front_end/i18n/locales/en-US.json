@@ -222,7 +222,7 @@
     "message": "Shortcuts cannot contain only modifier keys."
   },
   "settings/KeybindsSettingsTab.js | thisShortcutIsInUseByS": {
-    "message": "This shortcut is in use by {PH1}."
+    "message": "This shortcut is in use by {PH1}: {PH2}."
   },
   "settings/ModuleUIStrings.js | blackboxing": {
     "message": "Blackboxing"

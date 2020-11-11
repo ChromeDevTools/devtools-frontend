@@ -56,9 +56,10 @@ export const UIStrings = {
   shortcutsCannotContainOnly: 'Shortcuts cannot contain only modifier keys.',
   /**
   *@description Messages shown in shortcuts settings when the user inputs a shortcut that is already in use.
-  *@example {Start/stop recording} PH1
+  *@example {Performance} PH1
+  *@example {Start/stop recording} PH2
   */
-  thisShortcutIsInUseByS: 'This shortcut is in use by {PH1}.',
+  thisShortcutIsInUseByS: 'This shortcut is in use by {PH1}: {PH2}.',
   /**
   *@description Message shown in settings when to restore default shortcuts.
   */
@@ -637,7 +638,10 @@ export class ShortcutListItem {
         if (!action) {
           return;
         }
-        errorMessageElement.textContent = i18nString(UIStrings.thisShortcutIsInUseByS, {PH1: action.title()});
+        const actionTitle = action.title();
+        const actionCategory = action.category();
+        errorMessageElement.textContent =
+            i18nString(UIStrings.thisShortcutIsInUseByS, {PH1: actionCategory, PH2: actionTitle});
         return;
       }
       shortcutInput.classList.remove('error-input');

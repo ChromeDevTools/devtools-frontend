@@ -632,9 +632,6 @@ const alertsMap = new WeakMap();
 /**
  * This function is used to announce a message with the screen reader.
  * Setting the textContent would allow the SR to access the offscreen element via browse mode
- * Due to existing NVDA bugs (https://github.com/nvaccess/nvda/issues/6680), this alert will
- * be read twice for NVDA users.
- * This function should work as expected for other supported screen reader programs.
  * @param {string} message
  * @param {!Element} element
  */
@@ -649,6 +646,8 @@ export function alert(message, element) {
     alertElement.setAttribute('aria-atomic', 'true');
     alertsMap.set(document, alertElement);
   }
-
-  setAccessibleName(alertElement, message.trimEndWithMaxLength(10000));
+  // We first set the textContent to blank so that the string will announce even if it is replaced
+  // with the same string.
+  alertElement.textContent = '';
+  alertElement.textContent = message.trimEndWithMaxLength(10000);
 }

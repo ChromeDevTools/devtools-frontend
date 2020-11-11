@@ -991,17 +991,20 @@ export class TokenHighlighter {
       delete this._searchMatchLength;
       return 'search-highlight search-highlight-end';
     }
-    const match = stream.match(regex, false);
+    const match = stream.string.slice(stream.pos).match(regex);
     if (match) {
-      stream.next();
-      const matchLength = match[0].length;
-      if (matchLength === 1) {
-        return 'search-highlight search-highlight-full';
+      if (match.index === 0) {
+        stream.next();
+        const matchLength = match[0].length;
+        if (matchLength === 1) {
+          return 'search-highlight search-highlight-full';
+        }
+        this._searchMatchLength = matchLength;
+        return 'search-highlight search-highlight-start';
       }
-      this._searchMatchLength = matchLength;
-      return 'search-highlight search-highlight-start';
-    }
-    while (!stream.match(regex, false) && stream.next()) {
+      stream.pos += match.index;
+    } else {
+      stream.skipToEnd();
     }
   }
 

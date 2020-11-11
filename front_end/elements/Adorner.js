@@ -48,6 +48,7 @@ template.innerHTML = `
       display: inline-flex;
       box-sizing: border-box;
       height: 13px;
+      line-height: 13px;
       padding: 0 6px;
       font-size: 8.5px;
       color: var(--adorner-text-color, #3c4043);

@@ -587,7 +587,6 @@ input.custom-search-input::-webkit-search-cancel-button {
 
 .adorner-container devtools-adorner {
   margin-left: 3px;
-  vertical-align: text-bottom;
 }
 
 :host-context(.-theme-with-dark-background) devtools-adorner {

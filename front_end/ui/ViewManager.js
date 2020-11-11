@@ -131,7 +131,7 @@ class PreRegisteredView {
     }
 
     const widget = await this.widget();
-    widget.ownerViewDisposed();
+    await widget.ownerViewDisposed();
   }
 }
 

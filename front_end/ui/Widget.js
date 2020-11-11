@@ -277,7 +277,7 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
   onLayout() {
   }
 
-  ownerViewDisposed() {
+  async ownerViewDisposed() {
   }
 
   /**

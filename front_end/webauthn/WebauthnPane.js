@@ -106,6 +106,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this._hasBeenEnabled = false;
     /** @type {!Map<!Protocol.WebAuthn.AuthenticatorId, !DataGrid.DataGrid.DataGridImpl<?>>} */
     this._dataGrids = new Map();
+    /** @type {!UI.Toolbar.ToolbarCheckbox} */
+    this._enableCheckbox;
 
     /** @type {!Common.Settings.Setting<!Array<?>>} */
     this._availableAuthenticatorSetting =
@@ -149,11 +151,11 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
   /**
    * @override
    */
-  ownerViewDisposed() {
+  async ownerViewDisposed() {
     if (this._enableCheckbox) {
       this._enableCheckbox.setChecked(false);
     }
-    this._setVirtualAuthEnvEnabled(false);
+    await this._setVirtualAuthEnvEnabled(false);
   }
 
   _createToolbar() {
@@ -270,7 +272,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
   /**
    * @param {boolean} enable
    */
-  _setVirtualAuthEnvEnabled(enable) {
+  async _setVirtualAuthEnvEnabled(enable) {
+    this._enableCheckbox.setEnabled(false);
     if (enable && !this._hasBeenEnabled) {
       // Ensures metric is only tracked once per session.
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.VirtualAuthenticatorEnvironmentEnabled);
@@ -280,12 +283,15 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     if (this._model) {
       this._model.setVirtualAuthEnvEnabled(enable);
     }
-    this._updateVisibility(enable);
+
     if (enable) {
-      this._loadInitialAuthenticators();
+      await this._loadInitialAuthenticators();
     } else {
       this._removeAuthenticatorSections();
     }
+
+    this._updateVisibility(enable);
+    this._enableCheckbox.setEnabled(true);
   }
 
   /**

@@ -85,6 +85,7 @@ const issueDescriptions = new Map([
   [
     'CrossOriginEmbedderPolicy::CorpNotSameOriginAfterDefaultedToSameOriginByCoep', {
       file: 'issues/descriptions/CoepCorpNotSameOriginAfterDefaultedToSameOriginByCoep.md',
+      substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: ls`COOP and COEP`},
@@ -95,6 +96,7 @@ const issueDescriptions = new Map([
   [
     'CrossOriginEmbedderPolicy::CoepFrameResourceNeedsCoepHeader', {
       file: 'issues/descriptions/CoepFrameResourceNeedsCoepHeader.md',
+      substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: ls`COOP and COEP`},
@@ -104,6 +106,7 @@ const issueDescriptions = new Map([
   [
     'CrossOriginEmbedderPolicy::CoopSandboxedIframeCannotNavigateToCoopPage', {
       file: 'issues/descriptions/CoepCoopSandboxedIframeCannotNavigateToCoopPage.md',
+      substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: ls`COOP and COEP`},
@@ -113,6 +116,7 @@ const issueDescriptions = new Map([
   [
     'CrossOriginEmbedderPolicy::CorpNotSameSite', {
       file: 'issues/descriptions/CoepCorpNotSameSite.md',
+      substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: ls`COOP and COEP`},
@@ -123,6 +127,7 @@ const issueDescriptions = new Map([
   [
     'CrossOriginEmbedderPolicy::CorpNotSameOrigin', {
       file: 'issues/descriptions/CoepCorpNotSameOrigin.md',
+      substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [
         {link: 'https://web.dev/coop-coep/', linkTitle: ls`COOP and COEP`},

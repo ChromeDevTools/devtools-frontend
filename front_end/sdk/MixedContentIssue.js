@@ -57,6 +57,7 @@ export class MixedContentIssue extends Issue {
   getDescription() {
     return {
       file: 'issues/descriptions/mixedContent.md',
+      substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [{link: 'https://web.dev/what-is-mixed-content/', linkTitle: ls`Preventing mixed content`}],
     };

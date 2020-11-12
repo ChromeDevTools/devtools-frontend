@@ -38,6 +38,7 @@ export let IssueDescription;  // eslint-disable-line no-unused-vars
 /**
  * @typedef {{
   *             file: string,
+  *             substitutions: (!Map<string, string>|undefined),
   *             issueKind: !IssueKind,
   *             links: !Array<!{link: string, linkTitle: string}>
   *          }}

@@ -70,7 +70,7 @@ devtools_module("sources") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "sources.js"
+  entrypoint = "sources.ts"
 
   deps = [ ":sources" ]
 }

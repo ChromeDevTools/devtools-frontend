@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {LinearMemoryValueInterpreter} from '../../../../front_end/linear_memory_inspector/LinearMemoryValueInterpreter.js';
-import {ValueInterpreterDisplay} from '../../../../front_end/linear_memory_inspector/ValueInterpreterDisplay.js';
+import * as LinearMemoryInspector from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
+
 import {Endianness, ValueType} from '../../../../front_end/linear_memory_inspector/ValueInterpreterDisplayUtils.js';
 import {getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
@@ -15,7 +15,7 @@ const SETTINGS_SELECTOR = '.settings-toolbar';
 describe('LinearMemoryValueInterpreter', () => {
   function setUpComponent() {
     const buffer = new Uint8Array([34, 234, 12, 3]).buffer;
-    const component = new LinearMemoryValueInterpreter();
+    const component = new LinearMemoryInspector.LinearMemoryValueInterpreter.LinearMemoryValueInterpreter();
     component.data = {
       value: buffer,
       endianness: Endianness.Little,
@@ -33,7 +33,8 @@ describe('LinearMemoryValueInterpreter', () => {
 
   it('renders value display', async () => {
     const component = setUpComponent();
-    const valueDisplay = getElementWithinComponent(component, DISPLAY_SELECTOR, ValueInterpreterDisplay);
+    const valueDisplay = getElementWithinComponent(
+        component, DISPLAY_SELECTOR, LinearMemoryInspector.ValueInterpreterDisplay.ValueInterpreterDisplay);
     assert.isNotNull(valueDisplay);
   });
 });

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../elements/Icon.js';
-
 import * as Elements from '../elements/elements.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
@@ -49,6 +47,9 @@ export class LinearMemoryNavigator extends HTMLElement {
   private address: number = 0;
 
   set data(data: LinearMemoryNavigatorData) {
+    if (data.address < 0) {
+      throw new Error('Address should be greater or equal to zero.');
+    }
     this.address = data.address;
     this.render();
   }
@@ -67,6 +68,11 @@ export class LinearMemoryNavigator extends HTMLElement {
           align-items: center;
         }
 
+        .navigator-item {
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
         input {
           text-align: center;
         }
@@ -80,11 +86,11 @@ export class LinearMemoryNavigator extends HTMLElement {
         }
       </style>
       <div class="navigator">
-        <div>
+        <div class="navigator-item">
           ${this.createButton('ic_undo_16x16_icon', new HistoryNavigationEvent(Navigation.Backward))}
           ${this.createButton('ic_redo_16x16_icon', new HistoryNavigationEvent(Navigation.Forward))}
         </div>
-        <div>
+        <div class="navigator-item">
           ${this.createButton('ic_page_prev_16x16_icon', new PageNavigationEvent(Navigation.Backward))}
           <input data-input="true" contenteditable="true" value="0x${toHexString(this.address, 8)}"/>
           ${this.createButton('ic_page_next_16x16_icon', new PageNavigationEvent(Navigation.Forward))}

@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ValueInterpreterDisplay} from '../../../../front_end/linear_memory_inspector/ValueInterpreterDisplay.js';
+import * as LinearMemoryInspector from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
+
 import {Endianness, format, formatBoolean, formatFloat, formatInteger, ValueType, ValueTypeMode} from '../../../../front_end/linear_memory_inspector/ValueInterpreterDisplayUtils.js';
 import {getElementsWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
@@ -166,7 +167,7 @@ describe('ValueInterpreterDisplay', () => {
   });
 
   it('renders value in selected ValueTypes', async () => {
-    const component = new ValueInterpreterDisplay();
+    const component = new LinearMemoryInspector.ValueInterpreterDisplay.ValueInterpreterDisplay();
     const array = [1, 132, 172, 71];
     component.data = {
       buffer: new Uint8Array(array).buffer,

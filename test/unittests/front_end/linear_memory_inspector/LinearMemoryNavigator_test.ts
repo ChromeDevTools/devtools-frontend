@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {LinearMemoryNavigator, Navigation, PageNavigationEvent, RefreshEvent} from '../../../../front_end/linear_memory_inspector/LinearMemoryNavigator.js';
+import * as LinearMemoryInspector from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
 import {assertElement, assertElements, assertShadowRoot, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -13,12 +13,12 @@ export const NAVIGATOR_HISTORY_BUTTON_SELECTOR = '[data-button=history-navigatio
 export const NAVIGATOR_REFRESH_BUTTON_SELECTOR = '[data-button=refresh]';
 
 describe('LinearMemoryNavigator', () => {
-  let component: LinearMemoryNavigator;
+  let component: LinearMemoryInspector.LinearMemoryNavigator.LinearMemoryNavigator;
 
   beforeEach(renderNavigator);
 
   function renderNavigator() {
-    component = new LinearMemoryNavigator();
+    component = new LinearMemoryInspector.LinearMemoryNavigator.LinearMemoryNavigator();
     renderElementIntoDOM(component);
 
     component.data = {
@@ -35,13 +35,17 @@ describe('LinearMemoryNavigator', () => {
 
     const navigation = [];
     for (const button of pageNavigationButtons) {
-      const eventPromise = getEventPromise<PageNavigationEvent>(component, eventType);
+      const eventPromise =
+          getEventPromise<LinearMemoryInspector.LinearMemoryNavigator.PageNavigationEvent>(component, eventType);
       button.click();
       const event = await eventPromise;
       navigation.push(event.data);
     }
 
-    assert.deepEqual(navigation, [Navigation.Backward, Navigation.Forward]);
+    assert.deepEqual(navigation, [
+      LinearMemoryInspector.LinearMemoryNavigator.Navigation.Backward,
+      LinearMemoryInspector.LinearMemoryNavigator.Navigation.Forward,
+    ]);
   }
 
   it('renders navigator address', async () => {
@@ -65,7 +69,8 @@ describe('LinearMemoryNavigator', () => {
   });
 
   it('sends event when clicking on refresh', async () => {
-    const eventPromise = getEventPromise<RefreshEvent>(component, 'refresh');
+    const eventPromise =
+        getEventPromise<LinearMemoryInspector.LinearMemoryNavigator.RefreshEvent>(component, 'refresh');
 
     const shadowRoot = component.shadowRoot;
     assertShadowRoot(shadowRoot);

@@ -7,7 +7,7 @@ import './ValueInterpreterDisplay.js';
 import * as Elements from '../elements/elements.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {ValueDisplayData} from './ValueInterpreterDisplay.js';
+import type {ValueDisplayData} from './ValueInterpreterDisplay.js';
 import {Endianness, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 
 const {render, html} = LitHtml;

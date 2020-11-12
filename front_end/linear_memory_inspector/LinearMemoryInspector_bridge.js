@@ -14,6 +14,7 @@ import './LinearMemoryInspector.js';
 * @typedef {{
 * memory:!Uint8Array,
 * address:number,
+* memoryOffset:number,
 * }}
 */
 // @ts-ignore we export this for Closure not TS

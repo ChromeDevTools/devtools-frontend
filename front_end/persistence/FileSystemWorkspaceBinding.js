@@ -245,6 +245,10 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     return this._fileSystemPath;
   }
 
+  fileSystem() {
+    return this._fileSystem;
+  }
+
   /**
    * @override
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode

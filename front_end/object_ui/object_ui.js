@@ -18,4 +18,4 @@ export {
   RemoteObjectPreviewFormatter,
 };
 
-export const javaScriptAutocomplete = new JavaScriptAutocomplete.JavaScriptAutocomplete();
+export const javaScriptAutocomplete = JavaScriptAutocomplete.JavaScriptAutocomplete.instance();

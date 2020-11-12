@@ -855,6 +855,8 @@ export class RemoteObjectProperty {
     this.getter;
     /** @type {(!RemoteObject|undefined)} */
     this.setter;
+    /** @type {(?RemoteObject|undefined)} */
+    this.value;
   }
 
   /**

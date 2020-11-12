@@ -57,7 +57,7 @@ export class CookieModel extends SDKModel {
    * @return {!Promise<void>}
    */
   async deleteCookie(cookie) {
-    await this._deleteAll([cookie]);
+    await this.deleteCookies([cookie]);
   }
 
   /**
@@ -66,7 +66,7 @@ export class CookieModel extends SDKModel {
    */
   async clear(domain) {
     const cookies = await this.getCookiesForDomain(domain || null);
-    await this._deleteAll(cookies);
+    await this.deleteCookies(cookies);
   }
 
   /**
@@ -136,7 +136,7 @@ export class CookieModel extends SDKModel {
    * @param {!Array<!Cookie>} cookies
    * @return {!Promise<void>}
    */
-  async _deleteAll(cookies) {
+  async deleteCookies(cookies) {
     const networkAgent = this.target().networkAgent();
     this._blockedCookies.clear();
     this._cookieToBlockedReasons.clear();

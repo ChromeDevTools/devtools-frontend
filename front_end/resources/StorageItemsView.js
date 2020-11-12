@@ -27,6 +27,7 @@ export class StorageItemsView extends UI.Widget.VBox {
         this._addButton(Common.UIString.UIString('Clear All'), 'largeicon-clear', this.deleteAllItems);
     this._deleteSelectedButton =
         this._addButton(Common.UIString.UIString('Delete Selected'), 'largeicon-delete', this.deleteSelectedItem);
+    this._deleteAllButton.element.id = 'storage-items-delete-all';
 
     const toolbarItems =
         [this._refreshButton, this._filterItem, toolbarSeparator, this._deleteAllButton, this._deleteSelectedButton];
@@ -35,6 +36,19 @@ export class StorageItemsView extends UI.Widget.VBox {
     }
   }
 
+  /**
+   * @param {string} title
+   */
+  setDeleteAllTitle(title) {
+    this._deleteAllButton.setTitle(title);
+  }
+
+  /**
+   * @param {string} glyph
+   */
+  setDeleteAllGlyph(glyph) {
+    this._deleteAllButton.setGlyph(glyph);
+  }
 
   /**
    * @param {!UI.Toolbar.ToolbarItem} item
@@ -77,6 +91,13 @@ export class StorageItemsView extends UI.Widget.VBox {
       return items.filter(item => regExp.test(keyFunction(item)));
     }
     return items;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasFilter() {
+    return !!this._filterRegex;
   }
 
   /**

@@ -4,7 +4,7 @@
 
 import * as puppeteer from 'puppeteer';
 
-import {$$, click, goToResource, waitFor} from '../../shared/helper.js';
+import {$, $$, click, goToResource, waitFor} from '../../shared/helper.js';
 
 export async function navigateToApplicationTab(target: puppeteer.Page, testName: string) {
   await goToResource(`application/${testName}.html`);
@@ -38,4 +38,22 @@ export async function getDataGridData(selector: string, columns: string[]) {
 export async function getReportValues() {
   const fields = await $$('.report-field-value');
   return Promise.all(fields.map(node => node.evaluate(e => e.textContent)));
+}
+
+export async function getStorageItemsData(columns: string[]) {
+  return getDataGridData('.storage-view table', columns);
+}
+
+export async function filterStorageItems(filter: string) {
+  const element = await $('.toolbar-input-prompt') as puppeteer.ElementHandle;
+  await element.type(filter);
+}
+
+export async function clearStorageItemsFilter() {
+  await click('.toolbar-input .toolbar-input-clear-button');
+}
+
+export async function clearStorageItems() {
+  await waitFor('#storage-items-delete-all');
+  await click('#storage-items-delete-all');
 }

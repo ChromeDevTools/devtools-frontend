@@ -25,6 +25,8 @@ devtools_image_files = [
   "dropdown_7x6_icon.svg",
   "elements_panel_icon.svg",
   "errorWave.svg",
+  "ic_delete_list.svg",
+  "ic_delete_filter.svg",
   "flex-direction-icon.svg",
   "flex-align-content-center-icon.svg",
   "flex-align-content-start-icon.svg",

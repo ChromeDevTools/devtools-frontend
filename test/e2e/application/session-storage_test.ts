@@ -5,8 +5,7 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, getHostedModeServerPort, step} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
-import {doubleClickSourceTreeItem, getDataGridData, navigateToApplicationTab} from '../helpers/application-helpers.js';
+import {doubleClickSourceTreeItem, getStorageItemsData, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const SESSION_STORAGE_SELECTOR = '[aria-label="Session Storage"]';
 let DOMAIN_SELECTOR: string;
@@ -29,7 +28,7 @@ describe('The Application Tab', async () => {
     });
 
     await step('check that storage data values are correct', async () => {
-      const dataGridRowValues = await getDataGridData('.storage-view table', ['key', 'value']);
+      const dataGridRowValues = await getStorageItemsData(['key', 'value']);
       assert.deepEqual(dataGridRowValues, [
         {
           key: 'firstKey',

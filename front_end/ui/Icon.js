@@ -208,6 +208,8 @@ const initialDescriptors = new Map([
   ['largeicon-copy', {position: 'b6', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-deactivate-breakpoints', {position: 'c6', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-delete', {position: 'd9', spritesheet: 'largeicons', isMask: true}],
+  ['largeicon-delete-filter', {position: 'i5', spritesheet: 'largeicons', isMask: true}],
+  ['largeicon-delete-list', {position: 'i6', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-dock-to-bottom', {position: 'd8', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-dock-to-left', {position: 'd7', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-dock-to-right', {position: 'd6', spritesheet: 'largeicons', isMask: true}],

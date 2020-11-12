@@ -51,6 +51,9 @@
   <message name="IDS_DEVTOOLS_1244cdadee67e32c671f120f59b16d0c" desc="Explanation for the SharedArrayBuffer availability status">
     requires cross-origin isolated context
   </message>
+  <message name="IDS_DEVTOOLS_1300bf242b3862d5187d6b11b2ce3d06" desc="Label to delete all cookies">
+    Clear all cookies
+  </message>
   <message name="IDS_DEVTOOLS_1351a3eaa0f925dad980e83905bc1230" desc="Text of a DOM element in Service Workers View of the Application panel">
     Worker: <ph name="TARGETINFO_URL">$1s<ex>example.com</ex></ph>
   </message>
@@ -231,6 +234,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_6b2bfcecfdc437d73d756be2f262945d" desc="Manifest installability error in the Application panel">
     The Play Store app URL and Play Store ID do not match
+  </message>
+  <message name="IDS_DEVTOOLS_6bdb2cc42fcf3c72c7c5df8e0cf48f3f" desc="Label to only delete the cookies that are visible after filtering">
+    Clear filtered cookies
   </message>
   <message name="IDS_DEVTOOLS_6c202452e44c42e323204da2a3a3c24a" desc="Text in Clear Storage View of the Application panel">
     File System

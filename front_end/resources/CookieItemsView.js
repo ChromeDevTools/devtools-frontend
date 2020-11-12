@@ -87,6 +87,8 @@ export class CookieItemsView extends StorageItemsView {
 
     /** @type {!Array<!SDK.Cookie.Cookie>} */
     this._allCookies = [];
+    /** @type {!Array<!SDK.Cookie.Cookie>} */
+    this._shownCookies = [];
 
     this.setCookiesDomain(model, cookieDomain);
   }
@@ -200,11 +202,18 @@ export class CookieItemsView extends StorageItemsView {
     const host = parsedURL ? parsedURL.host : '';
     this._cookiesTable.setCookieDomain(host);
 
-    const shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
-    this._cookiesTable.setCookies(shownCookies, this._model.getCookieToBlockedReasonsMap());
-    UI.ARIAUtils.alert(ls`Number of cookies shown in table: ${shownCookies.length}`, this.element);
+    this._shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
+    if (this.hasFilter()) {
+      this.setDeleteAllTitle(ls`Clear filtered cookies`);
+      this.setDeleteAllGlyph('largeicon-delete-filter');
+    } else {
+      this.setDeleteAllTitle(ls`Clear all cookies`);
+      this.setDeleteAllGlyph('largeicon-delete-list');
+    }
+    this._cookiesTable.setCookies(this._shownCookies, this._model.getCookieToBlockedReasonsMap());
+    UI.ARIAUtils.alert(ls`Number of cookies shown in table: ${this._shownCookies.length}`, this.element);
     this.setCanFilter(true);
-    this.setCanDeleteAll(true);
+    this.setCanDeleteAll(this._shownCookies.length > 0);
     this.setCanDeleteSelected(!!this._cookiesTable.selectedCookie());
   }
 
@@ -231,11 +240,13 @@ export class CookieItemsView extends StorageItemsView {
   }
 
   /**
+   * This will only delete the currently visible cookies.
+   *
    * @override
    */
   deleteAllItems() {
     this._showPreview(null, null);
-    this._model.clear(this._cookieDomain).then(() => this.refreshItems());
+    this._model.deleteCookies(this._shownCookies).then(() => this.refreshItems());
   }
 
   /**

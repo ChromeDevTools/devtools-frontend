@@ -12,7 +12,7 @@
    height="216"
    id="svg2"
    version="1.1"
-   inkscape:version="1.0 (4035a4f, 2020-05-01)"
+   inkscape:version="1.0.1 (c497b03c, 2020-09-10)"
    sodipodi:docname="largeIcons.svg">
   <metadata
      id="metadata606">
@@ -22,7 +22,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -77,15 +77,15 @@
      inkscape:snap-grids="true"
      inkscape:current-layer="svg2"
      inkscape:window-maximized="0"
-     inkscape:window-y="0"
+     inkscape:window-y="937"
      inkscape:window-x="0"
-     inkscape:cy="117.31725"
-     inkscape:cx="174.13294"
-     inkscape:zoom="2.650477"
+     inkscape:cy="98.634086"
+     inkscape:cx="238.52575"
+     inkscape:zoom="19.303189"
      showgrid="true"
      id="namedview602"
-     inkscape:window-height="1120"
-     inkscape:window-width="1792"
+     inkscape:window-height="925"
+     inkscape:window-width="1680"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0"
      guidetolerance="10"
@@ -93,7 +93,8 @@
      objecttolerance="10"
      borderopacity="1"
      bordercolor="#666666"
-     pagecolor="#ffffff">
+     pagecolor="#ffffff"
+     inkscape:document-units="in">
     <inkscape:grid
        originy="0"
        originx="0"
@@ -1594,4 +1595,36 @@
        x="0"
        y="-11.601696"><tspan
          style="font-size:10.6667px">workflow.</tspan></tspan></text>
+  <g
+     style="fill:none"
+     id="g345"
+     transform="translate(229.38296,76.01)">
+    <path
+       d="M 1,5 H 12 C 10.22,5 8.63,5.77 7.53,7 H 1 Z M 6.34,9 H 1 v 2 H 6 C 6,10.3 6.12,9.63 6.34,9 Z M 1,1 H 13 V 3 H 1 Z"
+       fill="#000000"
+       id="path330" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 16,11 a 4,4 0 1 1 -8,0 4,4 0 0 1 8,0 z m -2.8,2.2 A 2.5,2.5 0 0 1 9.8,9.8 l 3.38,3.39 z m 0.95,-0.93 -3.42,-3.42 a 2.5,2.5 0 0 1 3.42,3.42 z"
+       fill="#000000"
+       id="path332" />
+  </g>
+  <g
+     style="fill:none"
+     id="g361"
+     transform="translate(229.36296,100)">
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="M 2.07,1 A 1.5,1.5 0 0 0 0.92,3.46 L 5,8.36 V 13 a 1,1 0 1 0 2,0 V 8.36 l 4.08,-4.9 A 1.5,1.5 0 0 0 9.93,1 Z M 6,6.44 3.14,3 h 5.72 z"
+       fill="#000000"
+       id="path347" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 16,11 a 4,4 0 1 1 -8,0 4,4 0 0 1 8,0 z m -2.8,2.2 A 2.5,2.5 0 0 1 9.8,9.8 l 3.38,3.39 z m 0.95,-0.93 -3.42,-3.42 a 2.5,2.5 0 0 1 3.42,3.42 z"
+       fill="#000000"
+       id="path349" />
+  </g>
 </svg>

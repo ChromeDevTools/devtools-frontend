@@ -17,6 +17,43 @@ const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control
 /** @type {!Array<!ReleaseNote>} */
 export const releaseNoteText = [
   {
+    version: 30,
+    header: 'Highlights from the Chrome 88 update',
+    highlights: [
+      {
+        title: 'New CSS angle visualization tools',
+        subtitle: 'Better visualize and edit CSS angle in the Styles pane.',
+        link: 'https://developers.google.com/web/updates/2020/11/devtools#css-angle',
+      },
+      {
+        title: 'Emulate unsupported image types',
+        subtitle: '2 new emulations to disable AVIF and WebP image formats in the Rendering tab.',
+        link: 'https://developers.google.com/web/updates/2020/11/devtools#emulate-image',
+      },
+      {
+        title: 'Emulate storage quota size',
+        subtitle: 'Override storage quota size in the Storage pane.',
+        link: 'https://developers.google.com/web/updates/2020/11/devtools#emulate-storage',
+      },
+      {
+        title: 'New Web Vitals lane',
+        subtitle: 'New Web Vitals lane in the Performance panel recordings.',
+        link: 'https://developers.google.com/web/updates/2020/11/devtools#web-vitals',
+      },
+      {
+        title: 'Report CORS errors in the Network panel',
+        subtitle: 'Show CORS errors label and error code for failed CORS requests.',
+        link: 'https://developers.google.com/web/updates/2020/11/devtools#cors',
+      },
+      {
+        title: 'Frame details view updates',
+        subtitle: 'New cross-origin isolation status, API availability section, and more.',
+        link: 'https://developers.google.com/web/updates/2020/11/devtools#frame-details',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2020/11/devtools',
+  },
+  {
     version: 29,
     header: 'Highlights from the Chrome 87 update',
     highlights: [

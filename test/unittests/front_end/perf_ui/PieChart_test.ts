@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as PerfUI from '../../../../front_end/perf_ui/PieChart.js';
+import * as PerfUI from '../../../../front_end/perf_ui/perf_ui.js';
 import {assertNotNull, assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -28,7 +28,7 @@ const testChartNoLegendData = {
 describe('PieChart', () => {
   describe('with legend', () => {
     it('is labelled by the chart name', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
@@ -40,7 +40,7 @@ describe('PieChart', () => {
     });
 
     it('has path nodes for a 2-slice chart', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
@@ -51,7 +51,7 @@ describe('PieChart', () => {
     });
 
     it('has a legend', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
@@ -62,7 +62,7 @@ describe('PieChart', () => {
     });
 
     it('formats the slice in the legend', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
@@ -74,7 +74,7 @@ describe('PieChart', () => {
     });
 
     it('has a total', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
@@ -85,7 +85,7 @@ describe('PieChart', () => {
     });
 
     it('formats the total', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
@@ -97,7 +97,7 @@ describe('PieChart', () => {
     });
 
     it('selects total by default', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
@@ -121,7 +121,7 @@ describe('PieChart', () => {
     });
 
     it('sets tabIndex=-1 on the slice', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
@@ -133,7 +133,7 @@ describe('PieChart', () => {
     });
 
     it('changes selected when clicking the legend', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
@@ -160,7 +160,7 @@ describe('PieChart', () => {
     });
 
     it('changes selected when clicking the chart', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
@@ -187,7 +187,7 @@ describe('PieChart', () => {
     });
 
     it('does not show a focus ring for click selection', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
@@ -202,7 +202,7 @@ describe('PieChart', () => {
     });
 
     it('shows a focus ring for keyboard selection', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartData;
@@ -219,7 +219,7 @@ describe('PieChart', () => {
 
   describe('without legend', () => {
     it('has no legend', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartNoLegendData;
@@ -230,7 +230,7 @@ describe('PieChart', () => {
     });
 
     it('sets tabIndex=1 on total', () => {
-      const chart = new PerfUI.PieChart();
+      const chart = new PerfUI.PieChartImpl.PieChart();
       renderElementIntoDOM(chart);
 
       chart.data = testChartNoLegendData;

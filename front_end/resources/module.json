@@ -81,28 +81,10 @@
     "i18n"
   ],
   "modules": [
-    "resources.js",
-    "resources-legacy.js",
-    "ApplicationCacheModel.js",
-    "AppManifestView.js",
-    "ApplicationCacheItemsView.js",
-    "BackgroundServiceModel.js",
-    "BackgroundServiceView.js",
-    "ClearStorageView.js",
-    "StorageItemsView.js",
-    "CookieItemsView.js",
-    "DatabaseModel.js",
-    "DOMStorageModel.js",
-    "DOMStorageItemsView.js",
-    "DatabaseQueryView.js",
-    "DatabaseTableView.js",
-    "FrameDetailsView.js",
-    "IndexedDBModel.js",
-    "IndexedDBViews.js",
-    "ResourcesPanel.js",
-    "ApplicationPanelSidebar.js",
-    "ServiceWorkerCacheViews.js",
-    "ServiceWorkersView.js"
+    "resources-legacy.js"
+  ],
+  "skip_compilation": [
+    "resources-legacy.js"
   ],
   "resources": [
     "appManifestView.css",

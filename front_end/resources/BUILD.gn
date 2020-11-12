@@ -54,7 +54,7 @@ devtools_module("resources") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "resources.js"
+  entrypoint = "resources.ts"
 
   deps = [ ":resources" ]
 }

@@ -67,6 +67,14 @@ export const waitForAdorners = async (expectedAdorners: {textContent: string, is
   });
 };
 
+export const waitForAdornerOnSelectedNode = async (expectedAdornerText: string) => {
+  await waitForFunction(async () => {
+    const selectedNode = await waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
+    const adorner = await waitFor(ADORNER_SELECTOR, selectedNode);
+    return expectedAdornerText === await adorner.evaluate(node => node.textContent);
+  });
+};
+
 export const toggleElementCheckboxInLayoutPane = async () => {
   await step('Click element checkbox in Layout pane', async () => {
     await waitFor(ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR);

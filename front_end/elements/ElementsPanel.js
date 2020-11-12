@@ -1113,6 +1113,14 @@ const TrackedCSSGridProperties = [
     name: 'display',
     value: 'inline-grid',
   },
+  {
+    name: 'display',
+    value: 'flex',
+  },
+  {
+    name: 'display',
+    value: 'inline-flex',
+  },
 ];
 
 /**

@@ -31,9 +31,9 @@ export const releaseNoteText = [
         link: 'https://developers.google.com/web/updates/2020/11/devtools#emulate-image',
       },
       {
-        title: 'Emulate storage quota size',
+        title: 'Simulate storage quota size',
         subtitle: 'Override storage quota size in the Storage pane.',
-        link: 'https://developers.google.com/web/updates/2020/11/devtools#emulate-storage',
+        link: 'https://developers.google.com/web/updates/2020/11/devtools#simulate-storage',
       },
       {
         title: 'New Web Vitals lane',

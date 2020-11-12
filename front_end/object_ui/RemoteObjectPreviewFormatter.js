@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -37,7 +34,7 @@ export class RemoteObjectPreviewFormatter {
       if (property.name === internalName.GeneratorState || property.name === internalName.PrimitiveValue) {
         return 3;
       }
-      if (property.type !== 'function' && !property.name.startsWith('#')) {
+      if (property.type !== Protocol.Runtime.PropertyPreviewType.Function && !property.name.startsWith('#')) {
         return 4;
       }
       return 5;
@@ -52,12 +49,16 @@ export class RemoteObjectPreviewFormatter {
   appendObjectPreview(parentElement, preview, isEntry) {
     const description = preview.description;
     const subTypesWithoutValuePreview = new Set(['null', 'regexp', 'error', 'internal#entry', 'trustedtype']);
-    if (preview.type !== 'object' || subTypesWithoutValuePreview.has(preview.subtype) || isEntry) {
+    if (preview.type !== Protocol.Runtime.ObjectPreviewType.Object ||
+        (preview.subtype && subTypesWithoutValuePreview.has(preview.subtype)) || isEntry) {
       parentElement.appendChild(
+          // @ts-ignore https://bugs.chromium.org/p/v8/issues/detail?id=11143
           this.renderPropertyPreview(preview.type, preview.subtype, preview.className, description));
       return;
     }
-    const isArrayOrTypedArray = preview.subtype === 'array' || preview.subtype === 'typedarray';
+    const isArrayOrTypedArray = preview.subtype === Protocol.Runtime.ObjectPreviewSubtype.Array
+        // @ts-ignore https://bugs.chromium.org/p/v8/issues/detail?id=11143
+        || preview.subtype === 'typedarray';
     if (description) {
       let text;
       if (isArrayOrTypedArray) {
@@ -84,7 +85,7 @@ export class RemoteObjectPreviewFormatter {
       this._appendObjectPropertiesPreview(propertiesElement, preview);
     }
     if (preview.overflow) {
-      const ellipsisText = propertiesElement.textContent.length > 1 ? ',\xA0…' : '…';
+      const ellipsisText = propertiesElement.textContent && propertiesElement.textContent.length > 1 ? ',\xA0…' : '…';
       propertiesElement.createChild('span').textContent = ellipsisText;
     }
     UI.UIUtils.createTextChild(propertiesElement, isArrayOrTypedArray ? ']' : '}');
@@ -118,6 +119,7 @@ export class RemoteObjectPreviewFormatter {
       const property = properties[i];
       const name = property.name;
       // Internal properties are given special formatting, e.g. Promises `<rejected>: 123`.
+      // @ts-ignore https://bugs.chromium.org/p/v8/issues/detail?id=11143
       if (preview.subtype === 'promise' && name === internalName.PromiseState) {
         parentElement.appendChild(this._renderDisplayName('<' + property.value + '>'));
         const nextProperty = i + 1 < properties.length ? properties[i + 1] : null;
@@ -164,7 +166,12 @@ export class RemoteObjectPreviewFormatter {
      * @return {number}
      */
     function toArrayIndex(name) {
-      const index = name >>> 0;
+      // We need to differentiate between property accesses and array index accesses
+      // Therefore, we need to make sure we are always dealing with an i32, in the event
+      // that a particular property also exists, but as the literal string. For example
+      // for {["1.5"]: true}, we don't want to return `true` if we provide `1.5` as the
+      // value, but only want to do that if we provide `"1.5"`.
+      const index = Number(name) >>> 0;
       if (String(index) === name && index < arrayLength) {
         return index;
       }
@@ -231,6 +238,9 @@ export class RemoteObjectPreviewFormatter {
    * @param {!Protocol.Runtime.ObjectPreview} preview
    */
   _appendEntriesPreview(parentElement, preview) {
+    if (!preview.entries) {
+      return;
+    }
     for (let i = 0; i < preview.entries.length; ++i) {
       if (i > 0) {
         UI.UIUtils.createTextChild(parentElement, ', ');
@@ -263,8 +273,11 @@ export class RemoteObjectPreviewFormatter {
    */
   _renderPropertyPreviewOrAccessor(propertyPath) {
     const property = propertyPath.peekLast();
+    if (!property) {
+      throw new Error('Could not find property');
+    }
     return this.renderPropertyPreview(
-        property.type, /** @type {string} */ (property.subtype), property.className, property.value);
+        property.type, /** @type {string} */ (property.subtype), property.name, property.value);
   }
 
   /**
@@ -334,6 +347,9 @@ const _internalName = {
  */
 export const createSpansForNodeTitle = function(container, nodeTitle) {
   const match = nodeTitle.match(/([^#.]+)(#[^.]+)?(\..*)?/);
+  if (!match) {
+    return;
+  }
   container.createChild('span', 'webkit-html-tag-name').textContent = match[1];
   if (match[2]) {
     container.createChild('span', 'webkit-html-attribute-value').textContent = match[2];

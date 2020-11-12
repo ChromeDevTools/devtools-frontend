@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Root from '../root/root.js';
+
 /**
  * @unrestricted
  */
@@ -287,8 +289,7 @@ export class ParsedURL {
     if (hrefPath.charAt(0) !== '/') {
       hrefPath = parsedURL.folderPathComponents + '/' + hrefPath;
     }
-    // @ts-ignore Runtime needs to be properly exported
-    return securityOrigin + Root.Runtime.normalizePath(hrefPath) + hrefSuffix;
+    return securityOrigin + Root.Runtime.Runtime.normalizePath(hrefPath) + hrefSuffix;
   }
 
   /**

@@ -441,4 +441,64 @@ describe('Parsed URL', () => {
     const parsedUrl = new ParsedURL('www.example.com');
     assert.strictEqual(parsedUrl.urlWithoutScheme(), 'www.example.com', 'URL without scheme returned was incorrect');
   });
+
+  it('returns the correct results for all ported web_tests unit tests', () => {
+    assert.strictEqual(
+        ParsedURL.completeURL('http://example.com/script.js', 'http://example.com/map.json'),
+        'http://example.com/map.json');
+    assert.strictEqual(
+        ParsedURL.completeURL('http://example.com/script.js', '/map.json'), 'http://example.com/map.json');
+    assert.strictEqual(
+        ParsedURL.completeURL('http://example.com/scripts/script.js', '../maps/map.json'),
+        'http://example.com/maps/map.json');
+
+    const baseURL = 'http://a/b/c/d;p?q';
+
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'http://h'), 'http://h');  // modified from RFC3986
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g'), 'http://a/b/c/g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, './g'), 'http://a/b/c/g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g/'), 'http://a/b/c/g/');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '/g'), 'http://a/g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '//g'), 'http://g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '?y'), 'http://a/b/c/d;p?y');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g?y'), 'http://a/b/c/g?y');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '#s'), 'http://a/b/c/d;p?q#s');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g#s'), 'http://a/b/c/g#s');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g?y#s'), 'http://a/b/c/g?y#s');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, ';x'), 'http://a/b/c/;x');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g;x'), 'http://a/b/c/g;x');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g;x?y#s'), 'http://a/b/c/g;x?y#s');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, ''), 'http://a/b/c/d;p?q');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '.'), 'http://a/b/c/');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, './'), 'http://a/b/c/');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '..'), 'http://a/b/');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '../'), 'http://a/b/');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '../g'), 'http://a/b/g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '../..'), 'http://a/');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '../../'), 'http://a/');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '../../g'), 'http://a/g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '../../../g'), 'http://a/g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '../../../../g'), 'http://a/g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '/./g'), 'http://a/g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '/../g'), 'http://a/g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g.'), 'http://a/b/c/g.');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '.g'), 'http://a/b/c/.g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g..'), 'http://a/b/c/g..');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, '..g'), 'http://a/b/c/..g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, './../g'), 'http://a/b/g');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, './g/.'), 'http://a/b/c/g/');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g/./h'), 'http://a/b/c/g/h');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g/../h'), 'http://a/b/c/h');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g;x=1/./y'), 'http://a/b/c/g;x=1/y');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g;x=1/../y'), 'http://a/b/c/y');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g?y/./x'), 'http://a/b/c/g?y/./x');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g?y/../x'), 'http://a/b/c/g?y/../x');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g#s/./x'), 'http://a/b/c/g#s/./x');
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g#s/../x'), 'http://a/b/c/g#s/../x');
+
+    assert.strictEqual(ParsedURL.completeURL('http://a/b/c/d;p?q', '//secure.com/moo'), 'http://secure.com/moo');
+    assert.strictEqual(ParsedURL.completeURL('http://a/b/c/d;p?q', 'cat.jpeg'), 'http://a/b/c/cat.jpeg');
+    assert.strictEqual(
+        ParsedURL.completeURL('http://example.com/path.css?query#fragment', ''), 'http://example.com/path.css?query');
+  });
 });

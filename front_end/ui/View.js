@@ -61,12 +61,6 @@ export class View {
   disposeView() {}
 }
 
-export const _widgetSymbol = Symbol('widget');
-
-// Closure is unhappy with the private access of _widgetSymbol,
-// so re-export it under a public symbol.
-export const widgetSymbol = _widgetSymbol;
-
 /**
  * @implements {View}
  * @unrestricted

@@ -222,9 +222,6 @@ UI.beautifyFunctionName = UIModule.UIUtils.beautifyFunctionName;
 /** @interface */
 UI.View = UIModule.View.View;
 
-/** @public */
-UI.View.widgetSymbol = UIModule.View.widgetSymbol;
-
 /** @constructor */
 UI.SimpleView = UIModule.View.SimpleView;
 

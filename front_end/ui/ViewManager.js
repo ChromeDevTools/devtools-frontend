@@ -15,7 +15,7 @@ import {Icon} from './Icon.js';
 import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import {Toolbar, ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {createTextChild} from './UIUtils.js';
-import {ProvidedView, TabbedViewLocation, View, ViewLocation, ViewLocationResolver, widgetSymbol,} from './View.js';  // eslint-disable-line no-unused-vars
+import {ProvidedView, TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!Array<!PreRegisteredView>} */
@@ -315,7 +315,10 @@ export class ViewManager {
    */
   materializedWidget(viewId) {
     const view = this.view(viewId);
-    return view ? view[widgetSymbol] : null;
+    if (!view) {
+      return null;
+    }
+    return widgetForView.get(view) || null;
   }
 
   /**
@@ -412,6 +415,8 @@ export class ViewManager {
   }
 }
 
+/** @type {!WeakMap<!View, !Widget>} */
+const widgetForView = new WeakMap();
 
 /**
  * @unrestricted
@@ -449,7 +454,7 @@ export class ContainerWidget extends VBox {
       // Move focus from |this| to loaded |widget| if any.
       const shouldFocus = this.element.hasFocus();
       this.setDefaultFocusedElement(null);
-      this._view[widgetSymbol] = widget;
+      widgetForView.set(this._view, widget);
       widget.show(this.element);
       if (shouldFocus) {
         widget.focus();
@@ -464,8 +469,11 @@ export class ContainerWidget extends VBox {
    */
   wasShown() {
     this._materialize().then(() => {
-      this._view[widgetSymbol].show(this.element);
-      this._wasShownForTest();
+      const widget = widgetForView.get(this._view);
+      if (widget) {
+        widget.show(this.element);
+        this._wasShownForTest();
+      }
     });
   }
 
@@ -535,7 +543,7 @@ export class _ExpandableContainerWidget extends VBox {
     }));
     promises.push(this._view.widget().then(widget => {
       this._widget = widget;
-      this._view[widgetSymbol] = widget;
+      widgetForView.set(this._view, widget);
       widget.show(this.element);
     }));
     this._materializePromise = Promise.all(promises);

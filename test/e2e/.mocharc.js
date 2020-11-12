@@ -51,9 +51,14 @@ const timeout = process.env['DEBUG'] ? 0 : 5 * 1000;
 // Our e2e tests are almost always slower than the default 75ms.
 const slow = 1000;
 
+const jobs = Number(process.env['JOBS']) || 1;
+const parallel = !process.env['DEBUG'] && jobs > 1;
+
 module.exports = {
   require: [path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'), 'source-map-support/register'],
   spec: testFiles,
   slow,
   timeout,
+  parallel,
+  jobs,
 }

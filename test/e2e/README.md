@@ -13,17 +13,19 @@ The tests therefore have a dual purpose:
 1. Serve as documentation and reference point for how DevTools is intended to be used.
 
 ## Running tests
-All tests: `npm run e2etest` (note, this requires python2 to be the default python binary!)
-Some additional, optional, helpful flags:
-`npm run e2etest -- --chrome-binary=[LOCATION] --chrome-features=[FEATURES]`
-LOCATION is a path to the chrome executable
-FEATURES is a comma separated list of chrome features passed as `--enable-features=[FEATURES]` to the chrome binary.
+Run all tests: `npm run e2etest` (note, this requires python2 to be the default python binary!)
+
+Some optional, helpful flags:
+* `--jobs=N` — use N parallel runners to speed things up
+* `--chrome-binary=LOCATION` — set a path to the chrome executable
+* `--chrome-features=FEATURES` — set a comma separated list of chrome features passed as `--enable-features=[FEATURES]` to the chrome binary.
+* `--test-file=REL_FILE_PATH` — run all tests in one file only. The path is relative to the generated test/e2e/
+directory. File extensions are not needed and are ignored. e.g. `--test-file=console/console-clear_test`
+
+To use the flags, first append `--` to the `npm` command, e.g.
+`npm run e2etest -- --jobs=4`
 
 If you only want to run a single test or testsuite, use respectively `it.only` or `describe.only`.
-
-You can also run all tests in one file with the `--test-file` option, e.g.
-`npm run e2etest -- --test-file=console/console-clear_test`. The path is relative to the generated test/e2e/
-directory. File extensions are not needed and are ignored.
 
 ## Debugging tests
 To see what the test script does, run `npm run debug-e2etest`. This will bring up the chrome window and stop just

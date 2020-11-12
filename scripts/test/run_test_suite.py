@@ -37,6 +37,12 @@ def parse_options(cli_args):
         '--chrome-features',
         dest='chrome_features',
         help='comma separated list of strings passed to --enable-features on the chromium commandline')
+    parser.add_argument(
+        '--jobs',
+        default='1',
+        dest='jobs',
+        help=
+        'The number of parallel runners to use (if supported). Defaults to 1')
     return parser.parse_args(cli_args)
 
 
@@ -44,6 +50,7 @@ def run_tests(chrome_binary,
               chrome_features,
               test_suite_path,
               test_suite,
+              jobs,
               test_file=None):
     env = os.environ.copy()
     env['CHROME_BIN'] = chrome_binary
@@ -52,6 +59,9 @@ def run_tests(chrome_binary,
 
     if test_file is not None:
         env['TEST_FILE'] = test_file
+
+    if jobs:
+        env['JOBS'] = jobs
 
     cwd = devtools_paths.devtools_root_path()
     exec_command = [
@@ -98,6 +108,9 @@ def run_test():
         print('Unable to run, no test suite provided')
         sys.exit(1)
 
+    if OPTIONS.jobs:
+        jobs = OPTIONS.jobs
+
     test_suite = OPTIONS.test_suite
     test_file = OPTIONS.test_file
 
@@ -118,6 +131,7 @@ def run_test():
                                  chrome_features,
                                  test_suite_path,
                                  test_suite,
+                                 jobs,
                                  test_file=test_file)
     except Exception as err:
         print(err)

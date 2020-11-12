@@ -4,11 +4,9 @@
 
 /* eslint-disable no-console */
 
-import {ChildProcess, spawn} from 'child_process';
-import * as path from 'path';
 import * as puppeteer from 'puppeteer';
 
-import {getBrowserAndPages, registerHandlers, setBrowserAndPages, setHostedModeServerPort} from './puppeteer-state.js';
+import {clearPuppeteerState, getBrowserAndPages, registerHandlers, setBrowserAndPages, setHostedModeServerPort} from './puppeteer-state.js';
 
 // Workaround for mismatching versions of puppeteer types and puppeteer library.
 declare module 'puppeteer' {
@@ -17,17 +15,15 @@ declare module 'puppeteer' {
   }
 }
 
-const HOSTED_MODE_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', 'hosted_mode', 'server.js');
 const EMPTY_PAGE = 'data:text/html,';
 const DEFAULT_TAB = {
   name: 'elements',
   selector: '.elements',
 };
 
-const cwd = path.join(__dirname, '..', '..');
-const {execPath} = process;
 const width = 1280;
 const height = 720;
+let unhandledRejectionSet = false;
 
 const headless = !process.env['DEBUG'];
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
@@ -51,7 +47,6 @@ const logLevels = {
   assert: 'E',
 };
 
-let hostedModeServer: ChildProcess;
 let browser: puppeteer.Browser;
 let frontendUrl: string;
 
@@ -157,9 +152,12 @@ async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
     throw new Error(`Page error in Frontend: ${error}`);
   });
 
-  process.on('unhandledRejection', error => {
-    throw new Error(`Unhandled rejection in Frontend: ${error}`);
-  });
+  if (!unhandledRejectionSet) {
+    process.on('unhandledRejection', error => {
+      throw new Error(`Unhandled rejection in Frontend: ${error}`);
+    });
+    unhandledRejectionSet = true;
+  }
 
   frontend.on('console', msg => {
     const logLevel = logLevels[msg.type() as keyof typeof logLevels] as string;
@@ -248,49 +246,15 @@ export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
   }
 }
 
-function startHostedModeServer(): Promise<number> {
-  console.log('Spawning hosted mode server');
-
-  function handleHostedModeError(error: Error) {
-    throw new Error(`Hosted mode server: ${error}`);
-  }
-
-  // Copy the current env and append the port.
-  const env = Object.create(process.env);
-  env.PORT = 0;  // 0 means request a free port from the OS.
-  return new Promise((resolve, reject) => {
-    // We open the server with an IPC channel so that it can report the port it
-    // used back to us. For parallel test mode, we need to avoid specifying a
-    // port directly and instead request any free port, which is what port 0
-    // signifies to the OS.
-    hostedModeServer = spawn(execPath, [HOSTED_MODE_SERVER_PATH], {cwd, env, stdio: ['pipe', 'pipe', 'pipe', 'ipc']});
-    hostedModeServer.on('message', message => {
-      if (message === 'ERROR') {
-        reject('Could not start hosted mode server');
-      } else {
-        resolve(parseInt(message, 10));
-      }
-    });
-    hostedModeServer.on('error', handleHostedModeError);
-    if (hostedModeServer.stderr) {
-      hostedModeServer.stderr.on('data', handleHostedModeError);
-    }
-  });
+// Can be run multiple times in the same process.
+export async function preFileSetup(hostedModeServerPort: number) {
+  setHostedModeServerPort(hostedModeServerPort);
+  registerHandlers();
+  await loadTargetPageAndDevToolsFrontend(hostedModeServerPort);
 }
 
-export async function globalSetup() {
-  try {
-    const port = await startHostedModeServer();
-    console.log(`Started hosted mode server on port ${port}`);
-    registerHandlers();
-    setHostedModeServerPort(port);
-    await loadTargetPageAndDevToolsFrontend(port);
-  } catch (message) {
-    throw new Error(message);
-  }
-}
-
-export async function globalTeardown() {
+// Can be run multiple times in the same process.
+export async function postFileTeardown() {
   // We need to kill the browser before we stop the hosted mode server.
   // That's because the browser could continue to make network requests,
   // even after we would have closed the server. If we did so, the requests
@@ -298,8 +262,7 @@ export async function globalTeardown() {
   // for the very last test that runs.
   await browser.close();
 
-  console.log('Stopping hosted mode server');
-  hostedModeServer.kill();
+  clearPuppeteerState();
 
   console.log('Expected errors: ' + expectedErrors.length);
   console.log('   Fatal errors: ' + fatalErrors.length);

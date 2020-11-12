@@ -15,6 +15,7 @@ node_ts_library("implementation") {
   sources = [
     "custom-query-handlers.ts",
     "hooks.ts",
+    "hosted_mode_server.ts",
     "mocha_hooks.ts",
     "puppeteer-state.ts",
   ]

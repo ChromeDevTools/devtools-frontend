@@ -4,9 +4,11 @@
 
 const {assert} = chai;
 
-import {FormatMillisecondsToSeconds, Bounds} from '../../../../front_end/media/TickingFlameChartHelpers.js';
+import type * as MediaModule from '../../../../front_end/media/media.js';
 
-function assertParameters(bounds: Bounds, low: number, high: number, min: number, max: number, range: number) {
+function assertParameters(
+    bounds: MediaModule.TickingFlameChartHelpers.Bounds, low: number, high: number, min: number, max: number,
+    range: number) {
   assert.closeTo(bounds.low, low, 0.01);
   assert.closeTo(bounds.high, high, 0.01);
   assert.closeTo(bounds.min, min, 0.01);
@@ -15,22 +17,27 @@ function assertParameters(bounds: Bounds, low: number, high: number, min: number
 }
 
 describe('TickingFlameChartTests', () => {
-  it('checks that the formatter works correctly', () => {
-    assert.strictEqual(FormatMillisecondsToSeconds(901, 0), '1 s');
-    assert.strictEqual(FormatMillisecondsToSeconds(901, 1), '0.9 s');
-    assert.strictEqual(FormatMillisecondsToSeconds(901, 2), '0.9 s');
-    assert.strictEqual(FormatMillisecondsToSeconds(901, 3), '0.901 s');
+  let Media: typeof MediaModule;
+  before(async () => {
+    Media = await import('../../../../front_end/media/media.js');
+  });
 
-    assert.strictEqual(FormatMillisecondsToSeconds(89129, 2), '89.13 s');
+  it('checks that the formatter works correctly', () => {
+    assert.strictEqual(Media.TickingFlameChartHelpers.FormatMillisecondsToSeconds(901, 0), '1 s');
+    assert.strictEqual(Media.TickingFlameChartHelpers.FormatMillisecondsToSeconds(901, 1), '0.9 s');
+    assert.strictEqual(Media.TickingFlameChartHelpers.FormatMillisecondsToSeconds(901, 2), '0.9 s');
+    assert.strictEqual(Media.TickingFlameChartHelpers.FormatMillisecondsToSeconds(901, 3), '0.901 s');
+
+    assert.strictEqual(Media.TickingFlameChartHelpers.FormatMillisecondsToSeconds(89129, 2), '89.13 s');
   });
 
   it('checks that the bounds are correct', () => {
-    const bounds = new Bounds(0, 100, 1000, 100);
+    const bounds = new Media.TickingFlameChartHelpers.Bounds(0, 100, 1000, 100);
     assertParameters(bounds, 0, 100, 0, 100, 100);
   });
 
   it('checks zoom toggle works correctly', () => {
-    const bounds = new Bounds(0, 1000, 1000, 100);
+    const bounds = new Media.TickingFlameChartHelpers.Bounds(0, 1000, 1000, 100);
     bounds.zoomOut(1, 0.5);  // does nothing, because it hasn't been zoomed yet.
     assertParameters(bounds, 0, 1000, 0, 1000, 1000);
 
@@ -42,7 +49,7 @@ describe('TickingFlameChartTests', () => {
   });
 
   it('checks zoom different locations works correctly', () => {
-    const bounds = new Bounds(0, 1000, 1000, 100);
+    const bounds = new Media.TickingFlameChartHelpers.Bounds(0, 1000, 1000, 100);
     bounds.zoomOut(1, 0.5);  // does nothing, because its already at max.
     assertParameters(bounds, 0, 1000, 0, 1000, 1000);
 
@@ -54,7 +61,7 @@ describe('TickingFlameChartTests', () => {
   });
 
   it('checks adding to the bounds range', () => {
-    const bounds = new Bounds(0, 1000, 1000, 100);
+    const bounds = new Media.TickingFlameChartHelpers.Bounds(0, 1000, 1000, 100);
 
     bounds.addMax(10);  // Should push up the max because we're zoomed out.
     assertParameters(bounds, 0, 1010, 0, 1010, 1010);

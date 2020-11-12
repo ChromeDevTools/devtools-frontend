@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import {Row, RowType} from './ChangesView.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -53,7 +50,9 @@ export function ChangesHighlighter(config, parserConfig) {
         syntaxHighlightMode.blankLine(syntaxState);
       }
       while (!stream.eol()) {
-        syntaxHighlightMode.token(stream, syntaxState);
+        if (syntaxHighlightMode.token) {
+          syntaxHighlightMode.token(stream, syntaxState);
+        }
         stream.start = stream.pos;
       }
       lineNumber++;
@@ -87,11 +86,13 @@ export function ChangesHighlighter(config, parserConfig) {
     token: function(stream, state) {
       const diffRow = diffRows[state.rowNumber];
       if (!diffRow) {
+        // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
         stream.next();
         return '';
       }
       fastForward(state, diffRow.baselineLineNumber - 1, diffRow.currentLineNumber - 1);
       let classes = '';
+      // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
       if (stream.pos === 0) {
         classes += ' line-background-' + diffRow.type + ' line-' + diffRow.type;
       }
@@ -104,9 +105,15 @@ export function ChangesHighlighter(config, parserConfig) {
       }
 
       if (syntaxHighlighterNeedsRefresh) {
-        if (diffRow.type === RowType.Deletion || diffRow.type === RowType.Addition || diffRow.type === RowType.Equal) {
-          state.syntaxStyle = syntaxHighlightMode.token(
-              stream, diffRow.type === RowType.Deletion ? state.baselineSyntaxState : state.currentSyntaxState);
+        if (syntaxHighlightMode.token &&
+            (diffRow.type === RowType.Deletion || diffRow.type === RowType.Addition ||
+             diffRow.type === RowType.Equal)) {
+          state.syntaxStyle =
+              syntaxHighlightMode.token(
+                  // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
+                  stream, diffRow.type === RowType.Deletion ? state.baselineSyntaxState : state.currentSyntaxState) ||
+              '';
+          // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
           state.syntaxPosition = stream.pos;
         } else {
           state.syntaxStyle = '';
@@ -114,10 +121,12 @@ export function ChangesHighlighter(config, parserConfig) {
         }
       }
 
+      // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
       stream.pos = Math.min(state.syntaxPosition, state.diffPosition);
       classes += ' ' + state.syntaxStyle;
       classes += ' ' + state.diffStyle;
 
+      // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
       if (stream.eol()) {
         state.rowNumber++;
         if (diffRow.type === RowType.Deletion) {
@@ -149,9 +158,11 @@ export function ChangesHighlighter(config, parserConfig) {
       let style = '';
       if (syntaxHighlightMode.blankLine) {
         if (diffRow.type === RowType.Equal || diffRow.type === RowType.Addition) {
+          // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
           style = syntaxHighlightMode.blankLine(state.currentSyntaxState);
           state.currentLineNumber++;
         } else if (diffRow.type === RowType.Deletion) {
+          // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
           style = syntaxHighlightMode.blankLine(state.baselineSyntaxState);
           state.baselineLineNumber++;
         }
@@ -165,13 +176,16 @@ export function ChangesHighlighter(config, parserConfig) {
      */
     copyState: function(state) {
       const newState = Object.assign({}, state);
+      // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
       newState.currentSyntaxState = CodeMirror.copyState(syntaxHighlightMode, state.currentSyntaxState);
+      // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
       newState.baselineSyntaxState = CodeMirror.copyState(syntaxHighlightMode, state.baselineSyntaxState);
       return /** @type {!DiffState} */ (newState);
     }
   };
 }
 
+// @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
 CodeMirror.defineMode('devtools-diff', ChangesHighlighter);
 
 /**
@@ -188,4 +202,5 @@ CodeMirror.defineMode('devtools-diff', ChangesHighlighter);
  *  diffStyle: string
  * }}
  */
+// @ts-ignore typedef
 export let DiffState;

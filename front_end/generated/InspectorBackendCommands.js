@@ -319,7 +319,8 @@ export function registerCommands(inspectorBackend) {
     WakeLockSystem: 'wakeLockSystem'
   });
   inspectorBackend.registerEnum('Browser.PermissionSetting', {Granted: 'granted', Denied: 'denied', Prompt: 'prompt'});
-  inspectorBackend.registerEnum('Browser.BrowserCommandId', {OpenTabSearch: 'openTabSearch'});
+  inspectorBackend.registerEnum(
+      'Browser.BrowserCommandId', {OpenTabSearch: 'openTabSearch', CloseTabSearch: 'closeTabSearch'});
   inspectorBackend.registerCommand(
       'Browser.setPermission',
       [

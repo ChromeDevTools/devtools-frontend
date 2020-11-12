@@ -859,6 +859,7 @@ domain Browser
   experimental type BrowserCommandId extends string
     enum
       openTabSearch
+      closeTabSearch
 
   # Set permission settings for given origin.
   experimental command setPermission
@@ -4539,12 +4540,13 @@ domain Network
       network
 
   # Determines what type of Trust Token operation is executed and
-  # depending on the type, some additional parameters.
+  # depending on the type, some additional parameters. The values
+  # are specified in third_party/blink/renderer/core/fetch/trust_token.idl.
   experimental type TrustTokenParams extends object
     properties
       TrustTokenOperationType type
 
-      # Only set for "srr-token-redemption" type and determine whether
+      # Only set for "token-redemption" type and determine whether
       # to request a fresh SRR or use a still valid cached SRR.
       enum refreshPolicy
         UseCached
@@ -4558,9 +4560,9 @@ domain Network
     enum
       # Type "token-request" in the Trust Token API.
       Issuance
-      # Type "srr-token-redemption" in the Trust Token API.
+      # Type "token-redemption" in the Trust Token API.
       Redemption
-      # Type "send-srr" in the Trust Token API.
+      # Type "send-redemption-record" in the Trust Token API.
       Signing
 
   # HTTP response data.
@@ -5528,8 +5530,8 @@ domain Network
 
   experimental type SecurityIsolationStatus extends object
     properties
-      CrossOriginOpenerPolicyStatus coop
-      CrossOriginEmbedderPolicyStatus coep
+      optional CrossOriginOpenerPolicyStatus coop
+      optional CrossOriginEmbedderPolicyStatus coep
 
   # Returns information about the COEP/COOP isolation status.
   experimental command getSecurityIsolationStatus
@@ -5634,6 +5636,10 @@ experimental domain Overlay
     properties
       # The style of the container border
       optional LineStyle containerBorder
+      # The style of the separator between lines
+      optional LineStyle lineSeparator
+      # The style of the separator between items
+      optional LineStyle itemSeparator
 
   # Style information for drawing a line.
   type LineStyle extends object

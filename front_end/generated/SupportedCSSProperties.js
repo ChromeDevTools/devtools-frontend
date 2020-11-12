@@ -94,6 +94,7 @@ export const generatedProperties = [
     'keywords': ['read-only', 'read-write', 'read-write-plaintext-only']
   },
   {'name': '-webkit-writing-mode', 'inherited': true},
+  {'name': 'additive-symbols'},
   {'name': 'advance-override'},
   {'name': 'advance-proportional-override'},
   {'name': 'align-content'},
@@ -381,6 +382,7 @@ export const generatedProperties = [
   },
   {'name': 'empty-cells', 'inherited': true, 'keywords': ['show', 'hide']},
   {'name': 'end'},
+  {'name': 'fallback'},
   {'name': 'fill', 'svg': true, 'inherited': true},
   {'svg': true, 'inherited': true, 'name': 'fill-opacity'},
   {'name': 'fill-rule', 'svg': true, 'inherited': true, 'keywords': ['nonzero', 'evenodd']},
@@ -623,6 +625,7 @@ export const generatedProperties = [
       'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'
     ]
   },
+  {'name': 'negative'},
   {'name': 'object-fit', 'keywords': ['fill', 'contain', 'cover', 'none', 'scale-down']},
   {'name': 'object-position'},
   {
@@ -660,6 +663,7 @@ export const generatedProperties = [
   {'name': 'overscroll-behavior-inline'},
   {'name': 'overscroll-behavior-x', 'keywords': ['auto', 'contain', 'none']},
   {'name': 'overscroll-behavior-y', 'keywords': ['auto', 'contain', 'none']},
+  {'name': 'pad'},
   {'longhands': ['padding-top', 'padding-right', 'padding-bottom', 'padding-left'], 'name': 'padding'},
   {'longhands': ['padding-block-start', 'padding-block-end'], 'name': 'padding-block'},
   {'name': 'padding-block-end'},
@@ -691,8 +695,10 @@ export const generatedProperties = [
     ]
   },
   {'name': 'position', 'keywords': ['static', 'relative', 'absolute', 'fixed', 'sticky']},
+  {'name': 'prefix'},
   {'name': 'quotes', 'inherited': true, 'keywords': ['auto', 'none']},
   {'svg': true, 'name': 'r'},
+  {'name': 'range'},
   {'name': 'resize', 'keywords': ['none', 'both', 'horizontal', 'vertical', 'block', 'inline']},
   {'name': 'right', 'keywords': ['auto']},
   {'name': 'rotate'},
@@ -752,6 +758,7 @@ export const generatedProperties = [
     'inherited': true,
     'keywords': ['none', 'normal', 'spell-out', 'digits', 'literal-punctuation', 'no-punctuation']
   },
+  {'name': 'speak-as'},
   {'name': 'src'},
   {'name': 'start'},
   {'name': 'stop-color', 'svg': true, 'keywords': ['currentcolor']},
@@ -764,7 +771,10 @@ export const generatedProperties = [
   {'name': 'stroke-miterlimit', 'svg': true, 'inherited': true},
   {'svg': true, 'inherited': true, 'name': 'stroke-opacity'},
   {'svg': true, 'inherited': true, 'name': 'stroke-width'},
+  {'name': 'suffix'},
+  {'name': 'symbols'},
   {'name': 'syntax'},
+  {'name': 'system'},
   {'name': 'tab-size', 'inherited': true},
   {'name': 'table-layout', 'keywords': ['auto', 'fixed']},
   {

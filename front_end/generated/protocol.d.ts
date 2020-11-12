@@ -1190,6 +1190,7 @@ declare namespace Protocol {
      */
     export enum BrowserCommandId {
       OpenTabSearch = 'openTabSearch',
+      CloseTabSearch = 'closeTabSearch',
     }
 
     /**
@@ -6687,12 +6688,13 @@ declare namespace Protocol {
 
     /**
      * Determines what type of Trust Token operation is executed and
-     * depending on the type, some additional parameters.
+     * depending on the type, some additional parameters. The values
+     * are specified in third_party/blink/renderer/core/fetch/trust_token.idl.
      */
     export interface TrustTokenParams {
       type: TrustTokenOperationType;
       /**
-       * Only set for "srr-token-redemption" type and determine whether
+       * Only set for "token-redemption" type and determine whether
        * to request a fresh SRR or use a still valid cached SRR.
        */
       refreshPolicy: TrustTokenParamsRefreshPolicy;
@@ -7328,8 +7330,8 @@ declare namespace Protocol {
     }
 
     export interface SecurityIsolationStatus {
-      coop: CrossOriginOpenerPolicyStatus;
-      coep: CrossOriginEmbedderPolicyStatus;
+      coop?: CrossOriginOpenerPolicyStatus;
+      coep?: CrossOriginEmbedderPolicyStatus;
     }
 
     /**
@@ -8342,6 +8344,14 @@ declare namespace Protocol {
        * The style of the container border
        */
       containerBorder?: LineStyle;
+      /**
+       * The style of the separator between lines
+       */
+      lineSeparator?: LineStyle;
+      /**
+       * The style of the separator between items
+       */
+      itemSeparator?: LineStyle;
     }
 
     export enum LineStylePattern {

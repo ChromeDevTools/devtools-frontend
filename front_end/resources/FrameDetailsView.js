@@ -120,7 +120,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
    *
    * @param {!HTMLElement} field
    * @param {function((!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue)):boolean} isEnabled
-   * @param {?Protocol.Network.CrossOriginEmbedderPolicyStatus|?Protocol.Network.CrossOriginOpenerPolicyStatus} info
+   * @param {?Protocol.Network.CrossOriginEmbedderPolicyStatus|?Protocol.Network.CrossOriginOpenerPolicyStatus|undefined} info
    */
   static fillCrossOriginPolicy(field, isEnabled, info) {
     if (!info) {

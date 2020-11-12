@@ -1742,7 +1742,8 @@
                     "experimental": true,
                     "type": "string",
                     "enum": [
-                        "openTabSearch"
+                        "openTabSearch",
+                        "closeTabSearch"
                     ]
                 },
                 {
@@ -9890,7 +9891,7 @@
                 },
                 {
                     "id": "TrustTokenParams",
-                    "description": "Determines what type of Trust Token operation is executed and\ndepending on the type, some additional parameters.",
+                    "description": "Determines what type of Trust Token operation is executed and\ndepending on the type, some additional parameters. The values\nare specified in third_party/blink/renderer/core/fetch/trust_token.idl.",
                     "experimental": true,
                     "type": "object",
                     "properties": [
@@ -9900,7 +9901,7 @@
                         },
                         {
                             "name": "refreshPolicy",
-                            "description": "Only set for \"srr-token-redemption\" type and determine whether\nto request a fresh SRR or use a still valid cached SRR.",
+                            "description": "Only set for \"token-redemption\" type and determine whether\nto request a fresh SRR or use a still valid cached SRR.",
                             "type": "string",
                             "enum": [
                                 "UseCached",
@@ -10774,10 +10775,12 @@
                     "properties": [
                         {
                             "name": "coop",
+                            "optional": true,
                             "$ref": "CrossOriginOpenerPolicyStatus"
                         },
                         {
                             "name": "coep",
+                            "optional": true,
                             "$ref": "CrossOriginEmbedderPolicyStatus"
                         }
                     ]
@@ -12207,6 +12210,18 @@
                         {
                             "name": "containerBorder",
                             "description": "The style of the container border",
+                            "optional": true,
+                            "$ref": "LineStyle"
+                        },
+                        {
+                            "name": "lineSeparator",
+                            "description": "The style of the separator between lines",
+                            "optional": true,
+                            "$ref": "LineStyle"
+                        },
+                        {
+                            "name": "itemSeparator",
+                            "description": "The style of the separator between items",
                             "optional": true,
                             "$ref": "LineStyle"
                         }

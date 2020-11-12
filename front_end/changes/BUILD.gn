@@ -25,7 +25,7 @@ devtools_module("changes") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "changes.js"
+  entrypoint = "changes.ts"
 
   deps = [ ":changes" ]
 }

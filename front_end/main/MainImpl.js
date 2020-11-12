@@ -199,6 +199,11 @@ export class MainImpl {
     // CSS Flexbox
     Root.Runtime.experiments.register('cssFlexboxFeatures', 'Enable new CSS Flexbox debugging features');
 
+    // Advanced Perceptual Contrast Algorithm.
+    Root.Runtime.experiments.register(
+        'APCA',
+        'Enable new Advanced Perceptual Contrast Algorithm (APCA) replacing previous contrast ratio and AA/AAA guidelines');
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'cssGridFeatures',
     ]);

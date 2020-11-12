@@ -628,7 +628,8 @@ export const DevtoolsExperiments = {
   'cssGridFeatures': 33,
   'keyboardShortcutEditor': 35,
   'cssFlexboxFeatures': 36,
-  '__lastValidEnumPosition': 37,
+  'APCA': 39,
+  '__lastValidEnumPosition': 40,
 };
 
 /** @type {!Object<string, number>} */

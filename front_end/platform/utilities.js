@@ -569,11 +569,6 @@ export class Multimap {
 }
 
 /**
- * @param {*} value
- */
-self.suppressUnused = function(value) {};
-
-/**
  * @param {function()} callback
  * @return {number}
  */

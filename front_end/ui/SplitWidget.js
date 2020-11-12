@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
@@ -60,8 +57,8 @@ export class SplitWidget extends Widget {
         this.contentElement.createChild('div', 'shadow-split-widget-contents shadow-split-widget-sidebar vbox');
     this._mainElement =
         this.contentElement.createChild('div', 'shadow-split-widget-contents shadow-split-widget-main vbox');
-    this._mainElement.createChild('slot').name = 'insertion-point-main';
-    this._sidebarElement.createChild('slot').name = 'insertion-point-sidebar';
+    /** @type {!HTMLSlotElement} */ (this._mainElement.createChild('slot')).name = 'insertion-point-main';
+    /** @type {!HTMLSlotElement} */ (this._sidebarElement.createChild('slot')).name = 'insertion-point-sidebar';
     this._resizerElement = this.contentElement.createChild('div', 'shadow-split-widget-resizer');
     this._resizerElementSize = null;
 
@@ -360,7 +357,7 @@ export class SplitWidget extends Widget {
         // Make sure main is first in the children list.
         if (sideToShow === this._mainWidget) {
           this._mainWidget.show(this.element, this._sidebarWidget ? this._sidebarWidget.element : null);
-        } else {
+        } else if (this._sidebarWidget) {
           this._sidebarWidget.show(this.element);
         }
       }
@@ -583,6 +580,7 @@ export class SplitWidget extends Widget {
     const animationTime = 50;
     this._animationCallback = callback || null;
 
+    /** @type {string} */
     let animatedMarginPropertyName;
     if (this._isVertical) {
       animatedMarginPropertyName = this._secondIsSidebar ? 'margin-right' : 'margin-left';
@@ -602,7 +600,7 @@ export class SplitWidget extends Widget {
     }
 
     // 2. Issue onresize to the sidebar element, its size won't change.
-    if (!reverse) {
+    if (!reverse && this._sidebarWidget) {
       this._sidebarWidget.doResize();
     }
 
@@ -610,7 +608,8 @@ export class SplitWidget extends Widget {
     this.contentElement.style.setProperty('transition', animatedMarginPropertyName + ' ' + animationTime + 'ms linear');
 
     const boundAnimationFrame = animationFrame.bind(this);
-    let startTime;
+    /** @type {?number} */
+    let startTime = null;
     /**
      * @this {SplitWidget}
      */
@@ -1000,4 +999,8 @@ export const Events = {
 const MinPadding = 20;
 
 /** @typedef {{showMode: string, size: number}} */
+// @ts-ignore typedef
 export let SettingForOrientation;
+
+/** @param {*} value */
+const suppressUnused = function(value) {};

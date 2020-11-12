@@ -161,9 +161,20 @@ describe('CSSAngle', () => {
 
     it('parses CSS properties with angles correctly', () => {
       assert.deepEqual(parseText('rotate(45deg)'), {value: 45, unit: AngleUnit.Deg});
+      assert.deepEqual(parseText('rotate(calc(45deg))'), {value: 45, unit: AngleUnit.Deg});
+      assert.deepEqual(parseText('skew(20deg)'), {value: 20, unit: AngleUnit.Deg});
+      assert.deepEqual(parseText('rotateX(20deg)'), {value: 20, unit: AngleUnit.Deg});
+      assert.deepEqual(parseText('rotateY(20deg)'), {value: 20, unit: AngleUnit.Deg});
+      assert.deepEqual(parseText('rotateZ(20deg)'), {value: 20, unit: AngleUnit.Deg});
+      assert.deepEqual(parseText('rotate3d(1, 1, 1, 20deg)'), {value: 20, unit: AngleUnit.Deg});
       assert.deepEqual(parseText('linear-gradient(10.5grad, black, white)'), {value: 10.5, unit: AngleUnit.Grad});
+      assert.deepEqual(
+          parseText('conic-gradient(black 25%, white 10deg 50%, black 20deg 75%, white 30deg)'),
+          {value: 10, unit: AngleUnit.Deg});
       assert.deepEqual(parseText('rotate3d(2, -1, -1, -0.2rad);'), {value: -0.2, unit: AngleUnit.Rad});
       assert.deepEqual(parseText('hue-rotate(1.5turn)'), {value: 1.5, unit: AngleUnit.Turn});
+      assert.deepEqual(parseText('oblique 25deg'), {value: 25, unit: AngleUnit.Deg});
+      assert.deepEqual(parseText('ray(20.8deg closest-side)'), {value: 20.8, unit: AngleUnit.Deg});
       assert.deepEqual(parseText('rotate(12345)'), null);
       assert.deepEqual(parseText(''), null);
       // TODO(changhaohan): crbug.com/1138628 handle unitless 0 case

@@ -199,33 +199,10 @@
     "ui"
   ],
   "modules": [
-    "network.js",
-    "network-legacy.js",
-    "BinaryResourceView.js",
-    "BlockedURLsPane.js",
-    "EventSourceMessagesView.js",
-    "HARWriter.js",
-    "NetworkConfigView.js",
-    "NetworkDataGridNode.js",
-    "NetworkItemView.js",
-    "NetworkTimeCalculator.js",
-    "NetworkLogView.js",
-    "NetworkLogViewColumns.js",
-    "NetworkFrameGrouper.js",
-    "NetworkManageCustomHeadersView.js",
-    "NetworkSearchScope.js",
-    "NetworkWaterfallColumn.js",
-    "RequestCookiesView.js",
-    "RequestHeadersView.js",
-    "RequestHTMLView.js",
-    "RequestInitiatorView.js",
-    "RequestResponseView.js",
-    "RequestPreviewView.js",
-    "RequestTimingView.js",
-    "ResourceWebSocketFrameView.js",
-    "SignedExchangeInfoView.js",
-    "NetworkOverview.js",
-    "NetworkPanel.js"
+    "network-legacy.js"
+  ],
+  "skip_compilation": [
+    "network-legacy.js"
   ],
   "resources": [
     "binaryResourceView.css",

@@ -60,7 +60,7 @@ devtools_module("network") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "network.js"
+  entrypoint = "network.ts"
 
   deps = [ ":network" ]
 }

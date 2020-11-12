@@ -63,6 +63,8 @@ export class CSSAngle extends HTMLElement {
   private propertyName = '';
   private propertyValue = '';
   private containingPane?: HTMLElement;
+  private angleElement: HTMLElement|null = null;
+  private swatchElement: HTMLElement|null = null;
   private popoverOpen = false;
   private popoverStyleTop = '';
   private onMinifyingAction = this.minify.bind(this);
@@ -89,15 +91,24 @@ export class CSSAngle extends HTMLElement {
   // because we anticipate most of the time this widget is minified even when
   // it's attached to the DOM tree.
   popover(): void {
-    const swatch = this.shadow.querySelector('devtools-css-angle-swatch');
-    if (!swatch || !this.containingPane) {
+    if (!this.containingPane) {
+      return;
+    }
+
+    if (!this.angleElement) {
+      this.angleElement = this.shadow.querySelector<HTMLElement>('.css-angle');
+    }
+    if (!this.swatchElement) {
+      this.swatchElement = this.shadow.querySelector<HTMLElement>('devtools-css-angle-swatch');
+    }
+    if (!this.angleElement || !this.swatchElement) {
       return;
     }
 
     this.dispatchEvent(new PopoverToggledEvent(true));
     this.bindMinifyingAction();
 
-    const miniIconBottom = swatch.getBoundingClientRect().bottom;
+    const miniIconBottom = this.swatchElement.getBoundingClientRect().bottom;
     if (miniIconBottom) {
       // We offset mini icon's Y position with the containing styles pane's Y position
       // because DevTools' root SplitWidget's insertion-point-sidebar slot,
@@ -109,6 +120,7 @@ export class CSSAngle extends HTMLElement {
 
     this.popoverOpen = true;
     this.render();
+    this.angleElement.focus();
   }
 
   minify(): void {
@@ -187,6 +199,7 @@ export class CSSAngle extends HTMLElement {
         if (newAngle) {
           this.updateAngle(newAngle);
         }
+        event.preventDefault();
         break;
       }
     }

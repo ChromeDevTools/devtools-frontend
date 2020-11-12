@@ -4,21 +4,21 @@
 
 const {assert} = chai;
 
-import {NodeURL} from '../../../../front_end/protocol_client/NodeURL.js';
+import * as ProtocolClient from '../../../../front_end/protocol_client/protocol_client.js';
 import {Platform} from '../../../../front_end/host/host.js';
 
 describe('NodeURL', () => {
   describe('platform detection for paths', () => {
     it('works correctly on windows', () => {
       const isWindows = true;
-      assert.isTrue(NodeURL._isPlatformPath('c:\\prog\\foobar.js', isWindows));
-      assert.isFalse(NodeURL._isPlatformPath('/usr/local/foobar.js', isWindows));
+      assert.isTrue(ProtocolClient.NodeURL.NodeURL._isPlatformPath('c:\\prog\\foobar.js', isWindows));
+      assert.isFalse(ProtocolClient.NodeURL.NodeURL._isPlatformPath('/usr/local/foobar.js', isWindows));
     });
 
     it('works correctly on linux', () => {
       const isWindows = false;
-      assert.isFalse(NodeURL._isPlatformPath('c:\\prog\\foobar.js', isWindows));
-      assert.isTrue(NodeURL._isPlatformPath('/usr/local/foobar.js', isWindows));
+      assert.isFalse(ProtocolClient.NodeURL.NodeURL._isPlatformPath('c:\\prog\\foobar.js', isWindows));
+      assert.isTrue(ProtocolClient.NodeURL.NodeURL._isPlatformPath('/usr/local/foobar.js', isWindows));
     });
   });
 
@@ -29,7 +29,7 @@ describe('NodeURL', () => {
     it('does patch url fields', () => {
       const object = {url, result: null};
 
-      NodeURL.patch(object);
+      ProtocolClient.NodeURL.NodeURL.patch(object);
 
       assert.strictEqual(object.url, patchedUrl);
     });
@@ -44,7 +44,7 @@ describe('NodeURL', () => {
         },
       };
 
-      NodeURL.patch(object);
+      ProtocolClient.NodeURL.NodeURL.patch(object);
 
       assert.strictEqual(object.result.result.value.url, url);
     });
@@ -65,7 +65,7 @@ describe('NodeURL', () => {
         },
       };
 
-      NodeURL.patch(object as unknown as {url: string});
+      ProtocolClient.NodeURL.NodeURL.patch(object as unknown as {url: string});
 
       assert.strictEqual(object.exceptionDetails.url, patchedUrl);
       assert.strictEqual(object.exceptionDetails.stackTrace.callFrames[0].url, patchedUrl);

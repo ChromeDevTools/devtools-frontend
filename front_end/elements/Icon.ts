@@ -102,7 +102,9 @@ export class Icon extends HTMLElement {
   }
 }
 
-customElements.define('devtools-icon', Icon);
+if (!customElements.get('devtools-icon')) {
+  customElements.define('devtools-icon', Icon);
+}
 
 declare global {
   interface HTMLElementTagNameMap {

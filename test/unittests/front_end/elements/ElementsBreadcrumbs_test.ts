@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ElementsBreadcrumbs} from '../../../../front_end/elements/ElementsBreadcrumbs.js';
+import type * as ElementsModule from '../../../../front_end/elements/elements.js';
 import {crumbsToRender, determineElementTitle, DOMNode} from '../../../../front_end/elements/ElementsBreadcrumbsUtils.js';
 import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, doubleRaf, renderElementIntoDOM, waitForScrollLeft} from '../helpers/DOMHelpers.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {withNoMutations} from '../helpers/MutationHelpers.js';
 
 const {assert} = chai;
@@ -32,7 +33,12 @@ const makeCrumb = (overrides: MakeCrumbOptions = {}) => {
   return newCrumb;
 };
 
-describe('ElementsBreadcrumbs', () => {
+describeWithEnvironment('Elements.ElementsBreadcrumbs.ElementsBreadcrumbs', () => {
+  let Elements: typeof ElementsModule;
+  before(async () => {
+    Elements = await import('../../../../front_end/elements/elements.js');
+  });
+
   describe('#determineElementTitle', () => {
     it('returns (text) for text nodes', () => {
       const node = makeCrumb({nodeType: Node.TEXT_NODE});
@@ -169,7 +175,7 @@ describe('ElementsBreadcrumbs', () => {
 
   describe('rendering breadcrumbs', () => {
     it('renders all the breadcrumbs provided', () => {
-      const component = new ElementsBreadcrumbs();
+      const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
       renderElementIntoDOM(component);
 
       const bodyCrumb = makeCrumb({
@@ -202,7 +208,7 @@ describe('ElementsBreadcrumbs', () => {
     });
 
     it('highlights the active breadcrumb', () => {
-      const component = new ElementsBreadcrumbs();
+      const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
       renderElementIntoDOM(component);
 
       const bodyCrumb = makeCrumb({
@@ -234,7 +240,7 @@ describe('ElementsBreadcrumbs', () => {
     });
 
     it('updates the text if a crumb\'s title changes', async () => {
-      const component = new ElementsBreadcrumbs();
+      const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
       renderElementIntoDOM(component);
 
       const bodyCrumb = makeCrumb({
@@ -298,7 +304,7 @@ describe('ElementsBreadcrumbs', () => {
         const thinWrapper = document.createElement('div');
         thinWrapper.style.width = '400px';
 
-        const component = new ElementsBreadcrumbs();
+        const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
         thinWrapper.appendChild(component);
 
         renderElementIntoDOM(thinWrapper);
@@ -325,7 +331,7 @@ describe('ElementsBreadcrumbs', () => {
         const thinWrapper = document.createElement('div');
         thinWrapper.style.width = '400px';
 
-        const component = new ElementsBreadcrumbs();
+        const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
         thinWrapper.appendChild(component);
 
         renderElementIntoDOM(thinWrapper);
@@ -355,7 +361,7 @@ describe('ElementsBreadcrumbs', () => {
         const thinWrapper = document.createElement('div');
         thinWrapper.style.width = '400px';
 
-        const component = new ElementsBreadcrumbs();
+        const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
         thinWrapper.appendChild(component);
 
         renderElementIntoDOM(thinWrapper);
@@ -387,7 +393,7 @@ describe('ElementsBreadcrumbs', () => {
         const thinWrapper = document.createElement('div');
         thinWrapper.style.width = '800px';
 
-        const component = new ElementsBreadcrumbs();
+        const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
         thinWrapper.appendChild(component);
 
         renderElementIntoDOM(thinWrapper);
@@ -415,6 +421,5 @@ describe('ElementsBreadcrumbs', () => {
         assert.isFalse(rightButton.classList.contains('hidden'));
       });
     });
-
   });
 });

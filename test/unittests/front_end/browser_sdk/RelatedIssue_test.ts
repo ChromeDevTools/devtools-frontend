@@ -5,11 +5,16 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../front_end/sdk/sdk.js';
-import * as BrowserSDK from '../../../../front_end/browser_sdk/browser_sdk.js';
-
+import type * as BrowserSDKModule from '../../../../front_end/browser_sdk/browser_sdk.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {StubIssue} from '../sdk/StubIssue.js';
 
-describe('issuesAssociatedWith', () => {
+describeWithEnvironment('issuesAssociatedWith', () => {
+  let BrowserSDK: typeof BrowserSDKModule;
+  before(async () => {
+    BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
+  });
+
   it('should return no issues if no issues exist', () => {
     const request = new SDK.NetworkRequest.NetworkRequest('', '', '', '', '', null);
     assert.strictEqual(BrowserSDK.RelatedIssue.issuesAssociatedWith([], request).length, 0);

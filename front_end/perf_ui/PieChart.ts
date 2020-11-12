@@ -301,7 +301,9 @@ export class PieChart extends HTMLElement {
   }
 }
 
-customElements.define('devtools-perf-piechart', PieChart);
+if (!customElements.get('devtools-perf-piechart')) {
+  customElements.define('devtools-perf-piechart', PieChart);
+}
 
 declare global {
   interface HTMLElementTagNameMap {

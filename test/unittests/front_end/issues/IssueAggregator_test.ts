@@ -4,17 +4,23 @@
 
 const {assert} = chai;
 
-import {IssueAggregator, AggregatedIssue} from '../../../../front_end/issues/IssueAggregator.js';
+import type * as IssuesModule from '../../../../front_end/issues/issues.js';
+import type * as BrowserSDKModule from '../../../../front_end/browser_sdk/browser_sdk.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {StubIssue} from '../sdk/StubIssue.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
-import * as BrowserSDK from '../../../../front_end/browser_sdk/browser_sdk.js';
 
-describe('AggregatedIssue', () => {
+describeWithEnvironment('AggregatedIssue', async () => {
+  let Issues: typeof IssuesModule;
+  before(async () => {
+    Issues = await import('../../../../front_end/issues/issues.js');
+  });
+
   it('deduplicates network requests across issues', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1', 'id2']);
     const issue2 = StubIssue.createFromRequestIds(['id1']);
 
-    const aggregatedIssue = new AggregatedIssue('code');
+    const aggregatedIssue = new Issues.IssueAggregator.AggregatedIssue('code');
     aggregatedIssue.addInstance(issue1);
     aggregatedIssue.addInstance(issue2);
 
@@ -27,7 +33,7 @@ describe('AggregatedIssue', () => {
     const issue2 = StubIssue.createFromCookieNames(['cookie2']);
     const issue3 = StubIssue.createFromCookieNames(['cookie1', 'cookie2']);
 
-    const aggregatedIssue = new AggregatedIssue('code');
+    const aggregatedIssue = new Issues.IssueAggregator.AggregatedIssue('code');
     aggregatedIssue.addInstance(issue1);
     aggregatedIssue.addInstance(issue2);
     aggregatedIssue.addInstance(issue3);
@@ -37,13 +43,21 @@ describe('AggregatedIssue', () => {
   });
 });
 
-describe('IssueAggregator', () => {
+describeWithEnvironment('IssueAggregator', async () => {
+  let BrowserSDK: typeof BrowserSDKModule;
+  let Issues: typeof IssuesModule;
+  before(async () => {
+    Issues = await import('../../../../front_end/issues/issues.js');
+    BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
+  });
+
   it('deduplicates issues with the same code', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1']);
     const issue2 = StubIssue.createFromRequestIds(['id2']);
 
     const mockModel = new MockIssuesModel([]);
-    const aggregator = new IssueAggregator((mockModel as unknown) as BrowserSDK.IssuesManager.IssuesManager);
+    const aggregator = new Issues.IssueAggregator.IssueAggregator(
+        (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
     mockModel.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
     mockModel.dispatchEventToListeners(
@@ -62,7 +76,8 @@ describe('IssueAggregator', () => {
     const issue3 = StubIssue.createFromRequestIds(['id3']);
 
     const mockModel = new MockIssuesModel([issue1_2, issue3]);
-    const aggregator = new IssueAggregator((mockModel as unknown) as BrowserSDK.IssuesManager.IssuesManager);
+    const aggregator = new Issues.IssueAggregator.IssueAggregator(
+        (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
     mockModel.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
     mockModel.dispatchEventToListeners(
@@ -81,7 +96,8 @@ describe('IssueAggregator', () => {
     const issue3 = new StubIssue('codeA', ['id1'], []);
 
     const mockModel = new MockIssuesModel([issue1_2, issue3]);
-    const aggregator = new IssueAggregator((mockModel as unknown) as BrowserSDK.IssuesManager.IssuesManager);
+    const aggregator = new Issues.IssueAggregator.IssueAggregator(
+        (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
     mockModel.dispatchEventToListeners(
         BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
     mockModel.dispatchEventToListeners(

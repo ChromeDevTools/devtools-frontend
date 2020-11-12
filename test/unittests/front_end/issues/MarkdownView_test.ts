@@ -2,43 +2,49 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {MarkdownView, renderToken} from '../../../../front_end/issues/MarkdownView.js';
+import type * as IssuesModule from '../../../../front_end/issues/issues.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {TemplateResult} from '../../../../front_end/third_party/lit-html/lit-html.js';
 import * as Marked from '../../../../front_end/third_party/marked/marked.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
-describe('MarkdownView', () => {
-  describe('renderToken', () => {
+describeWithEnvironment('MarkdownView', async () => {
+  let Issues: typeof IssuesModule;
+  before(async () => {
+    Issues = await import('../../../../front_end/issues/issues.js');
+  });
+
+  describe('renderToken', async () => {
     it('wraps paragraph tokens in <p> tags', () => {
-      const renderResult = renderToken({type: 'paragraph', tokens: []});
+      const renderResult = Issues.MarkdownView.renderToken({type: 'paragraph', tokens: []});
       assert.deepStrictEqual(renderResult.strings.raw, ['<p>', '</p>']);
     });
 
     it('wraps an unordered list token in <ul> tags', () => {
-      const renderResult = renderToken({type: 'list', items: []});
+      const renderResult = Issues.MarkdownView.renderToken({type: 'list', items: []});
       assert.deepStrictEqual(renderResult.strings.raw, ['<ul>', '</ul>']);
     });
 
     it('wraps list items in <li> tags', () => {
-      const renderResult = renderToken({type: 'list_item', tokens: []});
+      const renderResult = Issues.MarkdownView.renderToken({type: 'list_item', tokens: []});
       assert.deepStrictEqual(renderResult.strings.raw, ['<li>', '</li>']);
     });
 
     it('wraps a codespan token in <code> tags', () => {
-      const renderResult = renderToken({type: 'codespan', text: 'const foo = 42;'});
+      const renderResult = Issues.MarkdownView.renderToken({type: 'codespan', text: 'const foo = 42;'});
       assert.deepStrictEqual(renderResult.strings.raw, ['<code>', '</code>']);
       assert.deepStrictEqual(renderResult.values, ['const foo = 42;']);
     });
 
     it('renders childless text tokens as-is', () => {
-      const renderResult = renderToken({type: 'text', text: 'Simple text token'});
+      const renderResult = Issues.MarkdownView.renderToken({type: 'text', text: 'Simple text token'});
       assert.deepStrictEqual(renderResult.values, ['Simple text token']);
     });
 
     it('renders nested text tokens correctly', () => {
-      const renderResult = renderToken({
+      const renderResult = Issues.MarkdownView.renderToken({
         type: 'text',
         text: 'This text should not be rendered. Only the subtokens!',
         tokens: [
@@ -54,7 +60,7 @@ describe('MarkdownView', () => {
     });
 
     it('throws an error for invalid or unsupported token types', () => {
-      assert.throws(() => renderToken({type: 'no_way_this_is_a_valid_markdown_token'}));
+      assert.throws(() => Issues.MarkdownView.renderToken({type: 'no_way_this_is_a_valid_markdown_token'}));
     });
   });
 
@@ -70,7 +76,7 @@ ${paragraphText}
 
   describe('component', () => {
     it('renders basic markdown correctly', () => {
-      const component = new MarkdownView();
+      const component = new Issues.MarkdownView.MarkdownView();
       renderElementIntoDOM(component);
 
       component.data = {tokens: Marked.Marked.lexer(markdownString)};
@@ -88,7 +94,7 @@ ${paragraphText}
   });
 
   const renderString = (string: string, selector: 'p'|'code'): HTMLElement => {
-    const component = new MarkdownView();
+    const component = new Issues.MarkdownView.MarkdownView();
     renderElementIntoDOM(component);
     component.data = {tokens: Marked.Marked.lexer(string)};
     assertShadowRoot(component.shadowRoot);

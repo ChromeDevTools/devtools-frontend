@@ -16,6 +16,7 @@ import './MetricsSidebarPane.js';
 import './PlatformFontsWidget.js';
 import './PropertiesWidget.js';
 import './NodeStackTraceWidget.js';
+import './NodeText.js';
 import './StylePropertyHighlighter.js';
 import './StylesSidebarPane.js';
 import './StylePropertyTreeElement.js';
@@ -35,6 +36,7 @@ import * as ComputedStyleWidget from './ComputedStyleWidget.js';
 import * as CSSPropertyIconResolver from './CSSPropertyIconResolver.js';
 import * as DOMLinkifier from './DOMLinkifier.js';
 import * as DOMPath from './DOMPath.js';
+import * as ElementsBreadcrumbs from './ElementsBreadcrumbs.js';
 import * as ElementsPanel from './ElementsPanel.js';
 import * as ElementsPanelLink from './ElementsPanelLink_bridge.js';
 import * as ElementsSidebarPane from './ElementsSidebarPane.js';
@@ -68,6 +70,7 @@ export {
   CSSPropertyIconResolver,
   DOMLinkifier,
   DOMPath,
+  ElementsBreadcrumbs,
   ElementsPanel,
   ElementsPanelLink,
   ElementsSidebarPane,

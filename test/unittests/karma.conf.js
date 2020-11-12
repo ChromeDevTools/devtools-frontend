@@ -65,12 +65,30 @@ const TEST_FILES =
 
 const TEST_FILES_SOURCE_MAPS = TEST_FILES.map(fileName => `${fileName}.map`);
 
+// Locate the test setup file in all the gathered files. This is so we can
+// ensure that it goes first and registers its global hooks before anything else.
+const testSetupFilePattern = {
+  pattern: null,
+  type: 'module'
+};
+const testFiles = [];
+for (const pattern of TEST_FILES) {
+  if (pattern.endsWith('test_setup.js')) {
+    testSetupFilePattern.pattern = pattern;
+  } else {
+    testFiles.push({pattern, type: 'module'});
+  }
+}
+
 module.exports = function(config) {
   const options = {
     basePath: ROOT_DIRECTORY,
 
     files: [
-      ...TEST_FILES.map(pattern => ({pattern, type: 'module'})),
+      // Ensure the test setup goes first because Karma registers with Mocha in file order, and the hooks in the test_setup
+      // must be set before any other hooks in order to ensure all tests get the same environment.
+      testSetupFilePattern,
+      ...testFiles,
       ...TEST_FILES_SOURCE_MAPS.map(pattern => ({pattern, served: true, included: false})),
       ...TEST_SOURCES.map(source => ({pattern: source, served: true, included: false})),
       {pattern: path.join(GEN_DIRECTORY, 'front_end/Images/*.{svg,png}'), served: true, included: false},

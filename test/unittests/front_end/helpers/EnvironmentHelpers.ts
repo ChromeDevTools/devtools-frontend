@@ -117,8 +117,8 @@ export function describeWithEnvironment(title: string, fn: (this: Mocha.Suite) =
   reset: true,
 }) {
   return describe(`env-${title}`, () => {
-    beforeEach(() => initializeGlobalVars(opts));
-    afterEach(deinitializeGlobalVars);
+    before(() => initializeGlobalVars(opts));
+    after(deinitializeGlobalVars);
     describe(title, fn);
   });
 }

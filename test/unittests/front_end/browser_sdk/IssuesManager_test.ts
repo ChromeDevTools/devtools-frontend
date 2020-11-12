@@ -5,14 +5,19 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../front_end/sdk/sdk.js';
-import * as BrowserSDK from '../../../../front_end/browser_sdk/browser_sdk.js';
+import type * as BrowserSDKModule from '../../../../front_end/browser_sdk/browser_sdk.js';
 
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {StubIssue, ThirdPartyStubIssue} from '../sdk/StubIssue.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
 
 describeWithEnvironment('IssuesManager', () => {
-  it('collects issues from am issues model', () => {
+  let BrowserSDK: typeof BrowserSDKModule;
+  before(async () => {
+    BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
+  });
+
+  it('collects issues from an issues model', () => {
     const issue1 = new StubIssue('StubIssue1', ['id1', 'id2'], []);
     const issue2 = new StubIssue('StubIssue2', ['id1', 'id2'], []);
     const issue2_1 = new StubIssue('StubIssue2', ['id1', 'id2'], ['id3']);

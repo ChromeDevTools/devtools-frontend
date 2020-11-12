@@ -57,7 +57,9 @@ export class NodeText extends HTMLElement {
   }
 }
 
-customElements.define('devtools-node-text', NodeText);
+if (!customElements.get('devtools-node-text')) {
+  customElements.define('devtools-node-text', NodeText);
+}
 
 declare global {
   interface HTMLElementTagNameMap {

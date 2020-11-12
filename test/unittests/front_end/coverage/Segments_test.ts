@@ -4,19 +4,24 @@
 
 const {assert} = chai;
 
-import * as Coverage from '../../../../front_end/coverage/coverage.js';
+import type * as CoverageModule from '../../../../front_end/coverage/coverage.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
-const checkMerge =
-    (a: Coverage.CoverageModel.CoverageSegment[], b: Coverage.CoverageModel.CoverageSegment[],
-     expectedResult: Coverage.CoverageModel.CoverageSegment[]) => {
-      const mergedAB = Coverage.CoverageModel.mergeSegments(a, b);
-      assert.deepEqual(mergedAB, expectedResult);
-      const mergedBA = Coverage.CoverageModel.mergeSegments(b, a);
-      assert.deepEqual(mergedBA, expectedResult);
-    };
-
 describeWithEnvironment('mergeSegments', () => {
+  let Coverage: typeof CoverageModule;
+  before(async () => {
+    Coverage = await import('../../../../front_end/coverage/coverage.js');
+  });
+
+  const checkMerge =
+      (a: CoverageModule.CoverageModel.CoverageSegment[], b: CoverageModule.CoverageModel.CoverageSegment[],
+       expectedResult: CoverageModule.CoverageModel.CoverageSegment[]) => {
+        const mergedAB = Coverage.CoverageModel.mergeSegments(a, b);
+        assert.deepEqual(mergedAB, expectedResult);
+        const mergedBA = Coverage.CoverageModel.mergeSegments(b, a);
+        assert.deepEqual(mergedBA, expectedResult);
+      };
+
   it('merges coverage segments with the same timestamp correctly', () => {
     checkMerge([], [], []);
     checkMerge([{end: 10, count: 1, stamp: 100}], [], [{end: 10, count: 1, stamp: 100}]);

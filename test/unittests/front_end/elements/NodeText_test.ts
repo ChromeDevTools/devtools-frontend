@@ -2,13 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as ElementsModule from '../../../../front_end/elements/elements.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
 describeWithEnvironment('NodeText', async () => {
-  const Elements = await import('../../../../front_end/elements/elements.js');
+  let Elements: typeof ElementsModule;
+  before(async () => {
+    Elements = await import('../../../../front_end/elements/elements.js');
+  });
 
   function assertNodeTextContent(component: HTMLElement, expectedContent: string) {
     assertShadowRoot(component.shadowRoot);

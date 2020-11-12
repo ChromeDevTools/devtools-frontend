@@ -361,7 +361,9 @@ export class ElementsBreadcrumbs extends HTMLElement {
   }
 }
 
-customElements.define('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
+if (!customElements.get('devtools-elements-breadcrumbs')) {
+  customElements.define('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
+}
 
 declare global {
   interface HTMLElementTagNameMap {

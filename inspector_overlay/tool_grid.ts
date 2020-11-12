@@ -42,6 +42,7 @@ export class HighlightGridOverlay extends Overlay {
   reset(data: ResetData) {
     super.reset(data);
     this.gridLabelState.gridLayerCounter = 0;
+    this.gridLabels.innerHTML = '';
   }
 
   renderGridMarkup() {

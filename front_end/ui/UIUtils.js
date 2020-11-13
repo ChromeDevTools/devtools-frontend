@@ -568,7 +568,7 @@ export function handleElementValueModifications(event, element, finishHandler, s
   const replacementString = createReplacementString(wordString, event, customNumberHandler);
 
   if (replacementString) {
-    const replacementTextNode = createTextNode(replacementString);
+    const replacementTextNode = document.createTextNode(replacementString);
 
     wordRange.deleteContents();
     wordRange.insertNode(replacementTextNode);
@@ -705,11 +705,11 @@ export function formatLocalized(format, substitutions) {
    * @return {!Element}
    */
   function append(a, b) {
-    a.appendChild(typeof b === 'string' ? createTextNode(b) : /** @type {!Element} */ (b));
+    a.appendChild(typeof b === 'string' ? document.createTextNode(b) : /** @type {!Element} */ (b));
     return a;
   }
   return Platform.StringUtilities
-      .format(Common.UIString.UIString(format), substitutions, formatters, createElement('span'), append)
+      .format(Common.UIString.UIString(format), substitutions, formatters, document.createElement('span'), append)
       .formattedResult;
 }
 
@@ -1322,11 +1322,11 @@ export function createLabel(title, className, associatedControl) {
  * @return {!DevToolsRadioButton}
  */
 export function createRadioLabel(name, title, checked) {
-  const element = createElement('span', 'dt-radio');
+  const element = /** @type {!DevToolsRadioButton} */ (document.createElement('span', {is: 'dt-radio'}));
   element.radioElement.name = name;
   element.radioElement.checked = !!checked;
   createTextChild(element.labelElement, title);
-  return /** @type {!DevToolsRadioButton} */ (element);
+  return element;
 }
 
 /**
@@ -1335,7 +1335,7 @@ export function createRadioLabel(name, title, checked) {
  * @return {!HTMLElement}
  */
 export function createIconLabel(title, iconClass) {
-  const element = /** @type {!HTMLElement} */ (createElement('span', 'dt-icon-label'));
+  const element = /** @type {!DevToolsIconLabel} */ (document.createElement('span', {is: 'dt-icon-label'}));
   element.createChild('span').textContent = title;
   element.type = iconClass;
   return element;
@@ -1348,7 +1348,7 @@ export function createIconLabel(title, iconClass) {
  * @param {number} tabIndex
  */
 export function createSlider(min, max, tabIndex) {
-  const element = createElement('span', 'dt-slider');
+  const element = /** @type {!DevToolsSlider} */ (document.createElement('span', {is: 'dt-slider'}));
   element.sliderElement.min = min;
   element.sliderElement.max = max;
   element.sliderElement.step = 1;
@@ -1414,7 +1414,7 @@ export class CheckboxLabel extends HTMLSpanElement {
    */
   set checkColor(color) {
     this.checkboxElement.classList.add('dt-checkbox-themed');
-    const stylesheet = createElement('style');
+    const stylesheet = document.createElement('style');
     stylesheet.textContent = 'input.dt-checkbox-themed:checked:after { background-color: ' + color + '}';
     this._shadowRoot.appendChild(stylesheet);
   }
@@ -1444,9 +1444,8 @@ export class DevToolsIconLabel extends HTMLSpanElement {
   }
 
   /**
-     * @param {string} type
-     * @this {Element}
-     */
+   * @param {string} type
+   */
   set type(type) {
     this._iconElement.setIconType(type);
   }
@@ -1467,25 +1466,19 @@ export class DevToolsRadioButton extends HTMLSpanElement {
     const root = createShadowRootWithCoreStyles(
         this, {cssFile: 'ui/radioButton.css', enableLegacyPatching: true, delegatesFocus: undefined});
     root.createChild('slot');
-    this.addEventListener('click', radioClickHandler, false);
+    this.addEventListener('click', this.radioClickHandler.bind(this), false);
+  }
+
+  radioClickHandler() {
+    if (this.radioElement.checked || this.radioElement.disabled) {
+      return;
+    }
+    this.radioElement.checked = true;
+    this.radioElement.dispatchEvent(new Event('change'));
   }
 }
 
 registerCustomElement('span', 'dt-radio', DevToolsRadioButton);
-
-/**
-   * @param {!Event} event
-   * @suppressReceiverCheck
-   * @this {Element}
-   */
-function radioClickHandler(event) {
-  if (this.radioElement.checked || this.radioElement.disabled) {
-    return;
-  }
-  this.radioElement.checked = true;
-  this.radioElement.dispatchEvent(new Event('change'));
-}
-
 registerCustomElement('span', 'dt-icon-label', DevToolsIconLabel);
 
 class DevToolsSlider extends HTMLSpanElement {
@@ -1501,15 +1494,11 @@ class DevToolsSlider extends HTMLSpanElement {
 
   /**
      * @param {number} amount
-     * @this {Element}
      */
   set value(amount) {
     this.sliderElement.value = amount;
   }
 
-  /**
-     * @this {Element}
-     */
   get value() {
     return this.sliderElement.value;
   }
@@ -1529,7 +1518,6 @@ export class DevToolsSmallBubble extends HTMLSpanElement {
 
   /**
      * @param {string} type
-     * @this {Element}
      */
   set type(type) {
     this._textElement.className = type;
@@ -1556,7 +1544,6 @@ export class DevToolsCloseButton extends HTMLDivElement {
 
   /**
      * @param {boolean} gray
-     * @this {Element}
      */
   set gray(gray) {
     if (gray) {
@@ -1570,7 +1557,6 @@ export class DevToolsCloseButton extends HTMLDivElement {
 
   /**
    * @param {string} name
-   * @this {Element}
    */
   setAccessibleName(name) {
     ARIAUtils.setAccessibleName(this._buttonElement, name);
@@ -1578,7 +1564,6 @@ export class DevToolsCloseButton extends HTMLDivElement {
 
   /**
    * @param {boolean} tabbable
-   * @this {Element}
    */
   setTabbable(tabbable) {
     if (tabbable) {
@@ -1826,7 +1811,7 @@ export function loadImageFromData(data) {
  * @return {!HTMLInputElement}
  */
 export function createFileSelectorElement(callback) {
-  const fileSelectorElement = /** @type {!HTMLInputElement} */ (createElement('input'));
+  const fileSelectorElement = /** @type {!HTMLInputElement} */ (document.createElement('input'));
   fileSelectorElement.type = 'file';
   fileSelectorElement.style.display = 'none';
   fileSelectorElement.setAttribute('tabindex', -1);
@@ -1911,7 +1896,7 @@ export class ConfirmDialog {
  * @return {!Element}
  */
 export function createInlineButton(toolbarButton) {
-  const element = createElement('span');
+  const element = document.createElement('span');
   const shadowRoot = createShadowRootWithCoreStyles(
       element, {cssFile: 'ui/inlineButton.css', enableLegacyPatching: true, delegatesFocus: undefined});
   element.classList.add('inline-button');
@@ -1931,6 +1916,7 @@ export class Renderer {
    * @return {!Promise<?{node: !Node, tree: ?TreeOutline}>}
    */
   render(object, options) {
+    throw new Error('not implemented');
   }
 }
 
@@ -2005,7 +1991,10 @@ export const isScrolledToBottom = element => {
  * @return {!Element}
  */
 export function createSVGChild(element, childType, className) {
-  const child = element.ownerDocument.createSVGElement(childType, className);
+  const child = element.ownerDocument.createElementNS('http://www.w3.org/2000/svg', childType);
+  if (className) {
+    child.setAttribute('class', className);
+  }
   element.appendChild(child);
   return child;
 }

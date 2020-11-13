@@ -349,29 +349,6 @@ Document.prototype.createElementWithClass = function(elementName, className, cus
 };
 
 /**
- * @param {string} childType
- * @param {string=} className
- * @return {!Element}
- */
-Document.prototype.createSVGElement = function(childType, className) {
-  const element = this.createElementNS('http://www.w3.org/2000/svg', childType);
-  if (className) {
-    element.setAttribute('class', className);
-  }
-  return element;
-};
-
-/**
- * @param {string} childType
- * @param {string=} className
- * @return {!Element}
- * @suppressGlobalPropertiesCheck
- */
-self.createSVGElement = function(childType, className) {
-  return document.createSVGElement(childType, className);
-};
-
-/**
  * @return {!DocumentFragment}
  * @suppressGlobalPropertiesCheck
  */

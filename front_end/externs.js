@@ -817,13 +817,6 @@ const createElement = function(tagName, customElementType) {};
 const createTextNode = function(data) {};
 
 /**
- * @param {string} childType
- * @param {string=} className
- * @return {!Element}
- */
-const createSVGElement = function(childType, className) {};
-
-/**
  * @return {!DocumentFragment}
  */
 const createDocumentFragment = function() {};

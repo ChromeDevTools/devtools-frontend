@@ -455,10 +455,7 @@ export class CounterUI {
     this._range.textContent = Common.UIString.UIString('[%s\xa0\u2013\xa0%s]', min, max);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _toggleCounterGraph(event) {
+  _toggleCounterGraph() {
     this._value.classList.toggle('hidden', !this._filter.checked());
     this._countersPane.refresh();
   }

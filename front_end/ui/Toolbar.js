@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Root from '../root/root.js';
@@ -59,7 +56,9 @@ export class Toolbar {
   constructor(className, parentElement) {
     /** @type {!Array.<!ToolbarItem>} */
     this._items = [];
-    this.element = parentElement ? parentElement.createChild('div') : createElement('div');
+    /** @type {!HTMLElement} */
+    this.element =
+        /** @type {!HTMLElement} */ (parentElement ? parentElement.createChild('div') : document.createElement('div'));
     this.element.className = className;
     this.element.classList.add('toolbar');
     this._enabled = true;
@@ -104,7 +103,9 @@ export class Toolbar {
         if (longClickController) {
           longClickController.dispose();
           longClickController = null;
-          longClickGlyph.remove();
+          if (longClickGlyph) {
+            longClickGlyph.remove();
+          }
           longClickGlyph = null;
           longClickButtons = null;
         }
@@ -112,7 +113,7 @@ export class Toolbar {
     }
 
     function showOptions() {
-      let buttons = longClickButtons.slice();
+      let buttons = longClickButtons ? longClickButtons.slice() : [];
       buttons.push(mainButtonClone);
 
       const document = button.element.ownerDocument;
@@ -149,24 +150,31 @@ export class Toolbar {
       const hostButtonIndex = topNotBottom ? 0 : buttons.length - 1;
       buttons[hostButtonIndex].element.classList.add('emulate-active');
 
+      /** @param {!Event} e */
       function mouseOver(e) {
-        if (e.which !== 1) {
+        if (/** @type {!MouseEvent} */ (e).which !== 1) {
           return;
         }
-        const buttonElement = e.target.enclosingNodeOrSelfWithClass('toolbar-item');
-        buttonElement.classList.add('emulate-active');
+        if (e.target instanceof HTMLElement) {
+          const buttonElement = e.target.enclosingNodeOrSelfWithClass('toolbar-item');
+          buttonElement.classList.add('emulate-active');
+        }
       }
 
+      /** @param {!Event} e */
       function mouseOut(e) {
-        if (e.which !== 1) {
+        if (/** @type {!MouseEvent} */ (e).which !== 1) {
           return;
         }
-        const buttonElement = e.target.enclosingNodeOrSelfWithClass('toolbar-item');
-        buttonElement.classList.remove('emulate-active');
+        if (e.target instanceof HTMLElement) {
+          const buttonElement = e.target.enclosingNodeOrSelfWithClass('toolbar-item');
+          buttonElement.classList.remove('emulate-active');
+        }
       }
 
+      /** @param {!Event} e */
       function mouseUp(e) {
-        if (e.which !== 1) {
+        if (/** @type {!MouseEvent} */ (e).which !== 1) {
           return;
         }
         optionsGlassPane.hide();
@@ -195,6 +203,7 @@ export class Toolbar {
       button.setText(action.title());
     }
 
+    /** @param {!{data: *}} event */
     let handler = event => {
       action.execute();
     };
@@ -318,7 +327,7 @@ export class Toolbar {
    */
   appendToolbarItem(item) {
     this._items.push(item);
-    item._toolbar = this;
+    item.toolbar = this;
     if (!this._enabled) {
       item._applyEnabledState(false);
     }
@@ -343,7 +352,7 @@ export class Toolbar {
 
   removeToolbarItems() {
     for (const item of this._items) {
-      delete item._toolbar;
+      item.toolbar = null;
     }
     this._items = [];
     this._contentElement.removeChildren();
@@ -354,7 +363,7 @@ export class Toolbar {
    * @param {string} color
    */
   setColor(color) {
-    const style = createElement('style');
+    const style = document.createElement('style');
     style.textContent = '.toolbar-glyph { background-color: ' + color + ' !important }';
     this._shadowRoot.appendChild(style);
   }
@@ -363,7 +372,7 @@ export class Toolbar {
    * @param {string} color
    */
   setToggledColor(color) {
-    const style = createElement('style');
+    const style = document.createElement('style');
     style.textContent =
         '.toolbar-button.toolbar-state-on .toolbar-glyph { background-color: ' + color + ' !important }';
     this._shadowRoot.appendChild(style);
@@ -406,15 +415,20 @@ export class Toolbar {
     const filtered = extensions.filter(e => e.descriptor()['location'] === location);
     const items = await Promise.all(filtered.map(extension => {
       const descriptor = extension.descriptor();
-      if (descriptor['separator']) {
+      if (/** @type {*} */ (descriptor)['separator']) {
         return new ToolbarSeparator();
       }
       if (descriptor['actionId']) {
-        return Toolbar.createActionButtonForId(descriptor['actionId'], descriptor['showLabel']);
+        return Toolbar.createActionButtonForId(descriptor['actionId'], /** @type {*} */ (descriptor)['showLabel']);
       }
-      return extension.instance().then(p => p.item());
+      return extension.instance().then(p => /** @type {!Provider} */ (p).item());
     }));
-    items.filter(item => item).forEach(item => this.appendToolbarItem(item));
+
+    for (const item of items) {
+      if (item) {
+        this.appendToolbarItem(item);
+      }
+    }
   }
 }
 
@@ -424,6 +438,7 @@ export class Toolbar {
   *    userActionCode: (!Host.UserMetrics.Action|undefined)
   * }}
   */
+// @ts-ignore typedef
 export let ToolbarButtonOptions;
 
 /** @type {!ToolbarButtonOptions} */
@@ -446,6 +461,12 @@ export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
     this.element.classList.add('toolbar-item');
     this._visible = true;
     this._enabled = true;
+
+    /**
+     * Set by the parent toolbar during appending.
+     * @type {?Toolbar}
+     */
+    this.toolbar = null;
   }
 
   /**
@@ -456,6 +477,7 @@ export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
     if (this._title === title) {
       return;
     }
+    /** @type {string|undefined} */
     this._title = title;
     ARIAUtils.setAccessibleName(this.element, title);
     Tooltip.install(this.element, title, actionId, {
@@ -471,13 +493,15 @@ export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
     this._enabled = value;
-    this._applyEnabledState(this._enabled && (!this._toolbar || this._toolbar._enabled));
+    this._applyEnabledState(this._enabled && (!this.toolbar || this.toolbar._enabled));
   }
 
   /**
    * @param {boolean} enabled
    */
   _applyEnabledState(enabled) {
+    // @ts-ignore: Ignoring in favor of an `instanceof` check for all the different
+    //             kind of HTMLElement classes that have a disabled attribute.
     this.element.disabled = !enabled;
   }
 
@@ -497,11 +521,12 @@ export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
     }
     this.element.classList.toggle('hidden', !x);
     this._visible = x;
-    if (this._toolbar && !(this instanceof ToolbarSeparator)) {
-      this._toolbar._hideSeparatorDupes();
+    if (this.toolbar && !(this instanceof ToolbarSeparator)) {
+      this.toolbar._hideSeparatorDupes();
     }
   }
 
+  /** @param {boolean} alignRight */
   setRightAligned(alignRight) {
     this.element.classList.toggle('toolbar-item-right-aligned', alignRight);
   }
@@ -526,7 +551,7 @@ export class ToolbarText extends ToolbarItem {
    * @return {string}
    */
   text() {
-    return this.element.textContent;
+    return this.element.textContent || '';
   }
 
   /**
@@ -578,6 +603,7 @@ export class ToolbarButton extends ToolbarItem {
     }
     this._textElement.textContent = text;
     this._textElement.classList.toggle('hidden', !text);
+    /** @type {string|undefined} */
     this._text = text;
   }
 
@@ -591,6 +617,7 @@ export class ToolbarButton extends ToolbarItem {
     this._glyphElement.setIconType(glyph);
     this._glyphElement.classList.toggle('hidden', !glyph);
     this.element.classList.toggle('toolbar-has-glyph', !!glyph);
+    /** @type {string|undefined} */
     this._glyph = glyph;
   }
 
@@ -664,7 +691,8 @@ export class ToolbarInput extends ToolbarItem {
     this._prompt = new TextPrompt();
     this._proxyElement = this._prompt.attach(internalPromptElement);
     this._proxyElement.classList.add('toolbar-prompt-proxy');
-    this._proxyElement.addEventListener('keydown', event => this._onKeydownCallback(event));
+    this._proxyElement.addEventListener(
+        'keydown', /** @param {!Event} event */ event => this._onKeydownCallback(event));
     this._prompt.initialize(completions || (() => Promise.resolve([])), ' ');
     if (tooltip) {
       this._prompt.setTitle(tooltip);
@@ -673,10 +701,12 @@ export class ToolbarInput extends ToolbarItem {
     this._prompt.addEventListener(TextPromptEvents.TextChanged, this._onChangeCallback.bind(this));
 
     if (growFactor) {
-      this.element.style.flexGrow = growFactor;
+      // TODO(crbug.com/1011811): Replace with simple property access once Closure is gone.
+      this.element.style.setProperty('flexGrow', String(growFactor));
     }
     if (shrinkFactor) {
-      this.element.style.flexShrink = shrinkFactor;
+      // TODO(crbug.com/1011811): Replace with simple property access once Closure is gone.
+      this.element.style.setProperty('flexShrink', String(shrinkFactor));
     }
 
     const clearButton = this.element.createChild('div', 'toolbar-input-clear-button');
@@ -818,7 +848,7 @@ export class ToolbarMenuButton extends ToolbarButton {
    * @param {!Event} event
    */
   _mouseDown(event) {
-    if (event.buttons !== 1) {
+    if (/** @type {!MouseEvent} */ (event).buttons !== 1) {
       super._mouseDown(event);
       return;
     }
@@ -913,7 +943,9 @@ export class Provider {
   /**
    * @return {?ToolbarItem}
    */
-  item() {}
+  item() {
+    throw new Error('not implemented');
+  }
 }
 
 /**
@@ -923,7 +955,9 @@ export class ItemsProvider {
   /**
    * @return {!Array<!ToolbarItem>}
    */
-  toolbarItems() {}
+  toolbarItems() {
+    throw new Error('not implemented');
+  }
 }
 
 /**
@@ -940,7 +974,8 @@ export class ToolbarComboBox extends ToolbarItem {
     element.classList.add('toolbar-select-container');
     super(element);
 
-    this._selectElement = this.element.createChild('select', 'toolbar-item');
+    /** @type {!HTMLSelectElement} */
+    this._selectElement = /** @type {!HTMLSelectElement} */ (this.element.createChild('select', 'toolbar-item'));
     const dropdownArrowIcon = Icon.create('smallicon-triangle-down', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
     if (changeHandler) {
@@ -957,7 +992,7 @@ export class ToolbarComboBox extends ToolbarItem {
    * @return {!HTMLSelectElement}
    */
   selectElement() {
-    return /** @type {!HTMLSelectElement} */ (this._selectElement);
+    return this._selectElement;
   }
 
   /**
@@ -987,7 +1022,8 @@ export class ToolbarComboBox extends ToolbarItem {
    * @return {!Element}
    */
   createOption(label, value) {
-    const option = this._selectElement.createChild('option');
+    /** @type {!HTMLOptionElement} */
+    const option = /** @type {!HTMLOptionElement} */ (this._selectElement.createChild('option'));
     option.text = label;
     if (typeof value !== 'undefined') {
       option.value = value;
@@ -1020,7 +1056,7 @@ export class ToolbarComboBox extends ToolbarItem {
    */
   selectedOption() {
     if (this._selectElement.selectedIndex >= 0) {
-      return this._selectElement[this._selectElement.selectedIndex];
+      return /** @type {!HTMLOptionElement} */ (this._selectElement[this._selectElement.selectedIndex]);
     }
     return null;
   }
@@ -1139,14 +1175,14 @@ export class ToolbarCheckbox extends ToolbarItem {
   constructor(text, tooltip, listener) {
     super(CheckboxLabel.create(text));
     this.element.classList.add('checkbox');
-    this.inputElement = this.element.checkboxElement;
+    this.inputElement = /** @type {!CheckboxLabel} */ (this.element).checkboxElement;
     if (tooltip) {
       // install on the checkbox
       Tooltip.install(this.inputElement, tooltip, undefined, {
         anchorTooltipAtElement: true,
       });
       // install on the checkbox label
-      Tooltip.install(this.element.textElement, tooltip, undefined, {
+      Tooltip.install(/** @type {!CheckboxLabel} */ (this.element).textElement, tooltip, undefined, {
         anchorTooltipAtElement: true,
       });
     }

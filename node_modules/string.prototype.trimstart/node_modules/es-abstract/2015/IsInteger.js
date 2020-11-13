@@ -1,11 +1,7 @@
 'use strict';
 
-var GetIntrinsic = require('../GetIntrinsic');
-
-var $Math = GetIntrinsic('%Math%');
-
-var $floor = $Math.floor;
-var $abs = $Math.abs;
+var abs = require('./abs');
+var floor = require('./floor');
 
 var $isNaN = require('../helpers/isNaN');
 var $isFinite = require('../helpers/isFinite');
@@ -16,6 +12,6 @@ module.exports = function IsInteger(argument) {
 	if (typeof argument !== 'number' || $isNaN(argument) || !$isFinite(argument)) {
 		return false;
 	}
-	var abs = $abs(argument);
-	return $floor(abs) === abs;
+	var absValue = abs(argument);
+	return floor(absValue) === absValue;
 };

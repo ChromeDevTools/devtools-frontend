@@ -1,18 +1,15 @@
-/* eslint-env node*/
-
 'use strict';
 
-function settingFor(propertyName) {
-    return function (settings) {
-        const value = settings[`mocha/${ propertyName}`];
-        const mochaSettings = settings.mocha || {};
+function settingFor(settings, propertyName, fallback) {
+    const value = settings[`mocha/${propertyName}`];
+    const mochaSettings = settings.mocha || {};
 
-        return value || mochaSettings[propertyName] || [];
-    };
+    return value || mochaSettings[propertyName] || fallback;
 }
 
 module.exports = {
-    getAdditionalTestFunctions: settingFor('additionalTestFunctions'),
-    additionalSuiteNames: settingFor('additionalSuiteNames'),
-    getAdditionalXFunctions: settingFor('additionalXFunctions')
+    getAddtionalNames(settings) {
+        const additionalCustomNames = settingFor(settings, 'additionalCustomNames', []);
+        return additionalCustomNames;
+    }
 };

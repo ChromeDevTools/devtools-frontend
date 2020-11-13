@@ -9,7 +9,7 @@ var ESkeys = keys(ES).sort();
 var ES6keys = keys(ES.ES6).sort();
 
 test('exposed properties', function (t) {
-	t.deepEqual(ESkeys, ES6keys.concat(['ES2019', 'ES2018', 'ES2017', 'ES7', 'ES2016', 'ES6', 'ES2015', 'ES5']).sort(), 'main ES object keys match ES6 keys');
+	t.deepEqual(ESkeys, ES6keys.concat(['ES2020', 'ES2019', 'ES2018', 'ES2017', 'ES7', 'ES2016', 'ES6', 'ES2015', 'ES5']).sort(), 'main ES object keys match ES6 keys');
 	t.end();
 });
 
@@ -33,3 +33,4 @@ require('./es2016');
 require('./es2017');
 require('./es2018');
 require('./es2019');
+require('./es2020');

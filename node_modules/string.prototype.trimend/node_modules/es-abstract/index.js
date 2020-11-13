@@ -8,6 +8,7 @@ var ES2016 = require('./es2016');
 var ES2017 = require('./es2017');
 var ES2018 = require('./es2018');
 var ES2019 = require('./es2019');
+var ES2020 = require('./es2020');
 
 var ES = {
 	ES5: ES5,
@@ -17,7 +18,8 @@ var ES = {
 	ES2016: ES2016,
 	ES2017: ES2017,
 	ES2018: ES2018,
-	ES2019: ES2019
+	ES2019: ES2019,
+	ES2020: ES2020
 };
 assign(ES, ES5);
 delete ES.CheckObjectCoercible; // renamed in ES6 to RequireObjectCoercible

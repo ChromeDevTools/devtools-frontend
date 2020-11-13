@@ -82,14 +82,14 @@ module.exports = function GetSubstitution(matched, str, position, captures, repl
 					// $1 through $9, and not followed by a digit
 					var n = $parseInt(next, 10);
 					// if (n > m, impl-defined)
-					result += (n <= m && Type(captures[n - 1]) === 'Undefined') ? '' : captures[n - 1];
+					result += n <= m && Type(captures[n - 1]) === 'Undefined' ? '' : captures[n - 1];
 					i += 1;
 				} else if (isDigit(next) && (nextIsLast || isDigit(nextNext))) {
 					// $00 through $99
 					var nn = next + nextNext;
 					var nnI = $parseInt(nn, 10) - 1;
 					// if nn === '00' or nn > m, impl-defined
-					result += (nn <= m && Type(captures[nnI]) === 'Undefined') ? '' : captures[nnI];
+					result += nn <= m && Type(captures[nnI]) === 'Undefined' ? '' : captures[nnI];
 					i += 2;
 				} else {
 					result += '$';

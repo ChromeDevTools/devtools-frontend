@@ -33,7 +33,7 @@ module.exports = function ToPropertyDescriptor(Obj) {
 	if (has(Obj, 'get')) {
 		var getter = Obj.get;
 		if (typeof getter !== 'undefined' && !IsCallable(getter)) {
-			throw new TypeError('getter must be a function');
+			throw new $TypeError('getter must be a function');
 		}
 		desc['[[Get]]'] = getter;
 	}

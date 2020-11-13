@@ -3,6 +3,7 @@
 var GetIntrinsic = require('../GetIntrinsic');
 
 var $String = GetIntrinsic('%String%');
+var $TypeError = GetIntrinsic('%TypeError%');
 
 var Type = require('./Type');
 
@@ -10,7 +11,7 @@ var Type = require('./Type');
 
 module.exports = function NumberToString(m) {
 	if (Type(m) !== 'Number') {
-		throw new TypeError('Assertion failed: "m" must be a String');
+		throw new $TypeError('Assertion failed: "m" must be a String');
 	}
 
 	return $String(m);

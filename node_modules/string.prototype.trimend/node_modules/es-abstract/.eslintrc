@@ -26,6 +26,12 @@
 
 	"overrides": [
 		{
+			"files": "GetIntrinsic.js",
+			"rules": {
+				"max-statements": 0,
+			}
+		},
+		{
 			"files": "operations/*",
 			"rules": {
 				"max-lines": 0,

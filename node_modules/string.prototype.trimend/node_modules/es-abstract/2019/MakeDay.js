@@ -2,14 +2,14 @@
 
 var GetIntrinsic = require('../GetIntrinsic');
 
-var $floor = GetIntrinsic('%Math.floor%');
 var $DateUTC = GetIntrinsic('%Date.UTC%');
 
-var mod = require('../helpers/mod');
 var $isFinite = require('../helpers/isFinite');
 
 var DateFromTime = require('./DateFromTime');
 var Day = require('./Day');
+var floor = require('./floor');
+var modulo = require('./modulo');
 var MonthFromTime = require('./MonthFromTime');
 var ToInteger = require('./ToInteger');
 var YearFromTime = require('./YearFromTime');
@@ -23,8 +23,8 @@ module.exports = function MakeDay(year, month, date) {
 	var y = ToInteger(year);
 	var m = ToInteger(month);
 	var dt = ToInteger(date);
-	var ym = y + $floor(m / 12);
-	var mn = mod(m, 12);
+	var ym = y + floor(m / 12);
+	var mn = modulo(m, 12);
 	var t = $DateUTC(ym, mn, 1);
 	if (YearFromTime(t) !== ym || MonthFromTime(t) !== mn || DateFromTime(t) !== 1) {
 		return NaN;

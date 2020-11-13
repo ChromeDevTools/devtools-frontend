@@ -6,6 +6,8 @@ var IsInteger = require('./IsInteger');
 var Type = require('./Type');
 
 var MAX_SAFE_INTEGER = require('../helpers/maxSafeInteger');
+var isLeadingSurrogate = require('../helpers/isLeadingSurrogate');
+var isTrailingSurrogate = require('../helpers/isTrailingSurrogate');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
@@ -32,12 +34,12 @@ module.exports = function AdvanceStringIndex(S, index, unicode) {
 	}
 
 	var first = $charCodeAt(S, index);
-	if (first < 0xD800 || first > 0xDBFF) {
+	if (!isLeadingSurrogate(first)) {
 		return index + 1;
 	}
 
 	var second = $charCodeAt(S, index + 1);
-	if (second < 0xDC00 || second > 0xDFFF) {
+	if (!isTrailingSurrogate(second)) {
 		return index + 1;
 	}
 

@@ -3,6 +3,7 @@
 var assign = require('../../helpers/assign');
 
 var hasSymbols = require('has-symbols')();
+var hasBigInts = require('has-bigints')();
 
 var coercibleObject = { valueOf: function () { return 3; }, toString: function () { return 42; } };
 var coercibleFnObject = {
@@ -19,17 +20,19 @@ var uncoercibleFnObject = {
 var objects = [{}, coercibleObject, coercibleFnObject, toStringOnlyObject, valueOfOnlyObject];
 var nullPrimitives = [undefined, null];
 var nonIntegerNumbers = [-1.3, 0.2, 1.8, 1 / 3];
+var integerNumbers = [1, 7, 42, 1e17];
 var zeroes = [0, -0];
 var infinities = [Infinity, -Infinity];
 var numbers = zeroes.concat([42], infinities, nonIntegerNumbers);
 var strings = ['', 'foo', 'a\uD83D\uDCA9c'];
 var booleans = [true, false];
 var symbols = hasSymbols ? [Symbol.iterator, Symbol('foo')] : [];
-var nonSymbolPrimitives = [].concat(nullPrimitives, booleans, strings, numbers);
+var bigints = hasBigInts ? [BigInt(42), BigInt(0)] : [];
+var nonSymbolPrimitives = [].concat(nullPrimitives, booleans, strings, numbers, bigints);
 var nonNumberPrimitives = [].concat(nullPrimitives, booleans, strings, symbols);
-var nonNullPrimitives = [].concat(booleans, strings, numbers, symbols);
+var nonNullPrimitives = [].concat(booleans, strings, numbers, symbols, bigints);
 var nonUndefinedPrimitives = [].concat(null, nonNullPrimitives);
-var nonStrings = [].concat(nullPrimitives, booleans, numbers, symbols, objects);
+var nonStrings = [].concat(nullPrimitives, booleans, numbers, symbols, objects, bigints);
 var primitives = [].concat(nullPrimitives, nonNullPrimitives);
 var nonPropertyKeys = [].concat(nullPrimitives, booleans, numbers, objects);
 var propertyKeys = [].concat(strings, symbols);
@@ -39,6 +42,7 @@ var truthies = [].concat(true, 'foo', 42, symbols, objects);
 var timestamps = [].concat(0, 946713600000, 1546329600000);
 var nonFunctions = [].concat(primitives, objects, [42]);
 var nonArrays = [].concat(nonFunctions);
+var nonBigInts = [].concat(nonNumberPrimitives, numbers);
 
 var descriptors = {
 	configurable: function (descriptor) {
@@ -62,37 +66,39 @@ var descriptors = {
 };
 
 module.exports = {
-	coercibleObject: coercibleObject,
+	booleans: booleans,
 	coercibleFnObject: coercibleFnObject,
-	valueOfOnlyObject: valueOfOnlyObject,
-	toStringOnlyObject: toStringOnlyObject,
-	uncoercibleObject: uncoercibleObject,
-	uncoercibleFnObject: uncoercibleFnObject,
-	objects: objects,
-	nonFunctions: nonFunctions,
+	coercibleObject: coercibleObject,
+	falsies: falsies,
+	hasSymbols: hasSymbols,
+	infinities: infinities,
+	integerNumbers: integerNumbers,
 	nonArrays: nonArrays,
+	nonBigInts: nonBigInts,
+	nonBooleans: nonBooleans,
+	nonFunctions: nonFunctions,
+	nonIntegerNumbers: nonIntegerNumbers,
+	nonNullPrimitives: nonNullPrimitives,
+	nonNumberPrimitives: nonNumberPrimitives,
+	nonNumbers: nonNumberPrimitives.concat(objects),
+	nonPropertyKeys: nonPropertyKeys,
+	nonStrings: nonStrings,
+	nonSymbolPrimitives: nonSymbolPrimitives,
+	nonUndefinedPrimitives: nonUndefinedPrimitives,
 	nullPrimitives: nullPrimitives,
 	numbers: numbers,
-	zeroes: zeroes,
-	infinities: infinities,
-	strings: strings,
-	booleans: booleans,
-	symbols: symbols,
-	hasSymbols: hasSymbols,
-	nonSymbolPrimitives: nonSymbolPrimitives,
-	nonNumberPrimitives: nonNumberPrimitives,
-	nonNullPrimitives: nonNullPrimitives,
-	nonUndefinedPrimitives: nonUndefinedPrimitives,
-	nonStrings: nonStrings,
-	nonNumbers: nonNumberPrimitives.concat(objects),
-	nonIntegerNumbers: nonIntegerNumbers,
+	objects: objects,
 	primitives: primitives,
-	nonPropertyKeys: nonPropertyKeys,
 	propertyKeys: propertyKeys,
-	nonBooleans: nonBooleans,
-	falsies: falsies,
-	truthies: truthies,
+	strings: strings,
+	symbols: symbols,
 	timestamps: timestamps,
+	toStringOnlyObject: toStringOnlyObject,
+	truthies: truthies,
+	uncoercibleFnObject: uncoercibleFnObject,
+	uncoercibleObject: uncoercibleObject,
+	valueOfOnlyObject: valueOfOnlyObject,
+	zeroes: zeroes,
 	bothDescriptor: function () {
 		return { '[[Get]]': function () {}, '[[Value]]': true };
 	},

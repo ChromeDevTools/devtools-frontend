@@ -11,6 +11,8 @@ var v = require('./helpers/values');
 
 require('./helpers/runManifestTest')(test, ES, 5);
 
+ES = require('./helpers/createBoundESNamespace')(ES);
+
 test('ToPrimitive', function (t) {
 	t.test('primitives', function (st) {
 		var testPrimitive = function (primitive) {

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {DataGridController} from '../../../../../front_end/ui/components/DataGridController.js';
+import * as UIComponents from '../../../../../front_end/ui/components/components.js';
 import {assertNotNull, assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {TEXT_NODE, withMutations, withNoMutations} from '../../helpers/MutationHelpers.js';
 import {getAllRows, getHeaderCellForColumnId, getValuesForColumn, getValuesOfAllBodyRows} from './DataGridHelpers.js';
@@ -10,7 +10,7 @@ import {getAllRows, getHeaderCellForColumnId, getValuesForColumn, getValuesOfAll
 const {assert} = chai;
 
 
-const getInternalDataGridShadowRoot = (component: DataGridController): ShadowRoot => {
+const getInternalDataGridShadowRoot = (component: UIComponents.DataGridController.DataGridController): ShadowRoot => {
   assertShadowRoot(component.shadowRoot);
   const internalDataGrid = component.shadowRoot.querySelector('devtools-data-grid');
   assertNotNull(internalDataGrid);
@@ -31,7 +31,7 @@ describe('DataGridController', () => {
     ];
 
     it('lets the user click to sort the column in ASC order', async () => {
-      const component = new DataGridController();
+      const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns};
 
       renderElementIntoDOM(component);
@@ -55,7 +55,7 @@ describe('DataGridController', () => {
     });
 
     it('lets the user click twice to sort the column in DESC order', () => {
-      const component = new DataGridController();
+      const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns};
 
       renderElementIntoDOM(component);
@@ -72,7 +72,7 @@ describe('DataGridController', () => {
     });
 
     it('resets the sort if the user clicks after setting the sort to DESC', () => {
-      const component = new DataGridController();
+      const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns};
 
       renderElementIntoDOM(component);
@@ -105,7 +105,7 @@ describe('DataGridController', () => {
     ];
 
     it('only shows rows with values that match the filter', () => {
-      const component = new DataGridController();
+      const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns, filterText: 'Bravo'};
 
       renderElementIntoDOM(component);
@@ -118,7 +118,7 @@ describe('DataGridController', () => {
     });
 
     it('does not mutate the DOM when filtering', async () => {
-      const component = new DataGridController();
+      const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
@@ -135,7 +135,7 @@ describe('DataGridController', () => {
 
     it('renders all rows but applies a hidden class to hide non-matching rows, maintaining proper aria-rowindex labels',
        () => {
-         const component = new DataGridController();
+         const component = new UIComponents.DataGridController.DataGridController();
          component.data = {rows, columns, filterText: 'Bravo'};
 
          renderElementIntoDOM(component);
@@ -148,7 +148,7 @@ describe('DataGridController', () => {
        });
 
     it('shows all rows if the filter is then cleared', () => {
-      const component = new DataGridController();
+      const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns, filterText: 'Bravo'};
 
       renderElementIntoDOM(component);

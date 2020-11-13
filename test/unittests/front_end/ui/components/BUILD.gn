@@ -10,7 +10,7 @@ ts_library("components") {
 
   deps = [
     "../../../../../front_end/third_party/lit-html",
-    "../../../../../front_end/ui/components",
+    "../../../../../front_end/ui/components:bundle",
     "../../helpers",
   ]
 }

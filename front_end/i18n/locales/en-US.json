@@ -283,5 +283,47 @@
   },
   "settings/SettingsScreen.js | warning": {
     "message": "WARNING:"
+  },
+  "web_audio/AudioContextContentBuilder.js | audiocontext": {
+    "message": "AudioContext"
+  },
+  "web_audio/AudioContextContentBuilder.js | callbackBufferSize": {
+    "message": "Callback Buffer Size"
+  },
+  "web_audio/AudioContextContentBuilder.js | callbackInterval": {
+    "message": "Callback Interval"
+  },
+  "web_audio/AudioContextContentBuilder.js | currentTime": {
+    "message": "Current Time"
+  },
+  "web_audio/AudioContextContentBuilder.js | maxOutputChannels": {
+    "message": "Max Output Channels"
+  },
+  "web_audio/AudioContextContentBuilder.js | offlineaudiocontext": {
+    "message": "OfflineAudioContext"
+  },
+  "web_audio/AudioContextContentBuilder.js | renderCapacity": {
+    "message": "Render Capacity"
+  },
+  "web_audio/AudioContextContentBuilder.js | sampleRate": {
+    "message": "Sample Rate"
+  },
+  "web_audio/AudioContextContentBuilder.js | state": {
+    "message": "State"
+  },
+  "web_audio/AudioContextSelector.js | audioContextS": {
+    "message": "Audio context: {PH1}"
+  },
+  "web_audio/AudioContextSelector.js | noRecordings": {
+    "message": "(no recordings)"
+  },
+  "web_audio/ModuleUIStrings.js | audio": {
+    "message": "audio"
+  },
+  "web_audio/ModuleUIStrings.js | webaudio": {
+    "message": "WebAudio"
+  },
+  "web_audio/WebAudioView.js | openAPageThatUsesWebAudioApiTo": {
+    "message": "Open a page that uses Web Audio API to start monitoring."
   }
 }

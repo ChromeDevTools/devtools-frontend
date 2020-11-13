@@ -181,9 +181,6 @@
   <message name="IDS_DEVTOOLS_4252b72e6ebcd4d4b4c2e46a786f03d2" desc="Text for zooming in">
     Zoom
   </message>
-  <message name="IDS_DEVTOOLS_46a2a41cc6e552044816a2d04634545d" desc="The current state of an item">
-    State
-  </message>
   <message name="IDS_DEVTOOLS_4789f23283b3a61f858b641a1bef19a3" desc="Text for the memory of the page">
     Memory
   </message>
@@ -406,9 +403,6 @@
   <message name="IDS_DEVTOOLS_96e9bc575b5d3ed541113a249da8bd24" desc="Text to take screenshots">
     Capture screenshots
   </message>
-  <message name="IDS_DEVTOOLS_997a8c473db4f81c5fb3d5900030d44d" desc="Text that shows there is no recording">
-    (no recordings)
-  </message>
   <message name="IDS_DEVTOOLS_9d8c209e49e328528c39c273798e98c9" desc="Text to save content as a specific file type">
     Save as...
   </message>
@@ -516,9 +510,6 @@
   </message>
   <message name="IDS_DEVTOOLS_bafd7322c6e97d25b6299b5d6fe8920b" desc="Text in Timeline indicating that input has not happened recently">
     No
-  </message>
-  <message name="IDS_DEVTOOLS_bc955333ff170762be4971a8fde558cf" desc="Title of the WebAudio tool">
-    WebAudio
   </message>
   <message name="IDS_DEVTOOLS_bccaa4aa80831b76c11240a16447975f" desc="Title of the Console tool">
     Console

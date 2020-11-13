@@ -9,12 +9,14 @@ devtools_module("web_audio") {
   sources = [
     "AudioContextContentBuilder.js",
     "AudioContextSelector.js",
+    "ModuleUIStrings.js",
     "WebAudioModel.js",
     "WebAudioView.js",
   ]
 
   deps = [
     "../common:bundle",
+    "../i18n:bundle",
     "../sdk:bundle",
     "../ui:bundle",
     "graph_visualizer:bundle",

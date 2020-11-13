@@ -764,6 +764,7 @@ all_typescript_module_sources = [
   "wasmparser_worker/WasmParserWorker.js",
   "web_audio/AudioContextContentBuilder.js",
   "web_audio/AudioContextSelector.js",
+  "web_audio/ModuleUIStrings.js",
   "web_audio/WebAudioModel.js",
   "web_audio/WebAudioView.js",
   "web_audio/graph_visualizer/EdgeView.js",

@@ -1142,6 +1142,7 @@ grd_files_debug_sources = [
   "front_end/wasmparser_worker/WasmParserWorker.js",
   "front_end/web_audio/AudioContextContentBuilder.js",
   "front_end/web_audio/AudioContextSelector.js",
+  "front_end/web_audio/ModuleUIStrings.js",
   "front_end/web_audio/WebAudioModel.js",
   "front_end/web_audio/WebAudioView.js",
   "front_end/web_audio/graph_visualizer/EdgeView.js",

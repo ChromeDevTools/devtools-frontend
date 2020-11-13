@@ -2,7 +2,49 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
+
+export const UIStrings = {
+  /**
+  *@description Text in Audio Context Content Builder
+  */
+  audiocontext: 'AudioContext',
+  /**
+  *@description Text in Audio Context Content Builder
+  */
+  offlineaudiocontext: 'OfflineAudioContext',
+  /**
+  *@description The current state of an item
+  */
+  state: 'State',
+  /**
+  *@description Text in Audio Context Content Builder
+  */
+  sampleRate: 'Sample Rate',
+  /**
+  *@description Text in Audio Context Content Builder
+  */
+  callbackBufferSize: 'Callback Buffer Size',
+  /**
+  *@description Text in Audio Context Content Builder
+  */
+  maxOutputChannels: 'Max Output Channels',
+  /**
+  *@description Text in Audio Context Content Builder
+  */
+  currentTime: 'Current Time',
+  /**
+  *@description Text in Audio Context Content Builder
+  */
+  callbackInterval: 'Callback Interval',
+  /**
+  *@description Text in Audio Context Content Builder
+  */
+  renderCapacity: 'Render Capacity',
+};
+const str_ = i18n.i18n.registerUIStrings('web_audio/AudioContextContentBuilder.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ContextDetailBuilder {
   /**
@@ -20,14 +62,15 @@ export class ContextDetailBuilder {
    * @param {!Protocol.WebAudio.BaseAudioContext} context
    */
   _build(context) {
-    const title = context.contextType === 'realtime' ? ls`AudioContext` : ls`OfflineAudioContext`;
+    const title = context.contextType === 'realtime' ? i18nString(UIStrings.audiocontext) :
+                                                       i18nString(UIStrings.offlineaudiocontext);
     this._addTitle(title, context.contextId);
-    this._addEntry(ls`State`, context.contextState);
-    this._addEntry(ls`Sample Rate`, context.sampleRate, 'Hz');
+    this._addEntry(i18nString(UIStrings.state), context.contextState);
+    this._addEntry(i18nString(UIStrings.sampleRate), context.sampleRate, 'Hz');
     if (context.contextType === 'realtime') {
-      this._addEntry(ls`Callback Buffer Size`, context.callbackBufferSize, 'frames');
+      this._addEntry(i18nString(UIStrings.callbackBufferSize), context.callbackBufferSize, 'frames');
     }
-    this._addEntry(ls`Max Output Channels`, context.maxOutputChannelCount, 'ch');
+    this._addEntry(i18nString(UIStrings.maxOutputChannels), context.maxOutputChannelCount, 'ch');
   }
 
   /**
@@ -79,11 +122,11 @@ export class ContextSummaryBuilder {
     this._fragment = document.createDocumentFragment();
     this._fragment.appendChild(UI.Fragment.html`
       <div class="context-summary-container">
-        <span>${ls`Current Time`}: ${time} s</span>
+        <span>${i18nString(UIStrings.currentTime)}: ${time} s</span>
         <span>\u2758</span>
-        <span>${ls`Callback Interval`}: μ = ${mean} ms, σ = ${stddev} ms</span>
+        <span>${i18nString(UIStrings.callbackInterval)}: μ = ${mean} ms, σ = ${stddev} ms</span>
         <span>\u2758</span>
-        <span>${ls`Render Capacity`}: ${capacity} %</span>
+        <span>${i18nString(UIStrings.renderCapacity)}: ${capacity} %</span>
       </div>
     `);
   }

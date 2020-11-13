@@ -543,6 +543,9 @@
   <message name="IDS_DEVTOOLS_bc06bdbf329ad9ca96d447a6807694f4" desc="Title for a SameSiteCookie issue">
     Mark cross-site cookies as Secure to allow setting them in cross-site contexts
   </message>
+  <message name="IDS_DEVTOOLS_bc955333ff170762be4971a8fde558cf" desc="Title of the WebAudio tool">
+    WebAudio
+  </message>
   <message name="IDS_DEVTOOLS_bd10377344e85a24419a0271ceaac7ed" desc="Description for a SameSiteCookie issue">
     Cookies marked with <ph name="LOCKED_1">|SameSite=None|</ph> must also be marked with <ph name="LOCKED_1">|Secure|</ph> to get sent in cross-site requests.
        This behavior protects user data from being sent over an insecure connection.

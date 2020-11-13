@@ -3,7 +3,22 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
+
+export const UIStrings = {
+  /**
+  *@description Text that shows there is no recording
+  */
+  noRecordings: '(no recordings)',
+  /**
+  *@description Label prefix for an audio context selection
+  *@example {realtime (1e03ec)} PH1
+  */
+  audioContextS: 'Audio context: {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('web_audio/AudioContextSelector.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {UI.SoftDropDown.Delegate<!Protocol.WebAudio.BaseAudioContext>}
@@ -13,7 +28,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
     super();
 
     /** @type {string} */
-    this._placeholderText = ls`(no recordings)`;
+    this._placeholderText = i18nString(UIStrings.noRecordings);
 
     /** @type {!UI.ListModel.ListModel<!Protocol.WebAudio.BaseAudioContext>} */
     this._items = new UI.ListModel.ListModel();
@@ -24,7 +39,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
 
     this._toolbarItem = new UI.Toolbar.ToolbarItem(this._dropDown.element);
     this._toolbarItem.setEnabled(false);
-    this._toolbarItem.setTitle(ls`Audio context: ${this._placeholderText}`);
+    this._toolbarItem.setTitle(i18nString(UIStrings.audioContextS, {PH1: this._placeholderText}));
     this._items.addEventListener(UI.ListModel.Events.ItemsReplaced, this._onListItemReplaced, this);
     this._toolbarItem.element.classList.add('toolbar-has-dropdown');
 
@@ -36,7 +51,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
     const hasItems = !!this._items.length;
     this._toolbarItem.setEnabled(hasItems);
     if (!hasItems) {
-      this._toolbarItem.setTitle(ls`Audio context: ${this._placeholderText}`);
+      this._toolbarItem.setTitle(i18nString(UIStrings.audioContextS, {PH1: this._placeholderText}));
     }
   }
 
@@ -144,7 +159,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
     // It's possible that no context is selected yet.
     if (!this._selectedContext || this._selectedContext.contextId !== item.contextId) {
       this._selectedContext = item;
-      this._toolbarItem.setTitle(ls`Audio context: ${this.titleFor(item)}`);
+      this._toolbarItem.setTitle(i18nString(UIStrings.audioContextS, {PH1: this.titleFor(item)}));
     }
 
     this.dispatchEventToListeners(Events.ContextSelected, item);

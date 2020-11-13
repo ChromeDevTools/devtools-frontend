@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -10,6 +11,15 @@ import {ContextDetailBuilder, ContextSummaryBuilder} from './AudioContextContent
 import {AudioContextSelector, Events as SelectorEvents} from './AudioContextSelector.js';
 import {GraphManager} from './graph_visualizer/GraphManager.js';
 import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
+
+export const UIStrings = {
+  /**
+  *@description Text in Web Audio View
+  */
+  openAPageThatUsesWebAudioApiTo: 'Open a page that uses Web Audio API to start monitoring.',
+};
+const str_ = i18n.i18n.registerUIStrings('web_audio/WebAudioView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!WebAudioModel>}
@@ -41,7 +51,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget {
     this._landingPage.contentElement.classList.add('web-audio-landing-page', 'fill');
     this._landingPage.contentElement.appendChild(UI.Fragment.html`
       <div>
-        <p>${ls`Open a page that uses Web Audio API to start monitoring.`}</p>
+        <p>${i18nString(UIStrings.openAPageThatUsesWebAudioApiTo)}</p>
       </div>
     `);
     this._landingPage.show(this._detailViewContainer);

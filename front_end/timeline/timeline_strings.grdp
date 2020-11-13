@@ -304,6 +304,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_44ff4e8748811d0661f820aeb28ecaf4" desc="Text in Timeline UIUtils of the Performance panel">
     XHR Ready State Change
   </message>
+  <message name="IDS_DEVTOOLS_46a2a41cc6e552044816a2d04634545d" desc="The current state of an item">
+    State
+  </message>
   <message name="IDS_DEVTOOLS_46fa564bb1eed5cd3992cac85e8f094b" desc="Title of show screenshots setting in timeline panel of the performance panel">
     Screenshots
   </message>
@@ -674,6 +677,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_9841bdc50c4226cb6ec5db76494249e6" desc="Title of the 'Coverage' tool in the bottom drawer">
     Coverage
+  </message>
+  <message name="IDS_DEVTOOLS_997a8c473db4f81c5fb3d5900030d44d" desc="Text that shows there is no recording">
+    (no recordings)
   </message>
   <message name="IDS_DEVTOOLS_9a2837081f4b4cd67f625bd8e7567383" desc="Text in Timeline UIUtils of the Performance panel">
     Compile Script

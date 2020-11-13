@@ -3,25 +3,27 @@
 // found in the LICENSE file.
 
 import type * as IssuesModule from '../../../../front_end/issues/issues.js';
+import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import {IssueKind} from '../../../../front_end/sdk/Issue.js';
 
 const {assert} = chai;
 
 describeWithEnvironment('createIssueDescriptionFromMarkdown', async () => {
   let Issues: typeof IssuesModule;
+  let SDK: typeof SDKModule;
   before(async () => {
     Issues = await import('../../../../front_end/issues/issues.js');
+    SDK = await import('../../../../front_end/sdk/sdk.js');
   });
 
-  const emptyMarkdownDescription = {
-    file: '<unused>',
-    substitutions: undefined,
-    issueKind: IssueKind.BreakingChange,
-    links: [],
-  };
-
   it('only accepts Markdown where the first AST element is a heading, describing the title', () => {
+    const emptyMarkdownDescription = {
+      file: '<unused>',
+      substitutions: undefined,
+      issueKind: SDK.Issue.IssueKind.BreakingChange,
+      links: [],
+    };
+
     const validIssueDescription = '# Title for the issue\n\n...and some text describing the issue.';
 
     const description = Issues.MarkdownIssueDescription.createIssueDescriptionFromRawMarkdown(
@@ -30,6 +32,13 @@ describeWithEnvironment('createIssueDescriptionFromMarkdown', async () => {
   });
 
   it('throws an error for issue description without a heading', () => {
+    const emptyMarkdownDescription = {
+      file: '<unused>',
+      substitutions: undefined,
+      issueKind: SDK.Issue.IssueKind.BreakingChange,
+      links: [],
+    };
+
     const invalidIssueDescription = 'Just some text, but the heading is missing!';
 
     assert.throws(

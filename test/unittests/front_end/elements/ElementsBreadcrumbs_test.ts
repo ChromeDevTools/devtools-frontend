@@ -3,20 +3,20 @@
 // found in the LICENSE file.
 
 import type * as ElementsModule from '../../../../front_end/elements/elements.js';
-import {crumbsToRender, determineElementTitle, DOMNode} from '../../../../front_end/elements/ElementsBreadcrumbsUtils.js';
 import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, doubleRaf, renderElementIntoDOM, waitForScrollLeft} from '../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {withNoMutations} from '../helpers/MutationHelpers.js';
 
 const {assert} = chai;
 
-interface MakeCrumbOptions extends Partial<DOMNode> {
+
+interface MakeCrumbOptions extends Partial<ElementsModule.ElementsBreadcrumbsUtils.DOMNode> {
   attributes?: {[x: string]: string}
 }
 
 const makeCrumb = (overrides: MakeCrumbOptions = {}) => {
   const attributes = overrides.attributes || {};
-  const newCrumb: DOMNode = {
+  const newCrumb: ElementsModule.ElementsBreadcrumbsUtils.DOMNode = {
     parentNode: null,
     nodeType: Node.ELEMENT_NODE,
     id: 1,
@@ -33,7 +33,7 @@ const makeCrumb = (overrides: MakeCrumbOptions = {}) => {
   return newCrumb;
 };
 
-describeWithEnvironment('Elements.ElementsBreadcrumbs.ElementsBreadcrumbs', () => {
+describeWithEnvironment('ElementsBreadcrumbs', () => {
   let Elements: typeof ElementsModule;
   before(async () => {
     Elements = await import('../../../../front_end/elements/elements.js');
@@ -42,7 +42,7 @@ describeWithEnvironment('Elements.ElementsBreadcrumbs.ElementsBreadcrumbs', () =
   describe('#determineElementTitle', () => {
     it('returns (text) for text nodes', () => {
       const node = makeCrumb({nodeType: Node.TEXT_NODE});
-      const title = determineElementTitle(node);
+      const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
       assert.deepEqual(title, {
         main: '(text)',
         extras: {},
@@ -51,13 +51,13 @@ describeWithEnvironment('Elements.ElementsBreadcrumbs.ElementsBreadcrumbs', () =
 
     it('returns <!--> for comments', () => {
       const node = makeCrumb({nodeType: Node.COMMENT_NODE});
-      const title = determineElementTitle(node);
+      const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
       assert.deepEqual(title, {main: '<!-->', extras: {}});
     });
 
     it('returns <!doctype> for doctypes', () => {
       const node = makeCrumb({nodeType: Node.DOCUMENT_TYPE_NODE});
-      const title = determineElementTitle(node);
+      const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
       assert.deepEqual(title, {main: '<!doctype>', extras: {}});
     });
 
@@ -68,7 +68,7 @@ describeWithEnvironment('Elements.ElementsBreadcrumbs.ElementsBreadcrumbs', () =
           shadowRootType: 'shadowRoot',
           nodeNameNicelyCased: 'test-elem',
         });
-        const title = determineElementTitle(node);
+        const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
         assert.deepEqual(title, {main: '#shadow-root', extras: {}});
       });
 
@@ -78,7 +78,7 @@ describeWithEnvironment('Elements.ElementsBreadcrumbs.ElementsBreadcrumbs', () =
           shadowRootType: undefined,
           nodeNameNicelyCased: 'test-elem',
         });
-        const title = determineElementTitle(node);
+        const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
         assert.deepEqual(title, {main: 'test-elem', extras: {}});
       });
     });
@@ -86,19 +86,19 @@ describeWithEnvironment('Elements.ElementsBreadcrumbs.ElementsBreadcrumbs', () =
     describe('for element nodes', () => {
       it('takes the nicely cased node name by default', () => {
         const node = makeCrumb({nodeType: Node.ELEMENT_NODE, nodeNameNicelyCased: 'div'});
-        const title = determineElementTitle(node);
+        const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
         assert.deepEqual(title, {main: 'div', extras: {}});
       });
 
       it('uses the pseudoType if that is passed', () => {
         const node = makeCrumb({nodeType: Node.ELEMENT_NODE, pseudoType: 'test'});
-        const title = determineElementTitle(node);
+        const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
         assert.deepEqual(title, {main: '::test', extras: {}});
       });
 
       it('adds the ID as an extra if present', () => {
         const node = makeCrumb({nodeType: Node.ELEMENT_NODE, nodeNameNicelyCased: 'div', attributes: {id: 'test'}});
-        const title = determineElementTitle(node);
+        const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
         assert.deepEqual(title, {
           main: 'div',
           extras: {
@@ -113,7 +113,7 @@ describeWithEnvironment('Elements.ElementsBreadcrumbs.ElementsBreadcrumbs', () =
           nodeNameNicelyCased: 'div',
           attributes: {class: 'class1 class2'},
         });
-        const title = determineElementTitle(node);
+        const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
         assert.deepEqual(title, {
           main: 'div',
           extras: {
@@ -128,7 +128,7 @@ describeWithEnvironment('Elements.ElementsBreadcrumbs.ElementsBreadcrumbs', () =
         nodeType: Node.CDATA_SECTION_NODE,
         nodeNameNicelyCased: 'not-special-cased-node-type',
       });
-      const title = determineElementTitle(node);
+      const title = Elements.ElementsBreadcrumbsUtils.determineElementTitle(node);
       assert.deepEqual(title, {
         main: 'not-special-cased-node-type',
         extras: {},
@@ -138,7 +138,7 @@ describeWithEnvironment('Elements.ElementsBreadcrumbs.ElementsBreadcrumbs', () =
 
   describe('crumbsToRender', () => {
     it('returns an empty array when there is no selected node', () => {
-      const result = crumbsToRender([], null);
+      const result = Elements.ElementsBreadcrumbsUtils.crumbsToRender([], null);
       assert.deepEqual(result, []);
     });
 
@@ -157,7 +157,7 @@ describeWithEnvironment('Elements.ElementsBreadcrumbs.ElementsBreadcrumbs', () =
         nodeNameNicelyCased: 'body',
       });
 
-      const result = crumbsToRender([documentCrumb, bodyCrumb], bodyCrumb);
+      const result = Elements.ElementsBreadcrumbsUtils.crumbsToRender([documentCrumb, bodyCrumb], bodyCrumb);
 
       assert.deepEqual(result, [
         {
@@ -267,7 +267,8 @@ describeWithEnvironment('Elements.ElementsBreadcrumbs.ElementsBreadcrumbs', () =
 
       assertShadowRoot(component.shadowRoot);
       await withNoMutations(component.shadowRoot, shadowRoot => {
-        const newDiv: DOMNode = {...divCrumb, nodeName: 'span', nodeNameNicelyCased: 'span'};
+        const newDiv: ElementsModule.ElementsBreadcrumbsUtils
+            .DOMNode = {...divCrumb, nodeName: 'span', nodeNameNicelyCased: 'span'};
         component.data = {
           crumbs: [newDiv, bodyCrumb],
           selectedNode: bodyCrumb,

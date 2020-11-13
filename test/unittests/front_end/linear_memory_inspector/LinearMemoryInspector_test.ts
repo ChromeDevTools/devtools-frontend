@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as LinearMemoryInspector from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
-import {toHexString} from '../../../../front_end/linear_memory_inspector/LinearMemoryInspectorUtils.js';
 import {getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 import {NAVIGATOR_ADDRESS_SELECTOR, NAVIGATOR_HISTORY_BUTTON_SELECTOR, NAVIGATOR_PAGE_BUTTON_SELECTOR} from './LinearMemoryNavigator_test.js';
@@ -151,11 +150,11 @@ describe('LinearMemoryInspector', () => {
 
   it('formats a hexadecimal number', async () => {
     const number = 23;
-    assert.strictEqual(toHexString(number, 0), '17');
+    assert.strictEqual(LinearMemoryInspector.LinearMemoryInspectorUtils.toHexString(number, 0), '17');
   });
 
   it('formats a hexadecimal number and adds padding', async () => {
     const decimalNumber = 23;
-    assert.strictEqual(toHexString(decimalNumber, 5), '00017');
+    assert.strictEqual(LinearMemoryInspector.LinearMemoryInspectorUtils.toHexString(decimalNumber, 5), '00017');
   });
 });

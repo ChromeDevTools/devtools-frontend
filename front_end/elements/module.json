@@ -345,7 +345,9 @@
     "LayoutPane_bridge.js"
   ],
   "skip_compilation": [
-    "NodeText.js"
+    "NodeText.js",
+    "ElementsBreadcrumbsUtils.js",
+    "LayoutPaneUtils.js"
   ],
   "resources": [
     "classesPaneWidget.css",

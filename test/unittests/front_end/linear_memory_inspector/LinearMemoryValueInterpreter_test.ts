@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 
 import * as LinearMemoryInspector from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
-
-import {Endianness, ValueType} from '../../../../front_end/linear_memory_inspector/ValueInterpreterDisplayUtils.js';
 import {getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -37,8 +35,8 @@ describe('LinearMemoryValueInterpreter', () => {
     const component = new LinearMemoryInspector.LinearMemoryValueInterpreter.LinearMemoryValueInterpreter();
     component.data = {
       value: buffer,
-      endianness: Endianness.Little,
-      valueTypes: new Set([ValueType.Int8]),
+      endianness: LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little,
+      valueTypes: new Set([LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8]),
     };
     renderElementIntoDOM(component);
     return component;
@@ -72,7 +70,7 @@ describe('LinearMemoryValueInterpreter', () => {
         component, SETTINGS_SELECTOR, LinearMemoryInspector.ValueInterpreterSettings.ValueInterpreterSettings);
     const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryValueInterpreter.ValueTypeToggleEvent>(
         component, 'value-type-toggle');
-    const expectedType = ValueType.Boolean;
+    const expectedType = LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Boolean;
     const expectedChecked = true;
     const typeToggleEvent =
         new LinearMemoryInspector.ValueInterpreterSettings.TypeToggleEvent(expectedType, expectedChecked);

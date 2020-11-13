@@ -3,12 +3,11 @@
 // found in the LICENSE file.
 
 import * as InlineEditor from '../../../../front_end/inline_editor/inline_editor.js';
-import type {CSSVarSwatch} from '../../../../front_end/inline_editor/CSSVarSwatch.js';
 import {assertNotNull, assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
-function assertSwatch(swatch: CSSVarSwatch, expected: {
+function assertSwatch(swatch: InlineEditor.CSSVarSwatchImpl.CSSVarSwatch, expected: {
   valueTooltip: string|null,
   linkTooltip: string,
   isDefined: boolean,

@@ -6,10 +6,14 @@ const {assert} = chai;
 
 import {createTarget} from '../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../helpers/MockConnection.js';
-import {Protocol} from '../../../../front_end/protocol_client/protocol_client.js';
-import {CookieModel} from '../../../../front_end/sdk/CookieModel.js';
+import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
 
 describeWithMockConnection('CookieModel', () => {
+  let SDK: typeof SDKModule;
+  before(async () => {
+    SDK = await import('../../../../front_end/sdk/sdk.js');
+  });
+
   it('can retrieve cookies', async () => {
     // CDP Connection mock: for Network.getCookies, respond with a single cookie.
     setMockConnectionResponseHandler('Network.getCookies', () => {
@@ -30,7 +34,7 @@ describeWithMockConnection('CookieModel', () => {
     });
 
     const target = createTarget();
-    const model = new CookieModel(target);
+    const model = new SDK.CookieModel.CookieModel(target);
     const cookies = await model.getCookies(['https://www.google.com']);
     assert.isArray(cookies);
     assert.lengthOf(cookies, 1);

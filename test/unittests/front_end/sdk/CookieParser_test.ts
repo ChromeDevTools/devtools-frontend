@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 const {assert} = chai;
-import {CookieParser} from '../../../../front_end/sdk/CookieParser.js';
-import {Cookie} from '../../../../front_end/sdk/Cookie.js';
 
-function ensureCookiesExistOrFailTest(cookies: Cookie[]|null): cookies is Cookie[] {
+import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
+
+function ensureCookiesExistOrFailTest(cookies: SDKModule.Cookie.Cookie[]|null): cookies is SDKModule.Cookie.Cookie[] {
   if (!cookies) {
     assert.fail('expected cookies to exist');
     return false;
@@ -19,6 +20,8 @@ interface CookieExpectation {
       session?: boolean, path?: string, domain?: string, expires?: null|number|string, size?: number,
       priority?: Protocol.Network.CookiePriority,
 }
+
+const requestDate = new Date('Mon Oct 18 2010 17:00:00 GMT+0000');
 
 const cookieExpectationDefaults: CookieExpectation = {
   name: 'name',
@@ -34,9 +37,7 @@ const cookieExpectationDefaults: CookieExpectation = {
   priority: Protocol.Network.CookiePriority.Medium,
 };
 
-const requestDate = new Date('Mon Oct 18 2010 17:00:00 GMT+0000');
-
-function expectCookie(cookie: Cookie, cookieExpectation: CookieExpectation) {
+function expectCookie(cookie: SDKModule.Cookie.Cookie, cookieExpectation: CookieExpectation) {
   const expectation = {...cookieExpectationDefaults, ...cookieExpectation};
   assert.strictEqual(cookie.name(), expectation.name, 'name');
   assert.strictEqual(cookie.value(), expectation.value, 'value');
@@ -60,35 +61,40 @@ function expectCookie(cookie: Cookie, cookieExpectation: CookieExpectation) {
   assert.strictEqual(cookie.priority(), expectation.priority, 'priority');
 }
 
-function parseAndExpectCookies(cookieString: string, cookieExpectations: CookieExpectation[]) {
-  const cookies = CookieParser.parseCookie(cookieString);
-  if (ensureCookiesExistOrFailTest(cookies)) {
-    assert.lengthOf(
-        cookies, cookieExpectations.length,
-        'Expected number of parsed cookies to agree with number of expected cookies');
-    for (let i = 0; i < cookieExpectations.length; ++i) {
-      expectCookie(cookies[i], cookieExpectations[i]);
+describeWithEnvironment('CookieParser', () => {
+  let SDK: typeof SDKModule;
+  before(async () => {
+    SDK = await import('../../../../front_end/sdk/sdk.js');
+  });
+
+  function parseAndExpectCookies(cookieString: string, cookieExpectations: CookieExpectation[]) {
+    const cookies = SDK.CookieParser.CookieParser.parseCookie(cookieString);
+    if (ensureCookiesExistOrFailTest(cookies)) {
+      assert.lengthOf(
+          cookies, cookieExpectations.length,
+          'Expected number of parsed cookies to agree with number of expected cookies');
+      for (let i = 0; i < cookieExpectations.length; ++i) {
+        expectCookie(cookies[i], cookieExpectations[i]);
+      }
     }
   }
-}
 
-function parseAndExpectSetCookies(setCookieString: string, cookieExpectations: CookieExpectation[]) {
-  const cookies = CookieParser.parseSetCookie(setCookieString);
-  if (ensureCookiesExistOrFailTest(cookies)) {
-    assert.lengthOf(
-        cookies, cookieExpectations.length,
-        'Expected number of parsed cookies to agree with number of expected cookies');
-    for (let i = 0; i < cookieExpectations.length; ++i) {
-      expectCookie(cookies[i], cookieExpectations[i]);
+  function parseAndExpectSetCookies(setCookieString: string, cookieExpectations: CookieExpectation[]) {
+    const cookies = SDK.CookieParser.CookieParser.parseSetCookie(setCookieString);
+    if (ensureCookiesExistOrFailTest(cookies)) {
+      assert.lengthOf(
+          cookies, cookieExpectations.length,
+          'Expected number of parsed cookies to agree with number of expected cookies');
+      for (let i = 0; i < cookieExpectations.length; ++i) {
+        expectCookie(cookies[i], cookieExpectations[i]);
+      }
     }
   }
-}
 
-describe('CookieParser', () => {
   describe('parseCookie', () => {
     it('can parse basic cookies', () => {
       const cookie = 'foo=bar';
-      const cookies = CookieParser.parseCookie(cookie);
+      const cookies = SDK.CookieParser.CookieParser.parseCookie(cookie);
       if (ensureCookiesExistOrFailTest(cookies)) {
         assert.lengthOf(cookies, 1);
         expectCookie(cookies[0], {name: 'foo', value: 'bar', size: cookie.length});
@@ -97,7 +103,7 @@ describe('CookieParser', () => {
 
     it('parses multiple cookies', () => {
       const cookie = 'one=jack; two=tim';
-      const cookies = CookieParser.parseCookie(cookie);
+      const cookies = SDK.CookieParser.CookieParser.parseCookie(cookie);
       if (ensureCookiesExistOrFailTest(cookies)) {
         assert.lengthOf(cookies, 2);
         expectCookie(cookies[0], {name: 'one', value: 'jack', size: 10});

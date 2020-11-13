@@ -4,13 +4,13 @@
 
 import * as Common from '../../../../front_end/common/common.js';
 import * as InlineEditor from '../../../../front_end/inline_editor/inline_editor.js';
-import type {ColorSwatch, FormatChangedEvent} from '../../../../front_end/inline_editor/ColorSwatch.js';
 import {assertElement, assertNotNull, assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
 function assertSwatch(
-    swatch: ColorSwatch, expected: {backgroundColor?: string, colorTextInSlot?: string, tooltip?: string}) {
+    swatch: InlineEditor.ColorSwatchImpl.ColorSwatch,
+    expected: {backgroundColor?: string, colorTextInSlot?: string, tooltip?: string}) {
   assertShadowRoot(swatch.shadowRoot);
 
   const swatchEl = swatch.shadowRoot.querySelector('.color-swatch');
@@ -39,7 +39,7 @@ function createSwatch(color: Common.Color.Color|string, formatOrUseUserSetting?:
   return swatch;
 }
 
-function getClickTarget(swatch: ColorSwatch) {
+function getClickTarget(swatch: InlineEditor.ColorSwatchImpl.ColorSwatch) {
   assertNotNull(swatch.shadowRoot);
   return swatch.shadowRoot.querySelector('.color-swatch-inner') as HTMLElement;
 }
@@ -128,7 +128,7 @@ describe('ColorSwatch', () => {
 
     let currentFormat = swatch.format;
     swatch.addEventListener('format-changed', (e: Event) => {
-      currentFormat = (e as FormatChangedEvent).data.format;
+      currentFormat = (e as InlineEditor.ColorSwatchImpl.FormatChangedEvent).data.format;
     });
 
     assert.strictEqual(currentFormat, Common.Color.Format.Nickname);

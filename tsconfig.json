@@ -12,7 +12,8 @@
   },
   "include": [
     "front_end/",
-    "test/"
+    "test/",
+    "inspector_overlay"
   ],
   "exclude": [
     "front_end/externs.js",

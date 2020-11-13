@@ -8,7 +8,7 @@ import * as UI from '../../../../front_end/ui/ui.js';
 
 describe('Context', () => {
   it('can be instantiated without issues', () => {
-    const context = new UI.Context.Context();
+    const context = UI.Context.Context.instance({forceNew: true});
     assert.strictEqual(context.flavors().size, 0, 'context should not have any flavors upon instantiation');
   });
 

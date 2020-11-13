@@ -23,5 +23,8 @@
     "cssShadowSwatch.css",
     "cssShadowEditor.css",
     "swatchPopover.css"
+  ],
+  "skip_compilation": [
+    "CSSAngleUtils.js"
   ]
 }

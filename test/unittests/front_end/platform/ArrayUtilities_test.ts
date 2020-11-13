@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ArrayUtilities} from '../../../../front_end/platform/platform.js';
+import * as Platform from '../../../../front_end/platform/platform.js';
 
 const {assert} = chai;
 
@@ -24,11 +24,11 @@ describe('ArrayUtilities', () => {
       for (const testCase of testCases) {
         const actualFirstOnlyTrue = [...testCase.input];
 
-        ArrayUtilities.removeElement(actualFirstOnlyTrue, 2, true);
+        Platform.ArrayUtilities.removeElement(actualFirstOnlyTrue, 2, true);
         assert.deepStrictEqual(actualFirstOnlyTrue, testCase.expectedFirstOnlyTrue, 'Removing firstOnly (true) failed');
 
         const actualFirstOnlyFalse = [...testCase.input];
-        ArrayUtilities.removeElement(actualFirstOnlyFalse, 2, false);
+        Platform.ArrayUtilities.removeElement(actualFirstOnlyFalse, 2, false);
         assert.deepStrictEqual(
             actualFirstOnlyFalse, testCase.expectedFirstOnlyFalse, 'Removing firstOnly (false) failed');
       }

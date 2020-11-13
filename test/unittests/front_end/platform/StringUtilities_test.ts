@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {StringUtilities} from '../../../../front_end/platform/platform.js';
-import {FORMATTER_TOKEN} from '../../../../front_end/platform/string-utilities.js';
+import * as Platform from '../../../../front_end/platform/platform.js';
 
 const {assert} = chai;
 
@@ -12,7 +11,7 @@ describe('StringUtilities', () => {
     it('escapes the given characters', () => {
       const inputString = 'My string with a single quote \' in the middle';
       const charsToEscape = '\'';
-      const outputString = StringUtilities.escapeCharacters(inputString, charsToEscape);
+      const outputString = Platform.StringUtilities.escapeCharacters(inputString, charsToEscape);
 
       assert.strictEqual(outputString, 'My string with a single quote \\\' in the middle');
     });
@@ -20,7 +19,7 @@ describe('StringUtilities', () => {
     it('leaves the string alone if the characters are not found', () => {
       const inputString = 'Just a boring string';
       const charsToEscape = '\'';
-      const outputString = StringUtilities.escapeCharacters(inputString, charsToEscape);
+      const outputString = Platform.StringUtilities.escapeCharacters(inputString, charsToEscape);
       assert.strictEqual(outputString, inputString);
     });
   });
@@ -39,7 +38,7 @@ describe('StringUtilities', () => {
       ]);
       for (const [inputString, encodedString] of fixtures) {
         assert.strictEqual(
-            encodedString, StringUtilities.toBase64(inputString), `failed to encode ${inputString} correctly`);
+            encodedString, Platform.StringUtilities.toBase64(inputString), `failed to encode ${inputString} correctly`);
       }
     });
   });
@@ -47,7 +46,7 @@ describe('StringUtilities', () => {
   describe('findIndexesOfSubstring', () => {
     it('finds the expected indexes', () => {
       const inputString = '111111F1111111F11111111F';
-      const indexes = StringUtilities.findIndexesOfSubString(inputString, 'F');
+      const indexes = Platform.StringUtilities.findIndexesOfSubString(inputString, 'F');
       assert.deepEqual(indexes, [6, 14, 23]);
     });
   });
@@ -58,19 +57,19 @@ describe('StringUtilities', () => {
 56
 78
 9`;
-      const indexes = StringUtilities.findLineEndingIndexes(inputString);
+      const indexes = Platform.StringUtilities.findLineEndingIndexes(inputString);
       assert.deepEqual(indexes, [4, 7, 10, 12]);
     });
   });
 
   describe('isWhitespace', () => {
     it('correctly recognizes different kinds of whitespace', () => {
-      assert.isTrue(StringUtilities.isWhitespace(''));
-      assert.isTrue(StringUtilities.isWhitespace('  '));
-      assert.isTrue(StringUtilities.isWhitespace('\t'));
-      assert.isTrue(StringUtilities.isWhitespace('\n'));
+      assert.isTrue(Platform.StringUtilities.isWhitespace(''));
+      assert.isTrue(Platform.StringUtilities.isWhitespace('  '));
+      assert.isTrue(Platform.StringUtilities.isWhitespace('\t'));
+      assert.isTrue(Platform.StringUtilities.isWhitespace('\n'));
 
-      assert.isFalse(StringUtilities.isWhitespace('  foo '));
+      assert.isFalse(Platform.StringUtilities.isWhitespace('  foo '));
     });
   });
 
@@ -83,7 +82,7 @@ describe('StringUtilities', () => {
         ['https://example.com/foo[]', 'example.com/foo[]'],
       ]);
       for (const [url, expected] of fixtures) {
-        assert.strictEqual(StringUtilities.trimURL(url, baseURLDomain), expected, url);
+        assert.strictEqual(Platform.StringUtilities.trimURL(url, baseURLDomain), expected, url);
       }
     });
   });
@@ -91,13 +90,13 @@ describe('StringUtilities', () => {
   describe('collapseWhitespace', () => {
     it('collapses consecutive whitespace chars down to a single one', () => {
       const inputString = 'look                at this!';
-      const outputString = StringUtilities.collapseWhitespace(inputString);
+      const outputString = Platform.StringUtilities.collapseWhitespace(inputString);
       assert.strictEqual(outputString, 'look at this!');
     });
 
     it('matches globally and collapses all whitespace sections', () => {
       const inputString = 'a     b           c';
-      const outputString = StringUtilities.collapseWhitespace(inputString);
+      const outputString = Platform.StringUtilities.collapseWhitespace(inputString);
       assert.strictEqual(outputString, 'a b c');
     });
   });
@@ -105,11 +104,11 @@ describe('StringUtilities', () => {
   describe('reverse', () => {
     it('reverses the string', () => {
       const inputString = 'abc';
-      assert.strictEqual(StringUtilities.reverse(inputString), 'cba');
+      assert.strictEqual(Platform.StringUtilities.reverse(inputString), 'cba');
     });
 
     it('does nothing to an empty string', () => {
-      assert.strictEqual('', StringUtilities.reverse(''));
+      assert.strictEqual('', Platform.StringUtilities.reverse(''));
     });
   });
 
@@ -124,7 +123,7 @@ describe('StringUtilities', () => {
       ];
 
       const inputString = charsThatShouldBeEscaped.join('');
-      const outputString = StringUtilities.replaceControlCharacters(inputString);
+      const outputString = Platform.StringUtilities.replaceControlCharacters(inputString);
 
       const replacementCharacter = '\uFFFD';
       const expectedString = charsThatShouldBeEscaped.fill(replacementCharacter).join('');
@@ -133,45 +132,45 @@ describe('StringUtilities', () => {
 
     it('does not replace \n \t or \r', () => {
       const inputString = '\nhello world\t\r';
-      const outputString = StringUtilities.replaceControlCharacters(inputString);
+      const outputString = Platform.StringUtilities.replaceControlCharacters(inputString);
       assert.strictEqual(inputString, outputString);
     });
   });
 
   describe('countWtf8Bytes', () => {
     it('produces the correct WTF-8 byte size', () => {
-      assert.strictEqual(StringUtilities.countWtf8Bytes('a'), 1);
-      assert.strictEqual(StringUtilities.countWtf8Bytes('\x7F'), 1);
-      assert.strictEqual(StringUtilities.countWtf8Bytes('\u07FF'), 2);
-      assert.strictEqual(StringUtilities.countWtf8Bytes('\uD800'), 3);
-      assert.strictEqual(StringUtilities.countWtf8Bytes('\uDBFF'), 3);
-      assert.strictEqual(StringUtilities.countWtf8Bytes('\uDC00'), 3);
-      assert.strictEqual(StringUtilities.countWtf8Bytes('\uDFFF'), 3);
-      assert.strictEqual(StringUtilities.countWtf8Bytes('\uFFFF'), 3);
-      assert.strictEqual(StringUtilities.countWtf8Bytes('\u{10FFFF}'), 4);
-      assert.strictEqual(StringUtilities.countWtf8Bytes('Iñtërnâtiônàlizætiøn☃💩'), 34);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes('a'), 1);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes('\x7F'), 1);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes('\u07FF'), 2);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes('\uD800'), 3);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes('\uDBFF'), 3);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes('\uDC00'), 3);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes('\uDFFF'), 3);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes('\uFFFF'), 3);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes('\u{10FFFF}'), 4);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes('Iñtërnâtiônàlizætiøn☃💩'), 34);
 
       // An arbitrary lead surrogate (D800..DBFF).
       const leadSurrogate = '\uDABC';
       // An arbitrary trail surrogate (DC00..DFFF).
       const trailSurrogate = '\uDEF0';
-      assert.strictEqual(StringUtilities.countWtf8Bytes(`${leadSurrogate}${trailSurrogate}`), 4);
-      assert.strictEqual(StringUtilities.countWtf8Bytes(`${trailSurrogate}${leadSurrogate}`), 6);
-      assert.strictEqual(StringUtilities.countWtf8Bytes(`${leadSurrogate}`), 3);
-      assert.strictEqual(StringUtilities.countWtf8Bytes(`${trailSurrogate}`), 3);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes(`${leadSurrogate}${trailSurrogate}`), 4);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes(`${trailSurrogate}${leadSurrogate}`), 6);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes(`${leadSurrogate}`), 3);
+      assert.strictEqual(Platform.StringUtilities.countWtf8Bytes(`${trailSurrogate}`), 3);
     });
   });
 
   describe('stripLineBreaks', () => {
     it('strips linebreaks from strings', () => {
-      assert.strictEqual(StringUtilities.stripLineBreaks('a\nb'), 'ab');
-      assert.strictEqual(StringUtilities.stripLineBreaks('a\r\nb'), 'ab');
+      assert.strictEqual(Platform.StringUtilities.stripLineBreaks('a\nb'), 'ab');
+      assert.strictEqual(Platform.StringUtilities.stripLineBreaks('a\r\nb'), 'ab');
     });
   });
 
   describe('tokenizeFormatString', () => {
     it('deals with tokenizers that return undefined', () => {
-      const tokens = StringUtilities.tokenizeFormatString('%c%s', {
+      const tokens = Platform.StringUtilities.tokenizeFormatString('%c%s', {
         c: () => {},
         s: () => {},
       });
@@ -202,9 +201,10 @@ describe('StringUtilities', () => {
         }
       }
 
-      const tokens = StringUtilities.tokenizeFormatString(colors.map(c => `\u001b[${c}m`).join(''), {c: () => {}});
+      const tokens =
+          Platform.StringUtilities.tokenizeFormatString(colors.map(c => `\u001b[${c}m`).join(''), {c: () => {}});
 
-      const expectedTokens: FORMATTER_TOKEN[] = [
+      const expectedTokens: Platform.StringUtilities.FORMATTER_TOKEN[] = [
         {
           precision: undefined,
           substitutionIndex: undefined,
@@ -519,7 +519,7 @@ describe('StringUtilities', () => {
 
   describe('toTitleCase', () => {
     it('converts a string to title case', () => {
-      const output = StringUtilities.toTitleCase('foo bar baz');
+      const output = Platform.StringUtilities.toTitleCase('foo bar baz');
       assert.strictEqual(output, 'Foo bar baz');
     });
   });
@@ -527,50 +527,50 @@ describe('StringUtilities', () => {
   describe('removeURLFragment', () => {
     it('removes the URL fragment if found', () => {
       const input = 'http://www.example.com/foo.html#blah';
-      assert.strictEqual(StringUtilities.removeURLFragment(input), 'http://www.example.com/foo.html');
+      assert.strictEqual(Platform.StringUtilities.removeURLFragment(input), 'http://www.example.com/foo.html');
     });
 
     it('returns the same string if there is no fragment', () => {
       const input = 'http://www.example.com/foo.html';
-      assert.strictEqual(StringUtilities.removeURLFragment(input), input);
+      assert.strictEqual(Platform.StringUtilities.removeURLFragment(input), input);
     });
 
     it('does not strip query parameters', () => {
       const input = 'http://www.example.com/foo.html?x=1#blah';
-      assert.strictEqual(StringUtilities.removeURLFragment(input), 'http://www.example.com/foo.html?x=1');
+      assert.strictEqual(Platform.StringUtilities.removeURLFragment(input), 'http://www.example.com/foo.html?x=1');
     });
   });
   describe('filterRegex', () => {
     it('should do nothing for single non-special character', () => {
-      const regex = StringUtilities.filterRegex('f');
+      const regex = Platform.StringUtilities.filterRegex('f');
       assert.strictEqual(regex.toString(), '/f/i');
     });
 
     it('should prepend [^\\0 ]* patterns for following characters', () => {
-      const regex = StringUtilities.filterRegex('bar');
+      const regex = Platform.StringUtilities.filterRegex('bar');
       assert.strictEqual(regex.toString(), '/b[^\\0a]*a[^\\0r]*r/i');
     });
 
     it('should espace special characters', () => {
-      const regex = StringUtilities.filterRegex('{?}');
+      const regex = Platform.StringUtilities.filterRegex('{?}');
       assert.strictEqual(regex.toString(), '/\\{[^\\0\\?]*\\?[^\\0\\}]*\\}/i');
     });
   });
 
   describe('createSearchRegex', () => {
     it('returns a case sensitive regex if the call states it is case sensitive', () => {
-      const regex = StringUtilities.createSearchRegex('foo', true, false);
+      const regex = Platform.StringUtilities.createSearchRegex('foo', true, false);
       assert.strictEqual(regex.ignoreCase, false);
       assert.strictEqual(regex.source, 'foo');
     });
 
     it('creates a regex from plain text if the given input is not already a regex', () => {
-      const regex = StringUtilities.createSearchRegex('[foo]', false, false);
+      const regex = Platform.StringUtilities.createSearchRegex('[foo]', false, false);
       assert.strictEqual(regex.source, '\\[foo\\]');
     });
 
     it('leaves the input be if it is already a regex', () => {
-      const regex = StringUtilities.createSearchRegex('[foo]', false, true);
+      const regex = Platform.StringUtilities.createSearchRegex('[foo]', false, true);
       assert.strictEqual(regex.source, '[foo]');
     });
   });

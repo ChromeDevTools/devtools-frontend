@@ -4,7 +4,6 @@
 
 import type * as ElementsModule from '../../../../front_end/elements/elements.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import {SettingType} from '../../../../front_end/elements/LayoutPaneUtils.js';
 import {assertElement, assertShadowRoot, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -34,7 +33,7 @@ describeWithEnvironment('LayoutPane', async () => {
       settings: [
         {
           name: 'booleanSetting',
-          type: SettingType.BOOLEAN,
+          type: Elements.LayoutPaneUtils.SettingType.BOOLEAN,
           value: false,
           title: 'Boolean setting title',
           options: [
@@ -50,7 +49,7 @@ describeWithEnvironment('LayoutPane', async () => {
         },
         {
           name: 'enumSetting',
-          type: SettingType.ENUM,
+          type: Elements.LayoutPaneUtils.SettingType.ENUM,
           value: 'both',
           title: 'Enum setting title',
           options: [
@@ -82,7 +81,7 @@ describeWithEnvironment('LayoutPane', async () => {
       settings: [
         {
           name: 'booleanSetting',
-          type: SettingType.BOOLEAN,
+          type: Elements.LayoutPaneUtils.SettingType.BOOLEAN,
           value: false,
           title: 'Boolean setting title',
           options: [

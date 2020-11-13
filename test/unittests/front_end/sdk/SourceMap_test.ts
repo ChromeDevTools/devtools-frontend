@@ -4,7 +4,8 @@
 
 const {assert} = chai;
 
-import {SourceMapEntry, TextSourceMap} from '../../../../front_end/sdk/SourceMap.js';
+import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const fakeInitiator = {
   target: null,
@@ -12,9 +13,14 @@ const fakeInitiator = {
   initiatorUrl: '',
 };
 
-describe('SourceMapEntry', () => {
+describeWithEnvironment('SourceMapEntry', () => {
+  let SDK: typeof SDKModule;
+  before(async () => {
+    SDK = await import('../../../../front_end/sdk/sdk.js');
+  });
+
   it('can be instantiated correctly', () => {
-    const sourceMapEntry = new SourceMapEntry(1, 1, 'http://www.example.com/', 1, 1, 'example');
+    const sourceMapEntry = new SDK.SourceMap.SourceMapEntry(1, 1, 'http://www.example.com/', 1, 1, 'example');
     assert.strictEqual(sourceMapEntry.lineNumber, 1, 'line number was not set correctly');
     assert.strictEqual(sourceMapEntry.columnNumber, 1, 'column number was not set correctly');
     assert.strictEqual(sourceMapEntry.sourceURL, 'http://www.example.com/', 'source URL was not set correctly');
@@ -25,45 +31,52 @@ describe('SourceMapEntry', () => {
 
   describe('comparison', () => {
     it('checks line numbers first', () => {
-      const sourceMapEntry1 = new SourceMapEntry(1, 5, '<foo>', 1, 5, 'foo');
-      const sourceMapEntry2 = new SourceMapEntry(2, 5, '<foo>', 2, 5, 'foo');
-      assert.isBelow(SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0, 'first entry is not smaller');
+      const sourceMapEntry1 = new SDK.SourceMap.SourceMapEntry(1, 5, '<foo>', 1, 5, 'foo');
+      const sourceMapEntry2 = new SDK.SourceMap.SourceMapEntry(2, 5, '<foo>', 2, 5, 'foo');
+      assert.isBelow(
+          SDK.SourceMap.SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0, 'first entry is not smaller');
     });
 
     it('checks column numbers second when line numbers are equal', () => {
-      const sourceMapEntry1 = new SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
-      const sourceMapEntry2 = new SourceMapEntry(2, 25, '<foo>', 2, 5, 'foo');
-      assert.isBelow(SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0, 'first entry is not smaller');
+      const sourceMapEntry1 = new SDK.SourceMap.SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
+      const sourceMapEntry2 = new SDK.SourceMap.SourceMapEntry(2, 25, '<foo>', 2, 5, 'foo');
+      assert.isBelow(
+          SDK.SourceMap.SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0, 'first entry is not smaller');
     });
 
     it('works for equal SourceMapEntries', () => {
-      const sourceMapEntry1 = new SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
-      const sourceMapEntry2 = new SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
-      assert.strictEqual(SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0);
+      const sourceMapEntry1 = new SDK.SourceMap.SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
+      const sourceMapEntry2 = new SDK.SourceMap.SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
+      assert.strictEqual(SDK.SourceMap.SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0);
     });
   });
 });
 
-describe('TextSourceMap', () => {
+describeWithEnvironment('TextSourceMap', () => {
+  let SDK: typeof SDKModule;
+  before(async () => {
+    SDK = await import('../../../../front_end/sdk/sdk.js');
+  });
+
   describe('StringCharIterator', () => {
     it('detects when it has reached the end', () => {
-      const empty_iterator = new TextSourceMap.StringCharIterator('');
+      const empty_iterator = new SDK.SourceMap.TextSourceMap.StringCharIterator('');
       assert.isFalse(empty_iterator.hasNext());
 
-      const iterator = new TextSourceMap.StringCharIterator('foo');
+      const iterator = new SDK.SourceMap.TextSourceMap.StringCharIterator('foo');
       assert.isTrue(iterator.hasNext());
     });
 
     it('peeks the next character', () => {
-      const empty_iterator = new TextSourceMap.StringCharIterator('');
+      const empty_iterator = new SDK.SourceMap.TextSourceMap.StringCharIterator('');
       assert.strictEqual(empty_iterator.peek(), '');
 
-      const iterator = new TextSourceMap.StringCharIterator('foo');
+      const iterator = new SDK.SourceMap.TextSourceMap.StringCharIterator('foo');
       assert.strictEqual(iterator.peek(), 'f');
     });
 
     it('advances when {next} is called', () => {
-      const iterator = new TextSourceMap.StringCharIterator('bar');
+      const iterator = new SDK.SourceMap.TextSourceMap.StringCharIterator('bar');
       assert.strictEqual(iterator.next(), 'b');
       assert.strictEqual(iterator.next(), 'a');
       assert.strictEqual(iterator.next(), 'r');
@@ -72,8 +85,8 @@ describe('TextSourceMap', () => {
   });
 
   function assertMapping(
-      actual: SourceMapEntry|null, expectedSourceURL: string|undefined, expectedSourceLineNumber: number|undefined,
-      expectedSourceColumnNumber: number|undefined) {
+      actual: SDKModule.SourceMap.SourceMapEntry|null, expectedSourceURL: string|undefined,
+      expectedSourceLineNumber: number|undefined, expectedSourceColumnNumber: number|undefined) {
     assert.isNotNull(actual, 'expected SourceMapEntry to be present');
     assert.strictEqual(actual!.sourceURL, expectedSourceURL, 'unexpected source URL');
     assert.strictEqual(actual!.sourceLineNumber, expectedSourceLineNumber, 'unexpected source line number');
@@ -81,7 +94,8 @@ describe('TextSourceMap', () => {
   }
 
   function assertReverseMapping(
-      actual: SourceMapEntry|null, expectedCompiledLineNumber: number, expectedCompiledColumnNumber: number) {
+      actual: SDKModule.SourceMap.SourceMapEntry|null, expectedCompiledLineNumber: number,
+      expectedCompiledColumnNumber: number) {
     assert.isNotNull(actual, 'expected SourceMapEntry to be present');
     assert.strictEqual(actual!.lineNumber, expectedCompiledLineNumber, 'unexpected compiled line number');
     assert.strictEqual(actual!.columnNumber, expectedCompiledColumnNumber, 'unexpected compiled column number');
@@ -120,7 +134,7 @@ describe('TextSourceMap', () => {
       names: undefined,
       sourcesContent: undefined,
     };
-    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
 
     assertMapping(sourceMap.findEntry(0, 9), 'example.js', 0, 9);
     assertMapping(sourceMap.findEntry(0, 13), 'example.js', 0, 13);
@@ -148,7 +162,7 @@ describe('TextSourceMap', () => {
       names: undefined,
       sourcesContent: undefined,
     };
-    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
 
     assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
     assertMapping(sourceMap.findEntry(0, 2), 'example.js', 0, 2);
@@ -170,7 +184,7 @@ describe('TextSourceMap', () => {
       names: undefined,
       sourcesContent: undefined,
     };
-    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
 
     assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
     assertReverseMapping(sourceMap.sourceLineMapping('example.js', 1, 0), 3, 1);
@@ -216,7 +230,7 @@ describe('TextSourceMap', () => {
       names: undefined,
       sourcesContent: undefined,
     };
-    const sourceMap = new TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
 
     assert.lengthOf(sourceMap.sourceURLs(), 2, 'unexpected number of original source URLs');
     assertMapping(sourceMap.findEntry(0, 0), 'source1.js', 0, 0);

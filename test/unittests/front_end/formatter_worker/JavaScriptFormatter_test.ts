@@ -6,8 +6,8 @@ const {assert} = chai;
 
 import * as Platform from '../../../../front_end/platform/platform.js';
 
-import {FormattedContentBuilder} from '../../../../front_end/formatter_worker/FormattedContentBuilder.js';
-import {JavaScriptFormatter} from '../../../../front_end/formatter_worker/JavaScriptFormatter.js';
+import {FormattedContentBuilder} from '../../../../front_end/formatter_worker/FormattedContentBuilder.js';  // eslint-disable-line rulesdir/es_modules_import
+import {JavaScriptFormatter} from '../../../../front_end/formatter_worker/JavaScriptFormatter.js';  // eslint-disable-line rulesdir/es_modules_import
 
 function formatJavaScript(text: string): string {
   // Indent using 2 spaces for these unit tests.

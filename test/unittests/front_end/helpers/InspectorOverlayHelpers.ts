@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import {renderElementIntoDOM, assertElements, assertElement} from './DOMHelpers.js';
+
 import {_normalizePositionData, drawGridAreaNames, drawGridLineNumbers, drawGridLineNames, CanvasSize, GridPositionNormalizedDataWithNames, NormalizePositionDataConfig} from '../../../../inspector_overlay/css_grid_label_helpers.js';
 import {AreaBounds, Bounds} from '../../../../inspector_overlay/common.js';
 import {gridStyle} from '../../../../inspector_overlay/highlight_grid_common.js';

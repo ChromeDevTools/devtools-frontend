@@ -4,12 +4,17 @@
 
 const {assert} = chai;
 
-import {Protocol} from '../../../../front_end/protocol_client/protocol_client.js';
-import {Cookie} from '../../../../front_end/sdk/Cookie.js';
+import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
-describe('Cookie', () => {
+describeWithEnvironment('Cookie', () => {
+  let SDK: typeof SDKModule;
+  before(async () => {
+    SDK = await import('../../../../front_end/sdk/sdk.js');
+  });
+
   it('can be instantiated without issues', () => {
-    const cookie = new Cookie('name', 'value');
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
 
     assert.strictEqual(cookie.key(), '- name -');
     assert.strictEqual(cookie.name(), 'name');
@@ -32,7 +37,7 @@ describe('Cookie', () => {
 
   it('can be created from a protocol Cookie with all optional fields set', () => {
     const expires = new Date().getTime() + 3600 * 1000;
-    const cookie = Cookie.fromProtocolCookie({
+    const cookie = SDK.Cookie.Cookie.fromProtocolCookie({
       domain: '.example.com',
       expires: expires / 1000,
       httpOnly: true,
@@ -66,7 +71,7 @@ describe('Cookie', () => {
 
   // The jsdoc states that the fields are required, not optional
   it.skip('[crbug.com/1061125] can be created from a protocol Cookie with no optional fields set', () => {
-    const cookie = Cookie.fromProtocolCookie({
+    const cookie = SDK.Cookie.Cookie.fromProtocolCookie({
       domain: '.example.com',
       name: 'name',
       path: '/test',
@@ -99,7 +104,7 @@ describe('Cookie', () => {
   });
 
   it('can handle secure urls', () => {
-    const cookie = new Cookie('name', 'value');
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
     cookie.addAttribute('Secure');
     cookie.addAttribute('Domain', 'example.com');
     cookie.addAttribute('Path', '/test');
@@ -107,48 +112,48 @@ describe('Cookie', () => {
   });
 
   it('can handle insecure urls', () => {
-    const cookie = new Cookie('name', 'value');
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
     cookie.addAttribute('Domain', 'example.com');
     cookie.addAttribute('Path', '/test');
     assert.strictEqual(cookie.url(), 'http://example.com/test');
   });
 
   it('can set attributes used as flags', () => {
-    const cookie = new Cookie('name', 'value');
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
     cookie.addAttribute('HttpOnly');
     assert.strictEqual(cookie.httpOnly(), true);
   });
 
   it('can set attributes used as key=value', () => {
-    const cookie = new Cookie('name', 'value');
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
     cookie.addAttribute('Path', '/test');
     assert.strictEqual(cookie.path(), '/test');
   });
 
   it('can set initialize with a different priority', () => {
-    const cookie = new Cookie('name', 'value', null, Protocol.Network.CookiePriority.High);
+    const cookie = new SDK.Cookie.Cookie('name', 'value', null, Protocol.Network.CookiePriority.High);
     assert.strictEqual(cookie.priority(), 'High');
   });
 
   it('can change the priority', () => {
-    const cookie = new Cookie('name', 'value');
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
     cookie.addAttribute('Priority', 'Low');
     assert.strictEqual(cookie.priority(), 'Low');
   });
 
   it('can set the cookie line', () => {
-    const cookie = new Cookie('name', 'value');
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
     cookie.setCookieLine('name=value');
     assert.strictEqual(cookie.getCookieLine(), 'name=value');
   });
 
   it('can calculate the expiration date for session cookies', () => {
-    const cookie = new Cookie('name', 'value');
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
     assert.strictEqual(cookie.expiresDate(new Date()), null);
   });
 
   it('can calculate the expiration date for max age cookies', () => {
-    const cookie = new Cookie('name', 'value');
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
     const now = new Date();
     const expires = Math.floor(now.getTime()) + 3600 * 1000;
     cookie.addAttribute('Max-Age', '3600');
@@ -156,7 +161,7 @@ describe('Cookie', () => {
   });
 
   it('can calculate the expiration date for cookies with expires attribute', () => {
-    const cookie = new Cookie('name', 'value');
+    const cookie = new SDK.Cookie.Cookie('name', 'value');
     const now = new Date();
     const expires = Math.floor(now.getTime()) + 3600 * 1000;
     cookie.addAttribute('Expires', expires);

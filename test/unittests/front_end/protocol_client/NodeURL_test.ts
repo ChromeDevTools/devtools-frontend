@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as ProtocolClient from '../../../../front_end/protocol_client/protocol_client.js';
-import {Platform} from '../../../../front_end/host/host.js';
+import * as Host from '../../../../front_end/host/host.js';
 
 describe('NodeURL', () => {
   describe('platform detection for paths', () => {
@@ -23,8 +23,8 @@ describe('NodeURL', () => {
   });
 
   describe('patch', () => {
-    const url = Platform.isWin() ? 'c:\\prog\\foobar.js' : '/usr/local/home/prog/foobar.js';
-    const patchedUrl = Platform.isWin() ? 'file:///c:/prog/foobar.js' : 'file:///usr/local/home/prog/foobar.js';
+    const url = Host.Platform.isWin() ? 'c:\\prog\\foobar.js' : '/usr/local/home/prog/foobar.js';
+    const patchedUrl = Host.Platform.isWin() ? 'file:///c:/prog/foobar.js' : 'file:///usr/local/home/prog/foobar.js';
 
     it('does patch url fields', () => {
       const object = {url, result: null};

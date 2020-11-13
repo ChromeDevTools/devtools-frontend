@@ -4,16 +4,22 @@
 
 const {assert} = chai;
 
-import {LoadErrorDescription} from '../../../../front_end/host/ResourceLoader.js';
-import {PageResourceLoader} from '../../../../front_end/sdk/PageResourceLoader.js';
+import * as Host from '../../../../front_end/host/host.js';
+import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 interface LoadResult {
   success: boolean;
   content: string;
-  errorDescription: LoadErrorDescription;
+  errorDescription: Host.ResourceLoader.LoadErrorDescription;
 }
 
-describe('PageResourceLoader', () => {
+describeWithEnvironment('PageResourceLoader', () => {
+  let SDK: typeof SDKModule;
+  before(async () => {
+    SDK = await import('../../../../front_end/sdk/sdk.js');
+  });
+
   const loads: Array<{url: string}> = [];
   const load = (url: string): Promise<LoadResult> => {
     loads.push({url});
@@ -32,8 +38,8 @@ describe('PageResourceLoader', () => {
   });
 
   it('loads resources correctly', async () => {
-    const loader =
-        PageResourceLoader.instance({forceNew: true, loadOverride: load, maxConcurrentLoads: 500, loadTimeout: 30000});
+    const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
+        {forceNew: true, loadOverride: load, maxConcurrentLoads: 500, loadTimeout: 30000});
     const loading = [
       loader.loadResource('foo1', initiator),
       loader.loadResource('foo2', initiator),
@@ -51,8 +57,8 @@ describe('PageResourceLoader', () => {
   });
 
   it('deals with page reloads correctly', async () => {
-    const loader =
-        PageResourceLoader.instance({forceNew: true, loadOverride: load, maxConcurrentLoads: 1, loadTimeout: 30000});
+    const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
+        {forceNew: true, loadOverride: load, maxConcurrentLoads: 1, loadTimeout: 30000});
     const loading = [
       loader.loadResource('foo1', initiator).catch(e => e.message),
       loader.loadResource('foo2', initiator).catch(e => e.message),
@@ -82,8 +88,8 @@ describe('PageResourceLoader', () => {
       return new Promise(() => {});
     };
 
-    const loader =
-        PageResourceLoader.instance({forceNew: true, loadOverride: load, maxConcurrentLoads: 2, loadTimeout: 30});
+    const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
+        {forceNew: true, loadOverride: load, maxConcurrentLoads: 2, loadTimeout: 30});
     const loading = [
       loader.loadResource('foo1', initiator).catch(e => e.message),
       loader.loadResource('foo2', initiator).catch(e => e.message),
@@ -102,8 +108,8 @@ describe('PageResourceLoader', () => {
   });
 
   it('respects the max concurrent loads', async () => {
-    const loader =
-        PageResourceLoader.instance({forceNew: true, loadOverride: load, maxConcurrentLoads: 2, loadTimeout: 30});
+    const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
+        {forceNew: true, loadOverride: load, maxConcurrentLoads: 2, loadTimeout: 30});
     const loading = [
       loader.loadResource('foo1', initiator),
       loader.loadResource('foo2', initiator),

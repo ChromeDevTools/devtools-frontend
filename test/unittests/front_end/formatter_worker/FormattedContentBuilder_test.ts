@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import {FormattedContentBuilder} from '../../../../front_end/formatter_worker/FormattedContentBuilder.js';
+import {FormattedContentBuilder} from '../../../../front_end/formatter_worker/FormattedContentBuilder.js';  // eslint-disable-line rulesdir/es_modules_import
 
 describe('FormattedContentBuilder', () => {
   it('can add a token successfully', () => {

@@ -47,7 +47,7 @@ export class MemoryRequestEvent extends Event {
   data: {start: number, end: number, address: number};
 
   constructor(start: number, end: number, address: number) {
-    super('memoryRequest');
+    super('memory-request');
     this.data = {start, end, address};
   }
 }

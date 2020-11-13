@@ -40,6 +40,7 @@ export class AdvancedApp {
   }
 
   /**
+   * Note: it's used by toolbox_bootstrap.js without real type checks.
    * @return {!AdvancedApp}
    */
   static _instance() {

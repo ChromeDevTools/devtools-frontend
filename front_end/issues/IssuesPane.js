@@ -1114,10 +1114,11 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
 }
 
 // TODO(petermarshall, 1112738): Add survey triggers here.
+// These come from chrome/browser/ui/hats/hats_service.cc.
 /** @type {!Map<!SDK.Issue.IssueCategory, string|null>} */
 const issueSurveyTriggers = new Map([
   [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, null], [SDK.Issue.IssueCategory.MixedContent, null],
-  [SDK.Issue.IssueCategory.SameSiteCookie, null], [SDK.Issue.IssueCategory.HeavyAd, null],
+  [SDK.Issue.IssueCategory.SameSiteCookie, 'devtools-issues-cookies-samesite'], [SDK.Issue.IssueCategory.HeavyAd, null],
   [SDK.Issue.IssueCategory.ContentSecurityPolicy, null], [SDK.Issue.IssueCategory.Other, null]
 ]);
 

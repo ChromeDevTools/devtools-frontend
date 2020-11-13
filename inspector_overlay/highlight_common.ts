@@ -37,6 +37,34 @@ export type PathBounds = Bounds&{
   bottommostYForX: {[key: string]: number};
 }
 
+export interface LineStyle {
+  color?: string;
+  pattern?: LinePattern;
+}
+
+enum LinePattern {
+  Solid = 'solid',
+  Dotted = 'dotted',
+  Dashed = 'dashed'
+}
+
+export function drawPathWithLineStyle(context: CanvasRenderingContext2D, path: Path2D, lineStyle?: LineStyle) {
+  if (lineStyle && lineStyle.color) {
+    context.save();
+    context.translate(0.5, 0.5);
+    context.lineWidth = 1;
+    if (lineStyle.pattern === LinePattern.Dashed) {
+      context.setLineDash([3, 3]);
+    }
+    if (lineStyle.pattern === LinePattern.Dotted) {
+      context.setLineDash([2, 2]);
+    }
+    context.strokeStyle = lineStyle.color;
+    context.stroke(path);
+    context.restore();
+  }
+}
+
 export function buildPath(commands: Array<string|number>, bounds: PathBounds, emulationScaleFactor: number): Path2D {
   let commandsIndex = 0;
 

@@ -16,6 +16,7 @@ python2_action("build_inspector_overlay") {
     "$target_gen_dir/common.js",
     "$target_gen_dir/css_grid_label_helpers.js",
     "$target_gen_dir/highlight_common.js",
+    "$target_gen_dir/highlight_flex_common.js",
     "$target_gen_dir/highlight_grid_common.js",
     "$target_gen_dir/tool_distances.js",
     "$target_gen_dir/tool_grid.js",
@@ -36,7 +37,7 @@ python2_action("build_inspector_overlay") {
 
   args = [
     "main.js",
-    "80000",  # max_size in bytes
+    "85000",  # max_size in bytes
     "--input_path",
     rebase_path(target_gen_dir, root_build_dir),
     "--output_path",
@@ -74,6 +75,7 @@ ts_library("inspector_overlay") {
     "common.ts",
     "css_grid_label_helpers.ts",
     "highlight_common.ts",
+    "highlight_flex_common.ts",
     "highlight_grid_common.ts",
     "main.ts",
     "tool_distances.ts",

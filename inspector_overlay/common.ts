@@ -2,6 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+export type PathCommands = Array<string|number>;
+
+export interface Quad {
+  p1: Position;
+  p2: Position;
+  p3: Position;
+  p4: Position;
+}
+
 export interface Position {
   x: number;
   y: number;

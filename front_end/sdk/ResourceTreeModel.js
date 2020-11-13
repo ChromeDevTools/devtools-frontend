@@ -1072,6 +1072,13 @@ export class PageDispatcher {
   }
 
   /**
+ * @override
+ * @param {!Protocol.Page.DocumentOpenedEvent} event
+ */
+  documentOpened({frame}) {
+  }
+
+  /**
    * @override
    * @param {!Protocol.Page.FrameDetachedEvent} event
    */

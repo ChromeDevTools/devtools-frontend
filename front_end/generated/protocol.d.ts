@@ -9974,6 +9974,16 @@ declare namespace Protocol {
     }
 
     /**
+     * Fired when opening document to write to.
+     */
+    export interface DocumentOpenedEvent {
+      /**
+       * Frame object.
+       */
+      frame: Frame;
+    }
+
+    /**
      * Fired when a renderer-initiated navigation is requested.
      * Navigation may still be cancelled after the event is issued.
      */

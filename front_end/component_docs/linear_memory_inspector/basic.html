@@ -11,7 +11,7 @@
     <title>Linear Memory Inspector Example</title>
     <style>
       #container {
-        width: 800px;
+        width: 850px;
         height: 400px;
         border: 1px solid black;
         display: flex;
@@ -22,6 +22,12 @@
     <div id="container">
     </div>
     <script type="module">
+      // TODO(crbug.com/1146002): Replace this import as soon as
+      // we are able to use `import as * ...` across the codebase
+      // in the following files:
+      // LinearMemoryNavigator.ts
+      // LinearMemoryValueInterpreter.ts
+      import '../../elements/Icon.js';
       import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
       import {LinearMemoryInspector} from '../../linear_memory_inspector/LinearMemoryInspector.js';
 

@@ -19,9 +19,11 @@ const DEFAULT_MODE_MAPPING = new Map([
   [ValueType.String, ValueTypeMode.None],
 ]);
 
+const SORTED_VALUE_TYPES = Array.from(DEFAULT_MODE_MAPPING.keys());
+
 export interface ValueDisplayData {
   buffer: ArrayBuffer;
-  valueTypes: ValueType[];
+  valueTypes: Set<ValueType>;
   endianness: Endianness;
   valueTypeModes?: Map<ValueType, ValueTypeMode>;
 }
@@ -30,7 +32,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private endianness = Endianness.Little;
   private buffer = new ArrayBuffer(0);
-  private valueTypes: ValueType[] = [];
+  private valueTypes: Set<ValueType> = new Set();
   private valueTypeModeConfig: Map<ValueType, ValueTypeMode> = DEFAULT_MODE_MAPPING;
 
   set data(data: ValueDisplayData) {
@@ -64,12 +66,14 @@ export class ValueInterpreterDisplay extends HTMLElement {
         }
 
         .value-types {
-          display: grid;
+          display: table;
           overflow: hidden;
-          grid-template-columns: minmax(90px, 1fr) minmax(25px, 0.5fr) minmax(100px, 2fr) minmax(100px, 2fr);
-          grid-column-gap: 10px;
           padding-left: 12px;
           padding-right: 12px;
+        }
+
+        td {
+          padding: 0px 24px 0px 0px;
         }
 
         .value-type-cell {
@@ -82,7 +86,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
 
       </style>
         <div class="value-types">
-          ${this.valueTypes.map(type => this.showValue(type))}
+          ${SORTED_VALUE_TYPES.map(type => this.valueTypes.has(type) ? this.showValue(type) : '')}
         </div>
       </div>
     `, this.shadow, {eventContext: this},
@@ -94,14 +98,26 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <span class="value-type-cell">${type}</span>
-      ${isNumber(type) ?
-        html`<span class="mode-type value-type-cell">${this.valueTypeModeConfig.get(type)}</span>` :
-        html`<span/>`}
-      ${typeHasSignedNotation(type) ? html`
-        <span class="value-type-cell" data-value="true">+ ${this.parse({type, signed: false})}</span>
-        <span class="value-type-cell" data-value="true">± ${this.parse({type, signed: true})}</span>` :
-        html`<span class="value-type-cell" data-value="true">${this.parse({type})}</span>`}
+      <tr>
+        <td colspan="${isNumber(type) ? 1 : 2}">
+          <span class="value-type-cell">${type}</span>
+        </td>
+
+        ${isNumber(type) ?
+          html`<td><span class="mode-type value-type-cell">${this.valueTypeModeConfig.get(type)}</span></td>` : ''}
+
+        ${typeHasSignedNotation(type) ? html`
+          <td>
+            <span class="value-type-cell" data-value="true">+ ${this.parse({type, signed: false})}</span>
+          </td>
+          <td>
+            <span class="value-type-cell" data-value="true">± ${this.parse({type, signed: true})}</span>
+          </td>` :
+          html`
+          <td colspan="2">
+            <span class="value-type-cell" data-value="true">${this.parse({type})}</span>
+          </td>`}
+      </tr>
     `;
     // clang-format on
   }

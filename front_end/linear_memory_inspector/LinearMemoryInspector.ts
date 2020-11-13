@@ -12,7 +12,7 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 const {render, html} = LitHtml;
 
 import {HistoryNavigationEvent, LinearMemoryNavigatorData, Navigation, PageNavigationEvent} from './LinearMemoryNavigator.js';
-import type {LinearMemoryValueInterpreterData} from './LinearMemoryValueInterpreter.js';
+import type {LinearMemoryValueInterpreterData, ValueTypeToggleEvent} from './LinearMemoryValueInterpreter.js';
 import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
 import {VALUE_INTEPRETER_MAX_NUM_BYTES, ValueType, Endianness} from './ValueInterpreterDisplayUtils.js';
 
@@ -59,6 +59,7 @@ export class LinearMemoryInspector extends HTMLElement {
   private memoryOffset = 0;
   private address = 0;
   private numBytesPerPage = 4;
+  private valueTypes: Set<ValueType> = new Set([ValueType.Int8, ValueType.Float32, ValueType.Boolean]);
 
   set data(data: LinearMemoryInspectorData) {
     if (data.address < data.memoryOffset || data.address > data.memoryOffset + data.memory.length || data.address < 0) {
@@ -86,7 +87,7 @@ export class LinearMemoryInspector extends HTMLElement {
           display: flex;
         }
 
-        .memory-inspector {
+        .view {
           display: flex;
           flex: auto;
           flex-direction: column;
@@ -97,8 +98,12 @@ export class LinearMemoryInspector extends HTMLElement {
         devtools-linear-memory-inspector-navigator + devtools-linear-memory-inspector-viewer {
           margin-top: 12px;
         }
+
+        .value-interpreter {
+          display: flex;
+        }
       </style>
-      <div class="memory-inspector">
+      <div class="view">
         <devtools-linear-memory-inspector-navigator
           .data=${{address: this.address} as LinearMemoryNavigatorData}
           @page-navigation=${this.navigatePage}
@@ -109,15 +114,29 @@ export class LinearMemoryInspector extends HTMLElement {
           @resize=${this.resize}>
         </devtools-linear-memory-inspector-viewer>
       </div>
-      <devtools-linear-memory-inspector-interpreter .data=${{
-        value: this.memory.slice(this.address - this.memoryOffset, this.address + VALUE_INTEPRETER_MAX_NUM_BYTES).buffer,
-        valueTypes: [ValueType.Int8, ValueType.Int16, ValueType.Int64],
-        endianness: Endianness.Little } as LinearMemoryValueInterpreterData}>
-      </devtools-linear-memory-inspector-interpreter/>
+      <div class="value-interpreter">
+        <devtools-linear-memory-inspector-interpreter
+          .data=${{
+            value: this.memory.slice(this.address - this.memoryOffset, this.address + VALUE_INTEPRETER_MAX_NUM_BYTES).buffer,
+            valueTypes: this.valueTypes,
+            endianness: Endianness.Little } as LinearMemoryValueInterpreterData}
+          @value-type-toggle=${this.onValueTypeToggled}>
+        </devtools-linear-memory-inspector-interpreter/>
+      </div>
       `, this.shadow, {
       eventContext: this,
     });
     // clang-format on
+  }
+
+  private onValueTypeToggled(e: ValueTypeToggleEvent) {
+    const {type, checked} = e.data;
+    if (checked) {
+      this.valueTypes.add(type);
+    } else {
+      this.valueTypes.delete(type);
+    }
+    this.render();
   }
 
   private navigateHistory(e: HistoryNavigationEvent) {

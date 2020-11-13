@@ -15,6 +15,7 @@ devtools_module("linear_memory_inspector") {
     "LinearMemoryViewer.ts",
     "ValueInterpreterDisplay.ts",
     "ValueInterpreterDisplayUtils.ts",
+    "ValueInterpreterSettings.ts",
   ]
 
   deps = [

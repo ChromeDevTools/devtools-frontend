@@ -172,7 +172,7 @@ describe('ValueInterpreterDisplay', () => {
     component.data = {
       buffer: new Uint8Array(array).buffer,
       endianness: Endianness.Little,
-      valueTypes: [ValueType.Int16, ValueType.Float32, ValueType.Boolean],
+      valueTypes: new Set([ValueType.Int16, ValueType.Float32, ValueType.Boolean]),
     };
     renderElementIntoDOM(component);
 

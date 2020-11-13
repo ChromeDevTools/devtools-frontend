@@ -8,6 +8,7 @@ ts_library("linear_memory_inspector") {
     "LinearMemoryValueInterpreter_test.ts",
     "LinearMemoryViewer_test.ts",
     "ValueInterpreterDisplay_test.ts",
+    "ValueInterpreterSettings_test.ts",
   ]
 
   deps = [

@@ -7,6 +7,7 @@ import * as LinearMemoryNavigator from './LinearMemoryNavigator.js';
 import * as LinearMemoryValueInterpreter from './LinearMemoryValueInterpreter.js';
 import * as LinearMemoryViewer from './LinearMemoryViewer.js';
 import * as ValueInterpreterDisplay from './ValueInterpreterDisplay.js';
+import * as ValueInterpreterSettings from './ValueInterpreterSettings.js';
 
 export {
   LinearMemoryInspector,
@@ -14,4 +15,5 @@ export {
   LinearMemoryValueInterpreter,
   LinearMemoryViewer,
   ValueInterpreterDisplay,
+  ValueInterpreterSettings,
 };

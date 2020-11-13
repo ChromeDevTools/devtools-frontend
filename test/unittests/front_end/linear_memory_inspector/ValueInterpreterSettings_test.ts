@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as LinearMemoryInspector from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
-import {ValueType} from '../../../../front_end/linear_memory_inspector/ValueInterpreterDisplayUtils.js';
 import {assertElement, getElementsWithinComponent, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -15,7 +14,13 @@ const SETTINGS_LABEL_SELECTOR = '.type-label';
 describe('ValueInterpreterSettings', () => {
   function setUpComponent() {
     const component = new LinearMemoryInspector.ValueInterpreterSettings.ValueInterpreterSettings();
-    const data = {valueTypes: new Set([ValueType.Int8, ValueType.Boolean, ValueType.Float64])};
+    const data = {
+      valueTypes: new Set([
+        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8,
+        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Boolean,
+        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
+      ]),
+    };
     component.data = data;
     renderElementIntoDOM(component);
     return {component, data};
@@ -25,13 +30,13 @@ describe('ValueInterpreterSettings', () => {
     const {component} = setUpComponent();
     const checkboxes = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, HTMLLabelElement);
 
-    assert.lengthOf(checkboxes, Object.values(ValueType).length);
+    assert.lengthOf(checkboxes, Object.values(LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType).length);
   });
 
   it('triggers an event on checkbox click', async () => {
     const {component} = setUpComponent();
     const labels = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, HTMLLabelElement);
-    assert.lengthOf(labels, Object.values(ValueType).length);
+    assert.lengthOf(labels, Object.values(LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType).length);
 
     for (const label of labels) {
       const checkbox = label.querySelector(SETTINGS_INPUT_SELECTOR);
@@ -67,7 +72,8 @@ describe('ValueInterpreterSettings', () => {
     assert.deepEqual(checkedTitles, expectedTitles);
 
     const uncheckedTitles = new Set(elements.filter(n => !n.checked).map(n => n.title.innerText));
-    const allTypesTitle = Object.values(ValueType).map(type => `${type}`);
+    const allTypesTitle =
+        Object.values(LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType).map(type => `${type}`);
     const expectedUncheckedTitles = new Set(allTypesTitle.filter(title => !expectedTitles.has(title)));
     assert.deepEqual(uncheckedTitles, expectedUncheckedTitles);
   });

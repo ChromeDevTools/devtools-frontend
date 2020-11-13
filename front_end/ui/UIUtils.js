@@ -297,20 +297,22 @@ export function isBeingEdited(node) {
   if (!node || node.nodeType !== Node.ELEMENT_NODE) {
     return false;
   }
-  let element = /** {!Element} */ (node);
+  const element = /** @type {!Element} */ (node);
   if (element.classList.contains('text-prompt') || element.nodeName === 'INPUT' || element.nodeName === 'TEXTAREA') {
     return true;
   }
 
-  if (!UI.__editingCount) {
+  if (!elementsBeingEdited.size) {
     return false;
   }
 
-  while (element) {
-    if (element.__editing) {
+  /** @type {?Element} */
+  let currentElement = element;
+  while (currentElement) {
+    if (elementsBeingEdited.has(element)) {
       return true;
     }
-    element = element.parentElementOrShadowHost();
+    currentElement = currentElement.parentElementOrShadowHost();
   }
   return false;
 }
@@ -320,7 +322,7 @@ export function isBeingEdited(node) {
  * @suppressGlobalPropertiesCheck
  */
 export function isEditing() {
-  if (UI.__editingCount) {
+  if (elementsBeingEdited.size) {
     return true;
   }
 
@@ -338,22 +340,23 @@ export function isEditing() {
  */
 export function markBeingEdited(element, value) {
   if (value) {
-    if (element.__editing) {
+    if (elementsBeingEdited.has(element)) {
       return false;
     }
     element.classList.add('being-edited');
-    element.__editing = true;
-    UI.__editingCount = (UI.__editingCount || 0) + 1;
+    elementsBeingEdited.add(element);
   } else {
-    if (!element.__editing) {
+    if (!elementsBeingEdited.has(element)) {
       return false;
     }
     element.classList.remove('being-edited');
-    delete element.__editing;
-    --UI.__editingCount;
+    elementsBeingEdited.delete(element);
   }
   return true;
 }
+
+/** @type {!Set<!Element>} */
+const elementsBeingEdited = new Set();
 
 // Avoids Infinity, NaN, and scientific notation (e.g. 1e20), see crbug.com/81165.
 const _numberRegex = /^(-?(?:\d+(?:\.\d+)?|\.\d+))$/;

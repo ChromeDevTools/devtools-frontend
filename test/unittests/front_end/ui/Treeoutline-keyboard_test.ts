@@ -9,14 +9,6 @@ import * as UI from '../../../../front_end/ui/ui.js';
 import {assertNotNull, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 describe('TreeOutline', () => {
-  before(() => {
-    // @ts-ignore -- TODO(1148495): Remove this hack required to dispatch events.
-    globalThis.UI = {__editingCount: 0};
-  });
-  after(() => {
-    // @ts-ignore -- TODO(1148495): Remove.
-    globalThis.UI = undefined;
-  });
   it('responds correctly to navigation keys', () => {
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     renderElementIntoDOM(treeOutline.element);

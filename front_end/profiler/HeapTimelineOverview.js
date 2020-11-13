@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
@@ -23,7 +20,9 @@ export class HeapTimelineOverview extends UI.Widget.VBox {
     this._overviewGrid = new PerfUI.OverviewGrid.OverviewGrid('heap-recording', this._overviewCalculator);
     this._overviewGrid.element.classList.add('fill');
 
-    this._overviewCanvas = this._overviewContainer.createChild('canvas', 'heap-recording-overview-canvas');
+    /** @type {!HTMLCanvasElement} */
+    this._overviewCanvas = /** @type {!HTMLCanvasElement} */ (
+        this._overviewContainer.createChild('canvas', 'heap-recording-overview-canvas'));
     this._overviewContainer.appendChild(this._overviewGrid.element);
     this._overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
 
@@ -115,7 +114,11 @@ export class HeapTimelineOverview extends UI.Widget.VBox {
     this._overviewCanvas.style.width = width + 'px';
     this._overviewCanvas.style.height = height + 'px';
 
-    const context = this._overviewCanvas.getContext('2d');
+    const maybeContext = this._overviewCanvas.getContext('2d');
+    if (!maybeContext) {
+      throw new Error('Failed to get canvas context');
+    }
+    const context = maybeContext;
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
 
     if (this._running) {
@@ -129,7 +132,7 @@ export class HeapTimelineOverview extends UI.Widget.VBox {
       context.closePath();
     }
 
-    let gridY;
+    let gridY = 0;
     let gridValue;
     const gridLabelHeight = 14;
     if (yScaleFactor) {
@@ -309,6 +312,12 @@ export class Samples {
  * @unrestricted
  */
 export class OverviewCalculator {
+  constructor() {
+    this._maximumBoundaries = 0;
+    this._minimumBoundaries = 0;
+    this._xScaleFactor = 0;
+  }
+
   /**
    * @param {!HeapTimelineOverview} chart
    */

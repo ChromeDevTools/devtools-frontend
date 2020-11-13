@@ -10,6 +10,7 @@
     "noImplicitReturns": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "importHelpers": true,
     "stripInternal": true,
     "lib": ["es2015"]
   },

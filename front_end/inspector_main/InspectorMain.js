@@ -2,13 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -22,8 +20,9 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
   async run() {
     let firstCall = true;
     await SDK.Connections.initMainConnection(async () => {
-      const type = Root.Runtime.queryParam('v8only') ? SDK.SDKModel.Type.Node : SDK.SDKModel.Type.Frame;
-      const waitForDebuggerInPage = type === SDK.SDKModel.Type.Frame && Root.Runtime.queryParam('panel') === 'sources';
+      const type = Root.Runtime.Runtime.queryParam('v8only') ? SDK.SDKModel.Type.Node : SDK.SDKModel.Type.Frame;
+      const waitForDebuggerInPage =
+          type === SDK.SDKModel.Type.Frame && Root.Runtime.Runtime.queryParam('panel') === 'sources';
       const target = SDK.SDKModel.TargetManager.instance().createTarget(
           'main', Common.UIString.UIString('Main'), type, null, undefined, waitForDebuggerInPage);
 
@@ -37,13 +36,15 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
 
       if (waitForDebuggerInPage) {
         const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-        if (!debuggerModel.isReadyToPause()) {
-          await debuggerModel.once(SDK.DebuggerModel.Events.DebuggerIsReadyToPause);
+        if (debuggerModel) {
+          if (!debuggerModel.isReadyToPause()) {
+            await debuggerModel.once(SDK.DebuggerModel.Events.DebuggerIsReadyToPause);
+          }
+          debuggerModel.pause();
         }
-        debuggerModel.pause();
       }
 
-      target.runtimeAgent().runIfWaitingForDebugger();
+      await target.runtimeAgent().invoke_runIfWaitingForDebugger();
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
 
     new SourcesPanelIndicator();
@@ -94,7 +95,11 @@ export class FocusDebuggeeActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    SDK.SDKModel.TargetManager.instance().mainTarget().pageAgent().bringToFront();
+    const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+    if (!mainTarget) {
+      return false;
+    }
+    mainTarget.pageAgent().invoke_bringToFront();
     return true;
   }
 }
@@ -104,7 +109,7 @@ export class FocusDebuggeeActionDelegate {
  */
 export class NodeIndicator {
   constructor() {
-    const element = createElement('div');
+    const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
         element, {cssFile: 'inspector_main/nodeIcon.css', enableLegacyPatching: true, delegatesFocus: undefined});
     this._element = shadowRoot.createChild('div', 'node-icon');
@@ -187,8 +192,8 @@ export class BackendSettingsSync {
     if (target.type() !== SDK.SDKModel.Type.Frame || target.parentTarget()) {
       return;
     }
-    target.pageAgent().setAdBlockingEnabled(this._adBlockEnabledSetting.get());
-    target.emulationAgent().setFocusEmulationEnabled(this._emulatePageFocusSetting.get());
+    target.pageAgent().invoke_setAdBlockingEnabled({enabled: this._adBlockEnabledSetting.get()});
+    target.emulationAgent().invoke_setFocusEmulationEnabled({enabled: this._emulatePageFocusSetting.get()});
   }
 
   _updateAutoAttach() {

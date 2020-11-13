@@ -126,7 +126,7 @@
   ],
   "resources": [
     "domBreakpointsSidebarPane.css",
-    "eventListenerBreakpoints.css",
+    "categorizedBreakpointsSidebarPane.css",
     "xhrBreakpointsSidebarPane.css"
   ]
 }

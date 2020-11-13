@@ -527,18 +527,13 @@ EventListener.Origin = {
   FrameworkUser: 'FrameworkUser'
 };
 
-export class EventListenerBreakpoint {
+
+export class CategorizedBreakpoint {
   /**
-   * @param {string} instrumentationName
-   * @param {string} eventName
-   * @param {!Array<string>} eventTargetNames
    * @param {string} category
    * @param {string} title
    */
-  constructor(instrumentationName, eventName, eventTargetNames, category, title) {
-    this._instrumentationName = instrumentationName;
-    this._eventName = eventName;
-    this._eventTargetNames = eventTargetNames;
+  constructor(category, title) {
     this._category = category;
     this._title = title;
     /** @type {boolean} */
@@ -563,10 +558,41 @@ export class EventListenerBreakpoint {
    * @param {boolean} enabled
    */
   setEnabled(enabled) {
+    this._enabled = enabled;
+  }
+
+  /**
+   * @return {string}
+   */
+  title() {
+    return this._title;
+  }
+}
+
+export class EventListenerBreakpoint extends CategorizedBreakpoint {
+  /**
+   * @param {string} instrumentationName
+   * @param {string} eventName
+   * @param {!Array<string>} eventTargetNames
+   * @param {string} category
+   * @param {string} title
+   */
+  constructor(instrumentationName, eventName, eventTargetNames, category, title) {
+    super(category, title);
+    this._instrumentationName = instrumentationName;
+    this._eventName = eventName;
+    this._eventTargetNames = eventTargetNames;
+  }
+
+  /**
+   * @override
+   * @param {boolean} enabled
+   */
+  setEnabled(enabled) {
     if (this._enabled === enabled) {
       return;
     }
-    this._enabled = enabled;
+    super.setEnabled(enabled);
     for (const model of TargetManager.instance().models(DOMDebuggerModel)) {
       this._updateOnModel(model);
     }
@@ -591,13 +617,6 @@ export class EventListenerBreakpoint {
         }
       }
     }
-  }
-
-  /**
-   * @return {string}
-   */
-  title() {
-    return this._title;
   }
 }
 

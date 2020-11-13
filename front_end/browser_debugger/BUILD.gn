@@ -7,6 +7,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("browser_debugger") {
   sources = [
+    "CategorizedBreakpointsSidebarPane.js",
     "DOMBreakpointsSidebarPane.js",
     "EventListenerBreakpointsSidebarPane.js",
     "ObjectEventListenersSidebarPane.js",

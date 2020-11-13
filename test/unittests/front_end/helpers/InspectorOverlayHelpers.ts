@@ -96,19 +96,6 @@ export function getGridAreaNameLabelContainer(layerId?: number): HTMLElement {
   return el;
 }
 
-interface Position {
-  x: number;
-  y: number;
-}
-
-interface TrackSize extends Position {
-  computedSize: number;
-}
-
-interface NamedLinePosition extends Position {
-  name: string;
-}
-
 interface ExpectedLayerLabel {
   layerId: number;
   expectedLabels: ExpectedLineNumberLabel[];

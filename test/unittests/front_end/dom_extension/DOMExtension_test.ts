@@ -6,7 +6,7 @@ const {assert} = chai;
 import '../../../../front_end/dom_extension/DOMExtension.js';
 
 declare global {
-  interface HTMLElement {
+  interface HTMLElement {  // eslint-disable-line @typescript-eslint/no-unused-vars
     traverseNextNode(node: HTMLElement): HTMLElement;
     createChild(tagName: string, className?: string, content?: string): HTMLElement;
   }

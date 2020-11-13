@@ -30,6 +30,6 @@ export function createShadowRootWithCoreStyles(element, options = {
   if (cssFile) {
     appendStyle(shadowRoot, cssFile, {enableLegacyPatching});
   }
-  shadowRoot.addEventListener('focus', focusChanged.bind(UI), true);
+  shadowRoot.addEventListener('focus', focusChanged, true);
   return shadowRoot;
 }

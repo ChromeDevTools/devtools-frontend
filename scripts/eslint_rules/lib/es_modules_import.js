@@ -11,6 +11,7 @@
 const path = require('path');
 
 const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
+const UNITTESTS_DIRECTORY = path.join(__dirname, '..', '..', '..', 'test', 'unittests');
 const INSPECTOR_OVERLAY_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end', 'inspector_overlay');
 
 const EXEMPTED_THIRD_PARTY_MODULES = new Set([
@@ -165,7 +166,7 @@ module.exports = {
           });
         }
 
-        if (!importingFileName.startsWith(FRONT_END_DIRECTORY)) {
+        if (!importingFileName.startsWith(FRONT_END_DIRECTORY) && !importingFileName.startsWith(UNITTESTS_DIRECTORY)) {
           return;
         }
 

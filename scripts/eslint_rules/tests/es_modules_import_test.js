@@ -91,6 +91,10 @@ ruleTester.run('es_modules_import', rule, {
     {
       code: 'import Marked from \'../third_party/marked/package/lib/marked.esm.js\';',
       filename: 'front_end/marked/marked.js',
+    },
+    {
+      code: 'import * as Bindings from \'../../../../front_end/bindings/bindings.js\';',
+      filename: 'test/unittests/front_end/bindings/LiveLocation_test.ts',
     }
   ],
 
@@ -170,6 +174,15 @@ ruleTester.run('es_modules_import', rule, {
       errors: [{
         message:
             'Incorrect cross-namespace import: "../third_party/some-module/foo.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead. If the third_party dependency does not expose a single entrypoint, update es_modules_import.js to make it exempt.'
+      }],
+    },
+    // Unittests need to import module entrypoints.
+    {
+      code: 'import { LiveLocationPool } from \'../../../../front_end/bindings/LiveLocation.js\';',
+      filename: 'test/unittests/front_end/bindings/LiveLocation_test.ts',
+      errors: [{
+        message:
+            'Incorrect cross-namespace import: "../../../../front_end/bindings/LiveLocation.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.'
       }],
     },
   ]

@@ -280,7 +280,7 @@ export class ViewManager {
    * @return {!Promise<void>}
    */
   revealView(view) {
-    const location = /** @type {?_Location} */ (view[_Location.symbol]);
+    const location = locationForView.get(view);
     if (!location) {
       return Promise.resolve();
     }
@@ -336,7 +336,7 @@ export class ViewManager {
 
     const locationName = this._locationNameByViewId.get(viewId);
 
-    const location = view[_Location.symbol];
+    const location = locationForView.get(view);
     if (location) {
       location._reveal();
       return location.showView(view, undefined, userGesture, omitFocus);
@@ -510,7 +510,7 @@ export class _ExpandableContainerWidget extends VBox {
 
     ARIAUtils.setControls(this._titleElement, this.contentElement.createChild('slot'));
     this._view = view;
-    view[_ExpandableContainerWidget._symbol] = this;
+    expandableContainerForView.set(view, this);
   }
 
   /**
@@ -606,7 +606,8 @@ export class _ExpandableContainerWidget extends VBox {
   }
 }
 
-_ExpandableContainerWidget._symbol = Symbol('container');
+/** @type {!WeakMap<!View, !_ExpandableContainerWidget>} */
+const expandableContainerForView = new WeakMap();
 
 /**
  * @unrestricted
@@ -637,7 +638,8 @@ class _Location {
   }
 }
 
-_Location.symbol = Symbol('location');
+/** @type {!WeakMap<!View, !_Location>} */
+const locationForView = new WeakMap();
 
 /**
  * @implements {TabbedViewLocation}
@@ -740,7 +742,7 @@ export class _TabbedLocation extends _Location {
     for (const view of views) {
       const id = view.viewId();
       this._views.set(id, view);
-      view[_Location.symbol] = this;
+      locationForView.set(view, this);
       if (view.isTransient()) {
         continue;
       }
@@ -811,11 +813,11 @@ export class _TabbedLocation extends _Location {
     if (this._tabbedPane.hasTab(view.viewId())) {
       return;
     }
-    const oldLocation = view[_Location.symbol];
+    const oldLocation = locationForView.get(view);
     if (oldLocation && oldLocation !== this) {
       oldLocation.removeView(view);
     }
-    view[_Location.symbol] = this;
+    locationForView.set(view, this);
     this._manager._views.set(view.viewId(), view);
     this._views.set(view.viewId(), view);
     let index = undefined;
@@ -880,7 +882,7 @@ export class _TabbedLocation extends _Location {
       return;
     }
 
-    delete view[_Location.symbol];
+    locationForView.delete(view);
     this._manager._views.delete(view.viewId());
     this._tabbedPane.closeTab(view.viewId());
     this._views.delete(view.viewId());
@@ -962,19 +964,19 @@ class _StackLocation extends _Location {
    * @param {?View=} insertBefore
    */
   appendView(view, insertBefore) {
-    const oldLocation = view[_Location.symbol];
+    const oldLocation = locationForView.get(view);
     if (oldLocation && oldLocation !== this) {
       oldLocation.removeView(view);
     }
 
     let container = this._expandableContainers.get(view.viewId());
     if (!container) {
-      view[_Location.symbol] = this;
+      locationForView.set(view, this);
       this._manager._views.set(view.viewId(), view);
       container = new _ExpandableContainerWidget(view);
       let beforeElement = null;
       if (insertBefore) {
-        const beforeContainer = insertBefore[_ExpandableContainerWidget._symbol];
+        const beforeContainer = expandableContainerForView.get(insertBefore);
         beforeElement = beforeContainer ? beforeContainer.element : null;
       }
       container.show(this._vbox.contentElement, beforeElement);
@@ -1006,7 +1008,7 @@ class _StackLocation extends _Location {
 
     container.detach();
     this._expandableContainers.delete(view.viewId());
-    delete view[_Location.symbol];
+    locationForView.delete(view);
     this._manager._views.delete(view.viewId());
   }
 

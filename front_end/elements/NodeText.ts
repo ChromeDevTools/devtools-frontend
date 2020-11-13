@@ -42,11 +42,15 @@ export class NodeText extends HTMLElement {
     render(html`
       <style>
         .node-label-name {
-          color: var(--dom-tag-name-color);
+          color: var(--node-text-label-color, --dom-tag-name-color);
         }
 
         .node-label-class {
-          color: var(--dom-attribute-name-color);
+          color: var(--node-text-class-color, --dom-attribute-name-color);
+        }
+
+        .node-label-id {
+          color: var(--node-text-id-color);
         }
       </style>
       ${parts}

@@ -293,8 +293,7 @@ export class TimelineFrameModel {
       this._layerTreeId = event.args['layerTreeId'] || event.args['data']['layerTreeId'];
     } else if (
         event.id && event.phase === SDK.TracingModel.Phase.SnapshotObject &&
-        event.name === eventNames.LayerTreeHostImplSnapshot && parseInt(event.id, 0) === this._layerTreeId &&
-        this._target) {
+        event.name === eventNames.LayerTreeHostImplSnapshot && Number(event.id) === this._layerTreeId && this._target) {
       const snapshot = /** @type {!SDK.TracingModel.ObjectSnapshot} */ (event);
       this.handleLayerTreeSnapshot(new TracingFrameLayerTree(this._target, snapshot));
     } else {

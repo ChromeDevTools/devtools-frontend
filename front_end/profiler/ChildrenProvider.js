@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -19,12 +16,14 @@ export class ChildrenProvider {
    * @return {!Promise<number>}
    */
   nodePosition(snapshotObjectId) {
+    throw new Error('Not implemented yet');
   }
 
   /**
    * @return {!Promise<boolean>}
    */
   isEmpty() {
+    throw new Error('Not implemented yet');
   }
 
   /**
@@ -33,6 +32,7 @@ export class ChildrenProvider {
    * @return {!Promise<!HeapSnapshotModel.HeapSnapshotModel.ItemsRange>}
    */
   serializeItemsRange(startPosition, endPosition) {
+    throw new Error('Not implemented yet');
   }
 
   /**
@@ -40,5 +40,6 @@ export class ChildrenProvider {
    * @return {!Promise<?>}
    */
   sortAndRewind(comparator) {
+    throw new Error('Not implemented yet');
   }
 }

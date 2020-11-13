@@ -74,10 +74,10 @@ export function installDragHandle(
    */
   function onMouseDown(event) {
     const dragHandler = new DragHandler();
-    const dragStart = dragHandler.elementDragStart.bind(
-        dragHandler, element, elementDragStart, elementDrag, elementDragEnd, cursor, event);
+    const dragStart = () =>
+        dragHandler.elementDragStart(element, elementDragStart, elementDrag, elementDragEnd, cursor, event);
     if (startDelay) {
-      startTimer = setTimeout(dragStart, startDelay);
+      startTimer = window.setTimeout(dragStart, startDelay);
     } else {
       dragStart();
     }
@@ -85,18 +85,19 @@ export function installDragHandle(
 
   function onMouseUp() {
     if (startTimer) {
-      clearTimeout(startTimer);
+      window.clearTimeout(startTimer);
     }
     startTimer = null;
   }
 
+  /** @type {?number} */
   let startTimer;
   element.addEventListener('mousedown', onMouseDown, false);
   if (startDelay) {
     element.addEventListener('mouseup', onMouseUp, false);
   }
   if (hoverCursor !== null) {
-    element.style.cursor = hoverCursor || cursor || '';
+    /** @type {!HTMLElement} */ (element).style.cursor = hoverCursor || cursor || '';
   }
 }
 
@@ -128,7 +129,9 @@ class DragHandler {
     if (!DragHandler._glassPaneUsageCount++) {
       DragHandler._glassPane = new GlassPane();
       DragHandler._glassPane.setPointerEventsBehavior(PointerEventsBehavior.BlockedByGlassPane);
-      DragHandler._glassPane.show(DragHandler._documentForMouseOut);
+      if (DragHandler._documentForMouseOut) {
+        DragHandler._glassPane.show(DragHandler._documentForMouseOut);
+      }
     }
   }
 
@@ -140,9 +143,11 @@ class DragHandler {
     if (--DragHandler._glassPaneUsageCount) {
       return;
     }
-    DragHandler._glassPane.hide();
-    delete DragHandler._glassPane;
-    delete DragHandler._documentForMouseOut;
+    if (DragHandler._glassPane) {
+      DragHandler._glassPane.hide();
+      DragHandler._glassPane = null;
+    }
+    DragHandler._documentForMouseOut = null;
   }
 
   /**
@@ -151,9 +156,10 @@ class DragHandler {
    * @param {function(!MouseEvent):void} elementDrag
    * @param {?function(!MouseEvent):void} elementDragEnd
    * @param {?string} cursor
-   * @param {!Event} event
+   * @param {!Event} ev
    */
-  elementDragStart(targetElement, elementDragStart, elementDrag, elementDragEnd, cursor, event) {
+  elementDragStart(targetElement, elementDragStart, elementDrag, elementDragEnd, cursor, ev) {
+    const event = /** @type {!MouseEvent} */ (ev);
     // Only drag upon left button. Right will likely cause a context menu. So will ctrl-click on mac.
     if (event.button || (Host.Platform.isMac() && event.ctrlKey)) {
       return;
@@ -167,7 +173,7 @@ class DragHandler {
       return;
     }
 
-    const targetDocument = event.target.ownerDocument;
+    const targetDocument = /** @type {!Document} */ (event.target instanceof Node && event.target.ownerDocument);
     this._elementDraggingEventListener = elementDrag;
     this._elementEndDraggingEventListener = elementDragEnd;
     console.assert(
@@ -175,21 +181,24 @@ class DragHandler {
     DragHandler._documentForMouseOut = targetDocument;
     this._dragEventsTargetDocument = targetDocument;
     try {
-      this._dragEventsTargetDocumentTop = targetDocument.defaultView.top.document;
+      if (targetDocument.defaultView) {
+        this._dragEventsTargetDocumentTop = targetDocument.defaultView.top.document;
+      }
     } catch (e) {
       this._dragEventsTargetDocumentTop = this._dragEventsTargetDocument;
     }
 
-    targetDocument.addEventListener('mousemove', this._elementDragMove, true);
+    targetDocument.addEventListener('mousemove', e => this._elementDragMove(/** @type {!MouseEvent} */ (e)), true);
     targetDocument.addEventListener('mouseup', this._elementDragEnd, true);
     targetDocument.addEventListener('mouseout', this._mouseOutWhileDragging, true);
-    if (targetDocument !== this._dragEventsTargetDocumentTop) {
+    if (this._dragEventsTargetDocumentTop && targetDocument !== this._dragEventsTargetDocumentTop) {
       this._dragEventsTargetDocumentTop.addEventListener('mouseup', this._elementDragEnd, true);
     }
 
+    const targetHtmlElement = /** @type {!HTMLElement} */ (targetElement);
     if (typeof cursor === 'string') {
-      this._restoreCursorAfterDrag = restoreCursor.bind(this, targetElement.style.cursor);
-      targetElement.style.cursor = cursor;
+      this._restoreCursorAfterDrag = restoreCursor.bind(this, targetHtmlElement.style.cursor);
+      targetHtmlElement.style.cursor = cursor;
       targetDocument.body.style.cursor = cursor;
     }
     /**
@@ -198,8 +207,8 @@ class DragHandler {
      */
     function restoreCursor(oldCursor) {
       targetDocument.body.style.removeProperty('cursor');
-      targetElement.style.cursor = oldCursor;
-      this._restoreCursorAfterDrag = null;
+      targetHtmlElement.style.cursor = oldCursor;
+      this._restoreCursorAfterDrag = undefined;
     }
     event.preventDefault();
   }
@@ -222,7 +231,7 @@ class DragHandler {
     }
     this._dragEventsTargetDocument.removeEventListener('mousemove', this._elementDragMove, true);
     this._dragEventsTargetDocument.removeEventListener('mouseup', this._elementDragEnd, true);
-    if (this._dragEventsTargetDocument !== this._dragEventsTargetDocumentTop) {
+    if (this._dragEventsTargetDocumentTop && this._dragEventsTargetDocument !== this._dragEventsTargetDocumentTop) {
       this._dragEventsTargetDocumentTop.removeEventListener('mouseup', this._elementDragEnd, true);
     }
     delete this._dragEventsTargetDocument;
@@ -273,6 +282,12 @@ class DragHandler {
 }
 
 DragHandler._glassPaneUsageCount = 0;
+
+/** @type {?GlassPane} */
+DragHandler._glassPane = null;
+
+/** @type {?Document} */
+DragHandler._documentForMouseOut = null;
 
 /**
  * @param {?Node=} node

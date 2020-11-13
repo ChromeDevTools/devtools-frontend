@@ -4,7 +4,7 @@
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
-import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, CellPosition, Column, getRowEntryForColumnId, handleArrowKeyNavigation, keyIsArrowKey, renderCellValue, Row, SortDirection, SortState, stringValueForCell} from './DataGridUtils.js';
+import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, Cell, CellPosition, Column, getRowEntryForColumnId, handleArrowKeyNavigation, keyIsArrowKey, renderCellValue, Row, SortDirection, SortState, stringValueForCell} from './DataGridUtils.js';
 
 export interface DataGridData {
   columns: Column[];
@@ -23,6 +23,27 @@ export class ColumnHeaderClickEvent extends Event {
     this.data = {
       column,
       columnIndex,
+    };
+  }
+}
+
+export class BodyCellFocusedEvent extends Event {
+  /**
+   * Although the DataGrid cares only about the focused cell, and has no concept
+   * of a focused row, many components that render a data grid want to know what
+   * row is active, so on the cell focused event we also send the row that the
+   * cell is part of.
+   */
+  data: {
+    cell: Cell,
+    row: Row,
+  }
+
+  constructor(cell: Cell, row: Row) {
+    super('cell-focused');
+    this.data = {
+      cell,
+      row,
     };
   }
 }
@@ -375,14 +396,14 @@ export class DataGrid extends HTMLElement {
                 aria-rowindex=${rowIndex + 1}
                 class=${rowClasses}
               >${this.columns.map((col, columnIndex) => {
-                const entryForRow = getRowEntryForColumnId(row, col.id);
+                const cell = getRowEntryForColumnId(row, col.id);
                 const cellClasses = LitHtml.Directives.classMap({
                   hidden: col.hidden === true,
                   firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
                 });
                 const cellIsFocusableCell = columnIndex === this.focusableCell[0] && tableRowIndex === this.focusableCell[1];
-                const cellTextValue = stringValueForCell(entryForRow);
-                const cellOutput = renderCellValue(entryForRow);
+                const cellTextValue = stringValueForCell(cell);
+                const cellOutput = renderCellValue(cell);
                 return LitHtml.html`<td
                   class=${cellClasses}
                   title=${cellTextValue}
@@ -391,6 +412,9 @@ export class DataGrid extends HTMLElement {
                   data-row-index=${tableRowIndex}
                   data-col-index=${columnIndex}
                   data-grid-value-cell-for-column=${col.id}
+                  @focus=${() => {
+                    this.dispatchEvent(new BodyCellFocusedEvent(cell, row));
+                  }}
                   @click=${() => {
                     this.focusCell([columnIndex, tableRowIndex]);
                   }}

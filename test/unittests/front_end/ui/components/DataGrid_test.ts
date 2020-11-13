@@ -450,10 +450,20 @@ describe('DataGrid', () => {
     assert.strictEqual(newFocusedCell.getAttribute('data-col-index'), '0');
 
     dispatchKeyDownEvent(table, {key: 'Enter'});
-
     const clickEvent = await columnHeaderClickEvent;
-
     assert.deepEqual(clickEvent.data, {column: columns[0], columnIndex: 0});
+  });
+
+  it('emits an event when the user focuses a cell', async () => {
+    const component = renderDataGrid({rows, columns: columnsWithNoneSortable});
+    renderElementIntoDOM(component);
+    assertShadowRoot(component.shadowRoot);
+
+    const bodyCellFocusedEvent = getEventPromise<UIComponents.DataGrid.BodyCellFocusedEvent>(component, 'cell-focused');
+    const focusableCell = getFocusableCell(component.shadowRoot);
+    focusableCell.focus();
+    const cellFocusedEvent = await bodyCellFocusedEvent;
+    assert.deepEqual(cellFocusedEvent.data, {cell: rows[0].cells[0], row: rows[0]});
   });
 
   describe('adding new rows', () => {

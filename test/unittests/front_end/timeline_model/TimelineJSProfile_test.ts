@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import * as SDK from '../../../../front_end/sdk/sdk.js';
 
-import {TimelineJSProfileProcessor} from '../../../../front_end/timeline_model/TimelineJSProfile.js';
+import * as TimelineModel from '../../../../front_end/timeline_model/timeline_model.js';
 
 describe('TimelineJSProfile', () => {
   let tracingModel: SDK.TracingModel.TracingModel;
@@ -27,7 +27,8 @@ describe('TimelineJSProfile', () => {
 
   it('generateJSFrameEvents returns an empty array for an empty input', () => {
     const events: SDK.TracingModel.Event[] = [];
-    const returnedEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
+    const returnedEvents =
+        TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
     assert.deepEqual(returnedEvents, []);
   });
 
@@ -38,7 +39,8 @@ describe('TimelineJSProfile', () => {
     sampleEvent.addArgs({data: {stackTrace: [{callFrame: {}}]}});
     const events = [callEvent, sampleEvent];
 
-    const returnedEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
+    const returnedEvents =
+        TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
     assert.strictEqual(returnedEvents.length, 1);
     assert.strictEqual(returnedEvents[0].name, 'JSFrame');
     assert.strictEqual(returnedEvents[0].startTime, 5);
@@ -50,7 +52,8 @@ describe('TimelineJSProfile', () => {
     sampleEvent.addArgs({data: {stackTrace: [{callFrame: {}}]}});
     const events = [sampleEvent];
 
-    const returnedEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
+    const returnedEvents =
+        TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
     assert.strictEqual(returnedEvents.length, 1);
     assert.strictEqual(returnedEvents[0].name, 'JSFrame');
     assert.strictEqual(returnedEvents[0].startTime, 5);
@@ -72,7 +75,8 @@ describe('TimelineJSProfile', () => {
     sampleEvent5.addArgs({data: {stackTrace: [{'functionName': 'a', 'callUID': 'a', 'scriptId': 1}]}});
     const events = [sampleEvent1, sampleEvent2, sampleEvent3, callEvent, sampleEvent4, sampleEvent5];
 
-    const returnedEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
+    const returnedEvents =
+        TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
     assert.strictEqual(returnedEvents.length, 2);
     assert.strictEqual(returnedEvents[0].name, 'JSFrame');
     assert.strictEqual(returnedEvents[0].startTime, 5);

@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {WebVitalsTimeline} from '../../../../front_end/timeline/WebVitalsTimeline.js';
+import * as Timeline from '../../../../front_end/timeline/timeline.js';
 
 const {assert} = chai;
 
 describe('WebVitalsTimeline', () => {
   it('should instantiate without problems', () => {
-    const node = new WebVitalsTimeline();
-    assert.instanceOf(node, WebVitalsTimeline);
+    const node = new Timeline.WebVitalsTimeline.WebVitalsTimeline();
+    assert.instanceOf(node, Timeline.WebVitalsTimeline.WebVitalsTimeline);
   });
 
   // Not yet implementable

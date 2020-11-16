@@ -187,7 +187,7 @@ module.exports = {
           return;
         }
 
-        const {leading: comments} = context.getComments(node.body[0]);
+        const comments = context.getSourceCode().getCommentsBefore(node.body[0]);
 
         if (!comments || comments.length === 0) {
           context.report({

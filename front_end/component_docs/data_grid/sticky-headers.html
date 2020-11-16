@@ -52,10 +52,12 @@
 
         document.getElementById('container').appendChild(component)
 
+        const key = Math.floor(Math.random() * 10);
+        const value = Math.floor(Math.random() * 10);
         window.setInterval(() => {
           const randomDataRow = { cells: [
-            { columnId: 'key', value: `Key: ${Math.floor(Math.random() * 10)}`},
-            { columnId: 'value', value: `Value: ${Math.floor(Math.random() * 10)}`},
+            { columnId: 'key', value: `Key: ${key}`, title: `Key: ${key}`},
+            { columnId: 'value', value: `Value: ${value}`, title: `Value: ${value}`},
           ] }
           component.data = {
             ...component.data,

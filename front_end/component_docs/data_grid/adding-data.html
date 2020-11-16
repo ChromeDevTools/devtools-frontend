@@ -44,7 +44,7 @@
             { id: 'value', title: 'Value', sortable: false, widthWeighting: 1 },
           ],
           rows: [
-            {cells:[{ columnId: 'key', value: 'foo'}, { columnId: 'value', value: 'bar'}]}
+            {cells:[{ columnId: 'key', value: 'foo', title: 'foo' }, { columnId: 'value', value: 'bar', title: 'bar' }]}
           ]
         }
 
@@ -53,9 +53,11 @@
         document.querySelector('#add').addEventListener('click', (event) => {
           event.preventDefault();
 
+          const key = Math.floor(Math.random() * 10);
+          const value = Math.floor(Math.random() * 10);
           const randomDataRow = {cells:[
-            { columnId: 'key', value: `Key: ${Math.floor(Math.random() * 10)}`},
-            { columnId: 'value', value: `Value: ${Math.floor(Math.random() * 10)}`},
+            { columnId: 'key', value: `Key: ${key}`, title: `Key: ${key}`},
+            { columnId: 'value', value: `Value: ${value}`, title: `Value: ${value}`},
           ]}
 
           component.data = {

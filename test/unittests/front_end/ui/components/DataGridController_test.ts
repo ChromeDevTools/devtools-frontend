@@ -25,9 +25,9 @@ describe('DataGridController', () => {
       {id: 'key', title: 'Key', sortable: true, widthWeighting: 1},
     ];
     const rows = [
-      {cells: [{columnId: 'key', value: 'Bravo'}]},
-      {cells: [{columnId: 'key', value: 'Alpha'}]},
-      {cells: [{columnId: 'key', value: 'Charlie'}]},
+      {cells: [{columnId: 'key', value: 'Bravo', title: 'Bravo'}]},
+      {cells: [{columnId: 'key', value: 'Alpha', title: 'Alpha'}]},
+      {cells: [{columnId: 'key', value: 'Charlie', title: 'Charlie'}]},
     ];
 
     it('lets the user click to sort the column in ASC order', async () => {
@@ -99,9 +99,24 @@ describe('DataGridController', () => {
       {id: 'value', title: 'Phonetic', sortable: true, widthWeighting: 1},
     ];
     const rows = [
-      {cells: [{columnId: 'key', value: 'Letter A'}, {columnId: 'value', value: 'Alpha'}]},
-      {cells: [{columnId: 'key', value: 'Letter B'}, {columnId: 'value', value: 'Bravo'}]},
-      {cells: [{columnId: 'key', value: 'Letter C'}, {columnId: 'value', value: 'Charlie'}]},
+      {
+        cells: [
+          {columnId: 'key', value: 'Letter A', title: 'Letter A'},
+          {columnId: 'value', value: 'Alpha', title: 'Alpha'},
+        ],
+      },
+      {
+        cells: [
+          {columnId: 'key', value: 'Letter B', title: 'Letter B'},
+          {columnId: 'value', value: 'Bravo', title: 'Bravo'},
+        ],
+      },
+      {
+        cells: [
+          {columnId: 'key', value: 'Letter C', title: 'Letter C'},
+          {columnId: 'value', value: 'Charlie', title: 'Charlie'},
+        ],
+      },
     ];
 
     it('only shows rows with values that match the filter', () => {

@@ -38,10 +38,6 @@ describe('The Application Tab', async () => {
           key: 'secondKey',
           value: '{"field":"complexValue","primitive":2}',
         },
-        {
-          key: '',
-          value: '',
-        },
       ]);
     });
   });

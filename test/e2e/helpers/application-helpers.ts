@@ -23,7 +23,7 @@ export async function getDataGridData(selector: string, columns: string[]) {
   // Wait for Storage data-grid to show up
   await waitFor(selector);
 
-  const dataGridNodes = await $$('.data-grid-data-grid-node');
+  const dataGridNodes = await $$('.data-grid-data-grid-node:not(.creation-node)');
   const dataGridRowValues = await Promise.all(dataGridNodes.map(node => node.evaluate((row: Element, columns) => {
     const data: {[key: string]: string|null} = {};
     for (const column of columns) {

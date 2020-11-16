@@ -42,10 +42,6 @@ describe('The Application Tab', async () => {
         name: 'foo',
         value: 'bar',
       },
-      {
-        name: '',
-        value: '',
-      },
     ]);
   });
 
@@ -112,9 +108,6 @@ describe('The Application Tab', async () => {
       {
         name: 'foo',
       },
-      {
-        name: '',
-      },
     ]);
 
 
@@ -126,9 +119,6 @@ describe('The Application Tab', async () => {
     assert.deepEqual(dataGridRowValues2, [
       {
         name: 'foo',
-      },
-      {
-        name: '',
       },
     ]);
   });

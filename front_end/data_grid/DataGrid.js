@@ -2586,6 +2586,7 @@ export class CreationDataGridNode extends DataGridNode {
     super(data, hasChildren);
     /** @type {boolean} */
     this.isCreationNode = true;
+    this.element().classList.add('creation-node');
   }
 
   makeNormal() {

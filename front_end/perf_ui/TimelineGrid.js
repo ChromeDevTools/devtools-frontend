@@ -28,24 +28,24 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Host from '../host/host.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
+
+/** @type {!Map<!Element, !Element>} */
+const labelMap = new Map();
 
 /**
  * @unrestricted
  */
 export class TimelineGrid {
   constructor() {
-    this.element = createElement('div');
+    this.element = document.createElement('div');
     UI.Utils.appendStyle(this.element, 'perf_ui/timelineGrid.css', {enableLegacyPatching: true});
 
     this._dividersElement = this.element.createChild('div', 'resources-dividers');
 
-    this._gridHeaderElement = createElement('div');
+    this._gridHeaderElement = document.createElement('div');
     this._gridHeaderElement.classList.add('timeline-grid-header');
     this._eventDividersElement = this._gridHeaderElement.createChild('div', 'resources-event-dividers');
     this._dividersLabelBarElement = this._gridHeaderElement.createChild('div', 'resources-dividers-label-bar');
@@ -95,7 +95,7 @@ export class TimelineGrid {
     const offsets = [];
     for (let i = 0; i < dividersCount; ++i) {
       const time = firstDividerTime + gridSliceTime * i;
-      if (calculator.computePosition(time) < freeZoneAtLeft) {
+      if (calculator.computePosition(time) < (freeZoneAtLeft || 0)) {
         continue;
       }
       offsets.push({position: Math.floor(calculator.computePosition(time)), time: time});
@@ -187,46 +187,63 @@ export class TimelineGrid {
     const dividersElementClientWidth = this._dividersElement.clientWidth;
 
     // Reuse divider elements and labels.
-    let divider = /** @type {?Element} */ (this._dividersElement.firstChild);
-    let dividerLabelBar = /** @type {?Element} */ (this._dividersLabelBarElement.firstChild);
+    let divider = /** @type {?HTMLElement} */ (this._dividersElement.firstChild);
+    let dividerLabelBar = /** @type {?HTMLElement} */ (this._dividersLabelBarElement.firstChild);
 
     for (let i = 0; i < dividerOffsets.length; ++i) {
       if (!divider) {
-        divider = createElement('div');
+        divider = document.createElement('div');
         divider.className = 'resources-divider';
         this._dividersElement.appendChild(divider);
 
-        dividerLabelBar = createElement('div');
+        dividerLabelBar = document.createElement('div');
         dividerLabelBar.className = 'resources-divider';
-        const label = createElement('div');
+        const label = document.createElement('div');
         label.className = 'resources-divider-label';
-        dividerLabelBar._labelElement = label;
+        labelMap.set(dividerLabelBar, label);
         dividerLabelBar.appendChild(label);
         this._dividersLabelBarElement.appendChild(dividerLabelBar);
       }
 
       const time = dividerOffsets[i].time;
       const position = dividerOffsets[i].position;
-      dividerLabelBar._labelElement.textContent = calculator.formatValue(time, precision);
+      if (dividerLabelBar) {
+        const label = labelMap.get(dividerLabelBar);
+        if (label) {
+          label.textContent = calculator.formatValue(time, precision);
+        }
+      }
 
       const percentLeft = 100 * position / dividersElementClientWidth;
       divider.style.left = percentLeft + '%';
-      dividerLabelBar.style.left = percentLeft + '%';
+      if (dividerLabelBar) {
+        dividerLabelBar.style.left = percentLeft + '%';
+      }
 
-      divider = /** @type {?Element} */ (divider.nextSibling);
-      dividerLabelBar = /** @type {?Element} */ (dividerLabelBar.nextSibling);
+      divider = /** @type {?HTMLElement} */ (divider.nextSibling);
+      if (dividerLabelBar) {
+        dividerLabelBar = /** @type {?HTMLElement} */ (dividerLabelBar.nextSibling);
+      }
     }
 
     // Remove extras.
     while (divider) {
       const nextDivider = divider.nextSibling;
       this._dividersElement.removeChild(divider);
-      divider = nextDivider;
+      if (nextDivider) {
+        divider = /** @type {!HTMLElement} */ (nextDivider);
+      } else {
+        break;
+      }
     }
     while (dividerLabelBar) {
       const nextDivider = dividerLabelBar.nextSibling;
       this._dividersLabelBarElement.removeChild(dividerLabelBar);
-      dividerLabelBar = nextDivider;
+      if (nextDivider) {
+        dividerLabelBar = /** @type {!HTMLElement} */ (nextDivider);
+      } else {
+        break;
+      }
     }
     return true;
   }
@@ -287,6 +304,7 @@ export class Calculator {
    * @return {number}
    */
   computePosition(time) {
+    throw new Error('Not implemented');
   }
 
   /**
@@ -295,23 +313,30 @@ export class Calculator {
    * @return {string}
    */
   formatValue(time, precision) {
+    throw new Error('Not implemented');
   }
 
   /** @return {number} */
   minimumBoundary() {
+    throw new Error('Not implemented');
   }
 
   /** @return {number} */
   zeroTime() {
+    throw new Error('Not implemented');
   }
 
   /** @return {number} */
   maximumBoundary() {
+    throw new Error('Not implemented');
   }
 
   /** @return {number} */
-  boundarySpan() {}
+  boundarySpan() {
+    throw new Error('Not implemented');
+  }
 }
 
 /** @typedef {!{offsets: !Array<!{position: number, time: number}>, precision: number}} */
+// @ts-ignore Typedef.
 export let DividersData;

@@ -144,6 +144,7 @@ export class LinearMemoryViewer extends HTMLElement {
         :host {
           flex: auto;
           display: flex;
+          min-height: 20px;
         }
 
         .view {

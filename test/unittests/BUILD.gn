@@ -6,6 +6,7 @@ import("../../scripts/build/ninja/copy.gni")
 
 group("unittests") {
   deps = [
+    ":copy_debug_check",
     ":copy_to_gen",
     "front_end",
     "inspector_overlay",
@@ -15,4 +16,9 @@ group("unittests") {
 copy("copy_to_gen") {
   sources = [ "karma.conf.js" ]
   outputs = [ "$target_gen_dir/karma.conf.js" ]
+}
+
+copy("copy_debug_check") {
+  sources = [ "debug-check.js" ]
+  outputs = [ "$target_gen_dir/debug-check.js" ]
 }

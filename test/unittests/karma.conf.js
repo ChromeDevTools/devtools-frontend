@@ -4,10 +4,12 @@
 
 // @ts-nocheck File doesn't need to be checked by TS.
 
+const colors = require('ansi-colors');
 const path = require('path');
 const glob = require('glob');
 const fs = require('fs');
 const rimraf = require('rimraf');
+const debugCheck = require('./debug-check.js');
 
 // false by default
 const DEBUG_ENABLED = !!process.env['DEBUG'];
@@ -25,6 +27,17 @@ if (COVERAGE_ENABLED) {
   if (fs.existsSync(fullPathToDirectory)) {
     rimraf.sync(fullPathToDirectory);
   }
+
+  debugCheck(__dirname).then(isDebug => {
+    if (!isDebug) {
+      const warning = `The unit tests appear to be running against a non-debug build and
+your coverage report will likely be incomplete due to bundling.
+
+In order to get a complete coverage report please run against a
+target with is_debug = true in the args.gn file.`;
+      console.warn(colors.magenta(warning));
+    }
+  });
 }
 
 const GEN_DIRECTORY = path.join(__dirname, '..', '..');

@@ -31,7 +31,7 @@
 import {Overlay, ResetData} from './common.js';
 import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
 
-export class HighlightGridOverlay extends Overlay {
+export class PersistentOverlay extends Overlay {
   private gridLabelState = {
     gridLayerCounter: 0,
     gridPainted: false,

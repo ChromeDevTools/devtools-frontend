@@ -34,7 +34,7 @@ import {Bounds, constrainNumber, createChild, createElement, createTextChild, el
 import {buildPath, emptyBounds, PathBounds} from './highlight_common.js';
 import {drawLayoutFlexContainerHighlight, FlexContainerHighlight} from './highlight_flex_common.js';
 import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
-import {HighlightGridOverlay} from './tool_grid.js';
+import {PersistentOverlay} from './tool_persistent.js';
 
 interface Path {
   path: PathCommands, outlineColor: string;
@@ -76,15 +76,15 @@ interface Highlight {
 
 export class HighlightOverlay extends Overlay {
   private tooltip!: HTMLElement;
-  private gridOverlay?: HighlightGridOverlay;
+  private persistentOverlay?: PersistentOverlay;
   private gridLabelState = {gridLayerCounter: 0, gridPainted: false};
 
   reset(resetData: ResetData) {
     super.reset(resetData);
     this.tooltip.innerHTML = '';
     this.gridLabelState.gridLayerCounter = 0;
-    if (this.gridOverlay) {
-      this.gridOverlay.reset(resetData);
+    if (this.persistentOverlay) {
+      this.persistentOverlay.reset(resetData);
     }
   }
 
@@ -101,9 +101,9 @@ export class HighlightOverlay extends Overlay {
     this.document.body.append(tooltip);
     this.tooltip = tooltip;
 
-    this.gridOverlay = new HighlightGridOverlay(this.window);
-    this.gridOverlay.renderGridMarkup();
-    this.gridOverlay.setCanvas(canvas);
+    this.persistentOverlay = new PersistentOverlay(this.window);
+    this.persistentOverlay.renderGridMarkup();
+    this.persistentOverlay.setCanvas(canvas);
 
     this.setCanvas(canvas);
 
@@ -177,8 +177,8 @@ export class HighlightOverlay extends Overlay {
   }
 
   drawGridHighlight(highlight: GridHighlight) {
-    if (this.gridOverlay) {
-      this.gridOverlay.drawGridHighlight(highlight);
+    if (this.persistentOverlay) {
+      this.persistentOverlay.drawGridHighlight(highlight);
     }
   }
 

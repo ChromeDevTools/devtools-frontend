@@ -10,11 +10,11 @@ import {adoptStyleSheet} from './common.js';
 import {gridStyle} from './highlight_grid_common.js';
 import {DistancesOverlay} from './tool_distances.js';
 import highlightGridStyle from './tool_grid.css';
-import {HighlightGridOverlay} from './tool_grid.js';
 import highlightStyle from './tool_highlight.css';
 import {HighlightOverlay} from './tool_highlight.js';
 import pausedStyle from './tool_paused.css';
 import {PausedOverlay} from './tool_paused.js';
+import {PersistentOverlay} from './tool_persistent.js';
 import screenshotStyle from './tool_screenshot.css';
 import {ScreenshotOverlay} from './tool_screenshot.js';
 import sourceOrderStyle from './tool_source_order.css';
@@ -27,7 +27,7 @@ const gridStyleSheet = new CSSStyleSheet();
 gridStyleSheet.replaceSync(gridStyle);
 
 const highlightOverlay = new HighlightOverlay(window, [highlightStyle, gridStyleSheet]);
-const highlightGridOverlay = new HighlightGridOverlay(window, [highlightGridStyle, gridStyleSheet]);
+const persistentOverlay = new PersistentOverlay(window, [highlightGridStyle, gridStyleSheet]);
 const distancesOverlay = new DistancesOverlay(window);
 const pausedOverlay = new PausedOverlay(window, pausedStyle);
 const screenshotOverlay = new ScreenshotOverlay(window, screenshotStyle);
@@ -41,7 +41,9 @@ let platformName;
 const overlays = {
   distances: distancesOverlay,
   highlight: highlightOverlay,
-  highlightGrid: highlightGridOverlay,
+  // TODO(alexrudenko): remove next line once the backend is updated.
+  highlightGrid: persistentOverlay,
+  persistent: persistentOverlay,
   paused: pausedOverlay,
   screenshot: screenshotOverlay,
   sourceOrder: sourceOrderOverlay,

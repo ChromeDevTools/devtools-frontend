@@ -28,21 +28,6 @@ export async function mochaGlobalSetup(this: Mocha.Suite) {
   // in different processes, so we pass the port number as an environment var.
   process.env.hostedModeServerPort = String(await startHostedModeServer());
   console.log(`Started hosted mode server on port ${process.env.hostedModeServerPort}`);
-
-  if (process.env['DEBUG']) {
-    console.log('Running in debug mode.');
-    console.log(' - Press enter to run the test suite.');
-    console.log(' - Press ctrl + c to quit.');
-
-    await new Promise<void>(resolve => {
-      const {stdin} = process;
-
-      stdin.on('data', () => {
-        stdin.pause();
-        resolve();
-      });
-    });
-  }
 }
 
 export function mochaGlobalTeardown() {
@@ -62,6 +47,23 @@ export const mochaHooks = {
     // reasonably quickly (2 seconds by default).
     this.timeout(0);
     await preFileSetup(Number(process.env.hostedModeServerPort));
+
+    // Pause when running interactively in debug mode. This is mututally
+    // exclusive with parallel mode.
+    if (process.env['DEBUG']) {
+      console.log('Running in debug mode.');
+      console.log(' - Press enter to run the test suite.');
+      console.log(' - Press ctrl + c to quit.');
+
+      await new Promise<void>(resolve => {
+        const {stdin} = process;
+
+        stdin.on('data', () => {
+          stdin.pause();
+          resolve();
+        });
+      });
+    }
   },
   // In serial mode, run after all tests end, once only.
   // In parallel mode, run after all tests end, for each file.

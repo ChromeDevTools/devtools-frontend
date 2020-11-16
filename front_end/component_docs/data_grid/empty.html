@@ -1,0 +1,58 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Empty data grid</title>
+    <style>
+      #container {
+        width: 80%;
+        border: 1px solid black;
+        padding: 20px;
+        height: 300px;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div id="container">
+    </div>
+
+    <ul id="events"></ul>
+
+    <script type="module">
+      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+      import * as UI from '../../ui/ui.js';
+      import * as Components from '../../ui/components/components.js'
+
+      ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent())
+
+      const renderComponent = () => {
+        const component = new Components.DataGrid.DataGrid();
+
+        component.data = {
+          columns: [
+            { id: 'key', title: 'Key', widthWeighting: 1 },
+            { id: 'value', title: 'Value', widthWeighting: 1 },
+          ],
+          rows: [
+          ]
+        }
+
+        document.getElementById('container').appendChild(component)
+        component.addEventListener('cellFocus', event => {
+          const li = document.createElement('li');
+          li.innerHTML = `<pre><code>cellFocus: ${JSON.stringify(event.data)}</code></pre>`;
+          document.getElementById('events').appendChild(li)
+        })
+      }
+
+    </script>
+  </body>
+</html>

@@ -8,6 +8,7 @@ copy_to_gen("data_grid") {
   sources = [
     "adding-data.html",
     "basic.html",
+    "empty.html",
     "hide-cols.html",
     "sticky-headers.html",
   ]

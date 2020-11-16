@@ -224,21 +224,21 @@ export class DataGrid extends HTMLElement {
     return undefined;
   }
 
-  private renderEmptyRow() {
+
+  private renderFillerRow() {
     const visibleColumns = this.columns.filter(col => !col.hidden);
     const emptyCells = visibleColumns.map((col, colIndex) => {
       const emptyCellClasses = LitHtml.Directives.classMap({
         firstVisibleColumn: colIndex === 0,
       });
-      return LitHtml.html`<td class=${emptyCellClasses}></td>`;
+      return LitHtml.html`<td tabindex="-1" class=${emptyCellClasses}></td>`;
     });
-    return LitHtml.html`<tr>${emptyCells}</tr>`;
+    return LitHtml.html`<tr tabindex="-1" class="filler-row">${emptyCells}</tr>`;
   }
 
   private render() {
     const indexOfFirstVisibleColumn = this.columns.findIndex(col => !col.hidden);
     const anyColumnsSortable = this.columns.some(col => col.sortable === true);
-    const visibleRowsCount = this.rows.filter(row => !row.hidden).length;
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
@@ -314,6 +314,15 @@ export class DataGrid extends HTMLElement {
         display: none;
       }
 
+      .filler-row td {
+        /* By making the filler row cells 100% they take up any extra height,
+         * leaving the cells with content to be the regular height, and the
+         * final filler row to be as high as it needs to be to fill the empty
+         * space.
+         */
+        height: 100%;
+      }
+
       [aria-sort]:hover {
         cursor: pointer;
       }
@@ -376,7 +385,7 @@ export class DataGrid extends HTMLElement {
           </tr>
         </thead>
         <tbody>
-          ${visibleRowsCount === 0 ? this.renderEmptyRow() : this.rows.map((row, rowIndex) => {
+          ${this.rows.map((row, rowIndex) => {
             const focusableCell = this.getCurrentlyFocusableCell();
             const [,focusableCellRowIndex] = this.focusableCell;
 
@@ -422,6 +431,7 @@ export class DataGrid extends HTMLElement {
               })}
             `;
           })}
+         ${this.renderFillerRow()}
         </tbody>
       </table>
     </div>

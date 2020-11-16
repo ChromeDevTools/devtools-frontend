@@ -571,6 +571,9 @@
   <message name="IDS_DEVTOOLS_d7778d0c64b6ba21494c97f77a66885a" desc="Text to filter result items">
     Filter
   </message>
+  <message name="IDS_DEVTOOLS_da0b472ac86851a3c0b623260d09546c" desc="A title of the 'Persistence' setting category">
+    Persistence
+  </message>
   <message name="IDS_DEVTOOLS_dc30bc0c7914db5918da4263fce93ad2" desc="Text to clear content">
     Clear
   </message>

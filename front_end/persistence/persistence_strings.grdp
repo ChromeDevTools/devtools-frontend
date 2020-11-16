@@ -60,9 +60,6 @@
   <message name="IDS_DEVTOOLS_cf703cce77386955bfbff86f6ad9be03" desc="Text in Isolated File System Manager of the Workspace settings in Settings">
     Unable to add filesystem: <ph name="ERRORMESSAGE">$1s<ex>folder does not exist</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_da0b472ac86851a3c0b623260d09546c" desc="A title of the 'Persistence' setting category">
-    Persistence
-  </message>
   <message name="IDS_DEVTOOLS_e13c8cb15857d020445d01a8817f7d34" desc="Text in Isolated File System of the Workspace settings in Settings">
     File system error: <ph name="ERROR_MESSAGE">$1s<ex>folder does not exist</ex></ph>
   </message>

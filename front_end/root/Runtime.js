@@ -610,6 +610,7 @@ export class RuntimeExtensionDescriptor {
  *  title: string,
  *  value: (string|boolean),
  *  raw: (boolean|undefined),
+ *  text: (string|undefined),
  * }}
  */
 // @ts-ignore typedef

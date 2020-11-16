@@ -39,13 +39,6 @@ export class CommandMenu {
   static createCommand(options) {
     const {category, keys, title, shortcut, executeHandler, availableHandler, userActionCode} = options;
 
-    // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
-    const keyList = keys.split(',');
-    let key = '';
-    keyList.forEach(k => {
-      key += (ls(k.trim()) + '\0');
-    });
-
     let handler = executeHandler;
     if (userActionCode) {
       const actionCode = userActionCode;
@@ -55,23 +48,22 @@ export class CommandMenu {
       };
     }
 
-    return new Command(category, title, key, shortcut, handler, availableHandler);
+    return new Command(category, title, keys, shortcut, handler, availableHandler);
   }
 
   /**
-   * @param {!Root.Runtime.Extension} extension
+   * @param {!Common.Settings.Setting<*>} setting
    * @param {string} title
    * @param {V} value
    * @return {!Command}
    * @template V
    */
-  static createSettingCommand(extension, title, value) {
-    const category = extension.descriptor()['category'] || '';
-    const tags = extension.descriptor()['tags'] || '';
-    const reloadRequired = !!extension.descriptor()['reloadRequired'];
-    const setting = Common.Settings.Settings.instance().moduleSetting(extension.descriptor()['settingName']);
+  static createSettingCommand(setting, title, value) {
+    const category = setting.category() || '';
+    const tags = setting.tags() || '';
+    const reloadRequired = !!setting.reloadRequired();
     return CommandMenu.createCommand({
-      category: ls(category),
+      category,
       keys: tags,
       title,
       shortcut: '',
@@ -133,6 +125,8 @@ export class CommandMenu {
   }
 
   _loadCommands() {
+    // TODO(crbug.com/1134103): replace this implementation for the one on _loadCommandsFromPreRegisteredExtensions once
+    // all settings, views and type lookups extensions have been migrated.
     const locations = new Map();
     Root.Runtime.Runtime.instance().extensions(UI.View.ViewLocationResolver).forEach(extension => {
       const category = extension.descriptor()['category'];
@@ -161,14 +155,17 @@ export class CommandMenu {
     }
 
     // Populate allowlisted settings.
+    // TODO(crbug.com/1134103): Remove this call when all settings are migrated
     const settingExtensions = Root.Runtime.Runtime.instance().extensions('setting');
     for (const extension of settingExtensions) {
-      const options = extension.descriptor()['options'];
-      if (!options || !extension.descriptor()['category']) {
+      const descriptor = extension.descriptor();
+      const options = descriptor.options;
+      if (!options || !descriptor.category) {
         continue;
       }
       for (const pair of options) {
-        this._commands.push(CommandMenu.createSettingCommand(extension, ls(pair['title']), pair['value']));
+        const setting = Common.Settings.Settings.instance().moduleSetting(descriptor.settingName);
+        this._commands.push(CommandMenu.createSettingCommand(setting, ls(pair['title']), pair['value']));
       }
     }
     this._loadCommandsFromPreRegisteredExtensions(locations);
@@ -194,6 +191,17 @@ export class CommandMenu {
         id: view.viewId()
       };
       this._commands.push(CommandMenu.createRevealViewCommand(options));
+    }
+    const settingsRegistrations = Common.Settings.getRegisteredSettings();
+    for (const settingRegistration of settingsRegistrations) {
+      const options = settingRegistration.options;
+      if (!options || !settingRegistration.category) {
+        continue;
+      }
+      for (const pair of options) {
+        const setting = Common.Settings.Settings.instance().moduleSetting(settingRegistration.settingName);
+        this._commands.push(CommandMenu.createSettingCommand(setting, pair.title, pair.value));
+      }
     }
   }
 

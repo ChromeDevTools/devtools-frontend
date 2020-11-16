@@ -106,9 +106,6 @@ Common.Settings = CommonModule.Settings.Settings;
 
 Common.Settings.detectColorFormat = CommonModule.Settings.detectColorFormat;
 
-/**
- * @constructor
- */
 Common.Setting = CommonModule.Settings.Setting;
 
 Common.settingForTest = CommonModule.Settings.settingForTest;

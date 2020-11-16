@@ -296,7 +296,36 @@ export class GenericSettingsTab extends SettingsTab {
     for (const sectionName of explicitSectionOrder) {
       this._createSectionElement(sectionName);
     }
-    Root.Runtime.Runtime.instance().extensions('setting').forEach(this._addSetting.bind(this));
+
+    /** @type {!Array<!Common.Settings.SettingRegistration>} */
+    const unionOfSettings = [
+      // TODO(crbug.com/1134103): Remove this call when all settings are migrated
+      ...Root.Runtime.Runtime.instance().extensions('setting').map(extension => {
+        return {
+          category: extension.descriptor().category || undefined,
+          settingName: extension.descriptor().settingName,
+          title: extension.title(),
+          order: extension.descriptor().order,
+          settingType: extension.descriptor().settingType || '',
+          defaultValue: extension.descriptor().defaultValue,
+          tags: undefined,
+          isRegex: undefined,
+          options: undefined,
+          reloadRequired: undefined,
+          storageType: undefined,
+          titleMac: undefined,
+          userActionCondition: undefined,
+        };
+      }),
+      ...Common.Settings.getRegisteredSettings().map(setting => {
+        return {...setting, title: setting.titleMac || setting.title};
+      })
+    ];
+    // Some settings define their initial ordering.
+    unionOfSettings.sort(
+        (firstSetting, secondSetting) =>
+            firstSetting.order && secondSetting.order ? (firstSetting.order - secondSetting.order) : 0);
+    unionOfSettings.forEach(this._addSetting.bind(this));
     Root.Runtime.Runtime.instance().extensions(UI.SettingsUI.SettingUI).forEach(this._addSettingUI.bind(this));
 
     this._appendSection().appendChild(
@@ -309,28 +338,21 @@ export class GenericSettingsTab extends SettingsTab {
   }
 
   /**
-   * @param {!Root.Runtime.Extension} extension
+  * @param {!Common.Settings.SettingRegistration} setting
    * @return {boolean}
    */
-  static isSettingVisible(extension) {
-    const descriptor = extension.descriptor();
-    if (!('title' in descriptor)) {
-      return false;
-    }
-    if (!('category' in descriptor)) {
-      return false;
-    }
-    return true;
+  static isSettingVisible(setting) {
+    return !!(setting.title && setting.category);
   }
 
   /**
-   * @param {!Root.Runtime.Extension} extension
+   * @param {!Common.Settings.SettingRegistration} settingRegistration
    */
-  _addSetting(extension) {
-    if (!GenericSettingsTab.isSettingVisible(extension)) {
+  _addSetting(settingRegistration) {
+    if (!GenericSettingsTab.isSettingVisible(settingRegistration)) {
       return;
     }
-    const extensionCategory = extension.descriptor()['category'];
+    const extensionCategory = settingRegistration.category;
     if (!extensionCategory) {
       return;
     }
@@ -338,7 +360,7 @@ export class GenericSettingsTab extends SettingsTab {
     if (!sectionElement) {
       return;
     }
-    const setting = Common.Settings.Settings.instance().moduleSetting(extension.descriptor()['settingName']);
+    const setting = Common.Settings.Settings.instance().moduleSetting(settingRegistration.settingName);
     const settingControl = UI.SettingsUI.createControlForSetting(setting);
     if (settingControl) {
       sectionElement.appendChild(settingControl);
@@ -497,9 +519,33 @@ export class Revealer {
     const setting = /** @type {!Common.Settings.Setting<*>} */ (object);
     let success = false;
 
-    Root.Runtime.Runtime.instance().extensions('setting').forEach(revealModuleSetting);
+    /** @type {!Array<!Common.Settings.SettingRegistration>} */
+    const unionOfSettings = [
+      // TODO(crbug.com/1134103): Remove this call when all settings are migrated
+      ...Root.Runtime.Runtime.instance().extensions('setting').map(extension => {
+        return {
+          category: extension.descriptor().category || undefined,
+          settingName: extension.descriptor().settingName,
+          title: extension.title(),
+          order: extension.descriptor().order,
+          settingType: extension.descriptor().settingType || '',
+          defaultValue: extension.descriptor().defaultValue,
+          tags: undefined,
+          isRegex: undefined,
+          options: undefined,
+          reloadRequired: undefined,
+          storageType: undefined,
+          titleMac: undefined,
+          userActionCondition: undefined,
+        };
+      }),
+      ...Common.Settings.getRegisteredSettings().map(setting => {
+        return {...setting, title: setting.titleMac || setting.title};
+      })
+    ];
+    unionOfSettings.forEach(revealModuleSetting);
     Root.Runtime.Runtime.instance().extensions(UI.SettingsUI.SettingUI).forEach(revealSettingUI);
-    const unionOfSettingsExtension = [
+    const unionOfViews = [
       // TODO(crbug.com/1134103): Remove this call when all views are migrated
       ...Root.Runtime.Runtime.instance().extensions('view').map(extension => {
         return {
@@ -513,17 +559,17 @@ export class Revealer {
       }),
     ];
 
-    unionOfSettingsExtension.forEach(revealSettingsView);
+    unionOfViews.forEach(revealSettingsView);
     return success ? Promise.resolve() : Promise.reject();
 
     /**
-     * @param {!Root.Runtime.Extension} extension
+     * @param {!Common.Settings.SettingRegistration} settingRegistration
      */
-    function revealModuleSetting(extension) {
-      if (!GenericSettingsTab.isSettingVisible(extension)) {
+    function revealModuleSetting(settingRegistration) {
+      if (!GenericSettingsTab.isSettingVisible(settingRegistration)) {
         return;
       }
-      if (extension.descriptor()['settingName'] === setting.name) {
+      if (settingRegistration.settingName === setting.name) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
         SettingsScreen._showSettingsScreen();
         success = true;

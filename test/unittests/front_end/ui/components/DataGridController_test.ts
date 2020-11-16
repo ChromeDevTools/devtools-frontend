@@ -54,6 +54,48 @@ describe('DataGridController', () => {
           });
     });
 
+    it('can be provided an initial sort which is immediately applied', async () => {
+      const component = new UIComponents.DataGridController.DataGridController();
+      component.data = {
+        rows,
+        columns,
+        initialSort: {
+          columnId: 'key',
+          direction: UIComponents.DataGridUtils.SortDirection.ASC,
+        },
+      };
+
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+
+      const internalDataGridShadow = getInternalDataGridShadowRoot(component);
+      const cellValues = getValuesForColumn(internalDataGridShadow, 'key');
+      assert.deepEqual(cellValues, ['Alpha', 'Bravo', 'Charlie']);
+    });
+
+    it('lets the user click to change the sort when it is initially provided', async () => {
+      const component = new UIComponents.DataGridController.DataGridController();
+      component.data = {
+        rows,
+        columns,
+        initialSort: {
+          columnId: 'key',
+          direction: UIComponents.DataGridUtils.SortDirection.ASC,
+        },
+      };
+
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+
+      const internalDataGridShadow = getInternalDataGridShadowRoot(component);
+      const keyHeader = getHeaderCellForColumnId(internalDataGridShadow, 'key');
+      let cellValues = getValuesForColumn(internalDataGridShadow, 'key');
+      assert.deepEqual(cellValues, ['Alpha', 'Bravo', 'Charlie']);
+      dispatchClickEvent(keyHeader);  // DESC order
+      cellValues = getValuesForColumn(internalDataGridShadow, 'key');
+      assert.deepEqual(cellValues, ['Charlie', 'Bravo', 'Alpha']);
+    });
+
     it('lets the user click twice to sort the column in DESC order', () => {
       const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns};

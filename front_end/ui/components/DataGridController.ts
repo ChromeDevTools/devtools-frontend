@@ -14,11 +14,18 @@ export interface DataGridControllerData {
   columns: Column[];
   rows: Row[];
   filterText?: string;
+  /**
+   * Sets an initial sort state for the data grid. Is only used if the component
+   * hasn't rendered yet. If you pass this in on subsequent renders, it is
+   * ignored.
+   */
+  initialSort?: SortState;
 }
 
 export class DataGridController extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
 
+  private hasRenderedAtLeastOnce = false;
   private columns: ReadonlyArray<Column> = [];
   private rows: Row[] = [];
 
@@ -49,6 +56,12 @@ export class DataGridController extends HTMLElement {
 
     this.columns = [...this.originalColumns];
     this.rows = this.cloneAndFilterRows(data.rows, this.filterText);
+
+    if (!this.hasRenderedAtLeastOnce && data.initialSort) {
+      this.sortState = data.initialSort;
+      this.sortRows(this.sortState);
+    }
+
     this.render();
   }
 
@@ -147,6 +160,7 @@ export class DataGridController extends HTMLElement {
       eventContext: this,
     });
     // clang-format on
+    this.hasRenderedAtLeastOnce = true;
   }
 }
 

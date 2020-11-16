@@ -485,12 +485,12 @@ span[is=dt-icon-label] {
 }
 
 ::selection {
-  background-color: #bbdefb;
+  background-color: rgb(141 199 248 / 60%);
 }
 
 .-theme-with-dark-background *::selection,
 :host-context(.-theme-with-dark-background) *::selection {
-  background-color: #9e9e9e;
+  background-color: rgb(93 93 93 / 60%);
 }
 
 .reload-warning {

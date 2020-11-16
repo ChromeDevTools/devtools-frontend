@@ -84,13 +84,15 @@ describe('The color swatch', async () => {
     await assertNoColorSwatch(property);
   });
 
-  it('is displayed for var() functions that compute to colors in the Styles pane', async () => {
-    await goToTestPageAndSelectTestElement();
+  // Flaky test
+  it.skip(
+      '[crbug.com/1149358]: is displayed for var() functions that compute to colors in the Styles pane', async () => {
+        await goToTestPageAndSelectTestElement();
 
-    await waitForCSSPropertyValue('#inspected', 'background-color', 'var(--variable)');
-    const property = await getCSSPropertyInRule('#inspected', 'background-color');
-    await assertColorSwatch(property, 'blue');
-  });
+        await waitForCSSPropertyValue('#inspected', 'background-color', 'var(--variable)');
+        const property = await getCSSPropertyInRule('#inspected', 'background-color');
+        await assertColorSwatch(property, 'blue');
+      });
 
   it('is not displayed for var() functions that have color-looking names but do not compute to colors in the Styles pane',
      async () => {

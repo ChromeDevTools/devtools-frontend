@@ -19,7 +19,7 @@ export class XLink extends XElement {
    * @param {string=} linkText
    * @param {string=} className
    * @param {boolean=} preventClick
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   static create(url, linkText, className, preventClick) {
     if (!linkText) {
@@ -29,10 +29,11 @@ export class XLink extends XElement {
     url = addReferrerToURLIfNecessary(url);
     // clang-format off
     // TODO(dgozman): migrate css from 'devtools-link' to 'x-link'.
-    return html`
+    const element = html`
         <x-link href='${url}' class='${className} devtools-link' ${preventClick ? 'no-click' : ''}
         >${linkText.trimMiddle(MaxLengthForDisplayedURLs)}</x-link>`;
     // clang-format on
+    return /** @type {!HTMLElement} */ (element);
   }
 
   constructor() {

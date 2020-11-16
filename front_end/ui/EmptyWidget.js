@@ -54,10 +54,10 @@ export class EmptyWidget extends VBox {
 
   /**
    * @param {string} link
-   * @return {!Node}
+   * @return {!HTMLElement}
    */
   appendLink(link) {
-    return this._contentElement.appendChild(XLink.create(link, ls`Learn more`));
+    return /** @type {!HTMLElement} */ (this._contentElement.appendChild(XLink.create(link, ls`Learn more`)));
   }
 
   /**

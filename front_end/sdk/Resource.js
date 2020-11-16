@@ -324,4 +324,11 @@ export class Resource {
   frame() {
     return this._resourceTreeModel.frameForId(this._frameId);
   }
+
+  /**
+   * @return {number}
+   */
+  statusCode() {
+    return this._request ? this._request.statusCode : 0;
+  }
 }

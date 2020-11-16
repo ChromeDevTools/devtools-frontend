@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 import {Endianness, format, isNumber, isValidMode, typeHasSignedNotation, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 
+const ls = Common.ls;
 const {render, html} = LitHtml;
 
 const DEFAULT_MODE_MAPPING = new Map([
@@ -66,14 +68,13 @@ export class ValueInterpreterDisplay extends HTMLElement {
         }
 
         .value-types {
-          display: table;
+          display: grid;
+          grid-template-columns: auto auto 1fr 1fr;
+          grid-column-gap: 24px;
+          grid-row-gap: 4px;
           overflow: hidden;
           padding-left: 12px;
           padding-right: 12px;
-        }
-
-        td {
-          padding: 0px 24px 0px 0px;
         }
 
         .value-type-cell {
@@ -82,6 +83,14 @@ export class ValueInterpreterDisplay extends HTMLElement {
           white-space: nowrap;
           overflow: hidden;
           display: flex;
+        }
+
+        .value-type-cell-no-sign {
+          grid-column: 3 / 5;
+        }
+
+        .value-type-cell-no-mode {
+          grid-column: grid-column: 1 / 3;
         }
 
       </style>
@@ -98,26 +107,19 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <tr>
-        <td colspan="${isNumber(type) ? 1 : 2}">
-          <span class="value-type-cell">${type}</span>
-        </td>
+      ${isNumber(type) ?
+        html`
+          <span class="value-type-cell">${ls`${type}`}</span>
+          <span class="mode-type value-type-cell">${ls`${this.valueTypeModeConfig.get(type)}`}</span>` :
+        html`
+          <span class="value-type-cell-no-mode value-type-cell">${ls`${type}`}</span>`}
 
-        ${isNumber(type) ?
-          html`<td><span class="mode-type value-type-cell">${this.valueTypeModeConfig.get(type)}</span></td>` : ''}
-
-        ${typeHasSignedNotation(type) ? html`
-          <td>
-            <span class="value-type-cell" data-value="true">+ ${this.parse({type, signed: false})}</span>
-          </td>
-          <td>
-            <span class="value-type-cell" data-value="true">± ${this.parse({type, signed: true})}</span>
-          </td>` :
-          html`
-          <td colspan="2">
-            <span class="value-type-cell" data-value="true">${this.parse({type})}</span>
-          </td>`}
-      </tr>
+        ${typeHasSignedNotation(type) ?
+        html`
+          <span class="value-type-cell" data-value="true">+ ${this.parse({type, signed: false})}</span>
+          <span class="value-type-cell" data-value="true">± ${this.parse({type, signed: true})}</span>` :
+        html`
+          <span class="value-type-cell-no-sign value-type-cell" data-value="true">${this.parse({type})}</span>`}
     `;
     // clang-format on
   }

@@ -5,6 +5,7 @@
 import './ValueInterpreterDisplay.js';
 import './ValueInterpreterSettings.js';
 
+import * as Common from '../common/common.js';
 import * as Elements from '../elements/elements.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
@@ -12,6 +13,7 @@ import type {ValueDisplayData} from './ValueInterpreterDisplay.js';
 import {Endianness, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 import type {TypeToggleEvent, ValueInterpreterSettingsData} from './ValueInterpreterSettings.js';
 
+const ls = Common.ls;
 const {render, html} = LitHtml;
 
 export interface LinearMemoryValueInterpreterData {
@@ -82,7 +84,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
       <div class="value-interpreter">
         <div class="settings-toolbar">
           <div>
-            <span>${this.endianness}</span>
+            <span>${ls`${this.endianness}`}</span>
             <devtools-icon
               .data=${{iconName: 'dropdown_7x6_icon', color: 'rgb(110 110 110)', width: '7px'} as Elements.Icon.IconWithName}>
             </devtools-icon>

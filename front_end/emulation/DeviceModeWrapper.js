@@ -121,7 +121,7 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  * @unrestricted
  */
 export class ActionDelegate {

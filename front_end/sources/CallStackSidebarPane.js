@@ -499,7 +499,7 @@ export const elementSymbol = Symbol('element');
 export const defaultMaxAsyncStackChainDepth = 32;
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ActionDelegate {
   /**

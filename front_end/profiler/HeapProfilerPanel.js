@@ -15,7 +15,7 @@ import {instance} from './ProfileTypeRegistry.js';
 
 /**
  * @implements {UI.ContextMenu.Provider}
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class HeapProfilerPanel extends ProfilesPanel {
   constructor() {

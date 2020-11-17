@@ -32,7 +32,7 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Root from '../root/root.js';
 
-import {Action, Events as ActionEvents} from './Action.js';  // eslint-disable-line no-unused-vars
+import {Action, Events as ActionEvents} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
 import {ActionRegistry} from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';

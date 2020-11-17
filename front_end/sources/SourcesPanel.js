@@ -62,17 +62,17 @@ export class SourcesPanel extends UI.Panel.Panel {
         this._handleDrop.bind(this));
 
     this._workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    /** @type {!UI.Action.Action }*/
+    /** @type {!UI.ActionRegistration.Action }*/
     this._togglePauseAction = (UI.ActionRegistry.ActionRegistry.instance().action('debugger.toggle-pause'));
-    /** @type {!UI.Action.Action }*/
+    /** @type {!UI.ActionRegistration.Action }*/
     this._stepOverAction = (UI.ActionRegistry.ActionRegistry.instance().action('debugger.step-over'));
-    /** @type {!UI.Action.Action }*/
+    /** @type {!UI.ActionRegistration.Action }*/
     this._stepIntoAction = (UI.ActionRegistry.ActionRegistry.instance().action('debugger.step-into'));
-    /** @type {!UI.Action.Action }*/
+    /** @type {!UI.ActionRegistration.Action }*/
     this._stepOutAction = (UI.ActionRegistry.ActionRegistry.instance().action('debugger.step-out'));
-    /** @type {!UI.Action.Action }*/
+    /** @type {!UI.ActionRegistration.Action }*/
     this._stepAction = (UI.ActionRegistry.ActionRegistry.instance().action('debugger.step'));
-    /** @type {!UI.Action.Action }*/
+    /** @type {!UI.ActionRegistration.Action }*/
     this._toggleBreakpointsActiveAction =
         (UI.ActionRegistry.ActionRegistry.instance().action('debugger.toggle-breakpoints-active'));
 
@@ -1172,7 +1172,7 @@ export class DebuggerPausedDetailsRevealer {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  * @unrestricted
  */
 export class RevealingActionDelegate {
@@ -1197,7 +1197,7 @@ export class RevealingActionDelegate {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  * @unrestricted
  */
 export class DebuggingActionDelegate {

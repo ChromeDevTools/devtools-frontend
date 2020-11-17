@@ -115,7 +115,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
       userShortcutsSetting.set([]);
       keybindsSetSetting.set(UI.ShortcutRegistry.DefaultShortcutSetting);
     }));
-    /** @type {?UI.Action.Action} */
+    /** @type {?UI.ActionRegistration.Action} */
     this._editingItem = null;
     /** @type {?ShortcutListItem} */
     this._editingRow = null;
@@ -151,7 +151,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!UI.Action.Action} item
+   * @param {!UI.ActionRegistration.Action} item
    * @param {!Map.<!UI.KeyboardShortcut.KeyboardShortcut, ?Array.<!UI.KeyboardShortcut.Descriptor>>} editedShortcuts
    */
   commitChanges(item, editedShortcuts) {
@@ -231,7 +231,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!UI.Action.Action} action
+   * @param {!UI.ActionRegistration.Action} action
    */
   startEditing(action) {
     if (this._editingItem) {
@@ -243,7 +243,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!UI.Action.Action} action
+   * @param {!UI.ActionRegistration.Action} action
    */
   stopEditing(action) {
     UI.UIUtils.markBeingEdited(this._list.element, false);
@@ -320,7 +320,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox {
 
 export class ShortcutListItem {
   /**
-   * @param {!UI.Action.Action} item
+   * @param {!UI.ActionRegistration.Action} item
    * @param {!KeybindsSettingsTab} settingsTab
    * @param {boolean=} isEditing
    */
@@ -647,6 +647,6 @@ export class ShortcutListItem {
   }
 }
 
-/** @typedef {string|!UI.Action.Action} */
+/** @typedef {string|!UI.ActionRegistration.Action} */
 // @ts-ignore typedef
 export let KeybindsItem;

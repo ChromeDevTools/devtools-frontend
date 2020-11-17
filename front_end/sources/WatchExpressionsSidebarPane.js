@@ -39,7 +39,7 @@ import * as UI from '../ui/ui.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  * @implements {UI.Toolbar.ItemsProvider}
  * @implements {UI.ContextMenu.Provider}
  * @unrestricted

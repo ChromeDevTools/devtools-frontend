@@ -7,8 +7,6 @@
   ],
   "modules": [
     "ui-legacy.js",
-    "Action.js",
-    "ActionDelegate.js",
     "ARIAUtils.js",
     "ContextFlavorListener.js",
     "ui.js",
@@ -18,6 +16,7 @@
     "ViewManager.js",
     "Treeoutline.js",
     "InspectorView.js",
+    "ActionRegistration.js",
     "ActionRegistry.js",
     "ShortcutRegistry.js",
     "Context.js",

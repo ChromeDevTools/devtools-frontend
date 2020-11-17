@@ -4,7 +4,7 @@
 
 import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 
-import {Action} from './Action.js';
+import {Action, LegacyActionRegistration} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
 import {Context} from './Context.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!ActionRegistry} */
@@ -47,7 +47,7 @@ export class ActionRegistry {
       }
       console.assert(!this._actionsById.get(actionId));
 
-      const action = new Action(extension);
+      const action = new LegacyActionRegistration(extension);
       if (!action.category() || action.title()) {
         this._actionsById.set(actionId, action);
       } else {
@@ -82,7 +82,7 @@ export class ActionRegistry {
     const extensions = [];
     for (const actionId of actionIds) {
       const action = this._actionsById.get(actionId);
-      if (action && action.enabled()) {
+      if (action && action.enabled() && action instanceof LegacyActionRegistration) {
         extensions.push(action.extension());
       }
     }

@@ -27,7 +27,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     const toolbar = new UI.Toolbar.Toolbar('live-heap-profile-toolbar', this.contentElement);
 
     this._toggleRecordAction =
-        /** @type {!UI.Action.Action }*/ (
+        /** @type {!UI.ActionRegistration.Action }*/ (
             UI.ActionRegistry.ActionRegistry.instance().action('live-heap-profile.toggle-recording'));
     this._toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction);
     this._toggleRecordButton.setToggled(this._setting.get());
@@ -36,7 +36,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (mainTarget && mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel)) {
       const startWithReloadAction =
-          /** @type {!UI.Action.Action }*/ (
+          /** @type {!UI.ActionRegistration.Action }*/ (
               UI.ActionRegistry.ActionRegistry.instance().action('live-heap-profile.start-with-reload'));
       this._startWithReloadButton = UI.Toolbar.Toolbar.createActionButton(startWithReloadAction);
       toolbar.appendToolbarItem(this._startWithReloadButton);
@@ -324,7 +324,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ActionDelegate {
   /**

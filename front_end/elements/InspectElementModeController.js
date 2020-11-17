@@ -153,7 +153,7 @@ export class InspectElementModeController {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  * @unrestricted
  */
 export class ToggleSearchActionDelegate {

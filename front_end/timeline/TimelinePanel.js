@@ -75,13 +75,14 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._state = State.Idle;
     this._recordingPageReload = false;
     this._millisecondsToRecordAfterLoadEvent = 5000;
-    /** @type {!UI.Action.Action }*/
+    /** @type {!UI.ActionRegistration.Action }*/
     this._toggleRecordAction =
-        /** @type {!UI.Action.Action }*/ (
+        /** @type {!UI.ActionRegistration.Action }*/ (
             UI.ActionRegistry.ActionRegistry.instance().action('timeline.toggle-recording'));
-    /** @type {!UI.Action.Action }*/
+    /** @type {!UI.ActionRegistration.Action }*/
     this._recordReloadAction =
-        /** @type {!UI.Action.Action }*/ (UI.ActionRegistry.ActionRegistry.instance().action('timeline.record-reload'));
+        /** @type {!UI.ActionRegistration.Action }*/ (
+            UI.ActionRegistry.ActionRegistry.instance().action('timeline.record-reload'));
 
     this._historyManager = new TimelineHistoryManager();
 
@@ -1415,7 +1416,7 @@ export class LoadTimelineHandler {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  * @unrestricted
  */
 export class ActionDelegate {

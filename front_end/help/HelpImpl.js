@@ -82,7 +82,7 @@ export class HelpLateInitialization {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ReleaseNotesActionDelegate {
   /**
@@ -98,7 +98,7 @@ export class ReleaseNotesActionDelegate {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ReportIssueActionDelegate {
   /**

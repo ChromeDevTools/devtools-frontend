@@ -292,7 +292,7 @@ export const Events = {
 };
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ActionDelegate {
   /**

@@ -7,7 +7,7 @@ import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import {Action} from './Action.js';                  // eslint-disable-line no-unused-vars
+import {Action} from './ActionRegistration.js';      // eslint-disable-line no-unused-vars
 import {ActionRegistry} from './ActionRegistry.js';  // eslint-disable-line no-unused-vars
 import {Context} from './Context.js';
 import {Dialog} from './Dialog.js';

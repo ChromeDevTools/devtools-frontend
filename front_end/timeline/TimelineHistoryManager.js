@@ -13,9 +13,10 @@ export class TimelineHistoryManager {
   constructor() {
     /** @type {!Array<!PerformanceModel>} */
     this._recordings = [];
-    /** @type {!UI.Action.Action} */
+    /** @type {!UI.ActionRegistration.Action} */
     this._action =
-        /** @type {!UI.Action.Action} */ (UI.ActionRegistry.ActionRegistry.instance().action('timeline.show-history'));
+        /** @type {!UI.ActionRegistration.Action} */ (
+            UI.ActionRegistry.ActionRegistry.instance().action('timeline.show-history'));
     /** @type {!Map<string, number>} */
     this._nextNumberByDomain = new Map();
     this._button = new ToolbarButton(this._action);
@@ -498,7 +499,7 @@ DropDown._instance = null;
 
 export class ToolbarButton extends UI.Toolbar.ToolbarItem {
   /**
-   * @param {!UI.Action.Action} action
+   * @param {!UI.ActionRegistration.Action} action
    */
   constructor(action) {
     const element = document.createElement('button');
@@ -510,7 +511,8 @@ export class ToolbarButton extends UI.Toolbar.ToolbarItem {
     this.element.appendChild(dropdownArrowIcon);
     this.element.addEventListener('click', () => void action.execute(), false);
     this.setEnabled(action.enabled());
-    action.addEventListener(UI.Action.Events.Enabled, event => this.setEnabled(/** @type {boolean} */ (event.data)));
+    action.addEventListener(
+        UI.ActionRegistration.Events.Enabled, event => this.setEnabled(/** @type {boolean} */ (event.data)));
     this.setTitle(action.title());
   }
 

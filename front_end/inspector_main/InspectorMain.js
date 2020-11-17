@@ -60,7 +60,7 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  * @unrestricted
  */
 export class ReloadActionDelegate {
@@ -84,7 +84,7 @@ export class ReloadActionDelegate {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  * @unrestricted
  */
 export class FocusDebuggeeActionDelegate {

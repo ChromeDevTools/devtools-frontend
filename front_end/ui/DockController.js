@@ -31,7 +31,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 
-import {ActionDelegate} from './ActionDelegate.js';                 // eslint-disable-line no-unused-vars
+import {ActionDelegate} from './ActionRegistration.js';             // eslint-disable-line no-unused-vars
 import {Context} from './Context.js';                               // eslint-disable-line no-unused-vars
 import {Provider, ToolbarButton, ToolbarItem} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 

@@ -41,7 +41,7 @@ export class SearchSourcesView extends Search.SearchView.SearchView {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ActionDelegate {
   /**

@@ -8,8 +8,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("ui") {
   sources = [
     "ARIAUtils.js",
-    "Action.js",
-    "ActionDelegate.js",
+    "ActionRegistration.js",
     "ActionRegistry.js",
     "Context.js",
     "ContextFlavorListener.js",

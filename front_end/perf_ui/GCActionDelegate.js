@@ -6,7 +6,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class GCActionDelegate {
   /**

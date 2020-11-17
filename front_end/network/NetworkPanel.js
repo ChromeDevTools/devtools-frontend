@@ -63,7 +63,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._networkLogLargeRowsSetting = Common.Settings.Settings.instance().createSetting('networkLogLargeRows', false);
     this._networkRecordFilmStripSetting =
         Common.Settings.Settings.instance().createSetting('networkRecordFilmStripSetting', false);
-    /** @type {!UI.Action.Action }*/
+    /** @type {!UI.ActionRegistration.Action }*/
     this._toggleRecordAction = (UI.ActionRegistry.ActionRegistry.instance().action('network.toggle-recording'));
 
     /** @type {number|undefined} */
@@ -891,7 +891,7 @@ export class FilmStripRecorder {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ActionDelegate {
   /**

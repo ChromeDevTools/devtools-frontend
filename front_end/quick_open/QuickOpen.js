@@ -88,7 +88,7 @@ export class QuickOpenImpl {
 }
 
 /**
- * @implements {UI.ActionDelegate.ActionDelegate}
+ * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ShowActionDelegate {
   /**

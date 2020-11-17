@@ -24,7 +24,7 @@ devtools_module("heap_snapshot_worker") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "heap_snapshot_worker.js"
+  entrypoint = "heap_snapshot_worker.ts"
 
   deps = [ ":heap_snapshot_worker" ]
 }

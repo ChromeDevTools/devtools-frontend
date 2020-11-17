@@ -1,12 +1,9 @@
 {
   "modules": [
-    "heap_snapshot_worker.js",
-    "heap_snapshot_worker-legacy.js",
-    "AllocationProfile.js",
-    "HeapSnapshot.js",
-    "HeapSnapshotLoader.js",
-    "HeapSnapshotWorkerDispatcher.js",
-    "HeapSnapshotWorker.js"
+    "heap_snapshot_worker-legacy.js"
+  ],
+  "skip_compilation": [
+    "heap_snapshot_worker-legacy.js"
   ],
   "dependencies": [
     "heap_snapshot_model",

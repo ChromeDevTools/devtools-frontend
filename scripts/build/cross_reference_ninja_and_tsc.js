@@ -124,6 +124,7 @@ async function buildTargetInfo(buildDir, gnTarget) {
     const types = path.join(cwd, 'front_end/global_typings');
     const tscPath = path.join(cwd, 'node_modules', '.bin', 'tsc');
     const tscOut = await exec(`${tscPath} ${entryPoint} --types ${types}/resize_observer.d.ts --types ${
+        types}/request_idle_callback.d.ts --types ${
         types}/global_defs.d.ts --noEmit --listFiles --allowJs --target esnext`);
 
     // Filter the list and remap to those that are explicitly in the front_end, excluding the entrypoint itself.

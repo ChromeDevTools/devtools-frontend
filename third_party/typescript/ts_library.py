@@ -37,6 +37,8 @@ GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
               'global_defs.d.ts'),
     path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'global_typings',
               'resize_observer.d.ts'),
+    path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'global_typings',
+              'request_idle_callback.d.ts'),
     # generated protocol definitions
     path.join(ROOT_DIRECTORY_OF_REPOSITORY, 'front_end', 'generated',
               'protocol.d.ts'),

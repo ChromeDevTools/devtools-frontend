@@ -5,6 +5,7 @@
 // eslint-disable-next-line spaced-comment
 /// <reference path="./resize_observer.d.ts" />
 
+/// <reference path="./request_idle_callback.d.ts" />
 
 interface CSSStyleSheet {
   replaceSync(content: string): void;

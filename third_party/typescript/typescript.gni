@@ -48,6 +48,8 @@ template("ts_library") {
       devtools_location_prepend + "front_end/global_typings/global_defs.d.ts",
       devtools_location_prepend +
           "front_end/global_typings/resize_observer.d.ts",
+      devtools_location_prepend +
+          "front_end/global_typings/request_idle_callback.d.ts",
       devtools_location_prepend + "front_end/legacy/estree-legacy.d.ts",
       devtools_location_prepend + "front_end/legacy/codemirror-legacy.d.ts",
       devtools_location_prepend + "node_modules/@types/estree/index.d.ts",

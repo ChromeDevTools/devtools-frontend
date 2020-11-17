@@ -110,7 +110,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @return {boolean}
    */
-  _updateFilter() {
+  updateFilter() {
     const regex = this._parentPane.filterRegex();
     const matches = !!regex && (regex.test(this.property.name) || regex.test(this.property.value));
     this.listItemElement.classList.toggle('filter-match', matches);
@@ -120,7 +120,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     for (let i = 0; i < this.childCount(); ++i) {
       const child = /** @type {?StylePropertyTreeElement} */ (this.childAt(i));
-      if (!child || (child && !child._updateFilter())) {
+      if (!child || (child && !child.updateFilter())) {
         continue;
       }
       hasMatchingChildren = true;
@@ -630,7 +630,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (!this.property.activeInStyle()) {
       this.listItemElement.classList.add('inactive');
     }
-    this._updateFilter();
+    this.updateFilter();
 
     if (this.property.parsedOk && this.section() && this.parent.root) {
       const enabledCheckboxElement = document.createElement('input');

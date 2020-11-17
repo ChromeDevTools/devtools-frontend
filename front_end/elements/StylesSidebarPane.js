@@ -1894,8 +1894,9 @@ export class StylePropertiesSection {
       return;
     }
     const deepTarget = UI.UIUtils.deepElementFromEvent(event);
-    if (deepTarget.treeElement) {
-      this.addNewBlankProperty(deepTarget.treeElement.property.index + 1).startEditing();
+    const treeElement = deepTarget && UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(deepTarget);
+    if (treeElement) {
+      this.addNewBlankProperty(treeElement.property.index + 1).startEditing();
     } else {
       this.addNewBlankProperty().startEditing();
     }

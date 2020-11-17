@@ -108,7 +108,14 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
           if (!listItem) {
             return null;
           }
-          return /** @type {!ElementsTreeElement} */ (listItem.treeElement).node();
+
+          const treeElement =
+              /** @type {!ElementsTreeElement|undefined} */ (
+                  UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem));
+          if (!treeElement) {
+            return null;
+          }
+          return treeElement.node();
         });
 
     /** @type {!Map<!SDK.DOMModel.DOMNode, !UpdateRecord>} */

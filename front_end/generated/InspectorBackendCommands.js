@@ -1735,6 +1735,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Overlay.setShowGridOverlays', [{'name': 'gridNodeHighlightConfigs', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
+      'Overlay.setShowFlexOverlays', [{'name': 'flexNodeHighlightConfigs', 'type': 'object', 'optional': false}], []);
+  inspectorBackend.registerCommand(
       'Overlay.setShowPaintRects', [{'name': 'result', 'type': 'boolean', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Overlay.setShowLayoutShiftRegions', [{'name': 'result', 'type': 'boolean', 'optional': false}], []);
@@ -1808,7 +1810,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Page.fileChooserOpened', ['frameId', 'backendNodeId', 'mode']);
   inspectorBackend.registerEvent('Page.frameAttached', ['frameId', 'parentFrameId', 'stack']);
   inspectorBackend.registerEvent('Page.frameClearedScheduledNavigation', ['frameId']);
-  inspectorBackend.registerEvent('Page.frameDetached', ['frameId']);
+  inspectorBackend.registerEvent('Page.frameDetached', ['frameId', 'reason']);
   inspectorBackend.registerEvent('Page.frameNavigated', ['frame']);
   inspectorBackend.registerEvent('Page.documentOpened', ['frame']);
   inspectorBackend.registerEvent('Page.frameResized', []);

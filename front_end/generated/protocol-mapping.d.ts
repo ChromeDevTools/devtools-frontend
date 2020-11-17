@@ -1920,6 +1920,7 @@ export namespace ProtocolMapping {
      * Highlight multiple elements with the CSS Grid overlay.
      */
     'Overlay.setShowGridOverlays': {paramsType: [Protocol.Overlay.SetShowGridOverlaysRequest]; returnType: void;};
+    'Overlay.setShowFlexOverlays': {paramsType: [Protocol.Overlay.SetShowFlexOverlaysRequest]; returnType: void;};
     /**
      * Requests that backend shows paint rectangles
      */

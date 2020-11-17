@@ -5701,6 +5701,13 @@ experimental domain Overlay
       # Identifier of the node to highlight.
       DOM.NodeId nodeId
 
+  type FlexNodeHighlightConfig extends object
+    properties
+      # A descriptor for the highlight appearance of flex containers.
+      FlexContainerHighlightConfig flexContainerHighlightConfig
+      # Identifier of the node to highlight.
+      DOM.NodeId nodeId
+
   # Configuration for dual screen hinge
   type HingeConfig extends object
     properties
@@ -5865,6 +5872,11 @@ experimental domain Overlay
     parameters
       # An array of node identifiers and descriptors for the highlight appearance.
       array of GridNodeHighlightConfig gridNodeHighlightConfigs
+
+  command setShowFlexOverlays
+    parameters
+      # An array of node identifiers and descriptors for the highlight appearance.
+      array of FlexNodeHighlightConfig flexNodeHighlightConfigs
 
   # Requests that backend shows paint rectangles
   command setShowPaintRects
@@ -6768,6 +6780,12 @@ domain Page
     parameters
       # Id of the frame that has been detached.
       FrameId frameId
+      experimental enum reason
+        # The frame is removed from the DOM.
+        remove
+        # The frame is being swapped out in favor of an out-of-process iframe.
+        # A new frame target will be created (see Target.attachedToTarget).
+        swap
 
   # Fired once navigation of the frame has completed. Frame is now associated with the new loader.
   event frameNavigated

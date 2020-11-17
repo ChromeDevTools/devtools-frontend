@@ -2018,6 +2018,9 @@ declare namespace ProtocolProxyApi {
     invoke_setShowGridOverlays(params: Protocol.Overlay.SetShowGridOverlaysRequest):
         Promise<Protocol.ProtocolResponseWithError>;
 
+    invoke_setShowFlexOverlays(params: Protocol.Overlay.SetShowFlexOverlaysRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
     /**
      * Requests that backend shows paint rectangles
      */

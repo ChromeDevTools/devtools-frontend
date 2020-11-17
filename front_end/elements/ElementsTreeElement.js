@@ -107,6 +107,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
      * @type {!HTMLElement|undefined}
      */
     this._htmlEditElement;
+
+    /** @type {?UI.TreeOutline.TreeElement} */
+    this.expandAllButtonElement = null;
   }
 
   /**

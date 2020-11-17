@@ -904,7 +904,7 @@ export class DOMNode {
   /**
    * @param {!DOMNode} targetNode
    * @param {?DOMNode} anchorNode
-   * @param {function(?ProtocolClient.InspectorBackend.ProtocolError, !Protocol.DOM.NodeId=)=} callback
+   * @param {function(?ProtocolClient.InspectorBackend.ProtocolError, ?DOMNode)=} callback
    */
   copyTo(targetNode, anchorNode, callback) {
     this._agent
@@ -915,7 +915,7 @@ export class DOMNode {
             this._domModel.markUndoableState();
           }
           if (callback) {
-            callback(response.getError() || null, response.nodeId);
+            callback(response.getError() || null, this._domModel.nodeForId(response.nodeId));
           }
         });
   }

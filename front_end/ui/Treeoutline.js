@@ -483,6 +483,9 @@ export class TreeElement {
     this.setExpandable(expandable || false);
     this._collapsible = true;
     this.toggleOnClick = false;
+
+    /** @type {?HTMLButtonElement} */
+    this.button = null;
   }
 
   /**

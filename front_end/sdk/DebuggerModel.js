@@ -1203,6 +1203,7 @@ export const Events = {
 
 /** @enum {string} */
 export const BreakReason = {
+  CSPViolation: 'CSPViolation',
   DOM: 'DOM',
   EventListener: 'EventListener',
   XHR: 'XHR',

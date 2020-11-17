@@ -13,8 +13,11 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     this._isNull = true;
     /** @type {?number} */
     this._contrastRatio = null;
+    /** @type {?number} */
+    this._contrastRatioAPCA = null;
     /** @type {?Object<string, number>} */
     this._contrastRatioThresholds = null;
+    this._contrastRationAPCAThreshold = 0;
     /** @type {?Common.Color.Color} */
     this._fgColor = null;
     /** @type {?Common.Color.Color} */
@@ -35,6 +38,8 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     const isLargeFont = ContrastInfo.computeIsLargeFont(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
 
     this._contrastRatioThresholds = _ContrastThresholds[(isLargeFont ? 'largeFont' : 'normalFont')];
+    this._contrastRationAPCAThreshold =
+        Common.ColorUtils.getAPCAThreshold(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
     const bgColorText = contrastInfo.backgroundColors[0];
     const bgColor = Common.Color.Color.parse(bgColorText);
     if (bgColor) {
@@ -82,6 +87,20 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
+   * @return {?number}
+   */
+  contrastRatioAPCA() {
+    return this._contrastRatioAPCA;
+  }
+
+  /**
+   * @return {?number}
+   */
+  contrastRatioAPCAThreshold() {
+    return this._contrastRationAPCAThreshold;
+  }
+
+  /**
    * @param {!Common.Color.Color} bgColor
    */
   setBgColor(bgColor) {
@@ -111,6 +130,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     this._contrastRatio = Common.ColorUtils.contrastRatio(fgRGBA, this._bgColor.rgba());
+    this._contrastRatioAPCA = Common.ColorUtils.contrastRatioAPCA(this._fgColor.rgba(), this._bgColor.rgba());
   }
 
   /**
@@ -125,6 +145,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
     this._contrastRatio = Common.ColorUtils.contrastRatio(this._fgColor.rgba(), this._bgColor.rgba());
+    this._contrastRatioAPCA = Common.ColorUtils.contrastRatioAPCA(this._fgColor.rgba(), this._bgColor.rgba());
   }
 
   /**

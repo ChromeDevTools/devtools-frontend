@@ -324,6 +324,54 @@ describe('Color', () => {
           `incorrect color suggestion for ${fgColor}/${bgColor} with contrast ${contrast}`);
     }
   });
+
+  it('find the fg color with good contrast according to APCA', () => {
+    const tests = [
+      {
+        fgColor: 'white',
+        bgColor: 'white',
+        requiredContrast: 68,
+      },
+      {
+        fgColor: 'black',
+        bgColor: 'black',
+        requiredContrast: 68,
+      },
+      {
+        fgColor: 'grey',
+        bgColor: 'grey',
+        requiredContrast: 68,
+      },
+      {
+        bgColor: 'salmon',
+        fgColor: 'white',
+        requiredContrast: 66,
+      },
+      {
+        bgColor: 'lightblue',
+        fgColor: 'white',
+        requiredContrast: 66,
+      },
+      {
+        bgColor: 'white',
+        fgColor: '#00FF00',
+        requiredContrast: 66,
+      },
+      {
+        bgColor: 'black',
+        fgColor: '#b114ff',
+        requiredContrast: 66,
+      },
+    ];
+    for (const test of tests) {
+      const fg = Common.Color.Color.parse(test.fgColor)!;
+      const bg = Common.Color.Color.parse(test.bgColor)!;
+      const result = Common.Color.Color.findFgColorForContrastAPCA(fg, bg, test.requiredContrast);
+      const absContrast = Math.abs(Common.ColorUtils.contrastRatioAPCA(result!.rgba(), bg.rgba()));
+      assert.closeTo(absContrast, test.requiredContrast, 0.5);
+      assert.isTrue(Math.round(absContrast) >= test.requiredContrast);
+    }
+  });
 });
 
 describe('Generator', () => {

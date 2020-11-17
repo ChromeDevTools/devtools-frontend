@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 import {ContrastInfo, Events as ContrastInfoEvents} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
@@ -92,6 +93,9 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     this._contrastAAA = this._contrastThresholds.createChild('div', 'contrast-threshold');
     this._contrastPassFailAAA = this._contrastAAA.createChild('div', 'contrast-pass-fail');
 
+    this._contrastAPCA = this._contrastThresholds.createChild('div', 'contrast-threshold');
+    this._contrastPassFailAPCA = this._contrastAPCA.createChild('div', 'contrast-pass-fail');
+
     this._chooseBgColor = this._expandedDetails.createChild('div', 'contrast-choose-bg-color');
     this._chooseBgColor.textContent = Common.UIString.UIString('Pick background color');
 
@@ -126,6 +130,15 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     const bgColor = this._contrastInfo.bgColor();
     if (!fgColor || !bgColor) {
       return;
+    }
+
+    if (threshold === 'APCA') {
+      const requiredContrast = this._contrastInfo.contrastRatioAPCAThreshold();
+      if (requiredContrast === null) {
+        return;
+      }
+      // We add 1% to the min required contrast to make sure we are over the limit.
+      return Common.Color.Color.findFgColorForContrastAPCA(fgColor, bgColor, requiredContrast + 1);
     }
 
     const requiredContrast = this._contrastInfo.contrastRatioThreshold(threshold);
@@ -179,9 +192,56 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     this.setVisible(true);
     this._hideNoContrastInfoAvailableMessage();
 
-    const contrastRatio = this._contrastInfo.contrastRatio();
+    const isAPCAEnabled = Root.Runtime.experiments.isEnabled('APCA');
+
     const fgColor = this._contrastInfo.color();
     const bgColor = this._contrastInfo.bgColor();
+
+    if (isAPCAEnabled) {
+      const apcaContrastRatio = this._contrastInfo.contrastRatioAPCA();
+
+      if (apcaContrastRatio === null || !bgColor || !fgColor) {
+        this._contrastUnknown = true;
+        this._contrastValue.textContent = '';
+        this._contrastValueBubble.classList.add('contrast-unknown');
+        this._chooseBgColor.classList.remove('hidden');
+        this._contrastThresholds.classList.add('hidden');
+        this._showNoContrastInfoAvailableMessage();
+        return;
+      }
+
+      this._contrastUnknown = false;
+      this._chooseBgColor.classList.add('hidden');
+      this._contrastThresholds.classList.remove('hidden');
+      this._contrastValueBubble.classList.remove('contrast-unknown');
+      this._contrastValue.textContent = `${apcaContrastRatio.toFixed(2)}%`;
+
+      const apcaThreshold = this._contrastInfo.contrastRatioAPCAThreshold();
+      const passesAPCA = apcaContrastRatio && apcaThreshold ? Math.abs(apcaContrastRatio) >= apcaThreshold : false;
+      this._contrastPassFailAPCA.removeChildren();
+      const labelAPCA = this._contrastPassFailAPCA.createChild('span', 'contrast-link-label');
+      labelAPCA.textContent = Common.UIString.UIString('APCA');
+      if (apcaThreshold !== null) {
+        this._contrastPassFailAPCA.createChild('span').textContent = `: ${apcaThreshold.toFixed(2)}%`;
+      }
+      if (passesAPCA) {
+        this._contrastPassFailAPCA.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+      } else {
+        this._contrastPassFailAPCA.appendChild(UI.Icon.Icon.create('smallicon-no'));
+        const suggestedColor = this._computeSuggestedColor('APCA');
+        if (suggestedColor) {
+          const fixAPCA = this._createFixColorButton(this._contrastPassFailAPCA, suggestedColor);
+          fixAPCA.addEventListener('click', () => this._onSuggestColor('APCA'));
+        }
+      }
+      labelAPCA.addEventListener('click', /** @param {!Event} event */ event => ContrastDetails._showHelp());
+      this._element.classList.toggle('contrast-fail', !passesAPCA);
+      this._contrastValueBubble.classList.toggle('contrast-aa', passesAPCA);
+      return;
+    }
+
+    const contrastRatio = this._contrastInfo.contrastRatio();
+
     if (!contrastRatio || !bgColor || !fgColor) {
       this._contrastUnknown = true;
       this._contrastValue.textContent = '';
@@ -245,8 +305,8 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   static _showHelp() {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(UI.UIUtils.addReferrerToURL(
-        'https://developers.google.com/web/fundamentals/accessibility/accessible-styles#color_and_contrast'));
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+        UI.UIUtils.addReferrerToURL('https://web.dev/color-and-contrast-accessibility/'));
   }
 
   /**

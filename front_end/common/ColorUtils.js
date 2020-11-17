@@ -85,46 +85,137 @@ export function contrastRatio(fgRGBA, bgRGBA) {
   return contrastRatio;
 }
 
+// Constants for basic APCA version.
+// See https://github.com/Myndex/SAPC-APCA
+const sRGBtrc = 2.218;
+const normBgExp = 0.38;
+const normFgExp = 0.43;
+const revBgExp = 0.5;
+const revFgExp = 0.43;
+const blkThrs = 0.02;
+const blkClmp = 1.33;
+const scaleBoW = 161.8;
+const scaleWoB = 161.8;
+
+/**
+* Calculate relative luminance of a color.
+* See https://github.com/Myndex/SAPC-APCA
+* @param {!Array<number>} rgba
+* @return {number}
+*/
+export function luminanceAPCA([rSRGB, gSRGB, bSRGB]) {
+  const r = Math.pow(rSRGB, sRGBtrc);
+  const g = Math.pow(gSRGB, sRGBtrc);
+  const b = Math.pow(bSRGB, sRGBtrc);
+
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
 /**
  * Calculate the contrast ratio between a foreground and a background color.
  * Returns the percentage of the predicted visual contrast.
- * See resources at https://w3c.github.io/silver/guidelines/methods/Method-font-characteristic-contrast.html
+ * See https://github.com/Myndex/SAPC-APCA
  *
  * @param {!Array<number>} fgRGBA
  * @param {!Array<number>} bgRGBA
  * @return {number}
  */
 export function contrastRatioAPCA(fgRGBA, bgRGBA) {
-  fgRGBA = [...fgRGBA];
-  bgRGBA = [...bgRGBA];
-  // Linearize the gamma encoded RGB channels by applying a simple exponent.
-  for (let i = 0; i <= 2; i++) {
-    fgRGBA[i] = Math.pow(fgRGBA[i], 2.218);
-    bgRGBA[i] = Math.pow(bgRGBA[i], 2.218);
-  }
+  return contrastRatioByLuminanceAPCA(luminanceAPCA(fgRGBA), luminanceAPCA(bgRGBA));
+}
 
-  // Find relative luminance.
-  // TODO(alexrudenko): it appears to be a different kind of luminance compared to one in luminance().
-  let bgLuminance = 0.2126 * bgRGBA[0] + 0.7156 * bgRGBA[1] + 0.0722 * bgRGBA[2];
-  let fgLuminance = 0.2126 * fgRGBA[0] + 0.7156 * fgRGBA[1] + 0.0722 * fgRGBA[2];
-
-  // Constants for basic APCA version.
-  const normBgExp = 0.38;
-  const normFgExp = 0.43;
-  const revBgExp = 0.5;
-  const revFgExp = 0.43;
-  const blkThrs = 0.02;
-  const blkClmp = 1.75;
-
-  if (bgLuminance > fgLuminance) {
+/**
+ * @param {number} fgLuminance
+ * @param {number} bgLuminance
+ */
+export function contrastRatioByLuminanceAPCA(fgLuminance, bgLuminance) {
+  if (bgLuminance >= fgLuminance) {  // Black text on white.
     fgLuminance =
         (fgLuminance > blkThrs) ? fgLuminance : fgLuminance + Math.pow(Math.abs(fgLuminance - blkThrs), blkClmp);
-    const result = (Math.pow(bgLuminance, normBgExp) - Math.pow(fgLuminance, normFgExp)) * 161.8;
-    return result >= 15 ? result : 0;
+    return (Math.pow(bgLuminance, normBgExp) - Math.pow(fgLuminance, normFgExp)) * scaleBoW;
+  }
+  // White text on black.
+  bgLuminance =
+      (bgLuminance > blkThrs) ? bgLuminance : (bgLuminance + Math.pow(Math.abs(bgLuminance - blkThrs), blkClmp));
+  return (Math.pow(bgLuminance, revBgExp) - Math.pow(fgLuminance, revFgExp)) * scaleWoB;
+}
+
+/**
+ * Compute a desired luminance given a given luminance and a desired contrast
+ * percentage according to APCA.
+ * @param {number} luminance The given luminance.
+ * @param {number} contrast The desired contrast percentage.
+ * @param {boolean} lighter Whether the desired luminance is lighter or darker
+ * than the given luminance. If no luminance can be found which meets this
+ * requirement, a luminance which meets the inverse requirement will be
+ * returned.
+ * @return {number} The desired luminance.
+ */
+export function desiredLuminanceAPCA(luminance, contrast, lighter) {
+  function computeLuminance() {
+    if (!lighter) {  // Black text on white.
+      return Math.pow(Math.pow(luminance, normBgExp) - contrast / scaleBoW, 1 / normFgExp);
+    }
+    // White text on black.
+    luminance = (luminance > blkThrs) ? luminance : (luminance + Math.pow(Math.abs(luminance - blkThrs), blkClmp));
+    return Math.pow(contrast / scaleWoB + Math.pow(luminance, revBgExp), 1 / revFgExp);
+  }
+  let desiredLuminance = computeLuminance();
+  if (desiredLuminance < 0 || desiredLuminance > 1) {
+    lighter = !lighter;
+    desiredLuminance = computeLuminance();
+  }
+  return desiredLuminance;
+}
+
+// clang-format off
+const contrastAPCALookupTable = [
+  // See https://github.com/Myndex/SAPC-APCA
+  // font size in px | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 weights
+  [12, -1, -1, -1, 120, 100, 90, 80, 80, 80],
+  [14, -1, -1, -1, 100, 90, 80, 75, 75, 75],
+  [16, -1, -1, 120, 90, 80, 75, 70, 70, 70],
+  [18, -1, -1, 110, 80, 75, 70, 67, 65, 65],
+  [20, -1, -1, 100, 78, 72, 67, 65, 60, 60],
+  [22, -1, -1, 90, 77, 71, 65, 62, 57, 57],
+  [24, -1, 120, 80, 75, 70, 65, 60, 55, 55],
+  [26, -1, 110, 79, 72, 67, 62, 59, 54, 54],
+  [28, -1, 100, 77, 70, 65, 60, 57, 53, 53],
+  [32, -1, 90, 76, 67, 62, 57, 53, 50, 48],
+  [36, 120, 80, 75, 65, 60, 55, 50, 48, 48],
+  [42, 110, 77, 73, 62, 57, 52, 48, 46, 42],
+  [48, 100, 75, 70, 60, 55, 50, 45, 42, 40],
+  [60, 90, 73, 65, 57, 52, 46, 42, 40, 40],
+  [72, 70, 60, 55, 50, 45, 40, 40, 40, 40],
+  [96, 80, 60, 55, 50, 45, 40, 40, 40, 40],
+  [120, 60, 55, 50, 47, 43, 40, 40, 40, 40],
+];
+// clang-format on
+
+contrastAPCALookupTable.reverse();
+
+/**
+ * @param {string} fontSize
+ * @param {string} fontWeight
+ * @return {?number}
+ */
+export function getAPCAThreshold(fontSize, fontWeight) {
+  const size = parseFloat(fontSize.replace('px', ''));
+  const weight = parseFloat(fontWeight);
+
+  // Go over the table backwards to find the first matching font size and then the weight.
+  // Fonts larger than 96px, use the thresholds for 96px.
+  // Fonts smaller than 12px, don't get any threshold meaning the font size needs to be increased.
+  for (const [rowSize, ...rowWeights] of contrastAPCALookupTable) {
+    if (size >= rowSize) {
+      for (const [idx, keywordWeight] of [900, 800, 700, 600, 500, 400, 300, 200, 100].entries()) {
+        if (weight >= keywordWeight) {
+          const threshold = rowWeights[rowWeights.length - 1 - idx];
+          return threshold === -1 ? null : threshold;
+        }
+      }
+    }
   }
 
-  bgLuminance =
-      (bgLuminance > blkThrs) ? bgLuminance : bgLuminance + Math.pow(Math.abs(bgLuminance - blkThrs), blkClmp);
-  const result = (Math.pow(bgLuminance, revBgExp) - Math.pow(fgLuminance, revFgExp)) * 161.8;
-  return result <= -15 ? result : 0;
+  return null;
 }

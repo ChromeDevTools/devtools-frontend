@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 import {ContrastInfo, Events} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
@@ -21,10 +22,15 @@ export class ContrastOverlay {
     this._contrastRatioSVG = UI.UIUtils.createSVGChild(colorElement, 'svg', 'spectrum-contrast-container fill');
     /** @type {!Map<string, !Element>} */
     this._contrastRatioLines = new Map();
-    this._contrastRatioLines.set(
-        'aa', UI.UIUtils.createSVGChild(this._contrastRatioSVG, 'path', 'spectrum-contrast-line'));
-    this._contrastRatioLines.set(
-        'aaa', UI.UIUtils.createSVGChild(this._contrastRatioSVG, 'path', 'spectrum-contrast-line'));
+    if (Root.Runtime.experiments.isEnabled('APCA')) {
+      this._contrastRatioLines.set(
+          'APCA', UI.UIUtils.createSVGChild(this._contrastRatioSVG, 'path', 'spectrum-contrast-line'));
+    } else {
+      this._contrastRatioLines.set(
+          'aa', UI.UIUtils.createSVGChild(this._contrastRatioSVG, 'path', 'spectrum-contrast-line'));
+      this._contrastRatioLines.set(
+          'aaa', UI.UIUtils.createSVGChild(this._contrastRatioSVG, 'path', 'spectrum-contrast-line'));
+    }
 
     this._width = 0;
     this._height = 0;
@@ -38,10 +44,15 @@ export class ContrastOverlay {
   }
 
   _update() {
-    if (!this._visible || this._contrastInfo.isNull() || !this._contrastInfo.contrastRatio()) {
+    if (!this._visible || this._contrastInfo.isNull()) {
       return;
     }
-
+    if (Root.Runtime.experiments.isEnabled('APCA') && this._contrastInfo.contrastRatioAPCA() === null) {
+      return;
+    }
+    if (!this._contrastInfo.contrastRatio()) {
+      return;
+    }
     this._contrastRatioLinesThrottler.schedule(this._drawContrastRatioLinesBound);
   }
 
@@ -93,8 +104,10 @@ export class ContrastRatioLineBuilder {
    * @return {?string}
    */
   drawContrastRatioLine(width, height, level) {
-    const requiredContrast = this._contrastInfo.contrastRatioThreshold(level);
-    if (!width || !height || !requiredContrast) {
+    const requiredContrast = Root.Runtime.experiments.isEnabled('APCA') ?
+        this._contrastInfo.contrastRatioAPCAThreshold() :
+        this._contrastInfo.contrastRatioThreshold(level);
+    if (!width || !height || requiredContrast === null) {
       return null;
     }
 
@@ -118,7 +131,9 @@ export class ContrastRatioLineBuilder {
     let blendedRGBA = Common.ColorUtils.blendColors(fgRGBA, bgRGBA);
     const fgLuminance = Common.ColorUtils.luminance(blendedRGBA);
     const fgIsLighter = fgLuminance > bgLuminance;
-    const desiredLuminance = Common.Color.Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
+    const desiredLuminance = Root.Runtime.experiments.isEnabled('APCA') ?
+        Common.ColorUtils.desiredLuminanceAPCA(bgLuminance, requiredContrast, fgIsLighter) :
+        Common.Color.Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
 
     let lastV = fgHSVA[V];
     let currentSlope = 0;
@@ -128,6 +143,24 @@ export class ContrastRatioLineBuilder {
     const candidateRGBA = [];
     Common.Color.Color.hsva2rgba(candidateHSVA, candidateRGBA);
     blendedRGBA = Common.ColorUtils.blendColors(candidateRGBA, bgRGBA);
+
+    /**
+     * @param {!Array<number>} candidateHSVA
+     */
+    let candidateLuminance = candidateHSVA => {
+      return Common.ColorUtils.luminance(
+          Common.ColorUtils.blendColors(Common.Color.Color.fromHSVA(candidateHSVA).rgba(), bgRGBA));
+    };
+
+    if (Root.Runtime.experiments.isEnabled('APCA')) {
+      /**
+       * @param {!Array<number>} candidateHSVA
+       */
+      candidateLuminance = candidateHSVA => {
+        return Common.ColorUtils.luminanceAPCA(
+            Common.ColorUtils.blendColors(Common.Color.Color.fromHSVA(candidateHSVA).rgba(), bgRGBA));
+      };
+    }
 
     // Plot V for values of S such that the computed luminance approximates
     // `desiredLuminance`, until no suitable value for V can be found, or the
@@ -141,7 +174,7 @@ export class ContrastRatioLineBuilder {
       // gradient of the curve.
       candidateHSVA[V] = lastV + currentSlope * dS;
 
-      const v = Common.Color.Color.approachColorValue(candidateHSVA, bgRGBA, V, desiredLuminance);
+      const v = Common.Color.Color.approachColorValue(candidateHSVA, bgRGBA, V, desiredLuminance, candidateLuminance);
       if (v === null) {
         break;
       }
@@ -160,7 +193,7 @@ export class ContrastRatioLineBuilder {
     if (s < 1 + dS) {
       s -= dS;
       candidateHSVA[V] = 1;
-      s = Common.Color.Color.approachColorValue(candidateHSVA, bgRGBA, S, desiredLuminance);
+      s = Common.Color.Color.approachColorValue(candidateHSVA, bgRGBA, S, desiredLuminance, candidateLuminance);
       if (s !== null) {
         pathBuilder = pathBuilder.concat(['L', (s * width).toFixed(2), '-0.1']);
       }

@@ -29,7 +29,7 @@
 
 import * as Platform from '../platform/platform.js';
 
-import {blendColors, luminance, rgbaToHsla} from './ColorUtils.js';
+import {blendColors, desiredLuminanceAPCA, luminance, luminanceAPCA, rgbaToHsla} from './ColorUtils.js';
 
 /** @type {?Map<string, string>} */
 let _rgbaToNickname;
@@ -393,19 +393,16 @@ export class Color {
    * @param {!Array<number>} bgRGBA
    * @param {number} index - the index of the color component
    * @param {number} desiredLuminance
+   * @param {function(!Array<number>):number} candidateLuminance
    * @return {?number} The new value for the modified component, or `null` if
    *     no suitable value exists.
    */
-  static approachColorValue(candidateHSVA, bgRGBA, index, desiredLuminance) {
-    const candidateLuminance = () => {
-      return luminance(blendColors(Color.fromHSVA(candidateHSVA).rgba(), bgRGBA));
-    };
-
+  static approachColorValue(candidateHSVA, bgRGBA, index, desiredLuminance, candidateLuminance) {
     const epsilon = 0.0002;
 
     let x = candidateHSVA[index];
     let multiplier = 1;
-    let dLuminance = candidateLuminance() - desiredLuminance;
+    let dLuminance = candidateLuminance(candidateHSVA) - desiredLuminance;
     let previousSign = Math.sign(dLuminance);
 
     for (let guard = 100; guard; guard--) {
@@ -431,7 +428,7 @@ export class Color {
 
       candidateHSVA[index] = x;
 
-      dLuminance = candidateLuminance() - desiredLuminance;
+      dLuminance = candidateLuminance(candidateHSVA) - desiredLuminance;
     }
 
     // The loop should always converge or go out of bounds on its own.
@@ -450,12 +447,15 @@ export class Color {
     const candidateHSVA = fgColor.hsva();
     const bgRGBA = bgColor.rgba();
 
-    const candidateLuminance = () => {
+    /**
+     * @param {!Array<number>} candidateHSVA
+     */
+    const candidateLuminance = candidateHSVA => {
       return luminance(blendColors(Color.fromHSVA(candidateHSVA).rgba(), bgRGBA));
     };
 
     const bgLuminance = luminance(bgColor.rgba());
-    const fgLuminance = candidateLuminance();
+    const fgLuminance = candidateLuminance(candidateHSVA);
     const fgIsLighter = fgLuminance > bgLuminance;
 
     const desiredLuminance = Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
@@ -463,12 +463,52 @@ export class Color {
     const saturationComponentIndex = 1;
     const valueComponentIndex = 2;
 
-    if (Color.approachColorValue(candidateHSVA, bgRGBA, valueComponentIndex, desiredLuminance)) {
+    if (Color.approachColorValue(candidateHSVA, bgRGBA, valueComponentIndex, desiredLuminance, candidateLuminance)) {
       return Color.fromHSVA(candidateHSVA);
     }
 
     candidateHSVA[valueComponentIndex] = 1;
-    if (Color.approachColorValue(candidateHSVA, bgRGBA, saturationComponentIndex, desiredLuminance)) {
+    if (Color.approachColorValue(
+            candidateHSVA, bgRGBA, saturationComponentIndex, desiredLuminance, candidateLuminance)) {
+      return Color.fromHSVA(candidateHSVA);
+    }
+
+    return null;
+  }
+
+  /**
+   *
+   * @param {!Color} fgColor
+   * @param {!Color} bgColor
+   * @param {number} requiredContrast
+   * @return {?Color}
+   */
+  static findFgColorForContrastAPCA(fgColor, bgColor, requiredContrast) {
+    const candidateHSVA = fgColor.hsva();
+    const bgRGBA = bgColor.rgba();
+
+    /**
+     * @param {!Array<number>} candidateHSVA
+     */
+    const candidateLuminance = candidateHSVA => {
+      return luminanceAPCA(Color.fromHSVA(candidateHSVA).rgba());
+    };
+
+    const bgLuminance = luminanceAPCA(bgColor.rgba());
+    const fgLuminance = candidateLuminance(candidateHSVA);
+    const fgIsLighter = fgLuminance >= bgLuminance;
+    const desiredLuminance = desiredLuminanceAPCA(bgLuminance, requiredContrast, fgIsLighter);
+
+    const saturationComponentIndex = 1;
+    const valueComponentIndex = 2;
+
+    if (Color.approachColorValue(candidateHSVA, bgRGBA, valueComponentIndex, desiredLuminance, candidateLuminance)) {
+      return Color.fromHSVA(candidateHSVA);
+    }
+
+    candidateHSVA[valueComponentIndex] = 1;
+    if (Color.approachColorValue(
+            candidateHSVA, bgRGBA, saturationComponentIndex, desiredLuminance, candidateLuminance)) {
       return Color.fromHSVA(candidateHSVA);
     }
 

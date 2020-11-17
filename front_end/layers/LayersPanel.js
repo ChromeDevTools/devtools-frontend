@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
@@ -36,6 +37,18 @@ import * as UI from '../ui/ui.js';
 import {LayerPaintProfilerView} from './LayerPaintProfilerView.js';
 import {Events, LayerTreeModel} from './LayerTreeModel.js';
 
+export const UIStrings = {
+  /**
+  *@description Text for the details of something
+  */
+  details: 'Details',
+  /**
+  *@description Title of the Profiler tool
+  */
+  profiler: 'Profiler',
+};
+const str_ = i18n.i18n.registerUIStrings('layers/LayersPanel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {SDK.SDKModel.Observer}
  * @unrestricted
@@ -69,7 +82,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar {
     this._layerDetailsView = new LayerViewer.LayerDetailsView.LayerDetailsView(this._layerViewHost);
     this._layerDetailsView.addEventListener(
         LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, this._onPaintProfileRequested, this);
-    this._tabbedPane.appendTab(DetailsViewTabs.Details, Common.UIString.UIString('Details'), this._layerDetailsView);
+    this._tabbedPane.appendTab(DetailsViewTabs.Details, i18nString(UIStrings.details), this._layerDetailsView);
 
     this._paintProfilerView = new LayerPaintProfilerView(this._showImage.bind(this));
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this._onTabClosed, this);
@@ -186,8 +199,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar {
       this._layerBeingProfiled = selection.layer();
       if (!this._tabbedPane.hasTab(DetailsViewTabs.Profiler)) {
         this._tabbedPane.appendTab(
-            DetailsViewTabs.Profiler, Common.UIString.UIString('Profiler'), this._paintProfilerView, undefined, true,
-            true);
+            DetailsViewTabs.Profiler, i18nString(UIStrings.profiler), this._paintProfilerView, undefined, true, true);
       }
       this._tabbedPane.selectTab(DetailsViewTabs.Profiler);
       this._paintProfilerView.profile(snapshotWithRect.snapshot);

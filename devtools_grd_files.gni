@@ -640,6 +640,7 @@ grd_files_debug_sources = [
   "front_end/layers/LayerPaintProfilerView.js",
   "front_end/layers/LayerTreeModel.js",
   "front_end/layers/LayersPanel.js",
+  "front_end/layers/ModuleUIStrings.js",
   "front_end/lighthouse/LighthouseController.js",
   "front_end/lighthouse/LighthousePanel.js",
   "front_end/lighthouse/LighthouseProtocolService.js",

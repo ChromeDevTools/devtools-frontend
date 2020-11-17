@@ -140,6 +140,15 @@
   "devices/ModuleUIStrings.js | usb": {
     "message": "usb"
   },
+  "layers/LayersPanel.js | details": {
+    "message": "Details"
+  },
+  "layers/LayersPanel.js | profiler": {
+    "message": "Profiler"
+  },
+  "layers/ModuleUIStrings.js | layers": {
+    "message": "Layers"
+  },
   "resources/ClearStorageView.js | storageQuotaUsed": {
     "message": "{PH1} used out of {PH2} storage quota"
   },

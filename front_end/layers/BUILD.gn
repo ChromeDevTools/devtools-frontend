@@ -10,10 +10,12 @@ devtools_module("layers") {
     "LayerPaintProfilerView.js",
     "LayerTreeModel.js",
     "LayersPanel.js",
+    "ModuleUIStrings.js",
   ]
 
   deps = [
     "../common:bundle",
+    "../i18n:bundle",
     "../layer_viewer:bundle",
     "../sdk:bundle",
     "../ui:bundle",

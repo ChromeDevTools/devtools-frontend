@@ -280,6 +280,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_3e8e23cb13898f3f9760a0f1d9203bd1" desc="Text of a DOM element in Timeline UIUtils of the Performance panel">
     Stack trace:
   </message>
+  <message name="IDS_DEVTOOLS_3ec365dd533ddb7ef3d1c111186ce872" desc="Text for the details of something">
+    Details
+  </message>
   <message name="IDS_DEVTOOLS_3eec15d0ba9a93d3176bab9218bb2570" desc="Text in Timeline Panel of the Performance panel">
     Failed to save timeline: <ph name="ERROR_MESSAGE">$1s<ex>wrong format</ex></ph> (<ph name="ERROR_NAME">$2s<ex>ERROR_FILE_NOT_FOUND</ex></ph>, <ph name="ERROR_CODE">$3s<ex>2</ex></ph>)
   </message>

@@ -13,9 +13,9 @@
     "persistence"
   ],
   "modules": [
-    "snippets.js",
-    "snippets-legacy.js",
-    "ScriptSnippetFileSystem.js",
-    "SnippetsQuickOpen.js"
+    "snippets-legacy.js"
+  ],
+  "skip_compilation": [
+    "snippets-legacy.js"
   ]
 }

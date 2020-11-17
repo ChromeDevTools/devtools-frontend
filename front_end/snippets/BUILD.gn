@@ -22,7 +22,7 @@ devtools_module("snippets") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "snippets.js"
+  entrypoint = "snippets.ts"
 
   deps = [ ":snippets" ]
 }

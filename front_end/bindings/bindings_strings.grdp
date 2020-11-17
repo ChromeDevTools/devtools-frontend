@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_0b3cd891ae203280bc305402cc00726f" desc="Warning message that is displayed in the Console when debugging information was loaded, but no source files were found">
+    [<ph name="PLUGIN_NAME">$1s<ex>C/C++ DevTools Support (DWARF)</ex></ph>] Loaded debug symbols for <ph name="URL">$2s<ex>http://web.dev/file.wasm</ex></ph>, but didn&apos;t find any source files
+  </message>
+  <message name="IDS_DEVTOOLS_2d8e1b1712a4655a21d1ba90f0774e89" desc="Status message that is shown in the Console when debugging information is being loaded">
+    [<ph name="PLUGIN_NAME">$1s<ex>C/C++ DevTools Support (DWARF)</ex></ph>] Loading debug symbols for <ph name="URL">$2s<ex>http://web.dev/file.wasm</ex></ph> (via <ph name="SYMBOLSURL">$3s<ex>http://web.dev/file.wasm.debug.wasm</ex></ph>)...
+  </message>
   <message name="IDS_DEVTOOLS_412dac8227bbaf752fecaad8826f20e6" desc="Text in Resource Script Mapping">
     LiveEdit failed: <ph name="ERROR">$1s<ex>warning</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_4e2e6ddcd0969f3dff5b0ab850110692" desc="Error message that is displayed in the Console when debugging information cannot be loaded">
+    [<ph name="PLUGIN_NAME">$1s<ex>C/C++ DevTools Support (DWARF)</ex></ph>] Failed to load debug symbols for <ph name="URL">$2s<ex>http://web.dev/file.wasm</ex></ph> (<ph name="ERROR_MESSAGE">$3s<ex>File not found</ex></ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_575c24f39e4d3c02d7621cd49fb1e3b6" desc="Status message that is shown in the Console when debugging information is successfully loaded">
+    [<ph name="PLUGIN_NAME">$1s<ex>C/C++ DevTools Support (DWARF)</ex></ph>] Loaded debug symbols for <ph name="URL">$2s<ex>http://web.dev/file.wasm</ex></ph>, found <ph name="SOURCEFILEURLS_LENGTH">$3s<ex>42</ex></ph> source file(s)
+  </message>
   <message name="IDS_DEVTOOLS_5e2c3eac46d298d72b51f1500601d7be" desc="Error message that is displayed in the Sources panel when can't be loaded.">
     Unknown error loading file
+  </message>
+  <message name="IDS_DEVTOOLS_7b26fdc81ce30c0a7d820895b8a1c062" desc="Status message that is shown in the Console when debugging information is being loaded">
+    [<ph name="PLUGIN_NAME">$1s<ex>C/C++ DevTools Support (DWARF)</ex></ph>] Loading debug symbols for <ph name="URL">$2s<ex>http://web.dev/file.wasm</ex></ph>...
   </message>
   <message name="IDS_DEVTOOLS_d3ff22990e37ccce8a501ffba38626b7" desc="Text in Resource Script Mapping">
     LiveEdit compile failed: <ph name="EXCEPTIONDETAILS_TEXT">$1s<ex>connection lost</ex></ph>

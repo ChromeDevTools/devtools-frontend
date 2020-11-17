@@ -846,14 +846,26 @@ export class DebuggerLanguagePluginManager {
       let rawModuleHandle = this._rawModuleHandles.get(rawModuleId);
       if (!rawModuleHandle) {
         const sourceFileURLsPromise = (async () => {
+          const console = Common.Console.Console.instance();
           const url = script.sourceURL;
           const symbolsUrl = (script.debugSymbols && script.debugSymbols.externalURL) || '';
+          if (symbolsUrl) {
+            console.log(ls`[${plugin.name}] Loading debug symbols for ${url} (via ${symbolsUrl})...`);
+          } else {
+            console.log(ls`[${plugin.name}] Loading debug symbols for ${url}...`);
+          }
           try {
             const code = (!symbolsUrl && url.startsWith('wasm://')) ? await script.getWasmBytecode() : undefined;
             const sourceFileURLs = await plugin.addRawModule(rawModuleId, symbolsUrl, {url, code});
+            if (sourceFileURLs.length === 0) {
+              console.warn(ls`[${plugin.name}] Loaded debug symbols for ${url}, but didn't find any source files`);
+            } else {
+              console.log(
+                  ls`[${plugin.name}] Loaded debug symbols for ${url}, found ${sourceFileURLs.length} source file(s)`);
+            }
             return sourceFileURLs;
           } catch (error) {
-            Common.Console.Console.instance().error(ls`Error in debugger language plugin: ${error.message}`);
+            console.error(ls`[${plugin.name}] Failed to load debug symbols for ${url} (${error.message})`);
             this._rawModuleHandles.delete(rawModuleId);
             return [];
           }
@@ -1224,10 +1236,14 @@ export let TypeInfo;
 // @ts-ignore typedef
 export let EvalBase;
 
-/**
- * @interface
- */
 export class DebuggerLanguagePlugin {
+  /**
+   * @param {string} name The user visible name for the plugin.
+   */
+  constructor(name) {
+    this.name = name;
+  }
+
   /**
    * @param {!SDK.Script.Script} script
    * @return {boolean} True if this plugin should handle this script

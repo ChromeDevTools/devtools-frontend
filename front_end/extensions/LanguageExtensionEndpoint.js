@@ -8,18 +8,15 @@
 import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';                 // eslint-disable-line no-unused-vars
 
-/**
- * @implements {Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin}
- */
-export class LanguageExtensionEndpoint {
+export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin {
   /**
-   * @param {string} pluginName
+   * @param {string} name
    * @param {!{language: string, symbol_types: !Array<string>}} supportedScriptTypes
    * @param {!MessagePort} port
    */
-  constructor(pluginName, supportedScriptTypes, port) {
+  constructor(name, supportedScriptTypes, port) {
+    super(name);
     this._commands = Extensions.extensionAPI.LanguageExtensionPluginCommands;
-    this._pluginName = pluginName;
     this._supportedScriptTypes = supportedScriptTypes;
     this._port = port;
     this._port.onmessage = this._onResponse.bind(this);

@@ -1152,6 +1152,7 @@ grd_files_debug_sources = [
   "front_end/web_audio/graph_visualizer/GraphView.js",
   "front_end/web_audio/graph_visualizer/NodeRendererUtility.js",
   "front_end/web_audio/graph_visualizer/NodeView.js",
+  "front_end/webauthn/ModuleUIStrings.js",
   "front_end/webauthn/WebauthnPane.js",
   "front_end/worker_main/WorkerMain.js",
   "front_end/worker_service/ServiceDispatcher.js",

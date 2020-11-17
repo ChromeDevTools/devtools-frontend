@@ -325,5 +325,95 @@
   },
   "web_audio/WebAudioView.js | openAPageThatUsesWebAudioApiTo": {
     "message": "Open a page that uses Web Audio API to start monitoring."
+  },
+  "webauthn/ModuleUIStrings.js | webauthn": {
+    "message": "WebAuthn"
+  },
+  "webauthn/WebauthnPane.js | actions": {
+    "message": "Actions"
+  },
+  "webauthn/WebauthnPane.js | active": {
+    "message": "Active"
+  },
+  "webauthn/WebauthnPane.js | add": {
+    "message": "Add"
+  },
+  "webauthn/WebauthnPane.js | addAuthenticator": {
+    "message": "Add authenticator"
+  },
+  "webauthn/WebauthnPane.js | authenticatorS": {
+    "message": "Authenticator {PH1}"
+  },
+  "webauthn/WebauthnPane.js | credentials": {
+    "message": "Credentials"
+  },
+  "webauthn/WebauthnPane.js | editName": {
+    "message": "Edit name"
+  },
+  "webauthn/WebauthnPane.js | enableVirtualAuthenticator": {
+    "message": "Enable virtual authenticator environment"
+  },
+  "webauthn/WebauthnPane.js | export": {
+    "message": "Export"
+  },
+  "webauthn/WebauthnPane.js | id": {
+    "message": "ID"
+  },
+  "webauthn/WebauthnPane.js | isResident": {
+    "message": "Is Resident"
+  },
+  "webauthn/WebauthnPane.js | learnMore": {
+    "message": "Learn more"
+  },
+  "webauthn/WebauthnPane.js | newAuthenticator": {
+    "message": "New authenticator"
+  },
+  "webauthn/WebauthnPane.js | no": {
+    "message": "No"
+  },
+  "webauthn/WebauthnPane.js | noCredentialsTryCallingSFromYour": {
+    "message": "No credentials. Try calling {PH1} from your website."
+  },
+  "webauthn/WebauthnPane.js | privateKeypem": {
+    "message": "Private key.pem"
+  },
+  "webauthn/WebauthnPane.js | protocol": {
+    "message": "Protocol"
+  },
+  "webauthn/WebauthnPane.js | remove": {
+    "message": "Remove"
+  },
+  "webauthn/WebauthnPane.js | rpId": {
+    "message": "RP ID"
+  },
+  "webauthn/WebauthnPane.js | saveName": {
+    "message": "Save name"
+  },
+  "webauthn/WebauthnPane.js | setSAsTheActiveAuthenticator": {
+    "message": "Set {PH1} as the active authenticator"
+  },
+  "webauthn/WebauthnPane.js | signCount": {
+    "message": "Sign Count"
+  },
+  "webauthn/WebauthnPane.js | supportsResidentKeys": {
+    "message": "Supports resident keys"
+  },
+  "webauthn/WebauthnPane.js | supportsUserVerification": {
+    "message": "Supports user verification"
+  },
+  "webauthn/WebauthnPane.js | transport": {
+    "message": "Transport"
+  },
+  "webauthn/WebauthnPane.js | userHandle": {
+    "message": "User Handle"
+  },
+  "webauthn/WebauthnPane.js | useWebauthnForPhishingresistant": {
+    "message": "Use WebAuthn for phishing-resistant authentication"
+  },
+  "webauthn/WebauthnPane.js | uuid": {
+    "message": "UUID"
+  },
+  "webauthn/WebauthnPane.js | yes": {
+    "message": "Yes"
   }
 }

@@ -6,12 +6,16 @@ import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("webauthn") {
-  sources = [ "WebauthnPane.js" ]
+  sources = [
+    "ModuleUIStrings.js",
+    "WebauthnPane.js",
+  ]
 
   deps = [
     "../common:bundle",
     "../data_grid:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../sdk:bundle",
     "../ui:bundle",
   ]

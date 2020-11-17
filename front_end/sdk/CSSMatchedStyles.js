@@ -514,7 +514,8 @@ export class CSSMatchedStyles {
    */
   computeSingleVariableValue(style, cssVariableValue) {
     const domCascade = this._styleToDOMCascade.get(style) || null;
-    return domCascade ? domCascade.computeSingleVariableValue(style, cssVariableValue) : null;
+    const cssVariableValueNoSpaces = cssVariableValue.replace(/\s/g, '');
+    return domCascade ? domCascade.computeSingleVariableValue(style, cssVariableValueNoSpaces) : null;
   }
 
   /**

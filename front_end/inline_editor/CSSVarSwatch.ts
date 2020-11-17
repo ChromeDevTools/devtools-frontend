@@ -8,7 +8,7 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 const {render, html, Directives} = LitHtml;
 const ls = Common.ls;
 
-const VARIABLE_FUNCTION_REGEX = /(var\()(--[^,)]+)(.*)/;
+const VARIABLE_FUNCTION_REGEX = /(var\()(\s*--[^,)]+)(.*)/;
 
 interface SwatchRenderData {
   text: string;
@@ -40,7 +40,10 @@ export class CSSVarSwatch extends HTMLElement {
   }
 
   private parseVariableFunctionParts(): ParsedVariableFunction|null {
-    const result = this.text.match(VARIABLE_FUNCTION_REGEX);
+    // When the value of CSS var() is greater than two spaces, only one is
+    // always displayed, and the actual number of spaces is displayed when
+    // editing is clicked.
+    const result = this.text.replace(/\s{2,}/g, ' ').match(VARIABLE_FUNCTION_REGEX);
     if (!result) {
       return null;
     }
@@ -68,7 +71,8 @@ export class CSSVarSwatch extends HTMLElement {
       'undefined': !isDefined,
     });
     const title = isDefined ? ls`Jump to definition` : ls`${variableName} is not defined`;
-    const onClick = isDefined ? this.onLinkClick.bind(this, this.variableName) : null;
+    // The this.variableName's space must be removed, otherwise it cannot be triggered when clicked.
+    const onClick = isDefined ? this.onLinkClick.bind(this, this.variableName.trim()) : null;
 
     return html`<span class="${classes}" title="${title}" @mousedown=${onClick} role="link" tabindex="-1">${
         variableName}</span>`;

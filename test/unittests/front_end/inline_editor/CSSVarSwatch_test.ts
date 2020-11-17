@@ -12,7 +12,6 @@ function assertSwatch(swatch: InlineEditor.CSSVarSwatchImpl.CSSVarSwatch, expect
   linkTooltip: string,
   isDefined: boolean,
   varText: string,
-  hasColorSwatch: boolean,
   parsedColor?: string
 }) {
   assertShadowRoot(swatch.shadowRoot);
@@ -21,7 +20,6 @@ function assertSwatch(swatch: InlineEditor.CSSVarSwatchImpl.CSSVarSwatch, expect
 
   const link = container.querySelector('.css-var-link');
   assertNotNull(link);
-  const colorSwatch = container.querySelector('.color-swatch');
 
   assert.strictEqual(
       container.getAttribute('title'), expected.valueTooltip || '', 'The computed values appears as a tooltip');
@@ -30,13 +28,6 @@ function assertSwatch(swatch: InlineEditor.CSSVarSwatchImpl.CSSVarSwatch, expect
       'The link only has the class undefined when the property is undefined');
   assert.strictEqual(link.getAttribute('title'), expected.linkTooltip, 'The link has the right tooltip');
   assert.strictEqual(link.textContent, expected.varText, 'The link has the right text content');
-  assert.strictEqual(!!colorSwatch, expected.hasColorSwatch, 'The color swatch state is correct');
-
-  if (expected.hasColorSwatch) {
-    const innerColorSwatch = container.querySelector('.color-swatch-inner') as HTMLSpanElement;
-    assertNotNull(innerColorSwatch);
-    assert.strictEqual(innerColorSwatch.style.backgroundColor, expected.parsedColor, 'The color is correct');
-  }
 }
 
 describe('CSSVarSwatch', () => {
@@ -62,7 +53,6 @@ describe('CSSVarSwatch', () => {
       linkTooltip: 'Jump to definition',
       isDefined: true,
       varText: '--test',
-      hasColorSwatch: false,
     });
   });
 
@@ -81,7 +71,6 @@ describe('CSSVarSwatch', () => {
       linkTooltip: '--undefined is not defined',
       isDefined: false,
       varText: '--undefined',
-      hasColorSwatch: false,
     });
   });
 
@@ -100,7 +89,78 @@ describe('CSSVarSwatch', () => {
       linkTooltip: '--undefined is not defined',
       isDefined: false,
       varText: '--undefined',
-      hasColorSwatch: false,
+    });
+  });
+
+  it('renders a var() function with an color property but a fallback value', () => {
+    const component = new InlineEditor.CSSVarSwatchImpl.CSSVarSwatch();
+    renderElementIntoDOM(component);
+    component.data = {
+      text: 'var(--undefined-color, green)',
+      computedValue: 'green',
+      fromFallback: true,
+      onLinkClick: () => {},
+    };
+
+    assertSwatch(component, {
+      valueTooltip: 'green',
+      linkTooltip: '--undefined-color is not defined',
+      isDefined: false,
+      varText: '--undefined-color',
+    });
+  });
+
+  it('render the var() function and the fallback value contains spaces', () => {
+    const component = new InlineEditor.CSSVarSwatchImpl.CSSVarSwatch();
+    renderElementIntoDOM(component);
+    component.data = {
+      text: 'var(--undefined-color,    green   )',
+      computedValue: 'green',
+      fromFallback: true,
+      onLinkClick: () => {},
+    };
+
+    assertSwatch(component, {
+      valueTooltip: 'green',
+      linkTooltip: '--undefined-color is not defined',
+      isDefined: false,
+      varText: '--undefined-color',
+    });
+  });
+
+  it('renders a var() function with an color property', () => {
+    const component = new InlineEditor.CSSVarSwatchImpl.CSSVarSwatch();
+    renderElementIntoDOM(component);
+    component.data = {
+      text: 'var(--test, green)',
+      computedValue: 'red',
+      fromFallback: false,
+      onLinkClick: () => {},
+    };
+
+    assertSwatch(component, {
+      valueTooltip: 'red',
+      linkTooltip: 'Jump to definition',
+      isDefined: true,
+      varText: '--test',
+    });
+  });
+
+  it('renders a var() function with spaces', () => {
+    const component = new InlineEditor.CSSVarSwatchImpl.CSSVarSwatch();
+    renderElementIntoDOM(component);
+    component.data = {
+      text: 'var( --test     )',
+      computedValue: 'red',
+      fromFallback: false,
+      onLinkClick: () => {},
+    };
+
+    assertSwatch(component, {
+      valueTooltip: 'red',
+      linkTooltip: 'Jump to definition',
+      isDefined: true,
+      varText: ' --test ',
     });
   });
 });

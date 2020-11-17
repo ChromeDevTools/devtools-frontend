@@ -220,17 +220,10 @@
     "browser_sdk"
   ],
   "modules": [
-    "console.js",
-    "console-legacy.js",
-    "ConsoleContextSelector.js",
-    "ConsoleFilter.js",
-    "ConsolePinPane.js",
-    "ConsoleSidebar.js",
-    "ConsoleViewport.js",
-    "ConsoleViewMessage.js",
-    "ConsolePrompt.js",
-    "ConsoleView.js",
-    "ConsolePanel.js"
+    "console-legacy.js"
+  ],
+  "skip_compilation": [
+    "console-legacy.js"
   ],
   "resources": [
     "consoleContextSelector.css",

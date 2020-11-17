@@ -18,7 +18,7 @@ devtools_module("har_importer") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "har_importer.js"
+  entrypoint = "har_importer.ts"
 
   deps = [ ":har_importer" ]
 }

@@ -4,9 +4,9 @@
     "browser_sdk"
   ],
   "modules": [
-    "har_importer.js",
-    "har_importer-legacy.js",
-    "HARFormat.js",
-    "HARImporter.js"
+    "har_importer-legacy.js"
+  ],
+  "skip_compilation": [
+    "har_importer-legacy.js"
   ]
 }

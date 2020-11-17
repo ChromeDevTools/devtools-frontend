@@ -133,7 +133,7 @@ LayersTestRunner.dispatchMouseEvent = function(eventType, button, element, offse
 };
 
 LayersTestRunner.findLayerTreeElement = function(layer) {
-  const element = layer[LayerViewer.LayerTreeElement._symbol];
+  const element = LayerViewer.LayerTreeElement.layerToTreeElement.get(layer);
   element.reveal();
   return element.listItemElement;
 };

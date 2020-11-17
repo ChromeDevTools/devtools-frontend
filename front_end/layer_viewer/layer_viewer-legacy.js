@@ -34,7 +34,7 @@ LayerViewer.LayerTreeOutline.Events = LayerViewerModule.LayerTreeOutline.Events;
  */
 LayerViewer.LayerTreeElement = LayerViewerModule.LayerTreeOutline.LayerTreeElement;
 
-LayerViewer.LayerTreeElement._symbol = LayerViewerModule.LayerTreeOutline.layerSymbol;
+LayerViewer.LayerTreeElement.layerToTreeElement = LayerViewerModule.LayerTreeOutline.layerToTreeElement;
 
 /**
  * @interface

@@ -18,7 +18,7 @@ devtools_module("webauthn") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "webauthn.js"
+  entrypoint = "webauthn.ts"
 
   deps = [ ":webauthn" ]
 }

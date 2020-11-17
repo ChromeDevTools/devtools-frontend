@@ -19,8 +19,9 @@
     "host"
   ],
   "modules": [
-    "webauthn.js",
-    "WebauthnPane.js",
+    "webauthn-legacy.js"
+  ],
+  "skip_compilation": [
     "webauthn-legacy.js"
   ],
   "resources": [

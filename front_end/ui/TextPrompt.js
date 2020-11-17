@@ -138,7 +138,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     this._element.setAttribute('contenteditable', 'plaintext-only');
     this._element.addEventListener('keydown', this._boundOnKeyDown, false);
     this._element.addEventListener('input', this._boundOnInput, false);
-    this._element.addEventListener('mousewheel', this._boundOnMouseWheel, false);
+    this._element.addEventListener('wheel', this._boundOnMouseWheel, false);
     this._element.addEventListener('selectstart', this._boundClearAutocomplete, false);
     this._element.addEventListener('blur', this._boundClearAutocomplete, false);
 

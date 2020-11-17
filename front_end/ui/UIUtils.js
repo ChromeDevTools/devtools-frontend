@@ -369,18 +369,8 @@ export const StyleValueDelimiters = ' \xA0\t\n"\':;,/()';
  */
 export function getValueModificationDirection(event) {
   let direction = null;
-  // TODO(crbug.com/1145518) Remove usage of MouseWheelEvent.
-  if (event.type === 'mousewheel') {
-    const wheelEvent = /** @type {*} */ (event);
+  if (event.type === 'wheel') {
     // When shift is pressed while spinning mousewheel, delta comes as wheelDeltaX.
-    if (wheelEvent.wheelDeltaY > 0 || wheelEvent.wheelDeltaX > 0) {
-      direction = 'Up';
-    } else if (wheelEvent.wheelDeltaY < 0 || wheelEvent.wheelDeltaX < 0) {
-      direction = 'Down';
-    }
-  } else if (event.type === 'wheel') {
-    // When shift is pressed while spinning mousewheel, delta comes as wheelDeltaX.
-    // WheelEvent's deltaY is inverse from MouseWheelEvent.
     const wheelEvent = /** @type {!WheelEvent} */ (event);
     if (wheelEvent.deltaY < 0 || wheelEvent.deltaX < 0) {
       direction = 'Up';
@@ -554,13 +544,13 @@ export function handleElementValueModifications(event, element, finishHandler, s
     return document.createRange();
   }
 
-  const arrowKeyOrMouseWheelEvent =
+  const arrowKeyOrWheelEvent =
       (/** @type {!KeyboardEvent} */ (event).key === 'ArrowUp' ||
-       /** @type {!KeyboardEvent} */ (event).key === 'ArrowDown' || event.type === 'mousewheel');
+       /** @type {!KeyboardEvent} */ (event).key === 'ArrowDown' || event.type === 'wheel');
   const pageKeyPressed =
       (/** @type {!KeyboardEvent} */ (event).key === 'PageUp' ||
        /** @type {!KeyboardEvent} */ (event).key === 'PageDown');
-  if (!arrowKeyOrMouseWheelEvent && !pageKeyPressed) {
+  if (!arrowKeyOrWheelEvent && !pageKeyPressed) {
     return false;
   }
 

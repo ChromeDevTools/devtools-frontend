@@ -176,12 +176,12 @@ export class NetworkLogViewColumns {
     this._waterfallColumn = new NetworkWaterfallColumn(this._networkLogView.calculator());
 
     this._waterfallColumn.element.addEventListener('contextmenu', handleContextMenu.bind(this));
-    this._waterfallColumn.element.addEventListener('mousewheel', this._onMouseWheel.bind(this, false), {passive: true});
+    this._waterfallColumn.element.addEventListener('wheel', this._onMouseWheel.bind(this, false), {passive: true});
     this._waterfallColumn.element.addEventListener('touchstart', this._onTouchStart.bind(this));
     this._waterfallColumn.element.addEventListener('touchmove', this._onTouchMove.bind(this));
     this._waterfallColumn.element.addEventListener('touchend', this._onTouchEnd.bind(this));
 
-    this._dataGridScroller.addEventListener('mousewheel', this._onMouseWheel.bind(this, true), true);
+    this._dataGridScroller.addEventListener('wheel', this._onMouseWheel.bind(this, true), true);
     this._dataGridScroller.addEventListener('touchstart', this._onTouchStart.bind(this));
     this._dataGridScroller.addEventListener('touchmove', this._onTouchMove.bind(this));
     this._dataGridScroller.addEventListener('touchend', this._onTouchEnd.bind(this));

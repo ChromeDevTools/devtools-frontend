@@ -170,7 +170,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
           '-webkit-grabbing', '-webkit-grab');
     }
 
-    this._parentElement.addEventListener('mousewheel', this._onMouseWheel.bind(this), true);
+    this._parentElement.addEventListener('wheel', this._onMouseWheel.bind(this), true);
     this._parentElement.addEventListener('dblclick', this._resizeWindowMaximum.bind(this), true);
     UI.Utils.appendStyle(this._parentElement, 'perf_ui/overviewGrid.css', {enableLegacyPatching: true});
 
@@ -584,20 +584,19 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!Event} event
    */
   _onMouseWheel(event) {
-    // TODO(crbug.com/1145518) Remove usage of MouseWheelEvent.
-    const mouseWheelEvent = /** @type {*} */ (event);
+    const wheelEvent = /** @type {!WheelEvent} */ (event);
     if (!this._enabled) {
       return;
     }
-    if (typeof mouseWheelEvent.wheelDeltaY === 'number' && mouseWheelEvent.wheelDeltaY) {
+    if (wheelEvent.deltaY) {
       const zoomFactor = 1.1;
-      const mouseWheelZoomSpeed = 1 / 120;
+      const wheelZoomSpeed = 1 / 53;
 
-      const reference = mouseWheelEvent.offsetX / mouseWheelEvent.target.clientWidth;
-      this._zoom(Math.pow(zoomFactor, -mouseWheelEvent.wheelDeltaY * mouseWheelZoomSpeed), reference);
+      const reference = wheelEvent.offsetX / this._parentElement.clientWidth;
+      this._zoom(Math.pow(zoomFactor, wheelEvent.deltaY * wheelZoomSpeed), reference);
     }
-    if (typeof mouseWheelEvent.wheelDeltaX === 'number' && mouseWheelEvent.wheelDeltaX) {
-      let offset = Math.round(mouseWheelEvent.wheelDeltaX * WindowScrollSpeedFactor);
+    if (wheelEvent.deltaX) {
+      let offset = Math.round(wheelEvent.deltaX * WindowScrollSpeedFactor);
       const windowLeft = this._leftResizeElement.offsetLeft + ResizerOffset;
       const windowRight = this._rightResizeElement.offsetLeft + ResizerOffset;
 
@@ -611,7 +610,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
 
       this._setWindowPosition(windowLeft - offset, windowRight - offset);
 
-      mouseWheelEvent.preventDefault();
+      wheelEvent.preventDefault();
     }
   }
 

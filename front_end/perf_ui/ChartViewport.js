@@ -53,7 +53,7 @@ export class ChartViewport extends UI.Widget.VBox {
     this.viewportElement = this.contentElement.createChild('div', 'fill');
     this.viewportElement.addEventListener('mousemove', this._updateCursorPosition.bind(this), false);
     this.viewportElement.addEventListener('mouseout', this._onMouseOut.bind(this), false);
-    this.viewportElement.addEventListener('mousewheel', this._onMouseWheel.bind(this), false);
+    this.viewportElement.addEventListener('wheel', this._onMouseWheel.bind(this), false);
     this.viewportElement.addEventListener('keydown', this._onChartKeyDown.bind(this), false);
     this.viewportElement.addEventListener('keyup', this._onChartKeyUp.bind(this), false);
 
@@ -270,23 +270,18 @@ export class ChartViewport extends UI.Widget.VBox {
    * @param {!Event} e
    */
   _onMouseWheel(e) {
-    // TODO(crbug.com/1145518) Remove usage of MouseWheelEvent.
-    const mouseWheelEvent = /** @type {*} */ (e);
-    const doZoomInstead = mouseWheelEvent.shiftKey !==
+    const wheelEvent = /** @type {!WheelEvent} */ (e);
+    const doZoomInstead = wheelEvent.shiftKey !==
         (Common.Settings.Settings.instance().moduleSetting('flamechartMouseWheelAction').get() === 'zoom');
-    const panVertically =
-        !doZoomInstead && (mouseWheelEvent.wheelDeltaY || Math.abs(mouseWheelEvent.wheelDeltaX) === 120);
-    const panHorizontally =
-        doZoomInstead && Math.abs(mouseWheelEvent.wheelDeltaX) > Math.abs(mouseWheelEvent.wheelDeltaY);
+    const panVertically = !doZoomInstead && (wheelEvent.deltaY || Math.abs(wheelEvent.deltaX) === 53);
+    const panHorizontally = doZoomInstead && Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY);
     if (panVertically) {
-      this._vScrollElement.scrollTop -=
-          (mouseWheelEvent.wheelDeltaY || mouseWheelEvent.wheelDeltaX) / 120 * this._offsetHeight / 8;
+      this._vScrollElement.scrollTop += (wheelEvent.deltaY || wheelEvent.deltaX) / 53 * this._offsetHeight / 8;
     } else if (panHorizontally) {
-      this._handlePanGesture(-mouseWheelEvent.wheelDeltaX, /* animate */ true);
+      this._handlePanGesture(wheelEvent.deltaX, /* animate */ true);
     } else {  // Zoom.
-      const mouseWheelZoomSpeed = 1 / 120;
-      this._handleZoomGesture(
-          Math.pow(1.2, -(mouseWheelEvent.wheelDeltaY || mouseWheelEvent.wheelDeltaX) * mouseWheelZoomSpeed) - 1);
+      const wheelZoomSpeed = 1 / 53;
+      this._handleZoomGesture(Math.pow(1.2, (wheelEvent.deltaY || wheelEvent.deltaX) * wheelZoomSpeed) - 1);
     }
 
     // Block swipe gesture.

@@ -33,7 +33,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     this._registerShortcuts();
     UI.UIUtils.installDragHandle(
         element, this._onDragStart.bind(this), this._onDrag.bind(this), this._onDragEnd.bind(this), 'move', null);
-    element.addEventListener('mousewheel', this._onMouseWheel.bind(this), false);
+    element.addEventListener('wheel', this._onMouseWheel.bind(this), false);
     this._minScale = 0;
     this._maxScale = Infinity;
 
@@ -259,10 +259,9 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     /** @const */
     const zoomFactor = 1.1;
     /** @const */
-    const mouseWheelZoomSpeed = 1 / 120;
-    const mouseEvent = /** @type {*} */ (event);
-    // TODO(crbug.com/1145518) Remove usage of MouseWheelEvent.
-    const scaleFactor = Math.pow(zoomFactor, mouseEvent.wheelDeltaY * mouseWheelZoomSpeed);
+    const wheelZoomSpeed = 1 / 53;
+    const mouseEvent = /** @type {!WheelEvent} */ (event);
+    const scaleFactor = Math.pow(zoomFactor, -mouseEvent.deltaY * wheelZoomSpeed);
     this._onScale(
         scaleFactor, mouseEvent.clientX - this.element.totalOffsetLeft(),
         mouseEvent.clientY - this.element.totalOffsetTop());

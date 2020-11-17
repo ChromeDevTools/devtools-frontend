@@ -111,7 +111,7 @@ export class Spectrum extends UI.Widget.VBox {
       this._textValues.push(inputValue);
       inputValue.addEventListener('keydown', this._inputChanged.bind(this), false);
       inputValue.addEventListener('input', this._inputChanged.bind(this), false);
-      inputValue.addEventListener('mousewheel', this._inputChanged.bind(this), false);
+      inputValue.addEventListener('wheel', this._inputChanged.bind(this), false);
       inputValue.addEventListener('paste', this._pasted.bind(this), false);
     }
 
@@ -125,7 +125,7 @@ export class Spectrum extends UI.Widget.VBox {
     this._hexValue.maxLength = 9;
     this._hexValue.addEventListener('keydown', this._inputChanged.bind(this), false);
     this._hexValue.addEventListener('input', this._inputChanged.bind(this), false);
-    this._hexValue.addEventListener('mousewheel', this._inputChanged.bind(this), false);
+    this._hexValue.addEventListener('wheel', this._inputChanged.bind(this), false);
     this._hexValue.addEventListener('paste', this._pasted.bind(this), false);
 
     const label = this._hexContainer.createChild('div', 'spectrum-text-label');

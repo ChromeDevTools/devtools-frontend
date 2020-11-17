@@ -87,7 +87,8 @@ describe('The Performance panel', async function() {
     });
   });
 
-  it('is able to inspect the call stack for a wasm function from the bottom up', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1149827] is able to inspect the call stack for a wasm function from the bottom up', async () => {
     const {frontend} = getBrowserAndPages();
     const expectedActivities = ['mainWasm', 'js-to-wasm::i', '(anonymous)', 'Run Microtasks'];
 

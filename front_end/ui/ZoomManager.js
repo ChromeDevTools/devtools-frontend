@@ -6,10 +6,9 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @type {!ZoomManager}
+ * @type {!ZoomManager|undefined}
  */
 let zoomManagerInstance;
-
 
 export class ZoomManager extends Common.ObjectWrapper.ObjectWrapper {
   /**
@@ -39,6 +38,10 @@ export class ZoomManager extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     return zoomManagerInstance;
+  }
+
+  static removeInstance() {
+    zoomManagerInstance = undefined;
   }
 
   /**

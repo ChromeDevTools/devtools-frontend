@@ -3,9 +3,17 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../front_end/common/common.js';
+import * as Host from '../../../../front_end/host/host.js';
 import * as i18n from '../../../../front_end/i18n/i18n.js';
 import * as Root from '../../../../front_end/root/root.js';
 import * as SDK from '../../../../front_end/sdk/sdk.js';
+
+import type * as UIModule from '../../../../front_end/ui/ui.js';
+
+// Don't import UI at this stage because it will fail without
+// the environment. Instead we do the import at the end of the
+// initialization phase.
+let UI: typeof UIModule;
 
 function exposeLSIfNecessary() {
   // SDK.ResourceTree model has to exist to avoid a circular dependency, thus it
@@ -43,7 +51,7 @@ function createSettingValue(category: string, settingName: string, defaultValue:
   return {type: 'setting', category, settingName, defaultValue, settingType} as Root.Runtime.RuntimeExtensionDescriptor;
 }
 
-export function initializeGlobalVars({reset = true} = {}) {
+export async function initializeGlobalVars({reset = true} = {}) {
   exposeLSIfNecessary();
 
   // Create the appropriate settings needed to boot.
@@ -99,9 +107,14 @@ export function initializeGlobalVars({reset = true} = {}) {
       {}, (key, value) => storageVals.set(key, value), key => storageVals.delete(key), () => storageVals.clear(),
       'test');
   Common.Settings.Settings.instance({forceNew: reset, globalStorage: storage, localStorage: storage});
+
+  // Dynamically import UI after the rest of the environment is set up, otherwise it will fail.
+  UI = await import('../../../../front_end/ui/ui.js');
+  UI.ZoomManager.ZoomManager.instance(
+      {forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance});
 }
 
-export function deinitializeGlobalVars() {
+export async function deinitializeGlobalVars() {
   // Remove the global SDK.
   const globalObject = (globalThis as unknown as {SDK?: {}, ls?: {}});
   delete globalObject.SDK;
@@ -111,14 +124,19 @@ export function deinitializeGlobalVars() {
   SDK.SDKModel.TargetManager.removeInstance();
   Root.Runtime.Runtime.removeInstance();
   Common.Settings.Settings.removeInstance();
+
+  // Protect against the dynamic import not having happened.
+  if (UI) {
+    UI.ZoomManager.ZoomManager.removeInstance();
+  }
 }
 
 export function describeWithEnvironment(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {
   reset: true,
 }) {
   return describe(`env-${title}`, () => {
-    before(() => initializeGlobalVars(opts));
-    after(deinitializeGlobalVars);
+    before(async () => await initializeGlobalVars(opts));
+    after(async () => await deinitializeGlobalVars());
     describe(title, fn);
   });
 }

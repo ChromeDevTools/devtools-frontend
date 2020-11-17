@@ -17,11 +17,13 @@ ts_library("helpers") {
 
   deps = [
     "../../../../front_end/common:bundle",
+    "../../../../front_end/host:bundle",
     "../../../../front_end/i18n:bundle",
     "../../../../front_end/protocol_client:bundle",
     "../../../../front_end/root:bundle",
     "../../../../front_end/sdk:bundle",
     "../../../../front_end/third_party/lit-html:bundle",
+    "../../../../front_end/ui:bundle",
     "../../../../inspector_overlay",
   ]
 }

@@ -130,8 +130,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         Host.InspectorFrontendHostAPI.Events.SetInspectedTabId, this._setInspectedTabId, this);
 
     this._languageExtensionRequests = new Map();
-    /** @type {!Array<!LanguageExtensionEndpoint>} */
-    this._languageExtensionEndpoints = [];
     this._initExtensions();
   }
 
@@ -198,12 +196,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     const symbol_types_array = /** @type !Array<string> */
         (Array.isArray(symbol_types) && symbol_types.every(e => typeof e === 'string') ? symbol_types : []);
     const extension = new LanguageExtensionEndpoint(pluginName, {language, symbol_types: symbol_types_array}, port);
-    this._languageExtensionEndpoints.push(extension);
-    this.dispatchEventToListeners(Events.LanguageExtensionEndpointAdded, extension);
-  }
-
-  get languageExtensionEndpoints() {
-    return this._languageExtensionEndpoints;
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager.addPlugin(extension);
   }
 
   _inspectedURLChanged(event) {
@@ -1091,8 +1084,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
 /** @enum {symbol} */
 export const Events = {
   SidebarPaneAdded: Symbol('SidebarPaneAdded'),
-  TraceProviderAdded: Symbol('TraceProviderAdded'),
-  LanguageExtensionEndpointAdded: Symbol('LanguageExtensionEndpointAdded')
+  TraceProviderAdded: Symbol('TraceProviderAdded')
 };
 
 /**

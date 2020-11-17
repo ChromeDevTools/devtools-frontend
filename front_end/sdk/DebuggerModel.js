@@ -342,7 +342,7 @@ export class DebuggerModel extends SDKModel {
    */
   async _computeAutoStepSkipList(skipInlineFunctions) {
     // @ts-ignore
-    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this);
+    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().pluginManager;
     if (pluginManager) {
       // @ts-ignore
       const rawLocation = this._debuggerPausedDetails.callFrames[0].location();
@@ -354,7 +354,6 @@ export class DebuggerModel extends SDKModel {
                      uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber) ||
             [];
         // TODO(bmeurer): Remove the {rawLocation} from the {ranges}?
-        // @ts-ignore
         ranges = ranges.filter(range => contained(rawLocation, range));
       }
       if (skipInlineFunctions) {
@@ -387,7 +386,7 @@ export class DebuggerModel extends SDKModel {
 
   async stepOut() {
     // @ts-ignore
-    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this);
+    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().pluginManager;
     if (pluginManager) {
       // @ts-ignore
       const rawLocation = this._debuggerPausedDetails.callFrames[0].location();
@@ -580,13 +579,6 @@ export class DebuggerModel extends SDKModel {
     for (const scriptWithSourceMap of this._sourceMapIdToScript.values()) {
       this._sourceMapManager.detachSourceMap(scriptWithSourceMap);
     }
-    // @ts-ignore
-    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this);
-    if (pluginManager) {
-      for (const script of this._scripts.values()) {
-        pluginManager.removeScript(script);
-      }
-    }
     this._sourceMapIdToScript.clear();
 
     this._scripts.clear();
@@ -695,7 +687,7 @@ export class DebuggerModel extends SDKModel {
   async _setDebuggerPausedDetails(debuggerPausedDetails) {
     if (debuggerPausedDetails) {
       // @ts-ignore
-      const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this);
+      const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().pluginManager;
       if (pluginManager) {
         debuggerPausedDetails.callFrames =
             (await Promise.all(debuggerPausedDetails.callFrames.map(async callFrame => {
@@ -829,7 +821,7 @@ export class DebuggerModel extends SDKModel {
     this.dispatchEventToListeners(Events.ParsedScriptSource, script);
 
     // @ts-ignore
-    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this);
+    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().pluginManager;
     if (!Root.Runtime.experiments.isEnabled('wasmDWARFDebugging') || !pluginManager ||
         !pluginManager.hasPluginForScript(script)) {
       const sourceMapId = DebuggerModel._sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);
@@ -1557,7 +1549,7 @@ export class CallFrame {
       return this._sourceScopeChain;
     }
     // @ts-ignore
-    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this.debuggerModel);
+    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().pluginManager;
     const sourceScopeChain = pluginManager ? pluginManager.resolveScopeChain(this) : Promise.resolve(null);
     this._sourceScopeChain = sourceScopeChain;
     return sourceScopeChain;
@@ -1696,7 +1688,7 @@ export class CallFrame {
 
     if (this._script && this._script.isWasm()) {
       // @ts-ignore
-      const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().getLanguagePluginManager(this.debuggerModel);
+      const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().pluginManager;
       if (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging') && pluginManager) {
         const result = await pluginManager.evaluateExpression(options.expression, this);
         if (result) {

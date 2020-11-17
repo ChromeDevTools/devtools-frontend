@@ -8,6 +8,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("linear_memory_inspector") {
   sources = [
     "LinearMemoryInspector.ts",
+    "LinearMemoryInspectorPane.js",
     "LinearMemoryInspectorUtils.ts",
     "LinearMemoryInspector_bridge.js",
     "LinearMemoryNavigator.ts",
@@ -35,4 +36,10 @@ devtools_entrypoint("bundle") {
   entrypoint = "linear_memory_inspector.ts"
 
   deps = [ ":linear_memory_inspector" ]
+}
+
+devtools_entrypoint("legacy") {
+  entrypoint = "linear_memory_inspector-legacy.js"
+
+  deps = [ ":bundle" ]
 }

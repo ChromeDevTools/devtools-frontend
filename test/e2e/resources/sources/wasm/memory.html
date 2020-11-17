@@ -1,0 +1,48 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Memory</title>
+  <script>
+    (async () => {
+      const memory = new WebAssembly.Memory({initial: 100});
+      const string = "Hello this is a string in wasm memory!";
+      const int8Array = new Uint8Array(memory.buffer);
+      for (var i = 0; i < string.length; ++i) {
+        int8Array[i] = string.charCodeAt(i);
+      }
+      const numInts = string.length + 1000;
+      for (var i = string.length; i < numInts; ++i) {
+        int8Array[i] = i;
+      }
+
+      const importObj = {imports: {memory}};
+      const instance = await WebAssembly.instantiateStreaming(fetch('memory.wasm'), importObj);
+      instance.instance.exports.get(42);
+    })();
+  </script>
+</head>
+<body>
+  <h1>Memory</h1>
+  <p>
+    This tests that we can inspect the Wasm memory in the linear memory inspector.
+  </p>
+  <h2>Steps</h2>
+  <p>
+    <ol>
+      <li>Open DevTools</li>
+      <li>Locate the Wasm function <code>get</code> from the <code>memory.wasm</code> module and set a breakpoint on the <code>i32.load</code> line</li>
+      <li>Reload the page</button></li>
+      <li>Breakpoint should hit the new breakpoint</button></li>
+      <li>Now look at the Scope in the DevTools and right click on the <code>imports.memory</code></li>
+      <li>Select "Inspect memory"</li>
+      <li>The linear memory inspector should open</li>
+      <li>Inspect memory and navigate</li>
+    </ol>
+  </p>
+</body>
+</html>

@@ -53,6 +53,7 @@ devtools_module("sources") {
     "../formatter:bundle",
     "../host:bundle",
     "../inline_editor:bundle",
+    "../linear_memory_inspector:bundle",
     "../object_ui:bundle",
     "../persistence:bundle",
     "../platform:bundle",

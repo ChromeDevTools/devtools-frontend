@@ -33,6 +33,8 @@ copy_to_gen("sources") {
     "wasm/global_variable_with_dwarf.c",
     "wasm/global_variable_with_dwarf.html",
     "wasm/global_variable_with_dwarf.wasm",
+    "wasm/memory.html",
+    "wasm/memory.wasm",
     "wasm/scopes.html",
     "wasm/scopes.wasm",
     "wasm/stepping-with-state-and-threads.html",

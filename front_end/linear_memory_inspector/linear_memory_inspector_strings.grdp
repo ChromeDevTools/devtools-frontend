@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_2765f88501fd87c38912056b8a80a800" desc="Title of the 'Linear memory inspector' tool in the bottom drawer">
+    Memory Inspector
+  </message>
+  <message name="IDS_DEVTOOLS_73c853d29cadf796b94a2949aed63493" desc="Label in the 'Linear memory inspector' tool">
+    No open inspections
+  </message>
+</grit-part>

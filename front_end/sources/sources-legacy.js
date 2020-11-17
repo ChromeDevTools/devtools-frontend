@@ -134,6 +134,9 @@ Sources.OutlineQuickOpen = SourcesModule.OutlineQuickOpen.OutlineQuickOpen;
 /** @constructor */
 Sources.ScopeChainSidebarPane = SourcesModule.ScopeChainSidebarPane.ScopeChainSidebarPane;
 
+/** @constructor */
+Sources.ScopeChainSidebarPane.OpenLinearMemoryInspector = SourcesModule.ScopeChainSidebarPane.OpenLinearMemoryInspector;
+
 Sources.ScopeChainSidebarPane._pathSymbol = SourcesModule.ScopeChainSidebarPane.pathSymbol;
 
 /** @constructor */

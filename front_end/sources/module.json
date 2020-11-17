@@ -978,6 +978,16 @@
       "className": "Sources.JavaScriptBreakpointsSidebarPane"
     },
     {
+      "type": "@UI.ContextMenu.Provider",
+      "actionId": "sources.open-memory-inspector",
+      "className": "Sources.ScopeChainSidebarPane.OpenLinearMemoryInspector",
+      "experiment": "wasmDWARFDebugging",
+      "title": "Open memory inspector",
+      "contextTypes": [
+        "ObjectUI.ObjectPropertyTreeElement"
+      ]
+    },
+    {
       "type": "@UI.ContextFlavorListener",
       "contextTypes": [
         "SDK.DebuggerPausedDetails"
@@ -1136,7 +1146,8 @@
     "event_listeners",
     "object_ui",
     "formatter",
-    "coverage"
+    "coverage",
+    "linear_memory_inspector"
   ],
   "modules": [
     "sources-legacy.js"

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as LinearMemoryInspector from './LinearMemoryInspector.js';
+import * as LinearMemoryInspectorPane from './LinearMemoryInspectorPane.js';
 import * as LinearMemoryInspectorUtils from './LinearMemoryInspectorUtils.js';
 import * as LinearMemoryNavigator from './LinearMemoryNavigator.js';
 import * as LinearMemoryValueInterpreter from './LinearMemoryValueInterpreter.js';
@@ -13,6 +14,7 @@ import * as ValueInterpreterSettings from './ValueInterpreterSettings.js';
 
 export {
   LinearMemoryInspector,
+  LinearMemoryInspectorPane,
   LinearMemoryInspectorUtils,
   LinearMemoryNavigator,
   LinearMemoryValueInterpreter,

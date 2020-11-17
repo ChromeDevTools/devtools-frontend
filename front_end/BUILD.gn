@@ -188,6 +188,7 @@ group("legacy_entrypoints") {
     "layer_viewer:legacy",
     "layers:legacy",
     "lighthouse:legacy",
+    "linear_memory_inspector:legacy",
     "main:legacy",
     "media:legacy",
     "mobile_throttling:legacy",

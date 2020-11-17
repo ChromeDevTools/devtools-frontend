@@ -24,6 +24,9 @@
   <message name="IDS_DEVTOOLS_06c883a79771ecda24de1687ed7915ba" desc="Text for Coverage Status Bar Item in Sources Panel">
     Show Details
   </message>
+  <message name="IDS_DEVTOOLS_075cef1bc4f8f2e12cac76a45ff0de77" desc="A context menu item in the Scope View of the Sources Panel">
+    Inspect memory
+  </message>
   <message name="IDS_DEVTOOLS_08355a3ae65d425a4a6bac94ce97dcb4" desc="A context menu item in the Debugger Plugin of the Sources panel">
     Edit breakpoint…
   </message>
@@ -143,6 +146,9 @@
   </message>
   <message name="IDS_DEVTOOLS_3e27fe84bd1fddd585c8d06e6307b67a" desc="Text in Debugger Plugin of the Sources panel">
     Remove all breakpoints in line
+  </message>
+  <message name="IDS_DEVTOOLS_3ef29aa8d40c3af643ed1e06298d116c" desc="Title of the Context MenuProvider for opening the Linear Memory Inspector">
+    Open memory inspector
   </message>
   <message name="IDS_DEVTOOLS_3fd3dddd9661349b90b648bba2748f1b" desc="The UI destination when right clicking an item that can be revealed">
     Sources panel

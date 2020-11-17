@@ -23,11 +23,10 @@
     "emulation"
   ],
   "modules": [
-    "screencast.js",
-    "screencast-legacy.js",
-    "InputModel.js",
-    "ScreencastApp.js",
-    "ScreencastView.js"
+    "screencast-legacy.js"
+  ],
+  "skip_compilation": [
+    "screencast-legacy.js"
   ],
   "resources": [
     "screencastView.css"

@@ -21,7 +21,7 @@ devtools_module("screencast") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "screencast.js"
+  entrypoint = "screencast.ts"
 
   deps = [ ":screencast" ]
 }

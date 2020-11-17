@@ -23,7 +23,7 @@ devtools_module("settings") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "settings.js"
+  entrypoint = "settings.ts"
 
   deps = [ ":settings" ]
 }

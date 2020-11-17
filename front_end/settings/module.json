@@ -125,11 +125,10 @@
     "i18n"
   ],
   "modules": [
-    "settings.js",
-    "settings-legacy.js",
-    "SettingsScreen.js",
-    "FrameworkBlackboxSettingsTab.js",
-    "KeybindsSettingsTab.js"
+    "settings-legacy.js"
+  ],
+  "skip_compilation": [
+    "settings-legacy.js"
   ],
   "resources": [
     "frameworkBlackboxSettingsTab.css",

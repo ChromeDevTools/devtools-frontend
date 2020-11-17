@@ -23,27 +23,47 @@ function getMarkdownFileContent(filename: string): string {
   return rawMarkdown;
 }
 
-const validPlaceholderPattern = /\{(PLACEHOLDER_[a-zA-Z][a-zA-Z0-9]*)\}/g;
+const validPlaceholderMatchPattern = /\{(PLACEHOLDER_[a-zA-Z][a-zA-Z0-9]*)\}/g;
+const validPlaceholderNamePattern = /PLACEHOLDER_[a-zA-Z][a-zA-Z0-9]*/;
 
 /**
  * Replaces placeholders in markdown text with a string provided by the
  * `substitutions` map. To keep mental overhead to a minimum, the same
- * syntax is used as for l10n placeholders.
+ * syntax is used as for l10n placeholders. Please note that the
+ * placeholders require a mandatory 'PLACEHOLDER_' prefix.
  *
  * Example:
- *   const str = "This is markdown with `code` and two placeholders, namely {PH1} and {PH2}".
- *   const result = substitePlaceholders(str, new Map([['PH1', 'foo'], ['PH2', 'bar']]));
+ *   const str = "This is markdown with `code` and two placeholders, namely {PLACEHOLDER_PH1} and {PLACEHOLDER_PH2}".
+ *   const result = substitePlaceholders(str, new Map([['PLACEHOLDER_PH1', 'foo'], ['PLACEHOLDER_PH2', 'bar']]));
  *
  * Exported only for unit testing.
  */
 export function substitutePlaceholders(markdown: string, substitutions?: Map<string, string>): string {
-  return markdown.replace(validPlaceholderPattern, (_, placeholder) => {
+  const unusedPlaceholders = new Set(substitutions ? substitutions.keys() : []);
+  validatePlaceholders(unusedPlaceholders);
+
+  const result = markdown.replace(validPlaceholderMatchPattern, (_, placeholder) => {
     const replacement = substitutions ? substitutions.get(placeholder) : undefined;
     if (!replacement) {
       throw new Error(`No replacment provided for placeholder '${placeholder}'.`);
     }
+    unusedPlaceholders.delete(placeholder);
     return replacement;
   });
+
+  if (unusedPlaceholders.size > 0) {
+    throw new Error(`Unused replacements provided: ${[...unusedPlaceholders]}`);
+  }
+
+  return result;
+}
+
+// Ensure that all provided placeholders match the naming pattern.
+function validatePlaceholders(placeholders: Set<string>): void {
+  const invalidPlaceholders = [...placeholders].filter(placeholder => !validPlaceholderNamePattern.test(placeholder));
+  if (invalidPlaceholders.length > 0) {
+    throw new Error(`Invalid placeholders provided in the substitutions map: ${invalidPlaceholders}`);
+  }
 }
 
 /**

@@ -86,4 +86,24 @@ describeWithEnvironment('substitutePlaceholders', async () => {
 
     assert.strictEqual(Issues.MarkdownIssueDescription.substitutePlaceholders(str), str);
   });
+
+  it('throws an error for unused replacements', () => {
+    const str = 'Example string with no placeholder';
+
+    assert.throws(
+        () => Issues.MarkdownIssueDescription.substitutePlaceholders(str, new Map([['PLACEHOLDER_FOO', 'bar']])));
+  });
+
+  it('allows the same placeholder to be used multiple times', () => {
+    const str = 'Example string with the same placeholder used twice: {PLACEHOLDER_PH1} {PLACEHOLDER_PH1}';
+
+    const actual = Issues.MarkdownIssueDescription.substitutePlaceholders(str, new Map([['PLACEHOLDER_PH1', 'foo']]));
+    assert.strictEqual(actual, 'Example string with the same placeholder used twice: foo foo');
+  });
+
+  it('throws an error for invalid placeholder syntax provided in the substitutions map', () => {
+    const str = 'Example string with no placeholder';
+
+    assert.throws(() => Issues.MarkdownIssueDescription.substitutePlaceholders(str, new Map([['invalid_ph', 'foo']])));
+  });
 });

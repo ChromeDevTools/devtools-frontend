@@ -104,6 +104,10 @@ class PreRegisteredView {
     return this._viewRegistration.tags;
   }
 
+  persistence() {
+    return this._viewRegistration.persistence;
+  }
+
   /**
    * @override
    */

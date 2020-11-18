@@ -740,27 +740,48 @@ export class MainMenuItem {
                                                                     Common.UIString.UIString('Show console drawer'));
     contextMenu.appendItemsAtLocation('mainMenu');
     const moreTools = contextMenu.defaultSection().appendSubMenuItem(Common.UIString.UIString('More tools'));
-    const extensions = Root.Runtime.Runtime.instance().extensions('view', undefined, true);
-    for (const extension of extensions) {
-      const descriptor = extension.descriptor();
+    const unionOfViewExtensions = [
+      // TODO(crbug.com/1134103): Remove this call when all views are migrated
+      ...Root.Runtime.Runtime.instance().extensions('view').map(extension => {
+        return {
+          location: extension.descriptor().location,
+          persistence: extension.descriptor().persistence,
+          title: extension.title(),
+          id: extension.descriptor().id,
+        };
+      }),
+      ...UI.ViewManager.getRegisteredViewExtensions().map(view => {
+        return {
+          location: view.location(),
+          persistence: view.persistence(),
+          title: view.title(),
+          id: view.viewId(),
+        };
+      }),
+    ];
+    unionOfViewExtensions.sort((extension1, extension2) => {
+      const title1 = extension1.title || '';
+      const title2 = extension2.title || '';
+      return title1.localeCompare(title2);
+    });
 
-      if (descriptor['id'] === 'issues-pane') {
-        moreTools.defaultSection().appendItem(extension.title(), () => {
+    for (const viewExtension of unionOfViewExtensions) {
+      if (viewExtension.id === 'issues-pane') {
+        moreTools.defaultSection().appendItem(viewExtension.title, () => {
           Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HamburgerMenu);
           UI.ViewManager.ViewManager.instance().showView('issues-pane', /* userGesture */ true);
         });
         continue;
       }
 
-      if (descriptor['persistence'] !== 'closeable') {
+      if (viewExtension.persistence !== 'closeable') {
         continue;
       }
-      if (descriptor['location'] !== 'drawer-view' && descriptor['location'] !== 'panel') {
+      if (viewExtension.location !== 'drawer-view' && viewExtension.location !== 'panel') {
         continue;
       }
-
-      moreTools.defaultSection().appendItem(extension.title(), omitFocus => {
-        UI.ViewManager.ViewManager.instance().showView(descriptor['id'], true, /** @type {boolean} */ (omitFocus));
+      moreTools.defaultSection().appendItem(viewExtension.title, omitFocus => {
+        UI.ViewManager.ViewManager.instance().showView(viewExtension.id, true, /** @type {boolean} */ (omitFocus));
       });
     }
 

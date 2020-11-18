@@ -18,7 +18,7 @@ devtools_module("workspace_diff") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "workspace_diff.js"
+  entrypoint = "workspace_diff.ts"
 
   deps = [ ":workspace_diff" ]
 }

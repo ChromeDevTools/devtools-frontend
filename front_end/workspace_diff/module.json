@@ -5,8 +5,9 @@
     "persistence"
   ],
   "modules": [
-    "workspace_diff.js",
-    "workspace_diff-legacy.js",
-    "WorkspaceDiff.js"
+    "workspace_diff-legacy.js"
+  ],
+  "skip_compilation": [
+    "workspace_diff-legacy.js"
   ]
 }

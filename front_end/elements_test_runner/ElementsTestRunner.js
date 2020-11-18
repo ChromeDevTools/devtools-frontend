@@ -523,7 +523,7 @@ async function extractLinkText(element) {
   }
 
   const anchorText = anchor.textContent;
-  const info = Components.Linkifier._linkInfo(anchor);
+  const info = Components.Linkifier.linkInfo(anchor);
   const uiLocation = info && info.uiLocation;
   const anchorTarget =
       (uiLocation ?

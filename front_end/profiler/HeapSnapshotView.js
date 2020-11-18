@@ -1847,7 +1847,11 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
       if (!link) {
         return;
       }
-      if (Components.Linkifier.Linkifier.invokeFirstAction(link)) {
+      const linkInfo = Components.Linkifier.Linkifier.linkInfo(link);
+      if (!linkInfo) {
+        return;
+      }
+      if (Components.Linkifier.Linkifier.invokeFirstAction(linkInfo)) {
         event.consume(true);
       }
       return;

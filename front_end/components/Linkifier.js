@@ -115,7 +115,7 @@ export class Linkifier {
    * @param {!Workspace.UISourceCode.UILocation} uiLocation
    */
   static _bindUILocation(anchor, uiLocation) {
-    const linkInfo = Linkifier._linkInfo(anchor);
+    const linkInfo = Linkifier.linkInfo(anchor);
     if (!linkInfo) {
       return;
     }
@@ -136,7 +136,7 @@ export class Linkifier {
    * @param {!Element} anchor
    */
   static _unbindUILocation(anchor) {
-    const info = Linkifier._linkInfo(anchor);
+    const info = Linkifier.linkInfo(anchor);
     if (!info || !info.uiLocation) {
       return;
     }
@@ -175,7 +175,7 @@ export class Linkifier {
     }
     this._anchorsByTarget.delete(target);
     for (const anchor of anchors) {
-      const info = Linkifier._linkInfo(anchor);
+      const info = Linkifier.linkInfo(anchor);
       if (!info) {
         continue;
       }
@@ -252,7 +252,7 @@ export class Linkifier {
     // in the layout engine.
     // TODO(szuend): Remove comment and workaround once the crash is fixed.
     const anchor = /** @type {!HTMLElement} */ (Linkifier._createLink('\u200b', className, createLinkOptions));
-    const info = Linkifier._linkInfo(anchor);
+    const info = Linkifier.linkInfo(anchor);
     if (!info) {
       return null;
     }
@@ -366,7 +366,7 @@ export class Linkifier {
     // in the layout engine.
     // TODO(szuend): Remove comment and workaround once the crash is fixed.
     const anchor = /** @type {!HTMLElement} */ (Linkifier._createLink('\u200b', classes || ''));
-    const info = Linkifier._linkInfo(anchor);
+    const info = Linkifier.linkInfo(anchor);
     if (!info) {
       return fallbackAnchor;
     }
@@ -399,7 +399,7 @@ export class Linkifier {
     // in the layout engine.
     // TODO(szuend): Remove comment and workaround once the crash is fixed.
     const anchor = /** @type {!HTMLElement} */ (Linkifier._createLink('\u200b', classes || ''));
-    const info = Linkifier._linkInfo(anchor);
+    const info = Linkifier.linkInfo(anchor);
     if (!info) {
       return anchor;
     }
@@ -485,7 +485,7 @@ export class Linkifier {
    * @param {!Element} anchor
    */
   static _updateLinkDecorations(anchor) {
-    const info = Linkifier._linkInfo(anchor);
+    const info = Linkifier.linkInfo(anchor);
     if (!info || !info.enableDecorator) {
       return;
     }
@@ -542,7 +542,7 @@ export class Linkifier {
     const title = linkText !== url ? url : '';
     const linkOptions = {maxLength, title, href: url, preventClick, tabStop: options.tabStop, bypassURLTrimming};
     const link = Linkifier._createLink(linkText, className, linkOptions);
-    const info = Linkifier._linkInfo(link);
+    const info = Linkifier.linkInfo(link);
     if (!info) {
       return link;
     }
@@ -571,7 +571,7 @@ export class Linkifier {
       bypassURLTrimming: undefined
     };
     const link = Linkifier._createLink(text, '', createLinkOptions);
-    const linkInfo = Linkifier._linkInfo(link);
+    const linkInfo = Linkifier.linkInfo(link);
     if (!linkInfo) {
       return link;
     }
@@ -729,6 +729,14 @@ export class Linkifier {
   }
 
   /**
+   * @param {?Element} link
+   * @return {?_LinkInfo}
+   */
+  static linkInfo(link) {
+    return Linkifier._linkInfo(link);
+  }
+
+  /**
    * @param {!Event} event
    * @return {boolean}
    */
@@ -737,15 +745,19 @@ export class Linkifier {
     if (UI.UIUtils.isBeingEdited(/** @type {!Node} */ (event.target)) || link.hasSelection()) {
       return false;
     }
-    return Linkifier.invokeFirstAction(link);
+    const linkInfo = Linkifier.linkInfo(link);
+    if (!linkInfo) {
+      return false;
+    }
+    return Linkifier.invokeFirstAction(linkInfo);
   }
 
   /**
-   * @param {!Element} link
+   * @param {!_LinkInfo} linkInfo
    * @return {boolean}
    */
-  static invokeFirstAction(link) {
-    const actions = Linkifier._linkActions(link);
+  static invokeFirstAction(linkInfo) {
+    const actions = Linkifier._linkActions(linkInfo);
     if (actions.length) {
       actions[0].handler.call(null);
       return true;
@@ -785,18 +797,18 @@ export class Linkifier {
    * @return {?Workspace.UISourceCode.UILocation}
    */
   static uiLocation(link) {
-    const info = Linkifier._linkInfo(link);
+    const info = Linkifier.linkInfo(link);
     return info ? info.uiLocation : null;
   }
 
   /**
-   * @param {?Element} link
+   * @param {!_LinkInfo} info
    * @return {!Array<{section: string, title: string, handler: function()}>}
    */
-  static _linkActions(link) {
-    const info = Linkifier._linkInfo(link);
+  static _linkActions(info) {
     /** @type {!Array<{section: string, title: string, handler: function():*}>} */
     const result = [];
+
     if (!info) {
       return result;
     }
@@ -895,7 +907,12 @@ export class LinkContextMenuProvider {
       targetNode = targetNode.parentNodeOrShadowHost();
     }
     const link = /** @type {?Element} */ (targetNode);
-    const actions = Linkifier._linkActions(link);
+    const linkInfo = Linkifier.linkInfo(link);
+    if (!linkInfo) {
+      return;
+    }
+
+    const actions = Linkifier._linkActions(linkInfo);
     for (const action of actions) {
       contextMenu.section(action.section).appendItem(action.title, action.handler);
     }

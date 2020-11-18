@@ -10,8 +10,9 @@
     "mobile_throttling"
   ],
   "modules": [
-    "worker_main.js",
-    "worker_main-legacy.js",
-    "WorkerMain.js"
+    "worker_main-legacy.js"
+  ],
+  "skip_compilation": [
+    "worker_main-legacy.js"
   ]
 }

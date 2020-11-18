@@ -17,7 +17,7 @@ devtools_module("worker_main") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "worker_main.js"
+  entrypoint = "worker_main.ts"
 
   deps = [ ":worker_main" ]
 }

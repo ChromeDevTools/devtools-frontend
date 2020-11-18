@@ -1095,6 +1095,7 @@ class InvokeOnceHandlers {
 }
 
 let _coalescingLevel = 0;
+/** @type {?InvokeOnceHandlers} */
 let _postUpdateHandlers = null;
 
 export function startBatchUpdate() {
@@ -1107,8 +1108,11 @@ export function endBatchUpdate() {
   if (--_coalescingLevel) {
     return;
   }
-  _postUpdateHandlers.scheduleInvoke();
-  _postUpdateHandlers = null;
+
+  if (_postUpdateHandlers) {
+    _postUpdateHandlers.scheduleInvoke();
+    _postUpdateHandlers = null;
+  }
 }
 
 /**
@@ -1134,6 +1138,7 @@ export function animateFunction(window, func, params, duration, animationComplet
   const start = window.performance.now();
   let raf = window.requestAnimationFrame(animationStep);
 
+  /** @param {number} timestamp */
   function animationStep(timestamp) {
     const progress = Platform.NumberUtilities.clamp((timestamp - start) / duration, 0, 1);
     func(...params.map(p => p.from + (p.to - p.from) * progress));
@@ -1154,7 +1159,7 @@ export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Element} element
    * @param {function(!Event):void} callback
-   * @param {function(!Event):void} isEditKeyFunc
+   * @param {function(!Event):boolean} isEditKeyFunc
    */
   constructor(element, callback, isEditKeyFunc = event => isEnterOrSpaceKey(event)) {
     super();
@@ -1163,8 +1168,11 @@ export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
     this._editKey = isEditKeyFunc;
     this._enable();
 
-    /** @type {{mouseUp: function(!Event):void, mouseDown: function(!Event):void, reset: function():void }} */
+    /** @type {({mouseUp: function(!Event):void, mouseDown: function(!Event):void, reset: function():void}|undefined)}} */
     this._longClickData;
+
+    /** @type {(number|undefined)} */
+    this._longClickInterval;
   }
 
   reset() {
@@ -1201,7 +1209,7 @@ export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
     function keyDown(e) {
       if (this._editKey(e)) {
         const callback = this._callback;
-        this._longClickInterval = setTimeout(callback.bind(null, e), LongClickController.TIME_MS);
+        this._longClickInterval = window.setTimeout(callback.bind(null, e), LongClickController.TIME_MS);
       }
     }
 
@@ -1224,7 +1232,7 @@ export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
         return;
       }
       const callback = this._callback;
-      this._longClickInterval = setTimeout(callback.bind(null, e), LongClickController.TIME_MS);
+      this._longClickInterval = window.setTimeout(callback.bind(null, e), LongClickController.TIME_MS);
     }
 
     /**
@@ -1259,9 +1267,11 @@ LongClickController.TIME_MS = 200;
  */
 export function initializeUIUtils(document, themeSetting) {
   document.body.classList.toggle('inactive', !document.hasFocus());
-  document.defaultView.addEventListener('focus', _windowFocused.bind(UI, document), false);
-  document.defaultView.addEventListener('blur', _windowBlurred.bind(UI, document), false);
-  document.addEventListener('focus', focusChanged.bind(UI), true);
+  if (document.defaultView) {
+    document.defaultView.addEventListener('focus', _windowFocused.bind(undefined, document), false);
+    document.defaultView.addEventListener('blur', _windowBlurred.bind(undefined, document), false);
+  }
+  document.addEventListener('focus', focusChanged.bind(undefined), true);
 
   if (!ThemeSupport.ThemeSupport.hasInstance()) {
     ThemeSupport.ThemeSupport.instance({forceNew: true, setting: themeSetting});
@@ -1399,9 +1409,9 @@ export function createIconLabel(title, iconClass) {
  */
 export function createSlider(min, max, tabIndex) {
   const element = /** @type {!DevToolsSlider} */ (document.createElement('span', {is: 'dt-slider'}));
-  element.sliderElement.min = min;
-  element.sliderElement.max = max;
-  element.sliderElement.step = 1;
+  element.sliderElement.min = String(min);
+  element.sliderElement.max = String(max);
+  element.sliderElement.step = String(1);
   element.sliderElement.tabIndex = tabIndex;
   return element;
 }

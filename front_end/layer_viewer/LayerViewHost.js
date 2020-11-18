@@ -3,9 +3,18 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Layer View Host of the Layers panel
+  */
+  showInternalLayers: 'Show internal layers',
+};
+const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerViewHost.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @interface
  */
@@ -257,7 +266,7 @@ export class LayerViewHost {
    */
   showContextMenu(contextMenu, selection) {
     contextMenu.defaultSection().appendCheckboxItem(
-        Common.UIString.UIString('Show internal layers'), this._toggleShowInternalLayers.bind(this),
+        i18nString(UIStrings.showInternalLayers), this._toggleShowInternalLayers.bind(this),
         this._showInternalLayersSetting.get());
     const node = selection && selection.layer() && selection.layer().nodeForSelfOrAncestor();
     if (node) {

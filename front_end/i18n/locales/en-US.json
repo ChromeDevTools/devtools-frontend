@@ -140,6 +140,321 @@
   "devices/ModuleUIStrings.js | usb": {
     "message": "usb"
   },
+  "layer_viewer/LayerDetailsView.js | compositingReasons": {
+    "message": "Compositing Reasons"
+  },
+  "layer_viewer/LayerDetailsView.js | containingBlocRectangleDimensions": {
+    "message": "Containing Block {PH1} × {PH2} (at {PH3}, {PH4})"
+  },
+  "layer_viewer/LayerDetailsView.js | hasABackdropFilter": {
+    "message": "Has a backdrop filter."
+  },
+  "layer_viewer/LayerDetailsView.js | hasABlendingEffectThatNeedsToBe": {
+    "message": "Has a blending effect that needs to be known by compositor because of composited descendants."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAClipThatNeedsToBeKnownBy": {
+    "message": "Has a clip that needs to be known by compositor because of composited descendants."
+  },
+  "layer_viewer/LayerDetailsView.js | hasADTransform": {
+    "message": "Has a 3d transform."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAFilterEffectThatNeedsToBe": {
+    "message": "Has a filter effect that needs to be known by compositor because of composited descendants."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAMaskThatNeedsToBeKnownBy": {
+    "message": "Has a mask that needs to be known by compositor because of composited descendants."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAnActiveAcceleratedBackdrop": {
+    "message": "Has an active accelerated backdrop filter animation or transition."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAnActiveAcceleratedFilter": {
+    "message": "Has an active accelerated filter animation or transition."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAnActiveAcceleratedOpacity": {
+    "message": "Has an active accelerated opacity animation or transition."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAnActiveAcceleratedTransform": {
+    "message": "Has an active accelerated transform animation or transition."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAPerspectiveTransformThat": {
+    "message": "Has a perspective transform that needs to be known by compositor because of 3d descendants."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAPreservesdPropertyThatNeeds": {
+    "message": "Has a preserves-3d property that needs to be known by compositor because of 3d descendants."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAReflectionThatNeedsToBeKnown": {
+    "message": "Has a reflection that needs to be known by compositor because of composited descendants."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAWillchangeCompositingHint": {
+    "message": "Has a will-change compositing hint other than transform and opacity."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAWillchangeOpacityCompositing": {
+    "message": "Has a will-change: opacity compositing hint."
+  },
+  "layer_viewer/LayerDetailsView.js | hasAWillchangeTransform": {
+    "message": "Has a will-change: transform compositing hint."
+  },
+  "layer_viewer/LayerDetailsView.js | hasBackfacevisibilityHidden": {
+    "message": "Has backface-visibility: hidden."
+  },
+  "layer_viewer/LayerDetailsView.js | hasClippingAncestor": {
+    "message": "Has clipping ancestor."
+  },
+  "layer_viewer/LayerDetailsView.js | hasOpacityThatNeedsToBeAppliedBy": {
+    "message": "Has opacity that needs to be applied by compositor because of composited descendants."
+  },
+  "layer_viewer/LayerDetailsView.js | isAnAcceleratedCanvasOrIsA": {
+    "message": "Is an accelerated canvas, or is a display list backed canvas that was promoted to a layer based on a performance heuristic."
+  },
+  "layer_viewer/LayerDetailsView.js | isAnAcceleratedIframe": {
+    "message": "Is an accelerated iFrame."
+  },
+  "layer_viewer/LayerDetailsView.js | isAnAcceleratedPlugin": {
+    "message": "Is an accelerated plugin."
+  },
+  "layer_viewer/LayerDetailsView.js | isAnAcceleratedVideo": {
+    "message": "Is an accelerated video."
+  },
+  "layer_viewer/LayerDetailsView.js | isAPositionfixedElementWith": {
+    "message": "Is a position:fixed element with composited descendants."
+  },
+  "layer_viewer/LayerDetailsView.js | isAScrollableOverflowElement": {
+    "message": "Is a scrollable overflow element."
+  },
+  "layer_viewer/LayerDetailsView.js | isDomOverlayForWebxrImmersivear": {
+    "message": "Is DOM overlay for WebXR immersive-ar mode."
+  },
+  "layer_viewer/LayerDetailsView.js | isFixedOrStickyPosition": {
+    "message": "Is fixed or sticky position."
+  },
+  "layer_viewer/LayerDetailsView.js | isOverlayControlsForVideo": {
+    "message": "Is overlay controls for video."
+  },
+  "layer_viewer/LayerDetailsView.js | isTheDocumentrootscroller": {
+    "message": "Is the document.rootScroller."
+  },
+  "layer_viewer/LayerDetailsView.js | isTheRootLayer": {
+    "message": "Is the root layer."
+  },
+  "layer_viewer/LayerDetailsView.js | layerForLinkHighlightFrame": {
+    "message": "Layer for link highlight, frame overlay, etc."
+  },
+  "layer_viewer/LayerDetailsView.js | layerPaintedOnTopOfOtherLayersAs": {
+    "message": "Layer painted on top of other layers as decoration."
+  },
+  "layer_viewer/LayerDetailsView.js | layerWasSeparatelyComposited": {
+    "message": "Layer was separately composited because it could not be squashed."
+  },
+  "layer_viewer/LayerDetailsView.js | mainThreadScrollingReason": {
+    "message": "Main thread scrolling reason"
+  },
+  "layer_viewer/LayerDetailsView.js | memoryEstimate": {
+    "message": "Memory estimate"
+  },
+  "layer_viewer/LayerDetailsView.js | mightOverlapOtherComposited": {
+    "message": "Might overlap other composited content."
+  },
+  "layer_viewer/LayerDetailsView.js | nearestLayerShiftingContaining": {
+    "message": "Nearest Layer Shifting Containing Block"
+  },
+  "layer_viewer/LayerDetailsView.js | nearestLayerShiftingStickyBox": {
+    "message": "Nearest Layer Shifting Sticky Box"
+  },
+  "layer_viewer/LayerDetailsView.js | nonFastScrollable": {
+    "message": "Non fast scrollable"
+  },
+  "layer_viewer/LayerDetailsView.js | overlapsOtherCompositedContent": {
+    "message": "Overlaps other composited content."
+  },
+  "layer_viewer/LayerDetailsView.js | paintCount": {
+    "message": "Paint count"
+  },
+  "layer_viewer/LayerDetailsView.js | paintProfiler": {
+    "message": "Paint Profiler"
+  },
+  "layer_viewer/LayerDetailsView.js | parentWithCompositedNegative": {
+    "message": "Parent with composited negative z-index content."
+  },
+  "layer_viewer/LayerDetailsView.js | repaintsOnScroll": {
+    "message": "Repaints on scroll"
+  },
+  "layer_viewer/LayerDetailsView.js | scrollParentIsNotAnAncestor": {
+    "message": "Scroll parent is not an ancestor."
+  },
+  "layer_viewer/LayerDetailsView.js | scrollRectangleDimensions": {
+    "message": "{PH1} {PH2} × {PH3} (at {PH4}, {PH5})"
+  },
+  "layer_viewer/LayerDetailsView.js | secondaryLayerHomeForAGroupOf": {
+    "message": "Secondary layer, home for a group of squashable content."
+  },
+  "layer_viewer/LayerDetailsView.js | secondaryLayerNoopLayerToPlace": {
+    "message": "Secondary layer, no-op layer to place the squashing layer correctly in the composited layer tree."
+  },
+  "layer_viewer/LayerDetailsView.js | secondaryLayerTheHorizontal": {
+    "message": "Secondary layer, the horizontal scrollbar layer."
+  },
+  "layer_viewer/LayerDetailsView.js | secondaryLayerTheOverflow": {
+    "message": "Secondary layer, the overflow controls host layer."
+  },
+  "layer_viewer/LayerDetailsView.js | secondaryLayerTheScrollCorner": {
+    "message": "Secondary layer, the scroll corner layer."
+  },
+  "layer_viewer/LayerDetailsView.js | secondaryLayerTheVertical": {
+    "message": "Secondary layer, the vertical scrollbar layer."
+  },
+  "layer_viewer/LayerDetailsView.js | secondaryLayerToContainAnyNormal": {
+    "message": "Secondary layer, to contain any normal flow and positive z-index contents on top of a negative z-index layer."
+  },
+  "layer_viewer/LayerDetailsView.js | secondaryLayerToContainTheMask": {
+    "message": "Secondary layer, to contain the mask contents."
+  },
+  "layer_viewer/LayerDetailsView.js | secondaryLayerToHouseContents": {
+    "message": "Secondary layer, to house contents that can be scrolled."
+  },
+  "layer_viewer/LayerDetailsView.js | secondaryLayerUsedToPositionThe": {
+    "message": "Secondary layer, used to position the scrolling contents while scrolling."
+  },
+  "layer_viewer/LayerDetailsView.js | selectALayerToSeeItsDetails": {
+    "message": "Select a layer to see its details"
+  },
+  "layer_viewer/LayerDetailsView.js | shouldIsolateDescendantsToApplyA": {
+    "message": "Should isolate descendants to apply a blend effect."
+  },
+  "layer_viewer/LayerDetailsView.js | size": {
+    "message": "Size"
+  },
+  "layer_viewer/LayerDetailsView.js | slowScrollRegions": {
+    "message": "Slow scroll regions"
+  },
+  "layer_viewer/LayerDetailsView.js | stickyAncenstorLayersS": {
+    "message": "{PH1}: {PH2} ({PH3})"
+  },
+  "layer_viewer/LayerDetailsView.js | stickyBoxRectangleDimensions": {
+    "message": "Sticky Box {PH1} × {PH2} (at {PH3}, {PH4})"
+  },
+  "layer_viewer/LayerDetailsView.js | stickyPositionConstraint": {
+    "message": "Sticky position constraint"
+  },
+  "layer_viewer/LayerDetailsView.js | touchEventHandler": {
+    "message": "Touch event handler"
+  },
+  "layer_viewer/LayerDetailsView.js | unnamed": {
+    "message": "<unnamed>"
+  },
+  "layer_viewer/LayerDetailsView.js | updateRectangleDimensions": {
+    "message": "{PH1} × {PH2} (at {PH3},{PH4})"
+  },
+  "layer_viewer/LayerDetailsView.js | wheelEventHandler": {
+    "message": "Wheel event handler"
+  },
+  "layer_viewer/Layers3DView.js | cantDisplayLayers": {
+    "message": "Can't display layers,"
+  },
+  "layer_viewer/Layers3DView.js | checkSForPossibleReasons": {
+    "message": "Check {PH1} for possible reasons."
+  },
+  "layer_viewer/Layers3DView.js | dLayersView": {
+    "message": "3D Layers View"
+  },
+  "layer_viewer/Layers3DView.js | layerInformationIsNotYet": {
+    "message": "Layer information is not yet available."
+  },
+  "layer_viewer/Layers3DView.js | mousewheelEventListener": {
+    "message": "mousewheel event listener"
+  },
+  "layer_viewer/Layers3DView.js | paints": {
+    "message": "Paints"
+  },
+  "layer_viewer/Layers3DView.js | repaintsOnScroll": {
+    "message": "repaints on scroll"
+  },
+  "layer_viewer/Layers3DView.js | resetView": {
+    "message": "Reset View"
+  },
+  "layer_viewer/Layers3DView.js | showPaintProfiler": {
+    "message": "Show Paint Profiler"
+  },
+  "layer_viewer/Layers3DView.js | slowScrollRects": {
+    "message": "Slow scroll rects"
+  },
+  "layer_viewer/Layers3DView.js | touchEventListener": {
+    "message": "touch event listener"
+  },
+  "layer_viewer/Layers3DView.js | webglSupportIsDisabledInYour": {
+    "message": "WebGL support is disabled in your browser."
+  },
+  "layer_viewer/LayerTreeOutline.js | layersTreePane": {
+    "message": "Layers Tree Pane"
+  },
+  "layer_viewer/LayerTreeOutline.js | showPaintProfiler": {
+    "message": "Show Paint Profiler"
+  },
+  "layer_viewer/LayerTreeOutline.js | updateChildDimension": {
+    "message": " ({PH1} × {PH2})"
+  },
+  "layer_viewer/LayerViewHost.js | showInternalLayers": {
+    "message": "Show internal layers"
+  },
+  "layer_viewer/ModuleUIStrings.js | layers": {
+    "message": "Layers"
+  },
+  "layer_viewer/ModuleUIStrings.js | panOrRotateDown": {
+    "message": "Pan or rotate down"
+  },
+  "layer_viewer/ModuleUIStrings.js | panOrRotateLeft": {
+    "message": "Pan or rotate left"
+  },
+  "layer_viewer/ModuleUIStrings.js | panOrRotateRight": {
+    "message": "Pan or rotate right"
+  },
+  "layer_viewer/ModuleUIStrings.js | panOrRotateUp": {
+    "message": "Pan or rotate up"
+  },
+  "layer_viewer/ModuleUIStrings.js | resetView": {
+    "message": "Reset view"
+  },
+  "layer_viewer/ModuleUIStrings.js | switchToPanMode": {
+    "message": "Switch to pan mode"
+  },
+  "layer_viewer/ModuleUIStrings.js | switchToRotateMode": {
+    "message": "Switch to rotate mode"
+  },
+  "layer_viewer/ModuleUIStrings.js | zoomIn": {
+    "message": "Zoom in"
+  },
+  "layer_viewer/ModuleUIStrings.js | zoomOut": {
+    "message": "Zoom out"
+  },
+  "layer_viewer/PaintProfilerView.js | bitmap": {
+    "message": "Bitmap"
+  },
+  "layer_viewer/PaintProfilerView.js | commandLog": {
+    "message": "Command Log"
+  },
+  "layer_viewer/PaintProfilerView.js | misc": {
+    "message": "Misc"
+  },
+  "layer_viewer/PaintProfilerView.js | profiling": {
+    "message": "Profiling…"
+  },
+  "layer_viewer/PaintProfilerView.js | profilingResults": {
+    "message": "Profiling results"
+  },
+  "layer_viewer/PaintProfilerView.js | shapes": {
+    "message": "Shapes"
+  },
+  "layer_viewer/PaintProfilerView.js | text": {
+    "message": "Text"
+  },
+  "layer_viewer/TransformController.js | panModeX": {
+    "message": "Pan mode (X)"
+  },
+  "layer_viewer/TransformController.js | resetTransform": {
+    "message": "Reset transform (0)"
+  },
+  "layer_viewer/TransformController.js | rotateModeV": {
+    "message": "Rotate mode (V)"
+  },
   "layers/LayersPanel.js | details": {
     "message": "Details"
   },

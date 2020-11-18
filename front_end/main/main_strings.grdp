@@ -48,6 +48,9 @@
   <message name="IDS_DEVTOOLS_51f30f4743bd8f0e7141781bd2d93abb" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Set color format as authored
   </message>
+  <message name="IDS_DEVTOOLS_52ebc26c2921d5b84fc670dff9891821" desc="Text in the Shortcuts page to explain a keyboard shortcut (zoom out)">
+    Zoom out
+  </message>
   <message name="IDS_DEVTOOLS_55e1bbb4e00add64284ed28f15d40b25" desc="Title of a setting under the Appearance category in Settings">
     Color format:
   </message>
@@ -62,6 +65,9 @@
   </message>
   <message name="IDS_DEVTOOLS_60737985de866df2b4fee4562844ce8a" desc="A message to display prompting the user to reload DevTools if the OS color scheme changes.">
     The system-preferred color scheme has changed. To apply this change to DevTools, reload.
+  </message>
+  <message name="IDS_DEVTOOLS_7b91156d64b76a5dda815937fce9119d" desc="Text in the Shortcuts page to explain a keyboard shortcut (zoom in)">
+    Zoom in
   </message>
   <message name="IDS_DEVTOOLS_8645bf45e76c3f958ae99c114c419743" desc="Text in Main">
     Hide console drawer

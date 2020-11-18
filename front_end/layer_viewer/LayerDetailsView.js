@@ -28,13 +28,322 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {LayerView, LayerViewHost, ScrollRectSelection, Selection, SnapshotSelection, Type,} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  selectALayerToSeeItsDetails: 'Select a layer to see its details',
+  /**
+  *@description Element text content in Layer Details View of the Layers panel
+  *@example {Touch event handler} PH1
+  *@example {10} PH2
+  *@example {10} PH3
+  *@example {10} PH4
+  *@example {10} PH5
+  */
+  scrollRectangleDimensions: '{PH1} {PH2} × {PH3} (at {PH4}, {PH5})',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  unnamed: '<unnamed>',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  *@example {Nearest Layer Shifting Sticky Box} PH1
+  *@example {&lt;unnamed&gt;} PH2
+  *@example {5} PH3
+  */
+  stickyAncenstorLayersS: '{PH1}: {PH2} ({PH3})',
+  /**
+  *@description Sticky box rect element text content in Layer Details View of the Layers panel
+  *@example {10} PH1
+  *@example {10} PH2
+  *@example {10} PH3
+  *@example {10} PH4
+  */
+  stickyBoxRectangleDimensions: 'Sticky Box {PH1} × {PH2} (at {PH3}, {PH4})',
+  /**
+  *@description Containing block rect element text content in Layer Details View of the Layers panel
+  *@example {10} PH1
+  *@example {10} PH2
+  *@example {10} PH3
+  *@example {10} PH4
+  */
+  containingBlocRectangleDimensions: 'Containing Block {PH1} × {PH2} (at {PH3}, {PH4})',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  nearestLayerShiftingStickyBox: 'Nearest Layer Shifting Sticky Box',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  nearestLayerShiftingContaining: 'Nearest Layer Shifting Containing Block',
+  /**
+  *@description Size cell text content in Layer Details View of the Layers panel
+  *@example {10} PH1
+  *@example {10} PH2
+  *@example {10} PH3
+  *@example {10} PH4
+  */
+  updateRectangleDimensions: '{PH1} × {PH2} (at {PH3},{PH4})',
+  /**
+  *@description Text for the size of something
+  */
+  size: 'Size',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  compositingReasons: 'Compositing Reasons',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  memoryEstimate: 'Memory estimate',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  paintCount: 'Paint count',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  slowScrollRegions: 'Slow scroll regions',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  stickyPositionConstraint: 'Sticky position constraint',
+  /**
+  *@description Title of the paint profiler, old name of the performance pane
+  */
+  paintProfiler: 'Paint Profiler',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasADTransform: 'Has a 3d transform.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  isAnAcceleratedVideo: 'Is an accelerated video.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  isAnAcceleratedCanvasOrIsA:
+      'Is an accelerated canvas, or is a display list backed canvas that was promoted to a layer based on a performance heuristic.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  isAnAcceleratedPlugin: 'Is an accelerated plugin.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  isAnAcceleratedIframe: 'Is an accelerated iFrame.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasBackfacevisibilityHidden: 'Has backface-visibility: hidden.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAnActiveAcceleratedTransform: 'Has an active accelerated transform animation or transition.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAnActiveAcceleratedOpacity: 'Has an active accelerated opacity animation or transition.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAnActiveAcceleratedFilter: 'Has an active accelerated filter animation or transition.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAnActiveAcceleratedBackdrop: 'Has an active accelerated backdrop filter animation or transition.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  isDomOverlayForWebxrImmersivear: 'Is DOM overlay for WebXR immersive-ar mode.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  isFixedOrStickyPosition: 'Is fixed or sticky position.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  isAScrollableOverflowElement: 'Is a scrollable overflow element.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  scrollParentIsNotAnAncestor: 'Scroll parent is not an ancestor.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasClippingAncestor: 'Has clipping ancestor.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  isOverlayControlsForVideo: 'Is overlay controls for video.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAWillchangeTransform: 'Has a will-change: transform compositing hint.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAWillchangeOpacityCompositing: 'Has a will-change: opacity compositing hint.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAWillchangeCompositingHint: 'Has a will-change compositing hint other than transform and opacity.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasABackdropFilter: 'Has a backdrop filter.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  isTheDocumentrootscroller: 'Is the document.rootScroller.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  mightOverlapOtherComposited: 'Might overlap other composited content.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  overlapsOtherCompositedContent: 'Overlaps other composited content.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  parentWithCompositedNegative: 'Parent with composited negative z-index content.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  layerWasSeparatelyComposited: 'Layer was separately composited because it could not be squashed.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasOpacityThatNeedsToBeAppliedBy:
+      'Has opacity that needs to be applied by compositor because of composited descendants.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAMaskThatNeedsToBeKnownBy: 'Has a mask that needs to be known by compositor because of composited descendants.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAReflectionThatNeedsToBeKnown:
+      'Has a reflection that needs to be known by compositor because of composited descendants.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAFilterEffectThatNeedsToBe:
+      'Has a filter effect that needs to be known by compositor because of composited descendants.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasABlendingEffectThatNeedsToBe:
+      'Has a blending effect that needs to be known by compositor because of composited descendants.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAClipThatNeedsToBeKnownBy: 'Has a clip that needs to be known by compositor because of composited descendants.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAPerspectiveTransformThat:
+      'Has a perspective transform that needs to be known by compositor because of 3d descendants.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  hasAPreservesdPropertyThatNeeds:
+      'Has a preserves-3d property that needs to be known by compositor because of 3d descendants.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  shouldIsolateDescendantsToApplyA: 'Should isolate descendants to apply a blend effect.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  isAPositionfixedElementWith: 'Is a position:fixed element with composited descendants.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  isTheRootLayer: 'Is the root layer.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  secondaryLayerTheHorizontal: 'Secondary layer, the horizontal scrollbar layer.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  secondaryLayerTheVertical: 'Secondary layer, the vertical scrollbar layer.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  secondaryLayerTheOverflow: 'Secondary layer, the overflow controls host layer.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  secondaryLayerTheScrollCorner: 'Secondary layer, the scroll corner layer.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  secondaryLayerToHouseContents: 'Secondary layer, to house contents that can be scrolled.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  secondaryLayerUsedToPositionThe: 'Secondary layer, used to position the scrolling contents while scrolling.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  secondaryLayerHomeForAGroupOf: 'Secondary layer, home for a group of squashable content.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  secondaryLayerNoopLayerToPlace:
+      'Secondary layer, no-op layer to place the squashing layer correctly in the composited layer tree.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  secondaryLayerToContainAnyNormal:
+      'Secondary layer, to contain any normal flow and positive z-index contents on top of a negative z-index layer.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  secondaryLayerToContainTheMask: 'Secondary layer, to contain the mask contents.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  layerPaintedOnTopOfOtherLayersAs: 'Layer painted on top of other layers as decoration.',
+  /**
+  *@description Compositing reason description displayed in the Layer Details View of the Layers panel
+  */
+  layerForLinkHighlightFrame: 'Layer for link highlight, frame overlay, etc.',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  nonFastScrollable: 'Non fast scrollable',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  touchEventHandler: 'Touch event handler',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  wheelEventHandler: 'Wheel event handler',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  repaintsOnScroll: 'Repaints on scroll',
+  /**
+  *@description Text in Layer Details View of the Layers panel
+  */
+  mainThreadScrollingReason: 'Main thread scrolling reason',
+};
+const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerDetailsView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {LayerView}
  * @unrestricted
@@ -48,7 +357,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
     this.registerRequiredCSS('layer_viewer/layerDetailsView.css', {enableLegacyPatching: true});
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
-    this._emptyWidget = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Select a layer to see its details'));
+    this._emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectALayerToSeeItsDetails));
     this._layerSnapshotMap = this._layerViewHost.getLayerSnapshotMap();
 
     /**
@@ -166,9 +475,13 @@ export class LayerDetailsView extends UI.Widget.Widget {
     if (this._selection && /** @type {!ScrollRectSelection} */ (this._selection).scrollRectIndex === index) {
       element.classList.add('active');
     }
-    element.textContent = Common.UIString.UIString(
-        '%s %d × %d (at %d, %d)', slowScrollRectNames.get(scrollRect.type), scrollRect.rect.width,
-        scrollRect.rect.height, scrollRect.rect.x, scrollRect.rect.y);
+    element.textContent = i18nString(UIStrings.scrollRectangleDimensions, {
+      PH1: slowScrollRectNames.get(scrollRect.type),
+      PH2: scrollRect.rect.width,
+      PH3: scrollRect.rect.height,
+      PH4: scrollRect.rect.x,
+      PH5: scrollRect.rect.y
+    });
     element.addEventListener('click', this._onScrollRectClicked.bind(this, index), false);
   }
 
@@ -183,8 +496,8 @@ export class LayerDetailsView extends UI.Widget.Widget {
     }
 
     const node = layer.nodeForSelfOrAncestor();
-    const name = node ? node.simpleSelector() : Common.UIString.UIString('<unnamed>');
-    return Common.UIString.UIString('%s: %s (%s)', title, name, layer.id());
+    const name = node ? node.simpleSelector() : i18nString(UIStrings.unnamed);
+    return i18nString(UIStrings.stickyAncenstorLayersS, {PH1: title, PH2: name, PH3: layer.id()});
   }
 
   /**
@@ -212,22 +525,25 @@ export class LayerDetailsView extends UI.Widget.Widget {
 
     const stickyBoxRect = constraint.stickyBoxRect();
     const stickyBoxRectElement = this._stickyPositionConstraintCell.createChild('span');
-    stickyBoxRectElement.textContent = Common.UIString.UIString(
-        'Sticky Box %d × %d (at %d, %d)', stickyBoxRect.width, stickyBoxRect.height, stickyBoxRect.x, stickyBoxRect.y);
+    stickyBoxRectElement.textContent = i18nString(
+        UIStrings.stickyBoxRectangleDimensions,
+        {PH1: stickyBoxRect.width, PH2: stickyBoxRect.height, PH3: stickyBoxRect.x, PH4: stickyBoxRect.y});
 
     UI.UIUtils.createTextChild(this._stickyPositionConstraintCell, ', ');
 
     const containingBlockRect = constraint.containingBlockRect();
     const containingBlockRectElement = this._stickyPositionConstraintCell.createChild('span');
-    containingBlockRectElement.textContent = Common.UIString.UIString(
-        'Containing Block %d × %d (at %d, %d)', containingBlockRect.width, containingBlockRect.height,
-        containingBlockRect.x, containingBlockRect.y);
+    containingBlockRectElement.textContent = i18nString(UIStrings.containingBlocRectangleDimensions, {
+      PH1: containingBlockRect.width,
+      PH2: containingBlockRect.height,
+      PH3: containingBlockRect.x,
+      PH4: containingBlockRect.y
+    });
 
     this._createStickyAncestorChild(
-        Common.UIString.UIString('Nearest Layer Shifting Sticky Box'), constraint.nearestLayerShiftingStickyBox());
+        i18nString(UIStrings.nearestLayerShiftingStickyBox), constraint.nearestLayerShiftingStickyBox());
     this._createStickyAncestorChild(
-        Common.UIString.UIString('Nearest Layer Shifting Containing Block'),
-        constraint.nearestLayerShiftingContainingBlock());
+        i18nString(UIStrings.nearestLayerShiftingContaining), constraint.nearestLayerShiftingContainingBlock());
   }
 
   update() {
@@ -241,8 +557,9 @@ export class LayerDetailsView extends UI.Widget.Widget {
     this._emptyWidget.detach();
     this.contentElement.appendChild(this._tableElement);
     this.contentElement.appendChild(this._paintProfilerLink);
-    this._sizeCell.textContent =
-        Common.UIString.UIString('%d × %d (at %d,%d)', layer.width(), layer.height(), layer.offsetX(), layer.offsetY());
+    this._sizeCell.textContent = i18nString(
+        UIStrings.updateRectangleDimensions,
+        {PH1: layer.width(), PH2: layer.height(), PH3: layer.offsetX(), PH4: layer.offsetY()});
     if (this._paintCountCell.parentElement) {
       this._paintCountCell.parentElement.classList.toggle('hidden', !layer.paintCount());
     }
@@ -262,16 +579,16 @@ export class LayerDetailsView extends UI.Widget.Widget {
   _buildContent() {
     this._tableElement = /** @type {!HTMLElement} */ (this.contentElement.createChild('table'));
     this._tbodyElement = /** @type {!HTMLElement} */ (this._tableElement.createChild('tbody'));
-    this._sizeCell = this._createRow(Common.UIString.UIString('Size'));
-    this._compositingReasonsCell = this._createRow(Common.UIString.UIString('Compositing Reasons'));
-    this._memoryEstimateCell = this._createRow(Common.UIString.UIString('Memory estimate'));
-    this._paintCountCell = this._createRow(Common.UIString.UIString('Paint count'));
-    this._scrollRectsCell = this._createRow(Common.UIString.UIString('Slow scroll regions'));
-    this._stickyPositionConstraintCell = this._createRow(Common.UIString.UIString('Sticky position constraint'));
+    this._sizeCell = this._createRow(i18nString(UIStrings.size));
+    this._compositingReasonsCell = this._createRow(i18nString(UIStrings.compositingReasons));
+    this._memoryEstimateCell = this._createRow(i18nString(UIStrings.memoryEstimate));
+    this._paintCountCell = this._createRow(i18nString(UIStrings.paintCount));
+    this._scrollRectsCell = this._createRow(i18nString(UIStrings.slowScrollRegions));
+    this._stickyPositionConstraintCell = this._createRow(i18nString(UIStrings.stickyPositionConstraint));
     this._paintProfilerLink =
         /** @type {!HTMLElement} */ (this.contentElement.createChild('span', 'hidden devtools-link link-margin'));
     UI.ARIAUtils.markAsLink(this._paintProfilerLink);
-    this._paintProfilerLink.textContent = ls`Paint Profiler`;
+    this._paintProfilerLink.textContent = i18nString(UIStrings.paintProfiler);
     this._paintProfilerLink.tabIndex = 0;
     this._paintProfilerLink.addEventListener('click', e => {
       e.consume(true);
@@ -330,88 +647,54 @@ export class LayerDetailsView extends UI.Widget.Widget {
 
 // The compositing reason IDs are defined in third_party/blink/renderer/platform/graphics/compositing_reasons.cc
 const compositingReasonIdToReason = new Map([
-  ['transform3D', ls`Has a 3d transform.`],
-  ['video', ls`Is an accelerated video.`],
-  [
-    'canvas',
-    ls
-    `Is an accelerated canvas, or is a display list backed canvas that was promoted to a layer based on a performance heuristic.`
-  ],
-  ['plugin', ls`Is an accelerated plugin.`],
-  ['iFrame', ls`Is an accelerated iFrame.`],
-  ['backfaceVisibilityHidden', ls`Has backface-visibility: hidden.`],
-  ['activeTransformAnimation', ls`Has an active accelerated transform animation or transition.`],
-  ['activeOpacityAnimation', ls`Has an active accelerated opacity animation or transition.`],
-  ['activeFilterAnimation', ls`Has an active accelerated filter animation or transition.`],
-  ['activeBackdropFilterAnimation', ls`Has an active accelerated backdrop filter animation or transition.`],
-  ['immersiveArOverlay', ls`Is DOM overlay for WebXR immersive-ar mode.`],
-  ['scrollDependentPosition', ls`Is fixed or sticky position.`],
-  ['overflowScrolling', ls`Is a scrollable overflow element.`],
-  ['overflowScrollingParent', ls`Scroll parent is not an ancestor.`],
-  ['outOfFlowClipping', ls`Has clipping ancestor.`],
-  ['videoOverlay', ls`Is overlay controls for video.`],
-  ['willChangeTransform', ls`Has a will-change: transform compositing hint.`],
-  ['willChangeOpacity', ls`Has a will-change: opacity compositing hint.`],
-  ['willChangeOther', ls`Has a will-change compositing hint other than transform and opacity.`],
-  ['backdropFilter', ls`Has a backdrop filter.`],
-  ['rootScroller', ls`Is the document.rootScroller.`],
-  ['assumedOverlap', ls`Might overlap other composited content.`],
-  ['overlap', ls`Overlaps other composited content.`],
-  ['negativeZIndexChildren', ls`Parent with composited negative z-index content.`],
-  ['squashingDisallowed', ls`Layer was separately composited because it could not be squashed.`],
-  [
-    'opacityWithCompositedDescendants',
-    ls`Has opacity that needs to be applied by compositor because of composited descendants.`
-  ],
-  [
-    'maskWithCompositedDescendants',
-    ls`Has a mask that needs to be known by compositor because of composited descendants.`
-  ],
-  [
-    'reflectionWithCompositedDescendants',
-    ls`Has a reflection that needs to be known by compositor because of composited descendants.`
-  ],
-  [
-    'filterWithCompositedDescendants',
-    ls`Has a filter effect that needs to be known by compositor because of composited descendants.`
-  ],
-  [
-    'blendingWithCompositedDescendants',
-    ls`Has a blending effect that needs to be known by compositor because of composited descendants.`
-  ],
-  [
-    'clipsCompositingDescendants',
-    ls`Has a clip that needs to be known by compositor because of composited descendants.`
-  ],
-  [
-    'perspectiveWith3DDescendants',
-    ls`Has a perspective transform that needs to be known by compositor because of 3d descendants.`
-  ],
-  [
-    'preserve3DWith3DDescendants',
-    ls`Has a preserves-3d property that needs to be known by compositor because of 3d descendants.`
-  ],
-  ['isolateCompositedDescendants', ls`Should isolate descendants to apply a blend effect.`],
-  ['positionFixedWithCompositedDescendants', ls`Is a position:fixed element with composited descendants.`],
-  ['root', ls`Is the root layer.`],
-  ['layerForHorizontalScrollbar', ls`Secondary layer, the horizontal scrollbar layer.`],
-  ['layerForVerticalScrollbar', ls`Secondary layer, the vertical scrollbar layer.`],
-  ['layerForOverflowControlsHost', ls`Secondary layer, the overflow controls host layer.`],
-  ['layerForScrollCorner', ls`Secondary layer, the scroll corner layer.`],
-  ['layerForScrollingContents', ls`Secondary layer, to house contents that can be scrolled.`],
-  ['layerForScrollingContainer', ls`Secondary layer, used to position the scrolling contents while scrolling.`],
-  ['layerForSquashingContents', ls`Secondary layer, home for a group of squashable content.`],
-  [
-    'layerForSquashingContainer',
-    ls`Secondary layer, no-op layer to place the squashing layer correctly in the composited layer tree.`
-  ],
-  [
-    'layerForForeground',
-    ls`Secondary layer, to contain any normal flow and positive z-index contents on top of a negative z-index layer.`
-  ],
-  ['layerForMask', ls`Secondary layer, to contain the mask contents.`],
-  ['layerForDecoration', ls`Layer painted on top of other layers as decoration.`],
-  ['layerForOther', ls`Layer for link highlight, frame overlay, etc.`]
+  ['transform3D', i18nString(UIStrings.hasADTransform)],
+  ['video', i18nString(UIStrings.isAnAcceleratedVideo)],
+  ['canvas', i18nString(UIStrings.isAnAcceleratedCanvasOrIsA)],
+  ['plugin', i18nString(UIStrings.isAnAcceleratedPlugin)],
+  ['iFrame', i18nString(UIStrings.isAnAcceleratedIframe)],
+  ['backfaceVisibilityHidden', i18nString(UIStrings.hasBackfacevisibilityHidden)],
+  ['activeTransformAnimation', i18nString(UIStrings.hasAnActiveAcceleratedTransform)],
+  ['activeOpacityAnimation', i18nString(UIStrings.hasAnActiveAcceleratedOpacity)],
+  ['activeFilterAnimation', i18nString(UIStrings.hasAnActiveAcceleratedFilter)],
+  ['activeBackdropFilterAnimation', i18nString(UIStrings.hasAnActiveAcceleratedBackdrop)],
+  ['immersiveArOverlay', i18nString(UIStrings.isDomOverlayForWebxrImmersivear)],
+  ['scrollDependentPosition', i18nString(UIStrings.isFixedOrStickyPosition)],
+  ['overflowScrolling', i18nString(UIStrings.isAScrollableOverflowElement)],
+  ['overflowScrollingParent', i18nString(UIStrings.scrollParentIsNotAnAncestor)],
+  ['outOfFlowClipping', i18nString(UIStrings.hasClippingAncestor)],
+  ['videoOverlay', i18nString(UIStrings.isOverlayControlsForVideo)],
+  ['willChangeTransform', i18nString(UIStrings.hasAWillchangeTransform)],
+  ['willChangeOpacity', i18nString(UIStrings.hasAWillchangeOpacityCompositing)],
+  ['willChangeOther', i18nString(UIStrings.hasAWillchangeCompositingHint)],
+  ['backdropFilter', i18nString(UIStrings.hasABackdropFilter)],
+  ['rootScroller', i18nString(UIStrings.isTheDocumentrootscroller)],
+  ['assumedOverlap', i18nString(UIStrings.mightOverlapOtherComposited)],
+  ['overlap', i18nString(UIStrings.overlapsOtherCompositedContent)],
+  ['negativeZIndexChildren', i18nString(UIStrings.parentWithCompositedNegative)],
+  ['squashingDisallowed', i18nString(UIStrings.layerWasSeparatelyComposited)],
+  ['opacityWithCompositedDescendants', i18nString(UIStrings.hasOpacityThatNeedsToBeAppliedBy)],
+  ['maskWithCompositedDescendants', i18nString(UIStrings.hasAMaskThatNeedsToBeKnownBy)],
+  ['reflectionWithCompositedDescendants', i18nString(UIStrings.hasAReflectionThatNeedsToBeKnown)],
+  ['filterWithCompositedDescendants', i18nString(UIStrings.hasAFilterEffectThatNeedsToBe)],
+  ['blendingWithCompositedDescendants', i18nString(UIStrings.hasABlendingEffectThatNeedsToBe)],
+  ['clipsCompositingDescendants', i18nString(UIStrings.hasAClipThatNeedsToBeKnownBy)],
+  ['perspectiveWith3DDescendants', i18nString(UIStrings.hasAPerspectiveTransformThat)],
+  ['preserve3DWith3DDescendants', i18nString(UIStrings.hasAPreservesdPropertyThatNeeds)],
+  ['isolateCompositedDescendants', i18nString(UIStrings.shouldIsolateDescendantsToApplyA)],
+  ['positionFixedWithCompositedDescendants', i18nString(UIStrings.isAPositionfixedElementWith)],
+  ['root', i18nString(UIStrings.isTheRootLayer)],
+  ['layerForHorizontalScrollbar', i18nString(UIStrings.secondaryLayerTheHorizontal)],
+  ['layerForVerticalScrollbar', i18nString(UIStrings.secondaryLayerTheVertical)],
+  ['layerForOverflowControlsHost', i18nString(UIStrings.secondaryLayerTheOverflow)],
+  ['layerForScrollCorner', i18nString(UIStrings.secondaryLayerTheScrollCorner)],
+  ['layerForScrollingContents', i18nString(UIStrings.secondaryLayerToHouseContents)],
+  ['layerForScrollingContainer', i18nString(UIStrings.secondaryLayerUsedToPositionThe)],
+  ['layerForSquashingContents', i18nString(UIStrings.secondaryLayerHomeForAGroupOf)],
+  ['layerForSquashingContainer', i18nString(UIStrings.secondaryLayerNoopLayerToPlace)],
+  ['layerForForeground', i18nString(UIStrings.secondaryLayerToContainAnyNormal)],
+  ['layerForMask', i18nString(UIStrings.secondaryLayerToContainTheMask)],
+  ['layerForDecoration', i18nString(UIStrings.layerPaintedOnTopOfOtherLayersAs)],
+  ['layerForOther', i18nString(UIStrings.layerForLinkHighlightFrame)]
 ]);
 
 
@@ -421,12 +704,9 @@ export const Events = {
 };
 
 export const slowScrollRectNames = new Map([
-  [SDK.LayerTreeBase.Layer.ScrollRectType.NonFastScrollable, Common.UIString.UIString('Non fast scrollable')],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.TouchEventHandler, Common.UIString.UIString('Touch event handler')],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.WheelEventHandler, Common.UIString.UIString('Wheel event handler')],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.RepaintsOnScroll, Common.UIString.UIString('Repaints on scroll')],
-  [
-    SDK.LayerTreeBase.Layer.ScrollRectType.MainThreadScrollingReason,
-    Common.UIString.UIString('Main thread scrolling reason')
-  ]
+  [SDK.LayerTreeBase.Layer.ScrollRectType.NonFastScrollable, i18nString(UIStrings.nonFastScrollable)],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.TouchEventHandler, i18nString(UIStrings.touchEventHandler)],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.WheelEventHandler, i18nString(UIStrings.wheelEventHandler)],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.RepaintsOnScroll, i18nString(UIStrings.repaintsOnScroll)],
+  [SDK.LayerTreeBase.Layer.ScrollRectType.MainThreadScrollingReason, i18nString(UIStrings.mainThreadScrollingReason)]
 ]);

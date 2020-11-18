@@ -244,6 +244,7 @@ all_typescript_module_sources = [
   "layer_viewer/LayerTreeOutline.js",
   "layer_viewer/LayerViewHost.js",
   "layer_viewer/Layers3DView.js",
+  "layer_viewer/ModuleUIStrings.js",
   "layer_viewer/PaintProfilerView.js",
   "layer_viewer/TransformController.js",
   "layers/LayerPaintProfilerView.js",

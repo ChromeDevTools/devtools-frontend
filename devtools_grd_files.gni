@@ -627,6 +627,7 @@ grd_files_debug_sources = [
   "front_end/layer_viewer/LayerTreeOutline.js",
   "front_end/layer_viewer/LayerViewHost.js",
   "front_end/layer_viewer/Layers3DView.js",
+  "front_end/layer_viewer/ModuleUIStrings.js",
   "front_end/layer_viewer/PaintProfilerView.js",
   "front_end/layer_viewer/TransformController.js",
   "front_end/layers/LayerPaintProfilerView.js",

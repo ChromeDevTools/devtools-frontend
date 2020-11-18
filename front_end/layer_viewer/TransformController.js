@@ -3,9 +3,26 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Tooltip text that appears when hovering over largeicon pan button in Transform Controller of the Layers panel
+  */
+  panModeX: 'Pan mode (X)',
+  /**
+  *@description Tooltip text that appears when hovering over largeicon rotate button in Transform Controller of the Layers panel
+  */
+  rotateModeV: 'Rotate mode (V)',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon center button in the Transform Controller of the Layers panel
+  */
+  resetTransform: 'Reset transform (0)',
+};
+const str_ = i18n.i18n.registerUIStrings('layer_viewer/TransformController.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @unrestricted
  */
@@ -42,20 +59,18 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!Object<string, !UI.Toolbar.ToolbarToggle>} */
     this._modeButtons = {};
     if (!disableRotate) {
-      const panModeButton = new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Pan mode (X)'), 'largeicon-pan');
+      const panModeButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.panModeX), 'largeicon-pan');
       panModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._setMode.bind(this, Modes.Pan));
       this._modeButtons[Modes.Pan] = panModeButton;
       this._controlPanelToolbar.appendToolbarItem(panModeButton);
-      const rotateModeButton =
-          new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Rotate mode (V)'), 'largeicon-rotate');
+      const rotateModeButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.rotateModeV), 'largeicon-rotate');
       rotateModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._setMode.bind(this, Modes.Rotate));
       this._modeButtons[Modes.Rotate] = rotateModeButton;
       this._controlPanelToolbar.appendToolbarItem(rotateModeButton);
     }
     this._setMode(Modes.Pan);
 
-    const resetButton =
-        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Reset transform (0)'), 'largeicon-center');
+    const resetButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resetTransform), 'largeicon-center');
     resetButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.resetAndNotify.bind(this, undefined));
     this._controlPanelToolbar.appendToolbarItem(resetButton);
 

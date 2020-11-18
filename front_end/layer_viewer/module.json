@@ -1,6 +1,7 @@
 {
   "dependencies": [
     "components",
+    "i18n",
     "sdk",
     "timeline_model",
     "ui",

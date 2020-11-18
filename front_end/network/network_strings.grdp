@@ -426,6 +426,9 @@
   <message name="IDS_DEVTOOLS_9b5e92790ca7fec879dfd28355a224d1" desc="Text used to show that serviceworker fetch response source is HTTP cache">
     From HTTP cache
   </message>
+  <message name="IDS_DEVTOOLS_9dffbf69ffba8bc38bc4e01abf4b1675" desc="Generic label for any text">
+    Text
+  </message>
   <message name="IDS_DEVTOOLS_a1725c50b8a42b8b7af43912a64eb7d2" desc="Tooltip to explain lack of raw headers for a particular network request">
     Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers.
   </message>

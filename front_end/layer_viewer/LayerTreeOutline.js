@@ -29,11 +29,30 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {LayerSelection, LayerView, LayerViewHost, Selection} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Label for layers sidepanel tree
+  */
+  layersTreePane: 'Layers Tree Pane',
+  /**
+  *@description A context menu item in the DView of the Layers panel
+  */
+  showPaintProfiler: 'Show Paint Profiler',
+  /**
+  *@description Details text content in Layer Tree Outline of the Layers panel
+  *@example {10} PH1
+  *@example {10} PH2
+  */
+  updateChildDimension: ' ({PH1} × {PH2})',
+};
+const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerTreeOutline.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {LayerView}
  * @unrestricted
@@ -52,7 +71,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     this._treeOutline.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     this._treeOutline.element.addEventListener('mouseout', this._onMouseMove.bind(this), false);
     this._treeOutline.element.addEventListener('contextmenu', this._onContextMenu.bind(this), true);
-    UI.ARIAUtils.setAccessibleName(this._treeOutline.contentElement, ls`Layers Tree Pane`);
+    UI.ARIAUtils.setAccessibleName(this._treeOutline.contentElement, i18nString(UIStrings.layersTreePane));
 
     /** @type {?LayerTreeElement} */
     this._lastHoveredNode = null;
@@ -228,8 +247,8 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
       this._layerSnapshotMap = this._layerViewHost.getLayerSnapshotMap();
       if (this._layerSnapshotMap.has(layer)) {
         contextMenu.defaultSection().appendItem(
-            ls`Show Paint Profiler`, this.dispatchEventToListeners.bind(this, Events.PaintProfilerRequested, selection),
-            false);
+            i18nString(UIStrings.showPaintProfiler),
+            this.dispatchEventToListeners.bind(this, Events.PaintProfilerRequested, selection), false);
       }
     }
     this._layerViewHost.showContextMenu(contextMenu, selection);
@@ -272,7 +291,8 @@ export class LayerTreeElement extends UI.TreeOutline.TreeElement {
     const title = document.createDocumentFragment();
     UI.UIUtils.createTextChild(title, node ? node.simpleSelector() : '#' + this._layer.id());
     const details = title.createChild('span', 'dimmed');
-    details.textContent = Common.UIString.UIString(' (%d × %d)', this._layer.width(), this._layer.height());
+    details.textContent =
+        i18nString(UIStrings.updateChildDimension, {PH1: this._layer.width(), PH2: this._layer.height()});
     this.title = title;
   }
 

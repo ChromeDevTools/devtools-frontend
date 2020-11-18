@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
@@ -36,6 +37,59 @@ import * as UI from '../ui/ui.js';
 import {LayerSelection, LayerView, LayerViewHost, ScrollRectSelection, Selection, SnapshotSelection, Type,} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
 import {Events as TransformControllerEvents, TransformController} from './TransformController.js';
 
+export const UIStrings = {
+  /**
+  *@description Text of a DOM element in DView of the Layers panel
+  */
+  layerInformationIsNotYet: 'Layer information is not yet available.',
+  /**
+  *@description Accessibility label for canvas view in Layers tool
+  */
+  dLayersView: '3D Layers View',
+  /**
+  *@description Text in DView of the Layers panel
+  */
+  cantDisplayLayers: 'Can\'t display layers,',
+  /**
+  *@description Text in DView of the Layers panel
+  */
+  webglSupportIsDisabledInYour: 'WebGL support is disabled in your browser.',
+  /**
+  *@description Text in DView of the Layers panel
+  *@example {about:gpu} PH1
+  */
+  checkSForPossibleReasons: 'Check {PH1} for possible reasons.',
+  /**
+  *@description Text for a checkbox in the toolbar of the Layers panel to show the area of slow scroll rect
+  */
+  slowScrollRects: 'Slow scroll rects',
+  /**
+  *@description Text for a checkbox in the toolbar of the Layers panel to show the paints of the page
+  */
+  paints: 'Paints',
+  /**
+  *@description A context menu item in the DView of the Layers panel
+  */
+  resetView: 'Reset View',
+  /**
+  *@description A context menu item in the DView of the Layers panel
+  */
+  showPaintProfiler: 'Show Paint Profiler',
+  /**
+  *@description Text in DView of the Layers panel
+  */
+  repaintsOnScroll: 'repaints on scroll',
+  /**
+  *@description Text in DView of the Layers panel
+  */
+  touchEventListener: 'touch event listener',
+  /**
+  *@description Text in DView of the Layers panel
+  */
+  mousewheelEventListener: 'mousewheel event listener',
+};
+const str_ = i18n.i18n.registerUIStrings('layer_viewer/Layers3DView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!Map<!WebGLProgram, number>} */
 const vertexPositionAttributes = new Map();
 
@@ -68,8 +122,7 @@ export class Layers3DView extends UI.Widget.VBox {
     this.contentElement.classList.add('layers-3d-view');
     this._failBanner = new UI.Widget.VBox();
     this._failBanner.element.classList.add('full-widget-dimmed-banner');
-    UI.UIUtils.createTextChild(
-        this._failBanner.element, Common.UIString.UIString('Layer information is not yet available.'));
+    UI.UIUtils.createTextChild(this._failBanner.element, i18nString(UIStrings.layerInformationIsNotYet));
 
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
@@ -87,7 +140,7 @@ export class Layers3DView extends UI.Widget.VBox {
     this._canvasElement.addEventListener('mouseleave', this._onMouseMove.bind(this), false);
     this._canvasElement.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     this._canvasElement.addEventListener('contextmenu', this._onContextMenu.bind(this), false);
-    UI.ARIAUtils.setAccessibleName(this._canvasElement, ls`3D Layers View`);
+    UI.ARIAUtils.setAccessibleName(this._canvasElement, i18nString(UIStrings.dLayersView));
 
     /** @type {!Object.<string, ?Selection>} */
     this._lastSelection = {};
@@ -810,10 +863,10 @@ export class Layers3DView extends UI.Widget.VBox {
    */
   _webglDisabledBanner() {
     const fragment = this.contentElement.ownerDocument.createDocumentFragment();
-    fragment.createChild('div').textContent = Common.UIString.UIString('Can\'t display layers,');
-    fragment.createChild('div').textContent = Common.UIString.UIString('WebGL support is disabled in your browser.');
-    fragment.appendChild(
-        UI.UIUtils.formatLocalized('Check %s for possible reasons.', [UI.XLink.XLink.create('about:gpu')]));
+    fragment.createChild('div').textContent = i18nString(UIStrings.cantDisplayLayers);
+    fragment.createChild('div').textContent = i18nString(UIStrings.webglSupportIsDisabledInYour);
+    fragment.appendChild(i18n.i18n.getFormatLocalizedString(
+        str_, UIStrings.checkSForPossibleReasons, {PH1: UI.XLink.XLink.create('about:gpu')}));
     return fragment;
   }
 
@@ -860,7 +913,7 @@ export class Layers3DView extends UI.Widget.VBox {
    */
   _createVisibilitySetting(caption, name, value, toolbar) {
     const setting = Common.Settings.Settings.instance().createSetting(name, value);
-    setting.setTitle(Common.UIString.UIString(caption));
+    setting.setTitle(i18nString(caption));
     setting.addChangeListener(this._update, this);
     toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(setting));
     return setting;
@@ -870,9 +923,9 @@ export class Layers3DView extends UI.Widget.VBox {
     this._panelToolbar = this._transformController.toolbar();
     this.contentElement.appendChild(this._panelToolbar.element);
     this._showSlowScrollRectsSetting = this._createVisibilitySetting(
-        ls`Slow scroll rects`, 'frameViewerShowSlowScrollRects', true, this._panelToolbar);
+        i18nString(UIStrings.slowScrollRects), 'frameViewerShowSlowScrollRects', true, this._panelToolbar);
     this._showPaintsSetting =
-        this._createVisibilitySetting(ls`Paints`, 'frameViewerShowPaints', true, this._panelToolbar);
+        this._createVisibilitySetting(i18nString(UIStrings.paints), 'frameViewerShowPaints', true, this._panelToolbar);
     this._showPaintsSetting.addChangeListener(this._updatePaints, this);
     Common.Settings.Settings.instance()
         .moduleSetting('frameViewerHideChromeWindow')
@@ -885,11 +938,11 @@ export class Layers3DView extends UI.Widget.VBox {
   _onContextMenu(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-        Common.UIString.UIString('Reset View'), () => this._transformController.resetAndNotify(), false);
+        i18nString(UIStrings.resetView), () => this._transformController.resetAndNotify(), false);
     const selection = this._selectionFromEventPoint(event);
     if (selection && selection.type() === Type.Snapshot) {
       contextMenu.defaultSection().appendItem(
-          Common.UIString.UIString('Show Paint Profiler'),
+          i18nString(UIStrings.showPaintProfiler),
           this.dispatchEventToListeners.bind(this, Events.PaintProfilerRequested, selection), false);
     }
     this._layerViewHost.showContextMenu(contextMenu, selection);
@@ -985,9 +1038,9 @@ export const ChromeTexture = {
  * @enum {string}
  */
 export const ScrollRectTitles = {
-  RepaintsOnScroll: Common.UIString.UIString('repaints on scroll'),
-  TouchEventHandler: Common.UIString.UIString('touch event listener'),
-  WheelEventHandler: Common.UIString.UIString('mousewheel event listener')
+  RepaintsOnScroll: i18nString(UIStrings.repaintsOnScroll),
+  TouchEventHandler: i18nString(UIStrings.touchEventListener),
+  WheelEventHandler: i18nString(UIStrings.mousewheelEventListener)
 };
 
 export const FragmentShader = '' +

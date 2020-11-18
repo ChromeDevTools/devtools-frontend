@@ -11,12 +11,14 @@ devtools_module("layer_viewer") {
     "LayerTreeOutline.js",
     "LayerViewHost.js",
     "Layers3DView.js",
+    "ModuleUIStrings.js",
     "PaintProfilerView.js",
     "TransformController.js",
   ]
 
   deps = [
     "../common:bundle",
+    "../i18n:bundle",
     "../perf_ui:bundle",
     "../platform:bundle",
     "../sdk:bundle",

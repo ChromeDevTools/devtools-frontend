@@ -103,9 +103,6 @@
   <message name="IDS_DEVTOOLS_29296fcb28eb4edf5d0049b6cac7bbd1" desc="Text for a percentage value">
     <ph name="SCALE">$1.0f<ex>13.0</ex></ph>%%
   </message>
-  <message name="IDS_DEVTOOLS_2ae207ddfe5cd256a768769d93a879e5" desc="Title of the paint profiler, old name of the performance pane">
-    Paint Profiler
-  </message>
   <message name="IDS_DEVTOOLS_2b81bb9b3deebcbfa05edad7a845005a" desc="Text for rendering frames">
     Frames
   </message>
@@ -160,9 +157,6 @@
   <message name="IDS_DEVTOOLS_3edf8ca26a1ec14dd6e91dd277ae1de6" desc="Text for the origin of something">
     Origin
   </message>
-  <message name="IDS_DEVTOOLS_3f03ed88ee58335aa3df453443b9c8bc" desc="Text to indicate the progress of a profile">
-    Profiling…
-  </message>
   <message name="IDS_DEVTOOLS_3f8f88e3686b2345cecc9530e19e6172" desc="Text to store an HTML element or JavaScript variable or expression result as a global variable">
     Store as global variable
   </message>
@@ -216,9 +210,6 @@
   </message>
   <message name="IDS_DEVTOOLS_529a032eab49b8ddc6f49f8bcc086607" desc="Prev button title in Film Strip View of the Performance panel">
     Previous frame
-  </message>
-  <message name="IDS_DEVTOOLS_52ebc26c2921d5b84fc670dff9891821" desc="Text in the Shortcuts page to explain a keyboard shortcut (zoom out)">
-    Zoom out
   </message>
   <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Text for the execution stack trace">
     Stack Trace
@@ -316,9 +307,6 @@
   <message name="IDS_DEVTOOLS_7b3a6b02f467b95f2b5267aa94708c07" desc="Text for the name of a thread of the page">
     Thread <ph name="TID">$1s<ex>1</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_7b91156d64b76a5dda815937fce9119d" desc="Text in the Shortcuts page to explain a keyboard shortcut (zoom in)">
-    Zoom in
-  </message>
   <message name="IDS_DEVTOOLS_7d341c08fd102f0b86285b5ff2e26ea7" desc="Text with two placeholders separated by a colon">
     <ph name="BREAKPOINT_TYPE_LABEL">$1s<ex>Node removed</ex></ph>: <ph name="LINKIFIED_CONTENT">$2s<ex>div#id1</ex></ph>
   </message>
@@ -336,9 +324,6 @@
   </message>
   <message name="IDS_DEVTOOLS_86408593c34af77fdd90df932f8b5261" desc="Text for a programming function">
     Function
-  </message>
-  <message name="IDS_DEVTOOLS_87bfda183c4f851a101e97bbb1bbace7" desc="Title of the Layers tool">
-    Layers
   </message>
   <message name="IDS_DEVTOOLS_87d17f4624a514e81dc7c8e016a7405c" desc="Text for the mobile platform, as opposed to desktop">
     Mobile
@@ -405,9 +390,6 @@
   </message>
   <message name="IDS_DEVTOOLS_9df22f196a33acd0b372fe502de51211" desc="Text short for automatic">
     auto
-  </message>
-  <message name="IDS_DEVTOOLS_9dffbf69ffba8bc38bc4e01abf4b1675" desc="Generic label for any text">
-    Text
   </message>
   <message name="IDS_DEVTOOLS_9e65b51e82f2a9b9f72ebe3e083582bb" desc="Text to show an item is empty">
     (empty)

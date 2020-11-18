@@ -28,12 +28,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to indicate the progress of a profile
+  */
+  profiling: 'Profiling…',
+  /**
+  *@description Text in Paint Profiler View of the Layers panel
+  */
+  shapes: 'Shapes',
+  /**
+  *@description Text in Paint Profiler View of the Layers panel
+  */
+  bitmap: 'Bitmap',
+  /**
+  *@description Generic label for any text
+  */
+  text: 'Text',
+  /**
+  *@description Text in Paint Profiler View of the Layers panel
+  */
+  misc: 'Misc',
+  /**
+  *@description ARIA label for a pie chart that shows the results of the paint profiler
+  */
+  profilingResults: 'Profiling results',
+  /**
+  *@description Label for command log tree in the Profiler tab
+  */
+  commandLog: 'Command Log',
+};
+const str_ = i18n.i18n.registerUIStrings('layer_viewer/PaintProfilerView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @type {?Object.<string, !PaintProfilerCategory>}
  */
@@ -57,7 +89,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
     this.contentElement.classList.add('paint-profiler-overview');
     this._canvasContainer = this.contentElement.createChild('div', 'paint-profiler-canvas-container');
     this._progressBanner = this.contentElement.createChild('div', 'full-widget-dimmed-banner hidden');
-    this._progressBanner.textContent = Common.UIString.UIString('Profiling…');
+    this._progressBanner.textContent = i18nString(UIStrings.profiling);
     this._pieChart = PerfUI.PieChart.createPieChart();
     this._populatePieChart(0, []);
     this._pieChart.classList.add('paint-profiler-pie-chart');
@@ -95,10 +127,10 @@ export class PaintProfilerView extends UI.Widget.HBox {
   static categories() {
     if (!categories) {
       categories = {
-        shapes: new PaintProfilerCategory('shapes', Common.UIString.UIString('Shapes'), 'rgb(255, 161, 129)'),
-        bitmap: new PaintProfilerCategory('bitmap', Common.UIString.UIString('Bitmap'), 'rgb(136, 196, 255)'),
-        text: new PaintProfilerCategory('text', Common.UIString.UIString('Text'), 'rgb(180, 255, 137)'),
-        misc: new PaintProfilerCategory('misc', Common.UIString.UIString('Misc'), 'rgb(206, 160, 255)')
+        shapes: new PaintProfilerCategory('shapes', i18nString(UIStrings.shapes), 'rgb(255, 161, 129)'),
+        bitmap: new PaintProfilerCategory('bitmap', i18nString(UIStrings.bitmap), 'rgb(136, 196, 255)'),
+        text: new PaintProfilerCategory('text', i18nString(UIStrings.text), 'rgb(180, 255, 137)'),
+        misc: new PaintProfilerCategory('misc', i18nString(UIStrings.misc), 'rgb(206, 160, 255)')
       };
     }
     return categories;
@@ -354,7 +386,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
    */
   _populatePieChart(total, slices) {
     this._pieChart.data = {
-      chartName: ls`Profiling results`,
+      chartName: i18nString(UIStrings.profilingResults),
       size: 55,
       formatter: this._formatPieChartTime.bind(this),
       showLegend: false,
@@ -437,7 +469,7 @@ export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWid
     this.element.classList.add('overflow-auto');
 
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    UI.ARIAUtils.setAccessibleName(this._treeOutline.contentElement, ls`Command Log`);
+    UI.ARIAUtils.setAccessibleName(this._treeOutline.contentElement, i18nString(UIStrings.commandLog));
     this.element.appendChild(this._treeOutline.element);
     this.setDefaultFocusedElement(this._treeOutline.contentElement);
 

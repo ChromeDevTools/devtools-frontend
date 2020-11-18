@@ -17,6 +17,8 @@ const COVERAGE_ENABLED = !!process.env['COVERAGE'];
 
 // true by default
 const TEXT_COVERAGE_ENABLED = COVERAGE_ENABLED && !process.env['NO_TEXT_COVERAGE'];
+// true by default
+const HTML_COVERAGE_ENABLED = COVERAGE_ENABLED && !process.env['NO_HTML_COVERAGE'];
 const COVERAGE_OUTPUT_DIRECTORY = 'karma-coverage';
 
 if (COVERAGE_ENABLED) {
@@ -46,9 +48,16 @@ const browsers = DEBUG_ENABLED ? ['Chrome'] : ['ChromeHeadless'];
 
 const coverageReporters = COVERAGE_ENABLED ? ['coverage'] : [];
 const coveragePreprocessors = COVERAGE_ENABLED ? ['coverage'] : [];
-const commonIstanbulReporters = [{type: 'html'}, {type: 'json-summary'}];
-const istanbulReportOutputs =
-    TEXT_COVERAGE_ENABLED ? [{type: 'text'}, ...commonIstanbulReporters] : commonIstanbulReporters;
+const commonIstanbulReporters = [{type: 'json-summary'}];
+const istanbulReportOutputs = commonIstanbulReporters;
+
+if (TEXT_COVERAGE_ENABLED) {
+  istanbulReportOutputs.push({type: 'text'});
+}
+
+if (HTML_COVERAGE_ENABLED) {
+  istanbulReportOutputs.push({type: 'html'});
+}
 
 const UNIT_TESTS_ROOT_FOLDER = path.join(ROOT_DIRECTORY, 'test', 'unittests');
 const UNIT_TESTS_FOLDERS = [
@@ -149,7 +158,7 @@ module.exports = function(config) {
 
     proxies: {'/Images': 'front_end/Images'},
 
-    coverageReporter: {dir: COVERAGE_OUTPUT_DIRECTORY, reporters: istanbulReportOutputs},
+    coverageReporter: {dir: COVERAGE_OUTPUT_DIRECTORY, subdir: '.', reporters: istanbulReportOutputs},
 
     singleRun: !DEBUG_ENABLED,
   };

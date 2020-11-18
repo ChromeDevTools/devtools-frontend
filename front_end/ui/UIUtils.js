@@ -29,9 +29,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as DOMExtension from '../dom_extension/dom_extension.js';
 import * as Host from '../host/host.js';
@@ -1425,7 +1422,7 @@ export class CheckboxLabel extends HTMLSpanElement {
     this.checkboxElement;
     /** @type {!Element} */
     this.textElement;
-    CheckboxLabel._lastId = (CheckboxLabel._lastId || 0) + 1;
+    CheckboxLabel._lastId = CheckboxLabel._lastId + 1;
     const id = 'ui-checkbox-label' + CheckboxLabel._lastId;
     this._shadowRoot = createShadowRootWithCoreStyles(
         this, {cssFile: 'ui/checkboxTextLabel.css', enableLegacyPatching: true, delegatesFocus: undefined});
@@ -1461,7 +1458,6 @@ export class CheckboxLabel extends HTMLSpanElement {
 
   /**
    * @param {string} color
-   * @this {Element}
    */
   set backgroundColor(color) {
     this.checkboxElement.classList.add('dt-checkbox-themed');
@@ -1470,7 +1466,6 @@ export class CheckboxLabel extends HTMLSpanElement {
 
   /**
    * @param {string} color
-   * @this {Element}
    */
   set checkColor(color) {
     this.checkboxElement.classList.add('dt-checkbox-themed');
@@ -1481,13 +1476,18 @@ export class CheckboxLabel extends HTMLSpanElement {
 
   /**
    * @param {string} color
-   * @this {Element}
    */
   set borderColor(color) {
     this.checkboxElement.classList.add('dt-checkbox-themed');
     this.checkboxElement.style.borderColor = color;
   }
 }
+
+/** @type {number} */
+CheckboxLabel._lastId = 0;
+
+/** @type {?function():Element} */
+CheckboxLabel._constructor = null;
 
 export class DevToolsIconLabel extends HTMLSpanElement {
   constructor() {
@@ -1516,8 +1516,10 @@ let labelId = 0;
 export class DevToolsRadioButton extends HTMLSpanElement {
   constructor() {
     super();
+    /** @type {!HTMLInputElement} */
     this.radioElement = /** @type {!HTMLInputElement} */ (this.createChild('input', 'dt-radio-button'));
-    this.labelElement = this.createChild('label');
+    /** @type {!HTMLLabelElement} */
+    this.labelElement = /** @type {!HTMLLabelElement} */ (this.createChild('label'));
 
     const id = 'dt-radio-button-id' + (++labelId);
     this.radioElement.id = id;
@@ -1556,11 +1558,11 @@ class DevToolsSlider extends HTMLSpanElement {
      * @param {number} amount
      */
   set value(amount) {
-    this.sliderElement.value = amount;
+    this.sliderElement.value = String(amount);
   }
 
   get value() {
-    return this.sliderElement.value;
+    return Number(this.sliderElement.value);
   }
 }
 
@@ -1591,7 +1593,8 @@ export class DevToolsCloseButton extends HTMLDivElement {
     super();
     const root = createShadowRootWithCoreStyles(
         this, {cssFile: 'ui/closeButton.css', enableLegacyPatching: true, delegatesFocus: undefined});
-    this._buttonElement = root.createChild('div', 'close-button');
+    /** @type {!HTMLElement} */
+    this._buttonElement = /** @type {!HTMLElement} */ (root.createChild('div', 'close-button'));
     ARIAUtils.setAccessibleName(this._buttonElement, ls`Close`);
     ARIAUtils.markAsButton(this._buttonElement);
     const regularIcon = Icon.create('smallicon-cross', 'default-icon');
@@ -1637,7 +1640,7 @@ export class DevToolsCloseButton extends HTMLDivElement {
 registerCustomElement('div', 'dt-close-button', DevToolsCloseButton);
 
 /**
- * @param {!Element} input
+ * @param {!HTMLInputElement} input
  * @param {function(string):void} apply
  * @param {function(string):{valid: boolean, errorMessage: (string|undefined)}} validate
  * @param {boolean} numeric
@@ -1776,16 +1779,14 @@ export function measureTextWidth(context, text) {
     return context.measureText(text).width;
   }
 
-  let widthCache = measureTextWidth._textWidthCache;
-  if (!widthCache) {
-    widthCache = new Map();
-    measureTextWidth._textWidthCache = widthCache;
+  if (!measureTextWidthCache) {
+    measureTextWidthCache = new Map();
   }
   const font = context.font;
-  let textWidths = widthCache.get(font);
+  let textWidths = measureTextWidthCache.get(font);
   if (!textWidths) {
     textWidths = new Map();
-    widthCache.set(font, textWidths);
+    measureTextWidthCache.set(font, textWidths);
   }
   let width = textWidths.get(text);
   if (!width) {
@@ -1794,6 +1795,9 @@ export function measureTextWidth(context, text) {
   }
   return width;
 }
+
+/** @type {?Map<string, !Map<string, number>>} */
+let measureTextWidthCache = null;
 
 /**
  * @param {string} article
@@ -1874,11 +1878,13 @@ export function createFileSelectorElement(callback) {
   const fileSelectorElement = /** @type {!HTMLInputElement} */ (document.createElement('input'));
   fileSelectorElement.type = 'file';
   fileSelectorElement.style.display = 'none';
-  fileSelectorElement.setAttribute('tabindex', -1);
-  fileSelectorElement.onchange = onChange;
-  function onChange(event) {
-    callback(fileSelectorElement.files[0]);
-  }
+  fileSelectorElement.tabIndex = -1;
+  fileSelectorElement.onchange = () => {
+    if (fileSelectorElement.files) {
+      callback(fileSelectorElement.files[0]);
+    }
+  };
+
   return fileSelectorElement;
 }
 
@@ -1908,7 +1914,7 @@ export class MessageDialog {
       content.createChild('div', 'button').appendChild(okButton);
       dialog.setOutsideClickCallback(event => {
         event.consume();
-        resolve();
+        resolve(undefined);
       });
       dialog.show(where);
       okButton.focus();
@@ -1989,8 +1995,12 @@ Renderer.render = async function(object, options) {
   if (!object) {
     throw new Error('Can\'t render ' + object);
   }
-  const renderer = await Root.Runtime.Runtime.instance().extension(Renderer, object).instance();
-  return renderer ? renderer.render(object, options || {}) : null;
+  const extension = Root.Runtime.Runtime.instance().extension(Renderer, object);
+  if (!extension) {
+    return null;
+  }
+  const renderer = /** @type {?Renderer} */ (await extension.instance());
+  return renderer ? renderer.render(object, options) : null;
 };
 
 /**
@@ -2017,6 +2027,7 @@ export function formatTimestamp(timestamp, full) {
 }
 
 /** @typedef {!{title: (string|!Element|undefined), editable: (boolean|undefined) }} */
+// @ts-ignore typedef
 export let Options;
 
 /**
@@ -2029,6 +2040,7 @@ export let Options;
  *  parent: (Node|undefined),
  * }}
  */
+// @ts-ignore typedef
 export let HighlightChange;
 
 
@@ -2067,7 +2079,9 @@ export function createSVGChild(element, childType, className) {
  * @return {?Node}
  */
 export const enclosingNodeOrSelfWithNodeNameInArray = (initialNode, nameArray) => {
-  for (let node = initialNode; node && node !== initialNode.ownerDocument; node = node.parentNodeOrShadowHost()) {
+  /** @type {?Node} */
+  let node = initialNode;
+  for (; node && node !== initialNode.ownerDocument; node = node.parentNodeOrShadowHost()) {
     for (let i = 0; i < nameArray.length; ++i) {
       if (node.nodeName.toLowerCase() === nameArray[i].toLowerCase()) {
         return node;
@@ -2087,7 +2101,7 @@ export const enclosingNodeOrSelfWithNodeName = function(node, nodeName) {
 };
 
 /**
- * @param {null|undefined|!Document|!DocumentFragment} document
+ * @param {null|undefined|!Document|!ShadowRoot} document
  * @param {number} x
  * @param {number} y
  * @return {?Node}
@@ -2117,6 +2131,6 @@ export const deepElementFromEvent = ev => {
       !event.movementY) {
     return null;
   }
-  const root = event.target && event.target.getComponentRoot();
-  return root ? deepElementFromPoint(root, event.pageX, event.pageY) : null;
+  const root = event.target && /** @type {!Element} */ (event.target).getComponentRoot();
+  return root ? deepElementFromPoint(/** @type {(!Document|!ShadowRoot)} */ (root), event.pageX, event.pageY) : null;
 };

@@ -86,7 +86,7 @@ copy_to_gen("legacy_css") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "elements.js"
+  entrypoint = "elements.ts"
 
   deps = [ ":elements" ]
 }

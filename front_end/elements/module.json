@@ -307,47 +307,12 @@
     "inline_editor",
     "color_picker",
     "event_listeners"
-  ],  "modules": [
-    "elements.js",
-    "elements-legacy.js",
-    "InspectElementModeController.js",
-    "ColorSwatchPopoverIcon.js",
-    "ComputedStyleModel.js",
-    "Adorner.js",
-    "CSSPropertyIconResolver.js",
-    "DOMLinkifier.js",
-    "DOMPath.js",
-    "ElementsSidebarPane.js",
-    "ElementsTreeElement.js",
-    "ElementsTreeOutline.js",
-    "EventListenersWidget.js",
-    "MarkerDecorator.js",
-    "MetricsSidebarPane.js",
-    "PlatformFontsWidget.js",
-    "PropertiesWidget.js",
-    "NodeStackTraceWidget.js",
-    "StylePropertyHighlighter.js",
-    "StylesSidebarPane.js",
-    "StylePropertyTreeElement.js",
-    "ComputedStyleWidget.js",
-    "ComputedStyleProperty_bridge.js",
-    "ComputedStyleTrace_bridge.js",
-    "PropertyNameCategories.js",
-    "ElementsPanel.js",
-    "ClassesPaneWidget.js",
-    "ElementStatePaneWidget.js",
-    "ElementsTreeElementHighlighter.js",
-    "ImagePreviewPopover.js",
-    "Icon_bridge.js",
-    "ElementsBreadcrumbs_bridge.js",
-    "ElementsPanelLink_bridge.js",
-    "LayoutSidebarPane.js",
-    "LayoutPane_bridge.js"
+  ],
+  "modules": [
+    "elements-legacy.js"
   ],
   "skip_compilation": [
-    "NodeText.js",
-    "ElementsBreadcrumbsUtils.js",
-    "LayoutPaneUtils.js"
+    "elements-legacy.js"
   ],
   "resources": [
     "classesPaneWidget.css",

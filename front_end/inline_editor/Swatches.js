@@ -5,8 +5,8 @@
 import * as Common from '../common/common.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
-import * as ColorSwatch from './ColorSwatch_bridge.js';
 
+import {ColorSwatch} from './ColorSwatch.js';
 import {CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -81,7 +81,7 @@ export class CSSShadowSwatch extends HTMLSpanElement {
     root.createChild('slot');
     this._contentElement = this.createChild('span');
 
-    /** @type {?ColorSwatch.ColorSwatchClosureInterface} */
+    /** @type {?ColorSwatch} */
     this._colorSwatch;
   }
 
@@ -115,7 +115,7 @@ export class CSSShadowSwatch extends HTMLSpanElement {
       const result = results[i];
       if (result.regexIndex === 1) {
         if (!this._colorSwatch) {
-          this._colorSwatch = ColorSwatch.createColorSwatch();
+          this._colorSwatch = new ColorSwatch();
           const value = this._colorSwatch.createChild('span');
           this._colorSwatch.addEventListener('format-changed', /** @param {!Event} event */ event => {
             value.textContent = /** @type {*} */ (event).data.text;
@@ -149,7 +149,7 @@ export class CSSShadowSwatch extends HTMLSpanElement {
   }
 
   /**
-   * @return {?ColorSwatch.ColorSwatchClosureInterface}
+   * @return {?ColorSwatch}
    */
   colorSwatch() {
     return this._colorSwatch;

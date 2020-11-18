@@ -105,7 +105,7 @@ export class ColorSwatchPopoverIcon {
   /**
    * @param {!StylePropertyTreeElement} treeElement
    * @param {!InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper} swatchPopoverHelper
-   * @param {!InlineEditor.ColorSwatch.ColorSwatchClosureInterface} swatch
+   * @param {!InlineEditor.ColorSwatch.ColorSwatch} swatch
    */
   constructor(treeElement, swatchPopoverHelper, swatch) {
     this._treeElement = treeElement;

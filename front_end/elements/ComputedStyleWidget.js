@@ -101,7 +101,7 @@ const createTraceElement = (node, property, isPropertyOverloaded, matchedStyles,
  * @return {!Node}
  */
 const processColor = text => {
-  const swatch = InlineEditor.ColorSwatch.createColorSwatch();
+  const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
   swatch.renderColor(text, true);
   swatch.createChild('span').textContent = text;
   return swatch;
@@ -112,7 +112,7 @@ const processColor = text => {
  * @return {!Node}
  */
 const processComputedColor = text => {
-  const swatch = InlineEditor.ColorSwatch.createColorSwatch();
+  const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
   // Computed styles don't provide the original format, so switch to RGB.
   swatch.renderColor(text, Common.Color.Format.RGB);
   swatch.createChild('span').textContent = text;

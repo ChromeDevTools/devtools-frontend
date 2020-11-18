@@ -147,7 +147,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
       return null;
     }, () => this.node());
 
-    /** @type {?InlineEditor.CSSAngle.CSSAngleClosureInterface} */
+    /** @type {?InlineEditor.CSSAngle.CSSAngle} */
     this.activeCSSAngle = null;
   }
 
@@ -2870,7 +2870,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
      * @return {!Element}
      */
     function swatchRenderer(color) {
-      const swatch = InlineEditor.ColorSwatch.createColorSwatch();
+      const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
       swatch.renderColor(color);
       swatch.style.pointerEvents = 'none';
       return swatch;

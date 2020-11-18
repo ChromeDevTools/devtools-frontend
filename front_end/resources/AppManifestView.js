@@ -48,11 +48,11 @@ export class AppManifestView extends UI.Widget.VBox {
     this._startURLField = this._presentationSection.appendField(Common.UIString.UIString('Start URL'));
 
     const themeColorField = this._presentationSection.appendField(Common.UIString.UIString('Theme color'));
-    this._themeColorSwatch = InlineEditor.ColorSwatch.createColorSwatch();
+    this._themeColorSwatch = new InlineEditor.ColorSwatch.ColorSwatch();
     themeColorField.appendChild(this._themeColorSwatch);
 
     const backgroundColorField = this._presentationSection.appendField(Common.UIString.UIString('Background color'));
-    this._backgroundColorSwatch = InlineEditor.ColorSwatch.createColorSwatch();
+    this._backgroundColorSwatch = new InlineEditor.ColorSwatch.ColorSwatch();
     backgroundColorField.appendChild(this._backgroundColorSwatch);
 
     this._orientationField = this._presentationSection.appendField(Common.UIString.UIString('Orientation'));

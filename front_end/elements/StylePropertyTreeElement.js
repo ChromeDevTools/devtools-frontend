@@ -152,7 +152,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const tooltip =
         this._editable() ? Common.UIString.UIString('Open color picker. %s', shiftClickMessage) : shiftClickMessage;
 
-    const swatch = InlineEditor.ColorSwatch.createColorSwatch();
+    const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
     swatch.renderColor(text, useUserSettingFormat, tooltip);
 
     if (!valueChild) {
@@ -188,7 +188,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     const {computedValue, fromFallback} = computedSingleValue;
 
-    const varSwatch = InlineEditor.CSSVarSwatch.createCSSVarSwatch();
+    const varSwatch = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
     UI.UIUtils.createTextChild(varSwatch, text);
     varSwatch.data = {text, computedValue, fromFallback, onLinkClick: this._handleVarDefinitionClick.bind(this)};
 
@@ -210,7 +210,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   /**
-   * @param {!InlineEditor.ColorSwatch.ColorSwatchClosureInterface} swatch
+   * @param {!InlineEditor.ColorSwatch.ColorSwatch} swatch
    */
   async _addColorContrastInfo(swatch) {
     const swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
@@ -317,7 +317,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (!this._editable()) {
       return document.createTextNode(angleText);
     }
-    const cssAngle = InlineEditor.CSSAngle.createCSSAngle();
+    const cssAngle = new InlineEditor.CSSAngle.CSSAngle();
     const valueElement = document.createElement('span');
     valueElement.textContent = angleText;
     const computedPropertyValue = this._matchedStyles.computeValue(this.property.ownerStyle, this.property.value) || '';

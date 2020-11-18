@@ -217,7 +217,7 @@ export class CSSPlugin extends Plugin {
     if (!color) {
       return null;
     }
-    const swatch = InlineEditor.ColorSwatch.createColorSwatch();
+    const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
     swatch.renderColor(color, false, Common.UIString.UIString('Open color picker.'));
     const value = swatch.createChild('span');
     value.textContent = text;
@@ -267,14 +267,14 @@ export class CSSPlugin extends Plugin {
     this._currentSwatch = swatch;
 
     if (swatch.localName === 'devtools-color-swatch') {
-      this._showSpectrum(/** @type {!InlineEditor.ColorSwatch.ColorSwatchClosureInterface} */ (swatch));
+      this._showSpectrum(/** @type {!InlineEditor.ColorSwatch.ColorSwatch} */ (swatch));
     } else if (swatch instanceof InlineEditor.Swatches.BezierSwatch) {
       this._showBezierEditor(swatch);
     }
   }
 
   /**
-   * @param {!InlineEditor.ColorSwatch.ColorSwatchClosureInterface} swatch
+   * @param {!InlineEditor.ColorSwatch.ColorSwatch} swatch
    */
   _showSpectrum(swatch) {
     if (!this._spectrum) {
@@ -304,7 +304,7 @@ export class CSSPlugin extends Plugin {
     }
 
     if (this._currentSwatch.localName === 'devtools-color-swatch') {
-      const swatch = /** @type {!InlineEditor.ColorSwatch.ColorSwatchClosureInterface} */ (this._currentSwatch);
+      const swatch = /** @type {!InlineEditor.ColorSwatch.ColorSwatch} */ (this._currentSwatch);
       swatch.renderColor(color);
     }
     this._changeSwatchText(colorString);

@@ -22,7 +22,7 @@ devtools_module("node_main") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "node_main.js"
+  entrypoint = "node_main.ts"
 
   deps = [ ":node_main" ]
 }

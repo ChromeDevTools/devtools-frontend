@@ -4,7 +4,6 @@
 
 import("../../../third_party/typescript/typescript.gni")
 
-ts_library("helpers") {
-  testonly = true
+node_ts_library("helpers") {
   sources = [ "perf-helper.ts" ]
 }

@@ -618,6 +618,22 @@ export class DebuggerLanguagePluginManager {
   }
 
   /**
+   * @param {!Array<!SDK.DebuggerModel.CallFrame>} callFrames
+   * @return {!Promise<!Array<!SDK.DebuggerModel.CallFrame>>}
+   */
+  _expandCallFrames(callFrames) {
+    return Promise
+        .all(callFrames.map(async callFrame => {
+          const {frames} = await this.getFunctionInfo(callFrame);
+          if (frames.length) {
+            return frames.map(({name}, index) => callFrame.createVirtualCallFrame(index, name));
+          }
+          return callFrame;
+        }))
+        .then(callFrames => callFrames.flat());
+  }
+
+  /**
    * @override
    * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    */
@@ -625,6 +641,7 @@ export class DebuggerLanguagePluginManager {
     this._debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this._workspace));
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
+    debuggerModel.setExpandCallFramesCallback(this._expandCallFrames.bind(this));
   }
 
   /**
@@ -634,6 +651,7 @@ export class DebuggerLanguagePluginManager {
   modelRemoved(debuggerModel) {
     debuggerModel.removeEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
     debuggerModel.removeEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
+    debuggerModel.setExpandCallFramesCallback(null);
     const modelData = this._debuggerModelToData.get(debuggerModel);
     if (modelData) {
       modelData._dispose();

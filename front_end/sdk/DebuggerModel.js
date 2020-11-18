@@ -124,6 +124,8 @@ export class DebuggerModel extends SDKModel {
     this._skipAllPausesTimeout = 0;
     /** @type {(function(!DebuggerPausedDetails):boolean)|null} */
     this._beforePausedCallback = null;
+    /** @type {?function(!Array<!CallFrame>):!Promise<!Array<!CallFrame>>} */
+    this._expandCallFramesCallback = null;
 
     /** @type {!Common.ObjectWrapper.ObjectWrapper} */
     this._breakpointResolvedEventTarget = new Common.ObjectWrapper.ObjectWrapper();
@@ -682,24 +684,10 @@ export class DebuggerModel extends SDKModel {
 
   /**
    * @param {?DebuggerPausedDetails} debuggerPausedDetails
-   * @return {!Promise<boolean>}
+   * @return {boolean}
    */
-  async _setDebuggerPausedDetails(debuggerPausedDetails) {
+  _setDebuggerPausedDetails(debuggerPausedDetails) {
     if (debuggerPausedDetails) {
-      // @ts-ignore
-      const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().pluginManager;
-      if (pluginManager) {
-        debuggerPausedDetails.callFrames =
-            (await Promise.all(debuggerPausedDetails.callFrames.map(async callFrame => {
-              const {frames} = await pluginManager.getFunctionInfo(callFrame);
-              if (frames.length) {
-                return frames.map(
-                    (/** @type {!{name: string}} */ {name}, /** @type {number} */ index) =>
-                        callFrame.createVirtualCallFrame(index, name));
-              }
-              return callFrame;
-            }))).flat();
-      }
       this._isPausing = false;
       this._debuggerPausedDetails = debuggerPausedDetails;
       if (this._beforePausedCallback) {
@@ -728,7 +716,14 @@ export class DebuggerModel extends SDKModel {
   }
 
   /**
-   * @param {!Array.<!Protocol.Debugger.CallFrame>} callFrames
+   * @param {?function(!Array<!CallFrame>):!Promise<!Array<!CallFrame>>} callback
+   */
+  setExpandCallFramesCallback(callback) {
+    this._expandCallFramesCallback = callback;
+  }
+
+  /**
+   * @param {!Array<!Protocol.Debugger.CallFrame>} callFrames
    * @param {string} reason
    * @param {!Object|undefined} auxData
    * @param {!Array.<string>} breakpointIds
@@ -753,6 +748,10 @@ export class DebuggerModel extends SDKModel {
     const pausedDetails =
         new DebuggerPausedDetails(this, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId);
 
+    if (this._expandCallFramesCallback) {
+      pausedDetails.callFrames = await this._expandCallFramesCallback.call(null, pausedDetails.callFrames);
+    }
+
     if (this._continueToLocationCallback) {
       const callback = this._continueToLocationCallback;
       this._continueToLocationCallback = null;
@@ -761,7 +760,7 @@ export class DebuggerModel extends SDKModel {
       }
     }
 
-    if (!await this._setDebuggerPausedDetails(pausedDetails)) {
+    if (!this._setDebuggerPausedDetails(pausedDetails)) {
       if (this._autoStepOver) {
         this.stepOver();
       } else {
@@ -1928,7 +1927,7 @@ export class Scope {
 export class DebuggerPausedDetails {
   /**
    * @param {!DebuggerModel} debuggerModel
-   * @param {!Array.<!Protocol.Debugger.CallFrame>} callFrames
+   * @param {!Array<!Protocol.Debugger.CallFrame>} callFrames
    * @param {string} reason
    * @param {!Object.<string, *>|undefined} auxData
    * @param {!Array.<string>} breakpointIds

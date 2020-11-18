@@ -537,14 +537,6 @@ export function createReplacementString(wordString, event, customNumberHandler) 
  * @return {boolean}
  */
 export function handleElementValueModifications(event, element, finishHandler, suggestionHandler, customNumberHandler) {
-  /**
-   * @return {?Range}
-   * @suppressGlobalPropertiesCheck
-   */
-  function createRange() {
-    return document.createRange();
-  }
-
   const arrowKeyOrWheelEvent =
       (/** @type {!KeyboardEvent} */ (event).key === 'ArrowUp' ||
        /** @type {!KeyboardEvent} */ (event).key === 'ArrowDown' || event.type === 'wheel');
@@ -556,7 +548,7 @@ export function handleElementValueModifications(event, element, finishHandler, s
   }
 
   const selection = element.getComponentSelection();
-  if (!selection.rangeCount) {
+  if (!selection || !selection.rangeCount) {
     return false;
   }
 
@@ -583,7 +575,7 @@ export function handleElementValueModifications(event, element, finishHandler, s
     wordRange.deleteContents();
     wordRange.insertNode(replacementTextNode);
 
-    const finalSelectionRange = createRange();
+    const finalSelectionRange = document.createRange();
     finalSelectionRange.setStart(replacementTextNode, 0);
     finalSelectionRange.setEnd(replacementTextNode, replacementString.length);
 
@@ -594,7 +586,7 @@ export function handleElementValueModifications(event, element, finishHandler, s
     event.preventDefault();
 
     if (finishHandler) {
-      finishHandler(originalValue, replacementString);
+      finishHandler(originalValue || '', replacementString);
     }
 
     return true;
@@ -708,7 +700,7 @@ Number.withThousandsSeparator = function(num) {
  * @return {!Element}
  */
 export function formatLocalized(format, substitutions) {
-  const formatters = {s: substitution => substitution};
+  const formatters = {s: /** @param {*} substitution */ substitution => substitution};
   /**
    * @param {!Element} a
    * @param {*} b
@@ -802,9 +794,11 @@ export class ElementFocusRestorer {
    * @param {!Element} element
    */
   constructor(element) {
-    this._element = element;
-    this._previous = element.ownerDocument.deepActiveElement();
-    element.focus();
+    /** @type {?HTMLElement} */
+    this._element = /** @type {?HTMLElement} */ (element);
+    /** @type {?HTMLElement} */
+    this._previous = /** @type {?HTMLElement} */ (element.ownerDocument.deepActiveElement());
+    /** @type {!HTMLElement} */ (element).focus();
   }
 
   restore() {
@@ -823,7 +817,7 @@ export class ElementFocusRestorer {
  * @param {!Element} element
  * @param {number} offset
  * @param {number} length
- * @param {!Array.<!Object>=} domChanges
+ * @param {!Array.<*>=} domChanges
  * @return {?Element}
  */
 export function highlightSearchResult(element, offset, length, domChanges) {

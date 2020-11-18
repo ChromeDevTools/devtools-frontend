@@ -70,7 +70,7 @@ describe('LinearMemoryValueInterpreter', () => {
         component, SETTINGS_SELECTOR, LinearMemoryInspector.ValueInterpreterSettings.ValueInterpreterSettings);
     const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryValueInterpreter.ValueTypeToggleEvent>(
         component, 'value-type-toggle');
-    const expectedType = LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Boolean;
+    const expectedType = LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64;
     const expectedChecked = true;
     const typeToggleEvent =
         new LinearMemoryInspector.ValueInterpreterSettings.TypeToggleEvent(expectedType, expectedChecked);

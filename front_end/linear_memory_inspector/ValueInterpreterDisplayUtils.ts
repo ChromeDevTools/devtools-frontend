@@ -11,7 +11,6 @@ export enum ValueType {
   Int64 = 'Integer 64-bit',
   Float32 = 'Float 32-bit',
   Float64 = 'Float 64-bit',
-  Boolean = 'Boolean',
   String = 'String'
 }
 
@@ -38,7 +37,6 @@ export function isValidMode(type: ValueType, mode: ValueTypeMode) {
     case ValueType.Float32:
     case ValueType.Float64:
       return mode === ValueTypeMode.Scientific || mode === ValueTypeMode.Decimal;
-    case ValueType.Boolean:
     case ValueType.String:
       return mode === ValueTypeMode.None;
   }
@@ -102,15 +100,9 @@ export function format(formatData: FormatData) {
     case ValueType.Float64:
       value = valueView.getFloat64(0, isLittleEndian);
       return formatFloat(value, formatData.mode);
-    case ValueType.Boolean:
-      return formatBoolean(valueView.getInt8(0));
     case ValueType.String:
       throw new Error(`Type ${formatData.type} is not yet implemented`);
   }
-}
-
-export function formatBoolean(byte: number) {
-  return `${!!(byte & 0x1)}`;
 }
 
 export function formatFloat(value: number, mode: ValueTypeMode) {

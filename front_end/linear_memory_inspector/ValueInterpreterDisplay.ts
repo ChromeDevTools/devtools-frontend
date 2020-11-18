@@ -17,7 +17,6 @@ const DEFAULT_MODE_MAPPING = new Map([
   [ValueType.Int64, ValueTypeMode.Decimal],
   [ValueType.Float32, ValueTypeMode.Decimal],
   [ValueType.Float64, ValueTypeMode.Decimal],
-  [ValueType.Boolean, ValueTypeMode.None],
   [ValueType.String, ValueTypeMode.None],
 ]);
 

@@ -171,16 +171,6 @@ describe('ValueInterpreterDisplay', () => {
     assert.strictEqual(actualValue, '20');
   });
 
-  it('correctly LinearMemoryInspector.ValueInterpreterDisplayUtils.formats boolean', async () => {
-    let booleanValue = 3;
-    let actualValue = LinearMemoryInspector.ValueInterpreterDisplayUtils.formatBoolean(booleanValue);
-    assert.strictEqual(actualValue, 'true');
-
-    booleanValue = 0;
-    actualValue = LinearMemoryInspector.ValueInterpreterDisplayUtils.formatBoolean(booleanValue);
-    assert.strictEqual(actualValue, 'false');
-  });
-
   it('renders value in selected LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypes', async () => {
     const component = new LinearMemoryInspector.ValueInterpreterDisplay.ValueInterpreterDisplay();
     const array = [1, 132, 172, 71];
@@ -190,16 +180,15 @@ describe('ValueInterpreterDisplay', () => {
       valueTypes: new Set([
         LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int16,
         LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
-        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Boolean,
       ]),
     };
     renderElementIntoDOM(component);
 
     const dataValues = getElementsWithinComponent(component, '[data-value]', HTMLSpanElement);
-    assert.lengthOf(dataValues, 4);
+    assert.lengthOf(dataValues, 3);
 
     const actualValues = Array.from(dataValues).map(x => x.innerText);
-    const expectedValues = ['+ 33793', '± -31743', '88328.01', 'true'];
+    const expectedValues = ['+ 33793', '± -31743', '88328.01'];
     assert.deepStrictEqual(actualValues, expectedValues);
   });
 });

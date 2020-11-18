@@ -17,7 +17,6 @@ describe('ValueInterpreterSettings', () => {
     const data = {
       valueTypes: new Set([
         LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8,
-        LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Boolean,
         LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
       ]),
     };

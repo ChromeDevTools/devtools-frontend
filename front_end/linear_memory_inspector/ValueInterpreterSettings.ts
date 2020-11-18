@@ -24,7 +24,7 @@ const GROUP_TO_TYPES = new Map(
     [
       [ValueTypeGroup.Integer, [ValueType.Int8, ValueType.Int16, ValueType.Int32, ValueType.Int64]],
       [ValueTypeGroup.Float, [ValueType.Float32, ValueType.Float64]],
-      [ValueTypeGroup.Other, [ValueType.Boolean, ValueType.String]],
+      [ValueTypeGroup.Other, [ValueType.String]],
     ],
 );
 

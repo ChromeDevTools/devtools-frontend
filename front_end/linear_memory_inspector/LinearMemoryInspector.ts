@@ -59,7 +59,7 @@ export class LinearMemoryInspector extends HTMLElement {
   private memoryOffset = 0;
   private address = 0;
   private numBytesPerPage = 4;
-  private valueTypes: Set<ValueType> = new Set([ValueType.Int8, ValueType.Float32, ValueType.Boolean]);
+  private valueTypes: Set<ValueType> = new Set([ValueType.Int8, ValueType.Float32]);
 
   set data(data: LinearMemoryInspectorData) {
     if (data.address < data.memoryOffset || data.address > data.memoryOffset + data.memory.length || data.address < 0) {

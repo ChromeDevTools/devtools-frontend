@@ -18,7 +18,7 @@ export interface IconWithName {
   height?: string;
 }
 
-type IconData = IconWithPath|IconWithName;
+export type IconData = IconWithPath|IconWithName;
 
 const isString = (value: string|undefined): value is string => value !== undefined;
 

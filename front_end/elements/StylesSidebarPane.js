@@ -41,7 +41,7 @@ import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {findIcon} from './CSSPropertyIconResolver.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
-import * as Icon from './Icon_bridge.js';
+import {Icon} from './Icon.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import {Context, StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
@@ -2796,7 +2796,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         if (!iconInfo) {
           continue;
         }
-        const icon = Icon.createIcon();
+        const icon = new Icon();
         const width = '12.5px';
         const height = '12.5px';
         icon.data = {

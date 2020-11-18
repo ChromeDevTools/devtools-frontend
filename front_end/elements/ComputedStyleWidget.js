@@ -34,8 +34,8 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ComputedStyle, ComputedStyleModel, Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
-import {ComputedStylePropertyClosureInterface, ComputedStylePropertyData, createComputedStyleProperty} from './ComputedStyleProperty_bridge.js';  // eslint-disable-line no-unused-vars
-import {createComputedStyleTrace} from './ComputedStyleTrace_bridge.js';
+import {ComputedStyleProperty} from './ComputedStyleProperty.js';
+import {ComputedStyleTrace} from './ComputedStyleTrace.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import {categorizePropertyName, Category, DefaultCategoryOrder} from './PropertyNameCategories.js';  // eslint-disable-line no-unused-vars
@@ -47,7 +47,7 @@ import {IdleCallbackManager, StylePropertiesSection, StylesSidebarPane, StylesSi
  * @param {string} propertyValue
  */
 const createPropertyElement = (node, propertyName, propertyValue) => {
-  const propertyElement = createComputedStyleProperty();
+  const propertyElement = new ComputedStyleProperty();
 
   const renderer = new StylesSidebarPropertyRenderer(null, node, propertyName, propertyValue);
   renderer.setColorHandler(processComputedColor);
@@ -71,7 +71,7 @@ const createPropertyElement = (node, propertyName, propertyValue) => {
  * @param {!Components.Linkifier.Linkifier} linkifier
  */
 const createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, linkifier) => {
-  const trace = createComputedStyleTrace();
+  const trace = new ComputedStyleTrace();
 
   const renderer = new StylesSidebarPropertyRenderer(null, node, property.name, /** @type {string} */ (property.value));
   renderer.setColorHandler(processColor);

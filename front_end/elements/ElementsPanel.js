@@ -37,8 +37,8 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
-import {createElementsBreadcrumbs, DOMNode} from './ElementsBreadcrumbs_bridge.js';  // eslint-disable-line no-unused-vars
-import {ElementsTreeElement} from './ElementsTreeElement.js';  // eslint-disable-line no-unused-vars
+import {DOMNode, ElementsBreadcrumbs} from './ElementsBreadcrumbs.js';  // eslint-disable-line no-unused-vars
+import {ElementsTreeElement} from './ElementsTreeElement.js';           // eslint-disable-line no-unused-vars
 import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
 import {MarkerDecorator} from './MarkerDecorator.js';  // eslint-disable-line no-unused-vars
@@ -109,7 +109,7 @@ export class ElementsPanel extends UI.Panel.Panel {
 
     crumbsContainer.id = 'elements-crumbs';
 
-    this._breadcrumbs = createElementsBreadcrumbs();
+    this._breadcrumbs = new ElementsBreadcrumbs();
     this._breadcrumbs.addEventListener('node-selected', /** @param {!Event} event */ event => {
       this._crumbNodeSelected(/** @type {?} */ (event));
     });

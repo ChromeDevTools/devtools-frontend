@@ -12,6 +12,8 @@ import {BooleanSetting, EnumSetting, LayoutElement, Setting, SettingType} from '
 
 import type {NodeTextData} from './NodeText.js';
 
+export {LayoutElement};
+
 const {render, html} = LitHtml;
 const ls = Common.ls;
 const getStyleSheets = ComponentHelpers.GetStylesheet.getStyleSheets;

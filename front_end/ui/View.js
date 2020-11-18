@@ -182,7 +182,7 @@ export class ProvidedView {
    * @return {string}
    */
   title() {
-    return this._extension.title();
+    return ls(this._extension.title());
   }
 
   order() {

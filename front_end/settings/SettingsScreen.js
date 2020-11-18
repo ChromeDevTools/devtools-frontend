@@ -589,7 +589,7 @@ export class Revealer {
     }
 
     /**
-     * @param {!{settings: (!Array<string>|undefined), location: ?UI.ViewManager.ViewLocationValues, id: string}} extension
+     * @param {!{settings: (!Array<string>|undefined), location: (?UI.ViewManager.ViewLocationValues|undefined), id: string}} extension
      */
     function revealSettingsView(extension) {
       const location = extension.location;

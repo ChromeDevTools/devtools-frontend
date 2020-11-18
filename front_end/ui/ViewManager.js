@@ -34,14 +34,14 @@ export const ViewLocationValues = {
 /**
  * @typedef {{
  *  title: string,
- *  persistence: !ViewPersistence,
+ *  persistence: (!ViewPersistence|undefined),
  *  id: string,
- *  location: !ViewLocationValues,
- *  hasToolbar: boolean,
+ *  location: (!ViewLocationValues|undefined),
+ *  hasToolbar: (boolean|undefined),
  *  loadView: function():!Promise<!Widget>,
- *  order: number,
- *  settings: !Array<string>,
- *  tags: string,
+ *  order: (number|undefined),
+ *  settings: (!Array<string>|undefined),
+ *  tags: (string|undefined),
  * }}
  */
 // @ts-ignore typedef
@@ -185,7 +185,7 @@ export class ViewManager {
       ...registeredViewExtensions.map(registeredView => {
         return {
           viewId: registeredView.viewId(),
-          location: registeredView.location(),
+          location: registeredView.location() || null,
           view: registeredView,
         };
       }),
@@ -193,7 +193,14 @@ export class ViewManager {
 
     // All views define their initial ordering. When the user has not reordered, we use the
     // default ordering as defined by the views themselves.
-    unionOfViewExtensions.sort((firstView, secondView) => firstView.view.order() - secondView.view.order());
+    unionOfViewExtensions.sort((firstView, secondView) => {
+      const firstViewOrder = firstView.view.order();
+      const secondViewOrder = secondView.view.order();
+      if (firstViewOrder && secondViewOrder) {
+        return firstViewOrder - secondViewOrder;
+      }
+      return 0;
+    });
 
     for (const {viewId, view, location} of unionOfViewExtensions) {
       this._views.set(viewId, view);
@@ -822,7 +829,7 @@ export class _TabbedLocation extends _Location {
     const views = Array.from(this._views.values());
     views.sort((viewa, viewb) => viewa.title().localeCompare(viewb.title()));
     for (const view of views) {
-      const title = Common.UIString.UIString(view.title());
+      const title = view.title();
 
       if (view.viewId() === 'issues-pane') {
         contextMenu.defaultSection().appendItem(title, () => {

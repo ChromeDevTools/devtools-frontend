@@ -314,6 +314,15 @@ export class DataGrid extends HTMLElement {
         display: none;
       }
 
+      .filler-row {
+        /**
+        * The filler row is only there to stylistically fill grid lines down to the
+        * bottom, we don't want users to be able to focus into it (it's got tabIndex
+        * of -1) nor should they be able to click into it.
+        */
+        pointer-events: none;
+      }
+
       .filler-row td {
         /* By making the filler row cells 100% they take up any extra height,
          * leaving the cells with content to be the regular height, and the

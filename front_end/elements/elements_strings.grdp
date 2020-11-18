@@ -189,6 +189,9 @@
   <message name="IDS_DEVTOOLS_6f3cab519fe7e8f3b7834cf882f9dfe6" desc="Text in Classes Pane Widget of the Elements panel">
     Element Classes
   </message>
+  <message name="IDS_DEVTOOLS_713dd2b77f546aa3e2bed5bb34d70c54" desc="Label of the adorner for flex elements in the Elements panel">
+    Enable flex mode
+  </message>
   <message name="IDS_DEVTOOLS_7490f30ff46ab588405acd7109915139" desc="Hint element title in Elements Tree Element of the Elements panel">
     Use <ph name="ELEMENTS_HINT">$1s<ex>$$0</ex></ph> in the console to refer to this element.
   </message>
@@ -245,6 +248,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a78163b8c3f5e5a69fddd2a70c7f7309" desc="Text in Styles Sidebar Pane of the Elements panel">
     Style Attribute
+  </message>
+  <message name="IDS_DEVTOOLS_a86a5a4a6eea9002980b600540ff4ddc" desc="Label of the adorner for flex elements in the Elements panel">
+    Disable flex mode
   </message>
   <message name="IDS_DEVTOOLS_a915992a9a41d2e12c6c60cbd2b30e93" desc="Title of a section in the Layout Sidebar pane of the Elements panel">
     Overlay display settings

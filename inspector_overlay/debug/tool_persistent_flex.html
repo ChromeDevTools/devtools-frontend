@@ -1,0 +1,37 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Debug</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
+</head>
+<body>
+  <script type="module">
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+    dispatch(["setPlatform", "mac"]);
+    dispatch(["setOverlay", "persistent"]);
+    dispatch(["reset", {
+      viewportSize: {
+        width: viewportWidth,
+        height: viewportHeight,
+      },
+      deviceScaleFactor: 1,
+      pageScaleFactor: 1,
+      pageZoomFactor: 1,
+      emulationScaleFactor: 1,
+      scrollX: 0,
+      scrollY: 0,
+    }]);
+    dispatch(["drawFlexContainerHighlight", {"containerBorder":["M",9,9,"L",257,9,"L",257,369,"L",9,369,"Z"],"lines":[[["M",9,9,"L",129,9,"L",129,129,"L",9,129,"Z"],["M",129,9,"L",249,9,"L",249,129,"L",129,129,"Z"]],[["M",9,129,"L",75.859375,129,"L",75.859375,249,"L",9,249,"Z"],["M",75.859375,129,"L",195.859375,129,"L",195.859375,249,"L",75.859375,249,"Z"]],[["M",9,249,"L",129,249,"L",129,369,"L",9,369,"Z"],["M",129,249,"L",249,249,"L",249,369,"L",129,369,"Z"]]],"isHorizontalFlow":true,"flexContainerHighlightConfig":{"containerBorder":{"color":"#7f20d2","pattern":"dashed"},"lineSeparator":{"color":"#7f20d2","pattern":"dashed"},"itemSeparator":{"color":"#7f20d2","pattern":"dotted"}}}]);
+  </script>
+</body>
+</html>
+
+

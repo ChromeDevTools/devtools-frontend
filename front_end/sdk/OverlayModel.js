@@ -87,19 +87,20 @@ export class OverlayModel extends SDKModel {
 
     /** @type {?DefaultPersistentGridHighlighter} */
     this._persistentGridHighlighter = null;
+    /** @type {?DefaultPersistentFlexHighlighter} */
+    this._persistentFlexHighlighter = null;
     if (this._gridFeaturesExperimentEnabled) {
       this._persistentGridHighlighter = new DefaultPersistentGridHighlighter(this);
+      if (this._flexFeaturesExperimentEnabled) {
+        this._persistentFlexHighlighter = new DefaultPersistentFlexHighlighter(this);
+      }
       this._domModel.addEventListener(DOMModelEvents.NodeRemoved, () => {
-        if (!this._persistentGridHighlighter) {
-          return;
-        }
-        this._persistentGridHighlighter.refreshHighlights();
+        this._persistentGridHighlighter && this._persistentGridHighlighter.refreshHighlights();
+        this._persistentFlexHighlighter && this._persistentFlexHighlighter.refreshHighlights();
       });
       this._domModel.addEventListener(DOMModelEvents.DocumentUpdated, () => {
-        if (!this._persistentGridHighlighter) {
-          return;
-        }
-        this._persistentGridHighlighter.hideAllInOverlay();
+        this._persistentGridHighlighter && this._persistentGridHighlighter.hideAllInOverlay();
+        this._persistentFlexHighlighter && this._persistentFlexHighlighter.hideAllInOverlay();
       });
     }
     this._sourceOrderHighlighter = new SourceOrderHighlighter(this);
@@ -352,6 +353,39 @@ export class OverlayModel extends SDKModel {
     }
     this._persistentGridHighlighter.hideInOverlay(nodeId);
     this.dispatchEventToListeners(Events.PersistentGridOverlayStateChanged, {nodeId, enabled: false});
+  }
+
+  /**
+   * @param {number} nodeId
+   */
+  highlightFlexContainerInPersistentOverlay(nodeId) {
+    if (!this._persistentFlexHighlighter) {
+      return;
+    }
+    this._persistentFlexHighlighter.highlightInOverlay(nodeId);
+    this.dispatchEventToListeners(Events.PersistentFlexOverlayStateChanged, {nodeId, enabled: true});
+  }
+
+  /**
+   * @param {number} nodeId
+   * @return {boolean}
+   */
+  isHighlightedFlexContainerInPersistentOverlay(nodeId) {
+    if (!this._persistentFlexHighlighter) {
+      return false;
+    }
+    return this._persistentFlexHighlighter.isHighlighted(nodeId);
+  }
+
+  /**
+   * @param {number} nodeId
+   */
+  hideFlexContainerInPersistentOverlay(nodeId) {
+    if (!this._persistentFlexHighlighter) {
+      return;
+    }
+    this._persistentFlexHighlighter.hideInOverlay(nodeId);
+    this.dispatchEventToListeners(Events.PersistentFlexContainerOverlayStateChanged, {nodeId, enabled: false});
   }
 
   /**
@@ -632,6 +666,8 @@ export const Events = {
   ScreenshotRequested: Symbol('ScreenshotRequested'),
   PersistentGridOverlayCleared: Symbol('PersistentGridOverlayCleared'),
   PersistentGridOverlayStateChanged: Symbol('PersistentGridOverlayStateChanged'),
+  PersistentFlexOverlayStateChanged: Symbol('PersistentFlexOverlayStateChanged'),
+  PersistentFlexContainerOverlayStateChanged: Symbol('PersistentFlexContainerOverlayStateChanged'),
 };
 
 /**
@@ -968,6 +1004,150 @@ class DefaultPersistentGridHighlighter {
 }
 
 DefaultPersistentGridHighlighter.gridTelemetryLogged = false;
+
+/**
+ * @interface
+ */
+export class PersistentFlexHighlighter {
+  /**
+   * @param {number} nodeId
+   * @param {!Protocol.Overlay.FlexContainerHighlightConfig} config
+   */
+  highlightInOverlay(nodeId, config) {
+  }
+
+  /**
+   * @param {number} nodeId
+   */
+  hideInOverlay(nodeId) {
+  }
+
+  hideAllInOverlay() {
+  }
+
+  refreshHighlights() {
+  }
+
+  /**
+   * @param {number} nodeId
+   * @return {boolean}
+   */
+  isHighlighted(nodeId) {
+    return false;
+  }
+}
+
+/**
+ * @implements {PersistentFlexHighlighter}
+ */
+class DefaultPersistentFlexHighlighter {
+  /**
+   * @param {!OverlayModel} model
+   */
+  constructor(model) {
+    this._model = model;
+
+    /** @type {!Map<number, !Protocol.Overlay.FlexContainerHighlightConfig>} */
+    this._flexHighlights = new Map();
+  }
+
+  _onSettingChange() {
+    this._resetOverlay();
+  }
+
+  /**
+   * @param {number} nodeId
+   * @return {!Protocol.Overlay.FlexContainerHighlightConfig}
+   */
+  _buildFlexContainerHighlightConfig(nodeId) {
+    // TODO(alexrudenko): compute proper styles.
+    return {
+      containerBorder: {
+        color: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA(),
+        pattern: Protocol.Overlay.LineStylePattern.Dashed
+      },
+      itemSeparator: {
+        color: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA(),
+        pattern: Protocol.Overlay.LineStylePattern.Dotted
+      },
+      lineSeparator: {
+        color: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA(),
+        pattern: Protocol.Overlay.LineStylePattern.Dashed
+      }
+    };
+  }
+
+  /**
+   * @override
+   * @param {number} nodeId
+   */
+  highlightInOverlay(nodeId) {
+    this._flexHighlights.set(nodeId, this._buildFlexContainerHighlightConfig(nodeId));
+    this._updateHighlightsInOverlay();
+  }
+
+  /**
+   * @override
+   * @param {number} nodeId
+   * @return {boolean}
+   */
+  isHighlighted(nodeId) {
+    return this._flexHighlights.has(nodeId);
+  }
+
+  /**
+   * @override
+   * @param {number} nodeId
+   */
+  hideInOverlay(nodeId) {
+    if (this._flexHighlights.has(nodeId)) {
+      this._flexHighlights.delete(nodeId);
+      this._updateHighlightsInOverlay();
+    }
+  }
+
+  /**
+   * @override
+   */
+  hideAllInOverlay() {
+    this._flexHighlights.clear();
+    this._updateHighlightsInOverlay();
+  }
+
+  /**
+   * @override
+   */
+  refreshHighlights() {
+    let needsUpdate = false;
+    for (const nodeId of this._flexHighlights.keys()) {
+      if (this._model.getDOMModel().nodeForId(nodeId) === null) {
+        this._flexHighlights.delete(nodeId);
+        needsUpdate = true;
+      }
+    }
+    if (needsUpdate) {
+      this._updateHighlightsInOverlay();
+    }
+  }
+
+  _resetOverlay() {
+    for (const nodeId of this._flexHighlights.keys()) {
+      this._flexHighlights.set(nodeId, this._buildFlexContainerHighlightConfig(nodeId));
+    }
+    this._updateHighlightsInOverlay();
+  }
+
+  _updateHighlightsInOverlay() {
+    const hasGridNodesToHighlight = this._flexHighlights.size > 0;
+    this._model.setShowViewportSizeOnResize(!hasGridNodesToHighlight);
+    const overlayModel = this._model;
+    const flexNodeHighlightConfigs = [];
+    for (const [nodeId, flexContainerHighlightConfig] of this._flexHighlights.entries()) {
+      flexNodeHighlightConfigs.push({nodeId, flexContainerHighlightConfig});
+    }
+    overlayModel.target().overlayAgent().invoke_setShowFlexOverlays({flexNodeHighlightConfigs});
+  }
+}
 
 /**
  * Used to cycle through a list of predetermined colors for the grid overlay.

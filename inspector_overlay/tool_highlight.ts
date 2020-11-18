@@ -182,6 +182,12 @@ export class HighlightOverlay extends Overlay {
     }
   }
 
+  drawFlexContainerHighlight(highlight: FlexContainerHighlight) {
+    if (this.persistentOverlay) {
+      this.persistentOverlay.drawFlexContainerHighlight(highlight);
+    }
+  }
+
   _drawAxis(context: CanvasRenderingContext2D, rulerAtRight: boolean, rulerAtBottom: boolean) {
     if (this.gridLabelState.gridPainted) {
       return;

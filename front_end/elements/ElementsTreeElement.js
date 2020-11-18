@@ -2182,11 +2182,33 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   /**
-   * @return {!Adorner}
+   * @return {?Adorner}
    */
   createFlexAdorner() {
+    const node = this.node();
+    const nodeId = node.id;
+    if (!nodeId) {
+      return null;
+    }
     const adorner = this.adornText('flex', AdornerCategories.Layout);
     adorner.classList.add('flex');
+
+    const onClick = /** @type {!EventListener} */ (() => {
+      const model = node.domModel().overlayModel();
+      if (adorner.isActive()) {
+        model.highlightFlexContainerInPersistentOverlay(nodeId);
+      } else {
+        model.hideFlexContainerInPersistentOverlay(nodeId);
+      }
+    });
+
+    adorner.addInteraction(onClick, {
+      isToggle: true,
+      shouldPropagateOnKeydown: false,
+      ariaLabelDefault: ls`Enable flex mode`,
+      ariaLabelActive: ls`Disable flex mode`,
+    });
+
     return adorner;
   }
 }

@@ -41,8 +41,6 @@ let platformName;
 const overlays = {
   distances: distancesOverlay,
   highlight: highlightOverlay,
-  // TODO(alexrudenko): remove next line once the backend is updated.
-  highlightGrid: persistentOverlay,
   persistent: persistentOverlay,
   paused: pausedOverlay,
   screenshot: screenshotOverlay,

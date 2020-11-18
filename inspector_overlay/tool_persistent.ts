@@ -29,6 +29,7 @@
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {Overlay, ResetData} from './common.js';
+import {drawLayoutFlexContainerHighlight, FlexContainerHighlight} from './highlight_flex_common.js';
 import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
 
 export class PersistentOverlay extends Overlay {
@@ -78,6 +79,14 @@ export class PersistentOverlay extends Overlay {
     drawLayoutGridHighlight(
         highlight, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight, this.emulationScaleFactor,
         this.gridLabelState);
+    this.context.restore();
+  }
+
+  drawFlexContainerHighlight(highlight: FlexContainerHighlight) {
+    this.context.save();
+    drawLayoutFlexContainerHighlight(
+        highlight, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight,
+        this.emulationScaleFactor);
     this.context.restore();
   }
 }

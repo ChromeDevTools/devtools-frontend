@@ -4,7 +4,7 @@
 
 import type * as IssuesModule from '../../../../front_end/issues/issues.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import {TemplateResult} from '../../../../front_end/third_party/lit-html/lit-html.js';
+import * as LitHtml from '../../../../front_end/third_party/lit-html/lit-html.js';
 import * as Marked from '../../../../front_end/third_party/marked/marked.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
@@ -53,7 +53,7 @@ describeWithEnvironment('MarkdownView', async () => {
         ],
       });
 
-      const renderedParts = renderResult.values[0] as TemplateResult[];
+      const renderedParts = renderResult.values[0] as LitHtml.TemplateResult[];
       assert.strictEqual(renderedParts.length, 2);
       assert.deepStrictEqual(renderedParts[0].values, ['Nested raw text']);
       assert.deepStrictEqual(renderedParts[1].values, ['and a nested codespan to boot']);

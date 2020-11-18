@@ -15,16 +15,12 @@ const UNITTESTS_DIRECTORY = path.join(__dirname, '..', '..', '..', 'test', 'unit
 const INSPECTOR_OVERLAY_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end', 'inspector_overlay');
 
 const EXEMPTED_THIRD_PARTY_MODULES = new Set([
-  // lit-html is exempt as it doesn't expose all its modules from the root file
-  path.join(FRONT_END_DIRECTORY, 'third_party', 'lit-html'),
   // wasmparser is exempt as it doesn't expose all its modules from the root file
   path.join(FRONT_END_DIRECTORY, 'third_party', 'wasmparser'),
   // acorn is exempt as it doesn't expose all its modules from the root file
   path.join(FRONT_END_DIRECTORY, 'third_party', 'acorn'),
   // acorn-loose is exempt as it doesn't expose all its modules from the root file
   path.join(FRONT_END_DIRECTORY, 'third_party', 'acorn-loose'),
-  // marked is exempt as it doesn't expose all its modules from the root file
-  path.join(FRONT_END_DIRECTORY, 'third_party', 'marked'),
   // client-variations is exempt as it doesn't expose all its modules from the root file
   path.join(FRONT_END_DIRECTORY, 'third_party', 'chromium', 'client-variations'),
 ]);

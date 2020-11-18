@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {$, $$, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, $$, getBrowserAndPages, goToResource, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {triggerFindDialog} from '../helpers/search-helpers.js';
 
@@ -15,6 +15,10 @@ describe('The Search Panel', async () => {
     const SEARCH_RESULTS = '.search-results';
     const SEARCH_FILE_RESULT = '.search-result';
     const SEARCH_CHILDREN_RESULT = '.search-match-link';
+
+    // Wait for Devtools to settle before navigating:
+    // https://crbug.com/1150334
+    await timeout(500);
 
     // Load the search page, which has results in the HTML, JS, and CSS.
     await goToResource('search/search.html');

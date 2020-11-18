@@ -281,7 +281,7 @@ export function clearSourceFilesAdded(frontend: puppeteer.Page) {
 
 export function retrieveSourceFilesAdded(frontend: puppeteer.Page) {
   // Strip hostname, to make it agnostic of which server port we use
-  return frontend.evaluate(() => window.__sourceFilesAddedEvents.map(file => new URL(`http://${file}`).pathname));
+  return frontend.evaluate(() => window.__sourceFilesAddedEvents.map(file => new URL(`https://${file}`).pathname));
 }
 
 // Helpers for navigating the file tree.

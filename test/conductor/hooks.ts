@@ -59,7 +59,11 @@ const envChromeBinary = process.env['CHROME_BIN'];
 
 function launchChrome() {
   // Use port 0 to request any free port.
-  const launchArgs = ['--remote-debugging-port=0', '--enable-experimental-web-platform-features'];
+  const launchArgs = [
+    '--remote-debugging-port=0',
+    '--enable-experimental-web-platform-features',
+    '--ignore-certificate-errors',
+  ];
   const opts: puppeteer.LaunchOptions = {
     headless,
     executablePath: envChromeBinary,
@@ -134,7 +138,7 @@ async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
 
   // Connect to the DevTools frontend.
   const frontend = await browser.newPage();
-  frontendUrl = `http://localhost:${hostedModeServerPort}/front_end/devtools_app.html?ws=localhost:${
+  frontendUrl = `https://localhost:${hostedModeServerPort}/front_end/devtools_app.html?ws=localhost:${
       chromeDebugPort}/devtools/page/${id}`;
   await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
 

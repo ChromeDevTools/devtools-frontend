@@ -13,7 +13,7 @@ let DOMAIN_SELECTOR: string;
 
 describe('The Application Tab', async () => {
   before(async () => {
-    DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="http://localhost:${getHostedModeServerPort()}"]`;
+    DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="https://localhost:${getHostedModeServerPort()}"]`;
   });
 
   afterEach(async () => {

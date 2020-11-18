@@ -30,9 +30,9 @@ describe('The Console Tab', async () => {
       `Uncaught (in promise) Error: err2
     at uncaught-promise.html:25`,
       `Uncaught (in promise) DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
-    at throwDOMException (http://localhost:${
+    at throwDOMException (https://localhost:${
           getHostedModeServerPort()}/test/e2e/resources/console/uncaught-promise.html:40:7)
-    at catcher (http://localhost:${getHostedModeServerPort()}/test/e2e/resources/console/uncaught-promise.html:33:5)`,
+    at catcher (https://localhost:${getHostedModeServerPort()}/test/e2e/resources/console/uncaught-promise.html:33:5)`,
     ]);
   });
 

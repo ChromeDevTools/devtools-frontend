@@ -19,9 +19,9 @@ describe('The Application Tab', async () => {
     await waitForFunction(async () => {
       const fieldValues = await getReportValues();
       const expected = [
-        `http://localhost:${getHostedModeServerPort()}/test/e2e/resources/application/frame-tree.html`,
+        `https://localhost:${getHostedModeServerPort()}/test/e2e/resources/application/frame-tree.html`,
         '',
-        `http://localhost:${getHostedModeServerPort()}`,
+        `https://localhost:${getHostedModeServerPort()}`,
         '<#document>',
         '',
         'YesLocalhost is always a secure context',
@@ -49,7 +49,7 @@ describe('The Application Tab', async () => {
     await waitForFunction(async () => {
       const fieldValues = await getReportValues();
       const expected =
-          [`http://localhost:${getHostedModeServerPort()}/test/e2e/resources/application/dedicated-worker.js`, 'None'];
+          [`https://localhost:${getHostedModeServerPort()}/test/e2e/resources/application/dedicated-worker.js`, 'None'];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });
   });

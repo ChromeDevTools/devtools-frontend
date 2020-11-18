@@ -34,24 +34,25 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 /**
+ * @param {!Node} rootNode
  * @param {number} offset
  * @param {string} stopCharacters
  * @param {!Node} stayWithinNode
  * @param {string=} direction
  * @return {!Range}
  */
-Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, direction) {
+export function rangeOfWord(rootNode, offset, stopCharacters, stayWithinNode, direction) {
   let startNode;
   let startOffset = 0;
   let endNode;
   let endOffset = 0;
 
   if (!stayWithinNode) {
-    stayWithinNode = this;
+    stayWithinNode = rootNode;
   }
 
   if (!direction || direction === 'backward' || direction === 'both') {
-    let node = this;
+    let node = rootNode;
     while (node) {
       if (node === stayWithinNode) {
         if (!startNode) {
@@ -61,7 +62,7 @@ Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, di
       }
 
       if (node.nodeType === Node.TEXT_NODE) {
-        const start = (node === this ? (offset - 1) : (node.nodeValue.length - 1));
+        const start = (node === rootNode ? (offset - 1) : (node.nodeValue.length - 1));
         for (let i = start; i >= 0; --i) {
           if (stopCharacters.indexOf(node.nodeValue[i]) !== -1) {
             startNode = node;
@@ -83,12 +84,12 @@ Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, di
       startOffset = 0;
     }
   } else {
-    startNode = this;
+    startNode = rootNode;
     startOffset = offset;
   }
 
   if (!direction || direction === 'forward' || direction === 'both') {
-    let node = this;
+    let node = rootNode;
     while (node) {
       if (node === stayWithinNode) {
         if (!endNode) {
@@ -98,7 +99,7 @@ Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, di
       }
 
       if (node.nodeType === Node.TEXT_NODE) {
-        const start = (node === this ? offset : 0);
+        const start = (node === rootNode ? offset : 0);
         for (let i = start; i < node.nodeValue.length; ++i) {
           if (stopCharacters.indexOf(node.nodeValue[i]) !== -1) {
             endNode = node;
@@ -121,15 +122,26 @@ Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, di
                                                                stayWithinNode.childNodes.length;
     }
   } else {
-    endNode = this;
+    endNode = rootNode;
     endOffset = offset;
   }
 
-  const result = this.ownerDocument.createRange();
+  const result = rootNode.ownerDocument.createRange();
   result.setStart(startNode, startOffset);
   result.setEnd(endNode, endOffset);
 
   return result;
+}
+
+/**
+ * @param {number} offset
+ * @param {string} stopCharacters
+ * @param {!Node} stayWithinNode
+ * @param {string=} direction
+ * @return {!Range}
+ */
+Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, direction) {
+  return rangeOfWord(this, offset, stopCharacters, stayWithinNode, direction);
 };
 
 /**

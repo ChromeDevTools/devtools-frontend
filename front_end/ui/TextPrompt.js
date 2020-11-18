@@ -31,6 +31,7 @@
 // TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
+import * as DOMExtension from '../dom_extension/dom_extension.js';
 import * as Platform from '../platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -525,8 +526,9 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
 
-    const wordQueryRange = selectionRange.startContainer.rangeOfWord(
-        selectionRange.startOffset, this._completionStopCharacters, this._element, 'backward');
+    const wordQueryRange = DOMExtension.DOMExtension.rangeOfWord(
+        selectionRange.startContainer, selectionRange.startOffset, this._completionStopCharacters, this._element,
+        'backward');
 
     const expressionRange = wordQueryRange.cloneRange();
     expressionRange.collapse(true);

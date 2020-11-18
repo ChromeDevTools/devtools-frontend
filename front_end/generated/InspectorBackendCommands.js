@@ -782,6 +782,10 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'DOMDebugger.DOMBreakpointType',
       {SubtreeModified: 'subtree-modified', AttributeModified: 'attribute-modified', NodeRemoved: 'node-removed'});
+  inspectorBackend.registerEnum('DOMDebugger.CSPViolationType', {
+    TrustedtypeSinkViolation: 'trustedtype-sink-violation',
+    TrustedtypePolicyViolation: 'trustedtype-policy-violation'
+  });
   inspectorBackend.registerCommand(
       'DOMDebugger.getEventListeners',
       [
@@ -804,6 +808,8 @@ export function registerCommands(inspectorBackend) {
       'DOMDebugger.removeInstrumentationBreakpoint', [{'name': 'eventName', 'type': 'string', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'DOMDebugger.removeXHRBreakpoint', [{'name': 'url', 'type': 'string', 'optional': false}], []);
+  inspectorBackend.registerCommand(
+      'DOMDebugger.setBreakOnCSPViolation', [{'name': 'violationTypes', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'DOMDebugger.setDOMBreakpoint',
       [{'name': 'nodeId', 'type': 'number', 'optional': false}, {'name': 'type', 'type': 'string', 'optional': false}],

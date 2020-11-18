@@ -5371,6 +5371,16 @@
                     ]
                 },
                 {
+                    "id": "CSPViolationType",
+                    "description": "CSP Violation type.",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "trustedtype-sink-violation",
+                        "trustedtype-policy-violation"
+                    ]
+                },
+                {
                     "id": "EventListener",
                     "description": "Object event listener.",
                     "type": "object",
@@ -5519,6 +5529,21 @@
                             "name": "url",
                             "description": "Resource URL substring.",
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "setBreakOnCSPViolation",
+                    "description": "Sets breakpoint on particular CSP violations.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "violationTypes",
+                            "description": "CSP Violations to stop upon.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSPViolationType"
+                            }
                         }
                     ]
                 },

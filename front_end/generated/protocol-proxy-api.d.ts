@@ -1021,6 +1021,12 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Sets breakpoint on particular CSP violations.
+     */
+    invoke_setBreakOnCSPViolation(params: Protocol.DOMDebugger.SetBreakOnCSPViolationRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Sets breakpoint on particular operation with DOM.
      */
     invoke_setDOMBreakpoint(params: Protocol.DOMDebugger.SetDOMBreakpointRequest):

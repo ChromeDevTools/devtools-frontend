@@ -3674,6 +3674,14 @@ declare namespace Protocol {
     }
 
     /**
+     * CSP Violation type.
+     */
+    export enum CSPViolationType {
+      TrustedtypeSinkViolation = 'trustedtype-sink-violation',
+      TrustedtypePolicyViolation = 'trustedtype-policy-violation',
+    }
+
+    /**
      * Object event listener.
      */
     export interface EventListener {
@@ -3777,6 +3785,13 @@ declare namespace Protocol {
        * Resource URL substring.
        */
       url: string;
+    }
+
+    export interface SetBreakOnCSPViolationRequest {
+      /**
+       * CSP Violations to stop upon.
+       */
+      violationTypes: CSPViolationType[];
     }
 
     export interface SetDOMBreakpointRequest {

@@ -1259,6 +1259,11 @@ export namespace ProtocolMapping {
     'DOMDebugger.removeXHRBreakpoint':
         {paramsType: [Protocol.DOMDebugger.RemoveXHRBreakpointRequest]; returnType: void;};
     /**
+     * Sets breakpoint on particular CSP violations.
+     */
+    'DOMDebugger.setBreakOnCSPViolation':
+        {paramsType: [Protocol.DOMDebugger.SetBreakOnCSPViolationRequest]; returnType: void;};
+    /**
      * Sets breakpoint on particular operation with DOM.
      */
     'DOMDebugger.setDOMBreakpoint': {paramsType: [Protocol.DOMDebugger.SetDOMBreakpointRequest]; returnType: void;};

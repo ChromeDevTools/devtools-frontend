@@ -17,7 +17,7 @@ devtools_module("wasmparser_worker") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "wasmparser_worker.js"
+  entrypoint = "wasmparser_worker.ts"
 
   deps = [ ":wasmparser_worker" ]
 }

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as UIComponents from '../../../../../front_end/ui/components/components.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as UIComponents from '../../../../../front_end/ui/components/components.js';
 import {assertNotNull, assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {TEXT_NODE, withMutations, withNoMutations} from '../../helpers/MutationHelpers.js';
 import {getAllRows, getHeaderCellForColumnId, getValuesForColumn, getValuesOfAllBodyRows} from './DataGridHelpers.js';

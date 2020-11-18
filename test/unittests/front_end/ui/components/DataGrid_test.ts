@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../../../../front_end/third_party/lit-html/lit-html.js';
-import * as UIComponents from '../../../../../front_end/ui/components/components.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as UIComponents from '../../../../../front_end/ui/components/components.js';
 
 import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, getEventPromise, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {withMutations} from '../../helpers/MutationHelpers.js';

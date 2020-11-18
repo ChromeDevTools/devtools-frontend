@@ -22,7 +22,7 @@ devtools_module("input") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "input.js"
+  entrypoint = "input.ts"
 
   deps = [ ":input" ]
 }

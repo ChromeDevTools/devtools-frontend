@@ -72,10 +72,10 @@
     "ui"
   ],
   "modules": [
-    "input.js",
-    "input-legacy.js",
-    "InputModel.js",
-    "InputTimeline.js"
+    "input-legacy.js"
+  ],
+  "skip_compilation": [
+    "input-legacy.js"
   ],
   "resources": [
     "inputTimeline.css"

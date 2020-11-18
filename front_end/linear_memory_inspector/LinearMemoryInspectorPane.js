@@ -5,6 +5,8 @@
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
+const {ls} = Common;
+
 import {createLinearMemoryInspector} from './LinearMemoryInspector_bridge.js';
 
 /** @type {!LinearMemoryInspectorPaneImpl} */

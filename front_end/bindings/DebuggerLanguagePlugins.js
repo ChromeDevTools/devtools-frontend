@@ -1107,14 +1107,20 @@ class ModelData {
       if (!uiSourceCode) {
         uiSourceCode = this._project.createUISourceCode(url, Common.ResourceType.resourceTypes.SourceMapScript);
         NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
+
+        // Bind the uiSourceCode to the script first before we add the
+        // uiSourceCode to the project and thereby notify the rest of
+        // the system about the new source file.
+        // https://crbug.com/1150295 is an example where the breakpoint
+        // resolution logic kicks in right after adding the uiSourceCode
+        // and at that point we already need to have the mapping in place
+        // otherwise we will not get the breakpoint right.
+        this._uiSourceCodeToScripts.set(uiSourceCode, [script]);
+
         const contentProvider = new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
             url, Common.ResourceType.resourceTypes.SourceMapScript, initiator);
-
         const mimeType = Common.ResourceType.ResourceType.mimeFromURL(url) || 'text/javascript';
         this._project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
-
-        // Bind the uiSourceCode to the script.
-        this._uiSourceCodeToScripts.set(uiSourceCode, [script]);
       } else {
         // The same uiSourceCode can be provided by different scripts,
         // but we don't expect that to happen frequently.

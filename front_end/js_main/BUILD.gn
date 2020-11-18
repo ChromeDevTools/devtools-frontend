@@ -17,7 +17,7 @@ devtools_module("js_main") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "js_main.js"
+  entrypoint = "js_main.ts"
 
   deps = [ ":js_main" ]
 }

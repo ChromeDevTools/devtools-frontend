@@ -33,7 +33,7 @@ import * as Host from '../host/host.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';
 
-import {GetPropertiesResult, RemoteObject, RemoteObjectImpl, ScopeRef} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
+import {GetPropertiesResult, RemoteObject, ScopeRef} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
 import {EvaluationOptions, EvaluationResult, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import {Script} from './Script.js';
 import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
@@ -64,29 +64,12 @@ export function sortAndMergeRanges(locationRanges) {
   return merged;
 }
 
-/**
- * TODO(bmeurer): Introduce a dedicated {DebuggerLocationRange} class or something!
- *
- * @param {!Location} location
- * @param {!{start:!Location, end:!Location}} range
- * @return {boolean}
- */
-function contained(location, range) {
-  const {start, end} = range;
-  if (start.scriptId !== location.scriptId) {
-    return false;
-  }
-  if (location.lineNumber < start.lineNumber || location.lineNumber > end.lineNumber) {
-    return false;
-  }
-  if (location.lineNumber === start.lineNumber && location.columnNumber < start.columnNumber) {
-    return false;
-  }
-  if (location.lineNumber === end.lineNumber && location.columnNumber >= end.columnNumber) {
-    return false;
-  }
-  return true;
-}
+/** @enum {symbol} */
+export const StepMode = {
+  StepInto: Symbol('StepInto'),
+  StepOut: Symbol('StepOut'),
+  StepOver: Symbol('StepOver')
+};
 
 export class DebuggerModel extends SDKModel {
   /**
@@ -124,6 +107,8 @@ export class DebuggerModel extends SDKModel {
     this._skipAllPausesTimeout = 0;
     /** @type {(function(!DebuggerPausedDetails):boolean)|null} */
     this._beforePausedCallback = null;
+    /** @type {?function(!StepMode, !CallFrame):!Promise<!Array<!{start: !Location, end: !Location}>>} */
+    this._computeAutoStepRangesCallback = null;
     /** @type {?function(!Array<!CallFrame>):!Promise<!Array<!CallFrame>>} */
     this._expandCallFramesCallback = null;
 
@@ -339,78 +324,55 @@ export class DebuggerModel extends SDKModel {
   }
 
   /**
-   *  @param {boolean} skipInlineFunctions
-   *  @return {!Promise<!Array<!LocationRange>>}
+   * @param {?function(!StepMode, !CallFrame):!Promise<!Array<!{start: !Location, end: !Location}>>} callback
    */
-  async _computeAutoStepSkipList(skipInlineFunctions) {
-    // @ts-ignore
-    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().pluginManager;
-    if (pluginManager) {
-      // @ts-ignore
-      const rawLocation = this._debuggerPausedDetails.callFrames[0].location();
-      const uiLocation = await pluginManager.rawLocationToUILocation(rawLocation);
-      /** @type {!Array<{start: !Location, end: !Location}>} */
-      let ranges = [];
-      if (uiLocation) {
-        ranges = await pluginManager.uiLocationToRawLocationRanges(
-                     uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber) ||
-            [];
-        // TODO(bmeurer): Remove the {rawLocation} from the {ranges}?
-        ranges = ranges.filter(range => contained(rawLocation, range));
-      }
-      if (skipInlineFunctions) {
-        ranges = ranges.concat(await pluginManager.getInlinedCalleesRanges(rawLocation));
-      }
-      if (ranges.length) {
-        const skipList = ranges.map(
-            // @ts-ignore
-            location => new LocationRange(
-                location.start.scriptId, new ScriptPosition(location.start.lineNumber, location.start.columnNumber),
-                new ScriptPosition(location.end.lineNumber, location.end.columnNumber)));
-        return sortAndMergeRanges(skipList);
-      }
+  setComputeAutoStepRangesCallback(callback) {
+    this._computeAutoStepRangesCallback = callback;
+  }
+
+  /**
+   * @param {!StepMode} mode
+   * @return {!Promise<!Array<!Protocol.Debugger.LocationRange>>}
+   */
+  async _computeAutoStepSkipList(mode) {
+    /** @type {!Array<!{start: !Location, end: !Location}>} */
+    let ranges = [];
+    if (this._computeAutoStepRangesCallback && this._debuggerPausedDetails) {
+      const [callFrame] = this._debuggerPausedDetails.callFrames;
+      ranges = await this._computeAutoStepRangesCallback.call(null, mode, callFrame);
     }
-    return [];
+    const skipList = ranges.map(
+        location => new LocationRange(
+            location.start.scriptId, new ScriptPosition(location.start.lineNumber, location.start.columnNumber),
+            new ScriptPosition(location.end.lineNumber, location.end.columnNumber)));
+    return sortAndMergeRanges(skipList).map(x => x.payload());
   }
 
   async stepInto() {
-    const skipList = await this._computeAutoStepSkipList(false);
-    this._agent.invoke_stepInto({breakOnAsyncCall: false, skipList: skipList.map(x => x.payload())});
+    const skipList = await this._computeAutoStepSkipList(StepMode.StepInto);
+    this._agent.invoke_stepInto({breakOnAsyncCall: false, skipList});
   }
 
   async stepOver() {
     // Mark that in case of auto-stepping, we should be doing
     // step-over instead of step-in.
     this._autoStepOver = true;
-    const skipList = await this._computeAutoStepSkipList(true);
-    this._agent.invoke_stepOver({skipList: skipList.map(x => x.payload())});
+    const skipList = await this._computeAutoStepSkipList(StepMode.StepOver);
+    this._agent.invoke_stepOver({skipList});
   }
 
   async stepOut() {
-    // @ts-ignore
-    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().pluginManager;
-    if (pluginManager) {
-      // @ts-ignore
-      const rawLocation = this._debuggerPausedDetails.callFrames[0].location();
-      const ranges = await pluginManager.getInlinedFunctionRanges(rawLocation);
-      if (ranges.length) {
-        // Step out of inline function.
-        const skipList = sortAndMergeRanges(ranges.map(
-            // @ts-ignore
-            location => new LocationRange(
-                location.start.scriptId, new ScriptPosition(location.start.lineNumber, location.start.columnNumber),
-                new ScriptPosition(location.end.lineNumber, location.end.columnNumber))));
-
-        this._agent.invoke_stepOver({skipList: skipList.map(x => x.payload())});
-        return;
-      }
+    const skipList = await this._computeAutoStepSkipList(StepMode.StepOut);
+    if (skipList.length !== 0) {
+      this._agent.invoke_stepOver({skipList});
+    } else {
+      this._agent.invoke_stepOut();
     }
-    this._agent.invoke_stepOut();
   }
 
   scheduleStepIntoAsync() {
-    this._computeAutoStepSkipList(false).then(skipList => {
-      this._agent.invoke_stepInto({breakOnAsyncCall: true, skipList: skipList.map(x => x.payload())});
+    this._computeAutoStepSkipList(StepMode.StepInto).then(skipList => {
+      this._agent.invoke_stepInto({breakOnAsyncCall: true, skipList});
     });
   }
 

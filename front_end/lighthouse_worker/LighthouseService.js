@@ -2,19 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Root from '../root/root.js';
 
 /**
  * @interface
  */
-// eslint-disable-next-line
-const LighthousePort = class {
+class LighthousePort {  // eslint-disable-line
   /**
    * @param {!string} eventName, 'message', 'close'
-   * @param {function(string|undefined)} cb
+   * @param {function(string|undefined):void} cb
    */
   on(eventName, cb) {
   }
@@ -27,24 +23,24 @@ const LighthousePort = class {
 
   close() {
   }
-};
+}
 
 /**
  * @implements {LighthousePort}
- * @implements {Service}
  * @unrestricted
  */
 class LighthouseService {  // eslint-disable-line
   /**
    * @override
-   * @param {function(string)}
+   * @param {function(string,!Object=):void} notify
    */
   setNotify(notify) {
     this._notify = notify;
   }
 
   /**
-   * @return {!Promise<!ReportRenderer.RunnerResult>}
+   * @param {*} params
+   * @return {!Promise<*>}
    */
   start(params) {
     if (Root.Runtime.Runtime.queryParam('isUnderTest')) {
@@ -52,6 +48,7 @@ class LighthouseService {  // eslint-disable-line
       params.flags.maxWaitForLoad = 2 * 1000;
     }
 
+    // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
     self.listenForStatus(message => {
       this.statusUpdate(message[1]);
     });
@@ -63,13 +60,16 @@ class LighthouseService {  // eslint-disable-line
           flags.channel = 'devtools';
           flags.locale = locale;
 
+          // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
           const connection = self.setUpWorkerConnection(this);
+          // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
           const config = self.createConfig(params.categoryIDs, flags.emulatedFormFactor);
           const url = params.url;
 
+          // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
           return self.runLighthouse(url, flags, config, connection);
         })
-        .then(/** @type {!ReportRenderer.RunnerResult} */ result => {
+        .then(result => {
           // Keep all artifacts on the result, no trimming
           return result;
         })
@@ -82,14 +82,15 @@ class LighthouseService {  // eslint-disable-line
 
   /**
    * @param {string[]} locales
-   * @return {string|undefined}
+   * @return {!Promise<(string|undefined)>}
    */
   async fetchLocaleData(locales) {
+    // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
     const locale = self.lookupLocale(locales);
 
     // If the locale is en-US, no need to fetch locale data.
     if (locale === 'en-US' || locale === 'en') {
-      return;
+      return undefined;
     }
 
     // Try to load the locale data.
@@ -98,51 +99,51 @@ class LighthouseService {  // eslint-disable-line
       const module = Root.Runtime.Runtime.instance().module('lighthouse_worker');
       const localeDataText = await module.fetchResource(localeResource);
       const localeData = JSON.parse(localeDataText);
+      // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
       self.registerLocaleData(locale, localeData);
       return locale;
     } catch (_) {
     }
 
     // If no locale was found, or fetching locale data fails, Lighthouse will use `en-US` by default.
+    return undefined;
   }
 
-  /**
-   * @return {!Promise}
-   */
-  stop() {
+  async stop() {
     this.close();
-    return Promise.resolve();
   }
 
   /**
-   * @param {!Object=} params
-   * @return {!Promise}
+   * @param {*} params
    */
-  dispatchProtocolMessage(params) {
-    this._onMessage(params['message']);
-    return Promise.resolve();
+  async dispatchProtocolMessage(params) {
+    if (this._onMessage) {
+      this._onMessage(params['message']);
+    }
   }
 
   /**
    * @override
-   * @return {!Promise}
    */
-  dispose() {
-    return Promise.resolve();
+  async dispose() {
   }
 
   /**
    * @param {string} message
    */
   statusUpdate(message) {
-    this._notify('statusUpdate', {message: message});
+    if (this._notify) {
+      this._notify('statusUpdate', {message});
+    }
   }
 
   /**
    * @param {string} message
    */
   send(message) {
-    this._notify('sendProtocolMessage', {message: message});
+    if (this._notify) {
+      this._notify('sendProtocolMessage', {message});
+    }
   }
 
   close() {
@@ -150,7 +151,7 @@ class LighthouseService {  // eslint-disable-line
 
   /**
    * @param {string} eventName
-   * @param {function(string|undefined)} cb
+   * @param {function(string|undefined):void} cb
    */
   on(eventName, cb) {
     if (eventName === 'message') {
@@ -168,10 +169,15 @@ class LighthouseService {  // eslint-disable-line
 
 // Make lighthouse and traceviewer happy.
 globalThis.global = self;
+// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.isVinn = true;
+// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.document = {};
+// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.document.documentElement = {};
+// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.document.documentElement.style = {
   WebkitAppearance: 'WebkitAppearance'
 };
+// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.LighthouseService = LighthouseService;

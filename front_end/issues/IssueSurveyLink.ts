@@ -70,6 +70,13 @@ export class IssueSurveyLink extends HTMLElement {
     });
   }
 
+  private onKeyDown(event: Event) {
+    if (isEnterOrSpaceKey(event) && this.state === State.ShowLink) {
+      event.consume(true);
+      this.sendSurvey();
+    }
+  }
+
   private render() {
     if (this.state === State.Checking || this.state === State.DontShowLink) {
       return;
@@ -90,6 +97,8 @@ export class IssueSurveyLink extends HTMLElement {
     } else if (this.state === State.Failed || this.state === State.SurveyShown) {
       linkState = 'disabled-link';
     }
+
+    const ariaDisabled = this.state !== State.ShowLink;
 
     // clang-format off
     const output = LitHtml.html`
@@ -119,7 +128,7 @@ export class IssueSurveyLink extends HTMLElement {
           text-decoration: none;
         }
       </style>
-      <a class="link ${linkState}" @click=${this.sendSurvey}>
+      <a class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} role="button" aria-disabled=${ariaDisabled} @click=${this.sendSurvey} @keydown=${this.onKeyDown}>
         <devtools-icon class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--issue-link)', width: '16px', height: '16px'} as Elements.Icon.IconData}></devtools-icon><!--
       -->${linkText}
       </a>

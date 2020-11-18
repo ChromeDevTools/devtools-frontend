@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Bindings from '../bindings/bindings.js';
+import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
@@ -30,15 +28,17 @@ export class InputTimeline extends UI.Widget.VBox {
 
     this._state = State.Idle;
 
-
+    /** @type {!UI.ActionRegistration.Action}*/
     this._toggleRecordAction =
-        /** @type {!UI.ActionRegistration.Action }*/ (
+        /** @type {!UI.ActionRegistration.Action}*/ (
             UI.ActionRegistry.ActionRegistry.instance().action('input.toggle-recording'));
+    /** @type {!UI.ActionRegistration.Action}*/
     this._startReplayAction =
-        /** @type {!UI.ActionRegistration.Action }*/ (
+        /** @type {!UI.ActionRegistration.Action}*/ (
             UI.ActionRegistry.ActionRegistry.instance().action('input.start-replaying'));
+    /** @type {!UI.ActionRegistration.Action}*/
     this._togglePauseAction =
-        /** @type {!UI.ActionRegistration.Action }*/ (
+        /** @type {!UI.ActionRegistration.Action}*/ (
             UI.ActionRegistry.ActionRegistry.instance().action('input.toggle-pause'));
 
     const toolbarContainer = this.contentElement.createChild('div', 'input-timeline-toolbar-container');
@@ -55,9 +55,9 @@ export class InputTimeline extends UI.Widget.VBox {
     this._panelToolbar.appendSeparator();
 
     // Load / Save
-    this._loadButton = new UI.Toolbar.ToolbarButton(Common.UIString('Load profile…'), 'largeicon-load');
+    this._loadButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Load profile…'), 'largeicon-load');
     this._loadButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this._selectFileToLoad());
-    this._saveButton = new UI.Toolbar.ToolbarButton(Common.UIString('Save profile…'), 'largeicon-download');
+    this._saveButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Save profile…'), 'largeicon-download');
     this._saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this._saveToFile();
     });
@@ -157,7 +157,10 @@ export class InputTimeline extends UI.Widget.VBox {
    * Saves all current events in a file (JSON format).
    */
   async _saveToFile() {
-    console.assert(this._state === State.Idle && this._tracingModel);
+    console.assert(this._state === State.Idle);
+    if (!this._tracingModel) {
+      return;
+    }
 
     const fileName = `InputProfile-${Platform.DateUtilities.toISO8601Compact(new Date())}.json`;
     const stream = new Bindings.FileUtils.FileOutputStream();
@@ -175,7 +178,9 @@ export class InputTimeline extends UI.Widget.VBox {
 
 
   _selectFileToLoad() {
-    this._fileSelectorElement.click();
+    if (this._fileSelectorElement) {
+      this._fileSelectorElement.click();
+    }
   }
 
   /**
@@ -193,34 +198,47 @@ export class InputTimeline extends UI.Widget.VBox {
   async _startRecording() {
     this._setState(State.StartPending);
 
-    this._tracingClient = new InputTimeline.TracingClient(
+    this._tracingClient = new TracingClient(
         /** @type {!SDK.SDKModel.Target} */ (SDK.SDKModel.TargetManager.instance().mainTarget()), this);
 
     const response = await this._tracingClient.startRecording();
+    // @ts-ignore crbug.com/1011811 Fix tracing manager type once Closure is gone
     if (response[ProtocolClient.InspectorBackend.ProtocolError]) {
-      this._recordingFailed(response[ProtocolClient.InspectorBackend.ProtocolError]);
+      this._recordingFailed();
     } else {
       this._setState(State.Recording);
     }
   }
 
   async _stopRecording() {
+    if (!this._tracingClient) {
+      return;
+    }
     this._setState(State.StopPending);
     await this._tracingClient.stopRecording();
     this._tracingClient = null;
   }
 
   async _replayEvents() {
+    if (!this._inputModel) {
+      return;
+    }
     this._setState(State.Replaying);
     await this._inputModel.startReplay(this.replayStopped.bind(this));
   }
 
   _pauseReplay() {
+    if (!this._inputModel) {
+      return;
+    }
     this._inputModel.pause();
     this._setState(State.ReplayPaused);
   }
 
   _resumeReplay() {
+    if (!this._inputModel) {
+      return;
+    }
     this._inputModel.resume();
     this._setState(State.Replaying);
   }
@@ -262,7 +280,7 @@ export class InputTimeline extends UI.Widget.VBox {
     this._setState(State.Idle);
   }
 
-  _recordingFailed(error) {
+  _recordingFailed() {
     this._tracingClient = null;
     this._setState(State.Idle);
   }
@@ -300,8 +318,8 @@ export class ActionDelegate {
     const inputViewId = 'Inputs';
     UI.ViewManager.ViewManager.instance()
         .showView(inputViewId)
-        .then(() => UI.ViewManager.ViewManager.instance().view(inputViewId).widget())
-        .then(widget => this._innerHandleAction(/** @type !InputTimeline} */ (widget), actionId));
+        .then(() => /** @type {!UI.View.View} */ (UI.ViewManager.ViewManager.instance().view(inputViewId)).widget())
+        .then(widget => this._innerHandleAction(/** @type {!InputTimeline} */ (widget), actionId));
 
     return true;
   }
@@ -343,7 +361,7 @@ export class TracingClient {
     const backingStorage = new Bindings.TempFile.TempFileBackingStorage();
     this._tracingModel = new SDK.TracingModel.TracingModel(backingStorage);
 
-    /** @type {?function()} */
+    /** @type {?function():void} */
     this._tracingCompleteCallback = null;
   }
 
@@ -351,14 +369,15 @@ export class TracingClient {
    * @return {!Promise<!Object>}
    */
   async startRecording() {
-    function disabledByDefault(category) {
-      return 'disabled-by-default-' + category;
+    if (!this._tracingManager) {
+      return {};
     }
 
-    const categoriesArray = ['devtools.timeline', disabledByDefault('devtools.timeline.inputs')];
+    const categoriesArray = ['devtools.timeline', 'disabled-by-default-devtools.timeline.inputs'];
     const categories = categoriesArray.join(',');
 
     const response = await this._tracingManager.start(this, categories, '');
+    // @ts-ignore crbug.com/1011811 Fix tracing manager type once Closure is gone
     if (response['Protocol.Error']) {
       await this._waitForTracingToStop(false);
     }
@@ -387,7 +406,9 @@ export class TracingClient {
    * @override
    */
   tracingComplete() {
-    this._tracingCompleteCallback();
+    if (this._tracingCompleteCallback) {
+      this._tracingCompleteCallback();
+    }
     this._tracingCompleteCallback = null;
   }
 
@@ -407,7 +428,7 @@ export class TracingClient {
 
   /**
    * @param {boolean} awaitTracingCompleteCallback - Whether to wait for the _tracingCompleteCallback to happen
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   _waitForTracingToStop(awaitTracingCompleteCallback) {
     return new Promise(resolve => {

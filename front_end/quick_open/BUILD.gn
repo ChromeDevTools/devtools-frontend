@@ -26,7 +26,7 @@ devtools_module("quick_open") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "quick_open.js"
+  entrypoint = "quick_open.ts"
 
   deps = [ ":quick_open" ]
 }

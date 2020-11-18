@@ -100,14 +100,10 @@
     "diff"
   ],
   "modules": [
-    "quick_open.js",
-    "quick_open-legacy.js",
-    "FilteredListWidget.js",
-    "QuickOpen.js",
-    "CommandMenu.js",
-    "HelpQuickOpen.js",
-    "QuickInput.js",
-    "QuickPick.js"
+    "quick_open-legacy.js"
+  ],
+  "skip_compilation": [
+    "quick_open-legacy.js"
   ],
   "resources": [
     "filteredListWidget.css"

@@ -1003,7 +1003,7 @@ export class ToolbarComboBox extends ToolbarItem {
   }
 
   /**
-   * @return {!Array.<!Element>}
+   * @return {!Array.<!HTMLOptionElement>}
    */
   options() {
     return Array.prototype.slice.call(this._selectElement.children, 0);

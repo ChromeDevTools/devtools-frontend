@@ -519,7 +519,10 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
    * @return {?{snapshot:!HeapSnapshotProxy, snapshotNodeIndex:number}}
    */
   retainersDataSource() {
-    return {snapshot: this._dataGrid.snapshot, snapshotNodeIndex: this.snapshotNodeIndex};
+    return {
+      snapshot: /** @type {!HeapSnapshotProxy} */ (this._dataGrid.snapshot),
+      snapshotNodeIndex: this.snapshotNodeIndex
+    };
   }
 
   /**
@@ -1042,7 +1045,8 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
    * @return {!HeapSnapshotProviderProxy}
    */
   createProvider() {
-    return this._dataGrid.snapshot.createNodesProviderForClass(this._name, this._nodeFilter);
+    return /** @type {!HeapSnapshotProviderProxy} */ (
+        this._dataGrid.snapshot.createNodesProviderForClass(this._name, this._nodeFilter));
   }
 
   /**
@@ -1094,7 +1098,8 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
    * @return {!HeapSnapshotInstanceNode}
    */
   _createChildNode(item) {
-    return new HeapSnapshotInstanceNode(this._dataGrid, this._dataGrid.snapshot, item, false);
+    return new HeapSnapshotInstanceNode(
+        this._dataGrid, /** @type {!HeapSnapshotProxy} */ (this._dataGrid.snapshot), item, false);
   }
 
   /**
@@ -1261,7 +1266,8 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
   createProvider() {
     const tree = this._dataGrid;
     return new HeapSnapshotDiffNodesProvider(
-        tree.snapshot.createAddedNodesProvider(tree.baseSnapshot.uid, this._name),
+        /** @type {!HeapSnapshotProviderProxy} */ (/** @type {!HeapSnapshotProxy} */ (tree.snapshot)
+                                                       .createAddedNodesProvider(tree.baseSnapshot.uid, this._name)),
         tree.baseSnapshot.createDeletedNodesProvider(this._deletedIndexes), this._addedCount, this._removedCount);
   }
 
@@ -1284,7 +1290,8 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
    */
   _createChildNode(item) {
     if (item.isAddedNotRemoved) {
-      return new HeapSnapshotInstanceNode(this._dataGrid, this._dataGrid.snapshot, item, false);
+      return new HeapSnapshotInstanceNode(
+          this._dataGrid, /** @type {!HeapSnapshotProxy} */ (this._dataGrid.snapshot), item, false);
     }
     return new HeapSnapshotInstanceNode(this._dataGrid, this._dataGrid.baseSnapshot, item, true);
   }

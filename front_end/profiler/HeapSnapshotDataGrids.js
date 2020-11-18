@@ -53,6 +53,8 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
   constructor(heapProfilerModel, dataDisplayDelegate, dataGridParameters) {
     // TODO(allada) This entire class needs to be converted to use the templates in DataGridNode.
     super(dataGridParameters);
+    /** @type {?HeapSnapshotProxy} */
+    this.snapshot = null;
     this._heapProfilerModel = heapProfilerModel;
     this._dataDisplayDelegate = dataDisplayDelegate;
     const tooltips = [
@@ -86,6 +88,13 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
     this.addEventListener(HeapSnapshotSortableDataGrid.Events.SortingComplete, this._sortingComplete, this);
     this.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortingChanged, this);
     this.setRowContextMenuCallback(this._populateContextMenu.bind(this));
+  }
+
+  /**
+   * @param {!HeapSnapshotProxy} snapshot
+   * @param {number} nodeIndex
+   */
+  async setDataSource(snapshot, nodeIndex) {
   }
 
   /**
@@ -664,10 +673,11 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
   }
 
   /**
+   * @override
    * @param {!HeapSnapshotProxy} snapshot
    * @param {number} nodeIndex
    */
-  setDataSource(snapshot, nodeIndex) {
+  async setDataSource(snapshot, nodeIndex) {
     this.snapshot = snapshot;
     const node = {nodeIndex: nodeIndex || snapshot.rootNodeIndex};
     const fakeEdge = {node: node};
@@ -741,8 +751,8 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
    * @param {!HeapSnapshotProxy} snapshot
    * @param {number} nodeIndex
    */
-  setDataSource(snapshot, nodeIndex) {
-    super.setDataSource(snapshot, nodeIndex);
+  async setDataSource(snapshot, nodeIndex) {
+    await super.setDataSource(snapshot, nodeIndex);
     this.rootNode().expand();
   }
 }
@@ -824,9 +834,11 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
   }
 
   /**
+   * @override
    * @param {!HeapSnapshotProxy} snapshot
+   * @param {number} nodeIndex
    */
-  setDataSource(snapshot) {
+  async setDataSource(snapshot, nodeIndex) {
     this.snapshot = snapshot;
     if (this._profileIndex === -1) {
       this._populateChildren();
@@ -957,7 +969,12 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
     }[sortColumn];
   }
 
-  setDataSource(snapshot) {
+  /**
+   * @override
+   * @param {!HeapSnapshotProxy} snapshot
+   * @param {number} nodeIndex
+   */
+  async setDataSource(snapshot, nodeIndex) {
     this.snapshot = snapshot;
   }
 
@@ -983,7 +1000,8 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
     const diffByClassName = await this.snapshot.calculateSnapshotDiff(this.baseSnapshot.uid, aggregatesForDiff);
 
     for (const className in diffByClassName) {
-      const diff = diffByClassName[className];
+      const diff = /** @type {!HeapSnapshotModel.HeapSnapshotModel.DiffForClass} */ (
+          /** @type {?} */ (diffByClassName[className]));
       this.appendNode(this.rootNode(), new HeapSnapshotDiffNode(this, className, diff));
     }
     this.sortingChanged();
@@ -1022,9 +1040,11 @@ export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
   }
 
   /**
+   * @override
    * @param {!HeapSnapshotProxy} snapshot
+   * @param {number} nodeIndex
    */
-  async setDataSource(snapshot) {
+  async setDataSource(snapshot, nodeIndex) {
     this.snapshot = snapshot;
     this._topNodes = await this.snapshot.allocationTracesTops();
     this._populateChildren();

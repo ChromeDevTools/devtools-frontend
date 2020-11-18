@@ -398,6 +398,14 @@ export class SearchConfig {
     this.shouldJump = shouldJump;
     this.jumpBackward = jumpBackward;
   }
+
+  /**
+   * @param {boolean=} global
+   * @return {!RegExp}
+   */
+  toSearchRegex(global) {
+    throw new Error('Unsupported operation on search config');
+  }
 }
 
 /**

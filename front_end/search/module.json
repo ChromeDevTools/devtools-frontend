@@ -3,11 +3,10 @@
     "components"
   ],
   "modules": [
-    "search.js",
-    "search-legacy.js",
-    "SearchView.js",
-    "SearchConfig.js",
-    "SearchResultsPane.js"
+    "search-legacy.js"
+  ],
+  "skip_compilation": [
+    "search-legacy.js"
   ],
   "resources": [
     "searchResultsPane.css",

@@ -48,4 +48,9 @@ describeWithEnvironment('Imports entrypoints that are yet to be tested', () => {
     await import('../../../../front_end/worker_main/worker_main.js');
     await import('../../../../front_end/worker_service/worker_service.js');
   });
+
+  it('imports missing entrypoints',
+     () => {
+         // Intentionally blank, but here to ensure the before gets called.
+     });
 });

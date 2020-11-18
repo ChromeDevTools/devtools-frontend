@@ -33,9 +33,7 @@
 .metrics .label {
   position: absolute;
   font-size: 10px;
-  margin-left: 3px;
-  padding-left: 2px;
-  padding-right: 2px;
+  left: 4px;
 }
 
 .metrics .position {
@@ -55,6 +53,7 @@
   vertical-align: middle;
   padding: 3px 6px;
   margin: 3px;
+  position: relative;
 }
 
 .metrics .border {
@@ -65,6 +64,7 @@
   vertical-align: middle;
   padding: 3px 6px;
   margin: 3px;
+  position: relative;
 }
 
 .metrics .padding {
@@ -75,6 +75,8 @@
   vertical-align: middle;
   padding: 3px 6px;
   margin: 3px;
+  position: relative;
+  min-width: 120px;
 }
 
 .metrics .content {

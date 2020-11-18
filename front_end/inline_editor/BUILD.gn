@@ -45,7 +45,7 @@ copy_to_gen("legacy_css") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "inline_editor.js"
+  entrypoint = "inline_editor.ts"
 
   deps = [ ":inline_editor" ]
 }

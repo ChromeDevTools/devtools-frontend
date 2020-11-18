@@ -862,6 +862,7 @@ export function runCSSAnimationOnce(element, className) {
  */
 export function highlightRangesWithStyleClass(element, resultRanges, styleClass, changes) {
   changes = changes || [];
+  /** @type {!Array<!Element>} */
   const highlightNodes = [];
   const textNodes = element.childTextNodes();
   const lineText = textNodes
@@ -877,10 +878,10 @@ export function highlightRangesWithStyleClass(element, resultRanges, styleClass,
 
   const nodeRanges = [];
   let rangeEndOffset = 0;
-  for (let i = 0; i < textNodes.length; ++i) {
+  for (const textNode of textNodes) {
     const range = {};
     range.offset = rangeEndOffset;
-    range.length = textNodes[i].textContent.length;
+    range.length = textNode.textContent ? textNode.textContent.length : 0;
     rangeEndOffset = range.offset + range.length;
     nodeRanges.push(range);
   }
@@ -907,37 +908,80 @@ export function highlightRangesWithStyleClass(element, resultRanges, styleClass,
     highlightNode.textContent = lineText.substring(startOffset, endOffset);
 
     const lastTextNode = textNodes[endIndex];
-    const lastText = lastTextNode.textContent;
+    const lastText = lastTextNode.textContent || '';
     lastTextNode.textContent = lastText.substring(endOffset - nodeRanges[endIndex].offset);
-    changes.push({node: lastTextNode, type: 'changed', oldText: lastText, newText: lastTextNode.textContent});
+    changes.push({
+      node: /** @type {!Element} */ (lastTextNode),
+      type: 'changed',
+      oldText: lastText,
+      newText: lastTextNode.textContent,
+      nextSibling: undefined,
+      parent: undefined
+    });
 
-    if (startIndex === endIndex) {
+    if (startIndex === endIndex && lastTextNode.parentElement) {
       lastTextNode.parentElement.insertBefore(highlightNode, lastTextNode);
-      changes.push({node: highlightNode, type: 'added', nextSibling: lastTextNode, parent: lastTextNode.parentElement});
+      changes.push({
+        node: highlightNode,
+        type: 'added',
+        nextSibling: lastTextNode,
+        parent: lastTextNode.parentElement,
+        oldText: undefined,
+        newText: undefined
+      });
       highlightNodes.push(highlightNode);
 
       const prefixNode =
           ownerDocument.createTextNode(lastText.substring(0, startOffset - nodeRanges[startIndex].offset));
       lastTextNode.parentElement.insertBefore(prefixNode, highlightNode);
-      changes.push({node: prefixNode, type: 'added', nextSibling: highlightNode, parent: lastTextNode.parentElement});
+      changes.push({
+        node: /** @type {*} */ (prefixNode),
+        type: 'added',
+        nextSibling: highlightNode,
+        parent: lastTextNode.parentElement,
+        oldText: undefined,
+        newText: undefined
+      });
     } else {
       const firstTextNode = textNodes[startIndex];
-      const firstText = firstTextNode.textContent;
+      const firstText = firstTextNode.textContent || '';
       const anchorElement = firstTextNode.nextSibling;
 
-      firstTextNode.parentElement.insertBefore(highlightNode, anchorElement);
-      changes.push(
-          {node: highlightNode, type: 'added', nextSibling: anchorElement, parent: firstTextNode.parentElement});
-      highlightNodes.push(highlightNode);
+      if (firstTextNode.parentElement) {
+        firstTextNode.parentElement.insertBefore(highlightNode, anchorElement);
+        changes.push({
+          node: highlightNode,
+          type: 'added',
+          nextSibling: anchorElement || undefined,
+          parent: firstTextNode.parentElement,
+          oldText: undefined,
+          newText: undefined
+        });
+        highlightNodes.push(highlightNode);
+      }
 
       firstTextNode.textContent = firstText.substring(0, startOffset - nodeRanges[startIndex].offset);
-      changes.push({node: firstTextNode, type: 'changed', oldText: firstText, newText: firstTextNode.textContent});
+      changes.push({
+        node: /** @type {!Element} */ (firstTextNode),
+        type: 'changed',
+        oldText: firstText,
+        newText: firstTextNode.textContent,
+        nextSibling: undefined,
+        parent: undefined
+      });
 
       for (let j = startIndex + 1; j < endIndex; j++) {
         const textNode = textNodes[j];
         const text = textNode.textContent;
         textNode.textContent = '';
-        changes.push({node: textNode, type: 'changed', oldText: text, newText: textNode.textContent});
+        changes.push({
+          node: /** @type {!Element} */ (textNode),
+          type: 'changed',
+          oldText: text || undefined,
+          newText: textNode.textContent,
+          nextSibling: undefined,
+          parent: undefined
+        });
       }
     }
     startIndex = endIndex;
@@ -947,6 +991,7 @@ export function highlightRangesWithStyleClass(element, resultRanges, styleClass,
   return highlightNodes;
 }
 
+/** @param {!Array<*>} domChanges */
 export function applyDomChanges(domChanges) {
   for (let i = 0, size = domChanges.length; i < size; ++i) {
     const entry = domChanges[i];
@@ -961,6 +1006,7 @@ export function applyDomChanges(domChanges) {
   }
 }
 
+/** @param {!Array<*>} domChanges */
 export function revertDomChanges(domChanges) {
   for (let i = domChanges.length - 1; i >= 0; --i) {
     const entry = domChanges[i];
@@ -1963,11 +2009,12 @@ export function formatTimestamp(timestamp, full) {
 /** @typedef {!{title: (string|!Element|undefined), editable: (boolean|undefined) }} */
 export let Options;
 
-/** @typedef {{
+/**
+ * @typedef {{
  *  node: !Element,
  *  type: string,
- *  oldText: string,
- *  newText: string,
+ *  oldText: (string|undefined),
+ *  newText: (string|undefined),
  *  nextSibling: (Node|undefined),
  *  parent: (Node|undefined),
  * }}

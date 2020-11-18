@@ -237,7 +237,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           entry.node.remove();
           break;
         case 'changed':
-          entry.node.textContent = entry.oldText;
+          entry.node.textContent = entry.oldText || null;
           break;
       }
     }

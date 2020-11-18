@@ -65,6 +65,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
 
     this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
     this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
+    this._workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
   }
 
   /**
@@ -139,6 +140,23 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
    */
   _uiSourceCodeRemoved(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode.UISourceCode} */ (event.data);
+    this._removeUISourceCode(uiSourceCode);
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _projectRemoved(event) {
+    const project = /** @type {!Workspace.Workspace.Project} */ (event.data);
+    for (const uiSourceCode of project.uiSourceCodes()) {
+      this._removeUISourceCode(uiSourceCode);
+    }
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   */
+  _removeUISourceCode(uiSourceCode) {
     const breakpoints = this.breakpointLocationsForUISourceCode(uiSourceCode);
     breakpoints.forEach(bp => bp.breakpoint.removeUISourceCode(uiSourceCode));
   }

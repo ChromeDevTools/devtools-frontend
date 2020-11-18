@@ -131,10 +131,10 @@
     "mobile_throttling"
   ],
   "modules": [
-    "inspector_main.js",
-    "inspector_main-legacy.js",
-    "RenderingOptions.js",
-    "InspectorMain.js"
+    "inspector_main-legacy.js"
+  ],
+  "skip_compilation": [
+    "inspector_main-legacy.js"
   ],
   "resources": [
     "nodeIcon.css",

@@ -5,12 +5,13 @@
 // WARNING: don't use this rollup plugin outside of inspector_overlay.
 // See README for special constraints the overlay has.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 module.exports = function loadCSS() {
   return {
     name: 'loadCSS',
+    /**
+     * @param {!Object} code
+     * @param {string} id
+     */
     transform(code, id) {
       if (id.endsWith('.css')) {
         return {

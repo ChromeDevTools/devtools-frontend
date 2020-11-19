@@ -111,6 +111,7 @@ const migratedDirsSet = new Set([
   'layer_viewer',
   'security',
   'settings',
+  'text_editor',
   'web_audio',
   'webauthn',
 ]);

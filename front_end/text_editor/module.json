@@ -10,10 +10,11 @@
     }
   ],
   "dependencies": [
-    "ui",
-    "platform",
+    "cm",
     "common",
-    "cm"
+    "i18n",
+    "platform",
+    "ui"
   ],
   "modules": [
     "text_editor.js",

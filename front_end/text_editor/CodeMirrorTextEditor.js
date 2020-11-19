@@ -32,6 +32,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -39,6 +40,15 @@ import * as UI from '../ui/ui.js';
 
 import {changeObjectToEditOperation, toPos, toRange} from './CodeMirrorUtils.js';
 import {TextEditorAutocompleteController} from './TextEditorAutocompleteController.js';
+
+export const UIStrings = {
+  /**
+  *@description Text in Code Mirror Text Editor of the CodeMirror text editor
+  */
+  codeEditor: 'Code editor',
+};
+const str_ = i18n.i18n.registerUIStrings('text_editor/CodeMirrorTextEditor.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @typedef {{
@@ -75,7 +85,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
         Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get());
 
     this._codeMirror = new CodeMirror(this.element, {
-      screenReaderLabel: options.devtoolsAccessibleName || ls`Code editor`,
+      screenReaderLabel: options.devtoolsAccessibleName || i18nString(UIStrings.codeEditor),
       lineNumbers: options.lineNumbers,
       matchBrackets: true,
       smartIndent: true,

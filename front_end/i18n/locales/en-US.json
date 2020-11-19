@@ -947,6 +947,9 @@
   "settings/SettingsScreen.js | warning": {
     "message": "WARNING:"
   },
+  "text_editor/CodeMirrorTextEditor.js | codeEditor": {
+    "message": "Code editor"
+  },
   "web_audio/AudioContextContentBuilder.js | audiocontext": {
     "message": "AudioContext"
   },

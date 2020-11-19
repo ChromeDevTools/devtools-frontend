@@ -609,7 +609,7 @@ export class DebuggerPlugin extends Plugin {
 
     /** @type {?ObjectUI.ObjectPopoverHelper.ObjectPopoverHelper} */
     let objectPopoverHelper;
-    /** @type {?Object} */
+    /** @type {?CodeMirror.TextMarker} */
     let highlightDescriptor;
 
     /**

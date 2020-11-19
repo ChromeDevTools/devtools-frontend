@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -75,6 +72,7 @@ export class ExtensionPanel extends UI.Panel.Panel {
    * @override
    */
   searchCanceled() {
+    // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
     this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.CancelSearch);
     this._searchableView.updateSearchMatchesCount(0);
   }
@@ -95,6 +93,7 @@ export class ExtensionPanel extends UI.Panel.Panel {
    */
   performSearch(searchConfig, shouldJump, jumpBackwards) {
     const query = searchConfig.query;
+    // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
     this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.PerformSearch, query);
   }
 
@@ -102,6 +101,7 @@ export class ExtensionPanel extends UI.Panel.Panel {
    * @override
    */
   jumpToNextSearchResult() {
+    // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
     this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.NextSearchResult);
   }
 
@@ -109,6 +109,7 @@ export class ExtensionPanel extends UI.Panel.Panel {
    * @override
    */
   jumpToPreviousSearchResult() {
+    // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
     this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.PreviousSearchResult);
   }
 
@@ -209,7 +210,7 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
   /**
    * @param {!Object} object
    * @param {string} title
-   * @param {function(?string=)} callback
+   * @param {function(?string=):void} callback
    */
   setObject(object, title, callback) {
     this._createObjectPropertiesView();
@@ -221,7 +222,7 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
    * @param {string} title
    * @param {!Object} evaluateOptions
    * @param {string} securityOrigin
-   * @param {function(?string=)} callback
+   * @param {function(?string=):void} callback
    */
   setExpression(expression, title, evaluateOptions, securityOrigin, callback) {
     this._createObjectPropertiesView();
@@ -258,14 +259,16 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
 
   /**
    * @param {string} title
-   * @param {function(?string=)} callback
+   * @param {function(?string=):void} callback
    * @param {?ProtocolClient.InspectorBackend.ProtocolError} error
    * @param {?SDK.RemoteObject.RemoteObject} result
    * @param {boolean=} wasThrown
    */
   _onEvaluate(title, callback, error, result, wasThrown) {
-    if (error || !result) {
+    if (error) {
       callback(error.toString());
+    } else if (!result) {
+      callback();
     } else {
       this._setObject(result, title, callback);
     }
@@ -286,24 +289,26 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
   /**
    * @param {!SDK.RemoteObject.RemoteObject} object
    * @param {string} title
-   * @param {function(?string=)} callback
+   * @param {function(?string=):void} callback
    */
   _setObject(object, title, callback) {
+    const objectPropertiesView = this._objectPropertiesView;
     // This may only happen if setPage() was called while we were evaluating the expression.
-    if (!this._objectPropertiesView) {
+    if (!objectPropertiesView) {
       callback('operation cancelled');
       return;
     }
-    this._objectPropertiesView.element.removeChildren();
+    objectPropertiesView.element.removeChildren();
     UI.UIUtils.Renderer.render(object, {title, editable: false}).then(result => {
       if (!result) {
         callback();
         return;
       }
-      if (result.tree && result.tree.firstChild()) {
-        result.tree.firstChild().expand();
+      const firstChild = result.tree && result.tree.firstChild();
+      if (firstChild) {
+        firstChild.expand();
       }
-      this._objectPropertiesView.element.appendChild(result.node);
+      objectPropertiesView.element.appendChild(result.node);
       callback();
     });
   }

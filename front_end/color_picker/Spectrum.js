@@ -25,8 +25,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
@@ -37,6 +35,16 @@ import * as UI from '../ui/ui.js';
 import {ContrastDetails, Events as ContrastDetailsEvents} from './ContrastDetails.js';
 import {ContrastInfo} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
 import {ContrastOverlay} from './ContrastOverlay.js';
+
+/**
+ * @type {!WeakMap<!HTMLElement, boolean>}
+ */
+const colorElementToMutable = new WeakMap();
+
+/**
+ * @type {!WeakMap<!HTMLElement, string>}
+ */
+const colorElementToColor = new WeakMap();
 
 /**
  * @unrestricted
@@ -51,8 +59,8 @@ export class Spectrum extends UI.Widget.VBox {
      */
     function appendSwitcherIcon(parentElement) {
       const icon = UI.UIUtils.createSVGChild(parentElement, 'svg');
-      icon.setAttribute('height', 16);
-      icon.setAttribute('width', 16);
+      icon.setAttribute('height', String(16));
+      icon.setAttribute('width', String(16));
       const path = UI.UIUtils.createSVGChild(icon, 'path');
       path.setAttribute('d', 'M5,6 L11,6 L8,2 Z M5,10 L11,10 L8,14 Z');
       return icon;
@@ -75,7 +83,8 @@ export class Spectrum extends UI.Widget.VBox {
     this._dragX = 0;
     this._dragY = 0;
 
-    const toolsContainer = this.contentElement.createChild('div', 'spectrum-tools');
+    /** @type {!HTMLElement} */
+    const toolsContainer = /** @type {!HTMLElement} */ (this.contentElement.createChild('div', 'spectrum-tools'));
     const toolbar = new UI.Toolbar.Toolbar('spectrum-eye-dropper', toolsContainer);
     this._colorPickerButton =
         new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Toggle color picker'), 'largeicon-eyedropper');
@@ -143,14 +152,14 @@ export class Spectrum extends UI.Widget.VBox {
     UI.ARIAUtils.markAsButton(displaySwitcher);
 
     UI.UIUtils.installDragHandle(
-        this._hueElement, dragStart.bind(this, positionHue.bind(this)), positionHue.bind(this), null, 'pointer',
+        this._hueElement, this._dragStart.bind(this, positionHue.bind(this)), positionHue.bind(this), null, 'pointer',
         'default');
     UI.UIUtils.installDragHandle(
-        this._alphaElement, dragStart.bind(this, positionAlpha.bind(this)), positionAlpha.bind(this), null, 'pointer',
-        'default');
+        this._alphaElement, this._dragStart.bind(this, positionAlpha.bind(this)), positionAlpha.bind(this), null,
+        'pointer', 'default');
     UI.UIUtils.installDragHandle(
-        this._colorElement, dragStart.bind(this, positionColor.bind(this)), positionColor.bind(this), null, 'pointer',
-        'default');
+        this._colorElement, this._dragStart.bind(this, positionColor.bind(this)), positionColor.bind(this), null,
+        'pointer', 'default');
 
     // Color contrast business.
     if (contrastInfo) {
@@ -202,7 +211,43 @@ export class Spectrum extends UI.Widget.VBox {
 
     this._colorPickedBound = this._colorPicked.bind(this);
 
+    /**
+     * It's always set when the widget is shown and accessed only after that.
+     * @type {!Array<number>}
+     */
+    this._hsv;
+    /**
+     * @type {number}
+     */
+    this._hueAlphaWidth;
+    /**
+     * @type {number}
+     */
+    this.dragWidth;
+    /**
+     * @type {number}
+     */
+    this.dragHeight;
+    /**
+     * @type {number}
+     */
+    this._colorDragElementHeight;
+    /**
+     * @type {number}
+     */
+    this.slideHelperWidth;
+
+    this._numPaletteRowsShown = -1;
+
     this._loadPalettes();
+    /**
+     * @type {!Common.Settings.LegacySetting<*>}
+     */
+    this._selectedColorPalette;
+    /**
+     * @type {!Common.Settings.LegacySetting<*>}
+     */
+    this._customPaletteSetting;
     new PaletteGenerator(palette => {
       if (palette.colors.length) {
         this.addPalette(palette);
@@ -212,25 +257,14 @@ export class Spectrum extends UI.Widget.VBox {
     });
 
     /**
-     * @param {function(!Event)} callback
-     * @param {!Event} event
-     * @return {boolean}
-     * @this {Spectrum}
-     */
-    function dragStart(callback, event) {
-      this._colorOffset = this._colorElement.totalOffset();
-      callback(event);
-      return true;
-    }
-
-    /**
      * @param {!Element} element
      * @param {!Event} event
      * @return {number};
      */
     function getUpdatedSliderPosition(element, event) {
+      const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
       const elementPosition = element.getBoundingClientRect();
-      switch (event.key) {
+      switch (keyboardEvent.key) {
         case 'ArrowLeft':
         case 'ArrowDown':
           return elementPosition.left - 1;
@@ -238,7 +272,7 @@ export class Spectrum extends UI.Widget.VBox {
         case 'ArrowUp':
           return elementPosition.right + 1;
         default:
-          return event.x;
+          return /** @type {!MouseEvent} */ (event).x;
       }
     }
 
@@ -299,7 +333,8 @@ export class Spectrum extends UI.Widget.VBox {
       const horizontalY = elementPosition.y + elementPosition.width / 2;
       const defaultUnit = elementPosition.width / 4;
       const unit = getUnitToMove(defaultUnit, event);
-      switch (event.key) {
+      const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+      switch (keyboardEvent.key) {
         case 'ArrowLeft':
           return {x: elementPosition.left - unit, y: horizontalY};
         case 'ArrowRight':
@@ -309,7 +344,7 @@ export class Spectrum extends UI.Widget.VBox {
         case 'ArrowUp':
           return {x: verticalX, y: elementPosition.top - unit};
         default:
-          return {x: event.x, y: event.y};
+          return {x: /** @type {!MouseEvent} */ (event).x, y: /** @type {!MouseEvent} */ (event).y};
       }
     }
 
@@ -319,24 +354,43 @@ export class Spectrum extends UI.Widget.VBox {
      * @return {number}
      */
     function getUnitToMove(unit, event) {
-      if (event.altKey) {
+      const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+      if (keyboardEvent.altKey) {
         unit = 1;
-      } else if (event.ctrlKey) {
+      } else if (keyboardEvent.ctrlKey) {
         unit = 10;
-      } else if (event.shiftKey) {
+      } else if (keyboardEvent.shiftKey) {
         unit = 20;
       }
       return unit;
     }
   }
 
-  _contrastDetailsBackgroundColorPickedToggled({data: enabled}) {
-    if (enabled) {
+  /**
+   * @param {function(!Event):void} callback
+   * @param {!Event} event
+   * @return {boolean}
+   * @this {Spectrum}
+   */
+  _dragStart(callback, event) {
+    this._colorOffset = this._colorElement.totalOffset();
+    callback(event);
+    return true;
+  }
+
+  /**
+   * @param {{ data: * }} event
+   */
+  _contrastDetailsBackgroundColorPickedToggled(event) {
+    if (event.data) {
       this._toggleColorPicker(false);
     }
   }
 
   _contrastPanelExpanded() {
+    if (!this._contrastOverlay || !this._contrastDetails) {
+      return;
+    }
     this._contrastOverlay.setVisible(this._contrastDetails.expanded());
     this._resizeForSelectedPalette(true);
   }
@@ -382,11 +436,12 @@ export class Spectrum extends UI.Widget.VBox {
   }
 
   /**
-   * @param {function(!Event)} sliderNewPosition
+   * @param {function(!Event):void} sliderNewPosition
    * @param {!Event} event
    */
   _onSliderKeydown(sliderNewPosition, event) {
-    switch (event.key) {
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    switch (keyboardEvent.key) {
       case 'ArrowLeft':
       case 'ArrowRight':
       case 'ArrowDown':
@@ -404,7 +459,7 @@ export class Spectrum extends UI.Widget.VBox {
     if (!this.isShowing()) {
       return;
     }
-    if (this._palettePanelShowing) {
+    if (this._palettePanelShowing && this._closeButton) {
       this._closeButton.element.focus({preventScroll: true});
     } else {
       this.contentElement.focus();
@@ -415,10 +470,10 @@ export class Spectrum extends UI.Widget.VBox {
    * @param {string} colorText
    * @param {string=} colorName
    * @param {number=} animationDelay
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   _createPaletteColor(colorText, colorName, animationDelay) {
-    const element = document.createElement('div');
+    const element = /** @type {!HTMLElement} */ (document.createElement('div'));
     element.classList.add('spectrum-palette-color');
     element.style.background =
         Platform.StringUtilities.sprintf('linear-gradient(%s, %s), url(Images/checker.png)', colorText, colorText);
@@ -453,8 +508,8 @@ export class Spectrum extends UI.Widget.VBox {
               this, palette.colors[i], palette.colorNames[i], Boolean(palette.matchUserFormat)));
       colorElement.addEventListener('keydown', this._onPaletteColorKeydown.bind(this, i));
       if (palette.mutable) {
-        colorElement.__mutable = true;
-        colorElement.__color = palette.colors[i];
+        colorElementToMutable.set(colorElement, true);
+        colorElementToColor.set(colorElement, palette.colors[i]);
         colorElement.addEventListener('contextmenu', this._showPaletteColorContextMenu.bind(this, i));
       } else if (palette === MaterialPalette) {
         colorElement.classList.add('has-material-shades');
@@ -470,7 +525,7 @@ export class Spectrum extends UI.Widget.VBox {
       this._paletteContainer.appendChild(colorElement);
     }
     if (this._paletteContainer.childNodes.length > 0) {
-      this._paletteContainer.childNodes[0].tabIndex = 0;
+      /** @type {!HTMLElement} */ (this._paletteContainer.childNodes[0]).tabIndex = 0;
     }
     this._paletteContainerMutable = palette.mutable;
 
@@ -487,7 +542,7 @@ export class Spectrum extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Element} colorElement
+   * @param {!HTMLElement} colorElement
    * @param {string} colorText
    * @param {!Event} event
    */
@@ -499,7 +554,9 @@ export class Spectrum extends UI.Widget.VBox {
     function closeLightnessShades(element) {
       this._shadesContainer.classList.add('hidden');
       element.classList.remove('spectrum-shades-shown');
-      this._shadesContainer.ownerDocument.removeEventListener('mousedown', this._shadesCloseHandler, true);
+      if (this._shadesCloseHandler) {
+        this._shadesContainer.ownerDocument.removeEventListener('mousedown', this._shadesCloseHandler, true);
+      }
       delete this._shadesCloseHandler;
     }
 
@@ -512,7 +569,8 @@ export class Spectrum extends UI.Widget.VBox {
     this._shadesContainer.animate(
         [{transform: 'scaleY(0)', opacity: '0'}, {transform: 'scaleY(1)', opacity: '1'}],
         {duration: 200, easing: 'cubic-bezier(0.4, 0, 0.2, 1)'});
-    let shadesTop = this._paletteContainer.offsetTop + colorElement.offsetTop + colorElement.parentElement.offsetTop;
+    let shadesTop = this._paletteContainer.offsetTop + colorElement.offsetTop +
+        (colorElement.parentElement ? colorElement.parentElement.offsetTop : 0);
     if (this._contrastDetails) {
       shadesTop += this._contrastDetails.element().offsetHeight;
     }
@@ -534,61 +592,70 @@ export class Spectrum extends UI.Widget.VBox {
     }
 
     if (this._shadesContainer.childNodes.length > 0) {
-      this._shadesContainer.childNodes[this._shadesContainer.childNodes.length - 1].focus();
+      /** @type {!HTMLElement} */ (this._shadesContainer.childNodes[this._shadesContainer.childNodes.length - 1])
+          .focus();
     }
     this._shadesCloseHandler = closeLightnessShades.bind(this, colorElement);
     this._shadesContainer.ownerDocument.addEventListener('mousedown', this._shadesCloseHandler, true);
   }
 
   /**
-   * @param {!Event} e
+   * @param {!Event} event
    * @return {number}
    */
-  _slotIndexForEvent(e) {
-    const localX = e.pageX - this._paletteContainer.totalOffsetLeft();
-    const localY = e.pageY - this._paletteContainer.totalOffsetTop();
+  _slotIndexForEvent(event) {
+    const mouseEvent = /** @type {!MouseEvent} */ (event);
+    const localX = mouseEvent.pageX - this._paletteContainer.totalOffsetLeft();
+    const localY = mouseEvent.pageY - this._paletteContainer.totalOffsetTop();
     const col = Math.min(localX / _colorChipSize | 0, _itemsPerPaletteRow - 1);
     const row = (localY / _colorChipSize) | 0;
     return Math.min(row * _itemsPerPaletteRow + col, this._customPaletteSetting.get().colors.length - 1);
   }
 
   /**
-   * @param {!Event} e
+   * @param {!Event} event
    * @return {boolean}
    */
-  _isDraggingToBin(e) {
-    return e.pageX > this._deleteIconToolbar.element.totalOffsetLeft();
+  _isDraggingToBin(event) {
+    const mouseEvent = /** @type {!MouseEvent} */ (event);
+    return mouseEvent.pageX > this._deleteIconToolbar.element.totalOffsetLeft();
   }
 
   /**
-   * @param {!Event} e
+   * @param {!Event} event
    * @return {boolean}
    */
-  _paletteDragStart(e) {
-    const element = UI.UIUtils.deepElementFromEvent(e);
-    if (!element || !element.__mutable) {
+  _paletteDragStart(event) {
+    const element = /** @type {!HTMLElement} */ (UI.UIUtils.deepElementFromEvent(event));
+    if (!element || !colorElementToMutable.get(element)) {
       return false;
     }
 
-    const index = this._slotIndexForEvent(e);
+    const index = this._slotIndexForEvent(event);
     this._dragElement = element;
-    this._dragHotSpotX = e.pageX - (index % _itemsPerPaletteRow) * _colorChipSize;
-    this._dragHotSpotY = e.pageY - (index / _itemsPerPaletteRow | 0) * _colorChipSize;
+    const mouseEvent = /** @type {!MouseEvent} */ (event);
+    this._dragHotSpotX = mouseEvent.pageX - (index % _itemsPerPaletteRow) * _colorChipSize;
+    this._dragHotSpotY = mouseEvent.pageY - (index / _itemsPerPaletteRow | 0) * _colorChipSize;
     return true;
   }
 
   /**
-   * @param {!Event} e
+   * @param {!Event} event
    */
-  _paletteDrag(e) {
-    if (e.pageX < this._paletteContainer.totalOffsetLeft() || e.pageY < this._paletteContainer.totalOffsetTop()) {
+  _paletteDrag(event) {
+    const mouseEvent = /** @type {!MouseEvent} */ (event);
+    if (mouseEvent.pageX < this._paletteContainer.totalOffsetLeft() ||
+        mouseEvent.pageY < this._paletteContainer.totalOffsetTop()) {
       return;
     }
-    const newIndex = this._slotIndexForEvent(e);
-    const offsetX = e.pageX - (newIndex % _itemsPerPaletteRow) * _colorChipSize;
-    const offsetY = e.pageY - (newIndex / _itemsPerPaletteRow | 0) * _colorChipSize;
+    if (!this._dragElement || this._dragHotSpotX === undefined || this._dragHotSpotY === undefined) {
+      return;
+    }
+    const newIndex = this._slotIndexForEvent(event);
+    const offsetX = mouseEvent.pageX - (newIndex % _itemsPerPaletteRow) * _colorChipSize;
+    const offsetY = mouseEvent.pageY - (newIndex / _itemsPerPaletteRow | 0) * _colorChipSize;
 
-    const isDeleting = this._isDraggingToBin(e);
+    const isDeleting = this._isDraggingToBin(event);
     this._deleteIconToolbar.element.classList.add('dragging');
     this._deleteIconToolbar.element.classList.toggle('delete-color-toolbar-active', isDeleting);
     const dragElementTransform =
@@ -612,7 +679,7 @@ export class Spectrum extends UI.Widget.VBox {
       }
       const before = swatchOffsets.get(swatch);
       const after = swatch.totalOffset();
-      if (before.left !== after.left || before.top !== after.top) {
+      if (before && (before.left !== after.left || before.top !== after.top)) {
         swatch.animate(
             [
               {
@@ -630,6 +697,9 @@ export class Spectrum extends UI.Widget.VBox {
    * @param {!Event} e
    */
   _paletteDragEnd(e) {
+    if (!this._dragElement) {
+      return;
+    }
     if (this._isDraggingToBin(e)) {
       this._dragElement.remove();
     }
@@ -637,14 +707,15 @@ export class Spectrum extends UI.Widget.VBox {
     const children = this._paletteContainer.children;
     const colors = [];
     for (let i = 0; i < children.length; ++i) {
-      if (children[i].__color) {
-        colors.push(children[i].__color);
+      const color = colorElementToColor.get(/** @type {!HTMLElement} */ (children[i]));
+      if (color) {
+        colors.push(color);
       }
     }
-    const palette = this._customPaletteSetting.get();
+    const palette = /** @type {!Palette} */ (this._customPaletteSetting.get());
     palette.colors = colors;
     this._customPaletteSetting.set(palette);
-    this._showPalette(this._customPaletteSetting.get(), false);
+    this._showPalette(palette, false);
 
     this._deleteIconToolbar.element.classList.remove('dragging');
     this._deleteIconToolbar.element.classList.remove('delete-color-toolbar-active');
@@ -653,17 +724,18 @@ export class Spectrum extends UI.Widget.VBox {
   _loadPalettes() {
     this._palettes.set(MaterialPalette.title, MaterialPalette);
     /** @type {!Palette} */
-    const defaultCustomPalette = {title: 'Custom', colors: [], colorNames: [], mutable: true};
+    const defaultCustomPalette =
+        {title: 'Custom', colors: [], colorNames: [], mutable: true, matchUserFormat: undefined};
     this._customPaletteSetting =
         Common.Settings.Settings.instance().createSetting('customColorPalette', defaultCustomPalette);
-    const customPalette = this._customPaletteSetting.get();
+    const customPalette = /** @type {!Palette} */ (this._customPaletteSetting.get());
     // Fallback case for custom palettes created pre-m67
     customPalette.colorNames = customPalette.colorNames || [];
     this._palettes.set(customPalette.title, customPalette);
 
     this._selectedColorPalette =
         Common.Settings.Settings.instance().createSetting('selectedColorPalette', GeneratedPaletteTitle);
-    const palette = this._palettes.get(this._selectedColorPalette.get());
+    const palette = this._palettes.get(/** @type {string} */ (this._selectedColorPalette.get()));
     if (palette) {
       this._showPalette(palette, true);
     }
@@ -717,7 +789,7 @@ export class Spectrum extends UI.Widget.VBox {
    * @param {boolean=} force
    */
   _resizeForSelectedPalette(force) {
-    const palette = this._palettes.get(this._selectedColorPalette.get());
+    const palette = this._palettes.get(/** @type {string} */ (this._selectedColorPalette.get()));
     if (!palette) {
       return;
     }
@@ -763,8 +835,9 @@ export class Spectrum extends UI.Widget.VBox {
    * @param {!Event} event
    */
   _onPaletteColorKeydown(colorIndex, event) {
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
     let nextColorIndex;
-    switch (event.key) {
+    switch (keyboardEvent.key) {
       case 'ArrowLeft':
         nextColorIndex = colorIndex - 1;
         break;
@@ -778,25 +851,30 @@ export class Spectrum extends UI.Widget.VBox {
         nextColorIndex = colorIndex + _itemsPerPaletteRow;
         break;
     }
-    if (nextColorIndex > -1 && nextColorIndex < this._paletteContainer.childNodes.length) {
-      this._paletteContainer.childNodes[nextColorIndex].focus();
+    if (nextColorIndex !== undefined && nextColorIndex > -1 &&
+        nextColorIndex < this._paletteContainer.childNodes.length) {
+      /** @type {!HTMLElement} */ (this._paletteContainer.childNodes[nextColorIndex]).focus();
     }
   }
 
   /**
-   * @param {!Element} colorElement
+   * @param {!HTMLElement} colorElement
    * @param {!Event} event
    */
   _onShadeColorKeydown(colorElement, event) {
-    if (isEscKey(event) || event.key === 'Tab') {
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    const target = /** @type {!HTMLElement} */ (keyboardEvent.target);
+    if (isEscKey(event) || keyboardEvent.key === 'Tab') {
       colorElement.focus();
-      this._shadesCloseHandler();
+      if (this._shadesCloseHandler) {
+        this._shadesCloseHandler();
+      }
       event.consume(true);
-    } else if (event.key === 'ArrowUp' && event.target.previousElementSibling) {
-      event.target.previousElementSibling.focus();
+    } else if (keyboardEvent.key === 'ArrowUp' && target.previousElementSibling) {
+      /** @type {!HTMLElement} */ (target.previousElementSibling).focus();
       event.consume(true);
-    } else if (event.key === 'ArrowDown' && event.target.nextElementSibling) {
-      event.target.nextElementSibling.focus();
+    } else if (keyboardEvent.key === 'ArrowDown' && target.nextElementSibling) {
+      /** @type {!HTMLElement} */ (target.nextElementSibling).focus();
       event.consume(true);
     }
   }
@@ -816,12 +894,12 @@ export class Spectrum extends UI.Widget.VBox {
   }
 
   _addColorToCustomPalette() {
-    const palette = this._customPaletteSetting.get();
+    const palette = /** @type {!Palette} */ (this._customPaletteSetting.get());
     palette.colors.push(this.colorString());
     this._customPaletteSetting.set(palette);
-    this._showPalette(this._customPaletteSetting.get(), false);
+    this._showPalette(palette, false);
     const colorElements = this._paletteContainer.querySelectorAll('.spectrum-palette-color');
-    colorElements[colorElements.length - 1].focus();
+    /** @type {!HTMLElement} */ (colorElements[colorElements.length - 1]).focus();
   }
 
   /**
@@ -849,14 +927,14 @@ export class Spectrum extends UI.Widget.VBox {
    * @param {boolean} toRight
    */
   _deletePaletteColors(colorIndex, toRight) {
-    const palette = this._customPaletteSetting.get();
+    const palette = /** @type {!Palette} */ (this._customPaletteSetting.get());
     if (toRight) {
       palette.colors.splice(colorIndex + 1, palette.colors.length - colorIndex - 1);
     } else {
       palette.colors.splice(colorIndex, 1);
     }
     this._customPaletteSetting.set(palette);
-    this._showPalette(this._customPaletteSetting.get(), false);
+    this._showPalette(palette, false);
   }
 
   /**
@@ -964,7 +1042,7 @@ export class Spectrum extends UI.Widget.VBox {
       colorString = color.asString(cf.RGBA);
     }
 
-    console.assert(colorString);
+    console.assert(!!colorString);
     return colorString || '';
   }
 
@@ -1000,9 +1078,9 @@ export class Spectrum extends UI.Widget.VBox {
       this._hexContainer.hidden = false;
       this._displayContainer.hidden = true;
       if (this._colorFormat === cf.ShortHEX) {
-        this._hexValue.value = this._color().asString(this._color().detectHEXFormat());
+        this._hexValue.value = String(this._color().asString(this._color().detectHEXFormat()));
       } else {  // Don't use ShortHEX if original was not in that format.
-        this._hexValue.value = this._color().asString(this._color().hasAlpha() ? cf.HEXA : cf.HEX);
+        this._hexValue.value = String(this._color().asString(this._color().hasAlpha() ? cf.HEXA : cf.HEX));
       }
     } else {
       // RGBA, HSLA display.
@@ -1015,7 +1093,7 @@ export class Spectrum extends UI.Widget.VBox {
         UI.ARIAUtils.setAccessibleName(
             this._textValues[i],
             /** R in RGBA */ ls`${this._textLabels.textContent.charAt(i)} in ${this._textLabels.textContent}`);
-        this._textValues[i].value = colorValues[i];
+        this._textValues[i].value = String(colorValues[i]);
         if (!isRgb && (i === 1 || i === 2)) {
           this._textValues[i].value += '%';
         }
@@ -1023,7 +1101,7 @@ export class Spectrum extends UI.Widget.VBox {
       UI.ARIAUtils.setAccessibleName(
           this._textValues[3],
           /** A in RGBA */ ls`${this._textLabels.textContent.charAt(3)} in ${this._textLabels.textContent}`);
-      this._textValues[3].value = Math.round(colorValues[3] * 100) / 100;
+      this._textValues[3].value = String(Math.round(colorValues[3] * 100) / 100);
     }
   }
 
@@ -1075,14 +1153,14 @@ export class Spectrum extends UI.Widget.VBox {
    */
   _inputChanged(event) {
     /**
-     * @param {!Element} element
+     * @param {!HTMLInputElement} element
      * @return {string}
      */
     function elementValue(element) {
       return element.value;
     }
 
-    const inputElement = /** @type {!Element} */ (event.currentTarget);
+    const inputElement = /** @type {!HTMLInputElement} */ (event.currentTarget);
     const newValue = UI.UIUtils.createReplacementString(inputElement.value, event);
     if (newValue) {
       inputElement.value = newValue;
@@ -1126,7 +1204,7 @@ export class Spectrum extends UI.Widget.VBox {
     this._innerSetColor(undefined, undefined, undefined /* colorName */, undefined, ChangeSource.Model);
     this._toggleColorPicker(true);
 
-    if (this._contrastDetails) {
+    if (this._contrastDetails && this._contrastDetailsBackgroundColorPickedToggledBound) {
       this._contrastDetails.addEventListener(
           ContrastDetailsEvents.BackgroundColorPickerWillBeToggled,
           this._contrastDetailsBackgroundColorPickedToggledBound);
@@ -1138,7 +1216,7 @@ export class Spectrum extends UI.Widget.VBox {
    */
   willHide() {
     this._toggleColorPicker(false);
-    if (this._contrastDetails) {
+    if (this._contrastDetails && this._contrastDetailsBackgroundColorPickedToggledBound) {
       this._contrastDetails.removeEventListener(
           ContrastDetailsEvents.BackgroundColorPickerWillBeToggled,
           this._contrastDetailsBackgroundColorPickedToggledBound);
@@ -1201,7 +1279,7 @@ const GeneratedPaletteTitle = 'Page colors';
 
 export class PaletteGenerator {
   /**
-   * @param {function(!Palette)} callback
+   * @param {function(!Palette):void} callback
    */
   constructor(callback) {
     this._callback = callback;
@@ -1226,7 +1304,7 @@ export class PaletteGenerator {
    * @return {number}
    */
   _frequencyComparator(a, b) {
-    return this._frequencyMap.get(b) - this._frequencyMap.get(a);
+    return /** @type {number} */ (this._frequencyMap.get(b)) - /** @type {number} */ (this._frequencyMap.get(a));
   }
 
   _finish() {
@@ -1236,8 +1314,8 @@ export class PaletteGenerator {
      * @return {number}
      */
     function hueComparator(a, b) {
-      const hsva = paletteColors.get(a).hsva();
-      const hsvb = paletteColors.get(b).hsva();
+      const hsva = /** @type {!Common.Color.Color} */ (paletteColors.get(a)).hsva();
+      const hsvb = /** @type {!Common.Color.Color} */ (paletteColors.get(b)).hsva();
 
       // First trim the shades of gray
       if (hsvb[1] < 0.12 && hsva[1] < 0.12) {
@@ -1264,7 +1342,7 @@ export class PaletteGenerator {
     const paletteColors = new Map();
     const colorsPerRow = 24;
     while (paletteColors.size < colorsPerRow && colors.length) {
-      const colorText = colors.shift();
+      const colorText = /** @type {string} */ (colors.shift());
       const color = Common.Color.Color.parse(colorText);
       if (!color || color.nickname() === 'white' || color.nickname() === 'black') {
         continue;
@@ -1276,13 +1354,14 @@ export class PaletteGenerator {
       title: GeneratedPaletteTitle,
       colors: [...paletteColors.keys()].sort(hueComparator),
       colorNames: [],
-      mutable: false
+      mutable: false,
+      matchUserFormat: undefined,
     });
   }
 
   /**
    * @param {!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader} stylesheet
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async _processStylesheet(stylesheet) {
     let text = (await stylesheet.requestContent()).content || '';
@@ -1295,6 +1374,9 @@ export class PaletteGenerator {
   }
 }
 
+/**
+ * @type {!Object.<string, !Array<string>>}
+ */
 export const MaterialPaletteShades = {
   '#F44336':
       ['#FFEBEE', '#FFCDD2', '#EF9A9A', '#E57373', '#EF5350', '#F44336', '#E53935', '#D32F2F', '#C62828', '#B71C1C'],
@@ -1346,7 +1428,7 @@ export const MaterialPalette = {
 
 export class Swatch {
   /**
-   * @param {!Element} parentElement
+   * @param {!HTMLElement} parentElement
    */
   constructor(parentElement) {
     /** @type {?string} */
@@ -1355,7 +1437,7 @@ export class Swatch {
     const swatchElement = parentElement.createChild('span', 'swatch');
     this._swatchInnerElement = swatchElement.createChild('span', 'swatch-inner');
 
-    this._swatchOverlayElement = swatchElement.createChild('span', 'swatch-overlay');
+    this._swatchOverlayElement = /** @type {!HTMLElement} */ (swatchElement.createChild('span', 'swatch-overlay'));
     UI.ARIAUtils.markAsButton(this._swatchOverlayElement);
     UI.ARIAUtils.setPressed(this._swatchOverlayElement, false);
     this._swatchOverlayElement.tabIndex = 0;
@@ -1402,4 +1484,5 @@ export class Swatch {
 }
 
 /** @typedef {{ title: string, colors: !Array<string>, colorNames: !Array<string>, mutable: boolean, matchUserFormat: (boolean|undefined) }} */
+// @ts-ignore typedef
 export let Palette;

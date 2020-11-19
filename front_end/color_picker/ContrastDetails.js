@@ -23,8 +23,9 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!ContrastInfo} */
     this._contrastInfo = contrastInfo;
 
-    /** @type {!Element} */
-    this._element = contentElement.createChild('div', 'spectrum-contrast-details collapsed');
+    /** @type {!HTMLElement} */
+    this._element =
+        /** @type {!HTMLElement} */ (contentElement.createChild('div', 'spectrum-contrast-details collapsed'));
 
     /** @type {function(boolean=, !Common.EventTarget.EventTargetEvent=):void} */
     this._toggleMainColorPicker = toggleMainColorPickerCallback;
@@ -325,7 +326,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {!Element}
+   * @return {!HTMLElement}
    */
   element() {
     return this._element;

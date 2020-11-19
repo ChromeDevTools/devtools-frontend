@@ -29,7 +29,7 @@ export class ProfileView extends UI.View.SimpleView {
 
     this._profile = null;
 
-    this._searchableView = new UI.SearchableView.SearchableView(this);
+    this._searchableView = new UI.SearchableView.SearchableView(this, null);
     this._searchableView.setPlaceholder(Common.UIString.UIString('Find by cost (>50ms), name or file'));
     this._searchableView.show(this.element);
 

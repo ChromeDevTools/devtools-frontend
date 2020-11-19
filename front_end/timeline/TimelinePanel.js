@@ -145,7 +145,7 @@ export class TimelinePanel extends UI.Panel.Panel {
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
 
     this._flameChart = new TimelineFlameChartView(this);
-    this._searchableView = new UI.SearchableView.SearchableView(this._flameChart);
+    this._searchableView = new UI.SearchableView.SearchableView(this._flameChart, null);
     this._searchableView.setMinimumSize(0, 100);
     this._searchableView.element.classList.add('searchable-view');
     this._searchableView.show(this._timelinePane.element);

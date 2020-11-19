@@ -56,7 +56,7 @@ export class ExtensionPanel extends UI.Panel.Panel {
     this.setHideOnDetach();
     this._panelToolbar = new UI.Toolbar.Toolbar('hidden', this.element);
 
-    this._searchableView = new UI.SearchableView.SearchableView(this);
+    this._searchableView = new UI.SearchableView.SearchableView(this, null);
     this._searchableView.show(this.element);
 
     const extensionView = new ExtensionView(server, this._id, pageURL, 'extension');

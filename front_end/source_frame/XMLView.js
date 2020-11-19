@@ -45,7 +45,7 @@ export class XMLView extends UI.Widget.Widget {
    */
   static createSearchableView(parsedXML) {
     const xmlView = new XMLView(parsedXML);
-    const searchableView = new UI.SearchableView.SearchableView(xmlView);
+    const searchableView = new UI.SearchableView.SearchableView(xmlView, null);
     searchableView.setPlaceholder(Common.UIString.UIString('Find'));
     xmlView._searchableView = searchableView;
     xmlView.show(searchableView.element);

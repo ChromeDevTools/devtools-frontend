@@ -84,7 +84,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         UI.SplitWidget.Events.SidebarSizeChanged, this._updateTreeOutlineVisibleWidth.bind(this));
     this._splitWidget.show(this.element);
 
-    this._searchableView = new UI.SearchableView.SearchableView(this);
+    this._searchableView = new UI.SearchableView.SearchableView(this, null);
     this._searchableView.setMinimumSize(25, 28);
     this._searchableView.setPlaceholder(Common.UIString.UIString('Find by string, selector, or XPath'));
     const stackElement = this._searchableView.element;

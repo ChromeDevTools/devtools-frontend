@@ -74,7 +74,7 @@ export class JSONView extends UI.Widget.VBox {
     }
 
     const jsonView = new JSONView(parsedJSON);
-    const searchableView = new UI.SearchableView.SearchableView(jsonView);
+    const searchableView = new UI.SearchableView.SearchableView(jsonView, null);
     searchableView.setPlaceholder(Common.UIString.UIString('Find'));
     jsonView._searchableView = searchableView;
     jsonView.show(searchableView.element);
@@ -87,7 +87,7 @@ export class JSONView extends UI.Widget.VBox {
    */
   static createViewSync(obj) {
     const jsonView = new JSONView(new ParsedJSON(obj, '', ''));
-    const searchableView = new UI.SearchableView.SearchableView(jsonView);
+    const searchableView = new UI.SearchableView.SearchableView(jsonView, null);
     searchableView.setPlaceholder(Common.UIString.UIString('Find'));
     jsonView._searchableView = searchableView;
     jsonView.show(searchableView.element);

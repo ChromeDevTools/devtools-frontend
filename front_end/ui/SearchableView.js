@@ -29,9 +29,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -47,20 +44,23 @@ import {VBox} from './Widget.js';
 export class SearchableView extends VBox {
   /**
    * @param {!Searchable} searchable
+   * @param {?Replaceable} replaceable
    * @param {string=} settingName
    */
-  constructor(searchable, settingName) {
+  constructor(searchable, replaceable, settingName) {
     super(true);
     this.registerRequiredCSS('ui/searchableView.css', {enableLegacyPatching: true});
-    this.element[_symbol] = this;
+    searchableViewsByElement.set(this.element, this);
 
     this._searchProvider = searchable;
+    this._replaceProvider = replaceable;
     this._setting = settingName ? Common.Settings.Settings.instance().createSetting(settingName, {}) : null;
     this._replaceable = false;
 
     this.contentElement.createChild('slot');
     this._footerElementContainer = this.contentElement.createChild('div', 'search-bar hidden');
-    this._footerElementContainer.style.order = 100;
+    // TODO(crbug.com/1011811): Replace with normal property access once closure is gone.
+    this._footerElementContainer.style.setProperty('order', '100');
     this._footerElement = this._footerElementContainer.createChild('div', 'toolbar-search');
 
     const replaceToggleToolbar = new Toolbar('replace-toggle-toolbar', this._footerElement);
@@ -98,8 +98,10 @@ export class SearchableView extends VBox {
     this._searchInputElement.addEventListener('keydown', this._onSearchKeyDown.bind(this), true);
     this._searchInputElement.addEventListener('input', this._onInput.bind(this), false);
 
+    /** @type {!HTMLInputElement} */
     this._replaceInputElement =
-        searchInputElements.createChild('input', 'search-replace toolbar-replace-control hidden');
+        /** @type {!HTMLInputElement} */ (
+            searchInputElements.createChild('input', 'search-replace toolbar-replace-control hidden'));
     this._replaceInputElement.addEventListener('keydown', this._onReplaceKeyDown.bind(this), true);
     this._replaceInputElement.placeholder = Common.UIString.UIString('Replace');
 
@@ -147,22 +149,27 @@ export class SearchableView extends VBox {
    * @return {?SearchableView}
    */
   static fromElement(element) {
+    /** @type {?SearchableView} */
     let view = null;
     while (element && !view) {
-      view = element[_symbol];
+      view = searchableViewsByElement.get(element) || null;
       element = element.parentElementOrShadowHost();
     }
     return view;
   }
 
   _toggleCaseSensitiveSearch() {
-    this._caseSensitiveButton.setToggled(!this._caseSensitiveButton.toggled());
+    if (this._caseSensitiveButton) {
+      this._caseSensitiveButton.setToggled(!this._caseSensitiveButton.toggled());
+    }
     this._saveSetting();
     this._performSearch(false, true);
   }
 
   _toggleRegexSearch() {
-    this._regexButton.setToggled(!this._regexButton.toggled());
+    if (this._regexButton) {
+      this._regexButton.setToggled(!this._regexButton.toggled());
+    }
     this._saveSetting();
     this._performSearch(false, true);
   }
@@ -177,17 +184,21 @@ export class SearchableView extends VBox {
       return;
     }
     const settingValue = this._setting.get() || {};
-    settingValue.caseSensitive = this._caseSensitiveButton.toggled();
-    settingValue.isRegex = this._regexButton.toggled();
+    if (this._caseSensitiveButton) {
+      settingValue.caseSensitive = this._caseSensitiveButton.toggled();
+    }
+    if (this._regexButton) {
+      settingValue.isRegex = this._regexButton.toggled();
+    }
     this._setting.set(settingValue);
   }
 
   _loadSetting() {
     const settingValue = this._setting ? (this._setting.get() || {}) : {};
-    if (this._searchProvider.supportsCaseSensitiveSearch()) {
+    if (this._searchProvider.supportsCaseSensitiveSearch() && this._caseSensitiveButton) {
       this._caseSensitiveButton.setToggled(!!settingValue.caseSensitive);
     }
-    if (this._searchProvider.supportsRegexSearch()) {
+    if (this._searchProvider.supportsRegexSearch() && this._regexButton) {
       this._regexButton.setToggled(!!settingValue.isRegex);
     }
   }
@@ -222,11 +233,12 @@ export class SearchableView extends VBox {
    * @suppress {checkTypes}
    */
   updateSearchMatchesCount(matches) {
-    if (this._searchProvider.currentSearchMatches === matches) {
+    const untypedSearchProvider = /** @type {*} */ (this._searchProvider);
+    if (untypedSearchProvider.currentSearchMatches === matches) {
       return;
     }
-    this._searchProvider.currentSearchMatches = matches;
-    this._updateSearchMatchesCountAndCurrentMatchIndex(this._searchProvider.currentQuery ? matches : 0, -1);
+    untypedSearchProvider.currentSearchMatches = matches;
+    this._updateSearchMatchesCountAndCurrentMatchIndex(untypedSearchProvider.currentQuery ? matches : 0, -1);
   }
 
   /**
@@ -234,14 +246,15 @@ export class SearchableView extends VBox {
    * @suppress {checkTypes}
    */
   updateCurrentMatchIndex(currentMatchIndex) {
-    this._updateSearchMatchesCountAndCurrentMatchIndex(this._searchProvider.currentSearchMatches, currentMatchIndex);
+    const untypedSearchProvider = /** @type {*} */ (this._searchProvider);
+    this._updateSearchMatchesCountAndCurrentMatchIndex(untypedSearchProvider.currentSearchMatches, currentMatchIndex);
   }
 
   /**
    * @return {boolean}
    */
   isSearchVisible() {
-    return this._searchIsVisible;
+    return !!this._searchIsVisible;
   }
 
   closeSearch() {
@@ -251,6 +264,7 @@ export class SearchableView extends VBox {
     }
   }
 
+  /** @param {boolean} toggled */
   _toggleSearchBar(toggled) {
     this._footerElementContainer.classList.toggle('hidden', !toggled);
     this.doResize();
@@ -355,7 +369,7 @@ export class SearchableView extends VBox {
     let queryCandidate;
     if (!this._searchInputElement.hasFocus()) {
       const selection = InspectorView.instance().element.window().getSelection();
-      if (selection.rangeCount) {
+      if (selection && selection.rangeCount) {
         queryCandidate = selection.toString().replace(/\r?\n.*/, '');
       }
     }
@@ -380,9 +394,10 @@ export class SearchableView extends VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!Event} ev
    */
-  _onSearchKeyDown(event) {
+  _onSearchKeyDown(ev) {
+    const event = /** @type {!KeyboardEvent} */ (ev);
     if (isEscKey(event)) {
       this.closeSearch();
       event.consume(true);
@@ -423,6 +438,7 @@ export class SearchableView extends VBox {
     }
   }
 
+  /** @param {!Event} event */
   _onNextButtonSearch(event) {
     if (!this._searchNavigationNextElement.classList.contains('enabled')) {
       return;
@@ -431,6 +447,7 @@ export class SearchableView extends VBox {
     this._searchInputElement.focus();
   }
 
+  /** @param {!Event} event */
   _onPrevButtonSearch(event) {
     if (!this._searchNavigationPrevElement.classList.contains('enabled')) {
       return;
@@ -439,6 +456,7 @@ export class SearchableView extends VBox {
     this._searchInputElement.focus();
   }
 
+  /** @param {!Event} event */
   _onFindClick(event) {
     if (!this._currentQuery) {
       this._performSearch(true, true);
@@ -448,6 +466,7 @@ export class SearchableView extends VBox {
     this._searchInputElement.focus();
   }
 
+  /** @param {!Event} event */
   _onPreviousClick(event) {
     if (!this._currentQuery) {
       this._performSearch(true, true, true);
@@ -459,9 +478,10 @@ export class SearchableView extends VBox {
 
   /** @suppress {checkTypes} */
   _clearSearch() {
+    const untypedSearchProvider = /** @type {*} */ (this._searchProvider);
     delete this._currentQuery;
-    if (!!this._searchProvider.currentQuery) {
-      delete this._searchProvider.currentQuery;
+    if (!!untypedSearchProvider.currentQuery) {
+      delete untypedSearchProvider.currentQuery;
       this._searchProvider.searchCanceled();
     }
     this._updateSearchMatchesCountAndCurrentMatchIndex(0, -1);
@@ -481,7 +501,7 @@ export class SearchableView extends VBox {
     }
 
     this._currentQuery = query;
-    this._searchProvider.currentQuery = query;
+    /** @type {*} */ (this._searchProvider).currentQuery = query;
 
     const searchConfig = this._currentSearchConfig();
     this._searchProvider.performSearch(searchConfig, shouldJump, jumpBackwards);
@@ -512,16 +532,21 @@ export class SearchableView extends VBox {
   }
 
   _replace() {
+    if (!this._replaceProvider) {
+      throw new Error('No \'replacable\' provided to SearchableView!');
+    }
     const searchConfig = this._currentSearchConfig();
-    /** @type {!Replaceable} */ (this._searchProvider)
-        .replaceSelectionWith(searchConfig, this._replaceInputElement.value);
+    this._replaceProvider.replaceSelectionWith(searchConfig, this._replaceInputElement.value);
     delete this._currentQuery;
     this._performSearch(true, true);
   }
 
   _replaceAll() {
+    if (!this._replaceProvider) {
+      throw new Error('No \'replacable\' provided to SearchableView!');
+    }
     const searchConfig = this._currentSearchConfig();
-    /** @type {!Replaceable} */ (this._searchProvider).replaceAllWith(searchConfig, this._replaceInputElement.value);
+    this._replaceProvider.replaceAllWith(searchConfig, this._replaceInputElement.value);
   }
 
   /**
@@ -546,6 +571,8 @@ export class SearchableView extends VBox {
 
 export const _symbol = Symbol('searchableView');
 
+/** @type {!WeakMap<!Element, !SearchableView>} */
+const searchableViewsByElement = new WeakMap();
 
 /**
  * @interface
@@ -572,12 +599,15 @@ export class Searchable {
    * @return {boolean}
    */
   supportsCaseSensitiveSearch() {
+    throw new Error('not implemented yet');
   }
 
   /**
    * @return {boolean}
    */
-  supportsRegexSearch() {}
+  supportsRegexSearch() {
+    throw new Error('not implemented yet');
+  }
 }
 
 /**

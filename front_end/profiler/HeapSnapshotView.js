@@ -80,7 +80,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
 
     this._parentDataDisplayDelegate = dataDisplayDelegate;
 
-    this._searchableView = new UI.SearchableView.SearchableView(this);
+    this._searchableView = new UI.SearchableView.SearchableView(this, null);
     this._searchableView.setPlaceholder(ls`Find`, ls`Find`);
     this._searchableView.show(this.element);
 

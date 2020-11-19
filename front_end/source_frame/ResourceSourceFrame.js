@@ -93,7 +93,7 @@ export class SearchableContainer extends UI.Widget.VBox {
     const sourceFrame = new ResourceSourceFrame(resource, autoPrettyPrint);
     this._sourceFrame = sourceFrame;
     sourceFrame.setHighlighterType(highlighterType);
-    const searchableView = new UI.SearchableView.SearchableView(sourceFrame);
+    const searchableView = new UI.SearchableView.SearchableView(sourceFrame, sourceFrame);
     searchableView.element.classList.add('searchable-view');
     searchableView.setPlaceholder(ls`Find`);
     sourceFrame.show(searchableView.element);

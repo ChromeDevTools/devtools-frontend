@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
 import * as Common from '../common/common.js';
 
@@ -28,7 +25,6 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
    * @param {?TracingLayerPayload} root
    * @param {?Array<!TracingLayerPayload>} layers
    * @param {!Array<!LayerPaintEvent>} paints
-   * @return {!Promise}
    */
   async setLayers(root, layers, paints) {
     const idsToResolve = new Set();
@@ -36,7 +32,7 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
       // This is a legacy code path for compatibility, as cc is removing
       // layer tree hierarchy, this code will eventually be removed.
       this._extractNodeIdsToResolve(idsToResolve, {}, root);
-    } else {
+    } else if (layers) {
       for (let i = 0; i < layers.length; ++i) {
         this._extractNodeIdsToResolve(idsToResolve, {}, layers[i]);
       }
@@ -50,9 +46,12 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
     if (root) {
       const convertedLayers = this._innerSetLayers(oldLayersById, root);
       this.setRoot(convertedLayers);
-    } else {
+    } else if (layers) {
       const processedLayers = layers.map(this._innerSetLayers.bind(this, oldLayersById));
       const contentRoot = this.contentRoot();
+      if (!contentRoot) {
+        throw new Error('Content root is not set.');
+      }
       this.setRoot(contentRoot);
       for (let i = 0; i < processedLayers.length; ++i) {
         if (processedLayers[i].id() !== contentRoot.id()) {
@@ -154,6 +153,30 @@ export class TracingLayer {
    * @param {!TracingLayerPayload} payload
    */
   constructor(paintProfilerModel, payload) {
+    /** @type {?string} */
+    this._parentLayerId = null;
+    /** @type {?SDK.LayerTreeBase.Layer} */
+    this._parent = null;
+    this._layerId = '';
+    /** @type {?SDK.DOMModel.DOMNode} */
+    this._node = null;
+    this._offsetX = -1;
+    this._offsetY = -1;
+    this._width = -1;
+    this._height = -1;
+    /** @type {!Array<!SDK.LayerTreeBase.Layer>} */
+    this._children = [];
+    /** @type {!Array<number>} */
+    this._quad = [];
+    /** @type {!Array<!Protocol.LayerTree.ScrollRect>}*/
+    this._scrollRects = [];
+    this._gpuMemoryUsage = -1;
+    /** @type {!Array<!LayerPaintEvent>} */
+    this._paints = [];
+    /** @type {!Array<string>} */
+    this._compositingReasonIds = [];
+    this._drawsContent = false;
+
     this._paintProfilerModel = paintProfilerModel;
     this._reset(payload);
   }
@@ -162,7 +185,6 @@ export class TracingLayer {
    * @param {!TracingLayerPayload} payload
    */
   _reset(payload) {
-    /** @type {?SDK.DOMModel.DOMNode} */
     this._node = null;
     this._layerId = String(payload.layer_id);
     this._offsetX = payload.position[0];
@@ -182,6 +204,7 @@ export class TracingLayer {
         payload.compositing_reason_ids || (payload.debug_info && payload.debug_info.compositing_reason_ids) || [];
     this._drawsContent = !!payload.draws_content;
     this._gpuMemoryUsage = payload.gpu_memory_usage;
+    /** @type {!Array<!LayerPaintEvent>} */
     this._paints = [];
   }
 
@@ -259,9 +282,11 @@ export class TracingLayer {
    * @return {?SDK.DOMModel.DOMNode}
    */
   nodeForSelfOrAncestor() {
-    for (let layer = this; layer; layer = layer._parent) {
-      if (layer._node) {
-        return layer._node;
+    /** @type {?SDK.LayerTreeBase.Layer} */
+    let layer = this;
+    for (; layer; layer = layer.parent()) {
+      if (layer.node()) {
+        return layer.node();
       }
     }
     return null;
@@ -392,9 +417,12 @@ export class TracingLayer {
    */
   _pictureForRect(targetRect) {
     return Promise.all(this._paints.map(paint => paint.picturePromise())).then(pictures => {
-      const fragments =
-          pictures.filter(picture => picture && rectsOverlap(picture.rect, targetRect))
-              .map(picture => ({x: picture.rect[0], y: picture.rect[1], picture: picture.serializedPicture}));
+      const filteredPictures = /** @type {!Array<!{rect: !Array<number>, serializedPicture: string}>} */ (
+          pictures.filter(picture => picture && rectsOverlap(picture.rect, targetRect)));
+
+      const fragments = filteredPictures.map(
+          picture => ({x: picture.rect[0], y: picture.rect[1], picture: picture.serializedPicture}));
+
       if (!fragments.length || !this._paintProfilerModel) {
         return null;
       }
@@ -442,23 +470,29 @@ export class TracingLayer {
    * @param {!TracingLayerPayload} payload
    */
   _createScrollRects(payload) {
-    this._scrollRects = [];
+    /** @type {!Array<*>} */
+    const nonPayloadScrollRects = [];
     if (payload.non_fast_scrollable_region) {
-      this._scrollRects.push(this._scrollRectsFromParams(
-          payload.non_fast_scrollable_region, SDK.LayerTreeBase.Layer.ScrollRectType.NonFastScrollable.name));
+      nonPayloadScrollRects.push(this._scrollRectsFromParams(
+          payload.non_fast_scrollable_region, SDK.LayerTreeBase.Layer.ScrollRectType.NonFastScrollable));
     }
     if (payload.touch_event_handler_region) {
-      this._scrollRects.push(this._scrollRectsFromParams(
-          payload.touch_event_handler_region, SDK.LayerTreeBase.Layer.ScrollRectType.TouchEventHandler.name));
+      nonPayloadScrollRects.push(this._scrollRectsFromParams(
+          payload.touch_event_handler_region, SDK.LayerTreeBase.Layer.ScrollRectType.TouchEventHandler));
     }
     if (payload.wheel_event_handler_region) {
-      this._scrollRects.push(this._scrollRectsFromParams(
-          payload.wheel_event_handler_region, SDK.LayerTreeBase.Layer.ScrollRectType.WheelEventHandler.name));
+      nonPayloadScrollRects.push(this._scrollRectsFromParams(
+          payload.wheel_event_handler_region, SDK.LayerTreeBase.Layer.ScrollRectType.WheelEventHandler));
     }
     if (payload.scroll_event_handler_region) {
-      this._scrollRects.push(this._scrollRectsFromParams(
-          payload.scroll_event_handler_region, SDK.LayerTreeBase.Layer.ScrollRectType.RepaintsOnScroll.name));
+      nonPayloadScrollRects.push(this._scrollRectsFromParams(
+          payload.scroll_event_handler_region, SDK.LayerTreeBase.Layer.ScrollRectType.RepaintsOnScroll));
     }
+
+    // SDK.LayerBaseTree.Layer.ScrollRectType and Protocol.LayerTree.ScrollRectType are the
+    // same type, but we need to use the indirection of the nonPayloadScrollRects since
+    // the ScrollRectType is defined as a string in SDK.LayerBaseTree.Layer.ScrollRectType.
+    this._scrollRects = nonPayloadScrollRects;
   }
 
   /**
@@ -497,9 +531,17 @@ export class TracingLayer {
  gpu_memory_usage: number,
  transform: Array.<number>,
  owner_node: number,
- compositing_reasons: Array.<string>
+ reasons: Array.<string>,
+ compositing_reason: Array.<string>,
+ compositing_reason_ids: Array.<string>,
+ debug_info: {compositing_reason_ids: Array.<string>},
+ non_fast_scrollable_region: Array.<number>,
+ touch_event_handler_region: Array.<number>,
+ wheel_event_handler_region: Array.<number>,
+ scroll_event_handler_region: Array.<number>
 }}
 */
+// @ts-ignore typedef
 export let TracingLayerPayload;
 
 /** @typedef {!{
@@ -509,4 +551,5 @@ export let TracingLayerPayload;
  content_rect: !Array.<number>
 }}
 */
+// @ts-ignore typedef
 export let TracingLayerTile;

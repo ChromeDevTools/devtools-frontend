@@ -102,7 +102,6 @@ Timeline.TimelineFlameChartDataProvider = TimelineModule.TimelineFlameChartDataP
 
 Timeline.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs =
     TimelineModule.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs;
-Timeline.TimelineFlameChartDataProvider._indexSymbol = TimelineModule.TimelineFlameChartDataProvider.indexSymbol;
 
 /** @enum {symbol} */
 Timeline.TimelineFlameChartDataProvider.Events = TimelineModule.TimelineFlameChartDataProvider.Events;

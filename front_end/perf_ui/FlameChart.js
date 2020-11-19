@@ -34,6 +34,7 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as ThemeSupport from '../theme_support/theme_support.js';
+import * as TimelineModel from '../timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {ChartViewport, ChartViewportDelegate} from './ChartViewport.js';  // eslint-disable-line no-unused-vars
@@ -2447,7 +2448,7 @@ export class TimelineData {
     this.entryLevels = entryLevels;
     this.entryTotalTimes = entryTotalTimes;
     this.entryStartTimes = entryStartTimes;
-    this.groups = groups;
+    this.groups = groups || [];
     /** @type {!Array.<!FlameChartMarker>} */
     this.markers = [];
     /** @type {!Array.<number>} */
@@ -2639,7 +2640,8 @@ export const Colors = {
   *     startLevel: number,
   *     expanded: (boolean|undefined),
   *     selectable: (boolean|undefined),
-  *     style: !GroupStyle
+  *     style: !GroupStyle,
+  *     track: (?TimelineModel.TimelineModel.Track|undefined),
   * }}
   */
 // @ts-ignore Typedef

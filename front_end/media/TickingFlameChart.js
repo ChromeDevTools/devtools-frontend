@@ -467,8 +467,14 @@ class TickingFlameChartDataProvider {
    */
   addGroup(name, depth) {
     if (this._timelineData.groups) {
-      this._timelineData.groups.push(
-          {name: name, startLevel: this._maxLevel, expanded: true, selectable: false, style: DefaultStyle});
+      this._timelineData.groups.push({
+        name: name,
+        startLevel: this._maxLevel,
+        expanded: true,
+        selectable: false,
+        style: DefaultStyle,
+        track: null
+      });
     }
     this._maxLevel += depth;
   }

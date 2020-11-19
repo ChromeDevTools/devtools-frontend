@@ -692,14 +692,24 @@ export class TimelineUIUtils {
       case recordType.ResourceFinish: {
         const url = TimelineModel.TimelineModel.TimelineData.forEvent(event).url;
         if (url) {
-          details = Components.Linkifier.Linkifier.linkifyURL(url, {tabStop: true});
+          const options = {
+            tabStop: true,
+            className: undefined,
+            columnNumber: undefined,
+            text: undefined,
+            lineNumber: undefined,
+            preventClick: undefined,
+            maxLength: undefined,
+            bypassURLTrimming: undefined
+          };
+          details = Components.Linkifier.Linkifier.linkifyURL(url, options);
         }
         break;
       }
 
       case recordType.FunctionCall:
       case recordType.JSFrame: {
-        details = createElement('span');
+        details = document.createElement('span');
         UI.UIUtils.createTextChild(details, TimelineUIUtils.frameDisplayName(eventData));
         const location = linkifyLocation(
             eventData['scriptId'], eventData['url'], eventData['lineNumber'], eventData['columnNumber']);
@@ -743,7 +753,7 @@ export class TimelineUIUtils {
     }
 
     if (!details && detailsText) {
-      details = createTextNode(detailsText);
+      details = document.createTextNode(detailsText);
     }
     return details;
 
@@ -764,9 +774,9 @@ export class TimelineUIUtils {
      */
     function linkifyTopCallFrame() {
       const frame = TimelineModel.TimelineModel.TimelineData.forEvent(event).topFrame();
-      return frame ?
-          linkifier.maybeLinkifyConsoleCallFrame(target, frame, {className: 'timeline-details', tabStop: true}) :
-          null;
+      return frame ? linkifier.maybeLinkifyConsoleCallFrame(
+                         target, frame, {className: 'timeline-details', tabStop: true, columnNumber: undefined}) :
+                     null;
     }
   }
 
@@ -797,7 +807,7 @@ export class TimelineUIUtils {
   }
 
   /**
-   * @param {!Object} eventData
+   * @param {*} eventData
    * @param {!TimelineDetailsContentHelper} contentHelper
    */
   static buildCompilationCacheDetails(eventData, contentHelper) {
@@ -809,7 +819,7 @@ export class TimelineUIUtils {
       contentHelper.appendTextRow(ls`Compilation cache status`, ls`script loaded from cache`);
       contentHelper.appendTextRow(
           ls`Compilation cache size`, Platform.NumberUtilities.bytesToString(eventData['consumedCacheSize']));
-    } else if (eventData && eventData['cacheRejected']) {
+    } else if (eventData && 'cacheRejected' in eventData && eventData['cacheRejected']) {
       // Version mismatch or similar.
       contentHelper.appendTextRow(ls`Compilation cache status`, ls`failed to load script from cache`);
     } else {
@@ -887,8 +897,8 @@ export class TimelineUIUtils {
       contentHelper.appendWarningRow(event, TimelineModel.TimelineModel.TimelineModelImpl.WarningType.V8Deopt);
     }
 
-    if (detailed && !Number.isNaN(event.duration + 0)) {
-      contentHelper.appendTextRow(ls`Total Time`, Number.millisToString(event.duration, true));
+    if (detailed && !Number.isNaN(event.duration || 0)) {
+      contentHelper.appendTextRow(ls`Total Time`, Number.millisToString(event.duration || 0, true));
       contentHelper.appendTextRow(ls`Self Time`, Number.millisToString(event.selfTime, true));
     }
 
@@ -945,7 +955,17 @@ export class TimelineUIUtils {
       case recordTypes.ResourceFinish: {
         url = timelineData.url;
         if (url) {
-          contentHelper.appendElementRow(ls`Resource`, Components.Linkifier.Linkifier.linkifyURL(url, {tabStop: true}));
+          const options = {
+            tabStop: true,
+            className: undefined,
+            columnNumber: undefined,
+            lineNumber: undefined,
+            text: undefined,
+            preventClick: undefined,
+            maxLength: undefined,
+            bypassURLTrimming: undefined
+          };
+          contentHelper.appendElementRow(ls`Resource`, Components.Linkifier.Linkifier.linkifyURL(url, options));
         }
         if (eventData['requestMethod']) {
           contentHelper.appendTextRow(ls`Request Method`, eventData['requestMethod']);
@@ -1016,13 +1036,13 @@ export class TimelineUIUtils {
         break;
       }
 
+      // @ts-ignore Fall-through intended.
       case recordTypes.Paint: {
         const clip = eventData['clip'];
         contentHelper.appendTextRow(ls`Location`, ls`(${clip[0]}, ${clip[1]})`);
         const clipWidth = TimelineUIUtils.quadWidth(clip);
         const clipHeight = TimelineUIUtils.quadHeight(clip);
         contentHelper.appendTextRow(ls`Dimensions`, ls`${clipWidth} × ${clipHeight}`);
-        // Fall-through intended.
       }
 
       case recordTypes.PaintSetup:
@@ -1040,8 +1060,17 @@ export class TimelineUIUtils {
         relatedNodeLabel = ls`Owner Element`;
         url = timelineData.url;
         if (url) {
-          contentHelper.appendElementRow(
-              ls`Image URL`, Components.Linkifier.Linkifier.linkifyURL(url, {tabStop: true}));
+          const options = {
+            tabStop: true,
+            className: undefined,
+            columnNumber: undefined,
+            lineNumber: undefined,
+            text: undefined,
+            preventClick: undefined,
+            maxLength: undefined,
+            bypassURLTrimming: undefined
+          };
+          contentHelper.appendElementRow(ls`Image URL`, Components.Linkifier.Linkifier.linkifyURL(url, options));
         }
         break;
       }
@@ -1049,8 +1078,17 @@ export class TimelineUIUtils {
       case recordTypes.ParseAuthorStyleSheet: {
         url = eventData['styleSheetUrl'];
         if (url) {
-          contentHelper.appendElementRow(
-              ls`Stylesheet URL`, Components.Linkifier.Linkifier.linkifyURL(url, {tabStop: true}));
+          const options = {
+            tabStop: true,
+            className: undefined,
+            columnNumber: undefined,
+            lineNumber: undefined,
+            text: undefined,
+            preventClick: undefined,
+            maxLength: undefined,
+            bypassURLTrimming: undefined
+          };
+          contentHelper.appendElementRow(ls`Stylesheet URL`, Components.Linkifier.Linkifier.linkifyURL(url, options));
         }
         break;
       }
@@ -1114,10 +1152,10 @@ export class TimelineUIUtils {
         break;
       }
 
+      // @ts-ignore Fall-through intended.
       case recordTypes.FireIdleCallback: {
         contentHelper.appendTextRow(ls`Allotted Time`, Number.millisToString(eventData['allottedMilliseconds']));
         contentHelper.appendTextRow(ls`Invoked by Timeout`, eventData['timedOut']);
-        // Fall-through intended.
       }
 
       case recordTypes.RequestIdleCallback:
@@ -1131,10 +1169,10 @@ export class TimelineUIUtils {
         break;
       }
 
+      // @ts-ignore Fall-through intended.
       case recordTypes.MarkLCPCandidate: {
         contentHelper.appendTextRow(ls`Type`, String(eventData['type']));
         contentHelper.appendTextRow(ls`Size`, String(eventData['size']));
-        // Fall-through intended.
       }
 
       case recordTypes.MarkFirstPaint:
@@ -1159,7 +1197,7 @@ export class TimelineUIUtils {
       }
 
       case recordTypes.LayoutShift: {
-        const warning = createElement('span');
+        const warning = document.createElement('span');
         const clsLink = UI.UIUtils.createWebDevLink('cls/', ls`Cumulative Layout Shifts`);
         warning.appendChild(UI.UIUtils.formatLocalized('%s can result in poor user experiences.', [clsLink]));
         contentHelper.appendElementRow(ls`Warning`, warning, true);
@@ -1244,9 +1282,10 @@ export class TimelineUIUtils {
 
     /**
      * @param {number} time
-     * @return {!Object}
+     * @return {!Object.<string, number>}
      */
     function aggregatedStatsAtTime(time) {
+      /** @type {!Object.<string, number>} */
       const stats = {};
       const cache = events[categoryBreakdownCacheSymbol];
       for (const category in cache) {
@@ -1292,7 +1331,9 @@ export class TimelineUIUtils {
 
       // aggeregatedStats is a map by categories. For each category there's an array
       // containing sorted time points which records accumulated value of the category.
+      /** @type {!Object.<string, {time: !Array<number>, value: !Array<number>}>} */
       const aggregatedStats = {};
+      /** @type {!Array<string>} */
       const categoryStack = [];
       let lastTime = 0;
       TimelineModel.TimelineModel.TimelineModelImpl.forEachEvent(
@@ -1319,7 +1360,7 @@ export class TimelineUIUtils {
         if (statsArrays.time.length && statsArrays.time.peekLast() === time || lastTime > time) {
           return;
         }
-        const lastValue = statsArrays.value.length ? statsArrays.value.peekLast() : 0;
+        const lastValue = statsArrays.value.length > 0 ? statsArrays.value[statsArrays.value.length - 1] : 0;
         statsArrays.value.push(lastValue + time - lastTime);
         statsArrays.time.push(time);
       }
@@ -1346,7 +1387,7 @@ export class TimelineUIUtils {
         const category = TimelineUIUtils.eventStyle(e).category.name;
         const parentCategory = categoryStack.length ? categoryStack.peekLast() : null;
         if (category !== parentCategory) {
-          categoryChange(parentCategory, category, e.startTime);
+          categoryChange(parentCategory || null, category, e.startTime);
         }
         categoryStack.push(category);
       }
@@ -1358,7 +1399,7 @@ export class TimelineUIUtils {
         const category = categoryStack.pop();
         const parentCategory = categoryStack.length ? categoryStack.peekLast() : null;
         if (category !== parentCategory) {
-          categoryChange(category, parentCategory, e.endTime);
+          categoryChange(category || null, parentCategory || null, e.endTime || 0);
         }
       }
 
@@ -1381,7 +1422,17 @@ export class TimelineUIUtils {
     contentHelper.addSection(ls`Network request`, color);
 
     if (request.url) {
-      contentHelper.appendElementRow(ls`URL`, Components.Linkifier.Linkifier.linkifyURL(request.url, {tabStop: true}));
+      const options = {
+        tabStop: true,
+        className: undefined,
+        columnNumber: undefined,
+        text: undefined,
+        lineNumber: undefined,
+        preventClick: undefined,
+        maxLength: undefined,
+        bypassURLTrimming: undefined
+      };
+      contentHelper.appendElementRow(ls`URL`, Components.Linkifier.Linkifier.linkifyURL(request.url, options));
     }
 
     // The time from queueing the request until resource processing is finished.
@@ -1390,9 +1441,9 @@ export class TimelineUIUtils {
       let textRow = Number.millisToString(fullDuration, true);
       // The time from queueing the request until the download is finished. This
       // corresponds to the total time reported for the request in the network tab.
-      const networkDuration = request.finishTime - request.getStartTime();
+      const networkDuration = (request.finishTime || 0) - request.getStartTime();
       // The time it takes to make the resource available to the renderer process.
-      const processingDuration = request.endTime - request.finishTime;
+      const processingDuration = request.endTime - (request.finishTime || 0);
       if (isFinite(networkDuration) && isFinite(processingDuration)) {
         const networkDurationStr = Number.millisToString(networkDuration, true);
         const processingDurationStr = Number.millisToString(processingDuration, true);
@@ -1435,7 +1486,8 @@ export class TimelineUIUtils {
     const sendRequest = request.children[0];
     const topFrame = TimelineModel.TimelineModel.TimelineData.forEvent(sendRequest).topFrame();
     if (topFrame) {
-      const link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame, {tabStop: true});
+      const link = linkifier.maybeLinkifyConsoleCallFrame(
+          target, topFrame, {tabStop: true, className: undefined, columnNumber: undefined});
       if (link) {
         contentHelper.appendElementRow(title, link);
       }
@@ -1444,7 +1496,8 @@ export class TimelineUIUtils {
       if (initiator) {
         const initiatorURL = TimelineModel.TimelineModel.TimelineData.forEvent(initiator).url;
         if (initiatorURL) {
-          const link = linkifier.maybeLinkifyScriptLocation(target, null, initiatorURL, 0, {tabStop: true});
+          const link = linkifier.maybeLinkifyScriptLocation(
+              target, null, initiatorURL, 0, {tabStop: true, className: undefined, columnNumber: undefined});
           if (link) {
             contentHelper.appendElementRow(title, link);
           }
@@ -2637,7 +2690,8 @@ export class TimelineDetailsContentHelper {
       return;
     }
     const locationContent = createElement('span');
-    const link = this._linkifier.maybeLinkifyScriptLocation(this._target, null, url, startLine, {tabStop: true});
+    const link = this._linkifier.maybeLinkifyScriptLocation(
+        this._target, null, url, startLine, {tabStop: true, className: undefined, columnNumber: undefined});
     if (!link) {
       return;
     }

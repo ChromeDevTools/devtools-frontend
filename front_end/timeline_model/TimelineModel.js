@@ -1844,7 +1844,7 @@ export class NetworkRequest {
     this.decodedBodyLength = 0;
     /** @type {!Array<!SDK.TracingModel.Event>} */
     this.children = [];
-    /** @type {?Object} */
+    /** @type {{pushStart: number, requestTime: number, sendStart: number, receiveHeadersEnd: number}} */
     this.timing;
     /** @type {string} */
     this.mimeType;

@@ -541,7 +541,9 @@ export class OverlayModel extends SDKModel {
           lineSeparator: {
             color: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA(),
             pattern: Protocol.Overlay.LineStylePattern.Dashed,
-          }
+          },
+          mainDistributedSpace: {hatchColor: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA()},
+          crossDistributedSpace: {hatchColor: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA()}
         };
       }
     }

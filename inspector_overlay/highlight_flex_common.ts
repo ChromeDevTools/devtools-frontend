@@ -3,13 +3,26 @@
 // found in the LICENSE file.
 
 import {PathCommands, Position, Quad} from './common.js';
-import {buildPath, drawPathWithLineStyle, emptyBounds, LineStyle} from './highlight_common.js';
+import {BoxStyle, buildPath, createPathForQuad, drawPathWithLineStyle, emptyBounds, hatchFillPath, LineStyle} from './highlight_common.js';
 
 export interface FlexContainerHighlight {
   containerBorder: PathCommands;
   lines: Array<Array<PathCommands>>;
   isHorizontalFlow: boolean;
-  flexContainerHighlightConfig: {containerBorder?: LineStyle; lineSeparator?: LineStyle; itemSeparator?: LineStyle;};
+  flexContainerHighlightConfig: {
+    containerBorder?: LineStyle;
+    lineSeparator?: LineStyle;
+    itemSeparator?: LineStyle;
+    mainDistributedSpace?: BoxStyle;
+    crossDistributedSpace?: BoxStyle;
+    rowGapSpace?: BoxStyle;
+    columnGapSpace?: BoxStyle;
+  };
+}
+
+interface LineQuads {
+  quad: Quad;
+  items: Quad[];
 }
 
 export function drawLayoutFlexContainerHighlight(
@@ -26,7 +39,33 @@ export function drawLayoutFlexContainerHighlight(
     return;
   }
 
-  const paths = processFlexLineAndItemPaths(highlight.containerBorder, lines, isHorizontalFlow);
+  // Process the item paths we received from the backend into quads we can use to draw what we need.
+  const lineQuads = getLinesAndItemsQuads(highlight.containerBorder, lines, isHorizontalFlow);
+
+  // Draw lines and items.
+  drawFlexLinesAndItems(highlight, context, emulationScaleFactor, lineQuads, isHorizontalFlow);
+
+  // Draw the hatching pattern outside of items.
+  drawFlexSpace(highlight, context, emulationScaleFactor, highlight.containerBorder, lineQuads);
+}
+
+function drawFlexLinesAndItems(
+    highlight: FlexContainerHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number,
+    lineQuads: LineQuads[], isHorizontalFlow: boolean) {
+  const config = highlight.flexContainerHighlightConfig;
+
+  const paths = lineQuads.map((line, lineIndex) => {
+    const nextLineQuad = lineQuads[lineIndex + 1] && lineQuads[lineIndex + 1].quad;
+    return {
+      path: isHorizontalFlow ? quadToHorizontalLinesPath(line.quad, nextLineQuad) :
+                               quadToVerticalLinesPath(line.quad, nextLineQuad),
+      items: line.items.map((item, itemIndex) => {
+        const nextItemQuad = line.items[itemIndex + 1] && line.items[itemIndex + 1];
+        return isHorizontalFlow ? quadToVerticalLinesPath(item, nextItemQuad) :
+                                  quadToHorizontalLinesPath(item, nextItemQuad);
+      }),
+    };
+  });
 
   // Only draw lines when there's more than 1.
   const drawLines = paths.length > 1;
@@ -42,6 +81,66 @@ export function drawLayoutFlexContainerHighlight(
 }
 
 /**
+ * Draw the hatching pattern in all of the empty space between items and lines (either due to gaps or content
+ * distribution).
+ * Space created by content distribution along the cross axis (align-content) appears between flex lines.
+ * Space created by content distribution along the main axis (justify-content) appears between flex items.
+ * Note: space created by gaps isn't taken into account yet, and requires the backend to send data about the gap size.
+ */
+function drawFlexSpace(
+    highlight: FlexContainerHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number,
+    container: PathCommands, lineQuads: LineQuads[]) {
+  const {mainDistributedSpace, crossDistributedSpace} = highlight.flexContainerHighlightConfig;
+  const drawMainSpace = mainDistributedSpace && !!(mainDistributedSpace.fillColor || mainDistributedSpace.hatchColor);
+  const drawCrossSpace = lineQuads.length > 1 && crossDistributedSpace &&
+      !!(crossDistributedSpace.fillColor || crossDistributedSpace.hatchColor);
+
+  if (!drawMainSpace && !drawCrossSpace) {
+    return;
+  }
+
+  const containerQuad = rectPathToQuad(container);
+
+  // Start with the case where we want to draw all types of space, with the same style. This is important because it's
+  // a common case that we can optimize by drawing in one go, and therefore avoiding having visual offsets between
+  // mutliple hatch patterns.
+  if (drawMainSpace && drawCrossSpace && mainDistributedSpace && crossDistributedSpace &&
+      mainDistributedSpace.fillColor === crossDistributedSpace.fillColor &&
+      mainDistributedSpace.hatchColor === crossDistributedSpace.hatchColor) {
+    // Draw in one go by constructing a path that covers the entire container but punches holes where items are.
+    const allItemQuads = lineQuads.map(line => line.items).flat().map(item => item);
+    drawHatchPatternInQuad(containerQuad, allItemQuads, mainDistributedSpace, context, emulationScaleFactor);
+    return;
+  }
+
+  // In other cases, we're forced to draw the empty space in multiple go's. First drawing the space betweeb flex lines.
+  // And then the space between flex items, per line.
+  if (drawCrossSpace) {
+    // If we're drawing only cross space, then we do the same thing but punching holes where flex lines are.
+    const allLineQuads = lineQuads.map(line => line.quad);
+    drawHatchPatternInQuad(containerQuad, allLineQuads, crossDistributedSpace, context, emulationScaleFactor);
+  }
+
+  if (drawMainSpace) {
+    for (const line of lineQuads) {
+      const itemQuads = line.items;
+      drawHatchPatternInQuad(line.quad, itemQuads, mainDistributedSpace, context, emulationScaleFactor);
+    }
+  }
+}
+
+function drawHatchPatternInQuad(
+    outerQuad: Quad, quadsToClip: Quad[], boxStyle: BoxStyle|undefined, context: CanvasRenderingContext2D,
+    emulationScaleFactor: number) {
+  if (!boxStyle || !boxStyle.hatchColor) {
+    return;
+  }
+  const bounds = emptyBounds();
+  const path = createPathForQuad(outerQuad, quadsToClip, bounds, emulationScaleFactor);
+  hatchFillPath(context, path, bounds, 10, boxStyle.hatchColor, 0, false);
+}
+
+/**
  * We get a list of paths for each flex item from the backend. From this list, we compute the resulting paths for each
  * flex line too (making it span the entire container size (in the main direction)). We also process the item path so
  * they span the entire flex line size (in the cross direction).
@@ -50,7 +149,8 @@ export function drawLayoutFlexContainerHighlight(
  * @param lines
  * @param isHorizontalFlow
  */
-function processFlexLineAndItemPaths(container: PathCommands, lines: PathCommands[][], isHorizontalFlow: boolean) {
+function getLinesAndItemsQuads(
+    container: PathCommands, lines: PathCommands[][], isHorizontalFlow: boolean): LineQuads[] {
   const containerQuad = rectPathToQuad(container);
 
   // Create a quad for each line that's as big as the items it contains and extends to the edges of the container in the
@@ -79,18 +179,7 @@ function processFlexLineAndItemPaths(container: PathCommands, lines: PathCommand
     });
   }
 
-  return lineQuads.map((line, lineIndex) => {
-    const nextLineQuad = lineQuads[lineIndex + 1] && lineQuads[lineIndex + 1].quad;
-    return {
-      path: isHorizontalFlow ? quadToHorizontalLinesPath(line.quad, nextLineQuad) :
-                               quadToVerticalLinesPath(line.quad, nextLineQuad),
-      items: line.items.map((item, itemIndex) => {
-        const nextItemQuad = line.items[itemIndex + 1] && line.items[itemIndex + 1];
-        return isHorizontalFlow ? quadToVerticalLinesPath(item, nextItemQuad) :
-                                  quadToHorizontalLinesPath(item, nextItemQuad);
-      }),
-    };
-  });
+  return lineQuads;
 }
 
 function quadToHorizontalLinesPath(quad: Quad, nextQuad: Quad|undefined): PathCommands {

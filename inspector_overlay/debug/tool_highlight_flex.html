@@ -48,7 +48,28 @@ found in the LICENSE file.
           [ "M", 743.3333740234375, 511.66668701171875, "L", 823.3333740234375, 511.66668701171875, "L", 823.3333740234375, 530.3333740234375, "L", 743.3333740234375, 530.3333740234375, "Z" ]
         ]
       ],
-      "isHorizontalFlow": true, "flexContainerHighlightConfig": { "containerBorder": { "color": "rgba(255, 0, 0, 1)", "pattern": "dashed" }, "lineSeparator": { "color": "rgba(0, 0, 255, 1)", "pattern": "dashed" }, "itemSeparator": { "color": "rgba(0, 255, 0, 1)", "pattern": "dotted" } } } ] } }
+      "isHorizontalFlow": true,
+      "flexContainerHighlightConfig": {
+        "containerBorder": {
+          "color": "rgba(255, 0, 0, 1)",
+          "pattern": "dashed"
+        },
+        "lineSeparator": {
+          "color": "rgba(0, 0, 255, 1)",
+          "pattern": "dashed"
+        },
+        "itemSeparator": {
+          "color": "rgba(0, 255, 0, 1)",
+          "pattern": "dotted"
+        },
+        "mainDistributedSpace": {
+          "hatchColor": "red",
+        },
+        "crossDistributedSpace": {
+          "hatchColor": "blue",
+        }
+      }
+    } ] } }
 
     // Massage the data a bit so we can see a nice flex overlay.
     response = response.highlight;

@@ -28,7 +28,7 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {Bounds} from './common.js';
+import {Bounds, Quad} from './common.js';
 
 export type PathBounds = Bounds&{
   leftmostXForY: {[key: string]: number};
@@ -40,6 +40,11 @@ export type PathBounds = Bounds&{
 export interface LineStyle {
   color?: string;
   pattern?: LinePattern;
+}
+
+export interface BoxStyle {
+  fillColor?: string;
+  hatchColor?: string;
 }
 
 enum LinePattern {
@@ -137,4 +142,80 @@ export function applyMatrixToPoint(point: {x: number; y: number;}, matrix: DOMMa
   let domPoint = new DOMPoint(point.x, point.y);
   domPoint = domPoint.matrixTransform(matrix);
   return {x: domPoint.x, y: domPoint.y};
+}
+
+/**
+ * Draw line hatching at a 45 degree angle for a given
+ * path.
+ *   __________
+ *   |\  \  \ |
+ *   | \  \  \|
+ *   |  \  \  |
+ *   |\  \  \ |
+ *   **********
+ */
+export function hatchFillPath(
+    context: CanvasRenderingContext2D, path: Path2D, bounds: Bounds, delta: number, color: string,
+    rotationAngle: number, flipDirection: boolean|undefined) {
+  const dx = bounds.maxX - bounds.minX;
+  const dy = bounds.maxY - bounds.minY;
+  context.rect(bounds.minX, bounds.minY, dx, dy);
+  context.save();
+  context.clip(path);
+  context.setLineDash([5, 3]);
+  const majorAxis = Math.max(dx, dy);
+  context.strokeStyle = color;
+  const centerX = bounds.minX + dx / 2;
+  const centerY = bounds.minY + dy / 2;
+  context.translate(centerX, centerY);
+  context.rotate(rotationAngle * Math.PI / 180);
+  context.translate(-centerX, -centerY);
+  if (flipDirection) {
+    for (let i = -majorAxis; i < majorAxis; i += delta) {
+      context.beginPath();
+      context.moveTo(bounds.maxX - i, bounds.minY);
+      context.lineTo(bounds.maxX - dy - i, bounds.maxY);
+      context.stroke();
+    }
+  } else {
+    for (let i = -majorAxis; i < majorAxis; i += delta) {
+      context.beginPath();
+      context.moveTo(i + bounds.minX, bounds.minY);
+      context.lineTo(dy + i + bounds.minX, bounds.maxY);
+      context.stroke();
+    }
+  }
+  context.restore();
+}
+
+/**
+ * Given a quad, create the corresponding path object. This also accepts a list of quads to clip from the resulting
+ * path.
+ */
+export function createPathForQuad(
+    outerQuad: Quad, quadsToClip: Quad[], bounds: PathBounds, emulationScaleFactor: number) {
+  let commands = [
+    'M',
+    outerQuad.p1.x,
+    outerQuad.p1.y,
+    'L',
+    outerQuad.p2.x,
+    outerQuad.p2.y,
+    'L',
+    outerQuad.p3.x,
+    outerQuad.p3.y,
+    'L',
+    outerQuad.p4.x,
+    outerQuad.p4.y,
+  ];
+  for (const quad of quadsToClip) {
+    commands = [
+      ...commands,    'L', quad.p4.x, quad.p4.y, 'L', quad.p3.x, quad.p3.y, 'L', quad.p2.x,
+      quad.p2.y,      'L', quad.p1.x, quad.p1.y, 'L', quad.p4.x, quad.p4.y, 'L', outerQuad.p4.x,
+      outerQuad.p4.y,
+    ];
+  }
+  commands.push('Z');
+
+  return buildPath(commands, bounds, emulationScaleFactor);
 }

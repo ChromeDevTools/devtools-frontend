@@ -51,6 +51,9 @@
   <message name="IDS_DEVTOOLS_e4fc5497303105b60ef0b8c90be3fbd2" desc="Accessibility label for the DOM breakpoints list in the Sources panel">
     DOM Breakpoints list
   </message>
+  <message name="IDS_DEVTOOLS_e5cc0724ff43fa0e0ccfc0487b1aac68" desc="Title of the 'CSP Violation Breakpoints' tool in the bottom sidebar of the Sources tool">
+    CSP Violation Breakpoints
+  </message>
   <message name="IDS_DEVTOOLS_ebdb33cde9015fa4b294220ee89cff00" desc="Title of the 'Event Listener Breakpoints' tool in the bottom sidebar of the Sources tool">
     Event Listener Breakpoints
   </message>

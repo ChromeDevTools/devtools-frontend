@@ -10,6 +10,15 @@
       "className": "BrowserDebugger.EventListenerBreakpointsSidebarPane"
     },
     {
+      "type": "view",
+      "location": "sources.sidebar-bottom",
+      "id": "sources.cspViolationBreakpoints",
+      "title": "CSP Violation Breakpoints",
+      "order": 10,
+      "persistence": "permanent",
+      "className": "BrowserDebugger.CSPViolationBreakpointsSidebarPane"
+    },
+    {
       "type": "@UI.ContextFlavorListener",
       "contextTypes": [
         "SDK.DebuggerPausedDetails"

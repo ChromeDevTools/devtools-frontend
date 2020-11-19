@@ -133,6 +133,15 @@ export class DebuggerPausedMessage {
       messageWrapper = buildWrapper(Common.UIString.UIString('Paused on debugged function'));
     } else if (details.reason === SDK.DebuggerModel.BreakReason.OOM) {
       messageWrapper = buildWrapper(Common.UIString.UIString('Paused before potential out-of-memory crash'));
+    } else if (
+        details.reason === SDK.DebuggerModel.BreakReason.CSPViolation && details.auxData &&
+        details.auxData['violationType']) {
+      const text = /** @type {string} */ (details.auxData['violationType']);
+      if (text === Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation) {
+        messageWrapper = buildWrapper(ls`Paused on CSP violation`, ls`Trusted Type Sink Violation`);
+      } else if (text === Protocol.DOMDebugger.CSPViolationType.TrustedtypePolicyViolation) {
+        messageWrapper = buildWrapper(ls`Paused on CSP violation`, ls`Trusted Type Policy Violation`);
+      }
     } else if (details.callFrames.length) {
       const uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location());
       const breakpoint = uiLocation ? breakpointManager.findBreakpoint(uiLocation) : null;

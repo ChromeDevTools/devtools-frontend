@@ -387,3 +387,14 @@ export async function getValuesForScope(scope: string, expandCount = 0, waitForN
   const values = await Promise.all(valueSelectorElements.map(elem => elem.evaluate(n => n.textContent as string)));
   return values;
 }
+
+export async function getPausedMessages() {
+  const {frontend} = getBrowserAndPages();
+  const messageElement = await frontend.waitForSelector('.paused-message');
+  const statusMain = await waitFor('.status-main', messageElement);
+  const statusSub = await waitFor('.status-sub', messageElement);
+  return {
+    statusMain: await statusMain.evaluate(x => x.textContent),
+    statusSub: await statusSub.evaluate(x => x.textContent),
+  };
+}

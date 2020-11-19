@@ -29,6 +29,12 @@ BrowserDebugger.EventListenerBreakpointsSidebarPane =
 /**
  * @constructor
  */
+BrowserDebugger.CSPViolationBreakpointsSidebarPane =
+    BrowserDebuggerModule.CSPViolationBreakpointsSidebarPane.CSPViolationBreakpointsSidebarPane;
+
+/**
+ * @constructor
+ */
 BrowserDebugger.ObjectEventListenersSidebarPane =
     BrowserDebuggerModule.ObjectEventListenersSidebarPane.ObjectEventListenersSidebarPane;
 

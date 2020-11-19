@@ -197,6 +197,9 @@
   <message name="IDS_DEVTOOLS_5662edf029fe42e222f435fbc9ae73a2" desc="Title for Trusted Types policy violation issue link">
     Trusted Types - Fix violations
   </message>
+  <message name="IDS_DEVTOOLS_580e805a3a4db8fc19fff0044e008326" desc="Title for a category of breakpoints on Trusted Type violations">
+    Trusted Type Violations
+  </message>
   <message name="IDS_DEVTOOLS_68379f916c7ed8dd3ab30adaa20635fe" desc="Title of a setting that turns on grid line number labels">
     Show line numbers
   </message>
@@ -208,6 +211,9 @@
   </message>
   <message name="IDS_DEVTOOLS_7aca5a3302ffbed606fd7701315b1c45" desc="Title of a setting that turns on grid extension lines">
     Extend grid lines
+  </message>
+  <message name="IDS_DEVTOOLS_80785d28c7bc76ba8fb8fa9087774a3f" desc="Title for a checkbox that turns on breakpoints on Trusted Type sink violations">
+    Sink Violations
   </message>
   <message name="IDS_DEVTOOLS_8483e29deb85890986985e47b0ec8ccf" desc="Title for a SameSiteCookie issue">
     Migrate entirely to HTTPS to have cookies sent to same-site subresources
@@ -240,6 +246,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a56491b51306fc59e63d029cb33328ee" desc="Label for the link for Schemeful Same-Site Issues">
     How <ph name="FEATURE_NAME_SCHEMEFUL_SAME_SITE">Schemeful Same-Site</ph> Works
+  </message>
+  <message name="IDS_DEVTOOLS_a96d26c470375ec54854aa5939118471" desc="Title for a checkbox that turns on breakpoints on Trusted Type policy violations">
+    Policy Violations
   </message>
   <message name="IDS_DEVTOOLS_a9dbce0348c4df57c727ce7df2e7a8e6" desc="Title for CSP url link">
     Content Security Policy - Source Allowlists

@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_05184fe2fb6c76214bc56796837f1c9b" desc="Title of an action in the debugger tool to next call frame">
     Next call frame
   </message>
+  <message name="IDS_DEVTOOLS_064a309124865951376cf78dc2e8b1e7" desc="Text in Debugger Paused Message of the Sources panel">
+    Paused on CSP violation
+  </message>
   <message name="IDS_DEVTOOLS_06a75795f2a3be3930c707d64fd488c0" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Show trailing whitespace characters
   </message>
@@ -327,11 +330,17 @@
   <message name="IDS_DEVTOOLS_7e469e0762bb1a977747a18457c2e66f" desc="Show all link text content in Call Stack Sidebar Pane of the Sources panel">
     Show blackboxed frames
   </message>
+  <message name="IDS_DEVTOOLS_806aa4f46d00905eacd5b11c6ef6d2a5" desc="Text in Debugger Paused Message of the Sources panel specifying cause of break">
+    <ph name="LOCKED_1">Trusted Type</ph> Policy Violation
+  </message>
   <message name="IDS_DEVTOOLS_80bd21c435b5e5ba6890161f3bc4bfd7" desc="Text in Navigator View of the Sources panel">
     Search in folder
   </message>
   <message name="IDS_DEVTOOLS_820587f2a3808a99f9ffcc0576b31681" desc="A context menu item in the Navigator View of the Sources panel">
     Make a copy…
+  </message>
+  <message name="IDS_DEVTOOLS_820b37516ef4add726507afc69154221" desc="Text in Debugger Paused Message of the Sources panel specifying cause of break">
+    <ph name="LOCKED_1">Trusted Type</ph> Sink Violation
   </message>
   <message name="IDS_DEVTOOLS_8317db413bca5e9ed3305fdac525ddd2" desc="Empty placeholder in Scope Chain Sidebar Pane of the Sources panel">
     No variables

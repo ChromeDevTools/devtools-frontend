@@ -12249,6 +12249,30 @@
                             "description": "The style of the separator between items",
                             "optional": true,
                             "$ref": "LineStyle"
+                        },
+                        {
+                            "name": "mainDistributedSpace",
+                            "description": "Style of content-distribution space on the main axis (justify-content).",
+                            "optional": true,
+                            "$ref": "BoxStyle"
+                        },
+                        {
+                            "name": "crossDistributedSpace",
+                            "description": "Style of content-distribution space on the cross axis (align-content).",
+                            "optional": true,
+                            "$ref": "BoxStyle"
+                        },
+                        {
+                            "name": "rowGapSpace",
+                            "description": "Style of empty space caused by row gaps (gap/row-gap).",
+                            "optional": true,
+                            "$ref": "BoxStyle"
+                        },
+                        {
+                            "name": "columnGapSpace",
+                            "description": "Style of empty space caused by columns gaps (gap/column-gap).",
+                            "optional": true,
+                            "$ref": "BoxStyle"
                         }
                     ]
                 },
@@ -12272,6 +12296,25 @@
                                 "dashed",
                                 "dotted"
                             ]
+                        }
+                    ]
+                },
+                {
+                    "id": "BoxStyle",
+                    "description": "Style information for drawing a box.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "fillColor",
+                            "description": "The background color for the box (default: transparent)",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        },
+                        {
+                            "name": "hatchColor",
+                            "description": "The hatching color for the box (default: transparent)",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
                         }
                     ]
                 },
@@ -13631,6 +13674,13 @@
                         {
                             "name": "fromSurface",
                             "description": "Capture the screenshot from the surface, rather than the view. Defaults to true.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "captureBeyondViewport",
+                            "description": "Capture the screenshot beyond the viewport. Defaults to false.",
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"

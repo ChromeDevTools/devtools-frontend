@@ -1855,7 +1855,8 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'format', 'type': 'string', 'optional': true}, {'name': 'quality', 'type': 'number', 'optional': true},
         {'name': 'clip', 'type': 'object', 'optional': true},
-        {'name': 'fromSurface', 'type': 'boolean', 'optional': true}
+        {'name': 'fromSurface', 'type': 'boolean', 'optional': true},
+        {'name': 'captureBeyondViewport', 'type': 'boolean', 'optional': true}
       ],
       ['data']);
   inspectorBackend.registerEnum('Page.CaptureSnapshotRequestFormat', {MHTML: 'mhtml'});

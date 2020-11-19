@@ -527,6 +527,8 @@ export const generatedProperties = [
   {'name': 'list-style-image', 'inherited': true, 'keywords': ['none']},
   {'name': 'list-style-position', 'inherited': true, 'keywords': ['outside', 'inside']},
   {
+    'name': 'list-style-type',
+    'inherited': true,
     'keywords': [
       'disc',
       'circle',
@@ -584,9 +586,7 @@ export const generatedProperties = [
       'hiragana-iroha',
       'katakana-iroha',
       'none'
-    ],
-    'name': 'list-style-type',
-    'inherited': true
+    ]
   },
   {'longhands': ['margin-top', 'margin-right', 'margin-bottom', 'margin-left'], 'name': 'margin'},
   {'longhands': ['margin-block-start', 'margin-block-end'], 'name': 'margin-block'},

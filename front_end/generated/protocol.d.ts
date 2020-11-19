@@ -8367,6 +8367,22 @@ declare namespace Protocol {
        * The style of the separator between items
        */
       itemSeparator?: LineStyle;
+      /**
+       * Style of content-distribution space on the main axis (justify-content).
+       */
+      mainDistributedSpace?: BoxStyle;
+      /**
+       * Style of content-distribution space on the cross axis (align-content).
+       */
+      crossDistributedSpace?: BoxStyle;
+      /**
+       * Style of empty space caused by row gaps (gap/row-gap).
+       */
+      rowGapSpace?: BoxStyle;
+      /**
+       * Style of empty space caused by columns gaps (gap/column-gap).
+       */
+      columnGapSpace?: BoxStyle;
     }
 
     export enum LineStylePattern {
@@ -8386,6 +8402,20 @@ declare namespace Protocol {
        * The line pattern (default: solid)
        */
       pattern?: LineStylePattern;
+    }
+
+    /**
+     * Style information for drawing a box.
+     */
+    export interface BoxStyle {
+      /**
+       * The background color for the box (default: transparent)
+       */
+      fillColor?: DOM.RGBA;
+      /**
+       * The hatching color for the box (default: transparent)
+       */
+      hatchColor?: DOM.RGBA;
     }
 
     /**
@@ -9340,6 +9370,10 @@ declare namespace Protocol {
        * Capture the screenshot from the surface, rather than the view. Defaults to true.
        */
       fromSurface?: boolean;
+      /**
+       * Capture the screenshot beyond the viewport. Defaults to false.
+       */
+      captureBeyondViewport?: boolean;
     }
 
     export interface CaptureScreenshotResponse extends ProtocolResponseWithError {

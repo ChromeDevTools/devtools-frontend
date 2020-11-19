@@ -9,6 +9,7 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -38,8 +39,22 @@ export class HeapProfileView extends ProfileView {
 
     this._selectedSizeText = new UI.Toolbar.ToolbarText();
 
+    /** @type {!Array<number>} */
+    this._timestamps = [];
+    /** @type {!Array<number>} */
+    this._sizes = [];
+    /** @type {!Array<number>} */
+    this._max = [];
+    /** @type {!Array<number>} */
+    this._ordinals = [];
+    /** @type {number} */
+    this._totalTime = 0;
+    /** @type {number} */
+    this._lastOrdinal = 0;
+
+    this._timelineOverview = new HeapTimelineOverview();
+
     if (Root.Runtime.experiments.isEnabled('samplingHeapProfilerTimeline')) {
-      this._timelineOverview = new HeapTimelineOverview();
       this._timelineOverview.addEventListener(IdsRangeChanged, this._onIdsRangeChanged.bind(this));
       this._timelineOverview.show(this.element, this.element.firstChild);
       this._timelineOverview.start();
@@ -101,14 +116,15 @@ export class HeapProfileView extends ProfileView {
     this._sizes.push(0);
     this._timestamps.push(Date.now());
     this._ordinals.push(this._lastOrdinal + 1);
-    this._lastOrdinal = profile.samples.reduce((res, sample) => Math.max(res, sample.ordinal), this._lastOrdinal);
     for (const sample of profile.samples) {
+      this._lastOrdinal = Math.max(this._lastOrdinal, sample.ordinal);
       const bucket = this._ordinals.upperBound(sample.ordinal) - 1;
       this._sizes[bucket] += sample.size;
     }
-    this._max.push(this._sizes.peekLast());
+    this._max.push(this._sizes[this._sizes.length - 1]);
 
-    if (this._timestamps.peekLast() - this._timestamps[0] > this._totalTime) {
+    const lastTimestamp = this._timestamps[this._timestamps.length - 1];
+    if (lastTimestamp - this._timestamps[0] > this._totalTime) {
       this._totalTime *= 2;
     }
 
@@ -117,7 +133,7 @@ export class HeapProfileView extends ProfileView {
       max: this._max,
       ids: this._ordinals,
       timestamps: this._timestamps,
-      totalTime: this._totalTime
+      totalTime: this._totalTime,
     });
 
     this._timelineOverview.setSamples(samples);
@@ -278,6 +294,7 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
   constructor() {
     super(SamplingHeapProfileType.TypeId, ls`Allocation sampling`);
     SamplingHeapProfileType.instance = this;
+    /** @type {?number} */
     this._updateTimer = null;
     this._updateIntervalMs = 200;
   }
@@ -312,7 +329,9 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
   _startSampling() {
     this.profileBeingRecorded().heapProfilerModel().startSampling();
     if (Root.Runtime.experiments.isEnabled('samplingHeapProfilerTimeline')) {
-      this._updateTimer = setTimeout(this._updateStats.bind(this), this._updateIntervalMs);
+      this._updateTimer = window.setTimeout(() => {
+        this._updateStats();
+      }, this._updateIntervalMs);
     }
   }
 
@@ -321,7 +340,7 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
    * return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
    */
   _stopSampling() {
-    clearTimeout(this._updateTimer);
+    window.clearTimeout(this._updateTimer);
     this._updateTimer = null;
     this.dispatchEventToListeners(SamplingHeapProfileType.Events.RecordingStopped);
     return this.profileBeingRecorded().heapProfilerModel().stopSampling();
@@ -333,7 +352,9 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
       return;
     }
     this.dispatchEventToListeners(SamplingHeapProfileType.Events.StatsUpdate, profile);
-    this._updateTimer = setTimeout(this._updateStats.bind(this), this._updateIntervalMs);
+    this._updateTimer = window.setTimeout(() => {
+      this._updateStats();
+    }, this._updateIntervalMs);
   }
 }
 
@@ -360,7 +381,21 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
         title || Common.UIString.UIString('Profile %d', type.nextProfileUid()));
     this._heapProfilerModel = heapProfilerModel;
     this._protocolProfile =
-        /** @type {!Protocol.HeapProfiler.SamplingHeapProfile} */ ({head: {callFrame: {}, children: []}});
+        /** @type {!Protocol.HeapProfiler.SamplingHeapProfile} */ ({
+          head: {
+            callFrame: {
+              functionName: '',
+              scriptId: '',
+              url: '',
+              lineNumber: 0,
+              columnNumber: 0,
+            },
+            children: [],
+            selfSize: 0,
+            id: 0,
+          },
+          samples: [],
+        });
   }
 
   /**
@@ -396,11 +431,16 @@ export class SamplingHeapProfileNode extends SDK.ProfileTreeModel.ProfileNode {
   constructor(node) {
     const callFrame = node.callFrame || /** @type {!Protocol.Runtime.CallFrame} */ ({
                         // Backward compatibility for old CpuProfileNode format.
+                        // @ts-ignore https://crbug.com/1150777
                         functionName: node['functionName'],
+                        // @ts-ignore https://crbug.com/1150777
                         scriptId: node['scriptId'],
+                        // @ts-ignore https://crbug.com/1150777
                         url: node['url'],
+                        // @ts-ignore https://crbug.com/1150777
                         lineNumber: node['lineNumber'] - 1,
-                        columnNumber: node['columnNumber'] - 1
+                        // @ts-ignore https://crbug.com/1150777
+                        columnNumber: node['columnNumber'] - 1,
                       });
     super(callFrame);
     this.self = node.selfSize;
@@ -446,8 +486,8 @@ export class SamplingHeapProfileModel extends SDK.ProfileTreeModel.ProfileTreeMo
       const sourceNodeStack = [root];
       const targetNodeStack = [resultRoot];
       while (sourceNodeStack.length) {
-        const sourceNode = sourceNodeStack.pop();
-        const targetNode = targetNodeStack.pop();
+        const sourceNode = /** @type {!Protocol.HeapProfiler.SamplingHeapProfileNode} */ (sourceNodeStack.pop());
+        const targetNode = /** @type {!SamplingHeapProfileNode} */ (targetNodeStack.pop());
         targetNode.children = sourceNode.children.map(child => {
           const targetChild = new SamplingHeapProfileNode(child);
           if (nodeIdToSizeMap) {
@@ -521,7 +561,11 @@ export class NodeFormatter {
   linkifyNode(node) {
     const heapProfilerModel = this._profileView.profileHeader.heapProfilerModel();
     const target = heapProfilerModel ? heapProfilerModel.target() : null;
-    const options = {className: 'profile-node-file'};
+    const options = {
+      className: 'profile-node-file',
+      columnNumber: undefined,
+      tabStop: undefined,
+    };
     return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(target, node.profileNode.callFrame, options);
   }
 }
@@ -538,6 +582,8 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     super();
     this._profile = profile;
     this._heapProfilerModel = heapProfilerModel;
+    /** @type {!Array<!SDK.ProfileTreeModel.ProfileNode>} */
+    this._entryNodes = [];
   }
 
   /**
@@ -624,6 +670,7 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     if (!node) {
       return null;
     }
+    /** @type {!Array<{ title: string, value: string }>} */
     const entryInfo = [];
     /**
      * @param {string} title
@@ -639,7 +686,7 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     const link = linkifier.maybeLinkifyConsoleCallFrame(
         this._heapProfilerModel ? this._heapProfilerModel.target() : null, node.callFrame);
     if (link) {
-      pushEntryInfoRow(ls`URL`, link.textContent);
+      pushEntryInfoRow(ls`URL`, /** @type {string} */ (link.textContent));
     }
     linkifier.dispose();
     return ProfileView.buildPopoverTable(entryInfo);

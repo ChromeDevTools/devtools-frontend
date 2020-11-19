@@ -161,6 +161,57 @@ describeWithEnvironment('LayoutPane', async () => {
     assert.strictEqual(queryLabels(component, '[data-element]').length, 3);
   });
 
+  it('renders flex elements', async () => {
+    const component = new Elements.LayoutPane.LayoutPane();
+    renderElementIntoDOM(component);
+
+    component.data = {
+      gridElements: [],
+      flexContainerElements: [
+        {
+          id: 1,
+          color: 'red',
+          name: 'div',
+          domId: 'elementId',
+          enabled: false,
+          reveal: () => {},
+          toggle: () => {},
+          setColor: () => {},
+          highlight: () => {},
+          hideHighlight: () => {},
+        },
+        {
+          id: 2,
+          color: 'blue',
+          name: 'span',
+          domClasses: ['class1', 'class2'],
+          enabled: false,
+          reveal: () => {},
+          toggle: () => {},
+          setColor: () => {},
+          highlight: () => {},
+          hideHighlight: () => {},
+        },
+        {
+          id: 3,
+          color: 'green',
+          name: 'div',
+          enabled: false,
+          reveal: () => {},
+          toggle: () => {},
+          setColor: () => {},
+          highlight: () => {},
+          hideHighlight: () => {},
+        },
+      ],
+      settings: [],
+    };
+
+    assertShadowRoot(component.shadowRoot);
+
+    assert.strictEqual(queryLabels(component, '[data-element]').length, 3);
+  });
+
   it('send an event when an element overlay is toggled', async () => {
     const component = new Elements.LayoutPane.LayoutPane();
     renderElementIntoDOM(component);

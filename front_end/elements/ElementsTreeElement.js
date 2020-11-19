@@ -2166,9 +2166,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       ariaLabelActive: ls`Disable grid mode`,
     });
 
-    node.domModel().overlayModel().addEventListener(SDK.OverlayModel.Events.PersistentGridOverlayCleared, () => {
-      adorner.toggle(false /* force inactive state */);
-    });
     node.domModel().overlayModel().addEventListener(
         SDK.OverlayModel.Events.PersistentGridOverlayStateChanged, event => {
           const {nodeId: eventNodeId, enabled} = event.data;
@@ -2208,6 +2205,15 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       ariaLabelDefault: ls`Enable flex mode`,
       ariaLabelActive: ls`Disable flex mode`,
     });
+
+    node.domModel().overlayModel().addEventListener(
+        SDK.OverlayModel.Events.PersistentFlexContainerOverlayStateChanged, event => {
+          const {nodeId: eventNodeId, enabled} = event.data;
+          if (eventNodeId !== nodeId) {
+            return;
+          }
+          adorner.toggle(enabled);
+        });
 
     return adorner;
   }

@@ -43,12 +43,14 @@ function isBooleanSetting(setting: Setting): setting is BooleanSetting {
 export interface LayoutPaneData {
   settings: Setting[];
   gridElements: LayoutElement[];
+  flexContainerElements?: LayoutElement[];
 }
 
 export class LayoutPane extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private settings: Readonly<Setting[]> = [];
   private gridElements: Readonly<LayoutElement[]> = [];
+  private flexContainerElements?: Readonly<LayoutElement[]> = [];
 
   constructor() {
     super();
@@ -62,6 +64,7 @@ export class LayoutPane extends HTMLElement {
   set data(data: LayoutPaneData) {
     this.settings = data.settings;
     this.gridElements = data.gridElements;
+    this.flexContainerElements = data.flexContainerElements;
     this.render();
   }
 
@@ -93,6 +96,25 @@ export class LayoutPane extends HTMLElement {
               </div>` : ''}
           </div>` : ''}
       </details>
+      ${this.flexContainerElements !== undefined ?
+        html`
+        <details open>
+          <summary class="header">
+            ${ls`Flexbox`}
+          </summary>
+          ${this.flexContainerElements ?
+            html`<div class="content-section">
+              <h3 class="content-section-title">
+                ${this.flexContainerElements.length ? ls`Flexbox overlays` : ls`No flexbox layouts found on this page`}
+              </h3>
+              ${this.flexContainerElements.length ?
+                html`<div class="elements">
+                  ${this.flexContainerElements.map(element => this.renderElement(element))}
+                </div>` : ''}
+            </div>` : ''}
+        </details>
+        `
+      : ''}
     `, this.shadow, {
       eventContext: this,
     });

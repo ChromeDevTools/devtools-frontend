@@ -21,6 +21,9 @@
   <message name="IDS_DEVTOOLS_084cd932d6dd317197a20945c76603e2" desc="Text of a DOM element in Styles Sidebar Pane of the Elements panel">
     Inherited from<ph name="___">$1s<ex>''' '''</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_ad0febe9f53e525bc9c13b7598572629" desc="Title of the Flexbox section in the Layout panel">
+    Flexbox
+  </message>
   <message name="IDS_DEVTOOLS_0b17e22ff13be64e3216014d9c2a5354" desc="Title of a setting under the Elements category that can be invoked through the Command Menu">
     Enable DOM word wrap
   </message>
@@ -234,6 +237,9 @@
   <message name="IDS_DEVTOOLS_92c2cabd05b5ccef986c062a504cbcfb" desc="Accessible label for Elements panel adorners (suffix badges in Elements Tree Outline)">
     adorner active
   </message>
+  <message name="IDS_DEVTOOLS_0f81a4d3eee2e2be33630109ed553089" desc="Text in the Layout panel, when no flexbox elements are found">
+    No flexbox layouts found on this page
+  </message>
   <message name="IDS_DEVTOOLS_97d28fbc573f9f331f5b1886b5c1eeef" desc="Text in Elements Tree Element of the Elements panel, copy should be used as a verb">
     Copy full XPath
   </message>
@@ -242,6 +248,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a05fb8660778069f6d4a5c5b40a6dbc9" desc="Title of a setting under the Elements category in Settings">
     Show <ph name="LOCKED_1">user agent shadow DOM</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_a11203af0c01a0df9f01b0bcbe06f1e7" desc="Title of a section in the Layout panel">
+    Flexbox overlays
   </message>
   <message name="IDS_DEVTOOLS_a2f8f2d457d122dd0d135781187aef31" desc="Text in Styles Sidebar Pane of the Elements panel">
     Invalid property value

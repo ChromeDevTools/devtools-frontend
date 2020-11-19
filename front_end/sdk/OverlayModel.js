@@ -363,7 +363,7 @@ export class OverlayModel extends SDKModel {
       return;
     }
     this._persistentFlexHighlighter.highlightInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentFlexOverlayStateChanged, {nodeId, enabled: true});
+    this.dispatchEventToListeners(Events.PersistentFlexContainerOverlayStateChanged, {nodeId, enabled: true});
   }
 
   /**
@@ -666,9 +666,7 @@ export const Events = {
   ExitedInspectMode: Symbol('InspectModeExited'),
   HighlightNodeRequested: Symbol('HighlightNodeRequested'),
   ScreenshotRequested: Symbol('ScreenshotRequested'),
-  PersistentGridOverlayCleared: Symbol('PersistentGridOverlayCleared'),
   PersistentGridOverlayStateChanged: Symbol('PersistentGridOverlayStateChanged'),
-  PersistentFlexOverlayStateChanged: Symbol('PersistentFlexOverlayStateChanged'),
   PersistentFlexContainerOverlayStateChanged: Symbol('PersistentFlexContainerOverlayStateChanged'),
 };
 

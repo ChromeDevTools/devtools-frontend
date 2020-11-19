@@ -36,6 +36,9 @@ import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as UI from '../ui/ui.js';
 
+/** @type {!Common.Color.Generator|null} */
+let colorGeneratorInstance = null;
+
 /**
  * @implements {PerfUI.FlameChart.FlameChartDataProvider}
  * @unrestricted
@@ -49,16 +52,15 @@ export class ProfileFlameChartDataProvider {
    * @return {!Common.Color.Generator}
    */
   static colorGenerator() {
-    if (!ProfileFlameChartDataProvider._colorGenerator) {
-      const colorGenerator =
-          new Common.Color.Generator({min: 30, max: 330}, {min: 50, max: 80, count: 5}, {min: 80, max: 90, count: 3});
+    if (!colorGeneratorInstance) {
+      colorGeneratorInstance = new Common.Color.Generator(
+          {min: 30, max: 330, count: undefined}, {min: 50, max: 80, count: 5}, {min: 80, max: 90, count: 3});
 
-      colorGenerator.setColorForID('(idle)', 'hsl(0, 0%, 94%)');
-      colorGenerator.setColorForID('(program)', 'hsl(0, 0%, 80%)');
-      colorGenerator.setColorForID('(garbage collector)', 'hsl(0, 0%, 80%)');
-      ProfileFlameChartDataProvider._colorGenerator = colorGenerator;
+      colorGeneratorInstance.setColorForID('(idle)', 'hsl(0, 0%, 94%)');
+      colorGeneratorInstance.setColorForID('(program)', 'hsl(0, 0%, 80%)');
+      colorGeneratorInstance.setColorForID('(garbage collector)', 'hsl(0, 0%, 80%)');
     }
-    return ProfileFlameChartDataProvider._colorGenerator;
+    return colorGeneratorInstance;
   }
 
   /**
@@ -234,6 +236,7 @@ export class CPUProfileFlameChart extends UI.Widget.VBox {
     this._mainPane.addEventListener(PerfUI.FlameChart.Events.CanvasFocused, this._onEntrySelected, this);
     this._overviewPane.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
     this._dataProvider = dataProvider;
+    /** @type {!Array<number>} */
     this._searchResults = [];
   }
 
@@ -301,6 +304,7 @@ export class CPUProfileFlameChart extends UI.Widget.VBox {
   performSearch(searchConfig, shouldJump, jumpBackwards) {
     const matcher = createPlainTextSearchRegex(searchConfig.query, searchConfig.caseSensitive ? '' : 'i');
 
+    /** @type {number} */
     const selectedEntryIndex = this._searchResultIndex !== -1 ? this._searchResults[this._searchResultIndex] : -1;
     this._searchResults = [];
     const entriesCount = this._dataProvider._entryNodes.length;
@@ -453,7 +457,9 @@ export class OverviewPane extends UI.Widget.VBox {
     this._overviewCalculator = new OverviewCalculator(dataProvider);
     this._overviewGrid = new PerfUI.OverviewGrid.OverviewGrid('cpu-profile-flame-chart', this._overviewCalculator);
     this._overviewGrid.element.classList.add('fill');
-    this._overviewCanvas = this._overviewContainer.createChild('canvas', 'cpu-profile-flame-chart-overview-canvas');
+    /** @type {!HTMLCanvasElement} */
+    this._overviewCanvas = /** @type {!HTMLCanvasElement} */ (
+        this._overviewContainer.createChild('canvas', 'cpu-profile-flame-chart-overview-canvas'));
     this._overviewContainer.appendChild(this._overviewGrid.element);
     this._dataProvider = dataProvider;
     this._overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
@@ -544,6 +550,9 @@ export class OverviewPane extends UI.Widget.VBox {
     const canvasHeight = this._overviewCanvas.height;
     const drawData = this._calculateDrawData(canvasWidth);
     const context = this._overviewCanvas.getContext('2d');
+    if (!context) {
+      throw new Error('Failed to get canvas context');
+    }
     const ratio = window.devicePixelRatio;
     const offsetFromBottom = ratio;
     const lineWidth = 1;
@@ -554,7 +563,7 @@ export class OverviewPane extends UI.Widget.VBox {
     context.fillStyle = 'rgba(214,225,254,0.8)';
     context.moveTo(-lineWidth, canvasHeight + lineWidth);
     context.lineTo(-lineWidth, Math.round(canvasHeight - drawData[0] * yScaleFactor - offsetFromBottom));
-    let value;
+    let value = 0;
     for (let x = 0; x < canvasWidth; ++x) {
       value = Math.round(canvasHeight - drawData[x] * yScaleFactor - offsetFromBottom);
       context.lineTo(x, value);

@@ -28,17 +28,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Root from '../root/root.js';
 
 import {ActionDelegate as ActionDelegateInterface} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
 import {Context} from './Context.js';                                           // eslint-disable-line no-unused-vars
 import {ContextMenu} from './ContextMenu.js';                                   // eslint-disable-line no-unused-vars
 import {Dialog} from './Dialog.js';
-import {DockController} from './DockController.js';
+import {DockController, State} from './DockController.js';
 import {GlassPane} from './GlassPane.js';
 import {Icon} from './Icon.js';  // eslint-disable-line no-unused-vars
 import {Infobar, Type as InfobarType} from './Infobar.js';
@@ -101,7 +99,7 @@ export class InspectorView extends VBox {
     this._tabbedLocation = ViewManager.instance().createTabbedLocation(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(
             Host.InspectorFrontendHost.InspectorFrontendHostInstance),
-        'panel', true, true, Root.Runtime.queryParam('panel'));
+        'panel', true, true, Root.Runtime.Runtime.queryParam('panel'));
 
     this._tabbedPane = this._tabbedLocation.tabbedPane();
     this._tabbedPane.element.classList.add('main-tabbed-pane');
@@ -198,9 +196,12 @@ export class InspectorView extends VBox {
    * @param {string} panelName
    * @return {!Promise.<!Panel>}
    */
-  panel(panelName) {
-    return (
-        /** @type {!Promise.<!Panel>} */ (ViewManager.instance().view(panelName).widget()));
+  async panel(panelName) {
+    const view = ViewManager.instance().view(panelName);
+    if (!view) {
+      throw new Error(`Expected view for panel '${panelName}'`);
+    }
+    return /** @type {!Promise.<!Panel>} */ (view.widget());
   }
 
   /**
@@ -223,10 +224,10 @@ export class InspectorView extends VBox {
 
   /**
    * @param {string} panelName
-   * @return {!Promise.<?Panel>}
+   * @return {!Promise<void>}
    */
-  showPanel(panelName) {
-    return ViewManager.instance().showView(panelName);
+  async showPanel(panelName) {
+    await ViewManager.instance().showView(panelName);
   }
 
   /**
@@ -340,7 +341,7 @@ export class InspectorView extends VBox {
    */
   _keyDown(event) {
     const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
-    if (!KeyboardShortcut.eventHasCtrlOrMeta(keyboardEvent) || event.altKey || event.shiftKey) {
+    if (!KeyboardShortcut.eventHasCtrlOrMeta(keyboardEvent) || keyboardEvent.altKey || keyboardEvent.shiftKey) {
       return;
     }
 
@@ -348,12 +349,12 @@ export class InspectorView extends VBox {
     const panelShortcutEnabled = Common.Settings.moduleSetting('shortcutPanelSwitch').get();
     if (panelShortcutEnabled) {
       let panelIndex = -1;
-      if (event.keyCode > 0x30 && event.keyCode < 0x3A) {
-        panelIndex = event.keyCode - 0x31;
+      if (keyboardEvent.keyCode > 0x30 && keyboardEvent.keyCode < 0x3A) {
+        panelIndex = keyboardEvent.keyCode - 0x31;
       } else if (
-          event.keyCode > 0x60 && event.keyCode < 0x6A &&
+          keyboardEvent.keyCode > 0x60 && keyboardEvent.keyCode < 0x6A &&
           keyboardEvent.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD) {
-        panelIndex = event.keyCode - 0x61;
+        panelIndex = keyboardEvent.keyCode - 0x61;
       }
       if (panelIndex !== -1) {
         const panelName = this._tabbedPane.tabIds()[panelIndex];
@@ -404,7 +405,7 @@ export class InspectorView extends VBox {
    * @return {?SplitWidget}
    */
   ownerSplit() {
-    return this._ownerSplitWidget;
+    return this._ownerSplitWidget || null;
   }
 
   minimize() {
@@ -429,8 +430,7 @@ export class InspectorView extends VBox {
           text: ls`Reload DevTools`,
           highlight: true,
           delegate: () => {
-            if (DockController.instance().canDock() &&
-                DockController.instance().dockSide() === DockController.State.Undocked) {
+            if (DockController.instance().canDock() && DockController.instance().dockSide() === State.Undocked) {
               Host.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {});
             }
             Host.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());

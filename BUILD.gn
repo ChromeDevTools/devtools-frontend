@@ -224,7 +224,6 @@ devtools_applications = [
 
 devtools_frontend_resources_deps = [
   ":build_release_devtools",
-  ":devtools_extension_api",
   "front_end",
   "test",
 ]
@@ -260,7 +259,6 @@ action("generate_devtools_grd") {
       generated_typescript_modules + generated_devtools_locale_files +
       generated_emulated_device_images +
       [
-        "$resources_out_dir/devtools_extension_api.js",
         "$resources_out_dir/sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm",
         "$resources_out_dir/formatter_worker_entrypoint.js",
         "$resources_out_dir/third_party/acorn/package/dist/acorn.mjs",
@@ -317,17 +315,6 @@ action("generate_devtools_grd") {
            "--output",
            rebase_path(outfile, root_build_dir),
          ]
-}
-
-action("devtools_extension_api") {
-  script = "scripts/build/generate_devtools_extension_api.py"
-
-  devtools_extension_api_files = [ "front_end/extensions/ExtensionAPI.js" ]
-  inputs = devtools_extension_api_files
-  outputs = [ "$resources_out_dir/devtools_extension_api.js" ]
-
-  args = rebase_path(outputs, root_build_dir) +
-         rebase_path(devtools_extension_api_files, root_build_dir)
 }
 
 build_release_devtools_args = []

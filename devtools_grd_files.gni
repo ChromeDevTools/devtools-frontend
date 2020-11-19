@@ -158,7 +158,6 @@ grd_files_release_sources = [
   "front_end/devtools_app.html",
   "front_end/devtools_app.js",
   "front_end/devtools_compatibility.js",
-  "front_end/devtools_extension_api.js",
   "front_end/diff/diff-legacy.js",
   "front_end/diff/diff.js",
   "front_end/diff/diff_module.js",

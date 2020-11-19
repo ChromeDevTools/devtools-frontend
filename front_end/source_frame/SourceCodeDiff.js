@@ -2,15 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Diff from '../diff/diff.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
+import {SourcesTextEditor} from './SourcesTextEditor.js';     // eslint-disable-line no-unused-vars
 
 export class SourceCodeDiff {
   /**
-   * @param {!TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor} textEditor
+   * @param {!SourcesTextEditor} textEditor
    */
   constructor(textEditor) {
     this._textEditor = textEditor;
@@ -45,7 +43,7 @@ export class SourceCodeDiff {
       }
     }
     this._updateHighlightedLines(changedLines);
-    this._animationTimeout = setTimeout(
+    this._animationTimeout = window.setTimeout(
         this._updateHighlightedLines.bind(this, []), 400);  // // Keep this timeout in sync with sourcesView.css.
   }
 
@@ -87,6 +85,7 @@ export class SourceCodeDiff {
    * @return {!Array<!{type: !EditType, from: number, to: number}>}
    */
   static computeDiff(diff) {
+    /** @type {!Array<!{type: !EditType, from: number, to: number}>} */
     const result = [];
     let hasAdded = false;
     let hasRemoved = false;

@@ -25,9 +25,14 @@ describe('DataGridController', () => {
       {id: 'key', title: 'Key', sortable: true, widthWeighting: 1},
     ];
     const rows = [
-      {cells: [{columnId: 'key', value: 'Bravo', title: 'Bravo'}]},
-      {cells: [{columnId: 'key', value: 'Alpha', title: 'Alpha'}]},
-      {cells: [{columnId: 'key', value: 'Charlie', title: 'Charlie'}]},
+      {cells: [{columnId: 'key', value: 'Bravo'}]},
+      {cells: [{columnId: 'key', value: 'Alpha'}]},
+      {cells: [{columnId: 'key', value: 'Charlie'}]},
+    ];
+    const numericRows = [
+      {cells: [{columnId: 'key', value: 2}]},
+      {cells: [{columnId: 'key', value: 1}]},
+      {cells: [{columnId: 'key', value: 3}]},
     ];
 
     it('lets the user click to sort the column in ASC order', async () => {
@@ -52,6 +57,24 @@ describe('DataGridController', () => {
             const cellValues = getValuesForColumn(shadowRoot, 'key');
             assert.deepEqual(cellValues, ['Alpha', 'Bravo', 'Charlie']);
           });
+    });
+
+    it('supports sorting numeric columns', async () => {
+      const component = new UIComponents.DataGridController.DataGridController();
+      component.data = {rows: numericRows, columns};
+
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+
+      const internalDataGridShadow = getInternalDataGridShadowRoot(component);
+
+      const keyHeader = getHeaderCellForColumnId(internalDataGridShadow, 'key');
+      dispatchClickEvent(keyHeader);  // ASC order
+      let cellValues = getValuesForColumn(internalDataGridShadow, 'key');
+      assert.deepEqual(cellValues, ['1', '2', '3']);
+      dispatchClickEvent(keyHeader);  // DESC order
+      cellValues = getValuesForColumn(internalDataGridShadow, 'key');
+      assert.deepEqual(cellValues, ['3', '2', '1']);
     });
 
     it('can be provided an initial sort which is immediately applied', async () => {
@@ -143,20 +166,20 @@ describe('DataGridController', () => {
     const rows = [
       {
         cells: [
-          {columnId: 'key', value: 'Letter A', title: 'Letter A'},
-          {columnId: 'value', value: 'Alpha', title: 'Alpha'},
+          {columnId: 'key', value: 'Letter A'},
+          {columnId: 'value', value: 'Alpha'},
         ],
       },
       {
         cells: [
-          {columnId: 'key', value: 'Letter B', title: 'Letter B'},
-          {columnId: 'value', value: 'Bravo', title: 'Bravo'},
+          {columnId: 'key', value: 'Letter B'},
+          {columnId: 'value', value: 'Bravo'},
         ],
       },
       {
         cells: [
-          {columnId: 'key', value: 'Letter C', title: 'Letter C'},
-          {columnId: 'value', value: 'Charlie', title: 'Charlie'},
+          {columnId: 'key', value: 'Letter C'},
+          {columnId: 'value', value: 'Charlie'},
         ],
       },
     ];

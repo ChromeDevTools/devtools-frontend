@@ -26,6 +26,8 @@ export interface Column {
   hidden?: boolean;
 }
 
+export type CellValue = string|number|boolean|null;
+
 /**
  * A cell contains a `columnId`, which is the ID of the column the cell
  * reprsents, and the `value`, which is a string value for that cell.
@@ -35,12 +37,12 @@ export interface Column {
  */
 export interface Cell {
   columnId: string;
-  value: unknown;
-  title: string;
+  value: CellValue;
+  title?: string;
   // The renderer function actually returns LitHtml.TemplateResult but it's a
   // lot of work to teach the bridges generator about that.
   // TODO (crbug.com/1011811): Fix types once TypeScriptification is complete.
-  renderer?: (value: unknown) => unknown
+  renderer?: (value: CellValue) => unknown
 }
 
 export type Row = {
@@ -88,12 +90,8 @@ export function getRowEntryForColumnId(row: Row, id: string): Cell {
 
 export function renderCellValue(cell: Cell): LitHtml.TemplateResult {
   const output = cell.renderer ? cell.renderer(cell.value) as LitHtml.TemplateResult :
-                                 DataGridRenderers.stringRenderer(cell.value);
+                                 DataGridRenderers.primitiveRenderer(cell.value);
   return output;
-}
-
-export function stringValueForCell(cell: Cell): string {
-  return cell.title;
 }
 
 /**

@@ -8,7 +8,7 @@ import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
 import type {DataGridData, ColumnHeaderClickEvent} from './DataGrid.js';
 
-import {SortDirection, SortState, Column, Row, getRowEntryForColumnId, stringValueForCell} from './DataGridUtils.js';
+import {SortDirection, SortState, Column, Row, getRowEntryForColumnId} from './DataGridUtils.js';
 
 export interface DataGridControllerData {
   columns: Column[];
@@ -73,7 +73,7 @@ export class DataGridController extends HTMLElement {
     // Plain text search across all columns.
     return rows.map(row => {
       const rowHasMatchingValue = row.cells.some(cell => {
-        const rowText = stringValueForCell(cell);
+        const rowText = String(cell.value);
         return rowText.toLowerCase().includes(filterText.toLowerCase());
       });
 
@@ -91,8 +91,8 @@ export class DataGridController extends HTMLElement {
       const cell1 = getRowEntryForColumnId(row1, columnId);
       const cell2 = getRowEntryForColumnId(row2, columnId);
 
-      const value1 = stringValueForCell(cell1).toUpperCase();
-      const value2 = stringValueForCell(cell2).toUpperCase();
+      const value1 = typeof cell1.value === 'number' ? cell1.value : String(cell1.value).toUpperCase();
+      const value2 = typeof cell2.value === 'number' ? cell2.value : String(cell2.value).toUpperCase();
       if (value1 < value2) {
         return direction === SortDirection.ASC ? -1 : 1;
       }

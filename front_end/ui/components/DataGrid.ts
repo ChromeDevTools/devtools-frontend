@@ -4,7 +4,7 @@
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
-import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, Cell, CellPosition, Column, getRowEntryForColumnId, handleArrowKeyNavigation, keyIsArrowKey, renderCellValue, Row, SortDirection, SortState, stringValueForCell} from './DataGridUtils.js';
+import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, Cell, CellPosition, Column, getRowEntryForColumnId, handleArrowKeyNavigation, keyIsArrowKey, renderCellValue, Row, SortDirection, SortState} from './DataGridUtils.js';
 
 export interface DataGridData {
   columns: Column[];
@@ -420,11 +420,10 @@ export class DataGrid extends HTMLElement {
                   firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
                 });
                 const cellIsFocusableCell = columnIndex === this.focusableCell[0] && tableRowIndex === this.focusableCell[1];
-                const cellTextValue = stringValueForCell(cell);
                 const cellOutput = renderCellValue(cell);
                 return LitHtml.html`<td
                   class=${cellClasses}
-                  title=${cellTextValue}
+                  title=${cell.title || String(cell.value)}
                   tabindex=${cellIsFocusableCell ? '0' : '-1'}
                   aria-colindex=${columnIndex + 1}
                   data-row-index=${tableRowIndex}

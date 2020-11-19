@@ -40,6 +40,29 @@ export async function openFileInSourcesPanel(testInput: string) {
   await openSourcesPanel();
 }
 
+export async function openRecorderSubPane() {
+  const root = await waitFor('.navigator-tabbed-pane');
+
+  await waitFor('[aria-label="More tabs"]', root);
+  await click('[aria-label="More tabs"]', {root});
+
+  await waitFor('[aria-label="Recordings"]');
+
+  await click('[aria-label="Recordings"]');
+  await waitFor('[aria-label="Add recording"]');
+}
+
+export async function createNewRecording(recordingName: string) {
+  const {frontend} = getBrowserAndPages();
+
+  await click('[aria-label="Add recording"]');
+  await waitFor('[aria-label^="Recording"]');
+
+  await typeText(recordingName);
+
+  await frontend.keyboard.press('Enter');
+}
+
 export async function openSnippetsSubPane() {
   const root = await waitFor('.navigator-tabbed-pane');
 

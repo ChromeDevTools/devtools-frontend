@@ -196,6 +196,41 @@
     },
     {
       "type": "action",
+      "actionId": "recorder.toggle-recording",
+      "experiment": "recorder",
+      "category": "Recorder",
+      "className": "Sources.SourcesPanel.DebuggingActionDelegate",
+      "title": "Start Recording",
+      "iconClass": "largeicon-start-recording",
+      "toggleable": true,
+      "toggledIconClass": "largeicon-stop-recording",
+      "toggleWithRedColor": true,
+      "options": [
+        {
+          "value": true,
+          "title": "Record"
+        },
+        {
+          "value": false,
+          "title": "Stop"
+        }
+      ],
+      "contextTypes": [
+        "Sources.SourcesView"
+      ],
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+E"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+E"
+        }
+      ]
+    },
+    {
+      "type": "action",
       "category": "Debugger",
       "actionId": "debugger.toggle-breakpoints-active",
       "iconClass": "largeicon-deactivate-breakpoints",
@@ -369,6 +404,16 @@
       "className": "Sources.SearchSourcesView"
     },
     {
+      "type": "view",
+      "location": "navigator-view",
+      "id": "navigator-recordings",
+      "title": "Recordings",
+      "order": 8,
+      "persistence": "permanent",
+      "className": "Sources.RecordingsNavigatorView",
+      "experiment": "recorder"
+    },
+    {
       "type": "@Sources.NavigatorView",
       "viewId": "navigator-network",
       "className": "Sources.NetworkNavigatorView"
@@ -382,6 +427,12 @@
       "type": "@Sources.NavigatorView",
       "viewId": "navigator-snippets",
       "className": "Sources.SnippetsNavigatorView"
+    },
+    {
+      "type": "@Sources.NavigatorView",
+      "viewId": "navigator-recordings",
+      "className": "Sources.RecordingsNavigatorView",
+      "experiment": "recorder"
     },
     {
       "type": "action",

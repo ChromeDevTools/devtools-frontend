@@ -464,6 +464,9 @@
   "layers/ModuleUIStrings.js | layers": {
     "message": "Layers"
   },
+  "recorder/RecordingFileSystem.js | defaultRecordingName": {
+    "message": "Recording #{nextId}"
+  },
   "resources/ClearStorageView.js | storageQuotaUsed": {
     "message": "{PH1} used out of {PH2} storage quota"
   },

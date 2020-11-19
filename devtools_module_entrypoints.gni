@@ -127,6 +127,7 @@ generated_typescript_entrypoint_sources = [
   "$resources_out_dir/protocol_monitor/protocol_monitor.js",
   "$resources_out_dir/quick_open/quick_open-legacy.js",
   "$resources_out_dir/quick_open/quick_open.js",
+  "$resources_out_dir/recorder/recorder.js",
   "$resources_out_dir/resources/resources-legacy.js",
   "$resources_out_dir/resources/resources.js",
   "$resources_out_dir/root/root-legacy.js",

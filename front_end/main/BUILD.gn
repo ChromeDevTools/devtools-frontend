@@ -22,6 +22,7 @@ devtools_module("main") {
     "../persistence:bundle",
     "../platform:bundle",
     "../protocol_client:bundle",
+    "../recorder:bundle",
     "../sdk:bundle",
     "../snippets:bundle",
     "../theme_support:bundle",

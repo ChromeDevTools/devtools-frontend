@@ -63,7 +63,7 @@ export class JavaScriptCompilerPlugin extends Plugin {
     if (this._timeout) {
       clearTimeout(this._timeout);
     }
-    this._timeout = setTimeout(this._compile.bind(this), CompileDelay);
+    this._timeout = window.setTimeout(this._compile.bind(this), CompileDelay);
   }
 
   /**

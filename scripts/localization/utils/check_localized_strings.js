@@ -109,6 +109,7 @@ const migratedDirsSet = new Set([
   'devices',
   'layers',
   'layer_viewer',
+  'search',
   'security',
   'settings',
   'text_editor',

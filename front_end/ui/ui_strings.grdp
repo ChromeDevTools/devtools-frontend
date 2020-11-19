@@ -21,6 +21,9 @@
   <message name="IDS_DEVTOOLS_2ea54663ae9e3a586132a34a98d85ccf" desc="Text for the title of asynchronous function calls group in Call Stack">
     Async Call
   </message>
+  <message name="IDS_DEVTOOLS_2f04f3e6eee339eeb0ddb6c39606424d" desc="Text for searching with regular expressinn">
+    Use Regular Expression
+  </message>
   <message name="IDS_DEVTOOLS_3a39eb38e879f66d1c57dedd478272da" desc="label to open link externally">
     Open in new tab
   </message>
@@ -116,6 +119,9 @@
   </message>
   <message name="IDS_DEVTOOLS_c486d3222f16146af0711d84a14b62fb" desc="Sub millis format in UIUtils">
     <ph name="PH1">$1.2f<ex>2.14</ex></ph> ms
+  </message>
+  <message name="IDS_DEVTOOLS_c949475bc69a57c419ac976fe8870652" desc="Text to search by matching case of the input">
+    Match Case
   </message>
   <message name="IDS_DEVTOOLS_d06337cfbcc777e0a7caa50ef1a9986a" desc="The aria label for the button to open more tabs at the right tabbed pane in Elements tools">
     More tabs

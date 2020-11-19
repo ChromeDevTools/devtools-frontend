@@ -93,6 +93,9 @@
   <message name="IDS_DEVTOOLS_4cad9e20fde3f8991c5dd1d6a0fe13e7" desc="A context menu item in the Console Pin Pane of the Console panel">
     Remove expression
   </message>
+  <message name="IDS_DEVTOOLS_4d1b0b75a9737b7dcdc3a15a84fe856b" desc="Text to indicate the searching is in progress">
+    Searching…
+  </message>
   <message name="IDS_DEVTOOLS_53f0fca28a013c116a1df533d9bdf764" desc="Message text in Console View Message of the Console panel">
     [Deprecation] <ph name="MESSAGETEXT">$1s<ex>console.log(1)</ex></ph>
   </message>

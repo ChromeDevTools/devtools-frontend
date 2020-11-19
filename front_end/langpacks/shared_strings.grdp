@@ -115,9 +115,6 @@
   <message name="IDS_DEVTOOLS_2ddaa8e6378b906b42429dc4003edbd3" desc="A context menu item to reveal a node in the DOM tree of the Elements Panel">
     Reveal in Elements panel
   </message>
-  <message name="IDS_DEVTOOLS_2f04f3e6eee339eeb0ddb6c39606424d" desc="Text for searching with regular expressinn">
-    Use Regular Expression
-  </message>
   <message name="IDS_DEVTOOLS_31fde7b05ac8952dacf4af8a704074ec" desc="Text for previewing items">
     Preview
   </message>
@@ -186,9 +183,6 @@
   </message>
   <message name="IDS_DEVTOOLS_4cfa6c981549e990fe2344e4c805405e" desc="Text to find an item">
     Find
-  </message>
-  <message name="IDS_DEVTOOLS_4d1b0b75a9737b7dcdc3a15a84fe856b" desc="Text to indicate the searching is in progress">
-    Searching…
   </message>
   <message name="IDS_DEVTOOLS_4dab36ac83853282fc0d7bae20c19e90" desc="Text to show more options">
     More options
@@ -483,9 +477,6 @@
   </message>
   <message name="IDS_DEVTOOLS_c3fe109bf99ade2d76a55e5737015e3e" desc="Text to stop preventing the debugger from stepping into library code">
     Stop blackboxing
-  </message>
-  <message name="IDS_DEVTOOLS_c949475bc69a57c419ac976fe8870652" desc="Text to search by matching case of the input">
-    Match Case
   </message>
   <message name="IDS_DEVTOOLS_c9ad95228aa735bdda1aebf38da022af" desc="Text to parse something">
     Parse

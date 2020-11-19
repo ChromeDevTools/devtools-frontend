@@ -476,6 +476,60 @@
   "resources/ClearStorageView.js | storageWithCustomMarker": {
     "message": "{PH1} (custom)"
   },
+  "search/SearchResultsPane.js | lineS": {
+    "message": "Line {PH1}"
+  },
+  "search/SearchResultsPane.js | matchesCountS": {
+    "message": "Matches Count {PH1}"
+  },
+  "search/SearchResultsPane.js | showDMore": {
+    "message": "Show {PH1} more"
+  },
+  "search/SearchView.js | clear": {
+    "message": "Clear"
+  },
+  "search/SearchView.js | foundDMatchingLinesInDFiles": {
+    "message": "Found {PH1} matching lines in {PH2} files."
+  },
+  "search/SearchView.js | foundDMatchingLinesInFile": {
+    "message": "Found {PH1} matching lines in 1 file."
+  },
+  "search/SearchView.js | foundMatchingLineInFile": {
+    "message": "Found 1 matching line in 1 file."
+  },
+  "search/SearchView.js | indexing": {
+    "message": "Indexing…"
+  },
+  "search/SearchView.js | indexingInterrupted": {
+    "message": "Indexing interrupted."
+  },
+  "search/SearchView.js | matchCase": {
+    "message": "Match Case"
+  },
+  "search/SearchView.js | noMatchesFound": {
+    "message": "No matches found."
+  },
+  "search/SearchView.js | refresh": {
+    "message": "Refresh"
+  },
+  "search/SearchView.js | search": {
+    "message": "Search"
+  },
+  "search/SearchView.js | searchFinished": {
+    "message": "Search finished."
+  },
+  "search/SearchView.js | searching": {
+    "message": "Searching…"
+  },
+  "search/SearchView.js | searchInterrupted": {
+    "message": "Search interrupted."
+  },
+  "search/SearchView.js | searchQuery": {
+    "message": "Search Query"
+  },
+  "search/SearchView.js | useRegularExpression": {
+    "message": "Use Regular Expression"
+  },
   "security/ModuleUIStrings.js | security": {
     "message": "Security"
   },

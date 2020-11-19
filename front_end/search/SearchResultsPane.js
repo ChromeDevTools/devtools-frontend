@@ -4,11 +4,32 @@
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
 import {SearchConfig, SearchResult} from './SearchConfig.js';  // eslint-disable-line no-unused-vars
+
+export const UIStrings = {
+  /**
+  *@description Accessibility label for number of matches in each file in search results pane
+  *@example {2} PH1
+  */
+  matchesCountS: 'Matches Count {PH1}',
+  /**
+  *@description Search result label for results in the Search tool
+  *@example {2} PH1
+  */
+  lineS: 'Line {PH1}',
+  /**
+  *@description Text in Search Results Pane of the Search tab
+  *@example {2} PH1
+  */
+  showDMore: 'Show {PH1} more',
+};
+const str_ = i18n.i18n.registerUIStrings('search/SearchResultsPane.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SearchResultsPane extends UI.Widget.VBox {
   /**
@@ -112,7 +133,8 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     matchesCountSpan.className = 'search-result-matches-count';
 
     matchesCountSpan.textContent = `${this._searchResult.matchesCount()}`;
-    UI.ARIAUtils.setAccessibleName(matchesCountSpan, ls`Matches Count ${this._searchResult.matchesCount()}`);
+    UI.ARIAUtils.setAccessibleName(
+        matchesCountSpan, i18nString(UIStrings.matchesCountS, {PH1: this._searchResult.matchesCount()}));
 
     this.listItemElement.appendChild(matchesCountSpan);
     if (this.expanded) {
@@ -161,9 +183,9 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
       const resultLabel = searchResult.matchLabel(i);
       labelSpan.textContent = resultLabel;
       if (typeof resultLabel === 'number' && !isNaN(resultLabel)) {
-        UI.ARIAUtils.setAccessibleName(labelSpan, ls`Line ${resultLabel}`);
+        UI.ARIAUtils.setAccessibleName(labelSpan, i18nString(UIStrings.lineS, {PH1: resultLabel}));
       } else {
-        UI.ARIAUtils.setAccessibleName(labelSpan, ls`${resultLabel}`);
+        UI.ARIAUtils.setAccessibleName(labelSpan, resultLabel);
       }
       anchor.appendChild(labelSpan);
 
@@ -189,7 +211,7 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
    */
   _appendShowMoreMatchesElement(startMatchIndex) {
     const matchesLeftCount = this._searchResult.matchesCount() - startMatchIndex;
-    const showMoreMatchesText = Common.UIString.UIString('Show %d more', matchesLeftCount);
+    const showMoreMatchesText = i18nString(UIStrings.showDMore, {PH1: matchesLeftCount});
     const showMoreMatchesTreeElement = new UI.TreeOutline.TreeElement(showMoreMatchesText);
     this.appendChild(showMoreMatchesTreeElement);
     showMoreMatchesTreeElement.listItemElement.classList.add('show-more-matches');

@@ -3,10 +3,79 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {SearchConfig, SearchResult, SearchScope} from './SearchConfig.js';  // eslint-disable-line no-unused-vars
 import {SearchResultsPane} from './SearchResultsPane.js';
+
+export const UIStrings = {
+  /**
+  *@description Title of a search bar or tool
+  */
+  search: 'Search',
+  /**
+  *@description Accessibility label for search query text box
+  */
+  searchQuery: 'Search Query',
+  /**
+  *@description Text to search by matching case of the input
+  */
+  matchCase: 'Match Case',
+  /**
+  *@description Text for searching with regular expressinn
+  */
+  useRegularExpression: 'Use Regular Expression',
+  /**
+  *@description Text to refresh the page
+  */
+  refresh: 'Refresh',
+  /**
+  *@description Text to clear content
+  */
+  clear: 'Clear',
+  /**
+  *@description Search message element text content in Search View of the Search tab
+  */
+  indexing: 'Indexing…',
+  /**
+  *@description Text to indicate the searching is in progress
+  */
+  searching: 'Searching…',
+  /**
+  *@description Text in Search View of the Search tab
+  */
+  indexingInterrupted: 'Indexing interrupted.',
+  /**
+  *@description Search results message element text content in Search View of the Search tab
+  */
+  foundMatchingLineInFile: 'Found 1 matching line in 1 file.',
+  /**
+  *@description Search results message element text content in Search View of the Search tab
+  *@example {2} PH1
+  */
+  foundDMatchingLinesInFile: 'Found {PH1} matching lines in 1 file.',
+  /**
+  *@description Search results message element text content in Search View of the Search tab
+  *@example {2} PH1
+  *@example {2} PH2
+  */
+  foundDMatchingLinesInDFiles: 'Found {PH1} matching lines in {PH2} files.',
+  /**
+  *@description Search results message element text content in Search View of the Search tab
+  */
+  noMatchesFound: 'No matches found.',
+  /**
+  *@description Text in Search View of the Search tab
+  */
+  searchFinished: 'Search finished.',
+  /**
+  *@description Text in Search View of the Search tab
+  */
+  searchInterrupted: 'Search interrupted.',
+};
+const str_ = i18n.i18n.registerUIStrings('search/SearchView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SearchView extends UI.Widget.VBox {
   /**
@@ -53,20 +122,19 @@ export class SearchView extends UI.Widget.VBox {
       this._onKeyDown(/** @type {!KeyboardEvent} */ (event));
     });
     searchContainer.appendChild(this._search);
-    this._search.placeholder = Common.UIString.UIString('Search');
+    this._search.placeholder = i18nString(UIStrings.search);
     this._search.setAttribute('type', 'text');
     this._search.setAttribute('results', '0');
     this._search.setAttribute('size', '42');
-    UI.ARIAUtils.setAccessibleName(this._search, ls`Search Query`);
+    UI.ARIAUtils.setAccessibleName(this._search, i18nString(UIStrings.searchQuery));
     const searchItem = new UI.Toolbar.ToolbarItem(searchContainer);
 
     const toolbar = new UI.Toolbar.Toolbar('search-toolbar', this._searchPanelElement);
-    this._matchCaseButton = SearchView._appendToolbarToggle(toolbar, 'Aa', Common.UIString.UIString('Match Case'));
-    this._regexButton =
-        SearchView._appendToolbarToggle(toolbar, '.*', Common.UIString.UIString('Use Regular Expression'));
+    this._matchCaseButton = SearchView._appendToolbarToggle(toolbar, 'Aa', i18nString(UIStrings.matchCase));
+    this._regexButton = SearchView._appendToolbarToggle(toolbar, '.*', i18nString(UIStrings.useRegularExpression));
     toolbar.appendToolbarItem(searchItem);
-    const refreshButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Refresh'), 'largeicon-refresh');
-    const clearButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Clear'), 'largeicon-clear');
+    const refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'largeicon-refresh');
+    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'largeicon-clear');
     toolbar.appendToolbarItem(refreshButton);
     toolbar.appendToolbarItem(clearButton);
     refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this._onAction());
@@ -180,7 +248,7 @@ export class SearchView extends UI.Widget.VBox {
       this._progressIndicator.done();
     }
     this._progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
-    this._searchMessageElement.textContent = Common.UIString.UIString('Indexing…');
+    this._searchMessageElement.textContent = i18nString(UIStrings.indexing);
     this._progressIndicator.show(this._searchProgressPlaceholderElement);
     if (this._searchScope) {
       this._searchScope.performIndexing(
@@ -294,10 +362,10 @@ export class SearchView extends UI.Widget.VBox {
   _searchStarted(progressIndicator) {
     this._resetCounters();
     if (!this._searchingView) {
-      this._searchingView = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Searching…'));
+      this._searchingView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.searching));
     }
     this._showPane(this._searchingView);
-    this._searchMessageElement.textContent = Common.UIString.UIString('Searching…');
+    this._searchMessageElement.textContent = i18nString(UIStrings.searching);
     progressIndicator.show(this._searchProgressPlaceholderElement);
     this._updateSearchResultsMessage();
   }
@@ -306,19 +374,20 @@ export class SearchView extends UI.Widget.VBox {
    * @param {boolean} finished
    */
   _indexingFinished(finished) {
-    this._searchMessageElement.textContent = finished ? '' : Common.UIString.UIString('Indexing interrupted.');
+    this._searchMessageElement.textContent = finished ? '' : i18nString(UIStrings.indexingInterrupted);
   }
 
   _updateSearchResultsMessage() {
     if (this._searchMatchesCount && this._searchResultsCount) {
       if (this._searchMatchesCount === 1 && this._nonEmptySearchResultsCount === 1) {
-        this._searchResultsMessageElement.textContent = Common.UIString.UIString('Found 1 matching line in 1 file.');
+        this._searchResultsMessageElement.textContent = i18nString(UIStrings.foundMatchingLineInFile);
       } else if (this._searchMatchesCount > 1 && this._nonEmptySearchResultsCount === 1) {
         this._searchResultsMessageElement.textContent =
-            Common.UIString.UIString('Found %d matching lines in 1 file.', this._searchMatchesCount);
+            i18nString(UIStrings.foundDMatchingLinesInFile, {PH1: this._searchMatchesCount});
       } else {
-        this._searchResultsMessageElement.textContent = Common.UIString.UIString(
-            'Found %d matching lines in %d files.', this._searchMatchesCount, this._nonEmptySearchResultsCount);
+        this._searchResultsMessageElement.textContent = i18nString(
+            UIStrings.foundDMatchingLinesInDFiles,
+            {PH1: this._searchMatchesCount, PH2: this._nonEmptySearchResultsCount});
       }
     } else {
       this._searchResultsMessageElement.textContent = '';
@@ -346,10 +415,10 @@ export class SearchView extends UI.Widget.VBox {
 
   _nothingFound() {
     if (!this._notFoundView) {
-      this._notFoundView = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('No matches found.'));
+      this._notFoundView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMatchesFound));
     }
     this._showPane(this._notFoundView);
-    this._searchResultsMessageElement.textContent = Common.UIString.UIString('No matches found.');
+    this._searchResultsMessageElement.textContent = i18nString(UIStrings.noMatchesFound);
   }
 
   /**
@@ -370,7 +439,7 @@ export class SearchView extends UI.Widget.VBox {
    */
   _searchFinished(finished) {
     this._searchMessageElement.textContent =
-        finished ? Common.UIString.UIString('Search finished.') : Common.UIString.UIString('Search interrupted.');
+        finished ? i18nString(UIStrings.searchFinished) : i18nString(UIStrings.searchInterrupted);
   }
 
   /**

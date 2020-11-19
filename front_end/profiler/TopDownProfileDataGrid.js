@@ -23,9 +23,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';     // eslint-disable-line no-unused-vars
 
@@ -59,7 +56,7 @@ export class TopDownProfileDataGridNode extends ProfileDataGridNode {
           new TopDownProfileDataGridNode(children[i], /** @type {!TopDownProfileDataGridTree} */ (container.tree)));
     }
 
-    container._remainingChildren = null;
+    container._remainingChildren = [];
   }
 
   /**
@@ -67,8 +64,8 @@ export class TopDownProfileDataGridNode extends ProfileDataGridNode {
    * @param {string} aCallUID
    */
   static _excludeRecursively(container, aCallUID) {
-    if (container._remainingChildren) {
-      container.populate();
+    if (container._remainingChildren.length > 0) {
+      /** @type {!TopDownProfileDataGridNode} */ (container).populate();
     }
 
     container.save();
@@ -77,7 +74,8 @@ export class TopDownProfileDataGridNode extends ProfileDataGridNode {
     let index = container.children.length;
 
     while (index--) {
-      TopDownProfileDataGridNode._excludeRecursively(children[index], aCallUID);
+      TopDownProfileDataGridNode._excludeRecursively(
+          /** @type {!TopDownProfileDataGridNode} */ (children[index]), aCallUID);
     }
 
     const child = container.childrenByCallUID.get(aCallUID);

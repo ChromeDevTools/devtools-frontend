@@ -457,9 +457,6 @@ export class ProfileDataGridTree {
     return ProfileDataGridNode.sort([[this]], comparator, force);
   }
 
-  /**
-   * @protected
-   */
   save() {
     if (this._savedChildren) {
       return;

@@ -26,12 +26,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @ts-nocheck
 
-/* the long term goal here is to remove all functions in this file and
+/* The long term goal here is to remove all functions in this file and
  * replace them with ES Module functions rather than prototype
  * extensions but in the mean time if an old func in here depends on one
- * that has been migrated it will need to be imported
+ * that has been migrated, it will need to be imported.
  */
 import {inverse} from './map-utilities.js';
 import {caseInsensetiveComparator, escapeCharacters, regexSpecialCharacters, sprintf} from './string-utilities.js';
@@ -39,7 +38,9 @@ import {caseInsensetiveComparator, escapeCharacters, regexSpecialCharacters, spr
 // Still used in the test runners that can't use ES modules :(
 String.sprintf = sprintf;
 
+// @ts-ignore https://crbug.com/1050549
 String.regexSpecialCharacters = regexSpecialCharacters;
+// @ts-ignore https://crbug.com/1050549
 String.caseInsensetiveComparator = caseInsensetiveComparator;
 
 /**
@@ -60,11 +61,11 @@ String.prototype.trimMiddle = function(maxLength) {
   }
   let leftHalf = maxLength >> 1;
   let rightHalf = maxLength - leftHalf - 1;
-  if (this.codePointAt(this.length - rightHalf - 1) >= 0x10000) {
+  if (/** @type {number} */ (this.codePointAt(this.length - rightHalf - 1)) >= 0x10000) {
     --rightHalf;
     ++leftHalf;
   }
-  if (leftHalf > 0 && this.codePointAt(leftHalf - 1) >= 0x10000) {
+  if (leftHalf > 0 && /** @type {number} */ (this.codePointAt(leftHalf - 1)) >= 0x10000) {
     --leftHalf;
   }
   return this.substr(0, leftHalf) + '…' + this.substr(this.length - rightHalf, rightHalf);
@@ -128,7 +129,7 @@ String.hashCode = function(string) {
 String.naturalOrderComparator = function(a, b) {
   const chunk = /^\d+|^\D+/;
   let chunka, chunkb, anum, bnum;
-  while (1) {
+  while (true) {
     if (a) {
       if (!b) {
         return 1;
@@ -139,10 +140,10 @@ String.naturalOrderComparator = function(a, b) {
       }
       return 0;
     }
-    chunka = a.match(chunk)[0];
-    chunkb = b.match(chunk)[0];
-    anum = !isNaN(chunka);
-    bnum = !isNaN(chunkb);
+    chunka = /** @type {!Array<string>} */ (a.match(chunk))[0];
+    chunkb = /** @type {!Array<string>} */ (b.match(chunk))[0];
+    anum = !Number.isNaN(Number(chunka));
+    bnum = !Number.isNaN(Number(chunkb));
     if (anum && !bnum) {
       return -1;
     }
@@ -150,7 +151,7 @@ String.naturalOrderComparator = function(a, b) {
       return 1;
     }
     if (anum && bnum) {
-      const diff = chunka - chunkb;
+      const diff = Number(chunka) - Number(chunkb);
       if (diff) {
         return diff;
       }
@@ -173,15 +174,49 @@ String.naturalOrderComparator = function(a, b) {
  * @return {string}
  */
 Number.toFixedIfFloating = function(value) {
-  if (!value || isNaN(value)) {
+  if (!value || Number.isNaN(Number(value))) {
     return value;
   }
   const number = Number(value);
   return number % 1 ? number.toFixed(3) : String(number);
 };
 
+/**
+ * @param {!Array<number>} array
+ * @param {function(number, number): number} comparator
+ * @param {number} left
+ * @param {number} right
+ * @param {number} pivotIndex
+ * @return {number}
+ */
+const partition = (array, comparator, left, right, pivotIndex) => {
+  /**
+   * @param {!Array<number>} array
+   * @param {number} i1
+   * @param {number} i2
+   */
+  function swap(array, i1, i2) {
+    const temp = array[i1];
+    array[i1] = array[i2];
+    array[i2] = temp;
+  }
+
+  const pivotValue = array[pivotIndex];
+  swap(array, right, pivotIndex);
+  let storeIndex = left;
+  for (let i = left; i < right; ++i) {
+    if (comparator(array[i], pivotValue) < 0) {
+      swap(array, storeIndex, i);
+      ++storeIndex;
+    }
+  }
+  swap(array, right, storeIndex);
+  return storeIndex;
+};
+
 (function() {
-const partition = {
+// TODO(mathias): Remove this utility after verifying remaining call sites.
+const descriptor = {
   /**
      * @this {Array.<number>}
      * @param {function(number, number): number} comparator
@@ -190,28 +225,12 @@ const partition = {
      * @param {number} pivotIndex
      */
   value: function(comparator, left, right, pivotIndex) {
-    function swap(array, i1, i2) {
-      const temp = array[i1];
-      array[i1] = array[i2];
-      array[i2] = temp;
-    }
-
-    const pivotValue = this[pivotIndex];
-    swap(this, right, pivotIndex);
-    let storeIndex = left;
-    for (let i = left; i < right; ++i) {
-      if (comparator(this[i], pivotValue) < 0) {
-        swap(this, storeIndex, i);
-        ++storeIndex;
-      }
-    }
-    swap(this, right, storeIndex);
-    return storeIndex;
+    return partition(this, comparator, left, right, pivotIndex);
   },
-  configurable: true
+  configurable: true,
 };
-Object.defineProperty(Array.prototype, 'partition', partition);
-Object.defineProperty(Uint32Array.prototype, 'partition', partition);
+Object.defineProperty(Array.prototype, 'partition', descriptor);
+Object.defineProperty(Uint32Array.prototype, 'partition', descriptor);
 
 const sortRange = {
   /**
@@ -224,12 +243,20 @@ const sortRange = {
      * @this {Array.<number>}
      */
   value: function(comparator, leftBound, rightBound, sortWindowLeft, sortWindowRight) {
+    /**
+     * @param {!Array<number>} array
+     * @param {function(number, number): number} comparator
+     * @param {number} left
+     * @param {number} right
+     * @param {number} sortWindowLeft
+     * @param {number} sortWindowRight
+     */
     function quickSortRange(array, comparator, left, right, sortWindowLeft, sortWindowRight) {
       if (right <= left) {
         return;
       }
       const pivotIndex = Math.floor(Math.random() * (right - left)) + left;
-      const pivotNewIndex = array.partition(comparator, left, right, pivotIndex);
+      const pivotNewIndex = partition(array, comparator, left, right, pivotIndex);
       if (sortWindowLeft < pivotNewIndex) {
         quickSortRange(array, comparator, left, pivotNewIndex - 1, sortWindowLeft, sortWindowRight);
       }
@@ -244,7 +271,7 @@ const sortRange = {
     }
     return this;
   },
-  configurable: true
+  configurable: true,
 };
 Object.defineProperty(Array.prototype, 'sortRange', sortRange);
 Object.defineProperty(Uint32Array.prototype, 'sortRange', sortRange);
@@ -260,7 +287,7 @@ Object.defineProperty(Array.prototype, 'lowerBound', {
    * define the search window.
    *
    * @param {!T} object
-   * @param {function(!T,!S):number=} comparator
+   * @param {function(!T,!S):number} comparator
    * @param {number=} left
    * @param {number=} right
    * @return {number}
@@ -268,6 +295,10 @@ Object.defineProperty(Array.prototype, 'lowerBound', {
    * @template T,S
    */
   value: function(object, comparator, left, right) {
+    /**
+     * @param {string|number} a
+     * @param {string|number} b
+     */
     function defaultComparator(a, b) {
       return a < b ? -1 : (a > b ? 1 : 0);
     }
@@ -297,7 +328,7 @@ Object.defineProperty(Array.prototype, 'upperBound', {
    * define the search window.
    *
    * @param {!T} object
-   * @param {function(!T,!S):number=} comparator
+   * @param {function(!T,!S):number} comparator
    * @param {number=} left
    * @param {number=} right
    * @return {number}
@@ -305,6 +336,10 @@ Object.defineProperty(Array.prototype, 'upperBound', {
    * @template T,S
    */
   value: function(object, comparator, left, right) {
+    /**
+     * @param {string|number} a
+     * @param {string|number} b
+     */
     function defaultComparator(a, b) {
       return a < b ? -1 : (a > b ? 1 : 0);
     }
@@ -448,6 +483,7 @@ self.createPlainTextSearchRegex = function(query, flags) {
  * @return {?T}
  * @template T
  */
+// @ts-ignore https://crbug.com/1050549
 Set.prototype.firstValue = function() {
   if (!this.size) {
     return null;
@@ -459,6 +495,7 @@ Set.prototype.firstValue = function() {
  * @return {!Multimap<K,V>}
  * @template K,V
  */
+// @ts-ignore https://crbug.com/1050549
 Map.prototype.inverse = function() {
   return inverse(this);
 };
@@ -569,12 +606,14 @@ export class Multimap {
 }
 
 /**
- * @param {function()} callback
+ * @param {function(...*): *} callback
+ * @param {...*} args
  * @return {number}
  */
-self.setImmediate = function(callback) {
-  const args = [...arguments].slice(1);
-  Promise.resolve().then(() => callback(...args));
+// @ts-ignore https://crbug.com/1050549
+self.setImmediate = function(callback, ...args) {
+  // TODO(crbug.com/1050549): Update call sites to just use queueMicrotask?
+  Promise.resolve().then(() => callback.apply(null, args));
   return 0;
 };
 
@@ -601,14 +640,18 @@ const _singletonSymbol = Symbol('singleton');
 
 /**
  * @template T
- * @param {function(new:T, ...)} constructorFunction
+ * @param {function(new:T)} constructorFunction
  * @return {!T}
  */
+// @ts-ignore https://crbug.com/1050549
 self.singleton = function(constructorFunction) {
   if (_singletonSymbol in constructorFunction) {
+    // @ts-ignore We literally just confirmed this exists.
     return constructorFunction[_singletonSymbol];
   }
+  // @ts-ignore https://crbug.com/1050549
   const instance = new constructorFunction();
+  // @ts-ignore https://crbug.com/1050549
   constructorFunction[_singletonSymbol] = instance;
   return instance;
 };
@@ -632,9 +675,10 @@ self.base64ToSize = function(content) {
 };
 
 /**
- * @param {?string} input
+ * @param {string} input
  * @return {string}
  */
+// @ts-ignore https://crbug.com/1050549
 self.unescapeCssString = function(input) {
   // https://drafts.csswg.org/css-syntax/#consume-escaped-code-point
   const reCssEscapeSequence = /(?<!\\)\\(?:([a-fA-F0-9]{1,6})|(.))[\n\t\x20]?/gs;
@@ -652,7 +696,9 @@ self.unescapeCssString = function(input) {
   });
 };
 
+// @ts-ignore
 self.Platform = self.Platform || {};
+// @ts-ignore
 Platform = Platform || {};
 
 /** @constructor */

@@ -780,8 +780,8 @@ export class MainMenuItem {
       if (viewExtension.location !== 'drawer-view' && viewExtension.location !== 'panel') {
         continue;
       }
-      moreTools.defaultSection().appendItem(viewExtension.title, omitFocus => {
-        UI.ViewManager.ViewManager.instance().showView(viewExtension.id, true, /** @type {boolean} */ (omitFocus));
+      moreTools.defaultSection().appendItem(viewExtension.title, () => {
+        UI.ViewManager.ViewManager.instance().showView(viewExtension.id, true, false);
       });
     }
 

@@ -28,16 +28,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
 import * as Root from '../root/root.js';
 
 import {ActionRegistry} from './ActionRegistry.js';
 import {ShortcutRegistry} from './ShortcutRegistry.js';
-import {SoftContextMenu} from './SoftContextMenu.js';
+import {SoftContextMenu, SoftContextMenuDescriptor} from './SoftContextMenu.js';  // eslint-disable-line no-unused-vars
 import {deepElementFromEvent} from './UIUtils.js';
 
 /**
@@ -57,15 +54,22 @@ export class Item {
     this._disabled = disabled;
     this._checked = checked;
     this._contextMenu = contextMenu;
+    this._id = undefined;
     if (type === 'item' || type === 'checkbox') {
       this._id = contextMenu ? contextMenu._nextId() : 0;
     }
+
+    /** @type {*} */
+    this._customElement;
   }
 
   /**
    * @return {number}
    */
   id() {
+    if (this._id === undefined) {
+      throw new Error('Tried to access a ContextMenu Item ID but none was set.');
+    }
     return this._id;
   }
 
@@ -91,25 +95,48 @@ export class Item {
   }
 
   /**
-   * @return {!InspectorFrontendHostAPI.ContextMenuDescriptor}
+   * @return {!Host.InspectorFrontendHostAPI.ContextMenuDescriptor|!SoftContextMenuDescriptor}
    */
   _buildDescriptor() {
     switch (this._type) {
       case 'item': {
-        const result = {type: 'item', id: this._id, label: this._label, enabled: !this._disabled};
+        const result = {
+          type: 'item',
+          id: this._id,
+          label: this._label,
+          enabled: !this._disabled,
+          checked: undefined,
+          subItems: undefined
+        };
         if (this._customElement) {
-          result.element = this._customElement;
+          const resultAsSoftContextMenuItem = /** @type {!SoftContextMenuDescriptor} */ (result);
+          resultAsSoftContextMenuItem.element = /** @type {!Element} */ (this._customElement);
         }
         if (this._shortcut) {
-          result.shortcut = this._shortcut;
+          const resultAsSoftContextMenuItem = /** @type {!SoftContextMenuDescriptor} */ (result);
+          resultAsSoftContextMenuItem.shortcut = this._shortcut;
         }
         return result;
       }
       case 'separator': {
-        return {type: 'separator'};
+        return {
+          type: 'separator',
+          id: undefined,
+          label: undefined,
+          enabled: undefined,
+          checked: undefined,
+          subItems: undefined
+        };
       }
       case 'checkbox': {
-        return {type: 'checkbox', id: this._id, label: this._label, checked: !!this._checked, enabled: !this._disabled};
+        return {
+          type: 'checkbox',
+          id: this._id,
+          label: this._label,
+          checked: !!this._checked,
+          enabled: !this._disabled,
+          subItems: undefined
+        };
       }
     }
     throw new Error('Invalid item type:' + this._type);
@@ -136,14 +163,16 @@ export class Section {
 
   /**
    * @param {string} label
-   * @param {function(?):*} handler
+   * @param {function():*} handler
    * @param {boolean=} disabled
    * @return {!Item}
    */
   appendItem(label, handler, disabled) {
     const item = new Item(this._contextMenu, 'item', label, disabled);
     this._items.push(item);
-    this._contextMenu._setHandler(item.id(), handler);
+    if (this._contextMenu) {
+      this._contextMenu._setHandler(item.id(), handler);
+    }
     return item;
   }
 
@@ -212,7 +241,9 @@ export class Section {
   appendCheckboxItem(label, handler, checked, disabled) {
     const item = new Item(this._contextMenu, 'checkbox', label, disabled, checked);
     this._items.push(item);
-    this._contextMenu._setHandler(item.id(), handler);
+    if (this._contextMenu) {
+      this._contextMenu._setHandler(item.id(), handler);
+    }
     return item;
   }
 }
@@ -326,19 +357,39 @@ export class SubMenu extends Item {
 
   /**
    * @override
-   * @return {!InspectorFrontendHostAPI.ContextMenuDescriptor}
+   * @return {!Host.InspectorFrontendHostAPI.ContextMenuDescriptor|!SoftContextMenuDescriptor}
    */
   _buildDescriptor() {
-    /** @type {!InspectorFrontendHostAPI.ContextMenuDescriptor} */
-    const result = {type: 'subMenu', label: this._label, enabled: !this._disabled, subItems: []};
+    /** @type {!Host.InspectorFrontendHostAPI.ContextMenuDescriptor|!SoftContextMenuDescriptor} */
+    const result = {
+      type: 'subMenu',
+      label: this._label,
+      enabled: !this._disabled,
+      subItems: [],
+      id: undefined,
+      checked: undefined
+    };
 
     const nonEmptySections = this._sectionList.filter(section => !!section._items.length);
     for (const section of nonEmptySections) {
       for (const item of section._items) {
+        if (!result.subItems) {
+          result.subItems = [];
+        }
         result.subItems.push(item._buildDescriptor());
       }
       if (section !== nonEmptySections.peekLast()) {
-        result.subItems.push({type: 'separator'});
+        if (!result.subItems) {
+          result.subItems = [];
+        }
+        result.subItems.push({
+          type: 'separator',
+          id: undefined,
+          subItems: undefined,
+          checked: undefined,
+          enabled: undefined,
+          label: undefined
+        });
       }
     }
     return result;
@@ -359,7 +410,10 @@ export class SubMenu extends Item {
         continue;
       }
 
-      this.section(section).appendAction(extension.descriptor()['actionId']);
+      const actionId = extension.descriptor().actionId;
+      if (actionId) {
+        this.section(section).appendAction(actionId);
+      }
     }
   }
 }
@@ -378,6 +432,7 @@ export class ContextMenu extends SubMenu {
    */
   constructor(event, useSoftMenu, x, y) {
     super(null);
+    const mouseEvent = /** @type {!MouseEvent} */ (event);
     this._contextMenu = this;
     super._init();
     this._defaultSection = this.defaultSection();
@@ -385,11 +440,13 @@ export class ContextMenu extends SubMenu {
     this._pendingPromises = [];
     /** @type {!Array<!Object>} */
     this._pendingTargets = [];
-    this._event = event;
+    /** @type {!MouseEvent} */
+    this._event = mouseEvent;
     this._useSoftMenu = !!useSoftMenu;
-    this._x = x === undefined ? event.x : x;
-    this._y = y === undefined ? event.y : y;
-    this._handlers = {};
+    this._x = x === undefined ? mouseEvent.x : x;
+    this._y = y === undefined ? mouseEvent.y : y;
+    /** @type {!Map<number, function():*>} */
+    this._handlers = new Map();
     this._id = 0;
 
     const target = deepElementFromEvent(event);
@@ -432,7 +489,11 @@ export class ContextMenu extends SubMenu {
   }
 
   show() {
-    Promise.all(this._pendingPromises).then(populate.bind(this)).then(this._innerShow.bind(this));
+    Promise.all(this._pendingPromises)
+        .then(providers => {
+          populate.call(this, providers);
+        })
+        .then(this._innerShow.bind(this));
     ContextMenu._pendingMenu = this;
 
     /**
@@ -443,7 +504,7 @@ export class ContextMenu extends SubMenu {
       if (ContextMenu._pendingMenu !== this) {
         return;
       }
-      delete ContextMenu._pendingMenu;
+      ContextMenu._pendingMenu = null;
 
       for (let i = 0; i < appendCallResults.length; ++i) {
         const providers = appendCallResults[i];
@@ -470,13 +531,19 @@ export class ContextMenu extends SubMenu {
 
   _innerShow() {
     const menuObject = this._buildMenuDescriptors();
+    const eventTarget = this._event.target;
+    if (!eventTarget) {
+      return;
+    }
+    const ownerDocument = /** @type {!HTMLElement} */ (eventTarget).ownerDocument;
     if (this._useSoftMenu || ContextMenu._useSoftMenu ||
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
-      this._softMenu = new SoftContextMenu(menuObject, this._itemSelected.bind(this));
-      this._softMenu.show(this._event.target.ownerDocument, new AnchorBox(this._x, this._y, 0, 0));
+      this._softMenu = new SoftContextMenu(
+          /** @type {!Array<!SoftContextMenuDescriptor>} */ (menuObject), this._itemSelected.bind(this));
+      this._softMenu.show(/** @type {!Document} */ (ownerDocument), new AnchorBox(this._x, this._y, 0, 0));
     } else {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(
-          this._x, this._y, menuObject, this._event.target.ownerDocument);
+          this._x, this._y, menuObject, /** @type {!Document}*/ (ownerDocument));
 
       /**
        * @this {ContextMenu}
@@ -510,34 +577,36 @@ export class ContextMenu extends SubMenu {
 
   /**
    * @param {number} id
-   * @param {function(?):*} handler
+   * @param {function():*} handler
    */
   _setHandler(id, handler) {
     if (handler) {
-      this._handlers[id] = handler;
+      this._handlers.set(id, handler);
     }
   }
 
   /**
-   * @return {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>}
+   * @return {!Array.<!Host.InspectorFrontendHostAPI.ContextMenuDescriptor|!SoftContextMenuDescriptor>}
    */
   _buildMenuDescriptors() {
-    return /** @type {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>} */ (super._buildDescriptor().subItems);
+    return /** @type {!Array.<!Host.InspectorFrontendHostAPI.ContextMenuDescriptor|!SoftContextMenuDescriptor>} */ (
+        super._buildDescriptor().subItems);
   }
 
   /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onItemSelected(event) {
-    this._itemSelected(/** @type {string} */ (event.data));
+    this._itemSelected(/** @type {number} */ (event.data));
   }
 
   /**
-   * @param {string} id
+   * @param {number} id
    */
   _itemSelected(id) {
-    if (this._handlers[id]) {
-      this._handlers[id].call(this);
+    const handler = this._handlers.get(id);
+    if (handler) {
+      handler.call(this);
     }
     this._menuCleared();
   }
@@ -561,10 +630,16 @@ export class ContextMenu extends SubMenu {
    * @param {!Object} target
    */
   appendApplicableItems(target) {
-    this._pendingPromises.push(Root.Runtime.Runtime.instance().allInstances(Provider, target));
+    const allInstances =
+        /** @type {!Promise<!Array<!Provider>>}*/ (Root.Runtime.Runtime.instance().allInstances(Provider, target));
+    this._pendingPromises.push(allInstances);
     this._pendingTargets.push(target);
   }
 }
+
+ContextMenu._useSoftMenu = false;
+/** @type {?ContextMenu} */
+ContextMenu._pendingMenu = null;
 
 export const _groupWeights =
     ['header', 'new', 'reveal', 'edit', 'clipboard', 'debug', 'view', 'default', 'save', 'footer'];

@@ -908,7 +908,7 @@ export class SourcesPanel extends UI.Panel.Panel {
       return;
     }
     const openText = Common.UIString.UIString('Open in Sources panel');
-    /** @type {function(?):*} */
+    /** @type {function():*} */
     const callback = this.showUILocation.bind(this, uiSourceCode.uiLocation(0, 0));
     contextMenu.revealSection().appendItem(openText, callback);
   }

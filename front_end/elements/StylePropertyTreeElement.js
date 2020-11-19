@@ -745,7 +745,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
       }, !this.property.disabled);
     }
-    const revealCallback = /** @type {function(?):*} */ (this._navigateToSource.bind(this));
+    const revealCallback = /** @type {function():*} */ (this._navigateToSource.bind(this));
     contextMenu.defaultSection().appendItem(ls`Reveal in Sources panel`, revealCallback);
     contextMenu.show();
   }

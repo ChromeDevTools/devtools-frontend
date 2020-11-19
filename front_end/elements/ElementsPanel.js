@@ -1145,7 +1145,7 @@ export class ContextMenuProvider {
     if (ElementsPanel.instance().element.isAncestor(/** @type {!Node} */ (event.target))) {
       return;
     }
-    /** @type {function(?):*} */
+    /** @type {function():*} */
     const commandCallback = Common.Revealer.reveal.bind(Common.Revealer.Revealer, object);
     contextMenu.revealSection().appendItem(Common.UIString.UIString('Reveal in Elements panel'), commandCallback);
   }

@@ -2642,7 +2642,7 @@ export class DataGridWidget extends UI.Widget.VBox {
  *   columns: !Array.<!ColumnDescriptor>,
  *   editCallback: (undefined|function(*, string, *, *):*),
  *   deleteCallback: (undefined|function(*):*),
- *   refreshCallback: (undefined|function(*):*)
+ *   refreshCallback: (undefined|function():*)
  * }}
  */
 // @ts-ignore typedef

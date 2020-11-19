@@ -45,7 +45,7 @@ import {createTextChild, ElementFocusRestorer} from './UIUtils.js';
 export class SoftContextMenu {
   /**
    * @param {!Array.<!SoftContextMenuDescriptor>} items
-   * @param {function(string):void} itemSelectedCallback
+   * @param {function(number):void} itemSelectedCallback
    * @param {!SoftContextMenu=} parentMenu
    */
   constructor(items, itemSelectedCallback, parentMenu) {

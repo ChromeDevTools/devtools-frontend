@@ -910,9 +910,8 @@ export class NavigatorView extends UI.Widget.VBox {
           Common.UIString.UIString('Open folder'),
           () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(folderPath));
       if (project.canCreateFile()) {
-        contextMenu.defaultSection().appendItem(Common.UIString.UIString('New file'), uiSourceCode => {
-          this._handleContextMenuCreate(
-              project, path, /** @type {!Workspace.UISourceCode.UISourceCode} */ (uiSourceCode));
+        contextMenu.defaultSection().appendItem(Common.UIString.UIString('New file'), () => {
+          this._handleContextMenuCreate(project, path, undefined);
         });
       }
     }

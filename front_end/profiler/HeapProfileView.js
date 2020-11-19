@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
@@ -20,6 +17,15 @@ import {ProfileEvents, ProfileHeader, ProfileType} from './ProfileHeader.js';  /
 import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
 /**
+ * @param {!SamplingHeapProfileHeader} profileHeader
+ * @return {!Protocol.HeapProfiler.SamplingHeapProfile}
+ */
+function convertToSamplingHeapProfile(profileHeader) {
+  return /** @type {!Protocol.HeapProfiler.SamplingHeapProfile} */ (
+      profileHeader._profile || profileHeader.protocolProfile());
+}
+
+/**
  * @implements {UI.SearchableView.Searchable}
  * @unrestricted
  */
@@ -33,7 +39,7 @@ export class HeapProfileView extends ProfileView {
     this.profileHeader = profileHeader;
     this._profileType = profileHeader.profileType();
     this.initialize(new NodeFormatter(this));
-    const profile = new SamplingHeapProfileModel(profileHeader._profile || profileHeader.protocolProfile());
+    const profile = new SamplingHeapProfileModel(convertToSamplingHeapProfile(profileHeader));
     this.adjustedTotal = profile.total;
     this.setProfile(profile);
 
@@ -91,8 +97,8 @@ export class HeapProfileView extends ProfileView {
    * @param {number} maxId
    */
   _setSelectionRange(minId, maxId) {
-    const profile =
-        new SamplingHeapProfileModel(this.profileHeader._profile || this.profileHeader.protocolProfile(), minId, maxId);
+    const profileData = convertToSamplingHeapProfile(/** @type {!SamplingHeapProfileHeader} */ (this.profileHeader));
+    const profile = new SamplingHeapProfileModel(profileData, minId, maxId);
     this.adjustedTotal = profile.total;
     this.setProfile(profile);
   }
@@ -242,16 +248,16 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
 
   async _stopRecordingProfile() {
     this._recording = false;
-    if (!this.profileBeingRecorded() || !this.profileBeingRecorded().heapProfilerModel()) {
+    const recordedProfile = this.profileBeingRecorded();
+    if (!recordedProfile || !recordedProfile.heapProfilerModel()) {
       return;
     }
 
-    this.profileBeingRecorded().updateStatus(ls`Stopping…`);
+    recordedProfile.updateStatus(ls`Stopping…`);
     const profile = await this._stopSampling();
-    const recordedProfile = this.profileBeingRecorded();
     if (recordedProfile) {
-      console.assert(profile);
-      recordedProfile.setProtocolProfile(profile);
+      console.assert(profile !== undefined);
+      recordedProfile.setProtocolProfile(/** @type {?} */ (profile));
       recordedProfile.updateStatus('');
       this.setProfileBeingRecorded(null);
     }
@@ -280,12 +286,15 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
   }
 
   /**
-   * return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
+   * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
    */
   _stopSampling() {
     throw 'Not implemented';
   }
 }
+
+/** @type {!SamplingHeapProfileType} */
+let samplingHeapProfileTypeInstance;
 
 /**
  * @unrestricted
@@ -293,10 +302,17 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
 export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
   constructor() {
     super(SamplingHeapProfileType.TypeId, ls`Allocation sampling`);
-    SamplingHeapProfileType.instance = this;
-    /** @type {?number} */
-    this._updateTimer = null;
+    if (!samplingHeapProfileTypeInstance) {
+      samplingHeapProfileTypeInstance = this;
+    }
+
+    /** @type {number} */
+    this._updateTimer = 0;
     this._updateIntervalMs = 200;
+  }
+
+  static get instance() {
+    return samplingHeapProfileTypeInstance;
   }
 
   /**
@@ -327,7 +343,12 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
    * @override
    */
   _startSampling() {
-    this.profileBeingRecorded().heapProfilerModel().startSampling();
+    const heapProfilerModel = this._obtainRecordingProfile();
+    if (!heapProfilerModel) {
+      return;
+    }
+
+    heapProfilerModel.startSampling();
     if (Root.Runtime.experiments.isEnabled('samplingHeapProfilerTimeline')) {
       this._updateTimer = window.setTimeout(() => {
         this._updateStats();
@@ -336,18 +357,44 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
   }
 
   /**
-   * @override
-   * return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
+   * @return {?SDK.HeapProfilerModel.HeapProfilerModel}
    */
-  _stopSampling() {
+  _obtainRecordingProfile() {
+    const recordingProfile = this.profileBeingRecorded();
+    if (recordingProfile) {
+      const heapProfilerModel = recordingProfile.heapProfilerModel();
+      return heapProfilerModel;
+    }
+    return null;
+  }
+
+  /**
+   * @override
+   * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
+   */
+  async _stopSampling() {
     window.clearTimeout(this._updateTimer);
-    this._updateTimer = null;
+    this._updateTimer = 0;
     this.dispatchEventToListeners(SamplingHeapProfileType.Events.RecordingStopped);
-    return this.profileBeingRecorded().heapProfilerModel().stopSampling();
+    const heapProfilerModel = this._obtainRecordingProfile();
+    if (!heapProfilerModel) {
+      throw new Error('No heap profiler model');
+    }
+
+    const samplingProfile = await heapProfilerModel.stopSampling();
+    if (!samplingProfile) {
+      throw new Error('No sampling profile found');
+    }
+    return samplingProfile;
   }
 
   async _updateStats() {
-    const profile = await this.profileBeingRecorded().heapProfilerModel().getSamplingProfile();
+    const heapProfilerModel = this._obtainRecordingProfile();
+    if (!heapProfilerModel) {
+      return;
+    }
+
+    const profile = await heapProfilerModel.getSamplingProfile();
     if (!this._updateTimer) {
       return;
     }
@@ -380,27 +427,29 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
         heapProfilerModel && heapProfilerModel.debuggerModel(), type,
         title || Common.UIString.UIString('Profile %d', type.nextProfileUid()));
     this._heapProfilerModel = heapProfilerModel;
-    this._protocolProfile =
-        /** @type {!Protocol.HeapProfiler.SamplingHeapProfile} */ ({
-          head: {
-            callFrame: {
-              functionName: '',
-              scriptId: '',
-              url: '',
-              lineNumber: 0,
-              columnNumber: 0,
-            },
-            children: [],
-            selfSize: 0,
-            id: 0,
-          },
-          samples: [],
-        });
+    this._protocolProfile = {
+      head: {
+        callFrame: {
+          functionName: '',
+          scriptId: '',
+          url: '',
+          lineNumber: 0,
+          columnNumber: 0,
+        },
+        children: [],
+        selfSize: 0,
+        id: 0,
+      },
+      samples: [],
+      startTime: 0,
+      endTime: 0,
+      nodes: [],
+    };
   }
 
   /**
    * @override
-   * @return {!ProfileView}
+   * @return {!HeapProfileView}
    */
   createView() {
     return new HeapProfileView(this);
@@ -458,7 +507,7 @@ export class SamplingHeapProfileModel extends SDK.ProfileTreeModel.ProfileTreeMo
    */
   constructor(profile, minOrdinal, maxOrdinal) {
     super();
-    this.modules = profile.modules || [];
+    this.modules = /** @type {?} */ (profile).modules || [];
 
     /** @type {?Map<number, number>} */
     let nodeIdToSizeMap = null;

@@ -28,6 +28,8 @@ export class ProfileNode {
     this.children = [];
     /** @type {number} */
     this.depth;
+    /** @type {?string} */
+    this.deoptReason;
   }
 
   /**

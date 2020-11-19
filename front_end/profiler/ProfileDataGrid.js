@@ -23,9 +23,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
@@ -33,6 +30,7 @@ import * as UI from '../ui/ui.js';
 
 /**
  * @unrestricted
+ * @extends DataGrid.DataGrid.DataGridNode<*>
  */
 export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
   /**
@@ -51,6 +49,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
     this.tree = owningTree;
     /** @type {!Map<string, !ProfileDataGridNode>} */
     this.childrenByCallUID = new Map();
+    /** @type {*} */
     this.lastComparator = null;
 
     this.callUID = profileNode.callUID;
@@ -61,11 +60,13 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
     this.url = profileNode.url;
     /** @type {?Element} */
     this.linkElement = null;
+
+    this._populated = false;
   }
 
   /**
-   * @param {!Array<!Array<!ProfileDataGridNode>>} gridNodeGroups
-   * @param {function(!T, !T)} comparator
+   * @param {!Array<!Array<*>>} gridNodeGroups
+   * @param {function(!T, !T):number} comparator
    * @param {boolean} force
    * @template T
    */
@@ -98,7 +99,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
             children[childIndex].recalculateSiblings(childIndex);
           }
 
-          gridNodeGroups.push(children);
+          gridNodeGroups.push(/** @type {!Array<!ProfileDataGridNode>} */ (children));
         }
       }
     }
@@ -124,7 +125,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
 
     for (let index = 0; index < count; ++index) {
       if (!shouldAbsorb || children[index] !== child) {
-        container.appendChild(children[index]);
+        container.appendChild(/** @type {!ProfileDataGridNode} */ (children[index]));
       }
     }
 
@@ -132,11 +133,11 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
     count = children.length;
 
     for (let index = 0; index < count; ++index) {
-      const orphanedChild = children[index];
+      const orphanedChild = /** @type {!ProfileDataGridNode} */ (children[index]);
       const existingChild = container.childrenByCallUID.get(orphanedChild.callUID);
 
       if (existingChild) {
-        existingChild.merge(/** @type{!ProfileDataGridNode} */ (orphanedChild), false);
+        existingChild.merge(/** @type {!ProfileDataGridNode} */ (orphanedChild), false);
       } else {
         container.appendChild(orphanedChild);
       }
@@ -197,7 +198,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
         if (!urlElement) {
           return cell;
         }
-        urlElement.style.maxWidth = '75%';
+        /** @type {!HTMLElement} */ (urlElement).style.maxWidth = '75%';
         cell.appendChild(urlElement);
         this.linkElement = urlElement;
         return cell;
@@ -228,20 +229,23 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
   }
 
   /**
-   * @param {function(!T, !T)} comparator
+   * @param {function(!ProfileDataGridNode, !ProfileDataGridNode): number} comparator
    * @param {boolean} force
-   * @template T
    */
   sort(comparator, force) {
-    return ProfileDataGridNode.sort([[this]], comparator, force);
+    const sortComparator =
+        /** @type {function(!DataGrid.DataGrid.DataGridNode<*>, !DataGrid.DataGrid.DataGridNode<*>): number} */ (
+            comparator);
+    return ProfileDataGridNode.sort([[this]], sortComparator, force);
   }
 
   /**
    * @override
-   * @param {!DataGrid.DataGrid.DataGridNode} profileDataGridNode
+   * @param {!DataGrid.DataGrid.DataGridNode<*>} child
    * @param {number} index
    */
-  insertChild(profileDataGridNode, index) {
+  insertChild(child, index) {
+    const profileDataGridNode = /** @type {!ProfileDataGridNode} */ (child);
     super.insertChild(profileDataGridNode, index);
 
     this.childrenByCallUID.set(profileDataGridNode.callUID, /** @type {!ProfileDataGridNode} */ (profileDataGridNode));
@@ -249,7 +253,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
 
   /**
    * @override
-   * @param {!DataGrid.DataGrid.DataGridNode} profileDataGridNode
+   * @param {!DataGrid.DataGrid.DataGridNode<*>} profileDataGridNode
    */
   removeChild(profileDataGridNode) {
     super.removeChild(profileDataGridNode);
@@ -274,7 +278,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
     if (!node) {
       return null;
     }
-    return this.childrenByCallUID.get(node.callUID);
+    return this.childrenByCallUID.get(node.callUID) || null;
   }
 
   get selfPercent() {
@@ -292,10 +296,8 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
     ProfileDataGridNode.populate(this);
   }
 
-  /**
-   * @protected
-   */
   populateChildren() {
+    // Not implemented.
   }
 
   // When focusing and collapsing we modify lots of nodes in the tree.
@@ -315,15 +317,16 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
   /**
    * When focusing and collapsing we modify lots of nodes in the tree.
    * This allows us to restore them all to their original state when we revert.
-   * @protected
    */
   restore() {
     if (!this._savedChildren) {
       return;
     }
 
-    this.self = this._savedSelf;
-    this.total = this._savedTotal;
+    if (this._savedSelf && this._savedTotal) {
+      this.self = this._savedSelf;
+      this.total = this._savedTotal;
+    }
 
     this.removeChildren();
 
@@ -331,7 +334,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
     const count = children.length;
 
     for (let index = 0; index < count; ++index) {
-      children[index].restore();
+      /** @type {!ProfileDataGridNode} */ (children[index]).restore();
       this.appendChild(children[index]);
     }
   }
@@ -358,13 +361,21 @@ export class ProfileDataGridTree {
    */
   constructor(formatter, searchableView, total) {
     this.tree = this;
+    this.self = 0;
+    /** @type {!Array.<!ProfileDataGridNode>} */
     this.children = [];
     this._formatter = formatter;
     this._searchableView = searchableView;
     this.total = total;
+
+    /** @type {?function(!ProfileDataGridNode, !ProfileDataGridNode): number} */
     this.lastComparator = null;
     this.childrenByCallUID = new Map();
     this.deepSearch = true;
+    this._populated = false;
+
+    /** @type {!Array<{profileNode: !ProfileDataGridNode}>} */
+    this._searchResults;
   }
 
   /**
@@ -377,6 +388,10 @@ export class ProfileDataGridTree {
 
     if (!comparator) {
       if (isAscending) {
+        /**
+         * @param {!Object.<string, *>} lhs
+         * @param {!Object.<string, *>} rhs
+         */
         comparator = function(lhs, rhs) {
           if (lhs[property] < rhs[property]) {
             return -1;
@@ -389,6 +404,10 @@ export class ProfileDataGridTree {
           return 0;
         };
       } else {
+        /**
+         * @param {!Object.<string, *>} lhs
+         * @param {!Object.<string, *>} rhs
+         */
         comparator = function(lhs, rhs) {
           if (lhs[property] > rhs[property]) {
             return -1;
@@ -405,13 +424,16 @@ export class ProfileDataGridTree {
       ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property] = comparator;
     }
 
-    return comparator;
+    return /** @type {function(!Object.<string, *>, !Object.<string, *>):void} */ (comparator);
   }
 
   get expanded() {
     return true;
   }
 
+  /**
+   * @param {!ProfileDataGridNode} child
+   */
   appendChild(child) {
     this.insertChild(child, this.children.length);
   }
@@ -424,9 +446,14 @@ export class ProfileDataGridTree {
   exclude(profileDataGridNode) {
   }
 
+  /**
+   * @param {!DataGrid.DataGrid.DataGridNode<*>} child
+   * @param {number} index
+   */
   insertChild(child, index) {
-    this.children.splice(index, 0, child);
-    this.childrenByCallUID.set(child.callUID, child);
+    const childToInsert = /** @type {!ProfileDataGridNode} */ (child);
+    this.children.splice(index, 0, childToInsert);
+    this.childrenByCallUID.set(childToInsert.callUID, child);
   }
 
   removeChildren() {
@@ -435,6 +462,7 @@ export class ProfileDataGridTree {
   }
 
   populateChildren() {
+    // Not implemented.
   }
 
   /**
@@ -449,7 +477,7 @@ export class ProfileDataGridTree {
   }
 
   /**
-   * @param {function(!T, !T)} comparator
+   * @param {function(!T, !T):number} comparator
    * @param {boolean} force
    * @template T
    */
@@ -472,13 +500,15 @@ export class ProfileDataGridTree {
     }
 
     this.children = this._savedChildren;
-    this.total = this._savedTotal;
+    if (this._savedTotal) {
+      this.total = this._savedTotal;
+    }
 
     const children = this.children;
     const count = children.length;
 
     for (let index = 0; index < count; ++index) {
-      children[index].restore();
+      /** @type {!ProfileDataGridNode} */ (children[index]).restore();
     }
 
     this._savedChildren = null;
@@ -609,11 +639,19 @@ export class ProfileDataGridTree {
       return;
     }
 
+    /** @type {!Array<{profileNode: !ProfileDataGridNode}>} */
     this._searchResults = [];
     const deepSearch = this.deepSearch;
-    for (let current = this.children[0]; current; current = current.traverseNextNode(!deepSearch, null, !deepSearch)) {
-      if (matchesQuery(current)) {
-        this._searchResults.push({profileNode: current});
+    /** @type {?DataGrid.DataGrid.DataGridNode<*>} */
+    let current;
+    for (current = this.children[0]; current; current = current.traverseNextNode(!deepSearch, null, !deepSearch)) {
+      const item = /** @type {?ProfileDataGridNode} */ (current);
+      if (!item) {
+        break;
+      }
+
+      if (matchesQuery(item)) {
+        this._searchResults.push({profileNode: item});
       }
     }
     this._searchResultIndex = jumpBackwards ? 0 : this._searchResults.length - 1;
@@ -691,6 +729,7 @@ export class ProfileDataGridTree {
   }
 }
 
+/** @type {!Array.<!Object.<string, *>>} */
 ProfileDataGridTree.propertyComparators = [{}, {}];
 
 
@@ -704,13 +743,16 @@ export class Formatter {
    * @return {string}
    */
   formatValue(value, node) {
+    throw new Error('Not implemented');
   }
 
   /**
    * @param {number} value
+   * @param {!ProfileDataGridNode} node
    * @return {string}
    */
-  formatValueAccessibleText(value) {
+  formatValueAccessibleText(value, node) {
+    throw new Error('Not implemented');
   }
 
   /**
@@ -719,11 +761,14 @@ export class Formatter {
    * @return {string}
    */
   formatPercent(value, node) {
+    throw new Error('Not implemented');
   }
 
   /**
    * @param  {!ProfileDataGridNode} node
    * @return {?Element}
    */
-  linkifyNode(node) {}
+  linkifyNode(node) {
+    throw new Error('Not implemented');
+  }
 }

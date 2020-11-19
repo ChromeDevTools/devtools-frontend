@@ -354,6 +354,32 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
 
   /**
    * @override
+   * @return {number}
+   */
+  minimumBoundary() {
+    return this._cpuProfile.profileStartTime;
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  totalTime() {
+    return this._cpuProfile.profileHead.total;
+  }
+
+  /**
+   * @override
+   * @param {number} entryIndex
+   * @return {boolean}
+   */
+  entryHasDeoptReason(entryIndex) {
+    const node = /** @type {!SDK.CPUProfileDataModel.CPUProfileNode} */ (this.entryNodes[entryIndex]);
+    return !!node.deoptReason;
+  }
+
+  /**
+   * @override
    * @return {!PerfUI.FlameChart.TimelineData}
    */
   _calculateTimelineData() {
@@ -403,14 +429,12 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
     }
 
     this._maxStackDepth = maxDepth + 1;
+    this.entryNodes = entryNodes;
+    this.timelineData_ = new PerfUI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
 
-    this._timelineData = new PerfUI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
-
-    /** @type {!Array<!SDK.CPUProfileDataModel.CPUProfileNode>} */
-    this._entryNodes = entryNodes;
     this._entrySelfTimes = entrySelfTimes;
 
-    return this._timelineData;
+    return this.timelineData_;
   }
 
   /**
@@ -419,11 +443,8 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
    * @return {?Element}
    */
   prepareHighlightedEntryInfo(entryIndex) {
-    if (!this._entryNodes) {
-      return null;
-    }
-    const timelineData = this._timelineData;
-    const node = this._entryNodes[entryIndex];
+    const timelineData = this.timelineData_;
+    const node = this.entryNodes[entryIndex];
     if (!node) {
       return null;
     }
@@ -466,8 +487,9 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
     linkifier.dispose();
     pushEntryInfoRow(ls`Aggregated self time`, Number.secondsToString(node.self / 1000, true));
     pushEntryInfoRow(ls`Aggregated total time`, Number.secondsToString(node.total / 1000, true));
-    if (node.deoptReason) {
-      pushEntryInfoRow(ls`Not optimized`, node.deoptReason);
+    const deoptReason = /** @type {!SDK.CPUProfileDataModel.CPUProfileNode} */ (node).deoptReason;
+    if (deoptReason) {
+      pushEntryInfoRow(ls`Not optimized`, deoptReason);
     }
 
     return ProfileView.buildPopoverTable(entryInfo);

@@ -653,6 +653,15 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
 
   /**
    * @override
+   * @param {number} entryIndex
+   * @return {boolean}
+   */
+  entryHasDeoptReason(entryIndex) {
+    return false;
+  }
+
+  /**
+   * @override
    * @param {number} value
    * @param {number=} precision
    * @return {string}

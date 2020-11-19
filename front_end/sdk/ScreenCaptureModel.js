@@ -51,7 +51,8 @@ export class ScreenCaptureModel extends SDKModel {
    */
   async captureScreenshot(format, quality, clip) {
     await OverlayModel.muteHighlight();
-    const result = await this._agent.invoke_captureScreenshot({format, quality, clip, fromSurface: true});
+    const result = await this._agent.invoke_captureScreenshot(
+        {format, quality, clip, fromSurface: true, captureBeyondViewport: true});
     await OverlayModel.unmuteHighlight();
     return result.data;
   }

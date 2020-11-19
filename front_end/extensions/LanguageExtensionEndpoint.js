@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';                 // eslint-disable-line no-unused-vars
 
@@ -16,6 +13,7 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
    */
   constructor(name, supportedScriptTypes, port) {
     super(name);
+    // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
     this._commands = Extensions.extensionAPI.LanguageExtensionPluginCommands;
     this._supportedScriptTypes = supportedScriptTypes;
     this._port = port;
@@ -37,6 +35,9 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
     });
   }
 
+  /**
+   * @param {!MessageEvent<!{requestId: number, result: *, error: ?Error}>} event
+   */
   _onResponse({data: {requestId, result, error}}) {
     if (!this._pendingRequests.has(requestId)) {
       console.error(`No pending request ${requestId}`);
@@ -78,10 +79,10 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
    * Notifies the plugin that a script is removed.
    * @override
    * @param {string} rawModuleId
-   * @return {!Promise<undefined>}
+   * @return {!Promise<void>}
    */
   removeRawModule(rawModuleId) {
-    return /** @type {!Promise<undefined>} */ (this._sendRequest(this._commands.RemoveRawModule, {rawModuleId}));
+    return /** @type {!Promise<void>} */ (this._sendRequest(this._commands.RemoveRawModule, {rawModuleId}));
   }
 
   /** Find locations in raw modules from a location in a source file
@@ -106,6 +107,8 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
 
   /**
    * @override
+   * @param {string} type
+   * @return {!Promise<!Bindings.DebuggerLanguagePlugins.ScopeInfo>}
    */
   getScopeInfo(type) {
     return /** @type {!Promise<!Bindings.DebuggerLanguagePlugins.ScopeInfo>} */ (
@@ -164,6 +167,7 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
     return /** @type {!Promise<!Array<!Bindings.DebuggerLanguagePlugins.RawLocationRange>>} */ (
         this._sendRequest(this._commands.GetInlinedCalleesRanges, {rawLocation}));
   }
+
   /**
    * @override
    * @param {string} expression

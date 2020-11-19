@@ -2,7 +2,41 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
+
+export const UIStrings = {
+  /**
+  *@description Text in Security Panel of the Security panel
+  */
+  theSecurityOfThisPageIsUnknown: 'The security of this page is unknown.',
+  /**
+  *@description Text in Security Panel of the Security panel
+  */
+  thisPageIsNotSecure: 'This page is not secure.',
+  /**
+  *@description Text in Security Panel of the Security panel
+  */
+  thisPageIsSecureValidHttps: 'This page is secure (valid HTTPS).',
+  /**
+  *@description Text in Security Panel of the Security panel
+  */
+  thisPageIsNotSecureBrokenHttps: 'This page is not secure (broken HTTPS).',
+  /**
+  *@description Description of an SSL cipher that contains a separate (bulk) cipher and MAC.
+  *@example {AES_256_CBC} PH1
+  *@example {HMAC-SHA1} PH2
+  */
+  cipherWithMAC: '{PH1} with {PH2}',
+  /**
+  *@description Description of an SSL Key and its Key Exchange Group.
+  *@example {ECDHE_RSA} PH1
+  *@example {X25519} PH2
+  */
+  keyExchangeWithGroup: '{PH1} with {PH2}',
+};
+const str_ = i18n.i18n.registerUIStrings('security/SecurityModel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @unrestricted
@@ -81,11 +115,11 @@ export const Events = {
 
 /** @type {!Object<string, string>} */
 export const SummaryMessages = {
-  [Protocol.Security.SecurityState.Unknown]: ls`The security of this page is unknown.`,
-  [Protocol.Security.SecurityState.Insecure]: ls`This page is not secure.`,
-  [Protocol.Security.SecurityState.Neutral]: ls`This page is not secure.`,
-  [Protocol.Security.SecurityState.Secure]: ls`This page is secure (valid HTTPS).`,
-  [Protocol.Security.SecurityState.InsecureBroken]: ls`This page is not secure (broken HTTPS).`
+  [Protocol.Security.SecurityState.Unknown]: i18nString(UIStrings.theSecurityOfThisPageIsUnknown),
+  [Protocol.Security.SecurityState.Insecure]: i18nString(UIStrings.thisPageIsNotSecure),
+  [Protocol.Security.SecurityState.Neutral]: i18nString(UIStrings.thisPageIsNotSecure),
+  [Protocol.Security.SecurityState.Secure]: i18nString(UIStrings.thisPageIsSecureValidHttps),
+  [Protocol.Security.SecurityState.InsecureBroken]: i18nString(UIStrings.thisPageIsNotSecureBrokenHttps)
 };
 
 
@@ -174,7 +208,9 @@ export class CertificateSecurityState {
    */
   getKeyExchangeName() {
     if (this.keyExchangeGroup) {
-      return this.keyExchange ? ls`${this.keyExchange} with ${this.keyExchangeGroup}` : this.keyExchangeGroup;
+      return this.keyExchange ?
+          i18nString(UIStrings.keyExchangeWithGroup, {PH1: this.keyExchange, PH2: this.keyExchangeGroup}) :
+          this.keyExchangeGroup;
     }
     return this.keyExchange;
   }
@@ -183,7 +219,7 @@ export class CertificateSecurityState {
    * @return {string}
    */
   getCipherFullName() {
-    return this.mac ? ls`${this.cipher} with ${this.mac}` : this.cipher;
+    return this.mac ? i18nString(UIStrings.cipherWithMAC, {PH1: this.cipher, PH2: this.mac}) : this.cipher;
   }
 }
 

@@ -58,7 +58,6 @@
       <part file="../screencast/screencast_strings.grdp" />
       <part file="../sdk/sdk_strings.grdp" />
       <part file="../search/search_strings.grdp" />
-      <part file="../security/security_strings.grdp" />
       <part file="../snippets/snippets_strings.grdp" />
       <part file="../source_frame/source_frame_strings.grdp" />
       <part file="../sources/sources_strings.grdp" />

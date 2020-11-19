@@ -858,6 +858,7 @@ grd_files_debug_sources = [
   "front_end/search/SearchConfig.js",
   "front_end/search/SearchResultsPane.js",
   "front_end/search/SearchView.js",
+  "front_end/security/ModuleUIStrings.js",
   "front_end/security/SecurityModel.js",
   "front_end/security/SecurityPanel.js",
   "front_end/services/ServiceManager.js",

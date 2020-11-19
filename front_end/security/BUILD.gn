@@ -7,6 +7,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("security") {
   sources = [
+    "ModuleUIStrings.js",
     "SecurityModel.js",
     "SecurityPanel.js",
   ]
@@ -14,6 +15,7 @@ devtools_module("security") {
   deps = [
     "../common:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../network:bundle",
     "../sdk:bundle",
     "../ui:bundle",

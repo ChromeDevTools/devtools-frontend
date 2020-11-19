@@ -54,6 +54,9 @@
   <message name="IDS_DEVTOOLS_c5bdbf2fd625704541f51288fd37b726" desc="Label for close button in Color Picker">
     Return to color picker
   </message>
+  <message name="IDS_DEVTOOLS_c74ea6dbff701bfa23819583c52ebd97" desc="Text to show less content">
+    Show less
+  </message>
   <message name="IDS_DEVTOOLS_cac2bcb3559b2d76c69b22df4004a0a0" desc="Label for when no contrast information is available in the color picker">
     No contrast information available
   </message>

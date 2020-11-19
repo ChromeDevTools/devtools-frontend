@@ -118,9 +118,6 @@
   <message name="IDS_DEVTOOLS_2f04f3e6eee339eeb0ddb6c39606424d" desc="Text for searching with regular expressinn">
     Use Regular Expression
   </message>
-  <message name="IDS_DEVTOOLS_2fae32629d4ef4fc6341f1751b405e45" desc="Title of the 'Security' tool">
-    Security
-  </message>
   <message name="IDS_DEVTOOLS_31fde7b05ac8952dacf4af8a704074ec" desc="Text for previewing items">
     Preview
   </message>
@@ -153,9 +150,6 @@
   </message>
   <message name="IDS_DEVTOOLS_3e56c011b37f0bc78fb9eb175c1181c6" desc="A unit">
     kB
-  </message>
-  <message name="IDS_DEVTOOLS_3edf8ca26a1ec14dd6e91dd277ae1de6" desc="Text for the origin of something">
-    Origin
   </message>
   <message name="IDS_DEVTOOLS_3f8f88e3686b2345cecc9530e19e6172" desc="Text to store an HTML element or JavaScript variable or expression result as a global variable">
     Store as global variable
@@ -201,9 +195,6 @@
   </message>
   <message name="IDS_DEVTOOLS_502996d9790340c5fd7b86a5b93b1c9f" desc="Text to show the priority of an item">
     Priority
-  </message>
-  <message name="IDS_DEVTOOLS_51360304ea03557e79bdf5ff9cd2e234" desc="Text for the issuer of an item">
-    Issuer
   </message>
   <message name="IDS_DEVTOOLS_5174d1309f275ba6f275db3af9eb3e18" desc="Title of a section on CSS Grid tooling">
     Grid
@@ -301,9 +292,6 @@
   <message name="IDS_DEVTOOLS_7a1920d61156abc05a60135aefe8bc67" desc="A context menu item in the Console View of the Console panel">
     Default
   </message>
-  <message name="IDS_DEVTOOLS_7a2ccf251ecb20b2b84ce0e3c3f72a29" desc="Text to show something is secure">
-    Secure
-  </message>
   <message name="IDS_DEVTOOLS_7b3a6b02f467b95f2b5267aa94708c07" desc="Text for the name of a thread of the page">
     Thread <ph name="TID">$1s<ex>1</ex></ph>
   </message>
@@ -331,14 +319,8 @@
   <message name="IDS_DEVTOOLS_883d7615c4d2de3fa1218f1298c46d0e" desc="Text for network request headers">
     Headers
   </message>
-  <message name="IDS_DEVTOOLS_884680dd63eae99eab1a407133df66b7" desc="Text to view a security certificate">
-    View certificate
-  </message>
   <message name="IDS_DEVTOOLS_886f598a8a9e6a4bfe0c09fcf7779611" desc="Title of a Rendering setting that can be invoked through the Command Menu">
     Emulate a focused page
-  </message>
-  <message name="IDS_DEVTOOLS_888a77f5ac0748b6c8001822417df8b6" desc="Text for security or network protocol">
-    Protocol
   </message>
   <message name="IDS_DEVTOOLS_8d8fcc1abd550c5f25dbfaa57d59cb67" desc="Unit for data size in DevTools">
     MB
@@ -460,9 +442,6 @@
   <message name="IDS_DEVTOOLS_b1d75786654fa93f10c31c3b544bbd03" desc="Text to run a code snippet">
     Run snippet
   </message>
-  <message name="IDS_DEVTOOLS_b2844b8e17ecaaeae68d018fe9418af0" desc="Text to indicate the expiry date">
-    Valid until
-  </message>
   <message name="IDS_DEVTOOLS_b4e79b551a1ceae24b7de243ab1fd27c" desc="Text to add a breakpoint">
     Add breakpoint
   </message>
@@ -502,17 +481,8 @@
   <message name="IDS_DEVTOOLS_bec25a46972e4fa86df9413508add5c2" desc="Text that refers to disabling local fonts">
     Disable local fonts
   </message>
-  <message name="IDS_DEVTOOLS_c2cc7082a89c1ad6631a2f66af5f00c0" desc="Text that refers to the network connection">
-    Connection
-  </message>
   <message name="IDS_DEVTOOLS_c3fe109bf99ade2d76a55e5737015e3e" desc="Text to stop preventing the debugger from stepping into library code">
     Stop blackboxing
-  </message>
-  <message name="IDS_DEVTOOLS_c74ea6dbff701bfa23819583c52ebd97" desc="Text to show less content">
-    Show less
-  </message>
-  <message name="IDS_DEVTOOLS_c7892ebbb139886662c6f2fc8c450710" desc="Text that refers to the subject of a security certificate">
-    Subject
   </message>
   <message name="IDS_DEVTOOLS_c949475bc69a57c419ac976fe8870652" desc="Text to search by matching case of the input">
     Match Case
@@ -556,9 +526,6 @@
   <message name="IDS_DEVTOOLS_dc30bc0c7914db5918da4263fce93ad2" desc="Text to clear content">
     Clear
   </message>
-  <message name="IDS_DEVTOOLS_ddcf50c29294d4414f3f7c1bbc892cb5" desc="A title of the 'Resources' action category">
-    Resources
-  </message>
   <message name="IDS_DEVTOOLS_dde38f333e095c2293593f504fd701a2" desc="Title of the 'JavaScript Profiler' tool">
     JavaScript Profiler
   </message>
@@ -601,14 +568,8 @@
   <message name="IDS_DEVTOOLS_eae639a70006feff484a39363c977e24" desc="Text for the domain of a website">
     Domain
   </message>
-  <message name="IDS_DEVTOOLS_eb0f48a107df1a0f343d4cd513b555e6" desc="Text for a security certificate">
-    Certificate
-  </message>
   <message name="IDS_DEVTOOLS_eb81441fe20963ff9e8e69c5b32fc625" desc="Title for a group of configuration options">
     Presets
-  </message>
-  <message name="IDS_DEVTOOLS_eb902cf204f3e4dfffeb56d92a9b5c26" desc="Text to show since when an item is valid">
-    Valid from
   </message>
   <message name="IDS_DEVTOOLS_ebd9bec4d70abc789d439c1f136b0538" desc="Text in Timeline UIUtils of the Performance panel">
     Layout

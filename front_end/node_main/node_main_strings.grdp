@@ -15,6 +15,9 @@
   <message name="IDS_DEVTOOLS_b1f0f05f6f7dcbf25e065bb4c31fec72" desc="Text in Node Main of the Sources panel when debugging a Node.js app">
     Node.js: <ph name="TARGETINFO_URL">$1s<ex>example.com</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_c2cc7082a89c1ad6631a2f66af5f00c0" desc="Text that refers to the network connection">
+    Connection
+  </message>
   <message name="IDS_DEVTOOLS_ed6b1cccfa7455e9506ff7e5127e1df4" desc="Text in Node Connections Panel of the Sources panel when debugging a Node.js app">
     Specify network endpoint and <ph name="LOCKED_1">DevTools</ph> will connect to it automatically. Read <ph name="DOCUMENTATIONLINK">$1s<ex>Node.js debugging guide</ex></ph> to learn more.
   </message>

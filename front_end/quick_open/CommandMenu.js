@@ -96,8 +96,8 @@ export class CommandMenu {
 
     return CommandMenu.createCommand({
       category: action.category(),
-      keys: action.tags(),
-      title: action.title(),
+      keys: action.tags() || '',
+      title: action.title() || '',
       shortcut,
       executeHandler: action.execute.bind(action),
       userActionCode,

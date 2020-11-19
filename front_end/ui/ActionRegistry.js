@@ -4,7 +4,7 @@
 
 import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 
-import {Action, LegacyActionRegistration} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
+import {Action, getRegisteredActionExtensions, LegacyActionRegistration, PreRegisteredAction} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
 import {Context} from './Context.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!ActionRegistry} */
@@ -33,6 +33,15 @@ export class ActionRegistry {
   }
 
   _registerActions() {
+    const registeredActionExtensions = getRegisteredActionExtensions();
+    for (const action of registeredActionExtensions) {
+      this._actionsById.set(action.id(), action);
+      if (!action.canInstantiate()) {
+        action.setEnabled(false);
+      }
+    }
+    // This call is done for the legacy Actions in module.json
+    // TODO(crbug.com/1134103): Remove this call when all actions are migrated
     Root.Runtime.Runtime.instance().extensions('action').forEach(registerExtension, this);
 
     /**
@@ -79,14 +88,29 @@ export class ActionRegistry {
    * @return {!Array.<!Action>}
    */
   applicableActions(actionIds, context) {
+    /** @type {!Array<!Root.Runtime.Extension>} */
     const extensions = [];
+    /** @type {!Array<!PreRegisteredAction>} */
+    const applicablePreRegisteredActions = [];
     for (const actionId of actionIds) {
       const action = this._actionsById.get(actionId);
-      if (action && action.enabled() && action instanceof LegacyActionRegistration) {
-        extensions.push(action.extension());
+      if (action && action.enabled()) {
+        if (action instanceof LegacyActionRegistration) {
+          // This call is done for the legacy Actions in module.json
+          // TODO(crbug.com/1134103): Remove this call when all actions are migrated
+          extensions.push(action.extension());
+        } else if (isActionApplicableToContextTypes(
+                       /** @type {!PreRegisteredAction} */ (action), context.flavors())) {
+          applicablePreRegisteredActions.push(/** @type {!PreRegisteredAction} */ (action));
+        }
       }
     }
-    return [...context.applicableExtensions(extensions)].map(extensionToAction.bind(this));
+    // The call done to Context.applicableExtensions to validate if a legacy Runtime Action extension is applicable
+    // will be replaced by isActionApplicableToContextTypes(), which does not rely on Runtime to do the validation.
+    // TODO(crbug.com/1134103): Remove this call when all actions are migrated.
+    const applicableActionExtensions = [...context.applicableExtensions(extensions)].map(extensionToAction.bind(this));
+
+    return [...applicableActionExtensions, ...applicablePreRegisteredActions];
 
     /**
      * @param {!Root.Runtime.Extension} extension
@@ -96,6 +120,26 @@ export class ActionRegistry {
     function extensionToAction(extension) {
       const actionId = /** @type {string} */ (extension.descriptor().actionId);
       return /** @type {!Action} */ (this.action(actionId));
+    }
+
+    /**
+     * @param {!PreRegisteredAction} action
+     * @param {!Set.<function(new:Object, ...?):void>} currentContextTypes
+     * @return {boolean}
+     */
+    function isActionApplicableToContextTypes(action, currentContextTypes) {
+      const contextTypes = action.contextTypes();
+      if (!contextTypes) {
+        return true;
+      }
+      for (let i = 0; i < contextTypes.length; ++i) {
+        const contextType = contextTypes[i];
+        const isMatching = !!contextType && currentContextTypes.has(contextType);
+        if (isMatching) {
+          return true;
+        }
+      }
+      return false;
     }
   }
 

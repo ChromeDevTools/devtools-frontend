@@ -48,7 +48,7 @@ const parentMap = new Map();
 export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow {
   /**
    * @param {!SDK.RemoteObject.RemoteObject} object
-   * @param {?string|!Element=} title
+   * @param {(?string|!Element)=} title
    * @param {!Components.Linkifier.Linkifier=} linkifier
    * @param {?string=} emptyPlaceholder
    * @param {boolean=} ignoreHasOwnProperty
@@ -74,10 +74,11 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       this.titleElement = title;
       this.element.appendChild(title);
     }
-    if (!this.titleElement.hasAttribute('tabIndex')) {
+    if (this.titleElement instanceof HTMLElement && !this.titleElement.hasAttribute('tabIndex')) {
       this.titleElement.tabIndex = -1;
     }
 
+    // @ts-ignore This is used by the test runner to expand sections.
     this.element._section = this;
     this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
     this.registerRequiredCSS('object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
@@ -1095,8 +1096,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     const useDotNotation = /^(?:[$_\p{ID_Start}])(?:[$_\u200C\u200D\p{ID_Continue}])*$/u;
     const isInteger = /^(?:0|[1-9]\d*)$/;
 
-    const parentPath =
-        (this.parent.nameElement && !this.parent.property.synthetic) ? this.parent.nameElement.title : '';
+    const parentPath = (this.parent instanceof ObjectPropertyTreeElement && this.parent.nameElement &&
+                        !this.parent.property.synthetic) ?
+        this.parent.nameElement.title :
+        '';
 
     if (this.property.private || useDotNotation.test(name)) {
       this.nameElement.title = parentPath ? `${parentPath}.${name}` : name;
@@ -1247,8 +1250,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
       if (invalidate) {
         const parent = this.parent;
-        parent.invalidateChildren();
-        parent.onpopulate();
+        if (parent) {
+          parent.invalidateChildren();
+          parent.onpopulate();
+        }
       } else {
         this.update();
       }
@@ -1266,12 +1271,14 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     if (!expression) {
       // The property was deleted, so remove this tree element.
-      this.parent.removeChild(this);
+      this.parent && this.parent.removeChild(this);
     } else {
       // Call updateSiblings since their value might be based on the value that just changed.
       const parent = this.parent;
-      parent.invalidateChildren();
-      parent.onpopulate();
+      if (parent) {
+        parent.invalidateChildren();
+        parent.onpopulate();
+      }
     }
   }
 

@@ -884,21 +884,6 @@ export function dump(value, customFormatters, prefix, prefixWithName) {
 }
 
 /**
- * @param {!UI.TreeOutline.TreeElement} treeElement
- */
-export function dumpObjectPropertyTreeElement(treeElement) {
-  const expandedSubstring = treeElement.expanded ? '[expanded]' : '[collapsed]';
-  addResult(expandedSubstring + ' ' + treeElement.listItemElement.deepTextContent());
-
-  for (let i = 0; i < treeElement.childCount(); ++i) {
-    const property = treeElement.childAt(i).property;
-    const key = property.name;
-    const value = property.value._description;
-    addResult('    ' + key + ': ' + value);
-  }
-}
-
-/**
  * @param {symbol} eventName
  * @param {!Common.ObjectWrapper.ObjectWrapper} obj
  * @param {function(?):boolean=} condition
@@ -1486,7 +1471,6 @@ TestRunner.addArray = addArray;
 TestRunner.dumpDeepInnerHTML = dumpDeepInnerHTML;
 TestRunner.deepTextContent = deepTextContent;
 TestRunner.dump = dump;
-TestRunner.dumpObjectPropertyTreeElement = dumpObjectPropertyTreeElement;
 TestRunner.waitForEvent = waitForEvent;
 TestRunner.waitForTarget = waitForTarget;
 TestRunner.waitForTargetRemoved = waitForTargetRemoved;

@@ -9,7 +9,7 @@ import {injectCoreStyles} from './inject-core-styles.js';
 /**
  * @param {!Element} element
  * @param {(!{cssFile:(string|undefined),delegatesFocus:(boolean|undefined),enableLegacyPatching:boolean}|undefined)} options
- * @return {!DocumentFragment}
+ * @return {!ShadowRoot}
  */
 export function createShadowRootWithCoreStyles(element, options = {
   delegatesFocus: undefined,

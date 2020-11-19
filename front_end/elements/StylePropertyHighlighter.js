@@ -33,7 +33,7 @@ export class StylePropertyHighlighter {
 
     const treeElement = this._findTreeElement(treeElement => treeElement.property === cssProperty);
     if (treeElement) {
-      treeElement.parent.expand();
+      treeElement.parent && treeElement.parent.expand();
       this._scrollAndHighlightTreeElement(treeElement);
     }
   }

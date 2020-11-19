@@ -68,9 +68,12 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
 
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeOutline.element.classList.add('layer-tree', 'overflow-auto');
-    this._treeOutline.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
-    this._treeOutline.element.addEventListener('mouseout', this._onMouseMove.bind(this), false);
-    this._treeOutline.element.addEventListener('contextmenu', this._onContextMenu.bind(this), true);
+    this._treeOutline.element.addEventListener(
+        'mousemove', /** @type {!EventListener} */ (this._onMouseMove.bind(this)), false);
+    this._treeOutline.element.addEventListener(
+        'mouseout', /** @type {!EventListener} */ (this._onMouseMove.bind(this)), false);
+    this._treeOutline.element.addEventListener(
+        'contextmenu', /** @type {!EventListener} */ (this._onContextMenu.bind(this)), true);
     UI.ARIAUtils.setAccessibleName(this._treeOutline.contentElement, i18nString(UIStrings.layersTreePane));
 
     /** @type {?LayerTreeElement} */
@@ -193,17 +196,19 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     const rootElement = this._treeOutline.rootElement();
     // TODO(crbug.com/1011811): `node.root` is never defined anywhere and it is unclear whether this check should be here
     // in the first place.
-    for (let node = /** @type {?LayerTreeElement} */ (rootElement.firstChild());
-         node && !/** @type {*} */ (node).root;) {
+    const firstChild = rootElement.firstChild();
+    for (let node = /** @type {?LayerTreeElement} */ (firstChild); node && !node.root;) {
       if (seenLayers.get(node._layer)) {
         node = /** @type {?LayerTreeElement} */ (node.traverseNextTreeElement(false));
       } else {
         const nextNode = node.nextSibling || node.parent;
-        node.parent.removeChild(node);
+        if (node.parent) {
+          node.parent.removeChild(node);
+        }
         if (node === this._lastHoveredNode) {
           this._lastHoveredNode = null;
         }
-        node = nextNode;
+        node = nextNode instanceof LayerTreeElement ? nextNode : null;
       }
     }
     if (!this._treeOutline.selectedTreeElement && this._layerTree) {
@@ -218,7 +223,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!MouseEvent} event
    */
   _onMouseMove(event) {
     const node = /** @type {?LayerTreeElement} */ (this._treeOutline.treeElementFromEvent(event));
@@ -236,7 +241,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!MouseEvent} event
    */
   _onContextMenu(event) {
     const selection =

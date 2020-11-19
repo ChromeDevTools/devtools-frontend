@@ -1481,7 +1481,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
    */
   _clearViews(views) {
     for (const view of views.values()) {
-      view.parent.removeChild(view);
+      view.parent && view.parent.removeChild(view);
     }
     views.clear();
   }

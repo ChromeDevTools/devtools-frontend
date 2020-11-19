@@ -1378,7 +1378,7 @@ export class StylePropertiesSection {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!MouseEvent} event
    */
   _onMouseMove(event) {
     const hasCtrlOrMeta = UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!MouseEvent} */ (event));
@@ -2146,14 +2146,18 @@ export class StylePropertiesSection {
     }
 
     if (moveDirection === 'forward') {
-      let firstChild = /** @type {!StylePropertyTreeElement} */ (this.propertiesTreeOutline.firstChild());
-      while (firstChild && firstChild.inherited()) {
-        firstChild = firstChild.nextSibling;
+      const firstChild = /** @type {!StylePropertyTreeElement} */ (this.propertiesTreeOutline.firstChild());
+      /** @type {?StylePropertyTreeElement} */
+      let currentChild = firstChild;
+      while (currentChild && currentChild.inherited()) {
+        /** @type {?UI.TreeOutline.TreeElement} */
+        const sibling = currentChild.nextSibling;
+        currentChild = sibling instanceof StylePropertyTreeElement ? sibling : null;
       }
-      if (!firstChild) {
+      if (!currentChild) {
         this.addNewBlankProperty().startEditing();
       } else {
-        firstChild.startEditing(firstChild.nameElement);
+        currentChild.startEditing(currentChild.nameElement);
       }
     } else {
       const previousSection = this.previousEditableSibling();

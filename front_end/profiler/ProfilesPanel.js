@@ -670,7 +670,7 @@ export class ProfileGroupSidebarTreeElement extends UI.TreeOutline.TreeElement {
     super('', true);
     this.selectable = false;
     this._dataDisplayDelegate = dataDisplayDelegate;
-    this._title = title;
+    this._profileTitle = title;
     this.expand();
     this.toggleOnClick = true;
   }
@@ -699,7 +699,7 @@ export class ProfileGroupSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.createChild('div', 'titles no-subtitle')
         .createChild('span', 'title-container')
         .createChild('span', 'title')
-        .textContent = this._title;
+        .textContent = this._profileTitle;
   }
 }
 

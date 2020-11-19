@@ -490,9 +490,11 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     }
     const wasSelected = treeElement.selected;
     const parentListTreeElement = treeElement.parent;
-    parentListTreeElement.removeChild(treeElement);
-    if (wasSelected) {
-      parentListTreeElement.select();
+    if (parentListTreeElement) {
+      parentListTreeElement.removeChild(treeElement);
+      if (wasSelected) {
+        parentListTreeElement.select();
+      }
     }
     this._domStorageTreeElements.delete(domStorage);
   }
@@ -689,7 +691,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     const manifestURL = frameTreeElement.manifestURL;
     this._applicationCacheFrameElements.delete(frameId);
     this._applicationCacheViews.delete(frameId);
-    frameTreeElement.parent.removeChild(frameTreeElement);
+    frameTreeElement.parent && frameTreeElement.parent.removeChild(frameTreeElement);
 
     const manifestTreeElement = this._applicationCacheManifestElements.get(manifestURL);
     if (!manifestTreeElement || manifestTreeElement.childCount()) {
@@ -697,7 +699,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     }
 
     this._applicationCacheManifestElements.delete(manifestURL);
-    manifestTreeElement.parent.removeChild(manifestTreeElement);
+    manifestTreeElement.parent && manifestTreeElement.parent.removeChild(manifestTreeElement);
   }
 
   /**
@@ -803,8 +805,8 @@ export class BaseStorageTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const path = [];
-    for (let el = this; el; el = el.parent) {
-      const url = el.itemURL;
+    for (let el = /** @type {?UI.TreeOutline.TreeElement} */ (this); el; el = el.parent) {
+      const url = el instanceof BaseStorageTreeElement && el.itemURL;
       if (!url) {
         break;
       }

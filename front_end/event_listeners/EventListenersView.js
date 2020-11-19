@@ -390,13 +390,16 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
 
   _removeListenerBar() {
     const parent = this.parent;
+    if (!parent) {
+      return;
+    }
     parent.removeChild(this);
     if (!parent.childCount()) {
       parent.collapse();
     }
     let allHidden = true;
-    for (let i = 0; i < parent.childCount(); ++i) {
-      if (!parent.childAt(i).hidden) {
+    for (const child of parent.children()) {
+      if (!child.hidden) {
         allHidden = false;
       }
     }

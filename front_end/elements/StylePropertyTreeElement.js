@@ -632,7 +632,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     this.updateFilter();
 
-    if (this.property.parsedOk && this.section() && this.parent.root) {
+    if (this.property.parsedOk && this.section() && this.parent && this.parent.root) {
       const enabledCheckboxElement = document.createElement('input');
       enabledCheckboxElement.className = 'enabled-button';
       enabledCheckboxElement.type = 'checkbox';
@@ -732,7 +732,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
    */
   _handleContextMenuEvent(context, event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    if (this.property.parsedOk && this.section() && this.parent.root) {
+    if (this.property.parsedOk && this.section() && this.parent && this.parent.root) {
       contextMenu.defaultSection().appendCheckboxItem(ls`Toggle property and continue editing`, async () => {
         const sectionIndex = this._parentPane.focusedSectionIndex();
         if (this.treeOutline) {
@@ -772,7 +772,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
    */
   startEditing(selectElement) {
     // FIXME: we don't allow editing of longhand properties under a shorthand right now.
-    if (this.parent.isShorthand) {
+    if (this.parent instanceof StylePropertyTreeElement && this.parent.isShorthand) {
       return;
     }
 
@@ -1144,9 +1144,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
    * @return {?StylePropertyTreeElement}
    */
   _findSibling(moveDirection) {
+    /** @type {?StylePropertyTreeElement} */
     let target = this;
     do {
-      target = (moveDirection === 'forward' ? target.nextSibling : target.previousSibling);
+      /** @type {?UI.TreeOutline.TreeElement} */
+      const sibling = moveDirection === 'forward' ? target.nextSibling : target.previousSibling;
+      target = sibling instanceof StylePropertyTreeElement ? sibling : null;
     } while (target && target.inherited());
 
     return target;
@@ -1355,7 +1358,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     styleText = styleText.replace(/[\xA0\t]/g, ' ').trim();  // Replace &nbsp; with whitespace.
     if (!styleText.length && majorChange && this._newProperty && !hasBeenEditedIncrementally) {
       // The user deleted everything and never applied a new property value via Up/Down scrolling/live editing, so remove the tree element and update.
-      this.parent.removeChild(this);
+      this.parent && this.parent.removeChild(this);
       return;
     }
 

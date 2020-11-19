@@ -90,10 +90,13 @@ export class RequestInitiatorView extends UI.Widget.VBox {
       parent = treeElement;
     }
 
-    // parent should be this._request tree element now
+    // The parent should be this._request tree element now.
     if (parent instanceof UI.TreeOutline.TreeElement) {
       parent.select();
-      parent.titleElement.style.fontWeight = 'bold';
+      const titleElement = parent.titleElement;
+      if (titleElement instanceof HTMLElement) {
+        titleElement.style.fontWeight = 'bold';
+      }
     }
 
     const initiated = initiatorGraph.initiated;

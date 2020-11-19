@@ -2,15 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 /**
  * @param {?Node} node
  */
 function WidgetfocusWidgetForNode(node) {
   while (node) {
-    if (node.__widget) {
+    if (/** @type {?} */ (node).__widget) {
       break;
     }
     node = node.parentNodeOrShadowHost();
@@ -19,7 +16,7 @@ function WidgetfocusWidgetForNode(node) {
     return;
   }
 
-  let widget = node.__widget;
+  let widget = /** @type {?} */ (node).__widget;
   while (widget._parentWidget) {
     widget._parentWidget._defaultFocusedChild = widget;
     widget = widget._parentWidget;
@@ -36,7 +33,7 @@ function XWidgetfocusWidgetForNode(node) {
   while (node) {
     if (node instanceof XWidgetCtor) {
       if (widget) {
-        node._defaultFocusedElement = widget;
+        /** @type {?} */ (node)._defaultFocusedElement = widget;
       }
       widget = node;
     }
@@ -48,7 +45,8 @@ function XWidgetfocusWidgetForNode(node) {
  * @param {!Event} event
  */
 export function focusChanged(event) {
-  const document = event.target && event.target.ownerDocument;
+  const target = /** @type {!HTMLElement} */ (event.target);
+  const document = target ? target.ownerDocument : null;
   const element = document ? document.deepActiveElement() : null;
   WidgetfocusWidgetForNode(element);
   XWidgetfocusWidgetForNode(element);

@@ -245,6 +245,7 @@
       "type": "action",
       "actionId": "elements.capture-area-screenshot",
       "className": "Elements.InspectElementModeController.ToggleSearchActionDelegate",
+      "condition": "can_dock",
       "title": "Capture area screenshot",
       "category": "Screenshot"
     },

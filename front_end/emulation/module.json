@@ -31,6 +31,7 @@
       "actionId": "emulation.capture-screenshot",
       "category": "Screenshot",
       "className": "Emulation.DeviceModeWrapper.ActionDelegate",
+      "condition": "can_dock",
       "title": "Capture screenshot"
     },
     {
@@ -51,6 +52,7 @@
       "actionId": "emulation.capture-full-height-screenshot",
       "category": "Screenshot",
       "className": "Emulation.DeviceModeWrapper.ActionDelegate",
+      "condition": "can_dock",
       "title": "Capture full size screenshot"
     },
     {
@@ -58,6 +60,7 @@
       "actionId": "emulation.capture-node-screenshot",
       "category": "Screenshot",
       "className": "Emulation.DeviceModeWrapper.ActionDelegate",
+      "condition": "can_dock",
       "title": "Capture node screenshot"
     },
     {

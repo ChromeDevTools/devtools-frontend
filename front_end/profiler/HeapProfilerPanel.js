@@ -2,14 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
+import {HeapSnapshotView} from './HeapSnapshotView.js';  // eslint-disable-line no-unused-vars
 import {ProfilesPanel} from './ProfilesPanel.js';
 import {instance} from './ProfileTypeRegistry.js';
 
@@ -80,8 +78,10 @@ export class HeapProfilerPanel extends ProfilesPanel {
    */
   handleAction(context, actionId) {
     const panel = UI.Context.Context.instance().flavor(HeapProfilerPanel);
-    console.assert(panel && panel instanceof HeapProfilerPanel);
-    panel.toggleRecord();
+    console.assert(!!panel && panel instanceof HeapProfilerPanel);
+    if (panel) {
+      panel.toggleRecord();
+    }
     return true;
   }
 
@@ -112,9 +112,9 @@ export class HeapProfilerPanel extends ProfilesPanel {
     for (let i = 0; i < heapProfiles.length; i++) {
       const profile = heapProfiles[i];
       // FIXME: allow to choose snapshot if there are several options.
-      if (profile.maxJSObjectId >= snapshotObjectId) {
+      if (profile.maxJSObjectId >= parseInt(snapshotObjectId, 10)) {
         this.showProfile(profile);
-        const view = this.viewForProfile(profile);
+        const view = /** @type {!HeapSnapshotView} */ (this.viewForProfile(profile));
         view.selectLiveObject(perspectiveName, snapshotObjectId);
         break;
       }

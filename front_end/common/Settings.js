@@ -346,7 +346,6 @@ export class SettingsStorage {
 }
 
 /**
- * @interface
  * @template V
  */
 export class Setting {
@@ -459,10 +458,10 @@ export class Setting {
 
 /**
  * @unrestricted
- * @implements {Setting<V>}
+ * @extends {Setting<V>}
  * @template V
  */
-export class LegacySetting {
+export class LegacySetting extends Setting {
   /**
    * @param {!Settings} settings
    * @param {string} name
@@ -471,6 +470,7 @@ export class LegacySetting {
    * @param {!SettingsStorage} storage
    */
   constructor(settings, name, defaultValue, eventSupport, storage) {
+    super();
     this._settings = settings;
     this._name = name;
     this._defaultValue = defaultValue;
@@ -729,10 +729,10 @@ export class LegacySetting {
 
 /**
  * @unrestricted
- * @implements {Setting<V>}
+ * @extends {Setting<V>}
  * @template V
  */
-export class PreRegisteredSetting {
+export class PreRegisteredSetting extends Setting {
   /**
    * @param {!Settings} settings
    * @param {string} name
@@ -741,6 +741,7 @@ export class PreRegisteredSetting {
    * @param {!SettingsStorage} storage
    */
   constructor(settings, name, defaultValue, eventSupport, storage) {
+    super();
     this._settings = settings;
     this._name = name;
     this._defaultValue = defaultValue;

@@ -31,7 +31,7 @@ devtools_module("coverage") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "coverage.js"
+  entrypoint = "coverage.ts"
 
   deps = [ ":coverage" ]
 }

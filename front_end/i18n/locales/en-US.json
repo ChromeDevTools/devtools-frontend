@@ -125,6 +125,63 @@
   "coverage/ModuleUIStrings.js | stopInstrumentingCoverageAndShow": {
     "message": "Stop instrumenting coverage and show results"
   },
+  "developer_resources/DeveloperResourcesListView.js | Byte": {
+    "message": "1 byte"
+  },
+  "developer_resources/DeveloperResourcesListView.js | copyInitiatorUrl": {
+    "message": "Copy initiator URL"
+  },
+  "developer_resources/DeveloperResourcesListView.js | copyUrl": {
+    "message": "Copy URL"
+  },
+  "developer_resources/DeveloperResourcesListView.js | developerResources": {
+    "message": "Developer Resources"
+  },
+  "developer_resources/DeveloperResourcesListView.js | error": {
+    "message": "Error"
+  },
+  "developer_resources/DeveloperResourcesListView.js | failure": {
+    "message": "failure"
+  },
+  "developer_resources/DeveloperResourcesListView.js | initiator": {
+    "message": "Initiator"
+  },
+  "developer_resources/DeveloperResourcesListView.js | pending": {
+    "message": "pending"
+  },
+  "developer_resources/DeveloperResourcesListView.js | sBytes": {
+    "message": "{PH1} bytes"
+  },
+  "developer_resources/DeveloperResourcesListView.js | status": {
+    "message": "Status"
+  },
+  "developer_resources/DeveloperResourcesListView.js | success": {
+    "message": "success"
+  },
+  "developer_resources/DeveloperResourcesListView.js | totalBytes": {
+    "message": "Total Bytes"
+  },
+  "developer_resources/DeveloperResourcesListView.js | url": {
+    "message": "URL"
+  },
+  "developer_resources/DeveloperResourcesView.js | enableLoadingThroughTarget": {
+    "message": "Enable loading through target"
+  },
+  "developer_resources/DeveloperResourcesView.js | enterTextToSearchTheUrlAndError": {
+    "message": "Enter text to search the URL and Error columns"
+  },
+  "developer_resources/DeveloperResourcesView.js | loadHttpsDeveloperResources": {
+    "message": "Load HTTP(S) developer resources through the inspected target"
+  },
+  "developer_resources/DeveloperResourcesView.js | resources": {
+    "message": "{PH1} resources"
+  },
+  "developer_resources/DeveloperResourcesView.js | resourcesCurrentlyLoading": {
+    "message": "{PH1} resources, {PH2} currently loading"
+  },
+  "developer_resources/ModuleUIStrings.js | developerResources": {
+    "message": "Developer Resources"
+  },
   "devices/DevicesView.js | thisPanelHasBeenDeprecatedIn": {
     "message": "This panel has been deprecated in favor of the {PH1} interface, which has equivalent functionality."
   },

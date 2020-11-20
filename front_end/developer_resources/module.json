@@ -13,6 +13,7 @@
   ],
   "dependencies": [
     "common",
+    "i18n",
     "platform",
     "ui",
     "host",

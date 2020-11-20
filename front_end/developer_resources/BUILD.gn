@@ -9,11 +9,13 @@ devtools_module("developer_resources") {
   sources = [
     "DeveloperResourcesListView.js",
     "DeveloperResourcesView.js",
+    "ModuleUIStrings.js",
   ]
 
   deps = [
     "../common:bundle",
     "../data_grid:bundle",
+    "../i18n:bundle",
     "../platform:bundle",
     "../sdk:bundle",
     "../text_utils:bundle",

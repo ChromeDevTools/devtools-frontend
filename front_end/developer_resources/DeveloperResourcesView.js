@@ -3,10 +3,39 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {DeveloperResourcesListView} from './DeveloperResourcesListView.js';
+
+export const UIStrings = {
+  /**
+  *@description Placeholder for a search field in a toolbar
+  */
+  enterTextToSearchTheUrlAndError: 'Enter text to search the URL and Error columns',
+  /**
+  *@description Title for a checkbox in the toolbar of the developer resources view
+  */
+  loadHttpsDeveloperResources: 'Load HTTP(S) developer resources through the inspected target',
+  /**
+  *@description Text for a checkbox in the toolbar of the developer resources view
+  */
+  enableLoadingThroughTarget: 'Enable loading through target',
+  /**
+   *@description Text for resources load status
+   *@example {1} PH1
+   *@example {1} PH2
+   */
+  resourcesCurrentlyLoading: '{PH1} resources, {PH2} currently loading',
+  /**
+   *@description Text for resources load status
+   *@example {1} PH1
+   */
+  resources: '{PH1} resources',
+};
+const str_ = i18n.i18n.registerUIStrings('developer_resources/DeveloperResourcesView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DeveloperResourcesView extends UI.Widget.VBox {
   constructor() {
@@ -20,14 +49,14 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
     this._textFilterRegExp = null;
     const accessiblePlaceholder = '';  // Indicates that ToobarInput should use the placeholder as ARIA label.
     this._filterInput =
-        new UI.Toolbar.ToolbarInput(ls`Enter text to search the URL and Error columns`, accessiblePlaceholder, 1);
+        new UI.Toolbar.ToolbarInput(i18nString(UIStrings.enterTextToSearchTheUrlAndError), accessiblePlaceholder, 1);
     this._filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this._onFilterChanged, this);
     toolbar.appendToolbarItem(this._filterInput);
 
     const loadThroughTarget = SDK.PageResourceLoader.getLoadThroughTargetSetting();
     const loadThroughTargetCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        loadThroughTarget, ls`Load HTTP(S) developer resources through the inspected target`,
-        ls`Enable loading through target`);
+        loadThroughTarget, i18nString(UIStrings.loadHttpsDeveloperResources),
+        i18nString(UIStrings.enableLoadingThroughTarget));
     toolbar.appendToolbarItem(loadThroughTargetCheckbox);
 
     this._coverageResultsElement = this.contentElement.createChild('div', 'developer-resource-view-results');
@@ -55,9 +84,10 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
   _updateStats() {
     const {loading, resources} = this._loader.getNumberOfResources();
     if (loading > 0) {
-      this._statusMessageElement.textContent = `${resources} resources, ${loading} currently loading`;
+      this._statusMessageElement.textContent =
+          i18nString(UIStrings.resourcesCurrentlyLoading, {PH1: resources, PH2: loading});
     } else {
-      this._statusMessageElement.textContent = `${resources} resources`;
+      this._statusMessageElement.textContent = i18nString(UIStrings.resources, {PH1: resources});
     }
   }
 

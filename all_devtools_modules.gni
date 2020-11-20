@@ -122,6 +122,7 @@ all_typescript_module_sources = [
   "data_grid/ViewportDataGrid.js",
   "developer_resources/DeveloperResourcesListView.js",
   "developer_resources/DeveloperResourcesView.js",
+  "developer_resources/ModuleUIStrings.js",
   "devices/DevicesView.js",
   "devices/ModuleUIStrings.js",
   "diff/DiffWrapper.js",

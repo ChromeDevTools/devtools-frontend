@@ -4,10 +4,68 @@
 
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Host from '../host/host.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
+
+export const UIStrings = {
+  /**
+  *@description Text for the status of something
+  */
+  status: 'Status',
+  /**
+  *@description Text for web URLs
+  */
+  url: 'URL',
+  /**
+  *@description Text for the initiator of something
+  */
+  initiator: 'Initiator',
+  /**
+  *@description Text in Coverage List View of the Coverage tab
+  */
+  totalBytes: 'Total Bytes',
+  /**
+  *@description Text for errors
+  */
+  error: 'Error',
+  /**
+  *@description Title for the developer resources tab
+  */
+  developerResources: 'Developer Resources',
+  /**
+  *@description Text for a context menu entry
+  */
+  copyUrl: 'Copy URL',
+  /**
+  *@description Text for a context menu entry
+  */
+  copyInitiatorUrl: 'Copy initiator URL',
+  /**
+  *@description Text for the status column of a list view
+  */
+  pending: 'pending',
+  /**
+  *@description Text for the status column of a list view
+  */
+  success: 'success',
+  /**
+  *@description Text for the status column of a list view
+  */
+  failure: 'failure',
+  /**
+  *@description Accessible text for a file size of 1 byte
+  */
+  Byte: '1 byte',
+  /**
+  *@description Accessible text for the value in bytes in memory allocation or coverage view.
+  *@example {12345} PH1
+  */
+  sBytes: '{PH1} bytes',
+};
+const str_ = i18n.i18n.registerUIStrings('developer_resources/DeveloperResourcesListView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DeveloperResourcesListView extends UI.Widget.VBox {
   /**
@@ -23,11 +81,11 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     this.registerRequiredCSS('developer_resources/developerResourcesListView.css', {enableLegacyPatching: true});
 
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'status', title: ls`Status`, width: '60px', fixedWidth: true, sortable: true},
-      {id: 'url', title: ls`URL`, width: '250px', fixedWidth: false, sortable: true},
-      {id: 'initiator', title: ls`Initiator`, width: '80px', fixedWidth: false, sortable: true}, {
+      {id: 'status', title: i18nString(UIStrings.status), width: '60px', fixedWidth: true, sortable: true},
+      {id: 'url', title: i18nString(UIStrings.url), width: '250px', fixedWidth: false, sortable: true},
+      {id: 'initiator', title: i18nString(UIStrings.initiator), width: '80px', fixedWidth: false, sortable: true}, {
         id: 'size',
-        title: ls`Total Bytes`,
+        title: i18nString(UIStrings.totalBytes),
         width: '80px',
         fixedWidth: true,
         sortable: true,
@@ -35,7 +93,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
       },
       {
         id: 'errorMessage',
-        title: ls`Error`,
+        title: i18nString(UIStrings.error),
         width: '200px',
         fixedWidth: false,
         sortable: true,
@@ -43,7 +101,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     ]);
     /** @type {!DataGrid.SortableDataGrid.SortableDataGrid<!GridNode>} */
     this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
-      displayName: ls`Developer Resources`,
+      displayName: i18nString(UIStrings.developerResources),
       columns,
       editCallback: undefined,
       refreshCallback: undefined,
@@ -66,11 +124,11 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
    */
   _populateContextMenu(contextMenu, gridNode) {
     const item = (/** @type {!GridNode} */ (gridNode)).item;
-    contextMenu.clipboardSection().appendItem(ls`Copy URL`, () => {
+    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyUrl), () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(item.url);
     });
     if (item.initiator.initiatorUrl) {
-      contextMenu.clipboardSection().appendItem(ls`Copy initiator URL`, () => {
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyInitiatorUrl), () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(item.initiator.initiatorUrl);
       });
     }
@@ -220,9 +278,9 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
       }
       case 'status': {
         if (this.item.success === null) {
-          cell.textContent = ls`pending`;
+          cell.textContent = i18nString(UIStrings.pending);
         } else {
-          cell.textContent = this.item.success ? ls`success` : ls`failure`;
+          cell.textContent = this.item.success ? i18nString(UIStrings.success) : i18nString(UIStrings.failure);
         }
         break;
       }
@@ -231,7 +289,8 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         if (size !== null) {
           const sizeSpan = cell.createChild('span');
           sizeSpan.textContent = Number.withThousandsSeparator(size);
-          const sizeAccessibleName = (size === 1) ? ls`1 byte` : ls`${size} bytes`;
+          const sizeAccessibleName =
+              (size === 1) ? i18nString(UIStrings.Byte) : i18nString(UIStrings.sBytes, {PH1: size});
           this.setCellAccessibleName(sizeAccessibleName, cell, columnId);
         }
         break;

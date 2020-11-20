@@ -51,7 +51,7 @@ devtools_module("timeline") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "timeline.js"
+  entrypoint = "timeline.ts"
 
   deps = [ ":timeline" ]
 }

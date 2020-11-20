@@ -1154,15 +1154,12 @@ export class FlameChart extends UI.Widget.VBox {
 
     // Find the main thread so that we can mark tasks longer than 50ms.
     if ('groups' in timelineData && Array.isArray(timelineData.groups)) {
-      const mainThread = timelineData.groups.find(value => {
-        // value is a group, however, group is not defined to have a _track
-        // property, as relied on here, so we cast to unknown/any.
-        const group = /** @type {?} */ (value);
-        if (!group._track) {
+      const mainThread = timelineData.groups.find(group => {
+        if (!group.track) {
           return false;
         }
 
-        return group._track.name === 'CrRendererMain';
+        return group.track.name === 'CrRendererMain';
       });
 
       if (mainThread) {

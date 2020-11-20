@@ -246,31 +246,10 @@
     "mobile_throttling"
   ],
   "modules": [
-    "timeline.js",
-    "timeline-legacy.js",
-    "CLSLinkifier.js",
-    "CountersGraph.js",
-    "ExtensionTracingSession.js",
-    "PerformanceModel.js",
-    "TimelineController.js",
-    "TimelineDetailsView.js",
-    "TimelineLoader.js",
-    "TimelineEventOverview.js",
-    "TimelineFilters.js",
-    "TimelineFlameChartDataProvider.js",
-    "TimelineFlameChartNetworkDataProvider.js",
-    "TimelineFlameChartView.js",
-    "TimelineHistoryManager.js",
-    "TimelineTreeView.js",
-    "EventsTimelineTreeView.js",
-    "TimelineUIUtils.js",
-    "TimelineLayersView.js",
-    "TimelinePaintProfilerView.js",
-    "TimelinePanel.js",
-    "UIDevtoolsUtils.js",
-    "UIDevtoolsController.js",
-    "WebVitalsTimeline_bridge.js",
-    "WebVitalsTimelineUtils.js"
+    "timeline-legacy.js"
+  ],
+  "skip_compilation": [
+    "timeline-legacy.js"
   ],
   "resources": [
     "historyToolbarButton.css",

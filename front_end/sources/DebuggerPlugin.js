@@ -618,20 +618,6 @@ export class DebuggerPlugin extends Plugin {
      * @return {!Promise<?SDK.RuntimeModel.EvaluationResult>}
      */
     async function evaluate(uiSourceCode, evaluationText) {
-      if (selectedCallFrame.script.isWasm()) {
-        const sourceScopeChain = await selectedCallFrame.sourceScopeChain;
-        if (sourceScopeChain) {
-          for (const scopeChain of sourceScopeChain) {
-            const object = await /** @type {!Bindings.DebuggerLanguagePlugins.SourceScope}*/ (scopeChain)
-                               .getVariableValue(evaluationText);
-            if (object) {
-              return {object, exceptionDetails: undefined};
-            }
-          }
-          return null;
-        }
-      }
-
       const resolvedText = await resolveExpression(
           selectedCallFrame, evaluationText, uiSourceCode, editorLineNumber, startHighlight, endHighlight);
       return await selectedCallFrame.evaluate({

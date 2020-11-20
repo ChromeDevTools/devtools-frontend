@@ -14,9 +14,9 @@ const {assert} = chai;
 
 const createColumns = (): UIComponents.DataGridUtils.Column[] => {
   return [
-    {id: 'city', title: 'City', sortable: true, widthWeighting: 2},
-    {id: 'country', title: 'Country', sortable: false, widthWeighting: 2},
-    {id: 'population', title: 'Population', sortable: false, widthWeighting: 1},
+    {id: 'city', title: 'City', sortable: true, widthWeighting: 2, visible: true, hideable: false},
+    {id: 'country', title: 'Country', sortable: false, widthWeighting: 2, visible: true, hideable: false},
+    {id: 'population', title: 'Population', sortable: false, widthWeighting: 1, visible: true, hideable: false},
   ];
 };
 
@@ -126,7 +126,7 @@ describe('DataGrid', () => {
 
     it('hides columns marked as hidden', () => {
       const columnsWithCityHidden = createColumns();
-      columnsWithCityHidden[0].hidden = true;
+      columnsWithCityHidden[0].visible = false;
       const component = renderDataGrid({rows, columns: columnsWithCityHidden});
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
@@ -168,7 +168,8 @@ describe('DataGrid', () => {
     const stripLitHtmlCommentNodes = (text: string) => text.replaceAll('<!---->', '');
 
     it('uses the string renderer by default', () => {
-      const columns: UIComponents.DataGridUtils.Column[] = [{id: 'key', title: 'Key', widthWeighting: 1}];
+      const columns: UIComponents.DataGridUtils.Column[] =
+          [{id: 'key', title: 'Key', widthWeighting: 1, visible: true, hideable: false}];
       const rows: UIComponents.DataGridUtils.Row[] = [{cells: [{columnId: 'key', value: 'Hello World'}]}];
       const component = renderDataGrid({columns, rows});
       renderElementIntoDOM(component);
@@ -178,7 +179,8 @@ describe('DataGrid', () => {
     });
 
     it('can use the code block render to render text in a <code> tag', () => {
-      const columns: UIComponents.DataGridUtils.Column[] = [{id: 'key', title: 'Key', widthWeighting: 1}];
+      const columns: UIComponents.DataGridUtils.Column[] =
+          [{id: 'key', title: 'Key', widthWeighting: 1, visible: true, hideable: false}];
       const rows: UIComponents.DataGridUtils.Row[] = [{
         cells: [
           {
@@ -197,7 +199,8 @@ describe('DataGrid', () => {
     });
 
     it('accepts any custom renderer', () => {
-      const columns: UIComponents.DataGridUtils.Column[] = [{id: 'key', title: 'Key', widthWeighting: 1}];
+      const columns: UIComponents.DataGridUtils.Column[] =
+          [{id: 'key', title: 'Key', widthWeighting: 1, visible: true, hideable: false}];
       const rows: UIComponents.DataGridUtils.Row[] = [{
         cells: [{
           columnId: 'key',
@@ -373,7 +376,7 @@ describe('DataGrid', () => {
 
     it('correctly skips hidden columns', () => {
       const columnsWithCountryHidden = createColumns();
-      columnsWithCountryHidden[1].hidden = true;
+      columnsWithCountryHidden[1].visible = false;
       const component = renderDataGrid({rows, columns: columnsWithCountryHidden});
       assertShadowRoot(component.shadowRoot);
       focusTableCell(component.shadowRoot);
@@ -455,7 +458,7 @@ describe('DataGrid', () => {
       emulateUserKeyboardNavigation(component.shadowRoot, 'ArrowRight');
       assertCurrentFocusedCellIs(component.shadowRoot, {column: 1, row: 1});
       const columnsWithFirstHidden = createColumns();
-      columnsWithFirstHidden[0].hidden = true;
+      columnsWithFirstHidden[0].visible = false;
       component.data = {
         columns: columnsWithFirstHidden,
         rows: createRows(),
@@ -549,8 +552,8 @@ describe('DataGrid', () => {
       container.style.height = '100px';
 
       const columns = [
-        {id: 'key', title: 'Key', sortable: false, widthWeighting: 1},
-        {id: 'value', title: 'Value', sortable: false, widthWeighting: 1},
+        {id: 'key', title: 'Key', sortable: false, widthWeighting: 1, visible: true, hideable: false},
+        {id: 'value', title: 'Value', sortable: false, widthWeighting: 1, visible: true, hideable: false},
       ];
 
       const rows: UIComponents.DataGridUtils.Row[] = [
@@ -588,8 +591,8 @@ describe('DataGrid', () => {
       container.style.height = '100px';
 
       const columns = [
-        {id: 'key', title: 'Key', sortable: false, widthWeighting: 1},
-        {id: 'value', title: 'Value', sortable: false, widthWeighting: 1},
+        {id: 'key', title: 'Key', sortable: false, widthWeighting: 1, visible: true, hideable: false},
+        {id: 'value', title: 'Value', sortable: false, widthWeighting: 1, visible: true, hideable: false},
       ];
 
       const rows: UIComponents.DataGridUtils.Row[] = [
@@ -634,7 +637,8 @@ describe('DataGrid', () => {
           id: `column-${index}`,
           title: `Column ${index}`,
           sortable: false,
-          hidden: false,
+          visible: true,
+          hideable: false,
           widthWeighting: weight,
         };
       });
@@ -656,7 +660,7 @@ describe('DataGrid', () => {
 
     it('does not include hidden columns when calculating weighting', () => {
       const columns = makeColumnsWithWeightings(1, 1, 1);
-      columns[0].hidden = true;
+      columns[0].visible = false;
       const calculatedWidths =
           columns.map(col => UIComponents.DataGridUtils.calculateColumnWidthPercentageFromWeighting(columns, col.id));
       assert.deepEqual(calculatedWidths, [0, 50, 50]);
@@ -673,9 +677,9 @@ describe('DataGrid', () => {
   describe('#UIComponents.DataGridUtils.handleArrowKeyNavigation util', () => {
     const makeColumns = (): UIComponents.DataGridUtils.Column[] => {
       return [
-        {id: 'a', title: 'A', sortable: false, hidden: false, widthWeighting: 1},
-        {id: 'b', title: 'B', sortable: false, hidden: false, widthWeighting: 1},
-        {id: 'c', title: 'C', sortable: false, hidden: false, widthWeighting: 1},
+        {id: 'a', title: 'A', sortable: false, visible: true, hideable: false, widthWeighting: 1},
+        {id: 'b', title: 'B', sortable: false, visible: true, hideable: false, widthWeighting: 1},
+        {id: 'c', title: 'C', sortable: false, visible: true, hideable: false, widthWeighting: 1},
       ];
     };
 
@@ -721,7 +725,7 @@ describe('DataGrid', () => {
 
       it('does not let the user move left if there are no visible columns to the left', () => {
         const columnsWithFirstHidden = makeColumns();
-        columnsWithFirstHidden[0].hidden = true;
+        columnsWithFirstHidden[0].visible = false;
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
           key: UIComponents.DataGridUtils.ArrowKey.LEFT,
           currentFocusedCell: [1, 1],
@@ -743,7 +747,7 @@ describe('DataGrid', () => {
 
       it('correctly skips a hidden column to get to the next left visible column', () => {
         const withSecondColumnHidden = makeColumns();
-        withSecondColumnHidden[1].hidden = true;
+        withSecondColumnHidden[1].visible = false;
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
           key: UIComponents.DataGridUtils.ArrowKey.LEFT,
           currentFocusedCell: [2, 1],
@@ -767,7 +771,7 @@ describe('DataGrid', () => {
 
       it('does not let the user move right if there are no visible columns to the right', () => {
         const columnsWithLastHidden = makeColumns();
-        columnsWithLastHidden[2].hidden = true;
+        columnsWithLastHidden[2].visible = false;
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
           key: UIComponents.DataGridUtils.ArrowKey.RIGHT,
           currentFocusedCell: [1, 1],
@@ -789,7 +793,7 @@ describe('DataGrid', () => {
 
       it('correctly skips a hidden column to get to the next right visible column', () => {
         const withSecondColumnHidden = makeColumns();
-        withSecondColumnHidden[1].hidden = true;
+        withSecondColumnHidden[1].visible = false;
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
           key: UIComponents.DataGridUtils.ArrowKey.RIGHT,
           currentFocusedCell: [0, 1],

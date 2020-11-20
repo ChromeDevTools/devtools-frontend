@@ -22,7 +22,7 @@ const getInternalDataGridShadowRoot = (component: UIComponents.DataGridControlle
 describe('DataGridController', () => {
   describe('sorting the columns', () => {
     const columns = [
-      {id: 'key', title: 'Key', sortable: true, widthWeighting: 1},
+      {id: 'key', title: 'Key', sortable: true, widthWeighting: 1, visible: true, hideable: false},
     ];
     const rows = [
       {cells: [{columnId: 'key', value: 'Bravo'}]},
@@ -160,8 +160,8 @@ describe('DataGridController', () => {
 
   describe('filtering rows', () => {
     const columns = [
-      {id: 'key', title: 'Letter', sortable: true, widthWeighting: 1},
-      {id: 'value', title: 'Phonetic', sortable: true, widthWeighting: 1},
+      {id: 'key', title: 'Letter', sortable: true, widthWeighting: 1, visible: true, hideable: false},
+      {id: 'value', title: 'Phonetic', sortable: true, widthWeighting: 1, visible: true, hideable: false},
     ];
     const rows = [
       {

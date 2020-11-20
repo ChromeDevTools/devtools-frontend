@@ -226,7 +226,7 @@ export class DataGrid extends HTMLElement {
 
 
   private renderFillerRow() {
-    const visibleColumns = this.columns.filter(col => !col.hidden);
+    const visibleColumns = this.columns.filter(col => col.visible);
     const emptyCells = visibleColumns.map((col, colIndex) => {
       const emptyCellClasses = LitHtml.Directives.classMap({
         firstVisibleColumn: colIndex === 0,
@@ -237,7 +237,7 @@ export class DataGrid extends HTMLElement {
   }
 
   private render() {
-    const indexOfFirstVisibleColumn = this.columns.findIndex(col => !col.hidden);
+    const indexOfFirstVisibleColumn = this.columns.findIndex(col => col.visible);
     const anyColumnsSortable = this.columns.some(col => col.sortable === true);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -362,7 +362,7 @@ export class DataGrid extends HTMLElement {
         @keydown=${this.onTableKeyDown}
       >
         <colgroup>
-          ${this.columns.filter(col => !col.hidden).map(col => {
+          ${this.columns.filter(col => col.visible).map(col => {
             const width = calculateColumnWidthPercentageFromWeighting(this.columns, col.id);
             const style = `width: ${width}%`;
             return LitHtml.html`<col style=${style}>`;
@@ -372,7 +372,7 @@ export class DataGrid extends HTMLElement {
           <tr>
             ${this.columns.map((col, columnIndex) => {
               const thClasses = LitHtml.Directives.classMap({
-                hidden: col.hidden === true,
+                hidden: !col.visible,
                 firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
               });
               const cellIsFocusableCell = anyColumnsSortable && columnIndex === this.focusableCell[0] && this.focusableCell[1] === 0;
@@ -416,7 +416,7 @@ export class DataGrid extends HTMLElement {
               >${this.columns.map((col, columnIndex) => {
                 const cell = getRowEntryForColumnId(row, col.id);
                 const cellClasses = LitHtml.Directives.classMap({
-                  hidden: col.hidden === true,
+                  hidden: !col.visible,
                   firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
                 });
                 const cellIsFocusableCell = columnIndex === this.focusableCell[0] && tableRowIndex === this.focusableCell[1];

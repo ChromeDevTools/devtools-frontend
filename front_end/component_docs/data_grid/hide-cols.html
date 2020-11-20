@@ -41,9 +41,9 @@
 
         component.data = {
           columns: [
-            { id: 'key', title: 'Key', sortable: true, widthWeighting: 2 },
-            { id: 'value', title: 'Value', sortable: false, widthWeighting: 2},
-            { id: 'number', title: 'Number', sortable: false, widthWeighting: 1},
+            { id: 'key', title: 'Key', sortable: true, widthWeighting: 2, visible: true, hideable: false },
+            { id: 'value', title: 'Value', sortable: false, widthWeighting: 2, visible: true, hideable: true},
+            { id: 'number', title: 'Number', sortable: false, widthWeighting:1 , visible: true, hideable: false},
           ],
           rows: [
             { cells: [{ columnId: 'key', value: 'Bravo', title: 'Bravo'}, { columnId: 'value', value: 'foobar', title: 'foobar'}, { columnId: 'number', value: '1', title: '1'}]},
@@ -57,10 +57,10 @@
         const btn = document.querySelector('button');
         btn.addEventListener('click', () => {
           const {columns} = component.data
-          const isHidden = columns[1].hidden === true;
+          const isVisible = columns[1].visible === true;
 
           const newColumns = [...columns];
-          newColumns[1].hidden = !isHidden;
+          newColumns[1].visible = !isVisible;
 
           component.data = {
             columns: newColumns,

@@ -9,8 +9,8 @@ import * as DataGridRenderers from './DataGridRenderers.js';
   *
   * - `id`: a unique ID for that column.
   * - `title`: the user visible title.
-  * - `hidden`: an optional flag to mark the column as hidden, so it won't
-  *   render.
+  * - `visible`: if the column is visible when rendered
+  * - `hideable`: if the user is able to show/hide the column via the context menu.
   * - `width`: a number that denotes the width of the column. This is percentage
   *   based, out of 100.
   * - `sortable`: an optional property to denote if the  column is sortable.
@@ -23,7 +23,8 @@ export interface Column {
   title: string;
   sortable?: boolean;
   widthWeighting: number;
-  hidden?: boolean;
+  hideable: boolean;
+  visible: boolean;
 }
 
 export type CellValue = string|number|boolean|null;
@@ -119,7 +120,7 @@ export function renderCellValue(cell: Cell): LitHtml.TemplateResult {
 export function calculateColumnWidthPercentageFromWeighting(
     allColumns: ReadonlyArray<Column>, columnId: string): number {
   const totalWeights =
-      allColumns.filter(c => !c.hidden).reduce((sumOfWeights, col) => sumOfWeights + col.widthWeighting, 0);
+      allColumns.filter(c => c.visible).reduce((sumOfWeights, col) => sumOfWeights + col.widthWeighting, 0);
   const matchingColumn = allColumns.find(c => c.id === columnId);
   if (!matchingColumn) {
     throw new Error(`Could not find column with ID ${columnId}`);
@@ -127,7 +128,7 @@ export function calculateColumnWidthPercentageFromWeighting(
   if (matchingColumn.widthWeighting < 1) {
     throw new Error(`Error with column ${columnId}: width weightings must be >= 1.`);
   }
-  if (matchingColumn.hidden) {
+  if (!matchingColumn.visible) {
     return 0;
   }
 
@@ -144,7 +145,7 @@ export function handleArrowKeyNavigation(options: HandleArrowKeyOptions): CellPo
 
   switch (key) {
     case ArrowKey.LEFT: {
-      const firstVisibleColumnIndex = columns.findIndex(c => !c.hidden);
+      const firstVisibleColumnIndex = columns.findIndex(c => c.visible);
       if (selectedColIndex === firstVisibleColumnIndex) {
         // User is as far left as they can go, so don't move them.
         return [selectedColIndex, selectedRowIndex];
@@ -157,7 +158,7 @@ export function handleArrowKeyNavigation(options: HandleArrowKeyOptions): CellPo
       let nextColIndex = selectedColIndex;
       for (let i = nextColIndex - 1; i >= 0; i--) {
         const col = columns[i];
-        if (!col.hidden) {
+        if (col.visible) {
           nextColIndex = i;
           break;
         }
@@ -174,7 +175,7 @@ export function handleArrowKeyNavigation(options: HandleArrowKeyOptions): CellPo
       let nextColIndex = selectedColIndex;
       for (let i = nextColIndex + 1; i < columns.length; i++) {
         const col = columns[i];
-        if (!col.hidden) {
+        if (col.visible) {
           nextColIndex = i;
           break;
         }
@@ -243,7 +244,7 @@ export const calculateFirstFocusableCell =
       const {columns, rows} = options;
       const someColumnsSortable = columns.some(col => col.sortable === true);
       const focusableRowIndex = someColumnsSortable ? 0 : rows.findIndex(row => !row.hidden) + 1;
-      const focusableColIndex = columns.findIndex(col => !col.hidden);
+      const focusableColIndex = columns.findIndex(col => col.visible);
 
       return [focusableColIndex, focusableRowIndex];
     };

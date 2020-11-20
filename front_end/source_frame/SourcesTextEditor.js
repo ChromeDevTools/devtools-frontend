@@ -52,7 +52,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     this.codeMirror().on('focus', this._focus.bind(this));
     this.codeMirror().on('blur', this._blur.bind(this));
     this.codeMirror().on('beforeSelectionChange', this._fireBeforeSelectionChanged.bind(this));
-    this.element.addEventListener('contextmenu', this._contextMenu.bind(this), false);
+    this.codeMirror().on('gutterContextMenu', this._contextMenu.bind(this));
     /**
      * @param {!Event} event
      */
@@ -417,9 +417,13 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
   }
 
   /**
-   * @param {!Event} event
+   * |instance| is actually a CodeMirror.Editor
+   * @param {!Object} instance
+   * @param {number} lineNumber
+   * @param {string} gutterType
+   * @param {!MouseEvent} event
    */
-  _contextMenu(event) {
+  _contextMenu(instance, lineNumber, gutterType, event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     event.consume(true);  // Consume event now to prevent document from handling the async menu
     const wrapper = event.target ?
@@ -428,7 +432,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     const target = wrapper ? wrapper.querySelector('.CodeMirror-linenumber') : null;
     let promise;
     if (target) {
-      promise = this._delegate.populateLineGutterContextMenu(contextMenu, parseInt(target.textContent || '', 10) - 1);
+      promise = this._delegate.populateLineGutterContextMenu(contextMenu, lineNumber);
     } else {
       const textSelection = this.selection();
       promise =

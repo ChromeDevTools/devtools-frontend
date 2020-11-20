@@ -63,3 +63,11 @@ it('is able to find APCA threshold by font size and weight', () => {
   assert.deepEqual(Common.ColorUtils.getAPCAThreshold('16px', '400'), 90);
   assert.deepEqual(Common.ColorUtils.getAPCAThreshold('16px', '900'), 70);
 });
+
+it('is able to find AA/AAA thresholds', () => {
+  assert.deepEqual(Common.ColorUtils.getContrastThreshold('11px', '100'), {aa: 4.5, aaa: 7});
+  assert.deepEqual(Common.ColorUtils.getContrastThreshold('121px', '100'), {aa: 3, aaa: 4.5});
+  assert.deepEqual(Common.ColorUtils.getContrastThreshold('16px', '100'), {aa: 4.5, aaa: 7});
+  assert.deepEqual(Common.ColorUtils.getContrastThreshold('16px', '400'), {aa: 4.5, aaa: 7});
+  assert.deepEqual(Common.ColorUtils.getContrastThreshold('16px', '900'), {aa: 4.5, aaa: 7});
+});

@@ -2082,8 +2082,7 @@ export namespace ProtocolMapping {
     /**
      * Searches for given string in resource content.
      */
-    'Page.searchInResource':
-        {paramsType: [Protocol.Page.SearchInResourceRequest]; returnType: Protocol.Page.SearchInResourceResponse;};
+    'Page.': {paramsType: [Protocol.Page.SearchInResourceRequest]; returnType: Protocol.Page.SearchInResourceResponse;};
     /**
      * Enable Chrome's experimental ad filter on all sites.
      */

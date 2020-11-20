@@ -4,6 +4,7 @@
 
 import * as ColorPicker from '../color_picker/color_picker.js';
 import * as Common from '../common/common.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {CSSOverviewUnusedDeclarations} from './CSSOverviewUnusedDeclarations.js';
@@ -29,7 +30,12 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
    * @param {number} node
    */
   highlightNode(node) {
-    const highlightConfig = {contentColor: Common.Color.PageHighlight.Content.toProtocolRGBA(), showInfo: true};
+    const highlightConfig = {
+      contentColor: Common.Color.PageHighlight.Content.toProtocolRGBA(),
+      showInfo: true,
+      contrastAlgorithm: Root.Runtime.experiments.isEnabled('APCA') ? Protocol.Overlay.ContrastAlgorithm.Apca :
+                                                                      Protocol.Overlay.ContrastAlgorithm.Aa,
+    };
 
     this._overlayAgent.invoke_hideHighlight();
     this._overlayAgent.invoke_highlightNode({backendNodeId: node, highlightConfig});

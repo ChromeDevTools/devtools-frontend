@@ -494,6 +494,8 @@ export class OverlayModel extends SDKModel {
       showExtensionLines: showRulers,
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
+      contrastAlgorithm: Root.Runtime.experiments.isEnabled('APCA') ? Protocol.Overlay.ContrastAlgorithm.Apca :
+                                                                      Protocol.Overlay.ContrastAlgorithm.Aa,
     };
 
     if (mode === 'all' || mode === 'content') {

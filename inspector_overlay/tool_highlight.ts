@@ -28,7 +28,7 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {contrastRatio, rgbaToHsla} from '../front_end/common/ColorUtils.js';
+import {contrastRatio, contrastRatioAPCA, getAPCAThreshold, getContrastThreshold, rgbaToHsla} from '../front_end/common/ColorUtils.js';
 
 import {Bounds, constrainNumber, createChild, createElement, createTextChild, ellipsify, Overlay, PathCommands, ResetData} from './common.js';
 import {buildPath, emptyBounds, PathBounds} from './highlight_common.js';
@@ -46,6 +46,7 @@ interface ContrastInfo {
   backgroundColor: string;
   fontSize: string;
   fontWeight: string;
+  contrastAlgorithm: 'apca'|'aa'|'aaa';
 }
 
 interface ElementInfo {
@@ -359,19 +360,6 @@ function formatColor(hexa: string, colorFormat: string): string {
   return hexa;
 }
 
-function computeIsLargeFont(contrast: ContrastInfo) {
-  const boldWeights = new Set(['bold', 'bolder', '600', '700', '800', '900']);
-
-  const fontSizePx = parseFloat(contrast.fontSize.replace('px', ''));
-  const isBold = boldWeights.has(contrast.fontWeight);
-
-  const fontSizePt = fontSizePx * 72 / 96;
-  if (isBold) {
-    return fontSizePt >= 14;
-  }
-  return fontSizePt >= 18;
-}
-
 /**
  * Determine the layout type of the highlighted element based on the config.
  * @param {Object} elementInfo The element information, part of the config object passed to drawHighlight
@@ -513,16 +501,28 @@ function _createElementDescription(elementInfo: ElementInfo, colorFormat: string
   }
 
   function addContrastRow(fgColor: string, contrast: ContrastInfo) {
-    const ratio = contrastRatio(parseHexa(fgColor), parseHexa(contrast.backgroundColor));
-    const threshold = computeIsLargeFont(contrast) ? 3.0 : 4.5;
+    const parsedFgColor = parseHexa(fgColor);
+    const parsedBgColor = parseHexa(contrast.backgroundColor);
     const valueElement = addRow('Contrast', '', 'element-info-value-contrast');
     const sampleText = createChild(valueElement, 'div', 'contrast-text');
     sampleText.style.color = fgColor;
     sampleText.style.backgroundColor = contrast.backgroundColor;
     sampleText.textContent = 'Aa';
     const valueSpan = createChild(valueElement, 'span');
-    valueSpan.textContent = String(Math.round(ratio * 100) / 100);
-    createChild(valueElement, 'div', ratio < threshold ? 'a11y-icon a11y-icon-warning' : 'a11y-icon a11y-icon-ok');
+    if (contrast.contrastAlgorithm === 'apca') {
+      const percentage = contrastRatioAPCA(parsedFgColor, parsedBgColor);
+      const threshold = getAPCAThreshold(contrast.fontSize, contrast.fontWeight);
+      valueSpan.textContent = String(Math.round(percentage * 100) / 100) + '%';
+      createChild(
+          valueElement, 'div',
+          threshold === null || Math.abs(percentage) < threshold ? 'a11y-icon a11y-icon-warning' :
+                                                                   'a11y-icon a11y-icon-ok');
+    } else if (contrast.contrastAlgorithm === 'aa' || contrast.contrastAlgorithm === 'aaa') {
+      const ratio = contrastRatio(parsedFgColor, parsedBgColor);
+      const threshold = getContrastThreshold(contrast.fontSize, contrast.fontWeight)[contrast.contrastAlgorithm];
+      valueSpan.textContent = String(Math.round(ratio * 100) / 100);
+      createChild(valueElement, 'div', ratio < threshold ? 'a11y-icon a11y-icon-warning' : 'a11y-icon a11y-icon-ok');
+    }
   }
 
   return elementInfoElement;

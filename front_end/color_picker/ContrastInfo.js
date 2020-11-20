@@ -35,9 +35,8 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     this._isNull = false;
-    const isLargeFont = ContrastInfo.computeIsLargeFont(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
-
-    this._contrastRatioThresholds = _ContrastThresholds[(isLargeFont ? 'largeFont' : 'normalFont')];
+    this._contrastRatioThresholds =
+        Common.ColorUtils.getContrastThreshold(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
     this._contrastRationAPCAThreshold =
         Common.ColorUtils.getAPCAThreshold(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
     const bgColorText = contrastInfo.backgroundColors[0];
@@ -158,34 +157,11 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
     }
     return this._contrastRatioThresholds[level];
   }
-
-  /**
-   * @param {string} fontSize
-   * @param {string} fontWeight
-   * @return {boolean}
-   */
-  static computeIsLargeFont(fontSize, fontWeight) {
-    const boldWeights = ['bold', 'bolder', '600', '700', '800', '900'];
-
-    const fontSizePx = parseFloat(fontSize.replace('px', ''));
-    const isBold = (boldWeights.indexOf(fontWeight) !== -1);
-
-    const fontSizePt = fontSizePx * 72 / 96;
-    if (isBold) {
-      return fontSizePt >= 14;
-    }
-    return fontSizePt >= 18;
-  }
 }
 
 /** @enum {symbol} */
 export const Events = {
   ContrastInfoUpdated: Symbol('ContrastInfoUpdated')
-};
-
-const _ContrastThresholds = {
-  largeFont: {aa: 3.0, aaa: 4.5},
-  normalFont: {aa: 4.5, aaa: 7.0}
 };
 
 /** @typedef {{backgroundColors: ?Array<string>, computedFontSize: string, computedFontWeight: string}} */

@@ -102,6 +102,11 @@ export function defineCommonExtensionSymbols(apiPrivate) {
     GetInlinedFunctionRanges: 'getInlinedFunctionRanges',
     GetInlinedCalleesRanges: 'getInlinedCalleesRanges'
   };
+
+  /** @enum {string} */
+  apiPrivate.LanguageExtensionPluginEvents = {
+    UnregisteredLanguageExtensionPlugin: 'unregisteredLanguageExtensionPlugin'
+  };
 }
 
 /**
@@ -128,6 +133,7 @@ self.injectedExtensionAPI = function(
 
   const commands = apiPrivate.Commands;
   const languageExtensionPluginCommands = apiPrivate.LanguageExtensionPluginCommands;
+  const languageExtensionPluginEvents = apiPrivate.LanguageExtensionPluginEvents;
   const events = apiPrivate.Events;
   let userAction = false;
 
@@ -368,6 +374,7 @@ self.injectedExtensionAPI = function(
    * @constructor
    */
   function LanguageServicesAPIImpl() {
+    /** @type {!Map<*, !MessagePort>} */
     this._plugins = new Map();
   }
 
@@ -376,10 +383,11 @@ self.injectedExtensionAPI = function(
      * @param {*} plugin The language plugin instance to register.
      * @param {string} pluginName The plugin name
      * @param {{language: string, symbol_types: !Array<string>}} supportedScriptTypes Script language and debug symbol types supported by this extension.
+     * @return {!Promise<void>}
      */
-    registerLanguageExtensionPlugin: function(plugin, pluginName, supportedScriptTypes) {
+    registerLanguageExtensionPlugin: async function(plugin, pluginName, supportedScriptTypes) {
       if (this._plugins.has(plugin)) {
-        throw new Error('Tried to register a plugin twice');
+        throw new Error(`Tried to register plugin '${pluginName}' twice`);
       }
       const channel = new MessageChannel();
       const port = channel.port1;
@@ -425,9 +433,25 @@ self.injectedExtensionAPI = function(
         throw new Error(`Unknown language plugin method ${method}`);
       }
 
-      extensionServer.sendRequest(
-          {command: commands.RegisterLanguageExtensionPlugin, pluginName, port: channel.port2, supportedScriptTypes},
-          undefined, [channel.port2]);
+      await new Promise(resolve => {
+        extensionServer.sendRequest(
+            {command: commands.RegisterLanguageExtensionPlugin, pluginName, port: channel.port2, supportedScriptTypes},
+            () => resolve(), [channel.port2]);
+      });
+    },
+
+    /**
+     * @param {*} plugin The language plugin instance to unregister.
+     * @return {!Promise<void>}
+     */
+    unregisterLanguageExtensionPlugin: async function(plugin) {
+      const port = this._plugins.get(plugin);
+      if (!port) {
+        throw new Error('Tried to unregister a plugin that was not previously registered');
+      }
+      this._plugins.delete(plugin);
+      port.postMessage({event: languageExtensionPluginEvents.UnregisteredLanguageExtensionPlugin});
+      port.close();
     }
   };
 

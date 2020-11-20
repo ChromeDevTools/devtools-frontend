@@ -15,6 +15,8 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
     super(name);
     // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
     this._commands = Extensions.extensionAPI.LanguageExtensionPluginCommands;
+    // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
+    this._events = Extensions.extensionAPI.LanguageExtensionPluginEvents;
     this._supportedScriptTypes = supportedScriptTypes;
     this._port = port;
     this._port.onmessage = this._onResponse.bind(this);
@@ -36,9 +38,28 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
   }
 
   /**
-   * @param {!MessageEvent<!{requestId: number, result: *, error: ?Error}>} event
+   * @param {!MessageEvent<!{requestId: number, result: *, error: ?Error} | !{event: string}>} event
    */
-  _onResponse({data: {requestId, result, error}}) {
+  _onResponse({data}) {
+    if ('event' in data) {
+      const {event} = data;
+      switch (event) {
+        case this._events.UnregisteredLanguageExtensionPlugin: {
+          for (const {reject} of this._pendingRequests.values()) {
+            reject(new Error('Language extension endpoint disconnected'));
+          }
+          this._pendingRequests.clear();
+          this._port.close();
+          const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+          if (pluginManager) {
+            pluginManager.removePlugin(this);
+          }
+          break;
+        }
+      }
+      return;
+    }
+    const {requestId, result, error} = data;
     if (!this._pendingRequests.has(requestId)) {
       console.error(`No pending request ${requestId}`);
       return;

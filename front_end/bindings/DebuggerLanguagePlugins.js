@@ -718,6 +718,33 @@ export class DebuggerLanguagePluginManager {
   }
 
   /**
+   * @param {!DebuggerLanguagePlugin} plugin
+   */
+  removePlugin(plugin) {
+    this._plugins = this._plugins.filter(p => p !== plugin);
+    const scripts = new Set();
+    this._rawModuleHandles.forEach((rawModuleHandle, rawModuleId) => {
+      if (rawModuleHandle.plugin !== plugin) {
+        return;
+      }
+      rawModuleHandle.scripts.forEach(script => scripts.add(script));
+      this._rawModuleHandles.delete(rawModuleId);
+    });
+    for (const script of scripts) {
+      const modelData = /** @type {!ModelData} */ (this._debuggerModelToData.get(script.debuggerModel));
+      modelData._removeScript(script);
+
+      // Let's see if we have another plugin that's happy to
+      // take this orphaned script now. This is important to
+      // get right, since the same plugin might race during
+      // unregister/register and we might already have the
+      // new instance of the plugin added before we remove
+      // the previous instance.
+      this._parsedScriptSource({data: script});
+    }
+  }
+
+  /**
    * @param {!SDK.Script.Script} script
    * @return {boolean}
    */
@@ -1100,7 +1127,6 @@ class ModelData {
   }
 
   /**
-   *
    * @param {!SDK.Script.Script} script
    * @param {!Array<string>} urls
    */
@@ -1134,6 +1160,21 @@ class ModelData {
         }
       }
     }
+  }
+
+  /**
+   * @param {!SDK.Script.Script} script
+   */
+  _removeScript(script) {
+    this._uiSourceCodeToScripts.forEach((scripts, uiSourceCode) => {
+      scripts = scripts.filter(s => s !== script);
+      if (scripts.length === 0) {
+        this._uiSourceCodeToScripts.delete(uiSourceCode);
+        this._project.removeUISourceCode(uiSourceCode.url());
+      } else {
+        this._uiSourceCodeToScripts.set(uiSourceCode, scripts);
+      }
+    });
   }
 
   _dispose() {

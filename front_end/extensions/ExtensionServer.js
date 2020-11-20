@@ -188,15 +188,17 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _registerLanguageExtensionEndpoint(message, shared_port) {
-    if (!Root.Runtime.experiments.isEnabled('wasmDWARFDebugging')) {
+    const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+    if (!pluginManager) {
       return this._status.E_FAILED('WebAssembly DWARF support needs to be enabled to use this extension');
     }
 
     const {pluginName, port, supportedScriptTypes: {language, symbol_types}} = message;
     const symbol_types_array = /** @type !Array<string> */
         (Array.isArray(symbol_types) && symbol_types.every(e => typeof e === 'string') ? symbol_types : []);
-    const extension = new LanguageExtensionEndpoint(pluginName, {language, symbol_types: symbol_types_array}, port);
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager.addPlugin(extension);
+    const endpoint = new LanguageExtensionEndpoint(pluginName, {language, symbol_types: symbol_types_array}, port);
+    pluginManager.addPlugin(endpoint);
+    return this._status.OK();
   }
 
   _inspectedURLChanged(event) {

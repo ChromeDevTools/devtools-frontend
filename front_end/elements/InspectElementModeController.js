@@ -181,7 +181,7 @@ export class ToggleSearchActionDelegate {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    if (!Root.Runtime.Runtime.queryParam('isSharedWorker')) {
+    if (Root.Runtime.Runtime.queryParam('isSharedWorker')) {
       return false;
     }
 

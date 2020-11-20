@@ -15,7 +15,7 @@ devtools_module("javascript_metadata") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "javascript_metadata.js"
+  entrypoint = "javascript_metadata.ts"
 
   deps = [ ":javascript_metadata" ]
 }

@@ -27,7 +27,7 @@ devtools_module("layer_viewer") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "layer_viewer.js"
+  entrypoint = "layer_viewer.ts"
 
   deps = [ ":layer_viewer" ]
 }

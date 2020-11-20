@@ -20,7 +20,8 @@ async function getCode() {
 }
 
 describe('Recorder', () => {
-  it('should connect to the browser via DevTools own connection', async () => {
+  // Flaky test.
+  it.skip('[crbug.com/1151234] should connect to the browser via DevTools own connection', async () => {
     await enableExperiment('recorder');
     await goToResource('recorder/recorder.html');
 

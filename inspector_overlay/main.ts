@@ -2,21 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
+// @ts-ignore Importing CSS is handled in Rollup.
 import commonStyle from './common.css';
 import {adoptStyleSheet} from './common.js';
 import {gridStyle} from './highlight_grid_common.js';
 import {DistancesOverlay} from './tool_distances.js';
+// @ts-ignore Importing CSS is handled in Rollup.
 import highlightGridStyle from './tool_grid.css';
+// @ts-ignore Importing CSS is handled in Rollup.
 import highlightStyle from './tool_highlight.css';
 import {HighlightOverlay} from './tool_highlight.js';
+// @ts-ignore Importing CSS is handled in Rollup.
 import pausedStyle from './tool_paused.css';
 import {PausedOverlay} from './tool_paused.js';
 import {PersistentOverlay} from './tool_persistent.js';
+// @ts-ignore Importing CSS is handled in Rollup.
 import screenshotStyle from './tool_screenshot.css';
 import {ScreenshotOverlay} from './tool_screenshot.js';
+// @ts-ignore Importing CSS is handled in Rollup.
 import sourceOrderStyle from './tool_source_order.css';
 import {SourceOrderOverlay} from './tool_source_order.js';
 import {ViewportSizeOverlay} from './tool_viewport_size.js';
@@ -34,11 +37,20 @@ const screenshotOverlay = new ScreenshotOverlay(window, screenshotStyle);
 const sourceOrderOverlay = new SourceOrderOverlay(window, sourceOrderStyle);
 const viewportSizeOverlay = new ViewportSizeOverlay(window);
 
-let currentOverlay;
-let platformName;
+interface Overlays {
+  distances: DistancesOverlay;
+  highlight: HighlightOverlay;
+  persistent: PersistentOverlay;
+  paused: PausedOverlay;
+  screenshot: ScreenshotOverlay;
+  sourceOrder: SourceOrderOverlay;
+  viewportSize: ViewportSizeOverlay;
+}
+
+type PlatformName = string;
 
 // Key in this object is the name the backend refers to a particular overlay by.
-const overlays = {
+const overlays: Overlays = {
   distances: distancesOverlay,
   highlight: highlightOverlay,
   persistent: persistentOverlay,
@@ -48,10 +60,17 @@ const overlays = {
   viewportSize: viewportSizeOverlay,
 };
 
-window.dispatch = message => {
-  const functionName = message[0] as string;
+let currentOverlay: Overlays[keyof Overlays];
+let platformName: PlatformName;
+
+type MessageLookup = {
+  'setOverlay': keyof Overlays; 'setPlatform': PlatformName;
+}
+
+const dispatch = <K extends keyof MessageLookup>(message: [a: K, b: MessageLookup[K]]) => {
+  const functionName = message[0];
   if (functionName === 'setOverlay') {
-    const overlayName = message[1] as string;
+    const overlayName = message[1] as keyof Overlays;
     if (currentOverlay) {
       currentOverlay.uninstall();
     }
@@ -63,8 +82,11 @@ window.dispatch = message => {
       currentOverlay.install();
     }
   } else if (functionName === 'setPlatform') {
-    platformName = message[1] as string;
+    platformName = message[1];
   } else {
     currentOverlay.dispatch(message);
   }
 };
+
+// Window has an additional dispatch function added, so retype as unknown first
+(window as unknown as {dispatch: Function}).dispatch = dispatch;

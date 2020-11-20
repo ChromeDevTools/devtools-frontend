@@ -1008,11 +1008,6 @@ export class SourcesPanel extends UI.Panel.Panel {
       this._sidebarPaneStack.showView(this._threadsSidebarPane);
     }
 
-    if (!vertically) {
-      this._sidebarPaneStack.appendView(this._watchSidebarPane);
-    }
-
-    this._sidebarPaneStack.showView(this._callstackPane);
     const jsBreakpoints =
         /** @type {!UI.View.View} */ (UI.ViewManager.ViewManager.instance().view('sources.jsBreakpoints'));
     const scopeChainView =
@@ -1025,8 +1020,10 @@ export class SourcesPanel extends UI.Panel.Panel {
 
     if (!vertically) {
       // Populate the rest of the stack.
-      this._sidebarPaneStack.showView(scopeChainView);
+      this._sidebarPaneStack.appendView(this._watchSidebarPane);
       this._sidebarPaneStack.showView(jsBreakpoints);
+      this._sidebarPaneStack.showView(scopeChainView);
+      this._sidebarPaneStack.showView(this._callstackPane);
       this._extensionSidebarPanesContainer = this._sidebarPaneStack;
       this.sidebarPaneView = vbox;
       this._splitWidget.uninstallResizer(this._debugToolbar.gripElementForResize());
@@ -1036,6 +1033,7 @@ export class SourcesPanel extends UI.Panel.Panel {
 
       // Populate the left stack.
       this._sidebarPaneStack.showView(jsBreakpoints);
+      this._sidebarPaneStack.showView(this._callstackPane);
 
       const tabbedLocation =
           UI.ViewManager.ViewManager.instance().createTabbedLocation(this._revealDebuggerSidebar.bind(this));

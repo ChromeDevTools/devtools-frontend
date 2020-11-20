@@ -90,6 +90,24 @@ export const scopeIdentifiers = function(scope) {
 };
 
 /**
+ * @param {?SDK.DebuggerModel.CallFrame} callFrame
+ * @return {!Promise<?Array<SDK.DebuggerModel.ScopeChainEntry>>}
+ */
+export const resolveScopeChain = async function(callFrame) {
+  if (!callFrame) {
+    return null;
+  }
+  const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+  if (pluginManager) {
+    const scopeChain = await pluginManager.resolveScopeChain(callFrame);
+    if (scopeChain) {
+      return scopeChain;
+    }
+  }
+  return callFrame.scopeChain();
+};
+
+/**
  * @param {!SDK.DebuggerModel.ScopeChainEntry} scope
  * @return {!Promise.<!Map<string, string>>}
  */

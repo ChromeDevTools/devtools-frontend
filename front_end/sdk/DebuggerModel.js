@@ -1504,8 +1504,6 @@ export class CallFrame {
    */
   constructor(debuggerModel, script, payload, inlineFrameIndex, functionName) {
     this.debuggerModel = debuggerModel;
-    /** @type {?Promise<?Array<!ScopeChainEntry>>} */
-    this._sourceScopeChain = null;
     this._script = script;
     this._payload = payload;
     this._location = Location.fromPayload(debuggerModel, payload.location, inlineFrameIndex);
@@ -1526,20 +1524,6 @@ export class CallFrame {
     }
     this._returnValue =
         payload.returnValue ? this.debuggerModel._runtimeModel.createRemoteObject(payload.returnValue) : null;
-  }
-
-  /**
-   * @return {!Promise<?Array<!ScopeChainEntry>>}
-   */
-  get sourceScopeChain() {
-    if (this._sourceScopeChain) {
-      return this._sourceScopeChain;
-    }
-    // @ts-ignore
-    const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().pluginManager;
-    const sourceScopeChain = pluginManager ? pluginManager.resolveScopeChain(this) : Promise.resolve(null);
-    this._sourceScopeChain = sourceScopeChain;
-    return sourceScopeChain;
   }
 
   /**

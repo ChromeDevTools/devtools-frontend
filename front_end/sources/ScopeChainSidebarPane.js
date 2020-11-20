@@ -32,7 +32,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {resolveScopeInObject, resolveThisObject} from './SourceMapNamesResolver.js';
+import {resolveScopeChain, resolveScopeInObject, resolveThisObject} from './SourceMapNamesResolver.js';
 
 /**
  * @implements {UI.ContextFlavorListener.ContextFlavorListener}
@@ -76,38 +76,31 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!SDK.DebuggerModel.CallFrame} callFrame
-   * @return {!Promise<!Array<!SDK.DebuggerModel.ScopeChainEntry>>}
-   */
-  async _getScopeChain(callFrame) {
-    return (await callFrame.sourceScopeChain) || callFrame.scopeChain();
-  }
-
-  _update() {
+  async _update() {
     const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
     const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     this._linkifier.reset();
-    resolveThisObject(callFrame).then(this._innerUpdate.bind(this, details, callFrame));
+    const [thisObject, scopeChain] = await Promise.all([resolveThisObject(callFrame), resolveScopeChain(callFrame)]);
+    this._innerUpdate(details, callFrame, thisObject, scopeChain);
   }
 
   /**
    * @param {?SDK.DebuggerModel.DebuggerPausedDetails} details
    * @param {?SDK.DebuggerModel.CallFrame} callFrame
    * @param {?SDK.RemoteObject.RemoteObject} thisObject
+   * @param {?Array<!SDK.DebuggerModel.ScopeChainEntry>} scopeChain
    */
-  async _innerUpdate(details, callFrame, thisObject) {
+  _innerUpdate(details, callFrame, thisObject, scopeChain) {
     this._treeOutline.removeChildren();
     this.contentElement.removeChildren();
 
-    if (!details || !callFrame) {
+    if (!details || !callFrame || !scopeChain) {
       this.contentElement.appendChild(this._infoElement);
       return;
     }
 
     this.contentElement.appendChild(this._treeOutline.element);
     let foundLocalScope = false;
-    const scopeChain = await this._getScopeChain(callFrame);
     for (let i = 0; i < scopeChain.length; ++i) {
       const scope = scopeChain[i];
       const extraProperties = this._extraPropertiesForScope(scope, details, callFrame, thisObject, i === 0);

@@ -53,7 +53,7 @@ export function toRange(start, end) {
 }
 
 /**
- * @param {!CodeMirror.ChangeObject} changeObject
+ * @param {*} changeObject (!CodeMirror.ChangeObject)
  * @return {{oldRange: !TextUtils.TextRange.TextRange, newRange: !TextUtils.TextRange.TextRange}}
  */
 export function changeObjectToEditOperation(changeObject) {

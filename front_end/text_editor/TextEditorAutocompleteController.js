@@ -1,8 +1,6 @@
 // Copyright (c) 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as Common from '../common/common.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -36,6 +34,7 @@ export class TextEditorAutocompleteController {
       this.clearAutocomplete();
       this._tooltipGlassPane.hide();
     };
+    // @ts-ignore CodeMirror types are wrong.
     this._codeMirror.on('changes', this._changes);
     this._lastHintText = '';
     /** @type {?UI.SuggestBox.SuggestBox} */
@@ -54,6 +53,9 @@ export class TextEditorAutocompleteController {
         this._tooltipGlassPane.contentElement,
         {cssFile: 'text_editor/autocompleteTooltip.css', enableLegacyPatching: true, delegatesFocus: undefined});
     shadowRoot.appendChild(this._tooltipElement);
+
+    /** @type {?TextUtils.TextRange.TextRange} */
+    this._queryRange = null;
   }
 
   _initializeIfNeeded() {
@@ -61,26 +63,38 @@ export class TextEditorAutocompleteController {
       return;
     }
     this._initialized = true;
+    // @ts-ignore CodeMirror types are wrong.
     this._codeMirror.on('scroll', this._onScroll);
+    // @ts-ignore CodeMirror types are wrong.
     this._codeMirror.on('cursorActivity', this._onCursorActivity);
+    // @ts-ignore CodeMirror types are wrong.
     this._codeMirror.on('mousedown', this._mouseDown);
+    // @ts-ignore CodeMirror types are wrong.
     this._codeMirror.on('blur', this._blur);
     if (this._config.isWordChar) {
+      // @ts-ignore CodeMirror types are wrong.
       this._codeMirror.on('beforeChange', this._beforeChange);
       this._dictionary = new Common.TextDictionary.TextDictionary();
+      // @ts-ignore CodeMirror types are wrong.
       this._addWordsFromText(this._codeMirror.getValue());
     }
   }
 
   dispose() {
+    // @ts-ignore CodeMirror types are wrong.
     this._codeMirror.off('changes', this._changes);
     if (this._initialized) {
+      // @ts-ignore CodeMirror types are wrong.
       this._codeMirror.off('scroll', this._onScroll);
+      // @ts-ignore CodeMirror types are wrong.
       this._codeMirror.off('cursorActivity', this._onCursorActivity);
+      // @ts-ignore CodeMirror types are wrong.
       this._codeMirror.off('mousedown', this._mouseDown);
+      // @ts-ignore CodeMirror types are wrong.
       this._codeMirror.off('blur', this._blur);
     }
     if (this._dictionary) {
+      // @ts-ignore CodeMirror types are wrong.
       this._codeMirror.off('beforeChange', this._beforeChange);
       this._dictionary.reset();
     }
@@ -88,12 +102,13 @@ export class TextEditorAutocompleteController {
 
   /**
    * @param {!CodeMirror} codeMirror
-   * @param {!CodeMirror.BeforeChangeObject} changeObject
+   * @param {*} changeObject (!CodeMirror.BeforeChangeObject)
    */
   _beforeChange(codeMirror, changeObject) {
     this._updatedLines = this._updatedLines || {};
     for (let i = changeObject.from.line; i <= changeObject.to.line; ++i) {
       if (this._updatedLines[i] === undefined) {
+        // @ts-ignore CodeMirror types are wrong.
         this._updatedLines[i] = this._codeMirror.getLine(i);
       }
     }
@@ -111,7 +126,7 @@ export class TextEditorAutocompleteController {
      * @this {TextEditorAutocompleteController}
      */
     function addWord(word) {
-      if (word.length && (word[0] < '0' || word[0] > '9')) {
+      if (this._dictionary && word.length && (word[0] < '0' || word[0] > '9')) {
         this._dictionary.addWord(word);
       }
     }
@@ -123,7 +138,7 @@ export class TextEditorAutocompleteController {
   _removeWordsFromText(text) {
     TextUtils.TextUtils.Utils.textToWords(
         text, /** @type {function(string):boolean} */ (this._config.isWordChar),
-        word => this._dictionary.removeWord(word));
+        word => this._dictionary && this._dictionary.removeWord(word));
   }
 
   /**
@@ -162,14 +177,25 @@ export class TextEditorAutocompleteController {
     if (this._dictionary.wordCount(substituteWord) === 1) {
       completions = completions.filter(word => word !== substituteWord);
     }
-
-    completions.sort((a, b) => this._dictionary.wordCount(b) - this._dictionary.wordCount(a) || a.length - b.length);
-    return Promise.resolve(completions.map(item => ({text: item})));
+    const dictionary = this._dictionary;
+    completions.sort((a, b) => dictionary.wordCount(b) - dictionary.wordCount(a) || a.length - b.length);
+    return Promise.resolve(completions.map(item => ({
+                                             text: item,
+                                             title: undefined,
+                                             subtitle: undefined,
+                                             iconType: undefined,
+                                             priority: undefined,
+                                             isSecondary: undefined,
+                                             subtitleRenderer: undefined,
+                                             selectionRange: undefined,
+                                             hideGhostText: undefined,
+                                             iconElement: undefined
+                                           })));
   }
 
   /**
    * @param {!CodeMirror} codeMirror
-   * @param {!Array.<!CodeMirror.ChangeObject>} changes
+   * @param {!Array.<*>} changes (CodeMirror.ChangeObject)
    */
   _changes(codeMirror, changes) {
     if (!changes.length) {
@@ -182,12 +208,14 @@ export class TextEditorAutocompleteController {
       }
       delete this._updatedLines;
 
+      /** @type {!Object.<string, string>} */
       const linesToUpdate = {};
       for (let changeIndex = 0; changeIndex < changes.length; ++changeIndex) {
         const changeObject = changes[changeIndex];
         const editInfo = changeObjectToEditOperation(changeObject);
         for (let i = editInfo.newRange.startLine; i <= editInfo.newRange.endLine; ++i) {
-          linesToUpdate[i] = this._codeMirror.getLine(i);
+          // @ts-ignore CodeMirror types are wrong.
+          linesToUpdate[String(i)] = this._codeMirror.getLine(i);
         }
       }
       for (const lineNumber in linesToUpdate) {
@@ -197,6 +225,7 @@ export class TextEditorAutocompleteController {
 
     let singleCharInput = false;
     let singleCharDelete = false;
+    // @ts-ignore CodeMirror types are wrong.
     const cursor = this._codeMirror.getCursor('head');
     for (let changeIndex = 0; changeIndex < changes.length; ++changeIndex) {
       const changeObject = changes[changeIndex];
@@ -239,6 +268,7 @@ export class TextEditorAutocompleteController {
    * @return {boolean}
    */
   _validateSelectionsContexts(mainSelection) {
+    // @ts-ignore CodeMirror types are wrong.
     const selections = this._codeMirror.listSelections();
     if (selections.length <= 1) {
       return true;
@@ -262,11 +292,13 @@ export class TextEditorAutocompleteController {
    */
   autocomplete(force) {
     this._initializeIfNeeded();
+    // @ts-ignore CodeMirror types are wrong.
     if (this._codeMirror.somethingSelected()) {
       this._hideSuggestBox();
       return;
     }
 
+    // @ts-ignore CodeMirror types are wrong.
     const cursor = this._codeMirror.getCursor('head');
     const substituteRange = this._substituteRange(cursor.line, cursor.ch);
     if (!substituteRange || !this._validateSelectionsContexts(substituteRange)) {
@@ -281,13 +313,14 @@ export class TextEditorAutocompleteController {
     if (this._suggestBox) {
       hadSuggestBox = true;
     }
-    this._wordsWithQuery(queryRange, substituteRange, force).then(wordsAcquired.bind(this));
+    this._wordsWithQuery(queryRange, substituteRange, force).then(wordsWithQuery => {
+      return wordsAcquired(wordsWithQuery);
+    });
 
     /**
      * @param {!UI.SuggestBox.Suggestions} wordsWithQuery
-     * @this {TextEditorAutocompleteController}
      */
-    function wordsAcquired(wordsWithQuery) {
+    const wordsAcquired = wordsWithQuery => {
       if (!wordsWithQuery.length || (wordsWithQuery.length === 1 && query === wordsWithQuery[0].text) ||
           (!this._suggestBox && hadSuggestBox)) {
         this._hideSuggestBox();
@@ -307,18 +340,23 @@ export class TextEditorAutocompleteController {
           queryRange.startColumn !== oldQueryRange.startColumn) {
         this._updateAnchorBox();
       }
-      this._suggestBox.updateSuggestions(this._anchorBox, wordsWithQuery, true, !this._isCursorAtEndOfLine(), query);
-      if (this._suggestBox.visible) {
+      this._anchorBox &&
+          this._suggestBox.updateSuggestions(
+              this._anchorBox, wordsWithQuery, true, !this._isCursorAtEndOfLine(), query);
+      if (this._suggestBox.visible()) {
         this._tooltipGlassPane.hide();
       }
       this._onSuggestionsShownForTest(wordsWithQuery);
-    }
+    };
   }
 
   /**
    * @param {string} hint
    */
   _setHint(hint) {
+    if (this._queryRange === null) {
+      return;
+    }
     const query = this._textEditor.text(this._queryRange);
     if (!hint || !this._isCursorAtEndOfLine() || !hint.startsWith(query)) {
       this._clearHint();
@@ -326,6 +364,7 @@ export class TextEditorAutocompleteController {
     }
     const suffix = hint.substring(query.length).split('\n')[0];
     this._hintElement.textContent = suffix.trimEndWithMaxLength(10000);
+    // @ts-ignore CodeMirror types are wrong.
     const cursor = this._codeMirror.getCursor('to');
     if (this._hintMarker) {
       const position = this._hintMarker.position();
@@ -424,7 +463,9 @@ export class TextEditorAutocompleteController {
    * @return {boolean}
    */
   _isCursorAtEndOfLine() {
+    // @ts-ignore CodeMirror types are wrong.
     const cursor = this._codeMirror.getCursor('to');
+    // @ts-ignore CodeMirror types are wrong.
     return cursor.ch === this._codeMirror.getLine(cursor.line).length;
   }
 
@@ -446,13 +487,19 @@ export class TextEditorAutocompleteController {
    * @override
    */
   acceptSuggestion() {
+    if (this._currentSuggestion === null || this._queryRange === null) {
+      return;
+    }
+    // @ts-ignore CodeMirror types are wrong.
     const selections = this._codeMirror.listSelections().slice();
     const queryLength = this._queryRange.endColumn - this._queryRange.startColumn;
     const suggestion = this._currentSuggestion.text;
+    // @ts-ignore CodeMirror types are wrong.
     this._codeMirror.operation(() => {
       for (let i = selections.length - 1; i >= 0; --i) {
         const start = selections[i].head;
         const end = new CodeMirror.Pos(start.line, start.ch - queryLength);
+        // @ts-ignore CodeMirror types are wrong.
         this._codeMirror.replaceRange(suggestion, start, end, '+autocomplete');
       }
     });
@@ -463,9 +510,11 @@ export class TextEditorAutocompleteController {
    */
   textWithCurrentSuggestion() {
     if (!this._queryRange || this._currentSuggestion === null) {
+      // @ts-ignore CodeMirror types are wrong.
       return this._codeMirror.getValue();
     }
 
+    // @ts-ignore CodeMirror types are wrong.
     const selections = this._codeMirror.listSelections().slice();
     let last = {line: 0, column: 0};
     let text = '';
@@ -487,21 +536,27 @@ export class TextEditorAutocompleteController {
     if (!this._suggestBox) {
       return;
     }
+    // @ts-ignore CodeMirror types are wrong.
     const cursor = this._codeMirror.getCursor();
+    // @ts-ignore CodeMirror types are wrong.
     const scrollInfo = this._codeMirror.getScrollInfo();
+    // @ts-ignore CodeMirror types are wrong.
     const topmostLineNumber = this._codeMirror.lineAtHeight(scrollInfo.top, 'local');
+    // @ts-ignore CodeMirror types are wrong.
     const bottomLine = this._codeMirror.lineAtHeight(scrollInfo.top + scrollInfo.clientHeight, 'local');
     if (cursor.line < topmostLineNumber || cursor.line > bottomLine) {
       this.clearAutocomplete();
     } else {
       this._updateAnchorBox();
-      this._suggestBox.setPosition(this._anchorBox);
+      this._anchorBox && this._suggestBox.setPosition(this._anchorBox);
     }
   }
 
   async _updateTooltip() {
+    // @ts-ignore CodeMirror types are wrong.
     const cursor = this._codeMirror.getCursor();
     const tooltip = this._config.tooltipCallback ? await this._config.tooltipCallback(cursor.line, cursor.ch) : null;
+    // @ts-ignore CodeMirror types are wrong.
     const newCursor = this._codeMirror.getCursor();
 
     if (newCursor.line !== cursor.line && newCursor.ch !== cursor.ch) {
@@ -529,15 +584,17 @@ export class TextEditorAutocompleteController {
 
   _onCursorActivity() {
     this._updateTooltip();
-    if (!this._suggestBox) {
+    if (!this._suggestBox || this._queryRange === null) {
       return;
     }
+    // @ts-ignore CodeMirror types are wrong.
     const cursor = this._codeMirror.getCursor();
     let shouldCloseAutocomplete =
         !(cursor.line === this._queryRange.startLine && this._queryRange.startColumn <= cursor.ch &&
           cursor.ch <= this._queryRange.endColumn);
     // Try not to hide autocomplete when user types in.
     if (cursor.line === this._queryRange.startLine && cursor.ch === this._queryRange.endColumn + 1) {
+      // @ts-ignore CodeMirror types are wrong.
       const line = this._codeMirror.getLine(cursor.line);
       shouldCloseAutocomplete = this._config.isWordChar ? !this._config.isWordChar(line.charAt(cursor.ch - 1)) : false;
     }
@@ -551,6 +608,9 @@ export class TextEditorAutocompleteController {
   }
 
   _updateAnchorBox() {
+    if (this._queryRange === null) {
+      return;
+    }
     const line = this._queryRange.startLine;
     const column = this._queryRange.startColumn;
     const metrics = this._textEditor.cursorPositionToCoordinates(line, column);

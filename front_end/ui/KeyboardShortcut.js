@@ -27,9 +27,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Host from '../host/host.js';
 import {DefaultShortcutSetting} from './ShortcutRegistry.js';
 
@@ -45,7 +42,7 @@ export class KeyboardShortcut {
     this.descriptors = descriptors;
     this.action = action;
     this.type = type;
-    this.keybindSets = keybindSets;
+    this.keybindSets = keybindSets || new Set();
   }
 
   /**
@@ -134,7 +131,7 @@ export class KeyboardShortcut {
   }
 
   /**
-   * @param {?KeyboardEvent} keyboardEvent
+   * @param {!KeyboardEvent} keyboardEvent
    * @return {number}
    */
   static makeKeyFromEvent(keyboardEvent) {
@@ -153,21 +150,23 @@ export class KeyboardShortcut {
     }
 
     // Use either a real or a synthetic keyCode (for events originating from extensions).
+    // @ts-ignore ExtensionServer.js installs '__keyCode' on some events.
     const keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
     return KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }
 
   /**
-   * @param {?KeyboardEvent} keyboardEvent
+   * @param {!KeyboardEvent} keyboardEvent
    * @return {number}
    */
   static makeKeyFromEventIgnoringModifiers(keyboardEvent) {
+    // @ts-ignore ExtensionServer.js installs '__keyCode' on some events.
     const keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
     return KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, Modifiers.None);
   }
 
   /**
-   * @param {(?KeyboardEvent|?MouseEvent)} event
+   * @param {(!KeyboardEvent|!MouseEvent)} event
    * @return {boolean}
    */
   static eventHasCtrlOrMeta(event) {
@@ -179,7 +178,8 @@ export class KeyboardShortcut {
    * @return {boolean}
    */
   static hasNoModifiers(event) {
-    return !event.ctrlKey && !event.shiftKey && !event.altKey && !event.metaKey;
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    return !keyboardEvent.ctrlKey && !keyboardEvent.shiftKey && !keyboardEvent.altKey && !keyboardEvent.metaKey;
   }
 
   /**
@@ -207,10 +207,10 @@ export class KeyboardShortcut {
           typeof modifier !== 'undefined', `Only one key other than modifier is allowed in shortcut <${shortcut}>`);
       modifiers |= modifier;
     }
-    console.assert(keyString, `Modifiers-only shortcuts are not allowed (encountered <${shortcut}>)`);
+    console.assert(keyString.length > 0, `Modifiers-only shortcuts are not allowed (encountered <${shortcut}>)`);
 
     const key = Keys[keyString] || KeyBindings[keyString];
-    if (key && key.shiftKey) {
+    if (key && 'shiftKey' in key && /** @type {*} */ (key).shiftKey) {
       modifiers |= Modifiers.Shift;
     }
     return KeyboardShortcut.makeDescriptor(key ? key : keyString, modifiers);
@@ -248,7 +248,7 @@ export class KeyboardShortcut {
    * @return {number}
    */
   static _makeKeyFromCodeAndModifiers(keyCode, modifiers) {
-    return (keyCode & 255) | (modifiers << 8);
+    return (keyCode & 255) | ((modifiers || 0) << 8);
   }
 
   /**
@@ -287,15 +287,15 @@ export class KeyboardShortcut {
      * @return {string}
      */
     function mapModifiers(m) {
-      return modifiers & m ? /** @type {string} */ (modifierNames.get(m)) : '';
+      return (modifiers || 0) & m ? /** @type {string} */ (modifierNames.get(m)) : '';
     }
   }
 }
 
 /**
  * Constants for encoding modifier key set as a bit mask.
- * @enum {number}
- * @see #_makeKeyFromCodeAndModifiers
+ * @type {!Object<string, number>}
+ * see #_makeKeyFromCodeAndModifiers
  */
 export const Modifiers = {
   None: 0,  // Constant for empty modifiers set.
@@ -426,7 +426,9 @@ for (const key in Keys) {
 })();
 
 /** @typedef {!{code: number, name: (string|!Object.<string, string>)}} */
+// @ts-ignore typedef
 export let Key;
 
 /** @typedef {!{key: number, name: string}} */
+// @ts-ignore typedef
 export let Descriptor;

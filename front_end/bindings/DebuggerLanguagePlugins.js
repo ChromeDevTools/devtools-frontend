@@ -618,6 +618,27 @@ export class DebuggerLanguagePluginManager {
   }
 
   /**
+   * @param {!SDK.DebuggerModel.CallFrame} callFrame
+   * @param {!SDK.RuntimeModel.EvaluationOptions} options
+   * @returns {!Promise<?SDK.RuntimeModel.EvaluationResult>}
+   */
+  async _evaluateOnCallFrame(callFrame, options) {
+    const {script} = callFrame;
+    const {expression} = options;
+    const {plugin} = await this._rawModuleIdAndPluginForScript(script);
+    if (!plugin) {
+      return null;
+    }
+
+    try {
+      const object = await EvalNode.get(callFrame, plugin, expression);
+      return {object, exceptionDetails: undefined};
+    } catch (error) {
+      return {error: error.message};
+    }
+  }
+
+  /**
    * @param {!Array<!SDK.DebuggerModel.CallFrame>} callFrames
    * @return {!Promise<!Array<!SDK.DebuggerModel.CallFrame>>}
    */
@@ -641,6 +662,7 @@ export class DebuggerLanguagePluginManager {
     this._debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this._workspace));
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
+    debuggerModel.setEvaluateOnCallFrameCallback(this._evaluateOnCallFrame.bind(this));
     debuggerModel.setExpandCallFramesCallback(this._expandCallFrames.bind(this));
   }
 
@@ -651,6 +673,7 @@ export class DebuggerLanguagePluginManager {
   modelRemoved(debuggerModel) {
     debuggerModel.removeEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
     debuggerModel.removeEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
+    debuggerModel.setEvaluateOnCallFrameCallback(null);
     debuggerModel.setExpandCallFramesCallback(null);
     const modelData = this._debuggerModelToData.get(debuggerModel);
     if (modelData) {
@@ -975,25 +998,6 @@ export class DebuggerLanguagePluginManager {
     } catch (error) {
       Common.Console.Console.instance().warn(ls`Error in debugger language plugin: ${error.message}`);
       return noDwarfInfo;
-    }
-  }
-
-  /**
-   * @param {string} expression
-   * @param {!SDK.DebuggerModel.CallFrame} callFrame
-   * @returns {!Promise<?SDK.RuntimeModel.EvaluationResult>}
-   */
-  async evaluateExpression(expression, callFrame) {
-    const script = callFrame.script;
-    const {plugin} = await this._rawModuleIdAndPluginForScript(script);
-    if (!plugin) {
-      return null;
-    }
-
-    try {
-      return {object: await EvalNode.get(callFrame, plugin, expression), exceptionDetails: undefined};
-    } catch (error) {
-      return {error: error.message};
     }
   }
 

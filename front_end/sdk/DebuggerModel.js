@@ -112,6 +112,8 @@ export class DebuggerModel extends SDKModel {
     this._computeAutoStepRangesCallback = null;
     /** @type {?function(!Array<!CallFrame>):!Promise<!Array<!CallFrame>>} */
     this._expandCallFramesCallback = null;
+    /** @type {?function(!CallFrame, !EvaluationOptions):!Promise<?EvaluationResult>} */
+    this._evaluateOnCallFrameCallback = null;
 
     /** @type {!Common.ObjectWrapper.ObjectWrapper} */
     this._breakpointResolvedEventTarget = new Common.ObjectWrapper.ObjectWrapper();
@@ -683,6 +685,13 @@ export class DebuggerModel extends SDKModel {
    */
   setExpandCallFramesCallback(callback) {
     this._expandCallFramesCallback = callback;
+  }
+
+  /**
+   * @param {?function(!CallFrame, !EvaluationOptions):!Promise<?EvaluationResult>} callback
+   */
+  setEvaluateOnCallFrameCallback(callback) {
+    this._evaluateOnCallFrameCallback = callback;
   }
 
   /**
@@ -1655,7 +1664,9 @@ export class CallFrame {
    * @return {!Promise<!EvaluationResult>}
    */
   async evaluate(options) {
-    const runtimeModel = this.debuggerModel.runtimeModel();
+    const debuggerModel = this.debuggerModel;
+    const runtimeModel = debuggerModel.runtimeModel();
+
     // Assume backends either support both throwOnSideEffect and timeout options or neither.
     const needsTerminationOptions = !!options.throwOnSideEffect || options.timeout !== undefined;
     if (needsTerminationOptions &&
@@ -1664,14 +1675,10 @@ export class CallFrame {
       return {error: 'Side-effect checks not supported by backend.'};
     }
 
-    if (this._script && this._script.isWasm()) {
-      // @ts-ignore
-      const pluginManager = Bindings.DebuggerWorkspaceBinding.instance().pluginManager;
-      if (Root.Runtime.experiments.isEnabled('wasmDWARFDebugging') && pluginManager) {
-        const result = await pluginManager.evaluateExpression(options.expression, this);
-        if (result) {
-          return result;
-        }
+    if (debuggerModel._evaluateOnCallFrameCallback) {
+      const result = await debuggerModel._evaluateOnCallFrameCallback(this, options);
+      if (result) {
+        return result;
       }
     }
 

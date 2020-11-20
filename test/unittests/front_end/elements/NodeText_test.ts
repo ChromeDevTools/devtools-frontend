@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type * as ElementsModule from '../../../../front_end/elements/elements.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertShadowRoot, renderElementIntoDOM, assertElement} from '../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
@@ -58,5 +58,36 @@ describeWithEnvironment('NodeText', async () => {
       nodeClasses: [],
     };
     assertNodeTextContent(component, 'test#id');
+  });
+
+  it('applies the multiple descriptors class when a node has both an ID and some classes', () => {
+    const component = new Elements.NodeText.NodeText();
+    renderElementIntoDOM(component);
+    component.data = {
+      nodeTitle: 'test',
+      nodeId: 'id',
+      nodeClasses: ['foo'],
+    };
+    assertShadowRoot(component.shadowRoot);
+    const idLabel = component.shadowRoot.querySelector('.node-label-id');
+    const classLabel = component.shadowRoot.querySelector('.node-label-class');
+    assertElement(idLabel, HTMLSpanElement);
+    assertElement(classLabel, HTMLSpanElement);
+    assert.isTrue(idLabel.classList.contains('node-multiple-descriptors'));
+    assert.isTrue(classLabel.classList.contains('node-multiple-descriptors'));
+  });
+
+  it('does not apply the multiple descriptors class when the node has only an ID', () => {
+    const component = new Elements.NodeText.NodeText();
+    renderElementIntoDOM(component);
+    component.data = {
+      nodeTitle: 'test',
+      nodeId: 'id',
+      nodeClasses: [],
+    };
+    assertShadowRoot(component.shadowRoot);
+    const idLabel = component.shadowRoot.querySelector('.node-label-id');
+    assertElement(idLabel, HTMLSpanElement);
+    assert.isFalse(idLabel.classList.contains('node-multiple-descriptors'));
   });
 });

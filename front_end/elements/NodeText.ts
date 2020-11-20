@@ -24,17 +24,28 @@ export class NodeText extends HTMLElement {
   }
 
   private render() {
+    const hasId = !!this.nodeId;
+    const hasNodeClasses = !!(this.nodeClasses && this.nodeClasses.length > 0);
+
     const parts = [
       html`<span class="node-label-name">${this.nodeTitle}</span>`,
     ];
 
     if (this.nodeId) {
-      parts.push(html`<span class="node-label-id">#${CSS.escape(this.nodeId)}</span>`);
+      const classes = LitHtml.Directives.classMap({
+        'node-label-id': true,
+        'node-multiple-descriptors': hasNodeClasses,
+      });
+      parts.push(html`<span class=${classes}>#${CSS.escape(this.nodeId)}</span>`);
     }
 
     if (this.nodeClasses && this.nodeClasses.length > 0) {
       const text = this.nodeClasses.map(c => `.${CSS.escape(c)}`).join('');
-      parts.push(html`<span class="node-label-class">${text}</span>`);
+      const classes = LitHtml.Directives.classMap({
+        'node-label-class': true,
+        'node-multiple-descriptors': hasId,
+      });
+      parts.push(html`<span class=${classes}>${text}</span>`);
     }
 
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -51,6 +62,14 @@ export class NodeText extends HTMLElement {
 
         .node-label-id {
           color: var(--node-text-id-color);
+        }
+
+        .node-label-class.node-multiple-descriptors {
+          color: var(--node-text-multiple-descriptors-class, var(--node-text-class-color, --dom-attribute-name-color));
+        }
+
+        .node-label-id.node-multiple-descriptors {
+          color: var(--node-text-multiple-descriptors-id, var(--node-text-id-color, --dom-attribute-name-color));
         }
       </style>
       ${parts}

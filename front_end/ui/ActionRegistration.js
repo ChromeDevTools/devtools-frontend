@@ -499,6 +499,20 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper {
   bindings() {
     return this._actionRegistration.bindings;
   }
+
+  /**
+   * @return {(string|undefined)}
+   */
+  experiment() {
+    return this._actionRegistration.experiment;
+  }
+
+  /**
+   * @return {(string|undefined)}
+   */
+  condition() {
+    return this._actionRegistration.condition;
+  }
 }
 
 /** @type {!Array<!PreRegisteredAction>} */
@@ -549,7 +563,9 @@ export function registerActionExtension(registration) {
  * @return {!Array.<!PreRegisteredAction>}
  */
 export function getRegisteredActionExtensions() {
-  return registeredActionExtensions;
+  return registeredActionExtensions.filter(
+      action =>
+          Root.Runtime.Runtime.isDescriptorEnabled({experiment: action.experiment(), condition: action.condition()}));
 }
 
 
@@ -598,7 +614,9 @@ export let Binding;
   *  loadActionDelegate: (undefined|function():!Promise<!ActionDelegate>),
   *  contextTypes: (undefined|function():!Array<function(new:Object, ...*):void>),
   *  options: (undefined|!Array<!ExtensionOption>),
-  *  bindings: (!Array<!Binding>|undefined)
+  *  bindings: (!Array<!Binding>|undefined),
+  *  experiment: (string|undefined),
+  *  condition: (string|undefined)
   * }}
   */
 // @ts-ignore typedef

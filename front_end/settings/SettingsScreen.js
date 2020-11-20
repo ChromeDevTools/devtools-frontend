@@ -315,6 +315,8 @@ export class GenericSettingsTab extends SettingsTab {
           storageType: undefined,
           titleMac: undefined,
           userActionCondition: undefined,
+          experiment: undefined,
+          condition: undefined,
         };
       }),
       ...Common.Settings.getRegisteredSettings().map(setting => {
@@ -537,6 +539,8 @@ export class Revealer {
           storageType: undefined,
           titleMac: undefined,
           userActionCondition: undefined,
+          experiment: undefined,
+          condition: undefined,
         };
       }),
       ...Common.Settings.getRegisteredSettings().map(setting => {

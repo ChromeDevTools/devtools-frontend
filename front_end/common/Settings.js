@@ -97,7 +97,7 @@ export class Settings {
         setting._extension = extension;
         return setting;
       }),
-      ...registeredSettings.map(registration => {
+      ...getRegisteredSettings().map(registration => {
         const {settingName, defaultValue, storageType} = registration;
 
         // TODO(crbug.com/1134103): implement one liner if to call createRegExpSetting when 'registration.isRegex' is true, once all extensions of type
@@ -1630,7 +1630,9 @@ export function registerSettingExtension(registration) {
 * @return {!Array<!SettingRegistration>}
 */
 export function getRegisteredSettings() {
-  return registeredSettings;
+  return registeredSettings.filter(
+      setting =>
+          Root.Runtime.Runtime.isDescriptorEnabled({experiment: setting.experiment, condition: setting.condition}));
 }
 
 /**
@@ -1647,7 +1649,9 @@ export function getRegisteredSettings() {
   *  options: (undefined|!Array<!SettingExtensionOption>),
   *  reloadRequired: (boolean|undefined),
   *  storageType: (!SettingStorageType|undefined),
-  *  userActionCondition: (string|undefined)
+  *  userActionCondition: (string|undefined),
+  *  experiment: (string|undefined),
+  *  condition: (string|undefined)
   * }}
   */
 // @ts-ignore typedef

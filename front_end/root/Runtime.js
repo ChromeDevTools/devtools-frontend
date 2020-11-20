@@ -178,10 +178,10 @@ export class Runtime {
   }
 
   /**
-   * @param {!ModuleDescriptor|!RuntimeExtensionDescriptor} descriptor
+   * @param {!{experiment: (?string|undefined), condition: (?string|undefined)}} descriptor
    * @return {boolean}
    */
-  static _isDescriptorEnabled(descriptor) {
+  static isDescriptorEnabled(descriptor) {
     const activatorExperiment = descriptor['experiment'];
     if (activatorExperiment === '*') {
       return true;
@@ -653,7 +653,7 @@ export class Module {
    * @return {boolean}
    */
   enabled() {
-    return Runtime._isDescriptorEnabled(this._descriptor);
+    return Runtime.isDescriptorEnabled(this._descriptor);
   }
 
   /**
@@ -790,7 +790,7 @@ export class Extension {
   * @return {boolean}
   */
   enabled() {
-    return this._module.enabled() && Runtime._isDescriptorEnabled(this.descriptor());
+    return this._module.enabled() && Runtime.isDescriptorEnabled(this.descriptor());
   }
 
   /**

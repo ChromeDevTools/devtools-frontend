@@ -10,7 +10,7 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
 import {Icon} from './Icon.js';
 import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
-import {Toolbar, ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
+import {ItemsProvider, Toolbar, ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {createTextChild} from './UIUtils.js';
 import {ProvidedView, TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
@@ -33,6 +33,8 @@ export const ViewLocationValues = {
 
 /**
  * @typedef {{
+ *  experiment: (string|undefined),
+ *  condition: (string|undefined),
  *  title: string,
  *  persistence: (!ViewPersistence|undefined),
  *  id: string,
@@ -112,6 +114,9 @@ class PreRegisteredView {
    * @override
    */
   async toolbarItems() {
+    if (this._viewRegistration.hasToolbar) {
+      return this.widget().then(widget => /** @type {!ItemsProvider} */ (/** @type {*} */ (widget)).toolbarItems());
+    }
     return [];
   }
 
@@ -134,6 +139,14 @@ class PreRegisteredView {
     const widget = await this.widget();
     await widget.ownerViewDisposed();
   }
+
+  experiment() {
+    return this._viewRegistration.experiment;
+  }
+
+  condition() {
+    return this._viewRegistration.condition;
+  }
 }
 
 /**
@@ -147,7 +160,8 @@ export function registerViewExtension(registration) {
  * @return {!Array<!PreRegisteredView>}
  */
 export function getRegisteredViewExtensions() {
-  return registeredViewExtensions;
+  return registeredViewExtensions.filter(
+      view => Root.Runtime.Runtime.isDescriptorEnabled({experiment: view.experiment(), condition: view.condition()}));
 }
 
 /**
@@ -182,7 +196,7 @@ export class ViewManager {
           view: new ProvidedView(extension),
         };
       }),
-      ...registeredViewExtensions.map(registeredView => {
+      ...getRegisteredViewExtensions().map(registeredView => {
         return {
           viewId: registeredView.viewId(),
           location: registeredView.location() || null,

@@ -194,12 +194,9 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     }
     // Cleanup layers that don't exist anymore from tree.
     const rootElement = this._treeOutline.rootElement();
-    // TODO(crbug.com/1011811): `node.root` is never defined anywhere and it is unclear whether this check should be here
-    // in the first place.
-    const firstChild = rootElement.firstChild();
-    for (let node = /** @type {?LayerTreeElement} */ (firstChild); node && !node.root;) {
+    for (let node = rootElement.firstChild(); node instanceof LayerTreeElement && !node.root;) {
       if (seenLayers.get(node._layer)) {
-        node = /** @type {?LayerTreeElement} */ (node.traverseNextTreeElement(false));
+        node = node.traverseNextTreeElement(false);
       } else {
         const nextNode = node.nextSibling || node.parent;
         if (node.parent) {
@@ -208,7 +205,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
         if (node === this._lastHoveredNode) {
           this._lastHoveredNode = null;
         }
-        node = nextNode instanceof LayerTreeElement ? nextNode : null;
+        node = nextNode;
       }
     }
     if (!this._treeOutline.selectedTreeElement && this._layerTree) {

@@ -29,6 +29,7 @@ export const ViewPersistence = {
 export const ViewLocationValues = {
   PANEL: 'panel',
   SETTINGS_VIEW: 'settings-view',
+  ELEMENTS_SIDEBAR: 'elements-sidebar',
 };
 
 /**

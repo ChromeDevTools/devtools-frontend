@@ -28,14 +28,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as ARIAUtils from './ARIAUtils.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
-import {SplitWidget} from './SplitWidget.js';  // eslint-disable-line no-unused-vars
+import {SplitWidget} from './SplitWidget.js';      // eslint-disable-line no-unused-vars
+import {DevToolsCloseButton} from './UIUtils.js';  // eslint-disable-line no-unused-vars
 import {WidgetFocusRestorer} from './Widget.js';
 
 export class Dialog extends GlassPane {
@@ -61,7 +59,7 @@ export class Dialog extends GlassPane {
     /** @type {?Document} */
     this._targetDocument;
     this._targetDocumentKeyDownHandler = this._onKeyDown.bind(this);
-    /** @type {?function(!Event)} */
+    /** @type {?function(!Event):void} */
     this._escapeKeyCallback = null;
   }
 
@@ -95,7 +93,9 @@ export class Dialog extends GlassPane {
    * @override
    */
   hide() {
-    this._focusRestorer.restore();
+    if (this._focusRestorer) {
+      this._focusRestorer.restore();
+    }
     super.hide();
 
     if (this._targetDocument) {
@@ -103,7 +103,7 @@ export class Dialog extends GlassPane {
     }
     this._restoreTabIndexOnElements();
     this.dispatchEventToListeners('hidden');
-    delete Dialog._instance;
+    Dialog._instance = null;
   }
 
   /**
@@ -114,14 +114,15 @@ export class Dialog extends GlassPane {
   }
 
   /**
-   * @param {function(!Event)} callback
+   * @param {function(!Event):void} callback
    */
   setEscapeKeyCallback(callback) {
     this._escapeKeyCallback = callback;
   }
 
   addCloseButton() {
-    const closeButton = this.contentElement.createChild('div', 'dialog-close-button', 'dt-close-button');
+    const closeButton = /** @type {!DevToolsCloseButton} */ (
+        this.contentElement.createChild('div', 'dialog-close-button', 'dt-close-button'));
     closeButton.gray = true;
     closeButton.addEventListener('click', () => this.hide(), false);
   }
@@ -147,7 +148,9 @@ export class Dialog extends GlassPane {
     }
 
     this._tabIndexMap.clear();
-    for (let node = document; node; node = node.traverseNextNode(document)) {
+    /** @type {?Node} */
+    let node = document;
+    for (; node; node = node.traverseNextNode(document)) {
       if (node instanceof HTMLElement) {
         const element = /** @type {!HTMLElement} */ (node);
         const tabIndex = element.tabIndex;
@@ -174,7 +177,9 @@ export class Dialog extends GlassPane {
       return elementSet;
     }
 
-    for (let node = mainWidget.element; node; node = node.traverseNextNode(mainWidget.element)) {
+    /** @type {?Node} */
+    let node = mainWidget.element;
+    for (; node; node = node.traverseNextNode(mainWidget.element)) {
       if (!(node instanceof HTMLElement)) {
         continue;
       }
@@ -202,7 +207,8 @@ export class Dialog extends GlassPane {
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    if (event.keyCode === Keys.Esc.code && KeyboardShortcut.hasNoModifiers(event)) {
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    if (keyboardEvent.keyCode === Keys.Esc.code && KeyboardShortcut.hasNoModifiers(event)) {
       if (this._escapeKeyCallback) {
         this._escapeKeyCallback(event);
       }
@@ -218,6 +224,9 @@ export class Dialog extends GlassPane {
     }
   }
 }
+
+/** @type {?Dialog} */
+Dialog._instance = null;
 
 /** @enum {symbol} */
 export const OutsideTabIndexBehavior = {

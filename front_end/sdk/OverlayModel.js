@@ -594,6 +594,26 @@ export class OverlayModel extends SDKModel {
       };
     }
 
+    if (mode === 'justify-content' && this._flexFeaturesExperimentEnabled) {
+      highlightConfig.flexContainerHighlightConfig = {
+        containerBorder: {
+          color: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA(),
+          pattern: Protocol.Overlay.LineStylePattern.Dashed
+        },
+        mainDistributedSpace: {hatchColor: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA()}
+      };
+    }
+
+    if (mode === 'align-content' && this._flexFeaturesExperimentEnabled) {
+      highlightConfig.flexContainerHighlightConfig = {
+        containerBorder: {
+          color: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA(),
+          pattern: Protocol.Overlay.LineStylePattern.Dashed
+        },
+        crossDistributedSpace: {hatchColor: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA()}
+      };
+    }
+
     // the backend does not support the 'original' format because
     // it currently cannot retrieve the original format using computed styles
     const supportedColorFormats = new Set(['rgb', 'hsl', 'hex']);
@@ -1073,7 +1093,9 @@ class DefaultPersistentFlexHighlighter {
       lineSeparator: {
         color: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA(),
         pattern: Protocol.Overlay.LineStylePattern.Dashed
-      }
+      },
+      mainDistributedSpace: {hatchColor: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA()},
+      crossDistributedSpace: {hatchColor: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA()}
     };
   }
 

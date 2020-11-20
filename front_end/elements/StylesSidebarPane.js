@@ -61,6 +61,8 @@ const HIGHLIGHTABLE_PROPERTIES = [
   {property: 'grid-template-areas', mode: 'grid-areas'},
   {property: 'grid-template-columns', mode: 'grid-template-columns'},
   {property: 'grid-template-rows', mode: 'grid-template-rows'},
+  {property: 'justify-content', mode: 'justify-content'},
+  {property: 'align-content', mode: 'align-content'},
 ];
 
 /** @type {!StylesSidebarPane} */

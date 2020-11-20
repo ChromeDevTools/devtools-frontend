@@ -33,6 +33,14 @@ import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-lin
 import * as Workspace from '../workspace/workspace.js';
 
 /**
+ * @typedef {{
+ *   mimeType: string,
+ *   metadata: ?Workspace.UISourceCode.UISourceCodeMetadata
+ * }}
+ */
+let UISourceCodeData;  // eslint-disable-line no-unused-vars
+
+/**
  * @implements {Workspace.Workspace.Project}
  * @unrestricted
  */
@@ -46,9 +54,11 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
    */
   constructor(workspace, id, type, displayName, isServiceProject) {
     super(workspace, id, type, displayName);
-    /** @type {!Object.<string, !TextUtils.ContentProvider.ContentProvider>} */
-    this._contentProviders = {};
+    /** @type {!Map<string, !TextUtils.ContentProvider.ContentProvider>} */
+    this._contentProviders = new Map();
     this._isServiceProject = isServiceProject;
+    /** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !UISourceCodeData>} */
+    this._uiSourceCodeToData = new WeakMap();
     workspace.addProject(this);
   }
 
@@ -58,7 +68,8 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
    * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   async requestFileContent(uiSourceCode) {
-    const contentProvider = this._contentProviders[uiSourceCode.url()];
+    const contentProvider =
+        /** @type {!TextUtils.ContentProvider.ContentProvider} */ (this._contentProviders.get(uiSourceCode.url()));
     try {
       const [content, isEncoded] =
           await Promise.all([contentProvider.requestContent(), contentProvider.contentEncoded()]);
@@ -83,7 +94,8 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
    * @return {!Promise<?Workspace.UISourceCode.UISourceCodeMetadata>}
    */
   requestMetadata(uiSourceCode) {
-    return Promise.resolve(uiSourceCodeToMetadata.get(uiSourceCode) || null);
+    const {metadata} = /** @type {!UISourceCodeData} */ (this._uiSourceCodeToData.get(uiSourceCode));
+    return Promise.resolve(metadata);
   }
 
   /**
@@ -124,7 +136,8 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
    * @return {string}
    */
   mimeType(uiSourceCode) {
-    return /** @type {string} */ (uiSourceCodeToMimeType.get(uiSourceCode));
+    const {mimeType} = /** @type {!UISourceCodeData} */ (this._uiSourceCodeToData.get(uiSourceCode));
+    return mimeType;
   }
 
   /**
@@ -155,8 +168,10 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
         const copyOfPath = path.split('/');
         copyOfPath[copyOfPath.length - 1] = newName;
         const newPath = copyOfPath.join('/');
-        this._contentProviders[newPath] = this._contentProviders[path];
-        delete this._contentProviders[path];
+        const contentProvider =
+            /** @type {!TextUtils.ContentProvider.ContentProvider} */ (this._contentProviders.get(path));
+        this._contentProviders.set(newPath, contentProvider);
+        this._contentProviders.delete(path);
         this.renameUISourceCode(uiSourceCode, newName);
       }
       callback(success, newName);
@@ -230,7 +245,8 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
    * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
    */
   searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {
-    const contentProvider = this._contentProviders[uiSourceCode.url()];
+    const contentProvider =
+        /** @type {!TextUtils.ContentProvider.ContentProvider} */ (this._contentProviders.get(uiSourceCode.url()));
     return contentProvider.searchInContent(query, caseSensitive, isRegex);
   }
 
@@ -254,10 +270,12 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
      * @this {ContentProviderBasedProject}
      */
     async function searchInContent(path) {
-      const provider = this._contentProviders[path];
+      const contentProvider =
+          /** @type {!TextUtils.ContentProvider.ContentProvider} */ (this._contentProviders.get(path));
       let allMatchesFound = true;
       for (const query of searchConfig.queries().slice()) {
-        const searchMatches = await provider.searchInContent(query, !searchConfig.ignoreCase(), searchConfig.isRegex());
+        const searchMatches =
+            await contentProvider.searchInContent(query, !searchConfig.ignoreCase(), searchConfig.isRegex());
         if (!searchMatches.length) {
           allMatchesFound = false;
           break;
@@ -285,9 +303,8 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
    * @param {string} mimeType
    */
   addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType) {
-    uiSourceCodeToMimeType.set(uiSourceCode, mimeType);
-    this._contentProviders[uiSourceCode.url()] = contentProvider;
-    uiSourceCodeToMetadata.set(uiSourceCode, metadata);
+    this._contentProviders.set(uiSourceCode.url(), contentProvider);
+    this._uiSourceCodeToData.set(uiSourceCode, {mimeType, metadata});
     this.addUISourceCode(uiSourceCode);
   }
 
@@ -307,23 +324,18 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
    * @param {string} path
    */
   removeFile(path) {
-    delete this._contentProviders[path];
+    this._contentProviders.delete(path);
     this.removeUISourceCode(path);
   }
 
   reset() {
-    this._contentProviders = {};
+    this._contentProviders.clear();
     this.removeProject();
     this.workspace().addProject(this);
   }
 
   dispose() {
-    this._contentProviders = {};
+    this._contentProviders.clear();
     this.removeProject();
   }
 }
-
-/** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, ?Workspace.UISourceCode.UISourceCodeMetadata>} */
-const uiSourceCodeToMetadata = new WeakMap();
-/** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, string>} */
-const uiSourceCodeToMimeType = new WeakMap();

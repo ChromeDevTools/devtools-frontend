@@ -22,7 +22,7 @@ copy_to_gen("legacy_css") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "console_counters.js"
+  entrypoint = "console_counters.ts"
 
   deps = [ ":console_counters" ]
 }

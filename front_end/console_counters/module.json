@@ -15,9 +15,10 @@
     "ui"
   ],
   "modules": [
-    "console_counters.js",
-    "console_counters-legacy.js",
-    "WarningErrorCounter.js"
+    "console_counters-legacy.js"
+  ],
+  "skip_compilation": [
+    "console_counters-legacy.js"
   ],
   "resources": [
     "warningErrorCounter.css"

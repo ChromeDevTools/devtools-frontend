@@ -78,10 +78,6 @@ export class Script {
     this._isContentScript = isContentScript;
     this._isLiveEdit = isLiveEdit;
     this.sourceMapURL = sourceMapURL;
-    if (!sourceMapURL && debugSymbols && debugSymbols.type === 'EmbeddedDWARF') {
-      // TODO(chromium:1064248) Remove this once we either drop gimli or support DebugSymbols all the way down.
-      this.sourceMapURL = 'wasm://dwarf';
-    }
     this.debugSymbols = debugSymbols;
     this.hasSourceURL = hasSourceURL;
     this.contentLength = length;

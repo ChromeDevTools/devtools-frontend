@@ -39,6 +39,9 @@ ObjectUI.ObjectPropertiesSection = ObjectUIModule.ObjectPropertiesSection.Object
 ObjectUI.ObjectPropertiesSection._maxRenderableStringLength =
     ObjectUIModule.ObjectPropertiesSection.maxRenderableStringLength;
 
+ObjectUI.ObjectPropertiesSection.getObjectPropertiesSectionFrom =
+    ObjectUIModule.ObjectPropertiesSection.getObjectPropertiesSectionFrom;
+
 /** @constructor */
 ObjectUI.ObjectPropertiesSectionsTreeOutline =
     ObjectUIModule.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;

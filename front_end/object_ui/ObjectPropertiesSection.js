@@ -39,8 +39,19 @@ import {createSpansForNodeTitle, RemoteObjectPreviewFormatter} from './RemoteObj
 
 const EXPANDABLE_MAX_LENGTH = 50;
 
-/** @type {!Map<!SDK.RemoteObject.RemoteObjectProperty, ?SDK.RemoteObject.RemoteObject>} */
-const parentMap = new Map();
+/** @type {!WeakMap<!SDK.RemoteObject.RemoteObjectProperty, ?SDK.RemoteObject.RemoteObject>} */
+const parentMap = new WeakMap();
+
+/** @type {!WeakMap<!Element, !ObjectPropertiesSection>} */
+const objectPropertiesSectionMap = new WeakMap();
+
+/**
+ * @param {!Element} element
+ * @return {!ObjectPropertiesSection|undefined}
+ */
+export const getObjectPropertiesSectionFrom = element => {
+  return objectPropertiesSectionMap.get(element);
+};
 
 /**
  * @unrestricted
@@ -78,8 +89,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       this.titleElement.tabIndex = -1;
     }
 
-    // @ts-ignore This is used by the test runner to expand sections.
-    this.element._section = this;
+    objectPropertiesSectionMap.set(this.element, this);
     this.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
     this.registerRequiredCSS('object_ui/objectPropertiesSection.css', {enableLegacyPatching: true});
     this.rootElement().childrenListElement.classList.add('source-code', 'object-properties-section');

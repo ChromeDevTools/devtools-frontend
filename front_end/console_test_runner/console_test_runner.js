@@ -393,18 +393,19 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
         if (node._expandStackTraceForTest) {
           node._expandStackTraceForTest();
         }
-        if (!node._section) {
+        const section = ObjectUI.ObjectPropertiesSection.getObjectPropertiesSectionFrom(node);
+        if (!section) {
           continue;
         }
-        if (sectionFilter && !sectionFilter(node._section)) {
+        if (sectionFilter && !sectionFilter(section)) {
           continue;
         }
-        node._section.expand();
+        section.expand();
 
         if (!deepFilter) {
           continue;
         }
-        const treeElements = node._section.rootElement().children();
+        const treeElements = section.rootElement().children();
         for (let j = 0; j < treeElements.length; ++j) {
           for (let treeElement = treeElements[j]; treeElement;
                treeElement = treeElement.traverseNextTreeElement(true, null, true)) {

@@ -19,7 +19,7 @@ devtools_module("cookie_table") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "cookie_table.js"
+  entrypoint = "cookie_table.ts"
 
   deps = [ ":cookie_table" ]
 }

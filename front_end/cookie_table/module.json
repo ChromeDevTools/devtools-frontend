@@ -5,9 +5,10 @@
     "data_grid"
   ],
   "modules": [
-    "cookie_table.js",
-    "cookie_table-legacy.js",
-    "CookiesTable.js"
+    "cookie_table-legacy.js"
+  ],
+  "skip_compilation": [
+    "cookie_table-legacy.js"
   ],
   "resources": [
     "cookiesTable.css"

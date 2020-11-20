@@ -1486,6 +1486,11 @@ export function registerCommands(inspectorBackend) {
     SignatureValidityUrl: 'signatureValidityUrl',
     SignatureTimestamps: 'signatureTimestamps'
   });
+  inspectorBackend.registerEnum(
+      'Network.PrivateNetworkRequestPolicy',
+      {Allow: 'Allow', BlockFromInsecureToMorePrivate: 'BlockFromInsecureToMorePrivate'});
+  inspectorBackend.registerEnum(
+      'Network.IPAddressSpace', {Local: 'Local', Private: 'Private', Public: 'Public', Unknown: 'Unknown'});
   inspectorBackend.registerEnum('Network.CrossOriginOpenerPolicyValue', {
     SameOrigin: 'SameOrigin',
     SameOriginAllowPopups: 'SameOriginAllowPopups',
@@ -1522,7 +1527,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Network.webSocketHandshakeResponseReceived', ['requestId', 'timestamp', 'response']);
   inspectorBackend.registerEvent(
       'Network.webSocketWillSendHandshakeRequest', ['requestId', 'timestamp', 'wallTime', 'request']);
-  inspectorBackend.registerEvent('Network.requestWillBeSentExtraInfo', ['requestId', 'associatedCookies', 'headers']);
+  inspectorBackend.registerEvent(
+      'Network.requestWillBeSentExtraInfo', ['requestId', 'associatedCookies', 'headers', 'clientSecurityState']);
   inspectorBackend.registerEvent(
       'Network.responseReceivedExtraInfo', ['requestId', 'blockedCookies', 'headers', 'headersText']);
   inspectorBackend.registerCommand('Network.canClearBrowserCache', [], ['result']);
@@ -1649,6 +1655,7 @@ export function registerCommands(inspectorBackend) {
 
   // Overlay.
   inspectorBackend.registerEnum('Overlay.LineStylePattern', {Dashed: 'dashed', Dotted: 'dotted'});
+  inspectorBackend.registerEnum('Overlay.ContrastAlgorithm', {Aa: 'aa', Aaa: 'aaa', Apca: 'apca'});
   inspectorBackend.registerEnum('Overlay.ColorFormat', {Rgb: 'rgb', Hsl: 'hsl', Hex: 'hex'});
   inspectorBackend.registerEnum('Overlay.InspectMode', {
     SearchForNode: 'searchForNode',

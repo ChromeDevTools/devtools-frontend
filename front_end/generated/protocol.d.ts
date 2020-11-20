@@ -7318,6 +7318,24 @@ declare namespace Protocol {
       errors?: SignedExchangeError[];
     }
 
+    export enum PrivateNetworkRequestPolicy {
+      Allow = 'Allow',
+      BlockFromInsecureToMorePrivate = 'BlockFromInsecureToMorePrivate',
+    }
+
+    export enum IPAddressSpace {
+      Local = 'Local',
+      Private = 'Private',
+      Public = 'Public',
+      Unknown = 'Unknown',
+    }
+
+    export interface ClientSecurityState {
+      initiatorIsSecureContext: boolean;
+      initiatorIPAddressSpace: IPAddressSpace;
+      privateNetworkRequestPolicy: PrivateNetworkRequestPolicy;
+    }
+
     export enum CrossOriginOpenerPolicyValue {
       SameOrigin = 'SameOrigin',
       SameOriginAllowPopups = 'SameOriginAllowPopups',
@@ -8216,6 +8234,10 @@ declare namespace Protocol {
        * Raw request headers as they will be sent over the wire.
        */
       headers: Headers;
+      /**
+       * The client security state set for the request.
+       */
+      clientSecurityState?: ClientSecurityState;
     }
 
     /**
@@ -8418,6 +8440,12 @@ declare namespace Protocol {
       hatchColor?: DOM.RGBA;
     }
 
+    export enum ContrastAlgorithm {
+      Aa = 'aa',
+      Aaa = 'aaa',
+      Apca = 'apca',
+    }
+
     /**
      * Configuration data for the highlighting of page elements.
      */
@@ -8486,6 +8514,10 @@ declare namespace Protocol {
        * The flex container highlight configuration (default: all transparent).
        */
       flexContainerHighlightConfig?: FlexContainerHighlightConfig;
+      /**
+       * The contrast algorithm to use for the contrast ratio (default: aa).
+       */
+      contrastAlgorithm?: ContrastAlgorithm;
     }
 
     export enum ColorFormat {

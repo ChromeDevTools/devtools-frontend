@@ -294,19 +294,10 @@
     "mobile_throttling"
   ],
   "modules": [
-    "emulation.js",
-    "emulation-legacy.js",
-    "AdvancedApp.js",
-    "DeviceModeModel.js",
-    "DeviceModeToolbar.js",
-    "DeviceModeView.js",
-    "DeviceModeWrapper.js",
-    "DevicesSettingsTab.js",
-    "EmulatedDevices.js",
-    "InspectedPagePlaceholder.js",
-    "LocationsSettingsTab.js",
-    "MediaQueryInspector.js",
-    "SensorsView.js"
+    "emulation-legacy.js"
+  ],
+  "skip_compilation": [
+    "emulation-legacy.js"
   ],
   "resources": [
     "deviceModeToolbar.css",

@@ -23,7 +23,7 @@ devtools_module("color_picker") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "color_picker.js"
+  entrypoint = "color_picker.ts"
 
   deps = [ ":color_picker" ]
 }

@@ -541,6 +541,18 @@ CodeMirror.BeforeChangeObject;
 CodeMirror.ChangeObject;
 
 /** @constructor */
+CodeMirror.Position = function() {};
+CodeMirror.Position.prototype = {
+  clear: function() {},
+  changed: function() {}
+};
+/** @type {number} */
+CodeMirror.Position.prototype.line;
+/** @type {number} */
+CodeMirror.Position.prototype.ch;
+
+
+/** @constructor */
 CodeMirror.Pos = function(line, ch) {};
 /** @type {number} */
 CodeMirror.Pos.prototype.line;

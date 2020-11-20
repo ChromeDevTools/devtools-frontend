@@ -66,6 +66,9 @@ export let Token;
 // @ts-ignore typedef
 export let Coordinates;
 
+/** @type {!WeakMap<!CodeMirror.Editor, !CodeMirrorTextEditor>} */
+const editorToDevtoolsWrapper = new WeakMap();
+
 /**
  * @implements {UI.TextEditor.TextEditor}
  * @unrestricted
@@ -84,7 +87,8 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
     const {indentWithTabs, indentUnit} = CodeMirrorTextEditor._getIndentation(
         Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get());
 
-    this._codeMirror = new CodeMirror(this.element, {
+    /** @type {!CodeMirror.Editor} */
+    this._codeMirror = /** @type {!CodeMirror.Editor} */ (new CodeMirror(this.element, {
       screenReaderLabel: options.devtoolsAccessibleName || i18nString(UIStrings.codeEditor),
       lineNumbers: options.lineNumbers,
       matchBrackets: true,
@@ -99,10 +103,10 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
       tabIndex: 0,
       pollInterval: Math.pow(2, 31) - 1,  // ~25 days
       inputStyle: options.inputStyle || 'devToolsAccessibleTextArea'
-    });
+    }));
     this._codeMirrorElement = this.element.lastElementChild;
 
-    this._codeMirror._codeMirrorTextEditor = this;
+    editorToDevtoolsWrapper.set(this._codeMirror, this);
 
     Common.Settings.Settings.instance()
         .moduleSetting('textEditorIndent')
@@ -248,43 +252,55 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!CodeMirror} codeMirror
+   * @param {!CodeMirror.Editor} codeMirrorEditor
+   * @return {!CodeMirrorTextEditor}
+   */
+  static getForCodeMirror(codeMirrorEditor) {
+    const wrapper = editorToDevtoolsWrapper.get(codeMirrorEditor);
+    if (!wrapper) {
+      throw new Error('CodeMirrorTextEditor not found');
+    }
+    return wrapper;
+  }
+
+  /**
+   * @param {!CodeMirror.Editor} codeMirror
    */
   static autocompleteCommand(codeMirror) {
-    const autocompleteController = codeMirror._codeMirrorTextEditor._autocompleteController;
+    const autocompleteController = CodeMirrorTextEditor.getForCodeMirror(codeMirror)._autocompleteController;
     if (autocompleteController) {
       autocompleteController.autocomplete(true);
     }
   }
 
   /**
-   * @param {!CodeMirror} codeMirror
+   * @param {!CodeMirror.Editor} codeMirror
    */
   static undoLastSelectionCommand(codeMirror) {
-    codeMirror._codeMirrorTextEditor._selectNextOccurrenceController.undoLastSelection();
+    CodeMirrorTextEditor.getForCodeMirror(codeMirror)._selectNextOccurrenceController.undoLastSelection();
   }
 
   /**
-   * @param {!CodeMirror} codeMirror
+   * @param {!CodeMirror.Editor} codeMirror
    */
   static selectNextOccurrenceCommand(codeMirror) {
-    codeMirror._codeMirrorTextEditor._selectNextOccurrenceController.selectNextOccurrence();
+    CodeMirrorTextEditor.getForCodeMirror(codeMirror)._selectNextOccurrenceController.selectNextOccurrence();
   }
 
   /**
    * @param {boolean} shift
-   * @param {!CodeMirror} codeMirror
+   * @param {!CodeMirror.Editor} codeMirror
    */
   static moveCamelLeftCommand(shift, codeMirror) {
-    codeMirror._codeMirrorTextEditor._doCamelCaseMovement(-1, shift);
+    CodeMirrorTextEditor.getForCodeMirror(codeMirror)._doCamelCaseMovement(-1, shift);
   }
 
   /**
    * @param {boolean} shift
-   * @param {!CodeMirror} codeMirror
+   * @param {!CodeMirror.Editor} codeMirror
    */
   static moveCamelRightCommand(shift, codeMirror) {
-    codeMirror._codeMirrorTextEditor._doCamelCaseMovement(1, shift);
+    CodeMirrorTextEditor.getForCodeMirror(codeMirror)._doCamelCaseMovement(1, shift);
   }
 
   /**
@@ -382,7 +398,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!CodeMirror} codeMirror
+   * @param {!CodeMirror.Editor} codeMirror
    */
   static _fixWordMovement(codeMirror) {
     function moveLeft(shift, codeMirror) {
@@ -1201,7 +1217,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!CodeMirror} codeMirror
+   * @param {!CodeMirror.Editor} codeMirror
    * @param {!Array.<!CodeMirror.ChangeObject>} changes
    */
   _changes(codeMirror, changes) {
@@ -1242,7 +1258,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!CodeMirror} codeMirror
+   * @param {!CodeMirror.Editor} codeMirror
    * @param {{ranges: !Array.<{head: !CodeMirror.Pos, anchor: !CodeMirror.Pos}>}} selection
    */
   _beforeSelectionChange(codeMirror, selection) {
@@ -1485,7 +1501,7 @@ CodeMirror.commands.moveCamelRight = CodeMirrorTextEditor.moveCamelRightCommand.
 CodeMirror.commands.selectCamelRight = CodeMirrorTextEditor.moveCamelRightCommand.bind(null, true);
 
 /**
- * @param {!CodeMirror} codeMirror
+ * @param {!CodeMirror.Editor} codeMirror
  */
 CodeMirror.commands.UserIndent = function(codeMirror) {
   const ranges = codeMirror.listSelections();
@@ -1503,7 +1519,7 @@ CodeMirror.commands.UserIndent = function(codeMirror) {
 };
 
 /**
- * @param {!CodeMirror} codeMirror
+ * @param {!CodeMirror.Editor} codeMirror
  * @return {!Object|undefined}
  */
 CodeMirror.commands.indentLessOrPass = function(codeMirror) {
@@ -1518,7 +1534,7 @@ CodeMirror.commands.indentLessOrPass = function(codeMirror) {
 };
 
 /**
- * @param {!CodeMirror} codeMirror
+ * @param {!CodeMirror.Editor} codeMirror
  */
 CodeMirror.commands.gotoMatchingBracket = function(codeMirror) {
   const updatedSelections = [];
@@ -1538,35 +1554,35 @@ CodeMirror.commands.gotoMatchingBracket = function(codeMirror) {
 };
 
 /**
- * @param {!CodeMirror} codemirror
+ * @param {!CodeMirror.Editor} codemirror
  */
 CodeMirror.commands.undoAndReveal = function(codemirror) {
   const scrollInfo = codemirror.getScrollInfo();
   codemirror.execCommand('undo');
   const cursor = codemirror.getCursor('start');
-  codemirror._codeMirrorTextEditor._innerRevealLine(cursor.line, scrollInfo);
-  const autocompleteController = codemirror._codeMirrorTextEditor._autocompleteController;
+  CodeMirrorTextEditor.getForCodeMirror(codemirror)._innerRevealLine(cursor.line, scrollInfo);
+  const autocompleteController = CodeMirrorTextEditor.getForCodeMirror(codemirror)._autocompleteController;
   if (autocompleteController) {
     autocompleteController.clearAutocomplete();
   }
 };
 
 /**
- * @param {!CodeMirror} codemirror
+ * @param {!CodeMirror.Editor} codemirror
  */
 CodeMirror.commands.redoAndReveal = function(codemirror) {
   const scrollInfo = codemirror.getScrollInfo();
   codemirror.execCommand('redo');
   const cursor = codemirror.getCursor('start');
-  codemirror._codeMirrorTextEditor._innerRevealLine(cursor.line, scrollInfo);
-  const autocompleteController = codemirror._codeMirrorTextEditor._autocompleteController;
+  CodeMirrorTextEditor.getForCodeMirror(codemirror)._innerRevealLine(cursor.line, scrollInfo);
+  const autocompleteController = CodeMirrorTextEditor.getForCodeMirror(codemirror)._autocompleteController;
   if (autocompleteController) {
     autocompleteController.clearAutocomplete();
   }
 };
 
 /**
- * @param {!CodeMirror} codemirror
+ * @param {!CodeMirror.Editor} codemirror
  * @return {!Object|undefined}
  */
 CodeMirror.commands.dismiss = function(codemirror) {
@@ -1577,32 +1593,35 @@ CodeMirror.commands.dismiss = function(codemirror) {
       return CodeMirror.Pass;
     }
     codemirror.setSelection(selection.anchor, selection.anchor, {scroll: false});
-    codemirror._codeMirrorTextEditor.scrollLineIntoView(selection.anchor.line);
+    CodeMirrorTextEditor.getForCodeMirror(codemirror).scrollLineIntoView(selection.anchor.line);
     return;
   }
 
   codemirror.setSelection(selection.anchor, selection.head, {scroll: false});
-  codemirror._codeMirrorTextEditor.scrollLineIntoView(selection.anchor.line);
+  CodeMirrorTextEditor.getForCodeMirror(codemirror).scrollLineIntoView(selection.anchor.line);
 };
 
 /**
- * @param {!CodeMirror} codemirror
+ * @param {!CodeMirror.Editor} codemirror
  * @return {!Object|undefined}
  */
 CodeMirror.commands.goSmartPageUp = function(codemirror) {
-  if (codemirror._codeMirrorTextEditor.selection().equal(TextUtils.TextRange.TextRange.createFromLocation(0, 0))) {
+  if (CodeMirrorTextEditor.getForCodeMirror(codemirror)
+          .selection()
+          .equal(TextUtils.TextRange.TextRange.createFromLocation(0, 0))) {
     return CodeMirror.Pass;
   }
   codemirror.execCommand('goPageUp');
 };
 
 /**
- * @param {!CodeMirror} codemirror
+ * @param {!CodeMirror.Editor} codemirror
  * @return {!Object|undefined}
  */
 CodeMirror.commands.goSmartPageDown = function(codemirror) {
-  if (codemirror._codeMirrorTextEditor.selection().equal(
-          codemirror._codeMirrorTextEditor.fullRange().collapseToEnd())) {
+  if (CodeMirrorTextEditor.getForCodeMirror(codemirror)
+          .selection()
+          .equal(CodeMirrorTextEditor.getForCodeMirror(codemirror).fullRange().collapseToEnd())) {
     return CodeMirror.Pass;
   }
   codemirror.execCommand('goPageDown');
@@ -1614,7 +1633,7 @@ CodeMirror.commands.goSmartPageDown = function(codemirror) {
  */
 export class CodeMirrorPositionHandle {
   /**
-   * @param {!CodeMirror} codeMirror
+   * @param {!CodeMirror.Editor} codeMirror
    * @param {!CodeMirror.Pos} pos
    */
   constructor(codeMirror, pos) {
@@ -1653,7 +1672,7 @@ export class CodeMirrorPositionHandle {
 export class SelectNextOccurrenceController {
   /**
    * @param {!CodeMirrorTextEditor} textEditor
-   * @param {!CodeMirror} codeMirror
+   * @param {!CodeMirror.Editor} codeMirror
    */
   constructor(textEditor, codeMirror) {
     this._textEditor = textEditor;

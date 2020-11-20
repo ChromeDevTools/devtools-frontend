@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as TextEditor from '../text_editor/text_editor.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -122,6 +119,16 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
 
     /** @type {?Element} */
     this._infoBarDiv = null;
+  }
+
+  /**
+   * @override
+   * @param {!CodeMirror.Editor} codeMirrorEditor
+   * @return {!SourcesTextEditor}
+   */
+  static getForCodeMirror(codeMirrorEditor) {
+    return /** @type {!SourcesTextEditor} */ (
+        TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor.getForCodeMirror(codeMirrorEditor));
   }
 
   /**
@@ -480,7 +487,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
       indent = SourcesTextEditor._guessIndentationLevel(lines);
     }
 
-    if (indent === TextUtils.TextUtils.Utils.Indent.TabCharacter) {
+    if (indent === '\t') {
       this.codeMirror().setOption('indentWithTabs', true);
       this.codeMirror().setOption('indentUnit', 4);
     } else {
@@ -815,10 +822,13 @@ export class SourcesTextEditorDelegate {
 }
 
 /**
- * @param {!CodeMirror} codeMirror
+ * @param {!CodeMirror.Editor} codeMirror
  */
 CodeMirror.commands.smartNewlineAndIndent = function(codeMirror) {
   codeMirror.operation(innerSmartNewlineAndIndent.bind(null, codeMirror));
+  /**
+   * @param {!CodeMirror.Editor} codeMirror
+   */
   function innerSmartNewlineAndIndent(codeMirror) {
     const selections = codeMirror.listSelections();
     const replacements = [];
@@ -829,25 +839,28 @@ CodeMirror.commands.smartNewlineAndIndent = function(codeMirror) {
       const indent = TextUtils.TextUtils.Utils.lineIndent(line);
       replacements.push('\n' + indent.substring(0, Math.min(cur.ch, indent.length)));
     }
+    // @ts-ignore replaceSelection has not been added to the types yet.
     codeMirror.replaceSelections(replacements);
-    codeMirror._codeMirrorTextEditor._onAutoAppendedSpaces();
+    SourcesTextEditor.getForCodeMirror(codeMirror)._onAutoAppendedSpaces();
   }
 };
 
 /**
+ * @param {!CodeMirror.Editor} codeMirror
  * @return {!Object|undefined}
  */
-CodeMirror.commands.sourcesDismiss = function(codemirror) {
-  if (codemirror.listSelections().length === 1 && codemirror._codeMirrorTextEditor._isSearchActive()) {
+CodeMirror.commands.sourcesDismiss = function(codeMirror) {
+  if (codeMirror.listSelections().length === 1 && SourcesTextEditor.getForCodeMirror(codeMirror)._isSearchActive()) {
     return CodeMirror.Pass;
   }
-  return CodeMirror.commands.dismiss(codemirror);
+  return CodeMirror.commands.dismiss(codeMirror);
 };
 
 export const _BlockIndentController = {
   name: 'blockIndentKeymap',
 
   /**
+   * @param {!CodeMirror.Editor} codeMirror
    * @return {*}
    */
   Enter: function(codeMirror) {
@@ -859,7 +872,7 @@ export const _BlockIndentController = {
       const start = CodeMirror.cmpPos(selection.head, selection.anchor) < 0 ? selection.head : selection.anchor;
       const line = codeMirror.getLine(start.line);
       const indent = TextUtils.TextUtils.Utils.lineIndent(line);
-      let indentToInsert = '\n' + indent + codeMirror._codeMirrorTextEditor.indent();
+      let indentToInsert = '\n' + indent + SourcesTextEditor.getForCodeMirror(codeMirror).indent();
       let isCollapsedBlock = false;
       if (selection.head.ch === 0) {
         return CodeMirror.Pass;
@@ -878,7 +891,7 @@ export const _BlockIndentController = {
     }
     codeMirror.replaceSelections(replacements);
     if (!allSelectionsAreCollapsedBlocks) {
-      codeMirror._codeMirrorTextEditor._onAutoAppendedSpaces();
+      SourcesTextEditor.getForCodeMirror(codeMirror)._onAutoAppendedSpaces();
       return;
     }
     selections = codeMirror.listSelections();
@@ -890,10 +903,11 @@ export const _BlockIndentController = {
       updatedSelections.push({head: position, anchor: position});
     }
     codeMirror.setSelections(updatedSelections);
-    codeMirror._codeMirrorTextEditor._onAutoAppendedSpaces();
+    SourcesTextEditor.getForCodeMirror(codeMirror)._onAutoAppendedSpaces();
   },
 
   /**
+   * @param {!CodeMirror.Editor} codeMirror
    * @return {*}
    */
   '\'}\'': function(codeMirror) {
@@ -937,11 +951,15 @@ export const _BlockIndentController = {
 export class TokenHighlighter {
   /**
    * @param {!SourcesTextEditor} textEditor
-   * @param {!CodeMirror} codeMirror
+   * @param {!CodeMirror.Editor} codeMirror
    */
   constructor(textEditor, codeMirror) {
     this._textEditor = textEditor;
     this._codeMirror = codeMirror;
+    /**
+     * @type {!{overlay: {token: function(!CodeMirror.StringStream): ?string}, selectionStart: ?CodeMirror.Position}|undefined}
+     */
+    this._highlightDescriptor;
   }
 
   /**
@@ -968,11 +986,14 @@ export class TokenHighlighter {
     if (oldRegex && this._highlightRegex.toString() === oldRegex.toString()) {
       // Do not re-add overlay mode if regex did not change for better performance.
       if (this._highlightDescriptor) {
-        this._highlightDescriptor.selectionStart = selectionStart;
+        this._highlightDescriptor.selectionStart =
+            /** @type {!CodeMirror.Position} */ (/** @type {*} */ (selectionStart));
       }
     } else {
       this._removeHighlight();
-      this._setHighlighter(this._searchHighlighter.bind(this, this._highlightRegex), selectionStart);
+      this._setHighlighter(
+          this._searchHighlighter.bind(this, this._highlightRegex),
+          /** @type {!CodeMirror.Position} */ (/** @type {*} */ (selectionStart)));
     }
     if (this._highlightRange) {
       const pos = TextEditor.CodeMirrorUtils.toPos(this._highlightRange);
@@ -1038,6 +1059,7 @@ export class TokenHighlighter {
   /**
    * @param {!RegExp} regex
    * @param {!CodeMirror.StringStream} stream
+   * @return {?string}
    */
   _searchHighlighter(regex, stream) {
     if (stream.column() === 0) {
@@ -1066,31 +1088,35 @@ export class TokenHighlighter {
         this._searchMatchLength = matchLength;
         return 'search-highlight search-highlight-start';
       }
-      stream.pos += match.index;
+      stream.pos += /** @type {number} */ (match.index);
     } else {
       stream.skipToEnd();
     }
+    return null;
   }
 
   /**
    * @param {string} token
-   * @param {!CodeMirror.Pos} selectionStart
+   * @param {!CodeMirror.Position} selectionStart
    * @param {!CodeMirror.StringStream} stream
+   * @return {?string}
    */
   _tokenHighlighter(token, selectionStart, stream) {
     const tokenFirstChar = token.charAt(0);
-    if (stream.match(token) && (stream.eol() || !TextUtils.TextUtils.Utils.isWordChar(stream.peek()))) {
+    if (stream.match(token) &&
+        (stream.eol() || !TextUtils.TextUtils.Utils.isWordChar(/** @type {string} */ (stream.peek())))) {
       return stream.column() === selectionStart.ch ? 'token-highlight column-with-selection' : 'token-highlight';
     }
     let eatenChar;
     do {
       eatenChar = stream.next();
     } while (eatenChar && (TextUtils.TextUtils.Utils.isWordChar(eatenChar) || stream.peek() !== tokenFirstChar));
+    return null;
   }
 
   /**
-   * @param {function(!CodeMirror.StringStream)} highlighter
-   * @param {?CodeMirror.Pos} selectionStart
+   * @param {function(!CodeMirror.StringStream): ?string} highlighter
+   * @param {?CodeMirror.Position} selectionStart
    */
   _setHighlighter(highlighter, selectionStart) {
     const overlayMode = {token: highlighter};
@@ -1104,4 +1130,5 @@ const MaximumNumberOfWhitespacesPerSingleSpan = 16;
 export const lineNumbersGutterType = 'CodeMirror-linenumbers';
 
 /** @typedef {{gutterType: string, lineNumber: number, event: !MouseEvent}} */
+// @ts-ignore typedef
 export let GutterClickEventData;

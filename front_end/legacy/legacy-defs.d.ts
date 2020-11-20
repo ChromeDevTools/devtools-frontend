@@ -16,6 +16,7 @@ declare class DOM {
 }
 
 interface Array<T> {
+  binaryIndexOf<S>(value: S, comparator: (a: S, b: T) => number): number;
   peekLast(): T | undefined;
   intersectOrdered(array: T[], comparator: (a: T, b: T) => number): T[];
   mergeOrdered(array: T[], comparator: (a: T, b: T) => number): T[];

@@ -12,7 +12,7 @@ declare global {
     mergeOrdered(array: T[], comparator: (a: T, b: T) => number): T[];
     upperBound(value: T, comparator?: (a: T, b: T) => number): number;
     lowerBound(value: T, comparator?: (a: T, b: T) => number): number;
-    binaryIndexOf(value: T, comparator: (a: T, b: T) => number): number;
+    binaryIndexOf<S>(value: S, comparator: (a: S, b: T) => number): number;
     sortRange(
         comparator: (a: T, b: T) => number, leftBound: number, rightBound: number, sortWindowLeft: number,
         sortWindowRight: number): T[];

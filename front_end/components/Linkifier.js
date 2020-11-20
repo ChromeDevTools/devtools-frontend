@@ -724,16 +724,8 @@ export class Linkifier {
    * @param {?Element} link
    * @return {?_LinkInfo}
    */
-  static _linkInfo(link) {
-    return /** @type {?_LinkInfo} */ (link ? infoByAnchor.get(link) || null : null);
-  }
-
-  /**
-   * @param {?Element} link
-   * @return {?_LinkInfo}
-   */
   static linkInfo(link) {
-    return Linkifier._linkInfo(link);
+    return /** @type {?_LinkInfo} */ (link ? infoByAnchor.get(link) || null : null);
   }
 
   /**

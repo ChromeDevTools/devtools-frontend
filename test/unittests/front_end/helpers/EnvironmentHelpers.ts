@@ -29,6 +29,19 @@ exposeLSIfNecessary();
 // Expose the locale.
 i18n.i18n.registerLocale('en-US');
 
+// Load the strings from the resource file.
+(async () => {
+  const locale = i18n.i18n.registeredLocale;
+  if (locale) {
+    // proxied call.
+    const data = await (await fetch(`locales/${locale}.json`)).json();
+    if (data) {
+      const localizedStrings = data;
+      i18n.i18n.registerLocaleData(locale, localizedStrings);
+    }
+  }
+})();
+
 let targetManager: SDK.SDKModel.TargetManager;
 
 function initializeTargetManagerIfNecessary() {

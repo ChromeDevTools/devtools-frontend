@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_105b296a83f9c105355403f3332af50f" desc="Text of an item that pause the running task">
+    Pause
+  </message>
   <message name="IDS_DEVTOOLS_23635de276a53741f5e733a826333d5b" desc="Title of an action in the input timeline tool to start recording input events">
     Start recording
   </message>

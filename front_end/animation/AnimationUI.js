@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
@@ -10,6 +11,23 @@ import * as UI from '../ui/ui.js';
 import {AnimationImpl} from './AnimationModel.js';                             // eslint-disable-line no-unused-vars
 import {AnimationTimeline, StepTimingFunction} from './AnimationTimeline.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Title of the first and last points of an animation
+  */
+  animationEndpointSlider: 'Animation Endpoint slider',
+  /**
+  *@description Title of an Animation Keyframe point
+  */
+  animationKeyframeSlider: 'Animation Keyframe slider',
+  /**
+  *@description Title of an animation keyframe group
+  *@example {anilogo} PH1
+  */
+  sSlider: '{PH1} slider',
+};
+const str_ = i18n.i18n.registerUIStrings('animation/AnimationUI.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @unrestricted
  */
@@ -167,7 +185,9 @@ export class AnimationUI {
     circle.setAttribute('r', (Options.AnimationMargin / 2).toString());
     circle.tabIndex = 0;
     UI.ARIAUtils.setAccessibleName(
-        circle, keyframeIndex <= 0 ? ls`Animation Endpoint slider` : ls`Animation Keyframe slider`);
+        circle,
+        keyframeIndex <= 0 ? i18nString(UIStrings.animationEndpointSlider) :
+                             i18nString(UIStrings.animationKeyframeSlider));
 
     if (keyframeIndex <= 0) {
       circle.style.fill = this._color;
@@ -227,7 +247,7 @@ export class AnimationUI {
     }
     const group = cache[keyframeIndex];
     group.tabIndex = 0;
-    UI.ARIAUtils.setAccessibleName(group, ls`${this._animation.name()} slider`);
+    UI.ARIAUtils.setAccessibleName(group, i18nString(UIStrings.sSlider, {PH1: this._animation.name()}));
     group.style.transform = 'translateX(' + leftDistance.toFixed(2) + 'px)';
 
     if (easing === 'linear') {

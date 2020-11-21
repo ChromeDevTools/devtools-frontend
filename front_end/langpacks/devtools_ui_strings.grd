@@ -12,7 +12,6 @@
   <release seq="1" allow_pseudo="false">
     <messages fallback_to_english="true">
       <part file="../accessibility/accessibility_strings.grdp" />
-      <part file="../animation/animation_strings.grdp" />
       <part file="../lighthouse/lighthouse_strings.grdp" />
       <part file="../bindings/bindings_strings.grdp" />
       <part file="../browser_debugger/browser_debugger_strings.grdp" />

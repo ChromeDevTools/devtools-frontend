@@ -11,7 +11,8 @@
     }
   ],
   "dependencies": [
-    "elements"
+    "elements",
+    "i18n"
   ],
   "modules": [
     "animation-legacy.js"

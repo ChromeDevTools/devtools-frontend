@@ -12,11 +12,13 @@ devtools_module("animation") {
     "AnimationScreenshotPopover.js",
     "AnimationTimeline.js",
     "AnimationUI.js",
+    "ModuleUIStrings.js",
   ]
 
   deps = [
     "../common:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../inline_editor:bundle",
     "../platform:bundle",
     "../sdk:bundle",

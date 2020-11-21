@@ -21,6 +21,7 @@ all_typescript_module_sources = [
   "animation/AnimationScreenshotPopover.js",
   "animation/AnimationTimeline.js",
   "animation/AnimationUI.js",
+  "animation/ModuleUIStrings.js",
   "bindings/BlackboxManager.js",
   "bindings/BreakpointManager.js",
   "bindings/CSSWorkspaceBinding.js",

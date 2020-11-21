@@ -1,4 +1,58 @@
 {
+  "animation/AnimationTimeline.js | animationPreviews": {
+    "message": "Animation previews"
+  },
+  "animation/AnimationTimeline.js | animationPreviewS": {
+    "message": "Animation Preview {PH1}"
+  },
+  "animation/AnimationTimeline.js | clearAll": {
+    "message": "Clear all"
+  },
+  "animation/AnimationTimeline.js | listeningForAnimations": {
+    "message": "Listening for animations..."
+  },
+  "animation/AnimationTimeline.js | pause": {
+    "message": "Pause"
+  },
+  "animation/AnimationTimeline.js | pauseAll": {
+    "message": "Pause all"
+  },
+  "animation/AnimationTimeline.js | pauseTimeline": {
+    "message": "Pause timeline"
+  },
+  "animation/AnimationTimeline.js | playbackRatePlaceholder": {
+    "message": "{PH1}%"
+  },
+  "animation/AnimationTimeline.js | playbackRates": {
+    "message": "Playback rates"
+  },
+  "animation/AnimationTimeline.js | playTimeline": {
+    "message": "Play timeline"
+  },
+  "animation/AnimationTimeline.js | replayTimeline": {
+    "message": "Replay timeline"
+  },
+  "animation/AnimationTimeline.js | resumeAll": {
+    "message": "Resume all"
+  },
+  "animation/AnimationTimeline.js | selectAnEffectAboveToInspectAnd": {
+    "message": "Select an effect above to inspect and modify."
+  },
+  "animation/AnimationTimeline.js | setSpeedToS": {
+    "message": "Set speed to {PH1}"
+  },
+  "animation/AnimationUI.js | animationEndpointSlider": {
+    "message": "Animation Endpoint slider"
+  },
+  "animation/AnimationUI.js | animationKeyframeSlider": {
+    "message": "Animation Keyframe slider"
+  },
+  "animation/AnimationUI.js | sSlider": {
+    "message": "{PH1} slider"
+  },
+  "animation/ModuleUIStrings.js | animations": {
+    "message": "Animations"
+  },
   "coverage/CoverageListView.js | Byte": {
     "message": "1 byte"
   },

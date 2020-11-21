@@ -404,6 +404,7 @@ grd_files_debug_sources = [
   "front_end/animation/AnimationScreenshotPopover.js",
   "front_end/animation/AnimationTimeline.js",
   "front_end/animation/AnimationUI.js",
+  "front_end/animation/ModuleUIStrings.js",
   "front_end/bindings/BlackboxManager.js",
   "front_end/bindings/BreakpointManager.js",
   "front_end/bindings/CSSWorkspaceBinding.js",

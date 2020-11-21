@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -13,6 +14,69 @@ import {AnimationEffect, AnimationGroup, AnimationImpl, AnimationModel, Events} 
 import {AnimationScreenshotPopover} from './AnimationScreenshotPopover.js';
 import {AnimationUI} from './AnimationUI.js';
 
+export const UIStrings = {
+  /**
+  *@description Timeline hint text content in Animation Timeline of the Animation Inspector
+  */
+  selectAnEffectAboveToInspectAnd: 'Select an effect above to inspect and modify.',
+  /**
+  *@description Text to clear everything
+  */
+  clearAll: 'Clear all',
+  /**
+  *@description Tooltip text that appears when hovering over largeicon pause button in Animation Timeline of the Animation Inspector
+  */
+  pauseAll: 'Pause all',
+  /**
+  *@description Title of the playback rate button listbox
+  */
+  playbackRates: 'Playback rates',
+  /**
+  *@description Text in Animation Timeline of the Animation Inspector
+  *@example {50} PH1
+  */
+  playbackRatePlaceholder: '{PH1}%',
+  /**
+  *@description Text of an item that pause the running task
+  */
+  pause: 'Pause',
+  /**
+  *@description Button title in Animation Timeline of the Animation Inspector
+  *@example {50%} PH1
+  */
+  setSpeedToS: 'Set speed to {PH1}',
+  /**
+  *@description Title of Animation Previews listbox
+  */
+  animationPreviews: 'Animation previews',
+  /**
+  *@description Empty buffer hint text content in Animation Timeline of the Animation Inspector
+  */
+  listeningForAnimations: 'Listening for animations...',
+  /**
+  *@description Tooltip text that appears when hovering over largeicon replay animation button in Animation Timeline of the Animation Inspector
+  */
+  replayTimeline: 'Replay timeline',
+  /**
+  *@description Text in Animation Timeline of the Animation Inspector
+  */
+  resumeAll: 'Resume all',
+  /**
+  *@description Title of control button in animation timeline of the animation inspector
+  */
+  playTimeline: 'Play timeline',
+  /**
+  *@description Title of control button in animation timeline of the animation inspector
+  */
+  pauseTimeline: 'Pause timeline',
+  /**
+  *@description Title of a specific Animation Preview
+  *@example {1} PH1
+  */
+  animationPreviewS: 'Animation Preview {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('animation/AnimationTimeline.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!WeakMap<!SDK.DOMModel.DOMNode, !NodeUI>} */
 const nodeUIsByNode = new WeakMap();
 
@@ -37,7 +101,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._createHeader();
     this._animationsContainer = this.contentElement.createChild('div', 'animation-timeline-rows');
     const timelineHint = this.contentElement.createChild('div', 'animation-timeline-rows-hint');
-    timelineHint.textContent = ls`Select an effect above to inspect and modify.`;
+    timelineHint.textContent = i18nString(UIStrings.selectAnEffectAboveToInspectAnd);
 
     /** @type {!Array<!HTMLElement>} */
     this._playbackRateButtons;
@@ -155,30 +219,32 @@ export class AnimationTimeline extends UI.Widget.VBox {
   _createHeader() {
     const toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
     const topToolbar = new UI.Toolbar.Toolbar('animation-timeline-toolbar', toolbarContainer);
-    this._clearButton = new UI.Toolbar.ToolbarButton(ls`Clear all`, 'largeicon-clear');
+    this._clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
     this._clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._reset.bind(this));
     topToolbar.appendToolbarItem(this._clearButton);
     topToolbar.appendSeparator();
 
-    this._pauseButton = new UI.Toolbar.ToolbarToggle(ls`Pause all`, 'largeicon-pause', 'largeicon-resume');
+    this._pauseButton =
+        new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.pauseAll), 'largeicon-pause', 'largeicon-resume');
     this._pauseButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._togglePauseAll.bind(this));
     topToolbar.appendToolbarItem(this._pauseButton);
 
     const playbackRateControl = toolbarContainer.createChild('div', 'animation-playback-rate-control');
     playbackRateControl.addEventListener('keydown', this._handlePlaybackRateControlKeyDown.bind(this));
     UI.ARIAUtils.markAsListBox(playbackRateControl);
-    UI.ARIAUtils.setAccessibleName(playbackRateControl, ls`Playback rates`);
+    UI.ARIAUtils.setAccessibleName(playbackRateControl, i18nString(UIStrings.playbackRates));
 
     /** @type {!Array<!HTMLElement>} */
     this._playbackRateButtons = [];
     for (const playbackRate of GlobalPlaybackRates) {
       const button =
           /** @type {!HTMLElement} */ (playbackRateControl.createChild('button', 'animation-playback-rate-button'));
-      button.textContent = playbackRate ? ls`${playbackRate * 100}%` : ls`Pause`;
+      button.textContent = playbackRate ? i18nString(UIStrings.playbackRatePlaceholder, {PH1: playbackRate * 100}) :
+                                          i18nString(UIStrings.pause);
       playbackRates.set(button, playbackRate);
       button.addEventListener('click', this._setPlaybackRate.bind(this, playbackRate));
       UI.ARIAUtils.markAsOption(button);
-      button.title = ls`Set speed to ${button.textContent}`;
+      button.title = i18nString(UIStrings.setSpeedToS, {PH1: button.textContent});
       button.tabIndex = -1;
       this._playbackRateButtons.push(button);
     }
@@ -187,20 +253,21 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._previewContainer =
         /** @type {!HTMLElement} */ (this.contentElement.createChild('div', 'animation-timeline-buffer'));
     UI.ARIAUtils.markAsListBox(this._previewContainer);
-    UI.ARIAUtils.setAccessibleName(this._previewContainer, ls`Animation previews`);
+    UI.ARIAUtils.setAccessibleName(this._previewContainer, i18nString(UIStrings.animationPreviews));
     this._popoverHelper =
         new UI.PopoverHelper.PopoverHelper(this._previewContainer, this._getPopoverRequest.bind(this));
     this._popoverHelper.setDisableOnClick(true);
     this._popoverHelper.setTimeout(0);
     const emptyBufferHint = this.contentElement.createChild('div', 'animation-timeline-buffer-hint');
-    emptyBufferHint.textContent = ls`Listening for animations...`;
+    emptyBufferHint.textContent = i18nString(UIStrings.listeningForAnimations);
     const container = this.contentElement.createChild('div', 'animation-timeline-header');
     const controls = container.createChild('div', 'animation-controls');
     this._currentTime =
         /** @type {!HTMLElement} */ (controls.createChild('div', 'animation-timeline-current-time monospace'));
 
     const toolbar = new UI.Toolbar.Toolbar('animation-controls-toolbar', controls);
-    this._controlButton = new UI.Toolbar.ToolbarToggle(ls`Replay timeline`, 'largeicon-replay-animation');
+    this._controlButton =
+        new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.replayTimeline), 'largeicon-replay-animation');
     this._controlState = _ControlState.Replay;
     this._controlButton.setToggled(true);
     this._controlButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._controlButtonToggle.bind(this));
@@ -317,7 +384,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
     this._setPlaybackRate(this._playbackRate);
     if (this._pauseButton) {
-      this._pauseButton.setTitle(this._allPaused ? ls`Resume all` : ls`Pause all`);
+      this._pauseButton.setTitle(this._allPaused ? i18nString(UIStrings.resumeAll) : i18nString(UIStrings.pauseAll));
     }
   }
 
@@ -364,19 +431,19 @@ export class AnimationTimeline extends UI.Widget.VBox {
     if (this._selectedGroup && this._selectedGroup.paused()) {
       this._controlState = _ControlState.Play;
       this._controlButton.setToggled(true);
-      this._controlButton.setTitle(ls`Play timeline`);
+      this._controlButton.setTitle(i18nString(UIStrings.playTimeline));
       this._controlButton.setGlyph('largeicon-play-animation');
     } else if (
         !this._scrubberPlayer || !this._scrubberPlayer.currentTime ||
         this._scrubberPlayer.currentTime >= this.duration()) {
       this._controlState = _ControlState.Replay;
       this._controlButton.setToggled(true);
-      this._controlButton.setTitle(ls`Replay timeline`);
+      this._controlButton.setTitle(i18nString(UIStrings.replayTimeline));
       this._controlButton.setGlyph('largeicon-replay-animation');
     } else {
       this._controlState = _ControlState.Pause;
       this._controlButton.setToggled(false);
-      this._controlButton.setTitle(ls`Pause timeline`);
+      this._controlButton.setTitle(i18nString(UIStrings.pauseTimeline));
       this._controlButton.setGlyph('largeicon-pause-animation');
     }
   }
@@ -519,7 +586,8 @@ export class AnimationTimeline extends UI.Widget.VBox {
     preview.removeButton().addEventListener('click', this._removeAnimationGroup.bind(this, group));
     preview.element.addEventListener('click', this._selectAnimationGroup.bind(this, group));
     preview.element.addEventListener('keydown', this._handleAnimationGroupKeyDown.bind(this, group));
-    UI.ARIAUtils.setAccessibleName(preview.element, ls`Animation Preview ${this._groupBuffer.indexOf(group) + 1}`);
+    UI.ARIAUtils.setAccessibleName(
+        preview.element, i18nString(UIStrings.animationPreviewS, {PH1: this._groupBuffer.indexOf(group) + 1}));
     UI.ARIAUtils.markAsOption(preview.element);
 
     if (this._previewMap.size === 1) {

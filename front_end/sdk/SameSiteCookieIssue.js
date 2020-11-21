@@ -390,10 +390,8 @@ const sameSiteNoneInsecureWarnSet = {
 /**
  * @type {!Array<!{link: string, linkTitle: string}>}
  */
-const schemefulSameSiteArticles = [{
-  link: 'https://www.chromium.org/updates/schemeful-same-site/schemeful-same-site-devtools-issues',
-  linkTitle: ls`How Schemeful Same-Site Works`
-}];
+const schemefulSameSiteArticles =
+    [{link: 'https://web.dev/schemeful-samesite/', linkTitle: ls`How Schemeful Same-Site Works`}];
 
 const resolveBySentenceForDowngrade =
     ls`Resolve this issue by migrating your site (as defined by the eTLD+1) entirely to HTTPS. It is also recommended to mark the cookie with the |Secure| attribute if that is not already the case.`;

@@ -3,10 +3,23 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import * as ReportRenderer from './LighthouseReporterTypes.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Title of combo box in audits report selector
+  */
+  reports: 'Reports',
+  /**
+  *@description New report item label in Lighthouse Report Selector
+  */
+  newReport: '(new report)',
+};
+const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseReportSelector.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ReportSelector {
   /**
    * @param {function():void} renderNewLighthouseView
@@ -14,7 +27,8 @@ export class ReportSelector {
   constructor(renderNewLighthouseView) {
     this._renderNewLighthouseView = renderNewLighthouseView;
     this._newLighthouseItem = document.createElement('option');
-    this._comboBox = new UI.Toolbar.ToolbarComboBox(this._handleChange.bind(this), ls`Reports`, 'lighthouse-report');
+    this._comboBox = new UI.Toolbar.ToolbarComboBox(
+        this._handleChange.bind(this), i18nString(UIStrings.reports), 'lighthouse-report');
     this._comboBox.setMaxWidth(180);
     this._comboBox.setMinWidth(140);
     this._itemByOptionElement = new Map();
@@ -26,7 +40,7 @@ export class ReportSelector {
 
     this._comboBox.setEnabled(false);
     this._newLighthouseItem = document.createElement('option');
-    this._newLighthouseItem.label = Common.UIString.UIString('(new report)');
+    this._newLighthouseItem.label = i18nString(UIStrings.newReport);
     this._comboBox.selectElement().appendChild(this._newLighthouseItem);
     this._comboBox.select(this._newLighthouseItem);
   }

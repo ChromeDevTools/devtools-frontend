@@ -3,10 +3,135 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {ProtocolService} from './LighthouseProtocolService.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  canOnlyAuditHttphttpsPagesAnd:
+      'Can only audit HTTP/HTTPS pages and `Chrome` extensions. Navigate to a different page to start an audit.',
+  /**
+  *@description Text when stored data in one location may affect lighthouse run
+  *@example {IndexedDB} PH1
+  */
+  thereMayBeStoredDataAffectingSingular:
+      'There may be stored data affecting loading performance in this location: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores.',
+  /**
+  *@description Text when stored data in multiple locations may affect lighthouse run
+  *@example {IndexedDB, WebSQL} PH1
+  */
+  thereMayBeStoredDataAffectingLoadingPlural:
+      'There may be stored data affecting loading performance in these locations: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores.',
+  /**
+  *@description Help text in Lighthouse Controller
+  */
+  multipleTabsAreBeingControlledBy:
+      'Multiple tabs are being controlled by the same `service worker`. Close your other tabs on the same origin to audit this page.',
+  /**
+  *@description Help text in Lighthouse Controller
+  */
+  atLeastOneCategoryMustBeSelected: 'At least one category must be selected.',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  localStorage: 'Local Storage',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  indexeddb: 'IndexedDB',
+  /**
+  *@description Text in Application Panel Sidebar of the Application panel
+  */
+  webSql: 'Web SQL',
+  /**
+  *@description Text for the performance of something
+  */
+  performance: 'Performance',
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  howLongDoesThisAppTakeToShow: 'How long does this app take to show content and become usable',
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  progressiveWebApp: 'Progressive Web App',
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  doesThisPageMeetTheStandardOfA: 'Does this page meet the standard of a Progressive Web App',
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  bestPractices: 'Best practices',
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  doesThisPageFollowBestPractices: 'Does this page follow best practices for modern web development',
+  /**
+  *@description Text for accessibility of the web page
+  */
+  accessibility: 'Accessibility',
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  isThisPageUsableByPeopleWith: 'Is this page usable by people with disabilities or impairments',
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  seo: 'SEO',
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  isThisPageOptimizedForSearch: 'Is this page optimized for search engine results ranking',
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  publisherAds: 'Publisher Ads',
+  /**
+  *@description Help text in Lighthouse Controller
+  */
+  isThisPageOptimizedForAdSpeedAnd: 'Is this page optimized for ad speed and quality',
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  applyMobileEmulation: 'Apply mobile emulation',
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  applyMobileEmulationDuring: 'Apply mobile emulation during auditing',
+  /**
+  *@description Text for the mobile platform, as opposed to desktop
+  */
+  mobile: 'Mobile',
+  /**
+  *@description Text for the desktop platform, as opposed to mobile
+  */
+  desktop: 'Desktop',
+  /**
+  *@description Text for option to enable simulated throttling in Lighthouse Panel
+  */
+  simulatedThrottling: 'Simulated throttling',
+  /**
+  *@description Tooltip text that appears when hovering over the 'Simulated Throttling' checkbox in the settings pane opened by clicking the setting cog in the start view of the audits panel
+  */
+  simulateASlowerPageLoadBasedOn:
+      'Simulate a slower page load, based on data from an initial unthrottled load. If disabled, the page is actually slowed with applied throttling.',
+  /**
+  *@description Text to clear storage of the web page
+  */
+  clearStorage: 'Clear storage',
+  /**
+  *@description Text in Lighthouse Controller
+  */
+  resetStorageLocalstorage:
+      'Reset storage (localStorage, IndexedDB, etc) before auditing. (Good for performance & PWA testing)'
+};
+const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseController.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.ServiceWorkerManager.ServiceWorkerManager>}
  * @unrestricted
@@ -117,8 +242,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
     const mainTarget = this._manager.target();
     const inspectedURL = mainTarget && mainTarget.inspectedURL();
     if (inspectedURL && !/^(http|chrome-extension)/.test(inspectedURL)) {
-      return Common.UIString.UIString(
-          'Can only audit HTTP/HTTPS pages and Chrome extensions. Navigate to a different page to start an audit.');
+      return i18nString(UIStrings.canOnlyAuditHttphttpsPagesAnd);
     }
 
     return null;
@@ -142,14 +266,10 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
                           .map(usage => STORAGE_TYPE_NAMES.get(usage.storageType))
                           .filter(Boolean);
     if (locations.length === 1) {
-      return Common.UIString.UIString(
-          'There may be stored data affecting loading performance in this location: %s. Audit this page in an incognito window to prevent those resources from affecting your scores.',
-          locations.join(', '));
+      return i18nString(UIStrings.thereMayBeStoredDataAffectingSingular, {PH1: locations[0]});
     }
     if (locations.length > 1) {
-      return Common.UIString.UIString(
-          'There may be stored data affecting loading performance in these locations: %s. Audit this page in an incognito window to prevent those resources from affecting your scores.',
-          locations.join(', '));
+      return i18nString(UIStrings.thereMayBeStoredDataAffectingLoadingPlural, {PH1: locations.join(', ')});
     }
     return '';
   }
@@ -244,10 +364,9 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
 
     let helpText = '';
     if (hasActiveServiceWorker) {
-      helpText = Common.UIString.UIString(
-          'Multiple tabs are being controlled by the same service worker. Close your other tabs on the same origin to audit this page.');
+      helpText = i18nString(UIStrings.multipleTabsAreBeingControlledBy);
     } else if (!hasAtLeastOneCategory) {
-      helpText = Common.UIString.UIString('At least one category must be selected.');
+      helpText = i18nString(UIStrings.atLeastOneCategoryMustBeSelected);
     } else if (unauditablePageMessage) {
       helpText = unauditablePageMessage;
     }
@@ -261,9 +380,9 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
 }
 
 const STORAGE_TYPE_NAMES = new Map([
-  [Protocol.Storage.StorageType.Local_storage, Common.UIString.UIString('Local Storage')],
-  [Protocol.Storage.StorageType.Indexeddb, Common.UIString.UIString('IndexedDB')],
-  [Protocol.Storage.StorageType.Websql, Common.UIString.UIString('Web SQL')],
+  [Protocol.Storage.StorageType.Local_storage, i18nString(UIStrings.localStorage)],
+  [Protocol.Storage.StorageType.Indexeddb, i18nString(UIStrings.indexeddb)],
+  [Protocol.Storage.StorageType.Websql, i18nString(UIStrings.webSql)],
 ]);
 
 /** @type {!Array.<!Preset>} */
@@ -272,44 +391,44 @@ export const Presets = [
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_perf', true),
     configID: 'performance',
-    title: ls`Performance`,
-    description: ls`How long does this app take to show content and become usable`,
+    title: i18nString(UIStrings.performance),
+    description: i18nString(UIStrings.howLongDoesThisAppTakeToShow),
     plugin: false,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_pwa', true),
     configID: 'pwa',
-    title: ls`Progressive Web App`,
-    description: ls`Does this page meet the standard of a Progressive Web App`,
+    title: i18nString(UIStrings.progressiveWebApp),
+    description: i18nString(UIStrings.doesThisPageMeetTheStandardOfA),
     plugin: false,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_best_practices', true),
     configID: 'best-practices',
-    title: ls`Best practices`,
-    description: ls`Does this page follow best practices for modern web development`,
+    title: i18nString(UIStrings.bestPractices),
+    description: i18nString(UIStrings.doesThisPageFollowBestPractices),
     plugin: false,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_a11y', true),
     configID: 'accessibility',
-    title: ls`Accessibility`,
-    description: ls`Is this page usable by people with disabilities or impairments`,
+    title: i18nString(UIStrings.accessibility),
+    description: i18nString(UIStrings.isThisPageUsableByPeopleWith),
     plugin: false,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_seo', true),
     configID: 'seo',
-    title: ls`SEO`,
-    description: ls`Is this page optimized for search engine results ranking`,
+    title: i18nString(UIStrings.seo),
+    description: i18nString(UIStrings.isThisPageOptimizedForSearch),
     plugin: false,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_pubads', false),
     plugin: true,
     configID: 'lighthouse-plugin-publisher-ads',
-    title: ls`Publisher Ads`,
-    description: ls`Is this page optimized for ad speed and quality`
+    title: i18nString(UIStrings.publisherAds),
+    description: i18nString(UIStrings.isThisPageOptimizedForAdSpeedAnd)
   },
 ];
 
@@ -317,27 +436,26 @@ export const Presets = [
 export const RuntimeSettings = [
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.device_type', 'mobile'),
-    title: ls`Apply mobile emulation`,
-    description: ls`Apply mobile emulation during auditing`,
+    title: i18nString(UIStrings.applyMobileEmulation),
+    description: i18nString(UIStrings.applyMobileEmulationDuring),
     setFlags: (flags, value) => {
       // See Audits.AuditsPanel._setupEmulationAndProtocolConnection()
       flags.emulatedFormFactor = value;
     },
     options: [
-      {label: ls`Mobile`, value: 'mobile'},
-      {label: ls`Desktop`, value: 'desktop'},
+      {label: i18nString(UIStrings.mobile), value: 'mobile'},
+      {label: i18nString(UIStrings.desktop), value: 'desktop'},
     ],
     learnMore: undefined,
   },
   {
     // This setting is disabled, but we keep it around to show in the UI.
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.throttling', true),
-    title: ls`Simulated throttling`,
+    title: i18nString(UIStrings.simulatedThrottling),
     // We will disable this when we have a Lantern trace viewer within DevTools.
     learnMore:
         'https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#devtools-lighthouse-panel-throttling',
-    description: ls
-    `Simulate a slower page load, based on data from an initial unthrottled load. If disabled, the page is actually slowed with applied throttling.`,
+    description: i18nString(UIStrings.simulateASlowerPageLoadBasedOn),
     setFlags: (flags, value) => {
       flags.throttlingMethod = value ? 'simulate' : 'devtools';
     },
@@ -345,8 +463,8 @@ export const RuntimeSettings = [
   },
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.clear_storage', true),
-    title: ls`Clear storage`,
-    description: ls`Reset storage (localStorage, IndexedDB, etc) before auditing. (Good for performance & PWA testing)`,
+    title: i18nString(UIStrings.clearStorage),
+    description: i18nString(UIStrings.resetStorageLocalstorage),
     setFlags: (flags, value) => {
       flags.disableStorageReset = !value;
     },
@@ -355,18 +473,18 @@ export const RuntimeSettings = [
   },
 ];
 
-    export const Events = {
-      PageAuditabilityChanged: Symbol('PageAuditabilityChanged'),
-      PageWarningsChanged: Symbol('PageWarningsChanged'),
-      AuditProgressChanged: Symbol('AuditProgressChanged'),
-      RequestLighthouseStart: Symbol('RequestLighthouseStart'),
-      RequestLighthouseCancel: Symbol('RequestLighthouseCancel'),
-    };
+export const Events = {
+  PageAuditabilityChanged: Symbol('PageAuditabilityChanged'),
+  PageWarningsChanged: Symbol('PageWarningsChanged'),
+  AuditProgressChanged: Symbol('AuditProgressChanged'),
+  RequestLighthouseStart: Symbol('RequestLighthouseStart'),
+  RequestLighthouseCancel: Symbol('RequestLighthouseCancel'),
+};
 
-    /** @typedef {{setting: !Common.Settings.Setting<?>, configID: string, title: string, description: string, plugin: boolean}} */
-    // @ts-ignore typedef
-    export let Preset;
+/** @typedef {{setting: !Common.Settings.Setting<?>, configID: string, title: string, description: string, plugin: boolean}} */
+// @ts-ignore typedef
+export let Preset;
 
-    /** @typedef {{setting: !Common.Settings.Setting<?>, description: string, setFlags: function(!Object<string, *>, string):void, options: (!Array<?>|undefined), title: (string|undefined), learnMore: (string|undefined)}} */
-    // @ts-ignore typedef
-    export let RuntimeSetting;
+/** @typedef {{setting: !Common.Settings.Setting<?>, description: string, setFlags: function(!Object<string, *>, string):void, options: (!Array<?>|undefined), title: (string|undefined), learnMore: (string|undefined)}} */
+// @ts-ignore typedef
+export let RuntimeSetting;

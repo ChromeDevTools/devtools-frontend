@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
@@ -15,6 +16,23 @@ import * as Workspace from '../workspace/workspace.js';
 
 import * as ReportRenderer from './LighthouseReporterTypes.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Label for view trace button when simulated throttling is enabled
+  */
+  viewOriginalTrace: 'View Original Trace',
+  /**
+  *@description Text of the timeline button in Lighthouse Report Renderer
+  */
+  viewTrace: 'View Trace',
+  /**
+  *@description Help text for 'View Trace' button
+  */
+  thePerformanceMetricsAboveAre:
+      'The performance metrics above are simulated and won\'t match the timings found in this trace. Disable simulated throttling in "Lighthouse Settings" if you want the timings to match.',
+};
+const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseReportRenderer.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MaxLengthForLinks = 40;
 
 /**
@@ -50,11 +68,10 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
     }
 
     const defaultPassTrace = artifacts.traces.defaultPass;
-    const label = simulated ? Common.UIString.UIString('View Original Trace') : Common.UIString.UIString('View Trace');
+    const label = simulated ? i18nString(UIStrings.viewOriginalTrace) : i18nString(UIStrings.viewTrace);
     const timelineButton = UI.UIUtils.createTextButton(label, onViewTraceClick, 'view-trace');
     if (simulated) {
-      timelineButton.title = Common.UIString.UIString(
-          'The performance metrics above are simulated and won\'t match the timings found in this trace. Disable simulated throttling in "Lighthouse Settings" if you want the timings to match.');
+      timelineButton.title = i18nString(UIStrings.thePerformanceMetricsAboveAre);
     }
     container.insertBefore(timelineButton, disclaimerEl.nextSibling);
 

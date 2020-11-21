@@ -336,6 +336,9 @@
   <message name="IDS_DEVTOOLS_e0dcc9aef6db5e61e4102efdf5d54378" desc="Text in Accessibility Node View of the Accessibility panel">
     Invalid source.
   </message>
+  <message name="IDS_DEVTOOLS_e0e4fc6213e8b3593495a7260c3a4c2e" desc="Text for accessibility of the web page">
+    Accessibility
+  </message>
   <message name="IDS_DEVTOOLS_e1312fc3ec5859447389668b721d932f" desc="Tooltip text that appears when hovering over the 'Pressed' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Whether this toggle button is currently in a pressed state.
   </message>

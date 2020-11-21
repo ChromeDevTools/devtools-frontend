@@ -3,10 +3,147 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {Events, LighthouseController, RuntimeSettings} from './LighthouseController.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text to cancel something
+  */
+  cancel: 'Cancel',
+  /**
+  *@description Text when something is loading
+  */
+  loading: 'Loading…',
+  /**
+  *@description Text in Lighthouse Status View
+  *@example {github.com} PH1
+  */
+  auditingS: 'Auditing {PH1}',
+  /**
+  *@description Text in Lighthouse Status View
+  */
+  auditingYourWebPage: 'Auditing your web page',
+  /**
+  *@description Text in Lighthouse Status View
+  */
+  cancelling: 'Cancelling…',
+  /**
+  *@description Text in Lighthouse Status View
+  */
+  lighthouseIsWarmingUp: '`Lighthouse` is warming up…',
+  /**
+  *@description Text in Lighthouse Status View
+  */
+  lighthouseIsLoadingYourPage: '`Lighthouse` is loading your page',
+  /**
+  *@description Text in Lighthouse Status View
+  *@example {75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]} PH1
+  */
+  fastFactMessageWithPlaceholder: '💡 {PH1}',
+  /**
+  *@description Text of a DOM element in Lighthouse Status View
+  */
+  ahSorryWeRanIntoAnError: 'Ah, sorry! We ran into an error.',
+  /**
+  *@description Text in Lighthouse Status View
+  */
+  tryToNavigateToTheUrlInAFresh:
+      'Try to navigate to the URL in a fresh `Chrome` profile without any other tabs or extensions open and try again.',
+  /**
+  *@description Text of a DOM element in Lighthouse Status View
+  */
+  ifThisIssueIsReproduciblePlease: 'If this issue is reproducible, please report it at the `Lighthouse` `GitHub` repo.',
+  /**
+  *@description Text in Lighthouse Status View
+  */
+  lighthouseIsLoadingThePage: 'Lighthouse is loading the page.',
+  /**
+  *@description Text in the pop-up dialog when lighthouse is gathering information in the Lighthouse panel
+  */
+  lighthouseIsGatheringInformation: '`Lighthouse` is gathering information about the page to compute your score.',
+  /**
+  *@description Text in the pop-up dialog when lighthouse is auditing in the Lighthouse panel
+  */
+  almostThereLighthouseIsNow: 'Almost there! `Lighthouse` is now generating your report.',
+  /**
+  *@description Text when lighthouse is loading the page in the Lighthouse panel
+  */
+  lighthouseIsLoadingYourPageWith:
+      '`Lighthouse` is loading your page with throttling to measure performance on a mobile device on 3G.',
+  /**
+  *@description Text when lighthouse is loading the page in the Lighthouse panel
+  */
+  lighthouseIsLoadingYourPageWithThrottling:
+      '`Lighthouse` is loading your page with throttling to measure performance on a slow desktop on 3G.',
+  /**
+  *@description Text when lighthouse is loading the page in the Lighthouse panel
+  */
+  lighthouseIsLoadingYourPageWithMobile: '`Lighthouse` is loading your page with mobile emulation.',
+  /**
+  *@description Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel
+  */
+  mbTakesAMinimumOfSecondsTo:
+      '1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: `WebPageTest` and `DevTools` 3G definition].',
+  /**
+  *@description Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel
+  */
+  rebuildingPinterestPagesFor:
+      'Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: `WPO Stats`]',
+  /**
+  *@description Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel
+  */
+  byReducingTheResponseSizeOfJson:
+      'By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: `WPO Stats`]',
+  /**
+  *@description Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel
+  */
+  walmartSawAIncreaseInRevenueFor:
+      'Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: `WPO Stats`]',
+  /**
+  *@description Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel
+  */
+  ifASiteTakesSecondToBecome:
+      'If a site takes >1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: `Google Developers Blog`]',
+  /**
+  *@description Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel
+  */
+  OfGlobalMobileUsersInWereOnGOrG: '75% of global mobile users in 2016 were on 2G or 3G [Source: `GSMA Mobile`]',
+  /**
+  *@description Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel
+  */
+  theAverageUserDeviceCostsLess:
+      'The average user device costs less than 200 USD. [Source: `International Data Corporation`]',
+  /**
+  *@description Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel
+  */
+  SecondsIsTheAverageTimeAMobile:
+      '19 seconds is the average time a mobile web page takes to load on a 3G connection [Source: `Google DoubleClick blog`]',
+  /**
+  *@description Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel
+  */
+  OfMobilePagesTakeNearlySeconds:
+      '70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: `Think with Google`]',
+  /**
+  *@description Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel
+  */
+  asPageLoadTimeIncreasesFromOne:
+      'As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: `Think with Google`]',
+  /**
+  *@description Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel
+  */
+  asTheNumberOfElementsOnAPage:
+      'As the number of elements on a page increases from 400 to 6,000, the probability of conversion drops 95%. [Source: `Think with Google`]',
+  /**
+  *@description Fast fact in the pop-up dialog when lighthouse is running in the Lighthouse panel
+  */
+  lighthouseOnlySimulatesMobile:
+      '`Lighthouse` only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: `Lighthouse` team]',
+};
+const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseStatusView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class StatusView {
   /**
    * @param {!LighthouseController} controller
@@ -44,7 +181,7 @@ export class StatusView {
         {cssFile: 'lighthouse/lighthouseDialog.css', enableLegacyPatching: true, delegatesFocus: undefined});
     const lighthouseViewElement = dialogRoot.createChild('div', 'lighthouse-view vbox');
 
-    const cancelButton = UI.UIUtils.createTextButton(ls`Cancel`, this._cancel.bind(this));
+    const cancelButton = UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), this._cancel.bind(this));
     const fragment = UI.Fragment.Fragment.build`
       <div class="lighthouse-view vbox">
         <h2 $="status-header">Auditing your web page…</h2>
@@ -91,11 +228,12 @@ export class StatusView {
    */
   show(dialogRenderElement) {
     this._reset();
-    this.updateStatus(ls`Loading…`);
+    this.updateStatus(i18nString(UIStrings.loading));
 
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(this._inspectedURL);
     const pageHost = parsedURL && parsedURL.host;
-    const statusHeader = pageHost ? ls`Auditing ${pageHost}` : ls`Auditing your web page`;
+    const statusHeader =
+        pageHost ? i18nString(UIStrings.auditingS, {PH1: pageHost}) : i18nString(UIStrings.auditingYourWebPage);
     this._renderStatusHeader(statusHeader);
     // @ts-ignore TS expects Document, but gets Element (show takes Element|Document)
     this._dialog.show(dialogRenderElement);
@@ -132,7 +270,7 @@ export class StatusView {
     }
 
     if (message.startsWith('Cancel')) {
-      this._commitTextChange(Common.UIString.UIString('Cancelling…'));
+      this._commitTextChange(i18nString(UIStrings.cancelling));
       clearTimeout(this._scheduledFastFactTimeout);
       return;
     }
@@ -145,7 +283,7 @@ export class StatusView {
     // @ts-ignore indexOf null is valid.
     const currentPhaseIndex = StatusPhases.indexOf(this._currentPhase);
     if (!nextPhase && !this._currentPhase) {
-      this._commitTextChange(Common.UIString.UIString('Lighthouse is warming up…'));
+      this._commitTextChange(i18nString(UIStrings.lighthouseIsWarmingUp));
       clearTimeout(this._scheduledFastFactTimeout);
     } else if (nextPhase && (!this._currentPhase || currentPhaseIndex < nextPhaseIndex)) {
       this._currentPhase = nextPhase;
@@ -182,7 +320,7 @@ export class StatusView {
       return item.deviceType === deviceType && item.throttling === throttling;
     });
 
-    return match ? match.message : ls`Lighthouse is loading your page`;
+    return match ? match.message : i18nString(UIStrings.lighthouseIsLoadingYourPage);
   }
 
   /**
@@ -222,7 +360,8 @@ export class StatusView {
     }
 
     const fastFactIndex = Math.floor(Math.random() * this._fastFactsQueued.length);
-    this._scheduleTextChange(ls`\ud83d\udca1 ${this._fastFactsQueued[fastFactIndex]}`);
+    this._scheduleTextChange(
+        i18nString(UIStrings.fastFactMessageWithPlaceholder, {PH1: this._fastFactsQueued[fastFactIndex]}));
     this._fastFactsQueued.splice(fastFactIndex, 1);
   }
 
@@ -274,11 +413,9 @@ export class StatusView {
 
     if (this._statusText) {
       this._commitTextChange('');
-      UI.UIUtils.createTextChild(
-          this._statusText.createChild('p'), Common.UIString.UIString('Ah, sorry! We ran into an error.'));
+      UI.UIUtils.createTextChild(this._statusText.createChild('p'), i18nString(UIStrings.ahSorryWeRanIntoAnError));
       if (KnownBugPatterns.some(pattern => pattern.test(err.message))) {
-        const message = Common.UIString.UIString(
-            'Try to navigate to the URL in a fresh Chrome profile without any other tabs or extensions open and try again.');
+        const message = i18nString(UIStrings.tryToNavigateToTheUrlInAFresh);
         UI.UIUtils.createTextChild(this._statusText.createChild('p'), message);
       } else {
         this._renderBugReportBody(err, this._inspectedURL);
@@ -324,8 +461,7 @@ Stack Trace: ${err.stack}
 `;
     if (this._statusText) {
       UI.UIUtils.createTextChild(
-          this._statusText.createChild('p'),
-          ls`If this issue is reproducible, please report it at the Lighthouse GitHub repo.`);
+          this._statusText.createChild('p'), i18nString(UIStrings.ifThisIssueIsReproduciblePlease));
       UI.UIUtils.createTextChild(this._statusText.createChild('code', 'monospace'), issueBody.trim());
     }
   }
@@ -352,19 +488,19 @@ export const StatusPhases = [
   {
     id: 'loading',
     progressBarClass: 'loading',
-    message: ls`Lighthouse is loading the page.`,
+    message: i18nString(UIStrings.lighthouseIsLoadingThePage),
     statusMessagePrefix: 'Loading page',
   },
   {
     id: 'gathering',
     progressBarClass: 'gathering',
-    message: ls`Lighthouse is gathering information about the page to compute your score.`,
+    message: i18nString(UIStrings.lighthouseIsGatheringInformation),
     statusMessagePrefix: 'Gathering',
   },
   {
     id: 'auditing',
     progressBarClass: 'auditing',
-    message: ls`Almost there! Lighthouse is now generating your report.`,
+    message: i18nString(UIStrings.almostThereLighthouseIsNow),
     statusMessagePrefix: 'Auditing',
   }
 ];
@@ -374,41 +510,31 @@ const LoadingMessages = [
   {
     deviceType: 'mobile',
     throttling: 'on',
-    message: ls`Lighthouse is loading your page with throttling to measure performance on a mobile device on 3G.`,
+    message: i18nString(UIStrings.lighthouseIsLoadingYourPageWith),
   },
   {
     deviceType: 'desktop',
     throttling: 'on',
-    message: ls`Lighthouse is loading your page with throttling to measure performance on a slow desktop on 3G.`,
+    message: i18nString(UIStrings.lighthouseIsLoadingYourPageWithThrottling),
   },
   {
     deviceType: 'mobile',
     throttling: 'off',
-    message: ls`Lighthouse is loading your page with mobile emulation.`,
+    message: i18nString(UIStrings.lighthouseIsLoadingYourPageWithMobile),
   },
   {
     deviceType: 'desktop',
     throttling: 'off',
-    message: ls`Lighthouse is loading your page.`,
+    message: i18nString(UIStrings.lighthouseIsLoadingThePage),
   },
 ];
 
 const FastFacts = [
-  ls
-`1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: WebPageTest and DevTools 3G definition].`,
-    ls`Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: WPO Stats]`, ls
-`By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: WPO Stats]`,
-    ls`Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]`, ls
-`If a site takes >1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: Google Developers Blog]`,
-    ls`75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]`,
-    ls`The average user device costs less than 200 USD. [Source: International Data Corporation]`, ls
-`19 seconds is the average time a mobile web page takes to load on a 3G connection [Source: Google DoubleClick blog]`,
-    ls
-`70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: Think with Google]`,
-    ls
-`As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: Think with Google]`,
-    ls
-`As the number of elements on a page increases from 400 to 6,000, the probability of conversion drops 95%. [Source: Think with Google]`,
-    ls`70% of mobile pages weigh over 1MB, 36% over 2MB, and 12% over 4MB. [Source: Think with Google]`, ls
-  `Lighthouse only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: Lighthouse team]`,
+  i18nString(UIStrings.mbTakesAMinimumOfSecondsTo), i18nString(UIStrings.rebuildingPinterestPagesFor),
+  i18nString(UIStrings.byReducingTheResponseSizeOfJson), i18nString(UIStrings.walmartSawAIncreaseInRevenueFor),
+  i18nString(UIStrings.ifASiteTakesSecondToBecome), i18nString(UIStrings.OfGlobalMobileUsersInWereOnGOrG),
+  i18nString(UIStrings.theAverageUserDeviceCostsLess), i18nString(UIStrings.SecondsIsTheAverageTimeAMobile),
+  i18nString(UIStrings.OfMobilePagesTakeNearlySeconds), i18nString(UIStrings.asPageLoadTimeIncreasesFromOne),
+  i18nString(UIStrings.asTheNumberOfElementsOnAPage), i18nString(UIStrings.OfMobilePagesTakeNearlySeconds),
+  i18nString(UIStrings.lighthouseOnlySimulatesMobile)
 ];

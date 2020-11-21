@@ -15,6 +15,7 @@ devtools_module("lighthouse") {
     "LighthouseReporterTypes.js",
     "LighthouseStartView.js",
     "LighthouseStatusView.js",
+    "ModuleUIStrings.js",
     "RadioSetting.js",
   ]
 
@@ -23,6 +24,7 @@ devtools_module("lighthouse") {
     "../components:bundle",
     "../emulation:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../platform:bundle",
     "../protocol_client:bundle",
     "../sdk:bundle",

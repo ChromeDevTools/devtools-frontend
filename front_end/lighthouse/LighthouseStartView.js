@@ -3,11 +3,41 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
 import {Events, LighthouseController, Presets, RuntimeSettings} from './LighthouseController.js';  // eslint-disable-line no-unused-vars
 import {RadioSetting} from './RadioSetting.js';
 
+export const UIStrings = {
+  /**
+  *@description Text that is usually a hyperlink to more documentation
+  */
+  learnMore: 'Learn more',
+  /**
+  *@description Text that refers to device such as a phone
+  */
+  device: 'Device',
+  /**
+  *@description Title in the Lighthouse Start View for list of categories to run during audit
+  */
+  categories: 'Categories',
+  /**
+  *@description Text in Lighthouse Status View
+  */
+  communityPluginsBeta: 'Community Plugins (beta)',
+  /**
+  *@description Text of audits start button in Lighthouse Start View
+  */
+  generateReport: 'Generate report',
+  /**
+  *@description Text in Lighthouse Start View
+  */
+  identifyAndFixCommonProblemsThat:
+      'Identify and fix common problems that affect your site\'s performance, accessibility, and user experience.',
+};
+const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseStartView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @unrestricted
  */
@@ -61,7 +91,7 @@ export class StartView extends UI.Widget.Widget {
     toolbar.appendToolbarItem(control);
     if (runtimeSetting.learnMore) {
       const link = /** @type {!HTMLElement} */ (
-          UI.XLink.XLink.create(runtimeSetting.learnMore, ls`Learn more`, 'lighthouse-learn-more'));
+          UI.XLink.XLink.create(runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more'));
       link.style.padding = '5px';
       control.element.appendChild(link);
     }
@@ -73,7 +103,7 @@ export class StartView extends UI.Widget.Widget {
   _populateFormControls(fragment) {
     // Populate the device type
     const deviceTypeFormElements = fragment.$('device-type-form-elements');
-    this._populateRuntimeSettingAsRadio('lighthouse.device_type', ls`Device`, deviceTypeFormElements);
+    this._populateRuntimeSettingAsRadio('lighthouse.device_type', i18nString(UIStrings.device), deviceTypeFormElements);
 
     // Populate the categories
     const categoryFormElements = fragment.$('categories-form-elements');
@@ -86,9 +116,9 @@ export class StartView extends UI.Widget.Widget {
       row.appendChild(checkbox.element);
     }
     UI.ARIAUtils.markAsGroup(categoryFormElements);
-    UI.ARIAUtils.setAccessibleName(categoryFormElements, ls`Categories`);
+    UI.ARIAUtils.setAccessibleName(categoryFormElements, i18nString(UIStrings.categories));
     UI.ARIAUtils.markAsGroup(pluginFormElements);
-    UI.ARIAUtils.setAccessibleName(pluginFormElements, ls`Community Plugins (beta)`);
+    UI.ARIAUtils.setAccessibleName(pluginFormElements, i18nString(UIStrings.communityPluginsBeta));
   }
 
   _render() {
@@ -96,15 +126,14 @@ export class StartView extends UI.Widget.Widget {
     this._populateRuntimeSettingAsToolbarCheckbox('lighthouse.throttling', this._settingsToolbar);
 
     this._startButton = UI.UIUtils.createTextButton(
-        ls`Generate report`,
+        i18nString(UIStrings.generateReport),
         () => this._controller.dispatchEventToListeners(
             Events.RequestLighthouseStart,
             /* keyboardInitiated */ this._startButton.matches(':focus-visible')),
         /* className */ '', /* primary */ true);
     this.setDefaultFocusedElement(this._startButton);
 
-    const auditsDescription = ls
-    `Identify and fix common problems that affect your site's performance, accessibility, and user experience.`;  // crbug.com/972969
+    const auditsDescription = i18nString(UIStrings.identifyAndFixCommonProblemsThat);  // crbug.com/972969
 
     const fragment = UI.Fragment.Fragment.build`
       <div class="vbox lighthouse-start-view">
@@ -116,7 +145,8 @@ export class StartView extends UI.Widget.Widget {
           <div $="help-text" class="lighthouse-help-text hidden"></div>
           <div class="lighthouse-start-view-text">
             <span>${auditsDescription}</span>
-            ${UI.XLink.XLink.create('https://developers.google.com/web/tools/lighthouse/', ls`Learn more`)}
+            ${
+        UI.XLink.XLink.create('https://developers.google.com/web/tools/lighthouse/', i18nString(UIStrings.learnMore))}
           </div>
           <div $="warning-text" class="lighthouse-warning-text hidden"></div>
         </header>
@@ -124,20 +154,20 @@ export class StartView extends UI.Widget.Widget {
           <div class="lighthouse-form-categories">
             <div class="lighthouse-form-section">
               <div class="lighthouse-form-section-label">
-                ${ls`Categories`}
+                ${i18nString(UIStrings.categories)}
               </div>
               <div class="lighthouse-form-elements" $="categories-form-elements"></div>
             </div>
             <div class="lighthouse-form-section">
               <div class="lighthouse-form-section-label">
-                <div class="lighthouse-icon-label">${ls`Community Plugins (beta)`}</div>
+                <div class="lighthouse-icon-label">${i18nString(UIStrings.communityPluginsBeta)}</div>
               </div>
               <div class="lighthouse-form-elements" $="plugins-form-elements"></div>
             </div>
           </div>
           <div class="lighthouse-form-section">
             <div class="lighthouse-form-section-label">
-              ${ls`Device`}
+              ${i18nString(UIStrings.device)}
             </div>
             <div class="lighthouse-form-elements" $="device-type-form-elements"></div>
           </div>

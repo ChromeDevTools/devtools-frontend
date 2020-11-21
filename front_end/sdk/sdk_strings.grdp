@@ -644,6 +644,9 @@
   <message name="IDS_DEVTOOLS_dfac8599aa1a20968a973065801167fe" desc="Title of a setting under the Grid category that turns CSS Grid Area highlighting off">
     Do not show grid named areas
   </message>
+  <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="Text that refers to device such as a phone">
+    Device
+  </message>
   <message name="IDS_DEVTOOLS_e1e4c8c9ccd9fc39c391da4bcd093fb2" desc="Noun that represents a section or block of code in the Debugger Model. Shown in the Sources tab, while paused on a breakpoint.">
     Block
   </message>

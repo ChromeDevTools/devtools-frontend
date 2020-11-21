@@ -575,6 +575,234 @@
   "layers/ModuleUIStrings.js | layers": {
     "message": "Layers"
   },
+  "lighthouse/LighthouseController.js | accessibility": {
+    "message": "Accessibility"
+  },
+  "lighthouse/LighthouseController.js | applyMobileEmulation": {
+    "message": "Apply mobile emulation"
+  },
+  "lighthouse/LighthouseController.js | applyMobileEmulationDuring": {
+    "message": "Apply mobile emulation during auditing"
+  },
+  "lighthouse/LighthouseController.js | atLeastOneCategoryMustBeSelected": {
+    "message": "At least one category must be selected."
+  },
+  "lighthouse/LighthouseController.js | bestPractices": {
+    "message": "Best practices"
+  },
+  "lighthouse/LighthouseController.js | canOnlyAuditHttphttpsPagesAnd": {
+    "message": "Can only audit HTTP/HTTPS pages and Chrome extensions. Navigate to a different page to start an audit."
+  },
+  "lighthouse/LighthouseController.js | clearStorage": {
+    "message": "Clear storage"
+  },
+  "lighthouse/LighthouseController.js | desktop": {
+    "message": "Desktop"
+  },
+  "lighthouse/LighthouseController.js | doesThisPageFollowBestPractices": {
+    "message": "Does this page follow best practices for modern web development"
+  },
+  "lighthouse/LighthouseController.js | doesThisPageMeetTheStandardOfA": {
+    "message": "Does this page meet the standard of a Progressive Web App"
+  },
+  "lighthouse/LighthouseController.js | howLongDoesThisAppTakeToShow": {
+    "message": "How long does this app take to show content and become usable"
+  },
+  "lighthouse/LighthouseController.js | indexeddb": {
+    "message": "IndexedDB"
+  },
+  "lighthouse/LighthouseController.js | isThisPageOptimizedForAdSpeedAnd": {
+    "message": "Is this page optimized for ad speed and quality"
+  },
+  "lighthouse/LighthouseController.js | isThisPageOptimizedForSearch": {
+    "message": "Is this page optimized for search engine results ranking"
+  },
+  "lighthouse/LighthouseController.js | isThisPageUsableByPeopleWith": {
+    "message": "Is this page usable by people with disabilities or impairments"
+  },
+  "lighthouse/LighthouseController.js | localStorage": {
+    "message": "Local Storage"
+  },
+  "lighthouse/LighthouseController.js | mobile": {
+    "message": "Mobile"
+  },
+  "lighthouse/LighthouseController.js | multipleTabsAreBeingControlledBy": {
+    "message": "Multiple tabs are being controlled by the same service worker. Close your other tabs on the same origin to audit this page."
+  },
+  "lighthouse/LighthouseController.js | performance": {
+    "message": "Performance"
+  },
+  "lighthouse/LighthouseController.js | progressiveWebApp": {
+    "message": "Progressive Web App"
+  },
+  "lighthouse/LighthouseController.js | publisherAds": {
+    "message": "Publisher Ads"
+  },
+  "lighthouse/LighthouseController.js | resetStorageLocalstorage": {
+    "message": "Reset storage (localStorage, IndexedDB, etc) before auditing. (Good for performance & PWA testing)"
+  },
+  "lighthouse/LighthouseController.js | seo": {
+    "message": "SEO"
+  },
+  "lighthouse/LighthouseController.js | simulateASlowerPageLoadBasedOn": {
+    "message": "Simulate a slower page load, based on data from an initial unthrottled load. If disabled, the page is actually slowed with applied throttling."
+  },
+  "lighthouse/LighthouseController.js | simulatedThrottling": {
+    "message": "Simulated throttling"
+  },
+  "lighthouse/LighthouseController.js | thereMayBeStoredDataAffectingLoadingPlural": {
+    "message": "There may be stored data affecting loading performance in these locations: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores."
+  },
+  "lighthouse/LighthouseController.js | thereMayBeStoredDataAffectingSingular": {
+    "message": "There may be stored data affecting loading performance in this location: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores."
+  },
+  "lighthouse/LighthouseController.js | webSql": {
+    "message": "Web SQL"
+  },
+  "lighthouse/LighthousePanel.js | cancelling": {
+    "message": "Cancelling"
+  },
+  "lighthouse/LighthousePanel.js | clearAll": {
+    "message": "Clear all"
+  },
+  "lighthouse/LighthousePanel.js | dropLighthouseJsonHere": {
+    "message": "Drop Lighthouse JSON here"
+  },
+  "lighthouse/LighthousePanel.js | lighthouseSettings": {
+    "message": "Lighthouse settings"
+  },
+  "lighthouse/LighthousePanel.js | performAnAudit": {
+    "message": "Perform an audit…"
+  },
+  "lighthouse/LighthousePanel.js | printing": {
+    "message": "Printing"
+  },
+  "lighthouse/LighthousePanel.js | thePrintPopupWindowIsOpenPlease": {
+    "message": "The print popup window is open. Please close it to continue."
+  },
+  "lighthouse/LighthouseReportRenderer.js | thePerformanceMetricsAboveAre": {
+    "message": "The performance metrics above are simulated and won't match the timings found in this trace. Disable simulated throttling in \"Lighthouse Settings\" if you want the timings to match."
+  },
+  "lighthouse/LighthouseReportRenderer.js | viewOriginalTrace": {
+    "message": "View Original Trace"
+  },
+  "lighthouse/LighthouseReportRenderer.js | viewTrace": {
+    "message": "View Trace"
+  },
+  "lighthouse/LighthouseReportSelector.js | newReport": {
+    "message": "(new report)"
+  },
+  "lighthouse/LighthouseReportSelector.js | reports": {
+    "message": "Reports"
+  },
+  "lighthouse/LighthouseStartView.js | categories": {
+    "message": "Categories"
+  },
+  "lighthouse/LighthouseStartView.js | communityPluginsBeta": {
+    "message": "Community Plugins (beta)"
+  },
+  "lighthouse/LighthouseStartView.js | device": {
+    "message": "Device"
+  },
+  "lighthouse/LighthouseStartView.js | generateReport": {
+    "message": "Generate report"
+  },
+  "lighthouse/LighthouseStartView.js | identifyAndFixCommonProblemsThat": {
+    "message": "Identify and fix common problems that affect your site's performance, accessibility, and user experience."
+  },
+  "lighthouse/LighthouseStartView.js | learnMore": {
+    "message": "Learn more"
+  },
+  "lighthouse/LighthouseStatusView.js | ahSorryWeRanIntoAnError": {
+    "message": "Ah, sorry! We ran into an error."
+  },
+  "lighthouse/LighthouseStatusView.js | almostThereLighthouseIsNow": {
+    "message": "Almost there! Lighthouse is now generating your report."
+  },
+  "lighthouse/LighthouseStatusView.js | asPageLoadTimeIncreasesFromOne": {
+    "message": "As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: Think with Google]"
+  },
+  "lighthouse/LighthouseStatusView.js | asTheNumberOfElementsOnAPage": {
+    "message": "As the number of elements on a page increases from 400 to 6,000, the probability of conversion drops 95%. [Source: Think with Google]"
+  },
+  "lighthouse/LighthouseStatusView.js | auditingS": {
+    "message": "Auditing {PH1}"
+  },
+  "lighthouse/LighthouseStatusView.js | auditingYourWebPage": {
+    "message": "Auditing your web page"
+  },
+  "lighthouse/LighthouseStatusView.js | byReducingTheResponseSizeOfJson": {
+    "message": "By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: WPO Stats]"
+  },
+  "lighthouse/LighthouseStatusView.js | cancel": {
+    "message": "Cancel"
+  },
+  "lighthouse/LighthouseStatusView.js | cancelling": {
+    "message": "Cancelling…"
+  },
+  "lighthouse/LighthouseStatusView.js | fastFactMessageWithPlaceholder": {
+    "message": "💡 {PH1}"
+  },
+  "lighthouse/LighthouseStatusView.js | ifASiteTakesSecondToBecome": {
+    "message": "If a site takes >1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: Google Developers Blog]"
+  },
+  "lighthouse/LighthouseStatusView.js | ifThisIssueIsReproduciblePlease": {
+    "message": "If this issue is reproducible, please report it at the Lighthouse GitHub repo."
+  },
+  "lighthouse/LighthouseStatusView.js | lighthouseIsGatheringInformation": {
+    "message": "Lighthouse is gathering information about the page to compute your score."
+  },
+  "lighthouse/LighthouseStatusView.js | lighthouseIsLoadingThePage": {
+    "message": "Lighthouse is loading the page."
+  },
+  "lighthouse/LighthouseStatusView.js | lighthouseIsLoadingYourPage": {
+    "message": "Lighthouse is loading your page"
+  },
+  "lighthouse/LighthouseStatusView.js | lighthouseIsLoadingYourPageWith": {
+    "message": "Lighthouse is loading your page with throttling to measure performance on a mobile device on 3G."
+  },
+  "lighthouse/LighthouseStatusView.js | lighthouseIsLoadingYourPageWithMobile": {
+    "message": "Lighthouse is loading your page with mobile emulation."
+  },
+  "lighthouse/LighthouseStatusView.js | lighthouseIsLoadingYourPageWithThrottling": {
+    "message": "Lighthouse is loading your page with throttling to measure performance on a slow desktop on 3G."
+  },
+  "lighthouse/LighthouseStatusView.js | lighthouseIsWarmingUp": {
+    "message": "Lighthouse is warming up…"
+  },
+  "lighthouse/LighthouseStatusView.js | lighthouseOnlySimulatesMobile": {
+    "message": "Lighthouse only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: Lighthouse team]"
+  },
+  "lighthouse/LighthouseStatusView.js | loading": {
+    "message": "Loading…"
+  },
+  "lighthouse/LighthouseStatusView.js | mbTakesAMinimumOfSecondsTo": {
+    "message": "1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: WebPageTest and DevTools 3G definition]."
+  },
+  "lighthouse/LighthouseStatusView.js | OfGlobalMobileUsersInWereOnGOrG": {
+    "message": "75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]"
+  },
+  "lighthouse/LighthouseStatusView.js | OfMobilePagesTakeNearlySeconds": {
+    "message": "70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: Think with Google]"
+  },
+  "lighthouse/LighthouseStatusView.js | rebuildingPinterestPagesFor": {
+    "message": "Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: WPO Stats]"
+  },
+  "lighthouse/LighthouseStatusView.js | SecondsIsTheAverageTimeAMobile": {
+    "message": "19 seconds is the average time a mobile web page takes to load on a 3G connection [Source: Google DoubleClick blog]"
+  },
+  "lighthouse/LighthouseStatusView.js | theAverageUserDeviceCostsLess": {
+    "message": "The average user device costs less than 200 USD. [Source: International Data Corporation]"
+  },
+  "lighthouse/LighthouseStatusView.js | tryToNavigateToTheUrlInAFresh": {
+    "message": "Try to navigate to the URL in a fresh Chrome profile without any other tabs or extensions open and try again."
+  },
+  "lighthouse/LighthouseStatusView.js | walmartSawAIncreaseInRevenueFor": {
+    "message": "Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]"
+  },
+  "lighthouse/ModuleUIStrings.js | pwa": {
+    "message": "pwa"
+  },
   "recorder/RecordingFileSystem.js | defaultRecordingName": {
     "message": "Recording #{nextId}"
   },

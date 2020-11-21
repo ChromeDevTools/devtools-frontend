@@ -13,9 +13,6 @@
   <message name="IDS_DEVTOOLS_0511551e6cf7d61acd9b62f9304efa93" desc="Tooltip text that appears on the setting to preserve log when hovering over the item">
     Do not clear log on page reload / navigation
   </message>
-  <message name="IDS_DEVTOOLS_07ba8a9247a0f91e025d8036a28c3b56" desc="A tag of Application Panel that can be searched in the command menu">
-    pwa
-  </message>
   <message name="IDS_DEVTOOLS_0945359809dad1fbf3dea1c95a0da951" desc="Name of a network resource type">
     Document
   </message>
@@ -78,9 +75,6 @@
   </message>
   <message name="IDS_DEVTOOLS_22b6fe30dec1ae9c09480cce01cd4065" desc="Text to run commands">
     Run command
-  </message>
-  <message name="IDS_DEVTOOLS_2310408a63388fe57e3a4177168a8798" desc="Text for the desktop platform, as opposed to mobile">
-    Desktop
   </message>
   <message name="IDS_DEVTOOLS_231afe47f3f37d3808096b36c28b4ded" desc="Label for the column in the element list in the CSS Overview report">
     Element
@@ -234,9 +228,6 @@
   </message>
   <message name="IDS_DEVTOOLS_65b4c7424dd695c30efa73da8396c90c" desc="Title of the Profiler tool">
     Profiler
-  </message>
-  <message name="IDS_DEVTOOLS_6827a85b76e967f6a129e08f9272e76d" desc="Text in Application Panel Sidebar of the Application panel">
-    Local Storage
   </message>
   <message name="IDS_DEVTOOLS_689202409e48743b914713f96d93947c" desc="Text for the value of something">
     Value
@@ -439,9 +430,6 @@
   <message name="IDS_DEVTOOLS_b6434258c743f8673997b5aeb3721c27" desc="Text that refers to the network request method">
     Request Method
   </message>
-  <message name="IDS_DEVTOOLS_b66b856833f34a841b51c7207dbc601f" desc="Text in Application Panel Sidebar of the Application panel">
-    IndexedDB
-  </message>
   <message name="IDS_DEVTOOLS_b94d8a074eddd267702810179875737f" desc="Text that refers to the debugger">
     Debugger
   </message>
@@ -517,12 +505,6 @@
   <message name="IDS_DEVTOOLS_e02d2ae03de9d493df2b6b2d2813d302" desc="Text for the duration of something">
     Duration
   </message>
-  <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="Text that refers to device such as a phone">
-    Device
-  </message>
-  <message name="IDS_DEVTOOLS_e0e4fc6213e8b3593495a7260c3a4c2e" desc="Text for accessibility of the web page">
-    Accessibility
-  </message>
   <message name="IDS_DEVTOOLS_e199c6bb662785b037c5f330f58878ce" desc="Show all text content in Show More Data Grid Node of a data grid">
     Show all <ph name="TOTALSIZE">$1d<ex>50</ex></ph>
   </message>
@@ -558,9 +540,6 @@
   </message>
   <message name="IDS_DEVTOOLS_ebd9bec4d70abc789d439c1f136b0538" desc="Text in Timeline UIUtils of the Performance panel">
     Layout
-  </message>
-  <message name="IDS_DEVTOOLS_ec1e074d56484165315c26a9baebaebd" desc="Text in Application Panel Sidebar of the Application panel">
-    Web SQL
   </message>
   <message name="IDS_DEVTOOLS_ec211f7c20af43e742bf2570c3cb84f9" desc="Text to add something">
     Add

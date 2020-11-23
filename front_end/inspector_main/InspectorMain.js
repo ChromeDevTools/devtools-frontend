@@ -159,7 +159,7 @@ export class SourcesPanelIndicator {
       const javaScriptDisabled = Common.Settings.Settings.instance().moduleSetting('javaScriptDisabled').get();
       if (javaScriptDisabled) {
         icon = UI.Icon.Icon.create('smallicon-warning');
-        icon.title = Common.UIString.UIString('JavaScript is disabled');
+        UI.Tooltip.Tooltip.install(icon, Common.UIString.UIString('JavaScript is disabled'));
       }
       UI.InspectorView.InspectorView.instance().setPanelIcon('sources', icon);
     }

@@ -685,7 +685,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
 
       const statusCodeImage = /** @type {!UI.UIUtils.DevToolsIconLabel} */ (
           statusCodeFragment.createChild('span', 'resource-status-image', 'dt-icon-label'));
-      statusCodeImage.title = this._request.statusCode + ' ' + this._request.statusText;
+      UI.Tooltip.Tooltip.install(statusCodeImage, this._request.statusCode + ' ' + this._request.statusText);
 
       if (this._request.statusCode < 300 || this._request.statusCode === 304) {
         statusCodeImage.type = 'smallicon-green-ball';
@@ -759,7 +759,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
         cautionText = ls`Provisional headers are shown`;
       }
       const cautionElement = document.createElement('div');
-      cautionElement.title = cautionTitle;
+      UI.Tooltip.Tooltip.install(cautionElement, cautionTitle);
       /** @type {!UI.UIUtils.DevToolsIconLabel} */ (cautionElement.createChild('span', '', 'dt-icon-label')).type =
           'smallicon-warning';
       cautionElement.createChild('div', 'caution').textContent = cautionText;
@@ -796,7 +796,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
             }
             titleText += SDK.NetworkRequest.setCookieBlockedReasonToUiString(blockedReason);
           }
-          icon.title = titleText;
+          UI.Tooltip.Tooltip.install(icon, titleText);
         }
       }
 

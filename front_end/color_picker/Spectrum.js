@@ -480,7 +480,7 @@ export class Spectrum extends UI.Widget.VBox {
     if (animationDelay) {
       element.animate([{opacity: 0}, {opacity: 1}], {duration: 100, delay: animationDelay, fill: 'backwards'});
     }
-    element.title = colorName || colorText;
+    UI.Tooltip.Tooltip.install(element, colorName || colorText);
     return element;
   }
 
@@ -517,7 +517,8 @@ export class Spectrum extends UI.Widget.VBox {
         shadow.style.background = palette.colors[i];
         shadow = colorElement.createChild('div', 'spectrum-palette-color spectrum-palette-color-shadow');
         shadow.style.background = palette.colors[i];
-        colorElement.title = ls`Long-click or long-press space to show alternate shades of ${palette.colors[i]}`;
+        UI.Tooltip.Tooltip.install(
+            colorElement, ls`Long-click or long-press space to show alternate shades of ${palette.colors[i]}`);
         UI.ARIAUtils.setAccessibleName(colorElement, colorElement.title);
         new UI.UIUtils.LongClickController(
             colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
@@ -1445,7 +1446,7 @@ export class Swatch {
     this._swatchOverlayElement.addEventListener('mouseout', this._onCopyIconMouseout.bind(this));
     this._swatchOverlayElement.addEventListener('blur', this._onCopyIconMouseout.bind(this));
     this._swatchCopyIcon = UI.Icon.Icon.create('largeicon-copy', 'copy-color-icon');
-    this._swatchCopyIcon.title = ls`Copy color to clipboard`;
+    UI.Tooltip.Tooltip.install(this._swatchCopyIcon, ls`Copy color to clipboard`);
     this._swatchOverlayElement.appendChild(this._swatchCopyIcon);
     UI.ARIAUtils.setAccessibleName(this._swatchOverlayElement, this._swatchCopyIcon.title);
   }

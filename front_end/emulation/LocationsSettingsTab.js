@@ -66,7 +66,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
     const title = element.createChild('div', 'locations-list-text locations-list-title');
     const titleText = title.createChild('div', 'locations-list-title-text');
     titleText.textContent = location.title;
-    titleText.title = location.title;
+    UI.Tooltip.Tooltip.install(titleText, location.title);
     element.createChild('div', 'locations-list-separator');
     element.createChild('div', 'locations-list-text').textContent = String(location.lat);
     element.createChild('div', 'locations-list-separator');

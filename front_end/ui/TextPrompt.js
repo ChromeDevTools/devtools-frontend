@@ -34,6 +34,7 @@ import * as TextUtils from '../text_utils/text_utils.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {SuggestBox, SuggestBoxDelegate, Suggestion, Suggestions} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
+import {Tooltip} from './Tooltip.js';
 import {ElementFocusRestorer} from './UIUtils.js';
 import {appendStyle} from './utils/append-style.js';
 
@@ -151,7 +152,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     this._suggestBox = new SuggestBox(this, 20);
 
     if (this._title) {
-      this._proxyElement.title = this._title;
+      Tooltip.install(this._proxyElement, this._title);
     }
 
     return this._proxyElement;
@@ -265,7 +266,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
   setTitle(title) {
     this._title = title;
     if (this._proxyElement) {
-      this._proxyElement.title = title;
+      Tooltip.install(this._proxyElement, title);
     }
   }
 

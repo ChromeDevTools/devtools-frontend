@@ -1855,7 +1855,8 @@ export class TimelineUIUtils {
     const eventDivider = document.createElement('div');
     eventDivider.classList.add('resources-event-divider');
     const startTime = Number.millisToString(event.startTime - zeroTime);
-    eventDivider.title = Common.UIString.UIString('%s at %s', TimelineUIUtils.eventTitle(event), startTime);
+    UI.Tooltip.Tooltip.install(
+        eventDivider, Common.UIString.UIString('%s at %s', TimelineUIUtils.eventTitle(event), startTime));
     const style = TimelineUIUtils.markerStyleForEvent(event);
     if (style.tall) {
       eventDivider.style.backgroundColor = style.color;

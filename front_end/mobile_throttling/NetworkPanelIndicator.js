@@ -23,13 +23,13 @@ export class NetworkPanelIndicator {
       let icon = null;
       if (manager.isThrottling()) {
         icon = UI.Icon.Icon.create('smallicon-warning');
-        icon.title = Common.UIString.UIString('Network throttling is enabled');
+        UI.Tooltip.Tooltip.install(icon, Common.UIString.UIString('Network throttling is enabled'));
       } else if (SDK.NetworkManager.MultitargetNetworkManager.instance().isIntercepting()) {
         icon = UI.Icon.Icon.create('smallicon-warning');
-        icon.title = Common.UIString.UIString('Requests may be rewritten by local overrides');
+        UI.Tooltip.Tooltip.install(icon, Common.UIString.UIString('Requests may be rewritten by local overrides'));
       } else if (manager.isBlocking()) {
         icon = UI.Icon.Icon.create('smallicon-warning');
-        icon.title = Common.UIString.UIString('Requests may be blocked');
+        UI.Tooltip.Tooltip.install(icon, Common.UIString.UIString('Requests may be blocked'));
       }
       UI.InspectorView.InspectorView.instance().setPanelIcon('network', icon);
     }

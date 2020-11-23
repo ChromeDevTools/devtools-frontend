@@ -343,7 +343,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     if (this._eventListener.canRemove()) {
       const deleteButton = title.createChild('span', 'event-listener-button');
       deleteButton.textContent = Common.UIString.UIString('Remove');
-      deleteButton.title = Common.UIString.UIString('Delete event listener');
+      UI.Tooltip.Tooltip.install(deleteButton, Common.UIString.UIString('Delete event listener'));
       deleteButton.addEventListener('click', event => {
         this._removeListener();
         event.consume();
@@ -354,7 +354,8 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     if (this._eventListener.isScrollBlockingType() && this._eventListener.canTogglePassive()) {
       const passiveButton = title.createChild('span', 'event-listener-button');
       passiveButton.textContent = Common.UIString.UIString('Toggle Passive');
-      passiveButton.title = Common.UIString.UIString('Toggle whether event listener is passive or blocking');
+      UI.Tooltip.Tooltip.install(
+          passiveButton, Common.UIString.UIString('Toggle whether event listener is passive or blocking'));
       passiveButton.addEventListener('click', event => {
         this._togglePassiveListener();
         event.consume();

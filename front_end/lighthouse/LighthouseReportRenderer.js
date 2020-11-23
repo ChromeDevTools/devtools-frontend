@@ -71,7 +71,7 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
     const label = simulated ? i18nString(UIStrings.viewOriginalTrace) : i18nString(UIStrings.viewTrace);
     const timelineButton = UI.UIUtils.createTextButton(label, onViewTraceClick, 'view-trace');
     if (simulated) {
-      timelineButton.title = i18nString(UIStrings.thePerformanceMetricsAboveAre);
+      UI.Tooltip.Tooltip.install(timelineButton, i18nString(UIStrings.thePerformanceMetricsAboveAre));
     }
     container.insertBefore(timelineButton, disclaimerEl.nextSibling);
 
@@ -114,7 +114,7 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
 
       const element = await Common.Linkifier.Linkifier.linkify(
           node, {tooltip: detailsItem.snippet, preventKeyboardFocus: undefined});
-      origHTMLElement.title = '';
+      UI.Tooltip.Tooltip.install(origHTMLElement, '');
       origHTMLElement.textContent = '';
       origHTMLElement.appendChild(element);
     }
@@ -143,7 +143,7 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
         tabStop: undefined,
         text: undefined
       });
-      origHTMLElement.title = '';
+      UI.Tooltip.Tooltip.install(origHTMLElement, '');
       origHTMLElement.textContent = '';
       origHTMLElement.appendChild(element);
     }

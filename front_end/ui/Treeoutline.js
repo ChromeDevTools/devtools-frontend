@@ -36,6 +36,7 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {Icon} from './Icon.js';                            // eslint-disable-line no-unused-vars
 import {Config, InplaceEditor} from './InplaceEditor.js';  // eslint-disable-line no-unused-vars
 import {Keys} from './KeyboardShortcut.js';
+import {Tooltip} from './Tooltip.js';
 import {deepElementFromPoint, enclosingNodeOrSelfWithNodeNameInArray, isEditing} from './UIUtils.js';
 import {appendStyle} from './utils/append-style.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
@@ -931,7 +932,7 @@ export class TreeElement {
       return;
     }
     this._tooltip = x;
-    this._listItemNode.title = x;
+    Tooltip.install(this._listItemNode, x);
   }
 
   /**

@@ -2060,7 +2060,7 @@ export class FlameChart extends UI.Widget.VBox {
     }
     const marker = timelineData.markers[markerIndex];
     const barX = this._timeToPositionClipped(marker.startTime());
-    element.title = marker.title() || '';
+    UI.Tooltip.Tooltip.install(element, marker.title() || '');
     const style = element.style;
     style.left = barX + 'px';
     style.backgroundColor = marker.color();

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {Tooltip} from './Tooltip.js';
 import {HBox} from './Widget.js';
 
 export class SegmentedButton extends HBox {
@@ -25,7 +26,7 @@ export class SegmentedButton extends HBox {
     const button = this.contentElement.createChild('button', 'segmented-button-segment');
     button.textContent = label;
     if (tooltip) {
-      button.title = tooltip;
+      Tooltip.install(button, tooltip);
     }
     this._buttons.set(value, button);
     button.addEventListener('click', () => this.select(value));

@@ -166,7 +166,7 @@ class DataGridNode extends DataGrid.DataGrid.DataGridNode {
    */
   createCell(columnId) {
     const cell = super.createCell(columnId);
-    cell.title = cell.textContent || '';
+    UI.Tooltip.Tooltip.install(cell, cell.textContent || '');
 
     if (columnId !== 'actions') {
       return cell;
@@ -745,7 +745,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
    * @param {string} authenticatorName
    */
   _updateActiveLabelTitle(activeLabel, authenticatorName) {
-    activeLabel.radioElement.title = i18nString(UIStrings.setSAsTheActiveAuthenticator, {PH1: authenticatorName});
+    UI.Tooltip.Tooltip.install(
+        activeLabel.radioElement, i18nString(UIStrings.setSAsTheActiveAuthenticator, {PH1: authenticatorName}));
   }
 
   /**

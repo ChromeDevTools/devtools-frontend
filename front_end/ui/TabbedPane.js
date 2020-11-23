@@ -36,6 +36,7 @@ import {ContextMenu} from './ContextMenu.js';
 import {Constraints, Size} from './Geometry.js';
 import {Icon} from './Icon.js';
 import {Toolbar} from './Toolbar.js';
+import {Tooltip} from './Tooltip.js';
 import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
@@ -1189,7 +1190,7 @@ export class TabbedPaneTab {
   set tooltip(tooltip) {
     this._tooltip = tooltip;
     if (this._titleElement) {
-      this._titleElement.title = tooltip || '';
+      Tooltip.install(this._titleElement, tooltip || '');
     }
   }
 
@@ -1263,7 +1264,7 @@ export class TabbedPaneTab {
 
     const titleElement = tabElement.createChild('span', 'tabbed-pane-header-tab-title');
     titleElement.textContent = this.title;
-    titleElement.title = this.tooltip || '';
+    Tooltip.install(titleElement, this.tooltip || '');
     this._createIconElement(tabElement, titleElement, measuring);
     if (!measuring) {
       this._titleElement = titleElement;

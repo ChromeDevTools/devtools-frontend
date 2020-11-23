@@ -173,7 +173,7 @@ export class DebuggerPausedMessage {
       if (subText) {
         const subElement = messageWrapper.createChild('div', 'status-sub monospace');
         subElement.textContent = subText;
-        subElement.title = title || subText;
+        UI.Tooltip.Tooltip.install(subElement, title || subText);
       }
       return messageWrapper;
     }

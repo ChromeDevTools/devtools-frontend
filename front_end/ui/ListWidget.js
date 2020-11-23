@@ -6,6 +6,7 @@ import * as Common from '../common/common.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Toolbar, ToolbarButton} from './Toolbar.js';
+import {Tooltip} from './Tooltip.js';
 import {createInput, createTextButton, ElementFocusRestorer} from './UIUtils.js';
 import {VBox} from './Widget.js';
 
@@ -386,7 +387,7 @@ export class Editor {
       option.textContent = options[index];
     }
     if (title) {
-      select.title = title;
+      Tooltip.install(select, title);
       ARIAUtils.setAccessibleName(select, title);
     }
     select.addEventListener('input', this._validateControls.bind(this, false), false);

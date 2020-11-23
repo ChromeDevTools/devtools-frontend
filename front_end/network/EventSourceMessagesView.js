@@ -114,7 +114,7 @@ export class EventSourceMessageNode extends DataGrid.SortableDataGrid.SortableDa
         ('0' + time.getSeconds()).substr(-2) + '.' + ('00' + time.getMilliseconds()).substr(-3);
     const timeNode = document.createElement('div');
     UI.UIUtils.createTextChild(timeNode, timeText);
-    timeNode.title = time.toLocaleString();
+    UI.Tooltip.Tooltip.install(timeNode, time.toLocaleString());
     super({id: message.eventId, type: message.eventName, data: message.data, time: timeNode});
     this._message = message;
   }

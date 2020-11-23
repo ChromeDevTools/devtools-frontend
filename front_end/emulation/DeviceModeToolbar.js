@@ -154,7 +154,7 @@ export class DeviceModeToolbar {
   _fillMainToolbar(toolbar) {
     const widthInput = UI.UIUtils.createInput('device-mode-size-input', 'text');
     widthInput.maxLength = 4;
-    widthInput.title = Common.UIString.UIString('Width');
+    UI.Tooltip.Tooltip.install(widthInput, Common.UIString.UIString('Width'));
     this._updateWidthInput =
         UI.UIUtils.bindInput(widthInput, this._applyWidth.bind(this), DeviceModeModel.widthValidator, true);
     this._widthInput = widthInput;
@@ -169,7 +169,7 @@ export class DeviceModeToolbar {
 
     const heightInput = UI.UIUtils.createInput('device-mode-size-input', 'text');
     heightInput.maxLength = 4;
-    heightInput.title = Common.UIString.UIString('Height (leave empty for full)');
+    UI.Tooltip.Tooltip.install(heightInput, Common.UIString.UIString('Height (leave empty for full)'));
     this._updateHeightInput = UI.UIUtils.bindInput(heightInput, this._applyHeight.bind(this), validateHeight, true);
     this._heightInput = heightInput;
     this._heightItem = this._wrapToolbarItem(heightInput);

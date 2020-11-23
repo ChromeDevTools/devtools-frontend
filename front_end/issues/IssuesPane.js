@@ -262,13 +262,13 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
       icon.classList.add('link');
       url = request.url();
       filename = extractShortPath(url);
-      icon.title = ls`Click to show request in the network panel`;
+      UI.Tooltip.Tooltip.install(icon, ls`Click to show request in the network panel`);
     } else {
-      icon.title = ls`Request unavailable in the network panel, try reloading the inspected page`;
+      UI.Tooltip.Tooltip.install(icon, ls`Request unavailable in the network panel, try reloading the inspected page`);
       icon.classList.add('unavailable');
     }
     if (url) {
-      requestCell.title = url;
+      UI.Tooltip.Tooltip.install(requestCell, url);
     }
     requestCell.appendChild(document.createTextNode(filename));
     return requestCell;

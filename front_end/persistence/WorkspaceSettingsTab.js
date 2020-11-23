@@ -130,7 +130,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     UI.ARIAUtils.markAsHeading(nameElement, 2);
     const path = header.createChild('div', 'file-system-path');
     path.textContent = fileSystemPath;
-    path.title = fileSystemPath;
+    UI.Tooltip.Tooltip.install(path, fileSystemPath);
 
     const toolbar = new UI.Toolbar.Toolbar('');
     const button = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Remove'), 'largeicon-delete');

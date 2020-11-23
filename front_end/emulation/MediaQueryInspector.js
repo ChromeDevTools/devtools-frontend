@@ -309,7 +309,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
       result.createChild('div', 'media-inspector-marker-spacer');
       const markerElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-max-width');
       markerElement.style.width = maxWidthValue + 'px';
-      markerElement.title = model.mediaText();
+      UI.Tooltip.Tooltip.install(markerElement, model.mediaText());
       appendLabel(markerElement, model.maxWidthExpression(), false, false);
       appendLabel(markerElement, model.maxWidthExpression(), true, true);
       result.createChild('div', 'media-inspector-marker-spacer');
@@ -319,13 +319,13 @@ export class MediaQueryInspector extends UI.Widget.Widget {
       result.createChild('div', 'media-inspector-marker-spacer');
       const leftElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-max-width');
       leftElement.style.width = (maxWidthValue - minWidthValue) * 0.5 + 'px';
-      leftElement.title = model.mediaText();
+      UI.Tooltip.Tooltip.install(leftElement, model.mediaText());
       appendLabel(leftElement, model.maxWidthExpression(), true, false);
       appendLabel(leftElement, model.minWidthExpression(), false, true);
       result.createChild('div', 'media-inspector-marker-spacer').style.flex = '0 0 ' + minWidthValue + 'px';
       const rightElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-max-width');
       rightElement.style.width = (maxWidthValue - minWidthValue) * 0.5 + 'px';
-      rightElement.title = model.mediaText();
+      UI.Tooltip.Tooltip.install(rightElement, model.mediaText());
       appendLabel(rightElement, model.minWidthExpression(), true, false);
       appendLabel(rightElement, model.maxWidthExpression(), false, true);
       result.createChild('div', 'media-inspector-marker-spacer');
@@ -334,12 +334,12 @@ export class MediaQueryInspector extends UI.Widget.Widget {
     if (model.section() === Section.Min) {
       const leftElement = result.createChild(
           'div', 'media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-left');
-      leftElement.title = model.mediaText();
+      UI.Tooltip.Tooltip.install(leftElement, model.mediaText());
       appendLabel(leftElement, model.minWidthExpression(), false, false);
       result.createChild('div', 'media-inspector-marker-spacer').style.flex = '0 0 ' + minWidthValue + 'px';
       const rightElement = result.createChild(
           'div', 'media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-right');
-      rightElement.title = model.mediaText();
+      UI.Tooltip.Tooltip.install(rightElement, model.mediaText());
       appendLabel(rightElement, model.minWidthExpression(), true, true);
     }
 

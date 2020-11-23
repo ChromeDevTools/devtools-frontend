@@ -74,7 +74,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
     element.classList.add('custom-headers-list-item');
     const header = element.createChild('div', 'custom-header-name');
     header.textContent = item.header;
-    header.title = item.header;
+    UI.Tooltip.Tooltip.install(header, item.header);
     return element;
   }
 

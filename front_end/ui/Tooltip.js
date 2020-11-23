@@ -189,7 +189,7 @@ export class Tooltip {
     // Check if native tooltips should be used.
     if (this._shouldUseNativeTooltips()) {
       Object.defineProperty(this._anchorElement, 'title', /** @type {!Object} */ (_nativeTitle));
-      /** @type {!HTMLElement} */ (this._anchorElement).title = tooltip.content;
+      Tooltip.install(this._anchorElement, tooltip.content);
       return;
     }
 

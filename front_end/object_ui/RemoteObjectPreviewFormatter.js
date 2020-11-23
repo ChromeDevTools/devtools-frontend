@@ -294,7 +294,7 @@ export class RemoteObjectPreviewFormatter {
 
     if (type === 'accessor') {
       span.textContent = '(...)';
-      span.title = Common.UIString.UIString('The property is computed with a getter');
+      UI.Tooltip.Tooltip.install(span, Common.UIString.UIString('The property is computed with a getter'));
       return span;
     }
 
@@ -324,7 +324,7 @@ export class RemoteObjectPreviewFormatter {
         preview = '{…}';
       }
       span.textContent = preview;
-      span.title = description;
+      UI.Tooltip.Tooltip.install(span, description);
       return span;
     }
 

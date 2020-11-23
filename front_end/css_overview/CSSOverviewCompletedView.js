@@ -953,7 +953,7 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
         cell.appendChild(link);
         const button = document.createElement('button');
         button.classList.add('show-element');
-        button.title = ls`Show element`;
+        UI.Tooltip.Tooltip.install(button, ls`Show element`);
         button.tabIndex = 0;
         button.onclick = () => this.data.node.scrollIntoView();
         cell.appendChild(button);

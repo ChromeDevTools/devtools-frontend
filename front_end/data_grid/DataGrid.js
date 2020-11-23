@@ -221,11 +221,11 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   static setElementText(element, newText, longText) {
     if (longText && newText.length > 1000) {
       element.textContent = newText.trimEndWithMaxLength(1000);
-      (/** @type {!HTMLElement} */ (element)).title = newText;
+      UI.Tooltip.Tooltip.install(element, newText);
       elementToLongTextMap.set(element, newText);
     } else {
       element.textContent = newText;
-      (/** @type {!HTMLElement} */ (element)).title = '';
+      UI.Tooltip.Tooltip.install(element, '');
       elementToLongTextMap.delete(element);
     }
   }
@@ -236,7 +236,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
    */
   static setElementBoolean(element, value) {
     element.textContent = value ? '\u2713' : '';
-    (/** @type {!HTMLElement} */ (element)).title = '';
+    UI.Tooltip.Tooltip.install(element, '');
   }
 
   /**

@@ -176,7 +176,7 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!HTMLElement} */
     this._pinPreview = /** @type {!HTMLElement} */ (fragment.$('preview'));
     const nameElement = /** @type {!HTMLElement} */ (fragment.$('name'));
-    nameElement.title = expression;
+    UI.Tooltip.Tooltip.install(nameElement, expression);
     elementToConsolePin.set(this._pinElement, this);
 
     /** @type {?SDK.RuntimeModel.EvaluationResult} */
@@ -334,13 +334,13 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
         const sideEffectLabel =
             /** @type {!HTMLElement} */ (this._pinPreview.createChild('span', 'object-value-calculate-value-button'));
         sideEffectLabel.textContent = '(…)';
-        sideEffectLabel.title = ls`Evaluate, allowing side effects`;
+        UI.Tooltip.Tooltip.install(sideEffectLabel, ls`Evaluate, allowing side effects`);
       } else if (previewText) {
         this._pinPreview.appendChild(preview);
       } else if (!isEditing) {
         UI.UIUtils.createTextChild(this._pinPreview, ls`not available`);
       }
-      this._pinPreview.title = previewText;
+      UI.Tooltip.Tooltip.install(this._pinPreview, previewText);
     }
 
     let node = null;

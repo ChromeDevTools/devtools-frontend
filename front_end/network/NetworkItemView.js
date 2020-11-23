@@ -79,7 +79,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       const signedExchangeInfo = request.signedExchangeInfo();
       if (signedExchangeInfo && signedExchangeInfo.errors && signedExchangeInfo.errors.length) {
         const icon = UI.Icon.Icon.create('smallicon-error');
-        icon.title = Common.UIString.UIString('SignedExchange error');
+        UI.Tooltip.Tooltip.install(icon, Common.UIString.UIString('SignedExchange error'));
         this.setTabIcon(Tabs.Preview, icon);
       }
       this.appendTab(

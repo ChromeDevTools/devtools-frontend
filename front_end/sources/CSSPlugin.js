@@ -237,7 +237,7 @@ export class CSSPlugin extends Plugin {
     }
     const swatch = InlineEditor.Swatches.BezierSwatch.create();
     swatch.setBezierText(text);
-    swatch.iconElement().title = Common.UIString.UIString('Open cubic bezier editor.');
+    UI.Tooltip.Tooltip.install(swatch.iconElement(), Common.UIString.UIString('Open cubic bezier editor.'));
     swatch.iconElement().addEventListener('click', this._swatchIconClicked.bind(this, swatch), false);
     swatch.hideText(true);
     return swatch;

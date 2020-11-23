@@ -33,6 +33,7 @@ import * as Root from '../root/root.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {InspectorView} from './InspectorView.js';
+import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel} from './UIUtils.js';
 
 /**
@@ -45,7 +46,7 @@ import {CheckboxLabel} from './UIUtils.js';
 export const createSettingCheckbox = function(name, setting, omitParagraphElement, tooltip) {
   const label = CheckboxLabel.create(name);
   if (tooltip) {
-    label.title = tooltip;
+    Tooltip.install(label, tooltip);
   }
 
   const input = label.checkboxElement;

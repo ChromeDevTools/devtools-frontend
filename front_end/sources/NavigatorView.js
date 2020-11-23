@@ -1202,7 +1202,8 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
       }
       container.appendChild(icon);
       container.appendChild(badge);
-      container.title = Persistence.PersistenceUtils.PersistenceUtils.tooltipForUISourceCode(this._uiSourceCode);
+      UI.Tooltip.Tooltip.install(
+          container, Persistence.PersistenceUtils.PersistenceUtils.tooltipForUISourceCode(this._uiSourceCode));
       this.setLeadingIcons([/** @type {!UI.Icon.Icon} */ (container)]);
     } else {
       let iconType = 'largeicon-navigator-file';

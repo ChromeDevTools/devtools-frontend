@@ -131,7 +131,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     this._bottomResizerElement.createChild('div', '');
     this._createResizer(this._bottomResizerElement, 0, 1);
     this._bottomResizerElement.addEventListener('dblclick', this._model.setHeight.bind(this._model, 0), false);
-    this._bottomResizerElement.title = Common.UIString.UIString('Double-click for full height');
+    UI.Tooltip.Tooltip.install(this._bottomResizerElement, Common.UIString.UIString('Double-click for full height'));
 
     this._pageArea = /** @type {!HTMLElement} */ (this._screenArea.createChild('div', 'device-mode-page-area'));
     this._pageArea.createChild('slot');

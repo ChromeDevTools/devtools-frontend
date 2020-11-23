@@ -7,6 +7,7 @@ import * as Host from '../host/host.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu, Provider} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
 import {html} from './Fragment.js';
+import {Tooltip} from './Tooltip.js';
 import {addReferrerToURLIfNecessary, copyLinkAddressLabel, MaxLengthForDisplayedURLs, openLinkExternallyLabel} from './UIUtils.js';
 import {XElement} from './XElement.js';
 
@@ -102,7 +103,7 @@ export class XLink extends XElement {
       }
 
       this._href = href;
-      this.title = newValue;
+      Tooltip.install(this, newValue);
       this._updateClick();
       return;
     }

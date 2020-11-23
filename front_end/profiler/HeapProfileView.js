@@ -239,7 +239,7 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
     profileHeader.updateStatus(ls`Recording…`);
 
     const icon = UI.Icon.Icon.create('smallicon-warning');
-    icon.title = ls`Heap profiler is recording`;
+    UI.Tooltip.Tooltip.install(icon, ls`Heap profiler is recording`);
     UI.InspectorView.InspectorView.instance().setPanelIcon('heap_profiler', icon);
 
     this._recording = true;

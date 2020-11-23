@@ -58,7 +58,7 @@ export const decorateNodeLabel = function(node, parentElement, tooltipContent) {
     UI.UIUtils.createTextChild(pseudoElement, pseudoText);
     title += pseudoText;
   }
-  parentElement.title = tooltipContent || title;
+  UI.Tooltip.Tooltip.install(parentElement, tooltipContent || title);
 };
 
 /**

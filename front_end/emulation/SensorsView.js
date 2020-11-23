@@ -246,7 +246,7 @@ export class SensorsView extends UI.Widget.VBox {
         this._latitudeInput, this._applyLocationUserInput.bind(this), SDK.EmulationModel.Location.latitudeValidator,
         true, 0.1);
     this._latitudeSetter(String(location.latitude));
-    this._latitudeInput.title = modifierKeyMessage;
+    UI.Tooltip.Tooltip.install(this._latitudeInput, modifierKeyMessage);
     latitudeGroup.appendChild(UI.UIUtils.createLabel(ls`Latitude`, 'latlong-title', this._latitudeInput));
 
     this._longitudeInput = UI.UIUtils.createInput('', 'number');
@@ -257,7 +257,7 @@ export class SensorsView extends UI.Widget.VBox {
         this._longitudeInput, this._applyLocationUserInput.bind(this), SDK.EmulationModel.Location.longitudeValidator,
         true, 0.1);
     this._longitudeSetter(String(location.longitude));
-    this._longitudeInput.title = modifierKeyMessage;
+    UI.Tooltip.Tooltip.install(this._longitudeInput, modifierKeyMessage);
     longitudeGroup.appendChild(UI.UIUtils.createLabel(ls`Longitude`, 'latlong-title', this._longitudeInput));
 
     this._timezoneInput = UI.UIUtils.createInput('', 'text');
@@ -424,11 +424,11 @@ export class SensorsView extends UI.Widget.VBox {
     if (disable) {
       this._deviceOrientationFieldset.disabled = true;
       this._stageElement.classList.add('disabled');
-      this._stageElement.title = ls`Enable orientation to rotate`;
+      UI.Tooltip.Tooltip.install(this._stageElement, ls`Enable orientation to rotate`);
     } else {
       this._deviceOrientationFieldset.disabled = false;
       this._stageElement.classList.remove('disabled');
-      this._stageElement.title = ls`Shift+drag horizontally to rotate around the y-axis`;
+      UI.Tooltip.Tooltip.install(this._stageElement, ls`Shift+drag horizontally to rotate around the y-axis`);
     }
   }
 

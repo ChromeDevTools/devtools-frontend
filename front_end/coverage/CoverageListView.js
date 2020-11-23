@@ -363,7 +363,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     const cell = this.createTD(columnId);
     switch (columnId) {
       case 'url': {
-        cell.title = this._url;
+        UI.Tooltip.Tooltip.install(cell, this._url);
         const outer = cell.createChild('div', 'url-outer');
         const prefix = outer.createChild('div', 'url-prefix');
         const suffix = outer.createChild('div', 'url-suffix');
@@ -379,9 +379,9 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
       case 'type': {
         cell.textContent = coverageTypeToString(this._coverageInfo.type());
         if (this._coverageInfo.type() & CoverageType.JavaScriptPerFunction) {
-          cell.title = i18nString(UIStrings.jsCoverageWithPerFunction);
+          UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.jsCoverageWithPerFunction));
         } else if (this._coverageInfo.type() & CoverageType.JavaScript) {
-          cell.title = i18nString(UIStrings.jsCoverageWithPerBlock);
+          UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.jsCoverageWithPerBlock));
         }
         break;
       }

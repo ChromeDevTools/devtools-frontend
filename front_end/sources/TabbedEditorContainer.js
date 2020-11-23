@@ -561,7 +561,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
    */
   _addLoadErrorIcon(tabId) {
     const icon = UI.Icon.Icon.create('smallicon-error');
-    icon.title = ls`Unable to load this content.`;
+    UI.Tooltip.Tooltip.install(icon, ls`Unable to load this content.`);
     if (this._tabbedPane.tabView(tabId)) {
       this._tabbedPane.setTabIcon(tabId, icon);
     }
@@ -661,10 +661,11 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
       let icon = null;
       if (uiSourceCode.loadError()) {
         icon = UI.Icon.Icon.create('smallicon-error');
-        icon.title = ls`Unable to load this content.`;
+        UI.Tooltip.Tooltip.install(icon, ls`Unable to load this content.`);
       } else if (Persistence.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode)) {
         icon = UI.Icon.Icon.create('smallicon-warning');
-        icon.title = Common.UIString.UIString('Changes to this file were not saved to file system.');
+        UI.Tooltip.Tooltip.install(
+            icon, Common.UIString.UIString('Changes to this file were not saved to file system.'));
       } else {
         icon = Persistence.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode);
       }

@@ -74,7 +74,8 @@ export class FilmStripView extends UI.Widget.HBox {
     const frameTime = Number.millisToString(time - this._zeroTime);
     const element = document.createElement('div');
     element.classList.add('frame');
-    element.title = Common.UIString.UIString('Doubleclick to zoom image. Click to view preceding requests.');
+    UI.Tooltip.Tooltip.install(
+        element, Common.UIString.UIString('Doubleclick to zoom image. Click to view preceding requests.'));
     element.createChild('div', 'time').textContent = frameTime;
     element.tabIndex = 0;
     element.setAttribute('aria-label', ls`Screenshot for ${frameTime} - select to view preceding requests.`);
@@ -237,9 +238,9 @@ export class Dialog {
    */
   constructor(filmStripFrame, zeroTime) {
     const prevButton = UI.UIUtils.createTextButton('\u25C0', this._onPrevFrame.bind(this));
-    prevButton.title = Common.UIString.UIString('Previous frame');
+    UI.Tooltip.Tooltip.install(prevButton, Common.UIString.UIString('Previous frame'));
     const nextButton = UI.UIUtils.createTextButton('\u25B6', this._onNextFrame.bind(this));
-    nextButton.title = Common.UIString.UIString('Next frame');
+    UI.Tooltip.Tooltip.install(nextButton, Common.UIString.UIString('Next frame'));
 
     this._fragment = UI.Fragment.Fragment.build`
       <x-widget flex=none margin=12px>

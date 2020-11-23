@@ -363,7 +363,7 @@ export class RequestTimingView extends UI.Widget.VBox {
       const metric = tr.createChild('td', 'network-timing-metric');
       const description = serverTiming.description || serverTiming.metric;
       UI.UIUtils.createTextChild(metric, description);
-      metric.title = description;
+      UI.Tooltip.Tooltip.install(metric, description);
       const row = tr.createChild('td').createChild('div', 'network-timing-row');
 
       if (serverTiming.value === null) {

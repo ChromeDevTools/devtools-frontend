@@ -24,7 +24,7 @@ export class BezierPopoverIcon {
     this._swatchPopoverHelper = swatchPopoverHelper;
     this._swatch = swatch;
 
-    this._swatch.iconElement().title = Common.UIString.UIString('Open cubic bezier editor.');
+    UI.Tooltip.Tooltip.install(this._swatch.iconElement(), Common.UIString.UIString('Open cubic bezier editor.'));
     this._swatch.iconElement().addEventListener('click', this._iconClick.bind(this), false);
     this._swatch.iconElement().addEventListener(
         'mousedown', /** @param {!Event} event */ event => event.consume(), false);
@@ -267,7 +267,7 @@ export class ShadowSwatchPopoverHelper {
     this._shadowSwatch = shadowSwatch;
     this._iconElement = shadowSwatch.iconElement();
 
-    this._iconElement.title = Common.UIString.UIString('Open shadow editor.');
+    UI.Tooltip.Tooltip.install(this._iconElement, Common.UIString.UIString('Open shadow editor.'));
     this._iconElement.addEventListener('click', this._iconClick.bind(this), false);
     this._iconElement.addEventListener('mousedown', event => event.consume(), false);
 

@@ -84,7 +84,8 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     } else {
       this._controlButton.setAttribute('disabled', '');
     }
-    this._controlButton.title = this._recordButtonEnabled ? '' : UI.UIUtils.anotherProfilerActiveLabel();
+    UI.Tooltip.Tooltip.install(
+        this._controlButton, this._recordButtonEnabled ? '' : UI.UIUtils.anotherProfilerActiveLabel());
     if (this._isInstantProfile) {
       this._controlButton.classList.remove('running');
       this._controlButton.classList.add('primary-button');

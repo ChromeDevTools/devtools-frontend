@@ -1128,9 +1128,12 @@ export class SecurityMainView extends UI.Widget.VBox {
       [Protocol.Security.SecurityState.Neutral, lockSpectrum.createChild('div', 'lock-icon lock-icon-neutral')],
       [Protocol.Security.SecurityState.Insecure, lockSpectrum.createChild('div', 'lock-icon lock-icon-insecure')],
     ]);
-    this.getLockSpectrumDiv(Protocol.Security.SecurityState.Secure).title = i18nString(UIStrings.secure);
-    this.getLockSpectrumDiv(Protocol.Security.SecurityState.Neutral).title = i18nString(UIStrings.info);
-    this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).title = i18nString(UIStrings.notSecure);
+    UI.Tooltip.Tooltip.install(
+        this.getLockSpectrumDiv(Protocol.Security.SecurityState.Secure), i18nString(UIStrings.secure));
+    UI.Tooltip.Tooltip.install(
+        this.getLockSpectrumDiv(Protocol.Security.SecurityState.Neutral), i18nString(UIStrings.info));
+    UI.Tooltip.Tooltip.install(
+        this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure), i18nString(UIStrings.notSecure));
 
     this._summarySection.createChild('div', 'triangle-pointer-container')
         .createChild('div', 'triangle-pointer-wrapper')
@@ -1224,11 +1227,13 @@ export class SecurityMainView extends UI.Widget.VBox {
     if (this._securityState === Protocol.Security.SecurityState.Insecure) {
       this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure');
       this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure-broken');
-      this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).title = i18nString(UIStrings.notSecure);
+      UI.Tooltip.Tooltip.install(
+          this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure), i18nString(UIStrings.notSecure));
     } else if (this._securityState === Protocol.Security.SecurityState.InsecureBroken) {
       this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure-broken');
       this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure');
-      this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).title = i18nString(UIStrings.notSecureBroken);
+      UI.Tooltip.Tooltip.install(
+          this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure), i18nString(UIStrings.notSecureBroken));
     }
 
     // Use override summary if present, otherwise use base explanation
@@ -1256,11 +1261,13 @@ export class SecurityMainView extends UI.Widget.VBox {
     if (this._securityState === Protocol.Security.SecurityState.Insecure) {
       this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure');
       this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure-broken');
-      this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).title = i18nString(UIStrings.notSecure);
+      UI.Tooltip.Tooltip.install(
+          this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure), i18nString(UIStrings.notSecure));
     } else if (this._securityState === Protocol.Security.SecurityState.InsecureBroken) {
       this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure-broken');
       this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure');
-      this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).title = i18nString(UIStrings.notSecureBroken);
+      UI.Tooltip.Tooltip.install(
+          this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure), i18nString(UIStrings.notSecureBroken));
     }
 
     const {summary, explanations} = this._getSecuritySummaryAndExplanations(visibleSecurityState);

@@ -180,7 +180,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
       exclamationElement.type = 'smallicon-warning';
     }
     if (title) {
-      exclamationElement.title = title;
+      UI.Tooltip.Tooltip.install(exclamationElement, title);
     } else {
       exclamationElement.title = SDK.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ?
           Common.UIString.UIString('Invalid property value') :
@@ -2989,7 +2989,7 @@ export class StylesSidebarPropertyRenderer {
     }
 
     if (metadata.isStringProperty(this._propertyName)) {
-      valueElement.title = unescapeCssString(this._propertyValue);
+      UI.Tooltip.Tooltip.install(valueElement, unescapeCssString(this._propertyValue));
     }
 
     const regexes = [SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex];

@@ -177,7 +177,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     const suggestedColorString = formattedColor ? formattedColor + ' ' : '';
     const label = ls`Use suggested color ${suggestedColorString}to fix low contrast`;
     UI.ARIAUtils.setAccessibleName(button, label);
-    button.title = label;
+    UI.Tooltip.Tooltip.install(button, label);
     button.tabIndex = 0;
     button.style.backgroundColor = suggestedColorString;
     return button;

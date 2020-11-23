@@ -249,7 +249,7 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     const cell = /** @type {!HTMLElement} */ (this.createTD(columnId));
     switch (columnId) {
       case 'url': {
-        cell.title = this.item.url;
+        UI.Tooltip.Tooltip.install(cell, this.item.url);
         const outer = cell.createChild('div', 'url-outer');
         const prefix = outer.createChild('div', 'url-prefix');
         const suffix = outer.createChild('div', 'url-suffix');
@@ -265,7 +265,7 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
       case 'initiator': {
         const url = this.item.initiator.initiatorUrl || '';
         cell.textContent = url;
-        cell.title = url;
+        UI.Tooltip.Tooltip.install(cell, url);
         this.setCellAccessibleName(url, cell, columnId);
         cell.onmouseenter = () => {
           const frame = SDK.FrameManager.FrameManager.instance().getFrame(this.item.initiator.frameId || '');

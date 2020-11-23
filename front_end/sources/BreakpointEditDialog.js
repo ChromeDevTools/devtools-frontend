@@ -109,10 +109,12 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     const selectedValue = option.value;
     if (selectedValue === BreakpointType.Conditional) {
       this._editor.setPlaceholder(ls`Expression to check before pausing, e.g. x > 5`);
-      /** @type {!HTMLSpanElement} */ (this._typeSelector.element).title = ls`Pause only when the condition is true`;
+      /** @type {!HTMLSpanElement} */ UI.Tooltip.Tooltip.install(
+          (this._typeSelector.element), ls`Pause only when the condition is true`);
     } else if (selectedValue === BreakpointType.Logpoint) {
       this._editor.setPlaceholder(ls`Log message, e.g. 'x is', x`);
-      /** @type {!HTMLSpanElement} */ (this._typeSelector.element).title = ls`Log a message to Console, do not break`;
+      /** @type {!HTMLSpanElement} */ UI.Tooltip.Tooltip.install(
+          (this._typeSelector.element), ls`Log a message to Console, do not break`);
     }
   }
 

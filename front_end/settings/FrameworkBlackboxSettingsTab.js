@@ -90,7 +90,7 @@ export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
     blackboxContentScripts.appendChild(UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.blackboxContentScripts),
         Common.Settings.Settings.instance().moduleSetting('skipContentScripts'), true));
-    blackboxContentScripts.title = i18nString(UIStrings.blackboxContentScriptsExtension);
+    UI.Tooltip.Tooltip.install(blackboxContentScripts, i18nString(UIStrings.blackboxContentScriptsExtension));
 
     this._blackboxLabel = i18nString(UIStrings.blackbox);
     this._disabledLabel = i18nString(UIStrings.disabled);
@@ -148,7 +148,7 @@ export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
     element.classList.add('blackbox-list-item');
     const pattern = element.createChild('div', 'blackbox-pattern');
     pattern.textContent = item.pattern;
-    pattern.title = i18nString(UIStrings.blackboxScriptsWhoseNamesMatchS, {PH1: item.pattern});
+    UI.Tooltip.Tooltip.install(pattern, i18nString(UIStrings.blackboxScriptsWhoseNamesMatchS, {PH1: item.pattern}));
     element.createChild('div', 'blackbox-separator');
     element.createChild('div', 'blackbox-behavior').textContent =
         item.disabled ? this._disabledLabel : this._blackboxLabel;

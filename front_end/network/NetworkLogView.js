@@ -145,7 +145,7 @@ export class NetworkLogView extends UI.Widget.VBox {
         'hide-data-url', Common.UIString.UIString('Hide data URLs'), true, this._networkHideDataURLSetting);
     this._dataURLFilterUI.addEventListener(
         UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
-    this._dataURLFilterUI.element().title = ls`Hides data: and blob: URLs`;
+    UI.Tooltip.Tooltip.install(this._dataURLFilterUI.element(), ls`Hides data: and blob: URLs`);
     filterBar.addFilter(this._dataURLFilterUI);
 
     const filterItems =
@@ -162,14 +162,15 @@ export class NetworkLogView extends UI.Widget.VBox {
         'only-show-issues', ls`Has blocked cookies`, true, this._networkShowIssuesOnlySetting);
     this._onlyIssuesFilterUI.addEventListener(
         UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
-    this._onlyIssuesFilterUI.element().title = ls`Only show requests with blocked response cookies`;
+    UI.Tooltip.Tooltip.install(
+        this._onlyIssuesFilterUI.element(), ls`Only show requests with blocked response cookies`);
     filterBar.addFilter(this._onlyIssuesFilterUI);
 
     this._onlyBlockedRequestsUI = new UI.FilterBar.CheckboxFilterUI(
         'only-show-blocked-requests', ls`Blocked Requests`, true, this._networkOnlyBlockedRequestsSetting);
     this._onlyBlockedRequestsUI.addEventListener(
         UI.FilterBar.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
-    this._onlyBlockedRequestsUI.element().title = ls`Only show blocked requests`;
+    UI.Tooltip.Tooltip.install(this._onlyBlockedRequestsUI.element(), ls`Only show blocked requests`);
     filterBar.addFilter(this._onlyBlockedRequestsUI);
 
 

@@ -48,7 +48,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
 
     const otherUserAgentElement = UI.UIUtils.createInput('', 'text');
     otherUserAgentElement.value = userAgentSetting.get();
-    otherUserAgentElement.title = userAgentSetting.get();
+    UI.Tooltip.Tooltip.install(otherUserAgentElement, userAgentSetting.get());
     otherUserAgentElement.placeholder = Common.UIString.UIString('Enter a custom user agent');
     otherUserAgentElement.required = true;
     UI.ARIAUtils.setAccessibleName(otherUserAgentElement, otherUserAgentElement.placeholder);
@@ -70,7 +70,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
       if (value !== customOverride.value) {
         userAgentSetting.set(value);
         otherUserAgentElement.value = value;
-        otherUserAgentElement.title = value;
+        UI.Tooltip.Tooltip.install(otherUserAgentElement, value);
       } else {
         otherUserAgentElement.select();
       }
@@ -102,7 +102,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
           errorElement.textContent = '';
         }
         userAgentSetting.set(otherUserAgentElement.value);
-        otherUserAgentElement.title = otherUserAgentElement.value;
+        UI.Tooltip.Tooltip.install(otherUserAgentElement, otherUserAgentElement.value);
         settingChanged();
       }
     }

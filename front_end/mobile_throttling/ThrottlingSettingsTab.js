@@ -69,7 +69,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
     const title = element.createChild('div', 'conditions-list-text conditions-list-title');
     const titleText = title.createChild('div', 'conditions-list-title-text');
     titleText.textContent = conditions.title;
-    titleText.title = conditions.title;
+    UI.Tooltip.Tooltip.install(titleText, conditions.title);
     element.createChild('div', 'conditions-list-separator');
     element.createChild('div', 'conditions-list-text').textContent = throughputText(conditions.download);
     element.createChild('div', 'conditions-list-separator');

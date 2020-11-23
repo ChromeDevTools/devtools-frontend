@@ -4,6 +4,7 @@
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Toolbar} from './Toolbar.js';
+import {Tooltip} from './Tooltip.js';
 import {VBox} from './Widget.js';
 
 /**
@@ -152,7 +153,7 @@ export class Section extends VBox {
     if (this._titleElement.textContent !== title) {
       this._titleElement.textContent = title;
     }
-    this._titleElement.title = tooltip || '';
+    Tooltip.install(this._titleElement, tooltip || '');
     this._titleElement.classList.toggle('hidden', !this._titleElement.textContent);
   }
 

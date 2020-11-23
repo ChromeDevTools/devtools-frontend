@@ -244,7 +244,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
       playbackRates.set(button, playbackRate);
       button.addEventListener('click', this._setPlaybackRate.bind(this, playbackRate));
       UI.ARIAUtils.markAsOption(button);
-      button.title = i18nString(UIStrings.setSpeedToS, {PH1: button.textContent});
+      UI.Tooltip.Tooltip.install(button, i18nString(UIStrings.setSpeedToS, {PH1: button.textContent}));
       button.tabIndex = -1;
       this._playbackRateButtons.push(button);
     }

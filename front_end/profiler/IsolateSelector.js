@@ -33,8 +33,9 @@ export class IsolateSelector extends UI.Widget.VBox {
     this._totalTrendDiv = this._totalElement.createChild('div', 'profile-memory-usage-item-trend');
     this._totalElement.createChild('div').textContent = ls`Total JS heap size`;
     const trendIntervalMinutes = Math.round(SDK.IsolateManager.MemoryTrendWindowMs / 60e3);
-    this._totalTrendDiv.title = ls`Total page JS heap size change trend over the last ${trendIntervalMinutes} minutes.`;
-    this._totalValueDiv.title = ls`Total page JS heap size across all VM instances.`;
+    UI.Tooltip.Tooltip.install(
+        this._totalTrendDiv, ls`Total page JS heap size change trend over the last ${trendIntervalMinutes} minutes.`);
+    UI.Tooltip.Tooltip.install(this._totalValueDiv, ls`Total page JS heap size across all VM instances.`);
 
     SDK.IsolateManager.IsolateManager.instance().observeIsolates(this);
     SDK.SDKModel.TargetManager.instance().addEventListener(SDK.SDKModel.Events.NameChanged, this._targetChanged, this);
@@ -253,9 +254,10 @@ export class ListItem {
     this.element.classList.add('hbox');
     UI.ARIAUtils.markAsOption(this.element);
     this._heapDiv = this.element.createChild('div', 'profile-memory-usage-item-size');
-    this._heapDiv.title = ls`Heap size in use by live JS objects.`;
+    UI.Tooltip.Tooltip.install(this._heapDiv, ls`Heap size in use by live JS objects.`);
     this._trendDiv = this.element.createChild('div', 'profile-memory-usage-item-trend');
-    this._trendDiv.title = ls`Heap size change trend over the last ${trendIntervalMinutes} minutes.`;
+    UI.Tooltip.Tooltip.install(
+        this._trendDiv, ls`Heap size change trend over the last ${trendIntervalMinutes} minutes.`);
     this._nameDiv = this.element.createChild('div', 'profile-memory-usage-item-name');
     this.updateTitle();
   }
@@ -290,7 +292,7 @@ export class ListItem {
       titles.push(title);
       const titleDiv = this._nameDiv.createChild('div');
       titleDiv.textContent = title;
-      titleDiv.title = title;
+      UI.Tooltip.Tooltip.install(titleDiv, String(title));
     }
   }
 }

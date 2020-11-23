@@ -372,7 +372,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
         {PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString()});
 
     if (!response.overrideActive && response.quota < 125829120) {  // 120 MB
-      this._quotaRow.title = ls`Storage quota is limited in Incognito mode`;
+      UI.Tooltip.Tooltip.install(this._quotaRow, ls`Storage quota is limited in Incognito mode`);
       this._quotaRow.appendChild(UI.Icon.Icon.create('smallicon-info'));
     }
 

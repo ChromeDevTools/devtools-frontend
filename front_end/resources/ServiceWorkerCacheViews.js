@@ -436,7 +436,7 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode {
       value = new Date(this._request.endTime * 1000).toLocaleString();
     }
     DataGrid.DataGrid.DataGridImpl.setElementText(cell, value || '', true);
-    cell.title = this._request.url();
+    UI.Tooltip.Tooltip.install(cell, this._request.url());
     return cell;
   }
 }

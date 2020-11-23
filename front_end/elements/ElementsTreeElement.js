@@ -99,7 +99,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
       if (node.isAdFrameNode()) {
         const adorner = this.adornText('Ad', AdornerCategories.Security);
-        adorner.title = ls`This frame was identified as an ad frame`;
+        UI.Tooltip.Tooltip.install(adorner, ls`This frame was identified as an ad frame`);
       }
     }
 
@@ -315,7 +315,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (this.listItemElement && !this._hintElement) {
       this._hintElement = this.listItemElement.createChild('span', 'selected-hint');
       const selectedElementCommand = '$0';
-      this._hintElement.title = ls`Use ${selectedElementCommand} in the console to refer to this element.`;
+      UI.Tooltip.Tooltip.install(
+          this._hintElement, ls`Use ${selectedElementCommand} in the console to refer to this element.`);
       UI.ARIAUtils.markAsHidden(this._hintElement);
     }
   }

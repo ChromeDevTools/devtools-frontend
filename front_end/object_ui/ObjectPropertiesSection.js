@@ -257,7 +257,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     } else {
       addElements('\u0192', text, nameAndArguments(text));
     }
-    valueElement.title = description.trimEndWithMaxLength(500);
+    UI.Tooltip.Tooltip.install(valueElement, description.trimEndWithMaxLength(500));
     return valueElement;
 
     /**
@@ -353,7 +353,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         const previewFormatter = new RemoteObjectPreviewFormatter();
         previewFormatter.appendObjectPreview(valueElement, value.preview, false /* isEntry */);
         propertyValue = new ObjectPropertyValue(valueElement);
-        /** @type {!HTMLElement} */ (propertyValue.element).title = description || '';
+        UI.Tooltip.Tooltip.install(propertyValue.element, description || '');
       } else if (
           description.length > (/** @type {*} */ (self).ObjectUI.ObjectPropertiesSection._maxRenderableStringLength ||
                                 maxRenderableStringLength)) {
@@ -361,7 +361,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       } else {
         propertyValue = new ObjectPropertyValue(valueElement);
         propertyValue.element.textContent = description;
-        /** @type {!HTMLElement} */ (propertyValue.element).title = description;
+        UI.Tooltip.Tooltip.install(propertyValue.element, description);
       }
     }
 
@@ -381,7 +381,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     function createUnknownInternalLocationElement() {
       const valueElement = document.createElement('span');
       valueElement.textContent = '<' + Common.UIString.UIString('unknown') + '>';
-      valueElement.title = description || '';
+      UI.Tooltip.Tooltip.install(valueElement, description || '');
       return valueElement;
     }
 
@@ -400,7 +400,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       } else {
         UI.UIUtils.createTextChild(valueElement, text);
         propertyValue = new ObjectPropertyValue(valueElement);
-        valueElement.title = description || '';
+        UI.Tooltip.Tooltip.install(valueElement, description || '');
       }
       valueElement.createChild('span', 'object-value-string-quote').textContent = '"';
       return propertyValue;
@@ -422,7 +422,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         UI.UIUtils.createTextChild(valueElement, `${className} `);
         valueElement.appendChild(contentString.element);
         propertyValue = new ObjectPropertyValue(valueElement);
-        valueElement.title = text;
+        UI.Tooltip.Tooltip.install(valueElement, text);
       }
 
       return propertyValue;
@@ -455,7 +455,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       valueElement.createChild('span', 'object-value-scientific-notation-mantissa').textContent = numberParts[0];
       valueElement.createChild('span', 'object-value-scientific-notation-exponent').textContent = 'e' + numberParts[1];
       valueElement.classList.add('object-value-scientific-notation-number');
-      valueElement.title = description || '';
+      UI.Tooltip.Tooltip.install(valueElement, description || '');
       return valueElement;
     }
   }
@@ -827,7 +827,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       return rootElement;
     }
     element.classList.add('object-value-calculate-value-button');
-    element.title = Common.UIString.UIString('Invoke property getter');
+    UI.Tooltip.Tooltip.install(element, Common.UIString.UIString('Invoke property getter'));
     element.addEventListener('click', onInvokeGetterClick, false);
 
     /**
@@ -919,7 +919,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     const element = document.createElement('div');
     element.classList.add('object-value-calculate-value-button');
     element.textContent = Common.UIString.UIString('(...)');
-    element.title = Common.UIString.UIString('Show all %d', this.childCount());
+    UI.Tooltip.Tooltip.install(element, Common.UIString.UIString('Show all %d', this.childCount()));
     const children = this.children();
     for (let i = this._maxNumPropertiesToShow; i < this.childCount(); ++i) {
       children[i].hidden = true;
@@ -1037,7 +1037,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       valueElement.setTextContentTruncatedIfNeeded(value.description || '');
     }
     valueElement.classList.add('object-value-' + (value.subtype || value.type));
-    valueElement.title = value.description || '';
+    UI.Tooltip.Tooltip.install(valueElement, value.description || '');
     return valueElement;
   }
 
@@ -1070,7 +1070,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.valueElement = /** @type {!HTMLElement} */ (document.createElement('span'));
       this.valueElement.classList.add('object-value-undefined');
       this.valueElement.textContent = Common.UIString.UIString('<unreadable>');
-      this.valueElement.title = Common.UIString.UIString('No property getter');
+      UI.Tooltip.Tooltip.install(this.valueElement, Common.UIString.UIString('No property getter'));
     }
 
     const valueText = this.valueElement.textContent;
@@ -1098,7 +1098,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     const name = this.property.name;
 
     if (this.property.synthetic) {
-      this.nameElement.title = name;
+      UI.Tooltip.Tooltip.install(this.nameElement, name);
       return;
     }
 
@@ -1112,11 +1112,11 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         '';
 
     if (this.property.private || useDotNotation.test(name)) {
-      this.nameElement.title = parentPath ? `${parentPath}.${name}` : name;
+      UI.Tooltip.Tooltip.install(this.nameElement, parentPath ? `${parentPath}.${name}` : name);
     } else if (isInteger.test(name)) {
-      this.nameElement.title = `${parentPath}[${name}]`;
+      UI.Tooltip.Tooltip.install(this.nameElement, `${parentPath}[${name}]`);
     } else {
-      this.nameElement.title = `${parentPath}[${JSON.stringify(name)}]`;
+      UI.Tooltip.Tooltip.install(this.nameElement, `${parentPath}[${JSON.stringify(name)}]`);
     }
   }
 
@@ -1843,7 +1843,7 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
     this._text = text;
     this._maxLength = maxLength;
     container.textContent = text.slice(0, maxLength);
-    /** @type {!HTMLElement} */ (container).title = `${text.slice(0, maxLength)}…`;
+    UI.Tooltip.Tooltip.install(container, `${text.slice(0, maxLength)}…`);
 
     /** @type {?Element} */
     this._expandElement = container.createChild('span');

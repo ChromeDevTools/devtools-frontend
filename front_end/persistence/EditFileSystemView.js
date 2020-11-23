@@ -112,7 +112,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
     const pathPrefix = /** @type {string} */ (editable ? item : Common.UIString.UIString('%s (via .devtools)', item));
     const pathPrefixElement = element.createChild('div', 'file-system-value');
     pathPrefixElement.textContent = pathPrefix;
-    pathPrefixElement.title = pathPrefix;
+    UI.Tooltip.Tooltip.install(pathPrefixElement, pathPrefix);
     return element;
   }
 

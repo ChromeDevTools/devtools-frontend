@@ -288,7 +288,7 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
         ('0' + time.getSeconds()).substr(-2) + '.' + ('00' + time.getMilliseconds()).substr(-3);
     const timeNode = document.createElement('div');
     UI.UIUtils.createTextChild(timeNode, timeText);
-    timeNode.title = time.toLocaleString();
+    UI.Tooltip.Tooltip.install(timeNode, time.toLocaleString());
 
     let dataText = frame.text;
     let description = ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);

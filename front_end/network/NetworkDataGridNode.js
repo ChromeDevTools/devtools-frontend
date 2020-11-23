@@ -945,7 +945,7 @@ export class NetworkRequestNode extends NetworkNode {
    */
   _setTextAndTitle(element, text, title) {
     UI.UIUtils.createTextChild(element, text);
-    element.title = title || text;
+    UI.Tooltip.Tooltip.install(element, title || text);
   }
 
   /**
@@ -962,7 +962,7 @@ export class NetworkRequestNode extends NetworkNode {
     link.textContent = linkText;
     link.addEventListener('click', handler);
     element.appendChild(link);
-    element.title = cellText;
+    UI.Tooltip.Tooltip.install(element, cellText);
   }
 
   /**
@@ -1147,10 +1147,10 @@ export class NetworkRequestNode extends NetworkNode {
       const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this._request);
       UI.UIUtils.createTextChild(cell, networkManager ? networkManager.target().decorateLabel(name) : name);
       this._appendSubtitle(cell, this._request.path());
-      cell.title = this._request.url();
+      UI.Tooltip.Tooltip.install(cell, this._request.url());
     } else if (text) {
       UI.UIUtils.createTextChild(cell, text);
-      cell.title = text;
+      UI.Tooltip.Tooltip.install(cell, text);
     }
   }
 
@@ -1167,14 +1167,14 @@ export class NetworkRequestNode extends NetworkNode {
       if (this._request.localizedFailDescription) {
         UI.UIUtils.createTextChild(cell, failText);
         this._appendSubtitle(cell, this._request.localizedFailDescription, true);
-        cell.title = failText + ' ' + this._request.localizedFailDescription;
+        UI.Tooltip.Tooltip.install(cell, failText + ' ' + this._request.localizedFailDescription);
       } else {
         this._setTextAndTitle(cell, failText);
       }
     } else if (this._request.statusCode) {
       UI.UIUtils.createTextChild(cell, '' + this._request.statusCode);
       this._appendSubtitle(cell, this._request.statusText);
-      cell.title = this._request.statusCode + ' ' + this._request.statusText;
+      UI.Tooltip.Tooltip.install(cell, this._request.statusCode + ' ' + this._request.statusText);
     } else if (this._request.parsedURL.isDataURL()) {
       this._setTextAndTitle(cell, Common.UIString.UIString('(data)'));
     } else if (this._request.canceled) {
@@ -1261,7 +1261,7 @@ export class NetworkRequestNode extends NetworkNode {
     }
     switch (initiator.type) {
       case SDK.NetworkRequest.InitiatorType.Parser: {
-        cell.title = initiator.url + ':' + (initiator.lineNumber + 1);
+        UI.Tooltip.Tooltip.install(cell, initiator.url + ':' + (initiator.lineNumber + 1));
         const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(initiator.url);
         cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(
             initiator.url, /** @type {!Components.Linkifier.LinkifyURLOptions} */ ({
@@ -1274,7 +1274,7 @@ export class NetworkRequestNode extends NetworkNode {
       }
 
       case SDK.NetworkRequest.InitiatorType.Redirect: {
-        cell.title = initiator.url;
+        UI.Tooltip.Tooltip.install(cell, initiator.url);
         const redirectSource = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (request.redirectSource());
         console.assert(redirectSource !== null);
         if (this.parentView().nodeForRequest(redirectSource)) {
@@ -1302,7 +1302,7 @@ export class NetworkRequestNode extends NetworkNode {
               networkManager.target(), initiator.scriptId, initiator.url, initiator.lineNumber,
               {columnNumber: initiator.columnNumber, className: undefined, tabStop: undefined});
         }
-        /** @type {!HTMLElement} */ (this._linkifiedInitiatorAnchor).title = '';
+        /** @type {!HTMLElement} */ UI.Tooltip.Tooltip.install((this._linkifiedInitiatorAnchor), '');
         cell.appendChild(this._linkifiedInitiatorAnchor);
         this._appendSubtitle(cell, Common.UIString.UIString('Script'));
         cell.classList.add('network-script-initiated');
@@ -1310,7 +1310,7 @@ export class NetworkRequestNode extends NetworkNode {
       }
 
       case SDK.NetworkRequest.InitiatorType.Preload: {
-        cell.title = Common.UIString.UIString('Preload');
+        UI.Tooltip.Tooltip.install(cell, Common.UIString.UIString('Preload'));
         cell.classList.add('network-dim-cell');
         cell.appendChild(document.createTextNode(Common.UIString.UIString('Preload')));
         break;
@@ -1323,7 +1323,7 @@ export class NetworkRequestNode extends NetworkNode {
       }
 
       default: {
-        cell.title = Common.UIString.UIString('Other');
+        UI.Tooltip.Tooltip.install(cell, Common.UIString.UIString('Other'));
         cell.classList.add('network-dim-cell');
         cell.appendChild(document.createTextNode(Common.UIString.UIString('Other')));
       }
@@ -1338,28 +1338,28 @@ export class NetworkRequestNode extends NetworkNode {
 
     if (this._request.cachedInMemory()) {
       UI.UIUtils.createTextChild(cell, ls`(memory cache)`);
-      cell.title = ls`Served from memory cache, resource size: ${resourceSize}`;
+      UI.Tooltip.Tooltip.install(cell, ls`Served from memory cache, resource size: ${resourceSize}`);
       cell.classList.add('network-dim-cell');
     } else if (this._request.fetchedViaServiceWorker) {
       UI.UIUtils.createTextChild(cell, ls`(ServiceWorker)`);
-      cell.title = ls`Served from ServiceWorker, resource size: ${resourceSize}`;
+      UI.Tooltip.Tooltip.install(cell, ls`Served from ServiceWorker, resource size: ${resourceSize}`);
       cell.classList.add('network-dim-cell');
     } else if (this._request.redirectSourceSignedExchangeInfoHasNoErrors()) {
       UI.UIUtils.createTextChild(cell, ls`(signed-exchange)`);
-      cell.title = ls`Served from Signed HTTP Exchange, resource size: ${resourceSize}`;
+      UI.Tooltip.Tooltip.install(cell, ls`Served from Signed HTTP Exchange, resource size: ${resourceSize}`);
       cell.classList.add('network-dim-cell');
     } else if (this._request.fromPrefetchCache()) {
       UI.UIUtils.createTextChild(cell, ls`(prefetch cache)`);
-      cell.title = ls`Served from prefetch cache, resource size: ${resourceSize}`;
+      UI.Tooltip.Tooltip.install(cell, ls`Served from prefetch cache, resource size: ${resourceSize}`);
       cell.classList.add('network-dim-cell');
     } else if (this._request.cached()) {
       UI.UIUtils.createTextChild(cell, ls`(disk cache)`);
-      cell.title = ls`Served from disk cache, resource size: ${resourceSize}`;
+      UI.Tooltip.Tooltip.install(cell, ls`Served from disk cache, resource size: ${resourceSize}`);
       cell.classList.add('network-dim-cell');
     } else {
       const transferSize = Platform.NumberUtilities.bytesToString(this._request.transferSize);
       UI.UIUtils.createTextChild(cell, transferSize);
-      cell.title = `${transferSize} transferred over network, resource size: ${resourceSize}`;
+      UI.Tooltip.Tooltip.install(cell, `${transferSize} transferred over network, resource size: ${resourceSize}`);
     }
     this._appendSubtitle(cell, resourceSize);
   }

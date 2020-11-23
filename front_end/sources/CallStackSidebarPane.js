@@ -242,10 +242,10 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     if (item.isAsyncHeader) {
       element.classList.add('async-header');
     } else {
-      titleElement.title = item.title;
+      UI.Tooltip.Tooltip.install(titleElement, item.title);
       const linkElement = element.createChild('div', 'call-frame-location');
       linkElement.textContent = item.linkText.trimMiddle(30);
-      linkElement.title = item.linkText;
+      UI.Tooltip.Tooltip.install(linkElement, item.linkText);
       element.classList.toggle('blackboxed-call-frame', item.isBlackboxed);
       if (item.isBlackboxed) {
         UI.ARIAUtils.setDescription(element, ls`blackboxed`);

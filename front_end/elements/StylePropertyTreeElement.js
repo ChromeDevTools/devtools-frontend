@@ -587,7 +587,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.removeChildren();
     this.nameElement = /** @type {!HTMLElement} */ (propertyRenderer.renderName());
     if (this.property.name.startsWith('--') && this.nameElement) {
-      this.nameElement.title = this._matchedStyles.computeCSSVariable(this._style, this.property.name) || '';
+      UI.Tooltip.Tooltip.install(
+          this.nameElement, this._matchedStyles.computeCSSVariable(this._style, this.property.name) || '');
     }
     this.valueElement = /** @type {!HTMLElement} */ (propertyRenderer.renderValue());
     if (!this.treeOutline) {

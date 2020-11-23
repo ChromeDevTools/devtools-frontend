@@ -234,7 +234,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     if (this._cpuThrottlingRate !== CPUThrottlingRates.NoThrottling) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuThrottlingEnabled);
       icon = UI.Icon.Icon.create('smallicon-warning');
-      icon.title = Common.UIString.UIString('CPU throttling is enabled');
+      UI.Tooltip.Tooltip.install(icon, Common.UIString.UIString('CPU throttling is enabled'));
     }
     const index = this._cpuThrottlingRates.indexOf(this._cpuThrottlingRate);
     for (const control of this._cpuThrottlingControls) {

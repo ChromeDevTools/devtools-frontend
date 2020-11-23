@@ -35,6 +35,7 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {HistoryInput} from './HistoryInput.js';
 import {InspectorView} from './InspectorView.js';
 import {Toolbar, ToolbarButton, ToolbarToggle} from './Toolbar.js';
+import {Tooltip} from './Tooltip.js';
 import {createTextButton} from './UIUtils.js';
 import {VBox} from './Widget.js';
 
@@ -86,13 +87,13 @@ export class SearchableView extends VBox {
     this._searchNavigationPrevElement =
         searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-prev');
     this._searchNavigationPrevElement.addEventListener('click', this._onPrevButtonSearch.bind(this), false);
-    this._searchNavigationPrevElement.title = Common.UIString.UIString('Search previous');
+    Tooltip.install(this._searchNavigationPrevElement, Common.UIString.UIString('Search previous'));
     ARIAUtils.setAccessibleName(this._searchNavigationPrevElement, Common.UIString.UIString('Search previous'));
 
     this._searchNavigationNextElement =
         searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-next');
     this._searchNavigationNextElement.addEventListener('click', this._onNextButtonSearch.bind(this), false);
-    this._searchNavigationNextElement.title = Common.UIString.UIString('Search next');
+    Tooltip.install(this._searchNavigationNextElement, Common.UIString.UIString('Search next'));
     ARIAUtils.setAccessibleName(this._searchNavigationNextElement, Common.UIString.UIString('Search next'));
 
     this._searchInputElement.addEventListener('keydown', this._onSearchKeyDown.bind(this), true);

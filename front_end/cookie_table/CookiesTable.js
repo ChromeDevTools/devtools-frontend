@@ -702,7 +702,7 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode {
    */
   createCell(columnId) {
     const cell = super.createCell(columnId);
-    cell.title = cell.textContent || '';
+    UI.Tooltip.Tooltip.install(cell, cell.textContent || '');
 
     let blockedReasonString = '';
     if (this._blockedReasons) {
@@ -720,7 +720,7 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode {
 
     if (blockedReasonString) {
       const infoElement = UI.Icon.Icon.create('smallicon-info', 'cookie-warning-icon');
-      infoElement.title = blockedReasonString;
+      UI.Tooltip.Tooltip.install(infoElement, blockedReasonString);
       cell.insertBefore(infoElement, cell.firstChild);
       cell.classList.add('flagged-cookie-attribute-cell');
     }

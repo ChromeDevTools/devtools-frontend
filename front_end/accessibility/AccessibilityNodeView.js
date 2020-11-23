@@ -174,7 +174,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     valueElement.setTextContentTruncatedIfNeeded(valueText || '');
 
-    valueElement.title = String(value) || '';
+    UI.Tooltip.Tooltip.install(valueElement, String(value) || '');
 
     return valueElement;
   }
@@ -187,7 +187,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const exclamationElement =
         /** @type {!UI.UIUtils.DevToolsIconLabel} */ (document.createElement('span', {is: 'dt-icon-label'}));
     exclamationElement.type = 'smallicon-warning';
-    exclamationElement.title = tooltip;
+    UI.Tooltip.Tooltip.install(exclamationElement, tooltip);
     return exclamationElement;
   }
 
@@ -200,7 +200,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
       // @ts-ignore TS can't cast name here but we checked it's valid.
       const attribute = AXAttributes[name];
       nameElement.textContent = attribute.name;
-      nameElement.title = attribute.description;
+      UI.Tooltip.Tooltip.install(nameElement, attribute.description);
       nameElement.classList.add('ax-readable-name');
     } else {
       nameElement.textContent = name;
@@ -439,7 +439,7 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
         if (source.nativeSource) {
           const nativeSource = source.nativeSource;
           nameElement.textContent = AXNativeSourceTypes[nativeSource].name;
-          nameElement.title = AXNativeSourceTypes[nativeSource].description;
+          UI.Tooltip.Tooltip.install(nameElement, AXNativeSourceTypes[nativeSource].description);
           nameElement.classList.add('ax-readable-name');
           break;
         }
@@ -450,7 +450,7 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
       default:
         if (type in AXSourceTypes) {
           nameElement.textContent = AXSourceTypes[type].name;
-          nameElement.title = AXSourceTypes[type].description;
+          UI.Tooltip.Tooltip.install(nameElement, AXSourceTypes[type].description);
           nameElement.classList.add('ax-readable-name');
         } else {
           console.warn(type, 'not in AXSourceTypes');

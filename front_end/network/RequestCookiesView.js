@@ -53,7 +53,8 @@ export class RequestCookiesView extends UI.Widget.Widget {
     this._requestCookiesTitle = this.element.createChild('div');
     const titleText = this._requestCookiesTitle.createChild('span', 'request-cookies-title');
     titleText.textContent = ls`Request Cookies`;
-    titleText.title = ls`Cookies that were sent to the server in the 'cookie' header of the request`;
+    UI.Tooltip.Tooltip.install(
+        titleText, ls`Cookies that were sent to the server in the 'cookie' header of the request`);
 
     const requestCookiesCheckbox = /** @type {!UI.UIUtils.CheckboxLabel} */ (UI.SettingsUI.createSettingCheckbox(
         ls`show filtered out request cookies`, this._showFilteredOutCookiesSetting,

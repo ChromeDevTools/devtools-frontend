@@ -6,9 +6,6 @@ import * as Components from '../components/components.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-/** @type {!NodeStackTraceWidget} */
-let nodeStackTraceWidgetInstance;
-
 /**
  * @unrestricted
  */
@@ -22,19 +19,6 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
     this._creationStackTraceElement = this.contentElement.createChild('div', 'stack-trace');
 
     this._linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);
-  }
-
-  /**
-   * @param {{forceNew: ?boolean}=} opts
-   * @return {!NodeStackTraceWidget}
-   */
-  static instance(opts = {forceNew: null}) {
-    const {forceNew} = opts;
-    if (!nodeStackTraceWidgetInstance || forceNew) {
-      nodeStackTraceWidgetInstance = new NodeStackTraceWidget();
-    }
-
-    return nodeStackTraceWidgetInstance;
   }
 
   /**

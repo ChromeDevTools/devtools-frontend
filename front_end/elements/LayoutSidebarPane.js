@@ -72,9 +72,6 @@ const gridNodesToElements = nodes => {
   });
 };
 
-/** @type {!LayoutSidebarPane} */
-let layoutSidebarPaneInstance;
-
 /**
  * @param {!Array<!SDK.DOMModel.DOMNode>} nodes
  * @return {!Array<!LayoutElement>}
@@ -117,19 +114,6 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
      * @type {!Array<!SDK.DOMModel.DOMModel>}
      */
     this._domModels = [];
-  }
-
-  /**
-   * @param {{forceNew: ?boolean}=} opts
-   * @return {!LayoutSidebarPane}
-   */
-  static instance(opts = {forceNew: null}) {
-    const {forceNew} = opts;
-    if (!layoutSidebarPaneInstance || forceNew) {
-      layoutSidebarPaneInstance = new LayoutSidebarPane();
-    }
-
-    return layoutSidebarPaneInstance;
   }
 
   /**

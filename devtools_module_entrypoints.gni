@@ -57,7 +57,6 @@ generated_typescript_entrypoint_sources = [
   "$resources_out_dir/diff/diff.js",
   "$resources_out_dir/dom_extension/dom_extension.js",
   "$resources_out_dir/elements/elements-legacy.js",
-  "$resources_out_dir/elements/elements-meta.js",
   "$resources_out_dir/elements/elements.js",
   "$resources_out_dir/emulation/emulation-legacy.js",
   "$resources_out_dir/emulation/emulation.js",

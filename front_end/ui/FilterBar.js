@@ -312,8 +312,10 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     this._filtersElement.classList.add('filter-bitset-filter');
     ARIAUtils.markAsListBox(this._filtersElement);
     ARIAUtils.markAsMultiSelectable(this._filtersElement);
-    this._filtersElement.title = Common.UIString.UIString(
-        '%sClick to select multiple types', KeyboardShortcut.shortcutToString('', Modifiers.CtrlOrMeta));
+    Tooltip.install(
+        this._filtersElement,
+        Common.UIString.UIString(
+            '%sClick to select multiple types', KeyboardShortcut.shortcutToString('', Modifiers.CtrlOrMeta)));
 
     /** @type {!WeakMap<!HTMLElement, string>} */
     this._typeFilterElementTypeNames = new WeakMap();

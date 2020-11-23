@@ -82,8 +82,8 @@ export class RequestCookiesView extends UI.Widget.Widget {
 
     this._malformedResponseCookiesTitle = this.element.createChild('div', 'request-cookies-title');
     this._malformedResponseCookiesTitle.textContent = ls`Malformed Response Cookies`;
-    this._malformedResponseCookiesTitle.title = ls
-    `Cookies that were received from the server in the 'set-cookie' header of the response but were malformed`;
+    UI.Tooltip.Tooltip.install(this._malformedResponseCookiesTitle, ls
+    `Cookies that were received from the server in the 'set-cookie' header of the response but were malformed`);
 
     this._malformedResponseCookiesList = this.element.createChild('div');
   }

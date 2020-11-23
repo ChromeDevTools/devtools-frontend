@@ -664,9 +664,11 @@ export class MainMenuItem {
       titleElement.textContent = Common.UIString.UIString('Dock side');
       const toggleDockSideShorcuts =
           UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('main.toggle-dock');
-      titleElement.title = Common.UIString.UIString(
-          'Placement of DevTools relative to the page. (%s to restore last position)',
-          toggleDockSideShorcuts[0].title());
+      UI.Tooltip.Tooltip.install(
+          titleElement,
+          Common.UIString.UIString(
+              'Placement of DevTools relative to the page. (%s to restore last position)',
+              toggleDockSideShorcuts[0].title()));
       dockItemElement.appendChild(titleElement);
       const dockItemToolbar = new UI.Toolbar.Toolbar('', dockItemElement);
       if (Host.Platform.isMac() && !ThemeSupport.ThemeSupport.instance().hasTheme()) {

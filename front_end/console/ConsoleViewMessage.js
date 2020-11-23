@@ -199,8 +199,10 @@ export class ConsoleViewMessage {
           } else {
             messageElement.textContent = Common.UIString.UIString('Console was cleared');
           }
-          messageElement.title = ls`Clear all messages with ${
-              UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('console.clear')}`;
+          UI.Tooltip.Tooltip.install(
+              messageElement,
+              ls`Clear all messages with ${
+                  UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('console.clear')}`);
           break;
         case SDK.ConsoleModel.MessageType.Dir: {
           const obj = this._message.parameters ? this._message.parameters[0] : undefined;

@@ -213,9 +213,11 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
       const sabTransferAvailable = features.includes(Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed);
       this._apiSharedArrayBuffer.textContent =
           sabTransferAvailable ? ls`available, transferable` : ls`available, not transferable`;
-      this._apiSharedArrayBuffer.title = sabTransferAvailable ?
-          ls`SharedArrayBuffer constructor is available and SABs can be transferred via postMessage` :
-          ls`SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage`;
+      UI.Tooltip.Tooltip.install(
+          this._apiSharedArrayBuffer,
+          sabTransferAvailable ?
+              ls`SharedArrayBuffer constructor is available and SABs can be transferred via postMessage` :
+              ls`SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage`);
       if (!this._frame.isCrossOriginIsolated()) {
         const reasonHint = this._apiSharedArrayBuffer.createChild('span', 'inline-span');
         reasonHint.textContent = ls`⚠️ will require cross-origin isolated context in the future`;

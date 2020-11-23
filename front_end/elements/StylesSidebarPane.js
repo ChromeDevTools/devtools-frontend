@@ -182,9 +182,11 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     if (title) {
       UI.Tooltip.Tooltip.install(exclamationElement, title);
     } else {
-      exclamationElement.title = SDK.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ?
-          Common.UIString.UIString('Invalid property value') :
-          Common.UIString.UIString('Unknown property name');
+      UI.Tooltip.Tooltip.install(
+          exclamationElement,
+          SDK.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ?
+              Common.UIString.UIString('Invalid property value') :
+              Common.UIString.UIString('Unknown property name'));
     }
     return exclamationElement;
   }

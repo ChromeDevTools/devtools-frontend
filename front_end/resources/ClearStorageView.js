@@ -367,9 +367,11 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
     const element =
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.storageQuotaUsed, {PH1: usageAsString, PH2: quota});
     this._quotaRow.appendChild(element);
-    this._quotaRow.title = i18nString(
-        UIStrings.storageQuotaUsedWithBytes,
-        {PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString()});
+    UI.Tooltip.Tooltip.install(
+        this._quotaRow,
+        i18nString(
+            UIStrings.storageQuotaUsedWithBytes,
+            {PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString()}));
 
     if (!response.overrideActive && response.quota < 125829120) {  // 120 MB
       UI.Tooltip.Tooltip.install(this._quotaRow, ls`Storage quota is limited in Incognito mode`);

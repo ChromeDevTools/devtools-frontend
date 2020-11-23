@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as SDK from '../sdk/sdk.js';
 import * as Common from '../common/common.js';
 
@@ -20,7 +17,7 @@ export function frameworkEventListeners(object) {
         /** @type {!FrameworkEventListenersObject} */ ({eventListeners: [], internalHandlers: null}));
   }
 
-  const listenersResult = /** @type {!FrameworkEventListenersObject} */ ({eventListeners: []});
+  const listenersResult = /** @type {!FrameworkEventListenersObject} */ ({internalHandlers: null, eventListeners: []});
   return object.callFunction(frameworkEventListenersImpl, undefined)
       .then(assertCallFunctionResult)
       .then(getOwnProperties)
@@ -41,7 +38,7 @@ export function frameworkEventListeners(object) {
 
   /**
    * @param {!SDK.RemoteObject.GetPropertiesResult} result
-   * @return {!Promise<undefined>}
+   * @return {!Promise<!Array<void>>}
    */
   function createEventListeners(result) {
     if (!result.properties) {
@@ -59,7 +56,7 @@ export function frameworkEventListeners(object) {
         printErrorString(property.value);
       }
     }
-    return /** @type {!Promise<undefined>} */ (Promise.all(promises));
+    return /** @type {!Promise<!Array<void>>} */ (Promise.all(promises));
   }
 
   /**
@@ -99,20 +96,28 @@ export function frameworkEventListeners(object) {
       /**
        * @suppressReceiverCheck
        * @this {EventListenerObjectInInspectedPage}
-       * @return {!{type:string, useCapture:boolean, passive:boolean, once:boolean}}
+       * @return {!TruncatedEventListenerObjectInInspectedPage}
        */
       function truncatePageEventListener() {
         return {type: this.type, useCapture: this.useCapture, passive: this.passive, once: this.once};
       }
 
       /**
-       * @param {!{type:string, useCapture: boolean, passive: boolean, once: boolean}} truncatedListener
+       * @param {!TruncatedEventListenerObjectInInspectedPage} truncatedListener
        */
       function storeTruncatedListener(truncatedListener) {
-        type = truncatedListener.type;
-        useCapture = truncatedListener.useCapture;
-        passive = truncatedListener.passive;
-        once = truncatedListener.once;
+        if (truncatedListener.type !== undefined) {
+          type = truncatedListener.type;
+        }
+        if (truncatedListener.useCapture !== undefined) {
+          useCapture = truncatedListener.useCapture;
+        }
+        if (truncatedListener.passive !== undefined) {
+          passive = truncatedListener.passive;
+        }
+        if (truncatedListener.once !== undefined) {
+          once = truncatedListener.once;
+        }
       }
 
       promises.push(listenerObject.callFunction(handlerFunction)
@@ -123,11 +128,11 @@ export function frameworkEventListeners(object) {
 
       /**
        * @suppressReceiverCheck
-       * @return {function()}
+       * @return {?SDK.RemoteObject.RemoteObject}
        * @this {EventListenerObjectInInspectedPage}
        */
       function handlerFunction() {
-        return this.handler;
+        return this.handler || null;
       }
 
       /**
@@ -161,11 +166,11 @@ export function frameworkEventListeners(object) {
 
       /**
        * @suppressReceiverCheck
-       * @return {function()}
+       * @return {?SDK.RemoteObject.RemoteObject}
        * @this {EventListenerObjectInInspectedPage}
        */
       function getRemoveFunction() {
-        return this.remove;
+        return this.remove || null;
       }
 
       /**
@@ -261,6 +266,7 @@ export function frameworkEventListeners(object) {
    * @template T
    */
   function filterOutEmptyObjects(objects) {
+    // @ts-ignore TypeScript is unhappy with the @template, but it appears correct.
     return objects.filter(filterOutEmpty);
 
     /**
@@ -298,16 +304,20 @@ export function frameworkEventListeners(object) {
     */
   /**
    * @suppressReceiverCheck
-   * @return {!{eventListeners:!Array<!EventListenerObjectInInspectedPage>, internalHandlers:?Array<function()>}}
+   * @return {!{eventListeners:!Array<!EventListenerObjectInInspectedPage>}}
    * @this {Object}
    */
   function frameworkEventListenersImpl() {
     const errorLines = [];
+    /** @type {!Array<!EventListenerObjectInInspectedPage>} */
     let eventListeners = [];
+    /** @type {!Array<function():void>} */
     let internalHandlers = [];
     let fetchers = [jQueryFetcher];
     try {
+      // @ts-ignore Here because of layout tests.
       if (self.devtoolsFrameworkEventListeners && isArrayLike(self.devtoolsFrameworkEventListeners)) {
+        // @ts-ignore Here because of layout tests.
         fetchers = fetchers.concat(self.devtoolsFrameworkEventListeners);
       }
     } catch (e) {
@@ -318,30 +328,59 @@ export function frameworkEventListeners(object) {
       try {
         const fetcherResult = fetchers[i](this);
         if (fetcherResult.eventListeners && isArrayLike(fetcherResult.eventListeners)) {
-          eventListeners =
-              eventListeners.concat(fetcherResult.eventListeners.map(checkEventListener).filter(nonEmptyObject));
+          const fetcherResultEventListeners =
+              /** @type {!Array<?PossibleEventListenerObjectInInspectedPage>} */ (fetcherResult.eventListeners);
+          const nonEmptyEventListeners = fetcherResultEventListeners
+                                             .map(eventListener => {
+                                               return checkEventListener(eventListener);
+                                             })
+                                             .filter(nonEmptyObject);
+          eventListeners = eventListeners.concat(
+              /** @type {!Array<!EventListenerObjectInInspectedPage>} */ (nonEmptyEventListeners));
         }
         if (fetcherResult.internalHandlers && isArrayLike(fetcherResult.internalHandlers)) {
-          internalHandlers =
-              internalHandlers.concat(fetcherResult.internalHandlers.map(checkInternalHandler).filter(nonEmptyObject));
+          const fetcherResultInternalHandlers = /** @type {!Array<function():void>} */ (fetcherResult.internalHandlers);
+          const nonEmptyInternalHandlers = fetcherResultInternalHandlers
+                                               .map(handler => {
+                                                 return checkInternalHandler(handler);
+                                               })
+                                               .filter(nonEmptyObject);
+          internalHandlers = internalHandlers.concat(/** @type {!Array<function():void>} */ (nonEmptyInternalHandlers));
         }
       } catch (e) {
         errorLines.push('fetcher call produced error: ' + toString(e));
       }
     }
-    const result = {eventListeners: eventListeners};
-    if (internalHandlers.length) {
-      result.internalHandlers = internalHandlers;
+    /** @type {{eventListeners: !Array.<!EventListenerObjectInInspectedPage>, internalHandlers: (!Array.<function():void>|undefined), errorString:(string|undefined)}} */
+    const result = {
+      eventListeners: eventListeners,
+      internalHandlers: internalHandlers.length ? internalHandlers : undefined,
+      errorString: undefined,
+    };
+
+    // The logic further up seems to expect that if the internalHandlers is set,
+    // that it should have a non-empty Array, but TS / Closure also expect the
+    // property to exist, so we always add it above, but then remove it again
+    // here if there's no value set.
+    if (!result.internalHandlers) {
+      delete result.internalHandlers;
     }
+
     if (errorLines.length) {
       let errorString = 'Framework Event Listeners API Errors:\n\t' + errorLines.join('\n\t');
       errorString = errorString.substr(0, errorString.length - 1);
       result.errorString = errorString;
     }
+
+    // Remove the errorString if it's not set.
+    if (result.errorString === '' || result.errorString === undefined) {
+      delete result.errorString;
+    }
+
     return result;
 
     /**
-     * @param {?Object} obj
+     * @param {?{splice: !Function, length: number}} obj
      * @return {boolean}
      */
     function isArrayLike(obj) {
@@ -359,7 +398,7 @@ export function frameworkEventListeners(object) {
     }
 
     /**
-     * @param {*} eventListener
+     * @param {?PossibleEventListenerObjectInInspectedPage} eventListener
      * @return {?EventListenerObjectInInspectedPage}
      */
     function checkEventListener(eventListener) {
@@ -367,33 +406,35 @@ export function frameworkEventListeners(object) {
         let errorString = '';
         if (!eventListener) {
           errorString += 'empty event listener, ';
-        }
-        const type = eventListener.type;
-        if (!type || (typeof type !== 'string')) {
-          errorString += 'event listener\'s type isn\'t string or empty, ';
-        }
-        const useCapture = eventListener.useCapture;
-        if (typeof useCapture !== 'boolean') {
-          errorString += 'event listener\'s useCapture isn\'t boolean or undefined, ';
-        }
-        const passive = eventListener.passive;
-        if (typeof passive !== 'boolean') {
-          errorString += 'event listener\'s passive isn\'t boolean or undefined, ';
-        }
-        const once = eventListener.once;
-        if (typeof once !== 'boolean') {
-          errorString += 'event listener\'s once isn\'t boolean or undefined, ';
-        }
-        const handler = eventListener.handler;
-        if (!handler || (typeof handler !== 'function')) {
-          errorString += 'event listener\'s handler isn\'t a function or empty, ';
-        }
-        const remove = eventListener.remove;
-        if (remove && (typeof remove !== 'function')) {
-          errorString += 'event listener\'s remove isn\'t a function, ';
-        }
-        if (!errorString) {
-          return {type: type, useCapture: useCapture, passive: passive, once: once, handler: handler, remove: remove};
+        } else {
+          const type = eventListener.type;
+          if (!type || (typeof type !== 'string')) {
+            errorString += 'event listener\'s type isn\'t string or empty, ';
+          }
+          const useCapture = eventListener.useCapture;
+          if (typeof useCapture !== 'boolean') {
+            errorString += 'event listener\'s useCapture isn\'t boolean or undefined, ';
+          }
+          const passive = eventListener.passive;
+          if (typeof passive !== 'boolean') {
+            errorString += 'event listener\'s passive isn\'t boolean or undefined, ';
+          }
+          const once = eventListener.once;
+          if (typeof once !== 'boolean') {
+            errorString += 'event listener\'s once isn\'t boolean or undefined, ';
+          }
+          const handler = eventListener.handler;
+          if (!handler || (typeof handler !== 'function')) {
+            errorString += 'event listener\'s handler isn\'t a function or empty, ';
+          }
+          const remove = eventListener.remove;
+          if (remove && (typeof remove !== 'function')) {
+            errorString += 'event listener\'s remove isn\'t a function, ';
+          }
+          if (!errorString) {
+            return /** @type {!EventListenerObjectInInspectedPage} */ (
+                {type: type, useCapture: useCapture, passive: passive, once: once, handler: handler, remove: remove});
+          }
         }
         errorLines.push(errorString.substr(0, errorString.length - 2));
         return null;
@@ -429,22 +470,26 @@ export function frameworkEventListeners(object) {
     }
 
     /**
-     * @param {*} obj
+     * @param {?T} obj
      * @return {boolean}
+     * @template T
      */
     function nonEmptyObject(obj) {
       return !!obj;
     }
 
+    /**
+     * @param {*} node
+     */
     function jQueryFetcher(node) {
       if (!node || !(node instanceof Node)) {
         return {eventListeners: []};
       }
-      const jQuery = /** @type {?{fn,data,_data}}*/ (window['jQuery']);
+      const jQuery = /** @type {*} */ (window)['jQuery'];
       if (!jQuery || !jQuery.fn) {
         return {eventListeners: []};
       }
-      const jQueryFunction = /** @type {function(!Node)} */ (jQuery);
+      const jQueryFunction = /** @type {function(!Node):!Array<!{$handle: !Function, $events:*}>} */ (jQuery);
       const data = jQuery._data || jQuery.data;
 
       const eventListeners = [];
@@ -461,9 +506,9 @@ export function frameworkEventListeners(object) {
                 useCapture: true,
                 passive: false,
                 once: false,
-                type: type
+                type: type,
+                remove: jQueryRemove.bind(node, frameworkListener.selector),
               };
-              listener.remove = jQueryRemove.bind(node, frameworkListener.selector);
               eventListeners.push(listener);
             }
           }
@@ -496,7 +541,7 @@ export function frameworkEventListeners(object) {
     /**
      * @param {string} selector
      * @param {string} type
-     * @param {function()} handler
+     * @param {function():void} handler
      * @this {?Object}
      */
     function jQueryRemove(selector, type, handler) {
@@ -504,18 +549,28 @@ export function frameworkEventListeners(object) {
         return;
       }
       const node = /** @type {!Node} */ (this);
-      const jQuery = /** @type {?{fn,data,_data}}*/ (window['jQuery']);
+      const jQuery = /** @type {*} */ (window)['jQuery'];
       if (!jQuery || !jQuery.fn) {
         return;
       }
-      const jQueryFunction = /** @type {function(!Node)} */ (jQuery);
+      const jQueryFunction = /** @type {function(!Node):{off:!Function}} */ (jQuery);
       jQueryFunction(node).off(type, selector, handler);
     }
   }
 }
 
 /** @typedef {{eventListeners:!Array<!SDK.DOMDebuggerModel.EventListener>, internalHandlers:?SDK.RemoteObject.RemoteArray}} */
+// @ts-ignore Typedef.
 export let FrameworkEventListenersObject;
 
-/** @typedef {{type: string, useCapture: boolean, passive: boolean, once: boolean, handler: function()}} */
+/** @typedef {{type: (string|undefined), useCapture: (boolean|undefined), passive: (boolean|undefined), once: (boolean|undefined), handler: (?SDK.RemoteObject.RemoteObject|undefined), remove: (?SDK.RemoteObject.RemoteObject|undefined)}} */
+// @ts-ignore Typedef.
+export let PossibleEventListenerObjectInInspectedPage;
+
+/** @typedef {{type: string, useCapture: boolean, passive: boolean, once: boolean, handler: ?SDK.RemoteObject.RemoteObject, remove: ?SDK.RemoteObject.RemoteObject}} */
+// @ts-ignore Typedef.
 export let EventListenerObjectInInspectedPage;
+
+/** @typedef {{type: (string|undefined), useCapture: (boolean|undefined), passive: (boolean|undefined), once: (boolean|undefined)}} */
+// @ts-ignore Typedef.
+export let TruncatedEventListenerObjectInInspectedPage;

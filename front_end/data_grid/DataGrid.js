@@ -1775,6 +1775,9 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     if (this._inactive) {
       this._element.classList.add('inactive');
     }
+    if (this.isCreationNode) {
+      this._element.classList.add('creation-node');
+    }
     return this._element;
   }
 
@@ -2582,7 +2585,6 @@ export class CreationDataGridNode extends DataGridNode {
     super(data, hasChildren);
     /** @type {boolean} */
     this.isCreationNode = true;
-    this.element().classList.add('creation-node');
   }
 
   makeNormal() {

@@ -81,6 +81,8 @@ export class ProfileTreeModel {
     this.root;
     /** @type {number} */
     this.total;
+    /** @type {number} */
+    this.maxDepth;
   }
 
   /**

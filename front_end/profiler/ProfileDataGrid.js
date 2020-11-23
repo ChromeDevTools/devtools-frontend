@@ -271,7 +271,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
   }
 
   /**
-   * @param {!ProfileDataGridNode} node
+   * @param {!SDK.ProfileTreeModel.ProfileNode} node
    * @return {?ProfileDataGridNode}
    */
   findChild(node) {
@@ -466,7 +466,7 @@ export class ProfileDataGridTree {
   }
 
   /**
-   * @param {!ProfileDataGridNode} node
+   * @param {!SDK.ProfileTreeModel.ProfileNode} node
    * @return {?ProfileDataGridNode}
    */
   findChild(node) {

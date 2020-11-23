@@ -28,15 +28,21 @@
 // each child still represent the root node. We have to be particularly careful of recursion with this mode
 // because a root node can represent itself AND an ancestor.
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';     // eslint-disable-line no-unused-vars
 
 import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';  // eslint-disable-line no-unused-vars
 import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';  // eslint-disable-line no-unused-vars
+
+/** @typedef {{
+ *    ancestor: !SDK.ProfileTreeModel.ProfileNode,
+ *    focusNode: !SDK.ProfileTreeModel.ProfileNode,
+ *    totalAccountedFor: boolean,
+ * }}
+ */
+// @ts-ignore typedef
+export let NodeInfo;
 
 /**
  * @unrestricted
@@ -48,13 +54,17 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
    */
   constructor(profileNode, owningTree) {
     super(profileNode, owningTree, !!profileNode.parent && !!profileNode.parent.parent);
+    /** @type {!Array<!NodeInfo> | undefined} */
     this._remainingNodeInfos = [];
   }
 
   /**
-   * @param {!BottomUpProfileDataGridNode|!BottomUpProfileDataGridTree} container
+   * @param {!BottomUpProfileDataGridNode | !BottomUpProfileDataGridTree} container
    */
   static _sharedPopulate(container) {
+    if (container._remainingNodeInfos === undefined) {
+      return;
+    }
     const remainingNodeInfos = container._remainingNodeInfos;
     const count = remainingNodeInfos.length;
 
@@ -62,7 +72,7 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
       const nodeInfo = remainingNodeInfos[index];
       const ancestor = nodeInfo.ancestor;
       const focusNode = nodeInfo.focusNode;
-      let child = container.findChild(ancestor);
+      let child = /** @type {?BottomUpProfileDataGridNode} */ (container.findChild(ancestor));
 
       // If we already have this child, then merge the data together.
       if (child) {
@@ -90,6 +100,9 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
       const parent = ancestor.parent;
       if (parent && parent.parent) {
         nodeInfo.ancestor = parent;
+        if (!child._remainingNodeInfos) {
+          child._remainingNodeInfos = [];
+        }
         child._remainingNodeInfos.push(nodeInfo);
       }
     }
@@ -131,7 +144,7 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
     let index = this.children.length;
 
     while (index--) {
-      children[index]._exclude(aCallUID);
+      /** @type {!BottomUpProfileDataGridNode} */ (children[index])._exclude(aCallUID);
     }
 
     const child = this.childrenByCallUID.get(aCallUID);
@@ -169,6 +182,9 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
     BottomUpProfileDataGridNode._sharedPopulate(this);
   }
 
+  /**
+   * @param {!SDK.ProfileTreeModel.ProfileNode} profileNode
+   */
   _willHaveChildren(profileNode) {
     // In bottom up mode, our parents are our children since we display an inverted tree.
     // However, we don't want to show the very top parent since it is redundant.
@@ -196,6 +212,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
     /** @type {!Map<string, !Set<number>>} */
     const visitedProfileNodesForCallUID = new Map();
 
+    /** @type {!Array<!NodeInfo> | undefined} */
     this._remainingNodeInfos = [];
 
     for (let profileNodeGroupIndex = 0; profileNodeGroupIndex < profileNodeGroups.length; ++profileNodeGroupIndex) {
@@ -203,11 +220,14 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
       const profileNodes = profileNodeGroups[++profileNodeGroupIndex];
       const count = profileNodes.length;
 
+      /** @type {!WeakMap<!SDK.ProfileTreeModel.ProfileNode, number>} */
+      const profileNodeUIDValues = new WeakMap();
+
       for (let index = 0; index < count; ++index) {
         const profileNode = profileNodes[index];
 
-        if (!profileNode.UID) {
-          profileNode.UID = ++profileNodeUIDs;
+        if (!profileNodeUIDValues.get(profileNode)) {
+          profileNodeUIDValues.set(profileNode, ++profileNodeUIDs);
         }
 
         if (profileNode.parent) {
@@ -223,14 +243,18 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
             // We can do this check in this style because we are traversing the tree in pre-order.
             const parentCount = parentProfileNodes.length;
             for (let parentIndex = 0; parentIndex < parentCount; ++parentIndex) {
-              if (visitedNodes.has(parentProfileNodes[parentIndex].UID)) {
+              const parentUID = profileNodeUIDValues.get(parentProfileNodes[parentIndex]);
+              if (parentUID && visitedNodes.has(parentUID)) {
                 totalAccountedFor = true;
                 break;
               }
             }
           }
 
-          visitedNodes.add(profileNode.UID);
+          const uid = profileNodeUIDValues.get(profileNode);
+          if (uid) {
+            visitedNodes.add(uid);
+          }
 
           this._remainingNodeInfos.push(
               {ancestor: profileNode, focusNode: profileNode, totalAccountedFor: totalAccountedFor});
@@ -265,13 +289,13 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
     let currentNode = profileDataGridNode;
     let focusNode = profileDataGridNode;
 
-    while (currentNode.parent && (currentNode instanceof ProfileDataGridNode)) {
+    while (currentNode.parent && (currentNode instanceof BottomUpProfileDataGridNode)) {
       currentNode._takePropertiesFromProfileDataGridNode(profileDataGridNode);
 
       focusNode = currentNode;
-      currentNode = currentNode.parent;
+      currentNode = /** @type {!ProfileDataGridNode} */ (currentNode.parent);
 
-      if (currentNode instanceof ProfileDataGridNode) {
+      if (currentNode instanceof BottomUpProfileDataGridNode) {
         currentNode._keepOnlyChild(focusNode);
       }
     }
@@ -304,7 +328,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
     const count = children.length;
 
     for (let index = 0; index < count; ++index) {
-      children[index]._exclude(excludedCallUID);
+      /** @type {!BottomUpProfileDataGridNode} */ (children[index])._exclude(excludedCallUID);
     }
 
     if (this.lastComparator) {

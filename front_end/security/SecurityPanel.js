@@ -830,7 +830,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onMainFrameNavigated(event) {
-    const frame = /** type {!Protocol.Page.Frame}*/ (event.data);
+    const frame = /** @type {!Protocol.Page.Frame}*/ (event.data);
     const request = this._lastResponseReceivedForLoaderId.get(frame.loaderId);
 
     this.selectAndSwitchToMainView();

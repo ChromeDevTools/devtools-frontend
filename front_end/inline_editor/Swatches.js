@@ -92,6 +92,7 @@ export class CSSShadowSwatch extends HTMLSpanElement {
     let constructor = CSSShadowSwatch._constructor;
     if (!constructor) {
       constructor = UI.Utils.registerCustomElement('span', 'css-shadow-swatch', CSSShadowSwatch);
+      CSSShadowSwatch._constructor = constructor;
     }
 
     return /** @type {!CSSShadowSwatch} */ (constructor());

@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {enableExperiment, getBrowserAndPages, getHostedModeServerPort, goToResource} from '../../shared/helper.js';
+import {enableExperiment, getBrowserAndPages, getHostedModeServerPort, goToResource, waitForFunction} from '../../shared/helper.js';
 import {createNewRecording, openRecorderSubPane, openSourcesPanel} from '../helpers/sources-helpers.js';
 
 function retrieveCodeMirrorEditorContent() {
@@ -19,9 +19,19 @@ async function getCode() {
   return textContent.replace(new RegExp(`localhost:${getHostedModeServerPort()}`, 'g'), '<url>').replace(/\u200b/g, '');
 }
 
+function getWaitForScriptToChangeFunction() {
+  const previousScript = '';
+  return async function waitForScriptToChange() {
+    return waitForFunction(async () => {
+      const currentScript = await getCode();
+      return previousScript !== currentScript;
+    });
+  };
+}
+
 describe('Recorder', () => {
-  // Flaky test.
-  it.skip('[crbug.com/1151234] should connect to the browser via DevTools own connection', async () => {
+  it('should connect to the browser via DevTools own connection', async () => {
+    const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await enableExperiment('recorder');
     await goToResource('recorder/recorder.html');
 
@@ -34,21 +44,24 @@ describe('Recorder', () => {
     // Record
     await frontend.click('aria/Record');
     await frontend.waitForSelector('aria/Stop');
+    await waitForScriptToChange();
     await target.bringToFront();
     await target.click('#test');
+    await waitForScriptToChange();
     await target.click('#form-button');
+    await waitForScriptToChange();
     await target.click('#span');
+    await waitForScriptToChange();
     await target.click('#span2');
+    await waitForScriptToChange();
     await target.type('#input', 'test');
     await target.keyboard.press('Enter');
+    await waitForScriptToChange();
     await target.click('pierce/#inner-span');
-
-    const iframe = await target.$('#iframe').then(x => x ? x.contentFrame() : null);
-    // @ts-ignore
-    await iframe.click('#in-iframe');
+    await waitForScriptToChange();
     await frontend.bringToFront();
     await frontend.click('aria/Stop');
-
+    await waitForScriptToChange();
     const textContent = await getCode();
 
     assert.strictEqual(textContent, `const puppeteer = require('puppeteer')

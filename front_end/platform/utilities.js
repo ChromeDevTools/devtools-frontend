@@ -215,23 +215,6 @@ const partition = (array, comparator, left, right, pivotIndex) => {
 };
 
 (function() {
-// TODO(mathias): Remove this utility after verifying remaining call sites.
-const descriptor = {
-  /**
-     * @this {Array.<number>}
-     * @param {function(number, number): number} comparator
-     * @param {number} left
-     * @param {number} right
-     * @param {number} pivotIndex
-     */
-  value: function(comparator, left, right, pivotIndex) {
-    return partition(this, comparator, left, right, pivotIndex);
-  },
-  configurable: true,
-};
-Object.defineProperty(Array.prototype, 'partition', descriptor);
-Object.defineProperty(Uint32Array.prototype, 'partition', descriptor);
-
 const sortRange = {
   /**
      * @param {function(number, number): number} comparator

@@ -94,6 +94,13 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
   }
 
   /**
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig}
+   */
+  comparator() {
+    throw new Error('Not implemented.');
+  }
+
+  /**
    * @return {?{snapshot:!HeapSnapshotProxy, snapshotNodeIndex:number}}
    */
   retainersDataSource() {
@@ -796,20 +803,28 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
   }
 
   /**
+   * @override
    * @return {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig}
    */
   comparator() {
     const sortAscending = this._dataGrid.isSortOrderAscending();
     const sortColumnId = this._dataGrid.sortColumnId();
-    const sortFields = {
-      object: ['!edgeName', sortAscending, 'retainedSize', false],
-      count: ['!edgeName', true, 'retainedSize', false],
-      shallowSize: ['selfSize', sortAscending, '!edgeName', true],
-      retainedSize: ['retainedSize', sortAscending, '!edgeName', true],
-      distance: ['distance', sortAscending, '_name', true]
-    }[sortColumnId] ||
-        ['!edgeName', true, 'retainedSize', false];
-    return HeapSnapshotGridNode.createComparator(sortFields);
+    switch (sortColumnId) {
+      case 'object':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig(
+            '!edgeName', sortAscending, 'retainedSize', false);
+      case 'count':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('!edgeName', true, 'retainedSize', false);
+      case 'shallowSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('selfSize', sortAscending, '!edgeName', true);
+      case 'retainedSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig(
+            'retainedSize', sortAscending, '!edgeName', true);
+      case 'distance':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('distance', sortAscending, '_name', true);
+      default:
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('!edgeName', true, 'retainedSize', false);
+    }
   }
 
   /**
@@ -988,22 +1003,33 @@ export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
   }
 
   /**
+   * @override
    * @return {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig}
    */
   comparator() {
     const sortAscending = this._dataGrid.isSortOrderAscending();
     const sortColumnId = this._dataGrid.sortColumnId();
-    const sortFields = {
-      object: ['!edgeName', sortAscending, 'retainedSize', false],
-      distance: ['distance', sortAscending, 'retainedSize', false],
-      count: ['!edgeName', true, 'retainedSize', false],
-      addedSize: ['selfSize', sortAscending, '!edgeName', true],
-      removedSize: ['selfSize', sortAscending, '!edgeName', true],
-      shallowSize: ['selfSize', sortAscending, '!edgeName', true],
-      retainedSize: ['retainedSize', sortAscending, '!edgeName', true]
-    }[sortColumnId] ||
-        ['!edgeName', true, 'retainedSize', false];
-    return HeapSnapshotGridNode.createComparator(sortFields);
+    switch (sortColumnId) {
+      case 'object':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig(
+            '!edgeName', sortAscending, 'retainedSize', false);
+      case 'distance':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig(
+            'distance', sortAscending, 'retainedSize', false);
+      case 'count':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('!edgeName', true, 'retainedSize', false);
+      case 'addedSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('selfSize', sortAscending, '!edgeName', true);
+      case 'removedSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('selfSize', sortAscending, '!edgeName', true);
+      case 'shallowSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('selfSize', sortAscending, '!edgeName', true);
+      case 'retainedSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig(
+            'retainedSize', sortAscending, '!edgeName', true);
+      default:
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('!edgeName', true, 'retainedSize', false);
+    }
   }
 }
 
@@ -1103,18 +1129,25 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
   }
 
   /**
+   * @override
    * @return {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig}
    */
   comparator() {
     const sortAscending = this._dataGrid.isSortOrderAscending();
     const sortColumnId = this._dataGrid.sortColumnId();
-    const sortFields = {
-      object: ['name', sortAscending, 'id', true],
-      distance: ['distance', sortAscending, 'retainedSize', false],
-      shallowSize: ['selfSize', sortAscending, 'id', true],
-      retainedSize: ['retainedSize', sortAscending, 'id', true]
-    }[sortColumnId];
-    return HeapSnapshotGridNode.createComparator(sortFields);
+    switch (sortColumnId) {
+      case 'object':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('name', sortAscending, 'id', true);
+      case 'distance':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig(
+            'distance', sortAscending, 'retainedSize', false);
+      case 'shallowSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('selfSize', sortAscending, 'id', true);
+      case 'retainedSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('retainedSize', sortAscending, 'id', true);
+      default:
+        throw new Error(`Invalid sort column id ${sortColumnId}`);
+    }
   }
 
   /**
@@ -1313,21 +1346,30 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
   }
 
   /**
+   * @override
    * @return {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig}
    */
   comparator() {
     const sortAscending = this._dataGrid.isSortOrderAscending();
     const sortColumnId = this._dataGrid.sortColumnId();
-    const sortFields = {
-      object: ['name', sortAscending, 'id', true],
-      addedCount: ['name', true, 'id', true],
-      removedCount: ['name', true, 'id', true],
-      countDelta: ['name', true, 'id', true],
-      addedSize: ['selfSize', sortAscending, 'id', true],
-      removedSize: ['selfSize', sortAscending, 'id', true],
-      sizeDelta: ['selfSize', sortAscending, 'id', true]
-    }[sortColumnId];
-    return HeapSnapshotGridNode.createComparator(sortFields);
+    switch (sortColumnId) {
+      case 'object':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('name', sortAscending, 'id', true);
+      case 'addedCount':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('name', true, 'id', true);
+      case 'removedCount':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('name', true, 'id', true);
+      case 'countDelta':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('name', true, 'id', true);
+      case 'addedSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('selfSize', sortAscending, 'id', true);
+      case 'removedSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('selfSize', sortAscending, 'id', true);
+      case 'sizeDelta':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('selfSize', sortAscending, 'id', true);
+      default:
+        throw new Error(`Invalid sort column ${sortColumnId}`);
+    }
   }
 
   /**

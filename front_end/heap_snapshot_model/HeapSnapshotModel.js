@@ -253,15 +253,17 @@ export class DiffForClass {
  * @unrestricted
  */
 export class ComparatorConfig {
-  constructor() {
-    /** @type {string} */
-    this.fieldName1;
-    /** @type {boolean} */
-    this.ascending1;
-    /** @type {string} */
-    this.fieldName2;
-    /** @type {boolean} */
-    this.ascending2;
+  /**
+   * @param {string} fieldName1
+   * @param {boolean} ascending1
+   * @param {string} fieldName2
+   * @param {boolean} ascending2
+   * */
+  constructor(fieldName1, ascending1, fieldName2, ascending2) {
+    this.fieldName1 = fieldName1;
+    this.ascending1 = ascending1;
+    this.fieldName2 = fieldName2;
+    this.ascending2 = ascending2;
   }
 }
 

@@ -239,6 +239,15 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
     }
   }
 
+  /**
+   * @param {string} sortColumnId
+   * @param {boolean} ascending
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig}
+   */
+  _sortFields(sortColumnId, ascending) {
+    throw new Error('Not implemented');
+  }
+
   sortingChanged() {
     const sortAscending = this.isSortOrderAscending();
     const sortColumnId = this.sortColumnId();
@@ -247,22 +256,26 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
     }
     this._lastSortColumnId = sortColumnId;
     this._lastSortAscending = sortAscending;
-    const sortFields = this._sortFields(sortColumnId, sortAscending);
+    const sortFields = this._sortFields(sortColumnId || '', sortAscending);
 
     function SortByTwoFields(nodeA, nodeB) {
-      let field1 = nodeA[sortFields[0]];
-      let field2 = nodeB[sortFields[0]];
+      // @ts-ignore
+      let field1 = nodeA[sortFields.fieldName1];
+      // @ts-ignore
+      let field2 = nodeB[sortFields.fieldName1];
       let result = field1 < field2 ? -1 : (field1 > field2 ? 1 : 0);
-      if (!sortFields[1]) {
+      if (!sortFields.ascending1) {
         result = -result;
       }
       if (result !== 0) {
         return result;
       }
-      field1 = nodeA[sortFields[2]];
-      field2 = nodeB[sortFields[2]];
+      // @ts-ignore
+      field1 = nodeA[sortFields.fieldName2];
+      // @ts-ignore
+      field2 = nodeB[sortFields.fieldName2];
       result = field1 < field2 ? -1 : (field1 > field2 ? 1 : 0);
-      if (!sortFields[3]) {
+      if (!sortFields.ascending2) {
         result = -result;
       }
       return result;
@@ -731,14 +744,26 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
     return new HeapSnapshotRetainingObjectNode(this, snapshot, fakeEdge, null);
   }
 
+  /**
+   * @override
+   * @param {string} sortColumn
+   * @param {boolean} sortAscending
+   */
   _sortFields(sortColumn, sortAscending) {
-    return {
-      object: ['_name', sortAscending, '_count', false],
-      count: ['_count', sortAscending, '_name', true],
-      shallowSize: ['_shallowSize', sortAscending, '_name', true],
-      retainedSize: ['_retainedSize', sortAscending, '_name', true],
-      distance: ['_distance', sortAscending, '_name', true]
-    }[sortColumn];
+    switch (sortColumn) {
+      case 'object':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_name', sortAscending, '_count', false);
+      case 'count':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_count', sortAscending, '_name', true);
+      case 'shallowSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_shallowSize', sortAscending, '_name', true);
+      case 'retainedSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_retainedSize', sortAscending, '_name', true);
+      case 'distance':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_distance', sortAscending, '_name', true);
+      default:
+        throw new Error(`Unknown column ${sortColumn}`);
+    }
   }
 
   reset() {
@@ -789,17 +814,25 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
   }
 
   /**
+   * @override
    * @param {string} sortColumn
    * @param {boolean} sortAscending
-   * @return {!Array}
+   * @return {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig}
    */
   _sortFields(sortColumn, sortAscending) {
-    return {
-      object: ['_name', sortAscending, '_retainedSize', false],
-      distance: ['_distance', sortAscending, '_retainedSize', false],
-      shallowSize: ['_shallowSize', sortAscending, '_name', true],
-      retainedSize: ['_retainedSize', sortAscending, '_name', true]
-    }[sortColumn];
+    switch (sortColumn) {
+      case 'object':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_name', sortAscending, '_retainedSize', false);
+      case 'distance':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig(
+            '_distance', sortAscending, '_retainedSize', false);
+      case 'shallowSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_shallowSize', sortAscending, '_name', true);
+      case 'retainedSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_retainedSize', sortAscending, '_name', true);
+      default:
+        throw new Error(`Unknown column ${sortColumn}`);
+    }
   }
 
   /**
@@ -957,16 +990,30 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
     return 50;
   }
 
+  /**
+   * @override
+   * @param {string} sortColumn
+   * @param {boolean} sortAscending
+   */
   _sortFields(sortColumn, sortAscending) {
-    return {
-      object: ['_name', sortAscending, '_count', false],
-      addedCount: ['_addedCount', sortAscending, '_name', true],
-      removedCount: ['_removedCount', sortAscending, '_name', true],
-      countDelta: ['_countDelta', sortAscending, '_name', true],
-      addedSize: ['_addedSize', sortAscending, '_name', true],
-      removedSize: ['_removedSize', sortAscending, '_name', true],
-      sizeDelta: ['_sizeDelta', sortAscending, '_name', true]
-    }[sortColumn];
+    switch (sortColumn) {
+      case 'object':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_name', sortAscending, '_count', false);
+      case 'addedCount':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_addedCount', sortAscending, '_name', true);
+      case 'removedCount':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_removedCount', sortAscending, '_name', true);
+      case 'countDelta':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_countDelta', sortAscending, '_name', true);
+      case 'addedSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_addedSize', sortAscending, '_name', true);
+      case 'removedSize':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_removedSize', sortAscending, '_name', true);
+      case 'sizeDelta':
+        return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('_sizeDelta', sortAscending, '_name', true);
+      default:
+        throw new Error(`Unknown column ${sortColumn}`);
+    }
   }
 
   /**

@@ -53,6 +53,48 @@
   "animation/ModuleUIStrings.js | animations": {
     "message": "Animations"
   },
+  "changes/ChangesSidebar.js | sFromSourceMap": {
+    "message": "{PH1} (from source map)"
+  },
+  "changes/ChangesTextEditor.js | additions": {
+    "message": "Addition:{PH1}"
+  },
+  "changes/ChangesTextEditor.js | deletions": {
+    "message": "Deletion:{PH1}"
+  },
+  "changes/ChangesView.js | binaryData": {
+    "message": "Binary data"
+  },
+  "changes/ChangesView.js | changesDiffViewer": {
+    "message": "Changes diff viewer"
+  },
+  "changes/ChangesView.js | noChanges": {
+    "message": "No changes"
+  },
+  "changes/ChangesView.js | revertAllChangesToCurrentFile": {
+    "message": "Revert all changes to current file"
+  },
+  "changes/ChangesView.js | sDeletion": {
+    "message": "{PH1} deletion (-)"
+  },
+  "changes/ChangesView.js | sDeletions": {
+    "message": "{PH1} deletions (-)"
+  },
+  "changes/ChangesView.js | sInsertion": {
+    "message": "{PH1} insertion (+),"
+  },
+  "changes/ChangesView.js | sInsertions": {
+    "message": "{PH1} insertions (+),"
+  },
+  "changes/ChangesView.js | SkippingDMatchingLines": {
+    "message": "( … Skipping {PH1} matching lines … )"
+  },
+  "changes/ModuleUIStrings.js | changes": {
+    "message": "Changes"
+  },
+  "changes/ModuleUIStrings.js | changesDrawer": {
+    "message": "Changes drawer"
+  },
   "coverage/CoverageListView.js | Byte": {
     "message": "1 byte"
   },

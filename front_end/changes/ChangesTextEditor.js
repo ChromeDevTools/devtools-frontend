@@ -2,10 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../i18n/i18n.js';
 import * as TextEditor from '../text_editor/text_editor.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
 import {Row, RowType} from './ChangesView.js';  // eslint-disable-line no-unused-vars
+
+export const UIStrings = {
+  /**
+  *@description Text prepended to a removed line in a diff in the Changes tool, viewable only by screen reader.
+  *@example {function log () } PH1
+  */
+  deletions: 'Deletion:{PH1}',
+  /**
+  *@description Text prepended to a new line in a diff in the Changes tool, viewable only by screen reader.
+  *@example {function log () } PH1
+  */
+  additions: 'Addition:{PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('changes/ChangesTextEditor.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @extends {TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor}
@@ -86,10 +102,10 @@ export class DevToolsAccessibleDiffTextArea extends TextEditor.CodeMirrorTextEdi
     const rowType = diffRows[lineNumber].type;
 
     if (rowType === RowType.Deletion) {
-      this.textarea.value = ls`Deletion:${this.textarea.value}`;
+      this.textarea.value = i18nString(UIStrings.deletions, {PH1: this.textarea.value});
     }
     if (rowType === RowType.Addition) {
-      this.textarea.value = ls`Addition:${this.textarea.value}`;
+      this.textarea.value = i18nString(UIStrings.additions, {PH1: this.textarea.value});
     }
     this.prevInput = this.textarea.value;
   }

@@ -27,14 +27,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
 
 import * as TextUtils from '../text_utils/text_utils.js';
 
 /**
  * @param {!TextUtils.TextRange.TextRange} range
- * @return {!{start: !CodeMirror.Pos, end: !CodeMirror.Pos}}
+ * @return {!{start: *, end: *}} // {start: !CodeMirror.Pos, end: !CodeMirror.Pos}
  */
 export function toPos(range) {
   return {
@@ -44,8 +42,8 @@ export function toPos(range) {
 }
 
 /**
- * @param {!CodeMirror.Pos} start
- * @param {!CodeMirror.Pos} end
+ * @param {*} start // !CodeMirror.Pos
+ * @param {*} end // !CodeMirror.Pos
  * @return {!TextUtils.TextRange.TextRange}
  */
 export function toRange(start, end) {
@@ -79,7 +77,9 @@ export function changeObjectToEditOperation(changeObject) {
  * @return {!Array.<string>}
  */
 export function pullLines(codeMirror, linesCount) {
+  /** @type {!Array.<string>} */
   const lines = [];
+  // @ts-expect-error CodeMirror types do not specify eachLine.
   codeMirror.eachLine(0, linesCount, onLineHandle);
   return lines;
 
@@ -104,9 +104,14 @@ export class TokenizerFactory {
   createTokenizer(mimeType) {
     const mode = CodeMirror.getMode({indentUnit: 2}, mimeType);
     const state = CodeMirror.startState(mode);
+    /**
+     * @param {string} line
+     * @param {function(string, (string|null), number, number):void} callback
+     */
     function tokenize(line, callback) {
       const stream = new CodeMirror.StringStream(line);
       while (!stream.eol()) {
+        // @ts-expect-error CodeMirror types specify token as optional.
         const style = mode.token(stream, state);
         const value = stream.current();
         callback(value, style, stream.start, stream.start + value.length);

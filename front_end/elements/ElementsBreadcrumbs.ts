@@ -268,21 +268,11 @@ export class ElementsBreadcrumbs extends HTMLElement {
           text-align: center;
         }
 
-        .crumb.selected,
-        .crumb:hover {
-          background-color: var(--tab-selected-bg-color);
-        }
-
-        .overflow {
-          background-color: var(--toolbar-bg-color);
-        }
-
         .overflow.hidden {
           display: none;
         }
 
         .overflow:not(:disabled):hover {
-          background-color: var(--toolbar-hover-bg-color);
           cursor: pointer;
         }
 
@@ -291,8 +281,41 @@ export class ElementsBreadcrumbs extends HTMLElement {
           color: inherit;
         }
 
-        :host-context(.-theme-with-dark-background) .overflow:not(:disabled) {
+        .overflow:not(:disabled) {
           color: #fff;
+        }
+
+        .crumbs {
+          background: var(--color-background);
+        }
+        .crumb:hover {
+          background: var(--color-background-elevation-2);
+        }
+        .crumb.selected {
+          background: var(--color-background-elevation-1);
+        }
+        .crumb:focus {
+         outline: var(--color-primary) auto 1px;
+        }
+        .overflow {
+          background-color: var(--color-background-elevation-1);
+          color: var(--color-text-secondary)
+        }
+        .overflow:not(:disabled):hover {
+          background-color: var(--color-background-elevation-2);
+          color: var(--color-text-primary);
+          cursor: pointer;
+        }
+
+        .overflow:focus {
+         outline: var(--color-primary) auto 1px;
+        }
+
+        :host {
+          --node-text-label-color: var(--color-syntax-2);
+          --node-text-class-color: var(--color-syntax-4);
+          --node-text-id-color: var(--color-syntax-4);
+          --node-text-multiple-descriptors-id: var(--color-syntax-7);
         }
       </style>
 

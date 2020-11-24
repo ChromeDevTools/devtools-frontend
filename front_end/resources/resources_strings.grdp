@@ -133,6 +133,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_36ade12d9ad04b9411343828de870437" desc="Warning message for icons from the manifest">
     Icon <ph name="ICONURL">$1s<ex>https://example.com/icon.png</ex></ph> does not specify its size in the manifest
   </message>
+  <message name="IDS_DEVTOOLS_36c6b76be5e3e5d310c5da0657880c54" desc="Label for a checkbox that toggles the inclusion of 3rd party cookies when clearing site data">
+    including third-party cookies
+  </message>
   <message name="IDS_DEVTOOLS_36e256f915286539621b57d8c80f0105" desc="Text in Context menu for expanding objects in IndexedDB tables">
     Expand Recursively
   </message>
@@ -270,6 +273,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_7091ed290cfa49f60364af4d4b3c42b9" desc="Section header in the Frame Details view">
     API availablity
+  </message>
+  <message name="IDS_DEVTOOLS_76869c244f39290f2a9685482351e1b5" desc="Title of an action that clears all site data including 3rd party cookies">
+    Clear site data (including third-party cookies)
   </message>
   <message name="IDS_DEVTOOLS_76c18f2b1e4155961e10434e3d83317f" desc="Text in Indexed DBViews of the Application panel">
     Key generator value: <ph name="STRING_METADATA_KEYGENERATORVALUE_">$1s<ex>2</ex></ph>

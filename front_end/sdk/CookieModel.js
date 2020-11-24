@@ -62,11 +62,19 @@ export class CookieModel extends SDKModel {
 
   /**
    * @param {string=} domain
+   * @param {string=} securityOrigin
    * @return {!Promise<void>}
    */
-  async clear(domain) {
+  async clear(domain, securityOrigin) {
     const cookies = await this.getCookiesForDomain(domain || null);
-    await this.deleteCookies(cookies);
+    if (securityOrigin) {
+      const cookiesToDelete = cookies.filter(cookie => {
+        return securityOrigin.endsWith(cookie.domain());
+      });
+      await this.deleteCookies(cookiesToDelete);
+    } else {
+      await this.deleteCookies(cookies);
+    }
   }
 
   /**

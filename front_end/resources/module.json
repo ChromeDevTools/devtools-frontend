@@ -34,6 +34,13 @@
     },
     {
       "type": "action",
+      "category": "Resources",
+      "actionId": "resources.clear-incl-third-party-cookies",
+      "title": "Clear site data (including third-party cookies)",
+      "className": "Resources.ClearStorageView.ActionDelegate"
+    },
+    {
+      "type": "action",
       "actionId": "background-service.toggle-recording",
       "iconClass": "largeicon-start-recording",
       "toggleable": true,

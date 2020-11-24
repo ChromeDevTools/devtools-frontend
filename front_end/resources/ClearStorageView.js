@@ -69,6 +69,9 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
       this._settings.set(type, Common.Settings.Settings.instance().createSetting('clear-storage-' + type, true));
     }
 
+    this._includeThirdPartyCookiesSetting =
+        Common.Settings.Settings.instance().createSetting('clear-storage-include-third-party-cookies', false);
+
     const quota = this._reportView.appendSection(Common.UIString.UIString('Usage'));
     this._quotaRow = quota.appendSelectableRow();
     this._quotaRow.classList.add('quota-usage-row');
@@ -112,7 +115,12 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     const clearButtonSection = this._reportView.appendSection('', 'clear-storage-button').appendRow();
     this._clearButton = UI.UIUtils.createTextButton(ls`Clear site data`, this._clear.bind(this));
+    this._clearButton.id = 'storage-view-clear-button';
     clearButtonSection.appendChild(this._clearButton);
+
+    this._includeThirdPartyCookiesCheckbox = UI.SettingsUI.createSettingCheckbox(
+        ls`including third-party cookies`, this._includeThirdPartyCookiesSetting, true);
+    clearButtonSection.appendChild(this._includeThirdPartyCookiesCheckbox);
 
     const application = this._reportView.appendSection(Common.UIString.UIString('Application'));
     this._appendItem(application, Common.UIString.UIString('Unregister service workers'), 'service_workers');
@@ -269,7 +277,8 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
     }
 
     if (this._target) {
-      ClearStorageView.clear(this._target, this._securityOrigin, selectedStorageTypes);
+      const includeThirdPartyCookies = this._includeThirdPartyCookiesSetting.get();
+      ClearStorageView.clear(this._target, this._securityOrigin, selectedStorageTypes, includeThirdPartyCookies);
     }
 
     this._clearButton.disabled = true;
@@ -286,8 +295,9 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
    * @param {!SDK.SDKModel.Target} target
    * @param {string} securityOrigin
    * @param {!Array<string>} selectedStorageTypes
+   * @param {boolean} includeThirdPartyCookies
    */
-  static clear(target, securityOrigin, selectedStorageTypes) {
+  static clear(target, securityOrigin, selectedStorageTypes, includeThirdPartyCookies) {
     target.storageAgent().invoke_clearDataForOrigin(
         {origin: securityOrigin, storageTypes: selectedStorageTypes.join(',')});
 
@@ -296,7 +306,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
     if (set.has(Protocol.Storage.StorageType.Cookies) || hasAll) {
       const cookieModel = target.model(SDK.CookieModel.CookieModel);
       if (cookieModel) {
-        cookieModel.clear();
+        cookieModel.clear(undefined, includeThirdPartyCookies ? undefined : securityOrigin);
       }
     }
 
@@ -465,15 +475,18 @@ export class ActionDelegate {
   handleAction(context, actionId) {
     switch (actionId) {
       case 'resources.clear':
-        return this._handleClear();
+        return this._handleClear(false);
+      case 'resources.clear-incl-third-party-cookies':
+        return this._handleClear(true);
     }
     return false;
   }
 
   /**
+   * @param {boolean} includeThirdPartyCookies
    * @return {boolean}
    */
-  _handleClear() {
+  _handleClear(includeThirdPartyCookies) {
     const target = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (!target) {
       return false;
@@ -487,7 +500,7 @@ export class ActionDelegate {
       return false;
     }
 
-    ClearStorageView.clear(target, securityOrigin, AllStorageTypes);
+    ClearStorageView.clear(target, securityOrigin, AllStorageTypes, includeThirdPartyCookies);
     return true;
   }
 }

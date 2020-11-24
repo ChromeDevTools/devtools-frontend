@@ -131,9 +131,12 @@ export class ListControl {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _replacedItemsInRange(event) {
-    const data = /** @type {{index: number, removed: !Array<T>, inserted: number}} */ (event.data);
+    const data =
+        /** @type {{index: number, removed: !Array<T>, inserted: number, keepSelectedIndex: (boolean|undefined)}} */ (
+            event.data);
     const from = data.index;
     const to = from + data.removed.length;
+    const keepSelectedIndex = data.keepSelectedIndex;
 
     const oldSelectedItem = this._selectedItem;
     const oldSelectedElement = oldSelectedItem ? (this._itemToElement.get(oldSelectedItem) || null) : null;
@@ -146,9 +149,11 @@ export class ListControl {
       this._selectedIndex += data.inserted - (to - from);
       this._selectedItem = this._model.at(this._selectedIndex);
     } else if (this._selectedIndex >= from) {
-      let index = this._findFirstSelectable(from + data.inserted, +1, false);
+      const selectableIndex = keepSelectedIndex ? from : from + data.inserted;
+      let index = this._findFirstSelectable(selectableIndex, +1, false);
       if (index === -1) {
-        index = this._findFirstSelectable(from - 1, -1, false);
+        const alternativeSelectableIndex = keepSelectedIndex ? from : from - 1;
+        index = this._findFirstSelectable(alternativeSelectableIndex, -1, false);
       }
       this._select(index, oldSelectedItem, oldSelectedElement);
     }

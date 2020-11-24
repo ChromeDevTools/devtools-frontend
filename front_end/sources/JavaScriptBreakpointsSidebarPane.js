@@ -213,11 +213,14 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     if (this._breakpoints.length === breakpointItems.length) {
       for (let i = 0; i < this._breakpoints.length; i++) {
         if (!this._breakpoints.at(i).isSimilar(breakpointItems[i])) {
-          this._breakpoints.replace(i, breakpointItems[i]);
+          this._breakpoints.replace(i, breakpointItems[i], /** keepSelectedIndex= */ true);
         }
       }
     } else {
       this._breakpoints.replaceAll(breakpointItems);
+    }
+    if (!this._list.selectedItem() && this._breakpoints.at(0)) {
+      this._list.selectItem(this._breakpoints.at(0));
     }
   }
 

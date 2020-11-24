@@ -44,7 +44,6 @@
       <part file="../node_main/node_main_strings.grdp" />
       <part file="../object_ui/object_ui_strings.grdp" />
       <part file="../perf_ui/perf_ui_strings.grdp" />
-      <part file="../performance_monitor/performance_monitor_strings.grdp" />
       <part file="../persistence/persistence_strings.grdp" />
       <part file="../platform/platform_strings.grdp" />
       <part file="../profiler/profiler_strings.grdp" />

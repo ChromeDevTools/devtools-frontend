@@ -338,6 +338,7 @@ all_typescript_module_sources = [
   "perf_ui/PieChart_bridge.js",
   "perf_ui/TimelineGrid.js",
   "perf_ui/TimelineOverviewPane.js",
+  "performance_monitor/ModuleUIStrings.js",
   "performance_monitor/PerformanceMonitor.js",
   "persistence/Automapping.js",
   "persistence/EditFileSystemView.js",

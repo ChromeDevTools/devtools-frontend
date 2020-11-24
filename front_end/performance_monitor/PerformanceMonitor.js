@@ -4,10 +4,56 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
+
+export const UIStrings = {
+  /**
+  *@description Aria accessible name in Performance Monitor of the Performance monitor tab
+  */
+  graphsDisplayingARealtimeViewOf: 'Graphs displaying a real-time view of performance metrics',
+  /**
+  *@description Text in Performance Monitor of the Performance monitor tab
+  */
+  paused: 'Paused',
+  /**
+  *@description Text in Performance Monitor of the Performance monitor tab
+  */
+  cpuUsage: 'CPU usage',
+  /**
+  *@description Text in Performance Monitor of the Performance monitor tab
+  */
+  jsHeapSize: 'JS heap size',
+  /**
+  *@description Text in Performance Monitor of the Performance monitor tab
+  */
+  domNodes: 'DOM Nodes',
+  /**
+  *@description Text in Performance Monitor of the Performance monitor tab
+  */
+  jsEventListeners: 'JS event listeners',
+  /**
+  *@description Text for documents, a type of resources
+  */
+  documents: 'Documents',
+  /**
+  *@description Text in Performance Monitor of the Performance monitor tab
+  */
+  documentFrames: 'Document Frames',
+  /**
+  *@description Text in Performance Monitor of the Performance monitor tab
+  */
+  layoutsSec: 'Layouts / sec',
+  /**
+  *@description Text in Performance Monitor of the Performance monitor tab
+  */
+  styleRecalcsSec: 'Style recalcs / sec',
+};
+const str_ = i18n.i18n.registerUIStrings('performance_monitor/PerformanceMonitor.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.PerformanceMetricsModel.PerformanceMetricsModel>}
@@ -35,10 +81,9 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     /** @type {!HTMLCanvasElement} */
     this._canvas = /** @type {!HTMLCanvasElement} */ (chartContainer.createChild('canvas'));
     this._canvas.tabIndex = -1;
-    UI.ARIAUtils.setAccessibleName(
-        this._canvas, Common.UIString.UIString('Graphs displaying a real-time view of performance metrics'));
+    UI.ARIAUtils.setAccessibleName(this._canvas, i18nString(UIStrings.graphsDisplayingARealtimeViewOf));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
-        Common.UIString.UIString('Paused');
+        i18nString(UIStrings.paused);
     this._controlPane.addEventListener(Events.MetricChanged, this._recalcChartHeight, this);
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.PerformanceMetricsModel.PerformanceMetricsModel, this);
     /** @type {number} */
@@ -451,7 +496,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
     this._chartsInfo = [
       {
         ...defaults,
-        title: Common.UIString.UIString('CPU usage'),
+        title: i18nString(UIStrings.cpuUsage),
         metrics: [
           {name: 'TaskDuration', color: '#999'}, {name: 'ScriptDuration', color: 'orange'},
           {name: 'LayoutDuration', color: 'blueviolet'}, {name: 'RecalcStyleDuration', color: 'violet'}
@@ -465,26 +510,21 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
       },
       {
         ...defaults,
-        title: Common.UIString.UIString('JS heap size'),
+        title: i18nString(UIStrings.jsHeapSize),
         metrics: [{name: 'JSHeapTotalSize', color: '#99f'}, {name: 'JSHeapUsedSize', color: 'blue'}],
         format: format.Bytes,
         color: 'blue',
       },
-      {...defaults, title: Common.UIString.UIString('DOM Nodes'), metrics: [{name: 'Nodes', color: 'green'}]}, {
+      {...defaults, title: i18nString(UIStrings.domNodes), metrics: [{name: 'Nodes', color: 'green'}]}, {
         ...defaults,
-        title: Common.UIString.UIString('JS event listeners'),
+        title: i18nString(UIStrings.jsEventListeners),
         metrics: [{name: 'JSEventListeners', color: 'yellowgreen'}]
       },
-      {...defaults, title: Common.UIString.UIString('Documents'), metrics: [{name: 'Documents', color: 'darkblue'}]},
-      {...defaults, title: Common.UIString.UIString('Document Frames'), metrics: [{name: 'Frames', color: 'darkcyan'}]},
-      {
+      {...defaults, title: i18nString(UIStrings.documents), metrics: [{name: 'Documents', color: 'darkblue'}]},
+      {...defaults, title: i18nString(UIStrings.documentFrames), metrics: [{name: 'Frames', color: 'darkcyan'}]},
+      {...defaults, title: i18nString(UIStrings.layoutsSec), metrics: [{name: 'LayoutCount', color: 'hotpink'}]}, {
         ...defaults,
-        title: Common.UIString.UIString('Layouts / sec'),
-        metrics: [{name: 'LayoutCount', color: 'hotpink'}]
-      },
-      {
-        ...defaults,
-        title: Common.UIString.UIString('Style recalcs / sec'),
+        title: i18nString(UIStrings.styleRecalcsSec),
         metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}]
       }
     ];

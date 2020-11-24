@@ -722,6 +722,7 @@ grd_files_debug_sources = [
   "front_end/perf_ui/PieChart_bridge.js",
   "front_end/perf_ui/TimelineGrid.js",
   "front_end/perf_ui/TimelineOverviewPane.js",
+  "front_end/performance_monitor/ModuleUIStrings.js",
   "front_end/performance_monitor/PerformanceMonitor.js",
   "front_end/persistence/Automapping.js",
   "front_end/persistence/EditFileSystemView.js",

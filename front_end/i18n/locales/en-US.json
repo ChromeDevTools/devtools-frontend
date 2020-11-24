@@ -803,6 +803,54 @@
   "lighthouse/ModuleUIStrings.js | pwa": {
     "message": "pwa"
   },
+  "performance_monitor/ModuleUIStrings.js | activity": {
+    "message": "activity"
+  },
+  "performance_monitor/ModuleUIStrings.js | metrics": {
+    "message": "metrics"
+  },
+  "performance_monitor/ModuleUIStrings.js | monitor": {
+    "message": "monitor"
+  },
+  "performance_monitor/ModuleUIStrings.js | performance": {
+    "message": "performance"
+  },
+  "performance_monitor/ModuleUIStrings.js | performanceMonitor": {
+    "message": "Performance monitor"
+  },
+  "performance_monitor/ModuleUIStrings.js | systemMonitor": {
+    "message": "system monitor"
+  },
+  "performance_monitor/PerformanceMonitor.js | cpuUsage": {
+    "message": "CPU usage"
+  },
+  "performance_monitor/PerformanceMonitor.js | documentFrames": {
+    "message": "Document Frames"
+  },
+  "performance_monitor/PerformanceMonitor.js | documents": {
+    "message": "Documents"
+  },
+  "performance_monitor/PerformanceMonitor.js | domNodes": {
+    "message": "DOM Nodes"
+  },
+  "performance_monitor/PerformanceMonitor.js | graphsDisplayingARealtimeViewOf": {
+    "message": "Graphs displaying a real-time view of performance metrics"
+  },
+  "performance_monitor/PerformanceMonitor.js | jsEventListeners": {
+    "message": "JS event listeners"
+  },
+  "performance_monitor/PerformanceMonitor.js | jsHeapSize": {
+    "message": "JS heap size"
+  },
+  "performance_monitor/PerformanceMonitor.js | layoutsSec": {
+    "message": "Layouts / sec"
+  },
+  "performance_monitor/PerformanceMonitor.js | paused": {
+    "message": "Paused"
+  },
+  "performance_monitor/PerformanceMonitor.js | styleRecalcsSec": {
+    "message": "Style recalcs / sec"
+  },
   "recorder/RecordingFileSystem.js | defaultRecordingName": {
     "message": "Recording #{nextId}"
   },

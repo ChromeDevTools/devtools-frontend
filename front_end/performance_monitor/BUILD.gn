@@ -6,11 +6,15 @@ import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("performance_monitor") {
-  sources = [ "PerformanceMonitor.js" ]
+  sources = [
+    "ModuleUIStrings.js",
+    "PerformanceMonitor.js",
+  ]
 
   deps = [
     "../common:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../platform:bundle",
     "../sdk:bundle",
     "../theme_support:bundle",

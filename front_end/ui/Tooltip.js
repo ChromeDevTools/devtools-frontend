@@ -84,6 +84,16 @@ export class Tooltip {
   }
 
   /**
+   * @param {(!Element|!Document)} element
+   * @return {string}
+   */
+  static getContent(element) {
+    // @ts-ignore crbug.com/1150762: HTMLElement#title magic override.
+    const tooltip = element[_symbol];
+    return tooltip ? tooltip.content : '';
+  }
+
+  /**
    * @param {!Element} element
    */
   static addNativeOverrideContainer(element) {
@@ -112,8 +122,7 @@ export class Tooltip {
       if (!(element instanceof HTMLElement) || element.offsetParent === null) {
         continue;
       }
-      // @ts-ignore crbug.com/1150762: HTMLElement#title magic override.
-      if (element[_symbol]) {
+      if (Tooltip.getContent(element)) {
         this._show(element, mouseEvent);
         return;
       }
@@ -282,9 +291,7 @@ Object.defineProperty(HTMLElement.prototype, 'title', {
    * @this {!Element}
    */
   get: function() {
-    // @ts-ignore crbug.com/1150762: HTMLElement#title magic override.
-    const tooltip = this[_symbol];
-    return tooltip ? tooltip.content : '';
+    return Tooltip.getContent(this);
   },
 
   /**

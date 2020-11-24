@@ -133,7 +133,6 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     this._profileTypeSelectorForm.appendChild(labelElement);
     const optionElement = labelElement.radioElement;
     this._typeIdToOptionElementAndProfileType.set(profileType.id, {optionElement, profileType});
-    optionElement.style.visibility = 'hidden';
     optionElement.addEventListener('change', this._profileTypeChanged.bind(this, profileType), false);
     const descriptionElement = this._profileTypeSelectorForm.createChild('p');
     descriptionElement.textContent = profileType.description;

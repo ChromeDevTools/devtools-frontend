@@ -4,59 +4,12 @@
 
 import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';
-import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
 
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
 import {ChangesTextEditor} from './ChangesTextEditor.js';
-
-export const UIStrings = {
-  /**
-  *@description Screen-reader accessible name for the code editor in the Changes tool showing the user's changes.
-  */
-  changesDiffViewer: 'Changes diff viewer',
-  /**
-  *@description Screen reader/tooltip label for a button in the Changes tool that reverts all changes to the currently open file.
-  */
-  revertAllChangesToCurrentFile: 'Revert all changes to current file',
-  /**
-  *@description Text in Changes View of the Changes tab
-  */
-  noChanges: 'No changes',
-  /**
-  *@description Text in Changes View of the Changes tab
-  */
-  binaryData: 'Binary data',
-  /**
-  *@description Insertion text in Changes View of the Changes tab
-  *@example {1} PH1
-  */
-  sInsertion: '{PH1} insertion (+),',
-  /**
-  *@description Insertion text in Changes View of the Changes tab
-  *@example {2} PH1
-  */
-  sInsertions: '{PH1} insertions (+),',
-  /**
-  *@description Deletion text in Changes View of the Changes tab
-  *@example {1} PH1
-  */
-  sDeletion: '{PH1} deletion (-)',
-  /**
-  *@description Deletion text in Changes View of the Changes tab
-  *@example {2} PH1
-  */
-  sDeletions: '{PH1} deletions (-)',
-  /**
-  *@description Text in Changes View of the Changes tab
-  *@example {2} PH1
-  */
-  SkippingDMatchingLines: '( … Skipping {PH1} matching lines … )',
-};
-const str_ = i18n.i18n.registerUIStrings('changes/ChangesView.js', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /** @type {!ChangesView} */
 let changesViewInstance;
@@ -91,7 +44,7 @@ export class ChangesView extends UI.Widget.VBox {
 
     this._editor = new ChangesTextEditor({
       bracketMatchingSetting: undefined,
-      devtoolsAccessibleName: i18nString(UIStrings.changesDiffViewer),
+      devtoolsAccessibleName: ls`Changes diff viewer`,
       lineNumbers: true,
       lineWrapping: false,
       mimeType: undefined,
@@ -111,15 +64,14 @@ export class ChangesView extends UI.Widget.VBox {
     self.onInvokeElement(this._editor.element, this._click.bind(this));
 
     this._toolbar = new UI.Toolbar.Toolbar('changes-toolbar', mainWidget.element);
-    const revertButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.revertAllChangesToCurrentFile), 'largeicon-undo');
+    const revertButton = new UI.Toolbar.ToolbarButton(ls`Revert all changes to current file`, 'largeicon-undo');
     revertButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._revert.bind(this));
     this._toolbar.appendToolbarItem(revertButton);
     this._diffStats = new UI.Toolbar.ToolbarText('');
     this._toolbar.appendToolbarItem(this._diffStats);
     this._toolbar.setEnabled(false);
 
-    this._hideDiff(i18nString(UIStrings.noChanges));
+    this._hideDiff(ls`No changes`);
     this._selectedUISourceCodeChanged();
   }
 
@@ -198,7 +150,7 @@ export class ChangesView extends UI.Widget.VBox {
     }
     const uiSourceCode = this._selectedUISourceCode;
     if (!uiSourceCode.contentType().isTextType()) {
-      this._hideDiff(i18nString(UIStrings.binaryData));
+      this._hideDiff(ls`Binary data`);
       return;
     }
     this._workspaceDiff.requestDiff(uiSourceCode).then(diff => {
@@ -227,7 +179,7 @@ export class ChangesView extends UI.Widget.VBox {
     this._diffRows = [];
 
     if (!diff || (diff.length === 1 && diff[0][0] === Diff.Diff.Operation.Equal)) {
-      this._hideDiff(i18nString(UIStrings.noChanges));
+      this._hideDiff(ls`No changes`);
       return;
     }
 
@@ -278,16 +230,16 @@ export class ChangesView extends UI.Widget.VBox {
 
     let insertionText = '';
     if (insertions === 1) {
-      insertionText = i18nString(UIStrings.sInsertion, {PH1: insertions});
+      insertionText = ls`${insertions} insertion (+),`;
     } else {
-      insertionText = i18nString(UIStrings.sInsertions, {PH1: insertions});
+      insertionText = ls`${insertions} insertions (+),`;
     }
 
     let deletionText = '';
     if (deletions === 1) {
-      deletionText = i18nString(UIStrings.sDeletion, {PH1: deletions});
+      deletionText = ls`${deletions} deletion (-)`;
     } else {
-      deletionText = i18nString(UIStrings.sDeletions, {PH1: deletions});
+      deletionText = ls`${deletions} deletions (-)`;
     }
 
     this._diffStats.setText(`${insertionText} ${deletionText}`);
@@ -322,7 +274,8 @@ export class ChangesView extends UI.Widget.VBox {
         }
         if (lines.length > paddingLines * 2 + 1 && !atEnd) {
           equalRows.push(createRow(
-              i18nString(UIStrings.SkippingDMatchingLines, {PH1: (lines.length - paddingLines * 2)}), RowType.Spacer));
+              Common.UIString.UIString('( … Skipping %d matching lines … )', lines.length - paddingLines * 2),
+              RowType.Spacer));
         }
       }
       if (!atEnd) {

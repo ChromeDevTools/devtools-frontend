@@ -3,21 +3,10 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
-
-export const UIStrings = {
-  /**
-  *@description Name of an item from source map
-  *@example {compile.html} PH1
-  */
-  sFromSourceMap: '{PH1} (from source map)',
-};
-const str_ = i18n.i18n.registerUIStrings('changes/ChangesSidebar.js', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ChangesSidebar extends UI.Widget.Widget {
   /**
@@ -157,7 +146,7 @@ export class UISourceCodeTreeElement extends UI.TreeOutline.TreeElement {
 
     let tooltip = this.uiSourceCode.url();
     if (this.uiSourceCode.contentType().isFromSourceMap()) {
-      tooltip = i18nString(UIStrings.sFromSourceMap, {PH1: this.uiSourceCode.displayName()});
+      tooltip = Common.UIString.UIString('%s (from source map)', this.uiSourceCode.displayName());
     }
     this.tooltip = tooltip;
   }

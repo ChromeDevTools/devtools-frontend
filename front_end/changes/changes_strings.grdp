@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_025502db49a6cf61a8245998129bd973" desc="Deletion text in Changes View of the Changes tab">
+    <ph name="DELETIONS">$1s<ex>2</ex></ph> deletions (-)
+  </message>
+  <message name="IDS_DEVTOOLS_40b7f348c8d89730ae8b9a88c5d48e35" desc="Screen-reader accessible name for the code editor in the Changes tool showing the user's changes.">
+    Changes diff viewer
+  </message>
+  <message name="IDS_DEVTOOLS_5c2892cb638ec999fe22612587cd4a00" desc="Text in Changes View of the Changes tab">
+    No changes
+  </message>
+  <message name="IDS_DEVTOOLS_70c85e43e99bc0cfcbb656123306eb19" desc="Insertion text in Changes View of the Changes tab">
+    <ph name="INSERTIONS">$1s<ex>1</ex></ph> insertion (+),
+  </message>
+  <message name="IDS_DEVTOOLS_af2c230293677261fe33ba6d3fbf02e3" desc="Insertion text in Changes View of the Changes tab">
+    <ph name="INSERTIONS">$1s<ex>2</ex></ph> insertions (+),
+  </message>
+  <message name="IDS_DEVTOOLS_b5bfcafb00b072cfbae0735d027126f7" desc="Screen reader/tooltip label for a button in the Changes tool that reverts all changes to the currently open file.">
+    Revert all changes to current file
+  </message>
+  <message name="IDS_DEVTOOLS_8cd4f0e81bfac859d5f20d360ab63e93" desc="Text prepended to a new line in a diff in the Changes tool, viewable only by screen reader.">
+    Addition:<ph name="THIS_TEXTAREA_VALUE">$1s<ex>function log () {</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_c112bb3542e98308d12d5ecb10a67abc" desc="Title of the 'Changes' tool in the bottom drawer">
+    Changes
+  </message>
+  <message name="IDS_DEVTOOLS_c73e4e53c15d9971d9293fcff6c0d8c0" desc="Text in Changes View of the Changes tab">
+    ( … Skipping <ph name="LINES_LENGTH___PADDINGLINES____">$1d<ex>2</ex></ph> matching lines … )
+  </message>
+  <message name="IDS_DEVTOOLS_ca012662d53a8bde28b4d82722aaff7e" desc="The UI destination when right clicking an item that can be revealed">
+    Changes drawer
+  </message>
+  <message name="IDS_DEVTOOLS_e0e5ea9203300d2eb8ced39dd88c214e" desc="Deletion text in Changes View of the Changes tab">
+    <ph name="DELETIONS">$1s<ex>1</ex></ph> deletion (-)
+  </message>
+  <message name="IDS_DEVTOOLS_e8f345109e87ecbafb4fd29b9f8afc0f" desc="Text prepended to a removed line in a diff in the Changes tool, viewable only by screen reader.">
+    Deletion:<ph name="THIS_TEXTAREA_VALUE">$1s<ex>function log () {</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_f550ec70278cc72604795d91ff8dcd30" desc="Text in Changes View of the Changes tab">
+    Binary data
+  </message>
+</grit-part>

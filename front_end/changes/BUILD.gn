@@ -11,13 +11,11 @@ devtools_module("changes") {
     "ChangesSidebar.js",
     "ChangesTextEditor.js",
     "ChangesView.js",
-    "ModuleUIStrings.js",
   ]
 
   deps = [
     "../common:bundle",
     "../diff:bundle",
-    "../i18n:bundle",
     "../snippets:bundle",
     "../text_editor:bundle",
     "../ui:bundle",

@@ -90,6 +90,7 @@ generated_typescript_entrypoint_sources = [
   "$resources_out_dir/javascript_metadata/javascript_metadata.js",
   "$resources_out_dir/js_main/js_main-legacy.js",
   "$resources_out_dir/js_main/js_main.js",
+  "$resources_out_dir/js_profiler/js_profiler.js",
   "$resources_out_dir/layer_viewer/layer_viewer-legacy.js",
   "$resources_out_dir/layer_viewer/layer_viewer.js",
   "$resources_out_dir/layers/layers-legacy.js",

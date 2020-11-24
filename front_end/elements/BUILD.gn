@@ -90,3 +90,13 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "elements-meta.ts"
+
+  deps = [
+    ":bundle",
+    "../root:bundle",
+    "../ui:bundle",
+  ]
+}

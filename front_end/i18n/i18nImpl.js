@@ -15,15 +15,30 @@ export const registerLocaleData = i18nBundle.registerLocaleData;
 
 /**
  * The locale that DevTools displays
- * @type {string}
+ * @type {string|undefined}
  */
 export let registeredLocale;
 
 /**
  * The strings from the module.json file
- * @type {!Object}
+ * @type {!Object|undefined}
  */
 let moduleJSONStrings;
+
+/**
+ * Returns an instance of an object of formatted strings based on locale. If the instance is not
+ * set at the time of calling, it is created.
+ * @return {!Object}
+ * @suppress {checkTypes}
+ */
+function getOrSetModuleJSONStrings() {
+  if (!registeredLocale) {
+    throw new Error(`Unsupported locale '${registeredLocale}'`);
+  }
+
+  moduleJSONStrings = moduleJSONStrings || i18nBundle.getRendererFormattedStrings(registeredLocale);
+  return moduleJSONStrings;
+}
 
 /**
  * Take the locale passed in from the browser(host), run through the fallback logic (example: es-419 -> es)
@@ -42,6 +57,10 @@ export function registerLocale(locale) {
  * @return {string} the localized version of the
  */
 export function getLocalizedString(str_, id, values = {}) {
+  if (!registeredLocale) {
+    throw new Error(`Unsupported locale '${registeredLocale}'`);
+  }
+
   const icuMessage = str_(id, values);
   return i18nBundle.getFormatted(icuMessage, registeredLocale);
 }
@@ -53,7 +72,6 @@ export function getLocalizedString(str_, id, values = {}) {
  * @return {function(string, ?Object):string} return function to generate the string ids.
  */
 export function registerUIStrings(path, stringStructure) {
-  moduleJSONStrings = moduleJSONStrings || i18nBundle.getRendererFormattedStrings(registeredLocale);
   /**
    * Convert a message string & replacement values into an
    * indexed id value in the form '{messageid} | # {index}'.
@@ -68,7 +86,7 @@ export function registerUIStrings(path, stringStructure) {
     } catch (e) {
       // ID was not in the main file search for module.json strings
       if (e instanceof i18nBundle.idNotInMainDictionaryException) {
-        const stringMappingArray = Object.getOwnPropertyNames(moduleJSONStrings);
+        const stringMappingArray = Object.getOwnPropertyNames(getOrSetModuleJSONStrings());
         const index = stringMappingArray.indexOf(id);
         if (index >= 0) {
           return stringMappingArray[index];
@@ -90,6 +108,10 @@ export function registerUIStrings(path, stringStructure) {
  * @return {!Element} the localized result
  */
 export function getFormatLocalizedString(str_, stringId, placeholders) {
+  if (!registeredLocale) {
+    throw new Error(`Unsupported locale '${registeredLocale}'`);
+  }
+
   const icuMessage = str_(stringId, placeholders);
   const formatter = i18nBundle.getFormatter(icuMessage, registeredLocale);
 

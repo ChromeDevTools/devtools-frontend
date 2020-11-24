@@ -41,7 +41,7 @@ import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotContainmentDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotRetainmentDataGrid, HeapSnapshotSortableDataGrid,} from './HeapSnapshotDataGrids.js';
+import {AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotContainmentDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotRetainmentDataGrid, HeapSnapshotSortableDataGrid, HeapSnapshotSortableDataGridEvents,} from './HeapSnapshotDataGrids.js';  // eslint-disable-line no-unused-vars
 import {AllocationGridNode, HeapSnapshotGenericObjectNode, HeapSnapshotGridNode} from './HeapSnapshotGridNodes.js';  // eslint-disable-line no-unused-vars
 import {HeapSnapshotProxy, HeapSnapshotWorkerProxy} from './HeapSnapshotProxy.js';  // eslint-disable-line no-unused-vars
 import {HeapTimelineOverview, IdsRangeChanged, Samples} from './HeapTimelineOverview.js';
@@ -463,7 +463,8 @@ export class HeapSnapshotView extends UI.View.SimpleView {
       return;
     }
 
-    this._searchResults = await this._profile._snapshotProxy.search(this.currentQuery, this._dataGrid.nodeFilter());
+    const filter = this._dataGrid.nodeFilter();
+    this._searchResults = filter ? await this._profile._snapshotProxy.search(this.currentQuery, filter) : [];
 
     this._searchableView.updateSearchMatchesCount(this._searchResults.length);
     if (this._searchResults.length) {
@@ -550,7 +551,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
       return;
     }
     /** @type {!HeapSnapshotConstructorsDataGrid} */ (this._dataGrid)
-        .filterSelectIndexChanged(this._profiles(), profileIndex);
+        .filterSelectIndexChanged(/** @type {!Array<!HeapProfileHeader>} */ (this._profiles()), profileIndex);
 
     if (!this.currentQuery || !this._searchResults) {
       return;
@@ -631,7 +632,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
       return;
     }
 
-    const promise = dataGrid.once(HeapSnapshotSortableDataGrid.Events.ContentShown);
+    const promise = dataGrid.once(HeapSnapshotSortableDataGridEvents.ContentShown);
 
     const option = this._perspectiveSelect.options().find(option => option.value === String(perspectiveIndex));
     this._perspectiveSelect.select(/** @type {!Element} */ (option));
@@ -1080,7 +1081,7 @@ export class AllocationPerspective extends Perspective {
 
     heapSnapshotView._constructorsDataGrid.clear();
     if (heapSnapshotView._allocationDataGrid) {
-      const selectedNode = heapSnapshotView._allocationDataGrid.selectedNode;
+      const selectedNode = /** @type {!AllocationGridNode} */ (heapSnapshotView._allocationDataGrid.selectedNode);
       if (selectedNode) {
         heapSnapshotView._constructorsDataGrid.setAllocationNodeId(selectedNode.allocationNodeId());
       }

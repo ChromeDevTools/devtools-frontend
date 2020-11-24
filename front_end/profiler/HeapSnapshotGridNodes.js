@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
-
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
@@ -39,12 +36,14 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ChildrenProvider} from './ChildrenProvider.js';  // eslint-disable-line no-unused-vars
-import {AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotRetainmentDataGrid, HeapSnapshotSortableDataGrid,} from './HeapSnapshotDataGrids.js';  // eslint-disable-line no-unused-vars
+import {AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotRetainmentDataGrid, HeapSnapshotRetainmentDataGridEvents, HeapSnapshotSortableDataGrid,} from './HeapSnapshotDataGrids.js';  // eslint-disable-line no-unused-vars
 import {HeapSnapshotProviderProxy, HeapSnapshotProxy} from './HeapSnapshotProxy.js';  // eslint-disable-line no-unused-vars
 import {DataDisplayDelegate} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
+ * @abstract
+ * @extends {DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>}
  */
 export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
   /**
@@ -62,6 +61,7 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
     /**
      * List of position ranges for all visible nodes: [startPos1, endPos1),...,[startPosN, endPosN)
      * Position is an item position in the provider.
+     * @type {!Array<!{from: number, to: number}>}
      */
     this._retrievedChildrenRanges = [];
 
@@ -104,6 +104,13 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
    * @return {number}
    */
   _getHash() {
+    throw new Error('Not implemented.');
+  }
+  /**
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.Node|!HeapSnapshotModel.HeapSnapshotModel.Edge} item
+   * @return {!HeapSnapshotGridNode}
+   */
+  _createChildNode(item) {
     throw new Error('Not implemented.');
   }
 
@@ -154,10 +161,9 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
     if (this._providerObject) {
       this._providerObject.dispose();
     }
-    for (let node = this.children[0]; node; node = node.traverseNextNode(true, this, true)) {
-      if (node.dispose) {
-        node.dispose();
-      }
+    for (let node = /** @type {?HeapSnapshotGridNode} */ (this.children[0]); node;
+         node = /** @type {?HeapSnapshotGridNode} */ (node.traverseNextNode(true, this, true))) {
+      node.dispose();
     }
   }
 
@@ -206,10 +212,10 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
   }
 
   /**
-   * @return {!Array.<!DataGrid.DataGrid.DataGridNode>}
+   * @return {!Array.<!HeapSnapshotGridNode>}
    */
   allChildren() {
-    return this._dataGrid.allChildren(this);
+    return /** @type {!Array.<!HeapSnapshotGridNode>} */ (this._dataGrid.allChildren(this));
   }
 
   /**
@@ -221,7 +227,7 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
 
   /**
    * @param {number} nodePosition
-   * @return {?DataGrid.DataGrid.DataGridNode}
+   * @return {?HeapSnapshotGridNode}
    */
   childForPosition(nodePosition) {
     let indexOfFirstChildInRange = 0;
@@ -242,8 +248,9 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
    */
   _createValueCell(columnId) {
     const cell = /** @type {!HTMLElement} */ (UI.Fragment.html`<td class="numeric-column" />`);
-    if (this.dataGrid.snapshot.totalSize !== 0) {
-      const div = createElement('div');
+    const dataGrid = /** @type {!HeapSnapshotSortableDataGrid} */ (this.dataGrid);
+    if (dataGrid.snapshot && dataGrid.snapshot.totalSize !== 0) {
+      const div = document.createElement('div');
       const valueSpan = UI.Fragment.html`<span>${this.data[columnId]}</span>`;
       div.appendChild(valueSpan);
       const percentColumn = columnId + '-percent';
@@ -272,7 +279,7 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<?>}
    */
   expandWithoutPopulate() {
     // Make sure default populate won't take action.
@@ -295,161 +302,168 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
   /**
    * @param {?number=} fromPosition
    * @param {?number=} toPosition
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   _populateChildren(fromPosition, toPosition) {
-    let afterPopulate;
-    const promise = new Promise(resolve => {
-      afterPopulate = resolve;
-    });
-    fromPosition = fromPosition || 0;
-    toPosition = toPosition || fromPosition + this._dataGrid.defaultPopulateCount();
-    let firstNotSerializedPosition = fromPosition;
-    serializeNextChunk.call(this);
-    return promise;
+    return new Promise(resolve => {
+      fromPosition = fromPosition || 0;
+      toPosition = toPosition || fromPosition + this._dataGrid.defaultPopulateCount();
+      let firstNotSerializedPosition = fromPosition;
+      serializeNextChunk.call(this, toPosition);
 
-    /**
-     * @this {HeapSnapshotGridNode}
-     */
-    function serializeNextChunk() {
-      if (firstNotSerializedPosition >= toPosition) {
-        return;
-      }
-      const end = Math.min(firstNotSerializedPosition + this._dataGrid.defaultPopulateCount(), toPosition);
-      this._provider().serializeItemsRange(firstNotSerializedPosition, end).then(childrenRetrieved.bind(this));
-      firstNotSerializedPosition = end;
-    }
-
-    /**
-     * @this {HeapSnapshotGridNode}
-     */
-    function insertRetrievedChild(item, insertionIndex) {
-      if (this._savedChildren) {
-        const hash = this._childHashForEntity(item);
-        const child = this._savedChildren.get(hash);
-        if (child) {
-          this._dataGrid.insertChild(this, child, insertionIndex);
+      /**
+       * @this {HeapSnapshotGridNode}
+       * @param {number} toPosition
+       */
+      function serializeNextChunk(toPosition) {
+        if (firstNotSerializedPosition >= toPosition) {
           return;
         }
+        const end = Math.min(firstNotSerializedPosition + this._dataGrid.defaultPopulateCount(), toPosition);
+        this._provider()
+            .serializeItemsRange(firstNotSerializedPosition, end)
+            .then(itemsRange => childrenRetrieved.call(this, itemsRange, toPosition));
+        firstNotSerializedPosition = end;
       }
-      this._dataGrid.insertChild(this, this._createChildNode(item), insertionIndex);
-    }
 
-    /**
+      /**
+       * @this {HeapSnapshotGridNode}
+       * @param {!HeapSnapshotModel.HeapSnapshotModel.Node|!HeapSnapshotModel.HeapSnapshotModel.Edge} item
+       * @param {number} insertionIndex
+       */
+      function insertRetrievedChild(item, insertionIndex) {
+        if (this._savedChildren) {
+          const hash = this._childHashForEntity(item);
+          const child = this._savedChildren.get(hash);
+          if (child) {
+            this._dataGrid.insertChild(this, child, insertionIndex);
+            return;
+          }
+        }
+        this._dataGrid.insertChild(this, this._createChildNode(item), insertionIndex);
+      }
+
+      /**
      * @this {HeapSnapshotGridNode}
+     * @param {number} from
+     * @param {number} to
+     * @param {number} insertionIndex
      */
-    function insertShowMoreButton(from, to, insertionIndex) {
-      const button = new DataGrid.ShowMoreDataGridNode.ShowMoreDataGridNode(
-          this._populateChildren.bind(this), from, to, this._dataGrid.defaultPopulateCount());
-      this._dataGrid.insertChild(this, button, insertionIndex);
-    }
+      function insertShowMoreButton(from, to, insertionIndex) {
+        const button = /** @type {*} */ (new DataGrid.ShowMoreDataGridNode.ShowMoreDataGridNode(
+            this._populateChildren.bind(this), from, to, this._dataGrid.defaultPopulateCount()));
+        this._dataGrid.insertChild(this, /** @type {!HeapSnapshotGridNode} */ (button), insertionIndex);
+      }
 
-    /**
+      /**
      * @param {!HeapSnapshotModel.HeapSnapshotModel.ItemsRange} itemsRange
+     * @param {number} toPosition
      * @this {HeapSnapshotGridNode}
      */
-    function childrenRetrieved(itemsRange) {
-      let itemIndex = 0;
-      let itemPosition = itemsRange.startPosition;
-      const items = itemsRange.items;
-      let insertionIndex = 0;
+      function childrenRetrieved(itemsRange, toPosition) {
+        let itemIndex = 0;
+        let itemPosition = itemsRange.startPosition;
+        const items = itemsRange.items;
+        let insertionIndex = 0;
 
-      if (!this._retrievedChildrenRanges.length) {
-        if (itemsRange.startPosition > 0) {
-          this._retrievedChildrenRanges.push({from: 0, to: 0});
-          insertShowMoreButton.call(this, 0, itemsRange.startPosition, insertionIndex++);
-        }
-        this._retrievedChildrenRanges.push({from: itemsRange.startPosition, to: itemsRange.endPosition});
-        for (let i = 0, l = items.length; i < l; ++i) {
-          insertRetrievedChild.call(this, items[i], insertionIndex++);
-        }
-        if (itemsRange.endPosition < itemsRange.totalLength) {
-          insertShowMoreButton.call(this, itemsRange.endPosition, itemsRange.totalLength, insertionIndex++);
-        }
-      } else {
-        let rangeIndex = 0;
-        let found = false;
-        let range;
-        while (rangeIndex < this._retrievedChildrenRanges.length) {
-          range = this._retrievedChildrenRanges[rangeIndex];
-          if (range.to >= itemPosition) {
-            found = true;
-            break;
+        if (!this._retrievedChildrenRanges.length) {
+          if (itemsRange.startPosition > 0) {
+            this._retrievedChildrenRanges.push({from: 0, to: 0});
+            insertShowMoreButton.call(this, 0, itemsRange.startPosition, insertionIndex++);
           }
-          insertionIndex += range.to - range.from;
-          // Skip the button if there is one.
-          if (range.to < itemsRange.totalLength) {
-            insertionIndex += 1;
+          this._retrievedChildrenRanges.push({from: itemsRange.startPosition, to: itemsRange.endPosition});
+          for (let i = 0, l = items.length; i < l; ++i) {
+            insertRetrievedChild.call(this, items[i], insertionIndex++);
           }
-          ++rangeIndex;
-        }
-
-        if (!found || itemsRange.startPosition < range.from) {
-          // Update previous button.
-          this.allChildren()[insertionIndex - 1].setEndPosition(itemsRange.startPosition);
-          insertShowMoreButton.call(
-              this, itemsRange.startPosition, found ? range.from : itemsRange.totalLength, insertionIndex);
-          range = {from: itemsRange.startPosition, to: itemsRange.startPosition};
-          if (!found) {
-            rangeIndex = this._retrievedChildrenRanges.length;
+          if (itemsRange.endPosition < itemsRange.totalLength) {
+            insertShowMoreButton.call(this, itemsRange.endPosition, itemsRange.totalLength, insertionIndex++);
           }
-          this._retrievedChildrenRanges.splice(rangeIndex, 0, range);
         } else {
-          insertionIndex += itemPosition - range.from;
-        }
-        // At this point insertionIndex is always an index before button or between nodes.
-        // Also it is always true here that range.from <= itemPosition <= range.to
-
-        // Stretch the range right bound to include all new items.
-        while (range.to < itemsRange.endPosition) {
-          // Skip already added nodes.
-          const skipCount = range.to - itemPosition;
-          insertionIndex += skipCount;
-          itemIndex += skipCount;
-          itemPosition = range.to;
-
-          // We're at the position before button: ...<?node>x<button>
-          const nextRange = this._retrievedChildrenRanges[rangeIndex + 1];
-          let newEndOfRange = nextRange ? nextRange.from : itemsRange.totalLength;
-          if (newEndOfRange > itemsRange.endPosition) {
-            newEndOfRange = itemsRange.endPosition;
-          }
-          while (itemPosition < newEndOfRange) {
-            insertRetrievedChild.call(this, items[itemIndex++], insertionIndex++);
-            ++itemPosition;
+          let rangeIndex = 0;
+          let found = false;
+          let range = {from: 0, to: 0};
+          while (rangeIndex < this._retrievedChildrenRanges.length) {
+            range = this._retrievedChildrenRanges[rangeIndex];
+            if (range.to >= itemPosition) {
+              found = true;
+              break;
+            }
+            insertionIndex += range.to - range.from;
+            // Skip the button if there is one.
+            if (range.to < itemsRange.totalLength) {
+              insertionIndex += 1;
+            }
+            ++rangeIndex;
           }
 
-          // Merge with the next range.
-          if (nextRange && newEndOfRange === nextRange.from) {
-            range.to = nextRange.to;
-            // Remove "show next" button if there is one.
-            this.removeChildByIndex(insertionIndex);
-            this._retrievedChildrenRanges.splice(rangeIndex + 1, 1);
+          if (!found || itemsRange.startPosition < range.from) {
+            // Update previous button.
+            const button = /** @type {*} */ (this.allChildren()[insertionIndex - 1]);
+            button.setEndPosition(itemsRange.startPosition);
+            insertShowMoreButton.call(
+                this, itemsRange.startPosition, found ? range.from : itemsRange.totalLength, insertionIndex);
+            range = {from: itemsRange.startPosition, to: itemsRange.startPosition};
+            if (!found) {
+              rangeIndex = this._retrievedChildrenRanges.length;
+            }
+            this._retrievedChildrenRanges.splice(rangeIndex, 0, range);
           } else {
-            range.to = newEndOfRange;
-            // Remove or update next button.
-            if (newEndOfRange === itemsRange.totalLength) {
+            insertionIndex += itemPosition - range.from;
+          }
+          // At this point insertionIndex is always an index before button or between nodes.
+          // Also it is always true here that range.from <= itemPosition <= range.to
+
+          // Stretch the range right bound to include all new items.
+          while (range.to < itemsRange.endPosition) {
+            // Skip already added nodes.
+            const skipCount = range.to - itemPosition;
+            insertionIndex += skipCount;
+            itemIndex += skipCount;
+            itemPosition = range.to;
+
+            // We're at the position before button: ...<?node>x<button>
+            const nextRange = this._retrievedChildrenRanges[rangeIndex + 1];
+            let newEndOfRange = nextRange ? nextRange.from : itemsRange.totalLength;
+            if (newEndOfRange > itemsRange.endPosition) {
+              newEndOfRange = itemsRange.endPosition;
+            }
+            while (itemPosition < newEndOfRange) {
+              insertRetrievedChild.call(this, items[itemIndex++], insertionIndex++);
+              ++itemPosition;
+            }
+
+            // Merge with the next range.
+            if (nextRange && newEndOfRange === nextRange.from) {
+              range.to = nextRange.to;
+              // Remove "show next" button if there is one.
               this.removeChildByIndex(insertionIndex);
+              this._retrievedChildrenRanges.splice(rangeIndex + 1, 1);
             } else {
-              this.allChildren()[insertionIndex].setStartPosition(itemsRange.endPosition);
+              range.to = newEndOfRange;
+              // Remove or update next button.
+              if (newEndOfRange === itemsRange.totalLength) {
+                this.removeChildByIndex(insertionIndex);
+              } else {
+                /** @type {*} */ (this.allChildren()[insertionIndex]).setStartPosition(itemsRange.endPosition);
+              }
             }
           }
         }
-      }
 
-      // TODO: fix this.
-      this._instanceCount += items.length;
-      if (firstNotSerializedPosition < toPosition) {
-        serializeNextChunk.call(this);
-        return;
-      }
+        // TODO: fix this.
+        this._instanceCount += items.length;
+        if (firstNotSerializedPosition < toPosition) {
+          serializeNextChunk.call(this, toPosition);
+          return;
+        }
 
-      if (this.expanded) {
-        this._dataGrid.updateVisibleNodes(true);
+        if (this.expanded) {
+          this._dataGrid.updateVisibleNodes(true);
+        }
+        resolve();
+        this.dispatchEventToListeners(HeapSnapshotGridNode.Events.PopulateComplete);
       }
-      afterPopulate();
-      this.dispatchEventToListeners(HeapSnapshotGridNode.Events.PopulateComplete);
-    }
+    });
   }
 
   _saveChildren() {
@@ -460,7 +474,7 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
       if (!child.expanded) {
         continue;
       }
-      this._savedChildren.set(child._getHash(), /** @type {!HeapSnapshotGridNode} */ (child));
+      this._savedChildren.set(child._getHash(), child);
     }
   }
 
@@ -505,6 +519,8 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
     if (!node) {
       return;
     }
+    /** @type {string|null} */
+    this._referenceName = null;
     this._name = node.name;
     this._type = node.type;
     this._distance = node.distance;
@@ -524,7 +540,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
       this.detachedDOMTreeNode = true;
     }
 
-    const snapshot = dataGrid.snapshot;
+    const snapshot = /** @type {!HeapSnapshotProxy} */ (dataGrid.snapshot);
     const shallowSizePercent = this._shallowSize / snapshot.totalSize * 100.0;
     const retainedSizePercent = this._retainedSize / snapshot.totalSize * 100.0;
     this.data = {
@@ -548,7 +564,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
    * @return {?{snapshot:!HeapSnapshotProxy, snapshotNodeIndex:number}}
    */
   retainersDataSource() {
-    return {
+    return this.snapshotNodeIndex === undefined ? null : {
       snapshot: /** @type {!HeapSnapshotProxy} */ (this._dataGrid.snapshot),
       snapshotNodeIndex: this.snapshotNodeIndex
     };
@@ -597,7 +613,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
         value = value ? `${value}[]` : ls`(internal array)[]`;
         break;
     }
-    return this._createObjectCellWithValue(valueStyle, value);
+    return this._createObjectCellWithValue(valueStyle, value || '');
   }
 
   /**
@@ -625,7 +641,9 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
     this._appendSourceLocation(div);
     const cell = /** @type {!HTMLElement} */ (fragment.element());
     if (this.depth) {
-      cell.style.setProperty('padding-left', (this.depth * this.dataGrid.indentWidth) + 'px');
+      cell.style.setProperty(
+          'padding-left',
+          (this.depth * /** @type {!HeapSnapshotSortableDataGrid} */ (this.dataGrid).indentWidth) + 'px');
     }
     return cell;
   }
@@ -642,7 +660,8 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
   async _appendSourceLocation(div) {
     const linkContainer = UI.Fragment.html`<span class="heap-object-source-link" />`;
     div.appendChild(linkContainer);
-    const link = await this._dataGrid.dataDisplayDelegate().linkifyObject(this.snapshotNodeIndex);
+    const link =
+        await this._dataGrid.dataDisplayDelegate().linkifyObject(/** @type {number} */ (this.snapshotNodeIndex));
     if (link) {
       linkContainer.appendChild(link);
       this.linkElement = link;
@@ -774,7 +793,8 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
    * @return {?{snapshot:!HeapSnapshotProxy, snapshotNodeIndex:number}}
    */
   retainersDataSource() {
-    return {snapshot: this._snapshot, snapshotNodeIndex: this.snapshotNodeIndex};
+    return this.snapshotNodeIndex === undefined ? null :
+                                                  {snapshot: this._snapshot, snapshotNodeIndex: this.snapshotNodeIndex};
   }
 
   /**
@@ -782,6 +802,9 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
    * @return {!HeapSnapshotProviderProxy}
    */
   createProvider() {
+    if (this.snapshotNodeIndex === undefined) {
+      throw new Error('Cannot create a provider on a root node');
+    }
     return this._snapshot.createEdgesProvider(this.snapshotNodeIndex);
   }
 
@@ -797,11 +820,13 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
   }
 
   /**
-   * @param {!HeapSnapshotModel.HeapSnapshotModel.Edge} item
+   * @override
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.Node|!HeapSnapshotModel.HeapSnapshotModel.Edge} item
    * @return {!HeapSnapshotObjectNode}
    */
   _createChildNode(item) {
-    return new HeapSnapshotObjectNode(this._dataGrid, this._snapshot, item, this);
+    return new HeapSnapshotObjectNode(
+        this._dataGrid, this._snapshot, /** @type {!HeapSnapshotModel.HeapSnapshotModel.Edge} */ (item), this);
   }
 
   /**
@@ -891,16 +916,20 @@ export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
    * @return {!HeapSnapshotProviderProxy}
    */
   createProvider() {
+    if (this.snapshotNodeIndex === undefined) {
+      throw new Error('Cannot create providers on root nodes');
+    }
     return this._snapshot.createRetainingEdgesProvider(this.snapshotNodeIndex);
   }
 
   /**
    * @override
-   * @param {!HeapSnapshotModel.HeapSnapshotModel.Edge} item
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.Node|!HeapSnapshotModel.HeapSnapshotModel.Edge} item
    * @return {!HeapSnapshotRetainingObjectNode}
    */
   _createChildNode(item) {
-    return new HeapSnapshotRetainingObjectNode(this._dataGrid, this._snapshot, item, this);
+    return new HeapSnapshotRetainingObjectNode(
+        this._dataGrid, this._snapshot, /** @type {!HeapSnapshotModel.HeapSnapshotModel.Edge}*/ (item), this);
   }
 
   /**
@@ -929,13 +958,13 @@ export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
     }
     super.expand();
     if (--maxExpandLevels > 0 && this.children.length > 0) {
-      const retainer = this.children[0];
-      if (retainer._distance > 1) {
+      const retainer = /** @type {!HeapSnapshotRetainingObjectNode} */ (this.children[0]);
+      if ((retainer._distance || 0) > 1) {
         retainer._expandRetainersChain(maxExpandLevels);
         return;
       }
     }
-    this._dataGrid.dispatchEventToListeners(HeapSnapshotRetainmentDataGrid.Events.ExpandRetainersComplete);
+    this._dataGrid.dispatchEventToListeners(HeapSnapshotRetainmentDataGridEvents.ExpandRetainersComplete);
   }
 }
 
@@ -963,10 +992,10 @@ export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
       data['addedCount'] = '';
       data['addedSize'] = '';
       data['removedCount'] = '\u2022';
-      data['removedSize'] = Number.withThousandsSeparator(this._shallowSize);
+      data['removedSize'] = Number.withThousandsSeparator(this._shallowSize || 0);
     } else {
       data['addedCount'] = '\u2022';
-      data['addedSize'] = Number.withThousandsSeparator(this._shallowSize);
+      data['addedSize'] = Number.withThousandsSeparator(this._shallowSize || 0);
       data['removedCount'] = '';
       data['removedSize'] = '';
     }
@@ -977,7 +1006,9 @@ export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
    * @return {?{snapshot:!HeapSnapshotProxy, snapshotNodeIndex:number}}
    */
   retainersDataSource() {
-    return {snapshot: this._baseSnapshotOrSnapshot, snapshotNodeIndex: this.snapshotNodeIndex};
+    return this.snapshotNodeIndex === undefined ?
+        null :
+        {snapshot: this._baseSnapshotOrSnapshot, snapshotNodeIndex: this.snapshotNodeIndex};
   }
 
   /**
@@ -985,15 +1016,21 @@ export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
    * @return {!HeapSnapshotProviderProxy}
    */
   createProvider() {
+    if (this.snapshotNodeIndex === undefined) {
+      throw new Error('Cannot create providers on root nodes');
+    }
     return this._baseSnapshotOrSnapshot.createEdgesProvider(this.snapshotNodeIndex);
   }
 
   /**
-   * @param {!HeapSnapshotModel.HeapSnapshotModel.Edge} item
+   * @override
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.Node|!HeapSnapshotModel.HeapSnapshotModel.Edge} item
    * @return {!HeapSnapshotObjectNode}
    */
   _createChildNode(item) {
-    return new HeapSnapshotObjectNode(this._dataGrid, this._baseSnapshotOrSnapshot, item, null);
+    return new HeapSnapshotObjectNode(
+        this._dataGrid, this._baseSnapshotOrSnapshot, /** @type {!HeapSnapshotModel.HeapSnapshotModel.Edge} */ (item),
+        null);
   }
 
   /**
@@ -1057,7 +1094,7 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
     this._shallowSize = aggregate.self;
     this._retainedSize = aggregate.maxRet;
 
-    const snapshot = dataGrid.snapshot;
+    const snapshot = /** @type {!HeapSnapshotProxy} */ (dataGrid.snapshot);
     const retainedSizePercent = this._retainedSize / snapshot.totalSize * 100.0;
     const shallowSizePercent = this._shallowSize / snapshot.totalSize * 100.0;
     this.data = {
@@ -1084,7 +1121,8 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
    */
   createProvider() {
     return /** @type {!HeapSnapshotProviderProxy} */ (
-        this._dataGrid.snapshot.createNodesProviderForClass(this._name, this._nodeFilter));
+        /** @type {!HeapSnapshotProxy} */
+        (this._dataGrid.snapshot).createNodesProviderForClass(this._name, this._nodeFilter));
   }
 
   /**
@@ -1129,12 +1167,14 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
   }
 
   /**
-   * @param {!HeapSnapshotModel.HeapSnapshotModel.Node} item
+   * @override
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.Node|!HeapSnapshotModel.HeapSnapshotModel.Edge} item
    * @return {!HeapSnapshotInstanceNode}
    */
   _createChildNode(item) {
     return new HeapSnapshotInstanceNode(
-        this._dataGrid, /** @type {!HeapSnapshotProxy} */ (this._dataGrid.snapshot), item, false);
+        this._dataGrid, /** @type {!HeapSnapshotProxy} */ (this._dataGrid.snapshot),
+        /** @type {!HeapSnapshotModel.HeapSnapshotModel.Node} */ (item), false);
   }
 
   /**
@@ -1167,7 +1207,7 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
 export class HeapSnapshotDiffNodesProvider {
   /**
    * @param {!HeapSnapshotProviderProxy} addedNodesProvider
-   * @param {!Profiler.HeapSnapshotProviderProxy} deletedNodesProvider
+   * @param {!HeapSnapshotProviderProxy} deletedNodesProvider
    * @param {number} addedCount
    * @param {number} removedCount
    */
@@ -1247,7 +1287,7 @@ export class HeapSnapshotDiffNodesProvider {
   /**
    * @override
    * @param {!HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig} comparator
-   * @return {!Promise}
+   * @return {!Promise<void>}
    */
   async sortAndRewind(comparator) {
     await this._addedNodesProvider.sortAndRewind(comparator);
@@ -1297,11 +1337,17 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
    * @return {!HeapSnapshotDiffNodesProvider}
    */
   createProvider() {
-    const tree = this._dataGrid;
+    const tree = /** @type {!HeapSnapshotDiffDataGrid} */ (this._dataGrid);
+    if (tree.snapshot === null || tree.baseSnapshot === undefined || tree.baseSnapshot.uid === undefined) {
+      throw new Error('Data sources have not been set correctly');
+    }
+    const addedNodesProvider = tree.snapshot.createAddedNodesProvider(tree.baseSnapshot.uid, this._name);
+    const deletedNodesProvider = tree.baseSnapshot.createDeletedNodesProvider(this._deletedIndexes);
+    if (!addedNodesProvider || !deletedNodesProvider) {
+      throw new Error('Failed to create node providers');
+    }
     return new HeapSnapshotDiffNodesProvider(
-        /** @type {!HeapSnapshotProviderProxy} */ (/** @type {!HeapSnapshotProxy} */ (tree.snapshot)
-                                                       .createAddedNodesProvider(tree.baseSnapshot.uid, this._name)),
-        tree.baseSnapshot.createDeletedNodesProvider(this._deletedIndexes), this._addedCount, this._removedCount);
+        addedNodesProvider, deletedNodesProvider, this._addedCount, this._removedCount);
   }
 
   /**
@@ -1318,15 +1364,24 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
   }
 
   /**
-   * @param {!HeapSnapshotModel.HeapSnapshotModel.Node} item
+   * @override
+   * @param {!HeapSnapshotModel.HeapSnapshotModel.Node|!HeapSnapshotModel.HeapSnapshotModel.Edge} item
    * @return {!HeapSnapshotInstanceNode}
    */
   _createChildNode(item) {
+    const dataGrid = /** @type {!HeapSnapshotDiffDataGrid} */ (this._dataGrid);
     if (item.isAddedNotRemoved) {
+      if (dataGrid.snapshot === null) {
+        throw new Error('Data sources have not been set correctly');
+      }
       return new HeapSnapshotInstanceNode(
-          this._dataGrid, /** @type {!HeapSnapshotProxy} */ (this._dataGrid.snapshot), item, false);
+          this._dataGrid, dataGrid.snapshot, /** @type {!HeapSnapshotModel.HeapSnapshotModel.Node} */ (item), false);
     }
-    return new HeapSnapshotInstanceNode(this._dataGrid, this._dataGrid.baseSnapshot, item, true);
+    if (dataGrid.baseSnapshot === undefined) {
+      throw new Error('Data sources have not been set correctly');
+    }
+    return new HeapSnapshotInstanceNode(
+        this._dataGrid, dataGrid.baseSnapshot, /** @type {!HeapSnapshotModel.HeapSnapshotModel.Node} */ (item), true);
   }
 
   /**
@@ -1364,6 +1419,9 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
     return this._name.toLowerCase().indexOf(filterValue) === -1;
   }
 
+  /**
+   * @param {number} delta
+   */
   _signForDelta(delta) {
     if (delta === 0) {
       return '';
@@ -1409,10 +1467,11 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
   async _doPopulate() {
     this._populated = true;
 
-    const callers = await this._dataGrid.snapshot.allocationNodeCallers(this._allocationNode.id);
+    const callers = await /** @type {!HeapSnapshotProxy} */ (this._dataGrid.snapshot)
+                        .allocationNodeCallers(this._allocationNode.id);
 
     const callersChain = callers.nodesWithSingleCaller;
-    let parentNode = this;
+    let parentNode = /** @type {!AllocationGridNode}*/ (this);
     const dataGrid = /** @type {!AllocationDataGrid} */ (this._dataGrid);
     for (const caller of callersChain) {
       const child = new AllocationGridNode(dataGrid, caller);
@@ -1425,7 +1484,7 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
     }
 
     const callersBranch = callers.branchingCallers;
-    callersBranch.sort(this._dataGrid._createComparator());
+    callersBranch.sort(/** @type {!AllocationDataGrid}*/ (this._dataGrid).createComparator());
     for (const caller of callersBranch) {
       dataGrid.appendNode(parentNode, new AllocationGridNode(dataGrid, caller));
     }
@@ -1456,10 +1515,11 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
     const allocationNode = this._allocationNode;
     const heapProfilerModel = this._dataGrid.heapProfilerModel();
     if (allocationNode.scriptId) {
-      const linkifier = this._dataGrid._linkifier;
+      const linkifier = /** @type {!AllocationDataGrid}*/ (this._dataGrid).linkifier;
       const urlElement = linkifier.linkifyScriptLocation(
           heapProfilerModel ? heapProfilerModel.target() : null, String(allocationNode.scriptId),
-          allocationNode.scriptName, allocationNode.line - 1, allocationNode.column - 1, 'profile-node-file');
+          allocationNode.scriptName, allocationNode.line - 1,
+          {columnNumber: allocationNode.column - 1, className: 'profile-node-file', tabStop: undefined});
       urlElement.style.maxWidth = '75%';
       cell.insertBefore(urlElement, cell.firstChild);
     }

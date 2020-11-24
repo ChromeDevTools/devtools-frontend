@@ -476,7 +476,7 @@ HeapProfilerTestRunner.clickColumn = function(column, callback) {
 
   function sortingComplete() {
     HeapProfilerTestRunner._currentGrid().removeEventListener(
-        Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, sortingComplete, this);
+        Profiler.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, this);
     TestRunner.assertEquals(column.id, this._currentGrid().sortColumnId(), 'unexpected sorting');
     column.sort = this._currentGrid().sortOrder();
 
@@ -488,7 +488,7 @@ HeapProfilerTestRunner.clickColumn = function(column, callback) {
   }
 
   HeapProfilerTestRunner._currentGrid().addEventListener(
-      Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, sortingComplete, this);
+      Profiler.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, this);
   this._currentGrid()._clickInHeaderCell(event);
 };
 
@@ -659,11 +659,11 @@ HeapProfilerTestRunner.takeSnapshotPromise = function() {
       UI.panels.heap_profiler.showProfile(profile);
 
       const dataGrid = HeapProfilerTestRunner.currentProfileView()._dataGrid;
-      dataGrid.addEventListener(Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, sortingComplete, null);
+      dataGrid.addEventListener(Profiler.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, null);
 
       function sortingComplete() {
         dataGrid.removeEventListener(
-            Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, sortingComplete, null);
+            Profiler.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, null);
         resolve(profile);
       }
     }
@@ -689,11 +689,11 @@ HeapProfilerTestRunner._snapshotViewShown = function() {
     const dataGrid = this._dataGrid;
 
     function sortingComplete() {
-      dataGrid.removeEventListener(Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, sortingComplete, null);
+      dataGrid.removeEventListener(Profiler.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, null);
       callback();
     }
 
-    dataGrid.addEventListener(Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, sortingComplete, null);
+    dataGrid.addEventListener(Profiler.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, null);
   }
 };
 

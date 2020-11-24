@@ -143,6 +143,8 @@ export class Node {
 
     this.canBeQueried = false;
     this.detachedDOMTreeNode = false;
+    /** @type {?boolean} */
+    this.isAddedNotRemoved = null;
   }
 }
 
@@ -161,6 +163,8 @@ export class Edge {
     this.node = node;
     this.type = type;
     this.edgeIndex = edgeIndex;
+    /** @type {?boolean} */
+    this.isAddedNotRemoved = null;
   }
 }
 
@@ -297,16 +301,12 @@ export class ItemsRange {
    * @param {number} startPosition
    * @param {number} endPosition
    * @param {number} totalLength
-   * @param {!Array.<*>} items
+   * @param {!Array.<!Node|!Edge>} items
    */
   constructor(startPosition, endPosition, totalLength, items) {
-    /** @type {number} */
     this.startPosition = startPosition;
-    /** @type {number} */
     this.endPosition = endPosition;
-    /** @type {number} */
     this.totalLength = totalLength;
-    /** @type {!Array.<*>} */
     this.items = items;
   }
 }

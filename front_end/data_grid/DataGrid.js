@@ -1046,7 +1046,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   get scrollContainer() {
-    return this._scrollContainer;
+    return /** @type {!HTMLElement} */ (this._scrollContainer);
   }
 
   _positionResizers() {

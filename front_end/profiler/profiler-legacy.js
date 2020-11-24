@@ -33,11 +33,18 @@ Profiler.HeapProfilerPanel = ProfilerModule.HeapProfilerPanel.HeapProfilerPanel;
 /** @constructor */
 Profiler.HeapSnapshotSortableDataGrid = ProfilerModule.HeapSnapshotDataGrids.HeapSnapshotSortableDataGrid;
 
+/** @enum {symbol} */
+Profiler.HeapSnapshotSortableDataGridEvents = ProfilerModule.HeapSnapshotDataGrids.HeapSnapshotSortableDataGridEvents;
+
 /** @constructor */
 Profiler.HeapSnapshotContainmentDataGrid = ProfilerModule.HeapSnapshotDataGrids.HeapSnapshotContainmentDataGrid;
 
 /** @constructor */
 Profiler.HeapSnapshotRetainmentDataGrid = ProfilerModule.HeapSnapshotDataGrids.HeapSnapshotRetainmentDataGrid;
+
+/** @enum {symbol} */
+Profiler.HeapSnapshotRetainmentDataGridEvents =
+    ProfilerModule.HeapSnapshotDataGrids.HeapSnapshotRetainmentDataGridEvents;
 
 /** @constructor */
 Profiler.HeapSnapshotConstructorsDataGrid = ProfilerModule.HeapSnapshotDataGrids.HeapSnapshotConstructorsDataGrid;

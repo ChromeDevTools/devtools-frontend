@@ -845,6 +845,7 @@ export class AsyncEvent extends Event {
     super(startEvent.categoriesString, startEvent.name, startEvent.phase, startEvent.startTime, startEvent.thread);
     this.addArgs(startEvent.args);
     this.steps = [startEvent];
+    this.causedFrame = false;
   }
 
   /**

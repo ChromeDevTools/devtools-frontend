@@ -115,6 +115,9 @@ export class DebuggerModel extends SDKModel {
     /** @type {?function(!CallFrame, !EvaluationOptions):!Promise<?EvaluationResult>} */
     this._evaluateOnCallFrameCallback = null;
 
+    /** @type {boolean} */
+    this._ignoreDebuggerPausedEvents = false;
+
     /** @type {!Common.ObjectWrapper.ObjectWrapper} */
     this._breakpointResolvedEventTarget = new Common.ObjectWrapper.ObjectWrapper();
 
@@ -177,6 +180,13 @@ export class DebuggerModel extends SDKModel {
    */
   debuggerEnabled() {
     return !!this._debuggerEnabled;
+  }
+
+  /**
+   * @param {boolean} ignore
+   */
+  ignoreDebuggerPausedEvents(ignore) {
+    this._ignoreDebuggerPausedEvents = ignore;
   }
 
   /**
@@ -705,6 +715,10 @@ export class DebuggerModel extends SDKModel {
    */
   async _pausedScript(
       callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId, asyncCallStackTraceId) {
+    if (this._ignoreDebuggerPausedEvents) {
+      return;
+    }
+
     if (asyncCallStackTraceId) {
       // Note: this is only to support old backends. Newer ones do not send asyncCallStackTraceId.
       _scheduledPauseOnAsyncCall = asyncCallStackTraceId;

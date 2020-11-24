@@ -17,16 +17,23 @@
   window.addEventListener('submit', (event) => { event.preventDefault(); });
   const link = document.getElementById('shadow-root');
   const span1 = document.createElement('span');
-  link.appendChild(span1);
+  link.append(span1);
   const shadow = span1.attachShadow({mode: 'open'});
   const span2 = document.createElement('span');
   span2.id = 'inner-span';
   span2.textContent = 'World';
-  shadow.appendChild(span2);
+  shadow.append(span2);
 
   const iframe = document.getElementById('iframe');
   const button = document.createElement('button');
   button.textContent = 'iframe button';
   button.id = 'in-iframe';
-  iframe.contentDocument.body.appendChild(button);
+  iframe.contentDocument.body.append(button);
+
+  const innerIframe = document.createElement('iframe');
+  const innerIframeButton = document.createElement('button');
+  innerIframeButton.textContent = 'Inner iframe button';
+  innerIframeButton.id = 'inner-iframe';
+  iframe.contentDocument.body.append(innerIframe);
+  innerIframe.contentDocument.body.append(innerIframeButton);
 </script>

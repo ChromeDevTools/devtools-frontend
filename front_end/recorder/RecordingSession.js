@@ -8,6 +8,28 @@ import * as Elements from '../elements/elements.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
+class StepContext {
+  /**
+   * @param {!Array<number>} path
+   */
+  constructor(path = []) {
+    this.path = path;
+  }
+
+  toString() {
+    let expression = 'page';
+
+    if (this.path.length) {
+      expression += '.mainFrame()';
+    }
+    for (const index of this.path) {
+      expression += `.childFrames()[${index}]`;
+    }
+
+    return expression;
+  }
+}
+
 class Step {
   /**
    * @param {string} action
@@ -27,10 +49,12 @@ class Step {
 
 class ClickStep extends Step {
   /**
+   * @param {!StepContext} context
    * @param {string} selector
    */
-  constructor(selector) {
+  constructor(context, selector) {
     super('click');
+    this.context = context;
     this.selector = selector;
   }
 
@@ -38,7 +62,7 @@ class ClickStep extends Step {
    * @override
    */
   toString() {
-    return `await page.click(${JSON.stringify(this.selector)});`;
+    return `await ${this.context}.click(${JSON.stringify(this.selector)});`;
   }
 }
 
@@ -61,10 +85,12 @@ class NavigationStep extends Step {
 
 class SubmitStep extends Step {
   /**
+   * @param {!StepContext} context
    * @param {string} selector
    */
-  constructor(selector) {
+  constructor(context, selector) {
     super('submit');
+    this.context = context;
     this.selector = selector;
   }
 
@@ -72,17 +98,19 @@ class SubmitStep extends Step {
    * @override
    */
   toString() {
-    return `await page.submit(${JSON.stringify(this.selector)});`;
+    return `await ${this.context}.submit(${JSON.stringify(this.selector)});`;
   }
 }
 
 class ChangeStep extends Step {
   /**
+   * @param {!StepContext} context
    * @param {string} selector
    * @param {string} value
    */
-  constructor(selector, value) {
+  constructor(context, selector, value) {
     super('change');
+    this.context = context;
     this.selector = selector;
     this.value = value;
   }
@@ -91,7 +119,7 @@ class ChangeStep extends Step {
    * @override
    */
   toString() {
-    return `await page.type(${JSON.stringify(this.selector)}, ${JSON.stringify(this.value)});`;
+    return `await ${this.context}.type(${JSON.stringify(this.selector)}, ${JSON.stringify(this.value)});`;
   }
 }
 
@@ -120,6 +148,10 @@ export class RecordingSession {
     this._debuggerModel =
         /** @type {!SDK.DebuggerModel.DebuggerModel} */ (target.model(SDK.DebuggerModel.DebuggerModel));
 
+    this._resourceTreeModel =
+        /** @type {!SDK.ResourceTreeModel.ResourceTreeModel} */ (target.model(SDK.ResourceTreeModel.ResourceTreeModel));
+    this._runtimeModel = /** @type {!SDK.RuntimeModel.RuntimeModel} */ (target.model(SDK.RuntimeModel.RuntimeModel));
+
     target.registerDebuggerDispatcher(this);
   }
 
@@ -132,10 +164,36 @@ export class RecordingSession {
 
     const makeFunctionCallable = /** @type {function(*):string} */ (fn => `(${fn.toString()})()`);
 
-    await this._debuggerModel.suspendModel();
+
+    await this._debuggerModel.ignoreDebuggerPausedEvents(true);
     await this._debuggerAgent.invoke_enable({});
     await this._pageAgent.invoke_addScriptToEvaluateOnNewDocument({source: makeFunctionCallable(setupEventListeners)});
-    await this._runtimeAgent.invoke_evaluate({expression: makeFunctionCallable(setupEventListeners)});
+
+    const expression = makeFunctionCallable(setupEventListeners);
+    const executionContexts = this._runtimeModel.executionContexts();
+    for (const frame of this._resourceTreeModel.frames()) {
+      const executionContext = executionContexts.find(context => context.frameId === frame.id);
+      if (!executionContext) {
+        continue;
+      }
+
+      await executionContext.evaluate(
+          {
+            expression,
+            objectGroup: undefined,
+            includeCommandLineAPI: undefined,
+            silent: undefined,
+            returnByValue: undefined,
+            generatePreview: undefined,
+            allowUnsafeEvalBlockedByCSP: undefined,
+            throwOnSideEffect: undefined,
+            timeout: undefined,
+            disableBreaks: undefined,
+            replMode: undefined,
+          },
+          true, false);
+    }
+
 
     await this._domDebuggerAgent.invoke_setEventListenerBreakpoint({eventName: 'click'});
     await this._domDebuggerAgent.invoke_setEventListenerBreakpoint({eventName: 'change'});
@@ -155,7 +213,7 @@ export class RecordingSession {
     if (!mainFrame) {
       throw new Error('Could not find main frame');
     }
-    this.appendLineToScript('const puppeteer = require(\'puppeteer\')');
+    this.appendLineToScript('const puppeteer = require(\'puppeteer\');');
     this.appendLineToScript('');
     this.appendLineToScript('(async () => {');
     this._currentIndentation += 1;
@@ -166,11 +224,12 @@ export class RecordingSession {
   }
 
   async stop() {
+    this.appendLineToScript('await browser.close();');
     this._currentIndentation -= 1;
     this.appendLineToScript('})();');
     this.appendLineToScript('');
 
-    await this._debuggerModel.resumeModel();
+    await this._debuggerModel.ignoreDebuggerPausedEvents(false);
   }
 
   /**
@@ -209,9 +268,10 @@ export class RecordingSession {
   }
 
   /**
+   * @param {!StepContext} context
    * @param {!Array.<!Protocol.Runtime.PropertyDescriptor>} localFrame
    */
-  async handleClickEvent(localFrame) {
+  async handleClickEvent(context, localFrame) {
     const targetId = await this._findTargetId(localFrame, [
       'MouseEvent',
       'PointerEvent',
@@ -237,14 +297,15 @@ export class RecordingSession {
     if (!selector) {
       throw new Error('Could not find selector');
     }
-    this.appendStepToScript(new ClickStep(selector));
+    this.appendStepToScript(new ClickStep(context, selector));
     await this.resume();
   }
 
   /**
+   * @param {!StepContext} context
    * @param {!Array.<!Protocol.Runtime.PropertyDescriptor>} localFrame
    */
-  async handleSubmitEvent(localFrame) {
+  async handleSubmitEvent(context, localFrame) {
     const targetId = await this._findTargetId(localFrame, [
       'SubmitEvent',
     ]);
@@ -263,14 +324,15 @@ export class RecordingSession {
       throw new Error('Could not find selector');
     }
 
-    this.appendStepToScript(new SubmitStep(selector));
+    this.appendStepToScript(new SubmitStep(context, selector));
     await this.resume();
   }
 
   /**
+   * @param {!StepContext} context
    * @param {!Array.<!Protocol.Runtime.PropertyDescriptor>} localFrame
    */
-  async handleChangeEvent(localFrame) {
+  async handleChangeEvent(context, localFrame) {
     const targetId = await this._findTargetId(localFrame, [
       'Event',
     ]);
@@ -301,7 +363,7 @@ export class RecordingSession {
       objectId: targetId,
     });
 
-    this.appendStepToScript(new ChangeStep(selector, /** @type {string} */ (result.value)));
+    this.appendStepToScript(new ChangeStep(context, selector, /** @type {string} */ (result.value)));
     await this.resume();
   }
 
@@ -382,6 +444,27 @@ export class RecordingSession {
   }
 
   /**
+   * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
+   */
+  getContextForFrame(frame) {
+    const path = [];
+    let currentFrame = frame;
+    while (currentFrame) {
+      const parentFrame = currentFrame.parentFrame();
+      if (!parentFrame) {
+        break;
+      }
+
+      const childFrames = parentFrame.childFrames;
+      const index = childFrames.indexOf(currentFrame);
+      path.unshift(index);
+      currentFrame = parentFrame;
+    }
+
+    return new StepContext(path);
+  }
+
+  /**
    * @override
    * @param {!Protocol.Debugger.PausedEvent} params
    */
@@ -389,17 +472,33 @@ export class RecordingSession {
     const eventName = params.data.eventName;
     const localFrame = params.callFrames[0].scopeChain[0];
 
+    const scriptId = params.callFrames[0].location.scriptId;
+    const executionContextId = this._runtimeModel.executionContextIdForScriptId(scriptId);
+    const executionContext = this._runtimeModel.executionContext(executionContextId);
+    if (!executionContext) {
+      throw new Error('Could not find execution context.');
+    }
+    if (!executionContext.frameId) {
+      throw new Error('Execution context is not assigned to a frame.');
+    }
+    const frame = this._resourceTreeModel.frameForId(executionContext.frameId);
+    if (!frame) {
+      throw new Error('Could not find frame.');
+    }
+
+    const context = this.getContextForFrame(frame);
+
     if (!localFrame.object.objectId) {
       return;
     }
     this._runtimeAgent.invoke_getProperties({objectId: localFrame.object.objectId}).then(async ({result}) => {
       switch (eventName) {
         case 'listener:click':
-          return this.handleClickEvent(result);
+          return this.handleClickEvent(context, result);
         case 'listener:submit':
-          return this.handleSubmitEvent(result);
+          return this.handleSubmitEvent(context, result);
         case 'listener:change':
-          return this.handleChangeEvent(result);
+          return this.handleChangeEvent(context, result);
         default:
           this.skip();
       }

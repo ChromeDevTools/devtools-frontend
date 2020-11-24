@@ -4,7 +4,7 @@
 
 import * as puppeteer from 'puppeteer';
 
-import {$, $$, click, goToResource, waitFor} from '../../shared/helper.js';
+import {$, $$, click, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 
 export async function navigateToApplicationTab(target: puppeteer.Page, testName: string) {
   await goToResource(`application/${testName}.html`);
@@ -56,4 +56,20 @@ export async function clearStorageItemsFilter() {
 export async function clearStorageItems() {
   await waitFor('#storage-items-delete-all');
   await click('#storage-items-delete-all');
+}
+
+export async function selectCookieByName(name: string) {
+  const {frontend} = getBrowserAndPages();
+  await waitFor('.cookies-table');
+  const cell = await waitForFunction(async () => {
+    const tmp = await frontend.evaluateHandle(name => {
+      const result = [...document.querySelectorAll('.cookies-table .name-column')]
+                         .map(c => ({cell: c, textContent: c.textContent || ''}))
+                         .find(({textContent}) => textContent.trim() === name);
+      return result ? result.cell : undefined;
+    }, name);
+
+    return tmp.asElement() || undefined;
+  });
+  cell.click();
 }

@@ -486,7 +486,7 @@
   <message name="IDS_DEVTOOLS_ce89cbfed44c10f5dd21427be154f288" desc="Text in Network Log View of the Network panel">
     Copy as Node.js fetch
   </message>
-  <message name="IDS_DEVTOOLS_d07d8b2f741d82961c330af95e739d27" desc="Text for toggling header data (e.g. query string parameters) from encoded to decoded in the headers tab">
+  <message name="IDS_DEVTOOLS_d07d8b2f741d82961c330af95e739d27" desc="Text for toggling header data (e.g. query string parameters) from encoded to decoded in the headers tab or in the cookies preview">
     View decoded
   </message>
   <message name="IDS_DEVTOOLS_d0ba1750af6bfca9c78ae8105e2d2c96" desc="Tooltip for a filter in the Network panel">
@@ -498,7 +498,7 @@
   <message name="IDS_DEVTOOLS_d3a5ba3be76f23c067151787387512d2" desc="Text for a link to the issues panel">
     Learn more in the issues tab
   </message>
-  <message name="IDS_DEVTOOLS_d55df13c735b6066e930b3e66c4588ab" desc="Text for toggling header data (e.g. query string parameters) from decoded to encoded in the headers tab">
+  <message name="IDS_DEVTOOLS_d55df13c735b6066e930b3e66c4588ab" desc="Text for toggling header data (e.g. query string parameters) from decoded to encoded in the headers tab or in the cookies preview">
     View URL encoded
   </message>
   <message name="IDS_DEVTOOLS_d68ff2d86e48cad77057a4b0a842089d" desc="Tooltip for group by frame network setting">

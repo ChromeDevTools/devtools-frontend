@@ -690,4 +690,7 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_fe1c53e07b8cdf5e766595be09672b29" desc="Warning message for icons from the manifest">
     Icon <ph name="ICONURL">$1s<ex>https://example.com/icon.png</ex></ph> should specify its size as `{width}x{height}`
   </message>
+  <message name="IDS_DEVTOOLS_ffd2f812cf202d121661e957feb8bbc9" desc="Label for checkbox to show url decoded cookie values">
+    Show URL decoded
+  </message>
 </grit-part>

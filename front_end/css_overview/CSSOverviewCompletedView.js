@@ -180,6 +180,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this._mainContainer.setSidebarMinimized(true);
     this._elementContainer.closeTabs();
     this._viewMap = new Map();
+    CSSOverviewCompletedView.pushedNodes.clear();
+    this._sideBar.select('summary');
   }
 
   /**
@@ -808,8 +810,8 @@ export class ElementDetailsView extends UI.Widget.Widget {
         titleDOMFragment: undefined,
         sort: undefined,
         align: undefined,
-        width: undefined,
-        fixedWidth: undefined,
+        width: '150px',
+        fixedWidth: true,
         editable: undefined,
         nonSelectable: undefined,
         longText: undefined,

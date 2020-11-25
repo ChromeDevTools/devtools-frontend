@@ -316,6 +316,7 @@
 
 .contrast-container-in-grid > * {
   margin-right: 5px;
+  min-width: initial;
 }
 
 [is=ui-icon].smallicon-checkmark-square {

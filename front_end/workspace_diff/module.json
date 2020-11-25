@@ -6,8 +6,5 @@
   ],
   "modules": [
     "workspace_diff-legacy.js"
-  ],
-  "skip_compilation": [
-    "workspace_diff-legacy.js"
   ]
 }

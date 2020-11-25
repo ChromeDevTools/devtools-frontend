@@ -12,13 +12,5 @@
     "SetOuterHTMLTestRunner.js",
     "ElementsPanelShadowSelectionOnRefreshTestRunner.js",
     "StylesUpdateLinksTestRunner.js"
-  ],
-  "skip_compilation": [
-    "elements_test_runner.js",
-    "ElementsTestRunner.js",
-    "EditDOMTestRunner.js",
-    "SetOuterHTMLTestRunner.js",
-    "ElementsPanelShadowSelectionOnRefreshTestRunner.js",
-    "StylesUpdateLinksTestRunner.js"
   ]
 }

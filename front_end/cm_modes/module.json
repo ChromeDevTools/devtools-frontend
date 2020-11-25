@@ -106,16 +106,5 @@
     "../third_party/codemirror/package/mode/markdown/markdown.js",
     "../third_party/codemirror/package/mode/clojure/clojure.js",
     "../third_party/codemirror/package/mode/jsx/jsx.js"
-  ],
-  "skip_compilation": [
-    "../third_party/codemirror/package/mode/clike/clike.js",
-    "../third_party/codemirror/package/mode/coffeescript/coffeescript.js",
-    "../third_party/codemirror/package/mode/php/php.js",
-    "../third_party/codemirror/package/mode/python/python.js",
-    "../third_party/codemirror/package/mode/shell/shell.js",
-    "../third_party/codemirror/package/mode/livescript/livescript.js",
-    "../third_party/codemirror/package/mode/markdown/markdown.js",
-    "../third_party/codemirror/package/mode/clojure/clojure.js",
-    "../third_party/codemirror/package/mode/jsx/jsx.js"
   ]
 }

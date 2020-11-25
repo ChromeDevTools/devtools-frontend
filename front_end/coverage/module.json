@@ -60,9 +60,6 @@
   "modules": [
     "coverage-legacy.js"
   ],
-  "skip_compilation": [
-    "coverage-legacy.js"
-  ],
   "resources": [
     "coverageListView.css",
     "coverageView.css"

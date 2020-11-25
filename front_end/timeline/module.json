@@ -248,9 +248,6 @@
   "modules": [
     "timeline-legacy.js"
   ],
-  "skip_compilation": [
-    "timeline-legacy.js"
-  ],
   "resources": [
     "historyToolbarButton.css",
     "invalidationsTree.css",

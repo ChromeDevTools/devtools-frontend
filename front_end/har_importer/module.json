@@ -5,8 +5,5 @@
   ],
   "modules": [
     "har_importer-legacy.js"
-  ],
-  "skip_compilation": [
-    "har_importer-legacy.js"
   ]
 }

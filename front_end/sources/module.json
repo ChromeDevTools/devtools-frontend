@@ -1203,9 +1203,6 @@
   "modules": [
     "sources-legacy.js"
   ],
-  "skip_compilation": [
-    "sources-legacy.js"
-  ],
   "resources": [
     "breakpointEditDialog.css",
     "callStackSidebarPane.css",

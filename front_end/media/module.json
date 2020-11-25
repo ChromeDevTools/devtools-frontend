@@ -22,9 +22,6 @@
   "modules": [
     "media-legacy.js"
   ],
-  "skip_compilation": [
-    "media-legacy.js"
-  ],
   "resources": [
     "eventDisplayTable.css",
     "mediaView.css",

@@ -5,9 +5,5 @@
   "modules": [
     "../third_party/axe-core/axe.js",
     "axe_core_test_runner.js"
-  ],
-  "skip_compilation": [
-    "../third_party/axe-core/axe.js",
-    "axe_core_test_runner.js"
   ]
 }

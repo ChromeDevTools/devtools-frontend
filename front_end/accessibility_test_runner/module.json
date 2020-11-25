@@ -6,8 +6,5 @@
   ],
   "modules": [
     "accessibility_test_runner.js"
-  ],
-  "skip_compilation": [
-    "accessibility_test_runner.js"
   ]
 }

@@ -129,9 +129,6 @@
   "modules": [
     "layer_viewer-legacy.js"
   ],
-  "skip_compilation": [
-    "layer_viewer-legacy.js"
-  ],
   "resources": [
     "layers3DView.css",
     "paintProfiler.css",

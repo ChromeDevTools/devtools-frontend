@@ -222,9 +222,6 @@
   "modules": [
     "console-legacy.js"
   ],
-  "skip_compilation": [
-    "console-legacy.js"
-  ],
   "resources": [
     "consoleContextSelector.css",
     "consolePinPane.css",

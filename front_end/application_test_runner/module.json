@@ -14,13 +14,5 @@
     "ResourceTreeTestRunner.js",
     "ResourcesTestRunner.js",
     "ServiceWorkersTestRunner.js"
-  ],
-  "skip_compilation": [
-    "AppcacheTestRunner.js",
-    "CacheStorageTestRunner.js",
-    "IndexedDBTestRunner.js",
-    "ResourceTreeTestRunner.js",
-    "ResourcesTestRunner.js",
-    "ServiceWorkersTestRunner.js"
   ]
 }

@@ -20,9 +20,6 @@
   "modules": [
     "web_audio-legacy.js"
   ],
-  "skip_compilation": [
-    "web_audio-legacy.js"
-  ],
   "resources": [
     "webAudio.css",
     "audioContextSelector.css"

@@ -90,9 +90,6 @@
   "modules": [
     "resources-legacy.js"
   ],
-  "skip_compilation": [
-    "resources-legacy.js"
-  ],
   "resources": [
     "appManifestView.css",
     "backgroundServiceView.css",

@@ -312,9 +312,6 @@
   "modules": [
     "elements-legacy.js"
   ],
-  "skip_compilation": [
-    "elements-legacy.js"
-  ],
   "resources": [
     "classesPaneWidget.css",
     "computedStyleSidebarPane.css",

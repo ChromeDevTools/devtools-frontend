@@ -13,9 +13,6 @@
   ],
   "modules": [
     "linear_memory_inspector-legacy.js"
-  ],
-  "skip_compilation": [
-    "linear_memory_inspector-legacy.js"
-   ]
+  ]
 }
 

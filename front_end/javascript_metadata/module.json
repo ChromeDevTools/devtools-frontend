@@ -10,8 +10,5 @@
   ],
   "modules": [
     "javascript_metadata-legacy.js"
-  ],
-  "skip_compilation": [
-    "javascript_metadata-legacy.js"
   ]
 }

@@ -8,9 +8,5 @@
     "performance_test_runner.js",
     "TimelineTestRunner.js",
     "TimelineDataTestRunner.js"
-  ],
-  "skip_compilation": [
-    "TimelineTestRunner.js",
-    "TimelineDataTestRunner.js"
   ]
 }

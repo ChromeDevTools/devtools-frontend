@@ -201,9 +201,6 @@
   "modules": [
     "network-legacy.js"
   ],
-  "skip_compilation": [
-    "network-legacy.js"
-  ],
   "resources": [
     "binaryResourceView.css",
     "blockedURLsPane.css",

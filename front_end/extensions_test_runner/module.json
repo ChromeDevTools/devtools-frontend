@@ -7,10 +7,5 @@
     "extensions_test_runner.js",
     "ExtensionsNetworkTestRunner.js",
     "ExtensionsTestRunner.js"
-  ],
-  "skip_compilation": [
-    "extensions_test_runner.js",
-    "ExtensionsNetworkTestRunner.js",
-    "ExtensionsTestRunner.js"
   ]
 }

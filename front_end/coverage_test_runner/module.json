@@ -6,8 +6,5 @@
   ],
   "modules": [
     "coverage_test_runner.js"
-  ],
-  "skip_compilation": [
-    "coverage_test_runner.js"
   ]
 }

@@ -7,8 +7,5 @@
   ],
   "modules": [
     "layers_test_runner.js"
-  ],
-  "skip_compilation": [
-    "layers_test_runner.js"
   ]
 }

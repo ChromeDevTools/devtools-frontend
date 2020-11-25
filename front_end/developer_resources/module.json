@@ -25,9 +25,6 @@
   "modules": [
     "developer_resources-legacy.js"
   ],
-  "skip_compilation": [
-    "developer_resources-legacy.js"
-  ],
   "resources": [
     "developerResourcesView.css",
     "developerResourcesListView.css"

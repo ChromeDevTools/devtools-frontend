@@ -11,8 +11,5 @@
   ],
   "modules": [
     "worker_main-legacy.js"
-  ],
-  "skip_compilation": [
-    "worker_main-legacy.js"
   ]
 }

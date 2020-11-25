@@ -20,9 +20,6 @@
   "modules": [
     "security-legacy.js"
   ],
-  "skip_compilation": [
-    "security-legacy.js"
-  ],
   "resources": [
     "lockIcon.css",
     "mainView.css",

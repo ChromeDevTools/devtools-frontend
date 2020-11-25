@@ -74,9 +74,6 @@
   "modules": [
     "input-legacy.js"
   ],
-  "skip_compilation": [
-    "input-legacy.js"
-  ],
   "resources": [
     "inputTimeline.css"
   ]

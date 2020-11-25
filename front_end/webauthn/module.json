@@ -22,9 +22,6 @@
   "modules": [
     "webauthn-legacy.js"
   ],
-  "skip_compilation": [
-    "webauthn-legacy.js"
-  ],
   "resources": [
     "webauthnPane.css"
   ]

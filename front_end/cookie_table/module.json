@@ -7,9 +7,6 @@
   "modules": [
     "cookie_table-legacy.js"
   ],
-  "skip_compilation": [
-    "cookie_table-legacy.js"
-  ],
   "resources": [
     "cookiesTable.css"
   ]

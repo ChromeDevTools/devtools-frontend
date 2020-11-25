@@ -546,8 +546,5 @@
   ],
   "modules": [
     "main-legacy.js"
-  ],
-  "skip_compilation": [
-    "main-legacy.js"
   ]
 }

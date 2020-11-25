@@ -17,9 +17,6 @@
   "modules": [
     "animation-legacy.js"
   ],
-  "skip_compilation": [
-    "animation-legacy.js"
-  ],
   "resources": [
     "animationScreenshotPopover.css",
     "animationTimeline.css"

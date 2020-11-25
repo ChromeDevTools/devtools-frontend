@@ -85,12 +85,6 @@
         "type": "string"
       }
     },
-    "skip_compilation": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
     "experiment": {
       "type": "string"
     }

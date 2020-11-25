@@ -62,25 +62,6 @@ class Descriptors:
         result['modules'] = self.application.values()
         return json.dumps(result)
 
-    def all_compiled_files(self):
-        files = collections.OrderedDict()
-        for name in self.sorted_modules():
-            module = self.modules[name]
-            skipped_files = set(module.get('skip_compilation', []))
-            for script in module.get('modules', []):
-                if script not in skipped_files:
-                    files[path.normpath(path.join(self.application_dir, name, script))] = True
-        return files.keys()
-
-    def all_skipped_compilation_files(self):
-        files = collections.OrderedDict()
-        for name in self.sorted_modules():
-            module = self.modules[name]
-            skipped_files = set(module.get('skip_compilation', []))
-            for script in skipped_files:
-                files[path.join(name, script)] = True
-        return files.keys()
-
     def module_resources(self, name):
         return [name + '/' + resource for resource in self.modules[name].get('resources', [])]
 

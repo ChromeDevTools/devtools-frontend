@@ -133,9 +133,6 @@
   "modules": [
     "inspector_main-legacy.js"
   ],
-  "skip_compilation": [
-    "inspector_main-legacy.js"
-  ],
   "resources": [
     "nodeIcon.css",
     "renderingOptions.css"

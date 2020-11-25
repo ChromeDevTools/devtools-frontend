@@ -102,9 +102,6 @@
   "modules": [
     "quick_open-legacy.js"
   ],
-  "skip_compilation": [
-    "quick_open-legacy.js"
-  ],
   "resources": [
     "filteredListWidget.css"
   ]

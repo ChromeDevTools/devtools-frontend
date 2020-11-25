@@ -16,9 +16,6 @@
   "modules": [
     "accessibility-legacy.js"
   ],
-  "skip_compilation": [
-    "accessibility-legacy.js"
-  ],
   "resources": [
     "accessibilityNode.css",
     "accessibilityProperties.css",

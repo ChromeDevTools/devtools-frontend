@@ -5,8 +5,5 @@
   ],
   "modules": [
     "network_test_runner.js"
-  ],
-  "skip_compilation": [
-    "network_test_runner.js"
   ]
 }

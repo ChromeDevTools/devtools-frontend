@@ -127,9 +127,6 @@
   "modules": [
     "settings-legacy.js"
   ],
-  "skip_compilation": [
-    "settings-legacy.js"
-  ],
   "resources": [
     "frameworkBlackboxSettingsTab.css",
     "settingsScreen.css",

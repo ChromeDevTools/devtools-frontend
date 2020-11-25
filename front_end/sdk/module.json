@@ -650,8 +650,5 @@
     "wasm_source_map/pkg/wasm_source_map.js",
     "PageResourceLoader.js",
     "IOModel.js"
-  ],
-  "skip_compilation": [
-    "wasm_source_map/pkg/wasm_source_map.js"
   ]
 }

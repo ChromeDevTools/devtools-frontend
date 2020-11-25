@@ -16,8 +16,5 @@
   ],
   "modules": [
     "layers-legacy.js"
-  ],
-  "skip_compilation": [
-    "layers-legacy.js"
   ]
 }

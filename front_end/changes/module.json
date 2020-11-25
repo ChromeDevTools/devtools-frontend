@@ -30,9 +30,6 @@
   "modules": [
     "changes-legacy.js"
   ],
-  "skip_compilation": [
-    "changes-legacy.js"
-  ],
   "resources": [
     "changesView.css",
     "changesSidebar.css"

@@ -299,9 +299,6 @@
   "modules": [
     "emulation-legacy.js"
   ],
-  "skip_compilation": [
-    "emulation-legacy.js"
-  ],
   "resources": [
     "deviceModeToolbar.css",
     "deviceModeView.css",

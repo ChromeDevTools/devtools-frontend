@@ -2,7 +2,5 @@
   "modules": [
     "cm_headless.js",
     "../third_party/codemirror/package/addon/runmode/runmode-standalone.js"
-  ],  "skip_compilation": [
-    "../third_party/codemirror/package/addon/runmode/runmode-standalone.js"
   ]
 }

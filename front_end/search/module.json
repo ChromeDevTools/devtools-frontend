@@ -6,9 +6,6 @@
   "modules": [
     "search-legacy.js"
   ],
-  "skip_compilation": [
-    "search-legacy.js"
-  ],
   "resources": [
     "searchResultsPane.css",
     "searchView.css"

@@ -130,9 +130,6 @@
   "modules": [
     "browser_debugger-legacy.js"
   ],
-  "skip_compilation": [
-    "browser_debugger-legacy.js"
-  ],
   "resources": [
     "domBreakpointsSidebarPane.css",
     "categorizedBreakpointsSidebarPane.css",

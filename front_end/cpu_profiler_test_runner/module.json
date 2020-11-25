@@ -5,8 +5,5 @@
   ],
   "modules": [
     "cpu_profiler_test_runner.js"
-  ],
-  "skip_compilation": [
-    "cpu_profiler_test_runner.js"
   ]
 }

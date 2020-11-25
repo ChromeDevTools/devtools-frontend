@@ -1,8 +1,5 @@
 {  "modules": [
     "client_variations.js",
     "../third_party/chromium/client-variations/ClientVariations.js"
-  ],
-  "skip_compilation": [
-    "../third_party/chromium/client-variations/ClientVariations.js"
   ]
 }

@@ -5,8 +5,5 @@
   ],
   "modules": [
     "device_mode_test_runner.js"
-  ],
-  "skip_compilation": [
-    "device_mode_test_runner.js"
   ]
 }

@@ -10,8 +10,5 @@
   ],
   "modules": [
     "js_main-legacy.js"
-  ],
-  "skip_compilation": [
-    "js_main-legacy.js"
   ]
 }

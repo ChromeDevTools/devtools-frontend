@@ -16,14 +16,5 @@
     "SearchTestRunner.js",
     "EditorTestRunner.js",
     "AutocompleteTestRunner.js"
-  ],
-  "skip_compilation": [
-    "sources_test_runner.js",
-    "DebuggerTestRunner.js",
-    "LiveEditTestRunner.js",
-    "SearchTestRunner.js",
-    "SourcesTestRunner.js",
-    "EditorTestRunner.js",
-    "AutocompleteTestRunner.js"
   ]
 }

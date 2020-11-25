@@ -21,9 +21,6 @@
   "modules": [
     "css_overview-legacy.js"
   ],
-  "skip_compilation": [
-    "css_overview-legacy.js"
-  ],
   "resources": [
     "cssOverview.css",
     "cssOverviewStartView.css",

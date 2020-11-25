@@ -126,11 +126,7 @@ async function processFolder(dir) {
     }
     promises.push(processCSSFile(path.join(FRONTEND_PATH, dir, resource)));
   }
-  const skips = new Set(content.skip_compilation || []);
   for (const script of content.scripts || []) {
-    if (skips.has(script)) {
-      continue;
-    }
     promises.push(processScriptFile(path.join(FRONTEND_PATH, dir, script)));
   }
   await Promise.all(promises);

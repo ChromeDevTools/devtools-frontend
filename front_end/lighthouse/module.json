@@ -32,10 +32,5 @@
     "lighthouseDialog.css",
     "lighthousePanel.css",
     "lighthouseStartView.css"
-  ],
-  "skip_compilation": [
-    "lighthouse-legacy.js",
-    "../third_party/lighthouse/report-assets/report.js",
-    "../third_party/lighthouse/report-assets/report-generator.js"
   ]
 }

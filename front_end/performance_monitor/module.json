@@ -19,9 +19,6 @@
   "modules": [
     "performance_monitor-legacy.js"
   ],
-  "skip_compilation": [
-    "performance_monitor-legacy.js"
-  ],
   "resources": [
     "performanceMonitor.css"
   ]

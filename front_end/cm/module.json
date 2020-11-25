@@ -14,21 +14,7 @@
     "../third_party/codemirror/package/addon/fold/foldgutter.js",
     "../third_party/codemirror/package/addon/fold/brace-fold.js"
   ],
-  "skip_compilation": [
-    "codemirror.js",
-    "../third_party/codemirror/package/lib/codemirror.js",
-    "../third_party/codemirror/package/addon/comment/comment.js",
-    "../third_party/codemirror/package/addon/edit/closebrackets.js",
-    "../third_party/codemirror/package/addon/edit/matchbrackets.js",
-    "../third_party/codemirror/package/addon/mode/multiplex.js",
-    "../third_party/codemirror/package/addon/mode/overlay.js",
-    "../third_party/codemirror/package/addon/mode/simple.js",
-    "../third_party/codemirror/package/addon/selection/active-line.js",
-    "../third_party/codemirror/package/addon/selection/mark-selection.js",
-    "../third_party/codemirror/package/addon/fold/foldcode.js",
-    "../third_party/codemirror/package/addon/fold/foldgutter.js",
-    "../third_party/codemirror/package/addon/fold/brace-fold.js"
-  ],  "resources": [
+  "resources": [
     "codemirror.css"
   ]
 }

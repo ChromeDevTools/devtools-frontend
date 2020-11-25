@@ -25,9 +25,6 @@
   "modules": [
     "screencast-legacy.js"
   ],
-  "skip_compilation": [
-    "screencast-legacy.js"
-  ],
   "resources": [
     "screencastView.css"
   ]

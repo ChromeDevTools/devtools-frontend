@@ -6,9 +6,6 @@
   "modules": [
     "color_picker-legacy.js"
   ],
-  "skip_compilation": [
-    "color_picker-legacy.js"
-  ],
   "resources": [
     "spectrum.css"
   ]

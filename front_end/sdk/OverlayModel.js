@@ -9,6 +9,7 @@ import * as Root from '../root/root.js';
 
 import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
 import {DeferredDOMNode, DOMModel, DOMNode, Events as DOMModelEvents} from './DOMModel.js';  // eslint-disable-line no-unused-vars
+import {OverlayColorGenerator} from './OverlayColorGenerator.js';
 import {RemoteObject} from './RemoteObject.js';                             // eslint-disable-line no-unused-vars
 import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
@@ -1140,52 +1141,6 @@ class DefaultPersistentFlexHighlighter {
       flexNodeHighlightConfigs.push({nodeId, flexContainerHighlightConfig});
     }
     overlayModel.target().overlayAgent().invoke_setShowFlexOverlays({flexNodeHighlightConfigs});
-  }
-}
-
-/**
- * Used to cycle through a list of predetermined colors for the grid overlay.
- * This helps users differentiate between overlays when several are shown at the
- * same time.
- */
-class OverlayColorGenerator {
-  constructor() {
-    this._colors = [
-      // F59794
-      new Common.Color.Color([0.9607843137254902, 0.592156862745098, 0.5803921568627451, 1], Common.Color.Format.RGBA),
-      // F0BF4C
-      new Common.Color.Color([0.9411764705882353, 0.7490196078431373, 0.2980392156862745, 1], Common.Color.Format.RGBA),
-      // D4ED31
-      new Common.Color.Color(
-          [0.8313725490196079, 0.9294117647058824, 0.19215686274509805, 1], Common.Color.Format.RGBA),
-      // 9EEB47
-      new Common.Color.Color([0.6196078431372549, 0.9215686274509803, 0.2784313725490196, 1], Common.Color.Format.RGBA),
-      // 5BD1D7
-      new Common.Color.Color([0.3568627450980392, 0.8196078431372549, 0.8431372549019608, 1], Common.Color.Format.RGBA),
-      // BCCEFB
-      new Common.Color.Color([0.7372549019607844, 0.807843137254902, 0.984313725490196, 1], Common.Color.Format.RGBA),
-      // C6BEEE
-      new Common.Color.Color([0.7764705882352941, 0.7450980392156863, 0.9333333333333333, 1], Common.Color.Format.RGBA),
-      // D094EA
-      new Common.Color.Color([0.8156862745098039, 0.5803921568627451, 0.9176470588235294, 1], Common.Color.Format.RGBA),
-      // EB94CF
-      new Common.Color.Color([0.9215686274509803, 0.5803921568627451, 0.8117647058823529, 1], Common.Color.Format.RGBA),
-    ];
-    this._index = 0;
-  }
-
-  /**
-   * Generate the next color in the spectrum
-   * @return {!Common.Color.Color}
-   */
-  next() {
-    const color = this._colors[this._index];
-    this._index++;
-    if (this._index >= this._colors.length) {
-      this._index = 0;
-    }
-
-    return color;
   }
 }
 

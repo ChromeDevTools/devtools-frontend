@@ -49,6 +49,7 @@ import * as MixedContentIssue from './MixedContentIssue.js';
 import * as NetworkLog from './NetworkLog.js';
 import * as NetworkManager from './NetworkManager.js';
 import * as NetworkRequest from './NetworkRequest.js';
+import * as OverlayColorGenerator from './OverlayColorGenerator.js';
 import * as OverlayModel from './OverlayModel.js';
 import * as PageResourceLoader from './PageResourceLoader.js';
 import * as PaintProfiler from './PaintProfiler.js';
@@ -112,6 +113,7 @@ export {
   NetworkLog,
   NetworkManager,
   NetworkRequest,
+  OverlayColorGenerator,
   OverlayModel,
   PageResourceLoader,
   PaintProfiler,

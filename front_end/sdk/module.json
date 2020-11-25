@@ -627,6 +627,7 @@
     "ServiceWorkerManager.js",
     "TracingManager.js",
     "TracingModel.js",
+    "OverlayColorGenerator.js",
     "OverlayModel.js",
     "RuntimeModel.js",
     "IsolateManager.js",

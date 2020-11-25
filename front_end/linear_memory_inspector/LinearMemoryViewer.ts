@@ -89,7 +89,7 @@ export class LinearMemoryViewer extends HTMLElement {
 
     // We initially just plot one row with one byte group (here: byte group size of 4).
     // Depending on that initially plotted row we can determine how many rows and
-    // bytes per rows we can fit:
+    // bytes per row we can fit:
     // > 0000000 | b0 b1 b2 b4 | a0 a1 a2 a3       <
     //             ^-^           ^-^
     //             byteCellWidth textCellWidth
@@ -151,12 +151,13 @@ export class LinearMemoryViewer extends HTMLElement {
           overflow: hidden;
           text-overflow: ellipsis;
           box-sizing: border-box;
-          --selected-cell-color: #1a1aa6;
+          background: var(--color-background);
         }
 
         .row {
           display: flex;
           height: 20px;
+          align-items: center;
         }
 
         .cell {
@@ -166,13 +167,14 @@ export class LinearMemoryViewer extends HTMLElement {
         }
 
         .cell.selected {
-          border-color: var(--selected-cell-color);
-          color: var(--selected-cell-color);
-          background-color: #cfe8fc;
+          border-color: var(--color-syntax-3);
+          color: var(--color-syntax-3);
+          background-color: var(--item-selection-bg-color);
         }
 
         .byte-cell {
           min-width: 21px;
+          color: var(--color-text-primary)
         }
 
         .byte-group-margin {
@@ -181,22 +183,22 @@ export class LinearMemoryViewer extends HTMLElement {
 
         .text-cell {
           min-width: 14px;
-          color: var(--selected-cell-color);
+          color: var(--color-syntax-3);
         }
 
         .address {
-          font-size: 11px;
-          color: #9aa0a6;
+          color: var(--color-text-disabled);
         }
 
         .address.selected {
           font-weight: bold;
-          color: #333333;
+          color: var(--color-text-primary);
         }
 
         .divider {
           width: 1px;
-          background-color: rgb(204, 204, 204);
+          height: inherit;
+          background-color: var(--divider-color);
           margin: 0px 4px 0px 4px;
         }
       </style>
@@ -261,7 +263,7 @@ export class LinearMemoryViewer extends HTMLElement {
         selected: this.address - this.memoryOffset === i,
       };
       const value = i < this.memory.length ? html`${this.toAscii(this.memory[i])}` : '';
-      cells.push(html`<span class="${LitHtml.Directives.classMap(classMap)}">${value}</span>`);
+      cells.push(html`<span class="${LitHtml.Directives.classMap(classMap)}" @click=${this.onSelectedByte(i + this.memoryOffset)}>${value}</span>`);
     }
     return html`${cells}`;
   }

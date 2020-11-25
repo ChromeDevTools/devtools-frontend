@@ -61,7 +61,6 @@ describe('LinearMemoryViewer', () => {
     return cellsPerRow;
   }
 
-
   it('correctly renders bytes given a memory offset greater than zero', async () => {
     const data = createComponentData();
     data.memoryOffset = 1;
@@ -151,6 +150,20 @@ describe('LinearMemoryViewer', () => {
         assert.strictEqual(bytes[i].innerText, hex);
       }
     });
+
+    it('triggers an event on selecting a byte value', async () => {
+      const {component, data} = await setUpComponent();
+      assertShadowRoot(component.shadowRoot);
+
+      const byte = component.shadowRoot.querySelector(VIEWER_BYTE_CELL_SELECTOR);
+      assertElement(byte, HTMLSpanElement);
+
+      const eventPromise =
+          getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byte-selected');
+      byte.click();
+      const {data: address} = await eventPromise;
+      assert.strictEqual(address, data.memoryOffset);
+    });
   });
 
   describe('ascii view', () => {
@@ -185,6 +198,20 @@ describe('LinearMemoryViewer', () => {
         }
       }
     });
+
+    it('triggers an event on selecting an ascii value', async () => {
+      const {component, data} = await setUpComponent();
+      assertShadowRoot(component.shadowRoot);
+
+      const asciiCell = component.shadowRoot.querySelector(VIEWER_TEXT_CELL_SELECTOR);
+      assertElement(asciiCell, HTMLSpanElement);
+
+      const eventPromise =
+          getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byte-selected');
+      asciiCell.click();
+      const {data: address} = await eventPromise;
+      assert.strictEqual(address, data.memoryOffset);
+    });
   });
 
   describe('setting the address', () => {
@@ -218,20 +245,6 @@ describe('LinearMemoryViewer', () => {
       assertSelectedCellIsHighlighted(component, VIEWER_BYTE_CELL_SELECTOR, address);
       assertSelectedCellIsHighlighted(component, VIEWER_TEXT_CELL_SELECTOR, address);
       assertSelectedCellIsHighlighted(component, VIEWER_ADDRESS_SELECTOR, 0);
-    });
-
-    it('triggers an event', async () => {
-      const {component, data} = await setUpComponent();
-      assertShadowRoot(component.shadowRoot);
-
-      const byte = component.shadowRoot.querySelector(VIEWER_BYTE_CELL_SELECTOR);
-      assertElement(byte, HTMLSpanElement);
-
-      const eventPromise =
-          getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byte-selected');
-      byte.click();
-      const {data: address} = await eventPromise;
-      assert.strictEqual(address, data.memoryOffset);
     });
   });
 });

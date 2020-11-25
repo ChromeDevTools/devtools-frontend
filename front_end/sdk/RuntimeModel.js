@@ -411,9 +411,10 @@ export class RuntimeModel extends SDKModel {
         return subtype + '';
       }
       try {
-        return JSON.stringify(this, null, '  ');
-      } catch (e) {
-        return '' + this;
+        // TODO: Respect the indentation preference from DevTools → Settings.
+        return JSON.stringify(this, null, 2);
+      } catch (error) {
+        return String(this);
       }
     }
   }

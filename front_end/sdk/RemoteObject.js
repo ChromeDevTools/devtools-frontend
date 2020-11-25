@@ -682,8 +682,12 @@ export class RemoteObjectImpl extends RemoteObject {
       functionDeclaration: functionDeclaration.toString(),
       arguments: args,
       silent: true,
-      returnByValue: true
+      returnByValue: true,
     });
+
+    if (!this._objectId) {
+      return this.value;
+    }
     return response.getError() || response.exceptionDetails ? null : response.result.value;
   }
 

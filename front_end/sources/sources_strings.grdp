@@ -402,6 +402,9 @@
   <message name="IDS_DEVTOOLS_985edc3140c77213ce3e2f9877288ecb" desc="Text in Java Script Breakpoints Sidebar Pane of the Sources panel">
     Enable breakpoints in file
   </message>
+  <message name="IDS_DEVTOOLS_9a2f15bd263b082aefaada87510f972f" desc="A context menu item in the Console, Sources, and Network panel">
+    Copy <ph name="REMOTEOBJECT_TYPE">$1s<ex>string</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_9bbb0377ecbf31fdcfcce3283e815311" desc="Text in Snippets Plugin of the Sources panel">
     Ctrl+Enter
   </message>

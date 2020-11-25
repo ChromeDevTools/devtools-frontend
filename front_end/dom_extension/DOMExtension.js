@@ -30,8 +30,7 @@
  * http://ejohn.org/files/jsdiff.js (released under the MIT license).
  */
 
-// @ts-nocheck
-// TODO(crbug.com/1011811): Enable TypeScript compiler checks
+// @ts-nocheck This file is not checked by TypeScript Compiler as it has a lot of legacy code.
 
 /**
  * @param {!Node} rootNode

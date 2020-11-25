@@ -59,6 +59,7 @@ export class LayoutPane extends HTMLElement {
       ...getStyleSheets('ui/inspectorSyntaxHighlight.css', {patchThemeSupport: true}),
       ...getStyleSheets('elements/layoutPane.css', {patchThemeSupport: false}),
     ];
+    this.onSummaryKeyDown = this.onSummaryKeyDown.bind(this);
   }
 
   set data(data: LayoutPaneData) {
@@ -68,12 +69,31 @@ export class LayoutPane extends HTMLElement {
     this.render();
   }
 
+  private onSummaryKeyDown(event: KeyboardEvent) {
+    if (!event.target) {
+      return;
+    }
+    const summaryElement = event.target as HTMLElement;
+    const detailsElement = summaryElement.parentElement as HTMLDetailsElement;
+    if (!detailsElement) {
+      throw new Error('<details> element is not found for a <summary> element');
+    }
+    switch (event.key) {
+      case 'ArrowLeft':
+        detailsElement.open = false;
+        break;
+      case 'ArrowRight':
+        detailsElement.open = true;
+        break;
+    }
+  }
+
   private render() {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
       <details open>
-        <summary class="header">
+        <summary class="header" @keydown=${this.onSummaryKeyDown}>
           ${ls`Grid`}
         </summary>
         <div class="content-section">
@@ -99,7 +119,7 @@ export class LayoutPane extends HTMLElement {
       ${this.flexContainerElements !== undefined ?
         html`
         <details open>
-          <summary class="header">
+          <summary class="header" @keydown=${this.onSummaryKeyDown}>
             ${ls`Flexbox`}
           </summary>
           ${this.flexContainerElements ?

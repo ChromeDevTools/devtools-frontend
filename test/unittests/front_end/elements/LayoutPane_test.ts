@@ -273,4 +273,23 @@ describeWithEnvironment('LayoutPane', async () => {
     button.click();
     assert.strictEqual(called, 1);
   });
+
+  it('expands/collapses <details> using ArrowLeft/ArrowRight keys', async () => {
+    const component = new Elements.LayoutPane.LayoutPane();
+    component.data = {
+      gridElements: [],
+      settings: [],
+    };
+    renderElementIntoDOM(component);
+    assertShadowRoot(component.shadowRoot);
+    const details = component.shadowRoot.querySelector('details');
+    assertElement(details, HTMLDetailsElement);
+    const summary = details.querySelector('summary');
+    assertElement(summary, HTMLElement);
+    assert(details.open, 'The first details were not expanded by default');
+    summary.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key: 'ArrowLeft'}));
+    assert(!details.open, 'The details were not collapsed after sending ArrowLeft');
+    summary.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key: 'ArrowRight'}));
+    assert(details.open, 'The details were not expanded after sending ArrowRight');
+  });
 });

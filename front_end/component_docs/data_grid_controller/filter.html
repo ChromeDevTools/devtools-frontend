@@ -33,11 +33,14 @@
     <script type="module">
       import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
       import * as Components from '../../ui/components/components.js';
+      import * as TextUtils from '../../text_utils/text_utils.js';
 
       ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent())
 
       const renderComponent = () => {
         const component = new Components.DataGridController.DataGridController();
+
+        const filterParser = new TextUtils.TextUtils.FilterParser(['key', 'value'])
 
         component.data = {
           columns: [
@@ -57,9 +60,10 @@
         const filterTextInput = document.querySelector('input');
         filterTextInput.addEventListener('input', event => {
           const newText = event.target.value;
+          const filters = filterParser.parse(newText);
           component.data = {
             ...component.data,
-            filterText: newText
+            filters: filters
           }
         })
       }

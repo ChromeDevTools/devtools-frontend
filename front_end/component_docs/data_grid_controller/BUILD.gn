@@ -12,6 +12,7 @@ copy_to_gen("data_grid_controller") {
 
   deps = [
     "../../component_helpers:bundle",
+    "../../text_utils:bundle",
     "../../ui/components:bundle",
   ]
 }

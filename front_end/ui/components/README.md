@@ -56,44 +56,19 @@ A data-grid-controller extends the basic data-grid with more
 functionality. It renders a regular data-grid, but contains logic for
 filtering and sorting columns.
 
-You create a data-grid-controller in the same way as you create a
-data-grid, and the structure of the `rows` and `columns` is identical.
-Any column you wish to be sortable should have `sortable: true` set.
-Currently colums are sorted alphabetically in ASC or DESC order. We do
-not yet have the ability to provide custom compartor functions for
-column sorting.
+You create a data-grid-controller in the same way as you create a data-grid, and
+the structure of the `rows` and `columns` is identical. Any column you wish to
+be sortable should have `sortable: true` set. Currently colums are sorted
+alphabetically (or numerically if the values are numbers) in ASC or DESC order.
+We do not yet have the ability to provide custom compartor functions for column
+sorting.
 
-A data-grid-controller can optionally also take `filterText`. This is a
-string that will be used to filter rows. Any row with any value that
-matches the given text will be visible, and the rest hidden. Note that
-this does not support regular expressions, or matching via
-`columnTitle:value` as some parts of DevTools currently do. This
-functionality will be expanded over time as required.
+A data-grid-controller can optionally also take an array of filters. These
+should be created via `TextUtils.FilterParser`.
 
-
-const rows = [
-  { cells: [{ columnId: 'city', value: 'London', title: 'London' }, { columnId: 'country', value: 'UK', title: 'UK'}]},
-  { cells: [{ columnId: 'city', value: 'Berlin', title: 'Berlin' }, { columnId: 'country', value: 'Germany', title: 'Germany'}]},
-]
 ```
-
-# data-grid-controller
-
-A data-grid-controller extends the basic data-grid with more
-functionality. It renders a regular data-grid, but contains logic for
-filtering and sorting columns.
-
-You create a data-grid-controller in the same way as you create a
-data-grid, and the structure of the `rows` and `columns` is identical.
-Any column you wish to be sortable should have `sortable: true` set.
-Currently colums are sorted alphabetically in ASC or DESC order. We do
-not yet have the ability to provide custom compartor functions for
-column sorting.
-
-A data-grid-controller can optionally also take `filterText`. This is a
-string that will be used to filter rows. Any row with any value that
-matches the given text will be visible, and the rest hidden. Note that
-this does not support regular expressions, or matching via
-`columnTitle:value` as some parts of DevTools currently do. This
-functionality will be expanded over time as required.
-
+const keys = ['city', 'country'];
+const parser = new TextUtils.FilterParser(keys);
+// Pass this into devtools-data-grid-controller to filter accordingly
+const filters = parser.parse('lond')
+```

@@ -184,10 +184,30 @@ describe('DataGridController', () => {
       },
     ];
 
+    const createPlainTextFilter = (text: string) => ({
+      text,
+      key: undefined,
+      regex: undefined,
+      negative: false,
+    });
+
+    const createRegexFilter = (text: string) => ({
+      text: undefined,
+      key: undefined,
+      regex: new RegExp(text, 'i'),  // i because the FilterParser adds that flag
+      negative: false,
+    });
+
+    const createColumnFilter = (key: string, text: string) => ({
+      text,
+      key,
+      regex: undefined,
+      negative: false,
+    });
+
     it('only shows rows with values that match the filter', () => {
       const component = new UIComponents.DataGridController.DataGridController();
-      component.data = {rows, columns, filterText: 'Bravo'};
-
+      component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
@@ -205,7 +225,7 @@ describe('DataGridController', () => {
 
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       await withNoMutations(internalDataGridShadow, internalShadowRoot => {
-        component.data = {rows, columns, filterText: 'Bravo'};
+        component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
         const renderedRowValues = getValuesOfAllBodyRows(internalShadowRoot, {onlyVisible: true});
         assert.deepEqual(renderedRowValues, [
           ['Letter B', 'Bravo'],
@@ -216,7 +236,7 @@ describe('DataGridController', () => {
     it('renders all rows but applies a hidden class to hide non-matching rows, maintaining proper aria-rowindex labels',
        () => {
          const component = new UIComponents.DataGridController.DataGridController();
-         component.data = {rows, columns, filterText: 'Bravo'};
+         component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
 
          renderElementIntoDOM(component);
          assertShadowRoot(component.shadowRoot);
@@ -229,7 +249,7 @@ describe('DataGridController', () => {
 
     it('shows all rows if the filter is then cleared', () => {
       const component = new UIComponents.DataGridController.DataGridController();
-      component.data = {rows, columns, filterText: 'Bravo'};
+      component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
 
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
@@ -238,10 +258,76 @@ describe('DataGridController', () => {
       assert.lengthOf(renderedRowValues, 1);
       component.data = {
         ...component.data,
-        filterText: undefined,
+        filters: [],
       };
       renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow);
       assert.lengthOf(renderedRowValues, 3);
+    });
+
+    it('supports a regex filter', () => {
+      const component = new UIComponents.DataGridController.DataGridController();
+      component.data = {rows, columns, filters: [createRegexFilter('bravo')]};
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      const internalDataGridShadow = getInternalDataGridShadowRoot(component);
+      const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
+      assert.deepEqual(renderedRowValues, [
+        ['Letter B', 'Bravo'],
+      ]);
+    });
+
+    it('inverts the filter if given a negative filter', () => {
+      const component = new UIComponents.DataGridController.DataGridController();
+      const filter = createPlainTextFilter('bravo');
+      filter.negative = true;
+      component.data = {rows, columns, filters: [filter]};
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      const internalDataGridShadow = getInternalDataGridShadowRoot(component);
+      const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
+      assert.deepEqual(renderedRowValues, [
+        ['Letter A', 'Alpha'],
+        ['Letter C', 'Charlie'],
+      ]);
+    });
+
+    it('only shows rows that match all filters when given multiple filters', () => {
+      const component = new UIComponents.DataGridController.DataGridController();
+      // This matches no rows, as no row can match both of these filters
+      component.data = {rows, columns, filters: [createPlainTextFilter('alpha'), createPlainTextFilter('charlie')]};
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      const internalDataGridShadow = getInternalDataGridShadowRoot(component);
+      const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
+      assert.deepEqual(renderedRowValues, []);
+    });
+
+    it('supports filtering by column key', () => {
+      const component = new UIComponents.DataGridController.DataGridController();
+      // By filtering for values with `e` we expect to only get the "Letter C: Charlie" row as it's the only value field with an `e` in.
+      component.data = {rows, columns, filters: [createColumnFilter('value', 'e')]};
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      const internalDataGridShadow = getInternalDataGridShadowRoot(component);
+      const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
+      assert.deepEqual(renderedRowValues, [
+        ['Letter C', 'Charlie'],
+      ]);
+    });
+
+    it('supports negative filtering by column key', () => {
+      const component = new UIComponents.DataGridController.DataGridController();
+      const filter = createColumnFilter('value', 'e');
+      filter.negative = true;
+      component.data = {rows, columns, filters: [filter]};
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      const internalDataGridShadow = getInternalDataGridShadowRoot(component);
+      const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
+      assert.deepEqual(renderedRowValues, [
+        ['Letter A', 'Alpha'],
+        ['Letter B', 'Bravo'],
+      ]);
     });
   });
 });

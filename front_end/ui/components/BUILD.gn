@@ -12,7 +12,10 @@ devtools_module("components") {
     "DataGridRenderers.ts",
     "DataGridUtils.ts",
   ]
-  deps = [ "../../third_party/lit-html:bundle" ]
+  deps = [
+    "../../text_utils:bundle",
+    "../../third_party/lit-html:bundle",
+  ]
 
   visibility = [ "../../../test/unittests/front_end/ui/components" ]
 }

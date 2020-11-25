@@ -5,15 +5,14 @@
 import './DataGrid.js';
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-
+import type * as TextUtils from '../../text_utils/text_utils.js';
 import type {DataGridData, ColumnHeaderClickEvent} from './DataGrid.js';
-
 import {SortDirection, SortState, Column, Row, getRowEntryForColumnId} from './DataGridUtils.js';
 
 export interface DataGridControllerData {
   columns: Column[];
   rows: Row[];
-  filterText?: string;
+  filters?: readonly TextUtils.TextUtils.ParsedFilter[];
   /**
    * Sets an initial sort state for the data grid. Is only used if the component
    * hasn't rendered yet. If you pass this in on subsequent renders, it is
@@ -39,23 +38,23 @@ export class DataGridController extends HTMLElement {
   private originalRows: Row[] = [];
 
   private sortState: Readonly<SortState>|null = null;
-  private filterText?: string;
+  private filters: readonly TextUtils.TextUtils.ParsedFilter[] = []
 
   get data(): DataGridControllerData {
     return {
       columns: this.originalColumns as Column[],
       rows: this.originalRows as Row[],
-      filterText: this.filterText,
+      filters: this.filters,
     };
   }
 
   set data(data: DataGridControllerData) {
     this.originalColumns = data.columns;
     this.originalRows = data.rows;
-    this.filterText = data.filterText;
+    this.filters = data.filters || [];
 
     this.columns = [...this.originalColumns];
-    this.rows = this.cloneAndFilterRows(data.rows, this.filterText);
+    this.rows = this.cloneAndFilterRows(data.rows, this.filters);
 
     if (!this.hasRenderedAtLeastOnce && data.initialSort) {
       this.sortState = data.initialSort;
@@ -65,21 +64,54 @@ export class DataGridController extends HTMLElement {
     this.render();
   }
 
-  private cloneAndFilterRows(rows: Row[], filterText?: string): Row[] {
-    if (!filterText) {
+  private testRowWithFilter(row: Row, filter: TextUtils.TextUtils.ParsedFilter): boolean {
+    let rowMatchesFilter = false;
+
+    const {key, text, negative, regex} = filter;
+
+    let dataToTest;
+    if (key) {
+      const cell = getRowEntryForColumnId(row, key);
+      dataToTest = JSON.stringify(cell.value).toLowerCase();
+    } else {
+      dataToTest = JSON.stringify(row.cells.map(cell => cell.value)).toLowerCase();
+    }
+
+    if (regex) {
+      rowMatchesFilter = regex.test(dataToTest);
+    } else if (text) {
+      rowMatchesFilter = dataToTest.includes(text.toLowerCase());
+    }
+
+    // If `negative` is set to `true`, that means we have to flip the final
+    // result, because the filter is matching anything that doesn't match. e.g.
+    // {text: 'foo', negative: false} matches rows that contain the text `foo`
+    // but {text: 'foo', negative: true} matches rows that do NOT contain the
+    // text `foo` so if a filter is marked as negative, we first match against
+    // that filter, and then we flip it here.
+    return negative ? !rowMatchesFilter : rowMatchesFilter;
+  }
+
+  private cloneAndFilterRows(rows: Row[], filters: readonly TextUtils.TextUtils.ParsedFilter[]): Row[] {
+    if (filters.length === 0) {
       return [...rows];
     }
 
-    // Plain text search across all columns.
     return rows.map(row => {
-      const rowHasMatchingValue = row.cells.some(cell => {
-        const rowText = String(cell.value);
-        return rowText.toLowerCase().includes(filterText.toLowerCase());
-      });
-
+      // We assume that the row should be visible by default.
+      let rowShouldBeVisible = true;
+      for (const filter of filters) {
+        const rowMatchesFilter = this.testRowWithFilter(row, filter);
+        // If there are multiple filters, if any return false we hide the row.
+        // So if we get a false from testRowWithFilter, we can break early and return false.
+        if (!rowMatchesFilter) {
+          rowShouldBeVisible = false;
+          break;
+        }
+      }
       return {
         ...row,
-        hidden: !rowHasMatchingValue,
+        hidden: !rowShouldBeVisible,
       };
     });
   }

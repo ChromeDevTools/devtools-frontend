@@ -691,7 +691,7 @@ export class RowMessage {
     this.element = document.createElement('div');
     this.element.classList.add('text-editor-row-message');
     /** @type {!UI.UIUtils.DevToolsIconLabel} */
-    this._icon = /** @type {?} */ (this.element.createChild('label', '', 'dt-icon-label'));
+    this._icon = /** @type {?} */ (this.element.createChild('span', '', 'dt-icon-label'));
     this._icon.type = /** @type {string} */ (iconClassPerLevel.get(message.level()));
     /** @type {!UI.UIUtils.DevToolsSmallBubble} */
     this._repeatCountElement =

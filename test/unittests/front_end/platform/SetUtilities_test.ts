@@ -16,4 +16,17 @@ describe('SetUtilities', () => {
       assert.deepEqual([...set], ['a', 'b', 'c', 'd']);
     });
   });
+
+  describe('isEqual', () => {
+    it('checks if sets are equal', () => {
+      const isEqual = Plaform.SetUtilities.isEqual;
+      assert(isEqual(new Set(), new Set()));
+      assert(!isEqual(new Set(['a']), new Set()));
+      assert(isEqual(new Set(['a']), new Set(['a'])));
+      assert(!isEqual(new Set(['a']), new Set(['b'])));
+      assert(!isEqual(new Set(), new Set(['b'])));
+      const set = new Set(['a']);
+      assert(isEqual(set, set));
+    });
+  });
 });

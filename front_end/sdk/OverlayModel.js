@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
@@ -839,8 +840,8 @@ class DefaultPersistentGridHighlighter {
 
     // Debounce recording highlighted grids in order to avoid counting rapidly turning grids on and off.
     this._recordHighlightedGridCount = Common.Debouncer.debounce(this._doRecordHighlightedGridCount.bind(this), 1000);
-    /** @type {!Array<number>} */
-    this._previouslyRecordedGridCountNodeIds = [];
+    /** @type {!Set<number>} */
+    this._previouslyRecordedGridCountNodeIds = new Set();
   }
 
   /**
@@ -883,14 +884,14 @@ class DefaultPersistentGridHighlighter {
   }
 
   _doRecordHighlightedGridCount() {
-    const recordedNodeIds = [...this._gridHighlights.keys()];
+    const recordedNodeIds = new Set(this._gridHighlights.keys());
 
     // If only settings changed, but not the list of highlighted grids, bail out.
-    if (arraysEqual(recordedNodeIds, this._previouslyRecordedGridCountNodeIds)) {
+    if (Platform.SetUtilities.isEqual(recordedNodeIds, this._previouslyRecordedGridCountNodeIds)) {
       return;
     }
 
-    Host.userMetrics.highlightedPersistentCssGridCount(recordedNodeIds.length);
+    Host.userMetrics.highlightedPersistentCssGridCount(recordedNodeIds.size);
 
     this._previouslyRecordedGridCountNodeIds = recordedNodeIds;
   }
@@ -1218,25 +1219,3 @@ SDKModel.register(OverlayModel, Capability.DOM, true);
 /** @typedef {!{node: !DOMNode, selectorList: (string|undefined)} | !{deferredNode: DeferredDOMNode, selectorList: (string|undefined)} | !{object: !RemoteObject, selectorList: (string|undefined)} | !{clear: *}} */
 // @ts-ignore typedef
 export let HighlightData;
-
-/**
- * Checks if 2 arrays are equal.
- * @param {!Array<*>} a1 The first array
- * @param {!Array<*>} a2 The second array
- * @return {boolean}
- */
-const arraysEqual = (a1, a2) => {
-  if (a1.length !== a2.length) {
-    return false;
-  }
-
-  a1 = [...a1].sort();
-  a2 = [...a2].sort();
-  for (let i = 0; i < a1.length; i++) {
-    if (a1[i] !== a2[i]) {
-      return false;
-    }
-  }
-
-  return true;
-};

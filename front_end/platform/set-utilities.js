@@ -12,3 +12,23 @@ export const addAll = function(set, iterable) {
     set.add(item);
   }
 };
+
+/**
+ * @param {!Set<T>} setA
+ * @param {!Set<T>} setB
+ * @template T
+ */
+export const isEqual = function(setA, setB) {
+  if (setA === setB) {
+    return true;
+  }
+  if (setA.size !== setB.size) {
+    return false;
+  }
+  for (const item of setA) {
+    if (!setB.has(item)) {
+      return false;
+    }
+  }
+  return true;
+};

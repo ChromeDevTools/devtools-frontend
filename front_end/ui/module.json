@@ -86,6 +86,7 @@
     "inlineButton.css",
     "inspectorCommon.css",
     "inspectorStyle.css",
+    "themeColors.css",
     "inspectorSyntaxHighlight.css",
     "inspectorSyntaxHighlightDark.css",
     "inspectorViewTabbedPane.css",

@@ -1277,6 +1277,7 @@ export function initializeUIUtils(document, themeSetting) {
 
   const body = /** @type {!Element} */ (document.body);
   appendStyle(body, 'ui/inspectorStyle.css', {enableLegacyPatching: true});
+  appendStyle(body, 'ui/themeColors.css', {enableLegacyPatching: false});
   GlassPane.setContainer(/** @type {!Element} */ (document.body));
 }
 

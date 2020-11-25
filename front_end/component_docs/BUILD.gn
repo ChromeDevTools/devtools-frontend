@@ -1,8 +1,12 @@
 # Copyright 2020 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
+
 group("component_docs") {
   public_deps = [
+    ":bundle",
     "./color_swatch",
     "./computed_style_property",
     "./computed_style_trace",
@@ -17,4 +21,12 @@ group("component_docs") {
     "./theme_colors",
     "./webvitals",
   ]
+}
+
+devtools_module("component_docs_module") {
+  sources = [ "toggle_dark_mode.ts" ]
+}
+devtools_entrypoint("bundle") {
+  entrypoint = "component_docs.ts"
+  deps = [ ":component_docs_module" ]
 }

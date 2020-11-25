@@ -35,6 +35,7 @@ generated_typescript_entrypoint_sources = [
   "$resources_out_dir/color_picker/color_picker.js",
   "$resources_out_dir/common/common-legacy.js",
   "$resources_out_dir/common/common.js",
+  "$resources_out_dir/component_docs/component_docs.js",
   "$resources_out_dir/component_helpers/component_helpers.js",
   "$resources_out_dir/components/components-legacy.js",
   "$resources_out_dir/components/components.js",

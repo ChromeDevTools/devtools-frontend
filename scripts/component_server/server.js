@@ -147,6 +147,20 @@ async function requestHandler(request, response) {
     // This means it's a component path like /breadcrumbs.
     const componentHtml = await getExamplesForPath(filePath);
     respondWithHtml(response, componentHtml);
+    return;
+  } else if (/component_docs\/(.+)\/(.+)\.html/.test(filePath)) {
+    /** This conditional checks if we are viewing an individual example's HTML
+     *  file. e.g. localhost:8090/component_docs/data_grid/basic.html For each
+     *  example we inject themeColors.css into the page so all CSS variables
+     *  that components use are available.
+     */
+    const fileContents = await fs.promises.readFile(path.join(devtoolsFrontendFolder, filePath), {encoding: 'utf8'});
+    const themeColoursLink = '<link rel="stylesheet" href="/ui/themeColors.css" type="text/css" />';
+    const toggleDarkModeScript = '<script type="module" src="/component_docs/component_docs.js"></script>';
+    const newFileContents = fileContents.replace('<style>', themeColoursLink + '\n<style>')
+                                .replace('<script', toggleDarkModeScript + '\n<script');
+    respondWithHtml(response, newFileContents);
+
   } else {
     // This means it's an asset like a JS file or an image.
     const normalizedPath = normalizeImagePathIfRequired(filePath);

@@ -23,7 +23,6 @@
   <script type="module">
     import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
     import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-    import { appendStyle } from '../../ui/utils/append-style.js'
 
     ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent())
 
@@ -73,8 +72,6 @@
       constructor() {
         super()
         this.shadow = this.attachShadow({ mode: 'open' })
-        appendStyle(document.body, 'ui/inspectorStyle.css', { enableLegacyPatching: false })
-
         this.render();
       }
 

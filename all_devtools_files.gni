@@ -361,6 +361,7 @@ all_devtools_files = [
   "front_end/ui/inlineButton.css",
   "front_end/ui/inspectorCommon.css",
   "front_end/ui/inspectorStyle.css",
+  "front_end/ui/themeColors.css",
   "front_end/ui/inspectorSyntaxHighlight.css",
   "front_end/ui/inspectorSyntaxHighlightDark.css",
   "front_end/ui/inspectorViewTabbedPane.css",

@@ -10,6 +10,5 @@ copy_to_gen("theme_colors") {
   deps = [
     "../../component_helpers:bundle",
     "../../third_party/lit-html:bundle",
-    "../../ui:bundle",
   ]
 }

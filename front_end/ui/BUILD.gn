@@ -114,6 +114,7 @@ copy_to_gen("legacy_css") {
     "targetCrashedScreen.css",
     "textButton.css",
     "textPrompt.css",
+    "themeColors.css",
     "toolbar.css",
     "tooltip.css",
     "treeoutline.css",

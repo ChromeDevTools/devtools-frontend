@@ -66,6 +66,7 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'ui/inlineButton.css',
   'ui/inspectorCommon.css',
   'ui/inspectorStyle.css',
+  'ui/themeColors.css',
   'ui/inspectorSyntaxHighlight.css',
   'ui/inspectorSyntaxHighlightDark.css',
   'ui/inspectorViewTabbedPane.css',

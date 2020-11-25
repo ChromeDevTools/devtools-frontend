@@ -35,16 +35,3 @@ That way, other code contributors are aware of potential merge conflicts and reg
 
 If the functionality of the package changed significantly in the update, you might have to obtain another security review.
 Ask devtools-dev+security@ for guidance if you are unsure.
-
-## How to fix Closure type-checking
-
-Closure will try to type-check a third_party package as soon as it is imported by a DevTools module. This will fail should the third_party
-package not use JSDoc, or use it in way that is not supported by Closure. The workaround includes a couple of steps:
-
-* For each file that is imported by DevTools and which Closure is unhappy about, we need to create a `_types.js` file along-side it.
-  For example, if the package `foo` contains `third_party/foo/package/foo.js`, create a file `third_party/foo/package/foo_types.js` that exports the relevant
-  types that Closure needs to know about.
-* Add `foo.js` to the [run_type_check.py](https://source.chromium.org/chromium/chromium/src/+/master:third_party/devtools-frontend/src/scripts/test/run_type_check.py;l=344)
-  script. This tells our build system to use `foo_types.js` instead of `foo.js` for type-checking.
-* Don't forget to update the `README.chromium` of the third_party package to include the added `_types.js` files in the "Local Modifications" section.
-* Any `module.json` that lists `third_party/foo/package/foo.js` in its `modules` section, needs to add the same file to the `skip_compilation` section.

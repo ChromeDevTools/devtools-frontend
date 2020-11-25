@@ -394,16 +394,27 @@ export class RuntimeModel extends SDKModel {
           object.unserializableValue() || /** @type {string} */ (object.value));
       return;
     }
-    object.callFunctionJSON(toStringForClipboard, [{value: object.subtype}])
+
+    const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
+    object
+        .callFunctionJSON(toStringForClipboard, [{
+                            value: {
+                              subtype: object.subtype,
+                              indent: indent,
+                            }
+                          }])
         .then(Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
             Host.InspectorFrontendHost.InspectorFrontendHostInstance));
 
     /**
-     * @param {string} subtype
+     * @param {{subtype: string, indent: string}} data
      * @this {Object}
      * @suppressReceiverCheck
      */
-    function toStringForClipboard(subtype) {
+    function toStringForClipboard(data) {
+      const subtype = data.subtype;
+      const indent = data.indent;
+
       if (subtype === 'node') {
         return this instanceof Element ? this.outerHTML : undefined;
       }
@@ -411,8 +422,7 @@ export class RuntimeModel extends SDKModel {
         return subtype + '';
       }
       try {
-        // TODO: Respect the indentation preference from DevTools → Settings.
-        return JSON.stringify(this, null, 2);
+        return JSON.stringify(this, null, indent);
       } catch (error) {
         return String(this);
       }

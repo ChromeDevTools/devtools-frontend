@@ -545,8 +545,7 @@ class ModelData {
     if (!callFrame) {
       return false;
     }
-    if (callFrame.script.sourceMapURL !== SDK.SourceMap.WasmSourceMap.FAKE_URL &&
-        !Root.Runtime.experiments.isEnabled('emptySourceMapAutoStepping')) {
+    if (!Root.Runtime.experiments.isEnabled('emptySourceMapAutoStepping')) {
       return true;
     }
     return !!this._compilerMapping.mapsToSourceCode(callFrame.location());

@@ -480,7 +480,6 @@ all_typescript_module_sources = [
   "sdk/TracingManager.js",
   "sdk/TracingModel.js",
   "sdk/WebAuthnModel.js",
-  "sdk/wasm_source_map/pkg/wasm_source_map.js",
   "search/SearchConfig.js",
   "search/SearchResultsPane.js",
   "search/SearchView.js",

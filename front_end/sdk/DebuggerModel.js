@@ -37,7 +37,6 @@ import {GetPropertiesResult, RemoteObject, ScopeRef} from './RemoteObject.js';  
 import {EvaluationOptions, EvaluationResult, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import {Script} from './Script.js';
 import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
-import {WasmSourceMap} from './SourceMap.js';
 import {SourceMapManager} from './SourceMapManager.js';
 
 /**
@@ -797,11 +796,6 @@ export class DebuggerModel extends SDKModel {
     let isContentScript = false;
     if (executionContextAuxData && ('isDefault' in executionContextAuxData)) {
       isContentScript = !executionContextAuxData['isDefault'];
-    }
-    // TODO(crbug.com/1083146): Remove support for the Gimli based DWARF prototype.
-    if (!Root.Runtime.experiments.isEnabled('wasmDWARFDebugging') && !sourceMapURL && debugSymbols &&
-        debugSymbols.type === 'EmbeddedDWARF') {
-      sourceMapURL = WasmSourceMap.FAKE_URL;
     }
     const script = new Script(
         this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,

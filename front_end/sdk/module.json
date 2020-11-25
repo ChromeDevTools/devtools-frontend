@@ -648,7 +648,6 @@
     "PerformanceMetricsModel.js",
     "FilmStripModel.js",
     "ConsoleModel.js",
-    "wasm_source_map/pkg/wasm_source_map.js",
     "PageResourceLoader.js",
     "IOModel.js"
   ]

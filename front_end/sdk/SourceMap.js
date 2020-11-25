@@ -29,13 +29,10 @@
  */
 
 import * as Common from '../common/common.js';
-import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
 import {PageResourceLoader, PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
-import {Script} from './Script.js';  // eslint-disable-line no-unused-vars
-import initWasm, {Resolver as WasmResolver} from './wasm_source_map/pkg/wasm_source_map.js';
 
 /**
  * @interface
@@ -103,9 +100,6 @@ export class SourceMap {
    */
   mappings() {
     throw new Error('Not implemented');
-  }
-
-  dispose() {
   }
 }
 
@@ -594,12 +588,6 @@ export class TextSourceMap {
     return new TextUtils.TextRange.TextRange(
         startMapping.lineNumber, startMapping.columnNumber, endMapping.lineNumber, endMapping.columnNumber);
   }
-
-  /**
-   * @override
-   */
-  dispose() {
-  }
 }
 
 TextSourceMap._VLQ_BASE_SHIFT = 5;
@@ -649,139 +637,3 @@ TextSourceMap.SourceInfo = class {
     this.reverseMappings = reverseMappings;
   }
 };
-
-/** @type {?Promise<typeof WasmResolver>} */
-let asyncResolver;
-
-/**
- * @implements {SourceMap}
- */
-export class WasmSourceMap {
-  /**
-   * Implements SourceMap interface for DWARF information in Wasm.
-   * @param {string} wasmUrl
-   * @param {!WasmResolver} resolver
-   * @param {!PageResourceLoadInitiator} initiator
-   */
-  constructor(wasmUrl, resolver, initiator) {
-    this._wasmUrl = wasmUrl;
-    this._resolver = resolver;
-    this._initiator = initiator;
-  }
-
-  /**
-   * @private
-   */
-  static async _loadBindings() {
-    const arrayBuffer = await Root.Runtime.Runtime.instance().loadBinaryResourcePromise(
-        './sdk/wasm_source_map/pkg/wasm_source_map_bg.wasm');
-    await initWasm(arrayBuffer);
-    return WasmResolver;
-  }
-
-  /**
-   * @private
-   */
-  static _loadBindingsOnce() {
-    if (!asyncResolver) {
-      asyncResolver = WasmSourceMap._loadBindings();
-    }
-    return asyncResolver;
-  }
-
-  /**
-   *
-   * @param {!Script} script
-   * @param {string} wasmUrl
-   * @returns {!Promise<!WasmSourceMap>}
-   */
-  static async load(script, wasmUrl) {
-    const [Resolver, wasm] = await Promise.all([WasmSourceMap._loadBindingsOnce(), script.getWasmBytecode()]);
-    return new WasmSourceMap(wasmUrl, new Resolver(new Uint8Array(wasm)), script.createPageResourceLoadInitiator());
-  }
-
-  /**
-   * @override
-   * @return {string}
-   */
-  compiledURL() {
-    return this._wasmUrl;
-  }
-
-  /**
-   * @override
-   * @return {string}
-   */
-  url() {
-    return WasmSourceMap.FAKE_URL;
-  }
-
-  /**
-   * @override
-   * @return {!Array.<string>}
-   */
-  sourceURLs() {
-    return this._resolver.listFiles();
-  }
-
-  /**
-   * @override
-   * @param {string} sourceURL
-   * @param {!Common.ResourceType.ResourceType} contentType
-   * @return {!TextUtils.ContentProvider.ContentProvider}
-   */
-  sourceContentProvider(sourceURL, contentType) {
-    return new CompilerSourceMappingContentProvider(sourceURL, contentType, this._initiator);
-  }
-
-  /**
-   * @override
-   * @param {string} sourceURL
-   * @return {?string}
-   */
-  embeddedContentByURL(sourceURL) {
-    return null;
-  }
-
-  /**
-   * @override
-   * @param {number} lineNumber in compiled resource
-   * @param {number} columnNumber in compiled resource
-   * @return {?SourceMapEntry}
-   */
-  findEntry(lineNumber, columnNumber) {
-    if (lineNumber !== 0) {
-      console.warn(new Error('Invalid non-zero line number.'));
-    }
-    return this._resolver.resolve(columnNumber) || null;
-  }
-
-  /**
-   * @override
-   * @param {string} sourceURL
-   * @param {number} lineNumber
-   * @param {number} columnNumber
-   * @return {?SourceMapEntry}
-   */
-  sourceLineMapping(sourceURL, lineNumber, columnNumber) {
-    return this._resolver.resolveReverse(sourceURL, lineNumber, columnNumber) || null;
-  }
-
-  /**
-   * @override
-   * @return {!Array<!SourceMapEntry>}
-   */
-  mappings() {
-    return this._resolver.listMappings();
-  }
-
-  /**
-   * @override
-   */
-  dispose() {
-    this._resolver.free();
-  }
-}
-
-/* Special URL that should be kept in sync with one in V8 */
-WasmSourceMap.FAKE_URL = 'wasm://dwarf';

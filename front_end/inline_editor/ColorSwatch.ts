@@ -32,7 +32,7 @@ export class ColorSwatch extends HTMLElement {
   constructor() {
     super();
     this.shadow.adoptedStyleSheets = [
-      ...getStyleSheets('inline_editor/colorSwatch.css', {patchThemeSupport: false}),
+      ...getStyleSheets('inline_editor/colorSwatch.css', {enableLegacyPatching: false}),
     ];
   }
 

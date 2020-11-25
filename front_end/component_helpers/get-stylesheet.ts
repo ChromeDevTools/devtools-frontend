@@ -5,7 +5,7 @@
 import * as Root from '../root/root.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 
-const sheetsCache = new Map<string, {sheets: CSSStyleSheet[], patchThemeSupport: boolean}>();
+const sheetsCache = new Map<string, {sheets: CSSStyleSheet[], enableLegacyPatching: boolean}>();
 
 /**
  * Helper for importing a legacy stylesheet into a component.
@@ -13,12 +13,12 @@ const sheetsCache = new Map<string, {sheets: CSSStyleSheet[], patchThemeSupport:
  * Given a path to a stylesheet, it returns a CSSStyleSheet that can then be
  * adopted by your component.
  *
- * Pass `patchThemeSupport: true` to turn on the legacy dark mode theming and be
+ * Pass `enableLegacyPatching: true` to turn on the legacy dark mode theming and be
  * returned both the original stylesheet and the new patched rules for dark mode.
  */
-export function getStyleSheets(path: string, {patchThemeSupport = false} = {}): CSSStyleSheet[] {
+export function getStyleSheets(path: string, {enableLegacyPatching = false} = {}): CSSStyleSheet[] {
   const cachedResult = sheetsCache.get(path);
-  if (cachedResult && cachedResult.patchThemeSupport === patchThemeSupport) {
+  if (cachedResult && cachedResult.enableLegacyPatching === enableLegacyPatching) {
     return cachedResult.sheets;
   }
 
@@ -31,15 +31,15 @@ export function getStyleSheets(path: string, {patchThemeSupport = false} = {}): 
   originalStylesheet.replaceSync(content);
 
   const themeStyleSheet = ThemeSupport.ThemeSupport.instance().themeStyleSheet(path, content);
-  if (!patchThemeSupport || !themeStyleSheet) {
-    sheetsCache.set(path, {patchThemeSupport, sheets: [originalStylesheet]});
+  if (!enableLegacyPatching || !themeStyleSheet) {
+    sheetsCache.set(path, {enableLegacyPatching, sheets: [originalStylesheet]});
     return [originalStylesheet];
   }
 
   const patchedStyleSheet = new CSSStyleSheet();
 
   patchedStyleSheet.replaceSync(themeStyleSheet + '\n' + Root.Runtime.Runtime.resolveSourceURL(path + '.theme'));
-  sheetsCache.set(path, {patchThemeSupport, sheets: [originalStylesheet, patchedStyleSheet]});
+  sheetsCache.set(path, {enableLegacyPatching, sheets: [originalStylesheet, patchedStyleSheet]});
 
   return [originalStylesheet, patchedStyleSheet];
 }

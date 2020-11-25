@@ -305,6 +305,13 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   }
 
   /**
+   * @param {!SDK.DOMModel.DOMNode} targetNode
+   */
+  duplicateNode(targetNode) {
+    this._performDuplicate(targetNode);
+  }
+
+  /**
    * @param {!Event} event
    */
   _onPaste(event) {
@@ -347,6 +354,22 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
       }
       this.selectDOMNode(pastedNode);
     }
+  }
+
+  /**
+   * @param {!SDK.DOMModel.DOMNode} targetNode
+   */
+  _performDuplicate(targetNode) {
+    if (targetNode.isInShadowTree()) {
+      return;
+    }
+
+    const parentNode = targetNode.parentNode ? targetNode.parentNode : targetNode;
+    if (parentNode.nodeName() === '#document') {
+      return;
+    }
+
+    targetNode.copyTo(parentNode, targetNode.nextSibling);
   }
 
   /**

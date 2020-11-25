@@ -219,6 +219,9 @@
   <message name="IDS_DEVTOOLS_88a306e559954dc8c8ae9eb55d62297f" desc="A context menu item in the Elements Tree Element of the Elements panel">
     Add attribute
   </message>
+  <message name="IDS_DEVTOOLS_8a65a65210ce9ea98a667ded622790c5" desc="A context menu item in the Elements Tree Element of the Elements panel">
+    Duplicate element
+  </message>
   <message name="IDS_DEVTOOLS_8bd236209fc42bdeffdecd1cc68d7b86" desc="Swatch icon element title in Color Swatch Popover Icon of the Elements panel">
     Open color picker. <ph name="SHIFTCLICKMESSAGE">$1s<ex>Shift + Click to change color format.</ex></ph>
   </message>

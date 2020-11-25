@@ -64,7 +64,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     };
 
     this.codeMirror().addKeyMap(_BlockIndentController);
-    this._tokenHighlighter = new TokenHighlighter(this, this.codeMirror());
+    this._tokenHighlighter = new TokenHighlighter(this, /** @type {!CodeMirror.Editor} */ (this.codeMirror()));
 
     /** @type {!Array<string>} */
     this._gutters = [lineNumbersGutterType];
@@ -121,9 +121,10 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     this._infoBarDiv = null;
   }
 
+  // https://crbug.com/1151919 * = CodeMirror.Editor
   /**
    * @override
-   * @param {!CodeMirror.Editor} codeMirrorEditor
+   * @param {*} codeMirrorEditor
    * @return {!SourcesTextEditor}
    */
   static getForCodeMirror(codeMirrorEditor) {
@@ -473,8 +474,8 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
   }
 
   _onUpdateEditorIndentation() {
-    this._setEditorIndentation(
-        TextEditor.CodeMirrorUtils.pullLines(this.codeMirror(), LinesToScanForIndentationGuessing));
+    this._setEditorIndentation(TextEditor.CodeMirrorUtils.pullLines(
+        /** @type {!CodeMirror} */ (this.codeMirror()), LinesToScanForIndentationGuessing));
   }
 
   /**

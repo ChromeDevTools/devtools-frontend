@@ -391,7 +391,7 @@ CodeMirror.prototype = {
   getInputField: function() {},
   getLine: function(line) {},
   /**
-   * @return {!{wrapClass: string, height: number}}
+   * @return {!{wrapClass: string, height: number, text: string}}
    */
   getLineHandle: function(line) {},
   getLineNumber: function(line) {},
@@ -483,8 +483,16 @@ CodeMirror.prototype = {
   unlinkDoc: function(other) {}
 };
 CodeMirror.Editor = class extends CodeMirror {};
+CodeMirror.EditorConfiguration = class EditorConfiguration {};
+CodeMirror.KeyMap = class Keymap {};
+CodeMirror.EditorChangeLinkedList = class extends Array {};
 CodeMirror.Doc = class extends CodeMirror {};
-CodeMirror.LineHandle = class {};
+CodeMirror.LineHandle = class LineHandle {
+  constructor() {
+    /** @type {string} */
+    this.text;
+  }
+};
 /** @type {!{cursorDiv: Element, lineSpace: Element, gutters: Element}} */
 CodeMirror.prototype.display;
 /** @type {!{devtoolsAccessibleName: string, mode: string, lineWrapping: boolean}} */
@@ -502,8 +510,9 @@ CodeMirror.startState = function(mode) {};
 CodeMirror.copyState = function(mode, state) {};
 CodeMirror.inputStyles = {};
 CodeMirror.inputStyles.textarea = class {
+  // https://crbug.com/1151919 * = CodeMirror.Editor
   /**
-   * @param {!CodeMirror.Editor} codeMirror
+   * @param {*} codeMirror
    */
   constructor(codeMirror) {
     /** @type {!HTMLTextAreaElement} */

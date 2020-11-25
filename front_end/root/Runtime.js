@@ -602,6 +602,15 @@ export class RuntimeExtensionDescriptor {
     this.setting;
     /** @type {?string} */
     this.name;
+
+    /** @type {string} */
+    this.fileName;
+
+    /** @type {!Array<string>|undefined} */
+    this.mimeTypes;
+
+    /** @type {!Array<string>|undefined} */
+    this.dependencies;
   }
 }
 

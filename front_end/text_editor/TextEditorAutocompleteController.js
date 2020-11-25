@@ -14,9 +14,10 @@ import {changeObjectToEditOperation} from './CodeMirrorUtils.js';
  * @unrestricted
  */
 export class TextEditorAutocompleteController {
+  // https://crbug.com/1151919 * = CodeMirror.Editor
   /**
    * @param {!CodeMirrorTextEditor} textEditor
-   * @param {!CodeMirror} codeMirror
+   * @param {*} codeMirror
    * @param {!UI.TextEditor.AutocompleteConfig} config
    */
   constructor(textEditor, codeMirror, config) {
@@ -376,7 +377,8 @@ export class TextEditorAutocompleteController {
 
     if (!this._hintMarker) {
       this._hintMarker = this._textEditor.addBookmark(
-          cursor.line, cursor.ch, this._hintElement, TextEditorAutocompleteController.HintBookmark, true);
+          cursor.line, cursor.ch, /** @type {!HTMLElement} */ (this._hintElement),
+          TextEditorAutocompleteController.HintBookmark, true);
     } else if (this._lastHintText !== hint) {
       this._hintMarker.refresh();
     }

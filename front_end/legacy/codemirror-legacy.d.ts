@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as CodeMirrorModule from 'codemirror';
-
 declare global {
   var CodeMirror: typeof CodeMirrorModule;
 

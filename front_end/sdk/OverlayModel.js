@@ -773,11 +773,12 @@ class DefaultHighlighter {
 
 /**
  * @interface
+ * @template ConfigType
  */
-export class PersistentGridHighlighter {
+export class PersistentHighlighter {
   /**
    * @param {number} nodeId
-   * @param {!Protocol.Overlay.GridHighlightConfig} config
+   * @param {!ConfigType} config
    */
   highlightInOverlay(nodeId, config) {
   }
@@ -804,7 +805,7 @@ export class PersistentGridHighlighter {
 }
 
 /**
- * @implements {PersistentGridHighlighter}
+ * @implements {PersistentHighlighter<!Protocol.Overlay.GridHighlightConfig>}
  */
 class DefaultPersistentGridHighlighter {
   /**
@@ -1028,39 +1029,7 @@ class DefaultPersistentGridHighlighter {
 DefaultPersistentGridHighlighter.gridTelemetryLogged = false;
 
 /**
- * @interface
- */
-export class PersistentFlexHighlighter {
-  /**
-   * @param {number} nodeId
-   * @param {!Protocol.Overlay.FlexContainerHighlightConfig} config
-   */
-  highlightInOverlay(nodeId, config) {
-  }
-
-  /**
-   * @param {number} nodeId
-   */
-  hideInOverlay(nodeId) {
-  }
-
-  hideAllInOverlay() {
-  }
-
-  refreshHighlights() {
-  }
-
-  /**
-   * @param {number} nodeId
-   * @return {boolean}
-   */
-  isHighlighted(nodeId) {
-    return false;
-  }
-}
-
-/**
- * @implements {PersistentFlexHighlighter}
+ * @implements {PersistentHighlighter<!Protocol.Overlay.FlexContainerHighlightConfig>}
  */
 class DefaultPersistentFlexHighlighter {
   /**

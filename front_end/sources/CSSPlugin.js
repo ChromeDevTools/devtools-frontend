@@ -266,7 +266,7 @@ export class CSSPlugin extends Plugin {
     }
     this._currentSwatch = swatch;
 
-    if (swatch.localName === 'devtools-color-swatch') {
+    if (InlineEditor.ColorSwatch.ColorSwatch.isColorSwatch(swatch)) {
       this._showSpectrum(/** @type {!InlineEditor.ColorSwatch.ColorSwatch} */ (swatch));
     } else if (swatch instanceof InlineEditor.Swatches.BezierSwatch) {
       this._showBezierEditor(swatch);
@@ -303,7 +303,7 @@ export class CSSPlugin extends Plugin {
       return;
     }
 
-    if (this._currentSwatch.localName === 'devtools-color-swatch') {
+    if (InlineEditor.ColorSwatch.ColorSwatch.isColorSwatch(this._currentSwatch)) {
       const swatch = /** @type {!InlineEditor.ColorSwatch.ColorSwatch} */ (this._currentSwatch);
       swatch.renderColor(color);
     }

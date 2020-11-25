@@ -5,6 +5,8 @@
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
+import {ColorSwatch} from './ColorSwatch.js';
+
 /**
  * @unrestricted
  */
@@ -85,7 +87,16 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
     this._view.contentElement.removeEventListener('focusout', this._boundFocusOut, false);
     this._view.show(this._popover.contentElement);
     if (this._anchorElement) {
-      this._popover.setContentAnchorBox(this._anchorElement.boxInWindow());
+      let anchorBox = this._anchorElement.boxInWindow();
+      if (ColorSwatch.isColorSwatch(this._anchorElement)) {
+        const swatch = /** @type {!ColorSwatch} */ (this._anchorElement);
+        if (!swatch.anchorBox) {
+          return;
+        }
+        anchorBox = swatch.anchorBox;
+      }
+
+      this._popover.setContentAnchorBox(anchorBox);
       this._popover.show(/** @type {!Document} */ (this._anchorElement.ownerDocument));
     }
     this._view.contentElement.addEventListener('focusout', this._boundFocusOut, false);

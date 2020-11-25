@@ -66,14 +66,22 @@ function createServerIndexFile(componentNames) {
       <meta name="viewport" content="width=device-width" />
       <title>DevTools components</title>
       <style>
-        a { text-transform: capitalize; }
+        a:link, a:visited {
+          color: blue;
+          text-transform: capitalize;
+          text-decoration: none;
+        }
+        a:hover {
+          text-decoration: underline;
+        }
       </style>
     </head>
     <body>
       <h1>DevTools components</h1>
       <ul>
         ${componentNames.map(name => {
-          return `<li><a href='/${name}'>${name}</a></li>`;
+          const niceName = name.replace(/_/g, ' ');
+          return `<li><a href='/${name}'>${niceName}</a></li>`;
         }).join('\n')}
       </ul>
     </body>
@@ -141,7 +149,11 @@ async function requestHandler(request, response) {
 
   if (filePath === '/' || filePath === '/index.html') {
     const components = await fs.promises.readdir(path.join(devtoolsFrontendFolder, 'component_docs'));
-    const html = createServerIndexFile(components);
+    const html = createServerIndexFile(components.filter(filePath => {
+      const stats = fs.lstatSync(path.join(devtoolsFrontendFolder, 'component_docs', filePath));
+      // Filter out some build config files (tsconfig, d.ts, etc), and just list the directories.
+      return stats.isDirectory();
+    }));
     respondWithHtml(response, html);
   } else if (path.extname(filePath) === '') {
     // This means it's a component path like /breadcrumbs.

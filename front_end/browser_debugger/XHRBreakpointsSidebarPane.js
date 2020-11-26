@@ -377,7 +377,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
     this._emptyElement.classList.toggle('hidden', !isEmpty);
 
     const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
-    if (!details || details.reason !== SDK.DebuggerModel.BreakReason.XHR) {
+    if (!details || details.reason !== Protocol.Debugger.PausedEventReason.XHR) {
       if (this._hitBreakpoint) {
         const oldHitBreakpoint = this._hitBreakpoint;
         delete this._hitBreakpoint;

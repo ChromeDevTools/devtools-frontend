@@ -13,7 +13,7 @@ export class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
    * @param {string[]} categories
    * @param {!Array<!SDK.DOMDebuggerModel.CategorizedBreakpoint>} breakpoints
    * @param {string} viewId
-   * @param {!SDK.DebuggerModel.BreakReason} detailsPausedReason
+   * @param {!!Protocol.Debugger.PausedEventReason} detailsPausedReason
    */
   constructor(categories, breakpoints, viewId, detailsPausedReason) {
     super(true);

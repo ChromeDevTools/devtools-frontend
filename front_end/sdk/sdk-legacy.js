@@ -99,7 +99,7 @@ SDK.DebuggerModel.PauseOnExceptionsState = SDKModule.DebuggerModel.PauseOnExcept
 SDK.DebuggerModel.Events = SDKModule.DebuggerModel.Events;
 
 /** @enum {string} */
-SDK.DebuggerModel.BreakReason = SDKModule.DebuggerModel.BreakReason;
+SDK.DebuggerModel.BreakReason = Protocol.Debugger.PausedEventReason;
 
 /** @constructor */
 SDK.DebuggerModel.Location = SDKModule.DebuggerModel.Location;

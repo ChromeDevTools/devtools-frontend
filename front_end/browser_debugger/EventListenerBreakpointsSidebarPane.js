@@ -11,7 +11,8 @@ export class EventListenerBreakpointsSidebarPane extends CategorizedBreakpointsS
         breakpoint => breakpoint.category());
     categories.sort();
     const breakpoints = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().eventListenerBreakpoints();
-    super(categories, breakpoints, 'sources.eventListenerBreakpoints', SDK.DebuggerModel.BreakReason.EventListener);
+    super(
+        categories, breakpoints, 'sources.eventListenerBreakpoints', Protocol.Debugger.PausedEventReason.EventListener);
   }
 
   /**

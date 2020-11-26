@@ -98,13 +98,14 @@ export class DebuggerPausedMessage {
 
     const status = this._contentElement.createChild('div', 'paused-status');
 
-    const errorLike = details.reason === SDK.DebuggerModel.BreakReason.Exception ||
-        details.reason === SDK.DebuggerModel.BreakReason.PromiseRejection ||
-        details.reason === SDK.DebuggerModel.BreakReason.Assert || details.reason === SDK.DebuggerModel.BreakReason.OOM;
+    const errorLike = details.reason === Protocol.Debugger.PausedEventReason.Exception ||
+        details.reason === Protocol.Debugger.PausedEventReason.PromiseRejection ||
+        details.reason === Protocol.Debugger.PausedEventReason.Assert ||
+        details.reason === Protocol.Debugger.PausedEventReason.OOM;
     let messageWrapper;
-    if (details.reason === SDK.DebuggerModel.BreakReason.DOM) {
+    if (details.reason === Protocol.Debugger.PausedEventReason.DOM) {
       messageWrapper = await DebuggerPausedMessage._createDOMBreakpointHitMessage(details);
-    } else if (details.reason === SDK.DebuggerModel.BreakReason.EventListener) {
+    } else if (details.reason === Protocol.Debugger.PausedEventReason.EventListener) {
       let eventNameForUI = '';
       if (details.auxData) {
         eventNameForUI = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpointTitle(
@@ -112,29 +113,29 @@ export class DebuggerPausedMessage {
                 details.auxData));
       }
       messageWrapper = buildWrapper(Common.UIString.UIString('Paused on event listener'), eventNameForUI);
-    } else if (details.reason === SDK.DebuggerModel.BreakReason.XHR) {
+    } else if (details.reason === Protocol.Debugger.PausedEventReason.XHR) {
       const auxData = /** @type {!PausedDetailsAuxData} */ (details.auxData);
       messageWrapper = buildWrapper(Common.UIString.UIString('Paused on XHR or fetch'), auxData.url || '');
-    } else if (details.reason === SDK.DebuggerModel.BreakReason.Exception) {
+    } else if (details.reason === Protocol.Debugger.PausedEventReason.Exception) {
       const auxData = /** @type {!PausedDetailsAuxData} */ (details.auxData);
       const description = auxData.description || auxData.value || '';
       const descriptionWithoutStack = DebuggerPausedMessage._descriptionWithoutStack(description);
       messageWrapper =
           buildWrapper(Common.UIString.UIString('Paused on exception'), descriptionWithoutStack, description);
-    } else if (details.reason === SDK.DebuggerModel.BreakReason.PromiseRejection) {
+    } else if (details.reason === Protocol.Debugger.PausedEventReason.PromiseRejection) {
       const auxData = /** @type {!PausedDetailsAuxData} */ (details.auxData);
       const description = auxData.description || auxData.value || '';
       const descriptionWithoutStack = DebuggerPausedMessage._descriptionWithoutStack(description);
       messageWrapper =
           buildWrapper(Common.UIString.UIString('Paused on promise rejection'), descriptionWithoutStack, description);
-    } else if (details.reason === SDK.DebuggerModel.BreakReason.Assert) {
+    } else if (details.reason === Protocol.Debugger.PausedEventReason.Assert) {
       messageWrapper = buildWrapper(Common.UIString.UIString('Paused on assertion'));
-    } else if (details.reason === SDK.DebuggerModel.BreakReason.DebugCommand) {
+    } else if (details.reason === Protocol.Debugger.PausedEventReason.DebugCommand) {
       messageWrapper = buildWrapper(Common.UIString.UIString('Paused on debugged function'));
-    } else if (details.reason === SDK.DebuggerModel.BreakReason.OOM) {
+    } else if (details.reason === Protocol.Debugger.PausedEventReason.OOM) {
       messageWrapper = buildWrapper(Common.UIString.UIString('Paused before potential out-of-memory crash'));
     } else if (
-        details.reason === SDK.DebuggerModel.BreakReason.CSPViolation && details.auxData &&
+        details.reason === Protocol.Debugger.PausedEventReason.CSPViolation && details.auxData &&
         details.auxData['violationType']) {
       const text = /** @type {string} */ (details.auxData['violationType']);
       if (text === Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation) {

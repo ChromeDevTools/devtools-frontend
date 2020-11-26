@@ -295,7 +295,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
       this._highlightedBreakpoint = null;
       this._list.refreshItem(oldHighlightedBreakpoint);
     }
-    if (!details || !details.auxData || details.reason !== SDK.DebuggerModel.BreakReason.DOM) {
+    if (!details || !details.auxData || details.reason !== Protocol.Debugger.PausedEventReason.DOM) {
       return;
     }
 

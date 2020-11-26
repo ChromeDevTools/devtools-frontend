@@ -705,7 +705,7 @@ export class DebuggerModel extends SDKModel {
 
   /**
    * @param {!Array<!Protocol.Debugger.CallFrame>} callFrames
-   * @param {string} reason
+   * @param {!Protocol.Debugger.PausedEventReason} reason
    * @param {!Object|undefined} auxData
    * @param {!Array.<string>} breakpointIds
    * @param {!Protocol.Runtime.StackTrace=} asyncStackTrace
@@ -1178,20 +1178,6 @@ export const Events = {
   CallFrameSelected: Symbol('CallFrameSelected'),
   ConsoleCommandEvaluatedInSelectedCallFrame: Symbol('ConsoleCommandEvaluatedInSelectedCallFrame'),
   DebuggerIsReadyToPause: Symbol('DebuggerIsReadyToPause'),
-};
-
-/** @enum {string} */
-export const BreakReason = {
-  CSPViolation: 'CSPViolation',
-  DOM: 'DOM',
-  EventListener: 'EventListener',
-  XHR: 'XHR',
-  Exception: 'exception',
-  PromiseRejection: 'promiseRejection',
-  Assert: 'assert',
-  DebugCommand: 'debugCommand',
-  OOM: 'OOM',
-  Other: 'other'
 };
 
 /**
@@ -1905,7 +1891,7 @@ export class DebuggerPausedDetails {
   /**
    * @param {!DebuggerModel} debuggerModel
    * @param {!Array<!Protocol.Debugger.CallFrame>} callFrames
-   * @param {string} reason
+   * @param {!Protocol.Debugger.PausedEventReason} reason
    * @param {!Object.<string, *>|undefined} auxData
    * @param {!Array.<string>} breakpointIds
    * @param {!Protocol.Runtime.StackTrace=} asyncStackTrace
@@ -1927,7 +1913,8 @@ export class DebuggerPausedDetails {
    * @return {?RemoteObject}
    */
   exception() {
-    if (this.reason !== BreakReason.Exception && this.reason !== BreakReason.PromiseRejection) {
+    if (this.reason !== Protocol.Debugger.PausedEventReason.Exception &&
+        this.reason !== Protocol.Debugger.PausedEventReason.PromiseRejection) {
       return null;
     }
     return this.debuggerModel._runtimeModel.createRemoteObject(

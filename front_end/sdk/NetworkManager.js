@@ -829,7 +829,7 @@ export class NetworkDispatcher {
    * @override
    * @param {!Protocol.Network.RequestWillBeSentExtraInfoEvent} request
    */
-  requestWillBeSentExtraInfo({requestId, associatedCookies, headers}) {
+  requestWillBeSentExtraInfo({requestId, associatedCookies, headers, clientSecurityState}) {
     /** @type {!Array<!BlockedCookieWithReason>} */
     const blockedRequestCookies = [];
     const includedRequestCookies = [];
@@ -843,7 +843,8 @@ export class NetworkDispatcher {
     const extraRequestInfo = {
       blockedRequestCookies,
       includedRequestCookies,
-      requestHeaders: this._headersMapToHeadersArray(headers)
+      requestHeaders: this._headersMapToHeadersArray(headers),
+      clientSecurityState: clientSecurityState
     };
     this._getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);
   }

@@ -8,6 +8,8 @@ copy_to_gen("network") {
   sources = [
     "cacheable.rawresponse",
     "csp-report-only.rawresponse",
+    "fetch.html",
+    "image.svg",
     "last-modified.html",
     "last-modified.rawresponse",
     "resources-from-cache.html",

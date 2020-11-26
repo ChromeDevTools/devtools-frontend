@@ -193,6 +193,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     this._name;
     /** @type {(string|undefined)} */
     this._path;
+    /** @type {(!Protocol.Network.ClientSecurityState|undefined)} */
+    this._clientSecurityState;
   }
 
   /**
@@ -1528,6 +1530,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     this.setRequestHeaders(extraRequestInfo.requestHeaders);
     this._hasExtraRequestInfo = true;
     this.setRequestHeadersText('');  // Mark request headers as non-provisional
+    this._clientSecurityState = extraRequestInfo.clientSecurityState;
   }
 
   /**
@@ -1607,6 +1610,13 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
   redirectSourceSignedExchangeInfoHasNoErrors() {
     return !!this._redirectSource && !!this._redirectSource._signedExchangeInfo &&
         !this._redirectSource._signedExchangeInfo.errors;
+  }
+
+  /**
+   * @return {!Protocol.Network.ClientSecurityState|undefined}
+   */
+  clientSecurityState() {
+    return this._clientSecurityState;
   }
 }
 
@@ -1822,7 +1832,8 @@ export let EventSourceMessage;
   * @typedef {!{
   *   blockedRequestCookies: !Array<!BlockedCookieWithReason>,
   *   requestHeaders: !Array<!NameValue>,
-  *   includedRequestCookies: !Array<!Cookie>
+  *   includedRequestCookies: !Array<!Cookie>,
+  *   clientSecurityState: (!Protocol.Network.ClientSecurityState|undefined),
   * }}
   */
 // @ts-ignore typedef

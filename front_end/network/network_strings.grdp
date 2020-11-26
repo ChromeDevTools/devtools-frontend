@@ -450,6 +450,9 @@
   <message name="IDS_DEVTOOLS_2995fcc60be8c8c4525af76b7adc34bd" desc="Text in Network Data Grid Node of the Network panel">
     CORS error
   </message>
+  <message name="IDS_DEVTOOLS_a6ab3a18d43f3c5d2590fb86e9659c38" desc="Column header in the Network log view of the Network panel">
+    Initiator Address Space
+  </message>
   <message name="IDS_DEVTOOLS_b2844b8e17ecaaeae68d018fe9418af0" desc="Text to indicate the expiry date">
     Valid until
   </message>

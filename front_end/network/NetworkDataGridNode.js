@@ -648,6 +648,25 @@ export class NetworkRequestNode extends NetworkNode {
    * @param {!NetworkNode} b
    * @return {number}
    */
+  static InitiatorAddressSpaceComparator(a, b) {
+    const aRequest = a.requestOrFirstKnownChildRequest();
+    const bRequest = b.requestOrFirstKnownChildRequest();
+    if (!aRequest || !bRequest) {
+      return !aRequest ? -1 : 1;
+    }
+    const aClientSecurityState = aRequest.clientSecurityState();
+    const bClientSecurityState = bRequest.clientSecurityState();
+    if (!aClientSecurityState || !bClientSecurityState) {
+      return !aClientSecurityState ? -1 : 1;
+    }
+    return aClientSecurityState.initiatorIPAddressSpace.localeCompare(bClientSecurityState.initiatorIPAddressSpace);
+  }
+
+  /**
+   * @param {!NetworkNode} a
+   * @param {!NetworkNode} b
+   * @return {number}
+   */
   static RequestCookiesCountComparator(a, b) {
     // TODO(allada) Handle this properly for group nodes.
     const aRequest = a.requestOrFirstKnownChildRequest();
@@ -1034,6 +1053,10 @@ export class NetworkRequestNode extends NetworkNode {
         this._renderInitiatorCell(cell);
         break;
       }
+      case 'initiator-address-space': {
+        this._renderInitiatorAddressSpaceCell(cell);
+        break;
+      }
       case 'size': {
         this._renderSizeCell(cell);
         break;
@@ -1327,6 +1350,16 @@ export class NetworkRequestNode extends NetworkNode {
         cell.classList.add('network-dim-cell');
         cell.appendChild(document.createTextNode(Common.UIString.UIString('Other')));
       }
+    }
+  }
+
+  /**
+   * @param {!HTMLElement} cell
+   */
+  _renderInitiatorAddressSpaceCell(cell) {
+    const clientSecurityState = this._request.clientSecurityState();
+    if (clientSecurityState) {
+      UI.UIUtils.createTextChild(cell, clientSecurityState.initiatorIPAddressSpace);
     }
   }
 

@@ -908,6 +908,13 @@ const _temporaryDefaultColumns = [
     sortingFunction: NetworkRequestNode.InitiatorComparator
   },
   {
+    id: 'initiator-address-space',
+    title: Common.UIString.UIString('Initiator Address Space'),
+    visible: false,
+    weight: 10,
+    sortingFunction: NetworkRequestNode.InitiatorAddressSpaceComparator
+  },
+  {
     id: 'cookies',
     title: Common.UIString.UIString('Cookies'),
     align: DataGrid.DataGrid.Align.Right,

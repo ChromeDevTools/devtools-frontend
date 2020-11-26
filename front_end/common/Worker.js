@@ -33,20 +33,34 @@
  */
 export class WorkerWrapper {
   /**
-   * @param {string} appName
+   * @private
+   * @param {(string|!URL)} workerLocation
    */
-  constructor(appName) {
-    const url = appName + '.js' + location.search;
-
+  constructor(workerLocation) {
     /** @type {!Promise<!Worker>} */
     this._workerPromise = new Promise(fulfill => {
-      const worker = new Worker(url, {type: 'module'});
+      const worker = new Worker(workerLocation, {type: 'module'});
       worker.onmessage = event => {
         console.assert(event.data === 'workerReady');
         worker.onmessage = null;
         fulfill(worker);
       };
     });
+  }
+
+  /**
+   * @param {!URL} url
+   */
+  static fromURL(url) {
+    return new WorkerWrapper(url);
+  }
+
+  /**
+   * @param {string} entrypointName
+   */
+  static fromEntrypointName(entrypointName) {
+    const url = entrypointName + '.js' + location.search;
+    return new WorkerWrapper(url);
   }
 
   /**

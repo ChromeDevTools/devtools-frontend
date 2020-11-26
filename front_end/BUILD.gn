@@ -231,10 +231,7 @@ group("legacy_entrypoints") {
 }
 
 copy_sources_to_resources("entrypoint_copy") {
-  sources = [
-    "formatter_worker_entrypoint.js",
-    "integration_test_runner.html",
-  ]
+  sources = [ "integration_test_runner.html" ]
 }
 
 action("html_entrypoints") {

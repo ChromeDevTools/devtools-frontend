@@ -35,7 +35,8 @@ export class FormatterWorkerPool {
    * @return {!Common.Worker.WorkerWrapper}
    */
   _createWorker() {
-    const worker = new Common.Worker.WorkerWrapper('formatter_worker_entrypoint');
+    const worker =
+        Common.Worker.WorkerWrapper.fromURL(new URL('../formatter_worker/formatter_worker.js', import.meta.url));
     worker.onmessage = this._onWorkerMessage.bind(this, worker);
     worker.onerror = this._onWorkerError.bind(this, worker);
     return worker;

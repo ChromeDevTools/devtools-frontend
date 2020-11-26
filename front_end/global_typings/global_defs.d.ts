@@ -14,3 +14,7 @@ interface CSSStyleSheet {
 interface ShadowRoot {
   adoptedStyleSheets: CSSStyleSheet[]
 }
+
+interface ImportMeta {
+  url: string;
+}

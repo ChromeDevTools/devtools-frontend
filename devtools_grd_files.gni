@@ -217,7 +217,6 @@ grd_files_release_sources = [
   "front_end/formatter/formatter.js",
   "front_end/formatter/formatter_module.js",
   "front_end/formatter_worker/formatter_worker.js",
-  "front_end/formatter_worker_entrypoint.js",
   "front_end/har_importer/har_importer-legacy.js",
   "front_end/har_importer/har_importer.js",
   "front_end/har_importer/har_importer_module.js",

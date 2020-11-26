@@ -49,7 +49,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
     this._callbacks = new Map();
     /** @type {!Set<number>} */
     this._previousCallbacks = new Set();
-    this._worker = new Common.Worker.WorkerWrapper('heap_snapshot_worker_entrypoint');
+    this._worker = Common.Worker.WorkerWrapper.fromEntrypointName('heap_snapshot_worker_entrypoint');
     this._worker.onmessage = this._messageReceived.bind(this);
   }
 

@@ -699,14 +699,12 @@ export class Module {
     // by `build_release_applications`. These need to be loaded before any other code is
     // loaded, to make sure that the resource content is properly cached in `cachedResources`.
     if (this._descriptor.modules.includes(moduleFileName)) {
-      // TODO(crbug.com/1011811): Remove eval when we use TypeScript which does support dynamic imports
-      await eval(`import('../${this._name}/${moduleFileName}')`);
+      await import(`../${this._name}/${moduleFileName}`);
     }
 
     const fileName = this._descriptor.modules.includes(legacyFileName) ? legacyFileName : entrypointFileName;
 
-    // TODO(crbug.com/1011811): Remove eval when we use TypeScript which does support dynamic imports
-    await eval(`import('../${this._name}/${fileName}')`);
+    await import(`../${this._name}/${fileName}`);
   }
 
   /**

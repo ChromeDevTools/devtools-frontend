@@ -164,6 +164,21 @@
     },
     {
       "type": "action",
+      "actionId": "elements.duplicate-element",
+      "category": "Elements",
+      "title": "Duplicate element",
+      "contextTypes": [
+        "Elements.ElementsPanel"
+      ],
+      "className": "Elements.ElementsActionDelegate",
+      "bindings": [
+        {
+          "shortcut": "Shift+Alt+Down"
+        }
+      ]
+    },
+    {
+      "type": "action",
       "actionId": "elements.undo",
       "category": "Elements",
       "title": "Undo",

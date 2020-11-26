@@ -1295,6 +1295,9 @@ export class ElementsActionDelegate {
       case 'elements.edit-as-html':
         treeOutline.toggleEditAsHTML(node);
         return true;
+      case 'elements.duplicate-element':
+        treeOutline.duplicateNode(node);
+        return true;
       case 'elements.undo':
         SDK.DOMModel.DOMModelUndoStack.instance().undo();
         ElementsPanel.instance()._stylesWidget.forceUpdate();

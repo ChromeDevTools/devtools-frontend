@@ -44,7 +44,7 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
         }
       }
 
-      await target.runtimeAgent().invoke_runIfWaitingForDebugger();
+      target.runtimeAgent().invoke_runIfWaitingForDebugger();
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
 
     new SourcesPanelIndicator();

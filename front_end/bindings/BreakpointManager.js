@@ -217,6 +217,23 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Promise<!Array<!Workspace.UISourceCode.UILocation>>}
    */
   async possibleBreakpoints(uiSourceCode, textRange) {
+    const {pluginManager} = this._debuggerWorkspaceBinding;
+    if (pluginManager) {
+      // TODO(bmeurer): Refactor this logic, as for DWARF and sourcemaps, it doesn't make sense
+      //                to even ask V8 for possible break locations, since these are determined
+      //                from the debugging information.
+      const rawLocations = await pluginManager.uiLocationToRawLocations(uiSourceCode, textRange.startLine, 0);
+      if (rawLocations) {
+        const uiLocations = [];
+        for (const rawLocation of rawLocations) {
+          const uiLocation = await this._debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+          if (uiLocation) {
+            uiLocations.push(uiLocation);
+          }
+        }
+        return uiLocations;
+      }
+    }
     const startLocationsPromise = DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
         uiSourceCode, textRange.startLine, textRange.startColumn);
     const endLocationsPromise = DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(

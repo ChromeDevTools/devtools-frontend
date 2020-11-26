@@ -6273,6 +6273,7 @@ declare namespace Protocol {
       SignedExchange = 'SignedExchange',
       Ping = 'Ping',
       CSPViolationReport = 'CSPViolationReport',
+      Preflight = 'Preflight',
       Other = 'Other',
     }
 
@@ -6911,6 +6912,7 @@ declare namespace Protocol {
       Script = 'script',
       Preload = 'preload',
       SignedExchange = 'SignedExchange',
+      Preflight = 'preflight',
       Other = 'other',
     }
 
@@ -6940,6 +6942,10 @@ declare namespace Protocol {
        * module) (0-based).
        */
       columnNumber?: number;
+      /**
+       * Set if another request triggered this request (e.g. preflight).
+       */
+      requestId?: RequestId;
     }
 
     /**
@@ -8405,6 +8411,10 @@ declare namespace Protocol {
        * Style of empty space caused by columns gaps (gap/column-gap).
        */
       columnGapSpace?: BoxStyle;
+      /**
+       * Style of the self-alignment line (align-items).
+       */
+      crossAlignment?: LineStyle;
     }
 
     export enum LineStylePattern {

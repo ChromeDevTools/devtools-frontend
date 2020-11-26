@@ -9393,6 +9393,7 @@
                         "SignedExchange",
                         "Ping",
                         "CSPViolationReport",
+                        "Preflight",
                         "Other"
                     ]
                 },
@@ -10206,6 +10207,7 @@
                                 "script",
                                 "preload",
                                 "SignedExchange",
+                                "preflight",
                                 "other"
                             ]
                         },
@@ -10232,6 +10234,12 @@
                             "description": "Initiator column number, set for Parser type or for Script type (when script is importing\nmodule) (0-based).",
                             "optional": true,
                             "type": "number"
+                        },
+                        {
+                            "name": "requestId",
+                            "description": "Set if another request triggered this request (e.g. preflight).",
+                            "optional": true,
+                            "$ref": "RequestId"
                         }
                     ]
                 },
@@ -12318,6 +12326,12 @@
                             "description": "Style of empty space caused by columns gaps (gap/column-gap).",
                             "optional": true,
                             "$ref": "BoxStyle"
+                        },
+                        {
+                            "name": "crossAlignment",
+                            "description": "Style of the self-alignment line (align-items).",
+                            "optional": true,
+                            "$ref": "LineStyle"
                         }
                     ]
                 },

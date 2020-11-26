@@ -1344,6 +1344,7 @@ export function registerCommands(inspectorBackend) {
     SignedExchange: 'SignedExchange',
     Ping: 'Ping',
     CSPViolationReport: 'CSPViolationReport',
+    Preflight: 'Preflight',
     Other: 'Other'
   });
   inspectorBackend.registerEnum('Network.ErrorReason', {
@@ -1439,9 +1440,14 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum('Network.TrustTokenParamsRefreshPolicy', {UseCached: 'UseCached', Refresh: 'Refresh'});
   inspectorBackend.registerEnum(
       'Network.TrustTokenOperationType', {Issuance: 'Issuance', Redemption: 'Redemption', Signing: 'Signing'});
-  inspectorBackend.registerEnum(
-      'Network.InitiatorType',
-      {Parser: 'parser', Script: 'script', Preload: 'preload', SignedExchange: 'SignedExchange', Other: 'other'});
+  inspectorBackend.registerEnum('Network.InitiatorType', {
+    Parser: 'parser',
+    Script: 'script',
+    Preload: 'preload',
+    SignedExchange: 'SignedExchange',
+    Preflight: 'preflight',
+    Other: 'other'
+  });
   inspectorBackend.registerEnum('Network.SetCookieBlockedReason', {
     SecureOnly: 'SecureOnly',
     SameSiteStrict: 'SameSiteStrict',

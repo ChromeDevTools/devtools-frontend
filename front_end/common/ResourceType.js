@@ -282,6 +282,7 @@ export const resourceTypes = {
   Ping: new ResourceType('ping', ls`Ping`, resourceCategories.Other, false),
   CSPViolationReport: new ResourceType('csp-violation-report', ls`CSPViolationReport`, resourceCategories.Other, false),
   Other: new ResourceType('other', ls`Other`, resourceCategories.Other, false),
+  Preflight: new ResourceType('preflight', ls`Preflight`, resourceCategories.Other, true),
   SourceMapScript: new ResourceType('sm-script', ls`Script`, resourceCategories.Script, true),
   SourceMapStyleSheet: new ResourceType('sm-stylesheet', ls`Stylesheet`, resourceCategories.Stylesheet, true),
 };

@@ -108,6 +108,7 @@ generated_typescript_entrypoint_sources = [
   "$resources_out_dir/mobile_throttling/mobile_throttling.js",
   "$resources_out_dir/network/network-legacy.js",
   "$resources_out_dir/network/network.js",
+  "$resources_out_dir/node_debugger/node_debugger.js",
   "$resources_out_dir/node_main/node_main-legacy.js",
   "$resources_out_dir/node_main/node_main.js",
   "$resources_out_dir/object_ui/object_ui-legacy.js",

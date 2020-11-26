@@ -281,6 +281,7 @@ grd_files_release_sources = [
   "front_end/network/network_module.js",
   "front_end/node_app.html",
   "front_end/node_app.js",
+  "front_end/node_debugger/node_debugger.js",
   "front_end/node_debugger/node_debugger_module.js",
   "front_end/node_main/node_main-legacy.js",
   "front_end/node_main/node_main.js",

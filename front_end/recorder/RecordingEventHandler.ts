@@ -108,6 +108,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     ]);
 
     if (!targetId) {
+      this.skip();
       return;
     }
 
@@ -137,6 +138,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     ]);
 
     if (!targetId) {
+      this.skip();
       return;
     }
 
@@ -160,6 +162,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     ]);
 
     if (!targetId) {
+      this.skip();
       return;
     }
 
@@ -217,7 +220,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
 
   paused(params: Protocol.Debugger.PausedEvent) {
     if (params.reason !== 'EventListener') {
-      this.resume();
+      this.skip();
       return;
     }
 

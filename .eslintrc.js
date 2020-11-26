@@ -162,6 +162,7 @@ module.exports = {
        * const enum Foo { A = 'a' } rather than const enum Foo { A }
        */
       '@typescript-eslint/prefer-enum-initializers': 2,
+      'rulesdir/set_data_type_reference': 2,
     }
   }]
 };

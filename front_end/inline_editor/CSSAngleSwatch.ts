@@ -22,7 +22,7 @@ export class CSSAngleSwatch extends HTMLElement {
     unit: AngleUnit.Rad,
   };
 
-  set data(data: {angle: Angle}) {
+  set data(data: CSSAngleSwatchData) {
     this.angle = data.angle;
     this.render();
   }

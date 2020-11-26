@@ -1,0 +1,45 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Debug</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
+</head>
+<body>
+  <script type="module">
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+
+    dispatch(["setPlatform", "mac"]);
+    dispatch(["setOverlay", "highlight"]);
+    dispatch(["reset", {
+      viewportSize: {
+        width: viewportWidth,
+        height: viewportHeight,
+      },
+      deviceScaleFactor: 1,
+      pageScaleFactor: 1,
+      pageZoomFactor: 1,
+      emulationScaleFactor: 1,
+      scrollX: 0,
+      scrollY: 0,
+    }]);
+
+    let response = { "highlight": { "paths": [ { "path": [ "M", 195.80020141601562, 30.00569725036621, "L", 467.17559814453125, 199.5798797607422, "L", 308.1998291015625, 453.99432373046875, "L", 36.82441711425781, 284.4201354980469, "Z" ], "fillColor": "rgba(255, 0, 0, 0)", "outlineColor": "rgba(128, 0, 0, 0)", "name": "content" }, { "path": [ "M", 195.80020141601562, 30.00569725036621, "L", 467.17559814453125, 199.5798797607422, "L", 308.1998291015625, 453.99432373046875, "L", 36.82441711425781, 284.4201354980469, "Z" ], "fillColor": "rgba(0, 255, 0, 0)", "name": "padding" }, { "path": [ "M", 195.80020141601562, 30.00569725036621, "L", 467.17559814453125, 199.5798797607422, "L", 308.1998291015625, 453.99432373046875, "L", 36.82441711425781, 284.4201354980469, "Z" ], "fillColor": "rgba(0, 0, 255, 0)", "name": "border" }, { "path": [ "M", 195.80020141601562, 30.00569725036621, "L", 808.65625, 412.960693359375, "L", 649.6805419921875, 667.3751220703125, "L", 36.82441711425781, 284.4201354980469, "Z" ], "fillColor": "rgba(255, 255, 255, 0)", "name": "margin" } ], "showRulers": true, "showExtensionLines": true, "showAccessibilityInfo": true, "colorFormat": "hex", "elementInfo": { "tagName": "div", "idValue": "test-multi-line-space", "nodeWidth": "430.351", "nodeHeight": "423.989", "isKeyboardFocusable": false, "accessibleName": "", "accessibleRole": "generic", "layoutObjectName": "LayoutNGFlexibleBox", "showAccessibilityInfo": true }, "flexInfo": [ { "containerBorder": [ "M", 195.80020141601562, 30.00569725036621, "L", 467.17559814453125, 199.5798797607422, "L", 308.1998291015625, 453.99432373046875, "L", 36.82441711425781, 284.4201354980469, "Z" ], "lines": [ [ [ "M", 159.76568603515625, 87.6729736328125, "L", 227.6095428466797, 130.0665283203125, "L", 202.17340087890625, 170.7728271484375, "L", 134.32955932617188, 128.3792724609375, "Z" ], [ "M", 227.6095428466797, 130.0665283203125, "L", 295.4533996582031, 172.46006774902344, "L", 270.01727294921875, 213.16636657714844, "L", 202.17340087890625, 170.7728271484375, "Z" ], [ "M", 295.4533996582031, 172.46006774902344, "L", 363.2972412109375, 214.85360717773438, "L", 337.8611145019531, 255.55990600585938, "L", 270.01727294921875, 213.16636657714844, "Z" ], [ "M", 363.2972412109375, 214.85360717773438, "L", 431.1410827636719, 257.24713134765625, "L", 405.7049560546875, 297.9534606933594, "L", 337.8611145019531, 255.55990600585938, "Z" ] ], [ [ "M", 132.21697998046875, 207.2433319091797, "L", 200.06082153320312, 249.63687133789062, "L", 174.62469482421875, 290.34320068359375, "L", 106.78085327148438, 247.9496307373047, "Z" ], [ "M", 200.06082153320312, 249.63687133789062, "L", 267.9046630859375, 292.0304260253906, "L", 242.4685516357422, 332.7367248535156, "L", 174.62469482421875, 290.34320068359375, "Z" ], [ "M", 267.9046630859375, 292.0304260253906, "L", 335.74853515625, 334.4239501953125, "L", 310.3124084472656, 375.1302490234375, "L", 242.4685516357422, 332.7367248535156, "Z" ] ] ], "isHorizontalFlow": true, "alignItemsStyle": "stretch", "flexContainerHighlightConfig": { "containerBorder": { "color": "rgba(255, 0, 0, 0.6)", "pattern": "dashed" }, "lineSeparator": { "color": "rgba(255, 0, 0, 0.6)", "pattern": "dashed" }, "itemSeparator": { "color": "rgba(255, 0, 0, 0.6)", "pattern": "dotted" }, "mainDistributedSpace": { "fillColor": "rgba(255, 0, 0, 0.6)", "hatchColor": "rgba(255, 0, 0, 0.6)" }, "crossDistributedSpace": { "fillColor": "rgba(255, 0, 0, 0.6)", "hatchColor": "rgba(255, 0, 0, 0.6)" }, "rowGapSpace": { "fillColor": "rgba(255, 0, 0, 0.6)", "hatchColor": "rgba(255, 0, 0, 0.6)" }, "columnGapSpace": { "fillColor": "rgba(255, 0, 0, 0.6)", "hatchColor": "rgba(255, 0, 0, 0.6)" }, "crossAlignment": { "color": "red", "pattern": "solid" } } } ] } };
+
+    // Massage the data a bit so we can see a nice flex overlay.
+    response = response.highlight;
+    delete response.elementInfo;
+    response.showRulers = false;
+    response.showExtensionLines = false;
+
+    dispatch(["drawHighlight", response]);
+  </script>
+</body>
+</html>

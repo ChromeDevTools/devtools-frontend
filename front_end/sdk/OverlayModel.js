@@ -547,7 +547,7 @@ export class OverlayModel extends SDKModel {
             pattern: Protocol.Overlay.LineStylePattern.Dashed,
           },
           mainDistributedSpace: {hatchColor: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA()},
-          crossDistributedSpace: {hatchColor: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA()}
+          crossDistributedSpace: {hatchColor: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA()},
         };
       }
     }
@@ -615,6 +615,20 @@ export class OverlayModel extends SDKModel {
           pattern: Protocol.Overlay.LineStylePattern.Dashed
         },
         crossDistributedSpace: {hatchColor: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA()}
+      };
+    }
+
+    if (mode === 'align-items' && this._flexFeaturesExperimentEnabled) {
+      highlightConfig.flexContainerHighlightConfig = {
+        containerBorder: {
+          color: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA(),
+          pattern: Protocol.Overlay.LineStylePattern.Dashed
+        },
+        lineSeparator: {
+          color: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA(),
+          pattern: Protocol.Overlay.LineStylePattern.Dashed
+        },
+        crossAlignment: {color: Common.Color.PageHighlight.FlexContainerBorder.toProtocolRGBA()}
       };
     }
 

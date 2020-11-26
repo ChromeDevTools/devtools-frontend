@@ -49,20 +49,18 @@ import {Context, StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 // Highlightable properties are those that can be hovered in the sidebar to trigger a specific
 // highlighting mode on the current element.
 const HIGHLIGHTABLE_PROPERTIES = [
-  {property: 'padding', mode: 'padding'},
-  {property: 'border', mode: 'border'},
-  {property: 'margin', mode: 'margin'},
-  {property: 'grid-gap', mode: 'gap'},
-  {property: 'gap', mode: 'gap'},
-  {property: 'grid-column-gap', mode: 'column-gap'},
-  {property: 'grid-row-gap', mode: 'row-gap'},
-  {property: 'column-gap', mode: 'column-gap'},
-  {property: 'row-gap', mode: 'row-gap'},
-  {property: 'grid-template-areas', mode: 'grid-areas'},
-  {property: 'grid-template-columns', mode: 'grid-template-columns'},
-  {property: 'grid-template-rows', mode: 'grid-template-rows'},
-  {property: 'justify-content', mode: 'justify-content'},
-  {property: 'align-content', mode: 'align-content'},
+  {mode: 'padding', properties: ['padding']},
+  {mode: 'border', properties: ['border']},
+  {mode: 'margin', properties: ['margin']},
+  {mode: 'gap', properties: ['gap', 'grid-gap']},
+  {mode: 'column-gap', properties: ['column-gap', 'grid-column-gap']},
+  {mode: 'row-gap', properties: ['row-gap', 'grid-row-gap']},
+  {mode: 'grid-template-columns', properties: ['grid-template-columns']},
+  {mode: 'grid-template-rows', properties: ['grid-template-rows']},
+  {mode: 'grid-template-areas', properties: ['grid-areas']},
+  {mode: 'justify-content', properties: ['justify-content']},
+  {mode: 'align-content', properties: ['align-content']},
+  {mode: 'align-items', properties: ['align-items']},
 ];
 
 /** @type {!StylesSidebarPane} */
@@ -554,8 +552,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
     const rule = treeElement.property.ownerStyle.parentRule;
     const selectorList = (rule instanceof SDK.CSSRule.CSSStyleRule) ? rule.selectorText() : undefined;
-    for (const {property, mode} of HIGHLIGHTABLE_PROPERTIES) {
-      if (!treeElement.name.startsWith(property)) {
+    for (const {properties, mode} of HIGHLIGHTABLE_PROPERTIES) {
+      if (!properties.includes(treeElement.name)) {
         continue;
       }
       const node = this.node();

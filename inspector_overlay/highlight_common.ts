@@ -53,11 +53,12 @@ enum LinePattern {
   Dashed = 'dashed'
 }
 
-export function drawPathWithLineStyle(context: CanvasRenderingContext2D, path: Path2D, lineStyle?: LineStyle) {
+export function drawPathWithLineStyle(
+    context: CanvasRenderingContext2D, path: Path2D, lineStyle?: LineStyle, lineWidth: number = 1) {
   if (lineStyle && lineStyle.color) {
     context.save();
     context.translate(0.5, 0.5);
-    context.lineWidth = 1;
+    context.lineWidth = lineWidth;
     if (lineStyle.pattern === LinePattern.Dashed) {
       context.setLineDash([3, 3]);
     }

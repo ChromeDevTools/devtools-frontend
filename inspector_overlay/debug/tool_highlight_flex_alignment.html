@@ -1,0 +1,88 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Debug</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
+</head>
+<body>
+  <script type="module">
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+
+    dispatch(["setPlatform", "mac"]);
+    dispatch(["setOverlay", "highlight"]);
+    dispatch(["reset", {
+      viewportSize: {
+        width: viewportWidth,
+        height: viewportHeight,
+      },
+      deviceScaleFactor: 1,
+      pageScaleFactor: 1,
+      pageZoomFactor: 1,
+      emulationScaleFactor: 1,
+      scrollX: 0,
+      scrollY: 0,
+    }]);
+
+    let response = { "highlight": { "paths": [ { "path": [ "M", 633.3333740234375, 291.3333435058594, "L", 933.3333740234375, 291.3333435058594, "L", 933.3333740234375, 591.3333740234375, "L", 633.3333740234375, 591.3333740234375, "Z" ], "fillColor": "rgba(255, 0, 0, 0)", "outlineColor": "rgba(128, 0, 0, 0)", "name": "content" }, { "path": [ "M", 633.3333740234375, 291.3333435058594, "L", 933.3333740234375, 291.3333435058594, "L", 933.3333740234375, 591.3333740234375, "L", 633.3333740234375, 591.3333740234375, "Z" ], "fillColor": "rgba(0, 255, 0, 0)", "name": "padding" }, { "path": [ "M", 633.3333740234375, 291.3333435058594, "L", 933.3333740234375, 291.3333435058594, "L", 933.3333740234375, 591.3333740234375, "L", 633.3333740234375, 591.3333740234375, "Z" ], "fillColor": "rgba(0, 0, 255, 0)", "name": "border" }, { "path": [ "M", 633.3333740234375, 291.3333435058594, "L", 1186.666748046875, 291.3333435058594, "L", 1186.666748046875, 591.3333740234375, "L", 633.3333740234375, 591.3333740234375, "Z" ], "fillColor": "rgba(255, 255, 255, 0)", "name": "margin" } ], "showRulers": true, "showExtensionLines": true, "showAccessibilityInfo": true, "colorFormat": "hex", "elementInfo": { "tagName": "div", "idValue": "test-multi-line-space", "nodeWidth": "300", "nodeHeight": "300", "isKeyboardFocusable": false, "accessibleName": "", "accessibleRole": "generic", "layoutObjectName": "LayoutNGFlexibleBox", "showAccessibilityInfo": true }, "flexInfo": [
+      { "containerBorder": [ "M", 633.3333740234375, 291.3333435058594, "L", 933.3333740234375, 291.3333435058594, "L", 933.3333740234375, 591.3333740234375, "L", 633.3333740234375, 591.3333740234375, "Z" ],
+      "lines": [
+        [
+          [ "M", 650, 350, "L", 730, 350, "L", 730, 390, "L", 650, 390, "Z" ],
+          [ "M", 743.3333740234375, 352.3333435058594, "L", 823.3333740234375, 352.3333435058594, "L", 823.3333740234375, 371, "L", 743.3333740234375, 371, "Z" ],
+          [ "M", 823.3333740234375, 330, "L", 903.3333740234375, 330, "L", 903.3333740234375, 380, "L", 823.3333740234375, 380, "Z" ]
+        ],
+        [
+          [ "M", 663.3333740234375, 420, "L", 743.3333740234375, 420, "L", 743.3333740234375, 450.66668701171875, "L", 663.3333740234375, 450.66668701171875, "Z" ],
+          [ "M", 743.3333740234375, 432, "L", 823.3333740234375, 432, "L", 823.3333740234375, 440.66668701171875, "L", 743.3333740234375, 440.66668701171875, "Z" ],
+          [ "M", 830, 432, "L", 903.3333740234375, 432, "L", 903.3333740234375, 465, "L", 830, 465, "Z" ]
+        ],
+        [
+          [ "M", 743.3333740234375, 511.66668701171875, "L", 823.3333740234375, 511.66668701171875, "L", 823.3333740234375, 530.3333740234375, "L", 743.3333740234375, 530.3333740234375, "Z" ]
+        ]
+      ],
+     "alignItemsStyle": "center",
+      "isHorizontalFlow": true,
+      "flexContainerHighlightConfig": {
+        "containerBorder": {
+          "color": "rgba(255, 0, 0, 1)",
+          "pattern": "dashed"
+        },
+        "lineSeparator": {
+          "color": "rgba(0, 0, 255, 1)",
+          "pattern": "dashed"
+        },
+        "itemSeparator": {
+          "color": "rgba(0, 255, 0, 1)",
+          "pattern": "dotted"
+        },
+        "mainDistributedSpace": {
+          "hatchColor": "red",
+        },
+        "crossDistributedSpace": {
+          "hatchColor": "blue",
+        },
+        "crossAlignment": {
+          "color": "red",
+          "pattern": "solid"
+        }
+      }
+    } ] } }
+
+    // Massage the data a bit so we can see a nice flex overlay.
+    response = response.highlight;
+    delete response.elementInfo;
+    response.showRulers = false;
+    response.showExtensionLines = false;
+
+    dispatch(["drawHighlight", response]);
+  </script>
+</body>
+</html>

@@ -185,7 +185,7 @@ export class Linkifier {
       if (fallback) {
         // @ts-ignore
         anchor.href = fallback.href;
-        UI.Tooltip.Tooltip.install(anchor, fallback.title);
+        UI.Tooltip.Tooltip.install(anchor, UI.Tooltip.Tooltip.getContent(fallback));
         anchor.className = fallback.className;
         anchor.textContent = fallback.textContent;
         const fallbackInfo = infoByAnchor.get(fallback);

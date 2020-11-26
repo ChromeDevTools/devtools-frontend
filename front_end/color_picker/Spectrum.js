@@ -519,7 +519,7 @@ export class Spectrum extends UI.Widget.VBox {
         shadow.style.background = palette.colors[i];
         UI.Tooltip.Tooltip.install(
             colorElement, ls`Long-click or long-press space to show alternate shades of ${palette.colors[i]}`);
-        UI.ARIAUtils.setAccessibleName(colorElement, colorElement.title);
+        UI.ARIAUtils.setAccessibleName(colorElement, UI.Tooltip.Tooltip.getContent(colorElement));
         new UI.UIUtils.LongClickController(
             colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
       }

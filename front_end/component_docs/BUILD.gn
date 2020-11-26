@@ -17,6 +17,7 @@ group("component_docs") {
     "./issue_survey_link",
     "./layout_pane",
     "./linear_memory_inspector",
+    "./linkifier",
     "./perf_piechart",
     "./theme_colors",
     "./webvitals",

@@ -1140,6 +1140,7 @@ grd_files_debug_sources = [
   "front_end/ui/components/DataGridController.js",
   "front_end/ui/components/DataGridRenderers.js",
   "front_end/ui/components/DataGridUtils.js",
+  "front_end/ui/components/Linkifier.js",
   "front_end/ui/utils/append-style.js",
   "front_end/ui/utils/create-shadow-root-with-core-styles.js",
   "front_end/ui/utils/focus-changed.js",

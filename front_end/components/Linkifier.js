@@ -745,6 +745,14 @@ export class Linkifier {
   }
 
   /**
+   *
+   * @param {!_LinkInfo} linkInfo
+   */
+  static _handleClickFromNewComponentLand(linkInfo) {
+    Linkifier.invokeFirstAction(linkInfo);
+  }
+
+  /**
    * @param {!_LinkInfo} linkInfo
    * @return {boolean}
    */
@@ -973,6 +981,29 @@ export class LinkHandlerSettingUI {
     return UI.SettingsUI.createCustomSetting(Common.UIString.UIString('Link handling:'), this._element);
   }
 }
+
+let listeningToNewEvents = false;
+function listenForNewComponentLinkifierEvents() {
+  if (listeningToNewEvents) {
+    return;
+  }
+
+  listeningToNewEvents = true;
+
+  window.addEventListener(
+      'linkifier-click',
+      /**
+   *
+   * @param {!Event} event
+   */
+      function(event) {
+        const unknownEvent = /** @type {?} */ (event);
+        const eventWithData = /** @type {!{data: !_LinkInfo}} */ (unknownEvent);
+        Linkifier._handleClickFromNewComponentLand(eventWithData.data);
+      });
+}
+
+listenForNewComponentLinkifierEvents();
 
 /**
  * @implements {UI.ContextMenu.Provider}

@@ -137,14 +137,11 @@ export function waitForScrollLeft<T extends Element>(element: T, desiredScrollLe
 }
 
 /**
- * Dispatches a mouse click event. Errors if the event was not dispatched successfully.
+ * Dispatches a mouse click event.
  */
 export function dispatchClickEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
   const clickEvent = new MouseEvent('click', options);
-  const success = element.dispatchEvent(clickEvent);
-  if (!success) {
-    assert.fail('Failed to trigger click event successfully.');
-  }
+  element.dispatchEvent(clickEvent);
 }
 
 /**

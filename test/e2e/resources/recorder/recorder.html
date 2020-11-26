@@ -12,6 +12,7 @@
   <form><input id="input" /></form>
   <a id="shadow-root" role="link">Hello&nbsp;</a>
   <iframe id="iframe"></iframe>
+  <button id="popup">Open Popup</button>
 </div>
 <script>
   window.addEventListener('submit', (event) => { event.preventDefault(); });
@@ -36,4 +37,8 @@
   innerIframeButton.id = 'inner-iframe';
   iframe.contentDocument.body.append(innerIframe);
   innerIframe.contentDocument.body.append(innerIframeButton);
+
+  document.getElementById('popup').addEventListener('click', () => {
+    window.open('popup.html', 'Window Name ' + new Date(), 'resizable,scrollbars,status,width=200,height=200');
+  });
 </script>

@@ -35,7 +35,7 @@ describe('Recorder', () => {
     await enableExperiment('recorder');
     await goToResource('recorder/recorder.html');
 
-    const {frontend, target} = getBrowserAndPages();
+    const {frontend, target, browser} = getBrowserAndPages();
 
     await openSourcesPanel();
     await openRecorderSubPane();
@@ -66,6 +66,15 @@ describe('Recorder', () => {
     await target.mainFrame().childFrames()[0].childFrames()[0].click('aria/Inner iframe button');
     await waitForScriptToChange();
 
+    const newTargetPromise = browser.waitForTarget(t => t.url().endsWith('popup.html'));
+    await target.click('aria/Open Popup');
+    const newTarget = await newTargetPromise;
+    const newPage = await newTarget.page();
+    await newPage.waitFor('aria/Button in Popup');
+    await newPage.click('aria/Button in Popup');
+    await waitForScriptToChange();
+    await newPage.close();
+
     await frontend.bringToFront();
     await frontend.waitForSelector('aria/Stop');
     await frontend.click('aria/Stop');
@@ -87,6 +96,8 @@ describe('Recorder', () => {
     await page.click("aria/Hello World");
     await page.mainFrame().childFrames()[0].click("aria/iframe button");
     await page.mainFrame().childFrames()[0].childFrames()[0].click("aria/Inner iframe button");
+    await page.click("aria/Open Popup");
+    await (await browser.pages()).find(p => p.url() === "https://<url>/test/e2e/resources/recorder/popup.html").click("aria/Button in Popup");
     await browser.close();
 })();
 

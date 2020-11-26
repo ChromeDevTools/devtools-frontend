@@ -4,20 +4,28 @@
 
 import * as Accessibility from '../accessibility/accessibility.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as Elements from '../elements/elements.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
+import {RecordingEventHandler} from './RecordingEventHandler.js';
 
-class StepContext {
+export class StepFrameContext {
   /**
+   * @param {!string} target
    * @param {!Array<number>} path
    */
-  constructor(path = []) {
+  constructor(target, path = []) {
     this.path = path;
+    this.target = target;
   }
 
+
   toString() {
-    let expression = 'page';
+    let expression = '';
+    if (this.target === 'main') {
+      expression = 'page';
+    } else {
+      expression = `(await browser.pages()).find(p => p.url() === ${JSON.stringify(this.target)})`;
+    }
 
     if (this.path.length) {
       expression += '.mainFrame()';
@@ -30,7 +38,7 @@ class StepContext {
   }
 }
 
-class Step {
+export class Step {
   /**
    * @param {string} action
    */
@@ -47,9 +55,9 @@ class Step {
   }
 }
 
-class ClickStep extends Step {
+export class ClickStep extends Step {
   /**
-   * @param {!StepContext} context
+   * @param {!StepFrameContext} context
    * @param {string} selector
    */
   constructor(context, selector) {
@@ -66,7 +74,7 @@ class ClickStep extends Step {
   }
 }
 
-class NavigationStep extends Step {
+export class NavigationStep extends Step {
   /**
    * @param {string} url
    */
@@ -83,9 +91,9 @@ class NavigationStep extends Step {
   }
 }
 
-class SubmitStep extends Step {
+export class SubmitStep extends Step {
   /**
-   * @param {!StepContext} context
+   * @param {!StepFrameContext} context
    * @param {string} selector
    */
   constructor(context, selector) {
@@ -102,9 +110,9 @@ class SubmitStep extends Step {
   }
 }
 
-class ChangeStep extends Step {
+export class ChangeStep extends Step {
   /**
-   * @param {!StepContext} context
+   * @param {!StepFrameContext} context
    * @param {string} selector
    * @param {string} value
    */
@@ -123,9 +131,6 @@ class ChangeStep extends Step {
   }
 }
 
-/**
- * @implements {ProtocolProxyApi.DebuggerDispatcher}
- */
 export class RecordingSession {
   /**
    * @param {!SDK.SDKModel.Target} target
@@ -141,6 +146,7 @@ export class RecordingSession {
     this._runtimeAgent = target.runtimeAgent();
     this._accessibilityAgent = target.accessibilityAgent();
     this._pageAgent = target.pageAgent();
+    this._targetAgent = target.targetAgent();
 
     this._domModel = /** @type {!SDK.DOMModel.DOMModel} */ (target.model(SDK.DOMModel.DOMModel));
     this._axModel = /** @type {!Accessibility.AccessibilityModel.AccessibilityModel} */ (
@@ -151,54 +157,13 @@ export class RecordingSession {
     this._resourceTreeModel =
         /** @type {!SDK.ResourceTreeModel.ResourceTreeModel} */ (target.model(SDK.ResourceTreeModel.ResourceTreeModel));
     this._runtimeModel = /** @type {!SDK.RuntimeModel.RuntimeModel} */ (target.model(SDK.RuntimeModel.RuntimeModel));
+    this._childTargetManager = target.model(SDK.ChildTargetManager.ChildTargetManager);
 
-    target.registerDebuggerDispatcher(this);
+    this._target = target;
   }
 
   async start() {
-    const setupEventListeners = () => {
-      window.addEventListener('click', event => {}, true);
-      window.addEventListener('submit', event => {}, true);
-      window.addEventListener('change', event => {}, true);
-    };
-
-    const makeFunctionCallable = /** @type {function(*):string} */ (fn => `(${fn.toString()})()`);
-
-
-    await this._debuggerModel.ignoreDebuggerPausedEvents(true);
-    await this._debuggerAgent.invoke_enable({});
-    await this._pageAgent.invoke_addScriptToEvaluateOnNewDocument({source: makeFunctionCallable(setupEventListeners)});
-
-    const expression = makeFunctionCallable(setupEventListeners);
-    const executionContexts = this._runtimeModel.executionContexts();
-    for (const frame of this._resourceTreeModel.frames()) {
-      const executionContext = executionContexts.find(context => context.frameId === frame.id);
-      if (!executionContext) {
-        continue;
-      }
-
-      await executionContext.evaluate(
-          {
-            expression,
-            objectGroup: undefined,
-            includeCommandLineAPI: undefined,
-            silent: undefined,
-            returnByValue: undefined,
-            generatePreview: undefined,
-            allowUnsafeEvalBlockedByCSP: undefined,
-            throwOnSideEffect: undefined,
-            timeout: undefined,
-            disableBreaks: undefined,
-            replMode: undefined,
-          },
-          true, false);
-    }
-
-
-    await this._domDebuggerAgent.invoke_setEventListenerBreakpoint({eventName: 'click'});
-    await this._domDebuggerAgent.invoke_setEventListenerBreakpoint({eventName: 'change'});
-    await this._domDebuggerAgent.invoke_setEventListenerBreakpoint({eventName: 'submit'});
-
+    this.attachToTarget(this._target);
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       throw new Error('Could not find main target');
@@ -268,268 +233,92 @@ export class RecordingSession {
   }
 
   /**
-   * @param {!StepContext} context
-   * @param {!Array.<!Protocol.Runtime.PropertyDescriptor>} localFrame
+   * @param {!SDK.SDKModel.Target} target
    */
-  async handleClickEvent(context, localFrame) {
-    const targetId = await this._findTargetId(localFrame, [
-      'MouseEvent',
-      'PointerEvent',
-    ]);
+  async attachToTarget(target) {
+    target.registerDebuggerDispatcher(new RecordingEventHandler(this, target));
+    const debuggerAgent = target.debuggerAgent();
+    const domDebuggerAgent = target.domdebuggerAgent();
+    const pageAgent = target.pageAgent();
 
-    if (!targetId) {
-      return;
-    }
+    const debuggerModel =
+        /** @type {!SDK.DebuggerModel.DebuggerModel} */ (target.model(SDK.DebuggerModel.DebuggerModel));
 
-    const node = await this._domModel.pushNodeToFrontend(targetId);
-    if (!node) {
-      throw new Error('Node should not be null.');
-    }
+    const resourceTreeModel =
+        /** @type {!SDK.ResourceTreeModel.ResourceTreeModel} */ (target.model(SDK.ResourceTreeModel.ResourceTreeModel));
+    const runtimeModel = /** @type {!SDK.RuntimeModel.RuntimeModel} */ (target.model(SDK.RuntimeModel.RuntimeModel));
+    const childTargetManager = target.model(SDK.ChildTargetManager.ChildTargetManager);
 
-    // Clicking on a submit button will emit a submit event
-    // which will be handled in a different handler.
-    if (node.nodeName() === 'BUTTON' && node.getAttribute('type') === 'submit') {
-      this.skip();
-      return;
-    }
+    const setupEventListeners = () => {
+      window.addEventListener('click', event => {}, true);
+      window.addEventListener('submit', event => {}, true);
+      window.addEventListener('change', event => {}, true);
+    };
 
-    const selector = await this._getSelector(node);
-    if (!selector) {
-      throw new Error('Could not find selector');
-    }
-    this.appendStepToScript(new ClickStep(context, selector));
-    await this.resume();
-  }
+    const makeFunctionCallable = /** @type {function(*):string} */ (fn => `(${fn.toString()})()`);
 
-  /**
-   * @param {!StepContext} context
-   * @param {!Array.<!Protocol.Runtime.PropertyDescriptor>} localFrame
-   */
-  async handleSubmitEvent(context, localFrame) {
-    const targetId = await this._findTargetId(localFrame, [
-      'SubmitEvent',
-    ]);
+    // This uses the setEventListenerBreakpoint method from the debugger
+    // to get notified about new events. Therefor disable the normal debugger
+    // while recording.
+    await debuggerModel.ignoreDebuggerPausedEvents(true);
+    await debuggerAgent.invoke_enable({});
+    await pageAgent.invoke_addScriptToEvaluateOnNewDocument({source: makeFunctionCallable(setupEventListeners)});
 
-    if (!targetId) {
-      return;
-    }
-
-    const node = await this._domModel.pushNodeToFrontend(targetId);
-    if (!node) {
-      throw new Error('Node should not be null.');
-    }
-
-    const selector = await this._getSelector(node);
-    if (!selector) {
-      throw new Error('Could not find selector');
-    }
-
-    this.appendStepToScript(new SubmitStep(context, selector));
-    await this.resume();
-  }
-
-  /**
-   * @param {!StepContext} context
-   * @param {!Array.<!Protocol.Runtime.PropertyDescriptor>} localFrame
-   */
-  async handleChangeEvent(context, localFrame) {
-    const targetId = await this._findTargetId(localFrame, [
-      'Event',
-    ]);
-
-    if (!targetId) {
-      return;
-    }
-
-    const node = await this._domModel.pushNodeToFrontend(targetId);
-    if (!node) {
-      throw new Error('Node should not be null.');
-    }
-
-    const selector = await this._getSelector(node);
-    if (!selector) {
-      throw new Error('Could not find selector');
-    }
-
-    /**
-     * @this {!HTMLInputElement}
-     */
-    function getValue() {
-      return this.value;
-    }
-
-    const {result} = await this._runtimeAgent.invoke_callFunctionOn({
-      functionDeclaration: getValue.toString(),
-      objectId: targetId,
-    });
-
-    this.appendStepToScript(new ChangeStep(context, selector, /** @type {string} */ (result.value)));
-    await this.resume();
-  }
-
-  async resume() {
-    await this._debuggerAgent.invoke_setSkipAllPauses({skip: true});
-    await this._debuggerAgent.invoke_resume({terminateOnResume: false});
-    await this._debuggerAgent.invoke_setSkipAllPauses({skip: false});
-  }
-
-  async skip() {
-    await this._debuggerAgent.invoke_resume({terminateOnResume: false});
-  }
-
-  /**
-   * @param {!Array.<!Protocol.Runtime.PropertyDescriptor>} localFrame
-   * @param {!Array<string>} interestingClassNames
-   * @returns {!Promise<?Protocol.Runtime.RemoteObjectId>}
-   */
-  async _findTargetId(localFrame, interestingClassNames) {
-    const event = localFrame.find(
-        prop => !!(prop && prop.value && prop.value.className && interestingClassNames.includes(prop.value.className)));
-
-    if (!event || !event.value || !event.value.objectId) {
-      return null;
-    }
-
-    const eventProperties = await this._runtimeAgent.invoke_getProperties({
-      objectId: event.value.objectId,
-    });
-
-    if (!eventProperties) {
-      return null;
-    }
-
-    const target = eventProperties.result.find(prop => prop.name === 'target');
-
-    if (!target || !target.value) {
-      return null;
-    }
-
-    return target.value.objectId || null;
-  }
-
-  /**
-   * @param {!SDK.DOMModel.DOMNode} node
-   */
-  async _getSelector(node) {
-    const ariaSelector = await this._getAriaSelector(node);
-    if (ariaSelector) {
-      return ariaSelector;
-    }
-
-    const cssSelector = Elements.DOMPath.cssPath(node);
-    if (cssSelector) {
-      return cssSelector;
-    }
-
-    return null;
-  }
-
-  /**
-   * @param {!SDK.DOMModel.DOMNode} node
-   */
-  async _getAriaSelector(node) {
-    await this._axModel.requestPartialAXTree(node);
-    let axNode = this._axModel.axNodeForDOMNode(node);
-    while (axNode) {
-      const roleObject = axNode.role();
-      const nameObject = axNode.name();
-      const role = roleObject ? roleObject.value : null;
-      const name = nameObject ? nameObject.value : null;
-      if (name && ['button', 'link', 'textbox', 'checkbox'].indexOf(role) !== -1) {
-        return `aria/${name}`;
-      }
-      axNode = axNode.parentNode();
-    }
-    return null;
-  }
-
-  /**
-   * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
-   */
-  getContextForFrame(frame) {
-    const path = [];
-    let currentFrame = frame;
-    while (currentFrame) {
-      const parentFrame = currentFrame.parentFrame();
-      if (!parentFrame) {
-        break;
+    const expression = makeFunctionCallable(setupEventListeners);
+    const executionContexts = runtimeModel.executionContexts();
+    for (const frame of resourceTreeModel.frames()) {
+      const executionContext = executionContexts.find(context => context.frameId === frame.id);
+      if (!executionContext) {
+        continue;
       }
 
-      const childFrames = parentFrame.childFrames;
-      const index = childFrames.indexOf(currentFrame);
-      path.unshift(index);
-      currentFrame = parentFrame;
+      await executionContext.evaluate(
+          {
+            expression,
+            objectGroup: undefined,
+            includeCommandLineAPI: undefined,
+            silent: undefined,
+            returnByValue: undefined,
+            generatePreview: undefined,
+            allowUnsafeEvalBlockedByCSP: undefined,
+            throwOnSideEffect: undefined,
+            timeout: undefined,
+            disableBreaks: undefined,
+            replMode: undefined,
+          },
+          true, false);
     }
 
-    return new StepContext(path);
+
+    await Promise.all([
+      domDebuggerAgent.invoke_setEventListenerBreakpoint({eventName: 'click'}),
+      domDebuggerAgent.invoke_setEventListenerBreakpoint({eventName: 'change'}),
+      domDebuggerAgent.invoke_setEventListenerBreakpoint({eventName: 'submit'}),
+    ]);
+
+    childTargetManager?.addEventListener(SDK.ChildTargetManager.Events.TargetCreated, this.handleWindowOpened, this);
   }
 
   /**
-   * @override
-   * @param {!Protocol.Debugger.PausedEvent} params
+   * @param {!Common.EventTarget.EventTargetEvent} event
    */
-  paused(params) {
-    const eventName = params.data.eventName;
-    const localFrame = params.callFrames[0].scopeChain[0];
-
-    const scriptId = params.callFrames[0].location.scriptId;
-    const executionContextId = this._runtimeModel.executionContextIdForScriptId(scriptId);
-    const executionContext = this._runtimeModel.executionContext(executionContextId);
+  async handleWindowOpened(event) {
+    if (event.data.type !== 'page') {
+      return;
+    }
+    const executionContexts = this._runtimeModel.executionContexts();
+    const executionContext = executionContexts.find(context => context.frameId === event.data.openerFrameId);
     if (!executionContext) {
-      throw new Error('Could not find execution context.');
-    }
-    if (!executionContext.frameId) {
-      throw new Error('Execution context is not assigned to a frame.');
-    }
-    const frame = this._resourceTreeModel.frameForId(executionContext.frameId);
-    if (!frame) {
-      throw new Error('Could not find frame.');
+      throw new Error('Could not find execution context in opened frame.');
     }
 
-    const context = this.getContextForFrame(frame);
+    await this._targetAgent.invoke_attachToTarget({targetId: event.data.targetId, flatten: true});
+    const target = SDK.SDKModel.TargetManager.instance().targets().find(t => t.id() === event.data.targetId);
 
-    if (!localFrame.object.objectId) {
-      return;
+    if (!target) {
+      throw new Error('Could not find target.');
     }
-    this._runtimeAgent.invoke_getProperties({objectId: localFrame.object.objectId}).then(async ({result}) => {
-      switch (eventName) {
-        case 'listener:click':
-          return this.handleClickEvent(context, result);
-        case 'listener:submit':
-          return this.handleSubmitEvent(context, result);
-        case 'listener:change':
-          return this.handleChangeEvent(context, result);
-        default:
-          this.skip();
-      }
-    });
-  }
 
-  /**
-   * @override
-   */
-  breakpointResolved() {
-    // Added here to fullfill the ProtocolProxyApi.DebuggerDispatcher interface.
-  }
-
-  /**
-   * @override
-   */
-  resumed() {
-    // Added here to fullfill the ProtocolProxyApi.DebuggerDispatcher interface.
-  }
-
-  /**
-   * @override
-   */
-  scriptFailedToParse() {
-    // Added here to fullfill the ProtocolProxyApi.DebuggerDispatcher interface.
-  }
-
-  /**
-   * @override
-   */
-  scriptParsed() {
-    // Added here to fullfill the ProtocolProxyApi.DebuggerDispatcher interface.
+    this.attachToTarget(target);
   }
 }

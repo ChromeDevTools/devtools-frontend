@@ -8,6 +8,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("recorder") {
   sources = [
     "RecorderModel.js",
+    "RecordingEventHandler.ts",
     "RecordingFileSystem.js",
     "RecordingSession.js",
   ]

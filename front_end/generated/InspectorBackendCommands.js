@@ -1820,9 +1820,12 @@ export function registerCommands(inspectorBackend) {
     UnsafeUrl: 'unsafeUrl'
   });
   inspectorBackend.registerEvent('Page.domContentEventFired', ['timestamp']);
+  inspectorBackend.registerEnum(
+      'Page.FileChooserOpenedEventMode', {SelectSingle: 'selectSingle', SelectMultiple: 'selectMultiple'});
   inspectorBackend.registerEvent('Page.fileChooserOpened', ['frameId', 'backendNodeId', 'mode']);
   inspectorBackend.registerEvent('Page.frameAttached', ['frameId', 'parentFrameId', 'stack']);
   inspectorBackend.registerEvent('Page.frameClearedScheduledNavigation', ['frameId']);
+  inspectorBackend.registerEnum('Page.FrameDetachedEventReason', {Remove: 'remove', Swap: 'swap'});
   inspectorBackend.registerEvent('Page.frameDetached', ['frameId', 'reason']);
   inspectorBackend.registerEvent('Page.frameNavigated', ['frame']);
   inspectorBackend.registerEvent('Page.documentOpened', ['frame']);
@@ -1832,6 +1835,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Page.frameStartedLoading', ['frameId']);
   inspectorBackend.registerEvent('Page.frameStoppedLoading', ['frameId']);
   inspectorBackend.registerEvent('Page.downloadWillBegin', ['frameId', 'guid', 'url', 'suggestedFilename']);
+  inspectorBackend.registerEnum(
+      'Page.DownloadProgressEventState', {InProgress: 'inProgress', Completed: 'completed', Canceled: 'canceled'});
   inspectorBackend.registerEvent('Page.downloadProgress', ['guid', 'totalBytes', 'receivedBytes', 'state']);
   inspectorBackend.registerEvent('Page.interstitialHidden', []);
   inspectorBackend.registerEvent('Page.interstitialShown', []);
@@ -2526,6 +2531,20 @@ export function registerCommands(inspectorBackend) {
       'Debugger.DebugSymbolsType',
       {None: 'None', SourceMap: 'SourceMap', EmbeddedDWARF: 'EmbeddedDWARF', ExternalDWARF: 'ExternalDWARF'});
   inspectorBackend.registerEvent('Debugger.breakpointResolved', ['breakpointId', 'location']);
+  inspectorBackend.registerEnum('Debugger.PausedEventReason', {
+    Ambiguous: 'ambiguous',
+    Assert: 'assert',
+    CSPViolation: 'CSPViolation',
+    DebugCommand: 'debugCommand',
+    DOM: 'DOM',
+    EventListener: 'EventListener',
+    Exception: 'exception',
+    Instrumentation: 'instrumentation',
+    OOM: 'OOM',
+    Other: 'other',
+    PromiseRejection: 'promiseRejection',
+    XHR: 'XHR'
+  });
   inspectorBackend.registerEvent('Debugger.paused', [
     'callFrames', 'reason', 'data', 'hitBreakpoints', 'asyncStackTrace', 'asyncStackTraceId', 'asyncCallStackTraceId'
   ]);
@@ -2845,6 +2864,26 @@ export function registerCommands(inspectorBackend) {
     Error: 'error'
   });
   inspectorBackend.registerEvent('Runtime.bindingCalled', ['name', 'payload', 'executionContextId']);
+  inspectorBackend.registerEnum('Runtime.ConsoleAPICalledEventType', {
+    Log: 'log',
+    Debug: 'debug',
+    Info: 'info',
+    Error: 'error',
+    Warning: 'warning',
+    Dir: 'dir',
+    DirXML: 'dirxml',
+    Table: 'table',
+    Trace: 'trace',
+    Clear: 'clear',
+    StartGroup: 'startGroup',
+    StartGroupCollapsed: 'startGroupCollapsed',
+    EndGroup: 'endGroup',
+    Assert: 'assert',
+    Profile: 'profile',
+    ProfileEnd: 'profileEnd',
+    Count: 'count',
+    TimeEnd: 'timeEnd'
+  });
   inspectorBackend.registerEvent(
       'Runtime.consoleAPICalled', ['type', 'args', 'executionContextId', 'timestamp', 'stackTrace', 'context']);
   inspectorBackend.registerEvent('Runtime.exceptionRevoked', ['reason', 'exceptionId']);

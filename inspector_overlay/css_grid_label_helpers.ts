@@ -158,18 +158,17 @@ export function drawGridLabels(
     }
     labelContainerForNode = createChild(mainLabelLayerContainer, 'div');
     labelContainerForNode.id = labelContainerId;
-
-    labelContainerForNode.style.setProperty(
-        '--row-label-color',
-        config.gridHighlightConfig && config.gridHighlightConfig.rowLineColor ?
-            config.gridHighlightConfig.rowLineColor :
-            defaultLabelColor);
-    labelContainerForNode.style.setProperty(
-        '--column-label-color',
-        config.gridHighlightConfig && config.gridHighlightConfig.columnLineColor ?
-            config.gridHighlightConfig.columnLineColor :
-            defaultLabelColor);
   }
+
+  labelContainerForNode.style.setProperty(
+      '--row-label-color',
+      config.gridHighlightConfig && config.gridHighlightConfig.rowLineColor ? config.gridHighlightConfig.rowLineColor :
+                                                                              defaultLabelColor);
+  labelContainerForNode.style.setProperty(
+      '--column-label-color',
+      config.gridHighlightConfig && config.gridHighlightConfig.columnLineColor ?
+          config.gridHighlightConfig.columnLineColor :
+          defaultLabelColor);
 
   labelContainerForNode.innerText = '';
 

@@ -226,7 +226,16 @@ class EvalNode extends SDK.RemoteObject.RemoteObjectImpl {
       timeout: evalOptions.timeout,
     });
 
-    const {result} = response;
+    const {result, exceptionDetails} = response;
+    if (exceptionDetails) {
+      const errorMsg = exceptionDetails.exception ? exceptionDetails.exception.description : 'Uncaught exception';
+      Common.Console.Console.instance().warn(ls`Failed to format value: ${errorMsg}`);
+      const {typeId} = field.length > 0 ? field[field.length - 1] : base.rootType;
+      const fieldSourceType = sourceType.typeMap.get(typeId);
+      return new SDK.RemoteObject.RemoteObjectImpl(
+          callFrame.debuggerModel.runtimeModel(), undefined,
+          fieldSourceType ? fieldSourceType.typeInfo.typeNames[0] : '<unknown>', undefined, null);
+    }
     const object = new EvalNodeBase(callFrame, sourceType, plugin, result, null, evalOptions);
     const unpackedResultObject = await unpackResultObject(object);
     const node = unpackedResultObject || object;

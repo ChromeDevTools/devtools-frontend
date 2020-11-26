@@ -19,12 +19,12 @@ export interface IssueSurveyLinkData {
 }
 
 enum State {
-  Checking,  // (begin state) -> ShowLink | DontShowLink
-  ShowLink,  // -> Sending
-  Sending,   // -> SurveyShown | Failed
-  SurveyShown,
-  Failed,
-  DontShowLink
+  Checking = 'Checking',  // (begin state) -> ShowLink | DontShowLink
+  ShowLink = 'ShowLink',  // -> Sending
+  Sending = 'Sending',    // -> SurveyShown | Failed
+  SurveyShown = 'SurveyShown',
+  Failed = 'Failed',
+  DontShowLink = 'DontShowLink'
 }
 
 // A link to a survey. The link is rendered aysnchronously because we need to first check if

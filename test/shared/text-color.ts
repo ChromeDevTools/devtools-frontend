@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 export enum TextColor {
-  DIM,
-  GREEN,
-  RED,
-  MAGENTA,
-  CYAN
+  DIM = 'DIM',
+  GREEN = 'GREEN',
+  RED = 'RED',
+  MAGENTA = 'MAGENTA',
+  CYAN = 'CYAN'
 }
 
 export function color(msg: string, color: TextColor) {

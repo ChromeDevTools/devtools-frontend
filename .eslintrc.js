@@ -1,5 +1,9 @@
+// Copyright 2020 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 const path = require('path');
-const rulesDirPlugin = require('eslint-plugin-rulesdir')
+const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, 'scripts', 'eslint_rules', 'lib');
 
 module.exports = {
@@ -153,6 +157,11 @@ module.exports = {
       'no-unused-vars': 0,
       '@typescript-eslint/no-unused-vars': [2, {'argsIgnorePattern': '^_'}],
       'rulesdir/kebab_case_events': 2,
+      /**
+       * Enforce that enum members are explicitly defined:
+       * const enum Foo { A = 'a' } rather than const enum Foo { A }
+       */
+      '@typescript-eslint/prefer-enum-initializers': 2,
     }
   }]
 };

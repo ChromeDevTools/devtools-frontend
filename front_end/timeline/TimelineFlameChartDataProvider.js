@@ -209,7 +209,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    */
   textColor(index) {
     const event = this._entryData[index];
-    return event && eventToDisallowRoot.has(/** @type {!SDK.TracingModel.Event} */ (event)) ? '#888' :
+    return event && eventToDisallowRoot.get(/** @type {!SDK.TracingModel.Event} */ (event)) ? '#888' :
                                                                                               FlameChartStyle.textColor;
   }
 

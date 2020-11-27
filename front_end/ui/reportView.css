@@ -5,11 +5,11 @@
  */
 
 :host {
-  background-color: #f9f9f9;
+  background-color: var(--color-background-elevation-1);
 }
 
 .report-content-box {
-  background-color: white;
+  background-color: var(--color-background);
   overflow: auto;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .report-header {
-  border-bottom: 1px solid rgb(230 230 230);
+  border-bottom: 1px solid var(--color-details-hairline);
   padding: 12px 24px;
 }
 
@@ -44,7 +44,7 @@
 .report-section {
   display: flex;
   padding: 12px;
-  border-bottom: 1px solid rgb(230 230 230);
+  border-bottom: 1px solid var(--color-details-hairline);
   flex-direction: column;
 }
 
@@ -60,7 +60,7 @@
   text-overflow: ellipsis;
   overflow: hidden;
   font-weight: bold;
-  color: #555;
+  color: var(--color-text-secondary);
 }
 
 .report-field {
@@ -74,7 +74,7 @@
 }
 
 .report-field-name {
-  color: #888;
+  color: var(--color-text-disabled);
   flex: 0 0 128px;
   text-align: right;
   padding: 0 6px;
@@ -92,7 +92,7 @@
 }
 
 .report-field-value-subtitle {
-  color: #888;
+  color: var(--color-text-disabled);
   line-height: 14px;
 }
 

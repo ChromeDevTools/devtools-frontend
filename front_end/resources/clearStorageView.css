@@ -60,3 +60,7 @@
 .clear-storage-header {
   min-width: 400px;
 }
+
+.report-content-box {
+  overflow: initial;
+}

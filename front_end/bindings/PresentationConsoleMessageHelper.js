@@ -183,13 +183,9 @@ export class PresentationConsoleMessageHelper {
     }
 
     const pendingMessages = [];
-    for (let i = 0; i < messages.length; i++) {
-      const message = messages[i];
+    for (const message of messages) {
       const rawLocation = this._rawLocation(message);
-      if (!rawLocation) {
-        continue;
-      }
-      if (script.scriptId === rawLocation.scriptId) {
+      if (rawLocation && script.scriptId === rawLocation.scriptId) {
         this._addConsoleMessageToScript(message, rawLocation);
       } else {
         pendingMessages.push(message);

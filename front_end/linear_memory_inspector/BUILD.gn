@@ -10,7 +10,6 @@ devtools_module("linear_memory_inspector") {
     "LinearMemoryInspector.ts",
     "LinearMemoryInspectorPane.js",
     "LinearMemoryInspectorUtils.ts",
-    "LinearMemoryInspector_bridge.js",
     "LinearMemoryNavigator.ts",
     "LinearMemoryValueInterpreter.ts",
     "LinearMemoryViewer.ts",

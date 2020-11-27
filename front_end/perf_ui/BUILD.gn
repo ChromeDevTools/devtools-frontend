@@ -16,7 +16,6 @@ devtools_module("perf_ui") {
     "NetworkPriorities.js",
     "OverviewGrid.js",
     "PieChart.ts",
-    "PieChart_bridge.js",
     "TimelineGrid.js",
     "TimelineOverviewPane.js",
   ]

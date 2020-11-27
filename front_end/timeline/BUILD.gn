@@ -31,7 +31,6 @@ devtools_module("timeline") {
     "WebVitalsLane.ts",
     "WebVitalsTimeline.ts",
     "WebVitalsTimelineUtils.js",
-    "WebVitalsTimeline_bridge.js",
   ]
 
   deps = [

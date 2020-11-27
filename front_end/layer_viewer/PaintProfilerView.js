@@ -90,7 +90,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
     this._canvasContainer = this.contentElement.createChild('div', 'paint-profiler-canvas-container');
     this._progressBanner = this.contentElement.createChild('div', 'full-widget-dimmed-banner hidden');
     this._progressBanner.textContent = i18nString(UIStrings.profiling);
-    this._pieChart = PerfUI.PieChart.createPieChart();
+    this._pieChart = new PerfUI.PieChart.PieChart();
     this._populatePieChart(0, []);
     this._pieChart.classList.add('paint-profiler-pie-chart');
     this.contentElement.appendChild(this._pieChart);

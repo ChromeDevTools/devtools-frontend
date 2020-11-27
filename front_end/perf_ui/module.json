@@ -82,7 +82,6 @@
     "LiveHeapProfile.js",
     "NetworkPriorities.js",
     "OverviewGrid.js",
-    "PieChart_bridge.js",
     "TimelineGrid.js",
     "TimelineOverviewPane.js"
   ],

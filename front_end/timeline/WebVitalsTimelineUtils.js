@@ -6,7 +6,7 @@ import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as UI from '../ui/ui.js';
 
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
-import {createWebVitalsTimeline} from './WebVitalsTimeline_bridge.js';
+import {WebVitalsTimeline} from './WebVitalsTimeline.js';
 
 /**
  * @implements {PerfUI.ChartViewport.ChartViewportDelegate}
@@ -23,7 +23,7 @@ export class WebVitalsIntegrator extends UI.Widget.VBox {
     this.element.style.height = '120px';
     this.element.style.flex = '0 auto';
 
-    this.webVitalsTimeline = createWebVitalsTimeline();
+    this.webVitalsTimeline = new WebVitalsTimeline();
 
     this.chartViewport = new PerfUI.ChartViewport.ChartViewport(this);
     this.chartViewport.show(this.contentElement);

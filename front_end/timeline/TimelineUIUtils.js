@@ -1947,7 +1947,7 @@ export class TimelineUIUtils {
     element.classList.add('timeline-details-view-pie-chart-wrapper');
     element.classList.add('hbox');
 
-    const pieChart = PerfUI.PieChart.createPieChart();
+    const pieChart = new PerfUI.PieChart.PieChart();
     /** @type {!Array<{value: number, color: string, title: string}>} */
     const slices = [];
 

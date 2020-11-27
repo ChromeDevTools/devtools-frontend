@@ -7,7 +7,7 @@ import * as UI from '../ui/ui.js';
 
 const {ls} = Common;
 
-import {createLinearMemoryInspector} from './LinearMemoryInspector_bridge.js';
+import {LinearMemoryInspector} from './LinearMemoryInspector.js';
 
 /** @type {!LinearMemoryInspectorPaneImpl} */
 let inspectorInstance;
@@ -112,7 +112,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     }
 
     this.memoryWrapper = memoryWrapper;
-    this._inspector = createLinearMemoryInspector();
+    this._inspector = new LinearMemoryInspector();
     this._inspector.addEventListener('memory-request', /** @param {!Event} event */ event => {
       this._memoryRequested(/** @type {?} */ (event));
     });

@@ -8,6 +8,7 @@ ts_library("common") {
     "ColorUtils_test.ts",
     "Color_test.ts",
     "Console_test.ts",
+    "Debouncer_test.ts",
     "Lazy_test.ts",
     "Object_test.ts",
     "ParsedURL_test.ts",

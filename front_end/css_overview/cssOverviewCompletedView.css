@@ -298,7 +298,7 @@
 
 .contrast-warning .threshold-label {
   font-weight: normal;
-  width: 25px;
+  width: 30px;
 }
 
 .contrast-warning [is=ui-icon] {
@@ -364,4 +364,8 @@
 :host-context(.-theme-with-dark-background) .show-element:focus,
 :host-context(.-theme-with-dark-background) .show-element:hover {
   background-color: #6e6e6e;
+}
+
+.hidden {
+  display: none;
 }

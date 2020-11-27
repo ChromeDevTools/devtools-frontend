@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
+import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -12,6 +13,7 @@ import * as UI from '../ui/ui.js';
 import {Events, OverviewController} from './CSSOverviewController.js';  // eslint-disable-line no-unused-vars
 import {CSSOverviewSidebarPanel, SidebarEvents} from './CSSOverviewSidebarPanel.js';
 import {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';  // eslint-disable-line no-unused-vars
+
 
 /**
  * @typedef {!Map<string,!Set<number>>}
@@ -25,7 +27,7 @@ export let NodeStyleStats;
  *  contrastRatio: number,
  *  textColor: Common.Color.Color,
  *  backgroundColor: Common.Color.Color,
- *  thresholdsViolated: !{aa: boolean, aaa:boolean},
+ *  thresholdsViolated: !{aa: boolean, aaa:boolean, apca: boolean},
  * }}
  */
 // @ts-ignore typedef
@@ -612,7 +614,10 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
     let minContrastIssue = issues[0];
     for (const issue of issues) {
-      if (issue.contrastRatio < minContrastIssue.contrastRatio) {
+      // APCA contrast can be a negative value that is to be displayed. But the
+      // absolute value is used to compare against the threshold. Therefore, the min
+      // absolute value is the worst contrast.
+      if (Math.abs(issue.contrastRatio) < Math.abs(minContrastIssue.contrastRatio)) {
         minContrastIssue = issue;
       }
     }
@@ -620,6 +625,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     const color = /** @type { string }*/ (minContrastIssue.textColor.asString(Common.Color.Format.HEXA));
     const backgroundColor =
         /** @type { string }*/ (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA));
+
+    const showAPCA = Root.Runtime.experiments.isEnabled('APCA');
 
     const blockFragment = UI.Fragment.Fragment.build`<li>
       <button
@@ -630,22 +637,35 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
         Text
       </button>
       <div class="block-title">
-        <div class="contrast-warning" $="aa"><span class="threshold-label">${ls`AA`}</span></div>
-        <div class="contrast-warning" $="aaa"><span class="threshold-label">${ls`AAA`}</span></div>
+        <div class="contrast-warning hidden" $="aa"><span class="threshold-label">${ls`AA`}</span></div>
+        <div class="contrast-warning hidden" $="aaa"><span class="threshold-label">${ls`AAA`}</span></div>
+        <div class="contrast-warning hidden" $="apca"><span class="threshold-label">${ls`APCA`}</span></div>
       </div>
     </li>`;
 
-    const aa = /** @type {!HTMLElement} */ (blockFragment.$('aa'));
-    if (minContrastIssue.thresholdsViolated.aa) {
-      aa.appendChild(UI.Icon.Icon.create('smallicon-no'));
+    if (showAPCA) {
+      const apca = /** @type {!HTMLElement} */ (blockFragment.$('apca'));
+      if (minContrastIssue.thresholdsViolated.apca) {
+        apca.appendChild(UI.Icon.Icon.create('smallicon-no'));
+      } else {
+        apca.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+      }
+      apca.classList.remove('hidden');
     } else {
-      aa.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
-    }
-    const aaa = /** @type {!HTMLElement} */ (blockFragment.$('aaa'));
-    if (minContrastIssue.thresholdsViolated.aaa) {
-      aaa.appendChild(UI.Icon.Icon.create('smallicon-no'));
-    } else {
-      aaa.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+      const aa = /** @type {!HTMLElement} */ (blockFragment.$('aa'));
+      if (minContrastIssue.thresholdsViolated.aa) {
+        aa.appendChild(UI.Icon.Icon.create('smallicon-no'));
+      } else {
+        aa.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+      }
+      const aaa = /** @type {!HTMLElement} */ (blockFragment.$('aaa'));
+      if (minContrastIssue.thresholdsViolated.aaa) {
+        aaa.appendChild(UI.Icon.Icon.create('smallicon-no'));
+      } else {
+        aaa.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+      }
+      aa.classList.remove('hidden');
+      aaa.classList.remove('hidden');
     }
 
     const block = /** @type {!HTMLElement} */ (blockFragment.$('color'));
@@ -985,25 +1005,37 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
 
     if (columnId === 'contrastRatio') {
       const cell = this.createTD(columnId);
+      const showAPCA = Root.Runtime.experiments.isEnabled('APCA');
+      const contrastRatioString =
+          showAPCA ? this.data.contrastRatio.toFixed(2) + '%' : this.data.contrastRatio.toFixed(2);
       const contrastFragment = UI.Fragment.Fragment.build`
         <div class="contrast-container-in-grid" $="container">
           <span class="contrast-preview" style="border: ${getBorderString(this.data.backgroundColor)}; color: ${
           this.data.textColor.asString()}; background-color: ${this.data.backgroundColor.asString()};">Aa</span>
-          <span>${this.data.contrastRatio.toFixed(2)}</span>
+          <span>${contrastRatioString}</span>
         </div>
       `;
       const container = contrastFragment.$('container');
-      container.append(UI.Fragment.Fragment.build`<span>${ls`AA`}</span>`.element());
-      if (this.data.thresholdsViolated.aa) {
-        container.appendChild(UI.Icon.Icon.create('smallicon-no'));
+      if (showAPCA) {
+        container.append(UI.Fragment.Fragment.build`<span>${ls`APCA`}</span>`.element());
+        if (this.data.thresholdsViolated.apca) {
+          container.appendChild(UI.Icon.Icon.create('smallicon-no'));
+        } else {
+          container.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+        }
       } else {
-        container.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
-      }
-      container.append(UI.Fragment.Fragment.build`<span>${ls`AAA`}</span>`.element());
-      if (this.data.thresholdsViolated.aaa) {
-        container.appendChild(UI.Icon.Icon.create('smallicon-no'));
-      } else {
-        container.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+        container.append(UI.Fragment.Fragment.build`<span>${ls`AA`}</span>`.element());
+        if (this.data.thresholdsViolated.aa) {
+          container.appendChild(UI.Icon.Icon.create('smallicon-no'));
+        } else {
+          container.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+        }
+        container.append(UI.Fragment.Fragment.build`<span>${ls`AAA`}</span>`.element());
+        if (this.data.thresholdsViolated.aaa) {
+          container.appendChild(UI.Icon.Icon.create('smallicon-no'));
+        } else {
+          container.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+        }
       }
       cell.appendChild(contrastFragment.element());
       return cell;

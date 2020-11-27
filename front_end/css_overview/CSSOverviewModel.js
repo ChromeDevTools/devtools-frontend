@@ -249,27 +249,52 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
             computedFontWeight: fontWeightIdx !== -1 ? strings[fontWeightIdx] : '',
           });
           contrastInfo.setColor(textColor);
-          const aaThreshold = contrastInfo.contrastRatioThreshold('aa') || 0;
-          const aaaThreshold = contrastInfo.contrastRatioThreshold('aaa') || 0;
-          const contrastRatio = contrastInfo.contrastRatio() || 0;
-          if (aaThreshold > contrastRatio || aaaThreshold > contrastRatio) {
-            const formattedTextColor = formatColor(textColor);
-            const formattedBackgroundColor = formatColor(backgroundColor);
-            const key = `${formattedTextColor}_${formattedBackgroundColor}`;
-            const issue = {
-              nodeId,
-              contrastRatio,
-              textColor,
-              backgroundColor,
-              thresholdsViolated: {
-                aa: aaThreshold > contrastRatio,
-                aaa: aaaThreshold > contrastRatio,
-              },
-            };
-            if (textColorContrastIssues.has(key)) {
-              textColorContrastIssues.get(key).push(issue);
-            } else {
-              textColorContrastIssues.set(key, [issue]);
+          const formattedTextColor = formatColor(textColor);
+          const formattedBackgroundColor = formatColor(backgroundColor);
+          const key = `${formattedTextColor}_${formattedBackgroundColor}`;
+          if (Root.Runtime.experiments.isEnabled('APCA')) {
+            const contrastRatio = contrastInfo.contrastRatioAPCA();
+            const threshold = contrastInfo.contrastRatioAPCAThreshold();
+            const passes = contrastRatio && threshold ? Math.abs(contrastRatio) >= threshold : false;
+            if (!passes) {
+              const issue = {
+                nodeId,
+                contrastRatio,
+                textColor,
+                backgroundColor,
+                thresholdsViolated: {
+                  aa: false,
+                  aaa: false,
+                  apca: true,
+                },
+              };
+              if (textColorContrastIssues.has(key)) {
+                textColorContrastIssues.get(key).push(issue);
+              } else {
+                textColorContrastIssues.set(key, [issue]);
+              }
+            }
+          } else {
+            const aaThreshold = contrastInfo.contrastRatioThreshold('aa') || 0;
+            const aaaThreshold = contrastInfo.contrastRatioThreshold('aaa') || 0;
+            const contrastRatio = contrastInfo.contrastRatio() || 0;
+            if (aaThreshold > contrastRatio || aaaThreshold > contrastRatio) {
+              const issue = {
+                nodeId,
+                contrastRatio,
+                textColor,
+                backgroundColor,
+                thresholdsViolated: {
+                  aa: aaThreshold > contrastRatio,
+                  aaa: aaaThreshold > contrastRatio,
+                  apca: false,
+                },
+              };
+              if (textColorContrastIssues.has(key)) {
+                textColorContrastIssues.get(key).push(issue);
+              } else {
+                textColorContrastIssues.set(key, [issue]);
+              }
             }
           }
         }

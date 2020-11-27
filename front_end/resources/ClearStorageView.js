@@ -42,7 +42,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true, 1000);
-    this.registerRequiredCSS('resources/clearStorageView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('resources/clearStorageView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('clear-storage-container');
     const types = Protocol.Storage.StorageType;
     this._pieColors = new Map([
@@ -56,7 +56,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
     ]);
 
     this._reportView = new UI.ReportView.ReportView(Common.UIString.UIString('Storage'));
-    this._reportView.registerRequiredCSS('resources/clearStorageView.css', {enableLegacyPatching: true});
+    this._reportView.registerRequiredCSS('resources/clearStorageView.css', {enableLegacyPatching: false});
     this._reportView.element.classList.add('clear-storage-header');
     this._reportView.show(this.contentElement);
     /** @type {?SDK.SDKModel.Target} */

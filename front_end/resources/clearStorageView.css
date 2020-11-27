@@ -30,7 +30,7 @@
 }
 
 .quota-override-notification-editor {
-  border: solid 1px #d8d8d8;
+  border: solid 1px var(--color-background-highlight);
   display: flex;
   flex: auto;
   margin-right: 4px;
@@ -41,7 +41,7 @@
 }
 
 .quota-override-notification-editor:focus {
-  border: solid 1px #4285f4;
+  border: solid 1px var(--color-primary-variant);
 }
 
 .quota-override-error {

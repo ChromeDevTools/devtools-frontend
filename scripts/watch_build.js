@@ -7,7 +7,8 @@ const path = require('path');
 const childProcess = require('child_process');
 const cwd = process.cwd();
 const env = process.env;
-const frontEnd = path.join(cwd, 'front_end');
+const frontEndDir = path.join(cwd, 'front_end');
+const testsDir = path.join(cwd, 'test');
 
 // Extract the target if it's provided.
 let target = 'Default';
@@ -16,28 +17,45 @@ if (targetArg) {
   target = targetArg.slice('--target='.length);
 }
 
-let isBuilding = false;
-let filesChangedDuringBuild = false;
-const onFileChange = () => {
-  if (isBuilding) {
-    filesChangedDuringBuild = true;
+let restartBuild = false;
+let autoninja;
+const changedFiles = new Set();
+const onFileChange = (_, fileName) => {
+  // Some filesystems emit multiple events in quick succession for a
+  // single file change. Here we track the changed files, and reset
+  // after a short timeout.
+  if (changedFiles.has(fileName)) {
+    return;
+  }
+  changedFiles.add(fileName);
+  setTimeout(() => {
+    changedFiles.delete(fileName);
+  }, 250);
+
+  // If the exitCode is null, autoninja is still running so stop it
+  // and try to restart it again.
+  const ninjaProcessExists = !!(autoninja && autoninja.pid);
+  if (ninjaProcessExists) {
+    const isRunning = ninjaProcessExists && autoninja.exitCode === null;
+    if (isRunning) {
+      autoninja.kill();
+      restartBuild = true;
+    }
     return;
   }
 
-  filesChangedDuringBuild = false;
-  isBuilding = true;
-
-  const autoninja = childProcess.spawn(
-      'autoninja', ['-C', `out/${target}`, 'devtools_frontend_resources'], {cwd, env, stdio: 'inherit'});
+  autoninja = childProcess.spawn('autoninja', ['-C', `out/${target}`], {cwd, env, stdio: 'inherit'});
   autoninja.on('close', () => {
-    if (filesChangedDuringBuild) {
-      console.warn('Warning: files changed during build, you may wish to trigger a fresh rebuild.');
+    autoninja = null;
+    if (restartBuild) {
+      restartBuild = false;
+      console.log(`\n${fileName} changed, restarting ninja\n`);
+      onFileChange();
     }
-
-    isBuilding = false;
   });
 };
 
-// Watch the front_end folder and build on any change.
-console.log(`Watching for changes in ${frontEnd}; building to out/${target}`);
-fs.watch(`${frontEnd}`, {recursive: true}, onFileChange);
+// Watch the front_end and test folder and build on any change.
+console.log(`Watching for changes in ${frontEndDir} and ${testsDir}; building to out/${target}`);
+fs.watch(`${frontEndDir}`, {recursive: true}, onFileChange);
+fs.watch(`${testsDir}`, {recursive: true}, onFileChange);

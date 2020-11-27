@@ -13,6 +13,7 @@ const debugCheck = require('./debug-check.js');
 
 // false by default
 const DEBUG_ENABLED = !!process.env['DEBUG'];
+const REPEAT_ENABLED = !!process.env['REPEAT'];
 const COVERAGE_ENABLED = !!process.env['COVERAGE'];
 
 // true by default
@@ -45,6 +46,7 @@ target with is_debug = true in the args.gn file.`;
 const GEN_DIRECTORY = path.join(__dirname, '..', '..');
 const ROOT_DIRECTORY = path.join(GEN_DIRECTORY, '..', '..', '..');
 const browsers = DEBUG_ENABLED ? ['Chrome'] : ['ChromeHeadless'];
+const singleRun = !(DEBUG_ENABLED || REPEAT_ENABLED);
 
 const coverageReporters = COVERAGE_ENABLED ? ['coverage'] : [];
 const coveragePreprocessors = COVERAGE_ENABLED ? ['coverage'] : [];
@@ -106,14 +108,15 @@ module.exports = function(config) {
   const targetDir = path.relative(process.cwd(), GEN_DIRECTORY);
   const options = {
     basePath: ROOT_DIRECTORY,
+    autoWatchBatchDelay: 3000,
 
     files: [
       // Ensure the test setup goes first because Karma registers with Mocha in file order, and the hooks in the test_setup
       // must be set before any other hooks in order to ensure all tests get the same environment.
       testSetupFilePattern,
       ...testFiles,
-      ...TEST_FILES_SOURCE_MAPS.map(pattern => ({pattern, served: true, included: false})),
-      ...TEST_SOURCES.map(source => ({pattern: source, served: true, included: false})),
+      ...TEST_FILES_SOURCE_MAPS.map(pattern => ({pattern, served: true, included: false, watched: false})),
+      ...TEST_SOURCES.map(source => ({pattern: source, served: true, included: false, watched: false})),
       {pattern: path.join(GEN_DIRECTORY, 'front_end/Images/*.{svg,png}'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/i18n/locales/*.json'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.css'), served: true, included: false},
@@ -121,7 +124,7 @@ module.exports = function(config) {
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js.map'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.mjs'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.mjs.map'), served: true, included: false},
-      {pattern: path.join(ROOT_DIRECTORY, 'front_end/**/*.ts'), served: true, included: false},
+      {pattern: path.join(ROOT_DIRECTORY, 'front_end/**/*.ts'), served: true, included: false, watched: false},
       {pattern: path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.js.map'), served: true, included: false},
     ],
@@ -162,7 +165,7 @@ module.exports = function(config) {
 
     coverageReporter: {dir: COVERAGE_OUTPUT_DIRECTORY, subdir: '.', reporters: istanbulReportOutputs},
 
-    singleRun: !DEBUG_ENABLED,
+    singleRun,
   };
 
   config.set(options);

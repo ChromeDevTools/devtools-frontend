@@ -119,10 +119,10 @@ export class CSSModel extends SDKModel {
   /**
    * @param {string} sourceURL
    * @param {number} lineNumber
-   * @param {number} columnNumber
+   * @param {number=} columnNumber
    * @return {!Array<!CSSLocation>}
    */
-  createRawLocationsByURL(sourceURL, lineNumber, columnNumber) {
+  createRawLocationsByURL(sourceURL, lineNumber, columnNumber = 0) {
     const headers = this.headersForSourceURL(sourceURL);
     headers.sort(stylesheetComparator);
     const endIndex = headers.upperBound(

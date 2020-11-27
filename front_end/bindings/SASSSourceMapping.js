@@ -189,8 +189,9 @@ export class SASSSourceMapping {
     if (!sourceMap) {
       return [];
     }
-    const entries =
-        sourceMap.findReverseEntries(uiLocation.uiSourceCode.url(), uiLocation.lineNumber, uiLocation.columnNumber);
+    // TODO(crbug.com/1153123): Revisit the `columnNumber || 0` and also preserve `undefined` for source maps?
+    const entries = sourceMap.findReverseEntries(
+        uiLocation.uiSourceCode.url(), uiLocation.lineNumber, uiLocation.columnNumber || 0);
     const locations = [];
     for (const header of this._sourceMapManager.clientsForSourceMap(sourceMap)) {
       locations.push(

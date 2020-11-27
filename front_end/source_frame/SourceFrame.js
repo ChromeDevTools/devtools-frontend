@@ -120,9 +120,9 @@ export class SourceFrameImpl extends UI.View.SimpleView {
    * @override
    * @param {number} lineNumber
    * @param {number=} columnNumber
-   * @return {{lineNumber: number, columnNumber: number}}
+   * @return {{lineNumber: number, columnNumber?: number}}
    */
-  editorLocationToUILocation(lineNumber, columnNumber = 0) {
+  editorLocationToUILocation(lineNumber, columnNumber) {
     if (this._wasmDisassembly) {
       columnNumber = this._wasmDisassembly.lineNumberToBytecodeOffset(lineNumber);
       lineNumber = 0;
@@ -226,10 +226,10 @@ export class SourceFrameImpl extends UI.View.SimpleView {
 
   /**
    * @param {number} line
-   * @param {number} column
+   * @param {number=} column
    * @return {!Array<number>}
    */
-  _prettyToRawLocation(line, column) {
+  _prettyToRawLocation(line, column = 0) {
     if (!this._formattedMap) {
       return [line, column];
     }
@@ -950,7 +950,7 @@ export class Transformer {
   /**
    * @param {number} lineNumber
    * @param {number=} columnNumber
-   * @return {{lineNumber: number, columnNumber: number}}
+   * @return {{lineNumber: number, columnNumber?: number}}
    */
   editorLocationToUILocation(lineNumber, columnNumber) {
     throw new Error('Not implemented');

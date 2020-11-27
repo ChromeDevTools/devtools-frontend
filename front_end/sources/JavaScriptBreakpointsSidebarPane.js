@@ -238,8 +238,8 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     const uiLocation = item.locations[0].uiLocation;
     const hasEnabled = item.locations.some(location => location.breakpoint.enabled());
     const hasDisabled = item.locations.some(location => !location.breakpoint.enabled());
-    checkboxLabel.textElement.textContent =
-        uiLocation.linkText() + (item.showColumn ? ':' + (uiLocation.columnNumber + 1) : '');
+    checkboxLabel.textElement.textContent = uiLocation.linkText() +
+        (item.showColumn && typeof uiLocation.columnNumber === 'number' ? ':' + (uiLocation.columnNumber + 1) : '');
     checkboxLabel.checkboxElement.checked = hasEnabled;
     checkboxLabel.checkboxElement.indeterminate = hasEnabled && hasDisabled;
     checkboxLabel.checkboxElement.tabIndex = -1;
@@ -270,8 +270,8 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     if (item.text && lineNumber < item.text.lineCount()) {
       const lineText = item.text.lineAt(lineNumber);
       const maxSnippetLength = 200;
-      snippetElement.textContent =
-          lineText.substring(item.showColumn ? uiLocation.columnNumber : 0).trimEndWithMaxLength(maxSnippetLength);
+      snippetElement.textContent = lineText.substring(item.showColumn ? (uiLocation.columnNumber || 0) : 0)
+                                       .trimEndWithMaxLength(maxSnippetLength);
     }
 
     elementToBreakpointMap.set(element, item.locations);
@@ -379,7 +379,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
         this._breakpointLocationsForElement(element).map(breakpointLocation => breakpointLocation.uiLocation);
     let uiLocation = null;
     for (const uiLocationCandidate of uiLocations) {
-      if (!uiLocation || uiLocationCandidate.columnNumber < uiLocation.columnNumber) {
+      if (!uiLocation || uiLocationCandidate.compareTo(uiLocation) < 0) {
         uiLocation = uiLocationCandidate;
       }
     }

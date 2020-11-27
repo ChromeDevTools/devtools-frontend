@@ -280,7 +280,7 @@ export class DebuggerWorkspaceBinding {
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
-   * @param {number} columnNumber
+   * @param {number=} columnNumber
    * @return {!Promise<!Array<!SDK.DebuggerModel.Location>>}
    */
   async uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
@@ -519,10 +519,11 @@ class ModelData {
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
-   * @param {number} columnNumber
+   * @param {number=} columnNumber
    * @return {!Array<!SDK.DebuggerModel.Location>}
    */
-  _uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
+  _uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber = 0) {
+    // TODO(crbug.com/1153123): Revisit the `columnNumber = 0` and also preserve `undefined` for source maps?
     let locations = this._compilerMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     locations = locations.length ?
         locations :
@@ -704,7 +705,7 @@ export class DebuggerSourceMapping {
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
-   * @param {number} columnNumber
+   * @param {number=} columnNumber
    * @return {!Array<!SDK.DebuggerModel.Location>}
    */
   uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {

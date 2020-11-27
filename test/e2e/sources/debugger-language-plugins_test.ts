@@ -255,7 +255,7 @@ describe('The Debugger Language Plugins', async () => {
               const sourceFileURL = new URL('global_variable.ll', rawModule.url || symbols).href;
               this._modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 25, endOffset: 26},
-                sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 8, columnNumber: 0},
+                sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 8, columnNumber: -1},
               });
               return [sourceFileURL];
             }

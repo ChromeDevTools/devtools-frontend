@@ -465,7 +465,11 @@ export class Linkifier {
 
     let titleText = uiLocation.uiSourceCode.url();
     if (uiLocation.uiSourceCode.mimeType() === 'application/wasm') {
-      titleText += `:0x${uiLocation.columnNumber.toString(16)}`;
+      // For WebAssembly locations, we follow the conventions described in
+      // github.com/WebAssembly/design/blob/master/Web.md#developer-facing-display-conventions
+      if (typeof uiLocation.columnNumber === 'number') {
+        titleText += `:0x${uiLocation.columnNumber.toString(16)}`;
+      }
     } else if (typeof uiLocation.lineNumber === 'number') {
       titleText += ':' + (uiLocation.lineNumber + 1);
     }

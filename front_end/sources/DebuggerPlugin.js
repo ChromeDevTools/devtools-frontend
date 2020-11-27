@@ -1570,7 +1570,8 @@ export class DebuggerPlugin extends Plugin {
       this._breakpointManager
           .possibleBreakpoints(
               this._uiSourceCode,
-              new TextUtils.TextRange.TextRange(start.lineNumber, start.columnNumber, end.lineNumber, end.columnNumber))
+              new TextUtils.TextRange.TextRange(
+                  start.lineNumber, start.columnNumber || 0, end.lineNumber, end.columnNumber || 0))
           .then(addInlineDecorations.bind(this, editorLocation.lineNumber));
     }
 
@@ -1839,13 +1840,13 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScriptsBreakpointSet);
-    const origin = this._transformer.editorLocationToUILocation(editorLineNumber, 0);
+    const origin = this._transformer.editorLocationToUILocation(editorLineNumber);
     await this._setBreakpoint(origin.lineNumber, origin.columnNumber, condition, enabled);
   }
 
   /**
    * @param {number} lineNumber
-   * @param {number} columnNumber
+   * @param {number|undefined} columnNumber
    * @param {string} condition
    * @param {boolean} enabled
    */
@@ -1857,7 +1858,7 @@ export class DebuggerPlugin extends Plugin {
 
   /**
    * @param {number} lineNumber
-   * @param {number} columnNumber
+   * @param {number|undefined} columnNumber
    * @param {string} condition
    * @param {boolean} enabled
    */

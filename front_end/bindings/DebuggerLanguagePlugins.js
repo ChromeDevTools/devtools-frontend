@@ -840,6 +840,7 @@ export class DebuggerLanguagePluginManager {
         if (!uiSourceCode) {
           continue;
         }
+        // Absence of column information is indicated by the value `-1` in talking to language plugins.
         return uiSourceCode.uiLocation(
             sourceLocation.lineNumber, sourceLocation.columnNumber >= 0 ? sourceLocation.columnNumber : undefined);
       }
@@ -852,10 +853,10 @@ export class DebuggerLanguagePluginManager {
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
-   * @param {number} columnNumber
+   * @param {number=} columnNumber
    * @return {!Promise<?Array<!{start: !SDK.DebuggerModel.Location, end: !SDK.DebuggerModel.Location}>>} Returns null if this manager does not have a plugin for it.
    */
-  uiLocationToRawLocationRanges(uiSourceCode, lineNumber, columnNumber) {
+  uiLocationToRawLocationRanges(uiSourceCode, lineNumber, columnNumber = -1) {
     /** @type {!Array<!Promise<!Array<!{start: !SDK.DebuggerModel.Location, end: !SDK.DebuggerModel.Location}>>>} */
     const locationPromises = [];
     this.scriptsForUISourceCode(uiSourceCode).forEach(script => {
@@ -902,7 +903,7 @@ export class DebuggerLanguagePluginManager {
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @param {number} lineNumber
-   * @param {number} columnNumber
+   * @param {number=} columnNumber
    * @return {!Promise<?Array<!SDK.DebuggerModel.Location>>} Returns null if this manager does not have a plugin for it.
    */
   async uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
@@ -1241,7 +1242,7 @@ export let RawLocationRange;
 // @ts-ignore typedef
 export let RawLocation;
 
-/** Locations in source files
+/** Locations in source files. A columnNumber of `-1` indicates that the location refers to the whole line.
  * @typedef {{
  *            rawModuleId: string,
  *            sourceFileURL: string,

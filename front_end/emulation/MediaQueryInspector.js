@@ -137,8 +137,10 @@ export class MediaQueryInspector extends UI.Widget.Widget {
       if (!uiLocation) {
         continue;
       }
-      const descriptor = Platform.StringUtilities.sprintf(
-          '%s:%d:%d', uiLocation.uiSourceCode.url(), uiLocation.lineNumber + 1, uiLocation.columnNumber + 1);
+      const descriptor = typeof uiLocation.columnNumber === 'number' ?
+          Platform.StringUtilities.sprintf(
+              '%s:%d:%d', uiLocation.uiSourceCode.url(), uiLocation.lineNumber + 1, uiLocation.columnNumber + 1) :
+          Platform.StringUtilities.sprintf('%s:%d', uiLocation.uiSourceCode.url(), uiLocation.lineNumber + 1);
       uiLocations.set(descriptor, uiLocation);
     }
 

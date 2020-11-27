@@ -511,9 +511,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!UILocation}
    */
   uiLocation(lineNumber, columnNumber) {
-    if (typeof columnNumber === 'undefined') {
-      columnNumber = 0;
-    }
     return new UILocation(this, lineNumber, columnNumber);
   }
 
@@ -662,7 +659,7 @@ export class UILocation {
   /**
    * @param {!UISourceCode} uiSourceCode
    * @param {number} lineNumber
-   * @param {number} columnNumber
+   * @param {number=} columnNumber
    */
   constructor(uiSourceCode, lineNumber, columnNumber) {
     this.uiSourceCode = uiSourceCode;
@@ -679,7 +676,9 @@ export class UILocation {
     if (this.uiSourceCode.mimeType() === 'application/wasm') {
       // For WebAssembly locations, we follow the conventions described in
       // github.com/WebAssembly/design/blob/master/Web.md#developer-facing-display-conventions
-      linkText += `:0x${this.columnNumber.toString(16)}`;
+      if (typeof this.columnNumber === 'number') {
+        linkText += `:0x${this.columnNumber.toString(16)}`;
+      }
     } else if (typeof this.lineNumber === 'number') {
       linkText += ':' + (this.lineNumber + 1);
     }
@@ -690,8 +689,11 @@ export class UILocation {
    * @return {string}
    */
   id() {
-    return this.uiSourceCode.project().id() + ':' + this.uiSourceCode.url() + ':' + this.lineNumber + ':' +
-        this.columnNumber;
+    if (typeof this.columnNumber === 'number') {
+      return this.uiSourceCode.project().id() + ':' + this.uiSourceCode.url() + ':' + this.lineNumber + ':' +
+          this.columnNumber;
+    }
+    return this.lineId();
   }
 
   /**
@@ -727,6 +729,17 @@ export class UILocation {
     }
     if (this.lineNumber !== other.lineNumber) {
       return this.lineNumber - other.lineNumber;
+    }
+    // We consider `undefined` less than an actual column number, since
+    // UI location without a column number corresponds to the whole line.
+    if (this.columnNumber === other.columnNumber) {
+      return 0;
+    }
+    if (typeof this.columnNumber !== 'number') {
+      return -1;
+    }
+    if (typeof other.columnNumber !== 'number') {
+      return 1;
     }
     return this.columnNumber - other.columnNumber;
   }

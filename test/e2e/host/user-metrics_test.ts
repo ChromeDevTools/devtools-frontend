@@ -8,7 +8,7 @@ import * as puppeteer from 'puppeteer';
 import {$, click, enableExperiment, getBrowserAndPages, goToResource, platform, reloadDevTools, scrollElementIntoView, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToCssOverviewTab} from '../helpers/css-overview-helpers.js';
-import {editCSSProperty, expandSelectedNodeRecursively, focusElementsTree, INACTIVE_GRID_ADORNER_SELECTOR, navigateToSidePane, openLayoutPane, toggleElementCheckboxInLayoutPane, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
+import {editCSSProperty, focusElementsTree, navigateToSidePane, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 import {clickToggleButton, selectDualScreen, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
 import {closeSecurityTab, navigateToSecurityTab} from '../helpers/security-helpers.js';
 import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
@@ -46,7 +46,6 @@ declare global {
     __colorFixed: (evt: Event) => void;
     __issuesPanelIssueExpanded: (evt: Event) => void;
     __issuesPanelResourceOpened: (evt: Event) => void;
-    __gridOverlayOpenedFrom: (evt: Event) => void;
     Host: {
       UserMetrics: UserMetrics; userMetrics: {actionTaken(name: number): void; colorFixed(threshold: string): void;}
     };
@@ -125,11 +124,6 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.__caughtEvents.push({name: 'DevTools.IssuesPanelResourceOpened', value: customEvt.detail.value});
     };
 
-    window.__gridOverlayOpenedFrom = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.GridOverlayOpenedFrom', value: customEvt.detail.value});
-    };
-
     window.__caughtEvents = [];
     window.__beginCatchEvents = () => {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
@@ -146,7 +140,6 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.addEventListener('DevTools.ColorPicker.FixedColor', window.__colorFixed);
       window.addEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
       window.addEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
-      window.addEventListener('DevTools.GridOverlayOpenedFrom', window.__gridOverlayOpenedFrom);
     };
 
     window.__endCatchEvents = () => {
@@ -164,7 +157,6 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.removeEventListener('DevTools.ColorPicker.FixedColor', window.__colorFixed);
       window.removeEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
       window.removeEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
-      window.removeEventListener('DevTools.GridOverlayOpenedFrom', window.__gridOverlayOpenedFrom);
     };
 
     window.__beginCatchEvents();
@@ -186,17 +178,6 @@ async function assertCapturedEvents(expected: UserMetric[]) {
   const events = await retrieveCapturedEvents(frontend);
 
   assert.deepEqual(events, expected);
-}
-
-// Check if the given expected UserMetric events have been fired,
-// but do not care if they are the entirety of the events fired,
-// i.e. expected ∈ events, not necessarily expected === events.
-// The purpose of this helper is to ignore unrelated collateral events.
-async function assertEventsHaveBeenFired(events: UserMetric[]) {
-  const {frontend} = getBrowserAndPages();
-  const allEvents = await retrieveCapturedEvents(frontend);
-
-  assert.includeDeepMembers(allEvents, events);
 }
 
 describe('User Metrics', () => {
@@ -648,49 +629,6 @@ describe('User Metrics for Issue Panel', () => {
       {
         name: 'DevTools.IssuesPanelResourceOpened',
         value: 12,  // ContentSecurityPolicyLearnMore
-      },
-    ]);
-  });
-
-  afterEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await endCatchEvents(frontend);
-  });
-});
-
-describe('User Metrics for Grid Overlay', () => {
-  beforeEach(async () => {
-    await goToResource('elements/adornment.html');
-    await enableExperiment('cssGridFeatures');
-
-    const {frontend} = getBrowserAndPages();
-    await beginCatchEvents(frontend);
-
-    await waitForElementsStyleSection();
-    await waitForContentOfSelectedElementsNode('<body>\u200B');
-    await expandSelectedNodeRecursively();
-  });
-
-  // Flaky test
-  it.skip('[crbug.com/1134593] dispatch events when opening Grid overlay from adorner', async () => {
-    await click(INACTIVE_GRID_ADORNER_SELECTOR);
-
-    await assertEventsHaveBeenFired([
-      {
-        name: 'DevTools.GridOverlayOpenedFrom',
-        value: 0,  // adorner
-      },
-    ]);
-  });
-
-  it('dispatch events when opening Grid overlay from Layout pane', async () => {
-    await openLayoutPane();
-    await toggleElementCheckboxInLayoutPane();
-
-    await assertEventsHaveBeenFired([
-      {
-        name: 'DevTools.GridOverlayOpenedFrom',
-        value: 1,  // layout pane
       },
     ]);
   });

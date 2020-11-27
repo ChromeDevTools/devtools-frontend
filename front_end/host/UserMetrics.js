@@ -225,45 +225,6 @@ export class UserMetrics {
   }
 
   /**
-   * @param {string} gridSettingId
-   */
-  cssGridSettings(gridSettingId) {
-    const size = Object.keys(CSSGridSettings).length + 1;
-    const gridSetting = CSSGridSettings[gridSettingId];
-    if (gridSetting === undefined) {
-      return;
-    }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.CSSGridSettings, gridSetting, size);
-    Common.EventTarget.fireEvent(EnumeratedHistogram.CSSGridSettings, {value: gridSetting});
-  }
-
-  /**
-   * @param {number} count The number of highlighted persistent grids
-   */
-  highlightedPersistentCssGridCount(count) {
-    const size = HighlightedPersistentCSSGridCount.length;
-
-    let code;
-    for (let i = 0; i < size; i++) {
-      const min = HighlightedPersistentCSSGridCount[i];
-      const max = HighlightedPersistentCSSGridCount[i + 1] || {threshold: Infinity};
-
-      if (count >= min.threshold && count < max.threshold) {
-        code = min.code;
-        break;
-      }
-    }
-
-    if (typeof code === 'undefined') {
-      return;
-    }
-
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.HighlightedPersistentCSSGridCount, code, size);
-    Common.EventTarget.fireEvent(EnumeratedHistogram.HighlightedPersistentCSSGridCount, {value: code});
-  }
-
-  /**
    * @param {string} experimentId
    */
   experimentEnabledAtLaunch(experimentId) {
@@ -290,16 +251,6 @@ export class UserMetrics {
     const actionName = isEnabled ? EnumeratedHistogram.ExperimentEnabled : EnumeratedHistogram.ExperimentDisabled;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(actionName, experiment, size);
     Common.EventTarget.fireEvent(actionName, {value: experiment});
-  }
-
-  /**
-   * @param {!GridOverlayOpener} gridOverlayOpener
-   */
-  gridOverlayOpenedFrom(gridOverlayOpener) {
-    const size = Object.keys(GridOverlayOpener).length + 1;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.GridOverlayOpenedFrom, gridOverlayOpener, size);
-    Common.EventTarget.fireEvent(EnumeratedHistogram.GridOverlayOpenedFrom, {value: gridOverlayOpener});
   }
 }
 
@@ -558,31 +509,6 @@ export const DualScreenDeviceEmulated = {
   PlatformSupportUsed: 2        // user starts to use platform dual screen support feature.
 };
 
-/** @type {!Object<string, number>} */
-export const CSSGridSettings = {
-  'showGridLineLabels.none': 0,
-  'showGridLineLabels.lineNumbers': 1,
-  'showGridLineLabels.lineNames': 2,
-  'extendGridLines.false': 3,
-  'extendGridLines.true': 4,
-  'showGridAreas.false': 5,
-  'showGridAreas.true': 6,
-  'showGridTrackSizes.false': 7,
-  'showGridTrackSizes.true': 8,
-};
-
-export const HighlightedPersistentCSSGridCount = [
-  {threshold: 0, code: 0},   // 0 highlighted grids
-  {threshold: 1, code: 1},   // 1 highlighted grid
-  {threshold: 2, code: 2},   // 2 highlighted grids
-  {threshold: 3, code: 3},   // 3 highlighted grids
-  {threshold: 4, code: 4},   // 4 highlighted grids
-  {threshold: 5, code: 5},   // 5 to 9 highlighted grids
-  {threshold: 10, code: 6},  // 10 to 19 highlighted grids
-  {threshold: 20, code: 7},  // 20 to 49 highlighted grids
-  {threshold: 50, code: 8},  // more than 50 highlighted grids
-];
-
 /**
  * This list should contain the currently active Devtools Experiments.
  * Therefore, it is possible that the id's will no longer be continuous
@@ -658,10 +584,4 @@ export const IssueResourceOpened = {
   SameSiteCookieLearnMore: 10,
   HeavyAdLearnMore: 11,
   ContentSecurityPolicyLearnMore: 12
-};
-
-/** @enum {number} */
-export const GridOverlayOpener = {
-  Adorner: 0,
-  LayoutPane: 1,
 };

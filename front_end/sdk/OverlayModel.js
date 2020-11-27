@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
 import * as Root from '../root/root.js';
 
 import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
@@ -316,14 +315,12 @@ export class OverlayModel extends SDKModel {
 
   /**
    * @param {number} nodeId
-   * @param {!Host.UserMetrics.GridOverlayOpener} gridOverlayOpener
    */
-  highlightGridInPersistentOverlay(nodeId, gridOverlayOpener) {
+  highlightGridInPersistentOverlay(nodeId) {
     if (!this._peristentHighlighter) {
       return;
     }
     this._peristentHighlighter.highlightGridInOverlay(nodeId);
-    Host.userMetrics.gridOverlayOpenedFrom(gridOverlayOpener);
     this.dispatchEventToListeners(Events.PersistentGridOverlayStateChanged, {nodeId, enabled: true});
   }
 

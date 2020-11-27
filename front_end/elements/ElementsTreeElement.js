@@ -2160,8 +2160,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     const onClick = /** @type {!EventListener} */ (() => {
       if (adorner.isActive()) {
-        node.domModel().overlayModel().highlightGridInPersistentOverlay(
-            nodeId, Host.UserMetrics.GridOverlayOpener.Adorner);
+        node.domModel().overlayModel().highlightGridInPersistentOverlay(nodeId);
       } else {
         node.domModel().overlayModel().hideGridInPersistentOverlay(nodeId);
       }

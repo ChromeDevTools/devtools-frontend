@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -58,8 +57,7 @@ const gridNodesToElements = nodes => {
       enabled: node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(nodeId),
       toggle: value => {
         if (value) {
-          node.domModel().overlayModel().highlightGridInPersistentOverlay(
-              nodeId, Host.UserMetrics.GridOverlayOpener.LayoutPane);
+          node.domModel().overlayModel().highlightGridInPersistentOverlay(nodeId);
         } else {
           node.domModel().overlayModel().hideGridInPersistentOverlay(nodeId);
         }

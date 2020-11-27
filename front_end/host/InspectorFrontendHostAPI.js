@@ -431,9 +431,8 @@ export let CanShowSurveyResult;
 
 /**
  * Enum for recordPerformanceHistogram
- * Warning: There are two other definitions of this enum in the DevTools code
+ * Warning: There is another definition of this enum in the DevTools code
  * base, keep them in sync:
- * front_end/extern.js
  * front_end/devtools_compatibility.js
  * @readonly
  * @enum {string}
@@ -450,10 +449,7 @@ export const EnumeratedHistogram = {
   IssuesPanelResourceOpened: 'DevTools.IssuesPanelResourceOpened',
   KeybindSetSettingChanged: 'DevTools.KeybindSetSettingChanged',
   DualScreenDeviceEmulated: 'DevTools.DualScreenDeviceEmulated',
-  CSSGridSettings: 'DevTools.CSSGridSettings2',
-  HighlightedPersistentCSSGridCount: 'DevTools.HighlightedPersistentCSSGridCount',
   ExperimentEnabledAtLaunch: 'DevTools.ExperimentEnabledAtLaunch',
   ExperimentEnabled: 'DevTools.ExperimentEnabled',
   ExperimentDisabled: 'DevTools.ExperimentDisabled',
-  GridOverlayOpenedFrom: 'DevTools.GridOverlayOpenedFrom',
 };

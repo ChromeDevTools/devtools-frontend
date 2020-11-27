@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
-import * as Platform from '../platform/platform.js';
 
 import {OverlayColorGenerator} from './OverlayColorGenerator.js';
 
@@ -41,27 +39,6 @@ export class OverlayPersistentHighlighter {
     /** @type {!Common.Settings.Setting<*>} */
     this._showGridTrackSizesSetting = Common.Settings.Settings.instance().moduleSetting('showGridTrackSizes');
     this._showGridTrackSizesSetting.addChangeListener(this._onSettingChange, this);
-
-    this._logCurrentGridSettings();
-
-    // Debounce recording highlighted grids in order to avoid counting rapidly turning grids on and off.
-    this._recordHighlightedGridCount = Common.Debouncer.debounce(this._doRecordHighlightedGridCount.bind(this), 1000);
-    /** @type {!Set<number>} */
-    this._previouslyRecordedGridCountNodeIds = new Set();
-  }
-
-  /**
-   * @returns {boolean}
-   */
-  static getGridTelemetryLogged() {
-    return OverlayPersistentHighlighter.gridTelemetryLogged;
-  }
-
-  /**
-   * @param {boolean} isLogged
-   */
-  static setGridTelemetryLogged(isLogged) {
-    OverlayPersistentHighlighter.gridTelemetryLogged = isLogged;
   }
 
   /**
@@ -69,47 +46,6 @@ export class OverlayPersistentHighlighter {
    */
   _onSettingChange() {
     this.resetOverlay();
-  }
-
-  /**
-   * @private
-   */
-  _logCurrentGridSettings() {
-    if (OverlayPersistentHighlighter.getGridTelemetryLogged()) {
-      return;
-    }
-    this._recordGridSetting(this._showGridLineLabelsSetting);
-    this._recordGridSetting(this._extendGridLinesSetting);
-    this._recordGridSetting(this._showGridAreasSetting);
-    this._recordGridSetting(this._showGridTrackSizesSetting);
-    OverlayPersistentHighlighter.setGridTelemetryLogged(true);
-  }
-
-  /**
-   * @private
-   * @param {?Common.Settings.Setting<*>} setting
-   */
-  _recordGridSetting(setting) {
-    if (!setting) {
-      return;
-    }
-    Host.userMetrics.cssGridSettings(`${setting.name}.${setting.get()}`);
-  }
-
-  /**
-   * @private
-   */
-  _doRecordHighlightedGridCount() {
-    const recordedNodeIds = new Set(this._gridHighlights.keys());
-
-    // If only settings changed, but not the list of highlighted grids, bail out.
-    if (Platform.SetUtilities.isEqual(recordedNodeIds, this._previouslyRecordedGridCountNodeIds)) {
-      return;
-    }
-
-    Host.userMetrics.highlightedPersistentCssGridCount(recordedNodeIds.size);
-
-    this._previouslyRecordedGridCountNodeIds = recordedNodeIds;
   }
 
   /**
@@ -321,7 +257,6 @@ export class OverlayPersistentHighlighter {
       gridNodeHighlightConfigs.push({nodeId, gridHighlightConfig});
     }
     overlayModel.target().overlayAgent().invoke_setShowGridOverlays({gridNodeHighlightConfigs});
-    this._recordHighlightedGridCount();
   }
 
   /**
@@ -339,8 +274,6 @@ export class OverlayPersistentHighlighter {
     overlayModel.target().overlayAgent().invoke_setShowFlexOverlays({flexNodeHighlightConfigs});
   }
 }
-
-OverlayPersistentHighlighter.gridTelemetryLogged = false;
 
 /**
  * @interface

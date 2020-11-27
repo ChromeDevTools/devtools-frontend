@@ -43,6 +43,13 @@ def parse_options(cli_args):
         dest='jobs',
         help=
         'The number of parallel runners to use (if supported). Defaults to 1')
+    parser.add_argument(
+        '--server',
+        default='hosted-mode',
+        dest='server',
+        help=
+        'Which test server to run. Either hosted mode DevTools, or the component docs server.'
+    )
     return parser.parse_args(cli_args)
 
 
@@ -51,6 +58,7 @@ def run_tests(chrome_binary,
               test_suite_path,
               test_suite,
               jobs,
+              server,
               test_file=None):
     env = os.environ.copy()
     env['CHROME_BIN'] = chrome_binary
@@ -63,6 +71,7 @@ def run_tests(chrome_binary,
     if jobs:
         env['JOBS'] = jobs
 
+    env['SERVER'] = server
     cwd = devtools_paths.devtools_root_path()
     exec_command = [
         devtools_paths.node_path(),
@@ -113,6 +122,7 @@ def run_test():
 
     test_suite = OPTIONS.test_suite
     test_file = OPTIONS.test_file
+    server = OPTIONS.server
 
     print('Using Chromium binary ({}{})\n'.format(chrome_binary, ' ' + chrome_features if chrome_features else ''))
     print('Using Test Suite (%s)\n' % test_suite)
@@ -132,6 +142,7 @@ def run_test():
                                  test_suite_path,
                                  test_suite,
                                  jobs,
+                                 server,
                                  test_file=test_file)
     except Exception as err:
         print(err)

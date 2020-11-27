@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import {postFileTeardown, preFileSetup, resetPages} from './hooks.js';
-import {startHostedModeServer, stopHostedModeServer} from './hosted_mode_server.js';
+import {startServer, stopServer} from './test_server.js';
+
+const targetServerType = process.env['SERVER'];
 
 /* eslint-disable no-console */
 
@@ -23,16 +25,23 @@ process.on('SIGINT', postFileTeardown);
 // https://mochajs.org/#global-setup-fixtures. These let us start one hosted
 // mode server and share it between all the parallel test runners.
 export async function mochaGlobalSetup(this: Mocha.Suite) {
-  // Start the hosted mode server in the 'main' process. In parallel mode, we
+  // Start the test server in the 'main' process. In parallel mode, we
   // share one server between all parallel runners. The parallel runners are all
   // in different processes, so we pass the port number as an environment var.
-  process.env.hostedModeServerPort = String(await startHostedModeServer());
-  console.log(`Started hosted mode server on port ${process.env.hostedModeServerPort}`);
+  if (targetServerType !== 'hosted-mode' && targetServerType !== 'component-docs') {
+    throw new Error('Invalid target server: must be one of "hosted-mode" or "component-docs"');
+  }
+  if (targetServerType === 'hosted-mode') {
+    process.env.hostedModeServerPort = String(await startServer(targetServerType));
+  } else if (targetServerType === 'component-docs') {
+    process.env.componentDocsServerPort = String(await startServer(targetServerType));
+  }
+  console.log(`Started ${targetServerType} server on port ${process.env.hostedModeServerPort}`);
 }
 
 export function mochaGlobalTeardown() {
-  console.log('Stopping hosted mode server');
-  stopHostedModeServer();
+  console.log('Stopping server');
+  stopServer();
 }
 
 // These are the 'root hook plugins': https://mochajs.org/#root-hook-plugins

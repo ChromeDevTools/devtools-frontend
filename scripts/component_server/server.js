@@ -11,7 +11,17 @@ const {argv} = require('yargs');
 const serverPort = parseInt(process.env.PORT, 10) || 8090;
 
 const target = argv.target || 'Default';
-const devtoolsFrontendFolder = path.resolve(path.join(__dirname, '..', '..', 'out', target, 'gen', 'front_end'));
+
+/**
+ * When you run npm run components-server we run the script as is from scripts/,
+ * but when this server is run as part of a test suite it's run from
+ * out/Default/gen/scripts, so we have to do a bit of path mangling to figure
+ * out where we are.
+ */
+const isRunningInGen = __dirname.includes(path.join(path.sep, 'gen', path.sep, 'scripts'));
+const pathToOutDirectory = isRunningInGen ? path.resolve(path.join(__dirname), '..', '..', '..', '..') :
+                                            path.resolve(path.join(__dirname, '..', '..', 'out'));
+const devtoolsFrontendFolder = path.resolve(path.join(pathToOutDirectory, target, 'gen', 'front_end'));
 
 if (!fs.existsSync(devtoolsFrontendFolder)) {
   console.error(`ERROR: Generated front_end folder (${devtoolsFrontendFolder}) does not exist.`);
@@ -21,8 +31,21 @@ if (!fs.existsSync(devtoolsFrontendFolder)) {
   process.exit(1);
 }
 
-http.createServer(requestHandler).listen(serverPort);
-console.log(`Started components server at http://localhost:${serverPort}\n`);
+const server = http.createServer(requestHandler);
+server.listen(serverPort);
+server.once('listening', () => {
+  if (process.send) {
+    process.send(serverPort);
+  }
+  console.log(`Started components server at http://localhost:${serverPort}\n`);
+});
+
+server.once('error', error => {
+  if (process.send) {
+    process.send('ERROR');
+  }
+  throw error;
+});
 
 function createComponentIndexFile(componentPath, componentExamples) {
   const componentName = componentPath.replace('/', '').replace(/_/g, ' ');

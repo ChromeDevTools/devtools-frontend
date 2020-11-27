@@ -6,18 +6,24 @@ import {ChildProcess, spawn} from 'child_process';
 import * as path from 'path';
 
 const HOSTED_MODE_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', 'hosted_mode', 'server.js');
+const COMPONENT_DOCS_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', 'component_server', 'server.js');
 const cwd = path.join(__dirname, '..', '..');
-let hostedModeServer: ChildProcess;
+let runningServer: ChildProcess;
 
 // Starts a hosted mode server on any available port and returns the port number
 // once the server is ready to receive requests.
-export function startHostedModeServer(): Promise<number> {
-  if (hostedModeServer) {
-    throw new Error('Hosted mode server was already started');
+export function startServer(server: 'hosted-mode'|'component-docs'): Promise<number> {
+  if (runningServer) {
+    throw new Error('Server was already started.');
   }
-  function handleHostedModeError(error: Error) {
-    throw new Error(`Hosted mode server: ${error}`);
+  function handleServerError(error: Error) {
+    throw new Error(`Server error: ${error}`);
   }
+
+  const serverExecutable = {
+    'hosted-mode': HOSTED_MODE_SERVER_PATH,
+    'component-docs': COMPONENT_DOCS_SERVER_PATH,
+  }[server];
 
   // Copy the current env and append the port.
   const env = Object.create(process.env);
@@ -27,22 +33,21 @@ export function startHostedModeServer(): Promise<number> {
     // used back to us. For parallel test mode, we need to avoid specifying a
     // port directly and instead request any free port, which is what port 0
     // signifies to the OS.
-    hostedModeServer =
-        spawn(process.execPath, [HOSTED_MODE_SERVER_PATH], {cwd, env, stdio: ['pipe', 'pipe', 'pipe', 'ipc']});
-    hostedModeServer.on('message', message => {
+    runningServer = spawn(process.execPath, [serverExecutable], {cwd, env, stdio: ['pipe', 'pipe', 'pipe', 'ipc']});
+    runningServer.on('message', message => {
       if (message === 'ERROR') {
-        reject('Could not start hosted mode server');
+        reject('Could not start server');
       } else {
         resolve(parseInt(message, 10));
       }
     });
-    hostedModeServer.on('error', handleHostedModeError);
-    if (hostedModeServer.stderr) {
-      hostedModeServer.stderr.on('data', handleHostedModeError);
+    runningServer.on('error', handleServerError);
+    if (runningServer.stderr) {
+      runningServer.stderr.on('data', handleServerError);
     }
   });
 }
 
-export function stopHostedModeServer() {
-  hostedModeServer.kill();
+export function stopServer() {
+  runningServer.kill();
 }

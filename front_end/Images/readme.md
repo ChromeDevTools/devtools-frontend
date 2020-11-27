@@ -6,6 +6,10 @@
    - Make sure it's the `src/` version of the spritesheet.
    - Copy-paste the icon to a new page. Make sure it preserved its
      original size and aspect ratio, and isn't otherwise altered.
+   - To make sure step (3) below doesn't destroy the icon, it might be
+     necessary to resize it. Just select everything and use the elements
+     in the top toolbar to resize the icon (make sure the aspect ratio is
+     preserved).
    - Set the size of the page to match the icon. You may use Inkscape's
      Edit>Resize Page to Selection command to accomplish this.
    - If you chose to include padding in the icon, make sure the icon is
@@ -18,6 +22,13 @@
 
 3. Optimize:
    - `./scripts/optimize_svg_images.py`.
+   - This script produces, for example, `Images/list_icon.svg` from
+     `Images/src/list_icon.svg` by rounding numbers and removing hopefully
+     unnecessary content. However, it might end up distorting/destroying the
+     icon, especially if it is too small. Make sure to open the output of the
+     optimiztion process (e.g. `Images/list_icon.svg`) in Inkscape and inspect
+     it for damage. Enlarging the input image, as desribed in step (1) usually
+     circumvents this.
 
 4. Use Icon component in the DevTools front-end:
    - Visit https://docs.google.com/document/d/1EA--IokG6YW51y7unS8dIKUx6EtyjETT0uglmvIpfsg/edit#heading=h.xgjl2srtytjt for more information on that.

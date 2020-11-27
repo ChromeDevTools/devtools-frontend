@@ -23,6 +23,11 @@
   contain: strict;
 }
 
+:host(.collapsed) {
+  visibility: collapse;
+  height: 0;
+}
+
 /* The font we use on Windows takes up more vertical space, so adjust
  * the height of the metrics sidebar pane accordingly.
  */

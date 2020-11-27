@@ -37,8 +37,8 @@
   overflow: scroll;
 }
 
-.style-panes-wrapper > div:not(:first-child) {
-  border-top: 1px solid var(--divider-color);
+.style-panes-wrapper > div:not(:last-child) {
+  border-bottom: 1px solid var(--divider-color);
 }
 
 #elements-content:not(.elements-wrap) > div {

@@ -69,6 +69,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     const cssModel = this.cssModel();
     if (!node || node.nodeType() !== Node.ELEMENT_NODE || !cssModel) {
       this.contentElement.removeChildren();
+      this.element.classList.add('collapsed');
       return Promise.resolve();
     }
 
@@ -343,6 +344,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     metricsElement.addEventListener('mouseleave', this._highlightDOMNode.bind(this, false, 'all'), false);
     this.contentElement.removeChildren();
     this.contentElement.appendChild(metricsElement);
+    this.element.classList.remove('collapsed');
   }
 
   /**

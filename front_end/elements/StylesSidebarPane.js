@@ -641,6 +641,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
     const node = this.node();
     if (!matchedStyles || !node) {
+      this._sectionsContainer.removeChildren();
       this._noMatchesElement.classList.remove('hidden');
       return;
     }

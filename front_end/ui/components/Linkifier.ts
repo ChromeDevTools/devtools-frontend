@@ -15,7 +15,7 @@ export class LinkifierClick extends Event {
   data: LinkifierData;
 
   constructor(data: LinkifierData) {
-    super('linkifier-click', {
+    super('linkifier-activated', {
       bubbles: true,
       composed: true,
     });
@@ -39,11 +39,12 @@ export class Linkifier extends HTMLElement {
 
   private onLinkActivation(event: Event) {
     event.preventDefault();
-    this.dispatchEvent(new LinkifierClick({
+    const linkifierClickEvent = new LinkifierClick({
       url: this.url,
       lineNumber: this.lineNumber,
       columnNumber: this.columnNumber,
-    }));
+    });
+    this.dispatchEvent(linkifierClickEvent);
   }
 
   private render() {

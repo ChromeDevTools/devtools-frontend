@@ -659,6 +659,11 @@ export class DebuggerLanguagePluginManager {
     if (!plugin) {
       return null;
     }
+    const location = getRawLocation(callFrame);
+    const sourceLocations = await plugin.rawLocationToSourceLocation(location);
+    if (sourceLocations.length === 0) {
+      return null;
+    }
 
     try {
       const object = await EvalNode.get(callFrame, plugin, expression, options);

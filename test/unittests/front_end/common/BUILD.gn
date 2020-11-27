@@ -3,6 +3,7 @@ import("../../../../third_party/typescript/typescript.gni")
 ts_library("common") {
   testonly = true
   sources = [
+    "Base64_test.ts",
     "CharacterIdMap_test.ts",
     "ColorUtils_test.ts",
     "Color_test.ts",

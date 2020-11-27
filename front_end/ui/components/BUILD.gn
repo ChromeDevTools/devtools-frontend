@@ -12,6 +12,7 @@ devtools_module("components") {
     "DataGridRenderers.ts",
     "DataGridUtils.ts",
     "Linkifier.ts",
+    "LinkifierUtils.ts",
   ]
   deps = [
     "../../bindings:bundle",

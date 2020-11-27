@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Bindings from '../../bindings/bindings.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+import * as LinkifierUtils from './LinkifierUtils.js';
 
 export interface LinkifierData {
   url: string;
@@ -46,19 +46,6 @@ export class Linkifier extends HTMLElement {
     }));
   }
 
-  private linkText(): string {
-    if (this.url) {
-      const displayName = Bindings.ResourceUtils.displayNameForURL(this.url);
-      let text = `${displayName}`;
-      if (typeof this.lineNumber !== 'undefined') {
-        text += `:${this.lineNumber + 1}`;
-      }
-      return text;
-    }
-
-    throw new Error('New linkifier component error: don\'t know how to generate link text for given arguments');
-  }
-
   private render() {
     if (!this.url) {
       throw new Error('Cannot construct a Linkifier without providing a valid string URL.');
@@ -73,7 +60,7 @@ export class Linkifier extends HTMLElement {
             cursor: pointer;
          }
       </style>
-      <a class="link" href=${this.url} @click=${this.onLinkActivation}>${this.linkText()}</a>
+      <a class="link" href=${this.url} @click=${this.onLinkActivation}>${LinkifierUtils.linkText(this.url, this.lineNumber)}</a>
     `, this.shadow, { eventContext: this});
     // clang-format on
   }

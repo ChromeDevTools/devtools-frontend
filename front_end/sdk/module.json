@@ -628,6 +628,7 @@
     "TracingManager.js",
     "TracingModel.js",
     "OverlayColorGenerator.js",
+    "OverlayPersistentHighlighter.js",
     "OverlayModel.js",
     "RuntimeModel.js",
     "IsolateManager.js",

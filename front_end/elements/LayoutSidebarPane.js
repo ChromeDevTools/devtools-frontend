@@ -85,7 +85,7 @@ const flexContainerNodesToElements = nodes => {
     const nodeId = node.id;
     return {
       ...layoutElement,
-      color: '#000',  // TODO(alexrudenko): get the color from the overlay model.
+      color: node.domModel().overlayModel().colorOfFlexInPersistentOverlay(nodeId) || '#000',
       enabled: node.domModel().overlayModel().isHighlightedFlexContainerInPersistentOverlay(nodeId),
       toggle: value => {
         if (value) {
@@ -96,7 +96,7 @@ const flexContainerNodesToElements = nodes => {
       },
       setColor(value) {
         this.color = value;
-        // TODO(alexrudenko): save the node color in the overlay model.
+        node.domModel().overlayModel().setColorOfFlexInPersistentOverlay(nodeId, value);
       },
     };
   });

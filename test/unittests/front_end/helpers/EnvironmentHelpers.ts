@@ -97,6 +97,10 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue('Sources', 'jsSourceMapsEnabled', true),
     createSettingValue('Emulation', 'emulation.touch', '', 'enum'),
     createSettingValue('Emulation', 'emulation.idleDetection', '', 'enum'),
+    createSettingValue('Grid', 'showGridLineLabels', true),
+    createSettingValue('Grid', 'extendGridLines', true),
+    createSettingValue('Grid', 'showGridAreas', true),
+    createSettingValue('Grid', 'showGridTrackSizes', true),
   ];
 
   // Instantiate the runtime.

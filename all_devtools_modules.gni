@@ -460,6 +460,7 @@ all_typescript_module_sources = [
   "sdk/NetworkRequest.js",
   "sdk/OverlayColorGenerator.js",
   "sdk/OverlayModel.js",
+  "sdk/OverlayPersistentHighlighter.js",
   "sdk/PageResourceLoader.js",
   "sdk/PaintProfiler.js",
   "sdk/PerformanceMetricsModel.js",

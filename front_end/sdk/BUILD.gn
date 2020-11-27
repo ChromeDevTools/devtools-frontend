@@ -50,6 +50,7 @@ devtools_module("sdk") {
     "NetworkRequest.js",
     "OverlayColorGenerator.js",
     "OverlayModel.js",
+    "OverlayPersistentHighlighter.js",
     "PageResourceLoader.js",
     "PaintProfiler.js",
     "PerformanceMetricsModel.js",

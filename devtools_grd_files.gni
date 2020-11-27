@@ -845,6 +845,7 @@ grd_files_debug_sources = [
   "front_end/sdk/NetworkRequest.js",
   "front_end/sdk/OverlayColorGenerator.js",
   "front_end/sdk/OverlayModel.js",
+  "front_end/sdk/OverlayPersistentHighlighter.js",
   "front_end/sdk/PageResourceLoader.js",
   "front_end/sdk/PaintProfiler.js",
   "front_end/sdk/PerformanceMetricsModel.js",

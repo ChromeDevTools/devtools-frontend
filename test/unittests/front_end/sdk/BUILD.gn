@@ -13,6 +13,7 @@ ts_library("sdk") {
     "MockIssuesModel.ts",
     "NetworkManager_test.ts",
     "OverlayColorGenerator_test.ts",
+    "OverlayPersistentHighlighter_test.ts",
     "PageResourceLoader_test.ts",
     "ServerTiming_test.ts",
     "SourceMap_test.ts",

@@ -51,6 +51,7 @@ import * as NetworkManager from './NetworkManager.js';
 import * as NetworkRequest from './NetworkRequest.js';
 import * as OverlayColorGenerator from './OverlayColorGenerator.js';
 import * as OverlayModel from './OverlayModel.js';
+import * as OverlayPersistentHighlighter from './OverlayPersistentHighlighter.js';
 import * as PageResourceLoader from './PageResourceLoader.js';
 import * as PaintProfiler from './PaintProfiler.js';
 import * as PerformanceMetricsModel from './PerformanceMetricsModel.js';
@@ -115,6 +116,7 @@ export {
   NetworkRequest,
   OverlayColorGenerator,
   OverlayModel,
+  OverlayPersistentHighlighter,
   PageResourceLoader,
   PaintProfiler,
   PerformanceMetricsModel,

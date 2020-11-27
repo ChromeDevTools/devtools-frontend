@@ -9,7 +9,7 @@
 }
 
 .header {
-  color: var(--selection-inactive-fg-color);
+  color: var(--color-text-secondary);
   font-weight: bold;
   user-select: none;
   white-space: nowrap;

@@ -1008,6 +1008,10 @@ export class DebuggerLanguagePluginManager {
     };
 
     try {
+      const sourceMapping = await plugin.rawLocationToSourceLocation(location);
+      if (sourceMapping.length === 0) {
+        return null;
+      }
       /** @type {!Map<string, !SourceScope>} */
       const scopes = new Map();
       const variables = await plugin.listVariablesInScope(location);

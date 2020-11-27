@@ -136,7 +136,7 @@ module.exports = function(config) {
 
     browsers,
 
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['mocha', 'chai', 'sinon'],
 
     client: {
       /*
@@ -151,6 +151,7 @@ module.exports = function(config) {
       require('karma-chrome-launcher'),
       require('karma-mocha'),
       require('karma-chai'),
+      require('karma-sinon'),
       require('karma-sourcemap-loader'),
       require('karma-coverage'),
     ],

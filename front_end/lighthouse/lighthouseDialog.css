@@ -15,7 +15,7 @@
 }
 
 .lighthouse-view h2 {
-  color: #666;
+  color: var(--color-text-primary);
   font-weight: bold;
   font-size: 14px;
   flex: none;
@@ -33,7 +33,7 @@
   width: 100%;
   flex: auto;
   align-items: center;
-  color: #666;
+  color: var(--color-text-primary);
 }
 
 .lighthouse-status-text {
@@ -56,7 +56,7 @@
 .lighthouse-progress-wrapper {
   width: calc(100% + 2 * var(--view-horizontal-margin));
   height: 2px;
-  background-color: #e1f5fe;
+  background-color: var(--color-background-highlight);
   position: relative;
   margin: 10px;
 }
@@ -64,7 +64,7 @@
 .lighthouse-progress-bar {
   width: 0%;
   height: 100%;
-  background: #039be5;
+  background: var(--color-primary-variant);
   position: absolute;
   transform-origin: left;
   animation-fill-mode: forwards;

@@ -57,7 +57,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   constructor() {
     super('lighthouse');
     this.registerRequiredCSS('third_party/lighthouse/report-assets/report.css', {enableLegacyPatching: true});
-    this.registerRequiredCSS('lighthouse/lighthousePanel.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('lighthouse/lighthousePanel.css', {enableLegacyPatching: false});
 
     this._protocolService = new ProtocolService();
     this._controller = new LighthouseController(this._protocolService);

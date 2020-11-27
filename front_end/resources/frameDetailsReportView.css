@@ -18,7 +18,7 @@
 }
 
 .report-field .inline-name {
-  color: #888;
+  color: var(--color-text-disabled);
   padding-left: 2ex;
   user-select: none;
   white-space: pre-line;
@@ -29,7 +29,7 @@
 }
 
 .report-field .inline-comment {
-  color: #555;
+  color: var(--color-text-secondary);
   padding-left: 1ex;
   white-space: pre-line;
 }
@@ -43,7 +43,7 @@
 }
 
 .report-field .inline-span {
-  color: #555;
+  color: var(--color-text-secondary);
   padding-left: 1ex;
   white-space: pre-line;
 }

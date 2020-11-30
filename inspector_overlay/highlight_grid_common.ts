@@ -304,7 +304,9 @@ export function drawLayoutGridHighlight(
   }
 
   // Draw all the labels
-  drawGridLabels(highlight, gridBounds, areaBounds, {canvasWidth, canvasHeight}, labelState, writingModeMatrix);
+  drawGridLabels(
+      highlight, gridBounds, areaBounds, {canvasWidth, canvasHeight}, labelState, emulationScaleFactor,
+      writingModeMatrix);
 }
 
 function _applyWritingModeTransformation(writingMode: string, gridBounds: Bounds, context: CanvasRenderingContext2D) {

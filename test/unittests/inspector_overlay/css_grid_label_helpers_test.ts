@@ -68,7 +68,7 @@ describe('drawGridLineNumbers label creation', () => {
     it(description, () => {
       const el = getGridLineNumberLabelContainer();
       const data = _normalizePositionData(config, bounds);
-      drawGridLineNumbers(el, data, {canvasWidth: 800, canvasHeight: 600});
+      drawGridLineNumbers(el, data, {canvasWidth: 800, canvasHeight: 600}, 1);
 
       assert.strictEqual(el.children.length, expectedLabels.length, 'The right number of labels got created');
       assert.strictEqual(el.textContent, expectedLabels.join(''), 'The labels text is correct');
@@ -712,8 +712,8 @@ describe('drawGridTrackSizes label creation', () => {
   for (const {description, config, expectedLabels} of TESTS) {
     it(description, () => {
       const el = getGridTrackSizesLabelContainer();
-      drawGridTrackSizes(el, config.rowTrackSizes, 'row', {canvasWidth: 800, canvasHeight: 600});
-      drawGridTrackSizes(el, config.columnTrackSizes, 'column', {canvasWidth: 800, canvasHeight: 600});
+      drawGridTrackSizes(el, config.rowTrackSizes, 'row', {canvasWidth: 800, canvasHeight: 600}, 1);
+      drawGridTrackSizes(el, config.columnTrackSizes, 'column', {canvasWidth: 800, canvasHeight: 600}, 1);
       assert.strictEqual(el.children.length, expectedLabels.length, 'The right number of labels got created');
       assert.strictEqual(el.textContent, expectedLabels.join(''), 'The labels text is correct');
     });
@@ -744,6 +744,7 @@ describe('drawGridLineNames', () => {
         {type: 'column', textContent: 'second-col', x: 199},
         {type: 'column', textContent: 'third-col', x: 299},
       ],
+      deviceEmulationFactor: 1,
     },
     {
       description: 'groups labels together when they are for the same line',
@@ -759,10 +760,33 @@ describe('drawGridLineNames', () => {
         {type: 'column', textContent: 'first-colalso-first-coland-another-first-col'},
         {type: 'column', textContent: 'second-colalso-second-col'},
       ],
+      deviceEmulationFactor: 1,
+    },
+    {
+      description: 'places labels in the right spot with emulation factor = 2',
+      rowLineNameOffsets: [
+        {x: 100, y: 100, name: 'first-row'},
+        {x: 100, y: 200, name: 'second-row'},
+        {x: 100, y: 300, name: 'third-row'},
+      ],
+      columnLineNameOffsets: [
+        {x: 100, y: 100, name: 'first-col'},
+        {x: 200, y: 100, name: 'second-col'},
+        {x: 300, y: 100, name: 'third-col'},
+      ],
+      expectedLabels: [
+        {type: 'row', textContent: 'first-row', y: 200},
+        {type: 'row', textContent: 'second-row', y: 399.5},
+        {type: 'row', textContent: 'third-row', y: 599.5},
+        {type: 'column', textContent: 'first-col', x: 199},
+        {type: 'column', textContent: 'second-col', x: 399},
+        {type: 'column', textContent: 'third-col', x: 599},
+      ],
+      deviceEmulationFactor: 2,
     },
   ];
 
-  for (const {description, rowLineNameOffsets, columnLineNameOffsets, expectedLabels} of TESTS) {
+  for (const {description, rowLineNameOffsets, columnLineNameOffsets, deviceEmulationFactor, expectedLabels} of TESTS) {
     it(description,
        () => drawGridLineNamesAndAssertLabels(
            {
@@ -779,6 +803,6 @@ describe('drawGridLineNames', () => {
              maxY: 300,
              allPoints: [{x: 100, y: 100}, {x: 300, y: 100}, {x: 300, y: 300}, {x: 100, y: 300}],
            },
-           {canvasWidth: 800, canvasHeight: 600}, 0, expectedLabels));
+           {canvasWidth: 800, canvasHeight: 600}, 0, deviceEmulationFactor, expectedLabels));
   }
 });

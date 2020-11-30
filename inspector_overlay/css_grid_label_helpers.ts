@@ -145,7 +145,8 @@ export interface GridLabelState {
  */
 export function drawGridLabels(
     config: GridHighlightConfig, gridBounds: Bounds, areaBounds: AreaBounds[], canvasSize: CanvasSize,
-    labelState: GridLabelState, writingModeMatrix: DOMMatrix|undefined = new DOMMatrix()) {
+    labelState: GridLabelState, emulationScaleFactor: number,
+    writingModeMatrix: DOMMatrix|undefined = new DOMMatrix()) {
   // Find and clear the layer for the node specified in the config, or the default layer:
   // Each node has a layer for grid labels in order to draw multiple grid highlights
   // at once.
@@ -182,10 +183,11 @@ export function drawGridLabels(
   const normalizedData = _normalizePositionData(config, gridBounds);
   if (config.gridHighlightConfig && config.gridHighlightConfig.showLineNames) {
     drawGridLineNames(
-        lineNameContainer, normalizedData as GridPositionNormalizedDataWithNames, canvasSize, writingModeMatrix,
-        config.writingMode);
+        lineNameContainer, normalizedData as GridPositionNormalizedDataWithNames, canvasSize, emulationScaleFactor,
+        writingModeMatrix, config.writingMode);
   } else {
-    drawGridLineNumbers(lineNumberContainer, normalizedData, canvasSize, writingModeMatrix, config.writingMode);
+    drawGridLineNumbers(
+        lineNumberContainer, normalizedData, canvasSize, emulationScaleFactor, writingModeMatrix, config.writingMode);
   }
 
   // Draw area names.
@@ -194,12 +196,14 @@ export function drawGridLabels(
   if (config.columnTrackSizes) {
     // Draw column sizes.
     drawGridTrackSizes(
-        trackSizesContainer, config.columnTrackSizes, 'column', canvasSize, writingModeMatrix, config.writingMode);
+        trackSizesContainer, config.columnTrackSizes, 'column', canvasSize, emulationScaleFactor, writingModeMatrix,
+        config.writingMode);
   }
   if (config.rowTrackSizes) {
     // Draw row sizes.
     drawGridTrackSizes(
-        trackSizesContainer, config.rowTrackSizes, 'row', canvasSize, writingModeMatrix, config.writingMode);
+        trackSizesContainer, config.rowTrackSizes, 'row', canvasSize, emulationScaleFactor, writingModeMatrix,
+        config.writingMode);
   }
 }
 
@@ -372,19 +376,21 @@ export function _normalizePositionData(
  * @param {string=} writingMode The current writing-mode value
  */
 export function drawGridLineNumbers(
-    container: HTMLElement, data: GridPositionNormalizedData, canvasSize: CanvasSize,
+    container: HTMLElement, data: GridPositionNormalizedData, canvasSize: CanvasSize, emulationScaleFactor: number,
     writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(), writingMode: string|undefined = 'horizontal-tb') {
   if (!data.columns.positive.names) {
     for (const [i, pos] of positionIterator(data.columns.positive.positions, 'x')) {
       const element = _createLabelElement(container, (i + 1).toString(), 'column');
-      _placePositiveColumnLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize);
+      _placePositiveColumnLabel(
+          element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize, emulationScaleFactor);
     }
   }
 
   if (!data.rows.positive.names) {
     for (const [i, pos] of positionIterator(data.rows.positive.positions, 'y')) {
       const element = _createLabelElement(container, (i + 1).toString(), 'row');
-      _placePositiveRowLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize);
+      _placePositiveRowLabel(
+          element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize, emulationScaleFactor);
     }
   }
 
@@ -392,13 +398,15 @@ export function drawGridLineNumbers(
     // Negative positions are sorted such that the first position corresponds to the line closest to start edge of the grid.
     const element =
         _createLabelElement(container, (data.columns.negative.positions.length * -1 + i).toString(), 'column');
-    _placeNegativeColumnLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize);
+    _placeNegativeColumnLabel(
+        element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize, emulationScaleFactor);
   }
 
   for (const [i, pos] of positionIterator(data.rows.negative.positions, 'y')) {
     // Negative positions are sorted such that the first position corresponds to the line closest to start edge of the grid.
     const element = _createLabelElement(container, (data.rows.negative.positions.length * -1 + i).toString(), 'row');
-    _placeNegativeRowLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize);
+    _placeNegativeRowLabel(
+        element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize, emulationScaleFactor);
   }
 }
 
@@ -407,7 +415,8 @@ export function drawGridLineNumbers(
  */
 export function drawGridTrackSizes(
     container: HTMLElement, trackSizes: Array<TrackSize>, direction: 'row'|'column', canvasSize: CanvasSize,
-    writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(), writingMode: string|undefined = 'horizontal-tb') {
+    emulationScaleFactor: number, writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(),
+    writingMode: string|undefined = 'horizontal-tb') {
   const {main, cross} = _getAxes(writingMode);
   const {crossSize} = _getCanvasSizes(writingMode, canvasSize);
 
@@ -430,7 +439,7 @@ export function drawGridTrackSizes(
         direction === 'column' ? GridArrowTypes.bottomMid : GridArrowTypes.rightMid, writingMode);
     arrowType = _flipArrowTypeIfNeeded(arrowType, flipIn);
 
-    _placeLineLabel(element, arrowType, point.x, point.y, labelSize);
+    _placeLineLabel(element, arrowType, point.x, point.y, labelSize, emulationScaleFactor);
   }
 }
 
@@ -439,17 +448,20 @@ export function drawGridTrackSizes(
  */
 export function drawGridLineNames(
     container: HTMLElement, data: GridPositionNormalizedDataWithNames, canvasSize: CanvasSize,
-    writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(), writingMode: string|undefined = 'horizontal-tb') {
+    emulationScaleFactor: number, writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(),
+    writingMode: string|undefined = 'horizontal-tb') {
   for (const [i, pos] of data.columns.positive.positions.entries()) {
     const names = data.columns.positive.names[i];
     const element = _createLabelElement(container, _makeLineNameLabelContent(names), 'column');
-    _placePositiveColumnLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize);
+    _placePositiveColumnLabel(
+        element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize, emulationScaleFactor);
   }
 
   for (const [i, pos] of data.rows.positive.positions.entries()) {
     const names = data.rows.positive.names[i];
     const element = _createLabelElement(container, _makeLineNameLabelContent(names), 'row');
-    _placePositiveRowLabel(element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize);
+    _placePositiveRowLabel(
+        element, applyMatrixToPoint(pos, writingModeMatrix), data, writingMode, canvasSize, emulationScaleFactor);
   }
 }
 
@@ -553,8 +565,8 @@ function _getCanvasSizes(writingMode: string, canvasSize: CanvasSize): {mainSize
  * Determine the position of a positive row label, and place it.
  */
 function _placePositiveRowLabel(
-    element: HTMLElement, pos: Position, data: GridPositionNormalizedData, writingMode: string,
-    canvasSize: CanvasSize) {
+    element: HTMLElement, pos: Position, data: GridPositionNormalizedData, writingMode: string, canvasSize: CanvasSize,
+    emulationScaleFactor: number) {
   const {start, end} = _getLabelSideEdgePoints(data.bounds, 'row', 'positive');
   const {main, cross} = _getAxes(writingMode);
   const {crossSize} = _getCanvasSizes(writingMode, canvasSize);
@@ -578,15 +590,15 @@ function _placePositiveRowLabel(
   }
   arrowType = _flipArrowTypeIfNeeded(arrowType, flipIn);
 
-  _placeLineLabel(element, arrowType, pos.x, pos.y, labelSize);
+  _placeLineLabel(element, arrowType, pos.x, pos.y, labelSize, emulationScaleFactor);
 }
 
 /**
  * Determine the position of a negative row label, and place it.
  */
 function _placeNegativeRowLabel(
-    element: HTMLElement, pos: Position, data: GridPositionNormalizedData, writingMode: string,
-    canvasSize: CanvasSize) {
+    element: HTMLElement, pos: Position, data: GridPositionNormalizedData, writingMode: string, canvasSize: CanvasSize,
+    emulationScaleFactor: number) {
   const {start, end} = _getLabelSideEdgePoints(data.bounds, 'row', 'negative');
   const {main, cross} = _getAxes(writingMode);
   const {mainSize, crossSize} = _getCanvasSizes(writingMode, canvasSize);
@@ -610,15 +622,15 @@ function _placeNegativeRowLabel(
   }
   arrowType = _flipArrowTypeIfNeeded(arrowType, flipIn);
 
-  _placeLineLabel(element, arrowType, pos.x, pos.y, labelSize);
+  _placeLineLabel(element, arrowType, pos.x, pos.y, labelSize, emulationScaleFactor);
 }
 
 /**
  * Determine the position of a positive column label, and place it.
  */
 function _placePositiveColumnLabel(
-    element: HTMLElement, pos: Position, data: GridPositionNormalizedData, writingMode: string,
-    canvasSize: CanvasSize) {
+    element: HTMLElement, pos: Position, data: GridPositionNormalizedData, writingMode: string, canvasSize: CanvasSize,
+    emulationScaleFactor: number) {
   const {start, end} = _getLabelSideEdgePoints(data.bounds, 'column', 'positive');
   const {main, cross} = _getAxes(writingMode);
   const {mainSize, crossSize} = _getCanvasSizes(writingMode, canvasSize);
@@ -644,15 +656,15 @@ function _placePositiveColumnLabel(
 
   arrowType = _flipArrowTypeIfNeeded(arrowType, flipIn);
 
-  _placeLineLabel(element, arrowType, pos.x, pos.y, labelSize);
+  _placeLineLabel(element, arrowType, pos.x, pos.y, labelSize, emulationScaleFactor);
 }
 
 /**
  * Determine the position of a negative column label, and place it.
  */
 function _placeNegativeColumnLabel(
-    element: HTMLElement, pos: Position, data: GridPositionNormalizedData, writingMode: string,
-    canvasSize: CanvasSize) {
+    element: HTMLElement, pos: Position, data: GridPositionNormalizedData, writingMode: string, canvasSize: CanvasSize,
+    emulationScaleFactor: number) {
   const {start, end} = _getLabelSideEdgePoints(data.bounds, 'column', 'negative');
   const {main, cross} = _getAxes(writingMode);
   const {mainSize, crossSize} = _getCanvasSizes(writingMode, canvasSize);
@@ -677,7 +689,7 @@ function _placeNegativeColumnLabel(
   }
   arrowType = _flipArrowTypeIfNeeded(arrowType, flipIn);
 
-  _placeLineLabel(element, arrowType, pos.x, pos.y, labelSize);
+  _placeLineLabel(element, arrowType, pos.x, pos.y, labelSize, emulationScaleFactor);
 }
 
 /**
@@ -687,8 +699,10 @@ function _placeNegativeColumnLabel(
  * relative to the label are taken into account here to calculate the final x
  * and y coordinates of the label DOM element.
  */
-function _placeLineLabel(element: HTMLElement, arrowType: string, x: number, y: number, labelSize: LabelSize) {
-  const {contentLeft, contentTop} = _getLabelPositionByArrowType(arrowType, x, y, labelSize.width, labelSize.height);
+function _placeLineLabel(
+    element: HTMLElement, arrowType: string, x: number, y: number, labelSize: LabelSize, emulationScaleFactor: number) {
+  const {contentLeft, contentTop} =
+      _getLabelPositionByArrowType(arrowType, x, y, labelSize.width, labelSize.height, emulationScaleFactor);
 
   element.classList.add(arrowType);
   element.style.left = contentLeft + 'px';
@@ -851,10 +865,13 @@ function _adaptArrowTypeForWritingMode(arrowType: string, writingMode: string): 
  * Returns the required properties needed to place a label arrow based on the
  * arrow type and dimensions of the label
  */
-function _getLabelPositionByArrowType(arrowType: string, x: number, y: number, labelWidth: number, labelHeight: number):
-    {contentTop: number, contentLeft: number} {
+function _getLabelPositionByArrowType(
+    arrowType: string, x: number, y: number, labelWidth: number, labelHeight: number,
+    emulationScaleFactor: number): {contentTop: number, contentLeft: number} {
   let contentTop = 0;
   let contentLeft = 0;
+  x *= emulationScaleFactor;
+  y *= emulationScaleFactor;
   switch (arrowType) {
     case GridArrowTypes.leftTop:
       contentTop = y;

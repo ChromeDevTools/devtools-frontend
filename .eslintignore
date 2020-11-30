@@ -7,15 +7,12 @@ front_end/.eslintrc.js
 front_end/diff/diff_match_patch.js
 front_end/protocol_externs.js
 front_end/javascript_metadata/NativeFunctions.js
-front_end/**/*_bridge.js
 front_end/third_party/
 test/e2e/**/*.js
 test/shared/**/*.js
-test/unittests/scripts/component_bridges/gen/*
 test/**/fixtures/
 scripts/protocol_typescript/*.js
 scripts/migration/**/*.js
-scripts/component_bridges/gen/*
 node_modules
 
 *.d.ts

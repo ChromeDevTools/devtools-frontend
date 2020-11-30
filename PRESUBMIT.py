@@ -413,21 +413,6 @@ def _CheckForTooLargeFiles(input_api, output_api):
         return []
 
 
-def _CheckComponentBridgesUpToDate(input_api, output_api):
-    # Regenerate all bridge files - if any are out of date it will cause the git diff check to fail.
-    results = []
-
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                         'scripts', 'component_bridges',
-                                         'regenerate-all-bridges.js')
-
-    tsc_arguments = ['-p', 'scripts/component_bridges/tsconfig.json']
-    results.extend(
-        _checkWithTypeScript(input_api, output_api, tsc_arguments, script_path,
-                             ['--silent']))
-    return results
-
-
 def _RunCannedChecks(input_api, output_api):
     results = []
     results.extend(
@@ -459,7 +444,6 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
-    results.extend(_CheckComponentBridgesUpToDate(input_api, output_api))
     # Run the canned checks from `depot_tools` after the custom DevTools checks.
     # The canned checks for example check that lines have line endings. The
     # DevTools presubmit checks automatically fix these issues. If we would run

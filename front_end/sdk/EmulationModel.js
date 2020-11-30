@@ -513,9 +513,9 @@ export class DeviceOrientation {
       return null;
     }
 
-    const {valid: isAlphaValid} = DeviceOrientation.validator(alphaString);
-    const {valid: isBetaValid} = DeviceOrientation.validator(betaString);
-    const {valid: isGammaValid} = DeviceOrientation.validator(gammaString);
+    const {valid: isAlphaValid} = DeviceOrientation.alphaAngleValidator(alphaString);
+    const {valid: isBetaValid} = DeviceOrientation.betaAngleValidator(betaString);
+    const {valid: isGammaValid} = DeviceOrientation.gammaAngleValidator(gammaString);
 
     if (!isAlphaValid && !isBetaValid && !isGammaValid) {
       return null;
@@ -529,12 +529,40 @@ export class DeviceOrientation {
   }
 
   /**
-   * @param {string} value
-   * @return {{valid: boolean, errorMessage: (string|undefined)}}
+   * @param {!string} value
+   * @param {Object} interval
+   * @param {number} interval.minimum Minimum interval range (inclusive)
+   * @param {number} interval.maximum Maximum interval range (exclusive)
    */
-  static validator(value) {
-    const valid = /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value);
+  static angleRangeValidator(value, interval) {
+    const numValue = parseFloat(value);
+    const valid =
+        /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= interval.minimum && numValue < interval.maximum;
     return {valid, errorMessage: undefined};
+  }
+
+  /**
+  * @param {string} value
+  * @return {{valid: boolean, errorMessage: (string|undefined)}}
+  */
+  static alphaAngleValidator(value) {
+    return DeviceOrientation.angleRangeValidator(value, {minimum: 0, maximum: 360});
+  }
+
+  /**
+  * @param {string} value
+  * @return {{valid: boolean, errorMessage: (string|undefined)}}
+  */
+  static betaAngleValidator(value) {
+    return DeviceOrientation.angleRangeValidator(value, {minimum: -180, maximum: 180});
+  }
+
+  /**
+  * @param {string} value
+  * @return {{valid: boolean, errorMessage: (string|undefined)}}
+  */
+  static gammaAngleValidator(value) {
+    return DeviceOrientation.angleRangeValidator(value, {minimum: -90, maximum: 90});
   }
 
   /**

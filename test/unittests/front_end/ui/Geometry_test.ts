@@ -144,80 +144,154 @@ describe('EulerAngles', () => {
     assert.strictEqual(eulerAngles.gamma, 3, 'gamma value was not set correctly');
   });
 
-  it('is able to return a rotate 3D string', () => {
-    let eulerAngles = new UI.Geometry.EulerAngles(1, 2, 3);
-    let result = eulerAngles.toRotate3DString();
-    assert.strictEqual(
-        result, 'rotate3d(0,1,0,1deg) rotate3d(-1,0,0,2deg) rotate3d(0,-0.03489949670250097,0.9993908270190958,3deg)',
-        'function did not return the correct rotate 3D string');
-
-    eulerAngles = new UI.Geometry.EulerAngles(0, 0, 0);
-    result = eulerAngles.toRotate3DString();
-    assert.strictEqual(
-        result, 'rotate3d(0,1,0,0deg) rotate3d(-1,0,0,0deg) rotate3d(0,0,1,0deg)',
-        'function did not return the correct rotate 3D string');
-
-    eulerAngles = new UI.Geometry.EulerAngles(-1, -2, 3);
-    result = eulerAngles.toRotate3DString();
-    assert.strictEqual(
-        result, 'rotate3d(0,1,0,-1deg) rotate3d(-1,0,0,-2deg) rotate3d(0,0.03489949670250097,0.9993908270190958,3deg)',
-        'function did not return the correct rotate 3D string');
-
-    eulerAngles = new UI.Geometry.EulerAngles(-1, 2, -3);
-    result = eulerAngles.toRotate3DString();
-    assert.strictEqual(
-        result, 'rotate3d(0,1,0,-1deg) rotate3d(-1,0,0,2deg) rotate3d(0,-0.03489949670250097,0.9993908270190958,-3deg)',
-        'function did not return the correct rotate 3D string');
-
-    eulerAngles = new UI.Geometry.EulerAngles(0, 1, 2);
-    result = eulerAngles.toRotate3DString();
-    assert.strictEqual(
-        result, 'rotate3d(0,1,0,0deg) rotate3d(-1,0,0,1deg) rotate3d(0,-0.01745240643728351,0.9998476951563913,2deg)',
-        'function did not return the correct rotate 3D string');
-
-    eulerAngles = new UI.Geometry.EulerAngles(1, 0, 2);
-    result = eulerAngles.toRotate3DString();
-    assert.strictEqual(
-        result, 'rotate3d(0,1,0,1deg) rotate3d(-1,0,0,0deg) rotate3d(0,0,1,2deg)',
-        'function did not return the correct rotate 3D string');
-
-    eulerAngles = new UI.Geometry.EulerAngles(1, 2, 0);
-    result = eulerAngles.toRotate3DString();
-    assert.strictEqual(
-        result, 'rotate3d(0,1,0,1deg) rotate3d(-1,0,0,2deg) rotate3d(0,-0.03489949670250097,0.9993908270190958,0deg)',
-        'function did not return the correct rotate 3D string');
-  });
-
   it('is able to return Euler angles from an identity rotation matrix', () => {
     const matrix = new DOMMatrix();
-    const result = UI.Geometry.EulerAngles.fromRotationMatrix(matrix);
+    const result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
     assert.strictEqual(result.alpha, 0, 'alpha value was not set correctly');
     assert.strictEqual(result.beta, 0, 'beta value was not set correctly');
     assert.strictEqual(result.gamma, 0, 'gamma value was not set correctly');
   });
 
+  function matrixWithZXYRotation(alpha: number, beta: number, gamma: number): DOMMatrix {
+    return new DOMMatrix().rotate(0, 0, alpha).rotate(beta, 0, 0).rotate(0, gamma, 0);
+  }
+
   it('is able to return Euler angles from a rotation matrix', () => {
-    function roundAngle(angle: number): number {
-      return parseFloat(String.sprintf('%.4f', angle));
-    }
+    let matrix, result;
 
-    let matrix = new DOMMatrix([0.612, 0.353, -0.707, 0, 0.280, 0.739, 0.612, 0, 0.739, -0.573, 0.353, 0, 0, 0, 0, 1]);
-    let result = UI.Geometry.EulerAngles.fromRotationMatrix(matrix);
-    assert.strictEqual(roundAngle(result.alpha), 29.9762, 'alpha value was not set correctly');
-    assert.strictEqual(roundAngle(result.beta), 60.0238, 'beta value was not set correctly');
-    assert.strictEqual(roundAngle(result.gamma), 45.0200, 'gamma value was not set correctly');
+    matrix = matrixWithZXYRotation(0, 1, 2);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 0, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 1, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 2, 'gamma value was not set correctly');
 
-    matrix = new DOMMatrix([0.353, 0.612, -0.707, 0, -0.573, 0.739, 0.353, 0, 0.739, 0.280, 0.612, 0, 0, 0, 0, 1]);
-    result = UI.Geometry.EulerAngles.fromRotationMatrix(matrix);
-    assert.strictEqual(roundAngle(result.alpha), 60.0238, 'alpha value was not set correctly');
-    assert.strictEqual(roundAngle(result.beta), 29.9762, 'beta value was not set correctly');
-    assert.strictEqual(roundAngle(result.gamma), 45.0200, 'gamma value was not set correctly');
+    matrix = matrixWithZXYRotation(1, 0, 2);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 1, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 0, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 2, 'gamma value was not set correctly');
 
-    matrix = new DOMMatrix([0.342, 0, -0.939, 0, 0.321, 0.939, 0.116, 0, 0.883, -0.342, 0.321, 0, 0, 0, 0, 1]);
-    result = UI.Geometry.EulerAngles.fromRotationMatrix(matrix);
-    assert.strictEqual(roundAngle(result.alpha), 0, 'alpha value was not set correctly');
-    assert.strictEqual(roundAngle(result.beta), 19.8684, 'beta value was not set correctly');
-    assert.strictEqual(roundAngle(result.gamma), 69.9875, 'gamma value was not set correctly');
+    matrix = matrixWithZXYRotation(1, 2, 0);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 1, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 2, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 0, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(1, 2, 3);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 1, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 2, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 3, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(1, -2, -3);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 1, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, -2, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, -3, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(1, -2, 3);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 1, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, -2, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 3, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(1, 2, -3);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 1, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 2, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, -3, 'gamma value was not set correctly');
+  });
+
+  it('returns canonicalized Euler angles when a Gimbal lock occurs', () => {
+    let matrix, result;
+
+    matrix = matrixWithZXYRotation(30, 90, 45);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 75, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 90, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 0, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(30, -90, 45);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 345, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, -90, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 0, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(30, -90, -45);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 75, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, -90, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 0, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(0, 90, 45);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 45, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 90, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 0, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(0, 90, -45);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 315, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 90, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 0, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(45, 90, 0);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 45, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 90, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 0, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(0, 90, 0);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 0, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 90, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 0, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(0, -90, 0);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 0, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, -90, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 0, 'gamma value was not set correctly');
+  });
+
+  it('returns Euler angles inside the allowed Device Orientation intervals', () => {
+    let matrix, result;
+
+    matrix = matrixWithZXYRotation(1, 2, 90);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 181, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 178, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, -90, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(1, 2, -91);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 181, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 178, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 89, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(360, 1, 2);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 0, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 1, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 2, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(-1, 1, 2);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 359, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 1, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 2, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(1, -181, 2);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 1, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, 179, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 2, 'gamma value was not set correctly');
+
+    matrix = matrixWithZXYRotation(1, 180, 2);
+    result = UI.Geometry.EulerAngles.fromDeviceOrientationRotationMatrix(matrix);
+    assert.strictEqual(result.alpha, 1, 'alpha value was not set correctly');
+    assert.strictEqual(result.beta, -180, 'beta value was not set correctly');
+    assert.strictEqual(result.gamma, 2, 'gamma value was not set correctly');
   });
 });
 

@@ -201,28 +201,100 @@ export class EulerAngles {
   }
 
   /**
-   * @param {!CSSMatrix} rotationMatrix
+   * Derives orientation angles from a rotation matrix.
+   *
+   * The angles alpha, beta and gamma are in the [0, 360), [-180, 180) and
+   * [-90, 90) intervals respectively, as specified in the Device Orientation
+   * spec (https://w3c.github.io/deviceorientation/#deviceorientation).
+   *
+   * The Euler angles derived here follow a Z-X'-Y'' sequence.
+   *
+   * In particular we compute the decomposition of a given rotation matrix r
+   * such that
+   *    r = rz(alpha) * rx(beta) * ry(gamma)
+   * where rz, rx and ry are rotation matrices around z, x and y axes in the
+   * world coordinate reference frame respectively. The reference frame
+   * consists of three orthogonal axes x, y, z where x points East, y points
+   * north and z points upwards perpendicular to the ground plane. The computed
+   * angles alpha, beta and gamma are in degrees and clockwise-positive when
+   * viewed along the positive direction of the corresponding axis. Except for
+   * the special case when the beta angle is +-90 these angles uniquely
+   * define the orientation of a mobile device in 3D space. The
+   * alpha-beta-gamma representation resembles the yaw-pitch-roll convention
+   * used in vehicle dynamics, however it does not exactly match it. One of the
+   * differences is that the 'pitch' angle beta is allowed to be within [-180,
+   * 180). A mobile device with pitch angle greater than 90 could
+   * correspond to a user lying down and looking upward at the screen.
+   *
+   * @param {!DOMMatrixReadOnly} rotationMatrix
    * @return {!EulerAngles}
    */
-  static fromRotationMatrix(rotationMatrix) {
-    const beta = Math.atan2(rotationMatrix.m23, rotationMatrix.m33);
-    const gamma = Math.atan2(
-        -rotationMatrix.m13,
-        Math.sqrt(rotationMatrix.m11 * rotationMatrix.m11 + rotationMatrix.m12 * rotationMatrix.m12));
-    const alpha = Math.atan2(rotationMatrix.m12, rotationMatrix.m11);
-    return new EulerAngles(radiansToDegrees(alpha), radiansToDegrees(beta), radiansToDegrees(gamma));
-  }
+  static fromDeviceOrientationRotationMatrix(rotationMatrix) {
+    let alpha, beta, gamma;
 
-  /**
-   * @return {string}
-   */
-  toRotate3DString() {
-    const gammaAxisY = -Math.sin(degreesToRadians(this.beta));
-    const gammaAxisZ = Math.cos(degreesToRadians(this.beta));
-    const axis = {alpha: [0, 1, 0], beta: [-1, 0, 0], gamma: [0, gammaAxisY, gammaAxisZ]};
-    return 'rotate3d(' + axis.alpha.join(',') + ',' + this.alpha + 'deg) ' +
-        'rotate3d(' + axis.beta.join(',') + ',' + this.beta + 'deg) ' +
-        'rotate3d(' + axis.gamma.join(',') + ',' + this.gamma + 'deg)';
+    // A few implementation notes:
+    // - This code has been ported from Chromium's
+    //   //services/device/generic_sensor/orientation_util.cc at commit
+    //   1be837b6f142.
+    //
+    // - Since |rotationMatrix| contains non-integer numbers, directly
+    //   comparing them to 0 will not be accurate, so we use |_Eps| to check if
+    //   some numbers are close enough to 0.
+    //
+    // - The C++ code in Chromium uses a std::vector<double> to represent a 3x3
+    //   rotation matrix in row-major order. |rotationMatrix| is a 4x4 matrix
+    //   defined in column-major order, so |rotationMatrix.m13| here
+    //   corresponds to |r[8]| in the original C++ code.
+    //
+    // - There are rounding errors and approximations in the floating-point
+    //   arithmetics below, but it does not interfere with the use cases in
+    //   DevTools (i.e. angles that are mostly within the allowed intervals). A
+    //   rotation around the Z axis by 360 degrees will correctly return
+    //   alpha=0, but a rotation around the Z axis by 360 * 20000000000000000
+    //   will return alpha=~75 degrees, for example.
+    if (Math.abs(rotationMatrix.m33) < _Eps) {    // m33 == 0
+      if (Math.abs(rotationMatrix.m13) < _Eps) {  // m13 == 0, cos(beta) == 0
+        // Gimbal lock discontinuity: in the Z-X'-Y'' angle system used here, a
+        // rotation of 90 or -90 degrees around the X axis (beta) causes a
+        // Gimbal lock, which we handle by always setting gamma = 0 and
+        // handling the rotation in alpha.
+        alpha = Math.atan2(rotationMatrix.m12, rotationMatrix.m11);
+        beta = (rotationMatrix.m23 > 0) ? (Math.PI / 2) : -(Math.PI / 2);  // beta = +-pi/2
+        gamma = 0;                                                         // gamma = 0
+      } else if (rotationMatrix.m13 > 0) {                                 // cos(gamma) == 0, cos(beta) > 0
+        alpha = Math.atan2(-rotationMatrix.m21, rotationMatrix.m22);
+        beta = Math.asin(rotationMatrix.m23);  // beta [-pi/2, pi/2]
+        gamma = -(Math.PI / 2);                // gamma = -pi/2
+      } else {                                 // cos(gamma) == 0, cos(beta) < 0
+        alpha = Math.atan2(rotationMatrix.m21, -rotationMatrix.m22);
+        beta = -Math.asin(rotationMatrix.m23);
+        beta += (beta > 0 || Math.abs(beta) < _Eps) ? -Math.PI : Math.PI;  // beta [-pi,-pi/2) U (pi/2,pi)
+        gamma = -(Math.PI / 2);                                            // gamma = -pi/2
+      }
+    } else if (rotationMatrix.m33 > 0) {  // cos(beta) > 0
+      alpha = Math.atan2(-rotationMatrix.m21, rotationMatrix.m22);
+      beta = Math.asin(rotationMatrix.m23);                         // beta (-pi/2, pi/2)
+      gamma = Math.atan2(-rotationMatrix.m13, rotationMatrix.m33);  // gamma (-pi/2, pi/2)
+    } else {                                                        // cos(beta) < 0
+      alpha = Math.atan2(rotationMatrix.m21, -rotationMatrix.m22);
+      beta = -Math.asin(rotationMatrix.m23);
+      beta += (beta > 0 || Math.abs(beta) < _Eps) ? -Math.PI : Math.PI;  // beta [-pi,-pi/2) U (pi/2,pi)
+      gamma = Math.atan2(rotationMatrix.m13, -rotationMatrix.m33);       // gamma (-pi/2, pi/2)
+    }
+
+    // alpha is in [-pi, pi], make sure it is in [0, 2*pi).
+    if (alpha < -_Eps) {
+      alpha += 2 * Math.PI;  // alpha [0, 2*pi)
+    }
+
+    // We do not need a lot of precision in degrees. Arbitrarily set it to 6
+    // digits after the decimal point. In most use cases, this may be rounded
+    // even further in SensorsView and when passing these degrees to CSS.
+    alpha = Number(radiansToDegrees(alpha).toFixed(6));
+    beta = Number(radiansToDegrees(beta).toFixed(6));
+    gamma = Number(radiansToDegrees(gamma).toFixed(6));
+
+    return new EulerAngles(alpha, beta, gamma);
   }
 }
 

@@ -269,6 +269,39 @@ export class StylesSidebarPane extends ElementsSidebarPane {
   }
 
   /**
+   * @param {!StylePropertiesSection} section
+   * @return {{allDeclarationText: string, ruleText: string}}
+   */
+  static formatLeadingProperties(section) {
+    const selectorText = section._headerText();
+    const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
+
+    const style = section._style;
+    /** @type {!Array<string>} */
+    const lines = [];
+
+    // Invalid property should also be copied.
+    // For example: *display: inline.
+    for (const property of style.leadingProperties()) {
+      if (property.disabled) {
+        lines.push(`${indent}/* ${property.name}: ${property.value}; */`);
+      } else {
+        lines.push(`${indent}${property.name}: ${property.value};`);
+      }
+    }
+
+    /** @type {string} */
+    const allDeclarationText = lines.join('\n');
+    /** @type {string} */
+    const ruleText = `${selectorText} {\n${allDeclarationText}\n}`;
+
+    return {
+      allDeclarationText,
+      ruleText,
+    };
+  }
+
+  /**
    * @param {!SDK.CSSProperty.CSSProperty} cssProperty
    */
   revealProperty(cssProperty) {
@@ -1182,6 +1215,7 @@ export class StylePropertiesSection {
     }
 
     this._selectorElement.addEventListener('click', this._handleSelectorClick.bind(this), false);
+    this.element.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), false);
     this.element.addEventListener('mousedown', this._handleEmptySpaceMouseDown.bind(this), false);
     this.element.addEventListener('click', this._handleEmptySpaceClick.bind(this), false);
     this.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
@@ -2062,6 +2096,35 @@ export class StylePropertiesSection {
     }
     this._startEditingAtFirstPosition();
     event.consume(true);
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _handleContextMenuEvent(event) {
+    const target = /** @type {?Element} */ (event.target);
+    if (!target) {
+      return;
+    }
+
+
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    contextMenu.clipboardSection().appendItem(ls`Copy selector`, () => {
+      const selectorText = this._headerText();
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(selectorText);
+    });
+
+    contextMenu.clipboardSection().appendItem(ls`Copy rule`, () => {
+      const ruleText = StylesSidebarPane.formatLeadingProperties(this).ruleText;
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
+    });
+
+    contextMenu.clipboardSection().appendItem(ls`Copy all declarations`, () => {
+      const allDeclarationText = StylesSidebarPane.formatLeadingProperties(this).allDeclarationText;
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
+    });
+
+    contextMenu.show();
   }
 
   /**

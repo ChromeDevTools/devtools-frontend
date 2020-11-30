@@ -1971,6 +1971,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (!cascade) {
       return;
     }
+
+    const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
     /** @type {!Array<string>} */
     const lines = [];
     for (const style of cascade.nodeStyles().reverse()) {
@@ -1987,9 +1989,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (cascade.propertyState(property) !== SDK.CSSMatchedStyles.PropertyState.Active) {
           continue;
         }
-        lines.push(`${property.name}: ${property.value};`);
+        lines.push(`${indent}${property.name}: ${property.value};`);
       }
     }
+
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(lines.join('\n'));
   }
 

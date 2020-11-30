@@ -204,6 +204,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
    * @param {!Event} event
    */
   _handleVarDefinitionClick(variableName, event) {
+    // TODO: We need to block the right mouse click in CSS var().
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
     this._parentPane.jumpToProperty(variableName);
     event.consume(true);
@@ -524,6 +525,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         event.consume(true);
       }
     });
+
+    // Copy context menu.
+    this.listItemElement.addEventListener('contextmenu', this._handleCopyContextMenuEvent.bind(this));
   }
 
   /**
@@ -748,6 +752,44 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     const revealCallback = /** @type {function():*} */ (this._navigateToSource.bind(this));
     contextMenu.defaultSection().appendItem(ls`Reveal in Sources panel`, revealCallback);
+    contextMenu.show();
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _handleCopyContextMenuEvent(event) {
+    const target = /** @type {?Element} */ (event.target);
+
+    if (!target) {
+      return;
+    }
+
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    contextMenu.clipboardSection().appendItem(ls`Copy declaration`, () => {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.propertyText);
+    });
+
+    contextMenu.clipboardSection().appendItem(ls`Copy property`, () => {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.name);
+    });
+
+    contextMenu.clipboardSection().appendItem(ls`Copy value`, () => {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.value);
+    });
+
+    contextMenu.defaultSection().appendItem(ls`Copy rule`, () => {
+      const section = /** @type {!StylePropertiesSection} */ (this.section());
+      const ruleText = StylesSidebarPane.formatLeadingProperties(section).ruleText;
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
+    });
+
+    contextMenu.defaultSection().appendItem(ls`Copy all declarations`, () => {
+      const section = /** @type {!StylePropertiesSection} */ (this.section());
+      const allDeclarationText = StylesSidebarPane.formatLeadingProperties(section).allDeclarationText;
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
+    });
+
     contextMenu.show();
   }
 

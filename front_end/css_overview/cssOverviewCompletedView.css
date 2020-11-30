@@ -92,14 +92,14 @@
 .block-title {
   padding-top: 4px;
   font-size: 12px;
-  color: #303942;
+  color: var(--color-text-primary);
   text-transform: uppercase;
   letter-spacing: 0;
 }
 
 .results-section {
   flex-shrink: 0;
-  border-bottom: 1px solid #e6e6e6;
+  border-bottom: 1px solid var(--color-details-hairline);
   padding: var(--overview-default-padding) 0 var(--overview-default-padding) 0;
 }
 
@@ -208,7 +208,7 @@
   min-width: 100px;
   text-align: right;
   margin-right: 8px;
-  color: var(--accent-color);
+  color: var(--color-primary);
   pointer-events: none;
 }
 
@@ -223,7 +223,7 @@
 .overview-completed-view .media-queries button .bar,
 .overview-completed-view .unused-declarations button .bar {
   height: 8px;
-  background: var(--accent-color);
+  background: var(--color-primary);
   border-radius: 2px;
   min-width: 2px;
 }
@@ -234,7 +234,7 @@
 .overview-completed-view .media-queries button:focus .details,
 .overview-completed-view .unused-declarations button:hover .details,
 .overview-completed-view .unused-declarations button:focus .details {
-  color: var(--accent-color-hover);
+  color: var(--color-primary-variant);
 }
 
 .overview-completed-view .font-info button:hover .bar,
@@ -243,9 +243,9 @@
 .overview-completed-view .media-queries button:focus .bar,
 .overview-completed-view .unused-declarations button:hover .bar,
 .overview-completed-view .unused-declarations button:focus .bar {
-  background-color: var(--accent-color-hover);
+  background-color: var(--color-primary-variant);
   box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 0 0 2px rgb(66 133 244 / 40%);
-  color: #fff;
+  color: var(--color-background);
 }
 
 .overview-completed-view .font-info .font-metric {
@@ -284,7 +284,7 @@
 }
 
 .overview-completed-view .font-family:nth-child(2n+1) {
-  background: #fafafa;
+  background: var(--color-background);
 }
 
 .overview-completed-view .font-family:first-of-type {
@@ -339,7 +339,7 @@
   background: none;
   border: none;
   -webkit-mask-image: url(Images/ic_show_node_16x16.svg);
-  background-color: #333;
+  background-color: var(--color-background-elevation-1);
   width: 16px;
   height: 16px;
   display: none;
@@ -349,23 +349,10 @@
 
 .show-element:focus,
 .show-element:hover {
-  background-color: #6e6e6e;
+  background-color: var(--color-syntax-1);
 }
 
 .nodeId-column:focus-within .show-element,
 .nodeId-column:hover .show-element {
   display: inline-block;
-}
-
-:host-context(.-theme-with-dark-background) .show-element {
-  background-color: rgb(204 204 204);
-}
-
-:host-context(.-theme-with-dark-background) .show-element:focus,
-:host-context(.-theme-with-dark-background) .show-element:hover {
-  background-color: #6e6e6e;
-}
-
-.hidden {
-  display: none;
 }

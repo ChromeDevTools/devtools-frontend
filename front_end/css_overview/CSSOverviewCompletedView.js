@@ -93,7 +93,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
    */
   constructor(controller, target) {
     super('css_overview_completed_view');
-    this.registerRequiredCSS('css_overview/cssOverviewCompletedView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('css_overview/cssOverviewCompletedView.css', {enableLegacyPatching: false});
 
     this._controller = controller;
     this._formatter = new Intl.NumberFormat('en-US');

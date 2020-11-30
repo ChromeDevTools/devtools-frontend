@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
+import {ls} from '../platform/platform.js';
 
 import {AllocationProfile} from './AllocationProfile.js';
 import {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';  // eslint-disable-line no-unused-vars

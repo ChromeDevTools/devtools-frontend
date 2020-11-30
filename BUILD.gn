@@ -195,20 +195,14 @@ generated_test_modules = [
   "$resources_out_dir/sources_test_runner/sources_test_runner_module.js",
 ]
 
-all_worker_entrypoints = [
-  "front_end/heap_snapshot_worker_entrypoint.js",
-  "front_end/wasmparser_worker_entrypoint.js",
-]
+all_worker_entrypoints = [ "front_end/wasmparser_worker_entrypoint.js" ]
 
-generated_worker_bundles = [
-  "$resources_out_dir/heap_snapshot_worker_entrypoint.js",
-  "$resources_out_dir/wasmparser_worker_entrypoint.js",
-]
+generated_worker_bundles =
+    [ "$resources_out_dir/wasmparser_worker_entrypoint.js" ]
 
 devtools_applications = [
   "lighthouse_worker",
   "devtools_app",
-  "heap_snapshot_worker_entrypoint",
   "inspector",
   "integration_test_runner",
   "js_app",

@@ -28,20 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';  // eslint-disable-line no-unused-vars
+import '../heap_snapshot_model/heap_snapshot_model-legacy.js';
 import {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';
-
-/**
- * @param {*} message
- */
-function postMessageWrapper(message) {
-  postMessage(message);
-}
 
 // @ts-ignore This is a worker, not Window.
 const ctx = /** @type {*} */ (self);
 const ctxSelf = /** @type {!Worker} */ (ctx);
-const dispatcher = new HeapSnapshotWorkerDispatcher(ctxSelf, postMessageWrapper);
+const dispatcher =
+    new HeapSnapshotWorkerDispatcher(ctxSelf, /** @param {*} message */ message => self.postMessage(message));
 
 /**
  * @param {!EventListener} listener
@@ -53,3 +47,5 @@ function installMessageEventListener(listener) {
 
 // @ts-ignore
 installMessageEventListener(/** @type {!EventListener} */ (dispatcher.dispatchMessage.bind(dispatcher)));
+
+self.postMessage('workerReady');

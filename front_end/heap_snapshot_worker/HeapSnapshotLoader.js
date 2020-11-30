@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {HeapSnapshotHeader, HeapSnapshotProgress, JSHeapSnapshot, Profile} from './HeapSnapshot.js';  // eslint-disable-line no-unused-vars

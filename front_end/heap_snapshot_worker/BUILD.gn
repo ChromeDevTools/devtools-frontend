@@ -16,7 +16,8 @@ devtools_module("heap_snapshot_worker") {
 
   deps = [
     "../common:bundle",
-    "../heap_snapshot_model:bundle",
+    "../heap_snapshot_model:legacy",
+    "../platform:bundle",
     "../text_utils:bundle",
   ]
 

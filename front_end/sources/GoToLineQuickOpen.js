@@ -38,14 +38,29 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
       return Common.UIString.UIString('No file selected.');
     }
     const position = this._parsePosition(query);
+    const sourceFrame = this._currentSourceFrame();
     if (!position) {
-      const sourceFrame = this._currentSourceFrame();
       if (!sourceFrame) {
         return ls`Type a number to go to that line.`;
       }
-      const currentLineNumber = sourceFrame.textEditor.currentLineNumber() + 1;
+      const disassembly = sourceFrame.wasmDisassembly;
+      const currentLineNumber = sourceFrame.textEditor.currentLineNumber();
+      if (disassembly) {
+        const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
+        const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
+        const currentPosition = disassembly.lineNumberToBytecodeOffset(currentLineNumber);
+        return ls`Current position: 0x${
+            currentPosition.toString(16).padStart(
+                bytecodeOffsetDigits,
+                '0')}. Type an offset between 0x${'0'.padStart(bytecodeOffsetDigits, '0')} and 0x${
+            lastBytecodeOffset.toString(16)} to navigate to.`;
+      }
       const linesCount = sourceFrame.textEditor.linesCount;
       return ls`Current line: ${currentLineNumber}. Type a line number between 1 and ${linesCount} to navigate to.`;
+    }
+
+    if (sourceFrame && sourceFrame.wasmDisassembly) {
+      return ls`Go to offset 0x${(position.column - 1).toString(16)}.`;
     }
     if (position.column && position.column > 1) {
       return ls`Go to line ${position.line} and column ${position.column}.`;
@@ -58,6 +73,17 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
    * @return {?{line: number, column: number}}
    */
   _parsePosition(query) {
+    const sourceFrame = this._currentSourceFrame();
+    if (sourceFrame && sourceFrame.wasmDisassembly) {
+      const parts = query.match(/0x([0-9a-fA-F]+)/);
+      if (!parts || !parts[0] || parts[0].length !== query.length) {
+        return null;
+      }
+
+      const column = parseInt(parts[0], 16) + 1;
+      return {line: 0, column};
+    }
+
     const parts = query.match(/([0-9]+)(\:[0-9]*)?/);
     if (!parts || !parts[0] || parts[0].length !== query.length) {
       return null;

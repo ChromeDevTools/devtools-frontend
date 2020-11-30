@@ -110,9 +110,11 @@ export class PresentationConsoleMessageHelper {
     /** @type {!Array.<!PresentationConsoleMessage>} */
     this._presentationConsoleMessages = [];
 
-    // TODO(dgozman): setImmediate because we race with DebuggerWorkspaceBinding on ParsedScriptSource event delivery.
+    // TODO(dgozman): queueMicrotask because we race with DebuggerWorkspaceBinding on ParsedScriptSource event delivery.
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, event => {
-      setImmediate(this._parsedScriptSource.bind(this, event));
+      queueMicrotask(() => {
+        this._parsedScriptSource(event);
+      });
     });
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
 

@@ -153,7 +153,9 @@ export class PlatformFileSystem {
    * @param {!Common.Progress.Progress} progress
    */
   indexContent(progress) {
-    setImmediate(() => progress.done());
+    queueMicrotask(() => {
+      progress.done();
+    });
   }
 
   /**

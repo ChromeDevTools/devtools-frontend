@@ -16,7 +16,9 @@ export class NetworkSearchScope {
    * @param {!Common.Progress.Progress} progress
    */
   performIndexing(progress) {
-    setImmediate(progress.done.bind(progress));
+    queueMicrotask(() => {
+      progress.done();
+    });
   }
 
   /**

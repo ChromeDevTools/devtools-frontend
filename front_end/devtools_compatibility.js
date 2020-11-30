@@ -1147,7 +1147,7 @@
           return;
         }
         scheduled = true;
-        setImmediate(callObserver);
+        queueMicrotask(callObserver);
       }
 
       function callObserver() {

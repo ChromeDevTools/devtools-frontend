@@ -282,7 +282,7 @@ export class DebuggerPlugin extends Plugin {
   wasShown() {
     if (this._executionLocation) {
       // We need SourcesTextEditor to be initialized prior to this call. @see crbug.com/499889
-      setImmediate(() => {
+      queueMicrotask(() => {
         this._generateValuesInSource();
       });
     }
@@ -842,7 +842,7 @@ export class DebuggerPlugin extends Plugin {
     this._textEditor.setExecutionLocation(editorLocation.lineNumber, editorLocation.columnNumber);
     if (this._textEditor.isShowing()) {
       // We need SourcesTextEditor to be initialized prior to this call. @see crbug.com/506566
-      setImmediate(() => {
+      queueMicrotask(() => {
         if (this._controlDown) {
           this._showContinueToLocations();
         } else {
@@ -1338,7 +1338,9 @@ export class DebuggerPlugin extends Plugin {
     if (!this._scheduledBreakpointDecorationUpdates) {
       /** @type {?Set<!BreakpointDecoration>} */
       this._scheduledBreakpointDecorationUpdates = new Set();
-      setImmediate(() => this._textEditor.operation(update.bind(this)));
+      queueMicrotask(() => {
+        this._textEditor.operation(update.bind(this));
+      });
     }
     this._scheduledBreakpointDecorationUpdates.add(decoration);
 

@@ -557,7 +557,7 @@ export class ContextMenu extends SubMenu {
 
       // showContextMenuAtPoint call above synchronously issues a clear event for previous context menu (if any),
       // so we skip it before subscribing to the clear event.
-      setImmediate(listenToEvents.bind(this));
+      queueMicrotask(listenToEvents.bind(this));
     }
   }
 

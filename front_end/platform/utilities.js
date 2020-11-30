@@ -589,18 +589,6 @@ export class Multimap {
 }
 
 /**
- * @param {function(...*): *} callback
- * @param {...*} args
- * @return {number}
- */
-// @ts-ignore https://crbug.com/1050549
-self.setImmediate = function(callback, ...args) {
-  // TODO(crbug.com/1050549): Update call sites to just use queueMicrotask?
-  Promise.resolve().then(() => callback.apply(null, args));
-  return 0;
-};
-
-/**
  * @param {function():void} callback
  */
 export function runOnWindowLoad(callback) {

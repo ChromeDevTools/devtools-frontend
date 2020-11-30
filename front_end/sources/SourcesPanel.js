@@ -1358,7 +1358,9 @@ export class WrapperView extends UI.Widget.VBox {
    */
   willHide() {
     UI.InspectorView.InspectorView.instance().setDrawerMinimized(false);
-    setImmediate(() => SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance()));
+    queueMicrotask(() => {
+      SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance());
+    });
   }
 
   _showViewInWrapper() {

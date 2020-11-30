@@ -532,7 +532,6 @@ export class SensorsView extends UI.Widget.VBox {
     const div = parentElement.createChild('div', 'orientation-axis-input-container');
     div.appendChild(input);
     div.appendChild(UI.UIUtils.createLabel(label, /* className */ '', input));
-    input.type = 'number';
     return UI.UIUtils.bindInput(input, this._applyDeviceOrientationUserInput.bind(this), validator, true);
   }
 
@@ -545,21 +544,21 @@ export class SensorsView extends UI.Widget.VBox {
     fieldsetElement.classList.add('device-orientation-override-section');
     const cellElement = fieldsetElement.createChild('td', 'orientation-inputs-cell');
 
-    this._alphaElement = UI.UIUtils.createInput();
+    this._alphaElement = UI.UIUtils.createInput('', 'number');
     this._alphaElement.setAttribute('step', 'any');
     this._alphaSetter = this._createAxisInput(
         cellElement, this._alphaElement, Common.UIString.UIString('\u03B1 (alpha)'),
         SDK.EmulationModel.DeviceOrientation.alphaAngleValidator);
     this._alphaSetter(String(deviceOrientation.alpha));
 
-    this._betaElement = UI.UIUtils.createInput();
+    this._betaElement = UI.UIUtils.createInput('', 'number');
     this._betaElement.setAttribute('step', 'any');
     this._betaSetter = this._createAxisInput(
         cellElement, this._betaElement, Common.UIString.UIString('\u03B2 (beta)'),
         SDK.EmulationModel.DeviceOrientation.betaAngleValidator);
     this._betaSetter(String(deviceOrientation.beta));
 
-    this._gammaElement = UI.UIUtils.createInput();
+    this._gammaElement = UI.UIUtils.createInput('', 'number');
     this._gammaElement.setAttribute('step', 'any');
     this._gammaSetter = this._createAxisInput(
         cellElement, this._gammaElement, Common.UIString.UIString('\u03B3 (gamma)'),

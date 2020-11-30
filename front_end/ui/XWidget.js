@@ -47,11 +47,8 @@ export class XWidget extends XElement {
         }
       });
     }
-    // TODO(crbug.com/1011811): Remove if. Closure doesn't know about the 'observe property'.
-    //   Wrapping the call in an if fixes the Closure error.
-    if (_observer.observe) {
-      _observer.observe(this);
-    }
+
+    _observer.observe(this);
 
     this.setElementsToRestoreScrollPositionsFor([this]);
   }

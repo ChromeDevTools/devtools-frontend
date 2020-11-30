@@ -555,9 +555,8 @@ export function handleElementValueModifications(event, element, finishHandler, s
   }
 
   const originalValue = element.textContent;
-  /** TODO(crbug.com/1011811): Remove cast once Closure is gone. TS knows about non-nullability of `startContainer` */
   const wordRange = DOMExtension.DOMExtension.rangeOfWord(
-      /** @type {!Node} */ (selectionRange.startContainer), selectionRange.startOffset, StyleValueDelimiters, element);
+      selectionRange.startContainer, selectionRange.startOffset, StyleValueDelimiters, element);
   const wordString = wordRange.toString();
 
   if (suggestionHandler && suggestionHandler(wordString)) {

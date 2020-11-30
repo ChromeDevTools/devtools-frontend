@@ -1431,11 +1431,9 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
         return;
       }
       if ('file' in description) {
-        // TODO(crbug.com/1011811): Remove casts once closure is gone. TypeScript can infer the type variant.
-        description =
-            createIssueDescriptionFromMarkdown(/** @type {!SDK.Issue.MarkdownIssueDescription} */ (description));
+        description = createIssueDescriptionFromMarkdown(description);
       }
-      const view = new IssueView(this, issue, /** @type {!SDK.Issue.IssueDescription} */ (description));
+      const view = new IssueView(this, issue, description);
       this._issueViews.set(issue.code(), view);
       const parent = this._getIssueViewParent(issue);
       parent.appendChild(view, (a, b) => {

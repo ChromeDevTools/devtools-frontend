@@ -60,8 +60,7 @@ export class SearchableView extends VBox {
 
     this.contentElement.createChild('slot');
     this._footerElementContainer = this.contentElement.createChild('div', 'search-bar hidden');
-    // TODO(crbug.com/1011811): Replace with normal property access once closure is gone.
-    this._footerElementContainer.style.setProperty('order', '100');
+    this._footerElementContainer.style.order = '100';
     this._footerElement = this._footerElementContainer.createChild('div', 'toolbar-search');
 
     const replaceToggleToolbar = new Toolbar('replace-toggle-toolbar', this._footerElement);

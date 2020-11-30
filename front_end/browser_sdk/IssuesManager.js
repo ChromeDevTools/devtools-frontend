@@ -184,12 +184,11 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
 
   _updateFilteredIssues() {
     this._filteredIssues.clear();
-    // TODO(crbug.com/1011811): Replace with for .. of loop once Closure is gone.
-    this._issues.forEach((issue, key) => {
+    for (const [key, issue] of this._issues) {
       if (this._issueFilter(issue)) {
         this._filteredIssues.set(key, issue);
       }
-    });
+    }
 
     this.dispatchEventToListeners(Events.FullUpdateRequired);
     this.dispatchEventToListeners(Events.IssuesCountUpdated);

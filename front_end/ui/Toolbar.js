@@ -701,12 +701,10 @@ export class ToolbarInput extends ToolbarItem {
     this._prompt.addEventListener(TextPromptEvents.TextChanged, this._onChangeCallback.bind(this));
 
     if (growFactor) {
-      // TODO(crbug.com/1011811): Replace with simple property access once Closure is gone.
-      this.element.style.setProperty('flex-grow', String(growFactor));
+      this.element.style.flexGrow = String(growFactor);
     }
     if (shrinkFactor) {
-      // TODO(crbug.com/1011811): Replace with simple property access once Closure is gone.
-      this.element.style.setProperty('flex-shrink', String(shrinkFactor));
+      this.element.style.flexShrink = String(shrinkFactor);
     }
 
     const clearButton = this.element.createChild('div', 'toolbar-input-clear-button');

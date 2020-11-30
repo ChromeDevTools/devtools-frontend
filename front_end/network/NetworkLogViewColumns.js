@@ -236,8 +236,7 @@ export class NetworkLogViewColumns {
     }
     const event = /** @type {!WheelEvent} */ (ev);
     const hasRecentWheel = Date.now() - this._lastWheelTime < 80;
-    // TODO(crbug.com/1011811): Remove cast once Closure is gone. Closure doesn't know about `Element#scrollBy`.
-    /** @type {*} */ (this._activeScroller).scrollBy({top: event.deltaY, behavior: hasRecentWheel ? 'auto' : 'smooth'});
+    this._activeScroller.scrollBy({top: event.deltaY, behavior: hasRecentWheel ? 'auto' : 'smooth'});
     this._syncScrollers();
     this._lastWheelTime = Date.now();
   }
@@ -263,8 +262,7 @@ export class NetworkLogViewColumns {
     const currentPos = event.changedTouches[0].pageY;
     const delta = /** @type {number} */ (this._scrollerTouchStartPos) - currentPos;
 
-    // TODO(crbug.com/1011811): Remove cast once Closure is gone. Closure doesn't know about `Element#scrollBy`.
-    /** @type {*} */ (this._activeScroller).scrollBy({top: delta, behavior: 'auto'});
+    this._activeScroller.scrollBy({top: delta, behavior: 'auto'});
     this._syncScrollers();
 
     this._scrollerTouchStartPos = currentPos;

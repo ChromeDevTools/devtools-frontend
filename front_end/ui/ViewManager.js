@@ -298,10 +298,6 @@ export class ViewManager {
         throw new Error('Move view: Could not resolve location for view: ' + viewId);
       }
       location._reveal();
-      // TODO(crbug.com/1011811): Remove this `if` ocne Closure is gone. TS knows that `view` is non-null.
-      if (!view) {
-        return Promise.resolve();
-      }
       return location.showView(view, undefined, /* userGesture*/ true, /* omitFocus*/ false, shouldSelectTab);
     });
   }
@@ -442,8 +438,7 @@ export class ViewManager {
   _viewsForLocation(location) {
     const result = [];
     for (const [id, view] of this._views.entries()) {
-      // TODO(crbug.com/1011811): Remove cast once Closure is gone.
-      if (this._locationNameByViewId.get(/** @type {string} */ (id)) === location) {
+      if (this._locationNameByViewId.get(id) === location) {
         result.push(view);
       }
     }

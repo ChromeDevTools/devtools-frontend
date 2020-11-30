@@ -561,10 +561,9 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
 
-    // TODO(crbug.com/1011811): Remove casat once Closure is gone. TS knows about non-nullability of `startContainer`.
     const wordQueryRange = DOMExtension.DOMExtension.rangeOfWord(
-        /** @type {!Node} */ (selectionRange.startContainer), selectionRange.startOffset,
-        this._completionStopCharacters, this.element(), 'backward');
+        selectionRange.startContainer, selectionRange.startOffset, this._completionStopCharacters, this.element(),
+        'backward');
 
     const expressionRange = wordQueryRange.cloneRange();
     expressionRange.collapse(true);

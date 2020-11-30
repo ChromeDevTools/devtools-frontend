@@ -63,7 +63,7 @@ export class AccessibilitySubPane extends UI.View.SimpleView {
    */
   createTreeOutline() {
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    treeOutline.registerRequiredCSS('accessibility/accessibilityNode.css', {enableLegacyPatching: true});
+    treeOutline.registerRequiredCSS('accessibility/accessibilityNode.css', {enableLegacyPatching: false});
     treeOutline.registerRequiredCSS('accessibility/accessibilityProperties.css', {enableLegacyPatching: true});
     treeOutline.registerRequiredCSS('object_ui/objectValue.css', {enableLegacyPatching: true});
 

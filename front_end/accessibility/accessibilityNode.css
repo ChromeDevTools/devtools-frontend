@@ -52,7 +52,7 @@ span.ax-value-undefined {
 }
 
 .tree-outline li.property {
-  color: rgb(33 33 33);
+  color: var(--color-text-primary);
 }
 
 .tree-outline li.invalid {

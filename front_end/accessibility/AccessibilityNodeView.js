@@ -33,7 +33,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     this._ignoredReasonsTree = this.createTreeOutline();
 
     this.element.classList.add('accessibility-computed');
-    this.registerRequiredCSS('accessibility/accessibilityNode.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('accessibility/accessibilityNode.css', {enableLegacyPatching: false});
     this._treeOutline.setFocusable(true);
   }
 

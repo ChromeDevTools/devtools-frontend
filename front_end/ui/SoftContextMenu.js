@@ -385,7 +385,6 @@ export class SoftContextMenu {
     if (this._highlightedMenuItemElement === menuItemElement) {
       return;
     }
-
     if (this._subMenu) {
       this._subMenu.discard();
     }
@@ -393,10 +392,7 @@ export class SoftContextMenu {
       const detailsForElement = this.detailsForElementMap.get(this._highlightedMenuItemElement);
       this._highlightedMenuItemElement.classList.remove('force-white-icons');
       this._highlightedMenuItemElement.classList.remove('soft-context-menu-item-mouse-over');
-      if (!detailsForElement) {
-        return;
-      }
-      if (detailsForElement.subItems && detailsForElement.subMenuTimer) {
+      if (detailsForElement && detailsForElement.subItems && detailsForElement.subMenuTimer) {
         window.clearTimeout(detailsForElement.subMenuTimer);
         delete detailsForElement.subMenuTimer;
       }
@@ -409,16 +405,12 @@ export class SoftContextMenu {
       }
       this._highlightedMenuItemElement.classList.add('soft-context-menu-item-mouse-over');
       const detailsForElement = this.detailsForElementMap.get(this._highlightedMenuItemElement);
-      if (!detailsForElement) {
-        return;
-      }
-
-      if (detailsForElement.customElement) {
+      if (detailsForElement && detailsForElement.customElement) {
         detailsForElement.customElement.focus();
       } else {
         this._highlightedMenuItemElement.focus();
       }
-      if (scheduleSubMenu && detailsForElement.subItems && !detailsForElement.subMenuTimer) {
+      if (scheduleSubMenu && detailsForElement && detailsForElement.subItems && !detailsForElement.subMenuTimer) {
         detailsForElement.subMenuTimer =
             window.setTimeout(this._showSubMenu.bind(this, this._highlightedMenuItemElement), 150);
       }

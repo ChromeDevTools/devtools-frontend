@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Accessibility from '../accessibility/accessibility.js';
 import * as Elements from '../elements/elements.js';
 import * as SDK from '../sdk/sdk.js';
 
@@ -18,7 +17,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
   private debuggerAgent: ProtocolProxyApi.DebuggerApi;
   private runtimeAgent: ProtocolProxyApi.RuntimeApi;
   private domModel: SDK.DOMModel.DOMModel;
-  private axModel: Accessibility.AccessibilityModel.AccessibilityModel;
+  private axModel: SDK.AccessibilityModel.AccessibilityModel;
 
   constructor(session: RecordingSession, target: SDK.SDKModel.Target) {
     this.target = target;
@@ -30,8 +29,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     this.resourceTreeModel =
         target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel;
     this.domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
-    this.axModel = target.model(Accessibility.AccessibilityModel.AccessibilityModel) as
-        Accessibility.AccessibilityModel.AccessibilityModel;
+    this.axModel = target.model(SDK.AccessibilityModel.AccessibilityModel) as SDK.AccessibilityModel.AccessibilityModel;
   }
 
   async isSubmitButton(targetId: string) {

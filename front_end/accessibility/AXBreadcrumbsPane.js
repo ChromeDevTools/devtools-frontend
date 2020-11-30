@@ -6,7 +6,6 @@ import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {AccessibilityNode} from './AccessibilityModel.js';               // eslint-disable-line no-unused-vars
 import {AccessibilitySidebarView} from './AccessibilitySidebarView.js';  // eslint-disable-line no-unused-vars
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
@@ -55,7 +54,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
   }
 
   /**
-   * @param {?AccessibilityNode} axNode
+   * @param {?SDK.AccessibilityModel.AccessibilityNode} axNode
    * @override
    */
   setAXNode(axNode) {
@@ -70,7 +69,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
 
     const ancestorChain = [];
     /**
-     * @type {?AccessibilityNode}
+     * @type {?SDK.AccessibilityModel.AccessibilityNode}
      */
     let ancestor = axNode;
     while (ancestor) {
@@ -102,7 +101,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
 
     /**
      * @param {!AXBreadcrumb} parentBreadcrumb
-     * @param {!AccessibilityNode} axNode
+     * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
      * @param {number} localDepth
      */
     function append(parentBreadcrumb, axNode, localDepth) {
@@ -347,7 +346,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
   }
 
   /**
-   * @param {!AccessibilityNode} axNode
+   * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
    * @return {boolean}
    */
   _inspectDOMNode(axNode) {
@@ -418,12 +417,12 @@ const elementsToAXBreadcrumb = new WeakMap();
 
 export class AXBreadcrumb {
   /**
-   * @param {!AccessibilityNode} axNode
+   * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
    * @param {number} depth
    * @param {boolean} inspected
    */
   constructor(axNode, depth, inspected) {
-    /** @type {!AccessibilityNode} */
+    /** @type {!SDK.AccessibilityModel.AccessibilityNode} */
     this._axNode = axNode;
 
     this._element = document.createElement('div');
@@ -567,7 +566,7 @@ export class AXBreadcrumb {
   }
 
   /**
-   * @return {!AccessibilityNode}
+   * @return {!SDK.AccessibilityModel.AccessibilityNode}
    */
   axNode() {
     return this._axNode;

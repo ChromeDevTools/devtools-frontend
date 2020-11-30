@@ -5,7 +5,6 @@
 group("front_end") {
   deps = [
     "../../../front_end/Images",
-    "accessibility",
     "animation",
     "bindings",
     "browser_sdk",

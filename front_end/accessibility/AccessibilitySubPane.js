@@ -5,8 +5,6 @@
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
-import {AccessibilityNode} from './AccessibilityModel.js';  // eslint-disable-line no-unused-vars
-
 /**
  * @unrestricted
  */
@@ -20,14 +18,14 @@ export class AccessibilitySubPane extends UI.View.SimpleView {
     /**
      * @protected
      * @suppress {accessControls}
-     * @type {?AccessibilityNode}
+     * @type {?SDK.AccessibilityModel.AccessibilityNode}
      */
     this._axNode = null;
     this.registerRequiredCSS('accessibility/accessibilityProperties.css', {enableLegacyPatching: true});
   }
 
   /**
-   * @param {?AccessibilityNode} axNode
+   * @param {?SDK.AccessibilityModel.AccessibilityNode} axNode
    */
   setAXNode(axNode) {
   }

@@ -6,7 +6,6 @@ import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {AccessibilityNode, CoreAxPropertyName, CoreOrProtocolAxProperty} from './AccessibilityModel.js';  // eslint-disable-line no-unused-vars
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
@@ -20,7 +19,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     /**
      * @protected
      * @suppress {accessControls}
-     * @type {?AccessibilityNode}
+     * @type {?SDK.AccessibilityModel.AccessibilityNode}
      */
     this._axNode = null;
 
@@ -38,7 +37,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
   }
 
   /**
-   * @param {?AccessibilityNode} axNode
+   * @param {?SDK.AccessibilityModel.AccessibilityNode} axNode
    * @override
    */
   setAXNode(axNode) {
@@ -74,8 +73,8 @@ export class AXNodeSubPane extends AccessibilitySubPane {
        * @param {!Protocol.Accessibility.AXProperty} property
        */
       function addIgnoredReason(property) {
-        ignoredReasons.appendChild(
-            new AXNodeIgnoredReasonTreeElement(property, /** @type {!AccessibilityNode} */ (axNode)));
+        ignoredReasons.appendChild(new AXNodeIgnoredReasonTreeElement(
+            property, /** @type {!SDK.AccessibilityModel.AccessibilityNode} */ (axNode)));
       }
       const ignoredReasonsArray = /** @type {!Array<!Protocol.Accessibility.AXProperty>} */ (axNode.ignoredReasons());
       for (const reason of ignoredReasonsArray) {
@@ -95,11 +94,11 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     treeOutline.element.classList.remove('hidden');
 
     /**
-     * @param {!CoreOrProtocolAxProperty} property
+     * @param {!SDK.AccessibilityModel.CoreOrProtocolAxProperty} property
      */
     function addProperty(property) {
-      treeOutline.appendChild(
-          new AXNodePropertyTreePropertyElement(property, /** @type {!AccessibilityNode} */ (axNode)));
+      treeOutline.appendChild(new AXNodePropertyTreePropertyElement(
+          property, /** @type {!SDK.AccessibilityModel.AccessibilityNode} */ (axNode)));
     }
 
     for (const property of axNode.coreProperties()) {
@@ -108,8 +107,8 @@ export class AXNodeSubPane extends AccessibilitySubPane {
 
     const role = axNode.role();
     if (role) {
-      /** @type {!CoreOrProtocolAxProperty} */
-      const roleProperty = {name: CoreAxPropertyName.Role, value: role};
+      /** @type {!SDK.AccessibilityModel.CoreOrProtocolAxProperty} */
+      const roleProperty = {name: SDK.AccessibilityModel.CoreAxPropertyName.Role, value: role};
       addProperty(roleProperty);
     }
     for (const property of /** @type {!Array.<!Protocol.Accessibility.AXProperty>} */ (axNode.properties())) {
@@ -137,7 +136,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
  */
 export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
   /**
-   * @param {!AccessibilityNode} axNode
+   * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
    */
   constructor(axNode) {
     // Pass an empty title, the title gets made later in onattach.
@@ -303,8 +302,8 @@ export const StringProperties = new Set([
  */
 export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement {
   /**
-   * @param {!CoreOrProtocolAxProperty} property
-   * @param {!AccessibilityNode} axNode
+   * @param {!SDK.AccessibilityModel.CoreOrProtocolAxProperty} property
+   * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
    */
   constructor(property, axNode) {
     super(axNode);
@@ -339,7 +338,7 @@ export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement
 export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
   /**
    * @param {!Protocol.Accessibility.AXValueSource} source
-   * @param {!AccessibilityNode} axNode
+   * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
    */
   constructor(source, axNode) {
     super(axNode);
@@ -592,7 +591,7 @@ export class AXRelatedNodeElement {
 export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
   /**
    * @param {!Protocol.Accessibility.AXProperty} property
-   * @param {!AccessibilityNode} axNode
+   * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
    */
   constructor(property, axNode) {
     super(axNode);
@@ -604,7 +603,7 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
 
   /**
    * @param {?string} reason
-   * @param {?AccessibilityNode} axNode
+   * @param {?SDK.AccessibilityModel.AccessibilityNode} axNode
    * @return {?Element}
    */
   static createReasonElement(reason, axNode) {

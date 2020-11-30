@@ -7,7 +7,6 @@ import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {AccessibilityModel, AccessibilityNode} from './AccessibilityModel.js';  // eslint-disable-line no-unused-vars
 import {AXNodeSubPane} from './AccessibilityNodeView.js';
 import {ARIAAttributesPane} from './ARIAAttributesView.js';
 import {AXBreadcrumbsPane} from './AXBreadcrumbsPane.js';
@@ -47,7 +46,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
   }
 
   /**
-   * @return {?AccessibilityNode}
+   * @return {?SDK.AccessibilityModel.AccessibilityNode}
    */
   axNode() {
     return this._axNode;
@@ -64,7 +63,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
   }
 
   /**
-   * @param {?AccessibilityNode} axNode
+   * @param {?SDK.AccessibilityModel.AccessibilityNode} axNode
    */
   accessibilityNodeCallback(axNode) {
     if (!axNode) {
@@ -103,7 +102,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     if (!node) {
       return;
     }
-    const accessibilityModel = node.domModel().target().model(AccessibilityModel);
+    const accessibilityModel = node.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
     if (!accessibilityModel) {
       return;
     }

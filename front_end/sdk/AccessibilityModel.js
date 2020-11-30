@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../sdk/sdk.js';
+import {DeferredDOMNode, DOMModel, DOMNode} from './DOMModel.js';           // eslint-disable-line no-unused-vars
+import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 /** @enum {string} */
 export const CoreAxPropertyName = {
@@ -37,7 +38,7 @@ export class AccessibilityNode {
     if (payload.backendDOMNodeId) {
       accessibilityModel._setAXNodeForBackendDOMNodeId(payload.backendDOMNodeId, this);
       this._backendDOMNodeId = payload.backendDOMNodeId;
-      this._deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(accessibilityModel.target(), payload.backendDOMNodeId);
+      this._deferredDOMNode = new DeferredDOMNode(accessibilityModel.target(), payload.backendDOMNodeId);
     } else {
       this._backendDOMNodeId = null;
       this._deferredDOMNode = null;
@@ -161,7 +162,7 @@ export class AccessibilityNode {
   }
 
   /**
-   * @return {?SDK.DOMModel.DeferredDOMNode}
+   * @return {?DeferredDOMNode}
    */
   deferredDOMNode() {
     return this._deferredDOMNode;
@@ -220,9 +221,9 @@ export class AccessibilityNode {
 /**
  * @unrestricted
  */
-export class AccessibilityModel extends SDK.SDKModel.SDKModel {
+export class AccessibilityModel extends SDKModel {
   /**
-   * @param {!SDK.SDKModel.Target} target
+   * @param {!Target} target
    */
   constructor(target) {
     super(target);
@@ -238,7 +239,7 @@ export class AccessibilityModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {!SDK.DOMModel.DOMNode} node
+   * @param {!DOMNode} node
    * @return {!Promise<void>}
    */
   async requestPartialAXTree(node) {
@@ -276,7 +277,7 @@ export class AccessibilityModel extends SDK.SDKModel.SDKModel {
   }
 
   /**
-   * @param {?SDK.DOMModel.DOMNode} domNode
+   * @param {?DOMNode} domNode
    * @return {?AccessibilityNode}
    */
   axNodeForDOMNode(domNode) {
@@ -295,4 +296,4 @@ export class AccessibilityModel extends SDK.SDKModel.SDKModel {
   }
 }
 
-SDK.SDKModel.SDKModel.register(AccessibilityModel, SDK.SDKModel.Capability.DOM, false);
+SDKModel.register(AccessibilityModel, Capability.DOM, false);

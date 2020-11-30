@@ -10,6 +10,7 @@ import './NetworkRequest.js';
 import './NetworkManager.js';
 import './RuntimeModel.js';
 
+import * as AccessibilityModel from './AccessibilityModel.js';
 import * as ChildTargetManager from './ChildTargetManager.js';
 import * as CompilerSourceMappingContentProvider from './CompilerSourceMappingContentProvider.js';
 import * as Connections from './Connections.js';
@@ -75,6 +76,7 @@ import * as TracingModel from './TracingModel.js';
 import * as WebAuthnModel from './WebAuthnModel.js';
 
 export {
+  AccessibilityModel,
   ChildTargetManager,
   CompilerSourceMappingContentProvider,
   Connections,

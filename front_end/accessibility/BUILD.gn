@@ -10,7 +10,6 @@ devtools_module("accessibility") {
     "ARIAAttributesView.js",
     "ARIAMetadata.js",
     "AXBreadcrumbsPane.js",
-    "AccessibilityModel.js",
     "AccessibilityNodeView.js",
     "AccessibilitySidebarView.js",
     "AccessibilityStrings.js",

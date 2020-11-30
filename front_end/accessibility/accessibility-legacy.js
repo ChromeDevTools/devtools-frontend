@@ -56,16 +56,6 @@ Accessibility.AXBreadcrumb.RoleStyles = AccessibilityModule.AXBreadcrumbsPane.Ro
 /**
  * @constructor
  */
-Accessibility.AccessibilityNode = AccessibilityModule.AccessibilityModel.AccessibilityNode;
-
-/**
- * @constructor
- */
-Accessibility.AccessibilityModel = AccessibilityModule.AccessibilityModel.AccessibilityModel;
-
-/**
- * @constructor
- */
 Accessibility.AXNodeSubPane = AccessibilityModule.AccessibilityNodeView.AXNodeSubPane;
 
 /**

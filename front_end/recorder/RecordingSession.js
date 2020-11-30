@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Accessibility from '../accessibility/accessibility.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
@@ -149,8 +148,8 @@ export class RecordingSession {
     this._targetAgent = target.targetAgent();
 
     this._domModel = /** @type {!SDK.DOMModel.DOMModel} */ (target.model(SDK.DOMModel.DOMModel));
-    this._axModel = /** @type {!Accessibility.AccessibilityModel.AccessibilityModel} */ (
-        target.model(Accessibility.AccessibilityModel.AccessibilityModel));
+    this._axModel = /** @type {!SDK.AccessibilityModel.AccessibilityModel} */ (
+        target.model(SDK.AccessibilityModel.AccessibilityModel));
     this._debuggerModel =
         /** @type {!SDK.DebuggerModel.DebuggerModel} */ (target.model(SDK.DebuggerModel.DebuggerModel));
 

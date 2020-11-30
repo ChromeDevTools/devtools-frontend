@@ -6,13 +6,18 @@ const {assert} = chai;
 
 import {createTarget} from '../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../helpers/MockConnection.js';
-import * as Accessibility from '../../../../front_end/accessibility/accessibility.js';
+import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
 
 describeWithMockConnection('AccessibilityModel', () => {
+  let SDK: typeof SDKModule;
+  before(async () => {
+    SDK = await import('../../../../front_end/sdk/sdk.js');
+  });
+
   it('can be instantiated', () => {
     assert.doesNotThrow(() => {
       const target = createTarget();
-      new Accessibility.AccessibilityModel.AccessibilityModel(target);
+      new SDK.AccessibilityModel.AccessibilityModel(target);
     });
   });
 });

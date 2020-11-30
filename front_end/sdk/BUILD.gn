@@ -7,6 +7,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("sdk") {
   sources = [
+    "AccessibilityModel.js",
     "CPUProfileDataModel.js",
     "CPUProfilerModel.js",
     "CSSFontFace.js",

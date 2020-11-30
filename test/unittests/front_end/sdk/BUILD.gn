@@ -3,6 +3,7 @@ import("../../../../third_party/typescript/typescript.gni")
 ts_library("sdk") {
   testonly = true
   sources = [
+    "AccessibilityModel_test.ts",
     "CSSPropertyParser_test.ts",
     "CookieModel_test.ts",
     "CookieParser_test.ts",

@@ -602,6 +602,7 @@
     "ContentSecurityPolicyIssue.js",
     "CrossOriginEmbedderPolicyIssue.js",
     "ServerTiming.js",
+    "AccessibilityModel.js",
     "CPUProfileDataModel.js",
     "CPUProfilerModel.js",
     "CSSFontFace.js",

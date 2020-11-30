@@ -197,7 +197,6 @@ export class Tooltip {
 
     // Check if native tooltips should be used.
     if (this._shouldUseNativeTooltips()) {
-      Object.defineProperty(this._anchorElement, 'title', /** @type {!Object} */ (_nativeTitle));
       Tooltip.install(this._anchorElement, tooltip.content);
       return;
     }
@@ -282,23 +281,3 @@ export const TooltipSymbol = _symbol;
 
 /** @type {!Array.<!Element>} */
 const _nativeOverrideContainer = [];
-
-const _nativeTitle = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'title');
-
-Object.defineProperty(HTMLElement.prototype, 'title', {
-  /**
-   * @return {!Element|string}
-   * @this {!Element}
-   */
-  get: function() {
-    return Tooltip.getContent(this);
-  },
-
-  /**
-   * @param {!Element|string} x
-   * @this {!Element}
-   */
-  set: function(x) {
-    Tooltip.install(this, x);
-  }
-});

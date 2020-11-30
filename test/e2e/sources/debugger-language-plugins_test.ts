@@ -4,8 +4,9 @@
 
 import {assert} from 'chai';
 
-import {$, click, enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, click, debuggerStatement, enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, pasteText, waitFor, waitForFunction, waitForMany} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {addBreakpointForLine, getCallFrameLocations, getCallFrameNames, getValuesForScope, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 
@@ -766,5 +767,135 @@ describe('The Debugger Language Plugins', async () => {
     const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
     const value = await waitFor('.object-value-number', popover).then(e => e.evaluate(node => node.textContent));
     assert.strictEqual(value, '23');
+  });
+
+  it('shows sensible error messages.', async () => {
+    const {frontend} = getBrowserAndPages();
+    await frontend.evaluateHandle(
+        () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
+          class FormattingErrorsPlugin {
+            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            constructor() {
+              this._modules = new Map();
+            }
+
+            async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
+              const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
+              this._modules.set(rawModuleId, {
+                rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
+                sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
+              });
+              return [sourceFileURL];
+            }
+
+            async rawLocationToSourceLocation(rawLocation: RawLocation) {
+              const {rawLocationRange, sourceLocation} = this._modules.get(rawLocation.rawModuleId) || {};
+              if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
+                  rawLocation.codeOffset < rawLocationRange.endOffset) {
+                return [sourceLocation];
+              }
+              return [];
+            }
+
+            async getScopeInfo(type: string) {
+              return {type, typeName: type};
+            }
+
+            async listVariablesInScope(rawLocation: RawLocation) {
+              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {codeOffset} = rawLocation;
+              if (!rawLocationRange || rawLocationRange.startOffset > codeOffset ||
+                  rawLocationRange.endOffset <= codeOffset) {
+                return [];
+              }
+
+              return [{scope: 'LOCAL', name: 'unreachable', type: 'int'}];
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            async getTypeInfo(expression: string, context: RawLocation):
+                Promise<{typeInfos: TypeInfo[], base: EvalBase}|null> {
+              if (expression === 'foo') {
+                const typeInfos = [{
+                  typeNames: ['int'],
+                  typeId: 'int',
+                  members: [],
+                  alignment: 0,
+                  arraySize: 0,
+                  size: 4,
+                  canExpand: false,
+                  hasValue: true,
+                }];
+                const base = {rootType: typeInfos[0], payload: 28};
+
+                return {typeInfos, base};
+              }
+              throw new Error(`No typeinfo for ${expression}`);
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            async getFormatter(expressionOrField: string|{base: EvalBase, field: FieldInfo[]}, context: RawLocation):
+                Promise<{js: string}|null> {
+              if (typeof expressionOrField !== 'string' && expressionOrField.base.payload as number === 28 &&
+                  expressionOrField.field.length === 0) {
+                return {js: '23'};
+              }
+              throw new Error(`cannot format ${expressionOrField}`);
+            }
+          }
+
+          RegisterExtension(
+              extensionAPI, new FormattingErrorsPlugin(), 'Formatter Errors',
+              {language: 'WebAssembly', symbol_types: ['None']});
+        }));
+
+    await openSourcesPanel();
+    await click(PAUSE_ON_EXCEPTION_BUTTON);
+    await goToResource('sources/wasm/unreachable.html');
+    await waitFor(RESUME_BUTTON);
+    const locals = await getValuesForScope('LOCAL', 0, 1);
+    assert.deepStrictEqual(locals, ['unreachable: undefined']);
+
+
+    const watchPane = await waitFor('[aria-label="Watch"]');
+    const isExpanded = await watchPane.evaluate(element => {
+      return element.getAttribute('aria-expanded') === 'true';
+    });
+    if (!isExpanded) {
+      await click('.title-expand-icon', {root: watchPane});
+    }
+
+    await click('[aria-label="Add watch expression"]');
+    await pasteText('foo');
+    await frontend.keyboard.press('Enter');
+
+    await click('[aria-label="Add watch expression"]');
+    await pasteText('bar');
+    await frontend.keyboard.press('Enter');
+
+    const watchResults = await waitForMany('.watch-expression', 2);
+    const watchTexts = await Promise.all(watchResults.map(async watch => await watch.evaluate(e => e.textContent)));
+    assert.deepStrictEqual(watchTexts, ['foo: 23', 'bar: <not available>']);
+
+    await watchResults[1].hover();
+    const tooltip = await waitFor('.tooltip');
+    const tooltipText = await tooltip.evaluate(e => e.textContent);
+    assert.strictEqual(tooltipText, 'No typeinfo for bar');
+
+
+    await click(CONSOLE_TAB_SELECTOR);
+    await focusConsolePrompt();
+
+    await pasteText('bar');
+    await frontend.keyboard.press('Enter');
+
+    // Wait for the console to be usable again.
+    await frontend.waitForFunction(() => {
+      return document.querySelectorAll('.console-user-command-result').length === 1;
+    });
+
+    const messages = await getCurrentConsoleMessages();
+    assert.deepStrictEqual(messages.filter(m => !m.startsWith('[Formatter Errors]')), ['Uncaught No typeinfo for bar']);
+    await debuggerStatement(frontend);
   });
 });

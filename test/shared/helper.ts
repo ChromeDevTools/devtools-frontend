@@ -200,6 +200,14 @@ export const waitFor =
                                }, asyncScope));
 };
 
+export const waitForMany = async (
+    selector: string, count: number, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
+  return await asyncScope.exec(() => waitForFunction(async () => {
+                                 const elements = await $$(selector, root, handler);
+                                 return elements.length >= count ? elements : undefined;
+                               }, asyncScope));
+};
+
 export const waitForNone =
     async (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {

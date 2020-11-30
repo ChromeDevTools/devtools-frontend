@@ -477,6 +477,10 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
       this._valueElement.classList.add('value');
       titleElement.classList.add('dimmed');
       this._valueElement.textContent = Common.UIString.UIString('<not available>');
+      if (exceptionDetails !== undefined && exceptionDetails.exception !== undefined &&
+          exceptionDetails.exception.description !== undefined) {
+        UI.Tooltip.Tooltip.install(this._valueElement, exceptionDetails.exception.description);
+      }
     } else {
       const propertyValue =
           ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValueWithCustomSupport(

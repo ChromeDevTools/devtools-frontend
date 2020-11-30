@@ -197,6 +197,35 @@ class EvalNodeBase extends SDK.RemoteObject.RemoteObjectImpl {
   }
 }
 
+class EvalError extends Error {
+  /**
+   * @param {!SDK.RemoteObject.RemoteObject} exception
+   * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
+   */
+  constructor(exception, exceptionDetails) {
+    super();
+    this.exception = exception;
+    this.exceptionDetails = exceptionDetails;
+  }
+
+  /**
+   * @param {!SDK.DebuggerModel.CallFrame} callFrame
+   * @param {string} message
+   */
+  static throwLocal(callFrame, message) {
+    /** @type {!Protocol.Runtime.RemoteObject} */
+    const exception = {
+      type: Protocol.Runtime.RemoteObjectType.Object,
+      subtype: Protocol.Runtime.RemoteObjectSubtype.Error,
+      description: message
+    };
+    /** @type {!Protocol.Runtime.ExceptionDetails} */
+    const exceptionDetails = {text: 'Uncaught', exceptionId: -1, columnNumber: 0, lineNumber: 0, exception};
+    const errorObject = callFrame.debuggerModel.runtimeModel().createRemoteObject(exception);
+    throw new EvalError(errorObject, exceptionDetails);
+  }
+}
+
 class EvalNode extends SDK.RemoteObject.RemoteObjectImpl {
   /**
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
@@ -225,16 +254,14 @@ class EvalNode extends SDK.RemoteObject.RemoteObjectImpl {
       throwOnSideEffect: evalOptions.throwOnSideEffect,
       timeout: evalOptions.timeout,
     });
+    const error = response.getError();
+    if (error) {
+      throw new Error(error);
+    }
 
     const {result, exceptionDetails} = response;
     if (exceptionDetails) {
-      const errorMsg = exceptionDetails.exception ? exceptionDetails.exception.description : 'Uncaught exception';
-      Common.Console.Console.instance().warn(ls`Failed to format value: ${errorMsg}`);
-      const {typeId} = field.length > 0 ? field[field.length - 1] : base.rootType;
-      const fieldSourceType = sourceType.typeMap.get(typeId);
-      return new SDK.RemoteObject.RemoteObjectImpl(
-          callFrame.debuggerModel.runtimeModel(), undefined,
-          fieldSourceType ? fieldSourceType.typeInfo.typeNames[0] : '<unknown>', undefined, null);
+      throw new EvalError(callFrame.debuggerModel.runtimeModel().createRemoteObject(result), exceptionDetails);
     }
     const object = new EvalNodeBase(callFrame, sourceType, plugin, result, null, evalOptions);
     const unpackedResultObject = await unpackResultObject(object);
@@ -279,7 +306,12 @@ class EvalNode extends SDK.RemoteObject.RemoteObjectImpl {
   static async get(callFrame, plugin, expression, evalOptions) {
     const location = getRawLocation(callFrame);
 
-    const typeInfo = await plugin.getTypeInfo(expression, location);
+    let typeInfo;
+    try {
+      typeInfo = await plugin.getTypeInfo(expression, location);
+    } catch (e) {
+      EvalError.throwLocal(callFrame, e.message);
+    }
     if (!typeInfo) {
       return new SDK.RemoteObject.LocalJSONObject(undefined);
     }
@@ -460,16 +492,21 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
     }
 
     for (const variable of this.variables) {
-      const sourceVar = await EvalNode.get(
-          this._callFrame, this._plugin, variable.name,
-          /** @type {!SDK.RuntimeModel.EvaluationOptions} */
-          ({
-            generatePreview: false,
-            includeCommandLineAPI: true,
-            objectGroup: 'backtrace',
-            returnByValue: false,
-            silent: false
-          }));
+      let sourceVar;
+      try {
+        sourceVar = await EvalNode.get(
+            this._callFrame, this._plugin, variable.name,
+            /** @type {!SDK.RuntimeModel.EvaluationOptions} */
+            ({
+              generatePreview: false,
+              includeCommandLineAPI: true,
+              objectGroup: 'backtrace',
+              returnByValue: false,
+              silent: false
+            }));
+      } catch {
+        sourceVar = new SDK.RemoteObject.LocalJSONObject(undefined);
+      }
       if (variable.nestedName && variable.nestedName.length > 1) {
         let parent = namespaces;
         for (let index = 0; index < variable.nestedName.length - 1; index++) {
@@ -669,6 +706,10 @@ export class DebuggerLanguagePluginManager {
       const object = await EvalNode.get(callFrame, plugin, expression, options);
       return {object, exceptionDetails: undefined};
     } catch (error) {
+      if (error instanceof EvalError) {
+        const {exception: object, exceptionDetails} = error;
+        return {object, exceptionDetails};
+      }
       return {error: error.message};
     }
   }

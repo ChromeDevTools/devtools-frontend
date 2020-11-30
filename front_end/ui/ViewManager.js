@@ -34,8 +34,8 @@ export const ViewLocationValues = {
 
 /**
  * @typedef {{
- *  experiment: (string|undefined),
- *  condition: (string|undefined),
+ *  experiment: (!Root.Runtime.ExperimentName|undefined),
+ *  condition: (!Root.Runtime.ConditionName|undefined),
  *  title: string,
  *  persistence: (!ViewPersistence|undefined),
  *  id: string,

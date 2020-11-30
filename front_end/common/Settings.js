@@ -1650,8 +1650,8 @@ export function getRegisteredSettings() {
   *  reloadRequired: (boolean|undefined),
   *  storageType: (!SettingStorageType|undefined),
   *  userActionCondition: (string|undefined),
-  *  experiment: (string|undefined),
-  *  condition: (string|undefined)
+  *  experiment: (!Root.Runtime.ExperimentName|undefined),
+  *  condition: (!Root.Runtime.ConditionName|undefined)
   * }}
   */
 // @ts-ignore typedef

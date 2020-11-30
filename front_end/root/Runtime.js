@@ -1135,3 +1135,15 @@ export let appStartedPromiseCallback;
 export const appStarted = new Promise(fulfill => {
   appStartedPromiseCallback = fulfill;
 });
+
+
+/** @enum {string} */
+export const ExperimentName = {
+  CAPTURE_NODE_CREATION_STACKS: 'captureNodeCreationStacks',
+  CSS_GRID_FEATURES: 'cssGridFeatures',
+};
+
+/** @enum {string} */
+export const ConditionName = {
+  CAN_DOCK: 'can_dock',
+};

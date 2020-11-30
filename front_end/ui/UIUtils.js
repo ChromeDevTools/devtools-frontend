@@ -2135,9 +2135,3 @@ export const deepElementFromEvent = ev => {
   const root = event.target && /** @type {!Element} */ (event.target).getComponentRoot();
   return root ? deepElementFromPoint(/** @type {(!Document|!ShadowRoot)} */ (root), event.pageX, event.pageY) : null;
 };
-
-/** @enum {string} */
-export const Experiment = {
-  CAPTURE_NODE_CREATION_STACKS: 'captureNodeCreationStacks',
-  CSS_GRID_FEATURES: 'cssGridFeatures',
-};

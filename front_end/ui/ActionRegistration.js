@@ -519,9 +519,6 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper {
 /** @type {!Array<!PreRegisteredAction>} */
 const registeredActionExtensions = [];
 
-/** @type {!Map<string,!Set<string>>} */
-const shortcutsByPlatformMap = new Map();
-
 /** @type {!Set<string>} */
 const actionIdSet = new Set();
 
@@ -544,20 +541,7 @@ export function registerActionExtension(registration) {
     throw new Error(`Duplicate Action id '${actionId}': ${new Error().stack}`);
   }
   actionIdSet.add(actionId);
-  const preRegisteredAction = new PreRegisteredAction(registration);
-  const bindings = preRegisteredAction.bindings();
-  for (let i = 0; bindings && i < bindings.length; i++) {
-    const shortcut = bindings[i].shortcut;
-    const platform = bindings[i].platform || Platform.All;
-    const currentPlatformShortcuts = shortcutsByPlatformMap.get(platform) || new Set();
-    const allPlatformsShortcuts = shortcutsByPlatformMap.get(Platform.All) || new Set();
-    if (allPlatformsShortcuts.has(shortcut) || currentPlatformShortcuts.has(shortcut)) {
-      throw new Error(`Duplicate shortcut binding for shortcut '${shortcut}' on platform '${platform}'`);
-    }
-    currentPlatformShortcuts.add(shortcut);
-    shortcutsByPlatformMap.set(platform, currentPlatformShortcuts);
-  }
-  registeredActionExtensions.push(preRegisteredAction);
+  registeredActionExtensions.push(new PreRegisteredAction(registration));
 }
 
 /**
@@ -578,10 +562,20 @@ export const Events = {
 
 /** @enum {string} */
 export const ActionCategory = {
-  ELEMENTS: ls`Elements`
+  ELEMENTS: ls`Elements`,
+  SCREENSHOT: ls`Screenshot`
 };
 
+/** @enum {string} */
+export const IconClass = {
+  LARGEICON_NODE_SEARCH: 'largeicon-node-search',
+};
 
+/** @enum {string} */
+export const KeybindSet = {
+  DEVTOOLS_DEFAULT: 'devToolsDefault',
+  VS_CODE: 'vsCode',
+};
 /**
  * @typedef {{
   *  value: boolean,
@@ -596,7 +590,7 @@ export let ExtensionOption;
  * @typedef {{
   *  platform: (Platform|undefined),
   *  shortcut: string,
-  *  keybindSets: (!Array<string>|undefined),
+  *  keybindSets: (!Array<KeybindSet>|undefined),
   * }}
   */
 // @ts-ignore typedef
@@ -613,11 +607,11 @@ export let Binding;
   *  tags: (string|undefined),
   *  toggleable: (boolean|undefined),
   *  loadActionDelegate: (undefined|function():!Promise<!ActionDelegate>),
-  *  contextTypes: (undefined|function():!Array<function(new:Object, ...*):void>),
+  *  contextTypes: (undefined|function():!Array<?>),
   *  options: (undefined|!Array<!ExtensionOption>),
   *  bindings: (!Array<!Binding>|undefined),
-  *  experiment: (string|undefined),
-  *  condition: (string|undefined)
+  *  experiment: (!Root.Runtime.ExperimentName|undefined),
+  *  condition: (!Root.Runtime.ConditionName|undefined)
   * }}
   */
 // @ts-ignore typedef

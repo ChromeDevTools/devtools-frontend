@@ -169,6 +169,9 @@ export class InspectElementModeController {
   }
 }
 
+/** @type {!ToggleSearchActionDelegate} */
+let toggleSearchActionDelegateInstance;
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  * @unrestricted
@@ -195,5 +198,18 @@ export class ToggleSearchActionDelegate {
       inspectElementModeController._captureScreenshotMode();
     }
     return true;
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}=} opts
+   * @return {!ToggleSearchActionDelegate}
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!toggleSearchActionDelegateInstance || forceNew) {
+      toggleSearchActionDelegateInstance = new ToggleSearchActionDelegate();
+    }
+
+    return toggleSearchActionDelegateInstance;
   }
 }

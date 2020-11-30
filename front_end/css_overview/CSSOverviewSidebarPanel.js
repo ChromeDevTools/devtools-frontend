@@ -16,7 +16,7 @@ export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
   constructor() {
     super(true);
 
-    this.registerRequiredCSS('css_overview/cssOverviewSidebarPanel.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('css_overview/cssOverviewSidebarPanel.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('overview-sidebar-panel');
     this.contentElement.addEventListener('click', this._onItemClick.bind(this));
 

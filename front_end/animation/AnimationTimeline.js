@@ -90,7 +90,7 @@ const playbackRates = new WeakMap();
 export class AnimationTimeline extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('animation/animationTimeline.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('animation/animationTimeline.css', {enableLegacyPatching: false});
     this.element.classList.add('animations-timeline');
 
     this._gridWrapper = this.contentElement.createChild('div', 'grid-overflow-wrapper');

@@ -11,7 +11,7 @@
 .animation-node-row {
   width: 100%;
   display: flex;
-  border-bottom: 1px dashed hsl(0deg 0% 94% / 100%);
+  border-bottom: 1px dashed var(--color-details-hairline);
 }
 
 .animation-node-description {
@@ -20,9 +20,9 @@
   overflow: hidden;
   position: relative;
   transform-style: preserve-3d;
-  border-bottom: 1px solid hsl(0deg 0% 90%);
+  border-bottom: 1px solid var(--color-details-hairline);
   margin-bottom: -1px;
-  background-color: hsl(0deg 0% 98%);
+  background-color: var(--color-background-elevation-1);
   display: flex;
   align-items: center;
   flex: 0 0 150px;
@@ -62,7 +62,7 @@ line.animation-delay-line.animation-fill {
 }
 
 circle.animation-keyframe-point {
-  fill: white;
+  fill: var(--color-background);
 }
 
 circle.animation-endpoint,
@@ -87,7 +87,7 @@ circle.animation-keyframe-point:active {
 .animation-name {
   position: absolute;
   top: 8px;
-  color: #333;
+  color: var(--color-text-primary);
   text-align: center;
   margin-left: -8px;
   white-space: nowrap;
@@ -106,21 +106,21 @@ circle.animation-keyframe-point:active {
 
 .animation-timeline-header {
   height: 28px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--color-details-hairline);
   flex-shrink: 0;
   display: flex;
 }
 
 .animation-timeline-header::after {
-  content: "";
+  content: '';
   height: calc(100% - 48px - 28px);
   position: absolute;
   width: 150px;
   left: 0;
   margin-top: 28px;
-  background-color: hsl(0deg 0% 98%);
+  background-color: var(--color-background-elevation-1);
   z-index: 0;
-  border-right: 1px solid hsl(0deg 0% 90%);
+  border-right: 1px solid var(--color-details-hairline);
 }
 
 .animation-controls {
@@ -146,7 +146,7 @@ circle.animation-keyframe-point:active {
 .animation-timeline-buffer-hint {
   height: 48px;
   flex: 0 0 auto;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--color-details-hairline);
   display: flex;
   padding: 0 2px;
 }
@@ -165,7 +165,7 @@ circle.animation-keyframe-point:active {
 }
 
 .animation-time-overlay {
-  background-color: black;
+  background-color: var(--color-text-primary);
   opacity: 5%;
   position: absolute;
   height: 100%;
@@ -184,14 +184,14 @@ circle.animation-keyframe-point:active {
   height: 100%;
   width: 100%;
   top: 28px;
-  border-left: 1px solid hsl(4deg 90% 58% / 100%);
+  border-left: 1px solid var(--color-syntax-1);
   z-index: 2;
   cursor: col-resize;
 }
 
 .animation-scrubber-line {
   width: 11px;
-  background: linear-gradient(to right, transparent 5px, hsl(4deg 90% 58% / 100%) 5px, hsl(4deg 90% 58% / 100%) 6px, transparent 6px);
+  background: linear-gradient(to right, transparent 5px, var(--color-syntax-1) 5px, var(--color-syntax-1) 6px, transparent 6px);
   position: absolute;
   top: -28px;
   height: 28px;
@@ -204,7 +204,7 @@ circle.animation-keyframe-point:active {
   width: 7px;
   height: 7px;
   transform: rotate(45deg);
-  background: red;
+  background: var(--color-syntax-1);
   position: absolute;
   left: 2px;
   top: 1px;
@@ -228,7 +228,7 @@ svg.animation-timeline-grid {
 }
 
 rect.animation-timeline-grid-line {
-  fill: hsl(0deg 0% 93% / 100%);
+  fill: var(--color-background-elevation-2);
 }
 
 .animation-timeline-row > svg.animation-ui {
@@ -271,7 +271,7 @@ svg.animation-ui path:focus-visible {
 
 text.animation-timeline-grid-label {
   font-size: 10px;
-  fill: #5a5a5a;
+  fill: var(--color-text-secondary);
   text-anchor: middle;
 }
 
@@ -305,11 +305,11 @@ text.animation-timeline-grid-label {
 }
 
 .animation-node-row.animation-node-selected {
-  background-color: hsl(216deg 71% 53% / 8%);
+  background-color: var(--color-background-elevation-1);
 }
 
 .animation-node-selected > .animation-node-description {
-  background-color: #eff4fd;
+  background-color: var(--color-background-elevation-2);
 }
 
 .animation-buffer-preview {
@@ -332,9 +332,9 @@ text.animation-timeline-grid-label {
   position: absolute;
   top: 0;
   left: 0;
-  background: hsl(219deg 100% 66% / 27%);
+  background: var(--color-background-elevation-2);
   opacity: 0%;
-  border-right: 1px solid #a7a7a7;
+  border-right: 1px solid var(--color-details-hairline);
   cursor: pointer;
 }
 
@@ -344,7 +344,7 @@ text.animation-timeline-grid-label {
 
 .animation-buffer-preview:not(.selected):focus-visible,
 .animation-buffer-preview:not(.selected):hover {
-  background-color: hsl(217deg 90% 92% / 100%);
+  background-color: var(--color-background-elevation-2);
 }
 
 .animation-buffer-preview.selected {
@@ -360,13 +360,13 @@ text.animation-timeline-grid-label {
 
 .animation-paused::before,
 .animation-paused::after {
-  content: "";
-  background: hsl(0deg 100% 100%);
+  content: '';
+  background: var(--color-background);
   width: 7px;
   height: 20px;
   border-radius: 2px;
   margin: 2px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-details-hairline);
 }
 
 .animation-buffer-preview.paused .animation-paused {
@@ -378,7 +378,7 @@ text.animation-timeline-grid-label {
 }
 
 .animation-buffer-preview.selected > svg > line {
-  stroke: white !important;
+  stroke: var(--color-background) !important;
 }
 
 @keyframes newGroupAnim {
@@ -398,12 +398,12 @@ text.animation-timeline-grid-label {
 }
 
 .animation-playback-rate-button {
-  border: 1px solid #ccc;
-  color: #000;
+  border: 1px solid var(--color-details-hairline);
+  color: var(--color-text-primary);
   display: inline-block;
   margin-right: -1px;
   padding: 1px 4px;
-  background: white;
+  background: var(--color-background);
   flex: 1 0 auto;
   text-align: center;
   cursor: pointer;
@@ -418,7 +418,7 @@ text.animation-timeline-grid-label {
 }
 
 .animation-playback-rate-button.selected {
-  color: hsl(0deg 100% 100%);
+  color: var(--color-background);
   background-color: var(--selection-bg-color);
   border-color: var(--selection-bg-color);
   z-index: 1;
@@ -426,11 +426,11 @@ text.animation-timeline-grid-label {
 
 .animation-playback-rate-button.selected:first-child {
   color: var(--selection-bg-color);
-  background-color: hsl(217deg 89% 100%);
+  background-color: var(--color-background);
 }
 
 .animation-playback-rate-button.selected:focus-visible {
-  color: hsl(0deg 0% 0%);
+  color: var(--color-text-primary);
 }
 
 .animation-playback-rate-button.selected:first-child:focus-visible,
@@ -439,31 +439,30 @@ text.animation-timeline-grid-label {
 }
 
 .animation-playback-rate-button:not(.selected):hover {
-  background: hsl(211deg 100% 95%);
+  background: var(--color-background-elevation-2);
 }
 
-.animation-remove-button,
-.-theme-preserve {
+.animation-remove-button {
   position: absolute;
   top: -3px;
   right: -3px;
-  background: #7b7b7b;
+  background: var(--color-text-secondary);
   border-radius: 12px;
   height: 16px;
   width: 16px;
   align-items: center;
   font-size: 10px;
   justify-content: center;
-  box-shadow: 0 1px 4px 0 rgb(185 185 185);
+  box-shadow: 0 1px 4px 0 var(--color-background-highlight);
   z-index: 100;
   display: none;
   cursor: pointer;
   font-weight: 700;
-  color: white;
+  color: var(--color-background);
 }
 
 .animation-remove-button:hover {
-  background: #585858;
+  background: var(--color-text-primary);
 }
 
 .animation-buffer-preview:hover .animation-remove-button {
@@ -481,7 +480,7 @@ text.animation-timeline-grid-label {
   }
 
   .animation-node-description:focus-visible {
-    background-color: canvas;
+    background-color: var(--color-background);
     forced-color-adjust: none;
   }
 

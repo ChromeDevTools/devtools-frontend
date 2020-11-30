@@ -14,55 +14,50 @@
   min-height: 0;
 }
 
-.monospace {
-  font-size: 10px !important;
-  font-family: monospace;
-}
-
-.source-code {
-  font-family: monospace;
-  font-size: 11px !important;
-  white-space: pre-wrap;
-}
-
-.platform-mac .monospace,
-.platform-mac .source-code {
-  font-size: 11px !important;
-  font-family: Menlo, monospace;
-}
-
-.platform-windows .monospace,
-.platform-windows .source-code {
-  font-size: 12px !important;
-  font-family: Consolas, Lucida Console, Courier New, monospace;
-}
-
-.platform-linux .monospace,
-.platform-linux .source-code {
-  font-size: 11px !important;
-  font-family: dejavu sans mono, monospace;
-}
-
-:host-context(.platform-mac) .monospace,
-:host-context(.platform-mac) .source-code {
-  font-size: 11px !important;
-  font-family: Menlo, monospace;
-}
-
-:host-context(.platform-windows) .monospace,
-:host-context(.platform-windows) .source-code {
-  font-size: 12px !important;
-  font-family: Consolas, Lucida Console, Courier New, monospace;
-}
-
-:host-context(.platform-linux) .monospace,
-:host-context(.platform-linux) .source-code {
-  font-size: 11px !important;
-  font-family: dejavu sans mono, monospace;
+:root {
+  --monospace-font-size: 10px;
+  --monospace-font-family: monospace;
+  --source-code-font-size: 11px;
+  --source-code-font-family: monospace;
 }
 
 :focus {
   outline-width: 0;
+}
+
+.platform-mac,
+:host-context(.platform-mac) {
+  --monospace-font-size: 11px;
+  --monospace-font-family: menlo, monospace;
+  --source-code-font-size: 11px;
+  --source-code-font-family: menlo, monospace;
+}
+
+.platform-windows,
+:host-context(.platform-windows) {
+  --monospace-font-size: 12px;
+  --monospace-font-family: consolas, lucida console, courier new, monospace;
+  --source-code-font-size: 12px;
+  --source-code-font-family: consolas, lucida console, courier new, monospace;
+}
+
+.platform-linux,
+:host-context(.platform-linux) {
+  --monospace-font-size: 11px;
+  --monospace-font-family: dejavu sans mono, monospace;
+  --source-code-font-size: 11px;
+  --source-code-font-family: dejavu sans mono, monospace;
+}
+
+.monospace {
+  font-family: var(--monospace-font-family);
+  font-size: var(--monospace-font-size) !important;
+}
+
+.source-code {
+  font-family: var(--source-code-font-family);
+  font-size: var(--source-code-font-size) !important;
+  white-space: pre-wrap;
 }
 
 img {

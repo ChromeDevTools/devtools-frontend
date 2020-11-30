@@ -7,6 +7,7 @@ ts_library("components") {
     "DataGridHelpers.ts",
     "DataGrid_test.ts",
     "Linkifier_test.ts",
+    "ReportView_test.ts",
   ]
 
   deps = [

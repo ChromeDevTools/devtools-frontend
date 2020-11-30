@@ -13,6 +13,7 @@ devtools_module("components") {
     "DataGridUtils.ts",
     "Linkifier.ts",
     "LinkifierUtils.ts",
+    "ReportView.ts",
   ]
   deps = [
     "../../bindings:bundle",

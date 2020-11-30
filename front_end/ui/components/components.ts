@@ -7,6 +7,7 @@ import * as DataGridController from './DataGridController.js';
 import * as DataGridRenderers from './DataGridRenderers.js';
 import * as DataGridUtils from './DataGridUtils.js';
 import * as Linkifier from './Linkifier.js';
+import * as ReportView from './ReportView.js';
 
 export {
   DataGrid,
@@ -14,4 +15,5 @@ export {
   DataGridRenderers,
   DataGridUtils,
   Linkifier,
+  ReportView,
 };

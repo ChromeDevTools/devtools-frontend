@@ -757,6 +757,7 @@ all_typescript_module_sources = [
   "ui/components/DataGridUtils.js",
   "ui/components/Linkifier.js",
   "ui/components/LinkifierUtils.js",
+  "ui/components/ReportView.js",
   "ui/components/components.js",
   "ui/utils/append-style.js",
   "ui/utils/create-shadow-root-with-core-styles.js",

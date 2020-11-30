@@ -19,6 +19,7 @@ group("component_docs") {
     "./linear_memory_inspector",
     "./linkifier",
     "./perf_piechart",
+    "./report",
     "./theme_colors",
     "./webvitals",
   ]

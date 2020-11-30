@@ -25,6 +25,7 @@ devtools_image_files = [
   "dropdown_7x6_icon.svg",
   "elements_panel_icon.svg",
   "errorWave.svg",
+  "error_icon.svg",
   "ic_delete_list.svg",
   "ic_delete_filter.svg",
   "flex-direction-icon.svg",
@@ -93,6 +94,7 @@ devtools_image_files = [
   "touchCursor_2x.png",
   "touchCursor.png",
   "treeoutlineTriangles.svg",
+  "warning_icon.svg",
   "whatsnew.png",
   "feedback_thin_16x16_icon.svg",
 ]

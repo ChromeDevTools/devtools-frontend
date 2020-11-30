@@ -24,3 +24,8 @@
 .text-editor-row-message-repeat-count {
   margin-right: 0.5em;
 }
+
+.text-editor-row-message-icon {
+  flex: none;
+  margin-right: 6px;
+}

@@ -44,8 +44,8 @@
   -webkit-mask-position: 0 0;
   -webkit-mask-size: 30px 10px;
   -webkit-mask-repeat: no-repeat;
-  background-color: rgb(48 57 66);
-  content: "";
+  background-color: var(--color-syntax-7);
+  content: '';
   text-shadow: none;
   margin-right: -2px;
   height: 12px;
@@ -79,7 +79,7 @@
 
 .ax-breadcrumbs .ax-node.inspected .selection {
   display: block;
-  background-color: #ddd;
+  background-color: var(--color-background-elevation-2);
 }
 
 .ax-breadcrumbs .ax-node.inspected:focus .selection {
@@ -91,7 +91,7 @@
 }
 
 .ax-breadcrumbs .ax-node.inspected:focus {
-  color: white;
+  color: var(--color-background);
 }
 
 .ax-breadcrumbs .ax-node.inspected:focus * {
@@ -108,7 +108,7 @@
 }
 
 .ax-breadcrumbs .ax-node.preselected:not(.inspected):focus .selection {
-  border: 1px solid rgb(56 121 217 / 40%);
+  border: 1px solid var(--color-primary-variant);
 }
 
 @media (forced-colors: active) {

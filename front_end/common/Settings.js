@@ -55,6 +55,12 @@ export class Settings {
     this._localStorage = localStorage;
     this._sessionStorage = new SettingsStorage({});
 
+    /** @type {!Set<string>} */
+    this.settingNameSet = new Set();
+
+    /** @type {!Map<!SettingCategory,!Set<number>>} */
+    this.orderValuesBySettingCategory = new Map();
+
     this._eventSupport = new ObjectWrapper();
     /** @type {!Map<string, !Setting<*>>} */
     this._registry = new Map();
@@ -146,6 +152,21 @@ export class Settings {
    * @param {!Setting<*>} setting
    */
   _registerModuleSetting(setting) {
+    const settingName = setting.name;
+    const category = setting.category();
+    const order = setting.order();
+    if (this.settingNameSet.has(settingName)) {
+      throw new Error(`Duplicate Setting name '${settingName}'`);
+    }
+    if (category && order) {
+      const orderValues = this.orderValuesBySettingCategory.get(category) || new Set();
+      if (orderValues.has(order)) {
+        throw new Error(`Duplicate order value '${order}' for settings category '${category}'`);
+      }
+      orderValues.add(order);
+      this.orderValuesBySettingCategory.set(category, orderValues);
+    }
+    this.settingNameSet.add(settingName);
     this._moduleSettings.set(setting.name, setting);
   }
 
@@ -447,6 +468,13 @@ export class Setting {
   }
 
   /**
+   * @return {?number}
+   */
+  order() {
+    throw new Error('not implemented');
+  }
+
+  /**
    * @param {string} message
    * @param {string} name
    * @param {string} value
@@ -684,6 +712,10 @@ export class LegacySetting extends Setting {
           return SettingCategory.GRID;
         case 'Mobile':
           return SettingCategory.MOBILE;
+        case 'Emulation':
+          return SettingCategory.EMULATION;
+        case 'Memory':
+          return SettingCategory.MEMORY;
         default:
           throw new Error(`Invalid setting category ${category}`);
       }
@@ -708,6 +740,17 @@ export class LegacySetting extends Setting {
         keys += (ls(k.trim()) + '\0');
       });
       return keys;
+    }
+    return null;
+  }
+
+  /**
+   * @override
+   * @return {?number}
+   */
+  order() {
+    if (this._extension) {
+      return this._extension.descriptor().order || null;
     }
     return null;
   }
@@ -915,6 +958,17 @@ export class PreRegisteredSetting extends Setting {
   tags() {
     if (this._registration) {
       return this._registration.tags || null;
+    }
+    return null;
+  }
+
+  /**
+   * @override
+   * @return {?number}
+   */
+  order() {
+    if (this._registration) {
+      return this._registration.order || null;
     }
     return null;
   }
@@ -1598,6 +1652,8 @@ export const SettingCategory = {
   RENDERING: ls`Rendering`,
   GRID: ls`Grid`,
   MOBILE: ls`Mobile`,
+  EMULATION: ls`Emulation`,
+  MEMORY: ls`Memory`,
 };
 
 /** @enum {string} */
@@ -1611,18 +1667,10 @@ export const SettingType = {
 /** @type {!Array<!SettingRegistration>} */
 const registeredSettings = [];
 
-/** @type {!Set<string>} */
-const settingNameSet = new Set();
-
 /**
  * @param {!SettingRegistration} registration
  */
 export function registerSettingExtension(registration) {
-  const settingName = registration.settingName;
-  if (settingNameSet.has(settingName)) {
-    throw new Error(`Duplicate Setting name '${settingName}'`);
-  }
-  settingNameSet.add(settingName);
   registeredSettings.push(registration);
 }
 

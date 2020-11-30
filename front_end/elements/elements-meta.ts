@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -282,4 +283,138 @@ UI.ActionRegistration.registerActionExtension({
   experiment: undefined,
   condition: undefined,
   contextTypes: undefined,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.ELEMENTS,
+  order: 1,
+  title: ls`Show user agent shadow DOM`,
+  settingName: 'showUAShadowDOM',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  tags: undefined,
+  isRegex: undefined,
+  options: undefined,
+  reloadRequired: undefined,
+  storageType: undefined,
+  titleMac: undefined,
+  userActionCondition: undefined,
+  experiment: undefined,
+  condition: undefined,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.ELEMENTS,
+  order: 2,
+  title: ls`Word wrap`,
+  settingName: 'domWordWrap',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  options: [
+    {
+      value: true,
+      title: ls`Enable DOM word wrap`,
+      text: undefined,
+      raw: undefined,
+    },
+    {
+      value: false,
+      title: ls`Disable DOM word wrap`,
+      text: undefined,
+      raw: undefined,
+    },
+  ],
+  defaultValue: true,
+  tags: undefined,
+  isRegex: undefined,
+  reloadRequired: undefined,
+  storageType: undefined,
+  titleMac: undefined,
+  userActionCondition: undefined,
+  experiment: undefined,
+  condition: undefined,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.ELEMENTS,
+  order: 3,
+  title: ls`Show HTML comments`,
+  settingName: 'showHTMLComments',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: ls`Show HTML comments`,
+      text: undefined,
+      raw: undefined,
+    },
+    {
+      value: false,
+      title: ls`Hide HTML comments`,
+      text: undefined,
+      raw: undefined,
+    },
+  ],
+  tags: undefined,
+  isRegex: undefined,
+  reloadRequired: undefined,
+  storageType: undefined,
+  titleMac: undefined,
+  userActionCondition: undefined,
+  experiment: undefined,
+  condition: undefined,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.ELEMENTS,
+  order: 4,
+  title: ls`Reveal DOM node on hover`,
+  settingName: 'highlightNodeOnHoverInOverlay',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  options: undefined,
+  tags: undefined,
+  isRegex: undefined,
+  reloadRequired: undefined,
+  storageType: undefined,
+  titleMac: undefined,
+  userActionCondition: undefined,
+  experiment: undefined,
+  condition: undefined,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.ELEMENTS,
+  order: 5,
+  title: ls`Show detailed inspect tooltip`,
+  settingName: 'showDetailedInspectTooltip',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  options: undefined,
+  tags: undefined,
+  isRegex: undefined,
+  reloadRequired: undefined,
+  storageType: undefined,
+  titleMac: undefined,
+  userActionCondition: undefined,
+  experiment: undefined,
+  condition: undefined,
+});
+
+Common.Settings.registerSettingExtension({
+  settingName: 'showEventListenersForAncestors',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  category: undefined,
+  order: undefined,
+  title: undefined,
+  defaultValue: true,
+  options: undefined,
+  tags: undefined,
+  isRegex: undefined,
+  reloadRequired: undefined,
+  storageType: undefined,
+  titleMac: undefined,
+  userActionCondition: undefined,
+  experiment: undefined,
+  condition: undefined,
 });

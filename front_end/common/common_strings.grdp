@@ -9,6 +9,9 @@
   <message name="IDS_DEVTOOLS_375c9558f2166cab6515a7ab774c1735" desc="Name of a network resource type">
     TextTrack
   </message>
+  <message name="IDS_DEVTOOLS_430e23dfa8a1005a5eec889f0e7426ef" desc="Name of a settings category.">
+    Emulation
+  </message>
   <message name="IDS_DEVTOOLS_441d3aea2e55865603a26ca972779831" desc="Text that appears in a tooltip the xhr and fetch resource types filter.">
     XHR and Fetch
   </message>

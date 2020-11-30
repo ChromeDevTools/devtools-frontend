@@ -972,7 +972,6 @@ class Storage {
     this._breakpoints = new Map();
     const items = /** @type {!Array<!Storage.Item>} */ (this._setting.get());
     for (const item of items) {
-      item.columnNumber = item.columnNumber || 0;
       this._breakpoints.set(BreakpointManager._breakpointStorageId(item.url, item.lineNumber, item.columnNumber), item);
     }
     /** @type {boolean|undefined} */ this._muted;

@@ -9,8 +9,8 @@
 }
 
 .web-audio-toolbar-container {
-  background-color: var(--toolbar-bg-color);
-  border-bottom: var(--divider-border);
+  background-color: var(--color-background-elevation-1);
+  border-bottom: var(--color-background-highlight);
   min-height: fit-content;
 }
 
@@ -20,12 +20,12 @@
 
 .web-audio-landing-page {
   position: absolute;
-  background-color: white;
+  background-color: var(--color-background);
   justify-content: center;
   align-items: center;
   overflow: auto;
   font-size: 13px;
-  color: #777;
+  color: var(--color-background-elevation-1);
 }
 
 .web-audio-landing-page > div {
@@ -53,7 +53,7 @@
 .context-detail-container {
   flex: none;
   display: flex;
-  background-color: white;
+  background-color: var(--color-background);
   flex-direction: column;
 }
 
@@ -82,7 +82,7 @@
 }
 
 .context-detail-row-entry:not(:empty) {
-  color: hsl(0deg 0% 46% / 100%);
+  color: var(--color-text-secondary);
   overflow: hidden;
   width: 130px;
 }
@@ -98,8 +98,8 @@
   flex: 0 0 27px;
   line-height: 27px;
   padding-left: 5px;
-  background-color: #eee;
-  border-top: 1px solid #ccc;
+  background-color: var(--color-background-elevation-2);
+  border-top: 1px solid var(--color-details-hairline);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

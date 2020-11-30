@@ -4,7 +4,7 @@
 
 export const VALUE_INTEPRETER_MAX_NUM_BYTES = 8;
 
-export enum ValueType {
+export const enum ValueType {
   Int8 = 'Integer 8-bit',
   Int16 = 'Integer 16-bit',
   Int32 = 'Integer 32-bit',
@@ -14,12 +14,12 @@ export enum ValueType {
   String = 'String'
 }
 
-export enum Endianness {
+export const enum Endianness {
   Little = 'Little Endian',
   Big = 'Big Endian'
 }
 
-export enum ValueTypeMode {
+export const enum ValueTypeMode {
   Decimal = 'dec',
   Hexadecimal = 'hex',
   Octal = 'oct',

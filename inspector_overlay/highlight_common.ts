@@ -47,7 +47,7 @@ export interface BoxStyle {
   hatchColor?: string;
 }
 
-enum LinePattern {
+const enum LinePattern {
   Solid = 'solid',
   Dotted = 'dotted',
   Dashed = 'dashed'

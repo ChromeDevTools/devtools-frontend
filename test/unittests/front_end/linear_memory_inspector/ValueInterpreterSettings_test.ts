@@ -28,14 +28,21 @@ describe('ValueInterpreterSettings', () => {
   it('renders all checkboxes', async () => {
     const {component} = setUpComponent();
     const checkboxes = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, HTMLLabelElement);
-
-    assert.lengthOf(checkboxes, Object.values(LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType).length);
+    const checkboxLabels = Array.from(checkboxes, checkbox => checkbox.getAttribute('title'));
+    assert.deepEqual(checkboxLabels, [
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int16,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int32,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int64,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.String,
+    ]);
   });
 
   it('triggers an event on checkbox click', async () => {
     const {component} = setUpComponent();
     const labels = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, HTMLLabelElement);
-    assert.lengthOf(labels, Object.values(LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType).length);
 
     for (const label of labels) {
       const checkbox = label.querySelector(SETTINGS_INPUT_SELECTOR);
@@ -71,8 +78,15 @@ describe('ValueInterpreterSettings', () => {
     assert.deepEqual(checkedTitles, expectedTitles);
 
     const uncheckedTitles = new Set(elements.filter(n => !n.checked).map(n => n.title.innerText));
-    const allTypesTitle =
-        Object.values(LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType).map(type => `${type}`);
+    const allTypesTitle = [
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int16,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int32,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int64,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.String,
+    ];
     const expectedUncheckedTitles = new Set(allTypesTitle.filter(title => !expectedTitles.has(title)));
     assert.deepEqual(uncheckedTitles, expectedUncheckedTitles);
   });

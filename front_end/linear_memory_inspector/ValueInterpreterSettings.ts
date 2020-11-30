@@ -14,7 +14,7 @@ export interface ValueInterpreterSettingsData {
   valueTypes: Set<ValueType>;
 }
 
-enum ValueTypeGroup {
+const enum ValueTypeGroup {
   Integer = 'Integer',
   Float = 'Floating point',
   Other = 'Other'

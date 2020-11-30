@@ -18,7 +18,7 @@ export interface IssueSurveyLinkData {
   showSurvey: (trigger: string, callback: ShowSurveyCallback) => void;
 }
 
-enum State {
+const enum State {
   Checking = 'Checking',  // (begin state) -> ShowLink | DontShowLink
   ShowLink = 'ShowLink',  // -> Sending
   Sending = 'Sending',    // -> SurveyShown | Failed

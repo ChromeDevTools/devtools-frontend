@@ -25,10 +25,7 @@ devtools_module("linear_memory_inspector") {
     "../third_party/lit-html:bundle",
   ]
 
-  visibility = [
-    "../../test/unittests/front_end/linear_memory_inspector",
-    "../component_docs/*",
-  ]
+  visibility = [ "../component_docs/*" ]
 }
 
 devtools_entrypoint("bundle") {

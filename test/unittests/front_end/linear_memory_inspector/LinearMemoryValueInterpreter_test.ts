@@ -42,7 +42,7 @@ describe('LinearMemoryValueInterpreter', () => {
     return component;
   }
 
-  it('renders settings toolbar', async () => {
+  it('renders the settings toolbar', async () => {
     const component = setUpComponent();
     const settingsToolbar = getElementWithinComponent(component, TOOLBAR_SELECTOR, HTMLDivElement);
     assert.isNotNull(settingsToolbar);

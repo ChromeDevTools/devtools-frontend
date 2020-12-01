@@ -65,7 +65,7 @@ export class ImagePreview {
 
     function buildContent() {
       const container = document.createElement('table');
-      UI.Utils.appendStyle(container, 'components/imagePreview.css', {enableLegacyPatching: true});
+      UI.Utils.appendStyle(container, 'components/imagePreview.css', {enableLegacyPatching: false});
       container.className = 'image-preview-container';
       const intrinsicWidth = imageElement.naturalWidth;
       const intrinsicHeight = imageElement.naturalHeight;

@@ -1826,7 +1826,7 @@ export class TimelineUIUtils {
       return null;
     }
     const container = document.createElement('div');
-    UI.Utils.appendStyle(container, 'components/imagePreview.css', {enableLegacyPatching: true});
+    UI.Utils.appendStyle(container, 'components/imagePreview.css', {enableLegacyPatching: false});
     container.classList.add('image-preview-container', 'vbox', 'link');
     const img = /** @type {!HTMLImageElement} */ (container.createChild('img'));
     img.src = imageURL;

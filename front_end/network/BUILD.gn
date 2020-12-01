@@ -30,6 +30,7 @@ devtools_module("network") {
     "RequestPreviewView.js",
     "RequestResponseView.js",
     "RequestTimingView.js",
+    "RequestTrustTokensView.ts",
     "ResourceWebSocketFrameView.js",
     "SignedExchangeInfoView.js",
   ]
@@ -55,6 +56,7 @@ devtools_module("network") {
     "../text_utils:bundle",
     "../theme_support:bundle",
     "../ui:bundle",
+    "../ui/components:bundle",
     "../workspace:bundle",
   ]
 }

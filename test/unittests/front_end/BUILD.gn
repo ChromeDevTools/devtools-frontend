@@ -20,6 +20,7 @@ group("front_end") {
     "linear_memory_inspector",
     "media",
     "missing_entrypoints",
+    "network",
     "perf_ui",
     "persistence",
     "platform",

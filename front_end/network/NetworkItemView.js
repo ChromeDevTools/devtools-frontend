@@ -40,6 +40,7 @@ import {RequestInitiatorView} from './RequestInitiatorView.js';
 import {RequestPreviewView} from './RequestPreviewView.js';
 import {RequestResponseView} from './RequestResponseView.js';
 import {RequestTimingView} from './RequestTimingView.js';
+import {RequestTrustTokensView} from './RequestTrustTokensView.js';
 import {ResourceWebSocketFrameView} from './ResourceWebSocketFrameView.js';
 
 export class NetworkItemView extends UI.TabbedPane.TabbedPane {
@@ -92,6 +93,13 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     this.appendTab(
         Tabs.Timing, Common.UIString.UIString('Timing'), new RequestTimingView(request, calculator),
         Common.UIString.UIString('Request and response timeline'));
+
+    const trustTokenParams = request.trustTokenParams();
+    if (trustTokenParams) {
+      this.appendTab(
+          Tabs.TrustTokens, ls`Trust Tokens`, new RequestTrustTokensView(trustTokenParams),
+          ls`Trust Token operation details`);
+    }
 
     /** @type {?RequestCookiesView} */
     this._cookiesView = null;
@@ -197,5 +205,6 @@ export const Tabs = {
   Preview: 'preview',
   Response: 'response',
   Timing: 'timing',
+  TrustTokens: 'trustTokens',
   WsFrames: 'webSocketFrames'
 };

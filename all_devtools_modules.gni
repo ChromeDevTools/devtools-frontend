@@ -315,6 +315,7 @@ all_typescript_module_sources = [
   "network/RequestPreviewView.js",
   "network/RequestResponseView.js",
   "network/RequestTimingView.js",
+  "network/RequestTrustTokensView.js",
   "network/ResourceWebSocketFrameView.js",
   "network/SignedExchangeInfoView.js",
   "node_main/NodeConnectionsPanel.js",

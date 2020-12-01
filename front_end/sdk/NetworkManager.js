@@ -532,6 +532,7 @@ export class NetworkDispatcher {
     networkRequest.setIssueTime(timestamp, wallTime);
     networkRequest.setResourceType(
         type ? Common.ResourceType.resourceTypes[type] : Common.ResourceType.resourceTypes.Other);
+    networkRequest.setTrustTokenParams(request.trustTokenParams || null);
 
     this._getExtraInfoBuilder(requestId).addRequest(networkRequest);
 

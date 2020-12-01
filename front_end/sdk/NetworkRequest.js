@@ -195,6 +195,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     this._path;
     /** @type {(!Protocol.Network.ClientSecurityState|undefined)} */
     this._clientSecurityState;
+    /** @type {?Protocol.Network.TrustTokenParams} */
+    this._trustTokenParams = null;
   }
 
   /**
@@ -1617,6 +1619,16 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    */
   clientSecurityState() {
     return this._clientSecurityState;
+  }
+
+  /** @param {?Protocol.Network.TrustTokenParams} trustTokenParams */
+  setTrustTokenParams(trustTokenParams) {
+    this._trustTokenParams = trustTokenParams;
+  }
+
+  /** @return {?Protocol.Network.TrustTokenParams} */
+  trustTokenParams() {
+    return this._trustTokenParams;
   }
 }
 

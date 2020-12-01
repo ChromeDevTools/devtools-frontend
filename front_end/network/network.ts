@@ -52,6 +52,7 @@ import * as RequestInitiatorView from './RequestInitiatorView.js';
 import * as RequestPreviewView from './RequestPreviewView.js';
 import * as RequestResponseView from './RequestResponseView.js';
 import * as RequestTimingView from './RequestTimingView.js';
+import * as RequestTrustTokensView from './RequestTrustTokensView.js';
 import * as ResourceWebSocketFrameView from './ResourceWebSocketFrameView.js';
 import * as SignedExchangeInfoView from './SignedExchangeInfoView.js';
 
@@ -79,6 +80,7 @@ export {
   RequestPreviewView,
   RequestResponseView,
   RequestTimingView,
+  RequestTrustTokensView,
   ResourceWebSocketFrameView,
   SignedExchangeInfoView,
 };

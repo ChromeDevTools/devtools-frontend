@@ -57,6 +57,9 @@
   <message name="IDS_DEVTOOLS_100b560e280fea6e7d5ab12179d3f0e2" desc="Tooltip to explain what malformed response cookies are">
     Cookies that were received from the server in the &apos;set-cookie&apos; header of the response but were malformed
   </message>
+  <message name="IDS_DEVTOOLS_103b018f0bab1e8f397fd9e932d824a8" desc="Label of a tab in the network panel">
+    Trust Tokens
+  </message>
   <message name="IDS_DEVTOOLS_117068a6e55846888cbb60978fe82ca2" desc="Text in Request Timing View of the Network panel">
     Stalled
   </message>
@@ -161,6 +164,9 @@
   </message>
   <message name="IDS_DEVTOOLS_31977081ea2c828cc70e6151ab5d7da8" desc="Text in Request Headers View of the Network panel">
     view decoded
+  </message>
+  <message name="IDS_DEVTOOLS_3225a10b07f1580f10dee4abc3779e6c" desc="Section heading in the Trust Token tab">
+    Parameters
   </message>
   <message name="IDS_DEVTOOLS_324c6483c84f17f8af6b9a0d20145dda" desc="Text in Network Log View of the Network panel">
     <ph name="RESOURCESIZE">$1s<ex>10</ex></ph> B resources loaded by the page
@@ -417,6 +423,9 @@
   <message name="IDS_DEVTOOLS_82764787c77b4c9e53993b15d31a11c5" desc="Text to announce to screen readers that network data is available.">
     Network Data Available
   </message>
+  <message name="IDS_DEVTOOLS_82c5fda2c29f2bd8847c72adde307127" desc="Label for a list if origins in the Trust Token tab">
+    Issuers
+  </message>
   <message name="IDS_DEVTOOLS_8470bd9052ed82990d6e49335b14e41e" desc="Text in Headers View of the Network panel">
     This document was blocked from loading in an <ph name="LOCKED_1">iframe</ph> with a <ph name="LOCKED_1">sandbox</ph> attribute because this document specified a cross-origin opener policy.
   </message>
@@ -479,6 +488,9 @@
   </message>
   <message name="IDS_DEVTOOLS_c7892ebbb139886662c6f2fc8c450710" desc="Text that refers to the subject of a security certificate">
     Subject
+  </message>
+  <message name="IDS_DEVTOOLS_c789d2008c970ee9fe72c649938d8710" desc="Title of the Trust token tab in the Network panel">
+    Trust Token operation details
   </message>
   <message name="IDS_DEVTOOLS_c823a983a972cfb5ee4b8bf1918080d3" desc="Text in Headers View of the Network panel">
     Choose this option if the resource and the document are served from the same site.
@@ -560,6 +572,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f0c5b7ae2d085f65b7b003d43a7d7521" desc="Name of storage cache from which a response was fetched">
     Cache storage cache name: <ph name="THIS__REQUEST_RESPONSECACHESTORAGECACHENAME">$1s<ex>v1</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_f4973c5e21f7ce396d394e24e8fda55a" desc="Label for a Trust Token parameter">
+    Refresh policy
   </message>
   <message name="IDS_DEVTOOLS_f59329e45eb11a75d709aeb5b9b8943e" desc="Tooltip for expanding network request row setting">
     Show more information in request rows

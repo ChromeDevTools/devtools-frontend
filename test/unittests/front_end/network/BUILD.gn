@@ -6,10 +6,15 @@ import("../../../../third_party/typescript/typescript.gni")
 
 ts_library("network") {
   testonly = true
-  sources = [ "RequestTrustTokensView_test.ts" ]
+  sources = [
+    "HARWriter_test.ts",
+    "RequestTrustTokensView_test.ts",
+  ]
 
   deps = [
+    "../../../../front_end/common:bundle",
     "../../../../front_end/network:bundle",
+    "../../../../front_end/ui:bundle",
     "../helpers",
   ]
 }

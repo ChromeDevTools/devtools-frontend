@@ -79,16 +79,16 @@ export class HARLog {
    * @return {!Array<!Page>}
    */
   _buildPages(requests) {
-    /** @type {!Map<number, boolean>} */
-    const seenIdentifiers = new Map();
+    /** @type {!Set<number>} */
+    const seenIdentifiers = new Set();
     const pages = [];
     for (let i = 0; i < requests.length; ++i) {
       const request = requests[i];
       const page = PageLoad.forRequest(request);
-      if (!page || seenIdentifiers.get(page.id)) {
+      if (!page || seenIdentifiers.has(page.id)) {
         continue;
       }
-      seenIdentifiers.set(page.id, true);
+      seenIdentifiers.add(page.id);
       pages.push(this._convertPage(page, request));
     }
     return pages;

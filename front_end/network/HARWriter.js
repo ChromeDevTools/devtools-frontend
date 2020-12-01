@@ -59,6 +59,8 @@ export class HARWriter {
     progress.setTitle(Common.UIString.UIString('Collecting content…'));
     progress.setTotalWork(requests.length);
 
+    // Sort by issueTime because this is recorded as startedDateTime in HAR logs.
+    requests.sort((reqA, reqB) => reqA.issueTime() - reqB.issueTime());
     const harLog = await SDK.HARLog.HARLog.build(requests);
     const promises = [];
     for (let i = 0; i < requests.length; i++) {

@@ -1,0 +1,111 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Debug</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
+</head>
+<body>
+  <script type="module">
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+
+    dispatch(["setPlatform", "mac"]);
+    dispatch(["setOverlay", "highlight"]);
+    dispatch(["reset", {
+      viewportSize: {
+        width: viewportWidth,
+        height: viewportHeight,
+      },
+      deviceScaleFactor: 1,
+      pageScaleFactor: 1,
+      pageZoomFactor: 1,
+      emulationScaleFactor: 1,
+      scrollX: 0,
+      scrollY: 0,
+    }]);
+
+    let response = {
+      "highlight": {
+          "paths": [{
+              "path": ["M", 758.6666870117188, 490.66668701171875, "L", 1437.3333740234375, 490.66668701171875, "L", 1437.3333740234375, 558, "L", 758.6666870117188, 558, "Z"],
+              "fillColor": "rgba(255, 0, 0, 0)",
+              "outlineColor": "rgba(128, 0, 0, 0)",
+              "name": "content"
+          }],
+          "flexInfo": [{
+              "containerBorder": ["M", 758.6666870117188, 490.66668701171875, "L", 1437.3333740234375, 490.66668701171875, "L", 1437.3333740234375, 558, "L", 758.6666870117188, 558, "Z"],
+              "lines": [
+                  [{
+                      "itemBorder": ["M", 758.6666870117188, 510, "L", 829.3333740234375, 510, "L", 829.3333740234375, 552, "L", 758.6666870117188, 552, "Z"],
+                      "baseline": 22.33333396911621
+                  }, {
+                      "itemBorder": ["M", 829.3333740234375, 517.3333740234375, "L", 878.6666870117188, 517.3333740234375, "L", 878.6666870117188, 549.3333740234375, "L", 829.3333740234375, 549.3333740234375, "Z"],
+                      "baseline": 15
+                  }, {
+                      "itemBorder": ["M", 878.6666870117188, 507.3333435058594, "L", 975.3333740234375, 507.3333435058594, "L", 975.3333740234375, 554, "L", 878.6666870117188, 554, "Z"],
+                      "baseline": 25
+                  }, {
+                      "itemBorder": ["M", 975.3333740234375, 513.3333740234375, "L", 1011.3333740234375, 513.3333740234375, "L", 1011.3333740234375, 550.6666870117188, "L", 975.3333740234375, 550.6666870117188, "Z"],
+                      "baseline": 19
+                  }, {
+                      "itemBorder": ["M", 1011.3333740234375, 490.66668701171875, "L", 1110, 490.66668701171875, "L", 1110, 558, "L", 1011.3333740234375, 558, "Z"],
+                      "baseline": 41.66666793823242
+                  }]
+              ],
+              "isHorizontalFlow": true,
+              "alignItemsStyle": "baseline",
+              "flexContainerHighlightConfig": {
+                  "containerBorder": {
+                      "color": "rgba(122, 34, 238, 1)",
+                      "pattern": "dashed"
+                  },
+                  "lineSeparator": {
+                      "color": "rgba(122, 34, 238, 1)",
+                      "pattern": "dashed"
+                  },
+                  "itemSeparator": {
+                      "color": "rgba(122, 34, 238, 1)",
+                      "pattern": "dotted"
+                  },
+                  "mainDistributedSpace": {
+                      "fillColor": "rgba(122, 34, 238, 0)",
+                      "hatchColor": "rgba(122, 34, 238, 1)"
+                  },
+                  "crossDistributedSpace": {
+                      "fillColor": "rgba(122, 34, 238, 0)",
+                      "hatchColor": "rgba(122, 34, 238, 1)"
+                  },
+                  "rowGapSpace": {
+                      "fillColor": "rgba(122, 34, 238, 0)",
+                      "hatchColor": "rgba(122, 34, 238, 1)"
+                  },
+                  "columnGapSpace": {
+                      "fillColor": "rgba(122, 34, 238, 0)",
+                      "hatchColor": "rgba(122, 34, 238, 1)"
+                  },
+                  "crossAlignment": {
+                      "color": "rgba(122, 34, 238, 1)",
+                      "pattern": "solid"
+                  }
+              }
+          }]
+      }
+  };
+
+    // Massage the data a bit so we can see a nice flex overlay.
+    response = response.highlight;
+    delete response.elementInfo;
+    response.showRulers = false;
+    response.showExtensionLines = false;
+
+    dispatch(["drawHighlight", response]);
+  </script>
+</body>
+</html>

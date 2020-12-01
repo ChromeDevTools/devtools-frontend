@@ -5,9 +5,15 @@
 import {PathCommands, Position, Quad} from './common.js';
 import {BoxStyle, buildPath, createPathForQuad, drawPathWithLineStyle, emptyBounds, hatchFillPath, LineStyle} from './highlight_common.js';
 
+type FlexLinesHighlight = FlexItemHighlight[][];
+
+interface FlexItemHighlight {
+  itemBorder: PathCommands;
+  baseline: number;
+}
 export interface FlexContainerHighlight {
   containerBorder: PathCommands;
-  lines: Array<Array<PathCommands>>;
+  lines: FlexLinesHighlight;
   isHorizontalFlow: boolean;
   alignItemsStyle: string;
   flexContainerHighlightConfig: {
@@ -25,6 +31,7 @@ export interface FlexContainerHighlight {
 interface LineQuads {
   quad: Quad;
   items: Quad[];
+  extendedItems: Quad[];
 }
 
 const ALIGNMENT_LINE_THICKNESS = 2;
@@ -40,12 +47,26 @@ export function drawLayoutFlexContainerHighlight(
   const config = highlight.flexContainerHighlightConfig;
   const bounds = emptyBounds();
   const borderPath = buildPath(highlight.containerBorder, bounds, emulationScaleFactor);
-  const {isHorizontalFlow, lines} = highlight;
+  const {isHorizontalFlow} = highlight;
+  let {lines} = highlight;
   drawPathWithLineStyle(context, borderPath, config.containerBorder);
 
   // If there are no lines, bail out now.
   if (!lines || !lines.length) {
     return;
+  }
+
+  // TODO (patrickbrosset): remove this once the backend sends the baseline with each item.
+  if (lines[0].length && typeof lines[0][0].baseline === 'undefined') {
+    // @ts-ignore
+    lines = lines.map(line => {
+      return line.map(item => {
+        return {
+          baseline: 0,
+          itemBorder: item,
+        };
+      });
+    });
   }
 
   // Process the item paths we received from the backend into quads we can use to draw what we need.
@@ -58,7 +79,8 @@ export function drawLayoutFlexContainerHighlight(
   drawFlexSpace(highlight, context, emulationScaleFactor, highlight.containerBorder, lineQuads);
 
   // Draw the self-alignment lines and arrows.
-  drawFlexAlignment(highlight, context, emulationScaleFactor, lineQuads);
+  drawFlexAlignment(
+      highlight, context, emulationScaleFactor, lineQuads, lines.map(line => line.map(item => item.baseline)));
 }
 
 function drawFlexLinesAndItems(
@@ -71,8 +93,8 @@ function drawFlexLinesAndItems(
     return {
       path: isHorizontalFlow ? quadToHorizontalLinesPath(line.quad, nextLineQuad) :
                                quadToVerticalLinesPath(line.quad, nextLineQuad),
-      items: line.items.map((item, itemIndex) => {
-        const nextItemQuad = line.items[itemIndex + 1] && line.items[itemIndex + 1];
+      items: line.extendedItems.map((item, itemIndex) => {
+        const nextItemQuad = line.extendedItems[itemIndex + 1] && line.extendedItems[itemIndex + 1];
         return isHorizontalFlow ? quadToVerticalLinesPath(item, nextItemQuad) :
                                   quadToHorizontalLinesPath(item, nextItemQuad);
       }),
@@ -120,7 +142,7 @@ function drawFlexSpace(
       mainDistributedSpace.fillColor === crossDistributedSpace.fillColor &&
       mainDistributedSpace.hatchColor === crossDistributedSpace.hatchColor) {
     // Draw in one go by constructing a path that covers the entire container but punches holes where items are.
-    const allItemQuads = lineQuads.map(line => line.items).flat().map(item => item);
+    const allItemQuads = lineQuads.map(line => line.extendedItems).flat().map(item => item);
     drawHatchPatternInQuad(containerQuad, allItemQuads, mainDistributedSpace, context, emulationScaleFactor);
     return;
   }
@@ -135,7 +157,7 @@ function drawFlexSpace(
 
   if (drawMainSpace) {
     for (const line of lineQuads) {
-      const itemQuads = line.items;
+      const itemQuads = line.extendedItems;
       drawHatchPatternInQuad(line.quad, itemQuads, mainDistributedSpace, context, emulationScaleFactor);
     }
   }
@@ -143,15 +165,15 @@ function drawFlexSpace(
 
 function drawFlexAlignment(
     highlight: FlexContainerHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number,
-    lineQuads: LineQuads[]) {
-  for (const {quad} of lineQuads) {
-    drawFlexAlignmentForLine(highlight, context, emulationScaleFactor, quad);
-  }
+    lineQuads: LineQuads[], itemBaselines: number[][]) {
+  lineQuads.forEach(({quad, items}, i) => {
+    drawFlexAlignmentForLine(highlight, context, emulationScaleFactor, quad, items, itemBaselines[i]);
+  });
 }
 
 function drawFlexAlignmentForLine(
-    highlight: FlexContainerHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number,
-    lineQuad: Quad) {
+    highlight: FlexContainerHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number, lineQuad: Quad,
+    itemQuads: Quad[], itemBaselines: number[]) {
   const {alignItemsStyle, isHorizontalFlow} = highlight;
   const {crossAlignment} = highlight.flexContainerHighlightConfig;
   if (!crossAlignment || !crossAlignment.color) {
@@ -242,6 +264,38 @@ function drawFlexAlignmentForLine(
         isHorizontalFlow ? lineQuad.p3 : lineQuad.p2,
         isHorizontalFlow ? lineQuad.p4 : lineQuad.p3,
       ]);
+      break;
+    case 'baseline':
+      // Baseline alignment only works in horizontal direction.
+      if (isHorizontalFlow) {
+        // We know the baseline for each item, it's an offset value from the top of the item's quad box.
+        // If align-items:baseline is applied to the container, then all of the items' baselines are aligned and we can
+        // just use the first item's baseline to draw the alignment line we need.
+        // Any item may, however, override its own self-alignment with align-self. We don't know if some items are
+        // aligned differently, or if no items at all inherit from the container's align-items:baseline property, so in
+        // theory, drawing the alignment line is impossible.
+        // That said, in situations where align-items:baseline is used, it is safe to assume that most (if not all) of
+        // the items are actually using this alignment value.
+        // Given this, we still draw the alignment line using the first item's baseline value.
+        const itemQuad = itemQuads[0];
+
+        const start = intersectSegments([itemQuad.p1, itemQuad.p2], [lineQuad.p2, lineQuad.p3]);
+        const end = intersectSegments([itemQuad.p1, itemQuad.p2], [lineQuad.p1, lineQuad.p4]);
+
+        const baseline = itemBaselines[0];
+        const angle = Math.atan2(itemQuad.p4.y - itemQuad.p1.y, itemQuad.p4.x - itemQuad.p1.x);
+
+        linesToDraw.push([
+          {
+            x: start.x + (baseline * Math.cos(angle)),
+            y: start.y + (baseline * Math.sin(angle)),
+          },
+          {
+            x: end.x + (baseline * Math.cos(angle)),
+            y: end.y + (baseline * Math.sin(angle)),
+          },
+        ]);
+      }
       break;
   }
 
@@ -342,21 +396,21 @@ function drawHatchPatternInQuad(
  * @param isHorizontalFlow
  */
 function getLinesAndItemsQuads(
-    container: PathCommands, lines: PathCommands[][], isHorizontalFlow: boolean): LineQuads[] {
+    container: PathCommands, lines: FlexLinesHighlight, isHorizontalFlow: boolean): LineQuads[] {
   const containerQuad = rectPathToQuad(container);
 
   // Create a quad for each line that's as big as the items it contains and extends to the edges of the container in the
   // main direction.
-  const lineQuads: {quad: Quad, items: Quad[]}[] = [];
+  const lineQuads: LineQuads[] = [];
   for (const line of lines) {
     if (!line.length) {
       continue;
     }
 
-    let lineQuad = rectPathToQuad(line[0]);
+    let lineQuad = rectPathToQuad(line[0].itemBorder);
     const itemQuads: Quad[] = [];
-    for (const item of line) {
-      const itemQuad = rectPathToQuad(item);
+    for (const {itemBorder} of line) {
+      const itemQuad = rectPathToQuad(itemBorder);
       lineQuad = !lineQuad ? itemQuad : uniteQuads(lineQuad, itemQuad, isHorizontalFlow);
       itemQuads.push(itemQuad);
     }
@@ -367,7 +421,8 @@ function getLinesAndItemsQuads(
 
     lineQuads.push({
       quad: extendedLineQuad,
-      items: extendItemQuads,
+      items: itemQuads,
+      extendedItems: extendItemQuads,
     });
   }
 

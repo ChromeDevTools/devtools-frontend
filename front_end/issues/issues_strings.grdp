@@ -108,6 +108,9 @@
   <message name="IDS_DEVTOOLS_ba514415c6a7f5b7aa2b54d0914a122d" desc="Title for a column in an Heavy Ads issue view">
     Resolution Status
   </message>
+  <message name="IDS_DEVTOOLS_bd56fe2b0246ef9bc5d0c2aae8b8efea" desc="Title for a tab drawer listing CSP Violations">
+    CSP Violations
+  </message>
   <message name="IDS_DEVTOOLS_c8af22df9d871d6025aefc70795a91d6" desc="Title for a checkbox. Whether the issues tab should include third-party issues or not.">
     Include cookie Issues caused by third-party sites
   </message>

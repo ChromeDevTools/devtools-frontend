@@ -251,6 +251,8 @@ all_devtools_files = [
   "front_end/issues/descriptions/SameSiteUnspecifiedTreatedAsLaxSet.md",
   "front_end/issues/issuesPane.css",
   "front_end/issues/issuesTree.css",
+  "front_end/issues/cspViolationsView.css",
+  "front_end/issues/cspViolationsListView.css",
   "front_end/developer_resources/module.json",
   "front_end/developer_resources/developerResourcesView.css",
   "front_end/developer_resources/developerResourcesListView.css",

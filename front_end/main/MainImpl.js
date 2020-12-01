@@ -166,6 +166,7 @@ export class MainImpl {
     Root.Runtime.experiments.register('liveHeapProfile', 'Live heap profile', true);
     Root.Runtime.experiments.register('protocolMonitor', 'Protocol Monitor');
     Root.Runtime.experiments.register('developerResourcesView', 'Show developer resources view');
+    Root.Runtime.experiments.register('cspViolationsView', 'Show CSP Violations view');
     Root.Runtime.experiments.register(
         'recordCoverageWithPerformanceTracing', 'Record coverage while performance tracing');
     Root.Runtime.experiments.register('samplingHeapProfilerTimeline', 'Sampling heap profiler timeline', true);

@@ -7,6 +7,9 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("issues") {
   sources = [
+    "CSPViolationsListView.ts",
+    "CSPViolationsView.ts",
+    "ComboBoxOfCheckBoxes.ts",
     "IssueAggregator.js",
     "IssueRevealer.js",
     "IssueSurveyLink.ts",
@@ -25,6 +28,7 @@ devtools_module("issues") {
     "../third_party/lit-html:bundle",
     "../third_party/marked:bundle",
     "../ui:bundle",
+    "../ui/components:bundle",
   ]
 
   visibility = [ "../../test/unittests/front_end/issues" ]

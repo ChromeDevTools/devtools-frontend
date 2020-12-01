@@ -51,7 +51,7 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
   element.classList.add('monospace');
   element.style.display = 'inline-block';
   const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-      element, {cssFile: 'components/jsUtils.css', enableLegacyPatching: true, delegatesFocus: undefined});
+      element, {cssFile: 'components/jsUtils.css', enableLegacyPatching: false, delegatesFocus: undefined});
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
   let totalHiddenCallFramesCount = 0;
   let totalCallFramesCount = 0;

@@ -28,8 +28,6 @@ It's future-proof and works in node too!
 npm install is-buffer
 ```
 
-[Get supported is-buffer with the Tidelift Subscription](https://tidelift.com/subscription/pkg/npm-is-buffer?utm_source=npm-is-buffer&utm_medium=referral&utm_campaign=readme)
-
 ## usage
 
 ```js

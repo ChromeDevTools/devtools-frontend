@@ -21,8 +21,13 @@ module.exports = {
 
   loadCountry: function loadCountry () {
     throw new BrowserslistError(
-      'Country statistics is not supported ' +
+      'Country statistics are not supported ' +
       'in client-side build of Browserslist')
+  },
+
+  loadFeature: function loadFeature () {
+    throw new BrowserslistError(
+      'Supports queries are not available in client-side build of Browserslist')
   },
 
   currentNode: function currentNode (resolve, context) {

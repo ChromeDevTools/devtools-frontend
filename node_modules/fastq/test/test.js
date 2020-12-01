@@ -536,3 +536,19 @@ test('unshift without cb', function (t) {
     cb()
   }
 })
+
+test('push with worker throwing error', function (t) {
+  t.plan(5)
+  var q = buildQueue(function (task, cb) {
+    cb(new Error('test error'), null)
+  }, 1)
+  q.error(function (err, task) {
+    t.ok(err instanceof Error, 'global error handler should catch the error')
+    t.match(err.message, /test error/, 'error message should be "test error"')
+    t.equal(task, 42, 'The task executed should be passed')
+  })
+  q.push(42, function (err) {
+    t.ok(err instanceof Error, 'push callback should catch the error')
+    t.match(err.message, /test error/, 'error message should be "test error"')
+  })
+})

@@ -684,7 +684,7 @@ Example: `[ /*before*/ href /* after-attr */ = /* after-operator */ te/*inside-v
 ```js
 {
   attribute: "href",
-  operatator: "=",
+  operator: "=",
   value: "test",
   spaces: {
     before: '',

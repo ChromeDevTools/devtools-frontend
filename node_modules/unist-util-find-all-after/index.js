@@ -7,35 +7,26 @@ module.exports = findAllAfter
 function findAllAfter(parent, index, test) {
   var is = convert(test)
   var results = []
-  var children
-  var child
-  var length
 
   if (!parent || !parent.type || !parent.children) {
     throw new Error('Expected parent node')
   }
 
-  children = parent.children
-  length = children.length
+  if (typeof index === 'number') {
+    if (index < 0 || index === Infinity) {
+      throw new Error('Expected positive finite number as index')
+    }
+  } else {
+    index = parent.children.indexOf(index)
 
-  if (index === undefined || index === null) {
-    throw new Error('Expected positive finite index or child node')
-  } else if (index && typeof index !== 'number') {
-    index = children.indexOf(index)
-    if (index === -1) {
-      throw new Error('Expected child node')
+    if (index < 0) {
+      throw new Error('Expected child node or index')
     }
   }
 
-  if (typeof index !== 'number' || index < 0 || index === Infinity) {
-    throw new Error('Expected positive finite number as index')
-  }
-
-  while (++index < length) {
-    child = children[index]
-
-    if (is(child, index, parent)) {
-      results.push(child)
+  while (++index < parent.children.length) {
+    if (is(parent.children[index], index, parent)) {
+      results.push(parent.children[index])
     }
   }
 

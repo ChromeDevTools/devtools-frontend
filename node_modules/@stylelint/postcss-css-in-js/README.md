@@ -4,7 +4,7 @@
 
 <img align="right" width="95" height="95"
 	title="Philosopher’s stone, logo of PostCSS"
-	src="http://postcss.github.io/postcss/logo.svg">
+	src="https://api.postcss.org/logo.svg">
 
 [PostCSS](https://github.com/postcss/postcss) syntax for parsing [CSS in JS](https://github.com/MicheleBertoli/css-in-js) literals:
 

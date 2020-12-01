@@ -6,7 +6,7 @@ function unCamelCase(str) {
 			? s
 					.replace(/[A-Z]/g, (s) => '-' + s.toLowerCase())
 					.replace(/^(o|ms|moz|khtml|epub|(\w+-?)*webkit)(?=-)/i, '-$1')
-			: s
+			: s,
 	);
 }
 

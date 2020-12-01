@@ -124,6 +124,8 @@ Type: `Object`.
 
 * **end** - `Boolean` - if `end === false` then mergedStream will not be auto ended, you should end by yourself. **Default:** `undefined`
 
+* **pipeError** - `Boolean` - if `pipeError === true` then mergedStream will emit `error` event from source streams. **Default:** `undefined`
+
 * **objectMode** - `Boolean` . **Default:** `true`
 
 `objectMode` and other options(`highWaterMark`, `defaultEncoding` ...) is same as Node.js `Stream`.

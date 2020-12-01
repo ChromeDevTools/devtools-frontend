@@ -151,6 +151,8 @@ declare namespace vfile {
       position?: Unist.Point | Unist.Position | Unist.Node,
       ruleId?: string
     ) => vfileMessage.VFileMessage
+
+    [key: string]: unknown
   }
 }
 

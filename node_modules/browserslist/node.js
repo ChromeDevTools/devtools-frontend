@@ -1,3 +1,4 @@
+var feature = require('caniuse-lite/dist/unpacker/feature').default
 var region = require('caniuse-lite/dist/unpacker/region').default
 var path = require('path')
 var fs = require('fs')
@@ -152,8 +153,10 @@ function normalizeUsageData (usageData, data) {
 }
 
 module.exports = {
-  loadQueries: function loadQueries (context, name) {
-    if (!context.dangerousExtend) checkExtend(name)
+  loadQueries: function loadQueries (ctx, name) {
+    if (!ctx.dangerousExtend && !process.env.BROWSERSLIST_DANGEROUS_EXTEND) {
+      checkExtend(name)
+    }
     // eslint-disable-next-line security/detect-non-literal-require
     var queries = require(require.resolve(name, { paths: ['.'] }))
     if (queries) {
@@ -161,7 +164,7 @@ module.exports = {
         return queries
       } else if (typeof queries === 'object') {
         if (!queries.defaults) queries.defaults = []
-        return pickEnv(queries, context, name)
+        return pickEnv(queries, ctx, name)
       }
     }
     throw new BrowserslistError(
@@ -170,8 +173,10 @@ module.exports = {
     )
   },
 
-  loadStat: function loadStat (context, name, data) {
-    if (!context.dangerousExtend) checkExtend(name)
+  loadStat: function loadStat (ctx, name, data) {
+    if (!ctx.dangerousExtend && !process.env.BROWSERSLIST_DANGEROUS_EXTEND) {
+      checkExtend(name)
+    }
     // eslint-disable-next-line security/detect-non-literal-require
     var stats = require(
       require.resolve(
@@ -233,6 +238,21 @@ module.exports = {
         for (var j in usageData[i]) {
           usage[country][i + ' ' + j] = usageData[i][j]
         }
+      }
+    }
+  },
+
+  loadFeature: function loadFeature (features, name) {
+    name = name.replace(/[^\w-]/g, '')
+    if (features[name]) return
+
+    // eslint-disable-next-line security/detect-non-literal-require
+    var compressed = require('caniuse-lite/data/features/' + name + '.js')
+    var stats = feature(compressed).stats
+    features[name] = { }
+    for (var i in stats) {
+      for (var j in stats[i]) {
+        features[name][i + ' ' + j] = stats[i][j]
       }
     }
   },
@@ -337,6 +357,8 @@ module.exports = {
     dataTimeChecked = false
     filenessCache = { }
     configCache = { }
+
+    this.cache = { }
   },
 
   oldDataWarning: function oldDataWarning (agentsObj) {
@@ -350,7 +372,10 @@ module.exports = {
     if (latest !== 0 && latest < halfYearAgo) {
       console.warn(
         'Browserslist: caniuse-lite is outdated. Please run:\n' +
-        'npx browserslist@latest --update-db'
+        'npx browserslist@latest --update-db\n' +
+        '\n' +
+        'Why you should do it regularly:\n' +
+        'https://github.com/browserslist/browserslist#browsers-data-updating'
       )
     }
   },

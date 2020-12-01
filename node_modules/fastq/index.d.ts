@@ -4,6 +4,7 @@ declare function fastq<C, T = any, R = any>(worker: fastq.worker<C, T, R>, concu
 declare namespace fastq {
   type worker<C, T = any, R = any> = (this: C, task: T, cb: fastq.done<R>) => void
   type done<R = any> = (err: Error | null, result?: R) => void
+  type errorHandler<T = any> = (err: Error, task: T) => void
 
   interface queue<T = any, R = any> {
     push(task: T, done: done<R>): void
@@ -15,6 +16,7 @@ declare namespace fastq {
     getQueue(): T[]
     kill(): any
     killAndDrain(): any
+    error(handler: errorHandler): void
     concurrency: number
     drain(): any
     empty: () => void

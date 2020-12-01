@@ -1,12 +1,12 @@
 # entities [![NPM version](http://img.shields.io/npm/v/entities.svg)](https://npmjs.org/package/entities) [![Downloads](https://img.shields.io/npm/dm/entities.svg)](https://npmjs.org/package/entities) [![Build Status](http://img.shields.io/travis/fb55/entities.svg)](http://travis-ci.org/fb55/entities) [![Coverage](http://img.shields.io/coveralls/fb55/entities.svg)](https://coveralls.io/r/fb55/entities)
 
-Encode & decode XML and HTML entities with ease.
+Encode & decode HTML & XML entities with ease & speed.
 
 ## How to…
 
 ### …install `entities`
 
-    npm i entities
+    npm install entities
 
 ### …use `entities`
 
@@ -27,12 +27,12 @@ entities.decodeHTML("asdf &amp; &yuml; &uuml; &apos;"); // "asdf & ÿ ü '"
 
 This is how `entities` compares to other libraries on a very basic benchmark (see `scripts/benchmark.ts`, for 10,000,000 iterations):
 
-| Library        | `decode` performance | `encode` performance |
-| -------------- | -------------------- | -------------------- |
-| entities       | 10.809s              | 17.683s              |
-| html-entities  | 14.029s              | 22.670s              |
-| he             | 16.163s              | 44.010s              |
-| parse-entities | 28.507s              | N/A                  |
+| Library        | `decode` performance | `encode` performance | Bundle size                                                                |
+| -------------- | -------------------- | -------------------- | -------------------------------------------------------------------------- |
+| entities       | 10.809s              | 17.683s              | ![npm bundle size](https://img.shields.io/bundlephobia/min/entities)       |
+| html-entities  | 14.029s              | 22.670s              | ![npm bundle size](https://img.shields.io/bundlephobia/min/html-entities)  |
+| he             | 16.163s              | 44.010s              | ![npm bundle size](https://img.shields.io/bundlephobia/min/he)             |
+| parse-entities | 28.507s              | N/A                  | ![npm bundle size](https://img.shields.io/bundlephobia/min/parse-entities) |
 
 ---
 

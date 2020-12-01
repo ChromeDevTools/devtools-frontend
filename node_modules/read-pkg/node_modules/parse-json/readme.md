@@ -1,14 +1,12 @@
-# parse-json [![Build Status](https://travis-ci.org/sindresorhus/parse-json.svg?branch=master)](https://travis-ci.org/sindresorhus/parse-json)
+# parse-json [![Build Status](https://travis-ci.com/sindresorhus/parse-json.svg?branch=master)](https://travis-ci.com/github/sindresorhus/parse-json)
 
 > Parse JSON with more helpful errors
-
 
 ## Install
 
 ```
 $ npm install parse-json
 ```
-
 
 ## Usage
 
@@ -86,7 +84,6 @@ Prescribes how the value originally produced by parsing is transformed, before b
 Type: `string`
 
 Filename displayed in the error message.
-
 
 ---
 

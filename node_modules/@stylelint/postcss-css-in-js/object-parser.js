@@ -48,7 +48,7 @@ function defineRaws(node, prop, prefix, suffix, props) {
 			prefix,
 			suffix,
 		},
-		props
+		props,
 	);
 }
 
@@ -85,7 +85,7 @@ class objectParser {
 
 		let before = root.source.input.css.slice(
 			startNode.start - startNode.loc.start.column,
-			startNode.start
+			startNode.start,
 		);
 
 		if (/^\s+$/.test(before)) {

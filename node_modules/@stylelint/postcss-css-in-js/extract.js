@@ -201,12 +201,11 @@ function literalParser(source, opts, styles) {
 	}
 
 	function setSpecifier(id, nameSpace) {
-		nameSpace.unshift.apply(
-			nameSpace,
-			nameSpace
+		nameSpace.unshift(
+			...nameSpace
 				.shift()
 				.replace(/^\W+/, '')
-				.split(/[/\\]+/g)
+				.split(/[/\\]+/g),
 		);
 
 		if (types.isIdentifier(id)) {
@@ -240,7 +239,7 @@ function literalParser(source, opts, styles) {
 			const specifier = specifiers.get(node) || specifiers.get(node.name);
 
 			if (specifier) {
-				nameSpace.unshift.apply(nameSpace, specifier);
+				nameSpace.unshift(...specifier);
 			} else {
 				nameSpace.unshift(node.name);
 			}
@@ -254,7 +253,7 @@ function literalParser(source, opts, styles) {
 	}
 
 	function isStylePath(path) {
-		return getNameSpace(path, []).some(function (name) {
+		return getNameSpace(path, []).some(function (name, ...args) {
 			const result =
 				name &&
 				((Object.prototype.hasOwnProperty.call(supports, name) && supports[name]) ||
@@ -263,10 +262,13 @@ function literalParser(source, opts, styles) {
 
 			switch (typeof result) {
 				case 'function': {
-					return result.apply(this, Array.prototype.slice.call(arguments, 1));
+					return result.apply(this, args);
 				}
 				case 'boolean': {
 					return result;
+				}
+				default: {
+					return undefined;
 				}
 			}
 		});
@@ -432,8 +434,8 @@ function literalParser(source, opts, styles) {
 				(targetStyle) =>
 					targetStyle.opts &&
 					targetStyle.opts.expressions.some(
-						(expr) => expr.start <= style.startIndex && style.endIndex < expr.end
-					)
+						(expr) => expr.start <= style.startIndex && style.endIndex < expr.end,
+					),
 			);
 
 			if (target) {

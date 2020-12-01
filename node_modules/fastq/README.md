@@ -80,6 +80,7 @@ function worker (arg, cb) {
 * <a href="#getQueue"><code>queue#<b>getQueue()</b></code></a>
 * <a href="#kill"><code>queue#<b>kill()</b></code></a>
 * <a href="#killAndDrain"><code>queue#<b>killAndDrain()</b></code></a>
+* <a href="#error"><code>queue#<b>error()</b></code></a>
 * <a href="#concurrency"><code>queue#<b>concurrency</b></code></a>
 * <a href="#drain"><code>queue#<b>drain</b></code></a>
 * <a href="#empty"><code>queue#<b>empty</b></code></a>
@@ -157,6 +158,13 @@ function.
 ### queue.killAndDrain()
 
 Same than `kill` but the `drain` function will be called before reset to empty.
+
+-------------------------------------------------------
+<a name="error"></a>
+### queue.error(handler)
+
+Set a global error handler. `handler(err, task)` will be called
+when any of the tasks return an error.
 
 -------------------------------------------------------
 <a name="concurrency"></a>

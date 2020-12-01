@@ -26,7 +26,7 @@ var statAll = function (fs, stat, cwd, ignore, entries, sort) {
     var next = queue.shift()
     var nextAbs = path.join(cwd, next)
 
-    stat(nextAbs, function (err, stat) {
+    stat.call(fs, nextAbs, function (err, stat) {
       if (err) return callback(err)
 
       if (!stat.isDirectory()) return callback(null, next, stat)
@@ -227,12 +227,15 @@ exports.extract = function (cwd, opts) {
     if (!chmod) return cb()
 
     var mode = (header.mode | (header.type === 'directory' ? dmode : fmode)) & umask
-    chmod(name, mode, function (err) {
+
+    if (chown && own) chown.call(xfs, name, header.uid, header.gid, onchown)
+    else onchown(null)
+
+    function onchown (err) {
       if (err) return cb(err)
-      if (!own) return cb()
-      if (!chown) return cb()
-      chown(name, header.uid, header.gid, cb)
-    })
+      if (!chmod) return cb()
+      chmod.call(xfs, name, mode, cb)
+    }
   }
 
   extract.on('entry', function (header, stream, next) {

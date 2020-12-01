@@ -1,4 +1,5 @@
 'use strict';
+const {constants: BufferConstants} = require('buffer');
 const pump = require('pump');
 const bufferStream = require('./buffer-stream');
 
@@ -24,7 +25,8 @@ async function getStream(inputStream, options) {
 	let stream;
 	await new Promise((resolve, reject) => {
 		const rejectPromise = error => {
-			if (error) { // A null check
+			// Don't retrieve an oversized buffer.
+			if (error && stream.getBufferedLength() <= BufferConstants.MAX_LENGTH) {
 				error.bufferedData = stream.getBufferedValue();
 			}
 

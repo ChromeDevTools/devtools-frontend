@@ -86,7 +86,7 @@ declare const getStream: {
 	- When `encoding` is set to `buffer`, it collects an array of buffers. `maxBuffer` refers to the summed byte lengths of every buffer in the array.
 	- When `encoding` is set to anything else, it collects an array of strings. `maxBuffer` refers to the summed character lengths of every string in the array.
 	*/
-	array<StreamObjectModeType = unknown>(
+	array<StreamObjectModeType>(
 		stream: Stream,
 		options?: getStream.Options
 	): Promise<StreamObjectModeType[]>;

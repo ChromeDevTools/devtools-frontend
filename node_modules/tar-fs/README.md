@@ -81,6 +81,8 @@ Similarly you can use `mapStream` incase you wanna modify the input/output file 
 ``` js
 var pack = tar.pack('./my-directory', {
   mapStream: function(fileStream, header) {
+    // NOTE: the returned stream HAS to have the same length as the input stream.
+    // If not make sure to update the size in the header passed in here.
     if (path.extname(header.name) === '.js') {
       return fileStream.pipe(someTransform)
     }

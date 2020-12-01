@@ -35,9 +35,9 @@ LICENSES = [
 
 # List all DEPS here.
 DEPS = {
-    "@rollup/plugin-commonjs": "13.0.0",
+    "@rollup/plugin-commonjs": "17.0.0",
     "@types/chai": "4.2.14",
-    "@types/codemirror": "0.0.98",
+    "@types/codemirror": "0.0.100",
     "@types/karma-chai-sinon": "0.1.15",
     "@types/estree": "0.0.45",
     "@types/filesystem": "0.0.29",
@@ -63,17 +63,17 @@ DEPS = {
     "karma-spec-reporter": "0.0.32",
     "license-checker": "25.0.1",
     "mocha": "8.2.1",
-    "puppeteer": "5.4.1",
+    "puppeteer": "5.5.0",
     "recast": "0.20.4",
     "rimraf": "3.0.2",
-    "rollup": "2.33.1",
+    "rollup": "2.34.0",
     "rollup-plugin-terser": "7.0.2",
     "sinon": "9.2.1",
     "source-map-support": "0.5.19",
     "stylelint": "13.8.0",
     "stylelint-config-standard": "20.0.0",
     "typescript": "4.1.2",
-    "yargs": "15.3.1",
+    "yargs": "16.1.1",
 }
 
 def exec_command(cmd):

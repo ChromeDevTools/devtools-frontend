@@ -583,7 +583,7 @@ describe('DataGrid', () => {
         rows: [...rows, newRow],
         activeSort: null,
       };
-      assert.strictEqual(scrolledElement.scrollTop, 63);
+      assert.strictEqual(scrolledElement.scrollTop, 62);
     });
 
     it('does not auto scroll if the user has a cell selected', () => {

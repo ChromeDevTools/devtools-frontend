@@ -160,7 +160,6 @@ export class DataGrid extends HTMLElement {
 
     if (!newCellIsCurrentlyFocusedCell) {
       this.focusableCell = [newColumnIndex, newRowIndex];
-      this.render();
     }
 
     const cellElement = this.getCurrentlyFocusableCell();
@@ -171,9 +170,8 @@ export class DataGrid extends HTMLElement {
      * add arrow key support, so in the case where we're programatically moving the
      * focus, ensure we actually focus the cell.
      */
-    if (cellElement !== this.shadow.activeElement) {
-      cellElement.focus();
-    }
+    cellElement.focus();
+    this.render();
   }
 
   private onTableKeyDown(event: KeyboardEvent) {
@@ -244,10 +242,9 @@ export class DataGrid extends HTMLElement {
     LitHtml.render(LitHtml.html`
     <style>
       :host {
-        --table-divider-color: #aaa;
-        --toolbar-bg-color: #f3f3f3;
-        --selected-row-color: rgb(212, 212, 212);
-        --selection-bg-color: #1a73e8;
+        --table-divider-color: var(--color-details-hairline);
+        --toolbar-bg-color: var(--color-background-elevation-2);
+        --selected-row-color: var(--color-background-elevation-1);
 
         height: 100%;
         display: block;
@@ -275,18 +272,19 @@ export class DataGrid extends HTMLElement {
       }
 
 
-      tbody tr.selected {
-        background-color: var(--selected-row-color);
+      tbody tr {
+        background-color: var(--color-background);
       }
 
-      table:focus tr.selected {
-        background-color: var(--selection-bg-color)
+      tbody tr.selected {
+        background-color: var(--selected-row-color);
       }
 
       td, th {
         padding: 1px 4px;
         /* Divider between each cell, except the first one (see below) */
         border-left: 1px solid var(--table-divider-color);
+        color: var(--color-text-primary);
         line-height: 18px;
         height: 18px;
         user-select: text;
@@ -403,7 +401,7 @@ export class DataGrid extends HTMLElement {
 
             // Have to check for focusableCell existing as this runs on the
             // first render before it's ever been created.
-            const rowIsSelected = focusableCell ? focusableCell === document.activeElement && tableRowIndex === focusableCellRowIndex : false;
+            const rowIsSelected = focusableCell ? focusableCell === this.shadow.activeElement && tableRowIndex === focusableCellRowIndex : false;
 
             const rowClasses = LitHtml.Directives.classMap({
               selected: rowIsSelected,

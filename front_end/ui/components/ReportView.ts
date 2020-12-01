@@ -43,12 +43,8 @@ export class Report extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <style>
-        :host {
-          background-color: #f9f9f9;
-        }
-
         .content {
-          background-color: white;
+          background-color:  var(--color-background);
           overflow: auto;
         }
       </style>
@@ -85,14 +81,10 @@ export class ReportSection extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <style>
-        :host {
-          background-color: #f9f9f9;
-        }
-
         .section {
           display: flex;
           padding: 12px;
-          border-bottom: 1px solid rgb(230 230 230);
+          border-bottom: 1px solid var(--color-details-hairline);
           flex-direction: column;
         }
 
@@ -105,7 +97,7 @@ export class ReportSection extends HTMLElement {
           text-overflow: ellipsis;
           overflow: hidden;
           font-weight: bold;
-          color: #555;
+          color: var(--color-text-primary);
         }
       </style>
       <div class="section">
@@ -147,7 +139,7 @@ export class ReportRow extends HTMLElement {
         }
 
         .name {
-          color: #888;
+          color: var(--color-text-secondary);
           flex: 0 0 var(--name-column-width, 128px);
           padding: 0 6px;
           text-align: right;
@@ -155,6 +147,7 @@ export class ReportRow extends HTMLElement {
         }
 
         .value {
+          color: var(--color-text-primary);
           flex: auto;
           padding: 0 6px;
           white-space: pre;

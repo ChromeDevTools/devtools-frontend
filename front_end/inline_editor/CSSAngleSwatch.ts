@@ -79,6 +79,7 @@ if (!customElements.get('devtools-css-angle-swatch')) {
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-css-angle-swatch': CSSAngleSwatch;
   }

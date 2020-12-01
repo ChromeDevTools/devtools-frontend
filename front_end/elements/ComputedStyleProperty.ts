@@ -144,6 +144,7 @@ export class ComputedStyleProperty extends HTMLElement {
 customElements.define('devtools-computed-style-property', ComputedStyleProperty);
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-computed-style-property': ComputedStyleProperty;
   }

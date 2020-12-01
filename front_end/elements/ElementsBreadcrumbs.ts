@@ -390,6 +390,7 @@ if (!customElements.get('devtools-elements-breadcrumbs')) {
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-elements-breadcrumbs': ElementsBreadcrumbs;
   }

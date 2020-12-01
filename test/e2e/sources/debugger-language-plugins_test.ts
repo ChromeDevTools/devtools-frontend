@@ -15,6 +15,7 @@ import {addBreakpointForLine, getCallFrameLocations, getCallFrameNames, getValue
 const globalThis: any = global;
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
     __sourceFilesAddedEvents: string[];
   }

@@ -8,6 +8,7 @@ import {createElement, Overlay, createTextChild} from '../../../inspector_overla
 
 // Make sure typescript knows about the custom properties that are set on the window object.
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
     platform: string;
     viewportSize: object;

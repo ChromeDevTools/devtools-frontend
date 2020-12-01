@@ -217,6 +217,7 @@ export function constrainNumber(num: number, min: number, max: number): number {
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Document {
     adoptedStyleSheets: CSSStyleSheet[];
   }

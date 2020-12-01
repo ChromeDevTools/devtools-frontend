@@ -53,6 +53,7 @@ export class ElementsPanelLink extends HTMLElement {
 customElements.define('devtools-elements-panel-link', ElementsPanelLink);
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-elements-panel-link': ElementsPanelLink;
   }

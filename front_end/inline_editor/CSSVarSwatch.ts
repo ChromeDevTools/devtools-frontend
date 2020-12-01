@@ -107,6 +107,7 @@ if (!customElements.get('devtools-css-var-swatch')) {
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-css-var-swatch': CSSVarSwatch;
   }

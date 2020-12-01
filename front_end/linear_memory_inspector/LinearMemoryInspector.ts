@@ -181,6 +181,7 @@ export class LinearMemoryInspector extends HTMLElement {
 customElements.define('devtools-linear-memory-inspector-inspector', LinearMemoryInspector);
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-linear-memory-inspector-inspector': LinearMemoryInspector;
   }

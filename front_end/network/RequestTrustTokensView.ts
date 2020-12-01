@@ -105,6 +105,7 @@ function renderRowWithCodeValue(name: string, value: string) {
 customElements.define('devtools-trust-token-report', RequestTrustTokensReport);
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-trust-token-report': RequestTrustTokensReport;
   }

@@ -199,6 +199,7 @@ export class DataGridController extends HTMLElement {
 customElements.define('devtools-data-grid-controller', DataGridController);
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-data-grid-controller': DataGridController;
   }

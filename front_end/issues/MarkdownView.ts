@@ -81,6 +81,7 @@ export class MarkdownView extends HTMLElement {
 customElements.define('devtools-markdown-view', MarkdownView);
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-markdown-view': MarkdownView;
   }

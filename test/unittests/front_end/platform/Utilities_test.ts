@@ -8,6 +8,7 @@ const {assert} = chai;
 import '../../../../front_end/platform/utilities.js';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Array<T> {
     mergeOrdered(array: T[], comparator: (a: T, b: T) => number): T[];
     upperBound(value: T, comparator?: (a: T, b: T) => number): number;
@@ -18,16 +19,19 @@ declare global {
         sortWindowRight: number): T[];
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface String {
     trimMiddle(maxLength: number): string;
     repeat(length: number): string;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface StringConstructor {
     hashCode(value: string): number;
     naturalOrderComparator(a: string, b: string): number;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function unescapeCssString(input: string): string;
 }
 

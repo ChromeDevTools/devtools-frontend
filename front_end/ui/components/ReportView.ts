@@ -165,6 +165,7 @@ customElements.define('devtools-report-section', ReportSection);
 customElements.define('devtools-report-row', ReportRow);
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-report': Report;
     'devtools-report-section': ReportSection;

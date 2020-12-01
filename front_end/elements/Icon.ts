@@ -107,6 +107,7 @@ if (!customElements.get('devtools-icon')) {
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-icon': Icon;
   }

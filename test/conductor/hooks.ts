@@ -10,6 +10,7 @@ import {clearPuppeteerState, getBrowserAndPages, registerHandlers, setBrowserAnd
 
 // Workaround for mismatching versions of puppeteer types and puppeteer library.
 declare module 'puppeteer' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ConsoleMessage {
     stackTrace(): ConsoleMessageLocation[];
   }

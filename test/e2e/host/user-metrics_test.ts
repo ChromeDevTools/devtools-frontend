@@ -28,6 +28,7 @@ interface UserMetrics {
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
     __caughtEvents: UserMetric[];
     __beginCatchEvents: () => void;

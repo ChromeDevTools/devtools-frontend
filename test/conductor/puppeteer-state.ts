@@ -9,9 +9,13 @@ declare module 'puppeteer' {
     queryAll?: (element: Element|Document, selector: string) => Element[] | NodeListOf<Element>;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function registerCustomQueryHandler(name: string, queryHandler: CustomQueryHandler): void;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function unregisterCustomQueryHandler(name: string): void;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function customQueryHandlerNames(): string[];
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function clearCustomQueryHandlers(): void;
 }
 

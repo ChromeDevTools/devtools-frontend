@@ -11,6 +11,7 @@ import {getBrowserAndPages, getHostedModeServerPort} from '../conductor/puppetee
 import {AsyncScope} from './mocha-extensions.js';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
     __pendingEvents: Map<string, Event[]>;
   }

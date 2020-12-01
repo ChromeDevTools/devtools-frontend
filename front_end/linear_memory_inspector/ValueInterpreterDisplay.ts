@@ -137,6 +137,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
 customElements.define('devtools-linear-memory-inspector-interpreter-display', ValueInterpreterDisplay);
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-linear-memory-inspector-interpreter-display': ValueInterpreterDisplay;
   }

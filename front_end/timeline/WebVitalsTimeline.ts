@@ -7,6 +7,7 @@ import * as Host from '../host/host.js';
 import {WebVitalsEventLane, WebVitalsTimeboxLane} from './WebVitalsLane.js';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-timeline-webvitals': WebVitalsTimeline;
   }

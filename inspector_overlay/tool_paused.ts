@@ -5,6 +5,7 @@
 import {Overlay} from './common.js';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
     InspectorOverlayHost: {send(data: string): void;}
   }

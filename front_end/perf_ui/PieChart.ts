@@ -306,6 +306,7 @@ if (!customElements.get('devtools-perf-piechart')) {
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-perf-piechart': PieChart;
   }

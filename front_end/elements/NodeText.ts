@@ -85,6 +85,7 @@ if (!customElements.get('devtools-node-text')) {
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-node-text': NodeText;
   }

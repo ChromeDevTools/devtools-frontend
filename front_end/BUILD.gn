@@ -148,10 +148,12 @@ group("legacy_css") {
     "elements:legacy_css",
     "emulation:legacy_css",
     "help:legacy_css",
+    "inline_editor:legacy_css",
     "inspector_main:legacy_css",
     "mobile_throttling:legacy_css",
     "object_ui:legacy_css",
     "persistence:legacy_css",
+    "text_editor:legacy_css",
     "ui:legacy_css",
   ]
 }

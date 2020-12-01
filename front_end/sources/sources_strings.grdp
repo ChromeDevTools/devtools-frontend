@@ -642,6 +642,9 @@
   <message name="IDS_DEVTOOLS_f96985d765ed09d4930d76a3ca869508" desc="Tooltip text that appears when hovering over the largeicon terminate execution button in the Sources Panel of the Sources panel">
     Terminate current JavaScript call
   </message>
+  <message name="IDS_DEVTOOLS_fa6711f918fe2018131a4ad0380b9e56" desc="Name of an item from source map">
+    <ph name="DISPLAY_NAME">$1s<ex>compile.html</ex></ph> (from source map)
+  </message>
   <message name="IDS_DEVTOOLS_fada802796e35f867c2b3f605982b21d" desc="Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is removed">
     Descendant <ph name="TARGETNODELINK">$1s<ex>node</ex></ph> removed
   </message>

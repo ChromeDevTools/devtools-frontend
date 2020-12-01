@@ -126,18 +126,8 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'H',
-      platform: undefined,
-      keybindSets: undefined,
     },
   ],
-  iconClass: undefined,
-  toggleWithRedColor: undefined,
-  toggledIconClass: undefined,
-  tags: undefined,
-  toggleable: undefined,
-  options: undefined,
-  experiment: undefined,
-  condition: undefined,
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -154,18 +144,8 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'F2',
-      platform: undefined,
-      keybindSets: undefined,
     },
   ],
-  iconClass: undefined,
-  toggleWithRedColor: undefined,
-  toggledIconClass: undefined,
-  tags: undefined,
-  toggleable: undefined,
-  options: undefined,
-  experiment: undefined,
-  condition: undefined,
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -183,22 +163,12 @@ UI.ActionRegistration.registerActionExtension({
     {
       shortcut: 'Ctrl+Z',
       platform: UI.ActionRegistration.Platform.WindowsLinux,
-      keybindSets: undefined,
     },
     {
       shortcut: 'Meta+Z',
       platform: UI.ActionRegistration.Platform.Mac,
-      keybindSets: undefined,
     },
   ],
-  iconClass: undefined,
-  toggleWithRedColor: undefined,
-  toggledIconClass: undefined,
-  tags: undefined,
-  toggleable: undefined,
-  options: undefined,
-  experiment: undefined,
-  condition: undefined,
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -216,22 +186,12 @@ UI.ActionRegistration.registerActionExtension({
     {
       shortcut: 'Ctrl+Y',
       platform: UI.ActionRegistration.Platform.WindowsLinux,
-      keybindSets: undefined,
     },
     {
       shortcut: 'Meta+Shift+Z',
       platform: UI.ActionRegistration.Platform.Mac,
-      keybindSets: undefined,
     },
   ],
-  iconClass: undefined,
-  toggleWithRedColor: undefined,
-  toggledIconClass: undefined,
-  tags: undefined,
-  toggleable: undefined,
-  options: undefined,
-  experiment: undefined,
-  condition: undefined,
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -243,15 +203,6 @@ UI.ActionRegistration.registerActionExtension({
   condition: Root.Runtime.ConditionName.CAN_DOCK,
   title: ls`Capture area screenshot`,
   category: UI.ActionRegistration.ActionCategory.SCREENSHOT,
-  bindings: undefined,
-  iconClass: undefined,
-  toggleWithRedColor: undefined,
-  toggledIconClass: undefined,
-  tags: undefined,
-  toggleable: undefined,
-  options: undefined,
-  experiment: undefined,
-  contextTypes: undefined,
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -268,21 +219,12 @@ UI.ActionRegistration.registerActionExtension({
     {
       shortcut: 'Ctrl+Shift+C',
       platform: UI.ActionRegistration.Platform.WindowsLinux,
-      keybindSets: undefined,
     },
     {
       shortcut: 'Meta+Shift+C',
       platform: UI.ActionRegistration.Platform.Mac,
-      keybindSets: undefined,
     },
   ],
-  toggleWithRedColor: undefined,
-  toggledIconClass: undefined,
-  tags: undefined,
-  options: undefined,
-  experiment: undefined,
-  condition: undefined,
-  contextTypes: undefined,
 });
 
 Common.Settings.registerSettingExtension({

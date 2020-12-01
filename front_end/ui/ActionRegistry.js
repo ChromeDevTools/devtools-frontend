@@ -124,7 +124,7 @@ export class ActionRegistry {
 
     /**
      * @param {!PreRegisteredAction} action
-     * @param {!Set.<function(new:Object, ...?):void>} currentContextTypes
+     * @param {!Set.<?>} currentContextTypes
      * @return {boolean}
      */
     function isActionApplicableToContextTypes(action, currentContextTypes) {

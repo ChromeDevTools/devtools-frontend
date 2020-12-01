@@ -7,7 +7,7 @@ import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import {Action, Binding, getRegisteredActionExtensions} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
+import {Action, Binding, getRegisteredActionExtensions, KeybindSet} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
 import {ActionRegistry} from './ActionRegistry.js';  // eslint-disable-line no-unused-vars
 import {Context} from './Context.js';
 import {Dialog} from './Dialog.js';
@@ -392,6 +392,8 @@ export class ShortcutRegistry {
     this._actionToShortcut.clear();
     this._keyMap.clear();
     const keybindSet = this._keybindSetSetting.get();
+    // This call is done for the legacy Actions in module.json
+    // TODO(crbug.com/1134103): Remove this call when all actions are migrated
     const extensions = Root.Runtime.Runtime.instance().extensions('action');
     this._disabledDefaultShortcutsForAction.clear();
     this._devToolsDefaultShortcutActions.clear();
@@ -428,7 +430,7 @@ export class ShortcutRegistry {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setWhitelistedShortcuts(JSON.stringify(forwardedKeys));
 
     /**
-     * @param {!{actionId:?string, bindings: (!Array<!Binding>|undefined)}} actionExtension
+     * @param {!{actionId:?string, bindings: (!Array<!{shortcut: string, platform?: string, keybindSets?: string[] }>|undefined)}} actionExtension
      * @this {ShortcutRegistry}
      */
     function registerActionExtension(actionExtension) {
@@ -456,7 +458,7 @@ export class ShortcutRegistry {
             this._devToolsDefaultShortcutActions.add(actionId);
             this._registerShortcut(new KeyboardShortcut(shortcutDescriptors, actionId, Type.DefaultShortcut));
           } else {
-            if (keybindSets.includes(DefaultShortcutSetting)) {
+            if (keybindSets.includes(KeybindSet.DEVTOOLS_DEFAULT)) {
               this._devToolsDefaultShortcutActions.add(actionId);
             }
             this._registerShortcut(

@@ -3,11 +3,23 @@
   <message name="IDS_DEVTOOLS_180bc3b1c5619aaef40e803f49921012" desc="Text in CSSShadow Editor of the inline editor in the Styles tab">
     Spread
   </message>
+  <message name="IDS_DEVTOOLS_1ef0054faf96b87acdea23847bf263e8" desc="Line height slider label for Font Editor">
+    Line Height
+  </message>
   <message name="IDS_DEVTOOLS_2134e3ae0c489ce87a007a082d6a9a29" desc="Text in CSSShadow Editor of the inline editor in the Styles tab">
     X offset
   </message>
   <message name="IDS_DEVTOOLS_4ceccbff9f302a6f42425eb6d409093f" desc="Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles pane when the custom property in this function does not exist. The parameter is the name of the property.">
     <ph name="VARIABLENAME">$1s<ex>--my-custom-property-name</ex></ph> is not defined
+  </message>
+  <message name="IDS_DEVTOOLS_26729eed161f50a0c67cacc2971a6730" desc="Label for Font Editor property text input">
+    <ph name="THIS__PROPERTYNAME">$1s<ex>font-size</ex></ph> Text Input
+  </message>
+  <message name="IDS_DEVTOOLS_45f0d4fa9a30e9c5571dbaa9ad1be931" desc="Font size slider label for Font Editor">
+    Font Size
+  </message>
+  <message name="IDS_DEVTOOLS_505ef57ace06d82c92889613d575d6c9" desc="Text used in the Font Editor for the key values selector">
+    <ph name="THIS__PROPERTYNAME">$1s<ex>font-size</ex></ph> Key Value Selector
   </message>
   <message name="IDS_DEVTOOLS_575ed851c8964c290e73055ffdc085a6" desc="Text in CSSShadow Editor of the inline editor in the Styles tab">
     Y offset
@@ -15,16 +27,64 @@
   <message name="IDS_DEVTOOLS_5e9fb94d2ec46e6f829196c229e2b194" desc="Outset button text content in CSSShadow Editor of the inline editor in the Styles tab">
     Outset
   </message>
+  <message name="IDS_DEVTOOLS_5f960698b3ab5d2d706f1584aed27ba0" desc="Label for slider input in the Font Editor.">
+    <ph name="THIS__PROPERTYNAME">$1s<ex>font-size</ex></ph> Slider Input
+  </message>
+  <message name="IDS_DEVTOOLS_6184141f3ad2584cff257e2bfbbb8d0b" desc="Font weight slider label for Font Editor">
+    Font Weight
+  </message>
+  <message name="IDS_DEVTOOLS_627b24abf27e2d03d38537f84e81cb2e" desc="Label for letter-spacing labels">
+    Spacing
+  </message>
+  <message name="IDS_DEVTOOLS_78a32b5502c1f48c57f43b08284c40a2" desc="Label for Font Editor alert in CSS Properties section when toggling inputs">
+    Selector Input Mode
+  </message>
+  <message name="IDS_DEVTOOLS_80fcfcc3256f62cb7baf434d90fb9c80" desc="Announcement when deleting a font selector in the Font Editor">
+    Font Selector deleted at index: <ph name="INDEX">$1s<ex>2</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_873709207ad56d0b7bb9949ae36c75b0" desc="Section header for CSS property inputs">
+    CSS Properties
+  </message>
+  <message name="IDS_DEVTOOLS_8b1b1aa6c2a4785ab415c8fbf20e70d9" desc="Label for Font Editor button to delete font family/fallback selectors">
+    Delete <ph name="LABEL">$1s<ex>Fallback 1</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_8b52de510bc5497ac43abfe566be48ab" desc="Text in CSSShadow Editor of the inline editor in the Styles tab">
     Blur
+  </message>
+  <message name="IDS_DEVTOOLS_9029ce046818cc804c9397a7355aec5e" desc="Label for Font Editor unit input">
+    <ph name="THIS__PROPERTYNAME">$1s<ex>font-size</ex></ph> Unit Input
+  </message>
+  <message name="IDS_DEVTOOLS_aa6ca9aab00f41b6ad8248a50b4513ca" desc="Label for Font Editor alert in CSS Properties section when toggling inputs">
+    Slider Input Mode
+  </message>
+  <message name="IDS_DEVTOOLS_abfd56f509eff6820be36bc7d5fb99f9" desc="Announcement for deleting an empty font family selector in the Font Editor">
+    There is no value to delete at index: <ph name="INDEX">$1s<ex>2</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_b56d315e49178ba86341ff3b4e337c6b" desc="Inset button text content in CSSShadow Editor of the inline editor in the Styles tab">
     Inset
   </message>
-  <message name="IDS_DEVTOOLS_bfa0731f918a0e2ee23021896e388b38" desc="Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles pane, to jump to where the custom property in the function is defined">
+  <message name="IDS_DEVTOOLS_bfa0731f918a0e2ee23021896e388b38" desc="Text in CSS Variable Switch">
     Jump to definition
+  </message>
+  <message name="IDS_DEVTOOLS_d0cfdbcc26e8c7cac2acb8a8d68269d9" desc="Error text in Font Editor">
+    This property is set to contain units but does not have a defined corresponding unitsArray: <ph name="THIS__PROPERTYNAME">$1s<ex>font-size</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_d65b5983f317c42c6f6dff5678e628ca" desc="Icon element title in Color Swatch of the inline editor in the Styles tab">
     Shift-click to change color format
+  </message>
+  <message name="IDS_DEVTOOLS_db40a5d4b654151bf70f2e25e73263dc" desc="Font editor label for font family selector">
+    Font Family
+  </message>
+  <message name="IDS_DEVTOOLS_e1e406d7c7135668b394aba062803603" desc="Warning message for Font Editor invalid text input">
+    * Please enter a valid value for <ph name="PROPERTYNAME">$1s<ex>font-size</ex></ph> text input
+  </message>
+  <message name="IDS_DEVTOOLS_e5771a362d88a71a657bfcd21ca54b3f" desc="Font Editor units text box label">
+    Units
+  </message>
+  <message name="IDS_DEVTOOLS_ed0d032d982e79eaa9284f607bea4b80" desc="Label for numbered fallback selectors">
+    Fallback <ph name="THIS__FONTSELECTORS_LENGTH">$1s<ex>2</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_fa71ccd2e8f512821b6e4e0fd521c016" desc="Label for Font Editor toggle input type button">
+    <ph name="THIS__PROPERTYNAME">$1s<ex>font-size</ex></ph> Toggle Input Type
   </message>
 </grit-part>

@@ -9,6 +9,7 @@ import * as InlineEditor from '../inline_editor/inline_editor.js';
 import * as UI from '../ui/ui.js';
 
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
+import {StylePropertiesSection, StylesSidebarPane} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @unrestricted
@@ -342,3 +343,174 @@ export class ShadowSwatchPopoverHelper {
     delete this._originalPropertyText;
   }
 }
+
+export class FontEditorSectionManager {
+  /**
+   * @param {!InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper} swatchPopoverHelper
+   * @param {!StylePropertiesSection} section
+   */
+  constructor(swatchPopoverHelper, section) {
+    /** @type {!Map<string, !StylePropertyTreeElement>} */
+    this._treeElementMap = new Map();
+
+    /** @type {!InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper} */
+    this._swatchPopoverHelper = swatchPopoverHelper;
+
+    /** @type {!StylePropertiesSection} */
+    this._section = section;
+
+    /** @type {?StylesSidebarPane} */
+    this._parentPane = null;
+
+    /** @type {?InlineEditor.FontEditor.FontEditor} */
+    this._fontEditor = null;
+
+    /** @type {?Element} */
+    this._scrollerElement = null;
+
+    this._boundFontChanged = this._fontChanged.bind(this);
+    this._boundOnScroll = this._onScroll.bind(this);
+    this._boundResized = this._fontEditorResized.bind(this);
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _fontChanged(event) {
+    const {propertyName, value} = event.data;
+    const treeElement = this._treeElementMap.get(propertyName);
+    this._updateFontProperty(propertyName, value, treeElement);
+  }
+
+  /**
+   * @param {string} propertyName
+   * @param {string} value
+   * @param {!StylePropertyTreeElement=} treeElement
+   */
+  async _updateFontProperty(propertyName, value, treeElement) {
+    if (treeElement && treeElement.treeOutline && treeElement.valueElement && treeElement.property.parsedOk &&
+        treeElement.property.range) {
+      let elementRemoved = false;
+      treeElement.valueElement.textContent = value;
+      treeElement.property.value = value;
+      let styleText;
+      const propertyName = treeElement.property.name;
+      if (value.length) {
+        styleText = treeElement.renderedPropertyText();
+      } else {
+        styleText = '';
+        elementRemoved = true;
+        this._fixIndex(treeElement.property.index);
+      }
+      this._treeElementMap.set(propertyName, treeElement);
+      await treeElement.applyStyleText(styleText, true);
+      if (elementRemoved) {
+        this._treeElementMap.delete(propertyName);
+      }
+    } else if (value.length) {
+      const newProperty = this._section.addNewBlankProperty();
+      if (newProperty) {
+        newProperty.property.name = propertyName;
+        newProperty.property.value = value;
+        newProperty.updateTitle();
+        await newProperty.applyStyleText(newProperty.renderedPropertyText(), true);
+        this._treeElementMap.set(newProperty.property.name, newProperty);
+      }
+    }
+    this._section.onpopulate();
+    this._swatchPopoverHelper.reposition();
+    return;
+  }
+
+  _fontEditorResized() {
+    this._swatchPopoverHelper.reposition();
+  }
+
+  /**
+   * @param {number} removedIndex
+   */
+  _fixIndex(removedIndex) {
+    for (const treeElement of this._treeElementMap.values()) {
+      if (treeElement.property.index > removedIndex) {
+        treeElement.property.index -= 1;
+      }
+    }
+  }
+
+  /**
+   * @return {!Map<string, string>}
+   */
+  _createPropertyValueMap() {
+    const propertyMap = new Map();
+    for (const fontProperty of this._treeElementMap) {
+      const propertyName = /** @type {string} */ (fontProperty[0]);
+      const treeElement = fontProperty[1];
+      if (treeElement.property.value.length) {
+        propertyMap.set(propertyName, treeElement.property.value);
+      } else {
+        this._treeElementMap.delete(propertyName);
+      }
+    }
+    return propertyMap;
+  }
+
+  /**
+   * @param {!StylePropertyTreeElement} treeElement
+   */
+  registerFontProperty(treeElement) {
+    const propertyName = treeElement.property.name;
+    if (this._treeElementMap.has(propertyName)) {
+      const treeElementFromMap = this._treeElementMap.get(propertyName);
+      if (!treeElement.overloaded() || (treeElementFromMap && treeElementFromMap.overloaded())) {
+        this._treeElementMap.set(propertyName, treeElement);
+      }
+    } else {
+      this._treeElementMap.set(propertyName, treeElement);
+    }
+  }
+
+  /**
+   * @param {!Element} iconElement
+   * @param {!StylesSidebarPane} parentPane
+   */
+  async showPopover(iconElement, parentPane) {
+    if (this._swatchPopoverHelper.isShowing()) {
+      this._swatchPopoverHelper.hide(true);
+      return;
+    }
+    this._parentPane = parentPane;
+    const propertyValueMap = this._createPropertyValueMap();
+    this._fontEditor = new InlineEditor.FontEditor.FontEditor(propertyValueMap);
+    this._fontEditor.addEventListener(InlineEditor.FontEditor.Events.FontChanged, this._boundFontChanged);
+    this._fontEditor.addEventListener(InlineEditor.FontEditor.Events.FontEditorResized, this._boundResized);
+    this._swatchPopoverHelper.show(this._fontEditor, iconElement, this._onPopoverHidden.bind(this));
+    this._scrollerElement = iconElement.enclosingNodeOrSelfWithClass('style-panes-wrapper');
+    if (this._scrollerElement) {
+      this._scrollerElement.addEventListener('scroll', this._boundOnScroll, false);
+    }
+
+    this._parentPane.setEditingStyle(true);
+  }
+
+  _onScroll() {
+    this._swatchPopoverHelper.hide(true);
+  }
+
+  _onPopoverHidden() {
+    if (this._scrollerElement) {
+      this._scrollerElement.removeEventListener('scroll', this._boundOnScroll, false);
+    }
+    this._section.onpopulate();
+    if (this._fontEditor) {
+      this._fontEditor.removeEventListener(InlineEditor.FontEditor.Events.FontChanged, this._boundFontChanged);
+    }
+    this._fontEditor = null;
+    if (this._parentPane) {
+      this._parentPane.setEditingStyle(false);
+    }
+    this._section.resetToolbars();
+    this._section.onpopulate();
+  }
+}
+
+FontEditorSectionManager._treeElementSymbol = Symbol('FontEditorSectionManager._treeElementSymbol');

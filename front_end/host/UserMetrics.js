@@ -557,6 +557,7 @@ export const DevtoolsExperiments = {
   'recorder': 38,
   'APCA': 39,
   'cspViolationsView': 40,
+  'fontEditor': 41,
   '__lastValidEnumPosition': 41,
 };
 

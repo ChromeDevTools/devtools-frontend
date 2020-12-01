@@ -190,7 +190,7 @@ export class CSSMetadata {
    * @return {boolean}
    */
   isColorAwareProperty(propertyName) {
-    return !!_colorAwareProperties.has(propertyName.toLowerCase()) || this.isCustomProperty(propertyName.toLowerCase());
+    return _colorAwareProperties.has(propertyName.toLowerCase()) || this.isCustomProperty(propertyName.toLowerCase());
   }
 
   /**
@@ -241,7 +241,16 @@ export class CSSMetadata {
    */
   isBezierAwareProperty(propertyName) {
     propertyName = propertyName.toLowerCase();
-    return !!_bezierAwareProperties.has(propertyName) || this.isCustomProperty(propertyName);
+    return _bezierAwareProperties.has(propertyName) || this.isCustomProperty(propertyName);
+  }
+
+  /**
+   * @param {string} propertyName
+   * @return {boolean}
+   */
+  isFontAwareProperty(propertyName) {
+    propertyName = propertyName.toLowerCase();
+    return _fontAwareProperties.has(propertyName) || this.isCustomProperty(propertyName);
   }
 
   /**
@@ -481,6 +490,8 @@ const _bezierAwareProperties = new Set([
   'animation', 'animation-timing-function', 'transition', 'transition-timing-function', '-webkit-animation',
   '-webkit-animation-timing-function', '-webkit-transition', '-webkit-transition-timing-function'
 ]);
+
+const _fontAwareProperties = new Set(['font-size', 'line-height', 'font-weight', 'font-family', 'letter-spacing']);
 
 const _colorAwareProperties = new Set([
   'background',

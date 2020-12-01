@@ -37,6 +37,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
+import {FontEditorSectionManager} from './ColorSwatchPopoverIcon.js';
 import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {findIcon} from './CSSPropertyIconResolver.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
@@ -1209,9 +1210,36 @@ export class StylePropertiesSection {
           new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Insert Style Rule Below'), 'largeicon-add');
       newRuleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._onNewRuleClick, this);
       newRuleButton.element.tabIndex = -1;
-      const expandToolbar = new UI.Toolbar.Toolbar('sidebar-pane-section-toolbar', this._innerElement);
-      expandToolbar.appendToolbarItem(newRuleButton);
-      UI.ARIAUtils.markAsHidden(expandToolbar.element);
+      if (!this._newStyleRuleToolbar) {
+        this._newStyleRuleToolbar =
+            new UI.Toolbar.Toolbar('sidebar-pane-section-toolbar new-rule-toolbar', this._innerElement);
+      }
+      this._newStyleRuleToolbar.appendToolbarItem(newRuleButton);
+      UI.ARIAUtils.markAsHidden(this._newStyleRuleToolbar.element);
+    }
+
+    if (Root.Runtime.experiments.isEnabled('fontEditor') && this.editable) {
+      this._fontEditorToolbar = new UI.Toolbar.Toolbar('sidebar-pane-section-toolbar', this._innerElement);
+      this._fontEditorSectionManager = new FontEditorSectionManager(this._parentPane.swatchPopoverHelper(), this);
+      this._fontEditorButton = new UI.Toolbar.ToolbarButton('Font Editor', 'largeicon-font-editor');
+      this._fontEditorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+        this._onFontEditorButtonClicked();
+      }, this);
+      this._fontEditorButton.element.addEventListener('keydown', event => {
+        if (isEnterOrSpaceKey(event)) {
+          event.consume(true);
+          this._onFontEditorButtonClicked();
+        }
+      }, false);
+      this._fontEditorToolbar.appendToolbarItem(this._fontEditorButton);
+
+      if (this._style.type === SDK.CSSStyleDeclaration.Type.Inline) {
+        if (this._newStyleRuleToolbar) {
+          this._newStyleRuleToolbar.element.classList.add('shifted-toolbar');
+        }
+      } else {
+        this._fontEditorToolbar.element.classList.add('font-toolbar-hidden');
+      }
     }
 
     this._selectorElement.addEventListener('click', this._handleSelectorClick.bind(this), false);
@@ -1253,10 +1281,39 @@ export class StylePropertiesSection {
       this.element.classList.add('read-only');
       this.propertiesTreeOutline.element.classList.add('read-only');
     }
-
+    /** @type {?FontEditorSectionManager} */
+    this._fontPopoverIcon = null;
     this._hoverableSelectorsMode = false;
     this._markSelectorMatches();
     this.onpopulate();
+  }
+
+  /**
+   * @param {!StylePropertyTreeElement} treeElement
+   */
+  registerFontProperty(treeElement) {
+    if (this._fontEditorSectionManager) {
+      this._fontEditorSectionManager.registerFontProperty(treeElement);
+    }
+    if (this._fontEditorToolbar) {
+      this._fontEditorToolbar.element.classList.remove('font-toolbar-hidden');
+      if (this._newStyleRuleToolbar) {
+        this._newStyleRuleToolbar.element.classList.add('shifted-toolbar');
+      }
+    }
+  }
+
+  resetToolbars() {
+    if (this._parentPane.swatchPopoverHelper().isShowing() ||
+        this._style.type === SDK.CSSStyleDeclaration.Type.Inline) {
+      return;
+    }
+    if (this._fontEditorToolbar) {
+      this._fontEditorToolbar.element.classList.add('font-toolbar-hidden');
+    }
+    if (this._newStyleRuleToolbar) {
+      this._newStyleRuleToolbar.element.classList.remove('shifted-toolbar');
+    }
   }
 
   /**
@@ -1430,6 +1487,13 @@ export class StylePropertiesSection {
     const selection = this.element.getComponentSelection();
     if (!this._selectedSinceMouseDown && selection && selection.toString()) {
       this._selectedSinceMouseDown = true;
+    }
+  }
+
+  _onFontEditorButtonClicked() {
+    if (this._fontEditorSectionManager && this._fontEditorButton) {
+      // TODO(crbug.com/1149589): Add telemetry to track # of times Font Editor is opened.
+      this._fontEditorSectionManager.showPopover(this._fontEditorButton.element, this._parentPane);
     }
   }
 
@@ -2964,6 +3028,8 @@ export class StylesSidebarPropertyRenderer {
     this._colorHandler = null;
     /** @type {?function(string):!Node} */
     this._bezierHandler = null;
+    /** @type {?function(string):!Node} */
+    this._fontHandler = null;
     /** @type {?function(string, string):!Node} */
     this._shadowHandler = null;
     /** @type {?function(string, string):!Node} */
@@ -2986,6 +3052,13 @@ export class StylesSidebarPropertyRenderer {
    */
   setBezierHandler(handler) {
     this._bezierHandler = handler;
+  }
+
+  /**
+   * @param {function(string):!Node} handler
+   */
+  setFontHandler(handler) {
+    this._fontHandler = handler;
   }
 
   /**
@@ -3070,6 +3143,14 @@ export class StylesSidebarPropertyRenderer {
       // TODO(changhaohan): crbug.com/1138628 refactor this to handle unitless 0 cases
       regexes.push(InlineEditor.CSSAngleRegex.CSSAngleRegex);
       processors.push(this._angleHandler);
+    }
+    if (this._fontHandler && metadata.isFontAwareProperty(this._propertyName)) {
+      if (this._propertyName === 'font-family') {
+        regexes.push(InlineEditor.FontEditorUtils.FontFamilyRegex);
+      } else {
+        regexes.push(InlineEditor.FontEditorUtils.FontPropertiesRegex);
+      }
+      processors.push(this._fontHandler);
     }
     const results = TextUtils.TextUtils.Utils.splitStringByRegexes(this._propertyValue, regexes);
     for (let i = 0; i < results.length; i++) {

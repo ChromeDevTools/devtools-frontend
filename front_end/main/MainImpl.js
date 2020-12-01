@@ -210,6 +210,10 @@ export class MainImpl {
     Root.Runtime.experiments.enableExperimentsByDefault([
       'cssGridFeatures',
     ]);
+
+    // Font Editor
+    Root.Runtime.experiments.register('fontEditor', 'Enable new Font Editor tool within the Styles Pane.');
+
     Root.Runtime.experiments.cleanUpStaleExperiments();
     const enabledExperiments = Root.Runtime.Runtime.queryParam('enabledExperiments');
     if (enabledExperiments) {

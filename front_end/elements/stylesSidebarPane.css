@@ -172,6 +172,10 @@
   flex-shrink: 0;
 }
 
+.font-toolbar-hidden {
+  visibility: hidden;
+}
+
 .styles-sidebar-pane-filter-box {
   flex: auto;
   display: flex;
@@ -229,17 +233,24 @@
   position: absolute;
   right: 0;
   bottom: 0;
-  visibility: hidden;
   background-color: rgb(255 255 255 / 90%);
   z-index: 0;
+}
+
+.sidebar-pane-section-toolbar.new-rule-toolbar {
+  visibility: hidden;
 }
 
 .styles-section:focus-visible .sidebar-pane-section-toolbar {
   background-color: hsl(214deg 67% 95% / 90%);
 }
 
-.styles-pane:not(.is-editing-style) .styles-section.matched-styles:not(.read-only):hover .sidebar-pane-section-toolbar {
+.styles-pane:not(.is-editing-style) .styles-section.matched-styles:not(.read-only):hover .sidebar-pane-section-toolbar.new-rule-toolbar {
   visibility: visible;
+}
+
+.sidebar-pane-section-toolbar.shifted-toolbar {
+  padding-right: 32px;
 }
 
 .styles-show-all {

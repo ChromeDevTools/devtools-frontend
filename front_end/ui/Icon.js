@@ -217,6 +217,7 @@ const initialDescriptors = new Map([
   ['largeicon-edit', {position: 'a5', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-eyedropper', {position: 'b5', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-filter', {position: 'c5', spritesheet: 'largeicons', isMask: true}],
+  ['largeicon-font-editor', {position: 'i7', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-hide-bottom-sidebar', {position: 'e9', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-hide-left-sidebar', {position: 'e8', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-hide-right-sidebar', {position: 'e7', spritesheet: 'largeicons', isMask: true}],

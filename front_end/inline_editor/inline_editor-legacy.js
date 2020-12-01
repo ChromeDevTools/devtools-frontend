@@ -35,6 +35,11 @@ InlineEditor.CSSLength = InlineEditorModule.CSSShadowModel.CSSLength;
 InlineEditor.BezierSwatch = InlineEditorModule.Swatches.BezierSwatch;
 
 /** @constructor */
+InlineEditor.FontEditor = InlineEditorModule.FontEditor.FontEditor;
+
+InlineEditor.FontEditor.Events = InlineEditorModule.FontEditor.Events;
+
+/** @constructor */
 InlineEditor.CSSShadowSwatch = InlineEditorModule.Swatches.CSSShadowSwatch;
 
 /** @constructor */

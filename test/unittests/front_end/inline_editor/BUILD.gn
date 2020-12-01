@@ -7,6 +7,8 @@ ts_library("inline_editor") {
     "CSSAngle_test.ts",
     "CSSVarSwatch_test.ts",
     "ColorSwatch_test.ts",
+    "FontEditorUnitConverter_test.ts",
+    "FontEditorUtils_test.ts",
   ]
 
   deps = [

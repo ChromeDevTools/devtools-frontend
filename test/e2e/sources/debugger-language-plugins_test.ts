@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {$, click, debuggerStatement, enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, pasteText, waitFor, waitForFunction, waitForMany} from '../../shared/helper.js';
+import {$, click, enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, pasteText, waitFor, waitForFunction, waitForMany, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {addBreakpointForLine, getCallFrameLocations, getCallFrameNames, getValuesForScope, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
@@ -867,12 +867,16 @@ describe('The Debugger Language Plugins', async () => {
     }
 
     await click('[aria-label="Add watch expression"]');
+    await waitFor('.watch-expression-editing');
     await pasteText('foo');
     await frontend.keyboard.press('Enter');
+    await waitForNone('.watch-expression-editing');
 
     await click('[aria-label="Add watch expression"]');
+    await waitFor('.watch-expression-editing');
     await pasteText('bar');
     await frontend.keyboard.press('Enter');
+    await waitForNone('.watch-expression-editing');
 
     const watchResults = await waitForMany('.watch-expression', 2);
     const watchTexts = await Promise.all(watchResults.map(async watch => await watch.evaluate(e => e.textContent)));
@@ -897,6 +901,5 @@ describe('The Debugger Language Plugins', async () => {
 
     const messages = await getCurrentConsoleMessages();
     assert.deepStrictEqual(messages.filter(m => !m.startsWith('[Formatter Errors]')), ['Uncaught No typeinfo for bar']);
-    await debuggerStatement(frontend);
   });
 });

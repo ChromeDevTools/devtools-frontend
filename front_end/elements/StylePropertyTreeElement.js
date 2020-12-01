@@ -767,7 +767,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.clipboardSection().appendItem(ls`Copy declaration`, () => {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.propertyText);
+      const propertyText = `${this.property.name}: ${this.property.value};`;
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyText);
     });
 
     contextMenu.clipboardSection().appendItem(ls`Copy property`, () => {

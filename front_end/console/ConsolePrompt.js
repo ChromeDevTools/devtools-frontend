@@ -15,7 +15,7 @@ import {ConsolePanel} from './ConsolePanel.js';
 export class ConsolePrompt extends UI.Widget.Widget {
   constructor() {
     super();
-    this.registerRequiredCSS('console/consolePrompt.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('console/consolePrompt.css', {enableLegacyPatching: false});
     this._addCompletionsFromHistory = true;
     this._history = new ConsoleHistoryManager();
 

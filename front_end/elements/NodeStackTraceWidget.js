@@ -15,7 +15,7 @@ let nodeStackTraceWidgetInstance;
 export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true /* isWebComponent */);
-    this.registerRequiredCSS('elements/nodeStackTraceWidget.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('elements/nodeStackTraceWidget.css', {enableLegacyPatching: false});
 
     this._noStackTraceElement = this.contentElement.createChild('div', 'gray-info-message');
     this._noStackTraceElement.textContent = ls`No stack trace available`;

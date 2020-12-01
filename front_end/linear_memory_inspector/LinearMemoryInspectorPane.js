@@ -11,6 +11,17 @@ import {LinearMemoryInspector} from './LinearMemoryInspector.js';
 
 /** @type {!LinearMemoryInspectorPaneImpl} */
 let inspectorInstance;
+
+export class ViewClosedEvent extends Event {
+  /**
+   * @param {string} tabId
+   */
+  constructor(tabId) {
+    super('view-closed');
+    this.data = tabId;
+  }
+}
+
 export class Wrapper extends UI.Widget.VBox {
   constructor() {
     super();
@@ -48,30 +59,44 @@ export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
     return inspectorInstance;
   }
 
+
   /**
-   * @param {string} scriptId
+   * @param {string} tabId
    * @param {string} title
    * @param {!LazyUint8Array} arrayWrapper
    * @param {number} address
    */
-  showLinearMemory(scriptId, title, arrayWrapper, address) {
-    if (this._tabIdToInspectorView.has(scriptId)) {
-      this._tabbedPane.selectTab(scriptId);
-      return;
-    }
+  create(tabId, title, arrayWrapper, address) {
     const inspectorView = new LinearMemoryInspectorView(arrayWrapper, address);
-    this._tabIdToInspectorView.set(scriptId, inspectorView);
-    this._tabbedPane.appendTab(scriptId, title, inspectorView, undefined, false, true);
-    this._tabbedPane.selectTab(scriptId);
+    this._tabIdToInspectorView.set(tabId, inspectorView);
+    this._tabbedPane.appendTab(tabId, title, inspectorView, undefined, false, true);
+    this._tabbedPane.selectTab(tabId);
   }
 
   /**
-   *
+   * @param {string} tabId
+   */
+  close(tabId) {
+    this._tabbedPane.closeTab(tabId, false);
+  }
+
+  /**
+   * @param {string} tabId
+   */
+  reveal(tabId) {
+    if (!this._tabIdToInspectorView.has(tabId)) {
+      throw new Error(`View for specified tab id does not exist: ${tabId}`);
+    }
+    this._tabbedPane.selectTab(tabId);
+  }
+
+  /**
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _tabClosed(event) {
     const tabId = event.data.tabId;
     this._tabIdToInspectorView.delete(tabId);
+    this.dispatchEventToListeners('view-closed', tabId);
   }
 }
 

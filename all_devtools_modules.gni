@@ -265,6 +265,7 @@ all_typescript_module_sources = [
   "lighthouse/ModuleUIStrings.js",
   "lighthouse/RadioSetting.js",
   "linear_memory_inspector/LinearMemoryInspector.js",
+  "linear_memory_inspector/LinearMemoryInspectorController.js",
   "linear_memory_inspector/LinearMemoryInspectorPane.js",
   "linear_memory_inspector/LinearMemoryInspectorUtils.js",
   "linear_memory_inspector/LinearMemoryNavigator.js",

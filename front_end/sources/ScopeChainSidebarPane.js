@@ -30,7 +30,6 @@ import * as LinearMemoryInspector from '../linear_memory_inspector/linear_memory
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';
 
 import {resolveScopeChain, resolveScopeInObject, resolveThisObject} from './SourceMapNamesResolver.js';
 
@@ -215,52 +214,6 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
 }
 
 /**
- * @implements {LinearMemoryInspector.LinearMemoryInspectorPane.LazyUint8Array}
- * @unrestricted
- */
-class RemoteArrayWrapper {
-  /**
-   * @override
-   * @param {!SDK.RemoteObject.RemoteArray} array
-   */
-  constructor(array) {
-    this.remoteArray = array;
-  }
-
-  /**
-   * @override
-   */
-  length() {
-    return this.remoteArray.length();
-  }
-
-  /**
-   * @override
-   * @param {number} start
-   * @param {number} end
-   */
-  async getRange(start, end) {
-    if (start < 0 || end >= this.remoteArray.length() || start > end) {
-      return Promise.resolve(new Uint8Array(0));
-    }
-    const array = this.extractByteArray(start, end);
-    return array.then(x => new Uint8Array(x));
-  }
-
-  /**
-   * @param {number} start
-   * @param {number} end
-   */
-  async extractByteArray(start, end) {
-    const promises = [];
-    for (let i = start; i < end && i < this.remoteArray.length(); ++i) {
-      promises.push(this.remoteArray.at(i).then(x => x.value));
-    }
-    return Promise.all(promises);
-  }
-}
-
-/**
  * @implements {UI.ContextMenu.Provider}
  * @unrestricted
  */
@@ -291,22 +244,9 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox {
    * @param {!SDK.RemoteObject.RemoteObject} obj
    */
   async _openMemoryInspector(obj) {
-    const remoteArray = new SDK.RemoteObject.RemoteArray(obj);
-    const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
-
-    if (!callFrame) {
-      throw new Error(`Cannot find call frame for ${obj.description}.`);
-    }
-    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(callFrame.script.sourceURL);
+    const controller = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
     const address = 0;
-
-    if (!uiSourceCode) {
-      throw new Error(`Cannot find uiSourceCode for ${obj.description}`);
-    }
-    const inspector = LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPaneImpl.instance();
-    inspector.showLinearMemory(
-        callFrame.script.scriptId, uiSourceCode.displayName(), new RemoteArrayWrapper(remoteArray), address);
-    UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
+    controller.openInspectorView(obj, address);
   }
 }
 

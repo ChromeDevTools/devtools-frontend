@@ -652,6 +652,7 @@ grd_files_debug_sources = [
   "front_end/lighthouse/ModuleUIStrings.js",
   "front_end/lighthouse/RadioSetting.js",
   "front_end/linear_memory_inspector/LinearMemoryInspector.js",
+  "front_end/linear_memory_inspector/LinearMemoryInspectorController.js",
   "front_end/linear_memory_inspector/LinearMemoryInspectorPane.js",
   "front_end/linear_memory_inspector/LinearMemoryInspectorUtils.js",
   "front_end/linear_memory_inspector/LinearMemoryNavigator.js",

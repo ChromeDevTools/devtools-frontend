@@ -3,6 +3,7 @@ import("../../../../third_party/typescript/typescript.gni")
 ts_library("linear_memory_inspector") {
   testonly = true
   sources = [
+    "LinearMemoryInspectorController_test.ts",
     "LinearMemoryInspectorPane_test.ts",
     "LinearMemoryInspector_test.ts",
     "LinearMemoryNavigator_test.ts",
@@ -14,6 +15,7 @@ ts_library("linear_memory_inspector") {
 
   deps = [
     "../../../../front_end/linear_memory_inspector:bundle",
+    "../../../../front_end/sdk:bundle",
     "../helpers",
   ]
 }

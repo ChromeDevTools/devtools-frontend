@@ -41,7 +41,7 @@ describeWithEnvironment('LinearMemoryInspectorPane', async () => {
     const arrayWrapper = new Uint8Wrapper(createArray());
     const scriptId = 'scriptId';
     const title = 'Test Title';
-    instance.showLinearMemory(scriptId, title, arrayWrapper, 10);
+    instance.create(scriptId, title, arrayWrapper, 10);
 
     const tabbedPane = instance.contentElement.querySelector('.tabbed-pane');
     assertNotNull(tabbedPane);

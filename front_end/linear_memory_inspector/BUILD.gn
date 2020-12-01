@@ -8,6 +8,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("linear_memory_inspector") {
   sources = [
     "LinearMemoryInspector.ts",
+    "LinearMemoryInspectorController.ts",
     "LinearMemoryInspectorPane.js",
     "LinearMemoryInspectorUtils.ts",
     "LinearMemoryNavigator.ts",

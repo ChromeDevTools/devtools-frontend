@@ -119,6 +119,9 @@ module.exports = function(config) {
       ...TEST_SOURCES.map(source => ({pattern: source, served: true, included: false, watched: false})),
       {pattern: path.join(GEN_DIRECTORY, 'front_end/Images/*.{svg,png}'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/i18n/locales/*.json'), served: true, included: false},
+      // Inject the CSS color theme variables into the page so any rendered
+      // components have access to them.
+      {pattern: path.join(GEN_DIRECTORY, 'front_end/ui/themeColors.css'), served: true, included: true},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.css'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js.map'), served: true, included: false},

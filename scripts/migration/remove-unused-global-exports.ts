@@ -13,9 +13,13 @@ import {promisify} from 'util';
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
-const FRONT_END_FOLDER = path.join(process.env.PWD!, '..', '..', 'front_end');
+if (!process.env.PWD) {
+  throw new Error('Could not find required PWD environment variable.');
+}
+
+const FRONT_END_FOLDER = path.join(process.env.PWD, '..', '..', 'front_end');
 const TEST_FOLDER =
-    path.join(process.env.PWD!, '..', '..', '..', '..', 'blink', 'web_tests', 'http', 'tests', 'devtools');
+    path.join(process.env.PWD, '..', '..', '..', '..', 'blink', 'web_tests', 'http', 'tests', 'devtools');
 
 function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);

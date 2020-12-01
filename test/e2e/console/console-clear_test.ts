@@ -39,7 +39,11 @@ describe('The Console Tab', async function() {
     });
     await step('check that the remaining text in the console is correct', async () => {
       const clearResult = await frontend.evaluate(() => {
-        return document.querySelector('.console-user-command-result')!.textContent;
+        const result = document.querySelector('.console-user-command-result');
+        if (!result) {
+          assert.fail('Could not find user command result in the DOM.');
+        }
+        return result.textContent;
       });
       assert.strictEqual(clearResult, 'undefined', 'the result of clear was not undefined');
     });

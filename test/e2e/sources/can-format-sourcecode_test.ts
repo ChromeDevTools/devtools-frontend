@@ -12,7 +12,11 @@ import {addBreakpointForLine, openSourceCodeEditorForFile, retrieveTopCallFrameS
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print minified-sourcecode.js"]';
 
 function retrieveCodeMirrorEditorContent() {
-  return document.querySelector('.CodeMirror-code')!.textContent;
+  const code = document.querySelector('.CodeMirror-code');
+  if (!code) {
+    assert.fail('Could not find .CodeMirror-code element.');
+  }
+  return code.textContent || '';
 }
 
 async function prettyPrintMinifiedFile(frontend: puppeteer.Page) {
@@ -22,7 +26,11 @@ async function prettyPrintMinifiedFile(frontend: puppeteer.Page) {
 
   // A separate editor is opened which shows the formatted file
   await frontend.waitForFunction(previousTextContent => {
-    return document.querySelector('.CodeMirror-code')!.textContent !== previousTextContent;
+    const code = document.querySelector('.CodeMirror-code');
+    if (!code) {
+      throw new Error('Could not find .CodeMirror-code element.');
+    }
+    return (code.textContent || '') !== previousTextContent;
   }, {}, previousTextContent);
 }
 
@@ -79,12 +87,21 @@ describe('The Sources Tab', async function() {
       return messages.length === 2 ? messages : undefined;
     });
 
-    const messageLinks = await Promise.all(messages.map(
-        messageHandle =>
-            (messageHandle.evaluate(message => ({
-                                      message: message.querySelector('.console-message-text')!.textContent,
-                                      lineNumber: message.querySelector('.console-message-anchor')!.textContent,
-                                    })))));
+    const messageLinks =
+        await Promise.all(messages.map(messageHandle => (messageHandle.evaluate(message => {
+                                         const messageText = message.querySelector('.console-message-text');
+                                         const lineNumber = message.querySelector('.console-message-anchor');
+                                         if (!messageText) {
+                                           assert.fail('Could not find console message text element');
+                                         }
+                                         if (!lineNumber) {
+                                           assert.fail('Could not find console line number element');
+                                         }
+                                         return ({
+                                           message: messageText.textContent,
+                                           lineNumber: lineNumber.textContent,
+                                         });
+                                       }))));
 
     assert.deepEqual(messageLinks, [
       {

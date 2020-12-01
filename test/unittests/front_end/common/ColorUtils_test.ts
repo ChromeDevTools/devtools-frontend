@@ -50,8 +50,12 @@ it('is able to calculate the contrast ratio (APCA) between two colors', () => {
     },
   ];
   for (const test of tests) {
-    const fg = Common.Color.Color.parse(test.fgColor)!.rgba();
-    const bg = Common.Color.Color.parse(test.bgColor)!.rgba();
+    const fg = Common.Color.Color.parse(test.fgColor)?.rgba();
+    const bg = Common.Color.Color.parse(test.bgColor)?.rgba();
+    if (!fg || !bg) {
+      assert.fail(`Failed to parse foreground and/or background color: ${test.fgColor}, ${test.bgColor}`);
+      return;
+    }
     assert.closeTo(Common.ColorUtils.contrastRatioAPCA(fg, bg), test.expectedContrast, 0.01);
   }
 });

@@ -108,11 +108,17 @@ export class ScreenshotOverlay extends Overlay {
 }
 
 function currentRect() {
+  if (!anchor) {
+    throw new Error('Error calculating currentRect: no anchor was defined.');
+  }
+  if (!position) {
+    throw new Error('Error calculating currentRect: no position was defined.');
+  }
   return {
-    x: Math.min(anchor!.x, position!.x),
-    y: Math.min(anchor!.y, position!.y),
-    width: Math.abs(anchor!.x - position!.x),
-    height: Math.abs(anchor!.y - position!.y),
+    x: Math.min(anchor.x, position.x),
+    y: Math.min(anchor.y, position.y),
+    width: Math.abs(anchor.x - position.x),
+    height: Math.abs(anchor.y - position.y),
   };
 }
 

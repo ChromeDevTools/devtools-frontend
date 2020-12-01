@@ -189,10 +189,10 @@ async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
 }
 
 function formatStackFrame(stackFrame: puppeteer.ConsoleMessageLocation): string {
-  if (!stackFrame) {
+  if (!stackFrame || !stackFrame.url) {
     return '<unknown>';
   }
-  const filename = stackFrame!.url!.replace(/^.*\//, '');
+  const filename = stackFrame.url.replace(/^.*\//, '');
   return `${filename}:${stackFrame.lineNumber}:${stackFrame.columnNumber}`;
 }
 

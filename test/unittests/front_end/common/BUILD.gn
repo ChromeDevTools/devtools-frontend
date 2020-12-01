@@ -26,5 +26,6 @@ ts_library("common") {
   deps = [
     "../../../../front_end/client_variations:bundle",
     "../../../../front_end/common:bundle",
+    "../helpers",
   ]
 }

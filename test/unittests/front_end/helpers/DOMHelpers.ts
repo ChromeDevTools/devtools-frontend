@@ -60,7 +60,7 @@ export const resetTestDOM = () => {
  */
 export function assertNotNull<T>(val: T): asserts val is NonNullable<T> {
   if (val === null) {
-    assert.fail('Expected thing to be not null but it was');
+    assert.fail(`Expected given value to not be null but it was: ${val}`);
   }
 }
 

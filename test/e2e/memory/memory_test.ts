@@ -187,7 +187,7 @@ describe('The Memory Panel', async function() {
     if (!nextRow) {
       assert.fail('Could not find row below "shared in leaking()" row');
     }
-    const nextNextRow = await nextRow!.evaluateHandle(e => e.nextSibling);
+    const nextNextRow = await nextRow.evaluateHandle(e => e.nextSibling);
     if (!nextNextRow) {
       assert.fail('Could not find 2nd row below "shared in leaking()" row');
     }

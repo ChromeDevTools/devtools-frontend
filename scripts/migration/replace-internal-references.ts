@@ -99,7 +99,10 @@ async function rewriteSource(pathName: string, srcFile: string, mappings:Map<str
       importMap.set(targetImportFile, []);
     }
 
-    const imports = importMap.get(targetImportFile)!;
+    const imports = importMap.get(targetImportFile);
+    if (!imports) {
+      throw new Error(`Expected to find imports for ${targetImportFile} but found none.`);
+    }
     if (useExternalRefs) {
       if (imports.length === 0) {
         // We are creating statements like import * as Foo from '../foo/foo.js' so

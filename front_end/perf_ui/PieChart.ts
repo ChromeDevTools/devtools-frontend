@@ -231,13 +231,19 @@ export class PieChart extends HTMLElement {
     // when we click on something is not necessary. The same goes for focusing
     // slices below.
     const totalLegendRow = this.shadow.querySelector<HTMLDivElement>('.pie-chart-legend > :last-child');
-    totalLegendRow!.focus();
+    if (!totalLegendRow) {
+      return;
+    }
+    totalLegendRow.focus();
   }
 
   private selectAndFocusSlice(index: number) {
     this.selectSlice(index);
     const sliceLegendRow = this.shadow.querySelector<HTMLDivElement>(`.pie-chart-legend > :nth-child(${index + 1})`);
-    sliceLegendRow!.focus();
+    if (!sliceLegendRow) {
+      return;
+    }
+    sliceLegendRow.focus();
   }
 
   private focusNextElement() {

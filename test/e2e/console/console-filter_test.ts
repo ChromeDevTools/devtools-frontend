@@ -118,7 +118,7 @@ describe('The Console Tab', async () => {
   it('can exclude messages from a source url', async () => {
     const {frontend} = getBrowserAndPages();
     let sourceUrls: string[];
-    let uniqueUrls: Set<string>;
+    let uniqueUrls: Set<string> = new Set();
 
     await step('navigate to console-filter.html and wait for console messages', async () => {
       await getConsoleMessages('console-filter');
@@ -133,7 +133,7 @@ describe('The Console Tab', async () => {
       assert.isNotEmpty(uniqueUrls);
     });
 
-    for (const urlToExclude of uniqueUrls!) {
+    for (const urlToExclude of uniqueUrls) {
       const filter = createUrlFilter(urlToExclude);
       const expectedMessageFilter: MessageCheck = msg => {
         return msg.indexOf(urlToExclude) === -1;
@@ -149,7 +149,7 @@ describe('The Console Tab', async () => {
   it('can include messages from a given source url', async () => {
     const {frontend} = getBrowserAndPages();
     let sourceUrls: string[];
-    let uniqueUrls: Set<string>;
+    let uniqueUrls: Set<string> = new Set();
 
     await step('navigate to console-filter.html and wait for console messages', async () => {
       await getConsoleMessages('console-filter');
@@ -164,7 +164,7 @@ describe('The Console Tab', async () => {
       assert.isNotEmpty(uniqueUrls);
     });
 
-    for (const urlToKeep of uniqueUrls!) {
+    for (const urlToKeep of uniqueUrls) {
       const filter = urlToKeep;
       const expectedMessageFilter: MessageCheck = msg => {
         return msg.indexOf(urlToKeep) !== -1;

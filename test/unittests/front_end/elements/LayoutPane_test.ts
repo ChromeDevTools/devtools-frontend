@@ -17,9 +17,12 @@ describeWithEnvironment('LayoutPane', async () => {
   function queryLabels(component: HTMLElement, selector: string) {
     assertShadowRoot(component.shadowRoot);
     return Array.from(component.shadowRoot.querySelectorAll(selector)).map(label => {
+      const input = label.querySelector('[data-input]');
+      assertElement(input, HTMLElement);
+
       return {
         label: label.getAttribute('title'),
-        input: label.querySelector('[data-input]')!.tagName,
+        input: input.tagName,
       };
     });
   }

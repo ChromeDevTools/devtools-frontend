@@ -162,6 +162,11 @@ module.exports = {
        * const enum Foo { A = 'a' } rather than const enum Foo { A }
        */
       '@typescript-eslint/prefer-enum-initializers': 2,
+      /**
+       * Ban non-null assertion operator, e.g.:
+       * this.foo!.toLowerCase()
+       */
+      '@typescript-eslint/no-non-null-assertion': 2,
       'rulesdir/set_data_type_reference': 2,
       'rulesdir/lit_html_data_as_type': 2,
       'rulesdir/const_enum': 2,

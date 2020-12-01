@@ -100,7 +100,10 @@ describe('The Performance panel', async function() {
         'expand the tree for the "mainWasm" activity and check that it displays the correct values', async () => {
           await waitFor(ACTIVITY_COLUMN_SELECTOR);
           const mainWasmActivity = await retrieveActivity(frontend, 'mainWasm');
-          await mainWasmActivity!.click();
+          if (!mainWasmActivity) {
+            assert.fail('Could not find mainWasmActivity in frontend.');
+          }
+          await mainWasmActivity.click();
           await expandAndCheckActivityTree(frontend, expectedActivities);
         });
   });

@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import {assertNotNull} from '../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 describeWithEnvironment('Cookie', () => {
@@ -157,7 +158,9 @@ describeWithEnvironment('Cookie', () => {
     const now = new Date();
     const expires = Math.floor(now.getTime()) + 3600 * 1000;
     cookie.addAttribute('Max-Age', '3600');
-    assert.strictEqual(cookie.expiresDate(now)!.toISOString(), new Date(expires).toISOString());
+    const expiresDate = cookie.expiresDate(now);
+    assertNotNull(expiresDate);
+    assert.strictEqual(expiresDate.toISOString(), new Date(expires).toISOString());
   });
 
   it('can calculate the expiration date for cookies with expires attribute', () => {
@@ -165,6 +168,8 @@ describeWithEnvironment('Cookie', () => {
     const now = new Date();
     const expires = Math.floor(now.getTime()) + 3600 * 1000;
     cookie.addAttribute('Expires', expires);
-    assert.strictEqual(cookie.expiresDate(now)!.toISOString(), new Date(expires).toISOString());
+    const expiresDate = cookie.expiresDate(now);
+    assertNotNull(expiresDate);
+    assert.strictEqual(expiresDate.toISOString(), new Date(expires).toISOString());
   });
 });

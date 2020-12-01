@@ -6,6 +6,7 @@ const {assert} = chai;
 
 import * as UI from '../../../../front_end/ui/ui.js';
 import * as InlineEditor from '../../../../front_end/inline_editor/inline_editor.js';
+import {assertElement} from '../helpers/DOMHelpers.js';
 
 describe('BezierUI', () => {
   it('can be instantiated successfully', () => {
@@ -62,14 +63,16 @@ describe('BezierUI', () => {
     */
     assert.strictEqual(svg.getAttribute('width'), '10', 'curve SVG\'s width was not set up correctly');
     assert.strictEqual(svg.getAttribute('height'), '10', 'curve SVG\'s height was not set up correctly');
-    const linearLine = svg.querySelector('.linear-line')!;
+    const linearLine = svg.querySelector('.linear-line');
+    assertElement(linearLine, SVGLineElement);
     assert.exists(linearLine, 'Bezier curve\'s linear line did not exist');
     assert.strictEqual(linearLine.getAttribute('x1'), '3', 'Bezier curve\'s linear line had wrong x1');
     assert.strictEqual(linearLine.getAttribute('y1'), '6', 'Bezier curve\'s linear line had wrong y1');
     assert.strictEqual(linearLine.getAttribute('x2'), '7', 'Bezier curve\'s linear line had wrong x2');
     assert.strictEqual(linearLine.getAttribute('y2'), '4', 'Bezier curve\'s linear line had wrong y2');
 
-    const path = svg.querySelector('.bezier-path')!;
+    const path = svg.querySelector('.bezier-path');
+    assertElement(path, SVGPathElement);
     assert.exists(path, 'Bezier curve\'s path did not exist');
     assert.strictEqual(path.getAttribute('d'), 'M3,6 C7, 4 15, -2 7, 4', 'Bezier curve\'s path had wrong d');
 

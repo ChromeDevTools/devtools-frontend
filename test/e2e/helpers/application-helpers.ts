@@ -27,7 +27,8 @@ export async function getDataGridData(selector: string, columns: string[]) {
   const dataGridRowValues = await Promise.all(dataGridNodes.map(node => node.evaluate((row: Element, columns) => {
     const data: {[key: string]: string|null} = {};
     for (const column of columns) {
-      data[column] = row.querySelector(`.${column}-column`)!.textContent;
+      const columnElement = row.querySelector(`.${column}-column`);
+      data[column] = columnElement ? columnElement.textContent : '';
     }
     return data;
   }, columns)));

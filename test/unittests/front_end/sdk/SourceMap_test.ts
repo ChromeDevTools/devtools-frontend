@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
+import {assertNotNull} from '../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const fakeInitiator = {
@@ -87,18 +88,18 @@ describeWithEnvironment('TextSourceMap', () => {
   function assertMapping(
       actual: SDKModule.SourceMap.SourceMapEntry|null, expectedSourceURL: string|undefined,
       expectedSourceLineNumber: number|undefined, expectedSourceColumnNumber: number|undefined) {
-    assert.isNotNull(actual, 'expected SourceMapEntry to be present');
-    assert.strictEqual(actual!.sourceURL, expectedSourceURL, 'unexpected source URL');
-    assert.strictEqual(actual!.sourceLineNumber, expectedSourceLineNumber, 'unexpected source line number');
-    assert.strictEqual(actual!.sourceColumnNumber, expectedSourceColumnNumber, 'unexpected source column number');
+    assertNotNull(actual);
+    assert.strictEqual(actual.sourceURL, expectedSourceURL, 'unexpected source URL');
+    assert.strictEqual(actual.sourceLineNumber, expectedSourceLineNumber, 'unexpected source line number');
+    assert.strictEqual(actual.sourceColumnNumber, expectedSourceColumnNumber, 'unexpected source column number');
   }
 
   function assertReverseMapping(
       actual: SDKModule.SourceMap.SourceMapEntry|null, expectedCompiledLineNumber: number,
       expectedCompiledColumnNumber: number) {
-    assert.isNotNull(actual, 'expected SourceMapEntry to be present');
-    assert.strictEqual(actual!.lineNumber, expectedCompiledLineNumber, 'unexpected compiled line number');
-    assert.strictEqual(actual!.columnNumber, expectedCompiledColumnNumber, 'unexpected compiled column number');
+    assertNotNull(actual);
+    assert.strictEqual(actual.lineNumber, expectedCompiledLineNumber, 'unexpected compiled line number');
+    assert.strictEqual(actual.columnNumber, expectedCompiledColumnNumber, 'unexpected compiled column number');
   }
 
   // FIXME(szuend): The following tests are a straight-up port from a corresponding layout test.
@@ -167,7 +168,8 @@ describeWithEnvironment('TextSourceMap', () => {
     assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
     assertMapping(sourceMap.findEntry(0, 2), 'example.js', 0, 2);
 
-    const emptyEntry = sourceMap.findEntry(0, 1)!;
+    const emptyEntry = sourceMap.findEntry(0, 1);
+    assertNotNull(emptyEntry);
     assert.isUndefined(emptyEntry.sourceURL, 'unexpected url present for empty segment');
     assert.isUndefined(emptyEntry.sourceLineNumber, 'unexpected source line number for empty segment');
     assert.isUndefined(emptyEntry.sourceColumnNumber, 'unexpected source line number for empty segment');

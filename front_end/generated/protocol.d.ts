@@ -66,6 +66,7 @@ declare namespace Protocol {
       Labelfor = 'labelfor',
       Labelwrapped = 'labelwrapped',
       Legend = 'legend',
+      Rubyannotation = 'rubyannotation',
       Tablecaption = 'tablecaption',
       Title = 'title',
       Other = 'other',
@@ -8221,6 +8222,31 @@ declare namespace Protocol {
     }
 
     /**
+     * Fired upon WebTransport creation.
+     */
+    export interface WebTransportCreatedEvent {
+      /**
+       * WebTransport identifier.
+       */
+      transportId: RequestId;
+      /**
+       * WebTransport request URL.
+       */
+      url: string;
+      /**
+       * Request initiator.
+       */
+      initiator?: Initiator;
+    }
+
+    export interface WebTransportClosedEvent {
+      /**
+       * WebTransport identifier.
+       */
+      transportId: RequestId;
+    }
+
+    /**
      * Fired when additional information about a requestWillBeSent event is available from the
      * network stack. Not every requestWillBeSent event will have an additional
      * requestWillBeSentExtraInfo fired for it, and there is no guarantee whether requestWillBeSent
@@ -8271,6 +8297,49 @@ declare namespace Protocol {
        * available, such as in the case of HTTP/2 or QUIC.
        */
       headersText?: string;
+    }
+
+    export enum TrustTokenOperationDoneEventStatus {
+      Ok = 'Ok',
+      InvalidArgument = 'InvalidArgument',
+      FailedPrecondition = 'FailedPrecondition',
+      ResourceExhausted = 'ResourceExhausted',
+      AlreadyExists = 'AlreadyExists',
+      Unavailable = 'Unavailable',
+      BadResponse = 'BadResponse',
+      InternalError = 'InternalError',
+      UnknownError = 'UnknownError',
+      FulfilledLocally = 'FulfilledLocally',
+    }
+
+    /**
+     * Fired exactly once for each Trust Token operation. Depending on
+     * the type of the operation and whether the operation succeeded or
+     * failed, the event is fired before the corresponding request was sent
+     * or after the response was received.
+     */
+    export interface TrustTokenOperationDoneEvent {
+      /**
+       * Detailed success or error status of the operation.
+       * 'AlreadyExists' also signifies a successful operation, as the result
+       * of the operation already exists und thus, the operation was abort
+       * preemptively (e.g. a cache hit).
+       */
+      status: TrustTokenOperationDoneEventStatus;
+      type: TrustTokenOperationType;
+      requestId: RequestId;
+      /**
+       * Top level origin. The context in which the operation was attempted.
+       */
+      topLevelOrigin?: string;
+      /**
+       * Origin of the issuer in case of a "Issuance" or "Redemption" operation.
+       */
+      issuerOrigin?: string;
+      /**
+       * The number of obtained Trust Tokens on a successful "Issuance" operation.
+       */
+      issuedTokenCount?: integer;
     }
   }
 

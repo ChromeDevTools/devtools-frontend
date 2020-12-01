@@ -1914,6 +1914,13 @@ declare namespace ProtocolProxyApi {
     webSocketWillSendHandshakeRequest(params: Protocol.Network.WebSocketWillSendHandshakeRequestEvent): void;
 
     /**
+     * Fired upon WebTransport creation.
+     */
+    webTransportCreated(params: Protocol.Network.WebTransportCreatedEvent): void;
+
+    webTransportClosed(params: Protocol.Network.WebTransportClosedEvent): void;
+
+    /**
      * Fired when additional information about a requestWillBeSent event is available from the
      * network stack. Not every requestWillBeSent event will have an additional
      * requestWillBeSentExtraInfo fired for it, and there is no guarantee whether requestWillBeSent
@@ -1927,6 +1934,14 @@ declare namespace ProtocolProxyApi {
      * it, and responseReceivedExtraInfo may be fired before or after responseReceived.
      */
     responseReceivedExtraInfo(params: Protocol.Network.ResponseReceivedExtraInfoEvent): void;
+
+    /**
+     * Fired exactly once for each Trust Token operation. Depending on
+     * the type of the operation and whether the operation succeeded or
+     * failed, the event is fired before the corresponding request was sent
+     * or after the response was received.
+     */
+    trustTokenOperationDone(params: Protocol.Network.TrustTokenOperationDoneEvent): void;
   }
 
   export interface OverlayApi {

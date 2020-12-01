@@ -59,6 +59,7 @@
                         "labelfor",
                         "labelwrapped",
                         "legend",
+                        "rubyannotation",
                         "tablecaption",
                         "title",
                         "other"
@@ -12061,6 +12062,38 @@
                     ]
                 },
                 {
+                    "name": "webTransportCreated",
+                    "description": "Fired upon WebTransport creation.",
+                    "parameters": [
+                        {
+                            "name": "transportId",
+                            "description": "WebTransport identifier.",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "url",
+                            "description": "WebTransport request URL.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "initiator",
+                            "description": "Request initiator.",
+                            "optional": true,
+                            "$ref": "Initiator"
+                        }
+                    ]
+                },
+                {
+                    "name": "webTransportClosed",
+                    "parameters": [
+                        {
+                            "name": "transportId",
+                            "description": "WebTransport identifier.",
+                            "$ref": "RequestId"
+                        }
+                    ]
+                },
+                {
                     "name": "requestWillBeSentExtraInfo",
                     "description": "Fired when additional information about a requestWillBeSent event is available from the\nnetwork stack. Not every requestWillBeSent event will have an additional\nrequestWillBeSentExtraInfo fired for it, and there is no guarantee whether requestWillBeSent\nor requestWillBeSentExtraInfo will be fired first for the same request.",
                     "experimental": true,
@@ -12119,6 +12152,56 @@
                             "description": "Raw response header text as it was received over the wire. The raw text may not always be\navailable, such as in the case of HTTP/2 or QUIC.",
                             "optional": true,
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "trustTokenOperationDone",
+                    "description": "Fired exactly once for each Trust Token operation. Depending on\nthe type of the operation and whether the operation succeeded or\nfailed, the event is fired before the corresponding request was sent\nor after the response was received.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "status",
+                            "description": "Detailed success or error status of the operation.\n'AlreadyExists' also signifies a successful operation, as the result\nof the operation already exists und thus, the operation was abort\npreemptively (e.g. a cache hit).",
+                            "type": "string",
+                            "enum": [
+                                "Ok",
+                                "InvalidArgument",
+                                "FailedPrecondition",
+                                "ResourceExhausted",
+                                "AlreadyExists",
+                                "Unavailable",
+                                "BadResponse",
+                                "InternalError",
+                                "UnknownError",
+                                "FulfilledLocally"
+                            ]
+                        },
+                        {
+                            "name": "type",
+                            "$ref": "TrustTokenOperationType"
+                        },
+                        {
+                            "name": "requestId",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "topLevelOrigin",
+                            "description": "Top level origin. The context in which the operation was attempted.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "issuerOrigin",
+                            "description": "Origin of the issuer in case of a \"Issuance\" or \"Redemption\" operation.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "issuedTokenCount",
+                            "description": "The number of obtained Trust Tokens on a successful \"Issuance\" operation.",
+                            "optional": true,
+                            "type": "integer"
                         }
                     ]
                 }

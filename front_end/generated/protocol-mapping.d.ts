@@ -230,6 +230,11 @@ export namespace ProtocolMapping {
      */
     'Network.webSocketWillSendHandshakeRequest': [Protocol.Network.WebSocketWillSendHandshakeRequestEvent];
     /**
+     * Fired upon WebTransport creation.
+     */
+    'Network.webTransportCreated': [Protocol.Network.WebTransportCreatedEvent];
+    'Network.webTransportClosed': [Protocol.Network.WebTransportClosedEvent];
+    /**
      * Fired when additional information about a requestWillBeSent event is available from the
      * network stack. Not every requestWillBeSent event will have an additional
      * requestWillBeSentExtraInfo fired for it, and there is no guarantee whether requestWillBeSent
@@ -242,6 +247,13 @@ export namespace ProtocolMapping {
      * it, and responseReceivedExtraInfo may be fired before or after responseReceived.
      */
     'Network.responseReceivedExtraInfo': [Protocol.Network.ResponseReceivedExtraInfoEvent];
+    /**
+     * Fired exactly once for each Trust Token operation. Depending on
+     * the type of the operation and whether the operation succeeded or
+     * failed, the event is fired before the corresponding request was sent
+     * or after the response was received.
+     */
+    'Network.trustTokenOperationDone': [Protocol.Network.TrustTokenOperationDoneEvent];
     /**
      * Fired when the node should be inspected. This happens after call to `setInspectMode` or when
      * user manually inspects an element.

@@ -52,6 +52,7 @@ export function registerCommands(inspectorBackend) {
     Labelfor: 'labelfor',
     Labelwrapped: 'labelwrapped',
     Legend: 'legend',
+    Rubyannotation: 'rubyannotation',
     Tablecaption: 'tablecaption',
     Title: 'title',
     Other: 'other'
@@ -1533,10 +1534,27 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Network.webSocketHandshakeResponseReceived', ['requestId', 'timestamp', 'response']);
   inspectorBackend.registerEvent(
       'Network.webSocketWillSendHandshakeRequest', ['requestId', 'timestamp', 'wallTime', 'request']);
+  inspectorBackend.registerEvent('Network.webTransportCreated', ['transportId', 'url', 'initiator']);
+  inspectorBackend.registerEvent('Network.webTransportClosed', ['transportId']);
   inspectorBackend.registerEvent(
       'Network.requestWillBeSentExtraInfo', ['requestId', 'associatedCookies', 'headers', 'clientSecurityState']);
   inspectorBackend.registerEvent(
       'Network.responseReceivedExtraInfo', ['requestId', 'blockedCookies', 'headers', 'headersText']);
+  inspectorBackend.registerEnum('Network.TrustTokenOperationDoneEventStatus', {
+    Ok: 'Ok',
+    InvalidArgument: 'InvalidArgument',
+    FailedPrecondition: 'FailedPrecondition',
+    ResourceExhausted: 'ResourceExhausted',
+    AlreadyExists: 'AlreadyExists',
+    Unavailable: 'Unavailable',
+    BadResponse: 'BadResponse',
+    InternalError: 'InternalError',
+    UnknownError: 'UnknownError',
+    FulfilledLocally: 'FulfilledLocally'
+  });
+  inspectorBackend.registerEvent(
+      'Network.trustTokenOperationDone',
+      ['status', 'type', 'requestId', 'topLevelOrigin', 'issuerOrigin', 'issuedTokenCount']);
   inspectorBackend.registerCommand('Network.canClearBrowserCache', [], ['result']);
   inspectorBackend.registerCommand('Network.canClearBrowserCookies', [], ['result']);
   inspectorBackend.registerCommand('Network.canEmulateNetworkConditions', [], ['result']);

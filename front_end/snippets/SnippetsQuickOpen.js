@@ -3,11 +3,20 @@
 // found in the LICENSE file.
 
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 import {evaluateScriptSnippet, findSnippetsProject} from './ScriptSnippetFileSystem.js';
+
+export const UIStrings = {
+  /**
+  *@description Text in Snippets Quick Open of the Sources panel when opening snippets
+  */
+  noSnippetsFound: 'No snippets found.',
+};
+const str_ = i18n.i18n.registerUIStrings('snippets/SnippetsQuickOpen.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   constructor() {
@@ -33,7 +42,7 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
    * @return {string}
    */
   notFoundText(query) {
-    return Common.UIString.UIString('No snippets found.');
+    return i18nString(UIStrings.noSnippetsFound);
   }
 
   /**

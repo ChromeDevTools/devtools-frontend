@@ -480,6 +480,9 @@
   <message name="IDS_DEVTOOLS_b1a3aaa0de38001a39eeaf44c523a98c" desc="Icon title in Tabbed Editor Container of the Sources panel">
     Changes to this file were not saved to file system.
   </message>
+  <message name="IDS_DEVTOOLS_b1d75786654fa93f10c31c3b544bbd03" desc="Text to run a code snippet">
+    Run snippet
+  </message>
   <message name="IDS_DEVTOOLS_b2accffe28bb4f4b596c9be64a28d281" desc="Title of the 'Snippets' tool in the Snippets Navigator View, which is part of the Sources tool">
     Snippets
   </message>

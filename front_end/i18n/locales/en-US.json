@@ -1388,6 +1388,18 @@
   "settings/SettingsScreen.js | warning": {
     "message": "WARNING:"
   },
+  "snippets/ModuleUIStrings.js | runSnippet": {
+    "message": "Run snippet"
+  },
+  "snippets/ScriptSnippetFileSystem.js | linkedTo": {
+    "message": "Linked to {PH1}"
+  },
+  "snippets/ScriptSnippetFileSystem.js | scriptSnippet": {
+    "message": "Script snippet #{PH1}"
+  },
+  "snippets/SnippetsQuickOpen.js | noSnippetsFound": {
+    "message": "No snippets found."
+  },
   "text_editor/CodeMirrorTextEditor.js | codeEditor": {
     "message": "Code editor"
   },

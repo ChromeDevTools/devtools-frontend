@@ -7,12 +7,14 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("snippets") {
   sources = [
+    "ModuleUIStrings.js",
     "ScriptSnippetFileSystem.js",
     "SnippetsQuickOpen.js",
   ]
 
   deps = [
     "../common:bundle",
+    "../i18n:bundle",
     "../persistence:bundle",
     "../quick_open:bundle",
     "../sdk:bundle",

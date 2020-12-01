@@ -500,6 +500,7 @@ all_typescript_module_sources = [
   "settings/KeybindsSettingsTab.js",
   "settings/ModuleUIStrings.js",
   "settings/SettingsScreen.js",
+  "snippets/ModuleUIStrings.js",
   "snippets/ScriptSnippetFileSystem.js",
   "snippets/SnippetsQuickOpen.js",
   "source_frame/BinaryResourceViewFactory.js",

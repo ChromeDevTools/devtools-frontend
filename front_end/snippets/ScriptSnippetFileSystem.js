@@ -4,11 +4,27 @@
 
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
+
+export const UIStrings = {
+  /**
+  *@description Default snippet name when a new snippet is created in the Sources panel
+  *@example {1} PH1
+  */
+  scriptSnippet: 'Script snippet #{PH1}',
+  /**
+  *@description Text to show something is linked to another
+  *@example {example.url} PH1
+  */
+  linkedTo: 'Linked to {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('snippets/ScriptSnippetFileSystem.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @param {string} name
@@ -54,7 +70,7 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     const nextId = this._lastSnippetIdentifierSetting.get() + 1;
     this._lastSnippetIdentifierSetting.set(nextId);
 
-    const snippetName = ls`Script snippet #${nextId}`;
+    const snippetName = i18nString(UIStrings.scriptSnippet, {PH1: nextId});
     const snippets = this._snippetsSetting.get();
     snippets.push({name: snippetName, content: ''});
     this._snippetsSetting.set(snippets);
@@ -173,7 +189,7 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
    * @return {string}
    */
   tooltipForURL(url) {
-    return ls`Linked to ${unescapeSnippetName(url.substring(this.path().length))}`;
+    return i18nString(UIStrings.linkedTo, {PH1: unescapeSnippetName(url.substring(this.path().length))});
   }
 
   /**

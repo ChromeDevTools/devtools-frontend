@@ -421,9 +421,6 @@
   <message name="IDS_DEVTOOLS_b1c94ca2fbc3e78fc30069c8d0f01680" desc="Text for everything">
     All
   </message>
-  <message name="IDS_DEVTOOLS_b1d75786654fa93f10c31c3b544bbd03" desc="Text to run a code snippet">
-    Run snippet
-  </message>
   <message name="IDS_DEVTOOLS_b4e79b551a1ceae24b7de243ab1fd27c" desc="Text to add a breakpoint">
     Add breakpoint
   </message>

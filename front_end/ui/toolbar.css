@@ -112,7 +112,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 
 .toolbar-render-as-links * {
   font-weight: initial;
-  color: var(--link-color);
+  color: var(--color-link);
   text-decoration: underline;
   cursor: pointer;
 }

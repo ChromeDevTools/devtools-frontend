@@ -151,7 +151,7 @@ iframe.widget {
 .link {
   cursor: pointer;
   text-decoration: underline;
-  color: var(--link-color);
+  color: var(--color-link);
 }
 
 button,

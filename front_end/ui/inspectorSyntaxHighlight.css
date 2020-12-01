@@ -122,8 +122,12 @@
 }
 
 .devtools-link {
-  color: var(--link-color);
+  color: var(--color-link);
   text-decoration: underline;
+}
+
+.elements-disclosure .devtools-link {
+  color: var(--link-color);
 }
 
 .devtools-link [is=ui-icon] {
@@ -131,7 +135,7 @@
 }
 
 .devtools-link [is=ui-icon].icon-mask {
-  background-color: var(--link-color);
+  background-color: var(--color-link);
 }
 
 .devtools-link:focus-visible {

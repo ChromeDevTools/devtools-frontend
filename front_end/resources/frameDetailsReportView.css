@@ -53,7 +53,7 @@
 }
 
 .icon-link.devtools-link {
-  background-color: var(--link-color);
+  background-color: var(--color-link);
   vertical-align: sub;
 }
 

@@ -130,7 +130,7 @@
   min-width: 28px;
   background: transparent;
   border: none;
-  color: var(--link-color);
+  color: var(--color-link);
   text-decoration: underline;
   cursor: pointer;
 }

@@ -244,8 +244,17 @@ def run_npm_command(npm_command_args=None):
     if install_missing_deps():
         return True
 
+    runs_analysis_command = False
+
+    if run_custom_command:
+        runs_analysis_command = npm_command_args[:1] == [
+            'outdated'
+        ] or npm_command_args[:1] == ['audit']
+
     # By default, run the CI version of npm, which prevents updates to the versions of modules.
-    if exec_command(['npm', 'ci']):
+    # However, when we are analyzing the installed NPM dependencies, we don't need to run
+    # the installation process again.
+    if not runs_analysis_command and exec_command(['npm', 'ci']):
         return True
 
     if run_custom_command:

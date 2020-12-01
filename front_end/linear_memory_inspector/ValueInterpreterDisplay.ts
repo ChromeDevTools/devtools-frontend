@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {Endianness, format, isNumber, isValidMode, typeHasSignedNotation, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
+import {Endianness, format, isNumber, isValidMode, typeHasSignedNotation, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 
-const ls = Common.ls;
 const {render, html} = LitHtml;
 
 const DEFAULT_MODE_MAPPING = new Map([
@@ -38,6 +36,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
 
   set data(data: ValueDisplayData) {
     this.buffer = data.buffer;
+    this.endianness = data.endianness;
     this.valueTypes = data.valueTypes;
     this.valueTypeModeConfig = DEFAULT_MODE_MAPPING;
 
@@ -67,6 +66,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
         }
 
         .value-types {
+          width: 100%;
           display: grid;
           grid-template-columns: auto auto 1fr 1fr;
           grid-column-gap: 24px;
@@ -93,9 +93,8 @@ export class ValueInterpreterDisplay extends HTMLElement {
         }
 
       </style>
-        <div class="value-types">
-          ${SORTED_VALUE_TYPES.map(type => this.valueTypes.has(type) ? this.showValue(type) : '')}
-        </div>
+      <div class="value-types">
+        ${SORTED_VALUE_TYPES.map(type => this.valueTypes.has(type) ? this.showValue(type) : '')}
       </div>
     `, this.shadow, {eventContext: this},
     );
@@ -103,15 +102,21 @@ export class ValueInterpreterDisplay extends HTMLElement {
   }
 
   private showValue(type: ValueType) {
+    const mode = this.valueTypeModeConfig.get(type);
+    if (!mode) {
+      throw new Error(`No mode found for type ${type}`);
+    }
+    const localizedType = valueTypeToLocalizedString(type);
+    const localizedMode = valueTypeModeToLocalizedString(mode);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
       ${isNumber(type) ?
         html`
-          <span class="value-type-cell">${ls`${type}`}</span>
-          <span class="mode-type value-type-cell">${ls`${this.valueTypeModeConfig.get(type)}`}</span>` :
+          <span class="value-type-cell">${localizedType}</span>
+          <span class="mode-type value-type-cell">${localizedMode}</span>` :
         html`
-          <span class="value-type-cell-no-mode value-type-cell">${ls`${type}`}</span>`}
+          <span class="value-type-cell-no-mode value-type-cell">${localizedType}</span>`}
 
         ${typeHasSignedNotation(type) ?
         html`

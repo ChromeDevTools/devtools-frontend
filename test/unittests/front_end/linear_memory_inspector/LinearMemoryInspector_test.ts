@@ -6,6 +6,7 @@ import * as LinearMemoryInspector from '../../../../front_end/linear_memory_insp
 import {getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 import {NAVIGATOR_ADDRESS_SELECTOR, NAVIGATOR_HISTORY_BUTTON_SELECTOR, NAVIGATOR_PAGE_BUTTON_SELECTOR} from './LinearMemoryNavigator_test.js';
+import {ENDIANNESS_SELECTOR} from './LinearMemoryValueInterpreter_test.js';
 import {VIEWER_BYTE_CELL_SELECTOR} from './LinearMemoryViewer_test.js';
 
 const {assert} = chai;
@@ -146,6 +147,19 @@ describe('LinearMemoryInspector', () => {
     const actualByteValue = parseInt(selectedByte.innerText, 16);
     const expectedByteValue = data.memory[parseInt(address.value, 16)];
     assert.strictEqual(actualByteValue, expectedByteValue);
+  });
+
+  it('can change endianness settings on event', async () => {
+    const {component} = setUpComponent();
+    const interpreter = getValueInterpreter(component);
+    const select = getElementWithinComponent(interpreter, ENDIANNESS_SELECTOR, HTMLSelectElement);
+    assert.deepEqual(select.value, LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little);
+
+    const endianSetting = LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Big;
+    const event = new LinearMemoryInspector.LinearMemoryValueInterpreter.EndiannessChangedEvent(endianSetting);
+    interpreter.dispatchEvent(event);
+
+    assert.deepEqual(select.value, event.data);
   });
 
   it('formats a hexadecimal number', async () => {

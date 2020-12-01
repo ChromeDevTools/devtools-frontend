@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {ValueType} from './ValueInterpreterDisplayUtils.js';
+import {ValueType, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 
-const ls = Common.ls;
 const {render, html} = LitHtml;
 
 export interface ValueInterpreterSettingsData {
@@ -116,9 +114,9 @@ export class ValueInterpreterSettings extends HTMLElement {
     return html`
       ${types.map(type => {
         return html`
-          <label class="type-label" title=${type}>
+          <label class="type-label" title=${valueTypeToLocalizedString(type)}>
             <input data-input="true" type="checkbox" .checked=${this.valueTypes.has(type)} @change=${(e: Event) => this.onTypeToggle(type, e)}>
-            <span data-title="true">${ls`${type}`}</span>
+            <span data-title="true">${valueTypeToLocalizedString(type)}</span>
           </label>
      `;})}`;
   }

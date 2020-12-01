@@ -1,9 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_2765f88501fd87c38912056b8a80a800" desc="Title of the 'Linear memory inspector' tool in the bottom drawer">
+  <message name="IDS_DEVTOOLS_95e7a9b8fdf40d516a83634a580fc748" desc="Text that describes the Endianness setting that can be selected in the select item in the Linear Memory Inspector">
+    Little Endian
+  </message>
+  <message name="IDS_DEVTOOLS_10fdbcfd96cf17b041941dca1b13d54e" desc="Text that describes the type of a value in the Linear Memory Inspector">
+    Float 64-bit
+  </message>
+  <message name="IDS_DEVTOOLS_1cdbdf89f2d1bd3dd9e698b2b320cb86" desc="Text that describes the representation of a value in the Linear Memory Inspector, short for octal">
+    oct
+  </message>
+  <message name="IDS_DEVTOOLS_1feea25ecb958229287f885aebe7c49b" desc="Text that describes the representation of a value in the Linear Memory Inspector, short for decimal">
+    dec
+  </message>
+  <message name="IDS_DEVTOOLS_27118326006d3829667a400ad23d5d98" desc="Text that describes the type of a value in the Linear Memory Inspector">
+    String
+  </message>
+  <message name="IDS_DEVTOOLS_2765f88501fd87c38912056b8a80a800" desc="Title of the Linear Memory Inspector tool">
     Memory Inspector
   </message>
-  <message name="IDS_DEVTOOLS_73c853d29cadf796b94a2949aed63493" desc="Label in the 'Linear memory inspector' tool">
+  <message name="IDS_DEVTOOLS_334c4a4c42fdb79d7ebc3e73b517e6f8" desc="Text that describes the type of a value in the Linear Memory Inspector">
+    none
+  </message>
+  <message name="IDS_DEVTOOLS_3daf5d326175840ae98222894dddf3b0" desc="Tooltip text that appears when hovering over the 'Little Endian' or 'Big Endian' setting in the Linear Memory Inspector">
+    Change Endianness
+  </message>
+  <message name="IDS_DEVTOOLS_4e0e3abf06f47e3c8f36bfe319833fe4" desc="Text that describes the type of a value in the Linear Memory Inspector">
+    Integer 32-bit
+  </message>
+  <message name="IDS_DEVTOOLS_6740bd6698ad558af1c355dfb8356d6d" desc="Text that describes the type of a value in the Linear Memory Inspector">
+    Integer 8-bit
+  </message>
+  <message name="IDS_DEVTOOLS_73c853d29cadf796b94a2949aed63493" desc="Label in the Linear Memory Inspector tool that serves as a placeholder if no inspections are open">
     No open inspections
+  </message>
+  <message name="IDS_DEVTOOLS_a76f2c01be007dbd8c7fdb01a4ec6115" desc="Text that describes the representation of a value in the Linear Memory Inspector, short for scientific">
+    sci
+  </message>
+  <message name="IDS_DEVTOOLS_aaf28878cda7c688f16a2ed379371d6d" desc="Tooltip text that appears when hovering over the gear button to open and close settings in the Linear Memory Inspector">
+    Toggle value type settings
+  </message>
+  <message name="IDS_DEVTOOLS_b5b78b15775d7aa54506af3ca95fd561" desc="Text that describes the type of a value in the Linear Memory Inspector">
+    Float 32-bit
+  </message>
+  <message name="IDS_DEVTOOLS_b8d1b43eae73587ba56baef574709ecb" desc="Text that describes the representation of a value in the Linear Memory Inspector">
+    hex
+  </message>
+  <message name="IDS_DEVTOOLS_a4b86d60a07398d42aa20fac81ce5427" desc="Text that describes the Endianness setting that can be selected in the select item in the Linear Memory Inspector">
+    Big Endian
+  </message>
+  <message name="IDS_DEVTOOLS_e94cd34eafd5a04736af0b0e78669890" desc="Text that describes the type of a value in the Linear Memory Inspector">
+    Integer 64-bit
+  </message>
+  <message name="IDS_DEVTOOLS_f1817e8740a2974ef36dfc7d3d27d30a" desc="Text that describes the type of a value in the Linear Memory Inspector">
+    Integer 16-bit
   </message>
 </grit-part>

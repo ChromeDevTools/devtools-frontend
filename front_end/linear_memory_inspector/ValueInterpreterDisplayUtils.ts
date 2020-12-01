@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
+const ls = Common.ls;
+
 export const VALUE_INTEPRETER_MAX_NUM_BYTES = 8;
 
 export const enum ValueType {
@@ -25,6 +28,49 @@ export const enum ValueTypeMode {
   Octal = 'oct',
   Scientific = 'sci',
   None = 'none'
+}
+
+export function valueTypeModeToLocalizedString(mode: ValueTypeMode) {
+  switch (mode) {
+    case ValueTypeMode.Decimal:
+      return ls`dec`;
+    case ValueTypeMode.Hexadecimal:
+      return ls`hex`;
+    case ValueTypeMode.Octal:
+      return ls`oct`;
+    case ValueTypeMode.Scientific:
+      return ls`sci`;
+    case ValueTypeMode.None:
+      return ls`none`;
+  }
+}
+
+export function endiannessToLocalizedString(endianness: Endianness) {
+  switch (endianness) {
+    case Endianness.Little:
+      return ls`Little Endian`;
+    case Endianness.Big:
+      return ls`Big Endian`;
+  }
+}
+
+export function valueTypeToLocalizedString(valueType: ValueType) {
+  switch (valueType) {
+    case ValueType.Int8:
+      return ls`Integer 8-bit`;
+    case ValueType.Int16:
+      return ls`Integer 16-bit`;
+    case ValueType.Int32:
+      return ls`Integer 32-bit`;
+    case ValueType.Int64:
+      return ls`Integer 64-bit`;
+    case ValueType.Float32:
+      return ls`Float 32-bit`;
+    case ValueType.Float64:
+      return ls`Float 64-bit`;
+    case ValueType.String:
+      return ls`String`;
+  }
 }
 
 export function isValidMode(type: ValueType, mode: ValueTypeMode) {

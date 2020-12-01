@@ -10,6 +10,7 @@ const {assert} = chai;
 const DISPLAY_SELECTOR = 'devtools-linear-memory-inspector-interpreter-display';
 const SETTINGS_SELECTOR = 'devtools-linear-memory-inspector-interpreter-settings';
 const TOOLBAR_SELECTOR = '.settings-toolbar';
+export const ENDIANNESS_SELECTOR = '[data-endianness]';
 
 function assertSettingsRenders(component: HTMLElement) {
   const settings = getElementWithinComponent(
@@ -68,8 +69,8 @@ describe('LinearMemoryValueInterpreter', () => {
 
     const settings = getElementWithinComponent(
         component, SETTINGS_SELECTOR, LinearMemoryInspector.ValueInterpreterSettings.ValueInterpreterSettings);
-    const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryValueInterpreter.ValueTypeToggleEvent>(
-        component, 'value-type-toggle');
+    const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryValueInterpreter.ValueTypeToggledEvent>(
+        component, 'value-type-toggled');
     const expectedType = LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64;
     const expectedChecked = true;
     const typeToggleEvent =
@@ -79,5 +80,30 @@ describe('LinearMemoryValueInterpreter', () => {
     const event = await eventPromise;
     assert.strictEqual(event.data.type, expectedType);
     assert.strictEqual(event.data.checked, expectedChecked);
+  });
+
+  it('renders the endianness options', async () => {
+    const component = setUpComponent();
+    const input = getElementWithinComponent(component, ENDIANNESS_SELECTOR, HTMLSelectElement);
+    assert.deepEqual(input.value, LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little);
+    const options = input.querySelectorAll('option');
+    const endiannessSettings = Array.from(options).map(option => option.value);
+    assert.deepEqual(endiannessSettings, [
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little,
+      LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Big,
+    ]);
+  });
+
+  it('triggers an event on changing endianness', async () => {
+    const component = setUpComponent();
+    const input = getElementWithinComponent(component, ENDIANNESS_SELECTOR, HTMLSelectElement);
+
+    const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryValueInterpreter.EndiannessChangedEvent>(
+        component, 'endianness-changed');
+    const changeEvent = new Event('change');
+    input.dispatchEvent(changeEvent);
+
+    const event = await eventPromise;
+    assert.deepEqual(event.data, LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little);
   });
 });

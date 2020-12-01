@@ -12,7 +12,7 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 const {render, html} = LitHtml;
 
 import {HistoryNavigationEvent, LinearMemoryNavigatorData, Navigation, PageNavigationEvent} from './LinearMemoryNavigator.js';
-import type {LinearMemoryValueInterpreterData, ValueTypeToggleEvent} from './LinearMemoryValueInterpreter.js';
+import type {EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from './LinearMemoryValueInterpreter.js';
 import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
 import {VALUE_INTEPRETER_MAX_NUM_BYTES, ValueType, Endianness} from './ValueInterpreterDisplayUtils.js';
 
@@ -60,6 +60,7 @@ export class LinearMemoryInspector extends HTMLElement {
   private address = 0;
   private numBytesPerPage = 4;
   private valueTypes: Set<ValueType> = new Set([ValueType.Int8, ValueType.Float32]);
+  private endianness: Endianness = Endianness.Little;
 
   set data(data: LinearMemoryInspectorData) {
     if (data.address < data.memoryOffset || data.address > data.memoryOffset + data.memory.length || data.address < 0) {
@@ -120,8 +121,9 @@ export class LinearMemoryInspector extends HTMLElement {
           .data=${{
             value: this.memory.slice(this.address - this.memoryOffset, this.address + VALUE_INTEPRETER_MAX_NUM_BYTES).buffer,
             valueTypes: this.valueTypes,
-            endianness: Endianness.Little } as LinearMemoryValueInterpreterData}
-          @value-type-toggle=${this.onValueTypeToggled}>
+            endianness: this.endianness } as LinearMemoryValueInterpreterData}
+          @value-type-toggled=${this.onValueTypeToggled}
+          @endianness-changed=${this.onEndiannessChanged}>
         </devtools-linear-memory-inspector-interpreter/>
       </div>
       `, this.shadow, {
@@ -130,7 +132,12 @@ export class LinearMemoryInspector extends HTMLElement {
     // clang-format on
   }
 
-  private onValueTypeToggled(e: ValueTypeToggleEvent) {
+  private onEndiannessChanged(e: EndiannessChangedEvent) {
+    this.endianness = e.data;
+    this.render();
+  }
+
+  private onValueTypeToggled(e: ValueTypeToggledEvent) {
     const {type, checked} = e.data;
     if (checked) {
       this.valueTypes.add(type);

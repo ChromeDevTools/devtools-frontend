@@ -33,11 +33,17 @@ import * as SDK from '../sdk/sdk.js';
 import * as Sources from '../sources/sources.js';
 import * as UI from '../ui/ui.js';
 
+/** @type {!DOMBreakpointsSidebarPane} */
+let domBreakpointsSidebarPaneInstance;
+
 /**
  * @implements {UI.ContextFlavorListener.ContextFlavorListener}
  * @implements {UI.ListControl.ListDelegate<!SDK.DOMDebuggerModel.DOMBreakpoint>}
  */
 export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
+  /**
+   * @private
+   */
   constructor() {
     super(true);
     this.registerRequiredCSS('browser_debugger/domBreakpointsSidebarPane.css', {enableLegacyPatching: true});
@@ -77,6 +83,13 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
 
     this._highlightedBreakpoint = null;
     this._update();
+  }
+
+  static instance() {
+    if (!domBreakpointsSidebarPaneInstance) {
+      domBreakpointsSidebarPaneInstance = new DOMBreakpointsSidebarPane();
+    }
+    return domBreakpointsSidebarPaneInstance;
   }
 
   /**

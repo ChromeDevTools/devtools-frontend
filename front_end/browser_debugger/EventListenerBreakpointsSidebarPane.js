@@ -5,7 +5,13 @@
 import * as SDK from '../sdk/sdk.js';
 import {CategorizedBreakpointsSidebarPane} from './CategorizedBreakpointsSidebarPane.js';
 
+/** @type {!EventListenerBreakpointsSidebarPane} */
+let eventListenerBreakpointsSidebarPaneInstance;
+
 export class EventListenerBreakpointsSidebarPane extends CategorizedBreakpointsSidebarPane {
+  /**
+   * @private
+   */
   constructor() {
     const categories = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().eventListenerBreakpoints().map(
         breakpoint => breakpoint.category());
@@ -13,6 +19,13 @@ export class EventListenerBreakpointsSidebarPane extends CategorizedBreakpointsS
     const breakpoints = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().eventListenerBreakpoints();
     super(
         categories, breakpoints, 'sources.eventListenerBreakpoints', Protocol.Debugger.PausedEventReason.EventListener);
+  }
+
+  static instance() {
+    if (!eventListenerBreakpointsSidebarPaneInstance) {
+      eventListenerBreakpointsSidebarPaneInstance = new EventListenerBreakpointsSidebarPane();
+    }
+    return eventListenerBreakpointsSidebarPaneInstance;
   }
 
   /**

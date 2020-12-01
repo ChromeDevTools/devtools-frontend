@@ -35,3 +35,14 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "browser_debugger-meta.ts"
+
+  deps = [
+    ":bundle",
+    "../platform:bundle",
+    "../root:bundle",
+    "../ui:bundle",
+  ]
+}

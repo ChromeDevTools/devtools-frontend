@@ -1,57 +1,11 @@
 {
   "extensions": [
     {
-      "type": "view",
-      "location": "sources.sidebar-bottom",
-      "id": "sources.eventListenerBreakpoints",
-      "title": "Event Listener Breakpoints",
-      "order": 9,
-      "persistence": "permanent",
-      "className": "BrowserDebugger.EventListenerBreakpointsSidebarPane"
-    },
-    {
-      "type": "view",
-      "location": "sources.sidebar-bottom",
-      "id": "sources.cspViolationBreakpoints",
-      "title": "CSP Violation Breakpoints",
-      "order": 10,
-      "persistence": "permanent",
-      "className": "BrowserDebugger.CSPViolationBreakpointsSidebarPane"
-    },
-    {
       "type": "@UI.ContextFlavorListener",
       "contextTypes": [
         "SDK.DebuggerPausedDetails"
       ],
       "className": "BrowserDebugger.XHRBreakpointsSidebarPane"
-    },
-    {
-      "type": "view",
-      "location": "sources.sidebar-bottom",
-      "id": "sources.xhrBreakpoints",
-      "title": "XHR/fetch Breakpoints",
-      "order": 5,
-      "hasToolbar": true,
-      "persistence": "permanent",
-      "className": "BrowserDebugger.XHRBreakpointsSidebarPane"
-    },
-    {
-      "type": "view",
-      "location": "sources.sidebar-bottom",
-      "id": "sources.domBreakpoints",
-      "title": "DOM Breakpoints",
-      "order": 7,
-      "persistence": "permanent",
-      "className": "BrowserDebugger.DOMBreakpointsSidebarPane"
-    },
-    {
-      "type": "view",
-      "location": "elements-sidebar",
-      "id": "elements.domBreakpoints",
-      "title": "DOM Breakpoints",
-      "order": 6,
-      "persistence": "permanent",
-      "className": "BrowserDebugger.DOMBreakpointsSidebarPane"
     },
     {
       "type": "@Elements.MarkerDecorator",
@@ -73,16 +27,6 @@
         "SDK.DebuggerPausedDetails"
       ],
       "className": "BrowserDebugger.DOMBreakpointsSidebarPane"
-    },
-    {
-      "type": "view",
-      "location": "sources.sidebar-bottom",
-      "id": "sources.globalListeners",
-      "title": "Global Listeners",
-      "order": 8,
-      "hasToolbar": true,
-      "persistence": "permanent",
-      "className": "BrowserDebugger.ObjectEventListenersSidebarPane"
     },
     {
       "type": "view",

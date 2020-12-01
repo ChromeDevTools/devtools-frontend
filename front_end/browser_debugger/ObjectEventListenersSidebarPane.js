@@ -7,11 +7,17 @@ import * as EventListeners from '../event_listeners/event_listeners.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+/** @type {!ObjectEventListenersSidebarPane} */
+let objectEventListenersSidebarPaneInstance;
+
 /**
  * @implements {UI.Toolbar.ItemsProvider}
  * @unrestricted
  */
 export class ObjectEventListenersSidebarPane extends UI.Widget.VBox {
+  /**
+   * @private
+   */
   constructor() {
     super();
     this._refreshButton = new UI.Toolbar.ToolbarButton(ls`Refresh global listeners`, 'largeicon-refresh');
@@ -22,6 +28,13 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox {
         this.update.bind(this), /* enableDefaultTreeFocus */ true);
     this._eventListenersView.show(this.element);
     this.setDefaultFocusedChild(this._eventListenersView);
+  }
+
+  static instance() {
+    if (!objectEventListenersSidebarPaneInstance) {
+      objectEventListenersSidebarPaneInstance = new ObjectEventListenersSidebarPane();
+    }
+    return objectEventListenersSidebarPaneInstance;
   }
 
   /**

@@ -16,6 +16,9 @@ const containerToBreakpointEntry = new WeakMap();
  */
 const breakpointEntryToCheckbox = new WeakMap();
 
+/** @type {!XHRBreakpointsSidebarPane} */
+let xhrBreakpointsSidebarPaneInstance;
+
 /**
  * @implements {UI.ContextFlavorListener.ContextFlavorListener}
  * @implements {UI.Toolbar.ItemsProvider}
@@ -23,6 +26,9 @@ const breakpointEntryToCheckbox = new WeakMap();
  * @unrestricted
  */
 export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
+  /**
+   * @private
+   */
   constructor() {
     super(true);
     this.registerRequiredCSS('browser_debugger/xhrBreakpointsSidebarPane.css', {enableLegacyPatching: true});
@@ -49,6 +55,13 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
     this._emptyElement.tabIndex = -1;
     this._restoreBreakpoints();
     this._update();
+  }
+
+  static instance() {
+    if (!xhrBreakpointsSidebarPaneInstance) {
+      xhrBreakpointsSidebarPaneInstance = new XHRBreakpointsSidebarPane();
+    }
+    return xhrBreakpointsSidebarPaneInstance;
   }
 
   /**

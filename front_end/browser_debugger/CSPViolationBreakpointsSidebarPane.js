@@ -5,13 +5,26 @@
 import * as SDK from '../sdk/sdk.js';
 import {CategorizedBreakpointsSidebarPane} from './CategorizedBreakpointsSidebarPane.js';
 
+/** @type {!CSPViolationBreakpointsSidebarPane} */
+let cspViolationBreakpointsSidebarPaneInstance;
+
 export class CSPViolationBreakpointsSidebarPane extends CategorizedBreakpointsSidebarPane {
+  /**
+   * @private
+   */
   constructor() {
     /** @type {!Array<!SDK.DOMDebuggerModel.CSPViolationBreakpoint>} */
     const breakpoints = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().cspViolationBreakpoints();
     const categories = breakpoints.map(breakpoint => breakpoint.category());
     categories.sort();
     super(categories, breakpoints, 'sources.cspViolationBreakpoints', Protocol.Debugger.PausedEventReason.CSPViolation);
+  }
+
+  static instance() {
+    if (!cspViolationBreakpointsSidebarPaneInstance) {
+      cspViolationBreakpointsSidebarPaneInstance = new CSPViolationBreakpointsSidebarPane();
+    }
+    return cspViolationBreakpointsSidebarPaneInstance;
   }
 
   /**

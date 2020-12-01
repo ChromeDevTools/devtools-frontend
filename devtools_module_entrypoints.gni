@@ -23,6 +23,7 @@ generated_typescript_entrypoint_sources = [
   "$resources_out_dir/bindings/bindings-legacy.js",
   "$resources_out_dir/bindings/bindings.js",
   "$resources_out_dir/browser_debugger/browser_debugger-legacy.js",
+  "$resources_out_dir/browser_debugger/browser_debugger-meta.js",
   "$resources_out_dir/browser_debugger/browser_debugger.js",
   "$resources_out_dir/browser_sdk/browser_sdk.js",
   "$resources_out_dir/changes/changes-legacy.js",

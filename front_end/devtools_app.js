@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import './shell.js';
 import './elements/elements-meta.js';
+import './browser_debugger/browser_debugger-meta.js';
 import * as Startup from './startup/startup.js';
 
 Startup.RuntimeInstantiator.startApplication('devtools_app');

@@ -15,7 +15,7 @@ export class CSPViolationsListView extends UI.Widget.VBox {
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('issues/cspViolationsListView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('issues/cspViolationsListView.css', {enableLegacyPatching: false});
 
     this.table.data = {
       columns: [

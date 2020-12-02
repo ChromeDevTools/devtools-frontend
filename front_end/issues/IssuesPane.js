@@ -1323,7 +1323,7 @@ export function getGroupIssuesByCategorySetting() {
 export class IssuesPaneImpl extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('issues/issuesPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('issues/issuesPane.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('issues-pane');
 
     this._categoryViews = new Map();

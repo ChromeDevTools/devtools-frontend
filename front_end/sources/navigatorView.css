@@ -5,6 +5,6 @@
  */
 
 .navigator-toolbar {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--color-details-hairline);
   padding-left: 8px;
 }

@@ -103,7 +103,7 @@ export class InspectorView extends VBox {
 
     this._tabbedPane = this._tabbedLocation.tabbedPane();
     this._tabbedPane.element.classList.add('main-tabbed-pane');
-    this._tabbedPane.registerRequiredCSS('ui/inspectorViewTabbedPane.css', {enableLegacyPatching: true});
+    this._tabbedPane.registerRequiredCSS('ui/inspectorViewTabbedPane.css', {enableLegacyPatching: false});
     this._tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this._tabSelected, this);
     this._tabbedPane.setAccessibleName(Common.UIString.UIString('Panels'));
     this._tabbedPane.setTabDelegate(this._tabDelegate);

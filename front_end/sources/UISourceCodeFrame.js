@@ -810,7 +810,7 @@ export class RowMessageBucket {
   messagesDescription() {
     this._messagesDescriptionElement.removeChildren();
     UI.Utils.appendStyle(
-        this._messagesDescriptionElement, 'source_frame/messagesPopover.css', {enableLegacyPatching: true});
+        this._messagesDescriptionElement, 'source_frame/messagesPopover.css', {enableLegacyPatching: false});
     for (let i = 0; i < this._messages.length; ++i) {
       this._messagesDescriptionElement.appendChild(this._messages[i].element);
     }

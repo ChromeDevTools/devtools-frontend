@@ -38,7 +38,7 @@ export class FontView extends UI.View.SimpleView {
    */
   constructor(mimeType, contentProvider) {
     super(Common.UIString.UIString('Font'));
-    this.registerRequiredCSS('source_frame/fontView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('source_frame/fontView.css', {enableLegacyPatching: false});
     this.element.classList.add('font-view');
     this._url = contentProvider.contentURL();
     UI.ARIAUtils.setAccessibleName(this.element, ls`Preview of font from ${this._url}`);

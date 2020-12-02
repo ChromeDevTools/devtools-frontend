@@ -40,9 +40,9 @@ import {resolveScopeChain, resolveScopeInObject, resolveThisObject} from './Sour
 export class ScopeChainSidebarPane extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('sources/scopeChainSidebarPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('sources/scopeChainSidebarPane.css', {enableLegacyPatching: false});
     this._treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
-    this._treeOutline.registerRequiredCSS('sources/scopeChainSidebarPane.css', {enableLegacyPatching: true});
+    this._treeOutline.registerRequiredCSS('sources/scopeChainSidebarPane.css', {enableLegacyPatching: false});
     this._treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this._expandController =
         new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this._treeOutline);

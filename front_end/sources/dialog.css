@@ -17,7 +17,7 @@ label {
 }
 
 input[type=text].add-source-map {
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 20%);
+  box-shadow: 0 0 0 1px var(--box-shadow-outline-color);
   font-size: inherit;
   margin: 0 8px 0 5px;
 }

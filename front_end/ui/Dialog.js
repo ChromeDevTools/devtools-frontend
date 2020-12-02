@@ -39,7 +39,7 @@ import {WidgetFocusRestorer} from './Widget.js';
 export class Dialog extends GlassPane {
   constructor() {
     super();
-    this.registerRequiredCSS('ui/dialog.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('ui/dialog.css', {enableLegacyPatching: false});
     this.contentElement.tabIndex = 0;
     this.contentElement.addEventListener('focus', () => this.widget().focus(), false);
     this.widget().setDefaultFocusedElement(this.contentElement);

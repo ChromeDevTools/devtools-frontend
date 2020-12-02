@@ -1700,7 +1700,7 @@ export class TimelineUIUtils {
     }
 
     const invalidationsTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    invalidationsTreeOutline.registerRequiredCSS('timeline/invalidationsTree.css', {enableLegacyPatching: true});
+    invalidationsTreeOutline.registerRequiredCSS('timeline/invalidationsTree.css', {enableLegacyPatching: false});
     invalidationsTreeOutline.element.classList.add('invalidations-tree');
 
     const invalidationGroups = groupInvalidationsByCause(invalidations);

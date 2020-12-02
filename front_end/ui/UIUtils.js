@@ -1618,7 +1618,7 @@ export class DevToolsCloseButton extends HTMLDivElement {
   constructor() {
     super();
     const root = createShadowRootWithCoreStyles(
-        this, {cssFile: 'ui/closeButton.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        this, {cssFile: 'ui/closeButton.css', enableLegacyPatching: false, delegatesFocus: undefined});
     /** @type {!HTMLElement} */
     this._buttonElement = /** @type {!HTMLElement} */ (root.createChild('div', 'close-button'));
     ARIAUtils.setAccessibleName(this._buttonElement, ls`Close`);

@@ -17,7 +17,7 @@ export class XMLView extends UI.Widget.Widget {
    */
   constructor(parsedXML) {
     super(true);
-    this.registerRequiredCSS('source_frame/xmlView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('source_frame/xmlView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeOutline.registerRequiredCSS('source_frame/xmlTree.css', {enableLegacyPatching: true});

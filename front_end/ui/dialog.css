@@ -6,7 +6,7 @@
 
 .widget {
   box-shadow: var(--drop-shadow);
-  background: white;
+  background: var(--color-background);
   justify-content: flex-start;
   align-items: stretch;
   display: flex;

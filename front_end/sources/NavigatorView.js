@@ -71,7 +71,7 @@ const TYPE_ORDERS = new Map([
 export class NavigatorView extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('sources/navigatorView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('sources/navigatorView.css', {enableLegacyPatching: false});
 
     /** @type {?UI.Widget.Widget} */
     this._placeholder = null;

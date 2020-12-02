@@ -17,7 +17,7 @@
   max-width: 100%;
   max-height: 1000px;
   background-image: url(Images/checker.png);
-  box-shadow: 0 5px 10px rgb(0 0 0 / 50%);
+  box-shadow: 0 5px 10px var(--box-shadow-outline-color);
   user-select: text;
   -webkit-user-drag: auto;
 }

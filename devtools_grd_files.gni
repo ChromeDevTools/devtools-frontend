@@ -1143,6 +1143,7 @@ grd_files_debug_sources = [
   "front_end/ui/UIUtils.js",
   "front_end/ui/View.js",
   "front_end/ui/ViewManager.js",
+  "front_end/ui/ViewRegistration.js",
   "front_end/ui/Widget.js",
   "front_end/ui/XElement.js",
   "front_end/ui/XLink.js",

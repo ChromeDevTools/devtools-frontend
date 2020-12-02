@@ -61,6 +61,7 @@
     "SuggestBox.js",
     "TabbedPane.js",
     "UIUtils.js",
+    "ViewRegistration.js",
     "ZoomManager.js",
     "Geometry.js",
     "XLink.js",

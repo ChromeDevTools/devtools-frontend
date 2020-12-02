@@ -38,10 +38,6 @@ UI.ViewManager.registerViewExtension({
     const Elements = await loadElementsModule();
     return Elements.ElementsPanel.ElementsPanel.instance();
   },
-  experiment: undefined,
-  condition: undefined,
-  settings: undefined,
-  tags: undefined,
 });
 
 UI.ViewManager.registerViewExtension({
@@ -55,10 +51,6 @@ UI.ViewManager.registerViewExtension({
     const Elements = await loadElementsModule();
     return Elements.EventListenersWidget.EventListenersWidget.instance();
   },
-  settings: undefined,
-  experiment: undefined,
-  condition: undefined,
-  tags: undefined,
 });
 
 UI.ViewManager.registerViewExtension({
@@ -71,11 +63,6 @@ UI.ViewManager.registerViewExtension({
     const Elements = await loadElementsModule();
     return Elements.PropertiesWidget.PropertiesWidget.instance();
   },
-  settings: undefined,
-  condition: undefined,
-  tags: undefined,
-  hasToolbar: undefined,
-  experiment: undefined,
 });
 
 UI.ViewManager.registerViewExtension({
@@ -89,10 +76,6 @@ UI.ViewManager.registerViewExtension({
     const Elements = await loadElementsModule();
     return Elements.NodeStackTraceWidget.NodeStackTraceWidget.instance();
   },
-  condition: undefined,
-  settings: undefined,
-  tags: undefined,
-  hasToolbar: undefined,
 });
 
 UI.ViewManager.registerViewExtension({
@@ -106,10 +89,6 @@ UI.ViewManager.registerViewExtension({
     const Elements = await loadElementsModule();
     return Elements.LayoutSidebarPane.LayoutSidebarPane.instance();
   },
-  condition: undefined,
-  settings: undefined,
-  tags: undefined,
-  hasToolbar: undefined,
 });
 
 UI.ActionRegistration.registerActionExtension({

@@ -758,6 +758,7 @@ all_typescript_module_sources = [
   "ui/UIUtils.js",
   "ui/View.js",
   "ui/ViewManager.js",
+  "ui/ViewRegistration.js",
   "ui/Widget.js",
   "ui/XElement.js",
   "ui/XLink.js",

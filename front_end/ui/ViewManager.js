@@ -13,48 +13,13 @@ import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import {ItemsProvider, Toolbar, ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {createTextChild} from './UIUtils.js';
 import {ProvidedView, TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
+import {getRegisteredViewExtensions, registerViewExtension, ViewLocationValues, ViewPersistence, ViewRegistration} from './ViewRegistration.js';
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
-
-/** @type {!Array<!PreRegisteredView>} */
-const registeredViewExtensions = [];
-
-/** @enum {string} */
-export const ViewPersistence = {
-  CLOSEABLE: 'closeable',
-  PERMANENT: 'permanent',
-  TRANSIENT: 'transient',
-};
-
-/** @enum {string} */
-export const ViewLocationValues = {
-  PANEL: 'panel',
-  SETTINGS_VIEW: 'settings-view',
-  ELEMENTS_SIDEBAR: 'elements-sidebar',
-  SOURCES_SIDEBAR_BOTTOM: 'sources.sidebar-bottom'
-};
-
-/**
- * @typedef {{
- *  experiment: (!Root.Runtime.ExperimentName|undefined),
- *  condition: (!Root.Runtime.ConditionName|undefined),
- *  title: string,
- *  persistence: (!ViewPersistence|undefined),
- *  id: string,
- *  location: (!ViewLocationValues|undefined),
- *  hasToolbar: (boolean|undefined),
- *  loadView: function():!Promise<!Widget>,
- *  order: (number|undefined),
- *  settings: (!Array<string>|undefined),
- *  tags: (string|undefined),
- * }}
- */
-// @ts-ignore typedef
-export let ViewRegistration;
 
 /**
  * @implements {View}
  */
-class PreRegisteredView {
+export class PreRegisteredView {
   /**
    * @param {!ViewRegistration} viewRegistration
    */
@@ -149,21 +114,6 @@ class PreRegisteredView {
   condition() {
     return this._viewRegistration.condition;
   }
-}
-
-/**
- * @param {!ViewRegistration} registration
- */
-export function registerViewExtension(registration) {
-  registeredViewExtensions.push(new PreRegisteredView(registration));
-}
-
-/**
- * @return {!Array<!PreRegisteredView>}
- */
-export function getRegisteredViewExtensions() {
-  return registeredViewExtensions.filter(
-      view => Root.Runtime.Runtime.isDescriptorEnabled({experiment: view.experiment(), condition: view.condition()}));
 }
 
 /**
@@ -1074,3 +1024,5 @@ class _StackLocation extends _Location {
     }
   }
 }
+
+export {ViewRegistration, ViewPersistence, getRegisteredViewExtensions, registerViewExtension, ViewLocationValues};

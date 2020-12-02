@@ -1812,6 +1812,11 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
       const cell = element.appendChild(this.createCell(column.id));
       // Add each visibile cell to the node's accessible text by gathering 'Column Title: content'
       const localizedTitle = ls`${column.title}`;
+
+      if (column.dataType === DataType.Boolean && this.data[column.id] === true) {
+        this.setCellAccessibleName(ls`checked`, cell, column.id);
+      }
+
       accessibleTextArray.push(`${localizedTitle}: ${this.cellAccessibleTextMap.get(column.id) || cell.textContent}`);
     }
     this.nodeAccessibleText = accessibleTextArray.join(', ');

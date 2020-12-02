@@ -33,7 +33,6 @@ import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-co
 
 /**
  * @implements {Common.Progress.Progress}
- * @unrestricted
  */
 export class ProgressIndicator {
   constructor() {

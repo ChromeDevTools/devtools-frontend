@@ -73,7 +73,6 @@ let elementsPanelInstance;
  * @implements {UI.SearchableView.Searchable}
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DOMModel.DOMModel>}
  * @implements {UI.View.ViewLocationResolver}
- * @unrestricted
  */
 export class ElementsPanel extends UI.Panel.Panel {
   constructor() {
@@ -1125,7 +1124,6 @@ const TrackedCSSGridProperties = [
 
 /**
  * @implements {UI.ContextMenu.Provider}
- * @unrestricted
  */
 export class ContextMenuProvider {
   /**
@@ -1153,7 +1151,6 @@ export class ContextMenuProvider {
 
 /**
  * @implements {Common.Revealer.Revealer}
- * @unrestricted
  */
 export class DOMNodeRevealer {
   /**
@@ -1252,7 +1249,6 @@ export class DOMNodeRevealer {
 
 /**
  * @implements {Common.Revealer.Revealer}
- * @unrestricted
  */
 export class CSSPropertyRevealer {
   /**
@@ -1271,7 +1267,6 @@ let elementsActionDelegateInstance;
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class ElementsActionDelegate {
   /**
@@ -1328,7 +1323,6 @@ export class ElementsActionDelegate {
 
 /**
  * @implements {MarkerDecorator}
- * @unrestricted
  */
 export class PseudoStateMarkerDecorator {
   /**

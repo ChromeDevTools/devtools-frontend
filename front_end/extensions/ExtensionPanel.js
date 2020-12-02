@@ -37,7 +37,6 @@ import {ExtensionNotifierView, ExtensionView} from './ExtensionView.js';
 
 /**
  * @implements {UI.SearchableView.Searchable}
- * @unrestricted
  */
 export class ExtensionPanel extends UI.Panel.Panel {
   /**

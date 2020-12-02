@@ -11,7 +11,6 @@ import {changeObjectToEditOperation} from './CodeMirrorUtils.js';
 
 /**
  * @implements {UI.SuggestBox.SuggestBoxDelegate}
- * @unrestricted
  */
 export class TextEditorAutocompleteController {
   // https://crbug.com/1151919 * = CodeMirror.Editor

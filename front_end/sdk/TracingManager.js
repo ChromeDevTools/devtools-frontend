@@ -128,7 +128,6 @@ export class TracingManagerClient {
 
 /**
  * @implements {ProtocolProxyApi.TracingDispatcher}
- * @unrestricted
  */
 class TracingDispatcher {
   /**

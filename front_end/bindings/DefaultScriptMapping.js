@@ -42,7 +42,6 @@ const scriptToUISourceCodeMap = new WeakMap();
 
 /**
  * @implements {DebuggerSourceMapping}
- * @unrestricted
  */
 export class DefaultScriptMapping {
   /**

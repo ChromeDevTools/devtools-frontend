@@ -479,7 +479,6 @@ export class Setting {
 }
 
 /**
- * @unrestricted
  * @extends {Setting<V>}
  * @template V
  */
@@ -765,7 +764,6 @@ export class LegacySetting extends Setting {
 }
 
 /**
- * @unrestricted
  * @extends {Setting<V>}
  * @template V
  */
@@ -983,7 +981,6 @@ export class PreRegisteredSetting extends Setting {
 }
 
 /**
- * @unrestricted
  * @extends LegacySetting<*>
  */
 export class RegExpSetting extends LegacySetting {

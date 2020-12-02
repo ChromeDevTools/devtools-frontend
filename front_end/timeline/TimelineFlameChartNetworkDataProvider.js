@@ -17,7 +17,6 @@ import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 /**
  * @implements {PerfUI.FlameChart.FlameChartDataProvider}
- * @unrestricted
  */
 export class TimelineFlameChartNetworkDataProvider {
   constructor() {

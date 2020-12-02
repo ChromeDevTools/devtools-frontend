@@ -7,7 +7,6 @@ import * as UI from '../ui/ui.js';
 
 /**
  * @implements {UI.ListWidget.Delegate<!{header: string}>}
- * @unrestricted
  */
 export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
   /**

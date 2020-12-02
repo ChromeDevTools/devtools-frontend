@@ -52,7 +52,6 @@ import {instance} from './ProfileTypeRegistry.js';
 /**
  * @implements {DataDisplayDelegate}
  * @implements {UI.SearchableView.Searchable}
- * @unrestricted
  */
 export class HeapSnapshotView extends UI.View.SimpleView {
   /**
@@ -1117,7 +1116,6 @@ export class StatisticsPerspective extends Perspective {
 
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.HeapProfilerModel.HeapProfilerModel>}
- * @unrestricted
  */
 export class HeapSnapshotProfileType extends ProfileType {
   /**

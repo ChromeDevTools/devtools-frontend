@@ -18,7 +18,6 @@ import {Client as TimelineLoaderClient} from './TimelineLoader.js';  // eslint-d
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.CPUProfilerModel.CPUProfilerModel>}
  * @implements {SDK.TracingManager.TracingManagerClient}
- * @unrestricted
  */
 export class TimelineController {
   /**

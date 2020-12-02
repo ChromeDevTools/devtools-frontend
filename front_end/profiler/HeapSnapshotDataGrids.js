@@ -43,7 +43,6 @@ import {DataDisplayDelegate, ProfileHeader} from './ProfileHeader.js';  // eslin
 const adjacencyMap = new WeakMap();
 
 /**
- * @unrestricted
  * @extends DataGrid.DataGrid.DataGridImpl<!HeapSnapshotGridNode>
  */
 export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl {

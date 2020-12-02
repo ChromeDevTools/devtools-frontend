@@ -36,7 +36,6 @@ import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 
 /**
  * @extends {TimelineController}
- * @unrestricted
  */
 export class UIDevtoolsController extends TimelineController {
   /**

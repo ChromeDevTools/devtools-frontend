@@ -295,7 +295,6 @@ const MAX_EAGER_POST_REQUEST_BODY_LENGTH = 64 * 1024;  // bytes
 
 /**
  * @implements {ProtocolProxyApi.NetworkDispatcher}
- * @unrestricted
  */
 export class NetworkDispatcher {
   /**
@@ -1047,7 +1046,6 @@ let multiTargetNetworkManagerInstance;
 
 /**
  * @implements {SDKModelObserver<!NetworkManager>}
- * @unrestricted
  */
 export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {

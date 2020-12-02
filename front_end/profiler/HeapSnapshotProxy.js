@@ -271,7 +271,6 @@ export class HeapSnapshotProxyObject {
 
 /**
  * @implements {Common.StringOutputStream.OutputStream}
- * @unrestricted
  */
 export class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject {
   /**
@@ -517,7 +516,6 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
 
 /**
  * @implements {ChildrenProvider}
- * @unrestricted
  */
 export class HeapSnapshotProviderProxy extends HeapSnapshotProxyObject {
   /**

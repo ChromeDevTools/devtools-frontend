@@ -69,7 +69,6 @@ const editorToDevtoolsWrapper = new WeakMap();
 
 /**
  * @implements {UI.TextEditor.TextEditor}
- * @unrestricted
  */
 export class CodeMirrorTextEditor extends UI.Widget.VBox {
   /**
@@ -1752,7 +1751,6 @@ CodeMirror.commands.goSmartPageDown = function(codemirror) {
 
 /**
  * @implements {TextEditorPositionHandle}
- * @unrestricted
  */
 export class CodeMirrorPositionHandle {
   // https://crbug.com/1151919 first * = CodeMirror.Editor, second * = CodeMirror.Pos
@@ -2041,7 +2039,6 @@ export class TextEditorBookMark {
 
 /**
  * @implements {UI.TextEditor.TextEditorFactory}
- * @unrestricted
  */
 export class CodeMirrorTextEditorFactory {
   /**

@@ -36,7 +36,6 @@ import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-l
 
 /**
  * @implements {UI.ListWidget.Delegate<*>}
- * @unrestricted
  */
 export class EditFileSystemView extends UI.Widget.VBox {
   /**

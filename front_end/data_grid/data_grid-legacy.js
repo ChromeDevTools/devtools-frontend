@@ -15,19 +15,16 @@ DataGrid._sortIconSymbol = Symbol('sortIcon');
 DataGrid._longTextSymbol = Symbol('longText');
 
 /**
- * @unrestricted
  * @constructor
  */
 DataGrid.DataGrid = DataGridModule.DataGrid.DataGridImpl;
 
 /**
- * @unrestricted
  * @constructor
  */
 DataGrid.CreationDataGridNode = DataGridModule.DataGrid.CreationDataGridNode;
 
 /**
- * @unrestricted
  * @constructor
  */
 DataGrid.DataGridNode = DataGridModule.DataGrid.DataGridNode;
@@ -54,20 +51,17 @@ DataGrid.DataGrid.ResizeMethod = DataGridModule.DataGrid.ResizeMethod;
 DataGrid.ShowMoreDataGridNode = DataGridModule.ShowMoreDataGridNode.ShowMoreDataGridNode;
 
 /**
- * @unrestricted
  * @constructor
  */
 DataGrid.SortableDataGrid = DataGridModule.SortableDataGrid.SortableDataGrid;
 
 /**
- * @unrestricted
  * @constructor
  * @extends {DataGrid.ViewportDataGridNode<!NODE_TYPE>}
  */
 DataGrid.SortableDataGridNode = DataGridModule.SortableDataGrid.SortableDataGridNode;
 
 /**
- * @unrestricted
  * @extends {DataGrid.DataGrid<!NODE_TYPE>}
  * @constructor
  */
@@ -79,7 +73,6 @@ DataGrid.ViewportDataGrid = DataGridModule.ViewportDataGrid.ViewportDataGrid;
 DataGrid.ViewportDataGrid.Events = DataGridModule.ViewportDataGrid.Events;
 
 /**
- * @unrestricted
  * @extends {DataGrid.DataGridNode<!NODE_TYPE>}
  * @constructor
  */

@@ -15,7 +15,6 @@ Input.InputModel = InputModule.InputModel.InputModel;
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!Input.InputModel>}
  * @constructor
- * @unrestricted
  */
 Input.InputTimeline = InputModule.InputTimeline.InputTimeline;
 

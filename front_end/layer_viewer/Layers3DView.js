@@ -110,7 +110,6 @@ const imageForTexture = new Map();
 
 /**
  * @implements {LayerView}
- * @unrestricted
  */
 export class Layers3DView extends UI.Widget.VBox {
   /**

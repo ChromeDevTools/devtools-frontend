@@ -7,7 +7,6 @@ import * as UI from '../ui/ui.js';
 
 /**
  * @implements {Common.App.App}
- * @unrestricted
  */
 export class SimpleApp {
   /**
@@ -24,7 +23,6 @@ export class SimpleApp {
 
 /**
  * @implements {Common.AppProvider.AppProvider}
- * @unrestricted
  */
 export class SimpleAppProvider {
   /**

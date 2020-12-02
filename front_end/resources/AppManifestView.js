@@ -10,7 +10,6 @@ import * as UI from '../ui/ui.js';
 
 /**
  * @implements {SDK.SDKModel.Observer}
- * @unrestricted
  */
 export class AppManifestView extends UI.Widget.VBox {
   constructor() {

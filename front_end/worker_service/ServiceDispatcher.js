@@ -145,7 +145,6 @@ class ServiceDispatcher {
 
 /**
  * @implements {ServicePort}
- * @unrestricted
  */
 class WorkerServicePort {
   /**

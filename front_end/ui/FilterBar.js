@@ -194,7 +194,6 @@ FilterUI.Events = {
 
 /**
  * @implements {FilterUI}
- * @unrestricted
  */
 export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
@@ -296,7 +295,6 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
 
 /**
  * @implements {FilterUI}
- * @unrestricted
  */
 export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper {
   /**
@@ -507,7 +505,6 @@ NamedBitSetFilterUI.ALL_TYPES = 'all';
 
 /**
  * @implements {FilterUI}
- * @unrestricted
  */
 export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper {
   /**

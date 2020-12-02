@@ -32,7 +32,6 @@ let _listenerCallbackTuple;  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {EventTarget}
- * @unrestricted
  */
 export class ObjectWrapper {
   constructor() {

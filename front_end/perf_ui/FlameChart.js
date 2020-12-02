@@ -68,7 +68,6 @@ export class FlameChartDelegate {
 }
 
 /**
- * @unrestricted
  * @implements {Calculator}
  * @implements {ChartViewportDelegate}
  */

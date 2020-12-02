@@ -74,7 +74,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {UI.ListWidget.Delegate<Common.Settings.RegExpSettingItem>}
- * @unrestricted
  */
 export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
   constructor() {

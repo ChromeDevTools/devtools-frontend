@@ -36,7 +36,6 @@ import {Events as WorkspaceImplEvents, Project, projectTypes} from './WorkspaceI
 
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
- * @unrestricted
  */
 export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
   /**

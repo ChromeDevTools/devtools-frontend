@@ -40,7 +40,6 @@ import {metadataForURL} from './ResourceUtils.js';
 
 /**
  * @implements {DebuggerSourceMapping}
- * @unrestricted
  */
 export class ResourceScriptMapping {
   /**

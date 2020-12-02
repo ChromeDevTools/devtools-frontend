@@ -37,7 +37,6 @@ import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
 /**
  * @implements {InspectorFrontendHostAPI}
- * @unrestricted
  */
 export class InspectorFrontendHostStub {
   /**

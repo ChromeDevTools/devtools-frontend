@@ -43,7 +43,6 @@ const uiSourceCodeToStyleMap = new WeakMap();
 
 /**
  * @implements {SourceMapping}
- * @unrestricted
  */
 export class StylesSourceMapping {
   /**
@@ -201,7 +200,6 @@ export class StylesSourceMapping {
 
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
- * @unrestricted
  */
 export class StyleFile {
   /**

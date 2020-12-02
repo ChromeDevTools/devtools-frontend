@@ -652,7 +652,6 @@ export class SourceScope {
 }
 
 /**
- * @unrestricted
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DebuggerModel.DebuggerModel>}
  */
 export class DebuggerLanguagePluginManager {

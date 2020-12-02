@@ -14,7 +14,6 @@ import {InputModel} from './InputModel.js';
 
 /**
  * @implements {Timeline.TimelineLoader.Client}
- * @unrestricted
  */
 export class InputTimeline extends UI.Widget.VBox {
   constructor() {

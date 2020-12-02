@@ -6,7 +6,6 @@ import * as SDK from '../sdk/sdk.js';
 
 /**
  * @implements {ProtocolProxyApi.BackgroundServiceDispatcher}
- * @unrestricted
  */
 export class BackgroundServiceModel extends SDK.SDKModel.SDKModel {
   /**

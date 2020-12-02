@@ -8,7 +8,6 @@ import * as UI from '../ui/ui.js';
 import {DataGridImpl, DataGridNode, Parameters} from './DataGrid.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @unrestricted
  * @extends {DataGridImpl<!ViewportDataGridNode<!NODE_TYPE>>}
  * @template NODE_TYPE
  */
@@ -298,7 +297,6 @@ export const Events = {
 };
 
 /**
- * @unrestricted
  * @extends {DataGridNode<!ViewportDataGridNode<!NODE_TYPE>>}
  * @template NODE_TYPE
  */

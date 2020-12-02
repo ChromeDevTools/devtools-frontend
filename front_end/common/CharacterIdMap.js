@@ -4,7 +4,6 @@
 
 /**
  * @template T
- * @unrestricted
  */
 export class CharacterIdMap {
   constructor() {

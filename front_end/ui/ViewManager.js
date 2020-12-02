@@ -691,7 +691,6 @@ const locationForView = new WeakMap();
 
 /**
  * @implements {TabbedViewLocation}
- * @unrestricted
  */
 export class _TabbedLocation extends _Location {
   /**
@@ -989,7 +988,6 @@ _TabbedLocation.orderStep = 10;  // Keep in sync with descriptors.
 
 /**
  * @implements {ViewLocation}
- * @unrestricted
  */
 class _StackLocation extends _Location {
   /**

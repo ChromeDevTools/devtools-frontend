@@ -36,7 +36,6 @@ import {instance} from './ProfileTypeRegistry.js';
 
 /**
  * @implements {DataDisplayDelegate}
- * @unrestricted
  */
 export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
   /**

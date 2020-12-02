@@ -13,7 +13,6 @@ import {EditorAction, Events, SourcesView} from './SourcesView.js';  // eslint-d
 
 /**
  * @implements {EditorAction}
- * @unrestricted
  */
 export class InplaceFormatterEditorAction {
   constructor() {

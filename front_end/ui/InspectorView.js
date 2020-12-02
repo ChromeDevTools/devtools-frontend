@@ -55,7 +55,6 @@ let inspectorViewInstance;
 
 /**
  * @implements {ViewLocationResolver}
- * @unrestricted
  */
 export class InspectorView extends VBox {
   constructor() {
@@ -462,7 +461,6 @@ export class InspectorView extends VBox {
 
 /**
  * @implements {ActionDelegateInterface}
- * @unrestricted
  */
 export class ActionDelegate {
   /**

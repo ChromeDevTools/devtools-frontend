@@ -33,7 +33,6 @@ import * as UI from '../ui/ui.js';
 import {ExtensionServer} from './ExtensionServer.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @unrestricted
 */
 export class ExtensionView extends UI.Widget.Widget {
   /**

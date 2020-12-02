@@ -746,7 +746,6 @@ export const displayScreenshotDelay = 1000;
 
 /**
  * @implements {UI.ContextMenu.Provider}
- * @unrestricted
  */
 export class ContextMenuProvider {
   /**
@@ -762,7 +761,6 @@ export class ContextMenuProvider {
 
 /**
  * @implements {Common.Revealer.Revealer}
- * @unrestricted
  */
 export class RequestRevealer {
   /**

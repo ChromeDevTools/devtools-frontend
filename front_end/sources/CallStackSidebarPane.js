@@ -37,7 +37,6 @@ let callstackSidebarPaneInstance;
 /**
  * @implements {UI.ContextFlavorListener.ContextFlavorListener}
  * @implements {UI.ListControl.ListDelegate<!Item>}
- * @unrestricted
  */
 export class CallStackSidebarPane extends UI.View.SimpleView {
   /**

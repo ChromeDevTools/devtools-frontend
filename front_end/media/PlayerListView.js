@@ -78,7 +78,6 @@ export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
 }
 
 /**
- * @unrestricted
  * @implements TriggerDispatcher
  */
 export class PlayerListView extends UI.Widget.VBox {

@@ -29,7 +29,6 @@ import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 /**
- * @unrestricted
  * @extends DataGrid.DataGrid.DataGridNode<*>
  */
 export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
@@ -351,7 +350,6 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
 
 /**
  * @implements {UI.SearchableView.Searchable}
- * @unrestricted
  */
 export class ProfileDataGridTree {
   /**

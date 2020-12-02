@@ -66,7 +66,6 @@ const TYPE_ORDERS = new Map([
 
 /**
  * @implements {SDK.SDKModel.Observer}
- * @unrestricted
  */
 export class NavigatorView extends UI.Widget.VBox {
   constructor() {

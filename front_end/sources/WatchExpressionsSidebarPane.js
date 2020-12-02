@@ -42,7 +42,6 @@ import {UISourceCodeFrame} from './UISourceCodeFrame.js';
  * @implements {UI.ActionRegistration.ActionDelegate}
  * @implements {UI.Toolbar.ItemsProvider}
  * @implements {UI.ContextMenu.Provider}
- * @unrestricted
  */
 export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {

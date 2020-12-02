@@ -11,7 +11,6 @@ import * as UI from '../ui/ui.js';
 
 /**
  * @implements {UI.Toolbar.Provider}
- * @unrestricted
  */
 export class WarningErrorCounter {
   constructor() {

@@ -33,7 +33,6 @@ import * as SDK from '../sdk/sdk.js';
 
 /**
  * @implements {ProtocolProxyApi.StorageDispatcher}
- * @unrestricted
  */
 export class IndexedDBModel extends SDK.SDKModel.SDKModel {
   /**

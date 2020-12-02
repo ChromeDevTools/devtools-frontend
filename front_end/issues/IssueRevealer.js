@@ -9,7 +9,6 @@ import {IssuesPaneImpl} from './IssuesPane.js';  // eslint-disable-line no-unuse
 
 /**
  * @implements {Common.Revealer.Revealer}
- * @unrestricted
  */
 export class IssueRevealer {
   /**

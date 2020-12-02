@@ -303,7 +303,6 @@ export class Samples {
 
 /**
  * @implements {PerfUI.TimelineGrid.Calculator}
- * @unrestricted
  */
 export class OverviewCalculator {
   constructor() {

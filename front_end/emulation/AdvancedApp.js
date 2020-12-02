@@ -14,7 +14,6 @@ let _appInstance;
 
 /**
  * @implements {Common.App.App}
- * @unrestricted
  */
 export class AdvancedApp {
   constructor() {
@@ -223,7 +222,6 @@ export class AdvancedApp {
 
 /**
  * @implements {Common.AppProvider.AppProvider}
- * @unrestricted
  */
 export class AdvancedAppProvider {
   /**

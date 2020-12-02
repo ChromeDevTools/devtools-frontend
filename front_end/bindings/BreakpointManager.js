@@ -359,7 +359,6 @@ export const Events = {
 };
 
 /**
- * @unrestricted
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DebuggerModel.DebuggerModel>}
  */
 export class Breakpoint {

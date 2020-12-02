@@ -59,7 +59,6 @@ let timelinePanelInstance;
 /**
  * @implements {Client}
  * @implements {TimelineModeViewDelegate}
- * @unrestricted
  */
 export class TimelinePanel extends UI.Panel.Panel {
   constructor() {
@@ -1398,7 +1397,6 @@ export class StatusPane extends UI.Widget.VBox {
 
 /**
  * @implements {Common.QueryParamHandler.QueryParamHandler}
- * @unrestricted
  */
 export class LoadTimelineHandler {
   /**
@@ -1414,7 +1412,6 @@ export class LoadTimelineHandler {
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class ActionDelegate {
   /**

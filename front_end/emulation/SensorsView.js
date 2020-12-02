@@ -740,7 +740,6 @@ export const PresetOrientations = [{
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class ShowActionDelegate {
   /**

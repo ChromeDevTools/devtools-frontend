@@ -10,7 +10,6 @@ import {Capability, EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Ver
 
 /**
  * @implements {UI.ListWidget.Delegate<!EmulatedDevice>}
- * @unrestricted
  */
 export class DevicesSettingsTab extends UI.Widget.VBox {
   constructor() {

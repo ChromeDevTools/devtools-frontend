@@ -8,7 +8,6 @@ import * as UI from '../ui/ui.js';
 
 /**
  * @implements {UI.ListWidget.Delegate<!SDK.NetworkManager.Conditions>}
- * @unrestricted
  */
 export class ThrottlingSettingsTab extends UI.Widget.VBox {
   constructor() {

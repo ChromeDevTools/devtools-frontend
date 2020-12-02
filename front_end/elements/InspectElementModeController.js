@@ -43,7 +43,6 @@ let inspectElementModeController;
 
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.OverlayModel.OverlayModel>}
- * @unrestricted
  */
 export class InspectElementModeController {
   /**
@@ -174,7 +173,6 @@ let toggleSearchActionDelegateInstance;
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class ToggleSearchActionDelegate {
   /**

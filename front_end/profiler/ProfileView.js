@@ -21,7 +21,6 @@ import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';
 
 /**
  * @implements {UI.SearchableView.Searchable}
- * @unrestricted
  */
 export class ProfileView extends UI.View.SimpleView {
   constructor() {
@@ -553,7 +552,6 @@ export const ViewTypes = {
 
 /**
  * @implements {Common.StringOutputStream.OutputStream}
- * @unrestricted
  */
 export class WritableProfileHeader extends ProfileHeader {
   /**

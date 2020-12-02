@@ -69,7 +69,6 @@ export class ChunkedReader {
 
 /**
  * @implements {ChunkedReader}
- * @unrestricted
  */
 export class ChunkedFileReader {
   /**
@@ -214,7 +213,6 @@ export class ChunkedFileReader {
 
 /**
  * @implements {Common.StringOutputStream.OutputStream}
- * @unrestricted
  */
 export class FileOutputStream {
   constructor() {

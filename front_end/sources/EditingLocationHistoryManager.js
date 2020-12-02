@@ -134,7 +134,6 @@ export const HistoryDepth = 20;
 
 /**
  * @implements {Common.SimpleHistoryManager.HistoryEntry}
- * @unrestricted
  */
 export class EditingLocationHistoryEntry {
   /**

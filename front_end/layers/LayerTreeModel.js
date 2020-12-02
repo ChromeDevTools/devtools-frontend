@@ -247,7 +247,6 @@ export class AgentLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
 
 /**
  * @implements {SDK.LayerTreeBase.Layer}
- * @unrestricted
  */
 export class AgentLayer {
   /**
@@ -614,7 +613,6 @@ export class AgentLayer {
 
 /**
  * @implements {ProtocolProxyApi.LayerTreeDispatcher}
- * @unrestricted
  */
 class LayerTreeDispatcher {
   /**

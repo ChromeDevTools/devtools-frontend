@@ -242,7 +242,6 @@ export class NetworkLogViewInterface {
 }
 
 /**
- * @unrestricted
  * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<NetworkNode>}
  */
 export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode {

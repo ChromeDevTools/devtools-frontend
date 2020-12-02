@@ -56,7 +56,6 @@ export class HeapSnapshotItem {
 
 /**
  * @implements {HeapSnapshotItem}
- * @unrestricted
  */
 export class HeapSnapshotEdge {
   /**
@@ -205,7 +204,6 @@ export class HeapSnapshotItemIndexProvider {
 
 /**
  * @implements {HeapSnapshotItemIndexProvider}
- * @unrestricted
  */
 export class HeapSnapshotNodeIndexProvider {
   /**
@@ -228,7 +226,6 @@ export class HeapSnapshotNodeIndexProvider {
 
 /**
  * @implements {HeapSnapshotItemIndexProvider}
- * @unrestricted
  */
 export class HeapSnapshotEdgeIndexProvider {
   /**
@@ -251,7 +248,6 @@ export class HeapSnapshotEdgeIndexProvider {
 
 /**
  * @implements {HeapSnapshotItemIndexProvider}
- * @unrestricted
  */
 export class HeapSnapshotRetainerEdgeIndexProvider {
   /**
@@ -274,7 +270,6 @@ export class HeapSnapshotRetainerEdgeIndexProvider {
 
 /**
  * @implements {HeapSnapshotItemIterator}
- * @unrestricted
  */
 export class HeapSnapshotEdgeIterator {
   /**
@@ -314,7 +309,6 @@ export class HeapSnapshotEdgeIterator {
 
 /**
  * @implements {HeapSnapshotItem}
- * @unrestricted
  */
 export class HeapSnapshotRetainerEdge {
   /**
@@ -456,7 +450,6 @@ export class HeapSnapshotRetainerEdge {
 
 /**
  * @implements {HeapSnapshotItemIterator}
- * @unrestricted
  */
 export class HeapSnapshotRetainerEdgeIterator {
   /**
@@ -499,7 +492,6 @@ export class HeapSnapshotRetainerEdgeIterator {
 
 /**
  * @implements {HeapSnapshotItem}
- * @unrestricted
  */
 export class HeapSnapshotNode {
   /**
@@ -721,7 +713,6 @@ export class HeapSnapshotNode {
 
 /**
  * @implements {HeapSnapshotItemIterator}
- * @unrestricted
  */
 export class HeapSnapshotNodeIterator {
   /**
@@ -758,7 +749,6 @@ export class HeapSnapshotNodeIterator {
 
 /**
  * @implements {HeapSnapshotItemIterator}
- * @unrestricted
  */
 export class HeapSnapshotIndexRangeIterator {
   /**
@@ -798,7 +788,6 @@ export class HeapSnapshotIndexRangeIterator {
 
 /**
  * @implements {HeapSnapshotItemIterator}
- * @unrestricted
  */
 export class HeapSnapshotFilteredIterator {
   /**

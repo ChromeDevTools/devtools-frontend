@@ -57,7 +57,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.PerformanceMetricsModel.PerformanceMetricsModel>}
- * @unrestricted
  */
 export class PerformanceMonitorImpl extends UI.Widget.HBox {
   constructor() {

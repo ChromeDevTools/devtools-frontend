@@ -118,7 +118,6 @@ class IssueMessage {
 /**
  * @implements {UI.SearchableView.Searchable}
  * @implements {ConsoleViewportProvider}
- * @unrestricted
  */
 export class ConsoleView extends UI.Widget.VBox {
   constructor() {

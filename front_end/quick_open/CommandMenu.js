@@ -451,7 +451,6 @@ export class Command {
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class ShowActionDelegate {
   /**

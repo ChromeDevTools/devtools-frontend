@@ -23,7 +23,6 @@ let xhrBreakpointsSidebarPaneInstance;
  * @implements {UI.ContextFlavorListener.ContextFlavorListener}
  * @implements {UI.Toolbar.ItemsProvider}
  * @implements {UI.ListControl.ListDelegate<string>}
- * @unrestricted
  */
 export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
   /**

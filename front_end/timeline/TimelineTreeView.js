@@ -16,7 +16,6 @@ import {TimelineSelection} from './TimelinePanel.js';  // eslint-disable-line no
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 /**
- * @unrestricted
  * @implements {UI.SearchableView.Searchable}
  */
 export class TimelineTreeView extends UI.Widget.VBox {

@@ -14,7 +14,6 @@ import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // esli
 let blackboxManagerInstance;
 
 /**
- * @unrestricted
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DebuggerModel.DebuggerModel>}
  */
 export class BlackboxManager {

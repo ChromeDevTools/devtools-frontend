@@ -40,7 +40,6 @@ import {NetworkProject} from './NetworkProject.js';
 
 /**
  * @implements {DebuggerSourceMapping}
- * @unrestricted
  */
 export class CompilerScriptMapping {
   /**

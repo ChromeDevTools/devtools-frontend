@@ -41,7 +41,6 @@ import {HeapSnapshotProviderProxy, HeapSnapshotProxy} from './HeapSnapshotProxy.
 import {DataDisplayDelegate} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @unrestricted
  * @abstract
  * @extends {DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>}
  */
@@ -1187,7 +1186,6 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
 
 /**
  * @implements {ChildrenProvider}
- * @unrestricted
  */
 export class HeapSnapshotDiffNodesProvider {
   /**

@@ -27,7 +27,6 @@ function convertToSamplingHeapProfile(profileHeader) {
 
 /**
  * @implements {UI.SearchableView.Searchable}
- * @unrestricted
  */
 export class HeapProfileView extends ProfileView {
   /**
@@ -549,7 +548,6 @@ export class SamplingHeapProfileModel extends SDK.ProfileTreeModel.ProfileTreeMo
 
 /**
  * @implements {Formatter}
- * @unrestricted
  */
 export class NodeFormatter {
   /**

@@ -27,7 +27,6 @@ class LighthousePort {  // eslint-disable-line
 
 /**
  * @implements {LighthousePort}
- * @unrestricted
  */
 class LighthouseService {  // eslint-disable-line
   /**

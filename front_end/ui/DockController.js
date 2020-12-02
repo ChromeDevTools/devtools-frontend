@@ -194,7 +194,6 @@ export const Events = {
 
 /**
  * @implements {ActionDelegate}
- * @unrestricted
  */
 export class ToggleDockActionDelegate {
   /**
@@ -211,7 +210,6 @@ export class ToggleDockActionDelegate {
 
 /**
  * @implements {Provider}
- * @unrestricted
  */
 export class CloseButtonProvider {
   /**

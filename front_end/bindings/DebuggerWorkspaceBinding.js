@@ -22,7 +22,6 @@ import {ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping
 let debuggerWorkspaceBindingInstance;
 
 /**
- * @unrestricted
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DebuggerModel.DebuggerModel>}
  */
 export class DebuggerWorkspaceBinding {

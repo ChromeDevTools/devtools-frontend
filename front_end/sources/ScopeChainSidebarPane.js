@@ -35,7 +35,6 @@ import {resolveScopeChain, resolveScopeInObject, resolveThisObject} from './Sour
 
 /**
  * @implements {UI.ContextFlavorListener.ContextFlavorListener}
- * @unrestricted
  */
 export class ScopeChainSidebarPane extends UI.Widget.VBox {
   constructor() {
@@ -215,7 +214,6 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
 
 /**
  * @implements {UI.ContextMenu.Provider}
- * @unrestricted
  */
 export class OpenLinearMemoryInspector extends UI.Widget.VBox {
   /**

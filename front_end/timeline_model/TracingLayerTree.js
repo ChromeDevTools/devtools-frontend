@@ -142,7 +142,6 @@ export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
 
 /**
  * @implements {SDK.LayerTreeBase.Layer}
- * @unrestricted
  */
 export class TracingLayer {
   /**

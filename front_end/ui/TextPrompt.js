@@ -40,7 +40,6 @@ import {appendStyle} from './utils/append-style.js';
 
 /**
  * @implements {SuggestBoxDelegate}
- * @unrestricted
  */
 export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {

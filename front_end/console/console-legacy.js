@@ -64,7 +64,6 @@ Console.ConsoleGroup = ConsoleModule.ConsoleView.ConsoleGroup;
 
 /**
  * @implements {Console.ConsoleViewportElement}
- * @unrestricted
  * @constructor
  */
 Console.ConsoleViewMessage = ConsoleModule.ConsoleViewMessage.ConsoleViewMessage;

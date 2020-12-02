@@ -19,7 +19,6 @@ import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCo
  * @implements {TabbedEditorContainerDelegate}
  * @implements {UI.SearchableView.Searchable}
  * @implements {UI.SearchableView.Replaceable}
- * @unrestricted
  */
 export class SourcesView extends UI.Widget.VBox {
   /**
@@ -716,7 +715,6 @@ export class EditorAction {
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class SwitchFileActionDelegate {
   /**
@@ -781,7 +779,6 @@ export class SwitchFileActionDelegate {
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class ActionDelegate {
   /**

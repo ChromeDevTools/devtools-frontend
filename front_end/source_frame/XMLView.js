@@ -9,7 +9,6 @@ import * as UI from '../ui/ui.js';
 
 /**
  * @implements {UI.SearchableView.Searchable}
- * @unrestricted
  */
 export class XMLView extends UI.Widget.Widget {
   /**

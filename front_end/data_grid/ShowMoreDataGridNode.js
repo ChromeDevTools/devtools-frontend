@@ -33,7 +33,6 @@ import * as Common from '../common/common.js';
 import {DataGridNode} from './DataGrid.js';
 
 /**
- * @unrestricted
  * @extends {DataGridNode<!ShowMoreDataGridNode>}
  */
 export class ShowMoreDataGridNode extends DataGridNode {

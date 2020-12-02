@@ -21,7 +21,6 @@ export class MarkerDecorator {
 
 /**
  * @implements {MarkerDecorator}
- * @unrestricted
  */
 export class GenericDecorator {
   /**

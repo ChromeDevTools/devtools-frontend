@@ -741,7 +741,6 @@ export class AnimationGroup {
 
 /**
  * @implements {ProtocolProxyApi.AnimationDispatcher}
- * @unrestricted
  */
 export class AnimationDispatcher {
   /**

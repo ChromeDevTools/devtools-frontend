@@ -533,7 +533,6 @@ export class IDBDataView extends UI.View.SimpleView {
 
 /**
  * @extends DataGrid.DataGrid.DataGridNode<*>
- * @unrestricted
  */
 export class IDBDataGridNode extends DataGrid.DataGrid.DataGridNode {
   /**

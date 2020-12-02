@@ -53,7 +53,6 @@ export class NetworkTimeBoundary {
 
 /**
  * @implements {PerfUI.TimelineGrid.Calculator}
- * @unrestricted
  */
 export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
   /** @param {boolean} startAtZero */

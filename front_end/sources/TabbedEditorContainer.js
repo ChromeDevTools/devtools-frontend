@@ -919,7 +919,6 @@ export class History {
 
 /**
  * @implements {UI.TabbedPane.TabbedPaneTabDelegate}
- * @unrestricted
  */
 export class EditorContainerTabDelegate {
   /**

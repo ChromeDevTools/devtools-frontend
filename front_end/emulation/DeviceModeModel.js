@@ -16,7 +16,6 @@ let deviceModeModelInstance;
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.EmulationModel.EmulationModel>}
  * @extends {Common.ObjectWrapper.ObjectWrapper}
- * @unrestricted
  */
 export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
   /**

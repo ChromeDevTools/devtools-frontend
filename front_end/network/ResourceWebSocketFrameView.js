@@ -270,7 +270,6 @@ export const _filterTypes = [
 ];
 
 /**
- * @unrestricted
  * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<?>}
  */
 export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.SortableDataGridNode {

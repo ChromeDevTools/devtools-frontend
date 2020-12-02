@@ -93,7 +93,6 @@ export function pullLines(codeMirror, linesCount) {
 
 /**
  * @implements {TextUtils.TextUtils.TokenizerFactory}
- * @unrestricted
  */
 export class TokenizerFactory {
   /**

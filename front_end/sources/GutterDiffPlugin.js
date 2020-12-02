@@ -275,7 +275,6 @@ export const DiffGutterType = 'CodeMirror-gutter-diff';
 
 /**
  * @implements {UI.ContextMenu.Provider}
- * @unrestricted
  */
 export class ContextMenuProvider {
   /**

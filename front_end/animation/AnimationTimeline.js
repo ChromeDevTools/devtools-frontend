@@ -85,7 +85,6 @@ const playbackRates = new WeakMap();
 
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!AnimationModel>}
- * @unrestricted
  */
 export class AnimationTimeline extends UI.Widget.VBox {
   constructor() {

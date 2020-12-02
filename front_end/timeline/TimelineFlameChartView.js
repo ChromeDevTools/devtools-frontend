@@ -133,7 +133,6 @@ class MainSplitWidget extends UI.SplitWidget.SplitWidget {
 /**
  * @implements {PerfUI.FlameChart.FlameChartDelegate}
  * @implements {UI.SearchableView.Searchable}
- * @unrestricted
  */
 export class TimelineFlameChartView extends UI.Widget.VBox {
   /**
@@ -599,7 +598,6 @@ export const FlameChartStyle = {
 
 /**
  * @implements {PerfUI.FlameChart.FlameChartMarker}
- * @unrestricted
  */
 export class TimelineFlameChartMarker {
   /**

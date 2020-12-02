@@ -37,7 +37,6 @@ let eventListenersWidgetInstance;
 
 /**
  * @implements {UI.Toolbar.ItemsProvider}
- * @unrestricted
  */
 export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {

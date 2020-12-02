@@ -12,7 +12,6 @@ let objectEventListenersSidebarPaneInstance;
 
 /**
  * @implements {UI.Toolbar.ItemsProvider}
- * @unrestricted
  */
 export class ObjectEventListenersSidebarPane extends UI.Widget.VBox {
   /**

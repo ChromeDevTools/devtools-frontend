@@ -565,7 +565,6 @@ export class CounterUI {
 
 /**
  * @implements {PerfUI.TimelineGrid.Calculator}
- * @unrestricted
  */
 export class Calculator {
   constructor() {

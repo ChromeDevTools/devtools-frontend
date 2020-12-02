@@ -11,7 +11,6 @@ import * as TimelineModel from '../timeline_model/timeline_model.js';
 
 /**
  * @implements {Common.StringOutputStream.OutputStream}
- * @unrestricted
  */
 export class TimelineLoader {
   /**

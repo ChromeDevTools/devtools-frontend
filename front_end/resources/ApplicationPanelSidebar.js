@@ -55,7 +55,6 @@ import {ServiceWorkersView} from './ServiceWorkersView.js';
 
 /**
  * @implements {SDK.SDKModel.Observer}
- * @unrestricted
  */
 export class ApplicationPanelSidebar extends UI.Widget.VBox {
   /**

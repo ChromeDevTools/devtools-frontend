@@ -284,7 +284,6 @@ export const Events = {
 
 /**
  * @implements {Calculator}
- * @unrestricted
  */
 export class TimelineOverviewCalculator {
   constructor() {
@@ -443,7 +442,6 @@ export class TimelineOverview {
 
 /**
  * @implements {TimelineOverview}
- * @unrestricted
  */
 export class TimelineOverviewBase extends UI.Widget.VBox {
   constructor() {

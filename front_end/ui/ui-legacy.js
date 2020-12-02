@@ -113,7 +113,6 @@ UI.InspectorView = UIModule.InspectorView.InspectorView;
 
 /**
  * @implements {UI.ActionDelegate}
- * @unrestricted
  */
 UI.InspectorView.ActionDelegate = UIModule.InspectorView.ActionDelegate;
 

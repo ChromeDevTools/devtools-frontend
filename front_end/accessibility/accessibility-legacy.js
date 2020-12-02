@@ -30,7 +30,6 @@ Accessibility.ARIAAttributesPane.ARIAAttributePrompt = AccessibilityModule.ARIAA
 Accessibility.ARIAMetadata = AccessibilityModule.ARIAMetadata.ARIAMetadata;
 
 /**
- * @unrestricted
  * @constructor
  */
 Accessibility.ARIAMetadata.Attribute = AccessibilityModule.ARIAMetadata.Attribute;

@@ -14,7 +14,6 @@ import {PersistenceImpl} from './PersistenceImpl.js';
 
 /**
  * @implements {UI.ContextMenu.Provider}
- * @unrestricted
  */
 export class ContextMenuProvider {
   /**

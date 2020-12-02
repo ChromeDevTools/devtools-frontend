@@ -80,7 +80,6 @@ FormatterInterface.positionToLocation = function(lineEndings, position) {
 
 /**
  * @implements {FormatterInterface}
- * @unrestricted
  */
 export class ScriptFormatter {
   /**
@@ -123,7 +122,6 @@ export class ScriptFormatter {
 
 /**
  * @implements {FormatterInterface}
- * @unrestricted
  */
 class ScriptIdentityFormatter {
   /**
@@ -161,7 +159,6 @@ export class FormatterSourceMapping {
 
 /**
  * @implements {FormatterSourceMapping}
- * @unrestricted
  */
 class IdentityFormatterSourceMapping {
   /**
@@ -187,7 +184,6 @@ class IdentityFormatterSourceMapping {
 
 /**
  * @implements {FormatterSourceMapping}
- * @unrestricted
  */
 class FormatterSourceMappingImpl {
   /**

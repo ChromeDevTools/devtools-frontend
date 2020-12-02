@@ -72,7 +72,6 @@ export let EventProperties;  // eslint-disable-line no-unused-vars
 
 /**
  * Wrapper class for each event displayed on the timeline.
- * @unrestricted
  */
 export class Event {
   /**

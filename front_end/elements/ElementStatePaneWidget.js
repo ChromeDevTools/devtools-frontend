@@ -124,7 +124,6 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
 
 /**
  * @implements {UI.Toolbar.Provider}
- * @unrestricted
  */
 export class ButtonProvider {
   constructor() {

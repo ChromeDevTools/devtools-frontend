@@ -8,7 +8,6 @@ import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.RuntimeModel.RuntimeModel>}
- * @unrestricted
  */
 export class ExecutionContextSelector {
   /**

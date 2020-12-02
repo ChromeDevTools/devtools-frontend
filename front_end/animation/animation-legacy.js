@@ -36,7 +36,6 @@ Animation.AnimationModel.ScreenshotCapture = AnimationModule.AnimationModel.Scre
 /**
  * @implements {SDK.SDKModelObserver<!Animation.AnimationModel>}
  * @constructor
- * @unrestricted
  */
 Animation.AnimationTimeline = AnimationModule.AnimationTimeline.AnimationTimeline;
 

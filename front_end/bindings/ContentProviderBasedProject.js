@@ -42,7 +42,6 @@ let UISourceCodeData;  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {Workspace.Workspace.Project}
- * @unrestricted
  */
 export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStore {
   /**

@@ -33,7 +33,6 @@ export class LiveLocation {
 
 /**
  * @implements {LiveLocation}
- * @unrestricted
  */
 export class LiveLocationWithPool {
   /**

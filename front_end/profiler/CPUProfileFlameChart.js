@@ -39,7 +39,6 @@ let colorGeneratorInstance = null;
 
 /**
  * @implements {PerfUI.FlameChart.FlameChartDataProvider}
- * @unrestricted
  */
 export class ProfileFlameChartDataProvider {
   constructor() {
@@ -233,7 +232,6 @@ export class ProfileFlameChartDataProvider {
 
 /**
  * @implements {UI.SearchableView.Searchable}
- * @unrestricted
  */
 export class CPUProfileFlameChart extends UI.Widget.VBox {
   /**
@@ -396,7 +394,6 @@ export class CPUProfileFlameChart extends UI.Widget.VBox {
 
 /**
  * @implements {PerfUI.TimelineGrid.Calculator}
- * @unrestricted
  */
 export class OverviewCalculator {
   /**
@@ -476,7 +473,6 @@ export class OverviewCalculator {
 
 /**
  * @implements {PerfUI.FlameChart.FlameChartDelegate}
- * @unrestricted
  */
 export class OverviewPane extends UI.Widget.VBox {
   /**

@@ -37,7 +37,6 @@ import {Target} from './SDKModel.js';                // eslint-disable-line no-u
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
  * TODO(chromium:1011811): make `implements {FrameAssociated}` annotation work here.
- * @unrestricted
  */
 export class Script {
   /**

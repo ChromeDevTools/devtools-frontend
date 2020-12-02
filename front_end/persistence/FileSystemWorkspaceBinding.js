@@ -207,7 +207,6 @@ export class FileSystemWorkspaceBinding {
 
 /**
  * @implements {Workspace.Workspace.Project}
- * @unrestricted
  */
 export class FileSystem extends Workspace.Workspace.ProjectStore {
   /**

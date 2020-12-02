@@ -35,7 +35,6 @@ import {PageResourceLoader, PageResourceLoadInitiator} from './PageResourceLoade
 
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
- * @unrestricted
  */
 export class CompilerSourceMappingContentProvider {
   /**

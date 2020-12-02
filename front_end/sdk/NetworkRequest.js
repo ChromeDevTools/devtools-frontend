@@ -66,7 +66,6 @@ export const MIME_TYPE_TO_RESOURCE_TYPE = new Map([
 
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
- * @unrestricted
  */
 export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
   /**

@@ -7,7 +7,6 @@ import * as UI from '../ui/ui.js';
 
 /**
  * @implements {UI.ListWidget.Delegate<Item>}
- * @unrestricted
  */
 export class LocationsSettingsTab extends UI.Widget.VBox {
   constructor() {

@@ -46,7 +46,6 @@ import {TimelineCategory, TimelineUIUtils} from './TimelineUIUtils.js';  // esli
 
 /**
  * @implements {PerfUI.FlameChart.FlameChartDataProvider}
- * @unrestricted
  */
 export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {

@@ -301,7 +301,6 @@ export const Events = {
 
 /**
  * @implements {ProtocolProxyApi.DOMStorageDispatcher}
- * @unrestricted
  */
 export class DOMStorageDispatcher {
   /**

@@ -35,7 +35,6 @@ import {ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';  //
 
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
- * @unrestricted
  */
 export class Resource {
   /**

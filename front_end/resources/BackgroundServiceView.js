@@ -457,7 +457,6 @@ export class EventDataNode extends DataGrid.DataGrid.DataGridNode {
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class ActionDelegate {
   /**

@@ -218,7 +218,6 @@ export class Service {
 
 /**
  * @implements {ServicePort}
- * @unrestricted
  */
 export class RemoteServicePort {
   /**
@@ -338,7 +337,6 @@ export class RemoteServicePort {
 
 /**
  * @implements {ServicePort}
- * @unrestricted
  */
 export class WorkerServicePort {
   /**

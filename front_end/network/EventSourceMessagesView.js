@@ -98,7 +98,6 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
 }
 
 /**
- * @unrestricted
  * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<EventSourceMessageNode>}
  */
 export class EventSourceMessageNode extends DataGrid.SortableDataGrid.SortableDataGridNode {

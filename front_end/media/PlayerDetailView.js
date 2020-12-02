@@ -23,7 +23,6 @@ export const PlayerDetailViewTabs = {
 };
 
 /**
- * @unrestricted
  * @implements TriggerHandler
  */
 export class PlayerDetailView extends UI.TabbedPane.TabbedPane {

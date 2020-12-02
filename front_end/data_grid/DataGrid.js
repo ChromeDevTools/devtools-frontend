@@ -48,7 +48,6 @@ const elementToIndexMap = new WeakMap();
 
 
 /**
- * @unrestricted
  * @template NODE_TYPE
  */
 export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
@@ -1672,7 +1671,6 @@ export const ResizeMethod = {
 };
 
 /**
- * @unrestricted
  * @template NODE_TYPE
  */
 export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
@@ -2572,7 +2570,6 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
 }
 
 /**
- * @unrestricted
  * @extends {DataGridNode<!NODE_TYPE>}
  * @template NODE_TYPE
  */
@@ -2593,7 +2590,6 @@ export class CreationDataGridNode extends DataGridNode {
 }
 
 /**
- * @unrestricted
  * @template NODE_TYPE
  */
 export class DataGridWidget extends UI.Widget.VBox {

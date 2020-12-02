@@ -51,7 +51,6 @@ const str_ = i18n.i18n.registerUIStrings('layers/LayersPanel.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {SDK.SDKModel.Observer}
- * @unrestricted
  */
 export class LayersPanel extends UI.Panel.PanelWithSidebar {
   constructor() {

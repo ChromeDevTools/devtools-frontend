@@ -9,7 +9,6 @@ import {performSearchInContent} from './TextUtils.js';
 
 /**
  * @implements {ContentProvider}
- * @unrestricted
  */
 export class StaticContentProvider {
   /**

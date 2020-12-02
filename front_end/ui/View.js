@@ -63,7 +63,6 @@ export class View {
 
 /**
  * @implements {View}
- * @unrestricted
  */
 export class SimpleView extends VBox {
   /**
@@ -159,7 +158,6 @@ class ProvidedViewExtensionDescriptor  // eslint-disable-line no-unused-vars
 
 /**
  * @implements {View}
- * @unrestricted
  */
 export class ProvidedView {
   /**

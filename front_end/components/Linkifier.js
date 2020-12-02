@@ -59,7 +59,6 @@ let linkHandlerSettingInstance;
 
 /**
  * @implements {SDK.SDKModel.Observer}
- * @unrestricted
  */
 export class Linkifier {
   /**
@@ -896,7 +895,6 @@ LinkDecorator.Events = {
 
 /**
  * @implements {UI.ContextMenu.Provider}
- * @unrestricted
  */
 export class LinkContextMenuProvider {
   /**
@@ -928,7 +926,6 @@ let linkHandlerSettingUIInstance;
 
 /**
  * @implements {UI.SettingsUI.SettingUI}
- * @unrestricted
  */
 export class LinkHandlerSettingUI {
   /**
@@ -1011,7 +1008,6 @@ listenForNewComponentLinkifierEvents();
 
 /**
  * @implements {UI.ContextMenu.Provider}
- * @unrestricted
  */
 export class ContentProviderContextMenuProvider {
   /**

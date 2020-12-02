@@ -266,7 +266,6 @@ const cachedClassesMap = new WeakMap();
 
 /**
  * @implements {UI.Toolbar.Provider}
- * @unrestricted
  */
 export class ButtonProvider {
   constructor() {

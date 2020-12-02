@@ -179,7 +179,6 @@ export const Events = {
 
 /**
  * @implements {ProtocolProxyApi.DatabaseDispatcher}
- * @unrestricted
  */
 export class DatabaseDispatcher {
   /**

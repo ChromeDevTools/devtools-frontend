@@ -61,7 +61,6 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class ReloadActionDelegate {
   /**
@@ -85,7 +84,6 @@ export class ReloadActionDelegate {
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class FocusDebuggeeActionDelegate {
   /**
@@ -165,7 +163,6 @@ export class SourcesPanelIndicator {
 
 /**
  * @implements {SDK.SDKModel.Observer}
- * @unrestricted
  */
 export class BackendSettingsSync {
   constructor() {

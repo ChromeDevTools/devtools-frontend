@@ -85,7 +85,6 @@ let settingsScreenInstance;
 
 /**
  * @implements {UI.View.ViewLocationResolver}
- * @unrestricted
  */
 export class SettingsScreen extends UI.Widget.VBox {
   /**
@@ -471,7 +470,6 @@ export class ExperimentsSettingsTab extends SettingsTab {
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class ActionDelegate {
   /**
@@ -499,7 +497,6 @@ export class ActionDelegate {
 
 /**
  * @implements {Common.Revealer.Revealer}
- * @unrestricted
  */
 export class Revealer {
   /**

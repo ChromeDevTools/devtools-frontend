@@ -5,7 +5,6 @@ import {ColumnDescriptor, Events, Parameters} from './DataGrid.js';  // eslint-d
 import {ViewportDataGrid, ViewportDataGridNode} from './ViewportDataGrid.js';
 
 /**
- * @unrestricted
  * @extends {ViewportDataGrid<!SortableDataGridNode<NODE_TYPE>>}
  * @template NODE_TYPE
  */
@@ -158,7 +157,6 @@ export class SortableDataGrid extends ViewportDataGrid {
 }
 
 /**
- * @unrestricted
  * @extends {ViewportDataGridNode<SortableDataGridNode<NODE_TYPE>>}
  * @template NODE_TYPE
  */

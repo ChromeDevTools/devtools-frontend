@@ -11,7 +11,6 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.CSSModel.CSSModel>}
- * @unrestricted
  */
 export class MediaQueryInspector extends UI.Widget.Widget {
   /**

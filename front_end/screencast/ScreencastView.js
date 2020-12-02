@@ -37,7 +37,6 @@ import {InputModel} from './InputModel.js';
 
 /**
  * @implements {SDK.OverlayModel.Highlighter}
- * @unrestricted
  */
 export class ScreencastView extends UI.Widget.VBox {
   /**

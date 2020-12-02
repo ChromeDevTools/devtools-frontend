@@ -14,7 +14,6 @@ let _appInstance;
 /**
  * @implements {Common.App.App}
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.ScreenCaptureModel.ScreenCaptureModel>}
- * @unrestricted
  */
 export class ScreencastApp {
   constructor() {
@@ -113,7 +112,6 @@ export class ScreencastApp {
 
 /**
  * @implements {UI.Toolbar.Provider}
- * @unrestricted
  */
 export class ToolbarButtonProvider {
   /**
@@ -127,7 +125,6 @@ export class ToolbarButtonProvider {
 
 /**
  * @implements {Common.AppProvider.AppProvider}
- * @unrestricted
  */
 export class ScreencastAppProvider {
   /**

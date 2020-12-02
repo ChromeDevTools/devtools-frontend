@@ -37,7 +37,6 @@ import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
 /**
  * @implements {UI.SearchableView.Searchable}
- * @unrestricted
  */
 export class CPUProfileView extends ProfileView {
   /**
@@ -274,7 +273,6 @@ export class CPUProfileHeader extends WritableProfileHeader {
 
 /**
  * @implements {Formatter}
- * @unrestricted
  */
 export class NodeFormatter {
   /**

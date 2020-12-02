@@ -134,7 +134,6 @@ const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseController.js', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.ServiceWorkerManager.ServiceWorkerManager>}
- * @unrestricted
  */
 export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
   /**

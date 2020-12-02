@@ -52,7 +52,6 @@ let wrapperViewInstance;
  * @implements {UI.ContextMenu.Provider}
  * @implements {SDK.SDKModel.Observer}
  * @implements {UI.View.ViewLocationResolver}
- * @unrestricted
  */
 export class SourcesPanel extends UI.Panel.Panel {
   constructor() {
@@ -1150,7 +1149,6 @@ export const minToolbarWidth = 215;
 
 /**
  * @implements {Common.Revealer.Revealer}
- * @unrestricted
  */
 export class UILocationRevealer {
   /**
@@ -1170,7 +1168,6 @@ export class UILocationRevealer {
 
 /**
  * @implements {Common.Revealer.Revealer}
- * @unrestricted
  */
 export class DebuggerLocationRevealer {
   /**
@@ -1194,7 +1191,6 @@ export class DebuggerLocationRevealer {
 
 /**
  * @implements {Common.Revealer.Revealer}
- * @unrestricted
  */
 export class UISourceCodeRevealer {
   /**
@@ -1214,7 +1210,6 @@ export class UISourceCodeRevealer {
 
 /**
  * @implements {Common.Revealer.Revealer}
- * @unrestricted
  */
 export class DebuggerPausedDetailsRevealer {
   /**
@@ -1229,7 +1224,6 @@ export class DebuggerPausedDetailsRevealer {
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class RevealingActionDelegate {
   /**
@@ -1254,7 +1248,6 @@ export class RevealingActionDelegate {
 
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
- * @unrestricted
  */
 export class DebuggingActionDelegate {
   /**

@@ -6,7 +6,7 @@
 
 .widget {
   display: flex;
-  background: white;
+  background: var(--color-background);
   box-shadow: var(--drop-shadow);
   border-radius: 2px;
   overflow: auto;

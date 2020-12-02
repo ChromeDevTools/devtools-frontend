@@ -39,9 +39,6 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class NetworkNavigatorView extends NavigatorView {
   constructor() {
     super();
@@ -96,9 +93,6 @@ export class NetworkNavigatorView extends NavigatorView {
   }
 }
 
-/**
- * @unrestricted
- */
 export class FilesNavigatorView extends NavigatorView {
   constructor() {
     super();
@@ -228,9 +222,6 @@ export class OverridesNavigatorView extends NavigatorView {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ContentScriptsNavigatorView extends NavigatorView {
   constructor() {
     super();
@@ -252,9 +243,6 @@ export class ContentScriptsNavigatorView extends NavigatorView {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SnippetsNavigatorView extends NavigatorView {
   constructor() {
     super();
@@ -326,9 +314,6 @@ export class SnippetsNavigatorView extends NavigatorView {
   }
 }
 
-/**
- * @unrestricted
- */
 export class RecordingsNavigatorView extends NavigatorView {
   constructor() {
     super();

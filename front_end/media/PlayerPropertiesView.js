@@ -32,9 +32,6 @@ export const PlayerPropertyKeys = {
   kVideoPlaybackFreezing: 'kVideoPlaybackFreezing',
 };
 
-/**
- * @unrestricted
- */
 export class PropertyRenderer extends UI.Widget.VBox {
   /**
    * @param {string} title
@@ -137,9 +134,6 @@ export class FormattedPropertyRenderer extends PropertyRenderer {
   }
 }
 
-/**
- * @unrestricted
- */
 export class DefaultPropertyRenderer extends PropertyRenderer {
   /**
    * @param {string} title
@@ -151,9 +145,6 @@ export class DefaultPropertyRenderer extends PropertyRenderer {
   }
 }
 
-/**
- * @unrestricted
- */
 export class DimensionPropertyRenderer extends PropertyRenderer {
   /**
    * @param {string} title
@@ -189,9 +180,6 @@ export class DimensionPropertyRenderer extends PropertyRenderer {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AttributesView extends UI.Widget.VBox {
   /**
    * @param {!Array<!UI.Widget.Widget>} elements
@@ -345,9 +333,6 @@ class NoTracksPlaceholderMenu extends UI.Widget.VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class PlayerPropertiesView extends UI.Widget.VBox {
   constructor() {
     super();

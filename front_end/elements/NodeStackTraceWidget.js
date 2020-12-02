@@ -9,9 +9,6 @@ import * as UI from '../ui/ui.js';
 /** @type {!NodeStackTraceWidget} */
 let nodeStackTraceWidgetInstance;
 
-/**
- * @unrestricted
- */
 export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true /* isWebComponent */);

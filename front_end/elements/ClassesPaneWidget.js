@@ -9,9 +9,6 @@ import * as UI from '../ui/ui.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
 
-/**
- * @unrestricted
- */
 export class ClassesPaneWidget extends UI.Widget.Widget {
   constructor() {
     super(true);
@@ -293,9 +290,6 @@ export class ButtonProvider {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ClassNamePrompt extends UI.TextPrompt.TextPrompt {
   /**
    * @param {function(!SDK.DOMModel.DOMNode):!Map<string, boolean>} nodeClasses

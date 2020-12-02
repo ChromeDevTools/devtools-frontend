@@ -34,9 +34,6 @@ import * as SDK from '../sdk/sdk.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 
-/**
- * @unrestricted
- */
 export class TimelineModelImpl {
   constructor() {
     // The following fields are set by a call to _reset().
@@ -1946,9 +1943,6 @@ export class PageFrame {
   }
 }
 
-/**
- * @unrestricted
- */
 export class NetworkRequest {
   /**
    * @param {!SDK.TracingModel.Event} event
@@ -2114,9 +2108,6 @@ export class NetworkRequest {
   }
 }
 
-/**
- * @unrestricted
- */
 export class InvalidationTrackingEvent {
   /**
    * @param {!SDK.TracingModel.Event} event
@@ -2421,9 +2412,6 @@ export class InvalidationTracker {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TimelineAsyncEventTracker {
   constructor() {
     TimelineAsyncEventTracker._initialize();

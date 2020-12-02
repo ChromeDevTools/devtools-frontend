@@ -503,9 +503,6 @@ export const _backgroundColors = {
   FromFrame: '--network-grid-from-frame-color',
 };
 
-/**
- * @unrestricted
- */
 export class NetworkRequestNode extends NetworkNode {
   /**
    * @param {!NetworkLogViewInterface} parentView

@@ -5,9 +5,6 @@
 import * as Common from '../common/common.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
-/**
- * @unrestricted
- */
 export class CSSShadowModel {
   /**
    * @param {boolean} isBoxShadow
@@ -285,9 +282,6 @@ export const _Part = {
 };
 
 
-/**
- * @unrestricted
- */
 export class CSSLength {
   /**
    * @param {number} amount

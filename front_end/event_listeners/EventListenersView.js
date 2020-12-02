@@ -10,9 +10,6 @@ import * as UI from '../ui/ui.js';
 
 import {frameworkEventListeners, FrameworkEventListenersObject} from './EventListenersUtils.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class EventListenersView extends UI.Widget.VBox {
   /**
    * @param {function():void} changeCallback
@@ -250,9 +247,6 @@ export class EventListenersView extends UI.Widget.VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class EventListenersTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {string} type
@@ -290,9 +284,6 @@ export class EventListenersTreeElement extends UI.TreeOutline.TreeElement {
 }
 
 
-/**
- * @unrestricted
- */
 export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
   /**
    * @param {!SDK.DOMDebuggerModel.EventListener} eventListener

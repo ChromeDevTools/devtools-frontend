@@ -12,9 +12,6 @@ import * as Acorn from '../third_party/acorn/acorn.js';
 // @ts-ignore typedef
 export let TokenOrComment;
 
-/**
- * @unrestricted
- */
 export class AcornTokenizer {
   /**
    * @param {string} content

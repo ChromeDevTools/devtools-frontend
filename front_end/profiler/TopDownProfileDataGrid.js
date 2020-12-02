@@ -28,9 +28,6 @@ import * as UI from '../ui/ui.js';     // eslint-disable-line no-unused-vars
 
 import {Formatter, ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class TopDownProfileDataGridNode extends ProfileDataGridNode {
   /**
    * @param {!SDK.ProfileTreeModel.ProfileNode} profileNode
@@ -93,9 +90,6 @@ export class TopDownProfileDataGridNode extends ProfileDataGridNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TopDownProfileDataGridTree extends ProfileDataGridTree {
   /**
    * @param {!Formatter} formatter

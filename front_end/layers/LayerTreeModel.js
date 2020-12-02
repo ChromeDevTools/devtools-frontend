@@ -32,9 +32,6 @@ import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-/**
- * @unrestricted
- */
 export class LayerTreeModel extends SDK.SDKModel.SDKModel {
   /**
    * @param {!SDK.SDKModel.Target} target
@@ -168,9 +165,6 @@ export const Events = {
   LayerPainted: Symbol('LayerPainted'),
 };
 
-/**
- * @unrestricted
- */
 export class AgentLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
   /**
    * @param {!LayerTreeModel} layerTreeModel

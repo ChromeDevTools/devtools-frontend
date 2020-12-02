@@ -6,9 +6,6 @@ import * as UI from '../ui/ui.js';
 
 import {Events, OverviewController} from './CSSOverviewController.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class CSSOverviewProcessingView extends UI.Widget.Widget {
   /**
    * @param {!OverviewController} controller

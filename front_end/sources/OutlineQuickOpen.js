@@ -10,9 +10,6 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 import {SourcesView} from './SourcesView.js';
 
-/**
- * @unrestricted
- */
 export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   constructor() {
     super();

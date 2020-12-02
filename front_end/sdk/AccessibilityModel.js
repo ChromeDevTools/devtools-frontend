@@ -21,9 +21,6 @@ export const CoreAxPropertyName = {
 // @ts-ignore typedef
 export let CoreOrProtocolAxProperty;
 
-/**
- * @unrestricted
- */
 export class AccessibilityNode {
   /**
    * @param {!AccessibilityModel} accessibilityModel
@@ -218,9 +215,6 @@ export class AccessibilityNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AccessibilityModel extends SDKModel {
   /**
    * @param {!Target} target

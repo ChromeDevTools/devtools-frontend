@@ -41,9 +41,6 @@ export const DevToolsStubErrorCode = -32015;
 const _GenericError = -32000;
 const _ConnectionClosedErrorCode = -32001;
 
-/**
- * @unrestricted
- */
 export class InspectorBackend {
   constructor() {
     /** @type {!Map<string, !_AgentPrototype>} */
@@ -584,9 +581,6 @@ export class SessionRouter {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TargetBase {
   /**
    * @param {boolean} needsNodeJSPatching
@@ -1110,9 +1104,6 @@ export class TargetBase {
   }
 }
 
-/**
- * @unrestricted
- */
 class _AgentPrototype {
   /**
    * @param {string} domain
@@ -1301,9 +1292,6 @@ class _AgentPrototype {
   }
 }
 
-/**
- * @unrestricted
- */
 class _DispatcherPrototype {
   constructor() {
     /** @type {!Object<string, *>} */

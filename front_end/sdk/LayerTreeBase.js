@@ -239,9 +239,6 @@ export class StickyPositionConstraint {
   }
 }
 
-/**
- * @unrestricted
- */
 export class LayerTreeBase {
   /**
    * @param {?Target} target

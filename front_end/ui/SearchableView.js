@@ -39,9 +39,6 @@ import {Tooltip} from './Tooltip.js';
 import {createTextButton} from './UIUtils.js';
 import {VBox} from './Widget.js';
 
-/**
- * @unrestricted
- */
 export class SearchableView extends VBox {
   /**
    * @param {!Searchable} searchable
@@ -628,9 +625,6 @@ export class Replaceable {
   replaceAllWith(searchConfig, replacement) {}
 }
 
-/**
- * @unrestricted
- */
 export class SearchConfig {
   /**
    * @param {string} query

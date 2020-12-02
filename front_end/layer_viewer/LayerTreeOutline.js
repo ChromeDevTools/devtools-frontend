@@ -272,9 +272,6 @@ export const Events = {
   PaintProfilerRequested: Symbol('PaintProfilerRequested')
 };
 
-/**
- * @unrestricted
- */
 export class LayerTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!LayerTreeOutline} tree

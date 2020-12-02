@@ -4,9 +4,6 @@
 
 import {ExtensionServer} from './ExtensionServer.js';
 
-/**
- * @unrestricted
- */
 export class ExtensionTraceProvider {
   /**
    * @param {string} extensionOrigin

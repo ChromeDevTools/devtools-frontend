@@ -15,9 +15,6 @@ import {InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';  // esli
 /** @type {!DeviceModeWrapper} */
 let deviceModeWrapperInstance;
 
-/**
- * @unrestricted
- */
 export class DeviceModeWrapper extends UI.Widget.VBox {
   /**
    * @param {!InspectedPagePlaceholder} inspectedPagePlaceholder

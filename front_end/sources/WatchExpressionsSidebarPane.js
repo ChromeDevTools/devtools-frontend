@@ -290,9 +290,6 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
   }
 }
 
-/**
- * @unrestricted
- */
 export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {?string} expression

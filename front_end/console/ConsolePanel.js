@@ -34,9 +34,6 @@ import {ConsoleView} from './ConsoleView.js';
 /** @type {!ConsolePanel} */
 let consolePanelInstance;
 
-/**
- * @unrestricted
- */
 export class ConsolePanel extends UI.Panel.Panel {
   constructor() {
     super('console');

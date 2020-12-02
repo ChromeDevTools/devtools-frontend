@@ -30,9 +30,6 @@
 
 import * as Platform from '../platform/platform.js';
 
-/**
- * @unrestricted
- */
 export class TextRange {
   /**
    * @param {number} startLine
@@ -316,9 +313,6 @@ export class TextRange {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SourceRange {
   /**
    * @param {number} offset
@@ -330,9 +324,6 @@ export class SourceRange {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SourceEdit {
   /**
    * @param {string} sourceURL

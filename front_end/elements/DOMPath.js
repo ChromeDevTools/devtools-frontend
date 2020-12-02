@@ -337,9 +337,6 @@ export const _xPathIndex = function(node) {
   return -1;  // An error occurred: |node| not found in parent's children.
 };
 
-/**
- * @unrestricted
- */
 export class Step {
   /**
    * @param {string} value

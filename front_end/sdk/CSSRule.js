@@ -9,9 +9,6 @@ import {CSSModel, Edit} from './CSSModel.js';  // eslint-disable-line no-unused-
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
 import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class CSSRule {
   /**
    * @param {!CSSModel} cssModel
@@ -283,9 +280,6 @@ export class CSSKeyframesRule {
   }
 }
 
-/**
- * @unrestricted
- */
 export class CSSKeyframeRule extends CSSRule {
   /**
    * @param {!CSSModel} cssModel

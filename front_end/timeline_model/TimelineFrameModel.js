@@ -33,9 +33,6 @@ import * as SDK from '../sdk/sdk.js';
 import {RecordType, TimelineData} from './TimelineModel.js';
 import {TracingLayerTile, TracingLayerTree} from './TracingLayerTree.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class TimelineFrameModel {
   /**
    * @param {function(!SDK.TracingModel.Event):string} categoryMapper
@@ -380,9 +377,6 @@ TimelineFrameModel._mainFrameMarkers = [
   RecordType.ScrollLayer
 ];
 
-/**
- * @unrestricted
- */
 export class TracingFrameLayerTree {
   /**
    * @param {!SDK.SDKModel.Target} target
@@ -430,9 +424,6 @@ export class TracingFrameLayerTree {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TimelineFrame {
   /**
    * @param {number} startTime
@@ -496,9 +487,6 @@ export class TimelineFrame {
   }
 }
 
-/**
- * @unrestricted
- */
 export class LayerPaintEvent {
   /**
    * @param {!SDK.TracingModel.Event} event
@@ -560,9 +548,6 @@ export class LayerPaintEvent {
   }
 }
 
-/**
- * @unrestricted
- */
 export class PendingFrame {
   /**
    * @param {number} triggerTime

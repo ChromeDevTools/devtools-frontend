@@ -487,9 +487,6 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
   /**
    * @param {!DataDisplayDelegate} dataDisplayDelegate
@@ -646,9 +643,6 @@ export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ProfileGroup {
   constructor() {
     /** @type {!Array<!ProfileSidebarTreeElement>} */
@@ -658,9 +652,6 @@ export class ProfileGroup {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ProfileGroupSidebarTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!DataDisplayDelegate} dataDisplayDelegate

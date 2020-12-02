@@ -842,9 +842,6 @@ export class HeapSnapshotFilteredIterator {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotProgress {
   /**
    * @param {!HeapSnapshotWorkerDispatcher=} dispatcher
@@ -891,9 +888,6 @@ export class HeapSnapshotProgress {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotProblemReport {
   /**
    * @param {string} title
@@ -950,9 +944,6 @@ const DOMLinkState = {
 };
 Object.freeze(DOMLinkState);
 
-/**
- * @unrestricted
- */
 export class HeapSnapshot {
   /**
    * @param {!Profile} profile
@@ -2799,9 +2790,6 @@ export class HeapSnapshot {
   }
 }
 
-/**
- * @unrestricted
- */
 const HeapSnapshotMetainfo = class {
   constructor() {
     /**
@@ -2851,9 +2839,6 @@ const HeapSnapshotMetainfo = class {
   }
 };
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotHeader {
   constructor() {
     // New format.
@@ -2866,9 +2851,6 @@ export class HeapSnapshotHeader {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotItemProvider {
   /**
    * @param {!HeapSnapshotItemIterator} iterator
@@ -2965,9 +2947,6 @@ export class HeapSnapshotItemProvider {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotEdgesProvider extends HeapSnapshotItemProvider {
   /**
    * @param {!HeapSnapshot} snapshot
@@ -3100,9 +3079,6 @@ export class HeapSnapshotEdgesProvider extends HeapSnapshotItemProvider {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotNodesProvider extends HeapSnapshotItemProvider {
   /**
    * @param {!HeapSnapshot} snapshot
@@ -3209,9 +3185,6 @@ export class HeapSnapshotNodesProvider extends HeapSnapshotItemProvider {
   }
 }
 
-/**
- * @unrestricted
- */
 export class JSHeapSnapshot extends HeapSnapshot {
   /**
    * @param {!Profile} profile
@@ -3579,9 +3552,6 @@ export class JSHeapSnapshot extends HeapSnapshot {
   }
 }
 
-/**
- * @unrestricted
- */
 export class JSHeapSnapshotNode extends HeapSnapshotNode {
   /**
    * @param {!JSHeapSnapshot} snapshot
@@ -3775,9 +3745,6 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
   /**
    * @param {!JSHeapSnapshot} snapshot
@@ -3926,9 +3893,6 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
   }
 }
 
-/**
- * @unrestricted
- */
 export class JSHeapSnapshotRetainerEdge extends HeapSnapshotRetainerEdge {
   /**
    * @param {!JSHeapSnapshot} snapshot

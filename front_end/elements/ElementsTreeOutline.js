@@ -44,9 +44,6 @@ const elementsTreeOutlineByDOMModel = new WeakMap();
 /** @type {!Set<!ElementsTreeElement>} */
 const populatedTreeElements = new Set();
 
-/**
- * @unrestricted
- */
 export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
   /**
    * @param {boolean=} omitRootDOMNode
@@ -1701,9 +1698,6 @@ export const MappedCharToEntity = {
   '\ufeff': '#65279'  // BOM
 };
 
-/**
- * @unrestricted
- */
 export class UpdateRecord {
   /**
    * @param {string} attrName
@@ -1830,9 +1824,6 @@ export class Renderer {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!SDK.DOMModel.DOMNodeShortcut} nodeShortcut

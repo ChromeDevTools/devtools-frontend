@@ -44,9 +44,6 @@ import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';  // esli
 // @ts-ignore typedef
 export let NodeInfo;
 
-/**
- * @unrestricted
- */
 export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
   /**
    * @param {!SDK.ProfileTreeModel.ProfileNode} profileNode
@@ -192,9 +189,6 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
   /**
    * @param {!Formatter} formatter

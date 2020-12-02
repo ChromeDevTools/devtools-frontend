@@ -11,9 +11,6 @@ import * as UI from '../ui/ui.js';
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
 import {StylePropertiesSection, StylesSidebarPane} from './StylesSidebarPane.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class BezierPopoverIcon {
   /**
    * @param {!StylePropertyTreeElement} treeElement
@@ -99,9 +96,6 @@ export class BezierPopoverIcon {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ColorSwatchPopoverIcon {
   /**
    * @param {!StylePropertyTreeElement} treeElement
@@ -253,9 +247,6 @@ export class ColorSwatchPopoverIcon {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ShadowSwatchPopoverHelper {
   /**
    * @param {!StylePropertyTreeElement} treeElement

@@ -31,9 +31,6 @@ import {ls} from '../platform/platform.js';
 
 import {ParsedURL} from './ParsedURL.js';
 
-/**
- * @unrestricted
- */
 export class ResourceType {
   /**
    * @param {string} name
@@ -231,9 +228,6 @@ export class ResourceType {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ResourceCategory {
   /**
    * @param {string} title

@@ -36,9 +36,6 @@ import * as UI from '../ui/ui.js';
 /** @type {!PropertiesWidget} */
 let propertiesWidgetInstance;
 
-/**
- * @unrestricted
- */
 export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true /* isWebComponent */);

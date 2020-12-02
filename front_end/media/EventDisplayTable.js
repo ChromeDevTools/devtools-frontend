@@ -60,9 +60,6 @@ export class EventNode extends DataGrid.DataGrid.DataGridNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class PlayerEventsView extends UI.Widget.VBox {
   constructor() {
     super();

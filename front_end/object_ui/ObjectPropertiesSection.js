@@ -53,9 +53,6 @@ export const getObjectPropertiesSectionFrom = element => {
   return objectPropertiesSectionMap.get(element);
 };
 
-/**
- * @unrestricted
- */
 export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow {
   /**
    * @param {!SDK.RemoteObject.RemoteObject} object
@@ -574,9 +571,6 @@ export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutl
   }
 }
 
-/**
- * @unrestricted
- */
 export class RootElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!SDK.RemoteObject.RemoteObject} object
@@ -645,9 +639,6 @@ export class RootElement extends UI.TreeOutline.TreeElement {
 // Remaining children are shown as soon as requested via a show more properties button.
 export const InitialVisibleChildrenLimit = 200;
 
-/**
- * @unrestricted
- */
 export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!SDK.RemoteObject.RemoteObjectProperty} property
@@ -1325,9 +1316,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 }
 
 
-/**
- * @unrestricted
- */
 export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!SDK.RemoteObject.RemoteObject} object
@@ -1662,9 +1650,6 @@ ArrayGroupingTreeElement._sparseIterationThreshold = 250000;
 ArrayGroupingTreeElement._getOwnPropertyNamesThreshold = 500000;
 
 
-/**
- * @unrestricted
- */
 export class ObjectPropertyPrompt extends UI.TextPrompt.TextPrompt {
   constructor() {
     super();
@@ -1679,9 +1664,6 @@ const sectionMap = new Map();
 /** @type {!Map<!UI.TreeOutline.TreeElement, string>} */
 const cachedResultMap = new Map();
 
-/**
- * @unrestricted
- */
 export class ObjectPropertiesSectionsTreeExpandController {
   /**
    * @param {!UI.TreeOutline.TreeOutline} treeOutline

@@ -30,9 +30,6 @@
 
 import * as Common from '../common/common.js';
 
-/**
- * @unrestricted
- */
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import {EnumeratedHistogram} from './InspectorFrontendHostAPI.js';
 

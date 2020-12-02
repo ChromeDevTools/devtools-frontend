@@ -86,9 +86,6 @@ export class CPUProfileView extends ProfileView {
   }
 }
 
-/**
- * @unrestricted
- */
 export class CPUProfileType extends ProfileType {
   constructor() {
     super(CPUProfileType.TypeId, Common.UIString.UIString('Record JavaScript CPU Profile'));
@@ -226,9 +223,6 @@ export class CPUProfileType extends ProfileType {
 
 CPUProfileType.TypeId = 'CPU';
 
-/**
- * @unrestricted
- */
 export class CPUProfileHeader extends WritableProfileHeader {
   /**
    * @param {?SDK.CPUProfilerModel.CPUProfilerModel} cpuProfilerModel
@@ -338,9 +332,6 @@ export class NodeFormatter {
   }
 }
 
-/**
- * @unrestricted
- */
 export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
   /**
    * @param {!SDK.CPUProfileDataModel.CPUProfileDataModel} cpuProfile
@@ -496,9 +487,6 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
   }
 }
 
-/**
- * @unrestricted
- */
 CPUFlameChartDataProvider.ChartEntry = class {
   /**
    * @param {number} depth

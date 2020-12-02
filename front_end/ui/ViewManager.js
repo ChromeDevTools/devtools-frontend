@@ -171,9 +171,6 @@ export function getRegisteredViewExtensions() {
  */
 let viewManagerInstance;
 
-/**
- * @unrestricted
- */
 export class ViewManager {
   /**
    * @private
@@ -450,9 +447,6 @@ export class ViewManager {
 /** @type {!WeakMap<!View, !Widget>} */
 const widgetForView = new WeakMap();
 
-/**
- * @unrestricted
- */
 export class ContainerWidget extends VBox {
   /**
    * @param {!View} view
@@ -514,9 +508,6 @@ export class ContainerWidget extends VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class _ExpandableContainerWidget extends VBox {
   /**
    * @param {!View} view
@@ -650,9 +641,6 @@ export class _ExpandableContainerWidget extends VBox {
 /** @type {!WeakMap<!View, !_ExpandableContainerWidget>} */
 const expandableContainerForView = new WeakMap();
 
-/**
- * @unrestricted
- */
 class _Location {
   /**
    * @param {!ViewManager} manager

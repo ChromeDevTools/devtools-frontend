@@ -8,9 +8,6 @@ import * as UI from '../ui/ui.js';
 
 import {BezierUI} from './BezierUI.js';
 
-/**
- * @unrestricted
- */
 export class BezierEditor extends UI.Widget.VBox {
   /** @param {!UI.Geometry.CubicBezier} bezier */
   constructor(bezier) {

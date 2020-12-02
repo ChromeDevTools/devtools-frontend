@@ -32,9 +32,6 @@ import * as Common from '../common/common.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';             // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class NetworkTimeBoundary {
   /**
    * @param {number} minimum
@@ -349,9 +346,6 @@ export const _fromServiceWorkerFormat = new Common.UIString.UIStringFormat('%s (
 /** @type {!Common.UIString.UIStringFormat} */
 export const _fromCacheFormat = new Common.UIString.UIStringFormat('%s (from cache)');
 
-/**
- * @unrestricted
- */
 export class NetworkTransferTimeCalculator extends NetworkTimeCalculator {
   constructor() {
     super(false);
@@ -386,9 +380,6 @@ export class NetworkTransferTimeCalculator extends NetworkTimeCalculator {
   }
 }
 
-/**
- * @unrestricted
- */
 export class NetworkTransferDurationCalculator extends NetworkTimeCalculator {
   constructor() {
     super(true);

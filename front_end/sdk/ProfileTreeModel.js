@@ -4,9 +4,6 @@
 
 import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class ProfileNode {
   /**
    * @param {!Protocol.Runtime.CallFrame} callFrame
@@ -68,9 +65,6 @@ export class ProfileNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ProfileTreeModel {
   /**
    * @param {?Target=} target

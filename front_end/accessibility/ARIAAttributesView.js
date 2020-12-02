@@ -8,9 +8,6 @@ import * as UI from '../ui/ui.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 import {ariaMetadata} from './ARIAMetadata.js';
 
-/**
- * @unrestricted
- */
 export class ARIAAttributesPane extends AccessibilitySubPane {
   constructor() {
     super(ls`ARIA Attributes`);
@@ -54,9 +51,6 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!ARIAAttributesPane} parentPane
@@ -215,9 +209,6 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ARIAAttributePrompt extends UI.TextPrompt.TextPrompt {
   /**
    * @param {!Array<string>} ariaCompletions

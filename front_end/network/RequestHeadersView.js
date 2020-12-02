@@ -936,9 +936,6 @@ const viewSourceForItems = new WeakSet();
 /** @type {!WeakMap<!UI.TreeOutline.TreeElement, string>} */
 const headerNames = new WeakMap();
 
-/**
- * @unrestricted
- */
 export class Category extends UI.TreeOutline.TreeElement {
   /**
    * @param {!UI.TreeOutline.TreeOutline} root

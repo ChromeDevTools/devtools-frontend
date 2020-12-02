@@ -538,9 +538,6 @@ export const Events = {
   IndexedDBContentUpdated: Symbol('IndexedDBContentUpdated')
 };
 
-/**
- * @unrestricted
- */
 export class Entry {
   /**
    * @param {!SDK.RemoteObject.RemoteObject} key
@@ -554,9 +551,6 @@ export class Entry {
   }
 }
 
-/**
- * @unrestricted
- */
 export class DatabaseId {
   /**
    * @param {string} securityOrigin
@@ -576,9 +570,6 @@ export class DatabaseId {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Database {
   /**
    * @param {!DatabaseId} databaseId
@@ -592,9 +583,6 @@ export class Database {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ObjectStore {
   /**
    * @param {string} name
@@ -617,9 +605,6 @@ export class ObjectStore {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Index {
   /**
    * @param {string} name

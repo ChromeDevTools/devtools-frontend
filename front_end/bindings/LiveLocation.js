@@ -94,9 +94,6 @@ export class LiveLocationWithPool {
   }
 }
 
-/**
- * @unrestricted
- */
 export class LiveLocationPool {
   constructor() {
     this._locations = new Set();

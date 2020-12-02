@@ -153,9 +153,6 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TimelinePaintImageView extends UI.Widget.Widget {
   constructor() {
     super(true);

@@ -58,9 +58,6 @@ const kAllowedOrigins = [
 /** @type {?ExtensionServer} */
 let extensionServerInstance;
 
-/**
- * @unrestricted
- */
 export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @suppressGlobalPropertiesCheck
@@ -1089,9 +1086,6 @@ export const Events = {
   TraceProviderAdded: Symbol('TraceProviderAdded')
 };
 
-/**
- * @unrestricted
- */
 class ExtensionServerPanelView extends UI.View.SimpleView {
   /**
    * @param {string} name
@@ -1121,9 +1115,6 @@ class ExtensionServerPanelView extends UI.View.SimpleView {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ExtensionStatus {
   constructor() {
     /**

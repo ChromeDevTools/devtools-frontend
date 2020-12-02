@@ -5,9 +5,6 @@
 /** @type {!Object} */
 const SkipSubTreeObject = {};
 
-/**
- * @unrestricted
- */
 export class ESTreeWalker {
   /**
    * @param {function(!ESTree.Node):(!Object|undefined)} beforeVisit

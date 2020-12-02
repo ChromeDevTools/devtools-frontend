@@ -103,9 +103,6 @@ export class CSSMediaQueryExpression {
 }
 
 
-/**
- * @unrestricted
- */
 export class CSSMedia {
   /**
    * @param {!CSSModel} cssModel

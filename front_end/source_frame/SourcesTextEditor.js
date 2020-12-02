@@ -10,9 +10,6 @@ import * as UI from '../ui/ui.js';
 /** @type {!WeakSet<!Document>} */
 const whitespaceStyleInjectedSet = new WeakSet();
 
-/**
- * @unrestricted
- */
 export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor {
   /**
    * @param {!SourcesTextEditorDelegate} delegate
@@ -948,9 +945,6 @@ export const _BlockIndentController = {
 };
 
 
-/**
- * @unrestricted
- */
 export class TokenHighlighter {
   /**
    * @param {!SourcesTextEditor} textEditor

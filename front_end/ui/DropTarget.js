@@ -4,9 +4,6 @@
 
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 
-/**
- * @unrestricted
- */
 export class DropTarget {
   /**
    * @param {!Element} element

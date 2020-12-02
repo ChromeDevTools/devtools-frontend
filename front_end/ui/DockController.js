@@ -38,9 +38,6 @@ import {Provider, ToolbarButton, ToolbarItem} from './Toolbar.js';  // eslint-di
 /** @type {!DockController} */
 let dockControllerInstance;
 
-/**
- * @unrestricted
- */
 export class DockController extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {boolean} canDock

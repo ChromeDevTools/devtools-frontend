@@ -37,9 +37,6 @@ import {ShortcutRegistry} from './ShortcutRegistry.js';
 import {SoftContextMenu, SoftContextMenuDescriptor} from './SoftContextMenu.js';  // eslint-disable-line no-unused-vars
 import {deepElementFromEvent} from './UIUtils.js';
 
-/**
- * @unrestricted
- */
 export class Item {
   /**
    * @param {?ContextMenu} contextMenu
@@ -420,9 +417,6 @@ export class SubMenu extends Item {
 
 Item._uniqueSectionName = 0;
 
-/**
- * @unrestricted
- */
 export class ContextMenu extends SubMenu {
   /**
    * @param {!Event} event

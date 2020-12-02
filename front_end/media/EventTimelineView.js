@@ -8,9 +8,6 @@ import {ColdColorScheme, Event, EventProperties, HotColorScheme, TickingFlameCha
 // Has to be a double, see https://v8.dev/blog/react-cliff
 const NO_NORMALIZED_TIMESTAMP = -1.5;
 
-/**
- * @unrestricted
- */
 export class PlayerEventsTimeline extends TickingFlameChart {
   constructor() {
     super();

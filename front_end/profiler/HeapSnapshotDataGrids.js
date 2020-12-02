@@ -399,9 +399,6 @@ export const HeapSnapshotSortableDataGridEvents = {
   SortingComplete: Symbol('SortingComplete')
 };
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
   /**
    * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
@@ -691,9 +688,6 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGrid {
   /**
    * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
@@ -751,9 +745,6 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataGrid {
   /**
    * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
@@ -830,9 +821,6 @@ export const HeapSnapshotRetainmentDataGridEvents = {
   ExpandRetainersComplete: Symbol('ExpandRetainersComplete')
 };
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGrid {
   /**
    * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
@@ -1012,9 +1000,6 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
   /**
    * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
@@ -1118,9 +1103,6 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
   /**
    * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel

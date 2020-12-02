@@ -657,9 +657,6 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
 
 SDK.SDKModel.SDKModel.register(CoverageModel, SDK.SDKModel.Capability.None, false);
 
-/**
- * @unrestricted
- */
 export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {string} url

@@ -36,9 +36,6 @@ import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior, SizeBe
 import {Icon} from './Icon.js';
 import {createTextChild, ElementFocusRestorer} from './UIUtils.js';
 
-/**
- * @unrestricted
- */
 export class SoftContextMenu {
   /**
    * @param {!Array.<!SoftContextMenuDescriptor>} items

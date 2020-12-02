@@ -78,9 +78,6 @@ export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   /**
    * @param {!TargetManager} targetManager

@@ -35,9 +35,6 @@ import {IsolateSelector} from './IsolateSelector.js';
 import {ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
 import {ProfilesPanel} from './ProfilesPanel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class ProfileLauncherView extends UI.Widget.VBox {
   /**
    * @param {!ProfilesPanel} profilesPanel

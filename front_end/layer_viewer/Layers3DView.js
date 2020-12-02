@@ -1080,9 +1080,6 @@ export const ViewportBorderWidth = 3;
 export const LayerSpacing = 20;
 export const ScrollRectSpacing = 4;
 
-/**
- * @unrestricted
- */
 export class LayerTextureManager {
   /**
    * @param {function():void} textureUpdatedCallback
@@ -1303,9 +1300,6 @@ export class LayerTextureManager {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Rectangle {
   /**
    * @param {?Selection} relatedObject
@@ -1420,9 +1414,6 @@ export class Rectangle {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Tile {
   /**
    * @param {!SDK.PaintProfiler.SnapshotWithRect} snapshotWithRect

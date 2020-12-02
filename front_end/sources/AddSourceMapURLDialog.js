@@ -5,9 +5,6 @@
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
-/**
- * @unrestricted
- */
 export class AddSourceMapURLDialog extends UI.Widget.HBox {
   /**
    * @param {function(string):void} callback

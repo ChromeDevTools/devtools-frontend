@@ -9,9 +9,6 @@ import * as UI from '../ui/ui.js';
 
 import {MaxDeviceSize, MinDeviceSize} from './DeviceModeModel.js';
 
-/**
- * @unrestricted
- */
 export class EmulatedDevice {
   constructor() {
     /** @type {string} */
@@ -575,9 +572,6 @@ export const _Show = {
 /** @type {!EmulatedDevicesList} */
 let _instance;
 
-/**
- * @unrestricted
- */
 export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();

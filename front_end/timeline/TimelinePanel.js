@@ -1271,9 +1271,6 @@ export class TimelineModeViewDelegate {
   }
 }
 
-/**
- * @unrestricted
- */
 export class StatusPane extends UI.Widget.VBox {
   /**
    * @param {!{showTimer: (boolean|undefined), showProgress: (boolean|undefined), description: (string|undefined), buttonText: (string|undefined), buttonDisabled: (boolean|undefined)}} options - a collection of options controlling the appearance of the pane.

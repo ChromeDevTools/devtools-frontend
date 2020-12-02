@@ -9,9 +9,6 @@ import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint
 import {AbortTokenization, createTokenizer} from './FormatterWorker.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
 
-/**
- * @unrestricted
- */
 export class HTMLFormatter {
   /**
    * @param {!FormattedContentBuilder} builder
@@ -207,9 +204,6 @@ HTMLFormatter.SupportedJavaScriptMimeTypes = new Set([
   'text/x-ecmascript', 'text/x-javascript'
 ]);
 
-/**
- * @unrestricted
- */
 export class HTMLModel {
   /**
    * @param {string} text
@@ -502,9 +496,6 @@ const ParseState = {
   AttributeValue: 'AttributeValue'
 };
 
-/**
- * @unrestricted
- */
 const Token = class {
   /**
    * @param {string} value
@@ -520,9 +511,6 @@ const Token = class {
   }
 };
 
-/**
- * @unrestricted
- */
 const Tag = class {
   /**
    * @param {string} name
@@ -543,9 +531,6 @@ const Tag = class {
 };
 
 
-/**
- * @unrestricted
- */
 const FormatterElement = class {
   /**
    * @param {string} name

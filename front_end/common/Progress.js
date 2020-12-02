@@ -68,9 +68,6 @@ export class Progress {
   }
 }
 
-/**
- * @unrestricted
- */
 export class CompositeProgress {
   /**
    * @param {!Progress} parent

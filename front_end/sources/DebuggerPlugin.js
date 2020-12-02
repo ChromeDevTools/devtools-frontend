@@ -1946,9 +1946,6 @@ export class DebuggerPlugin extends Plugin {
   }
 }
 
-/**
- * @unrestricted
- */
 export class BreakpointDecoration {
   /**
    * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor

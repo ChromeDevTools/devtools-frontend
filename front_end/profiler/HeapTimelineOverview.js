@@ -6,9 +6,6 @@ import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
-/**
- * @unrestricted
- */
 export class HeapTimelineOverview extends UI.Widget.VBox {
   constructor() {
     super();
@@ -289,9 +286,6 @@ export class SmoothScale {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Samples {
   constructor() {
     /** @type {!Array<number>} */

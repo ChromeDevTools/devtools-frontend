@@ -1188,9 +1188,6 @@ export class DebuggerLanguagePluginManager {
   }
 }
 
-/**
- * @unrestricted
- */
 class ModelData {
   /**
    * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel

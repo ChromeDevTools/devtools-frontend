@@ -34,9 +34,6 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import {HeapSnapshotHeader, HeapSnapshotProgress, JSHeapSnapshot, Profile} from './HeapSnapshot.js';  // eslint-disable-line no-unused-vars
 import {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotLoader {
   /**
    * @param {!HeapSnapshotWorkerDispatcher} dispatcher

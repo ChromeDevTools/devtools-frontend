@@ -13,9 +13,6 @@ import {TimelineModeViewDelegate, TimelineSelection} from './TimelinePanel.js'; 
 import {TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
-/**
- * @unrestricted
- */
 export class EventsTimelineTreeView extends TimelineTreeView {
   /**
    * @param {!TimelineModeViewDelegate} delegate
@@ -176,9 +173,6 @@ export class EventsTimelineTreeView extends TimelineTreeView {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Filters extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();

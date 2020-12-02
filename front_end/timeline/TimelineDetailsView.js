@@ -16,9 +16,6 @@ import {TimelineModeViewDelegate, TimelineSelection} from './TimelinePanel.js'; 
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';  // eslint-disable-line no-unused-vars
 import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.js';
 
-/**
- * @unrestricted
- */
 export class TimelineDetailsView extends UI.Widget.VBox {
   /**
    * @param {!TimelineModeViewDelegate} delegate

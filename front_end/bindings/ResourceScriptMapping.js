@@ -271,9 +271,6 @@ export class ResourceScriptMapping {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!ResourceScriptMapping} resourceScriptMapping

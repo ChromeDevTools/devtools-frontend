@@ -279,9 +279,6 @@ export class FilterParser {
   }
 }
 
-/**
- * @unrestricted
- */
 export class BalancedJSONTokenizer {
   /**
    * @param {function(string):void} callback

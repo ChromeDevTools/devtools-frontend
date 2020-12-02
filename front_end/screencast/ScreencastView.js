@@ -818,9 +818,6 @@ export const _navBarHeight = 29;
 export const _HttpRegex = /^http:\/\/(.+)/;
 export const _SchemeRegex = /^(https?|about|chrome):/;
 
-/**
- * @unrestricted
- */
 export class ProgressTracker {
   /**
    * @param {?SDK.ResourceTreeModel.ResourceTreeModel} resourceTreeModel

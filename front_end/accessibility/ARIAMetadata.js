@@ -31,9 +31,6 @@ export let RoleConfig;
 // @ts-ignore typedef
 export let Config;
 
-/**
- * @unrestricted
- */
 export class ARIAMetadata {
   /**
    * @param {?Config} config
@@ -100,9 +97,6 @@ export function ariaMetadata() {
   return _instance;
 }
 
-/**
- * @unrestricted
- */
 export class Attribute {
   /**
    * @param {!AttributeConfig} config

@@ -11,9 +11,6 @@ import * as UI from '../ui/ui.js';
 import {defaultMobileScaleFactor, DeviceModeModel, Type, UA} from './DeviceModeModel.js';
 import {EmulatedDevice, EmulatedDevicesList, Events, Horizontal, HorizontalSpanned, Mode, Vertical, VerticalSpanned} from './EmulatedDevices.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class DeviceModeToolbar {
   /**
    * @param {!DeviceModeModel} model

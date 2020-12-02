@@ -130,9 +130,6 @@ export class ExtensionPanel extends UI.Panel.Panel {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ExtensionButton {
   /**
    * @param {!ExtensionServer} server
@@ -175,9 +172,6 @@ export class ExtensionButton {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ExtensionSidebarPane extends UI.View.SimpleView {
   /**
    * @param {!ExtensionServer} server

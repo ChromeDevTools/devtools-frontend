@@ -100,9 +100,6 @@ const flexContainerNodesToElements = nodes => {
   });
 };
 
-/**
- * @unrestricted
- */
 export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true /* isWebComponent */);

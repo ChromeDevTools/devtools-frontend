@@ -38,9 +38,6 @@ let _eventStylesMap = null;
 /** @type {?Object<string, !TimelineCategory>} */
 let _categories = null;
 
-/**
- * @unrestricted
- */
 export class UIDevtoolsUtils {
   /**
    * @return {boolean}

@@ -5,9 +5,6 @@
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 
-/**
- * @unrestricted
- */
 export class OverviewController extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();

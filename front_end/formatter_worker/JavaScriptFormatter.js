@@ -34,9 +34,6 @@ import {AcornTokenizer, ECMA_VERSION, TokenOrComment} from './AcornTokenizer.js'
 import {ESTreeWalker} from './ESTreeWalker.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class JavaScriptFormatter {
   /**
    * @param {!FormattedContentBuilder} builder

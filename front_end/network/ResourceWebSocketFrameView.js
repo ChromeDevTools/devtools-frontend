@@ -27,9 +27,6 @@ import * as UI from '../ui/ui.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
 
-/**
- * @unrestricted
- */
 export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request

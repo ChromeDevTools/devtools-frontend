@@ -35,9 +35,6 @@ export const HeapSnapshotProgressEvent = {
 
 export const baseSystemDistance = 100000000;
 
-/**
- * @unrestricted
- */
 export class AllocationNodeCallers {
   /**
    * @param {!Array.<!SerializedAllocationNode>} nodesWithSingleCaller
@@ -51,9 +48,6 @@ export class AllocationNodeCallers {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SerializedAllocationNode {
   /**
    * @param {number} nodeId
@@ -94,9 +88,6 @@ export class SerializedAllocationNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AllocationStackFrame {
   /**
    * @param {string} functionName
@@ -119,9 +110,6 @@ export class AllocationStackFrame {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Node {
   /**
    * @param {number} id
@@ -148,9 +136,6 @@ export class Node {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Edge {
   /**
    * @param {string} name
@@ -168,9 +153,6 @@ export class Edge {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Aggregate {
   constructor() {
     /** @type {number} */
@@ -190,9 +172,6 @@ export class Aggregate {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AggregateForDiff {
   constructor() {
     /** @type {!Array.<number>} */
@@ -204,9 +183,6 @@ export class AggregateForDiff {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Diff {
   constructor() {
     /** @type {number} */
@@ -228,9 +204,6 @@ export class Diff {
   }
 }
 
-/**
- * @unrestricted
- */
 export class DiffForClass {
   constructor() {
     /** @type {number} */
@@ -253,9 +226,6 @@ export class DiffForClass {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ComparatorConfig {
   /**
    * @param {string} fieldName1
@@ -271,9 +241,6 @@ export class ComparatorConfig {
   }
 }
 
-/**
- * @unrestricted
- */
 export class WorkerCommand {
   constructor() {
     /** @type {number} */
@@ -293,9 +260,6 @@ export class WorkerCommand {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ItemsRange {
   /**
    * @param {number} startPosition
@@ -311,9 +275,6 @@ export class ItemsRange {
   }
 }
 
-/**
- * @unrestricted
- */
 export class StaticData {
   /**
    * @param {number} nodeCount
@@ -333,9 +294,6 @@ export class StaticData {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Statistics {
   constructor() {
     /** @type {number} */
@@ -355,9 +313,6 @@ export class Statistics {
   }
 }
 
-/**
- * @unrestricted
- */
 export class NodeFilter {
   /**
    * @param {number=} minNodeId
@@ -382,9 +337,6 @@ export class NodeFilter {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SearchConfig {
   /**
    * @param {string} query
@@ -410,9 +362,6 @@ export class SearchConfig {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Samples {
   /**
    * @param {!Array.<number>} timestamps
@@ -426,9 +375,6 @@ export class Samples {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Location {
   /**
    * @param {number} scriptId

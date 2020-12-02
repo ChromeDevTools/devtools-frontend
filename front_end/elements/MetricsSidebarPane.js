@@ -32,9 +32,6 @@ import * as UI from '../ui/ui.js';
 
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 
-/**
- * @unrestricted
- */
 export class MetricsSidebarPane extends ElementsSidebarPane {
   constructor() {
     super();

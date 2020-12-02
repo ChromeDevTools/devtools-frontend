@@ -42,9 +42,6 @@ export class WidgetElement extends HTMLDivElement {  // eslint-disable-line no-u
   }
 }
 
-/**
- * @unrestricted
- */
 export class Widget extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {boolean=} isWebComponent
@@ -692,9 +689,6 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
  */
 const storedScrollPositions = new WeakMap();
 
-/**
- * @unrestricted
- */
 export class VBox extends Widget {
   /**
    * @param {boolean=} isWebComponent
@@ -727,9 +721,6 @@ export class VBox extends Widget {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HBox extends Widget {
   /**
    * @param {boolean=} isWebComponent
@@ -761,9 +752,6 @@ export class HBox extends Widget {
   }
 }
 
-/**
- * @unrestricted
- */
 export class VBoxWithResizeCallback extends VBox {
   /**
    * @param {function():void} resizeCallback
@@ -781,9 +769,6 @@ export class VBoxWithResizeCallback extends VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class WidgetFocusRestorer {
   /**
    * @param {!Widget} widget

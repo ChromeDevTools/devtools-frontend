@@ -34,9 +34,6 @@ import * as Host from '../host/host.js';
 /** @type {?FileManager} */
 let fileManagerInstance;
 
-/**
- * @unrestricted
- */
 export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @private

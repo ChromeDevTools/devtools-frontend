@@ -39,9 +39,6 @@ export function getRemoteBase(location = self.location.toString()) {
 /** @type {!WeakMap<function(new:?), ?>} */
 const constructedInstances = new WeakMap();
 
-/**
- * @unrestricted
- */
 export class Runtime {
   /**
    * @private
@@ -418,9 +415,6 @@ export class Runtime {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ModuleDescriptor {
   constructor() {
     /**
@@ -465,9 +459,6 @@ export class ModuleDescriptor {
 
 // This class is named like this, because we already have an "ExtensionDescriptor" in the externs
 // These two do not share the same structure
-/**
- * @unrestricted
- */
 export class RuntimeExtensionDescriptor {
   constructor() {
     /**
@@ -609,9 +600,6 @@ export class RuntimeExtensionDescriptor {
 // @ts-ignore typedef
 export let Option;
 
-/**
- * @unrestricted
- */
 export class Module {
   /**
    * @param {!Runtime} manager
@@ -741,9 +729,6 @@ export class Module {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Extension {
   /**
   * @param {!Module} moduleParam

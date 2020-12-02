@@ -7,9 +7,6 @@ import * as UI from '../ui/ui.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
 
-/**
- * @unrestricted
- */
 export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();

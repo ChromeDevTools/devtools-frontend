@@ -28,9 +28,6 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('animation/AnimationUI.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @unrestricted
- */
 export class AnimationUI {
   /**
    * @param {!AnimationImpl} animation

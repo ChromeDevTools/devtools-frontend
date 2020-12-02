@@ -42,9 +42,6 @@ import {RemoteObject} from './RemoteObject.js';  // eslint-disable-line no-unuse
 import {RuntimeModel} from './RuntimeModel.js';
 import {Capability, SDKModel, Target, TargetManager} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class DOMNode {
   /**
    * @param {!DOMModel} domModel
@@ -1242,9 +1239,6 @@ export class DOMNodeShortcut {
   }
 }
 
-/**
- * @unrestricted
- */
 export class DOMDocument extends DOMNode {
   /**
    * @param {!DOMModel} domModel
@@ -1262,9 +1256,6 @@ export class DOMDocument extends DOMNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class DOMModel extends SDKModel {
   /**
    * @param {!Target} target

@@ -65,9 +65,6 @@ let colorGenerator;
 /** @type {!WeakMap<!TimelineModel.TimelineModel.NetworkRequest, !HTMLImageElement>} */
 const requestPreviewElements = new WeakMap();
 
-/**
- * @unrestricted
- */
 export class TimelineUIUtils {
   /**
    * @return {!Object.<string, !TimelineRecordStyle>}
@@ -2338,9 +2335,6 @@ export const NetworkCategory = {
 
 export const aggregatedStatsKey = Symbol('aggregatedStats');
 
-/**
- * @unrestricted
- */
 export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!SDK.SDKModel.Target} target
@@ -2518,9 +2512,6 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
 
 export const previewElementSymbol = Symbol('previewElement');
 
-/**
- * @unrestricted
- */
 export class EventDispatchTypeDescriptor {
   /**
    * @param {number} priority
@@ -2534,9 +2525,6 @@ export class EventDispatchTypeDescriptor {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TimelineCategory extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {string} name
@@ -2576,9 +2564,6 @@ TimelineCategory.Events = {
   VisibilityChanged: Symbol('VisibilityChanged')
 };
 
-/**
- * @unrestricted
- */
 export class TimelinePopupContentHelper {
   /**
    * @param {string} title
@@ -2646,9 +2631,6 @@ export class TimelinePopupContentHelper {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TimelineDetailsContentHelper {
   /**
    * @param {?SDK.SDKModel.Target} target

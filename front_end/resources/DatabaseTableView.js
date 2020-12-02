@@ -28,9 +28,6 @@ import * as DataGrid from '../data_grid/data_grid.js';
 import * as UI from '../ui/ui.js';
 import {Database, DatabaseModel, Events as DatabaseModelEvents} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class DatabaseTableView extends UI.View.SimpleView {
   /**
    * @param {!Database} database

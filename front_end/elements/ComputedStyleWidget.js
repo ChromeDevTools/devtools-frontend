@@ -145,9 +145,6 @@ const propertySorter = (propA, propB) => {
   return canonicalA.compareTo(canonicalB);
 };
 
-/**
- * @unrestricted
- */
 export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true);

@@ -30,9 +30,6 @@
 
 import {Trie} from './Trie.js';
 
-/**
- * @unrestricted
- */
 export class TextDictionary {
   constructor() {
     /** @type {!Map<string, number>} */

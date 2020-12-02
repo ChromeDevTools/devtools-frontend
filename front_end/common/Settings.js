@@ -41,9 +41,6 @@ import {ObjectWrapper} from './Object.js';
  */
 let settingsInstance;
 
-/**
- * @unrestricted
- */
 export class Settings {
   /**
    * @private
@@ -278,9 +275,6 @@ export class Settings {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SettingsStorage {
   /**
    * @param {!Object<string,string>} object
@@ -1065,9 +1059,6 @@ export class RegExpSetting extends LegacySetting {
   }
 }
 
-/**
- * @unrestricted
- */
 export class VersionController {
   static get _currentVersionName() {
     return 'inspectorVersion';

@@ -30,9 +30,6 @@
 
 import * as Root from '../root/root.js';
 
-/**
- * @unrestricted
- */
 export class ParsedURL {
   /**
    * @param {string} url

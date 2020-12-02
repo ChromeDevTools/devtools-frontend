@@ -241,9 +241,6 @@ export class SettingsScreen extends UI.Widget.VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 class SettingsTab extends UI.Widget.VBox {
   /**
    * @param {string} name
@@ -278,9 +275,6 @@ class SettingsTab extends UI.Widget.VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class GenericSettingsTab extends SettingsTab {
   constructor() {
     super(i18nString(UIStrings.preferences), 'preferences-tab-content');
@@ -414,9 +408,6 @@ export class GenericSettingsTab extends SettingsTab {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ExperimentsSettingsTab extends SettingsTab {
   constructor() {
     super(i18nString(UIStrings.experiments), 'experiments-tab-content');

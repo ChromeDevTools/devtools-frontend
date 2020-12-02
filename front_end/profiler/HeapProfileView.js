@@ -171,9 +171,6 @@ export class HeapProfileView extends ProfileView {
 
 }
 
-/**
- * @unrestricted
- */
 export class SamplingHeapProfileTypeBase extends ProfileType {
   /**
    * @param {string} typeId
@@ -296,9 +293,6 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
 /** @type {!SamplingHeapProfileType} */
 let samplingHeapProfileTypeInstance;
 
-/**
- * @unrestricted
- */
 export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
   constructor() {
     super(SamplingHeapProfileType.TypeId, ls`Allocation sampling`);
@@ -413,9 +407,6 @@ SamplingHeapProfileType.Events = {
   StatsUpdate: Symbol('StatsUpdate')
 };
 
-/**
- * @unrestricted
- */
 export class SamplingHeapProfileHeader extends WritableProfileHeader {
   /**
    * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
@@ -470,9 +461,6 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SamplingHeapProfileNode extends SDK.ProfileTreeModel.ProfileNode {
   /**
    * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} node
@@ -496,9 +484,6 @@ export class SamplingHeapProfileNode extends SDK.ProfileTreeModel.ProfileNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SamplingHeapProfileModel extends SDK.ProfileTreeModel.ProfileTreeModel {
   /**
    * @param {!Protocol.HeapProfiler.SamplingHeapProfile} profile
@@ -619,9 +604,6 @@ export class NodeFormatter {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
   /**
    * @param {!SDK.ProfileTreeModel.ProfileTreeModel} profile

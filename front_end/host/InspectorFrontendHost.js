@@ -566,9 +566,6 @@ export class InspectorFrontendHostStub {
 // @ts-ignore Global injected by devtools-compatibility.js
 export let InspectorFrontendHostInstance = window.InspectorFrontendHost;
 
-/**
- * @unrestricted
- */
 class InspectorFrontendAPIImpl {
   constructor() {
     this._debugFrontend = (!!Root.Runtime.Runtime.queryParam('debugFrontend')) ||

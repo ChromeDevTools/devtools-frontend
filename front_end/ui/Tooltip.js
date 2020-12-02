@@ -9,9 +9,6 @@ import {ShortcutRegistry} from './ShortcutRegistry.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
-/**
- * @unrestricted
- */
 export class Tooltip {
   /**
    * @param {!Document} doc

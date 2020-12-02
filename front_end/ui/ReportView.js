@@ -7,9 +7,6 @@ import {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {VBox} from './Widget.js';
 
-/**
- * @unrestricted
- */
 export class ReportView extends VBox {
   /**
    * @param {string=} title

@@ -41,9 +41,6 @@ import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
-/**
- * @unrestricted
- */
 export class TabbedPane extends VBox {
   constructor() {
     super(true);
@@ -1072,9 +1069,6 @@ export const Events = {
   TabOrderChanged: Symbol('TabOrderChanged')
 };
 
-/**
- * @unrestricted
- */
 export class TabbedPaneTab {
   /**
    * @param {!TabbedPane} tabbedPane

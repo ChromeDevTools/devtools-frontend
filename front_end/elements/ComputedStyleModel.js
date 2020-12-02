@@ -6,9 +6,6 @@ import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-/**
- * @unrestricted
- */
 export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();
@@ -158,9 +155,6 @@ export const Events = {
   ComputedStyleChanged: Symbol('ComputedStyleChanged')
 };
 
-/**
- * @unrestricted
- */
 export class ComputedStyle {
   /**
    * @param {!SDK.DOMModel.DOMNode} node

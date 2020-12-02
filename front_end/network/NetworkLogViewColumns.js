@@ -15,9 +15,6 @@ import {NetworkTimeCalculator, NetworkTransferDurationCalculator, NetworkTransfe
 import {NetworkWaterfallColumn} from './NetworkWaterfallColumn.js';
 import {RequestInitiatorView} from './RequestInitiatorView.js';
 
-/**
- * @unrestricted
- */
 export class NetworkLogViewColumns {
   /**
    * @param {!NetworkLogView} networkLogView

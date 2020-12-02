@@ -76,9 +76,6 @@ let categories = null;
  */
 let logItemCategoriesMap = null;
 
-/**
- * @unrestricted
- */
 export class PaintProfilerView extends UI.Widget.HBox {
   /**
    * @param {function(string=):void} showImageCallback
@@ -459,9 +456,6 @@ export const Events = {
   WindowChanged: Symbol('WindowChanged')
 };
 
-/**
- * @unrestricted
- */
 export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super();
@@ -543,9 +537,6 @@ export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWid
   }
 }
 
-/**
- * @unrestricted
- */
 export class LogTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!PaintProfilerCommandLogView} ownerView
@@ -621,9 +612,6 @@ export class LogTreeElement extends UI.TreeOutline.TreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class LogPropertyTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!{name: string, value: *}} property
@@ -666,9 +654,6 @@ export class LogPropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class PaintProfilerCategory {
   /**
    * @param {string} name

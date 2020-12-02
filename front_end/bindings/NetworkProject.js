@@ -67,9 +67,6 @@ export const Events = {
   FrameAttributionRemoved: Symbol('FrameAttributionRemoved')
 };
 
-/**
- * @unrestricted
- */
 export class NetworkProject {
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode

@@ -505,9 +505,6 @@ HeapSnapshotGridNode.Events = {
   PopulateComplete: Symbol('PopulateComplete')
 };
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
   /**
    * @param {!HeapSnapshotSortableDataGrid} dataGrid
@@ -755,9 +752,6 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
   /**
    * @param {!HeapSnapshotSortableDataGrid} dataGrid
@@ -897,9 +891,6 @@ export class HeapSnapshotObjectNode extends HeapSnapshotGenericObjectNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
   /**
    * @param {!HeapSnapshotSortableDataGrid} dataGrid
@@ -968,9 +959,6 @@ export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
   /**
    * @param {!HeapSnapshotSortableDataGrid} dataGrid
@@ -1075,9 +1063,6 @@ export class HeapSnapshotInstanceNode extends HeapSnapshotGenericObjectNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
   /**
    * @param {!HeapSnapshotConstructorsDataGrid} dataGrid
@@ -1295,9 +1280,6 @@ export class HeapSnapshotDiffNodesProvider {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
   /**
    * @param {!HeapSnapshotDiffDataGrid} dataGrid
@@ -1433,9 +1415,6 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AllocationGridNode extends HeapSnapshotGridNode {
   /**
    * @param {!AllocationDataGrid} dataGrid

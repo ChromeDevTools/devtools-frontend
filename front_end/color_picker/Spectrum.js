@@ -46,9 +46,6 @@ const colorElementToMutable = new WeakMap();
  */
 const colorElementToColor = new WeakMap();
 
-/**
- * @unrestricted
- */
 export class Spectrum extends UI.Widget.VBox {
   /**
    * @param {?ContrastInfo=} contrastInfo

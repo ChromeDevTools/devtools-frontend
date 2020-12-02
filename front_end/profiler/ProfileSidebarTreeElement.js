@@ -26,9 +26,6 @@ export function setSharedFileSelectorElement(element) {
   sharedFileSelectorElement = element;
 }
 
-/**
- * @unrestricted
- */
 export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!DataDisplayDelegate} dataDisplayDelegate

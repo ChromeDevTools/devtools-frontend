@@ -15,9 +15,6 @@ import {LinkDecorator} from './PersistenceUtils.js';
 /** @type {!PersistenceImpl} */
 let persistenceInstance;
 
-/**
- * @unrestricted
- */
 export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Workspace.Workspace.WorkspaceImpl} workspace
@@ -453,9 +450,6 @@ export const Events = {
   BindingRemoved: Symbol('BindingRemoved')
 };
 
-/**
- * @unrestricted
- */
 export class PathEncoder {
   constructor() {
     /** @type {!Common.CharacterIdMap.CharacterIdMap<string>} */
@@ -479,9 +473,6 @@ export class PathEncoder {
   }
 }
 
-/**
- * @unrestricted
- */
 export class PersistenceBinding {
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} network

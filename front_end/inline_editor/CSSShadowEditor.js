@@ -17,9 +17,6 @@ const sliderThumbRadius = 6;
 /** @type {number} */
 const canvasSize = 88;
 
-/**
- * @unrestricted
- */
 export class CSSShadowEditor extends UI.Widget.VBox {
   constructor() {
     super(true);

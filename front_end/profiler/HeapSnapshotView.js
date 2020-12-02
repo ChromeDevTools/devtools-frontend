@@ -872,9 +872,6 @@ export class HeapSnapshotView extends UI.View.SimpleView {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Perspective {
   /**
    * @param {string} title
@@ -933,9 +930,6 @@ export class Perspective {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SummaryPerspective extends Perspective {
   constructor() {
     super(Common.UIString.UIString('Summary'));
@@ -978,9 +972,6 @@ export class SummaryPerspective extends Perspective {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ComparisonPerspective extends Perspective {
   constructor() {
     super(Common.UIString.UIString('Comparison'));
@@ -1016,9 +1007,6 @@ export class ComparisonPerspective extends Perspective {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ContainmentPerspective extends Perspective {
   constructor() {
     super(Common.UIString.UIString('Containment'));
@@ -1044,9 +1032,6 @@ export class ContainmentPerspective extends Perspective {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AllocationPerspective extends Perspective {
   constructor() {
     super(Common.UIString.UIString('Allocation'));
@@ -1107,9 +1092,6 @@ export class AllocationPerspective extends Perspective {
   }
 }
 
-/**
- * @unrestricted
- */
 export class StatisticsPerspective extends Perspective {
   constructor() {
     super(Common.UIString.UIString('Statistics'));
@@ -1340,9 +1322,6 @@ export class HeapSnapshotProfileType extends ProfileType {
 HeapSnapshotProfileType.TypeId = 'HEAP';
 HeapSnapshotProfileType.SnapshotReceived = 'SnapshotReceived';
 
-/**
- * @unrestricted
- */
 export class TrackingHeapSnapshotProfileType extends HeapSnapshotProfileType {
   constructor() {
     super(TrackingHeapSnapshotProfileType.TypeId, ls`Allocation instrumentation on timeline`);
@@ -1588,9 +1567,6 @@ TrackingHeapSnapshotProfileType.HeapStatsUpdate = 'HeapStatsUpdate';
 TrackingHeapSnapshotProfileType.TrackingStarted = 'TrackingStarted';
 TrackingHeapSnapshotProfileType.TrackingStopped = 'TrackingStopped';
 
-/**
- * @unrestricted
- */
 export class HeapProfileHeader extends ProfileHeader {
   /**
    * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
@@ -1858,9 +1834,6 @@ export class HeapProfileHeader extends ProfileHeader {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotStatisticsView extends UI.Widget.VBox {
   constructor() {
     super();

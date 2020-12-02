@@ -23,9 +23,6 @@ class Service {
   }
 }
 
-/**
- * @unrestricted
- */
 class ServiceDispatcher {
   /**
    * @param {!ServicePort} port

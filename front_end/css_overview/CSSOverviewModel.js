@@ -9,9 +9,6 @@ import * as SDK from '../sdk/sdk.js';
 
 import {CSSOverviewUnusedDeclarations} from './CSSOverviewUnusedDeclarations.js';
 
-/**
- * @unrestricted
- */
 export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
   /**
    * @param {!SDK.SDKModel.Target} target

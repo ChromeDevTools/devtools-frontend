@@ -14,9 +14,6 @@ import {QuickOpenImpl} from './QuickOpen.js';
 /** @type {!CommandMenu} */
 let commandMenuInstance;
 
-/**
- * @unrestricted
- */
 export class CommandMenu {
   /** @private */
   constructor() {
@@ -394,9 +391,6 @@ export const MaterialPaletteColors = [
   '#CDDC39', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'
 ];
 
-/**
- * @unrestricted
- */
 export class Command {
   /**
    * @param {string} category

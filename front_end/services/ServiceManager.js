@@ -6,9 +6,6 @@ import * as Common from '../common/common.js';  // eslint-disable-line no-unused
 import * as Host from '../host/host.js';
 import * as Root from '../root/root.js';
 
-/**
- * @unrestricted
- */
 export class ServiceManager {
   /**
    * @param {string} serviceName
@@ -58,9 +55,6 @@ export class ServiceManager {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Connection {
   /**
    * @param {!ServicePort} port
@@ -165,9 +159,6 @@ export class Connection {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Service {
   /**
    * @param {!Connection} connection

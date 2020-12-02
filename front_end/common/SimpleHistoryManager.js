@@ -43,9 +43,6 @@ export class HistoryEntry {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SimpleHistoryManager {
   /**
    * @param {number} historyDepth

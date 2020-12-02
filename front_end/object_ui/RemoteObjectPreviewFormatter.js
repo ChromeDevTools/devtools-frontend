@@ -6,9 +6,6 @@ import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-/**
- * @unrestricted
- */
 export class RemoteObjectPreviewFormatter {
   /**
    * @param {!Protocol.Runtime.PropertyPreview} a

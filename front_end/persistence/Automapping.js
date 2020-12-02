@@ -457,9 +457,6 @@ export class Automapping {
   }
 }
 
-/**
- * @unrestricted
- */
 class FilePathIndex {
   /**
    * @param {!PathEncoder} encoder
@@ -501,9 +498,6 @@ class FilePathIndex {
   }
 }
 
-/**
- * @unrestricted
- */
 class FolderIndex {
   /**
    * @param {!PathEncoder} encoder
@@ -563,9 +557,6 @@ class FolderIndex {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AutomappingStatus {
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} network

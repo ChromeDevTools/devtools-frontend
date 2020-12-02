@@ -652,9 +652,6 @@ export const Events = {
   LineDecorationRemoved: Symbol('LineDecorationRemoved')
 };
 
-/**
- * @unrestricted
- */
 export class UILocation {
   /**
    * @param {!UISourceCode} uiSourceCode
@@ -745,9 +742,6 @@ export class UILocation {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Message {
   /**
    * @param {!UISourceCode} uiSourceCode
@@ -826,9 +820,6 @@ Message.Level = {
   Warning: 'Warning'
 };
 
-/**
- * @unrestricted
- */
 export class LineMarker {
   /**
    * @param {!TextUtils.TextRange.TextRange} range
@@ -863,9 +854,6 @@ export class LineMarker {
   }
 }
 
-/**
- * @unrestricted
- */
 export class UISourceCodeMetadata {
   /**
    * @param {?Date} modificationTime

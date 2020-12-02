@@ -35,9 +35,6 @@ import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-lin
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';  // eslint-disable-line no-unused-vars
 import {PlatformFileSystem} from './PlatformFileSystem.js';
 
-/**
- * @unrestricted
- */
 export class IsolatedFileSystem extends PlatformFileSystem {
   /**
    * @param {!IsolatedFileSystemManager} manager

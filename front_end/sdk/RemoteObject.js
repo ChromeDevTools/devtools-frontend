@@ -820,9 +820,6 @@ export class ScopeRef {
   }
 }
 
-/**
- * @unrestricted
- */
 export class RemoteObjectProperty {
   /**
    * @param {string} name

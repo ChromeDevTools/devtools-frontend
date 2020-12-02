@@ -36,9 +36,6 @@
 
 import {Cookie, Type} from './Cookie.js';
 
-/**
- * @unrestricted
- */
 export class CookieParser {
   /**
    * @param {string=} domain

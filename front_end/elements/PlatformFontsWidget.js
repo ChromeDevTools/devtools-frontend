@@ -34,9 +34,6 @@ import * as UI from '../ui/ui.js';
 
 import {ComputedStyleModel, Events} from './ComputedStyleModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
   /**
    * @param {!ComputedStyleModel} sharedModel

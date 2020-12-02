@@ -33,9 +33,6 @@ import * as UI from '../ui/ui.js';
 
 import {SourceFrameImpl} from './SourceFrame.js';
 
-/**
- * @unrestricted
- */
 export class ResourceSourceFrame extends SourceFrameImpl {
   /**
    * @param {!TextUtils.ContentProvider.ContentProvider} resource

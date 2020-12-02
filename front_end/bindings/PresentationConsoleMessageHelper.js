@@ -215,9 +215,6 @@ export class PresentationConsoleMessageHelper {
   }
 }
 
-/**
- * @unrestricted
- */
 export class PresentationConsoleMessage {
   /**
    * @param {!SDK.ConsoleModel.ConsoleMessage} message

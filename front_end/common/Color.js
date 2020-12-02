@@ -34,9 +34,6 @@ import {blendColors, desiredLuminanceAPCA, luminance, luminanceAPCA, rgbaToHsla}
 /** @type {?Map<string, string>} */
 let _rgbaToNickname;
 
-/**
- * @unrestricted
- */
 export class Color {
   /**
    * @param {!Array.<number>} rgba

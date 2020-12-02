@@ -9,9 +9,6 @@ import * as UI from '../ui/ui.js';
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
-/**
- * @unrestricted
- */
 export class AXNodeSubPane extends AccessibilitySubPane {
   constructor() {
     super(ls`Computed Properties`);
@@ -131,9 +128,6 @@ export class AXNodeSubPane extends AccessibilitySubPane {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!SDK.AccessibilityModel.AccessibilityNode} axNode
@@ -297,9 +291,6 @@ export const StringProperties = new Set([
   Protocol.Accessibility.AXValueType.IdrefList, Protocol.Accessibility.AXValueType.Idref
 ]);
 
-/**
- * @unrestricted
- */
 export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement {
   /**
    * @param {!SDK.AccessibilityModel.CoreOrProtocolAxProperty} property
@@ -332,9 +323,6 @@ export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement
   }
 }
 
-/**
- * @unrestricted
- */
 export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
   /**
    * @param {!Protocol.Accessibility.AXValueSource} source
@@ -498,9 +486,6 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {{deferredNode: (!SDK.DOMModel.DeferredDOMNode|undefined), idref: (string|undefined)}} node
@@ -538,9 +523,6 @@ export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AXRelatedNodeElement {
   /**
    * @param {{deferredNode: (!SDK.DOMModel.DeferredDOMNode|undefined), idref: (string|undefined)}} node
@@ -585,9 +567,6 @@ export class AXRelatedNodeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
   /**
    * @param {!Protocol.Accessibility.AXProperty} property

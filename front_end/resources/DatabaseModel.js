@@ -29,9 +29,6 @@
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 
-/**
- * @unrestricted
- */
 export class Database {
   /**
    * @param {!DatabaseModel} model
@@ -121,9 +118,6 @@ export class Database {
   }
 }
 
-/**
- * @unrestricted
- */
 export class DatabaseModel extends SDK.SDKModel.SDKModel {
   /**
    * @param {!SDK.SDKModel.Target} target

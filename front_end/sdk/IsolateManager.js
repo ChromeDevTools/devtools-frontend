@@ -270,9 +270,6 @@ export class Isolate {
 
 }
 
-/**
- * @unrestricted
- */
 export class MemoryTrend {
   /**
    * @param {number} maxCount

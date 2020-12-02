@@ -112,9 +112,6 @@ export function elementDragStart(targetElement, elementDragStart, elementDrag, e
   dragHandler.elementDragStart(targetElement, elementDragStart, elementDrag, elementDragEnd, cursor, event);
 }
 
-/**
- * @unrestricted
- */
 class DragHandler {
   constructor() {
     this._elementDragMove = this._elementDragMove.bind(this);
@@ -782,9 +779,6 @@ function _windowBlurred(document, event) {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ElementFocusRestorer {
   /**
    * @param {!Element} element
@@ -1039,9 +1033,6 @@ export function measurePreferredSize(element, containerElement) {
   return new Size(result.width, result.height);
 }
 
-/**
- * @unrestricted
- */
 class InvokeOnceHandlers {
   /**
    * @param {boolean} autoInvoke
@@ -1148,9 +1139,6 @@ export function animateFunction(window, func, params, duration, animationComplet
   return () => window.cancelAnimationFrame(raf);
 }
 
-/**
- * @unrestricted
- */
 export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Element} element

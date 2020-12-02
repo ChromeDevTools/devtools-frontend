@@ -34,9 +34,6 @@ import * as UI from '../ui/ui.js';
 
 import {Calculator, TimelineGrid} from './TimelineGrid.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class OverviewGrid {
   /**
    * @param {string} prefix
@@ -144,9 +141,6 @@ export const WindowScrollSpeedFactor = .3;
 export const ResizerOffset = 3.5;  // half pixel because offset values are not rounded but ceiled
 export const OffsetFromWindowEnds = 10;
 
-/**
- * @unrestricted
- */
 export class Window extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Element} parentElement
@@ -641,9 +635,6 @@ export const Events = {
   WindowChanged: Symbol('WindowChanged')
 };
 
-/**
- * @unrestricted
- */
 export class WindowSelector {
   /**
    * @param {!Element} parent

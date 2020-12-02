@@ -33,9 +33,6 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
-/**
- * @unrestricted
- */
 export class ImageView extends UI.View.SimpleView {
   /**
    * @param {string} mimeType

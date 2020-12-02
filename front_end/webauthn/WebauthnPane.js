@@ -217,9 +217,6 @@ class EmptyDataGridNode extends DataGrid.DataGrid.DataGridNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class WebauthnPaneImpl extends UI.Widget.VBox {
   constructor() {
     super(true);

@@ -144,9 +144,6 @@ export class NodeIndicator {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SourcesPanelIndicator {
   constructor() {
     Common.Settings.Settings.instance()

@@ -9,9 +9,6 @@ const MAX_WORKERS = Math.min(2, navigator.hardwareConcurrency - 1);
 /** @type {!FormatterWorkerPool} */
 let formatterWorkerPoolInstance;
 
-/**
- * @unrestricted
- */
 export class FormatterWorkerPool {
   constructor() {
     /** @type {!Array<!Task>} */
@@ -263,9 +260,6 @@ export class FormatterWorkerPool {
   }
 }
 
-/**
- * @unrestricted
- */
 class Task {
   /**
    * @param {string} method

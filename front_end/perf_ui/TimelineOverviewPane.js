@@ -35,9 +35,6 @@ import * as UI from '../ui/ui.js';
 import {Events as OverviewGridEvents, OverviewGrid} from './OverviewGrid.js';
 import {Calculator} from './TimelineGrid.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class TimelineOverviewPane extends UI.Widget.VBox {
   /**
    * @param {string} prefix

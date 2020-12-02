@@ -59,9 +59,6 @@ export class TabbedEditorContainerDelegate {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!TabbedEditorContainerDelegate} delegate
@@ -722,9 +719,6 @@ export const Events = {
 export let tabId = 0;
 export const maximalPreviouslyViewedFilesCount = 30;
 
-/**
- * @unrestricted
- */
 export class HistoryItem {
   /**
    * @param {string} url
@@ -766,9 +760,6 @@ export class HistoryItem {
 
 HistoryItem.serializableUrlLengthLimit = 4096;
 
-/**
- * @unrestricted
- */
 export class History {
   /**
    * @param {!Array.<!HistoryItem>} items

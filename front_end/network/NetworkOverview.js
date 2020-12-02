@@ -11,9 +11,6 @@ import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkTimeBoundary} from './NetworkTimeCalculator.js';
 import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
 
-/**
- * @unrestricted
- */
 export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
   constructor() {
     super();

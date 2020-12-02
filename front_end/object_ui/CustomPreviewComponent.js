@@ -178,9 +178,6 @@ export class CustomPreviewSection {
   }
 }
 
-/**
- * @unrestricted
- */
 export class CustomPreviewComponent {
   /**
    * @param {!SDK.RemoteObject.RemoteObject} object

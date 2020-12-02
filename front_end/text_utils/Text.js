@@ -7,9 +7,6 @@ import * as Platform from '../platform/platform.js';
 import {TextCursor} from './TextCursor.js';
 import {SourceRange, TextRange} from './TextRange.js';
 
-/**
- * @unrestricted
- */
 export class Text {
   /**
    * @param {string} value

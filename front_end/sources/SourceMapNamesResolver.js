@@ -14,9 +14,6 @@ const scopeToCachedIdentifiersMap = new WeakMap();
 
 /** @type {!WeakMap<!SDK.DebuggerModel.CallFrame, !Map<string,string>>} */
 const cachedMapBycallFrame = new WeakMap();
-/**
- * @unrestricted
- */
 export class Identifier {
   /**
    * @param {string} name
@@ -421,9 +418,6 @@ export const resolveScopeInObject = function(scope) {
   return new RemoteObject(scope);
 };
 
-/**
- * @unrestricted
- */
 export class RemoteObject extends SDK.RemoteObject.RemoteObject {
   /**
    * @param {!SDK.DebuggerModel.ScopeChainEntry} scope

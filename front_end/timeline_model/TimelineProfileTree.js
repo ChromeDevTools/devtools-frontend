@@ -8,9 +8,6 @@ import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 import {RecordType, TimelineData, TimelineModelImpl} from './TimelineModel.js';
 import {TimelineModelFilter} from './TimelineModelFilter.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class Node {
   /**
    * @param {string|symbol} id

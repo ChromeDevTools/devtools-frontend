@@ -12,9 +12,6 @@ import {ARIAAttributesPane} from './ARIAAttributesView.js';
 import {AXBreadcrumbsPane} from './AXBreadcrumbsPane.js';
 import {SourceOrderPane} from './SourceOrderView.js';
 
-/**
- * @unrestricted
- */
 export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super();

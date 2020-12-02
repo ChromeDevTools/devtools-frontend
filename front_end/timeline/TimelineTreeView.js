@@ -694,9 +694,6 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TreeGridNode extends GridNode {
   /**
    * @param {!TimelineModel.TimelineProfileTree.Node} profileNode
@@ -735,9 +732,6 @@ TreeGridNode._gridNodeSymbol = Symbol('treeGridNode');
 /** @type {!WeakMap<!TimelineModel.TimelineProfileTree.Node, !TreeGridNode>} */
 const profileNodeToTreeGridNode = new WeakMap();
 
-/**
- * @unrestricted
- */
 export class AggregatedTimelineTreeView extends TimelineTreeView {
   constructor() {
     super();
@@ -1043,9 +1037,6 @@ AggregatedTimelineTreeView.GroupBy = {
   Frame: 'Frame'
 };
 
-/**
- * @unrestricted
- */
 export class CallTreeTimelineTreeView extends AggregatedTimelineTreeView {
   constructor() {
     super();
@@ -1070,9 +1061,6 @@ export class CallTreeTimelineTreeView extends AggregatedTimelineTreeView {
   }
 }
 
-/**
- * @unrestricted
- */
 export class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
   constructor() {
     super();
@@ -1098,9 +1086,6 @@ export class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TimelineStackView extends UI.Widget.VBox {
   /**
    * @param {!TimelineTreeView} treeView

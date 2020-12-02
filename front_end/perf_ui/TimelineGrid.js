@@ -35,9 +35,6 @@ import * as UI from '../ui/ui.js';
 /** @type {!Map<!Element, !Element>} */
 const labelMap = new Map();
 
-/**
- * @unrestricted
- */
 export class TimelineGrid {
   constructor() {
     this.element = document.createElement('div');

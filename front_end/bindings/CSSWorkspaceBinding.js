@@ -353,9 +353,6 @@ export class ModelInfo {
   }
 }
 
-/**
- * @unrestricted
- */
 export class LiveLocation extends LiveLocationWithPool {
   /**
    * @param {!SDK.CSSModel.CSSLocation} rawLocation

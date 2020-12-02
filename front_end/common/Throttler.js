@@ -6,9 +6,6 @@
 // @ts-ignore Typedef.
 export let FinishCallback;
 
-/**
- * @unrestricted
- */
 export class Throttler {
   /**
    * @param {number} timeout

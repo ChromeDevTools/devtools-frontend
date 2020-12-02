@@ -141,9 +141,6 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {string} expression

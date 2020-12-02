@@ -4,9 +4,6 @@
 
 import * as UI from '../ui/ui.js';
 
-/**
- * @unrestricted
- */
 export class BezierUI {
   /**
    * @param {number} width

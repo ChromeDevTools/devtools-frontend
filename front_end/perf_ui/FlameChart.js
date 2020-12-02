@@ -2431,9 +2431,6 @@ export class FlameChart extends UI.Widget.VBox {
 export const HeaderHeight = 15;
 export const MinimalTimeWindowMs = 0.5;
 
-/**
- * @unrestricted
- */
 export class TimelineData {
   /**
    * @param {!Array<number>|!Uint16Array} entryLevels

@@ -1790,9 +1790,6 @@ export class CodeMirrorPositionHandle {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SelectNextOccurrenceController {
   // https://crbug.com/1151919 * = CodeMirror.Editor
   /**
@@ -1994,9 +1991,6 @@ export class CodeMirrorMimeMode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TextEditorBookMark {
   // https://crbug.com/1151919 * = CodeMirror.TextMarker
   /**

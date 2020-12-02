@@ -12,9 +12,6 @@ import {DeviceModeToolbar} from './DeviceModeToolbar.js';
 import {MediaQueryInspector} from './MediaQueryInspector.js';
 
 
-/**
- * @unrestricted
- */
 export class DeviceModeView extends UI.Widget.VBox {
   constructor() {
     super(true);
@@ -590,9 +587,6 @@ export class DeviceModeView extends UI.Widget.VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Ruler extends UI.Widget.VBox {
   /**
    * @param {boolean} horizontal

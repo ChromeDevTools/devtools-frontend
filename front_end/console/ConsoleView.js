@@ -1459,9 +1459,6 @@ export class ConsoleView extends UI.Widget.VBox {
 
 const persistedHistorySize = 300;
 
-/**
- * @unrestricted
- */
 export class ConsoleViewFilter {
   /**
    * @param {function():void} filterChangedCallback
@@ -1651,9 +1648,6 @@ export class ConsoleViewFilter {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ConsoleGroup {
   /**
    * @param {?ConsoleGroup} parentGroup

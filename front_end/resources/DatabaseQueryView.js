@@ -28,9 +28,6 @@ import * as UI from '../ui/ui.js';
 
 import {Database} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class DatabaseQueryView extends UI.Widget.VBox {
   /**
    * @param {!Database} database

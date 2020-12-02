@@ -30,9 +30,6 @@
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 
-/**
- * @unrestricted
- */
 export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!DOMStorageModel} model
@@ -106,9 +103,6 @@ DOMStorage.Events = {
   DOMStorageItemUpdated: Symbol('DOMStorageItemUpdated')
 };
 
-/**
- * @unrestricted
- */
 export class DOMStorageModel extends SDK.SDKModel.SDKModel {
   /**
    * @param {!SDK.SDKModel.Target} target

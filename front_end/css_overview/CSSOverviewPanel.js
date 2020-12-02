@@ -16,9 +16,6 @@ import {CSSOverviewProcessingView} from './CSSOverviewProcessingView.js';
 import {CSSOverviewStartView} from './CSSOverviewStartView.js';
 import {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class CSSOverviewPanel extends UI.Panel.Panel {
   constructor() {
     super('css_overview');

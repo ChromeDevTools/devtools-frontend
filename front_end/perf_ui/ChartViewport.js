@@ -37,9 +37,6 @@ export class ChartViewportDelegate {
   update() {}
 }
 
-/**
- * @unrestricted
- */
 export class ChartViewport extends UI.Widget.VBox {
   /**
    * @param {!ChartViewportDelegate} delegate

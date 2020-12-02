@@ -177,9 +177,6 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Category extends UI.TreeOutline.TreeElement {
   /**
    * @param {!UI.TreeOutline.TreeOutline} root

@@ -12,9 +12,6 @@ import {RecordType} from './TimelineModel.js';
  */
 const eventToPhase = new WeakMap();
 
-/**
- * @unrestricted
- */
 export class TimelineIRModel {
   constructor() {
     // Attributes below are guaranteed to be set by reset();

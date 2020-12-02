@@ -11,9 +11,6 @@ import {createTextButton} from './UIUtils.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 import {Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class Infobar {
   /**
    * @param {!Type} type

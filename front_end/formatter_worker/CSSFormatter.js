@@ -31,9 +31,6 @@
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';  // eslint-disable-line no-unused-vars
 import {createTokenizer} from './FormatterWorker.js';
 
-/**
- * @unrestricted
- */
 export class CSSFormatter {
   /**
    * @param {!FormattedContentBuilder} builder

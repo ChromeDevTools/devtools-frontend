@@ -411,9 +411,6 @@ export class ConsolePrompt extends UI.Widget.Widget {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ConsoleHistoryManager {
   constructor() {
     /**

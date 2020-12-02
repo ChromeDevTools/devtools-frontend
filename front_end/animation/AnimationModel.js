@@ -4,9 +4,6 @@
 
 import * as SDK from '../sdk/sdk.js';
 
-/**
- * @unrestricted
- */
 export class AnimationModel extends SDK.SDKModel.SDKModel {
   /**
    * @param {!SDK.SDKModel.Target} target
@@ -194,9 +191,6 @@ export const Events = {
   ModelReset: Symbol('ModelReset')
 };
 
-/**
- * @unrestricted
- */
 export class AnimationImpl {
   /**
    * @param {!AnimationModel} animationModel
@@ -397,9 +391,6 @@ export const Type = {
   WebAnimation: 'WebAnimation'
 };
 
-/**
- * @unrestricted
- */
 export class AnimationEffect {
   /**
    * @param {!AnimationModel} animationModel
@@ -507,9 +498,6 @@ export class AnimationEffect {
   }
 }
 
-/**
- * @unrestricted
- */
 export class KeyframesRule {
   /**
    * @param {!Protocol.Animation.KeyframesRule} payload
@@ -545,9 +533,6 @@ export class KeyframesRule {
   }
 }
 
-/**
- * @unrestricted
- */
 export class KeyframeStyle {
   /**
    * @param {!Protocol.Animation.KeyframeStyle} payload
@@ -586,9 +571,6 @@ export class KeyframeStyle {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AnimationGroup {
   /**
    * @param {!AnimationModel} animationModel
@@ -794,9 +776,6 @@ export class AnimationDispatcher {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ScreenshotCapture {
   /**
    * @param {!AnimationModel} animationModel

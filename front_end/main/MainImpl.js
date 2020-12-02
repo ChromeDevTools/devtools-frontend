@@ -47,9 +47,6 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {ExecutionContextSelector} from './ExecutionContextSelector.js';
 
-/**
- * @unrestricted
- */
 export class MainImpl {
   constructor() {
     MainImpl._instanceForTest = this;
@@ -824,9 +821,6 @@ export class SettingsButtonProvider {
   }
 }
 
-/**
- * @unrestricted
- */
 export class PauseListener {
   constructor() {
     SDK.SDKModel.TargetManager.instance().addModelListener(

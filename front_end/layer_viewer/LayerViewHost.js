@@ -37,9 +37,6 @@ export class LayerView {
   setLayerTree(layerTree) {}
 }
 
-/**
- * @unrestricted
- */
 export class Selection {
   /**
    * @param {!Type} type
@@ -91,9 +88,6 @@ export const Type = {
   Snapshot: Symbol('Snapshot')
 };
 
-/**
- * @unrestricted
- */
 export class LayerSelection extends Selection {
   /**
    * @param {!SDK.LayerTreeBase.Layer} layer
@@ -113,9 +107,6 @@ export class LayerSelection extends Selection {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ScrollRectSelection extends Selection {
   /**
    * @param {!SDK.LayerTreeBase.Layer} layer
@@ -137,9 +128,6 @@ export class ScrollRectSelection extends Selection {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SnapshotSelection extends Selection {
   /**
    * @param {!SDK.LayerTreeBase.Layer} layer
@@ -168,9 +156,6 @@ export class SnapshotSelection extends Selection {
   }
 }
 
-/**
- * @unrestricted
- */
 export class LayerViewHost {
   constructor() {
     /** @type {!Array.<!LayerView>} */

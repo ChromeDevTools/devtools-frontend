@@ -33,9 +33,6 @@ import * as Components from '../components/components.js';
 import * as UI from '../ui/ui.js';
 import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class ConsoleViewport {
   /**
    * @param {!ConsoleViewportProvider} provider

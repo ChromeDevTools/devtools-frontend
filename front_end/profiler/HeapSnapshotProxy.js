@@ -33,9 +33,6 @@ import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.j
 
 import {ChildrenProvider} from './ChildrenProvider.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {function(string, *):void} eventHandler
@@ -217,9 +214,6 @@ HeapSnapshotWorkerProxy.Events = {
   Wait: Symbol('Wait')
 };
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotProxyObject {
   /**
    * @param {!HeapSnapshotWorkerProxy} worker
@@ -315,9 +309,6 @@ export class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject {
   }
 }
 
-/**
- * @unrestricted
- */
 export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
   /**
    * @param {!HeapSnapshotWorkerProxy} worker

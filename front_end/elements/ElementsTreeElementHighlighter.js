@@ -9,9 +9,6 @@ import * as UI from '../ui/ui.js';
 import {ElementsTreeElement} from './ElementsTreeElement.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
 
-/**
- * @unrestricted
- */
 export class ElementsTreeElementHighlighter {
   /**
    * @param {!ElementsTreeOutline} treeOutline

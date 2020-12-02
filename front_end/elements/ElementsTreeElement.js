@@ -46,9 +46,6 @@ import {ElementsTreeOutline, MappedCharToEntity, UpdateRecord} from './ElementsT
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {MarkerDecorator} from './MarkerDecorator.js';
 
-/**
- * @unrestricted
- */
 export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!SDK.DOMModel.DOMNode} node

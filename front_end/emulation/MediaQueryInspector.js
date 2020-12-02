@@ -381,9 +381,6 @@ export const Section = {
   Min: 2
 };
 
-/**
- * @unrestricted
- */
 export class MediaQueryUIModel {
   /**
    * @param {!SDK.CSSMedia.CSSMedia} cssMedia

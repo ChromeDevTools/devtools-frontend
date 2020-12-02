@@ -5,9 +5,6 @@
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {ObjectSnapshot} from './TracingModel.js';            // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class TracingManager extends SDKModel {
   /**
    * @param {!Target} target

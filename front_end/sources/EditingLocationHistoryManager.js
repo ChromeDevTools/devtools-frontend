@@ -36,9 +36,6 @@ import * as Workspace from '../workspace/workspace.js';    // eslint-disable-lin
 import {SourcesView} from './SourcesView.js';                                  // eslint-disable-line no-unused-vars
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';                      // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class EditingLocationHistoryManager {
   /**
    * @param {!SourcesView} sourcesView

@@ -5,9 +5,6 @@
 import * as Common from '../common/common.js';
 import {elementDragStart} from './UIUtils.js';
 
-/**
- * @unrestricted
- */
 export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
   constructor() {
     super();

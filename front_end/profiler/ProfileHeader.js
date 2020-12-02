@@ -6,9 +6,6 @@ import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!ProfileType} profileType
@@ -111,9 +108,6 @@ export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/**
- * @unrestricted
- */
 export class StatusUpdate {
   /**
    * @param {?string} subtitle
@@ -134,9 +128,6 @@ export const Events = {
   ProfileTitleChanged: Symbol('ProfileTitleChanged')
 };
 
-/**
- * @unrestricted
- */
 export class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {string} id

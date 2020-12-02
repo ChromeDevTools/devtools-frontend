@@ -41,9 +41,6 @@ import {LiveLocation, LiveLocationPool} from './LiveLocation.js';        // esli
  */
 let breakpointManagerInstance;
 
-/**
- * @unrestricted
- */
 export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @private
@@ -653,9 +650,6 @@ export class Breakpoint {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ModelBreakpoint {
   /**
    * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
@@ -1019,9 +1013,6 @@ class Storage {
   }
 }
 
-/**
- * @unrestricted
- */
 Storage.Item = class {
   /**
    * @param {!Breakpoint} breakpoint

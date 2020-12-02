@@ -71,9 +71,6 @@ export function localize(string) {
   return string;
 }
 
-/**
- * @unrestricted
- */
 export class UIStringFormat {
   /**
    * @param {string} format

@@ -45,9 +45,6 @@ import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, LongClickController} from './UIUtils.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 
-/**
- * @unrestricted
- */
 export class Toolbar {
   /**
    * @param {string} className
@@ -447,9 +444,6 @@ const TOOLBAR_BUTTON_DEFAULT_OPTIONS = {
   userActionCode: undefined
 };
 
-/**
- * @unrestricted
- */
 export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Element} element
@@ -532,9 +526,6 @@ export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ToolbarText extends ToolbarItem {
   /**
    * @param {string=} text
@@ -562,9 +553,6 @@ export class ToolbarText extends ToolbarItem {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ToolbarButton extends ToolbarItem {
   /**
    * @param {string} title
@@ -769,9 +757,6 @@ ToolbarInput.Event = {
   TextChanged: Symbol('TextChanged')
 };
 
-/**
- * @unrestricted
- */
 export class ToolbarToggle extends ToolbarButton {
   /**
    * @param {string} title
@@ -826,9 +811,6 @@ export class ToolbarToggle extends ToolbarButton {
 }
 
 
-/**
- * @unrestricted
- */
 export class ToolbarMenuButton extends ToolbarButton {
   /**
    * @param {function(!ContextMenu):void} contextMenuHandler
@@ -887,9 +869,6 @@ export class ToolbarMenuButton extends ToolbarButton {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ToolbarSettingToggle extends ToolbarToggle {
   /**
    * @param {!Common.Settings.Setting<boolean>} setting
@@ -920,9 +899,6 @@ export class ToolbarSettingToggle extends ToolbarToggle {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ToolbarSeparator extends ToolbarItem {
   /**
    * @param {boolean=} spacer
@@ -958,9 +934,6 @@ export class ItemsProvider {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ToolbarComboBox extends ToolbarItem {
   /**
    * @param {?function(!Event):void} changeHandler
@@ -1095,9 +1068,6 @@ export class ToolbarComboBox extends ToolbarItem {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ToolbarSettingComboBox extends ToolbarComboBox {
   /**
    * @param {!Array<!{value: string, label: string}>} options
@@ -1161,9 +1131,6 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ToolbarCheckbox extends ToolbarItem {
   /**
    * @param {string} text

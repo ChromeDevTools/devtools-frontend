@@ -772,9 +772,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class BaseStorageTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
@@ -982,9 +979,6 @@ export class BackgroundServiceTreeElement extends BaseStorageTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class DatabaseTreeElement extends BaseStorageTreeElement {
   /**
    * @param {!ApplicationPanelSidebar} sidebar
@@ -1034,9 +1028,6 @@ export class DatabaseTreeElement extends BaseStorageTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class DatabaseTableTreeElement extends BaseStorageTreeElement {
   /**
    * @param {!ApplicationPanelSidebar} sidebar
@@ -1072,9 +1063,6 @@ export class DatabaseTableTreeElement extends BaseStorageTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ServiceWorkerCacheTreeElement extends StorageCategoryTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
@@ -1254,9 +1242,6 @@ export class SWCacheTreeElement extends BaseStorageTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ServiceWorkersTreeElement extends BaseStorageTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
@@ -1293,9 +1278,6 @@ export class ServiceWorkersTreeElement extends BaseStorageTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AppManifestTreeElement extends BaseStorageTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
@@ -1332,9 +1314,6 @@ export class AppManifestTreeElement extends BaseStorageTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ClearStorageTreeElement extends BaseStorageTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
@@ -1368,9 +1347,6 @@ export class ClearStorageTreeElement extends BaseStorageTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class IndexedDBTreeElement extends StorageCategoryTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
@@ -1527,9 +1503,6 @@ export class IndexedDBTreeElement extends StorageCategoryTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class IDBDatabaseTreeElement extends BaseStorageTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
@@ -1828,9 +1801,6 @@ export class IDBObjectStoreTreeElement extends BaseStorageTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class IDBIndexTreeElement extends BaseStorageTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
@@ -1922,9 +1892,6 @@ export class IDBIndexTreeElement extends BaseStorageTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class DOMStorageTreeElement extends BaseStorageTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
@@ -2034,9 +2001,6 @@ export class CookieTreeElement extends BaseStorageTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ApplicationCacheManifestTreeElement extends BaseStorageTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
@@ -2073,9 +2037,6 @@ export class ApplicationCacheManifestTreeElement extends BaseStorageTreeElement 
   }
 }
 
-/**
- * @unrestricted
- */
 export class ApplicationCacheFrameTreeElement extends BaseStorageTreeElement {
   /**
    * @param {!ApplicationPanelSidebar} sidebar
@@ -2135,9 +2096,6 @@ export class ApplicationCacheFrameTreeElement extends BaseStorageTreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class StorageCategoryView extends UI.Widget.VBox {
   constructor() {
     super();

@@ -5,9 +5,6 @@
 import {VBox} from './Widget.js';
 import {ZoomManager} from './ZoomManager.js';
 
-/**
- * @unrestricted
- */
 export class RootView extends VBox {
   constructor() {
     super();

@@ -5,9 +5,6 @@
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
-/**
- * @unrestricted
- */
 export class AccessibilitySubPane extends UI.View.SimpleView {
   /**
    * @param {string} name

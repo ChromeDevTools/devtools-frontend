@@ -7,9 +7,6 @@ import * as Host from '../host/host.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
-/**
- * @unrestricted
- */
 export class FilmStripView extends UI.Widget.HBox {
   constructor() {
     super(true);

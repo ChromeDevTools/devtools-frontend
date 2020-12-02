@@ -345,9 +345,6 @@ export class JSONView extends UI.Widget.VBox {
 }
 
 
-/**
- * @unrestricted
- */
 export class ParsedJSON {
   /**
    * @param {*} data

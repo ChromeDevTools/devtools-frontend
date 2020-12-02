@@ -73,9 +73,6 @@ export class ContentProvider {
   }
 }
 
-/**
- * @unrestricted
- */
 export class SearchMatch {
   /**
    * @param {number} lineNumber

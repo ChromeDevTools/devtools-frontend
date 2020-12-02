@@ -68,9 +68,6 @@ export class Panel extends VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class PanelWithSidebar extends Panel {
   /**
    * @param {string} name

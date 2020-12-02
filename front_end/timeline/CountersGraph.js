@@ -37,9 +37,6 @@ import * as UI from '../ui/ui.js';
 import {Events, PerformanceModel, Window} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {TimelineModeViewDelegate} from './TimelinePanel.js';             // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class CountersGraph extends UI.Widget.VBox {
   /**
    * @param {!TimelineModeViewDelegate} delegate
@@ -288,9 +285,6 @@ export class CountersGraph extends UI.Widget.VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Counter {
   constructor() {
     /** @type {!Array<number>} */
@@ -390,9 +384,6 @@ export class Counter {
   }
 }
 
-/**
- * @unrestricted
- */
 export class CounterUI {
   /**
    * @param {!CountersGraph} countersPane

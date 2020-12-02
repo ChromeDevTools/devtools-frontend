@@ -45,9 +45,6 @@ import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTr
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SourceMapManager} from './SourceMapManager.js';
 
-/**
- * @unrestricted
- */
 export class CSSModel extends SDKModel {
   /**
    * @param {!Target} target

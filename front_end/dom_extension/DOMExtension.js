@@ -403,9 +403,6 @@ Element.prototype.totalOffset = function() {
   return {left: rect.left, top: rect.top};
 };
 
-/**
- * @unrestricted
- */
 self.AnchorBox = class {
   /**
    * @param {number=} x

@@ -9,9 +9,6 @@ import * as UI from '../ui/ui.js';
  */
 let inspectedPagePlaceholderInstance;
 
-/**
- * @unrestricted
- */
 export class InspectedPagePlaceholder extends UI.Widget.Widget {
   constructor() {
     super(true);

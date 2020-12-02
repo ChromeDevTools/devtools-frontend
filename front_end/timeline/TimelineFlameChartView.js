@@ -582,9 +582,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Selection {
   /**
    * @param {!TimelineSelection} selection

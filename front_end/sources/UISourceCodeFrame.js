@@ -689,9 +689,6 @@ const lineClassPerLevel = new Map();
 lineClassPerLevel.set(Workspace.UISourceCode.Message.Level.Error, 'text-editor-line-with-error');
 lineClassPerLevel.set(Workspace.UISourceCode.Message.Level.Warning, 'text-editor-line-with-warning');
 
-/**
- * @unrestricted
- */
 export class RowMessage {
   /**
    * @param {!Workspace.UISourceCode.Message} message

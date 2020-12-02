@@ -30,9 +30,6 @@
 
 import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
 
-/**
- * @unrestricted
- */
 export class AllocationProfile {
   /**
    *
@@ -269,9 +266,6 @@ export class AllocationProfile {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TopDownAllocationNode {
   /**
    * @param {number} id
@@ -298,9 +292,6 @@ export class TopDownAllocationNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class BottomUpAllocationNode {
   /**
    * @param {!FunctionAllocationInfo} functionInfo
@@ -359,9 +350,6 @@ export class BottomUpAllocationNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class FunctionAllocationInfo {
   /**
    * @param {string} functionName

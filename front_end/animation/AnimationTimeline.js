@@ -982,9 +982,6 @@ export const _ControlState = {
   Pause: 'pause-outline'
 };
 
-/**
- * @unrestricted
- */
 export class NodeUI {
   /**
    * @param {!AnimationEffect} animationEffect
@@ -1036,9 +1033,6 @@ export class NodeUI {
   }
 }
 
-/**
- * @unrestricted
- */
 export class StepTimingFunction {
   /**
    * @param {number} steps

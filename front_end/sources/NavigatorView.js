@@ -1056,9 +1056,6 @@ export class NavigatorView extends UI.Widget.VBox {
 /** @type {!WeakSet<!UI.TreeOutline.TreeElement>} */
 const boostOrderForNode = new WeakSet();
 
-/**
- * @unrestricted
- */
 export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!NavigatorView} navigatorView
@@ -1159,9 +1156,6 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   /**
    * @param {!NavigatorView} navigatorView
@@ -1328,9 +1322,6 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   }
 }
 
-/**
- * @unrestricted
- */
 export class NavigatorTreeNode {
   /**
    * @param {!NavigatorView} navigatorView
@@ -1479,9 +1470,6 @@ export class NavigatorTreeNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class NavigatorRootTreeNode extends NavigatorTreeNode {
   /**
    * @param {!NavigatorView} navigatorView
@@ -1507,9 +1495,6 @@ export class NavigatorRootTreeNode extends NavigatorTreeNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
   /**
    * @param {!NavigatorView} navigatorView
@@ -1682,9 +1667,6 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class NavigatorFolderTreeNode extends NavigatorTreeNode {
   /**
    * @param {!NavigatorView} navigatorView
@@ -1870,9 +1852,6 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class NavigatorGroupTreeNode extends NavigatorTreeNode {
   /**
    * @param {!NavigatorView} navigatorView

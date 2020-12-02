@@ -94,9 +94,6 @@ const TraceEvents = {
   Screenshot: 'Screenshot'
 };
 
-/**
- * @unrestricted
- */
 export class Frame {
   /**
    * @param {!FilmStripModel} model

@@ -598,9 +598,6 @@ export class BackingStorage {
 /** @typedef {*} */
 let Args;  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class Event {
   /**
    * @param {string|undefined} categories
@@ -834,9 +831,6 @@ export class ObjectSnapshot extends Event {
   }
 }
 
-/**
- * @unrestricted
- */
 export class AsyncEvent extends Event {
   /**
    * @param {!Event} startEvent

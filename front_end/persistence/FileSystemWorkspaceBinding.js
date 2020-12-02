@@ -37,9 +37,6 @@ import {IsolatedFileSystem} from './IsolatedFileSystem.js';                     
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';  // eslint-disable-line no-unused-vars
 import {PlatformFileSystem} from './PlatformFileSystem.js';                        // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class FileSystemWorkspaceBinding {
   /**
    * @param {!IsolatedFileSystemManager} isolatedFileSystemManager

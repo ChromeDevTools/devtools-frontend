@@ -30,9 +30,6 @@ import * as UI from '../ui/ui.js';
 
 import {ApplicationCacheModel, CHECKING, DOWNLOADING, IDLE, OBSOLETE, UNCACHED, UPDATEREADY} from './ApplicationCacheModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class ApplicationCacheItemsView extends UI.View.SimpleView {
   /**
    * @param {!ApplicationCacheModel} model

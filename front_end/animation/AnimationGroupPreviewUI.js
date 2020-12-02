@@ -6,9 +6,6 @@ import * as UI from '../ui/ui.js';
 import {AnimationGroup} from './AnimationModel.js';  // eslint-disable-line no-unused-vars
 import {AnimationUI} from './AnimationUI.js';
 
-/**
- * @unrestricted
- */
 export class AnimationGroupPreviewUI {
   /**
    * @param {!AnimationGroup} model

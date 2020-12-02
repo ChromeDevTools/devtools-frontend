@@ -11,9 +11,6 @@
 // @ts-ignore typedef
 export let UnusedDeclaration;
 
-/**
- * @unrestricted
- */
 export class CSSOverviewUnusedDeclarations {
   /**
    * @param {!Map<string,!Array<!UnusedDeclaration>>} target

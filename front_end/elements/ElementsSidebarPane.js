@@ -8,9 +8,6 @@ import * as UI from '../ui/ui.js';
 
 import {ComputedStyleModel, Events} from './ComputedStyleModel.js';
 
-/**
- * @unrestricted
- */
 export class ElementsSidebarPane extends UI.Widget.VBox {
   /**
    * @param {boolean=} delegatesFocus

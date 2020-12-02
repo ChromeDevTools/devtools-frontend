@@ -445,9 +445,6 @@ export class DebuggerWorkspaceBinding {
   }
 }
 
-/**
- * @unrestricted
- */
 class ModelData {
   /**
    * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
@@ -560,9 +557,6 @@ class ModelData {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Location extends LiveLocationWithPool {
   /**
    * @param {!SDK.Script.Script} script

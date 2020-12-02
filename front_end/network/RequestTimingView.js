@@ -36,9 +36,6 @@ import * as UI from '../ui/ui.js';
 
 import {Events, NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class RequestTimingView extends UI.Widget.VBox {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request

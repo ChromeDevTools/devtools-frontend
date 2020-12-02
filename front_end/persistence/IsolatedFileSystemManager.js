@@ -40,9 +40,6 @@ import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-l
  */
 let isolatedFileSystemManagerInstance;
 
-/**
- * @unrestricted
- */
 export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @private

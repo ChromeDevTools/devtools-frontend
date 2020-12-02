@@ -36,9 +36,6 @@ import * as UI from '../ui/ui.js';
 
 const expiresSessionValue = Common.UIString.UIString('Session');
 
-/**
- * @unrestricted
- */
 export class CookiesTable extends UI.Widget.VBox {
   /**
    * @param {boolean=} renderInline

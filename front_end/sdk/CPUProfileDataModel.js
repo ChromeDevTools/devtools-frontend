@@ -7,9 +7,6 @@ import * as Common from '../common/common.js';
 import {ProfileNode, ProfileTreeModel} from './ProfileTreeModel.js';
 import {Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class CPUProfileNode extends ProfileNode {
   /**
    * @param {!Protocol.Profiler.ProfileNode} node
@@ -38,9 +35,6 @@ export class CPUProfileNode extends ProfileNode {
   }
 }
 
-/**
- * @unrestricted
- */
 export class CPUProfileDataModel extends ProfileTreeModel {
   /**
    * @param {!Protocol.Profiler.Profile} profile

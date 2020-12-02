@@ -220,9 +220,6 @@ export class Event {
 }
 
 
-/**
- * @unrestricted
- */
 export class TickingFlameChart extends UI.Widget.VBox {
   constructor() {
     super();

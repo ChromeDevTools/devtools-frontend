@@ -1313,9 +1313,6 @@ export class DebuggingActionDelegate {
   }
 }
 
-/**
- * @unrestricted
- */
 export class WrapperView extends UI.Widget.VBox {
   constructor() {
     super();

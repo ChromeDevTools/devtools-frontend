@@ -83,9 +83,6 @@ function getBorderString(color) {
   return `1px solid hsl(${h}deg ${s}% ${l}%)`;
 }
 
-/**
- * @unrestricted
- */
 export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   /**
    * @param {!OverviewController} controller

@@ -7,9 +7,6 @@ import * as Common from '../common/common.js';
 
 import {LayerPaintEvent} from './TimelineFrameModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
   /**
    * @param {?SDK.SDKModel.Target} target

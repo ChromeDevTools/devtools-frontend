@@ -42,9 +42,6 @@ import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, createTextChild} from './UIUtils.js';
 import {HBox} from './Widget.js';
 
-/**
- * @unrestricted
- */
 export class FilterBar extends HBox {
   /**
    * @param {string} name

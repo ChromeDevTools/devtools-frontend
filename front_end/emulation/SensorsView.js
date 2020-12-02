@@ -12,9 +12,6 @@ import * as UI from '../ui/ui.js';
  */
 let _instanceObject = null;
 
-/**
- * @unrestricted
- */
 export class SensorsView extends UI.Widget.VBox {
   constructor() {
     super(true);

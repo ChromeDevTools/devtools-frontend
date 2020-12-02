@@ -8,9 +8,6 @@ import * as UI from '../ui/ui.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
 
-/**
- * @unrestricted
- */
 export class ElementStatePaneWidget extends UI.Widget.Widget {
   constructor() {
     super(true);

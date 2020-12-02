@@ -38,9 +38,6 @@ import * as Root from '../root/root.js';
  */
 let themeSupportInstance;
 
-/**
- * @unrestricted
- */
 export class ThemeSupport {
   /**
    * @private

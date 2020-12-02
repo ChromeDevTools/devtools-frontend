@@ -90,9 +90,6 @@ export class ExtensionView extends UI.Widget.Widget {
   }
 }
 
-/**
- * @unrestricted
- */
 export class ExtensionNotifierView extends UI.Widget.VBox {
   /**
    * @param {!ExtensionServer} server

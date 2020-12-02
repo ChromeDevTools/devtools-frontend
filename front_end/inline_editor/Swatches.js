@@ -9,9 +9,6 @@ import * as UI from '../ui/ui.js';
 import {ColorSwatch} from './ColorSwatch.js';
 import {CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class BezierSwatch extends HTMLSpanElement {
   constructor() {
     super();
@@ -68,9 +65,6 @@ export class BezierSwatch extends HTMLSpanElement {
 /** @type {?function():!Element} */
 BezierSwatch._constructor = null;
 
-/**
- * @unrestricted
- */
 export class CSSShadowSwatch extends HTMLSpanElement {
   constructor() {
     super();

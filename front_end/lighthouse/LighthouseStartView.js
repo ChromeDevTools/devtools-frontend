@@ -38,9 +38,6 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseStartView.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @unrestricted
- */
 export class StartView extends UI.Widget.Widget {
   /**
    * @param {!LighthouseController} controller

@@ -36,9 +36,6 @@ import * as UI from '../ui/ui.js';
 
 import {Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class IDBDatabaseView extends UI.Widget.VBox {
   /**
    * @param {!IndexedDBModel} model
@@ -112,9 +109,6 @@ export class IDBDatabaseView extends UI.Widget.VBox {
   }
 }
 
-/**
- * @unrestricted
- */
 export class IDBDataView extends UI.View.SimpleView {
   /**
    * @param {!IndexedDBModel} model

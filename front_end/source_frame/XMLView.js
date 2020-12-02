@@ -243,9 +243,6 @@ export class XMLView extends UI.Widget.Widget {
 }
 
 
-/**
- * @unrestricted
- */
 export class XMLViewNode extends UI.TreeOutline.TreeElement {
   /**
    * @param {!Node|!ParentNode} node

@@ -273,9 +273,6 @@ export const projectTypes = {
   Service: 'service'
 };
 
-/**
- * @unrestricted
- */
 export class ProjectStore {
   /**
    * @param {!WorkspaceImpl} workspace
@@ -414,9 +411,6 @@ export class ProjectStore {
  */
 let workspaceInstance;
 
-/**
- * @unrestricted
- */
 export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @private

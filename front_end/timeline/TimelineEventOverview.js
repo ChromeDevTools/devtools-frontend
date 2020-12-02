@@ -39,9 +39,6 @@ import * as UI from '../ui/ui.js';
 import {PerformanceModel} from './PerformanceModel.js';  // eslint-disable-line no-unused-vars
 import {EventDispatchTypeDescriptor, TimelineCategory, TimelineRecordStyle, TimelineUIUtils} from './TimelineUIUtils.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @unrestricted
- */
 export class TimelineEventOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
   /**
    * @param {string} id
@@ -81,9 +78,6 @@ export class TimelineEventOverview extends PerfUI.TimelineOverviewPane.TimelineO
   }
 }
 
-/**
- * @unrestricted
- */
 export class TimelineEventOverviewInput extends TimelineEventOverview {
   constructor() {
     super('input', null);
@@ -140,9 +134,6 @@ export class TimelineEventOverviewInput extends TimelineEventOverview {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TimelineEventOverviewNetwork extends TimelineEventOverview {
   constructor() {
     super('network', Common.UIString.UIString('NET'));
@@ -186,9 +177,6 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
 /** @type {!WeakMap<!TimelineCategory, number>} */
 const categoryToIndex = new WeakMap();
 
-/**
- * @unrestricted
- */
 export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   constructor() {
     super('cpu-activity', Common.UIString.UIString('CPU'));
@@ -323,9 +311,6 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
   constructor() {
     super('responsiveness', null);
@@ -389,9 +374,6 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TimelineFilmStripOverview extends TimelineEventOverview {
   constructor() {
     super('filmstrip', null);
@@ -538,9 +520,6 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
 
 TimelineFilmStripOverview.Padding = 2;
 
-/**
- * @unrestricted
- */
 export class TimelineEventOverviewFrames extends TimelineEventOverview {
   constructor() {
     super('framerate', Common.UIString.UIString('FPS'));
@@ -600,9 +579,6 @@ export class TimelineEventOverviewFrames extends TimelineEventOverview {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TimelineEventOverviewMemory extends TimelineEventOverview {
   constructor() {
     super('memory', Common.UIString.UIString('HEAP'));
@@ -729,9 +705,6 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
   }
 }
 
-/**
- * @unrestricted
- */
 export class Quantizer {
   /**
    * @param {number} startTime
@@ -775,9 +748,6 @@ export class Quantizer {
   }
 }
 
-/**
- * @unrestricted
- */
 export class TimelineEventOverviewCoverage extends TimelineEventOverview {
   constructor() {
     super('coverage', Common.UIString.UIString('COVERAGE'));

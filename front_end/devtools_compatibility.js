@@ -6,9 +6,6 @@
 
   // DevToolsAPI ----------------------------------------------------------------
 
-  /**
-   * @unrestricted
-   */
   const DevToolsAPIImpl = class {
     constructor() {
       /**
@@ -382,7 +379,6 @@
 
   /**
    * @implements {InspectorFrontendHostAPI}
-   * @unrestricted
    */
   const InspectorFrontendHostImpl = class {
     /**

@@ -849,9 +849,6 @@ export class Extension {
   }
 }
 
-/**
-* @unrestricted
-*/
 export class ExperimentsSupport {
   constructor() {
     /** @type {!Array<!Experiment>} */
@@ -1009,9 +1006,6 @@ export class ExperimentsSupport {
   }
 }
 
-/**
-* @unrestricted
-*/
 class Experiment {
   /**
   * @param {!ExperimentsSupport} experiments

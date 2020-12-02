@@ -39,9 +39,6 @@
 
 (function createTestSuite(window) {
 
-  /**
-   * @unrestricted
-   */
   const TestSuite = class {
     /**
      * Test suite for interactive UI tests.

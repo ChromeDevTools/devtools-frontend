@@ -28,10 +28,10 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {contrastRatio, contrastRatioAPCA, getAPCAThreshold, getContrastThreshold, rgbaToHsla} from '../front_end/common/ColorUtils.js';
+import {contrastRatio, contrastRatioAPCA, getAPCAThreshold, getContrastThreshold} from '../front_end/common/ColorUtils.js';
 
 import {Bounds, constrainNumber, createChild, createElement, createTextChild, ellipsify, Overlay, PathCommands, ResetData} from './common.js';
-import {buildPath, emptyBounds, PathBounds} from './highlight_common.js';
+import {buildPath, emptyBounds, formatColor, parseHexa, PathBounds} from './highlight_common.js';
 import {drawLayoutFlexContainerHighlight, FlexContainerHighlight} from './highlight_flex_common.js';
 import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
 import {PersistentOverlay} from './tool_persistent.js';
@@ -332,33 +332,6 @@ export class HighlightOverlay extends Overlay {
 const lightGridColor = 'rgba(0,0,0,0.2)';
 const darkGridColor = 'rgba(0,0,0,0.7)';
 const gridBackgroundColor = 'rgba(255, 255, 255, 0.8)';
-
-function parseHexa(hexa: string): Array<number> {
-  return (hexa.match(/#(\w\w)(\w\w)(\w\w)(\w\w)/) || []).slice(1).map(c => parseInt(c, 16) / 255);
-}
-
-function formatColor(hexa: string, colorFormat: string): string {
-  if (colorFormat === 'rgb') {
-    const [r, g, b, a] = parseHexa(hexa);
-    // rgb(r g b [ / a])
-    return `rgb(${(r * 255).toFixed()} ${(g * 255).toFixed()} ${(b * 255).toFixed()}${
-        a === 1 ? '' : ' / ' + Math.round(a * 100) / 100})`;
-  }
-
-  if (colorFormat === 'hsl') {
-    const [h, s, l, a] = rgbaToHsla(parseHexa(hexa));
-    // hsl(hdeg s l [ / a])
-    return `hsl(${Math.round(h * 360)}deg ${Math.round(s * 100)} ${Math.round(l * 100)}${
-        a === 1 ? '' : ' / ' + Math.round(a * 100) / 100})`;
-  }
-
-  if (hexa.endsWith('FF')) {
-    // short hex if no alpha
-    return hexa.substr(0, 7);
-  }
-
-  return hexa;
-}
 
 /**
  * Determine the layout type of the highlighted element based on the config.

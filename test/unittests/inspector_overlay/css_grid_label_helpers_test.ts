@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import {drawGridAreaNamesAndAssertLabels, drawGridLineNumbersAndAssertLabels, drawMultipleGridLineNumbersAndAssertLabels, getGridLineNumberLabelContainer, getGridTrackSizesLabelContainer, initFrameForGridLabels, initFrameForMultipleGridLabels, drawGridLineNamesAndAssertLabels} from '../front_end/helpers/InspectorOverlayHelpers.js';
-import {drawGridLineNumbers, drawGridTrackSizes, _normalizePositionData} from '../../../inspector_overlay/css_grid_label_helpers.js';
+import {drawGridLineNumbers, drawGridTrackSizes, generateLegibleTextColor, _normalizePositionData} from '../../../inspector_overlay/css_grid_label_helpers.js';
 
 describe('drawGridLineNumbers label creation', () => {
   beforeEach(initFrameForGridLabels);
@@ -805,4 +805,44 @@ describe('drawGridLineNames', () => {
            },
            {canvasWidth: 800, canvasHeight: 600}, 0, deviceEmulationFactor, expectedLabels));
   }
+});
+
+describe('generateLegibleTextColor', () => {
+  it('returns expected colors depending on the background color', () => {
+    // black
+    assert.strictEqual(generateLegibleTextColor('rgb(0, 0, 0)'), 'white');
+
+    // dark grey
+    assert.strictEqual(generateLegibleTextColor('rgb(50, 50, 50)'), 'white');
+
+    // light grey
+    assert.strictEqual(generateLegibleTextColor('rgb(200, 200, 200)'), '#121212');
+
+    // white
+    assert.strictEqual(generateLegibleTextColor('rgb(255, 255, 255)'), '#121212');
+
+    // several of the default colors (from OverlayColorGenerator.js)
+    assert.strictEqual(generateLegibleTextColor('rgb(245, 151, 148)'), '#121212');
+    assert.strictEqual(generateLegibleTextColor('rgb(212, 237, 49)'), '#121212');
+    assert.strictEqual(generateLegibleTextColor('rgb(91, 209, 215)'), '#121212');
+    assert.strictEqual(generateLegibleTextColor('rgb(188, 206, 251)'), '#121212');
+    assert.strictEqual(generateLegibleTextColor('rgb(208, 148, 234)'), '#121212');
+    assert.strictEqual(generateLegibleTextColor('rgb(235, 148, 207)'), '#121212');
+  });
+
+  it('ignores alpha', () => {
+    assert.strictEqual(generateLegibleTextColor('rgba(0, 0, 0, 0.8)'), 'white');
+  });
+
+  it('returns null for unparsable rgb colors', () => {
+    assert.isNull(generateLegibleTextColor('not a color'));
+    assert.isNull(generateLegibleTextColor(''));
+    assert.isNull(generateLegibleTextColor('rgb(r g b)'));
+  });
+
+  it('accepts #hex colors too', () => {
+    assert.strictEqual(generateLegibleTextColor('#000000'), 'white');
+    assert.strictEqual(generateLegibleTextColor('#FFFFFF'), '#121212');
+    assert.strictEqual(generateLegibleTextColor('#a68cf0'), '#121212');
+  });
 });

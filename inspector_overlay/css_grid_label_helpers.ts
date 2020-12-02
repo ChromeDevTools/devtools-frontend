@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {luminance} from '../front_end/common/ColorUtils.js';
+
 import {AreaBounds, Bounds, createChild, Position} from './common.js';  // eslint-disable-line no-unused-vars
-import {applyMatrixToPoint} from './highlight_common.js';
+import {applyMatrixToPoint, parseHexa} from './highlight_common.js';
 
 /**
  * There are 12 different types of arrows for labels.
@@ -53,6 +55,7 @@ const gridLabelDistance = 20;
 // The maximum number of custom line names that can be displayed in a label.
 const maxLineNamesCount = 3;
 const defaultLabelColor = '#1A73E8';
+const defaultLabelTextColor = '#121212';
 
 export interface CanvasSize {
   canvasWidth: number;
@@ -161,15 +164,21 @@ export function drawGridLabels(
     labelContainerForNode.id = labelContainerId;
   }
 
-  labelContainerForNode.style.setProperty(
-      '--row-label-color',
-      config.gridHighlightConfig && config.gridHighlightConfig.rowLineColor ? config.gridHighlightConfig.rowLineColor :
-                                                                              defaultLabelColor);
-  labelContainerForNode.style.setProperty(
-      '--column-label-color',
-      config.gridHighlightConfig && config.gridHighlightConfig.columnLineColor ?
-          config.gridHighlightConfig.columnLineColor :
-          defaultLabelColor);
+  const rowColor = config.gridHighlightConfig && config.gridHighlightConfig.rowLineColor ?
+      config.gridHighlightConfig.rowLineColor :
+      defaultLabelColor;
+  const rowTextColor = generateLegibleTextColor(rowColor);
+
+  labelContainerForNode.style.setProperty('--row-label-color', rowColor);
+  labelContainerForNode.style.setProperty('--row-label-text-color', rowTextColor);
+
+  const columnColor = config.gridHighlightConfig && config.gridHighlightConfig.columnLineColor ?
+      config.gridHighlightConfig.columnLineColor :
+      defaultLabelColor;
+  const columnTextColor = generateLegibleTextColor(columnColor);
+
+  labelContainerForNode.style.setProperty('--column-label-color', columnColor);
+  labelContainerForNode.style.setProperty('--column-label-text-color', columnTextColor);
 
   labelContainerForNode.innerText = '';
 
@@ -926,4 +935,41 @@ function _getLabelPositionByArrowType(
     contentTop,
     contentLeft,
   };
+}
+
+/**
+ * Given a background color, generate a color for text to be legible.
+ * This assumes the background color is given as either a "rgba(r, g, b, a)" string or a #rrggbb string.
+ * This is because colors are sent by the backend using blink::Color:Serialized() which follows the logic for
+ * serializing colors from https://html.spec.whatwg.org/#serialization-of-a-color
+ *
+ * In rgba form, the alpha channel is ignored.
+ *
+ * This is made to be small and fast and not require importing the entire Color utility from DevTools as it would make
+ * the overlay bundle unnecessarily big.
+ *
+ * This is also made to generate the defaultLabelTextColor for all of the default label colors that the
+ * OverlayColorGenerator produces.
+ */
+export function generateLegibleTextColor(backgroundColor: string) {
+  let rgb: number[] = [];
+
+  // Try to parse it as a #rrggbbaa string first
+  const rgba = parseHexa(backgroundColor + '00');
+  if (rgba.length === 4) {
+    rgb = rgba.slice(0, 3).map(c => c);
+  } else {
+    // Next try to parse as a rgba() string
+    const parsed = backgroundColor.match(/[0-9.]+/g);
+    if (!parsed) {
+      return null;
+    }
+    rgb = parsed.slice(0, 3).map(s => parseInt(s, 10) / 255);
+  }
+
+  if (!rgb.length) {
+    return null;
+  }
+
+  return luminance(rgb) > 0.2 ? defaultLabelTextColor : 'white';
 }

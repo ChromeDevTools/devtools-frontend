@@ -5,11 +5,12 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$, click, enableExperiment, getBrowserAndPages, goToResource, platform, reloadDevTools, scrollElementIntoView, waitFor} from '../../shared/helper.js';
+import {$, click, enableExperiment, getBrowserAndPages, goToResource, platform, pressKey, reloadDevTools, scrollElementIntoView, typeText, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToCssOverviewTab} from '../helpers/css-overview-helpers.js';
 import {editCSSProperty, focusElementsTree, navigateToSidePane, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 import {clickToggleButton, selectDualScreen, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
+import {openCommandMenu} from '../helpers/quick_open-helpers.js';
 import {closeSecurityTab, navigateToSecurityTab} from '../helpers/security-helpers.js';
 import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
 
@@ -273,6 +274,22 @@ describe('User Metrics', () => {
         value: 37,  // 'issues-pane'.
       },
     ]);
+  });
+
+  it('dispatches event when opening issues drawer via command menu', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    await openCommandMenu();
+    await typeText('issues');
+    await waitFor('.filtered-list-widget-title');
+    await pressKey('Enter');
+    await waitFor('[aria-label="Issues panel"]');
+
+    const events = await retrieveCapturedEvents(frontend);
+    assert.deepInclude(events, {
+      name: 'DevTools.IssuesPanelOpenedFrom',
+      value: 5,  // CommandMenu
+    });
   });
 
   it('dispatches an event when F1 is used to open settings', async () => {

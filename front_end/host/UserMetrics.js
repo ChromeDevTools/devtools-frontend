@@ -495,7 +495,8 @@ export const IssueOpener = {
   LearnMoreLinkCOEP: 1,
   StatusBarIssuesCounter: 2,
   HamburgerMenu: 3,
-  Adorner: 4
+  Adorner: 4,
+  CommandMenu: 5
 };
 
 /** @enum {number} */

@@ -18,6 +18,7 @@
     "Progress.js",
     "ResourceType.js",
     "Settings.js",
+    "SettingRegistration.js",
     "SegmentedRange.js",
     "Throttler.js",
     "Trie.js",

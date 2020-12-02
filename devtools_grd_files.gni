@@ -465,6 +465,7 @@ grd_files_debug_sources = [
   "front_end/common/Revealer.js",
   "front_end/common/Runnable.js",
   "front_end/common/SegmentedRange.js",
+  "front_end/common/SettingRegistration.js",
   "front_end/common/Settings.js",
   "front_end/common/SimpleHistoryManager.js",
   "front_end/common/StringOutputStream.js",

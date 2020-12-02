@@ -27,6 +27,7 @@ devtools_module("common") {
     "Revealer.js",
     "Runnable.js",
     "SegmentedRange.js",
+    "SettingRegistration.ts",
     "Settings.js",
     "SimpleHistoryManager.js",
     "StringOutputStream.js",

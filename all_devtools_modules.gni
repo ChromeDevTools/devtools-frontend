@@ -78,6 +78,7 @@ all_typescript_module_sources = [
   "common/Revealer.js",
   "common/Runnable.js",
   "common/SegmentedRange.js",
+  "common/SettingRegistration.js",
   "common/Settings.js",
   "common/SimpleHistoryManager.js",
   "common/StringOutputStream.js",

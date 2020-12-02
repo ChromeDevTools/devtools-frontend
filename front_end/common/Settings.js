@@ -35,6 +35,7 @@ import {Color, Format} from './Color.js';  // eslint-disable-line no-unused-vars
 import {Console} from './Console.js';
 import {EventDescriptor, EventTargetEvent} from './EventTarget.js';  // eslint-disable-line no-unused-vars
 import {ObjectWrapper} from './Object.js';
+import {getRegisteredSettings, RegExpSettingItem, registerSettingExtension, SettingCategory, SettingCategoryObject, SettingExtensionOption, SettingRegistration, SettingType, SettingTypeObject} from './SettingRegistration.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @type {!Settings|undefined}
@@ -84,7 +85,7 @@ export class Settings {
             storageType = SettingStorageType.Global;
         }
         const {settingName, defaultValue, userActionCondition} = descriptor;
-        const isRegex = descriptor.settingType === SettingType.REGEX;
+        const isRegex = descriptor.settingType === SettingTypeObject.REGEX;
 
         // This cast is done so that the assignation to setting._extension below is type valid.
         const setting = isRegex && typeof defaultValue === 'string' ?
@@ -617,13 +618,13 @@ export class LegacySetting extends Setting {
       const type = this._extension.descriptor().settingType;
       switch (type) {
         case 'boolean':
-          return SettingType.BOOLEAN;
+          return SettingTypeObject.BOOLEAN;
         case 'enum':
-          return SettingType.ENUM;
+          return SettingTypeObject.ENUM;
         case 'regex':
-          return SettingType.REGEX;
+          return SettingTypeObject.REGEX;
         case 'array':
-          return SettingType.ARRAY;
+          return SettingTypeObject.ARRAY;
         default:
           throw new Error('Invalid setting type');
       }
@@ -682,33 +683,33 @@ export class LegacySetting extends Setting {
 
       switch (category) {
         case 'Elements':
-          return SettingCategory.ELEMENTS;
+          return SettingCategoryObject.ELEMENTS;
         case 'Appearance':
-          return SettingCategory.APPEARANCE;
+          return SettingCategoryObject.APPEARANCE;
         case 'Sources':
-          return SettingCategory.SOURCES;
+          return SettingCategoryObject.SOURCES;
         case 'Network':
-          return SettingCategory.NETWORK;
+          return SettingCategoryObject.NETWORK;
         case 'Performance':
-          return SettingCategory.PERFORMANCE;
+          return SettingCategoryObject.PERFORMANCE;
         case 'Console':
-          return SettingCategory.CONSOLE;
+          return SettingCategoryObject.CONSOLE;
         case 'Persistence':
-          return SettingCategory.PERSISTENCE;
+          return SettingCategoryObject.PERSISTENCE;
         case 'Debugger':
-          return SettingCategory.DEBUGGER;
+          return SettingCategoryObject.DEBUGGER;
         case 'Global':
-          return SettingCategory.GLOBAL;
+          return SettingCategoryObject.GLOBAL;
         case 'Rendering':
-          return SettingCategory.RENDERING;
+          return SettingCategoryObject.RENDERING;
         case 'Grid':
-          return SettingCategory.GRID;
+          return SettingCategoryObject.GRID;
         case 'Mobile':
-          return SettingCategory.MOBILE;
+          return SettingCategoryObject.MOBILE;
         case 'Emulation':
-          return SettingCategory.EMULATION;
+          return SettingCategoryObject.EMULATION;
         case 'Memory':
-          return SettingCategory.MEMORY;
+          return SettingCategoryObject.MEMORY;
         default:
           throw new Error(`Invalid setting category ${category}`);
       }
@@ -1622,84 +1623,14 @@ export function detectColorFormat(color) {
   return format;
 }
 
-/** @typedef {{pattern: string, disabled: (boolean|undefined)}} */
-// @ts-ignore typedef
-export let RegExpSettingItem;
-
-/** @enum {string} */
-export const SettingCategory = {
-  ELEMENTS: ls`Elements`,
-  APPEARANCE: ls`Appearance`,
-  SOURCES: ls`Sources`,
-  NETWORK: ls`Network`,
-  PERFORMANCE: ls`Performance`,
-  CONSOLE: ls`Console`,
-  PERSISTENCE: ls`Persistence`,
-  DEBUGGER: ls`Debugger`,
-  GLOBAL: ls`Global`,
-  RENDERING: ls`Rendering`,
-  GRID: ls`Grid`,
-  MOBILE: ls`Mobile`,
-  EMULATION: ls`Emulation`,
-  MEMORY: ls`Memory`,
+export {
+  getRegisteredSettings,
+  registerSettingExtension,
+  RegExpSettingItem,
+  SettingCategory,
+  SettingCategoryObject,
+  SettingExtensionOption,
+  SettingRegistration,
+  SettingType,
+  SettingTypeObject
 };
-
-/** @enum {string} */
-export const SettingType = {
-  ARRAY: 'array',
-  REGEX: 'regex',
-  ENUM: 'enum',
-  BOOLEAN: 'boolean',
-};
-
-/** @type {!Array<!SettingRegistration>} */
-const registeredSettings = [];
-
-/**
- * @param {!SettingRegistration} registration
- */
-export function registerSettingExtension(registration) {
-  registeredSettings.push(registration);
-}
-
-/**
-* @return {!Array<!SettingRegistration>}
-*/
-export function getRegisteredSettings() {
-  return registeredSettings.filter(
-      setting =>
-          Root.Runtime.Runtime.isDescriptorEnabled({experiment: setting.experiment, condition: setting.condition}));
-}
-
-/**
- * @typedef {{
-  *  category: (!SettingCategory|undefined),
-  *  order: (number|undefined),
-  *  title: (string|undefined),
-  *  titleMac: (string|undefined),
-  *  settingName: string,
-  *  settingType: !SettingType,
-  *  defaultValue: *,
-  *  tags: (string|undefined),
-  *  isRegex: (boolean|undefined),
-  *  options: (undefined|!Array<!SettingExtensionOption>),
-  *  reloadRequired: (boolean|undefined),
-  *  storageType: (!SettingStorageType|undefined),
-  *  userActionCondition: (string|undefined),
-  *  experiment: (!Root.Runtime.ExperimentName|undefined),
-  *  condition: (!Root.Runtime.ConditionName|undefined)
-  * }}
-  */
-// @ts-ignore typedef
-export let SettingRegistration;
-
-/**
- * @typedef {{
-  *  value: (boolean|string),
-  *  title: string,
-  *  text: (string|undefined),
-  *  raw: (boolean|undefined),
-  * }}
-  */
-// @ts-ignore typedef
-export let SettingExtensionOption;

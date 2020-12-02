@@ -49,7 +49,8 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     this.codeMirror().on('focus', this._focus.bind(this));
     this.codeMirror().on('blur', this._blur.bind(this));
     this.codeMirror().on('beforeSelectionChange', this._fireBeforeSelectionChanged.bind(this));
-    this.codeMirror().on('gutterContextMenu', this._contextMenu.bind(this));
+    this.codeMirror().on('gutterContextMenu', this._gutterContextMenu.bind(this));
+    this.codeMirror().on('contextmenu', this._textAreaContextMenu.bind(this));
     /**
      * @param {!Event} event
      */
@@ -427,34 +428,35 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
   /**
    * |instance| is actually a CodeMirror.Editor
    * @param {!Object} instance
+   * @param {!MouseEvent} event
+   */
+  _textAreaContextMenu(instance, event) {
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    event.consume(true);  // Consume event now to prevent document from handling the async menu
+
+    const textSelection = this.selection();
+    this._delegate.populateTextAreaContextMenu(contextMenu, textSelection.startLine, textSelection.startColumn)
+        .then(() => {
+          contextMenu.appendApplicableItems(this);
+          contextMenu.show();
+        });
+  }
+
+  /**
+   * |instance| is actually a CodeMirror.Editor
+   * @param {!Object} instance
    * @param {number} lineNumber
    * @param {string} gutterType
    * @param {!MouseEvent} event
    */
-  _contextMenu(instance, lineNumber, gutterType, event) {
+  _gutterContextMenu(instance, lineNumber, gutterType, event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     event.consume(true);  // Consume event now to prevent document from handling the async menu
-    const wrapper = event.target ?
-        /** @type {!Node} */ (event.target).enclosingNodeOrSelfWithClass('CodeMirror-gutter-wrapper') :
-        null;
-    const target = wrapper ? wrapper.querySelector('.CodeMirror-linenumber') : null;
-    let promise;
-    if (target) {
-      promise = this._delegate.populateLineGutterContextMenu(contextMenu, lineNumber);
-    } else {
-      const textSelection = this.selection();
-      promise =
-          this._delegate.populateTextAreaContextMenu(contextMenu, textSelection.startLine, textSelection.startColumn);
-    }
-    promise.then(showAsync.bind(this));
 
-    /**
-     * @this {SourcesTextEditor}
-     */
-    function showAsync() {
+    this._delegate.populateLineGutterContextMenu(contextMenu, lineNumber).then(() => {
       contextMenu.appendApplicableItems(this);
       contextMenu.show();
-    }
+    });
   }
 
   /**

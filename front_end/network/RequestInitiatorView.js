@@ -13,7 +13,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
    */
   constructor(request) {
     super();
-    this.registerRequiredCSS('network/requestInitiatorView.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('network/requestInitiatorView.css', {enableLegacyPatching: false});
     this.element.classList.add('request-initiator-view');
     /** @type {!Components.Linkifier.Linkifier} */
     this._linkifier = new Components.Linkifier.Linkifier();

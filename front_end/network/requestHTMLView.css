@@ -4,10 +4,12 @@
  * found in the LICENSE file.
  */
 
-.-theme-preserve,
 .html-preview-frame {
   box-shadow: var(--drop-shadow);
-  background: white;
+
+  /* We always want a white background, even in dark mode, hence why we don't
+  use our theme variables for this one */
+  background: #fff;
   flex-grow: 1;
   margin: 20px;
 }

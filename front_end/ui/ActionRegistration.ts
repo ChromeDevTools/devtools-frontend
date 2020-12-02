@@ -60,7 +60,7 @@ export class LegacyActionRegistration extends Common.ObjectWrapper.ObjectWrapper
   }
 
   id(): string {
-    return this._actionDescriptor().actionId || '';
+    return this.actionDescriptor().actionId || '';
   }
 
   extension(): Root.Runtime.Extension {
@@ -77,15 +77,15 @@ export class LegacyActionRegistration extends Common.ObjectWrapper.ObjectWrapper
   }
 
   icon(): string {
-    return this._actionDescriptor().iconClass || '';
+    return this.actionDescriptor().iconClass || '';
   }
 
   toggledIcon(): string {
-    return this._actionDescriptor().toggledIconClass || '';
+    return this.actionDescriptor().toggledIconClass || '';
   }
 
   toggleWithRedColor(): boolean {
-    return !!this._actionDescriptor().toggleWithRedColor;
+    return !!this.actionDescriptor().toggleWithRedColor;
   }
 
   setEnabled(enabled: boolean) {
@@ -102,11 +102,11 @@ export class LegacyActionRegistration extends Common.ObjectWrapper.ObjectWrapper
   }
 
   category(): string {
-    return ls`${this._actionDescriptor().category || ''}`;
+    return ls`${this.actionDescriptor().category || ''}`;
   }
 
   tags(): string {
-    const keys = this._actionDescriptor().tags || '';
+    const keys = this.actionDescriptor().tags || '';
     // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
     const keyList = keys.split(',');
     let key = '';
@@ -117,12 +117,12 @@ export class LegacyActionRegistration extends Common.ObjectWrapper.ObjectWrapper
   }
 
   toggleable(): boolean {
-    return !!this._actionDescriptor().toggleable;
+    return !!this.actionDescriptor().toggleable;
   }
 
   title(): string {
     let title = this._extension.title() || '';
-    const options = this._actionDescriptor().options;
+    const options = this.actionDescriptor().options;
     if (options) {
       for (const pair of options) {
         if (pair.value !== this._toggled) {
@@ -147,7 +147,7 @@ export class LegacyActionRegistration extends Common.ObjectWrapper.ObjectWrapper
     this.dispatchEventToListeners(Events.Toggled, toggled);
   }
 
-  _actionDescriptor(): ActionRuntimeExtensionDescriptor {
+  private actionDescriptor(): ActionRuntimeExtensionDescriptor {
     return this._extension.descriptor() as ActionRuntimeExtensionDescriptor;
   }
 }
@@ -159,35 +159,35 @@ export interface ActionDelegate {
 export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper implements Action {
   _enabled = true;
   _toggled = false;
-  _actionRegistration: ActionRegistration;
+  private actionRegistration: ActionRegistration;
   constructor(actionRegistration: ActionRegistration) {
     super();
-    this._actionRegistration = actionRegistration;
+    this.actionRegistration = actionRegistration;
   }
 
   id(): string {
-    return this._actionRegistration.actionId;
+    return this.actionRegistration.actionId;
   }
 
   async execute(): Promise<boolean> {
-    if (!this._actionRegistration.loadActionDelegate) {
+    if (!this.actionRegistration.loadActionDelegate) {
       return false;
     }
-    const delegate = await this._actionRegistration.loadActionDelegate();
+    const delegate = await this.actionRegistration.loadActionDelegate();
     const actionId = this.id();
     return delegate.handleAction(Context.instance(), actionId);
   }
 
   icon(): string|undefined {
-    return this._actionRegistration.iconClass;
+    return this.actionRegistration.iconClass;
   }
 
   toggledIcon(): string|undefined {
-    return this._actionRegistration.toggledIconClass;
+    return this.actionRegistration.toggledIconClass;
   }
 
   toggleWithRedColor(): boolean {
-    return !!this._actionRegistration.toggleWithRedColor;
+    return !!this.actionRegistration.toggleWithRedColor;
   }
 
   setEnabled(enabled: boolean) {
@@ -204,20 +204,20 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
   }
 
   category(): string {
-    return this._actionRegistration.category;
+    return this.actionRegistration.category;
   }
 
   tags(): string|undefined {
-    return this._actionRegistration.tags;
+    return this.actionRegistration.tags;
   }
 
   toggleable(): boolean {
-    return !!this._actionRegistration.toggleable;
+    return !!this.actionRegistration.toggleable;
   }
 
   title(): string {
-    let title = this._actionRegistration.title || '';
-    const options = this._actionRegistration.options;
+    let title = this.actionRegistration.title || '';
+    const options = this.actionRegistration.options;
     if (options) {
       // Actions with an 'options' property don't have a title field. Instead, the displayed
       // title is taken from the 'title' property of the option that is not active. Only one of the
@@ -248,30 +248,30 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
   }
 
   options(): undefined|Array<ExtensionOption> {
-    return this._actionRegistration.options;
+    return this.actionRegistration.options;
   }
 
   contextTypes(): undefined|Array<unknown> {
-    if (this._actionRegistration.contextTypes) {
-      return this._actionRegistration.contextTypes();
+    if (this.actionRegistration.contextTypes) {
+      return this.actionRegistration.contextTypes();
     }
     return undefined;
   }
 
   canInstantiate(): boolean {
-    return !!this._actionRegistration.loadActionDelegate;
+    return !!this.actionRegistration.loadActionDelegate;
   }
 
   bindings(): Array<Binding>|undefined {
-    return this._actionRegistration.bindings;
+    return this.actionRegistration.bindings;
   }
 
   experiment(): string|undefined {
-    return this._actionRegistration.experiment;
+    return this.actionRegistration.experiment;
   }
 
   condition(): string|undefined {
-    return this._actionRegistration.condition;
+    return this.actionRegistration.condition;
   }
 }
 

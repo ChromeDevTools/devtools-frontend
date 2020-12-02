@@ -146,7 +146,7 @@ export class HighlightOverlay extends Overlay {
         !!(highlight.paths.length && highlight.showRulers && bounds.minY < 20 && bounds.maxY + 20 < this.canvasHeight);
 
     if (highlight.showRulers) {
-      this._drawAxis(this.context, rulerAtRight, rulerAtBottom);
+      this.drawAxis(this.context, rulerAtRight, rulerAtBottom);
     }
 
     if (highlight.paths.length) {
@@ -189,7 +189,7 @@ export class HighlightOverlay extends Overlay {
     }
   }
 
-  _drawAxis(context: CanvasRenderingContext2D, rulerAtRight: boolean, rulerAtBottom: boolean) {
+  private drawAxis(context: CanvasRenderingContext2D, rulerAtRight: boolean, rulerAtBottom: boolean) {
     if (this.gridLabelState.gridPainted) {
       return;
     }

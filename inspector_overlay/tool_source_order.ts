@@ -91,14 +91,14 @@ export class SourceOrderOverlay extends Overlay {
 
     this.context.save();
     if (!!sourceOrder) {
-      this._drawSourceOrderLabel(sourceOrder, outlineColor, bounds);
+      this.drawSourceOrderLabel(sourceOrder, outlineColor, bounds);
     }
     this.context.restore();
 
     return {bounds: bounds};
   }
 
-  _drawSourceOrderLabel(sourceOrder: number, color: string, bounds: PathBounds) {
+  private drawSourceOrderLabel(sourceOrder: number, color: string, bounds: PathBounds) {
     const sourceOrderContainer = this.sourceOrderContainer;
     const otherLabels = sourceOrderContainer.children;
     const labelContainer = createChild(sourceOrderContainer, 'div', 'source-order-label-container');

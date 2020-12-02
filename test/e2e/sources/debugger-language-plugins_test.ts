@@ -202,14 +202,14 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluate(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class LocationMappingPlugin {
-            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
             constructor() {
-              this._modules = new Map();
+              this.modules = new Map();
             }
 
             async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
-              this._modules.set(rawModuleId, {
+              this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
                 sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
               });
@@ -217,7 +217,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async rawLocationToSourceLocation(rawLocation: RawLocation) {
-              const {rawLocationRange, sourceLocation} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return [sourceLocation];
@@ -248,14 +248,14 @@ describe('The Debugger Language Plugins', async () => {
           // This plugin will emulate a source mapping with a single file and a single corresponding source line and byte
           // code offset pair.
           class LocationMappingPlugin {
-            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
             constructor() {
-              this._modules = new Map();
+              this.modules = new Map();
             }
 
             async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
               const sourceFileURL = new URL('global_variable.ll', rawModule.url || symbols).href;
-              this._modules.set(rawModuleId, {
+              this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 25, endOffset: 26},
                 sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 8, columnNumber: -1},
               });
@@ -263,7 +263,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async rawLocationToSourceLocation(rawLocation: RawLocation) {
-              const {rawLocationRange, sourceLocation} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return [sourceLocation];
@@ -273,7 +273,7 @@ describe('The Debugger Language Plugins', async () => {
 
 
             async sourceLocationToRawLocation(sourceLocationArg: SourceLocation) {
-              const {rawLocationRange, sourceLocation} = this._modules.get(sourceLocationArg.rawModuleId) || {};
+              const {rawLocationRange, sourceLocation} = this.modules.get(sourceLocationArg.rawModuleId) || {};
               if (rawLocationRange && sourceLocation &&
                   JSON.stringify(sourceLocation) === JSON.stringify(sourceLocationArg)) {
                 return [rawLocationRange];
@@ -301,14 +301,14 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class VariableListingPlugin {
-            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
             constructor() {
-              this._modules = new Map();
+              this.modules = new Map();
             }
 
             async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
-              this._modules.set(rawModuleId, {
+              this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
                 sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
               });
@@ -316,7 +316,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async rawLocationToSourceLocation(rawLocation: RawLocation) {
-              const {rawLocationRange, sourceLocation} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return [sourceLocation];
@@ -329,7 +329,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async listVariablesInScope(rawLocation: RawLocation) {
-              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return [
@@ -362,14 +362,14 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class InliningPlugin {
-            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocations?: SourceLocation[]}>;
+            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocations?: SourceLocation[]}>;
             constructor() {
-              this._modules = new Map();
+              this.modules = new Map();
             }
 
             async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
-              this._modules.set(rawModuleId, {
+              this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
                 sourceLocations: [
                   {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
@@ -381,7 +381,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async rawLocationToSourceLocation(rawLocation: RawLocation) {
-              const {rawLocationRange, sourceLocations} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange, sourceLocations} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocations && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return [sourceLocations[rawLocation.inlineFrameIndex || 0]];
@@ -390,7 +390,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async getFunctionInfo(rawLocation: RawLocation) {
-              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return {frames: [{name: 'inner_inline_func'}, {name: 'outer_inline_func'}, {name: 'Main'}]};
@@ -403,7 +403,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async listVariablesInScope(rawLocation: RawLocation) {
-              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange} = this.modules.get(rawLocation.rawModuleId) || {};
               const frame = rawLocation.inlineFrameIndex || 0;
               if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
@@ -449,14 +449,14 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class InliningPlugin {
-            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocations?: SourceLocation[]}>;
+            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocations?: SourceLocation[]}>;
             constructor() {
-              this._modules = new Map();
+              this.modules = new Map();
             }
 
             async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
-              this._modules.set(rawModuleId, {
+              this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
                 sourceLocations: [
                   {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
@@ -466,7 +466,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async rawLocationToSourceLocation(rawLocation: RawLocation) {
-              const {rawLocationRange, sourceLocations} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange, sourceLocations} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocations && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return [sourceLocations[rawLocation.inlineFrameIndex || 0]];
@@ -475,7 +475,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async getFunctionInfo(rawLocation: RawLocation) {
-              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return {frames: []};
@@ -513,14 +513,14 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class VariableListingPlugin {
-            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
             constructor() {
-              this._modules = new Map();
+              this.modules = new Map();
             }
 
             async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
-              this._modules.set(rawModuleId, {
+              this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
                 sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
               });
@@ -528,7 +528,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async rawLocationToSourceLocation(rawLocation: RawLocation) {
-              const {rawLocationRange, sourceLocation} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return [sourceLocation];
@@ -669,14 +669,14 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class VariableListingPlugin {
-            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
             constructor() {
-              this._modules = new Map();
+              this.modules = new Map();
             }
 
             async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
-              this._modules.set(rawModuleId, {
+              this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
                 sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
               });
@@ -684,7 +684,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async rawLocationToSourceLocation(rawLocation: RawLocation) {
-              const {rawLocationRange, sourceLocation} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return [sourceLocation];
@@ -697,7 +697,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async listVariablesInScope(rawLocation: RawLocation) {
-              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange} = this.modules.get(rawLocation.rawModuleId) || {};
               const {codeOffset} = rawLocation;
               if (!rawLocationRange || rawLocationRange.startOffset > codeOffset ||
                   rawLocationRange.endOffset <= codeOffset) {
@@ -775,14 +775,14 @@ describe('The Debugger Language Plugins', async () => {
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {
           class FormattingErrorsPlugin {
-            _modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
+            private modules: Map<string, {rawLocationRange?: RawLocationRange, sourceLocation?: SourceLocation}>;
             constructor() {
-              this._modules = new Map();
+              this.modules = new Map();
             }
 
             async addRawModule(rawModuleId: string, symbols: string, rawModule: RawModule) {
               const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
-              this._modules.set(rawModuleId, {
+              this.modules.set(rawModuleId, {
                 rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
                 sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
               });
@@ -790,7 +790,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async rawLocationToSourceLocation(rawLocation: RawLocation) {
-              const {rawLocationRange, sourceLocation} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
               if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
                   rawLocation.codeOffset < rawLocationRange.endOffset) {
                 return [sourceLocation];
@@ -803,7 +803,7 @@ describe('The Debugger Language Plugins', async () => {
             }
 
             async listVariablesInScope(rawLocation: RawLocation) {
-              const {rawLocationRange} = this._modules.get(rawLocation.rawModuleId) || {};
+              const {rawLocationRange} = this.modules.get(rawLocation.rawModuleId) || {};
               const {codeOffset} = rawLocation;
               if (!rawLocationRange || rawLocationRange.startOffset > codeOffset ||
                   rawLocationRange.endOffset <= codeOffset) {

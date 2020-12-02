@@ -195,8 +195,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     this._path;
     /** @type {(!Protocol.Network.ClientSecurityState|undefined)} */
     this._clientSecurityState;
-    /** @type {?Protocol.Network.TrustTokenParams} */
-    this._trustTokenParams = null;
+    /** @type {(!Protocol.Network.TrustTokenParams|undefined)} */
+    this._trustTokenParams;
+    /** @type {(!Protocol.Network.TrustTokenOperationDoneEvent|undefined)} */
+    this._trustTokenOperationDoneEvent;
   }
 
   /**
@@ -1621,14 +1623,26 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     return this._clientSecurityState;
   }
 
-  /** @param {?Protocol.Network.TrustTokenParams} trustTokenParams */
+  /** @param {!Protocol.Network.TrustTokenParams} trustTokenParams */
   setTrustTokenParams(trustTokenParams) {
     this._trustTokenParams = trustTokenParams;
   }
 
-  /** @return {?Protocol.Network.TrustTokenParams} */
+  /** @return {(!Protocol.Network.TrustTokenParams|undefined)} */
   trustTokenParams() {
     return this._trustTokenParams;
+  }
+
+  /** @param {!Protocol.Network.TrustTokenOperationDoneEvent} doneEvent */
+  setTrustTokenOperationDoneEvent(doneEvent) {
+    this._trustTokenOperationDoneEvent = doneEvent;
+
+    this.dispatchEventToListeners(Events.TrustTokenResultAdded);
+  }
+
+  /** @return {(!Protocol.Network.TrustTokenOperationDoneEvent|undefined)} */
+  trustTokenOperationDoneEvent() {
+    return this._trustTokenOperationDoneEvent;
   }
 }
 
@@ -1640,7 +1654,8 @@ export const Events = {
   RequestHeadersChanged: Symbol('RequestHeadersChanged'),
   ResponseHeadersChanged: Symbol('ResponseHeadersChanged'),
   WebsocketFrameAdded: Symbol('WebsocketFrameAdded'),
-  EventSourceMessageAdded: Symbol('EventSourceMessageAdded')
+  EventSourceMessageAdded: Symbol('EventSourceMessageAdded'),
+  TrustTokenResultAdded: Symbol('TrustTokenResultAdded'),
 };
 
 /** @enum {string} */

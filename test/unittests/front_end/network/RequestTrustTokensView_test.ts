@@ -15,9 +15,11 @@ describe('RequestTrustTokensView', () => {
     assertShadowRoot(component.shadowRoot);
 
     component.data = {
-      type: Protocol.Network.TrustTokenOperationType.Redemption,
-      refreshPolicy: Protocol.Network.TrustTokenParamsRefreshPolicy.UseCached,
-    } as Protocol.Network.TrustTokenParams;
+      params: {
+        type: Protocol.Network.TrustTokenOperationType.Redemption,
+        refreshPolicy: Protocol.Network.TrustTokenParamsRefreshPolicy.UseCached,
+      },
+    } as Network.RequestTrustTokensView.RequestTrustTokensReportData;
 
     const [typeSpan, refreshPolicySpan] = component.shadowRoot.querySelectorAll('span.code');
     assert.strictEqual(typeSpan.textContent, 'Redemption');
@@ -31,9 +33,11 @@ describe('RequestTrustTokensView', () => {
 
     const expectedIssuers = ['example.org', 'foo.dev', 'bar.com'];
     component.data = {
-      type: Protocol.Network.TrustTokenOperationType.Signing,
-      issuers: expectedIssuers,
-    } as Protocol.Network.TrustTokenParams;
+      params: {
+        type: Protocol.Network.TrustTokenOperationType.Signing,
+        issuers: expectedIssuers,
+      },
+    } as Network.RequestTrustTokensView.RequestTrustTokensReportData;
 
     const issuerElements = component.shadowRoot.querySelectorAll('ul.issuers-list > li');
     const actualIssuers = [...issuerElements].map(e => e.textContent);

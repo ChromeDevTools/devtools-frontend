@@ -94,11 +94,9 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         Tabs.Timing, Common.UIString.UIString('Timing'), new RequestTimingView(request, calculator),
         Common.UIString.UIString('Request and response timeline'));
 
-    const trustTokenParams = request.trustTokenParams();
-    if (trustTokenParams) {
+    if (request.trustTokenParams()) {
       this.appendTab(
-          Tabs.TrustTokens, ls`Trust Tokens`, new RequestTrustTokensView(trustTokenParams),
-          ls`Trust Token operation details`);
+          Tabs.TrustTokens, ls`Trust Tokens`, new RequestTrustTokensView(request), ls`Trust Token operation details`);
     }
 
     /** @type {?RequestCookiesView} */

@@ -8,32 +8,56 @@ import type * as Components from '../ui/components/components.js';
 
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as Platform from '../platform/platform.js';
+import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 const ls = Platform.UIString.ls;
 
 export class RequestTrustTokensView extends UI.Widget.VBox {
   private readonly reportView = new RequestTrustTokensReport();
+  private readonly request: SDK.NetworkRequest.NetworkRequest;
 
-  constructor(params: Protocol.Network.TrustTokenParams) {
+  constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
+    this.request = request;
 
-    this.reportView.data = params;
     this.contentElement.appendChild(this.reportView);
   }
+
+  wasShown() {
+    this.request.addEventListener(SDK.NetworkRequest.Events.TrustTokenResultAdded, this.refreshReportView, this);
+
+    this.refreshReportView();
+  }
+
+  willHide() {
+    this.request.removeEventListener(SDK.NetworkRequest.Events.TrustTokenResultAdded, this.refreshReportView, this);
+  }
+
+  private refreshReportView() {
+    this.reportView.data = {
+      params: this.request.trustTokenParams(),
+      result: this.request.trustTokenOperationDoneEvent(),
+    };
+  }
+}
+
+export interface RequestTrustTokensReportData {
+  params?: Readonly<Protocol.Network.TrustTokenParams>;
+  result?: Readonly<Protocol.Network.TrustTokenOperationDoneEvent>;
 }
 
 export class RequestTrustTokensReport extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private params?: Readonly<Protocol.Network.TrustTokenParams>;
+  private trustTokenData?: Readonly<RequestTrustTokensReportData>;
 
-  set data(data: Protocol.Network.TrustTokenParams) {
-    this.params = data;
+  set data(data: RequestTrustTokensReportData) {
+    this.trustTokenData = data;
     this.render();
   }
 
   private render() {
-    if (!this.params) {
+    if (!this.trustTokenData) {
       throw new Error('Trying to render a Trust Token report without providing data');
     }
 
@@ -55,25 +79,37 @@ export class RequestTrustTokensReport extends HTMLElement {
         }
       </style>
       <devtools-report>
-        <devtools-report-section .data=${{sectionTitle: ls`Parameters`} as Components.ReportView.ReportSectionData}>
-          ${renderRowWithCodeValue(ls`Type`, this.params.type.toString())}
-          ${this.renderRefreshPolicy()}
-          ${this.renderIssuers()}
-        </devtools-report-section>
+        ${this.renderParameterSection()}
       </devtools-report>
     `, this.shadow);
     // clang-format on
   }
 
-  private renderRefreshPolicy() {
-    if (!this.params || this.params.type !== Protocol.Network.TrustTokenOperationType.Redemption) {
+  private renderParameterSection() {
+    if (!this.trustTokenData || !this.trustTokenData.params) {
       return LitHtml.nothing;
     }
-    return renderRowWithCodeValue(ls`Refresh policy`, this.params.refreshPolicy.toString());
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return LitHtml.html`
+      <devtools-report-section .data=${{sectionTitle: ls`Parameters`} as Components.ReportView.ReportSectionData}>
+        ${renderRowWithCodeValue(ls`Type`, this.trustTokenData.params.type.toString())}
+        ${this.renderRefreshPolicy(this.trustTokenData.params)}
+        ${this.renderIssuers(this.trustTokenData.params)}
+      </devtools-report-section>
+    `;
+    // clang-format on
   }
 
-  private renderIssuers() {
-    if (!this.params || !this.params.issuers || this.params.issuers.length === 0) {
+  private renderRefreshPolicy(params: Protocol.Network.TrustTokenParams) {
+    if (params.type !== Protocol.Network.TrustTokenOperationType.Redemption) {
+      return LitHtml.nothing;
+    }
+    return renderRowWithCodeValue(ls`Refresh policy`, params.refreshPolicy.toString());
+  }
+
+  private renderIssuers(params: Protocol.Network.TrustTokenParams) {
+    if (!params.issuers || params.issuers.length === 0) {
       return LitHtml.nothing;
     }
 
@@ -83,10 +119,11 @@ export class RequestTrustTokensReport extends HTMLElement {
       <devtools-report-row>
         <span slot="name">${ls`Issuers`}</span>
         <ul slot="value" class="issuers-list">
-          ${this.params.issuers.map(issuer => LitHtml.html`<li>${issuer}</li>`)}
+          ${params.issuers.map(issuer => LitHtml.html`<li>${issuer}</li>`)}
         </ul>
       </devtools-report-row>
     `;
+    // clang-format on
   }
 }
 

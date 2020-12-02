@@ -532,7 +532,9 @@ export class NetworkDispatcher {
     networkRequest.setIssueTime(timestamp, wallTime);
     networkRequest.setResourceType(
         type ? Common.ResourceType.resourceTypes[type] : Common.ResourceType.resourceTypes.Other);
-    networkRequest.setTrustTokenParams(request.trustTokenParams || null);
+    if (request.trustTokenParams) {
+      networkRequest.setTrustTokenParams(request.trustTokenParams);
+    }
 
     this._getExtraInfoBuilder(requestId).addRequest(networkRequest);
 
@@ -1028,7 +1030,13 @@ export class NetworkDispatcher {
   webTransportClosed() {
   }
 
-  trustTokenOperationDone() {
+  /** @param {!Protocol.Network.TrustTokenOperationDoneEvent} event */
+  trustTokenOperationDone(event) {
+    const request = this._inflightRequestsById.get(event.requestId);
+    if (!request) {
+      return;
+    }
+    request.setTrustTokenOperationDoneEvent(event);
   }
 }
 

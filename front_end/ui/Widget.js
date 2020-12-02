@@ -708,7 +708,6 @@ export class VBox extends Widget {
 
     /**
      * @this {!Widget}
-     * @suppressReceiverCheck
      */
     function updateForChild() {
       const child = this.constraints();
@@ -739,7 +738,6 @@ export class HBox extends Widget {
 
     /**
      * @this {!Widget}
-     * @suppressReceiverCheck
      */
     function updateForChild() {
       const child = this.constraints();

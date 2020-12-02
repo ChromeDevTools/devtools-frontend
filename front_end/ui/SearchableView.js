@@ -227,7 +227,6 @@ export class SearchableView extends VBox {
 
   /**
    * @param {number} matches
-   * @suppress {checkTypes}
    */
   updateSearchMatchesCount(matches) {
     const untypedSearchProvider = /** @type {*} */ (this._searchProvider);
@@ -240,7 +239,6 @@ export class SearchableView extends VBox {
 
   /**
    * @param {number} currentMatchIndex
-   * @suppress {checkTypes}
    */
   updateCurrentMatchIndex(currentMatchIndex) {
     const untypedSearchProvider = /** @type {*} */ (this._searchProvider);
@@ -473,7 +471,6 @@ export class SearchableView extends VBox {
     this._searchInputElement.focus();
   }
 
-  /** @suppress {checkTypes} */
   _clearSearch() {
     const untypedSearchProvider = /** @type {*} */ (this._searchProvider);
     delete this._currentQuery;
@@ -488,7 +485,6 @@ export class SearchableView extends VBox {
    * @param {boolean} forceSearch
    * @param {boolean} shouldJump
    * @param {boolean=} jumpBackwards
-   * @suppress {checkTypes}
    */
   _performSearch(forceSearch, shouldJump, jumpBackwards) {
     const query = this._searchInputElement.value;

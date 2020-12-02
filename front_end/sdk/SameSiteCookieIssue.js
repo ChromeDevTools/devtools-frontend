@@ -259,8 +259,6 @@ function textMessageWithResolutions(text, resolveMessage, resolutions) {
    */
   const appendStyled = (element, message) => {
     let lastIndex = 0;
-    // Closure doesn't know String.p.matchAll exists.
-    /** @suppress {missingProperties} */
     const matches = message.matchAll(/\|(.*?)\|/g);
     for (const match of matches) {  //
       if (match.index !== undefined) {

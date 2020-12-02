@@ -132,7 +132,6 @@ export class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {string} id
    * @param {string} name
-   * @suppressGlobalPropertiesCheck
    */
   constructor(id, name) {
     super();

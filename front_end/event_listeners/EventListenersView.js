@@ -119,7 +119,6 @@ export class EventListenersView extends UI.Widget.VBox {
       }
 
       /**
-       * @suppressReceiverCheck
        * @return {!Array<boolean>}
        * @this {Array<*>}
        */

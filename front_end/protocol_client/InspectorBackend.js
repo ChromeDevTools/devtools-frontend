@@ -32,7 +32,6 @@ import {NodeURL} from './NodeURL.js';
 
 /**
  * @typedef {string}
- * @suppress {checkTypes}
  */
 export const ProtocolError = Symbol('Protocol.Error');
 export const DevToolsStubErrorCode = -32015;

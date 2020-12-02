@@ -29,7 +29,6 @@ let moduleJSONStrings;
  * Returns an instance of an object of formatted strings based on locale. If the instance is not
  * set at the time of calling, it is created.
  * @return {!Object}
- * @suppress {checkTypes}
  */
 function getOrSetModuleJSONStrings() {
   if (!registeredLocale) {

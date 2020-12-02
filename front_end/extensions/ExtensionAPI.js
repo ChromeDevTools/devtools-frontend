@@ -116,7 +116,6 @@ export function defineCommonExtensionSymbols(apiPrivate) {
  * @param {!Array<number>} keysToForward
  * @param {number} injectedScriptId
  * @param {function(!Object, !Object)} testHook
- * @suppressGlobalPropertiesCheck
  */
 self.injectedExtensionAPI = function(
     extensionInfo, inspectedTabId, themeName, keysToForward, testHook, injectedScriptId) {
@@ -761,10 +760,6 @@ self.injectedExtensionAPI = function(
 
   let keyboardEventRequestQueue = [];
   let forwardTimer = null;
-
-  /**
-   * @suppressGlobalPropertiesCheck
-   */
   function forwardKeyboardEvent(event) {
     // Check if the event should be forwarded.
     // This is a workaround for crbug.com/923338.

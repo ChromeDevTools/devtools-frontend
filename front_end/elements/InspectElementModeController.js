@@ -45,9 +45,6 @@ let inspectElementModeController;
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.OverlayModel.OverlayModel>}
  */
 export class InspectElementModeController {
-  /**
-   * @suppressGlobalPropertiesCheck
-   */
   constructor() {
     this._toggleSearchAction = UI.ActionRegistry.ActionRegistry.instance().action('elements.toggle-element-search');
     this._mode = Protocol.Overlay.InspectMode.None;

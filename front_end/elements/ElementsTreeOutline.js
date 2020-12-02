@@ -1075,8 +1075,6 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     /**
      * @param {?string} pseudoType
      * @param {boolean} hidden
-     * @suppressGlobalPropertiesCheck
-     * @suppressReceiverCheck
      * @this {!Element}
      */
     function toggleClassAndInjectStyleRule(pseudoType, hidden) {
@@ -1667,7 +1665,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
 
 ElementsTreeOutline._treeOutlineSymbol = Symbol('treeOutline');
 
-/** @override @suppress {checkPrototypalTypes} @enum {symbol} */
+/** @override @enum {symbol} */
 ElementsTreeOutline.Events = {
   SelectedNodeChanged: Symbol('SelectedNodeChanged'),
   ElementsTreeUpdated: Symbol('ElementsTreeUpdated')

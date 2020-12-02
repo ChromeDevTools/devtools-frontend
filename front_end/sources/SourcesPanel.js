@@ -931,7 +931,6 @@ export class SourcesPanel extends UI.Panel.Panel {
     /**
      * @param {*} data
      * @this {Object}
-     * @suppressReceiverCheck
      */
     function toStringForClipboard(data) {
       const subtype = data.subtype;

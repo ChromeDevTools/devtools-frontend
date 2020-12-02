@@ -15,7 +15,6 @@ export class AXNodeSubPane extends AccessibilitySubPane {
 
     /**
      * @protected
-     * @suppress {accessControls}
      * @type {?SDK.AccessibilityModel.AccessibilityNode}
      */
     this._axNode = null;

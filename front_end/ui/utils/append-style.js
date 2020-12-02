@@ -9,7 +9,6 @@ import * as ThemeSupport from '../../theme_support/theme_support.js';
  * @param {!Node} node
  * @param {string} cssFile
  * @param {!{enableLegacyPatching:boolean}} options
- * @suppressGlobalPropertiesCheck
  */
 export function appendStyle(node, cssFile, options = {
   enableLegacyPatching: false

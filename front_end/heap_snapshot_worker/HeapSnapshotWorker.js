@@ -39,7 +39,6 @@ const dispatcher =
 
 /**
  * @param {!EventListener} listener
- * @suppressGlobalPropertiesCheck
  */
 function installMessageEventListener(listener) {
   ctxSelf.addEventListener('message', listener, false);

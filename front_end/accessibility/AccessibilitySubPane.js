@@ -14,7 +14,6 @@ export class AccessibilitySubPane extends UI.View.SimpleView {
 
     /**
      * @protected
-     * @suppress {accessControls}
      * @type {?SDK.AccessibilityModel.AccessibilityNode}
      */
     this._axNode = null;

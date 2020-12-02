@@ -333,10 +333,6 @@ export class NetworkLogViewColumns {
   scheduleRefresh() {
     this._waterfallColumn.scheduleDraw();
   }
-
-  /**
-   * @suppressGlobalPropertiesCheck
-   */
   _updateRowsSize() {
     const largeRows = !!this._networkLogLargeRowsSetting.get();
 

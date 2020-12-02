@@ -311,7 +311,6 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     /**
      * @param {!FileError} error
      * @this {IsolatedFileSystem}
-     * @suppress {checkTypes}
      * TODO(jsbell): Update externs replacing FileError with DOMException. https://crbug.com/496901
      */
     function errorHandler(error) {

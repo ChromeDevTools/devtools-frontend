@@ -12,7 +12,6 @@ import * as Workspace from '../workspace/workspace.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
- * @suppress {accessControls}
  */
 
 /* eslint-disable no-console */
@@ -53,7 +52,6 @@ self['onerror'] = (message, source, lineno, colno, error) => {
   addResult('TEST ENDED IN ERROR: ' + error.stack);
   completeTest();
 };
-/** @suppressGlobalPropertiesCheck @suppress {checkTypes} */
 (() => {
   self.addEventListener('unhandledrejection', event => {
     addResult(`PROMISE FAILURE: ${event.reason.stack}`);
@@ -106,10 +104,6 @@ export function completeTest() {
 }
 
 self.TestRunner = self.TestRunner || {};
-
-/**
- * @suppressGlobalPropertiesCheck
- */
 export function flushResults() {
   Array.prototype.forEach.call(document.documentElement.childNodes, x => x.remove());
   const outputElement = document.createElement('div');
@@ -1352,7 +1346,6 @@ export function url(url = '') {
  * @param {string} str
  * @param {string} mimeType
  * @return {!Promise.<undefined>}
- * @suppressGlobalPropertiesCheck
  */
 export function dumpSyntaxHighlight(str, mimeType) {
   const node = document.createElement('span');

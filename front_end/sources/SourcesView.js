@@ -21,9 +21,6 @@ import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCo
  * @implements {UI.SearchableView.Replaceable}
  */
 export class SourcesView extends UI.Widget.VBox {
-  /**
-   * @suppressGlobalPropertiesCheck
-   */
   constructor() {
     super();
     this.registerRequiredCSS('sources/sourcesView.css', {enableLegacyPatching: true});

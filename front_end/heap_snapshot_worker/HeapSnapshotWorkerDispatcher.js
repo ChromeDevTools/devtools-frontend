@@ -40,10 +40,6 @@ import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.j
  * }}
  */
 let DispatcherResponse;  // eslint-disable-line no-unused-vars
-
-/**
-
- */
 export class HeapSnapshotWorkerDispatcher {
   /**
    *

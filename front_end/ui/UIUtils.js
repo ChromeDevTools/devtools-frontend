@@ -314,7 +314,6 @@ export function isBeingEdited(node) {
 
 /**
  * @return {boolean}
- * @suppressGlobalPropertiesCheck
  */
 export function isEditing() {
   if (elementsBeingEdited.size) {
@@ -1060,10 +1059,6 @@ class InvokeOnceHandlers {
     }
     methods.add(method);
   }
-
-  /**
-   * @suppressGlobalPropertiesCheck
-   */
   scheduleInvoke() {
     if (this._handlers) {
       requestAnimationFrame(this._invoke.bind(this));

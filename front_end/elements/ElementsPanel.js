@@ -814,7 +814,6 @@ export class ElementsPanel extends UI.Panel.Panel {
   }
 
   /**
-   * @suppress {accessControls}
    * @param {!SDK.DOMModel.DOMNode} node
    * @param {boolean} focus
    * @param {boolean=} omitHighlight

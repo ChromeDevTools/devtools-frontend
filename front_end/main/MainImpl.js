@@ -235,10 +235,6 @@ export class MainImpl {
       Host.userMetrics.experimentEnabledAtLaunch(experiment.name);
     }
   }
-
-  /**
-   * @suppressGlobalPropertiesCheck
-   */
   async _createAppUI() {
     MainImpl.time('Main._createAppUI');
 
@@ -379,7 +375,6 @@ export class MainImpl {
 
   /**
    * @param {!Object} appProvider
-   * @suppressGlobalPropertiesCheck
    */
   _showAppUI(appProvider) {
     MainImpl.time('Main._showAppUI');
@@ -607,7 +602,6 @@ export class SearchActionDelegate {
    * @param {!UI.Context.Context} context
    * @param {string} actionId
    * @return {boolean}
-   * @suppressGlobalPropertiesCheck
    */
   handleAction(context, actionId) {
     let searchableView = UI.SearchableView.SearchableView.fromElement(document.deepActiveElement());

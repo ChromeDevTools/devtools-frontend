@@ -4,7 +4,6 @@
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
- * @suppress {accessControls}
  */
 
 self.ConsoleTestRunner = self.ConsoleTestRunner || {};
@@ -593,7 +592,6 @@ ConsoleTestRunner.waitForConsoleMessagesPromise = async function(expectedCount) 
  * @param {number} fromTextOffset
  * @param {number} toMessage
  * @param {number} toTextOffset
- * @suppressGlobalPropertiesCheck
  */
 ConsoleTestRunner.selectConsoleMessages = async function(fromMessage, fromTextOffset, toMessage, toTextOffset) {
   const consoleView = Console.ConsoleView.instance();

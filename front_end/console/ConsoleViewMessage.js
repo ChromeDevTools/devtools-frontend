@@ -557,7 +557,6 @@ export class ConsoleViewMessage {
   /**
    * @param {!SDK.RemoteObject.RemoteObject} obj
    * @return {!HTMLElement}
-   * @suppress {accessControls}
    */
   _formatParameterAsValue(obj) {
     const result = /** @type {!HTMLElement} */ (document.createElement('span'));
@@ -578,7 +577,6 @@ export class ConsoleViewMessage {
   /**
    * @param {!SDK.RemoteObject.RemoteObject} obj
    * @return {!HTMLElement}
-   * @suppress {accessControls}
    */
   _formatParameterAsTrustedType(obj) {
     const result = /** @type {!HTMLElement} */ (document.createElement('span'));
@@ -1416,10 +1414,6 @@ export class ConsoleViewMessage {
     this._repeatCount = repeatCount;
     this._showRepeatCountElement();
   }
-
-  /**
-   * @suppress {checkTypes}
-   */
   _showRepeatCountElement() {
     if (!this._element) {
       return;
@@ -1654,7 +1648,6 @@ export class ConsoleViewMessage {
    * @param {string} string
    * @param {function(string,string,number=,number=):!Node} linkifier
    * @return {!DocumentFragment}
-   * @suppress {accessControls}
    */
   _linkifyWithCustomLinkifier(string, linkifier) {
     if (string.length > getMaxTokenizableStringLength()) {
@@ -1710,7 +1703,6 @@ export class ConsoleViewMessage {
   /**
    * @param {string} string
    * @return {!Array<{type: (string|undefined), text: string}>}
-   * @suppress {accessControls}
    */
   static _tokenizeMessageText(string) {
     const {tokenizerRegexes, tokenizerTypes} = getOrCreateTokenizers();

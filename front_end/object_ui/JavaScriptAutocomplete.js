@@ -518,7 +518,6 @@ export class JavaScriptAutocomplete {
       /**
        * @param {string=} type
        * @return {!Object}
-       * @suppressReceiverCheck
        * @this {Object}
        */
       function getCompletions(type) {

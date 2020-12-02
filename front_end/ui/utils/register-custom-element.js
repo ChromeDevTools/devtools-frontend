@@ -7,7 +7,6 @@
  * @param {string} typeExtension
  * @param {function(new:HTMLElement, *):void} definition
  * @return {function():!Element}
- * @suppressGlobalPropertiesCheck
  */
 export function registerCustomElement(localName, typeExtension, definition) {
   self.customElements.define(typeExtension, class extends definition {

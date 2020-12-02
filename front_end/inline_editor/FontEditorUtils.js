@@ -2,11 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @fileoverview
- * @suppress {moduleLoad|checkTypes}
- */
-
 import * as CssOverviewModule from '../css_overview/css_overview.js';
 import * as SDK from '../sdk/sdk.js';
 

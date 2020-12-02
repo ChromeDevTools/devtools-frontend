@@ -148,10 +148,6 @@ export class SuggestBox {
         measurePreferredSize(element, this._element).width + measuredScrollbarWidth(this._element.ownerDocument);
     return Math.min(kMaxWidth, preferredWidth);
   }
-
-  /**
-   * @suppressGlobalPropertiesCheck
-   */
   _show() {
     if (this.visible()) {
       return;

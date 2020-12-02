@@ -1104,7 +1104,6 @@ export class DOMNode {
     node.highlightForTwoSeconds();
 
     /**
-     * @suppressReceiverCheck
      * @this {!Element}
      */
     function scrollIntoView() {
@@ -1127,7 +1126,6 @@ export class DOMNode {
     await this._domModel.target().pageAgent().invoke_bringToFront();
 
     /**
-     * @suppressReceiverCheck
      * @this {!HTMLElement}
      */
     function focusInPage() {

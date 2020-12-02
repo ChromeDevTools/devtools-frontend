@@ -348,7 +348,6 @@ export class ConsoleViewport {
 
   /**
    * @param {?Selection} selection
-   * @suppressGlobalPropertiesCheck
    */
   _isSelectionBackwards(selection) {
     if (!selection || !selection.rangeCount || !selection.anchorNode || !selection.focusNode) {

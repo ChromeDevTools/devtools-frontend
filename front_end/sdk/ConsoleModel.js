@@ -445,7 +445,6 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     /**
-     * @suppressReceiverCheck
      * @param {!Protocol.Runtime.CallArgument} value
      * @this {Window}
      */

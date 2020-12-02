@@ -299,7 +299,6 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
 
   /**
    * @return {string}
-   * @suppressGlobalPropertiesCheck
    */
   backgroundColor() {
     const bgColors = _backgroundColors;

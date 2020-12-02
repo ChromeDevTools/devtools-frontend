@@ -241,16 +241,11 @@ export class LighthouseReportUIFeatures extends self.ReportUIFeatures {
   }
 
   /**
-   * @suppress {visibility}
    * @return {!Document}
    */
   getDocument() {
     return this._document;
   }
-
-  /**
-   * @suppress {visibility}
-   */
   resetUIState() {
     this._resetUIState();
   }

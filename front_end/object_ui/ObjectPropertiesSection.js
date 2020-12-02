@@ -836,7 +836,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     /**
      * @param {string} arrayStr
-     * @suppressReceiverCheck
      * @this {Object}
      */
     function invokeGetter(arrayStr) {
@@ -1376,7 +1375,6 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
      * @param {number=} bucketThreshold
      * @param {number=} sparseIterationThreshold
      * @param {number=} getOwnPropertyNamesThreshold
-     * @suppressReceiverCheck
      * @this {Object}
      */
     function packRanges(fromIndex, toIndex, bucketThreshold, sparseIterationThreshold, getOwnPropertyNamesThreshold) {
@@ -1530,7 +1528,6 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     /**
-     * @suppressReceiverCheck
      * @this {Object.<number, !Object>}
      * @param {number=} fromIndex // must declare optional
      * @param {number=} toIndex // must declare optional
@@ -1598,7 +1595,6 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
 
     /**
      * @param {boolean=} skipGetOwnPropertyNames
-     * @suppressReceiverCheck
      * @this {Object}
      */
     function buildObjectFragment(skipGetOwnPropertyNames) {

@@ -592,9 +592,6 @@ export class Multimap {
  * @param {function():void} callback
  */
 export function runOnWindowLoad(callback) {
-  /**
-   * @suppressGlobalPropertiesCheck
-   */
   function windowLoaded() {
     window.removeEventListener('DOMContentLoaded', windowLoaded, false);
     callback();

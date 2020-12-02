@@ -94,7 +94,6 @@ export function frameworkEventListeners(object) {
       promises.push(listenerObject.callFunctionJSON(truncatePageEventListener, undefined).then(storeTruncatedListener));
 
       /**
-       * @suppressReceiverCheck
        * @this {EventListenerObjectInInspectedPage}
        * @return {!TruncatedEventListenerObjectInInspectedPage}
        */
@@ -127,7 +126,6 @@ export function frameworkEventListeners(object) {
                         .then(storeFunctionWithDetails));
 
       /**
-       * @suppressReceiverCheck
        * @return {?SDK.RemoteObject.RemoteObject}
        * @this {EventListenerObjectInInspectedPage}
        */
@@ -165,7 +163,6 @@ export function frameworkEventListeners(object) {
           listenerObject.callFunction(getRemoveFunction).then(assertCallFunctionResult).then(storeRemoveFunction));
 
       /**
-       * @suppressReceiverCheck
        * @return {?SDK.RemoteObject.RemoteObject}
        * @this {EventListenerObjectInInspectedPage}
        */
@@ -303,7 +300,6 @@ export function frameworkEventListeners(object) {
         }
     */
   /**
-   * @suppressReceiverCheck
    * @return {!{eventListeners:!Array<!EventListenerObjectInInspectedPage>}}
    * @this {Object}
    */
@@ -459,7 +455,6 @@ export function frameworkEventListeners(object) {
     /**
      * @param {*} obj
      * @return {string}
-     * @suppress {uselessCode}
      */
     function toString(obj) {
       try {

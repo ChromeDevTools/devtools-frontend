@@ -328,8 +328,6 @@ Element.prototype.removeChildren = function() {
  * @param {string} tagName
  * @param {string=} customElementType
  * @return {!Element}
- * @suppress {checkTypes}
- * @suppressGlobalPropertiesCheck
  */
 self.createElement = function(tagName, customElementType) {
   return document.createElement(tagName, {is: customElementType});
@@ -338,7 +336,6 @@ self.createElement = function(tagName, customElementType) {
 /**
  * @param {number|string} data
  * @return {!Text}
- * @suppressGlobalPropertiesCheck
  */
 self.createTextNode = function(data) {
   return document.createTextNode(data);
@@ -348,7 +345,6 @@ self.createTextNode = function(data) {
  * @param {string} elementName
  * @param {string=} className
  * @param {string=} customElementType
- * @suppress {checkTypes}
  * @return {!Element}
  */
 Document.prototype.createElementWithClass = function(elementName, className, customElementType) {
@@ -361,7 +357,6 @@ Document.prototype.createElementWithClass = function(elementName, className, cus
 
 /**
  * @return {!DocumentFragment}
- * @suppressGlobalPropertiesCheck
  */
 self.createDocumentFragment = function() {
   return document.createDocumentFragment();
@@ -789,7 +784,6 @@ export const originalRemoveChildren = Element.prototype.removeChildren;
  * @override
  * @param {?Node} child
  * @return {!Node}
- * @suppress {duplicate}
  */
 Element.prototype.appendChild = function(child) {
   if (child.__widget && child.parentElement !== this) {
@@ -803,7 +797,6 @@ Element.prototype.appendChild = function(child) {
  * @param {?Node} child
  * @param {?Node} anchor
  * @return {!Node}
- * @suppress {duplicate}
  */
 Element.prototype.insertBefore = function(child, anchor) {
   if (child.__widget && child.parentElement !== this) {
@@ -816,7 +809,6 @@ Element.prototype.insertBefore = function(child, anchor) {
  * @override
  * @param {?Node} child
  * @return {!Node}
- * @suppress {duplicate}
  */
 Element.prototype.removeChild = function(child) {
   if (child.__widgetCounter || child.__widget) {

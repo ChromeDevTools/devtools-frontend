@@ -659,7 +659,6 @@ export class DebuggerLanguagePluginManager {
    * @param {!SDK.SDKModel.TargetManager} targetManager
    * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
-   * @suppress {missingProperties}
    */
   constructor(targetManager, workspace, debuggerWorkspaceBinding) {
     this._workspace = workspace;

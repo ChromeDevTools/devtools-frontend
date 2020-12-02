@@ -8,7 +8,6 @@ self.AxeCoreTestRunner = self.AxeCoreTestRunner || {};
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
- * @suppress {accessControls}
  */
 
 // These rules are disabled for one or more of the following reasons:

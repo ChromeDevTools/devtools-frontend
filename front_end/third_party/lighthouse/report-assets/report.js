@@ -2521,7 +2521,6 @@ if (typeof module !== 'undefined' && module.exports) {
 
 /**
  * @fileoverview
- * @suppress {reportUnknownTypes}
  */
 
 /**

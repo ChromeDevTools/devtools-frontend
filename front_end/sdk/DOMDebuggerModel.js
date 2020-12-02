@@ -412,7 +412,6 @@ export class EventListener {
        * @param {function():void} listener
        * @param {boolean} useCapture
        * @this {{removeEventListener: function(string, function():void, boolean):void}}
-       * @suppressReceiverCheck
        */
       function removeListener(type, listener, useCapture) {
         this.removeEventListener(type, listener, useCapture);
@@ -441,7 +440,6 @@ export class EventListener {
        * @param {boolean} useCapture
        * @param {boolean} passive
        * @this {function(string, function():void, boolean, boolean):void}
-       * @suppressReceiverCheck
        */
       function callCustomRemove(type, listener, useCapture, passive) {
         this.call(null, type, listener, useCapture, passive);
@@ -492,7 +490,6 @@ export class EventListener {
          addEventListener:function(string, function():void, {capture: boolean, passive: boolean}):void,
          removeEventListener: function(string, function():void, {capture: boolean}):void,
        }}
-     * @suppressReceiverCheck
      */
     function callTogglePassive(type, listener, useCapture, passive) {
       this.removeEventListener(type, listener, {capture: useCapture});

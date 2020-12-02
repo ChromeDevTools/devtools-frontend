@@ -39,9 +39,6 @@ import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
  * @implements {InspectorFrontendHostAPI}
  */
 export class InspectorFrontendHostStub {
-  /**
-   * @suppressGlobalPropertiesCheck
-   */
   constructor() {
     /**
      * @param {!KeyboardEvent} event
@@ -156,7 +153,6 @@ export class InspectorFrontendHostStub {
   /**
    * @override
    * @param {string} url
-   * @suppressGlobalPropertiesCheck
    */
   inspectedURLChanged(url) {
     document.title = Common.UIString.UIString('DevTools - %s', url.replace(/^https?:\/\//, ''));
@@ -165,7 +161,6 @@ export class InspectorFrontendHostStub {
   /**
    * @override
    * @param {?(string|undefined)} text
-   * @suppressGlobalPropertiesCheck
    */
   copyText(text) {
     if (text === undefined || text === null) {

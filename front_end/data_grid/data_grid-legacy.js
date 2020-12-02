@@ -68,7 +68,7 @@ DataGrid.SortableDataGridNode = DataGridModule.SortableDataGrid.SortableDataGrid
 DataGrid.ViewportDataGrid = DataGridModule.ViewportDataGrid.ViewportDataGrid;
 
 /**
- * @override @suppress {checkPrototypalTypes} @enum {symbol}
+ * @override @enum {symbol}
  */
 DataGrid.ViewportDataGrid.Events = DataGridModule.ViewportDataGrid.Events;
 

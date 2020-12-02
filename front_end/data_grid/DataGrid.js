@@ -1110,7 +1110,6 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Event} event
-   * @suppressGlobalPropertiesCheck
    */
   _keyDown(event) {
     if (!(event instanceof KeyboardEvent)) {
@@ -1682,7 +1681,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     super();
     /** @type {?Element} */
     this._element = null;
-    /** @type {boolean} @suppress {accessControls} */
+    /** @type {boolean} */
     this._expanded = false;
     /** @type {boolean} */
     this._selected = false;

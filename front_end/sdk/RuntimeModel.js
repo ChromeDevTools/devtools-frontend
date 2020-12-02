@@ -409,7 +409,6 @@ export class RuntimeModel extends SDKModel {
     /**
      * @param {{subtype: string, indent: string}} data
      * @this {Object}
-     * @suppressReceiverCheck
      */
     function toStringForClipboard(data) {
       const subtype = data.subtype;

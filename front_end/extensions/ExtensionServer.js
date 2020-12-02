@@ -60,7 +60,6 @@ let extensionServerInstance;
 
 export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
   /**
-   * @suppressGlobalPropertiesCheck
    * @private
    */
   constructor() {
@@ -116,7 +115,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     this._registerHandler(commands.RegisterLanguageExtensionPlugin, this._registerLanguageExtensionEndpoint.bind(this));
     window.addEventListener('message', this._onWindowMessage.bind(this), false);  // Only for main window.
 
-    /** @suppress {checkTypes} */
     const existingTabId =
         window.DevToolsAPI && window.DevToolsAPI.getInspectedTabId && window.DevToolsAPI.getInspectedTabId();
 
@@ -307,7 +305,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {*} message
-   * @suppressGlobalPropertiesCheck
    */
   _onApplyStyleSheet(message) {
     if (!Root.Runtime.experiments.isEnabled('applyCustomStylesheet')) {
@@ -661,7 +658,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
 
     /**
      * @param {*} entry
-     * @suppressGlobalPropertiesCheck
      */
     function handleEventEntry(entry) {
       // Fool around closure compiler -- it has its own notion of both KeyboardEvent constructor
@@ -776,7 +772,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Root.Runtime.RuntimeExtensionDescriptor} extensionInfo
-   * @suppressGlobalPropertiesCheck
    */
   _addExtension(extensionInfo) {
     const startPage = extensionInfo.startPage;

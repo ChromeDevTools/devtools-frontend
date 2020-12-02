@@ -149,7 +149,6 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     }
 
     /**
-     * @suppressReceiverCheck
      * @this {*}
      */
     function protoList() {

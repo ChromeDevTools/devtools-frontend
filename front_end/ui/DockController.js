@@ -125,7 +125,6 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {string} dockSide
-   * @suppressGlobalPropertiesCheck
    */
   setDockSide(dockSide) {
     if (states.indexOf(dockSide) === -1) {

@@ -108,7 +108,6 @@ export class UserMetrics {
   /**
    * @param {string} panelName
    * @param {string} histogramName
-   * @suppressGlobalPropertiesCheck
    */
   panelLoaded(panelName, histogramName) {
     if (this._firedLaunchHistogram || panelName !== this._launchPanelName) {

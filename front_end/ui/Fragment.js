@@ -62,7 +62,6 @@ export class Fragment {
   /**
    * @param {!TemplateDefinition} strings
    * @return {!_Template}
-   * @suppressGlobalPropertiesCheck
    */
   static _template(strings) {
     let html = '';

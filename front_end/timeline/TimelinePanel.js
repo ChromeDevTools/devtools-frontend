@@ -431,10 +431,6 @@ export class TimelinePanel extends UI.Panel.Panel {
     contextMenu.appendItemsAtLocation('timelineMenu');
     contextMenu.show();
   }
-
-  /**
-   * @suppress {deprecated}
-   */
   async _saveToFile() {
     if (this._state !== State.Idle) {
       return;

@@ -400,7 +400,7 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
 
 SamplingHeapProfileType.TypeId = 'SamplingHeap';
 
-/** @override @suppress {checkPrototypalTypes} @enum {symbol} */
+/** @override @enum {symbol} */
 SamplingHeapProfileType.Events = {
   RecordingStopped: Symbol('RecordingStopped'),
   StatsUpdate: Symbol('StatsUpdate')

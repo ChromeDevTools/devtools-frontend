@@ -114,7 +114,6 @@ export class ImagePreview {
 
     /**
      * @return {!PrecomputedFeatures}
-     * @suppressReceiverCheck
      * @this {!HTMLImageElement}
      */
     function features() {

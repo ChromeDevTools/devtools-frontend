@@ -1230,7 +1230,6 @@ export class RemoteArray {
     return this._object.callFunction(at, [RemoteObject.toCallArgument(index)]).then(assertCallFunctionResult);
 
     /**
-     * @suppressReceiverCheck
      * @param {number} index
      * @return {*}
      * @this {*}

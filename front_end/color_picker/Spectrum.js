@@ -450,7 +450,6 @@ export class Spectrum extends UI.Widget.VBox {
 
   /**
    * (Suppress warning about preventScroll)
-   * @suppress {checkTypes}
    */
   _focus() {
     if (!this.isShowing()) {

@@ -72,9 +72,6 @@ export class ViewportDataGrid extends DataGridImpl {
    */
   setScrollContainer(scrollContainer) {
     this.scrollContainer.removeEventListener('scroll', this._onScrollBound, true);
-    /**
-     * @suppress {accessControls}
-     */
     this._scrollContainer = scrollContainer;
     this.scrollContainer.addEventListener('scroll', this._onScrollBound, true);
   }
@@ -290,7 +287,7 @@ export class ViewportDataGrid extends DataGridImpl {
 }
 
 /**
- * @override @suppress {checkPrototypalTypes} @enum {symbol}
+ * @override @enum {symbol}
  */
 export const Events = {
   ViewportCalculated: Symbol('ViewportCalculated')
@@ -482,9 +479,6 @@ export class ViewportDataGridNode extends DataGridNode {
       return;
     }
     this.clearFlatNodes();
-    /**
-     * @suppress {accessControls}
-     */
     this._expanded = false;
     const existingElement = this.existingElement();
     if (existingElement) {

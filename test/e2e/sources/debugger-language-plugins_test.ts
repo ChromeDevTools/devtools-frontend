@@ -351,9 +351,9 @@ describe('The Debugger Language Plugins', async () => {
     await goToResource('sources/wasm/unreachable.html');
     await waitFor(RESUME_BUTTON);
 
-    const locals = await getValuesForScope('LOCAL');
+    const locals = await getValuesForScope('LOCAL', 0, 1);
     assert.deepEqual(locals, ['localX: undefined']);
-    const globals = await getValuesForScope('GLOBAL', 2);
+    const globals = await getValuesForScope('GLOBAL', 2, 3);
     assert.deepEqual(globals, ['n1: namespace', 'n2: namespace', 'globalY: undefined']);
   });
 

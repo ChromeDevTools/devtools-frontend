@@ -30,7 +30,8 @@ function getWaitForScriptToChangeFunction() {
 }
 
 describe('Recorder', () => {
-  it('should connect to the browser via DevTools own connection', async () => {
+  // crbug.com/1154575 flaky
+  it.skip('[crbug.com/1154575] should connect to the browser via DevTools own connection', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await enableExperiment('recorder');
     await goToResource('recorder/recorder.html');

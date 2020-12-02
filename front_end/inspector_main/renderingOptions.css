@@ -16,7 +16,7 @@
 .panel-section-separator {
   height: 1px;
   margin-bottom: 10px;
-  background: #f0f0f0;
+  background: var(--color-details-hairline);
   flex: none;
 }
 

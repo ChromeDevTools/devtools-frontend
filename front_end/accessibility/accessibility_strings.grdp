@@ -273,7 +273,7 @@
   <message name="IDS_DEVTOOLS_bbbabdbe1b262f75d99d62880b953be1" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Role
   </message>
-  <message name="IDS_DEVTOOLS_bcb5b27b25eb902ce4d46008ca767e07" desc="Tooltip text that appears when hovering over the 'From ruby annotation' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane"">
+  <message name="IDS_DEVTOOLS_bcb5b27b25eb902ce4d46008ca767e07" desc="Tooltip text that appears when hovering over the 'From ruby annotation' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Value from native HTML ruby annotation.
   </message>
   <message name="IDS_DEVTOOLS_bf1cf93766b632e2d22d21959cb5eb2f" desc="Tooltip text that appears when hovering over the 'Editable' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">

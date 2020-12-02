@@ -56,7 +56,7 @@ let wrapperViewInstance;
 export class SourcesPanel extends UI.Panel.Panel {
   constructor() {
     super('sources');
-    this.registerRequiredCSS('sources/sourcesPanel.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('sources/sourcesPanel.css', {enableLegacyPatching: false});
     new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.Folder], Common.UIString.UIString('Drop workspace folder here'),
         this._handleDrop.bind(this));

@@ -26,7 +26,7 @@ async function openFontEditor(index: number) {
   await waitFor('.font-selector-section');
 }
 
-describe('The font editor', async function() {
+describe.skip('[https://crbug.com/1154560] The font editor', async function() {
   beforeEach(async function() {
     await enableExperiment('fontEditor');
     await goToTestPageAndSelectTestElement();

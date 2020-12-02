@@ -9,5 +9,5 @@
 }
 
 .csp-violations-toolbar {
-  border-bottom: var(--divider-border);
+  border-bottom: var(--color-details-hairline);
 }

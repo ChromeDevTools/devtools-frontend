@@ -31,6 +31,10 @@
   --color-syntax-6: #236e25;
   --color-syntax-7: #303942;
   --color-syntax-8: #a894a6;
+  --drop-shadow:
+    0 0 0 1px rgb(0 0 0 / 5%),
+    0 2px 4px rgb(0 0 0 / 20%),
+    0 2px 6px rgb(0 0 0 / 10%);
 }
 
 .-theme-with-dark-background {
@@ -55,4 +59,8 @@
   --color-syntax-6: #898989;
   --color-syntax-7: #cfd0d0;
   --color-syntax-8: #5db0d7;
+  --drop-shadow:
+    0 0 0 1px rgb(255 255 255 / 20%),
+    0 2px 4px 2px rgb(0 0 0 / 20%),
+    0 2px 6px 2px rgb(0 0 0 / 10%);
 }

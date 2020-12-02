@@ -6,6 +6,7 @@ import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("issues") {
   sources = [
+    "csp-violations-tab_test.ts",
     "group-by-categories_test.ts",
     "report-only_test.ts",
   ]

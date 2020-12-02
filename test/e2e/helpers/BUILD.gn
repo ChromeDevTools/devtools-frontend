@@ -13,6 +13,7 @@ node_ts_library("helpers") {
     "coverage-helpers.ts",
     "cross-tool-helper.ts",
     "css-overview-helpers.ts",
+    "datagrid-helpers.ts",
     "elements-helpers.ts",
     "emulation-helpers.ts",
     "event-listeners-helpers.ts",

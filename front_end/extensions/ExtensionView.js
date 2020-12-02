@@ -32,8 +32,6 @@ import * as UI from '../ui/ui.js';
 
 import {ExtensionServer} from './ExtensionServer.js';  // eslint-disable-line no-unused-vars
 
-/**
-*/
 export class ExtensionView extends UI.Widget.Widget {
   /**
    * @param {!ExtensionServer} server

@@ -1000,6 +1000,13 @@ export class DebuggerLanguagePluginManager {
           try {
             const code = (!symbolsUrl && url.startsWith('wasm://')) ? await script.getWasmBytecode() : undefined;
             const sourceFileURLs = await plugin.addRawModule(rawModuleId, symbolsUrl, {url, code});
+            // Check that the handle isn't stale by now. This works because the code that assigns to
+            // `rawModuleHandle` below will run before this code because of the `await` in the preceding
+            // line. This is primarily to avoid logging the message below, which would give the developer
+            // the misleading information that we're done, while in reality it was a stale call that finished.
+            if (rawModuleHandle !== this._rawModuleHandles.get(rawModuleId)) {
+              return [];
+            }
             if (sourceFileURLs.length === 0) {
               console.warn(ls`[${plugin.name}] Loaded debug symbols for ${url}, but didn't find any source files`);
             } else {
@@ -1024,10 +1031,13 @@ export class DebuggerLanguagePluginManager {
       // for the DebuggerModel again, which may disappear
       // in the meantime...
       rawModuleHandle.addRawModulePromise.then(sourceFileURLs => {
-        const modelData = this._debuggerModelToData.get(script.debuggerModel);
-        if (modelData) {  // The DebuggerModel could have disappeared meanwhile...
-          modelData._addSourceFiles(script, sourceFileURLs);
-          this._debuggerWorkspaceBinding.updateLocations(script);
+        // The script might have disappeared meanwhile...
+        if (script.debuggerModel.scriptForId(script.scriptId) === script) {
+          const modelData = this._debuggerModelToData.get(script.debuggerModel);
+          if (modelData) {  // The DebuggerModel could have disappeared meanwhile...
+            modelData._addSourceFiles(script, sourceFileURLs);
+            this._debuggerWorkspaceBinding.updateLocations(script);
+          }
         }
       });
       return;

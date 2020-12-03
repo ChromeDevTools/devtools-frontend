@@ -48,7 +48,7 @@ abstract class WebVitalsLane {
 }
 
 export class WebVitalsEventLane extends WebVitalsLane {
-  private markers: ReadonlyArray<Marker> = [];
+  private markers: readonly Marker[] = [];
   private selectedMarker: Marker|null = null;
   private hoverMarker: Marker|null = null;
   private labelMetrics: TextMetrics;
@@ -79,7 +79,7 @@ export class WebVitalsEventLane extends WebVitalsLane {
     this.selectedMarker = this.hoverMarker;
   }
 
-  setEvents(markers: ReadonlyArray<Event>) {
+  setEvents(markers: readonly Event[]) {
     this.hoverMarker = null;
     this.selectedMarker = null;
     this.markers = markers.map(e => this.getMarker(e));
@@ -272,7 +272,7 @@ export class WebVitalsEventLane extends WebVitalsLane {
 
 export class WebVitalsTimeboxLane extends WebVitalsLane {
   private longTaskPattern: CanvasPattern;
-  private boxes: ReadonlyArray<Timebox> = [];
+  private boxes: readonly Timebox[] = [];
   private label: string;
   private hoverBox: number = -1;
   private selectedBox: number = -1;
@@ -320,7 +320,7 @@ export class WebVitalsTimeboxLane extends WebVitalsLane {
     this.selectedBox = this.hoverBox;
   }
 
-  setTimeboxes(boxes: ReadonlyArray<Timebox>) {
+  setTimeboxes(boxes: readonly Timebox[]) {
     this.selectedBox = -1;
     this.hoverBox = -1;
     this.boxes = boxes;

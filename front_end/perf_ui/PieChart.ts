@@ -31,7 +31,7 @@ export class PieChart extends HTMLElement {
   private formatter = (val: number) => val + '';
   private showLegend = false;
   private total = 0;
-  private slices: ReadonlyArray<Slice> = [];
+  private slices: readonly Slice[] = [];
 
   private totalSelected = true;
   private sliceSelected = -1;

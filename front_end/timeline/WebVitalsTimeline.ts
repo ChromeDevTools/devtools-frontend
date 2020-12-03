@@ -91,7 +91,7 @@ export function assertInstanceOf<T>(instance: any, constructor: Constructor<T>):
 
 export class WebVitalsTimeline extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private mainFrameNavigations: ReadonlyArray<number> = [];
+  private mainFrameNavigations: readonly number[] = [];
   private startTime = 0;
   private duration = 1000;
   private maxDuration = 1000;
@@ -263,7 +263,7 @@ export class WebVitalsTimeline extends HTMLElement {
     return MarkerType.Bad;
   }
 
-  private renderMainFrameNavigations(markers: ReadonlyArray<number>) {
+  private renderMainFrameNavigations(markers: readonly number[]) {
     this.context.save();
     this.context.strokeStyle = 'blue';
     this.context.beginPath();

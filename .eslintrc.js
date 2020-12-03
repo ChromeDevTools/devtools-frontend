@@ -171,6 +171,7 @@ module.exports = {
       'rulesdir/lit_html_data_as_type': 2,
       'rulesdir/const_enum': 2,
       'rulesdir/no_underscored_properties': 2,
+      'rulesdir/prefer_readonly_keyword': 2,
     }
   }]
 };

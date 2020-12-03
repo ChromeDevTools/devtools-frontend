@@ -52,8 +52,8 @@ const KEYS_TREATED_AS_CLICKS = new Set([' ', 'Enter']);
 
 export class DataGrid extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private columns: ReadonlyArray<Column> = [];
-  private rows: ReadonlyArray<Row> = [];
+  private columns: readonly Column[] = [];
+  private rows: readonly Row[] = [];
   private sortState: Readonly<SortState>|null = null;
   /**
    * Following guidance from

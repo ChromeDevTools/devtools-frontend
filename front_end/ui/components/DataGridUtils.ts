@@ -117,8 +117,7 @@ export function renderCellValue(cell: Cell): LitHtml.TemplateResult {
  * @param allColumns
  * @param columnId
  */
-export function calculateColumnWidthPercentageFromWeighting(
-    allColumns: ReadonlyArray<Column>, columnId: string): number {
+export function calculateColumnWidthPercentageFromWeighting(allColumns: readonly Column[], columnId: string): number {
   const totalWeights =
       allColumns.filter(c => c.visible).reduce((sumOfWeights, col) => sumOfWeights + col.widthWeighting, 0);
   const matchingColumn = allColumns.find(c => c.id === columnId);

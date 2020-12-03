@@ -19,7 +19,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private readonly resizeObserver = new ResizeObserver(() => this.checkForOverflowOnResize());
 
-  private crumbsData: ReadonlyArray<DOMNode> = [];
+  private crumbsData: readonly DOMNode[] = [];
   private selectedDOMNode: Readonly<DOMNode>|null = null;
   private overflowing = false;
   private userScrollPosition: UserScrollPosition = 'start';

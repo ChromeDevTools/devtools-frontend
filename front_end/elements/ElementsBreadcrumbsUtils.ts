@@ -32,7 +32,7 @@ export interface CrumbTitle {
   extras: {id?: string; classes?: string[];};
 }
 
-export const crumbsToRender = (crumbs: ReadonlyArray<DOMNode>, selectedNode: Readonly<DOMNode>|null): Crumb[] => {
+export const crumbsToRender = (crumbs: readonly DOMNode[], selectedNode: Readonly<DOMNode>|null): Crumb[] => {
   if (!selectedNode) {
     return [];
   }

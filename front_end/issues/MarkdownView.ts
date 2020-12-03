@@ -14,7 +14,7 @@ export interface MarkdownViewData {
 export class MarkdownView extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
 
-  private tokenData: ReadonlyArray<Object> = [];
+  private tokenData: readonly Object[] = [];
 
   set data(data: MarkdownViewData) {
     this.tokenData = data.tokens;

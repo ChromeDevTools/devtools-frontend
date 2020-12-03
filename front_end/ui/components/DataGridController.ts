@@ -25,7 +25,7 @@ export class DataGridController extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
 
   private hasRenderedAtLeastOnce = false;
-  private columns: ReadonlyArray<Column> = [];
+  private columns: readonly Column[] = [];
   private rows: Row[] = [];
 
   /**
@@ -34,7 +34,7 @@ export class DataGridController extends HTMLElement {
    * mutate the data we're given, but a copy of the data. If our `get data` is
    * called, we'll return the original, not the sorted data.
    */
-  private originalColumns: ReadonlyArray<Column> = [];
+  private originalColumns: readonly Column[] = [];
   private originalRows: Row[] = [];
 
   private sortState: Readonly<SortState>|null = null;

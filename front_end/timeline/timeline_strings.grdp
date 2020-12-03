@@ -75,6 +75,9 @@
   <message name="IDS_DEVTOOLS_09d66464ad53e6080988ad30824ea023" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Frame — <ph name="TRACK_URL">$1s<ex>https://example.com</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_0a773823a19cba0ef29840874ec20736" desc="Text in Timeline Frame Chart Data Provider of the Performance panel">
+    Dropped Frame
+  </message>
   <message name="IDS_DEVTOOLS_0a9d131e2c626ead31d9ecb8c54e3372" desc="Text in UIDevtools Utils of the Performance panel">
     View::OnPaintBackground
   </message>

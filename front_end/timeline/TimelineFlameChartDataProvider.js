@@ -888,6 +888,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     let time = '';
     let title;
     let warning;
+    let nameSpanTimelineInfoTime = 'timeline-info-time';
+
     const type = this._entryType(entryIndex);
     if (type === EntryType.Event) {
       const event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
@@ -925,7 +927,16 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const frame = /** @type {!TimelineModel.TimelineFrameModel.TimelineFrame} */ (this._entryData[entryIndex]);
       time = Common.UIString.UIString(
           '%s ~ %.0f\xa0fps', Number.preciseMillisToString(frame.duration, 1), (1000 / frame.duration));
-      title = frame.idle ? Common.UIString.UIString('Idle Frame') : Common.UIString.UIString('Frame');
+
+      if (frame.idle) {
+        title = Common.UIString.UIString('Idle Frame');
+      } else if (frame.dropped) {
+        title = Common.UIString.UIString('Dropped Frame');
+        nameSpanTimelineInfoTime = 'timeline-info-warning';
+      } else {
+        title = Common.UIString.UIString('Frame');
+      }
+
       if (frame.hasWarnings()) {
         warning = document.createElement('span');
         warning.textContent = Common.UIString.UIString('Long frame');
@@ -939,7 +950,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         element,
         {cssFile: 'timeline/timelineFlamechartPopover.css', enableLegacyPatching: true, delegatesFocus: undefined});
     const contents = root.createChild('div', 'timeline-flamechart-popover');
-    contents.createChild('span', 'timeline-info-time').textContent = time;
+    contents.createChild('span', nameSpanTimelineInfoTime).textContent = time;
     contents.createChild('span', 'timeline-info-title').textContent = title;
     if (warning) {
       warning.classList.add('timeline-info-warning');
@@ -1040,7 +1051,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const frame = /** @type {!TimelineModel.TimelineFrameModel.TimelineFrame} */ (this._entryData[entryIndex]);
     barX += hPadding;
     barWidth -= 2 * hPadding;
-    context.fillStyle = frame.idle ? 'white' : (frame.hasWarnings() ? '#fad1d1' : '#d7f0d1');
+    context.fillStyle =
+        frame.idle ? 'white' : frame.dropped ? '#f0b7b1' : (frame.hasWarnings() ? '#fad1d1' : '#d7f0d1');
     context.fillRect(barX, barY, barWidth, barHeight);
 
     const frameDurationText = Number.preciseMillisToString(frame.duration, 1);

@@ -125,6 +125,7 @@ export class TimelineFrameModel {
     this._mainFrameRequested = false;
     this._framePendingCommit = null;
     this._lastBeginFrame = null;
+    this._lastDroppedFrame = null;
     this._lastNeedsBeginFrame = null;
     this._framePendingActivation = null;
     this._lastTaskBeginTime = null;
@@ -141,6 +142,16 @@ export class TimelineFrameModel {
       this._startFrame(startTime);
     }
     this._lastBeginFrame = startTime;
+  }
+
+  /**
+   * @param {number} startTime
+   */
+  handleDroppedFrame(startTime) {
+    if (!this._lastFrame) {
+      this._startFrame(startTime);
+    }
+    this._lastDroppedFrame = startTime;
   }
 
   /**
@@ -167,6 +178,11 @@ export class TimelineFrameModel {
           this._lastBeginFrame = null;
         }
         this._lastNeedsBeginFrame = null;
+      }
+      if (this._lastDroppedFrame) {
+        this._lastFrame.dropped = true;
+        this._startFrame(this._lastDroppedFrame);
+        this._lastDroppedFrame = null;
       }
       this._startFrame(startTime);
     }
@@ -324,6 +340,8 @@ export class TimelineFrameModel {
       this.handleRequestMainThreadFrame();
     } else if (event.name === eventNames.NeedsBeginFrameChanged) {
       this.handleNeedFrameChanged(timestamp, event.args['data'] && event.args['data']['needsBeginFrame']);
+    } else if (event.name === eventNames.DroppedFrame) {
+      this.handleDroppedFrame(timestamp);
     }
   }
 
@@ -438,6 +456,7 @@ export class TimelineFrame {
     this.timeByCategory = {};
     this.cpuTime = 0;
     this.idle = false;
+    this.dropped = false;
     /** @type {?TracingFrameLayerTree} */
     this.layerTree = null;
     /** @type {!Array.<!LayerPaintEvent>} */

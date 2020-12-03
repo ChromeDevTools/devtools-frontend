@@ -288,6 +288,10 @@ select.toolbar-item:focus-visible > * {
   height: 16px;
 }
 
+.toolbar-input-clear-button > .search-cancel-button {
+  display: block;
+}
+
 .toolbar-input-clear-button:hover {
   opacity: 99%;
 }

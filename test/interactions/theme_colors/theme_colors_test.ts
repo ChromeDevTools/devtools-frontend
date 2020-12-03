@@ -21,7 +21,7 @@ describe('theme colors', () => {
     await loadComponentDocExample('theme_colors/basic.html');
     const lightModeVariables = await getListOfColorsFromList('.light-mode');
     const darkModeVariables = await getListOfColorsFromList('.dark-mode');
-    assert.lengthOf(lightModeVariables, 18);
+    assert.strictEqual(lightModeVariables[0], '--color-primary');
     assert.deepEqual(lightModeVariables, darkModeVariables);
   });
 });

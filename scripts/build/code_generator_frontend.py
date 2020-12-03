@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env vpython
 # Copyright (c) 2011 Google Inc. All rights reserved.
 # Copyright (c) 2012 Intel Corporation. All rights reserved.
 #

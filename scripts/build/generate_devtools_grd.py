@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env vpython
 #
 # Copyright (C) 2011 Google Inc. All rights reserved.
 #

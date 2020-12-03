@@ -334,19 +334,107 @@ export interface Binding {
   keybindSets?: Array<KeybindSet>;
 }
 
+/**
+ * The representation of an action extension to be registered.
+ */
 export interface ActionRegistration {
+  /**
+   * The unique id of an Action extension.
+   */
   actionId: string;
+  /**
+   * The category with which the action is displayed in the UI.
+   */
   category: ActionCategory;
+  /**
+   * The title with which the action is displayed in the UI.
+   */
   title?: string;
+  /**
+   * The type of the icon used to trigger the action.
+   */
   iconClass?: string;
+  /**
+   * Whether the style of the icon toggles on interaction.
+   */
   toggledIconClass?: string;
+  /**
+   * Whether the class 'toolbar-toggle-with-red-color' is toggled on the icon on interaction.
+   */
   toggleWithRedColor?: boolean;
+  /**
+   * Words used to find an action in the Command Menu.
+   */
   tags?: string;
+  /**
+   * Whether the action is toggleable.
+   */
   toggleable?: boolean;
+  /**
+   * Loads the class that handles the action when it is triggered.
+   */
   loadActionDelegate?: () => Promise<ActionDelegate>;
+  /**
+   * Returns the classes that represent the 'context flavors' under which the action is available for triggering.
+   * The context of the application is described in 'flavors' that are usually views added and removed to the context
+   * as the user interacts with the application (e.g when the user moves across views). (See UI.Context)
+   * When the action is supposed to be available globally, that is, it does not depend on the application to have
+   * a specific context, the value of this property should be undefined.
+   *
+   * Because the method is synchronous, context types should be already loaded when the method is invoked.
+   * In the case that an action has context types it depends on, and they haven't been loaded yet, the function should
+   * return an empty array. Once the context types have been loaded, the function should return an array with all types
+   * that it depends on.
+   *
+   * The common pattern for implementing this function is relying on having the module with the corresponding context
+   * types loaded and stored when the related 'view' extension is loaded asynchronously. As an example:
+   *
+   * ```js
+   * let loadedElementsModule;
+   *
+   * async function loadElementsModule() {
+   *
+   *   if (!loadedElementsModule) {
+   *     loadedElementsModule = await import('./elements.js');
+   *   }
+   *   return loadedElementsModule;
+   * }
+   * function maybeRetrieveContextTypes(getClassCallBack: (elementsModule: typeof Elements) => unknown[]): unknown[] {
+   *
+   *   if (loadedElementsModule === undefined) {
+   *     return [];
+   *   }
+   *   return getClassCallBack(loadedElementsModule);
+   * }
+   * UI.ActionRegistration.registerActionExtension({
+   *
+   *   contextTypes() {
+   *     return maybeRetrieveContextTypes(Elements => [Elements.ElementsPanel.ElementsPanel]);
+   *   }
+   *   <...>
+   * });
+   * ```
+   */
   contextTypes?: () => Array<unknown>;
+  /**
+   * The descriptions for each of the two states in which toggleable can be.
+   */
   options?: Array<ExtensionOption>;
+  /**
+   * The description of the variables (e.g. platform, keys and keybind sets) under which a keyboard shortcut triggers the action.
+   * If a keybind must be available on all platforms, its 'platform' property must be undefined. The same applies to keybind sets
+   * and the keybindSet property.
+   *
+   * Keybinds also depend on the context types of their corresponding action, and so they will only be available when such context types
+   * are flavors of the current appliaction context.
+   */
   bindings?: Array<Binding>;
+  /**
+   * The name of the experiment an action is associated with.
+   */
   experiment?: Root.Runtime.ExperimentName;
+  /**
+   * A condition represented as a string the action's availability depends on.
+   */
   condition?: Root.Runtime.ConditionName;
 }

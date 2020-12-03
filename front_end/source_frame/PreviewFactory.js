@@ -56,7 +56,7 @@ export class PreviewFactory {
 
     if (resourceType.isTextType()) {
       const highlighterType =
-          provider.contentType().canonicalMimeType() || mimeType.replace(/;.*/, '');  // remove charset
+          mimeType.replace(/;.*/, '') /* remove charset */ || provider.contentType().canonicalMimeType();
       return ResourceSourceFrame.createSearchableView(provider, highlighterType, true /* autoPrettyPrint */);
     }
 

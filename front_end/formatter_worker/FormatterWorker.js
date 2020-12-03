@@ -213,7 +213,8 @@ export function format(mimeType, text, indentString) {
         formatter.format(text, lineEndings, 0, text.length);
         break;
       }
-      case 'text/javascript': {
+      case 'text/javascript':
+      case 'application/javascript': {
         const formatter = new JavaScriptFormatter(builder);
         formatter.format(text, lineEndings, 0, text.length);
         break;

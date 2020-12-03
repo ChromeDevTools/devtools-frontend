@@ -47,26 +47,12 @@ export function drawLayoutFlexContainerHighlight(
   const config = highlight.flexContainerHighlightConfig;
   const bounds = emptyBounds();
   const borderPath = buildPath(highlight.containerBorder, bounds, emulationScaleFactor);
-  const {isHorizontalFlow} = highlight;
-  let {lines} = highlight;
+  const {isHorizontalFlow, lines} = highlight;
   drawPathWithLineStyle(context, borderPath, config.containerBorder);
 
   // If there are no lines, bail out now.
   if (!lines || !lines.length) {
     return;
-  }
-
-  // TODO (patrickbrosset): remove this once the backend sends the baseline with each item.
-  if (lines[0].length && typeof lines[0][0].baseline === 'undefined') {
-    // @ts-ignore
-    lines = lines.map(line => {
-      return line.map(item => {
-        return {
-          baseline: 0,
-          itemBorder: item,
-        };
-      });
-    });
   }
 
   // Process the item paths we received from the backend into quads we can use to draw what we need.

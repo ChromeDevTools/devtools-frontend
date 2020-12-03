@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
-import {click, getBrowserAndPages, getHostedModeServerPort, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {click, getBrowserAndPages, getTestServerPort, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 import {clearStorageItems, clearStorageItemsFilter, doubleClickSourceTreeItem, filterStorageItems, getStorageItemsData, navigateToApplicationTab, selectCookieByName} from '../helpers/application-helpers.js';
 
 const COOKIES_SELECTOR = '[aria-label="Cookies"]';
@@ -13,7 +13,7 @@ let DOMAIN_SELECTOR: string;
 
 describe('The Application Tab', async () => {
   before(async () => {
-    DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="https://localhost:${getHostedModeServerPort()}"]`;
+    DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
   });
 
   afterEach(async () => {

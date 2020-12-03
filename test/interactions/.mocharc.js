@@ -10,7 +10,7 @@ const fs = require('fs');
 // To make sure that any leftover JavaScript files (e.g. that were outputs from now-removed tests)
 // aren't incorrectly included, we glob for the TypeScript files instead and use that
 // to instruct Mocha to run the output JavaScript file.
-const ROOT_DIRECTORY = path.join(__dirname, '..', '..', '..', '..', '..', 'test', 'perf');
+const ROOT_DIRECTORY = path.join(__dirname, '..', '..', '..', '..', '..', 'test', 'interactions');
 let testFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts')).map(fileName => {
   const renamedFile = fileName.replace(/\.ts$/, '.js');
   const generatedFile = path.join(__dirname, path.relative(ROOT_DIRECTORY, renamedFile));
@@ -30,7 +30,7 @@ testFiles = process.env['TEST_FILE'] || testFiles;
 // of the application at the moment of the timeout. Here, 0 denotes "indefinite timeout".
 const timeout = process.env['DEBUG'] ? 0 : 5 * 1000;
 
-process.env.TEST_SERVER_TYPE = 'hosted-mode';
+process.env.TEST_SERVER_TYPE = 'component-docs';
 module.exports = {
   require: path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'),
   spec: testFiles,

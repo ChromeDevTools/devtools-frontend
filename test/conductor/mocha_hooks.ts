@@ -5,11 +5,10 @@
 import {postFileTeardown, preFileSetup, resetPages} from './hooks.js';
 import {startServer, stopServer} from './test_server.js';
 
-const targetServerType = process.env['SERVER'];
-
 /* eslint-disable no-console */
 
 process.on('SIGINT', postFileTeardown);
+
 
 // We can run Mocha in two modes: serial and parallel. In parallel mode, Mocha
 // starts multiple node processes which don't know about each other. It provides
@@ -25,18 +24,14 @@ process.on('SIGINT', postFileTeardown);
 // https://mochajs.org/#global-setup-fixtures. These let us start one hosted
 // mode server and share it between all the parallel test runners.
 export async function mochaGlobalSetup(this: Mocha.Suite) {
+  if (process.env.TEST_SERVER_TYPE !== 'hosted-mode' && process.env.TEST_SERVER_TYPE !== 'component-docs') {
+    throw new Error(`Invalid test server type: ${process.env.TEST_SERVER_TYPE}`);
+  }
   // Start the test server in the 'main' process. In parallel mode, we
   // share one server between all parallel runners. The parallel runners are all
   // in different processes, so we pass the port number as an environment var.
-  if (targetServerType !== 'hosted-mode' && targetServerType !== 'component-docs') {
-    throw new Error('Invalid target server: must be one of "hosted-mode" or "component-docs"');
-  }
-  if (targetServerType === 'hosted-mode') {
-    process.env.hostedModeServerPort = String(await startServer(targetServerType));
-  } else if (targetServerType === 'component-docs') {
-    process.env.componentDocsServerPort = String(await startServer(targetServerType));
-  }
-  console.log(`Started ${targetServerType} server on port ${process.env.hostedModeServerPort}`);
+  process.env.testServerPort = String(await startServer(process.env.TEST_SERVER_TYPE));
+  console.log(`Started ${process.env.TEST_SERVER_TYPE} server on port ${process.env.testServerPort}`);
 }
 
 export function mochaGlobalTeardown() {
@@ -55,7 +50,7 @@ export const mochaHooks = {
     // take an arbitrarily long time, while still enforcing that tests run
     // reasonably quickly (2 seconds by default).
     this.timeout(0);
-    await preFileSetup(Number(process.env.hostedModeServerPort));
+    await preFileSetup(Number(process.env.testServerPort));
 
     // Pause when running interactively in debug mode. This is mututally
     // exclusive with parallel mode.

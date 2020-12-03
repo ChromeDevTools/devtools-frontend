@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$$, click, getBrowserAndPages, getHostedModeServerPort, getPendingEvents, goToResource, pressKey, step, timeout, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, getPendingEvents, getTestServerPort, goToResource, pressKey, step, timeout, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
 import {AsyncScope} from '../../shared/mocha-extensions.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
@@ -319,7 +319,7 @@ export type NestedFileSelector = {
 export function createSelectorsForWorkerFile(
     workerName: string, folderName: string, fileName: string, workerIndex = 1): NestedFileSelector {
   const rootSelector = new Array(workerIndex).fill(`[aria-label="${workerName}, worker"]`).join(' ~ ');
-  const domainSelector = `${rootSelector} + ol > [aria-label="localhost:${getHostedModeServerPort()}, domain"]`;
+  const domainSelector = `${rootSelector} + ol > [aria-label="localhost:${getTestServerPort()}, domain"]`;
   const folderSelector = `${domainSelector} + ol > [aria-label^="${folderName}, "]`;
   const fileSelector = `${folderSelector} + ol > [aria-label="${fileName}, file"]`;
 

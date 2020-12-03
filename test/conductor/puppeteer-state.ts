@@ -25,9 +25,9 @@ let target: puppeteer.Page|null;
 let frontend: puppeteer.Page|null;
 let browser: puppeteer.Browser|null;
 
-// Set when we launch the hosted mode server. It will be different for each
+// Set when we launch the server. It will be different for each
 // sub-process runner when running in parallel.
-let hostedModeServerPort: number|null;
+let testServerPort: number|null;
 
 export interface BrowserAndPages {
   target: puppeteer.Page;
@@ -39,7 +39,7 @@ export const clearPuppeteerState = () => {
   target = null;
   frontend = null;
   browser = null;
-  hostedModeServerPort = null;
+  testServerPort = null;
 };
 
 export const setBrowserAndPages = (newValues: BrowserAndPages) => {
@@ -70,21 +70,21 @@ export const getBrowserAndPages = (): BrowserAndPages => {
   };
 };
 
-export const setHostedModeServerPort = (port: number) => {
-  if (hostedModeServerPort) {
-    throw new Error('Can\'t set the hosted mode server port twice.');
+export const setTestServerPort = (port: number) => {
+  if (testServerPort) {
+    throw new Error('Can\'t set the test server port twice.');
   }
-  hostedModeServerPort = port;
+  testServerPort = port;
 };
 
-export const getHostedModeServerPort = () => {
-  if (!hostedModeServerPort) {
+export const getTestServerPort = () => {
+  if (!testServerPort) {
     throw new Error(
-        'Unable to locate hosted mode server port. Was it stored first?' +
+        'Unable to locate test server port. Was it stored first?' +
         '\nYou might be calling this function at module instantiation time, instead of ' +
         'at runtime when the port is available.');
   }
-  return hostedModeServerPort;
+  return testServerPort;
 };
 
 let handlerRegistered = false;

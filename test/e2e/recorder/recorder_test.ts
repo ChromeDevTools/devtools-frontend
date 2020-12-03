@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {enableExperiment, getBrowserAndPages, getHostedModeServerPort, goToResource, waitForFunction} from '../../shared/helper.js';
+import {enableExperiment, getBrowserAndPages, getTestServerPort, goToResource, waitForFunction} from '../../shared/helper.js';
 import {createNewRecording, openRecorderSubPane, openSourcesPanel} from '../helpers/sources-helpers.js';
 
 function retrieveCodeMirrorEditorContent() {
@@ -16,7 +16,7 @@ async function getCode() {
   const {frontend} = getBrowserAndPages();
   const textContent = await frontend.evaluate(retrieveCodeMirrorEditorContent);
   // TODO: Change to replaceAll once it's supported in Node.js.
-  return textContent.replace(new RegExp(`localhost:${getHostedModeServerPort()}`, 'g'), '<url>').replace(/\u200b/g, '');
+  return textContent.replace(new RegExp(`localhost:${getTestServerPort()}`, 'g'), '<url>').replace(/\u200b/g, '');
 }
 
 function getWaitForScriptToChangeFunction() {

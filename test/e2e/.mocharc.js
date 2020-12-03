@@ -54,6 +54,7 @@ const slow = 1000;
 const jobs = Number(process.env['JOBS']) || 1;
 const parallel = !process.env['DEBUG'] && jobs > 1;
 
+process.env.TEST_SERVER_TYPE = 'hosted-mode';
 module.exports = {
   require: [path.join(__dirname, '..', 'conductor', 'mocha_hooks.js'), 'source-map-support/register'],
   spec: testFiles,

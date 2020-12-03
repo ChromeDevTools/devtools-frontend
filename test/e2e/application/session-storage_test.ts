@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, getHostedModeServerPort, step} from '../../shared/helper.js';
+import {getBrowserAndPages, getTestServerPort, step} from '../../shared/helper.js';
 import {doubleClickSourceTreeItem, getStorageItemsData, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const SESSION_STORAGE_SELECTOR = '[aria-label="Session Storage"]';
@@ -12,8 +12,7 @@ let DOMAIN_SELECTOR: string;
 
 describe('The Application Tab', async () => {
   before(async () => {
-    DOMAIN_SELECTOR =
-        `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="https://localhost:${getHostedModeServerPort()}"]`;
+    DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
   });
 
   it('shows Session Storage keys and values', async () => {

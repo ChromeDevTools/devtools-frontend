@@ -6,7 +6,7 @@
 
 import * as puppeteer from 'puppeteer';
 
-import {clearPuppeteerState, getBrowserAndPages, registerHandlers, setBrowserAndPages, setHostedModeServerPort} from './puppeteer-state.js';
+import {clearPuppeteerState, getBrowserAndPages, registerHandlers, setBrowserAndPages, setTestServerPort} from './puppeteer-state.js';
 
 // Workaround for mismatching versions of puppeteer types and puppeteer library.
 declare module 'puppeteer' {
@@ -29,6 +29,11 @@ let unhandledRejectionSet = false;
 const headless = !process.env['DEBUG'];
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
+
+const TEST_SERVER_TYPE = process.env.TEST_SERVER_TYPE;
+if (!TEST_SERVER_TYPE) {
+  throw new Error('Failed to run tests: process.env.TEST_SERVER_TYPE was not defined.');
+}
 
 // TODO: move this into a file
 const ALLOWED_ASSERTION_FAILURES = [
@@ -93,25 +98,26 @@ function getDebugPort(browser: puppeteer.Browser) {
   throw new Error(`Unable to find debug port: ${websocketUrl}`);
 }
 
-async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
+async function loadTargetPageAndFrontend(testServerPort: number) {
+  /**
+   * In hosted mode we run the DevTools and test against it.
+   */
+  const needToLoadDevTools = TEST_SERVER_TYPE === 'hosted-mode';
+
   browser = await launchChrome();
-  const chromeDebugPort = getDebugPort(browser);
-  console.log(`Opened chrome with debug port: ${chromeDebugPort}`);
-
   let stdout = '', stderr = '';
-
-  const process = browser.process();
-  if (process) {
-    if (process.stderr) {
-      process.stderr.setEncoding('utf8');
-      process.stderr.on('data', data => {
+  const browserProcess = browser.process();
+  if (browserProcess) {
+    if (browserProcess.stderr) {
+      browserProcess.stderr.setEncoding('utf8');
+      browserProcess.stderr.on('data', data => {
         stderr += data;
       });
     }
 
-    if (process.stdout) {
-      process.stdout.setEncoding('utf8');
-      process.stdout.on('data', data => {
+    if (browserProcess.stdout) {
+      browserProcess.stdout.setEncoding('utf8');
+      browserProcess.stdout.on('data', data => {
         stdout += data;
       });
     }
@@ -121,27 +127,45 @@ async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
   const srcPage = await browser.newPage();
   await srcPage.goto(EMPTY_PAGE);
 
-  // Now get the DevTools listings.
-  const devtools = await browser.newPage();
-  await devtools.goto(`http://localhost:${chromeDebugPort}/json`);
+  // Create the frontend - the page that will be under test. This will be either
+  // DevTools Frontend in hosted mode, or the component docs in docs test mode.
+  const frontend = await browser.newPage();
 
-  // Find the appropriate item to inspect the target page.
-  const listing = await devtools.$('pre');
-  const json = await devtools.evaluate(listing => listing.textContent, listing);
-  const targets: DevToolsTarget[] = JSON.parse(json);
-  const target = targets.find(target => target.url === EMPTY_PAGE);
-  if (!target) {
-    throw new Error(`Unable to find target page: ${EMPTY_PAGE}`);
+  if (needToLoadDevTools) {
+    const chromeDebugPort = getDebugPort(browser);
+    console.log(`Opened chrome with debug port: ${chromeDebugPort}`);
+    // Now get the DevTools listings.
+    const devtools = await browser.newPage();
+    await devtools.goto(`http://localhost:${chromeDebugPort}/json`);
+
+    // Find the appropriate item to inspect the target page.
+    const listing = await devtools.$('pre');
+    const json = await devtools.evaluate(listing => listing.textContent, listing);
+    const targets: DevToolsTarget[] = JSON.parse(json);
+    const target = targets.find(target => target.url === EMPTY_PAGE);
+    if (!target) {
+      throw new Error(`Unable to find target page: ${EMPTY_PAGE}`);
+    }
+
+    const {id} = target;
+    await devtools.close();
+
+    /**
+     * In hosted mode the frontend points to DevTools, so let's load it up.
+     */
+    frontendUrl = `https://localhost:${testServerPort}/front_end/devtools_app.html?ws=localhost:${
+        chromeDebugPort}/devtools/page/${id}`;
+    await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
   }
 
-  const {id} = target;
-  await devtools.close();
 
-  // Connect to the DevTools frontend.
-  const frontend = await browser.newPage();
-  frontendUrl = `https://localhost:${hostedModeServerPort}/front_end/devtools_app.html?ws=localhost:${
-      chromeDebugPort}/devtools/page/${id}`;
-  await frontend.goto(frontendUrl, {waitUntil: ['networkidle2', 'domcontentloaded']});
+  if (TEST_SERVER_TYPE === 'component-docs') {
+    /**
+     * In the component docs mode it points to the page where we load component
+     * doc examples, so let's just set it to an empty page for now.
+     */
+    await frontend.goto(EMPTY_PAGE);
+  }
 
   frontend.on('error', error => {
     console.log('STDOUT:');
@@ -158,7 +182,7 @@ async function loadTargetPageAndDevToolsFrontend(hostedModeServerPort: number) {
   });
 
   if (!unhandledRejectionSet) {
-    process.on('unhandledRejection', error => {
+    browserProcess.on('unhandledRejection', error => {
       throw new Error(`Unhandled rejection in Frontend: ${error}`);
     });
     unhandledRejectionSet = true;
@@ -201,10 +225,16 @@ export async function resetPages() {
   // Reload the target page.
   await target.goto(EMPTY_PAGE, {waitUntil: ['domcontentloaded']});
 
-  // Clear any local storage settings.
-  await frontend.evaluate(() => localStorage.clear());
+  if (TEST_SERVER_TYPE === 'hosted-mode') {
+    const {frontend} = getBrowserAndPages();
+    // Clear any local storage settings.
+    await frontend.evaluate(() => localStorage.clear());
 
-  await reloadDevTools();
+    await reloadDevTools();
+  } else {
+    // Reset the frontend back to an empty page for the component docs server.
+    await frontend.goto(EMPTY_PAGE, {waitUntil: ['domcontentloaded']});
+  }
 }
 
 type ReloadDevToolsOptions = {
@@ -215,7 +245,6 @@ type ReloadDevToolsOptions = {
 
 export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
   const {frontend} = getBrowserAndPages();
-
   // For the unspecified case wait for loading, then wait for the elements panel.
   const {selectedPanel = DEFAULT_TAB, canDock = false, queryParams = {}} = options;
 
@@ -252,10 +281,10 @@ export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
 }
 
 // Can be run multiple times in the same process.
-export async function preFileSetup(hostedModeServerPort: number) {
-  setHostedModeServerPort(hostedModeServerPort);
+export async function preFileSetup(serverPort: number) {
+  setTestServerPort(serverPort);
   registerHandlers();
-  await loadTargetPageAndDevToolsFrontend(hostedModeServerPort);
+  await loadTargetPageAndFrontend(serverPort);
 }
 
 // Can be run multiple times in the same process.

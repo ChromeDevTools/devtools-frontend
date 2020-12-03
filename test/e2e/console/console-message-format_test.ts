@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getHostedModeServerPort} from '../../shared/helper.js';
+import {getTestServerPort} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getConsoleMessages, showVerboseMessages, waitForConsoleMessagesToBeNonEmpty} from '../helpers/console-helpers.js';
 
@@ -31,8 +31,8 @@ describe('The Console Tab', async () => {
     at uncaught-promise.html:25`,
       `Uncaught (in promise) DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
     at throwDOMException (https://localhost:${
-          getHostedModeServerPort()}/test/e2e/resources/console/uncaught-promise.html:40:7)
-    at catcher (https://localhost:${getHostedModeServerPort()}/test/e2e/resources/console/uncaught-promise.html:33:5)`,
+          getTestServerPort()}/test/e2e/resources/console/uncaught-promise.html:40:7)
+    at catcher (https://localhost:${getTestServerPort()}/test/e2e/resources/console/uncaught-promise.html:33:5)`,
     ]);
   });
 

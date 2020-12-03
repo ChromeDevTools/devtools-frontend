@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, getBrowserAndPages, getHostedModeServerPort, goToResource, pressKey, waitFor, waitForFunction} from '../../shared/helper.js';
+import {click, getBrowserAndPages, getTestServerPort, goToResource, pressKey, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {doubleClickSourceTreeItem, getReportValues, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
@@ -19,9 +19,9 @@ describe('The Application Tab', async () => {
     await waitForFunction(async () => {
       const fieldValues = await getReportValues();
       const expected = [
-        `https://localhost:${getHostedModeServerPort()}/test/e2e/resources/application/frame-tree.html`,
+        `https://localhost:${getTestServerPort()}/test/e2e/resources/application/frame-tree.html`,
         '',
-        `https://localhost:${getHostedModeServerPort()}`,
+        `https://localhost:${getTestServerPort()}`,
         '<#document>',
         '',
         'YesLocalhost is always a secure context',
@@ -49,7 +49,7 @@ describe('The Application Tab', async () => {
     await waitForFunction(async () => {
       const fieldValues = await getReportValues();
       const expected =
-          [`https://localhost:${getHostedModeServerPort()}/test/e2e/resources/application/dedicated-worker.js`, 'None'];
+          [`https://localhost:${getTestServerPort()}/test/e2e/resources/application/dedicated-worker.js`, 'None'];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });
   });

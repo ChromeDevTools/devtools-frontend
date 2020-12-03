@@ -721,6 +721,14 @@ export function copyLinkAddressLabel() {
   return Common.UIString.UIString('Copy link address');
 }
 
+
+/**
+ * @return {string}
+ */
+export function copyFileNameLabel() {
+  return ls`Copy file name`;
+}
+
 /**
  * @return {string}
  */

@@ -361,7 +361,7 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
     }
 
     if (!this._binaryView) {
-      if (this.dataText.length > 0) {
+      if (this._dataText.length > 0) {
         this._binaryView =
             new BinaryResourceView(this._dataText, /* url */ '', Common.ResourceType.resourceTypes.WebSocket);
       }

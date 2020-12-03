@@ -434,14 +434,14 @@ describe('The Debugger Language Plugins', async () => {
         ['unreachable.ll:6', 'unreachable.ll:11', 'unreachable.ll:16', 'unreachable.html:27', 'unreachable.html:30']);
 
     // We see variables for innermost frame.
-    assert.deepEqual(await getValuesForScope('LOCAL'), ['localX0: undefined']);
+    assert.deepEqual(await getValuesForScope('LOCAL', 0, 1), ['localX0: undefined']);
 
     // Switching frames affects what variables we see.
     await switchToCallFrame(2);
-    assert.deepEqual(await getValuesForScope('LOCAL'), ['localX1: undefined']);
+    assert.deepEqual(await getValuesForScope('LOCAL', 0, 1), ['localX1: undefined']);
 
     await switchToCallFrame(3);
-    assert.deepEqual(await getValuesForScope('LOCAL'), ['localX2: undefined']);
+    assert.deepEqual(await getValuesForScope('LOCAL', 0, 1), ['localX2: undefined']);
   });
 
   it('falls back to wasm function names when inline info not present', async () => {

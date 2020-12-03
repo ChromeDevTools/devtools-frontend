@@ -392,7 +392,7 @@ export async function getScopeNames() {
   return scopeNames;
 }
 
-export async function getValuesForScope(scope: string, expandCount = 0, waitForNoOfValues = 0) {
+export async function getValuesForScope(scope: string, expandCount: number, waitForNoOfValues: number) {
   const scopeSelector = `[aria-label="${scope}"]`;
   await waitFor(scopeSelector);
   for (let i = 0; i < expandCount; i++) {

@@ -43,7 +43,7 @@ describe('Source Tab', async () => {
     });
 
     await step('check that the module scope content is as expected', async () => {
-      moduleScopeValues = await getValuesForScope('Module');
+      moduleScopeValues = await getValuesForScope('Module', 0, 3);
       // Remove occurrences of arrays.
       const formattedValues = moduleScopeValues.map((line: string) => {
         return line.replace(/\[[^\]]*\]/, '').trim();
@@ -53,7 +53,7 @@ describe('Source Tab', async () => {
     });
 
     await step('check that the local scope content is as expected', async () => {
-      localScopeValues = await getValuesForScope('Local');
+      localScopeValues = await getValuesForScope('Local', 0, 4);
       assert.deepEqual(localScopeValues, ['f32_var: 5.5', 'f64_var: 2.23e-11', 'i32: 42', 'i64_var: 9221120237041090']);
     });
 
@@ -62,7 +62,7 @@ describe('Source Tab', async () => {
     });
 
     await step('check that the stack scope content is as expected', async () => {
-      const stackScopeValues = await getValuesForScope('Stack');
+      const stackScopeValues = await getValuesForScope('Stack', 0, 0);
       assert.deepEqual(stackScopeValues, []);
     });
 
@@ -82,7 +82,7 @@ describe('Source Tab', async () => {
     });
 
     await step('check that the stack scope content is updated to reflect the change', async () => {
-      const stackScopeValues = await getValuesForScope('Stack');
+      const stackScopeValues = await getValuesForScope('Stack', 0, 1);
       assert.deepEqual(stackScopeValues, ['0: 24']);
     });
 

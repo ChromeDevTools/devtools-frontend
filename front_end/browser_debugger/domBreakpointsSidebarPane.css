@@ -26,17 +26,13 @@
 }
 
 .breakpoint-list .breakpoint-entry:hover {
-  background-color: #eee;
+  background-color: var(--color-background-elevation-2);
 }
 
 .breakpoint-hit {
-  background-color: rgb(255 255 194);
-  border-right: 3px solid rgb(107 97 48);
-}
-
-:host-context(.-theme-with-dark-background) .breakpoint-hit {
-  background-color: hsl(46deg 98% 22%);
-  color: #ccc;
+  background-color: var(--color-background-elevation-2);
+  border-right: 3px solid var(--color-details-hairline);
+  color: var(--color-text-primary);
 }
 
 @media (forced-colors: active) {

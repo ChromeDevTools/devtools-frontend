@@ -46,7 +46,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox {
    */
   constructor() {
     super(true);
-    this.registerRequiredCSS('browser_debugger/domBreakpointsSidebarPane.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('browser_debugger/domBreakpointsSidebarPane.css', {enableLegacyPatching: false});
 
     /** @type {!WeakMap<!Element, !HTMLInputElement>} */
     this.elementToCheckboxes = new WeakMap();

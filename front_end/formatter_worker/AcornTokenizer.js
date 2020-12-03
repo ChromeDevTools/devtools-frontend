@@ -12,6 +12,31 @@ import * as Acorn from '../third_party/acorn/acorn.js';
 // @ts-ignore typedef
 export let TokenOrComment;
 
+/**
+ * The tokenizer in Acorn does not allow you to peek into the next token.
+ * We use the peekToken method to determine when to stop formatting a
+ * particular block of code.
+ *
+ * To remedy the situation, we implement the peeking of tokens ourselves.
+ * To do so, whenever we call `nextToken`, we already retrieve the token
+ * after it (in `_bufferedToken`), so that `_peekToken` can check if there
+ * is more work to do.
+ *
+ * There are 2 catches:
+ *
+ * 1. in the constructor we need to start the initialize the buffered token,
+ *    such that `peekToken` on the first call is able to retrieve it. However,
+ * 2. comments and tokens can arrive intermixed from the tokenizer. This usually
+ *    happens when comments are the first comments of a file. In the scenario that
+ *    the first comment in a file is a line comment attached to a token, we first
+ *    receive the token and after that we receive the comment. However, when tokenizing
+ *    we should reverse the order and return the comment, before the token.
+ *
+ * All that is to say that the `_bufferedToken` is only used for *true* tokens.
+ * We mimic comments to be tokens to fix the reordering issue, but we store these
+ * separately to keep track of them. Any call to `_nextTokenInternal` will figure
+ * out whether the next token should be the preceding comment or not.
+ */
 export class AcornTokenizer {
   /**
    * @param {string} content
@@ -20,13 +45,27 @@ export class AcornTokenizer {
     this._content = content;
     /** @type {!Array<!Acorn.Comment>} */
     this._comments = [];
-    this._tokenizer = Acorn.tokenizer(this._content, {onComment: this._comments, ecmaVersion: ECMA_VERSION});
+    this._tokenizer =
+        Acorn.tokenizer(this._content, {onComment: this._comments, ecmaVersion: ECMA_VERSION, allowHashBang: true});
     const contentLineEndings = Platform.StringUtilities.findLineEndingIndexes(this._content);
     this._textCursor = new TextUtils.TextCursor.TextCursor(contentLineEndings);
     this._tokenLineStart = 0;
     this._tokenLineEnd = 0;
     this._tokenColumnStart = 0;
-    this._nextTokenInternal();
+    // If the first "token" should be a comment, we don't want to shift
+    // the comment from the array (which happens in `_nextTokenInternal`).
+    // Therefore, we should bail out from retrieving the token if this
+    // is the case.
+    //
+    // However, sometimes we have leading comments that are attached to tokens
+    // themselves. In that case, we first retrieve the actual token, before
+    // we see the comment itself. In that case, we should proceed and
+    // initialize `_bufferedToken` as normal, to allow us to fix the reordering.
+    if (this._comments.length === 0) {
+      this._nextTokenInternal();
+    }
+    /** @type {(!TokenOrComment|undefined)} */
+    this._bufferedToken;
   }
 
   /**
@@ -76,16 +115,24 @@ export class AcornTokenizer {
   }
 
   /**
-   * @return {!TokenOrComment}
+   * @return {(TokenOrComment|undefined)}
    */
   _nextTokenInternal() {
     if (this._comments.length) {
-      return /** @type {!TokenOrComment} */ (this._comments.shift());
+      const nextComment = this._comments.shift();
+      // If this was the last comment to process, we need to make
+      // sure to update our `_bufferedToken` to become the actual
+      // token. This only happens when we are processing the very
+      // first comment of a file (usually a hashbang comment)
+      // in which case we don't have to fix the reordering of tokens.
+      if (!this._bufferedToken && this._comments.length === 0) {
+        this._bufferedToken = this._tokenizer.getToken();
+      }
+      return nextComment;
     }
     const token = this._bufferedToken;
-
     this._bufferedToken = this._tokenizer.getToken();
-    return /** @type {!TokenOrComment} */ (token);
+    return token;
   }
 
   /**
@@ -93,7 +140,7 @@ export class AcornTokenizer {
    */
   nextToken() {
     const token = this._nextTokenInternal();
-    if (token.type === Acorn.tokTypes.eof) {
+    if (!token || token.type === Acorn.tokTypes.eof) {
       return null;
     }
 

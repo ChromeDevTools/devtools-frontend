@@ -46,4 +46,90 @@ describe('JavaScriptFormatter', () => {
     const formattedCode = formatJavaScript('x=1_000;');
     assert.strictEqual(formattedCode, 'x = 1_000;\n');
   });
+
+  describe('formats files with comments', () => {
+    it('handles 1 leading comment correctly', () => {
+      const formattedCode = formatJavaScript(`// This is a starting comment
+console.log('5');`);
+      assert.strictEqual(formattedCode, `// This is a starting comment
+console.log('5');
+`);
+    });
+
+    it('handles leading hashbang correctly', () => {
+      const formattedCode = formatJavaScript(`#! hashbang
+{{{console.log(1)}}}`);
+      assert.strictEqual(formattedCode, `#! hashbang
+{
+  {
+    {
+      console.log(1)
+    }
+  }
+}
+`);
+    });
+
+    it('handles 1 trailing comment correctly', () => {
+      const formattedCode = formatJavaScript('console.log(\'5\'); // This is a trailing comment');
+      assert.strictEqual(formattedCode, `console.log('5');
+// This is a trailing comment
+`);
+    });
+
+    it('handles 1 trailing comment on a new line correctly', () => {
+      const formattedCode = formatJavaScript(`console.log('5');
+// This is a new line comment`);
+      assert.strictEqual(formattedCode, `console.log('5');
+// This is a new line comment
+`);
+    });
+
+    it('handles 2 leading comments', () => {
+      const formattedCode = formatJavaScript(`// This is a starting line comment
+/* This is a starting block comment */
+console.log('5');`);
+      assert.strictEqual(formattedCode, `// This is a starting line comment
+/* This is a starting block comment */
+console.log('5');
+`);
+    });
+
+    it('handles 2 trailing comments correctly', () => {
+      const formattedCode = formatJavaScript(`console.log('5'); // This is a trailing comment same line
+// This is a trailing new line comment`);
+      assert.strictEqual(formattedCode, `console.log('5');
+// This is a trailing comment same line
+// This is a trailing new line comment
+`);
+    });
+
+    it('handles leading and trailing comments correctly', () => {
+      const formattedCode = formatJavaScript(`// This is a starting line comment
+/* This is a starting block comment */
+console.log('5'); // This is a trailing comment same line
+// This is a trailing new line comment`);
+      assert.strictEqual(formattedCode, `// This is a starting line comment
+/* This is a starting block comment */
+console.log('5');
+// This is a trailing comment same line
+// This is a trailing new line comment
+`);
+    });
+
+    it('handles a hashbang, leading and trailing comments correctly', () => {
+      const formattedCode = formatJavaScript(`#! hashbang
+// This is a starting line comment
+/* This is a starting block comment */
+console.log('5'); // This is a trailing comment same line
+// This is a trailing new line comment`);
+      assert.strictEqual(formattedCode, `#! hashbang
+// This is a starting line comment
+/* This is a starting block comment */
+console.log('5');
+// This is a trailing comment same line
+// This is a trailing new line comment
+`);
+    });
+  });
 });

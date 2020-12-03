@@ -9,17 +9,8 @@ import * as acorn from './package/dist/acorn.mjs';
 // Extensions return a new Parser class (no mutation).
 const ExtendedParser = acorn.Parser.extend(logicalAssignment, numericSeparator);
 
-/**
- * @typedef {acorn.Token}
- */
-// @ts-ignore typedef
-export let Token;
-
-/**
- * @typedef {acorn.Comment}
- */
-// @ts-ignore typedef
-export let Comment;
+export let Token: acorn.Token;
+export let Comment: acorn.Comment;
 
 export const tokTypes = acorn.tokTypes;
 

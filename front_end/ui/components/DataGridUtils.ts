@@ -49,7 +49,7 @@ export interface Cell {
 export type Row = {
   cells: Cell[];
   hidden?: boolean;
-}
+};
 
 export const enum SortDirection {
   ASC = 'ASC',

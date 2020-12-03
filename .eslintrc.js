@@ -153,9 +153,14 @@ module.exports = {
     'rules': {
       '@typescript-eslint/explicit-member-accessibility': [2, {'accessibility': 'no-public'}],
       'comma-dangle': [2, 'always-multiline'],
+
       // run just the TypeScript unused-vars rule, else we get duplicate errors
       'no-unused-vars': 0,
       '@typescript-eslint/no-unused-vars': [2, {'argsIgnorePattern': '^_'}],
+      // run just the TypeScript semi rule, else we get duplicate errors
+      'semi': 0,
+      '@typescript-eslint/semi': 2,
+
       'rulesdir/kebab_case_events': 2,
       /**
        * Enforce that enum members are explicitly defined:

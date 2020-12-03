@@ -36,7 +36,7 @@ export type PathBounds = Bounds&{
   rightmostXForY: {[key: string]: number};
   topmostYForX: {[key: string]: number};
   bottommostYForX: {[key: string]: number};
-}
+};
 
 export interface LineStyle {
   color?: string;

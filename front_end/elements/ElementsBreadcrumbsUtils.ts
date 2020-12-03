@@ -61,7 +61,7 @@ const makeCrumbTitle = (main: string, extras = {}): CrumbTitle => {
 };
 
 export class NodeSelectedEvent extends Event {
-  data: unknown
+  data: unknown;
 
   constructor(node: DOMNode) {
     super('node-selected', {});

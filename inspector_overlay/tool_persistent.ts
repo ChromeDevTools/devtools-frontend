@@ -36,7 +36,7 @@ export class PersistentOverlay extends Overlay {
   private gridLabelState = {
     gridLayerCounter: 0,
     gridPainted: false,
-  }
+  };
 
   private gridLabels!: HTMLElement;
 

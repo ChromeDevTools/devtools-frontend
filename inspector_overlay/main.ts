@@ -65,7 +65,7 @@ let platformName: PlatformName;
 
 type MessageLookup = {
   'setOverlay': keyof Overlays; 'setPlatform': PlatformName;
-}
+};
 
 const dispatch = <K extends keyof MessageLookup>(message: [a: K, b: MessageLookup[K]]) => {
   const functionName = message[0];

@@ -15,7 +15,7 @@ export const enum Navigation {
 }
 
 export class PageNavigationEvent extends Event {
-  data: Navigation
+  data: Navigation;
 
   constructor(navigation: Navigation) {
     super('page-navigation', {});
@@ -24,7 +24,7 @@ export class PageNavigationEvent extends Event {
 }
 
 export class HistoryNavigationEvent extends Event {
-  data: Navigation
+  data: Navigation;
 
   constructor(navigation: Navigation) {
     super('history-navigation', {});

@@ -16,7 +16,7 @@ export class ColumnHeaderClickEvent extends Event {
   data: {
     column: Column,
     columnIndex: number,
-  }
+  };
 
   constructor(column: Column, columnIndex: number) {
     super('column-header-click');
@@ -37,7 +37,7 @@ export class BodyCellFocusedEvent extends Event {
   data: {
     cell: Cell,
     row: Row,
-  }
+  };
 
   constructor(cell: Cell, row: Row) {
     super('cell-focused');

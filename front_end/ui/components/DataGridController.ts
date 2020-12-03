@@ -38,7 +38,7 @@ export class DataGridController extends HTMLElement {
   private originalRows: Row[] = [];
 
   private sortState: Readonly<SortState>|null = null;
-  private filters: readonly TextUtils.TextUtils.ParsedFilter[] = []
+  private filters: readonly TextUtils.TextUtils.ParsedFilter[] = [];
 
   get data(): DataGridControllerData {
     return {

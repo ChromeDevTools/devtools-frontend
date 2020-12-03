@@ -14,7 +14,7 @@ export interface LinearMemoryViewerData {
 }
 
 export class ByteSelectedEvent extends Event {
-  data: number
+  data: number;
 
   constructor(address: number) {
     super('byte-selected');
@@ -23,7 +23,7 @@ export class ByteSelectedEvent extends Event {
 }
 
 export class ResizeEvent extends Event {
-  data: number
+  data: number;
 
   constructor(numBytesPerPage: number) {
     super('resize');

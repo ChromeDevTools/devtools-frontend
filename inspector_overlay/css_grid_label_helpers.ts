@@ -71,7 +71,7 @@ interface PositionData {
 
 type PositionDataWithNames = PositionData&{
   names: string[][];
-}
+};
 
 interface TracksPositionData {
   positive: PositionData;

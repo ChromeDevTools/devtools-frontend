@@ -24,7 +24,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
    */
   constructor() {
     super('resources');
-    this.registerRequiredCSS('resources/resourcesPanel.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('resources/resourcesPanel.css', {enableLegacyPatching: false});
 
     this._resourcesLastSelectedItemSetting =
         Common.Settings.Settings.instance().createSetting('resourcesLastSelectedElementPath', []);

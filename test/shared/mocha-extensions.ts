@@ -3,10 +3,33 @@
 // found in the LICENSE file.
 
 import * as Mocha from 'mocha';
+
+import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
+
+import {getEnvVar} from './config.js';
+
 export {beforeEach, describe} from 'mocha';
 
+async function takeScreenshots() {
+  try {
+    const {target, frontend} = getBrowserAndPages();
+    const opts = {
+      encoding: 'base64' as 'base64',
+    };
+    const targetScreenshot = await target.screenshot(opts);
+    const frontendScreenshot = await frontend.screenshot(opts);
+    const prefix = 'data:image/png;base64,';
+    console.error('Target page screenshot (copy the next line and open in the browser):');
+    console.error(prefix + targetScreenshot);
+    console.error('Frontend screenshot (copy the next line and open in the browser):');
+    console.error(prefix + frontendScreenshot);
+  } catch (err) {
+    console.error('Error taking a screenshot', err);
+  }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function timeoutHook(done: Mocha.Done|undefined, err?: any) {
+async function timeoutHook(this: Mocha.Runnable, done: Mocha.Done|undefined, err?: any) {
   function* joinStacks() {
     const scopes = AsyncScope.scopes;
     if (scopes.size === 0) {
@@ -22,10 +45,16 @@ function timeoutHook(done: Mocha.Done|undefined, err?: any) {
 
   const stacks = Array.from(joinStacks());
   if (stacks.length > 0) {
+    if (!getEnvVar('DEBUG')) {
+      await takeScreenshots();
+    }
     console.error(`Pending async operations during failure:\n${stacks.join('\n\n')}`);
   }
   if (done) {
-    return done(err);
+    // This workaround is needed to allow timeoutHook to be async.
+    this.timedOut = false;
+    done(err);
+    this.timedOut = true;
   }
 }
 
@@ -53,7 +82,7 @@ function wrapMochaCall(
   const test = call(name, function(done: Mocha.Done) {
     if (test) {
       const originalDone = test.callback;
-      test.callback = timeoutHook.bind(undefined, originalDone);
+      test.callback = timeoutHook.bind(test, originalDone);
       // If a timeout is already scheduled, reset it to install our new hook
       test.resetTimeout();
     }

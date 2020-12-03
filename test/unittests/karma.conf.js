@@ -165,7 +165,8 @@ module.exports = function(config) {
       [path.join(GEN_DIRECTORY, 'inspector_overlay/**/*.{js,mjs}')]: [...coveragePreprocessors],
     },
 
-    proxies: {'/Images': 'front_end/Images', '/locales': `/base/${targetDir}/front_end/i18n/locales`},
+    proxies:
+        {'/Images': `/base/${targetDir}/front_end/Images`, '/locales': `/base/${targetDir}/front_end/i18n/locales`},
 
     coverageReporter: {dir: COVERAGE_OUTPUT_DIRECTORY, subdir: '.', reporters: istanbulReportOutputs},
 

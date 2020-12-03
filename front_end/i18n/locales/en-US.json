@@ -845,6 +845,159 @@
   "lighthouse/ModuleUIStrings.js | pwa": {
     "message": "pwa"
   },
+  "media/EventDisplayTable.js | eventDisplay": {
+    "message": "Event display"
+  },
+  "media/EventDisplayTable.js | eventName": {
+    "message": "Event name"
+  },
+  "media/EventDisplayTable.js | timestamp": {
+    "message": "Timestamp"
+  },
+  "media/EventDisplayTable.js | value": {
+    "message": "Value"
+  },
+  "media/ModuleUIStrings.js | media": {
+    "message": "Media"
+  },
+  "media/ModuleUIStrings.js | video": {
+    "message": "video"
+  },
+  "media/PlayerDetailView.js | events": {
+    "message": "Events"
+  },
+  "media/PlayerDetailView.js | messages": {
+    "message": "Messages"
+  },
+  "media/PlayerDetailView.js | playerEvents": {
+    "message": "Player events"
+  },
+  "media/PlayerDetailView.js | playerMessages": {
+    "message": "Player messages"
+  },
+  "media/PlayerDetailView.js | playerProperties": {
+    "message": "Player properties"
+  },
+  "media/PlayerDetailView.js | playerTimeline": {
+    "message": "Player timeline"
+  },
+  "media/PlayerDetailView.js | properties": {
+    "message": "Properties"
+  },
+  "media/PlayerDetailView.js | timeline": {
+    "message": "Timeline"
+  },
+  "media/PlayerListView.js | hideAllOthers": {
+    "message": "Hide all others"
+  },
+  "media/PlayerListView.js | hidePlayer": {
+    "message": "Hide player"
+  },
+  "media/PlayerListView.js | players": {
+    "message": "Players"
+  },
+  "media/PlayerListView.js | savePlayerInfo": {
+    "message": "Save player info"
+  },
+  "media/PlayerMessagesView.js | all": {
+    "message": "All"
+  },
+  "media/PlayerMessagesView.js | custom": {
+    "message": "Custom"
+  },
+  "media/PlayerMessagesView.js | debug": {
+    "message": "Debug"
+  },
+  "media/PlayerMessagesView.js | default": {
+    "message": "Default"
+  },
+  "media/PlayerMessagesView.js | error": {
+    "message": "Error"
+  },
+  "media/PlayerMessagesView.js | filterLogMessages": {
+    "message": "Filter log messages"
+  },
+  "media/PlayerMessagesView.js | info": {
+    "message": "Info"
+  },
+  "media/PlayerMessagesView.js | logLevel": {
+    "message": "Log level:"
+  },
+  "media/PlayerMessagesView.js | warning": {
+    "message": "Warning"
+  },
+  "media/PlayerPropertiesView.js | audio": {
+    "message": "Audio"
+  },
+  "media/PlayerPropertiesView.js | bitrate": {
+    "message": "Bitrate"
+  },
+  "media/PlayerPropertiesView.js | decoder": {
+    "message": "Decoder"
+  },
+  "media/PlayerPropertiesView.js | decoderName": {
+    "message": "Decoder name"
+  },
+  "media/PlayerPropertiesView.js | decryptingDemuxer": {
+    "message": "Decrypting demuxer"
+  },
+  "media/PlayerPropertiesView.js | duration": {
+    "message": "Duration"
+  },
+  "media/PlayerPropertiesView.js | fileSize": {
+    "message": "File size"
+  },
+  "media/PlayerPropertiesView.js | frameRate": {
+    "message": "Frame rate"
+  },
+  "media/PlayerPropertiesView.js | hardwareDecoder": {
+    "message": "Hardware decoder"
+  },
+  "media/PlayerPropertiesView.js | noDecoder": {
+    "message": "No decoder"
+  },
+  "media/PlayerPropertiesView.js | noTextTracks": {
+    "message": "No text tracks"
+  },
+  "media/PlayerPropertiesView.js | playbackFrameTitle": {
+    "message": "Playback frame title"
+  },
+  "media/PlayerPropertiesView.js | playbackFrameUrl": {
+    "message": "Playback frame URL"
+  },
+  "media/PlayerPropertiesView.js | properties": {
+    "message": "Properties"
+  },
+  "media/PlayerPropertiesView.js | rangeHeaderSupport": {
+    "message": "Range header support"
+  },
+  "media/PlayerPropertiesView.js | resolution": {
+    "message": "Resolution"
+  },
+  "media/PlayerPropertiesView.js | singleoriginPlayback": {
+    "message": "Single-origin playback"
+  },
+  "media/PlayerPropertiesView.js | startTime": {
+    "message": "Start time"
+  },
+  "media/PlayerPropertiesView.js | streaming": {
+    "message": "Streaming"
+  },
+  "media/PlayerPropertiesView.js | textTrack": {
+    "message": "Text track"
+  },
+  "media/PlayerPropertiesView.js | track": {
+    "message": "Track"
+  },
+  "media/PlayerPropertiesView.js | video": {
+    "message": "Video"
+  },
+  "media/PlayerPropertiesView.js | videoFreezingScore": {
+    "message": "Video freezing score"
+  },
+  "media/PlayerPropertiesView.js | videoPlaybackRoughness": {
+    "message": "Video playback roughness"
+  },
   "performance_monitor/ModuleUIStrings.js | activity": {
     "message": "activity"
   },

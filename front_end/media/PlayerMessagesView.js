@@ -3,8 +3,49 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description A context menu item in the Console View of the Console panel
+  */
+  default: 'Default',
+  /**
+  *@description Text in Network Throttling Selector of the Network panel
+  */
+  custom: 'Custom',
+  /**
+  *@description Text for everything
+  */
+  all: 'All',
+  /**
+  *@description Text for errors
+  */
+  error: 'Error',
+  /**
+  *@description Text to indicate an item is a warning
+  */
+  warning: 'Warning',
+  /**
+  *@description Sdk console message message level info of level Labels in Console View of the Console panel
+  */
+  info: 'Info',
+  /**
+  *@description Debug log level
+  */
+  debug: 'Debug',
+  /**
+  *@description Label for selecting between the set of log levels to show.
+  */
+  logLevel: 'Log level:',
+  /**
+  *@description Default text for user-text-entry for searching log messages.
+  */
+  filterLogMessages: 'Filter log messages',
+};
+const str_ = i18n.i18n.registerUIStrings('media/PlayerMessagesView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @enum {number}
  */
@@ -51,9 +92,9 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper {
     this._bitFieldValue = MessageLevelBitfield.Default;
     this._savedBitFieldValue = MessageLevelBitfield.Default;
 
-    this._defaultTitle = ls`Default`;
-    this._customTitle = ls`Custom`;
-    this._allTitle = ls`All`;
+    this._defaultTitle = i18nString(UIStrings.default);
+    this._customTitle = i18nString(UIStrings.custom);
+    this._allTitle = i18nString(UIStrings.all);
 
     /**
      * @type {!WeakMap<!SelectableLevel, !HTMLElement>}
@@ -90,7 +131,7 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper {
     });
 
     this._items.insert(this._items.length, {
-      title: ls`Error`,
+      title: i18nString(UIStrings.error),
       overwrite: false,
       stringValue: 'error',
       value: MessageLevelBitfield.Error,
@@ -98,7 +139,7 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper {
     });
 
     this._items.insert(this._items.length, {
-      title: ls`Warning`,
+      title: i18nString(UIStrings.warning),
       overwrite: false,
       stringValue: 'warning',
       value: MessageLevelBitfield.Warning,
@@ -106,7 +147,7 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper {
     });
 
     this._items.insert(this._items.length, {
-      title: ls`Info`,
+      title: i18nString(UIStrings.info),
       overwrite: false,
       stringValue: 'info',
       value: MessageLevelBitfield.Info,
@@ -114,7 +155,7 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper {
     });
 
     this._items.insert(this._items.length, {
-      title: ls`Debug`,
+      title: i18nString(UIStrings.debug),
       overwrite: false,
       stringValue: 'debug',
       value: MessageLevelBitfield.Debug,
@@ -232,7 +273,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
 
   _buildToolbar() {
     const toolbar = new UI.Toolbar.Toolbar('media-messages-toolbar', this._headerPanel);
-    toolbar.appendText(ls`Log level:`);
+    toolbar.appendText(i18nString(UIStrings.logLevel));
     toolbar.appendToolbarItem(this._createDropdown());
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._createFilterInput());
@@ -258,7 +299,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
   }
 
   _createFilterInput() {
-    const filterInput = new UI.Toolbar.ToolbarInput(ls`Filter log messages`);
+    const filterInput = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.filterLogMessages));
     filterInput.addEventListener(
         UI.Toolbar.ToolbarInput.Event.TextChanged,
         /**

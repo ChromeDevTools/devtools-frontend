@@ -139,12 +139,6 @@
   <message name="IDS_DEVTOOLS_3f8f88e3686b2345cecc9530e19e6172" desc="Text to store an HTML element or JavaScript variable or expression result as a global variable">
     Store as global variable
   </message>
-  <message name="IDS_DEVTOOLS_4059b0251f66a18cb56f544728796875" desc="Sdk console message message level info of level Labels in Console View of the Console panel">
-    Info
-  </message>
-  <message name="IDS_DEVTOOLS_41de6d6cfb8953c021bbe4ba0701c8a1" desc="Text in Network Item View of the Network panel">
-    Messages
-  </message>
   <message name="IDS_DEVTOOLS_41fdb410354e76ef7674f98e1cc84c8f" desc="Text for throttling the network">
     Throttling
   </message>
@@ -271,9 +265,6 @@
   <message name="IDS_DEVTOOLS_76c3e002d3c052bd6a909366a8dc3845" desc="Text that appears on a button for the manifest resource type filter.">
     Manifest
   </message>
-  <message name="IDS_DEVTOOLS_7a1920d61156abc05a60135aefe8bc67" desc="A context menu item in the Console View of the Console panel">
-    Default
-  </message>
   <message name="IDS_DEVTOOLS_7b3a6b02f467b95f2b5267aa94708c07" desc="Text for the name of a thread of the page">
     Thread <ph name="TID">$1s<ex>1</ex></ph>
   </message>
@@ -316,9 +307,6 @@
   <message name="IDS_DEVTOOLS_902b0d55fddef6f8d651fe1035b7d4bd" desc="Text for errors">
     Error
   </message>
-  <message name="IDS_DEVTOOLS_90589c47f06eb971d548591f23c285af" desc="Text in Network Throttling Selector of the Network panel">
-    Custom
-  </message>
   <message name="IDS_DEVTOOLS_90da6f38945a1c7e7ba11e3adcbe6919" desc="Text for pausing the debugger on exceptions">
     Pause on exceptions
   </message>
@@ -360,9 +348,6 @@
   </message>
   <message name="IDS_DEVTOOLS_9f29da220ed82809ec5dd70af4e52904" desc="Text for the total time of something">
     Total Time
-  </message>
-  <message name="IDS_DEVTOOLS_9fc2d28c05ed9eb1d75ba4465abf15a9" desc="Title of the 'Properties' tool in the sidebar of the elements tool">
-    Properties
   </message>
   <message name="IDS_DEVTOOLS_a02c83a7dbd96295beaefb72c2bee2de" desc="Text that refers to the main target">
     Main

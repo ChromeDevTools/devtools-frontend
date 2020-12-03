@@ -3,11 +3,32 @@
 // found in the LICENSE file.
 
 import * as DataGrid from '../data_grid/data_grid.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/ui.js';
 
 import {PlayerEvent} from './MediaModel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text for timestamps of items
+  */
+  timestamp: 'Timestamp',
+  /**
+  *@description The column header for event names.
+  */
+  eventName: 'Event name',
+  /**
+  *@description Text for the value of something
+  */
+  value: 'Value',
+  /**
+  *@description Data grid name for Event Display data grids
+  */
+  eventDisplay: 'Event display',
+};
+const str_ = i18n.i18n.registerUIStrings('media/EventDisplayTable.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @typedef {{
  *     id: string,
@@ -71,13 +92,13 @@ export class PlayerEventsView extends UI.Widget.VBox {
     this._dataGrid = this._createDataGrid([
       {
         id: MediaEventColumnKeys.Timestamp,
-        title: ls`Timestamp`,
+        title: i18nString(UIStrings.timestamp),
         weight: 1,
         sortable: false,
       },
-      {id: MediaEventColumnKeys.Event, title: ls`Event name`, weight: 2, sortable: false}, {
+      {id: MediaEventColumnKeys.Event, title: i18nString(UIStrings.eventName), weight: 2, sortable: false}, {
         id: MediaEventColumnKeys.Value,
-        title: ls`Value`,
+        title: i18nString(UIStrings.value),
         weight: 7,
         sortable: false,
       }
@@ -102,7 +123,7 @@ export class PlayerEventsView extends UI.Widget.VBox {
     // renderers, since they can change size, and this breaks the visible
     // element computation in ViewportDataGrid.
     const datagrid = new DataGrid.DataGrid.DataGridImpl({
-      displayName: ls`Event display`,
+      displayName: i18nString(UIStrings.eventDisplay),
       columns: gridColumnDescs,
       deleteCallback: undefined,
       editCallback: undefined,

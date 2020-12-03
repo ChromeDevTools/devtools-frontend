@@ -676,6 +676,7 @@ grd_files_debug_sources = [
   "front_end/media/EventTimelineView.js",
   "front_end/media/MainView.js",
   "front_end/media/MediaModel.js",
+  "front_end/media/ModuleUIStrings.js",
   "front_end/media/PlayerDetailView.js",
   "front_end/media/PlayerListView.js",
   "front_end/media/PlayerMessagesView.js",

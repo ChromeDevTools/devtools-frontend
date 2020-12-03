@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {PlayerEventsView} from './EventDisplayTable.js';
@@ -12,6 +12,42 @@ import {PlayerEvent} from './MediaModel.js';   // eslint-disable-line no-unused-
 import {PlayerMessagesView} from './PlayerMessagesView.js';
 import {PlayerPropertiesView} from './PlayerPropertiesView.js';
 
+export const UIStrings = {
+  /**
+  *@description Title of the 'Properties' tool in the sidebar of the elements tool
+  */
+  properties: 'Properties',
+  /**
+  *@description Button text for viewing properties.
+  */
+  playerProperties: 'Player properties',
+  /**
+  *@description Button text for viewing events.
+  */
+  events: 'Events',
+  /**
+  *@description Hover text for the Events button.
+  */
+  playerEvents: 'Player events',
+  /**
+  *@description Text in Network Item View of the Network panel
+  */
+  messages: 'Messages',
+  /**
+  *@description Column header for messages view.
+  */
+  playerMessages: 'Player messages',
+  /**
+  *@description Title for the timeline tab.
+  */
+  timeline: 'Timeline',
+  /**
+  *@description Hovertext for Timeline tab.
+  */
+  playerTimeline: 'Player timeline',
+};
+const str_ = i18n.i18n.registerUIStrings('media/PlayerDetailView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @enum {string}
  */
@@ -35,20 +71,19 @@ export class PlayerDetailView extends UI.TabbedPane.TabbedPane {
     this._timelineView = new PlayerEventsTimeline();
 
     this.appendTab(
-        PlayerDetailViewTabs.Properties, Common.UIString.UIString('Properties'), this._propertyView,
-        Common.UIString.UIString('Player properties'));
+        PlayerDetailViewTabs.Properties, i18nString(UIStrings.properties), this._propertyView,
+        i18nString(UIStrings.playerProperties));
 
     this.appendTab(
-        PlayerDetailViewTabs.Events, Common.UIString.UIString('Events'), this._eventView,
-        Common.UIString.UIString('Player events'));
+        PlayerDetailViewTabs.Events, i18nString(UIStrings.events), this._eventView, i18nString(UIStrings.playerEvents));
 
     this.appendTab(
-        PlayerDetailViewTabs.Messages, Common.UIString.UIString('Messages'), this._messageView,
-        Common.UIString.UIString('Player messages'));
+        PlayerDetailViewTabs.Messages, i18nString(UIStrings.messages), this._messageView,
+        i18nString(UIStrings.playerMessages));
 
     this.appendTab(
-        PlayerDetailViewTabs.Timeline, Common.UIString.UIString('Timeline'), this._timelineView,
-        Common.UIString.UIString('Player timeline'));
+        PlayerDetailViewTabs.Timeline, i18nString(UIStrings.timeline), this._timelineView,
+        i18nString(UIStrings.playerTimeline));
   }
 
   /**

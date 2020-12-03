@@ -2,9 +2,109 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description The type of media, for example - video, audio, or text. Capitalized.
+  */
+  video: 'Video',
+  /**
+  *@description The type of media, for example - video, audio, or text. Capitalized.
+  */
+  audio: 'Audio',
+  /**
+  *@description A video or audio stream - but capitalized.
+  */
+  track: 'Track',
+  /**
+  *@description A device that converts media files into playable streams of audio or video.
+  */
+  decoder: 'Decoder',
+  /**
+  *@description Title of the 'Properties' tool in the sidebar of the elements tool
+  */
+  properties: 'Properties',
+  /**
+  *@description Menu label for text tracks, it is followed by a number, like 'Text Track #1'
+  */
+  textTrack: 'Text track',
+  /**
+  *@description Place holder text stating that there are no text tracks on this player.
+  */
+  noTextTracks: 'No text tracks',
+  /**
+  *@description Media property giving the width x height of the video
+  */
+  resolution: 'Resolution',
+  /**
+  *@description Media property giving the file size of the media
+  */
+  fileSize: 'File size',
+  /**
+  *@description Media property giving the media file bitrate
+  */
+  bitrate: 'Bitrate',
+  /**
+  *@description Text for the duration of something
+  */
+  duration: 'Duration',
+  /**
+  *@description The label for a timestamp when a video was started.
+  */
+  startTime: 'Start time',
+  /**
+  *@description Media property signaling whether the media is streaming
+  */
+  streaming: 'Streaming',
+  /**
+  *@description Media property describing where the media is playing from.
+  */
+  playbackFrameUrl: 'Playback frame URL',
+  /**
+  *@description Media property giving the title of the frame where the media is embedded
+  */
+  playbackFrameTitle: 'Playback frame title',
+  /**
+  *@description Media property describing whether the file is single or cross origin in nature
+  */
+  singleoriginPlayback: 'Single-origin playback',
+  /**
+  *@description Media property describing support for range http headers
+  */
+  rangeHeaderSupport: 'Range header support',
+  /**
+  *@description Media property giving the media file frame rate
+  */
+  frameRate: 'Frame rate',
+  /**
+  *@description Media property giving the distance of the playback quality from the ideal playback.
+  */
+  videoPlaybackRoughness: 'Video playback roughness',
+  /**
+  *@description A score describing how choppy the video playback is.
+  */
+  videoFreezingScore: 'Video freezing score',
+  /**
+  *@description Media property giving the name of the decoder being used
+  */
+  decoderName: 'Decoder name',
+  /**
+  *@description There is no decoder
+  */
+  noDecoder: 'No decoder',
+  /**
+  *@description Media property signaling whether a hardware decoder is being used
+  */
+  hardwareDecoder: 'Hardware decoder',
+  /**
+  *@description Media property signaling whether the content is encrypted
+  */
+  decryptingDemuxer: 'Decrypting demuxer',
+};
+const str_ = i18n.i18n.registerUIStrings('media/PlayerPropertiesView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @enum {string} */
 export const PlayerPropertyKeys = {
   kResolution: 'kResolution',
@@ -116,7 +216,7 @@ export class FormattedPropertyRenderer extends PropertyRenderer {
    * @param {function(string):string} formatfunction
    */
   constructor(title, formatfunction) {
-    super(Common.UIString.UIString(title));
+    super(i18nString(title));
     this._formatfunction = formatfunction;
   }
 
@@ -140,7 +240,7 @@ export class DefaultPropertyRenderer extends PropertyRenderer {
    * @param {string} default_text
    */
   constructor(title, default_text) {
-    super(Common.UIString.UIString(title));
+    super(i18nString(title));
     this.changeContents(default_text);
   }
 }
@@ -150,7 +250,7 @@ export class DimensionPropertyRenderer extends PropertyRenderer {
    * @param {string} title
    */
   constructor(title) {
-    super(Common.UIString.UIString(title));
+    super(i18nString(title));
     this._width = 0;
     this._height = 0;
   }
@@ -263,8 +363,8 @@ export class AudioTrackManager extends TrackManager {
 
 
 const TrackTypeLocalized = {
-  Video: Common.UIString.UIString('Video'),
-  Audio: Common.UIString.UIString('Audio'),
+  Video: i18nString(UIStrings.video),
+  Audio: i18nString(UIStrings.audio),
 };
 
 
@@ -273,7 +373,7 @@ class GenericTrackMenu extends UI.TabbedPane.TabbedPane {
    * @param {string} decoderName
    * @param {string} trackName
    */
-  constructor(decoderName, trackName = ls`Track`) {
+  constructor(decoderName, trackName = i18nString(UIStrings.track)) {
     super();
     this._decoderName = decoderName;
     this._trackName = trackName;
@@ -284,7 +384,7 @@ class GenericTrackMenu extends UI.TabbedPane.TabbedPane {
    * @param {!UI.Widget.Widget} element
    */
   addNewTab(trackNumber, element) {
-    const localizedTrackLower = Common.UIString.UIString('track');
+    const localizedTrackLower = i18nString(UIStrings.track);
     this.appendTab(
         `Track${trackNumber}`,  // No need for localizing, internal ID.
         `${this._trackName} #${trackNumber}`, element, `${this._decoderName} ${localizedTrackLower} #${trackNumber}`);
@@ -299,9 +399,9 @@ class DecoderTrackMenu extends GenericTrackMenu {
   constructor(decoderName, informationalElement) {
     super(decoderName);
 
-    const decoderLocalized = Common.UIString.UIString('Decoder');
+    const decoderLocalized = i18nString(UIStrings.decoder);
     const title = `${decoderName} ${decoderLocalized}`;
-    const propertiesLocalized = Common.UIString.UIString('Properties');
+    const propertiesLocalized = i18nString(UIStrings.properties);
     const hoverText = `${title} ${propertiesLocalized}`;
     this.appendTab('DecoderProperties', title, informationalElement, hoverText);
   }
@@ -372,8 +472,8 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   _lazyCreateTrackTabs() {
     let textTracksTabs = this._textTrackTabs;
     if (textTracksTabs === null) {
-      const textTracks = new GenericTrackMenu(ls`Text track`);
-      textTracksTabs = new NoTracksPlaceholderMenu(textTracks, ls`No text tracks`);
+      const textTracks = new GenericTrackMenu(i18nString(UIStrings.textTrack));
+      textTracksTabs = new NoTracksPlaceholderMenu(textTracks, i18nString(UIStrings.noTextTracks));
       textTracksTabs.show(this.contentElement);
       this._textTracksTabs = textTracksTabs;
     }
@@ -451,68 +551,68 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
 
   populateAttributesAndElements() {
     /* Media properties */
-    const resolution = new PropertyRenderer(ls`Resolution`);
+    const resolution = new PropertyRenderer(i18nString(UIStrings.resolution));
     this._mediaElements.push(resolution);
     this._attributeMap.set(PlayerPropertyKeys.kResolution, resolution);
 
-    const fileSize = new FormattedPropertyRenderer(ls`File size`, this.formatFileSize);
+    const fileSize = new FormattedPropertyRenderer(i18nString(UIStrings.fileSize), this.formatFileSize);
     this._mediaElements.push(fileSize);
     this._attributeMap.set(PlayerPropertyKeys.kTotalBytes, fileSize);
 
-    const bitrate = new FormattedPropertyRenderer(ls`Bitrate`, this.formatKbps);
+    const bitrate = new FormattedPropertyRenderer(i18nString(UIStrings.bitrate), this.formatKbps);
     this._mediaElements.push(bitrate);
     this._attributeMap.set(PlayerPropertyKeys.kBitrate, bitrate);
 
-    const duration = new FormattedPropertyRenderer(ls`Duration`, this.formatTime);
+    const duration = new FormattedPropertyRenderer(i18nString(UIStrings.duration), this.formatTime);
     this._mediaElements.push(duration);
     this._attributeMap.set(PlayerPropertyKeys.kMaxDuration, duration);
 
-    const startTime = new PropertyRenderer(ls`Start time`);
+    const startTime = new PropertyRenderer(i18nString(UIStrings.startTime));
     this._mediaElements.push(startTime);
     this._attributeMap.set(PlayerPropertyKeys.kStartTime, startTime);
 
-    const streaming = new PropertyRenderer(ls`Streaming`);
+    const streaming = new PropertyRenderer(i18nString(UIStrings.streaming));
     this._mediaElements.push(streaming);
     this._attributeMap.set(PlayerPropertyKeys.kIsStreaming, streaming);
 
-    const frameUrl = new PropertyRenderer(ls`Playback frame URL`);
+    const frameUrl = new PropertyRenderer(i18nString(UIStrings.playbackFrameUrl));
     this._mediaElements.push(frameUrl);
     this._attributeMap.set(PlayerPropertyKeys.kFrameUrl, frameUrl);
 
-    const frameTitle = new PropertyRenderer(ls`Playback frame title`);
+    const frameTitle = new PropertyRenderer(i18nString(UIStrings.playbackFrameTitle));
     this._mediaElements.push(frameTitle);
     this._attributeMap.set(PlayerPropertyKeys.kFrameTitle, frameTitle);
 
-    const singleOrigin = new PropertyRenderer(ls`Single-origin playback`);
+    const singleOrigin = new PropertyRenderer(i18nString(UIStrings.singleoriginPlayback));
     this._mediaElements.push(singleOrigin);
     this._attributeMap.set(PlayerPropertyKeys.kIsSingleOrigin, singleOrigin);
 
-    const rangeHeaders = new PropertyRenderer(ls`Range header support`);
+    const rangeHeaders = new PropertyRenderer(i18nString(UIStrings.rangeHeaderSupport));
     this._mediaElements.push(rangeHeaders);
     this._attributeMap.set(PlayerPropertyKeys.kIsRangeHeaderSupported, rangeHeaders);
 
-    const frameRate = new PropertyRenderer(ls`Frame rate`);
+    const frameRate = new PropertyRenderer(i18nString(UIStrings.frameRate));
     this._mediaElements.push(frameRate);
     this._attributeMap.set(PlayerPropertyKeys.kFramerate, frameRate);
 
-    const roughness = new PropertyRenderer(ls`Video playback roughness`);
+    const roughness = new PropertyRenderer(i18nString(UIStrings.videoPlaybackRoughness));
     this._mediaElements.push(roughness);
     this._attributeMap.set(PlayerPropertyKeys.kVideoPlaybackRoughness, roughness);
 
-    const freezingScore = new PropertyRenderer(ls`Video freezing score`);
+    const freezingScore = new PropertyRenderer(i18nString(UIStrings.videoFreezingScore));
     this._mediaElements.push(freezingScore);
     this._attributeMap.set(PlayerPropertyKeys.kVideoPlaybackFreezing, freezingScore);
 
     /* Video Decoder Properties */
-    const decoderName = new DefaultPropertyRenderer(ls`Decoder name`, ls`No decoder`);
+    const decoderName = new DefaultPropertyRenderer(i18nString(UIStrings.decoderName), i18nString(UIStrings.noDecoder));
     this._videoDecoderElements.push(decoderName);
     this._attributeMap.set(PlayerPropertyKeys.kVideoDecoderName, decoderName);
 
-    const videoPlatformDecoder = new PropertyRenderer(ls`Hardware decoder`);
+    const videoPlatformDecoder = new PropertyRenderer(i18nString(UIStrings.hardwareDecoder));
     this._videoDecoderElements.push(videoPlatformDecoder);
     this._attributeMap.set(PlayerPropertyKeys.kIsPlatformVideoDecoder, videoPlatformDecoder);
 
-    const videoDDS = new PropertyRenderer(ls`Decrypting demuxer`);
+    const videoDDS = new PropertyRenderer(i18nString(UIStrings.decryptingDemuxer));
     this._videoDecoderElements.push(videoDDS);
     this._attributeMap.set(PlayerPropertyKeys.kIsVideoDecryptingDemuxerStream, videoDDS);
 
@@ -520,15 +620,16 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     this._attributeMap.set(PlayerPropertyKeys.kVideoTracks, videoTrackManager);
 
     /* Audio Decoder Properties */
-    const audioDecoder = new DefaultPropertyRenderer(ls`Decoder name`, ls`No decoder`);
+    const audioDecoder =
+        new DefaultPropertyRenderer(i18nString(UIStrings.decoderName), i18nString(UIStrings.noDecoder));
     this._audioDecoderElements.push(audioDecoder);
     this._attributeMap.set(PlayerPropertyKeys.kAudioDecoderName, audioDecoder);
 
-    const audioPlatformDecoder = new PropertyRenderer(ls`Hardware decoder`);
+    const audioPlatformDecoder = new PropertyRenderer(i18nString(UIStrings.hardwareDecoder));
     this._audioDecoderElements.push(audioPlatformDecoder);
     this._attributeMap.set(PlayerPropertyKeys.kIsPlatformAudioDecoder, audioPlatformDecoder);
 
-    const audioDDS = new PropertyRenderer(ls`Decrypting demuxer`);
+    const audioDDS = new PropertyRenderer(i18nString(UIStrings.decryptingDemuxer));
     this._audioDecoderElements.push(audioDDS);
     this._attributeMap.set(PlayerPropertyKeys.kIsAudioDecryptingDemuxerStream, audioDDS);
 

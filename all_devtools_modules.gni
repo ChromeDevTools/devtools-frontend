@@ -289,6 +289,7 @@ all_typescript_module_sources = [
   "media/EventTimelineView.js",
   "media/MainView.js",
   "media/MediaModel.js",
+  "media/ModuleUIStrings.js",
   "media/PlayerDetailView.js",
   "media/PlayerListView.js",
   "media/PlayerMessagesView.js",

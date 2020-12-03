@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_9df0e8cc86e20861ac1440068aa6b49a" desc="A context menu item in Styles panel to copy CSS rule">
     Copy rule
   </message>
+  <message name="IDS_DEVTOOLS_9fc2d28c05ed9eb1d75ba4465abf15a9" desc="Title of the 'Properties' tool in the sidebar of the elements tool">
+    Properties
+  </message>
   <message name="IDS_DEVTOOLS_ad0febe9f53e525bc9c13b7598572629" desc="Title of the Flexbox section in the Layout panel">
     Flexbox
   </message>

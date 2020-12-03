@@ -2,13 +2,33 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {MainView, TriggerDispatcher} from './MainView.js';  // eslint-disable-line no-unused-vars
 import {PlayerEvent} from './MediaModel.js';      // eslint-disable-line no-unused-vars
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
 
+export const UIStrings = {
+  /**
+  *@description A right-click context menu entry which when clicked causes the menu entry for that player to be removed.
+  */
+  hidePlayer: 'Hide player',
+  /**
+  *@description A right-click context menu entry which should keep the element selected, while hiding all other entries.
+  */
+  hideAllOthers: 'Hide all others',
+  /**
+  *@description Context menu entry which downloads the json dump when clicked
+  */
+  savePlayerInfo: 'Save player info',
+  /**
+  *@description Side-panel entry title text for the players section.
+  */
+  players: 'Players',
+};
+const str_ = i18n.i18n.registerUIStrings('media/PlayerListView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @typedef {{playerTitle: string, playerID: string, exists: boolean, playing: boolean, titleEdited: boolean}}
  */
@@ -54,9 +74,9 @@ export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
    */
   _rightClickContextMenu(playerID, event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.headerSection().appendItem(ls`Hide player`, this._hidePlayer.bind(this, playerID));
-    contextMenu.headerSection().appendItem(ls`Hide all others`, this._hideOthers.bind(this, playerID));
-    contextMenu.headerSection().appendItem(ls`Save player info`, this._savePlayer.bind(this, playerID));
+    contextMenu.headerSection().appendItem(i18nString(UIStrings.hidePlayer), this._hidePlayer.bind(this, playerID));
+    contextMenu.headerSection().appendItem(i18nString(UIStrings.hideAllOthers), this._hideOthers.bind(this, playerID));
+    contextMenu.headerSection().appendItem(i18nString(UIStrings.savePlayerInfo), this._savePlayer.bind(this, playerID));
     contextMenu.show();
     return true;
   }
@@ -98,7 +118,7 @@ export class PlayerListView extends UI.Widget.VBox {
     this._sidebarTree.registerRequiredCSS('media/playerListView.css', {enableLegacyPatching: true});
 
     // Players active in this tab.
-    this._playerList = this._addListSection(Common.UIString.UIString('Players'));
+    this._playerList = this._addListSection(i18nString(UIStrings.players));
     this._playerList.listItemElement.classList.add('player-entry-header');
   }
 

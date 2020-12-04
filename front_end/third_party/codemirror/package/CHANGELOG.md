@@ -1,3 +1,49 @@
+## 5.58.3 (2020-11-19)
+
+### Bug fixes
+
+Suppress quick-firing of blur-focus events when dragging and clicking on Internet Explorer.
+
+Fix the `insertAt` option to `addLineWidget` to actually allow the widget to be placed after all widgets for the line.
+
+[soy mode](https://codemirror.net/mode/soy/): Support `@Attribute` and element composition.
+
+[shell mode](https://codemirror.net/mode/shell/): Support heredoc quoting.
+
+## 5.58.2 (2020-10-23)
+
+### Bug fixes
+
+Fix a bug where horizontally scrolling the cursor into view sometimes failed with a non-fixed gutter.
+
+[julia mode](https://codemirror.net/mode/julia/): Fix an infinite recursion bug.
+
+## 5.58.1 (2020-09-23)
+
+### Bug fixes
+
+[placeholder addon](https://codemirror.net/doc/manual.html#addon_placeholder): Remove arrow function that ended up in the code.
+
+## 5.58.0 (2020-09-21)
+
+### Bug fixes
+
+Make backspace delete by code point, not glyph.
+
+Suppress flickering focus outline when clicking on scrollbars in Chrome.
+
+Fix a bug that prevented attributes added via `markText` from showing up unless the span also had some other styling.
+
+Suppress cut and paste context menu entries in readonly editors in Chrome.
+
+[placeholder addon](https://codemirror.net/doc/manual.html#addon_placeholder): Update placeholder visibility during composition.
+
+### New features
+
+Make it less cumbersome to style new lint message types.
+
+[vim bindings](https://codemirror.net/demo/vim.html): Support black hole register, `gn` and `gN`
+
 ## 5.57.0 (2020-08-20)
 
 ### Bug fixes

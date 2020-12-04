@@ -50,8 +50,14 @@ export class IDBDatabaseView extends UI.Widget.VBox {
     /** @type {!Database} */
     this._database;
 
+    this.registerRequiredCSS('resources/indexedDBViews.css', {enableLegacyPatching: false});
+    this.contentElement.classList.add('indexed-db-container');
+
     this._reportView = new UI.ReportView.ReportView(databaseName);
     this._reportView.show(this.contentElement);
+    this._reportView.registerRequiredCSS('resources/indexedDBViews.css', {enableLegacyPatching: false});
+    this._reportView.element.classList.add('indexed-db-header');
+
 
     const bodySection = this._reportView.appendSection('');
     this._securityOriginElement = bodySection.appendField(ls`Security origin`);

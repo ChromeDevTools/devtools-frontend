@@ -15,6 +15,7 @@ export class AppManifestView extends UI.Widget.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('resources/appManifestView.css', {enableLegacyPatching: false});
+    this.contentElement.classList.add('manifest-container');
 
     Common.Settings.Settings.instance()
         .moduleSetting('colorFormat')
@@ -29,6 +30,7 @@ export class AppManifestView extends UI.Widget.VBox {
 
     this._reportView = new UI.ReportView.ReportView(Common.UIString.UIString('App Manifest'));
     this._reportView.registerRequiredCSS('resources/appManifestView.css', {enableLegacyPatching: false});
+    this._reportView.element.classList.add('manifest-view-header');
     this._reportView.show(this.contentElement);
     this._reportView.hideWidget();
 

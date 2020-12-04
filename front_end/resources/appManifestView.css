@@ -6,3 +6,11 @@
 .report-field-name {
   flex-basis: 152px;
 }
+
+.manifest-view-header {
+  min-width: 400px;
+}
+
+.manifest-container {
+  overflow: auto;
+}

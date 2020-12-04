@@ -75,6 +75,14 @@
   unicode-bidi: -webkit-isolate;
 }
 
+.indexed-db-container {
+  overflow: auto;
+}
+
+.indexed-db-header {
+  min-width: 400px;
+}
+
 .source-code.indexed-db-key-path {
   font-size: unset !important;
 }

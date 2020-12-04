@@ -335,6 +335,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
                   data-crumb="true"
                 >
                   <a href="#"
+                    draggable=false
                     class="crumb-link"
                     @click=${this.onCrumbClick(crumb.node)}
                     @mousemove=${this.onCrumbMouseMove(crumb.node)}

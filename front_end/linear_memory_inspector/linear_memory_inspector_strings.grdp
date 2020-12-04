@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_93e8992f1c3e014b608bf11f62cbb43e" desc="Tooltip text that appears when hovering over an unsigned interpretation of the memory under the Value Interpreter">
+    Unsigned value
+  </message>
   <message name="IDS_DEVTOOLS_95e7a9b8fdf40d516a83634a580fc748" desc="Text that describes the Endianness setting that can be selected in the select item in the Linear Memory Inspector">
     Little Endian
   </message>
@@ -50,6 +53,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a4b86d60a07398d42aa20fac81ce5427" desc="Text that describes the Endianness setting that can be selected in the select item in the Linear Memory Inspector">
     Big Endian
+  </message>
+  <message name="IDS_DEVTOOLS_bdb5f47ccff5c99439b6818bd235d496" desc="Tooltip text that appears when hovering over a signed interpretation of the memory under the Value Interpreter">
+    Signed value
   </message>
   <message name="IDS_DEVTOOLS_dd2ca041b7e67f1d5358c8debaa2eba5" desc="Tooltip text that appears when hovering over a valid address in the address line in the Linear Memory Inspector">
     Enter address

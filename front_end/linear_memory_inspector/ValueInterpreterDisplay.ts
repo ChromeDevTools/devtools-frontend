@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {Endianness, format, isNumber, isValidMode, typeHasSignedNotation, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
+import {Endianness, format, isNumber, isValidMode, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 
+import ls = Common.ls;
 const {render, html} = LitHtml;
 
 const DEFAULT_MODE_MAPPING = new Map([
@@ -68,12 +70,16 @@ export class ValueInterpreterDisplay extends HTMLElement {
         .value-types {
           width: 100%;
           display: grid;
-          grid-template-columns: auto auto 1fr 1fr;
+          grid-template-columns: auto auto 1fr;
           grid-column-gap: 24px;
           grid-row-gap: 4px;
           overflow: hidden;
           padding-left: 12px;
           padding-right: 12px;
+        }
+
+        .value-type-cell-multiple-values {
+          gap: 5px;
         }
 
         .value-type-cell {
@@ -82,10 +88,6 @@ export class ValueInterpreterDisplay extends HTMLElement {
           white-space: nowrap;
           overflow: hidden;
           display: flex;
-        }
-
-        .value-type-cell-no-sign {
-          grid-column: 3 / 5;
         }
 
         .value-type-cell-no-mode {
@@ -108,6 +110,10 @@ export class ValueInterpreterDisplay extends HTMLElement {
     }
     const localizedType = valueTypeToLocalizedString(type);
     const localizedMode = valueTypeModeToLocalizedString(mode);
+
+    const unsignedValue = this.parse({type, signed: false});
+    const signedValue = this.parse({type, signed: true});
+    const showSignedAndUnsigned = signedValue !== unsignedValue;
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -118,12 +124,15 @@ export class ValueInterpreterDisplay extends HTMLElement {
         html`
           <span class="value-type-cell-no-mode value-type-cell">${localizedType}</span>`}
 
-        ${typeHasSignedNotation(type) ?
+        ${showSignedAndUnsigned ?
         html`
-          <span class="value-type-cell" data-value="true">+ ${this.parse({type, signed: false})}</span>
-          <span class="value-type-cell" data-value="true">± ${this.parse({type, signed: true})}</span>` :
+          <div class="value-type-cell-multiple-values value-type-cell">
+            <span data-value="true" title=${ls`Unsigned value`}>${unsignedValue}</span>
+            <span>/<span>
+            <span data-value="true" title=${ls`Signed value`}>${signedValue}</span>
+          </div>` :
         html`
-          <span class="value-type-cell-no-sign value-type-cell" data-value="true">${this.parse({type})}</span>`}
+          <span class="value-type-cell" data-value="true">${unsignedValue}</span>`}
     `;
     // clang-format on
   }
@@ -131,7 +140,8 @@ export class ValueInterpreterDisplay extends HTMLElement {
   private parse(data: {type: ValueType, signed?: boolean}) {
     const mode = this.valueTypeModeConfig.get(data.type);
     if (!mode) {
-      throw new Error(`No known way of showing value for ${data.type}`);
+      console.error(`No known way of showing value for ${data.type}`);
+      return 'N/A';
     }
 
     return format(

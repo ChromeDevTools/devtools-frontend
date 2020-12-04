@@ -188,7 +188,7 @@ describe('ValueInterpreterDisplay', () => {
     assert.lengthOf(dataValues, 3);
 
     const actualValues = Array.from(dataValues).map(x => x.innerText);
-    const expectedValues = ['+ 33793', '± -31743', '88328.01'];
+    const expectedValues = ['33793', '-31743', '88328.01'];
     assert.deepStrictEqual(actualValues, expectedValues);
   });
 });

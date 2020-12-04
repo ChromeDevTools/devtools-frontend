@@ -88,18 +88,6 @@ export function isValidMode(type: ValueType, mode: ValueTypeMode) {
   }
 }
 
-export function typeHasSignedNotation(type: ValueType) {
-  switch (type) {
-    case ValueType.Int8:
-    case ValueType.Int16:
-    case ValueType.Int32:
-    case ValueType.Int64:
-      return true;
-    default:
-      return false;
-  }
-}
-
 export function isNumber(type: ValueType) {
   switch (type) {
     case ValueType.Int8:

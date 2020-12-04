@@ -11,6 +11,7 @@ export interface LinearMemoryViewerData {
   memory: Uint8Array;
   address: number;
   memoryOffset: number;
+  focus: boolean;
 }
 
 export class ByteSelectedEvent extends Event {
@@ -45,6 +46,10 @@ export class LinearMemoryViewer extends HTMLElement {
   private numRows = 1;
   private numBytesInRow = LinearMemoryViewer.BYTE_GROUP_SIZE;
 
+  private focusOnByte = true;
+
+  private lastKeyUpdateSent: number|undefined = undefined;
+
   set data(data: LinearMemoryViewerData) {
     if (data.address < data.memoryOffset || data.address > data.memoryOffset + data.memory.length || data.address < 0) {
       throw new Error('Address is out of bounds.');
@@ -57,6 +62,7 @@ export class LinearMemoryViewer extends HTMLElement {
     this.memory = data.memory;
     this.address = data.address;
     this.memoryOffset = data.memoryOffset;
+    this.focusOnByte = data.focus;
     this.update();
   }
 
@@ -68,7 +74,17 @@ export class LinearMemoryViewer extends HTMLElement {
   private update() {
     this.updateDimensions();
     this.render();
+    this.focusOnView();
     this.engageResizeObserver();
+  }
+
+  private focusOnView() {
+    if (this.focusOnByte) {
+      const view = this.shadow.querySelector<HTMLDivElement>('.view');
+      if (view) {
+        view.focus();
+      }
+    }
   }
 
   private resize() {
@@ -152,6 +168,7 @@ export class LinearMemoryViewer extends HTMLElement {
           text-overflow: ellipsis;
           box-sizing: border-box;
           background: var(--color-background);
+          outline: none;
         }
 
         .row {
@@ -202,10 +219,33 @@ export class LinearMemoryViewer extends HTMLElement {
           margin: 0px 4px 0px 4px;
         }
       </style>
-      <div class="view">
+      <div class="view" tabindex="0" @keydown=${this.onKeyDown}>
           ${this.renderView()}
       </div>
       `, this.shadow, {eventContext: this});
+  }
+
+  private onKeyDown(event: Event) {
+    const keyboardEvent = event as KeyboardEvent;
+    let newAddress = undefined;
+    if (keyboardEvent.code === 'ArrowUp') {
+      newAddress = this.address - this.numBytesInRow;
+    } else if (keyboardEvent.code === 'ArrowDown') {
+      newAddress = this.address + this.numBytesInRow;
+    } else if (keyboardEvent.code === 'ArrowLeft') {
+      newAddress = this.address - 1;
+    } else if (keyboardEvent.code === 'ArrowRight') {
+      newAddress = this.address + 1;
+    } else if (keyboardEvent.code === 'PageUp') {
+      newAddress = this.address - this.numBytesInRow * this.numRows;
+    } else if (keyboardEvent.code === 'PageDown') {
+      newAddress = this.address + this.numBytesInRow * this.numRows;
+    }
+
+    if (newAddress !== undefined && newAddress !== this.lastKeyUpdateSent) {
+      this.lastKeyUpdateSent = newAddress;
+      this.dispatchEvent(new ByteSelectedEvent(newAddress));
+    }
   }
 
   private renderView() {
@@ -248,7 +288,8 @@ export class LinearMemoryViewer extends HTMLElement {
       };
       const isSelectableCell = i < this.memory.length;
       const byteValue = isSelectableCell ? html`${toHexString({number: this.memory[i], pad: 2, prefix: false})}` : '';
-      const onSelectedByte = isSelectableCell ? this.onSelectedByte.bind(this, i + this.memoryOffset) : '';
+      const actualIndex = i + this.memoryOffset;
+      const onSelectedByte = isSelectableCell ? this.onSelectedByte.bind(this, actualIndex) : '';
       cells.push(html`<span class="${LitHtml.Directives.classMap(classMap)}" @click=${onSelectedByte}>${byteValue}</span>`);
     }
     return html`${cells}`;

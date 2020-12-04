@@ -4,7 +4,7 @@
 
 import * as LinearMemoryInspector from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
 
-import {assertElement, assertElements, assertShadowRoot, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertElement, assertElements, assertShadowRoot, getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
@@ -45,6 +45,7 @@ describe('LinearMemoryViewer', () => {
       memory: new Uint8Array(memory),
       address: 2,
       memoryOffset: 0,
+      focus: true,
     };
 
     return data;
@@ -59,6 +60,31 @@ describe('LinearMemoryViewer', () => {
     assert.isNotEmpty(cellsPerRow);
     assertElements(cellsPerRow, HTMLSpanElement);
     return cellsPerRow;
+  }
+
+  function assertSelectedCellIsHighlighted(
+      component: LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer, cellSelector: string, index: number) {
+    assertShadowRoot(component.shadowRoot);
+    const selectedCells = component.shadowRoot.querySelectorAll(cellSelector + '.selected');
+    assert.lengthOf(selectedCells, 1);
+    assertElements(selectedCells, HTMLSpanElement);
+    const selectedCell = selectedCells[0];
+
+    const allCells = getCellsPerRow(component, cellSelector);
+    assert.isAtLeast(allCells.length, index);
+    const cellAtAddress = allCells[index];
+
+    assert.strictEqual(selectedCell, cellAtAddress);
+  }
+
+  async function assertEventTriggeredOnArrowNavigation(
+      component: LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer, code: string, expectedAddress: number) {
+    const eventPromise =
+        getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byte-selected');
+    const view = getElementWithinComponent(component, '.view', HTMLDivElement);
+    view.dispatchEvent(new KeyboardEvent('keydown', {'code': code}));
+    const event = await eventPromise;
+    assert.strictEqual(event.data, expectedAddress);
   }
 
   it('correctly renders bytes given a memory offset greater than zero', async () => {
@@ -93,158 +119,190 @@ describe('LinearMemoryViewer', () => {
     assert.isNotNull(await eventPromise);
   });
 
-  describe('address view', () => {
-    it('renders one address per row', async () => {
-      const {component} = await setUpComponent();
-      assertShadowRoot(component.shadowRoot);
-      const rows = component.shadowRoot.querySelectorAll(VIEWER_ROW_SELECTOR);
-      const addresses = component.shadowRoot.querySelectorAll(VIEWER_ADDRESS_SELECTOR);
-      assert.isNotEmpty(rows);
-      assert.strictEqual(rows.length, addresses.length);
-    });
-
-    it('renders addresses depending on the bytes per row', async () => {
-      const {component, data} = await setUpComponent();
-      const bytesPerRow = getCellsPerRow(component, VIEWER_BYTE_CELL_SELECTOR);
-      const numBytesPerRow = bytesPerRow.length;
-
-      assertShadowRoot(component.shadowRoot);
-      const addresses = component.shadowRoot.querySelectorAll(VIEWER_ADDRESS_SELECTOR);
-      assert.isNotEmpty(addresses);
-
-      for (let i = 0, currentAddress = data.memoryOffset; i < addresses.length; currentAddress += numBytesPerRow, ++i) {
-        const addressElement = addresses[i];
-        assertElement(addressElement, HTMLSpanElement);
-
-        const hex = currentAddress.toString(16).toUpperCase().padStart(8, '0');
-        assert.strictEqual(addressElement.innerText, hex);
-      }
-    });
+  it('renders one address per row', async () => {
+    const {component} = await setUpComponent();
+    assertShadowRoot(component.shadowRoot);
+    const rows = component.shadowRoot.querySelectorAll(VIEWER_ROW_SELECTOR);
+    const addresses = component.shadowRoot.querySelectorAll(VIEWER_ADDRESS_SELECTOR);
+    assert.isNotEmpty(rows);
+    assert.strictEqual(rows.length, addresses.length);
   });
 
-  describe('bytes view', () => {
-    it('renders unsplittable byte group', async () => {
-      const thinWrapper = document.createElement('div');
-      thinWrapper.style.width = '10px';
+  it('renders addresses depending on the bytes per row', async () => {
+    const {component, data} = await setUpComponent();
+    const bytesPerRow = getCellsPerRow(component, VIEWER_BYTE_CELL_SELECTOR);
+    const numBytesPerRow = bytesPerRow.length;
 
-      const component = new LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer();
-      component.data = createComponentData();
-      thinWrapper.appendChild(component);
-      renderElementIntoDOM(thinWrapper);
-      const bytesPerRow = getCellsPerRow(component, VIEWER_BYTE_CELL_SELECTOR);
-      assert.strictEqual(bytesPerRow.length, NUM_BYTES_PER_GROUP);
-    });
+    assertShadowRoot(component.shadowRoot);
+    const addresses = component.shadowRoot.querySelectorAll(VIEWER_ADDRESS_SELECTOR);
+    assert.isNotEmpty(addresses);
 
-    it('renders byte values corresponding to memory set', async () => {
-      const {component, data} = await setUpComponent();
-      assertShadowRoot(component.shadowRoot);
-      const bytes = component.shadowRoot.querySelectorAll(VIEWER_BYTE_CELL_SELECTOR);
-      assertElements(bytes, HTMLSpanElement);
+    for (let i = 0, currentAddress = data.memoryOffset; i < addresses.length; currentAddress += numBytesPerRow, ++i) {
+      const addressElement = addresses[i];
+      assertElement(addressElement, HTMLSpanElement);
 
-      const memory = data.memory;
-      const bytesPerPage = bytes.length;
-      const memoryStartAddress = Math.floor(data.address / bytesPerPage) * bytesPerPage;
-      assert.isAtMost(bytes.length, memory.length);
-      for (let i = 0; i < bytes.length; ++i) {
-        const hex = memory[memoryStartAddress + i].toString(16).toUpperCase().padStart(2, '0');
-        assert.strictEqual(bytes[i].innerText, hex);
-      }
-    });
-
-    it('triggers an event on selecting a byte value', async () => {
-      const {component, data} = await setUpComponent();
-      assertShadowRoot(component.shadowRoot);
-
-      const byte = component.shadowRoot.querySelector(VIEWER_BYTE_CELL_SELECTOR);
-      assertElement(byte, HTMLSpanElement);
-
-      const eventPromise =
-          getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byte-selected');
-      byte.click();
-      const {data: address} = await eventPromise;
-      assert.strictEqual(address, data.memoryOffset);
-    });
-  });
-
-  describe('ascii view', () => {
-    it('renders as many ascii values as byte values in a row', async () => {
-      const {component} = await setUpComponent();
-      const bytes = getCellsPerRow(component, VIEWER_BYTE_CELL_SELECTOR);
-      const ascii = getCellsPerRow(component, VIEWER_TEXT_CELL_SELECTOR);
-
-      assert.strictEqual(bytes.length, ascii.length);
-    });
-
-    it('renders ascii values corresponding to bytes', async () => {
-      const {component} = await setUpComponent();
-      assertShadowRoot(component.shadowRoot);
-
-      const asciiValues = component.shadowRoot.querySelectorAll(VIEWER_TEXT_CELL_SELECTOR);
-      const byteValues = component.shadowRoot.querySelectorAll(VIEWER_BYTE_CELL_SELECTOR);
-      assertElements(asciiValues, HTMLSpanElement);
-      assertElements(byteValues, HTMLSpanElement);
-      assert.strictEqual(byteValues.length, asciiValues.length);
-
-      const smallestPrintableAscii = 20;
-      const largestPrintableAscii = 127;
-
-      for (let i = 0; i < byteValues.length; ++i) {
-        const byteValue = parseInt(byteValues[i].innerText, 16);
-        const asciiText = asciiValues[i].innerText;
-        if (byteValue < smallestPrintableAscii || byteValue > largestPrintableAscii) {
-          assert.strictEqual(asciiText, '.');
-        } else {
-          assert.strictEqual(asciiText, String.fromCharCode(byteValue).trim());
-        }
-      }
-    });
-
-    it('triggers an event on selecting an ascii value', async () => {
-      const {component, data} = await setUpComponent();
-      assertShadowRoot(component.shadowRoot);
-
-      const asciiCell = component.shadowRoot.querySelector(VIEWER_TEXT_CELL_SELECTOR);
-      assertElement(asciiCell, HTMLSpanElement);
-
-      const eventPromise =
-          getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byte-selected');
-      asciiCell.click();
-      const {data: address} = await eventPromise;
-      assert.strictEqual(address, data.memoryOffset);
-    });
-  });
-
-  describe('setting the address', () => {
-    function assertSelectedCellIsHighlighted(
-        component: LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer, cellSelector: string, index: number) {
-      assertShadowRoot(component.shadowRoot);
-      const selectedCells = component.shadowRoot.querySelectorAll(cellSelector + '.selected');
-      assert.lengthOf(selectedCells, 1);
-      assertElements(selectedCells, HTMLSpanElement);
-      const selectedCell = selectedCells[0];
-
-      const allCells = getCellsPerRow(component, cellSelector);
-      assert.isAtLeast(allCells.length, index);
-      const cellAtAddress = allCells[index];
-
-      assert.strictEqual(selectedCell, cellAtAddress);
+      const hex = currentAddress.toString(16).toUpperCase().padStart(8, '0');
+      assert.strictEqual(addressElement.innerText, hex);
     }
+  });
 
-    it('highlights selected byte value', async () => {
-      const component = new LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer();
-      const memory = new Uint8Array([2, 3, 5, 3]);
-      const address = 2;
+  it('renders unsplittable byte group', async () => {
+    const thinWrapper = document.createElement('div');
+    thinWrapper.style.width = '10px';
 
-      renderElementIntoDOM(component);
-      component.data = {
-        memory,
-        address,
-        memoryOffset: 0,
-      };
+    const component = new LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer();
+    component.data = createComponentData();
+    thinWrapper.appendChild(component);
+    renderElementIntoDOM(thinWrapper);
+    const bytesPerRow = getCellsPerRow(component, VIEWER_BYTE_CELL_SELECTOR);
+    assert.strictEqual(bytesPerRow.length, NUM_BYTES_PER_GROUP);
+  });
 
-      assertSelectedCellIsHighlighted(component, VIEWER_BYTE_CELL_SELECTOR, address);
-      assertSelectedCellIsHighlighted(component, VIEWER_TEXT_CELL_SELECTOR, address);
-      assertSelectedCellIsHighlighted(component, VIEWER_ADDRESS_SELECTOR, 0);
-    });
+  it('renders byte values corresponding to memory set', async () => {
+    const {component, data} = await setUpComponent();
+    assertShadowRoot(component.shadowRoot);
+    const bytes = component.shadowRoot.querySelectorAll(VIEWER_BYTE_CELL_SELECTOR);
+    assertElements(bytes, HTMLSpanElement);
+
+    const memory = data.memory;
+    const bytesPerPage = bytes.length;
+    const memoryStartAddress = Math.floor(data.address / bytesPerPage) * bytesPerPage;
+    assert.isAtMost(bytes.length, memory.length);
+    for (let i = 0; i < bytes.length; ++i) {
+      const hex = memory[memoryStartAddress + i].toString(16).toUpperCase().padStart(2, '0');
+      assert.strictEqual(bytes[i].innerText, hex);
+    }
+  });
+
+  it('triggers an event on selecting a byte value', async () => {
+    const {component, data} = await setUpComponent();
+    assertShadowRoot(component.shadowRoot);
+
+    const byte = component.shadowRoot.querySelector(VIEWER_BYTE_CELL_SELECTOR);
+    assertElement(byte, HTMLSpanElement);
+
+    const eventPromise =
+        getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byte-selected');
+    byte.click();
+    const {data: address} = await eventPromise;
+    assert.strictEqual(address, data.memoryOffset);
+  });
+
+  it('renders as many ascii values as byte values in a row', async () => {
+    const {component} = await setUpComponent();
+    const bytes = getCellsPerRow(component, VIEWER_BYTE_CELL_SELECTOR);
+    const ascii = getCellsPerRow(component, VIEWER_TEXT_CELL_SELECTOR);
+
+    assert.strictEqual(bytes.length, ascii.length);
+  });
+
+  it('renders ascii values corresponding to bytes', async () => {
+    const {component} = await setUpComponent();
+    assertShadowRoot(component.shadowRoot);
+
+    const asciiValues = component.shadowRoot.querySelectorAll(VIEWER_TEXT_CELL_SELECTOR);
+    const byteValues = component.shadowRoot.querySelectorAll(VIEWER_BYTE_CELL_SELECTOR);
+    assertElements(asciiValues, HTMLSpanElement);
+    assertElements(byteValues, HTMLSpanElement);
+    assert.strictEqual(byteValues.length, asciiValues.length);
+
+    const smallestPrintableAscii = 20;
+    const largestPrintableAscii = 127;
+
+    for (let i = 0; i < byteValues.length; ++i) {
+      const byteValue = parseInt(byteValues[i].innerText, 16);
+      const asciiText = asciiValues[i].innerText;
+      if (byteValue < smallestPrintableAscii || byteValue > largestPrintableAscii) {
+        assert.strictEqual(asciiText, '.');
+      } else {
+        assert.strictEqual(asciiText, String.fromCharCode(byteValue).trim());
+      }
+    }
+  });
+
+  it('triggers an event on selecting an ascii value', async () => {
+    const {component, data} = await setUpComponent();
+    assertShadowRoot(component.shadowRoot);
+
+    const asciiCell = component.shadowRoot.querySelector(VIEWER_TEXT_CELL_SELECTOR);
+    assertElement(asciiCell, HTMLSpanElement);
+
+    const eventPromise =
+        getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(component, 'byte-selected');
+    asciiCell.click();
+    const {data: address} = await eventPromise;
+    assert.strictEqual(address, data.memoryOffset);
+  });
+
+  it('highlights selected byte value on setting an address', async () => {
+    const component = new LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer();
+    const memory = new Uint8Array([2, 3, 5, 3]);
+    const address = 2;
+
+    renderElementIntoDOM(component);
+    component.data = {
+      memory,
+      address,
+      memoryOffset: 0,
+      focus: true,
+    };
+
+    assertSelectedCellIsHighlighted(component, VIEWER_BYTE_CELL_SELECTOR, address);
+    assertSelectedCellIsHighlighted(component, VIEWER_TEXT_CELL_SELECTOR, address);
+    assertSelectedCellIsHighlighted(component, VIEWER_ADDRESS_SELECTOR, 0);
+  });
+
+  it('triggers an event on arrow down', async () => {
+    const {component, data} = await setUpComponent();
+    const addressBefore = data.address;
+    const expectedAddress = addressBefore - 1;
+    await assertEventTriggeredOnArrowNavigation(component, 'ArrowLeft', expectedAddress);
+  });
+
+  it('triggers an event on arrow right', async () => {
+    const {component, data} = await setUpComponent();
+    const addressBefore = data.address;
+    const expectedAddress = addressBefore + 1;
+    await assertEventTriggeredOnArrowNavigation(component, 'ArrowRight', expectedAddress);
+  });
+
+  it('triggers an event on arrow down', async () => {
+    const {component, data} = await setUpComponent();
+    const addressBefore = data.address;
+
+    const bytesPerRow = getCellsPerRow(component, VIEWER_BYTE_CELL_SELECTOR);
+    const numBytesPerRow = bytesPerRow.length;
+    const expectedAddress = addressBefore + numBytesPerRow;
+    await assertEventTriggeredOnArrowNavigation(component, 'ArrowDown', expectedAddress);
+  });
+
+  it('triggers an event on arrow up', async () => {
+    const {component, data} = await setUpComponent();
+    const addressBefore = data.address;
+
+    const bytesPerRow = getCellsPerRow(component, VIEWER_BYTE_CELL_SELECTOR);
+    const numBytesPerRow = bytesPerRow.length;
+    const expectedAddress = addressBefore - numBytesPerRow;
+    await assertEventTriggeredOnArrowNavigation(component, 'ArrowUp', expectedAddress);
+  });
+
+  it('triggers an event on page down', async () => {
+    const {component, data} = await setUpComponent();
+    const addressBefore = data.address;
+
+    const bytes = getElementsWithinComponent(component, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
+    const numBytesPerPage = bytes.length;
+    const expectedAddress = addressBefore + numBytesPerPage;
+    await assertEventTriggeredOnArrowNavigation(component, 'PageDown', expectedAddress);
+  });
+
+  it('triggers an event on page down', async () => {
+    const {component, data} = await setUpComponent();
+    const addressBefore = data.address;
+
+    const bytes = getElementsWithinComponent(component, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
+    const numBytesPerPage = bytes.length;
+    const expectedAddress = addressBefore - numBytesPerPage;
+    await assertEventTriggeredOnArrowNavigation(component, 'PageUp', expectedAddress);
   });
 });

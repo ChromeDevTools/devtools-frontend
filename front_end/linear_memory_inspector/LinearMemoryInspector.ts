@@ -147,7 +147,7 @@ export class LinearMemoryInspector extends HTMLElement {
           @page-navigation=${this.navigatePage}
           @history-navigation=${this.navigateHistory}></devtools-linear-memory-inspector-navigator>
         <devtools-linear-memory-inspector-viewer
-          .data=${{memory: this.memory.slice(start - this.memoryOffset, end - this.memoryOffset), address: this.address, memoryOffset: start} as LinearMemoryViewerData}
+          .data=${{memory: this.memory.slice(start - this.memoryOffset, end - this.memoryOffset), address: this.address, memoryOffset: start, focus: this.currentNavigatorMode === Mode.Submitted} as LinearMemoryViewerData}
           @byte-selected=${this.onByteSelected}
           @resize=${this.resize}>
         </devtools-linear-memory-inspector-viewer>
@@ -175,7 +175,8 @@ export class LinearMemoryInspector extends HTMLElement {
 
   private onByteSelected(e: ByteSelectedEvent) {
     this.currentNavigatorMode = Mode.Submitted;
-    this.jumpToAddress(e.data);
+    const addressInRange = Math.max(0, Math.min(e.data, this.outerMemoryLength - 1));
+    this.jumpToAddress(addressInRange);
   }
 
   private onEndiannessChanged(e: EndiannessChangedEvent) {

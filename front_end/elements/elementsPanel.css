@@ -34,7 +34,7 @@
 }
 
 .style-panes-wrapper {
-  overflow: scroll;
+  overflow: hidden scroll;
 }
 
 .style-panes-wrapper > div:not(:last-child) {

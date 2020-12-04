@@ -175,6 +175,7 @@ export class SoftContextMenu {
       const wrapper = menuItemElement.createChild('div', 'soft-context-menu-custom-item');
       wrapper.appendChild(item.element);
       detailsForElement.customElement = /** @type {!HTMLElement} */ (item.element);
+      this.detailsForElementMap.set(menuItemElement, detailsForElement);
       return menuItemElement;
     }
 

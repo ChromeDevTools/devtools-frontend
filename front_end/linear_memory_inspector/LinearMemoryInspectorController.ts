@@ -108,7 +108,7 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     // TODO(kimanh): scriptIds are not unique, find a different way to uniquely identify this object
     if (this.scriptIdToRemoteObject.has(scriptId)) {
       this.paneInstance.reveal(scriptId);
-      // TODO(kimanh): refresh view to get the latest updates.
+      UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
       return;
     }
     let objBoundToLMI = await this.getObjectWithExtendedLifetime(obj);

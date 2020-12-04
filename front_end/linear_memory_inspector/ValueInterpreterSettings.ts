@@ -15,14 +15,12 @@ export interface ValueInterpreterSettingsData {
 const enum ValueTypeGroup {
   Integer = 'Integer',
   Float = 'Floating point',
-  Other = 'Other'
 }
 
 const GROUP_TO_TYPES = new Map(
     [
       [ValueTypeGroup.Integer, [ValueType.Int8, ValueType.Int16, ValueType.Int32, ValueType.Int64]],
       [ValueTypeGroup.Float, [ValueType.Float32, ValueType.Float64]],
-      [ValueTypeGroup.Other, [ValueType.String]],
     ],
 );
 

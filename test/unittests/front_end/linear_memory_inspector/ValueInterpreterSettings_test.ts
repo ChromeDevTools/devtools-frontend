@@ -36,7 +36,6 @@ describe('ValueInterpreterSettings', () => {
       LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int64,
       LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
       LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.String,
     ]);
   });
 
@@ -85,7 +84,6 @@ describe('ValueInterpreterSettings', () => {
       LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int64,
       LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
       LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
-      LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.String,
     ];
     const expectedUncheckedTitles = new Set(allTypesTitle.filter(title => !expectedTitles.has(title)));
     assert.deepEqual(uncheckedTitles, expectedUncheckedTitles);

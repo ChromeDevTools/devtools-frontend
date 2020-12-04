@@ -7,11 +7,17 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {LazyUint8Array, LinearMemoryInspectorPaneImpl} from './LinearMemoryInspectorPane.js';
+import {LinearMemoryInspectorPaneImpl} from './LinearMemoryInspectorPane.js';
 
 const LINEAR_MEMORY_INSPECTOR_OBJECT_GROUP = 'linear-memory-inspector';
+const MEMORY_TRANSFER_MIN_CHUNK_SIZE = 1000;
 
 let controllerInstance: LinearMemoryInspectorController;
+
+export interface LazyUint8Array {
+  getRange(start: number, end: number): Promise<Uint8Array>;
+  length(): number;
+}
 
 export class RemoteArrayWrapper implements LazyUint8Array {
   private remoteArray: SDK.RemoteObject.RemoteArray;
@@ -62,6 +68,28 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     }
     controllerInstance = new LinearMemoryInspectorController();
     return controllerInstance;
+  }
+
+  static async getMemoryForAddress(memoryWrapper: LazyUint8Array, address: number) {
+    // Provide a chunk of memory that covers the address to show and some before and after
+    // as 1. the address shown is not necessarily at the beginning of a page and
+    // 2. to allow for fewer memory requests.
+    const memoryChunkStart = Math.max(0, address - MEMORY_TRANSFER_MIN_CHUNK_SIZE / 2);
+    const memoryChunkEnd = memoryChunkStart + MEMORY_TRANSFER_MIN_CHUNK_SIZE;
+    const memory = await memoryWrapper.getRange(memoryChunkStart, memoryChunkEnd);
+    return {memory: memory, offset: memoryChunkStart};
+  }
+
+  static async getMemoryRange(memoryWrapper: LazyUint8Array, start: number, end: number) {
+    // Check that the requested start is within bounds.
+    // If the requested end is larger than the actual
+    // memory, it will be automatically capped when
+    // requesting the range.
+    if (start < 0 || start > end || start >= memoryWrapper.length()) {
+      throw new Error('Requested range is out of bounds.');
+    }
+    const chunkEnd = Math.max(end, start + MEMORY_TRANSFER_MIN_CHUNK_SIZE);
+    return await memoryWrapper.getRange(start, chunkEnd);
   }
 
   async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address: number) {

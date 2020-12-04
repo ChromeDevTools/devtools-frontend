@@ -12,7 +12,7 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 const ls = Common.ls;
 const {render, html} = LitHtml;
 
-import {Mode, AddressChangedEvent, HistoryNavigationEvent, LinearMemoryNavigatorData, Navigation, PageNavigationEvent} from './LinearMemoryNavigator.js';
+import {Mode, AddressInputChangedEvent, HistoryNavigationEvent, LinearMemoryNavigatorData, Navigation, PageNavigationEvent} from './LinearMemoryNavigator.js';
 import type {EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from './LinearMemoryValueInterpreter.js';
 import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
 import {VALUE_INTEPRETER_MAX_NUM_BYTES, ValueType, Endianness} from './ValueInterpreterDisplayUtils.js';
@@ -59,6 +59,15 @@ export class MemoryRequestEvent extends Event {
   }
 }
 
+export class AddressChangedEvent extends Event {
+  data: number;
+
+  constructor(address: number) {
+    super('address-changed');
+    this.data = address;
+  }
+}
+
 export class LinearMemoryInspector extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private readonly history = new Common.SimpleHistoryManager.SimpleHistoryManager(10);
@@ -90,6 +99,7 @@ export class LinearMemoryInspector extends HTMLElement {
     this.address = data.address;
     this.memoryOffset = data.memoryOffset;
     this.outerMemoryLength = data.outerMemoryLength;
+    this.dispatchEvent(new AddressChangedEvent(this.address));
     this.render();
   }
 
@@ -132,7 +142,8 @@ export class LinearMemoryInspector extends HTMLElement {
       <div class="view">
         <devtools-linear-memory-inspector-navigator
           .data=${{address: navigatorAddressToShow, valid: navigatorAddressIsValid, mode: this.currentNavigatorMode, error: errorMsg} as LinearMemoryNavigatorData}
-          @address-changed=${this.onAddressChange}
+          @refresh-requested=${this.onRefreshRequest}
+          @address-input-changed=${this.onAddressChange}
           @page-navigation=${this.navigatePage}
           @history-navigation=${this.navigateHistory}></devtools-linear-memory-inspector-navigator>
         <devtools-linear-memory-inspector-viewer
@@ -157,6 +168,11 @@ export class LinearMemoryInspector extends HTMLElement {
     // clang-format on
   }
 
+  private onRefreshRequest() {
+    const {start, end} = this.getPageRangeForAddress(this.address, this.numBytesPerPage);
+    this.dispatchEvent(new MemoryRequestEvent(start, end, this.address));
+  }
+
   private onByteSelected(e: ByteSelectedEvent) {
     this.currentNavigatorMode = Mode.Submitted;
     this.jumpToAddress(e.data);
@@ -172,7 +188,7 @@ export class LinearMemoryInspector extends HTMLElement {
     return newAddress !== undefined && newAddress >= 0 && newAddress < this.outerMemoryLength;
   }
 
-  private onAddressChange(e: AddressChangedEvent) {
+  private onAddressChange(e: AddressInputChangedEvent) {
     const {address, mode} = e.data;
     const isValid = this.isValidAddress(address);
     const newAddress = parseAddress(address);
@@ -222,6 +238,7 @@ export class LinearMemoryInspector extends HTMLElement {
     const historyEntry = new AddressHistoryEntry(address, () => this.jumpToAddress(address));
     this.history.push(historyEntry);
     this.address = address;
+    this.dispatchEvent(new AddressChangedEvent(this.address));
     this.update();
   }
 

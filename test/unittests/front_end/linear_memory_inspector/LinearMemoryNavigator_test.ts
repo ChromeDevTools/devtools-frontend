@@ -10,7 +10,7 @@ const {assert} = chai;
 export const NAVIGATOR_ADDRESS_SELECTOR = '[data-input]';
 export const NAVIGATOR_PAGE_BUTTON_SELECTOR = '[data-button=page-navigation]';
 export const NAVIGATOR_HISTORY_BUTTON_SELECTOR = '[data-button=history-navigation]';
-export const NAVIGATOR_REFRESH_BUTTON_SELECTOR = '[data-button=refresh]';
+export const NAVIGATOR_REFRESH_BUTTON_SELECTOR = '[data-button=refresh-requested]';
 
 describe('LinearMemoryNavigator', () => {
   let component: LinearMemoryInspector.LinearMemoryNavigator.LinearMemoryNavigator;
@@ -75,8 +75,8 @@ describe('LinearMemoryNavigator', () => {
   });
 
   it('sends event when clicking on refresh', async () => {
-    const eventPromise =
-        getEventPromise<LinearMemoryInspector.LinearMemoryNavigator.RefreshEvent>(component, 'refresh');
+    const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryNavigator.RefreshRequestedEvent>(
+        component, 'refresh-requested');
 
     const shadowRoot = component.shadowRoot;
     assertShadowRoot(shadowRoot);

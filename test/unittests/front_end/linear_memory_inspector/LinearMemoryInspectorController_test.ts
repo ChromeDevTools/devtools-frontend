@@ -6,34 +6,98 @@ import * as LinearMemoryInspector from '../../../../front_end/linear_memory_insp
 import * as SDK from '../../../../front_end/sdk/sdk.js';
 
 const {assert} = chai;
+const {LinearMemoryInspectorController} = LinearMemoryInspector;
 
-describe('RemoteArrayWrapper', async () => {
-  class MockRemoteObject extends SDK.RemoteObject.LocalJSONObject {
-    constructor(array: Uint8Array) {
-      super(array);
-    }
-
-    arrayLength() {
-      return this._value.length;
-    }
-
-    callFunction<T>(
-        _functionDeclaration: (this: Object, ...args: unknown[]) => T, args: Array<Protocol.Runtime.CallArgument>) {
-      if (args) {
-        const object = new SDK.RemoteObject.LocalJSONObject(this._value[args[0].value]);
-        const result = {object, wasThrown: false};
-        return Promise.resolve(result);
-      }
-      return Promise.resolve({object: null, wasThrown: true});
-    }
+class MockRemoteObject extends SDK.RemoteObject.LocalJSONObject {
+  constructor(array: Uint8Array) {
+    super(array);
   }
 
-  it('correctly wraps the remote object', async () => {
+  set(index: number, value: number) {
+    this._value[index] = value;
+  }
+
+  arrayLength() {
+    return this._value.length;
+  }
+
+  callFunction<T>(
+      _functionDeclaration: (this: Object, ...args: unknown[]) => T, args: Array<Protocol.Runtime.CallArgument>) {
+    if (args) {
+      const object = new SDK.RemoteObject.LocalJSONObject(this._value[args[0].value]);
+      const result = {object, wasThrown: false};
+      return Promise.resolve(result);
+    }
+    return Promise.resolve({object: null, wasThrown: true});
+  }
+}
+
+function createWrapper(array: Uint8Array) {
+  const mockRemoteObj = new MockRemoteObject(array);
+  const mockRemoteArray = new SDK.RemoteObject.RemoteArray(mockRemoteObj);
+  return new LinearMemoryInspectorController.RemoteArrayWrapper(mockRemoteArray);
+}
+
+describe('LinearMemoryInspectorController', async () => {
+  it('throws an error on an invalid (out-of-bounds) memory range request', async () => {
+    const array = new Uint8Array([2, 4, 6, 2, 4]);
+    const wrapper = createWrapper(array);
+    try {
+      await LinearMemoryInspectorController.LinearMemoryInspectorController.getMemoryRange(wrapper, 10, 20);
+      throw new Error('Function did now throw.');
+    } catch (e) {
+      const error = e as Error;
+      assert.strictEqual(error.message, 'Requested range is out of bounds.');
+    }
+  });
+
+  it('throws an error on an invalid memory range request', async () => {
+    const array = new Uint8Array([2, 4, 6, 2, 4]);
+    const wrapper = createWrapper(array);
+    try {
+      await LinearMemoryInspectorController.LinearMemoryInspectorController.getMemoryRange(wrapper, 20, 10);
+      throw new Error('Function did now throw.');
+    } catch (e) {
+      const error = e as Error;
+      assert.strictEqual(error.message, 'Requested range is out of bounds.');
+    }
+  });
+
+  it('can pull updated data on memory range request', async () => {
     const array = new Uint8Array([2, 4, 6, 2, 4]);
     const mockRemoteObj = new MockRemoteObject(array);
     const mockRemoteArray = new SDK.RemoteObject.RemoteArray(mockRemoteObj);
+    const wrapper = new LinearMemoryInspectorController.RemoteArrayWrapper(mockRemoteArray);
+    const valuesBefore =
+        await LinearMemoryInspectorController.LinearMemoryInspectorController.getMemoryRange(wrapper, 0, array.length);
 
-    const wrapper = new LinearMemoryInspector.LinearMemoryInspectorController.RemoteArrayWrapper(mockRemoteArray);
+    assert.strictEqual(valuesBefore.length, array.length);
+    for (let i = 0; i < array.length; ++i) {
+      assert.strictEqual(valuesBefore[i], array[i]);
+    }
+
+    const changedIndex = 0;
+    const changedValue = 10;
+    mockRemoteObj.set(changedIndex, changedValue);
+    const valuesAfter =
+        await LinearMemoryInspectorController.LinearMemoryInspectorController.getMemoryRange(wrapper, 0, array.length);
+
+    assert.strictEqual(valuesAfter.length, valuesBefore.length);
+    for (let i = 0; i < valuesBefore.length; ++i) {
+      if (i === changedIndex) {
+        assert.strictEqual(valuesAfter[i], changedValue);
+      } else {
+        assert.strictEqual(valuesAfter[i], valuesBefore[i]);
+      }
+    }
+  });
+});
+
+describe('RemoteArrayWrapper', async () => {
+  it('correctly wraps the remote object', async () => {
+    const array = new Uint8Array([2, 4, 6, 2, 4]);
+    const wrapper = createWrapper(array);
+
     assert.strictEqual(wrapper.length(), array.length);
 
     const extractedArray = await wrapper.getRange(0, 3);

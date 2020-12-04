@@ -16,11 +16,11 @@ export const enum Navigation {
   Forward = 'Forward'
 }
 
-export class AddressChangedEvent extends Event {
+export class AddressInputChangedEvent extends Event {
   data: {address: string, mode: Mode};
 
   constructor(address: string, mode: Mode) {
-    super('address-changed');
+    super('address-input-changed');
     this.data = {address, mode};
   }
 }
@@ -43,9 +43,9 @@ export class HistoryNavigationEvent extends Event {
   }
 }
 
-export class RefreshEvent extends Event {
+export class RefreshRequestedEvent extends Event {
   constructor() {
-    super('refresh', {});
+    super('refresh-requested', {});
   }
 }
 
@@ -135,7 +135,7 @@ export class LinearMemoryNavigator extends HTMLElement {
           ${this.createAddressInput()}
           ${this.createButton('ic_page_next_16x16_icon', new PageNavigationEvent(Navigation.Forward))}
         </div>
-        ${this.createButton('refresh_12x12_icon', new RefreshEvent())}
+        ${this.createButton('refresh_12x12_icon', new RefreshRequestedEvent())}
       </div>
       `;
       render(result, this.shadow, {eventContext: this});
@@ -155,7 +155,7 @@ export class LinearMemoryNavigator extends HTMLElement {
 
   private onAddressChange(mode: Mode, event: Event) {
     const addressInput = event.target as HTMLInputElement;
-    this.dispatchEvent(new AddressChangedEvent(addressInput.value, mode));
+    this.dispatchEvent(new AddressInputChangedEvent(addressInput.value, mode));
   }
 
   private createButton(name: string, event: Event) {

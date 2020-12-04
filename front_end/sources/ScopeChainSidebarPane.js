@@ -220,7 +220,7 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox {
    * @param {!SDK.RemoteObject.RemoteObject} obj
    */
   _isMemoryObjectProperty(obj) {
-    return obj.className === 'Uint8Array';
+    return obj.className === 'Memory' || obj.className === 'Uint8Array';
   }
 
   /**

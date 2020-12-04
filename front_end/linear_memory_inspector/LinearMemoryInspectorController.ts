@@ -111,7 +111,12 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
       // TODO(kimanh): refresh view to get the latest updates.
       return;
     }
-    const objBoundToLMI = await this.getObjectWithExtendedLifetime(obj);
+    let objBoundToLMI = await this.getObjectWithExtendedLifetime(obj);
+    if (objBoundToLMI.className === 'Memory') {
+      objBoundToLMI = (await objBoundToLMI.callFunction(function() {
+                        return new Uint8Array((this as WebAssembly.Memory).buffer);
+                      }, [])).object as SDK.RemoteObject.RemoteObject;
+    }
     this.scriptIdToRemoteObject.set(scriptId, objBoundToLMI);
     const remoteArray = new SDK.RemoteObject.RemoteArray(objBoundToLMI);
     const arrayWrapper = new RemoteArrayWrapper(remoteArray);

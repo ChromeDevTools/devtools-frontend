@@ -1,3 +1,16 @@
+# [4.0.0](https://github.com/wasdk/wasmparser/compare/v3.3.1...v4.0.0) (2020-11-03)
+
+
+### Bug Fixes
+
+* both members of IFunctionBodyOffset are mandatory numbers ([7383b87](https://github.com/wasdk/wasmparser/commit/7383b87960e09844c094588424bc0acb3076838c))
+
+
+### BREAKING CHANGES
+
+* the `start` and `end` fields of `IFunctionBodyOffset`
+were optional members before.
+
 ## [3.3.1](https://github.com/wasdk/wasmparser/compare/v3.3.0...v3.3.1) (2020-10-27)
 
 

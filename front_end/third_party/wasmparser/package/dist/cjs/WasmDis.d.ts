@@ -41,8 +41,8 @@ export declare enum LabelMode {
     Always = 2
 }
 export interface IFunctionBodyOffset {
-    start?: number;
-    end?: number;
+    start: number;
+    end: number;
 }
 export interface IDisassemblerResult {
     lines: Array<string>;

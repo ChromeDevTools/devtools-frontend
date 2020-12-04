@@ -408,8 +408,8 @@ export enum LabelMode {
 
 // The breakable range is [start, end).
 export interface IFunctionBodyOffset {
-  start?: number;
-  end?: number;
+  start: number;
+  end: number;
 }
 
 export interface IDisassemblerResult {
@@ -449,7 +449,7 @@ export class WasmDisassembler {
   private _exportMetadata: IExportMetadata = null;
   private _labelMode: LabelMode;
   private _functionBodyOffsets: Array<IFunctionBodyOffset>;
-  private _currentFunctionBodyOffset: IFunctionBodyOffset;
+  private _currentFunctionBodyOffset: number;
   private _currentSectionId: SectionCode;
   private _logFirstInstruction: boolean;
   constructor() {
@@ -464,7 +464,7 @@ export class WasmDisassembler {
     this._nameResolver = new DefaultNameResolver();
     this._labelMode = LabelMode.WhenUsed;
     this._functionBodyOffsets = [];
-    this._currentFunctionBodyOffset = null;
+    this._currentFunctionBodyOffset = 0;
     this._currentSectionId = SectionCode.Unknown;
     this._logFirstInstruction = false;
 
@@ -533,16 +533,15 @@ export class WasmDisassembler {
   }
   private logStartOfFunctionBodyOffset() {
     if (this.addOffsets) {
-      this._currentFunctionBodyOffset = {
-        start: this._currentPosition,
-      };
+      this._currentFunctionBodyOffset = this._currentPosition;
     }
   }
   private logEndOfFunctionBodyOffset() {
-    if (this.addOffsets && this._currentFunctionBodyOffset) {
-      this._currentFunctionBodyOffset.end = this._currentPosition;
-      this._functionBodyOffsets.push(this._currentFunctionBodyOffset);
-      this._currentFunctionBodyOffset = null;
+    if (this.addOffsets) {
+      this._functionBodyOffsets.push({
+        start: this._currentFunctionBodyOffset,
+        end: this._currentPosition,
+      });
     }
   }
   private printFuncType(typeIndex: number): void {

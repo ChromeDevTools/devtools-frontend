@@ -358,7 +358,7 @@ var WasmDisassembler = /** @class */ (function () {
         this._nameResolver = new DefaultNameResolver();
         this._labelMode = LabelMode.WhenUsed;
         this._functionBodyOffsets = [];
-        this._currentFunctionBodyOffset = null;
+        this._currentFunctionBodyOffset = 0;
         this._currentSectionId = -1 /* Unknown */;
         this._logFirstInstruction = false;
         this._reset();
@@ -447,16 +447,15 @@ var WasmDisassembler = /** @class */ (function () {
     };
     WasmDisassembler.prototype.logStartOfFunctionBodyOffset = function () {
         if (this.addOffsets) {
-            this._currentFunctionBodyOffset = {
-                start: this._currentPosition,
-            };
+            this._currentFunctionBodyOffset = this._currentPosition;
         }
     };
     WasmDisassembler.prototype.logEndOfFunctionBodyOffset = function () {
-        if (this.addOffsets && this._currentFunctionBodyOffset) {
-            this._currentFunctionBodyOffset.end = this._currentPosition;
-            this._functionBodyOffsets.push(this._currentFunctionBodyOffset);
-            this._currentFunctionBodyOffset = null;
+        if (this.addOffsets) {
+            this._functionBodyOffsets.push({
+                start: this._currentFunctionBodyOffset,
+                end: this._currentPosition,
+            });
         }
     };
     WasmDisassembler.prototype.printFuncType = function (typeIndex) {

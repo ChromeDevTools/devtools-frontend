@@ -47,6 +47,23 @@ describe('JavaScriptFormatter', () => {
     assert.strictEqual(formattedCode, 'x = 1_000;\n');
   });
 
+  it('formats do-while loops correctly', () => {
+    const formattedCode = formatJavaScript(`function demo() {
+  do {} while (false);
+  if (true) {}
+}
+function demo() {do {} while (false);if (true) {}}`);
+    assert.strictEqual(formattedCode, `function demo() {
+  do {} while (false);
+  if (true) {}
+}
+function demo() {
+  do {} while (false);
+  if (true) {}
+}
+`);
+  });
+
   describe('formats files with comments', () => {
     it('handles 1 leading comment correctly', () => {
       const formattedCode = formatJavaScript(`// This is a starting comment

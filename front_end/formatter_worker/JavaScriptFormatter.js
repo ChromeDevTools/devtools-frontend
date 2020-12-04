@@ -337,6 +337,9 @@ export class JavaScriptFormatter {
       if (AT.keyword(token, 'while')) {
         return blockBody ? 'sts' : 'n<ts';
       }
+      if (AT.punctuator(token, ';')) {
+        return 'tn';
+      }
     } else if (node.type === 'ClassBody') {
       if (AT.punctuator(token, '{')) {
         return 'stn>';

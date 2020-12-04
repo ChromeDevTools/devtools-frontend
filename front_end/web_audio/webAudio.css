@@ -25,7 +25,7 @@
   align-items: center;
   overflow: auto;
   font-size: 13px;
-  color: var(--color-background-elevation-1);
+  color: var(--color-text-primary);
 }
 
 .web-audio-landing-page > div {

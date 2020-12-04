@@ -282,6 +282,9 @@
   <message name="IDS_DEVTOOLS_4a5a4b959ef84dd7b7ee73e837b6a54e" desc="A context menu item in the Network Panel of the Network panel">
     Reveal in Network panel
   </message>
+  <message name="IDS_DEVTOOLS_4c3880bb027f159e801041b1021e88e8" desc="Text for one or a group of functions">
+    Method
+  </message>
   <message name="IDS_DEVTOOLS_4dea2ac78e9450e62e96c166ef9f5d4c" desc="Text in Network Log View Columns of the Network panel">
     Manage Header Columns…
   </message>

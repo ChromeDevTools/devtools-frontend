@@ -778,6 +778,7 @@ grd_files_debug_sources = [
   "front_end/profiler/TopDownProfileDataGrid.js",
   "front_end/protocol_client/InspectorBackend.js",
   "front_end/protocol_client/NodeURL.js",
+  "front_end/protocol_monitor/ModuleUIStrings.js",
   "front_end/protocol_monitor/ProtocolMonitor.js",
   "front_end/quick_open/CommandMenu.js",
   "front_end/quick_open/FilteredListWidget.js",

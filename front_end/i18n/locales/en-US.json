@@ -1046,6 +1046,48 @@
   "performance_monitor/PerformanceMonitor.js | styleRecalcsSec": {
     "message": "Style recalcs / sec"
   },
+  "protocol_monitor/ModuleUIStrings.js | protocolMonitor": {
+    "message": "Protocol monitor"
+  },
+  "protocol_monitor/ProtocolMonitor.js | clearAll": {
+    "message": "Clear all"
+  },
+  "protocol_monitor/ProtocolMonitor.js | direction": {
+    "message": "Direction"
+  },
+  "protocol_monitor/ProtocolMonitor.js | documentation": {
+    "message": "Documentation"
+  },
+  "protocol_monitor/ProtocolMonitor.js | filter": {
+    "message": "Filter"
+  },
+  "protocol_monitor/ProtocolMonitor.js | method": {
+    "message": "Method"
+  },
+  "protocol_monitor/ProtocolMonitor.js | noMessageSelected": {
+    "message": "No message selected"
+  },
+  "protocol_monitor/ProtocolMonitor.js | protocolMonitor": {
+    "message": "Protocol Monitor"
+  },
+  "protocol_monitor/ProtocolMonitor.js | record": {
+    "message": "Record"
+  },
+  "protocol_monitor/ProtocolMonitor.js | request": {
+    "message": "Request"
+  },
+  "protocol_monitor/ProtocolMonitor.js | response": {
+    "message": "Response"
+  },
+  "protocol_monitor/ProtocolMonitor.js | sMs": {
+    "message": "{PH1} ms"
+  },
+  "protocol_monitor/ProtocolMonitor.js | target": {
+    "message": "Target"
+  },
+  "protocol_monitor/ProtocolMonitor.js | timestamp": {
+    "message": "Timestamp"
+  },
   "recorder/RecordingFileSystem.js | defaultRecordingName": {
     "message": "Recording #{nextId}"
   },

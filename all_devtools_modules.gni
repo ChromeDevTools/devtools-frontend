@@ -391,6 +391,7 @@ all_typescript_module_sources = [
   "profiler/TopDownProfileDataGrid.js",
   "protocol_client/InspectorBackend.js",
   "protocol_client/NodeURL.js",
+  "protocol_monitor/ModuleUIStrings.js",
   "protocol_monitor/ProtocolMonitor.js",
   "quick_open/CommandMenu.js",
   "quick_open/FilteredListWidget.js",

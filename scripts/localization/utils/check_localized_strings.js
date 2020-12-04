@@ -115,6 +115,7 @@ const migratedDirsSet = new Set([
   'lighthouse',
   'media',
   'performance_monitor',
+  'protocol_monitor',
   'search',
   'security',
   'settings',

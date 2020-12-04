@@ -46,7 +46,6 @@
       <part file="../platform/platform_strings.grdp" />
       <part file="../profiler/profiler_strings.grdp" />
       <part file="../issues/issues_strings.grdp" />
-      <part file="../protocol_monitor/protocol_monitor_strings.grdp" />
       <part file="../quick_open/quick_open_strings.grdp" />
       <part file="../resources/resources_strings.grdp" />
       <part file="../screencast/screencast_strings.grdp" />

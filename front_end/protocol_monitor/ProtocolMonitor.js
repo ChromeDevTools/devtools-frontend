@@ -4,11 +4,70 @@
 
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
+
+export const UIStrings = {
+  /**
+  *@description Text for one or a group of functions
+  */
+  method: 'Method',
+  /**
+  *@description Text in Protocol Monitor of the Protocol Monitor tab
+  */
+  direction: 'Direction',
+  /**
+  *@description Text in Protocol Monitor of the Protocol Monitor tab
+  */
+  request: 'Request',
+  /**
+  *@description Text for a network response
+  */
+  response: 'Response',
+  /**
+  *@description Text for timestamps of items
+  */
+  timestamp: 'Timestamp',
+  /**
+  *@description Text in Protocol Monitor of the Protocol Monitor tab
+  */
+  target: 'Target',
+  /**
+  *@description Text to record a series of actions for analysis
+  */
+  record: 'Record',
+  /**
+  *@description Text to clear everything
+  */
+  clearAll: 'Clear all',
+  /**
+  *@description Data grid name for Protocol Monitor data grids
+  */
+  protocolMonitor: 'Protocol Monitor',
+  /**
+  *@description Text to filter result items
+  */
+  filter: 'Filter',
+  /**
+  *@description Text for the documentation of something
+  */
+  documentation: 'Documentation',
+  /**
+  *@description Cell text content in Protocol Monitor of the Protocol Monitor tab
+  *@example {30} PH1
+  */
+  sMs: '{PH1} ms',
+  /**
+  *@description Text in Protocol Monitor of the Protocol Monitor tab
+  */
+  noMessageSelected: 'No message selected',
+};
+const str_ = i18n.i18n.registerUIStrings('protocol_monitor/ProtocolMonitor.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ProtocolMonitorImpl extends UI.Widget.VBox {
   constructor() {
@@ -31,18 +90,38 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
      * @type {!Array<!ProtocolColumnConfig>}
      */
     this._columns = [
-      {id: 'method', title: ls`Method`, visible: true, sortable: true, hideable: false, weight: 60},
-      {id: 'direction', title: ls`Direction`, visible: false, sortable: true, hideable: true, weight: 30},
-      {id: 'request', title: ls`Request`, visible: true, sortable: false, hideable: true, weight: 60},
-      {id: 'response', title: ls`Response`, visible: true, sortable: false, hideable: true, weight: 60},
-      {id: 'timestamp', title: ls`Timestamp`, visible: false, sortable: true, hideable: true, weight: 30},
-      {id: 'target', title: ls`Target`, visible: false, sortable: true, hideable: true, weight: 30}
+      {id: 'method', title: i18nString(UIStrings.method), visible: true, sortable: true, hideable: false, weight: 60}, {
+        id: 'direction',
+        title: i18nString(UIStrings.direction),
+        visible: false,
+        sortable: true,
+        hideable: true,
+        weight: 30
+      },
+      {id: 'request', title: i18nString(UIStrings.request), visible: true, sortable: false, hideable: true, weight: 60},
+      {
+        id: 'response',
+        title: i18nString(UIStrings.response),
+        visible: true,
+        sortable: false,
+        hideable: true,
+        weight: 60
+      },
+      {
+        id: 'timestamp',
+        title: i18nString(UIStrings.timestamp),
+        visible: false,
+        sortable: true,
+        hideable: true,
+        weight: 30
+      },
+      {id: 'target', title: i18nString(UIStrings.target), visible: false, sortable: true, hideable: true, weight: 30}
     ];
 
     this.registerRequiredCSS('protocol_monitor/protocolMonitor.css', {enableLegacyPatching: true});
     const topToolbar = new UI.Toolbar.Toolbar('protocol-monitor-toolbar', this.contentElement);
-    const recordButton =
-        new UI.Toolbar.ToolbarToggle(ls`Record`, 'largeicon-start-recording', 'largeicon-stop-recording');
+    const recordButton = new UI.Toolbar.ToolbarToggle(
+        i18nString(UIStrings.record), 'largeicon-start-recording', 'largeicon-stop-recording');
     recordButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       recordButton.setToggled(!recordButton.toggled());
       this._setRecording(recordButton.toggled());
@@ -51,7 +130,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     topToolbar.appendToolbarItem(recordButton);
     recordButton.setToggled(true);
 
-    const clearButton = new UI.Toolbar.ToolbarButton(ls`Clear all`, 'largeicon-clear');
+    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this._dataGrid.rootNode().removeChildren();
       this._nodes = [];
@@ -62,7 +141,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     const split = new UI.SplitWidget.SplitWidget(true, true, 'protocol-monitor-panel-split', 250);
     split.show(this.contentElement);
     this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
-      displayName: ls`Protocol Monitor`,
+      displayName: i18nString(UIStrings.protocolMonitor),
       columns: this._columns.map(column => ({
                                    id: column.id,
                                    title: column.title,
@@ -107,7 +186,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this._suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(keys);
 
     this._textFilterUI = new UI.Toolbar.ToolbarInput(
-        ls`Filter`, '', 1, .2, '', this._suggestionBuilder.completions.bind(this._suggestionBuilder));
+        i18nString(UIStrings.filter), '', 1, .2, '', this._suggestionBuilder.completions.bind(this._suggestionBuilder));
     this._textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, event => {
       const query = /** @type {string} */ (event.data);
       const filters = this._filterParser.parse(query);
@@ -164,10 +243,10 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
    * @param {!DataGrid.DataGrid.DataGridNode<!DataGrid.ViewportDataGrid.ViewportDataGridNode<!DataGrid.SortableDataGrid.SortableDataGridNode<!ProtocolNode>>>} node
    */
   _innerRowContextMenu(contextMenu, node) {
-    contextMenu.defaultSection().appendItem(ls`Filter`, () => {
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.filter), () => {
       this._textFilterUI.setValue(`method:${node.data.method}`, true);
     });
-    contextMenu.defaultSection().appendItem(ls`Documentation`, () => {
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.documentation), () => {
       const [domain, method] = node.data.method.split('.');
       const type = node.data.direction === 'sent' ? 'method' : 'event';
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
@@ -355,7 +434,7 @@ export class ProtocolNode extends DataGrid.SortableDataGrid.SortableDataGridNode
       }
       case 'timestamp': {
         const cell = this.createTD(columnId);
-        cell.textContent = ls`${this.data[columnId]} ms`;
+        cell.textContent = i18nString(UIStrings.sMs, {PH1: this.data[columnId]});
         return cell;
       }
     }
@@ -378,8 +457,8 @@ export class InfoWidget extends UI.Widget.VBox {
   constructor() {
     super();
     this._tabbedPane = new UI.TabbedPane.TabbedPane();
-    this._tabbedPane.appendTab('request', 'Request', new UI.Widget.Widget());
-    this._tabbedPane.appendTab('response', 'Response', new UI.Widget.Widget());
+    this._tabbedPane.appendTab('request', i18nString(UIStrings.request), new UI.Widget.Widget());
+    this._tabbedPane.appendTab('response', i18nString(UIStrings.response), new UI.Widget.Widget());
     this._tabbedPane.show(this.contentElement);
     this._tabbedPane.selectTab('response');
     this.render(null);
@@ -392,8 +471,10 @@ export class InfoWidget extends UI.Widget.VBox {
     const requestEnabled = data && data.direction === 'sent';
     this._tabbedPane.setTabEnabled('request', !!requestEnabled);
     if (!data) {
-      this._tabbedPane.changeTabView('request', new UI.EmptyWidget.EmptyWidget(ls`No message selected`));
-      this._tabbedPane.changeTabView('response', new UI.EmptyWidget.EmptyWidget(ls`No message selected`));
+      this._tabbedPane.changeTabView(
+          'request', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected)));
+      this._tabbedPane.changeTabView(
+          'response', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected)));
       return;
     }
     if (!requestEnabled) {

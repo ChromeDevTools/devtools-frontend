@@ -31,10 +31,13 @@ export class DOMWorld {
         this._contextResolveCallback = null;
         this._detached = false;
         /**
-         * internal
+         * @internal
          */
         this._waitTasks = new Set();
-        // Contains mapping from functions that should be bound to Puppeteer functions.
+        /**
+         * @internal
+         * Contains mapping from functions that should be bound to Puppeteer functions.
+         */
         this._boundFunctions = new Map();
         // Set of bindings that have been registered in the current context.
         this._ctxBindings = new Set();
@@ -54,10 +57,6 @@ export class DOMWorld {
         if (context) {
             this._contextResolveCallback.call(null, context);
             this._contextResolveCallback = null;
-            this._ctxBindings.clear();
-            for (const name of this._boundFunctions.keys()) {
-                await this.addBindingToContext(name);
-            }
             for (const waitTask of this._waitTasks)
                 waitTask.rerun();
         }
@@ -314,19 +313,19 @@ export class DOMWorld {
     /**
      * @internal
      */
-    async addBindingToContext(name) {
+    async addBindingToContext(context, name) {
         // Previous operation added the binding so we are done.
-        if (this._ctxBindings.has(name))
+        if (this._ctxBindings.has(DOMWorld.bindingIdentifier(name, context._contextId))) {
             return;
+        }
         // Wait for other operation to finish
         if (this._settingUpBinding) {
             await this._settingUpBinding;
-            return this.addBindingToContext(name);
+            return this.addBindingToContext(context, name);
         }
         const bind = async (name) => {
             const expression = helper.pageBindingInitString('internal', name);
             try {
-                const context = await this.executionContext();
                 await context._client.send('Runtime.addBinding', {
                     name,
                     executionContextId: context._contextId,
@@ -340,29 +339,24 @@ export class DOMWorld {
                 const ctxDestroyed = error.message.includes('Execution context was destroyed');
                 const ctxNotFound = error.message.includes('Cannot find context with specified id');
                 if (ctxDestroyed || ctxNotFound) {
-                    // Retry adding the binding in the next context
-                    await bind(name);
+                    return;
                 }
                 else {
                     debugError(error);
                     return;
                 }
             }
-            this._ctxBindings.add(name);
+            this._ctxBindings.add(DOMWorld.bindingIdentifier(name, context._contextId));
         };
         this._settingUpBinding = bind(name);
         await this._settingUpBinding;
         this._settingUpBinding = null;
     }
-    /**
-     * @internal
-     */
-    async addBinding(name, puppeteerFunction) {
-        this._boundFunctions.set(name, puppeteerFunction);
-        await this.addBindingToContext(name);
-    }
     async _onBindingCalled(event) {
         let payload;
+        if (!this._hasContext())
+            return;
+        const context = await this.executionContext();
         try {
             payload = JSON.parse(event.payload);
         }
@@ -372,11 +366,9 @@ export class DOMWorld {
             return;
         }
         const { type, name, seq, args } = payload;
-        if (type !== 'internal' || !this._ctxBindings.has(name))
+        if (type !== 'internal' ||
+            !this._ctxBindings.has(DOMWorld.bindingIdentifier(name, context._contextId)))
             return;
-        if (!this._hasContext())
-            return;
-        const context = await this.executionContext();
         if (context._contextId !== event.executionContextId)
             return;
         try {
@@ -401,7 +393,7 @@ export class DOMWorld {
     /**
      * @internal
      */
-    async waitForSelectorInPage(queryOne, selector, options) {
+    async waitForSelectorInPage(queryOne, selector, options, binding) {
         const { visible: waitForVisible = false, hidden: waitForHidden = false, timeout = this._timeoutSettings.timeout(), } = options;
         const polling = waitForVisible || waitForHidden ? 'raf' : 'mutation';
         const title = `selector \`${selector}\`${waitForHidden ? ' to be hidden' : ''}`;
@@ -411,7 +403,16 @@ export class DOMWorld {
                 : document.querySelector(selector);
             return checkWaitForOptions(node, waitForVisible, waitForHidden);
         }
-        const waitTask = new WaitTask(this, helper.makePredicateString(predicate, queryOne), title, polling, timeout, selector, waitForVisible, waitForHidden);
+        const waitTaskOptions = {
+            domWorld: this,
+            predicateBody: helper.makePredicateString(predicate, queryOne),
+            title,
+            polling,
+            timeout,
+            args: [selector, waitForVisible, waitForHidden],
+            binding,
+        };
+        const waitTask = new WaitTask(waitTaskOptions);
         const jsHandle = await waitTask.promise;
         const elementHandle = jsHandle.asElement();
         if (!elementHandle) {
@@ -428,7 +429,15 @@ export class DOMWorld {
             const node = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
             return checkWaitForOptions(node, waitForVisible, waitForHidden);
         }
-        const waitTask = new WaitTask(this, helper.makePredicateString(predicate), title, polling, timeout, xpath, waitForVisible, waitForHidden);
+        const waitTaskOptions = {
+            domWorld: this,
+            predicateBody: helper.makePredicateString(predicate),
+            title,
+            polling,
+            timeout,
+            args: [xpath, waitForVisible, waitForHidden],
+        };
+        const waitTask = new WaitTask(waitTaskOptions);
         const jsHandle = await waitTask.promise;
         const elementHandle = jsHandle.asElement();
         if (!elementHandle) {
@@ -439,46 +448,60 @@ export class DOMWorld {
     }
     waitForFunction(pageFunction, options = {}, ...args) {
         const { polling = 'raf', timeout = this._timeoutSettings.timeout(), } = options;
-        return new WaitTask(this, pageFunction, 'function', polling, timeout, ...args).promise;
+        const waitTaskOptions = {
+            domWorld: this,
+            predicateBody: pageFunction,
+            title: 'function',
+            polling,
+            timeout,
+            args,
+        };
+        const waitTask = new WaitTask(waitTaskOptions);
+        return waitTask.promise;
     }
     async title() {
         return this.evaluate(() => document.title);
     }
 }
+DOMWorld.bindingIdentifier = (name, contextId) => `${name}_${contextId}`;
 /**
  * @internal
  */
 export class WaitTask {
-    constructor(domWorld, predicateBody, title, polling, timeout, ...args) {
+    constructor(options) {
         this._runCount = 0;
         this._terminated = false;
-        if (helper.isString(polling))
-            assert(polling === 'raf' || polling === 'mutation', 'Unknown polling option: ' + polling);
-        else if (helper.isNumber(polling))
-            assert(polling > 0, 'Cannot poll with non-positive interval: ' + polling);
+        if (helper.isString(options.polling))
+            assert(options.polling === 'raf' || options.polling === 'mutation', 'Unknown polling option: ' + options.polling);
+        else if (helper.isNumber(options.polling))
+            assert(options.polling > 0, 'Cannot poll with non-positive interval: ' + options.polling);
         else
-            throw new Error('Unknown polling options: ' + polling);
+            throw new Error('Unknown polling options: ' + options.polling);
         function getPredicateBody(predicateBody) {
             if (helper.isString(predicateBody))
                 return `return (${predicateBody});`;
             return `return (${predicateBody})(...args);`;
         }
-        this._domWorld = domWorld;
-        this._polling = polling;
-        this._timeout = timeout;
-        this._predicateBody = getPredicateBody(predicateBody);
-        this._args = args;
+        this._domWorld = options.domWorld;
+        this._polling = options.polling;
+        this._timeout = options.timeout;
+        this._predicateBody = getPredicateBody(options.predicateBody);
+        this._args = options.args;
+        this._binding = options.binding;
         this._runCount = 0;
-        domWorld._waitTasks.add(this);
+        this._domWorld._waitTasks.add(this);
+        if (this._binding) {
+            this._domWorld._boundFunctions.set(this._binding.name, this._binding.pptrFunction);
+        }
         this.promise = new Promise((resolve, reject) => {
             this._resolve = resolve;
             this._reject = reject;
         });
         // Since page navigation requires us to re-install the pageScript, we should track
         // timeout on our end.
-        if (timeout) {
-            const timeoutError = new TimeoutError(`waiting for ${title} failed: timeout ${timeout}ms exceeded`);
-            this._timeoutTimer = setTimeout(() => this.terminate(timeoutError), timeout);
+        if (options.timeout) {
+            const timeoutError = new TimeoutError(`waiting for ${options.title} failed: timeout ${options.timeout}ms exceeded`);
+            this._timeoutTimer = setTimeout(() => this.terminate(timeoutError), options.timeout);
         }
         this.rerun();
     }
@@ -489,11 +512,18 @@ export class WaitTask {
     }
     async rerun() {
         const runCount = ++this._runCount;
-        /** @type {?JSHandle} */
         let success = null;
         let error = null;
+        const context = await this._domWorld.executionContext();
+        if (this._terminated || runCount !== this._runCount)
+            return;
+        if (this._binding) {
+            await this._domWorld.addBindingToContext(context, this._binding.name);
+        }
+        if (this._terminated || runCount !== this._runCount)
+            return;
         try {
-            success = await (await this._domWorld.executionContext()).evaluateHandle(waitForPredicatePageFunction, this._predicateBody, this._polling, this._timeout, ...this._args);
+            success = await context.evaluateHandle(waitForPredicatePageFunction, this._predicateBody, this._polling, this._timeout, ...this._args);
         }
         catch (error_) {
             error = error_;
@@ -511,10 +541,13 @@ export class WaitTask {
             await success.dispose();
             return;
         }
-        // When frame is detached the task should have been terminated by the DOMWorld.
-        // This can fail if we were adding this task while the frame was detached,
-        // so we terminate here instead.
         if (error) {
+            if (error.message.includes('TypeError: binding is not a function')) {
+                return this.rerun();
+            }
+            // When frame is detached the task should have been terminated by the DOMWorld.
+            // This can fail if we were adding this task while the frame was detached,
+            // so we terminate here instead.
             if (error.message.includes('Execution context is not available in detached frame')) {
                 this.terminate(new Error('waitForFunction failed: frame got detached.'));
                 return;

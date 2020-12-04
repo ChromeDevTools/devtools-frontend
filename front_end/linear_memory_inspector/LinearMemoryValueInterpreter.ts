@@ -98,8 +98,22 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         .settings-toolbar-button {
           display: flex;
           justify-content: center;
-          width: 30px;
+          align-items: center;
+          width: 20px;
           height: 20px;
+          border: none;
+          background-color: transparent;
+        }
+
+        .settings-toolbar-button devtools-icon {
+          height: 14px;
+          width: 14px;
+          min-height: 14px;
+          min-width: 14px;
+        }
+
+        .settings-toolbar-button.active devtools-icon {
+          --icon-color: var(--color-primary);
         }
 
         .divider {
@@ -112,9 +126,9 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
       <div class="value-interpreter">
         <div class="settings-toolbar">
           ${this.renderSetting()}
-          <button data-settings="true" class="settings-toolbar-button" title=${ls`Toggle value type settings`} @click=${this.onSettingsToggle}>
+          <button data-settings="true" class="settings-toolbar-button ${this.showSettings ? 'active' : ''}" title=${ls`Toggle value type settings`} @click=${this.onSettingsToggle}>
             <devtools-icon
-              .data=${{ iconName: 'settings_14x14_icon', color: 'rgb(110 110 110)', width: '14px' } as Elements.Icon.IconWithName}>
+              .data=${{ iconName: 'settings_14x14_icon', color: 'var(--color-text-secondary)', width: '14px' } as Elements.Icon.IconWithName}>
             </devtools-icon>
           </button>
         </div>

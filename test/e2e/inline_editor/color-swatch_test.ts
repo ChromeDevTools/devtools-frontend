@@ -15,7 +15,9 @@ async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/de
   await goToResource(path);
   await waitForContentOfSelectedElementsNode('<body>\u200B');
 
-  await frontend.keyboard.press('ArrowDown');
+  // Press ArrowRight two times to ensure that body is expanded and the #inspected element is selected.
+  await frontend.keyboard.press('ArrowRight');
+  await frontend.keyboard.press('ArrowRight');
   await waitForContentOfSelectedElementsNode('<div id=\u200B"inspected">\u200BInspected div\u200B</div>\u200B');
 }
 
@@ -84,15 +86,13 @@ describe('The color swatch', async () => {
     await assertNoColorSwatch(property);
   });
 
-  // Flaky test
-  it.skip(
-      '[crbug.com/1149358]: is displayed for var() functions that compute to colors in the Styles pane', async () => {
-        await goToTestPageAndSelectTestElement();
+  it('is displayed for var() functions that compute to colors in the Styles pane', async () => {
+    await goToTestPageAndSelectTestElement();
 
-        await waitForCSSPropertyValue('#inspected', 'background-color', 'var(--variable)');
-        const property = await getCSSPropertyInRule('#inspected', 'background-color');
-        await assertColorSwatch(property, 'blue');
-      });
+    await waitForCSSPropertyValue('#inspected', 'background-color', 'var(--variable)');
+    const property = await getCSSPropertyInRule('#inspected', 'background-color');
+    await assertColorSwatch(property, 'blue');
+  });
 
   it('is not displayed for var() functions that have color-looking names but do not compute to colors in the Styles pane',
      async () => {

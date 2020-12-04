@@ -48,6 +48,7 @@
   text-align: center;
   padding: 3px;
   margin: 3px;
+  position: relative;
 }
 
 .metrics .margin {

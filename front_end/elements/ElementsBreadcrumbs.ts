@@ -281,10 +281,6 @@ export class ElementsBreadcrumbs extends HTMLElement {
           color: inherit;
         }
 
-        .overflow:not(:disabled) {
-          color: #fff;
-        }
-
         .crumbs {
           background: var(--color-background);
         }
@@ -300,6 +296,9 @@ export class ElementsBreadcrumbs extends HTMLElement {
         .overflow {
           background-color: var(--color-background-elevation-1);
           color: var(--color-text-secondary)
+        }
+        .overflow:disabled {
+          opacity: 0.5;
         }
         .overflow:not(:disabled):hover {
           background-color: var(--color-background-elevation-2);

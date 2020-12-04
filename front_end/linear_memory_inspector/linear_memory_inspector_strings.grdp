@@ -42,11 +42,17 @@
   <message name="IDS_DEVTOOLS_b5b78b15775d7aa54506af3ca95fd561" desc="Text that describes the type of a value in the Linear Memory Inspector">
     Float 32-bit
   </message>
+  <message name="IDS_DEVTOOLS_b76f41f4d3d68097e9816a7b9cac4474" desc="Tooltip text that appears when hovering over an invalid address in the address line in the Linear Memory Inspector">
+    Address has to be a number between <ph name="MEMORY_START_ADDRESS">$1s<ex>0x00000000</ex></ph> and <ph name="MEMORY_END_ADDRESS">$2s<ex>0x00400000</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_b8d1b43eae73587ba56baef574709ecb" desc="Text that describes the representation of a value in the Linear Memory Inspector">
     hex
   </message>
   <message name="IDS_DEVTOOLS_a4b86d60a07398d42aa20fac81ce5427" desc="Text that describes the Endianness setting that can be selected in the select item in the Linear Memory Inspector">
     Big Endian
+  </message>
+  <message name="IDS_DEVTOOLS_dd2ca041b7e67f1d5358c8debaa2eba5" desc="Tooltip text that appears when hovering over a valid address in the address line in the Linear Memory Inspector">
+    Enter address
   </message>
   <message name="IDS_DEVTOOLS_e94cd34eafd5a04736af0b0e78669890" desc="Text that describes the type of a value in the Linear Memory Inspector">
     Integer 64-bit

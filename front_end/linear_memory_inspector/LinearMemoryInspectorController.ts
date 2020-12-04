@@ -26,7 +26,8 @@ export class RemoteArrayWrapper implements LazyUint8Array {
 
   async getRange(start: number, end: number) {
     const newEnd = Math.min(end, this.remoteArray.length());
-    if (start < 0 || newEnd >= this.remoteArray.length() || start > newEnd) {
+    if (start < 0 || start > newEnd) {
+      console.error(`Requesting invalid range of memory: (${start}, ${end})`);
       return Promise.resolve(new Uint8Array(0));
     }
     const array = await this.extractByteArray(start, newEnd);
@@ -35,7 +36,7 @@ export class RemoteArrayWrapper implements LazyUint8Array {
 
   private async extractByteArray(start: number, end: number) {
     const promises = [];
-    for (let i = start; i < end && i < this.remoteArray.length(); ++i) {
+    for (let i = start; i < end; ++i) {
       // TODO(kimanh): encode requested range in base64 string.
       promises.push(this.remoteArray.at(i).then(x => x.value));
     }

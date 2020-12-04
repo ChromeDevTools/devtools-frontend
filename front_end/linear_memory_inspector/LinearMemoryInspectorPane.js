@@ -153,6 +153,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
         memory: memory,
         address: address,
         memoryOffset: memoryChunkStart,
+        outerMemoryLength: this.memoryWrapper.length(),
       };
     });
   }
@@ -179,6 +180,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
         memory: memory,
         address: address,
         memoryOffset: start,
+        outerMemoryLength: this.memoryWrapper.length(),
       };
     });
   }

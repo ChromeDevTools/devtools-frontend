@@ -127,27 +127,32 @@ export function format(formatData: FormatData) {
   const isLittleEndian = formatData.endianness === Endianness.Little;
   let value;
 
-  switch (formatData.type) {
-    case ValueType.Int8:
-      value = formatData.signed ? valueView.getInt8(0) : valueView.getUint8(0);
-      return formatInteger(value, formatData.mode);
-    case ValueType.Int16:
-      value = formatData.signed ? valueView.getInt16(0, isLittleEndian) : valueView.getUint16(0, isLittleEndian);
-      return formatInteger(value, formatData.mode);
-    case ValueType.Int32:
-      value = formatData.signed ? valueView.getInt32(0, isLittleEndian) : valueView.getUint32(0, isLittleEndian);
-      return formatInteger(value, formatData.mode);
-    case ValueType.Int64:
-      value = formatData.signed ? valueView.getBigInt64(0, isLittleEndian) : valueView.getBigUint64(0, isLittleEndian);
-      return formatInteger(value, formatData.mode);
-    case ValueType.Float32:
-      value = valueView.getFloat32(0, isLittleEndian);
-      return formatFloat(value, formatData.mode);
-    case ValueType.Float64:
-      value = valueView.getFloat64(0, isLittleEndian);
-      return formatFloat(value, formatData.mode);
-    case ValueType.String:
-      throw new Error(`Type ${formatData.type} is not yet implemented`);
+  try {
+    switch (formatData.type) {
+      case ValueType.Int8:
+        value = formatData.signed ? valueView.getInt8(0) : valueView.getUint8(0);
+        return formatInteger(value, formatData.mode);
+      case ValueType.Int16:
+        value = formatData.signed ? valueView.getInt16(0, isLittleEndian) : valueView.getUint16(0, isLittleEndian);
+        return formatInteger(value, formatData.mode);
+      case ValueType.Int32:
+        value = formatData.signed ? valueView.getInt32(0, isLittleEndian) : valueView.getUint32(0, isLittleEndian);
+        return formatInteger(value, formatData.mode);
+      case ValueType.Int64:
+        value =
+            formatData.signed ? valueView.getBigInt64(0, isLittleEndian) : valueView.getBigUint64(0, isLittleEndian);
+        return formatInteger(value, formatData.mode);
+      case ValueType.Float32:
+        value = valueView.getFloat32(0, isLittleEndian);
+        return formatFloat(value, formatData.mode);
+      case ValueType.Float64:
+        value = valueView.getFloat64(0, isLittleEndian);
+        return formatFloat(value, formatData.mode);
+      case ValueType.String:
+        throw new Error(`Type ${formatData.type} is not yet implemented`);
+    }
+  } catch (e) {
+    return 'N/A';
   }
 }
 

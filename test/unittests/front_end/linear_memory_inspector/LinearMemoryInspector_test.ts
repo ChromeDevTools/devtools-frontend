@@ -51,10 +51,28 @@ describe('LinearMemoryInspector', () => {
       memory: new Uint8Array(memory),
       address: 20,
       memoryOffset: 0,
+      outerMemoryLength: memory.length,
     };
     component.data = data;
 
     return {component, data};
+  }
+
+  function triggerAddressChangedEvent(
+      component: LinearMemoryInspector.LinearMemoryInspector.LinearMemoryInspector, address: string,
+      mode: LinearMemoryInspector.LinearMemoryNavigator.Mode) {
+    const navigator = getNavigator(component);
+    const changeEvent = new LinearMemoryInspector.LinearMemoryNavigator.AddressChangedEvent(address, mode);
+    navigator.dispatchEvent(changeEvent);
+  }
+
+  function assertUpdatesInNavigator(
+      navigator: LinearMemoryInspector.LinearMemoryNavigator.LinearMemoryNavigator, expectedAddress: string,
+      expectedTooltip: string) {
+    const address = getElementWithinComponent(navigator, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
+    const addressValue = address.value;
+    assert.strictEqual(addressValue, expectedAddress);
+    assert.strictEqual(address.title, expectedTooltip);
   }
 
   it('renders the navigator component', async () => {
@@ -122,7 +140,7 @@ describe('LinearMemoryInspector', () => {
     const addressBefore = parseInt(address.value, 16);
 
     const viewer = getViewer(component);
-    const bytesShown = await getElementsWithinComponent(viewer, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
+    const bytesShown = getElementsWithinComponent(viewer, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
     const numBytesPerPage = bytesShown.length;
 
     forwardButton.click();
@@ -162,13 +180,73 @@ describe('LinearMemoryInspector', () => {
     assert.deepEqual(select.value, event.data);
   });
 
+  it('leaves the navigator address as inputted by user on edit event', () => {
+    const {component} = setUpComponent();
+    const navigator = getNavigator(component);
+    triggerAddressChangedEvent(component, '2', LinearMemoryInspector.LinearMemoryNavigator.Mode.Edit);
+    assertUpdatesInNavigator(navigator, '2', 'Enter address');
+  });
+
+  it('changes navigator address (to hex) on valid user submit event', () => {
+    const {component} = setUpComponent();
+    const navigator = getNavigator(component);
+    triggerAddressChangedEvent(component, '2', LinearMemoryInspector.LinearMemoryNavigator.Mode.Submitted);
+    assertUpdatesInNavigator(navigator, '0x00000002', 'Enter address');
+  });
+
+  it('leaves the navigator address as inputted by user on invalid edit event', () => {
+    const {component} = setUpComponent();
+    const navigator = getNavigator(component);
+    triggerAddressChangedEvent(component, '-2', LinearMemoryInspector.LinearMemoryNavigator.Mode.Edit);
+    assertUpdatesInNavigator(navigator, '-2', 'Address has to be a number between 0x00000000 and 0x000003E8');
+  });
+
+  it('leaves the navigator address as inputted by user on invalid submit event', () => {
+    const {component} = setUpComponent();
+    const navigator = getNavigator(component);
+    triggerAddressChangedEvent(component, '-2', LinearMemoryInspector.LinearMemoryNavigator.Mode.Submitted);
+    assertUpdatesInNavigator(navigator, '-2', 'Address has to be a number between 0x00000000 and 0x000003E8');
+  });
+
   it('formats a hexadecimal number', async () => {
     const number = 23;
-    assert.strictEqual(LinearMemoryInspector.LinearMemoryInspectorUtils.toHexString(number, 0), '17');
+    assert.strictEqual(
+        LinearMemoryInspector.LinearMemoryInspectorUtils.toHexString({number, pad: 0, prefix: false}), '17');
   });
 
   it('formats a hexadecimal number and adds padding', async () => {
-    const decimalNumber = 23;
-    assert.strictEqual(LinearMemoryInspector.LinearMemoryInspectorUtils.toHexString(decimalNumber, 5), '00017');
+    const number = 23;
+    assert.strictEqual(
+        LinearMemoryInspector.LinearMemoryInspectorUtils.toHexString({number, pad: 5, prefix: false}), '00017');
+  });
+
+  it('formats a hexadecimal number and adds prefix', async () => {
+    const number = 23;
+    assert.strictEqual(
+        LinearMemoryInspector.LinearMemoryInspectorUtils.toHexString({number, pad: 5, prefix: true}), '0x00017');
+  });
+
+  it('can parse a valid hexadecimal address', async () => {
+    const address = '0xa';
+    const parsedAddress = LinearMemoryInspector.LinearMemoryInspectorUtils.parseAddress(address);
+    assert.strictEqual(parsedAddress, 10);
+  });
+
+  it('can parse a valid decimal address', async () => {
+    const address = '20';
+    const parsedAddress = LinearMemoryInspector.LinearMemoryInspectorUtils.parseAddress(address);
+    assert.strictEqual(parsedAddress, 20);
+  });
+
+  it('returns undefined on parsing invalid address', async () => {
+    const address = '20a';
+    const parsedAddress = LinearMemoryInspector.LinearMemoryInspectorUtils.parseAddress(address);
+    assert.strictEqual(parsedAddress, undefined);
+  });
+
+  it('returns undefined on parsing negative address', async () => {
+    const address = '-20';
+    const parsedAddress = LinearMemoryInspector.LinearMemoryInspectorUtils.parseAddress(address);
+    assert.strictEqual(parsedAddress, undefined);
   });
 });

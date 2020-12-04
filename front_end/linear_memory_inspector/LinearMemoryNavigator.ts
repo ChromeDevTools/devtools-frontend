@@ -2,16 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import * as Elements from '../elements/elements.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-import {toHexString} from './LinearMemoryInspectorUtils.js';
-
 const {render, html} = LitHtml;
+const ls = Common.ls;
+
+const ENTER_ADDRESS_TITLE = ls`Enter address`;
 
 export const enum Navigation {
   Backward = 'Backward',
   Forward = 'Forward'
+}
+
+export class AddressChangedEvent extends Event {
+  data: {address: string, mode: Mode};
+
+  constructor(address: string, mode: Mode) {
+    super('address-changed');
+    this.data = {address, mode};
+  }
 }
 
 export class PageNavigationEvent extends Event {
@@ -39,25 +50,44 @@ export class RefreshEvent extends Event {
 }
 
 export interface LinearMemoryNavigatorData {
-  address: number;
+  address: string;
+  mode: Mode;
+  valid: boolean;
+  error: string|undefined;
+}
+
+export const enum Mode {
+  Edit = 'Edit',
+  Submitted = 'Submitted',
+  InvalidSubmit = 'InvalidSubmit'
 }
 
 export class LinearMemoryNavigator extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private address: number = 0;
+  private address = '0';
+  private error: string|undefined = undefined;
+  private valid = true;
 
   set data(data: LinearMemoryNavigatorData) {
-    if (data.address < 0) {
-      throw new Error('Address should be greater or equal to zero.');
-    }
     this.address = data.address;
+    this.error = data.error;
+    this.valid = data.valid;
     this.render();
+
+    const addressInput = this.shadow.querySelector<HTMLInputElement>('.address-input');
+    if (addressInput) {
+      if (data.mode === Mode.Submitted) {
+        addressInput.blur();
+      } else if (data.mode === Mode.InvalidSubmit) {
+        addressInput.select();
+      }
+    }
   }
 
   private render() {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    render(html`
+    const result = html`
       <style>
         .navigator {
           min-height: 24px;
@@ -66,6 +96,8 @@ export class LinearMemoryNavigator extends HTMLElement {
           justify-content: space-between;
           overflow: hidden;
           align-items: center;
+          background-color: var(--color-background);
+          color: var(--color-text-primary);
         }
 
         .navigator-item {
@@ -73,8 +105,16 @@ export class LinearMemoryNavigator extends HTMLElement {
           overflow: hidden;
         }
 
-        input {
+        .address-input {
           text-align: center;
+          outline: none;
+          color: var(--color-text-primary);
+          border: 1px solid var(--color-background-elevation-2);
+          background: transparent;
+        }
+
+        .address-input.invalid {
+          color: var(--color-accent-red);
         }
 
         .navigator-button {
@@ -92,13 +132,30 @@ export class LinearMemoryNavigator extends HTMLElement {
         </div>
         <div class="navigator-item">
           ${this.createButton('ic_page_prev_16x16_icon', new PageNavigationEvent(Navigation.Backward))}
-          <input data-input="true" contenteditable="true" value="0x${toHexString(this.address, 8)}"/>
+          ${this.createAddressInput()}
           ${this.createButton('ic_page_next_16x16_icon', new PageNavigationEvent(Navigation.Forward))}
         </div>
         ${this.createButton('refresh_12x12_icon', new RefreshEvent())}
       </div>
-      `, this.shadow, {eventContext: this});
+      `;
+      render(result, this.shadow, {eventContext: this});
     // clang-format on
+  }
+
+  private createAddressInput() {
+    const classMap = {
+      'address-input': true,
+      invalid: !this.valid,
+    };
+    return html`
+      <input class=${LitHtml.Directives.classMap(classMap)} data-input="true" .value=${this.address}
+        title=${this.valid ? ENTER_ADDRESS_TITLE : this.error} @change=${
+        this.onAddressChange.bind(this, Mode.Submitted)} @input=${this.onAddressChange.bind(this, Mode.Edit)}/>`;
+  }
+
+  private onAddressChange(mode: Mode, event: Event) {
+    const addressInput = event.target as HTMLInputElement;
+    this.dispatchEvent(new AddressChangedEvent(addressInput.value, mode));
   }
 
   private createButton(name: string, event: Event) {

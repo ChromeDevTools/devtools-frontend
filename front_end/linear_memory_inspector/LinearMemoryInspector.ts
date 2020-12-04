@@ -9,17 +9,24 @@ import './LinearMemoryViewer.js';
 import * as Common from '../common/common.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
+const ls = Common.ls;
 const {render, html} = LitHtml;
 
-import {HistoryNavigationEvent, LinearMemoryNavigatorData, Navigation, PageNavigationEvent} from './LinearMemoryNavigator.js';
+import {Mode, AddressChangedEvent, HistoryNavigationEvent, LinearMemoryNavigatorData, Navigation, PageNavigationEvent} from './LinearMemoryNavigator.js';
 import type {EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from './LinearMemoryValueInterpreter.js';
 import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
 import {VALUE_INTEPRETER_MAX_NUM_BYTES, ValueType, Endianness} from './ValueInterpreterDisplayUtils.js';
+import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 
+// If the LinearMemoryInspector only receives a portion
+// of the original Uint8Array to show, it requires information
+// on the 1. memoryOffset (at which index this portion starts),
+// and on the 2. outerMemoryLength (length of the original Uint8Array).
 export interface LinearMemoryInspectorData {
   memory: Uint8Array;
   address: number;
   memoryOffset: number;
+  outerMemoryLength: number;
 }
 
 class AddressHistoryEntry implements Common.SimpleHistoryManager.HistoryEntry {
@@ -55,10 +62,18 @@ export class MemoryRequestEvent extends Event {
 export class LinearMemoryInspector extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private readonly history = new Common.SimpleHistoryManager.SimpleHistoryManager(10);
+
   private memory = new Uint8Array();
   private memoryOffset = 0;
+  private outerMemoryLength = 0;
+
   private address = 0;
+
+  private currentNavigatorMode = Mode.Submitted;
+  private currentNavigatorAddressLine = `${this.address}`;
+
   private numBytesPerPage = 4;
+
   private valueTypes: Set<ValueType> = new Set([ValueType.Int8, ValueType.Float32]);
   private endianness: Endianness = Endianness.Little;
 
@@ -74,11 +89,20 @@ export class LinearMemoryInspector extends HTMLElement {
     this.memory = data.memory;
     this.address = data.address;
     this.memoryOffset = data.memoryOffset;
+    this.outerMemoryLength = data.outerMemoryLength;
     this.render();
   }
 
   private render() {
     const {start, end} = this.getPageRangeForAddress(this.address, this.numBytesPerPage);
+
+    const navigatorAddressToShow =
+        this.currentNavigatorMode === Mode.Submitted ? formatAddress(this.address) : this.currentNavigatorAddressLine;
+    const navigatorAddressIsValid = this.isValidAddress(navigatorAddressToShow);
+
+    const invalidAddressMsg =
+        ls`Address has to be a number between ${formatAddress(0)} and ${formatAddress(this.outerMemoryLength)}`;
+    const errorMsg = navigatorAddressIsValid ? undefined : invalidAddressMsg;
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -107,12 +131,13 @@ export class LinearMemoryInspector extends HTMLElement {
       </style>
       <div class="view">
         <devtools-linear-memory-inspector-navigator
-          .data=${{address: this.address} as LinearMemoryNavigatorData}
+          .data=${{address: navigatorAddressToShow, valid: navigatorAddressIsValid, mode: this.currentNavigatorMode, error: errorMsg} as LinearMemoryNavigatorData}
+          @address-changed=${this.onAddressChange}
           @page-navigation=${this.navigatePage}
           @history-navigation=${this.navigateHistory}></devtools-linear-memory-inspector-navigator>
         <devtools-linear-memory-inspector-viewer
           .data=${{memory: this.memory.slice(start - this.memoryOffset, end - this.memoryOffset), address: this.address, memoryOffset: start} as LinearMemoryViewerData}
-          @byte-selected=${(e: ByteSelectedEvent) => this.jumpToAddress(e.data)}
+          @byte-selected=${this.onByteSelected}
           @resize=${this.resize}>
         </devtools-linear-memory-inspector-viewer>
       </div>
@@ -132,8 +157,39 @@ export class LinearMemoryInspector extends HTMLElement {
     // clang-format on
   }
 
+  private onByteSelected(e: ByteSelectedEvent) {
+    this.currentNavigatorMode = Mode.Submitted;
+    this.jumpToAddress(e.data);
+  }
+
   private onEndiannessChanged(e: EndiannessChangedEvent) {
     this.endianness = e.data;
+    this.render();
+  }
+
+  private isValidAddress(address: string) {
+    const newAddress = parseAddress(address);
+    return newAddress !== undefined && newAddress >= 0 && newAddress < this.outerMemoryLength;
+  }
+
+  private onAddressChange(e: AddressChangedEvent) {
+    const {address, mode} = e.data;
+    const isValid = this.isValidAddress(address);
+    const newAddress = parseAddress(address);
+    this.currentNavigatorAddressLine = address;
+
+    if (newAddress !== undefined && isValid) {
+      this.currentNavigatorMode = mode;
+      this.jumpToAddress(newAddress);
+      return;
+    }
+
+    if (mode === Mode.Submitted && !isValid) {
+      this.currentNavigatorMode = Mode.InvalidSubmit;
+    } else {
+      this.currentNavigatorMode = Mode.Edit;
+    }
+
     this.render();
   }
 
@@ -152,13 +208,18 @@ export class LinearMemoryInspector extends HTMLElement {
   }
 
   private navigatePage(e: PageNavigationEvent) {
-    const newAddress = e.data === Navigation.Forward ? this.address + this.numBytesPerPage :
-                                                       Math.max(this.address - this.numBytesPerPage, 0);
-    this.jumpToAddress(newAddress);
+    const newAddress =
+        e.data === Navigation.Forward ? this.address + this.numBytesPerPage : this.address - this.numBytesPerPage;
+    const addressInRange = Math.max(0, Math.min(newAddress, this.outerMemoryLength - 1));
+    this.jumpToAddress(addressInRange);
   }
 
   private jumpToAddress(address: number) {
-    const historyEntry = new AddressHistoryEntry(address, x => this.jumpToAddress(x));
+    if (address < 0 || address >= this.outerMemoryLength) {
+      console.warn(`Specified address is out of bounds: ${address}`);
+      return;
+    }
+    const historyEntry = new AddressHistoryEntry(address, () => this.jumpToAddress(address));
     this.history.push(historyEntry);
     this.address = address;
     this.update();
@@ -167,7 +228,8 @@ export class LinearMemoryInspector extends HTMLElement {
   private getPageRangeForAddress(address: number, numBytesPerPage: number) {
     const pageNumber = Math.floor(address / numBytesPerPage);
     const pageStartAddress = pageNumber * numBytesPerPage;
-    return {start: pageStartAddress, end: pageStartAddress + numBytesPerPage};
+    const pageEndAddress = Math.min(pageStartAddress + numBytesPerPage, this.outerMemoryLength);
+    return {start: pageStartAddress, end: pageEndAddress};
   }
 
   private resize(event: ResizeEvent) {

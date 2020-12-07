@@ -8,6 +8,8 @@ import {doubleClickSourceTreeItem, getReportValues, navigateToApplicationTab} fr
 
 const TOP_FRAME_SELECTOR = '[aria-label="top"]';
 const WORKERS_SELECTOR = '[aria-label="Workers"]';
+const IFRAME_SELECTOR = '[aria-label="frameId (iframe.html)"]';
+const MAIN_FRAME_SELECTOR = '[aria-label="frameId (main-frame.html)"]';
 
 describe('The Application Tab', async () => {
   it('shows details for a frame when clicked on in the frame tree', async () => {
@@ -50,6 +52,62 @@ describe('The Application Tab', async () => {
       const fieldValues = await getReportValues();
       const expected =
           [`https://localhost:${getTestServerPort()}/test/e2e/resources/application/dedicated-worker.js`, 'None'];
+      return JSON.stringify(fieldValues) === JSON.stringify(expected);
+    });
+  });
+
+  it('can handle when JS writes to frame', async () => {
+    const {target} = getBrowserAndPages();
+    await goToResource('application/main-frame.html');
+    await click('#tab-resources');
+    await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);
+    await doubleClickSourceTreeItem(IFRAME_SELECTOR);
+
+    // check iframe's URL after pageload
+    await waitForFunction(async () => {
+      const fieldValues = await getReportValues();
+      const expected = [
+        `https://localhost:${getTestServerPort()}/test/e2e/resources/application/iframe.html`,
+        '',
+        `https://localhost:${getTestServerPort()}`,
+        '<iframe>',
+        '',
+        'YesLocalhost is always a secure context',
+        'No',
+        'None',
+        'UnsafeNone',
+        'available, transferable⚠️ will require cross-origin isolated context in the future',
+      ];
+      return JSON.stringify(fieldValues) === JSON.stringify(expected);
+    });
+
+    // write to the iframe using 'document.write()'
+    await target.evaluate(() => {
+      const frame = document.getElementById('frameId') as HTMLIFrameElement;
+      const doc = frame.contentDocument;
+      if (doc) {
+        doc.open();
+        doc.write('<h1>Hello world !</h1>');
+        doc.close();
+      }
+    });
+
+    // check that iframe's URL has changed
+    await doubleClickSourceTreeItem(MAIN_FRAME_SELECTOR);
+    await waitForFunction(async () => {
+      const fieldValues = await getReportValues();
+      const expected = [
+        `https://localhost:${getTestServerPort()}/test/e2e/resources/application/main-frame.html`,
+        '',
+        `https://localhost:${getTestServerPort()}`,
+        '<iframe>',
+        '',
+        'YesLocalhost is always a secure context',
+        'No',
+        'None',
+        'UnsafeNone',
+        'available, transferable⚠️ will require cross-origin isolated context in the future',
+      ];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });
   });

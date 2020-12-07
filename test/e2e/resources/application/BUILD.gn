@@ -10,6 +10,8 @@ copy_to_gen("application") {
     "cross-origin-cookies.html",
     "dedicated-worker.js",
     "frame-tree.html",
+    "iframe.html",
+    "main-frame.html",
     "main.css",
     "service-worker-network.html",
     "service-worker.js",

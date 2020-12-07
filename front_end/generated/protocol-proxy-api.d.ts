@@ -91,8 +91,6 @@ declare namespace ProtocolProxyApi {
 
     Media: MediaApi;
 
-    Console: ConsoleApi;
-
     Debugger: DebuggerApi;
 
     HeapProfiler: HeapProfilerApi;
@@ -3212,30 +3210,7 @@ declare namespace ProtocolProxyApi {
      * list of player ids and all events again.
      */
     playersCreated(params: Protocol.Media.PlayersCreatedEvent): void;
-  }
 
-  export interface ConsoleApi {
-    /**
-     * Does nothing.
-     */
-    invoke_clearMessages(): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
-     * Disables console domain, prevents further console messages from being reported to the client.
-     */
-    invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
-     * Enables console domain, sends the messages collected so far to the client by means of the
-     * `messageAdded` notification.
-     */
-    invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
-  }
-  export interface ConsoleDispatcher {
-    /**
-     * Issued when new console message is added.
-     */
-    messageAdded(params: Protocol.Console.MessageAddedEvent): void;
   }
 
   export interface DebuggerApi {

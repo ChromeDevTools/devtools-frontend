@@ -15,7 +15,8 @@ const PROTOCOL_JSON_PATH = path.resolve(
     __dirname, path.join('..', '..', 'third_party', 'blink', 'public', 'devtools_protocol', 'browser_protocol.json'));
 
 const protocolJson = require(PROTOCOL_JSON_PATH);
-const protocolDomains: Protocol.Domain[] = protocolJson.domains;
+const removedDomains = new Set(['Console']);
+const protocolDomains: Protocol.Domain[] = protocolJson.domains.filter(({domain}) => !removedDomains.has(domain));
 
 let numIndents = 0;
 let emitStr = '';

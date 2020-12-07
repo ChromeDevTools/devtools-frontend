@@ -542,10 +542,6 @@ export namespace ProtocolMapping {
      */
     'Media.playersCreated': [Protocol.Media.PlayersCreatedEvent];
     /**
-     * Issued when new console message is added.
-     */
-    'Console.messageAdded': [Protocol.Console.MessageAddedEvent];
-    /**
      * Fired when breakpoint is resolved to an actual script and location.
      */
     'Debugger.breakpointResolved': [Protocol.Debugger.BreakpointResolvedEvent];
@@ -2558,19 +2554,6 @@ export namespace ProtocolMapping {
      * Disables the Media domain.
      */
     'Media.disable': {paramsType: []; returnType: void;};
-    /**
-     * Does nothing.
-     */
-    'Console.clearMessages': {paramsType: []; returnType: void;};
-    /**
-     * Disables console domain, prevents further console messages from being reported to the client.
-     */
-    'Console.disable': {paramsType: []; returnType: void;};
-    /**
-     * Enables console domain, sends the messages collected so far to the client by means of the
-     * `messageAdded` notification.
-     */
-    'Console.enable': {paramsType: []; returnType: void;};
     /**
      * Continues execution until specific location is reached.
      */

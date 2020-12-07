@@ -1104,9 +1104,6 @@ export class DebuggerLanguagePluginManager {
     const location = {
       rawModuleId,
       codeOffset: callFrame.location().columnNumber - (script.codeOffset() || 0),
-      // TODO(crbug.com/1134110): Once closure->typescript migration is complete, delete this and
-      // change type definition to show that this field is optional.
-      inlineFrameIndex: undefined
     };
 
     try {
@@ -1136,9 +1133,6 @@ export class DebuggerLanguagePluginManager {
       // RawLocation.columnNumber is the byte offset in the full raw wasm module. Plugins expect the offset in the code
       // section, so subtract the offset of the code section in the module here.
       codeOffset: rawLocation.columnNumber - (script.codeOffset() || 0),
-      // TODO(crbug.com/1134110): Once closure->typescript migration is complete, delete this and
-      // change type definition to show that this field is optional.
-      inlineFrameIndex: undefined
     };
 
     try {
@@ -1175,9 +1169,6 @@ export class DebuggerLanguagePluginManager {
       // RawLocation.columnNumber is the byte offset in the full raw wasm module. Plugins expect the offset in the code
       // section, so subtract the offset of the code section in the module here.
       codeOffset: rawLocation.columnNumber - (script.codeOffset() || 0),
-      // TODO(crbug.com/1134110): Once closure->typescript migration is complete, delete this and
-      // change type definition to show that this field is optional.
-      inlineFrameIndex: undefined
     };
 
     try {
@@ -1291,7 +1282,7 @@ export let RawLocationRange;
  * @typedef {{
  *            rawModuleId: string,
  *            codeOffset: number,
- *            inlineFrameIndex: (number|undefined)
+ *            inlineFrameIndex?: number
  *          }}
  */
 // @ts-ignore typedef

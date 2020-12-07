@@ -73,7 +73,7 @@ const cspURLViolation = {
   substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
   links: [{
-    link: 'https://developers.google.com/web/fundamentals/security/csp#source_whitelists',
+    link: 'https://developers.google.com/web/fundamentals/security/csp#source_allowlists',
     linkTitle: ls`Content Security Policy - Source Allowlists`
   }],
 };

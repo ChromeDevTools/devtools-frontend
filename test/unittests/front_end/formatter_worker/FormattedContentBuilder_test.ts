@@ -4,24 +4,24 @@
 
 const {assert} = chai;
 
-import {FormattedContentBuilder} from '../../../../front_end/formatter_worker/FormattedContentBuilder.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as FormatterWorker from '../../../../front_end/formatter_worker/formatter_worker.js';
 
 describe('FormattedContentBuilder', () => {
   it('can add a token successfully', () => {
-    const formattedContentBuilder = new FormattedContentBuilder('  ');
+    const formattedContentBuilder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
     formattedContentBuilder.addToken('Test Script', 0);
     assert.strictEqual(formattedContentBuilder.content(), 'Test Script');
   });
 
   it('returns the previous enforceSpaceBetweenWords value', () => {
-    const formattedContentBuilder = new FormattedContentBuilder('  ');
+    const formattedContentBuilder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
     formattedContentBuilder.setEnforceSpaceBetweenWords(false);
     const result = formattedContentBuilder.setEnforceSpaceBetweenWords(true);
     assert.strictEqual(result, false);
   });
 
   it('should squash new lines by default', () => {
-    const builder = new FormattedContentBuilder('  ');
+    const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
     builder.addToken('Token 1', 0);
     builder.addNewLine();
     builder.addNewLine();
@@ -31,7 +31,7 @@ describe('FormattedContentBuilder', () => {
   });
 
   it('should respect the noSquash parameter', () => {
-    const builder = new FormattedContentBuilder('  ');
+    const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
     builder.addToken('Token 1', 0);
     builder.addNewLine();
     builder.addNewLine(true);
@@ -41,7 +41,7 @@ describe('FormattedContentBuilder', () => {
   });
 
   it('should avoid leading newlines', () => {
-    const builder = new FormattedContentBuilder('  ');
+    const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
     builder.addNewLine();
     builder.addToken('Token', 0);
 
@@ -49,7 +49,7 @@ describe('FormattedContentBuilder', () => {
   });
 
   it('not add more than one newline at the end', () => {
-    const builder = new FormattedContentBuilder('  ');
+    const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
     builder.addToken('Token', 0);
     builder.addNewLine();
     builder.addNewLine(true);
@@ -58,7 +58,7 @@ describe('FormattedContentBuilder', () => {
   });
 
   it('should not collapse hard spaces', () => {
-    const builder = new FormattedContentBuilder('  ');
+    const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
     builder.addToken('Token 1', 0);
     builder.addHardSpace();
     builder.addHardSpace();
@@ -69,7 +69,7 @@ describe('FormattedContentBuilder', () => {
   });
 
   it('should collapse soft spaces', () => {
-    const builder = new FormattedContentBuilder('  ');
+    const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
     builder.addToken('Token 1', 0);
     builder.addSoftSpace();
     builder.addSoftSpace();
@@ -80,7 +80,7 @@ describe('FormattedContentBuilder', () => {
   });
 
   it('should ignore a soft space after a hard space', () => {
-    const builder = new FormattedContentBuilder('  ');
+    const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
     builder.addToken('Token 1', 0);
     builder.addHardSpace();
     builder.addSoftSpace();
@@ -90,7 +90,7 @@ describe('FormattedContentBuilder', () => {
   });
 
   it('should ignore a soft space before a hard space', () => {
-    const builder = new FormattedContentBuilder('  ');
+    const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
     builder.addToken('Token 1', 0);
     builder.addSoftSpace();
     builder.addHardSpace();
@@ -100,7 +100,7 @@ describe('FormattedContentBuilder', () => {
   });
 
   it('should handle the nesting level correctly', () => {
-    const builder = new FormattedContentBuilder('  ');
+    const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
     builder.addToken('Token 1', 0);
     builder.addNewLine();
     builder.increaseNestingLevel();
@@ -122,7 +122,7 @@ describe('FormattedContentBuilder', () => {
   });
 
   it('should allow mapping from unformatted source positions to formatted ones', () => {
-    const builder = new FormattedContentBuilder('  ');
+    const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
     builder.addToken('#main', 0);
     builder.addSoftSpace();
     builder.addToken('{', 5);
@@ -146,7 +146,7 @@ describe('FormattedContentBuilder', () => {
 
   it('should not cache the identation for more than 20 nesting levels', () => {
     let x = 0;
-    const builder = new FormattedContentBuilder({
+    const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder({
       toString() {
         return x++;
       },

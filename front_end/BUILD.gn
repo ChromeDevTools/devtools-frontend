@@ -43,7 +43,7 @@ group("front_end") {
     "event_listeners:bundle",
     "extensions:bundle",
     "formatter:bundle",
-    "formatter_worker:bundle",
+    "formatter_worker:worker_entrypoint",
     "har_importer:bundle",
     "heap_snapshot_model:bundle",
     "heap_snapshot_worker:bundle",

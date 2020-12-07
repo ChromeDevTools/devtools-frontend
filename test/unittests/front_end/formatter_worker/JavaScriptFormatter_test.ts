@@ -5,14 +5,12 @@
 const {assert} = chai;
 
 import * as Platform from '../../../../front_end/platform/platform.js';
-
-import {FormattedContentBuilder} from '../../../../front_end/formatter_worker/FormattedContentBuilder.js';  // eslint-disable-line rulesdir/es_modules_import
-import {JavaScriptFormatter} from '../../../../front_end/formatter_worker/JavaScriptFormatter.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as FormatterWorker from '../../../../front_end/formatter_worker/formatter_worker.js';
 
 function formatJavaScript(text: string): string {
   // Indent using 2 spaces for these unit tests.
-  const builder = new FormattedContentBuilder('  ');
-  const formatter = new JavaScriptFormatter(builder);
+  const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
+  const formatter = new FormatterWorker.JavaScriptFormatter.JavaScriptFormatter(builder);
   const lineEndings = Platform.StringUtilities.findLineEndingIndexes(text);
   formatter.format(text, lineEndings, 0, text.length);
 

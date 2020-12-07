@@ -58,6 +58,7 @@ devtools_module_entrypoint_sources = [
   "extensions/extensions.js",
   "formatter/formatter-legacy.js",
   "formatter/formatter.js",
+  "formatter_worker/formatter_worker-entrypoint.js",
   "formatter_worker/formatter_worker.js",
   "har_importer/har_importer-legacy.js",
   "har_importer/har_importer.js",

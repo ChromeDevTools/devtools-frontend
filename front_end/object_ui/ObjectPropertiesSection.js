@@ -1081,7 +1081,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   _updatePropertyPath() {
-    if (this.nameElement.title) {
+    if (UI.Tooltip.Tooltip.getContent(this.nameElement)) {
       return;
     }
 
@@ -1098,7 +1098,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const parentPath = (this.parent instanceof ObjectPropertyTreeElement && this.parent.nameElement &&
                         !this.parent.property.synthetic) ?
-        this.parent.nameElement.title :
+        UI.Tooltip.Tooltip.getContent(this.parent.nameElement) :
         '';
 
     if (this.property.private || useDotNotation.test(name)) {
@@ -1132,9 +1132,9 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         contextMenu.clipboardSection().appendItem(ls`Copy value`, copyValueHandler);
       }
     }
-    if (!this.property.synthetic && this.nameElement && this.nameElement.title) {
+    if (!this.property.synthetic && this.nameElement && UI.Tooltip.Tooltip.getContent(this.nameElement)) {
       const copyPathHandler = Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
-          Host.InspectorFrontendHost.InspectorFrontendHostInstance, this.nameElement.title);
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance, UI.Tooltip.Tooltip.getContent(this.nameElement));
       contextMenu.clipboardSection().appendItem(ls`Copy property path`, copyPathHandler);
     }
     if (parentMap.get(this.property) instanceof SDK.RemoteObject.LocalJSONObject) {
@@ -1310,7 +1310,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
    * @return {string}
    */
   path() {
-    return this.nameElement.title;
+    return UI.Tooltip.Tooltip.getContent(this.nameElement);
   }
 }
 

@@ -1,3 +1,65 @@
+## 8.0.4 (2020-10-05)
+
+### Bug fixes
+
+Make `await x ** y` an error, following the spec.
+
+Fix potentially exponential regular expression.
+
+## 8.0.3 (2020-10-02)
+
+### Bug fixes
+
+Fix a wasteful loop during `Parser` creation when setting `ecmaVersion` to `"latest"`.
+
+## 8.0.2 (2020-09-30)
+
+### Bug fixes
+
+Make the TypeScript types reflect the current allowed values for `ecmaVersion`.
+
+Fix another regexp/division tokenizer issue.
+
+## 8.0.1 (2020-08-12)
+
+### Bug fixes
+
+Provide the correct value in the `version` export.
+
+## 8.0.0 (2020-08-12)
+
+### Bug fixes
+
+Disallow expressions like `(a = b) = c`.
+
+Make non-octal escape sequences a syntax error in strict mode.
+
+### New features
+
+The package can now be loaded directly as an ECMAScript module in node 13+.
+
+Update to the set of Unicode properties from ES2021.
+
+### Breaking changes
+
+The `ecmaVersion` option is now required. For the moment, omitting it will still work with a warning, but that will change in a future release.
+
+Some changes to method signatures that may be used by plugins.
+
+## 7.4.0 (2020-08-03)
+
+### New features
+
+Add support for logical assignment operators.
+
+Add support for numeric separators.
+
+## 7.3.1 (2020-06-11)
+
+### Bug fixes
+
+Make the string in the `version` export match the actual library version.
+
 ## 7.3.0 (2020-06-11)
 
 ### Bug fixes

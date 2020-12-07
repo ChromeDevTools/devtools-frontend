@@ -314,16 +314,16 @@
     }
   }
 
-  // A second optional argument can be given to further configure
-  // the parser process. These options are recognized:
+  // A second argument must be given to configure the parser process.
+  // These options are recognized (only `ecmaVersion` is required):
 
   var defaultOptions = {
     // `ecmaVersion` indicates the ECMAScript version to parse. Must be
-    // either 3, 5, 6 (2015), 7 (2016), 8 (2017), 9 (2018), or 10
-    // (2019). This influences support for strict mode, the set of
-    // reserved words, and support for new syntax features. The default
-    // is 10.
-    ecmaVersion: 10,
+    // either 3, 5, 6 (or 2015), 7 (2016), 8 (2017), 9 (2018), 10
+    // (2019), 11 (2020), 12 (2021), or `"latest"` (the latest version
+    // the library supports). This influences support for strict mode,
+    // the set of reserved words, and support for new syntax features.
+    ecmaVersion: null,
     // `sourceType` indicates the mode the code should be parsed in.
     // Can be either `"script"` or `"module"`. This influences global
     // strict mode and parsing of `import` and `export` declarations.
@@ -404,14 +404,25 @@
 
   // Interpret and default an options object
 
+  var warnedAboutEcmaVersion = false;
+
   function getOptions(opts) {
     var options = {};
 
     for (var opt in defaultOptions)
       { options[opt] = opts && has(opts, opt) ? opts[opt] : defaultOptions[opt]; }
 
-    if (options.ecmaVersion >= 2015)
-      { options.ecmaVersion -= 2009; }
+    if (options.ecmaVersion === "latest") {
+      options.ecmaVersion = 1e8;
+    } else if (options.ecmaVersion == null) {
+      if (!warnedAboutEcmaVersion && typeof console === "object" && console.warn) {
+        warnedAboutEcmaVersion = true;
+        console.warn("Since Acorn 8.0.0, options.ecmaVersion is required.\nDefaulting to 2020, but this will stop working in the future.");
+      }
+      options.ecmaVersion = 11;
+    } else if (options.ecmaVersion >= 2015) {
+      options.ecmaVersion -= 2009;
+    }
 
     if (options.allowReserved == null)
       { options.allowReserved = options.ecmaVersion < 5; }
@@ -458,7 +469,7 @@
     return SCOPE_FUNCTION | (async ? SCOPE_ASYNC : 0) | (generator ? SCOPE_GENERATOR : 0)
   }
 
-  // Used in checkLVal and declareName to determine the type of a binding
+  // Used in checkLVal* and declareName to determine the type of a binding
   var
       BIND_NONE = 0, // Not a binding
       BIND_VAR = 1, // Var-style binding
@@ -473,8 +484,7 @@
     this.keywords = wordsRegexp(keywords[options.ecmaVersion >= 6 ? 6 : options.sourceType === "module" ? "5module" : 5]);
     var reserved = "";
     if (options.allowReserved !== true) {
-      for (var v = options.ecmaVersion;; v--)
-        { if (reserved = reservedWords[v]) { break } }
+      reserved = reservedWords[options.ecmaVersion >= 6 ? 6 : options.ecmaVersion === 5 ? 5 : 3];
       if (options.sourceType === "module") { reserved += " await"; }
     }
     this.reservedWords = wordsRegexp(reserved);
@@ -547,7 +557,7 @@
     this.regexpState = null;
   };
 
-  var prototypeAccessors = { inFunction: { configurable: true },inGenerator: { configurable: true },inAsync: { configurable: true },allowSuper: { configurable: true },allowDirectSuper: { configurable: true },treatFunctionsAsVar: { configurable: true } };
+  var prototypeAccessors = { inFunction: { configurable: true },inGenerator: { configurable: true },inAsync: { configurable: true },allowSuper: { configurable: true },allowDirectSuper: { configurable: true },treatFunctionsAsVar: { configurable: true },inNonArrowFunction: { configurable: true } };
 
   Parser.prototype.parse = function parse () {
     var node = this.options.program || this.startNode();
@@ -561,9 +571,7 @@
   prototypeAccessors.allowSuper.get = function () { return (this.currentThisScope().flags & SCOPE_SUPER) > 0 };
   prototypeAccessors.allowDirectSuper.get = function () { return (this.currentThisScope().flags & SCOPE_DIRECT_SUPER) > 0 };
   prototypeAccessors.treatFunctionsAsVar.get = function () { return this.treatFunctionsAsVarInScope(this.currentScope()) };
-
-  // Switch to a getter for 7.0.0.
-  Parser.prototype.inNonArrowFunction = function inNonArrowFunction () { return (this.currentThisScope().flags & SCOPE_FUNCTION) > 0 };
+  prototypeAccessors.inNonArrowFunction.get = function () { return (this.currentThisScope().flags & SCOPE_FUNCTION) > 0 };
 
   Parser.extend = function extend () {
       var plugins = [], len = arguments.length;
@@ -594,7 +602,7 @@
 
   // ## Parser utilities
 
-  var literal = /^(?:'((?:\\.|[^'])*?)'|"((?:\\.|[^"])*?)")/;
+  var literal = /^(?:'((?:\\.|[^'\\])*?)'|"((?:\\.|[^"\\])*?)")/;
   pp.strictDirective = function(start) {
     for (;;) {
       // Try to find string literal.
@@ -978,7 +986,7 @@
         } else { node.await = awaitAt > -1; }
       }
       this.toAssignable(init, false, refDestructuringErrors);
-      this.checkLVal(init);
+      this.checkLValPattern(init);
       return this.parseForIn(node, init)
     } else {
       this.checkExpressionErrors(refDestructuringErrors, true);
@@ -1079,7 +1087,7 @@
         clause.param = this.parseBindingAtom();
         var simple = clause.param.type === "Identifier";
         this.enterScope(simple ? SCOPE_SIMPLE_CATCH : 0);
-        this.checkLVal(clause.param, simple ? BIND_SIMPLE_CATCH : BIND_LEXICAL);
+        this.checkLValPattern(clause.param, simple ? BIND_SIMPLE_CATCH : BIND_LEXICAL);
         this.expect(types.parenR);
       } else {
         if (this.options.ecmaVersion < 10) { this.unexpected(); }
@@ -1215,8 +1223,6 @@
         init.start,
         ((isForIn ? "for-in" : "for-of") + " loop variable declaration may not have an initializer")
       );
-    } else if (init.type === "AssignmentPattern") {
-      this.raise(init.start, "Invalid left-hand side in for-loop");
     }
     node.left = init;
     node.right = isForIn ? this.parseExpression() : this.parseMaybeAssign();
@@ -1252,7 +1258,7 @@
 
   pp$1.parseVarId = function(decl, kind) {
     decl.id = this.parseBindingAtom();
-    this.checkLVal(decl.id, kind === "var" ? BIND_VAR : BIND_LEXICAL, false);
+    this.checkLValPattern(decl.id, kind === "var" ? BIND_VAR : BIND_LEXICAL, false);
   };
 
   var FUNC_STATEMENT = 1, FUNC_HANGING_STATEMENT = 2, FUNC_NULLABLE_ID = 4;
@@ -1278,7 +1284,7 @@
         // subject to Annex B semantics (BIND_FUNCTION). Otherwise, the binding
         // mode depends on properties of the current scope (see
         // treatFunctionsAsVar).
-        { this.checkLVal(node.id, (this.strict || node.generator || node.async) ? this.treatFunctionsAsVar ? BIND_VAR : BIND_LEXICAL : BIND_FUNCTION); }
+        { this.checkLValSimple(node.id, (this.strict || node.generator || node.async) ? this.treatFunctionsAsVar ? BIND_VAR : BIND_LEXICAL : BIND_FUNCTION); }
     }
 
     var oldYieldPos = this.yieldPos, oldAwaitPos = this.awaitPos, oldAwaitIdentPos = this.awaitIdentPos;
@@ -1404,7 +1410,7 @@
     if (this.type === types.name) {
       node.id = this.parseIdent();
       if (isStatement)
-        { this.checkLVal(node.id, BIND_LEXICAL, false); }
+        { this.checkLValSimple(node.id, BIND_LEXICAL, false); }
     } else {
       if (isStatement === true)
         { this.unexpected(); }
@@ -1584,7 +1590,7 @@
       // import defaultObj, { x, y as z } from '...'
       var node = this.startNode();
       node.local = this.parseIdent();
-      this.checkLVal(node.local, BIND_LEXICAL);
+      this.checkLValSimple(node.local, BIND_LEXICAL);
       nodes.push(this.finishNode(node, "ImportDefaultSpecifier"));
       if (!this.eat(types.comma)) { return nodes }
     }
@@ -1593,7 +1599,7 @@
       this.next();
       this.expectContextual("as");
       node$1.local = this.parseIdent();
-      this.checkLVal(node$1.local, BIND_LEXICAL);
+      this.checkLValSimple(node$1.local, BIND_LEXICAL);
       nodes.push(this.finishNode(node$1, "ImportNamespaceSpecifier"));
       return nodes
     }
@@ -1612,7 +1618,7 @@
         this.checkUnreserved(node$2.imported);
         node$2.local = node$2.imported;
       }
-      this.checkLVal(node$2.local, BIND_LEXICAL);
+      this.checkLValSimple(node$2.local, BIND_LEXICAL);
       nodes.push(this.finishNode(node$2, "ImportSpecifier"));
     }
     return nodes
@@ -1649,6 +1655,7 @@
 
       case "ObjectPattern":
       case "ArrayPattern":
+      case "AssignmentPattern":
       case "RestElement":
         break
 
@@ -1697,9 +1704,6 @@
         node.type = "AssignmentPattern";
         delete node.operator;
         this.toAssignable(node.left, isBinding);
-        // falls through to AssignmentPattern
-
-      case "AssignmentPattern":
         break
 
       case "ParenthesizedExpression":
@@ -1816,28 +1820,89 @@
     return this.finishNode(node, "AssignmentPattern")
   };
 
-  // Verify that a node is an lval — something that can be assigned
-  // to.
-  // bindingType can be either:
-  // 'var' indicating that the lval creates a 'var' binding
-  // 'let' indicating that the lval creates a lexical ('let' or 'const') binding
-  // 'none' indicating that the binding should be checked for illegal identifiers, but not for duplicate references
+  // The following three functions all verify that a node is an lvalue —
+  // something that can be bound, or assigned to. In order to do so, they perform
+  // a variety of checks:
+  //
+  // - Check that none of the bound/assigned-to identifiers are reserved words.
+  // - Record name declarations for bindings in the appropriate scope.
+  // - Check duplicate argument names, if checkClashes is set.
+  //
+  // If a complex binding pattern is encountered (e.g., object and array
+  // destructuring), the entire pattern is recursively checked.
+  //
+  // There are three versions of checkLVal*() appropriate for different
+  // circumstances:
+  //
+  // - checkLValSimple() shall be used if the syntactic construct supports
+  //   nothing other than identifiers and member expressions. Parenthesized
+  //   expressions are also correctly handled. This is generally appropriate for
+  //   constructs for which the spec says
+  //
+  //   > It is a Syntax Error if AssignmentTargetType of [the production] is not
+  //   > simple.
+  //
+  //   It is also appropriate for checking if an identifier is valid and not
+  //   defined elsewhere, like import declarations or function/class identifiers.
+  //
+  //   Examples where this is used include:
+  //     a += …;
+  //     import a from '…';
+  //   where a is the node to be checked.
+  //
+  // - checkLValPattern() shall be used if the syntactic construct supports
+  //   anything checkLValSimple() supports, as well as object and array
+  //   destructuring patterns. This is generally appropriate for constructs for
+  //   which the spec says
+  //
+  //   > It is a Syntax Error if [the production] is neither an ObjectLiteral nor
+  //   > an ArrayLiteral and AssignmentTargetType of [the production] is not
+  //   > simple.
+  //
+  //   Examples where this is used include:
+  //     (a = …);
+  //     const a = …;
+  //     try { … } catch (a) { … }
+  //   where a is the node to be checked.
+  //
+  // - checkLValInnerPattern() shall be used if the syntactic construct supports
+  //   anything checkLValPattern() supports, as well as default assignment
+  //   patterns, rest elements, and other constructs that may appear within an
+  //   object or array destructuring pattern.
+  //
+  //   As a special case, function parameters also use checkLValInnerPattern(),
+  //   as they also support defaults and rest constructs.
+  //
+  // These functions deliberately support both assignment and binding constructs,
+  // as the logic for both is exceedingly similar. If the node is the target of
+  // an assignment, then bindingType should be set to BIND_NONE. Otherwise, it
+  // should be set to the appropriate BIND_* constant, like BIND_VAR or
+  // BIND_LEXICAL.
+  //
+  // If the function is called with a non-BIND_NONE bindingType, then
+  // additionally a checkClashes object may be specified to allow checking for
+  // duplicate argument names. checkClashes is ignored if the provided construct
+  // is an assignment (i.e., bindingType is BIND_NONE).
 
-  pp$2.checkLVal = function(expr, bindingType, checkClashes) {
+  pp$2.checkLValSimple = function(expr, bindingType, checkClashes) {
     if ( bindingType === void 0 ) bindingType = BIND_NONE;
+
+    var isBind = bindingType !== BIND_NONE;
 
     switch (expr.type) {
     case "Identifier":
-      if (bindingType === BIND_LEXICAL && expr.name === "let")
-        { this.raiseRecoverable(expr.start, "let is disallowed as a lexically bound name"); }
       if (this.strict && this.reservedWordsStrictBind.test(expr.name))
-        { this.raiseRecoverable(expr.start, (bindingType ? "Binding " : "Assigning to ") + expr.name + " in strict mode"); }
-      if (checkClashes) {
-        if (has(checkClashes, expr.name))
-          { this.raiseRecoverable(expr.start, "Argument name clash"); }
-        checkClashes[expr.name] = true;
+        { this.raiseRecoverable(expr.start, (isBind ? "Binding " : "Assigning to ") + expr.name + " in strict mode"); }
+      if (isBind) {
+        if (bindingType === BIND_LEXICAL && expr.name === "let")
+          { this.raiseRecoverable(expr.start, "let is disallowed as a lexically bound name"); }
+        if (checkClashes) {
+          if (has(checkClashes, expr.name))
+            { this.raiseRecoverable(expr.start, "Argument name clash"); }
+          checkClashes[expr.name] = true;
+        }
+        if (bindingType !== BIND_OUTSIDE) { this.declareName(expr.name, bindingType, expr.start); }
       }
-      if (bindingType !== BIND_NONE && bindingType !== BIND_OUTSIDE) { this.declareName(expr.name, bindingType, expr.start); }
       break
 
     case "ChainExpression":
@@ -1845,45 +1910,62 @@
       break
 
     case "MemberExpression":
-      if (bindingType) { this.raiseRecoverable(expr.start, "Binding member expression"); }
+      if (isBind) { this.raiseRecoverable(expr.start, "Binding member expression"); }
       break
 
-    case "ObjectPattern":
-      for (var i = 0, list = expr.properties; i < list.length; i += 1)
-        {
-      var prop = list[i];
+    case "ParenthesizedExpression":
+      if (isBind) { this.raiseRecoverable(expr.start, "Binding parenthesized expression"); }
+      return this.checkLValSimple(expr.expression, bindingType, checkClashes)
 
-      this.checkLVal(prop, bindingType, checkClashes);
+    default:
+      this.raise(expr.start, (isBind ? "Binding" : "Assigning to") + " rvalue");
     }
-      break
+  };
 
-    case "Property":
-      // AssignmentProperty has type === "Property"
-      this.checkLVal(expr.value, bindingType, checkClashes);
+  pp$2.checkLValPattern = function(expr, bindingType, checkClashes) {
+    if ( bindingType === void 0 ) bindingType = BIND_NONE;
+
+    switch (expr.type) {
+    case "ObjectPattern":
+      for (var i = 0, list = expr.properties; i < list.length; i += 1) {
+        var prop = list[i];
+
+      this.checkLValInnerPattern(prop, bindingType, checkClashes);
+      }
       break
 
     case "ArrayPattern":
       for (var i$1 = 0, list$1 = expr.elements; i$1 < list$1.length; i$1 += 1) {
         var elem = list$1[i$1];
 
-      if (elem) { this.checkLVal(elem, bindingType, checkClashes); }
+      if (elem) { this.checkLValInnerPattern(elem, bindingType, checkClashes); }
       }
       break
 
+    default:
+      this.checkLValSimple(expr, bindingType, checkClashes);
+    }
+  };
+
+  pp$2.checkLValInnerPattern = function(expr, bindingType, checkClashes) {
+    if ( bindingType === void 0 ) bindingType = BIND_NONE;
+
+    switch (expr.type) {
+    case "Property":
+      // AssignmentProperty has type === "Property"
+      this.checkLValInnerPattern(expr.value, bindingType, checkClashes);
+      break
+
     case "AssignmentPattern":
-      this.checkLVal(expr.left, bindingType, checkClashes);
+      this.checkLValPattern(expr.left, bindingType, checkClashes);
       break
 
     case "RestElement":
-      this.checkLVal(expr.argument, bindingType, checkClashes);
-      break
-
-    case "ParenthesizedExpression":
-      this.checkLVal(expr.expression, bindingType, checkClashes);
+      this.checkLValPattern(expr.argument, bindingType, checkClashes);
       break
 
     default:
-      this.raise(expr.start, (bindingType ? "Binding" : "Assigning to") + " rvalue");
+      this.checkLValPattern(expr, bindingType, checkClashes);
     }
   };
 
@@ -1999,13 +2081,18 @@
     if (this.type.isAssign) {
       var node = this.startNodeAt(startPos, startLoc);
       node.operator = this.value;
-      node.left = this.type === types.eq ? this.toAssignable(left, false, refDestructuringErrors) : left;
+      if (this.type === types.eq)
+        { left = this.toAssignable(left, false, refDestructuringErrors); }
       if (!ownDestructuringErrors) {
         refDestructuringErrors.parenthesizedAssign = refDestructuringErrors.trailingComma = refDestructuringErrors.doubleProto = -1;
       }
-      if (refDestructuringErrors.shorthandAssign >= node.left.start)
+      if (refDestructuringErrors.shorthandAssign >= left.start)
         { refDestructuringErrors.shorthandAssign = -1; } // reset because shorthand default was used correctly
-      this.checkLVal(left);
+      if (this.type === types.eq)
+        { this.checkLValPattern(left); }
+      else
+        { this.checkLValSimple(left); }
+      node.left = left;
       this.next();
       node.right = this.parseMaybeAssign(noIn);
       return this.finishNode(node, "AssignmentExpression")
@@ -2096,7 +2183,7 @@
       this.next();
       node.argument = this.parseMaybeUnary(null, true);
       this.checkExpressionErrors(refDestructuringErrors, true);
-      if (update) { this.checkLVal(node.argument); }
+      if (update) { this.checkLValSimple(node.argument); }
       else if (this.strict && node.operator === "delete" &&
                node.argument.type === "Identifier")
         { this.raiseRecoverable(node.start, "Deleting local variable in strict mode"); }
@@ -2110,7 +2197,7 @@
         node$1.operator = this.value;
         node$1.prefix = false;
         node$1.argument = expr;
-        this.checkLVal(expr);
+        this.checkLValSimple(expr);
         this.next();
         expr = this.finishNode(node$1, "UpdateExpression");
       }
@@ -2385,7 +2472,7 @@
     var node = this.startNode();
     node.value = value;
     node.raw = this.input.slice(this.start, this.end);
-    if (node.raw.charCodeAt(node.raw.length - 1) === 110) { node.bigint = node.raw.slice(0, -1); }
+    if (node.raw.charCodeAt(node.raw.length - 1) === 110) { node.bigint = node.raw.slice(0, -1).replace(/_/g, ""); }
     this.next();
     return this.finishNode(node, "Literal")
   };
@@ -2487,7 +2574,7 @@
         { this.raiseRecoverable(node.property.start, "The only valid meta property for new is 'new.target'"); }
       if (containsEsc)
         { this.raiseRecoverable(node.start, "'new.target' must not contain escaped characters"); }
-      if (!this.inNonArrowFunction())
+      if (!this.inNonArrowFunction)
         { this.raiseRecoverable(node.start, "'new.target' can only be used in functions"); }
       return this.finishNode(node, "MetaProperty")
     }
@@ -2660,13 +2747,13 @@
         { this.awaitIdentPos = startPos; }
       prop.kind = "init";
       if (isPattern) {
-        prop.value = this.parseMaybeDefault(startPos, startLoc, prop.key);
+        prop.value = this.parseMaybeDefault(startPos, startLoc, this.copyNode(prop.key));
       } else if (this.type === types.eq && refDestructuringErrors) {
         if (refDestructuringErrors.shorthandAssign < 0)
           { refDestructuringErrors.shorthandAssign = this.start; }
-        prop.value = this.parseMaybeDefault(startPos, startLoc, prop.key);
+        prop.value = this.parseMaybeDefault(startPos, startLoc, this.copyNode(prop.key));
       } else {
-        prop.value = prop.key;
+        prop.value = this.copyNode(prop.key);
       }
       prop.shorthand = true;
     } else { this.unexpected(); }
@@ -2773,7 +2860,7 @@
       // if a let/const declaration in the function clashes with one of the params.
       this.checkParams(node, !oldStrict && !useStrict && !isArrowFunction && !isMethod && this.isSimpleParamList(node.params));
       // Ensure the function name isn't a forbidden identifier in strict mode, e.g. 'eval'
-      if (this.strict && node.id) { this.checkLVal(node.id, BIND_OUTSIDE); }
+      if (this.strict && node.id) { this.checkLValSimple(node.id, BIND_OUTSIDE); }
       node.body = this.parseBlock(false, undefined, useStrict && !oldStrict);
       node.expression = false;
       this.adaptDirectivePrologue(node.body.body);
@@ -2801,7 +2888,7 @@
       {
       var param = list[i];
 
-      this.checkLVal(param, BIND_VAR, allowDuplicates ? null : nameHash);
+      this.checkLValInnerPattern(param, BIND_VAR, allowDuplicates ? null : nameHash);
     }
   };
 
@@ -2909,7 +2996,7 @@
 
     var node = this.startNode();
     this.next();
-    node.argument = this.parseMaybeUnary(null, false);
+    node.argument = this.parseMaybeUnary(null, true);
     return this.finishNode(node, "AwaitExpression")
   };
 
@@ -3074,6 +3161,12 @@
     return finishNodeAt.call(this, node, type, pos, loc)
   };
 
+  pp$6.copyNode = function(node) {
+    var newNode = new Node(this, node.start, this.startLoc);
+    for (var prop in node) { newNode[prop] = node[prop]; }
+    return newNode
+  };
+
   // The algorithm used to determine whether a regexp can appear at a
 
   var TokContext = function TokContext(token, isExpr, preserveSpace, override, generator) {
@@ -3178,7 +3271,8 @@
   };
 
   types._function.updateContext = types._class.updateContext = function(prevType) {
-    if (prevType.beforeExpr && prevType !== types.semi && prevType !== types._else &&
+    if (prevType.beforeExpr && prevType !== types._else &&
+        !(prevType === types.semi && this.curContext() !== types$1.p_stat) &&
         !(prevType === types._return && lineBreak.test(this.input.slice(this.lastTokEnd, this.start))) &&
         !((prevType === types.colon || prevType === types.braceL) && this.curContext() === types$1.b_stat))
       { this.context.push(types$1.f_expr); }
@@ -3224,10 +3318,12 @@
   var ecma9BinaryProperties = "ASCII ASCII_Hex_Digit AHex Alphabetic Alpha Any Assigned Bidi_Control Bidi_C Bidi_Mirrored Bidi_M Case_Ignorable CI Cased Changes_When_Casefolded CWCF Changes_When_Casemapped CWCM Changes_When_Lowercased CWL Changes_When_NFKC_Casefolded CWKCF Changes_When_Titlecased CWT Changes_When_Uppercased CWU Dash Default_Ignorable_Code_Point DI Deprecated Dep Diacritic Dia Emoji Emoji_Component Emoji_Modifier Emoji_Modifier_Base Emoji_Presentation Extender Ext Grapheme_Base Gr_Base Grapheme_Extend Gr_Ext Hex_Digit Hex IDS_Binary_Operator IDSB IDS_Trinary_Operator IDST ID_Continue IDC ID_Start IDS Ideographic Ideo Join_Control Join_C Logical_Order_Exception LOE Lowercase Lower Math Noncharacter_Code_Point NChar Pattern_Syntax Pat_Syn Pattern_White_Space Pat_WS Quotation_Mark QMark Radical Regional_Indicator RI Sentence_Terminal STerm Soft_Dotted SD Terminal_Punctuation Term Unified_Ideograph UIdeo Uppercase Upper Variation_Selector VS White_Space space XID_Continue XIDC XID_Start XIDS";
   var ecma10BinaryProperties = ecma9BinaryProperties + " Extended_Pictographic";
   var ecma11BinaryProperties = ecma10BinaryProperties;
+  var ecma12BinaryProperties = ecma11BinaryProperties + " EBase EComp EMod EPres ExtPict";
   var unicodeBinaryProperties = {
     9: ecma9BinaryProperties,
     10: ecma10BinaryProperties,
-    11: ecma11BinaryProperties
+    11: ecma11BinaryProperties,
+    12: ecma12BinaryProperties
   };
 
   // #table-unicode-general-category-values
@@ -3237,10 +3333,12 @@
   var ecma9ScriptValues = "Adlam Adlm Ahom Ahom Anatolian_Hieroglyphs Hluw Arabic Arab Armenian Armn Avestan Avst Balinese Bali Bamum Bamu Bassa_Vah Bass Batak Batk Bengali Beng Bhaiksuki Bhks Bopomofo Bopo Brahmi Brah Braille Brai Buginese Bugi Buhid Buhd Canadian_Aboriginal Cans Carian Cari Caucasian_Albanian Aghb Chakma Cakm Cham Cham Cherokee Cher Common Zyyy Coptic Copt Qaac Cuneiform Xsux Cypriot Cprt Cyrillic Cyrl Deseret Dsrt Devanagari Deva Duployan Dupl Egyptian_Hieroglyphs Egyp Elbasan Elba Ethiopic Ethi Georgian Geor Glagolitic Glag Gothic Goth Grantha Gran Greek Grek Gujarati Gujr Gurmukhi Guru Han Hani Hangul Hang Hanunoo Hano Hatran Hatr Hebrew Hebr Hiragana Hira Imperial_Aramaic Armi Inherited Zinh Qaai Inscriptional_Pahlavi Phli Inscriptional_Parthian Prti Javanese Java Kaithi Kthi Kannada Knda Katakana Kana Kayah_Li Kali Kharoshthi Khar Khmer Khmr Khojki Khoj Khudawadi Sind Lao Laoo Latin Latn Lepcha Lepc Limbu Limb Linear_A Lina Linear_B Linb Lisu Lisu Lycian Lyci Lydian Lydi Mahajani Mahj Malayalam Mlym Mandaic Mand Manichaean Mani Marchen Marc Masaram_Gondi Gonm Meetei_Mayek Mtei Mende_Kikakui Mend Meroitic_Cursive Merc Meroitic_Hieroglyphs Mero Miao Plrd Modi Modi Mongolian Mong Mro Mroo Multani Mult Myanmar Mymr Nabataean Nbat New_Tai_Lue Talu Newa Newa Nko Nkoo Nushu Nshu Ogham Ogam Ol_Chiki Olck Old_Hungarian Hung Old_Italic Ital Old_North_Arabian Narb Old_Permic Perm Old_Persian Xpeo Old_South_Arabian Sarb Old_Turkic Orkh Oriya Orya Osage Osge Osmanya Osma Pahawh_Hmong Hmng Palmyrene Palm Pau_Cin_Hau Pauc Phags_Pa Phag Phoenician Phnx Psalter_Pahlavi Phlp Rejang Rjng Runic Runr Samaritan Samr Saurashtra Saur Sharada Shrd Shavian Shaw Siddham Sidd SignWriting Sgnw Sinhala Sinh Sora_Sompeng Sora Soyombo Soyo Sundanese Sund Syloti_Nagri Sylo Syriac Syrc Tagalog Tglg Tagbanwa Tagb Tai_Le Tale Tai_Tham Lana Tai_Viet Tavt Takri Takr Tamil Taml Tangut Tang Telugu Telu Thaana Thaa Thai Thai Tibetan Tibt Tifinagh Tfng Tirhuta Tirh Ugaritic Ugar Vai Vaii Warang_Citi Wara Yi Yiii Zanabazar_Square Zanb";
   var ecma10ScriptValues = ecma9ScriptValues + " Dogra Dogr Gunjala_Gondi Gong Hanifi_Rohingya Rohg Makasar Maka Medefaidrin Medf Old_Sogdian Sogo Sogdian Sogd";
   var ecma11ScriptValues = ecma10ScriptValues + " Elymaic Elym Nandinagari Nand Nyiakeng_Puachue_Hmong Hmnp Wancho Wcho";
+  var ecma12ScriptValues = ecma11ScriptValues + " Chorasmian Chrs Diak Dives_Akuru Khitan_Small_Script Kits Yezi Yezidi";
   var unicodeScriptValues = {
     9: ecma9ScriptValues,
     10: ecma10ScriptValues,
-    11: ecma11ScriptValues
+    11: ecma11ScriptValues,
+    12: ecma12ScriptValues
   };
 
   var data = {};
@@ -3261,13 +3359,14 @@
   buildUnicodeData(9);
   buildUnicodeData(10);
   buildUnicodeData(11);
+  buildUnicodeData(12);
 
   var pp$8 = Parser.prototype;
 
   var RegExpValidationState = function RegExpValidationState(parser) {
     this.parser = parser;
     this.validFlags = "gim" + (parser.options.ecmaVersion >= 6 ? "uy" : "") + (parser.options.ecmaVersion >= 9 ? "s" : "");
-    this.unicodeProperties = data[parser.options.ecmaVersion >= 11 ? 11 : parser.options.ecmaVersion];
+    this.unicodeProperties = data[parser.options.ecmaVersion >= 12 ? 12 : parser.options.ecmaVersion];
     this.source = "";
     this.flags = "";
     this.start = 0;
@@ -4551,7 +4650,13 @@
 
   pp$9.readToken_pipe_amp = function(code) { // '|&'
     var next = this.input.charCodeAt(this.pos + 1);
-    if (next === code) { return this.finishOp(code === 124 ? types.logicalOR : types.logicalAND, 2) }
+    if (next === code) {
+      if (this.options.ecmaVersion >= 12) {
+        var next2 = this.input.charCodeAt(this.pos + 2);
+        if (next2 === 61) { return this.finishOp(types.assign, 3) }
+      }
+      return this.finishOp(code === 124 ? types.logicalOR : types.logicalAND, 2)
+    }
     if (next === 61) { return this.finishOp(types.assign, 2) }
     return this.finishOp(code === 124 ? types.bitwiseOR : types.bitwiseAND, 1)
   };
@@ -4608,13 +4713,20 @@
   };
 
   pp$9.readToken_question = function() { // '?'
-    if (this.options.ecmaVersion >= 11) {
+    var ecmaVersion = this.options.ecmaVersion;
+    if (ecmaVersion >= 11) {
       var next = this.input.charCodeAt(this.pos + 1);
       if (next === 46) {
         var next2 = this.input.charCodeAt(this.pos + 2);
         if (next2 < 48 || next2 > 57) { return this.finishOp(types.questionDot, 2) }
       }
-      if (next === 63) { return this.finishOp(types.coalesce, 2) }
+      if (next === 63) {
+        if (ecmaVersion >= 12) {
+          var next2$1 = this.input.charCodeAt(this.pos + 2);
+          if (next2$1 === 61) { return this.finishOp(types.assign, 3) }
+        }
+        return this.finishOp(types.coalesce, 2)
+      }
     }
     return this.finishOp(types.question, 1)
   };
@@ -4743,22 +4855,59 @@
   // were read, the integer value otherwise. When `len` is given, this
   // will return `null` unless the integer has exactly `len` digits.
 
-  pp$9.readInt = function(radix, len) {
-    var start = this.pos, total = 0;
-    for (var i = 0, e = len == null ? Infinity : len; i < e; ++i) {
+  pp$9.readInt = function(radix, len, maybeLegacyOctalNumericLiteral) {
+    // `len` is used for character escape sequences. In that case, disallow separators.
+    var allowSeparators = this.options.ecmaVersion >= 12 && len === undefined;
+
+    // `maybeLegacyOctalNumericLiteral` is true if it doesn't have prefix (0x,0o,0b)
+    // and isn't fraction part nor exponent part. In that case, if the first digit
+    // is zero then disallow separators.
+    var isLegacyOctalNumericLiteral = maybeLegacyOctalNumericLiteral && this.input.charCodeAt(this.pos) === 48;
+
+    var start = this.pos, total = 0, lastCode = 0;
+    for (var i = 0, e = len == null ? Infinity : len; i < e; ++i, ++this.pos) {
       var code = this.input.charCodeAt(this.pos), val = (void 0);
+
+      if (allowSeparators && code === 95) {
+        if (isLegacyOctalNumericLiteral) { this.raiseRecoverable(this.pos, "Numeric separator is not allowed in legacy octal numeric literals"); }
+        if (lastCode === 95) { this.raiseRecoverable(this.pos, "Numeric separator must be exactly one underscore"); }
+        if (i === 0) { this.raiseRecoverable(this.pos, "Numeric separator is not allowed at the first of digits"); }
+        lastCode = code;
+        continue
+      }
+
       if (code >= 97) { val = code - 97 + 10; } // a
       else if (code >= 65) { val = code - 65 + 10; } // A
       else if (code >= 48 && code <= 57) { val = code - 48; } // 0-9
       else { val = Infinity; }
       if (val >= radix) { break }
-      ++this.pos;
+      lastCode = code;
       total = total * radix + val;
     }
+
+    if (allowSeparators && lastCode === 95) { this.raiseRecoverable(this.pos - 1, "Numeric separator is not allowed at the last of digits"); }
     if (this.pos === start || len != null && this.pos - start !== len) { return null }
 
     return total
   };
+
+  function stringToNumber(str, isLegacyOctalNumericLiteral) {
+    if (isLegacyOctalNumericLiteral) {
+      return parseInt(str, 8)
+    }
+
+    // `parseFloat(value)` stops parsing at the first numeric separator then returns a wrong value.
+    return parseFloat(str.replace(/_/g, ""))
+  }
+
+  function stringToBigInt(str) {
+    if (typeof BigInt !== "function") {
+      return null
+    }
+
+    // `BigInt(value)` throws syntax error if the string contains numeric separators.
+    return BigInt(str.replace(/_/g, ""))
+  }
 
   pp$9.readRadixNumber = function(radix) {
     var start = this.pos;
@@ -4766,7 +4915,7 @@
     var val = this.readInt(radix);
     if (val == null) { this.raise(this.start + 2, "Expected number in radix " + radix); }
     if (this.options.ecmaVersion >= 11 && this.input.charCodeAt(this.pos) === 110) {
-      val = typeof BigInt !== "undefined" ? BigInt(this.input.slice(start, this.pos)) : null;
+      val = stringToBigInt(this.input.slice(start, this.pos));
       ++this.pos;
     } else if (isIdentifierStart(this.fullCharCodeAtPos())) { this.raise(this.pos, "Identifier directly after number"); }
     return this.finishToken(types.num, val)
@@ -4776,13 +4925,12 @@
 
   pp$9.readNumber = function(startsWithDot) {
     var start = this.pos;
-    if (!startsWithDot && this.readInt(10) === null) { this.raise(start, "Invalid number"); }
+    if (!startsWithDot && this.readInt(10, undefined, true) === null) { this.raise(start, "Invalid number"); }
     var octal = this.pos - start >= 2 && this.input.charCodeAt(start) === 48;
     if (octal && this.strict) { this.raise(start, "Invalid number"); }
     var next = this.input.charCodeAt(this.pos);
     if (!octal && !startsWithDot && this.options.ecmaVersion >= 11 && next === 110) {
-      var str$1 = this.input.slice(start, this.pos);
-      var val$1 = typeof BigInt !== "undefined" ? BigInt(str$1) : null;
+      var val$1 = stringToBigInt(this.input.slice(start, this.pos));
       ++this.pos;
       if (isIdentifierStart(this.fullCharCodeAtPos())) { this.raise(this.pos, "Identifier directly after number"); }
       return this.finishToken(types.num, val$1)
@@ -4800,8 +4948,7 @@
     }
     if (isIdentifierStart(this.fullCharCodeAtPos())) { this.raise(this.pos, "Identifier directly after number"); }
 
-    var str = this.input.slice(start, this.pos);
-    var val = octal ? parseInt(str, 8) : parseFloat(str);
+    var val = stringToNumber(this.input.slice(start, this.pos), octal);
     return this.finishToken(types.num, val)
   };
 
@@ -4964,6 +5111,12 @@
       return ""
     case 56:
     case 57:
+      if (this.strict) {
+        this.invalidStringToken(
+          this.pos - 1,
+          "Invalid escape sequence"
+        );
+      }
       if (inTemplate) {
         var codePos = this.pos - 1;
 
@@ -5060,7 +5213,7 @@
 
   // Acorn is a tiny, fast JavaScript parser written in JavaScript.
 
-  var version = "7.1.0";
+  var version = "8.0.4";
 
   Parser.acorn = {
     Parser: Parser,
@@ -5136,3 +5289,4 @@
   Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
+//# sourceMappingURL=acorn.js.map

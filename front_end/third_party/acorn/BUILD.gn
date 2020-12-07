@@ -18,9 +18,5 @@ devtools_pre_built("acorn") {
 devtools_entrypoint("bundle") {
   entrypoint = "acorn.ts"
 
-  deps = [
-    ":acorn",
-    "../acorn-logical-assignment",
-    "../acorn-numeric-separator",
-  ]
+  deps = [ ":acorn" ]
 }

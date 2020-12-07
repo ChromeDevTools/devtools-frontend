@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
 
 import {CPUProfilerModel, EventData, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';  // eslint-disable-line no-unused-vars
 import {Events as DebuggerModelEvents, Location} from './DebuggerModel.js';  // eslint-disable-line no-unused-vars
@@ -187,7 +188,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
    */
   addCommandMessage(executionContext, text) {
     const commandMessage =
-        new ConsoleMessage(executionContext.runtimeModel, MessageSource.JS, null, text, MessageType.Command);
+        new ConsoleMessage(executionContext.runtimeModel, MessageSource.Javascript, null, text, MessageType.Command);
     commandMessage.setExecutionContextId(executionContext.id);
     this.addMessage(commandMessage);
     return commandMessage;
@@ -250,6 +251,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
    */
   _consoleAPICalled(runtimeModel, event) {
     const call = /** @type {!ConsoleAPICall} */ (event.data);
+    /** @type {MessageLevel} */
     let level = MessageLevel.Info;
     if (call.type === MessageType.Debug) {
       level = MessageLevel.Verbose;
@@ -329,7 +331,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!CPUProfilerModel} cpuProfilerModel
-   * @param {string} type
+   * @param {MessageType} type
    * @param {!Location} scriptLocation
    * @param {string} messageText
    */
@@ -484,10 +486,10 @@ export const Events = {
 export class ConsoleMessage {
   /**
    * @param {?RuntimeModel} runtimeModel
-   * @param {string} source
-   * @param {?string} level
+   * @param {MessageSource} source
+   * @param {?MessageLevel} level
    * @param {string} messageText
-   * @param {string=} type
+   * @param {MessageType=} type
    * @param {?string=} url
    * @param {number=} line
    * @param {number=} column
@@ -555,15 +557,16 @@ export class ConsoleMessage {
   /**
    * @param {!RuntimeModel} runtimeModel
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
-   * @param {string=} messageType
+   * @param {MessageType=} messageType
    * @param {number=} timestamp
    * @param {string=} forceUrl
    * @return {!ConsoleMessage}
    */
   static fromException(runtimeModel, exceptionDetails, messageType, timestamp, forceUrl) {
     return new ConsoleMessage(
-        runtimeModel, MessageSource.JS, MessageLevel.Error, RuntimeModel.simpleTextFromException(exceptionDetails),
-        messageType, forceUrl || exceptionDetails.url, exceptionDetails.lineNumber, exceptionDetails.columnNumber,
+        runtimeModel, MessageSource.Javascript, MessageLevel.Error,
+        RuntimeModel.simpleTextFromException(exceptionDetails), messageType, forceUrl || exceptionDetails.url,
+        exceptionDetails.lineNumber, exceptionDetails.columnNumber,
         exceptionDetails.exception ? [RemoteObject.fromLocalObject(exceptionDetails.text), exceptionDetails.exception] :
                                      undefined,
         exceptionDetails.stackTrace, timestamp, exceptionDetails.executionContextId, exceptionDetails.scriptId);
@@ -639,7 +642,7 @@ export class ConsoleMessage {
    */
   isGroupable() {
     const isUngroupableError = this.level === MessageLevel.Error &&
-        (this.source === MessageSource.JS || this.source === MessageSource.Network);
+        (this.source === MessageSource.Javascript || this.source === MessageSource.Network);
     return (
         this.source !== MessageSource.ConsoleAPI && this.type !== MessageType.Command &&
         this.type !== MessageType.Result && this.type !== MessageType.System && !isUngroupableError);
@@ -722,77 +725,41 @@ export class ConsoleMessage {
   }
 }
 
-// Note: Keep these constants in sync with the ones in ConsoleTypes.h
 /**
- * @enum {string}
+ * @enum {Protocol.Log.LogEntrySource|FrontendMessageSource}
  */
 export const MessageSource = {
-  XML: 'xml',
-  JS: 'javascript',
-  Network: 'network',
-  ConsoleAPI: 'console-api',
-  Storage: 'storage',
-  AppCache: 'appcache',
-  Rendering: 'rendering',
-  CSS: 'css',
-  Security: 'security',
-  Deprecation: 'deprecation',
-  Worker: 'worker',
-  Violation: 'violation',
-  Intervention: 'intervention',
-  Recommendation: 'recommendation',
-  Other: 'other'
+  ...Protocol.Log.LogEntrySource,
+  ...FrontendMessageSource,
 };
 
 /**
- * @enum {string}
- */
-export const MessageType = {
-  Log: 'log',
-  Debug: 'debug',
-  Info: 'info',
-  Error: 'error',
-  Warning: 'warning',
-  Dir: 'dir',
-  DirXML: 'dirxml',
-  Table: 'table',
-  Trace: 'trace',
-  Clear: 'clear',
-  StartGroup: 'startGroup',
-  StartGroupCollapsed: 'startGroupCollapsed',
-  EndGroup: 'endGroup',
-  Assert: 'assert',
-  Result: 'result',
-  Profile: 'profile',
-  ProfileEnd: 'profileEnd',
-  Command: 'command',
-  System: 'system',
-  QueryObjectResult: 'queryObjectResult'
-};
-
-/**
- * @enum {string}
+ * @enum {Protocol.Log.LogEntryLevel}
  */
 export const MessageLevel = {
-  Verbose: 'verbose',
-  Info: 'info',
-  Warning: 'warning',
-  Error: 'error'
+  ...Protocol.Log.LogEntryLevel,
 };
 
-/** @type {!Map<!MessageSource, string>} */
-export const MessageSourceDisplayName = new Map([
-  [MessageSource.XML, 'xml'], [MessageSource.JS, 'javascript'], [MessageSource.Network, 'network'],
-  [MessageSource.ConsoleAPI, 'console-api'], [MessageSource.Storage, 'storage'], [MessageSource.AppCache, 'appcache'],
+/**
+ * @enum {Protocol.Runtime.ConsoleAPICalledEventType|FrontendMessageType}
+ */
+export const MessageType = {
+  ...Protocol.Runtime.ConsoleAPICalledEventType,
+  ...FrontendMessageType,
+};
+
+export const MessageSourceDisplayName = new Map(/** @type {[!MessageSource, string][]} */ ([
+  [MessageSource.XML, 'xml'], [MessageSource.Javascript, 'javascript'], [MessageSource.Network, 'network'],
+  [MessageSource.ConsoleAPI, 'console-api'], [MessageSource.Storage, 'storage'], [MessageSource.Appcache, 'appcache'],
   [MessageSource.Rendering, 'rendering'], [MessageSource.CSS, 'css'], [MessageSource.Security, 'security'],
   [MessageSource.Deprecation, 'deprecation'], [MessageSource.Worker, 'worker'], [MessageSource.Violation, 'violation'],
   [MessageSource.Intervention, 'intervention'], [MessageSource.Recommendation, 'recommendation'],
   [MessageSource.Other, 'other']
-]);
+]));
 
 /**
  * @typedef {{
-  *    type: string,
+  *    type: MessageType,
   *    args: !Array<!Protocol.Runtime.RemoteObject>,
   *    executionContextId: number,
   *    timestamp: number,

@@ -250,7 +250,7 @@ export async function evaluateScriptSnippet(uiSourceCode) {
   }
   const scriptId = scripts[scripts.length - 1].scriptId;
   SDK.ConsoleModel.ConsoleModel.instance().addMessage(new SDK.ConsoleModel.ConsoleMessage(
-      runtimeModel, SDK.ConsoleModel.MessageSource.JS, SDK.ConsoleModel.MessageLevel.Info, '',
+      runtimeModel, SDK.ConsoleModel.MessageSource.Javascript, SDK.ConsoleModel.MessageLevel.Info, '',
       SDK.ConsoleModel.MessageType.Result, url, undefined, undefined, [result.object], undefined, undefined,
       executionContext.id, scriptId));
 }

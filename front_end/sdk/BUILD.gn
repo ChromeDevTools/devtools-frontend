@@ -24,6 +24,7 @@ devtools_module("sdk") {
     "CompilerSourceMappingContentProvider.js",
     "Connections.js",
     "ConsoleModel.js",
+    "ConsoleModelTypes.ts",
     "ContentSecurityPolicyIssue.js",
     "Cookie.js",
     "CookieModel.js",

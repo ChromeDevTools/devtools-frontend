@@ -831,6 +831,7 @@ grd_files_debug_sources = [
   "front_end/sdk/CompilerSourceMappingContentProvider.js",
   "front_end/sdk/Connections.js",
   "front_end/sdk/ConsoleModel.js",
+  "front_end/sdk/ConsoleModelTypes.js",
   "front_end/sdk/ContentSecurityPolicyIssue.js",
   "front_end/sdk/Cookie.js",
   "front_end/sdk/CookieModel.js",

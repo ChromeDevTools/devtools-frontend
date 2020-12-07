@@ -511,6 +511,7 @@ export class ConsoleView extends UI.Widget.VBox {
    * @param {!Common.Console.Message} message
    */
   _addSinkMessage(message) {
+    /** @type {SDK.ConsoleModel.MessageLevel} */
     let level = SDK.ConsoleModel.MessageLevel.Verbose;
     switch (message.level) {
       case Common.Console.MessageLevel.Info:
@@ -1193,8 +1194,8 @@ export class ConsoleView extends UI.Widget.VBox {
     let message;
     if (!exceptionDetails) {
       message = new SDK.ConsoleModel.ConsoleMessage(
-          result.runtimeModel(), SDK.ConsoleModel.MessageSource.JS, level, '', SDK.ConsoleModel.MessageType.Result,
-          undefined, undefined, undefined, [result]);
+          result.runtimeModel(), SDK.ConsoleModel.MessageSource.Javascript, level, '',
+          SDK.ConsoleModel.MessageType.Result, undefined, undefined, undefined, [result]);
     } else {
       message = SDK.ConsoleModel.ConsoleMessage.fromException(
           result.runtimeModel(), exceptionDetails, SDK.ConsoleModel.MessageType.Result, undefined, undefined);
@@ -1493,13 +1494,12 @@ export class ConsoleViewFilter {
     this._currentFilter = new ConsoleFilter('', [], null, this._messageLevelFiltersSetting.get());
     this._updateCurrentFilter();
 
-    /** @type {!Map<!SDK.ConsoleModel.MessageLevel, string>} */
-    this._levelLabels = new Map([
+    this._levelLabels = new Map(/** @type {[SDK.ConsoleModel.MessageLevel, string][]} */ ([
       [SDK.ConsoleModel.MessageLevel.Verbose, Common.UIString.UIString('Verbose')],
       [SDK.ConsoleModel.MessageLevel.Info, Common.UIString.UIString('Info')],
       [SDK.ConsoleModel.MessageLevel.Warning, Common.UIString.UIString('Warnings')],
       [SDK.ConsoleModel.MessageLevel.Error, Common.UIString.UIString('Errors')],
-    ]);
+    ]));
 
     this._levelMenuButton = new UI.Toolbar.ToolbarButton(ls`Log levels`);
     this._levelMenuButton.turnIntoSelect();

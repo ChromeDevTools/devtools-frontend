@@ -444,6 +444,7 @@ all_typescript_module_sources = [
   "sdk/CompilerSourceMappingContentProvider.js",
   "sdk/Connections.js",
   "sdk/ConsoleModel.js",
+  "sdk/ConsoleModelTypes.js",
   "sdk/ContentSecurityPolicyIssue.js",
   "sdk/Cookie.js",
   "sdk/CookieModel.js",

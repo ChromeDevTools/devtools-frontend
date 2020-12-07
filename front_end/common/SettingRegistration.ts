@@ -60,7 +60,7 @@ export interface SettingRegistration {
   settingName: string;
   settingType: SettingType;
   defaultValue: unknown;
-  tags?: string;
+  tags?: Array<string>;
   isRegex?: boolean;
   options?: Array<SettingExtensionOption>;
   reloadRequired?: boolean;

@@ -36,7 +36,7 @@ export interface Action extends Common.EventTarget.EventTarget {
 
   category(): string;
 
-  tags(): string|undefined;
+  tags(): string|void;
 
   toggleable(): boolean;
 
@@ -207,8 +207,11 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
     return this.actionRegistration.category;
   }
 
-  tags(): string|undefined {
-    return this.actionRegistration.tags;
+  tags(): string|void {
+    if (this.actionRegistration.tags) {
+      // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
+      return this.actionRegistration.tags.join('\0');
+    }
   }
 
   toggleable(): boolean {
@@ -365,7 +368,7 @@ export interface ActionRegistration {
   /**
    * Words used to find an action in the Command Menu.
    */
-  tags?: string;
+  tags?: Array<string>;
   /**
    * Whether the action is toggleable.
    */

@@ -29,7 +29,10 @@ export interface ViewRegistration {
   id: string;
   location?: ViewLocationValues;
   hasToolbar?: boolean;
-  loadView: () => Promise<Widget>, order?: number, settings?: Array<string>, tags?: string;
+  loadView: () => Promise<Widget>;
+  order?: number;
+  settings?: Array<string>;
+  tags?: Array<string>;
 }
 
 export function registerViewExtension(registration: ViewRegistration) {

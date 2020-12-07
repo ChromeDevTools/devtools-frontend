@@ -949,8 +949,9 @@ export class PreRegisteredSetting extends Setting {
    * @return {?string}
    */
   tags() {
-    if (this._registration) {
-      return this._registration.tags || null;
+    if (this._registration && this._registration.tags) {
+      // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
+      return this._registration.tags.join('\0');
     }
     return null;
   }

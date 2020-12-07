@@ -70,7 +70,11 @@ export class PreRegisteredView {
   }
 
   tags() {
-    return this._viewRegistration.tags;
+    if (this._viewRegistration.tags) {
+      // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
+      return this._viewRegistration.tags.join('\0');
+    }
+    return undefined;
   }
 
   persistence() {

@@ -9,8 +9,17 @@ const {assert} = chai;
 const {LinearMemoryInspectorController} = LinearMemoryInspector;
 
 class MockRemoteObject extends SDK.RemoteObject.LocalJSONObject {
-  constructor(array: Uint8Array) {
+  private objSubtype?: string;
+
+  constructor(array: Uint8Array, subType?: string) {
     super(array);
+    if (subType) {
+      this.objSubtype = subType;
+    }
+  }
+
+  get subtype(): string {
+    return this.subtype;
   }
 
   set(index: number, value: number) {
@@ -39,6 +48,23 @@ function createWrapper(array: Uint8Array) {
 }
 
 describe('LinearMemoryInspectorController', async () => {
+  async function assertInvalidArrayBufferObject(mockObj: SDK.RemoteObject.RemoteObject) {
+    try {
+      await LinearMemoryInspector.LinearMemoryInspectorController.getUint8ArrayFromObject(mockObj);
+    } catch (e) {
+      return;
+    }
+    throw new Error('Should not accept non-array buffer types.');
+  }
+
+  async function assertValidArrayBufferObject(mockObj: SDK.RemoteObject.RemoteObject) {
+    try {
+      await LinearMemoryInspector.LinearMemoryInspectorController.getUint8ArrayFromObject(mockObj);
+    } catch (e) {
+      throw new Error('Should not accept non-array buffer types.');
+    }
+  }
+
   it('throws an error on an invalid (out-of-bounds) memory range request', async () => {
     const array = new Uint8Array([2, 4, 6, 2, 4]);
     const wrapper = createWrapper(array);
@@ -90,6 +116,20 @@ describe('LinearMemoryInspectorController', async () => {
         assert.strictEqual(valuesAfter[i], valuesBefore[i]);
       }
     }
+  });
+
+  it('only accepts remote object types with array buffers', async () => {
+    const allowedTypes = ['webassemblymemory', 'typedarray', 'dataview', 'arraybuffer'];
+    const array = new Uint8Array();
+    const subtypes = Object.values(Protocol.Runtime.RemoteObjectSubtype);
+    subtypes.forEach(async subtype => {
+      const mockObj = new MockRemoteObject(array, subtype);
+      if (allowedTypes.includes(subtype)) {
+        assertValidArrayBufferObject(mockObj);
+      } else {
+        assertInvalidArrayBufferObject(mockObj);
+      }
+    });
   });
 });
 

@@ -561,7 +561,7 @@ function collectAllStringsInDir(dir) {
   /** @type {Record<string, CtcMessage>} */
   const strings = {};
 
-  const globPattern = path.join(path.relative(SRC_ROOT, dir), '/**/*.js');
+  const globPattern = path.join(path.relative(SRC_ROOT, dir), '/**/*.{js,ts}');
   const files = glob.sync(globPattern, {
     cwd: SRC_ROOT,
     ignore: ignoredPathComponents,

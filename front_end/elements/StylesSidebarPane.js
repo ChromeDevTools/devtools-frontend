@@ -1492,7 +1492,7 @@ export class StylePropertiesSection {
 
   _onFontEditorButtonClicked() {
     if (this._fontEditorSectionManager && this._fontEditorButton) {
-      // TODO(crbug.com/1149589): Add telemetry to track # of times Font Editor is opened.
+      Host.userMetrics.cssEditorOpened('fontEditor');
       this._fontEditorSectionManager.showPopover(this._fontEditorButton.element, this._parentPane);
     }
   }

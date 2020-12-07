@@ -221,6 +221,22 @@ export class UserMetrics {
   }
 
   /**
+   * @param {string} editorName
+   */
+  cssEditorOpened(editorName) {
+    const size = Object.keys(CssEditorOpened).length + 1;
+    const key = editorName;
+    const value = CssEditorOpened[key];
+
+    if (value === undefined) {
+      return;
+    }
+
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.CssEditorOpened, value, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.CssEditorOpened, {value});
+  }
+
+  /**
    * @param {string} experimentId
    */
   experimentEnabledAtLaunch(experimentId) {
@@ -504,6 +520,14 @@ export const DualScreenDeviceEmulated = {
   DualScreenDeviceSelected: 0,  // a dual screen or fold device is selected
   SpanButtonClicked: 1,         // span button is clicked when emulating a dual screen/fold device
   PlatformSupportUsed: 2        // user starts to use platform dual screen support feature.
+};
+
+/** @type {!Object<string, number>} */
+export const CssEditorOpened = {
+  'colorPicker': 0,
+  'shadowEditor': 1,
+  'bezierEditor': 2,
+  'fontEditor': 3
 };
 
 /**

@@ -131,13 +131,13 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     this._type = type;
     this._parentTarget = parentTarget;
     this._id = id;
+    /** @type {Map<function(new:SDKModel, Target), SDKModel>}} */
     this._modelByConstructor = new Map();
     this._isSuspended = suspended;
   }
 
   /**
-   * TODO(1011811): Replace type with !Set<function(new:SDKModel, !Target)> once we no longer type-check with closure.
-   * @param {*} required
+   * @param {Set<function(new:SDKModel, !Target)>} required
    */
   createModels(required) {
     this._creatingModels = true;
@@ -247,7 +247,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         }
       }
     }
-    return this._modelByConstructor.get(modelClass) || null;
+    return /** @type {T} */ (this._modelByConstructor.get(modelClass)) || null;
   }
 
   /**
@@ -449,7 +449,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {function(new:T,!Target)} modelClass
-   * @param {!SDKModelObserver<?>} observer
+   * @param {!SDKModelObserver<T>} observer
    * @template {!SDKModel} T
    */
   observeModels(modelClass, observer) {

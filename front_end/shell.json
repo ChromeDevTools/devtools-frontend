@@ -23,7 +23,6 @@
 
     { "name": "changes" },
     { "name": "client_variations" },
-    { "name": "cm_modes" },
     { "name": "cm" },
     { "name": "color_picker" },
     { "name": "console" },

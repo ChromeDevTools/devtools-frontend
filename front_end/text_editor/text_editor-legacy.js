@@ -19,14 +19,8 @@ TextEditor.CodeMirrorTextEditor.SelectNextOccurrenceController =
 /** @interface */
 TextEditor.TextEditorPositionHandle = TextEditorModule.CodeMirrorTextEditor.TextEditorPositionHandle;
 
-TextEditor.CodeMirrorTextEditor._loadedMimeModeExtensions =
-    TextEditorModule.CodeMirrorTextEditor.loadedMimeModeExtensions;
-
 /** @constructor */
 TextEditor.CodeMirrorPositionHandle = TextEditorModule.CodeMirrorTextEditor.CodeMirrorPositionHandle;
-
-/** @interface */
-TextEditor.CodeMirrorMimeMode = TextEditorModule.CodeMirrorTextEditor.CodeMirrorMimeMode;
 
 /** @constructor */
 TextEditor.TextEditorBookMark = TextEditorModule.CodeMirrorTextEditor.TextEditorBookMark;

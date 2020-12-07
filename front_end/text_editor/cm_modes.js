@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../cm/cm.js';
+
 // TODO(crbug.com/1029037): lazily load these files again after the
 // race-condition with CodeMirror is fixed
 import '../third_party/codemirror/package/mode/clike/clike.js';
@@ -13,9 +15,9 @@ import '../third_party/codemirror/package/mode/livescript/livescript.js';
 import '../third_party/codemirror/package/mode/markdown/markdown.js';
 import '../third_party/codemirror/package/mode/clojure/clojure.js';
 import '../third_party/codemirror/package/mode/jsx/jsx.js';
-
-import * as DefaultCodeMirrorMimeMode from './DefaultCodeMirrorMimeMode.js';
-
-export {
-  DefaultCodeMirrorMimeMode,
-};
+import '../third_party/codemirror/package/mode/css/css.js';
+import '../third_party/codemirror/package/mode/javascript/javascript.js';
+import '../third_party/codemirror/package/mode/xml/xml.js';
+import '../third_party/codemirror/package/mode/htmlmixed/htmlmixed.js';
+import '../third_party/codemirror/package/mode/htmlembedded/htmlembedded.js';
+import '../third_party/codemirror/package/mode/wast/wast.js';

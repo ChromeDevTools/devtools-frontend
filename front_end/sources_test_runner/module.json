@@ -5,7 +5,7 @@
     "workspace",
     "source_frame",
     "text_utils",
-    "cm_modes",
+    "text_editor",
     "browser_debugger"
   ],
   "modules": [

@@ -31,7 +31,6 @@ import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
@@ -388,61 +387,6 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
     function tokenOverride(superToken, stream, state) {
       const token = superToken(stream, state);
       return token ? tokenPrefix + token.split(/ +/).join(' ' + tokenPrefix) : token;
-    }
-  }
-
-  /**
-   * @param {string} mimeType
-   * @return {!Array<!Root.Runtime.Extension>}}
-   */
-  static _collectUninstalledModes(mimeType) {
-    const installed = loadedMimeModeExtensions;
-
-    const nameToExtension = new Map();
-    const extensions = Root.Runtime.Runtime.instance().extensions(CodeMirrorMimeMode);
-    for (const extension of extensions) {
-      nameToExtension.set(extension.descriptor()['fileName'], extension);
-    }
-
-    const modesToLoad = new Set();
-    for (const extension of extensions) {
-      const descriptor = extension.descriptor();
-      const mimeTypes = descriptor.mimeTypes;
-      if (installed.has(extension) || mimeTypes && mimeTypes.indexOf(mimeType) === -1) {
-        continue;
-      }
-
-      modesToLoad.add(extension);
-      const deps = descriptor['dependencies'] || [];
-      for (let i = 0; i < deps.length; ++i) {
-        const extension = nameToExtension.get(deps[i]);
-        if (extension && !installed.has(extension)) {
-          modesToLoad.add(extension);
-        }
-      }
-    }
-    return Array.from(modesToLoad);
-  }
-
-  /**
-   * @param {!Array<!Root.Runtime.Extension>} extensions
-   * @return {!Promise<!Array<void>>}
-   */
-  static _installMimeTypeModes(extensions) {
-    const promises = extensions.map(extension => extension.instance().then(installMode.bind(null, extension)));
-    return Promise.all(promises);
-
-    /**
-     * @param {!Root.Runtime.Extension} extension
-     * @param {!Object} instance
-     */
-    function installMode(extension, instance) {
-      if (loadedMimeModeExtensions.has(extension)) {
-        return;
-      }
-      const mode = /** @type {!CodeMirrorMimeMode} */ (instance);
-      mode.install(extension);
-      loadedMimeModeExtensions.add(extension);
     }
   }
 
@@ -887,23 +831,11 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
    */
   setMimeType(mimeType) {
     this._mimeType = mimeType;
-    const modesToLoad = CodeMirrorTextEditor._collectUninstalledModes(mimeType);
 
-    if (!modesToLoad.length) {
-      setMode.call(this);
-    } else {
-      CodeMirrorTextEditor._installMimeTypeModes(modesToLoad).then(setMode.bind(this));
-    }
-
-    /**
-     * @this {CodeMirrorTextEditor}
-     */
-    function setMode() {
-      const rewrittenMimeType = this.rewriteMimeType(mimeType);
-      const modeOption = this._codeMirror.getOption('mode');
-      if (modeOption !== rewrittenMimeType) {
-        this._codeMirror.setOption('mode', rewrittenMimeType);
-      }
+    const rewrittenMimeType = this.rewriteMimeType(mimeType);
+    const modeOption = this._codeMirror.getOption('mode');
+    if (modeOption !== rewrittenMimeType) {
+      this._codeMirror.setOption('mode', rewrittenMimeType);
     }
   }
 
@@ -1971,21 +1903,6 @@ export class TextEditorPositionHandle {
    */
   equal(positionHandle) {
     throw new Error('Not implemented here.');
-  }
-}
-
-/** @type {!Set<!Root.Runtime.Extension>} */
-export const loadedMimeModeExtensions = new Set();
-
-
-/**
- * @interface
- */
-export class CodeMirrorMimeMode {
-  /**
-   * @param {!Root.Runtime.Extension} extension
-   */
-  async install(extension) {
   }
 }
 

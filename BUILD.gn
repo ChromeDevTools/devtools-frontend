@@ -120,7 +120,6 @@ generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/browser_debugger/browser_debugger_module.js",
   "$resources_out_dir/changes/changes_module.js",
   "$resources_out_dir/client_variations/client_variations_module.js",
-  "$resources_out_dir/cm_modes/cm_modes_module.js",
   "$resources_out_dir/cm/cm_module.js",
   "$resources_out_dir/color_picker/color_picker_module.js",
   "$resources_out_dir/console/console_module.js",

@@ -20,7 +20,6 @@ devtools_module_entrypoint_sources = [
   "client_variations/client_variations.js",
   "cm/cm.js",
   "cm_headless/cm_headless.js",
-  "cm_modes/cm_modes.js",
   "color_picker/color_picker-legacy.js",
   "color_picker/color_picker.js",
   "common/common-legacy.js",

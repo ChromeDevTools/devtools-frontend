@@ -10,6 +10,7 @@ devtools_module("text_editor") {
     "CodeMirrorTextEditor.js",
     "CodeMirrorUtils.js",
     "TextEditorAutocompleteController.js",
+    "cm_modes.js",
   ]
 
   deps = [

@@ -9,7 +9,6 @@ ts_library("missing_entrypoints") {
     "../../../../front_end/changes:bundle",
     "../../../../front_end/cm",
     "../../../../front_end/cm_headless",
-    "../../../../front_end/cm_modes:bundle",
     "../../../../front_end/console:bundle",
     "../../../../front_end/console_counters:bundle",
     "../../../../front_end/css_overview:bundle",

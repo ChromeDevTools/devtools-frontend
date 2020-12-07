@@ -12,7 +12,7 @@
 }
 
 .empty-view {
-  color: hsl(0deg 0% 43% / 100%);
+  color: var(--color-text-secondary);
   padding: 30px;
   display: flex;
   align-items: center;

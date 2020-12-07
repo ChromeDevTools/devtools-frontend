@@ -1923,7 +1923,7 @@ export class MessageDialog {
     dialog.setDimmed(true);
     const shadowRoot = createShadowRootWithCoreStyles(
         dialog.contentElement,
-        {cssFile: 'ui/confirmDialog.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        {cssFile: 'ui/confirmDialog.css', enableLegacyPatching: false, delegatesFocus: undefined});
     const content = shadowRoot.createChild('div', 'widget');
     await new Promise(resolve => {
       const okButton = createTextButton(Common.UIString.UIString('OK'), resolve, '', true);
@@ -1953,7 +1953,7 @@ export class ConfirmDialog {
     ARIAUtils.setAccessibleName(dialog.contentElement, message);
     const shadowRoot = createShadowRootWithCoreStyles(
         dialog.contentElement,
-        {cssFile: 'ui/confirmDialog.css', enableLegacyPatching: true, delegatesFocus: undefined});
+        {cssFile: 'ui/confirmDialog.css', enableLegacyPatching: false, delegatesFocus: undefined});
     const content = shadowRoot.createChild('div', 'widget');
     content.createChild('div', 'message').createChild('span').textContent = message;
     const buttonsBar = content.createChild('div', 'button');

@@ -41,7 +41,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   user-select: none;
-  color: #222;
+  color: var(--color-text-primary);
   overflow: hidden;
 }
 

@@ -556,7 +556,7 @@ export class OverviewInfo {
         UI.Utils
             .createShadowRootWithCoreStyles(
                 this._glassPane.contentElement,
-                {cssFile: 'perf_ui/timelineOverviewInfo.css', enableLegacyPatching: true, delegatesFocus: undefined})
+                {cssFile: 'perf_ui/timelineOverviewInfo.css', enableLegacyPatching: false, delegatesFocus: undefined})
             .createChild('div', 'overview-info');
   }
 

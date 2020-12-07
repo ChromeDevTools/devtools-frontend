@@ -77,7 +77,7 @@ export const linkifyNodeReference = function(node, options = {
   const root = document.createElement('span');
   root.classList.add('monospace');
   const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-      root, {cssFile: 'elements/domLinkifier.css', enableLegacyPatching: true, delegatesFocus: undefined});
+      root, {cssFile: 'elements/domLinkifier.css', enableLegacyPatching: false, delegatesFocus: undefined});
   const link = /** @type {!HTMLDivElement} */ (shadowRoot.createChild('div', 'node-link'));
 
   decorateNodeLabel(node, link, options.tooltip);
@@ -106,7 +106,7 @@ export const linkifyDeferredNodeReference = function(deferredNode, options = {
 }) {
   const root = document.createElement('div');
   const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-      root, {cssFile: 'elements/domLinkifier.css', enableLegacyPatching: true, delegatesFocus: undefined});
+      root, {cssFile: 'elements/domLinkifier.css', enableLegacyPatching: false, delegatesFocus: undefined});
   const link = /** @type {!HTMLDivElement} */ (shadowRoot.createChild('div', 'node-link'));
   link.createChild('slot');
   link.addEventListener('click', deferredNode.resolve.bind(deferredNode, onDeferredNodeResolved), false);

@@ -9,7 +9,7 @@ import * as UI from '../ui/ui.js';
 export class NodeConnectionsPanel extends UI.Panel.Panel {
   constructor() {
     super('node-connection');
-    this.registerRequiredCSS('node_main/nodeConnectionsPanel.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('node_main/nodeConnectionsPanel.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('node-panel');
 
     const container = this.contentElement.createChild('div', 'node-panel-center');
@@ -67,7 +67,7 @@ export class NodeConnectionsView extends UI.Widget.VBox {
 
     /** @type {!UI.ListWidget.ListWidget<!Adb.PortForwardingRule>} */
     this._list = new UI.ListWidget.ListWidget(this);
-    this._list.registerRequiredCSS('node_main/nodeConnectionsPanel.css', {enableLegacyPatching: true});
+    this._list.registerRequiredCSS('node_main/nodeConnectionsPanel.css', {enableLegacyPatching: false});
     this._list.element.classList.add('network-discovery-list');
     const placeholder = document.createElement('div');
     placeholder.classList.add('network-discovery-list-empty');

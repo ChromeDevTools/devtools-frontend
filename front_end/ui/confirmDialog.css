@@ -25,5 +25,5 @@
 }
 
 .reason {
-  color: #8b0000;
+  color: var(--color-accent-red);
 }

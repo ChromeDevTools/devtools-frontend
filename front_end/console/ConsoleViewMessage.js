@@ -524,6 +524,7 @@ export class ConsoleViewMessage {
       case 'typedarray':
       case 'weakmap':
       case 'weakset':
+      case 'webassemblymemory':
         element = this._formatParameterAsObject(output, includePreview);
         break;
       case 'node':

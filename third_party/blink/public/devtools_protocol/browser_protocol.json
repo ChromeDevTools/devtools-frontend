@@ -21063,6 +21063,7 @@
                                 "typedarray",
                                 "arraybuffer",
                                 "dataview",
+                                "webassemblymemory",
                                 "i32",
                                 "i64",
                                 "f32",

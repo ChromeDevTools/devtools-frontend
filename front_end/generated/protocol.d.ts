@@ -14212,6 +14212,7 @@ declare namespace Protocol {
       Typedarray = 'typedarray',
       Arraybuffer = 'arraybuffer',
       Dataview = 'dataview',
+      Webassemblymemory = 'webassemblymemory',
       I32 = 'i32',
       I64 = 'i64',
       F32 = 'f32',

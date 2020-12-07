@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as LinearMemoryInspector from '../../../../front_end/linear_memory_inspector/linear_memory_inspector.js';
-import {assertElement, assertElements, assertShadowRoot, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertElement, assertElements, assertShadowRoot, getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
@@ -129,5 +129,31 @@ describe('LinearMemoryNavigator', () => {
     };
     const input = getElementWithinComponent(component, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
     assert.strictEqual(input.title, error);
+  });
+
+  it('shows tooltip on page navigation buttons', async () => {
+    const buttons = getElementsWithinComponent(component, NAVIGATOR_PAGE_BUTTON_SELECTOR, HTMLButtonElement);
+    assert.lengthOf(buttons, 2);
+    const pageBack = buttons[0];
+    const pageForward = buttons[1];
+
+    assert.strictEqual(pageBack.title, 'Previous page');
+    assert.strictEqual(pageForward.title, 'Next page');
+  });
+
+  it('shows tooltip on history navigation buttons', async () => {
+    const buttons = getElementsWithinComponent(component, NAVIGATOR_HISTORY_BUTTON_SELECTOR, HTMLButtonElement);
+    assert.lengthOf(buttons, 2);
+    const historyBack = buttons[0];
+    const historyForward = buttons[1];
+
+    assert.strictEqual(historyBack.title, 'Go back in address history');
+    assert.strictEqual(historyForward.title, 'Go forward in address history');
+  });
+
+  it('shows tooltip on refresh button', async () => {
+    const refreshButton = getElementWithinComponent(component, NAVIGATOR_REFRESH_BUTTON_SELECTOR, HTMLButtonElement);
+
+    assert.strictEqual(refreshButton.title, 'Refresh');
   });
 });

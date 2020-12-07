@@ -101,6 +101,7 @@ export class LinearMemoryNavigator extends HTMLElement {
         }
 
         .navigator-item {
+          display: flex;
           white-space: nowrap;
           overflow: hidden;
         }
@@ -118,24 +119,44 @@ export class LinearMemoryNavigator extends HTMLElement {
         }
 
         .navigator-button {
+          display: flex;
+          width: 20px;
+          height: 20px;
           background: transparent;
           overflow: hidden;
-          vertical-align: middle;
           border: none;
           padding: 0px;
+          outline: none;
+          justify-content: center;
+          align-items: center;
         }
-      </style>
+
+        .navigator-button devtools-icon {
+          height: 14px;
+          width: 14px;
+          min-height: 14px;
+          min-width: 14px;
+        }
+
+        .navigator-button:hover devtools-icon {
+          --icon-color: var(--color-text-primary);
+        }
+
+        .navigator-button:focus devtools-icon {
+          --icon-color: var(--color-text-secondary);
+        }
+        </style>
       <div class="navigator">
         <div class="navigator-item">
-          ${this.createButton('ic_undo_16x16_icon', new HistoryNavigationEvent(Navigation.Backward))}
-          ${this.createButton('ic_redo_16x16_icon', new HistoryNavigationEvent(Navigation.Forward))}
+          ${this.createButton('ic_undo_16x16_icon', ls`Go back in address history`, new HistoryNavigationEvent(Navigation.Backward))}
+          ${this.createButton('ic_redo_16x16_icon', ls`Go forward in address history`, new HistoryNavigationEvent(Navigation.Forward))}
         </div>
         <div class="navigator-item">
-          ${this.createButton('ic_page_prev_16x16_icon', new PageNavigationEvent(Navigation.Backward))}
+          ${this.createButton('ic_page_prev_16x16_icon', ls`Previous page`, new PageNavigationEvent(Navigation.Backward))}
           ${this.createAddressInput()}
-          ${this.createButton('ic_page_next_16x16_icon', new PageNavigationEvent(Navigation.Forward))}
+          ${this.createButton('ic_page_next_16x16_icon', ls`Next page`, new PageNavigationEvent(Navigation.Forward))}
         </div>
-        ${this.createButton('refresh_12x12_icon', new RefreshRequestedEvent())}
+        ${this.createButton('refresh_12x12_icon', ls`Refresh`, new RefreshRequestedEvent())}
       </div>
       `;
       render(result, this.shadow, {eventContext: this});
@@ -158,11 +179,13 @@ export class LinearMemoryNavigator extends HTMLElement {
     this.dispatchEvent(new AddressInputChangedEvent(addressInput.value, mode));
   }
 
-  private createButton(name: string, event: Event) {
+  private createButton(name: string, title: string, event: Event) {
     return html`
-      <button class="navigator-button" data-button=${event.type} @click=${this.dispatchEvent.bind(this, event)}>
+      <button class="navigator-button"
+        data-button=${event.type} title=${title}
+        @click=${this.dispatchEvent.bind(this, event)}>
         <devtools-icon .data=${
-        {iconName: name, color: 'rgb(110 110 110)', width: '16px'} as Elements.Icon.IconWithName}>
+        {iconName: name, color: 'var(--color-text-secondary)', width: '14px'} as Elements.Icon.IconWithName}>
         </devtools-icon>
       </button>`;
   }

@@ -19,9 +19,10 @@ const target = argv.target || 'Default';
  * out where we are.
  */
 const isRunningInGen = __dirname.includes(path.join(path.sep, 'gen', path.sep, 'scripts'));
-const pathToOutDirectory = isRunningInGen ? path.resolve(path.join(__dirname), '..', '..', '..', '..') :
-                                            path.resolve(path.join(__dirname, '..', '..', 'out'));
-const devtoolsFrontendFolder = path.resolve(path.join(pathToOutDirectory, target, 'gen', 'front_end'));
+
+const pathToBuiltOutTargetDirectory = isRunningInGen ? path.resolve(path.join(__dirname), '..', '..', '..') :
+                                                       path.resolve(path.join(__dirname, '..', '..', 'out', target));
+const devtoolsFrontendFolder = path.resolve(path.join(pathToBuiltOutTargetDirectory, 'gen', 'front_end'));
 
 if (!fs.existsSync(devtoolsFrontendFolder)) {
   console.error(`ERROR: Generated front_end folder (${devtoolsFrontendFolder}) does not exist.`);

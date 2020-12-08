@@ -466,26 +466,31 @@ export class SoftContextMenu {
       }
       const detailsForElement = this.detailsForElementMap.get(this._highlightedMenuItemElement);
       if (!detailsForElement || detailsForElement.customElement) {
+        // The custom element will handle the event, so return early and do not consume it.
         return;
       }
       this._triggerAction(this._highlightedMenuItemElement, keyboardEvent);
       if (detailsForElement.subItems && this._subMenu) {
         this._subMenu._highlightNext();
       }
+      keyboardEvent.consume(true);
     }
 
     switch (keyboardEvent.key) {
       case 'ArrowUp':
         this._highlightPrevious();
+        keyboardEvent.consume(true);
         break;
       case 'ArrowDown':
         this._highlightNext();
+        keyboardEvent.consume(true);
         break;
       case 'ArrowLeft':
         if (this._parentMenu) {
           this._highlightMenuItem(null, false);
           this.discard();
         }
+        keyboardEvent.consume(true);
         break;
       case 'ArrowRight': {
         if (!this._highlightedMenuItemElement) {
@@ -498,10 +503,12 @@ export class SoftContextMenu {
             this._subMenu._highlightNext();
           }
         }
+        keyboardEvent.consume(true);
         break;
       }
       case 'Escape':
         this.discard();
+        keyboardEvent.consume(true);
         break;
       case 'Enter':
         if (!isEnterKey(keyboardEvent)) {
@@ -511,8 +518,8 @@ export class SoftContextMenu {
         break;
       case ' ':
         onEnterOrSpace.call(this);
+        break;
     }
-    keyboardEvent.consume(true);
   }
 }
 

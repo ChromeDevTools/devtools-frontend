@@ -147,6 +147,10 @@
   margin-top: 1px;
 }
 
+.filter-cancel-button {
+  display: block;
+}
+
 .filter-text-empty .filter-input-clear-button {
   display: none;
 }

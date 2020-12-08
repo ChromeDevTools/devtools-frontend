@@ -560,20 +560,22 @@ export class Linkifier {
 
   /**
    * @param {!Object} revealable
-   * @param {string} text
+   * @param {string|!HTMLElement} text
    * @param {string=} fallbackHref
+   * @param {string=} title
+   * @param {string=} className
    * @return {!HTMLElement}
    */
-  static linkifyRevealable(revealable, text, fallbackHref) {
+  static linkifyRevealable(revealable, text, fallbackHref, title, className) {
     const createLinkOptions = {
       maxLength: UI.UIUtils.MaxLengthForDisplayedURLs,
       href: fallbackHref,
-      title: undefined,
+      title,
       preventClick: undefined,
       tabStop: undefined,
       bypassURLTrimming: undefined
     };
-    const link = Linkifier._createLink(text, '', createLinkOptions);
+    const link = Linkifier._createLink(text, className || '', createLinkOptions);
     const linkInfo = Linkifier.linkInfo(link);
     if (!linkInfo) {
       return link;
@@ -583,7 +585,7 @@ export class Linkifier {
   }
 
   /**
-   * @param {string} text
+   * @param {string|!HTMLElement} text
    * @param {string} className
    * @param {!_CreateLinkOptions=} options
    * @returns {!HTMLElement}
@@ -611,14 +613,16 @@ export class Linkifier {
       link.href = href;
     }
 
-    if (bypassURLTrimming) {
-      link.classList.add('devtools-link-styled-trim');
-      Linkifier._appendTextWithoutHashes(link, text);
+    if (text instanceof HTMLElement) {
+      link.appendChild(text);
     } else {
-      Linkifier._setTrimmedText(link, text, maxLength);
+      if (bypassURLTrimming) {
+        link.classList.add('devtools-link-styled-trim');
+        Linkifier._appendTextWithoutHashes(link, text);
+      } else {
+        Linkifier._setTrimmedText(link, text, maxLength);
+      }
     }
-
-    // Linkifier._appendTextWithoutHashes(link, text);
 
     const linkInfo = {
       icon: null,

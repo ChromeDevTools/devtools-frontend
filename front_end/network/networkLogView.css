@@ -307,6 +307,10 @@
   max-height: 11px;
 }
 
+.network-log-grid.data-grid .trailing-link-icon {
+  padding-left: 0.5ex;
+}
+
 /* stylelint-enable no-descending-specificity, no-duplicate-selectors */
 
 /* This is part of the large color block declared above, but should not be

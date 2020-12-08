@@ -1000,7 +1000,18 @@ export class NetworkRequestNode extends NetworkNode {
         break;
       }
       case 'method': {
-        this._setTextAndTitle(cell, this._request.requestMethod);
+        const preflightRequest = this._request.preflightRequest();
+        if (preflightRequest) {
+          this._setTextAndTitle(
+              cell,
+              `${this._request.requestMethod} + `,
+              ls`${this._request.requestMethod} + Preflight`,
+          );
+          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
+              preflightRequest, ls`Preflight`, undefined, ls`Select preflight request`));
+        } else {
+          this._setTextAndTitle(cell, this._request.requestMethod);
+        }
         break;
       }
       case 'status': {
@@ -1337,6 +1348,17 @@ export class NetworkRequestNode extends NetworkNode {
       case SDK.NetworkRequest.InitiatorType.SignedExchange: {
         cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url));
         this._appendSubtitle(cell, Common.UIString.UIString('signed-exchange'));
+        break;
+      }
+
+      case SDK.NetworkRequest.InitiatorType.Preflight: {
+        cell.appendChild(document.createTextNode(Common.UIString.UIString('Preflight')));
+        if (initiator.initiatorRequest) {
+          const icon = UI.Icon.Icon.create('mediumicon-network-panel');
+          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
+              initiator.initiatorRequest, icon, undefined, ls`Select the request that triggered this preflight`,
+              'trailing-link-icon'));
+        }
         break;
       }
 

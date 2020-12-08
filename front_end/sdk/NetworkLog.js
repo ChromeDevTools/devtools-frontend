@@ -75,6 +75,8 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
       }
       this.setIsRecording(/** @type{boolean} */ (recordLogSetting.get()));
     }, this);
+    /** @type {!Map<string, !NetworkRequest>} */
+    this._unresolvedPreflightRequests = new Map();
   }
 
   /**
@@ -246,6 +248,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     let columnNumber = -Infinity;
     let scriptId = null;
     let initiatorStack = null;
+    let initiatorRequest = null;
     const initiator = request.initiator();
 
     const redirectSource = request.redirectSource();
@@ -282,20 +285,16 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
         }
       } else if (initiator.type === Protocol.Network.InitiatorType.Preload) {
         type = InitiatorType.Preload;
+      } else if (initiator.type === Protocol.Network.InitiatorType.Preflight) {
+        type = InitiatorType.Preflight;
+        initiatorRequest = request.preflightInitiatorRequest();
       } else if (initiator.type === Protocol.Network.InitiatorType.SignedExchange) {
         type = InitiatorType.SignedExchange;
         url = initiator.url || '';
       }
     }
 
-    initiatorInfo.info = {
-      type: type,
-      url: url,
-      lineNumber: lineNumber,
-      columnNumber: columnNumber,
-      scriptId: scriptId,
-      stack: initiatorStack
-    };
+    initiatorInfo.info = {type, url, lineNumber, columnNumber, scriptId, stack: initiatorStack, initiatorRequest};
     return initiatorInfo.info;
   }
 
@@ -397,6 +396,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     this._receivedNetworkResponses = [];
     this._requestsSet = new Set();
     this._requestsMap.clear();
+    this._unresolvedPreflightRequests.clear();
     this.dispatchEventToListeners(Events.Reset);
 
     // Preserve requests from the new session.
@@ -465,7 +465,38 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     } else {
       requestList.push(request);
     }
+    this._tryResolvePreflightRequests(request);
     this.dispatchEventToListeners(Events.RequestAdded, request);
+  }
+
+  /**
+   * @param {!NetworkRequest} request
+   */
+  _tryResolvePreflightRequests(request) {
+    if (request.isPreflightRequest()) {
+      const initiator = request.initiator();
+      if (initiator && initiator.requestId) {
+        const requests = this.requestsForId(initiator.requestId);
+        if (requests.length) {
+          request.setPreflightInitiatorRequest(requests[0]);
+        } else {
+          this._unresolvedPreflightRequests.set(initiator.requestId, request);
+        }
+      }
+    } else {
+      const preflightRequest = this._unresolvedPreflightRequests.get(request.requestId());
+      if (preflightRequest) {
+        this._unresolvedPreflightRequests.delete(request.requestId());
+        request.setPreflightRequest(preflightRequest);
+        preflightRequest.setPreflightInitiatorRequest(request);
+        // Force recomputation of initiator info, if it already exists.
+        const data = this._initiatorData.get(preflightRequest);
+        if (data) {
+          data.info = null;
+        }
+        this.dispatchEventToListeners(Events.RequestUpdated, preflightRequest);
+      }
+    }
   }
 
   /**
@@ -478,6 +509,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     this._receivedNetworkResponses = [];
     this._requestsSet.clear();
     this._requestsMap.clear();
+    this._unresolvedPreflightRequests.clear();
     for (const request of requests) {
       this._addRequest(request);
     }
@@ -556,6 +588,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     this._receivedNetworkResponses = [];
     this._requestsSet.clear();
     this._requestsMap.clear();
+    this._unresolvedPreflightRequests.clear();
     const managers = new Set(TargetManager.instance().models(NetworkManager));
     for (const manager of this._pageLoadForManager.keys()) {
       if (!managers.has(manager)) {
@@ -698,6 +731,6 @@ let InitiatorData;  // eslint-disable-line no-unused-vars
 // @ts-ignore typedef
 export let InitiatorGraph;
 
-/** @typedef {!{type: !InitiatorType, url: string, lineNumber: number, columnNumber: number, scriptId: ?string, stack: ?Protocol.Runtime.StackTrace}} */
+/** @typedef {!{type: !InitiatorType, url: string, lineNumber: number, columnNumber: number, scriptId: ?string, stack: ?Protocol.Runtime.StackTrace, initiatorRequest: ?NetworkRequest}} */
 // @ts-ignore typedef
 export let _InitiatorInfo;

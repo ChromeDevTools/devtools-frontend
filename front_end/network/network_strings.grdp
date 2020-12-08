@@ -285,6 +285,9 @@
   <message name="IDS_DEVTOOLS_4c3880bb027f159e801041b1021e88e8" desc="Text for one or a group of functions">
     Method
   </message>
+  <message name="IDS_DEVTOOLS_4d91e4c2c626448a31f9b88b9952d3ca" desc="Title for a link element in the network log view">
+    Select the request that triggered this preflight
+  </message>
   <message name="IDS_DEVTOOLS_4dea2ac78e9450e62e96c166ef9f5d4c" desc="Text in Network Log View Columns of the Network panel">
     Manage Header Columns…
   </message>
@@ -566,6 +569,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e48c00bc05b642164b5520137b66d011" desc="Text in Network Log View of the Network panel">
     Copy all as Node.js fetch
+  </message>
+  <message name="IDS_DEVTOOLS_e6cd6bb66327eb0b749f96c7ad18a68d" desc="Content of the request method column in the network log view">
+    <ph name="THIS__REQUEST_REQUESTMETHOD">$1s<ex>GET</ex></ph> + Preflight
   </message>
   <message name="IDS_DEVTOOLS_eb0f48a107df1a0f343d4cd513b555e6" desc="Text for a security certificate">
     Certificate
@@ -1085,6 +1091,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f6068daa29dbb05a7ead1e3b5a48bbee" desc="Text in Event Source Messages View of the Network panel">
     Data
+  </message>
+  <message name="IDS_DEVTOOLS_f665a5e83d7312bfffde7058443c014a" desc="Title for a link element in the network log view">
+    Select preflight request
   </message>
   <message name="IDS_DEVTOOLS_f6a884486253ccf6c97c1252563acbbc" desc="Text to inform about the ServerTiming API">
     During development, you can use <ph name="LINK">$1s<ex>https://example.com</ex></ph> to add insights into the server-side timing of this request.

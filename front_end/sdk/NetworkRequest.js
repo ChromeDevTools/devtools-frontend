@@ -89,6 +89,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     this._initiator = initiator;
     /** @type {?NetworkRequest} */
     this._redirectSource = null;
+    /** @type {?NetworkRequest} */
+    this._preflightRequest = null;
+    /** @type {?NetworkRequest} */
+    this._preflightInitiatorRequest = null;
     /** @type {boolean} */
     this._isRedirect = false;
     /** @type {?NetworkRequest} */
@@ -833,6 +837,41 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    */
   setRedirectSource(originatingRequest) {
     this._redirectSource = originatingRequest;
+  }
+
+  /**
+   * @return {?NetworkRequest}
+   */
+  preflightRequest() {
+    return this._preflightRequest;
+  }
+
+  /**
+   * @param {?NetworkRequest} preflightRequest
+   */
+  setPreflightRequest(preflightRequest) {
+    this._preflightRequest = preflightRequest;
+  }
+
+  /**
+   * @return {?NetworkRequest}
+   */
+  preflightInitiatorRequest() {
+    return this._preflightInitiatorRequest;
+  }
+
+  /**
+   * @param {?NetworkRequest} preflightInitiatorRequest
+   */
+  setPreflightInitiatorRequest(preflightInitiatorRequest) {
+    this._preflightInitiatorRequest = preflightInitiatorRequest;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isPreflightRequest() {
+    return !!this._initiator && this._initiator.type === Protocol.Network.InitiatorType.Preflight;
   }
 
   /**
@@ -1664,7 +1703,8 @@ export const InitiatorType = {
   Redirect: 'redirect',
   Script: 'script',
   Preload: 'preload',
-  SignedExchange: 'signedExchange'
+  SignedExchange: 'signedExchange',
+  Preflight: 'preflight',
 };
 
 /** @enum {string} */

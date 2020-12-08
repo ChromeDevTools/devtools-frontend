@@ -8,6 +8,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("help") {
   sources = [
     "HelpImpl.js",
+    "ModuleUIStrings.js",
     "ReleaseNoteText.js",
     "ReleaseNoteView.js",
   ]
@@ -15,6 +16,7 @@ devtools_module("help") {
   deps = [
     "../common:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../ui:bundle",
   ]
 }

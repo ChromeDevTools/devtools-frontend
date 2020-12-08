@@ -596,6 +596,7 @@ grd_files_debug_sources = [
   "front_end/heap_snapshot_worker/HeapSnapshotWorker.js",
   "front_end/heap_snapshot_worker/HeapSnapshotWorkerDispatcher.js",
   "front_end/help/HelpImpl.js",
+  "front_end/help/ModuleUIStrings.js",
   "front_end/help/ReleaseNoteText.js",
   "front_end/help/ReleaseNoteView.js",
   "front_end/host/InspectorFrontendHost.js",

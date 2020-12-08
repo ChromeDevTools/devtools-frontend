@@ -3,9 +3,28 @@
 // found in the LICENSE file.
 
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {latestReleaseNote, ReleaseNote, releaseNoteViewId} from './HelpImpl.js';  // eslint-disable-line no-unused-vars
+
+export const UIStrings = {
+  /**
+  *@description Text that only contain a placeholder
+  *@example {100ms (at 200ms)} PH1
+  */
+  s: '{PH1}',
+  /**
+  *@description Text that is usually a hyperlink to more documentation
+  */
+  learnMore: 'Learn more',
+  /**
+  *@description Text to close something
+  */
+  close: 'Close',
+};
+const str_ = i18n.i18n.registerUIStrings('help/ReleaseNoteView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ReleaseNoteView extends UI.Widget.VBox {
   constructor() {
@@ -13,7 +32,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     this.registerRequiredCSS('help/releaseNote.css', {enableLegacyPatching: true});
     this._releaseNoteElement = this._createReleaseNoteElement(latestReleaseNote());
     const topSection = this.contentElement.createChild('div', 'release-note-top-section');
-    topSection.textContent = ls`${latestReleaseNote().header}`;
+    topSection.textContent = i18nString(UIStrings.s, {PH1: latestReleaseNote().header});
     this.contentElement.appendChild(this._releaseNoteElement);
   }
 
@@ -34,7 +53,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     hbox.classList.add('hbox');
     const container = hbox.createChild('div', 'release-note-container');
     const contentContainer = container.createChild('ul');
-    UI.ARIAUtils.setAccessibleName(contentContainer, ls`${latestReleaseNote().header}`);
+    UI.ARIAUtils.setAccessibleName(contentContainer, i18nString(UIStrings.s, {PH1: latestReleaseNote().header}));
 
     let linkNumber = 1;
     for (const highlight of releaseNote.highlights) {
@@ -56,21 +75,21 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     }
 
     const actionContainer = container.createChild('div', 'release-note-action-container');
-    const learnMore = UI.UIUtils.createTextButton(ls`Learn more`, event => {
+    const learnMore = UI.UIUtils.createTextButton(i18nString(UIStrings.learnMore), event => {
       event.consume(true);
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(releaseNote.link);
     });
     UI.ARIAUtils.markAsLink(learnMore);
     actionContainer.appendChild(learnMore);
 
-    actionContainer.appendChild(UI.UIUtils.createTextButton(ls`Close`, event => {
+    actionContainer.appendChild(UI.UIUtils.createTextButton(i18nString(UIStrings.close), event => {
       event.consume(true);
       UI.InspectorView.InspectorView.instance().closeDrawerTab(releaseNoteViewId, true);
     }, 'close-release-note'));
 
     const imageLink = /** @type {!HTMLElement} */ (UI.XLink.XLink.create(releaseNote.link, ' '));
     imageLink.classList.add('release-note-image');
-    UI.Tooltip.Tooltip.install(imageLink, ls`${latestReleaseNote().header}`);
+    UI.Tooltip.Tooltip.install(imageLink, i18nString(UIStrings.s, {PH1: latestReleaseNote().header}));
 
     hbox.appendChild(imageLink);
     const image = /** @type {!HTMLImageElement} */ (imageLink.createChild('img'));

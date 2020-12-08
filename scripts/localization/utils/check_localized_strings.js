@@ -112,6 +112,7 @@ const migratedDirsSet = new Set([
   'coverage',
   'developer_resources',
   'devices',
+  'help',
   'layers',
   'layer_viewer',
   'lighthouse',

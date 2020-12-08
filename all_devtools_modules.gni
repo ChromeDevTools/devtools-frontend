@@ -210,6 +210,7 @@ all_typescript_module_sources = [
   "heap_snapshot_worker/HeapSnapshotWorker.js",
   "heap_snapshot_worker/HeapSnapshotWorkerDispatcher.js",
   "help/HelpImpl.js",
+  "help/ModuleUIStrings.js",
   "help/ReleaseNoteText.js",
   "help/ReleaseNoteView.js",
   "host/InspectorFrontendHost.js",

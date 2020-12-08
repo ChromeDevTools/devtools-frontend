@@ -293,6 +293,39 @@
   "devices/ModuleUIStrings.js | usb": {
     "message": "usb"
   },
+  "help/ModuleUIStrings.js | appearance": {
+    "message": "Appearance"
+  },
+  "help/ModuleUIStrings.js | bug": {
+    "message": "bug"
+  },
+  "help/ModuleUIStrings.js | doNotShowWhatsNewAfterEachUpdate": {
+    "message": "Do not show What's New after each update"
+  },
+  "help/ModuleUIStrings.js | help": {
+    "message": "Help"
+  },
+  "help/ModuleUIStrings.js | releaseNotes": {
+    "message": "Release notes"
+  },
+  "help/ModuleUIStrings.js | reportADevtoolsIssue": {
+    "message": "Report a DevTools issue"
+  },
+  "help/ModuleUIStrings.js | showWhatsNewAfterEachUpdate": {
+    "message": "Show What's New after each update"
+  },
+  "help/ModuleUIStrings.js | whatsNew": {
+    "message": "What's New"
+  },
+  "help/ReleaseNoteView.js | close": {
+    "message": "Close"
+  },
+  "help/ReleaseNoteView.js | learnMore": {
+    "message": "Learn more"
+  },
+  "help/ReleaseNoteView.js | s": {
+    "message": "{PH1}"
+  },
   "layer_viewer/LayerDetailsView.js | compositingReasons": {
     "message": "Compositing Reasons"
   },

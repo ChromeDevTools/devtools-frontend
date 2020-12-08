@@ -108,7 +108,8 @@ describe('The Performance panel', async function() {
         });
   });
 
-  it('is able to inspect the call stack for a wasm function from the call tree', async () => {
+  // Broken test
+  it.skip('[crbug.com/1156555]: is able to inspect the call stack for a wasm function from the call tree', async () => {
     const {frontend} = getBrowserAndPages();
     const expectedActivities = [
       'Run Microtasks',

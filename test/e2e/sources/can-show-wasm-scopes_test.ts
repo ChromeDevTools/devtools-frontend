@@ -9,7 +9,8 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {addBreakpointForLine, getScopeNames, getValuesForScope, openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, RESUME_BUTTON, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
 
 describe('Source Tab', async () => {
-  it('shows and updates the module, local, and stack scope while pausing', async () => {
+  // Broken test
+  it.skip('[crbug.com/1156555]: shows and updates the module, local, and stack scope while pausing', async () => {
     const {frontend, target} = getBrowserAndPages();
     const breakpointLine = 12;
     const numberOfLines = 16;

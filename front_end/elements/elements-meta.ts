@@ -128,6 +128,24 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 UI.ActionRegistration.registerActionExtension({
+  actionId: 'elements.duplicate-element',
+  category: UI.ActionRegistration.ActionCategory.ELEMENTS,
+  title: ls`Duplicate element`,
+  async loadActionDelegate() {
+    const Elements = await loadElementsModule();
+    return Elements.ElementsPanel.ElementsActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Elements => [Elements.ElementsPanel.ElementsPanel]);
+  },
+  bindings: [
+    {
+      shortcut: 'Shift+Alt+Down',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
   actionId: 'elements.undo',
   category: UI.ActionRegistration.ActionCategory.ELEMENTS,
   title: ls`Undo`,

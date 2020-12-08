@@ -109,7 +109,10 @@ export function registerCommands(inspectorBackend) {
         {'name': 'fetchRelatives', 'type': 'boolean', 'optional': true}
       ],
       ['nodes']);
-  inspectorBackend.registerCommand('Accessibility.getFullAXTree', [], ['nodes']);
+  inspectorBackend.registerCommand(
+      'Accessibility.getFullAXTree', [{'name': 'max_depth', 'type': 'number', 'optional': true}], ['nodes']);
+  inspectorBackend.registerCommand(
+      'Accessibility.getChildAXNodes', [{'name': 'id', 'type': 'string', 'optional': false}], ['nodes']);
   inspectorBackend.registerCommand(
       'Accessibility.queryAXTree',
       [
@@ -1534,8 +1537,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Network.webSocketHandshakeResponseReceived', ['requestId', 'timestamp', 'response']);
   inspectorBackend.registerEvent(
       'Network.webSocketWillSendHandshakeRequest', ['requestId', 'timestamp', 'wallTime', 'request']);
-  inspectorBackend.registerEvent('Network.webTransportCreated', ['transportId', 'url', 'initiator']);
-  inspectorBackend.registerEvent('Network.webTransportClosed', ['transportId']);
+  inspectorBackend.registerEvent('Network.webTransportCreated', ['transportId', 'url', 'timestamp', 'initiator']);
+  inspectorBackend.registerEvent('Network.webTransportClosed', ['transportId', 'timestamp']);
   inspectorBackend.registerEvent(
       'Network.requestWillBeSentExtraInfo', ['requestId', 'associatedCookies', 'headers', 'clientSecurityState']);
   inspectorBackend.registerEvent(

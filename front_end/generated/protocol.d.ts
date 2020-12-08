@@ -285,7 +285,23 @@ declare namespace Protocol {
       nodes: AXNode[];
     }
 
+    export interface GetFullAXTreeRequest {
+      /**
+       * The maximum depth at which descendants of the root node should be retrieved.
+       * If omitted, the full tree is returned.
+       */
+      max_depth?: integer;
+    }
+
     export interface GetFullAXTreeResponse extends ProtocolResponseWithError {
+      nodes: AXNode[];
+    }
+
+    export interface GetChildAXNodesRequest {
+      id: AXNodeId;
+    }
+
+    export interface GetChildAXNodesResponse extends ProtocolResponseWithError {
       nodes: AXNode[];
     }
 
@@ -8234,6 +8250,10 @@ declare namespace Protocol {
        */
       url: string;
       /**
+       * Timestamp.
+       */
+      timestamp: MonotonicTime;
+      /**
        * Request initiator.
        */
       initiator?: Initiator;
@@ -8244,6 +8264,10 @@ declare namespace Protocol {
        * WebTransport identifier.
        */
       transportId: RequestId;
+      /**
+       * Timestamp.
+       */
+      timestamp: MonotonicTime;
     }
 
     /**

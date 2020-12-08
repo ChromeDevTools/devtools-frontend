@@ -122,9 +122,17 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.Accessibility.GetPartialAXTreeResponse>;
 
     /**
-     * Fetches the entire accessibility tree
+     * Fetches the entire accessibility tree for the root Document
      */
-    invoke_getFullAXTree(): Promise<Protocol.Accessibility.GetFullAXTreeResponse>;
+    invoke_getFullAXTree(params: Protocol.Accessibility.GetFullAXTreeRequest):
+        Promise<Protocol.Accessibility.GetFullAXTreeResponse>;
+
+    /**
+     * Fetches a particular accessibility node by AXNodeId.
+     * Requires `enable()` to have been called previously.
+     */
+    invoke_getChildAXNodes(params: Protocol.Accessibility.GetChildAXNodesRequest):
+        Promise<Protocol.Accessibility.GetChildAXNodesResponse>;
 
     /**
      * Query a DOM node's accessibility subtree for accessible name and role.

@@ -461,6 +461,7 @@ export class SearchView extends UI.Widget.VBox {
    * @param {!KeyboardEvent} event
    */
   _onKeyDown(event) {
+    this._save();
     switch (event.keyCode) {
       case UI.KeyboardShortcut.Keys.Enter.code:
         this._onAction();
@@ -486,7 +487,6 @@ export class SearchView extends UI.Widget.VBox {
     if (!searchConfig.query() || !searchConfig.query().length) {
       return;
     }
-    this._save();
     this._startSearch(searchConfig);
   }
 }

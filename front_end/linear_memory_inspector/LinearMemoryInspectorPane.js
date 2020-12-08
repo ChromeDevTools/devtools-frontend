@@ -40,6 +40,7 @@ export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this._tabClosed, this);
     this._tabbedPane.show(this.contentElement);
 
+    /** @type {!Map<string, LinearMemoryInspectorView>} */
     this._tabIdToInspectorView = new Map();
   }
 
@@ -75,10 +76,19 @@ export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
    * @param {string} tabId
    */
   reveal(tabId) {
-    if (!this._tabIdToInspectorView.has(tabId)) {
+    this.refreshView(tabId);
+    this._tabbedPane.selectTab(tabId);
+  }
+
+  /**
+   * @param {string} tabId
+   */
+  refreshView(tabId) {
+    const view = this._tabIdToInspectorView.get(tabId);
+    if (!view) {
       throw new Error(`View for specified tab id does not exist: ${tabId}`);
     }
-    this._tabbedPane.selectTab(tabId);
+    view.refreshData();
   }
 
   /**
@@ -120,6 +130,10 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
    * @override
    */
   wasShown() {
+    this.refreshData();
+  }
+
+  refreshData() {
     LinearMemoryInspectorController.getMemoryForAddress(this._memoryWrapper, this._address).then(({memory, offset}) => {
       this._inspector.data = {
         memory: memory,

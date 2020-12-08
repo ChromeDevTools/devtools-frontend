@@ -75,8 +75,11 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     super();
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.RuntimeModel.RuntimeModel, this);
     SDK.SDKModel.TargetManager.instance().addModelListener(
-        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this.onGlobalObjectClear, this);
     this.paneInstance.addEventListener('view-closed', this.viewClosed.bind(this));
+
+    SDK.SDKModel.TargetManager.instance().addModelListener(
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.onDebuggerPause, this);
   }
 
   static instance() {
@@ -147,9 +150,18 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     }
   }
 
-  private globalObjectCleared(event: Common.EventTarget.EventTargetEvent) {
+  private onDebuggerPause(event: Common.EventTarget.EventTargetEvent) {
     const debuggerModel = event.data as SDK.DebuggerModel.DebuggerModel;
-    this.modelRemoved(debuggerModel._runtimeModel);
+    for (const [scriptId, remoteObject] of this.scriptIdToRemoteObject) {
+      if (debuggerModel.runtimeModel() === remoteObject.runtimeModel()) {
+        this.paneInstance.refreshView(scriptId);
+      }
+    }
+  }
+
+  private onGlobalObjectClear(event: Common.EventTarget.EventTargetEvent) {
+    const debuggerModel = event.data as SDK.DebuggerModel.DebuggerModel;
+    this.modelRemoved(debuggerModel.runtimeModel());
   }
 
   private viewClosed(event: Common.EventTarget.EventTargetEvent) {

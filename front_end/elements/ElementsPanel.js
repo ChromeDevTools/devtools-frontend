@@ -1121,6 +1121,9 @@ const TrackedCSSGridProperties = [
   },
 ];
 
+/** @type {!ContextMenuProvider} */
+let contextMenuProviderInstance;
+
 /**
  * @implements {UI.ContextMenu.Provider}
  */
@@ -1145,6 +1148,13 @@ export class ContextMenuProvider {
     /** @type {function():*} */
     const commandCallback = Common.Revealer.reveal.bind(Common.Revealer.Revealer, object);
     contextMenu.revealSection().appendItem(Common.UIString.UIString('Reveal in Elements panel'), commandCallback);
+  }
+
+  static instance() {
+    if (!contextMenuProviderInstance) {
+      contextMenuProviderInstance = new ContextMenuProvider();
+    }
+    return contextMenuProviderInstance;
   }
 }
 

@@ -482,39 +482,31 @@ export class ContextMenu extends SubMenu {
     return this._id++;
   }
 
-  show() {
-    Promise.all(this._pendingPromises)
-        .then(providers => {
-          populate.call(this, providers);
-        })
-        .then(this._innerShow.bind(this));
+  async show() {
     ContextMenu._pendingMenu = this;
+    this._event.consume(true);
+    /** @type {!Array<!Array<!Provider>>} */
+    const loadedProviders = await Promise.all(this._pendingPromises);
 
-    /**
-     * @param {!Array.<!Array.<!Provider>>} appendCallResults
-     * @this {ContextMenu}
-     */
-    function populate(appendCallResults) {
-      if (ContextMenu._pendingMenu !== this) {
-        return;
+    // After loading all providers, the contextmenu might be hidden again, so bail out.
+    if (ContextMenu._pendingMenu !== this) {
+      return;
+    }
+    ContextMenu._pendingMenu = null;
+
+    for (let i = 0; i < loadedProviders.length; ++i) {
+      const providers = loadedProviders[i];
+      const target = this._pendingTargets[i];
+
+      for (const provider of providers) {
+        provider.appendApplicableItems(this._event, this, target);
       }
-      ContextMenu._pendingMenu = null;
-
-      for (let i = 0; i < appendCallResults.length; ++i) {
-        const providers = appendCallResults[i];
-        const target = this._pendingTargets[i];
-
-        for (let j = 0; j < providers.length; ++j) {
-          const provider = /** @type {!Provider} */ (providers[j]);
-          provider.appendApplicableItems(this._event, this, target);
-        }
-      }
-
-      this._pendingPromises = [];
-      this._pendingTargets = [];
     }
 
-    this._event.consume(true);
+    this._pendingPromises = [];
+    this._pendingTargets = [];
+
+    this._innerShow();
   }
 
   discard() {
@@ -628,6 +620,16 @@ export class ContextMenu extends SubMenu {
         /** @type {!Promise<!Array<!Provider>>}*/ (Root.Runtime.Runtime.instance().allInstances(Provider, target));
     this._pendingPromises.push(allInstances);
     this._pendingTargets.push(target);
+    // We need to duplicate the registered providers into the pending promises,
+    // since an array of providers is related to a particular target. Since both
+    // `allInstances` and `loadRegisteredProviders` return a Promise of an array,
+    // we can't unroll these promises at this point. Thus, we can't concatenate
+    // both arrays right now and we have to do that *after* resolving their
+    // promises. Since the `_pendingTargets` array requires each of its indices
+    // to have a matching array of providers, we need to duplicate the target
+    // in that array as well.
+    this._pendingPromises.push(loadRegisteredProviders());
+    this._pendingTargets.push(target);
   }
 }
 
@@ -649,5 +651,26 @@ export class Provider {
    */
   appendApplicableItems(event, contextMenu, target) {}
 }
+
+/** @type {!Array<!ProviderRegistration>} */
+const registeredProviders = [];
+
+/**
+ * @param {!ProviderRegistration} registration
+ */
+export function registerProvider(registration) {
+  registeredProviders.push(registration);
+}
+
+async function loadRegisteredProviders() {
+  return Promise.all(registeredProviders.map(registration => registration.loadProvider()));
+}
+
+/**
+ * @typedef {{
+ *   loadProvider: function(): !Promise<!Provider>
+ * }} */
+// @ts-ignore typedef
+export let ProviderRegistration;
 
 ContextMenu._groupWeights = _groupWeights;

@@ -1,15 +1,6 @@
 {
   "extensions": [
     {
-      "type": "@UI.ContextMenu.Provider",
-      "contextTypes": [
-        "SDK.RemoteObject",
-        "SDK.DOMNode",
-        "SDK.DeferredDOMNode"
-      ],
-      "className": "Elements.ElementsPanel.ContextMenuProvider"
-    },
-    {
       "type": "@UI.Renderer",
       "contextTypes": [
         "SDK.DOMNode",

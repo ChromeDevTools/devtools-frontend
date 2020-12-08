@@ -165,19 +165,7 @@ export class InspectorFrontendHostStub {
     if (text === undefined || text === null) {
       return;
     }
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(text);
-    } else if (document.queryCommandSupported('copy')) {
-      // FIXME: Is this dead code?
-      const input = document.createElement('input');
-      input.value = text;
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand('copy');
-      document.body.removeChild(input);
-    } else {
-      Common.Console.Console.instance().error('Clipboard is not enabled in hosted mode. Please inspect using chrome://inspect');
-    }
+    navigator.clipboard.writeText(text);
   }
 
   /**

@@ -104,6 +104,17 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
   }
 
   /**
+   * Toggle the visibility of the Metrics pane. This toggle allows external
+   * callers to control the visibility of this pane, but toggling this on does
+   * not guarantee the pane will always show up, because the pane's visibility
+   * is also controlled by the internal condition that style cannot be empty.
+   * @param {boolean} isVisible
+   */
+  toggleVisibility(isVisible) {
+    this.element.classList.toggle('invisible', !isVisible);
+  }
+
+  /**
    * @param {!Map.<string, string>} style
    * @param {string} propertyName
    * @return {number}

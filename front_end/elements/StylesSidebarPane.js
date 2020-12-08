@@ -127,6 +127,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     this._filterRegex = null;
     this._isActivePropertyHighlighted = false;
     this._initialUpdateCompleted = false;
+    this.hasMatchedStyles = false;
 
     this.contentElement.classList.add('styles-pane');
 
@@ -498,10 +499,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
       this._initialUpdateCompleted = true;
       this.dispatchEventToListeners(Events.InitialUpdateCompleted);
     }
-  }
 
-  initialUpdateCompleted() {
-    return this._initialUpdateCompleted;
+    this.dispatchEventToListeners(Events.StylesUpdateCompleted, {hasMatchedStyles: this.hasMatchedStyles});
   }
 
   /**
@@ -674,7 +673,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     this._sectionBlocks = [];
 
     const node = this.node();
-    if (!matchedStyles || !node) {
+    this.hasMatchedStyles = matchedStyles !== null && node !== null;
+    if (!this.hasMatchedStyles) {
       this._sectionsContainer.removeChildren();
       this._noMatchesElement.classList.remove('hidden');
       return;
@@ -728,6 +728,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 
     // Record the elements tool load time after the sidepane has loaded.
     Host.userMetrics.panelLoaded('elements', 'DevTools.Launch.Elements');
+
+    this.dispatchEventToListeners(Events.StylesUpdateCompleted, {hasStyle: true});
   }
 
   /**
@@ -1030,6 +1032,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
 /** @enum {symbol} */
 export const Events = {
   InitialUpdateCompleted: Symbol('InitialUpdateCompleted'),
+  StylesUpdateCompleted: Symbol('StylesUpdateCompleted'),
 };
 
 export const _maxLinkLength = 23;

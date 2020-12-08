@@ -23,6 +23,11 @@
   contain: strict;
 }
 
+:host(.invisible) {
+  visibility: hidden;
+  height: 0;
+}
+
 :host(.collapsed) {
   visibility: collapse;
   height: 0;

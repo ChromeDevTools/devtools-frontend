@@ -930,12 +930,22 @@ export class ElementsPanel extends UI.Panel.Panel {
       this._stylesWidget.appendToolbarItem(stylesSplitWidget.createShowHideSidebarButton(ls`Computed Styles sidebar`));
     });
 
+    const showMetricsWidgetInComputedPane = () => {
+      this._metricsWidget.show(computedStylePanesWrapper.element, this._computedStyleWidget.element);
+      this._metricsWidget.toggleVisibility(true /* visible */);
+      this._stylesWidget.removeEventListener(StylesSidebarPaneEvents.StylesUpdateCompleted, toggleMetricsWidget);
+    };
+
     const showMetricsWidgetInStylesPane = () => {
       const showMergedComputedPane = stylesSplitWidget.showMode() === UI.SplitWidget.ShowMode.Both;
       if (showMergedComputedPane) {
-        this._metricsWidget.show(computedStylePanesWrapper.element, this._computedStyleWidget.element);
+        showMetricsWidgetInComputedPane();
       } else {
         this._metricsWidget.show(matchedStylePanesWrapper.element);
+        if (!this._stylesWidget.hasMatchedStyles) {
+          this._metricsWidget.toggleVisibility(false /* invisible */);
+        }
+        this._stylesWidget.addEventListener(StylesSidebarPaneEvents.StylesUpdateCompleted, toggleMetricsWidget);
       }
     };
 
@@ -944,20 +954,21 @@ export class ElementsPanel extends UI.Panel.Panel {
     /**
      * @param {!Common.EventTarget.EventTargetEvent} event
      */
+    const toggleMetricsWidget = event => {
+      this._metricsWidget.toggleVisibility(event.data.hasMatchedStyles);
+    };
+
+    /**
+     * @param {!Common.EventTarget.EventTargetEvent} event
+     */
     const tabSelected = event => {
       const tabId = /** @type {string} */ (event.data.tabId);
       if (tabId === Common.UIString.UIString('Computed')) {
         computedStylePanesWrapper.show(computedView.element);
-        this._metricsWidget.show(computedStylePanesWrapper.element, this._computedStyleWidget.element);
+        showMetricsWidgetInComputedPane();
       } else if (tabId === Common.UIString.UIString('Styles')) {
         stylesSplitWidget.setSidebarWidget(computedStylePanesWrapper);
-        if (this._stylesWidget.initialUpdateCompleted()) {
-          showMetricsWidgetInStylesPane();
-        } else {
-          this._stylesWidget.addEventListener(StylesSidebarPaneEvents.InitialUpdateCompleted, () => {
-            showMetricsWidgetInStylesPane();
-          });
-        }
+        showMetricsWidgetInStylesPane();
       }
 
       if (skippedInitialTabSelectedEvent) {

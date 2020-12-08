@@ -44,26 +44,26 @@ class CookiePreviewWidget extends UI.Widget.VBox {
     this._showDecodedSetting = Common.Settings.Settings.instance().createSetting('cookieViewShowDecoded', false);
 
     const header = document.createElement('div');
-    header.classList.add('header');
+    header.classList.add('cookie-preview-widget-header');
     const span = document.createElement('span');
-    span.classList.add('header-label');
+    span.classList.add('cookie-preview-widget-header-label');
     span.textContent = 'Cookie Value';
     header.appendChild(span);
     this.contentElement.appendChild(header);
 
     const toggle = UI.UIUtils.CheckboxLabel.create(ls`Show URL decoded`, this._showDecodedSetting.get());
-    toggle.classList.add('toggle');
+    toggle.classList.add('cookie-preview-widget-toggle');
     toggle.checkboxElement.addEventListener('click', () => this.showDecoded(!this._showDecodedSetting.get()));
     header.appendChild(toggle);
     this._toggle = toggle;
 
     const value = document.createElement('div');
-    value.classList.add('cookie-value');
+    value.classList.add('cookie-preview-widget-cookie-value');
     value.textContent = '';
     value.addEventListener('dblclick', this.handleDblClickOnCookieValue.bind(this));
     this._value = value;
 
-    this.contentElement.classList.add('preview');
+    this.contentElement.classList.add('cookie-preview-widget');
     this.contentElement.appendChild(value);
   }
 

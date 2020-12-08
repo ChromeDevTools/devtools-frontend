@@ -60,7 +60,7 @@ describe('The Application Tab', async () => {
     await selectCookieByName('foo');
 
     await waitForFunction(async () => {
-      const previewValueNode = await waitFor('.cookie-value');
+      const previewValueNode = await waitFor('.cookie-preview-widget-cookie-value');
       const previewValue = await previewValueNode.evaluate(e => e.textContent);
       return previewValue === 'bar';
     });
@@ -80,7 +80,7 @@ describe('The Application Tab', async () => {
     await selectCookieByName('urlencoded');
 
     await waitForFunction(async () => {
-      const previewValueNode = await waitFor('.cookie-value');
+      const previewValueNode = await waitFor('.cookie-preview-widget-cookie-value');
       const previewValue = await previewValueNode.evaluate(e => e.textContent);
       return previewValue === 'Hello%2BWorld!';
     });
@@ -88,7 +88,7 @@ describe('The Application Tab', async () => {
     await click('[aria-label="Show URL decoded"]');
 
     await waitForFunction(async () => {
-      const previewValueNode = await waitFor('.cookie-value');
+      const previewValueNode = await waitFor('.cookie-preview-widget-cookie-value');
       const previewValue = await previewValueNode.evaluate(e => e.textContent);
       return previewValue === 'Hello+World!';
     });
@@ -106,7 +106,7 @@ describe('The Application Tab', async () => {
 
     // Select a cookie first
     await waitForFunction(async () => {
-      const previewValueNode1 = await waitFor('.cookie-value');
+      const previewValueNode1 = await waitFor('.cookie-preview-widget-cookie-value');
       const previewValue1 = await previewValueNode1.evaluate(e => e.textContent);
       return previewValue1 === 'bar';
     });

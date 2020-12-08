@@ -389,6 +389,10 @@ export class AppManifestView extends UI.Widget.VBox {
           errorMessage =
               ls`Manifest contains 'display_override' field, and the first supported display mode must be one of 'standalone', 'fullscreen', or 'minimal-ui'`;
           break;
+        case 'warn-not-offline-capable':
+          errorMessage =
+              ls`Page does not work offline. The page will not be regarded as installable after Chrome 93, stable release August 2021.`;
+          break;
         default:
           console.error(`Installability error id '${installabilityError.errorId}' is not recognized`);
           break;

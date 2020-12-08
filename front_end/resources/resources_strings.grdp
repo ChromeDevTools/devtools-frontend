@@ -504,6 +504,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_c1ea3facd2946b59df718d8dd2737cfa" desc="Text in Application Panel Sidebar of the Application panel">
     Background Services
   </message>
+  <message name="IDS_DEVTOOLS_c3ce3e7083dd535c002d6bd81f01aec5" desc="Warning message for offline capability check">
+    Page does not work offline. The page will not be regarded as installable after Chrome 93, stable release August 2021.
+  </message>
   <message name="IDS_DEVTOOLS_c64518704ce0c0d5501a45763f464276" desc="Text in Clear Storage View of the Application panel">
     Usage
   </message>

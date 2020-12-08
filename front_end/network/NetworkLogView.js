@@ -212,7 +212,7 @@ export class NetworkLogView extends UI.Widget.VBox {
 
     this._textFilterSetting = Common.Settings.Settings.instance().createSetting('networkTextFilter', '');
     if (this._textFilterSetting.get()) {
-      this.setTextFilterValue(this._textFilterSetting.get());
+      this._textFilterUI.setValue(this._textFilterSetting.get());
     }
   }
 

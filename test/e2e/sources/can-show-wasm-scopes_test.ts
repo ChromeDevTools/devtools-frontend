@@ -9,8 +9,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {addBreakpointForLine, getScopeNames, getValuesForScope, openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, RESUME_BUTTON, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
 
 describe('Source Tab', async () => {
-  // Broken test
-  it.skip('[crbug.com/1156555]: shows and updates the module, local, and stack scope while pausing', async () => {
+  it('shows and updates the module, local, and stack scope while pausing', async () => {
     const {frontend, target} = getBrowserAndPages();
     const breakpointLine = 12;
     const numberOfLines = 16;
@@ -50,7 +49,7 @@ describe('Source Tab', async () => {
         return line.replace(/\[[^\]]*\]/, '').trim();
       });
       assert.deepEqual(
-          formattedValues, ['globals: {imports.global: 24}', 'instance: Instance\xA0{}', 'memory0: Uint8Array(65536)']);
+          formattedValues, ['globals: {imports.global: 24}', 'instance: Instance\xA0{}', 'memory0: Memory(1)\xA0{}']);
     });
 
     await step('check that the local scope content is as expected', async () => {

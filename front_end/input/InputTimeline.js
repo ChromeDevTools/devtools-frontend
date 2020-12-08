@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Bindings from '../bindings/bindings.js';
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
@@ -11,6 +11,23 @@ import * as Timeline from '../timeline/timeline.js';
 import * as UI from '../ui/ui.js';
 
 import {InputModel} from './InputModel.js';
+
+export const UIStrings = {
+  /**
+  *@description Text to clear everything
+  */
+  clearAll: 'Clear all',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon load button
+  */
+  loadProfile: 'Load profile…',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon download button
+  */
+  saveProfile: 'Save profile…',
+};
+const str_ = i18n.i18n.registerUIStrings('input/InputTimeline.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {Timeline.TimelineLoader.Client}
@@ -47,16 +64,16 @@ export class InputTimeline extends UI.Widget.VBox {
     this._panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this._startReplayAction));
     this._panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this._togglePauseAction));
 
-    this._clearButton = new UI.Toolbar.ToolbarButton(ls`Clear all`, 'largeicon-clear');
+    this._clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
     this._clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._reset.bind(this));
     this._panelToolbar.appendToolbarItem(this._clearButton);
 
     this._panelToolbar.appendSeparator();
 
     // Load / Save
-    this._loadButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Load profile…'), 'largeicon-load');
+    this._loadButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.loadProfile), 'largeicon-load');
     this._loadButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this._selectFileToLoad());
-    this._saveButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Save profile…'), 'largeicon-download');
+    this._saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveProfile), 'largeicon-download');
     this._saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this._saveToFile();
     });

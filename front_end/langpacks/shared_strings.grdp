@@ -271,9 +271,6 @@
   <message name="IDS_DEVTOOLS_8166a4b3fb4979da3a24ed21ced7fdf7" desc="Text for an option to learn more about something">
     Learn more
   </message>
-  <message name="IDS_DEVTOOLS_81aa2078d1eceede831b2976dbf32e62" desc="Text to clear everything">
-    Clear all
-  </message>
   <message name="IDS_DEVTOOLS_850985cd851d0fe440f03f77762e2590" desc="Text for the network request Content-Length header">
     <ph name="LOCKED_1">Content-Length</ph>
   </message>
@@ -559,9 +556,6 @@
   <message name="IDS_DEVTOOLS_f31bbdd1b3e85bccd652680e16935819" desc="Text for the source of something">
     Source
   </message>
-  <message name="IDS_DEVTOOLS_f34ebd9ed4156c54fbd77bb3a5b3107a" desc="Tooltip text that appears when hovering over the largeicon download button">
-    Save profile…
-  </message>
   <message name="IDS_DEVTOOLS_f53944c3a55bdb5ad65c6226e358a626" desc="Text to undock the DevTools">
     Undock into separate window
   </message>
@@ -570,9 +564,6 @@
   </message>
   <message name="IDS_DEVTOOLS_f907e651164789346ae0a1e257c462d8" desc="Label for a group of JavaScript files">
     Script
-  </message>
-  <message name="IDS_DEVTOOLS_fa7c73b6eb5f3c3b77e47d8a4557af3e" desc="Tooltip text that appears when hovering over the largeicon load button">
-    Load profile…
   </message>
   <message name="IDS_DEVTOOLS_fb61758d0f0fda4ba867c3d5a46c16a7" desc="Name of the Sources panel">
     Sources

@@ -9,10 +9,12 @@ devtools_module("input") {
   sources = [
     "InputModel.js",
     "InputTimeline.js",
+    "ModuleUIStrings.js",
   ]
 
   deps = [
     "../bindings:bundle",
+    "../i18n:bundle",
     "../platform:bundle",
     "../protocol_client:bundle",
     "../sdk:bundle",

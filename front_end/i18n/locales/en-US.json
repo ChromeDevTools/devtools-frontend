@@ -326,6 +326,33 @@
   "help/ReleaseNoteView.js | s": {
     "message": "{PH1}"
   },
+  "input/InputTimeline.js | clearAll": {
+    "message": "Clear all"
+  },
+  "input/InputTimeline.js | loadProfile": {
+    "message": "Load profile…"
+  },
+  "input/InputTimeline.js | saveProfile": {
+    "message": "Save profile…"
+  },
+  "input/ModuleUIStrings.js | inputs": {
+    "message": "Inputs"
+  },
+  "input/ModuleUIStrings.js | pause": {
+    "message": "Pause"
+  },
+  "input/ModuleUIStrings.js | resume": {
+    "message": "Resume"
+  },
+  "input/ModuleUIStrings.js | startRecording": {
+    "message": "Start recording"
+  },
+  "input/ModuleUIStrings.js | startReplaying": {
+    "message": "Start replaying"
+  },
+  "input/ModuleUIStrings.js | stopRecording": {
+    "message": "Stop recording"
+  },
   "layer_viewer/LayerDetailsView.js | compositingReasons": {
     "message": "Compositing Reasons"
   },

@@ -1026,6 +1026,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_f2f08200f7e8df8715e4a4fc148d11f9" desc="Text in Timeline UIUtils of the Performance panel">
     Compilation cache size
   </message>
+  <message name="IDS_DEVTOOLS_f34ebd9ed4156c54fbd77bb3a5b3107a" desc="Tooltip text that appears when hovering over the largeicon download button">
+    Save profile…
+  </message>
   <message name="IDS_DEVTOOLS_f466ef0697891303497dfbf951a14b1d" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Idle Frame
   </message>
@@ -1040,6 +1043,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_f8dd1d7ea0aea500de367999ebba5c47" desc="Text in UIDevtools Utils of the Performance panel">
     Layer::PaintContentsToDisplayList
+  </message>
+  <message name="IDS_DEVTOOLS_fa7c73b6eb5f3c3b77e47d8a4557af3e" desc="Tooltip text that appears when hovering over the largeicon load button">
+    Load profile…
   </message>
   <message name="IDS_DEVTOOLS_faa313428f0d69de3acffbd44c3df1ec" desc="Title of capture layers and pictures setting in timeline panel of the performance panel">
     Enable advanced paint instrumentation (slow)

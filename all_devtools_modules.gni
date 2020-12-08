@@ -238,6 +238,7 @@ all_typescript_module_sources = [
   "inline_editor/Swatches.js",
   "input/InputModel.js",
   "input/InputTimeline.js",
+  "input/ModuleUIStrings.js",
   "inspector_main/InspectorMain.js",
   "inspector_main/RenderingOptions.js",
   "issues/CSPViolationsListView.js",

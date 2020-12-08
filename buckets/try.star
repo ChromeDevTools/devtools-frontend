@@ -77,6 +77,7 @@ try_builder(
     dimensions = dimensions.default_ubuntu,
     execution_timeout = 2 * time.hour,
     build_numbers = True,
+    properties = { "run_experimental_steps" : True }
 )
 
 builder_coverage(

@@ -1039,10 +1039,37 @@ export class NetworkDispatcher {
     return request;
   }
 
-  webTransportCreated() {
+  /**
+   * @override
+   * @param {!Protocol.Network.WebTransportCreatedEvent} request
+   */
+  webTransportCreated({transportId, url: requestURL, timestamp: time, initiator}) {
+    const networkRequest = new NetworkRequest(transportId, requestURL, '', '', '', initiator || null);
+    networkRequest.hasNetworkData = true;
+    requestToManagerMap.set(networkRequest, this._manager);
+    networkRequest.setResourceType(Common.ResourceType.resourceTypes.WebTransport);
+    networkRequest.setIssueTime(time, 0);
+    // This dummy deltas are needed to show this request as being
+    // downloaded(blue) given typical WebTransport is kept for a while.
+    // TODO(yoichio): Add appropreate events to fix these dummy datas.
+    // TODO(yoichio): Add appropreate events to address abort cases.
+    networkRequest.responseReceivedTime = time + 0.001;
+    networkRequest.endTime = time + 0.002;
+    this._startNetworkRequest(networkRequest, null);
   }
 
-  webTransportClosed() {
+  /**
+   * @override
+   * @param {!Protocol.Network.WebTransportClosedEvent} request
+   */
+  webTransportClosed({transportId, timestamp: time}) {
+    const networkRequest = this._inflightRequestsById.get(transportId);
+    if (!networkRequest) {
+      return;
+    }
+
+    networkRequest.endTime = time;
+    this._finishNetworkRequest(networkRequest, time, 0);
   }
 
   /** @param {!Protocol.Network.TrustTokenOperationDoneEvent} event */

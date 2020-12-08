@@ -271,6 +271,8 @@ export const resourceTypes = {
   Fetch: new ResourceType('fetch', ls`Fetch`, resourceCategories.XHR, true),
   EventSource: new ResourceType('eventsource', ls`EventSource`, resourceCategories.XHR, true),
   WebSocket: new ResourceType('websocket', ls`WebSocket`, resourceCategories.WebSocket, false),
+  // TODO(yoichio): Consider creating new category WT or WS/WT with WebSocket.
+  WebTransport: new ResourceType('webtransport', ls`WebTransport`, resourceCategories.WebSocket, false),
   Manifest: new ResourceType('manifest', ls`Manifest`, resourceCategories.Manifest, true),
   SignedExchange: new ResourceType('signed-exchange', ls`SignedExchange`, resourceCategories.Other, false),
   Ping: new ResourceType('ping', ls`Ping`, resourceCategories.Other, false),

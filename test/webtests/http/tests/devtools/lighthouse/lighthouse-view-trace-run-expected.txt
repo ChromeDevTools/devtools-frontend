@@ -43,6 +43,7 @@ no-document-write
 non-composited-animations
 offscreen-images
 performance-budget
+preload-lcp-image
 redirects
 render-blocking-resources
 resource-summary

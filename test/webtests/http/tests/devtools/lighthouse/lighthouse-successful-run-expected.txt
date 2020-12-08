@@ -119,6 +119,9 @@ Gathering: Accessibility
 Gathering: TraceElements
 Gathering: InspectorIssues
 Gathering: SourceMaps
+Populate base artifacts
+Get webapp manifest
+Collect stacks
 Running offlinePass pass
 Resetting state with about:blank
 Setting up network for the pass trace
@@ -248,6 +251,9 @@ Auditing: Avoids `unload` event listeners
 Auditing: Avoid non-composited animations
 Auditing: Image elements have explicit `width` and `height`
 Auditing: Page has valid source maps
+Auditing: Preload Largest Contentful Paint image
+Computing artifact: LanternLargestContentfulPaint
+Computing artifact: LanternFirstContentfulPaint
 Auditing: Site works cross-browser
 Auditing: Page transitions don't feel like they block on the network
 Auditing: Each page has a URL
@@ -329,6 +335,7 @@ Auditing: Properly defines charset
 Auditing: Avoids an excessive DOM size
 Auditing: Links to cross-origin destinations are safe
 Auditing: Avoids requesting the geolocation permission on page load
+Auditing: No issues in the `Issues` panel in Chrome Devtools
 Auditing: Avoids `document.write()`
 Auditing: Avoids front-end JavaScript libraries with known security vulnerabilities
 Auditing: Detected JavaScript libraries
@@ -368,20 +375,20 @@ Auditing: Latency of first ad render
 Computing artifact: AdRenderTime
 Computing artifact: LanternAdRenderTime
 Auditing: GPT and bids loaded in parallel
-Auditing: GPT tag is loaded from recommended host
+Auditing: GPT tag is loaded from an official source
 Auditing: Ad tag is loaded over HTTPS
 Auditing: Ad scripts are loaded statically
 Auditing: Header bidding is parallelized
 Auditing: Tag load time
 Computing artifact: TagLoadTime
 Computing artifact: LanternTagLoadTime
-Auditing: Ad density in initial viewport is within recommended range
+Auditing: Ad density is within recommended range
 Auditing: Cumulative ad shift
 Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 6.4.0
+Version: 6.5.0
 TestedAsMobileDevice: true
 ViewportDimensions: {
   "innerWidth": 980,
@@ -466,6 +473,7 @@ image-alt: notApplicable
 image-aspect-ratio: pass
 image-size-responsive: pass
 input-image-alt: notApplicable
+inspector-issues: pass
 installable-manifest: fail
 interactive: flaky
 interactive-element-affordance: manual
@@ -484,7 +492,7 @@ list: notApplicable
 listitem: notApplicable
 load-fast-enough-for-pwa: flaky
 loads-ad-tag-over-https: notApplicable
-loads-gpt-from-sgdn: notApplicable
+loads-gpt-from-official-source: notApplicable
 logical-tab-order: manual
 long-tasks: flaky
 main-thread-tasks: informative
@@ -512,6 +520,7 @@ password-inputs-can-be-pasted-into: pass
 performance-budget: notApplicable
 plugins: pass
 preload-fonts: notApplicable
+preload-lcp-image: numeric
 pwa-cross-browser: manual
 pwa-each-page-has-url: manual
 pwa-page-transitions: manual
@@ -564,5 +573,164 @@ visual-order-follows-dom: manual
 without-javascript: pass
 works-offline: fail
 
-# of .lh-audit divs: 155
+# of .lh-audit divs: 157
+
+.lh-audit divs:
+accesskeys
+ad-blocking-tasks
+ad-render-blocking-resources
+ad-request-critical-path
+ad-request-from-page-start
+ad-top-of-viewport
+ads-in-viewport
+appcache-manifest
+apple-touch-icon
+aria-allowed-attr
+aria-hidden-body
+aria-hidden-focus
+aria-input-field-name
+aria-required-attr
+aria-required-children
+aria-required-parent
+aria-roles
+aria-toggle-field-name
+aria-valid-attr
+aria-valid-attr-value
+async-ad-tags
+bid-request-from-page-start
+blocking-load-events
+bootup-time
+bottleneck-requests
+button-name
+bypass
+canonical
+charset
+color-contrast
+content-width
+crawlable-anchors
+critical-request-chains
+cumulative-ad-shift
+custom-controls-labels
+custom-controls-roles
+definition-list
+deprecations
+dlitem
+doctype
+document-title
+document-title
+dom-size
+duplicate-id-active
+duplicate-id-aria
+duplicate-tags
+duplicated-javascript
+efficient-animated-content
+errors-in-console
+external-anchors-use-rel-noopener
+first-ad-render
+focus-traps
+focusable-controls
+font-display
+font-size
+form-field-multiple-labels
+frame-title
+geolocation-on-start
+gpt-bids-parallel
+heading-order
+hreflang
+html-has-lang
+html-lang-valid
+http-status-code
+image-alt
+image-alt
+image-aspect-ratio
+image-size-responsive
+input-image-alt
+inspector-issues
+installable-manifest
+interactive-element-affordance
+is-crawlable
+is-on-https
+is-on-https
+js-libraries
+label
+largest-contentful-paint-element
+layout-shift-elements
+layout-table
+legacy-javascript
+link-name
+link-text
+list
+listitem
+load-fast-enough-for-pwa
+loads-ad-tag-over-https
+loads-gpt-from-official-source
+logical-tab-order
+long-tasks
+mainthread-work-breakdown
+managed-focus
+maskable-icon
+meta-description
+meta-refresh
+meta-viewport
+no-document-write
+no-unload-listeners
+no-vulnerable-libraries
+non-composited-animations
+notification-on-start
+object-alt
+offline-start-url
+offscreen-content-hidden
+offscreen-images
+password-inputs-can-be-pasted-into
+plugins
+preload-fonts
+preload-lcp-image
+pwa-cross-browser
+pwa-each-page-has-url
+pwa-page-transitions
+redirects
+redirects-http
+render-blocking-resources
+resource-summary
+robots-txt
+script-injected-tags
+serial-header-bidding
+server-response-time
+service-worker
+splash-screen
+structured-data
+tabindex
+tag-load-time
+tap-targets
+td-headers-attr
+th-has-data-cells
+themed-omnibox
+third-party-summary
+total-byte-weight
+unminified-css
+unminified-javascript
+unsized-images
+unused-css-rules
+unused-javascript
+use-landmarks
+user-timings
+uses-http2
+uses-long-cache-ttl
+uses-optimized-images
+uses-passive-event-listeners
+uses-rel-preconnect
+uses-rel-preload
+uses-responsive-images
+uses-text-compression
+uses-webp-images
+valid-lang
+valid-source-maps
+video-caption
+video-description
+viewport
+viewport
+viewport-ad-density
+visual-order-follows-dom
+without-javascript
+works-offline
 

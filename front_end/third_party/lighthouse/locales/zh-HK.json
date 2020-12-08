@@ -384,16 +384,16 @@
     "message": "提供有效的 `apple-touch-icon`"
   },
   "lighthouse-core/audits/autocomplete.js | columnCurrent": {
-    "message": "Current Value"
+    "message": "目前的值"
   },
   "lighthouse-core/audits/autocomplete.js | columnSuggestions": {
-    "message": "Suggested Token"
+    "message": "建議的憑證"
   },
   "lighthouse-core/audits/autocomplete.js | description": {
-    "message": "`autocomplete` helps users submit forms quicker. To reduce user effort, consider enabling by setting the `autocomplete` attribute to a valid value. [Learn more](https://developers.google.com/web/fundamentals/design-and-ux/input/forms#use_metadata_to_enable_auto-complete)"
+    "message": "`autocomplete` 有助使用者更快提交表格。如要減少使用者需要執行的動作，建議您將 `autocomplete` 屬性設定為有效值以啟用此功能。[瞭解詳情](https://developers.google.com/web/fundamentals/design-and-ux/input/forms#use_metadata_to_enable_auto-complete)"
   },
   "lighthouse-core/audits/autocomplete.js | failureTitle": {
-    "message": "`<input>` elements do not have correct `autocomplete` attributes"
+    "message": "`<input>` 元素沒有正確的 `autocomplete` 屬性"
   },
   "lighthouse-core/audits/autocomplete.js | manualReview": {
     "message": "需要人手審查"
@@ -402,10 +402,10 @@
     "message": "查看憑證次序"
   },
   "lighthouse-core/audits/autocomplete.js | title": {
-    "message": "`<input>` elements correctly use `autocomplete`"
+    "message": "`<input>` 元素正確使用 `autocomplete`"
   },
   "lighthouse-core/audits/autocomplete.js | warningInvalid": {
-    "message": "`autocomplete` token(s): \"{token}\" is invalid in {snippet}"
+    "message": "`autocomplete` 憑證：{snippet} 中的「{token}」無效"
   },
   "lighthouse-core/audits/autocomplete.js | warningOrder": {
     "message": "查看憑證次序：{snippet} 中的「{tokens}」"
@@ -585,7 +585,7 @@
     "message": "避免使用應用程式快取"
   },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
-    "message": "A character encoding declaration is required. It can be done with a `<meta>` tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more](https://web.dev/charset/)."
+    "message": "需要字元編碼宣告。可以在 HTML 的前 1024 個字節或 Content-Type HTTP 回應標題中使用 `<meta>` 標記宣告。[瞭解詳情](https://web.dev/charset/)。"
   },
   "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
     "message": "字元集宣告遺失或在 HTML 中太遲出現"
@@ -752,9 +752,6 @@
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | title": {
     "message": "使用被動活動監聽器來提升捲動效能"
   },
-  "lighthouse-core/audits/errors-in-console.js | columnDesc": {
-    "message": "說明"
-  },
   "lighthouse-core/audits/errors-in-console.js | description": {
     "message": "如果管理中心有錯誤記錄，表示系統仍有問題尚待解決，例如網絡要求錯誤和其他瀏覽器問題。[瞭解詳情](https://web.dev/errors-in-console/)"
   },
@@ -834,7 +831,7 @@
     "message": "要求解決"
   },
   "lighthouse-core/audits/is-on-https.js | description": {
-    "message": "All sites should be protected with HTTPS, even ones that don't handle sensitive data. This includes avoiding [mixed content](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content), where some resources are loaded over HTTP despite the initial request being served over HTTPS. HTTPS prevents intruders from tampering with or passively listening in on the communications between your app and your users, and is a prerequisite for HTTP/2 and many new web platform APIs. [Learn more](https://web.dev/is-on-https/)."
+    "message": "所有網站都應該使用 HTTPS 確保安全，即使網站不處理敏感資料亦然。這包括避免[混合內容](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content)，即使初始要求透過 HTTPS 提供，混合內容中的部分資源仍會透過 HTTP 載入。HTTPS 能防範入侵者竄改或被動監聽應用程式與使用者之間的通訊，且 HTTP/2 和很多新的網絡平台 API 都要求使用 HTTPS。[瞭解詳情](https://web.dev/is-on-https/)。"
   },
   "lighthouse-core/audits/is-on-https.js | displayValue": {
     "message": "{itemCount,plural, =1{發現 1 個不安全的要求}other{發現 # 個不安全的要求}}"
@@ -1057,6 +1054,12 @@
   },
   "lighthouse-core/audits/preload-fonts.js | title": {
     "message": "已預先載入使用 `font-display: optional` 的字型"
+  },
+  "lighthouse-core/audits/preload-lcp-image.js | description": {
+    "message": "預先載入 LCP 元素使用的圖片，以便改善 LCP 時間。[瞭解詳情](https://web.dev/optimize-lcp/#preload-important-resources)。"
+  },
+  "lighthouse-core/audits/preload-lcp-image.js | title": {
+    "message": "預先載入「最大內容繪製」圖片"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
     "message": "如果您已設定 HTTPS，請確認是否已將所有 HTTP 流量重新導向至 HTTPS，以便為所有使用者提供安全的網絡功能。[瞭解詳情](https://web.dev/redirects-http/)。"
@@ -1368,7 +1371,7 @@
     "message": "用戶使用時間標記和測量結果"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | crossoriginWarning": {
-    "message": "A `<link rel=preconnect>` was found for \"{securityOrigin}\" but was not used by the browser. Check that you are using the `crossorigin` attribute properly."
+    "message": "{securityOrigin} 有「`<link rel=preconnect>`」，但瀏覽器沒有使用。請檢查您使用 `crossorigin` 屬性的方式是否正確。"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
     "message": "建議您新增 `preconnect` 或 `dns-prefetch` 資源提示，及早連線至重要的第三方來源。[瞭解詳情](https://web.dev/uses-rel-preconnect/)。"
@@ -1377,13 +1380,13 @@
     "message": "預先連接至必要來源"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
-    "message": "More than 2 `<link rel=preconnect>` connections were found. These should be used sparingly and only to the most important origins."
+    "message": "已找到超過 2 個「`<link rel=preconnect>`」的連結。這些連結應盡量少用，並只用於最重要的來源。"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | unusedWarning": {
-    "message": "A `<link rel=preconnect>` was found for \"{securityOrigin}\" but was not used by the browser. Only use `preconnect` for important origins that the page will certainly request."
+    "message": "{securityOrigin} 有「`<link rel=preconnect>`」，但瀏覽器沒有使用。請只為載入網頁一定會要求的重要來源使用「`preconnect`」。"
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
-    "message": "A preload `<link>` was found for \"{preloadURL}\" but was not used by the browser. Check that you are using the `crossorigin` attribute properly."
+    "message": "「{preloadURL}」有預先載入的 `<link>`，但瀏覽器沒有使用。請檢查您使用 `crossorigin` 屬性的方式是否正確。"
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
     "message": "建議使用 `<link rel=preload>` 來指定優先需要的網絡要求，並預先擷取資源。[瞭解詳情](https://web.dev/uses-rel-preload/)。"
@@ -1597,6 +1600,9 @@
   },
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "適合透過流動裝置瀏覽"
+  },
+  "lighthouse-core/gather/driver.js | warningData": {
+    "message": "{locationCount,plural, =1{此位置可能有儲存資料正在影響載入效能：{locations}。請透過無痕式視窗審核此頁面，以免這些資源影響分數。}other{這些位置可能有儲存資料正在影響載入效能：{locations}。請透過無痕式視窗審核此頁面，以免這些資源影響分數。}}"
   },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "您的測試網址 ({requested}) 已重新導向至 {final}，因此頁面未必可以如預期載入。請嘗試直接測試第二個網址。"
@@ -1923,34 +1929,34 @@
     "message": "警告： "
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
-    "message": "For animated content, use [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) to minimize CPU usage when the content is offscreen."
+    "message": "當動畫內容在顯示螢幕之外時，您可以使用 [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) 標籤來節省 CPU 用量。"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
-    "message": "Ensure that you are using [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) for images to automatically lazy-load. [Learn more](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
+    "message": "請確保您正在使用 [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites)，讓圖片自動延遲載入。[瞭解詳情](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)。"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | render-blocking-resources": {
     "message": "使用 [AMP Optimizer](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) 等工具在[伺服器端輸出 AMP 版面配置](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/)。"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | unminified-css": {
-    "message": "Refer to the [AMP documentation](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) to ensure all styles are supported."
+    "message": "請參閱 [AMP 文件](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/)，確保所有樣式均受支援。"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
-    "message": "The [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) component supports the [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) attribute to specify which image assets to use based on the screen size. [Learn more](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
+    "message": "[`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) 組件支援 [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) 屬性，可根據螢幕大小指定要使用的圖片資產。[瞭解詳情](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)。"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
-    "message": "Consider displaying all [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) components in WebP formats while specifying an appropriate fallback for other browsers. [Learn more](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
+    "message": "建議以 WebP 格式顯示您的所有 [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) 組件，同時為其他瀏覽器指定適合的備用圖片。[瞭解詳情](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)。"
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "如果要輸出很大型的清單，建議使用組件開發套件 (CDK) 進行虛擬捲動。[瞭解詳情](https://web.dev/virtualize-lists-with-angular-cdk/)。"
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | total-byte-weight": {
-    "message": "Apply [route-level code splitting](https://web.dev/route-level-code-splitting-in-angular/) to minimize the size of your JavaScript bundles. Also, consider precaching assets with the [Angular service worker](https://web.dev/precaching-with-the-angular-service-worker/)."
+    "message": "套用[路線層級的程式碼分割](https://web.dev/route-level-code-splitting-in-angular/)，盡可能降低您的 JavaScript 套裝大小。此外，建議使用 [Angular Service Worker](https://web.dev/precaching-with-the-angular-service-worker/) 預先快取資產。"
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | unminified-warning": {
     "message": "如果您使用 Angular CLI，請確保在正式版本的模式中產生版本。[瞭解詳情](https://angular.io/guide/deployment#enable-runtime-production-mode)。"
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | unused-javascript": {
-    "message": "If you are using Angular CLI, include source maps in your production build to inspect your bundles. [Learn more](https://angular.io/guide/deployment#inspect-the-bundles)."
+    "message": "如果您使用 Angular CLI，請在正式版本中包含來源對應以檢查套裝。[瞭解詳情](https://angular.io/guide/deployment#inspect-the-bundles)。"
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | uses-rel-preload": {
     "message": "預先載入路線以加快導航速度。[瞭解詳情](https://web.dev/route-preloading-in-angular/)。"
@@ -1965,10 +1971,10 @@
     "message": "在主題中定義自訂字體時，請指定 `@font-display`。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
-    "message": "Install [a Drupal module](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) that can lazy load images. Such modules provide the ability to defer any offscreen images to improve performance."
+    "message": "請安裝可以延遲載入圖片的 [Drupal 模組](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search)。這些模組可延遲載入所有畫面外的圖片，進而提升效能。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, or potentially load assets asynchronously via JavaScript such as the [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg) module. Beware that optimizations provided by this module may break your site, so you will likely need to make code changes."
+    "message": "建議使用模組來內嵌重要的 CSS 和 JavaScript，或透過[進階 CSS/JS 彙整](https://www.drupal.org/project/advagg)模組等 JavaScript 來非同步載入資產。請注意，此模組提供的優化可能令網站無法正常運作，因此您可能需要修改程式碼。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
     "message": "主題、模組和伺服器規格均會影響伺服器回應時間。建議尋找更優化的主題、謹慎選擇優化模組和/或升級伺服器。您的代管伺服器應使用 PHP opcode 快取、記憶體快取來降低資料庫查詢時間 (例如 Redis 或 Memcached)，還可優化應用程式邏輯以提升頁面載入速度。"
@@ -1986,7 +1992,7 @@
     "message": "建議移除未使用的 CSS 規則，並只將需要的 Drupal 程式庫附加至相關頁面或頁面內的組件。查看 [Drupal 文件連結](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library)即可瞭解詳情。如要找出會新增多餘 CSS 的附加程式庫，請嘗試在 Chrome DevTools 中執行[程式碼覆蓋率](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)。您可在 Drupal 網站上停用 CSS 彙整時，透過樣式表網址找出有問題的主題/模組。請留意清單中包含很多樣式表，且程式碼覆蓋率中有大量紅色標示的主題/模組。主題/模組應只將網頁上實際使用的樣式表加入清單。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-javascript": {
-    "message": "Consider removing unused JavaScript assets and only attach the needed Drupal libraries to the relevant page or component in a page. See the [Drupal documentation link](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) for details. To identify attached libraries that are adding extraneous JavaScript, try running [code coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in Chrome DevTools. You can identify the theme/module responsible from the URL of the script when JavaScript aggregation is disabled in your Drupal site. Look out for themes/modules that have many scripts in the list which have a lot of red in code coverage. A theme/module should only enqueue a script if it is actually used on the page."
+    "message": "建議移除未使用的 JavaScript 資產，並只將需要的 Drupal 程式庫附加至相關頁面或頁面內的組件。查看 [Drupal 文件連結](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library)即可瞭解詳情。如要找出會新增多餘 JavaScript 的附加程式庫，請嘗試在 Chrome DevTools 中執行[程式碼覆蓋率](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)。您可在 Drupal 網站上停用 JavaScript 彙整時，透過指令碼網址找出有問題的主題/模組。請留意清單中包含很多指令碼，且程式碼覆蓋率中有大量紅色標示的主題/模組。主題/模組應只將網頁上實際使用的指令碼加入清單。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-long-cache-ttl": {
     "message": "在「管理 » 設定 » 開發」頁面中設定「瀏覽器和 Proxy 快取最大期限」。讀取 [Drupal 快取並優化效能](https://www.drupal.org/docs/7/managing-site-performance-and-scalability/caching-to-improve-performance/caching-overview#s-drupal-performance-resources)。"
@@ -2001,13 +2007,13 @@
     "message": "請確保您正在使用 Drupal 內置的[回應式圖片樣式](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) (於 Drupal 8 及以上版本提供)。由檢視模式、檢視畫面或透過 WYSIWYG 編輯器上載的圖片輸出圖片欄位時，請使用回應式圖片樣式。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
-    "message": "Consider installing and configuring [a module to leverage WebP image formats](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) in your site. Such modules automatically generate a WebP version of your uploaded images to optimize loading times."
+    "message": "建議在您的網站中安裝並設定[模組以使用 WebP 圖片格式](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search)。這些模組會為您上載的圖片自動產生 WebP 版本，以優化載入時間。"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "建議將 GIF 上載至可將 GIF 用作 HTML5 影片嵌入的伺服器。"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Install a [lazy-load Joomla plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) that provides the ability to defer any offscreen images, or switch to a template that provides that functionality. Starting with Joomla 4.0, a dedicated lazy-loading plugin can be enabled by using the \"Content - Lazy Loading Images\" plugin. Also consider using [an AMP plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "安裝可延遲載入所有畫面外圖片的[延遲載入 Joomla 外掛程式](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)，或改用提供此功能的範本。從 Joomla 4.0 版本開始，您可使用「Content - Lazy Loading Images」外掛程式啟用專用的延遲載入外掛程式。您亦可考慮使用 [AMP 外掛程式](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)。"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "部分 Joomla 外掛程式可助您[內嵌重要資產](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)或[延後載入較不重要的資源](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)。請注意，這些外掛程式的優化設定可能影響範本或外掛程式的功能，因此您需要全面測試這些功能。"
@@ -2082,7 +2088,7 @@
     "message": "建議在 [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) 搜尋更多第三方擴充程式，以便運用較新的圖片格式。"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "Consider using a “windowing” library like `react-window` to minimize the number of DOM nodes created if you are rendering many repeated elements on the page. [Learn more](https://web.dev/virtualize-long-lists-react-window/). Also, minimize unnecessary re-renders using [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), or [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) and [skip effects](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) only until certain dependencies have changed if you are using the `Effect` hook to improve runtime performance."
+    "message": "如果您要在網頁上輸出很多重複的元素，建議使用 `react-window` 等「視窗化」程式庫來壓縮建立的 DOM 節點數量。[瞭解詳情](https://web.dev/virtualize-long-lists-react-window/)。此外，如果您使用 `Effect` 鈎子 (Hook) 來改善執行階段的效能，請僅在已變更特定依賴性時才使用 [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action)、[`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) 或 [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) 和[略過效果](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)，藉此減少不必要的重新輸出。"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "如果使用 React Router，請盡量避免在[路線導航](https://reacttraining.com/react-router/web/api/Redirect)使用 `<Redirect>` 組件。"
@@ -2091,10 +2097,10 @@
     "message": "如果您在伺服器端輸出任何 React 組件，建議使用 `renderToNodeStream()` 或 `renderToStaticNodeStream()`，允許用戶端接收並混合標記的不同部分，而非同時完成。[瞭解詳情](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)。"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
-    "message": "If your build system minifies CSS files automatically, ensure that you are deploying the production build of your application. You can check this with the React Developer Tools extension. [Learn more](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+    "message": "如果您建立自動壓縮 CSS 檔案的系統，請確定部署的應用程式為正式版本。您可以使用 React Developer Tools 擴充程式執行這項檢查。[瞭解詳情](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)。"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-javascript": {
-    "message": "If your build system minifies JS files automatically, ensure that you are deploying the production build of your application. You can check this with the React Developer Tools extension. [Learn more](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+    "message": "如果您建立自動壓縮 JS 檔案的系統，請確定部署的應用程式為正式版本。您可以使用 React Developer Tools 擴充程式執行這項檢查。[瞭解詳情](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)。"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unused-javascript": {
     "message": "如果沒有使用伺服器端輸出，請以 `React.lazy()` [分割您的 JavaScript 套件](https://web.dev/code-splitting-suspense/)。否則請使用[可載入的組件](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/) 等第三方程式庫分割程式碼。"

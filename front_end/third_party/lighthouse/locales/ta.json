@@ -384,16 +384,16 @@
     "message": "செல்லுபடியாகும் `apple-touch-icon`ஐ வழங்குகிறது"
   },
   "lighthouse-core/audits/autocomplete.js | columnCurrent": {
-    "message": "Current Value"
+    "message": "தற்போதைய மதிப்பு"
   },
   "lighthouse-core/audits/autocomplete.js | columnSuggestions": {
-    "message": "Suggested Token"
+    "message": "பரிந்துரைக்கப்படும் டோக்கன்"
   },
   "lighthouse-core/audits/autocomplete.js | description": {
-    "message": "`autocomplete` helps users submit forms quicker. To reduce user effort, consider enabling by setting the `autocomplete` attribute to a valid value. [Learn more](https://developers.google.com/web/fundamentals/design-and-ux/input/forms#use_metadata_to_enable_auto-complete)"
+    "message": "படிவங்களைப் பயனர்கள் விரைவாகச் சமர்ப்பிக்க `autocomplete` பண்புக்கூறு உதவுகிறது. பயனரின் வேலையை எளிதாக்கும் வகையில், சரியான மதிப்பில் `autocomplete` பண்புக்கூறை அமைத்து அதை இயக்கவும். [மேலும் அறிக](https://developers.google.com/web/fundamentals/design-and-ux/input/forms#use_metadata_to_enable_auto-complete)"
   },
   "lighthouse-core/audits/autocomplete.js | failureTitle": {
-    "message": "`<input>` elements do not have correct `autocomplete` attributes"
+    "message": "`<input>` கூறுகளில் சரியான `autocomplete` பண்புக்கூறுகள் இல்லை"
   },
   "lighthouse-core/audits/autocomplete.js | manualReview": {
     "message": "நீங்களே உள்ளிட வேண்டும்"
@@ -402,10 +402,10 @@
     "message": "டோக்கன்களின் வரிசையைச் சரிபார்க்கவும்"
   },
   "lighthouse-core/audits/autocomplete.js | title": {
-    "message": "`<input>` elements correctly use `autocomplete`"
+    "message": "`<input>` கூறுகள் `autocomplete` பண்புக்கூறைச் சரியாகப் பயன்படுத்துகின்றன"
   },
   "lighthouse-core/audits/autocomplete.js | warningInvalid": {
-    "message": "`autocomplete` token(s): \"{token}\" is invalid in {snippet}"
+    "message": "{snippet} இல் \"{token}\" என்ற `autocomplete` டோக்கன் (டோக்கன்கள்) தவறாக உள்ளன"
   },
   "lighthouse-core/audits/autocomplete.js | warningOrder": {
     "message": "{snippet} இல் \"{tokens}\" டோக்கன்களின் வரிசையைச் சரிபார்க்கவும்"
@@ -585,7 +585,7 @@
     "message": "ஆப்ஸின் தற்காலிக சேமிப்பைத் தவிர்க்கும்"
   },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
-    "message": "A character encoding declaration is required. It can be done with a `<meta>` tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more](https://web.dev/charset/)."
+    "message": "எழுத்துக்குறிக் குறியாக்கத்தை வரையறுக்க வேண்டும். HTMLலின் முதல் 1024 பைட்டுகளிலோ Content-Type HTTP பதில் தலைப்பிலோ `<meta>` குறிச்சொல்லைக் குறிப்பிட்டு இதைச் செய்யலாம். [மேலும் அறிக](https://web.dev/charset/)."
   },
   "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
     "message": "எழுத்துக்குறியாக்க அறிவிப்பு இல்லை அல்லது HTMLலில் மிகவும் தாமதமாக நிகழ்கிறது"
@@ -752,9 +752,6 @@
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | title": {
     "message": "நகர்த்துதல் செயல்திறனை மேம்படுத்துவதற்காக பேசிவ் லிசனர்களைப் பயன்படுத்துகின்றன"
   },
-  "lighthouse-core/audits/errors-in-console.js | columnDesc": {
-    "message": "விளக்கம்"
-  },
   "lighthouse-core/audits/errors-in-console.js | description": {
     "message": "கன்சோலில் பதிவுசெய்யப்பட்ட பிழைகள் தீர்க்கப்படாத சிக்கல்களைக் குறிக்கின்றன. அவை நெட்வொர்க் கோரிக்கை பிழைகளினாலும் வேறு உலாவி சிக்கல்களினாலும் ஏற்பட்டிருக்கும். [மேலும் அறிக](https://web.dev/errors-in-console/)"
   },
@@ -834,7 +831,7 @@
     "message": "கோரிக்கைக்கான தீர்வு"
   },
   "lighthouse-core/audits/is-on-https.js | description": {
-    "message": "All sites should be protected with HTTPS, even ones that don't handle sensitive data. This includes avoiding [mixed content](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content), where some resources are loaded over HTTP despite the initial request being served over HTTPS. HTTPS prevents intruders from tampering with or passively listening in on the communications between your app and your users, and is a prerequisite for HTTP/2 and many new web platform APIs. [Learn more](https://web.dev/is-on-https/)."
+    "message": "அனைத்துத் தளங்களும் HTTPS மூலம் பாதுகாக்கப்பட வேண்டும், பாதுகாக்கப்பட வேண்டிய தனிப்பட்ட தரவைக் கையாளாதத் தளங்களுக்கும் இது பொருந்தும். தொடக்கக் கோரிக்கை HTTPS மூலம் வழங்கப்பட்டாலும் HTTP வழியாகவே சில தளங்கள் ஏற்றப்படும். [கலவையான உள்ளடக்கத்தைத்](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content) தவிர்ப்பதும் இதில் உள்ளடங்கும். உங்கள் ஆப்ஸிற்கும் பயனர்களுக்கும் இடையில் நடக்கும் தகவல் பரிமாற்றத்தில் குறுக்கிட்டு சேதப்படுத்துபவர்களையும் மறைந்திருந்து கவனிப்பவர்களையும் HTTPS தடுக்கிறது. இது HTTP/2 மற்றும் பல புதிய பிளாட்ஃபார்ம் APIகளில் முக்கியமாக இருக்க வேண்டியதாகும். [மேலும் அறிக](https://web.dev/is-on-https/)."
   },
   "lighthouse-core/audits/is-on-https.js | displayValue": {
     "message": "{itemCount,plural, =1{பாதுகாப்பு இல்லாத 1 கோரிக்கை கண்டறியப்பட்டுள்ளது}other{பாதுகாப்பு இல்லாத # கோரிக்கைகள் கண்டறியப்பட்டுள்ளன}}"
@@ -1057,6 +1054,12 @@
   },
   "lighthouse-core/audits/preload-fonts.js | title": {
     "message": "`font-display: optional` என அமைக்கப்பட்டுள்ள எழுத்துருக்கள் முன்கூட்டியே ஏற்றப்பட்டன"
+  },
+  "lighthouse-core/audits/preload-lcp-image.js | description": {
+    "message": "LCP நேரத்தை மேம்படுத்த, LCP உறுப்பு பயன்படுத்தும் படத்தை முன்கூட்டியே ஏற்றுங்கள். [மேலும் அறிக](https://web.dev/optimize-lcp/#preload-important-resources)."
+  },
+  "lighthouse-core/audits/preload-lcp-image.js | title": {
+    "message": "பெரிய பகுதியைக் காண்பிக்கும் படத்தை முன்கூட்டியே ஏற்றுதல்"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
     "message": "HTTPSஐ ஏற்கனவே நீங்கள் அமைத்திருந்தால் உங்களின் அனைத்துப் பயனர்களுக்கும் பாதுகாப்பான இணைய அம்சங்களைச் செயல்படுத்தும் வகையில் எல்லா HTTP ட்ராஃபிக்கையும் HTTPSக்குத் திசைதிருப்பவும். [மேலும் அறிக](https://web.dev/redirects-http/)."
@@ -1368,7 +1371,7 @@
     "message": "பயனர் நேரக் குறிப்புகளும் அளவீடுகளும்"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | crossoriginWarning": {
-    "message": "A `<link rel=preconnect>` was found for \"{securityOrigin}\" but was not used by the browser. Check that you are using the `crossorigin` attribute properly."
+    "message": "\"{securityOrigin}\" தளத்திற்கான முன்னிணைப்பு (`<link rel=preconnect>`) கண்டறியப்பட்டது, ஆனால் உலாவி அதைப் பயன்படுத்தவில்லை. `crossorigin` பண்புக்கூறைச் சரியாகப் பயன்படுத்துகிறீர்களா என்று பார்க்கவும்."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
     "message": "முக்கிய மூன்றாம் தரப்பு டொமைன்களுடன் விரைவான இணைப்புகளை ஏற்படுத்த `preconnect` அல்லது `dns-prefetch` ஆதாரக் குறிப்புகளைச் சேர்க்கலாம். [மேலும் அறிக](https://web.dev/uses-rel-preconnect/)."
@@ -1377,13 +1380,13 @@
     "message": "தேவைப்படும் டொமைன் பெயர்களுக்கு முன்கூட்டியே இணைப்பு வழங்கவும்"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
-    "message": "More than 2 `<link rel=preconnect>` connections were found. These should be used sparingly and only to the most important origins."
+    "message": "இரண்டிற்கும் மேற்பட்ட `<link rel=preconnect>` இணைப்புகள் உள்ளன. இவற்றை அரிதாகவும் மிகவும் முக்கியமான மூலங்களை இணைப்பதற்கும் மட்டுமே பயன்படுத்த வேண்டும்."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | unusedWarning": {
-    "message": "A `<link rel=preconnect>` was found for \"{securityOrigin}\" but was not used by the browser. Only use `preconnect` for important origins that the page will certainly request."
+    "message": "\"{securityOrigin}\" தளத்திற்கான முன்னிணைப்பு (`<link rel=preconnect>`) கண்டறியப்பட்டது, ஆனால் உலாவி அதைப் பயன்படுத்தவில்லை. பக்கம் நிச்சயமாகக் கோரும் முக்கியமான தளங்களுக்கு மட்டுமே `preconnect` ஐப் பயன்படுத்தவும்."
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
-    "message": "A preload `<link>` was found for \"{preloadURL}\" but was not used by the browser. Check that you are using the `crossorigin` attribute properly."
+    "message": "\"{preloadURL}\" தளத்திற்கான முன்கூட்டியே ஏற்றப்பட்ட இணைப்பு (`<link>`) கண்டறியப்பட்டது, ஆனால் உலாவி அதைப் பயன்படுத்தவில்லை. `crossorigin` பண்புக்கூறைச் சரியாகப் பயன்படுத்துகிறீர்களா என்று பார்க்கவும்."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
     "message": "பக்கம் ஏற்றப்படும்போது தற்சமயம் பின்னர் கோரிக்கையளிக்கப்படும் ஆதாரங்களை முன்னுரிமை அளிக்க `<link rel=preload>`ஐப் பயன்படுத்தவும். [மேலும் அறிக](https://web.dev/uses-rel-preload/)."
@@ -1597,6 +1600,9 @@
   },
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "மொபைலுக்கேற்றது"
+  },
+  "lighthouse-core/gather/driver.js | warningData": {
+    "message": "{locationCount,plural, =1{செயல்திறன் அளவீட்டைப் பாதிக்கக்கூடிய, சேமித்தத் தரவு இந்த இடத்தில் இருக்கலாம்: {locations}. இவை உங்கள் ஸ்கோர்களைப் பாதிப்பதைத் தவிர்க்கும் வகையில், மறைநிலைச் சாளரத்தில் இந்தப் பக்கத்தின் செயல்பாட்டை ஆய்வு செய்யவும்.}other{செயல்திறன் அளவீட்டைப் பாதிக்கக்கூடிய, சேமித்தத் தரவு இந்த இடத்தில் இருக்கலாம்: {locations}. இவை உங்கள் ஸ்கோர்களைப் பாதிப்பதைத் தவிர்க்கும் வகையில், மறைநிலைச் சாளரத்தில் இந்தப் பக்கத்தின் செயல்பாட்டை ஆய்வு செய்யவும்.}}"
   },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "உங்கள் சோதனை URL ({requested}) {final}என்பதற்குத் திசைதிருப்பப்பட்டதால் எதிர்பரர்த்த அளவிற்குப் பக்கம் ஏற்றப்படாமல் போகக்கூடும். நேரடியாக இரண்டாவது URLலை சோதித்துப் பாருங்கள்."
@@ -1923,34 +1929,34 @@
     "message": "எச்சரிக்கைகள்: "
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
-    "message": "For animated content, use [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) to minimize CPU usage when the content is offscreen."
+    "message": "அனிமேஷன் செய்யப்பட்ட உள்ளடக்கமாக இருந்தால், உள்ளடக்கம் திரைக்கு வெளியில் இருக்கும்போது CPU உபயோகத்தைக் குறைக்கும் வகையில் [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) காம்பனென்ட்டைப் பயன்படுத்தவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
-    "message": "Ensure that you are using [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) for images to automatically lazy-load. [Learn more](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
+    "message": "தேவையுள்ளபோது படங்களைத் தானாகவே ஏற்றுவதற்கு [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) காம்பனென்ட்டைப் பயன்படுத்துவதை உறுதிசெய்துகொள்ளவும். [மேலும் அறிக](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | render-blocking-resources": {
     "message": "[AMP மேம்படுத்துதல் அம்சம்](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) முதல் [சேவையகத் தரப்பு ரெண்டரிங் AMP தளவமைப்புகள்](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/) போன்ற அம்சங்களைப் பயன்படுத்தவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | unminified-css": {
-    "message": "Refer to the [AMP documentation](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) to ensure all styles are supported."
+    "message": "அனைத்து ஸ்டைல்களும் ஆதரிக்கப்படுவதை உறுதிசெய்துகொள்ள, [AMP ஆவணமாக்கலைப்](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) பார்க்கவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
-    "message": "The [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) component supports the [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) attribute to specify which image assets to use based on the screen size. [Learn more](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
+    "message": "திரை அளவின் அடிப்படையில் எந்தப் பட அசெட்டுகளைப் பயன்படுத்த வேண்டும் என்பதைக் குறிப்பிடும் வகையில் [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) காம்பனென்ட் [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) பண்புக்கூறை ஆதரிக்கும். [மேலும் அறிக](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
-    "message": "Consider displaying all [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) components in WebP formats while specifying an appropriate fallback for other browsers. [Learn more](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
+    "message": "மற்ற உலாவிகளுக்குத் தகுந்த ஒரு ஃபால்பேக்கைக் குறிப்பிடும்போது [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) காம்பனென்ட்கள் அனைத்தையும் WebP வடிவங்களில் காட்சிப்படுத்தவும். [மேலும் அறிக](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "பெரிய பட்டியல்கள் ரெண்டரிங் செய்யப்பட்டால் Component Dev Kitஐ (CDK) பயன்படுத்தி விர்ச்சுவல் ஸ்கிராலிங்க் செய்வதைப் பரிசீலிக்கவும். [மேலும் அறிக](https://web.dev/virtualize-lists-with-angular-cdk/)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | total-byte-weight": {
-    "message": "Apply [route-level code splitting](https://web.dev/route-level-code-splitting-in-angular/) to minimize the size of your JavaScript bundles. Also, consider precaching assets with the [Angular service worker](https://web.dev/precaching-with-the-angular-service-worker/)."
+    "message": "உங்கள் JavaScript தொகுப்புகளின் அளவைக் குறைக்க, [ரூட் நிலையில் குறியீட்டைப் பிரிப்பதைப்](https://web.dev/route-level-code-splitting-in-angular/) பயன்படுத்தவும். இத்துடன் [Angular service worker](https://web.dev/precaching-with-the-angular-service-worker/)ரைப் பயன்படுத்தி அசெட்டுகளை முன்கூட்டியே தற்காலிகமாகவும் சேமிக்கவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | unminified-warning": {
     "message": "நீங்கள் Angular CLIயை பயன்படுத்தினால் பதிப்புகள் தயாரிப்பு பயன்முறையில் உருவாக்கப்படுவதை உறுதிப்படுத்திக்கொள்ளவும். [மேலும் அறிக](https://angular.io/guide/deployment#enable-runtime-production-mode)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | unused-javascript": {
-    "message": "If you are using Angular CLI, include source maps in your production build to inspect your bundles. [Learn more](https://angular.io/guide/deployment#inspect-the-bundles)."
+    "message": "Angular CLIயைப் பயன்படுத்தினால் உங்கள் தொகுப்புகளை ஆய்வு செய்யும் வகையில் தயாரிப்புப் பதிப்பில் மூல வரைபடங்களைச் சேர்க்கவும். [மேலும் அறிக](https://angular.io/guide/deployment#inspect-the-bundles)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | uses-rel-preload": {
     "message": "வழிசெலுத்தலை வேகப்படுத்த வழிகளை முன்கூட்டியே ஏற்றவும். [மேலும் அறிக](https://web.dev/route-preloading-in-angular/)."
@@ -1965,10 +1971,10 @@
     "message": "உங்கள் தீமில் பிரத்தியேக எழுத்துருக்களை வரையறுக்கும்போது `@font-display` ஐக் குறிப்பிடவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
-    "message": "Install [a Drupal module](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) that can lazy load images. Such modules provide the ability to defer any offscreen images to improve performance."
+    "message": "படங்களைத் தேவையுள்ளபோது ஏற்றும் [Drupal மாடியூலை](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) நிறுவவும். செயல்திறனை மேம்படுத்துவதற்காக இந்த மாடியூல்கள் திரைக்கு வெளியில் உள்ள படங்களை மெதுவாக ஏற்றும் வசதியை வழங்குகின்றன."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, or potentially load assets asynchronously via JavaScript such as the [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg) module. Beware that optimizations provided by this module may break your site, so you will likely need to make code changes."
+    "message": "முக்கியமான CSS & JavaScriptடை முன்னிலைப்படுத்த, மாடியூலைப் பயன்படுத்தவும் அல்லது [மேம்பட்ட CSS/JS ஒருங்கிணைப்பு](https://www.drupal.org/project/advagg) மாடியூல் போன்ற JavaScript மூலம் ஒத்திசைவின்றி அசெட்டுகளை ஏற்றவும். இந்த மாடியூல் வழங்கும் மேம்படுத்துதல்கள் உங்கள் இணையதளத்தைப் பாதிக்கலாம் என்பதால் நீங்கள் குறியீட்டில் மாற்றங்களைச் செய்ய வேண்டியிருக்கும்."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
     "message": "தீம்கள், மாடியூல்கள், சேவையக விவரக்குறிப்புகள் ஆகிய அனைத்தும் சேவையகத்தின் வேகத்தை நிர்ணயிக்கின்றன. மேலும் மேம்படுத்தப்பட்ட தீமினைக் கண்டறிந்து, மேம்படுத்தல் மாடியூலைக் கவனமாகத் தேர்ந்தெடுக்கவும் மற்றும்/அல்லது சேவையகத்தை மேம்படுத்தவும். PHP ஆப்கோட் தற்காலிகச் சேமிப்பு, Redis/Memcached போன்ற தரவுத்தள வினவல் நேரங்களைக் குறைப்பதற்கான தற்காலிக நினைவகச் சேமிப்பு, பக்கங்கள் விரைவாக ஏற்றப்படுவதற்கான மேம்பட்ட பயன்பாட்டு லாஜிக் ஆகியவற்றை உங்கள் ஹோஸ்டிங் சேவையகங்கள் பயன்படுத்த அனுமதிக்க வேண்டும்."
@@ -1986,7 +1992,7 @@
     "message": "பயன்படுத்தப்படாத CSS விதிகளை அகற்றிவிட்டு தொடர்புடைய பக்கம்/பக்கத்தில் உள்ள காம்பனென்ட்டில் தேவையான Drupal லைப்ரரிகளை மட்டும் இணைக்கவும். விவரங்களுக்கு [Drupal ஆவணமாக்கல் இணைப்பைப்](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) பார்க்கவும். பொருத்தமற்ற CSSஸைச் சேர்க்கும் இணைக்கப்பட்ட லைப்ரரிகளை அடையாளம் காண, Chrome DevToolsஸில் [குறியீட்டுக் கவரேஜை](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) இயக்கிப் பார்க்கவும். Drupal தளத்தில் CSS ஒருங்கிணைப்பு முடக்கப்பட்டிருக்கும்போது ஸ்டைல்ஷீட்டின் URLலில் இதற்குக் காரணமான தீம்/மாடியூலைக் கண்டறியலாம். அதிகளவு சிவப்பில் உள்ள குறியீட்டுக் கவரேஜைக் கொண்ட பட்டியலில் பல ஸ்டைல்ஷீட்களைக் கொண்ட தீம்கள்/மாடியூல்களைக் கண்டறியவும். பக்கத்தில் பயன்படுத்தும் பட்சத்தில் ஒரு தீம்/மாடியூல் ஒரு ஸ்டைல்ஷீட்டை மட்டுமே வரிசையில் சேர்க்க வேண்டும்."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-javascript": {
-    "message": "Consider removing unused JavaScript assets and only attach the needed Drupal libraries to the relevant page or component in a page. See the [Drupal documentation link](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) for details. To identify attached libraries that are adding extraneous JavaScript, try running [code coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in Chrome DevTools. You can identify the theme/module responsible from the URL of the script when JavaScript aggregation is disabled in your Drupal site. Look out for themes/modules that have many scripts in the list which have a lot of red in code coverage. A theme/module should only enqueue a script if it is actually used on the page."
+    "message": "பயன்படுத்தப்படாத JavaScript அசெட்டுகளை அகற்றிவிட்டு தொடர்புடைய பக்கம்/பக்கத்தில் உள்ள காம்பனென்ட்டில் தேவையான Drupal லைப்ரரிகளை மட்டும் இணைக்கவும். விவரங்களுக்கு [Drupal ஆவணமாக்கல் இணைப்பைப்](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) பார்க்கவும். பொருத்தமற்ற JavaScriptடைச் சேர்க்கும் இணைக்கப்பட்ட லைப்ரரிகளை அடையாளம் காண, Chrome DevToolsஸில் [குறியீட்டுக் கவரேஜை](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) இயக்கிப் பார்க்கவும். Drupal தளத்தில் JavaScript ஒருங்கிணைப்பு முடக்கப்பட்டிருக்கும்போது ஸ்கிரிப்ட்டின் URLலில் இதற்குக் காரணமான தீம்/மாடியூலைக் கண்டறியலாம். குறியீட்டுக் கவரேஜில் அதிக சிவப்பைக் கொண்ட பட்டியலிலுள்ள பல ஸ்கிரிப்ட்டுகளைக் கொண்ட தீம்கள்/மாடியூல்களைக் கண்டறியவும். பக்கத்தில் பயன்படுத்தும் பட்சத்தில் மட்டுமே ஒரு தீம்/மாடியூல் ஒரு ஸ்கிரிப்ட்டை வரிசையில் சேர்க்க வேண்டும்."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-long-cache-ttl": {
     "message": "\"நிர்வாகம் » உள்ளமைவு » மேம்பாடு\" என்ற பக்கத்தில் \"உலாவி & ப்ராக்ஸி தகவல்களை நீண்ட காலத்திற்குத் தற்காலிகமாகச் சேமி\" என அமைக்கவும். [செயல்திறனுக்கான Drupal தற்காலிகச் சேமிப்பு & மேம்படுத்துதல்](https://www.drupal.org/docs/7/managing-site-performance-and-scalability/caching-to-improve-performance/caching-overview#s-drupal-performance-resources) குறித்து தெரிந்துகொள்ளவும்."
@@ -2001,13 +2007,13 @@
     "message": "Drupalலில் வழங்கப்பட்டுள்ள இயல்பான [திரைக்கு ஏற்ப அளவு மாறும் பட ஸ்டைல்களை](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) (Drupal 8 & அதற்குப் பிந்தைய பதிப்பில் கிடைக்கும்) பயன்படுத்துவதை உறுதிசெய்துகொள்ளவும். காட்சிப் பயன்முறைகள், காட்சிகள் ஆகியவற்றின் மூலமாகவோ WYSIWYG எடிட்டரைப் பயன்படுத்திப் பதிவேற்றப்பட்ட படங்களின் மூலமாகவோ படப் புலங்களை ரெண்டர் செய்யும்போது திரைக்கு ஏற்ப அளவு மாறும் பட ஸ்டைல்களைப் பயன்படுத்தவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
-    "message": "Consider installing and configuring [a module to leverage WebP image formats](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) in your site. Such modules automatically generate a WebP version of your uploaded images to optimize loading times."
+    "message": "உங்கள் தளத்தில் [WebP பட வடிவமைப்புகளைப் பயன்படுத்துவதற்கான ஒரு மாடியூலை](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) நிறுவி உள்ளமைக்கவும். ஏற்றும் நேரத்தைக் குறைப்பதற்காக இந்த மாடியூல்கள் நீங்கள் பதிவேற்றிய படங்களின் WebP பதிப்பைத் தானாகவே உருவாக்கும்."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "GIFஃபை HTML5 வீடியோவாக உட்பொதிக்க உதவும் சேவையில் அதைப் பதிவேற்றவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Install a [lazy-load Joomla plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) that provides the ability to defer any offscreen images, or switch to a template that provides that functionality. Starting with Joomla 4.0, a dedicated lazy-loading plugin can be enabled by using the \"Content - Lazy Loading Images\" plugin. Also consider using [an AMP plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "திரைக்கு வெளியில் உள்ள படங்களை மெதுவாக ஏற்றும் வசதியை வழங்குகிற [தேவையுள்ளபோது ஏற்றும் Joomla செருகுநிரலை](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) நிறுவவும் அல்லது அந்த வசதியை வழங்கும் டெம்ப்ளேட்டிற்கு மாறவும். Joomla 4.0 ஐப் பயன்படுத்தித் தொடங்குவதன் மூலம் “உள்ளடக்கப் படங்களைத் தேவையுள்ளபோது ஏற்றும்” செருகுநிரலைப் பயன்படுத்தி, தேவையுள்ளபோது ஏற்றும் பிரத்தியேகச் செருகுநிரலை இயக்கலாம். அத்துடன் [AMP செருகுநிரலையும்](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp) பயன்படுத்தவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "[முக்கியமான அசெட்டுகளை முன்னிலைப்படுத்த](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)/[முக்கியத்துவம் குறைவான ஆதாரங்களைத் தவிர்க்க](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) பல Joomla செருகுநிரல்கள் உதவுகின்றன. இந்தச் செருகுநிரல்கள் வழங்கும் மேம்படுத்துதல்கள் உங்கள் டெம்ப்ளேட்டுகள்/செருகுநிரல்களில் உள்ள அம்சங்களைப் பாதிக்கலாம் என்பதால் இவற்றை நீங்கள் முற்றிலும் சோதனை செய்ய வேண்டும்."
@@ -2082,7 +2088,7 @@
     "message": "பல்வேறு மூன்றாம் தரப்பு நீட்டிப்புகள் புதிய பட ஃபார்மேட்டுகளை அளவிட [Magento சந்தையைத்](https://marketplace.magento.com/catalogsearch/result/?q=webp) தேடுவதைப் பரிசீலிக்கவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "Consider using a “windowing” library like `react-window` to minimize the number of DOM nodes created if you are rendering many repeated elements on the page. [Learn more](https://web.dev/virtualize-long-lists-react-window/). Also, minimize unnecessary re-renders using [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), or [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) and [skip effects](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) only until certain dependencies have changed if you are using the `Effect` hook to improve runtime performance."
+    "message": "தொடர்ந்து நிகழ்கின்ற பல கூறுகளை ஒரு பக்கத்தில் ரெண்டரிங் செய்கிறீர்கள் என்றால் DOM கணுக்கள் உருவாக்கப்படும் எண்ணிக்கையைக் குறைக்கும் வகையில் `react-window` போன்ற “விண்டோவிங்” லைப்ரரியைப் பயன்படுத்தவும். [மேலும் அறிக](https://web.dev/virtualize-long-lists-react-window/). இயங்கும் நேரச் செயல்திறனை மேம்படுத்த `Effect` ஹுக்கைப் பயன்படுத்துகிறீர்கள் எனில் குறிப்பிட்ட சார்புநிலைகள் மாறும் வரை மட்டும் [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) போன்றவற்றைப் பயன்படுத்தித் தேவையற்ற மறு ரெண்டரிங்குகளைக் குறைத்துக்கொள்ளவும் [விளைவுகளைத் தவிர்க்கவும்](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) வேண்டும்."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "நீங்கள் ரியாக்ட் ரூட்டரைப் பயன்படுத்தினால் [ரூட் வழிசெலுத்தல்களுக்கு](https://reacttraining.com/react-router/web/api/Redirect) `<Redirect>` உறுப்பைப் பயன்படுத்துவதைக் குறைத்துக்கொள்ளவும்."
@@ -2091,10 +2097,10 @@
     "message": "நீங்கள் சேவையகம் தரப்பாக இருந்து ரியாக்ட் கூறுகளை ரெண்டரிங் செய்பவராக இருந்தால் அனைத்தையும் ஒரே நேரத்தில் அல்லாமல் மார்க் அப்பின் வெவ்வேறு பகுதிகளைப் பெறவும் ஹைட்ரேட் செய்யவும் கிளையண்ட்டை அனுமதிப்பதற்கு `renderToNodeStream()` அல்லது `renderToStaticNodeStream()`ஐப் பயன்படுத்துவதைப் பரிசீலிக்கவும். [மேலும் அறிக](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
-    "message": "If your build system minifies CSS files automatically, ensure that you are deploying the production build of your application. You can check this with the React Developer Tools extension. [Learn more](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+    "message": "உங்கள் பதிப்பு சிஸ்டம் உங்கள் CSS கோப்புகளைத் தானாகவே சிறிதாக்கினால் உங்கள் ஆப்ஸின் தயாரிப்புப் பதிப்பைப் பயன்படுத்துவதை உறுதிசெய்துகொள்ளவும். React Developer Tools நீட்டிப்பில் இதைப் பார்க்கலாம். [மேலும் அறிக](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-javascript": {
-    "message": "If your build system minifies JS files automatically, ensure that you are deploying the production build of your application. You can check this with the React Developer Tools extension. [Learn more](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+    "message": "உங்கள் பதிப்பு சிஸ்டம் உங்கள் JS கோப்புகளைத் தானாகவே சிறிதாக்கினால் உங்கள் ஆப்ஸின் தயாரிப்புப் பதிப்பைப் பயன்படுத்துவதை உறுதிசெய்துகொள்ளவும். React Developer Tools நீட்டிப்பில் இதைப் பார்க்கலாம். [மேலும் அறிக](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unused-javascript": {
     "message": "நீங்கள் சேவையகத் தரப்பு ரெண்டரிங் செய்யவில்லை என்றால் `React.lazy()` மூலம் [JavaScript தொகுப்புகளை பிரிக்கவும்](https://web.dev/code-splitting-suspense/). இல்லையென்றால் [loadable-components](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/) போன்ற மூன்றாம் தரப்பு லைப்ரரி மூலம் குறியீட்டைப் பிரிக்கவும்."

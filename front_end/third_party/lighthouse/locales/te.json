@@ -384,16 +384,16 @@
     "message": "చెల్లుబాటు అయ్యే '`apple-touch-icon`'ను అందిస్తుంది"
   },
   "lighthouse-core/audits/autocomplete.js | columnCurrent": {
-    "message": "Current Value"
+    "message": "ప్రస్తుత విలువ"
   },
   "lighthouse-core/audits/autocomplete.js | columnSuggestions": {
-    "message": "Suggested Token"
+    "message": "సూచించబడిన టోకెన్"
   },
   "lighthouse-core/audits/autocomplete.js | description": {
-    "message": "`autocomplete` helps users submit forms quicker. To reduce user effort, consider enabling by setting the `autocomplete` attribute to a valid value. [Learn more](https://developers.google.com/web/fundamentals/design-and-ux/input/forms#use_metadata_to_enable_auto-complete)"
+    "message": "ఫారమ్‌లను త్వరగా సమర్పించడానికి `autocomplete`, యూజర్‌లకు సహాయపడుతుంది. యూజర్ శ్రమను తగ్గించడానికి, `autocomplete` లక్షణాన్ని చెల్లుబాటు అయ్యే విలువకు సెట్ చేయడం ద్వారా ఎనేబుల్ చేయడాన్ని పరిగణించండి. [మరింత తెలుసుకోండి](https://developers.google.com/web/fundamentals/design-and-ux/input/forms#use_metadata_to_enable_auto-complete)"
   },
   "lighthouse-core/audits/autocomplete.js | failureTitle": {
-    "message": "`<input>` elements do not have correct `autocomplete` attributes"
+    "message": "`<input>` ఎలిమెంట్‌లకు సరైన `autocomplete` లక్షణాలు లేవు"
   },
   "lighthouse-core/audits/autocomplete.js | manualReview": {
     "message": "దీనికి మాన్యువల్ రివ్యూ అవసరం"
@@ -402,10 +402,10 @@
     "message": "టోకెన్‌ల ఆర్డర్‌ను రివ్యూ చేయండి"
   },
   "lighthouse-core/audits/autocomplete.js | title": {
-    "message": "`<input>` elements correctly use `autocomplete`"
+    "message": "`<input>` ఎలిమెంట్‌లు `autocomplete`ను సరిగ్గా ఉపయోగిస్తాయి"
   },
   "lighthouse-core/audits/autocomplete.js | warningInvalid": {
-    "message": "`autocomplete` token(s): \"{token}\" is invalid in {snippet}"
+    "message": "`autocomplete` టోకెన్(లు): {snippet}లో \"{token}\" చెల్లదు"
   },
   "lighthouse-core/audits/autocomplete.js | warningOrder": {
     "message": "టోకెన్‌ల ఆర్డర్‌ను రివ్యూ చేయండి: \"{tokens}\"ను {snippet}లో"
@@ -585,7 +585,7 @@
     "message": "అప్లికేషన్ కాష్‌ను నివారిస్తోంది"
   },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
-    "message": "A character encoding declaration is required. It can be done with a `<meta>` tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more](https://web.dev/charset/)."
+    "message": "అక్షర ఎన్‌కోడింగ్ డిక్లేరేషన్ అవసరం. HTMLలోని మొదటి 1024 బైట్‌లలో లేదా కంటెంట్-రకం HTTP ప్రతిస్పందన హెడర్‌లో `<meta>` ట్యాగ్‌తో దీనిని పూర్తి చేయవచ్చు. [మరింత తెలుసుకోండి](https://web.dev/charset/)."
   },
   "lighthouse-core/audits/dobetterweb/charset.js | failureTitle": {
     "message": "Charset డిక్లేరేషన్ అందించలేదు లేదా HTMLలో చాలా ఆలస్యంగా వస్తోంది"
@@ -752,9 +752,6 @@
   "lighthouse-core/audits/dobetterweb/uses-passive-event-listeners.js | title": {
     "message": "స్క్రోలింగ్ పనితీరును మెరుగుపరచడానికి పాసివ్ లిజనర్‌లను వినియోగిస్తుంది"
   },
-  "lighthouse-core/audits/errors-in-console.js | columnDesc": {
-    "message": "వివరణ"
-  },
   "lighthouse-core/audits/errors-in-console.js | description": {
     "message": "కన్సోల్‌లో లాగ్ చేయబడిన ఎర్రర్‌లు పరిష్కారం కాని సమస్యలను సూచిస్తాయి. నెట్‌వర్క్ అభ్యర్థన వైఫల్యాలు, ఇతర బ్రౌజర్ ఇబ్బందుల వలన అవి ఏర్పడి ఉంటాయి. [మరింత తెలుసుకోండి](https://web.dev/errors-in-console/)"
   },
@@ -834,7 +831,7 @@
     "message": "రిజల్యూషన్ రిక్వెస్ట్ చేయండి"
   },
   "lighthouse-core/audits/is-on-https.js | description": {
-    "message": "All sites should be protected with HTTPS, even ones that don't handle sensitive data. This includes avoiding [mixed content](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content), where some resources are loaded over HTTP despite the initial request being served over HTTPS. HTTPS prevents intruders from tampering with or passively listening in on the communications between your app and your users, and is a prerequisite for HTTP/2 and many new web platform APIs. [Learn more](https://web.dev/is-on-https/)."
+    "message": "అన్ని సైట్‌లకు HTTPS రక్షణను జోడించాలి, సున్నితమైన వ్యక్తిగత సమాచారం ఏదీ లేని వాటికి కూడా ఈ రక్షణను జోడించాలి. [మిశ్రమ కంటెంట్](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content)ను నివారించడం కూడా ఇందులో ఉంది, ప్రారంభ రిక్వెస్ట్ అనేది HTTPS ద్వారా అందించబడుతున్నప్పటికీ కొన్ని రిసోర్స్‌లు HTTP ద్వారా లోడ్ చేయబడతాయి. HTTPS రక్షణను జోడించడం వలన దాడులకు పాల్పడే వారు ఎవరూ కూడా మీ యాప్, మీ యూజర్ల మధ్య జరిగే కమ్యూనికేషన్‌లను ట్యాంపర్ చేయడం లేదా దొంగచాటుగా వినడం లాంటివి చేయకుండా అడ్డుకోబడతారు, అలాగే HTTP/2, ఇంకా అనేక కొత్త వెబ్ ప్లాట్‌ఫామ్ APIల కోసం దీనిని తప్పనిసరిగా వినియోగించాలి. [మరింత తెలుసుకోండి](https://web.dev/is-on-https/)."
   },
   "lighthouse-core/audits/is-on-https.js | displayValue": {
     "message": "{itemCount,plural, =1{1 అసురక్షితమైన అభ్యర్థన కనుగొనబడింది}other{# అసురక్షితమైన అభ్యర్థనలు కనుగొనబడ్డాయి}}"
@@ -1057,6 +1054,12 @@
   },
   "lighthouse-core/audits/preload-fonts.js | title": {
     "message": "`font-display: optional`తో ఉన్న ఫాంట్‌లు ముందే లోడ్ చేయబడ్డాయి"
+  },
+  "lighthouse-core/audits/preload-lcp-image.js | description": {
+    "message": "మీ LCP సమయాన్ని మెరుగుపరుచుకోవడానికి LCP ఎలిమెంట్ ఉపయోగించిన ఇమేజ్‌ను ముందే లోడ్ చేయండి. [మరింత తెలుసుకోండి](https://web.dev/optimize-lcp/#preload-important-resources)."
+  },
+  "lighthouse-core/audits/preload-lcp-image.js | title": {
+    "message": "కంటెంట్ కలిగి ఉండే అతిపెద్ద పెయింట్ ఇమేజ్‌ను ముందే లోడ్ చేయండి"
   },
   "lighthouse-core/audits/redirects-http.js | description": {
     "message": "మీరు ఇప్పటికే 'HTTPS' సెటప్ చేసుకుని ఉంటే, మొత్తం 'HTTP' ట్రాఫిక్‌ను 'HTTPS'కు మళ్లించేలా జాగ్రత్త తీసుకోవడం ద్వారా మీ వినియోగదారులందరికీ సురక్షితమైన వెబ్ ఫీచర్‌లను అందించండి. [మరింత తెలుసుకోండి](https://web.dev/redirects-http/)."
@@ -1368,7 +1371,7 @@
     "message": "వినియోగదారు సమయం మార్కులు మరియు కొలమానాలు"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | crossoriginWarning": {
-    "message": "A `<link rel=preconnect>` was found for \"{securityOrigin}\" but was not used by the browser. Check that you are using the `crossorigin` attribute properly."
+    "message": "\"{securityOrigin}\" కోసం `<link rel=preconnect>` కనుగొనబడింది, కానీ బ్రౌజర్ దీన్ని ఉపయోగించలేదు. మీరు `crossorigin` లక్షణాన్ని సక్రమంగా ఉపయోగిస్తున్నారో లేదో చెక్ చేయండి."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | description": {
     "message": "ముఖ్యమైన మూడవ పక్ష మూలాలకు ముందస్తు కనెక్షన్‌లను ఏర్పాటు చేయడానికి '`preconnect`' లేదా '`dns-prefetch`' వనరు సూచనలను జోడించడాన్ని పరిగణనలోకి తీసుకోండి. [మరింత తెలుసుకోండి](https://web.dev/uses-rel-preconnect/)."
@@ -1377,13 +1380,13 @@
     "message": "అవసరమైన మూలాలకు ముందుగా కనెక్ట్ చేయండి"
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | tooManyPreconnectLinksWarning": {
-    "message": "More than 2 `<link rel=preconnect>` connections were found. These should be used sparingly and only to the most important origins."
+    "message": "2 కంటే ఎక్కువ `<link rel=preconnect>` కనెక్షన్‌లు కనుగొనబడ్డాయి. వీటిని పరిమితంగా, కేవలం అత్యంత ముఖ్యమైన మూల స్థానాలలో మాత్రమే ఉపయోగించాలి."
   },
   "lighthouse-core/audits/uses-rel-preconnect.js | unusedWarning": {
-    "message": "A `<link rel=preconnect>` was found for \"{securityOrigin}\" but was not used by the browser. Only use `preconnect` for important origins that the page will certainly request."
+    "message": "\"{securityOrigin}\" కోసం `<link rel=preconnect>` కనుగొనబడింది, కానీ బ్రౌజర్ దీన్ని ఉపయోగించలేదు. పేజీ ఖచ్చితంగా రిక్వెస్ట్ చేసే ముఖ్యమైన మూలాల కోసం మాత్రమే `preconnect`ను ఉపయోగించండి."
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
-    "message": "A preload `<link>` was found for \"{preloadURL}\" but was not used by the browser. Check that you are using the `crossorigin` attribute properly."
+    "message": "\"{preloadURL}\" కోసం ముందే లోడ్ చేసిన ఒక `<link>` కనుగొనబడింది, కానీ బ్రౌజర్ దీన్ని ఉపయోగించలేదు. మీరు `crossorigin` లక్షణాన్ని సక్రమంగా ఉపయోగిస్తున్నారో లేదో చెక్ చేయండి."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
     "message": "ప్రస్తుతం పేజీ లోడ్‌లో తర్వాత అభ్యర్ధించబడిన వనరులను పొందడాన్ని ప్రాధాన్యపరచడానికి '`<link rel=preload>`'ను ఉపయోగించడం పరిశీలించండి. [మరింత తెలుసుకోండి](https://web.dev/uses-rel-preload/)."
@@ -1597,6 +1600,9 @@
   },
   "lighthouse-core/config/default-config.js | seoMobileGroupTitle": {
     "message": "మొబైల్-అనుకూలం"
+  },
+  "lighthouse-core/gather/driver.js | warningData": {
+    "message": "{locationCount,plural, =1{ఈ లొకేషన్‌లో 'లోడింగ్ పనితీరు'ను ప్రభావితం చేసే స్టోర్డ్ డేటా ఉండవచ్చు: {locations}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి.}other{ఈ లొకేషన్‌లలో ఉండే స్టోర్డ్ డేటా వల్ల 'లోడింగ్ పనితీరు' ప్రభావితం కావచ్చు: {locations}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి.}}"
   },
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "మీ పరీక్ష URL ({requested})ను {final}కు మళ్లించినందున, పేజీ అనుకున్న విధంగా లోడ్ కాలేకపోతుండవచ్చు. నేరుగా రెండవ URLను పరీక్షించడం ట్రై చేయండి."
@@ -1923,34 +1929,34 @@
     "message": "హెచ్చరికలు: "
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
-    "message": "For animated content, use [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) to minimize CPU usage when the content is offscreen."
+    "message": "యానిమేట్ చేసిన కంటెంట్ కోసం, కంటెంట్ ఆఫ్‌స్క్రీన్‌లో ఉన్నప్పుడు CPU వినియోగాన్ని తగ్గించడానికి, [`amp-anim`](https://amp.dev/documentation/components/amp-anim/)ను ఉపయోగించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | offscreen-images": {
-    "message": "Ensure that you are using [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) for images to automatically lazy-load. [Learn more](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
+    "message": "ఇమేజ్‌లను ఆటోమేటిక్‌గా లేజీ-లోడ్ చేయడానికి, మీరు [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites)ను ఉపయోగిస్తున్నారని నిర్ధారించుకోండి. [మరింత తెలుసుకోండి](https://amp.dev/documentation/guides-and-tutorials/develop/media_iframes_3p/?format=websites#images)."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | render-blocking-resources": {
     "message": "[సర్వర్ వైపు అమలు చేసే AMP లేఅవుట్‌ల](https://amp.dev/documentation/guides-and-tutorials/optimize-and-measure/server-side-rendering/) కోసం [AMP ఆప్టిమైజర్](https://github.com/ampproject/amp-toolbox/tree/master/packages/optimizer) లాంటి సాధనాలను ఉపయోగించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | unminified-css": {
-    "message": "Refer to the [AMP documentation](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/) to ensure all styles are supported."
+    "message": "అన్ని స్టయిల్‌లకు సపోర్ట్ ఉందో లేదో నిర్ధారించుకోవడానికి [AMP డాక్యుమెంటేషన్](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/style_pages/)ను చూడండి."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-responsive-images": {
-    "message": "The [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) component supports the [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) attribute to specify which image assets to use based on the screen size. [Learn more](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
+    "message": "స్క్రీన్ సైజ్ ఆధారంగా ఏయే ఇమేజ్ అస్సెట్‌లను ఉపయోగించాలో పేర్కొనడానికి [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) కాంపోనెంట్ [`srcset`](https://web.dev/use-srcset-to-automatically-choose-the-right-image/) లక్షణానికి సపోర్ట్ అందిస్తుంది. [మరింత తెలుసుకోండి](https://amp.dev/documentation/guides-and-tutorials/develop/style_and_layout/art_direction/)."
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | uses-webp-images": {
-    "message": "Consider displaying all [`amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) components in WebP formats while specifying an appropriate fallback for other browsers. [Learn more](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
+    "message": "ఇతర బ్రౌజర్‌ల కోసం సముచితంగా ఉండే మునుపటి వాటిని పేర్కొంటున్నప్పుడు, మీ అన్ని [ `amp-img`](https://amp.dev/documentation/components/amp-img/?format=websites) కాంపోనెంట్‌లను WebP ఫార్మాట్‌లలో ప్రదర్శించడానికి ప్రయత్నించండి. [మరింత తెలుసుకోండి](https://amp.dev/documentation/components/amp-img/#example:-specifying-a-fallback-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | dom-size": {
     "message": "చాలా ఎక్కువ జాబితాలను అమలు చేస్తున్నట్లయితే, కాంపొనెంట్ డెవలపర్ కిట్ (CDK)తో వర్చువల్ స్క్రోలింగ్ చేయడానికి ప్రయత్నించండి. [మరింత తెలుసుకోండి](https://web.dev/virtualize-lists-with-angular-cdk/)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | total-byte-weight": {
-    "message": "Apply [route-level code splitting](https://web.dev/route-level-code-splitting-in-angular/) to minimize the size of your JavaScript bundles. Also, consider precaching assets with the [Angular service worker](https://web.dev/precaching-with-the-angular-service-worker/)."
+    "message": "మీ JavaScript బండిల్‌ల సైజ్‌ను తగ్గించడానికి [మూల స్థాయిలో కోడ్ విభజన](https://web.dev/route-level-code-splitting-in-angular/)ను వర్తింపజేయండి. అలాగే, [Angular సర్వీస్ వర్కర్](https://web.dev/precaching-with-the-angular-service-worker/) సహాయంతో, అస్సెట్‌లను ముందుగానే కాష్ చేయడానికి ప్రయత్నించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | unminified-warning": {
     "message": "మీరు Angular CLIని ఉపయోగిస్తున్నట్లయితే, బిల్డ్‌లను ఉత్పాదన మోడ్‌లో రూపొందించినట్లు నిర్ధారించుకోండి. [మరింత తెలుసుకోండి](https://angular.io/guide/deployment#enable-runtime-production-mode)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | unused-javascript": {
-    "message": "If you are using Angular CLI, include source maps in your production build to inspect your bundles. [Learn more](https://angular.io/guide/deployment#inspect-the-bundles)."
+    "message": "మీరు Angular CLIను ఉపయోగిస్తున్నట్లయితే, మీ బండిల్‌లను పర్యవేక్షించడానికి మీ ప్రొడక్షన్ బిల్డ్‌లో సోర్స్ మ్యాప్‌లను చేర్చండి. [మరింత తెలుసుకోండి](https://angular.io/guide/deployment#inspect-the-bundles)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | uses-rel-preload": {
     "message": "నావిగేషన్ వేగంగా అందించడానికి తగిన సమయం కంటే ముందుగానే మార్గాలను లోడ్ చేస్తుంది. [మరింత తెలుసుకోండి](https://web.dev/route-preloading-in-angular/)."
@@ -1965,10 +1971,10 @@
     "message": "మీ థీమ్‌లో అనుకూల ఫాంట్‌లను నిర్వచించినప్పుడు `@font-display`ను పేర్కొనండి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
-    "message": "Install [a Drupal module](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) that can lazy load images. Such modules provide the ability to defer any offscreen images to improve performance."
+    "message": "లేజీ ఇమేజ్‌లను లోడ్ చేయగల [ఒక Drupal మాడ్యూల్](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search)ను ఇన్‌స్టాల్ చేయండి. అలాంటి మాడ్యూల్‌లు, పనితీరును మెరుగుపరచడానికి ఎలాంటి ఆఫ్‌స్క్రీన్ ఇమేజ్‌లను అయినా మినహాయించగల సామర్థ్యాన్ని అందిస్తాయి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, or potentially load assets asynchronously via JavaScript such as the [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg) module. Beware that optimizations provided by this module may break your site, so you will likely need to make code changes."
+    "message": "కీలకమైన CSS, JavaSciptను ఇన్‌లైన్‌లో ఉంచడానికి, లేదా [అధునాతన CSS/JS అగ్రిగేషన్](https://www.drupal.org/project/advagg) మాడ్యూల్ లాంటి JavaScript ద్వారా అస్సెట్‌లను అసమకాలికంగా లోడ్ చేసే అవకాశం ఉండటానికి, మాడ్యూల్‌ను ఉపయోగించడానికి ప్రయత్నించండి. ఈ మాడ్యూల్ ద్వారా అందించబడే ఆప్టిమైజేషన్‌లు మీ సైట్‌ను విడగొట్టవచ్చని గుర్తుంచుకోండి, కనుక మీరు కోడ్‌కు మార్పులు చేయాల్సి రావచ్చు."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | time-to-first-byte": {
     "message": "థీమ్‌లు, మాడ్యూల్‌లు, సర్వర్ నిర్దేశాలన్నీ కూడా సర్వర్ ప్రతిస్పందన సమయాన్ని ప్రభావితం చేస్తాయి. చాలా జాగ్రత్తగా ఆప్టిమైజేషన్ మాడ్యూల్‌ను ఎంచుకోవడం, మరియు/లేదా మీ సర్వర్‌ను అప్‌గ్రేడ్ చేయడం ద్వారా, మరింత ఆప్టిమైజ్ చేయబడిన థీమ్‌ను కనుగొనడానికి ప్రయత్నించండి. మీ హోస్టింగ్ సర్వర్‌లు Redis లేదా Memcached లాంటి డేటాబేస్ క్వెరీ సమయాలను తగ్గించడానికి PHP opcode కాషింగ్, మెమరీ-కాషింగ్‌లను ఉపయోగించాలి, అలాగే పేజీలను వేగవంతంగా సిద్ధం చేయడానికి ఆప్టిమైజ్ చేయబడిన అప్లికేషన్ లాజిక్‌ను ఉపయోగించాలి."
@@ -1986,7 +1992,7 @@
     "message": "ఉపయోగించని CSS నియమాలను తీసివేయవచ్చు, దాన్ని పరిశీలించండి, సంబంధిత పేజీకి లేదా పేజీలోని భాగానికి అవసరమైన Drupal లైబ్రరీలను మాత్రమే అటాచ్ చేయండి. వివరాల కోసం [Drupal డాక్యుమెంటేషన్ లింక్‌](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library)ను చూడండి. అసంబద్ధమైన CSSను జోడిస్తున్న 'అటాచ్ చేయబడిన' లైబ్రరీలను గుర్తించడానికి, Chrome DevToolsలో [కోడ్ కవరేజీ](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)ని రన్ చేయడానికి ట్రై చేయండి. మీ Drupal సైట్‌లో CSS సముదాయం డిజేబుల్ చేయబడినప్పుడు అందుకు కారణమైన థీమ్/మాడ్యూల్‌ను, స్టయిల్‌షీట్‌కు చెందిన URL నుండి మీరు గుర్తించవచ్చు. కోడ్ కవరేజీలో ఎక్కువ ఎరుపు రంగు కలిగి ఉన్న లిస్ట్‌లో అనేక స్టయిల్‌షీట్‌లను కలిగి ఉన్న థీమ్/మాడ్యూల్‌ల కోసం చూడండి. నిజంగా థీమ్/మాడ్యూల్‌ను ఆ పేజీలో ఉపయోగించినప్పుడు మాత్రమే స్టయిల్‌షీట్‌కు జత చేయాలి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-javascript": {
-    "message": "Consider removing unused JavaScript assets and only attach the needed Drupal libraries to the relevant page or component in a page. See the [Drupal documentation link](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) for details. To identify attached libraries that are adding extraneous JavaScript, try running [code coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in Chrome DevTools. You can identify the theme/module responsible from the URL of the script when JavaScript aggregation is disabled in your Drupal site. Look out for themes/modules that have many scripts in the list which have a lot of red in code coverage. A theme/module should only enqueue a script if it is actually used on the page."
+    "message": "ఉపయోగించబడని JavaScipt అస్సెట్‌లను తీసివేయడానికి ప్రయత్నించండి, సంబంధిత పేజీకి లేదా పేజీలోని కాంపోనెంట్‌కు అవసరమైన Drupal లైబ్రరీలను మాత్రమే అటాచ్ చేయండి. వివరాల కోసం [Drupal డాక్యుమెంటేషన్ లింక్](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library)ను చూడండి. అదనపు JavaScriptను జోడించే అటాచ్ చేయబడిన లైబ్రరీలను గుర్తించడానికి, Chrome DevToolsలో [కోడ్ కవరేజీ](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)ను రన్ చేయడానికి ట్రై చేయండి. మీ Drupal సైట్‌లో JavaScript అగ్రిగేషన్ డిజేబుల్ చేయబడినప్పుడు, దానికి కారణమైన థీమ్/మాడ్యూల్‌ను, స్క్రిప్ట్‌కు చెందిన URL నుండి మీరు గుర్తించవచ్చు. కోడ్ కవరేజీలో ఎక్కువ ఎరుపు రంగు కలిగి ఉన్న లిస్ట్‌లో అనేక స్క్రిప్ట్‌లను కలిగి ఉన్న థీమ్‌లు/మాడ్యూల్‌ల కోసం చూడండి. నిజంగా థీమ్/మాడ్యూల్‌ను ఆ పేజీలో ఉపయోగించినప్పుడు మాత్రమే స్క్రిప్ట్‌కు జత చేయాలి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-long-cache-ttl": {
     "message": "\"బ్రౌజర్, ప్రాక్సీ కాష్ గరిష్ఠ వయసు\"ను \"అడ్మినిస్ట్రేషన్ » కాన్ఫిగరేషన్ » డెవలప్మెంట్\" పేజీలో సెట్ చేయండి. [Drupal కాష్, పనితీరు కోసం ఆప్టిమైజ్ చేయడం](https://www.drupal.org/docs/7/managing-site-performance-and-scalability/caching-to-improve-performance/caching-overview#s-drupal-performance-resources) గురించి చదవండి."
@@ -2001,13 +2007,13 @@
     "message": "మీరు Drupal నుండి అందించబడే (Drupal 8, ఆపైన అందుబాటులో ఉన్నవి) స్థానిక [ప్రతిస్పందనాత్మక ఇమేజ్ స్టయిల్‌ల](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)ను ఉపయోగిస్తున్నారని నిర్ధారించుకోండి. వీక్షణ మోడ్‌లు, వీక్షణల ద్వారా ఇమేజ్ ఫీల్డ్‌లను, లేదా WYSIWYG ఎడిటర్ ద్వారా అప్‌లోడ్ చేయబడిన ఇమేజ్‌లను రెండరింగ్ చేస్తున్నప్పుడు ప్రతిస్పందనాత్మక ఇమేజ్ స్టయిల్‌లను ఉపయోగించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-webp-images": {
-    "message": "Consider installing and configuring [a module to leverage WebP image formats](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) in your site. Such modules automatically generate a WebP version of your uploaded images to optimize loading times."
+    "message": "మీ సైట్‌లో [WebP ఇమేజ్ ఫార్మాట్‌లను ఉపయోగించడానికి మాడ్యూల్](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search)ను ఇన్‌స్టాల్ చేసి, కాన్ఫిగర్ చేయడానికి ప్రయత్నించండి. అలాంటి మాడ్యూల్‌లు, లోడ్ అయ్యే సమయాన్ని ఆప్టిమైజ్ చేయడానికి, మీరు అప్‌లోడ్ చేసిన ఇమేజ్‌లకు ఒక WebP వెర్షన్‌ను ఆటోమేటిక్‌గా జెనరేట్ చేస్తాయి."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "మీ GIFను HTML5 వీడియోగా పొందుపరచడానికి అందుబాటులో ఉండేలా చేసే సర్వీస్‌కు దానిని అప్‌లోడ్ చేయవచ్చు, దాన్ని పరిశీలించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Install a [lazy-load Joomla plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) that provides the ability to defer any offscreen images, or switch to a template that provides that functionality. Starting with Joomla 4.0, a dedicated lazy-loading plugin can be enabled by using the \"Content - Lazy Loading Images\" plugin. Also consider using [an AMP plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "ఏవైనా ఆఫ్‌స్క్రీన్ ఇమేజ్‌లు ఉంటే, వాటిని మినహాయించగల సామర్థ్యాన్ని అందించే, లేదా ఆ ఫంక్షనాలిటీని అందించే టెంప్లేట్‌కు స్విచ్ చేయగలిగే [లేజీ-లోడ్ Joomla ప్లగ్ఇన్](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)ను ఇన్‌స్టాల్ చేయండి. Joomla 4.0తో ప్రారంభించి, \"కంటెంట్ - లేజీ లోడింగ్ ఇమేజ్‌ల\" ప్లగ్ఇన్‌ను ఉపయోగించడం ద్వారా, ఒక ప్రత్యేకమైన లేజీ-లోడింగ్ ప్లగ్ఇన్ ఎనేబుల్ చేయబడుతుంది. అలాగే [AMP ప్లగ్ఇన్](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)ను ఉపయోగించడానికి ప్రయత్నించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "[కీలకమైన అస్సెట్‌లను ఇన్‌లైన్‌లో ఉంచడానికి](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) లేదా [తక్కువ ప్రాముఖ్యత ఉన్న రిసోర్స్‌లను మినహాయించడానికి](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) మీకు సహాయపడగల అనేక Joomla ప్లగ్ఇన్‌లు ఉన్నాయి. ఈ ప్లగ్ఇన్‌ల ద్వారా అందించబడే ఆప్టిమైజేషన్‌లు మీ టెంప్లేట్‌ల లేదా ప్లగ్ఇన్‌ల ఫీచర్‌లను విడగొట్టవచ్చని గుర్తుంచుకోండి, కనుక మీరు వీటిని బాగా పరీక్షించవలసి ఉంటుంది."
@@ -2082,7 +2088,7 @@
     "message": "సరికొత్త చిత్ర ఫార్మాట్‌లను అందించే వివిధ రకాల మూడవ పక్ష ఎక్స్‌టెన్షన్‌ల కోసం [Magento మార్కెట్‌ప్లేస్](https://marketplace.magento.com/catalogsearch/result/?q=webp)‌లో వెతకడానికి ప్రయత్నించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "Consider using a “windowing” library like `react-window` to minimize the number of DOM nodes created if you are rendering many repeated elements on the page. [Learn more](https://web.dev/virtualize-long-lists-react-window/). Also, minimize unnecessary re-renders using [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), or [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) and [skip effects](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) only until certain dependencies have changed if you are using the `Effect` hook to improve runtime performance."
+    "message": "మీరు పేజీలోని అనేక రిపీట్ అయ్యే ఎలిమెంట్‌లను రెండరింగ్ చేస్తున్నట్లయితే, క్రియేట్ చేయబడే DOM నోడ్‌ల నంబర్‌ను కనిష్ఠ స్థాయికి తగ్గించడానికి, `react-window` లాంటి “విండో తరహా” లైబ్రరీని ఉపయోగించేందుకు ప్రయత్నించండి. [మరింత తెలుసుకోండి](https://web.dev/virtualize-long-lists-react-window/). అలాగే, [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), లేదా [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo)ను ఉపయోగించి అనవసరమైన రీ-రెండర్‌లను తగ్గించండి, అలాగే మీరు రన్‌టైమ్ పనితీరును మెరుగుపరచడానికి `Effect` హుక్‌ను ఉపయోగిస్తున్నప్పుడు కొన్ని ఆధారిత అంశాలు మారినప్పుడు మాత్రమే[ఎఫెక్ట్‌లను స్కిప్ చేయండి](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "మీరు 'రియాక్ట్ రూటర్'ను ఉపయోగిస్తున్నట్లయితే, [మార్గం నావిగేషన్‌ల](https://reacttraining.com/react-router/web/api/Redirect) కోసం `<Redirect>` కాంపొనెంట్ వినియోగాన్ని కనీస స్థాయికి తగ్గించండి."
@@ -2091,10 +2097,10 @@
     "message": "మీరు సర్వర్ వైపు నుండి ఏవైనా 'రియాక్ట్' కాంపొనెంట్‌లను అమలు చేస్తున్నట్లయితే, `renderToNodeStream()` లేదా `renderToStaticNodeStream()`ను వినియోగించడానికి ప్రయత్నించడం ద్వారా మార్క్అప్‌లో ఉండే విభాగాలన్నీ ఒకేసారి కాకుండా, వివిధ భాగాలుగా అందుకోవడానికి, హైడ్రేట్ చేయడానికి క్లయింట్‌ను అనుమతించండి. [మరింత తెలుసుకోండి](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
-    "message": "If your build system minifies CSS files automatically, ensure that you are deploying the production build of your application. You can check this with the React Developer Tools extension. [Learn more](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+    "message": "మీ బిల్డ్ సిస్టమ్, CSS ఫైల్‌ల సైజును ఆటోమేటిక్‌గా తగ్గిస్తున్నట్లయితే, మీ అప్లికేషన్ ప్రొడక్షన్ బిల్డ్‌ను మీరు అమలు చేస్తున్నట్లు నిర్ధారించుకోండి. React Developer Tools ఎక్స్‌టెన్షన్ సహాయంతో మీరు దీనిని చెక్ చేయవచ్చు. [మరింత తెలుసుకోండి](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-javascript": {
-    "message": "If your build system minifies JS files automatically, ensure that you are deploying the production build of your application. You can check this with the React Developer Tools extension. [Learn more](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
+    "message": "మీ బిల్డ్ సిస్టమ్, JS ఫైల్‌ల సైజును ఆటోమేటిక్‌గా తగ్గిస్తున్నట్లయితే, మీ అప్లికేషన్ ప్రొడక్షన్ బిల్డ్‌ను మీరు అమలు చేస్తున్నట్లు నిర్ధారించుకోండి. React Developer Tools ఎక్స్‌టెన్షన్ సహాయంతో మీరు దీనిని చెక్ చేయవచ్చు. [మరింత తెలుసుకోండి](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unused-javascript": {
     "message": "మీరు సర్వర్ వైపు అమలు చేయనట్లయితే, `React.lazy()` ద్వారా [మీ JavaScript బండిల్‌లను విభజించండి](https://web.dev/code-splitting-suspense/). లేదంటే, '[లోడ్ చేయదగిన కాంపొనెంట్‌లు](https://www.smooth-code.com/open-source/loadable-components/docs/getting-started/)' లాంటి మూడవ పక్షం లైబ్రరీని ఉపయోగించడం ద్వారా కోడ్‌ను విభజించండి."

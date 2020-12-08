@@ -81,6 +81,7 @@ class Util {
         // into 'debugdata' (LHR ≥5.0).
         // @ts-expect-error tsc rightly flags that these values shouldn't occur.
         if (audit.details.type === undefined || audit.details.type === 'diagnostic') {
+          // @ts-expect-error details is of type never.
           audit.details.type = 'debugdata';
         }
 
@@ -1095,7 +1096,7 @@ const URL_PREFIXES = ['http://', 'https://', 'data:'];
 class DetailsRenderer {
   /**
    * @param {DOM} dom
-   * @param {{fullPageScreenshot?: LH.Audit.Details.FullPageScreenshot}} [options]
+   * @param {{fullPageScreenshot?: LH.Artifacts.FullPageScreenshot}} [options]
    */
   constructor(dom, options = {}) {
     this._dom = dom;
@@ -1584,19 +1585,21 @@ class DetailsRenderer {
     if (item.selector) element.setAttribute('data-selector', item.selector);
     if (item.snippet) element.setAttribute('data-snippet', item.snippet);
 
-    if (!item.boundingRect || !this._fullPageScreenshot) {
-      return element;
-    }
+    if (!this._fullPageScreenshot) return element;
+
+    const rect =
+      (item.lhId ? this._fullPageScreenshot.nodes[item.lhId] : null) || item.boundingRect;
+    if (!rect) return element;
 
     const maxThumbnailSize = {width: 147, height: 100};
     const elementScreenshot = ElementScreenshotRenderer.render(
       this._dom,
       this._templateContext,
-      this._fullPageScreenshot,
-      item.boundingRect,
+      this._fullPageScreenshot.screenshot,
+      rect,
       maxThumbnailSize
     );
-    element.prepend(elementScreenshot);
+    if (elementScreenshot) element.prepend(elementScreenshot);
 
     return element;
   }
@@ -2263,6 +2266,18 @@ if (typeof module !== 'undefined' && module.exports) {
 /** @typedef {{width: number, height: number}} Size */
 
 /**
+ * @param {LH.Artifacts.FullPageScreenshot['screenshot']} screenshot
+ * @param {LH.Artifacts.Rect} rect
+ * @return {boolean}
+ */
+function screenshotOverlapsRect(screenshot, rect) {
+  return rect.left <= screenshot.width &&
+    0 <= rect.right &&
+    rect.top <= screenshot.height &&
+    0 <= rect.bottom;
+}
+
+/**
  * @param {number} value
  * @param {number} min
  * @param {number} max
@@ -2353,14 +2368,14 @@ class ElementScreenshotRenderer {
   /**
    * Called externally and must be injected to the report in order to use this renderer.
    * @param {DOM} dom
-   * @param {LH.Audit.Details.FullPageScreenshot} fullPageScreenshot
+   * @param {LH.Artifacts.FullPageScreenshot['screenshot']} screenshot
    */
-  static createBackgroundImageStyle(dom, fullPageScreenshot) {
+  static createBackgroundImageStyle(dom, screenshot) {
     const styleEl = dom.createElement('style');
     styleEl.id = 'full-page-screenshot-style';
     styleEl.textContent = `
       .lh-element-screenshot__image {
-        background-image: url(${fullPageScreenshot.data})
+        background-image: url(${screenshot.data})
       }`;
     return styleEl;
   }
@@ -2369,7 +2384,7 @@ class ElementScreenshotRenderer {
    * Installs the lightbox elements and wires up click listeners to all .lh-element-screenshot elements.
    * @param {DOM} dom
    * @param {ParentNode} templateContext
-   * @param {LH.Audit.Details.FullPageScreenshot} fullPageScreenshot
+   * @param {LH.Artifacts.FullPageScreenshot} fullPageScreenshot
    */
   static installOverlayFeature(dom, templateContext, fullPageScreenshot) {
     const reportEl = dom.find('.lh-report', dom.document());
@@ -2398,13 +2413,16 @@ class ElementScreenshotRenderer {
         top: Number(el.dataset['rectTop']),
         bottom: Number(el.dataset['rectTop']) + Number(el.dataset['rectHeight']),
       };
-      overlay.appendChild(ElementScreenshotRenderer.render(
+      const screenshotElement = ElementScreenshotRenderer.render(
         dom,
         templateContext,
-        fullPageScreenshot,
+        fullPageScreenshot.screenshot,
         elementRectSC,
         maxLightboxSize
-      ));
+      );
+      if (!screenshotElement) return;
+
+      overlay.appendChild(screenshotElement);
       overlay.addEventListener('click', () => {
         overlay.remove();
       });
@@ -2433,14 +2451,19 @@ class ElementScreenshotRenderer {
   /**
    * Renders an element with surrounding context from the full page screenshot.
    * Used to render both the thumbnail preview in details tables and the full-page screenshot in the lightbox.
+   * Returns null if element rect is outside screenshot bounds.
    * @param {DOM} dom
    * @param {ParentNode} templateContext
-   * @param {LH.Audit.Details.FullPageScreenshot} fullPageScreenshot
+   * @param {LH.Artifacts.FullPageScreenshot['screenshot']} screenshot
    * @param {LH.Artifacts.Rect} elementRectSC Region of screenshot to highlight.
    * @param {Size} maxRenderSizeDC e.g. maxThumbnailSize or maxLightboxSize.
-   * @return {Element}
+   * @return {Element|null}
    */
-  static render(dom, templateContext, fullPageScreenshot, elementRectSC, maxRenderSizeDC) {
+  static render(dom, templateContext, screenshot, elementRectSC, maxRenderSizeDC) {
+    if (!screenshotOverlapsRect(screenshot, elementRectSC)) {
+      return null;
+    }
+
     const tmpl = dom.cloneTemplate('#tmpl-lh-element-screenshot', templateContext);
     const containerEl = dom.find('.lh-element-screenshot', tmpl);
 
@@ -2457,7 +2480,7 @@ class ElementScreenshotRenderer {
       width: maxRenderSizeDC.width / zoomFactor,
       height: maxRenderSizeDC.height / zoomFactor,
     };
-    elementPreviewSizeSC.width = Math.min(fullPageScreenshot.width, elementPreviewSizeSC.width);
+    elementPreviewSizeSC.width = Math.min(screenshot.width, elementPreviewSizeSC.width);
     /* This preview size is either the size of the thumbnail or size of the Lightbox */
     const elementPreviewSizeDC = {
       width: elementPreviewSizeSC.width * zoomFactor,
@@ -2467,7 +2490,7 @@ class ElementScreenshotRenderer {
     const positions = ElementScreenshotRenderer.getScreenshotPositions(
       elementRectSC,
       elementPreviewSizeSC,
-      {width: fullPageScreenshot.width, height: fullPageScreenshot.height}
+      {width: screenshot.width, height: screenshot.height}
     );
 
     const contentEl = dom.find('.lh-element-screenshot__content', containerEl);
@@ -2480,7 +2503,7 @@ class ElementScreenshotRenderer {
     imageEl.style.backgroundPositionY = -(positions.screenshot.top * zoomFactor) + 'px';
     imageEl.style.backgroundPositionX = -(positions.screenshot.left * zoomFactor) + 'px';
     imageEl.style.backgroundSize =
-      `${fullPageScreenshot.width * zoomFactor}px ${fullPageScreenshot.height * zoomFactor}px`;
+      `${screenshot.width * zoomFactor}px ${screenshot.height * zoomFactor}px`;
 
     const markerEl = dom.find('.lh-element-screenshot__element-marker', containerEl);
     markerEl.style.width = elementRectSC.width * zoomFactor + 'px';
@@ -2521,6 +2544,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
 /**
  * @fileoverview
+ * @suppress {reportUnknownTypes}
  */
 
 /**
@@ -2669,6 +2693,15 @@ if (typeof module !== 'undefined' && module.exports) {
  */
 function getTableRows(tableEl) {
   return Array.from(tableEl.tBodies[0].rows);
+}
+
+function getAppsOrigin() {
+  const isVercel = window.location.host.endsWith('.vercel.app');
+  const isDev = new URLSearchParams(window.location.search).has('dev');
+
+  if (isVercel) return `https://${window.location.host}/gh-pages`;
+  if (isDev) return 'http://localhost:8000';
+  return 'https://googlechrome.github.io/lighthouse';
 }
 
 class ReportUIFeatures {
@@ -2938,8 +2971,11 @@ class ReportUIFeatures {
 
   _setupElementScreenshotOverlay() {
     const fullPageScreenshot =
-      this.json.audits['full-page-screenshot'] && this.json.audits['full-page-screenshot'].details;
-    if (!fullPageScreenshot || fullPageScreenshot.type !== 'full-page-screenshot') return;
+      this.json.audits['full-page-screenshot'] &&
+      this.json.audits['full-page-screenshot'].details &&
+      this.json.audits['full-page-screenshot'].details.type === 'full-page-screenshot' &&
+      this.json.audits['full-page-screenshot'].details.fullPageScreenshot;
+    if (!fullPageScreenshot) return;
 
     ElementScreenshotRenderer.installOverlayFeature(
       this._dom, this._templateContext, fullPageScreenshot);
@@ -3093,8 +3129,7 @@ class ReportUIFeatures {
         break;
       }
       case 'open-viewer': {
-        const viewerPath = '/lighthouse/viewer/';
-        ReportUIFeatures.openTabAndSendJsonReport(this.json, viewerPath);
+        ReportUIFeatures.openTabAndSendJsonReportToViewer(this.json);
         break;
       }
       case 'save-gist': {
@@ -3128,33 +3163,64 @@ class ReportUIFeatures {
   /**
    * Opens a new tab to the online viewer and sends the local page's JSON results
    * to the online viewer using postMessage.
-   * @param {LH.Result} reportJson
-   * @param {string} viewerPath
+   * @param {LH.Result} json
    * @protected
    */
-  static openTabAndSendJsonReport(reportJson, viewerPath) {
-    const VIEWER_ORIGIN = 'https://googlechrome.github.io';
+  static openTabAndSendJsonReportToViewer(json) {
+    // The popup's window.name is keyed by version+url+fetchTime, so we reuse/select tabs correctly
+    // @ts-ignore - If this is a v2 LHR, use old `generatedTime`.
+    const fallbackFetchTime = /** @type {string} */ (json.generatedTime);
+    const fetchTime = json.fetchTime || fallbackFetchTime;
+    const windowName = `${json.lighthouseVersion}-${json.requestedUrl}-${fetchTime}`;
+    const url = getAppsOrigin() + '/viewer/';
+    ReportUIFeatures.openTabAndSendData({lhr: json}, url, windowName);
+  }
+
+  /**
+   * Opens a new tab to the treemap app and sends the JSON results using postMessage.
+   * @param {LH.Result} json
+   */
+  static openTreemap(json) {
+    const treemapDebugData = /** @type {LH.Audit.Details.DebugData} */ (
+      json.audits['script-treemap-data'].details);
+    if (!treemapDebugData) {
+      throw new Error('no script treemap data found');
+    }
+
+    const windowName = `treemap-${json.requestedUrl}`;
+    /** @type {LH.Treemap.Options} */
+    const treemapOptions = {
+      lhr: json,
+    };
+    const url = getAppsOrigin() + '/treemap/';
+    ReportUIFeatures.openTabAndSendData(treemapOptions, url, windowName);
+  }
+
+  /**
+   * Opens a new tab to an external page and sends data using postMessage.
+   * @param {{lhr: LH.Result} | LH.Treemap.Options} data
+   * @param {string} url
+   * @param {string} windowName
+   * @protected
+   */
+  static openTabAndSendData(data, url, windowName) {
+    const origin = new URL(url).origin;
     // Chrome doesn't allow us to immediately postMessage to a popup right
     // after it's created. Normally, we could also listen for the popup window's
     // load event, however it is cross-domain and won't fire. Instead, listen
     // for a message from the target app saying "I'm open".
-    const json = reportJson;
     window.addEventListener('message', function msgHandler(messageEvent) {
-      if (messageEvent.origin !== VIEWER_ORIGIN) {
+      if (messageEvent.origin !== origin) {
         return;
       }
       if (popup && messageEvent.data.opened) {
-        popup.postMessage({lhresults: json}, VIEWER_ORIGIN);
+        popup.postMessage(data, origin);
         window.removeEventListener('message', msgHandler);
       }
     });
 
     // The popup's window.name is keyed by version+url+fetchTime, so we reuse/select tabs correctly
-    // @ts-expect-error - If this is a v2 LHR, use old `generatedTime`.
-    const fallbackFetchTime = /** @type {string} */ (json.generatedTime);
-    const fetchTime = json.fetchTime || fallbackFetchTime;
-    const windowName = `${json.lighthouseVersion}-${json.requestedUrl}-${fetchTime}`;
-    const popup = window.open(`${VIEWER_ORIGIN}${viewerPath}`, windowName);
+    const popup = window.open(url, windowName);
   }
 
   /**
@@ -4707,13 +4773,15 @@ class ReportRenderer {
 
     const fullPageScreenshot =
       report.audits['full-page-screenshot'] && report.audits['full-page-screenshot'].details &&
-      report.audits['full-page-screenshot'].details.type === 'full-page-screenshot' ?
-      report.audits['full-page-screenshot'].details : undefined;
+      report.audits['full-page-screenshot'].details.type === 'full-page-screenshot' &&
+      report.audits['full-page-screenshot'].details.fullPageScreenshot ?
+      report.audits['full-page-screenshot'].details.fullPageScreenshot : undefined;
     const detailsRenderer = new DetailsRenderer(this._dom, {
       fullPageScreenshot,
     });
     const fullPageScreenshotStyleEl = fullPageScreenshot &&
-      ElementScreenshotRenderer.createBackgroundImageStyle(this._dom, fullPageScreenshot);
+      ElementScreenshotRenderer.createBackgroundImageStyle(
+        this._dom, fullPageScreenshot.screenshot);
 
     const categoryRenderer = new CategoryRenderer(this._dom, detailsRenderer);
     categoryRenderer.setTemplateContext(this._templateContext);
@@ -4832,18 +4900,39 @@ class I18n {
    * @return {string}
    */
   formatBytesToKiB(size, granularity = 0.1) {
-    const kbs = this._numberFormatter.format(Math.round(size / 1024 / granularity) * granularity);
+    const formatter = this._byteFormatterForGranularity(granularity);
+    const kbs = formatter.format(Math.round(size / 1024 / granularity) * granularity);
     return `${kbs}${NBSP2}KiB`;
   }
 
   /**
    * @param {number} size
-   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 0.1
+   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 1
    * @return {string}
    */
   formatBytes(size, granularity = 1) {
-    const kbs = this._numberFormatter.format(Math.round(size / granularity) * granularity);
+    const formatter = this._byteFormatterForGranularity(granularity);
+    const kbs = formatter.format(Math.round(size / granularity) * granularity);
     return `${kbs}${NBSP2}bytes`;
+  }
+
+  /**
+   * Format bytes with a constant number of fractional digits, i.e for a granularity of 0.1, 10 becomes '10.0'
+   * @param {number} granularity Controls how coarse the displayed value is
+   * @return {Intl.NumberFormat}
+   */
+  _byteFormatterForGranularity(granularity) {
+    // assume any granularity above 1 will not contain fractional parts, i.e. will never be 1.5
+    let numberOfFractionDigits = 0;
+    if (granularity < 1) {
+      numberOfFractionDigits = -Math.floor(Math.log10(granularity));
+    }
+
+    return new Intl.NumberFormat(this._numberDateLocale, {
+      ...this._numberFormatter.resolvedOptions(),
+      maximumFractionDigits: numberOfFractionDigits,
+      minimumFractionDigits: numberOfFractionDigits,
+    });
   }
 
   /**

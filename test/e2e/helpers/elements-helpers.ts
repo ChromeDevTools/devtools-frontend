@@ -8,6 +8,7 @@ import * as puppeteer from 'puppeteer';
 import {$, $$, click, getBrowserAndPages, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
+const EXPANDED_SELECTED_TREE_ELEMENT_SELECTOR = '.selected.expanded[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
 const CSS_PROPERTY_VALUE_SELECTOR = '.value';
 const COLOR_SWATCH_SELECTOR = '.color-swatch-inner';
@@ -99,6 +100,14 @@ export const waitForSomeGridsInLayoutPane = async (minimumGridCount: number) => 
 export const waitForContentOfSelectedElementsNode = async (expectedTextContent: string) => {
   await waitForFunction(async () => {
     const selectedNode = await waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
+    const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
+    return selectedTextContent === expectedTextContent;
+  });
+};
+
+export const waitForContentOfExpandedSelectedElementsNode = async (expectedTextContent: string) => {
+  await waitForFunction(async () => {
+    const selectedNode = await waitFor(EXPANDED_SELECTED_TREE_ELEMENT_SELECTOR);
     const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
     return selectedTextContent === expectedTextContent;
   });

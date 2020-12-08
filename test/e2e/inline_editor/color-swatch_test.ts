@@ -7,16 +7,14 @@ import * as puppeteer from 'puppeteer';
 
 import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {editCSSProperty, getColorSwatch, getColorSwatchColor, getCSSPropertyInRule, getPropertyFromComputedPane, navigateToSidePane, shiftClickColorSwatch, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsComputedSection, waitForPropertyValueInComputedPane} from '../helpers/elements-helpers.js';
+import {editCSSProperty, getColorSwatch, getColorSwatchColor, getCSSPropertyInRule, getPropertyFromComputedPane, navigateToSidePane, shiftClickColorSwatch, waitForContentOfExpandedSelectedElementsNode, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsComputedSection, waitForPropertyValueInComputedPane} from '../helpers/elements-helpers.js';
 
 async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/default.html') {
   const {frontend} = getBrowserAndPages();
 
   await goToResource(path);
-  await waitForContentOfSelectedElementsNode('<body>\u200B');
+  await waitForContentOfExpandedSelectedElementsNode('<body>\u200B');
 
-  // Press ArrowRight two times to ensure that body is expanded and the #inspected element is selected.
-  await frontend.keyboard.press('ArrowRight');
   await frontend.keyboard.press('ArrowRight');
   await waitForContentOfSelectedElementsNode('<div id=\u200B"inspected">\u200BInspected div\u200B</div>\u200B');
 }

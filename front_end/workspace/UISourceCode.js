@@ -29,10 +29,24 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {Events as WorkspaceImplEvents, Project, projectTypes} from './WorkspaceImpl.js';  // eslint-disable-line no-unused-vars
+
+export const UIStrings = {
+  /**
+  *@description Text for the index of something
+  */
+  index: '(index)',
+  /**
+  *@description Text in UISource Code of the DevTools local workspace
+  */
+  thisFileWasChangedExternally: 'This file was changed externally. Would you like to reload it?',
+};
+const str_ = i18n.i18n.registerUIStrings('workspace/UISourceCode.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {TextUtils.ContentProvider.ContentProvider}
@@ -140,7 +154,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
    */
   displayName(skipTrim) {
     if (!this._name) {
-      return ls`(index)`;
+      return i18nString(UIStrings.index);
     }
     let name = this._name;
     try {
@@ -324,7 +338,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     // Make sure we are in the next frame before stopping the world with confirm
     await new Promise(resolve => setTimeout(resolve, 0));
 
-    const shouldUpdate = window.confirm(ls`This file was changed externally. Would you like to reload it?`);
+    const shouldUpdate = window.confirm(i18nString(UIStrings.thisFileWasChangedExternally));
     if (shouldUpdate) {
       this._contentCommitted(/** @type {string} */ (updatedContent.content), false);
     } else {

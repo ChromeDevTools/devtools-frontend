@@ -274,9 +274,6 @@
   <message name="IDS_DEVTOOLS_81aa2078d1eceede831b2976dbf32e62" desc="Text to clear everything">
     Clear all
   </message>
-  <message name="IDS_DEVTOOLS_84d0c431d1472a0609d69b39dcb3a287" desc="Text for the index of something">
-    (index)
-  </message>
   <message name="IDS_DEVTOOLS_850985cd851d0fe440f03f77762e2590" desc="Text for the network request Content-Length header">
     <ph name="LOCKED_1">Content-Length</ph>
   </message>

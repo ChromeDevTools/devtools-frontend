@@ -147,6 +147,9 @@
   <message name="IDS_DEVTOOLS_7c1e3c25af10fa5d8046dff929148280" desc="Text in Console Sidebar of the Console panel to show that there is 1 info">
     1 info
   </message>
+  <message name="IDS_DEVTOOLS_84d0c431d1472a0609d69b39dcb3a287" desc="Text for the index of something">
+    (index)
+  </message>
   <message name="IDS_DEVTOOLS_93977f1310f482395375a9950b512462" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Eagerly evaluate console prompt text
   </message>

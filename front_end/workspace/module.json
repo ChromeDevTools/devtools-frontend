@@ -2,6 +2,7 @@
   "dependencies": [
     "common",
     "host",
+    "i18n",
     "platform"
   ],
   "modules": [

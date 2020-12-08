@@ -1771,5 +1771,11 @@
   },
   "webauthn/WebauthnPane.js | yes": {
     "message": "Yes"
+  },
+  "workspace/UISourceCode.js | index": {
+    "message": "(index)"
+  },
+  "workspace/UISourceCode.js | thisFileWasChangedExternally": {
+    "message": "This file was changed externally. Would you like to reload it?"
   }
 }

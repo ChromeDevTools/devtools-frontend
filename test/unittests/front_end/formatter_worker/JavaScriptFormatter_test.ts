@@ -4,17 +4,10 @@
 
 const {assert} = chai;
 
-import * as Platform from '../../../../front_end/platform/platform.js';
 import * as FormatterWorker from '../../../../front_end/formatter_worker/formatter_worker.js';
 
 function formatJavaScript(text: string): string {
-  // Indent using 2 spaces for these unit tests.
-  const builder = new FormatterWorker.FormattedContentBuilder.FormattedContentBuilder('  ');
-  const formatter = new FormatterWorker.JavaScriptFormatter.JavaScriptFormatter(builder);
-  const lineEndings = Platform.StringUtilities.findLineEndingIndexes(text);
-  formatter.format(text, lineEndings, 0, text.length);
-
-  return builder.content();
+  return FormatterWorker.FormatterWorker.format('application/javascript', text, '  ').content;
 }
 
 describe('JavaScriptFormatter', () => {

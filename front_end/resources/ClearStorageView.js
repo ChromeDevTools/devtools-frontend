@@ -55,6 +55,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
       [types.Websql, 'rgb(203, 220, 56)'],           // lime
     ]);
 
+    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._reportView = new UI.ReportView.ReportView(Common.UIString.UIString('Storage'));
     this._reportView.registerRequiredCSS('resources/clearStorageView.css', {enableLegacyPatching: false});
     this._reportView.element.classList.add('clear-storage-header');

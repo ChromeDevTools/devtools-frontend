@@ -7,6 +7,10 @@ import {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {VBox} from './Widget.js';
 
+/**
+ * @deprecated Please consider using the web component version of this widget
+ *             (`ui/components/ReportView.ts`) for new code.
+ */
 export class ReportView extends VBox {
   /**
    * @param {string=} title

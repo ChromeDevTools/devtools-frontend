@@ -53,6 +53,7 @@ export class IDBDatabaseView extends UI.Widget.VBox {
     this.registerRequiredCSS('resources/indexedDBViews.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('indexed-db-container');
 
+    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._reportView = new UI.ReportView.ReportView(databaseName);
     this._reportView.show(this.contentElement);
     this._reportView.registerRequiredCSS('resources/indexedDBViews.css', {enableLegacyPatching: false});

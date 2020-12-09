@@ -28,6 +28,7 @@ export class AppManifestView extends UI.Widget.VBox {
     this._emptyView.show(this.contentElement);
     this._emptyView.hideWidget();
 
+    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._reportView = new UI.ReportView.ReportView(Common.UIString.UIString('App Manifest'));
     this._reportView.registerRequiredCSS('resources/appManifestView.css', {enableLegacyPatching: false});
     this._reportView.element.classList.add('manifest-view-header');

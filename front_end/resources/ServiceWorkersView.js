@@ -26,6 +26,7 @@ export class ServiceWorkersView extends UI.Widget.VBox {
     super(true);
     this.registerRequiredCSS('resources/serviceWorkersView.css', {enableLegacyPatching: false});
 
+    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._currentWorkersView = new UI.ReportView.ReportView(Common.UIString.UIString('Service Workers'));
     this._currentWorkersView.setBodyScrollable(false);
     this.contentElement.classList.add('service-worker-list');
@@ -47,6 +48,7 @@ export class ServiceWorkersView extends UI.Widget.VBox {
     this._sectionToRegistration = new WeakMap();
 
     const othersDiv = this.contentElement.createChild('div', 'service-workers-other-origin');
+    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     const othersView = new UI.ReportView.ReportView();
     othersView.setHeaderVisible(false);
     othersView.show(othersDiv);

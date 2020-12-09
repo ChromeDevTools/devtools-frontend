@@ -26,6 +26,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._frame = frame;
     this.contentElement.classList.add('frame-details-container');
 
+    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._reportView = new UI.ReportView.ReportView(frame.displayName());
     this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
     this._reportView.show(this.contentElement);
@@ -366,6 +367,7 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     this._isWindowClosed = isWindowClosed;
     this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('frame-details-container');
+    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._reportView = new UI.ReportView.ReportView(this.buildTitle());
     this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
     this._reportView.show(this.contentElement);
@@ -440,6 +442,7 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._targetInfo = targetInfo;
     this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
     this.contentElement.classList.add('frame-details-container');
+    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this._reportView = new UI.ReportView.ReportView(this._targetInfo.title || this._targetInfo.url || ls`worker`);
     this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
     this._reportView.show(this.contentElement);

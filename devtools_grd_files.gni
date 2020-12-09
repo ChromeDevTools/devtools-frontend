@@ -685,6 +685,7 @@ grd_files_debug_sources = [
   "front_end/media/TickingFlameChart.js",
   "front_end/media/TickingFlameChartHelpers.js",
   "front_end/mobile_throttling/MobileThrottlingSelector.js",
+  "front_end/mobile_throttling/ModuleUIStrings.js",
   "front_end/mobile_throttling/NetworkPanelIndicator.js",
   "front_end/mobile_throttling/NetworkThrottlingSelector.js",
   "front_end/mobile_throttling/ThrottlingManager.js",

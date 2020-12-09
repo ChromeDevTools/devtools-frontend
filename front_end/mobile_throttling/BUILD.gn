@@ -8,6 +8,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("mobile_throttling") {
   sources = [
     "MobileThrottlingSelector.js",
+    "ModuleUIStrings.js",
     "NetworkPanelIndicator.js",
     "NetworkThrottlingSelector.js",
     "ThrottlingManager.js",
@@ -18,6 +19,7 @@ devtools_module("mobile_throttling") {
   deps = [
     "../common:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../sdk:bundle",
     "../ui:bundle",
   ]

@@ -52,6 +52,7 @@
   ],
   "dependencies": [
     "common",
+    "i18n",
     "sdk",
     "ui",
     "protocol_client"

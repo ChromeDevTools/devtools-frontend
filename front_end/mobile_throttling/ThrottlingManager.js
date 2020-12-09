@@ -4,13 +4,62 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {MobileThrottlingSelector} from './MobileThrottlingSelector.js';
 import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
-import {Conditions, ConditionsList, cpuThrottlingPresets, CPUThrottlingRates, CustomConditions, MobileThrottlingConditionsGroup, NetworkThrottlingConditionsGroup} from './ThrottlingPresets.js';  // eslint-disable-line no-unused-vars
+import {Conditions, ConditionsList, MobileThrottlingConditionsGroup, NetworkThrottlingConditionsGroup, ThrottlingPresets} from './ThrottlingPresets.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text with two placeholders separated by a colon
+  *@example {Node removed} PH1
+  *@example {div#id1} PH2
+  */
+  sS: '{PH1}: {PH2}',
+  /**
+  *@description Text in Throttling Manager of the Network panel
+  */
+  add: 'Add…',
+  /**
+  *@description Accessibility label for custom add network throttling option
+  *@example {Custom} PH1
+  */
+  addS: 'Add {PH1}',
+  /**
+  *@description Text to indicate the network connectivity is offline
+  */
+  offline: 'Offline',
+  /**
+  *@description Text in Throttling Manager of the Network panel
+  */
+  forceDisconnectedFromNetwork: 'Force disconnected from network',
+  /**
+  *@description Text for throttling the network
+  */
+  throttling: 'Throttling',
+  /**
+  *@description Icon title in Throttling Manager of the Network panel
+  */
+  cpuThrottlingIsEnabled: 'CPU throttling is enabled',
+  /**
+  *@description Screen reader label for a select box that chooses the CPU throttling speed in the Performance panel
+  */
+  cpuThrottling: 'CPU throttling',
+  /**
+  *@description Text for no network throttling
+  */
+  noThrottling: 'No throttling',
+  /**
+  *@description Text in Throttling Manager of the Network panel
+  *@example {2} PH1
+  */
+  dSlowdown: '{PH1}× slowdown',
+};
+const str_ = i18n.i18n.registerUIStrings('mobile_throttling/ThrottlingManager.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!ThrottlingManager} */
 let throttlingManagerInstance;
 
@@ -23,11 +72,10 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
    */
   constructor() {
     super();
-    /** @type {!CPUThrottlingRates} */
-    this._cpuThrottlingRate = CPUThrottlingRates.NoThrottling;
+    this._cpuThrottlingRate = ThrottlingPresets.CPUThrottlingRates.NoThrottling;
     /** @type {!Set<!UI.Toolbar.ToolbarComboBox>} */
     this._cpuThrottlingControls = new Set();
-    this._cpuThrottlingRates = cpuThrottlingPresets;
+    this._cpuThrottlingRates = ThrottlingPresets.cpuThrottlingPresets;
     /** @type {!Common.Settings.Setting<!Array<!SDK.NetworkManager.Conditions>>} */
     this._customNetworkConditionsSetting = Common.Settings.Settings.instance().moduleSetting('customNetworkConditions');
     /** @type {!SDK.NetworkManager.Conditions} */
@@ -82,13 +130,13 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         for (const conditions of group.items) {
           const title = conditions.title;
           const option = new Option(title, title);
-          UI.ARIAUtils.setAccessibleName(option, ls`${group.title}: ${title}`);
+          UI.ARIAUtils.setAccessibleName(option, i18nString(UIStrings.sS, {PH1: group.title, PH2: title}));
           groupElement.appendChild(option);
           options.push(conditions);
         }
         if (i === groups.length - 1) {
-          const option = new Option(ls`Add…`, ls`Add…`);
-          UI.ARIAUtils.setAccessibleName(option, ls`Add ${group.title}`);
+          const option = new Option(i18nString(UIStrings.add), i18nString(UIStrings.add));
+          UI.ARIAUtils.setAccessibleName(option, i18nString(UIStrings.addS, {PH1: group.title}));
           groupElement.appendChild(option);
           options.push(null);
         }
@@ -122,8 +170,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
    */
   createOfflineToolbarCheckbox() {
     const checkbox = new UI.Toolbar.ToolbarCheckbox(
-        Common.UIString.UIString('Offline'), Common.UIString.UIString('Force disconnected from network'),
-        forceOffline.bind(this));
+        i18nString(UIStrings.offline), i18nString(UIStrings.forceDisconnectedFromNetwork), forceOffline.bind(this));
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
     checkbox.setChecked(
@@ -158,7 +205,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
    */
   createMobileThrottlingButton() {
     const button = new UI.Toolbar.ToolbarMenuButton(appendItems);
-    button.setTitle(Common.UIString.UIString('Throttling'));
+    button.setTitle(i18nString(UIStrings.throttling));
     button.setGlyph('');
     button.turnIntoSelect();
     button.setDarkText();
@@ -178,11 +225,12 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         if (!conditions) {
           continue;
         }
-        if (conditions.title === CustomConditions.title && conditions.description === CustomConditions.description) {
+        if (conditions.title === ThrottlingPresets.getCustomConditions().title &&
+            conditions.description === ThrottlingPresets.getCustomConditions().description) {
           continue;
         }
         contextMenu.defaultSection().appendCheckboxItem(
-            Common.UIString.UIString(conditions.title),
+            i18nString(conditions.title),
             selector.optionSelected.bind(selector, /** @type {!Conditions} */ (conditions)), selectedIndex === index);
       }
     }
@@ -223,7 +271,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!CPUThrottlingRates} rate
+   * @param {!number} rate
    */
   setCPUThrottlingRate(rate) {
     this._cpuThrottlingRate = rate;
@@ -231,10 +279,10 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
       emulationModel.setCPUThrottlingRate(this._cpuThrottlingRate);
     }
     let icon = null;
-    if (this._cpuThrottlingRate !== CPUThrottlingRates.NoThrottling) {
+    if (this._cpuThrottlingRate !== ThrottlingPresets.CPUThrottlingRates.NoThrottling) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuThrottlingEnabled);
       icon = UI.Icon.Icon.create('smallicon-warning');
-      UI.Tooltip.Tooltip.install(icon, Common.UIString.UIString('CPU throttling is enabled'));
+      UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.cpuThrottlingIsEnabled));
     }
     const index = this._cpuThrottlingRates.indexOf(this._cpuThrottlingRate);
     for (const control of this._cpuThrottlingControls) {
@@ -249,7 +297,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
    * @param {!SDK.EmulationModel.EmulationModel} emulationModel
    */
   modelAdded(emulationModel) {
-    if (this._cpuThrottlingRate !== CPUThrottlingRates.NoThrottling) {
+    if (this._cpuThrottlingRate !== ThrottlingPresets.CPUThrottlingRates.NoThrottling) {
       emulationModel.setCPUThrottlingRate(this._cpuThrottlingRate);
     }
   }
@@ -268,14 +316,13 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     const control = new UI.Toolbar.ToolbarComboBox(
         event => this.setCPUThrottlingRate(
             this._cpuThrottlingRates[/** @type {!HTMLSelectElement} */ (event.target).selectedIndex]),
-        ls`CPU throttling`);
+        i18nString(UIStrings.cpuThrottling));
     this._cpuThrottlingControls.add(control);
     const currentRate = this._cpuThrottlingRate;
 
     for (let i = 0; i < this._cpuThrottlingRates.length; ++i) {
       const rate = this._cpuThrottlingRates[i];
-      const title =
-          rate === 1 ? Common.UIString.UIString('No throttling') : Common.UIString.UIString('%d× slowdown', rate);
+      const title = rate === 1 ? i18nString(UIStrings.noThrottling) : i18nString(UIStrings.dSlowdown, {PH1: rate});
       const option = control.createOption(title);
       control.addOption(option);
       if (currentRate === rate) {

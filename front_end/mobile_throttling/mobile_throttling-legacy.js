@@ -29,18 +29,22 @@ MobileThrottling.ThrottlingManager.ActionDelegate = MobileThrottlingModule.Throt
 MobileThrottling.throttlingManager = MobileThrottlingModule.ThrottlingManager.throttlingManager;
 
 /** @enum {number} */
-MobileThrottling.CPUThrottlingRates = MobileThrottlingModule.ThrottlingPresets.CPUThrottlingRates;
+MobileThrottling.CPUThrottlingRates = MobileThrottlingModule.ThrottlingPresets.ThrottlingPresets.CPUThrottlingRates;
 
-MobileThrottling.NoThrottlingConditions = MobileThrottlingModule.ThrottlingPresets.NoThrottlingConditions;
-MobileThrottling.OfflineConditions = MobileThrottlingModule.ThrottlingPresets.OfflineConditions;
-MobileThrottling.LowEndMobileConditions = MobileThrottlingModule.ThrottlingPresets.LowEndMobileConditions;
-MobileThrottling.MidTierMobileConditions = MobileThrottlingModule.ThrottlingPresets.MidTierMobileConditions;
-MobileThrottling.CustomConditions = MobileThrottlingModule.ThrottlingPresets.CustomConditions;
+MobileThrottling.NoThrottlingConditions =
+    MobileThrottlingModule.ThrottlingPresets.ThrottlingPresets.getNoThrottlingConditions;
+MobileThrottling.OfflineConditions = MobileThrottlingModule.ThrottlingPresets.ThrottlingPresets.getOfflineConditions;
+MobileThrottling.LowEndMobileConditions =
+    MobileThrottlingModule.ThrottlingPresets.ThrottlingPresets.getLowEndMobileConditions;
+MobileThrottling.MidTierMobileConditions =
+    MobileThrottlingModule.ThrottlingPresets.ThrottlingPresets.getMidTierMobileConditions;
+MobileThrottling.CustomConditions = MobileThrottlingModule.ThrottlingPresets.ThrottlingPresets.getCustomConditions;
 
-MobileThrottling.mobilePresets = MobileThrottlingModule.ThrottlingPresets.mobilePresets;
-MobileThrottling.advancedMobilePresets = MobileThrottlingModule.ThrottlingPresets.advancedMobilePresets;
-MobileThrottling.networkPresets = MobileThrottlingModule.ThrottlingPresets.networkPresets;
-MobileThrottling.cpuThrottlingPresets = MobileThrottlingModule.ThrottlingPresets.cpuThrottlingPresets;
+MobileThrottling.mobilePresets = MobileThrottlingModule.ThrottlingPresets.ThrottlingPresets.getMobilePresets;
+MobileThrottling.advancedMobilePresets =
+    MobileThrottlingModule.ThrottlingPresets.ThrottlingPresets.getAdvancedMobilePresets;
+MobileThrottling.networkPresets = MobileThrottlingModule.ThrottlingPresets.ThrottlingPresets.networkPresets;
+MobileThrottling.cpuThrottlingPresets = MobileThrottlingModule.ThrottlingPresets.ThrottlingPresets.cpuThrottlingPresets;
 
 /** @constructor */
 MobileThrottling.ThrottlingSettingsTab = MobileThrottlingModule.ThrottlingSettingsTab.ThrottlingSettingsTab;

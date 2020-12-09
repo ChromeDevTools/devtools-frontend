@@ -299,6 +299,7 @@ all_typescript_module_sources = [
   "media/TickingFlameChart.js",
   "media/TickingFlameChartHelpers.js",
   "mobile_throttling/MobileThrottlingSelector.js",
+  "mobile_throttling/ModuleUIStrings.js",
   "mobile_throttling/NetworkPanelIndicator.js",
   "mobile_throttling/NetworkThrottlingSelector.js",
   "mobile_throttling/ThrottlingManager.js",

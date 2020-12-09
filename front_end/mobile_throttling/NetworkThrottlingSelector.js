@@ -3,10 +3,27 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 
-import {networkPresets, NetworkThrottlingConditionsGroup} from './ThrottlingPresets.js';  // eslint-disable-line no-unused-vars
+import {NetworkThrottlingConditionsGroup, ThrottlingPresets} from './ThrottlingPresets.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text to indicate something is not enabled
+  */
+  disabled: 'Disabled',
+  /**
+  *@description Title for a group of configuration options
+  */
+  presets: 'Presets',
+  /**
+  *@description Text in Network Throttling Selector of the Network panel
+  */
+  custom: 'Custom',
+};
+const str_ = i18n.i18n.registerUIStrings('mobile_throttling/NetworkThrottlingSelector.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkThrottlingSelector {
   /**
    * @param {function(!Array<!NetworkThrottlingConditionsGroup>):!Array<?SDK.NetworkManager.Conditions>} populateCallback
@@ -40,12 +57,9 @@ export class NetworkThrottlingSelector {
   }
 
   _populateOptions() {
-    const disabledGroup = {
-      title: Common.UIString.UIString('Disabled'),
-      items: [SDK.NetworkManager.NoThrottlingConditions]
-    };
-    const presetsGroup = {title: Common.UIString.UIString('Presets'), items: networkPresets};
-    const customGroup = {title: Common.UIString.UIString('Custom'), items: this._customNetworkConditionsSetting.get()};
+    const disabledGroup = {title: i18nString(UIStrings.disabled), items: [SDK.NetworkManager.NoThrottlingConditions]};
+    const presetsGroup = {title: i18nString(UIStrings.presets), items: ThrottlingPresets.networkPresets};
+    const customGroup = {title: i18nString(UIStrings.custom), items: this._customNetworkConditionsSetting.get()};
     this._options = this._populateCallback([disabledGroup, presetsGroup, customGroup]);
     if (!this._networkConditionsChanged()) {
       for (let i = this._options.length - 1; i >= 0; i--) {

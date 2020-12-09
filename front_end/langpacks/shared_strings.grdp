@@ -76,9 +76,6 @@
   <message name="IDS_DEVTOOLS_231afe47f3f37d3808096b36c28b4ded" desc="Label for the column in the element list in the CSS Overview report">
     Element
   </message>
-  <message name="IDS_DEVTOOLS_26ae7bdd1d6fb8c4886e6fde8d12601c" desc="Text for the latency of a task">
-    Latency
-  </message>
   <message name="IDS_DEVTOOLS_290612199861c31d1036b185b4e69b75" desc="Text for the summary view">
     Summary
   </message>
@@ -136,8 +133,6 @@
   <message name="IDS_DEVTOOLS_3f8f88e3686b2345cecc9530e19e6172" desc="Text to store an HTML element or JavaScript variable or expression result as a global variable">
     Store as global variable
   </message>
-  <message name="IDS_DEVTOOLS_41fdb410354e76ef7674f98e1cc84c8f" desc="Text for throttling the network">
-    Throttling
   </message>
   <message name="IDS_DEVTOOLS_4252b72e6ebcd4d4b4c2e46a786f03d2" desc="Text for zooming in">
     Zoom
@@ -301,9 +296,6 @@
   <message name="IDS_DEVTOOLS_90da6f38945a1c7e7ba11e3adcbe6919" desc="Text for pausing the debugger on exceptions">
     Pause on exceptions
   </message>
-  <message name="IDS_DEVTOOLS_913f9c49dcb544e2087cee284f4a00b7" desc="A tag of Mobile related settings that can be searched in the command menu">
-    device
-  </message>
   <message name="IDS_DEVTOOLS_91e02cd2b8621d0c05197f645668c5c4" desc="A tag of Group Network by frame setting that can be searched in the command menu">
     network
   </message>
@@ -412,9 +404,6 @@
   <message name="IDS_DEVTOOLS_b9dee6bade160c89fb7f0e539d453513" desc="Text to dock the DevTools to the bottom of the browser tab">
     Dock to bottom
   </message>
-  <message name="IDS_DEVTOOLS_b9f5c797ebbf55adccdd8539a65a0241" desc="Text to indicate something is not enabled">
-    Disabled
-  </message>
   <message name="IDS_DEVTOOLS_ba5b676ccf658f863ef2e3df082ee262" desc="Text for the event that an animation frame is fired">
     Animation Frame Fired
   </message>
@@ -511,9 +500,6 @@
   <message name="IDS_DEVTOOLS_eae639a70006feff484a39363c977e24" desc="Text for the domain of a website">
     Domain
   </message>
-  <message name="IDS_DEVTOOLS_eb81441fe20963ff9e8e69c5b32fc625" desc="Title for a group of configuration options">
-    Presets
-  </message>
   <message name="IDS_DEVTOOLS_ebd9bec4d70abc789d439c1f136b0538" desc="Text in Timeline UIUtils of the Performance panel">
     Layout
   </message>
@@ -531,9 +517,6 @@
   </message>
   <message name="IDS_DEVTOOLS_ee1cab1975e28575b1631ee8fc4ea749" desc="Title of an action in the emulation tool to capture node screenshot">
     Capture node screenshot
-  </message>
-  <message name="IDS_DEVTOOLS_ee33e909372d935d190f4fcb2a92d542" desc="The milisecond unit">
-    ms
   </message>
   <message name="IDS_DEVTOOLS_eec89088ee408b80387155272b113256" desc="Title of the Network tool">
     Network

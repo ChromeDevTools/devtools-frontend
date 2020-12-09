@@ -246,6 +246,9 @@
   <message name="IDS_DEVTOOLS_911f0f24bdce6808f4614d6a263b143b" desc="Text in Sensors View of the Device Toolbar">
     Locale
   </message>
+  <message name="IDS_DEVTOOLS_913f9c49dcb544e2087cee284f4a00b7" desc="A tag of Mobile related settings that can be searched in the command menu">
+    device
+  </message>
   <message name="IDS_DEVTOOLS_92394ac4969be25aa83d1c928f6a7dbc" desc="Label in the Devices settings pane for the device name input of a custom device">
     Device Name
   </message>
@@ -290,6 +293,9 @@
   </message>
   <message name="IDS_DEVTOOLS_c15b53cb50624f0e86e1a9ef5a9dd120" desc="Title of the span/un-span button">
     Toggle dual-screen mode
+  </message>
+  <message name="IDS_DEVTOOLS_eb81441fe20963ff9e8e69c5b32fc625" desc="Title for a group of configuration options">
+    Presets
   </message>
   <message name="IDS_DEVTOOLS_eebd338ddbd547e41e4a1296de82963a" desc="Title of Locations settings">
     Locations

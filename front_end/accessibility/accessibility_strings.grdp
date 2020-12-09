@@ -267,6 +267,9 @@
   <message name="IDS_DEVTOOLS_b9db1026019a8730b64397052a61ded0" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Atomic (live regions)
   </message>
+  <message name="IDS_DEVTOOLS_b9f5c797ebbf55adccdd8539a65a0241" desc="Text to indicate something is not enabled">
+    Disabled
+  </message>
   <message name="IDS_DEVTOOLS_bb129d779ae1ffda5fda12070a4a142b" desc="Tooltip text that appears when hovering over the 'From caption' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Value from figcaption element.
   </message>

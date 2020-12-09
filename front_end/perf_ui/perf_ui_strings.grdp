@@ -66,4 +66,7 @@
   <message name="IDS_DEVTOOLS_e2885880b7034cd40dce71aeffa3662f" desc="Element title in Film Strip View of the Performance panel">
     Doubleclick to zoom image. Click to view preceding requests.
   </message>
+  <message name="IDS_DEVTOOLS_ee33e909372d935d190f4fcb2a92d542" desc="The milisecond unit">
+    ms
+  </message>
 </grit-part>

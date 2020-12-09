@@ -132,6 +132,9 @@
   <message name="IDS_DEVTOOLS_22f3e616a52e25632d98fd53d3f821ed" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Safari — Mac</ph>
   </message>
+  <message name="IDS_DEVTOOLS_26ae7bdd1d6fb8c4886e6fde8d12601c" desc="Text for the latency of a task">
+    Latency
+  </message>
   <message name="IDS_DEVTOOLS_26b6b5ae2c6e2575b2a451c35e94df23" desc="Text in Request Timing View of the Network panel">
     Waiting (TTFB)
   </message>
@@ -245,6 +248,9 @@
   </message>
   <message name="IDS_DEVTOOLS_41e85145baafb89d0b709ae827218084" desc="A context menu item in the Network Log View of the Network panel">
     Clear browser cache
+  </message>
+  <message name="IDS_DEVTOOLS_41fdb410354e76ef7674f98e1cc84c8f" desc="Text for throttling the network">
+    Throttling
   </message>
   <message name="IDS_DEVTOOLS_4202ef115ebede37eb22297113f5fb32" desc="Text in Network Data Grid Node of the Network panel">
     Redirect

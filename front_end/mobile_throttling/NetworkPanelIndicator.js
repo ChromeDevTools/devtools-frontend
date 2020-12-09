@@ -2,10 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Icon title in Network Panel Indicator of the Network panel
+  */
+  networkThrottlingIsEnabled: 'Network throttling is enabled',
+  /**
+  *@description Icon title in Network Panel Indicator of the Network panel
+  */
+  requestsMayBeRewrittenByLocal: 'Requests may be rewritten by local overrides',
+  /**
+  *@description Icon title in Network Panel Indicator of the Network panel
+  */
+  requestsMayBeBlocked: 'Requests may be blocked',
+};
+const str_ = i18n.i18n.registerUIStrings('mobile_throttling/NetworkPanelIndicator.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkPanelIndicator {
   constructor() {
     // TODO: we should not access network from other modules.
@@ -23,13 +39,13 @@ export class NetworkPanelIndicator {
       let icon = null;
       if (manager.isThrottling()) {
         icon = UI.Icon.Icon.create('smallicon-warning');
-        UI.Tooltip.Tooltip.install(icon, Common.UIString.UIString('Network throttling is enabled'));
+        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.networkThrottlingIsEnabled));
       } else if (SDK.NetworkManager.MultitargetNetworkManager.instance().isIntercepting()) {
         icon = UI.Icon.Icon.create('smallicon-warning');
-        UI.Tooltip.Tooltip.install(icon, Common.UIString.UIString('Requests may be rewritten by local overrides'));
+        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestsMayBeRewrittenByLocal));
       } else if (manager.isBlocking()) {
         icon = UI.Icon.Icon.create('smallicon-warning');
-        UI.Tooltip.Tooltip.install(icon, Common.UIString.UIString('Requests may be blocked'));
+        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestsMayBeBlocked));
       }
       UI.InspectorView.InspectorView.instance().setPanelIcon('network', icon);
     }

@@ -1058,6 +1058,156 @@
   "media/PlayerPropertiesView.js | videoPlaybackRoughness": {
     "message": "Video playback roughness"
   },
+  "mobile_throttling/MobileThrottlingSelector.js | advanced": {
+    "message": "Advanced"
+  },
+  "mobile_throttling/MobileThrottlingSelector.js | disabled": {
+    "message": "Disabled"
+  },
+  "mobile_throttling/MobileThrottlingSelector.js | presets": {
+    "message": "Presets"
+  },
+  "mobile_throttling/ModuleUIStrings.js | device": {
+    "message": "device"
+  },
+  "mobile_throttling/ModuleUIStrings.js | enableFastGThrottling": {
+    "message": "Enable fast 3G throttling"
+  },
+  "mobile_throttling/ModuleUIStrings.js | enableSlowGThrottling": {
+    "message": "Enable slow 3G throttling"
+  },
+  "mobile_throttling/ModuleUIStrings.js | goOffline": {
+    "message": "Go offline"
+  },
+  "mobile_throttling/ModuleUIStrings.js | goOnline": {
+    "message": "Go online"
+  },
+  "mobile_throttling/ModuleUIStrings.js | network": {
+    "message": "Network"
+  },
+  "mobile_throttling/ModuleUIStrings.js | throttling": {
+    "message": "throttling"
+  },
+  "mobile_throttling/NetworkPanelIndicator.js | networkThrottlingIsEnabled": {
+    "message": "Network throttling is enabled"
+  },
+  "mobile_throttling/NetworkPanelIndicator.js | requestsMayBeBlocked": {
+    "message": "Requests may be blocked"
+  },
+  "mobile_throttling/NetworkPanelIndicator.js | requestsMayBeRewrittenByLocal": {
+    "message": "Requests may be rewritten by local overrides"
+  },
+  "mobile_throttling/NetworkThrottlingSelector.js | custom": {
+    "message": "Custom"
+  },
+  "mobile_throttling/NetworkThrottlingSelector.js | disabled": {
+    "message": "Disabled"
+  },
+  "mobile_throttling/NetworkThrottlingSelector.js | presets": {
+    "message": "Presets"
+  },
+  "mobile_throttling/ThrottlingManager.js | add": {
+    "message": "Add…"
+  },
+  "mobile_throttling/ThrottlingManager.js | addS": {
+    "message": "Add {PH1}"
+  },
+  "mobile_throttling/ThrottlingManager.js | cpuThrottling": {
+    "message": "CPU throttling"
+  },
+  "mobile_throttling/ThrottlingManager.js | cpuThrottlingIsEnabled": {
+    "message": "CPU throttling is enabled"
+  },
+  "mobile_throttling/ThrottlingManager.js | dSlowdown": {
+    "message": "{PH1}× slowdown"
+  },
+  "mobile_throttling/ThrottlingManager.js | forceDisconnectedFromNetwork": {
+    "message": "Force disconnected from network"
+  },
+  "mobile_throttling/ThrottlingManager.js | noThrottling": {
+    "message": "No throttling"
+  },
+  "mobile_throttling/ThrottlingManager.js | offline": {
+    "message": "Offline"
+  },
+  "mobile_throttling/ThrottlingManager.js | sS": {
+    "message": "{PH1}: {PH2}"
+  },
+  "mobile_throttling/ThrottlingManager.js | throttling": {
+    "message": "Throttling"
+  },
+  "mobile_throttling/ThrottlingPresets.js | checkNetworkAndPerformancePanels": {
+    "message": "Check Network and Performance panels"
+  },
+  "mobile_throttling/ThrottlingPresets.js | custom": {
+    "message": "Custom"
+  },
+  "mobile_throttling/ThrottlingPresets.js | fastGXCpuSlowdown": {
+    "message": "Fast 3G & 4x CPU slowdown"
+  },
+  "mobile_throttling/ThrottlingPresets.js | lowendMobile": {
+    "message": "Low-end mobile"
+  },
+  "mobile_throttling/ThrottlingPresets.js | midtierMobile": {
+    "message": "Mid-tier mobile"
+  },
+  "mobile_throttling/ThrottlingPresets.js | noInternetConnectivity": {
+    "message": "No internet connectivity"
+  },
+  "mobile_throttling/ThrottlingPresets.js | noThrottling": {
+    "message": "No throttling"
+  },
+  "mobile_throttling/ThrottlingPresets.js | slowGXCpuSlowdown": {
+    "message": "Slow 3G & 6x CPU slowdown"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | addCustomProfile": {
+    "message": "Add custom profile..."
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | dms": {
+    "message": "{PH1}ms"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | download": {
+    "message": "Download"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | dskbs": {
+    "message": "{PH1}{PH2}kB/s"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | dsmbs": {
+    "message": "{PH1}{PH2}MB/s"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | fsmbs": {
+    "message": "{PH1}{PH2}MB/s"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | kbs": {
+    "message": "kb/s"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | latency": {
+    "message": "Latency"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | latencyMustBeAnIntegerBetweenSms": {
+    "message": "Latency must be an integer between {PH1}ms to {PH2}ms inclusive"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | ms": {
+    "message": "ms"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | networkThrottlingProfiles": {
+    "message": "Network Throttling Profiles"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | optional": {
+    "message": "optional"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | profileName": {
+    "message": "Profile Name"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | profileNameCharactersLengthMust": {
+    "message": "Profile Name characters length must be between 1 to {PH1} inclusive"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | sMustBeANumberBetweenSkbsToSkbs": {
+    "message": "{PH1} must be a number between {PH2}kb/s to {PH3}kb/s inclusive"
+  },
+  "mobile_throttling/ThrottlingSettingsTab.js | upload": {
+    "message": "Upload"
+  },
   "performance_monitor/ModuleUIStrings.js | activity": {
     "message": "activity"
   },

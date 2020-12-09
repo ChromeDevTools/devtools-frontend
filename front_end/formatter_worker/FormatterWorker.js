@@ -28,10 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import '../cm_headless/cm_headless.js';
-import '../third_party/codemirror/package/mode/css/css.js';
-import '../third_party/codemirror/package/mode/xml/xml.js';
-
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as Acorn from '../third_party/acorn/acorn.js';
@@ -52,7 +48,7 @@ export function createTokenizer(mimeType) {
   const mode = CodeMirror.getMode({indentUnit: 2}, mimeType);
   const state = CodeMirror.startState(mode);
 
-  if (!mode) {
+  if (!mode || mode.name === 'null') {
     throw new Error(`Could not find CodeMirror mode for MimeType: ${mimeType}`);
   }
 

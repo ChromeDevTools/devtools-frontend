@@ -267,7 +267,7 @@ class EvalNode extends SDK.RemoteObject.RemoteObjectImpl {
     const unpackedResultObject = await unpackResultObject(object);
     const node = unpackedResultObject || object;
 
-    if (typeof node.value === 'undefined') {
+    if (typeof node.value === 'undefined' && node.type !== 'undefined') {
       node.description = sourceType.typeInfo.typeNames[0];
     }
 
@@ -504,7 +504,8 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
               returnByValue: false,
               silent: false
             }));
-      } catch {
+      } catch (e) {
+        console.warn(e);
         sourceVar = new SDK.RemoteObject.LocalJSONObject(undefined);
       }
       if (variable.nestedName && variable.nestedName.length > 1) {

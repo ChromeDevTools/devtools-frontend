@@ -13,6 +13,7 @@ import './DeviceModeToolbar.js';
 import './DeviceModeView.js';
 import './DeviceModeWrapper.js';
 import './LocationsSettingsTab.js';
+import './StructuredHeaders.js';
 
 import * as AdvancedApp from './AdvancedApp.js';
 import * as DeviceModeModel from './DeviceModeModel.js';
@@ -25,6 +26,7 @@ import * as InspectedPagePlaceholder from './InspectedPagePlaceholder.js';
 import * as LocationsSettingsTab from './LocationsSettingsTab.js';
 import * as MediaQueryInspector from './MediaQueryInspector.js';
 import * as SensorsView from './SensorsView.js';
+import * as StructuredHeaders from './StructuredHeaders.js';
 
 export {
   AdvancedApp,
@@ -38,4 +40,5 @@ export {
   LocationsSettingsTab,
   MediaQueryInspector,
   SensorsView,
+  StructuredHeaders,
 };

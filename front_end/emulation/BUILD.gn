@@ -18,6 +18,7 @@ devtools_module("emulation") {
     "LocationsSettingsTab.js",
     "MediaQueryInspector.js",
     "SensorsView.js",
+    "StructuredHeaders.ts",
   ]
 
   deps = [

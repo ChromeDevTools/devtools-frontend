@@ -563,6 +563,7 @@ grd_files_debug_sources = [
   "front_end/emulation/LocationsSettingsTab.js",
   "front_end/emulation/MediaQueryInspector.js",
   "front_end/emulation/SensorsView.js",
+  "front_end/emulation/StructuredHeaders.js",
   "front_end/event_listeners/EventListenersUtils.js",
   "front_end/event_listeners/EventListenersView.js",
   "front_end/extensions/ExtensionAPI.js",

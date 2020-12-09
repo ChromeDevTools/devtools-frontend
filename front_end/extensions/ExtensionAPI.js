@@ -100,7 +100,8 @@ export function defineCommonExtensionSymbols(apiPrivate) {
     GetFormatter: 'getFormatter',
     GetFunctionInfo: 'getFunctionInfo',
     GetInlinedFunctionRanges: 'getInlinedFunctionRanges',
-    GetInlinedCalleesRanges: 'getInlinedCalleesRanges'
+    GetInlinedCalleesRanges: 'getInlinedCalleesRanges',
+    GetMappedLines: 'getMappedLines',
   };
 
   /** @enum {string} */
@@ -430,6 +431,11 @@ self.injectedExtensionAPI = function(
             return plugin.getInlinedFunctionRanges(parameters.rawLocation);
           case languageExtensionPluginCommands.GetInlinedCalleesRanges:
             return plugin.getInlinedCalleesRanges(parameters.rawLocation);
+          case languageExtensionPluginCommands.GetMappedLines:
+            if ('getMappedLines' in plugin) {
+              return plugin.getMappedLines(parameters.rawModuleId, parameters.sourceFileURL);
+            }
+            return Promise.resolve(undefined);
         }
         throw new Error(`Unknown language plugin method ${method}`);
       }

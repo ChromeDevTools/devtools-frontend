@@ -1187,6 +1187,36 @@ export class DebuggerLanguagePluginManager {
       return [];
     }
   }
+
+  /**
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   */
+  async getMappedLines(uiSourceCode) {
+    const rawModuleIds =
+        await Promise.all(this.scriptsForUISourceCode(uiSourceCode).map(s => this._rawModuleIdAndPluginForScript(s)));
+
+    /** @type {Set<number> | undefined} */
+    let mappedLines;
+    for (const {rawModuleId, plugin} of rawModuleIds) {
+      if (!plugin) {
+        continue;
+      }
+      const lines = await plugin.getMappedLines(rawModuleId, uiSourceCode.url());
+
+      if (lines === undefined) {
+        continue;
+      }
+      if (mappedLines === undefined) {
+        mappedLines = new Set(lines);
+      } else {
+        /**
+         * @param {number} l
+         */
+        lines.forEach(l => /** @type {!Set<number>} */ (mappedLines).add(l));
+      }
+    }
+    return mappedLines;
+  }
 }
 
 class ModelData {
@@ -1505,6 +1535,15 @@ export class DebuggerLanguagePlugin {
    * @return {!Promise<!Array<!RawLocationRange>>}
   */
   async getInlinedCalleesRanges(rawLocation) {
+    throw new Error('Not implemented yet');
+  }
+
+  /**
+   * @param {string} rawModuleId
+   * @param {string} sourceFileURL
+   * @return {!Promise<!Array<number>|undefined>}
+   */
+  async getMappedLines(rawModuleId, sourceFileURL) {
     throw new Error('Not implemented yet');
   }
 }

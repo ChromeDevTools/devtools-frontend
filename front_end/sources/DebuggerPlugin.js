@@ -1677,6 +1677,27 @@ export class DebuggerPlugin extends Plugin {
       }
       return;
     }
+
+    const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+    if (pluginManager) {
+      pluginManager.getMappedLines(this._uiSourceCode)
+          .then(mappedLines => {
+            if (mappedLines === undefined) {
+              return;
+            }
+            const linesCount = this._textEditor.linesCount;
+            for (let i = 0; i < linesCount; ++i) {
+              const lineHasMapping = mappedLines.has(i);
+              if (!lineHasMapping) {
+                this._hasLineWithoutMapping = true;
+              }
+              if (this._hasLineWithoutMapping) {
+                this._textEditor.toggleLineClass(i, 'cm-non-breakable-line', !lineHasMapping);
+              }
+            }
+          })
+          .catch(console.error);
+    }
   }
 
   _updateScriptFiles() {

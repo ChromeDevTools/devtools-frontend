@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {$, click, enableExperiment, getBrowserAndPages, getResourcesPath, goToResource, pasteText, waitFor, waitForFunction, waitForMany, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
-import {addBreakpointForLine, getCallFrameLocations, getCallFrameNames, getValuesForScope, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, checkBreakpointIsNotActive, getCallFrameLocations, getCallFrameNames, getValuesForScope, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
 
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
@@ -115,6 +115,8 @@ interface TestPluginImpl {
   getFormatter?(expressionOrField: string|{base: EvalBase, field: FieldInfo[]}, context: RawLocation):
       Promise<{js: string}|null>;
   getFunctionInfo?(rawLocation: RawLocation): Promise<{frames: Array<FunctionInfo>}|null>;
+
+  getMappedLines?(rawModuleId: string, sourceFileURL: string): Promise<number[]|undefined>;
 
   dispose?(): void;
 }
@@ -280,6 +282,14 @@ describe('The Debugger Language Plugins', async () => {
               }
               return [];
             }
+
+            async getMappedLines(rawModuleId: string, sourceFileURL: string) {
+              const {sourceLocation} = this.modules.get(rawModuleId) || {};
+              if (sourceLocation && sourceLocation.sourceFileURL === sourceFileURL) {
+                return [5, 6, 7, 8, 9];
+              }
+              return undefined;
+            }
           }
 
           RegisterExtension(
@@ -290,10 +300,14 @@ describe('The Debugger Language Plugins', async () => {
     await openFileInSourcesPanel('wasm/global_variable.html');
     await target.evaluate('go();');
     await openFileInEditor('global_variable.ll');
+    // Line 4 is non-breakable.
+    await addBreakpointForLine(frontend, 4, true);
     await addBreakpointForLine(frontend, 9);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);
     assert.deepEqual(scriptLocation, 'global_variable.ll:9');
+
+    await checkBreakpointIsNotActive(4);
   });
 
   it('shows top-level and nested variables', async () => {

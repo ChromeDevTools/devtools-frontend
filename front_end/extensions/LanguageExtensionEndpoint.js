@@ -213,6 +213,17 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
 
   /**
    * @override
+   * @param {string} rawModuleId
+   * @param {string} sourceFileURL
+   * @return {!Promise<!Array<number>|undefined>}
+   */
+  async getMappedLines(rawModuleId, sourceFileURL) {
+    return /** {!Promise<!Array<number>|undefined>} */ (
+        this._sendRequest(this._commands.GetMappedLines, {rawModuleId, sourceFileURL}));
+  }
+
+  /**
+   * @override
    */
   dispose() {
   }

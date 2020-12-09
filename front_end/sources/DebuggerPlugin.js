@@ -312,20 +312,23 @@ export class DebuggerPlugin extends Plugin {
                                   .scriptsForUISourceCode(this._uiSourceCode)
                                   .every(script => script.isJavaScript());
     if (!breakpoints.length) {
-      contextMenu.debugSection().appendItem(
-          Common.UIString.UIString('Add breakpoint'), this._createNewBreakpoint.bind(this, editorLineNumber, '', true));
-      // Conditional breakpoints, logpoints and 'Never pause here'
-      // are currently only available for JavaScript debugging.
-      if (hasOnlyJavaScript) {
+      if (!this._textEditor.hasLineClass(editorLineNumber, 'cm-non-breakable-line')) {
         contextMenu.debugSection().appendItem(
-            Common.UIString.UIString('Add conditional breakpoint…'),
-            this._editBreakpointCondition.bind(this, editorLineNumber, null, null, false /* preferLogpoint */));
-        contextMenu.debugSection().appendItem(
-            ls`Add logpoint…`,
-            this._editBreakpointCondition.bind(this, editorLineNumber, null, null, true /* preferLogpoint */));
-        contextMenu.debugSection().appendItem(
-            Common.UIString.UIString('Never pause here'),
-            this._createNewBreakpoint.bind(this, editorLineNumber, 'false', true));
+            Common.UIString.UIString('Add breakpoint'),
+            this._createNewBreakpoint.bind(this, editorLineNumber, '', true));
+        // Conditional breakpoints, logpoints and 'Never pause here'
+        // are currently only available for JavaScript debugging.
+        if (hasOnlyJavaScript) {
+          contextMenu.debugSection().appendItem(
+              Common.UIString.UIString('Add conditional breakpoint…'),
+              this._editBreakpointCondition.bind(this, editorLineNumber, null, null, false /* preferLogpoint */));
+          contextMenu.debugSection().appendItem(
+              ls`Add logpoint…`,
+              this._editBreakpointCondition.bind(this, editorLineNumber, null, null, true /* preferLogpoint */));
+          contextMenu.debugSection().appendItem(
+              Common.UIString.UIString('Never pause here'),
+              this._createNewBreakpoint.bind(this, editorLineNumber, 'false', true));
+        }
       }
     } else {
       const hasOneBreakpoint = breakpoints.length === 1;

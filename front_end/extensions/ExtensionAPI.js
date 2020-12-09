@@ -392,9 +392,11 @@ self.injectedExtensionAPI = function(
       const port = channel.port1;
       this._plugins.set(plugin, port);
       port.onmessage = ({data: {requestId, method, parameters}}) => {
+        console.time(`${requestId}: ${method}`);
         dispatchMethodCall(method, parameters)
             .then(result => port.postMessage({requestId, result}))
-            .catch(error => port.postMessage({requestId, error: {message: error.message}}));
+            .catch(error => port.postMessage({requestId, error: {message: error.message}}))
+            .finally(() => console.timeEnd(`${requestId}: ${method}`));
       };
 
       /**

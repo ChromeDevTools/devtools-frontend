@@ -95,6 +95,54 @@
   "changes/ModuleUIStrings.js | changesDrawer": {
     "message": "Changes drawer"
   },
+  "cookie_table/CookiesTable.js | cookies": {
+    "message": "Cookies"
+  },
+  "cookie_table/CookiesTable.js | domain": {
+    "message": "Domain"
+  },
+  "cookie_table/CookiesTable.js | editableCookies": {
+    "message": "Editable Cookies"
+  },
+  "cookie_table/CookiesTable.js | expiresMaxage": {
+    "message": "Expires / Max-Age"
+  },
+  "cookie_table/CookiesTable.js | httponly": {
+    "message": "HttpOnly"
+  },
+  "cookie_table/CookiesTable.js | na": {
+    "message": "N/A"
+  },
+  "cookie_table/CookiesTable.js | name": {
+    "message": "Name"
+  },
+  "cookie_table/CookiesTable.js | path": {
+    "message": "Path"
+  },
+  "cookie_table/CookiesTable.js | priority": {
+    "message": "Priority"
+  },
+  "cookie_table/CookiesTable.js | samesite": {
+    "message": "SameSite"
+  },
+  "cookie_table/CookiesTable.js | secure": {
+    "message": "Secure"
+  },
+  "cookie_table/CookiesTable.js | session": {
+    "message": "Session"
+  },
+  "cookie_table/CookiesTable.js | showIssueAssociatedWithThis": {
+    "message": "Show issue associated with this cookie"
+  },
+  "cookie_table/CookiesTable.js | showRequestsWithThisCookie": {
+    "message": "Show Requests With This Cookie"
+  },
+  "cookie_table/CookiesTable.js | size": {
+    "message": "Size"
+  },
+  "cookie_table/CookiesTable.js | value": {
+    "message": "Value"
+  },
   "coverage/CoverageListView.js | Byte": {
     "message": "1 byte"
   },

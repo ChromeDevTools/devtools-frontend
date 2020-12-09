@@ -31,10 +31,80 @@
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-const expiresSessionValue = Common.UIString.UIString('Session');
+export const UIStrings = {
+  /**
+  *@description Cookie table cookies table expires session value in Cookies Table of the Cookies table in the Application panel
+  */
+  session: 'Session',
+  /**
+  *@description Text for the name of something
+  */
+  name: 'Name',
+  /**
+  *@description Text for the value of something
+  */
+  value: 'Value',
+  /**
+  *@description Text for the domain of a website
+  */
+  domain: 'Domain',
+  /**
+  *@description Text that refers to a file path
+  */
+  path: 'Path',
+  /**
+  *@description Text in Cookies Table of the Cookies table in the Application panel
+  */
+  expiresMaxage: 'Expires / Max-Age',
+  /**
+  *@description Text for the size of something
+  */
+  size: 'Size',
+  /**
+  *@description Text in Cookies Table of the Cookies table in the Application panel
+  */
+  httponly: 'HttpOnly',
+  /**
+  *@description Text to show something is secure
+  */
+  secure: 'Secure',
+  /**
+  *@description Text in Cookies Table of the Cookies table in the Application panel
+  */
+  samesite: 'SameSite',
+  /**
+  *@description Text to show the priority of an item
+  */
+  priority: 'Priority',
+  /**
+  *@description Data grid name for Editable Cookies data grid
+  */
+  editableCookies: 'Editable Cookies',
+  /**
+  *@description Text for web cookies
+  */
+  cookies: 'Cookies',
+  /**
+  *@description Text for something not available
+  */
+  na: 'N/A',
+  /**
+  *@description Text for Context Menu entry
+  */
+  showRequestsWithThisCookie: 'Show Requests With This Cookie',
+  /**
+  *@description Text for Context Menu entry
+  */
+  showIssueAssociatedWithThis: 'Show issue associated with this cookie',
+};
+const str_ = i18n.i18n.registerUIStrings('cookie_table/CookiesTable.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const expiresSessionValue = i18nString(UIStrings.session);
 
 export class CookiesTable extends UI.Widget.VBox {
   /**
@@ -60,7 +130,7 @@ export class CookiesTable extends UI.Widget.VBox {
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {
         id: SDK.Cookie.Attributes.Name,
-        title: ls`Name`,
+        title: i18nString(UIStrings.name),
         sortable: true,
         disclosure: editable,
         sort: DataGrid.DataGrid.Order.Ascending,
@@ -70,25 +140,43 @@ export class CookiesTable extends UI.Widget.VBox {
       },
       {
         id: SDK.Cookie.Attributes.Value,
-        title: ls`Value`,
+        title: i18nString(UIStrings.value),
         sortable: true,
         longText: true,
         weight: 34,
         editable: editable,
       },
-      {id: SDK.Cookie.Attributes.Domain, title: ls`Domain`, sortable: true, weight: 7, editable: editable},
-      {id: SDK.Cookie.Attributes.Path, title: ls`Path`, sortable: true, weight: 7, editable: editable},
-      {id: SDK.Cookie.Attributes.Expires, title: ls`Expires / Max-Age`, sortable: true, weight: 7, editable: editable},
+      {
+        id: SDK.Cookie.Attributes.Domain,
+        title: i18nString(UIStrings.domain),
+        sortable: true,
+        weight: 7,
+        editable: editable
+      },
+      {
+        id: SDK.Cookie.Attributes.Path,
+        title: i18nString(UIStrings.path),
+        sortable: true,
+        weight: 7,
+        editable: editable
+      },
+      {
+        id: SDK.Cookie.Attributes.Expires,
+        title: i18nString(UIStrings.expiresMaxage),
+        sortable: true,
+        weight: 7,
+        editable: editable
+      },
       {
         id: SDK.Cookie.Attributes.Size,
-        title: ls`Size`,
+        title: i18nString(UIStrings.size),
         sortable: true,
         align: DataGrid.DataGrid.Align.Right,
         weight: 7,
       },
       {
         id: SDK.Cookie.Attributes.HttpOnly,
-        title: ls`HttpOnly`,
+        title: i18nString(UIStrings.httponly),
         sortable: true,
         align: DataGrid.DataGrid.Align.Center,
         weight: 7,
@@ -97,7 +185,7 @@ export class CookiesTable extends UI.Widget.VBox {
       },
       {
         id: SDK.Cookie.Attributes.Secure,
-        title: ls`Secure`,
+        title: i18nString(UIStrings.secure),
         sortable: true,
         align: DataGrid.DataGrid.Align.Center,
         weight: 7,
@@ -106,14 +194,14 @@ export class CookiesTable extends UI.Widget.VBox {
       },
       {
         id: SDK.Cookie.Attributes.SameSite,
-        title: ls`SameSite`,
+        title: i18nString(UIStrings.samesite),
         sortable: true,
         weight: 7,
         editable: editable,
       },
       {
         id: SDK.Cookie.Attributes.Priority,
-        title: ls`Priority`,
+        title: i18nString(UIStrings.priority),
         sortable: true,
         sort: DataGrid.DataGrid.Order.Descending,
         weight: 7,
@@ -124,7 +212,7 @@ export class CookiesTable extends UI.Widget.VBox {
     if (editable) {
       /** @type {!DataGrid.DataGrid.DataGridImpl<!DataGridNode>} */
       this._dataGrid = new DataGrid.DataGrid.DataGridImpl({
-        displayName: ls`Editable Cookies`,
+        displayName: i18nString(UIStrings.editableCookies),
         columns,
         editCallback: this._onUpdateCookie.bind(this),
         deleteCallback: this._onDeleteCookie.bind(this),
@@ -132,7 +220,7 @@ export class CookiesTable extends UI.Widget.VBox {
       });
     } else {
       this._dataGrid = new DataGrid.DataGrid.DataGridImpl({
-        displayName: ls`Cookies`,
+        displayName: i18nString(UIStrings.cookies),
         columns,
         editCallback: undefined,
         deleteCallback: undefined,
@@ -461,8 +549,8 @@ export class CookiesTable extends UI.Widget.VBox {
     data[SDK.Cookie.Attributes.Value] = cookie.value();
 
     if (cookie.type() === SDK.Cookie.Type.Request) {
-      data[SDK.Cookie.Attributes.Domain] = cookie.domain() ? cookie.domain() : ls`N/A`;
-      data[SDK.Cookie.Attributes.Path] = cookie.path() ? cookie.path() : ls`N/A`;
+      data[SDK.Cookie.Attributes.Domain] = cookie.domain() ? cookie.domain() : i18nString(UIStrings.na);
+      data[SDK.Cookie.Attributes.Path] = cookie.path() ? cookie.path() : i18nString(UIStrings.na);
     } else {
       data[SDK.Cookie.Attributes.Domain] = cookie.domain() || '';
       data[SDK.Cookie.Attributes.Path] = cookie.path() || '';
@@ -477,7 +565,8 @@ export class CookiesTable extends UI.Widget.VBox {
         data[SDK.Cookie.Attributes.Expires] = new Date(cookie.expires()).toISOString();
       }
     } else {
-      data[SDK.Cookie.Attributes.Expires] = cookie.type() === SDK.Cookie.Type.Request ? ls`N/A` : expiresSessionValue;
+      data[SDK.Cookie.Attributes.Expires] =
+          cookie.type() === SDK.Cookie.Type.Request ? i18nString(UIStrings.na) : expiresSessionValue;
     }
 
     data[SDK.Cookie.Attributes.Size] = cookie.size();
@@ -639,7 +728,7 @@ export class CookiesTable extends UI.Widget.VBox {
     }
     const cookie = maybeCookie;
 
-    contextMenu.revealSection().appendItem(ls`Show Requests With This Cookie`, () => {
+    contextMenu.revealSection().appendItem(i18nString(UIStrings.showRequestsWithThisCookie), () => {
       const evt = new CustomEvent('networkrevealandfilter', {
         bubbles: true,
         composed: true,
@@ -658,7 +747,7 @@ export class CookiesTable extends UI.Widget.VBox {
       this.element.dispatchEvent(evt);
     });
     if (BrowserSDK.RelatedIssue.hasIssues(cookie)) {
-      contextMenu.revealSection().appendItem(ls`Show issue associated with this cookie`, () => {
+      contextMenu.revealSection().appendItem(i18nString(UIStrings.showIssueAssociatedWithThis), () => {
         // TODO(chromium:1077719): Just filter for the cookie instead of revealing one of the associated issues.
         BrowserSDK.RelatedIssue.reveal(cookie);
       });

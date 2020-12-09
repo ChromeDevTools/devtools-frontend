@@ -19,6 +19,7 @@ group("front_end") {
     "formatter_worker",
     "inline_editor",
     "issues",
+    "javascript_metadata",
     "linear_memory_inspector",
     "media",
     "missing_entrypoints",

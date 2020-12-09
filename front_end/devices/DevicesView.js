@@ -16,6 +16,9 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('devices/DevicesView.js', UIStrings);
 
+// @ts-ignore
+self.Devices = self.Devices || {};
+
 Devices.DevicesView = class extends UI.Widget.VBox {
   constructor() {
     super(true);

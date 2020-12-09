@@ -331,6 +331,7 @@ all_typescript_module_sources = [
   "network/RequestTrustTokensView.js",
   "network/ResourceWebSocketFrameView.js",
   "network/SignedExchangeInfoView.js",
+  "node_main/ModuleUIStrings.js",
   "node_main/NodeConnectionsPanel.js",
   "node_main/NodeMain.js",
   "object_ui/CustomPreviewComponent.js",

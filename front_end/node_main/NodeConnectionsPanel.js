@@ -2,9 +2,37 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
+
+export const UIStrings = {
+  /**
+  *@description Text in Node Connections Panel of the Sources panel when debugging a Node.js app
+  */
+  nodejsDebuggingGuide: 'Node.js debugging guide',
+  /**
+  *@description Text in Node Connections Panel of the Sources panel when debugging a Node.js app
+  *@example {Node.js debugging guide} PH1
+  */
+  specifyNetworkEndpointAnd:
+      'Specify network endpoint and DevTools will connect to it automatically. Read {PH1} to learn more.',
+  /**
+  *@description Placeholder text content in Node Connections Panel of the Sources panel when debugging a Node.js app
+  */
+  noConnectionsSpecified: 'No connections specified',
+  /**
+  *@description Text of add network target button in Node Connections Panel of the Sources panel when debugging a Node.js app
+  */
+  addConnection: 'Add connection',
+  /**
+  *@description Text in Node Connections Panel of the Sources panel when debugging a Node.js app
+  */
+  networkAddressEgLocalhost: 'Network address (e.g. localhost:9229)',
+};
+const str_ = i18n.i18n.registerUIStrings('node_main/NodeConnectionsPanel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class NodeConnectionsPanel extends UI.Panel.Panel {
   constructor() {
@@ -60,10 +88,9 @@ export class NodeConnectionsView extends UI.Widget.VBox {
 
     const networkDiscoveryFooter = this.element.createChild('div', 'network-discovery-footer');
     const documentationLink =
-        UI.XLink.XLink.create('https://nodejs.org/en/docs/inspector/', ls`Node.js debugging guide`);
-    networkDiscoveryFooter.appendChild(UI.UIUtils.formatLocalized(
-        'Specify network endpoint and DevTools will connect to it automatically. Read %s to learn more.',
-        [documentationLink]));
+        UI.XLink.XLink.create('https://nodejs.org/en/docs/inspector/', i18nString(UIStrings.nodejsDebuggingGuide));
+    networkDiscoveryFooter.appendChild(
+        i18n.i18n.getFormatLocalizedString(str_, UIStrings.specifyNetworkEndpointAnd, {PH1: documentationLink}));
 
     /** @type {!UI.ListWidget.ListWidget<!Adb.PortForwardingRule>} */
     this._list = new UI.ListWidget.ListWidget(this);
@@ -71,14 +98,14 @@ export class NodeConnectionsView extends UI.Widget.VBox {
     this._list.element.classList.add('network-discovery-list');
     const placeholder = document.createElement('div');
     placeholder.classList.add('network-discovery-list-empty');
-    placeholder.textContent = Common.UIString.UIString('No connections specified');
+    placeholder.textContent = i18nString(UIStrings.noConnectionsSpecified);
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.element);
     /** @type {?UI.ListWidget.Editor<!Adb.PortForwardingRule>} */
     this._editor = null;
 
     const addButton = UI.UIUtils.createTextButton(
-        Common.UIString.UIString('Add connection'), this._addNetworkTargetButtonClicked.bind(this),
+        i18nString(UIStrings.addConnection), this._addNetworkTargetButtonClicked.bind(this),
         'add-network-target-button', true /* primary */);
     this.element.appendChild(addButton);
 
@@ -171,7 +198,8 @@ export class NodeConnectionsView extends UI.Widget.VBox {
     this._editor = editor;
     const content = editor.contentElement();
     const fields = content.createChild('div', 'network-discovery-edit-row');
-    const input = editor.createInput('address', 'text', ls`Network address (e.g. localhost:9229)`, addressValidator);
+    const input =
+        editor.createInput('address', 'text', i18nString(UIStrings.networkAddressEgLocalhost), addressValidator);
     fields.createChild('div', 'network-discovery-value network-discovery-address').appendChild(input);
     return editor;
 

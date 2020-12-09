@@ -1208,6 +1208,33 @@
   "mobile_throttling/ThrottlingSettingsTab.js | upload": {
     "message": "Upload"
   },
+  "node_main/ModuleUIStrings.js | connection": {
+    "message": "Connection"
+  },
+  "node_main/ModuleUIStrings.js | node": {
+    "message": "node"
+  },
+  "node_main/NodeConnectionsPanel.js | addConnection": {
+    "message": "Add connection"
+  },
+  "node_main/NodeConnectionsPanel.js | networkAddressEgLocalhost": {
+    "message": "Network address (e.g. localhost:9229)"
+  },
+  "node_main/NodeConnectionsPanel.js | noConnectionsSpecified": {
+    "message": "No connections specified"
+  },
+  "node_main/NodeConnectionsPanel.js | nodejsDebuggingGuide": {
+    "message": "Node.js debugging guide"
+  },
+  "node_main/NodeConnectionsPanel.js | specifyNetworkEndpointAnd": {
+    "message": "Specify network endpoint and DevTools will connect to it automatically. Read {PH1} to learn more."
+  },
+  "node_main/NodeMain.js | main": {
+    "message": "Main"
+  },
+  "node_main/NodeMain.js | nodejsS": {
+    "message": "Node.js: {PH1}"
+  },
   "performance_monitor/ModuleUIStrings.js | activity": {
     "message": "activity"
   },

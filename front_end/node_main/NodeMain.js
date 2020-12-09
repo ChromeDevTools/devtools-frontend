@@ -5,9 +5,23 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 
+export const UIStrings = {
+  /**
+  *@description Text that refers to the main target
+  */
+  main: 'Main',
+  /**
+  *@description Text in Node Main of the Sources panel when debugging a Node.js app
+  *@example {example.com} PH1
+  */
+  nodejsS: 'Node.js: {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('node_main/NodeMain.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {Common.Runnable.Runnable}
  */
@@ -19,7 +33,7 @@ export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
     SDK.Connections.initMainConnection(async () => {
       const target = SDK.SDKModel.TargetManager.instance().createTarget(
-          'main', Common.UIString.UIString('Main'), SDK.SDKModel.Type.Browser, null);
+          'main', i18nString(UIStrings.main), SDK.SDKModel.Type.Browser, null);
       target.setInspectedURL('Node.js');
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
   }
@@ -108,7 +122,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel {
    * @param {!Protocol.Target.AttachedToTargetEvent} event
    */
   attachedToTarget({sessionId, targetInfo}) {
-    const name = ls`Node.js: ${targetInfo.url}`;
+    const name = i18nString(UIStrings.nodejsS, {PH1: targetInfo.url});
     const connection = new NodeConnection(this._targetAgent, sessionId);
     this._childConnections.set(sessionId, connection);
     const target = this._targetManager.createTarget(

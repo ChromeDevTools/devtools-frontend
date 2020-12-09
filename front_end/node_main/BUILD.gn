@@ -7,6 +7,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("node_main") {
   sources = [
+    "ModuleUIStrings.js",
     "NodeConnectionsPanel.js",
     "NodeMain.js",
   ]
@@ -15,6 +16,7 @@ devtools_module("node_main") {
     "../common:bundle",
     "../components:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../protocol_client:bundle",
     "../sdk:bundle",
     "../ui:bundle",

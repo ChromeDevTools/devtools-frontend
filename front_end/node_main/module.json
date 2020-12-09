@@ -15,6 +15,7 @@
     }
   ],
   "dependencies": [
+    "i18n",
     "platform",
     "ui",
     "host",

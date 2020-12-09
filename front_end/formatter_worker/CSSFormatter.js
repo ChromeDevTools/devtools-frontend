@@ -91,7 +91,7 @@ export class CSSFormatter {
     }
     // The css- prefix is optional, as we override that in the tokenizer defined
     // in CodeMirrorTextEditor.js. In a worker context, we don't use the prefix.
-    if (type && /^(css-)?property/.test(type) && !this._state.inPropertyValue) {
+    if (type && (/^(css-)?property/.test(type) || /^(css-)?variable-2/.test(type)) && !this._state.inPropertyValue) {
       this._state.seenProperty = true;
     }
     this._lastLine = startLine;

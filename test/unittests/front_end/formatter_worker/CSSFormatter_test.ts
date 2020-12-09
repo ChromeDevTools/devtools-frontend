@@ -160,14 +160,24 @@ span {
 
   it('formats supports rule correctly', () => {
     const formattedCode = formatCSS('@supports(--foo:green){body{color:green;}}#content{font-size:14px}');
-    assert.strictEqual(formattedCode, `@supports(--foo:green) {
+    assert.strictEqual(formattedCode, `@supports(--foo: green) {
   body {
-    color: green;
+    color:green;
   }
 }
 
 #content {
   font-size: 14px
+}
+`);
+  });
+
+  it('formats css-variable definitions and usages correctly', () => {
+    const formattedCode = formatCSS('html { --foo: bar; --color: red; background-color: var(--foo); }');
+    assert.strictEqual(formattedCode, `html {
+  --foo: bar;
+  --color: red;
+  background-color: var(--foo);
 }
 `);
   });

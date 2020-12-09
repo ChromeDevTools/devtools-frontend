@@ -64,15 +64,24 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
      */
     this._leftParenthesesIndices = [];
     ARIAUtils.markAsHidden(this._ghostTextElement);
+
+    /** @type {function(this:null, string, string, boolean=):!Promise<!Suggestions>} */
+    this._loadCompletions;
+    /** @type {string} */
+    this._completionStopCharacters;
+    /** @type {boolean} */
+    this._usesSuggestionBuilder;
   }
 
   /**
    * @param {function(this:null, string, string, boolean=):!Promise<!Suggestions>} completions
    * @param {string=} stopCharacters
+   * @param {boolean=} usesSuggestionBuilder
    */
-  initialize(completions, stopCharacters) {
+  initialize(completions, stopCharacters, usesSuggestionBuilder) {
     this._loadCompletions = completions;
     this._completionStopCharacters = stopCharacters || ' =:[({;,!+-*/&|^<>.';
+    this._usesSuggestionBuilder = usesSuggestionBuilder || false;
   }
 
   /**
@@ -446,7 +455,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     if (!result) {
       result = this._acceptSuggestionInternal();
     }
-    if (result) {
+    if (this._usesSuggestionBuilder && result) {
+      // Trigger autocompletions for text prompts using suggestion builders
       this.autoCompleteSoon();
     }
     return result;

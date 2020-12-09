@@ -111,6 +111,8 @@ export const waitForContentOfExpandedSelectedElementsNode = async (expectedTextC
     const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
     return selectedTextContent === expectedTextContent;
   });
+  // Make sure that the element is focused and can receive keyboard events.
+  await click(EXPANDED_SELECTED_TREE_ELEMENT_SELECTOR);
 };
 
 /**

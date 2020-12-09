@@ -9,6 +9,7 @@ ts_library("formatter_worker") {
   sources = [
     "CSSFormatter_test.ts",
     "FormattedContentBuilder_test.ts",
+    "HTMLFormatter_test.ts",
     "JavaScriptFormatter_test.ts",
   ]
   deps = [ "../../../../front_end/formatter_worker:bundle" ]

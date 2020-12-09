@@ -130,7 +130,7 @@ export class HTMLFormatter {
     if (Platform.StringUtilities.isWhitespace(token.value)) {
       return;
     }
-    if (token.type.has('comment') || token.type.has('meta')) {
+    if (hasTokenInSet(token.type, 'comment') || hasTokenInSet(token.type, 'meta')) {
       this._builder.addNewLine();
       this._builder.addToken(token.value.trim(), token.startOffset);
       this._builder.addNewLine();
@@ -163,7 +163,7 @@ export class HTMLFormatter {
       return;
     }
 
-    if (!isBodyToken && token.type.has('attribute')) {
+    if (!isBodyToken && hasTokenInSet(token.type, 'attribute')) {
       this._builder.addSoftSpace();
     }
 
@@ -203,6 +203,18 @@ HTMLFormatter.SupportedJavaScriptMimeTypes = new Set([
   'text/javascript1.3', 'text/javascript1.4', 'text/javascript1.5', 'text/jscript', 'text/livescript',
   'text/x-ecmascript', 'text/x-javascript'
 ]);
+
+/**
+ * @param {!Set<string>} tokenTypes
+ * @param {string} type
+ */
+function hasTokenInSet(tokenTypes, type) {
+  // We prefix the CodeMirror HTML tokenizer with the xml- prefix
+  // in a full version. When running in a worker context, this
+  // prefix is not appended, as the global is only overridden
+  // in CodeMirrorTextEditor.js.
+  return tokenTypes.has(type) || tokenTypes.has(`xml-${type}`);
+}
 
 export class HTMLModel {
   /**
@@ -308,19 +320,19 @@ export class HTMLModel {
     const type = token.type;
     switch (this._state) {
       case S.Initial:
-        if (type.has('bracket') && (value === '<' || value === '</')) {
+        if (hasTokenInSet(type, 'bracket') && (value === '<' || value === '</')) {
           this._onStartTag(token);
           this._state = S.Tag;
         }
         return;
       case S.Tag:
-        if (type.has('tag') && !type.has('bracket')) {
+        if (hasTokenInSet(type, 'tag') && !hasTokenInSet(type, 'bracket')) {
           this._tagName = value.trim().toLowerCase();
-        } else if (type.has('attribute')) {
+        } else if (hasTokenInSet(type, 'attribute')) {
           this._attributeName = value.trim().toLowerCase();
           this._attributes.set(this._attributeName, '');
           this._state = S.AttributeName;
-        } else if (type.has('bracket') && (value === '>' || value === '/>')) {
+        } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
           this._onEndTag(token);
           this._state = S.Initial;
         }
@@ -328,16 +340,16 @@ export class HTMLModel {
       case S.AttributeName:
         if (!type.size && value === '=') {
           this._state = S.AttributeValue;
-        } else if (type.has('bracket') && (value === '>' || value === '/>')) {
+        } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
           this._onEndTag(token);
           this._state = S.Initial;
         }
         return;
       case S.AttributeValue:
-        if (type.has('string')) {
+        if (hasTokenInSet(type, 'string')) {
           this._attributes.set(this._attributeName, value);
           this._state = S.Tag;
-        } else if (type.has('bracket') && (value === '>' || value === '/>')) {
+        } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
           this._onEndTag(token);
           this._state = S.Initial;
         }

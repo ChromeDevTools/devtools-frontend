@@ -6,6 +6,7 @@ import * as CSSFormatter from './CSSFormatter.js';
 import * as CSSRuleParser from './CSSRuleParser.js';
 import * as FormattedContentBuilder from './FormattedContentBuilder.js';
 import * as FormatterWorker from './FormatterWorker.js';
+import * as HTMLFormatter from './HTMLFormatter.js';
 import * as JavaScriptFormatter from './JavaScriptFormatter.js';
 import * as JavaScriptOutline from './JavaScriptOutline.js';
 
@@ -14,6 +15,7 @@ export {
   CSSRuleParser,
   FormattedContentBuilder,
   FormatterWorker,
+  HTMLFormatter,
   JavaScriptFormatter,
   JavaScriptOutline,
 };

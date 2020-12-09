@@ -205,7 +205,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     this._filterInputElement = container.createChild('span', 'filter-input-field');
 
     this._prompt = new TextPrompt();
-    this._prompt.initialize(this._completions.bind(this), ' ');
+    this._prompt.initialize(this._completions.bind(this), ' ', true);
     /** @type {!HTMLElement} */
     this._proxyElement = /** @type {!HTMLElement} */ (this._prompt.attach(this._filterInputElement));
     Tooltip.install(this._proxyElement, Common.UIString.UIString('e.g. /small[\\d]+/ url:a.com/b'));

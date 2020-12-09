@@ -1481,7 +1481,7 @@ export class ConsoleViewFilter {
     this._suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(filterKeys);
     this._textFilterUI = new UI.Toolbar.ToolbarInput(
         Common.UIString.UIString('Filter'), '', 0.2, 1, Common.UIString.UIString('e.g. /event\\d/ -cdn url:a.com'),
-        this._suggestionBuilder.completions.bind(this._suggestionBuilder));
+        this._suggestionBuilder.completions.bind(this._suggestionBuilder), true);
     this._textFilterSetting = Common.Settings.Settings.instance().createSetting('console.textFilter', '');
     if (this._textFilterSetting.get()) {
       this._textFilterUI.setValue(this._textFilterSetting.get());

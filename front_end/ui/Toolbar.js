@@ -665,8 +665,9 @@ export class ToolbarInput extends ToolbarItem {
    * @param {number=} shrinkFactor
    * @param {string=} tooltip
    * @param {(function(string, string, boolean=):!Promise<!Suggestions>)=} completions
+   * @param {boolean=} dynamicCompletions
    */
-  constructor(placeholder, accessiblePlaceholder, growFactor, shrinkFactor, tooltip, completions) {
+  constructor(placeholder, accessiblePlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions) {
     const element = document.createElement('div');
     element.classList.add('toolbar-input');
     super(element);
@@ -681,7 +682,7 @@ export class ToolbarInput extends ToolbarItem {
     this._proxyElement.classList.add('toolbar-prompt-proxy');
     this._proxyElement.addEventListener(
         'keydown', /** @param {!Event} event */ event => this._onKeydownCallback(event));
-    this._prompt.initialize(completions || (() => Promise.resolve([])), ' ');
+    this._prompt.initialize(completions || (() => Promise.resolve([])), ' ', dynamicCompletions);
     if (tooltip) {
       this._prompt.setTitle(tooltip);
     }

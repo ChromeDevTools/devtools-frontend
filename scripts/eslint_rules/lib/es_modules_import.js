@@ -161,7 +161,8 @@ module.exports = {
           });
         }
 
-        if (!importingFileName.startsWith(FRONT_END_DIRECTORY) && !importingFileName.startsWith(UNITTESTS_DIRECTORY)) {
+        const importingFileIsUnitTestFile = importingFileName.startsWith(UNITTESTS_DIRECTORY);
+        if (!importingFileName.startsWith(FRONT_END_DIRECTORY) && !importingFileIsUnitTestFile) {
           return;
         }
 
@@ -184,6 +185,13 @@ module.exports = {
            * all functionality in a single entrypoint
            */
           return;
+        }
+        if (importPath.includes('/front_end/') && !importingFileIsUnitTestFile) {
+          context.report({
+            node,
+            message:
+                'Invalid relative import: an import should not include the "front_end" directory. If you are in a unit test, you should import from the module entrypoint.',
+          });
         }
 
         if (importPath.endsWith(path.join('platform', 'platform.js')) && nodeSpecifiersImportLsOnly(node.specifiers)) {

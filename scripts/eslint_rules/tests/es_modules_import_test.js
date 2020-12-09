@@ -27,10 +27,6 @@ ruleTester.run('es_modules_import', rule, {
       filename: 'front_end/common/common.js',
     },
     {
-      code: 'import { Exporting } from \'../../../front_end/common/EventTarget.js\';',
-      filename: 'test/common/common.js',
-    },
-    {
       code: 'import * as CommonModule from \'./common.js\';',
       filename: 'front_end/common/common-legacy.js',
     },
@@ -106,6 +102,11 @@ ruleTester.run('es_modules_import', rule, {
     {
       code: 'import * as Marked from \'../third_party/marked/marked.js\';',
       filename: 'front_end/common/common.js',
+    },
+    // Tests are allowed to import from front_end
+    {
+      code: 'import * as UI from \'../../../front_end/ui/ui.js\';',
+      filename: 'test/unittests/front_end/foo.js',
     },
   ],
 
@@ -191,10 +192,12 @@ ruleTester.run('es_modules_import', rule, {
     {
       code: 'import { LiveLocationPool } from \'../../../../front_end/bindings/LiveLocation.js\';',
       filename: 'test/unittests/front_end/bindings/LiveLocation_test.ts',
-      errors: [{
-        message:
-            'Incorrect cross-namespace import: "../../../../front_end/bindings/LiveLocation.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.'
-      }],
+      errors: [
+        {
+          message:
+              'Incorrect cross-namespace import: "../../../../front_end/bindings/LiveLocation.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.'
+        },
+      ],
     },
     {
       code: 'import {appendStyle} from \'./append-style.js\';',
@@ -218,6 +221,22 @@ ruleTester.run('es_modules_import', rule, {
       errors: [{
         message:
             'Incorrect cross-namespace import: "../third_party/marked/package/lib/marked.esm.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead. If the third_party dependency does not expose a single entrypoint, update es_modules_import.js to make it exempt.'
+      }],
+    },
+    {
+      code: 'import * as Marked from \'../../front_end/third_party/marked/package/lib/marked.esm.js\';',
+      filename: 'front_end/marked/marked.js',
+      errors: [{
+        message:
+            'Invalid relative import: an import should not include the "front_end" directory. If you are in a unit test, you should import from the module entrypoint.'
+      }],
+    },
+    {
+      code: 'import * as SDK from \'../../front_end/sdk/sdk.js\';',
+      filename: 'front_end/marked/marked.js',
+      errors: [{
+        message:
+            'Invalid relative import: an import should not include the "front_end" directory. If you are in a unit test, you should import from the module entrypoint.'
       }],
     }
   ]

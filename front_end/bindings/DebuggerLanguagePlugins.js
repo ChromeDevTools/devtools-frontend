@@ -197,13 +197,14 @@ class EvalNodeBase extends SDK.RemoteObject.RemoteObjectImpl {
   }
 }
 
-class EvalError extends Error {
+class FormattingError extends Error {
   /**
    * @param {!SDK.RemoteObject.RemoteObject} exception
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    */
   constructor(exception, exceptionDetails) {
-    super();
+    const {description} = exceptionDetails.exception || {};
+    super(description || exceptionDetails.text);
     this.exception = exception;
     this.exceptionDetails = exceptionDetails;
   }
@@ -222,7 +223,7 @@ class EvalError extends Error {
     /** @type {!Protocol.Runtime.ExceptionDetails} */
     const exceptionDetails = {text: 'Uncaught', exceptionId: -1, columnNumber: 0, lineNumber: 0, exception};
     const errorObject = callFrame.debuggerModel.runtimeModel().createRemoteObject(exception);
-    throw new EvalError(errorObject, exceptionDetails);
+    throw new FormattingError(errorObject, exceptionDetails);
   }
 }
 
@@ -261,7 +262,7 @@ class EvalNode extends SDK.RemoteObject.RemoteObjectImpl {
 
     const {result, exceptionDetails} = response;
     if (exceptionDetails) {
-      throw new EvalError(callFrame.debuggerModel.runtimeModel().createRemoteObject(result), exceptionDetails);
+      throw new FormattingError(callFrame.debuggerModel.runtimeModel().createRemoteObject(result), exceptionDetails);
     }
     const object = new EvalNodeBase(callFrame, sourceType, plugin, result, null, evalOptions);
     const unpackedResultObject = await unpackResultObject(object);
@@ -310,7 +311,7 @@ class EvalNode extends SDK.RemoteObject.RemoteObjectImpl {
     try {
       typeInfo = await plugin.getTypeInfo(expression, location);
     } catch (e) {
-      EvalError.throwLocal(callFrame, e.message);
+      FormattingError.throwLocal(callFrame, e.message);
     }
     if (!typeInfo) {
       return new SDK.RemoteObject.LocalJSONObject(undefined);
@@ -705,7 +706,7 @@ export class DebuggerLanguagePluginManager {
       const object = await EvalNode.get(callFrame, plugin, expression, options);
       return {object, exceptionDetails: undefined};
     } catch (error) {
-      if (error instanceof EvalError) {
+      if (error instanceof FormattingError) {
         const {exception: object, exceptionDetails} = error;
         return {object, exceptionDetails};
       }

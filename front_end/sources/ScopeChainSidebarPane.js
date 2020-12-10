@@ -33,10 +33,16 @@ import * as UI from '../ui/ui.js';
 
 import {resolveScopeChain, resolveScopeInObject, resolveThisObject} from './SourceMapNamesResolver.js';
 
+/** @type {!ScopeChainSidebarPane} */
+let scopeChainSidebarPaneInstance;
+
 /**
  * @implements {UI.ContextFlavorListener.ContextFlavorListener}
  */
 export class ScopeChainSidebarPane extends UI.Widget.VBox {
+  /**
+   * @private
+   */
   constructor() {
     super(true);
     this.registerRequiredCSS('sources/scopeChainSidebarPane.css', {enableLegacyPatching: false});
@@ -51,6 +57,13 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
     this._infoElement.textContent = ls`Not paused`;
     this._infoElement.tabIndex = -1;
     this._update();
+  }
+
+  static instance() {
+    if (!scopeChainSidebarPaneInstance) {
+      scopeChainSidebarPaneInstance = new ScopeChainSidebarPane();
+    }
+    return scopeChainSidebarPaneInstance;
   }
 
   /**

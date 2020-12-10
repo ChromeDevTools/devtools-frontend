@@ -144,6 +144,7 @@ devtools_module_entrypoint_sources = [
   "source_frame/source_frame-legacy.js",
   "source_frame/source_frame.js",
   "sources/sources-legacy.js",
+  "sources/sources-meta.js",
   "sources/sources.js",
   "startup/startup.js",
   "test_runner/test_runner.js",

@@ -1,14 +1,6 @@
 {
   "extensions": [
     {
-      "type": "view",
-      "location": "panel",
-      "id": "sources",
-      "title": "Sources",
-      "order": 30,
-      "className": "Sources.SourcesPanel"
-    },
-    {
       "type": "@UI.ContextMenu.Provider",
       "contextTypes": [
         "Workspace.UISourceCode",
@@ -377,43 +369,6 @@
       "className": "Sources.ScriptFormatterEditorAction"
     },
     {
-      "type": "view",
-      "location": "navigator-view",
-      "id": "navigator-files",
-      "title": "Filesystem",
-      "order": 3,
-      "persistence": "permanent",
-      "className": "Sources.FilesNavigatorView"
-    },
-    {
-      "type": "view",
-      "location": "navigator-view",
-      "id": "navigator-snippets",
-      "title": "Snippets",
-      "order": 6,
-      "persistence": "permanent",
-      "className": "Sources.SnippetsNavigatorView"
-    },
-    {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "sources.search-sources-tab",
-      "title": "Search",
-      "order": 7,
-      "persistence": "closeable",
-      "className": "Sources.SearchSourcesView"
-    },
-    {
-      "type": "view",
-      "location": "navigator-view",
-      "id": "navigator-recordings",
-      "title": "Recordings",
-      "order": 8,
-      "persistence": "permanent",
-      "className": "Sources.RecordingsNavigatorView",
-      "experiment": "recorder"
-    },
-    {
       "type": "@Sources.NavigatorView",
       "viewId": "navigator-network",
       "className": "Sources.NetworkNavigatorView"
@@ -693,15 +648,6 @@
           "title": "Disallow scrolling past end of file"
         }
       ]
-    },
-    {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "sources.quick",
-      "title": "Quick source",
-      "persistence": "closeable",
-      "order": 1000,
-      "className": "Sources.SourcesPanel.WrapperView"
     },
     {
       "type": "action",
@@ -997,36 +943,6 @@
       "name": "sources.sidebar-tabs",
       "category": "Sources",
       "className": "Sources.SourcesPanel"
-    },
-    {
-      "type": "view",
-      "id": "sources.threads",
-      "title": "Threads",
-      "persistence": "permanent",
-      "className": "Sources.ThreadsSidebarPane",
-      "condition": "!sources.hide_thread_sidebar"
-    },
-    {
-      "type": "view",
-      "id": "sources.scopeChain",
-      "title": "Scope",
-      "persistence": "permanent",
-      "className": "Sources.ScopeChainSidebarPane"
-    },
-    {
-      "type": "view",
-      "id": "sources.watch",
-      "title": "Watch",
-      "hasToolbar": true,
-      "persistence": "permanent",
-      "className": "Sources.WatchExpressionsSidebarPane"
-    },
-    {
-      "type": "view",
-      "id": "sources.jsBreakpoints",
-      "title": "Breakpoints",
-      "persistence": "permanent",
-      "className": "Sources.JavaScriptBreakpointsSidebarPane"
     },
     {
       "type": "@UI.ContextMenu.Provider",

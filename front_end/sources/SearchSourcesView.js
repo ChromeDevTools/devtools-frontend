@@ -7,9 +7,22 @@ import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
 import {SourcesSearchScope} from './SourcesSearchScope.js';
 
+/** @type {!SearchSourcesView} */
+let searchSourcesViewInstance;
+
 export class SearchSourcesView extends Search.SearchView.SearchView {
+  /**
+   * @private
+   */
   constructor() {
     super('sources');
+  }
+
+  static instance() {
+    if (!searchSourcesViewInstance) {
+      searchSourcesViewInstance = new SearchSourcesView();
+    }
+    return searchSourcesViewInstance;
   }
 
   /**

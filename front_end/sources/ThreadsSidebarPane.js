@@ -6,11 +6,17 @@ import * as Common from '../common/common.js';  // eslint-disable-line no-unused
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+/** @type {!ThreadsSidebarPane} */
+let threadsSidebarPaneInstance;
+
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DebuggerModel.DebuggerModel>}
  * @implements {UI.ListControl.ListDelegate<!SDK.DebuggerModel.DebuggerModel>}
  */
 export class ThreadsSidebarPane extends UI.Widget.VBox {
+  /**
+   * @private
+   */
   constructor() {
     super(true);
     this.registerRequiredCSS('sources/threadsSidebarPane.css', {enableLegacyPatching: true});
@@ -25,6 +31,13 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.SDKModel.Target, this._targetFlavorChanged, this);
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
+  }
+
+  static instance() {
+    if (!threadsSidebarPaneInstance) {
+      threadsSidebarPaneInstance = new ThreadsSidebarPane();
+    }
+    return threadsSidebarPaneInstance;
   }
 
   /**

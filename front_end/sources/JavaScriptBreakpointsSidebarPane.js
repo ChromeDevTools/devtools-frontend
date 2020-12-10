@@ -10,11 +10,17 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
+/** @type {!JavaScriptBreakpointsSidebarPane} */
+let javaScriptBreakpointsSidebarPaneInstance;
+
 /**
  * @implements {UI.ContextFlavorListener.ContextFlavorListener}
  * @implements {UI.ListControl.ListDelegate<!BreakpointItem>}
  */
 export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
+  /**
+   * @private
+   */
   constructor() {
     super(true);
     this.registerRequiredCSS('sources/javaScriptBreakpointsSidebarPane.css', {enableLegacyPatching: true});
@@ -36,6 +42,13 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     this._emptyElement.tabIndex = -1;
 
     this.update();
+  }
+
+  static instance() {
+    if (!javaScriptBreakpointsSidebarPaneInstance) {
+      javaScriptBreakpointsSidebarPaneInstance = new JavaScriptBreakpointsSidebarPane();
+    }
+    return javaScriptBreakpointsSidebarPaneInstance;
   }
 
   /**

@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Elements from '../elements/elements.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
+import * as Components from '../ui/components/components.js';
 
 const {render, html} = LitHtml;
 const ls = Common.ls;
@@ -185,7 +185,7 @@ export class LinearMemoryNavigator extends HTMLElement {
         data-button=${event.type} title=${title}
         @click=${this.dispatchEvent.bind(this, event)}>
         <devtools-icon .data=${
-        {iconName: name, color: 'var(--color-text-secondary)', width: '14px'} as Elements.Icon.IconWithName}>
+        {iconName: name, color: 'var(--color-text-secondary)', width: '14px'} as Components.Icon.IconWithName}>
         </devtools-icon>
       </button>`;
   }

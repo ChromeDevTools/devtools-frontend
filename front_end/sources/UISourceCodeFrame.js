@@ -29,13 +29,13 @@
  */
 
 import * as Common from '../common/common.js';
-import * as Elements from '../elements/elements.js';
 import * as Persistence from '../persistence/persistence.js';  // eslint-disable-line no-unused-vars
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
+import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -667,7 +667,7 @@ export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
 /**
  *
  * @param {!Workspace.UISourceCode.Message.Level} level
- * @return {Elements.Icon.IconData}
+ * @return {WebComponents.Icon.IconData}
  */
 function getIconClassPerLevel(level) {
   if (level === Workspace.UISourceCode.Message.Level.Error) {
@@ -698,7 +698,7 @@ export class RowMessage {
     this._repeatCount = 1;
     this.element = document.createElement('div');
     this.element.classList.add('text-editor-row-message');
-    this._icon = new Elements.Icon.Icon();
+    this._icon = new WebComponents.Icon.Icon();
     this._icon.data = getIconClassPerLevel(message.level());
     this._icon.classList.add('text-editor-row-message-icon');
 
@@ -766,8 +766,7 @@ export class RowMessageBucket {
     this._decoration.classList.add('text-editor-line-decoration');
     elementToMessageBucket.set(this._decoration, this);
     this._wave = this._decoration.createChild('div', 'text-editor-line-decoration-wave');
-    /** @type {!Elements.Icon.Icon} */
-    this._icon = new Elements.Icon.Icon();
+    this._icon = new WebComponents.Icon.Icon();
     this._icon.classList.add('text-editor-line-decoration-icon');
     this._wave.appendChild(this._icon);
     /** @type {?number} */

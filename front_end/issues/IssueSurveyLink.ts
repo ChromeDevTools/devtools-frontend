@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Elements from '../elements/elements.js';
 import * as Host from '../host/host.js';  // eslint-disable-line no-unused-vars
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
+import * as Components from '../ui/components/components.js';
 
 const ls = Common.ls;
 
@@ -129,7 +129,7 @@ export class IssueSurveyLink extends HTMLElement {
         }
       </style>
       <a class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} role="button" aria-disabled=${ariaDisabled} @click=${this.sendSurvey} @keydown=${this.onKeyDown}>
-        <devtools-icon class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--issue-link)', width: '16px', height: '16px'} as Elements.Icon.IconData}></devtools-icon><!--
+        <devtools-icon class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--issue-link)', width: '16px', height: '16px'} as Components.Icon.IconData}></devtools-icon><!--
       -->${linkText}
       </a>
     `;

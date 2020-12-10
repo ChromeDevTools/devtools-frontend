@@ -7,8 +7,8 @@ import './ValueInterpreterSettings.js';
 
 import * as Common from '../common/common.js';
 import * as ComponentHelpers from '../component_helpers/component_helpers.js';
-import * as Elements from '../elements/elements.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
+import * as Components from '../ui/components/components.js';
 
 import type {ValueDisplayData} from './ValueInterpreterDisplay.js';
 import {Endianness, endiannessToLocalizedString, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
@@ -128,7 +128,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
           ${this.renderSetting()}
           <button data-settings="true" class="settings-toolbar-button ${this.showSettings ? 'active' : ''}" title=${ls`Toggle value type settings`} @click=${this.onSettingsToggle}>
             <devtools-icon
-              .data=${{ iconName: 'settings_14x14_icon', color: 'var(--color-text-secondary)', width: '14px' } as Elements.Icon.IconWithName}>
+              .data=${{ iconName: 'settings_14x14_icon', color: 'var(--color-text-secondary)', width: '14px' } as Components.Icon.IconWithName}>
             </devtools-icon>
           </button>
         </div>

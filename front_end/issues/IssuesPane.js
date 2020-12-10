@@ -9,6 +9,7 @@ import * as Elements from '../elements/elements.js';
 import * as Host from '../host/host.js';
 import * as Network from '../network/network.js';
 import * as SDK from '../sdk/sdk.js';
+import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
 import {AggregatedIssue, Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
@@ -211,7 +212,7 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     const frameCell = /** @type {!HTMLElement} */ (document.createElement('td'));
     frameCell.classList.add('affected-resource-cell');
     if (frame) {
-      const icon = new Elements.Icon.Icon();
+      const icon = new WebComponents.Icon.Icon();
       icon.data = {iconName: 'elements_panel_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
       icon.classList.add('link', 'elements-panel');
       icon.onclick = async () => {
@@ -247,7 +248,7 @@ class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     let filename = url ? extractShortPath(url) : '';
     const requestCell = /** @type {!HTMLElement} */ (document.createElement('td'));
     requestCell.classList.add('affected-resource-cell');
-    const icon = new Elements.Icon.Icon();
+    const icon = new WebComponents.Icon.Icon();
     icon.data = {iconName: 'network_panel_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
     icon.classList.add('network-panel');
     requestCell.appendChild(icon);
@@ -1188,7 +1189,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
   _appendHeader() {
     const header = document.createElement('div');
     header.classList.add('header');
-    const icon = new Elements.Icon.Icon();
+    const icon = new WebComponents.Icon.Icon();
     icon.data = {iconName: 'breaking_change_icon', color: '', width: '16px', height: '16px'};
     icon.classList.add('breaking-change');
     this._aggregatedIssuesCount = /** @type {!HTMLElement} */ (document.createElement('span'));
@@ -1268,7 +1269,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
       const link = UI.Fragment.html
       `<a class="link devtools-link" role="link" tabindex="0" href=${description.link}>${
           ls`Learn more: ${description.linkTitle}`}</a>`;
-      const linkIcon = new Elements.Icon.Icon();
+      const linkIcon = new WebComponents.Icon.Icon();
       linkIcon.data = {iconName: 'link_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
       linkIcon.classList.add('link-icon');
       link.prepend(linkIcon);
@@ -1395,7 +1396,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     rightToolbar.appendSeparator();
     const toolbarWarnings = document.createElement('div');
     toolbarWarnings.classList.add('toolbar-warnings');
-    const breakingChangeIcon = new Elements.Icon.Icon();
+    const breakingChangeIcon = new WebComponents.Icon.Icon();
     breakingChangeIcon.data = {iconName: 'breaking_change_icon', color: '', width: '16px', height: '16px'};
     breakingChangeIcon.classList.add('breaking-change');
     toolbarWarnings.appendChild(breakingChangeIcon);

@@ -35,6 +35,7 @@ import * as InlineEditor from '../inline_editor/inline_editor.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
+import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
 import {FontEditorSectionManager} from './ColorSwatchPopoverIcon.js';
@@ -42,7 +43,6 @@ import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {findIcon} from './CSSPropertyIconResolver.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
-import {Icon} from './Icon.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import {Context, StylePropertyTreeElement} from './StylePropertyTreeElement.js';  // eslint-disable-line no-unused-vars
@@ -2932,7 +2932,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         if (!iconInfo) {
           continue;
         }
-        const icon = new Icon();
+        const icon = new WebComponents.Icon.Icon();
         const width = '12.5px';
         const height = '12.5px';
         icon.data = {

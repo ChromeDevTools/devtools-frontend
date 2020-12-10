@@ -28,7 +28,6 @@ devtools_module("elements") {
     "ElementsTreeElementHighlighter.js",
     "ElementsTreeOutline.js",
     "EventListenersWidget.js",
-    "Icon.ts",
     "ImagePreviewPopover.js",
     "InspectElementModeController.js",
     "LayoutPane.ts",
@@ -66,6 +65,7 @@ devtools_module("elements") {
     "../text_editor:bundle",
     "../third_party/lit-html:bundle",
     "../ui:bundle",
+    "../ui/components:bundle",
     "../workspace:bundle",
   ]
 

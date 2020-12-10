@@ -11,6 +11,7 @@ devtools_module("resources") {
     "ApplicationCacheItemsView.js",
     "ApplicationCacheModel.js",
     "ApplicationPanelSidebar.js",
+    "ApplicationPanelTreeElement.ts",
     "BackgroundServiceModel.js",
     "BackgroundServiceView.js",
     "ClearStorageView.js",

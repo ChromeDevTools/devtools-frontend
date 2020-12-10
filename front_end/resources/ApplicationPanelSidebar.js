@@ -38,6 +38,7 @@ import * as UI from '../ui/ui.js';
 
 import {ApplicationCacheItemsView} from './ApplicationCacheItemsView.js';
 import {ApplicationCacheModel, Events as ApplicationCacheModelEvents} from './ApplicationCacheModel.js';
+import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {AppManifestView} from './AppManifestView.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {BackgroundServiceView} from './BackgroundServiceView.js';
@@ -771,58 +772,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
   }
 }
 
-export class BaseStorageTreeElement extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {!ResourcesPanel} storagePanel
-   * @param {string} title
-   * @param {boolean} expandable
-   */
-  constructor(storagePanel, title, expandable) {
-    super(title, expandable);
-    this._storagePanel = storagePanel;
-    UI.ARIAUtils.setAccessibleName(this.listItemElement, title);
-  }
-
-  /**
-   * @return {string}
-   */
-  get itemURL() {
-    throw new Error('Unimplemented Method');
-  }
-
-  /**
-   * @override
-   * @param {boolean=} selectedByUser
-   * @return {boolean}
-   */
-  onselect(selectedByUser) {
-    if (!selectedByUser) {
-      return false;
-    }
-
-    const path = [];
-    for (let el = /** @type {?UI.TreeOutline.TreeElement} */ (this); el; el = el.parent) {
-      const url = el instanceof BaseStorageTreeElement && el.itemURL;
-      if (!url) {
-        break;
-      }
-      path.push(url);
-    }
-    this._storagePanel.setLastSelectedItemPath(path);
-
-    return false;
-  }
-
-  /**
-   * @protected
-   * @param {?UI.Widget.Widget} view
-   */
-  showView(view) {
-    this._storagePanel.showView(view);
-  }
-}
-
-export class StorageCategoryTreeElement extends BaseStorageTreeElement {
+export class StorageCategoryTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    * @param {string} categoryName
@@ -858,7 +808,7 @@ export class StorageCategoryTreeElement extends BaseStorageTreeElement {
    */
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    this._storagePanel.showCategoryView(this._categoryName, this._categoryLink);
+    this.resourcesPanel.showCategoryView(this._categoryName, this._categoryLink);
     return false;
   }
 
@@ -887,7 +837,7 @@ export class StorageCategoryTreeElement extends BaseStorageTreeElement {
   }
 }
 
-export class BackgroundServiceTreeElement extends BaseStorageTreeElement {
+export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    * @param {!Protocol.BackgroundService.ServiceName} serviceName
@@ -978,7 +928,7 @@ export class BackgroundServiceTreeElement extends BaseStorageTreeElement {
   }
 }
 
-export class DatabaseTreeElement extends BaseStorageTreeElement {
+export class DatabaseTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ApplicationPanelSidebar} sidebar
    * @param {!DatabaseModelDatabase} database
@@ -1027,7 +977,7 @@ export class DatabaseTreeElement extends BaseStorageTreeElement {
   }
 }
 
-export class DatabaseTableTreeElement extends BaseStorageTreeElement {
+export class DatabaseTableTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ApplicationPanelSidebar} sidebar
    * @param {!DatabaseModelDatabase} database
@@ -1132,7 +1082,7 @@ export class ServiceWorkerCacheTreeElement extends StorageCategoryTreeElement {
    * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    */
   _addCache(model, cache) {
-    const swCacheTreeElement = new SWCacheTreeElement(this._storagePanel, model, cache);
+    const swCacheTreeElement = new SWCacheTreeElement(this.resourcesPanel, model, cache);
     this._swCacheTreeElements.add(swCacheTreeElement);
     this.appendChild(swCacheTreeElement);
   }
@@ -1169,7 +1119,7 @@ export class ServiceWorkerCacheTreeElement extends StorageCategoryTreeElement {
   }
 }
 
-export class SWCacheTreeElement extends BaseStorageTreeElement {
+export class SWCacheTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    * @param {!SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel} model
@@ -1241,7 +1191,7 @@ export class SWCacheTreeElement extends BaseStorageTreeElement {
   }
 }
 
-export class ServiceWorkersTreeElement extends BaseStorageTreeElement {
+export class ServiceWorkersTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    */
@@ -1277,7 +1227,7 @@ export class ServiceWorkersTreeElement extends BaseStorageTreeElement {
   }
 }
 
-export class AppManifestTreeElement extends BaseStorageTreeElement {
+export class AppManifestTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    */
@@ -1313,7 +1263,7 @@ export class AppManifestTreeElement extends BaseStorageTreeElement {
   }
 }
 
-export class ClearStorageTreeElement extends BaseStorageTreeElement {
+export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    */
@@ -1427,7 +1377,7 @@ export class IndexedDBTreeElement extends StorageCategoryTreeElement {
    * @param {!DatabaseId} databaseId
    */
   _addIndexedDB(model, databaseId) {
-    const idbDatabaseTreeElement = new IDBDatabaseTreeElement(this._storagePanel, model, databaseId);
+    const idbDatabaseTreeElement = new IDBDatabaseTreeElement(this.resourcesPanel, model, databaseId);
     this._idbDatabaseTreeElements.push(idbDatabaseTreeElement);
     this.appendChild(idbDatabaseTreeElement);
     model.refreshDatabase(databaseId);
@@ -1502,7 +1452,7 @@ export class IndexedDBTreeElement extends StorageCategoryTreeElement {
   }
 }
 
-export class IDBDatabaseTreeElement extends BaseStorageTreeElement {
+export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    * @param {!IndexedDBModel} model
@@ -1575,7 +1525,7 @@ export class IDBDatabaseTreeElement extends BaseStorageTreeElement {
       objectStoreNames.add(objectStore.name);
       let treeElement = this._idbObjectStoreTreeElements.get(objectStore.name);
       if (!treeElement) {
-        treeElement = new IDBObjectStoreTreeElement(this._storagePanel, this._model, this._databaseId, objectStore);
+        treeElement = new IDBObjectStoreTreeElement(this.resourcesPanel, this._model, this._databaseId, objectStore);
         this._idbObjectStoreTreeElements.set(objectStore.name, treeElement);
         this.appendChild(treeElement);
       }
@@ -1641,7 +1591,7 @@ export class IDBDatabaseTreeElement extends BaseStorageTreeElement {
   }
 }
 
-export class IDBObjectStoreTreeElement extends BaseStorageTreeElement {
+export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    * @param {!IndexedDBModel} model
@@ -1723,7 +1673,7 @@ export class IDBObjectStoreTreeElement extends BaseStorageTreeElement {
       let treeElement = this._idbIndexTreeElements.get(index.name);
       if (!treeElement) {
         treeElement = new IDBIndexTreeElement(
-            this._storagePanel, this._model, this._databaseId, this._objectStore, index,
+            this.resourcesPanel, this._model, this._databaseId, this._objectStore, index,
             this._refreshObjectStore.bind(this));
         this._idbIndexTreeElements.set(index.name, treeElement);
         this.appendChild(treeElement);
@@ -1800,7 +1750,7 @@ export class IDBObjectStoreTreeElement extends BaseStorageTreeElement {
   }
 }
 
-export class IDBIndexTreeElement extends BaseStorageTreeElement {
+export class IDBIndexTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    * @param {!IndexedDBModel} model
@@ -1891,7 +1841,7 @@ export class IDBIndexTreeElement extends BaseStorageTreeElement {
   }
 }
 
-export class DOMStorageTreeElement extends BaseStorageTreeElement {
+export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    * @param {!DOMStorage} domStorage
@@ -1921,7 +1871,7 @@ export class DOMStorageTreeElement extends BaseStorageTreeElement {
    */
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    this._storagePanel.showDOMStorage(this._domStorage);
+    this.resourcesPanel.showDOMStorage(this._domStorage);
     return false;
   }
 
@@ -1943,7 +1893,7 @@ export class DOMStorageTreeElement extends BaseStorageTreeElement {
   }
 }
 
-export class CookieTreeElement extends BaseStorageTreeElement {
+export class CookieTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
@@ -1984,7 +1934,7 @@ export class CookieTreeElement extends BaseStorageTreeElement {
   _handleContextMenuEvent(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-        Common.UIString.UIString('Clear'), () => this._storagePanel.clearCookies(this._target, this._cookieDomain));
+        Common.UIString.UIString('Clear'), () => this.resourcesPanel.clearCookies(this._target, this._cookieDomain));
     contextMenu.show();
   }
 
@@ -1995,12 +1945,12 @@ export class CookieTreeElement extends BaseStorageTreeElement {
    */
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    this._storagePanel.showCookies(this._target, this._cookieDomain);
+    this.resourcesPanel.showCookies(this._target, this._cookieDomain);
     return false;
   }
 }
 
-export class ApplicationCacheManifestTreeElement extends BaseStorageTreeElement {
+export class ApplicationCacheManifestTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    * @param {string} manifestURL
@@ -2031,12 +1981,12 @@ export class ApplicationCacheManifestTreeElement extends BaseStorageTreeElement 
    */
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    this._storagePanel.showCategoryView(this._manifestURL, null);
+    this.resourcesPanel.showCategoryView(this._manifestURL, null);
     return false;
   }
 }
 
-export class ApplicationCacheFrameTreeElement extends BaseStorageTreeElement {
+export class ApplicationCacheFrameTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ApplicationPanelSidebar} sidebar
    * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
@@ -2378,7 +2328,7 @@ export class ResourcesSection {
   }
 }
 
-export class FrameTreeElement extends BaseStorageTreeElement {
+export class FrameTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesSection} section
    * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
@@ -2621,7 +2571,7 @@ export class FrameTreeElement extends BaseStorageTreeElement {
 }
 /** @type {!WeakMap<!SDK.Resource.Resource, !FrameResourceTreeElement>} */
 const resourceToFrameResourceTreeElement = new WeakMap();
-export class FrameResourceTreeElement extends BaseStorageTreeElement {
+export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    * @param {!SDK.Resource.Resource} resource
@@ -2742,7 +2692,7 @@ export class FrameResourceTreeElement extends BaseStorageTreeElement {
   }
 }
 
-class FrameWindowTreeElement extends BaseStorageTreeElement {
+class FrameWindowTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    * @param {!Protocol.Target.TargetInfo} targetInfo
@@ -2804,7 +2754,7 @@ class FrameWindowTreeElement extends BaseStorageTreeElement {
   }
 }
 
-class WorkerTreeElement extends BaseStorageTreeElement {
+class WorkerTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    * @param {!Protocol.Target.TargetInfo} targetInfo

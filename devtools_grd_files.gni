@@ -798,6 +798,7 @@ grd_files_debug_sources = [
   "front_end/resources/ApplicationCacheItemsView.js",
   "front_end/resources/ApplicationCacheModel.js",
   "front_end/resources/ApplicationPanelSidebar.js",
+  "front_end/resources/ApplicationPanelTreeElement.js",
   "front_end/resources/BackgroundServiceModel.js",
   "front_end/resources/BackgroundServiceView.js",
   "front_end/resources/ClearStorageView.js",

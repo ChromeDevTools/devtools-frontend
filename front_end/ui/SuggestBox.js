@@ -171,13 +171,18 @@ export class SuggestBox {
    */
   _applySuggestion(isIntermediateSuggestion) {
     if (this._onlyCompletion) {
-      ARIAUtils.alert(ls`${this._onlyCompletion.text}, suggestion`, this._element);
+      ARIAUtils.alert(
+          ls`${this._onlyCompletion.text}, suggestion ${this._list.selectedIndex() + 1} of ${this._items.length}`,
+          this._element);
       this._suggestBoxDelegate.applySuggestion(this._onlyCompletion, isIntermediateSuggestion);
       return true;
     }
     const suggestion = this._list.selectedItem();
     if (suggestion && suggestion.text) {
-      ARIAUtils.alert(ls`${suggestion.title || suggestion.text}, suggestion`, this._element);
+      ARIAUtils.alert(
+          ls`${suggestion.title || suggestion.text}, suggestion ${this._list.selectedIndex() + 1} of ${
+              this._items.length}`,
+          this._element);
     }
     this._suggestBoxDelegate.applySuggestion(suggestion, isIntermediateSuggestion);
 

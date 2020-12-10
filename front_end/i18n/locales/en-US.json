@@ -1259,6 +1259,9 @@
   "mobile_throttling/ThrottlingSettingsTab.js | upload": {
     "message": "Upload"
   },
+  "node_debugger/ModuleUIStrings.js | node": {
+    "message": "Node"
+  },
   "node_main/ModuleUIStrings.js | connection": {
     "message": "Connection"
   },

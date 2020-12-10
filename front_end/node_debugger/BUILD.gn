@@ -3,9 +3,16 @@
 # found in the LICENSE file.
 
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
+
+devtools_module("node_debugger") {
+  sources = [ "ModuleUIStrings.js" ]
+
+  deps = [ "../i18n:bundle" ]
+}
 
 devtools_entrypoint("bundle") {
   entrypoint = "node_debugger.js"
 
-  deps = []
+  deps = [ ":node_debugger" ]
 }

@@ -721,6 +721,7 @@ grd_files_debug_sources = [
   "front_end/network/RequestTrustTokensView.js",
   "front_end/network/ResourceWebSocketFrameView.js",
   "front_end/network/SignedExchangeInfoView.js",
+  "front_end/node_debugger/ModuleUIStrings.js",
   "front_end/node_main/ModuleUIStrings.js",
   "front_end/node_main/NodeConnectionsPanel.js",
   "front_end/node_main/NodeMain.js",

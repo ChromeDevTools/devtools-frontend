@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<grit-part>
-  <message name="IDS_DEVTOOLS_6c3a6944a808a7c0bbb6788dbec54a9f" desc="Title of the 'Node' tool in the Network Navigator View, which is part of the Sources tool">
-    Node
-  </message>
-</grit-part>

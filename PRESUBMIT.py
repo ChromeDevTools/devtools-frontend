@@ -454,6 +454,12 @@ def _CommonChecks(input_api, output_api):
     # we don't show the message to suppress these errors, which would otherwise be
     # causing CQ to fail.
     results.extend(_RunCannedChecks(input_api, output_api))
+    return results
+
+
+def _SideEffectChecks(input_api, output_api):
+    """Check side effects caused by other checks"""
+    results = []
     results.extend(_CheckNoUncheckedFiles(input_api, output_api))
     results.extend(_CheckForTooLargeFiles(input_api, output_api))
     return results
@@ -465,6 +471,8 @@ def CheckChangeOnUpload(input_api, output_api):
     results.extend(_CheckDevtoolsLocalization(input_api, output_api))
     # Run collectStrings after localization check that cleans up unused strings
     results.extend(_CollectStrings(input_api, output_api))
+    # Run checks that rely on output from other DevTool checks
+    results.extend(_SideEffectChecks(input_api, output_api))
     return results
 
 
@@ -474,6 +482,8 @@ def CheckChangeOnCommit(input_api, output_api):
     results.extend(_CheckDevtoolsLocalization(input_api, output_api, True))
     # Run collectStrings after localization check that cleans up unused strings
     results.extend(_CollectStrings(input_api, output_api))
+    # Run checks that rely on output from other DevTool checks
+    results.extend(_SideEffectChecks(input_api, output_api))
     results.extend(input_api.canned_checks.CheckChangeHasDescription(input_api, output_api))
     return results
 

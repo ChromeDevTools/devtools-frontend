@@ -8,15 +8,17 @@ import {ls} from '../platform/platform.js';
 
 import {FrameManager} from './FrameManager.js';
 import {Issue, IssueCategory, IssueDescription, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {IssuesModel} from './IssuesModel.js';                                  // eslint-disable-line no-unused-vars
 import {ResourceTreeFrame} from './ResourceTreeModel.js';                      // eslint-disable-line no-unused-vars
 
 export class SameSiteCookieIssue extends Issue {
   /**
    * @param {string} code
    * @param {!Protocol.Audits.SameSiteCookieIssueDetails} issueDetails
+   * @param {!IssuesModel} issuesModel
    */
-  constructor(code, issueDetails) {
-    super(code);
+  constructor(code, issueDetails, issuesModel) {
+    super(code, issuesModel);
     this._issueDetails = issueDetails;
   }
 
@@ -34,9 +36,10 @@ export class SameSiteCookieIssue extends Issue {
    * Returns an array of issues from a given SameSiteCookieIssueDetails.
    *
    * @param {!Protocol.Audits.SameSiteCookieIssueDetails} sameSiteDetails
+   * @param {!IssuesModel} issuesModel
    * @return {!Array<!Issue>}
    */
-  static createIssuesFromSameSiteDetails(sameSiteDetails) {
+  static createIssuesFromSameSiteDetails(sameSiteDetails, issuesModel) {
     /** @type {!Array<!Issue>} */
     const issues = [];
 
@@ -49,7 +52,7 @@ export class SameSiteCookieIssue extends Issue {
             exclusionReason, sameSiteDetails.cookieWarningReasons, sameSiteDetails.operation,
             sameSiteDetails.cookieUrl);
         if (code) {
-          issues.push(new SameSiteCookieIssue(code, sameSiteDetails));
+          issues.push(new SameSiteCookieIssue(code, sameSiteDetails, issuesModel));
         }
       }
       return issues;
@@ -61,7 +64,7 @@ export class SameSiteCookieIssue extends Issue {
         const code = SameSiteCookieIssue.codeForSameSiteDetails(
             warningReason, [], sameSiteDetails.operation, sameSiteDetails.cookieUrl);
         if (code) {
-          issues.push(new SameSiteCookieIssue(code, sameSiteDetails));
+          issues.push(new SameSiteCookieIssue(code, sameSiteDetails, issuesModel));
         }
       }
     }

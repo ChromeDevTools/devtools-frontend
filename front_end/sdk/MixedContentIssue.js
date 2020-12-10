@@ -5,13 +5,15 @@
 import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
 
 import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {IssuesModel} from './IssuesModel.js';  // eslint-disable-line no-unused-vars
 
 export class MixedContentIssue extends Issue {
   /**
    * @param {!Protocol.Audits.MixedContentIssueDetails} issueDetails
+   * @param {!IssuesModel} issuesModel
    */
-  constructor(issueDetails) {
-    super(Protocol.Audits.InspectorIssueCode.MixedContentIssue);
+  constructor(issueDetails, issuesModel) {
+    super(Protocol.Audits.InspectorIssueCode.MixedContentIssue, issuesModel);
     this._issueDetails = issueDetails;
   }
 

@@ -5,6 +5,7 @@
 import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
 
 import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {IssuesModel} from './IssuesModel.js';  // eslint-disable-line no-unused-vars
 
 /**
  * @param {!Protocol.Audits.BlockedByResponseReason} reason
@@ -29,9 +30,10 @@ export function isCrossOriginEmbedderPolicyIssue(reason) {
 export class CrossOriginEmbedderPolicyIssue extends Issue {
   /**
    * @param {!Protocol.Audits.BlockedByResponseIssueDetails} issueDetails
+   * @param {!IssuesModel} issuesModel
    */
-  constructor(issueDetails) {
-    super(`CrossOriginEmbedderPolicy::${issueDetails.reason}`);
+  constructor(issueDetails, issuesModel) {
+    super(`CrossOriginEmbedderPolicy::${issueDetails.reason}`, issuesModel);
     /** @type {!Protocol.Audits.BlockedByResponseIssueDetails} */
     this._details = issueDetails;
   }

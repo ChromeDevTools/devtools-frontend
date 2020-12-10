@@ -554,9 +554,10 @@ class AffectedDirectivesView extends AffectedResourcesView {
     element.classList.add('affected-resource-directive');
 
     const cspIssueDetails = cspIssue.details();
-    if (this._issue.code() === SDK.ContentSecurityPolicyIssue.inlineViolationCode) {
+    const model = cspIssue.model();
+    if (this._issue.code() === SDK.ContentSecurityPolicyIssue.inlineViolationCode && model) {
       this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
-      this._appendBlockedElement(element, cspIssueDetails.violatingNodeId, cspIssue.model());
+      this._appendBlockedElement(element, cspIssueDetails.violatingNodeId, model);
       this._appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
       this._appendStatus(element, cspIssueDetails.isReportOnly);
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.urlViolationCode) {

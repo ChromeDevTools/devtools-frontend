@@ -107,7 +107,7 @@ function createIssuesForSameSiteCookieIssue(issuesModel, inspectorDetails) {
     return [];
   }
 
-  return SameSiteCookieIssue.createIssuesFromSameSiteDetails(sameSiteDetails);
+  return SameSiteCookieIssue.createIssuesFromSameSiteDetails(sameSiteDetails, issuesModel);
 }
 
 /**
@@ -121,7 +121,7 @@ function createIssuesForMixedContentIssue(issuesModel, inspectorDetails) {
     console.warn('Mixed content issue without details received.');
     return [];
   }
-  return [new MixedContentIssue(mixedContentDetails)];
+  return [new MixedContentIssue(mixedContentDetails, issuesModel)];
 }
 
 
@@ -151,7 +151,7 @@ function createIssuesForHeavyAdIssue(issuesModel, inspectorDetails) {
     console.warn('Heavy Ad issue without details received.');
     return [];
   }
-  return [new HeavyAdIssue(heavyAdIssueDetails)];
+  return [new HeavyAdIssue(heavyAdIssueDetails, issuesModel)];
 }
 
 /**
@@ -166,7 +166,7 @@ function createIssuesForBlockedByResponseIssue(issuesModel, inspectorDetails) {
     return [];
   }
   if (isCrossOriginEmbedderPolicyIssue(blockedByResponseIssueDetails.reason)) {
-    return [new CrossOriginEmbedderPolicyIssue(blockedByResponseIssueDetails)];
+    return [new CrossOriginEmbedderPolicyIssue(blockedByResponseIssueDetails, issuesModel)];
   }
   return [];
 }

@@ -17,9 +17,8 @@ export class ContentSecurityPolicyIssue extends Issue {
     const issue_code = [
       Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue, issueDetails.contentSecurityPolicyViolationType
     ].join('::');
-    super(issue_code);
+    super(issue_code, issuesModel);
     this._issueDetails = issueDetails;
-    this._issuesModel = issuesModel;
   }
 
   /**
@@ -51,13 +50,6 @@ export class ContentSecurityPolicyIssue extends Issue {
       return description;
     }
     return null;
-  }
-
-  /**
-   * @returns {!IssuesModel}
-   */
-  model() {
-    return this._issuesModel;
   }
 
   /**

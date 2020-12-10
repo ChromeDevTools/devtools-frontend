@@ -69,6 +69,42 @@ function assertItemParams(
   assertParams(result.parameters, expectParams);
 }
 
+function assertListError(result: StructuredHeaders.List|StructuredHeaders.Error): void {
+  assert.strictEqual(result.kind, StructuredHeaders.ResultKind.ERROR);
+}
+
+function assertListAndGetItems(result: StructuredHeaders.List|StructuredHeaders.Error): StructuredHeaders.ListMember[] {
+  if (result.kind === StructuredHeaders.ResultKind.ERROR) {
+    assert.fail('Got error instead of List');
+    return [];
+  }
+  return result.items;
+}
+
+function assertListItem(
+    item: StructuredHeaders.ListMember, expectValue: StructuredHeaders.BareItem,
+    expectParams: [string, StructuredHeaders.BareItem][]): void {
+  if (item.kind === StructuredHeaders.ResultKind.INNER_LIST) {
+    assert.fail('Unexpected inner list when an item expected');
+    return;
+  }
+  assert.deepStrictEqual(
+      item.value, expectValue,
+      'List item bare value mismatch, ' + item.value.value + ' vs expected ' + expectValue.value);
+  assertItemParams(item, expectParams);
+}
+
+function assertInnerListAndGetItems(
+    item: StructuredHeaders.ListMember,
+    expectParams: [string, StructuredHeaders.BareItem][]): StructuredHeaders.Item[] {
+  if (item.kind !== StructuredHeaders.ResultKind.INNER_LIST) {
+    assert.fail('Expected inner list, got:' + item.kind);
+    return [];
+  }
+  assertParams(item.parameters, expectParams);
+  return item.items;
+}
+
 describe('StructuredHeaders', () => {
   describe('Parsing', () => {
     it('Parses integers', () => {
@@ -158,6 +194,65 @@ describe('StructuredHeaders', () => {
         ['a', {kind: StructuredHeaders.ResultKind.INTEGER, value: 4}],
         ['b', {kind: StructuredHeaders.ResultKind.STRING, value: 'hi'}],
       ]);
+    });
+    it('Parses lists', () => {
+      const items = assertListAndGetItems(StructuredHeaders.parseList('a, \t"b", ?0;d;e=42'));
+      assert.lengthOf(items, 3);
+      assertListItem(items[0], {kind: StructuredHeaders.ResultKind.TOKEN, value: 'a'}, []);
+      assertListItem(items[1], {kind: StructuredHeaders.ResultKind.STRING, value: 'b'}, []);
+      assertListItem(items[2], {kind: StructuredHeaders.ResultKind.BOOLEAN, value: false}, [
+        ['d', {kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}],
+        ['e', {kind: StructuredHeaders.ResultKind.INTEGER, value: 42}],
+      ]);
+    });
+    it('Parses empty list', () => {
+      // Grammar seems to reject it, but the algorithm (which is normative) seems OK
+      // with it, and 0-length lists are OK per the data model.
+      const items = assertListAndGetItems(StructuredHeaders.parseList(''));
+      assert.lengthOf(items, 0);
+    });
+    it('Parses inner lists', () => {
+      const items = assertListAndGetItems(StructuredHeaders.parseList('a, ("b" "c"), (d e)'));
+      assert.lengthOf(items, 3);
+      assertListItem(items[0], {kind: StructuredHeaders.ResultKind.TOKEN, value: 'a'}, []);
+      const items_l1 = assertInnerListAndGetItems(items[1], []);
+      assert.lengthOf(items_l1, 2);
+      assertListItem(items_l1[0], {kind: StructuredHeaders.ResultKind.STRING, value: 'b'}, []);
+      assertListItem(items_l1[1], {kind: StructuredHeaders.ResultKind.STRING, value: 'c'}, []);
+      const items_l2 = assertInnerListAndGetItems(items[2], []);
+      assert.lengthOf(items_l2, 2);
+      assertListItem(items_l2[0], {kind: StructuredHeaders.ResultKind.TOKEN, value: 'd'}, []);
+      assertListItem(items_l2[1], {kind: StructuredHeaders.ResultKind.TOKEN, value: 'e'}, []);
+    });
+    it('Parses empty inner lists', () => {
+      // Empty inner lists are OK.
+      const items = assertListAndGetItems(StructuredHeaders.parseList(' (  )  '));
+      assert.lengthOf(items, 1);
+      const items_l0 = assertInnerListAndGetItems(items[0], []);
+      assert.lengthOf(items_l0, 0);
+    });
+    it('Parses inner list params', () => {
+      // Example from spec, with inner list params and item params.
+      const items = assertListAndGetItems(StructuredHeaders.parseList('("foo"; a=1;b=2);lvl=5, ("bar" "baz");lvl=1'));
+      assert.lengthOf(items, 2);
+      const items_l0 =
+          assertInnerListAndGetItems(items[0], [['lvl', {kind: StructuredHeaders.ResultKind.INTEGER, value: 5}]]);
+      assert.lengthOf(items_l0, 1);
+      assertListItem(items_l0[0], {kind: StructuredHeaders.ResultKind.STRING, value: 'foo'}, [
+        ['a', {kind: StructuredHeaders.ResultKind.INTEGER, value: 1}],
+        ['b', {kind: StructuredHeaders.ResultKind.INTEGER, value: 2}],
+      ]);
+      const items_l1 =
+          assertInnerListAndGetItems(items[1], [['lvl', {kind: StructuredHeaders.ResultKind.INTEGER, value: 1}]]);
+      assert.lengthOf(items_l1, 2);
+      assertListItem(items_l1[0], {kind: StructuredHeaders.ResultKind.STRING, value: 'bar'}, []);
+      assertListItem(items_l1[1], {kind: StructuredHeaders.ResultKind.STRING, value: 'baz'}, []);
+    });
+    it('Detects various list syntax errors', () => {
+      assertListError(StructuredHeaders.parseList('a,'));
+      assertListError(StructuredHeaders.parseList('a b'));
+      assertListError(StructuredHeaders.parseList('(a,'));
+      assertListError(StructuredHeaders.parseList('(a,b'));
     });
   });
 });

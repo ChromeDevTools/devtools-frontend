@@ -7,8 +7,10 @@
 // (the ABNF fragments are quoted from the spec, unless otherwise specified,
 //  and the code pretty much just follows the algorithms given there).
 //
-// As of this CL, parseItem is the main entry point, and only item parsing is
-// supported.
+// parseList and parseItem are the main entry points.
+//
+// Currently dictionary handling is not implemented (but would likely be easy
+// to add).
 
 export const enum ResultKind {
   ERROR = 0,
@@ -22,6 +24,8 @@ export const enum ResultKind {
   TOKEN = 8,
   BINARY = 9,
   BOOLEAN = 10,
+  LIST = 11,
+  INNER_LIST = 12,
 }
 
 export interface Error {
@@ -87,6 +91,23 @@ export interface Item {
   kind: ResultKind.ITEM;
   value: BareItem;
   parameters: Parameters;
+}
+
+// inner-list    = "(" *SP [ sf-item *( 1*SP sf-item ) *SP ] ")"
+//                   parameters
+export interface InnerList {
+  kind: ResultKind.INNER_LIST;
+  items: Item[];
+  parameters: Parameters;
+}
+
+// list-member = sf-item / inner-list
+export type ListMember = Item|InnerList;
+
+// sf-list = list-member *( OWS "," OWS list-member )
+export interface List {
+  kind: ResultKind.LIST;
+  items: ListMember[];
 }
 
 const CHAR_MINUS: number = '-'.charCodeAt(0);
@@ -232,6 +253,79 @@ class Input {
 
 function makeError(): Error {
   return {kind: ResultKind.ERROR};
+}
+
+// 4.2.1. Parsing a list
+function parseListInternal(input: Input): List|Error {
+  const result: List = {kind: ResultKind.LIST, items: []};
+
+  while (!input.atEnd()) {
+    const piece: ListMember|Error = parseItemOrInnerList(input);
+    if (piece.kind === ResultKind.ERROR) {
+      return piece;
+    }
+    result.items.push(piece);
+    input.skipOWS();
+    if (input.atEnd()) {
+      return result;
+    }
+
+    if (input.peek() !== ',') {
+      return makeError();
+    }
+    input.eat();
+    input.skipOWS();
+
+    // "If input_string is empty, there is a trailing comma; fail parsing."
+    if (input.atEnd()) {
+      return makeError();
+    }
+  }
+  return result;  // this case corresponds to an empty list.
+}
+
+// 4.2.1.1.  Parsing an Item or Inner List
+function parseItemOrInnerList(input: Input): ListMember|Error {
+  if (input.peek() === '(') {
+    return parseInnerList(input);
+  }
+  return parseItemInternal(input);
+}
+
+// 4.2.1.2.  Parsing an Inner List
+function parseInnerList(input: Input): InnerList|Error {
+  if (input.peek() !== '(') {
+    return makeError();
+  }
+  input.eat();
+
+  const items: Item[] = [];
+  while (!input.atEnd()) {
+    input.skipSP();
+    if (input.peek() === ')') {
+      input.eat();
+      const params: Parameters|Error = parseParameters(input);
+      if (params.kind === ResultKind.ERROR) {
+        return params;
+      }
+      return {
+        kind: ResultKind.INNER_LIST,
+        items: items,
+        parameters: params,
+      };
+    }
+    const item: Item|Error = parseItemInternal(input);
+    if (item.kind === ResultKind.ERROR) {
+      return item;
+    }
+    items.push(item);
+    if (input.peek() !== ' ' && input.peek() !== ')') {
+      return makeError();
+    }
+  }
+
+  // Didn't see ), so error.
+  return makeError();
 }
 
 // 4.2.3.  Parsing an Item
@@ -494,4 +588,9 @@ export function parseItem(input: string): Item|Error {
     return makeError();
   }
   return result;
+}
+
+export function parseList(input: string): List|Error {
+  // No need to look for trailing stuff here since parseListInternal does it already.
+  return parseListInternal(new Input(input));
 }

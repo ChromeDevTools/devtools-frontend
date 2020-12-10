@@ -96,6 +96,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
   justify-content: space-between;
   padding: 0 3px 0 5px;
   border: 1px solid transparent;
+  flex-shrink: 1;
 }
 
 .toolbar-has-dropdown .toolbar-text {

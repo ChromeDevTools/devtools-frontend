@@ -48,7 +48,6 @@ export class DeviceModeToolbar {
     const leftContainer = this._element.createChild('div', 'device-mode-toolbar-spacer');
     leftContainer.createChild('div', 'device-mode-toolbar-spacer');
     const leftToolbar = new UI.Toolbar.Toolbar('', leftContainer);
-    leftToolbar.makeWrappable();
     this._fillLeftToolbar(leftToolbar);
 
     const mainToolbar = new UI.Toolbar.Toolbar('', this._element);

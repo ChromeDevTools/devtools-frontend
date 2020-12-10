@@ -167,6 +167,7 @@ devtools_module_entrypoint_sources = [
   "ui/ui-legacy.js",
   "ui/ui.js",
   "ui/utils/utils.js",
+  "wasmparser_worker/wasmparser_worker-entrypoint.js",
   "wasmparser_worker/wasmparser_worker.js",
   "web_audio/graph_visualizer/graph_visualizer.js",
   "web_audio/web_audio-legacy.js",

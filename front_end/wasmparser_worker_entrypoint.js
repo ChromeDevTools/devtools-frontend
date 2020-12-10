@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import './startup/startup.js';
-import './wasmparser_worker/wasmparser_worker.js';
+import './wasmparser_worker/wasmparser_worker-entrypoint.js';
 
 import * as Startup from './startup/startup.js';
 

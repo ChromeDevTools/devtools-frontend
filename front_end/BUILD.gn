@@ -97,7 +97,7 @@ group("front_end") {
     "toolbox_bootstrap:bundle",
     "ui:bundle",
     "ui/components:bundle",
-    "wasmparser_worker:bundle",
+    "wasmparser_worker:worker_entrypoint",
     "web_audio:bundle",
     "webauthn:bundle",
     "worker_main:bundle",

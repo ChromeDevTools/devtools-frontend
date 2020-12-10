@@ -33,15 +33,10 @@ import * as WasmDis from '../third_party/wasmparser/package/dist/esm/WasmDis.js'
 import * as WasmParser from '../third_party/wasmparser/package/dist/esm/WasmParser.js';
 
 /**
- * @param {!{data: !{method:string, params: !{content: string}}}} event
+ * @param {!{content: string}} params
+ * @param {function(*):void} postMessage
  */
-self.onmessage = function(event) {
-  const method = (event.data.method);
-  const params = (event.data.params);
-  if (method !== 'disassemble') {
-    return;
-  }
-
+export function dissambleWASM(params, postMessage) {
   try {
     const dataBuffer = Common.Base64.decode(params.content);
 
@@ -120,17 +115,17 @@ self.onmessage = function(event) {
       offsetInModule += parser.position;
 
       const percentage = Math.floor((offsetInModule / data.length) * 100);
-      this.postMessage({event: 'progress', params: {percentage}});
+      postMessage({event: 'progress', params: {percentage}});
     }
 
-    this.postMessage({event: 'progress', params: {percentage: 99}});
+    postMessage({event: 'progress', params: {percentage: 99}});
 
     const source = lines.join('\n');
 
-    this.postMessage({event: 'progress', params: {percentage: 100}});
+    postMessage({event: 'progress', params: {percentage: 100}});
 
-    this.postMessage({method: 'disassemble', result: {source, offsets, functionBodyOffsets}});
+    postMessage({method: 'disassemble', result: {source, offsets, functionBodyOffsets}});
   } catch (error) {
-    this.postMessage({method: 'disassemble', error});
+    postMessage({method: 'disassemble', error});
   }
-};
+}

@@ -8,8 +8,6 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("startup") {
   sources = [ "RuntimeInstantiator.js" ]
 
-  is_web_worker = true
-
   deps = [ "../root:bundle" ]
 }
 

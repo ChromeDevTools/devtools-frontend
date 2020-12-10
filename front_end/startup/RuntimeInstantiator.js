@@ -88,6 +88,7 @@ export async function startWorker(appName) {
   return startApplication(appName).then(sendWorkerReady);
 
   function sendWorkerReady() {
+    // @ts-ignore
     self.postMessage('workerReady');
   }
 }

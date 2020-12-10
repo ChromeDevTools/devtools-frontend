@@ -3,9 +3,16 @@
 # found in the LICENSE file.
 
 import("../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../scripts/build/ninja/devtools_module.gni")
+
+devtools_module("js_profiler") {
+  sources = [ "ModuleUIStrings.js" ]
+
+  deps = [ "../i18n:bundle" ]
+}
 
 devtools_entrypoint("bundle") {
   entrypoint = "js_profiler.js"
 
-  deps = []
+  deps = [ ":js_profiler" ]
 }

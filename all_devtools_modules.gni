@@ -253,6 +253,7 @@ all_typescript_module_sources = [
   "javascript_metadata/JavaScriptMetadata.js",
   "javascript_metadata/NativeFunctions.js",
   "js_main/JsMain.js",
+  "js_profiler/ModuleUIStrings.js",
   "layer_viewer/LayerDetailsView.js",
   "layer_viewer/LayerTreeOutline.js",
   "layer_viewer/LayerViewHost.js",

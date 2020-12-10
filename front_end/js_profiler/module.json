@@ -10,6 +10,7 @@
     }
   ],
   "dependencies": [
+    "i18n",
     "profiler"
   ],
   "modules": []

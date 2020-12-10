@@ -153,6 +153,9 @@
   <message name="IDS_DEVTOOLS_610de28d957d1148614ecc6b2ec48443" desc="Text in Live Heap Profile View of a profiler tool">
     URL of the script source
   </message>
+  <message name="IDS_DEVTOOLS_65b4c7424dd695c30efa73da8396c90c" desc="Title of the Profiler tool">
+    Profiler
+  </message>
   <message name="IDS_DEVTOOLS_678d0a4421b60dc59999ac02837496a6" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Constructor
   </message>

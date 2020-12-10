@@ -21,14 +21,14 @@ export class StepFrameContext {
   toString() {
     let expression = '';
     if (this.target === 'main') {
-      expression = 'const target = page;\n';
+      expression = 'const targetPage = page;\n';
     } else {
-      expression = `const pages = await browser.pages();
-        const target = pages.find(p => p.url() === ${JSON.stringify(this.target)});
+      expression = `const target = await browser.waitForTarget(p => p.url() === ${JSON.stringify(this.target)});
+        const targetPage = await target.page();
       `;
     }
 
-    expression += '  const frame = target.mainFrame()';
+    expression += 'const frame = targetPage.mainFrame()';
     for (const index of this.path) {
       expression += `.childFrames()[${index}]`;
     }
@@ -71,7 +71,8 @@ export class ClickStep extends Step {
   toString() {
     return `{
       ${this.context}
-      await frame.click(${JSON.stringify(this.selector)});
+      const element = await frame.waitForSelector(${JSON.stringify(this.selector)});
+      await element.click();
     }`;
   }
 }
@@ -110,7 +111,8 @@ export class SubmitStep extends Step {
   toString() {
     return `{
       ${this.context}
-      await frame.submit(${JSON.stringify(this.selector)});
+      const element = await frame.waitForSelector(${JSON.stringify(this.selector)});
+      await element.evaluate(form => form.submit());
     }`;
   }
 }
@@ -134,7 +136,8 @@ export class ChangeStep extends Step {
   toString() {
     return `{
       ${this.context}
-      await frame.type(${JSON.stringify(this.selector)}, ${JSON.stringify(this.value)});
+      const element = await frame.waitForSelector(${JSON.stringify(this.selector)});
+      await element.type(${JSON.stringify(this.value)});
     }`;
   }
 }

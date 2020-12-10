@@ -6,11 +6,18 @@
 
 .image-view {
   overflow: auto;
+  justify-content: center;
 }
 
 .image-view > .image {
-  padding: 20px 20px 10px 20px;
+  padding: 20px 20px 0 20px;
   text-align: center;
+}
+
+.image-view > .image::after {
+  content: '';
+  display: block;
+  height: 20px;
 }
 
 .image-view img.resource-image-view {
@@ -19,5 +26,6 @@
   background-image: url(Images/checker.png);
   box-shadow: 0 5px 10px var(--box-shadow-outline-color);
   user-select: text;
+  vertical-align: top;
   -webkit-user-drag: auto;
 }

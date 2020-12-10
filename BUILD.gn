@@ -194,11 +194,6 @@ generated_test_modules = [
   "$resources_out_dir/sources_test_runner/sources_test_runner_module.js",
 ]
 
-all_worker_entrypoints = [ "front_end/wasmparser_worker_entrypoint.js" ]
-
-generated_worker_bundles =
-    [ "$resources_out_dir/wasmparser_worker_entrypoint.js" ]
-
 devtools_applications = [
   "lighthouse_worker",
   "devtools_app",
@@ -209,7 +204,6 @@ devtools_applications = [
   "node_app",
   "shell",
   "toolbox",
-  "wasmparser_worker_entrypoint",
   "worker_app",
 ]
 
@@ -247,9 +241,8 @@ action("generate_devtools_grd") {
   grd_files =
       generated_applications_html + generated_applications_js +
       generated_non_autostart_non_remote_modules + devtools_embedder_scripts +
-      generated_worker_bundles + generated_module_entrypoint_sources +
-      generated_typescript_modules + generated_devtools_locale_files +
-      generated_emulated_device_images +
+      generated_module_entrypoint_sources + generated_typescript_modules +
+      generated_devtools_locale_files + generated_emulated_device_images +
       [ "$resources_out_dir/third_party/acorn/package/dist/acorn.mjs" ]
 
   inputs = grd_files + front_end_image_files
@@ -327,10 +320,9 @@ python2_action("build_release_devtools") {
   ]
 
   inputs = helper_scripts + all_devtools_files + devtools_test_files +
-           application_templates + all_worker_entrypoints
-  outputs =
-      generated_applications_js + generated_non_autostart_non_remote_modules +
-      generated_test_modules + generated_worker_bundles
+           application_templates
+  outputs = generated_applications_js +
+            generated_non_autostart_non_remote_modules + generated_test_modules
 
   args = devtools_applications + [
            "--input_path",

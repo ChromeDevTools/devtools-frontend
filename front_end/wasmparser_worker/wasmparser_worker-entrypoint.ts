@@ -15,3 +15,5 @@ self.onmessage = (event: {data: {method: string, params: {content: string}}}) =>
     self.postMessage(message);
   }));
 };
+
+self.postMessage('workerReady');

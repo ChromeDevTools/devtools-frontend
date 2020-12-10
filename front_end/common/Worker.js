@@ -31,7 +31,7 @@
 export class WorkerWrapper {
   /**
    * @private
-   * @param {(string|!URL)} workerLocation
+   * @param {!URL} workerLocation
    */
   constructor(workerLocation) {
     /** @type {!Promise<!Worker>} */
@@ -49,14 +49,6 @@ export class WorkerWrapper {
    * @param {!URL} url
    */
   static fromURL(url) {
-    return new WorkerWrapper(url);
-  }
-
-  /**
-   * @param {string} entrypointName
-   */
-  static fromEntrypointName(entrypointName) {
-    const url = entrypointName + '.js' + location.search;
     return new WorkerWrapper(url);
   }
 

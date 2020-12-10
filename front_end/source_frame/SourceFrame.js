@@ -332,7 +332,8 @@ export class SourceFrameImpl extends UI.View.SimpleView {
       progressIndicator.setWorked(1);
 
       if (!error && this._highlighterType === 'application/wasm') {
-        const worker = Common.Worker.WorkerWrapper.fromEntrypointName('wasmparser_worker_entrypoint');
+        const worker = Common.Worker.WorkerWrapper.fromURL(
+            new URL('../wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
         /** @type {!Promise<!{source: string, offsets: !Array<number>, functionBodyOffsets: !Array<{start: number, end: number}>}>} */
         const promise = new Promise((resolve, reject) => {
           worker.onmessage = ({/** @type {{event:string, params:{percentage:number}}} */ data}) => {

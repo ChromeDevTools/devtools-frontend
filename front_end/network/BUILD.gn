@@ -72,3 +72,13 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "network-meta.ts"
+
+  deps = [
+    ":bundle",
+    "../root:bundle",
+    "../ui:bundle",
+  ]
+}

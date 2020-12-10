@@ -1,14 +1,6 @@
 {
   "extensions": [
     {
-      "type": "view",
-      "location": "panel",
-      "id": "network",
-      "title": "Network",
-      "order": 40,
-      "className": "Network.NetworkPanel"
-    },
-    {
       "type": "@UI.ContextMenu.Provider",
       "contextTypes": [
         "SDK.NetworkRequest",
@@ -119,37 +111,10 @@
       ]
     },
     {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "network.blocked-urls",
-      "title": "Network request blocking",
-      "persistence": "closeable",
-      "order": 60,
-      "className": "Network.BlockedURLsPane"
-    },
-    {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "network.config",
-      "title": "Network conditions",
-      "persistence": "closeable",
-      "order": 40,
-      "className": "Network.NetworkConfigView",
-      "tags": "disk cache, network throttling, useragent, user agent, user-agent"
-    },
-    {
       "type": "@UI.ViewLocationResolver",
       "name": "network-sidebar",
       "category": "Network",
       "className": "Network.NetworkPanel"
-    },
-    {
-      "type": "view",
-      "location": "network-sidebar",
-      "id": "network.search-network-tab",
-      "title": "Search",
-      "persistence": "permanent",
-      "className": "Network.SearchNetworkView"
     },
     {
       "type": "action",

@@ -7,7 +7,7 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 /** @type {?BlockedURLsPane} */
-export let _instance = null;
+export let blockedURLsPaneInstance = null;
 
 /**
  * @implements {UI.ListWidget.Delegate<SDK.NetworkManager.BlockedPattern>}
@@ -17,7 +17,6 @@ export class BlockedURLsPane extends UI.Widget.VBox {
     super(true);
     this.registerRequiredCSS('network/blockedURLsPane.css', {enableLegacyPatching: false});
 
-    _instance = this;
     this._manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
     this._manager.addEventListener(SDK.NetworkManager.MultitargetNetworkManager.Events.BlockedPatternsChanged, () => {
       this._update();
@@ -57,6 +56,17 @@ export class BlockedURLsPane extends UI.Widget.VBox {
   }
 
   /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!blockedURLsPaneInstance || forceNew) {
+      blockedURLsPaneInstance = new BlockedURLsPane();
+    }
+    return blockedURLsPaneInstance;
+  }
+
+  /**
    * @return {!Element}
    */
   _createEmptyPlaceholder() {
@@ -68,8 +78,8 @@ export class BlockedURLsPane extends UI.Widget.VBox {
   }
 
   static reset() {
-    if (_instance) {
-      _instance.reset();
+    if (blockedURLsPaneInstance) {
+      blockedURLsPaneInstance.reset();
     }
   }
 

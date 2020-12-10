@@ -7,6 +7,9 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+/** @type {!NetworkConfigView} */
+let networkConfigViewInstance;
+
 export class NetworkConfigView extends UI.Widget.VBox {
   constructor() {
     super(true);
@@ -18,6 +21,17 @@ export class NetworkConfigView extends UI.Widget.VBox {
     this._createNetworkThrottlingSection();
     this.contentElement.createChild('div').classList.add('panel-section-separator');
     this._createUserAgentSection();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!networkConfigViewInstance || forceNew) {
+      networkConfigViewInstance = new NetworkConfigView();
+    }
+    return networkConfigViewInstance;
   }
 
   /**

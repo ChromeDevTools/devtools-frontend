@@ -101,6 +101,7 @@ devtools_module_entrypoint_sources = [
   "mobile_throttling/mobile_throttling-legacy.js",
   "mobile_throttling/mobile_throttling.js",
   "network/network-legacy.js",
+  "network/network-meta.js",
   "network/network.js",
   "node_debugger/node_debugger.js",
   "node_main/node_main-legacy.js",

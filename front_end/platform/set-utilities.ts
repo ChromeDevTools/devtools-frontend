@@ -2,23 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @param {!Set<T>} set
- * @param {!Iterable<!T>} iterable
- * @template T
- */
-export const addAll = function(set, iterable) {
+export const addAll = function<T>(set: Set<T>, iterable: Iterable<T>) {
   for (const item of iterable) {
     set.add(item);
   }
 };
 
-/**
- * @param {!Set<T>} setA
- * @param {!Set<T>} setB
- * @template T
- */
-export const isEqual = function(setA, setB) {
+export const isEqual = function<T>(setA: Set<T>, setB: Set<T>): boolean {
   if (setA === setB) {
     return true;
   }

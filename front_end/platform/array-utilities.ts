@@ -3,13 +3,9 @@
 // found in the LICENSE file.
 
 /**
- * @param {!Array<T>} array
- * @param {!T} element
- * @param {boolean=} firstOnly Only remove the first occurrence of `element` from the array.
  * @return {boolean} True, if any element got removed.
- * @template T
  */
-export const removeElement = (array, element, firstOnly) => {
+export const removeElement = <T>(array: T[], element: T, firstOnly?: boolean): boolean => {
   let index = array.indexOf(element);
   if (index === -1) {
     return false;

@@ -3,15 +3,10 @@
 // found in the LICENSE file.
 
 import {Multimap} from './utilities.js';
-/**
- * @param {!Map<K,V>} map
- * @return {!Multimap<!V, !K>}
- * @template K,V
- */
-export const inverse = function(map) {
-  const result = new Multimap();
-  for (const key of map.keys()) {
-    const value = map.get(key);
+
+export const inverse = function<K, V>(map: Map<K, V>): Multimap<V, K> {
+  const result = new Multimap<V, K>();
+  for (const [key, value] of map.entries()) {
     result.set(value, key);
   }
   return result;

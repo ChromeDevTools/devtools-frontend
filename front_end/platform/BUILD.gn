@@ -8,11 +8,11 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("platform") {
   sources = [
     "UIString.js",
-    "array-utilities.js",
-    "date-utilities.js",
-    "map-utilities.js",
+    "array-utilities.ts",
+    "date-utilities.ts",
+    "map-utilities.ts",
     "number-utilities.js",
-    "set-utilities.js",
+    "set-utilities.ts",
     "string-utilities.js",
     "utilities.js",
   ]

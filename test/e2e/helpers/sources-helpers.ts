@@ -107,10 +107,12 @@ export async function getOpenSources() {
   return openSources;
 }
 
-export async function waitForhighlightedLineWhichIncludesText(expectedTextContent: string) {
-  const selectedLine = await waitFor(ACTIVE_LINE);
-  const text = await selectedLine.evaluate(node => node.textContent);
-  assert.deepInclude(text, expectedTextContent);
+export async function waitForHighlightedLineWhichIncludesText(expectedTextContent: string) {
+  await waitForFunction(async () => {
+    const selectedLine = await waitFor(ACTIVE_LINE);
+    const text = await selectedLine.evaluate(node => node.textContent);
+    return (text && text.includes(expectedTextContent)) ? text : undefined;
+  });
 }
 
 // We can't use the click helper, as it is not possible to select a particular

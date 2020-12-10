@@ -37,7 +37,7 @@
 
         const container = document.getElementById('container');
 
-        container.addEventListener('linkifier-click', function(event) {
+        container.addEventListener('linkifier-activated', function(event) {
           const data = JSON.stringify(event.data, null, 2)
           alert(`Linkifier click: ${data}`)
 

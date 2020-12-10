@@ -1006,7 +1006,7 @@ function listenForNewComponentLinkifierEvents() {
   listeningToNewEvents = true;
 
   window.addEventListener(
-      'linkifier-click',
+      'linkifier-activated',
       /**
    *
    * @param {!Event} event

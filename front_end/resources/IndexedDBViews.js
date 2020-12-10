@@ -153,6 +153,7 @@ export class IDBDataView extends UI.View.SimpleView {
         UI.UIUtils.createIconLabel(Common.UIString.UIString('Data may be stale'), 'smallicon-warning'));
     this._needsRefresh.setVisible(false);
     this._needsRefresh.setTitle(Common.UIString.UIString('Some entries may have been modified'));
+    this._clearingObjectStore = false;
 
     this._createEditorToolbar();
 
@@ -502,12 +503,18 @@ export class IDBDataView extends UI.View.SimpleView {
    */
   async _clearButtonClicked(event) {
     this._clearButton.setEnabled(false);
+    this._clearingObjectStore = true;
     await this._model.clearObjectStore(this._databaseId, this._objectStore.name);
+    this._clearingObjectStore = false;
     this._clearButton.setEnabled(true);
     this._updateData(true);
   }
 
   markNeedsRefresh() {
+    // We expect that calling clearObjectStore() will cause the backend to send us an update.
+    if (this._clearingObjectStore) {
+      return;
+    }
     this._needsRefresh.setVisible(true);
   }
 

@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 // @ts-nocheck
+import '../heap_snapshot_model/heap_snapshot_model-legacy.js';
+import './heap_snapshot_worker-entrypoint.js';
 
 import * as HeapSnapshotWorkerModule from './heap_snapshot_worker.js';
 

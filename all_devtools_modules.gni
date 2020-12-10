@@ -208,7 +208,6 @@ all_typescript_module_sources = [
   "heap_snapshot_worker/AllocationProfile.js",
   "heap_snapshot_worker/HeapSnapshot.js",
   "heap_snapshot_worker/HeapSnapshotLoader.js",
-  "heap_snapshot_worker/HeapSnapshotWorker.js",
   "heap_snapshot_worker/HeapSnapshotWorkerDispatcher.js",
   "help/HelpImpl.js",
   "help/ModuleUIStrings.js",

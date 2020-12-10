@@ -45,7 +45,7 @@ group("front_end") {
     "formatter_worker:worker_entrypoint",
     "har_importer:bundle",
     "heap_snapshot_model:bundle",
-    "heap_snapshot_worker:bundle",
+    "heap_snapshot_worker:worker_entrypoint",
     "help:bundle",
     "i18n:bundle",
     "inline_editor:bundle",

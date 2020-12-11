@@ -37,6 +37,7 @@
     "e2etest": "scripts/test/run_test_suite.py --test-suite=e2e",
     "interactionstest": "scripts/test/run_test_suite.py --test-suite=interactions",
     "eslint-test": "mocha \"./scripts/eslint_rules/tests/*_test.js\"",
+    "generate-dark-mode-styles": "scripts/dark_mode/run_dark_theme_generator.py",
     "generate-protocol-resources": "scripts/deps/generate_protocol_resources.py && git cl format --js",
     "grdp-utils-test": "mocha \"./scripts/localization/utils/tests/*_test.js\"",
     "install-deps": "scripts/deps/manage_node_deps.py",

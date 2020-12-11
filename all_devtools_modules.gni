@@ -249,6 +249,8 @@ all_typescript_module_sources = [
   "issues/IssueSurveyLink.js",
   "issues/IssuesPane.js",
   "issues/MarkdownIssueDescription.js",
+  "issues/MarkdownLink.js",
+  "issues/MarkdownLinksMap.js",
   "issues/MarkdownView.js",
   "javascript_metadata/JavaScriptMetadata.js",
   "javascript_metadata/NativeFunctions.js",

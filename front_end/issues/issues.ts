@@ -8,6 +8,8 @@ import * as IssueRevealer from './IssueRevealer.js';
 import * as IssuesPane from './IssuesPane.js';
 import * as IssueSurveyLink from './IssueSurveyLink.js';
 import * as MarkdownIssueDescription from './MarkdownIssueDescription.js';
+import * as MarkdownLink from './MarkdownLink.js';
+import * as MarkdownLinksMap from './MarkdownLinksMap.js';
 import * as MarkdownView from './MarkdownView.js';
 
 export {
@@ -17,5 +19,7 @@ export {
   IssuesPane,
   IssueSurveyLink,
   MarkdownIssueDescription,
+  MarkdownLink,
+  MarkdownLinksMap,
   MarkdownView,
 };

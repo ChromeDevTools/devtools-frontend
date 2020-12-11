@@ -4,6 +4,8 @@
 
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
+import {MarkdownLinkData} from './MarkdownLink.js';
+
 const html = LitHtml.html;
 const render = LitHtml.render;
 
@@ -123,13 +125,18 @@ const renderText = (token: any) => {
 
 // TODO(crbug.com/1108699): Fix types when they are available.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const tokenRenderers = new Map<string,(token: any) => LitHtml.TemplateResult>([
+const tokenRenderers = new Map<string, (token: any) => LitHtml.TemplateResult>([
   ['paragraph', token => html`<p>${renderChildTokens(token)}</p>`],
   ['list', token => html`<ul>${token.items.map(renderToken)}</ul>`],
   ['list_item', token => html`<li>${renderChildTokens(token)}</li>`],
   ['text', renderText],
   ['codespan', token => html`<code>${unescape(token.text)}</code>`],
   ['space', () => html``],
+  [
+    'link',
+    token => html`<devtools-markdown-link .data=${
+        {key: token.href, title: token.text} as MarkdownLinkData}></devtools-markdown-link>`,
+  ],
 ]);
 
 // TODO(crbug.com/1108699): Fix types when they are available.

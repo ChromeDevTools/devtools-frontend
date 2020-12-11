@@ -308,6 +308,16 @@ export class NetworkDispatcher {
     this._inflightRequestsByURL = {};
     /** @type {!Map<string, !RedirectExtraInfoBuilder>} */
     this._requestIdToRedirectExtraInfoBuilder = new Map();
+    /**
+     * In case of an early abort or a cache hit, the Trust Token done event is
+     * reported before the request itself is created in `requestWillBeSent`.
+     * This causes the event to be lost as no `NetworkRequest` instance has been
+     * created yet.
+     * This map caches the events temporarliy and populates the NetworKRequest
+     * once it is created in `requestWillBeSent`.
+     * @type {!Map<string, Protocol.Network.TrustTokenOperationDoneEvent>}
+     */
+    this._requestIdToTrustTokenEvent = new Map();
   }
 
   /**
@@ -533,6 +543,11 @@ export class NetworkDispatcher {
         type ? Common.ResourceType.resourceTypes[type] : Common.ResourceType.resourceTypes.Other);
     if (request.trustTokenParams) {
       networkRequest.setTrustTokenParams(request.trustTokenParams);
+    }
+    const maybeTrustTokenEvent = this._requestIdToTrustTokenEvent.get(requestId);
+    if (maybeTrustTokenEvent) {
+      networkRequest.setTrustTokenOperationDoneEvent(maybeTrustTokenEvent);
+      this._requestIdToTrustTokenEvent.delete(requestId);
     }
 
     this._getExtraInfoBuilder(requestId).addRequest(networkRequest);
@@ -1033,6 +1048,7 @@ export class NetworkDispatcher {
   trustTokenOperationDone(event) {
     const request = this._inflightRequestsById.get(event.requestId);
     if (!request) {
+      this._requestIdToTrustTokenEvent.set(event.requestId, event);
       return;
     }
     request.setTrustTokenOperationDoneEvent(event);

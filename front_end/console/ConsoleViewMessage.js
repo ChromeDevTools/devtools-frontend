@@ -922,7 +922,7 @@ export class ConsoleViewMessage {
       return false;
     }
 
-    /** @type {!Object.<string, function((string|!{description: string}|undefined|!SDK.RemoteObject.RemoteObject), !Platform.StringUtilities.FORMATTER_TOKEN):*>} */
+    /** @type {!Object.<string, function((string|!{description: string}|undefined|!SDK.RemoteObject.RemoteObject), !Platform.StringUtilities.FormatterToken):*>} */
     const formatters = {};
     // Firebug uses %o for formatting objects.
     formatters.o = parameterFormatter.bind(this, false /* force */, true /* includePreview */);

@@ -78,7 +78,7 @@ export class UIStringFormat {
   constructor(format) {
     /** @type {string} */
     this._localizedFormat = localize(format);
-    /** @type {!Array.<!StringUtilities.FORMATTER_TOKEN>} */
+    /** @type {!Array.<!StringUtilities.FormatterToken>} */
     this._tokenizedFormat =
         StringUtilities.tokenizeFormatString(this._localizedFormat, StringUtilities.standardFormatters);
   }

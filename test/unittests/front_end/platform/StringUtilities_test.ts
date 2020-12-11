@@ -180,14 +180,14 @@ describe('StringUtilities', () => {
           precision: -1,
           specifier: 'c',
           substitutionIndex: 0,
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
         },
         {
           value: undefined,
           precision: -1,
           specifier: 's',
           substitutionIndex: 1,
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
         },
       ]);
     });
@@ -204,12 +204,12 @@ describe('StringUtilities', () => {
       const tokens =
           Platform.StringUtilities.tokenizeFormatString(colors.map(c => `\u001b[${c}m`).join(''), {c: () => {}});
 
-      const expectedTokens: Platform.StringUtilities.FORMATTER_TOKEN[] = [
+      const expectedTokens: Platform.StringUtilities.FormatterToken[] = [
         {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: black',
           },
@@ -218,7 +218,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: red',
           },
@@ -227,7 +227,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: green',
           },
@@ -236,7 +236,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: yellow',
           },
@@ -245,7 +245,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: blue',
           },
@@ -254,7 +254,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: magenta',
           },
@@ -263,7 +263,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: cyan',
           },
@@ -272,7 +272,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: lightGray',
           },
@@ -281,7 +281,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: default',
           },
@@ -290,7 +290,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: darkGray',
           },
@@ -299,7 +299,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: lightRed',
           },
@@ -308,7 +308,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: lightGreen',
           },
@@ -317,7 +317,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: lightYellow',
           },
@@ -326,7 +326,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: lightBlue',
           },
@@ -335,7 +335,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: lightMagenta',
           },
@@ -344,7 +344,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: lightCyan',
           },
@@ -353,7 +353,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'color: white',
           },
@@ -362,7 +362,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : black',
           },
@@ -371,7 +371,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : red',
           },
@@ -380,7 +380,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : green',
           },
@@ -389,7 +389,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : yellow',
           },
@@ -398,7 +398,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : blue',
           },
@@ -407,7 +407,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : magenta',
           },
@@ -416,7 +416,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : cyan',
           },
@@ -425,7 +425,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : lightGray',
           },
@@ -434,7 +434,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : default',
           },
@@ -443,7 +443,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : darkGray',
           },
@@ -452,7 +452,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : lightRed',
           },
@@ -461,7 +461,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : lightGreen',
           },
@@ -470,7 +470,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : lightYellow',
           },
@@ -479,7 +479,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : lightBlue',
           },
@@ -488,7 +488,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : lightMagenta',
           },
@@ -497,7 +497,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : lightCyan',
           },
@@ -506,7 +506,7 @@ describe('StringUtilities', () => {
           precision: undefined,
           substitutionIndex: undefined,
           specifier: 'c',
-          type: 'specifier',
+          type: Platform.StringUtilities.FormatterType.SPECIFIER,
           value: {
             description: 'background : white',
           },

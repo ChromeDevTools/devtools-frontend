@@ -2,12 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @param {string} inputString
- * @param {string} charsToEscape
- * @return {string} the string with any matching chars escaped
- */
-export const escapeCharacters = (inputString, charsToEscape) => {
+export const escapeCharacters = (inputString: string, charsToEscape: string): string => {
   let foundChar = false;
   for (let i = 0; i < charsToEscape.length; ++i) {
     if (inputString.indexOf(charsToEscape.charAt(i)) !== -1) {
@@ -31,70 +26,50 @@ export const escapeCharacters = (inputString, charsToEscape) => {
   return result;
 };
 
-/**
- * @enum {string}
- */
-const FORMATTER_TYPES = {
-  STRING: 'string',
-  SPECIFIER: 'specifier',
-};
+export const enum FormatterType {
+  STRING = 'string',
+  SPECIFIER = 'specifier',
+}
 
-/** @typedef {{type: !FORMATTER_TYPES, value: (string|{description: string}|undefined), specifier: (string|undefined), precision: (number|undefined), substitutionIndex: (number|undefined)}} */
-// @ts-ignore typedef
-export let FORMATTER_TOKEN;
+export interface FormatterToken {
+  type: FormatterType;
+  value?: string|{description: string};
+  specifier?: string;
+  precision?: number;
+  substitutionIndex?: number;
+}
 
-/**
- * @param {string} formatString
- * @param {!Object.<string, function(string, ...*):*>} formatters
- * @return {!Array.<!FORMATTER_TOKEN>}
- */
-export const tokenizeFormatString = function(formatString, formatters) {
-  /** @type {!Array<!FORMATTER_TOKEN>} */
-  const tokens = [];
+export const tokenizeFormatString = function(formatString: string, formatters: Record<string, Function>) {
+  const tokens: FormatterToken[] = [];
 
-  /**
-   * @param {string} str
-   */
-  function addStringToken(str) {
+  function addStringToken(str: string) {
     if (!str) {
       return;
     }
-    if (tokens.length && tokens[tokens.length - 1].type === FORMATTER_TYPES.STRING) {
+    if (tokens.length && tokens[tokens.length - 1].type === FormatterType.STRING) {
       tokens[tokens.length - 1].value += str;
     } else {
       tokens.push({
-        type: FORMATTER_TYPES.STRING,
+        type: FormatterType.STRING,
         value: str,
-        specifier: undefined,
-        precision: undefined,
-        substitutionIndex: undefined
       });
     }
   }
 
-  /**
-   * @param {string} specifier
-   * @param {number} precision
-   * @param {number} substitutionIndex
-   */
-  function addSpecifierToken(specifier, precision, substitutionIndex) {
-    tokens.push({type: FORMATTER_TYPES.SPECIFIER, specifier, precision, substitutionIndex, value: undefined});
+  function addSpecifierToken(specifier: string, precision: number, substitutionIndex: number) {
+    tokens.push({type: FormatterType.SPECIFIER, specifier, precision, substitutionIndex, value: undefined});
   }
 
-  /**
-   * @param {number} code
-   */
-  function addAnsiColor(code) {
-    /**
-     * @type {!Object<number, string>}
-     */
-    const types = {3: 'color', 9: 'colorLight', 4: 'bgColor', 10: 'bgColorLight'};
+  function addAnsiColor(code: number) {
+    type ColorType = 'color'|'colorLight'|'bgColor'|'bgColorLight';
+
+    const types: Record<number, ColorType> = {3: 'color', 9: 'colorLight', 4: 'bgColor', 10: 'bgColorLight'};
     const colorCodes = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'lightGray', '', 'default'];
     const colorCodesLight =
         ['darkGray', 'lightRed', 'lightGreen', 'lightYellow', 'lightBlue', 'lightMagenta', 'lightCyan', 'white', ''];
-    /** @type {!Object<string, !Array<string>>} */
-    const colors = {color: colorCodes, colorLight: colorCodesLight, bgColor: colorCodes, bgColorLight: colorCodesLight};
-    const type = types[Math.floor(code / 10)];
+    const colors: Record<ColorType, string[]> =
+        {color: colorCodes, colorLight: colorCodesLight, bgColor: colorCodes, bgColorLight: colorCodesLight};
+    const type = types[Math.floor(code / 10)] as ColorType;
     if (!type) {
       return;
     }
@@ -103,7 +78,7 @@ export const tokenizeFormatString = function(formatString, formatters) {
       return;
     }
     tokens.push({
-      type: FORMATTER_TYPES.SPECIFIER,
+      type: FormatterType.SPECIFIER,
       specifier: 'c',
       value: {description: (type.startsWith('bg') ? 'background : ' : 'color: ') + color},
       precision: undefined,
@@ -124,8 +99,7 @@ export const tokenizeFormatString = function(formatString, formatters) {
     if (match[0] === '%%') {
       addStringToken('%');
     } else if (match[0].startsWith('%')) {
-      // eslint-disable-next-line no-unused-vars
-      const [_, substitionString, precisionString, specifierString] = match;
+      const [, substitionString, precisionString, specifierString] = match;
       if (substitionString && Number(substitionString) > 0) {
         substitutionIndex = Number(substitionString) - 1;
       }
@@ -142,17 +116,14 @@ export const tokenizeFormatString = function(formatString, formatters) {
   return tokens;
 };
 
-/**
- * @template T, U
- * @param {string} formatString
- * @param {?ArrayLike<U>} substitutions
- * @param {!Object.<string, function((string|!{description: string}|undefined|U), !FORMATTER_TOKEN):*>} formatters
- * @param {!T} initialValue
- * @param {function(T, *): T} append
- * @param {!Array.<!FORMATTER_TOKEN>=} tokenizedFormat
- * @return {!{formattedResult: T, unusedSubstitutions: ?ArrayLike<U>}};
- */
-export const format = function(formatString, substitutions, formatters, initialValue, append, tokenizedFormat) {
+type FormatterFunction<T> = (input: string|{description: string}|undefined|T, token: FormatterToken) => unknown;
+
+export const format = function<T, U>(
+    formatString: string, substitutions: ArrayLike<U>|null, formatters: Record<string, FormatterFunction<U>>,
+    initialValue: T, append: (initialValue: T, newString?: string) => T, tokenizedFormat?: FormatterToken[]): {
+  formattedResult: T,
+  unusedSubstitutions: ArrayLike<U>|null,
+} {
   if (!formatString || ((!substitutions || !substitutions.length) && formatString.search(/\u001b\[(\d+)m/) === -1)) {
     return {formattedResult: append(initialValue, formatString), unusedSubstitutions: substitutions};
   }
@@ -161,36 +132,26 @@ export const format = function(formatString, substitutions, formatters, initialV
     return 'String.format("' + formatString + '", "' + Array.prototype.join.call(substitutions, '", "') + '")';
   }
 
-  /**
-   * @param {string} msg
-   */
-  function warn(msg) {
+  function warn(msg: string) {
     console.warn(prettyFunctionName() + ': ' + msg);
   }
 
-  /**
-   * @param {string} msg
-   */
-  function error(msg) {
+  function error(msg: string) {
     console.error(prettyFunctionName() + ': ' + msg);
   }
 
   let result = initialValue;
   const tokens = tokenizedFormat || tokenizeFormatString(formatString, formatters);
-  /** @type {!Object<number, boolean>} */
-  const usedSubstitutionIndexes = {};
-  /** @type {!ArrayLike<*>} */
-  const actualSubstitutions = substitutions || [];
+  const usedSubstitutionIndexes: Record<number, boolean> = {};
+  const actualSubstitutions: ArrayLike<U> = substitutions || [];
 
-  for (let i = 0; i < tokens.length; ++i) {
-    const token = tokens[i];
-
-    if (token.type === FORMATTER_TYPES.STRING) {
-      result = append(result, token.value);
+  for (const token of tokens) {
+    if (token.type === FormatterType.STRING) {
+      result = append(result, token.value as string);
       continue;
     }
 
-    if (token.type !== FORMATTER_TYPES.SPECIFIER) {
+    if (token.type !== FormatterType.SPECIFIER) {
       error('Unknown token type "' + token.type + '" found.');
       continue;
     }
@@ -215,17 +176,22 @@ export const format = function(formatString, substitutions, formatters, initialV
     if (token.specifier === undefined || !(token.specifier in formatters)) {
       // Encountered an unsupported format character, treat as a string.
       warn('unsupported format character \u201C' + token.specifier + '\u201D. Treating as a string.');
-      result = append(
-          result,
-          (token.value || token.substitutionIndex === undefined) ? '' : actualSubstitutions[token.substitutionIndex]);
+      const stringToAppend = (token.value || token.substitutionIndex === undefined) ?
+          '' :
+          String(actualSubstitutions[token.substitutionIndex]);
+      result = append(result, stringToAppend);
       continue;
     }
 
+    const formatter = formatters[token.specifier];
+    const valueToFormat = token.value ||
+        (token.substitutionIndex !== undefined ? actualSubstitutions[token.substitutionIndex] : undefined);
+    const stringToAppend = formatter(valueToFormat, token);
+
     result = append(
         result,
-        formatters[token.specifier](
-            token.value || (token.substitutionIndex !== undefined && actualSubstitutions[token.substitutionIndex]),
-            token));
+        stringToAppend as string,
+    );
   }
 
   const unusedSubstitutions = [];
@@ -240,74 +206,41 @@ export const format = function(formatString, substitutions, formatters, initialV
 };
 
 export const standardFormatters = {
-  /**
-   * @param {*} substitution
-   * @return {number}
-   */
-  d: function(substitution) {
-    return /** @type {number} */ (!isNaN(substitution) ? substitution : 0);
+  d: function(substitution: unknown): number {
+    return (!isNaN(substitution as number) ? substitution as number : 0);
   },
 
-  /**
-   * @param {*} substitution
-   * @param {!FORMATTER_TOKEN} token
-   * @return {number}
-   */
-  f: function(substitution, token) {
-    if (substitution && token.precision !== undefined && token.precision > -1) {
+  f: function(substitution: unknown, token: FormatterToken): string {
+    if (substitution && typeof substitution === 'number' && token.precision !== undefined && token.precision > -1) {
       substitution = substitution.toFixed(token.precision);
     }
-    const precision = (token.precision !== undefined && token.precision > -1) ? Number(0).toFixed(token.precision) : 0;
-    return /** @type number} */ (!isNaN(substitution) ? substitution : precision);
+    const precision =
+        (token.precision !== undefined && token.precision > -1) ? Number(0).toFixed(token.precision) : '0';
+    return !isNaN(substitution as number) ? substitution as string : precision;
   },
 
-  /**
-   * @param {*} substitution
-   * @return {string}
-   */
-  s: function(substitution) {
-    return /** @type {string} */ (substitution);
-  }
+  s: function(substitution: unknown) {
+    return substitution as string;
+  },
 };
 
-/**
- * @param {string} formatString
- * @param {!Array.<*>} substitutions
- * @return {string}
- */
-export const vsprintf = function(formatString, substitutions) {
-  // @ts-ignore
-  return format(formatString, substitutions, standardFormatters, '', function(a, b) {
-           return a + b;
-         }).formattedResult;
+export const vsprintf = function(formatString: string, substitutions: unknown[]): string {
+  return format(formatString, substitutions, standardFormatters, '', (a, b) => a + b).formattedResult;
 };
 
-/**
- * @param {string} format
- * @param {...*} var_arg
- * @return {string}
- */
-export const sprintf = function(format, var_arg) {
-  return vsprintf(format, Array.prototype.slice.call(arguments, 1));
+export const sprintf = function(format: string, ...varArg: unknown[]): string {
+  return vsprintf(format, varArg);
 };
 
 
- /**
- * @param {string} inputString
- * @return {string}
- */
-export const toBase64 = inputString => {
+export const toBase64 = (inputString: string): string => {
   /* note to the reader: we can't use btoa here because we need to
    * support Unicode correctly. See the test cases for this function and
    * also
    * https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#The_Unicode_Problem
    */
 
-  /**
-   * @param {number} b
-   * @return {number}
-   */
-  function encodeBits(b) {
+  function encodeBits(b: number): number {
     return b < 26 ? b + 65 : b < 52 ? b + 71 : b < 62 ? b - 4 : b === 62 ? 43 : b === 63 ? 47 : 65;
   }
   const encoder = new TextEncoder();
@@ -336,13 +269,7 @@ export const toBase64 = inputString => {
   return encoded;
 };
 
-/**
- *
- * @param {string} inputString
- * @param {string} searchString
- * @return {!Array.<number>}
- */
-export const findIndexesOfSubString = (inputString, searchString) => {
+export const findIndexesOfSubString = (inputString: string, searchString: string): number[] => {
   const matches = [];
   let i = inputString.indexOf(searchString);
   while (i !== -1) {
@@ -352,31 +279,17 @@ export const findIndexesOfSubString = (inputString, searchString) => {
   return matches;
 };
 
-/**
- *
- * @param {string} inputString
- * @return {!Array.<number>}
- */
-export const findLineEndingIndexes = inputString => {
+export const findLineEndingIndexes = (inputString: string): number[] => {
   const endings = findIndexesOfSubString(inputString, '\n');
   endings.push(inputString.length);
   return endings;
 };
 
-/**
- * @param {string} inputString
- * @return {boolean}
- */
-export const isWhitespace = inputString => {
+export const isWhitespace = (inputString: string): boolean => {
   return /^\s*$/.test(inputString);
 };
 
-/**
- * @param {string} url
- * @param {?string=} baseURLDomain
- * @return {string}
- */
-export const trimURL = (url, baseURLDomain) => {
+export const trimURL = (url: string, baseURLDomain?: string): string => {
   let result = url.replace(/^(https|http|file):\/\//i, '');
   if (baseURLDomain) {
     if (result.toLowerCase().startsWith(baseURLDomain.toLowerCase())) {
@@ -386,38 +299,21 @@ export const trimURL = (url, baseURLDomain) => {
   return result;
 };
 
-/**
- * @param {string} inputString
- * @return {string}
- */
-export const collapseWhitespace = inputString => {
+export const collapseWhitespace = (inputString: string): string => {
   return inputString.replace(/[\s\xA0]+/g, ' ');
 };
 
-/**
- *
- * @param {string} inputString
- * @return {string}
- */
-export const reverse = inputString => {
+export const reverse = (inputString: string): string => {
   return inputString.split('').reverse().join('');
 };
 
-/**
- * @param {string} inputString
- * @return {string}
- */
-export const replaceControlCharacters = inputString => {
+export const replaceControlCharacters = (inputString: string): string => {
   // Replace C0 and C1 control character sets with replacement character.
   // Do not replace '\t', \n' and '\r'.
   return inputString.replace(/[\0-\x08\x0B\f\x0E-\x1F\x80-\x9F]/g, '\uFFFD');
 };
 
-/**
- * @param {string} inputString
- * @return {number}
- */
-export const countWtf8Bytes = inputString => {
+export const countWtf8Bytes = (inputString: string): number => {
   let count = 0;
   for (let i = 0; i < inputString.length; i++) {
     const c = inputString.charCodeAt(i);
@@ -446,43 +342,25 @@ export const countWtf8Bytes = inputString => {
   return count;
 };
 
-/**
- * @param {string} inputStr
- */
-export const stripLineBreaks = inputStr => {
+export const stripLineBreaks = (inputStr: string): string => {
   return inputStr.replace(/(\r)?\n/g, '');
 };
 
-/**
- * @param {string} inputStr
- * @return {string}
- */
-export const toTitleCase = inputStr => {
+export const toTitleCase = (inputStr: string): string => {
   return inputStr.substring(0, 1).toUpperCase() + inputStr.substring(1);
 };
 
-/**
- * @param {string} inputStr
- * @return {string}
- */
-export const removeURLFragment = inputStr => {
+export const removeURLFragment = (inputStr: string): string => {
   const url = new URL(inputStr);
   url.hash = '';
   return url.toString();
 };
 
-/**
- * @return {string}
- */
-export const regexSpecialCharacters = function() {
+export const regexSpecialCharacters = function(): string {
   return '^[]{}()\\.^$*+?|-,';
 };
 
-/**
- * @param {string} query
- * @return {!RegExp}
- */
-export const filterRegex = function(query) {
+export const filterRegex = function(query: string): RegExp {
   const toEscape = regexSpecialCharacters();
   let regexString = '';
   for (let i = 0; i < query.length; ++i) {
@@ -498,13 +376,7 @@ export const filterRegex = function(query) {
   return new RegExp(regexString, 'i');
 };
 
-/**
- * @param {string} query
- * @param {boolean} caseSensitive
- * @param {boolean} isRegex
- * @return {!RegExp}
- */
-export const createSearchRegex = function(query, caseSensitive, isRegex) {
+export const createSearchRegex = function(query: string, caseSensitive: boolean, isRegex: boolean): RegExp {
   const regexFlags = caseSensitive ? 'g' : 'gi';
   let regexObject;
 
@@ -523,12 +395,7 @@ export const createSearchRegex = function(query, caseSensitive, isRegex) {
   return regexObject;
 };
 
-/**
- * @param {string} a
- * @param {string} b
- * @return {number}
- */
-export const caseInsensetiveComparator = function(a, b) {
+export const caseInsensetiveComparator = function(a: string, b: string): number {
   a = a.toUpperCase();
   b = b.toUpperCase();
   if (a === b) {

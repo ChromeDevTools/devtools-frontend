@@ -13,7 +13,7 @@ devtools_module("platform") {
     "map-utilities.ts",
     "number-utilities.js",
     "set-utilities.ts",
-    "string-utilities.js",
+    "string-utilities.ts",
     "utilities.js",
   ]
 

@@ -401,7 +401,7 @@ export class LiveLocation extends LiveLocationWithPool {
    * @override
    * @return {!Promise<boolean>}
    */
-  async isBlackboxed() {
+  async isIgnoreListed() {
     return false;
   }
 }

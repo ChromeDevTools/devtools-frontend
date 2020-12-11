@@ -26,7 +26,7 @@ export class LiveLocation {
   /**
    * @return {!Promise<boolean>}
    */
-  isBlackboxed() {
+  isIgnoreListed() {
     throw new Error('not implemented');
   }
 }
@@ -88,7 +88,7 @@ export class LiveLocationWithPool {
    * @override
    * @return {!Promise<boolean>}
    */
-  async isBlackboxed() {
+  async isIgnoreListed() {
     throw 'Not implemented';
   }
 }

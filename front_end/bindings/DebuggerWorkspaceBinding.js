@@ -592,7 +592,7 @@ export class Location extends LiveLocationWithPool {
    * @override
    * @return {!Promise<boolean>}
    */
-  async isBlackboxed() {
+  async isIgnoreListed() {
     const uiLocation = await this.uiLocation();
     return uiLocation ? IgnoreListManager.instance().isIgnoreListedUISourceCode(uiLocation.uiSourceCode) : false;
   }
@@ -640,8 +640,8 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
    * @override
    * @return {!Promise<boolean>}
    */
-  async isBlackboxed() {
-    return this._current ? this._current.isBlackboxed() : false;
+  async isIgnoreListed() {
+    return this._current ? this._current.isIgnoreListed() : false;
   }
 
   /**
@@ -676,7 +676,7 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
 
     this._current = this._locations[0];
     for (const location of this._locations) {
-      if (!(await location.isBlackboxed())) {
+      if (!(await location.isIgnoreListed())) {
         this._current = location;
         break;
       }

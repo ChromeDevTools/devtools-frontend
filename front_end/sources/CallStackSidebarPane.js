@@ -617,7 +617,7 @@ export class Item {
    */
   async _update(liveLocation) {
     const uiLocation = await liveLocation.uiLocation();
-    this.isBlackboxed = await liveLocation.isBlackboxed();
+    this.isBlackboxed = await liveLocation.isIgnoreListed();
     this.linkText = uiLocation ? uiLocation.linkText() : '';
     this.uiLocation = uiLocation;
     this.updateDelegate(this);

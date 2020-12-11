@@ -105,6 +105,53 @@ function assertInnerListAndGetItems(
   return item.items;
 }
 
+function assertSerializeResult(
+    result: StructuredHeaders.SerializationResult|StructuredHeaders.Error, expected: string): void {
+  if (result.kind === StructuredHeaders.ResultKind.ERROR) {
+    assert.fail('Got error instead of serialization result');
+    return;
+  }
+  assert.strictEqual(result.value, expected);
+}
+
+function assertSerializeError(result: StructuredHeaders.SerializationResult|StructuredHeaders.Error): void {
+  assert.strictEqual(result.kind, StructuredHeaders.ResultKind.ERROR);
+}
+
+function makeItem(bareItem: StructuredHeaders.BareItem): StructuredHeaders.Item {
+  return {
+    kind: StructuredHeaders.ResultKind.ITEM,
+    value: bareItem,
+    parameters: {kind: StructuredHeaders.ResultKind.PARAMETERS, items: []},
+  };
+}
+
+function makeParams(params: [string, StructuredHeaders.BareItem][]): StructuredHeaders.Parameters {
+  const typedParams: StructuredHeaders.Parameters = {kind: StructuredHeaders.ResultKind.PARAMETERS, items: []};
+  for (const param of params) {
+    typedParams.items.push({
+      kind: StructuredHeaders.ResultKind.PARAMETER,
+      name: {kind: StructuredHeaders.ResultKind.PARAM_NAME, value: param[0]},
+      value: param[1],
+    });
+  }
+  return typedParams;
+}
+
+function makeItemWithParams(
+    bareItem: StructuredHeaders.BareItem, params: [string, StructuredHeaders.BareItem][]): StructuredHeaders.Item {
+  return {kind: StructuredHeaders.ResultKind.ITEM, value: bareItem, parameters: makeParams(params)};
+}
+
+function makeList(items: StructuredHeaders.ListMember[]): StructuredHeaders.List {
+  return {kind: StructuredHeaders.ResultKind.LIST, items: items};
+}
+
+function makeInnerList(
+    items: StructuredHeaders.Item[], params: [string, StructuredHeaders.BareItem][]): StructuredHeaders.InnerList {
+  return {kind: StructuredHeaders.ResultKind.INNER_LIST, items: items, parameters: makeParams(params)};
+}
+
 describe('StructuredHeaders', () => {
   describe('Parsing', () => {
     it('Parses integers', () => {
@@ -254,5 +301,163 @@ describe('StructuredHeaders', () => {
       assertListError(StructuredHeaders.parseList('(a,'));
       assertListError(StructuredHeaders.parseList('(a,b'));
     });
+  });
+  describe('Serialization', () => {
+    it('Serializes integers', () => {
+      assertSerializeResult(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.INTEGER, value: -45})), '-45');
+      assertSerializeResult(
+          StructuredHeaders.serializeItem(
+              makeItem({kind: StructuredHeaders.ResultKind.INTEGER, value: 999999999999999})),
+          '999999999999999');
+      assertSerializeResult(
+          StructuredHeaders.serializeItem(
+              makeItem({kind: StructuredHeaders.ResultKind.INTEGER, value: -999999999999999})),
+          '-999999999999999');
+
+      assertSerializeError(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.INTEGER, value: 3.14})));
+      assertSerializeError(StructuredHeaders.serializeItem(
+          makeItem({kind: StructuredHeaders.ResultKind.INTEGER, value: -1000000000000000})));
+      assertSerializeError(StructuredHeaders.serializeItem(
+          makeItem({kind: StructuredHeaders.ResultKind.INTEGER, value: 1000000000000000})));
+    });
+    it('Serializes strings', () => {
+      assertSerializeResult(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.STRING, value: 'str'})),
+          '"str"');
+      assertSerializeResult(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.STRING, value: 'str"\\'})),
+          '"str\\"\\\\"');
+      assertSerializeResult(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.STRING, value: ''})), '""');
+
+      // Only printable ASCII....
+      assertSerializeError(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.STRING, value: '\u2124'})));
+      assertSerializeError(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.STRING, value: '\u007f'})));
+      assertSerializeError(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.STRING, value: '\u001f'})));
+    });
+    it('Serializes tokens', () => {
+      assertSerializeResult(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.TOKEN, value: 'tok'})), 'tok');
+      assertSerializeResult(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.TOKEN, value: '*foo:bar/baz'})),
+          '*foo:bar/baz');
+
+      assertSerializeError(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.TOKEN, value: '/foo'})));
+      assertSerializeError(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.TOKEN, value: '*,'})));
+      assertSerializeError(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.TOKEN, value: ''})));
+    });
+    it('Serializes booleans', () => {
+      assertSerializeResult(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.BOOLEAN, value: true})), '?1');
+      assertSerializeResult(
+          StructuredHeaders.serializeItem(makeItem({kind: StructuredHeaders.ResultKind.BOOLEAN, value: false})), '?0');
+    });
+    it('Serializes parameters', () => {
+      assertSerializeResult(
+          StructuredHeaders.serializeItem(makeItemWithParams(
+              {kind: StructuredHeaders.ResultKind.BOOLEAN, value: true},
+              [
+                ['arg1', {kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}],
+                ['arg2', {kind: StructuredHeaders.ResultKind.BOOLEAN, value: false}],
+              ])),
+          '?1;arg1;arg2=?0');
+      assertSerializeResult(
+          StructuredHeaders.serializeItem(makeItemWithParams(
+              {kind: StructuredHeaders.ResultKind.BOOLEAN, value: true},
+              [
+                ['*1', {kind: StructuredHeaders.ResultKind.TOKEN, value: 'Yes'}],
+                ['*2', {kind: StructuredHeaders.ResultKind.INTEGER, value: 1}],
+              ])),
+          '?1;*1=Yes;*2=1');
+
+      assertSerializeError(StructuredHeaders.serializeItem(makeItemWithParams(
+          {kind: StructuredHeaders.ResultKind.BOOLEAN, value: true},
+          [['Arg1', {kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}]])));
+      assertSerializeError(StructuredHeaders.serializeItem(makeItemWithParams(
+          {kind: StructuredHeaders.ResultKind.BOOLEAN, value: true},
+          [['*Arg1', {kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}]])));
+    });
+  });
+  it('Serializes lists', () => {
+    assertSerializeResult(StructuredHeaders.serializeList(makeList([])), '');
+    assertSerializeResult(
+        StructuredHeaders.serializeList(makeList([
+          makeItem({kind: StructuredHeaders.ResultKind.BOOLEAN, value: false}),
+          makeItem({kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}),
+        ])),
+        '?0, ?1');
+    assertSerializeResult(
+        StructuredHeaders.serializeList(makeList([
+          makeItemWithParams(
+              {kind: StructuredHeaders.ResultKind.STRING, value: 'hi'},
+              [
+                ['arg1', {kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}],
+                ['arg2', {kind: StructuredHeaders.ResultKind.BOOLEAN, value: false}],
+              ]),
+          makeItem({kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}),
+        ])),
+        '"hi";arg1;arg2=?0, ?1');
+
+    assertSerializeResult(
+        StructuredHeaders.serializeList(
+            makeList([makeItem({kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}), makeInnerList([], [])])),
+        '?1, ()');
+
+    assertSerializeResult(
+        StructuredHeaders.serializeList(makeList([
+          makeItem({kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}),
+          makeInnerList(
+              [
+                makeItem({kind: StructuredHeaders.ResultKind.INTEGER, value: 1}),
+                makeItem({kind: StructuredHeaders.ResultKind.INTEGER, value: 2}),
+              ],
+              []),
+          makeInnerList(
+              [
+                makeItem({kind: StructuredHeaders.ResultKind.INTEGER, value: 3}),
+                makeItemWithParams(
+                    {kind: StructuredHeaders.ResultKind.INTEGER, value: 4},
+                    [['p1', {kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}]]),
+              ],
+              [['o1', {kind: StructuredHeaders.ResultKind.STRING, value: 'val'}]]),
+        ])),
+        '?1, (1 2), (3 4;p1);o1="val"');
+
+
+    assertSerializeError(StructuredHeaders.serializeList(makeList([
+      makeItem({kind: StructuredHeaders.ResultKind.STRING, value: '\u0000'}),
+      makeItem({kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}),
+    ])));
+
+    assertSerializeError(StructuredHeaders.serializeList(makeList([
+      makeItemWithParams(
+          {kind: StructuredHeaders.ResultKind.STRING, value: 'hi'},
+          [
+            ['Arg1', {kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}],
+            ['arg2', {kind: StructuredHeaders.ResultKind.BOOLEAN, value: false}],
+          ]),
+      makeItem({kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}),
+    ])));
+
+    assertSerializeError(StructuredHeaders.serializeList(makeList([
+      makeItem({kind: StructuredHeaders.ResultKind.BOOLEAN, value: true}),
+      makeInnerList(
+          [
+            makeItem({kind: StructuredHeaders.ResultKind.INTEGER, value: 1.34}),
+            makeItem({kind: StructuredHeaders.ResultKind.INTEGER, value: 2}),
+          ],
+          []),
+    ])));
+
+    assertSerializeError(StructuredHeaders.serializeList(
+        makeList([makeInnerList([], [['+o1', {kind: StructuredHeaders.ResultKind.STRING, value: 'val'}]])])));
   });
 });

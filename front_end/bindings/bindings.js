@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as BlackboxManager from './BlackboxManager.js';
 import * as BreakpointManager from './BreakpointManager.js';
 import * as CompilerScriptMapping from './CompilerScriptMapping.js';
 import * as ContentProviderBasedProject from './ContentProviderBasedProject.js';
@@ -11,6 +10,7 @@ import * as DebuggerLanguagePlugins from './DebuggerLanguagePlugins.js';
 import * as DebuggerWorkspaceBinding from './DebuggerWorkspaceBinding.js';
 import * as DefaultScriptMapping from './DefaultScriptMapping.js';
 import * as FileUtils from './FileUtils.js';
+import * as BlackboxManager from './IgnoreListManager.js';
 import * as LiveLocation from './LiveLocation.js';
 import * as NetworkProject from './NetworkProject.js';
 import * as PresentationConsoleMessageHelper from './PresentationConsoleMessageHelper.js';

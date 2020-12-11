@@ -21,7 +21,7 @@
     "ContentProviderBasedProject.js",
     "DefaultScriptMapping.js",
     "FileUtils.js",
-    "BlackboxManager.js",
+    "IgnoreListManager.js",
     "NetworkProject.js",
     "PresentationConsoleMessageHelper.js",
     "ResourceUtils.js",

@@ -81,7 +81,9 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     this._sidebarTree.addEventListener(UI.TreeOutline.Events.ElementAttached, this._treeElementAdded, this);
 
     this.contentElement.appendChild(this._sidebarTree.element);
-    this._applicationTreeElement = this._addSidebarSection(Common.UIString.UIString('Application'));
+
+    const applicationSectionTitle = ls`Application`;
+    this._applicationTreeElement = this._addSidebarSection(applicationSectionTitle);
     const manifestTreeElement = new AppManifestTreeElement(panel);
     this._applicationTreeElement.appendChild(manifestTreeElement);
     this.serviceWorkersTreeElement = new ServiceWorkersTreeElement(panel);
@@ -89,7 +91,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     const clearStorageTreeElement = new ClearStorageTreeElement(panel);
     this._applicationTreeElement.appendChild(clearStorageTreeElement);
 
-    const storageTreeElement = this._addSidebarSection(Common.UIString.UIString('Storage'));
+    const storageSectionTitle = ls`Storage`;
+    const storageTreeElement = this._addSidebarSection(storageSectionTitle);
     this.localStorageListTreeElement =
         new ExpandableApplicationPanelTreeElement(panel, Common.UIString.UIString('Local Storage'), 'LocalStorage');
     this.localStorageListTreeElement.setLink(
@@ -126,7 +129,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     this.cookieListTreeElement.setLeadingIcons([cookieIcon]);
     storageTreeElement.appendChild(this.cookieListTreeElement);
 
-    const cacheTreeElement = this._addSidebarSection(Common.UIString.UIString('Cache'));
+    const cacheSectionTitle = ls`Cache`;
+    const cacheTreeElement = this._addSidebarSection(cacheSectionTitle);
     this.cacheStorageListTreeElement = new ServiceWorkerCacheTreeElement(panel);
     cacheTreeElement.appendChild(this.cacheStorageListTreeElement);
     this.applicationCacheListTreeElement = new ExpandableApplicationPanelTreeElement(
@@ -139,7 +143,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     cacheTreeElement.appendChild(this.applicationCacheListTreeElement);
 
     if (Root.Runtime.experiments.isEnabled('backgroundServices')) {
-      const backgroundServiceTreeElement = this._addSidebarSection(ls`Background Services`);
+      const backgroundServiceSectionTitle = ls`Background Services`;
+      const backgroundServiceTreeElement = this._addSidebarSection(backgroundServiceSectionTitle);
 
       this.backgroundFetchTreeElement =
           new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundFetch);
@@ -167,8 +172,9 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
         backgroundServiceTreeElement.appendChild(this.pushMessagingTreeElement);
       }
     }
-
-    this._resourcesSection = new ResourcesSection(panel, this._addSidebarSection(Common.UIString.UIString('Frames')));
+    const resourcesSectionTitle = ls`Frames`;
+    const resourcesTreeElement = this._addSidebarSection(resourcesSectionTitle);
+    this._resourcesSection = new ResourcesSection(panel, resourcesTreeElement);
 
     /** @type {!Map.<!DatabaseModelDatabase, !Object.<string, !DatabaseTableView>>} */
     this._databaseTableViews = new Map();
@@ -205,6 +211,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     treeElement.setCollapsible(false);
     treeElement.selectable = false;
     this._sidebarTree.appendChild(treeElement);
+    UI.ARIAUtils.setAccessibleName(treeElement.childrenListElement, title);
     return treeElement;
   }
 

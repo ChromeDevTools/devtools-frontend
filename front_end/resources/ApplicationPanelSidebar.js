@@ -38,7 +38,7 @@ import * as UI from '../ui/ui.js';
 
 import {ApplicationCacheItemsView} from './ApplicationCacheItemsView.js';
 import {ApplicationCacheModel, Events as ApplicationCacheModelEvents} from './ApplicationCacheModel.js';
-import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
+import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {AppManifestView} from './AppManifestView.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {BackgroundServiceView} from './BackgroundServiceView.js';
@@ -91,7 +91,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
 
     const storageTreeElement = this._addSidebarSection(Common.UIString.UIString('Storage'));
     this.localStorageListTreeElement =
-        new StorageCategoryTreeElement(panel, Common.UIString.UIString('Local Storage'), 'LocalStorage');
+        new ExpandableApplicationPanelTreeElement(panel, Common.UIString.UIString('Local Storage'), 'LocalStorage');
     this.localStorageListTreeElement.setLink(
         'https://developers.google.com/web/tools/chrome-devtools/storage/localstorage?utm_source=devtools');
     const localStorageIcon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
@@ -99,7 +99,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
 
     storageTreeElement.appendChild(this.localStorageListTreeElement);
     this.sessionStorageListTreeElement =
-        new StorageCategoryTreeElement(panel, Common.UIString.UIString('Session Storage'), 'SessionStorage');
+        new ExpandableApplicationPanelTreeElement(panel, Common.UIString.UIString('Session Storage'), 'SessionStorage');
     this.sessionStorageListTreeElement.setLink(
         'https://developers.google.com/web/tools/chrome-devtools/storage/sessionstorage?utm_source=devtools');
     const sessionStorageIcon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
@@ -111,14 +111,15 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
         'https://developers.google.com/web/tools/chrome-devtools/storage/indexeddb?utm_source=devtools');
     storageTreeElement.appendChild(this.indexedDBListTreeElement);
     this.databasesListTreeElement =
-        new StorageCategoryTreeElement(panel, Common.UIString.UIString('Web SQL'), 'Databases');
+        new ExpandableApplicationPanelTreeElement(panel, Common.UIString.UIString('Web SQL'), 'Databases');
     this.databasesListTreeElement.setLink(
         'https://developers.google.com/web/tools/chrome-devtools/storage/websql?utm_source=devtools');
     const databaseIcon = UI.Icon.Icon.create('mediumicon-database', 'resource-tree-item');
     this.databasesListTreeElement.setLeadingIcons([databaseIcon]);
 
     storageTreeElement.appendChild(this.databasesListTreeElement);
-    this.cookieListTreeElement = new StorageCategoryTreeElement(panel, Common.UIString.UIString('Cookies'), 'Cookies');
+    this.cookieListTreeElement =
+        new ExpandableApplicationPanelTreeElement(panel, Common.UIString.UIString('Cookies'), 'Cookies');
     this.cookieListTreeElement.setLink(
         'https://developers.google.com/web/tools/chrome-devtools/storage/cookies?utm_source=devtools');
     const cookieIcon = UI.Icon.Icon.create('mediumicon-cookie', 'resource-tree-item');
@@ -128,8 +129,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     const cacheTreeElement = this._addSidebarSection(Common.UIString.UIString('Cache'));
     this.cacheStorageListTreeElement = new ServiceWorkerCacheTreeElement(panel);
     cacheTreeElement.appendChild(this.cacheStorageListTreeElement);
-    this.applicationCacheListTreeElement =
-        new StorageCategoryTreeElement(panel, Common.UIString.UIString('Application Cache'), 'ApplicationCache');
+    this.applicationCacheListTreeElement = new ExpandableApplicationPanelTreeElement(
+        panel, Common.UIString.UIString('Application Cache'), 'ApplicationCache');
     this.applicationCacheListTreeElement.setLink(
         'https://developers.google.com/web/tools/chrome-devtools/storage/applicationcache?utm_source=devtools');
     const applicationCacheIcon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
@@ -772,71 +773,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
   }
 }
 
-export class StorageCategoryTreeElement extends ApplicationPanelTreeElement {
-  /**
-   * @param {!ResourcesPanel} storagePanel
-   * @param {string} categoryName
-   * @param {string} settingsKey
-   */
-  constructor(storagePanel, categoryName, settingsKey) {
-    super(storagePanel, categoryName, false);
-    this._expandedSetting = Common.Settings.Settings.instance().createSetting(
-        'resources' + settingsKey + 'Expanded', settingsKey === 'Frames');
-    this._categoryName = categoryName;
-    this._categoryLink = null;
-  }
-
-  /**
-   * @override
-   * @return {string}
-   */
-  get itemURL() {
-    return 'category://' + this._categoryName;
-  }
-
-  /**
-   * @param {string} link
-   */
-  setLink(link) {
-    this._categoryLink = link;
-  }
-
-  /**
-   * @override
-   * @param {boolean=} selectedByUser
-   * @return {boolean}
-   */
-  onselect(selectedByUser) {
-    super.onselect(selectedByUser);
-    this.resourcesPanel.showCategoryView(this._categoryName, this._categoryLink);
-    return false;
-  }
-
-  /**
-   * @override
-   */
-  onattach() {
-    super.onattach();
-    if (this._expandedSetting.get()) {
-      this.expand();
-    }
-  }
-
-  /**
-   * @override
-   */
-  onexpand() {
-    this._expandedSetting.set(true);
-  }
-
-  /**
-   * @override
-   */
-  oncollapse() {
-    this._expandedSetting.set(false);
-  }
-}
-
 export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
@@ -1012,7 +948,7 @@ export class DatabaseTableTreeElement extends ApplicationPanelTreeElement {
   }
 }
 
-export class ServiceWorkerCacheTreeElement extends StorageCategoryTreeElement {
+export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    */
@@ -1296,7 +1232,7 @@ export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
   }
 }
 
-export class IndexedDBTreeElement extends StorageCategoryTreeElement {
+export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement {
   /**
    * @param {!ResourcesPanel} storagePanel
    */
@@ -2338,7 +2274,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     this._section = section;
     this._frame = frame;
     this._frameId = frame.id;
-    /** @type {!Map<string, !StorageCategoryTreeElement>} */
+    /** @type {!Map<string, !ExpandableApplicationPanelTreeElement>} */
     this._categoryElements = new Map();
     /** @type {!Map<string, !FrameResourceTreeElement>} */
     this._treeElementForResource = new Map();
@@ -2452,8 +2388,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     let categoryElement =
         resourceType === Common.ResourceType.resourceTypes.Document ? this : this._categoryElements.get(categoryName);
     if (!categoryElement) {
-      categoryElement =
-          new StorageCategoryTreeElement(this._section._panel, resource.resourceType().category().title, categoryName);
+      categoryElement = new ExpandableApplicationPanelTreeElement(
+          this._section._panel, resource.resourceType().category().title, categoryName, categoryName === 'Frames');
       this._categoryElements.set(resourceType.name(), categoryElement);
       this.appendChild(categoryElement, FrameTreeElement._presentationOrderCompare);
     }
@@ -2473,7 +2409,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     const categoryKey = 'OpenedWindows';
     let categoryElement = this._categoryElements.get(categoryKey);
     if (!categoryElement) {
-      categoryElement = new StorageCategoryTreeElement(this._section._panel, ls`Opened Windows`, categoryKey);
+      categoryElement =
+          new ExpandableApplicationPanelTreeElement(this._section._panel, ls`Opened Windows`, categoryKey);
       this._categoryElements.set(categoryKey, categoryElement);
       this.appendChild(categoryElement, FrameTreeElement._presentationOrderCompare);
     }
@@ -2491,7 +2428,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     const categoryKey = 'Workers';
     let categoryElement = this._categoryElements.get(categoryKey);
     if (!categoryElement) {
-      categoryElement = new StorageCategoryTreeElement(this._section._panel, ls`Workers`, categoryKey);
+      categoryElement = new ExpandableApplicationPanelTreeElement(this._section._panel, ls`Workers`, categoryKey);
       this._categoryElements.set(categoryKey, categoryElement);
       this.appendChild(categoryElement, FrameTreeElement._presentationOrderCompare);
     }
@@ -2555,7 +2492,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
      * @param {*} treeElement
      */
     function typeWeight(treeElement) {
-      if (treeElement instanceof StorageCategoryTreeElement) {
+      if (treeElement instanceof ExpandableApplicationPanelTreeElement) {
         return 2;
       }
       if (treeElement instanceof FrameTreeElement) {

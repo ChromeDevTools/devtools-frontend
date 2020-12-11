@@ -167,7 +167,6 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     const filterInput = StylesSidebarPane.createPropertyFilterElement(ls`Filter`, hbox, filterCallback.bind(this));
     UI.ARIAUtils.setAccessibleName(filterInput, Common.UIString.UIString('Filter Computed Styles'));
     filterContainerElement.appendChild(filterInput);
-    this.setDefaultFocusedElement(filterInput);
     /** @type {?RegExp} */
     this._filterRegex = null;
 

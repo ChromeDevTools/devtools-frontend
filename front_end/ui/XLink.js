@@ -96,7 +96,7 @@ export class XLink extends XElement {
       try {
         url = new URL(newValue);
         href = url.toString();
-      } catch (error) {
+      } catch {
       }
       if (url && url.protocol === 'javascript:') {
         href = null;

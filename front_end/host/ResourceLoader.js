@@ -127,7 +127,7 @@ function isHTTPError(netError) {
  * @param {string|undefined} netErrorName
  */
 export function netErrorToMessage(netError, httpStatusCode, netErrorName) {
-  if (netError === undefined || httpStatusCode === undefined || netErrorName === undefined) {
+  if (netError === undefined || netErrorName === undefined) {
     return null;
   }
   if (netError !== 0) {

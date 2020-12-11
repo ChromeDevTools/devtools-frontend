@@ -103,7 +103,7 @@
       "id": "blackbox",
       "title": "Ignore List",
       "order": 4,
-      "className": "Settings.FrameworkBlackboxSettingsTab"
+      "className": "Settings.FrameworkIgnoreListSettingsTab"
     },
     {
       "type": "view",
@@ -128,7 +128,7 @@
     "settings-legacy.js"
   ],
   "resources": [
-    "frameworkBlackboxSettingsTab.css",
+    "frameworkIgnoreListSettingsTab.css",
     "settingsScreen.css",
     "keybindsSettingsTab.css"
   ]

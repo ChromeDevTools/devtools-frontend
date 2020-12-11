@@ -4,14 +4,14 @@
 
 
 import './SettingsScreen.js';
-import './FrameworkBlackboxSettingsTab.js';
+import './FrameworkIgnoreListSettingsTab.js';
 
-import * as FrameworkBlackboxSettingsTab from './FrameworkBlackboxSettingsTab.js';
+import * as FrameworkIgnoreListSettingsTab from './FrameworkIgnoreListSettingsTab.js';
 import * as KeybindsSettingsTab from './KeybindsSettingsTab.js';
 import * as SettingsScreen from './SettingsScreen.js';
 
 export {
-  FrameworkBlackboxSettingsTab,
+  FrameworkIgnoreListSettingsTab,
   KeybindsSettingsTab,
   SettingsScreen,
 };

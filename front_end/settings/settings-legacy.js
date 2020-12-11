@@ -12,7 +12,7 @@ Settings = Settings || {};
 /**
  * @constructor
  */
-Settings.FrameworkBlackboxSettingsTab = SettingsModule.FrameworkBlackboxSettingsTab.FrameworkBlackboxSettingsTab;
+Settings.FrameworkIgnoreListSettingsTab = SettingsModule.FrameworkIgnoreListSettingsTab.FrameworkIgnoreListSettingsTab;
 
 /**
  * @constructor

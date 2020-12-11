@@ -289,7 +289,7 @@ all_devtools_files = [
   "front_end/security/originView.css",
   "front_end/security/sidebar.css",
   "front_end/services/module.json",
-  "front_end/settings/frameworkBlackboxSettingsTab.css",
+  "front_end/settings/frameworkIgnoreListSettingsTab.css",
   "front_end/settings/keybindsSettingsTab.css",
   "front_end/settings/module.json",
   "front_end/settings/settingsScreen.css",

@@ -1934,49 +1934,49 @@
   "security/SecurityPanel.js | yourPageRequestedNonsecure": {
     "message": "Your page requested non-secure resources that were blocked."
   },
-  "settings/FrameworkBlackboxSettingsTab.js | addFilenamePattern": {
+  "settings/FrameworkIgnoreListSettingsTab.js | addFilenamePattern": {
     "message": "Add filename pattern"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | addPattern": {
+  "settings/FrameworkIgnoreListSettingsTab.js | addPattern": {
     "message": "Add pattern..."
   },
-  "settings/FrameworkBlackboxSettingsTab.js | behavior": {
+  "settings/FrameworkIgnoreListSettingsTab.js | behavior": {
     "message": "Behavior"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | debuggerWillSkipThroughThe": {
+  "settings/FrameworkIgnoreListSettingsTab.js | debuggerWillSkipThroughThe": {
     "message": "Debugger will skip through the scripts and will not stop on exceptions thrown by them."
   },
-  "settings/FrameworkBlackboxSettingsTab.js | disabled": {
+  "settings/FrameworkIgnoreListSettingsTab.js | disabled": {
     "message": "Disabled"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | frameworkIgnoreList": {
+  "settings/FrameworkIgnoreListSettingsTab.js | frameworkIgnoreList": {
     "message": "Framework Ignore List"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | ignoreList": {
+  "settings/FrameworkIgnoreListSettingsTab.js | ignoreList": {
     "message": "Ignore List"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | ignoreListContentScripts": {
+  "settings/FrameworkIgnoreListSettingsTab.js | ignoreListContentScripts": {
     "message": "Add content scripts to ignore list"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | ignoreListContentScriptsExtension": {
+  "settings/FrameworkIgnoreListSettingsTab.js | ignoreListContentScriptsExtension": {
     "message": "Add content scripts to ignore list (extension scripts in the page)"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | ignoreScriptsWhoseNamesMatchS": {
+  "settings/FrameworkIgnoreListSettingsTab.js | ignoreScriptsWhoseNamesMatchS": {
     "message": "Ignore scripts whose names match '{PH1}'"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | noIgnoreListPatterns": {
+  "settings/FrameworkIgnoreListSettingsTab.js | noIgnoreListPatterns": {
     "message": "No ignore list patterns"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | pattern": {
+  "settings/FrameworkIgnoreListSettingsTab.js | pattern": {
     "message": "Pattern"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | patternAlreadyExists": {
+  "settings/FrameworkIgnoreListSettingsTab.js | patternAlreadyExists": {
     "message": "Pattern already exists"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | patternCannotBeEmpty": {
+  "settings/FrameworkIgnoreListSettingsTab.js | patternCannotBeEmpty": {
     "message": "Pattern cannot be empty"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | patternMustBeAValidRegular": {
+  "settings/FrameworkIgnoreListSettingsTab.js | patternMustBeAValidRegular": {
     "message": "Pattern must be a valid regular expression"
   },
   "settings/KeybindsSettingsTab.js | addAShortcut": {

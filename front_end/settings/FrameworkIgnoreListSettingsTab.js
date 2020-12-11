@@ -69,16 +69,16 @@ export const UIStrings = {
   */
   patternMustBeAValidRegular: 'Pattern must be a valid regular expression',
 };
-const str_ = i18n.i18n.registerUIStrings('settings/FrameworkBlackboxSettingsTab.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('settings/FrameworkIgnoreListSettingsTab.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {UI.ListWidget.Delegate<Common.Settings.RegExpSettingItem>}
  */
-export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
+export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('settings/frameworkIgnoreListSettingsTab.css', {enableLegacyPatching: true});
 
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.frameworkIgnoreList);
@@ -96,7 +96,7 @@ export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
 
     this._list = new UI.ListWidget.ListWidget(this);
     this._list.element.classList.add('blackbox-list');
-    this._list.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css', {enableLegacyPatching: true});
+    this._list.registerRequiredCSS('settings/frameworkIgnoreListSettingsTab.css', {enableLegacyPatching: true});
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('blackbox-list-empty');
@@ -229,7 +229,7 @@ export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
      * @param {!Common.Settings.RegExpSettingItem} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @this {FrameworkBlackboxSettingsTab}
+     * @this {FrameworkIgnoreListSettingsTab}
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function patternValidator(item, index, input) {

@@ -85,21 +85,21 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
     UI.ARIAUtils.markAsHeading(header, 1);
     this.contentElement.createChild('div', 'intro').textContent = i18nString(UIStrings.debuggerWillSkipThroughThe);
 
-    const blackboxContentScripts = this.contentElement.createChild('div', 'blackbox-content-scripts');
-    blackboxContentScripts.appendChild(UI.SettingsUI.createSettingCheckbox(
+    const ignoreListContentScripts = this.contentElement.createChild('div', 'ignore-list-content-scripts');
+    ignoreListContentScripts.appendChild(UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.ignoreListContentScripts),
         Common.Settings.Settings.instance().moduleSetting('skipContentScripts'), true));
-    UI.Tooltip.Tooltip.install(blackboxContentScripts, i18nString(UIStrings.ignoreListContentScriptsExtension));
+    UI.Tooltip.Tooltip.install(ignoreListContentScripts, i18nString(UIStrings.ignoreListContentScriptsExtension));
 
-    this._blackboxLabel = i18nString(UIStrings.ignoreList);
+    this._ignoreListLabel = i18nString(UIStrings.ignoreList);
     this._disabledLabel = i18nString(UIStrings.disabled);
 
     this._list = new UI.ListWidget.ListWidget(this);
-    this._list.element.classList.add('blackbox-list');
+    this._list.element.classList.add('ignore-list');
     this._list.registerRequiredCSS('settings/frameworkIgnoreListSettingsTab.css', {enableLegacyPatching: true});
 
     const placeholder = document.createElement('div');
-    placeholder.classList.add('blackbox-list-empty');
+    placeholder.classList.add('ignore-list-empty');
     placeholder.textContent = i18nString(UIStrings.noIgnoreListPatterns);
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.contentElement);
@@ -144,15 +144,15 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
    */
   renderItem(item, editable) {
     const element = document.createElement('div');
-    element.classList.add('blackbox-list-item');
-    const pattern = element.createChild('div', 'blackbox-pattern');
+    element.classList.add('ignore-list-item');
+    const pattern = element.createChild('div', 'ignore-list-pattern');
     pattern.textContent = item.pattern;
     UI.Tooltip.Tooltip.install(pattern, i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {PH1: item.pattern}));
-    element.createChild('div', 'blackbox-separator');
-    element.createChild('div', 'blackbox-behavior').textContent =
-        item.disabled ? this._disabledLabel : this._blackboxLabel;
+    element.createChild('div', 'ignore-list-separator');
+    element.createChild('div', 'ignore-list-behavior').textContent =
+        item.disabled ? this._disabledLabel : this._ignoreListLabel;
     if (item.disabled) {
-      element.classList.add('blackbox-disabled');
+      element.classList.add('ignore-list-disabled');
     }
     return element;
   }
@@ -193,7 +193,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
   beginEdit(item) {
     const editor = this._createEditor();
     editor.control('pattern').value = item.pattern;
-    editor.control('behavior').value = item.disabled ? this._disabledLabel : this._blackboxLabel;
+    editor.control('behavior').value = item.disabled ? this._disabledLabel : this._ignoreListLabel;
     return editor;
   }
 
@@ -209,19 +209,19 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
     this._editor = editor;
     const content = editor.contentElement();
 
-    const titles = content.createChild('div', 'blackbox-edit-row');
-    titles.createChild('div', 'blackbox-pattern').textContent = i18nString(UIStrings.pattern);
-    titles.createChild('div', 'blackbox-separator blackbox-separator-invisible');
-    titles.createChild('div', 'blackbox-behavior').textContent = i18nString(UIStrings.behavior);
+    const titles = content.createChild('div', 'ignore-list-edit-row');
+    titles.createChild('div', 'ignore-list-pattern').textContent = i18nString(UIStrings.pattern);
+    titles.createChild('div', 'ignore-list-separator ignore-list-separator-invisible');
+    titles.createChild('div', 'ignore-list-behavior').textContent = i18nString(UIStrings.behavior);
 
-    const fields = content.createChild('div', 'blackbox-edit-row');
+    const fields = content.createChild('div', 'ignore-list-edit-row');
     const pattern = editor.createInput('pattern', 'text', '/framework\\.js$', patternValidator.bind(this));
     UI.ARIAUtils.setAccessibleName(pattern, i18nString(UIStrings.pattern));
-    fields.createChild('div', 'blackbox-pattern').appendChild(pattern);
-    fields.createChild('div', 'blackbox-separator blackbox-separator-invisible');
-    const behavior = editor.createSelect('behavior', [this._blackboxLabel, this._disabledLabel], behaviorValidator);
+    fields.createChild('div', 'ignore-list-pattern').appendChild(pattern);
+    fields.createChild('div', 'ignore-list-separator ignore-list-separator-invisible');
+    const behavior = editor.createSelect('behavior', [this._ignoreListLabel, this._disabledLabel], behaviorValidator);
     UI.ARIAUtils.setAccessibleName(behavior, i18nString(UIStrings.behavior));
-    fields.createChild('div', 'blackbox-behavior').appendChild(behavior);
+    fields.createChild('div', 'ignore-list-behavior').appendChild(behavior);
 
     return editor;
 

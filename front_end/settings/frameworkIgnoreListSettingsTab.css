@@ -20,7 +20,7 @@
   margin-top: 10px;
 }
 
-.blackbox-content-scripts {
+.ignore-list-content-scripts {
   margin-top: 10px;
   flex: none;
 }
@@ -31,14 +31,14 @@
   flex: none;
 }
 
-.blackbox-list {
+.ignore-list {
   margin-top: 10px;
   max-width: 500px;
   flex: 0 1 auto;
   min-height: 30px;
 }
 
-.blackbox-list-empty {
+.ignore-list-empty {
   flex: auto;
   height: 30px;
   display: flex;
@@ -46,7 +46,7 @@
   justify-content: center;
 }
 
-.blackbox-list-item {
+.ignore-list-item {
   padding: 3px 5px 3px 5px;
   height: 30px;
   display: flex;
@@ -55,12 +55,12 @@
   flex: auto 1 1;
 }
 
-.blackbox-pattern {
+.ignore-list-pattern {
   flex: auto;
   min-width: 100px;
 }
 
-.blackbox-list-item .blackbox-pattern {
+.ignore-list-item .ignore-list-pattern {
   white-space: nowrap;
   text-overflow: ellipsis;
   user-select: none;
@@ -68,32 +68,32 @@
   overflow: hidden;
 }
 
-.blackbox-list-item.blackbox-disabled .blackbox-pattern {
+.ignore-list-item.ignore-list-disabled .ignore-list-pattern {
   text-decoration: line-through;
 }
 
-.blackbox-behavior {
+.ignore-list-behavior {
   flex: 0 0 100px;
   padding-left: 10px;
 }
 
-.blackbox-behavior > select {
+.ignore-list-behavior > select {
   margin-left: -10px;
 }
 
-.blackbox-separator {
+.ignore-list-separator {
   flex: 0 0 1px;
   background-color: rgb(231 231 231);
   height: 30px;
   margin: 0 4px;
 }
 
-.blackbox-separator-invisible {
+.ignore-list-separator-invisible {
   visibility: hidden;
   height: 100% !important;
 }
 
-.blackbox-edit-row {
+.ignore-list-edit-row {
   flex: none;
   display: flex;
   flex-direction: row;
@@ -101,8 +101,8 @@
   align-items: center;
 }
 
-.blackbox-edit-row input,
-.blackbox-edit-row select {
+.ignore-list-edit-row input,
+.ignore-list-edit-row select {
   width: 100%;
   text-align: inherit;
 }

@@ -9,12 +9,17 @@ devtools_module("browser_sdk") {
   sources = [
     "IssuesManager.js",
     "LogManager.js",
+    "MarkdownHelpers.ts",
     "RelatedIssue.js",
+    "SourceFrameIssuesManager.ts",
   ]
 
   deps = [
+    "../bindings:bundle",
     "../common:bundle",
     "../sdk:bundle",
+    "../third_party/marked:bundle",
+    "../workspace:bundle",
   ]
 }
 

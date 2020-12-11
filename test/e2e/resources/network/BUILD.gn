@@ -14,6 +14,7 @@ copy_to_gen("network") {
     "last-modified.rawresponse",
     "resources-from-cache.html",
     "trusted-type-violations-enforced.rawresponse",
+    "trusted-type-violations-report-only-in-html.rawresponse",
     "trusted-type-violations-report-only.rawresponse",
     "unreachable.rawresponse",
     "utf-8.rawresponse",

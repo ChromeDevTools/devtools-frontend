@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
+import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
 
 /** @type {?IssuesManager} */
 let issuesManagerInstance = null;
@@ -39,6 +40,8 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
 
     /** @type {?Common.EventTarget.EventDescriptor} */
     this._showThirdPartySettingsChangeListener = null;
+
+    this._sourceFrameIssuesManager = new SourceFrameIssuesManager(this);
   }
 
   /**

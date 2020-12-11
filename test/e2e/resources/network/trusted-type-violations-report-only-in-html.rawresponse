@@ -1,0 +1,12 @@
+200
+Content-Security-Policy-Report-Only: require-trusted-types-for 'script'; trusted-types policy1
+Date: Sun, 10 Oct 2010 23:26:07 GMT
+Server: Apache/2.2.8 (Ubuntu) mod_ssl/2.2.8 OpenSSL/0.9.8g
+Last-Modified: Sun, 26 Sep 2010 22:04:35 GMT
+ETag: "trusted-type-violations-enforced.rawresponse"
+Accept-Ranges: bytes
+Content-Length: 104
+Connection: close
+Content-Type: text/html; charset=utf-8
+
+<html><body onload='trustedTypes.createPolicy("policy2",{});document.body.innerHTML="a";'></body></html>

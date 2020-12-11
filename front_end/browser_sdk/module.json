@@ -32,10 +32,15 @@
     "browser_sdk.js",
     "LogManager.js",
     "IssuesManager.js",
-    "RelatedIssue.js"
+    "RelatedIssue.js",
+    "SourceFrameIssuesManager.js"
   ],
   "dependencies": [
     "common",
     "sdk"
+  ],
+  "resources": [
+    "../issues/descriptions/cspTrustedTypesSinkViolation.md",
+    "../issues/descriptions/cspTrustedTypesPolicyViolation.md"
   ]
 }

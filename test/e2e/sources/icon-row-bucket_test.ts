@@ -70,4 +70,39 @@ describe('Display error information next to affected lines', async () => {
       assert.strictEqual(await getIconFile(bucketIconComponent), 'error_icon.svg');
     }
   });
+  it('Issue messages should be displayed', async () => {
+    await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
+    const issueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
+
+    const issueMessages: string[] = [];
+    const expectedIssueMessages = [
+      'Trusted Type policy creation blocked by Content Security Policy',
+      'Trusted Type expected, but String received',
+    ];
+    for (const issueIconComponent of issueIconComponents) {
+      await click(issueIconComponent);
+      const vbox = await waitFor('div.vbox.flex-auto.no-pointer-events');
+      const rowMessages = await getRowsText(vbox);
+      issueMessages.push(...rowMessages);
+    }
+    assert.deepEqual(issueMessages, expectedIssueMessages);
+  });
+  it('Issues should also appear inside HTML', async () => {
+    await openFileInSourceTab('trusted-type-violations-report-only-in-html.rawresponse');
+    const icons = await getIconComponents('text-editor-line-decoration-icon-issue');
+    assert.strictEqual(icons.length, 1);
+  });
+  it('Issue icons should be correct', async () => {
+    await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
+    const bucketIssueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
+    for (const bucketIssueIconComponent of bucketIssueIconComponents) {
+      await click(bucketIssueIconComponent);
+      const vbox = await waitFor('div.vbox.flex-auto.no-pointer-events');
+      const issueIconComponents = await getIconComponents('text-editor-row-message-icon', vbox);
+      for (const issueIconComponent of issueIconComponents) {
+        assert.strictEqual(await getIconFile(issueIconComponent), 'breaking_change_icon.svg');
+      }
+      assert.strictEqual(await getIconFile(bucketIssueIconComponent), 'breaking_change_icon.svg');
+    }
+  });
 });

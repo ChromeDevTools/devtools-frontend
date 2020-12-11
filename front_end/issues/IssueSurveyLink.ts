@@ -70,13 +70,6 @@ export class IssueSurveyLink extends HTMLElement {
     });
   }
 
-  private onKeyDown(event: Event) {
-    if (isEnterOrSpaceKey(event) && this.state === State.ShowLink) {
-      event.consume(true);
-      this.sendSurvey();
-    }
-  }
-
   private render() {
     if (this.state === State.Checking || this.state === State.DontShowLink) {
       return;
@@ -110,11 +103,16 @@ export class IssueSurveyLink extends HTMLElement {
           vertical-align: sub;
         }
         .link {
-          padding-top: 4px;
+          padding: 4px 0 0 0;
           text-decoration: underline;
           cursor: pointer;
           font-size: 14px;
           color: var(--issue-link);
+          border: none;
+          background: none;
+        }
+        .link:focus:not(:focus-visible) {
+          outline: none;
         }
         .pending-link {
           opacity: 75%;
@@ -128,10 +126,10 @@ export class IssueSurveyLink extends HTMLElement {
           text-decoration: none;
         }
       </style>
-      <a class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} role="button" aria-disabled=${ariaDisabled} @click=${this.sendSurvey} @keydown=${this.onKeyDown}>
+      <button class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} aria-disabled=${ariaDisabled} @click=${this.sendSurvey}>
         <devtools-icon class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--issue-link)', width: '16px', height: '16px'} as Components.Icon.IconData}></devtools-icon><!--
       -->${linkText}
-      </a>
+      </button>
     `;
     // clang-format on
     LitHtml.render(output, this.shadow, {eventContext: this});

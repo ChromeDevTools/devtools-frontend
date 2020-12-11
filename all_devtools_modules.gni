@@ -414,6 +414,7 @@ all_typescript_module_sources = [
   "resources/AppManifestView.js",
   "resources/ApplicationCacheItemsView.js",
   "resources/ApplicationCacheModel.js",
+  "resources/ApplicationPanelCacheSection.js",
   "resources/ApplicationPanelSidebar.js",
   "resources/ApplicationPanelTreeElement.js",
   "resources/BackgroundServiceModel.js",

@@ -38,6 +38,7 @@ import * as UI from '../ui/ui.js';
 
 import {ApplicationCacheItemsView} from './ApplicationCacheItemsView.js';
 import {ApplicationCacheModel, Events as ApplicationCacheModelEvents} from './ApplicationCacheModel.js';
+import {ApplicationCacheManifestTreeElement} from './ApplicationPanelCacheSection.js';
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {AppManifestView} from './AppManifestView.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
@@ -1882,42 +1883,6 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.resourcesPanel.showCookies(this._target, this._cookieDomain);
-    return false;
-  }
-}
-
-export class ApplicationCacheManifestTreeElement extends ApplicationPanelTreeElement {
-  /**
-   * @param {!ResourcesPanel} storagePanel
-   * @param {string} manifestURL
-   */
-  constructor(storagePanel, manifestURL) {
-    const title = new Common.ParsedURL.ParsedURL(manifestURL).displayName;
-    super(storagePanel, title, false);
-    this.tooltip = manifestURL;
-    this._manifestURL = manifestURL;
-  }
-
-  /**
-   * @override
-   * @return {string}
-   */
-  get itemURL() {
-    return 'appcache://' + this._manifestURL;
-  }
-
-  get manifestURL() {
-    return this._manifestURL;
-  }
-
-  /**
-   * @override
-   * @param {boolean=} selectedByUser
-   * @return {boolean}
-   */
-  onselect(selectedByUser) {
-    super.onselect(selectedByUser);
-    this.resourcesPanel.showCategoryView(this._manifestURL, null);
     return false;
   }
 }

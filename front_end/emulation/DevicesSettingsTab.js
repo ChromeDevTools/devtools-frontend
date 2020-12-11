@@ -114,7 +114,10 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     checkbox.type = 'checkbox';
     checkbox.checked = device.show();
     checkbox.addEventListener('click', onItemClicked.bind(this), false);
-    label.appendChild(document.createTextNode(device.title));
+    const span = document.createElement('span');
+    span.classList.add('device-name');
+    span.appendChild(document.createTextNode(device.title));
+    label.appendChild(span);
     return label;
 
     /**

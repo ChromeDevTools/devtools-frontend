@@ -54,6 +54,12 @@
   outline: auto 5px -webkit-focus-ring-color;
 }
 
+.device-name {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 .devices-edit-fields {
   flex: auto;
   display: flex;

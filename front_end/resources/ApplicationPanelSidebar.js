@@ -38,7 +38,7 @@ import * as UI from '../ui/ui.js';
 
 import {ApplicationCacheItemsView} from './ApplicationCacheItemsView.js';
 import {ApplicationCacheModel, Events as ApplicationCacheModelEvents} from './ApplicationCacheModel.js';
-import {ApplicationCacheManifestTreeElement, ServiceWorkerCacheTreeElement} from './ApplicationPanelCacheSection.js';
+import {ApplicationCacheFrameTreeElement, ApplicationCacheManifestTreeElement, ServiceWorkerCacheTreeElement} from './ApplicationPanelCacheSection.js';
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {AppManifestView} from './AppManifestView.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
@@ -1703,65 +1703,6 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.resourcesPanel.showCookies(this._target, this._cookieDomain);
-    return false;
-  }
-}
-
-export class ApplicationCacheFrameTreeElement extends ApplicationPanelTreeElement {
-  /**
-   * @param {!ApplicationPanelSidebar} sidebar
-   * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
-   * @param {string} manifestURL
-   */
-  constructor(sidebar, frame, manifestURL) {
-    super(sidebar._panel, '', false);
-    this._sidebar = sidebar;
-    this._frameId = frame.id;
-    this._manifestURL = manifestURL;
-    this._refreshTitles(frame);
-
-    const icon = UI.Icon.Icon.create('mediumicon-frame-top', 'navigator-folder-tree-item');
-    this.setLeadingIcons([icon]);
-  }
-
-  /**
-   * @override
-   * @return {string}
-   */
-  get itemURL() {
-    return 'appcache://' + this._manifestURL + '/' + encodeURI(this.titleAsText());
-  }
-
-  get frameId() {
-    return this._frameId;
-  }
-
-  get manifestURL() {
-    return this._manifestURL;
-  }
-
-  /**
-   * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
-   */
-  _refreshTitles(frame) {
-    this.title = frame.displayName();
-  }
-
-  /**
-   * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
-   */
-  frameNavigated(frame) {
-    this._refreshTitles(frame);
-  }
-
-  /**
-   * @override
-   * @param {boolean=} selectedByUser
-   * @return {boolean}
-   */
-  onselect(selectedByUser) {
-    super.onselect(selectedByUser);
-    this._sidebar._showApplicationCache(this._frameId);
     return false;
   }
 }

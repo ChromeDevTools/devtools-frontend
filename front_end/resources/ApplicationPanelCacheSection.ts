@@ -6,6 +6,7 @@ import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+import {ApplicationPanelSidebar} from './ApplicationPanelSidebar.js';
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {ResourcesPanel} from './ResourcesPanel.js';
 import {ServiceWorkerCacheView} from './ServiceWorkerCacheViews.js';
@@ -172,5 +173,40 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
   hasModelAndCache(
       model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, cache: SDK.ServiceWorkerCacheModel.Cache): boolean {
     return this.cache.equals(cache) && this.model === model;
+  }
+}
+
+export class ApplicationCacheFrameTreeElement extends ApplicationPanelTreeElement {
+  private readonly sidebar: ApplicationPanelSidebar;
+  readonly frameId: string;
+  readonly manifestURL: string;
+
+  constructor(sidebar: ApplicationPanelSidebar, frame: SDK.ResourceTreeModel.ResourceTreeFrame, manifestURL: string) {
+    super(sidebar._panel, '', false);
+    this.sidebar = sidebar;
+    this.frameId = frame.id;
+    this.manifestURL = manifestURL;
+    this.refreshTitles(frame);
+
+    const icon = UI.Icon.Icon.create('mediumicon-frame-top', 'navigator-folder-tree-item');
+    this.setLeadingIcons([icon]);
+  }
+
+  get itemURL(): string {
+    return 'appcache://' + this.manifestURL + '/' + encodeURI(this.titleAsText());
+  }
+
+  private refreshTitles(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
+    this.title = frame.displayName();
+  }
+
+  frameNavigated(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
+    this.refreshTitles(frame);
+  }
+
+  onselect(selectedByUser: boolean|undefined): boolean {
+    super.onselect(selectedByUser);
+    this.sidebar._showApplicationCache(this.frameId);
+    return false;
   }
 }

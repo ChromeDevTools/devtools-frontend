@@ -15,7 +15,7 @@ describe('SourceMap handling', async () => {
   it('can deal with a source map that has no mappings', async () => {
     const {frontend} = getBrowserAndPages();
 
-    await openSettingsTab('Blackboxing');
+    await openSettingsTab('Ignore List');
     await click(PATTERN_ADD_BUTTON);
     await waitFor(PATTERN_INPUT_FIELD);
     await click(PATTERN_INPUT_FIELD);

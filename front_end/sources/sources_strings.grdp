@@ -63,6 +63,9 @@
   <message name="IDS_DEVTOOLS_160023e58c0251b10b570f6b43914bfc" desc="Text that appears when user drag and drop something (for example, a file) in Sources Panel of the Sources panel">
     Drop workspace folder here
   </message>
+  <message name="IDS_DEVTOOLS_1749108fc3206b646dec4fa2be51a822" desc="A context menu item in the Call Stack Sidebar Pane of the Sources panel">
+    Add all content scripts to ignore list
+  </message>
   <message name="IDS_DEVTOOLS_1aff765143dc4bf8ef68f698234e10f6" desc="Name of the category that hold recording related actions">
     Recorder
   </message>
@@ -108,6 +111,9 @@
   <message name="IDS_DEVTOOLS_27cd6a52dd9de75342d5115dc6bca6ba" desc="Text in Debugger Plugin of the Sources panel">
     Associated files are available via file tree or <ph name="UI_SHORTCUTREGISTRY_SHORTCUTTITLEFORACTION__QUICKOPEN_SHOW__">$1s<ex>Ctrl+P Ctrl+O</ex></ph>.
   </message>
+  <message name="IDS_DEVTOOLS_283f6e8644ad6ee9a96eeef9e3903734" desc="A context menu item in the Call Stack Sidebar Pane of the Sources panel">
+    Remove all content scripts from ignore list
+  </message>
   <message name="IDS_DEVTOOLS_2a7465e1c9bb68e86a204cab633b27fb" desc="A context menu item in the Console that stores selection as a temporary global variable">
     Store <ph name="REMOTEOBJECT_TYPE">$1s<ex>string</ex></ph> as global variable
   </message>
@@ -129,9 +135,6 @@
   <message name="IDS_DEVTOOLS_339ba442656bbc8e43e64b427dc598ff" desc="Text in Go To Line Quick Open of the Sources panel">
     Type a number to go to that line.
   </message>
-  <message name="IDS_DEVTOOLS_3486ec2a2dd86270ed12b46a54372d06" desc="A context menu item in the Call Stack Sidebar Pane of the Sources panel">
-    Blackbox all content scripts
-  </message>
   <message name="IDS_DEVTOOLS_348b4e067738aac6d7d6c30ccdb59beb" desc="Text in Debugger Plugin of the Sources panel">
     Source Map detected.
   </message>
@@ -147,9 +150,6 @@
   <message name="IDS_DEVTOOLS_3831f64f248899a06a6bbc8b82fccfdf" desc="Text in Breakpoint Edit Dialog of the Sources panel">
     Log message, e.g. &apos;x is&apos;, x
   </message>
-  <message name="IDS_DEVTOOLS_3a4c2017c43ba6b63be4576d17893645" desc="Text in Debugger Plugin of the Sources panel">
-    Source map found, but ignored for blackboxed file.
-  </message>
   <message name="IDS_DEVTOOLS_3a9bd88b445fd1f4d4d8c3ce995be74a" desc="Title of an action in the debugger tool to step over">
     Step over next function call
   </message>
@@ -164,9 +164,6 @@
   </message>
   <message name="IDS_DEVTOOLS_3fd3dddd9661349b90b648bba2748f1b" desc="The UI destination when right clicking an item that can be revealed">
     Sources panel
-  </message>
-  <message name="IDS_DEVTOOLS_41b826bce34ab4e527b30470f0c7dafe" desc="Text of a button in the Sources panel Debugger Plugin to unblackbox a script">
-    Unblackbox
   </message>
   <message name="IDS_DEVTOOLS_41c03dfb0ea5890d60756ad55c6e47b1" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Detect indentation
@@ -239,9 +236,6 @@
   </message>
   <message name="IDS_DEVTOOLS_5e7d63192de1cf31345f98b0252bc523" desc="Value element text content in Watch Expressions Sidebar Pane of the Sources panel">
     &lt;not available&gt;
-  </message>
-  <message name="IDS_DEVTOOLS_6005268f51bade5b1f650b47b7ff68ff" desc="A context menu item in the Call Stack Sidebar Pane of the Sources panel">
-    Stop blackboxing all content scripts
   </message>
   <message name="IDS_DEVTOOLS_609e1caaefa475a5144c13008b30edf8" desc="Title of an action that opens the go to member menu">
     Go to a function declaration/rule set
@@ -345,9 +339,6 @@
   <message name="IDS_DEVTOOLS_7b5c591188e24ed71b8c72b32e86af5e" desc="Text in Debugger Plugin of the Sources panel">
     Disable all breakpoints in line
   </message>
-  <message name="IDS_DEVTOOLS_7e469e0762bb1a977747a18457c2e66f" desc="Show all link text content in Call Stack Sidebar Pane of the Sources panel">
-    Show blackboxed frames
-  </message>
   <message name="IDS_DEVTOOLS_806aa4f46d00905eacd5b11c6ef6d2a5" desc="Text in Debugger Paused Message of the Sources panel specifying cause of break">
     <ph name="LOCKED_1">Trusted Type</ph> Policy Violation
   </message>
@@ -420,9 +411,6 @@
   <message name="IDS_DEVTOOLS_9db6195620a7743228ce74addf1414d8" desc="Text in Debugger Plugin of the Sources panel">
     Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.
   </message>
-  <message name="IDS_DEVTOOLS_9e72db64445e9083fe77c30ce28ac067" desc="Text exposed to screen reader when navigating through a blackboxed call frame in the sources panel.">
-    blackboxed
-  </message>
   <message name="IDS_DEVTOOLS_9f7753821d867a81273a50de2b1e0cac" desc="Title of an action under the Debugger category that can be invoked through the Command Menu">
     Pause script execution
   </message>
@@ -458,6 +446,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a95c3c1dc2719e527889096bbd7b662c" desc="Search label in Navigator View of the Sources panel">
     Search in all files
+  </message>
+  <message name="IDS_DEVTOOLS_ab4aaf0f5179c738c59019bc946801dd" desc="Text exposed to screen reader when navigating through a ignore-listed call frame in the sources panel">
+    on ignore list
   </message>
   <message name="IDS_DEVTOOLS_abe5b14af1d1b81dffc5d6009dead621" desc="Type selector element title in Breakpoint Edit Dialog of the Sources panel">
     Pause only when the condition is true
@@ -507,6 +498,9 @@
   <message name="IDS_DEVTOOLS_b918846bd0a77b2051d8c4019201315f" desc="Text in Java Script Breakpoints Sidebar Pane of the Sources panel">
     Remove other breakpoints
   </message>
+  <message name="IDS_DEVTOOLS_bb594a43177a0e4a04e735223ccddb6a" desc="Text in Debugger Plugin of the Sources panel">
+    This script is on the debugger&apos;s ignore list
+  </message>
   <message name="IDS_DEVTOOLS_bceac9ba5f9e73f46255c5056368fd00" desc="Text in Debugger Plugin of the Sources panel">
     Enable all breakpoints in line
   </message>
@@ -536,6 +530,9 @@
   </message>
   <message name="IDS_DEVTOOLS_c79e1cbadc868bad54f2eabe113c06f0" desc="Text in Debugger Plugin of the Sources panel">
     Enable breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_d25d5fb3cea58ed75394702df42ee1e1" desc="Text in Debugger Plugin of the Sources panel">
+    Source map found, but ignored for file on ignore list.
   </message>
   <message name="IDS_DEVTOOLS_dbd92f0d69c038a1dba721deba3b7d90" desc="Label for the button to add a new recording">
     Add recording
@@ -582,9 +579,6 @@
   <message name="IDS_DEVTOOLS_d6444e40ec843a5dc64161f9eafe07a4" desc="Text in Breakpoint Edit Dialog of the Sources panel">
     Logpoint
   </message>
-  <message name="IDS_DEVTOOLS_d7ad3e44cfac26b42d276ea72315da95" desc="Text in Debugger Plugin of the Sources panel">
-    This script is blackboxed in the debugger
-  </message>
   <message name="IDS_DEVTOOLS_da1c6b95e46b078b40e1a53bc7c44f17" desc="Title of an action in the debugger tool to step into">
     Step into next function call
   </message>
@@ -609,6 +603,9 @@
   <message name="IDS_DEVTOOLS_eb2f2225858078738d498794cd737d18" desc="Error message for tooltip showing that a file in Sources could not be loaded">
     Unable to load this content.
   </message>
+  <message name="IDS_DEVTOOLS_eb83f94fdcc1a4204664a419e85d55eb" desc="Show all link text content in Call Stack Sidebar Pane of the Sources panel">
+    Show ignore-listed frames
+  </message>
   <message name="IDS_DEVTOOLS_ed5eceb0fe85ceeeabf4b4b93eeca711" desc="A context menu item in the Sources Panel of the Sources panel">
     Continue to here
   </message>
@@ -618,7 +615,7 @@
   <message name="IDS_DEVTOOLS_f0a47f037ca7a988466a647277ef1134" desc="Text in Debugger Paused Message of the Sources panel">
     Paused on assertion
   </message>
-  <message name="IDS_DEVTOOLS_f1206f9fadc5ce41694f69129aecac26" desc="Text of a button in the Sources panel Debugger Plugin to configure blackboxing in Settings">
+  <message name="IDS_DEVTOOLS_f1206f9fadc5ce41694f69129aecac26" desc="Text of a button in the Sources panel Debugger Plugin to configure ignore listing in Settings">
     Configure
   </message>
   <message name="IDS_DEVTOOLS_f156b89abea73d4db0bf1b212d198c41" desc="Tooltip/screen reader label of a button in the Sources panel that refreshes all watch expressions.">

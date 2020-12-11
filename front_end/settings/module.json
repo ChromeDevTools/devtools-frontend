@@ -101,7 +101,7 @@
       "type": "view",
       "location": "settings-view",
       "id": "blackbox",
-      "title": "Blackboxing",
+      "title": "Ignore List",
       "order": 4,
       "className": "Settings.FrameworkBlackboxSettingsTab"
     },

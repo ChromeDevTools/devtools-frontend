@@ -25,8 +25,8 @@ export const UIStrings = {
   */
   experiments: 'Experiments',
   /**
-  *@description Title of Blackboxing settings
+  *@description Title of Ignore List settings
   */
-  blackboxing: 'Blackboxing',
+  ignoreList: 'Ignore List',
 };
 i18n.i18n.registerUIStrings('settings/ModuleUIStrings.js', UIStrings);

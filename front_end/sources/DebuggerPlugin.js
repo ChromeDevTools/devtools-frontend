@@ -246,8 +246,8 @@ export class DebuggerPlugin extends Plugin {
     }
 
     const infobar = new UI.Infobar.Infobar(
-        UI.Infobar.Type.Warning, Common.UIString.UIString('This script is blackboxed in the debugger'), [
-          {text: ls`Unblackbox`, highlight: false, delegate: unblackbox, dismiss: true}, {
+        UI.Infobar.Type.Warning, Common.UIString.UIString('This script is on the debugger\'s ignore list'), [
+          {text: ls`Remove from ignore list`, highlight: false, delegate: unblackbox, dismiss: true}, {
             text: ls`Configure`,
             highlight: false,
             delegate:
@@ -263,7 +263,8 @@ export class DebuggerPlugin extends Plugin {
     const scriptFile =
         this._scriptFileForDebuggerModel.size ? this._scriptFileForDebuggerModel.values().next().value : null;
     if (scriptFile && scriptFile.hasSourceMapURL()) {
-      infobar.createDetailsRowMessage(Common.UIString.UIString('Source map found, but ignored for blackboxed file.'));
+      infobar.createDetailsRowMessage(
+          Common.UIString.UIString('Source map found, but ignored for file on ignore list.'));
     }
     this._textEditor.attachInfobar(this._blackboxInfobar);
   }

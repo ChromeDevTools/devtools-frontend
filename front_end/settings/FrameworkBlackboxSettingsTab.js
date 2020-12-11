@@ -8,64 +8,64 @@ import * as UI from '../ui/ui.js';
 
 export const UIStrings = {
   /**
-  *@description Header text content in Framework Blackbox Settings Tab of the Settings
+  *@description Header text content in Framework Ignore List Settings Tab of the Settings
   */
-  frameworkBlackboxing: 'Framework Blackboxing',
+  frameworkIgnoreList: 'Framework Ignore List',
   /**
-  *@description Text in Framework Blackbox Settings Tab of the Settings
+  *@description Text in Framework Ignore List Settings Tab of the Settings
   */
   debuggerWillSkipThroughThe: 'Debugger will skip through the scripts and will not stop on exceptions thrown by them.',
   /**
-  *@description Text in Framework Blackbox Settings Tab of the Settings
+  *@description Text in Framework Ignore List Settings Tab of the Settings
   */
-  blackboxContentScripts: 'Blackbox content scripts',
+  ignoreListContentScripts: 'Add content scripts to ignore list',
   /**
-  *@description Blackbox content scripts title in Framework Blackbox Settings Tab of the Settings
+  *@description Ignore List content scripts title in Framework Ignore List Settings Tab of the Settings
   */
-  blackboxContentScriptsExtension: 'Blackbox content scripts (extension scripts in the page)',
+  ignoreListContentScriptsExtension: 'Add content scripts to ignore list (extension scripts in the page)',
   /**
-  *@description Blackbox label in Framework Blackbox Settings Tab of the Settings
+  *@description Ignore List label in Framework Ignore List Settings Tab of the Settings
   */
-  blackbox: 'Blackbox',
+  ignoreList: 'Ignore List',
   /**
   *@description Text to indicate something is not enabled
   */
   disabled: 'Disabled',
   /**
-  *@description Placeholder text content in Framework Blackbox Settings Tab of the Settings
+  *@description Placeholder text content in Framework Ignore List Settings Tab of the Settings
   */
-  noBlackboxedPatterns: 'No blackboxed patterns',
+  noIgnoreListPatterns: 'No ignore list patterns',
   /**
-  *@description Text of the add pattern button in Framework Blackbox Settings Tab of the Settings
+  *@description Text of the add pattern button in Framework Ignore List Settings Tab of the Settings
   */
   addPattern: 'Add pattern...',
   /**
-  *@description Aria accessible name in Framework Blackbox Settings Tab of the Settings
+  *@description Aria accessible name in Framework Ignore List Settings Tab of the Settings
   */
   addFilenamePattern: 'Add filename pattern',
   /**
-  *@description Pattern title in Framework Blackbox Settings Tab of the Settings
+  *@description Pattern title in Framework Ignore List Settings Tab of the Settings
   *@example {ad.*?} PH1
   */
-  blackboxScriptsWhoseNamesMatchS: 'Blackbox scripts whose names match \'{PH1}\'',
+  ignoreScriptsWhoseNamesMatchS: 'Ignore scripts whose names match \'{PH1}\'',
   /**
-  *@description Aria accessible name in Framework Blackbox Settings Tab of the Settings
+  *@description Aria accessible name in Framework Ignore List Settings Tab of the Settings
   */
   pattern: 'Pattern',
   /**
-  *@description Aria accessible name in Framework Blackbox Settings Tab of the Settings
+  *@description Aria accessible name in Framework Ignore List Settings Tab of the Settings
   */
   behavior: 'Behavior',
   /**
-  *@description Error message in Framework Blackbox settings pane that declares pattern must not be empty
+  *@description Error message in Framework Ignore List settings pane that declares pattern must not be empty
   */
   patternCannotBeEmpty: 'Pattern cannot be empty',
   /**
-  *@description Error message in Framework Blackbox settings pane that declares pattern already exits
+  *@description Error message in Framework Ignore List settings pane that declares pattern already exits
   */
   patternAlreadyExists: 'Pattern already exists',
   /**
-  *@description Error message in Framework Blackbox settings pane that declares pattern must be a valid regular expression
+  *@description Error message in Framework Ignore List settings pane that declares pattern must be a valid regular expression
   */
   patternMustBeAValidRegular: 'Pattern must be a valid regular expression',
 };
@@ -81,17 +81,17 @@ export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
     this.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css', {enableLegacyPatching: true});
 
     const header = this.contentElement.createChild('div', 'header');
-    header.textContent = i18nString(UIStrings.frameworkBlackboxing);
+    header.textContent = i18nString(UIStrings.frameworkIgnoreList);
     UI.ARIAUtils.markAsHeading(header, 1);
     this.contentElement.createChild('div', 'intro').textContent = i18nString(UIStrings.debuggerWillSkipThroughThe);
 
     const blackboxContentScripts = this.contentElement.createChild('div', 'blackbox-content-scripts');
     blackboxContentScripts.appendChild(UI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.blackboxContentScripts),
+        i18nString(UIStrings.ignoreListContentScripts),
         Common.Settings.Settings.instance().moduleSetting('skipContentScripts'), true));
-    UI.Tooltip.Tooltip.install(blackboxContentScripts, i18nString(UIStrings.blackboxContentScriptsExtension));
+    UI.Tooltip.Tooltip.install(blackboxContentScripts, i18nString(UIStrings.ignoreListContentScriptsExtension));
 
-    this._blackboxLabel = i18nString(UIStrings.blackbox);
+    this._blackboxLabel = i18nString(UIStrings.ignoreList);
     this._disabledLabel = i18nString(UIStrings.disabled);
 
     this._list = new UI.ListWidget.ListWidget(this);
@@ -100,7 +100,7 @@ export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('blackbox-list-empty');
-    placeholder.textContent = i18nString(UIStrings.noBlackboxedPatterns);
+    placeholder.textContent = i18nString(UIStrings.noIgnoreListPatterns);
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.contentElement);
     const addPatternButton =
@@ -147,7 +147,7 @@ export class FrameworkBlackboxSettingsTab extends UI.Widget.VBox {
     element.classList.add('blackbox-list-item');
     const pattern = element.createChild('div', 'blackbox-pattern');
     pattern.textContent = item.pattern;
-    UI.Tooltip.Tooltip.install(pattern, i18nString(UIStrings.blackboxScriptsWhoseNamesMatchS, {PH1: item.pattern}));
+    UI.Tooltip.Tooltip.install(pattern, i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {PH1: item.pattern}));
     element.createChild('div', 'blackbox-separator');
     element.createChild('div', 'blackbox-behavior').textContent =
         item.disabled ? this._disabledLabel : this._blackboxLabel;

@@ -247,7 +247,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
       UI.Tooltip.Tooltip.install(linkElement, item.linkText);
       element.classList.toggle('blackboxed-call-frame', item.isBlackboxed);
       if (item.isBlackboxed) {
-        UI.ARIAUtils.setDescription(element, ls`blackboxed`);
+        UI.ARIAUtils.setDescription(element, ls`on ignore list`);
       }
       if (!itemToCallFrame.has(item)) {
         UI.ARIAUtils.setDisabled(element, true);
@@ -319,7 +319,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     element.classList.add('blackboxed-message');
     element.createChild('span');
     const showAllLink = element.createChild('span', 'link');
-    showAllLink.textContent = Common.UIString.UIString('Show blackboxed frames');
+    showAllLink.textContent = Common.UIString.UIString('Show ignore-listed frames');
     UI.ARIAUtils.markAsLink(showAllLink);
     showAllLink.tabIndex = 0;
     const showAll = () => {
@@ -436,20 +436,23 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     if (canBlackbox) {
       if (isBlackboxed) {
         contextMenu.defaultSection().appendItem(
-            Common.UIString.UIString('Stop blackboxing'), manager.unblackboxUISourceCode.bind(manager, uiSourceCode));
+            Common.UIString.UIString('Remove from ignore list'),
+            manager.unblackboxUISourceCode.bind(manager, uiSourceCode));
       } else {
         contextMenu.defaultSection().appendItem(
-            Common.UIString.UIString('Blackbox script'), manager.blackboxUISourceCode.bind(manager, uiSourceCode));
+            Common.UIString.UIString('Add script to ignore list'),
+            manager.blackboxUISourceCode.bind(manager, uiSourceCode));
       }
     }
     if (isContentScript) {
       if (isBlackboxed) {
         contextMenu.defaultSection().appendItem(
-            Common.UIString.UIString('Stop blackboxing all content scripts'),
+            Common.UIString.UIString('Remove all content scripts from ignore list'),
             manager.blackboxContentScripts.bind(manager));
       } else {
         contextMenu.defaultSection().appendItem(
-            Common.UIString.UIString('Blackbox all content scripts'), manager.unblackboxContentScripts.bind(manager));
+            Common.UIString.UIString('Add all content scripts to ignore list'),
+            manager.unblackboxContentScripts.bind(manager));
       }
     }
   }

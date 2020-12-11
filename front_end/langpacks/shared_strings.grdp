@@ -182,6 +182,9 @@
   <message name="IDS_DEVTOOLS_59cc7cb8dfb2491cc5dfe8ebc546d797" desc="Text to pretty print a file">
     Pretty print
   </message>
+  <message name="IDS_DEVTOOLS_5a8e8e5a965aaa4368065686b4629b4f" desc="Text to stop preventing the debugger from stepping into library code">
+    Remove from ignore list
+  </message>
   <message name="IDS_DEVTOOLS_5de39fa1bce4bbf9232597a2120bc4d4" desc="Text to open the cubic bezier editor">
     Open cubic bezier editor.
   </message>
@@ -295,9 +298,6 @@
   </message>
   <message name="IDS_DEVTOOLS_91e02cd2b8621d0c05197f645668c5c4" desc="A tag of Group Network by frame setting that can be searched in the command menu">
     network
-  </message>
-  <message name="IDS_DEVTOOLS_93898e12951c906e5286ccb36d980ce5" desc="Text for scripts that should not be stepped into when debugging">
-    Blackbox script
   </message>
   <message name="IDS_DEVTOOLS_939aaa05e0943b39eab3a34fd609384d" desc="Text to scroll the displayed content into view">
     Scroll into view
@@ -419,9 +419,6 @@
   <message name="IDS_DEVTOOLS_bec25a46972e4fa86df9413508add5c2" desc="Text that refers to disabling local fonts">
     Disable local fonts
   </message>
-  <message name="IDS_DEVTOOLS_c3fe109bf99ade2d76a55e5737015e3e" desc="Text to stop preventing the debugger from stepping into library code">
-    Stop blackboxing
-  </message>
   <message name="IDS_DEVTOOLS_c9ad95228aa735bdda1aebf38da022af" desc="Text to parse something">
     Parse
   </message>
@@ -439,6 +436,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d3d2e617335f08df83599665eef8a418" desc="Text to close something">
     Close
+  </message>
+  <message name="IDS_DEVTOOLS_d48a0b796559f82f7dad6167c77ae40c" desc="Text for scripts that should not be stepped into when debugging">
+    Add script to ignore list
   </message>
   <message name="IDS_DEVTOOLS_d59048f21fd887ad520398ce677be586" desc="Text that is usually a hyperlink to more documentation">
     Learn more

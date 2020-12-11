@@ -179,7 +179,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         return event.name + ':' + event.args['step'];
       }
       if (eventToDisallowRoot.get(event)) {
-        return Common.UIString.UIString('Blackboxed');
+        return Common.UIString.UIString('On ignore list');
       }
       if (this._performanceModel && this._performanceModel.timelineModel().isMarkerEvent(event)) {
         return TimelineUIUtils.markerShortTitle(event);

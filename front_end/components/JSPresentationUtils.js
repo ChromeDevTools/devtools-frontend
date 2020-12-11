@@ -105,11 +105,11 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
         Bindings.BlackboxManager.BlackboxManager.instance().canBlackboxUISourceCode(uiLocation.uiSourceCode)) {
       if (Bindings.BlackboxManager.BlackboxManager.instance().isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
         contextMenu.debugSection().appendItem(
-            ls`Stop blackboxing`,
+            ls`Remove from ignore list`,
             () => Bindings.BlackboxManager.BlackboxManager.instance().unblackboxUISourceCode(uiLocation.uiSourceCode));
       } else {
         contextMenu.debugSection().appendItem(
-            ls`Blackbox script`,
+            ls`Add script to ignore list`,
             () => Bindings.BlackboxManager.BlackboxManager.instance().blackboxUISourceCode(uiLocation.uiSourceCode));
       }
     }

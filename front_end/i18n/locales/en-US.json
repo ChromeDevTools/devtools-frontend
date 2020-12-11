@@ -1784,29 +1784,29 @@
   "settings/FrameworkBlackboxSettingsTab.js | behavior": {
     "message": "Behavior"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | blackbox": {
-    "message": "Blackbox"
-  },
-  "settings/FrameworkBlackboxSettingsTab.js | blackboxContentScripts": {
-    "message": "Blackbox content scripts"
-  },
-  "settings/FrameworkBlackboxSettingsTab.js | blackboxContentScriptsExtension": {
-    "message": "Blackbox content scripts (extension scripts in the page)"
-  },
-  "settings/FrameworkBlackboxSettingsTab.js | blackboxScriptsWhoseNamesMatchS": {
-    "message": "Blackbox scripts whose names match '{PH1}'"
-  },
   "settings/FrameworkBlackboxSettingsTab.js | debuggerWillSkipThroughThe": {
     "message": "Debugger will skip through the scripts and will not stop on exceptions thrown by them."
   },
   "settings/FrameworkBlackboxSettingsTab.js | disabled": {
     "message": "Disabled"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | frameworkBlackboxing": {
-    "message": "Framework Blackboxing"
+  "settings/FrameworkBlackboxSettingsTab.js | frameworkIgnoreList": {
+    "message": "Framework Ignore List"
   },
-  "settings/FrameworkBlackboxSettingsTab.js | noBlackboxedPatterns": {
-    "message": "No blackboxed patterns"
+  "settings/FrameworkBlackboxSettingsTab.js | ignoreList": {
+    "message": "Ignore List"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | ignoreListContentScripts": {
+    "message": "Add content scripts to ignore list"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | ignoreListContentScriptsExtension": {
+    "message": "Add content scripts to ignore list (extension scripts in the page)"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | ignoreScriptsWhoseNamesMatchS": {
+    "message": "Ignore scripts whose names match '{PH1}'"
+  },
+  "settings/FrameworkBlackboxSettingsTab.js | noIgnoreListPatterns": {
+    "message": "No ignore list patterns"
   },
   "settings/FrameworkBlackboxSettingsTab.js | pattern": {
     "message": "Pattern"
@@ -1865,14 +1865,14 @@
   "settings/KeybindsSettingsTab.js | thisShortcutIsInUseByS": {
     "message": "This shortcut is in use by {PH1}: {PH2}."
   },
-  "settings/ModuleUIStrings.js | blackboxing": {
-    "message": "Blackboxing"
-  },
   "settings/ModuleUIStrings.js | documentation": {
     "message": "Documentation"
   },
   "settings/ModuleUIStrings.js | experiments": {
     "message": "Experiments"
+  },
+  "settings/ModuleUIStrings.js | ignoreList": {
+    "message": "Ignore List"
   },
   "settings/ModuleUIStrings.js | preferences": {
     "message": "Preferences"

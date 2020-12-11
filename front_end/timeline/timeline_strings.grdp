@@ -451,9 +451,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_60c21f78ce2dcd2da001fa3221c8ca15" desc="Text in Timeline UIUtils of the Performance panel">
     Nodes:
   </message>
-  <message name="IDS_DEVTOOLS_60f718c3ba644a198920a74083ccb80f" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
-    Blackboxed
-  </message>
   <message name="IDS_DEVTOOLS_611d29c748a7931c825a247fcf3f290e" desc="Text in Timeline UIUtils of the Performance panel">
     Encrypt
   </message>
@@ -507,6 +504,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_6d8a59067ffe0498f3f5f2c03025b799" desc="Text in Timeline Tree View of the Performance panel">
     Group by URL
+  </message>
+  <message name="IDS_DEVTOOLS_6dc1c046188f96f58b9c6e73de5410b9" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
+    On ignore list
   </message>
   <message name="IDS_DEVTOOLS_6ebfbd6a11e852377844c8fd6e1608cc" desc="Text in UIDevtools Utils of the Performance panel">
     View::OnPaint

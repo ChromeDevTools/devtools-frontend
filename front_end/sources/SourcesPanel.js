@@ -867,7 +867,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     if (!Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
              .scriptsForUISourceCode(uiSourceCode)
              .every(script => script.isJavaScript())) {
-      // Blackboxing and 'Continue to here' currently only works for JavaScript debugging.
+      // Ignore List and 'Continue to here' currently only works for JavaScript debugging.
       return;
     }
     const contentType = uiSourceCode.contentType();

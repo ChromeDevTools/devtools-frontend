@@ -30,11 +30,33 @@
  */
 
 import * as Bindings from '../bindings/bindings.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {Linkifier} from './Linkifier.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to stop preventing the debugger from stepping into library code
+  */
+  removeFromIgnore: 'Remove from ignore list',
+  /**
+  *@description Text for scripts that should not be stepped into when debugging
+  */
+  addToIgnore: 'Add script to ignore list',
+  /**
+  *@description Show all link text content in JSPresentation Utils
+  */
+  showMoreFrame: 'Show 1 more frame',
+  /**
+  *@description Show all link text content in JSPresentation Utils
+  *@example {2} PH1
+  */
+  showSMoreFrames: 'Show {PH1} more frames',
+};
+const str_ = i18n.i18n.registerUIStrings('components/JSPresentationUtils.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @param {?SDK.SDKModel.Target} target
  * @param {!Linkifier} linkifier
@@ -105,11 +127,11 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
         Bindings.BlackboxManager.BlackboxManager.instance().canBlackboxUISourceCode(uiLocation.uiSourceCode)) {
       if (Bindings.BlackboxManager.BlackboxManager.instance().isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
         contextMenu.debugSection().appendItem(
-            ls`Remove from ignore list`,
+            i18nString(UIStrings.removeFromIgnore),
             () => Bindings.BlackboxManager.BlackboxManager.instance().unblackboxUISourceCode(uiLocation.uiSourceCode));
       } else {
         contextMenu.debugSection().appendItem(
-            ls`Add script to ignore list`,
+            i18nString(UIStrings.addToIgnore),
             () => Bindings.BlackboxManager.BlackboxManager.instance().blackboxUISourceCode(uiLocation.uiSourceCode));
       }
     }
@@ -148,9 +170,9 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
     cell.colSpan = 4;
     const showAllLink = cell.createChild('span', 'link');
     if (totalHiddenCallFramesCount === 1) {
-      showAllLink.textContent = ls`Show 1 more frame`;
+      showAllLink.textContent = i18nString(UIStrings.showMoreFrame);
     } else {
-      showAllLink.textContent = ls`Show ${totalHiddenCallFramesCount} more frames`;
+      showAllLink.textContent = i18nString(UIStrings.showSMoreFrames, {PH1: totalHiddenCallFramesCount});
     }
     showAllLink.addEventListener('click', () => {
       contentElement.classList.add('show-blackboxed');

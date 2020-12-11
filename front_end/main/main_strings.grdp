@@ -93,6 +93,9 @@
   <message name="IDS_DEVTOOLS_9b1ed2cbe56f7a315f0a365d2b97cb59" desc="A title of the 'Drawer' @UI.ViewLocationResolver category">
     Drawer
   </message>
+  <message name="IDS_DEVTOOLS_9df22f196a33acd0b372fe502de51211" desc="Text short for automatic">
+    auto
+  </message>
   <message name="IDS_DEVTOOLS_a18366b217ebf811ad1886e4f4f865b2" desc="A drop-down menu option to switch to dark theme">
     Dark
   </message>

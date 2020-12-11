@@ -17,7 +17,6 @@
       <part file="../browser_sdk/browser_sdk_strings.grdp" />
       <part file="../color_picker/color_picker_strings.grdp" />
       <part file="../common/common_strings.grdp" />
-      <part file="../components/components_strings.grdp" />
       <part file="../console/console_strings.grdp" />
       <part file="../console_counters/console_counters_strings.grdp" />
       <part file="../css_overview/css_overview_strings.grdp" />

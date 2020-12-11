@@ -109,6 +109,7 @@ let devtoolsFrontendDirs;
 const migratedDirsSet = new Set([
   'animation',
   'changes',
+  'components',
   'cookie_table',
   'coverage',
   'developer_resources',

@@ -95,6 +95,51 @@
   "changes/ModuleUIStrings.js | changesDrawer": {
     "message": "Changes drawer"
   },
+  "components/ImagePreview.js | imageFromS": {
+    "message": "Image from {PH1}"
+  },
+  "components/ImagePreview.js | sSPx": {
+    "message": "{PH1} × {PH2} px"
+  },
+  "components/ImagePreview.js | sSPxIntrinsicSSPx": {
+    "message": "{PH1} × {PH2} px (intrinsic: {PH3} × {PH4} px)"
+  },
+  "components/ImagePreview.js | unknownSource": {
+    "message": "unknown source"
+  },
+  "components/JSPresentationUtils.js | addToIgnore": {
+    "message": "Add script to ignore list"
+  },
+  "components/JSPresentationUtils.js | removeFromIgnore": {
+    "message": "Remove from ignore list"
+  },
+  "components/JSPresentationUtils.js | showMoreFrame": {
+    "message": "Show 1 more frame"
+  },
+  "components/JSPresentationUtils.js | showSMoreFrames": {
+    "message": "Show {PH1} more frames"
+  },
+  "components/Linkifier.js | auto": {
+    "message": "auto"
+  },
+  "components/Linkifier.js | linkHandling": {
+    "message": "Link handling:"
+  },
+  "components/Linkifier.js | openUsingS": {
+    "message": "Open using {PH1}"
+  },
+  "components/Linkifier.js | reveal": {
+    "message": "Reveal"
+  },
+  "components/Linkifier.js | revealInS": {
+    "message": "Reveal in {PH1}"
+  },
+  "components/Linkifier.js | unknown": {
+    "message": "(unknown)"
+  },
+  "components/TargetDetachedDialog.js | websocketDisconnected": {
+    "message": "WebSocket disconnected"
+  },
   "cookie_table/CookiesTable.js | cookies": {
     "message": "Cookies"
   },

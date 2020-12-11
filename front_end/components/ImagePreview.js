@@ -3,10 +3,38 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Description in Image Preview
+  *@example {500} PH1
+  *@example {300} PH2
+  *@example {200} PH3
+  *@example {100} PH4
+  */
+  sSPxIntrinsicSSPx: '{PH1} × {PH2} px (intrinsic: {PH3} × {PH4} px)',
+  /**
+  *@description Description in Image Preview
+  *@example {500} PH1
+  *@example {500} PH2
+  */
+  sSPx: '{PH1} × {PH2} px',
+  /**
+  *@description Alt text description of an image's source
+  */
+  unknownSource: 'unknown source',
+  /**
+  *@description Text to indicate the source of an image
+  *@example {example.com} PH1
+  */
+  imageFromS: 'Image from {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('components/ImagePreview.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @typedef {{
  * renderedWidth: number,
  * renderedHeight: number,
@@ -74,10 +102,11 @@ export class ImagePreview {
       let description;
       if (showDimensions) {
         if (renderedHeight !== intrinsicHeight || renderedWidth !== intrinsicWidth) {
-          description =
-              ls`${renderedWidth} × ${renderedHeight} px (intrinsic: ${intrinsicWidth} × ${intrinsicHeight} px)`;
+          description = i18nString(
+              UIStrings.sSPxIntrinsicSSPx,
+              {PH1: renderedWidth, PH2: renderedHeight, PH3: intrinsicWidth, PH4: intrinsicHeight});
         } else {
-          description = ls`${renderedWidth} × ${renderedHeight} px`;
+          description = i18nString(UIStrings.sSPx, {PH1: renderedWidth, PH2: renderedHeight});
         }
       }
 
@@ -127,7 +156,7 @@ export class ImagePreview {
    */
   static defaultAltTextForImageURL(url) {
     const parsedImageURL = new Common.ParsedURL.ParsedURL(url);
-    const imageSourceText = parsedImageURL.isValid ? parsedImageURL.displayName : ls`unknown source`;
-    return ls`Image from ${imageSourceText}`;
+    const imageSourceText = parsedImageURL.isValid ? parsedImageURL.displayName : i18nString(UIStrings.unknownSource);
+    return i18nString(UIStrings.imageFromS, {PH1: imageSourceText});
   }
 }

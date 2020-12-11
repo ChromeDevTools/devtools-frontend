@@ -271,6 +271,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_390afae8f87b5024e0c32c4e6ce3e2da" desc="Text in Timeline UIUtils of the Performance panel">
     Run Microtasks
   </message>
+  <message name="IDS_DEVTOOLS_393c3f5ea8ad35c02691d507bdbb31b0" desc="Text for revealing an item in its destination">
+    Reveal
+  </message>
   <message name="IDS_DEVTOOLS_3b419ceb25fddb807ea9483f65fded06" desc="Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in timeline panel of the performance panel">
     Capture settings
   </message>

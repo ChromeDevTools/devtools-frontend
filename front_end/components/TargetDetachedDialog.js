@@ -2,9 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text on the remote debugging window to indicate the connection is lost
+  */
+  websocketDisconnected: 'WebSocket disconnected',
+};
+const str_ = i18n.i18n.registerUIStrings('components/TargetDetachedDialog.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {ProtocolProxyApi.InspectorDispatcher}
  */
@@ -28,7 +37,8 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel {
   }
 
   static webSocketConnectionLost() {
-    UI.RemoteDebuggingTerminatedScreen.RemoteDebuggingTerminatedScreen.show(ls`WebSocket disconnected`);
+    UI.RemoteDebuggingTerminatedScreen.RemoteDebuggingTerminatedScreen.show(
+        i18nString(UIStrings.websocketDisconnected));
   }
 
   /**

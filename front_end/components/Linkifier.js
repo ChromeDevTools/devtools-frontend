@@ -31,11 +31,42 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Linkifier
+  */
+  unknown: '(unknown)',
+  /**
+  *@description Text short for automatic
+  */
+  auto: 'auto',
+  /**
+  *@description Text in Linkifier
+  *@example {Sources panel} PH1
+  */
+  revealInS: 'Reveal in {PH1}',
+  /**
+  *@description Text for revealing an item in its destination
+  */
+  reveal: 'Reveal',
+  /**
+  *@description A context menu item in the Linkifier
+  *@example {Extension} PH1
+  */
+  openUsingS: 'Open using {PH1}',
+  /**
+  *@description Text in Linkifier
+  */
+  linkHandling: 'Link handling:',
+};
+const str_ = i18n.i18n.registerUIStrings('components/Linkifier.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!Set<!Linkifier>} */
 const instances = new Set();
 
@@ -534,7 +565,7 @@ export class Linkifier {
       if (className) {
         element.className = className;
       }
-      element.textContent = text || url || Common.UIString.UIString('(unknown)');
+      element.textContent = text || url || i18nString(UIStrings.unknown);
       return element;
     }
 
@@ -777,7 +808,8 @@ export class Linkifier {
    */
   static _linkHandlerSetting() {
     if (!linkHandlerSettingInstance) {
-      linkHandlerSettingInstance = Common.Settings.Settings.instance().createSetting('openLinkHandler', ls`auto`);
+      linkHandlerSettingInstance =
+          Common.Settings.Settings.instance().createSetting('openLinkHandler', i18nString(UIStrings.auto));
     }
     return linkHandlerSettingInstance;
   }
@@ -840,7 +872,7 @@ export class Linkifier {
       const destination = Common.Revealer.revealDestination(revealable);
       result.push({
         section: 'reveal',
-        title: destination ? ls`Reveal in ${destination}` : ls`Reveal`,
+        title: destination ? i18nString(UIStrings.revealInS, {PH1: destination}) : i18nString(UIStrings.reveal),
         handler: () => Common.Revealer.reveal(revealable)
       });
     }
@@ -853,7 +885,7 @@ export class Linkifier {
         }
         const action = {
           section: 'reveal',
-          title: Common.UIString.UIString('Open using %s', title),
+          title: i18nString(UIStrings.openUsingS, {PH1: title}),
           handler: handler.bind(null, contentProvider, lineNumber)
         };
         if (title === Linkifier._linkHandlerSetting().get()) {
@@ -967,7 +999,7 @@ export class LinkHandlerSettingUI {
   _update() {
     this._element.removeChildren();
     const names = [...linkHandlers.keys()];
-    names.unshift(Common.UIString.UIString('auto'));
+    names.unshift(i18nString(UIStrings.auto));
     for (const name of names) {
       const option = document.createElement('option');
       option.textContent = name;
@@ -993,7 +1025,7 @@ export class LinkHandlerSettingUI {
    * @return {?Element}
    */
   settingElement() {
-    return UI.SettingsUI.createCustomSetting(Common.UIString.UIString('Link handling:'), this._element);
+    return UI.SettingsUI.createCustomSetting(i18nString(UIStrings.linkHandling), this._element);
   }
 }
 
@@ -1045,7 +1077,7 @@ export class ContentProviderContextMenuProvider {
         continue;
       }
       contextMenu.revealSection().appendItem(
-          Common.UIString.UIString('Open using %s', title), handler.bind(null, contentProvider, 0));
+          i18nString(UIStrings.openUsingS, {PH1: title}), handler.bind(null, contentProvider, 0));
     }
     if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {
       return;

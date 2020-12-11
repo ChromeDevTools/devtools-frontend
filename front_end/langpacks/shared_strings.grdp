@@ -106,9 +106,6 @@
   <message name="IDS_DEVTOOLS_3793ea52a7be2d7deafd858fda50775c" desc="Text exposed to screen readers on checked items.">
     checked
   </message>
-  <message name="IDS_DEVTOOLS_393c3f5ea8ad35c02691d507bdbb31b0" desc="Text for revealing an item in its destination">
-    Reveal
-  </message>
   <message name="IDS_DEVTOOLS_3afbd9828e011526955ca93b48b57524" desc="Text for one or a group of screenshots">
     Screenshot
   </message>
@@ -181,9 +178,6 @@
   </message>
   <message name="IDS_DEVTOOLS_59cc7cb8dfb2491cc5dfe8ebc546d797" desc="Text to pretty print a file">
     Pretty print
-  </message>
-  <message name="IDS_DEVTOOLS_5a8e8e5a965aaa4368065686b4629b4f" desc="Text to stop preventing the debugger from stepping into library code">
-    Remove from ignore list
   </message>
   <message name="IDS_DEVTOOLS_5de39fa1bce4bbf9232597a2120bc4d4" desc="Text to open the cubic bezier editor">
     Open cubic bezier editor.
@@ -317,9 +311,6 @@
   <message name="IDS_DEVTOOLS_9d8c209e49e328528c39c273798e98c9" desc="Text to save content as a specific file type">
     Save as...
   </message>
-  <message name="IDS_DEVTOOLS_9df22f196a33acd0b372fe502de51211" desc="Text short for automatic">
-    auto
-  </message>
   <message name="IDS_DEVTOOLS_9e65b51e82f2a9b9f72ebe3e083582bb" desc="Text to show an item is empty">
     (empty)
   </message>
@@ -433,9 +424,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d3d2e617335f08df83599665eef8a418" desc="Text to close something">
     Close
-  </message>
-  <message name="IDS_DEVTOOLS_d48a0b796559f82f7dad6167c77ae40c" desc="Text for scripts that should not be stepped into when debugging">
-    Add script to ignore list
   </message>
   <message name="IDS_DEVTOOLS_d59048f21fd887ad520398ce677be586" desc="Text that is usually a hyperlink to more documentation">
     Learn more

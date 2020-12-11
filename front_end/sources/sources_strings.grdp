@@ -225,6 +225,9 @@
   <message name="IDS_DEVTOOLS_5a0a64ecca63ba9a006b6397cbdc2b8c" desc="Text to go to a given line">
     Go to line
   </message>
+  <message name="IDS_DEVTOOLS_5a8e8e5a965aaa4368065686b4629b4f" desc="Text to stop preventing the debugger from stepping into library code">
+    Remove from ignore list
+  </message>
   <message name="IDS_DEVTOOLS_5bcc1f50ed61246502d37ce93368dda8" desc="Text in Debugger Paused Message of the Sources panel">
     Paused on XHR or fetch
   </message>
@@ -533,6 +536,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d25d5fb3cea58ed75394702df42ee1e1" desc="Text in Debugger Plugin of the Sources panel">
     Source map found, but ignored for file on ignore list.
+  </message>
+  <message name="IDS_DEVTOOLS_d48a0b796559f82f7dad6167c77ae40c" desc="Text for scripts that should not be stepped into when debugging">
+    Add script to ignore list
   </message>
   <message name="IDS_DEVTOOLS_dbd92f0d69c038a1dba721deba3b7d90" desc="Label for the button to add a new recording">
     Add recording

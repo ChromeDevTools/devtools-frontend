@@ -18,6 +18,7 @@ devtools_module("components") {
     "../bindings:bundle",
     "../common:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../platform:bundle",
     "../sdk:bundle",
     "../text_utils:bundle",

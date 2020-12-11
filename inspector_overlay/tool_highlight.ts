@@ -56,6 +56,7 @@ interface ElementInfo {
   className?: string;
   nodeWidth: number;
   nodeHeight: number;
+  isLocked: boolean;
   isLockedAncestor: boolean;
   style: {[key: string]: string|undefined};
   showAccessibilityInfo: boolean;
@@ -385,7 +386,11 @@ function _createElementDescription(elementInfo: ElementInfo, colorFormat: string
   let elementInfoBodyElement: HTMLElement;
 
   if (elementInfo.isLockedAncestor) {
-    addTextRow('Showing the locked ancestor', '');
+    addTextRow('Showing content-visibility ancestor', '');
+  }
+
+  if (elementInfo.isLocked) {
+    addTextRow('Descendants are skipped due to content-visibility', '');
   }
 
   const color = style['color'];

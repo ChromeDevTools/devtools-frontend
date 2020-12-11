@@ -146,7 +146,6 @@ grd_files_release_sources = [
   "front_end/coverage/coverage-legacy.js",
   "front_end/coverage/coverage.js",
   "front_end/coverage/coverage_module.js",
-  "front_end/css_overview/css_overview-legacy.js",
   "front_end/css_overview/css_overview-meta.js",
   "front_end/css_overview/css_overview.js",
   "front_end/css_overview/css_overview_module.js",

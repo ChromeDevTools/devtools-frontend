@@ -175,7 +175,6 @@ group("legacy_entrypoints") {
     "console_counters:legacy",
     "cookie_table:legacy",
     "coverage:legacy",
-    "css_overview:legacy",
     "data_grid:legacy",
     "developer_resources:legacy",
     "diff:legacy",

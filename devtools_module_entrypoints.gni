@@ -36,7 +36,6 @@ devtools_module_entrypoint_sources = [
   "cookie_table/cookie_table.js",
   "coverage/coverage-legacy.js",
   "coverage/coverage.js",
-  "css_overview/css_overview-legacy.js",
   "css_overview/css_overview-meta.js",
   "css_overview/css_overview.js",
   "data_grid/data_grid-legacy.js",

@@ -579,7 +579,8 @@ export const DevtoolsExperiments = {
   'APCA': 39,
   'cspViolationsView': 40,
   'fontEditor': 41,
-  '__lastValidEnumPosition': 41,
+  'fullAccessibilityTree': 42,
+  '__lastValidEnumPosition': 42,
 };
 
 /** @type {!Object<string, number>} */

@@ -10,7 +10,7 @@ self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 ApplicationTestRunner.dumpCacheTree = async function(pathFilter) {
   UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
   const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, '_updateCacheNames');
-  UI.panels.resources._sidebar.cacheStorageListTreeElement._refreshCaches();
+  UI.panels.resources._sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
   await ApplicationTestRunner.dumpCacheTreeNoRefresh(pathFilter);
 };
@@ -44,14 +44,14 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
   for (let i = 0; i < cachesTreeElement.childCount(); ++i) {
     const cacheTreeElement = cachesTreeElement.childAt(i);
     TestRunner.addResult('    cache: ' + cacheTreeElement.title);
-    let view = cacheTreeElement._view;
+    let view = cacheTreeElement.view;
 
     if (!view) {
       cacheTreeElement.onselect(false);
     }
-    view = cacheTreeElement._view;
+    view = cacheTreeElement.view;
     await view._updateData(true);
-    if (cacheTreeElement._view._entriesForTest.length === 0) {
+    if (cacheTreeElement.view._entriesForTest.length === 0) {
       TestRunner.addResult('        (cache empty)');
       continue;
     }
@@ -62,14 +62,14 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
       continue;
     }
 
-    cacheTreeElement._view._entryPathFilter = pathFilter;
+    cacheTreeElement.view._entryPathFilter = pathFilter;
     await view._updateData(true);
-    if (cacheTreeElement._view._entriesForTest.length === 0) {
+    if (cacheTreeElement.view._entriesForTest.length === 0) {
       TestRunner.addResult('        (no matching entries)');
       continue;
     }
 
-    _dumpDataGrid(cacheTreeElement._view._dataGrid);
+    _dumpDataGrid(cacheTreeElement.view._dataGrid);
     TestRunner.addResult('        totalCount: ' + String(view._returnCount));
   }
 };
@@ -77,7 +77,7 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
 ApplicationTestRunner.dumpCachedEntryContent = async function(cacheName, requestUrl, withHeader) {
   UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
   const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, '_updateCacheNames');
-  UI.panels.resources._sidebar.cacheStorageListTreeElement._refreshCaches();
+  UI.panels.resources._sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
   await ApplicationTestRunner.dumpCachedEntryContentNoRefresh(cacheName, requestUrl, withHeader);
 };
@@ -95,11 +95,11 @@ ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName
       continue;
     }
 
-    let view = cacheTreeElement._view;
+    let view = cacheTreeElement.view;
     if (!view) {
       cacheTreeElement.onselect(false);
     }
-    view = cacheTreeElement._view;
+    view = cacheTreeElement.view;
     await view._updateData(true);
 
     const promiseDumpContent = new Promise(resolve => {
@@ -138,7 +138,7 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
 
   const cachesTreeElement = UI.panels.resources._sidebar.cacheStorageListTreeElement;
   let promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, '_updateCacheNames');
-  UI.panels.resources._sidebar.cacheStorageListTreeElement._refreshCaches();
+  UI.panels.resources._sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
 
   if (!cachesTreeElement.childCount()) {
@@ -157,13 +157,13 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
 
     if (!optionalEntry) {
       promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, '_cacheRemoved');
-      cacheTreeElement._clearCache();
+      cacheTreeElement.clearCache();
       await promise;
       return;
     }
 
     promise = TestRunner.addSnifferPromise(Resources.ServiceWorkerCacheView.prototype, '_updateDataCallback');
-    let view = cacheTreeElement._view;
+    let view = cacheTreeElement.view;
 
     if (!view) {
       cacheTreeElement.onselect(false);
@@ -171,7 +171,7 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
       view._updateData(true);
     }
 
-    view = cacheTreeElement._view;
+    view = cacheTreeElement.view;
     await promise;
     const entry = view._entriesForTest.find(entry => entry.requestURL === optionalEntry);
 

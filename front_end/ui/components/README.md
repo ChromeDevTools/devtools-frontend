@@ -72,3 +72,64 @@ const parser = new TextUtils.FilterParser(keys);
 // Pass this into devtools-data-grid-controller to filter accordingly
 const filters = parser.parse('lond')
 ```
+
+# data-grid resizing
+
+The DataGrid supports clicking and dragging on a column to resize it. Read on if
+you want to know about the implementation details...
+
+You cannot add a mouse event listener to find out when a table cell border is
+dragged, so what we do is render a 20px wide handler that is invisibly placed at
+the right hand edge of a cell (represented by H in the diagram below).
+
+The handler is responsible for resizing the cell it lives in, and the cell to
+its right. That's why the far right table cells do not have a handler in,
+because there is no cell to the right. In the code, and in this doc, these cells
+will be referred to as the "left cell" and the "right cell".
+
+|---------|---------|
+| cell1  H| cell2   |
+|---------|---------|
+
+When the user starts to drag we first gather some data that we need to resize
+correctly:
+
+1. The initial width in pixels of both cells.
+2. The initial width in percentages of both cells.
+3. The initial X position of the mouse that started the drag.
+4. The `col` elements for each cell (as these are what we resize).
+
+We then bind a `mousemove` listener to the `document` housing our data-grid. We
+do this to allow the user to move their mouse outside of the small resize
+handler without losing the drag - else you have to be very precise with your
+cursor!
+
+When we get a mouse move event, we calculate the delta of the mouse move
+(event.x - initialX) as a percentage of the data grid width. Then, depending on
+if the pixel delta was positive (user moved their mouse to the right) or
+negative (to the left) we can then adjust the widths accordingly.
+
+If the user moved positively (to the right):
+- the left cell width becomes (initialWidth + percentageDelta)%
+- the right cell width becomes (initialWidth - percentageDelta)%
+
+If the user moved negatively (to the left):
+- the left cell width becomes (initialWidth - percentageDelta)%
+- the right cell width becomes (initialWidth + percentageDelta)%
+
+We also clamp these widths. The minimum % a column is allowed to be is 10% (in
+time we may alter this), and the largest it's allowed to grow to is the sum of
+the left and right column's initial % width, minus the 10% minimum. So if the
+left cell has a width of 30%, and the right cell has 40%, that means:
+
+- the minimum width is 10%
+- the maximum width is (30% + 40%) - 10%
+
+We then apply these percentages but before we do we `Math.floor` the left cell
+and `Math.ceil` the right cell. This is to ensure we end up with a nice round %
+number at the end, and also avoids a tiny mouse move changing a column's
+percentage width by such a small amount that the user sees a tiny stutter, which
+is not great. Doing this reduces the smoothness of the resizing by a tiny amount
+(barely noticable), but by keeping the widths in percentages we don't have to
+manually calculate pixel values or deal with the window being resized, so the
+advantages of working solely in % are worth it.

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {ElementHandle} from 'puppeteer';
-import {$$, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$, $$, waitFor, waitForFunction} from '../../shared/helper.js';
 
 export async function getDataGridRows(
     expectedNumberOfRows: number, root?: ElementHandle<Element>): Promise<ElementHandle<Element>[][]> {
@@ -20,4 +20,38 @@ export async function getDataGridRows(
     tableElements.push(cells);
   }
   return tableElements;
+}
+
+export async function getDataGrid() {
+  const dataGrid = await waitFor('devtools-data-grid');
+  if (!dataGrid) {
+    assert.fail('Could not find data-grid');
+  }
+  return dataGrid;
+}
+
+
+export async function getInnerTextOfDataGridCells(
+    dataGridElement: ElementHandle<Element>, expectedNumberOfRows: number): Promise<string[][]> {
+  const gridRows = await getDataGridRows(expectedNumberOfRows, dataGridElement);
+  const table: Array<Array<string>> = [];
+  for (const row of gridRows) {
+    const textRow = [];
+    for (const cell of row.values()) {
+      const text = await cell.evaluate(x => {
+        return (x as HTMLElement).innerText || '';
+      });
+      textRow.push(text);
+    }
+    table.push(textRow);
+  }
+  return table;
+}
+export async function getDataGridCellAtIndex(
+    dataGrid: ElementHandle<Element>, position: {row: number, column: number}) {
+  const cell = await $(`td[data-row-index="${position.row}"][data-col-index="${position.column}"]`, dataGrid);
+  if (!cell) {
+    assert.fail(`Could not load column at position ${JSON.stringify(position)}`);
+  }
+  return cell;
 }

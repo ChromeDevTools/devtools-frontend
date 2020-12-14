@@ -9,6 +9,9 @@
   "references": [
     {
       "path": "../shared/tsconfig.json"
+    },
+    {
+      "path": "../e2e/tsconfig.json"
     }
   ],
   "extends": "../../tsconfig.base.json"

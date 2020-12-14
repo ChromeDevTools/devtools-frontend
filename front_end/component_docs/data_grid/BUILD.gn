@@ -11,6 +11,7 @@ copy_to_gen("data_grid") {
     "empty.html",
     "hide-cols.html",
     "sticky-headers.html",
+    "three_columns.html",
   ]
 
   deps = [

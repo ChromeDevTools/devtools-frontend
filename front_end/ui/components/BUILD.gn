@@ -18,6 +18,8 @@ devtools_module("components") {
   ]
   deps = [
     "../../bindings:bundle",
+    "../../host:bundle",
+    "../../platform:bundle",
     "../../text_utils:bundle",
     "../../third_party/lit-html:bundle",
   ]

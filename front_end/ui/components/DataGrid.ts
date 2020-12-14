@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../host/host.js';
+import * as Platform from '../../platform/platform.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
 import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, Cell, CellPosition, Column, getRowEntryForColumnId, handleArrowKeyNavigation, keyIsArrowKey, renderCellValue, Row, SortDirection, SortState} from './DataGridUtils.js';
@@ -55,6 +57,24 @@ export class DataGrid extends HTMLElement {
   private columns: readonly Column[] = [];
   private rows: readonly Row[] = [];
   private sortState: Readonly<SortState>|null = null;
+  private currentResize: {
+    rightCellCol: HTMLTableColElement,
+    leftCellCol: HTMLTableColElement,
+    leftCellColInitialPercentageWidth: number,
+    rightCellColInitialPercentageWidth: number,
+    initialLeftCellWidth: number,
+    initialRightCellWidth: number,
+    initialMouseX: number,
+    documentForCursorChange: Document,
+    cursorToRestore: string,
+  }|null = null;
+
+  // These have to be bound as they are put onto the global document, not onto
+  // this element, so LitHtml does not bind them for us.
+  private boundOnResizePointerUp = this.onResizePointerUp.bind(this);
+  private boundOnResizePointerMove = this.onResizePointerMove.bind(this);
+  private boundOnResizePointerDown = this.onResizePointerDown.bind(this);
+
   /**
    * Following guidance from
    * https://www.w3.org/TR/wai-aria-practices/examples/grid/dataGrids.html, we
@@ -229,9 +249,186 @@ export class DataGrid extends HTMLElement {
       const emptyCellClasses = LitHtml.Directives.classMap({
         firstVisibleColumn: colIndex === 0,
       });
-      return LitHtml.html`<td tabindex="-1" class=${emptyCellClasses}></td>`;
+      return LitHtml.html`<td tabindex="-1" class=${emptyCellClasses} data-filler-row-column-index=${colIndex}>
+    ${this.renderResizeForCell([colIndex + 1, this.rows.length])}</td>`;
     });
     return LitHtml.html`<tr tabindex="-1" class="filler-row">${emptyCells}</tr>`;
+  }
+
+  private cleanUpAfterResizeColumnComplete(): void {
+    if (!this.currentResize) {
+      return;
+    }
+    this.currentResize.documentForCursorChange.body.style.cursor = this.currentResize.cursorToRestore;
+    this.currentResize = null;
+  }
+
+  private onResizePointerDown(event: PointerEvent): void {
+    if (event.buttons !== 1 || (Host.Platform.isMac() && event.ctrlKey)) {
+      // Ensure we only react to a left click drag mouse down event.
+      // On Mac we ignorre Ctrl-click which can be used to bring up context menus, etc.
+      return;
+    }
+    event.preventDefault();
+
+    const resizerElement = event.target as HTMLElement;
+    if (!resizerElement) {
+      return;
+    }
+
+    const leftCellContainingResizer = resizerElement.parentElement;
+    if (!leftCellContainingResizer) {
+      return;
+    }
+    let cellColumnIndex = leftCellContainingResizer.dataset.colIndex;
+    let cellRowIndex = leftCellContainingResizer.dataset.rowIndex;
+
+    /* If the user is dragging via the filler row we use slightly different
+     * attributes to figure out the columns involved in the resize.
+     */
+    if (leftCellContainingResizer.hasAttribute('data-filler-row-column-index')) {
+      cellColumnIndex = leftCellContainingResizer.dataset.fillerRowColumnIndex;
+      cellRowIndex = String(this.rows.length);
+    }
+
+    if (!cellColumnIndex || !cellRowIndex) {
+      return;
+    }
+    const positionOfLeftCell: CellPosition =
+        [globalThis.parseInt(cellColumnIndex, 10), globalThis.parseInt(cellRowIndex, 10)];
+    const positionOfRightCell = [positionOfLeftCell[0] + 1, positionOfLeftCell[1]];
+
+    const selector = `[data-col-index="${positionOfRightCell[0]}"][data-row-index="${positionOfRightCell[1]}"]`;
+    const cellToRight = this.shadow.querySelector<HTMLElement>(selector);
+    if (!cellToRight) {
+      return;
+    }
+
+    // We query for the cols as they are the elements that we put the actual width on.
+    const cols = this.shadow.querySelectorAll<HTMLTableColElement>('col');
+    const leftCellCol = cols[positionOfLeftCell[0]];
+    const rightCellCol = cols[positionOfRightCell[0]];
+    if (!leftCellCol || !rightCellCol) {
+      return;
+    }
+
+    const targetDocumentForCursorChange = (event.target as Node).ownerDocument;
+    if (!targetDocumentForCursorChange) {
+      return;
+    }
+
+    // We now store values that we'll make use of in the mousemouse event to calculate how much to resize the table by.
+    this.currentResize = {
+      leftCellCol,
+      rightCellCol,
+      leftCellColInitialPercentageWidth: globalThis.parseInt(leftCellCol.style.width, 10),
+      rightCellColInitialPercentageWidth: globalThis.parseInt(rightCellCol.style.width, 10),
+      initialLeftCellWidth: leftCellContainingResizer.clientWidth,
+      initialRightCellWidth: cellToRight.clientWidth,
+      initialMouseX: event.x,
+      documentForCursorChange: targetDocumentForCursorChange,
+      cursorToRestore: resizerElement.style.cursor,
+    };
+
+    targetDocumentForCursorChange.body.style.cursor = 'col-resize';
+    resizerElement.setPointerCapture(event.pointerId);
+    resizerElement.addEventListener('pointermove', this.boundOnResizePointerMove);
+  }
+
+  private onResizePointerMove(event: PointerEvent): void {
+    event.preventDefault();
+    if (!this.currentResize) {
+      return;
+    }
+
+    const MIN_CELL_WIDTH_PERCENTAGE = 10;
+    const MAX_CELL_WIDTH_PERCENTAGE =
+        (this.currentResize.leftCellColInitialPercentageWidth + this.currentResize.rightCellColInitialPercentageWidth) -
+        MIN_CELL_WIDTH_PERCENTAGE;
+    const deltaOfMouseMove = event.x - this.currentResize.initialMouseX;
+    const absoluteDelta = Math.abs(deltaOfMouseMove);
+    const percentageDelta =
+        (absoluteDelta / (this.currentResize.initialLeftCellWidth + this.currentResize.initialRightCellWidth)) * 100;
+
+    let newLeftColumnPercentage;
+    let newRightColumnPercentage;
+    if (deltaOfMouseMove > 0) {
+      /**
+       * A positive delta means the user moved their mouse to the right, so we
+       * want to make the right column smaller, and the left column larger.
+       */
+      newLeftColumnPercentage = Platform.NumberUtilities.clamp(
+          this.currentResize.leftCellColInitialPercentageWidth + percentageDelta, MIN_CELL_WIDTH_PERCENTAGE,
+          MAX_CELL_WIDTH_PERCENTAGE);
+      newRightColumnPercentage = Platform.NumberUtilities.clamp(
+          this.currentResize.rightCellColInitialPercentageWidth - percentageDelta, MIN_CELL_WIDTH_PERCENTAGE,
+          MAX_CELL_WIDTH_PERCENTAGE);
+    } else if (deltaOfMouseMove < 0) {
+      /**
+       * Negative delta means the user moved their mouse to the left, which
+       * means we want to make the right column larger, and the left column
+       * smaller.
+       */
+      newLeftColumnPercentage = Platform.NumberUtilities.clamp(
+          this.currentResize.leftCellColInitialPercentageWidth - percentageDelta, MIN_CELL_WIDTH_PERCENTAGE,
+          MAX_CELL_WIDTH_PERCENTAGE);
+      newRightColumnPercentage = Platform.NumberUtilities.clamp(
+          this.currentResize.rightCellColInitialPercentageWidth + percentageDelta, MIN_CELL_WIDTH_PERCENTAGE,
+          MAX_CELL_WIDTH_PERCENTAGE);
+    }
+
+    if (!newLeftColumnPercentage || !newRightColumnPercentage) {
+      // The delta was 0, so nothing to do.
+      return;
+    }
+
+    // We floor one value and ceil the other so we work in whole numbers rather than vast amounts of decimal places.
+    // This stops the cells from stuttering when you barely move the mouse.
+    this.currentResize.leftCellCol.style.width = Math.floor(newLeftColumnPercentage) + '%';
+    this.currentResize.rightCellCol.style.width = Math.ceil(newRightColumnPercentage) + '%';
+  }
+
+  private onResizePointerUp(event: PointerEvent): void {
+    event.preventDefault();
+    const resizer = event.target as HTMLElement;
+    if (!resizer) {
+      return;
+    }
+    resizer.releasePointerCapture(event.pointerId);
+    resizer.removeEventListener('pointermove', this.boundOnResizePointerMove);
+    this.cleanUpAfterResizeColumnComplete();
+  }
+
+  private renderResizeForCell(position: CellPosition): LitHtml.TemplateResult {
+    /**
+     * A resizer for a column is placed at the far right of the _previous column
+     * cell_. So when we get called with [1, 0] that means this dragger is
+     * resizing column 1, but the dragger itself is located within column 0. We
+     * need the column to the left because when you resize a column you're not
+     * only resizing it but also the column to its left.
+     */
+    const cellToLeftOfResizingCell = position[0] - 1;
+    const lastVisibleColumnIndex = this.getIndexOfLastVisibleColumn();
+    // If we are in the very last column, there is no column to the right to resize, so don't render a resizer.
+    if (cellToLeftOfResizingCell === lastVisibleColumnIndex) {
+      return LitHtml.html``;
+    }
+
+    return LitHtml.html`<span class="cell-resize-handle"
+     @pointerdown=${this.boundOnResizePointerDown}
+     @pointerup=${this.boundOnResizePointerUp}
+    ></span>`;
+  }
+
+  private getIndexOfLastVisibleColumn(): number {
+    let index = this.columns.length - 1;
+    for (; index > -1; index--) {
+      const col = this.columns[index];
+      if (col.visible) {
+        break;
+      }
+    }
+    return index;
   }
 
   private render(): void {
@@ -292,7 +489,18 @@ export class DataGrid extends HTMLElement {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+        position: relative;
       }
+
+      .cell-resize-handle {
+        right: 0;
+        top: 0;
+        height: 100%;
+        width: 20px;
+        cursor: col-resize;
+        position: absolute;
+      }
+
       /* There is no divider before the first cell */
       td.firstVisibleColumn, th.firstVisibleColumn {
         border-left: none;
@@ -312,15 +520,6 @@ export class DataGrid extends HTMLElement {
         display: none;
       }
 
-      .filler-row {
-        /**
-        * The filler row is only there to stylistically fill grid lines down to the
-        * bottom, we don't want users to be able to focus into it (it's got tabIndex
-        * of -1) nor should they be able to click into it.
-        */
-        pointer-events: none;
-      }
-
       .filler-row td {
         /* By making the filler row cells 100% they take up any extra height,
          * leaving the cells with content to be the regular height, and the
@@ -328,6 +527,11 @@ export class DataGrid extends HTMLElement {
          * space.
          */
         height: 100%;
+        pointer-events: none;
+      }
+      .filler-row td .cell-resize-handle {
+        pointer-events: all;
+
       }
 
       [aria-sort]:hover {
@@ -387,7 +591,7 @@ export class DataGrid extends HTMLElement {
                 data-row-index='0'
                 data-col-index=${columnIndex}
                 tabindex=${LitHtml.Directives.ifDefined(anyColumnsSortable ? (cellIsFocusableCell ? '0' : '-1') : undefined)}
-              >${col.title}</th>`;
+              >${col.title}${this.renderResizeForCell([columnIndex + 1, 0])}</th>`;
             })}
           </tr>
         </thead>
@@ -433,7 +637,7 @@ export class DataGrid extends HTMLElement {
                   @click=${(): void => {
                     this.focusCell([columnIndex, tableRowIndex]);
                   }}
-                >${cellOutput}</td>`;
+                >${cellOutput}${this.renderResizeForCell([columnIndex + 1, tableRowIndex])}</span></td>`;
               })}
             `;
           })}

@@ -8,15 +8,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Basic Data grid example</title>
+    <title>Data grid with 3 columns</title>
     <style>
       #container {
-        width: 80%;
+        width: 900px;
         border: 1px solid black;
         padding: 20px;
         height: 300px;
       }
-
     </style>
   </head>
   <body>
@@ -38,11 +37,12 @@
           columns: [
             { id: 'key', title: 'Key', widthWeighting: 1, visible: true, hideable: false },
             { id: 'value', title: 'Value', widthWeighting: 1, visible: true, hideable: false },
+            { id: 'number', title: 'Number', widthWeighting: 1, visible: true, hideable: false },
           ],
           rows: [
-            {cells: [{ columnId: 'key', value: 'Bravo', title: 'Bravo'}, { columnId: 'value', value: 'Letter B'}] },
-            {cells: [{ columnId: 'key', value: 'Alpha', title: 'Alpha'}, { columnId: 'value', value: 'Letter A'}] },
-            {cells: [{ columnId: 'key', value: 'Charlie', title: 'Charlie'}, { columnId: 'value', value: 'Letter C'}] },
+            {cells: [{ columnId: 'key', value: 'Bravo', title: 'Bravo'}, { columnId: 'value', value: 'Letter B'}, { columnId: 'number', value: '1'}] },
+            {cells: [{ columnId: 'key', value: 'Alpha', title: 'Alpha'}, { columnId: 'value', value: 'Letter A'}, { columnId: 'number', value: '2'}] },
+            {cells: [{ columnId: 'key', value: 'Charlie', title: 'Charlie'}, { columnId: 'value', value: 'Letter C'}, { columnId: 'number', value: '3'}] },
           ]
         }
 

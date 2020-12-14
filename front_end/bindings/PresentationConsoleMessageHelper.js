@@ -104,8 +104,8 @@ export class PresentationConsoleMessageHelper {
   constructor(debuggerModel) {
     this._debuggerModel = debuggerModel;
 
-    /** @type {!Object.<string, !Array.<!SDK.ConsoleModel.ConsoleMessage>>} */
-    this._pendingConsoleMessages = {};
+    /** @type {!Map<string, !Array.<!SDK.ConsoleModel.ConsoleMessage>>} */
+    this._pendingConsoleMessages = new Map();
 
     /** @type {!Array.<!PresentationConsoleMessage>} */
     this._presentationConsoleMessages = [];
@@ -167,10 +167,12 @@ export class PresentationConsoleMessageHelper {
     if (!message.url) {
       return;
     }
-    if (!this._pendingConsoleMessages[message.url]) {
-      this._pendingConsoleMessages[message.url] = [];
+    const pendingMessages = this._pendingConsoleMessages.get(message.url);
+    if (!pendingMessages) {
+      this._pendingConsoleMessages.set(message.url, [message]);
+    } else {
+      pendingMessages.push(message);
     }
-    this._pendingConsoleMessages[message.url].push(message);
   }
 
   /**
@@ -179,7 +181,7 @@ export class PresentationConsoleMessageHelper {
   _parsedScriptSource(event) {
     const script = /** @type {!SDK.Script.Script} */ (event.data);
 
-    const messages = this._pendingConsoleMessages[script.sourceURL];
+    const messages = this._pendingConsoleMessages.get(script.sourceURL);
     if (!messages) {
       return;
     }
@@ -195,14 +197,14 @@ export class PresentationConsoleMessageHelper {
     }
 
     if (pendingMessages.length) {
-      this._pendingConsoleMessages[script.sourceURL] = pendingMessages;
+      this._pendingConsoleMessages.set(script.sourceURL, pendingMessages);
     } else {
-      delete this._pendingConsoleMessages[script.sourceURL];
+      this._pendingConsoleMessages.delete(script.sourceURL);
     }
   }
 
   _consoleCleared() {
-    this._pendingConsoleMessages = {};
+    this._pendingConsoleMessages = new Map();
     this._debuggerReset();
   }
 

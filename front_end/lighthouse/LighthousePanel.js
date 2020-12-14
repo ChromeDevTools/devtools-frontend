@@ -53,7 +53,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class LighthousePanel extends UI.Panel.Panel {
   constructor() {
     super('lighthouse');
-    this.registerRequiredCSS('third_party/lighthouse/report-assets/report.css', {enableLegacyPatching: true});
+    this.registerRequiredCSS('third_party/lighthouse/report-assets/report.css', {enableLegacyPatching: false});
     this.registerRequiredCSS('lighthouse/lighthousePanel.css', {enableLegacyPatching: false});
 
     this._protocolService = new ProtocolService();

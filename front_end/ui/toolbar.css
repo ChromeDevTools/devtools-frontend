@@ -22,7 +22,6 @@
   display: flex;
   flex: none;
   align-items: center;
-  user-select: text;
 }
 
 .toolbar-shadow.wrappable {

@@ -25,44 +25,6 @@
       "className": "Network.NetworkPanel.RequestLocationRevealer"
     },
     {
-      "type": "setting",
-      "category": "Network",
-      "title": "Color-code resource types",
-      "settingName": "networkColorCodeResourceTypes",
-      "settingType": "boolean",
-      "defaultValue": false,
-      "tags": "color code, resource type",
-      "options": [
-        {
-          "value": true,
-          "title": "Color code by resource type"
-        },
-        {
-          "value": false,
-          "title": "Use default colors"
-        }
-      ]
-    },
-    {
-      "type": "setting",
-      "category": "Network",
-      "title": "Group network log by frame",
-      "settingName": "network.group-by-frame",
-      "settingType": "boolean",
-      "defaultValue": false,
-      "tags": "network, frame, group",
-      "options": [
-        {
-          "value": true,
-          "title": "Group network log items by frame"
-        },
-        {
-          "value": false,
-          "title": "Don't group network log items by frame"
-        }
-      ]
-    },
-    {
       "type": "@UI.ViewLocationResolver",
       "name": "network-sidebar",
       "category": "Network",

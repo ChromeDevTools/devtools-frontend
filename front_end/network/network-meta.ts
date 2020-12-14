@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -155,6 +156,44 @@ UI.ActionRegistration.registerActionExtension({
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
         UI.ActionRegistration.KeybindSet.VS_CODE,
       ],
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.NETWORK,
+  title: ls`Color-code resource types`,
+  settingName: 'networkColorCodeResourceTypes',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: false,
+  tags: [ls`color code`, ls`resource type`],
+  options: [
+    {
+      value: true,
+      title: ls`Color code by resource type`,
+    },
+    {
+      value: false,
+      title: ls`Use default colors`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.NETWORK,
+  title: ls`Group network log by frame`,
+  settingName: 'network.group-by-frame',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: false,
+  tags: [ls`network`, ls`frame`, ls`group`],
+  options: [
+    {
+      value: true,
+      title: ls`Group network log items by frame`,
+    },
+    {
+      value: false,
+      title: ls`Don't group network log items by frame`,
     },
   ],
 });

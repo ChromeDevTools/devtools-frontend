@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as FormatterActions from '../formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es_modules_import
 
 const MAX_WORKERS = Math.min(2, navigator.hardwareConcurrency - 1);
 
@@ -121,7 +122,7 @@ export class FormatterWorkerPool {
   }
 
   /**
-   * @param {string} methodName
+   * @param {!FormatterActions.FormatterActions} methodName
    * @param {!Object<string, string>} params
    * @return {!Promise<*>}
    */
@@ -141,7 +142,7 @@ export class FormatterWorkerPool {
    */
   format(mimeType, content, indentString) {
     const parameters = {mimeType: mimeType, content: content, indentString: indentString};
-    return /** @type {!Promise<!FormatResult>} */ (this._runTask('format', parameters));
+    return /** @type {!Promise<!FormatResult>} */ (this._runTask(FormatterActions.FormatterActions.FORMAT, parameters));
   }
 
   /**
@@ -149,7 +150,8 @@ export class FormatterWorkerPool {
    * @return {!Promise<!Array<!{name: string, offset: number}>>}
    */
   javaScriptIdentifiers(content) {
-    return this._runTask('javaScriptIdentifiers', {content: content}).then(ids => ids || []);
+    return this._runTask(FormatterActions.FormatterActions.JAVASCRIPT_IDENTIFIERS, {content: content})
+        .then(ids => ids || []);
   }
 
   /**
@@ -157,7 +159,8 @@ export class FormatterWorkerPool {
    * @return {!Promise<string>}
    */
   evaluatableJavaScriptSubstring(content) {
-    return this._runTask('evaluatableJavaScriptSubstring', {content: content}).then(text => text || '');
+    return this._runTask(FormatterActions.FormatterActions.EVALUATE_JAVASCRIPT_SUBSTRING, {content: content})
+        .then(text => text || '');
   }
 
   /**
@@ -165,7 +168,7 @@ export class FormatterWorkerPool {
    * @param {function(boolean, !Array<!CSSRule>):void} callback
    */
   parseCSS(content, callback) {
-    this._runChunkedTask('parseCSS', {content: content}, onDataChunk);
+    this._runChunkedTask(FormatterActions.FormatterActions.PARSE_CSS, {content: content}, onDataChunk);
 
     /**
      * @param {boolean} isLastChunk
@@ -182,7 +185,7 @@ export class FormatterWorkerPool {
    * @param {function(boolean, !Array<!JSOutlineItem>):void} callback
    */
   javaScriptOutline(content, callback) {
-    this._runChunkedTask('javaScriptOutline', {content: content}, onDataChunk);
+    this._runChunkedTask(FormatterActions.FormatterActions.JAVASCRIPT_OUTLINE, {content: content}, onDataChunk);
 
     /**
      * @param {boolean} isLastChunk
@@ -239,7 +242,8 @@ export class FormatterWorkerPool {
    * @return {!Promise<?string>}
    */
   findLastExpression(content) {
-    return /** @type {!Promise<?string>} */ (this._runTask('findLastExpression', {content}));
+    return /** @type {!Promise<?string>} */ (
+        this._runTask(FormatterActions.FormatterActions.FIND_LAST_EXPRESSION, {content}));
   }
 
   /**
@@ -248,7 +252,7 @@ export class FormatterWorkerPool {
    */
   findLastFunctionCall(content) {
     return /** @type {!Promise<?{baseExpression: string, receiver: string, argumentIndex: number, functionName: string}>} */ (
-        this._runTask('findLastFunctionCall', {content}));
+        this._runTask(FormatterActions.FormatterActions.FIND_LAST_FUNCTION_CALL, {content}));
   }
 
   /**
@@ -256,7 +260,8 @@ export class FormatterWorkerPool {
    * @return {!Promise<!Array<string>>}
    */
   argumentsList(content) {
-    return /** @type {!Promise<!Array<string>>} */ (this._runTask('argumentsList', {content}));
+    return /** @type {!Promise<!Array<string>>} */ (
+        this._runTask(FormatterActions.FormatterActions.ARGUMENTS_LIST, {content}));
   }
 }
 

@@ -604,6 +604,14 @@ export function runOnWindowLoad(callback) {
   }
 }
 
+/**
+ * @param {never} type
+ * @param {string} message
+ */
+export function assertNever(type, message) {
+  throw new Error(message);
+}
+
 const _singletonSymbol = Symbol('singleton');
 
 /**

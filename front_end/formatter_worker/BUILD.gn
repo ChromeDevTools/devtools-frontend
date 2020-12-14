@@ -35,10 +35,20 @@ devtools_entrypoint("bundle") {
   deps = [ ":formatter_worker" ]
 }
 
+devtools_entrypoint("formatter_actions") {
+  entrypoint = "FormatterActions.ts"
+
+  deps = []
+}
+
 devtools_entrypoint("worker_entrypoint") {
   entrypoint = "formatter_worker-entrypoint.ts"
 
   is_web_worker = true
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    ":formatter_actions",
+    "../platform:bundle",
+  ]
 }

@@ -4,7 +4,7 @@
 
 import * as Platform from '../platform/platform.js';
 
-function toolboxLoaded() {
+function toolboxLoaded(): void {
   if (!window.opener) {
     return;
   }

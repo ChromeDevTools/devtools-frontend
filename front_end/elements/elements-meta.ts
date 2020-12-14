@@ -12,7 +12,7 @@ import type * as Elements from './elements.js';
 
 let loadedElementsModule: (typeof Elements|undefined);
 
-async function loadElementsModule() {
+async function loadElementsModule(): Promise<typeof Elements> {
   if (!loadedElementsModule) {
     // Side-effect import resources in module.json
     await Root.Runtime.Runtime.instance().loadModulePromise('elements');

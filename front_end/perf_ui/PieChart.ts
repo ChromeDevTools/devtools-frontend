@@ -28,7 +28,7 @@ export class PieChart extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private chartName = '';
   private size = 0;
-  private formatter = (val: number) => val + '';
+  private formatter = (val: number): string => val + '';
   private showLegend = false;
   private total = 0;
   private slices: readonly Slice[] = [];
@@ -50,7 +50,7 @@ export class PieChart extends HTMLElement {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     this.lastAngle = -Math.PI / 2;
     // clang-format off
     const output = html`
@@ -182,7 +182,7 @@ export class PieChart extends HTMLElement {
         </div>
         ${this.showLegend ? html`
         <div class="pie-chart-legend">
-          ${this.slices.map((slice, index) => {
+          ${this.slices.map((slice, index): LitHtml.TemplateResult => {
             const selected = this.sliceSelected === index;
             return html`
               <div class="pie-chart-legend-row ${selected ? 'selected' : ''}"
@@ -205,25 +205,25 @@ export class PieChart extends HTMLElement {
     render(output, this.shadow, {eventContext: this});
   }
 
-  private onSliceClicked(index: number) {
-    return () => {
+  private onSliceClicked(index: number): () => void {
+    return (): void => {
       this.selectSlice(index);
     };
   }
 
-  private selectSlice(index: number) {
+  private selectSlice(index: number): void {
     this.totalSelected = false;
     this.sliceSelected = index;
     this.render();
   }
 
-  private selectTotal() {
+  private selectTotal(): void {
     this.totalSelected = true;
     this.sliceSelected = -1;
     this.render();
   }
 
-  private selectAndFocusTotal() {
+  private selectAndFocusTotal(): void {
     this.selectTotal();
     // In order for the :focus-visible styles to work, we need to focus the
     // newly selected item. This is so that the outline is only shown for focus
@@ -237,7 +237,7 @@ export class PieChart extends HTMLElement {
     totalLegendRow.focus();
   }
 
-  private selectAndFocusSlice(index: number) {
+  private selectAndFocusSlice(index: number): void {
     this.selectSlice(index);
     const sliceLegendRow = this.shadow.querySelector<HTMLDivElement>(`.pie-chart-legend > :nth-child(${index + 1})`);
     if (!sliceLegendRow) {
@@ -246,7 +246,7 @@ export class PieChart extends HTMLElement {
     sliceLegendRow.focus();
   }
 
-  private focusNextElement() {
+  private focusNextElement(): void {
     if (this.totalSelected) {
       this.selectAndFocusSlice(0);
     } else if (this.sliceSelected === this.slices.length - 1) {
@@ -256,7 +256,7 @@ export class PieChart extends HTMLElement {
     }
   }
 
-  private focusPreviousElement() {
+  private focusPreviousElement(): void {
     if (this.totalSelected) {
       this.selectAndFocusSlice(this.slices.length - 1);
     } else if (this.sliceSelected === 0) {
@@ -266,7 +266,7 @@ export class PieChart extends HTMLElement {
     }
   }
 
-  private onKeyDown(event: KeyboardEvent) {
+  private onKeyDown(event: KeyboardEvent): void {
     let handled = false;
     if (event.key === 'ArrowDown') {
       this.focusNextElement();
@@ -282,7 +282,7 @@ export class PieChart extends HTMLElement {
     }
   }
 
-  private getPathStringForSlice(slice: Slice) {
+  private getPathStringForSlice(slice: Slice): string|undefined {
     const value = slice.value;
     let sliceAngle = value / this.total * 2 * Math.PI;
     if (!isFinite(sliceAngle)) {

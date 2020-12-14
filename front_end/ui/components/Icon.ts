@@ -61,7 +61,7 @@ export class Icon extends HTMLElement {
     };
   }
 
-  private getStyles() {
+  private getStyles(): {[key: string]: string} {
     const {iconPath, width, height, color} = this;
     const commonStyles = {
       width,
@@ -87,7 +87,7 @@ export class Icon extends HTMLElement {
     };
   }
 
-  private render() {
+  private render(): void {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <style>

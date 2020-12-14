@@ -83,7 +83,7 @@ export class CSSAngle extends HTMLElement {
     this.render();
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     this.unbindMinifyingAction();
   }
 
@@ -205,7 +205,7 @@ export class CSSAngle extends HTMLElement {
     }
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -248,7 +248,7 @@ export class CSSAngle extends HTMLElement {
     // clang-format on
   }
 
-  private renderPopover() {
+  private renderPopover(): LitHtml.TemplateResult {
     let contextualBackground = '';
     // TODO(crbug.com/1143010): for now we ignore values with "url"; when we refactor
     // CSS value parsing we should properly apply atomic contextual background.

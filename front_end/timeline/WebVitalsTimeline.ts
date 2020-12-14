@@ -164,7 +164,7 @@ export class WebVitalsTimeline extends HTMLElement {
     return LINE_HEIGHT;
   }
 
-  private handlePointerMove(e: MouseEvent) {
+  private handlePointerMove(e: MouseEvent): void {
     const x = e.offsetX, y = e.offsetY;
     const lane = Math.floor(y / LINE_HEIGHT);
 
@@ -177,7 +177,7 @@ export class WebVitalsTimeline extends HTMLElement {
     this.scheduleRender();
   }
 
-  private handlePointerOut(_: MouseEvent) {
+  private handlePointerOut(_: MouseEvent): void {
     this.fcpLane.handlePointerMove(null);
     this.lcpLane.handlePointerMove(null);
     this.layoutShiftsLane.handlePointerMove(null);
@@ -186,7 +186,7 @@ export class WebVitalsTimeline extends HTMLElement {
     this.scheduleRender();
   }
 
-  private handleClick(e: MouseEvent) {
+  private handleClick(e: MouseEvent): void {
     const x = e.offsetX;
 
     this.focus();
@@ -229,7 +229,7 @@ export class WebVitalsTimeline extends HTMLElement {
     this.render();
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     this.style.display = 'block';
     this.tabIndex = 0;
 
@@ -241,7 +241,7 @@ export class WebVitalsTimeline extends HTMLElement {
     this.render();
   }
 
-  private getMarkerTypeForFCPEvent(event: WebVitalsFCPEvent) {
+  private getMarkerTypeForFCPEvent(event: WebVitalsFCPEvent): MarkerType {
     const t = this.getTimeSinceLastMainFrameNavigation(event.timestamp);
     if (t <= FCP_GOOD_TIMING) {
       return MarkerType.Good;
@@ -252,7 +252,7 @@ export class WebVitalsTimeline extends HTMLElement {
     return MarkerType.Bad;
   }
 
-  private getMarkerTypeForLCPEvent(event: WebVitalsLCPEvent) {
+  private getMarkerTypeForLCPEvent(event: WebVitalsLCPEvent): MarkerType {
     const t = this.getTimeSinceLastMainFrameNavigation(event.timestamp);
     if (t <= LCP_GOOD_TIMING) {
       return MarkerType.Good;
@@ -263,7 +263,7 @@ export class WebVitalsTimeline extends HTMLElement {
     return MarkerType.Bad;
   }
 
-  private renderMainFrameNavigations(markers: readonly number[]) {
+  private renderMainFrameNavigations(markers: readonly number[]): void {
     this.context.save();
     this.context.strokeStyle = 'blue';
     this.context.beginPath();
@@ -325,7 +325,7 @@ export class WebVitalsTimeline extends HTMLElement {
     this.renderMainFrameNavigations(this.mainFrameNavigations);
   }
 
-  private scheduleRender() {
+  private scheduleRender(): void {
     if (this.animationFrame) {
       return;
     }

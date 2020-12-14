@@ -81,7 +81,9 @@ export function createIssueDescriptionFromRawMarkdown(
   markdownComponent.data = {tokens: markdownAst.slice(1)};
   return {
     title,
-    message: () => markdownComponent,
+    message(): MarkdownView {
+      return markdownComponent;
+    },
     issueKind: SDK.Issue.IssueKind.BreakingChange,
     links: description.links,
   };

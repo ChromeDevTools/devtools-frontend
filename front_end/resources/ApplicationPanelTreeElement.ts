@@ -38,7 +38,7 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
     return false;
   }
 
-  showView(view: UI.Widget.Widget|null) {
+  showView(view: UI.Widget.Widget|null): void {
     this.resourcesPanel.showView(view);
   }
 }
@@ -56,11 +56,11 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     this.categoryLink = null;
   }
 
-  get itemURL() {
+  get itemURL(): string {
     return 'category://' + this.categoryName;
   }
 
-  setLink(link: string) {
+  setLink(link: string): void {
     this.categoryLink = link;
   }
 
@@ -70,18 +70,18 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     return false;
   }
 
-  onattach() {
+  onattach(): void {
     super.onattach();
     if (this.expandedSetting.get()) {
       this.expand();
     }
   }
 
-  onexpand() {
+  onexpand(): void {
     this.expandedSetting.set(true);
   }
 
-  oncollapse() {
+  oncollapse(): void {
     this.expandedSetting.set(false);
   }
 }

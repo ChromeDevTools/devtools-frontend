@@ -39,10 +39,11 @@ export interface FormatterToken {
   substitutionIndex?: number;
 }
 
-export const tokenizeFormatString = function(formatString: string, formatters: Record<string, Function>) {
+export const tokenizeFormatString = function(
+    formatString: string, formatters: Record<string, Function>): FormatterToken[] {
   const tokens: FormatterToken[] = [];
 
-  function addStringToken(str: string) {
+  function addStringToken(str: string): void {
     if (!str) {
       return;
     }
@@ -56,11 +57,11 @@ export const tokenizeFormatString = function(formatString: string, formatters: R
     }
   }
 
-  function addSpecifierToken(specifier: string, precision: number, substitutionIndex: number) {
+  function addSpecifierToken(specifier: string, precision: number, substitutionIndex: number): void {
     tokens.push({type: FormatterType.SPECIFIER, specifier, precision, substitutionIndex, value: undefined});
   }
 
-  function addAnsiColor(code: number) {
+  function addAnsiColor(code: number): void {
     type ColorType = 'color'|'colorLight'|'bgColor'|'bgColorLight';
 
     const types: Record<number, ColorType> = {3: 'color', 9: 'colorLight', 4: 'bgColor', 10: 'bgColorLight'};
@@ -128,15 +129,15 @@ export const format = function<T, U>(
     return {formattedResult: append(initialValue, formatString), unusedSubstitutions: substitutions};
   }
 
-  function prettyFunctionName() {
+  function prettyFunctionName(): string {
     return 'String.format("' + formatString + '", "' + Array.prototype.join.call(substitutions, '", "') + '")';
   }
 
-  function warn(msg: string) {
+  function warn(msg: string): void {
     console.warn(prettyFunctionName() + ': ' + msg);
   }
 
-  function error(msg: string) {
+  function error(msg: string): void {
     console.error(prettyFunctionName() + ': ' + msg);
   }
 
@@ -219,7 +220,7 @@ export const standardFormatters = {
     return !isNaN(substitution as number) ? substitution as string : precision;
   },
 
-  s: function(substitution: unknown) {
+  s: function(substitution: unknown): string {
     return substitution as string;
   },
 };

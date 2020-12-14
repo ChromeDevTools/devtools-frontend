@@ -6,17 +6,17 @@ export const HEXADECIMAL_REGEXP = /^0x[a-fA-F0-9]+$/;
 export const DECIMAL_REGEXP = /^0$|[1-9]\d*$/;
 
 
-export function toHexString(data: {number: number, pad: number, prefix: boolean}) {
+export function toHexString(data: {number: number, pad: number, prefix: boolean}): string {
   const hex = data.number.toString(16).padStart(data.pad, '0');
   const upperHex = hex.toUpperCase();
   return data.prefix ? '0x' + upperHex : upperHex;
 }
 
-export function formatAddress(address: number) {
+export function formatAddress(address: number): string {
   return toHexString({number: address, pad: 8, prefix: true});
 }
 
-export function parseAddress(address: string) {
+export function parseAddress(address: string): number|undefined {
   const hexMatch = address.match(HEXADECIMAL_REGEXP);
   const decMatch = address.match(DECIMAL_REGEXP);
 

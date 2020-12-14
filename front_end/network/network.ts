@@ -92,7 +92,7 @@ export {
  * @param {!CustomEvent<!Array<{filterType: !NetworkLogView.FilterType, filterValue: string}>>} evt
  */
 // @ts-ignore
-const onRevealAndFilter = evt => {
+const onRevealAndFilter = (evt): void => {
   NetworkPanel.NetworkPanel.revealAndFilter(evt.detail);
 };
 

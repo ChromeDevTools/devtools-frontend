@@ -53,7 +53,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -103,7 +103,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // clang-format on
   }
 
-  private showValue(type: ValueType) {
+  private showValue(type: ValueType): LitHtml.TemplateResult {
     const mode = this.valueTypeModeConfig.get(type);
     if (!mode) {
       throw new Error(`No mode found for type ${type}`);
@@ -137,7 +137,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // clang-format on
   }
 
-  private parse(data: {type: ValueType, signed?: boolean}) {
+  private parse(data: {type: ValueType, signed?: boolean}): string {
     const mode = this.valueTypeModeConfig.get(data.type);
     if (!mode) {
       console.error(`No known way of showing value for ${data.type}`);

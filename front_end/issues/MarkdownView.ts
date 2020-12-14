@@ -23,11 +23,11 @@ export class MarkdownView extends HTMLElement {
     this.update();
   }
 
-  private update() {
+  private update(): void {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -91,7 +91,7 @@ declare global {
 
 // TODO(crbug.com/1108699): Fix types when they are available.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const renderChildTokens = (token: any) => {
+const renderChildTokens = (token: any): string => {
   return token.tokens.map(renderToken);
 };
 
@@ -113,7 +113,7 @@ const unescape = (text: string): string => {
 };
 // TODO(crbug.com/1108699): Fix types when they are available.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const renderText = (token: any) => {
+const renderText = (token: any): LitHtml.TemplateResult => {
   if (token.tokens && token.tokens.length > 0) {
     return html`${renderChildTokens(token)}`;
   }
@@ -126,22 +126,22 @@ const renderText = (token: any) => {
 // TODO(crbug.com/1108699): Fix types when they are available.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const tokenRenderers = new Map<string, (token: any) => LitHtml.TemplateResult>([
-  ['paragraph', token => html`<p>${renderChildTokens(token)}</p>`],
-  ['list', token => html`<ul>${token.items.map(renderToken)}</ul>`],
-  ['list_item', token => html`<li>${renderChildTokens(token)}</li>`],
+  ['paragraph', (token): LitHtml.TemplateResult => html`<p>${renderChildTokens(token)}</p>`],
+  ['list', (token): LitHtml.TemplateResult => html`<ul>${token.items.map(renderToken)}</ul>`],
+  ['list_item', (token): LitHtml.TemplateResult => html`<li>${renderChildTokens(token)}</li>`],
   ['text', renderText],
-  ['codespan', token => html`<code>${unescape(token.text)}</code>`],
-  ['space', () => html``],
+  ['codespan', (token): LitHtml.TemplateResult => html`<code>${unescape(token.text)}</code>`],
+  ['space', (): LitHtml.TemplateResult => html``],
   [
     'link',
-    token => html`<devtools-markdown-link .data=${
+    (token): LitHtml.TemplateResult => html`<devtools-markdown-link .data=${
         {key: token.href, title: token.text} as MarkdownLinkData}></devtools-markdown-link>`,
   ],
 ]);
 
 // TODO(crbug.com/1108699): Fix types when they are available.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const renderToken = (token: any) => {
+export const renderToken = (token: any): LitHtml.TemplateResult => {
   const renderFn = tokenRenderers.get(token.type);
   if (!renderFn) {
     throw new Error(`Markdown token type '${token.type}' not supported.`);

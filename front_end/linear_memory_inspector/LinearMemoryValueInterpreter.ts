@@ -67,7 +67,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -157,14 +157,14 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     // clang-format on
   }
 
-  private onEndiannessChange(event: Event) {
+  private onEndiannessChange(event: Event): void {
     event.preventDefault();
     const select = event.target as HTMLInputElement;
     const endianness = select.value as Endianness;
     this.dispatchEvent(new EndiannessChangedEvent(endianness));
   }
 
-  private renderSetting() {
+  private renderSetting(): LitHtml.TemplateResult {
     const onEnumSettingChange = this.onEndiannessChange.bind(this);
     return html`
     <label data-endianness-setting="true" title=${ls`Change Endianness`}>
@@ -178,12 +178,12 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     `;
   }
 
-  private onSettingsToggle() {
+  private onSettingsToggle(): void {
     this.showSettings = !this.showSettings;
     this.render();
   }
 
-  private onTypeToggle(e: TypeToggleEvent) {
+  private onTypeToggle(e: TypeToggleEvent): void {
     this.dispatchEvent(new ValueTypeToggledEvent(e.data.type, e.data.checked));
   }
 }

@@ -7,7 +7,7 @@ export const isValid = (date: Date): boolean => {
 };
 
 export const toISO8601Compact = (date: Date): string => {
-  function leadZero(x: number) {
+  function leadZero(x: number): string {
     return (x > 9 ? '' : '0') + x;
   }
   return date.getFullYear() + leadZero(date.getMonth() + 1) + leadZero(date.getDate()) + 'T' +

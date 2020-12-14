@@ -88,7 +88,7 @@ export class LegacyActionRegistration extends Common.ObjectWrapper.ObjectWrapper
     return !!this.actionDescriptor().toggleWithRedColor;
   }
 
-  setEnabled(enabled: boolean) {
+  setEnabled(enabled: boolean): void {
     if (this._enabled === enabled) {
       return;
     }
@@ -137,7 +137,7 @@ export class LegacyActionRegistration extends Common.ObjectWrapper.ObjectWrapper
     return this._toggled;
   }
 
-  setToggled(toggled: boolean) {
+  setToggled(toggled: boolean): void {
     console.assert(this.toggleable(), 'Shouldn\'t be toggling an untoggleable action', this.id());
     if (this._toggled === toggled) {
       return;
@@ -190,7 +190,7 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
     return !!this.actionRegistration.toggleWithRedColor;
   }
 
-  setEnabled(enabled: boolean) {
+  setEnabled(enabled: boolean): void {
     if (this._enabled === enabled) {
       return;
     }
@@ -240,7 +240,7 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
     return this._toggled;
   }
 
-  setToggled(toggled: boolean) {
+  setToggled(toggled: boolean): void {
     console.assert(this.toggleable(), 'Shouldn\'t be toggling an untoggleable action', this.id());
     if (this._toggled === toggled) {
       return;
@@ -282,7 +282,7 @@ const registeredActionExtensions: Array<PreRegisteredAction> = [];
 
 const actionIdSet = new Set<string>();
 
-export function registerActionExtension(registration: ActionRegistration) {
+export function registerActionExtension(registration: ActionRegistration): void {
   const actionId = registration.actionId;
   if (actionIdSet.has(actionId)) {
     throw new Error(`Duplicate Action id '${actionId}': ${new Error().stack}`);

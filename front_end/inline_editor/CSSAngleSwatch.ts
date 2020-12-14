@@ -27,7 +27,7 @@ export class CSSAngleSwatch extends HTMLElement {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     const {translateX, translateY} = get2DTranslationsForAngle(this.angle, swatchWidth / 4);
     const miniHandStyle = {
       transform: `translate(${translateX}px, ${translateY}px) rotate(${this.angle.value}${this.angle.unit})`,

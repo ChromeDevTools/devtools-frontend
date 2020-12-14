@@ -11,7 +11,7 @@ import type * as Sources from './sources.js';
 
 let loadedSourcesModule: (typeof Sources|undefined);
 
-async function loadSourcesModule() {
+async function loadSourcesModule(): Promise<typeof Sources> {
   if (!loadedSourcesModule) {
     // Side-effect import resources in module.json
     await Root.Runtime.Runtime.instance().loadModulePromise('sources');

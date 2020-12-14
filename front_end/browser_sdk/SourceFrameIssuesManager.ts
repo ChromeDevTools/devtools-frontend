@@ -24,13 +24,13 @@ export class SourceFrameIssuesManager {
     this.issuesManager.addEventListener(IssuesManager.Events.FullUpdateRequired, this.onFullUpdateRequired, this);
   }
 
-  private onIssueAdded(event: Common.EventTarget.EventTargetEvent) {
+  private onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
     const {issue} =
         /** @type {!{issue: !SDK.Issue.Issue}} */ (event.data);
     this.addIssue(issue);
   }
 
-  private addIssue(issue: SDK.Issue.Issue) {
+  private addIssue(issue: SDK.Issue.Issue): void {
     if (!this.isTrustedTypeIssue(issue)) {
       return;
     }
@@ -49,7 +49,7 @@ export class SourceFrameIssuesManager {
     }
   }
 
-  private onFullUpdateRequired() {
+  private onFullUpdateRequired(): void {
     this.resetMessages();
     const issues = this.issuesManager.issues();
     for (const issue of issues) {
@@ -63,7 +63,7 @@ export class SourceFrameIssuesManager {
     return findTitleFromMarkdownAst(markdownAst);
   }
 
-  private addIssueMessageToScript(issue: SDK.Issue.Issue, rawLocation: SDK.DebuggerModel.Location) {
+  private addIssueMessageToScript(issue: SDK.Issue.Issue, rawLocation: SDK.DebuggerModel.Location): void {
     const description = issue.getDescription();
     if (description && 'file' in description) {
       const title = this.createIssueDescriptionFromMarkdown(description);
@@ -80,7 +80,7 @@ export class SourceFrameIssuesManager {
         issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode;
   }
 
-  private resetMessages() {
+  private resetMessages(): void {
     for (const message of this.issueMessages) {
       message.dispose();
     }
@@ -103,7 +103,7 @@ export class IssueMessage {
         rawLocation, this.updateLocation.bind(this), locationPool);
   }
 
-  private async updateLocation(liveLocation: Bindings.LiveLocation.LiveLocation) {
+  private async updateLocation(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
     if (this.uiMessage) {
       this.uiMessage.remove();
     }
@@ -115,7 +115,7 @@ export class IssueMessage {
         uiLocation.uiSourceCode.addLineMessage(this.level, this.text, uiLocation.lineNumber, uiLocation.columnNumber);
   }
 
-  dispose() {
+  dispose(): void {
     this.uiMessage?.remove();
   }
 

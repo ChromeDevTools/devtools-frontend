@@ -4,7 +4,7 @@
 
 import * as WasmParserWorker from './wasmparser_worker.js';  // eslint-disable-line rulesdir/es_modules_import
 
-self.onmessage = (event: {data: {method: string, params: {content: string}}}) => {
+self.onmessage = (event: {data: {method: string, params: {content: string}}}): void => {
   const method = event.data.method;
 
   if (method !== 'disassemble') {

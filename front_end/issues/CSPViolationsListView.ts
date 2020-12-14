@@ -36,7 +36,7 @@ export class CSPViolationsListView extends UI.Widget.VBox {
     this.contentElement.appendChild(this.table);
   }
 
-  updateTextFilter(filter: string) {
+  updateTextFilter(filter: string): void {
     if (filter.length === 0) {
       this.table.data = {...this.table.data, filters: []};
     } else {
@@ -47,7 +47,7 @@ export class CSPViolationsListView extends UI.Widget.VBox {
     }
   }
 
-  updateCategoryFilter(categories: Set<string>) {
+  updateCategoryFilter(categories: Set<string>): void {
     this.categoryFilter = categories;
     const rows = [];
     for (const [issue, row] of this.issueRows.entries()) {
@@ -62,7 +62,7 @@ export class CSPViolationsListView extends UI.Widget.VBox {
     return (this.categoryFilter.has(issue.code()) || this.categoryFilter.size === 0);
   }
 
-  addIssue(issue: SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
+  addIssue(issue: SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue): void {
     const sourceCode = issue.details().sourceCodeLocation;
     if (!sourceCode) {
       return;
@@ -74,10 +74,12 @@ export class CSPViolationsListView extends UI.Widget.VBox {
         {
           columnId: 'sourceCode',
           value: sourceCode.url,
-          renderer: () => LitHtml.html`<devtools-linkifier .data=${{
-            url: sourceCode.url,
-            lineNumber: sourceCode.lineNumber,
-          } as UIComponents.Linkifier.LinkifierData}></devtools-linkifier>`,
+          renderer(): LitHtml.TemplateResult {
+            return LitHtml.html`<devtools-linkifier .data=${{
+              url: sourceCode.url,
+              lineNumber: sourceCode.lineNumber,
+            } as UIComponents.Linkifier.LinkifierData}></devtools-linkifier>`;
+          },
         },
         {columnId: 'violatedDirective', value: issue.details().violatedDirective},
         {columnId: 'category', value: category},
@@ -92,7 +94,7 @@ export class CSPViolationsListView extends UI.Widget.VBox {
     }
   }
 
-  clearIssues() {
+  clearIssues(): void {
     this.issueRows.clear();
     this.table.data = {...this.table.data, rows: []};
   }

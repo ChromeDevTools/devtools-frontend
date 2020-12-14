@@ -11,7 +11,7 @@ import type * as BrowserDebugger from './browser_debugger.js';
 
 let loadedBrowserDebuggerModule: (typeof BrowserDebugger|undefined);
 
-async function loadBrowserDebuggerModule() {
+async function loadBrowserDebuggerModule(): Promise<typeof BrowserDebugger> {
   if (!loadedBrowserDebuggerModule) {
     // Side-effect import resources in module.json
     await Root.Runtime.Runtime.instance().loadModulePromise('browser_debugger');

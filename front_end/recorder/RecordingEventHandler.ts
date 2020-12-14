@@ -32,8 +32,8 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     this.axModel = target.model(SDK.AccessibilityModel.AccessibilityModel) as SDK.AccessibilityModel.AccessibilityModel;
   }
 
-  async isSubmitButton(targetId: string) {
-    function innerIsSubmitButton(this: HTMLButtonElement) {
+  async isSubmitButton(targetId: string): Promise<unknown> {
+    function innerIsSubmitButton(this: HTMLButtonElement): boolean {
       return this.tagName === 'BUTTON' && this.type === 'submit' && this.form !== null;
     }
 
@@ -44,7 +44,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     return result.value;
   }
 
-  async getSelector(node: SDK.DOMModel.DOMNode) {
+  async getSelector(node: SDK.DOMModel.DOMNode): Promise<string|null> {
     const ariaSelector = await this.getAriaSelector(node);
     if (ariaSelector) {
       return ariaSelector;
@@ -58,7 +58,8 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     return null;
   }
 
-  async findTargetId(localFrame: Protocol.Runtime.PropertyDescriptor[], interestingClassNames: string[]) {
+  async findTargetId(localFrame: Protocol.Runtime.PropertyDescriptor[], interestingClassNames: string[]):
+      Promise<string|null|undefined> {
     const event = localFrame.find(
         prop => !!(prop && prop.value && prop.value.className && interestingClassNames.includes(prop.value.className)));
 
@@ -83,7 +84,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     return target.value.objectId || null;
   }
 
-  async getAriaSelector(node: SDK.DOMModel.DOMNode) {
+  async getAriaSelector(node: SDK.DOMModel.DOMNode): Promise<string|null> {
     await this.axModel.requestPartialAXTree(node);
     let axNode = this.axModel.axNodeForDOMNode(node);
     while (axNode) {
@@ -99,7 +100,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     return null;
   }
 
-  async handleClickEvent(context: StepFrameContext, localFrame: Protocol.Runtime.PropertyDescriptor[]) {
+  async handleClickEvent(context: StepFrameContext, localFrame: Protocol.Runtime.PropertyDescriptor[]): Promise<void> {
     const targetId = await this.findTargetId(localFrame, [
       'MouseEvent',
       'PointerEvent',
@@ -130,7 +131,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     await this.resume();
   }
 
-  async handleSubmitEvent(context: StepFrameContext, localFrame: Protocol.Runtime.PropertyDescriptor[]) {
+  async handleSubmitEvent(context: StepFrameContext, localFrame: Protocol.Runtime.PropertyDescriptor[]): Promise<void> {
     const targetId = await this.findTargetId(localFrame, [
       'SubmitEvent',
     ]);
@@ -154,7 +155,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     await this.resume();
   }
 
-  async handleChangeEvent(context: StepFrameContext, localFrame: Protocol.Runtime.PropertyDescriptor[]) {
+  async handleChangeEvent(context: StepFrameContext, localFrame: Protocol.Runtime.PropertyDescriptor[]): Promise<void> {
     const targetId = await this.findTargetId(localFrame, [
       'Event',
     ]);
@@ -174,7 +175,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
       throw new Error('Could not find selector');
     }
 
-    function getValue(this: HTMLInputElement) {
+    function getValue(this: HTMLInputElement): string {
       return this.value;
     }
 
@@ -187,7 +188,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     await this.resume();
   }
 
-  getContextForFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
+  getContextForFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): StepFrameContext {
     const path = [];
     let currentFrame = frame;
     while (currentFrame) {
@@ -206,17 +207,17 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     return new StepFrameContext(target, path);
   }
 
-  async resume() {
+  async resume(): Promise<void> {
     await this.debuggerAgent.invoke_setSkipAllPauses({skip: true});
     await this.debuggerAgent.invoke_resume({terminateOnResume: false});
     await this.debuggerAgent.invoke_setSkipAllPauses({skip: false});
   }
 
-  async skip() {
+  async skip(): Promise<void> {
     await this.debuggerAgent.invoke_resume({terminateOnResume: false});
   }
 
-  paused(params: Protocol.Debugger.PausedEvent) {
+  paused(params: Protocol.Debugger.PausedEvent): void {
     if (params.reason !== 'EventListener') {
       this.skip();
       return;
@@ -258,19 +259,19 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     });
   }
 
-  breakpointResolved() {
+  breakpointResolved(): void {
     // Added here to fullfill the ProtocolProxyApi.DebuggerDispatcher interface.
   }
 
-  resumed() {
+  resumed(): void {
     // Added here to fullfill the ProtocolProxyApi.DebuggerDispatcher interface.
   }
 
-  scriptFailedToParse() {
+  scriptFailedToParse(): void {
     // Added here to fullfill the ProtocolProxyApi.DebuggerDispatcher interface.
   }
 
-  scriptParsed() {
+  scriptParsed(): void {
     // Added here to fullfill the ProtocolProxyApi.DebuggerDispatcher interface.
   }
 }

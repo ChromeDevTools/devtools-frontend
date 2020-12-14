@@ -8,7 +8,7 @@ export class IdentityFormatter {
   constructor(private builder: FormattedContentBuilder) {
   }
 
-  format(text: string, lineEndings: number[], fromOffset: number, toOffset: number) {
+  format(text: string, lineEndings: number[], fromOffset: number, toOffset: number): void {
     const content = text.substring(fromOffset, toOffset);
     this.builder.addToken(content, fromOffset);
   }

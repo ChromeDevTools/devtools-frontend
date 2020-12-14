@@ -27,7 +27,7 @@ export class MarkdownLink extends HTMLElement {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     // clang-format off
     const output = LitHtml.html`
       <style>

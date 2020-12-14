@@ -30,7 +30,7 @@ export const enum ValueTypeMode {
   None = 'none'
 }
 
-export function valueTypeModeToLocalizedString(mode: ValueTypeMode) {
+export function valueTypeModeToLocalizedString(mode: ValueTypeMode): string {
   switch (mode) {
     case ValueTypeMode.Decimal:
       return ls`dec`;
@@ -45,7 +45,7 @@ export function valueTypeModeToLocalizedString(mode: ValueTypeMode) {
   }
 }
 
-export function endiannessToLocalizedString(endianness: Endianness) {
+export function endiannessToLocalizedString(endianness: Endianness): string {
   switch (endianness) {
     case Endianness.Little:
       return ls`Little Endian`;
@@ -54,7 +54,7 @@ export function endiannessToLocalizedString(endianness: Endianness) {
   }
 }
 
-export function valueTypeToLocalizedString(valueType: ValueType) {
+export function valueTypeToLocalizedString(valueType: ValueType): string {
   switch (valueType) {
     case ValueType.Int8:
       return ls`Integer 8-bit`;
@@ -73,7 +73,7 @@ export function valueTypeToLocalizedString(valueType: ValueType) {
   }
 }
 
-export function isValidMode(type: ValueType, mode: ValueTypeMode) {
+export function isValidMode(type: ValueType, mode: ValueTypeMode): boolean {
   switch (type) {
     case ValueType.Int8:
     case ValueType.Int16:
@@ -88,7 +88,7 @@ export function isValidMode(type: ValueType, mode: ValueTypeMode) {
   }
 }
 
-export function isNumber(type: ValueType) {
+export function isNumber(type: ValueType): boolean {
   switch (type) {
     case ValueType.Int8:
     case ValueType.Int16:
@@ -110,7 +110,7 @@ export interface FormatData {
   mode: ValueTypeMode;
 }
 
-export function format(formatData: FormatData) {
+export function format(formatData: FormatData): string {
   const valueView = new DataView(formatData.buffer);
   const isLittleEndian = formatData.endianness === Endianness.Little;
   let value;
@@ -144,7 +144,7 @@ export function format(formatData: FormatData) {
   }
 }
 
-export function formatFloat(value: number, mode: ValueTypeMode) {
+export function formatFloat(value: number, mode: ValueTypeMode): string {
   switch (mode) {
     case ValueTypeMode.Decimal:
       return value.toFixed(2).toString();
@@ -155,7 +155,7 @@ export function formatFloat(value: number, mode: ValueTypeMode) {
   }
 }
 
-export function formatInteger(value: number|bigint, mode: ValueTypeMode) {
+export function formatInteger(value: number|bigint, mode: ValueTypeMode): string {
   switch (mode) {
     case ValueTypeMode.Decimal:
       return value.toString();

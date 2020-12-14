@@ -34,11 +34,11 @@ import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 export class Report extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
 
-  connectedCallback() {
+  connectedCallback(): void {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
@@ -76,7 +76,7 @@ export class ReportSection extends HTMLElement {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
@@ -123,11 +123,11 @@ export class ReportSection extends HTMLElement {
 export class ReportRow extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
 
-  connectedCallback() {
+  connectedCallback(): void {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`

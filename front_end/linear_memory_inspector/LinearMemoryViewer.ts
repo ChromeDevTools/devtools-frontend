@@ -66,19 +66,19 @@ export class LinearMemoryViewer extends HTMLElement {
     this.update();
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     this.isObservingResize = false;
     this.resizeObserver.disconnect();
   }
 
-  private update() {
+  private update(): void {
     this.updateDimensions();
     this.render();
     this.focusOnView();
     this.engageResizeObserver();
   }
 
-  private focusOnView() {
+  private focusOnView(): void {
     if (this.focusOnByte) {
       const view = this.shadow.querySelector<HTMLDivElement>('.view');
       if (view) {
@@ -87,7 +87,7 @@ export class LinearMemoryViewer extends HTMLElement {
     }
   }
 
-  private resize() {
+  private resize(): void {
     // A memory request currently takes too much time, so for the time being
     // update with whatever data we have, and request for more memory to fill
     // the screen if applicable after.
@@ -96,7 +96,7 @@ export class LinearMemoryViewer extends HTMLElement {
   }
 
   /** Recomputes the number of rows and (byte) columns that fit into the current view. */
-  private updateDimensions() {
+  private updateDimensions(): void {
     if (this.clientWidth === 0 || this.clientHeight === 0 || !this.shadowRoot) {
       this.numBytesInRow = LinearMemoryViewer.BYTE_GROUP_SIZE;
       this.numRows = 1;
@@ -143,7 +143,7 @@ export class LinearMemoryViewer extends HTMLElement {
     this.numRows = Math.floor(this.clientHeight / rowElement.clientHeight);
   }
 
-  private engageResizeObserver() {
+  private engageResizeObserver(): void {
     if (!this.resizeObserver || this.isObservingResize) {
       return;
     }
@@ -152,7 +152,7 @@ export class LinearMemoryViewer extends HTMLElement {
     this.isObservingResize = true;
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -225,7 +225,7 @@ export class LinearMemoryViewer extends HTMLElement {
       `, this.shadow, {eventContext: this});
   }
 
-  private onKeyDown(event: Event) {
+  private onKeyDown(event: Event): void {
     const keyboardEvent = event as KeyboardEvent;
     let newAddress = undefined;
     if (keyboardEvent.code === 'ArrowUp') {
@@ -248,7 +248,7 @@ export class LinearMemoryViewer extends HTMLElement {
     }
   }
 
-  private renderView() {
+  private renderView(): LitHtml.TemplateResult {
     const itemTemplates = [];
     for (let i = 0; i < this.numRows; ++i) {
       itemTemplates.push(this.renderRow(i));
@@ -256,7 +256,7 @@ export class LinearMemoryViewer extends HTMLElement {
     return html`${itemTemplates}`;
   }
 
-  private renderRow(row: number) {
+  private renderRow(row: number): LitHtml.TemplateResult {
     const {startIndex, endIndex} = {startIndex: row * this.numBytesInRow, endIndex: (row + 1) * this.numBytesInRow};
 
     const classMap = {
@@ -274,7 +274,7 @@ export class LinearMemoryViewer extends HTMLElement {
     `;
   }
 
-  private renderByteValues(startIndex: number, endIndex: number) {
+  private renderByteValues(startIndex: number, endIndex: number): LitHtml.TemplateResult {
     const cells = [];
     for (let i = startIndex; i < endIndex; ++i) {
       // Add margin after each group of bytes of size byteGroupSize.
@@ -295,7 +295,7 @@ export class LinearMemoryViewer extends HTMLElement {
     return html`${cells}`;
   }
 
-  private renderCharacterValues(startIndex: number, endIndex: number) {
+  private renderCharacterValues(startIndex: number, endIndex: number): LitHtml.TemplateResult {
     const cells = [];
     for (let i = startIndex; i < endIndex; ++i) {
       const classMap = {
@@ -311,14 +311,14 @@ export class LinearMemoryViewer extends HTMLElement {
     return html`${cells}`;
   }
 
-  private toAscii(byte: number) {
+  private toAscii(byte: number): string {
     if (byte >= 20 && byte <= 0x7F) {
       return String.fromCharCode(byte);
     }
     return '.';
   }
 
-  private onSelectedByte(index: number) {
+  private onSelectedByte(index: number): void {
     this.dispatchEvent(new ByteSelectedEvent(index));
   }
 }

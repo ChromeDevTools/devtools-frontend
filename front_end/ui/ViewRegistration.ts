@@ -38,7 +38,7 @@ export interface ViewRegistration {
   tags?: Array<string>;
 }
 
-export function registerViewExtension(registration: ViewRegistration) {
+export function registerViewExtension(registration: ViewRegistration): void {
   registeredViewExtensions.push(new PreRegisteredView(registration));
 }
 

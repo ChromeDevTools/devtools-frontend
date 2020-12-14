@@ -36,7 +36,7 @@ export class ColorSwatch extends HTMLElement {
     ];
   }
 
-  static isColorSwatch(element: Element) {
+  static isColorSwatch(element: Element): element is ColorSwatch {
     return element.localName === 'devtools-color-swatch';
   }
 
@@ -88,12 +88,12 @@ export class ColorSwatch extends HTMLElement {
     this.render();
   }
 
-  private renderTextOnly() {
+  private renderTextOnly(): void {
     // Non-color values can be passed to the component (like 'none' from border style).
     LitHtml.render(this.text, this.shadow, {eventContext: this});
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
 
@@ -111,7 +111,7 @@ export class ColorSwatch extends HTMLElement {
     // clang-format on
   }
 
-  private onClick(e: KeyboardModifiedEvent) {
+  private onClick(e: KeyboardModifiedEvent): void {
     e.stopPropagation();
 
     if (e.shiftKey) {
@@ -122,11 +122,11 @@ export class ColorSwatch extends HTMLElement {
     this.dispatchEvent(new Event('swatch-click'));
   }
 
-  private consume(e: Event) {
+  private consume(e: Event): void {
     e.stopPropagation();
   }
 
-  private toggleNextFormat() {
+  private toggleNextFormat(): void {
     if (!this._color || !this._format) {
       return;
     }

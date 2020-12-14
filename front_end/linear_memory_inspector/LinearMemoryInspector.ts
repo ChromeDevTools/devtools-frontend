@@ -41,11 +41,11 @@ class AddressHistoryEntry implements Common.SimpleHistoryManager.HistoryEntry {
     this.callback = callback;
   }
 
-  valid() {
+  valid(): boolean {
     return true;
   }
 
-  reveal() {
+  reveal(): void {
     this.callback(this.address);
   }
 }
@@ -103,7 +103,7 @@ export class LinearMemoryInspector extends HTMLElement {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     const {start, end} = this.getPageRangeForAddress(this.address, this.numBytesPerPage);
 
     const navigatorAddressToShow =
@@ -168,28 +168,28 @@ export class LinearMemoryInspector extends HTMLElement {
     // clang-format on
   }
 
-  private onRefreshRequest() {
+  private onRefreshRequest(): void {
     const {start, end} = this.getPageRangeForAddress(this.address, this.numBytesPerPage);
     this.dispatchEvent(new MemoryRequestEvent(start, end, this.address));
   }
 
-  private onByteSelected(e: ByteSelectedEvent) {
+  private onByteSelected(e: ByteSelectedEvent): void {
     this.currentNavigatorMode = Mode.Submitted;
     const addressInRange = Math.max(0, Math.min(e.data, this.outerMemoryLength - 1));
     this.jumpToAddress(addressInRange);
   }
 
-  private onEndiannessChanged(e: EndiannessChangedEvent) {
+  private onEndiannessChanged(e: EndiannessChangedEvent): void {
     this.endianness = e.data;
     this.render();
   }
 
-  private isValidAddress(address: string) {
+  private isValidAddress(address: string): boolean {
     const newAddress = parseAddress(address);
     return newAddress !== undefined && newAddress >= 0 && newAddress < this.outerMemoryLength;
   }
 
-  private onAddressChange(e: AddressInputChangedEvent) {
+  private onAddressChange(e: AddressInputChangedEvent): void {
     const {address, mode} = e.data;
     const isValid = this.isValidAddress(address);
     const newAddress = parseAddress(address);
@@ -210,7 +210,7 @@ export class LinearMemoryInspector extends HTMLElement {
     this.render();
   }
 
-  private onValueTypeToggled(e: ValueTypeToggledEvent) {
+  private onValueTypeToggled(e: ValueTypeToggledEvent): void {
     const {type, checked} = e.data;
     if (checked) {
       this.valueTypes.add(type);
@@ -220,18 +220,18 @@ export class LinearMemoryInspector extends HTMLElement {
     this.render();
   }
 
-  private navigateHistory(e: HistoryNavigationEvent) {
+  private navigateHistory(e: HistoryNavigationEvent): boolean {
     return e.data === Navigation.Forward ? this.history.rollover() : this.history.rollback();
   }
 
-  private navigatePage(e: PageNavigationEvent) {
+  private navigatePage(e: PageNavigationEvent): void {
     const newAddress =
         e.data === Navigation.Forward ? this.address + this.numBytesPerPage : this.address - this.numBytesPerPage;
     const addressInRange = Math.max(0, Math.min(newAddress, this.outerMemoryLength - 1));
     this.jumpToAddress(addressInRange);
   }
 
-  private jumpToAddress(address: number) {
+  private jumpToAddress(address: number): void {
     if (address < 0 || address >= this.outerMemoryLength) {
       console.warn(`Specified address is out of bounds: ${address}`);
       return;
@@ -243,19 +243,19 @@ export class LinearMemoryInspector extends HTMLElement {
     this.update();
   }
 
-  private getPageRangeForAddress(address: number, numBytesPerPage: number) {
+  private getPageRangeForAddress(address: number, numBytesPerPage: number): {start: number, end: number} {
     const pageNumber = Math.floor(address / numBytesPerPage);
     const pageStartAddress = pageNumber * numBytesPerPage;
     const pageEndAddress = Math.min(pageStartAddress + numBytesPerPage, this.outerMemoryLength);
     return {start: pageStartAddress, end: pageEndAddress};
   }
 
-  private resize(event: ResizeEvent) {
+  private resize(event: ResizeEvent): void {
     this.numBytesPerPage = event.data;
     this.update();
   }
 
-  private update() {
+  private update(): void {
     const {start, end} = this.getPageRangeForAddress(this.address, this.numBytesPerPage);
     if (start < this.memoryOffset || end > this.memoryOffset + this.memory.length) {
       this.dispatchEvent(new MemoryRequestEvent(start, end, this.address));

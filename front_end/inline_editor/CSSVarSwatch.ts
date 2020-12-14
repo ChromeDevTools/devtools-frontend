@@ -63,7 +63,7 @@ export class CSSVarSwatch extends HTMLElement {
     return '';
   }
 
-  private renderLink(variableName: string) {
+  private renderLink(variableName: string): LitHtml.TemplateResult {
     const isDefined = this.computedValue && !this.fromFallback;
 
     const classes = Directives.classMap({
@@ -78,7 +78,7 @@ export class CSSVarSwatch extends HTMLElement {
         variableName}</span>`;
   }
 
-  private render() {
+  private render(): void {
     const functionParts = this.parseVariableFunctionParts();
     if (!functionParts) {
       render('', this.shadow, {eventContext: this});

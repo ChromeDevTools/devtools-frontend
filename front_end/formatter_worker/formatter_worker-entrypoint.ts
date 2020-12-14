@@ -8,7 +8,7 @@ import '../third_party/codemirror/package/mode/xml/xml.js';
 
 import * as FormatterWorker from './formatter_worker.js';  // eslint-disable-line rulesdir/es_modules_import
 
-self.onmessage = function(event: MessageEvent) {
+self.onmessage = function(event: MessageEvent): void {
   const method: string = event.data.method;
   const params: {indentString: string; content: string; mimeType: string;} = event.data.params;
   if (!method) {

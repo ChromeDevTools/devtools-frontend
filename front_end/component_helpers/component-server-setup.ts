@@ -12,7 +12,7 @@ import {CSS_RESOURCES_TO_LOAD_INTO_RUNTIME} from './get-stylesheet.js';
  * Houses any setup required to run the component docs server. Currently this is
  * only populating the runtime CSS cache but may be extended in the future.
  */
-export async function setup() {
+export async function setup(): Promise<void> {
   const setting = {
     get() {
       return 'default';
@@ -26,5 +26,5 @@ export async function setup() {
     });
   });
 
-  return Promise.all(allPromises);
+  await Promise.all(allPromises);
 }

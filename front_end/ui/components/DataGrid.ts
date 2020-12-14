@@ -126,7 +126,7 @@ export class DataGrid extends HTMLElement {
     this.render();
   }
 
-  private scrollToBottomIfRequired() {
+  private scrollToBottomIfRequired(): void {
     if (this.hasRenderedAtLeastOnce === false) {
       // On the first render we don't want to assume the user wants to scroll to the bottom;
       return;
@@ -147,14 +147,14 @@ export class DataGrid extends HTMLElement {
     }
   }
 
-  private getCurrentlyFocusableCell() {
+  private getCurrentlyFocusableCell(): HTMLTableCellElement|null {
     const [columnIndex, rowIndex] = this.focusableCell;
     const cell = this.shadow.querySelector<HTMLTableCellElement>(
         `[data-row-index="${rowIndex}"][data-col-index="${columnIndex}"]`);
     return cell;
   }
 
-  private focusCell([newColumnIndex, newRowIndex]: CellPosition) {
+  private focusCell([newColumnIndex, newRowIndex]: CellPosition): void {
     const [currentColumnIndex, currentRowIndex] = this.focusableCell;
     const newCellIsCurrentlyFocusedCell = (currentColumnIndex === newColumnIndex && currentRowIndex === newRowIndex);
 
@@ -174,7 +174,7 @@ export class DataGrid extends HTMLElement {
     this.render();
   }
 
-  private onTableKeyDown(event: KeyboardEvent) {
+  private onTableKeyDown(event: KeyboardEvent): void {
     const key = event.key;
 
     if (KEYS_TREATED_AS_CLICKS.has(key)) {
@@ -199,7 +199,7 @@ export class DataGrid extends HTMLElement {
     this.focusCell(nextFocusedCell);
   }
 
-  private onColumnHeaderClick(col: Column, index: number) {
+  private onColumnHeaderClick(col: Column, index: number): void {
     this.dispatchEvent(new ColumnHeaderClickEvent(col, index));
   }
 
@@ -208,7 +208,7 @@ export class DataGrid extends HTMLElement {
    * Guidance on values of attribute taken from
    * https://www.w3.org/TR/wai-aria-practices/examples/grid/dataGrids.html.
    */
-  private ariaSortForHeader(col: Column) {
+  private ariaSortForHeader(col: Column): string|undefined {
     if (col.sortable && (!this.sortState || this.sortState.columnId !== col.id)) {
       // Column is sortable but is not currently sorted
       return 'none';
@@ -223,7 +223,7 @@ export class DataGrid extends HTMLElement {
   }
 
 
-  private renderFillerRow() {
+  private renderFillerRow(): LitHtml.TemplateResult {
     const visibleColumns = this.columns.filter(col => col.visible);
     const emptyCells = visibleColumns.map((col, colIndex) => {
       const emptyCellClasses = LitHtml.Directives.classMap({
@@ -234,7 +234,7 @@ export class DataGrid extends HTMLElement {
     return LitHtml.html`<tr tabindex="-1" class="filler-row">${emptyCells}</tr>`;
   }
 
-  private render() {
+  private render(): void {
     const indexOfFirstVisibleColumn = this.columns.findIndex(col => col.visible);
     const anyColumnsSortable = this.columns.some(col => col.sortable === true);
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -377,7 +377,7 @@ export class DataGrid extends HTMLElement {
 
               return LitHtml.html`<th class=${thClasses}
                 data-grid-header-cell=${col.id}
-                @click=${() => {
+                @click=${(): void => {
                   this.focusCell([columnIndex, 0]);
                   this.onColumnHeaderClick(col, columnIndex);
                 }}
@@ -392,7 +392,7 @@ export class DataGrid extends HTMLElement {
           </tr>
         </thead>
         <tbody>
-          ${this.rows.map((row, rowIndex) => {
+          ${this.rows.map((row, rowIndex): LitHtml.TemplateResult => {
             const focusableCell = this.getCurrentlyFocusableCell();
             const [,focusableCellRowIndex] = this.focusableCell;
 
@@ -427,10 +427,10 @@ export class DataGrid extends HTMLElement {
                   data-row-index=${tableRowIndex}
                   data-col-index=${columnIndex}
                   data-grid-value-cell-for-column=${col.id}
-                  @focus=${() => {
+                  @focus=${(): void => {
                     this.dispatchEvent(new BodyCellFocusedEvent(cell, row));
                   }}
-                  @click=${() => {
+                  @click=${(): void => {
                     this.focusCell([columnIndex, tableRowIndex]);
                   }}
                 >${cellOutput}</td>`;

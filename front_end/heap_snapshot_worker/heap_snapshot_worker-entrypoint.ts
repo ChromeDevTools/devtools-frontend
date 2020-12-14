@@ -10,7 +10,7 @@ const ctxSelf = self as any as Worker;
 const dispatcher = new HeapSnapshotWorker.HeapSnapshotWorkerDispatcher.HeapSnapshotWorkerDispatcher(
     ctxSelf, (message: unknown) => self.postMessage(message));
 
-function installMessageEventListener(listener: EventListener) {
+function installMessageEventListener(listener: EventListener): void {
   ctxSelf.addEventListener('message', listener, false);
 }
 

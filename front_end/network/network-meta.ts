@@ -11,7 +11,7 @@ import type * as Network from './network.js';
 
 let loadedNetworkModule: (typeof Network|undefined);
 
-async function loadNetworkModule() {
+async function loadNetworkModule(): Promise<typeof Network> {
   if (!loadedNetworkModule) {
     // Side-effect import resources in module.json
     await Root.Runtime.Runtime.instance().loadModulePromise('network');

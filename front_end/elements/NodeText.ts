@@ -23,7 +23,7 @@ export class NodeText extends HTMLElement {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     const hasId = !!this.nodeId;
     const hasNodeClasses = !!(this.nodeClasses && this.nodeClasses.length > 0);
 

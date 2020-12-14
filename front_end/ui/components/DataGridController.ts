@@ -116,7 +116,7 @@ export class DataGridController extends HTMLElement {
     });
   }
 
-  private sortRows(state: SortState) {
+  private sortRows(state: SortState): void {
     const {columnId, direction} = state;
 
     this.rows.sort((row1, row2) => {
@@ -136,7 +136,7 @@ export class DataGridController extends HTMLElement {
     this.render();
   }
 
-  private onColumnHeaderClick(event: ColumnHeaderClickEvent) {
+  private onColumnHeaderClick(event: ColumnHeaderClickEvent): void {
     const {column} = event.data;
     if (this.sortState && this.sortState.columnId === column.id) {
       const {columnId, direction} = this.sortState;
@@ -170,7 +170,7 @@ export class DataGridController extends HTMLElement {
     }
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`

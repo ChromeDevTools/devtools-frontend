@@ -42,7 +42,7 @@ export class ValueInterpreterSettings extends HTMLElement {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -104,7 +104,7 @@ export class ValueInterpreterSettings extends HTMLElement {
       `, this.shadow, {eventContext: this});
   }
 
-  private plotTypeSelections(group: ValueTypeGroup) {
+  private plotTypeSelections(group: ValueTypeGroup): LitHtml.TemplateResult {
     const types = GROUP_TO_TYPES.get(group);
     if (!types) {
       throw new Error(`Unknown group ${group}`);
@@ -113,13 +113,13 @@ export class ValueInterpreterSettings extends HTMLElement {
       ${types.map(type => {
         return html`
           <label class="type-label" title=${valueTypeToLocalizedString(type)}>
-            <input data-input="true" type="checkbox" .checked=${this.valueTypes.has(type)} @change=${(e: Event) => this.onTypeToggle(type, e)}>
+            <input data-input="true" type="checkbox" .checked=${this.valueTypes.has(type)} @change=${(e: Event): void => this.onTypeToggle(type, e)}>
             <span data-title="true">${valueTypeToLocalizedString(type)}</span>
           </label>
      `;})}`;
   }
 
-  private onTypeToggle(type: ValueType, event: Event) {
+  private onTypeToggle(type: ValueType, event: Event): void {
     const checkbox = event.target as HTMLInputElement;
     this.dispatchEvent(new TypeToggleEvent(type, checkbox.checked));
   }

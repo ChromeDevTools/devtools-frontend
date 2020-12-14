@@ -19,13 +19,13 @@ export class FormattedContentBuilder {
   constructor(private indentString: string) {
   }
 
-  setEnforceSpaceBetweenWords(value: boolean) {
+  setEnforceSpaceBetweenWords(value: boolean): boolean {
     const oldValue = this.enforceSpaceBetweenWords;
     this.enforceSpaceBetweenWords = value;
     return oldValue;
   }
 
-  addToken(token: string, offset: number) {
+  addToken(token: string, offset: number): void {
     const last = this.formattedContent.peekLast();
     if (this.enforceSpaceBetweenWords && last && /\w/.test(last[last.length - 1]) && /\w/.test(token)) {
       this.addSoftSpace();
@@ -38,18 +38,18 @@ export class FormattedContentBuilder {
     this.addText(token);
   }
 
-  addSoftSpace() {
+  addSoftSpace(): void {
     if (!this.hardSpaces) {
       this.softSpace = true;
     }
   }
 
-  addHardSpace() {
+  addHardSpace(): void {
     this.softSpace = false;
     ++this.hardSpaces;
   }
 
-  addNewLine(noSquash?: boolean) {
+  addNewLine(noSquash?: boolean): void {
     // Avoid leading newlines.
     if (!this.formattedContentLength) {
       return;
@@ -61,11 +61,11 @@ export class FormattedContentBuilder {
     }
   }
 
-  increaseNestingLevel() {
+  increaseNestingLevel(): void {
     this.nestingLevel += 1;
   }
 
-  decreaseNestingLevel() {
+  decreaseNestingLevel(): void {
     if (this.nestingLevel > 0) {
       this.nestingLevel -= 1;
     }
@@ -75,7 +75,7 @@ export class FormattedContentBuilder {
     return this.formattedContent.join('') + (this.newLines ? '\n' : '');
   }
 
-  private appendFormatting() {
+  private appendFormatting(): void {
     if (this.newLines) {
       for (let i = 0; i < this.newLines; ++i) {
         this.addText('\n');
@@ -112,12 +112,12 @@ export class FormattedContentBuilder {
     return fullIndent;
   }
 
-  private addText(text: string) {
+  private addText(text: string): void {
     this.formattedContent.push(text);
     this.formattedContentLength += text.length;
   }
 
-  private addMappingIfNeeded(originalPosition: number) {
+  private addMappingIfNeeded(originalPosition: number): void {
     if (originalPosition - this.lastOriginalPosition === this.formattedContentLength - this.lastFormattedPosition) {
       return;
     }

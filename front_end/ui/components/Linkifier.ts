@@ -37,7 +37,7 @@ export class Linkifier extends HTMLElement {
     this.render();
   }
 
-  private onLinkActivation(event: Event) {
+  private onLinkActivation(event: Event): void {
     event.preventDefault();
     const linkifierClickEvent = new LinkifierClick({
       url: this.url,
@@ -47,7 +47,7 @@ export class Linkifier extends HTMLElement {
     this.dispatchEvent(linkifierClickEvent);
   }
 
-  private render() {
+  private render(): void {
     if (!this.url) {
       throw new Error('Cannot construct a Linkifier without providing a valid string URL.');
     }

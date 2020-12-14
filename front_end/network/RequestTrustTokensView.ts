@@ -24,17 +24,17 @@ export class RequestTrustTokensView extends UI.Widget.VBox {
     this.contentElement.appendChild(this.reportView);
   }
 
-  wasShown() {
+  wasShown(): void {
     this.request.addEventListener(SDK.NetworkRequest.Events.TrustTokenResultAdded, this.refreshReportView, this);
 
     this.refreshReportView();
   }
 
-  willHide() {
+  willHide(): void {
     this.request.removeEventListener(SDK.NetworkRequest.Events.TrustTokenResultAdded, this.refreshReportView, this);
   }
 
-  private refreshReportView() {
+  private refreshReportView(): void {
     this.reportView.data = {
       params: this.request.trustTokenParams(),
       result: this.request.trustTokenOperationDoneEvent(),
@@ -56,7 +56,7 @@ export class RequestTrustTokensReport extends HTMLElement {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     if (!this.trustTokenData) {
       throw new Error('Trying to render a Trust Token report without providing data');
     }
@@ -85,7 +85,7 @@ export class RequestTrustTokensReport extends HTMLElement {
     // clang-format on
   }
 
-  private renderParameterSection() {
+  private renderParameterSection(): LitHtml.TemplateResult|{} {
     if (!this.trustTokenData || !this.trustTokenData.params) {
       return LitHtml.nothing;
     }
@@ -101,14 +101,14 @@ export class RequestTrustTokensReport extends HTMLElement {
     // clang-format on
   }
 
-  private renderRefreshPolicy(params: Protocol.Network.TrustTokenParams) {
+  private renderRefreshPolicy(params: Protocol.Network.TrustTokenParams): LitHtml.TemplateResult|{} {
     if (params.type !== Protocol.Network.TrustTokenOperationType.Redemption) {
       return LitHtml.nothing;
     }
     return renderRowWithCodeValue(ls`Refresh policy`, params.refreshPolicy.toString());
   }
 
-  private renderIssuers(params: Protocol.Network.TrustTokenParams) {
+  private renderIssuers(params: Protocol.Network.TrustTokenParams): LitHtml.TemplateResult|{} {
     if (!params.issuers || params.issuers.length === 0) {
       return LitHtml.nothing;
     }
@@ -127,7 +127,7 @@ export class RequestTrustTokensReport extends HTMLElement {
   }
 }
 
-function renderRowWithCodeValue(name: string, value: string) {
+function renderRowWithCodeValue(name: string, value: string): LitHtml.TemplateResult {
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
   return LitHtml.html`

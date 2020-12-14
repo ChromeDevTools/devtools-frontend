@@ -45,7 +45,7 @@ export class IssueSurveyLink extends HTMLElement {
     this.checkSurvey();
   }
 
-  private checkSurvey() {
+  private checkSurvey(): void {
     this.state = State.Checking;
     this.canShowSurvey(this.trigger, ({canShowSurvey}) => {
       if (!canShowSurvey) {
@@ -57,7 +57,7 @@ export class IssueSurveyLink extends HTMLElement {
     });
   }
 
-  private sendSurvey() {
+  private sendSurvey(): void {
     this.state = State.Sending;
     this.render();
     this.showSurvey(this.trigger, ({surveyShown}) => {
@@ -70,7 +70,7 @@ export class IssueSurveyLink extends HTMLElement {
     });
   }
 
-  private render() {
+  private render(): void {
     if (this.state === State.Checking || this.state === State.DontShowLink) {
       return;
     }

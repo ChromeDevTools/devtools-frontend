@@ -33,13 +33,13 @@ export class ElementsBreadcrumbs extends HTMLElement {
     this.update();
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     this.isObservingResize = false;
     this.resizeObserver.disconnect();
   }
 
-  private onCrumbClick(node: DOMNode) {
-    return (event: Event) => {
+  private onCrumbClick(node: DOMNode): (event: Event) => void {
+    return (event: Event): void => {
       event.preventDefault();
       this.dispatchEvent(new NodeSelectedEvent(node));
     };
@@ -52,7 +52,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
    *
    * If either of these are true, we toggle the overflowing state accordingly and trigger a re-render.
    */
-  private checkForOverflowOnResize() {
+  private checkForOverflowOnResize(): void {
     const wrappingElement = this.shadow.querySelector('.crumbs');
     const crumbs = this.shadow.querySelector('.crumbs-scroll-container');
     if (!wrappingElement || !crumbs) {
@@ -73,29 +73,29 @@ export class ElementsBreadcrumbs extends HTMLElement {
     }
   }
 
-  private update() {
+  private update(): void {
     this.render();
     this.engageResizeObserver();
     this.ensureSelectedNodeIsVisible();
   }
 
-  private onCrumbMouseMove(node: DOMNode) {
-    return () => node.highlightNode();
+  private onCrumbMouseMove(node: DOMNode): () => void {
+    return (): void => node.highlightNode();
   }
 
-  private onCrumbMouseLeave(node: DOMNode) {
-    return () => node.clearHighlight();
+  private onCrumbMouseLeave(node: DOMNode): () => void {
+    return (): void => node.clearHighlight();
   }
 
-  private onCrumbFocus(node: DOMNode) {
-    return () => node.highlightNode();
+  private onCrumbFocus(node: DOMNode): () => void {
+    return (): void => node.highlightNode();
   }
 
-  private onCrumbBlur(node: DOMNode) {
-    return () => node.clearHighlight();
+  private onCrumbBlur(node: DOMNode): () => void {
+    return (): void => node.clearHighlight();
   }
 
-  private engageResizeObserver() {
+  private engageResizeObserver(): void {
     if (!this.resizeObserver || this.isObservingResize === true) {
       return;
     }
@@ -118,7 +118,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
    * triggers a re-render. If we are not overflowing, this method returns and
    * does nothing.
    */
-  private checkForOverflow() {
+  private checkForOverflow(): void {
     if (this.overflowing) {
       return;
     }
@@ -141,7 +141,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     this.render();
   }
 
-  private onCrumbsWindowScroll(event: Event) {
+  private onCrumbsWindowScroll(event: Event): void {
     if (!event.target) {
       return;
     }
@@ -156,7 +156,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     this.updateScrollState(scrollWindow);
   }
 
-  private updateScrollState(scrollWindow: Element) {
+  private updateScrollState(scrollWindow: Element): void {
     const maxScrollLeft = scrollWindow.scrollWidth - scrollWindow.clientWidth;
     const currentScroll = scrollWindow.scrollLeft;
 
@@ -183,8 +183,8 @@ export class ElementsBreadcrumbs extends HTMLElement {
     this.render();
   }
 
-  private onOverflowClick(direction: 'left'|'right') {
-    return () => {
+  private onOverflowClick(direction: 'left'|'right'): () => void {
+    return (): void => {
       this.userHasManuallyScrolled = true;
       const scrollWindow = this.shadow.querySelector('.crumbs-window');
 
@@ -205,7 +205,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     };
   }
 
-  private renderOverflowButton(direction: 'left'|'right', disabled: boolean) {
+  private renderOverflowButton(direction: 'left'|'right', disabled: boolean): LitHtml.TemplateResult {
     const buttonStyles = LitHtml.Directives.classMap({
       overflow: true,
       [direction]: true,
@@ -222,7 +222,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
       `;
   }
 
-  private render() {
+  private render(): void {
     const crumbs = crumbsToRender(this.crumbsData, this.selectedDOMNode);
 
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -360,7 +360,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     this.checkForOverflow();
   }
 
-  private ensureSelectedNodeIsVisible() {
+  private ensureSelectedNodeIsVisible(): void {
     /*
      * If the user has manually scrolled the crumbs in either direction, we
      * effectively hand control over the scrolling down to them. This is to

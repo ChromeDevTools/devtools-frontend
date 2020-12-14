@@ -69,7 +69,7 @@ export class LayoutPane extends HTMLElement {
     this.render();
   }
 
-  private onSummaryKeyDown(event: KeyboardEvent) {
+  private onSummaryKeyDown(event: KeyboardEvent): void {
     if (!event.target) {
       return;
     }
@@ -88,7 +88,7 @@ export class LayoutPane extends HTMLElement {
     }
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -149,49 +149,49 @@ export class LayoutPane extends HTMLElement {
     return this.settings.filter(isBooleanSetting);
   }
 
-  private onBooleanSettingChange(setting: BooleanSetting, event: HTMLInputElementEvent) {
+  private onBooleanSettingChange(setting: BooleanSetting, event: HTMLInputElementEvent): void {
     event.preventDefault();
     this.dispatchEvent(new SettingChangedEvent(setting.name, event.target.checked));
   }
 
-  private onEnumSettingChange(setting: EnumSetting, event: HTMLInputElementEvent) {
+  private onEnumSettingChange(setting: EnumSetting, event: HTMLInputElementEvent): void {
     event.preventDefault();
     this.dispatchEvent(new SettingChangedEvent(setting.name, event.target.value));
   }
 
-  private onElementToggle(element: LayoutElement, event: HTMLInputElementEvent) {
+  private onElementToggle(element: LayoutElement, event: HTMLInputElementEvent): void {
     event.preventDefault();
     element.toggle(event.target.checked);
   }
 
-  private onElementClick(element: LayoutElement, event: HTMLInputElementEvent) {
+  private onElementClick(element: LayoutElement, event: HTMLInputElementEvent): void {
     event.preventDefault();
     element.reveal();
   }
 
-  private onColorChange(element: LayoutElement, event: HTMLInputElementEvent) {
+  private onColorChange(element: LayoutElement, event: HTMLInputElementEvent): void {
     event.preventDefault();
     element.setColor(event.target.value);
     this.render();
   }
 
-  private onElementMouseEnter(element: LayoutElement, event: HTMLInputElementEvent) {
+  private onElementMouseEnter(element: LayoutElement, event: HTMLInputElementEvent): void {
     event.preventDefault();
     element.highlight();
   }
 
-  private onElementMouseLeave(element: LayoutElement, event: HTMLInputElementEvent) {
+  private onElementMouseLeave(element: LayoutElement, event: HTMLInputElementEvent): void {
     event.preventDefault();
     element.hideHighlight();
   }
 
-  private renderElement(element: LayoutElement) {
+  private renderElement(element: LayoutElement): LitHtml.TemplateResult {
     const onElementToggle = this.onElementToggle.bind(this, element);
     const onElementClick = this.onElementClick.bind(this, element);
     const onColorChange = this.onColorChange.bind(this, element);
     const onMouseEnter = this.onElementMouseEnter.bind(this, element);
     const onMouseLeave = this.onElementMouseLeave.bind(this, element);
-    const onColorLabelKeyUp = (event: KeyboardEvent) => {
+    const onColorLabelKeyUp = (event: KeyboardEvent): void => {
       // Handle Enter and Space events to make the color picker accessible.
       if (event.key !== 'Enter' && event.key !== ' ') {
         return;
@@ -222,7 +222,7 @@ export class LayoutPane extends HTMLElement {
     // clang-format on
   }
 
-  private renderBooleanSetting(setting: BooleanSetting) {
+  private renderBooleanSetting(setting: BooleanSetting): LitHtml.TemplateResult {
     const onBooleanSettingChange = this.onBooleanSettingChange.bind(this, setting);
     return html`<label data-boolean-setting="true" class="checkbox-label" title=${setting.title}>
       <input data-input="true" type="checkbox" .checked=${setting.value} @change=${onBooleanSettingChange} />
@@ -230,7 +230,7 @@ export class LayoutPane extends HTMLElement {
     </label>`;
   }
 
-  private renderEnumSetting(setting: EnumSetting) {
+  private renderEnumSetting(setting: EnumSetting): LitHtml.TemplateResult {
     const onEnumSettingChange = this.onEnumSettingChange.bind(this, setting);
     return html`<label data-enum-setting="true" class="select-label" title=${setting.title}>
       <select class="chrome-select" data-input="true" @change=${onEnumSettingChange}>

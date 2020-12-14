@@ -9,7 +9,7 @@ import {SettingStorageType} from './Settings.js';
 
 const registeredSettings: Array<SettingRegistration> = [];
 
-export function registerSettingExtension(registration: SettingRegistration) {
+export function registerSettingExtension(registration: SettingRegistration): void {
   registeredSettings.push(registration);
 }
 

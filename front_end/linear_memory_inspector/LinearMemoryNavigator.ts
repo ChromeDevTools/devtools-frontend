@@ -84,7 +84,7 @@ export class LinearMemoryNavigator extends HTMLElement {
     }
   }
 
-  private render() {
+  private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     const result = html`
@@ -163,7 +163,7 @@ export class LinearMemoryNavigator extends HTMLElement {
     // clang-format on
   }
 
-  private createAddressInput() {
+  private createAddressInput(): LitHtml.TemplateResult {
     const classMap = {
       'address-input': true,
       invalid: !this.valid,
@@ -174,12 +174,12 @@ export class LinearMemoryNavigator extends HTMLElement {
         this.onAddressChange.bind(this, Mode.Submitted)} @input=${this.onAddressChange.bind(this, Mode.Edit)}/>`;
   }
 
-  private onAddressChange(mode: Mode, event: Event) {
+  private onAddressChange(mode: Mode, event: Event): void {
     const addressInput = event.target as HTMLInputElement;
     this.dispatchEvent(new AddressInputChangedEvent(addressInput.value, mode));
   }
 
-  private createButton(name: string, title: string, event: Event) {
+  private createButton(name: string, title: string, event: Event): LitHtml.TemplateResult {
     return html`
       <button class="navigator-button"
         data-button=${event.type} title=${title}

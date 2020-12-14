@@ -51,7 +51,7 @@ export class CSPViolationsView extends UI.Widget.VBox {
     this.addAllIssues();
   }
 
-  private onIssueAdded(event: Common.EventTarget.EventTargetEvent) {
+  private onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {
     const {issue} =
         /** @type {!{issuesModel: !SDK.IssuesModel.IssuesModel, issue: !SDK.Issue.Issue}} */ (event.data);
     if (issue instanceof SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
@@ -59,12 +59,12 @@ export class CSPViolationsView extends UI.Widget.VBox {
     }
   }
 
-  private onFullUpdateRequired() {
+  private onFullUpdateRequired(): void {
     this.listView.clearIssues();
     this.addAllIssues();
   }
 
-  private addAllIssues() {
+  private addAllIssues(): void {
     for (const issue of this.issuesManager.issues()) {
       if (issue instanceof SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
         this.listView.addIssue(issue);

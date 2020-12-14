@@ -23,11 +23,11 @@ export class ElementsPanelLink extends HTMLElement {
     this.update();
   }
 
-  private update() {
+  private update(): void {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     // clang-format off
       LitHtml.render(LitHtml.html`
       <style>

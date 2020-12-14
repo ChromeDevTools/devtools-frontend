@@ -27,11 +27,11 @@ export class RemoteArrayWrapper implements LazyUint8Array {
     this.remoteArray = array;
   }
 
-  length() {
+  length(): number {
     return this.remoteArray.length();
   }
 
-  async getRange(start: number, end: number) {
+  async getRange(start: number, end: number): Promise<Uint8Array> {
     const newEnd = Math.min(end, this.remoteArray.length());
     if (start < 0 || start > newEnd) {
       console.error(`Requesting invalid range of memory: (${start}, ${end})`);
@@ -41,7 +41,7 @@ export class RemoteArrayWrapper implements LazyUint8Array {
     return new Uint8Array(array);
   }
 
-  private async extractByteArray(start: number, end: number) {
+  private async extractByteArray(start: number, end: number): Promise<number[]> {
     const promises = [];
     for (let i = start; i < end; ++i) {
       // TODO(kimanh): encode requested range in base64 string.
@@ -51,7 +51,8 @@ export class RemoteArrayWrapper implements LazyUint8Array {
   }
 }
 
-export async function getUint8ArrayFromObject(obj: SDK.RemoteObject.RemoteObject) {
+export async function getUint8ArrayFromObject(obj: SDK.RemoteObject.RemoteObject):
+    Promise<SDK.RemoteObject.RemoteObject> {
   const response = await obj.runtimeModel()._agent.invoke_callFunctionOn({
     objectId: obj.objectId,
     functionDeclaration: 'function() { return new Uint8Array(this instanceof ArrayBuffer? this : this.buffer); }',
@@ -82,7 +83,7 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.onDebuggerPause, this);
   }
 
-  static instance() {
+  static instance(): LinearMemoryInspectorController {
     if (controllerInstance) {
       return controllerInstance;
     }
@@ -90,7 +91,8 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     return controllerInstance;
   }
 
-  static async getMemoryForAddress(memoryWrapper: LazyUint8Array, address: number) {
+  static async getMemoryForAddress(memoryWrapper: LazyUint8Array, address: number):
+      Promise<{memory: Uint8Array, offset: number}> {
     // Provide a chunk of memory that covers the address to show and some before and after
     // as 1. the address shown is not necessarily at the beginning of a page and
     // 2. to allow for fewer memory requests.
@@ -100,7 +102,7 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     return {memory: memory, offset: memoryChunkStart};
   }
 
-  static async getMemoryRange(memoryWrapper: LazyUint8Array, start: number, end: number) {
+  static async getMemoryRange(memoryWrapper: LazyUint8Array, start: number, end: number): Promise<Uint8Array> {
     // Check that the requested start is within bounds.
     // If the requested end is larger than the actual
     // memory, it will be automatically capped when
@@ -112,7 +114,7 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     return await memoryWrapper.getRange(start, chunkEnd);
   }
 
-  async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address: number) {
+  async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address: number): Promise<void> {
     const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
     if (!callFrame) {
       throw new Error(`Cannot find call frame for ${obj.description}.`);
@@ -141,7 +143,7 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
   }
 
-  modelRemoved(model: SDK.RuntimeModel.RuntimeModel) {
+  modelRemoved(model: SDK.RuntimeModel.RuntimeModel): void {
     for (const [scriptId, remoteObject] of this.scriptIdToRemoteObject) {
       if (model === remoteObject.runtimeModel()) {
         this.scriptIdToRemoteObject.delete(scriptId);
@@ -150,7 +152,7 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     }
   }
 
-  private onDebuggerPause(event: Common.EventTarget.EventTargetEvent) {
+  private onDebuggerPause(event: Common.EventTarget.EventTargetEvent): void {
     const debuggerModel = event.data as SDK.DebuggerModel.DebuggerModel;
     for (const [scriptId, remoteObject] of this.scriptIdToRemoteObject) {
       if (debuggerModel.runtimeModel() === remoteObject.runtimeModel()) {
@@ -159,12 +161,12 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     }
   }
 
-  private onGlobalObjectClear(event: Common.EventTarget.EventTargetEvent) {
+  private onGlobalObjectClear(event: Common.EventTarget.EventTargetEvent): void {
     const debuggerModel = event.data as SDK.DebuggerModel.DebuggerModel;
     this.modelRemoved(debuggerModel.runtimeModel());
   }
 
-  private viewClosed(event: Common.EventTarget.EventTargetEvent) {
+  private viewClosed(event: Common.EventTarget.EventTargetEvent): void {
     const scriptId = event.data;
     const remoteObj = this.scriptIdToRemoteObject.get(scriptId);
     if (remoteObj) {

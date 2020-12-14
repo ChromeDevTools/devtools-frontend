@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 const DARK_THEME_CLASS = '-theme-with-dark-background';
-const toggleDarkMode = () => {
+function toggleDarkMode(): void {
   document.body.classList.toggle(DARK_THEME_CLASS);
-};
+}
 
-export function init() {
+export function init(): void {
   const isDarkAlready = window.matchMedia('(prefers-color-scheme: dark)').matches;
   if (isDarkAlready) {
     document.body.classList.add(DARK_THEME_CLASS);

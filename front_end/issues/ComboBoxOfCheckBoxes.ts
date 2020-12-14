@@ -8,7 +8,7 @@ import * as UI from '../ui/ui.js';
 export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
   private options = new Array<MenuOption>();
   private headers = new Array<MenuHeader>();
-  private onOptionClicked = () => {};
+  private onOptionClicked = (): void => {};
   constructor(title: string) {
     super(title);
     this.turnIntoSelect();
@@ -16,11 +16,11 @@ export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
     UI.ARIAUtils.markAsMenuButton(this.element);
   }
 
-  addOption(option: string, value: string, defaultEnabled: boolean) {
+  addOption(option: string, value: string, defaultEnabled: boolean): void {
     this.options.push({'title': option, 'value': value, default: defaultEnabled, 'enabled': defaultEnabled});
   }
 
-  setOptionEnabled(index: number, enabled: boolean) {
+  setOptionEnabled(index: number, enabled: boolean): void {
     const option = this.options[index];
     if (!option) {
       return;
@@ -29,11 +29,11 @@ export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
     this.onOptionClicked();
   }
 
-  addHeader(headerName: string, callback: (() => void)) {
+  addHeader(headerName: string, callback: (() => void)): void {
     this.headers.push({title: headerName, callback: callback});
   }
 
-  setOnOptionClicked(onOptionClicked: (() => void)) {
+  setOnOptionClicked(onOptionClicked: (() => void)): void {
     this.onOptionClicked = onOptionClicked;
   }
 
@@ -41,7 +41,7 @@ export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
     return this.options;
   }
 
-  private showLevelContextMenu(event: Common.EventTarget.EventTargetEvent) {
+  private showLevelContextMenu(event: Common.EventTarget.EventTargetEvent): void {
     const mouseEvent = /** @type {!Event} */ (event.data);
     const contextMenu = new UI.ContextMenu.ContextMenu(
         mouseEvent, true, this.element.totalOffsetLeft(),

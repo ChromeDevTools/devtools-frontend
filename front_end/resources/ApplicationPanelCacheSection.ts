@@ -44,7 +44,7 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
     this.swCacheTreeElements = new Set();
   }
 
-  initialize(model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel|null) {
+  initialize(model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel|null): void {
     this.swCacheTreeElements.clear();
     this.swCacheModel = model;
     if (model) {
@@ -60,37 +60,37 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
         this.cacheRemoved, this);
   }
 
-  onattach() {
+  onattach(): void {
     super.onattach();
     this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), true);
   }
 
-  private handleContextMenuEvent(event: MouseEvent) {
+  private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(ls`Refresh Caches`, this.refreshCaches.bind(this));
     contextMenu.show();
   }
 
-  private refreshCaches() {
+  private refreshCaches(): void {
     if (this.swCacheModel) {
       this.swCacheModel.refreshCacheNames();
     }
   }
 
-  private cacheAdded(event: Common.EventTarget.EventTargetEvent) {
+  private cacheAdded(event: Common.EventTarget.EventTargetEvent): void {
     const cache = /** @type {!SDK.ServiceWorkerCacheModel.Cache} */ (event.data.cache);
     const model = /** @type {!SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel} */ (event.data.model);
     this.addCache(model, cache);
   }
 
   private addCache(
-      model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, cache: SDK.ServiceWorkerCacheModel.Cache) {
+      model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, cache: SDK.ServiceWorkerCacheModel.Cache): void {
     const swCacheTreeElement = new SWCacheTreeElement(this.resourcesPanel, model, cache);
     this.swCacheTreeElements.add(swCacheTreeElement);
     this.appendChild(swCacheTreeElement);
   }
 
-  private cacheRemoved(event: Common.EventTarget.EventTargetEvent) {
+  private cacheRemoved(event: Common.EventTarget.EventTargetEvent): void {
     const cache = /** @type {!SDK.ServiceWorkerCacheModel.Cache} */ (event.data.cache);
     const model = /** @type {!SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel} */ (event.data.model);
 
@@ -133,34 +133,34 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL() {
+  get itemURL(): string {
     // I don't think this will work at all.
     return 'cache://' + this.cache.cacheId;
   }
 
-  onattach() {
+  onattach(): void {
     super.onattach();
     this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), true);
   }
 
-  private handleContextMenuEvent(event: MouseEvent) {
+  private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(ls`Delete`, this.clearCache.bind(this));
     contextMenu.show();
   }
 
-  private clearCache() {
+  private clearCache(): void {
     this.model.deleteCache(this.cache);
   }
 
-  update(cache: SDK.ServiceWorkerCacheModel.Cache) {
+  update(cache: SDK.ServiceWorkerCacheModel.Cache): void {
     this.cache = cache;
     if (this.view) {
       this.view.update(cache);
     }
   }
 
-  onselect(selectedByUser: boolean|undefined) {
+  onselect(selectedByUser: boolean|undefined): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
       this.view = new ServiceWorkerCacheView(this.model, this.cache);
@@ -196,11 +196,11 @@ export class ApplicationCacheFrameTreeElement extends ApplicationPanelTreeElemen
     return 'appcache://' + this.manifestURL + '/' + encodeURI(this.titleAsText());
   }
 
-  private refreshTitles(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
+  private refreshTitles(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
     this.title = frame.displayName();
   }
 
-  frameNavigated(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
+  frameNavigated(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
     this.refreshTitles(frame);
   }
 

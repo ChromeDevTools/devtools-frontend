@@ -90,7 +90,7 @@ export class CSSAngleEditor extends HTMLElement {
     event.preventDefault();
   }
 
-  private render() {
+  private render(): void {
     const clockStyles = {
       background: this.background,
     };
@@ -213,7 +213,7 @@ export class CSSAngleEditor extends HTMLElement {
     // clang-format on
   }
 
-  private renderDials() {
+  private renderDials(): LitHtml.TemplateResult[] {
     if (!this.dialTemplates) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off

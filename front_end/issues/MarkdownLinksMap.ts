@@ -14,7 +14,7 @@
 // use getMarkdownLink to get the appropriate link.
 export const markdownLinks = new Map<string, string>([]);
 
-export const getMarkdownLink = (key: string) => {
+export const getMarkdownLink = (key: string): string => {
   const link = markdownLinks.get(key);
   if (!link) {
     throw new Error(`Markdown link with key '${key}' is not available, please check MarkdownLinksMap.ts`);

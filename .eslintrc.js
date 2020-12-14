@@ -23,18 +23,18 @@ module.exports = {
   'parserOptions': {'ecmaVersion': 9, 'sourceType': 'module'},
 
   /**
-     * ESLint rules
-     *
-     * All available rules: http://eslint.org/docs/rules/
-     *
-     * Rules take the following form:
-     *   'rule-name', [severity, { opts }]
-     * Severity: 2 == error, 1 == warning, 0 == off.
-     */
+   * ESLint rules
+   *
+   * All available rules: http://eslint.org/docs/rules/
+   *
+   * Rules take the following form:
+   *   'rule-name', [severity, { opts }]
+   * Severity: 2 == error, 1 == warning, 0 == off.
+   */
   'rules': {
     /**
-         * Enforced rules
-         */
+     * Enforced rules
+     */
 
 
     // syntax preferences
@@ -111,8 +111,8 @@ module.exports = {
     'linebreak-style': [2, 'unix'],
 
     /**
-         * Disabled, aspirational rules
-         */
+     * Disabled, aspirational rules
+     */
 
     'indent': [0, 2, {'SwitchCase': 1, 'CallExpression': {'arguments': 2}, 'MemberExpression': 2}],
 
@@ -133,20 +133,12 @@ module.exports = {
     '@typescript-eslint/explicit-member-accessibility': [0],
     '@typescript-eslint/no-explicit-any': 2,
 
-    // errors on it('test') with no body
-    'mocha/no-pending-tests': 2,
-    // errors on {describe, it}.only
-    'mocha/no-exclusive-tests': 2,
-
     // Closure does not properly typecheck default exports
     'import/no-default-export': 2,
 
     // DevTools specific rules
     'rulesdir/es_modules_import': 2,
     'rulesdir/check_license_header': 2,
-    'rulesdir/check_test_definitions': 2,
-    'rulesdir/avoid_assert_equal': 2,
-    'rulesdir/no_repeated_tests': 2,
   },
   'overrides': [{
     'files': ['*.ts'],
@@ -161,7 +153,6 @@ module.exports = {
       'semi': 0,
       '@typescript-eslint/semi': 2,
 
-      'rulesdir/kebab_case_events': 2,
       /**
        * Enforce that enum members are explicitly defined:
        * const enum Foo { A = 'a' } rather than const enum Foo { A }
@@ -172,8 +163,6 @@ module.exports = {
        * this.foo!.toLowerCase()
        */
       '@typescript-eslint/no-non-null-assertion': 2,
-      'rulesdir/set_data_type_reference': 2,
-      'rulesdir/lit_html_data_as_type': 2,
       'rulesdir/const_enum': 2,
       'rulesdir/no_underscored_properties': 2,
       'rulesdir/prefer_readonly_keyword': 2,

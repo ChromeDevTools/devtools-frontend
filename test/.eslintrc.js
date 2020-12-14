@@ -7,14 +7,14 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', 'scripts', 'eslint_rules', 'lib');
 
 module.exports = {
-  'overrides': [{
-    'files': ['*.ts'],
-    'rules': {
-      '@typescript-eslint/explicit-function-return-type': 2,
+  'rules': {
+    // errors on it('test') with no body
+    'mocha/no-pending-tests': 2,
+    // errors on {describe, it}.only
+    'mocha/no-exclusive-tests': 2,
 
-      'rulesdir/kebab_case_events': 2,
-      'rulesdir/set_data_type_reference': 2,
-      'rulesdir/lit_html_data_as_type': 2,
-    }
-  }]
+    'rulesdir/check_test_definitions': 2,
+    'rulesdir/avoid_assert_equal': 2,
+    'rulesdir/no_repeated_tests': 2,
+  },
 };

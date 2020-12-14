@@ -209,6 +209,7 @@ def _CheckDevToolsStyleJS(input_api, output_api):
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                '.eslintignore'),
         input_api.os_path.join(front_end_directory, '.eslintrc.js'),
+        input_api.os_path.join(test_directory, '.eslintrc.js'),
         input_api.os_path.join(scripts_directory, 'test',
                                'run_lint_check_js.py'),
         input_api.os_path.join(scripts_directory, 'test',

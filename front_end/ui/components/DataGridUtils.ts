@@ -1,7 +1,9 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Platform from '../../platform/platform.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+
 import * as DataGridRenderers from './DataGridRenderers.js';
 
 /**
@@ -235,6 +237,9 @@ export function handleArrowKeyNavigation(options: HandleArrowKeyOptions): CellPo
 
       return [selectedColIndex, rowIndexToMoveTo];
     }
+
+    default:
+      return Platform.assertNever(key, `Unknown arrow key: ${key}`);
   }
 }
 

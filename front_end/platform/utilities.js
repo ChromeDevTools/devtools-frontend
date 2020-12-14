@@ -607,6 +607,7 @@ export function runOnWindowLoad(callback) {
 /**
  * @param {never} type
  * @param {string} message
+ * @return {never}
  */
 export function assertNever(type, message) {
   throw new Error(message);

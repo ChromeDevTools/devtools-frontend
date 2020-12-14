@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {CSSAngleRegex} from './CSSAngleRegex.js';
@@ -88,6 +89,8 @@ export const roundAngleByUnit = (angle: Angle): Angle => {
       // Allow up to 2 decimals.
       roundedValue = Math.round(angle.value * 100) / 100;
       break;
+    default:
+      Platform.assertNever(angle.unit, `Unknown angle unit: ${angle.unit}`);
   }
 
   return {

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 const ls = Common.ls;
 
 export const VALUE_INTEPRETER_MAX_NUM_BYTES = 8;
@@ -42,6 +43,8 @@ export function valueTypeModeToLocalizedString(mode: ValueTypeMode): string {
       return ls`sci`;
     case ValueTypeMode.None:
       return ls`none`;
+    default:
+      return Platform.assertNever(mode, `Unknown mode: ${mode}`);
   }
 }
 
@@ -51,6 +54,8 @@ export function endiannessToLocalizedString(endianness: Endianness): string {
       return ls`Little Endian`;
     case Endianness.Big:
       return ls`Big Endian`;
+    default:
+      return Platform.assertNever(endianness, `Unknown endianness: ${endianness}`);
   }
 }
 
@@ -70,6 +75,8 @@ export function valueTypeToLocalizedString(valueType: ValueType): string {
       return ls`Float 64-bit`;
     case ValueType.String:
       return ls`String`;
+    default:
+      return Platform.assertNever(valueType, `Unknown value type: ${valueType}`);
   }
 }
 
@@ -85,6 +92,8 @@ export function isValidMode(type: ValueType, mode: ValueTypeMode): boolean {
       return mode === ValueTypeMode.Scientific || mode === ValueTypeMode.Decimal;
     case ValueType.String:
       return mode === ValueTypeMode.None;
+    default:
+      return Platform.assertNever(type, `Unknown value type: ${type}`);
   }
 }
 
@@ -138,6 +147,8 @@ export function format(formatData: FormatData): string {
         return formatFloat(value, formatData.mode);
       case ValueType.String:
         throw new Error(`Type ${formatData.type} is not yet implemented`);
+      default:
+        return Platform.assertNever(formatData.type, `Unknown value type: ${formatData.type}`);
     }
   } catch (e) {
     return 'N/A';

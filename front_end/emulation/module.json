@@ -124,33 +124,11 @@
       "tags": "device"
     },
     {
-      "type": "view",
-      "location": "settings-view",
-      "id": "devices",
-      "title": "Devices",
-      "order": 30,
-      "className": "Emulation.DevicesSettingsTab",
-      "settings": [
-        "standardEmulatedDeviceList",
-        "customEmulatedDeviceList"
-      ]
-    },
-    {
       "type": "action",
       "actionId": "emulation.show-sensors",
       "category": "Sensors",
       "title": "Sensors",
       "className": "Emulation.SensorsView.ShowActionDelegate"
-    },
-    {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "sensors",
-      "title": "Sensors",
-      "persistence": "closeable",
-      "order": 100,
-      "className": "Emulation.SensorsView",
-      "tags": "geolocation, timezones, locale, locales, accelerometer, device orientation"
     },
     {
       "type": "setting",
@@ -220,17 +198,6 @@
           "timezoneId": "Asia/Tokyo",
           "locale": "ja_JP"
         }
-      ]
-    },
-    {
-      "type": "view",
-      "location": "settings-view",
-      "id": "emulation-locations",
-      "title": "Locations",
-      "order": 40,
-      "className": "Emulation.LocationsSettingsTab",
-      "settings": [
-        "emulation.locations"
       ]
     },
     {

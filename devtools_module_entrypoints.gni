@@ -51,6 +51,7 @@ devtools_module_entrypoint_sources = [
   "elements/elements-meta.js",
   "elements/elements.js",
   "emulation/emulation-legacy.js",
+  "emulation/emulation-meta.js",
   "emulation/emulation.js",
   "event_listeners/event_listeners-legacy.js",
   "event_listeners/event_listeners.js",

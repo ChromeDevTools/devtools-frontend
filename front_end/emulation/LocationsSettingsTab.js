@@ -5,10 +5,14 @@
 import * as Common from '../common/common.js';
 import * as UI from '../ui/ui.js';
 
+/** @type {!LocationsSettingsTab} */
+let locationsSettingsTabInstance;
+
 /**
  * @implements {UI.ListWidget.Delegate<Item>}
  */
 export class LocationsSettingsTab extends UI.Widget.VBox {
+  /** @private */
   constructor() {
     super(true);
     this.registerRequiredCSS('emulation/locationsSettingsTab.css', {enableLegacyPatching: true});
@@ -28,6 +32,14 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
     this._customSetting.addChangeListener(this._locationsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);
+  }
+
+  static instance() {
+    if (!locationsSettingsTabInstance) {
+      locationsSettingsTabInstance = new LocationsSettingsTab();
+    }
+
+    return locationsSettingsTabInstance;
   }
 
   /**

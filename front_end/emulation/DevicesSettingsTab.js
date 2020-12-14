@@ -8,10 +8,14 @@ import * as UI from '../ui/ui.js';
 import {DeviceModeModel, MaxDeviceNameLength, UA} from './DeviceModeModel.js';
 import {Capability, EmulatedDevice, EmulatedDevicesList, Events, Horizontal, Vertical,} from './EmulatedDevices.js';
 
+/** @type {!DevicesSettingsTab} */
+let devicesSettingsTabInstance;
+
 /**
  * @implements {UI.ListWidget.Delegate<!EmulatedDevice>}
  */
 export class DevicesSettingsTab extends UI.Widget.VBox {
+  /** @private */
   constructor() {
     super();
     this.element.classList.add('settings-tab-container');
@@ -39,6 +43,13 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     this._emulatedDevicesList.addEventListener(Events.StandardDevicesUpdated, this._devicesUpdated, this);
 
     this.setDefaultFocusedElement(this._addCustomButton);
+  }
+
+  static instance() {
+    if (!devicesSettingsTabInstance) {
+      devicesSettingsTabInstance = new DevicesSettingsTab();
+    }
+    return devicesSettingsTabInstance;
   }
 
   /**

@@ -58,3 +58,9 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "emulation-meta.ts"
+
+  deps = [ ":bundle" ]
+}

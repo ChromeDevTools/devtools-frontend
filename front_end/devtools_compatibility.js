@@ -367,6 +367,7 @@
     PanelShown: 'DevTools.PanelShown',
     SidebarPaneShown: 'DevTools.SidebarPaneShown',
     KeyboardShortcutFired: 'DevTools.KeyboardShortcutFired',
+    IssueCreated: 'DevTools.IssueCreated',
     IssuesPanelIssueExpanded: 'DevTools.IssuesPanelIssueExpanded',
     IssuesPanelOpenedFrom: 'DevTools.IssuesPanelOpenedFrom',
     IssuesPanelResourceOpened: 'DevTools.IssuesPanelResourceOpened',

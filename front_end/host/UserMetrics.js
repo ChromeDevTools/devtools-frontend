@@ -211,6 +211,19 @@ export class UserMetrics {
   }
 
   /**
+   * @param {string} code
+   */
+  issueCreated(code) {
+    const size = Object.keys(IssueCreated).length + 1;
+    const issueCreated = IssueCreated[code];
+    if (issueCreated === undefined) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.IssueCreated, issueCreated, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.IssueCreated, {value: issueCreated});
+  }
+
+  /**
    * @param {!DualScreenDeviceEmulated} emulationAction
    */
   dualScreenDeviceEmulated(emulationAction) {
@@ -608,4 +621,44 @@ export const IssueResourceOpened = {
   SameSiteCookieLearnMore: 10,
   HeavyAdLearnMore: 11,
   ContentSecurityPolicyLearnMore: 12
+};
+
+/** @type {!Object<string, number>} */
+export const IssueCreated = {
+  MixedContentIssue: 0,
+  'ContentSecurityPolicyIssue::kInlineViolation': 1,
+  'ContentSecurityPolicyIssue::kEvalViolation': 2,
+  'ContentSecurityPolicyIssue::kURLViolation': 3,
+  'ContentSecurityPolicyIssue::kTrustedTypesSinkViolation': 4,
+  'ContentSecurityPolicyIssue::kTrustedTypesPolicyViolation': 5,
+  'HeavyAdIssue::NetworkTotalLimit': 6,
+  'HeavyAdIssue::CpuTotalLimit': 7,
+  'HeavyAdIssue::CpuPeakLimit': 8,
+  'CrossOriginEmbedderPolicyIssue::CoepFrameResourceNeedsCoepHeader': 9,
+  'CrossOriginEmbedderPolicyIssue::CoopSandboxedIFrameCannotNavigateToCoopPage': 10,
+  'CrossOriginEmbedderPolicyIssue::CorpNotSameOrigin': 11,
+  'CrossOriginEmbedderPolicyIssue::CorpNotSameOriginAfterDefaultedToSameOriginByCoep': 12,
+  'CrossOriginEmbedderPolicyIssue::CorpNotSameSite': 13,
+  'SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::ReadCookie': 14,
+  'SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::SetCookie': 15,
+  'SameSiteCookieIssue::WarnSameSiteNoneInsecure::ReadCookie': 16,
+  'SameSiteCookieIssue::WarnSameSiteNoneInsecure::SetCookie': 17,
+  'SameSiteCookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Secure': 18,
+  'SameSiteCookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Insecure': 19,
+  'SameSiteCookieIssue::WarnCrossDowngrade::ReadCookie::Secure': 20,
+  'SameSiteCookieIssue::WarnCrossDowngrade::ReadCookie::Insecure': 21,
+  'SameSiteCookieIssue::WarnCrossDowngrade::SetCookie::Secure': 22,
+  'SameSiteCookieIssue::WarnCrossDowngrade::SetCookie::Insecure': 23,
+  'SameSiteCookieIssue::ExcludeNavigationContextDowngrade::Secure': 24,
+  'SameSiteCookieIssue::ExcludeNavigationContextDowngrade::Insecure': 25,
+  'SameSiteCookieIssue::ExcludeContextDowngrade::ReadCookie::Secure': 26,
+  'SameSiteCookieIssue::ExcludeContextDowngrade::ReadCookie::Insecure': 27,
+  'SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Secure': 28,
+  'SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Insecure': 29,
+  'SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie': 30,
+  'SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie': 31,
+  'SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie': 32,
+  'SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::SetCookie': 33,
+  'SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie': 34,
+  'SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie': 35
 };

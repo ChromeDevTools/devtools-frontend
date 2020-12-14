@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Host from '../host/host.js';
+
 import {IssuesModel} from './IssuesModel.js';  // eslint-disable-line no-unused-vars
 
 /** @enum {symbol} */
@@ -79,6 +81,7 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {string} */
     this._code = code;
     this._issuesModel = issuesModel;
+    Host.userMetrics.issueCreated(code);
   }
 
   /**

@@ -33,7 +33,7 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
    * @param {!IssuesModel} issuesModel
    */
   constructor(issueDetails, issuesModel) {
-    super(`CrossOriginEmbedderPolicy::${issueDetails.reason}`, issuesModel);
+    super(`CrossOriginEmbedderPolicyIssue::${issueDetails.reason}`, issuesModel);
     /** @type {!Protocol.Audits.BlockedByResponseIssueDetails} */
     this._details = issueDetails;
   }
@@ -85,7 +85,7 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
 /** @type {!Map<string, !MarkdownIssueDescription>} */
 const issueDescriptions = new Map([
   [
-    'CrossOriginEmbedderPolicy::CorpNotSameOriginAfterDefaultedToSameOriginByCoep', {
+    'CrossOriginEmbedderPolicyIssue::CorpNotSameOriginAfterDefaultedToSameOriginByCoep', {
       file: 'issues/descriptions/CoepCorpNotSameOriginAfterDefaultedToSameOriginByCoep.md',
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
@@ -96,7 +96,7 @@ const issueDescriptions = new Map([
     }
   ],
   [
-    'CrossOriginEmbedderPolicy::CoepFrameResourceNeedsCoepHeader', {
+    'CrossOriginEmbedderPolicyIssue::CoepFrameResourceNeedsCoepHeader', {
       file: 'issues/descriptions/CoepFrameResourceNeedsCoepHeader.md',
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
@@ -106,7 +106,7 @@ const issueDescriptions = new Map([
     }
   ],
   [
-    'CrossOriginEmbedderPolicy::CoopSandboxedIframeCannotNavigateToCoopPage', {
+    'CrossOriginEmbedderPolicyIssue::CoopSandboxedIframeCannotNavigateToCoopPage', {
       file: 'issues/descriptions/CoepCoopSandboxedIframeCannotNavigateToCoopPage.md',
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
@@ -116,7 +116,7 @@ const issueDescriptions = new Map([
     }
   ],
   [
-    'CrossOriginEmbedderPolicy::CorpNotSameSite', {
+    'CrossOriginEmbedderPolicyIssue::CorpNotSameSite', {
       file: 'issues/descriptions/CoepCorpNotSameSite.md',
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
@@ -127,7 +127,7 @@ const issueDescriptions = new Map([
     }
   ],
   [
-    'CrossOriginEmbedderPolicy::CorpNotSameOrigin', {
+    'CrossOriginEmbedderPolicyIssue::CorpNotSameOrigin', {
       file: 'issues/descriptions/CoepCorpNotSameOrigin.md',
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,

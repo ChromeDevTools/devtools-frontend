@@ -1,0 +1,164 @@
+<!--
+Copyright 2020 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Debug</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
+</head>
+<body>
+  <script type="module">
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+
+    dispatch(["setPlatform", "mac"]);
+    dispatch(["setOverlay", "highlight"]);
+    dispatch(["reset", {
+      viewportSize: {
+        width: viewportWidth,
+        height: viewportHeight,
+      },
+      deviceScaleFactor: 1,
+      pageScaleFactor: 1,
+      pageZoomFactor: 1,
+      emulationScaleFactor: 1,
+      scrollX: 0,
+      scrollY: 0,
+    }]);
+
+    let response = {
+      "highlight": {
+          "paths": [{
+              "path": ["M", 32, 86.66667175292969, "L", 282, 86.66667175292969, "L", 282, 336.66668701171875, "L", 32, 336.66668701171875, "Z"],
+              "fillColor": "rgba(255, 0, 0, 0)",
+              "outlineColor": "rgba(128, 0, 0, 0)",
+              "name": "content"
+          }],
+          "flexInfo": [{
+              "containerBorder": ["M", 32, 86.66667175292969, "L", 282, 86.66667175292969, "L", 282, 336.66668701171875, "L", 32, 336.66668701171875, "Z"],
+              "lines": [
+                  [{
+                      "itemBorder": ["M", 36, 111.66667175292969, "L", 86, 111.66667175292969, "L", 86, 141.6666717529297, "L", 36, 141.6666717529297, "Z"],
+                      "baseline": 19
+                  }, {
+                      "itemBorder": ["M", 100, 111.66667175292969, "L", 150, 111.66667175292969, "L", 150, 141.6666717529297, "L", 100, 141.6666717529297, "Z"],
+                      "baseline": 19
+                  }, {
+                      "itemBorder": ["M", 164, 111.66667175292969, "L", 214, 111.66667175292969, "L", 214, 141.6666717529297, "L", 164, 141.6666717529297, "Z"],
+                      "baseline": 19
+                  }, {
+                      "itemBorder": ["M", 228, 111.66667175292969, "L", 278, 111.66667175292969, "L", 278, 141.6666717529297, "L", 228, 141.6666717529297, "Z"],
+                      "baseline": 19
+                  }],
+                  [{
+                      "itemBorder": ["M", 36, 196.6666717529297, "L", 86, 196.6666717529297, "L", 86, 226.6666717529297, "L", 36, 226.6666717529297, "Z"],
+                      "baseline": 19
+                  }, {
+                      "itemBorder": ["M", 100, 196.6666717529297, "L", 150, 196.6666717529297, "L", 150, 226.6666717529297, "L", 100, 226.6666717529297, "Z"],
+                      "baseline": 19
+                  }, {
+                      "itemBorder": ["M", 164, 196.6666717529297, "L", 214, 196.6666717529297, "L", 214, 226.6666717529297, "L", 164, 226.6666717529297, "Z"],
+                      "baseline": 19
+                  }, {
+                      "itemBorder": ["M", 228, 196.6666717529297, "L", 278, 196.6666717529297, "L", 278, 226.6666717529297, "L", 228, 226.6666717529297, "Z"],
+                      "baseline": 19
+                  }],
+                  [{
+                      "itemBorder": ["M", 52, 281.66668701171875, "L", 102, 281.66668701171875, "L", 102, 311.66668701171875, "L", 52, 311.66668701171875, "Z"],
+                      "baseline": 19
+                  }, {
+                      "itemBorder": ["M", 132, 281.66668701171875, "L", 182, 281.66668701171875, "L", 182, 311.66668701171875, "L", 132, 311.66668701171875, "Z"],
+                      "baseline": 19
+                  }, {
+                      "itemBorder": ["M", 212, 281.66668701171875, "L", 262, 281.66668701171875, "L", 262, 311.66668701171875, "L", 212, 311.66668701171875, "Z"],
+                      "baseline": 19
+                  }]
+              ],
+              "isHorizontalFlow": true,
+              "alignItemsStyle": "normal",
+              "mainGap": 10,
+              "crossGap": 10,
+              "writingMode": "horizontal-tb",
+              "flexContainerHighlightConfig": {
+                  "containerBorder": {
+                      "color": "rgba(200, 0, 50, 1)",
+                      "pattern": "dashed"
+                  },
+                  "lineSeparator": {
+                      "color": "rgba(200, 0, 50, 0)",
+                      "pattern": "dashed"
+                  },
+                  "itemSeparator": {
+                      "color": "rgba(200, 0, 50, 0)",
+                      "pattern": "dashed"
+                  },
+                  "columnGapSpace": {
+                      "hatchColor": "rgba(200, 0, 50, 1)",
+                      "fillColor": "rgba(200, 0, 50, .3)"
+                  },
+                  "rowGapSpace": {
+                      "hatchColor": "rgba(200, 0, 50, 1)",
+                      "fillColor": "rgba(200, 0, 50, .3)"
+                  }
+              }
+          }]
+      }
+    };
+
+    response = {
+      "highlight": {
+        "paths": [
+          { "path": [ "M", 302, 96.66667175292969, "L", 402, 96.66667175292969, "L", 402, 196.6666717529297, "L", 302, 196.6666717529297, "Z" ], "fillColor": "rgba(255, 0, 0, 0)", "outlineColor": "rgba(128, 0, 0, 0)", "name": "content" },
+        ],
+        "flexInfo": [{
+          "containerBorder": [ "M", 302, 96.66667175292969, "L", 402, 96.66667175292969, "L", 402, 196.6666717529297, "L", 302, 196.6666717529297, "Z" ],
+          "lines": [
+            [
+              { "itemBorder": [ "M", 312, 176.6666717529297, "L", 332, 176.6666717529297, "L", 332, 196.6666717529297, "L", 312, 196.6666717529297, "Z" ], "baseline": 20 },
+              { "itemBorder": [ "M", 342, 96.66667175292969, "L", 362, 96.66667175292969, "L", 362, 116.66667175292969, "L", 342, 116.66667175292969, "Z" ], "baseline": 20 },
+              { "itemBorder": [ "M", 372, 176.6666717529297, "L", 392, 176.6666717529297, "L", 392, 196.6666717529297, "L", 372, 196.6666717529297, "Z" ], "baseline": 20 }
+            ]
+          ],
+          "isHorizontalFlow": true,
+          "writingMode": "horizontal-tb",
+          "alignItemsStyle": "flex-end",
+          "mainGap": 10,
+          "crossGap": 10,
+          "flexContainerHighlightConfig": {
+            "containerBorder": {
+                "color": "rgba(200, 0, 50, 1)",
+                "pattern": "dashed"
+            },
+            "lineSeparator": {
+                "color": "rgba(200, 0, 50, 0)",
+                "pattern": "dashed"
+            },
+            "itemSeparator": {
+                "color": "rgba(200, 0, 50, 0)",
+                "pattern": "dashed"
+            },
+            "columnGapSpace": {
+                "hatchColor": "rgba(200, 0, 50, 1)",
+                "fillColor": "rgba(200, 0, 50, .3)"
+            },
+            "rowGapSpace": {
+                "hatchColor": "rgba(200, 0, 50, 1)",
+                "fillColor": "rgba(200, 0, 50, .3)"
+            }
+          }
+        }]
+      }
+    };
+
+    // Massage the data a bit so we can see a nice flex overlay.
+    response = response.highlight;
+
+    dispatch(["drawHighlight", response]);
+  </script>
+</body>
+</html>

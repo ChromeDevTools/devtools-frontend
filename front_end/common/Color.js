@@ -965,15 +965,11 @@ export const PageHighlight = {
   Shape: Color.fromRGBA([96, 82, 177, 0.8]),
   ShapeMargin: Color.fromRGBA([96, 82, 127, .6]),
   CssGrid: Color.fromRGBA([0x4b, 0, 0x82, 1]),
-  GridRowLine: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, 1]),
-  GridColumnLine: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, 1]),
+  LayoutLine: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, 1]),
   GridBorder: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, 1]),
-  GridRowGapBackground: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, .3]),
-  GridColumnGapBackground: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, .3]),
-  GridRowGapHatch: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, .8]),
-  GridColumnGapHatch: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, .8]),
+  GapBackground: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, .3]),
+  GapHatch: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, .8]),
   GridAreaBorder: Color.fromRGBA([26, 115, 232, 1]),
-  FlexContainerBorder: Color.fromRGBA([...LAYOUT_LINES_HIGHLIGHT_COLOR, 1]),
 };
 
 export const SourceOrderHighlight = {

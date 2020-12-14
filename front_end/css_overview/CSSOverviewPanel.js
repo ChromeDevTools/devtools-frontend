@@ -16,7 +16,11 @@ import {CSSOverviewProcessingView} from './CSSOverviewProcessingView.js';
 import {CSSOverviewStartView} from './CSSOverviewStartView.js';
 import {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';  // eslint-disable-line no-unused-vars
 
+/** @type {!CSSOverviewPanel} */
+let CSSOverviewPanelInstance;
+
 export class CSSOverviewPanel extends UI.Panel.Panel {
+  /** @private */
   constructor() {
     super('css_overview');
     this.registerRequiredCSS('css_overview/cssOverview.css', {enableLegacyPatching: false});
@@ -40,6 +44,13 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
     this._controller.addEventListener(Events.RequestNodeHighlight, this._requestNodeHighlight, this);
 
     this._reset();
+  }
+
+  static instance() {
+    if (!CSSOverviewPanelInstance) {
+      CSSOverviewPanelInstance = new CSSOverviewPanel();
+    }
+    return CSSOverviewPanelInstance;
   }
 
   _reset() {

@@ -1,15 +1,5 @@
 {
-  "extensions": [
-    {
-      "type": "view",
-      "location": "panel",
-      "id": "cssoverview",
-      "title": "CSS Overview",
-      "className": "CssOverview.CSSOverviewPanel",
-      "order": 95,
-      "experiment": "cssOverview"
-    }
-  ],
+  "extensions": [],
   "dependencies": [
     "elements",
     "ui",

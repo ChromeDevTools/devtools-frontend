@@ -30,6 +30,7 @@ group("front_end") {
     "cookie_table:bundle",
     "coverage:bundle",
     "css_overview:bundle",
+    "css_overview:meta",
     "data_grid:bundle",
     "developer_resources:bundle",
     "devices:bundle",

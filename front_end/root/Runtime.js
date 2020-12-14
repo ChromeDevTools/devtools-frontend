@@ -1120,6 +1120,7 @@ export const appStarted = new Promise(fulfill => {
 export const ExperimentName = {
   CAPTURE_NODE_CREATION_STACKS: 'captureNodeCreationStacks',
   CSS_GRID_FEATURES: 'cssGridFeatures',
+  CSS_OVERVIEW: 'cssOverview',
 };
 
 /** @enum {string} */

@@ -37,6 +37,7 @@ devtools_module_entrypoint_sources = [
   "coverage/coverage-legacy.js",
   "coverage/coverage.js",
   "css_overview/css_overview-legacy.js",
+  "css_overview/css_overview-meta.js",
   "css_overview/css_overview.js",
   "data_grid/data_grid-legacy.js",
   "data_grid/data_grid.js",

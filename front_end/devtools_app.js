@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import './shell.js';
+import './css_overview/css_overview-meta.js';
 import './elements/elements-meta.js';
 import './browser_debugger/browser_debugger-meta.js';
 import './sources/sources-meta.js';

@@ -312,12 +312,15 @@ export const Events = {
 export const ActionCategory = {
   ELEMENTS: ls`Elements`,
   SCREENSHOT: ls`Screenshot`,
+  NETWORK: ls`Network`,
 };
 
 type ActionCategory = typeof ActionCategory[keyof typeof ActionCategory];
 
 export const enum IconClass {
   LARGEICON_NODE_SEARCH = 'largeicon-node-search',
+  LARGEICON_START_RECORDING = 'largeicon-start-recording',
+  LARGEICON_STOP_RECORDING = 'largeicon-stop-recording',
 }
 
 export const enum KeybindSet {

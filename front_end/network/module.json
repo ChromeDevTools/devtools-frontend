@@ -63,86 +63,10 @@
       ]
     },
     {
-      "type": "action",
-      "actionId": "network.toggle-recording",
-      "category": "Network",
-      "iconClass": "largeicon-start-recording",
-      "toggleable": true,
-      "toggledIconClass": "largeicon-stop-recording",
-      "toggleWithRedColor": true,
-      "contextTypes": [
-        "Network.NetworkPanel"
-      ],
-      "className": "Network.NetworkPanel.ActionDelegate",
-      "options": [
-        {
-          "value": true,
-          "title": "Record network log"
-        },
-        {
-          "value": false,
-          "title": "Stop recording network log"
-        }
-      ],
-      "bindings": [
-        {
-          "platform": "windows,linux",
-          "shortcut": "Ctrl+E"
-        },
-        {
-          "platform": "mac",
-          "shortcut": "Meta+E"
-        }
-      ]
-    },
-    {
-      "type": "action",
-      "actionId": "network.hide-request-details",
-      "category": "Network",
-      "title": "Hide request details",
-      "contextTypes": [
-        "Network.NetworkPanel"
-      ],
-      "className": "Network.NetworkPanel.ActionDelegate",
-      "bindings": [
-        {
-          "shortcut": "Esc"
-        }
-      ]
-    },
-    {
       "type": "@UI.ViewLocationResolver",
       "name": "network-sidebar",
       "category": "Network",
       "className": "Network.NetworkPanel"
-    },
-    {
-      "type": "action",
-      "actionId": "network.search",
-      "category": "Network",
-      "title": "Search",
-      "className": "Network.NetworkPanel.ActionDelegate",
-      "contextTypes": [
-        "Network.NetworkPanel"
-      ],
-      "bindings": [
-        {
-          "platform": "mac",
-          "shortcut": "Meta+F",
-          "keybindSets": [
-            "devToolsDefault",
-            "vsCode"
-          ]
-        },
-        {
-          "platform": "windows,linux",
-          "shortcut": "Ctrl+F",
-          "keybindSets": [
-            "devToolsDefault",
-            "vsCode"
-          ]
-        }
-      ]
     }
   ],
   "dependencies": [

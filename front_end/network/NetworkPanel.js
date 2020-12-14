@@ -888,10 +888,25 @@ export class FilmStripRecorder {
   }
 }
 
+/** @type {!ActionDelegate} */
+let networkActionDelegateInstance;
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ActionDelegate {
+  /**
+   * @param {{forceNew: ?boolean}=} opts
+   * @return {ActionDelegate}
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!networkActionDelegateInstance || forceNew) {
+      networkActionDelegateInstance = new ActionDelegate();
+    }
+    return networkActionDelegateInstance;
+  }
+
   /**
    * @override
    * @param {!UI.Context.Context} context

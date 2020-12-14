@@ -20,6 +20,13 @@ async function loadNetworkModule(): Promise<typeof Network> {
   return loadedNetworkModule;
 }
 
+function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (loadedNetworkModule: typeof Network) => T[]): T[] {
+  if (loadedNetworkModule === undefined) {
+    return [];
+  }
+  return getClassCallBack(loadedNetworkModule);
+}
+
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'network',
@@ -65,4 +72,89 @@ UI.ViewManager.registerViewExtension({
     const Network = await loadNetworkModule();
     return Network.NetworkPanel.SearchNetworkView.instance();
   },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'network.toggle-recording',
+  category: UI.ActionRegistration.ActionCategory.NETWORK,
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
+  toggleable: true,
+  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
+  toggleWithRedColor: true,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Network => [Network.NetworkPanel.NetworkPanel]);
+  },
+  async loadActionDelegate() {
+    const Network = await loadNetworkModule();
+    return Network.NetworkPanel.ActionDelegate.instance();
+  },
+  options: [
+    {
+      value: true,
+      title: ls`Record network log`,
+    },
+    {
+      value: false,
+      title: ls`Stop recording network log`,
+    },
+  ],
+  bindings: [
+    {
+      shortcut: 'Ctrl+E',
+      platform: UI.ActionRegistration.Platform.WindowsLinux,
+    },
+    {
+      shortcut: 'Meta+E',
+      platform: UI.ActionRegistration.Platform.Mac,
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'network.hide-request-details',
+  category: UI.ActionRegistration.ActionCategory.NETWORK,
+  title: ls`Hide request details`,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Network => [Network.NetworkPanel.NetworkPanel]);
+  },
+  async loadActionDelegate() {
+    const Network = await loadNetworkModule();
+    return Network.NetworkPanel.ActionDelegate.instance();
+  },
+  bindings: [
+    {
+      shortcut: 'Esc',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'network.search',
+  category: UI.ActionRegistration.ActionCategory.NETWORK,
+  title: ls`Search`,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Network => [Network.NetworkPanel.NetworkPanel]);
+  },
+  async loadActionDelegate() {
+    const Network = await loadNetworkModule();
+    return Network.NetworkPanel.ActionDelegate.instance();
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platform.Mac,
+      shortcut: 'Meta+F',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platform.WindowsLinux,
+      shortcut: 'Ctrl+F',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
 });

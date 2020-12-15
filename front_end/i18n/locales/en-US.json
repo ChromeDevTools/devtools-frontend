@@ -1382,6 +1382,114 @@
   "performance_monitor/PerformanceMonitor.js | styleRecalcsSec": {
     "message": "Style recalcs / sec"
   },
+  "persistence/Automapping.js | theAttemptToBindSInTheWorkspace": {
+    "message": "The attempt to bind \"{PH1}\" in the workspace failed as this URI is malformed."
+  },
+  "persistence/EditFileSystemView.js | add": {
+    "message": "Add"
+  },
+  "persistence/EditFileSystemView.js | enterAPath": {
+    "message": "Enter a path"
+  },
+  "persistence/EditFileSystemView.js | enterAUniquePath": {
+    "message": "Enter a unique path"
+  },
+  "persistence/EditFileSystemView.js | excludedFolders": {
+    "message": "Excluded folders"
+  },
+  "persistence/EditFileSystemView.js | folderPath": {
+    "message": "Folder path"
+  },
+  "persistence/EditFileSystemView.js | none": {
+    "message": "None"
+  },
+  "persistence/EditFileSystemView.js | sViaDevtools": {
+    "message": "{PH1} (via .devtools)"
+  },
+  "persistence/IsolatedFileSystem.js | blobCouldNotBeLoaded": {
+    "message": "Blob could not be loaded."
+  },
+  "persistence/IsolatedFileSystem.js | cantReadFileSS": {
+    "message": "Can't read file: {PH1}: {PH2}"
+  },
+  "persistence/IsolatedFileSystem.js | fileSystemErrorS": {
+    "message": "File system error: {PH1}"
+  },
+  "persistence/IsolatedFileSystem.js | linkedToS": {
+    "message": "Linked to {PH1}"
+  },
+  "persistence/IsolatedFileSystem.js | unknownErrorReadingFileS": {
+    "message": "Unknown error reading file: {PH1}"
+  },
+  "persistence/IsolatedFileSystemManager.js | unableToAddFilesystemS": {
+    "message": "Unable to add filesystem: {PH1}"
+  },
+  "persistence/ModuleUIStrings.js | disableOverrideNetworkRequests": {
+    "message": "Disable override network requests"
+  },
+  "persistence/ModuleUIStrings.js | enableLocalOverrides": {
+    "message": "Enable Local Overrides"
+  },
+  "persistence/ModuleUIStrings.js | enableOverrideNetworkRequests": {
+    "message": "Enable override network requests"
+  },
+  "persistence/ModuleUIStrings.js | interception": {
+    "message": "interception"
+  },
+  "persistence/ModuleUIStrings.js | network": {
+    "message": "network"
+  },
+  "persistence/ModuleUIStrings.js | override": {
+    "message": "override"
+  },
+  "persistence/ModuleUIStrings.js | persistence": {
+    "message": "Persistence"
+  },
+  "persistence/ModuleUIStrings.js | request": {
+    "message": "request"
+  },
+  "persistence/ModuleUIStrings.js | rewrite": {
+    "message": "rewrite"
+  },
+  "persistence/ModuleUIStrings.js | workspace": {
+    "message": "Workspace"
+  },
+  "persistence/PersistenceActions.js | openInContainingFolder": {
+    "message": "Open in containing folder"
+  },
+  "persistence/PersistenceActions.js | saveAs": {
+    "message": "Save as..."
+  },
+  "persistence/PersistenceActions.js | saveForOverrides": {
+    "message": "Save for overrides"
+  },
+  "persistence/PersistenceActions.js | saveImage": {
+    "message": "Save image"
+  },
+  "persistence/PersistenceUtils.js | linkedToS": {
+    "message": "Linked to {PH1}"
+  },
+  "persistence/PersistenceUtils.js | linkedToSourceMapS": {
+    "message": "Linked to source map: {PH1}"
+  },
+  "persistence/PlatformFileSystem.js | unableToReadFilesWithThis": {
+    "message": "Unable to read files with this implementation."
+  },
+  "persistence/WorkspaceSettingsTab.js | addFolder": {
+    "message": "Add folder…"
+  },
+  "persistence/WorkspaceSettingsTab.js | folderExcludePattern": {
+    "message": "Folder exclude pattern"
+  },
+  "persistence/WorkspaceSettingsTab.js | mappingsAreInferredAutomatically": {
+    "message": "Mappings are inferred automatically."
+  },
+  "persistence/WorkspaceSettingsTab.js | remove": {
+    "message": "Remove"
+  },
+  "persistence/WorkspaceSettingsTab.js | workspace": {
+    "message": "Workspace"
+  },
   "protocol_monitor/ModuleUIStrings.js | protocolMonitor": {
     "message": "Protocol monitor"
   },

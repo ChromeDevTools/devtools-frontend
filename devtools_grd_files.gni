@@ -755,6 +755,7 @@ grd_files_debug_sources = [
   "front_end/persistence/FileSystemWorkspaceBinding.js",
   "front_end/persistence/IsolatedFileSystem.js",
   "front_end/persistence/IsolatedFileSystemManager.js",
+  "front_end/persistence/ModuleUIStrings.js",
   "front_end/persistence/NetworkPersistenceManager.js",
   "front_end/persistence/PersistenceActions.js",
   "front_end/persistence/PersistenceImpl.js",

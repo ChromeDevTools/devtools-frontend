@@ -364,6 +364,7 @@ all_typescript_module_sources = [
   "persistence/FileSystemWorkspaceBinding.js",
   "persistence/IsolatedFileSystem.js",
   "persistence/IsolatedFileSystemManager.js",
+  "persistence/ModuleUIStrings.js",
   "persistence/NetworkPersistenceManager.js",
   "persistence/PersistenceActions.js",
   "persistence/PersistenceImpl.js",

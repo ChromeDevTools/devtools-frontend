@@ -29,11 +29,45 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Edit File System View of the Workspace settings in Settings
+  */
+  excludedFolders: 'Excluded folders',
+  /**
+  *@description Text to add something
+  */
+  add: 'Add',
+  /**
+  *@description Text to show there is nothing
+  */
+  none: 'None',
+  /**
+  *@description Text in Edit File System View of the Workspace settings in Settings
+  *@example {file/path/} PH1
+  */
+  sViaDevtools: '{PH1} (via .devtools)',
+  /**
+  *@description Text in Edit File System View of the Workspace settings in Settings
+  */
+  folderPath: 'Folder path',
+  /**
+  *@description Error message when a file system path is an empty string.
+  */
+  enterAPath: 'Enter a path',
+  /**
+  *@description Error message when a file system path is identical to an existing path.
+  */
+  enterAUniquePath: 'Enter a unique path',
+};
+const str_ = i18n.i18n.registerUIStrings('persistence/EditFileSystemView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {UI.ListWidget.Delegate<*>}
  */
@@ -56,15 +90,15 @@ export class EditFileSystemView extends UI.Widget.VBox {
 
     const excludedFoldersHeader = this.contentElement.createChild('div', 'file-system-header');
     excludedFoldersHeader.createChild('div', 'file-system-header-text').textContent =
-        Common.UIString.UIString('Excluded folders');
+        i18nString(UIStrings.excludedFolders);
     excludedFoldersHeader.appendChild(UI.UIUtils.createTextButton(
-        Common.UIString.UIString('Add'), this._addExcludedFolderButtonClicked.bind(this), 'add-button'));
+        i18nString(UIStrings.add), this._addExcludedFolderButtonClicked.bind(this), 'add-button'));
     this._excludedFoldersList = new UI.ListWidget.ListWidget(this);
     this._excludedFoldersList.element.classList.add('file-system-list');
     this._excludedFoldersList.registerRequiredCSS('persistence/editFileSystemView.css', {enableLegacyPatching: false});
     const excludedFoldersPlaceholder = document.createElement('div');
     excludedFoldersPlaceholder.classList.add('file-system-list-empty');
-    excludedFoldersPlaceholder.textContent = Common.UIString.UIString('None');
+    excludedFoldersPlaceholder.textContent = i18nString(UIStrings.none);
     this._excludedFoldersList.setEmptyPlaceholder(excludedFoldersPlaceholder);
     this._excludedFoldersList.show(this.contentElement);
 
@@ -108,7 +142,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
   renderItem(item, editable) {
     const element = document.createElement('div');
     element.classList.add('file-system-list-item');
-    const pathPrefix = /** @type {string} */ (editable ? item : Common.UIString.UIString('%s (via .devtools)', item));
+    const pathPrefix = /** @type {string} */ (editable ? item : i18nString(UIStrings.sViaDevtools, {PH1: item}));
     const pathPrefixElement = element.createChild('div', 'file-system-value');
     pathPrefixElement.textContent = pathPrefix;
     UI.Tooltip.Tooltip.install(pathPrefixElement, pathPrefix);
@@ -164,7 +198,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
     const content = editor.contentElement();
 
     const titles = content.createChild('div', 'file-system-edit-row');
-    titles.createChild('div', 'file-system-value').textContent = Common.UIString.UIString('Folder path');
+    titles.createChild('div', 'file-system-value').textContent = i18nString(UIStrings.folderPath);
 
     const fields = content.createChild('div', 'file-system-edit-row');
     fields.createChild('div', 'file-system-value')
@@ -183,13 +217,13 @@ export class EditFileSystemView extends UI.Widget.VBox {
       const prefix = this._normalizePrefix(input.value.trim());
 
       if (!prefix) {
-        return {valid: false, errorMessage: ls`Enter a path`};
+        return {valid: false, errorMessage: i18nString(UIStrings.enterAPath)};
       }
 
       const configurableCount = this._getFileSystem().excludedFolders().size;
       for (let i = 0; i < configurableCount; ++i) {
         if (i !== index && this._excludedFolders[i] === prefix) {
-          return {valid: false, errorMessage: ls`Enter a unique path`};
+          return {valid: false, errorMessage: i18nString(UIStrings.enterAUniquePath)};
         }
       }
       return {valid: true, errorMessage: undefined};

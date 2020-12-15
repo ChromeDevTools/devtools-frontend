@@ -459,6 +459,9 @@
   <message name="IDS_DEVTOOLS_888a77f5ac0748b6c8001822417df8b6" desc="Text for security or network protocol">
     Protocol
   </message>
+  <message name="IDS_DEVTOOLS_91e02cd2b8621d0c05197f645668c5c4" desc="A tag of Group Network by frame setting that can be searched in the command menu">
+    network
+  </message>
   <message name="IDS_DEVTOOLS_95059da3555281e1df90b77ce4ff7554" desc="Text in Request Timing View of the Network panel">
     respondWith
   </message>

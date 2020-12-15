@@ -3,8 +3,17 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Assertion error message when failing to load a file
+  */
+  unableToReadFilesWithThis: 'Unable to read files with this implementation.',
+};
+const str_ = i18n.i18n.registerUIStrings('persistence/PlatformFileSystem.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PlatformFileSystem {
   /**
    * @param {string} path
@@ -89,7 +98,7 @@ export class PlatformFileSystem {
    * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
    */
   async requestFileContent(path) {
-    return {content: null, error: ls`Unable to read files with this implementation.`, isEncoded: false};
+    return {content: null, error: i18nString(UIStrings.unableToReadFilesWithThis), isEncoded: false};
   }
 
   /**

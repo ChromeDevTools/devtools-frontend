@@ -9,6 +9,9 @@
   <message name="IDS_DEVTOOLS_07fad2e297fd65e042fa00d6977b4f2d" desc="Tooltip for button linking to the Elements panel">
     Click to reveal the violating DOM node in the Elements panel
   </message>
+  <message name="IDS_DEVTOOLS_10573b873d2fa5a365d558a45e328e47" desc="A tag of Enable Local Overrides setting that can be searched in the command menu">
+    request
+  </message>
   <message name="IDS_DEVTOOLS_15c2d85f1fae22a3c3a0594510a1f611" desc="Label for the category of affected resources in issue view">
     Request
   </message>

@@ -30,11 +30,41 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';  // eslint-disable-line no-unused-vars
 import {PlatformFileSystem} from './PlatformFileSystem.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Isolated File System of the Workspace settings in Settings
+  *@example {folder does not exist} PH1
+  */
+  fileSystemErrorS: 'File system error: {PH1}',
+  /**
+  *@description Error message when reading a remote blob
+  */
+  blobCouldNotBeLoaded: 'Blob could not be loaded.',
+  /**
+  *@description Error message when reading a file.
+  *@example {c:\dir\file.js} PH1
+  *@example {Underlying error} PH2
+  */
+  cantReadFileSS: 'Can\'t read file: {PH1}: {PH2}',
+  /**
+  *@description Error message when failing to load a file
+  *@example {c:\dir\file.js} PH1
+  */
+  unknownErrorReadingFileS: 'Unknown error reading file: {PH1}',
+  /**
+  *@description Text to show something is linked to another
+  *@example {example.url} PH1
+  */
+  linkedToS: 'Linked to {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('persistence/IsolatedFileSystem.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class IsolatedFileSystem extends PlatformFileSystem {
   /**
    * @param {!IsolatedFileSystemManager} manager
@@ -90,7 +120,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @return {string}
    */
   static errorMessage(error) {
-    return Common.UIString.UIString('File system error: %s', /** @type {*} */ (error).message);
+    return i18nString(UIStrings.fileSystemErrorS, {PH1: /** @type {*} */ (error).message});
   }
 
   /**
@@ -364,7 +394,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   async _innerRequestFileContent(path) {
     const blob = await this.requestFileBlob(path);
     if (!blob) {
-      return {content: null, error: ls`Blob could not be loaded.`, isEncoded: false};
+      return {content: null, error: i18nString(UIStrings.blobCouldNotBeLoaded), isEncoded: false};
     }
 
     const reader = new FileReader();
@@ -380,7 +410,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
     await readPromise;
     if (reader.error) {
-      const error = ls`Can't read file: ${path}: ${reader.error}`;
+      const error = i18nString(UIStrings.cantReadFileSS, {PH1: path, PH2: reader.error});
       console.error(error);
       return {content: null, isEncoded: false, error};
     }
@@ -390,10 +420,10 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       result = /** @type {string} */ (reader.result);
     } catch (e) {
       result = null;
-      error = ls`Can't read file: ${path}: ${e.message}`;
+      error = i18nString(UIStrings.cantReadFileSS, {PH1: path, PH2: e.message});
     }
     if (result === undefined || result === null) {
-      error = error || ls`Unknown error reading file: ${path}`;
+      error = error || i18nString(UIStrings.unknownErrorReadingFileS, {PH1: path});
       console.error(error);
       return {content: null, isEncoded: false, error};
     }
@@ -742,7 +772,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    */
   tooltipForURL(url) {
     const path = Common.ParsedURL.ParsedURL.urlToPlatformPath(url, Host.Platform.isWin()).trimMiddle(150);
-    return ls`Linked to ${path}`;
+    return i18nString(UIStrings.linkedToS, {PH1: path});
   }
 
   /**

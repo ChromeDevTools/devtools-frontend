@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {EditFileSystemView} from './EditFileSystemView.js';
@@ -12,13 +12,37 @@ import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js'
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text of a DOM element in Workspace Settings Tab of the Workspace settings in Settings
+  */
+  workspace: 'Workspace',
+  /**
+  *@description Text of a DOM element in Workspace Settings Tab of the Workspace settings in Settings
+  */
+  mappingsAreInferredAutomatically: 'Mappings are inferred automatically.',
+  /**
+  *@description Text of the add button in Workspace Settings Tab of the Workspace settings in Settings
+  */
+  addFolder: 'Add folder…',
+  /**
+  *@description Label element text content in Workspace Settings Tab of the Workspace settings in Settings
+  */
+  folderExcludePattern: 'Folder exclude pattern',
+  /**
+  *@description Label for an item to remove something
+  */
+  remove: 'Remove',
+};
+const str_ = i18n.i18n.registerUIStrings('persistence/WorkspaceSettingsTab.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class WorkspaceSettingsTab extends UI.Widget.VBox {
   constructor() {
     super();
     this.registerRequiredCSS('persistence/workspaceSettingsTab.css', {enableLegacyPatching: true});
 
     const header = this.element.createChild('header');
-    UI.UIUtils.createTextChild(header.createChild('h1'), Common.UIString.UIString('Workspace'));
+    UI.UIUtils.createTextChild(header.createChild('h1'), i18nString(UIStrings.workspace));
 
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
                                 .createChild('div', 'settings-tab settings-content settings-container');
@@ -34,11 +58,12 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     this.containerElement.appendChild(folderExcludePatternInput);
 
     const div = this.containerElement.createChild('div', 'settings-info-message');
-    UI.UIUtils.createTextChild(div, Common.UIString.UIString('Mappings are inferred automatically.'));
+    UI.UIUtils.createTextChild(div, i18nString(UIStrings.mappingsAreInferredAutomatically));
 
     this._fileSystemsListContainer = this.containerElement.createChild('div', '');
 
-    const addButton = UI.UIUtils.createTextButton(ls`Add folder…`, this._addFileSystemClicked.bind(this));
+    const addButton =
+        UI.UIUtils.createTextButton(i18nString(UIStrings.addFolder), this._addFileSystemClicked.bind(this));
     this.containerElement.appendChild(addButton);
     this.setDefaultFocusedElement(addButton);
 
@@ -60,7 +85,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
   _createFolderExcludePatternInput() {
     const p = document.createElement('p');
     const labelElement = p.createChild('label');
-    labelElement.textContent = ls`Folder exclude pattern`;
+    labelElement.textContent = i18nString(UIStrings.folderExcludePattern);
     const inputElement = UI.UIUtils.createInput('', 'text');
     UI.ARIAUtils.bindLabelToControl(labelElement, inputElement);
     p.appendChild(inputElement);
@@ -133,7 +158,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     UI.Tooltip.Tooltip.install(path, fileSystemPath);
 
     const toolbar = new UI.Toolbar.Toolbar('');
-    const button = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Remove'), 'largeicon-delete');
+    const button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.remove), 'largeicon-delete');
     button.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this._removeFileSystemClicked.bind(this, fileSystem));
     toolbar.appendToolbarItem(button);

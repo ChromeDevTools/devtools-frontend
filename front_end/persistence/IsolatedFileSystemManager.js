@@ -30,11 +30,21 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {PlatformFileSystem} from './PlatformFileSystem.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Isolated File System Manager of the Workspace settings in Settings
+  *@example {folder does not exist} PH1
+  */
+  unableToAddFilesystemS: 'Unable to add filesystem: {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('persistence/IsolatedFileSystemManager.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @type {!IsolatedFileSystemManager}
  */
@@ -216,7 +226,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     const fileSystem = /** @type {?FileSystem} */ (event.data['fileSystem']);
     if (errorMessage) {
       if (errorMessage !== '<selection cancelled>') {
-        Common.Console.Console.instance().error(Common.UIString.UIString('Unable to add filesystem: %s', errorMessage));
+        Common.Console.Console.instance().error(i18nString(UIStrings.unableToAddFilesystemS, {PH1: errorMessage}));
       }
       if (!this._fileSystemRequestResolve) {
         return;

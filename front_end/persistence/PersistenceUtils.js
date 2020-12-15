@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -11,6 +12,20 @@ import {FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 import {Events, PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Persistence Utils of the Workspace settings in Settings
+  *@example {example.url} PH1
+  */
+  linkedToSourceMapS: 'Linked to source map: {PH1}',
+  /**
+  *@description Text to show something is linked to another
+  *@example {example.url} PH1
+  */
+  linkedToS: 'Linked to {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('persistence/PersistenceUtils.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PersistenceUtils {
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
@@ -25,9 +40,9 @@ export class PersistenceUtils {
       return FileSystemWorkspaceBinding.tooltipForUISourceCode(binding.fileSystem);
     }
     if (binding.network.contentType().isFromSourceMap()) {
-      return Common.UIString.UIString('Linked to source map: %s', binding.network.url().trimMiddle(150));
+      return i18nString(UIStrings.linkedToSourceMapS, {PH1: binding.network.url().trimMiddle(150)});
     }
-    return Common.UIString.UIString('Linked to %s', binding.network.url().trimMiddle(150));
+    return i18nString(UIStrings.linkedToS, {PH1: binding.network.url().trimMiddle(150)});
   }
 
   /**

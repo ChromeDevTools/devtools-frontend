@@ -4,12 +4,23 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {FileSystem, FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 import {PathEncoder, PersistenceImpl} from './PersistenceImpl.js';
+
+export const UIStrings = {
+  /**
+  *@description Error message when attempting to create a binding from a malformed URI.
+  *@example {file://%E0%A4%A} PH1
+  */
+  theAttemptToBindSInTheWorkspace: 'The attempt to bind "{PH1}" in the workspace failed as this URI is malformed.',
+};
+const str_ = i18n.i18n.registerUIStrings('persistence/Automapping.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class Automapping {
   /**
@@ -394,8 +405,7 @@ export class Automapping {
         const decodedUrl = decodeURI(url);
         return decodedUrl;
       } catch (error) {
-        Common.Console.Console.instance().error(
-            ls`The attempt to bind "${url}" in the workspace failed as this URI is malformed.`);
+        Common.Console.Console.instance().error(i18nString(UIStrings.theAttemptToBindSInTheWorkspace, {PH1: url}));
         return null;
       }
     }

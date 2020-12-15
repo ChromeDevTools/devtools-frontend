@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';                         // eslint-disable-line no-unused-vars
@@ -12,6 +13,26 @@ import * as Workspace from '../workspace/workspace.js';
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 import {PersistenceImpl} from './PersistenceImpl.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to save content as a specific file type
+  */
+  saveAs: 'Save as...',
+  /**
+  *@description Context menu item for saving an image
+  */
+  saveImage: 'Save image',
+  /**
+  *@description A context menu item in the Persistence Actions of the Workspace settings in Settings
+  */
+  saveForOverrides: 'Save for overrides',
+  /**
+  *@description A context menu item in the Persistence Actions of the Workspace settings in Settings
+  */
+  openInContainingFolder: 'Open in containing folder',
+};
+const str_ = i18n.i18n.registerUIStrings('persistence/PersistenceActions.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {UI.ContextMenu.Provider}
  */
@@ -48,15 +69,15 @@ export class ContextMenuProvider {
     }
 
     if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet()) {
-      contextMenu.saveSection().appendItem(Common.UIString.UIString('Save as...'), saveAs);
+      contextMenu.saveSection().appendItem(i18nString(UIStrings.saveAs), saveAs);
     } else if (contentProvider instanceof SDK.Resource.Resource && contentProvider.contentType().isImage()) {
-      contextMenu.saveSection().appendItem(Common.UIString.UIString('Save image'), saveImage);
+      contextMenu.saveSection().appendItem(i18nString(UIStrings.saveImage), saveImage);
     }
 
     // Retrieve uiSourceCode by URL to pick network resources everywhere.
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(contentProvider.contentURL());
     if (uiSourceCode && NetworkPersistenceManager.instance().canSaveUISourceCodeForOverrides(uiSourceCode)) {
-      contextMenu.saveSection().appendItem(Common.UIString.UIString('Save for overrides'), () => {
+      contextMenu.saveSection().appendItem(i18nString(UIStrings.saveForOverrides), () => {
         uiSourceCode.commitWorkingCopy();
         NetworkPersistenceManager.instance().saveUISourceCodeForOverrides(
             /** @type {!Workspace.UISourceCode.UISourceCode} */ (uiSourceCode));
@@ -69,7 +90,7 @@ export class ContextMenuProvider {
     if (fileURL.startsWith('file://')) {
       const path = Common.ParsedURL.ParsedURL.urlToPlatformPath(fileURL, Host.Platform.isWin());
       contextMenu.revealSection().appendItem(
-          Common.UIString.UIString('Open in containing folder'),
+          i18nString(UIStrings.openInContainingFolder),
           () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path));
     }
   }

@@ -57,6 +57,9 @@
   <message name="IDS_DEVTOOLS_d4d96ef85bcd85156baa07069a5fcec8" desc="Name of a network resource type">
     CSPViolationReport
   </message>
+  <message name="IDS_DEVTOOLS_da0b472ac86851a3c0b623260d09546c" desc="A title of the 'Persistence' setting category">
+    Persistence
+  </message>
   <message name="IDS_DEVTOOLS_fff0d600f8a0b5e19e88bfb821dd1157" desc="Text that appears in a tooltip for the image types filter.">
     Images
   </message>

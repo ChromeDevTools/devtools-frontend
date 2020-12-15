@@ -14,7 +14,7 @@ interface SwatchRenderData {
   text: string;
   computedValue: string|null;
   fromFallback: boolean;
-  onLinkClick: (varialeName: string, event: Event) => void;
+  onLinkClick: (varialeName: string, event: MouseEvent) => void;
 }
 
 interface ParsedVariableFunction {
@@ -28,7 +28,7 @@ export class CSSVarSwatch extends HTMLElement {
   private text: string = '';
   private computedValue: string|null = null;
   private fromFallback: boolean = false;
-  private onLinkClick: (varialeName: string, event: Event) => void = () => undefined;
+  private onLinkClick: (varialeName: string, event: MouseEvent) => void = () => undefined;
 
   set data(data: SwatchRenderData) {
     this.text = data.text;
@@ -95,6 +95,10 @@ export class CSSVarSwatch extends HTMLElement {
         cursor: pointer;
         text-decoration: underline;
         text-underline-position: under;
+      }
+
+      .css-var-link:focus:not(:focus-visible) {
+        outline: none;
       }
       </style><span title="${this.computedValue || ''}">${functionParts.pre}${link}${functionParts.post}</span>`,
       this.shadow, { eventContext: this });

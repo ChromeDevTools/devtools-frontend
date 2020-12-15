@@ -201,10 +201,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   /**
    * @param {string} variableName
-   * @param {!Event} event
+   * @param {!MouseEvent} event
    */
   _handleVarDefinitionClick(variableName, event) {
-    // TODO: We need to block the right mouse click in CSS var().
+    if (event.button !== 0) {
+      return;
+    }
+
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
     this._parentPane.jumpToProperty(variableName);
     event.consume(true);

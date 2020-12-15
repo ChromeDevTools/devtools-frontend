@@ -27,10 +27,7 @@ export class Importer {
     const requests = [];
     for (const entry of log.entries) {
       const pageref = entry.pageref;
-      if (pageref === undefined) {
-        continue;
-      }
-      let pageLoad = pageLoads.get(pageref);
+      let pageLoad = pageref ? pageLoads.get(pageref) : undefined;
       const documentURL = pageLoad ? pageLoad.mainRequest.url() : entry.request.url;
 
       let initiator = null;
@@ -45,8 +42,8 @@ export class Importer {
 
       const request = new SDK.NetworkRequest.NetworkRequest(
           'har-' + requests.length, entry.request.url, documentURL, '', '', initiator);
-      const page = pages.get(pageref);
-      if (!pageLoad && page) {
+      const page = pageref ? pages.get(pageref) : undefined;
+      if (!pageLoad && pageref && page) {
         pageLoad = Importer._buildPageLoad(page, request);
         pageLoads.set(pageref, pageLoad);
       }

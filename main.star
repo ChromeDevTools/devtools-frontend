@@ -82,6 +82,7 @@ luci.tree_closer(
     tree_status_host = "devtools-status.appspot.com",
     failed_step_regexp_exclude = [
         "E2E tests",
+        "Interactions",
     ] + EXCLUDED_STEPS,
 )
 

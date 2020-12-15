@@ -12,277 +12,10 @@ import * as SDK from '../sdk/sdk.js';
 import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
+import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
 import {AggregatedIssue, Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
 import {IssueSurveyLink} from './IssueSurveyLink.js';
 import {createIssueDescriptionFromMarkdown} from './MarkdownIssueDescription.js';
-
-/** @enum {string} */
-const AffectedItem = {
-  Cookie: 'Cookie',
-  Directive: 'Directive',
-  Element: 'Element',
-  LearnMore: 'LearnMore',
-  Request: 'Request',
-  Source: 'Source'
-};
-
-/**
- * @param {string} path
- * @return {string}
- */
-const extractShortPath = path => {
-  // 1st regex matches everything after last '/'
-  // if path ends with '/', 2nd regex returns everything between the last two '/'
-  return (/[^/]+$/.exec(path) || /[^/]+\/$/.exec(path) || [''])[0];
-};
-
-class AffectedResourcesView extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {!IssueView} parent
-   * @param {!{singular:string, plural:string}} resourceName - Singular and plural of the affected resource name.
-   */
-  constructor(parent, resourceName) {
-    super();
-    this.toggleOnClick = true;
-    /** @type {!IssueView} */
-    this._parent = parent;
-    this._resourceName = resourceName;
-    /** @type {!Element} */
-    this._affectedResourcesCountElement = this.createAffectedResourcesCounter();
-    /** @type {!Element} */
-    this._affectedResources = this.createAffectedResources();
-    this._affectedResourcesCount = 0;
-    /** @type {?Common.EventTarget.EventDescriptor} */
-    this._networkListener = null;
-    /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
-    this._frameListeners = [];
-    /** @type {!Set<string>} */
-    this._unresolvedRequestIds = new Set();
-    /** @type {!Set<string>} */
-    this._unresolvedFrameIds = new Set();
-  }
-
-  /**
-   * @returns {!Element}
-   */
-  createAffectedResourcesCounter() {
-    const counterLabel = document.createElement('div');
-    counterLabel.classList.add('affected-resource-label');
-    this.listItemElement.appendChild(counterLabel);
-    return counterLabel;
-  }
-
-  /**
-   * @returns {!Element}
-   */
-  createAffectedResources() {
-    const body = new UI.TreeOutline.TreeElement();
-    const affectedResources = document.createElement('table');
-    affectedResources.classList.add('affected-resource-list');
-    body.listItemElement.appendChild(affectedResources);
-    this.appendChild(body);
-
-    return affectedResources;
-  }
-
-  /**
-   *
-   * @param {number} count
-   */
-  getResourceName(count) {
-    if (count === 1) {
-      return this._resourceName.singular;
-    }
-    return this._resourceName.plural;
-  }
-
-  /**
-   * @param {number} count
-   */
-  updateAffectedResourceCount(count) {
-    this._affectedResourcesCount = count;
-    this._affectedResourcesCountElement.textContent = `${count} ${this.getResourceName(count)}`;
-    this.hidden = this._affectedResourcesCount === 0;
-    this._parent.updateAffectedResourceVisibility();
-  }
-
-  /**
-   * @returns {boolean}
-   */
-  isEmpty() {
-    return this._affectedResourcesCount === 0;
-  }
-
-  clear() {
-    this._affectedResources.textContent = '';
-  }
-
-  expandIfOneResource() {
-    if (this._affectedResourcesCount === 1) {
-      this.expand();
-    }
-  }
-
-  /**
-   * This function resolves a requestId to network requests. If the requestId does not resolve, a listener is installed
-   * that takes care of updating the view if the network request is added. This is useful if the issue is added before
-   * the network request gets reported.
-   * @param {string} requestId
-   * @return {!Array<!SDK.NetworkRequest.NetworkRequest>}
-   */
-  _resolveRequestId(requestId) {
-    const requests = SDK.NetworkLog.NetworkLog.instance().requestsForId(requestId);
-    if (!requests.length) {
-      this._unresolvedRequestIds.add(requestId);
-      if (!this._networkListener) {
-        this._networkListener = SDK.NetworkLog.NetworkLog.instance().addEventListener(
-            SDK.NetworkLog.Events.RequestAdded, this._onRequestAdded, this);
-      }
-    }
-    return requests;
-  }
-
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onRequestAdded(event) {
-    const request = /** @type {!SDK.NetworkRequest.NetworkRequest} */ (event.data);
-    const requestWasUnresolved = this._unresolvedRequestIds.delete(request.requestId());
-    if (this._unresolvedRequestIds.size === 0 && this._networkListener) {
-      // Stop listening once all requests are resolved.
-      Common.EventTarget.EventTarget.removeEventListeners([this._networkListener]);
-      this._networkListener = null;
-    }
-    if (requestWasUnresolved) {
-      this.update();
-    }
-  }
-
-  /**
-   * This function resolves a frameId to a ResourceTreeFrame. If the frameId does not resolve, or hasn't navigated yet,
-   * a listener is installed that takes care of updating the view if the frame is added. This is useful if the issue is
-   * added before the frame gets reported.
-   * @param {!Protocol.Page.FrameId} frameId
-   * @return {?SDK.ResourceTreeModel.ResourceTreeFrame}
-   */
-  _resolveFrameId(frameId) {
-    const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-    if (!frame || !frame.url) {
-      this._unresolvedFrameIds.add(frameId);
-      if (!this._frameListeners.length) {
-        const addListener = SDK.FrameManager.FrameManager.instance().addEventListener(
-            SDK.FrameManager.Events.FrameAddedToTarget, this._onFrameChanged, this);
-        const navigateListener = SDK.FrameManager.FrameManager.instance().addEventListener(
-            SDK.FrameManager.Events.FrameNavigated, this._onFrameChanged, this);
-        this._frameListeners = [addListener, navigateListener];
-      }
-    }
-    return frame;
-  }
-
-  /**
-   *
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onFrameChanged(event) {
-    const frame = /** @type {!SDK.ResourceTreeModel.ResourceTreeFrame} */ (event.data.frame);
-    if (!frame.url) {
-      return;
-    }
-    const frameWasUnresolved = this._unresolvedFrameIds.delete(frame.id);
-    if (this._unresolvedFrameIds.size === 0 && this._frameListeners.length) {
-      // Stop listening once all requests are resolved.
-      Common.EventTarget.EventTarget.removeEventListeners(this._frameListeners);
-      this._frameListeners = [];
-    }
-    if (frameWasUnresolved) {
-      this.update();
-    }
-  }
-
-  /**
-   * @param {!Protocol.Page.FrameId} frameId
-   * @param {!SDK.Issue.Issue} issue
-   * @returns {!HTMLElement}
-   */
-  _createFrameCell(frameId, issue) {
-    const frame = this._resolveFrameId(frameId);
-    const url = frame && (frame.unreachableUrl() || frame.url) || ls`unknown`;
-
-    const frameCell = /** @type {!HTMLElement} */ (document.createElement('td'));
-    frameCell.classList.add('affected-resource-cell');
-    if (frame) {
-      const icon = new WebComponents.Icon.Icon();
-      icon.data = {iconName: 'elements_panel_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
-      icon.classList.add('link', 'elements-panel');
-      icon.onclick = async () => {
-        Host.userMetrics.issuesPanelResourceOpened(issue.getCategory(), AffectedItem.Element);
-        const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-        if (frame) {
-          const ownerNode = await frame.getOwnerDOMNodeOrDocument();
-          if (ownerNode) {
-            Common.Revealer.reveal(ownerNode);
-          }
-        }
-      };
-      UI.Tooltip.Tooltip.install(icon, ls`Click to reveal the frame's DOM node in the Elements panel`);
-      frameCell.appendChild(icon);
-    }
-    frameCell.appendChild(document.createTextNode(url));
-    frameCell.onmouseenter = () => {
-      const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
-      if (frame) {
-        frame.highlight();
-      }
-    };
-    frameCell.onmouseleave = () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
-    return frameCell;
-  }
-
-  /**
-   * @param {!Protocol.Audits.AffectedRequest} request
-   * @returns {!HTMLElement}
-   */
-  _createRequestCell(request) {
-    let url = request.url;
-    let filename = url ? extractShortPath(url) : '';
-    const requestCell = /** @type {!HTMLElement} */ (document.createElement('td'));
-    requestCell.classList.add('affected-resource-cell');
-    const icon = new WebComponents.Icon.Icon();
-    icon.data = {iconName: 'network_panel_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
-    icon.classList.add('network-panel');
-    requestCell.appendChild(icon);
-
-    const requests = this._resolveRequestId(request.requestId);
-    if (requests.length) {
-      const request = requests[0];
-      requestCell.onclick = () => {
-        Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, Network.NetworkItemView.Tabs.Headers);
-      };
-      requestCell.classList.add('link');
-      icon.classList.add('link');
-      url = request.url();
-      filename = extractShortPath(url);
-      UI.Tooltip.Tooltip.install(icon, ls`Click to show request in the network panel`);
-    } else {
-      UI.Tooltip.Tooltip.install(icon, ls`Request unavailable in the network panel, try reloading the inspected page`);
-      icon.classList.add('unavailable');
-    }
-    if (url) {
-      UI.Tooltip.Tooltip.install(requestCell, url);
-    }
-    requestCell.appendChild(document.createTextNode(filename));
-    return requestCell;
-  }
-
-  /**
-   * @virtual
-   * @return {void}
-   */
-  update() {
-    throw new Error('This should never be called, did you forget to override?');
-  }
-}
 
 class AffectedElementsView extends AffectedResourcesView {
   /**
@@ -330,7 +63,7 @@ class AffectedElementsView extends AffectedResourcesView {
     cellElement.appendChild(anchorElement);
     const rowElement = document.createElement('tr');
     rowElement.appendChild(cellElement);
-    this._affectedResources.appendChild(rowElement);
+    this.affectedResources.appendChild(rowElement);
   }
 
   /**
@@ -538,7 +271,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
       this.updateAffectedResourceCount(0);
       return;
     }
-    this._affectedResources.appendChild(header);
+    this.affectedResources.appendChild(header);
     let count = 0;
     for (const cspIssue of cspIssues) {
       count++;
@@ -582,7 +315,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
       return;
     }
 
-    this._affectedResources.appendChild(element);
+    this.affectedResources.appendChild(element);
   }
 
   /**
@@ -623,7 +356,7 @@ class AffectedCookiesView extends AffectedResourcesView {
         ' & ' + ls`Path`;
     header.appendChild(info);
 
-    this._affectedResources.appendChild(header);
+    this.affectedResources.appendChild(header);
 
     let count = 0;
     for (const cookie of cookies) {
@@ -668,7 +401,7 @@ class AffectedCookiesView extends AffectedResourcesView {
 
     element.appendChild(name);
     element.appendChild(info);
-    this._affectedResources.appendChild(element);
+    this.affectedResources.appendChild(element);
   }
 
   /**
@@ -697,7 +430,7 @@ class AffectedRequestsView extends AffectedResourcesView {
   _appendAffectedRequests(affectedRequests) {
     let count = 0;
     for (const affectedRequest of affectedRequests) {
-      for (const request of this._resolveRequestId(affectedRequest.requestId)) {
+      for (const request of this.resolveRequestId(affectedRequest.requestId)) {
         count++;
         this._appendNetworkRequest(request);
       }
@@ -720,7 +453,7 @@ class AffectedRequestsView extends AffectedResourcesView {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-request');
     element.appendChild(nameElement);
-    this._affectedResources.appendChild(element);
+    this.affectedResources.appendChild(element);
   }
 
   /**
@@ -781,7 +514,7 @@ class AffectedSourcesView extends AffectedResourcesView {
     const rowElement = document.createElement('tr');
     rowElement.classList.add('affected-resource-source');
     rowElement.appendChild(cellElement);
-    this._affectedResources.appendChild(rowElement);
+    this.affectedResources.appendChild(rowElement);
   }
 
   /**
@@ -827,12 +560,12 @@ class AffectedMixedContentView extends AffectedResourcesView {
     info.textContent = ls`Restriction Status`;
     header.appendChild(info);
 
-    this._affectedResources.appendChild(header);
+    this.affectedResources.appendChild(header);
 
     let count = 0;
     for (const mixedContent of mixedContents) {
       if (mixedContent.request) {
-        this._resolveRequestId(mixedContent.request.requestId).forEach(networkRequest => {
+        this.resolveRequestId(mixedContent.request.requestId).forEach(networkRequest => {
           this.appendAffectedMixedContent(mixedContent, networkRequest);
           count++;
         });
@@ -873,7 +606,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
     status.textContent = SDK.MixedContentIssue.MixedContentIssue.translateStatus(mixedContent.resolutionStatus);
     element.appendChild(status);
 
-    this._affectedResources.appendChild(element);
+    this.affectedResources.appendChild(element);
   }
 
   /**
@@ -917,7 +650,7 @@ class AffectedHeavyAdView extends AffectedResourcesView {
     frame.textContent = ls`Frame URL`;
     header.appendChild(frame);
 
-    this._affectedResources.appendChild(header);
+    this.affectedResources.appendChild(header);
 
     let count = 0;
     for (const heavyAd of heavyAds) {
@@ -975,10 +708,10 @@ class AffectedHeavyAdView extends AffectedResourcesView {
     element.appendChild(status);
 
     const frameId = heavyAd.frame.frameId;
-    const frameUrl = this._createFrameCell(frameId, this._issue);
+    const frameUrl = this.createFrameCell(frameId, this._issue);
     element.appendChild(frameUrl);
 
-    this._affectedResources.appendChild(element);
+    this.affectedResources.appendChild(element);
   }
 
   /**
@@ -1022,7 +755,7 @@ class AffectedBlockedByResponseView extends AffectedResourcesView {
     frame.textContent = ls`Blocked Resource`;
     header.appendChild(frame);
 
-    this._affectedResources.appendChild(header);
+    this.affectedResources.appendChild(header);
 
     let count = 0;
     for (const detail of details) {
@@ -1039,24 +772,24 @@ class AffectedBlockedByResponseView extends AffectedResourcesView {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-row');
 
-    const requestCell = this._createRequestCell(details.request);
+    const requestCell = this.createRequestCell(details.request);
     element.appendChild(requestCell);
 
     if (details.parentFrame) {
-      const frameUrl = this._createFrameCell(details.parentFrame.frameId, this._issue);
+      const frameUrl = this.createFrameCell(details.parentFrame.frameId, this._issue);
       element.appendChild(frameUrl);
     } else {
       element.appendChild(document.createElement('td'));
     }
 
     if (details.blockedFrame) {
-      const frameUrl = this._createFrameCell(details.blockedFrame.frameId, this._issue);
+      const frameUrl = this.createFrameCell(details.blockedFrame.frameId, this._issue);
       element.appendChild(frameUrl);
     } else {
       element.appendChild(document.createElement('td'));
     }
 
-    this._affectedResources.appendChild(element);
+    this.affectedResources.appendChild(element);
   }
 
   /**
@@ -1125,7 +858,7 @@ const issueSurveyTriggers = new Map([
   [SDK.Issue.IssueCategory.ContentSecurityPolicy, 'devtools-issues-csp'], [SDK.Issue.IssueCategory.Other, null]
 ]);
 
-class IssueView extends UI.TreeOutline.TreeElement {
+export class IssueView extends UI.TreeOutline.TreeElement {
   /**
    *
    * @param {!IssuesPaneImpl} parent
@@ -1143,7 +876,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
     this.listItemElement.classList.add('issue');
     this.childrenListElement.classList.add('body');
 
-    this._affectedResources = this._createAffectedResources();
+    this.affectedResources = this._createAffectedResources();
     /** @type {!Array<!AffectedResourcesView>} */
     this._affectedResourceViews = [
       new AffectedCookiesView(this, this._issue), new AffectedElementsView(this, this._issue),
@@ -1169,7 +902,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
   onattach() {
     this._appendHeader();
     this._createBody();
-    this.appendChild(this._affectedResources);
+    this.appendChild(this.affectedResources);
     for (const view of this._affectedResourceViews) {
       this.appendAffectedResource(view);
       view.update();
@@ -1183,7 +916,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
    * @param {!UI.TreeOutline.TreeElement} resource
    */
   appendAffectedResource(resource) {
-    this._affectedResources.appendChild(resource);
+    this.affectedResources.appendChild(resource);
   }
 
   _appendHeader() {
@@ -1231,7 +964,7 @@ class IssueView extends UI.TreeOutline.TreeElement {
 
   updateAffectedResourceVisibility() {
     const noResources = this._affectedResourceViews.every(view => view.isEmpty());
-    this._affectedResources.hidden = noResources;
+    this.affectedResources.hidden = noResources;
   }
 
   /**

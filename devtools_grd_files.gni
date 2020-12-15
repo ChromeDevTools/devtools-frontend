@@ -633,6 +633,7 @@ grd_files_debug_sources = [
   "front_end/input/ModuleUIStrings.js",
   "front_end/inspector_main/InspectorMain.js",
   "front_end/inspector_main/RenderingOptions.js",
+  "front_end/issues/AffectedResourcesView.js",
   "front_end/issues/CSPViolationsListView.js",
   "front_end/issues/CSPViolationsView.js",
   "front_end/issues/ComboBoxOfCheckBoxes.js",

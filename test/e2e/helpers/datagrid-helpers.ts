@@ -16,7 +16,7 @@ export async function getDataGridRows(
 
   const tableElements = [];
   for (const rowHandler of rowsHandler) {
-    const cells = await $$('td[data-row-index]', rowHandler);
+    const cells = await $$('td[data-row-index]:not(.hidden)', rowHandler);
     tableElements.push(cells);
   }
   return tableElements;
@@ -52,6 +52,14 @@ export async function getDataGridCellAtIndex(
   const cell = await $(`td[data-row-index="${position.row}"][data-col-index="${position.column}"]`, dataGrid);
   if (!cell) {
     assert.fail(`Could not load column at position ${JSON.stringify(position)}`);
+  }
+  return cell;
+}
+
+export async function getDataGridFillerCellAtColumnIndex(dataGrid: ElementHandle<Element>, columnIndex: number) {
+  const cell = await $(`tr.filler-row > td[data-filler-row-column-index="${columnIndex}"]`, dataGrid);
+  if (!cell) {
+    assert.fail(`Could not load filler column at position ${columnIndex}`);
   }
   return cell;
 }

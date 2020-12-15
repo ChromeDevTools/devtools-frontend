@@ -244,8 +244,10 @@ export class DataGrid extends HTMLElement {
 
 
   private renderFillerRow(): LitHtml.TemplateResult {
-    const visibleColumns = this.columns.filter(col => col.visible);
-    const emptyCells = visibleColumns.map((col, colIndex) => {
+    const emptyCells = this.columns.map((col, colIndex) => {
+      if (!col.visible) {
+        return LitHtml.nothing;
+      }
       const emptyCellClasses = LitHtml.Directives.classMap({
         firstVisibleColumn: colIndex === 0,
       });
@@ -296,18 +298,25 @@ export class DataGrid extends HTMLElement {
     }
     const positionOfLeftCell: CellPosition =
         [globalThis.parseInt(cellColumnIndex, 10), globalThis.parseInt(cellRowIndex, 10)];
-    const positionOfRightCell = [positionOfLeftCell[0] + 1, positionOfLeftCell[1]];
 
+    /* To find the cell to the right we can't just go +1 as it might be hidden,
+     * so find the next index that is visible.
+     */
+    const nextVisibleColumnIndex = this.columns.findIndex((column, index) => {
+      return index > positionOfLeftCell[0] && column.visible === true;
+    });
+    const positionOfRightCell = [nextVisibleColumnIndex, positionOfLeftCell[1]];
     const selector = `[data-col-index="${positionOfRightCell[0]}"][data-row-index="${positionOfRightCell[1]}"]`;
     const cellToRight = this.shadow.querySelector<HTMLElement>(selector);
     if (!cellToRight) {
       return;
     }
 
-    // We query for the cols as they are the elements that we put the actual width on.
-    const cols = this.shadow.querySelectorAll<HTMLTableColElement>('col');
-    const leftCellCol = cols[positionOfLeftCell[0]];
-    const rightCellCol = cols[positionOfRightCell[0]];
+    // We query for the <col> elements as they are the elements that we put the actual width on.
+    const leftCellCol =
+        this.shadow.querySelector<HTMLTableColElement>(`col[data-col-column-index="${positionOfLeftCell[0]}"]`);
+    const rightCellCol =
+        this.shadow.querySelector<HTMLTableColElement>(`col[data-col-column-index="${positionOfRightCell[0]}"]`);
     if (!leftCellCol || !rightCellCol) {
       return;
     }
@@ -564,10 +573,14 @@ export class DataGrid extends HTMLElement {
         @keydown=${this.onTableKeyDown}
       >
         <colgroup>
-          ${this.columns.filter(col => col.visible).map(col => {
+          ${this.columns.map((col, colIndex) => {
             const width = calculateColumnWidthPercentageFromWeighting(this.columns, col.id);
             const style = `width: ${width}%`;
-            return LitHtml.html`<col style=${style}>`;
+            if (!col.visible) {
+              return LitHtml.nothing;
+            }
+
+            return LitHtml.html`<col style=${style} data-col-column-index=${colIndex}>`;
           })}
         </colgroup>
         <thead>

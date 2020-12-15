@@ -4,15 +4,18 @@
 }
 
 .header {
-  align-items: center;
   background-color: var(--toolbar-bg-color, #f3f3f3);
   border-bottom: var(--divider-border, 1px solid #d0d0d0);
-  border-top: var(--divider-border, 1px solid #d0d0d0);
-  display: flex;
   line-height: 1.6;
   overflow: hidden;
   padding: 0 5px;
   white-space: nowrap;
+}
+
+.header::marker {
+  color: rgb(110 110 110);
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .header:focus {

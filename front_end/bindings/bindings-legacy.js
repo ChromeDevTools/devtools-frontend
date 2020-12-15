@@ -10,7 +10,7 @@ self.Bindings = self.Bindings || {};
 Bindings = Bindings || {};
 
 /** @constructor */
-Bindings.BlackboxManager = BindingsModule.BlackboxManager.BlackboxManager;
+Bindings.IgnoreListManager = BindingsModule.IgnoreListManager.IgnoreListManager;
 
 /** @constructor */
 Bindings.BreakpointManager = BindingsModule.BreakpointManager.BreakpointManager;

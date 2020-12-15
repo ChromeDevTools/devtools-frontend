@@ -10,7 +10,7 @@ import * as DebuggerLanguagePlugins from './DebuggerLanguagePlugins.js';
 import * as DebuggerWorkspaceBinding from './DebuggerWorkspaceBinding.js';
 import * as DefaultScriptMapping from './DefaultScriptMapping.js';
 import * as FileUtils from './FileUtils.js';
-import * as BlackboxManager from './IgnoreListManager.js';
+import * as IgnoreListManager from './IgnoreListManager.js';
 import * as LiveLocation from './LiveLocation.js';
 import * as NetworkProject from './NetworkProject.js';
 import * as PresentationConsoleMessageHelper from './PresentationConsoleMessageHelper.js';
@@ -22,7 +22,6 @@ import * as StylesSourceMapping from './StylesSourceMapping.js';
 import * as TempFile from './TempFile.js';
 
 export {
-  BlackboxManager,
   BreakpointManager,
   CompilerScriptMapping,
   ContentProviderBasedProject,
@@ -31,6 +30,7 @@ export {
   DebuggerWorkspaceBinding,
   DefaultScriptMapping,
   FileUtils,
+  IgnoreListManager,
   LiveLocation,
   NetworkProject,
   PresentationConsoleMessageHelper,

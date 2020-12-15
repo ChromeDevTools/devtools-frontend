@@ -35,7 +35,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
-import {BlackboxManager} from './IgnoreListManager.js';
+import {IgnoreListManager} from './IgnoreListManager.js';
 import {NetworkProject} from './NetworkProject.js';
 
 /**
@@ -253,7 +253,7 @@ export class CompilerScriptMapping {
     const sourceMap = /** @type {!SDK.SourceMap.SourceMap} */ (event.data.sourceMap);
     await this._removeStubUISourceCode(script);
 
-    if (BlackboxManager.instance().isBlackboxedURL(script.sourceURL, script.isContentScript())) {
+    if (IgnoreListManager.instance().isIgnoreListedURL(script.sourceURL, script.isContentScript())) {
       this._sourceMapAttachedForTest(sourceMap);
       return;
     }

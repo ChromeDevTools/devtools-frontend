@@ -11,7 +11,7 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 import {CompilerScriptMapping} from './CompilerScriptMapping.js';
 import {DebuggerLanguagePluginManager} from './DebuggerLanguagePlugins.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
-import {BlackboxManager} from './IgnoreListManager.js';
+import {IgnoreListManager} from './IgnoreListManager.js';
 import {LiveLocation, LiveLocationPool, LiveLocationWithPool} from './LiveLocation.js';  // eslint-disable-line no-unused-vars
 import {ResourceMapping} from './ResourceMapping.js';
 import {ResourceScriptFile, ResourceScriptMapping} from './ResourceScriptMapping.js';  // eslint-disable-line no-unused-vars
@@ -594,7 +594,7 @@ export class Location extends LiveLocationWithPool {
    */
   async isBlackboxed() {
     const uiLocation = await this.uiLocation();
-    return uiLocation ? BlackboxManager.instance().isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
+    return uiLocation ? IgnoreListManager.instance().isIgnoreListedUISourceCode(uiLocation.uiSourceCode) : false;
   }
 }
 

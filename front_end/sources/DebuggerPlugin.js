@@ -229,7 +229,7 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
     const projectType = uiSourceCode.project().type();
-    if (!Bindings.BlackboxManager.BlackboxManager.instance().isBlackboxedUISourceCode(uiSourceCode)) {
+    if (!Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedUISourceCode(uiSourceCode)) {
       this._hideBlackboxInfobar();
       return;
     }
@@ -239,9 +239,9 @@ export class DebuggerPlugin extends Plugin {
     }
 
     function unblackbox() {
-      Bindings.BlackboxManager.BlackboxManager.instance().unblackboxUISourceCode(uiSourceCode);
+      Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(uiSourceCode);
       if (projectType === Workspace.Workspace.projectTypes.ContentScripts) {
-        Bindings.BlackboxManager.BlackboxManager.instance().unblackboxContentScripts();
+        Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListContentScripts();
       }
     }
 
@@ -393,7 +393,7 @@ export class DebuggerPlugin extends Plugin {
     function populateSourceMapMembers() {
       if (this._uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&
           Common.Settings.Settings.instance().moduleSetting('jsSourceMapsEnabled').get() &&
-          !Bindings.BlackboxManager.BlackboxManager.instance().isBlackboxedUISourceCode(this._uiSourceCode)) {
+          !Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedUISourceCode(this._uiSourceCode)) {
         if (this._scriptFileForDebuggerModel.size) {
           const scriptFile = this._scriptFileForDebuggerModel.values().next().value;
           const addSourceMapURLLabel = Common.UIString.UIString('Add source map…');

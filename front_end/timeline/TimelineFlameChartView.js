@@ -405,7 +405,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
   willHide() {
     this._networkFlameChartGroupExpansionSetting.removeChangeListener(this.resizeToPreferredHeights, this);
     this._showMemoryGraphSetting.removeChangeListener(this._updateCountersGraphToggle, this);
-    Bindings.BlackboxManager.BlackboxManager.instance().removeChangeListener(this._boundRefresh);
+    Bindings.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this._boundRefresh);
   }
 
   /**
@@ -414,7 +414,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
   wasShown() {
     this._networkFlameChartGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights, this);
     this._showMemoryGraphSetting.addChangeListener(this._updateCountersGraphToggle, this);
-    Bindings.BlackboxManager.BlackboxManager.instance().addChangeListener(this._boundRefresh);
+    Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this._boundRefresh);
     if (this._needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
     }

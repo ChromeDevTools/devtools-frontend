@@ -9,14 +9,14 @@ import * as Workspace from '../workspace/workspace.js';
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';  // eslint-disable-line no-unused-vars
 
 /**
- * @type {!BlackboxManager}
+ * @type {!IgnoreListManager}
  */
-let blackboxManagerInstance;
+let ignoreListManagerInstance;
 
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.DebuggerModel.DebuggerModel>}
  */
-export class BlackboxManager {
+export class IgnoreListManager {
   /**
    * @private
    * @param {!DebuggerWorkspaceBinding} debuggerWorkspaceBinding
@@ -38,7 +38,7 @@ export class BlackboxManager {
     this._listeners = new Set();
 
     /** @type {!Map<string, boolean>} */
-    this._isBlackboxedURLCache = new Map();
+    this._isIgnoreListedURLCache = new Map();
 
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
@@ -48,17 +48,17 @@ export class BlackboxManager {
    */
   static instance(opts = {forceNew: null, debuggerWorkspaceBinding: null}) {
     const {forceNew, debuggerWorkspaceBinding} = opts;
-    if (!blackboxManagerInstance || forceNew) {
+    if (!ignoreListManagerInstance || forceNew) {
       if (!debuggerWorkspaceBinding) {
         throw new Error(
             `Unable to create settings: targetManager, workspace, and debuggerWorkspaceBinding must be provided: ${
                 new Error().stack}`);
       }
 
-      blackboxManagerInstance = new BlackboxManager(debuggerWorkspaceBinding);
+      ignoreListManagerInstance = new IgnoreListManager(debuggerWorkspaceBinding);
     }
 
-    return blackboxManagerInstance;
+    return ignoreListManagerInstance;
   }
 
   /**
@@ -80,7 +80,7 @@ export class BlackboxManager {
    * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    */
   modelAdded(debuggerModel) {
-    this._setBlackboxPatterns(debuggerModel);
+    this._setIgnoreListPatterns(debuggerModel);
     const sourceMapManager = debuggerModel.sourceMapManager();
     sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this._sourceMapAttached, this);
     sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this._sourceMapDetached, this);
@@ -98,8 +98,8 @@ export class BlackboxManager {
   }
 
   _clearCacheIfNeeded() {
-    if (this._isBlackboxedURLCache.size > 1024) {
-      this._isBlackboxedURLCache.clear();
+    if (this._isIgnoreListedURLCache.size > 1024) {
+      this._isIgnoreListedURLCache.clear();
     }
   }
 
@@ -112,7 +112,7 @@ export class BlackboxManager {
    * @param {!SDK.DebuggerModel.DebuggerModel} debuggerModel
    * @return {!Promise<boolean>}
    */
-  _setBlackboxPatterns(debuggerModel) {
+  _setIgnoreListPatterns(debuggerModel) {
     const regexPatterns = this._getSkipStackFramesPatternSetting().getAsArray();
     const patterns = /** @type {!Array<string>} */ ([]);
     for (const item of regexPatterns) {
@@ -127,14 +127,14 @@ export class BlackboxManager {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {boolean}
    */
-  isBlackboxedUISourceCode(uiSourceCode) {
+  isIgnoreListedUISourceCode(uiSourceCode) {
     const projectType = uiSourceCode.project().type();
     const isContentScript = projectType === Workspace.Workspace.projectTypes.ContentScripts;
     if (isContentScript && Common.Settings.Settings.instance().moduleSetting('skipContentScripts').get()) {
       return true;
     }
     const url = this._uiSourceCodeURL(uiSourceCode);
-    return url ? this.isBlackboxedURL(url) : false;
+    return url ? this.isIgnoreListedURL(url) : false;
   }
 
   /**
@@ -142,17 +142,17 @@ export class BlackboxManager {
    * @param {boolean=} isContentScript
    * @return {boolean}
    */
-  isBlackboxedURL(url, isContentScript) {
-    if (this._isBlackboxedURLCache.has(url)) {
-      return !!this._isBlackboxedURLCache.get(url);
+  isIgnoreListedURL(url, isContentScript) {
+    if (this._isIgnoreListedURLCache.has(url)) {
+      return !!this._isIgnoreListedURLCache.get(url);
     }
     if (isContentScript && Common.Settings.Settings.instance().moduleSetting('skipContentScripts').get()) {
       return true;
     }
     const regex = this._getSkipStackFramesPatternSetting().asRegExp();
-    const isBlackboxed = (regex && regex.test(url)) || false;
-    this._isBlackboxedURLCache.set(url, isBlackboxed);
-    return isBlackboxed;
+    const isIgnoreListed = (regex && regex.test(url)) || false;
+    this._isIgnoreListedURLCache.set(url, isIgnoreListed);
+    return isIgnoreListed;
   }
 
   /**
@@ -178,11 +178,11 @@ export class BlackboxManager {
    * @return {!Promise<void>}
    */
   async _updateScriptRanges(script, sourceMap) {
-    let hasBlackboxedMappings = false;
-    if (!BlackboxManager.instance().isBlackboxedURL(script.sourceURL, script.isContentScript())) {
-      hasBlackboxedMappings = sourceMap ? sourceMap.sourceURLs().some(url => this.isBlackboxedURL(url)) : false;
+    let hasIgnoreListedMappings = false;
+    if (!IgnoreListManager.instance().isIgnoreListedURL(script.sourceURL, script.isContentScript())) {
+      hasIgnoreListedMappings = sourceMap ? sourceMap.sourceURLs().some(url => this.isIgnoreListedURL(url)) : false;
     }
-    if (!hasBlackboxedMappings) {
+    if (!hasIgnoreListedMappings) {
       if (scriptToRange.get(script) && await script.setBlackboxedRanges([])) {
         scriptToRange.delete(script);
       }
@@ -198,15 +198,15 @@ export class BlackboxManager {
     /** @type {!Array<!SourceRange>} */
     const newRanges = [];
     if (mappings.length > 0) {
-      let currentBlackboxed = false;
+      let currentIgnoreListed = false;
       if (mappings[0].lineNumber !== 0 || mappings[0].columnNumber !== 0) {
         newRanges.push({lineNumber: 0, columnNumber: 0});
-        currentBlackboxed = true;
+        currentIgnoreListed = true;
       }
       for (const mapping of mappings) {
-        if (mapping.sourceURL && currentBlackboxed !== this.isBlackboxedURL(mapping.sourceURL)) {
+        if (mapping.sourceURL && currentIgnoreListed !== this.isIgnoreListedURL(mapping.sourceURL)) {
           newRanges.push({lineNumber: mapping.lineNumber, columnNumber: mapping.columnNumber});
-          currentBlackboxed = !currentBlackboxed;
+          currentIgnoreListed = !currentIgnoreListed;
         }
       }
     }
@@ -247,7 +247,7 @@ export class BlackboxManager {
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {boolean}
    */
-  canBlackboxUISourceCode(uiSourceCode) {
+  canIgnoreListUISourceCode(uiSourceCode) {
     const url = this._uiSourceCodeURL(uiSourceCode);
     return url ? !!this._urlToRegExpString(url) : false;
   }
@@ -255,35 +255,35 @@ export class BlackboxManager {
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
-  blackboxUISourceCode(uiSourceCode) {
+  ignoreListUISourceCode(uiSourceCode) {
     const url = this._uiSourceCodeURL(uiSourceCode);
     if (url) {
-      this._blackboxURL(url);
+      this._ignoreListURL(url);
     }
   }
 
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    */
-  unblackboxUISourceCode(uiSourceCode) {
+  unIgnoreListUISourceCode(uiSourceCode) {
     const url = this._uiSourceCodeURL(uiSourceCode);
     if (url) {
-      this._unblackboxURL(url);
+      this._unIgnoreListURL(url);
     }
   }
 
-  blackboxContentScripts() {
+  ignoreListContentScripts() {
     Common.Settings.Settings.instance().moduleSetting('skipContentScripts').set(true);
   }
 
-  unblackboxContentScripts() {
+  unIgnoreListContentScripts() {
     Common.Settings.Settings.instance().moduleSetting('skipContentScripts').set(false);
   }
 
   /**
    * @param {string} url
    */
-  _blackboxURL(url) {
+  _ignoreListURL(url) {
     const regexPatterns = this._getSkipStackFramesPatternSetting().getAsArray();
     const regexValue = this._urlToRegExpString(url);
     if (!regexValue) {
@@ -307,9 +307,9 @@ export class BlackboxManager {
   /**
    * @param {string} url
    */
-  _unblackboxURL(url) {
+  _unIgnoreListURL(url) {
     let regexPatterns = this._getSkipStackFramesPatternSetting().getAsArray();
-    const regexValue = BlackboxManager.instance()._urlToRegExpString(url);
+    const regexValue = IgnoreListManager.instance()._urlToRegExpString(url);
     if (!regexValue) {
       return;
     }
@@ -333,12 +333,12 @@ export class BlackboxManager {
   }
 
   async _patternChanged() {
-    this._isBlackboxedURLCache.clear();
+    this._isIgnoreListedURLCache.clear();
 
     /** @type {!Array<!Promise<*>>} */
     const promises = [];
     for (const debuggerModel of SDK.SDKModel.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
-      promises.push(this._setBlackboxPatterns(debuggerModel));
+      promises.push(this._setIgnoreListPatterns(debuggerModel));
       const sourceMapManager = debuggerModel.sourceMapManager();
       for (const script of debuggerModel.scripts()) {
         promises.push(this._updateScriptRanges(script, sourceMapManager.sourceMapForClient(script)));

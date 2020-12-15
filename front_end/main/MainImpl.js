@@ -353,7 +353,7 @@ export class MainImpl {
 
     new ExecutionContextSelector(SDK.SDKModel.TargetManager.instance(), UI.Context.Context.instance());
     // @ts-ignore layout test global
-    self.Bindings.blackboxManager = Bindings.BlackboxManager.BlackboxManager.instance({
+    self.Bindings.ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({
       forceNew: true,
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
     });

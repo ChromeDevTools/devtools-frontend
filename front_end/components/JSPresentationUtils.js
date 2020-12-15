@@ -98,7 +98,8 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
         const uiLocation = Linkifier.uiLocation(link);
         if (uiLocation &&
-            Bindings.BlackboxManager.BlackboxManager.instance().isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
+            Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedUISourceCode(
+                uiLocation.uiSourceCode)) {
           shouldHide = true;
         }
         row.createChild('td').textContent = ' @ ';
@@ -124,15 +125,17 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
     event.consume(true);
     const uiLocation = Linkifier.uiLocation(link);
     if (uiLocation &&
-        Bindings.BlackboxManager.BlackboxManager.instance().canBlackboxUISourceCode(uiLocation.uiSourceCode)) {
-      if (Bindings.BlackboxManager.BlackboxManager.instance().isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
+        Bindings.IgnoreListManager.IgnoreListManager.instance().canIgnoreListUISourceCode(uiLocation.uiSourceCode)) {
+      if (Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedUISourceCode(uiLocation.uiSourceCode)) {
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.removeFromIgnore),
-            () => Bindings.BlackboxManager.BlackboxManager.instance().unblackboxUISourceCode(uiLocation.uiSourceCode));
+            () => Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(
+                uiLocation.uiSourceCode));
       } else {
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.addToIgnore),
-            () => Bindings.BlackboxManager.BlackboxManager.instance().blackboxUISourceCode(uiLocation.uiSourceCode));
+            () => Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(
+                uiLocation.uiSourceCode));
       }
     }
     contextMenu.appendApplicableItems(event);

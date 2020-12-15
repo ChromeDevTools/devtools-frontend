@@ -635,7 +635,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * @return {boolean}
    */
   _isBlackboxedURL(url) {
-    return Bindings.BlackboxManager.BlackboxManager.instance().isBlackboxedURL(url);
+    return Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedURL(url);
   }
 
   /**

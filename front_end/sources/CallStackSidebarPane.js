@@ -428,31 +428,32 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem) {
       return;
     }
-    const canBlackbox = Bindings.BlackboxManager.BlackboxManager.instance().canBlackboxUISourceCode(uiSourceCode);
-    const isBlackboxed = Bindings.BlackboxManager.BlackboxManager.instance().isBlackboxedUISourceCode(uiSourceCode);
+    const canBlackbox = Bindings.IgnoreListManager.IgnoreListManager.instance().canIgnoreListUISourceCode(uiSourceCode);
+    const isBlackboxed =
+        Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedUISourceCode(uiSourceCode);
     const isContentScript = uiSourceCode.project().type() === Workspace.Workspace.projectTypes.ContentScripts;
 
-    const manager = Bindings.BlackboxManager.BlackboxManager.instance();
+    const manager = Bindings.IgnoreListManager.IgnoreListManager.instance();
     if (canBlackbox) {
       if (isBlackboxed) {
         contextMenu.defaultSection().appendItem(
             Common.UIString.UIString('Remove from ignore list'),
-            manager.unblackboxUISourceCode.bind(manager, uiSourceCode));
+            manager.unIgnoreListUISourceCode.bind(manager, uiSourceCode));
       } else {
         contextMenu.defaultSection().appendItem(
             Common.UIString.UIString('Add script to ignore list'),
-            manager.blackboxUISourceCode.bind(manager, uiSourceCode));
+            manager.ignoreListUISourceCode.bind(manager, uiSourceCode));
       }
     }
     if (isContentScript) {
       if (isBlackboxed) {
         contextMenu.defaultSection().appendItem(
             Common.UIString.UIString('Remove all content scripts from ignore list'),
-            manager.blackboxContentScripts.bind(manager));
+            manager.ignoreListContentScripts.bind(manager));
       } else {
         contextMenu.defaultSection().appendItem(
             Common.UIString.UIString('Add all content scripts to ignore list'),
-            manager.unblackboxContentScripts.bind(manager));
+            manager.unIgnoreListContentScripts.bind(manager));
       }
     }
   }

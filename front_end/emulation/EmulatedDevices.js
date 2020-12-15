@@ -406,6 +406,10 @@ export class EmulatedDevice {
     json['dual-screen'] = this.isDualScreen;
     json['show'] = this._show;
 
+    if (this.userAgentMetadata) {
+      json['user-agent-metadata'] = this.userAgentMetadata;
+    }
+
     return json;
   }
 

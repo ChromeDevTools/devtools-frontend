@@ -452,6 +452,9 @@
   <message name="IDS_DEVTOOLS_e02d2ae03de9d493df2b6b2d2813d302" desc="Text for the duration of something">
     Duration
   </message>
+  <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="Text that refers to device such as a phone">
+    Device
+  </message>
   <message name="IDS_DEVTOOLS_e199c6bb662785b037c5f330f58878ce" desc="Show all text content in Show More Data Grid Node of a data grid">
     Show all <ph name="TOTALSIZE">$1d<ex>50</ex></ph>
   </message>

@@ -65,10 +65,38 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  padding-left: 4px;
   margin-bottom: 5px;
 }
 
+.devices-edit-fields b {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.devices-edit-client-hints-heading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.devices-edit-client-hints-heading .help-icon {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
 .devices-edit-fields input {
+  flex: auto;
+  margin: 8px 5px 0 5px;
+}
+
+li.devices-edit-client-hints-field {
+  /* Cancel out padding from treeview's .tree-outline ol */
+  left: -12px;
+}
+
+.devices-edit-client-hints-field input {
   flex: auto;
   margin: 8px 5px 0 5px;
 }

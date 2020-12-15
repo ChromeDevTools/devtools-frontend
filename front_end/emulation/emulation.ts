@@ -14,6 +14,7 @@ import './DeviceModeView.js';
 import './DeviceModeWrapper.js';
 import './LocationsSettingsTab.js';
 import './StructuredHeaders.js';
+import './UserAgentMetadata.js';
 
 import * as AdvancedApp from './AdvancedApp.js';
 import * as DeviceModeModel from './DeviceModeModel.js';
@@ -27,6 +28,7 @@ import * as LocationsSettingsTab from './LocationsSettingsTab.js';
 import * as MediaQueryInspector from './MediaQueryInspector.js';
 import * as SensorsView from './SensorsView.js';
 import * as StructuredHeaders from './StructuredHeaders.js';
+import * as UserAgentMetadata from './UserAgentMetadata.js';
 
 export {
   AdvancedApp,
@@ -41,4 +43,5 @@ export {
   MediaQueryInspector,
   SensorsView,
   StructuredHeaders,
+  UserAgentMetadata,
 };

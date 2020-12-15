@@ -6,7 +6,10 @@ import("../../../../third_party/typescript/typescript.gni")
 
 ts_library("emulation") {
   testonly = true
-  sources = [ "StructuredHeaders_test.ts" ]
+  sources = [
+    "StructuredHeaders_test.ts",
+    "UserAgentMetadata_test.ts",
+  ]
 
   deps = [
     "../../../../front_end/emulation:bundle",

@@ -179,6 +179,7 @@ all_typescript_module_sources = [
   "emulation/MediaQueryInspector.js",
   "emulation/SensorsView.js",
   "emulation/StructuredHeaders.js",
+  "emulation/UserAgentMetadata.js",
   "event_listeners/EventListenersUtils.js",
   "event_listeners/EventListenersView.js",
   "extensions/ExtensionAPI.js",

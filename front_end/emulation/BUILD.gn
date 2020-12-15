@@ -19,6 +19,7 @@ devtools_module("emulation") {
     "MediaQueryInspector.js",
     "SensorsView.js",
     "StructuredHeaders.ts",
+    "UserAgentMetadata.ts",
   ]
 
   deps = [

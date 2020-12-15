@@ -402,6 +402,10 @@ function drawAlignmentArrow(
   context.fillStyle = crossAlignment.color;
   context.fill(path);
 
+  context.lineWidth = 1;
+  context.strokeStyle = 'white';
+  context.stroke(path);
+
   context.restore();
 }
 

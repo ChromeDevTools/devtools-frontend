@@ -119,7 +119,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 }
 
 .toolbar-render-as-links button {
-  height: 14px;
+  height: 15px;
   margin: 2px;
 }
 

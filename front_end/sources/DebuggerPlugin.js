@@ -172,10 +172,10 @@ export class DebuggerPlugin extends Plugin {
 
     Common.Settings.Settings.instance()
         .moduleSetting('skipStackFramesPattern')
-        .addChangeListener(this._showBlackboxInfobarIfNeeded, this);
+        .addChangeListener(this._showIgnoreListInfobarIfNeeded, this);
     Common.Settings.Settings.instance()
         .moduleSetting('skipContentScripts')
-        .addChangeListener(this._showBlackboxInfobarIfNeeded, this);
+        .addChangeListener(this._showIgnoreListInfobarIfNeeded, this);
 
     /** @type {!Map.<number, !DecoratorWidget>} */
     this._valueWidgets = new Map();
@@ -198,8 +198,8 @@ export class DebuggerPlugin extends Plugin {
     }
 
     /** @type {?UI.Infobar.Infobar} */
-    this._blackboxInfobar = null;
-    this._showBlackboxInfobarIfNeeded();
+    this._ignoreListInfobar = null;
+    this._showIgnoreListInfobarIfNeeded();
 
     for (const scriptFile of this._scriptFileForDebuggerModel.values()) {
       scriptFile.checkMapping();
@@ -223,22 +223,22 @@ export class DebuggerPlugin extends Plugin {
     return uiSourceCode.contentType().hasScripts();
   }
 
-  _showBlackboxInfobarIfNeeded() {
+  _showIgnoreListInfobarIfNeeded() {
     const uiSourceCode = this._uiSourceCode;
     if (!uiSourceCode.contentType().hasScripts()) {
       return;
     }
     const projectType = uiSourceCode.project().type();
     if (!Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedUISourceCode(uiSourceCode)) {
-      this._hideBlackboxInfobar();
+      this._hideIgnoreListInfobar();
       return;
     }
 
-    if (this._blackboxInfobar) {
-      this._blackboxInfobar.dispose();
+    if (this._ignoreListInfobar) {
+      this._ignoreListInfobar.dispose();
     }
 
-    function unblackbox() {
+    function unIgnoreList() {
       Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(uiSourceCode);
       if (projectType === Workspace.Workspace.projectTypes.ContentScripts) {
         Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListContentScripts();
@@ -247,7 +247,7 @@ export class DebuggerPlugin extends Plugin {
 
     const infobar = new UI.Infobar.Infobar(
         UI.Infobar.Type.Warning, Common.UIString.UIString('This script is on the debugger\'s ignore list'), [
-          {text: ls`Remove from ignore list`, highlight: false, delegate: unblackbox, dismiss: true}, {
+          {text: ls`Remove from ignore list`, highlight: false, delegate: unIgnoreList, dismiss: true}, {
             text: ls`Configure`,
             highlight: false,
             delegate:
@@ -255,7 +255,7 @@ export class DebuggerPlugin extends Plugin {
             dismiss: false
           }
         ]);
-    this._blackboxInfobar = infobar;
+    this._ignoreListInfobar = infobar;
 
     infobar.createDetailsRowMessage(Common.UIString.UIString(
         'The debugger will skip stepping through this script, and will not stop on exceptions.'));
@@ -266,15 +266,15 @@ export class DebuggerPlugin extends Plugin {
       infobar.createDetailsRowMessage(
           Common.UIString.UIString('Source map found, but ignored for file on ignore list.'));
     }
-    this._textEditor.attachInfobar(this._blackboxInfobar);
+    this._textEditor.attachInfobar(this._ignoreListInfobar);
   }
 
-  _hideBlackboxInfobar() {
-    if (!this._blackboxInfobar) {
+  _hideIgnoreListInfobar() {
+    if (!this._ignoreListInfobar) {
       return;
     }
-    this._blackboxInfobar.dispose();
-    this._blackboxInfobar = null;
+    this._ignoreListInfobar.dispose();
+    this._ignoreListInfobar = null;
   }
 
   /**
@@ -1919,7 +1919,7 @@ export class DebuggerPlugin extends Plugin {
       this._scheduledBreakpointDecorationUpdates.clear();
     }
 
-    this._hideBlackboxInfobar();
+    this._hideIgnoreListInfobar();
     if (this._sourceMapInfobar) {
       this._sourceMapInfobar.dispose();
     }
@@ -1959,10 +1959,10 @@ export class DebuggerPlugin extends Plugin {
 
     Common.Settings.Settings.instance()
         .moduleSetting('skipStackFramesPattern')
-        .removeChangeListener(this._showBlackboxInfobarIfNeeded, this);
+        .removeChangeListener(this._showIgnoreListInfobarIfNeeded, this);
     Common.Settings.Settings.instance()
         .moduleSetting('skipContentScripts')
-        .removeChangeListener(this._showBlackboxInfobarIfNeeded, this);
+        .removeChangeListener(this._showIgnoreListInfobarIfNeeded, this);
     super.dispose();
 
     this._clearExecutionLine();

@@ -115,7 +115,12 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
       const element = await Common.Linkifier.Linkifier.linkify(
           node, {tooltip: detailsItem.snippet, preventKeyboardFocus: undefined});
       UI.Tooltip.Tooltip.install(origHTMLElement, '');
+
+      const screenshotElement = origHTMLElement.querySelector('.lh-element-screenshot');
       origHTMLElement.textContent = '';
+      if (screenshotElement) {
+        origHTMLElement.append(screenshotElement);
+      }
       origHTMLElement.appendChild(element);
     }
   }

@@ -267,6 +267,7 @@ export class ConsoleContextSelector {
       return Common.UIString.UIString('Extension');
     }
     const sameTargetParentFrame = frame && frame.sameTargetParentFrame();
+    // TODO(crbug.com/1159332): Understand why condition involves the sameTargetParentFrame.
     if (!frame || !sameTargetParentFrame || sameTargetParentFrame.securityOrigin !== executionContext.origin) {
       const url = Common.ParsedURL.ParsedURL.fromString(executionContext.origin);
       if (url) {
@@ -274,14 +275,13 @@ export class ConsoleContextSelector {
       }
     }
 
-    if (frame) {
-      const callFrame = frame.findCreationCallFrame(callFrame => !!callFrame.url);
-      if (callFrame) {
-        return new Common.ParsedURL.ParsedURL(callFrame.url).domain();
+    if (frame && frame.securityOrigin) {
+      const domain = new Common.ParsedURL.ParsedURL(frame.securityOrigin).domain();
+      if (domain) {
+        return domain;
       }
-      return Common.UIString.UIString('IFrame');
     }
-    return '';
+    return Common.UIString.UIString('IFrame');
   }
 
   /**

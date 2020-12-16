@@ -813,22 +813,6 @@ export class ResourceTreeFrame {
   }
 
   /**
-   * @param {function(!Protocol.Runtime.CallFrame):boolean} searchFn
-   * @return {?Protocol.Runtime.CallFrame}
-   */
-  findCreationCallFrame(searchFn) {
-    let stackTrace = this._creationStackTrace;
-    while (stackTrace) {
-      const foundEntry = stackTrace.callFrames.find(searchFn);
-      if (foundEntry) {
-        return foundEntry;
-      }
-      stackTrace = stackTrace.parent || null;
-    }
-    return null;
-  }
-
-  /**
    * Returns true if this is the main frame of its target. For example, this returns true for the main frame
    * of an out-of-process iframe (OOPIF).
    * @return {boolean}

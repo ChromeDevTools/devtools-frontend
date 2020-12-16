@@ -149,6 +149,7 @@ export class ReportRow extends HTMLElement {
         .value {
           color: var(--color-text-primary);
           flex: auto;
+          margin-inline-start: 0px;
           padding: 0 6px;
           white-space: pre;
         }

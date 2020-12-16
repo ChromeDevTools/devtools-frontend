@@ -65,6 +65,10 @@ export class RequestTrustTokensReport extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <style>
+        devtools-report {
+          --name-column-width: 150px;
+        }
+
         .code {
           font-family: var(--monospace-font-family);
           font-size: var(--monospace-font-size);
@@ -77,9 +81,23 @@ export class RequestTrustTokensReport extends HTMLElement {
           padding: 0;
           margin: 0;
         }
+
+        .status-row {
+          display: flex;
+        }
+
+        .status-icon {
+          margin-right: 6px;
+        }
+
+        .status-text {
+          display: flex;
+          flex-direction: column;
+        }
       </style>
       <devtools-report>
         ${this.renderParameterSection()}
+        ${this.renderResultSection()}
       </devtools-report>
     `, this.shadow);
     // clang-format on
@@ -89,16 +107,14 @@ export class RequestTrustTokensReport extends HTMLElement {
     if (!this.trustTokenData || !this.trustTokenData.params) {
       return LitHtml.nothing;
     }
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
+
     return LitHtml.html`
       <devtools-report-section .data=${{sectionTitle: ls`Parameters`} as Components.ReportView.ReportSectionData}>
         ${renderRowWithCodeValue(ls`Type`, this.trustTokenData.params.type.toString())}
         ${this.renderRefreshPolicy(this.trustTokenData.params)}
         ${this.renderIssuers(this.trustTokenData.params)}
-      </devtools-report-section>
-    `;
-    // clang-format on
+        ${this.renderIssuerAndTopLevelOriginFromResult()}
+      </devtools-report-section>`;
   }
 
   private renderRefreshPolicy(params: Protocol.Network.TrustTokenParams): LitHtml.TemplateResult|{} {
@@ -113,30 +129,126 @@ export class RequestTrustTokensReport extends HTMLElement {
       return LitHtml.nothing;
     }
 
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
     return LitHtml.html`
       <devtools-report-row>
         <span slot="name">${ls`Issuers`}</span>
         <ul slot="value" class="issuers-list">
           ${params.issuers.map(issuer => LitHtml.html`<li>${issuer}</li>`)}
         </ul>
-      </devtools-report-row>
-    `;
-    // clang-format on
+      </devtools-report-row>`;
+  }
+
+  // The issuer and top level origin are technically parameters but reported in the
+  // result structure due to the timing when they are calculated in the backend.
+  // Nonetheless, we show them as part of the parameter section.
+  private renderIssuerAndTopLevelOriginFromResult(): LitHtml.TemplateResult|{} {
+    if (!this.trustTokenData || !this.trustTokenData.result) {
+      return LitHtml.nothing;
+    }
+
+    return LitHtml.html`
+      ${renderSimpleRowIfValuePresent(ls`Top level origin`, this.trustTokenData.result.topLevelOrigin)}
+      ${renderSimpleRowIfValuePresent(ls`Issuer`, this.trustTokenData.result.issuerOrigin)}`;
+  }
+
+  private renderResultSection(): LitHtml.TemplateResult|{} {
+    if (!this.trustTokenData || !this.trustTokenData.result) {
+      return LitHtml.nothing;
+    }
+    return LitHtml.html`
+      <devtools-report-section .data=${{sectionTitle: ls`Result`} as Components.ReportView.ReportSectionData}>
+        <devtools-report-row>
+          <span slot="name">${ls`Status`}</span>
+          <div slot="value" class="status-row">
+            <devtools-icon class="status-icon"
+              .data=${getIconForStatusCode(this.trustTokenData.result.status)}>
+            </devtools-icon>
+            <div class="status-text">
+              <span><strong>${getSimplifiedStatusTextForStatusCode(this.trustTokenData.result.status)}</strong></span>
+              <span>${getDetailedTextForStatusCode(this.trustTokenData.result.status)}</span>
+            </div>
+          </div>
+        </devtools-report-row>
+        ${this.renderIssuedTokenCount(this.trustTokenData.result)}
+      </devtools-report-section>`;
+  }
+
+  private renderIssuedTokenCount(result: Protocol.Network.TrustTokenOperationDoneEvent): LitHtml.TemplateResult|{} {
+    if (result.type !== Protocol.Network.TrustTokenOperationType.Issuance) {
+      return LitHtml.nothing;
+    }
+    return renderSimpleRowIfValuePresent(ls`Number of issued tokens`, result.issuedTokenCount);
   }
 }
 
+const SUCCESS_ICON_DATA: Components.Icon.IconWithName = {
+  color: 'rgb(12, 164, 12)',
+  iconName: 'ic_checkmark_16x16',
+  width: '12px',
+};
+
+const FAILURE_ICON_DATA: Components.Icon.IconWithName = {
+  color: '',
+  iconName: 'error_icon',
+  width: '12px',
+};
+
+function statusConsideredSuccess(status: Protocol.Network.TrustTokenOperationDoneEventStatus): boolean {
+  return status === Protocol.Network.TrustTokenOperationDoneEventStatus.Ok ||
+      status === Protocol.Network.TrustTokenOperationDoneEventStatus.AlreadyExists ||
+      status === Protocol.Network.TrustTokenOperationDoneEventStatus.FulfilledLocally;
+}
+
+function getIconForStatusCode(status: Protocol.Network.TrustTokenOperationDoneEventStatus):
+    Components.Icon.IconWithName {
+  return statusConsideredSuccess(status) ? SUCCESS_ICON_DATA : FAILURE_ICON_DATA;
+}
+
+function getSimplifiedStatusTextForStatusCode(status: Protocol.Network.TrustTokenOperationDoneEventStatus): string {
+  return statusConsideredSuccess(status) ? ls`Success` : ls`Failure`;
+}
+
+function getDetailedTextForStatusCode(status: Protocol.Network.TrustTokenOperationDoneEventStatus): string|null {
+  switch (status) {
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.Ok:
+      return null;
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.AlreadyExists:
+      return ls`The operations result was served from cache.`;
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.FulfilledLocally:
+      return ls`The operation was fulfilled locally, no request was sent.`;
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.InvalidArgument:
+      return ls`A client-provided argument was malformed or otherwise invalid.`;
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.ResourceExhausted:
+      return ls`Either no inputs for this operation are available or the output exceeds the operations quota.`;
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.BadResponse:
+      return ls`The servers response was malformed or otherwise invalid.`;
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.FailedPrecondition:
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.Unavailable:
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.InternalError:
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.UnknownError:
+      return ls`The operation failed for an unknown reason.`;
+  }
+}
+
+function renderSimpleRowIfValuePresent<T>(name: string, value: T|undefined): LitHtml.TemplateResult|{} {
+  if (value === undefined) {
+    return LitHtml.nothing;
+  }
+
+  return LitHtml.html`
+    <devtools-report-row>
+      <span slot="name">${name}</span>
+      <span slot="value">${value}</span>
+    </devtools-report-row>`;
+}
+
 function renderRowWithCodeValue(name: string, value: string): LitHtml.TemplateResult {
-  // Disabled until https://crbug.com/1079231 is fixed.
-  // clang-format off
   return LitHtml.html`
     <devtools-report-row>
       <span slot="name">${name}</span>
       <span slot="value" class="code">${value}</span>
     </devtools-report-row>
   `;
-  // clang-format on
 }
 
 customElements.define('devtools-trust-token-report', RequestTrustTokensReport);

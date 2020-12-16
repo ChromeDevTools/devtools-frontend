@@ -43,6 +43,7 @@ devtools_module("network") {
     "../components:bundle",
     "../cookie_table:bundle",
     "../data_grid:bundle",
+    "../elements:bundle",
     "../har_importer:bundle",
     "../host:bundle",
     "../mobile_throttling:bundle",

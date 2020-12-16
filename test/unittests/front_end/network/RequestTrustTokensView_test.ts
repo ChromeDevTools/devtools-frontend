@@ -3,17 +3,19 @@
 // found in the LICENSE file.
 
 import * as Network from '../../../../front_end/network/network.js';
-
-import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertNotNull, getElementsWithinComponent, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
 describe('RequestTrustTokensView', () => {
-  it('renders the RefreshPolicy for redemptions', () => {
+  const renderRequestTrustTokensView = () => {
     const component = new Network.RequestTrustTokensView.RequestTrustTokensReport();
     renderElementIntoDOM(component);
-    assertShadowRoot(component.shadowRoot);
+    return component;
+  };
 
+  it('renders the RefreshPolicy for redemptions', () => {
+    const component = renderRequestTrustTokensView();
     component.data = {
       params: {
         type: Protocol.Network.TrustTokenOperationType.Redemption,
@@ -21,16 +23,13 @@ describe('RequestTrustTokensView', () => {
       },
     } as Network.RequestTrustTokensView.RequestTrustTokensReportData;
 
-    const [typeSpan, refreshPolicySpan] = component.shadowRoot.querySelectorAll('span.code');
+    const [typeSpan, refreshPolicySpan] = getElementsWithinComponent(component, 'span.code', HTMLElement);
     assert.strictEqual(typeSpan.textContent, 'Redemption');
     assert.strictEqual(refreshPolicySpan.textContent, 'UseCached');
   });
 
   it('renders all issuers as a list', () => {
-    const component = new Network.RequestTrustTokensView.RequestTrustTokensReport();
-    renderElementIntoDOM(component);
-    assertShadowRoot(component.shadowRoot);
-
+    const component = renderRequestTrustTokensView();
     const expectedIssuers = ['example.org', 'foo.dev', 'bar.com'];
     component.data = {
       params: {
@@ -39,9 +38,39 @@ describe('RequestTrustTokensView', () => {
       },
     } as Network.RequestTrustTokensView.RequestTrustTokensReportData;
 
-    const issuerElements = component.shadowRoot.querySelectorAll('ul.issuers-list > li');
+    const issuerElements = getElementsWithinComponent(component, 'ul.issuers-list > li', HTMLElement);
     const actualIssuers = [...issuerElements].map(e => e.textContent);
 
     assert.deepStrictEqual(actualIssuers.sort(), expectedIssuers.sort());
+  });
+
+  it('renders a result section with success status for successful requests', () => {
+    const component = renderRequestTrustTokensView();
+    component.data = {
+      result: {
+        status: Protocol.Network.TrustTokenOperationDoneEventStatus.Ok,
+        type: Protocol.Network.TrustTokenOperationType.Issuance,
+        requestId: 'mockId',
+      },
+    };
+
+    const simpleText = getElementWithinComponent(component, 'div.status-text > span', HTMLElement);
+    assertNotNull(simpleText);
+    assert.strictEqual(simpleText.textContent, 'Success');
+  });
+
+  it('renders a result section with failure status for failed requests', () => {
+    const component = renderRequestTrustTokensView();
+    component.data = {
+      result: {
+        status: Protocol.Network.TrustTokenOperationDoneEventStatus.BadResponse,
+        type: Protocol.Network.TrustTokenOperationType.Issuance,
+        requestId: 'mockId',
+      },
+    };
+
+    const simpleText = getElementWithinComponent(component, 'div.status-text > span', HTMLElement);
+    assertNotNull(simpleText);
+    assert.strictEqual(simpleText.textContent, 'Failure');
   });
 });

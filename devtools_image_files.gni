@@ -51,6 +51,7 @@ devtools_image_files = [
   "flex-align-self-flex-start-icon.svg",
   "flex-align-self-stretch-icon.svg",
   "baseline-icon.svg",
+  "ic_checkmark_16x16.svg",
   "ic_info_black_18dp.svg",
   "ic_page_next_16x16_icon.svg",
   "ic_page_prev_16x16_icon.svg",

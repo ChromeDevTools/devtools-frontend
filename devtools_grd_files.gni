@@ -56,6 +56,7 @@ grd_files_release_sources = [
   "front_end/Images/flex-justify-content-space-around-icon.svg",
   "front_end/Images/flex-justify-content-space-between-icon.svg",
   "front_end/Images/flex-justify-content-space-evenly-icon.svg",
+  "front_end/Images/ic_checkmark_16x16.svg",
   "front_end/Images/ic_delete_filter.svg",
   "front_end/Images/ic_delete_list.svg",
   "front_end/Images/ic_info_black_18dp.svg",

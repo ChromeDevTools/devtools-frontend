@@ -36,6 +36,9 @@ export class PreRegisteredView {
     return this._viewRegistration.title;
   }
 
+  commandPrompt() {
+    return ls(this._viewRegistration.commandPrompt);
+  }
   /**
    * @override
    */

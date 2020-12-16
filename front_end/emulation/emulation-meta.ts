@@ -22,6 +22,7 @@ async function loadEmulationModule(): Promise<typeof Emulation> {
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
+  commandPrompt: 'Show Devices',
   title: ls`Devices`,
   order: 30,
   async loadView() {
@@ -37,6 +38,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
+  commandPrompt: 'Show Sensors',
   title: ls`Sensors`,
   id: 'sensors',
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
@@ -58,6 +60,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
   id: 'emulation-locations',
+  commandPrompt: 'Show Locations',
   title: ls`Locations`,
   order: 40,
   async loadView() {

@@ -198,7 +198,7 @@ export class CommandMenu {
 
       /** @type {!RevealViewCommandOptions} */
       const options = {
-        title: view.title(),
+        title: view.commandPrompt(),
         tags: view.tags() || '',
         category: ls(category),
         userActionCode: undefined,

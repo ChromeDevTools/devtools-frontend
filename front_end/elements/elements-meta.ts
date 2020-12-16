@@ -30,6 +30,7 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (elementsModul
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'elements',
+  commandPrompt: 'Show Elements',
   title: ls`Elements`,
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -43,6 +44,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.eventListeners',
+  commandPrompt: 'Show Event Listeners',
   title: ls`Event Listeners`,
   order: 5,
   hasToolbar: true,
@@ -56,6 +58,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.domProperties',
+  commandPrompt: 'Show Properties',
   title: ls`Properties`,
   order: 7,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -69,6 +72,7 @@ UI.ViewManager.registerViewExtension({
   experiment: Root.Runtime.ExperimentName.CAPTURE_NODE_CREATION_STACKS,
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.domCreation',
+  commandPrompt: 'Show Stack Trace',
   title: ls`Stack Trace`,
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -82,6 +86,7 @@ UI.ViewManager.registerViewExtension({
   experiment: Root.Runtime.ExperimentName.CSS_GRID_FEATURES,
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.layout',
+  commandPrompt: 'Show Layout',
   title: ls`Layout`,
   order: 4,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,

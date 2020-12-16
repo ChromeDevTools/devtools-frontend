@@ -23,6 +23,7 @@ async function loadSourcesModule(): Promise<typeof Sources> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'sources',
+  commandPrompt: 'Show Sources',
   title: ls`Sources`,
   order: 30,
   async loadView() {
@@ -34,6 +35,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-files',
+  commandPrompt: 'Show Filesystem',
   title: ls`Filesystem`,
   order: 3,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -46,6 +48,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-snippets',
+  commandPrompt: 'Show Snippets',
   title: ls`Snippets`,
   order: 6,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -58,6 +61,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'sources.search-sources-tab',
+  commandPrompt: 'Show Search',
   title: ls`Search`,
   order: 7,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
@@ -70,6 +74,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-recordings',
+  commandPrompt: 'Show Recordings',
   title: ls`Recordings`,
   order: 8,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -83,6 +88,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'sources.quick',
+  commandPrompt: 'Show Quick source',
   title: ls`Quick source`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 1000,
@@ -94,6 +100,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   id: 'sources.threads',
+  commandPrompt: 'Show Threads',
   title: ls`Threads`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   condition: '!sources.hide_thread_sidebar',
@@ -105,6 +112,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   id: 'sources.scopeChain',
+  commandPrompt: 'Show Scope',
   title: ls`Scope`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
@@ -115,6 +123,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   id: 'sources.watch',
+  commandPrompt: 'Show Watch',
   title: ls`Watch`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
@@ -126,6 +135,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   id: 'sources.jsBreakpoints',
+  commandPrompt: 'Show Breakpoints',
   title: ls`Breakpoints`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {

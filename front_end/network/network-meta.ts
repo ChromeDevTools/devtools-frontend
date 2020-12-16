@@ -31,6 +31,7 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (loadedNetwork
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'network',
+  commandPrompt: 'Show Network',
   title: ls`Network`,
   order: 40,
   async loadView() {
@@ -42,6 +43,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'network.blocked-urls',
+  commandPrompt: 'Show Network request blocking',
   title: ls`Network request blocking`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 60,
@@ -54,6 +56,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'network.config',
+  commandPrompt: 'Show Network conditions',
   title: ls`Network conditions`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 40,
@@ -67,6 +70,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NETWORK_SIDEBAR,
   id: 'network.search-network-tab',
+  commandPrompt: 'Show Search',
   title: ls`Search`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {

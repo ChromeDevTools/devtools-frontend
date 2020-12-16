@@ -879,7 +879,7 @@ export class SourcesPanel extends UI.Panel.Panel {
             Common.UIString.UIString('Continue to here'), this._continueToLocation.bind(this, uiLocation));
       }
 
-      this._callstackPane.appendBlackboxURLContextMenuItems(contextMenu, uiSourceCode);
+      this._callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
     }
   }
 

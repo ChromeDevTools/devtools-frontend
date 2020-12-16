@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-.blackboxed-message {
+.ignore-listed-message {
   text-align: center;
   font-style: italic;
   padding: 4px;
@@ -16,11 +16,11 @@
   margin-left: 5px;
 }
 
-.blackboxed-message > .link {
+.ignore-listed-message > .link {
   margin-left: 5px;
 }
 
-.blackboxed-message > .link:focus {
+.ignore-listed-message > .link:focus {
   outline-width: unset;
 }
 
@@ -92,7 +92,7 @@
   left: 0;
 }
 
-.blackboxed-call-frame {
+.ignore-listed-call-frame {
   opacity: 60%;
   font-style: italic;
 }
@@ -108,12 +108,12 @@
   display: block;
 }
 
-:host-context(.-theme-with-dark-background) .blackboxed-message {
+:host-context(.-theme-with-dark-background) .ignore-listed-message {
   background-color: hsl(46deg 98% 22%);
   color: #aaa;
 }
 
-:host-context(.-theme-with-dark-background) .blackboxed-message > .link {
+:host-context(.-theme-with-dark-background) .ignore-listed-message > .link {
   color: hsl(0deg 0% 67%);
 }
 

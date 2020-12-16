@@ -224,12 +224,6 @@ ol.expanded {
   vertical-align: bottom;
 }
 
-@media (forced-colors: active) {
-  .tree-outline > li .webkit-css-property {
-    color: HighlightText;
-  }
-}
-
 devtools-css-angle {
   display: inline-block;
 }

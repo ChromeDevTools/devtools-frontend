@@ -210,7 +210,7 @@ export const getAllPropertiesFromComputedPane = async () => {
              value: value.textContent ? value.textContent.trim().replace(/;$/, '') : '',
            };
          }))))
-      .filter(prop => !!prop);
+      .filter(prop => Boolean(prop));
 };
 
 export const getPropertyFromComputedPane = async (name: string) => {
@@ -225,7 +225,7 @@ export const getPropertyFromComputedPane = async (name: string) => {
     }, name);
     // Note that evaluateHandle always returns a handle, even if it points to an undefined remote object, so we need to
     // check it's defined here or continue iterating.
-    if (await matchingProperty.evaluate(n => !!n)) {
+    if (await matchingProperty.evaluate(n => Boolean(n))) {
       return matchingProperty as puppeteer.ElementHandle;
     }
   }
@@ -351,7 +351,7 @@ export const getDisplayedCSSPropertyNames = async (propertiesSection: puppeteer.
   const propertyNamesText = (await Promise.all(cssPropertyNames.map(
                                  node => node.evaluate(n => n.textContent),
                                  )))
-                                .filter(c => !!c);
+                                .filter(c => Boolean(c));
   return propertyNamesText;
 };
 
@@ -403,7 +403,7 @@ export const getCSSPropertyInRule = async (ruleSection: puppeteer.ElementHandle<
         await node.evaluateHandle((node, name) => (name === node.textContent) ? node.parentNode : undefined, name);
     // Note that evaluateHandle always returns a handle, even if it points to an undefined remote object, so we need to
     // check it's defined here or continue iterating.
-    if (await parent.evaluate(n => !!n)) {
+    if (await parent.evaluate(n => Boolean(n))) {
       return parent as puppeteer.ElementHandle;
     }
   }

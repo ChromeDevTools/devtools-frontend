@@ -24,7 +24,7 @@ export async function navigateToNetworkTab(testName: string) {
 export async function waitForSomeRequestsToAppear(numberOfRequests: number) {
   await waitForFunction(async () => {
     const requests = await getAllRequestNames();
-    return requests.length >= numberOfRequests && !!requests.map(name => name ? name.trim() : '').join('');
+    return requests.length >= numberOfRequests && Boolean(requests.map(name => name ? name.trim() : '').join(''));
   });
 }
 

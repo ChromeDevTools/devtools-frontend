@@ -14,7 +14,7 @@ describe('common helper', () => {
   it('exposes DOM manipulation methods on DOM elements', () => {
     const wrapper = document.createElement('div');
 
-    assert.isTrue(!!wrapper.createChild, 'createChild is available on DOM elements');
+    assert.isTrue(Boolean(wrapper.createChild), 'createChild is available on DOM elements');
     const child = wrapper.createChild('span', 'child');
 
     assert.instanceOf(child, HTMLSpanElement, 'The right span element got created');
@@ -25,7 +25,7 @@ describe('common helper', () => {
     assert.instanceOf(textChild, Text, 'The right text node got created');
     assert.strictEqual(textChild.textContent, 'hello world', 'The right text content got set');
 
-    assert.isTrue(!!wrapper.removeChildren, 'removeChildren is available on DOM elements');
+    assert.isTrue(Boolean(wrapper.removeChildren), 'removeChildren is available on DOM elements');
     wrapper.removeChildren();
 
     assert.strictEqual(wrapper.childElementCount, 0, 'All children got removed');

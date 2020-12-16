@@ -12,9 +12,9 @@ const rimraf = require('rimraf');
 const debugCheck = require('./debug-check.js');
 
 // false by default
-const DEBUG_ENABLED = !!process.env['DEBUG'];
-const REPEAT_ENABLED = !!process.env['REPEAT'];
-const COVERAGE_ENABLED = !!process.env['COVERAGE'];
+const DEBUG_ENABLED = Boolean(process.env['DEBUG']);
+const REPEAT_ENABLED = Boolean(process.env['REPEAT']);
+const COVERAGE_ENABLED = Boolean(process.env['COVERAGE']);
 
 // true by default
 const TEXT_COVERAGE_ENABLED = COVERAGE_ENABLED && !process.env['NO_TEXT_COVERAGE'];

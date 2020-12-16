@@ -24,7 +24,7 @@ async function assertColorSwatch(container: puppeteer.ElementHandle|undefined, e
     assert.fail('Container not found');
   }
   const swatch = await getColorSwatch(container, 0);
-  assert.isTrue(!!swatch, 'Color swatch found');
+  assert.isTrue(Boolean(swatch), 'Color swatch found');
 
   const color = await getColorSwatchColor(container, 0);
   assert.strictEqual(color, expectedColor, 'Color swatch has the right color');

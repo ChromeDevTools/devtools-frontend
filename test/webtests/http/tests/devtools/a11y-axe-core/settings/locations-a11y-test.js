@@ -14,7 +14,7 @@
     addLocationButton.click();
 
     const newLocationInputs = locationsWidget._list._editor._controls;
-    TestRunner.addResult(`Opened input box: ${!!newLocationInputs}`);
+    TestRunner.addResult(`Opened input box: ${Boolean(newLocationInputs)}`);
 
     await AxeCoreTestRunner.runValidation(locationsWidget.contentElement);
   }

@@ -15,7 +15,7 @@
     addPatternButton.click();
 
     const blackboxInputs = blackboxWidget._list._editor._controls;
-    TestRunner.addResult(`Opened input box: ${!!blackboxInputs}`);
+    TestRunner.addResult(`Opened input box: ${Boolean(blackboxInputs)}`);
 
     await AxeCoreTestRunner.runValidation(blackboxWidget.contentElement);
   }

@@ -42,14 +42,14 @@ export const checkIfTabExistsInMainPanel = async (tabId: string) => {
   const mainPanel = await waitFor(MAIN_PANEL_SELECTOR);
   const header = await waitFor(TAB_HEADER_SELECTOR, mainPanel);
   const tab = await header.$(tabId);
-  return !!tab;
+  return Boolean(tab);
 };
 
 export const checkIfTabExistsInDrawer = async (tabId: string) => {
   const drawer = await waitFor(DRAWER_PANEL_SELECTOR);
   const header = await waitFor(TAB_HEADER_SELECTOR, drawer);
   const tab = await header.$(tabId);
-  return !!tab;
+  return Boolean(tab);
 };
 
 export const moveTabToDrawer = async (tabId: string) => {

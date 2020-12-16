@@ -8,6 +8,7 @@ rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', 'scripts', 'eslint_rules',
 
 module.exports = {
   'rules': {
+    'no-implicit-coercion': 2,
     // errors on it('test') with no body
     'mocha/no-pending-tests': 2,
     // errors on {describe, it}.only

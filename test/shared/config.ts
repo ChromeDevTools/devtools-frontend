@@ -24,7 +24,7 @@ export function getEnvVar<Key extends keyof SupportedEnvVars>(
   const envVar = process.env[name];
 
   if (typeof defaultValue === 'boolean') {
-    return (!!envVar) as SupportedEnvVars[Key];
+    return (Boolean(envVar)) as SupportedEnvVars[Key];
   }
 
   if (typeof defaultValue === 'number') {

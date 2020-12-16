@@ -510,6 +510,11 @@ export class SoftContextMenu {
         this.discard();
         keyboardEvent.consume(true);
         break;
+      /**
+       * Important: we don't consume the event by default for `Enter` or `Space`
+       * key events, as if there's a custom sub menu we pass the event onto
+       * that.
+       */
       case 'Enter':
         if (!isEnterKey(keyboardEvent)) {
           return;
@@ -519,6 +524,8 @@ export class SoftContextMenu {
       case ' ':
         onEnterOrSpace.call(this);
         break;
+      default:
+        keyboardEvent.consume(true);
     }
   }
 }

@@ -1,24 +1,6 @@
 {
   "extensions": [
     {
-      "type": "view",
-      "location": "panel",
-      "id": "heap_profiler",
-      "title": "Memory",
-      "order": 60,
-      "className": "Profiler.HeapProfilerPanel"
-    },
-    {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "live_heap_profile",
-      "title": "Live Heap Profile",
-      "persistence": "closeable",
-      "className": "Profiler.LiveHeapProfileView",
-      "order": 100,
-      "experiment": "liveHeapProfile"
-    },
-    {
       "type": "@UI.ContextMenu.Provider",
       "contextTypes": [
         "SDK.RemoteObject"

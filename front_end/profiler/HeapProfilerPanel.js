@@ -11,6 +11,8 @@ import {HeapSnapshotView} from './HeapSnapshotView.js';  // eslint-disable-line 
 import {ProfilesPanel} from './ProfilesPanel.js';
 import {instance} from './ProfileTypeRegistry.js';
 
+/** @type {HeapProfilerPanel} */
+let heapProfilerPanelInstance;
 /**
  * @implements {UI.ContextMenu.Provider}
  * @implements {UI.ActionRegistration.ActionDelegate}
@@ -21,6 +23,13 @@ export class HeapProfilerPanel extends ProfilesPanel {
     const profileTypes =
         [registry.heapSnapshotProfileType, registry.trackingHeapSnapshotProfileType, registry.samplingHeapProfileType];
     super('heap_profiler', profileTypes, 'profiler.heap-toggle-recording');
+  }
+
+  static instance() {
+    if (!heapProfilerPanelInstance) {
+      heapProfilerPanelInstance = new HeapProfilerPanel();
+    }
+    return heapProfilerPanelInstance;
   }
 
   /**

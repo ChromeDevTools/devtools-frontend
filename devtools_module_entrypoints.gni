@@ -119,6 +119,7 @@ devtools_module_entrypoint_sources = [
   "persistence/persistence.js",
   "platform/platform.js",
   "profiler/profiler-legacy.js",
+  "profiler/profiler-meta.js",
   "profiler/profiler.js",
   "protocol_client/protocol_client-legacy.js",
   "protocol_client/protocol_client.js",

@@ -13,6 +13,7 @@ group("front_end") {
     ":legacy_entrypoints",
     ":ts_library-verification",
     "accessibility:bundle",
+    "accessibility:meta",
     "animation:bundle",
     "bindings:bundle",
     "browser_debugger:bundle",

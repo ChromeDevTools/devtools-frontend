@@ -12,7 +12,11 @@ import {ARIAAttributesPane} from './ARIAAttributesView.js';
 import {AXBreadcrumbsPane} from './AXBreadcrumbsPane.js';
 import {SourceOrderPane} from './SourceOrderView.js';
 
+/** @type {!AccessibilitySidebarView} */
+let accessibilitySidebarViewInstance;
+
 export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget {
+  /** @private */
   constructor() {
     super();
     this._sourceOrderViewerExperimentEnabled = Root.Runtime.experiments.isEnabled('sourceOrderViewer');
@@ -33,6 +37,13 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this._sidebarPaneStack.widget().show(this.element);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._pullNode, this);
     this._pullNode();
+  }
+
+  static instance() {
+    if (!accessibilitySidebarViewInstance) {
+      accessibilitySidebarViewInstance = new AccessibilitySidebarView();
+    }
+    return accessibilitySidebarViewInstance;
   }
 
   /**

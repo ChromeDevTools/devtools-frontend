@@ -6,6 +6,7 @@ import("./scripts/build/ninja/vars.gni")
 
 devtools_module_entrypoint_sources = [
   "accessibility/accessibility-legacy.js",
+  "accessibility/accessibility-meta.js",
   "accessibility/accessibility.js",
   "animation/animation-legacy.js",
   "animation/animation.js",

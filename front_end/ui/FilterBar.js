@@ -208,7 +208,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     this._filterInputElement = container.createChild('span', 'filter-input-field');
 
     this._prompt = new TextPrompt();
-    this._prompt.initialize(this._completions.bind(this), ' ', true);
+    this._prompt.initialize(this._completions.bind(this), ' ');
     /** @type {!HTMLElement} */
     this._proxyElement = /** @type {!HTMLElement} */ (this._prompt.attach(this._filterInputElement));
     this._proxyElement.title = Common.UIString.UIString('e.g. /small[\\d]+/ url:a.com/b');

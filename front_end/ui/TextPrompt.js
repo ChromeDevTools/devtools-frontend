@@ -64,27 +64,15 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
      */
     this._leftParenthesesIndices = [];
     ARIAUtils.markAsHidden(this._ghostTextElement);
-<<<<<<< HEAD   (4361e8 Fix Remote Devices view)
-=======
-
-    /** @type {function(this:null, string, string, boolean=):!Promise<!Suggestions>} */
-    this._loadCompletions;
-    /** @type {string} */
-    this._completionStopCharacters;
-    /** @type {boolean} */
-    this._usesSuggestionBuilder;
->>>>>>> CHANGE (b9e29f TextPrompt: Limit Autocomplete Retry to suggestion builder f)
   }
 
   /**
    * @param {function(this:null, string, string, boolean=):!Promise<!Suggestions>} completions
    * @param {string=} stopCharacters
-   * @param {boolean=} usesSuggestionBuilder
    */
-  initialize(completions, stopCharacters, usesSuggestionBuilder) {
+  initialize(completions, stopCharacters) {
     this._loadCompletions = completions;
     this._completionStopCharacters = stopCharacters || ' =:[({;,!+-*/&|^<>.';
-    this._usesSuggestionBuilder = usesSuggestionBuilder || false;
   }
 
   /**
@@ -458,8 +446,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     if (!result) {
       result = this._acceptSuggestionInternal();
     }
-    if (this._usesSuggestionBuilder && result) {
-      // Trigger autocompletions for text prompts using suggestion builders
+    if (result) {
       this.autoCompleteSoon();
     }
     return result;

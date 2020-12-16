@@ -107,12 +107,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this._suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(keys);
 
     this._textFilterUI = new UI.Toolbar.ToolbarInput(
-<<<<<<< HEAD   (4361e8 Fix Remote Devices view)
         ls`Filter`, '', 1, .2, '', this._suggestionBuilder.completions.bind(this._suggestionBuilder));
-=======
-        i18nString(UIStrings.filter), '', 1, .2, '', this._suggestionBuilder.completions.bind(this._suggestionBuilder),
-        true);
->>>>>>> CHANGE (b9e29f TextPrompt: Limit Autocomplete Retry to suggestion builder f)
     this._textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, event => {
       const query = /** @type {string} */ (event.data);
       const filters = this._filterParser.parse(query);

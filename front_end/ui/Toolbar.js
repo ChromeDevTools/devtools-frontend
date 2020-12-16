@@ -650,9 +650,8 @@ export class ToolbarInput extends ToolbarItem {
    * @param {number=} shrinkFactor
    * @param {string=} tooltip
    * @param {(function(string, string, boolean=):!Promise<!Suggestions>)=} completions
-   * @param {boolean=} dynamicCompletions
    */
-  constructor(placeholder, accessiblePlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions) {
+  constructor(placeholder, accessiblePlaceholder, growFactor, shrinkFactor, tooltip, completions) {
     const element = document.createElement('div');
     element.classList.add('toolbar-input');
     super(element);
@@ -665,14 +664,8 @@ export class ToolbarInput extends ToolbarItem {
     this._prompt = new TextPrompt();
     this._proxyElement = this._prompt.attach(internalPromptElement);
     this._proxyElement.classList.add('toolbar-prompt-proxy');
-<<<<<<< HEAD   (4361e8 Fix Remote Devices view)
     this._proxyElement.addEventListener('keydown', event => this._onKeydownCallback(event));
     this._prompt.initialize(completions || (() => Promise.resolve([])), ' ');
-=======
-    this._proxyElement.addEventListener(
-        'keydown', /** @param {!Event} event */ event => this._onKeydownCallback(event));
-    this._prompt.initialize(completions || (() => Promise.resolve([])), ' ', dynamicCompletions);
->>>>>>> CHANGE (b9e29f TextPrompt: Limit Autocomplete Retry to suggestion builder f)
     if (tooltip) {
       this._prompt.setTitle(tooltip);
     }

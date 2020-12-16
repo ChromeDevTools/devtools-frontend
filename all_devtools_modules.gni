@@ -250,6 +250,8 @@ all_typescript_module_sources = [
   "issues/IssueRevealer.js",
   "issues/IssueSurveyLink.js",
   "issues/IssuesPane.js",
+  "issues/MarkdownImage.js",
+  "issues/MarkdownImagesMap.js",
   "issues/MarkdownIssueDescription.js",
   "issues/MarkdownLink.js",
   "issues/MarkdownLinksMap.js",

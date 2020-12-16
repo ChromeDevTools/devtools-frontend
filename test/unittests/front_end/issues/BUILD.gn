@@ -5,7 +5,9 @@ ts_library("issues") {
   sources = [
     "IssueAggregator_test.ts",
     "IssueSurveyLink_test.ts",
+    "MarkdownImage_test.ts",
     "MarkdownIssueDescription_test.ts",
+    "MarkdownLink_test.ts",
     "MarkdownView_test.ts",
   ]
 
@@ -14,6 +16,7 @@ ts_library("issues") {
     "../../../../front_end/issues:bundle",
     "../../../../front_end/sdk:bundle",
     "../../../../front_end/third_party/marked:bundle",
+    "../../../../front_end/ui/components:bundle",
     "../helpers",
     "../sdk",
   ]

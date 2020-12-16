@@ -32,7 +32,7 @@ export class MarkdownLink extends HTMLElement {
     const output = LitHtml.html`
       <style>
         .devtools-link {
-          color: var(--color-primary);
+          color: var(--color-link);
           text-decoration: none;
         }
 

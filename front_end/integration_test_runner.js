@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import './devtools_app.js';
+import './accessibility/accessibility-legacy.js';
 import * as Startup from './startup/startup.js';
 
 if (self.testRunner) {

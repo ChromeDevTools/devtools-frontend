@@ -1,7 +1,5 @@
 {
-  "modules": [
-    "accessibility-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "accessibilityNode.css",
     "accessibilityProperties.css",

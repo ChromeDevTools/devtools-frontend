@@ -1781,7 +1781,7 @@ export class DebuggerPlugin extends Plugin {
         if (!editorAction.isCurrentUISourceCodeFormatable()) {
           return;
         }
-        formatterCallback = () => editorAction.toggleFormatScriptSource.bind(editorAction);
+        formatterCallback = editorAction.toggleFormatScriptSource.bind(editorAction);
         break;
       }
     }

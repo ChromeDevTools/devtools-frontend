@@ -13,7 +13,7 @@
   font-style: italic;
 }
 
-.stack-preview-container .webkit-html-blackbox-link {
+.stack-preview-container .webkit-html-ignore-list-link {
   opacity: 60%;
 }
 
@@ -32,14 +32,14 @@
   max-width: 80em;
 }
 
-.stack-preview-container:not(.show-blackboxed) > tr.blackboxed {
+.stack-preview-container:not(.show-ignore-listed) > tr.ignore-listed {
   display: none;
 }
 
-.stack-preview-container > tr.show-blackboxed-link {
+.stack-preview-container > tr.show-ignore-listed-link {
   font-style: italic;
 }
 
-.stack-preview-container.show-blackboxed > tr.show-blackboxed-link {
+.stack-preview-container.show-ignore-listed > tr.show-ignore-listed-link {
   display: none;
 }

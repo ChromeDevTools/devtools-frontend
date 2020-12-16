@@ -504,7 +504,7 @@ export class Linkifier {
       titleText += ':' + (uiLocation.lineNumber + 1);
     }
     UI.Tooltip.Tooltip.install(anchor, titleText);
-    anchor.classList.toggle('webkit-html-blackbox-link', await liveLocation.isIgnoreListed());
+    anchor.classList.toggle('webkit-html-ignore-list-link', await liveLocation.isIgnoreListed());
     Linkifier._updateLinkDecorations(anchor);
   }
 

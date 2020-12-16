@@ -107,7 +107,7 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
         links.push(link);
       }
       if (shouldHide) {
-        row.classList.add('blackboxed');
+        row.classList.add('ignore-listed');
         ++hiddenCallFrames;
       }
       contentElement.appendChild(row);
@@ -161,13 +161,13 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
     row.createChild('td');
     row.createChild('td');
     if (appendStackTrace(asyncStackTrace)) {
-      row.classList.add('blackboxed');
+      row.classList.add('ignore-listed');
     }
     asyncStackTrace = asyncStackTrace.parent;
   }
 
   if (totalHiddenCallFramesCount) {
-    const row = contentElement.createChild('tr', 'show-blackboxed-link');
+    const row = contentElement.createChild('tr', 'show-ignore-listed-link');
     row.createChild('td').textContent = '\n';
     const cell = /** @type {!HTMLTableCellElement} */ (row.createChild('td'));
     cell.colSpan = 4;
@@ -178,7 +178,7 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
       showAllLink.textContent = i18nString(UIStrings.showSMoreFrames, {PH1: totalHiddenCallFramesCount});
     }
     showAllLink.addEventListener('click', () => {
-      contentElement.classList.add('show-blackboxed');
+      contentElement.classList.add('show-ignore-listed');
       if (contentUpdated) {
         contentUpdated();
       }

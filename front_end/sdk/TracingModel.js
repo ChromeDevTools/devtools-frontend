@@ -712,8 +712,8 @@ export class Event {
         console.error('Same argument name (' + name + ') is used for begin and end phases of ' + this.name);
       }
       /** @typedef {Object<string, string|number|ObjectSnapshot>} */
-      let BlackboxArgs;  // eslint-disable-line no-unused-vars
-      /** @type {!BlackboxArgs} */ (this.args)[name] = /** @type {!BlackboxArgs} */ (args)[name];
+      let IgnoreListArgs;  // eslint-disable-line no-unused-vars
+      /** @type {!IgnoreListArgs} */ (this.args)[name] = /** @type {!IgnoreListArgs} */ (args)[name];
     }
   }
 

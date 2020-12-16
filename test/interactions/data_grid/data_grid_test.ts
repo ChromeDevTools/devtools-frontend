@@ -26,6 +26,7 @@ async function clickAndDragResizeHandlerHorizontally(handler: ElementHandle<Elem
   await frontend.mouse.move(position.x, position.y);
   await frontend.mouse.down();
   await frontend.mouse.move(position.x + mouseXChange, position.y);
+  await frontend.mouse.up();
 }
 
 
@@ -204,14 +205,14 @@ describe('data grid', () => {
     assertNumberBetween(columnWidths[1], 294, 300);
 
     await clickAndDragResizeHandlerHorizontally(firstResizeHandler, -100);
-    // /* The resize calculation is roughly as follows
-    //  * mouse delta = 100px (-100, but we Math.abs it)
-    //  * delta as a % = (100 / (leftCellWidth + rightCellWidth)) * 100
-    //  * % delta = (100 / 666 + 333) * 100
-    //  * % delta = 11.1%
-    //  * therefore left column % = -11.1%
-    //  * and right column % = + 11.1%
-    //  */
+    /* The resize calculation is roughly as follows
+     * mouse delta = 100px (-100, but we Math.abs it)
+     * delta as a % = (100 / (leftCellWidth + rightCellWidth)) * 100
+     * % delta = (100 / 666 + 333) * 100
+     * % delta = 11.1%
+     * therefore left column % = -11.1%
+     * and right column % = + 11.1%
+     */
     const newColumnPercentageWidths = await getColumnPercentageWidths(dataGrid);
     assert.deepEqual(
         newColumnPercentageWidths,
@@ -222,5 +223,48 @@ describe('data grid', () => {
     columnWidths = await getColumnPixelWidths(columns);
     assertNumberBetween(columnWidths[0], 493, 498);  // 55% of 900 = 495
     assertNumberBetween(columnWidths[1], 402, 408);  // 45% of 900 = 405
+  });
+
+  it('persists the column resizes when new data is added', async () => {
+    await loadComponentDocExample('data_grid/adding-data.html');
+
+    const dataGrid = await getDataGrid();
+    await getDataGridRows(1, dataGrid);
+    await waitFor('.cell-resize-handle', dataGrid);
+    const firstResizeHandler = await $('.cell-resize-handle', dataGrid);
+    if (!firstResizeHandler) {
+      assert.fail('Could not find resizeHandler');
+    }
+
+    const columns = [
+      await getDataGridCellAtIndex(dataGrid, {row: 1, column: 0}),
+      await getDataGridCellAtIndex(dataGrid, {row: 1, column: 1}),
+    ];
+
+    let columnPixelWidths = await getColumnPixelWidths(columns);
+    // The container is 600px and both columns have weighting of 1, so they
+    // should both be ~300.
+    assertNumberBetween(columnPixelWidths[0], 297, 303);
+    assertNumberBetween(columnPixelWidths[1], 297, 303);
+
+    await clickAndDragResizeHandlerHorizontally(firstResizeHandler, 50);
+    const newColumnPercentageWidths = await getColumnPercentageWidths(dataGrid);
+    assert.deepEqual(
+        newColumnPercentageWidths,
+        [
+          58,  // 50 + 8.3 rounded
+          42,  // 50 - 8.3 rounded
+        ]);
+    columnPixelWidths = await getColumnPixelWidths(columns);
+    assertNumberBetween(columnPixelWidths[0], 346, 350);  // 58% of 600 = 348
+    assertNumberBetween(columnPixelWidths[1], 250, 255);  // 42% of 600 = 252
+
+    const addButton = await waitFor('#add');
+    await click(addButton);
+    await getDataGridRows(2, dataGrid);
+
+    const newColumnPixelWidths = await getColumnPixelWidths(columns);
+    // Ensure that after resizing and then adding a row that the widths are not changed
+    assert.deepEqual(newColumnPixelWidths, columnPixelWidths);
   });
 });

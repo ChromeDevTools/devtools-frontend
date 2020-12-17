@@ -253,7 +253,8 @@ export function registerCommands(inspectorBackend) {
     MixedContentIssue: 'MixedContentIssue',
     BlockedByResponseIssue: 'BlockedByResponseIssue',
     HeavyAdIssue: 'HeavyAdIssue',
-    ContentSecurityPolicyIssue: 'ContentSecurityPolicyIssue'
+    ContentSecurityPolicyIssue: 'ContentSecurityPolicyIssue',
+    SharedArrayBufferTransferIssue: 'SharedArrayBufferTransferIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});
@@ -305,6 +306,7 @@ export function registerCommands(inspectorBackend) {
     BackgroundFetch: 'backgroundFetch',
     ClipboardReadWrite: 'clipboardReadWrite',
     ClipboardSanitizedWrite: 'clipboardSanitizedWrite',
+    DisplayCapture: 'displayCapture',
     DurableStorage: 'durableStorage',
     Flash: 'flash',
     Geolocation: 'geolocation',
@@ -2378,7 +2380,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'transferMode', 'type': 'string', 'optional': true},
         {'name': 'streamFormat', 'type': 'string', 'optional': true},
         {'name': 'streamCompression', 'type': 'string', 'optional': true},
-        {'name': 'traceConfig', 'type': 'object', 'optional': true}
+        {'name': 'traceConfig', 'type': 'object', 'optional': true},
+        {'name': 'perfettoConfig', 'type': 'string', 'optional': true}
       ],
       []);
 

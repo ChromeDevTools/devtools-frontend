@@ -661,6 +661,14 @@ experimental domain Audits
       optional SourceCodeLocation sourceCodeLocation
       optional DOM.BackendNodeId violatingNodeId
 
+  # Details for a request that has been blocked with the BLOCKED_BY_RESPONSE
+  # code. Currently only used for COEP/COOP, but may be extended to include
+  # some CSP errors in the future.
+  type SharedArrayBufferTransferIssueDetails extends object
+    properties
+      SourceCodeLocation sourceCodeLocation
+      boolean isWarning
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -671,6 +679,7 @@ experimental domain Audits
       BlockedByResponseIssue
       HeavyAdIssue
       ContentSecurityPolicyIssue
+      SharedArrayBufferTransferIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -682,6 +691,7 @@ experimental domain Audits
       optional BlockedByResponseIssueDetails blockedByResponseIssueDetails
       optional HeavyAdIssueDetails heavyAdIssueDetails
       optional ContentSecurityPolicyIssueDetails contentSecurityPolicyIssueDetails
+      optional SharedArrayBufferTransferIssueDetails sharedArrayBufferTransferIssueDetails
 
   # An inspector issue reported from the back-end.
   type InspectorIssue extends object
@@ -828,6 +838,7 @@ domain Browser
       backgroundFetch
       clipboardReadWrite
       clipboardSanitizedWrite
+      displayCapture
       durableStorage
       flash
       geolocation
@@ -8077,6 +8088,10 @@ experimental domain Tracing
       # transfer mode (defaults to `none`)
       optional StreamCompression streamCompression
       optional TraceConfig traceConfig
+      # Base64-encoded serialized perfetto.protos.TraceConfig protobuf message
+      # When specified, the parameters `categories`, `options`, `traceConfig`
+      # are ignored.
+      optional binary perfettoConfig
 
   event bufferUsage
     parameters

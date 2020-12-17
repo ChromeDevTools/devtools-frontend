@@ -927,6 +927,16 @@ declare namespace Protocol {
     }
 
     /**
+     * Details for a request that has been blocked with the BLOCKED_BY_RESPONSE
+     * code. Currently only used for COEP/COOP, but may be extended to include
+     * some CSP errors in the future.
+     */
+    export interface SharedArrayBufferTransferIssueDetails {
+      sourceCodeLocation: SourceCodeLocation;
+      isWarning: boolean;
+    }
+
+    /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
      * information about the kind of issue.
@@ -937,6 +947,7 @@ declare namespace Protocol {
       BlockedByResponseIssue = 'BlockedByResponseIssue',
       HeavyAdIssue = 'HeavyAdIssue',
       ContentSecurityPolicyIssue = 'ContentSecurityPolicyIssue',
+      SharedArrayBufferTransferIssue = 'SharedArrayBufferTransferIssue',
     }
 
     /**
@@ -950,6 +961,7 @@ declare namespace Protocol {
       blockedByResponseIssueDetails?: BlockedByResponseIssueDetails;
       heavyAdIssueDetails?: HeavyAdIssueDetails;
       contentSecurityPolicyIssueDetails?: ContentSecurityPolicyIssueDetails;
+      sharedArrayBufferTransferIssueDetails?: SharedArrayBufferTransferIssueDetails;
     }
 
     /**
@@ -1149,6 +1161,7 @@ declare namespace Protocol {
       BackgroundFetch = 'backgroundFetch',
       ClipboardReadWrite = 'clipboardReadWrite',
       ClipboardSanitizedWrite = 'clipboardSanitizedWrite',
+      DisplayCapture = 'displayCapture',
       DurableStorage = 'durableStorage',
       Flash = 'flash',
       Geolocation = 'geolocation',
@@ -11860,6 +11873,12 @@ declare namespace Protocol {
        */
       streamCompression?: StreamCompression;
       traceConfig?: TraceConfig;
+      /**
+       * Base64-encoded serialized perfetto.protos.TraceConfig protobuf message
+       * When specified, the parameters `categories`, `options`, `traceConfig`
+       * are ignored.
+       */
+      perfettoConfig?: binary;
     }
 
     export interface BufferUsageEvent {

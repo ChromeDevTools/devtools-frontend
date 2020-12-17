@@ -39,7 +39,12 @@ export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
     target: SDK.SDKModel.Target, event: E, payload: ProtocolMapping.Events[E][0]) {
   const [domain, method] = event.split('.');
   if (!target._dispatchers[domain]) {
-    return;
+    throw new Error(`No dispatcher for domain "${domain}" on provided target`);
+  }
+
+  // Register the event if it doesn't exist already.
+  if (!(method in target._dispatchers[domain]._eventArgs)) {
+    target._dispatchers[domain].registerEvent(method, {});
   }
 
   target._dispatchers[domain].dispatch(method, {method, params: payload});

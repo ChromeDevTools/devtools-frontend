@@ -517,7 +517,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const isExtension = entryType === EntryType.ExtensionEvent;
     const openEvents = [];
     const flowEventsEnabled = Root.Runtime.experiments.isEnabled('timelineFlowEvents');
-    const blackboxingEnabled = !isExtension && Root.Runtime.experiments.isEnabled('blackboxJSFramesOnTimeline');
+    const ignoreListingEnabled = !isExtension && Root.Runtime.experiments.isEnabled('blackboxJSFramesOnTimeline');
     let maxStackDepth = 0;
     let group = null;
     if (track && track.type === TimelineModel.TimelineModel.TrackType.MainThread) {
@@ -580,7 +580,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         openEvents.pop();
       }
       eventToDisallowRoot.set(e, false);
-      if (blackboxingEnabled && this._isBlackboxedEvent(e)) {
+      if (ignoreListingEnabled && this._isIgnoreListedEvent(e)) {
         const parent = openEvents.peekLast();
         if (parent && eventToDisallowRoot.get(parent)) {
           continue;
@@ -622,19 +622,19 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
    */
-  _isBlackboxedEvent(event) {
+  _isIgnoreListedEvent(event) {
     if (event.name !== TimelineModel.TimelineModel.RecordType.JSFrame) {
       return false;
     }
     const url = event.args['data']['url'];
-    return url && this._isBlackboxedURL(url);
+    return url && this._isIgnoreListedURL(url);
   }
 
   /**
    * @param {string} url
    * @return {boolean}
    */
-  _isBlackboxedURL(url) {
+  _isIgnoreListedURL(url) {
     return Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedURL(url);
   }
 

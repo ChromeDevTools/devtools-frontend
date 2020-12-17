@@ -32,6 +32,8 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     /** @type {!Map<string, !Protocol.Audits.BlockedByResponseIssueDetails>} */
     this._blockedByResponseDetails = new Map();
     this._aggregatedIssuesCount = 0;
+    /** @type {Set<SDK.SharedArrayBufferTransferIssue.SharedArrayBufferTransferIssue>} */
+    this._sharedArrayBufferTransferIssues = new Set();
   }
 
   /**
@@ -94,6 +96,13 @@ export class AggregatedIssue extends SDK.Issue.Issue {
    */
   requests() {
     return this._requests.values();
+  }
+
+  /**
+   * @return {Iterable<SDK.SharedArrayBufferTransferIssue.SharedArrayBufferTransferIssue>}
+   */
+  sharedArrayBufferTransfersIssues() {
+    return this._sharedArrayBufferTransferIssues;
   }
 
   /**
@@ -169,6 +178,9 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     }
     if (issue instanceof SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
       this._cspIssues.add(issue);
+    }
+    if (issue instanceof SDK.SharedArrayBufferTransferIssue.SharedArrayBufferTransferIssue) {
+      this._sharedArrayBufferTransferIssues.add(issue);
     }
   }
 }

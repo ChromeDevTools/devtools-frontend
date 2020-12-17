@@ -15,6 +15,7 @@ group("resources") {
     "emulation",
     "host",
     "inline_editor",
+    "issues",
     "layers",
     "lighthouse",
     "media",

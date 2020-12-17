@@ -549,6 +549,9 @@
   <message name="IDS_DEVTOOLS_ba76fecd860f5cf4a97da9177080fc1c" desc="Label for the link for Mixed Content Issues">
     Preventing mixed content
   </message>
+  <message name="IDS_DEVTOOLS_bbe82d0b9010205fc45f5371b4e5f379" desc="Label for the link for Shared Array Buffer Issues">
+    Enabling Shared Array Buffer
+  </message>
   <message name="IDS_DEVTOOLS_bc06bdbf329ad9ca96d447a6807694f4" desc="Title for a SameSiteCookie issue">
     Mark cross-site cookies as Secure to allow setting them in cross-site contexts
   </message>

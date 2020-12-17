@@ -13,6 +13,7 @@ import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
 import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
+import {AffectedSharedArrayBufferTransferDetailsView} from './AffectedSharedArrayBufferTransferDetailsView.js';
 import {AggregatedIssue, Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
 import {IssueSurveyLink} from './IssueSurveyLink.js';
 import {createIssueDescriptionFromMarkdown} from './MarkdownIssueDescription.js';
@@ -812,7 +813,8 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new AffectedCookiesView(this, this._issue), new AffectedElementsView(this, this._issue),
       new AffectedRequestsView(this, this._issue), new AffectedMixedContentView(this, this._issue),
       new AffectedSourcesView(this, this._issue), new AffectedHeavyAdView(this, this._issue),
-      new AffectedDirectivesView(this, this._issue), new AffectedBlockedByResponseView(this, this._issue)
+      new AffectedDirectivesView(this, this._issue), new AffectedBlockedByResponseView(this, this._issue),
+      new AffectedSharedArrayBufferTransferDetailsView(this, this._issue)
     ];
 
     this._aggregatedIssuesCount = null;

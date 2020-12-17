@@ -69,6 +69,9 @@
   <message name="IDS_DEVTOOLS_7b5d976547762b53d6829e5f7dba7a80" desc="Header for the source location column">
     Source Location
   </message>
+  <message name="IDS_DEVTOOLS_7b83d3f08fa392b79e3f553b585971cd" desc="Value for the status column in Shared Array Buffer issues">
+    warning
+  </message>
   <message name="IDS_DEVTOOLS_7f7208f102493356f51e7eb55dd157a1" desc="Text displayed instead of the survey link after the survey link is clicked, if the survey was shown successfully, in the issue view">
     Thank you for your feedback
   </message>

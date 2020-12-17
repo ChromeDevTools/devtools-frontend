@@ -245,6 +245,7 @@ all_devtools_files = [
   "front_end/issues/descriptions/cspTrustedTypesSinkViolation.md",
   "front_end/issues/descriptions/cspTrustedTypesPolicyViolation.md",
   "front_end/issues/descriptions/mixedContent.md",
+  "front_end/issues/descriptions/sharedArrayBufferTransfer.md",
   "front_end/issues/descriptions/SameSiteUnspecifiedLaxAllowUnsafeRead.md",
   "front_end/issues/descriptions/SameSiteUnspecifiedLaxAllowUnsafeSet.md",
   "front_end/issues/descriptions/SameSiteUnspecifiedTreatedAsLaxRead.md",

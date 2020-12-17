@@ -69,6 +69,7 @@ devtools_module("sdk") {
     "ServerTiming.js",
     "ServiceWorkerCacheModel.js",
     "ServiceWorkerManager.js",
+    "SharedArrayBufferTransferIssue.ts",
     "SourceMap.js",
     "SourceMapManager.js",
     "TracingManager.js",

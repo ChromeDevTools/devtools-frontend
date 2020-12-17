@@ -9,6 +9,7 @@ import {Issue} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {MixedContentIssue} from './MixedContentIssue.js';
 import {SameSiteCookieIssue} from './SameSiteCookieIssue.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
+import {SharedArrayBufferTransferIssue} from './SharedArrayBufferTransferIssue.js';
 
 
 /**
@@ -172,6 +173,20 @@ function createIssuesForBlockedByResponseIssue(issuesModel, inspectorDetails) {
 }
 
 /**
+ * @param {!IssuesModel} issuesModel
+ * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
+ * @return {!Array<!Issue>}
+ */
+function createIssuesForSharedArrayBufferTransferIssue(issuesModel, inspectorDetails) {
+  const sabIssueDetails = inspectorDetails.sharedArrayBufferTransferIssueDetails;
+  if (!sabIssueDetails) {
+    console.warn('SAB transfer issue without details received.');
+    return [];
+  }
+  return [new SharedArrayBufferTransferIssue(sabIssueDetails, issuesModel)];
+}
+
+/**
  * @type {!Map<!Protocol.Audits.InspectorIssueCode, function(!IssuesModel, !Protocol.Audits.InspectorIssueDetails):!Array<!Issue>>}
  */
 const issueCodeHandlers = new Map([
@@ -180,6 +195,7 @@ const issueCodeHandlers = new Map([
   [Protocol.Audits.InspectorIssueCode.HeavyAdIssue, createIssuesForHeavyAdIssue],
   [Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue, createIssuesForContentSecurityPolicyIssue],
   [Protocol.Audits.InspectorIssueCode.BlockedByResponseIssue, createIssuesForBlockedByResponseIssue],
+  [Protocol.Audits.InspectorIssueCode.SharedArrayBufferTransferIssue, createIssuesForSharedArrayBufferTransferIssue],
 ]);
 
 /** @enum {symbol} */

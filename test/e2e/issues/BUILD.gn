@@ -9,6 +9,7 @@ node_ts_library("issues") {
     "csp-violations-tab_test.ts",
     "group-by-categories_test.ts",
     "report-only_test.ts",
+    "sab-issues_test.ts",
   ]
 
   deps = [

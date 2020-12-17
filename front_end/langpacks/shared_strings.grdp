@@ -49,6 +49,9 @@
   <message name="IDS_DEVTOOLS_16f78b9465f03f7ec5a03c24918fbde3" desc="Status code of an event">
     Status Code
   </message>
+  <message name="IDS_DEVTOOLS_17145319aba079a26c6d3bb2b1d58894" desc="Text in Request Timing View of the Network panel">
+    <ph name="LOCKED_TERM">Service Worker</ph>
+  </message>
   <message name="IDS_DEVTOOLS_193cfc9be3b995831c6af2fea6650e60" desc="Text that refers to one or a group of webpages">
     Page
   </message>
@@ -262,6 +265,9 @@
   </message>
   <message name="IDS_DEVTOOLS_87d17f4624a514e81dc7c8e016a7405c" desc="Text for the mobile platform, as opposed to desktop">
     Mobile
+  </message>
+  <message name="IDS_DEVTOOLS_88183b946cc5f0e8c96b2e66e1c74a7e" desc="Text for an unspecified service worker response source">
+    Unknown
   </message>
   <message name="IDS_DEVTOOLS_883d7615c4d2de3fa1218f1298c46d0e" desc="Text for network request headers">
     Headers

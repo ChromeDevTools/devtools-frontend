@@ -84,9 +84,6 @@
   <message name="IDS_DEVTOOLS_16c32be3b42643aee708e7ccdd52c9f4" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Microsoft Edge — Android Mobile</ph>
   </message>
-  <message name="IDS_DEVTOOLS_17145319aba079a26c6d3bb2b1d58894" desc="Text in Request Timing View of the Network panel">
-    <ph name="LOCKED_TERM">Service Worker</ph>
-  </message>
   <message name="IDS_DEVTOOLS_17439cab6b197fcaff231614384c9dcc" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Opera (Presto) — Windows</ph>
   </message>
@@ -461,9 +458,6 @@
   </message>
   <message name="IDS_DEVTOOLS_8470bd9052ed82990d6e49335b14e41e" desc="Text in Headers View of the Network panel">
     This document was blocked from loading in an <ph name="LOCKED_1">iframe</ph> with a <ph name="LOCKED_1">sandbox</ph> attribute because this document specified a cross-origin opener policy.
-  </message>
-  <message name="IDS_DEVTOOLS_88183b946cc5f0e8c96b2e66e1c74a7e" desc="Text for an unspecified service worker response source">
-    Unknown
   </message>
   <message name="IDS_DEVTOOLS_884680dd63eae99eab1a407133df66b7" desc="Text to view a security certificate">
     View certificate

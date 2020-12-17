@@ -256,6 +256,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_6c202452e44c42e323204da2a3a3c24a" desc="Text in Clear Storage View of the Application panel">
     File System
   </message>
+  <message name="IDS_DEVTOOLS_6cb7eb9696d986359fa3a78c4b8e60dc" desc="Label for plural of worker type: web workers">
+    Web Workers
+  </message>
   <message name="IDS_DEVTOOLS_6cf9494c4b53b910c03613070767018f" desc="This label specifies the server endpoints to which the server is reporting errors and warnings through the Report-to API">
     reporting to
   </message>
@@ -273,6 +276,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_7091ed290cfa49f60364af4d4b3c42b9" desc="Section header in the Frame Details view">
     API availablity
+  </message>
+  <message name="IDS_DEVTOOLS_7438130df111e5a471571fc62779a8b3" desc="Label for worker type: web worker">
+    Web Worker
   </message>
   <message name="IDS_DEVTOOLS_76869c244f39290f2a9685482351e1b5" desc="Title of an action that clears all site data including 3rd party cookies">
     Clear site data (including third-party cookies)
@@ -455,9 +461,6 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_b29728d72d14907bdf5618db1f12b322" desc="Manifest installability error in the Application panel">
     Page has no manifest &lt;link&gt; URL
-  </message>
-  <message name="IDS_DEVTOOLS_b43943424bcb8365929e3db3c25e994c" desc="Text in Frames View of the Application panel">
-    Workers
   </message>
   <message name="IDS_DEVTOOLS_b5dc9b0e6beecb1e80f6f1b5b3050f12" desc="The UI destination when right clicking an item that can be revealed">
     Application panel

@@ -451,10 +451,25 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._documentSection = this._reportView.appendSection(ls`Document`);
     this._URLFieldValue = this._documentSection.appendField(ls`URL`);
     this._URLFieldValue.textContent = this._targetInfo.url;
+    const workerType = this._documentSection.appendField(ls`Type`);
+    workerType.textContent = this.workerTypeToString(this._targetInfo.type);
 
     this._isolationSection = this._reportView.appendSection(ls`Security & Isolation`);
     this._coepPolicy = this._isolationSection.appendField(ls`Cross-Origin Embedder Policy`);
     this.update();
+  }
+
+  /**
+   * @param {string} type
+   */
+  workerTypeToString(type) {
+    if (type === 'worker') {
+      return ls`Web Worker`;
+    }
+    if (type === 'service_worker') {
+      return ls`Service Worker`;
+    }
+    return ls`Unknown`;
   }
 
   async _updateCoopCoepStatus() {

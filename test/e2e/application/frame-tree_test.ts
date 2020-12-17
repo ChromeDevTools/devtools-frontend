@@ -7,7 +7,8 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {doubleClickSourceTreeItem, getReportValues, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const TOP_FRAME_SELECTOR = '[aria-label="top"]';
-const WORKERS_SELECTOR = '[aria-label="Workers"]';
+const WEB_WORKERS_SELECTOR = '[aria-label="Web Workers"]';
+const SERVICE_WORKERS_SELECTOR = '[aria-label="top"] ~ ol [aria-label="Service Workers"]';
 const IFRAME_SELECTOR = '[aria-label="frameId (iframe.html)"]';
 const MAIN_FRAME_SELECTOR = '[aria-label="frameId (main-frame.html)"]';
 
@@ -36,7 +37,7 @@ describe('The Application Tab', async () => {
     });
   });
 
-  it('shows dedicated worker in the frame tree', async () => {
+  it('shows dedicated workers in the frame tree', async () => {
     const {target} = getBrowserAndPages();
     await goToResource('application/frame-tree.html');
     await click('#tab-resources');
@@ -44,14 +45,36 @@ describe('The Application Tab', async () => {
     // DevTools is not ready yet when the worker is being initially attached.
     // We therefore need to reload the page to see the worker in DevTools.
     await target.reload();
-    await doubleClickSourceTreeItem(WORKERS_SELECTOR);
-    await waitFor(`${WORKERS_SELECTOR} + ol li:first-child`);
+    await doubleClickSourceTreeItem(WEB_WORKERS_SELECTOR);
+    await waitFor(`${WEB_WORKERS_SELECTOR} + ol li:first-child`);
     pressKey('ArrowDown');
 
     await waitForFunction(async () => {
       const fieldValues = await getReportValues();
-      const expected =
-          [`https://localhost:${getTestServerPort()}/test/e2e/resources/application/dedicated-worker.js`, 'None'];
+      const expected = [
+        `https://localhost:${getTestServerPort()}/test/e2e/resources/application/dedicated-worker.js`,
+        'Web Worker',
+        'None',
+      ];
+      return JSON.stringify(fieldValues) === JSON.stringify(expected);
+    });
+  });
+
+  it('shows service workers in the frame tree', async () => {
+    await goToResource('application/service-worker-network.html');
+    await click('#tab-resources');
+    await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);
+    await doubleClickSourceTreeItem(SERVICE_WORKERS_SELECTOR);
+    await waitFor(`${SERVICE_WORKERS_SELECTOR} + ol li:first-child`);
+    pressKey('ArrowDown');
+
+    await waitForFunction(async () => {
+      const fieldValues = await getReportValues();
+      const expected = [
+        `https://localhost:${getTestServerPort()}/test/e2e/resources/application/service-worker.js`,
+        'Service Worker',
+        'None',
+      ];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });
   });

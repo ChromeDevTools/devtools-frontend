@@ -10,6 +10,7 @@ ts_library("sdk") {
     "Cookie_test.ts",
     "DebuggerModel_test.ts",
     "FrameManager_test.ts",
+    "HARLog_test.ts",
     "Issue_test.ts",
     "MockIssuesModel.ts",
     "NetworkManager_test.ts",

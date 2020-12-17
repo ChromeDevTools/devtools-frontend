@@ -368,7 +368,7 @@ export class Entry {
       highestTime = Math.max(sendEnd, connectEnd, sslEnd, dnsEnd, blockedStart, 0);
     } else if (this._request.responseReceivedTime === -1) {
       // Means that we don't have any more details after blocked, so attribute all to blocked.
-      result.blocked = this._request.endTime - issueTime;
+      result.blocked = Entry._toMilliseconds(this._request.endTime - issueTime);
       return result;
     }
 

@@ -66,6 +66,9 @@
   <message name="IDS_DEVTOOLS_7232b2cfdea953afe7f0087a11712c9b" desc="Category title for a group of content security policy (CSP) issues">
     Content Security Policy
   </message>
+  <message name="IDS_DEVTOOLS_7b5d976547762b53d6829e5f7dba7a80" desc="Header for the source location column">
+    Source Location
+  </message>
   <message name="IDS_DEVTOOLS_7f7208f102493356f51e7eb55dd157a1" desc="Text displayed instead of the survey link after the survey link is clicked, if the survey was shown successfully, in the issue view">
     Thank you for your feedback
   </message>
@@ -92,9 +95,6 @@
   </message>
   <message name="IDS_DEVTOOLS_a4d7581ea74e5240c4a1a7c32532d6f8" desc="Label for mixed content issue's restriction status">
     Restriction Status
-  </message>
-  <message name="IDS_DEVTOOLS_a98df7359ac52361af81fa897d556a6a" desc="Header for the source code column">
-    Source code
   </message>
   <message name="IDS_DEVTOOLS_af54fb3a43842c87e975974597a1623a" desc="Label in the issues panel">
     No issues detected so far

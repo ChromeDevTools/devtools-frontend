@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as Network from '../network/network.js';
 import * as SDK from '../sdk/sdk.js';
@@ -235,6 +236,34 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     }
     requestCell.appendChild(document.createTextNode(filename));
     return requestCell;
+  }
+
+  // TODO(chromium:1158753): Provide `target` and `scriptId` at call sites once
+  // available from the back-end.
+  protected appendSourceLocation(
+      element: HTMLElement, sourceLocation: Protocol.Audits.SourceCodeLocation|undefined,
+      target: SDK.SDKModel.Target|null = null, scriptId: string|null = null): void {
+    const sourceCodeLocation = document.createElement('td');
+    sourceCodeLocation.classList.add('affected-source-location');
+    if (sourceLocation) {
+      const maxLengthForDisplayedURLs = 40;  // Same as console messages.
+      // TODO(crbug.com/1108503): Add some mechanism to be able to add telemetry to this element.
+      const linkifier = new Components.Linkifier.Linkifier(maxLengthForDisplayedURLs);
+      const sourceAnchor =
+          linkifier.linkifyScriptLocation(target, scriptId, sourceLocation.url, sourceLocation.lineNumber);
+      sourceCodeLocation.appendChild(sourceAnchor);
+    }
+    element.appendChild(sourceCodeLocation);
+  }
+
+  protected appendColumnTitle(header: HTMLElement, title: string, additionalClass: string|null = null): void {
+    const info = document.createElement('td');
+    info.classList.add('affected-resource-header');
+    if (additionalClass) {
+      info.classList.add(additionalClass);
+    }
+    info.textContent = title;
+    header.appendChild(info);
   }
 
   update(): void {

@@ -1324,7 +1324,7 @@ class _DispatcherPrototype {
 
   /**
    * @param {string} functionName
-   * @param {!{method: string, params: ?Array<string>}} messageObject
+   * @param {!{method: string, params: ?Object.<string, *>|undefined}} messageObject
    */
   dispatch(functionName, messageObject) {
     if (!this._dispatchers.length) {

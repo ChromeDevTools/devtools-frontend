@@ -6,6 +6,7 @@ import {ProtocolMapping} from '../../../../front_end/generated/protocol-mapping.
 import * as ProtocolClient from '../../../../front_end/protocol_client/protocol_client.js';
 
 import {deinitializeGlobalVars, initializeGlobalVars} from './EnvironmentHelpers.js';
+import type * as SDK from '../../../../front_end/sdk/sdk.js';
 
 type ProtocolCommand = keyof ProtocolMapping.Commands;
 type ProtocolCommandParams<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['paramsType'];
@@ -32,6 +33,16 @@ export function getMockConnectionResponseHandler(method: ProtocolCommand) {
 
 export function clearMockConnectionResponseHandler(method: ProtocolCommand) {
   responseMap.delete(method);
+}
+
+export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
+    target: SDK.SDKModel.Target, event: E, payload: ProtocolMapping.Events[E][0]) {
+  const [domain, method] = event.split('.');
+  if (!target._dispatchers[domain]) {
+    return;
+  }
+
+  target._dispatchers[domain].dispatch(method, {method, params: payload});
 }
 
 function enable({reset = true} = {}) {

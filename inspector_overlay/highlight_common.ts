@@ -146,6 +146,11 @@ export function applyMatrixToPoint(point: {x: number; y: number;}, matrix: DOMMa
   return {x: domPoint.x, y: domPoint.y};
 }
 
+const HATCH_LINE_LENGTH = 5;
+const HATCH_LINE_GAP = 3;
+let hatchLinePattern: CanvasPattern;
+let hatchLineColor: string = '';
+
 /**
  * Draw line hatching at a 45 degree angle for a given
  * path.
@@ -159,34 +164,43 @@ export function applyMatrixToPoint(point: {x: number; y: number;}, matrix: DOMMa
 export function hatchFillPath(
     context: CanvasRenderingContext2D, path: Path2D, bounds: Bounds, delta: number, color: string,
     rotationAngle: number, flipDirection: boolean|undefined) {
-  const dx = bounds.maxX - bounds.minX;
-  const dy = bounds.maxY - bounds.minY;
-  context.rect(bounds.minX, bounds.minY, dx, dy);
-  context.save();
-  context.clip(path);
-  context.setLineDash([5, 3]);
-  const majorAxis = Math.max(dx, dy);
-  context.strokeStyle = color;
-  const centerX = bounds.minX + dx / 2;
-  const centerY = bounds.minY + dy / 2;
-  context.translate(centerX, centerY);
-  context.rotate(rotationAngle * Math.PI / 180);
-  context.translate(-centerX, -centerY);
-  if (flipDirection) {
-    for (let i = -majorAxis; i < majorAxis; i += delta) {
-      context.beginPath();
-      context.moveTo(bounds.maxX - i, bounds.minY);
-      context.lineTo(bounds.maxX - dy - i, bounds.maxY);
-      context.stroke();
-    }
-  } else {
-    for (let i = -majorAxis; i < majorAxis; i += delta) {
-      context.beginPath();
-      context.moveTo(i + bounds.minX, bounds.minY);
-      context.lineTo(dy + i + bounds.minX, bounds.maxY);
-      context.stroke();
-    }
+  // Make the bounds be at most the canvas size if it is bigger in any direction.
+  // Making the bounds bigger than the canvas is useless as what's drawn there won't be visible.
+  if (context.canvas.width < bounds.maxX - bounds.minX || context.canvas.height < bounds.maxY - bounds.minY) {
+    bounds = {
+      minX: 0,
+      maxX: context.canvas.width,
+      minY: 0,
+      maxY: context.canvas.height,
+      allPoints: [],
+    };
   }
+
+  // If we haven't done it yet, initialize an offscreen canvas used to create the dashed line repeated pattern.
+  if (!hatchLinePattern || color !== hatchLineColor) {
+    hatchLineColor = color;
+
+    const offscreenCanvas = document.createElement('canvas');
+    offscreenCanvas.width = delta;
+    offscreenCanvas.height = HATCH_LINE_LENGTH + HATCH_LINE_GAP;
+
+    const offscreenCtx = offscreenCanvas.getContext('2d') as CanvasRenderingContext2D;
+    offscreenCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+    offscreenCtx.rect(0, 0, 1, HATCH_LINE_LENGTH);
+    offscreenCtx.fillStyle = color;
+    offscreenCtx.fill();
+
+    hatchLinePattern = context.createPattern(offscreenCanvas, 'repeat') as CanvasPattern;
+  }
+
+  context.save();
+
+  const matrix = new DOMMatrix();
+  hatchLinePattern.setTransform(matrix.scale(flipDirection ? -1 : 1, 1).rotate(0, 0, -45 + rotationAngle));
+
+  context.fillStyle = hatchLinePattern;
+  context.fill(path);
+
   context.restore();
 }
 

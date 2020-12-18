@@ -424,12 +424,10 @@ class Util {
         networkThrottling = Util.i18n.strings.runtimeUnknown;
     }
 
-    let deviceEmulation = Util.i18n.strings.runtimeNoEmulation;
-    if (settings.emulatedFormFactor === 'mobile') {
-      deviceEmulation = Util.i18n.strings.runtimeMobileEmulation;
-    } else if (settings.emulatedFormFactor === 'desktop') {
-      deviceEmulation = Util.i18n.strings.runtimeDesktopEmulation;
-    }
+    // TODO(paulirish): revise Runtime Settings strings: https://github.com/GoogleChrome/lighthouse/pull/11796
+    const deviceEmulation = settings.formFactor === 'mobile'
+      ? Util.i18n.strings.runtimeMobileEmulation
+      : Util.i18n.strings.runtimeDesktopEmulation;
 
     return {
       deviceEmulation,
@@ -2387,24 +2385,34 @@ class ElementScreenshotRenderer {
    * @param {LH.Artifacts.FullPageScreenshot} fullPageScreenshot
    */
   static installOverlayFeature(dom, templateContext, fullPageScreenshot) {
-    const reportEl = dom.find('.lh-report', dom.document());
-    const screenshotOverlayClass = 'lh-feature-screenshot-overlay';
-    if (reportEl.classList.contains(screenshotOverlayClass)) return;
-    reportEl.classList.add(screenshotOverlayClass);
+    const rootEl = dom.find('.lh-root', dom.document());
+    if (!rootEl) {
+      console.warn('No lh-root. Overlay install failed.'); // eslint-disable-line no-console
+      return;
+    }
 
-    const maxLightboxSize = {
-      width: dom.document().documentElement.clientWidth,
-      height: dom.document().documentElement.clientHeight * 0.75,
-    };
+    const screenshotOverlayClass = 'lh-screenshot-overlay--enabled';
+    // Don't install the feature more than once.
+    if (rootEl.classList.contains(screenshotOverlayClass)) return;
+    rootEl.classList.add(screenshotOverlayClass);
 
-    dom.document().addEventListener('click', e => {
+    // Add a single listener to the root element to handle all clicks within (event delegation).
+    rootEl.addEventListener('click', e => {
       const target = /** @type {?HTMLElement} */ (e.target);
       if (!target) return;
-      const el = /** @type {?HTMLElement} */ (target.closest('.lh-element-screenshot'));
+      // Only activate the overlay for clicks on the screenshot *preview* of an element, not the full-size too.
+      const el = /** @type {?HTMLElement} */ (target.closest('.lh-node > .lh-element-screenshot'));
       if (!el) return;
 
-      const overlay = dom.createElement('div');
-      overlay.classList.add('lh-element-screenshot__overlay');
+      const overlay = dom.createElement('div', 'lh-element-screenshot__overlay');
+      rootEl.append(overlay);
+
+      // The newly-added overlay has the dimensions we need.
+      const maxLightboxSize = {
+        width: overlay.clientWidth * 0.95,
+        height: overlay.clientHeight * 0.80,
+      };
+
       const elementRectSC = {
         width: Number(el.dataset['rectWidth']),
         height: Number(el.dataset['rectHeight']),
@@ -2420,14 +2428,15 @@ class ElementScreenshotRenderer {
         elementRectSC,
         maxLightboxSize
       );
-      if (!screenshotElement) return;
 
-      overlay.appendChild(screenshotElement);
-      overlay.addEventListener('click', () => {
+      // This would be unexpected here.
+      // When `screenshotElement` is `null`, there is also no thumbnail element for the user to have clicked to make it this far.
+      if (!screenshotElement) {
         overlay.remove();
-      });
-
-      reportEl.appendChild(overlay);
+        return;
+      }
+      overlay.appendChild(screenshotElement);
+      overlay.addEventListener('click', () => overlay.remove());
     });
   }
 
@@ -2888,8 +2897,9 @@ class ReportUIFeatures {
   _setupThirdPartyFilter() {
     // Some audits should not display the third party filter option.
     const thirdPartyFilterAuditExclusions = [
-      // This audit deals explicitly with third party resources.
+      // These audits deal explicitly with third party resources.
       'uses-rel-preconnect',
+      'third-party-facades',
     ];
     // Some audits should hide third party by default.
     const thirdPartyFilterAuditHideByDefault = [
@@ -2974,7 +2984,7 @@ class ReportUIFeatures {
       this.json.audits['full-page-screenshot'] &&
       this.json.audits['full-page-screenshot'].details &&
       this.json.audits['full-page-screenshot'].details.type === 'full-page-screenshot' &&
-      this.json.audits['full-page-screenshot'].details.fullPageScreenshot;
+      this.json.audits['full-page-screenshot'].details;
     if (!fullPageScreenshot) return;
 
     ElementScreenshotRenderer.installOverlayFeature(
@@ -3253,10 +3263,9 @@ class ReportUIFeatures {
     if ('onbeforeprint' in self) {
       self.addEventListener('afterprint', this.collapseAllDetails);
     } else {
-      const win = /** @type {Window} */ (self);
       // Note: FF implements both window.onbeforeprint and media listeners. However,
       // it doesn't matchMedia doesn't fire when matching 'print'.
-      win.matchMedia('print').addListener(mql => {
+      self.matchMedia('print').addListener(mql => {
         if (mql.matches) {
           this.expandAllDetails();
         } else {
@@ -4220,7 +4229,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     const paramPairs = [...metricPairs];
 
     if (Util.reportJson) {
-      paramPairs.push(['device', Util.reportJson.configSettings.emulatedFormFactor]);
+      paramPairs.push(['device', Util.reportJson.configSettings.formFactor]);
       paramPairs.push(['version', Util.reportJson.lighthouseVersion]);
     }
 
@@ -4719,7 +4728,7 @@ class ReportRenderer {
     const warnings = this._dom.find('ul', container);
     for (const warningString of report.runWarnings) {
       const warning = warnings.appendChild(this._dom.createElement('li'));
-      warning.textContent = warningString;
+      warning.appendChild(this._dom.convertMarkdownLinkSnippets(warningString));
     }
 
     return container;
@@ -4773,9 +4782,8 @@ class ReportRenderer {
 
     const fullPageScreenshot =
       report.audits['full-page-screenshot'] && report.audits['full-page-screenshot'].details &&
-      report.audits['full-page-screenshot'].details.type === 'full-page-screenshot' &&
-      report.audits['full-page-screenshot'].details.fullPageScreenshot ?
-      report.audits['full-page-screenshot'].details.fullPageScreenshot : undefined;
+      report.audits['full-page-screenshot'].details.type === 'full-page-screenshot' ?
+      report.audits['full-page-screenshot'].details : undefined;
     const detailsRenderer = new DetailsRenderer(this._dom, {
       fullPageScreenshot,
     });
@@ -4996,12 +5004,13 @@ class I18n {
 
     /** @type {Array<string>} */
     const parts = [];
-    const unitLabels = /** @type {Object<string, number>} */ ({
+    /** @type {Record<string, number>} */
+    const unitLabels = {
       d: 60 * 60 * 24,
       h: 60 * 60,
       m: 60,
       s: 1,
-    });
+    };
 
     Object.keys(unitLabels).forEach(label => {
       const unit = unitLabels[label];

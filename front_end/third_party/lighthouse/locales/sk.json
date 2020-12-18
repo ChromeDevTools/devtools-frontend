@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "K prvkom formulára sú priradené štítky"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "Tabuľka používaná na vytvorenie rozloženia by nemala obsahovať údajové prvky, ako sú prvky th a caption, prípadne atribút summary, pretože by ste tým mohli zmiasť používateľov čítačiek obrazovky. [Ďalšie informácie](https://web.dev/layout-table/)"
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "Prezentačné prvky `<table>` nepoužívajú atribút `<th>`, `<caption>` alebo `[summary]`."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "Prezentačné prvky `<table>` nepoužívajú atribút `<th>`, `<caption>` ani `[summary]`."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "Rozpoznateľný, jedinečný a zamerateľný text odkazu (a alternatívny text pre obrázky, ktoré sa používajú ako odkazy) zlepšuje navigáciu pomocou čítačky obrazovky. [Ďalšie informácie](https://web.dev/link-name/)"
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "Prvky `<video>` obsahujú prvok `<track>` s titulkami `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "Zvukové popisy pridávajú k videám relevantné informácie, napríklad o výrazoch tváre a scénach, ktoré dialógy neposkytujú. [Ďalšie informácie](https://web.dev/video-description/)"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "Prvky `<video>` neobsahujú prvok `<track>` s titulkami `[kind=\"description\"]`."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "Prvky `<video>` obsahujú prvok `<track>` s titulkami `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Ak chcete zaistiť ideálny vzhľad progresívnej webovej aplikácie v systéme iOS, keď si ju používateľ pridá na plochu, definujte vlastnosť `apple-touch-icon`. Musí odkazovať na nepriehľadný obrázok PNG s veľkosťou 192 × 192 px (alebo 180 × 180 px). [Ďalšie informácie](https://web.dev/apple-touch-icon/)"
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "Zobrazuje obrázky so správnym pomerom strán"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "Neplatné informácie o veľkosti obrázka {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "Skutočná veľkosť"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Nepoužívajte veľké posuny rozloženia"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Rýchle načítanie stránky cez mobilnú sieť zaisťuje dobrý dojem používateľov mobilných zariadení. [Ďalšie informácie](https://web.dev/load-fast-enough-for-pwa/)"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "Interaktívna po {timeInMs, number, seconds} s"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "Interaktívna v simulovanej mobilnej sieti v čase {timeInMs, number, seconds} s"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "Vaša stránka sa načítava príliš pomaly a nie je interaktívna do desiatich sekúnd. Prezrite si príležitosti a diagnostiku v sekcii Výkonnosť a zistite, ako ju zlepšiť."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "Načítanie stránky nie je dostatočne rýchle v mobilných sieťach"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "Načítanie stránky je dostatočne rýchle v mobilných sieťach"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Sú tu uvedené najdlhšie úlohy hlavného vlákna slúžiace na identifikáciu faktorov, ktoré najväčšou mierou prispievajú k oneskoreniu vstupu. [Ďalšie informácie](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Efekt má nepodporované parametre časovania"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Obsluha umožňuje vašej webovej aplikácii spoľahlivo fungovať za nepredvídateľných podmienok siete. [Ďalšie informácie](https://web.dev/offline-start-url/)"
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Pri načítaní {url} v obsluhe sa vyskytla chyba. Kód stavu: {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` nereaguje kódom 200, keď je offline"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` reaguje kódom 200, keď je offline"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Nástroju Lighthouse sa nepodarilo prečítať vlastnosť `start_url` z manifestu. Na základe toho sa za webovú adresu dokumentu považuje `start_url`. Chybové hlásenie: {manifestWarning}."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Udržujte množstvo a veľkosť žiadostí siete pod cieľovými hodnotami stanovenými poskytnutým rozpočtom výkonnosti. [Ďalšie informácie](https://developers.google.com/web/tools/lighthouse/audits/budgets)"
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Nastavuje farbu motívu pre panel s adresou."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "Čas blokovania hlavného vlákna"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Tretia strana"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "Zníženie vplyvu kódu tretích strán"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "Ďalšie zdroje"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "Minimalizujte použitie riešení tretích strán"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "Obsahuje značku `<meta name=\"viewport\">` s vlastnosťou `width` alebo `initial-scale`"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Vaša aplikácia by mala zobrazovať nejaký obsah, keď je zakázaný JavaScript, aj keby malo ísť iba o upozornenie používateľa, že na používanie aplikácie sa vyžaduje JavaScript. [Ďalšie informácie](https://web.dev/without-javascript/)"
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "Telo stránky by malo vykresliť nejaký obsah, ak jej skripty nie sú k dispozícii."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "Neposkytuje záložný obsah, keď nie je k dispozícii JavaScript"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "Obsahuje určitý obsah, keď nie je k dispozícii JavaScript"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Ak vytvárate progresívnu webovú aplikáciu, zvážte použitie obsluhy, aby aplikácia mohla fungovať offline. [Ďalšie informácie](https://web.dev/works-offline/)"
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "Aktuálna stránka nereaguje kódom 200, keď je offline"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "Aktuálna stránka reaguje kódom 200, keď je offline"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "Táto stránka sa nemusí načítavať offline, pretože testovacia webová adresa ({requested}) bola presmerovaná na {final}. Skúste priamo otestovať druhú webovú adresu."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "Toto sú možnosti zlepšenia technológie ARIA vo vašej aplikácii, čo môže pomôcť používateľom asistenčných technológií (napr. čítačiek obrazovky)."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Progresívna webová aplikácia"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "Rýchle a spoľahlivé"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Inštalovateľné"

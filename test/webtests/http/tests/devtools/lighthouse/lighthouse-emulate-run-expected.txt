@@ -14,15 +14,19 @@ Generate report: enabled visible
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-emulate-pass.html
-Version: 6.5.0
-TestedAsMobileDevice: true
-ViewportDimensions: {
-  "innerWidth": 360,
-  "innerHeight": 640,
-  "outerWidth": 360,
-  "outerHeight": 640,
-  "devicePixelRatio": 3
+Version: 7.0.0
+formFactor: mobile
+screenEmulation: {
+  "mobile": true,
+  "width": 360,
+  "height": 640,
+  "deviceScaleFactor": 2.625,
+  "disabled": true
 }
+Mobile network UA?: true
+Mobile configured UA?: true
+throttlingMethod: simulate
+throttling.rttMs: 150
 
 
 content-width: pass undefined

@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "Τα στοιχεία φόρμας έχουν συσχετισμένες ετικέτες"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "Ένας πίνακας που χρησιμοποιείται για σκοπούς διάταξης δεν πρέπει να περιλαμβάνει στοιχεία δεδομένων, όπως τα στοιχεία th ή caption ή το χαρακτηριστικό summary, επειδή αυτό μπορεί να προκαλέσει σύγχυση στους χρήστες του αναγνώστη οθόνης. [Μάθετε περισσότερα](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "Τα στοιχεία παρουσίασης `<table>` δεν αποφεύγουν τη χρήση των ετικετών `<th>` ή `<caption>` ή του χαρακτηριστικού `[summary]`."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "Τα στοιχεία παρουσίασης `<table>` αποφεύγουν τη χρήση των ετικετών `<th>` ή `<caption>` ή του χαρακτηριστικού `[summary]`."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "Το κείμενο συνδέσμων (και το εναλλακτικό κείμενο για εικόνες όταν χρησιμοποιούνται ως σύνδεσμοι) που είναι διακριτό, μοναδικό και έχει δυνατότητα εστίασης βελτιώνει την εμπειρία πλοήγησης για τους χρήστες των αναγνωστών οθόνης. [Μάθετε περισσότερα](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "Τα στοιχεία `<video>` περιέχουν ένα στοιχείο `<track>` με `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "Οι ηχητικές περιγραφές παρέχουν πληροφορίες για τα βίντεο, οι οποίες δεν μπορούν να αποδοθούν μέσω των διαλόγων, όπως οι εκφράσεις προσώπου και το σκηνικό δράσης. [Μάθετε περισσότερα](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "Τα στοιχεία `<video>` δεν περιέχουν ένα στοιχείο `<track>` με `[kind=\"description\"]`."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "Τα στοιχεία `<video>` περιέχουν ένα στοιχείο `<track>` με `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Για ιδανική εμφάνιση στο iOS όταν οι χρήστες προσθέτουν μια προηγμένη εφαρμογή ιστού στην αρχική οθόνη, ορίστε ένα `apple-touch-icon`. Το εικονίδιο πρέπει να παραπέμπει σε μια μη διαφανή, τετράγωνη εικόνα PNG 192px (ή 180px). [Μάθετε περισσότερα](https://web.dev/apple-touch-icon/)."
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "Προβάλλει τις εικόνες με τον σωστό λόγο διαστάσεων"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "Μη έγκυρες πληροφορίες διαστάσεων εικόνας {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "Πραγματικό μέγεθος"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Αποφύγετε τις μεγάλες μετατοπίσεις διάταξης"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Η γρήγορη φόρτωση των σελίδων μέσω ενός δικτύου κινητής τηλεφωνίας διασφαλίζει μια καλή εμπειρία για τους χρήστες κινητών. [Μάθετε περισσότερα](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "Διαδραστική σε {timeInMs, number, seconds} δ."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "Διαδραστική σε προσομοιωμένο δίκτυο κινητής τηλεφωνίας σε {timeInMs, number, seconds} δ."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "Η σελίδα σας φορτώνεται πολύ αργά και δεν μπορείτε να αλληλεπιδράσετε μαζί της εντός 10 δευτερολέπτων. Δείτε τις ευκαιρίες και τα διαγνωστικά στοιχεία στην ενότητα Απόδοση για να μάθετε πώς μπορείτε να βελτιώσετε την απόδοση."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "Η φόρτωση σελίδας δεν είναι αρκετά γρήγορη σε δίκτυα κινητής τηλεφωνίας"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "Η φόρτωση σελίδας είναι αρκετά γρήγορη σε δίκτυα κινητής τηλεφωνίας"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Παραθέτει τις μεγαλύτερες εργασίες στο κύριο νήμα, κάτι που είναι χρήσιμο για τον εντοπισμό των συνεισφερόντων που συμβάλλουν περισσότερο στην καθυστέρηση εισόδου. [Μάθετε περισσότερα](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Το εφέ έχει μη υποστηριζόμενες παραμέτρους χρονισμού."
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Ένα service worker επιτρέπει στην εφαρμογή ιστού σας να είναι πιο αξιόπιστη όταν εκτελείται σε απρόβλεπτες συνθήκες δικτύου. [Μάθετε περισσότερα](https://web.dev/offline-start-url/)."
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Σφάλμα κατά τη φόρτωση του {url} στο Service Worker. Ελήφθη ο κωδικός σφάλματος {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "Το `start_url` δεν αποκρίνεται με κωδικό 200 όταν είναι εκτός σύνδεσης"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "Το `start_url` αποκρίνεται με κωδικό 200 όταν είναι εκτός σύνδεσης"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Το Lighthouse δεν μπόρεσε να διαβάσει το `start_url` από το μανιφέστο. Επομένως, το `start_url` θεωρήθηκε ότι είναι το URL του εγγράφου. Μήνυμα σφάλματος: '{manifestWarning}'."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Διατηρήστε την ποσότητα και το μέγεθος των αιτημάτων δικτύου εντός των στόχων που ορίζονται από τον παρεχόμενο προϋπολογισμό απόδοσης. [Μάθετε περισσότερα](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Ορίζει ένα χρώμα θέματος για τη γραμμή διευθύνσεων."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "Χρόνος αποκλεισμού κύριου νήματος"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Τρίτο μέρος"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "Μείωση αντίκτυπου του κώδικα τρίτου μέρους"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "Άλλοι πόροι"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "Ελαχιστοποίηση χρήσης τρίτων μερών"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "Έχει ετικέτα `<meta name=\"viewport\">` με `width` ή `initial-scale`"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Η εφαρμογή σας θα πρέπει να εμφανίζει κάποιο περιεχόμενο όταν η JavaScript είναι απενεργοποιημένη, ακόμη και αν είναι απλώς μια προειδοποίηση που ενημερώνει τον χρήστη ότι η JavaScript είναι απαραίτητη για τη χρήση της εφαρμογής. [Μάθετε περισσότερα](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "Το σώμα της σελίδας θα πρέπει να αποδίδει κάποιο περιεχόμενο αν τα σενάριά του δεν είναι διαθέσιμα."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "Δεν παρέχει εναλλακτικό περιεχόμενο όταν η JavaScript δεν είναι διαθέσιμη"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "Περιλαμβάνει κάποιο περιεχόμενο όταν η JavaScript δεν είναι διαθέσιμη"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Εάν δημιουργείτε μια προηγμένη εφαρμογή ιστού, εξετάστε το ενδεχόμενο χρήσης ενός service worker ώστε η εφαρμογή σας να μπορεί να λειτουργεί εκτός σύνδεσης. [Μάθετε περισσότερα](https://web.dev/works-offline/)."
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "Η τρέχουσα σελίδα δεν αποκρίνεται με κωδικό 200 όταν είναι εκτός σύνδεσης"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "Η τρέχουσα σελίδα αποκρίνεται με κωδικό 200 όταν είναι εκτός σύνδεσης"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "Αυτή η σελίδα μπορεί να μην φορτώνεται εκτός σύνδεσης επειδή το URL δοκιμής σας ({requested}) ανακατευθύνθηκε στο \"{final}\". Προσπαθήστε να δοκιμάσετε απευθείας το δεύτερο URL."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "Αυτές είναι ευκαιρίες να βελτιώσετε τη χρήση των ARIA στην εφαρμογή σας, κάνοντας καλύτερη την εμπειρία χρήστη σε τεχνολογίες υποβοήθησης, όπως στον αναγνώστη οθόνης."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Προηγμένη εφαρμογή ιστού"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "Γρήγορος και αξιόπιστος"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Δυνατότητα εγκατάστασης"

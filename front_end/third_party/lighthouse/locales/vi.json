@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "Các phần tử biểu mẫu có nhãn liên quan"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "Bảng đang dùng cho mục đích bố cục không nên bao gồm phần tử dữ liệu, chẳng hạn như th, phần tử chú thích hoặc thuộc tính tóm tắt, vì điều này có thể tạo ra trải nghiệm gây bối rối cho người dùng trình đọc màn hình. [Tìm hiểu thêm](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "Các phần tử `<table>` dạng trình bày không tránh sử dụng `<th>`, `<caption>` hoặc thuộc tính `[summary]`."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "Các phần tử `<table>` dạng trình bày tránh sử dụng `<th>`, `<caption>` hoặc thuộc tính `[summary]`."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "Văn bản liên kết (và văn bản thay thế cho hình ảnh, khi dùng làm đường liên kết) có thể thấy rõ, duy nhất và có thể lấy tiêu điểm sẽ cải thiện trải nghiệm khám phá cho người dùng trình đọc màn hình. [Tìm hiểu thêm](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "Các phần tử `<video>` chứa phần tử `<track>` có `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "Phần mô tả âm thanh cung cấp thông tin liên quan cho video mà phần hội thoại không thể làm được, chẳng hạn như cảnh và biểu cảm khuôn mặt. [Tìm hiểu thêm](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "Các phần tử `<video>` không chứa phần tử `<track>` có `[kind=\"description\"]`."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "Các phần tử `<video>` chứa phần tử `<track>` có `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Hãy xác định `apple-touch-icon` để khi người dùng thêm một ứng dụng web tiến bộ vào màn hình chính trên iOS, biểu tượng ứng dụng sẽ hiển thị chính xác. Thuộc tính này phải trỏ đến ảnh PNG vuông có kích thước 192px (hoặc 180px) ở dạng không trong suốt. [Tìm hiểu thêm](https://web.dev/apple-touch-icon/)"
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "Hiển thị hình ảnh có tỷ lệ khung hình chính xác"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "Thông tin kích thước hình ảnh không hợp lệ {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "Kích thước thực"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Tránh các thay đổi lớn về bố cục"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Tốc độ tải trang nhanh trên mạng di động giúp mang đến trải nghiệm tích cực cho người dùng thiết bị di động. [Tìm hiểu thêm](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "Tương tác ở giây thứ {timeInMs, number, seconds}"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "Tương tác trên mạng di động mô phỏng ở giây thứ {timeInMs, number, seconds}"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "Trang của bạn tải quá chậm và không tương tác trong vòng 10 giây. Hãy xem các lựa chọn tối ưu hóa và thông tin chẩn đoán trong phần \"Hiệu suất\" để tìm hiểu cách cải thiện."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "Tốc độ tải trang không đủ nhanh trên mạng di động"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "Tốc độ tải trang đủ nhanh trên mạng di động"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Liệt kê những việc cần nhiều thời gian thực hiện nhất trong chuỗi chính. Thông tin này khá hữu ích trong việc xác định những thành phần có thời gian phản hồi tương tác chậm nhất. [Tìm hiểu thêm](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Hiệu ứng có tham số thời gian không được hỗ trợ"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Trình chạy dịch vụ giúp ứng dụng web của bạn hoạt động ổn định trong điều kiện mạng chập chờn. [Tìm hiểu thêm](https://web.dev/offline-start-url/)"
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Lỗi khi tải {url} trong Trình chạy dịch vụ, trả về mã trạng thái {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` không trả về mã trạng thái 200 khi không có mạng"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` trả về mã trạng thái 200 khi không có mạng"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse không đọc được `start_url` trong tệp kê khai. Do đó, `start_url` được giả định là URL của tài liệu. Thông báo lỗi: '{manifestWarning}'."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Đảm bảo số lượng và quy mô của yêu cầu mạng thấp hơn mục tiêu đặt ra của ngân sách hiệu suất đã cung cấp. [Tìm hiểu thêm](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Đặt màu giao diện cho thanh địa chỉ."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "Thời gian chặn chuỗi chính"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Bên thứ ba"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "Giảm mức ảnh hưởng của mã bên thứ ba"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "Tài nguyên khác"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "Giảm thiểu mức sử dụng của bên thứ ba"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "Có thẻ `<meta name=\"viewport\">` có `width` hoặc `initial-scale`"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Ứng dụng của bạn phải hiển thị một số nội dung khi JavaScript bị tắt, ngay cả khi đó chỉ là một cảnh báo cho người dùng biết phải có JavaScript mới dùng được ứng dụng. [Tìm hiểu thêm](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "Phần nội dung trang phải hiển thị một số nội dung nếu không có sẵn tập lệnh."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "Không cung cấp nội dung dự phòng khi JavaScript không có sẵn"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "Chứa một số nội dung khi JavaScript không có sẵn"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Nếu bạn đang tạo một Ứng dụng web tiến bộ, hãy cân nhắc dùng trình chạy dịch vụ để ứng dụng có thể hoạt động khi không có mạng. [Tìm hiểu thêm](https://web.dev/works-offline/)"
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "Trang hiện tại không trả về mã trạng thái 200 khi không có mạng"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "Trang hiện tại trả về mã trạng thái 200 khi không có mạng"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "Trang này có thể không tải được khi không có mạng vì URL kiểm tra ({requested}) đã được chuyển hướng tới \"{final}\". Hãy thử kiểm tra trực tiếp URL thứ hai."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "Đây là những cơ hội giúp cải thiện việc sử dụng ARIA trong ứng dụng của bạn, nhờ đó có thể nâng cao trải nghiệm cho người dùng công nghệ hỗ trợ, chẳng hạn như trình đọc màn hình."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Ứng dụng web tiến bộ"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "Nhanh và đáng tin cậy"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Có thể cài đặt"

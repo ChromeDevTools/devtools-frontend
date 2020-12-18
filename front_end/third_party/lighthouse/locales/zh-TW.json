@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "表單元素具有相關聯的標籤"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "用於版面配置的表格不應包含資料元素 (例如 th、字幕元素或摘要屬性)，否則可能會對螢幕閱讀器使用者造成混淆。[瞭解詳情](https://web.dev/layout-table/)。"
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "表示性元素 `<table>` 未避免使用 `<th>`、`<caption>` 元素或 `[summary]` 屬性。"
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "表示性元素 `<table>` 並未使用 `<th>`、`<caption>` 或 `[summary]` 屬性。"
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "使用可辨別、未重複且可聚焦的連結文字 (以及連結圖片的替代文字)，有助於改善螢幕閱讀器使用者的瀏覽體驗。[瞭解詳情](https://web.dev/link-name/)。"
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "`<video>` 元素包含帶有 `[kind=\"captions\"]` 的 `<track>` 元素"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "音訊說明可為影片提供對話功能無法提供的相關資訊，例如面部表情和場景。[瞭解詳情](https://web.dev/video-description/)。"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "`<video>` 元素不含任何帶有 `[kind=\"description\"]` 的 `<track>` 元素。"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "`<video>` 元素包含帶有 `[kind=\"description\"]` 的 `<track>` 元素"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "請定義「`apple-touch-icon`」，這樣一來，當 iOS 使用者將漸進式網頁應用程式新增到主螢幕時，系統才會顯示正確圖示。apple-touch-icon 必須指向大小為 192 像素 (或 180 像素) 的不透明正方形 PNG。[瞭解詳情](https://web.dev/apple-touch-icon/)。"
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "圖片的顯示比例正確"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "圖片大小資訊無效 ({url})"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "實際大小"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "避免大量版面配置轉移"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "如果網頁能透過行動網路快速載入，就可確保行動裝置使用者獲得良好的使用體驗。[瞭解詳情](https://web.dev/load-fast-enough-for-pwa/)。"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "在 {timeInMs, number, seconds} 秒開始互動"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "在 {timeInMs, number, seconds} 秒於模擬行動網路上開始互動"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "你的網頁載入速度太慢，無法在 10 秒內與使用者互動。請參閱「效能」部分的最佳化建議與診斷報告，瞭解如何改善載入速度。"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "網頁在行動網路中的載入速度不夠快"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "網頁在行動網路中的載入速度夠快"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "列出主要執行緒上執行時間最長的工作，這項資訊有助於找出造成輸入延遲的主因。[瞭解詳情](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "效果包含不支援的時間參數"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Service Worker 可讓你的網頁應用程式即使在連線不穩定時依然維持正常運作。[瞭解詳情](https://web.dev/offline-start-url/)。"
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "在 Service Worker 中載入 {url} 時發生錯誤，狀態碼為 {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` 在離線時不會傳回狀態碼 200 的回應"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` 在離線時會傳回狀態碼 200 的回應"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse 無法從資訊清單中讀取 `start_url`，因此將 `start_url` 假設為文件的網址。錯誤訊息：「{manifestWarning}」。"
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "讓網路要求的數量和大小低於使用者根據效能預算所設定的目標。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/budgets)。"
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "設定網址列的主題顏色。"
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "主要執行緒封鎖時間"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "第三方"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "降低第三方程式碼的影響"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "其他資源"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "盡量減少第三方程式碼的使用量"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "具備包含 `width` 或 `initial-scale` 的 `<meta name=\"viewport\">` 標記"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "當 JavaScript 停用時，你的應用程式應該要顯示一些內容，即使只是向使用者顯示「必須啟用 JavaScript 才能使用此應用程式」這類警告訊息也可以。[瞭解詳情](https://web.dev/without-javascript/)。"
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "即使網頁的指令碼無法使用，網頁內文仍應顯示一些內容。"
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "當 JavaScript 無法使用時不提供備用內容"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "當 JavaScript 無法使用時包含一些內容"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "如果你正在建構漸進式網頁應用程式，請考慮使用 Service Worker，讓你的應用程式可以離線運作。[瞭解詳情](https://web.dev/works-offline/)。"
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "目前的網頁在離線時不會傳回狀態碼 200 的回應"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "目前的網頁在離線時會傳回狀態碼 200 的回應"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "由於你的測試網址 ({requested}) 重新導向到「{final}」，因此這個頁面可能無法在離線時載入。請試著直接測試第二個網址。"
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "這些稽核建議可協助改善 ARIA 在應用程式中的使用情形，進而讓輔助技術 (例如螢幕閱讀器) 的使用體驗更上一層樓。"
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "漸進式網頁應用程式"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "快速穩定"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "可安裝"

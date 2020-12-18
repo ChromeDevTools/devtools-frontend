@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "A formátumelemekhez megfelelő címkék vannak társítva"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "Az elrendezési célokat szolgáló táblázat ne tartalmazzon adatelemeket (pl. „th” vagy „caption” elemet, illetve „summary” attribútumot), mert zavarók lehetnek a képernyőolvasót használó személyek számára. [További információ](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "A prezentációs `<table>` elemek nem kerülik a(z) `<th>`, a(z) `<caption>` vagy a(z) `[summary]` attribútum használatát."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "A prezentációs `<table>` elemek kerülik a(z) `<th>`, a(z) `<caption>` vagy a(z) `[summary]` attribútum használatát."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "A felismerhető, egyedi és fókuszálható linkszövegek (és linkként használt képek alternatív szövegei) jobb navigációs élményt biztosítanak a képernyőolvasóra hagyatkozó felhasználók számára. [További információ](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "A(z) `<video>` elemekhez `[kind=\"captions\"]` tartalmú `<track>` elem tartozik"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "Az audiokommentárok olyan fontos információkat nyújtanak a videókhoz, amelyek a párbeszédekből nem derülnek ki (ilyen például az arckifejezések és a jelenetek leírása). [További információ](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "A(z) `<video>` elemekhez nem tartozik `[kind=\"description\"]` tartalmú `<track>` elem."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "A(z) `<video>` elemekhez `[kind=\"description\"]` tartalmú `<track>` elem tartozik"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Ha azt szeretné, hogy a megjelenés ideális legyen iOS rendszeren, amikor a felhasználók progresszív webes alkalmazást adnak hozzá a kezdőképernyőhöz, határozzon meg egy `apple-touch-icon` elemet. Az ikonnak 192 képpont (vagy 180 képpont) méretű, nem átlátszó, négyzetes PNG-re kell mutatnia. [További információ](https://web.dev/apple-touch-icon/)."
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "Helyes képaránnyal jeleníti meg a képeket"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "Érvénytelen képméretezési információ {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "Valós méret"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Az elrendezés nagy mértékű mozgásának elkerülése"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "A mobilhálózatokon is gyors oldalbetöltés jobb mobilos felhasználói élményt jelent. [További információ](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "{timeInMs, number, seconds} mp az interaktívvá válásig"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "Interaktívvá válás szimulált mobilhálózaton: {timeInMs, number, seconds} mp"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "Az oldal túl lassan töltődik be, és nem válik interaktívvá tíz másodpercen belül. A probléma elhárításához tekintse meg a „Teljesítmény” szakaszban lévő lehetőségeket és diagnosztikákat."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "Az oldalbetöltés nem elég gyors mobilhálózatokon"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "Az oldalbetöltés kellően gyors mobilhálózatokon"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "A fő szál leghosszabb feladatait listázza. Hasznos az interakciótól számított késéshez legnagyobb mértékben hozzájáruló elemek azonosításához. [További információ](https://web.dev/long-tasks-devtools/)."
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Az effekt nem támogatott időzítési paraméterekkel rendelkezik"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "A szolgáltató munkatársnak köszönhetően internetes alkalmazása előre nem látható hálózati körülmények mellett is megbízhatóan fog működni. [További információ](https://web.dev/offline-start-url/)."
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Hiba történt a(z) {url} betöltése során a service workerben Állapotkód: {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "A(z) `start_url` nem 200-as állapotkódot küld vissza, amikor offline állapotban van"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "A(z) `start_url` 200-as állapotkódot küld vissza, amikor offline állapotban van"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "A Lighthouse nem tudta olvasni a manifest `start_url` elemét. Ennek következtében azt feltételezi, hogy a(z) `start_url` a dokumentum URL-címe. Hibaüzenet: „{manifestWarning}”."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "A hálózati kérések száma és mérete maradjon a megadott teljesítménybüdzsé célpontjai alatt. [További információ](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "A téma színét állítja be a címsávon."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "Fő szál akadályozásának időtartama"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Harmadik fél"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "Csökkentse a harmadik felek kódjai által kiváltott hatást"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "Egyéb források"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "Minimalizálja a harmadik felektől származó kódok használatát"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "Van `width` vagy `initial-scale` beállítással rendelkező `<meta name=\"viewport\">` címkéje"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Az alkalmazásnak akkor is meg kellene jelenítenie valamilyen tartalmat, ha a JavaScript le van tiltva. Ez akár egy figyelmeztetés is lehet, mely szerint JavaScript szükséges az alkalmazás használatához. [További információ](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "Az oldal törzsében meg kellene jelennie valamilyen tartalomnak, ha a szkriptek nem használhatók."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "Nem biztosít tartalék tartalmat, ha a JavaScript nem használható"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "Vannak benne tartalmak akkor is, amikor a JavaScript nem használható"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Ha progresszív webes alkalmazást készít, fontolja meg szolgáltató munkatárs használatát, így alkalmazása offline állapotban is működni fog. [További információ](https://web.dev/works-offline/)."
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "A jelenlegi oldal nem 200-as állapotkódot küld vissza, amikor offline állapotban van"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "A jelenlegi oldal 200-as állapotkódot küld vissza, amikor offline állapotban van"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "Előfordulhat, hogy az oldal offline állapotban nem töltődik be, mert a teszt-URL-t ({requested}) a rendszer a következő címre irányította át: „{final}”. Próbálkozzon a második URL közvetlen ellenőrzésével."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "Ezek a lehetőségek segíthetnek az ARIA alkalmazásban való használatának javításában, ami jobb felhasználói élményt biztosíthat a kisegítő technológiákat (például képernyőolvasót) használó személyeknek."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Progresszív webes alkalmazás"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "Gyors és megbízható"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Telepíthető"

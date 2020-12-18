@@ -13,10 +13,9 @@ Tests that lighthouse panel passes flags.
 Generate report: enabled visible
 
 =============== Lighthouse Results ===============
-emulatedFormFactor: desktop
+formFactor: desktop
 disableStorageReset: false
 throttlingMethod: devtools
-TestedAsMobileDevice: false
 
 View Trace Button Text: "View Trace"
 View Trace Button Title: ""

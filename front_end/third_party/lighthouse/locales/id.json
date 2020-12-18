@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "Elemen formulir memiliki label yang terkait"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "Tabel yang digunakan untuk tujuan tata letak sebaiknya tidak mencakup elemen data, seperti elemen th atau teks atau atribut ringkasan karena hal ini dapat menyebabkan pengalaman yang membingungkan bagi pengguna pembaca layar. [Pelajari lebih lanjut](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "Elemen `<table>` presentasional tidak menghindari penggunaan atribut `<th>`, `<caption>`, atau `[summary]`."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "Elemen `<table>` yang bersifat presentasional menghindari penggunaan atribut `<th>`, `<caption>`, atau `[summary]`."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "Teks link (dan teks alternatif untuk gambar, saat digunakan sebagai link) yang mudah dilihat, unik, dan dapat difokuskan menyempurnakan pengalaman navigasi bagi pengguna pembaca layar. [Pelajari lebih lanjut](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "Elemen `<video>` memuat elemen `<track>` dengan `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "Deskripsi audio memberikan informasi yang relevan untuk video yang tidak dapat diberikan melalui dialog, seperti ekspresi wajah dan adegan. [Pelajari lebih lanjut](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "Elemen `<video>` tidak memuat elemen `<track>` dengan `[kind=\"description\"]`."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "Elemen `<video>` memuat elemen `<track>` dengan `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Untuk tampilan ideal pada iOS saat pengguna menambahkan progressive web app ke layar utama, tentukan `apple-touch-icon`. Ikon harus mengarah ke PNG persegi 192 piksel (atau 180 piksel) yang tidak transparan. [Pelajari Lebih Lanjut](https://web.dev/apple-touch-icon/)."
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "Menampilkan gambar dengan rasio tinggi lebar yang benar"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "Informasi ukuran gambar {url} tidak valid"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "Ukuran sebenarnya"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Hindari peralihan tata letak berukuran besar"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Pemuatan halaman yang cepat melalui jaringan seluler menjamin pengalaman pengguna seluler yang baik. [Pelajari lebih lanjut](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "Interaktif di {timeInMs, number, seconds} dtk"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "Interaktif di jaringan seluler tersimulasi pada {timeInMs, number, seconds} dtk"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "Pemuatan halaman terlalu lambat dan tidak interaktif selama 10 detik. Lihat peluang dan diagnostik dalam bagian \"Performa\" untuk mempelajari cara meningkatkan kecepatan pemuatan."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "Pemuatan halaman tidak cukup cepat pada jaringan seluler"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "Pemuatan halaman cukup cepat pada jaringan seluler"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Mencantumkan tugas yang berjalan paling lama di thread utama, berguna untuk mengidentifikasi kontributor utama penundaan input. [Pelajari lebih lanjut](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Efek memiliki parameter waktu yang tidak didukung"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Pekerja layanan memungkinkan aplikasi web dapat diandalkan dalam kondisi jaringan yang tidak terduga. [Pelajari lebih lanjut](https://web.dev/offline-start-url/)."
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Error saat memuat {url} di Pekerja Layanan, mendapatkan kode status {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` tidak merespons dengan kode 200 saat offline"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` merespons dengan kode 200 saat offline"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse tidak dapat membaca `start_url` dari manifes tersebut. Oleh karena itu, `start_url` dianggap sebagai URL dokumen. Pesan error: '{manifestWarning}'."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Pertahankan jumlah dan ukuran permintaan jaringan di bawah target yang ditetapkan oleh anggaran performa yang disediakan. [Pelajari lebih lanjut](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Menyetel warna tema untuk kolom URL."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "Waktu Pemblokiran Thread Utama"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Pihak Ketiga"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "Kurangi dampak kode pihak ketiga"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "Resource lainnya"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "Meminimalkan penggunaan pihak ketiga"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "Memiliki tag `<meta name=\"viewport\">` dengan `width` atau `initial-scale`"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Aplikasi Anda harus menampilkan beberapa konten saat JavaScript nonaktif, meskipun hanya berupa peringatan kepada pengguna bahwa JavaScript diperlukan untuk menggunakan aplikasi. [Pelajari lebih lanjut](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "Isi halaman harus merender beberapa konten jika skripnya tidak tersedia."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "Tidak menyediakan konten pengganti saat JavaScript tidak tersedia"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "Berisi beberapa konten saat JavaScript tidak tersedia"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Jika Anda membuat build Progressive Web App, pertimbangkan untuk menggunakan pekerja layanan agar aplikasi dapat berfungsi secara offline. [Pelajari lebih lanjut](https://web.dev/works-offline/)."
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "Halaman saat ini tidak merespons dengan kode 200 saat offline"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "Halaman saat ini merespons dengan kode 200 saat offline"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "Halaman tersebut mungkin tidak dimuat secara offline karena URL uji Anda ({requested}) tidak dialihkan ke \"{final}\". Coba uji URL kedua secara langsung."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "Ini adalah peluang untuk meningkatkan penggunaan ARIA pada aplikasi Anda, yang dapat meningkatkan pengalaman bagi pengguna teknologi asistif, seperti pembaca layar."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Progressive Web App"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "Cepat dan dapat diandalkan"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Dapat Diinstal"

@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "Lomake-elementeillä on niihin liittyvät tunnisteet"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "Asettelua varten luodussa taulukossa ei pitäisi olla dataelementtejä, kuten taulukoiden otsikko ‑elementtejä, tekstityselementtejä tai yhteenvetomääritteitä, koska ne voivat tehdä näytönlukuohjelman käytöstä sekavaa. [Lue lisää](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "Esittelyyn tarkoitetut `<table>`-elementit eivät vältä `<th>`-,`<caption>`- tai `[summary]`-määritteen käyttöä"
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "Esittelyyn tarkoitetut `<table>`-elementit välttävät `<th>`-,`<caption>`- tai `[summary]`-määritteiden käyttöä"
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "Linkkiteksti (ja vaihtoehtoinen teksti kuvia varten, kun niitä käytetään linkkeinä), joka on erottuva, yksilöllinen ja tarkennettavissa, parantaa näytönlukuohjelmaa käyttävien navigointikokemusta. [Lue lisää](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "`<video>`-elementit sisältävät `<track>`-elementin, jossa on `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "Äänikuvaukset antavat videoista oleellista tietoa (esimerkiksi ilmeistä ja tapahtumapaikoista), jota ei saa keskustelusta. [Lue lisää](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "`<video>`-elementit eivät sisällä `<track>`-elementtiä, jossa on `[kind=\"description\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "`<video>`-elementit sisältävät `<track>`-elementin, jossa on `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Määritä `apple-touch-icon`, jotta iOS-näkyvyys on paras mahdollinen, kun käyttäjä lisää progressiivisen web-sovelluksen aloitusnäytölle. Sen on viitattava läpinäkymättömään neliön muotoiseen (192 px tai 180 px) PNG-tiedostoon. [Lue lisää](https://web.dev/apple-touch-icon/)."
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "Näytä kuvat, joiden kuvasuhde on oikea"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "Virheelliset kuvan kokotiedot: {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "Todellinen koko"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Vältä suuria asettelun muutoksia"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Nopea sivun lataus mobiiliverkon kautta varmistaa hyvän mobiilikäyttökokemuksen. [Lue lisää](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "Interaktiivinen: {timeInMs, number, seconds} s"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "Interaktiivinen simuloidussa mobiiliverkossa: {timeInMs, number, seconds} s"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "Sivu latautuu liian hitaasti eikä ole interaktiivinen 10 sekunnin sisällä. Katso mahdollisuuksia ja diagnostiikkatietoja Tehokkuus-osiosta sivujen kehittämiseksi."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "Sivu ei lataudu tarpeeksi nopeasti mobiiliverkoissa"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "Sivu latautuu tarpeeksi nopeasti mobiiliverkoissa"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Näyttää pääsäikeen pitkäkestoisimmat tehtävät, mistä on apua syöttöviiveen pahimpien aiheuttajien tunnistamisessa. [Lue lisää](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Tehosteessa on ei-tuettuja ajoitusparametreja"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Service worker auttaa tekemään verkkosovelluksesta luotettavan, jos verkko-olosuhteet ovat vaikeita ennustaa. [Lue lisää](https://web.dev/offline-start-url/)."
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Virhe, kun {url} ladattiin Service Workerissa, tuloksena tilakoodi {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` ei vastaa 200-viestillä offline-tilassa"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` vastaa 200-viestillä offline-tilassa"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "`start_url` ei ollut Lighthousen luettavissa luettelossa. Siksi oletimme, että `start_url` on dokumentin URL-osoite. Virheilmoitus: {manifestWarning}"
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Pidä verkkopyyntöjen määrä ja koko tehokkuusbudjetissa määritettyjen tavoitteiden rajoissa. [Lue lisää](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Asettaa osoitepalkin teemavärin"
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "Pääsäikeen estoaika"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Kolmas osapuoli"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "Vähennä kolmannen osapuolen koodin vaikutusta"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "Muut resurssit"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "Minimoi kolmannen osapuolen käyttö"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "`<meta name=\"viewport\">` ‑tagi, jossa `width` tai `initial-scale`, löytyy"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Sovelluksen tulee näyttää jotakin sisältöä, vaikka JavaScript ei ole toiminnassa. Näytä käyttäjälle vähintään varoitus, että JavaScript on pakollinen sovelluksen käyttöä varten. [Lue lisää](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "Sivun runko-osan pitäisi renderöidä sisältöä, vaikka sen skriptit eivät ole saatavilla."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "Ei palauta varasisältöä, kun JavaScript ei ole käytettävissä"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "Palauttaa sisältöä, vaikka JavaScript ei ole käytettävissä"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Jos kehität progressiivista web-sovellusta, harkitse service workerin käyttöä tukemaan sovelluksen toimintaa offline-tilassa. [Lue lisää](https://web.dev/works-offline/)."
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "Nykyinen sivu ei vastaa 200-viestillä offline-tilassa"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "Nykyinen sivu vastaa 200-viestillä offline-tilassa"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "Sivun offline-lataus ei ehkä onnistu, koska testi-URL ({requested}) ohjattiin uudelleen osoitteeseen {final}. Kokeile suoraan toista URL-osoitetta."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "Näillä voit parantaa ARIA:n käyttöä sovelluksessasi, mikä voi tehdä avustusteknologiaa (kuten näytönlukuohjelmaa) käyttävien kokemuksesta paremman."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Progressiivinen web-sovellus"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "Nopea ja luotettava"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Asennettavissa"

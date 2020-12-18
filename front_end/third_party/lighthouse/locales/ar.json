@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "احتواء عناصر النموذج على التصنيفات المرتبطة"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "يجب ألا يشتمل الجدول المُستخدم لأغراض التنسيق على عناصر البيانات، مثل عناصر الشرح أو سمة الملخّص، لأن ذلك يمكن أن ينشئ تجربة محيرة لمستخدمي برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "لا تتجنّب عناصر `<table>` للعرض التقديمي استخدام `<th>` أو `<caption>` أو السمة `[summary]`."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "تتجنّب عناصر `<table>` للعرض التقديمي استخدام `<th>` أو `<caption>` أو السمة `[summary]`."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "إنّ نص الرابط (والنص البديل للصور، عند استخدامه كروابط) الذي يُعد مميّزًا وفريدًا وقابلاً للتركيز يحسّن تجربة التنقل لمستخدمي برامج قراءة الشاشة. [مزيد من المعلومات](https://web.dev/link-name/)"
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "العناصر `<video>` تحتوي على عنصر `<track>` مع `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "توفّر الأوصاف الصوتية معلومات ذات صلة للفيديوهات التي لا يمكن إجراء الحوار بها، مثل تعبيرات الوجه وأجواء الإضاءة. [مزيد من المعلومات](https://web.dev/video-description/)"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "عناصر `<video>` لا تحتوي على عنصر `<track>` مع `[kind=\"description\"]`."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "العناصر `<video>` تحتوي على عنصر `<track>` مع `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "للحصول على المظهر المثالي على نظام التشغيل iOS عند إضافة المستخدمين تطبيق ويب تقدّمي إلى الشاشة الرئيسية، يمكنك تحديد `apple-touch-icon`. يجب أن تشير هذه السمة إلى مربع غير شفاف بتنسيق PNG مقاسه 192 بكسل (أو 180 بكسل). [مزيد من المعلومات](https://web.dev/apple-touch-icon/)"
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "يتم عرض الصور مع نسبة العرض إلى الارتفاع الصحيحة"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "معلومات تغيير حجم الصورة غير صالحة {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "الحجم الفعلي"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "تجنُّب متغيّرات التصميم الكبيرة"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "إنّ تحميل الصفحات بشكل سريع عبر شبكة الجوّال يضمن توفير تجربة استخدام عالية الجودة. [مزيد من المعلومات](https://web.dev/load-fast-enough-for-pwa/)"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "الوقت التفاعلي {timeInMs, number, seconds} ثانية"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "الوقت التفاعلي على شبكة الجوّال التي تمت محاكاتها لمدة {timeInMs, number, seconds}  ثانية"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "تحميل الصفحة بطيء جدًا وليس تفاعليًا خلال 10 ثوانٍ. يُرجى الاطّلاع على الفرص وبيانات التشخيص في قسم \"الأداء\" للتعرُّف على طريقة التحسين."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "تحميل الصفحة على شبكات الجوّال ليس سريعًا بشكلٍ كافٍ"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "تحميل الصفحة سريع بشكلٍ كافٍ في شبكات الجوّال"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "يتم إدراج أطول المهام في سلسلة المحادثات الرئيسية، ما يساعد في تحديد أكثر الأشخاص الذين يسببون تأخير في عملية الإدخال. [مزيد من المعلومات](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "يحتوي \"التأثير\" على مَعلَمات توقيت غير متوافقة"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "يمكّن مشغّل الخدمات تطبيق الويب من أن يصبح موثوقًا به في ظروف الشبكة التي لا يمكن التنبؤ بها. [مزيد من المعلومات](https://web.dev/offline-start-url/)"
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "خطأ أثناء تحميل {url} في مشغّل الخدمات، واستخدام رمز الحالة {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` لا تستجيب باستخدام رمز 200 عند عدم الاتصال بالإنترنت"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` يستجيب باستخدام رمز 200 عند عدم الاتصال بالإنترنت"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "تعذّر على Lighthouse قراءة `start_url` من البيان. ونتيجة لذلك، كان من المفترض أن يكون `start_url` هو عنوان URL للمستند. رسالة خطأ: '{manifestWarning}'."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "يمكنك الحفاظ على كمية طلبات الشبكة وحجمها ضمن الاستهدافات المحدّدة في ميزانية الأداء المقدّمة. [مزيد من المعلومات](https://developers.google.com/web/tools/lighthouse/audits/budgets)"
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "ضبط لون تصميم لشريط العناوين"
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "وقت حظر سلسلة المحادثات الأساسية"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "الجهة الخارجية"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "تقليل تأثير رمز الجهة الخارجية"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "موارد أخرى"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "تقليل استخدام الرموز التابعة لجهات خارجية"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "تضمين علامة `<meta name=\"viewport\">` مع `width` أو `initial-scale`"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "يجب أن يعرض تطبيقك بعض المحتوى عند إيقاف JavaScript، حتى في حال كان مجرد تحذير للمستخدم يشير إلى ضرورة وجود JavaScript لاستخدام التطبيق. [مزيد من المعلومات](https://web.dev/without-javascript/)"
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "يجب أن يعرض نص الصفحة بعض المحتوى في حالة عدم توفر النصوص البرمجية."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "عدم تقديم المحتوى الاحتياطي عند عدم توفر JavaScript"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "تضمين بعض المحتوى عند عدم توفّر JavaScript"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "في حال كنت تنشئ \"تطبيق ويب تقدّمي\"، يمكنك استخدام مشغّل الخدمات حتى يتمكّن التطبيق من العمل بلا اتصال بالإنترنت. [مزيد من المعلومات](https://web.dev/works-offline/)"
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "الصفحة الحالية لا تستجيب باستخدام رمز 200 عند عدم الاتصال بالإنترنت"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "الصفحة الحالية تستجيب باستخدام رمز 200 عند عدم الاتصال بالإنترنت"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "قد لا يتم تحميل الصفحة بلا اتصال بالإنترنت لأنه تمت إعادة توجيه عنوان URL للاختبار ({requested}) إلى \"{final}\". ويمكنك محاولة اختبار عنوان URL الثاني مباشرة."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "هذه هي فرص لتحسين استخدام ARIA في تطبيقك، ما قد يحسّن تجربة مستخدمي التكنولوجيا المساعدة، مثل قارئ الشاشة."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "تطبيق الويب التقدّمي"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "سريع وموثوق"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "القسم القابل للتثبيت"

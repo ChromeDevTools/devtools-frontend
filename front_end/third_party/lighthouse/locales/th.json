@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "องค์ประกอบฟอร์มมีป้ายกำกับที่เชื่อมโยงอยู่"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "ตารางที่ใช้สำหรับการออกแบบต้องไม่มีองค์ประกอบข้อมูล เช่น องค์ประกอบ th หรือคำอธิบายภาพ หรือแอตทริบิวต์สรุป เพราะอาจสร้างความสับสนระหว่างการใช้งานของผู้ใช้โปรแกรมอ่านหน้าจอ [ดูข้อมูลเพิ่มเติม](https://web.dev/layout-table/)"
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "องค์ประกอบ `<table>` สำหรับการนำเสนอไม่หลีกเลี่ยงการใช้ `<th>`, `<caption>` หรือแอตทริบิวต์ `[summary]`"
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "องค์ประกอบ `<table>` สำหรับการนำเสนอหลีกเลี่ยงการใช้ `<th>`, `<caption>` หรือแอตทริบิวต์ `[summary]`"
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "ข้อความลิงก์ (และข้อความสำรองสำหรับรูปภาพเมื่อใช้เป็นลิงก์) ที่แยกแยะได้ ไม่ซ้ำกัน และโฟกัสได้ ช่วยปรับปรุงประสบการณ์การไปยังส่วนต่างๆ สำหรับผู้ใช้โปรแกรมอ่านหน้าจอ [ดูข้อมูลเพิ่มเติม](https://web.dev/link-name/)"
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "องค์ประกอบ `<video>` มีองค์ประกอบ `<track>` ที่มี `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "คำอธิบายเสียงให้ข้อมูลเกี่ยวข้องสำหรับวิดีโอที่สื่อสารผ่านบทพูดไม่ได้ เช่น สีหน้าและฉากต่างๆ [ดูข้อมูลเพิ่มเติม](https://web.dev/video-description/)"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "องค์ประกอบ `<video>` ไม่มีองค์ประกอบ `<track>` ที่มี `[kind=\"description\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "องค์ประกอบ `<video>` มีองค์ประกอบ `<track>` ที่มี `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "ให้ระบุ `apple-touch-icon` เพื่อให้ปรากฏใน iOS ได้อย่างดีที่สุดเมื่อผู้ใช้เพิ่ม Progressive Web App ลงในหน้าจอหลัก โดยต้องชี้ไปที่สี่เหลี่ยมจตุรัสแบบไม่โปร่งใสขนาด 192 พิกเซล (หรือ 180 พิกเซล) รูปแบบ PNG [ดูข้อมูลเพิ่มเติม](https://web.dev/apple-touch-icon/)"
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "แสดงรูปภาพที่มีสัดส่วนถูกต้อง"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "ข้อมูลขนาดรูปภาพไมู่กต้อง {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "ขนาดจริง"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "หลีกเลี่ยงการเลื่อนเลย์เอาต์ขนาดใหญ่"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "การโหลดหน้าเว็บที่รวดเร็วผ่านเครือข่ายมือถือช่วยให้มั่นใจว่าผู้ใช้ได้รับประสบการณ์การใช้งานที่ดีในอุปกรณ์เคลื่อนที่ [ดูข้อมูลเพิ่มเติม](https://web.dev/load-fast-enough-for-pwa/)"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "โต้ตอบที่ {timeInMs, number, seconds} วินาที"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "มีการโต้ตอบในเครือข่ายมือถือจำลองที่ {timeInMs, number, seconds} วินาที"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "หน้าเว็บโหลดช้าเกินไปและไม่มีการโต้ตอบภายใน 10 วินาที ไปที่โอกาสและการวินิจฉัยในส่วน \"ประสิทธิภาพ\" เพื่อดูวิธีปรับปรุง"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "การโหลดหน้าเว็บไม่เร็วพอเมื่อใช้เครือข่ายมือถือ"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "การโหลดหน้าเว็บเร็วพอเมื่อใช้เครือข่ายมือถือ"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "ระบุงานที่ใช้เวลานานที่สุดในเทรดหลัก เหมาะสำหรับการระบุปัจจัยที่แย่ที่สุดที่ทำให้อินพุตล่าช้า [ดูข้อมูลเพิ่มเติม](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "เอฟเฟกต์มีพารามิเตอร์การจับเวลาที่ไม่รองรับ"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Service Worker ช่วยให้เว็บแอปของคุณเชื่อถือได้ในสภาวะของเครือข่ายที่คาดการณ์ไม่ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/offline-start-url/)"
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "การโหลดที่ผิดพลาดของ {url} ใน Service Worker ได้รหัสสถานะ {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` ไม่ตอบสนองด้วยรหัส 200 เมื่อออฟไลน์"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` ตอบสนองด้วยรหัส 200 เมื่อออฟไลน์"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse อ่าน `start_url` จากไฟล์ Manifest ไม่ได้ ด้วยเหตุนี้ ระบบจึงสันนิษฐานว่า `start_url` เป็น URL ของเอกสาร ข้อความแสดงข้อผิดพลาด: \"{manifestWarning}\""
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "ควบคุมให้จำนวนและขนาดของคำขอเครือข่ายอยู่ภายในเป้าหมายที่กำหนดตามงบประมาณประสิทธิภาพที่ให้มา [ดูข้อมูลเพิ่มเติม](https://developers.google.com/web/tools/lighthouse/audits/budgets)"
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "กำหนดสีธีมของแถบที่อยู่"
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "เวลาในการบล็อกเทรดหลัก"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "บุคคลที่สาม"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "ลดผลกระทบจากโค้ดของบุคคลที่สาม"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "ทรัพยากรอื่นๆ"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "ลดการใช้ของบุคคลที่สาม"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "มีแท็ก `<meta name=\"viewport\">` ที่มี `width` หรือ `initial-scale`"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "แอปควรแสดงเนื้อหาบางอย่างเมื่อมีการปิดใช้ JavaScript แม้จะเป็นเพียงการเตือนผู้ใช้ว่าการใช้แอปจำเป็นต้องใช้ JavaScript [ดูข้อมูลเพิ่มเติม](https://web.dev/without-javascript/)"
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "ส่วนเนื้อหาในหน้าควรแสดงเนื้อหาบางอย่างถ้าสคริปต์ในหน้าไม่พร้อมใช้งาน"
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "ไม่แสดงเนื้อหาทางเลือกเมื่อ JavaScript ไม่พร้อมใช้งาน"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "มีเนื้อหาบางอย่างแสดงขึ้นเมื่อ JavaScript ไม่พร้อมใช้งาน"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "หากคุณกำลังสร้าง Progressive Web App ให้พิจารณาใช้ Service Worker เพื่อให้แอปทำงานแบบออฟไลน์ได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/works-offline/)"
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "หน้าปัจจุบันไม่ตอบสนองด้วยรหัส 200 เมื่อออฟไลน์"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "หน้าปัจจุบันตอบสนองด้วยรหัส 200 เมื่อออฟไลน์"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "หน้านี้อาจไม่โหลดขึ้นขณะออฟไลน์เนื่องจาก URL ทดสอบของคุณ ({requested}) มีการเปลี่ยนเส้นทางไปยัง \"{final}\" ลองทดสอบ URL ที่ 2 โดยตรง"
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "นี่เป็นโอกาสปรับปรุงการใช้งาน ARIA ในแอปพลิเคชันของคุณ ซึ่งอาจช่วยให้ผู้ใช้ได้รับประสบการณ์การใช้งานเทคโนโลยีอำนวยความสะดวก เช่น โปรแกรมอ่านหน้าจอ ที่ดียิ่งขึ้น"
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Progressive Web App"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "ทำงานเร็วและวางใจได้"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "ติดตั้งได้"

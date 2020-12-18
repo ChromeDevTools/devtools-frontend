@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "படிவ உறுப்புகளுக்கு, தொடர்புடைய லேபிள்கள் உள்ளன"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "தளவமைப்புக்காகப் பயன்படுத்தப்படும் அட்டவணையில் th, தலைப்பு உறுப்புகள், சுருக்கவிவரப் பண்புக்கூறு போன்ற தரவு உறுப்புகளை சேர்க்கக் கூடாது, ஏனெனில் இது ஸ்க்ரீன் ரீடர் பயனர்களுக்குக் குழப்பத்தை ஏற்படுத்தும். [மேலும் அறிக](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "`<th>`, `<caption>` அல்லது `[summary]` பண்புக்கூறைப் பயன்படுத்துவதை விளக்க `<table>` உறுப்புகள் தவிர்க்கவில்லை."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "`<th>`, `<caption>` அல்லது `[summary]` பண்புக்கூறைப் பயன்படுத்துவதை விளக்க `<table>` உறுப்புகள் தவிர்க்கும்."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "தெளிவான, தனித்துவமான, மையப்படுத்தக்கூடிய இணைப்பு உரை (மற்றும் இணைப்புகளாகப் பயன்படுத்தப்படும் படங்களுக்கான மாற்று உரை) ஸ்க்ரீன் ரீடர் பயனர்களுக்கான வழிகாட்டும் அனுபவத்தை மேம்படுத்தும். [மேலும் அறிக](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "`<video>` உறுப்புகளில் `[kind=\"captions\"]`ஐக் கொண்டுள்ள`<track>` உறுப்பு உள்ளது"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "வீடியோக்களில் வசனங்களால் வெளிப்படுத்த முடியாத முக பாவனைகள், காட்சிகள் போன்றவற்றுக்கான தொடர்புடைய தகவல்களை ஆடியோ விளக்கங்கள் வழங்கும். [மேலும் அறிக](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "`<video>` உறுப்புகளில் `[kind=\"description\"]` உள்ள `<track>` உறுப்பு இல்லை."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "`<video>` உறுப்புகளில் `[kind=\"description\"]`ஐக் கொண்டுள்ள`<track>` உறுப்பு உள்ளது"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "முகப்புத் திரையில் நவீன இணைய ஆப்ஸை பயனர்கள் சேர்க்கும் போது iOSஸில் சிறப்பாகத் தோன்ற `apple-touch-icon` ஒன்றை வரையறுக்கவும். அது ஒளிபுகுத்தன்மையற்ற 192 பிகசல் (அல்லது 180 பிக்சல்) அளவுள்ள கட்ட வடிவத்திலான PNGயைக் காட்ட வேண்டும். [மேலும் அறிக](https://web.dev/apple-touch-icon/)."
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "சரியான தோற்ற விகிதத்துடன் படங்களைக் காட்டுகிறது"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "பட அளவு குறித்த தகவல் செல்லாதது {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "உண்மையான அளவு"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "பெரிய தளவமைப்பு ஷிஃப்ட்களைத் தவிர்த்தல்"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "மொபைல் நெட்வொர்க்கில் பக்கம் வேகமாக ஏற்றப்பட்டால் அது மொபைல் பயனர்களுக்கு சிறந்த அனுபவத்தை வழங்கும். [மேலும் அறிக](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "பக்கம் பதிலளிக்க எடுத்துக்கொண்ட நேரம்: {timeInMs, number, seconds} வி."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "மாதிரி மொபைல் நெட்வொர்க்கில் {timeInMs, number, seconds} வினாடிகளில் பதிலளிக்கிறது"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "உங்கள் பக்கம் மிகவும் மெதுவாக ஏற்றப்படுவதால் 10 நொடிகளுக்குள் விரைவாகப் பதிலளிக்கவில்லை. எவ்வாறு மேம்படுத்துவது என்பதைத் தெரிந்து கொள்ள \"செயல்திறன்\" பிரிவில் உள்ள 'வாய்ப்புகள் மற்றும் பிழை கண்டறிதல்' என்பதைப் பார்க்கவும்."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "மொபைல் நெட்வொர்க்குகளில் பக்கம் போதுமான வேகத்தில் ஏற்றப்படவில்லை"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "மொபைல் நெட்வொர்க்குகளில் பக்கம் போதுமான வேகத்தில் ஏற்றப்படுகிறது"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "முக்கியத் தொடரிழையில் உள்ள பணிகளில், இருப்பதிலேயே நீளமானவற்றைப் பட்டியலிடுகிறது. உள்ளீட்டுத் தாமதத்திற்கு அதிகமாகப் பங்களிப்பவற்றை அடையாளம் காண இது உதவுகிறது. [மேலும் அறிக](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "ஆதரிக்கப்படாத நேர அளவுருக்களை எஃபெக்ட் கொண்டுள்ளது"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "கணிக்க முடியாத நெட்வொர்க் சூழல்களிலும் சேவைச் செயலாக்கி உங்கள் இணைய ஆப்ஸை நம்பகமானதாக மாற்றும். [மேலும் அறிக](https://web.dev/offline-start-url/)."
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Service Workerரில் {url} ஐ ஏற்ற முடியவில்லை, {statusCode} எனும் நிலைக் குறியீடு கிடைத்துள்ளது"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "ஆஃப்லைனில் உள்ள போது 200 என்ற HTTP நிலைக் குறியீட்டுடன் `start_url` விரைவாகப் பதிலளிக்கவில்லை"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "ஆஃப்லைனில் உள்ள போது 200 என்ற HTTP நிலைக் குறியீட்டுடன் `start_url` விரைவாகப் பதிலளிக்கும்"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "மெனிஃபெஸ்ட்டில் இருந்து `start_url`ஐ Lighthouseஸால் படிக்க முடியவில்லை. இதனால் `start_url` இந்த ஆவணத்தின் URL ஆகக் கருதப்பட்டது. பிழைச் செய்தி: '{manifestWarning}'."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "நெட்வொர்க் கோரிக்கைகளின் அளவையும் எண்ணிக்கையையும் செயல்திறன் பட்ஜெட் அமைத்துள்ள இலக்கீடுகளுக்குள் வைத்திருக்கவும். [மேலும் அறிக](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "முகவரிப் பட்டிக்கான தீம் வண்ணத்தை அமைக்கும்."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "முக்கியத் தொடரிழையில் தடுப்பதற்குச் செலவிட்ட நேரம்"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "மூன்றாம் தரப்பு"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "மூன்றாம் தரப்புக் குறியீட்டின் பாதிப்பைக் குறைக்கவும்"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "இதர மூலங்கள்"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "மூன்றாம் தரப்பு உபயோகத்தைக் குறைத்தல்"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "`width` அல்லது `initial-scale` உடன் `<meta name=\"viewport\">` குறிச்சொல் அமைக்கப்பட்டுள்ளது"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "JavaScript முடக்கத்தில் உள்ள போது சில உள்ளடக்கத்தை உங்கள் ஆப்ஸ் காட்ட வேண்டும். அது ஆப்ஸைப் பயன்படுத்த JavaScript தேவை என்ற எச்சரிக்கைச் செய்தியாக இருந்தாலும் பரவாயில்லை. [மேலும் அறிக](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "ஸ்கிரிப்ட்கள் இல்லாத போது பக்கம் சில உள்ளடக்கத்தை ரெண்டர் செய்ய வேண்டும்."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "JavaScript முடக்கத்தில் உள்ள போது ஃபால்பேக் உள்ளடக்கத்தை வழங்காது"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "JavaScript முடக்கத்தில் உள்ள போது சில உள்ளடக்கம் காட்டப்படும்"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "நவீன இணைய ஆப்ஸை உருவாக்குகிறீர்கள் எனில் ஆஃப்லைனில் உங்கள் ஆப்ஸ் செயல்படும் வகையில் சேவைச் செயலாக்கியைப் பயன்படுத்தும்படி பரிந்துரைக்கிறோம். [மேலும் அறிக](https://web.dev/works-offline/)."
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "ஆஃப்லைனில் உள்ள போது 200 என்ற HTTP நிலைக் குறியீட்டுடன் தற்போதைய பக்கம் விரைவாகப் பதிலளிக்கவில்லை"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "ஆஃப்லைனில் உள்ள போது 200 என்ற HTTP நிலைக் குறியீட்டுடன் தற்போதைய பக்கம் விரைவாகப் பதிலளிக்கும்"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "\"{final}\"க்கு உங்களின் சோதனை URL ({requested}) திசைதிருப்பப்பட்டதால் இந்தப் பக்கத்தை ஆஃப்லைனில் ஏற்ற முடியாமல் போகக்கூடும். இரண்டாவது URLஐ நேரடியாகச் சோதித்துப் பார்க்கவும்."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "இந்த வாய்ப்புகள் உங்கள் ஆப்ஸில் உள்ள ARIAயின் ஆப்ஸை மேம்படுத்தும், இது ஸ்க்ரீன் ரீடர் போன்ற உதவிகரமான தொழில்நுட்பத்தைப் பயன்படுத்தும் பயனர்களின் அனுபவத்தை மேம்படுத்தக்கூடும்."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "நவீன இணைய ஆப்ஸ்"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "விரைவானது, நம்பகமானது"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "நிறுவக்கூடியவை"

@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "Елементите на формуляра имат свързани етикети"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "Ако дадена таблица се използва само за оформление, тя не трябва да съдържа елементи с данни, като например елементите th или caption или атрибута summary, тъй като това може да създаде объркване за потребителите на екранни четци. [Научете повече](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "Презентационните елементи `<table>` използват `<th>`, `<caption>` или атрибута `[summary]`."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "Презентационните елементи `<table>` не използват `<th>`, `<caption>` или атрибута `[summary]`."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "Текстът на връзките (и алтернативният текст за изображения, когато се използват за връзки), който е различим, уникален и дава възможност фокусът да бъде поставен върху него, подобрява навигирането за потребителите на екранни четци. [Научете повече](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "Елементите `<video>` съдържат елемент `<track>` с `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "Аудиоописанията предоставят полезна информация за видеоклиповете (например за обстановката и изражението на лицата на героите), която потребителите не биха могли да разберат от диалога. [Научете повече](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "Някои елементи `<video>` не съдържат елемент `<track>` с `[kind=\"description\"]`."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "Елементите `<video>` съдържат елемент `<track>` с `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "За най-добро изобразяване под iOS, когато потребителите добавят прогресивно уеб приложение (PWA) към началния екран, дефинирайте атрибут `apple-touch-icon`. Той трябва да сочи към непрозрачен квадратен PNG файл със страна от 192 (или 180) пиксела. [Научете повече](https://web.dev/apple-touch-icon/)."
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "Показва изображенията с правилно съотношение"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "Информацията за размера на изображението е невалидна: {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "Действителен размер"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Избягвайте големи промени в оформлението"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Бързото зареждане на страниците през мобилни мрежи осигурява добра практическа работа за потребителите на мобилни устройства. [Научете повече](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "Интерактивна след {timeInMs, number, seconds} сек"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "Интерактивност при симулирана мобилна мрежа след {timeInMs, number, seconds} сек"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "Страницата се зарежда прекалено бавно и не е интерактивна в рамките на 10 секунди. За да научите как да я подобрите, разгледайте възможностите и диагностичните данни в секцията „Ефективност“."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "Страницата не се зарежда достатъчно бързо през мобилни мрежи"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "Страницата се зарежда достатъчно бързо през мобилни мрежи"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Посочва най-продължителните задачи в основната нишка и ви помага да идентифицирате главните причинители на забавяне при взаимодействие. [Научете повече](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Ефектът съдържа неподдържани параметри за време"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Файлът service worker дава възможност на уеб приложението ви да работи надеждно при непредсказуеми условия в мрежата. [Научете повече](https://web.dev/offline-start-url/)."
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Грешка при зареждането на {url} в service worker. Получен код на състоянието: {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` не отговаря с код 200, когато е офлайн"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` отговаря с код 200, когато е офлайн"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse не можа да прочете `start_url` от манифеста. В резултат на това бе предположено, че URL адресът на документа изпълнява функцията на `start_url`. Съобщение за грешка: „{manifestWarning}“."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Поддържайте количеството и обема на мрежовите заявки под целевите стойности в посочения бюджет за ефективността. [Научете повече](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Зададен е тематичен цвят за адресната лента."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "Време на блокиране на основната нишка"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Трета страна"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "Намалете влиянието на кода от трети страни"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "Други ресурси"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "Сведете до минимум използването на код на трети страни"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "Има маркер `<meta name=\"viewport\">` с атрибут `width` или `initial-scale`"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Когато JavaScript е деактивиран, в приложението ви трябва да се показва някакво съдържание, дори да е само предупреждение към потребителя, че за използване на приложението се изисква JavaScript. [Научете повече](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "В основната част на страницата трябва да се изобразява съдържание, ако скриптовете ѝ не могат да бъдат заредени."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "Не предоставя резервно съдържание, когато JavaScript не е налице"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "Показва се част от съдържанието, когато JavaScript не е налице"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Ако създавате прогресивно уеб приложение (PWA), добре е да използвате service worker, за да може то да работи офлайн. [Научете повече](https://web.dev/works-offline/)."
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "Текущата страница не отговаря с код 200, когато е офлайн"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "Текущата страница отговаря с код 200, когато е офлайн"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "Страницата може да не се зарежда офлайн, тъй като тестовият ви URL адрес ({requested}) бе пренасочен към {final}. Опитайте се да тествате втория URL адрес директно."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "Това са възможности за подобряване на използването на ARIA в приложението ви. Така може да подобрите практическата работа за потребителите на помощни технологии, като например екранни четци."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Прогресивно уеб приложение (PWA)"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "Бързина и надеждност"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Възможност за инсталиране"

@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "फ़ॉर्म एलिमेंट में सहभागी लेबल हैं"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "लेआउट के लिए इस्तेमाल की जाने वाली टेबल में th या कैप्शन वाले एलिमेंट जैसे, डेटा एलिमेंट या सारांश विशेषता शामिल नहीं होनी चाहिए, क्योंकि इससे स्क्रीन रीडर उपयोगकर्ताओं को उलझन हो सकती हैं. [ज़्यादा जानें](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "प्रज़ेंटेशन के लिए इस्तेमाल होने वाले `<table>`एलिमेंट में `<th>`, `<caption>` या `[summary]` विशेषता का इस्तेमाल होता है."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "प्रज़ेंटेशन के लिए इस्तेमाल होने वाले `<table>`एलिमेंट में `<th>`, `<caption>` या `[summary]` विशेषता का इस्तेमाल नहीं होता."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "जो लिंक टेक्स्ट (और इमेज के लिए इस्तेमाल किया वैकल्पिक टेक्स्ट) समझने लायक, सबसे अलग, और फ़ोकस करने लायक है, उससे स्क्रीन रीडर उपयोगकर्ताओं का नेविगेशन अनुभव बेहतर बनता है. [ज़्यादा जानें](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "`<video>` एलिमेंट में `[kind=\"captions\"]` वाला एक `<track>` एलिमेंट है"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "ऑडियो के ब्यौरे में वीडियो से जुड़ी काम की ऐसी जानकारी दी जाती है जो बातचीत से नहीं दी जा सकती. जैसे, चेहरे के हावभाव और सीन. [ज़्यादा जानें](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "`<video>` एलिमेंट में `[kind=\"description\"]` वाला कोई `<track>` एलिमेंट नहीं है."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "`<video>` एलिमेंट में `[kind=\"description\"]` वाला एक `<track>` एलिमेंट है"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "उपयोगकर्ता जब होम स्क्रीन पर प्रगतिशील वेब ऐप्लिकेशन जोड़ें, तो iOS पर वह अच्छे से नज़र आए, इसके लिए `apple-touch-icon` तय करें. यह ज़रूरी है कि यह आइकॉन किसी ऐसे 192px (या 180px) के वर्गाकार PNG की तरफ़ इशारा करे जिसके आर-पार न देखा जा सके. [ज़्यादा जानें](https://web.dev/apple-touch-icon/)."
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "चौड़ाई-ऊंचाई के सही अनुपात वाली इमेज दिखाता है"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "इमेज के आकार की जानकारी गलत है {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "इमेज का असल साइज़"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "बड़े लेआउट शिफ़्ट से बचें"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "सेल्युलर नेटवर्क पर तेज़ी से पेज लोड होने की सुविधा से मोबाइल इस्तेमाल करने वालों को अच्छा अनुभव मिलता है. [ज़्यादा जानें](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "इंटरैक्शन {timeInMs, number, seconds} से. में शुरू हुआ"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "{timeInMs, number, seconds} से. में सिम्युलेट किए गए मोबाइल नेटवर्क पर इंटरैक्शन शुरू हुआ"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "आपका पेज बहुत धीरे लोड होता है और 10 सेकंड में इंटरैक्टिव नहीं होता है. सुधार करने के तरीके जानने के लिए \"परफ़ॉर्मेंस\" सेक्शन में अवसरों पर नज़र डालें और गड़बड़ी की जानकारी लें."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "मोबाइल नेटवर्क पर पेज लोड होने की गति ज़रूरत के मुताबिक तेज़ नहीं है"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "मोबाइल नेटवर्क पर पेज लोड होने की गति ज़रूरत के मुताबिक तेज़ है"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "यह मुख्य थ्रेड पर सबसे लंबे टास्क की सूची बनाता है. इससे इनपुट डिले के लिए, सबसे खराब योगदान देने वालों की पहचान करने में मदद मिलती है. [ज़्यादा जानें](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "इस इफ़ेक्ट में समय के ऐसे पैरामीटर हैं जो काम नहीं करते"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "सर्विस वर्कर की वजह से आपका वेब ऐप्लिकेशन ऑनलाइन, ऑफ़लाइन, और रुक-रुककर चलने वाले नेटवर्क जैसी स्थितियों में भी अच्छे ढंग से काम करता है. [ज़्यादा जानें](https://web.dev/offline-start-url/)."
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "सर्विस वर्कर में {url} लोड करने में गड़बड़ी हुई, {statusCode} स्थिति कोड मिला"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` ऑफ़लाइन होने पर, \"200\" कोड का जवाब नहीं देता है"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` ऑफ़लाइन होने पर, \"200\" कोड का जवाब देता है"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse, मेनिफ़ेस्ट फ़ाइल से `start_url` को नहीं ढूंढ सका. इसी वजह से, `start_url` को दस्तावेज़ का यूआरएल मान लिया गया. गड़बड़ी का मैसेज: '{manifestWarning}'."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "नेटवर्क अनुरोधों की संख्या और उनकी क्वालिटी, आपको दिए गए परफ़ॉर्मेंस बजट की ओर से सेट किए गए लक्ष्यों के हिसाब से होनी चाहिए. [ज़्यादा जानें](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "'पता बार' के लिए थीम का रंग सेट करता है."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "मुख्य थ्रेड ब्लॉक होने का समय"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "तीसरा पक्ष"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "तीसरे पक्ष के कोड का असर कम करें"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "अन्य संसाधन"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "तीसरे पक्ष के इस्तेमाल को कम करें"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "वेब पेज पर `width` या `initial-scale` वाला `<meta name=\"viewport\">` टैग है"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "JavaScript बंद होने पर भी आपके ऐप्लिकेशन की कुछ सामग्री दिखाई देनी चाहिए. भले ही वह उपयोगकर्ता को दी जाने वाली एक चेतावनी हो कि ऐप्लिकेशन को इस्तेमाल करने के लिए JavaScript ज़रूरी है. [ज़्यादा जानें](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "अगर इसकी स्क्रिप्ट उपलब्ध नहीं हैं, तो पेज के मुख्य हिस्से को कुछ सामग्री रेंडर करनी चाहिए या उसकी इमेज बनानी चाहिए."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "यह वेब पेज, JavaScript उपलब्ध न होने पर फ़ॉलबैक सामग्री मुहैया नहीं कराता है"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "यह वेब पेज, JavaScript उपलब्ध नहीं होने पर कुछ सामग्री दिखाता है"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "अगर आप एक प्रगतिशील वेब ऐप्लिकेशन बना रहे हैं, तो सर्विस वर्कर का इस्तेमाल करें, ताकि आपका ऐप्लिकेशन ऑफ़लाइन भी काम कर सके. [ज़्यादा जानें](https://web.dev/works-offline/)."
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "ऑफ़लाइन होने पर, मौजूदा पेज \"200\" कोड का जवाब नहीं देता है"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "ऑफ़लाइन होने पर, मौजूदा पेज \"200\" कोड का जवाब देता है"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "ऐसा हो सकता है कि ऑफ़लाइन होने पर पेज इसलिए लोड नहीं हो रहा है, क्योंकि आपका टेस्ट यूआरएल ({requested}) को \"{final}\" की ओर रीडायरेक्ट किया गया था. टेस्टिंग के लिए सीधे दूसरा यूआरएल आज़माएं."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "ये आपके ऐप्लिकेशन में ARIA के इस्तेमाल को बेहतर बनाने के अवसर हैं, जिससे उपयोगकर्ताओं का स्क्रीन रीडर जैसी सहायक तकनीक का अनुभव बेहतर हो सकता है."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "प्रगतिशील वेब ऐप्लिकेशन"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "तेज़ और भरोसेमंद"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "इंस्टॉल किया जा सकता है"

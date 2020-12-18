@@ -26,6 +26,7 @@ first-contentful-paint
 first-cpu-idle
 first-meaningful-paint
 font-display
+full-page-screenshot
 interactive
 largest-contentful-paint
 largest-contentful-paint-element
@@ -50,6 +51,7 @@ resource-summary
 screenshot-thumbnails
 server-response-time
 speed-index
+third-party-facades
 third-party-summary
 timing-budget
 total-blocking-time

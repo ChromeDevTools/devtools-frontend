@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "Los elementos de formulario tienen etiquetas asociadas"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "Las tablas que se usen con fines de diseño no deben incluir elementos de datos (como ordinales, leyendas o atributos de resumen), dado que estos pueden confundir a los usuarios de lectores de pantalla. [Obtén más información](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "Los elementos `<table>` de presentación no evitan el uso de `<th>`, `<caption>` ni del atributo `[summary]`."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "Los elementos `<table>` de presentación evitan el uso de `<th>`, `<caption>` o del atributo `[summary]`."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "Usar textos de vínculo (y textos alternativos para las imágenes, si estas se usan como vínculos) que sean reconocibles y únicos, y que se puedan seleccionar mejora la experiencia de navegación de los usuarios de lectores de pantalla. [Obtén más información](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "Los elementos `<video>` contienen un elemento `<track>` con `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "Las descripciones de audio incluidas en los videos proporcionan información relevante que no surge de los diálogos, como la relativa a expresiones faciales y escenografía. [Obtén más información](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "Los elementos `<video>` no contienen un elemento `<track>` con `[kind=\"description\"]`."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "Los elementos `<video>` contienen un elemento `<track>` con `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Para que el aspecto en iOS sea perfecto cuando los usuarios agreguen una app web progresiva a la pantalla principal, define un atributo `apple-touch-icon`. El atributo debe apuntar a un archivo PNG cuadrado de 192 px (o 180 px) que no sea transparente. [Obtén más información](https://web.dev/apple-touch-icon/)."
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "Muestra imágenes con una relación de aspecto correcta"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "La información sobre el tamaño de la imagen no es válida {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "Tamaño real"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "No realices cambios grandes en el diseño"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Si las páginas se cargan rápidamente en las redes móviles, el usuario disfrutará de una buena experiencia. [Obtén más información](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "Interactiva a los {timeInMs, number, seconds} s"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "Interactiva en una red móvil simulada a los {timeInMs, number, seconds} s"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "Tu página tarda mucho en cargarse y no es interactiva en menos de 10 segundos. Para obtener información sobre cómo mejorarla, accede a la sección Rendimiento, donde podrás consultar las oportunidades disponibles y el diagnóstico correspondiente."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "La página no se carga suficientemente rápido en las redes móviles"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "La carga de la página es lo suficientemente rápida en redes móviles"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Se muestran las tareas más largas en el subproceso principal (permite identificar las tareas que más contribuyen al mayor retraso de entrada). [Más información](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "El efecto tiene parámetros de tiempo no compatibles"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Usar un service worker permite que tu aplicación web sea confiable en condiciones de red impredecibles. [Obtén más información](https://web.dev/offline-start-url/)."
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Se produjo un error al cargar {url} en Service Worker; se obtuvo el código de estado {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` no responde con un código de estado HTTP 200 cuando no hay conexión"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` responde con un código de estado HTTP 200 cuando no hay conexión"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse no pudo leer el atributo `start_url` del manifiesto. Por lo tanto, se tomó como `start_url` la URL del documento. Mensaje de error: \"{manifestWarning}\"."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Asegúrate de que la cantidad y el tamaño de las solicitudes de red sean menores que los valores objetivo establecidos en la estimación de rendimiento. [Obtén más información](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Establece un color de tema para la barra de direcciones."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "Tiempo de bloqueo del subproceso principal"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Terceros"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "Reduce el impacto del código de terceros"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "Otros recursos"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "Minimiza el uso del código de terceros"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "Tiene una etiqueta `<meta name=\"viewport\">` con `width` o `initial-scale`"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Tu app debe mostrar algún contenido cuando JavaScript está inhabilitado, aunque solo sea un aviso para informar al usuario que se necesita JavaScript para usar la app. [Obtén más información](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "El cuerpo de la página debe renderizar parte del contenido aunque sus secuencias de comandos no estén disponibles."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "No se incluye contenido alternativo cuando no está disponible JavaScript"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "Se incluye parte del contenido cuando no está disponible JavaScript"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Si estás creando una app web progresiva, puedes usar un service worker para que la app funcione sin conexión. [Obtén más información](https://web.dev/works-offline/)."
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "La página actual no responde con un código de estado HTTP 200 cuando no hay conexión"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "La página actual responde con un código de estado HTTP 200 cuando no hay conexión"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "Es posible que la página no se esté cargando sin conexión porque se redireccionó la URL de prueba ({requested}) a \"{final}\". Prueba directamente la segunda URL."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "A continuación, se indican consejos para optimizar el uso de ARIA en tu app, lo que puede mejorar la experiencia de los usuarios de tecnologías de asistencia, como los lectores de pantalla."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "App web progresiva"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "Rápida y confiable"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Instalable"

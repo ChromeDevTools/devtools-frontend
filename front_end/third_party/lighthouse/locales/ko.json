@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "양식 요소에 관련 라벨이 포함되어 있습니다"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "스크린 리더 사용자에게 혼란스러운 환경이 생길 수 있으므로 레이아웃 용도로 사용되는 표에는 th 또는 caption 요소와 같은 데이터 요소나 summary 속성이 포함되지 않아야 합니다. [자세히 알아보기](https://web.dev/layout-table/)"
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "프레젠테이션 `<table>` 요소에서 `<th>`, `<caption>` 또는 `[summary]` 속성의 사용이 지양되지 않음"
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "프레젠테이션 `<table>` 요소에서 `<th>`, `<caption>` 또는 `[summary]` 속성을 가급적 사용하지 않음"
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "인식하기 쉽고, 고유하고, 초점을 맞추기 쉬운 링크 텍스트(및 이미지가 링크로 사용되는 경우 이미지의 대체 텍스트)를 사용하면 스크린 리더 사용자의 탐색 환경을 개선할 수 있습니다. [자세히 알아보기](https://web.dev/link-name/)"
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "`<video>` 요소에 `[kind=\"captions\"]` 지원 `<track>` 요소가 포함됨"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "오디오 설명은 표정 및 장면과 같이 대화에서 제공할 수 없는 동영상에 관한 정보를 제공합니다. [자세히 알아보기](https://web.dev/video-description/)"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "`<video>` 요소에 `[kind=\"description\"]` 지원 `<track>` 요소가 포함되지 않음"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "`<video>` 요소에 `[kind=\"description\"]` 지원 `<track>` 요소가 포함됨"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "프로그레시브 웹 앱을 홈 화면에 추가했을 때 iOS에서 제대로 표시되려면 `apple-touch-icon`을(를) 정의해야 합니다. 투명하지 않은 192px 또는 180px 정사각형 PNG로 설정되어야 합니다. [자세히 알아보기](https://web.dev/apple-touch-icon/)"
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "이미지를 올바른 가로세로 비율로 표시"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "잘못된 이미지 크기 정보 {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "실제 크기"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "대규모 레이아웃 변경 피하기"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "셀룰러 네트워크에서 페이지 로드가 빠르면 우수한 모바일 사용자 환경을 제공할 수 있습니다. [자세히 알아보기](https://web.dev/load-fast-enough-for-pwa/)"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "페이지와 상호작용할 수 있게 될 때까지 걸린 시간: {timeInMs, number, seconds}초"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "시뮬레이션된 모바일 네트워크에서 페이지와 상호작용할 수 있게 될 때까지 걸린 시간: {timeInMs, number, seconds}초"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "페이지가 너무 느리게 로드되므로 10초 이내에 사용할 수 없습니다. '성능' 섹션에서 추천 내용과 진단을 확인해 개선 방안을 알아보세요."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "모바일 네트워크에서 페이지 로딩이 충분히 빠르지 않음"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "모바일 네트워크에서 페이지 로드가 충분히 빠름"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "기본 스레드의 가장 긴 작업을 열거합니다. 입력 지연을 가장 많이 유발하는 작업을 찾을 때 용이합니다. [자세히 알아보기](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "지원되지 않는 타이밍 매개변수가 효과에 포함됨"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "서비스 워커를 사용하면 예측 불가능한 네트워크 상태에서도 웹 앱이 안정적으로 작동할 수 있습니다. [자세히 알아보기](https://web.dev/offline-start-url/)"
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "서비스 워커에서 {url}을(를) 로드하는 중 오류 발생, {statusCode} 상태 코드 받기"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url`이(가) 오프라인 시 200으로 응답하지 않음"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url`이(가) 오프라인 시 200으로 응답함"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse가 매니페스트에서 `start_url`을(를) 읽지 못했습니다. 그 결과 `start_url`은(는) 문서 URL인 것으로 간주되었습니다. 오류 메시지는 '{manifestWarning}'입니다."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "네트워크 요청의 양과 크기는 제공된 성능 예산에 따라 설정된 목표치 아래로 유지하세요. [자세히 알아보기](https://developers.google.com/web/tools/lighthouse/audits/budgets)"
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "주소 표시줄의 테마 색상을 설정함"
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "기본 스레드 차단 시간"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "타사"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "타사 코드의 영향을 줄임"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "기타 리소스"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "타사 사용량 최소화"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "`width` 또는 `initial-scale`이(가) 포함된 `<meta name=\"viewport\">` 태그가 있음"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "JavaScript가 사용 중지되었더라도 사용자에게 앱을 사용하려면 JavaScript가 필요하다는 경고 등의 일부 콘텐츠는 앱에 표시되어야 합니다. [자세히 알아보기](https://web.dev/without-javascript/)"
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "페이지 본문에서 스크립트를 사용할 수 없는 경우 본문에서 콘텐츠를 일부 렌더링해야 합니다."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "JavaScript를 사용할 수 없는 경우 대체 콘텐츠를 제공하지 않음"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "JavaScript를 사용할 수 없는 경우에도 일부 콘텐츠를 포함함"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "프로그레시브 웹 앱을 빌드할 경우 앱이 오프라인에서도 작동할 수 있도록 서비스 워커를 사용하는 것이 좋습니다. [자세히 알아보기](https://web.dev/works-offline/)"
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "현재 페이지가 오프라인 시 200으로 응답하지 않음"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "현재 페이지가 오프라인 시 200으로 응답함"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "테스트 URL({requested})이 '{final}'(으)로 리디렉션되므로 이 페이지가 오프라인 상태에서는 로드되지 않을 수 있습니다. 두 번째 URL로 직접 테스트해 보세요."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "애플리케이션의 ARIA 사용을 개선하도록 추천된 사항입니다. 이를 통해 스크린 리더와 같은 지원 기술을 사용하는 사용자의 환경을 개선할 수 있습니다."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "프로그레시브 웹 앱"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "속도와 안정성"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "설치 가능"

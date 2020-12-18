@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "לרכיבי טופס יש תוויות המשויכות אליהם"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "טבלה המשמשת לקביעת פריסה אינה יכולה לכלול רכיבי נתונים, כמו הרכיב th, הרכיב ‏caption או המאפיין summary, כי הם עשויים ליצור חוויה מבלבלת עבור משתמשים הנעזרים בקורא מסך. [מידע נוסף](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "ברכיבי `<table>` להצגה, אין הימנעות משימוש ב-`<th>`, ב-`<caption>` או במאפיין `[summary]`."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "רכיבי `<table>` להצגה לא מכילים `<th>`, `<caption>` או את המאפיין `[summary]`."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "כשהטקסט של הקישור מובן וייחודי ואפשר להתמקד בו, משתמשים שנעזרים בקורא מסך נהנים מחוויית ניווט משופרת. מצב זה נכון גם לגבי טקסט חלופי של תמונות כשנעשה בהן שימוש כקישורים. [מידע נוסף](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "רכיבי `<video>` מכילים רכיב `<track>` עם `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "בסרטונים, תיאורים קוליים מספקים מידע רלוונטי שאי אפשר להבין מהדיאלוג. למשל, הבעות פנים ונופים. [מידע נוסף](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "יש רכיבי `<video>` שלא מכילים רכיב `<track>` עם `[kind=\"description\"]`."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "רכיבי `<video>` מכילים רכיב `<track>` עם `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "כדי שהדף יוצג למשתמשים באופן אידיאלי ב-iOS לאחר הוספת Progressive Web App למסך הבית, מומלץ להגדיר `apple-touch-icon`. המאפיין חייב להפנות לתמונת PNG לא שקופה בפורמט ריבוע בגודל 192 פיקסלים (או 180 פיקסלים). [מידע נוסף](https://web.dev/apple-touch-icon/)."
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "התמונות מוצגות ביחס גובה-רוחב נכון"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "נתוני הגודל של תמונה לא חוקיים: {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "גודל בפועל"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "יש להימנע משינויים משמעותיים בפריסה"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "כשהדף נטען במהירות ברשת סלולרית, חוויית המשתמש איכותית. [מידע נוסף](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "פעילות מלאה תוך {timeInMs, number, seconds} שנ'"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "הזמן עד לפעילות מלאה בהדמיית רשת סלולרית הוא {timeInMs, number, seconds} שניות"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "הדף שלך נטען לאט מדי ולא מגיע לפעילות מלאה תוך 10 שניות. כדי ללמוד כיצד לבצע שיפורים, מומלץ לעיין בהזדמנויות ובניתוחים שמופיעים בקטע \"ביצועים\"."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "טעינת הדף לא מהירה מספיק ברשתות סלולריות"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "טעינת הדף ברשתות סלולריות מהירה מספיק"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "מציין את המשימות הארוכות ביותר בתהליכון הראשי. מסייע לזהות את המשימות שמאטות את הקלט במידה הרבה ביותר. [מידע נוסף](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "האפקט כולל פרמטרים של תזמון שאינם נתמכים"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "קובץ שירות (service worker) מאפשר לאפליקציית האינטרנט שלך להיות אמינה יותר בתנאי רשת לא צפויים. [מידע נוסף](https://web.dev/offline-start-url/)."
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "אירעה שגיאה בטעינה של {url} בקובץ השירות (Service Worker). קוד השגיאה: {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` לא מגיב בסטטוס 200 כשהוא במצב לא מקוון"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` מגיב בסטטוס 200 כשהוא במצב לא מקוון"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "מערכת Lighthouse לא הצליחה לקרוא את `start_url` מהמניפסט. כתוצאה מכך, התבצעה הנחה ש-`start_url` היא כתובת ה-URL של המסמך. הודעת שגיאה: '{manifestWarning}'."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "הכמות והגודל של בקשות ברשת צריכים להיות מתחת ליעדים שהוגדרו בתקציב הביצועים הרלוונטי. [מידע נוסף](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "מגדיר צבע עיצוב עבור סרגל הכתובות."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "משך החסימה של התהליכון הראשי"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "צד שלישי"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "עליך להפחית את השפעת הקוד של צד שלישי"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "משאבים אחרים"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "צמצום השימוש בצדדים שלישיים"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "יש תג `<meta name=\"viewport\">` עם `width` או `initial-scale`"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "האפליקציה שלך צריכה להציג תוכן כלשהו כשה-JavaScript מושבת, גם אם זו רק אזהרה למשתמש שנדרש JavaScript כדי להשתמש באפליקציה. [מידע נוסף](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "אם הסקריפטים של גוף הדף לא זמינים, הוא צריך לעבד תוכן כלשהו."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "לא מספק תוכן חלופי כש-JavaScript לא זמין"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "מכיל תוכן כלשהו כש-JavaScript לא זמין"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "אם בונים Progressive Web App, מומלץ לשקול להשתמש בקובץ שירות (service worker) כדי שהאפליקציה תוכל לעבוד במצב לא מקוון. [מידע נוסף](https://web.dev/works-offline/)."
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "דף זה לא מגיב בסטטוס 200 כשהוא במצב לא מקוון"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "דף זה מגיב בסטטוס 200 כשהוא במצב לא מקוון"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "ייתכן שהדף לא נטען באופן לא מקוון בגלל שכתובת ה-URL לבדיקה ({requested}) הופנתה אל \"{final}\". מומלץ לבדוק את כתובת ה-URL השנייה באופן ישיר."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "אלו הזדמנויות לשיפור השימוש ב-ARIA באפליקציה, והן יכולות לשפר את החוויה של משתמשים שנעזרים בטכנולוגיות לנגישות, כמו קוראי מסך."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Progressive Web App"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "מהיר ואמין"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "ניתן להתקנה"

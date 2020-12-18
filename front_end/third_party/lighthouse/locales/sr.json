@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "Елементи образаца имају повезане ознаке"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "Табела која се користи у сврхе распореда не треба да обухвата елементе података, као што су елементи th или титл или атрибут резимеа јер то може да збуни кориснике читача екрана. [Сазнајте више](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "Презентациони елементи `<table>` не избегавају употребу атрибута `<th>`, `<caption>` или `[summary]`."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "Презентациони елементи `<table>` избегавају употребу атрибута `<th>`, `<caption>` или `[summary]`."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "Текст линка (и алтернативни текст за слике када се користи за линкове) који је препознатљив, јединствен и може да се фокусира олакшава кретање за кориснике читача екрана. [Сазнајте више](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "Елементи `<video>` садрже елемент `<track>` са атрибутом `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "Аудио описи пружају релевантне информације за видео снимке које дијалог не може, попут израза лица и сцена. [Сазнајте више](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "Елементи `<video>` не обухватају елемент `<track>` са атрибутом `[kind=\"description\"]`."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "Елементи `<video>` садрже елемент `<track>` са атрибутом `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Да би изглед на iOS-у био идеалан када корисници додају прогресивну веб-апликацију на почетни екран, дефинишите икону `apple-touch-icon`. Она мора да усмерава на нетранспарентни квадратни PNG од 192 пиксела (или 180 пиксела). [Сазнајте више](https://web.dev/apple-touch-icon/)."
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "Приказује слике са тачном размером"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "Неважеће информације о величини слике {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "Стварна величина"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Избегавајте велике промене распореда"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Брзо учитавање странице преко мобилне мреже обезбеђује добар доживљај корисницима мобилних уређаја. [Сазнајте више](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "Интерактивно за {timeInMs, number, seconds} сек"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "Интерактивна на симулираној мобилној мрежи за {timeInMs, number, seconds} сек"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "Страница се преспоро учитава и не постаје интерактивна у року од 10 секунди. Погледајте прилике и дијагностику у одељку „Учинак“ да бисте сазнали како да побољшате учинак странице."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "Учитавање странице није довољно брзо на мобилним мрежама"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "Учитавање странице је довољно брзо на мобилним мрежама"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Наводи најдуже задатке у главној нити, што је корисно за идентификовање оних који највише доприносе кашњењу приказа. [Сазнајте више](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Ефекат има неподржане параметре времена"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Сервисер омогућава да веб-апликација буде поуздана у непредвидивим условима мреже. [Сазнајте више](https://web.dev/offline-start-url/)."
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Грешка при учитавању URL-а {url} у сервисеру, пронађен је кôд статуса {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` не одговара кодом 200 када је офлајн"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` одговара кодом 200 када је офлајн"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse није успео да прочита `start_url` из манифеста. Као последица тога, претпоставили смо да је `start_url` URL документа. Порука о грешци: „{manifestWarning}“."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Захтеве за количину и величину мреже одржавајте испод граница одређених циљевима за учинак. [Сазнајте више](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Подешава боју теме за траку за адресу."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "Период блокирања главне нити"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Независни добављач"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "Смањите утицај кода независног добављача"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "Остали ресурси"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "Смањите коришћење садржаја треће стране"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "Има ознаку `<meta name=\"viewport\">` са ознаком `width` или `initial-scale`"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Апликација треба да приказује неки садржај када је JavaScript онемогућен, чак и ако је то само упозорење кориснику да је JavaScript обавезан за коришћење апликације. [Сазнајте више](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "Тело странице треба да приказује неки садржај ако јој скрипте нису доступне."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "Не пружа резервни садржај када JavaScript није доступан"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "Има неки садржај када JavaScript није доступан"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Ако правите прогресивну веб-апликацију, размислите о томе да користите сервисер како би апликација могла да ради офлајн. [Сазнајте више](https://web.dev/works-offline/)."
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "Актуелна страница не одговара кодом 200 када је офлајн"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "Актуелна страница одговара кодом 200 када је офлајн"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "Страница се можда не учитава офлајн зато што је пробни URL ({requested}) преусмерен на „{final}“. Пробајте директно да тестирате други URL."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "То су прилике да побољшате коришћење ARIA улога у апликацији, чиме може да побољша доживљај корисника технологије за помоћ особама са инвалидитетом, као што је читач екрана."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Прогресивна веб-апликација"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "Брзо и поуздано"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Може да се инсталира"

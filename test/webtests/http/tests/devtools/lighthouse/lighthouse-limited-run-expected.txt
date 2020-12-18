@@ -15,11 +15,9 @@ Generate report: enabled visible
 =============== Audits run ===============
 apple-touch-icon
 content-width
+full-page-screenshot
 installable-manifest
-is-on-https
-load-fast-enough-for-pwa
 maskable-icon
-offline-start-url
 pwa-cross-browser
 pwa-each-page-has-url
 pwa-page-transitions
@@ -28,6 +26,4 @@ service-worker
 splash-screen
 themed-omnibox
 viewport
-without-javascript
-works-offline
 

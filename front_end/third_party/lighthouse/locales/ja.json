@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "フォームの要素にラベルが関連付けられています"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "レイアウト目的で表を使用している場合は、th 要素、caption 要素、summary 属性などのデータ要素を含めないでください。スクリーン リーダーを操作しにくくなる可能性があります。[詳細](https://web.dev/layout-table/)"
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "レイアウト用の `<table>` 要素で、`<th>`、`<caption>`、または `[summary]` 属性が使用されています。"
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "レイアウト用の `<table>` 要素で、`<th>`、`<caption>`、または `[summary]` 属性は使用されていません。"
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "識別可能、フォーカス可能な一意のリンクテキスト（および画像をリンクとして使用している場合はその代替テキスト）を使用すると、スクリーン リーダーでのナビゲーションの操作性が向上します。[詳細](https://web.dev/link-name/)"
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "`<video>` 要素に `[kind=\"captions\"]` が指定された `<track>` 要素が含まれています"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "音声による説明を使用すると、顔の表情や場面といった、会話で伝えることのできない動画の関連情報を提供できます。[詳細](https://web.dev/video-description/)"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "`<video>` 要素に、`[kind=\"description\"]` が指定された `<track>` 要素が含まれていません。"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "`<video>` 要素に `[kind=\"description\"]` が指定された `<track>` 要素が含まれています"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "ユーザーがプログレッシブ ウェブアプリを iOS のホーム画面に追加したとき、アプリが希望どおりのデザインで表示されるようにするには、`apple-touch-icon` を定義します。参照先は不透明な 192 ピクセル（または 180 ピクセル）の正方形の PNG 画像とする必要があります。[詳細](https://web.dev/apple-touch-icon/)"
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "正しいアスペクト比の画像が表示されています"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "画像サイズに関する情報（{url}）が正しくありません"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "実サイズ"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "レイアウトが大きく変わらないようにする"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "モバイル ネットワークでのページ読み込みを速くすることで、優れたモバイル ユーザー エクスペリエンスが実現されます。[詳細](https://web.dev/load-fast-enough-for-pwa/)"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "操作可能になるまでの時間: {timeInMs, number, seconds} 秒"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "モバイル ネットワークのシミュレーションで操作可能になるまでの時間: {timeInMs, number, seconds} 秒"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "ページの読み込みが遅すぎます。応答に 10 秒以上かかっています。改善方法については、[パフォーマンス] に表示される最適化案と診断結果をご確認ください。"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "ページ読み込みはモバイル ネットワークで十分な速度で実行されません"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "ページ読み込みはモバイル ネットワークで十分な速度で実行されます"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "メインスレッドで長時間実行されているタスクを表示します。入力の遅延に最も影響しているタスクを特定する際に役立ちます。[詳細](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "サポートされていないタイミング パラメータがエフェクトで使用されています"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Service Worker によって、ネットワークが予期しない状態になったときでもウェブアプリの安定した動作が可能になります。[詳細](https://web.dev/offline-start-url/)"
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Service Worker で {url} の読み込み中にエラーが発生しました。ステータス コード: {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` は、オフライン時にステータス 200 の応答を返しません"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` は、オフライン時にステータス 200 の応答を返します"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse でマニフェストから `start_url` を読み取れませんでした。その結果、`start_url` はドキュメントの URL と認識されています。エラー メッセージ: 「{manifestWarning}」。"
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "ネットワーク リクエストの数とサイズが、指定したパフォーマンス予算の設定目標内に収まるよう維持します。[詳細](https://developers.google.com/web/tools/lighthouse/audits/budgets)"
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "アドレスバーにテーマの色が設定されています。"
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "メインスレッドのブロック時間"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "第三者"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "第三者コードの影響を抑えてください"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "その他のリソース"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "第三者の使用の最小化"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "`width` または `initial-scale` を指定した `<meta name=\"viewport\">` タグがあります"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "JavaScript が無効になっている場合でも、アプリではなんらかのコンテンツを表示する必要があります。「アプリの使用には JavaScript が必要」という旨の警告を表示するだけでもかまいません。[詳細](https://web.dev/without-javascript/)"
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "スクリプトを利用できない場合でも、ページの本文にはなんらかのコンテンツを表示する必要があります。"
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "JavaScript を利用できない場合の代替コンテンツが提供されていません"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "JavaScript を利用できない場合のコンテンツが含まれています"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "プログレッシブ ウェブアプリを作成している場合は、アプリがオフラインでも動作するように、Service Worker の使用を検討してください。[詳細](https://web.dev/works-offline/)"
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "現在のページは、オフライン時にステータス 200 の応答を返しません"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "現在のページは、オフライン時にステータス 200 の応答を返します"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "テスト URL（{requested}）が「{final}」にリダイレクトされているため、このページはオフラインで読み込まれない可能性があります。2 番目の URL を直接テストしてみてください。"
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "ここには、アプリでの ARIA の使用方法に関する改善点が表示されます。修正すると、支援技術（スクリーン リーダーなど）の利便性が向上する可能性があります。"
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "プログレッシブ ウェブアプリ"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "スピードと高い信頼性"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "インストール対応"

@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "Elementi obrazcev imajo povezane oznake"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "Tabela, ki se uporablja za namene postavitve, ne sme vsebovati podatkovnih elementov, na primer elementov »th« oziroma podnapisov ali atributa povzetka, ker lahko to privede do zavajajoče izkušnje za uporabnike bralnikov zaslona. [Več o tem](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "Elementi predstavitvene razpredelnice `<table>` se ne izogibajo uporabi atributa `<th>`, `<caption>` ali `[summary]`."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "Elementi predstavitvene razpredelnice `<table>` se izogibajo uporabi atributa `<th>`, `<caption>` ali `[summary]`."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "Besedilo za povezavo (in nadomestno besedilo za slike, kadar so uporabljene kot povezave), ki je prepoznavno in edinstveno ter ga je mogoče izbrati, uporabnikom bralnikov zaslona zagotavlja boljšo izkušnjo pomikanja. [Več o tem](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "Elementi `<video>` vsebujejo element `<track>` s podnapisi `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "Zvočni opisi zagotavljajo pomembne informacije glede videoposnetkov, ki jih sam dialog ne more, na primer opisujejo obrazne izraze in prizore. [Več o tem](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "Elementi `<video>` ne vsebujejo elementa `<track>` z opisom `[kind=\"description\"]`."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "Elementi `<video>` vsebujejo element `<track>` s podnapisi `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Za idealen prikaz v iOSu, ko uporabniki dodajo moderno spletno aplikacijo na začetni zaslon, določite to: `apple-touch-icon`. Kazati mora na neprosojno kvadratno datoteko PNG velikosti 192 (ali 180) slikovnih pik. [Več o tem](https://web.dev/apple-touch-icon/)."
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "Prikazuje slike s pravilnim razmerjem stranic"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "Neveljavni podatki o velikosti slike {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "Dejanska velikost"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Izogibajte se velikim pomikom postavitve"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Hitro nalaganje strani prek mobilnega omrežja zagotavlja dobro uporabniško izkušnjo pri uporabi mobilnih naprav. [Več o tem](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "Interaktivno ob {timeInMs, number, seconds} s"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "Interaktivno v simuliranem mobilnem omrežju ob {timeInMs, number, seconds} s"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "Stran se nalaga prepočasi in ni interaktivna v 10 sekundah. Oglejte si priložnosti in diagnostiko v razdelku »Delovanje«, če želite izvedeti, kako do izboljšanja."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "Nalaganje strani ni dovolj hitro v mobilnih omrežjih"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "Nalaganje strani je dovolj hitro v mobilnih omrežjih"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Navede najdaljša opravila v glavni niti, kar je koristno za prepoznavanje elementov, ki največ prispevajo k zakasnitvi vnosa. [Več o tem](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Učinek ima nepodprte časovne parametre"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Proces storitve spletni aplikaciji omogoča zanesljivost v nepredvidljivih omrežnih okoliščinah. [Več o tem](https://web.dev/offline-start-url/)."
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Napaka pri nalaganju {url} v procesu storitve, prejeta je bila koda stanja {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` se ne odzove s kodo stanja HTTP 200, ko nima povezave"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` se odzove s kodo stanja HTTP 200, ko nima povezave"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse ni mogel prebrati URL-ja `start_url` v manifestu. Za URL dokumenta se je posledično imelo ta URL: `start_url`. Sporočilo o napaki: »{manifestWarning}«."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Količino in velikosti omrežnih zahtev imejte pod cilji, ki so nastavljeni z navedenim proračunom za uspešnost. [Več o tem](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Nastavi barvo teme za naslovno vrstico."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "Čas blokiranja glavne niti"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Drugi ponudniki"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "Zmanjšanje vpliva kode drugega ponudnika"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "Drugi viri"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "Zmanjšajte uporabo komponent drugih ponudnikov"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "Ima oznako `<meta name=\"viewport\">` s tem: `width` ali `initial-scale`"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Aplikacija bi morala prikazati nekaj vsebine, če je JavaScript onemogočen, četudi zgolj opozorilo uporabniku, da uporaba aplikacije terja JavaScript. [Več o tem](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "Telo strani bi moralo upodobiti nekaj vsebine, če njeni skripti niso na voljo."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "Ne zagotavlja nadomestne vsebine, ko JavaScript ni na voljo"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "Vsebuje nekaj vsebine, ko JavaScript ni na voljo"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Če ustvarjate moderno spletno aplikacijo, razmislite o uporabi procesa storitve, da lahko aplikacija deluje brez povezave. [Več o tem](https://web.dev/works-offline/)."
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "Trenutna stran se ne odzove s kodo stanja HTTP 200, ko nima povezave"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "Trenutna stran se odzove s kodo stanja HTTP 200, ko nima povezave"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "Stran se morda ne naloži brez povezave, ker je bil preizkusni URL ({requested}) preusmerjen na »{final}«. Poskusite neposredno preizkusiti drugi URL."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "Tu imate na voljo priložnosti, da izboljšate uporabo atributov ARIA v aplikaciji, s čimer lahko izboljšate izkušnjo za uporabnike pomožnih tehnologij, kot je bralnik zaslona."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Moderna spletna aplikacija"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "Hitro in zanesljivo"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Namestljivo"

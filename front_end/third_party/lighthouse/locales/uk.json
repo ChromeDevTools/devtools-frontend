@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "Елементи форми мають пов’язані мітки"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "Таблиця, яка використовується як макет, не повинна містити елементів даних, як-от елементів th або caption чи атрибут summary, оскільки це може спантеличити користувачів програм зчитування з екрана. [Докладніше](https://web.dev/layout-table/)."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "Презентаційні елементи `<table>` використовують атрибути `<th>`, `<caption>` або `[summary]`."
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "Презентаційні елементи `<table>` не використовують атрибути `<th>`, `<caption>` або `[summary]`."
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "Унікальний і доступний для виділення текст посилання (а також альтернативний текст для зображень, коли вони використовуються як посилання), який можна розпізнати, покращує навігацію для користувачів програм зчитування з екрана. [Докладніше](https://web.dev/link-name/)."
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "Елементи `<video>` містять елемент `<track>` з атрибутом `[kind=\"captions\"]`"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "Звукові описи надають важливу інформацію про відео (як-от міміка й оточення), яку не можуть забезпечити діалоги. [Докладніше](https://web.dev/video-description/)."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "Елементи `<video>` не містять елемент `<track>` з атрибутом `[kind=\"description\"]`."
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "Елементи `<video>` містять елемент `<track>` з атрибутом `[kind=\"description\"]`"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "Налаштуйте параметр `apple-touch-icon` для ідеального вигляду на пристроях iOS, коли користувачі додають прогресивний веб-додаток на головний екран. Цей параметр має вказувати на непрозоре квадратне зображення PNG розміром 192 пікс. (або 180 пікс.). [Докладніше](https://web.dev/apple-touch-icon/)."
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "Показує зображення правильного формату"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "Недійсна інформація про розмір зображення {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "Дійсний розмір"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Уникайте великих зсувів макета"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "Якщо сторінка швидко завантажується в мобільній мережі, це покращує враження користувачів мобільних пристроїв. [Докладніше](https://web.dev/load-fast-enough-for-pwa/)."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "Стає інтерактивною через {timeInMs, number, seconds} с"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "Стає інтерактивною в емульованій мобільній мережі через {timeInMs, number, seconds} с"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "Сторінка завантажується надто повільно й неактивна впродовж 10 секунд. Щоб дізнатися, як виправити цю ситуацію, перегляньте можливості та дані діагностики в розділі \"Ефективність\"."
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "Швидкість завантаження сторінки через мобільну мережу недостатньо висока"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "Швидкість завантаження сторінки через мобільну мережу достатньо висока"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Указано найтриваліші завдання в головному потоці. Ці дані корисні, щоб визначати, що найбільше впливає на затримку вхідного сигналу. [Докладніше](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Ефект містить непідтримувані параметри хронометражу"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Синтаксис Service Worker забезпечує надійність вашого веб-додатка в разі непередбачуваних умов у мережі. [Докладніше](https://web.dev/offline-start-url/)."
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "Не вдалося завантажити {url} у синтаксис Service Worker, код статусу – {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` не надсилає код 200 у режимі офлайн"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` надсилає код 200 у режимі офлайн"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse не може прочитати `start_url` з маніфесту. Через це `start_url` вважається URL-адресою документа. Повідомлення про помилку: \"{manifestWarning}\"."
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "Стежте, щоб кількість і розмір мережевих запитів не перевищували цільових значень, указаних у бюджеті ефективності. [Докладніше](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Змінює колір адресного рядка відповідно до теми."
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "Час блокування основного ланцюжка"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Сторонні розробники"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "Зменште вплив стороннього коду"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "Інші ресурси"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "Зменште використання стороннього коду"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "Має тег `<meta name=\"viewport\">` з атрибутами `width` або `initial-scale`"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "Ваш додаток має відображати певний контент, коли JavaScript вимкнено, навіть якщо це просто сповіщення для користувачів про те, що для використання додатка потрібно ввімкнути JavaScript. [Докладніше](https://web.dev/without-javascript/)."
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "Сторінка має відображати контент, навіть якщо її сценарії недоступні."
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "Резервний контент не відображається, коли JavaScript вимкнено"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "Певний контент відображається, коли JavaScript вимкнено"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "Якщо ви створюєте прогресивний веб-додаток, можете скористатися синтаксисом Service Worker, щоб додаток працював офлайн. [Докладніше](https://web.dev/works-offline/)."
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "Поточна сторінка не надсилає код 200 у режимі офлайн"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "Поточна сторінка надсилає код 200 у режимі офлайн"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "Ця сторінка може не завантажуватись офлайн, оскільки тестову URL-адресу ({requested}) було переспрямовано на {final}. Спробуйте перевірити другу URL-адресу напряму."
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "Ці рекомендації допоможуть покращити використання ролей ARIA у вашому додатку, що може позитивно вплинути на взаємодію для користувачів допоміжних технологій, як-от програм зчитування з екрана."
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "Прогресивний веб-додаток"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "Швидкість і надійність"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Можна встановити"

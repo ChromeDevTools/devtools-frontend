@@ -254,15 +254,6 @@
   "lighthouse-core/audits/accessibility/label.js | title": {
     "message": "表单元素具有关联的标签"
   },
-  "lighthouse-core/audits/accessibility/layout-table.js | description": {
-    "message": "用于实现布局用途的表格不应包含数据元素（例如 th 或 caption 元素或 summary 属性），因为这会令屏幕阅读器用户感到困惑。[了解详情](https://web.dev/layout-table/)。"
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | failureTitle": {
-    "message": "展示性 `<table>` 元素未避免使用 `<th>`、`<caption>` 或 `[summary]` 属性。"
-  },
-  "lighthouse-core/audits/accessibility/layout-table.js | title": {
-    "message": "展示性 `<table>` 元素未使用 `<th>`、`<caption>` 或 `[summary]` 属性。"
-  },
   "lighthouse-core/audits/accessibility/link-name.js | description": {
     "message": "请确保链接文字（以及用作链接的图片替代文字）可识别、独一无二且可成为焦点，这样做会提升屏幕阅读器用户的导航体验。[了解详情](https://web.dev/link-name/)。"
   },
@@ -361,15 +352,6 @@
   },
   "lighthouse-core/audits/accessibility/video-caption.js | title": {
     "message": "`<video>` 元素包含带 `[kind=\"captions\"]` 的 `<track>` 元素"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | description": {
-    "message": "音频说明可提供对话框无法提供的视频相关信息（例如面部表情和场景）。[了解详情](https://web.dev/video-description/)。"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | failureTitle": {
-    "message": "`<video>` 元素缺少含 `[kind=\"description\"]` 的 `<track>` 元素。"
-  },
-  "lighthouse-core/audits/accessibility/video-description.js | title": {
-    "message": "`<video>` 元素包含带 `[kind=\"description\"]` 的 `<track>` 元素"
   },
   "lighthouse-core/audits/apple-touch-icon.js | description": {
     "message": "请定义一个 `apple-touch-icon`，以在 iOS 用户向主屏幕添加渐进式 Web 应用时获得理想的外观。它必须指向一张不透明的 192px（或 180px）方形 PNG 图片。[了解详情](https://web.dev/apple-touch-icon/)。"
@@ -788,9 +770,6 @@
   "lighthouse-core/audits/image-aspect-ratio.js | title": {
     "message": "显示的图像宽高比正确"
   },
-  "lighthouse-core/audits/image-aspect-ratio.js | warningCompute": {
-    "message": "无效的图片大小信息 {url}"
-  },
   "lighthouse-core/audits/image-size-responsive.js | columnActual": {
     "message": "实际大小"
   },
@@ -877,24 +856,6 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "请避免出现大幅度的布局偏移"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | description": {
-    "message": "如果网页在移动网络中的加载速度较快，则可确保良好的移动用户体验。[了解详情](https://web.dev/load-fast-enough-for-pwa/)。"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText": {
-    "message": "页面交互需要 {timeInMs, number, seconds} 秒"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride": {
-    "message": "在模拟移动网络上需要 {timeInMs, number, seconds} 秒才能支持交互"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | explanationLoadSlow": {
-    "message": "您的网页加载速度过慢，在 10 秒钟内一直未进行互动。要了解如何改进，请查看“性能”部分中的优化建议和诊断结果。"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle": {
-    "message": "页面在移动网络上的加载速度不够快"
-  },
-  "lighthouse-core/audits/load-fast-enough-for-pwa.js | title": {
-    "message": "页面在移动网络上的加载速度足够快"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "列出了主线程中运行时间最长的任务，有助于识别出导致输入延迟的最主要原因。[了解详情](https://web.dev/long-tasks-devtools/)"
@@ -1021,21 +982,6 @@
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "效果含有不受支持的时间参数"
-  },
-  "lighthouse-core/audits/offline-start-url.js | description": {
-    "message": "Service Worker 可让您的 Web 应用在无法预测的网络状况下正常运行。[了解详情](https://web.dev/offline-start-url/)。"
-  },
-  "lighthouse-core/audits/offline-start-url.js | errorLoading": {
-    "message": "在 Service Worker 中加载 {url} 时出错，状态代码为 {statusCode}"
-  },
-  "lighthouse-core/audits/offline-start-url.js | failureTitle": {
-    "message": "`start_url` 在离线时没有响应，并返回 200"
-  },
-  "lighthouse-core/audits/offline-start-url.js | title": {
-    "message": "`start_url` 在离线时也能成功做出响应，并返回 200"
-  },
-  "lighthouse-core/audits/offline-start-url.js | warningCantStart": {
-    "message": "Lighthouse 无法从清单读取 `start_url`。因此，系统已将 `start_url` 视为该文档的网址。错误消息：“{manifestWarning}”。"
   },
   "lighthouse-core/audits/performance-budget.js | description": {
     "message": "请将网络请求的数量和数据大小保持在提供的性能预算所设定的目标之内。[了解详情](https://developers.google.com/web/tools/lighthouse/audits/budgets)。"
@@ -1316,9 +1262,6 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "为地址栏设置主题背景颜色。"
   },
-  "lighthouse-core/audits/third-party-summary.js | columnBlockingTime": {
-    "message": "主线程拦截时间"
-  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "第三方"
   },
@@ -1330,9 +1273,6 @@
   },
   "lighthouse-core/audits/third-party-summary.js | failureTitle": {
     "message": "降低第三方代码的影响"
-  },
-  "lighthouse-core/audits/third-party-summary.js | otherValue": {
-    "message": "其他资源"
   },
   "lighthouse-core/audits/third-party-summary.js | title": {
     "message": "尽量减少第三方使用"
@@ -1423,30 +1363,6 @@
   },
   "lighthouse-core/audits/viewport.js | title": {
     "message": "具有包含 `width` 或 `initial-scale` 的 `<meta name=\"viewport\">` 标记"
-  },
-  "lighthouse-core/audits/without-javascript.js | description": {
-    "message": "您的应用应该在 JavaScript 被禁用时显示一些内容，哪怕只是向用户显示一则警告（告知其必须启用 JavaScript 才能使用该应用）。[了解详情](https://web.dev/without-javascript/)。"
-  },
-  "lighthouse-core/audits/without-javascript.js | explanation": {
-    "message": "网页正文应该能在其脚本不可用时呈现一些内容。"
-  },
-  "lighthouse-core/audits/without-javascript.js | failureTitle": {
-    "message": "不提供在 JavaScript 未启用时显示的后备内容"
-  },
-  "lighthouse-core/audits/without-javascript.js | title": {
-    "message": "包含一些 JavaScript 未启用时显示的内容"
-  },
-  "lighthouse-core/audits/works-offline.js | description": {
-    "message": "如果您想构建渐进式 Web 应用，不妨考虑使用 Service Worker，以确保您的应用可离线工作。[了解详情](https://web.dev/works-offline/)。"
-  },
-  "lighthouse-core/audits/works-offline.js | failureTitle": {
-    "message": "当前网页在离线时没有响应，并返回 200"
-  },
-  "lighthouse-core/audits/works-offline.js | title": {
-    "message": "当前网页即使在离线时也能成功做出响应，并返回 200"
-  },
-  "lighthouse-core/audits/works-offline.js | warningNoLoad": {
-    "message": "由于您的测试网址 ({requested}) 已重定向到“{final}”，因此该网页可能无法离线加载。请尝试直接测试另一个网址。"
   },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "这些提示旨在帮助改进 ARIA 在您的应用内的使用情况，从而改善辅助技术（例如屏幕阅读器）用户的体验。"
@@ -1564,9 +1480,6 @@
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
     "message": "渐进式 Web 应用"
-  },
-  "lighthouse-core/config/default-config.js | pwaFastReliableGroupTitle": {
-    "message": "快速且可靠"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "可安装"

@@ -81,9 +81,18 @@
   margin-bottom: 5px;
 }
 
+/* Don't want the bottom margin in the specific case of the folding one;
+ * it messes with alignment with the arrow (which is a ::before) and  it's
+ * spaced reasonably without it anyway
+ */
+li .devices-edit-client-hints-heading {
+  margin-bottom: 0;
+}
+
 .devices-edit-client-hints-heading .help-icon {
   margin-left: 4px;
   margin-right: 4px;
+  vertical-align: middle;
 }
 
 .devices-edit-fields input {

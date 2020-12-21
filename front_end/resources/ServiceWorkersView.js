@@ -482,7 +482,7 @@ export class Section {
     name.appendChild(link);
     if (this._registration.errors.length) {
       const errorsLabel = UI.UIUtils.createIconLabel(String(this._registration.errors.length), 'smallicon-error');
-      errorsLabel.classList.add('link');
+      errorsLabel.classList.add('devtools-link', 'link');
       errorsLabel.tabIndex = 0;
       UI.ARIAUtils.setAccessibleName(errorsLabel, ls`${this._registration.errors.length} registration errors`);
       self.onInvokeElement(errorsLabel, () => Common.Console.Console.instance().show());

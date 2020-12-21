@@ -162,7 +162,7 @@ export class SameSiteCookieIssue extends Issue {
 
   /**
    * @override
-   * @returns {(?IssueDescription|?MarkdownIssueDescription)}
+   * @returns {?MarkdownIssueDescription}
    */
   getDescription() {
     const description = issueDescriptions.get(this.code());
@@ -245,69 +245,6 @@ function IsSubdomainOf(subdomain, superdomain) {
   return subdomainWithoutSuperdomian.endsWith('.');
 }
 
-/**
- * @param {string} text
- * @param {string} resolveMessage
- * @param {!Array<string>} resolutions
- * @return {!Element}
- */
-function textMessageWithResolutions(text, resolveMessage, resolutions) {
-  /**
-   * Inserts <code> tags for substrings of `message` that are enclosed
-   * by |, i.e. "Hello |code|" causes code get enclosed in a <code> tag.
-   * This is not an injection risk, as it only use `textContent` and only
-   * programmatically creates <span> and <code> elements.
-   * @param {!Element} element
-   * @param {string} message
-   */
-  const appendStyled = (element, message) => {
-    let lastIndex = 0;
-    const matches = message.matchAll(/\|(.*?)\|/g);
-    for (const match of matches) {  //
-      if (match.index !== undefined) {
-        const span = document.createElement('span');
-        span.textContent = message.substring(lastIndex, match.index);
-        element.appendChild(span);
-        const code = document.createElement('code');
-        code.textContent = match[1];
-        lastIndex = match.index + match[0].length;
-        element.appendChild(code);
-      }
-    }
-    if (lastIndex < message.length) {
-      const span = document.createElement('span');
-      span.textContent = message.substring(lastIndex, message.length);
-      element.appendChild(span);
-    }
-  };
-  const message = document.createElement('div');
-  message.classList.add('message');
-  const messageContent = document.createElement('p');
-  appendStyled(messageContent, text);
-  message.append(messageContent);
-
-  const resolutionParagraph = document.createElement('p');
-  message.append(resolutionParagraph);
-
-  const resolutionParagraphTextContent = document.createElement('span');
-  appendStyled(resolutionParagraphTextContent, resolveMessage);
-  resolutionParagraph.append(resolutionParagraphTextContent);
-
-  if (resolutions.length > 0) {
-    const resolutionList = document.createElement('ul');
-    resolutionList.classList.add('resolutions-list');
-    resolutionParagraph.append(resolutionList);
-
-    for (const resolution of resolutions) {
-      const listItem = document.createElement('li');
-      appendStyled(listItem, resolution);
-      resolutionList.append(listItem);
-    }
-  }
-
-  return message;
-}
-
 const sameSiteUnspecifiedErrorRead = {
   file: 'issues/descriptions/SameSiteUnspecifiedTreatedAsLaxRead.md',
   substitutions: undefined,
@@ -370,9 +307,6 @@ const sameSiteNoneInsecureWarnSet = {
 const schemefulSameSiteArticles =
     [{link: 'https://web.dev/schemeful-samesite/', linkTitle: ls`How Schemeful Same-Site Works`}];
 
-const resolveBySentenceForDowngrade =
-    ls`Resolve this issue by migrating your site (as defined by the eTLD+1) entirely to HTTPS. It is also recommended to mark the cookie with the |Secure| attribute if that is not already the case.`;
-
 /**
  * @param {boolean} isSecure
  */
@@ -393,15 +327,13 @@ function sameSiteWarnStrictLaxDowngradeStrict(isSecure) {
  * @param {boolean} isSecure
  */
 function sameSiteExcludeNavigationContextDowngrade(isSecure) {
-  const destination = isSecure ? ls`a secure` : ls`an insecure`;
-  const origin = !isSecure ? ls`a secure` : ls`an insecure`;
+  const substitutions = new Map([
+    ['PLACEHOLDER_destination', isSecure ? ls`a secure` : ls`an insecure`],
+    ['PLACEHOLDER_origin', !isSecure ? ls`a secure` : ls`an insecure`],
+  ]);
   return {
-    title: ls`Migrate entirely to HTTPS to have cookies sent on same-site requests`,
-    message: () => textMessageWithResolutions(
-        ls`A cookie was not sent to ${destination} origin from ${origin} context on a navigation.
-        Because this cookie would have been sent across schemes on the same site, it was not sent.
-        This behavior enhances the |SameSite| attribute’s protection of user data from request forgery by network attackers.`,
-        resolveBySentenceForDowngrade, []),
+    file: 'issues/descriptions/SameSiteExcludeNavigationContextDowngrade.md',
+    substitutions,
     issueKind: IssueKind.BreakingChange,
     links: schemefulSameSiteArticles,
   };
@@ -427,15 +359,13 @@ function sameSiteWarnCrossDowngradeRead(isSecure) {
  * @param {boolean} isSecure
  */
 function sameSiteExcludeContextDowngradeRead(isSecure) {
-  const destination = isSecure ? ls`a secure` : ls`an insecure`;
-  const origin = !isSecure ? ls`a secure` : ls`an insecure`;
+  const substitutions = new Map([
+    ['PLACEHOLDER_destination', isSecure ? ls`a secure` : ls`an insecure`],
+    ['PLACEHOLDER_origin', !isSecure ? ls`a secure` : ls`an insecure`],
+  ]);
   return {
-    title: ls`Migrate entirely to HTTPS to have cookies sent to same-site subresources`,
-    message: () => textMessageWithResolutions(
-        ls`A cookie was not sent to ${destination} origin from ${origin} context.
-        Because this cookie would have been sent across schemes on the same site, it was not sent.
-        This behavior enhances the |SameSite| attribute’s protection of user data from request forgery by network attackers.`,
-        resolveBySentenceForDowngrade, []),
+    file: 'issues/descriptions/SameSiteExcludeContextDowngradeRead.md',
+    substitutions,
     issueKind: IssueKind.BreakingChange,
     links: schemefulSameSiteArticles,
   };
@@ -459,24 +389,40 @@ function sameSiteWarnCrossDowngradeSet(isSecure) {
 
 /**
  * @param {boolean} isSecure
+ * @return {!MarkdownIssueDescription}
  */
 function sameSiteExcludeContextDowngradeSet(isSecure) {
-  const destination = isSecure ? ls`a secure` : ls`an insecure`;
-  const origin = !isSecure ? ls`a secure` : ls`an insecure`;
+  const substitutions = new Map([
+    ['PLACEHOLDER_destination', isSecure ? ls`a secure` : ls`an insecure`],
+    ['PLACEHOLDER_origin', !isSecure ? ls`a secure` : ls`an insecure`],
+  ]);
   return {
-    title: ls`Migrate entirely to HTTPS to allow cookies to be set by same-site subresources`,
-    message: () => textMessageWithResolutions(
-        ls`A cookie was not set by ${origin} origin in ${destination} context.
-        Because this cookie would have been set across schemes on the same site, it was blocked.
-        This behavior enhances the |SameSite| attribute’s protection of user data from request forgery by network attackers.`,
-        resolveBySentenceForDowngrade, []),
+    file: 'issues/descriptions/SameSiteExcludeContextDowngradeSet.md',
+    substitutions,
     issueKind: IssueKind.BreakingChange,
     links: schemefulSameSiteArticles,
   };
 }
 
-/** @type {!Map<string, (!IssueDescription|!MarkdownIssueDescription)>} */
+/** @type {!Map<string, !MarkdownIssueDescription>} */
 const issueDescriptions = new Map([
+  ['SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', sameSiteUnspecifiedErrorRead],
+  ['SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', sameSiteUnspecifiedErrorSet],
+  // These two don't have a deprecation date yet, but they need to be fixed eventually.
+  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie', sameSiteUnspecifiedWarnRead],
+  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::SetCookie', sameSiteUnspecifiedWarnSet],
+  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie', sameSiteUnspecifiedWarnRead],
+  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie', sameSiteUnspecifiedWarnSet],
+  ['SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureErrorRead],
+  ['SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureErrorSet],
+  ['SameSiteCookieIssue::WarnSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureWarnRead],
+  ['SameSiteCookieIssue::WarnSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureWarnSet],
+  ['SameSiteCookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Secure', sameSiteWarnStrictLaxDowngradeStrict(true)],
+  ['SameSiteCookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Insecure', sameSiteWarnStrictLaxDowngradeStrict(false)],
+  ['SameSiteCookieIssue::WarnCrossDowngrade::ReadCookie::Secure', sameSiteWarnCrossDowngradeRead(true)],
+  ['SameSiteCookieIssue::WarnCrossDowngrade::ReadCookie::Insecure', sameSiteWarnCrossDowngradeRead(false)],
+  ['SameSiteCookieIssue::WarnCrossDowngrade::SetCookie::Secure', sameSiteWarnCrossDowngradeSet(true)],
+  ['SameSiteCookieIssue::WarnCrossDowngrade::SetCookie::Insecure', sameSiteWarnCrossDowngradeSet(false)],
   ['SameSiteCookieIssue::ExcludeNavigationContextDowngrade::Secure', sameSiteExcludeNavigationContextDowngrade(true)],
   [
     'SameSiteCookieIssue::ExcludeNavigationContextDowngrade::Insecure', sameSiteExcludeNavigationContextDowngrade(false)
@@ -484,35 +430,5 @@ const issueDescriptions = new Map([
   ['SameSiteCookieIssue::ExcludeContextDowngrade::ReadCookie::Secure', sameSiteExcludeContextDowngradeRead(true)],
   ['SameSiteCookieIssue::ExcludeContextDowngrade::ReadCookie::Insecure', sameSiteExcludeContextDowngradeRead(false)],
   ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Secure', sameSiteExcludeContextDowngradeSet(true)],
-  ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Insecure', sameSiteExcludeContextDowngradeSet(false)]
+  ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Insecure', sameSiteExcludeContextDowngradeSet(false)],
 ]);
-
-issueDescriptions.set(
-    'SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', sameSiteUnspecifiedErrorRead);
-issueDescriptions.set(
-    'SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', sameSiteUnspecifiedErrorSet);
-// These two don't have a deprecation date yet, but they need to be fixed eventually.
-issueDescriptions.set(
-    'SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie', sameSiteUnspecifiedWarnRead);
-issueDescriptions.set(
-    'SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::SetCookie', sameSiteUnspecifiedWarnSet);
-issueDescriptions.set(
-    'SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie', sameSiteUnspecifiedWarnRead);
-issueDescriptions.set(
-    'SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie', sameSiteUnspecifiedWarnSet);
-issueDescriptions.set('SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureErrorRead);
-issueDescriptions.set('SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureErrorSet);
-issueDescriptions.set('SameSiteCookieIssue::WarnSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureWarnRead);
-issueDescriptions.set('SameSiteCookieIssue::WarnSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureWarnSet);
-issueDescriptions.set(
-    'SameSiteCookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Secure', sameSiteWarnStrictLaxDowngradeStrict(true));
-issueDescriptions.set(
-    'SameSiteCookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Insecure', sameSiteWarnStrictLaxDowngradeStrict(false));
-issueDescriptions.set(
-    'SameSiteCookieIssue::WarnCrossDowngrade::ReadCookie::Secure', sameSiteWarnCrossDowngradeRead(true));
-issueDescriptions.set(
-    'SameSiteCookieIssue::WarnCrossDowngrade::ReadCookie::Insecure', sameSiteWarnCrossDowngradeRead(false));
-issueDescriptions.set(
-    'SameSiteCookieIssue::WarnCrossDowngrade::SetCookie::Secure', sameSiteWarnCrossDowngradeSet(true));
-issueDescriptions.set(
-    'SameSiteCookieIssue::WarnCrossDowngrade::SetCookie::Insecure', sameSiteWarnCrossDowngradeSet(false));

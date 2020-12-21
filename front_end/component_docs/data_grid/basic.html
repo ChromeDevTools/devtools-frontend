@@ -16,9 +16,9 @@
         padding: 20px;
         height: 300px;
       }
-
     </style>
   </head>
+
   <body>
 
     <div id="container">
@@ -28,8 +28,10 @@
     <script type="module">
       import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
       import * as Components from '../../ui/components/components.js'
+      import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 
       ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent())
+      FrontendHelpers.initializeGlobalVars();
 
       const renderComponent = () => {
         const component = new Components.DataGrid.DataGrid();
@@ -40,9 +42,9 @@
             { id: 'value', title: 'Value', widthWeighting: 1, visible: true, hideable: false },
           ],
           rows: [
-            {cells: [{ columnId: 'key', value: 'Bravo', title: 'Bravo'}, { columnId: 'value', value: 'Letter B'}] },
-            {cells: [{ columnId: 'key', value: 'Alpha', title: 'Alpha'}, { columnId: 'value', value: 'Letter A'}] },
-            {cells: [{ columnId: 'key', value: 'Charlie', title: 'Charlie'}, { columnId: 'value', value: 'Letter C'}] },
+            { cells: [{ columnId: 'key', value: 'Bravo', title: 'Bravo' }, { columnId: 'value', value: 'Letter B' }] },
+            { cells: [{ columnId: 'key', value: 'Alpha', title: 'Alpha' }, { columnId: 'value', value: 'Letter A' }] },
+            { cells: [{ columnId: 'key', value: 'Charlie', title: 'Charlie' }, { columnId: 'value', value: 'Letter C' }] },
           ]
         }
 
@@ -53,7 +55,6 @@
           document.getElementById('events').appendChild(li)
         })
       }
-
     </script>
   </body>
 </html>

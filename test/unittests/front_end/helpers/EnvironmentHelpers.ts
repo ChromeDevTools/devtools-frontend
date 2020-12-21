@@ -34,10 +34,15 @@ i18n.i18n.registerLocale('en-US');
   const locale = i18n.i18n.registeredLocale;
   if (locale) {
     // proxied call.
-    const data = await (await fetch(`locales/${locale}.json`)).json();
-    if (data) {
-      const localizedStrings = data;
-      i18n.i18n.registerLocaleData(locale, localizedStrings);
+    try {
+      const data = await (await fetch(`locales/${locale}.json`)).json();
+      if (data) {
+        const localizedStrings = data;
+        i18n.i18n.registerLocaleData(locale, localizedStrings);
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('EnvironmentHelper: Loading en-US locale failed', error.message);
     }
   }
 })();

@@ -200,9 +200,27 @@ async function requestHandler(request, response) {
   } else {
     // This means it's an asset like a JS file or an image.
     const normalizedPath = normalizeImagePathIfRequired(filePath);
-    const fullPath = path.join(devtoolsFrontendFolder, normalizedPath);
 
-    if (!fullPath.startsWith(devtoolsFrontendFolder)) {
+    let fullPath = path.join(devtoolsFrontendFolder, normalizedPath);
+    if (fullPath.endsWith(path.join('locales', 'en-US.json'))) {
+      // Rewrite this path so we can load up the locale in the component-docs
+      fullPath = path.join(devtoolsFrontendFolder, 'i18n', 'locales', 'en-US.json');
+    }
+    /**
+     * Component docs can also load files from the test directory, so we ensure
+     * that we allow that here, and also then deal with the relative imports
+     * that come from the test directory, which will contain the front_end
+     * folder already. In which case we take the devToolsFrontendFolder, and go
+     * up one directory with '..' to make sure we import the right file from the
+     * right place.
+     */
+    const fileIsInTestFolder = normalizedPath.startsWith('/test/');
+    const fileStartsWithFrontEnd = normalizedPath.startsWith('/front_end/');
+    if (fileIsInTestFolder || fileStartsWithFrontEnd) {
+      fullPath = path.join(devtoolsFrontendFolder, '..', normalizedPath);
+    }
+
+    if (!fullPath.startsWith(devtoolsFrontendFolder) && !fileIsInTestFolder) {
       console.error(`Path ${fullPath} is outside the DevTools Frontend root dir.`);
       process.exit(1);
     }

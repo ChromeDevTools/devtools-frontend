@@ -139,7 +139,7 @@ export class DeviceModeToolbar {
     toolbar.appendToolbarItem(this._wrapToolbarItem(this._createEmptyToolbarElement()));
     this._deviceSelectItem = new UI.Toolbar.ToolbarMenuButton(this._appendDeviceMenuItems.bind(this));
     this._deviceSelectItem.setGlyph('');
-    this._deviceSelectItem.turnIntoSelect();
+    this._deviceSelectItem.turnIntoSelect(true);
     this._deviceSelectItem.setDarkText();
     toolbar.appendToolbarItem(this._deviceSelectItem);
   }

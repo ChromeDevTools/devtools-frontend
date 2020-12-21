@@ -10,6 +10,7 @@ import {assertGutterDecorationForDomNodeExists, forcePseudoState, getComputedSty
 
 const TARGET_SHOWN_ON_HOVER_SELECTOR = '.show-on-hover';
 const TARGET_SHOWN_ON_FOCUS_SELECTOR = '.show-on-focus';
+const TARGET_SHOWN_ON_TARGET_SELECTOR = '#show-on-target';
 
 describe('The Elements tab', async () => {
   it('can force :hover state for selected DOM node', async () => {
@@ -19,7 +20,7 @@ describe('The Elements tab', async () => {
 
     await waitForElementsStyleSection();
 
-    await step('Sanity check to make sure we have the correct node selected after opening a file', async () => {
+    await step('Ensure the correct node is selected after opening a file', async () => {
       await waitForContentOfSelectedElementsNode('<body>\u200B');
     });
 
@@ -39,6 +40,34 @@ describe('The Elements tab', async () => {
     assert.strictEqual(displayComputedStyle, 'inline');
   });
 
+  it('can force :target state for selected DOM node', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    await goToResource('elements/target.html');
+
+    await waitForElementsStyleSection();
+
+    await step('Ensure the correct node is selected after opening a file', async () => {
+      await waitForContentOfSelectedElementsNode('<body>\u200B');
+    });
+
+    // FIXME(crbug/1112692): Refactor test to remove the timeout.
+    await timeout(50);
+
+    await step('Select element that we can target', async () => {
+      await frontend.keyboard.press('ArrowRight');
+      await waitForContentOfSelectedElementsNode(
+          '<span id=\u200B"show-on-target">\u200BSome text here, only shown on :target\u200B</span>\u200B');
+    });
+
+    await forcePseudoState(':target');
+    await assertGutterDecorationForDomNodeExists();
+    await waitForDomNodeToBeVisible(TARGET_SHOWN_ON_TARGET_SELECTOR);
+
+    const displayComputedStyle = await getComputedStylesForDomNode(TARGET_SHOWN_ON_TARGET_SELECTOR, 'display');
+    assert.strictEqual(displayComputedStyle, 'inline');
+  });
+
   // Flaky test
   it.skip('[crbug.com/1134593] can force :focus state for selected DOM node', async () => {
     const {frontend} = getBrowserAndPages();
@@ -47,7 +76,7 @@ describe('The Elements tab', async () => {
 
     await waitForElementsStyleSection();
 
-    await step('Sanity check to make sure we have the correct node selected after opening a file', async () => {
+    await step('Ensure the correct node is selected after opening a file', async () => {
       await waitForContentOfSelectedElementsNode('<body>\u200B');
     });
 
@@ -78,7 +107,7 @@ describe('The Elements tab', async () => {
 
     await waitForElementsStyleSection();
 
-    await step('Sanity check to make sure we have the correct node selected after opening a file', async () => {
+    await step('Ensure the correct node is selected after opening a file', async () => {
       await waitForContentOfSelectedElementsNode('<body>\u200B');
     });
 

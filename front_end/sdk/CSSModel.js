@@ -436,14 +436,15 @@ export class CSSModel extends SDKModel {
    */
   forcePseudoState(node, pseudoClass, enable) {
     const forcedPseudoClasses = node.marker(PseudoStateMarker) || [];
+    const hasPseudoClass = forcedPseudoClasses.includes(pseudoClass);
     if (enable) {
-      if (forcedPseudoClasses.indexOf(pseudoClass) >= 0) {
+      if (hasPseudoClass) {
         return false;
       }
       forcedPseudoClasses.push(pseudoClass);
       node.setMarker(PseudoStateMarker, forcedPseudoClasses);
     } else {
-      if (forcedPseudoClasses.indexOf(pseudoClass) < 0) {
+      if (!hasPseudoClass) {
         return false;
       }
       Platform.ArrayUtilities.removeElement(forcedPseudoClasses, pseudoClass);

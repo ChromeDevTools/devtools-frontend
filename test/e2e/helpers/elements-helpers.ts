@@ -99,8 +99,7 @@ export const waitForSomeGridsInLayoutPane = async (minimumGridCount: number) => 
 
 export const waitForContentOfSelectedElementsNode = async (expectedTextContent: string) => {
   await waitForFunction(async () => {
-    const selectedNode = await waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
-    const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
+    const selectedTextContent = await getContentOfSelectedNode();
     return selectedTextContent === expectedTextContent;
   });
 };

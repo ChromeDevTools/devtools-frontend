@@ -22,5 +22,6 @@ copy_to_gen("elements") {
     "simple-styled-page.html",
     "style-pane-properties.html",
     "stylesheets-with-various-sources.html",
+    "target.html",
   ]
 }

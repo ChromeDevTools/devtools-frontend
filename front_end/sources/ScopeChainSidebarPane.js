@@ -89,10 +89,14 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
 
   async _update() {
     const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
-    const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     this._linkifier.reset();
     const [thisObject, scopeChain] = await Promise.all([resolveThisObject(callFrame), resolveScopeChain(callFrame)]);
-    this._innerUpdate(details, callFrame, thisObject, scopeChain);
+    // By now the developer might have moved on, and we don't want to show stale
+    // scope information, so check again that we're still on the same CallFrame.
+    if (callFrame === UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame)) {
+      const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
+      this._innerUpdate(details, callFrame, thisObject, scopeChain);
+    }
   }
 
   /**

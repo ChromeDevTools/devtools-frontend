@@ -689,6 +689,7 @@ export class RowMessage {
     this._icon = new WebComponents.Icon.Icon();
     this._icon.data = getIconClassPerLevel(message.level());
     this._icon.classList.add('text-editor-row-message-icon');
+    this._icon.addEventListener('click', () => this.callClickHandler());
 
     this.element.append(this._icon);
     /** @type {!UI.UIUtils.DevToolsSmallBubble} */
@@ -709,6 +710,13 @@ export class RowMessage {
    */
   message() {
     return this._message;
+  }
+
+  callClickHandler() {
+    const handler = this._message.clickHandler();
+    if (handler) {
+      handler();
+    }
   }
 
   /**
@@ -761,6 +769,7 @@ export class RowMessageBucket {
     this._issueIcon = new WebComponents.Icon.Icon();
     this._issueIcon.data = getIconClassPerLevel(Workspace.UISourceCode.Message.Level.Issue);
     this._issueIcon.classList.add('text-editor-line-decoration-icon-issue', 'hidden');
+    this._issueIcon.addEventListener('click', () => this._issueClickHandler());
 
     const iconsElement = this._wave.createChild('span');
     iconsElement.append(this._errorIcon);
@@ -835,6 +844,13 @@ export class RowMessageBucket {
    */
   uniqueMessagesCount() {
     return this._messages.length;
+  }
+
+  _issueClickHandler() {
+    const firstIssue = this._messages.find(m => m.message().level() === Workspace.UISourceCode.Message.Level.Issue);
+    if (firstIssue) {
+      firstIssue.callClickHandler();
+    }
   }
 
   /**

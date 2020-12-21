@@ -597,6 +597,10 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   margin-right: 2px;
 }
 
+.CodeMirror .text-editor-line-decoration-icon-issue {
+  cursor: pointer;
+}
+
 .CodeMirror .text-editor-line-with-warning:not(.cm-execution-line):not(.cm-readonly-highlight) {
   background-color: rgb(241 230 0 / 10%);
 }

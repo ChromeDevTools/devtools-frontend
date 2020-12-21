@@ -40,6 +40,21 @@ async function openFileInSourceTab(fileName: string) {
   await element.click();
 }
 
+async function getExpandedIssuesTitle(): Promise<Set<string>> {
+  const expandedIssues = new Set<string>();
+  await waitFor('.issue');
+  const issues = await $$('.issue');
+  for (const issue of issues) {
+    const expanded = await issue.evaluate(x => x.classList.contains('expanded'));
+    if (expanded) {
+      const titleHandler = await waitFor('.title', issue);
+      const title = await titleHandler.evaluate(x => (x instanceof HTMLElement) ? x.innerText : '');
+      expandedIssues.add(title);
+    }
+  }
+  return expandedIssues;
+}
+
 describe('Display error information next to affected lines', async () => {
   it('Error messages should be displayed', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
@@ -92,17 +107,30 @@ describe('Display error information next to affected lines', async () => {
     const icons = await getIconComponents('text-editor-line-decoration-icon-issue');
     assert.strictEqual(icons.length, 1);
   });
-  it('Issue icons should be correct', async () => {
+  it('Issues icon should reveal Issues Tab', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const bucketIssueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
-    for (const bucketIssueIconComponent of bucketIssueIconComponents) {
-      await click(bucketIssueIconComponent);
-      const vbox = await waitFor('div.vbox.flex-auto.no-pointer-events');
-      const issueIconComponents = await getIconComponents('text-editor-row-message-icon', vbox);
-      for (const issueIconComponent of issueIconComponents) {
-        assert.strictEqual(await getIconFile(issueIconComponent), 'breaking_change_icon.svg');
-      }
-      assert.strictEqual(await getIconFile(bucketIssueIconComponent), 'breaking_change_icon.svg');
-    }
+    assert.strictEqual(bucketIssueIconComponents.length, 1);
+    const issueIconComponent = bucketIssueIconComponents[0];
+    await click(issueIconComponent);
+
+    const expandedIssues = await getExpandedIssuesTitle();
+    assert.isTrue(expandedIssues.has('Trusted Type policy creation blocked by Content Security Policy'));
+  });
+  it('Issues icon in popover should reveal Issues Tab', async () => {
+    await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
+    const bucketIssueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
+    assert.strictEqual(bucketIssueIconComponents.length, 1);
+    const issueIconComponent = bucketIssueIconComponents[0];
+    await issueIconComponent.hover();
+
+    const vbox = await waitFor('div.vbox.flex-auto.no-pointer-events');
+    const rowMessage = await waitFor('.text-editor-row-message', vbox);
+    const issueTitle = await rowMessage.evaluate(x => (x instanceof HTMLElement) ? x.innerText : '');
+    const issueIcon = await waitFor('.text-editor-row-message-icon', rowMessage);
+    await issueIcon.click();
+
+    const expandedIssues = await getExpandedIssuesTitle();
+    assert.isTrue(expandedIssues.has(issueTitle));
   });
 });

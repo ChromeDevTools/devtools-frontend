@@ -539,21 +539,24 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string} text
    * @param {number} lineNumber
    * @param {number=} columnNumber
+   * @param {(() => void )=} clickHandler
    * @return {!Message} message
    */
-  addLineMessage(level, text, lineNumber, columnNumber) {
+  addLineMessage(level, text, lineNumber, columnNumber, clickHandler) {
     return this.addMessage(
-        level, text, new TextUtils.TextRange.TextRange(lineNumber, columnNumber || 0, lineNumber, columnNumber || 0));
+        level, text, new TextUtils.TextRange.TextRange(lineNumber, columnNumber || 0, lineNumber, columnNumber || 0),
+        clickHandler);
   }
 
   /**
    * @param {!Message.Level} level
    * @param {string} text
    * @param {!TextUtils.TextRange.TextRange} range
+   * @param {(() => void )=} clickHandler
    * @return {!Message} message
    */
-  addMessage(level, text, range) {
-    const message = new Message(this, level, text, range);
+  addMessage(level, text, range, clickHandler) {
+    const message = new Message(this, level, text, range, clickHandler);
     if (!this._messages) {
       this._messages = new Set();
     }
@@ -761,12 +764,14 @@ export class Message {
    * @param {!Message.Level} level
    * @param {string} text
    * @param {!TextUtils.TextRange.TextRange} range
+   * @param {(() => void )=} clickHandler
    */
-  constructor(uiSourceCode, level, text, range) {
+  constructor(uiSourceCode, level, text, range, clickHandler) {
     this._uiSourceCode = uiSourceCode;
     this._level = level;
     this._text = text;
     this._range = range;
+    this._clickHandler = clickHandler;
   }
 
   /**
@@ -795,6 +800,13 @@ export class Message {
    */
   range() {
     return this._range;
+  }
+
+  /**
+   * @return {(() => void ) | undefined}
+   */
+  clickHandler() {
+    return this._clickHandler;
   }
 
   /**

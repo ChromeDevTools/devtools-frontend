@@ -28,4 +28,5 @@
 .text-editor-row-message-icon {
   flex: none;
   margin-right: 6px;
+  cursor: pointer;
 }

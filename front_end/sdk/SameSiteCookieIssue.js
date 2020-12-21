@@ -308,18 +308,6 @@ function textMessageWithResolutions(text, resolveMessage, resolutions) {
   return message;
 }
 
-const resolutionsRead = [
-  ls`Specify |SameSite=None| and |Secure| if the cookie should be sent in cross-site requests. This enables third-party use.`,
-  ls`Specify |SameSite=Strict| or |SameSite=Lax| if the cookie should not be sent in cross-site requests`,
-];
-
-const resolutionsSet = [
-  ls`Specify |SameSite=None| and |Secure| if the cookie is intended to be set in cross-site contexts. Note that only cookies sent over HTTPS may use the |Secure| attribute.`,
-  ls`Specify |SameSite=Strict| or |SameSite=Lax| if the cookie should not be set by cross-site requests`,
-];
-
-const resolveBySentence = ls`Resolve this issue by updating the attributes of the cookie:`;
-
 const sameSiteUnspecifiedErrorRead = {
   file: 'issues/descriptions/SameSiteUnspecifiedTreatedAsLaxRead.md',
   substitutions: undefined,
@@ -349,41 +337,29 @@ const sameSiteUnspecifiedWarnSet = {
 };
 
 const sameSiteNoneInsecureErrorRead = {
-  title: ls`Mark cross-site cookies as Secure to allow them to be sent in cross-site requests`,
-  message: () => textMessageWithResolutions(
-      ls`Cookies marked with |SameSite=None| must also be marked with |Secure| to get sent in cross-site requests.
-       This behavior protects user data from being sent over an insecure connection.`,
-      resolveBySentence, resolutionsRead),
+  file: 'issues/descriptions/SameSiteNoneInsecureErrorRead.md',
+  substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
   links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteNoneInsecureErrorSet = {
-  title: ls`Mark cross-site cookies as Secure to allow setting them in cross-site contexts`,
-  message: () => textMessageWithResolutions(
-      ls`Cookies marked with |SameSite=None| must also be marked with |Secure| to allow setting them in a cross-site context.
-       This behavior protects user data from being sent over an insecure connection.`,
-      resolveBySentence, resolutionsSet),
+  file: 'issues/descriptions/SameSiteNoneInsecureErrorSet.md',
+  substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
   links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteNoneInsecureWarnRead = {
-  title: ls`Mark cross-site cookies as Secure to allow them to be sent in cross-site requests`,
-  message: () => textMessageWithResolutions(
-      ls`In a future version of the browser, cookies marked with |SameSite=None| must also be marked with |Secure| to get sent in cross-site requests.
-       This behavior protects user data from being sent over an insecure connection.`,
-      resolveBySentence, resolutionsRead),
+  file: 'issues/descriptions/SameSiteNoneInsecureWarnRead.md',
+  substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
   links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
 
 const sameSiteNoneInsecureWarnSet = {
-  title: ls`Mark cross-site cookies as Secure to allow setting them in cross-site contexts`,
-  message: () => textMessageWithResolutions(
-      ls`In a future version of the browser, cookies marked with |SameSite=None| must also be marked with |Secure| to allow setting them in a cross-site context.
-       This behavior protects user data from being sent over an insecure connection.`,
-      resolveBySentence, resolutionsSet),
+  file: 'issues/descriptions/SameSiteNoneInsecureWarnSet.md',
+  substitutions: undefined,
   issueKind: IssueKind.BreakingChange,
   links: [{link: 'https://web.dev/samesite-cookies-explained/', linkTitle: ls`SameSite cookies explained`}],
 };
@@ -507,10 +483,6 @@ function sameSiteExcludeContextDowngradeSet(isSecure) {
 
 /** @type {!Map<string, (!IssueDescription|!MarkdownIssueDescription)>} */
 const issueDescriptions = new Map([
-  ['SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureErrorRead],
-  ['SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureErrorSet],
-  ['SameSiteCookieIssue::WarnSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureWarnRead],
-  ['SameSiteCookieIssue::WarnSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureWarnSet],
   ['SameSiteCookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Secure', sameSiteWarnStrictLaxDowngradeStrict(true)],
   ['SameSiteCookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Insecure', sameSiteWarnStrictLaxDowngradeStrict(false)],
   ['SameSiteCookieIssue::WarnCrossDowngrade::ReadCookie::Secure', sameSiteWarnCrossDowngradeRead(true)],
@@ -540,3 +512,7 @@ issueDescriptions.set(
     'SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie', sameSiteUnspecifiedWarnRead);
 issueDescriptions.set(
     'SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie', sameSiteUnspecifiedWarnSet);
+issueDescriptions.set('SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureErrorRead);
+issueDescriptions.set('SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureErrorSet);
+issueDescriptions.set('SameSiteCookieIssue::WarnSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureWarnRead);
+issueDescriptions.set('SameSiteCookieIssue::WarnSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureWarnSet);

@@ -198,6 +198,26 @@ async function requestHandler(request, response) {
     respondWithHtml(response, newFileContents);
 
   } else {
+    if (filePath.startsWith('/front_end')) {
+      /**
+       * We load files from the test directory whose paths will often start with
+       * /front_end if they load in frontend code. However we also get requests
+       * from within the front_end directory which do not start with /front_end.
+       * This means we might get two requests for the same file:
+       *
+       * 1) /front_end/ui/ui.js
+       * 2) /ui/ui.js
+       *
+       * If we serve them both it will mean we load ui/ui.js twice. So instead
+       * we redirect permanently to the non-/front_end prefixed URL so that the
+       * browser only loads each module once.
+       */
+      response.writeHead(301, {
+        Location: filePath.replace('/front_end', ''),
+      });
+      response.end();
+      return;
+    }
     // This means it's an asset like a JS file or an image.
     const normalizedPath = normalizeImagePathIfRequired(filePath);
 
@@ -215,8 +235,7 @@ async function requestHandler(request, response) {
      * right place.
      */
     const fileIsInTestFolder = normalizedPath.startsWith('/test/');
-    const fileStartsWithFrontEnd = normalizedPath.startsWith('/front_end/');
-    if (fileIsInTestFolder || fileStartsWithFrontEnd) {
+    if (fileIsInTestFolder) {
       fullPath = path.join(devtoolsFrontendFolder, '..', normalizedPath);
     }
 

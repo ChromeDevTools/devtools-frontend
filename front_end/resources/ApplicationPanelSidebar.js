@@ -2080,6 +2080,9 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     // This is used to persist over reloads/navigation which frame was selected.
     // A frame's title can change on DevTools refresh, so we resort to using
     // the URL instead (even though it is not guaranteed to be unique).
+    if (this._frame.isTopFrame()) {
+      return 'frame://';
+    }
     return 'frame://' + encodeURI(this._frame.url);
   }
 

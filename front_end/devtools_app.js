@@ -5,11 +5,9 @@ import './shell.js';
 import './css_overview/css_overview-meta.js';
 import './elements/elements-meta.js';
 import './browser_debugger/browser_debugger-meta.js';
-import './sources/sources-meta.js';
 import './network/network-meta.js';
 import './emulation/emulation-meta.js';
 import './accessibility/accessibility-meta.js';
-import './profiler/profiler-meta.js';
 import * as Startup from './startup/startup.js';
 
 Startup.RuntimeInstantiator.startApplication('devtools_app');

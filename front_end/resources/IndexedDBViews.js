@@ -403,7 +403,6 @@ export class IDBDataView extends UI.View.SimpleView {
     let skipCount = this._skipCount;
     let selected = this._dataGrid.selectedNode ? this._dataGrid.selectedNode.data['number'] : 0;
     selected = Math.max(selected, this._skipCount);  // Page forward should select top entry
-    this._refreshButton.setEnabled(false);
     this._clearButton.setEnabled(!this._isIndex);
 
     if (!force && this._lastKey === key && this._lastPageSize === pageSize && this._lastSkipCount === skipCount) {
@@ -424,7 +423,6 @@ export class IDBDataView extends UI.View.SimpleView {
      * @this {IDBDataView}
      */
     function callback(entries, hasMore) {
-      this._refreshButton.setEnabled(true);
       this.clear();
       this._entries = entries;
       let selectedNode = null;

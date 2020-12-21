@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_007c41a9025be2c8e14b496ed3ee00f8" desc="Text to save an item">
+    Save…
+  </message>
   <message name="IDS_DEVTOOLS_02184526968aa861a744df910647fcf0" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Freed Size
   </message>

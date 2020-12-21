@@ -89,11 +89,12 @@ export class SearchMatch {
  * @param {string} mimeType
  * @param {boolean} contentEncoded
  * @param {?string=} charset
+ * @param {boolean} limitSize
  * @return {?string}
  */
-export const contentAsDataURL = function(content, mimeType, contentEncoded, charset) {
+export const contentAsDataURL = function(content, mimeType, contentEncoded, charset, limitSize = true) {
   const maxDataUrlSize = 1024 * 1024;
-  if (content === undefined || content === null || content.length > maxDataUrlSize) {
+  if (content === undefined || content === null || (limitSize && content.length > maxDataUrlSize)) {
     return null;
   }
 

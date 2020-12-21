@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_70a0a440eed4f94a3632d346b03d9a53" desc="A drop-down menu option to set indentation to 2 spaces">
     2 spaces
   </message>
+  <message name="IDS_DEVTOOLS_7614f0bed267d2f1e6cd281e6989954a" desc="A context menu item in the Image Preview">
+    Save image as...
+  </message>
   <message name="IDS_DEVTOOLS_7894a953b2e5c818b263e862929417f3" desc="A drop-down menu option to set indentation to tab character">
     Tab character
   </message>
@@ -59,6 +62,9 @@
   </message>
   <message name="IDS_DEVTOOLS_fb49df2db96d183474fb9e954a9f0e52" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Set indentation to tab character
+  </message>
+  <message name="IDS_DEVTOOLS_fd456406745d816a45cae554c788e754" desc="The default file name when downloading a file">
+    download
   </message>
   <message name="IDS_DEVTOOLS_fe81050cdc3adc7c1912fc08b7aec77f" desc="A drop-down menu option to set indentation to 4 spaces">
     4 spaces

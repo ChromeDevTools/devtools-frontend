@@ -139,7 +139,10 @@ export class ImageView extends UI.View.SimpleView {
 
     contextMenu.clipboardSection().appendItem(
         Common.UIString.UIString('Open image in new tab'), this._openInNewTab.bind(this));
-    contextMenu.clipboardSection().appendItem(Common.UIString.UIString('Save…'), this._saveImage.bind(this));
+    contextMenu.clipboardSection().appendItem(ls`Save image as...`, async () => {
+      await this._saveImage();
+    });
+
     contextMenu.show();
   }
 
@@ -151,11 +154,29 @@ export class ImageView extends UI.View.SimpleView {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this._url);
   }
 
-  _saveImage() {
+  async _saveImage() {
+    const contentEncoded = await this._contentProvider.contentEncoded();
+    if (!this._cachedContent) {
+      return;
+    }
+    const cachedContent = this._cachedContent;
+    const imageDataURL =
+        TextUtils.ContentProvider.contentAsDataURL(cachedContent, this._mimeType, contentEncoded, '', false);
+
+    if (!imageDataURL) {
+      return;
+    }
+
     const link = document.createElement('a');
-    link.download = this._parsedURL.displayName;
-    link.href = this._url;
+    link.href = imageDataURL;
+
+    // If it is a Base64 image, set a default file name.
+    // When chrome saves a file, the file name characters that are not supported
+    // by the OS will be replaced automatically. For example, in the Mac,
+    // `:` it will be replaced with `_`.
+    link.download = this._parsedURL.isDataURL() ? ls`download` : decodeURIComponent(this._parsedURL.displayName);
     link.click();
+    link.remove();
   }
 
   _openInNewTab() {

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Strings in this file are shared, i.e. they appear multiple times. -->
 <grit-part>
-  <message name="IDS_DEVTOOLS_007c41a9025be2c8e14b496ed3ee00f8" desc="Text to save an item">
-    Save…
-  </message>
   <message name="IDS_DEVTOOLS_040c4b52a3c06c6067fac76c4c7c3a2c" desc="Title of the 'Network conditions' tool in the bottom drawer">
     Network conditions
   </message>

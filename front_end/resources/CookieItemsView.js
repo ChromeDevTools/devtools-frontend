@@ -188,8 +188,6 @@ export class CookieItemsView extends StorageItemsView {
         networkManager.addEventListener(SDK.NetworkManager.Events.LoadingFinished, this._onLoadingFinished, this),
       ];
     }
-
-    this._showPreview(null);
   }
 
   /**
@@ -262,6 +260,10 @@ export class CookieItemsView extends StorageItemsView {
     this.setCanFilter(true);
     this.setCanDeleteAll(this._shownCookies.length > 0);
     this.setCanDeleteSelected(!!this._cookiesTable.selectedCookie());
+
+    if (!this._cookiesTable.selectedCookie()) {
+      this._showPreview(null);
+    }
   }
 
   /**

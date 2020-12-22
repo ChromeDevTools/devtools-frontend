@@ -17,6 +17,7 @@ ts_library("tests") {
 
   deps = [
     "data_grid",
+    "data_grid_controller",
     "helpers",
     "theme_colors",
   ]

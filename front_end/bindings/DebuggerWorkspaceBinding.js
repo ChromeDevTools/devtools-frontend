@@ -59,8 +59,8 @@ export class DebuggerWorkspaceBinding {
     const {forceNew, targetManager, workspace} = opts;
     if (!debuggerWorkspaceBindingInstance || forceNew) {
       if (!targetManager || !workspace) {
-        throw new Error(
-            `Unable to create settings: targetManager and workspace must be provided: ${new Error().stack}`);
+        throw new Error(`Unable to create DebuggerWorkspaceBinding: targetManager and workspace must be provided: ${
+            new Error().stack}`);
       }
 
       debuggerWorkspaceBindingInstance = new DebuggerWorkspaceBinding(targetManager, workspace);

@@ -6,8 +6,9 @@ import './DataGrid.js';
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import type * as TextUtils from '../../text_utils/text_utils.js';
-import type {DataGridData, ColumnHeaderClickEvent} from './DataGrid.js';
+import type {DataGridData, ColumnHeaderClickEvent, DataGridContextMenusConfiguration, ContextMenuColumnSortClickEvent} from './DataGrid.js';
 import {SortDirection, SortState, Column, Row, getRowEntryForColumnId} from './DataGridUtils.js';
+
 
 export interface DataGridControllerData {
   columns: Column[];
@@ -19,6 +20,7 @@ export interface DataGridControllerData {
    * ignored.
    */
   initialSort?: SortState;
+  contextMenus?: DataGridContextMenusConfiguration;
 }
 
 export class DataGridController extends HTMLElement {
@@ -27,6 +29,7 @@ export class DataGridController extends HTMLElement {
   private hasRenderedAtLeastOnce = false;
   private columns: readonly Column[] = [];
   private rows: Row[] = [];
+  private contextMenus?: DataGridContextMenusConfiguration;
 
   /**
    * Because the controller will sort data in place (e.g. mutate it) when we get
@@ -45,6 +48,7 @@ export class DataGridController extends HTMLElement {
       columns: this.originalColumns as Column[],
       rows: this.originalRows as Row[],
       filters: this.filters,
+      contextMenus: this.contextMenus,
     };
   }
 
@@ -52,6 +56,7 @@ export class DataGridController extends HTMLElement {
     this.originalColumns = data.columns;
     this.originalRows = data.rows;
     this.filters = data.filters || [];
+    this.contextMenus = data.contextMenus;
 
     this.columns = [...this.originalColumns];
     this.rows = this.cloneAndFilterRows(data.rows, this.filters);
@@ -138,6 +143,10 @@ export class DataGridController extends HTMLElement {
 
   private onColumnHeaderClick(event: ColumnHeaderClickEvent): void {
     const {column} = event.data;
+    this.applySortOnColumn(column);
+  }
+
+  private applySortOnColumn(column: Column): void {
     if (this.sortState && this.sortState.columnId === column.id) {
       const {columnId, direction} = this.sortState;
 
@@ -170,6 +179,16 @@ export class DataGridController extends HTMLElement {
     }
   }
 
+  private onContextMenuColumnSortClick(event: ContextMenuColumnSortClickEvent): void {
+    this.applySortOnColumn(event.data.column);
+  }
+
+  private onContextMenuHeaderResetClick(): void {
+    this.sortState = null;
+    this.rows = [...this.originalRows];
+    this.render();
+  }
+
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -185,9 +204,12 @@ export class DataGridController extends HTMLElement {
           columns: this.columns,
           rows: this.rows,
           activeSort: this.sortState,
+          contextMenus: this.contextMenus,
         } as DataGridData}
         @column-header-click=${this.onColumnHeaderClick}
-      ></devtools-data-grid>
+        @context-menu-column-sort-click=${this.onContextMenuColumnSortClick}
+        @context-menu-header-reset-click=${this.onContextMenuHeaderResetClick}
+     ></devtools-data-grid>
     `, this.shadow, {
       eventContext: this,
     });

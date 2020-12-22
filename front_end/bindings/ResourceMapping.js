@@ -49,7 +49,7 @@ export class ResourceMapping {
     if (!resourceMappingInstance || forceNew) {
       if (!targetManager || !workspace) {
         throw new Error(
-            `Unable to create settings: targetManager and workspace must be provided: ${new Error().stack}`);
+            `Unable to create ResourceMapping: targetManager and workspace must be provided: ${new Error().stack}`);
       }
 
       resourceMappingInstance = new ResourceMapping(targetManager, workspace);

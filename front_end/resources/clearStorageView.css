@@ -64,3 +64,12 @@
 .report-content-box {
   overflow: initial;
 }
+
+.include-third-party-cookies {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-left: 16px;
+}

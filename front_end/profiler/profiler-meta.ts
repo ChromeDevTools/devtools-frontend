@@ -20,6 +20,13 @@ async function loadProfilerModule(): Promise<typeof Profiler> {
   return loadedProfilerModule;
 }
 
+function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (profilerModule: typeof Profiler) => T[]): T[] {
+  if (loadedProfilerModule === undefined) {
+    return [];
+  }
+  return getClassCallBack(loadedProfilerModule);
+}
+
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'heap_profiler',
@@ -44,4 +51,94 @@ UI.ViewManager.registerViewExtension({
     return Profiler.LiveHeapProfileView.LiveHeapProfileView.instance();
   },
   experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'live-heap-profile.toggle-recording',
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
+  toggleable: true,
+  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
+  toggleWithRedColor: true,
+  async loadActionDelegate() {
+    const Profiler = await loadProfilerModule();
+    return Profiler.LiveHeapProfileView.ActionDelegate.instance();
+  },
+  category: UI.ActionRegistration.ActionCategory.MEMORY,
+  experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
+  options: [
+    {
+      value: true,
+      title: ls`Start recording heap allocations`,
+    },
+    {
+      value: false,
+      title: ls`Stop recording heap allocations`,
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'live-heap-profile.start-with-reload',
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_REFRESH,
+  async loadActionDelegate() {
+    const Profiler = await loadProfilerModule();
+    return Profiler.LiveHeapProfileView.ActionDelegate.instance();
+  },
+  category: UI.ActionRegistration.ActionCategory.MEMORY,
+  experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
+  title: ls`Start recording heap allocations and reload the page`,
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'profiler.heap-toggle-recording',
+  category: UI.ActionRegistration.ActionCategory.MEMORY,
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
+  title: ls`Start/stop recording`,
+  toggleable: true,
+  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
+  toggleWithRedColor: true,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Profiler => [Profiler.HeapProfilerPanel.HeapProfilerPanel]);
+  },
+  async loadActionDelegate() {
+    const Profiler = await loadProfilerModule();
+    return Profiler.HeapProfilerPanel.HeapProfilerPanel.instance();
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platform.WindowsLinux,
+      shortcut: 'Ctrl+E',
+    },
+    {
+      platform: UI.ActionRegistration.Platform.Mac,
+      shortcut: 'Meta+E',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'profiler.js-toggle-recording',
+  category: UI.ActionRegistration.ActionCategory.JAVASCRIPT_PROFILER,
+  title: ls`Start/stop recording`,
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
+  toggleable: true,
+  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
+  toggleWithRedColor: true,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Profiler => [Profiler.ProfilesPanel.JSProfilerPanel]);
+  },
+  async loadActionDelegate() {
+    const Profiler = await loadProfilerModule();
+    return Profiler.ProfilesPanel.JSProfilerPanel.instance();
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platform.WindowsLinux,
+      shortcut: 'Ctrl+E',
+    },
+    {
+      platform: UI.ActionRegistration.Platform.Mac,
+      shortcut: 'Meta+E',
+    },
+  ],
 });

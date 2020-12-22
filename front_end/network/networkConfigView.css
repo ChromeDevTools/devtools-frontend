@@ -91,6 +91,7 @@
 
 .network-config-ua-custom {
   opacity: 50%;
+  padding-bottom: 8px;
 }
 
 .network-config-ua-custom.checked {

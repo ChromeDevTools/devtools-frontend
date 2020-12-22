@@ -103,6 +103,17 @@ export class InspectorBackend {
 
     // @ts-ignore Method code generation
     TargetBase.prototype['register' + domain + 'Dispatcher'] = registerDispatcher;
+
+    /**
+     * @this {TargetBase}
+     * @param {!_DispatcherPrototype} dispatcher
+     */
+    function unregisterDispatcher(dispatcher) {
+      this.unregisterDispatcher(domain, dispatcher);
+    }
+
+    // @ts-ignore Method code generation
+    TargetBase.prototype['unregister' + domain + 'Dispatcher'] = unregisterDispatcher;
   }
 
   /**
@@ -645,6 +656,17 @@ export class TargetBase {
   }
 
   /**
+   * @param {string} domain
+   * @param {!Object} dispatcher
+   */
+  unregisterDispatcher(domain, dispatcher) {
+    if (!this._dispatchers[domain]) {
+      return;
+    }
+    this._dispatchers[domain].removeDomainDispatcher(dispatcher);
+  }
+
+  /**
    * @param {string} reason
    */
   dispose(reason) {
@@ -987,6 +1009,13 @@ export class TargetBase {
   }
 
   /**
+   * @param {!ProtocolProxyApi.DebuggerDispatcher} dispatcher
+   */
+  unregisterDebuggerDispatcher(dispatcher) {
+    throw new Error('Implemented in InspectorBackend.js');
+  }
+
+  /**
    * @param {!ProtocolProxyApi.DOMDispatcher} dispatcher
    */
   registerDOMDispatcher(dispatcher) {
@@ -1320,6 +1349,17 @@ class _DispatcherPrototype {
    */
   addDomainDispatcher(dispatcher) {
     this._dispatchers.push(dispatcher);
+  }
+
+  /**
+   * @param {!Object} dispatcher
+   */
+  removeDomainDispatcher(dispatcher) {
+    const index = this._dispatchers.indexOf(dispatcher);
+    if (index === -1) {
+      return;
+    }
+    this._dispatchers.splice(index, 1);
   }
 
   /**

@@ -17,7 +17,6 @@ export class StepFrameContext {
     this.target = target;
   }
 
-
   toString() {
     let expression = '';
     if (this.target === 'main') {
@@ -142,6 +141,7 @@ export class ChangeStep extends Step {
   }
 }
 
+const DOM_BREAKPOINTS = new Set(['Mouse:click', 'Control:change', 'Control:submit']);
 export class RecordingSession {
   /**
    * @param {!SDK.SDKModel.Target} target
@@ -171,9 +171,32 @@ export class RecordingSession {
     this._childTargetManager = target.model(SDK.ChildTargetManager.ChildTargetManager);
 
     this._target = target;
+    /** @type {Map<!SDK.SDKModel.Target, RecordingEventHandler>} */
+    this._eventHandlers = new Map();
+
+    /** @type {Set<!SDK.SDKModel.Target>} */
+    this._targets = new Set();
+
+    /** @type {Map<!SDK.DOMDebuggerModel.EventListenerBreakpoint, boolean>} */
+    this._initialDomBreakpointState = new Map();
+
+    /** @type {Array<!SDK.DOMDebuggerModel.EventListenerBreakpoint>} */
+    this._interestingBreakpoints = [];
+
+    /** @type {?Protocol.Page.ScriptIdentifier} */
+    this._newDocumentScriptIdentifier = null;
   }
 
   async start() {
+    const allDomBreakpoints = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().eventListenerBreakpoints();
+    this._interestingBreakpoints =
+        allDomBreakpoints.filter(breakpoint => DOM_BREAKPOINTS.has(breakpoint.category() + ':' + breakpoint.title()));
+
+    for (const breakpoint of this._interestingBreakpoints) {
+      this._initialDomBreakpointState.set(breakpoint, breakpoint.enabled());
+      breakpoint.setEnabled(true);
+    }
+
     this.attachToTarget(this._target);
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (!mainTarget) {
@@ -200,12 +223,25 @@ export class RecordingSession {
   }
 
   async stop() {
+    for (const target of this._targets) {
+      await this.detachFromTarget(target);
+    }
+    await this.detachFromTarget(this._target);
+
     await this.appendLineToScript('await browser.close();');
     this._currentIndentation -= 1;
     await this.appendLineToScript('})();');
     await this.appendLineToScript('');
 
+    if (this._newDocumentScriptIdentifier) {
+      await this._pageAgent.invoke_removeScriptToEvaluateOnNewDocument({identifier: this._newDocumentScriptIdentifier});
+    }
+
     await this._debuggerModel.ignoreDebuggerPausedEvents(false);
+
+    for (const [breakpoint, enabled] of this._initialDomBreakpointState.entries()) {
+      breakpoint.setEnabled(enabled);
+    }
   }
 
   /**
@@ -258,35 +294,66 @@ export class RecordingSession {
    * @param {!SDK.SDKModel.Target} target
    */
   async attachToTarget(target) {
-    target.registerDebuggerDispatcher(new RecordingEventHandler(this, target));
-    const debuggerAgent = target.debuggerAgent();
-    const domDebuggerAgent = target.domdebuggerAgent();
+    this._targets.add(target);
+    const eventHandler = new RecordingEventHandler(this, target);
+    this._eventHandlers.set(target, eventHandler);
+    target.registerDebuggerDispatcher(eventHandler);
+
     const pageAgent = target.pageAgent();
 
     const debuggerModel =
         /** @type {!SDK.DebuggerModel.DebuggerModel} */ (target.model(SDK.DebuggerModel.DebuggerModel));
 
-    const resourceTreeModel =
-        /** @type {!SDK.ResourceTreeModel.ResourceTreeModel} */ (target.model(SDK.ResourceTreeModel.ResourceTreeModel));
-    const runtimeModel = /** @type {!SDK.RuntimeModel.RuntimeModel} */ (target.model(SDK.RuntimeModel.RuntimeModel));
     const childTargetManager = target.model(SDK.ChildTargetManager.ChildTargetManager);
 
-    const setupEventListeners = () => {
-      window.addEventListener('click', event => {}, true);
-      window.addEventListener('submit', event => {}, true);
-      window.addEventListener('change', event => {}, true);
-    };
-
-    const makeFunctionCallable = /** @type {function(*):string} */ (fn => `(${fn.toString()})()`);
+    const setupEventListeners = `
+      if (!window.__recorderEventListener) {
+        const recorderEventListener = (event) => { };
+        window.addEventListener('click', recorderEventListener, true);
+        window.addEventListener('submit', recorderEventListener, true);
+        window.addEventListener('change', recorderEventListener, true);
+        window.__recorderEventListener = recorderEventListener;
+      }
+    `;
 
     // This uses the setEventListenerBreakpoint method from the debugger
     // to get notified about new events. Therefor disable the normal debugger
     // while recording.
+    await debuggerModel.resumeModel();
     await debuggerModel.ignoreDebuggerPausedEvents(true);
-    await debuggerAgent.invoke_enable({});
-    await pageAgent.invoke_addScriptToEvaluateOnNewDocument({source: makeFunctionCallable(setupEventListeners)});
 
-    const expression = makeFunctionCallable(setupEventListeners);
+    const {identifier} = await pageAgent.invoke_addScriptToEvaluateOnNewDocument({source: setupEventListeners});
+    this._newDocumentScriptIdentifier = identifier;
+
+    await this.evaluateInAllFrames(target, setupEventListeners);
+
+    childTargetManager?.addEventListener(SDK.ChildTargetManager.Events.TargetCreated, this.handleWindowOpened, this);
+  }
+
+  /**
+   * @param {!SDK.SDKModel.Target} target
+   */
+  async detachFromTarget(target) {
+    const eventHandler = this._eventHandlers.get(target);
+    if (!eventHandler) {
+      return;
+    }
+    target.unregisterDebuggerDispatcher(eventHandler);
+
+    const debuggerModel =
+        /** @type {!SDK.DebuggerModel.DebuggerModel} */ (target.model(SDK.DebuggerModel.DebuggerModel));
+
+    await debuggerModel.ignoreDebuggerPausedEvents(false);
+  }
+
+  /**
+   * @param {!SDK.SDKModel.Target} target
+   * @param {string} expression
+   */
+  async evaluateInAllFrames(target, expression) {
+    const resourceTreeModel =
+        /** @type {!SDK.ResourceTreeModel.ResourceTreeModel} */ (target.model(SDK.ResourceTreeModel.ResourceTreeModel));
+    const runtimeModel = /** @type {!SDK.RuntimeModel.RuntimeModel} */ (target.model(SDK.RuntimeModel.RuntimeModel));
     const executionContexts = runtimeModel.executionContexts();
     for (const frame of resourceTreeModel.frames()) {
       const executionContext = executionContexts.find(context => context.frameId === frame.id);
@@ -310,15 +377,6 @@ export class RecordingSession {
           },
           true, false);
     }
-
-
-    await Promise.all([
-      domDebuggerAgent.invoke_setEventListenerBreakpoint({eventName: 'click'}),
-      domDebuggerAgent.invoke_setEventListenerBreakpoint({eventName: 'change'}),
-      domDebuggerAgent.invoke_setEventListenerBreakpoint({eventName: 'submit'}),
-    ]);
-
-    childTargetManager?.addEventListener(SDK.ChildTargetManager.Events.TargetCreated, this.handleWindowOpened, this);
   }
 
   /**

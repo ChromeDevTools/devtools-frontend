@@ -27,7 +27,7 @@
   display: inline-block;
   border: 1px solid rgb(128 128 128 / 60%);
   box-sizing: border-box;
-  cursor: default;
+  cursor: pointer;
 }
 
 .color-swatch:not(.read-only) .color-swatch-inner:hover {

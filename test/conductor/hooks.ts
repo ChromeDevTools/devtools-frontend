@@ -42,6 +42,9 @@ const ALLOWED_ASSERTION_FAILURES = [
   // Expected failures in assertion_test.ts
   'expected failure 1',
   'expected failure 2',
+  // A failing fetch isn't itself a real error.
+  // TODO(https://crbug.com/124534) Remove once those messages are not printed anymore.
+  'Failed to load resource: the server responded with a status of 404 (Not Found)',
 ];
 
 const logLevels = {

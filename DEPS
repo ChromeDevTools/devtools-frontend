@@ -6,7 +6,7 @@ use_relative_paths = True
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': 'd4fcf57b4e9a6f0245a49370568ea4140860e9ce',
+  'build_revision': '9fd8d42cde04f619ecdcb47d2c268798760878be',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': 'ea9f1f737564cdf5e51b63103de081f5772a6339',
@@ -15,7 +15,7 @@ vars = {
   'depot_tools_revision': '67e12286df04ef0eeec3aeaf6f224d2fe11751b7',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': '94298cef795ec994106bdaff002c41182911b767',
+  'inspector_protocol_revision': '88c8137706fc29deeffa8cec39ef793bdafb57dc',
 
   'clang_format_url': 'https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format.git',
   'clang_format_revision': '96636aa0e9f047f17447f2d45a094d0b59ed7917',

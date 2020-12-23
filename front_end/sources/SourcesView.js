@@ -194,12 +194,6 @@ export class SourcesView extends UI.Widget.VBox {
     }
   }
 
-  _resetPlaceholderState() {
-    this._placeholderOptionArray[this._selectedIndex].element.tabIndex = -1;
-    this._placeholderOptionArray[0].element.tabIndex = 0;
-    this._selectedIndex = 0;
-  }
-
   /**
    * @return {!Map.<!Workspace.UISourceCode.UISourceCode, number>}
    */
@@ -272,7 +266,6 @@ export class SourcesView extends UI.Widget.VBox {
    */
   willHide() {
     UI.Context.Context.instance().setFlavor(SourcesView, null);
-    this._resetPlaceholderState();
     super.willHide();
   }
 

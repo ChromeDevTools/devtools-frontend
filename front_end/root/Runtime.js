@@ -69,7 +69,8 @@ export class Runtime {
     const {forceNew, moduleDescriptors} = opts;
     if (!runtimeInstance || forceNew) {
       if (!moduleDescriptors) {
-        throw new Error(`Unable to create runtime: moduleDescriptors must be provided: ${new Error().stack}`);
+        throw new Error(
+            `Unable to create settings: targetManager and workspace must be provided: ${new Error().stack}`);
       }
 
       runtimeInstance = new Runtime(moduleDescriptors);

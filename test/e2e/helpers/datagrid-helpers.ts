@@ -22,18 +22,10 @@ export async function getDataGridRows(
   return tableElements;
 }
 
-export async function getDataGrid(root?: ElementHandle) {
-  const dataGrid = await waitFor('devtools-data-grid', root);
+export async function getDataGrid() {
+  const dataGrid = await waitFor('devtools-data-grid');
   if (!dataGrid) {
     assert.fail('Could not find data-grid');
-  }
-  return dataGrid;
-}
-
-export async function getDataGridController() {
-  const dataGrid = await waitFor('devtools-data-grid-controller');
-  if (!dataGrid) {
-    assert.fail('Could not find data-grid-controller');
   }
   return dataGrid;
 }

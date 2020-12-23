@@ -47,7 +47,7 @@ export class CSSWorkspaceBinding {
     if (!cssWorkspaceBindingInstance || forceNew) {
       if (!targetManager || !workspace) {
         throw new Error(
-            `Unable to create CSSWorkspaceBinding: targetManager and workspace must be provided: ${new Error().stack}`);
+            `Unable to create settings: targetManager and workspace must be provided: ${new Error().stack}`);
       }
 
       cssWorkspaceBindingInstance = new CSSWorkspaceBinding(targetManager, workspace);

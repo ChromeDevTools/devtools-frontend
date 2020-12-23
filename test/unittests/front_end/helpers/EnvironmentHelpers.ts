@@ -134,10 +134,6 @@ export async function initializeGlobalVars({reset = true} = {}) {
   UI = await import('../../../../front_end/ui/ui.js');
   UI.ZoomManager.ZoomManager.instance(
       {forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance});
-
-  // Needed for any context menus which may be created - either in a test or via
-  // rendering a component in the component docs server.
-  UI.GlassPane.GlassPane.setContainer(document.body);
 }
 
 export async function deinitializeGlobalVars() {

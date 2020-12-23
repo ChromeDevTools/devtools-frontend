@@ -22,10 +22,10 @@ const isRunningInGen = __dirname.includes(path.join(path.sep, 'gen', path.sep, '
 
 const pathToBuiltOutTargetDirectory = isRunningInGen ? path.resolve(path.join(__dirname), '..', '..', '..') :
                                                        path.resolve(path.join(__dirname, '..', '..', 'out', target));
-const devtoolsRootFolder = path.resolve(path.join(pathToBuiltOutTargetDirectory, 'gen'));
+const devtoolsFrontendFolder = path.resolve(path.join(pathToBuiltOutTargetDirectory, 'gen', 'front_end'));
 
-if (!fs.existsSync(devtoolsRootFolder)) {
-  console.error(`ERROR: Generated front_end folder (${devtoolsRootFolder}) does not exist.`);
+if (!fs.existsSync(devtoolsFrontendFolder)) {
+  console.error(`ERROR: Generated front_end folder (${devtoolsFrontendFolder}) does not exist.`);
   console.log(
       'The components server works from the built Ninja output; you may need to run Ninja to update your built DevTools.');
   console.log('If you build to a target other than default, you need to pass --target=X as an argument');
@@ -49,7 +49,7 @@ server.once('error', error => {
 });
 
 function createComponentIndexFile(componentPath, componentExamples) {
-  const componentName = componentPath.replace('/front_end/component_docs/', '').replace(/_/g, ' ');
+  const componentName = componentPath.replace('/', '').replace(/_/g, ' ');
   // clang-format off
   return `<!DOCTYPE html>
   <html>
@@ -70,7 +70,7 @@ function createComponentIndexFile(componentPath, componentExamples) {
     <body>
       <h1>${componentName}</h1>
       ${componentExamples.map(example => {
-        const fullPath = path.join(componentPath, example);
+        const fullPath = path.join('component_docs', componentPath, example);
         return `<div class="example">
           <h3><a href="${fullPath}">${example}</a></h3>
           <iframe src="${fullPath}"></iframe>
@@ -105,7 +105,7 @@ function createServerIndexFile(componentNames) {
       <ul>
         ${componentNames.map(name => {
           const niceName = name.replace(/_/g, ' ');
-          return `<li><a href='/front_end/component_docs/${name}'>${niceName}</a></li>`;
+          return `<li><a href='/${name}'>${niceName}</a></li>`;
         }).join('\n')}
       </ul>
     </body>
@@ -114,7 +114,7 @@ function createServerIndexFile(componentNames) {
 }
 
 async function getExamplesForPath(filePath) {
-  const componentDirectory = path.join(devtoolsRootFolder, filePath);
+  const componentDirectory = path.join(devtoolsFrontendFolder, 'component_docs', filePath);
   const allFiles = await fs.promises.readdir(componentDirectory);
   const htmlExampleFiles = allFiles.filter(file => {
     return path.extname(file) === '.html';
@@ -160,7 +160,7 @@ function normalizeImagePathIfRequired(filePath) {
   }
 
   const [, imageName, imageExt] = match;
-  const normalizedPath = path.join('front_end', 'Images', `${imageName}.${imageExt}`);
+  const normalizedPath = path.join('Images', `${imageName}.${imageExt}`);
   return normalizedPath;
 }
 
@@ -172,42 +172,74 @@ async function requestHandler(request, response) {
   }
 
   if (filePath === '/' || filePath === '/index.html') {
-    const components = await fs.promises.readdir(path.join(devtoolsRootFolder, 'front_end', 'component_docs'));
+    const components = await fs.promises.readdir(path.join(devtoolsFrontendFolder, 'component_docs'));
     const html = createServerIndexFile(components.filter(filePath => {
-      const stats = fs.lstatSync(path.join(devtoolsRootFolder, 'front_end', 'component_docs', filePath));
+      const stats = fs.lstatSync(path.join(devtoolsFrontendFolder, 'component_docs', filePath));
       // Filter out some build config files (tsconfig, d.ts, etc), and just list the directories.
       return stats.isDirectory();
     }));
     respondWithHtml(response, html);
-  } else if (filePath.startsWith('/front_end/component_docs') && path.extname(filePath) === '') {
+  } else if (path.extname(filePath) === '') {
     // This means it's a component path like /breadcrumbs.
     const componentHtml = await getExamplesForPath(filePath);
     respondWithHtml(response, componentHtml);
     return;
   } else if (/component_docs\/(.+)\/(.+)\.html/.test(filePath)) {
     /** This conditional checks if we are viewing an individual example's HTML
-     *  file. e.g. localhost:8090/front_end/component_docs/data_grid/basic.html For each
+     *  file. e.g. localhost:8090/component_docs/data_grid/basic.html For each
      *  example we inject themeColors.css into the page so all CSS variables
      *  that components use are available.
      */
-    const fileContents = await fs.promises.readFile(path.join(devtoolsRootFolder, filePath), {encoding: 'utf8'});
-    const themeColoursLink = '<link rel="stylesheet" href="/front_end/ui/themeColors.css" type="text/css" />';
-    const toggleDarkModeScript = '<script type="module" src="/front_end/component_docs/component_docs.js"></script>';
+    const fileContents = await fs.promises.readFile(path.join(devtoolsFrontendFolder, filePath), {encoding: 'utf8'});
+    const themeColoursLink = '<link rel="stylesheet" href="/ui/themeColors.css" type="text/css" />';
+    const toggleDarkModeScript = '<script type="module" src="/component_docs/component_docs.js"></script>';
     const newFileContents = fileContents.replace('<style>', themeColoursLink + '\n<style>')
                                 .replace('<script', toggleDarkModeScript + '\n<script');
     respondWithHtml(response, newFileContents);
 
   } else {
+    if (filePath.startsWith('/front_end')) {
+      /**
+       * We load files from the test directory whose paths will often start with
+       * /front_end if they load in frontend code. However we also get requests
+       * from within the front_end directory which do not start with /front_end.
+       * This means we might get two requests for the same file:
+       *
+       * 1) /front_end/ui/ui.js
+       * 2) /ui/ui.js
+       *
+       * If we serve them both it will mean we load ui/ui.js twice. So instead
+       * we redirect permanently to the non-/front_end prefixed URL so that the
+       * browser only loads each module once.
+       */
+      response.writeHead(301, {
+        Location: filePath.replace('/front_end', ''),
+      });
+      response.end();
+      return;
+    }
     // This means it's an asset like a JS file or an image.
     const normalizedPath = normalizeImagePathIfRequired(filePath);
 
-    let fullPath = path.join(devtoolsRootFolder, normalizedPath);
+    let fullPath = path.join(devtoolsFrontendFolder, normalizedPath);
     if (fullPath.endsWith(path.join('locales', 'en-US.json'))) {
       // Rewrite this path so we can load up the locale in the component-docs
-      fullPath = path.join(devtoolsRootFolder, 'front_end', 'i18n', 'locales', 'en-US.json');
+      fullPath = path.join(devtoolsFrontendFolder, 'i18n', 'locales', 'en-US.json');
+    }
+    /**
+     * Component docs can also load files from the test directory, so we ensure
+     * that we allow that here, and also then deal with the relative imports
+     * that come from the test directory, which will contain the front_end
+     * folder already. In which case we take the devToolsFrontendFolder, and go
+     * up one directory with '..' to make sure we import the right file from the
+     * right place.
+     */
+    const fileIsInTestFolder = normalizedPath.startsWith('/test/');
+    if (fileIsInTestFolder) {
+      fullPath = path.join(devtoolsFrontendFolder, '..', normalizedPath);
     }
 
-    if (!fullPath.startsWith(devtoolsRootFolder) && !fileIsInTestFolder) {
+    if (!fullPath.startsWith(devtoolsFrontendFolder) && !fileIsInTestFolder) {
       console.error(`Path ${fullPath} is outside the DevTools Frontend root dir.`);
       process.exit(1);
     }

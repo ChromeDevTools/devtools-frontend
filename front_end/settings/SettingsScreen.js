@@ -427,7 +427,10 @@ export class ExperimentsSettingsTab extends SettingsTab {
       const warningMessage = i18nString(UIStrings.theseExperimentsAreParticularly);
       experimentsSection.appendChild(this._createExperimentsWarningSubsection(warningMessage));
       for (const experiment of unstableExperiments) {
-        experimentsSection.appendChild(this._createExperimentCheckbox(experiment));
+        // TODO(crbug.com/1161439): remove experiment duplication
+        if (experiment.name !== 'blackboxJSFramesOnTimeline') {
+          experimentsSection.appendChild(this._createExperimentCheckbox(experiment));
+        }
       }
     }
   }
@@ -455,6 +458,10 @@ export class ExperimentsSettingsTab extends SettingsTab {
     input.name = experiment.name;
     function listener() {
       experiment.setEnabled(input.checked);
+      // TODO(crbug.com/1161439): remove experiment duplication
+      if (experiment.name === 'ignoreListJSFramesOnTimeline') {
+        Root.Runtime.experiments.setEnabled('blackboxJSFramesOnTimeline', input.checked);
+      }
       Host.userMetrics.experimentChanged(experiment.name, experiment.isEnabled());
       UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
           i18nString(UIStrings.oneOrMoreSettingsHaveChanged));

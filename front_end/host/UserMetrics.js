@@ -592,7 +592,8 @@ export const DevtoolsExperiments = {
   'cspViolationsView': 40,
   'fontEditor': 41,
   'fullAccessibilityTree': 42,
-  '__lastValidEnumPosition': 42,
+  'ignoreListJSFramesOnTimeline': 43,
+  '__lastValidEnumPosition': 43,
 };
 
 /** @type {!Object<string, number>} */

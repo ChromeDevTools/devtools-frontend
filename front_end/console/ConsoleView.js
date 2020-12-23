@@ -144,12 +144,10 @@ export class ConsoleView extends UI.Widget.VBox {
     this._splitWidget.hideSidebar();
     this._splitWidget.enableShowModeSaving();
     this._isSidebarOpen = this._splitWidget.showMode() === UI.SplitWidget.ShowMode.Both;
-    if (this._isSidebarOpen) {
-      this._filter._levelMenuButton.setEnabled(false);
-    }
+    this._filter.setLevelMenuOverridden(this._isSidebarOpen);
     this._splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, event => {
       this._isSidebarOpen = event.data === UI.SplitWidget.ShowMode.Both;
-      this._filter._levelMenuButton.setEnabled(!this._isSidebarOpen);
+      this._filter.setLevelMenuOverridden(this._isSidebarOpen);
       this._onFilterChanged();
     });
     this._contentsElement = this._searchableView.element;
@@ -1527,6 +1525,18 @@ export class ConsoleViewFilter {
     }
     if (message.url) {
       this._suggestionBuilder.addItem(FilterType.Url, message.url);
+    }
+  }
+
+  /**
+   * @param {boolean} overridden
+   */
+  setLevelMenuOverridden(overridden) {
+    this._levelMenuButton.setEnabled(!overridden);
+    if (overridden) {
+      this._levelMenuButton.setTitle(Common.UIString.UIString('Overridden by filter sidebar'));
+    } else {
+      this._updateLevelMenuButtonText();
     }
   }
 

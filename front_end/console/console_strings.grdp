@@ -87,6 +87,9 @@
   <message name="IDS_DEVTOOLS_411f3a865d83fba7f4772925666cfa7c" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Hide network messages
   </message>
+  <message name="IDS_DEVTOOLS_427df96465654505c66d95467b0077e3" desc="Title text of a setting in Console View of the Console panel">
+    Overridden by filter sidebar
+  </message>
   <message name="IDS_DEVTOOLS_468312e6ff2ebf1b104e5d7f489de74d" desc="Tooltip text that appears on the setting when hovering over it in Console View of the Console panel">
     Eagerly evaluate text in the prompt
   </message>

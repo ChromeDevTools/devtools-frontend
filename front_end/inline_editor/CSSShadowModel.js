@@ -19,6 +19,7 @@ export class CSSShadowModel {
     /** @type {!Common.Color.Color} */
     this._color = /** @type {!Common.Color.Color} */ (Common.Color.Color.parse('black'));
     this._format = [_Part.OffsetX, _Part.OffsetY];
+    this._important = false;
   }
 
   /**
@@ -61,7 +62,7 @@ export class CSSShadowModel {
       const shadow = new CSSShadowModel(isBoxShadow);
       shadow._format = [];
       let nextPartAllowed = true;
-      const regexes = [/inset/gi, Common.Color.Regex, CSSLength.Regex];
+      const regexes = [/!important/gi, /inset/gi, Common.Color.Regex, CSSLength.Regex];
       const results = TextUtils.TextUtils.Utils.splitStringByRegexes(shadowTexts[i], regexes);
       for (let j = 0; j < results.length; j++) {
         const result = results[j];
@@ -77,18 +78,20 @@ export class CSSShadowModel {
             return [];
           }
           nextPartAllowed = false;
-
           if (result.regexIndex === 0) {
+            shadow._important = true;
+            shadow._format.push(_Part.Important);
+          } else if (result.regexIndex === 1) {
             shadow._inset = true;
             shadow._format.push(_Part.Inset);
-          } else if (result.regexIndex === 1) {
+          } else if (result.regexIndex === 2) {
             const color = Common.Color.Color.parse(result.value);
             if (!color) {
               return [];
             }
             shadow._color = color;
             shadow._format.push(_Part.Color);
-          } else if (result.regexIndex === 2) {
+          } else if (result.regexIndex === 3) {
             const length = CSSLength.parse(result.value);
             if (!length) {
               return [];
@@ -113,7 +116,8 @@ export class CSSShadowModel {
       if (invalidCount(shadow, _Part.OffsetX, 1, 1) || invalidCount(shadow, _Part.OffsetY, 1, 1) ||
           invalidCount(shadow, _Part.Color, 0, 1) || invalidCount(shadow, _Part.BlurRadius, 0, 1) ||
           invalidCount(shadow, _Part.Inset, 0, isBoxShadow ? 1 : 0) ||
-          invalidCount(shadow, _Part.SpreadRadius, 0, isBoxShadow ? 1 : 0)) {
+          invalidCount(shadow, _Part.SpreadRadius, 0, isBoxShadow ? 1 : 0) ||
+          invalidCount(shadow, _Part.Important, 0, 1)) {
         return [];
       }
       shadows.push(shadow);
@@ -263,6 +267,8 @@ export class CSSShadowModel {
         parts.push(this._spreadRadius.asCSSText());
       } else if (part === _Part.Color) {
         parts.push(this._color.asString(this._color.format()));
+      } else if (part === _Part.Important && this._important) {
+        parts.push('!important');
       }
     }
     return parts.join(' ');
@@ -278,7 +284,8 @@ export const _Part = {
   OffsetY: 'Y',
   BlurRadius: 'B',
   SpreadRadius: 'S',
-  Color: 'C'
+  Color: 'C',
+  Important: 'M'
 };
 
 

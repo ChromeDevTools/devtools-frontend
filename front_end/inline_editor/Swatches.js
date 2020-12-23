@@ -105,10 +105,11 @@ export class CSSShadowSwatch extends HTMLSpanElement {
   setCSSShadow(model) {
     this._model = model;
     this._contentElement.removeChildren();
-    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(model.asCSSText(), [/inset/g, Common.Color.Regex]);
+    const results = TextUtils.TextUtils.Utils.splitStringByRegexes(
+        model.asCSSText(), [/!important/g, /inset/g, Common.Color.Regex]);
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
-      if (result.regexIndex === 1) {
+      if (result.regexIndex === 2) {
         if (!this._colorSwatch) {
           this._colorSwatch = new ColorSwatch();
           const value = this._colorSwatch.createChild('span');

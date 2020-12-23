@@ -308,7 +308,7 @@ export class RecordingSession {
     content += (indent.repeat(this._currentIndentation) + line).trimRight() + '\n';
     await this._uiSourceCode.setContent(content, false);
     const lastLine = content.split('\n').length;
-    Common.Revealer.reveal(this._uiSourceCode.uiLocation(lastLine));
+    Common.Revealer.reveal(this._uiSourceCode.uiLocation(lastLine), true);
   }
 
   /**

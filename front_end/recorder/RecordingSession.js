@@ -141,7 +141,40 @@ export class ChangeStep extends Step {
   }
 }
 
+export class EmulateNetworkConditions extends Step {
+  /**
+   * @param {!SDK.NetworkManager.Conditions} conditions
+   */
+  constructor(conditions) {
+    super('emulateNetworkConditions');
+    this.conditions = conditions;
+  }
+
+  /**
+   * @override
+   */
+  toString() {
+    // TODO(crbug.com/1161438): Update once puppeteer has better support for this
+    return `{
+      // Simulated network throttling (${this.conditions.title})
+      const client = await page.target().createCDPSession();
+      await client.send('Network.enable');
+      await client.send('Network.emulateNetworkConditions', {
+        // Network connectivity is absent
+        offline: ${!this.conditions.download && !this.conditions.upload},
+        // Download speed (bytes/s)
+        downloadThroughput: ${this.conditions.download},
+        // Upload speed (bytes/s)
+        uploadThroughput: ${this.conditions.upload},
+        // Latency (ms)
+        latency: ${this.conditions.latency},
+      });
+    }`;
+  }
+}
+
 const DOM_BREAKPOINTS = new Set(['Mouse:click', 'Control:change', 'Control:submit']);
+
 export class RecordingSession {
   /**
    * @param {!SDK.SDKModel.Target} target
@@ -158,6 +191,8 @@ export class RecordingSession {
     this._accessibilityAgent = target.accessibilityAgent();
     this._pageAgent = target.pageAgent();
     this._targetAgent = target.targetAgent();
+
+    this._networkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
 
     this._domModel = /** @type {!SDK.DOMModel.DOMModel} */ (target.model(SDK.DOMModel.DOMModel));
     this._axModel = /** @type {!SDK.AccessibilityModel.AccessibilityModel} */ (
@@ -197,6 +232,10 @@ export class RecordingSession {
       breakpoint.setEnabled(true);
     }
 
+    this._networkManager.addEventListener(
+        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._handleNetworkConditionsChanged,
+        this);
+
     this.attachToTarget(this._target);
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (!mainTarget) {
@@ -219,7 +258,19 @@ export class RecordingSession {
     await this.appendLineToScript('const browser = await puppeteer.launch();');
     await this.appendLineToScript('const page = await browser.newPage();');
     await this.appendLineToScript('');
+
+
+    const networkConditions = this._networkManager.networkConditions();
+    if (networkConditions !== SDK.NetworkManager.NoThrottlingConditions) {
+      await this.appendStepToScript(new EmulateNetworkConditions(networkConditions));
+    }
+
     await this.appendStepToScript(new NavigationStep(mainFrame.url));
+  }
+
+  _handleNetworkConditionsChanged() {
+    const networkConditions = this._networkManager.networkConditions();
+    this.appendStepToScript(new EmulateNetworkConditions(networkConditions));
   }
 
   async stop() {
@@ -227,6 +278,10 @@ export class RecordingSession {
       await this.detachFromTarget(target);
     }
     await this.detachFromTarget(this._target);
+
+    this._networkManager.removeEventListener(
+        SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._handleNetworkConditionsChanged,
+        this);
 
     await this.appendLineToScript('await browser.close();');
     this._currentIndentation -= 1;

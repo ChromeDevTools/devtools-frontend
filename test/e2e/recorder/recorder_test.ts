@@ -31,6 +31,14 @@ function getWaitForScriptToChangeFunction() {
   };
 }
 
+async function changeNetworkConditions(condition: string) {
+  const {frontend} = getBrowserAndPages();
+  await frontend.waitForSelector('pierce/#tab-network');
+  await frontend.click('pierce/#tab-network');
+  await frontend.waitForSelector('pierce/[aria-label="Throttling"]');
+  await frontend.select('pierce/[aria-label="Throttling"] select', condition);
+}
+
 describe('Recorder', function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
   this.timeout(10000);
@@ -153,6 +161,97 @@ describe('Recorder', function() {
         const targetPage = await target.page();
         const frame = targetPage.mainFrame();
         const element = await frame.waitForSelector("aria/Button in Popup");
+        await element.click();
+    }
+    await browser.close();
+})();
+
+`);
+  });
+
+  // crbug.com/1154575 failing on linux and windows due to crbug.com/1157828
+  it.skip('[crbug.com/1154575] should also record network conditions', async () => {
+    const waitForScriptToChange = getWaitForScriptToChangeFunction();
+    await enableExperiment('recorder');
+    await goToResource('recorder/recorder.html');
+
+    const {frontend, target} = getBrowserAndPages();
+
+    await changeNetworkConditions('Fast 3G');
+
+    await openSourcesPanel();
+    await openRecorderSubPane();
+    await createNewRecording('New recording');
+
+    // Record
+    await frontend.click('aria/Record');
+    await frontend.waitForSelector('aria/Stop');
+    await waitForScriptToChange();
+    await target.bringToFront();
+    await target.click('#test');
+    await waitForScriptToChange();
+
+
+    await frontend.bringToFront();
+    await changeNetworkConditions('Slow 3G');
+    await target.bringToFront();
+
+    await target.click('#test');
+    await waitForScriptToChange();
+
+    await frontend.bringToFront();
+    await frontend.waitForSelector('aria/Stop');
+    await frontend.click('aria/Stop');
+    await waitForScriptToChange();
+    const textContent = await getCode();
+
+    assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
+
+(async () => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    {
+        // Simulated network throttling (Fast 3G)
+        const client = await page.target().createCDPSession();
+        await client.send('Network.enable');
+        await client.send('Network.emulateNetworkConditions', {
+        // Network connectivity is absent
+        offline: false,
+        // Download speed (bytes/s)
+        downloadThroughput: 180000,
+        // Upload speed (bytes/s)
+        uploadThroughput: 84375,
+        // Latency (ms)
+        latency: 562.5,
+        });
+    }
+    await page.goto("https://<url>/test/e2e/resources/recorder/recorder.html");
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const element = await frame.waitForSelector("aria/Test Button");
+        await element.click();
+    }
+    {
+        // Simulated network throttling (Slow 3G)
+        const client = await page.target().createCDPSession();
+        await client.send('Network.enable');
+        await client.send('Network.emulateNetworkConditions', {
+        // Network connectivity is absent
+        offline: false,
+        // Download speed (bytes/s)
+        downloadThroughput: 50000,
+        // Upload speed (bytes/s)
+        uploadThroughput: 50000,
+        // Latency (ms)
+        latency: 2000,
+        });
+    }
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const element = await frame.waitForSelector("aria/Test Button");
         await element.click();
     }
     await browser.close();

@@ -2974,7 +2974,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'timeout', 'type': 'number', 'optional': true},
         {'name': 'disableBreaks', 'type': 'boolean', 'optional': true},
         {'name': 'replMode', 'type': 'boolean', 'optional': true},
-        {'name': 'allowUnsafeEvalBlockedByCSP', 'type': 'boolean', 'optional': true}
+        {'name': 'allowUnsafeEvalBlockedByCSP', 'type': 'boolean', 'optional': true},
+        {'name': 'uniqueContextId', 'type': 'string', 'optional': true}
       ],
       ['result', 'exceptionDetails']);
   inspectorBackend.registerCommand('Runtime.getIsolateId', [], ['id']);

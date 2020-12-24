@@ -14497,6 +14497,12 @@ declare namespace Protocol {
        */
       name: string;
       /**
+       * A system-unique execution context identifier. Unlike the id, this is unique accross
+       * multiple processes, so can be reliably used to identify specific context while backend
+       * performs a cross-process navigation.
+       */
+      uniqueId: string;
+      /**
        * Embedder-specific auxiliary data.
        */
       auxData?: any;
@@ -14756,6 +14762,9 @@ declare namespace Protocol {
       /**
        * Specifies in which execution context to perform evaluation. If the parameter is omitted the
        * evaluation will be performed in the context of the inspected page.
+       * This is mutually exclusive with `uniqueContextId`, which offers an
+       * alternative way to identify the execution context that is more reliable
+       * in a multi-process environment.
        */
       contextId?: ExecutionContextId;
       /**
@@ -14801,6 +14810,15 @@ declare namespace Protocol {
        * evaluation and allows unsafe-eval. Defaults to true.
        */
       allowUnsafeEvalBlockedByCSP?: boolean;
+      /**
+       * An alternative way to specify the execution context to evaluate in.
+       * Compared to contextId that may be reused accross processes, this is guaranteed to be
+       * system-unique, so it can be used to prevent accidental evaluation of the expression
+       * in context different than intended (e.g. as a result of navigation accross process
+       * boundaries).
+       * This is mutually exclusive with `contextId`.
+       */
+      uniqueContextId?: string;
     }
 
     export interface EvaluateResponse extends ProtocolResponseWithError {

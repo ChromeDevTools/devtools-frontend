@@ -65,7 +65,8 @@ function requestHandler(request, response) {
     }
 
     let encoding = 'utf8';
-    if (absoluteFilePath.endsWith('.wasm') || absoluteFilePath.endsWith('.png') || absoluteFilePath.endsWith('.jpg')) {
+    if (absoluteFilePath.endsWith('.wasm') || absoluteFilePath.endsWith('.png') || absoluteFilePath.endsWith('.jpg') ||
+        absoluteFilePath.endsWith('.avif')) {
       encoding = 'binary';
     }
 
@@ -104,6 +105,9 @@ function requestHandler(request, response) {
       encoding = 'binary';
     } else if (path.endsWith('.jpg')) {
       response.setHeader('Content-Type', 'image/jpg');
+      encoding = 'binary';
+    } else if (path.endsWith('.avif')) {
+      response.setHeader('Content-Type', 'image/avif');
       encoding = 'binary';
     }
 

@@ -47,8 +47,8 @@ export class ElementsSidebarPane extends UI.Widget.VBox {
    * @protected
    * @return {!Promise.<?>}
    */
-  doUpdate() {
-    return Promise.resolve();
+  async doUpdate() {
+    return;
   }
 
   update() {

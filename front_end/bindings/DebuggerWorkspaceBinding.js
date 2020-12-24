@@ -192,14 +192,14 @@ export class DebuggerWorkspaceBinding {
    * @param {!LiveLocationPool} locationPool
    * @return {!Promise<?Location>}
    */
-  createLiveLocation(rawLocation, updateDelegate, locationPool) {
+  async createLiveLocation(rawLocation, updateDelegate, locationPool) {
     const script = rawLocation.script();
     if (!script) {
-      return Promise.resolve(null);
+      return null;
     }
     const modelData = this._debuggerModelToData.get(script.debuggerModel);
     if (!modelData) {
-      return Promise.resolve(null);
+      return null;
     }
     const liveLocationPromise = modelData._createLiveLocation(rawLocation, updateDelegate, locationPool);
     this._recordLiveLocationChange(liveLocationPromise);

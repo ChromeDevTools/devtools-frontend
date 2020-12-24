@@ -136,8 +136,8 @@ export class RuntimeModel extends SDKModel {
    */
   _executionContextCreated(context) {
     const data = context.auxData || {isDefault: true};
-    const executionContext =
-        new ExecutionContext(this, context.id, context.name, context.origin, data['isDefault'], data['frameId']);
+    const executionContext = new ExecutionContext(
+        this, context.id, context.uniqueId, context.name, context.origin, data['isDefault'], data['frameId']);
     this._executionContextById.set(executionContext.id, executionContext);
     this.dispatchEventToListeners(Events.ExecutionContextCreated, executionContext);
   }
@@ -653,13 +653,15 @@ export class ExecutionContext {
   /**
    * @param {!RuntimeModel} runtimeModel
    * @param {number} id
+   * @param {string} uniqueId
    * @param {string} name
    * @param {string} origin
    * @param {boolean} isDefault
    * @param {string=} frameId
    */
-  constructor(runtimeModel, id, name, origin, isDefault, frameId) {
+  constructor(runtimeModel, id, uniqueId, name, origin, isDefault, frameId) {
     this.id = id;
+    this.uniqueId = uniqueId;
     this.name = name;
     /** @type {?string} */
     this._label = null;
@@ -823,7 +825,7 @@ export class ExecutionContext {
       objectGroup: options.objectGroup,
       includeCommandLineAPI: options.includeCommandLineAPI,
       silent: options.silent,
-      contextId: this.id,
+      uniqueContextId: this.uniqueId,
       returnByValue: options.returnByValue,
       generatePreview: options.generatePreview,
       userGesture: userGesture,

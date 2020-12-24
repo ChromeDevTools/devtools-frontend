@@ -52,12 +52,12 @@ export class ImagePreview {
    * @param {!{precomputedFeatures: (!PrecomputedFeatures|undefined), imageAltText: (string|undefined)}=} options
    * @return {!Promise<?Element>}
    */
-  static build(
+  static async build(
       target, originalImageURL, showDimensions, options = {precomputedFeatures: undefined, imageAltText: undefined}) {
     const {precomputedFeatures, imageAltText} = options;
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     if (!resourceTreeModel) {
-      return Promise.resolve(/** @type {?Element} */ (null));
+      return /** @type {?Element} */ (null);
     }
     let resource = resourceTreeModel.resourceForURL(originalImageURL);
     let imageURL = originalImageURL;
@@ -66,7 +66,7 @@ export class ImagePreview {
       resource = resourceTreeModel.resourceForURL(imageURL);
     }
     if (!resource || !isImageResource(resource)) {
-      return Promise.resolve(/** @type {?Element} */ (null));
+      return /** @type {?Element} */ (null);
     }
 
     /** @type {function(*):void} */

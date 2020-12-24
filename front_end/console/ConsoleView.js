@@ -633,10 +633,10 @@ export class ConsoleView extends UI.Widget.VBox {
   /**
    * @return {!Promise.<void>}
    */
-  _invalidateViewport() {
+  async _invalidateViewport() {
     if (this._muteViewportUpdates) {
       this._maybeDirtyWhileMuted = true;
-      return Promise.resolve();
+      return;
     }
     if (this._needsFullUpdate) {
       this._updateMessageList();
@@ -644,7 +644,7 @@ export class ConsoleView extends UI.Widget.VBox {
     } else {
       this._viewport.invalidate();
     }
-    return Promise.resolve();
+    return;
   }
 
   _scheduleViewportRefresh() {

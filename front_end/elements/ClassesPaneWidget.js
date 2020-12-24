@@ -345,39 +345,40 @@ export class ClassNamePrompt extends UI.TextPrompt.TextPrompt {
    * @param {boolean=} force
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  _buildClassNameCompletions(expression, prefix, force) {
+  async _buildClassNameCompletions(expression, prefix, force) {
     if (!prefix || force) {
       this._classNamesPromise = null;
     }
 
     const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     if (!selectedNode || (!prefix && !force && !expression.trim())) {
-      return Promise.resolve([]);
+      return [];
     }
 
     if (!this._classNamesPromise || this._selectedFrameId !== selectedNode.frameId()) {
       this._classNamesPromise = this._getClassNames(selectedNode);
     }
 
-    return this._classNamesPromise.then(completions => {
-      const classesMap = this._nodeClasses(/** @type {!SDK.DOMModel.DOMNode} */ (selectedNode));
-      completions = completions.filter(value => !classesMap.get(value));
+    let completions = await this._classNamesPromise;
+    const classesMap = this._nodeClasses(/** @type {!SDK.DOMModel.DOMNode} */ (selectedNode));
+    completions = completions.filter(value => !classesMap.get(value));
 
-      if (prefix[0] === '.') {
-        completions = completions.map(value => '.' + value);
-      }
-      return completions.filter(value => value.startsWith(prefix)).sort().map(completion => ({
-                                                                                text: completion,
-                                                                                title: undefined,
-                                                                                subtitle: undefined,
-                                                                                iconType: undefined,
-                                                                                priority: undefined,
-                                                                                isSecondary: undefined,
-                                                                                subtitleRenderer: undefined,
-                                                                                selectionRange: undefined,
-                                                                                hideGhostText: undefined,
-                                                                                iconElement: undefined,
-                                                                              }));
+    if (prefix[0] === '.') {
+      completions = completions.map(value => '.' + value);
+    }
+    return completions.filter(value => value.startsWith(prefix)).sort().map(completion => {
+      return {
+        text: completion,
+        title: undefined,
+        subtitle: undefined,
+        iconType: undefined,
+        priority: undefined,
+        isSecondary: undefined,
+        subtitleRenderer: undefined,
+        selectionRange: undefined,
+        hideGhostText: undefined,
+        iconElement: undefined,
+      };
     });
   }
 }

@@ -272,15 +272,15 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   /**
    * @return {!Promise.<?SDK.CSSMatchedStyles.CSSMatchedStyles>}
    */
-  _fetchMatchedCascade() {
+  async _fetchMatchedCascade() {
     const node = this._computedStyleModel.node();
     if (!node || !this._computedStyleModel.cssModel()) {
-      return Promise.resolve(/** @type {?SDK.CSSMatchedStyles.CSSMatchedStyles} */ (null));
+      return /** @type {?SDK.CSSMatchedStyles.CSSMatchedStyles} */ (null);
     }
 
     const cssModel = this._computedStyleModel.cssModel();
     if (!cssModel) {
-      return Promise.resolve(null);
+      return null;
     }
 
     return cssModel.cachedMatchedCascadeForNode(node).then(validateStyles.bind(this));

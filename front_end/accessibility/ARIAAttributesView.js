@@ -228,24 +228,25 @@ export class ARIAAttributePrompt extends UI.TextPrompt.TextPrompt {
    * @param {boolean=} force
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  _buildPropertyCompletions(expression, prefix, force) {
+  async _buildPropertyCompletions(expression, prefix, force) {
     prefix = prefix.toLowerCase();
     if (!prefix && !force && expression) {
-      return Promise.resolve([]);
+      return [];
     }
-    return Promise.resolve(
-        this._ariaCompletions.filter(value => value.startsWith(prefix)).map(c => ({
-                                                                              text: c,
-                                                                              title: undefined,
-                                                                              subtitle: undefined,
-                                                                              iconType: undefined,
-                                                                              priority: undefined,
-                                                                              isSecondary: undefined,
-                                                                              subtitleRenderer: undefined,
-                                                                              selectionRange: undefined,
-                                                                              hideGhostText: undefined,
-                                                                              iconElement: undefined,
-                                                                            })));
+    return this._ariaCompletions.filter(value => value.startsWith(prefix)).map(c => {
+      return {
+        text: c,
+        title: undefined,
+        subtitle: undefined,
+        iconType: undefined,
+        priority: undefined,
+        isSecondary: undefined,
+        subtitleRenderer: undefined,
+        selectionRange: undefined,
+        hideGhostText: undefined,
+        iconElement: undefined,
+      };
+    });
   }
 }
 

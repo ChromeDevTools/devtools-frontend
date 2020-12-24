@@ -79,7 +79,7 @@ interface Highlight {
 export class HighlightOverlay extends Overlay {
   private tooltip!: HTMLElement;
   private persistentOverlay?: PersistentOverlay;
-  private gridLabelState = {gridLayerCounter: 0, gridPainted: false};
+  private gridLabelState = {gridLayerCounter: 0};
 
   reset(resetData: ResetData) {
     super.reset(resetData);
@@ -191,11 +191,6 @@ export class HighlightOverlay extends Overlay {
   }
 
   private drawAxis(context: CanvasRenderingContext2D, rulerAtRight: boolean, rulerAtBottom: boolean) {
-    if (this.gridLabelState.gridPainted) {
-      return;
-    }
-    this.gridLabelState.gridPainted = true;
-
     context.save();
 
     const pageFactor = this.pageZoomFactor * this.pageScaleFactor * this.emulationScaleFactor;

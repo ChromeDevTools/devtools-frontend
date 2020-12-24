@@ -33,10 +33,7 @@ import {drawLayoutFlexContainerHighlight, FlexContainerHighlight} from './highli
 import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
 
 export class PersistentOverlay extends Overlay {
-  private gridLabelState = {
-    gridLayerCounter: 0,
-    gridPainted: false,
-  };
+  private gridLabelState = {gridLayerCounter: 0};
 
   private gridLabels!: HTMLElement;
 

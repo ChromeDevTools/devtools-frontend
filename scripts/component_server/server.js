@@ -252,7 +252,8 @@ async function requestHandler(request, response) {
     }
 
     let encoding = 'utf8';
-    if (fullPath.endsWith('.wasm') || fullPath.endsWith('.png') || fullPath.endsWith('.jpg')) {
+    if (fullPath.endsWith('.wasm') || fullPath.endsWith('.png') || fullPath.endsWith('.jpg') ||
+        fullPath.endsWith('.avif')) {
       encoding = 'binary';
     }
 
@@ -273,6 +274,9 @@ async function requestHandler(request, response) {
       encoding = 'binary';
     } else if (fullPath.endsWith('.jpg')) {
       response.setHeader('Content-Type', 'image/jpg');
+      encoding = 'binary';
+    } else if (fullPath.endsWith('.avif')) {
+      response.setHeader('Content-Type', 'image/avif');
       encoding = 'binary';
     }
 

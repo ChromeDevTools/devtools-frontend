@@ -120,15 +120,15 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @return {!Promise.<?ComputedStyle>}
    */
-  fetchComputedStyle() {
+  async fetchComputedStyle() {
     const elementNode = this._elementNode();
     const cssModel = this.cssModel();
     if (!elementNode || !cssModel) {
-      return Promise.resolve(/** @type {?ComputedStyle} */ (null));
+      return /** @type {?ComputedStyle} */ (null);
     }
     const nodeId = elementNode.id;
     if (!nodeId) {
-      return Promise.resolve(/** @type {?ComputedStyle} */ (null));
+      return /** @type {?ComputedStyle} */ (null);
     }
 
     if (!this._computedStylePromise) {

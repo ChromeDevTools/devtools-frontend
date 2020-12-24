@@ -126,15 +126,16 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
   /**
    * @override
    */
-  doUpdate() {
+  async doUpdate() {
     if (!this._pins.size || !this.isShowing()) {
-      return Promise.resolve();
+      return;
     }
     if (this.isShowing()) {
       this.update();
     }
     const updatePromises = Array.from(this._pins, pin => pin.updatePreview());
-    return Promise.all(updatePromises).then(this._updatedForTest.bind(this));
+    await Promise.all(updatePromises);
+    this._updatedForTest();
   }
 
   _updatedForTest() {

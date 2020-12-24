@@ -460,9 +460,9 @@ export class Layers3DView extends UI.Widget.VBox {
             image && LayerTextureManager._createTextureForImage(this._gl || null, image) || undefined;
       });
     }
-    loadChromeTexture.call(this, ChromeTexture.Left, 'Images/chromeLeft.png');
-    loadChromeTexture.call(this, ChromeTexture.Middle, 'Images/chromeMiddle.png');
-    loadChromeTexture.call(this, ChromeTexture.Right, 'Images/chromeRight.png');
+    loadChromeTexture.call(this, ChromeTexture.Left, 'Images/chromeLeft.avif');
+    loadChromeTexture.call(this, ChromeTexture.Middle, 'Images/chromeMiddle.avif');
+    loadChromeTexture.call(this, ChromeTexture.Right, 'Images/chromeRight.avif');
   }
 
   /**

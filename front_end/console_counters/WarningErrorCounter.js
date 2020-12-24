@@ -120,14 +120,14 @@ export class WarningErrorCounter {
   /**
    * @return {!Promise<void>}
    */
-  _updateThrottled() {
+  async _updateThrottled() {
     const errors = SDK.ConsoleModel.ConsoleModel.instance().errors();
     const warnings = SDK.ConsoleModel.ConsoleModel.instance().warnings();
     const violations = this._violationCounter ? SDK.ConsoleModel.ConsoleModel.instance().violations() : 0;
     const issues = BrowserSDK.IssuesManager.IssuesManager.instance().numberOfIssues();
     if (errors === this._errorCount && warnings === this._warningCount && violations === this._violationCount &&
         issues === this._issuesCount) {
-      return Promise.resolve();
+      return;
     }
     this._errorCount = errors;
     this._warningCount = warnings;
@@ -202,7 +202,7 @@ export class WarningErrorCounter {
     UI.InspectorView.InspectorView.instance().toolbarItemResized();
     this._updatingForTest = false;
     this._updatedForTest();
-    return Promise.resolve();
+    return;
   }
 
   /**

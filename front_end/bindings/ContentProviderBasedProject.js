@@ -92,9 +92,9 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
    * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
    * @return {!Promise<?Workspace.UISourceCode.UISourceCodeMetadata>}
    */
-  requestMetadata(uiSourceCode) {
+  async requestMetadata(uiSourceCode) {
     const {metadata} = /** @type {!UISourceCodeData} */ (this._uiSourceCodeToData.get(uiSourceCode));
-    return Promise.resolve(metadata);
+    return metadata;
   }
 
   /**

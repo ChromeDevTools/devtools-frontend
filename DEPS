@@ -6,10 +6,10 @@ use_relative_paths = True
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': 'e77e4d71d2dbe4c075360b210d2f7724f7f510fa',
+  'build_revision': '3d38a62e5a0deab4366b1e55e0f9abf9a3a2d945',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': 'ea9f1f737564cdf5e51b63103de081f5772a6339',
+  'buildtools_revision': '2277272f7a7978c48f1b2c50d41af83485552235',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
   'depot_tools_revision': '46ef281c525f704bb9445142e9e4d70dacae7d4d',
@@ -23,7 +23,7 @@ vars = {
   'emscripten_tag': '4764c5c323a474f7ba28ae991b0c9024fccca43c',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:53d92014bf94c3893886470a1c7c1289f8818db0',
+  'gn_version': 'git_revision:0d67e272bdb8145f87d238bc0b2cb8bf80ccec90',
 
   # Chromium build number for unit tests. It should be regularly updated to
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE

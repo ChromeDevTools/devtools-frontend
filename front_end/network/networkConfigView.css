@@ -45,6 +45,10 @@
   margin: 5px 0;
 }
 
+.network-config-input-validation-error:empty {
+  display: none;
+}
+
 /* Network throttling */
 
 .network-config-throttling .chrome-select {

@@ -66,7 +66,7 @@ devtools_image_files = [
   "navigationControls_2x.png",
   "navigationControls.png",
   "network_panel_icon.svg",
-  "nodeIcon.png",
+  "nodeIcon.avif",
   "node_search_icon.svg",
   "popoverArrows.png",
   "profileGroupIcon.png",

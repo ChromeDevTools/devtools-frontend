@@ -141,6 +141,9 @@
   <message name="IDS_DEVTOOLS_3cbd091fd9522762ed01c1b305a8beda" desc="Tooltip to explain why a cookie was blocked">
     This cookie didn&apos;t specify a &quot;SameSite&quot; attribute when it was stored and was defaulted to &quot;SameSite=Lax,&quot; and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with &quot;SameSite=None&quot; to enable cross-site usage.
   </message>
+  <message name="IDS_DEVTOOLS_3e3f8a3abd60f2389b744ca8ed0aa4d9" desc="Text to indicate that network throttling is disabled">
+    No throttling
+  </message>
   <message name="IDS_DEVTOOLS_3f23f0e9da2803d48c2d67aa09f01bf5" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie didn&apos;t specify a &quot;SameSite&quot; attribute and was defaulted to &quot;SameSite=Lax,&quot; and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with &quot;SameSite=None&quot; to enable cross-site usage.
   </message>

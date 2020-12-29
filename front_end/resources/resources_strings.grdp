@@ -202,6 +202,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_536cf547cb6ecfe32be6ed3ffdabf893" desc="Text of button in Clear Storage View of the Application panel">
     Clear site data
   </message>
+  <message name="IDS_DEVTOOLS_54f664c70c22054ea0d8d26fc3997ce7" desc="Text to indicate the network connectivity is online">
+    Online
+  </message>
   <message name="IDS_DEVTOOLS_55bce575c41275ddaf5fbd1beb7d6018" desc="Text in Service Workers View of the Application panel">
     #<ph name="INSTALLING_ID">$1s<ex>2</ex></ph> trying to install
   </message>

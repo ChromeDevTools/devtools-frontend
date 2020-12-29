@@ -261,7 +261,7 @@ export const Events = {
 
 /** @type {!Conditions} */
 export const NoThrottlingConditions = {
-  title: Common.UIString.UIString('Online'),
+  title: Common.UIString.UIString('No throttling'),
   download: -1,
   upload: -1,
   latency: 0

@@ -167,9 +167,6 @@
   <message name="IDS_DEVTOOLS_53cd8180752335dce4f9b9ed493ef58d" desc="Text to indicate the source of an image">
     Image from <ph name="URL">$1s<ex>example.com</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_54f664c70c22054ea0d8d26fc3997ce7" desc="Text to indicate the network connectivity is online">
-    Online
-  </message>
   <message name="IDS_DEVTOOLS_597b56e53847cd6a4712ac183f61fa68" desc="Text for web cookies">
     Cookies
   </message>

@@ -81,6 +81,8 @@
 
 .indexed-db-header {
   min-width: 400px;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .source-code.indexed-db-key-path {

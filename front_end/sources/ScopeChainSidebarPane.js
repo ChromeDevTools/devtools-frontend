@@ -54,7 +54,6 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
     this._linkifier = new Components.Linkifier.Linkifier();
     this._infoElement = document.createElement('div');
     this._infoElement.className = 'gray-info-message';
-    this._infoElement.textContent = ls`Not paused`;
     this._infoElement.tabIndex = -1;
     this._update();
   }
@@ -88,55 +87,53 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
   }
 
   async _update() {
-    const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
+    // The `resolveThisObject(callFrame)` and `resolveScopeChain(callFrame)` calls
+    // below may take a while to complete, so indicate to the user that something
+    // is happening (see https://crbug.com/1162416).
+    this._infoElement.textContent = ls`Loading...`;
+    this.contentElement.removeChildren();
+    this.contentElement.appendChild(this._infoElement);
+
     this._linkifier.reset();
+
+    const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
     const [thisObject, scopeChain] = await Promise.all([resolveThisObject(callFrame), resolveScopeChain(callFrame)]);
     // By now the developer might have moved on, and we don't want to show stale
     // scope information, so check again that we're still on the same CallFrame.
     if (callFrame === UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame)) {
       const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
-      this._innerUpdate(details, callFrame, thisObject, scopeChain);
-    }
-  }
+      this._treeOutline.removeChildren();
 
-  /**
-   * @param {?SDK.DebuggerModel.DebuggerPausedDetails} details
-   * @param {?SDK.DebuggerModel.CallFrame} callFrame
-   * @param {?SDK.RemoteObject.RemoteObject} thisObject
-   * @param {?Array<!SDK.DebuggerModel.ScopeChainEntry>} scopeChain
-   */
-  _innerUpdate(details, callFrame, thisObject, scopeChain) {
-    this._treeOutline.removeChildren();
-    this.contentElement.removeChildren();
-
-    if (!details || !callFrame || !scopeChain) {
-      this.contentElement.appendChild(this._infoElement);
-      return;
-    }
-
-    this.contentElement.appendChild(this._treeOutline.element);
-    let foundLocalScope = false;
-    for (let i = 0; i < scopeChain.length; ++i) {
-      const scope = scopeChain[i];
-      const extraProperties = this._extraPropertiesForScope(scope, details, callFrame, thisObject, i === 0);
-
-      if (scope.type() === Protocol.Debugger.ScopeType.Local) {
-        foundLocalScope = true;
+      if (!details || !callFrame || !scopeChain) {
+        this._infoElement.textContent = ls`Not paused`;
+        return;
       }
 
-      const section = this._createScopeSectionTreeElement(scope, extraProperties);
-      if (scope.type() === Protocol.Debugger.ScopeType.Global) {
-        section.collapse();
-      } else if (!foundLocalScope || scope.type() === Protocol.Debugger.ScopeType.Local) {
-        section.expand();
-      }
+      this.contentElement.removeChildren();
+      this.contentElement.appendChild(this._treeOutline.element);
+      let foundLocalScope = false;
+      for (let i = 0; i < scopeChain.length; ++i) {
+        const scope = scopeChain[i];
+        const extraProperties = this._extraPropertiesForScope(scope, details, callFrame, thisObject, i === 0);
 
-      this._treeOutline.appendChild(section);
-      if (i === 0) {
-        section.select(/* omitFocus */ true);
+        if (scope.type() === Protocol.Debugger.ScopeType.Local) {
+          foundLocalScope = true;
+        }
+
+        const section = this._createScopeSectionTreeElement(scope, extraProperties);
+        if (scope.type() === Protocol.Debugger.ScopeType.Global) {
+          section.collapse();
+        } else if (!foundLocalScope || scope.type() === Protocol.Debugger.ScopeType.Local) {
+          section.expand();
+        }
+
+        this._treeOutline.appendChild(section);
+        if (i === 0) {
+          section.select(/* omitFocus */ true);
+        }
       }
+      this._sidebarPaneUpdatedForTest();
     }
-    this._sidebarPaneUpdatedForTest();
   }
 
   /**

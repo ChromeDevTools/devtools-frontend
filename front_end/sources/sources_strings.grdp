@@ -360,6 +360,9 @@
   <message name="IDS_DEVTOOLS_83e2ef9071f03b9f43e568204aaad9a4" desc="Text for Coverage Status Bar Item in Sources Panel">
     Click to show Coverage Panel
   </message>
+  <message name="IDS_DEVTOOLS_8524de963f07201e5c086830d370797f" desc="Loading indicator in Scope Sidebar Pane of the Sources panel">
+    Loading...
+  </message>
   <message name="IDS_DEVTOOLS_8560d166d251804230566118358414e5" desc="A context menu item in the Watch Expressions Sidebar Pane of the Sources panel">
     Add watch expression
   </message>

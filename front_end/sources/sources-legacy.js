@@ -172,7 +172,6 @@ Sources.SourceMapNamesResolver._scopeIdentifiers = SourcesModule.SourceMapNamesR
 Sources.SourceMapNamesResolver._resolveScope = SourcesModule.SourceMapNamesResolver.resolveScope;
 Sources.SourceMapNamesResolver._allVariablesInCallFrame = SourcesModule.SourceMapNamesResolver.allVariablesInCallFrame;
 Sources.SourceMapNamesResolver.resolveExpression = SourcesModule.SourceMapNamesResolver.resolveExpression;
-Sources.SourceMapNamesResolver._resolveExpression = SourcesModule.SourceMapNamesResolver.resolveExpressionAsync;
 Sources.SourceMapNamesResolver.resolveThisObject = SourcesModule.SourceMapNamesResolver.resolveThisObject;
 Sources.SourceMapNamesResolver.resolveScopeInObject = SourcesModule.SourceMapNamesResolver.resolveScopeInObject;
 

@@ -137,8 +137,6 @@ Sources.ScopeChainSidebarPane = SourcesModule.ScopeChainSidebarPane.ScopeChainSi
 /** @constructor */
 Sources.ScopeChainSidebarPane.OpenLinearMemoryInspector = SourcesModule.ScopeChainSidebarPane.OpenLinearMemoryInspector;
 
-Sources.ScopeChainSidebarPane._pathSymbol = SourcesModule.ScopeChainSidebarPane.pathSymbol;
-
 /** @constructor */
 Sources.ScriptFormatterEditorAction = SourcesModule.ScriptFormatterEditorAction.ScriptFormatterEditorAction;
 

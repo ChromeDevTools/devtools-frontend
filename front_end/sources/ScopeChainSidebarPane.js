@@ -262,5 +262,3 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox {
     controller.openInspectorView(obj, address);
   }
 }
-
-export const pathSymbol = Symbol('path');

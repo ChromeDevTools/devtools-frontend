@@ -173,6 +173,9 @@ export class ViewManager {
     });
 
     for (const {viewId, view, location} of unionOfViewExtensions) {
+      if (this._views.has(viewId)) {
+        throw new Error(`Duplicate view id '${viewId}'`);
+      }
       this._views.set(viewId, view);
       // Use the preferred user location if available
       const locationName = preferredExtensionLocations[viewId] || location;

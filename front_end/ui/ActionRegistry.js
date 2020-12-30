@@ -54,6 +54,9 @@ export class ActionRegistry {
         console.error(`No actionId provided for extension ${extension.descriptor().name}`);
         return;
       }
+      if (this._actionsById.get(actionId)) {
+        throw new Error(`Duplicate action id '${actionId}'`);
+      }
       console.assert(!this._actionsById.get(actionId));
 
       const action = new LegacyActionRegistration(extension);

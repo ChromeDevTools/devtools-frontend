@@ -92,7 +92,7 @@ grd_files_release_sources = [
   "front_end/Images/resourceJSIcon.png",
   "front_end/Images/resourcePlainIcon.png",
   "front_end/Images/resourcePlainIconSmall.png",
-  "front_end/Images/resourcesTimeGraphIcon.png",
+  "front_end/Images/resourcesTimeGraphIcon.avif",
   "front_end/Images/searchNext.png",
   "front_end/Images/searchPrev.png",
   "front_end/Images/securityIcons.svg",

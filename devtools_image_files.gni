@@ -84,7 +84,7 @@ devtools_image_files = [
   "resourceJSIcon.png",
   "resourcePlainIcon.png",
   "resourcePlainIconSmall.png",
-  "resourcesTimeGraphIcon.png",
+  "resourcesTimeGraphIcon.avif",
   "searchNext.png",
   "searchPrev.png",
   "securityIcons.svg",

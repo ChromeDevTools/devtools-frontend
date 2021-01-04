@@ -418,7 +418,8 @@ export class Toolbar {
         return new ToolbarSeparator();
       }
       if (descriptor['actionId']) {
-        return Toolbar.createActionButtonForId(descriptor['actionId'], /** @type {*} */ (descriptor)['showLabel']);
+        return Toolbar.createActionButtonForId(
+            descriptor['actionId'], {showLabel: /** @type {*} */ (descriptor)['showLabel'], userActionCode: undefined});
       }
       return extension.instance().then(p => /** @type {!Provider} */ (p).item());
     }));

@@ -1535,6 +1535,9 @@
   "recorder/RecordingFileSystem.js | defaultRecordingName": {
     "message": "Recording #{nextId}"
   },
+  "recorder/RecordingFileSystem.js | linkedToS": {
+    "message": "Linked to {PH1}"
+  },
   "resources/ClearStorageView.js | storageQuotaUsed": {
     "message": "{PH1} used out of {PH2} storage quota"
   },

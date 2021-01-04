@@ -8,28 +8,20 @@ import * as Persistence from '../persistence/persistence.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';    // eslint-disable-line no-unused-vars
 
-export const _UIStrings = {
+export const UIStrings = {
   /**
   * @description Default name of a new recording
   * @example {1} nextId
   */
   defaultRecordingName: 'Recording #{nextId}',
+  /**
+  * @description Text to show something is linked to another
+  * @example {example.url} PH1
+  */
+  linkedToS: 'Linked to {PH1}',
 };
-
-/** @type {?function(string, (!Object | undefined)): string} */
-let _i18nString = null;
-
-/**
- * @return {function(string, (!Object | undefined)): string}
- */
-function getI18nString() {
-  if (_i18nString) {
-    return _i18nString;
-  }
-  const str_ = i18n.i18n.registerUIStrings('recorder/RecordingFileSystem.js', _UIStrings);
-  _i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-  return _i18nString;
-}
+const str_ = i18n.i18n.registerUIStrings('recorder/RecordingFileSystem.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @param {string} name
@@ -75,7 +67,7 @@ export class RecordingFileSystem extends Persistence.PlatformFileSystem.Platform
     const nextId = this._lastRecordingIdentifierSetting.get() + 1;
     this._lastRecordingIdentifierSetting.set(nextId);
 
-    const recordingName = getI18nString()(_UIStrings.defaultRecordingName, {nextId});
+    const recordingName = i18nString(UIStrings.defaultRecordingName, {nextId: nextId});
     const recordings = this._recordingsSetting.get();
     recordings.push({name: recordingName, content: '{"steps": []}'});
     this._recordingsSetting.set(recordings);
@@ -194,7 +186,7 @@ export class RecordingFileSystem extends Persistence.PlatformFileSystem.Platform
    * @return {string}
    */
   tooltipForURL(url) {
-    return ls`Linked to ${unescapeRecordingName(url.substring(this.path().length))}`;
+    return i18nString(UIStrings.linkedToS, {PH1: unescapeRecordingName(url.substring(this.path().length))});
   }
 
   /**

@@ -284,6 +284,8 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     tree.setShowSelectionOnKeyboardFocus(true, false);
     const treeRoot = new UI.TreeOutline.TreeElement(uaChFields, true);
     tree.appendChild(treeRoot);
+    // Select the folder to make left/right arrows work as expected; don't change focus, however, since it should start with the device name field.
+    treeRoot.select(true, false);
     content.appendChild(tree.element);
 
     /**

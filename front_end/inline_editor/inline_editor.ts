@@ -8,7 +8,6 @@ import * as ColorSwatchImpl from './ColorSwatch.js';
 import * as ColorSwatch from './ColorSwatch.js';
 import * as CSSAngleImpl from './CSSAngle.js';
 import * as CSSAngle from './CSSAngle.js';
-import * as CSSAngleRegex from './CSSAngleRegex.js';
 import * as CSSAngleUtils from './CSSAngleUtils.js';
 import * as CSSShadowEditor from './CSSShadowEditor.js';
 import * as CSSShadowModel from './CSSShadowModel.js';
@@ -27,7 +26,6 @@ export {
   ColorSwatchImpl,
   CSSAngle,
   CSSAngleImpl,
-  CSSAngleRegex,
   CSSAngleUtils,
   CSSShadowEditor,
   CSSShadowModel,

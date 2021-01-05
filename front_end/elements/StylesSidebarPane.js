@@ -3143,7 +3143,7 @@ export class StylesSidebarPropertyRenderer {
     }
     if (this._angleHandler && metadata.isAngleAwareProperty(this._propertyName)) {
       // TODO(changhaohan): crbug.com/1138628 refactor this to handle unitless 0 cases
-      regexes.push(InlineEditor.CSSAngleRegex.CSSAngleRegex);
+      regexes.push(InlineEditor.CSSAngleUtils.CSSAngleRegex);
       processors.push(this._angleHandler);
     }
     if (this._fontHandler && metadata.isFontAwareProperty(this._propertyName)) {

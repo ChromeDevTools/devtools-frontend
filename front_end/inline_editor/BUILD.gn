@@ -12,7 +12,6 @@ devtools_module("inline_editor") {
     "BezierUI.js",
     "CSSAngle.ts",
     "CSSAngleEditor.ts",
-    "CSSAngleRegex.js",
     "CSSAngleSwatch.ts",
     "CSSAngleUtils.ts",
     "CSSShadowEditor.js",

@@ -5,7 +5,7 @@
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
-import {CSSAngleRegex} from './CSSAngleRegex.js';
+export const CSSAngleRegex = /(?<value>[+-]?\d*\.?\d+)(?<unit>deg|grad|rad|turn)/;
 
 export const enum AngleUnit {
   Deg = 'deg',

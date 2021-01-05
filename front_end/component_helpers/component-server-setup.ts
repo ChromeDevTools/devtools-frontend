@@ -21,7 +21,7 @@ export async function setup(): Promise<void> {
   ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
 
   const allPromises = CSS_RESOURCES_TO_LOAD_INTO_RUNTIME.map(resourcePath => {
-    return fetch('/' + resourcePath).then(response => response.text()).then(cssText => {
+    return fetch('/front_end/' + resourcePath).then(response => response.text()).then(cssText => {
       Root.Runtime.cachedResources.set(resourcePath, cssText);
     });
   });

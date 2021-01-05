@@ -6,7 +6,7 @@ import {getBrowserAndPages, getTestServerPort} from '../../shared/helper.js';
 
 export const loadComponentDocExample = async (url: string) => {
   const {frontend} = getBrowserAndPages();
-  await frontend.goto(`http://localhost:${getTestServerPort()}/component_docs/${url}`, {
+  await frontend.goto(`http://localhost:${getTestServerPort()}/front_end/component_docs/${url}`, {
     waitUntil: 'networkidle0',
   });
 };

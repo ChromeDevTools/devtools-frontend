@@ -85,6 +85,7 @@ group("front_end") {
     "sdk:bundle",
     "search:bundle",
     "security:bundle",
+    "security:meta",
     "services:bundle",
     "settings:bundle",
     "snippets:bundle",

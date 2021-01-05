@@ -94,6 +94,9 @@
   <message name="IDS_DEVTOOLS_2ddaa8e6378b906b42429dc4003edbd3" desc="A context menu item to reveal a node in the DOM tree of the Elements Panel">
     Reveal in Elements panel
   </message>
+  <message name="IDS_DEVTOOLS_2fae32629d4ef4fc6341f1751b405e45" desc="Title of the 'Security' tool">
+    Security
+  </message>
   <message name="IDS_DEVTOOLS_31fde7b05ac8952dacf4af8a704074ec" desc="Text for previewing items">
     Preview
   </message>

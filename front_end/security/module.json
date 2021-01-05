@@ -1,22 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "view",
-      "location": "panel",
-      "id": "security",
-      "title": "Security",
-      "order": 80,
-      "persistence": "closeable",
-      "className": "Security.SecurityPanel"
-    }
-  ],
-  "dependencies": [
-    "i18n",
-    "network",
-    "platform",
-    "ui",
-    "sdk"
-  ],
   "modules": [
     "security-legacy.js"
   ],

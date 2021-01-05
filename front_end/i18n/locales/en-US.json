@@ -1601,9 +1601,6 @@
   "search/SearchView.js | useRegularExpression": {
     "message": "Use Regular Expression"
   },
-  "security/ModuleUIStrings.js | security": {
-    "message": "Security"
-  },
   "security/SecurityModel.js | cipherWithMAC": {
     "message": "{PH1} with {PH2}"
   },

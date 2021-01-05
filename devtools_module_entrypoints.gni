@@ -139,6 +139,7 @@ devtools_module_entrypoint_sources = [
   "search/search-legacy.js",
   "search/search.js",
   "security/security-legacy.js",
+  "security/security-meta.js",
   "security/security.js",
   "services/services-legacy.js",
   "services/services.js",

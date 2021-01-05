@@ -33,3 +33,9 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "security-meta.ts"
+
+  deps = [ ":bundle" ]
+}

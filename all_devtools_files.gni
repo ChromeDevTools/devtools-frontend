@@ -6,6 +6,13 @@ import("./scripts/build/ninja/vars.gni")
 
 all_devtools_files = [
   "front_end/shell.js",
+  "front_end/devtools_app.js",
+  "front_end/inspector.js",
+  "front_end/js_app.js",
+  "front_end/ndb_app.js",
+  "front_end/node_app.js",
+  "front_end/toolbox.js",
+  "front_end/worker_app.js",
   "front_end/accessibility_test_runner/accessibility_test_runner.js",
   "front_end/accessibility_test_runner/module.json",
   "front_end/accessibility/accessibilityNode.css",

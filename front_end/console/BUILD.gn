@@ -55,3 +55,9 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "console-meta.ts"
+
+  deps = [ ":bundle" ]
+}

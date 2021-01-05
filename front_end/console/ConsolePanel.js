@@ -98,13 +98,19 @@ export class ConsolePanel extends UI.Panel.Panel {
 let wrapperViewInstance = null;
 
 export class WrapperView extends UI.Widget.VBox {
+  /** @private */
   constructor() {
     super();
     this.element.classList.add('console-view-wrapper');
 
-    wrapperViewInstance = this;
-
     this._view = ConsoleView.instance();
+  }
+
+  static instance() {
+    if (!wrapperViewInstance) {
+      wrapperViewInstance = new WrapperView();
+    }
+    return wrapperViewInstance;
   }
 
   /**

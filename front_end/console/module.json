@@ -1,23 +1,6 @@
 {
   "extensions": [
     {
-      "type": "view",
-      "location": "panel",
-      "id": "console",
-      "title": "Console",
-      "order": 20,
-      "className": "Console.ConsolePanel"
-    },
-    {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "console-view",
-      "title": "Console",
-      "persistence": "permanent",
-      "order": 0,
-      "className": "Console.ConsolePanel.WrapperView"
-    },
-    {
       "type": "@Common.Revealer",
       "contextTypes": [
         "Common.Console"

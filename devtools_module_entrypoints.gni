@@ -30,6 +30,7 @@ devtools_module_entrypoint_sources = [
   "components/components-legacy.js",
   "components/components.js",
   "console/console-legacy.js",
+  "console/console-meta.js",
   "console/console.js",
   "console_counters/console_counters-legacy.js",
   "console_counters/console_counters.js",

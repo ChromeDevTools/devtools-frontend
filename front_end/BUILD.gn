@@ -27,6 +27,7 @@ group("front_end") {
     "component_helpers:bundle",
     "components:bundle",
     "console:bundle",
+    "console:meta",
     "console_counters:bundle",
     "cookie_table:bundle",
     "coverage:bundle",

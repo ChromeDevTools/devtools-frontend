@@ -31,6 +31,7 @@ LICENSES = [
     "CC-BY-3.0",
     "CC-BY-4.0",
     "ISC",
+    "MPL-2.0",
 ]
 
 # List all DEPS here.
@@ -51,6 +52,7 @@ DEPS = {
     "escodegen": "2.0.0",
     "eslint": "7.14.0",
     "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-lit-a11y": "1.0.1",
     "eslint-plugin-mocha": "8.0.0",
     "eslint-plugin-rulesdir": "0.1.0",
     "karma": "5.2.3",

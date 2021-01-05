@@ -293,7 +293,7 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     const baseline = await this._originalContent();
-    if (!baseline) {
+    if (baseline === null) {
       return null;
     }
     if (baseline.length > 1024 * 1024) {

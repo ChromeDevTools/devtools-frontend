@@ -57,7 +57,6 @@ export class OverlayModel extends SDKModel {
     }
 
     this._inspectModeEnabled = false;
-    this._gridFeaturesExperimentEnabled = Root.Runtime.experiments.isEnabled('cssGridFeatures');
     this._flexFeaturesExperimentEnabled = Root.Runtime.experiments.isEnabled('cssFlexboxFeatures');
 
     this._hideHighlightTimeout = null;
@@ -86,16 +85,14 @@ export class OverlayModel extends SDKModel {
     }
 
     /** @type {?OverlayPersistentHighlighter} */
-    this._peristentHighlighter = null;
-    if (this._gridFeaturesExperimentEnabled) {
-      this._peristentHighlighter = new OverlayPersistentHighlighter(this, this._flexFeaturesExperimentEnabled);
-      this._domModel.addEventListener(DOMModelEvents.NodeRemoved, () => {
-        this._peristentHighlighter && this._peristentHighlighter.refreshHighlights();
-      });
-      this._domModel.addEventListener(DOMModelEvents.DocumentUpdated, () => {
-        this._peristentHighlighter && this._peristentHighlighter.hideAllInOverlay();
-      });
-    }
+    this._peristentHighlighter = new OverlayPersistentHighlighter(this, this._flexFeaturesExperimentEnabled);
+    this._domModel.addEventListener(DOMModelEvents.NodeRemoved, () => {
+      this._peristentHighlighter && this._peristentHighlighter.refreshHighlights();
+    });
+    this._domModel.addEventListener(DOMModelEvents.DocumentUpdated, () => {
+      this._peristentHighlighter && this._peristentHighlighter.hideAllInOverlay();
+    });
+
     this._sourceOrderHighlighter = new SourceOrderHighlighter(this);
     this._sourceOrderModeActive = false;
   }
@@ -582,7 +579,7 @@ export class OverlayModel extends SDKModel {
       }
     }
 
-    if (mode.endsWith('gap') && this._gridFeaturesExperimentEnabled) {
+    if (mode.endsWith('gap')) {
       highlightConfig.gridHighlightConfig = {
         gridBorderColor: Common.Color.PageHighlight.GridBorder.toProtocolRGBA(),
         gridBorderDash: true
@@ -620,7 +617,7 @@ export class OverlayModel extends SDKModel {
       }
     }
 
-    if (mode === 'grid-areas' && this._gridFeaturesExperimentEnabled) {
+    if (mode === 'grid-areas') {
       highlightConfig.gridHighlightConfig = {
         rowLineColor: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
         columnLineColor: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
@@ -631,7 +628,7 @@ export class OverlayModel extends SDKModel {
       };
     }
 
-    if (mode === 'grid-template-columns' && this._gridFeaturesExperimentEnabled) {
+    if (mode === 'grid-template-columns') {
       highlightConfig.contentColor = Common.Color.PageHighlight.Content.toProtocolRGBA();
       highlightConfig.gridHighlightConfig = {
         columnLineColor: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
@@ -639,7 +636,7 @@ export class OverlayModel extends SDKModel {
       };
     }
 
-    if (mode === 'grid-template-rows' && this._gridFeaturesExperimentEnabled) {
+    if (mode === 'grid-template-rows') {
       highlightConfig.contentColor = Common.Color.PageHighlight.Content.toProtocolRGBA();
       highlightConfig.gridHighlightConfig = {
         rowLineColor: Common.Color.PageHighlight.LayoutLine.toProtocolRGBA(),

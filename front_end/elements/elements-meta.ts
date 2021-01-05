@@ -83,7 +83,6 @@ UI.ViewManager.registerViewExtension({
 });
 
 UI.ViewManager.registerViewExtension({
-  experiment: Root.Runtime.ExperimentName.CSS_GRID_FEATURES,
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.layout',
   commandPrompt: 'Show Layout',

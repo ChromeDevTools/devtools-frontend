@@ -2100,14 +2100,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   async updateStyleAdorners() {
-    // Avoid doing any work if flex and grid features are turned off. This section needs
-    // to be removed when those experiments graduate.
-    const gridFeaturesEnabled = Root.Runtime.experiments.isEnabled('cssGridFeatures');
-    const flexFeaturesEnabled = Root.Runtime.experiments.isEnabled('cssFlexboxFeatures');
-    if (!gridFeaturesEnabled && !flexFeaturesEnabled) {
-      return;
-    }
-
     if (this._isClosingTag) {
       return;
     }
@@ -2129,8 +2121,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const display = styles.get('display');
-    const isGrid = gridFeaturesEnabled && (display === 'grid' || display === 'inline-grid');
-    const isFlex = flexFeaturesEnabled && (display === 'flex' || display === 'inline-flex');
+    const isGrid = display === 'grid' || display === 'inline-grid';
+    const isFlex =
+        Root.Runtime.experiments.isEnabled('cssFlexboxFeatures') && (display === 'flex' || display === 'inline-flex');
 
     let adorner;
     if (isGrid) {

@@ -585,7 +585,6 @@ export const DevtoolsExperiments = {
   'timelineReplayEvent': 30,
   'wasmDWARFDebugging': 31,
   'dualScreenSupport': 32,
-  'cssGridFeatures': 33,
   'keyboardShortcutEditor': 35,
   'cssFlexboxFeatures': 36,
   'recorder': 38,

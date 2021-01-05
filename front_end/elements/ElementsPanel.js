@@ -32,7 +32,6 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Extensions from '../extensions/extensions.js';
 import * as Host from '../host/host.js';
-import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -1060,15 +1059,11 @@ export class ElementsPanel extends UI.Panel.Panel {
    * @param {!SDK.CSSModel.CSSModel} cssModel
    */
   _setupStyleTracking(cssModel) {
-    if (Root.Runtime.experiments.isEnabled('cssGridFeatures')) {
-      // Style tracking is conditional on enabling experimental Grid features
-      // because it's the only use case for now.
-      const gridStyleTracker = cssModel.createCSSPropertyTracker(TrackedCSSGridProperties);
-      gridStyleTracker.start();
-      this._gridStyleTrackerByCSSModel.set(cssModel, gridStyleTracker);
-      gridStyleTracker.addEventListener(
-          SDK.CSSModel.CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated, this._trackedCSSPropertiesUpdated, this);
-    }
+    const gridStyleTracker = cssModel.createCSSPropertyTracker(TrackedCSSGridProperties);
+    gridStyleTracker.start();
+    this._gridStyleTrackerByCSSModel.set(cssModel, gridStyleTracker);
+    gridStyleTracker.addEventListener(
+        SDK.CSSModel.CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated, this._trackedCSSPropertiesUpdated, this);
   }
 
   /**

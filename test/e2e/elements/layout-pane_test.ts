@@ -4,16 +4,12 @@
 
 import {assert} from 'chai';
 
-import {enableExperiment, goToResource, step} from '../../shared/helper.js';
+import {goToResource, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {expandSelectedNodeRecursively, getGridsInLayoutPane, openLayoutPane, toggleElementCheckboxInLayoutPane, waitForAdorners, waitForContentOfSelectedElementsNode, waitForElementsStyleSection, waitForSomeGridsInLayoutPane} from '../helpers/elements-helpers.js';
 import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 
 describe('Layout Pane in the Elements Tab', async function() {
-  beforeEach(async () => {
-    await enableExperiment('cssGridFeatures');
-  });
-
   it('displays Layout pane', async () => {
     await goToResource('elements/css-grid.html');
     await step('Prepare elements tab', async () => {

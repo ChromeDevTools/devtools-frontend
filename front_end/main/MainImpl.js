@@ -192,11 +192,6 @@ export class MainImpl {
     // Dual-screen
     Root.Runtime.experiments.register('dualScreenSupport', 'Emulation: Support dual screen mode');
 
-    // CSS Grid
-    Root.Runtime.experiments.register(
-        'cssGridFeatures',
-        'Enable new CSS Grid debugging features (configuration options available in Layout sidebar pane in Elements after restart)');
-
     // CSS Flexbox
     Root.Runtime.experiments.register('cssFlexboxFeatures', 'Enable new CSS Flexbox debugging features');
 
@@ -207,10 +202,6 @@ export class MainImpl {
 
     // Full Accessibility Tree
     Root.Runtime.experiments.register('fullAccessibilityTree', 'Enable full accessibility tree view in Elements pane');
-
-    Root.Runtime.experiments.enableExperimentsByDefault([
-      'cssGridFeatures',
-    ]);
 
     // Font Editor
     Root.Runtime.experiments.register('fontEditor', 'Enable new Font Editor tool within the Styles Pane.');

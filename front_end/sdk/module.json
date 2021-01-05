@@ -119,7 +119,6 @@
       "type": "setting",
       "category": "Grid",
       "title": "Show area names",
-      "experiment": "cssGridFeatures",
       "settingName": "showGridAreas",
       "settingType": "boolean",
       "options": [
@@ -138,7 +137,6 @@
       "type": "setting",
       "category": "Grid",
       "title": "Show track sizes",
-      "experiment": "cssGridFeatures",
       "settingName": "showGridTrackSizes",
       "settingType": "boolean",
       "options": [
@@ -157,7 +155,6 @@
       "type": "setting",
       "category": "Grid",
       "title": "Extend grid lines",
-      "experiment": "cssGridFeatures",
       "settingName": "extendGridLines",
       "settingType": "boolean",
       "options": [
@@ -176,7 +173,6 @@
       "type": "setting",
       "category": "Grid",
       "title": "Show line labels",
-      "experiment": "cssGridFeatures",
       "settingName": "showGridLineLabels",
       "settingType": "enum",
       "options": [

@@ -31,7 +31,6 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CSSFontFace} from './CSSFontFace.js';
@@ -868,9 +867,7 @@ export class CSSModel extends SDKModel {
    * @override
    */
   dispose() {
-    if (Root.Runtime.experiments.isEnabled('cssGridFeatures')) {
-      this.disableCSSPropertyTracker();
-    }
+    this.disableCSSPropertyTracker();
     super.dispose();
     this._sourceMapManager.dispose();
   }

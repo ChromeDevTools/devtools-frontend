@@ -8,8 +8,8 @@
   box-sizing: border-box;
 
   /* This is required for correct sizing of flex items because we rely
-     * on an old version of the flexbox spec.
-     * Longer-term we should remove this, see crbug.com/473625 */
+     * on an old version of the flexbox spec. */
+
   min-width: 0;
   min-height: 0;
 }

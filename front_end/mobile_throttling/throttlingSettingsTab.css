@@ -41,7 +41,7 @@
 .conditions-list-text {
   white-space: nowrap;
   text-overflow: ellipsis;
-  flex: 0 0 70px;
+  flex: 0 0 100px;
   user-select: none;
   color: #222;
   text-align: end;
@@ -87,7 +87,7 @@
 }
 
 .conditions-edit-optional {
-  position: absolute;
+  position: relative;
   bottom: -20px;
   right: 0;
   color: rgb(128 128 128);

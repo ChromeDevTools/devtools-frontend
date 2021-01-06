@@ -427,7 +427,7 @@ charset: pass
 color-contrast: pass
 content-width: fail
 crawlable-anchors: pass
-critical-request-chains: notApplicable
+critical-request-chains: informative
 cumulative-ad-shift: notApplicable
 cumulative-layout-shift: numeric
 custom-controls-labels: manual

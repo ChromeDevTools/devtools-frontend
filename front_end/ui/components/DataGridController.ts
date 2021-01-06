@@ -6,8 +6,8 @@ import './DataGrid.js';
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import type * as TextUtils from '../../text_utils/text_utils.js';
-import type {DataGridData, ColumnHeaderClickEvent, DataGridContextMenusConfiguration, ContextMenuColumnSortClickEvent} from './DataGrid.js';
-import {SortDirection, SortState, Column, Row, getRowEntryForColumnId} from './DataGridUtils.js';
+import type {DataGridData, ColumnHeaderClickEvent, DataGridContextMenusConfiguration} from './DataGrid.js';
+import {SortDirection, SortState, Column, Row, getRowEntryForColumnId, ContextMenuColumnSortClickEvent} from './DataGridUtils.js';
 
 
 export interface DataGridControllerData {

@@ -1,0 +1,63 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Data grid controller with custom context menu items</title>
+    <style>
+      #container {
+        width: 80%;
+        border: 1px solid black;
+        padding: 20px;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div id="container">
+    </div>
+
+    <script type="module">
+      import * as EnvironmentHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+      import * as Components from '../../ui/components/components.js';
+
+      EnvironmentHelpers.initializeGlobalVars().then(() => {
+        return ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent())
+      })
+
+      const renderComponent = () => {
+        const component = new Components.DataGridController.DataGridController();
+
+        component.data = {
+          columns: [
+            { id: 'key', title: 'Key', sortable: true, widthWeighting: 1, visible: true, hideable: false},
+            { id: 'value', title: 'Value', sortable: false, widthWeighting: 1, visible: true, hideable: true, sortable: true },
+          ],
+          rows: [
+            // Each key is the ID of a column, and the value is the value for that column
+            {cells: [{ columnId: 'key', value: 'Bravo', title: 'Bravo'}, { columnId: 'value', value: 'Letter B'}] },
+            {cells: [{ columnId: 'key', value: 'Alpha', title: 'Alpha'}, { columnId: 'value', value: 'Letter A'}] },
+            {cells: [{ columnId: 'key', value: 'Charlie', title: 'Charlie'}, { columnId: 'value', value: 'Letter C'}] },
+          ],
+          contextMenus: {
+            bodyRow: (menu, columns, selectedRow) => {
+              menu.defaultSection().appendItem('Hello World', () => {
+                alert('You clicked!')
+              })
+            }
+          }
+        }
+
+        document.getElementById('container').appendChild(component)
+      }
+
+    </script>
+  </body>
+</html>

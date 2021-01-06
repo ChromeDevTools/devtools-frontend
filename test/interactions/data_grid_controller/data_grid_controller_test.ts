@@ -10,6 +10,45 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample} from '../helpers/shared.js';
 import {platform} from '../../shared/helper.js';
 
+async function assertTopLevelContextMenuItemsText(expectedOptions: string[]): Promise<void> {
+  const contextMenu = await $('.soft-context-menu');
+  if (!contextMenu) {
+    assert.fail('Could not find context menu.');
+  }
+
+  const allItems = await $$('.soft-context-menu > .soft-context-menu-item');
+  const allItemsText = await Promise.all(allItems.map(item => item.evaluate(div => div.textContent)));
+
+  assert.deepEqual(allItemsText, expectedOptions);
+}
+
+async function assertSubMenuItemsText(subMenuText: string, expectedOptions: string[]): Promise<void> {
+  const subMenuEntryItem = await findSubMenuEntryItem(subMenuText);
+  if (!subMenuEntryItem) {
+    const allItems = await $$('.soft-context-menu > .soft-context-menu-item');
+    const allItemsText = await Promise.all(allItems.map(item => item.evaluate(div => div.textContent)));
+    assert.fail(`Could not find "${subMenuText}" option on context menu. Found items: ${allItemsText.join(' | ')}`);
+    return;
+  }
+
+  await subMenuEntryItem.hover();
+  await waitForFunction(async () => {
+    const menus = await $$('.soft-context-menu');
+    // Wait for the main menu + the sub menu to be in the DOM
+    return menus.length === 2;
+  });
+  const allMenus = await $$('.soft-context-menu');
+  // Each submenu is rendered as a separate context menu and is appended to
+  // the DOM after the main context menu, hence the array index.
+  const subMenuElement = allMenus[1];
+  if (!subMenuElement) {
+    assert.fail(`Could not find sub menu for ${subMenuText}`);
+  }
+  const subMenuItems = await $$('.soft-context-menu-item', subMenuElement);
+  const subMenuItemsText = await Promise.all(subMenuItems.map(item => item.evaluate(div => div.textContent)));
+  assert.deepEqual(subMenuItemsText, expectedOptions);
+}
+
 async function activateContextMenuOnColumnHeader(headerText: string) {
   const dataGridController = await getDataGridController();
   const dataGrid = await getDataGrid(dataGridController);
@@ -42,6 +81,21 @@ async function findSubMenuEntryItem(text: string): Promise<puppeteer.ElementHand
   }
   return matchingElement;
 }
+async function activateContextMenuOnBodyCell(cellText: string) {
+  const dataGridController = await getDataGridController();
+  const dataGrid = await getDataGrid(dataGridController);
+  const headerCell = await $textContent(cellText, dataGrid);
+  if (!headerCell) {
+    assert.fail(`Could not find body cell with text ${cellText}`);
+  }
+  await click(headerCell, {
+    clickOptions: {
+      button: 'right',
+    },
+  });
+  return headerCell;
+}
+
 
 describe('data grid controller', () => {
   it('lets the user right click on a header to show the context menu', async () => {
@@ -50,6 +104,8 @@ describe('data grid controller', () => {
 
     const contextMenu = await $('.soft-context-menu');
     assert.isNotNull(contextMenu);
+    await assertTopLevelContextMenuItemsText(['Value', 'Sort By', 'Reset Columns']);
+
   });
 
   it('lists the hideable columns in the context menu and lets the user click to toggle the visibility', async () => {
@@ -108,5 +164,20 @@ describe('data grid controller', () => {
           ['Charlie', 'Letter C'],
         ],
         renderedText);
+  });
+
+  it('lists sort by and header options when right clicking on a body row', async () => {
+    await loadComponentDocExample('data_grid_controller/basic.html');
+    await activateContextMenuOnBodyCell('Bravo');
+
+    await assertTopLevelContextMenuItemsText(['Sort By', 'Header Options']);
+    await assertSubMenuItemsText('Header Options', ['Value', 'Reset Columns']);
+    await assertSubMenuItemsText('Sort By', ['Key', 'Value']);
+  });
+
+  it('allows the parent to add custom context menu items', async () => {
+    await loadComponentDocExample('data_grid_controller/custom-context-menu-items.html');
+    await activateContextMenuOnBodyCell('Bravo');
+    await assertTopLevelContextMenuItemsText(['Sort By', 'Header Options', 'Hello World']);
   });
 });

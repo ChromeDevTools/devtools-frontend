@@ -252,3 +252,23 @@ export const calculateFirstFocusableCell =
 
       return [focusableColIndex, focusableRowIndex];
     };
+
+
+export class ContextMenuColumnSortClickEvent extends Event {
+  data: {
+    column: Column,
+  };
+
+  constructor(column: Column) {
+    super('context-menu-column-sort-click');
+    this.data = {
+      column,
+    };
+  }
+}
+
+export class ContextMenuHeaderResetClickEvent extends Event {
+  constructor() {
+    super('context-menu-header-reset-click');
+  }
+}

@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/copy.gni")
 copy_to_gen("data_grid_controller") {
   sources = [
     "basic.html",
+    "custom-context-menu-items.html",
     "filter.html",
   ]
 

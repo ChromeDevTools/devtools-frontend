@@ -168,7 +168,7 @@ export class CSSAngle extends HTMLElement {
 
   private onMiniIconClick(event: MouseEvent): void {
     event.stopPropagation();
-    if (event.shiftKey) {
+    if (event.shiftKey && !this.popoverOpen) {
       this.displayNextUnit();
       return;
     }
@@ -176,10 +176,8 @@ export class CSSAngle extends HTMLElement {
   }
 
   // Fix that the previous text will be selected when double-clicking the angle icon
-  // TODO: When the angle selector(picker) is opened, hold down Shift and click the angle icon to close it.
   private consume(event: MouseEvent): void {
     event.stopPropagation();
-    event.preventDefault();
   }
 
   private onKeydown(event: KeyboardEvent): void {
@@ -219,6 +217,7 @@ export class CSSAngle extends HTMLElement {
         devtools-css-angle-swatch {
           display: inline-block;
           margin-right: 2px;
+          user-select: none;
         }
 
         devtools-css-angle-editor {

@@ -346,8 +346,8 @@ table is empty.
   <message name="IDS_DEVTOOLS_897356954c2cd3d41b221e3f24f99bba" desc="Text in DOMStorage Items View of the Application panel">
     Key
   </message>
-  <message name="IDS_DEVTOOLS_8a6bd58d43215a9efccc3753ab42b347" desc="Manifest installability error in the Application panel">
-    Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least <ph name="MINIMUM_ICON_SIZE">$1s<ex>100</ex></ph>px is required, the sizes attribute must be set, and the purpose attribute, if set, must include &quot;any&quot; or &quot;maskable&quot;.
+  <message name="IDS_DEVTOOLS_8bd78132dbb5d2bbc6752e961a914e4b" desc="Manifest installability error in the Application panel">
+    Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least <ph name="MINIMUM_ICON_SIZE">$1s<ex>100</ex></ph>px is required, the sizes attribute must be set, and the purpose attribute, if set, must include &quot;any&quot; and should not include &quot;maskable&quot;.
   </message>
   <message name="IDS_DEVTOOLS_8bf93164da9c0dfb017c81bfc458b7b5" desc="ARIA label for a pie chart in the Clear Storage View of the Application panel">
     Storage usage
@@ -410,6 +410,9 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_a0394c82ef53a78ef470b18ecbf960b4" desc="Label for the primary icon loaded from the manifest">
     Primary icon
 as used by <ph name="LOCKED_1">Chrome</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_7221e899f1eafe09d48bbf5f26ffad22" desc="Manifest installability error in the Application panel">
+    No supplied icon is at least <ph name="MINIMUM_ICON_SIZE">$1s<ex>100</ex></ph>px square in PNG, SVG or WebP format, with the purpose attribute unset or set to &quot;any&quot;.
   </message>
   <message name="IDS_DEVTOOLS_a20961082dd1a8a90cb08914b976639b" desc="Explanatory text in the Frame Details view">
     Localhost is always a secure context
@@ -680,9 +683,6 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_f4d6426949b935ced95ef5e5d0bc5ef5" desc="Manifest installability error in the Application panel">
     No Play store ID provided
-  </message>
-  <message name="IDS_DEVTOOLS_f5649c3ccd8b0c75730dc2125db86b7c" desc="Manifest installability error in the Application panel">
-    No supplied icon is at least <ph name="MINIMUM_ICON_SIZE">$1s<ex>100</ex></ph>px square in PNG, SVG or WebP format
   </message>
   <message name="IDS_DEVTOOLS_f75623bb4626a57e8a7a3c0e1c092463" desc="Text in Cookie Items View of the Application panel">
     Select a cookie to preview its value

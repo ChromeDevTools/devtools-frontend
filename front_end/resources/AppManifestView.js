@@ -336,7 +336,7 @@ export class AppManifestView extends UI.Widget.VBox {
           }
           errorMessage = ls`Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least ${
               installabilityError.errorArguments[0]
-                  .value}px is required, the sizes attribute must be set, and the purpose attribute, if set, must include "any" or "maskable".`;
+                  .value}px is required, the sizes attribute must be set, and the purpose attribute, if set, must include "any" and should not include "maskable".`;
           break;
         case 'no-matching-service-worker':
           errorMessage = ls
@@ -349,7 +349,8 @@ export class AppManifestView extends UI.Widget.VBox {
             break;
           }
           errorMessage = ls`No supplied icon is at least ${
-              installabilityError.errorArguments[0].value}px square in PNG, SVG or WebP format`;
+              installabilityError.errorArguments[0]
+                  .value}px square in PNG, SVG or WebP format, with the purpose attribute unset or set to "any".`;
           break;
         case 'cannot-download-icon':
           errorMessage = ls`Could not download a required icon from the manifest`;

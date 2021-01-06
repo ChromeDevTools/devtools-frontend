@@ -1100,6 +1100,9 @@
   "media/PlayerPropertiesView.js | duration": {
     "message": "Duration"
   },
+  "media/PlayerPropertiesView.js | encoderName": {
+    "message": "Encoder name"
+  },
   "media/PlayerPropertiesView.js | fileSize": {
     "message": "File size"
   },
@@ -1109,8 +1112,14 @@
   "media/PlayerPropertiesView.js | hardwareDecoder": {
     "message": "Hardware decoder"
   },
+  "media/PlayerPropertiesView.js | hardwareEncoder": {
+    "message": "Hardware encoder"
+  },
   "media/PlayerPropertiesView.js | noDecoder": {
     "message": "No decoder"
+  },
+  "media/PlayerPropertiesView.js | noEncoder": {
+    "message": "No encoder"
   },
   "media/PlayerPropertiesView.js | noTextTracks": {
     "message": "No text tracks"

@@ -102,9 +102,25 @@ export const UIStrings = {
   *@description Media property signaling whether the content is encrypted
   */
   decryptingDemuxer: 'Decrypting demuxer',
+
+  /**
+  *@description Media property giving the name of the video encoder being used.
+  */
+  encoderName: 'Encoder name',
+  /**
+  *@description There is no encoder.
+  */
+  noEncoder: 'No encoder',
+  /**
+  *@description Media property signaling whether the encoder is hardware accelerated.
+  */
+  hardwareEncoder: 'Hardware encoder',
 };
+
 const str_ = i18n.i18n.registerUIStrings('media/PlayerPropertiesView.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+// Keep this enum in sync with media/base/media_log_properties.h
 /** @enum {string} */
 export const PlayerPropertyKeys = {
   kResolution: 'kResolution',
@@ -122,6 +138,8 @@ export const PlayerPropertyKeys = {
   kAudioDecoderName: 'kAudioDecoderName',
   kIsPlatformVideoDecoder: 'kIsPlatformVideoDecoder',
   kIsPlatformAudioDecoder: 'kIsPlatformAudioDecoder',
+  kVideoEncoderName: 'kVideoEncoderName',
+  kIsPlatformVideoEncoder: 'kIsPlatformVideoEncoder',
   kIsVideoDecryptingDemuxerStream: 'kIsVideoDecryptingDemuxerStream',
   kIsAudioDecryptingDemuxerStream: 'kIsAudioDecryptingDemuxerStream',
   kAudioTracks: 'kAudioTracks',
@@ -611,6 +629,16 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     const videoPlatformDecoder = new PropertyRenderer(i18nString(UIStrings.hardwareDecoder));
     this._videoDecoderElements.push(videoPlatformDecoder);
     this._attributeMap.set(PlayerPropertyKeys.kIsPlatformVideoDecoder, videoPlatformDecoder);
+
+
+    const encoderName = new DefaultPropertyRenderer(i18nString(UIStrings.encoderName), i18nString(UIStrings.noEncoder));
+    this._videoDecoderElements.push(encoderName);
+    this._attributeMap.set(PlayerPropertyKeys.kVideoEncoderName, encoderName);
+
+    const videoPlatformEncoder = new PropertyRenderer(i18nString(UIStrings.hardwareEncoder));
+    this._videoDecoderElements.push(videoPlatformEncoder);
+    this._attributeMap.set(PlayerPropertyKeys.kIsPlatformVideoEncoder, videoPlatformEncoder);
+
 
     const videoDDS = new PropertyRenderer(i18nString(UIStrings.decryptingDemuxer));
     this._videoDecoderElements.push(videoDDS);

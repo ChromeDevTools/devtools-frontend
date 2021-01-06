@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-
+import type * as puppeteer from 'puppeteer';
 import {getDataGrid, getDataGridController, getInnerTextOfDataGridCells} from '../../e2e/helpers/datagrid-helpers.js';
 import {$, $$, $textContent, click, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample} from '../helpers/shared.js';
+import {platform} from '../../shared/helper.js';
 
 async function activateContextMenuOnColumnHeader(headerText: string) {
   const dataGridController = await getDataGridController();
@@ -24,6 +25,23 @@ async function activateContextMenuOnColumnHeader(headerText: string) {
   return headerCell;
 }
 
+async function findSubMenuEntryItem(text: string): Promise<puppeteer.ElementHandle<Element>> {
+  /**
+   * On Mac the context menu adds the ▶ icon to the sub menu entry points in the
+   * context menu, but on Linux/Windows it uses an image. So we search for
+   * textContent with and without the ▶ symbol to find the match regardless of
+   * the platform the tests are running on.
+   */
+  const textToSearchFor = platform === 'mac' ? `${text}▶` : text;
+  const matchingElement = await $textContent(textToSearchFor);
+
+  if (!matchingElement) {
+    const allItems = await $$('.soft-context-menu > .soft-context-menu-item');
+    const allItemsText = await Promise.all(allItems.map(item => item.evaluate(div => div.textContent)));
+    assert.fail(`Could not find "${text}" option on context menu. Found items: ${allItemsText.join(' | ')}`);
+  }
+  return matchingElement;
+}
 
 describe('data grid controller', () => {
   it('lets the user right click on a header to show the context menu', async () => {
@@ -68,16 +86,7 @@ describe('data grid controller', () => {
     if (!contextMenu) {
       assert.fail('Could not find context menu.');
     }
-    const sortBy = await $textContent('Sort By');
-    if (!sortBy) {
-      const allItems = await $$('.soft-context-menu > .soft-context-menu-item');
-      const allItemsText = await Promise.all(allItems.map(item => item.evaluate(div => div.textContent)));
-      // This test has flaked randomly on CQ and we're not sure why. Not going to fail it for now and will log out more info to help with debugging.
-      console.error('Test would have failed!');
-      // eslint-disable-next-line no-console
-      console.log(`Could not find sort by option on context menu. Found items: ${allItemsText.join(' | ')}`);
-      return;
-    }
+    const sortBy = await findSubMenuEntryItem('Sort By');
     await sortBy.hover();
 
     const keyColumnSort = await waitFor('[aria-label="Key"]');

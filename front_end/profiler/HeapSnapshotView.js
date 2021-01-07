@@ -1687,7 +1687,8 @@ export class HeapProfileHeader extends ProfileHeader {
       return;
     }
     const serializedMessage = /** @type {string} */ (data);
-    const messageObject = Common.UIString.deserializeUIString(serializedMessage);
+    const messageObject = /** @type {!{messageParts: string, values: !Array<*>}} */ (
+        Common.UIString.deserializeUIString(serializedMessage));
     this.updateStatus(ls(messageObject.messageParts, messageObject.values));
   }
 

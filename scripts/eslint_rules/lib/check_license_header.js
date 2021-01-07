@@ -117,7 +117,7 @@ const OTHER_LICENSE_HEADERS = [
   'object_ui/ObjectPropertiesSection.js',
   'perf_ui/TimelineGrid.js',
   'platform/utilities.js',
-  'platform/UIString.js',
+  'platform/UIString.ts',
   'resources/ApplicationPanelSidebar.js',
   'resources/CookieItemsView.js',
   'resources/DOMStorageItemsView.js',

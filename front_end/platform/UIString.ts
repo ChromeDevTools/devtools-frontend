@@ -31,31 +31,17 @@
 
 import * as StringUtilities from './string-utilities.js';
 
-/**
- * @param {string} string
- * @param {...*} vararg
- * @return {string}
- */
-export function UIString(string, ...vararg) {
+export function UIString(string: string, ..._vararg: unknown[]): string {
   return StringUtilities.vsprintf(localize(string), Array.prototype.slice.call(arguments, 1));
 }
 
-/**
- * @param {string} string
- * @param {?ArrayLike<*>} values
- * @return {string}
- */
-export function serializeUIString(string, values = []) {
+export function serializeUIString(string: string, values: unknown[] = []): string {
   const messageParts = [string];
   const serializedMessage = {messageParts, values};
   return JSON.stringify(serializedMessage);
 }
 
-/**
- * @param {string=} serializedMessage
- * @return {*}
- */
-export function deserializeUIString(serializedMessage) {
+export function deserializeUIString(serializedMessage?: string): unknown {
   if (!serializedMessage) {
     return {};
   }
@@ -63,59 +49,32 @@ export function deserializeUIString(serializedMessage) {
   return JSON.parse(serializedMessage);
 }
 
-/**
- * @param {string} string
- * @return {string}
- */
-export function localize(string) {
+export function localize(string: string): string {
   return string;
 }
 
 export class UIStringFormat {
-  /**
-   * @param {string} format
-   */
-  constructor(format) {
-    /** @type {string} */
-    this._localizedFormat = localize(format);
-    /** @type {!Array.<!StringUtilities.FormatterToken>} */
-    this._tokenizedFormat =
-        StringUtilities.tokenizeFormatString(this._localizedFormat, StringUtilities.standardFormatters);
+  private localizedFormat: string;
+  private tokenizedFormat: StringUtilities.FormatterToken[];
+
+  constructor(format: string) {
+    this.localizedFormat = localize(format);
+    this.tokenizedFormat =
+        StringUtilities.tokenizeFormatString(this.localizedFormat, StringUtilities.standardFormatters);
   }
 
-  /**
-   * @param {string} a
-   * @param {*} b
-   * @return {string}
-   */
-  static _append(a, b) {
-    return a + b;
-  }
-
-  /**
-   * @param {...*} vararg
-   * @return {string}
-   */
-  format(vararg) {
-    // the code here uses odd generics that Closure likes but TS doesn't
-    // so rather than fight to typecheck this in a dodgy way we just let TS ignore it
-    // @ts-ignore
+  format(..._vararg: unknown[]): string {
     return StringUtilities
         .format(
-            this._localizedFormat, arguments, StringUtilities.standardFormatters, '', UIStringFormat._append,
-            this._tokenizedFormat)
+            this.localizedFormat, arguments, StringUtilities.standardFormatters, '', (a, b) => a + b,
+            this.tokenizedFormat)
         .formattedResult;
   }
 }
 
 const _substitutionStrings = new WeakMap();
 
-/**
- * @param {!ITemplateArray|string} strings
- * @param {...*} vararg
- * @return {string}
- */
-export function ls(strings, ...vararg) {
+export function ls(strings: ITemplateArray|string, ...vararg: unknown[]): string {
   if (typeof strings === 'string') {
     return strings;
   }
@@ -124,6 +83,5 @@ export function ls(strings, ...vararg) {
     substitutionString = strings.join('%s');
     _substitutionStrings.set(strings, substitutionString);
   }
-  // @ts-ignore TS gets confused with the arguments slicing
   return UIString(substitutionString, ...vararg);
 }

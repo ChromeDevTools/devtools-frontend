@@ -83,10 +83,14 @@ const nodeUIsByNode = new WeakMap();
 /** @type {!WeakMap<!HTMLElement, number>} */
 const playbackRates = new WeakMap();
 
+/** @type {!AnimationTimeline} */
+let animationTimelineInstance;
+
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!AnimationModel>}
  */
 export class AnimationTimeline extends UI.Widget.VBox {
+  /** @private */
   constructor() {
     super(true);
     this.registerRequiredCSS('animation/animationTimeline.css', {enableLegacyPatching: false});
@@ -137,6 +141,13 @@ export class AnimationTimeline extends UI.Widget.VBox {
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
     SDK.SDKModel.TargetManager.instance().observeModels(AnimationModel, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._nodeChanged, this);
+  }
+
+  static instance() {
+    if (!animationTimelineInstance) {
+      animationTimelineInstance = new AnimationTimeline();
+    }
+    return animationTimelineInstance;
   }
 
   /**

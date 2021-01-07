@@ -9,6 +9,7 @@ devtools_module_entrypoint_sources = [
   "accessibility/accessibility-meta.js",
   "accessibility/accessibility.js",
   "animation/animation-legacy.js",
+  "animation/animation-meta.js",
   "animation/animation.js",
   "bindings/bindings-legacy.js",
   "bindings/bindings.js",

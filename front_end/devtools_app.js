@@ -9,6 +9,7 @@ import './network/network-meta.js';
 import './security/security-meta.js';
 import './emulation/emulation-meta.js';
 import './accessibility/accessibility-meta.js';
+import './animation/animation-meta.js';
 import * as Startup from './startup/startup.js';
 
 Startup.RuntimeInstantiator.startApplication('devtools_app');

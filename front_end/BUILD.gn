@@ -15,6 +15,7 @@ group("front_end") {
     "accessibility:bundle",
     "accessibility:meta",
     "animation:bundle",
+    "animation:meta",
     "bindings:bundle",
     "browser_debugger:bundle",
     "browser_debugger:meta",

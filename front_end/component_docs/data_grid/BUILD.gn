@@ -6,7 +6,14 @@ import("../../../scripts/build/ninja/copy.gni")
 import("../../../third_party/typescript/typescript.gni")
 
 ts_library("ts") {
-  sources = [ "basic.ts" ]
+  sources = [
+    "adding-data.ts",
+    "basic.ts",
+    "empty.ts",
+    "hide-cols.ts",
+    "sticky-headers.ts",
+    "three_columns.ts",
+  ]
 
   deps = [
     "../../../test/unittests/front_end/helpers",

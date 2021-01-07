@@ -7,9 +7,6 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', 'scripts', 'eslint_rules', 'lib');
 
 module.exports = {
-  'rules': {
-    'no-implicit-coercion': 2,
-  },
   'overrides': [{
     'files': ['*.ts'],
     'rules': {

@@ -73,12 +73,12 @@ function rewriteSource(refactoringNamespace: string, source: string) {
           const fullName = `${computeNamespaceName(refactoringNamespace)}.${getFullTypeName(topLevelAssignment)}`;
 
           try {
-            const usedInModuleJson = !!child_process.execSync(
-                `grep --include=\*module.json -r ${fullName} ${FRONT_END_FOLDER} || true`, {encoding: 'utf8'});
+            const usedInModuleJson = Boolean(child_process.execSync(
+                `grep --include=\*module.json -r ${fullName} ${FRONT_END_FOLDER} || true`, {encoding: 'utf8'}));
             const usedInLayoutTests =
-                !!child_process.execSync(`grep -r ${fullName} ${TEST_FOLDER} || true`, {encoding: 'utf8'});
-            const usedInLayoutTestRunners = !!child_process.execSync(
-                `grep --include=\*test_runner\*.js -r ${fullName} ${FRONT_END_FOLDER} || true`, {encoding: 'utf8'});
+                Boolean(child_process.execSync(`grep -r ${fullName} ${TEST_FOLDER} || true`, {encoding: 'utf8'}));
+            const usedInLayoutTestRunners = Boolean(child_process.execSync(
+                `grep --include=\*test_runner\*.js -r ${fullName} ${FRONT_END_FOLDER} || true`, {encoding: 'utf8'}));
 
             if (!usedInModuleJson && !usedInLayoutTests && !usedInLayoutTestRunners) {
               removedExports.push(assignment.right.name);

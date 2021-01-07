@@ -144,7 +144,7 @@ function checkShouldAddExampleTag(keys) {
     return false;
   }
   const stringObjs = [...keys.values()];
-  const stringsWithArgument = stringObjs.filter(stringObj => !!stringObj.arguments);
+  const stringsWithArgument = stringObjs.filter(stringObj => Boolean(stringObj.arguments));
   return stringsWithArgument.length > 0;
 }
 

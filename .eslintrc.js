@@ -79,6 +79,7 @@ module.exports = {
     'radix': 2,
     'valid-typeof': 2,
     'no-return-assign': [2, 'always'],
+    'no-implicit-coercion': 2,
 
     // es2015 features
     'require-yield': 2,

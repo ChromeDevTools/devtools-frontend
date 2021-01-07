@@ -34,7 +34,7 @@ const onFileChange = (_, fileName) => {
 
   // If the exitCode is null, autoninja is still running so stop it
   // and try to restart it again.
-  const ninjaProcessExists = !!(autoninja && autoninja.pid);
+  const ninjaProcessExists = Boolean(autoninja && autoninja.pid);
   if (ninjaProcessExists) {
     const isRunning = ninjaProcessExists && autoninja.exitCode === null;
     if (isRunning) {

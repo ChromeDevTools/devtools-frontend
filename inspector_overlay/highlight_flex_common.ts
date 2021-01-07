@@ -125,12 +125,13 @@ function drawFlexSpace(
   const mainGapSpace = isHorizontalFlow ? columnGapSpace : rowGapSpace;
   const crossGapSpace = isHorizontalFlow ? rowGapSpace : columnGapSpace;
 
-  const drawMainSpace = mainDistributedSpace && !!(mainDistributedSpace.fillColor || mainDistributedSpace.hatchColor);
+  const drawMainSpace =
+      mainDistributedSpace && Boolean(mainDistributedSpace.fillColor || mainDistributedSpace.hatchColor);
   const drawCrossSpace = lineQuads.length > 1 && crossDistributedSpace &&
-      !!(crossDistributedSpace.fillColor || crossDistributedSpace.hatchColor);
-  const drawMainGapSpace = mainGapSpace && !!(mainGapSpace.fillColor || mainGapSpace.hatchColor);
+      Boolean(crossDistributedSpace.fillColor || crossDistributedSpace.hatchColor);
+  const drawMainGapSpace = mainGapSpace && Boolean(mainGapSpace.fillColor || mainGapSpace.hatchColor);
   const drawCrossGapSpace =
-      lineQuads.length > 1 && crossGapSpace && !!(crossGapSpace.fillColor || crossGapSpace.hatchColor);
+      lineQuads.length > 1 && crossGapSpace && Boolean(crossGapSpace.fillColor || crossGapSpace.hatchColor);
 
   const isSameStyle = mainDistributedSpace && crossDistributedSpace && mainGapSpace && crossGapSpace &&
       mainDistributedSpace.fillColor === crossDistributedSpace.fillColor &&

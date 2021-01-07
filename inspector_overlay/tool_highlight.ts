@@ -141,10 +141,10 @@ export class HighlightOverlay extends Overlay {
 
     this.context.save();
 
-    const rulerAtRight =
-        !!(highlight.paths.length && highlight.showRulers && bounds.minX < 20 && bounds.maxX + 20 < this.canvasWidth);
-    const rulerAtBottom =
-        !!(highlight.paths.length && highlight.showRulers && bounds.minY < 20 && bounds.maxY + 20 < this.canvasHeight);
+    const rulerAtRight = Boolean(
+        highlight.paths.length && highlight.showRulers && bounds.minX < 20 && bounds.maxX + 20 < this.canvasWidth);
+    const rulerAtBottom = Boolean(
+        highlight.paths.length && highlight.showRulers && bounds.minY < 20 && bounds.maxY + 20 < this.canvasHeight);
 
     if (highlight.showRulers) {
       this.drawAxis(this.context, rulerAtRight, rulerAtBottom);

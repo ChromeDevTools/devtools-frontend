@@ -280,7 +280,7 @@ const getEventMapping =
     };
 
 const isWeakInterface = (params: Protocol.PropertyType[]): boolean => {
-  return params.every(p => !!p.optional);
+  return params.every(p => Boolean(p.optional));
 };
 
 const getCommandMapping = (command: Protocol.Command, domainName: string,

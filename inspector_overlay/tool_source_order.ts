@@ -86,11 +86,11 @@ export class SourceOrderOverlay extends Overlay {
     const outlineColor = path.outlineColor;
 
     this.context.save();
-    _drawPath(this.context, path.path, outlineColor, !!sourceOrder, bounds, this.emulationScaleFactor);
+    _drawPath(this.context, path.path, outlineColor, Boolean(sourceOrder), bounds, this.emulationScaleFactor);
     this.context.restore();
 
     this.context.save();
-    if (!!sourceOrder) {
+    if (Boolean(sourceOrder)) {
       this.drawSourceOrderLabel(sourceOrder, outlineColor, bounds);
     }
     this.context.restore();

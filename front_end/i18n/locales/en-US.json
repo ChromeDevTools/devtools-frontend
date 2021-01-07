@@ -1277,9 +1277,6 @@
   "mobile_throttling/ThrottlingSettingsTab.js | dskbs": {
     "message": "{PH1}{PH2}kB/s"
   },
-  "mobile_throttling/ThrottlingSettingsTab.js | dsmbs": {
-    "message": "{PH1}{PH2}MB/s"
-  },
   "mobile_throttling/ThrottlingSettingsTab.js | fsmbs": {
     "message": "{PH1}{PH2}MB/s"
   },

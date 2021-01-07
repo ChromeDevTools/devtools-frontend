@@ -79,12 +79,6 @@ export const UIStrings = {
   *@example { } PH2
   */
   fsmbs: '{PH1}{PH2}MB/s',
-  /**
-  *@description Text in Throttling Settings Tab of the Network panel
-  *@example {25} PH1
-  *@example { } PH2
-  */
-  dsmbs: '{PH1}{PH2}MB/s',
 };
 const str_ = i18n.i18n.registerUIStrings('mobile_throttling/ThrottlingSettingsTab.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -349,5 +343,7 @@ export function throughputText(throughput, plainText) {
     const formattedResult = (throughputInKbps / 1000).toFixed(1);
     return i18nString(UIStrings.fsmbs, {PH1: formattedResult, PH2: delimiter});
   }
-  return i18nString(UIStrings.dsmbs, {PH1: (throughputInKbps / 1000) | 0, PH2: delimiter});
+  // TODO(petermarshall): Figure out if there is a difference we need to tell i18n about
+  // for these two versions: one with decimal places and one without.
+  return i18nString(UIStrings.fsmbs, {PH1: (throughputInKbps / 1000) | 0, PH2: delimiter});
 }

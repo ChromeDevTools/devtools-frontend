@@ -11,6 +11,7 @@ copy_to_gen("console") {
     "built-ins.html",
     "console-filter.html",
     "cookie-issue.html",
+    "data-url-exceptions.html",
     "document-write.html",
     "dom-interactions.html",
     "escaping.html",

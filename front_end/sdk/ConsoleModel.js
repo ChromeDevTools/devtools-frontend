@@ -688,7 +688,8 @@ export class ConsoleMessage {
 
     return (this.runtimeModel() === msg.runtimeModel()) && (this.source === msg.source) && (this.type === msg.type) &&
         (this.level === msg.level) && (this.line === msg.line) && (this.url === msg.url) &&
-        (this.messageText === msg.messageText) && (this.executionContextId === msg.executionContextId);
+        (this.scriptId === msg.scriptId) && (this.messageText === msg.messageText) &&
+        (this.executionContextId === msg.executionContextId);
   }
 
   /**

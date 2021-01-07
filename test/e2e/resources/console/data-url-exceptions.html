@@ -1,0 +1,26 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<script>
+  const script1Contents = "function foo1() { fail(); } \n function foo2() { foo1(); }";
+  const script2Contents = "function bar1() { foo2(); } \n function bar2() { bar1(); } \n bar2();";
+  const repeatingScript = "for (let i = 0; i < 5; i++) {console.log('msg');}";
+
+  function fail() {
+    throw new Error("Failed");
+  }
+
+  function injectDataScript(script) {
+    const url = "data:text/javascript;base64," + btoa(script);
+    const element = document.createElement("script");
+    element.setAttribute("src", url);
+    document.documentElement.appendChild(element);
+  }
+
+  eval(repeatingScript);
+  injectDataScript(repeatingScript);
+  injectDataScript(script1Contents);
+  injectDataScript(script2Contents);
+</script>

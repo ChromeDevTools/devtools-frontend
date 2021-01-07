@@ -177,6 +177,23 @@ describe('The Console Tab', async () => {
     ]);
   });
 
+  it('can handle repeated messages from data URLs in exceptions', async () => {
+    const messages =
+        await getConsoleMessages('data-url-exceptions', false, () => waitForConsoleMessagesToBeNonEmpty(1));
+
+    assert.deepEqual(messages, [
+      'msg',  // 5 times from eval script, collapsed
+      'msg',  // 5 times from data url script, collapsed
+      `Uncaught Error: Failed
+    at fail (data-url-exceptions.html:12)
+    at foo1 (data:text/javascript…pIHsgZm9vMSgpOyB9:1)
+    at foo2 (data:text/javascript…pIHsgZm9vMSgpOyB9:2)
+    at bar1 (data:text/javascript…9IAogYmFyMigpOw==:1)
+    at bar2 (data:text/javascript…9IAogYmFyMigpOw==:2)
+    at data:text/javascript…9IAogYmFyMigpOw==:3`,
+    ]);
+  });
+
   it('can show stackoverflow exceptions', async () => {
     const messages = await getConsoleMessages('stack-overflow', false, () => waitForConsoleMessagesToBeNonEmpty(1));
 

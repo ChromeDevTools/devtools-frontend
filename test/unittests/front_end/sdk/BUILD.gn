@@ -5,6 +5,7 @@ ts_library("sdk") {
   sources = [
     "AccessibilityModel_test.ts",
     "CSSPropertyParser_test.ts",
+    "ConsoleModel_test.ts",
     "CookieModel_test.ts",
     "CookieParser_test.ts",
     "Cookie_test.ts",

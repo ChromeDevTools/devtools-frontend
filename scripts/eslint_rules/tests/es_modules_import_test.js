@@ -108,6 +108,11 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import * as UI from \'../../../front_end/ui/ui.js\';',
       filename: 'test/unittests/front_end/foo.js',
     },
+    // Component doc files can reach into the test directory to use the helpers
+    {
+      code: 'import * as FrontendHelpers from \'../../../test/unittests/front_end/helpers/EnvironmentHelpers.js\'',
+      filename: 'front_end/component_docs/data_grid/basic.ts',
+    },
   ],
 
   invalid: [

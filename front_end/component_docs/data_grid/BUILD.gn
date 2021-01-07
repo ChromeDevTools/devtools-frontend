@@ -3,6 +3,17 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/copy.gni")
+import("../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  sources = [ "basic.ts" ]
+
+  deps = [
+    "../../../test/unittests/front_end/helpers",
+    "../../component_helpers:bundle",
+    "../../ui/components:bundle",
+  ]
+}
 
 copy_to_gen("data_grid") {
   sources = [
@@ -14,9 +25,5 @@ copy_to_gen("data_grid") {
     "three_columns.html",
   ]
 
-  deps = [
-    "../../../test/unittests/front_end/helpers",
-    "../../component_helpers:bundle",
-    "../../ui/components:bundle",
-  ]
+  deps = [ ":ts" ]
 }

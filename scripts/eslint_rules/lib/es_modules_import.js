@@ -13,6 +13,7 @@ const path = require('path');
 const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
 const UNITTESTS_DIRECTORY = path.join(__dirname, '..', '..', '..', 'test', 'unittests');
 const INSPECTOR_OVERLAY_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end', 'inspector_overlay');
+const COMPONENT_DOCS_DIRECTORY = path.join(FRONT_END_DIRECTORY, 'component_docs');
 
 const EXEMPTED_THIRD_PARTY_MODULES = new Set([
   // wasmparser is exempt as it doesn't expose all its modules from the root file
@@ -78,6 +79,11 @@ function nodeSpecifiersImportLsOnly(specifiers) {
 
 function checkStarImport(context, node, importPath, importingFileName, exportingFileName) {
   if (isModuleEntrypoint(importingFileName)) {
+    return;
+  }
+
+  if (importingFileName.startsWith(COMPONENT_DOCS_DIRECTORY) &&
+      importPath.includes(path.join('front_end', 'helpers'))) {
     return;
   }
 
@@ -162,6 +168,7 @@ module.exports = {
         }
 
         const importingFileIsUnitTestFile = importingFileName.startsWith(UNITTESTS_DIRECTORY);
+        const importingFileIsComponentDocsFile = importingFileName.startsWith(COMPONENT_DOCS_DIRECTORY);
         if (!importingFileName.startsWith(FRONT_END_DIRECTORY) && !importingFileIsUnitTestFile) {
           return;
         }
@@ -186,7 +193,7 @@ module.exports = {
            */
           return;
         }
-        if (importPath.includes('/front_end/') && !importingFileIsUnitTestFile) {
+        if (importPath.includes('/front_end/') && !importingFileIsUnitTestFile && !importingFileIsComponentDocsFile) {
           context.report({
             node,
             message:

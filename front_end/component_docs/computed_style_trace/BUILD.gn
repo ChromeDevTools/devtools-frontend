@@ -4,8 +4,16 @@
 
 import("../../../scripts/build/ninja/copy.gni")
 
+import("../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  sources = [ "basic.ts" ]
+
+  deps = [ "../../elements:bundle" ]
+}
+
 copy_to_gen("computed_style_trace") {
   sources = [ "basic.html" ]
 
-  deps = [ "../../elements" ]
+  deps = [ ":ts" ]
 }

@@ -19,25 +19,6 @@
     <div id="container">
       <input type="color" id="picker">
     </div>
-    <script type="module">
-      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-      import {ColorSwatch} from '../../inline_editor/ColorSwatch.js';
-
-      const container = document.querySelector("#container");
-      const picker = document.querySelector("#picker");
-
-      ComponentHelpers.ComponentServerSetup.setup().then(() => {
-        const component = new ColorSwatch();
-        document.getElementById('container').appendChild(component);
-        component.renderColor('#f06');
-        container.insertBefore(component, picker);
-
-        picker.addEventListener('input', e => {
-          component.renderColor(e.target.value);
-        });
-
-        component.addEventListener('swatch-click', () => picker.click());
-      });
-    </script>
+    <script type="module" src="./change-color.js"></script>
   </body>
 </html>

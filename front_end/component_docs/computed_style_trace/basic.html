@@ -20,27 +20,6 @@
     <div id="container">
     </div>
 
-    <script type="module">
-      import {ComputedStyleTrace} from '../../elements/ComputedStyleTrace.js';
-
-      const component = new ComputedStyleTrace();
-
-      const traceValue = document.createElement('span');
-      traceValue.textContent = 'block';
-      traceValue.slot = 'trace-value';
-      component.appendChild(traceValue);
-
-      const traceLink = document.createElement('span');
-      traceLink.textContent = 'user agent stylesheet';
-      traceLink.slot = 'trace-link';
-      component.appendChild(traceLink);
-
-      document.getElementById('container').appendChild(component);
-      component.data = {
-        selector: 'body',
-        active: true,
-        onNavigateToSource: () => {},
-      };
-    </script>
+    <script type="module" src="./basic.js"></script>
   </body>
 </html>

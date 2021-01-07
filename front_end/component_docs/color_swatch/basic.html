@@ -27,38 +27,6 @@
   <body>
     <ul id="container">
     </ul>
-    <script type="module">
-      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-      import {ColorSwatch} from '../../inline_editor/ColorSwatch.js';
-
-      function appendExample(swatch) {
-        const li = document.createElement('li');
-        li.appendChild(swatch);
-        document.querySelector('#container').appendChild(li);
-      }
-
-      ComponentHelpers.ComponentServerSetup.setup().then(() => {
-        // Simple
-        let component = new ColorSwatch();
-        component.renderColor('#f06');
-        appendExample(component);
-
-        // No text next to the swatch
-        component = new ColorSwatch();
-        component.renderColor('gold');
-        let content = document.createElement('span');
-        content.textContent = '';
-        component.appendChild(content);
-        appendExample(component);
-
-        // Custom content
-        component = new ColorSwatch();
-        component.renderColor('rebeccapurple');
-        content = document.createElement('span');
-        content.textContent = 'custom content';
-        component.appendChild(content);
-        appendExample(component);
-      });
-    </script>
+    <script type="module" src="./basic.js"></script>
   </body>
 </html>

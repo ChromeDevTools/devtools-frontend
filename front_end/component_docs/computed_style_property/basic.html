@@ -20,27 +20,6 @@
     <div id="container">
     </div>
 
-    <script type="module">
-      import {ComputedStyleProperty} from '../../elements/ComputedStyleProperty.js';
-
-      const component = new ComputedStyleProperty();
-
-      const propertyName = document.createElement('span');
-      propertyName.textContent = 'display';
-      propertyName.slot = 'property-name';
-      component.appendChild(propertyName);
-
-      const propertyValue = document.createElement('span');
-      propertyValue.textContent = 'block';
-      propertyValue.slot = 'property-value';
-      component.appendChild(propertyValue);
-
-      document.getElementById('container').appendChild(component);
-      component.data = {
-        inherited: true,
-        expanded: false,
-        onNavigateToSource: () => {},
-      };
-    </script>
+    <script type="module" src="./basic.js"></script>
   </body>
 </html>

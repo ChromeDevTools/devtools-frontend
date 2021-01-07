@@ -3,6 +3,16 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/copy.gni")
+import("../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  sources = [
+    "basic.ts",
+    "change-color.ts",
+  ]
+
+  deps = [ "../../inline_editor:bundle" ]
+}
 
 copy_to_gen("color_swatch") {
   sources = [
@@ -10,5 +20,5 @@ copy_to_gen("color_swatch") {
     "change-color.html",
   ]
 
-  deps = [ "../../inline_editor" ]
+  deps = [ ":ts" ]
 }

@@ -85,7 +85,7 @@ export class LegacyActionRegistration extends Common.ObjectWrapper.ObjectWrapper
   }
 
   toggleWithRedColor(): boolean {
-    return !!this.actionDescriptor().toggleWithRedColor;
+    return Boolean(this.actionDescriptor().toggleWithRedColor);
   }
 
   setEnabled(enabled: boolean): void {
@@ -117,7 +117,7 @@ export class LegacyActionRegistration extends Common.ObjectWrapper.ObjectWrapper
   }
 
   toggleable(): boolean {
-    return !!this.actionDescriptor().toggleable;
+    return Boolean(this.actionDescriptor().toggleable);
   }
 
   title(): string {
@@ -187,7 +187,7 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
   }
 
   toggleWithRedColor(): boolean {
-    return !!this.actionRegistration.toggleWithRedColor;
+    return Boolean(this.actionRegistration.toggleWithRedColor);
   }
 
   setEnabled(enabled: boolean): void {
@@ -215,7 +215,7 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
   }
 
   toggleable(): boolean {
-    return !!this.actionRegistration.toggleable;
+    return Boolean(this.actionRegistration.toggleable);
   }
 
   title(): string {
@@ -262,7 +262,7 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
   }
 
   canInstantiate(): boolean {
-    return !!this.actionRegistration.loadActionDelegate;
+    return Boolean(this.actionRegistration.loadActionDelegate);
   }
 
   bindings(): Array<Binding>|undefined {

@@ -130,7 +130,7 @@ export class Item {
           type: 'checkbox',
           id: this._id,
           label: this._label,
-          checked: !!this._checked,
+          checked: Boolean(this._checked),
           enabled: !this._disabled,
           subItems: undefined
         };
@@ -367,7 +367,7 @@ export class SubMenu extends Item {
       checked: undefined
     };
 
-    const nonEmptySections = this._sectionList.filter(section => !!section._items.length);
+    const nonEmptySections = this._sectionList.filter(section => Boolean(section._items.length));
     for (const section of nonEmptySections) {
       for (const item of section._items) {
         if (!result.subItems) {
@@ -436,7 +436,7 @@ export class ContextMenu extends SubMenu {
     this._pendingTargets = [];
     /** @type {!MouseEvent} */
     this._event = mouseEvent;
-    this._useSoftMenu = !!useSoftMenu;
+    this._useSoftMenu = Boolean(useSoftMenu);
     this._x = x === undefined ? mouseEvent.x : x;
     this._y = y === undefined ? mouseEvent.y : y;
     /** @type {!Map<number, function():*>} */

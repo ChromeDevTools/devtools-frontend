@@ -75,8 +75,8 @@ export class Icon extends HTMLSpanElement {
     if (this._descriptor) {
       this.classList.toggle('spritesheet-' + this._descriptor.spritesheet, value);
       this.classList.toggle(this._iconType, value);
-      this.classList.toggle('icon-mask', value && !!this._descriptor.isMask);
-      this.classList.toggle('icon-invert', value && !!this._descriptor.invert);
+      this.classList.toggle('icon-mask', value && Boolean(this._descriptor.isMask));
+      this.classList.toggle('icon-invert', value && Boolean(this._descriptor.invert));
     }
   }
 

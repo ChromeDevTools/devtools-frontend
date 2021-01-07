@@ -827,7 +827,7 @@ export class DebuggerLanguagePluginManager {
   hasPluginForScript(script) {
     const rawModuleId = rawModuleIdForScript(script);
     const rawModuleHandle = this._rawModuleHandles.get(rawModuleId);
-    return !!rawModuleHandle && rawModuleHandle.scripts.includes(script);
+    return rawModuleHandle !== undefined && rawModuleHandle.scripts.includes(script);
   }
 
   /**

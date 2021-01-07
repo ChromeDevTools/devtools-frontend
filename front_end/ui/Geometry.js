@@ -485,7 +485,7 @@ export class Size {
    * @return {boolean}
    */
   isEqual(size) {
-    return !!size && this.width === size.width && this.height === size.height;
+    return size !== null && this.width === size.width && this.height === size.height;
   }
 
   /**
@@ -541,7 +541,7 @@ export class Insets {
    * @return {boolean}
    */
   isEqual(insets) {
-    return !!insets && this.left === insets.left && this.top === insets.top && this.right === insets.right &&
+    return insets !== null && this.left === insets.left && this.top === insets.top && this.right === insets.right &&
         this.bottom === insets.bottom;
   }
 }
@@ -566,7 +566,7 @@ export class Rect {
    * @return {boolean}
    */
   isEqual(rect) {
-    return !!rect && this.left === rect.left && this.top === rect.top && this.width === rect.width &&
+    return rect !== null && this.left === rect.left && this.top === rect.top && this.width === rect.width &&
         this.height === rect.height;
   }
 
@@ -629,7 +629,8 @@ export class Constraints {
    * @return {boolean}
    */
   isEqual(constraints) {
-    return !!constraints && this.minimum.isEqual(constraints.minimum) && this.preferred.isEqual(constraints.preferred);
+    return constraints !== null && this.minimum.isEqual(constraints.minimum) &&
+        this.preferred.isEqual(constraints.preferred);
   }
 
   /**

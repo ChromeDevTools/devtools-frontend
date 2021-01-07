@@ -231,7 +231,7 @@ export class Fragment {
       }
       return node;
     }
-    return document.createTextNode('' + value);
+    return document.createTextNode(String(value));
   }
 }
 

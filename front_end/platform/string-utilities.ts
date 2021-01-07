@@ -91,7 +91,7 @@ export const tokenizeFormatString = function(
   let substitutionIndex = 0;
   const re =
       new RegExp(`%%|%(?:(\\d+)\\$)?(?:\\.(\\d*))?([${Object.keys(formatters).join('')}])|\\u001b\\[(\\d+)m`, 'g');
-  for (let match = re.exec(formatString); !!match; match = re.exec(formatString)) {
+  for (let match = re.exec(formatString); match !== null; match = re.exec(formatString)) {
     const matchStart = match.index;
     if (matchStart > textStart) {
       addStringToken(formatString.substring(textStart, matchStart));

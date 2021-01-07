@@ -193,10 +193,10 @@ export class SearchableView extends VBox {
   _loadSetting() {
     const settingValue = this._setting ? (this._setting.get() || {}) : {};
     if (this._searchProvider.supportsCaseSensitiveSearch() && this._caseSensitiveButton) {
-      this._caseSensitiveButton.setToggled(!!settingValue.caseSensitive);
+      this._caseSensitiveButton.setToggled(Boolean(settingValue.caseSensitive));
     }
     if (this._searchProvider.supportsRegexSearch() && this._regexButton) {
-      this._regexButton.setToggled(!!settingValue.isRegex);
+      this._regexButton.setToggled(Boolean(settingValue.isRegex));
     }
   }
 
@@ -249,7 +249,7 @@ export class SearchableView extends VBox {
    * @return {boolean}
    */
   isSearchVisible() {
-    return !!this._searchIsVisible;
+    return Boolean(this._searchIsVisible);
   }
 
   closeSearch() {
@@ -474,7 +474,7 @@ export class SearchableView extends VBox {
   _clearSearch() {
     const untypedSearchProvider = /** @type {*} */ (this._searchProvider);
     delete this._currentQuery;
-    if (!!untypedSearchProvider.currentQuery) {
+    if (Boolean(untypedSearchProvider.currentQuery)) {
       delete untypedSearchProvider.currentQuery;
       this._searchProvider.searchCanceled();
     }

@@ -574,9 +574,9 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     expressionRange.setStartBefore(this.element());
     const completionRequestId = ++this._completionRequestId;
     const completions =
-        await this._loadCompletions.call(null, expressionRange.toString(), wordQueryRange.toString(), !!force);
+        await this._loadCompletions.call(null, expressionRange.toString(), wordQueryRange.toString(), Boolean(force));
     this._completionsReady(
-        completionRequestId, /** @type {!Selection} */ (selection), wordQueryRange, !!force, completions);
+        completionRequestId, /** @type {!Selection} */ (selection), wordQueryRange, Boolean(force), completions);
   }
 
   disableDefaultSuggestionForEmptyInput() {
@@ -623,7 +623,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
 
     // Filter out dupes.
     const store = new Set();
-    completions = completions.filter(item => !store.has(item.text) && !!store.add(item.text));
+    completions = completions.filter(item => !store.has(item.text) && Boolean(store.add(item.text)));
 
     if (query || force) {
       if (query) {
@@ -654,7 +654,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     this._queryRange = new TextUtils.TextRange.TextRange(
         0, beforeRange.toString().length, 0, beforeRange.toString().length + fullWordRange.toString().length);
 
-    const shouldSelect = !this._disableDefaultSuggestionForEmptyInput || !!this.text();
+    const shouldSelect = !this._disableDefaultSuggestionForEmptyInput || Boolean(this.text());
     if (this._suggestBox) {
       this._suggestBox.updateSuggestions(
           this._boxForAnchorAtStart(selection, fullWordRange), completions, shouldSelect, !this._isCaretAtEndOfPrompt(),
@@ -729,7 +729,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   isSuggestBoxVisible() {
-    return !!this._suggestBox && this._suggestBox.visible();
+    return this._suggestBox !== undefined && this._suggestBox.visible();
   }
 
   /**

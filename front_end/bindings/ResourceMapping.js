@@ -218,7 +218,7 @@ class ModelInfo {
     this._bindings = new Map();
 
     const cssModel = target.model(SDK.CSSModel.CSSModel);
-    console.assert(!!cssModel);
+    console.assert(Boolean(cssModel));
     this._cssModel = /** @type {!SDK.CSSModel.CSSModel} */ (cssModel);
     this._eventListeners = [
       resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this),

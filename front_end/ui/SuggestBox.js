@@ -186,7 +186,7 @@ export class SuggestBox {
     }
     this._suggestBoxDelegate.applySuggestion(suggestion, isIntermediateSuggestion);
 
-    return this.visible() && !!suggestion;
+    return this.visible() && Boolean(suggestion);
   }
 
   /**
@@ -392,7 +392,7 @@ export class SuggestBox {
    * @return {boolean}
    */
   enterKeyPressed() {
-    const hasSelectedItem = !!this._list.selectedItem() || !!this._onlyCompletion;
+    const hasSelectedItem = Boolean(this._list.selectedItem()) || Boolean(this._onlyCompletion);
     this.acceptSuggestion();
 
     // Report the event as non-handled if there is no selected item,

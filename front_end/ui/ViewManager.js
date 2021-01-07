@@ -383,7 +383,7 @@ export class ViewManager {
    * @return {boolean}
    */
   hasViewsForLocation(location) {
-    return !!this._viewsForLocation(location).length;
+    return Boolean(this._viewsForLocation(location).length);
   }
 
   /**

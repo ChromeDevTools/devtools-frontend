@@ -125,7 +125,7 @@ export class CookiesTable extends UI.Widget.VBox {
     this._refreshCallback = refreshCallback;
     this._deleteCallback = deleteCallback;
 
-    const editable = !!saveCallback;
+    const editable = Boolean(saveCallback);
 
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {
@@ -335,12 +335,12 @@ export class CookiesTable extends UI.Widget.VBox {
 
   /**
    * @param {!SDK.Cookie.Cookie} cookieA
-   * @param {?SDK.Cookie.Cookie} cookieB
+   * @param {(?SDK.Cookie.Cookie|undefined)} cookieB
    * @return {boolean}
    */
   _isSameCookie(cookieA, cookieB) {
-    return !!cookieB && cookieB.name() === cookieA.name() && cookieB.domain() === cookieA.domain() &&
-        cookieB.path() === cookieA.path();
+    return cookieB !== null && cookieB !== undefined && cookieB.name() === cookieA.name() &&
+        cookieB.domain() === cookieA.domain() && cookieB.path() === cookieA.path();
   }
 
   _rebuildTable() {
@@ -691,7 +691,7 @@ export class CookiesTable extends UI.Widget.VBox {
       return true;
     }
     const parsedURL = Common.ParsedURL.ParsedURL.fromString('http://' + domain);
-    return !!parsedURL && parsedURL.domain() === domain;
+    return parsedURL !== null && parsedURL.domain() === domain;
   }
 
   /**
@@ -700,7 +700,7 @@ export class CookiesTable extends UI.Widget.VBox {
    */
   _isValidPath(path) {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString('http://example.com' + path);
-    return !!parsedURL && parsedURL.path === path;
+    return parsedURL !== null && parsedURL.path === path;
   }
 
   /**

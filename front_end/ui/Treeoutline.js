@@ -78,9 +78,9 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
    */
   setShowSelectionOnKeyboardFocus(show, preventTabOrder) {
     this.contentElement.classList.toggle('hide-selection-when-blurred', show);
-    this._preventTabOrder = !!preventTabOrder;
+    this._preventTabOrder = Boolean(preventTabOrder);
     if (this._focusable) {
-      this.contentElement.tabIndex = !!preventTabOrder ? -1 : 0;
+      this.contentElement.tabIndex = Boolean(preventTabOrder) ? -1 : 0;
     }
     this._showSelectionOnKeyboardFocus = show;
   }
@@ -193,7 +193,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
 
   updateFocusable() {
     if (this._focusable) {
-      this.contentElement.tabIndex = (this._preventTabOrder || !!this.selectedTreeElement) ? -1 : 0;
+      this.contentElement.tabIndex = (this._preventTabOrder || Boolean(this.selectedTreeElement)) ? -1 : 0;
       if (this.selectedTreeElement) {
         this.selectedTreeElement._setFocusable(true);
       }
@@ -1027,7 +1027,7 @@ export class TreeElement {
       return;
     }
 
-    console.assert(!!this.treeOutline);
+    console.assert(Boolean(this.treeOutline));
     const showSelectionOnKeyboardFocus = this.treeOutline ? this.treeOutline._showSelectionOnKeyboardFocus : false;
     const toggleOnClick = this.toggleOnClick && (showSelectionOnKeyboardFocus || !this.selectable);
     const isInTriangle = this.isEventWithinDisclosureTriangle(event);
@@ -1265,7 +1265,7 @@ export class TreeElement {
     }
 
     if (this.treeOutline) {
-      this.treeOutline._deferredScrollIntoView(this, !!center);
+      this.treeOutline._deferredScrollIntoView(this, Boolean(center));
     }
   }
 

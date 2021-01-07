@@ -147,7 +147,7 @@ export class NetworkProject {
       return;
     }
     const attributionInfo = frameAttribution.get(frameId);
-    console.assert(!!attributionInfo, 'Failed to remove frame attribution for url: ' + uiSourceCode.url());
+    console.assert(Boolean(attributionInfo), 'Failed to remove frame attribution for url: ' + uiSourceCode.url());
     if (!attributionInfo) {
       return;
     }
@@ -196,6 +196,6 @@ export class NetworkProject {
       return [];
     }
     const frames = Array.from(attribution.keys()).map(frameId => resourceTreeModel.frameForId(frameId));
-    return /** @type {!Array<!SDK.ResourceTreeModel.ResourceTreeFrame>} */ (frames.filter(frame => !!frame));
+    return /** @type {!Array<!SDK.ResourceTreeModel.ResourceTreeFrame>} */ (frames.filter(frame => Boolean(frame)));
   }
 }

@@ -214,7 +214,7 @@ export class Tooltip {
 
     // Show tooltip instantly if a tooltip was shown recently.
     const now = Date.now();
-    const instant = (!!this._tooltipLastClosed && now - this._tooltipLastClosed < Timing.InstantThreshold);
+    const instant = (this._tooltipLastClosed !== undefined && now - this._tooltipLastClosed < Timing.InstantThreshold);
     this._tooltipElement.classList.toggle('instant', instant);
     this._tooltipLastOpened = instant ? now : now + Timing.OpeningDelay;
 

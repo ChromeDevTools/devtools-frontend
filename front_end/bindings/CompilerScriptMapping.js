@@ -150,7 +150,8 @@ export class CompilerScriptMapping {
       return true;
     }
     const entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
-    return !!entry && entry.lineNumber === rawLocation.lineNumber && entry.columnNumber === rawLocation.columnNumber;
+    return entry !== null && entry.lineNumber === rawLocation.lineNumber &&
+        entry.columnNumber === rawLocation.columnNumber;
   }
 
   /**
@@ -332,7 +333,7 @@ export class CompilerScriptMapping {
     if (!sourceMap) {
       return true;
     }
-    return !!sourceMap.sourceLineMapping(uiSourceCode.url(), lineNumber, 0);
+    return Boolean(sourceMap.sourceLineMapping(uiSourceCode.url(), lineNumber, 0));
   }
 
   dispose() {

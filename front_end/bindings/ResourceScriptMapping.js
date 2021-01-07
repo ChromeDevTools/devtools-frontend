@@ -298,7 +298,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   _hasScripts(scripts) {
-    return !!this._script && this._script === scripts[0];
+    return Boolean(this._script) && this._script === scripts[0];
   }
 
   /**
@@ -324,7 +324,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
       return true;
     }
     const suffix = this._uiSourceCode.workingCopy().substr(this._scriptSource.length);
-    return !!suffix.length && !suffix.match(SDK.Script.sourceURLRegex);
+    return Boolean(suffix.length) && !suffix.match(SDK.Script.sourceURLRegex);
   }
 
   /**
@@ -415,21 +415,21 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   hasDivergedFromVM() {
-    return !!this._hasDivergedFromVM;
+    return Boolean(this._hasDivergedFromVM);
   }
 
   /**
    * @return {boolean}
    */
   isDivergingFromVM() {
-    return !!this._isDivergingFromVM;
+    return Boolean(this._isDivergingFromVM);
   }
 
   /**
    * @return {boolean}
    */
   isMergingToVM() {
-    return !!this._isMergingToVM;
+    return Boolean(this._isMergingToVM);
   }
 
   checkMapping() {
@@ -467,7 +467,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   hasSourceMapURL() {
-    return !!this._script && !!this._script.sourceMapURL;
+    return this._script !== undefined && Boolean(this._script.sourceMapURL);
   }
 
   /**

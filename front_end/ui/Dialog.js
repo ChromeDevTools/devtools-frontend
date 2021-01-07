@@ -67,7 +67,7 @@ export class Dialog extends GlassPane {
    * @return {boolean}
    */
   static hasInstance() {
-    return !!Dialog._instance;
+    return Boolean(Dialog._instance);
   }
 
   /**

@@ -205,7 +205,7 @@ export class PopoverHelper {
    * @return {boolean}
    */
   isPopoverVisible() {
-    return !!this._hidePopoverCallback;
+    return Boolean(this._hidePopoverCallback);
   }
 
   hidePopover() {

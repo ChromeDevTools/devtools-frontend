@@ -217,7 +217,7 @@ export class TabbedPane extends VBox {
    * @param {number=} index
    */
   appendTab(id, tabTitle, view, tabTooltip, userGesture, isCloseable, index) {
-    const closeable = typeof isCloseable === 'boolean' ? isCloseable : !!this._closeableTabs;
+    const closeable = typeof isCloseable === 'boolean' ? isCloseable : Boolean(this._closeableTabs);
     const tab = new TabbedPaneTab(this, id, tabTitle, closeable, view, tabTooltip);
     tab.setDelegate(/** @type {!TabbedPaneTabDelegate} */ (this._delegate));
     console.assert(!this._tabsById.has(id), `Tabbed pane already contains a tab with id '${id}'`);

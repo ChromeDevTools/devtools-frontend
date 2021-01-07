@@ -341,7 +341,7 @@ export function setControls(element, controlledElement) {
  * @param {boolean} value
  */
 export function setChecked(element, value) {
-  element.setAttribute('aria-checked', (!!value).toString());
+  element.setAttribute('aria-checked', (Boolean(value)).toString());
 }
 
 /**
@@ -356,7 +356,7 @@ export function setCheckboxAsIndeterminate(element) {
  * @param {boolean} value
  */
 export function setDisabled(element, value) {
-  element.setAttribute('aria-disabled', (!!value).toString());
+  element.setAttribute('aria-disabled', (Boolean(value)).toString());
 }
 
 /**
@@ -364,7 +364,7 @@ export function setDisabled(element, value) {
  * @param {boolean} value
  */
 export function setExpanded(element, value) {
-  element.setAttribute('aria-expanded', (!!value).toString());
+  element.setAttribute('aria-expanded', (Boolean(value)).toString());
 }
 
 /**
@@ -379,7 +379,7 @@ export function unsetExpandable(element) {
  * @param {boolean} value
  */
 export function setHidden(element, value) {
-  element.setAttribute('aria-hidden', (!!value).toString());
+  element.setAttribute('aria-hidden', (Boolean(value)).toString());
 }
 
 /**
@@ -416,7 +416,7 @@ export function setSelected(element, value) {
   // aria-selected behaves differently for false and undefined.
   // Often times undefined values are unintentionally typed as booleans.
   // Use !! to make sure this is true or false.
-  element.setAttribute('aria-selected', (!!value).toString());
+  element.setAttribute('aria-selected', (Boolean(value)).toString());
 }
 
 /**
@@ -446,7 +446,7 @@ export function setPressed(element, value) {
   // aria-pressed behaves differently for false and undefined.
   // Often times undefined values are unintentionally typed as booleans.
   // Use !! to make sure this is true or false.
-  element.setAttribute('aria-pressed', (!!value).toString());
+  element.setAttribute('aria-pressed', (Boolean(value)).toString());
 }
 
 /**

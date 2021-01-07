@@ -220,7 +220,7 @@ export class ResourceTreeModel extends SDKModel {
     if (!frame) {
       // Simulate missed "frameAttached" for a main frame navigation to the new backend process.
       frame = this._frameAttached(framePayload.id, framePayload.parentId || '');
-      console.assert(!!frame);
+      console.assert(Boolean(frame));
       if (!frame) {
         return;
       }
@@ -645,7 +645,7 @@ export class ResourceTreeFrame {
    * @returns {boolean}
    */
   isSecureContext() {
-    return !!this._secureContextType && this._secureContextType.startsWith('Secure');
+    return this._secureContextType !== null && this._secureContextType.startsWith('Secure');
   }
 
   /**
@@ -659,7 +659,7 @@ export class ResourceTreeFrame {
    * @returns {boolean}
    */
   isCrossOriginIsolated() {
-    return !!this._crossOriginIsolatedContextType && this._crossOriginIsolatedContextType.startsWith('Isolated');
+    return this._crossOriginIsolatedContextType !== null && this._crossOriginIsolatedContextType.startsWith('Isolated');
   }
 
   /**

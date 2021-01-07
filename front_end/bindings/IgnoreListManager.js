@@ -144,7 +144,7 @@ export class IgnoreListManager {
    */
   isIgnoreListedURL(url, isContentScript) {
     if (this._isIgnoreListedURLCache.has(url)) {
-      return !!this._isIgnoreListedURLCache.get(url);
+      return Boolean(this._isIgnoreListedURLCache.get(url));
     }
     if (isContentScript && Common.Settings.Settings.instance().moduleSetting('skipContentScripts').get()) {
       return true;
@@ -249,7 +249,7 @@ export class IgnoreListManager {
    */
   canIgnoreListUISourceCode(uiSourceCode) {
     const url = this._uiSourceCodeURL(uiSourceCode);
-    return url ? !!this._urlToRegExpString(url) : false;
+    return url ? Boolean(this._urlToRegExpString(url)) : false;
   }
 
   /**

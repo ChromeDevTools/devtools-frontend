@@ -545,7 +545,7 @@ class ModelData {
     if (!Root.Runtime.experiments.isEnabled('emptySourceMapAutoStepping')) {
       return true;
     }
-    return !!this._compilerMapping.mapsToSourceCode(callFrame.location());
+    return Boolean(this._compilerMapping.mapsToSourceCode(callFrame.location()));
   }
 
   _dispose() {
@@ -623,7 +623,8 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
     const location = new StackTraceTopFrameLocation(updateDelegate, locationPool);
     const locationsPromises = rawLocations.map(
         rawLocation => binding.createLiveLocation(rawLocation, location._scheduleUpdate.bind(location), locationPool));
-    location._locations = /** @type {!Array<!Location>} */ ((await Promise.all(locationsPromises)).filter(l => !!l));
+    location._locations =
+        /** @type {!Array<!Location>} */ ((await Promise.all(locationsPromises)).filter(l => Boolean(l)));
     await location._updateLocation();
     return location;
   }

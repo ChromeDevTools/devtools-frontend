@@ -85,7 +85,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     this._documentURL = documentURL;
     this._frameId = frameId;
     this._loaderId = loaderId;
-    /** @type {?Protocol.Network.Initiator} */
+    /** @type {(?Protocol.Network.Initiator|undefined)} */
     this._initiator = initiator;
     /** @type {?NetworkRequest} */
     this._redirectSource = null;
@@ -608,28 +608,28 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   wasBlocked() {
-    return !!this._blockedReason;
+    return Boolean(this._blockedReason);
   }
 
   /**
    * @return {boolean}
    */
   cached() {
-    return (!!this._fromMemoryCache || !!this._fromDiskCache) && !this._transferSize;
+    return (Boolean(this._fromMemoryCache) || Boolean(this._fromDiskCache)) && !this._transferSize;
   }
 
   /**
    * @return {boolean}
    */
   cachedInMemory() {
-    return !!this._fromMemoryCache && !this._transferSize;
+    return Boolean(this._fromMemoryCache) && !this._transferSize;
   }
 
   /**
    * @return {boolean}
    */
   fromPrefetchCache() {
-    return !!this._fromPrefetchCache;
+    return Boolean(this._fromPrefetchCache);
   }
 
   setFromMemoryCache() {
@@ -651,7 +651,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   get fetchedViaServiceWorker() {
-    return !!this._fetchedViaServiceWorker;
+    return Boolean(this._fetchedViaServiceWorker);
   }
 
   /**
@@ -871,7 +871,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   isPreflightRequest() {
-    return !!this._initiator && this._initiator.type === Protocol.Network.InitiatorType.Preflight;
+    return this._initiator !== null && this._initiator !== undefined &&
+        this._initiator.type === Protocol.Network.InitiatorType.Preflight;
   }
 
   /**
@@ -1079,7 +1080,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
       ...this.blockedRequestCookies().map(blockedRequestCookie => blockedRequestCookie.cookie),
       ...this.blockedResponseCookies().map(blockedResponseCookie => blockedResponseCookie.cookie),
       // blockedRequestCookie or blockedResponseCookie might not contain a cookie in case of SyntaxErrors:
-    ].filter(v => !!v));
+    ].filter(v => Boolean(v)));
   }
 
   /**
@@ -1378,7 +1379,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   isHttpFamily() {
-    return !!this.url().match(/^https?:/i);
+    return Boolean(this.url().match(/^https?:/i));
   }
 
   /**
@@ -1458,7 +1459,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    * @return {?Protocol.Network.Initiator}
    */
   initiator() {
-    return this._initiator;
+    return this._initiator || null;
   }
 
   /**
@@ -1650,7 +1651,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   redirectSourceSignedExchangeInfoHasNoErrors() {
-    return !!this._redirectSource && !!this._redirectSource._signedExchangeInfo &&
+    return this._redirectSource !== null && this._redirectSource._signedExchangeInfo !== null &&
         !this._redirectSource._signedExchangeInfo.errors;
   }
 

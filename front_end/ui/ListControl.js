@@ -303,7 +303,7 @@ export class ListControl {
       return false;
     }
     let index = this._selectedIndex === -1 ? this._model.length - 1 : this._selectedIndex - 1;
-    index = this._findFirstSelectable(index, -1, !!canWrap);
+    index = this._findFirstSelectable(index, -1, Boolean(canWrap));
     if (index !== -1) {
       this._scrollIntoView(index, center);
       this._select(index);
@@ -322,7 +322,7 @@ export class ListControl {
       return false;
     }
     let index = this._selectedIndex === -1 ? 0 : this._selectedIndex + 1;
-    index = this._findFirstSelectable(index, +1, !!canWrap);
+    index = this._findFirstSelectable(index, +1, Boolean(canWrap));
     if (index !== -1) {
       this._scrollIntoView(index, center);
       this._select(index);
@@ -373,7 +373,7 @@ export class ListControl {
    */
   _scrollIntoView(index, center) {
     if (this._mode === ListMode.NonViewport) {
-      this._elementAtIndex(index).scrollIntoViewIfNeeded(!!center);
+      this._elementAtIndex(index).scrollIntoViewIfNeeded(Boolean(center));
       return;
     }
 

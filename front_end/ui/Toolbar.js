@@ -400,7 +400,9 @@ export class Toolbar {
       lastSeparator.setVisible(false);
     }
 
-    this.element.classList.toggle('hidden', !!lastSeparator && lastSeparator.visible() && !nonSeparatorVisible);
+    this.element.classList.toggle(
+        'hidden',
+        lastSeparator !== null && lastSeparator !== undefined && lastSeparator.visible() && !nonSeparatorVisible);
   }
 
   /**
@@ -604,7 +606,7 @@ export class ToolbarButton extends ToolbarItem {
     }
     this._glyphElement.setIconType(glyph);
     this._glyphElement.classList.toggle('hidden', !glyph);
-    this.element.classList.toggle('toolbar-has-glyph', !!glyph);
+    this.element.classList.toggle('toolbar-has-glyph', Boolean(glyph));
     /** @type {string|undefined} */
     this._glyph = glyph;
   }
@@ -826,7 +828,7 @@ export class ToolbarMenuButton extends ToolbarButton {
   constructor(contextMenuHandler, useSoftMenu) {
     super('', 'largeicon-menu');
     this._contextMenuHandler = contextMenuHandler;
-    this._useSoftMenu = !!useSoftMenu;
+    this._useSoftMenu = Boolean(useSoftMenu);
     ARIAUtils.markAsMenuButton(this.element);
   }
 

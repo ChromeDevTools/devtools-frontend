@@ -70,7 +70,7 @@ export class SplitWidget extends Widget {
 
     this._defaultSidebarWidth = defaultSidebarWidth || 200;
     this._defaultSidebarHeight = defaultSidebarHeight || this._defaultSidebarWidth;
-    this._constraintsInDip = !!constraintsInDip;
+    this._constraintsInDip = Boolean(constraintsInDip);
     this._resizeStartSizeDIP = 0;
     this._setting = settingName ? Common.Settings.Settings.instance().createSetting(settingName, {}) : null;
 
@@ -163,7 +163,7 @@ export class SplitWidget extends Widget {
     this._sidebarElement.style.removeProperty('width');
     this._sidebarElement.style.removeProperty('height');
 
-    this._innerSetSidebarSizeDIP(this._preferredSidebarSizeDIP(), !!animate);
+    this._innerSetSidebarSizeDIP(this._preferredSidebarSizeDIP(), Boolean(animate));
   }
 
   /**
@@ -816,7 +816,7 @@ export class SplitWidget extends Widget {
    */
   hideDefaultResizer(noSplitter) {
     this.uninstallResizer(this._resizerElement);
-    this._sidebarElement.classList.toggle('no-default-splitter', !!noSplitter);
+    this._sidebarElement.classList.toggle('no-default-splitter', Boolean(noSplitter));
   }
 
   /**

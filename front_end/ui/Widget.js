@@ -188,14 +188,14 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   _inNotification() {
-    return !!this._notificationDepth || !!(this._parentWidget && this._parentWidget._inNotification());
+    return Boolean(this._notificationDepth) || Boolean(this._parentWidget && this._parentWidget._inNotification());
   }
 
   _parentIsShowing() {
     if (this._isRoot) {
       return true;
     }
-    return !!this._parentWidget && this._parentWidget.isShowing();
+    return this._parentWidget !== null && this._parentWidget.isShowing();
   }
 
   /**
@@ -638,7 +638,7 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
    */
   _hasNonZeroConstraints() {
     const constraints = this.constraints();
-    return !!(
+    return Boolean(
         constraints.minimum.width || constraints.minimum.height || constraints.preferred.width ||
         constraints.preferred.height);
   }

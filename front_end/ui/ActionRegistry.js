@@ -134,7 +134,7 @@ export class ActionRegistry {
       }
       for (let i = 0; i < contextTypes.length; ++i) {
         const contextType = contextTypes[i];
-        const isMatching = !!contextType && currentContextTypes.has(contextType);
+        const isMatching = Boolean(contextType) && currentContextTypes.has(contextType);
         if (isMatching) {
           return true;
         }

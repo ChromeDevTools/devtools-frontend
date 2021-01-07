@@ -54,7 +54,7 @@ export class FilterBar extends HBox {
     this.element.classList.add('filter-bar');
 
     this._stateSetting =
-        Common.Settings.Settings.instance().createSetting('filterBar-' + name + '-toggled', !!visibleByDefault);
+        Common.Settings.Settings.instance().createSetting('filterBar-' + name + '-toggled', Boolean(visibleByDefault));
     this._filterButton =
         new ToolbarSettingToggle(this._stateSetting, 'largeicon-filter', Common.UIString.UIString('Filter'));
 
@@ -241,7 +241,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   isActive() {
-    return !!this._prompt.text();
+    return Boolean(this._prompt.text());
   }
 
   /**
@@ -517,7 +517,7 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     super();
     this._filterElement = /** @type {!HTMLDivElement} */ (document.createElement('div'));
     this._filterElement.classList.add('filter-checkbox-filter');
-    this._activeWhenChecked = !!activeWhenChecked;
+    this._activeWhenChecked = Boolean(activeWhenChecked);
     this._label = CheckboxLabel.create(title);
     this._filterElement.appendChild(this._label);
     this._checkboxElement = this._label.checkboxElement;

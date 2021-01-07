@@ -678,7 +678,7 @@ Number.secondsToString = function(seconds, higherResolution) {
  * @return {string}
  */
 Number.withThousandsSeparator = function(num) {
-  let str = num + '';
+  let str = String(num);
   const re = /(\d+)(\d{3})/;
   while (str.match(re)) {
     str = str.replace(re, '$1\xA0$2');
@@ -1398,7 +1398,7 @@ export function createLabel(title, className, associatedControl) {
 export function createRadioLabel(name, title, checked) {
   const element = /** @type {!DevToolsRadioButton} */ (document.createElement('span', {is: 'dt-radio'}));
   element.radioElement.name = name;
-  element.radioElement.checked = !!checked;
+  element.radioElement.checked = Boolean(checked);
   createTextChild(element.labelElement, title);
   return element;
 }
@@ -1462,7 +1462,7 @@ export class CheckboxLabel extends HTMLSpanElement {
       CheckboxLabel._constructor = registerCustomElement('span', 'dt-checkbox', CheckboxLabel);
     }
     const element = /** @type {!CheckboxLabel} */ (CheckboxLabel._constructor());
-    element.checkboxElement.checked = !!checked;
+    element.checkboxElement.checked = Boolean(checked);
     if (title !== undefined) {
       element.textElement.textContent = title;
       ARIAUtils.setAccessibleName(element.checkboxElement, title);

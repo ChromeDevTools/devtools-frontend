@@ -204,7 +204,7 @@ export class ShortcutRegistry {
    */
   async handleKey(key, domKey, event, handlers) {
     const keyModifiers = key >> 8;
-    const hasHandlersOrPrefixKey = !!handlers || !!this._activePrefixKey;
+    const hasHandlersOrPrefixKey = Boolean(handlers) || Boolean(this._activePrefixKey);
     const keyMapNode = this._keyMap.getNode(key);
     const maybeHasActions =
         (this._applicableActions(key, handlers)).length > 0 || (keyMapNode && keyMapNode.hasChords());
@@ -288,7 +288,7 @@ export class ShortcutRegistry {
      * @return {boolean}
      */
     function hasModifier(mod) {
-      return !!(keyModifiers & mod);
+      return Boolean(keyModifiers & mod);
     }
 
     /**

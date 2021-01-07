@@ -236,7 +236,7 @@ export class FileOutputStream {
       Workspace.FileManager.FileManager.instance().addEventListener(
           Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
     }
-    return !!saveResponse;
+    return Boolean(saveResponse);
   }
 
   /**

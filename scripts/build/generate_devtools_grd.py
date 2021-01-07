@@ -142,7 +142,10 @@ def main(argv):
 
     for dirname in parsed_args.image_dirs:
         for filename in sorted(os.listdir(dirname)):
-            if not filename.endswith('.png') and not filename.endswith('.gif') and not filename.endswith('.svg'):
+            if not filename.endswith('.gif') and not filename.endswith(
+                    '.png') and not filename.endswith(
+                        '.svg') and not filename.endswith(
+                            'avif') and not filename.endswith('webp'):
                 continue
             shutil.copy(path.join(dirname, filename), path.join(output_directory, 'Images'))
             add_file_to_grd(doc, path.join('Images', filename))

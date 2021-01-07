@@ -217,7 +217,7 @@ export class ServiceWorkersView extends UI.Widget.VBox {
         section._section.hideWidget();
       }
     }
-    this.contentElement.classList.toggle('service-worker-has-current', !!hasThis);
+    this.contentElement.classList.toggle('service-worker-has-current', Boolean(hasThis));
     this._updateListVisibility();
   }
 
@@ -455,7 +455,7 @@ export class Section {
    */
   _updateClientsField(version) {
     this._clientsField.removeChildren();
-    this._section.setFieldVisible(Common.UIString.UIString('Clients'), !!version.controlledClients.length);
+    this._section.setFieldVisible(Common.UIString.UIString('Clients'), Boolean(version.controlledClients.length));
     for (const client of version.controlledClients) {
       const clientLabelText = this._clientsField.createChild('div', 'service-worker-client');
       if (this._clientInfoCache.has(client)) {

@@ -97,7 +97,7 @@ export class ProfileLauncherView extends UI.Widget.VBox {
       this._controlButton.textContent = Common.UIString.UIString('Start');
     }
     for (const {optionElement} of this._typeIdToOptionElementAndProfileType.values()) {
-      optionElement.disabled = !!this._isProfiling;
+      optionElement.disabled = Boolean(this._isProfiling);
     }
   }
 

@@ -312,7 +312,7 @@ export class Resource {
       return true;
     }
     if (this._type === Common.ResourceType.resourceTypes.Other) {
-      return !!this._content && !this._contentEncoded;
+      return Boolean(this._content) && !this._contentEncoded;
     }
     return false;
   }

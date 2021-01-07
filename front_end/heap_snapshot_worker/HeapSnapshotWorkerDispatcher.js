@@ -109,7 +109,7 @@ export class HeapSnapshotWorkerDispatcher {
           if (result) {
             this._objects[data.newObjectId] = result;
           }
-          response.result = !!result;
+          response.result = Boolean(result);
           break;
         }
         case 'method': {

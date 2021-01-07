@@ -620,7 +620,7 @@ export class WritableProfileHeader extends ProfileHeader {
    * @return {boolean}
    */
   canSaveToFile() {
-    return !this.fromFile() && !!this._protocolProfile;
+    return !this.fromFile() && Boolean(this._protocolProfile);
   }
 
   /**

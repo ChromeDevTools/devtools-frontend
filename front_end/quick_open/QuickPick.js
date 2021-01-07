@@ -165,7 +165,7 @@ class QuickPickProvider extends Provider {
    * @return {boolean}
    */
   renderAsTwoRows() {
-    return this._items.some(i => !!i.detail);
+    return this._items.some(i => Boolean(i.detail));
   }
 
   /**

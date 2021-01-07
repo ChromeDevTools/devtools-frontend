@@ -178,7 +178,8 @@ export class ConsolePrompt extends UI.Widget.Widget {
    * @return {boolean}
    */
   _isCaretAtEndOfPrompt() {
-    return !!this._editor && this._editor.selection().collapseToEnd().equal(this._editor.fullRange().collapseToEnd());
+    return this._editor !== null &&
+        this._editor.selection().collapseToEnd().equal(this._editor.fullRange().collapseToEnd());
   }
 
   moveCaretToEndOfPrompt() {

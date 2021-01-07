@@ -24,8 +24,8 @@ export class NodeText extends HTMLElement {
   }
 
   private render(): void {
-    const hasId = !!this.nodeId;
-    const hasNodeClasses = !!(this.nodeClasses && this.nodeClasses.length > 0);
+    const hasId = Boolean(this.nodeId);
+    const hasNodeClasses = Boolean(this.nodeClasses && this.nodeClasses.length > 0);
 
     const parts = [
       html`<span class="node-label-name">${this.nodeTitle}</span>`,

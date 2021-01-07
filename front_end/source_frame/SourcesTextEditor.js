@@ -197,7 +197,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
    * @return {boolean}
    */
   _isSearchActive() {
-    return !!this._tokenHighlighter.highlightedRegex();
+    return Boolean(this._tokenHighlighter.highlightedRegex());
   }
 
   /**

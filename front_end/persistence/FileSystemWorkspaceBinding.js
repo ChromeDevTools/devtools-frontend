@@ -386,7 +386,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
         callback(false, newName);
         return;
       }
-      console.assert(!!newName);
+      console.assert(Boolean(newName));
       const slash = filePath.lastIndexOf('/');
       const parentPath = filePath.substring(0, slash);
       filePath = parentPath + '/' + newName;
@@ -524,7 +524,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
       return null;
     }
     const uiSourceCode = this._addFile(filePath);
-    uiSourceCode.setContent(content, !!isBase64);
+    uiSourceCode.setContent(content, Boolean(isBase64));
     this._creatingFilesGuard.delete(guardFileName);
     return uiSourceCode;
   }

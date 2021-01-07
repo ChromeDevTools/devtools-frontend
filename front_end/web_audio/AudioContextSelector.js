@@ -48,7 +48,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   _onListItemReplaced() {
-    const hasItems = !!this._items.length;
+    const hasItems = Boolean(this._items.length);
     this._toolbarItem.setEnabled(hasItems);
     if (!hasItems) {
       this._toolbarItem.setTitle(i18nString(UIStrings.audioContextS, {PH1: this._placeholderText}));

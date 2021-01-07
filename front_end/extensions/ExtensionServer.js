@@ -148,7 +148,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   hasExtensions() {
-    return !!this._registeredExtensions.size;
+    return Boolean(this._registeredExtensions.size);
   }
 
   /**
@@ -497,7 +497,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     if (options.injectedScript) {
       injectedScript = '(function(){' + options.injectedScript + '})()';
     }
-    SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(!!options.ignoreCache, injectedScript);
+    SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(Boolean(options.ignoreCache), injectedScript);
     return this._status.OK();
   }
 
@@ -1040,7 +1040,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         callback(result.error, null, false);
         return;
       }
-      callback(null, result.object || null, !!result.exceptionDetails);
+      callback(null, result.object || null, Boolean(result.exceptionDetails));
     }
   }
 

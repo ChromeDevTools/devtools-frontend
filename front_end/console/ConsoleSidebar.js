@@ -192,7 +192,7 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
           Platform.StringUtilities.sprintf(_groupPluralTitleMap.get(this._filter.name) || '', this._messageCount);
     }
 
-    this.setExpandable(!!this.childCount());
+    this.setExpandable(Boolean(this.childCount()));
   }
 
   /**

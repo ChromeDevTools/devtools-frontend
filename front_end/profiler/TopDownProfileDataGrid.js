@@ -34,7 +34,7 @@ export class TopDownProfileDataGridNode extends ProfileDataGridNode {
    * @param {!TopDownProfileDataGridTree} owningTree
    */
   constructor(profileNode, owningTree) {
-    const hasChildren = !!(profileNode.children && profileNode.children.length);
+    const hasChildren = Boolean(profileNode.children && profileNode.children.length);
 
     super(profileNode, owningTree, hasChildren);
 

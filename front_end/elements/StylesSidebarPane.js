@@ -432,7 +432,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
      * @return {boolean}
      */
     function styleSheetResourceHeader(header) {
-      return !header.isViaInspector() && !header.isInline && !!header.resourceURL();
+      return !header.isViaInspector() && !header.isInline && Boolean(header.resourceURL());
     }
   }
 
@@ -882,7 +882,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     for (const block of this._sectionBlocks) {
       hasAnyVisibleBlock = block.updateFilter() || hasAnyVisibleBlock;
     }
-    this._noMatchesElement.classList.toggle('hidden', !!hasAnyVisibleBlock);
+    this._noMatchesElement.classList.toggle('hidden', Boolean(hasAnyVisibleBlock));
   }
 
   /**
@@ -1096,7 +1096,7 @@ export class SectionBlock {
     if (this._titleElement) {
       this._titleElement.classList.toggle('hidden', !hasAnyVisibleSection);
     }
-    return !!hasAnyVisibleSection;
+    return Boolean(hasAnyVisibleSection);
   }
 
   /**
@@ -1159,7 +1159,7 @@ export class StylePropertiesSection {
     this._parentPane = parentPane;
     this._style = style;
     this._matchedStyles = matchedStyles;
-    this.editable = !!(style.styleSheetId && style.range);
+    this.editable = Boolean(style.styleSheetId && style.range);
     /** @type {?number} */
     this._hoverTimer = null;
     this._willCauseCancelEditing = false;
@@ -1821,7 +1821,7 @@ export class StylePropertiesSection {
         break;
       }
       count++;
-      const isShorthand = !!style.longhandProperties(property.name).length;
+      const isShorthand = Boolean(style.longhandProperties(property.name).length);
       const inherited = this.isPropertyInherited(property.name);
       const overloaded = this._isPropertyOverloaded(property);
       if (style.parentRule && style.parentRule.isUserAgent() && inherited) {
@@ -1862,7 +1862,7 @@ export class StylePropertiesSection {
     }
 
     const regex = this._parentPane.filterRegex();
-    const hideRule = !hasMatchingChild && !!regex && !regex.test(this.element.deepTextContent());
+    const hideRule = !hasMatchingChild && regex !== null && !regex.test(this.element.deepTextContent());
     this.element.classList.toggle('hidden', hideRule);
     if (!hideRule && this._style.parentRule) {
       this._markSelectorHighlights();
@@ -1956,7 +1956,7 @@ export class StylePropertiesSection {
     const selectors = this._selectorElement.getElementsByClassName('simple-selector');
     const regex = this._parentPane.filterRegex();
     for (let i = 0; i < selectors.length; ++i) {
-      const selectorMatchesFilter = !!regex && regex.test(selectors[i].textContent || '');
+      const selectorMatchesFilter = regex !== null && regex.test(selectors[i].textContent || '');
       selectors[i].classList.toggle('filter-match', selectorMatchesFilter);
     }
   }
@@ -2951,7 +2951,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
 
     if (this._isColorAware && !this._isEditingName) {
       results.sort((a, b) => {
-        if (!!a.subtitleRenderer === !!b.subtitleRenderer) {
+        if (Boolean(a.subtitleRenderer) === Boolean(b.subtitleRenderer)) {
           return 0;
         }
         return a.subtitleRenderer ? -1 : 1;
@@ -3228,7 +3228,7 @@ export class ButtonProvider {
     function onNodeChanged() {
       let node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
       node = node ? node.enclosingElementOrSelf() : null;
-      this._button.setEnabled(!!node);
+      this._button.setEnabled(Boolean(node));
     }
   }
 

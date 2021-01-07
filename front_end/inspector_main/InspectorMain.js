@@ -126,7 +126,7 @@ export class NodeIndicator {
    * @param {!Array<!Protocol.Target.TargetInfo>} targetInfos
    */
   _update(targetInfos) {
-    const hasNode = !!targetInfos.find(target => target.type === 'node' && !target.attached);
+    const hasNode = Boolean(targetInfos.find(target => target.type === 'node' && !target.attached));
     this._element.classList.toggle('inactive', !hasNode);
     if (hasNode) {
       this._button.setVisible(true);

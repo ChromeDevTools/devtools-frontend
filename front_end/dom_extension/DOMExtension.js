@@ -442,7 +442,7 @@ self.AnchorBox = class {
    * @return {boolean}
    */
   equals(anchorBox) {
-    return !!anchorBox && this.x === anchorBox.x && this.y === anchorBox.y && this.width === anchorBox.width &&
+    return Boolean(anchorBox) && this.x === anchorBox.x && this.y === anchorBox.y && this.width === anchorBox.width &&
         this.height === anchorBox.height;
   }
 };
@@ -581,7 +581,7 @@ Node.prototype.isAncestor = function(node) {
  * @return {boolean}
  */
 Node.prototype.isDescendant = function(descendant) {
-  return !!descendant && descendant.isAncestor(this);
+  return Boolean(descendant) && descendant.isAncestor(this);
 };
 
 /**
@@ -589,7 +589,7 @@ Node.prototype.isDescendant = function(descendant) {
  * @return {boolean}
  */
 Node.prototype.isSelfOrAncestor = function(node) {
-  return !!node && (node === this || this.isAncestor(node));
+  return Boolean(node) && (node === this || this.isAncestor(node));
 };
 
 /**
@@ -597,7 +597,7 @@ Node.prototype.isSelfOrAncestor = function(node) {
  * @return {boolean}
  */
 Node.prototype.isSelfOrDescendant = function(node) {
-  return !!node && (node === this || this.isDescendant(node));
+  return Boolean(node) && (node === this || this.isDescendant(node));
 };
 
 /**
@@ -709,7 +709,7 @@ DocumentFragment.prototype.deepActiveElement = Document.prototype.deepActiveElem
  */
 Element.prototype.hasFocus = function() {
   const root = this.getComponentRoot();
-  return !!root && this.isSelfOrAncestor(root.activeElement);
+  return Boolean(root) && this.isSelfOrAncestor(root.activeElement);
 };
 
 /**
@@ -771,7 +771,7 @@ DOMTokenList.prototype['toggle'] = function(token, force) {
   if (arguments.length === 1) {
     force = !this.contains(token);
   }
-  return originalToggle.call(this, token, !!force);
+  return originalToggle.call(this, token, Boolean(force));
 };
 })();
 

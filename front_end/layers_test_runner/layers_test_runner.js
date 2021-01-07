@@ -139,7 +139,7 @@ LayersTestRunner.findLayerTreeElement = function(layer) {
 
 LayersTestRunner.dispatchMouseEventToLayerTree = function(eventType, button, layer) {
   const element = LayersTestRunner.findLayerTreeElement(layer);
-  TestRunner.assertTrue(!!element);
+  TestRunner.assertTrue(Boolean(element));
   LayersTestRunner.dispatchMouseEvent(eventType, button, element, element.clientWidth >> 1, element.clientHeight >> 1);
 };
 

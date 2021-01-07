@@ -1027,7 +1027,7 @@ export class ConsoleViewMessage {
     regexObject.lastIndex = 0;
     const contentElement = this.contentElement();
     const anchorText = this._anchorElement ? this._anchorElement.deepTextContent() : '';
-    return (!!anchorText && regexObject.test(anchorText.trim())) ||
+    return (Boolean(anchorText) && regexObject.test(anchorText.trim())) ||
         regexObject.test(contentElement.deepTextContent().slice(anchorText.length));
   }
 
@@ -1072,7 +1072,7 @@ export class ConsoleViewMessage {
    */
   setInSimilarGroup(inSimilarGroup, isLast) {
     this._inSimilarGroup = inSimilarGroup;
-    this._lastInSimilarGroup = inSimilarGroup && !!isLast;
+    this._lastInSimilarGroup = inSimilarGroup && Boolean(isLast);
     if (this._similarGroupMarker && !inSimilarGroup) {
       this._similarGroupMarker.remove();
       this._similarGroupMarker = null;
@@ -1088,7 +1088,7 @@ export class ConsoleViewMessage {
    * @return {boolean}
    */
   isLastInSimilarGroup() {
-    return !!this._inSimilarGroup && !!this._lastInSimilarGroup;
+    return Boolean(this._inSimilarGroup) && Boolean(this._lastInSimilarGroup);
   }
 
   resetCloseGroupDecorationCount() {
@@ -1263,7 +1263,7 @@ export class ConsoleViewMessage {
 
     const runtimeModel = this._message.runtimeModel();
     let formattedMessage;
-    const shouldIncludeTrace = !!this._message.stackTrace &&
+    const shouldIncludeTrace = Boolean(this._message.stackTrace) &&
         (this._message.source === SDK.ConsoleModel.MessageSource.Network ||
          this._message.source === SDK.ConsoleModel.MessageSource.Violation ||
          this._message.level === SDK.ConsoleModel.MessageLevel.Error ||

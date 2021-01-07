@@ -541,7 +541,7 @@ export class SamplingHeapProfileModel extends SDK.ProfileTreeModel.ProfileTreeMo
      */
     function pruneEmptyBranches(node) {
       node.children = node.children.filter(pruneEmptyBranches);
-      return !!(node.children.length || node.self);
+      return Boolean(node.children.length || node.self);
     }
   }
 }

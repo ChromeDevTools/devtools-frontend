@@ -599,7 +599,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       child.hidden = !matched;
       hasMatch = hasMatch || matched;
     }
-    this._noMatchesElement.classList.toggle('hidden', !!hasMatch);
+    this._noMatchesElement.classList.toggle('hidden', Boolean(hasMatch));
   }
 
   _filterGroupLists() {

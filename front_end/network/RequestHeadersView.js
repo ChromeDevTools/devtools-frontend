@@ -52,7 +52,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
 
     const contentType = request.requestContentType();
     if (contentType) {
-      this._decodeRequestParameters = !!contentType.match(/^application\/x-www-form-urlencoded\s*(;.*)?$/i);
+      this._decodeRequestParameters = Boolean(contentType.match(/^application\/x-www-form-urlencoded\s*(;.*)?$/i));
     }
 
     /** @type {?UI.TreeOutline.TreeElement} */

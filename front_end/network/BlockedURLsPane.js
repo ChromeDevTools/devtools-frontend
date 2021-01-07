@@ -210,7 +210,8 @@ export class BlockedURLsPane extends UI.Widget.VBox {
    */
   _update() {
     const enabled = this._manager.blockingEnabled();
-    this._list.element.classList.toggle('blocking-disabled', !enabled && !!this._manager.blockedPatterns().length);
+    this._list.element.classList.toggle(
+        'blocking-disabled', !enabled && Boolean(this._manager.blockedPatterns().length));
     this._enabledCheckbox.setChecked(enabled);
     this._list.clear();
     for (const pattern of this._manager.blockedPatterns()) {

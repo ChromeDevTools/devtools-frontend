@@ -29,7 +29,7 @@ export const cssPath = function(node, optimized) {
   const steps = [];
   let contextNode = /** @type {?SDK.DOMModel.DOMNode} */ (node);
   while (contextNode) {
-    const step = _cssPathStep(contextNode, !!optimized, contextNode === node);
+    const step = _cssPathStep(contextNode, Boolean(optimized), contextNode === node);
     if (!step) {
       break;
     }  // Error - bail out early.

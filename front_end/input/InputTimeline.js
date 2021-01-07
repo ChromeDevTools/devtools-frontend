@@ -131,12 +131,12 @@ export class InputTimeline extends UI.Widget.VBox {
   _updateControls() {
     this._toggleRecordAction.setToggled(this._state === State.Recording);
     this._toggleRecordAction.setEnabled(this._isAvailableState() || this._state === State.Recording);
-    this._startReplayAction.setEnabled(this._isAvailableState() && !!this._tracingModel);
+    this._startReplayAction.setEnabled(this._isAvailableState() && Boolean(this._tracingModel));
     this._togglePauseAction.setEnabled(this._state === State.Replaying || this._state === State.ReplayPaused);
     this._togglePauseAction.setToggled(this._state === State.ReplayPaused);
     this._clearButton.setEnabled(this._isAvailableState());
     this._loadButton.setEnabled(this._isAvailableState());
-    this._saveButton.setEnabled(this._isAvailableState() && !!this._tracingModel);
+    this._saveButton.setEnabled(this._isAvailableState() && Boolean(this._tracingModel));
   }
 
   _toggleRecording() {

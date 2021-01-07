@@ -1752,7 +1752,7 @@ export class FlameChart extends UI.Widget.VBox {
       if (this._isGroupCollapsible(index)) {
         drawExpansionArrow.call(
             this, this._expansionArrowIndent * (group.style.nestingLevel + 1),
-            offset + group.style.height - this._textBaseline - this._arrowSide / 2, !!group.expanded);
+            offset + group.style.height - this._textBaseline - this._arrowSide / 2, Boolean(group.expanded));
       }
     });
     context.fill();
@@ -1832,7 +1832,7 @@ export class FlameChart extends UI.Widget.VBox {
       last = groupStack.peekLast();
       const parentGroupVisible = last ? last.visible : false;
       const thisGroupVisible = parentGroupVisible && (!this._isGroupCollapsible(i) || group.expanded);
-      groupStack.push({nestingLevel: group.style.nestingLevel, visible: !!thisGroupVisible});
+      groupStack.push({nestingLevel: group.style.nestingLevel, visible: Boolean(thisGroupVisible)});
       const nextOffset = i === groups.length - 1 ? groupOffsets[i + 1] + group.style.padding : groupOffsets[i + 1];
       if (!parentGroupVisible) {
         continue;
@@ -2158,7 +2158,7 @@ export class FlameChart extends UI.Widget.VBox {
 
         last = groupStack.peekLast();
         parentGroupIsVisible = last ? last.visible : false;
-        visible = !!thisGroupIsVisible && parentGroupIsVisible;
+        visible = Boolean(thisGroupIsVisible) && parentGroupIsVisible;
         groupStack.push({nestingLevel: style.nestingLevel, visible: visible});
         if (parentGroupIsVisible) {
           currentOffset += nextLevel ? 0 : style.padding;
@@ -2211,7 +2211,7 @@ export class FlameChart extends UI.Widget.VBox {
     const groups = this._rawTimelineData.groups || [];
     const style = groups[index].style;
     if (!style.shareHeaderLine || !style.collapsible) {
-      return !!style.collapsible;
+      return Boolean(style.collapsible);
     }
     const isLastGroup = index + 1 >= groups.length;
     if (!isLastGroup && groups[index + 1].style.nestingLevel > style.nestingLevel) {

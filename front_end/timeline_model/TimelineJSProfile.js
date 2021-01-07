@@ -162,7 +162,7 @@ export class TimelineJSProfileProcessor {
      * @return {boolean}
      */
     function showNativeName(name) {
-      return showRuntimeCallStats && !!TimelineJSProfileProcessor.nativeGroup(name);
+      return showRuntimeCallStats && Boolean(TimelineJSProfileProcessor.nativeGroup(name));
     }
 
     /**

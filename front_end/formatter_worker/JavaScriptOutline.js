@@ -144,7 +144,7 @@ export function javaScriptOutline(content) {
    * @return {boolean}
    */
   function isClassNode(node) {
-    return !!node && node.type === 'ClassExpression';
+    return node !== undefined && node.type === 'ClassExpression';
   }
 
   /**

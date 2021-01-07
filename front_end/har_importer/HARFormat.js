@@ -278,8 +278,8 @@ class HARCookie extends HARBase {
     this.path = HARBase._optionalString(data['path']);
     this.domain = HARBase._optionalString(data['domain']);
     this.expires = data['expires'] ? HARBase._safeDate(data['expires']) : undefined;
-    this.httpOnly = data['httpOnly'] !== undefined ? !!data['httpOnly'] : undefined;
-    this.secure = data['secure'] !== undefined ? !!data['secure'] : undefined;
+    this.httpOnly = data['httpOnly'] !== undefined ? Boolean(data['httpOnly']) : undefined;
+    this.secure = data['secure'] !== undefined ? Boolean(data['secure']) : undefined;
     this.comment = HARBase._optionalString(data['comment']);
   }
 }

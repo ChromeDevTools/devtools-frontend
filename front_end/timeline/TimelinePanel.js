@@ -696,7 +696,7 @@ export class TimelinePanel extends UI.Panel.Panel {
     this._panelRightToolbar.setEnabled(this._state !== state.Loading);
     this._dropTarget.setEnabled(this._state === state.Idle);
     this._loadButton.setEnabled(this._state === state.Idle);
-    this._saveButton.setEnabled(this._state === state.Idle && !!this._performanceModel);
+    this._saveButton.setEnabled(this._state === state.Idle && Boolean(this._performanceModel));
   }
 
   _toggleRecording() {

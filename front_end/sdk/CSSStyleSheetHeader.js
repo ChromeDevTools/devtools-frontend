@@ -25,7 +25,7 @@ export class CSSStyleSheetHeader {
     this.id = payload.styleSheetId;
     this.frameId = payload.frameId;
     this.sourceURL = payload.sourceURL;
-    this.hasSourceURL = !!payload.hasSourceURL;
+    this.hasSourceURL = Boolean(payload.hasSourceURL);
     this.origin = payload.origin;
     this.title = payload.title;
     this.disabled = payload.disabled;
@@ -97,7 +97,7 @@ export class CSSStyleSheetHeader {
    */
   _viaInspectorResourceURL() {
     const model = this._cssModel.target().model(ResourceTreeModel);
-    console.assert(!!model);
+    console.assert(Boolean(model));
     if (!model) {
       return '';
     }
@@ -105,7 +105,7 @@ export class CSSStyleSheetHeader {
     if (!frame) {
       return '';
     }
-    console.assert(!!frame);
+    console.assert(Boolean(frame));
     const parsedURL = new Common.ParsedURL.ParsedURL(frame.url);
     let fakeURL = 'inspector://' + parsedURL.host + parsedURL.folderPathComponents;
     if (!fakeURL.endsWith('/')) {

@@ -211,7 +211,7 @@ export class CookieItemsView extends StorageItemsView {
 
   _handleCookieSelected() {
     const cookie = this._cookiesTable.selectedCookie();
-    this.setCanDeleteSelected(!!cookie);
+    this.setCanDeleteSelected(Boolean(cookie));
 
     this._showPreview(cookie);
   }
@@ -259,7 +259,7 @@ export class CookieItemsView extends StorageItemsView {
     UI.ARIAUtils.alert(ls`Number of cookies shown in table: ${this._shownCookies.length}`, this.element);
     this.setCanFilter(true);
     this.setCanDeleteAll(this._shownCookies.length > 0);
-    this.setCanDeleteSelected(!!this._cookiesTable.selectedCookie());
+    this.setCanDeleteSelected(Boolean(this._cookiesTable.selectedCookie()));
 
     if (!this._cookiesTable.selectedCookie()) {
       this._showPreview(null);

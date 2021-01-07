@@ -178,7 +178,7 @@ export class DebuggerModel extends SDKModel {
    * @return {boolean}
    */
   debuggerEnabled() {
-    return !!this._debuggerEnabled;
+    return Boolean(this._debuggerEnabled);
   }
 
   /**
@@ -240,7 +240,7 @@ export class DebuggerModel extends SDKModel {
    * @return {boolean}
    */
   isReadyToPause() {
-    return !!this._debuggerId;
+    return Boolean(this._debuggerId);
   }
 
   /**
@@ -970,7 +970,7 @@ export class DebuggerModel extends SDKModel {
    * @return {boolean}
    */
   isPaused() {
-    return !!this.debuggerPausedDetails();
+    return Boolean(this.debuggerPausedDetails());
   }
 
   /**
@@ -1243,8 +1243,8 @@ class DebuggerDispatcher {
     }
     this._debuggerModel._parsedScriptSource(
         scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData,
-        !!isLiveEdit, sourceMapURL, !!hasSourceURL, false, length || 0, stackTrace || null, codeOffset || null,
-        scriptLanguage || null, debugSymbols || null, embedderName || null);
+        Boolean(isLiveEdit), sourceMapURL, Boolean(hasSourceURL), false, length || 0, stackTrace || null,
+        codeOffset || null, scriptLanguage || null, debugSymbols || null, embedderName || null);
   }
 
   /**
@@ -1275,7 +1275,7 @@ class DebuggerDispatcher {
     }
     this._debuggerModel._parsedScriptSource(
         scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData,
-        false, sourceMapURL, !!hasSourceURL, true, length || 0, stackTrace || null, codeOffset || null,
+        false, sourceMapURL, Boolean(hasSourceURL), true, length || 0, stackTrace || null, codeOffset || null,
         scriptLanguage || null, null, embedderName || null);
   }
 
@@ -1646,7 +1646,7 @@ export class CallFrame {
     const runtimeModel = debuggerModel.runtimeModel();
 
     // Assume backends either support both throwOnSideEffect and timeout options or neither.
-    const needsTerminationOptions = !!options.throwOnSideEffect || options.timeout !== undefined;
+    const needsTerminationOptions = Boolean(options.throwOnSideEffect) || options.timeout !== undefined;
     if (needsTerminationOptions &&
         (runtimeModel.hasSideEffectSupport() === false ||
          (runtimeModel.hasSideEffectSupport() === null && !await runtimeModel.checkSideEffectSupport()))) {

@@ -178,7 +178,7 @@ export class EditingLocationHistoryEntry {
   valid() {
     const position = this._positionHandle.resolve();
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(this._projectId, this._url);
-    return !!(position && uiSourceCode);
+    return Boolean(position && uiSourceCode);
   }
 
   /**

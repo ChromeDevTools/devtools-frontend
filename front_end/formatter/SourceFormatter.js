@@ -244,7 +244,7 @@ class ScriptMapping {
       const rawLocations = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                                .uiLocationToRawLocationsForUnformattedJavaScript(
                                    formatData.originalSourceCode, originalLine, originalColumn);
-      console.assert(rawLocations.every(l => l && !!l.script()));
+      console.assert(rawLocations.every(l => l && Boolean(l.script())));
       return rawLocations;
     }
     if (formatData.originalSourceCode.contentType() === Common.ResourceType.resourceTypes.Document) {
@@ -256,8 +256,8 @@ class ScriptMapping {
         // Here we have an inline script, which was formatted together with the containing document, so we must not
         // translate locations as they are relative to the start of the document.
         const locations = /** @type {!Array<!SDK.DebuggerModel.Location>} */ (
-            scripts.map(script => script.rawLocation(originalLine, originalColumn)).filter(l => !!l));
-        console.assert(locations.every(l => l && !!l.script()));
+            scripts.map(script => script.rawLocation(originalLine, originalColumn)).filter(l => Boolean(l)));
+        console.assert(locations.every(l => l && Boolean(l.script())));
         return locations;
       }
     }
@@ -306,7 +306,7 @@ class ScriptMapping {
       const rawLocations = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                                .uiLocationToRawLocationsForUnformattedJavaScript(uiSourceCode, 0, 0);
       return /** @type {!Array<!SDK.Script.Script>} */ (
-          rawLocations.map(location => location.script()).filter(script => !!script));
+          rawLocations.map(location => location.script()).filter(script => Boolean(script)));
     }
     return [];
   }
@@ -401,7 +401,7 @@ class StyleMapping {
       const rawLocations = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().uiLocationToRawLocations(
           uiSourceCode.uiLocation(0, 0));
       return /** @type {!Array<!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>} */ (
-          rawLocations.map(rawLocation => rawLocation.header()).filter(header => !!header));
+          rawLocations.map(rawLocation => rawLocation.header()).filter(header => Boolean(header)));
     }
     return [];
   }

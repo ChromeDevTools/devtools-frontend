@@ -206,9 +206,9 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
     const column = this._columns[columnId];
     if (column.dataType === DataType.Boolean) {
-      DataGridImpl.setElementBoolean(element, /** @type {boolean} */ (!!value));
+      DataGridImpl.setElementBoolean(element, /** @type {boolean} */ (Boolean(value)));
     } else if (value !== null) {
-      DataGridImpl.setElementText(element, /** @type {string} */ (value), !!column.longText);
+      DataGridImpl.setElementText(element, /** @type {string} */ (value), Boolean(column.longText));
     }
   }
 

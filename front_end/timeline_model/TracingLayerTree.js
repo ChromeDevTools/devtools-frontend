@@ -198,7 +198,7 @@ export class TracingLayer {
     // if the first one is not set.
     this._compositingReasonIds =
         payload.compositing_reason_ids || (payload.debug_info && payload.debug_info.compositing_reason_ids) || [];
-    this._drawsContent = !!payload.draws_content;
+    this._drawsContent = Boolean(payload.draws_content);
     this._gpuMemoryUsage = payload.gpu_memory_usage;
     /** @type {!Array<!LayerPaintEvent>} */
     this._paints = [];

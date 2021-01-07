@@ -1390,7 +1390,7 @@
         if (arguments.length === 1) {
           force = !this.contains(token);
         }
-        return originalDOMTokenListToggle.call(this, token, !!force);
+        return originalDOMTokenListToggle.call(this, token, Boolean(force));
       };
     }
 

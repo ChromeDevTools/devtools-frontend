@@ -156,7 +156,7 @@ String.naturalOrderComparator = function(a, b) {
         return diff;
       }
       if (chunka.length !== chunkb.length) {
-        if (!+chunka && !+chunkb) {  // chunks are strings of all 0s (special case)
+        if (!Number(chunka) && !Number(chunkb)) {  // chunks are strings of all 0s (special case)
           return chunka.length - chunkb.length;
         }
         return chunkb.length - chunka.length;

@@ -219,7 +219,7 @@ export class DOMStorageItemsView extends StorageItemsView {
       selectedNode.selected = true;
     }
     this._dataGrid.addCreationNode(false);
-    this.setCanDeleteSelected(!!selectedNode);
+    this.setCanDeleteSelected(Boolean(selectedNode));
   }
 
   /**

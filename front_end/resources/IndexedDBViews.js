@@ -130,7 +130,7 @@ export class IDBDataView extends UI.View.SimpleView {
 
     this._model = model;
     this._databaseId = databaseId;
-    this._isIndex = !!index;
+    this._isIndex = Boolean(index);
     this._refreshObjectStoreCallback = refreshObjectStoreCallback;
 
     this.element.classList.add('indexed-db-data-view', 'storage-view');
@@ -443,7 +443,7 @@ export class IDBDataView extends UI.View.SimpleView {
       if (selectedNode) {
         selectedNode.select();
       }
-      this._pageBackButton.setEnabled(!!skipCount);
+      this._pageBackButton.setEnabled(Boolean(skipCount));
       this._pageForwardButton.setEnabled(hasMore);
       this._needsRefresh.setVisible(false);
       this._updateToolbarEnablement();

@@ -1596,7 +1596,7 @@ export class HeapSnapshot {
      * @return {boolean}
      */
     function traceIdFilter(node) {
-      return !!set[node.traceNodeId()];
+      return Boolean(set[node.traceNodeId()]);
     }
     return traceIdFilter;
   }
@@ -1611,7 +1611,7 @@ export class HeapSnapshot {
     const aggregates = this._buildAggregates(filter);
 
     let aggregatesByClassName;
-    if (!!key && this._aggregates[key]) {
+    if (key && this._aggregates[key]) {
       aggregatesByClassName = this._aggregates[key];
     } else {
       this._calculateClassesRetainedSize(aggregates.aggregatesByClassIndex, filter);
@@ -1884,7 +1884,7 @@ export class HeapSnapshot {
       const nodeIndex = /** @type {number} */ (list.pop());
       node.nodeIndex = nodeIndex;
       let classIndex = node.classIndex();
-      const seen = !!seenClassNameIndexes.get(classIndex);
+      const seen = Boolean(seenClassNameIndexes.get(classIndex));
       const nodeOrdinal = nodeIndex / nodeFieldCount;
       const dominatedIndexFrom = firstDominatedNodeIndex[nodeOrdinal];
       const dominatedIndexTo = firstDominatedNodeIndex[nodeOrdinal + 1];
@@ -3556,7 +3556,7 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
   canBeQueried() {
     const snapshot = /** @type {!JSHeapSnapshot} */ (this._snapshot);
     const flags = snapshot._flagsOfNode(this);
-    return !!(flags & snapshot._nodeFlags.canBeQueried);
+    return Boolean(flags & snapshot._nodeFlags.canBeQueried);
   }
 
   /**

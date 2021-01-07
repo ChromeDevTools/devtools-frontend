@@ -110,7 +110,7 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
       }
     }
     this.dispatchEventToListeners(Events.AnimationGroupStarted, matchedGroup || incomingGroup);
-    return !!matchedGroup;
+    return Boolean(matchedGroup);
   }
 
   /**

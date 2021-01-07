@@ -69,7 +69,7 @@ export class ReportSelector {
    * @return {boolean}
    */
   hasCurrentSelection() {
-    return !!this._selectedItem();
+    return Boolean(this._selectedItem());
   }
 
   /**

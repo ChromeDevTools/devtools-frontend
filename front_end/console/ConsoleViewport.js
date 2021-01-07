@@ -183,7 +183,7 @@ export class ConsoleViewport {
    * @return {boolean}
    */
   _isOutsideViewport(element) {
-    return !!element && !element.isSelfOrDescendant(this._contentElement);
+    return element !== null && !element.isSelfOrDescendant(this._contentElement);
   }
 
   /**
@@ -463,7 +463,7 @@ export class ConsoleViewport {
     };
 
     const {element: anchorElement, offset: anchorOffset} =
-        clampSelection(this._anchorSelection, !!this._selectionIsBackward);
+        clampSelection(this._anchorSelection, Boolean(this._selectionIsBackward));
     const {element: headElement, offset: headOffset} = clampSelection(this._headSelection, !this._selectionIsBackward);
     selection.setBaseAndExtent(anchorElement, anchorOffset, headElement, headOffset);
   }
@@ -546,8 +546,8 @@ export class ConsoleViewport {
     function prepare() {
       this._topGapElement.style.height = topGapHeight + 'px';
       this._bottomGapElement.style.height = bottomGapHeight + 'px';
-      this._topGapElementActive = !!topGapHeight;
-      this._bottomGapElementActive = !!bottomGapHeight;
+      this._topGapElementActive = Boolean(topGapHeight);
+      this._bottomGapElementActive = Boolean(bottomGapHeight);
       this._contentElement.style.setProperty('height', '10000000px');
     }
 
@@ -570,7 +570,7 @@ export class ConsoleViewport {
     const itemsToRender = new Set();
     for (let i = this._firstActiveIndex; i <= this._lastActiveIndex; ++i) {
       const providerElement = this._providerElement(i);
-      console.assert(!!providerElement, 'Expected provider element to be defined');
+      console.assert(Boolean(providerElement), 'Expected provider element to be defined');
       if (providerElement) {
         itemsToRender.add(providerElement);
       }
@@ -633,7 +633,7 @@ export class ConsoleViewport {
     const textLines = [];
     for (let i = startSelection.item; i <= endSelection.item; ++i) {
       const providerElement = this._providerElement(i);
-      console.assert(!!providerElement);
+      console.assert(Boolean(providerElement));
       if (!providerElement) {
         continue;
       }

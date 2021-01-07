@@ -40,7 +40,7 @@ export class SearchSourcesView extends Search.SearchView.SearchView {
     location.appendView(view);
     await UI.ViewManager.ViewManager.instance().revealView(/** @type {!UI.View.View} */ (view));
     const widget = /** @type {!Search.SearchView.SearchView} */ (await view.widget());
-    widget.toggle(query, !!searchImmediately);
+    widget.toggle(query, Boolean(searchImmediately));
     return widget;
   }
 

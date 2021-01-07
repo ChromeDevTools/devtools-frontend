@@ -156,14 +156,14 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
      */
     const coepIsEnabled = value => value !== Protocol.Network.CrossOriginEmbedderPolicyValue.None;
     FrameDetailsView.fillCrossOriginPolicy(this._coepPolicy, coepIsEnabled, info.coep);
-    this._isolationSection.setFieldVisible(ls`Cross-Origin Embedder Policy`, !!info.coep);
+    this._isolationSection.setFieldVisible(ls`Cross-Origin Embedder Policy`, Boolean(info.coep));
 
     /**
      * @param {!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue} value
      */
     const coopIsEnabled = value => value !== Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone;
     FrameDetailsView.fillCrossOriginPolicy(this._coopPolicy, coopIsEnabled, info.coop);
-    this._isolationSection.setFieldVisible(ls`Cross-Origin Opener Policy`, !!info.coop);
+    this._isolationSection.setFieldVisible(ls`Cross-Origin Opener Policy`, Boolean(info.coop));
   }
 
   /**
@@ -204,7 +204,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
 
   _updateApiAvailability() {
     const features = this._frame.getGatedAPIFeatures();
-    this._apiAvailability.setFieldVisible(ls`Shared Array Buffers`, !!features);
+    this._apiAvailability.setFieldVisible(ls`Shared Array Buffers`, Boolean(features));
 
     if (!features) {
       return;

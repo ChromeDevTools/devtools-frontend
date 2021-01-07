@@ -54,7 +54,7 @@ export class ViewportDataGrid extends DataGridImpl {
     let startsWithOdd = true;
     if (this._visibleNodes.length) {
       const allChildren = (/** @type {!ViewportDataGridNode<!NODE_TYPE>}*/ (this.rootNode())).flatChildren();
-      startsWithOdd = !!(allChildren.indexOf(this._visibleNodes[0]));
+      startsWithOdd = Boolean(allChildren.indexOf(this._visibleNodes[0]));
     }
     this._updateStripesClass(startsWithOdd);
   }
@@ -115,7 +115,7 @@ export class ViewportDataGrid extends DataGridImpl {
     if (this._stickToBottom && isFromUser) {
       this._stickToBottom = UI.UIUtils.isScrolledToBottom(this.scrollContainer);
     }
-    this._updateIsFromUser = this._updateIsFromUser || !!isFromUser;
+    this._updateIsFromUser = this._updateIsFromUser || Boolean(isFromUser);
     if (this._updateAnimationFrameId) {
       return;
     }
@@ -227,13 +227,13 @@ export class ViewportDataGrid extends DataGridImpl {
     if (visibleNodes.length) {
       const nodes = this.rootNode().flatChildren();
       const index = nodes.indexOf(visibleNodes[0]);
-      this._updateStripesClass(!!(index % 2));
-      if (this._stickToBottom && index !== -1 && !!(index % 2) !== this._firstVisibleIsStriped) {
+      this._updateStripesClass(Boolean(index % 2));
+      if (this._stickToBottom && index !== -1 && Boolean(index % 2) !== this._firstVisibleIsStriped) {
         offset += 1;
       }
     }
 
-    this._firstVisibleIsStriped = !!(offset % 2);
+    this._firstVisibleIsStriped = Boolean(offset % 2);
 
     for (let i = 0; i < visibleNodes.length; ++i) {
       const node = visibleNodes[i];
@@ -508,7 +508,7 @@ export class ViewportDataGridNode extends DataGridNode {
    */
   attached() {
     const existingElement = this.existingElement();
-    return !!(this.dataGrid && existingElement && existingElement.parentElement);
+    return Boolean(this.dataGrid && existingElement && existingElement.parentElement);
   }
 
   /**

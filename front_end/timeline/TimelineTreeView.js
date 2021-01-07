@@ -879,7 +879,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
    * @return {!Array<!TimelineModel.TimelineProfileTree.Node>}
    */
   _buildHeaviestStack(treeNode) {
-    console.assert(!!treeNode.parent, 'Attempt to build stack for tree root');
+    console.assert(Boolean(treeNode.parent), 'Attempt to build stack for tree root');
     let result = [];
     // Do not add root to the stack, as it's the tree itself.
     for (let node = treeNode; node && node.parent; node = node.parent) {

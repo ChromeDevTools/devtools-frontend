@@ -249,7 +249,7 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
    * @param {!XMLView} xmlView
    */
   constructor(node, closeTag, xmlView) {
-    super('', !closeTag && 'childElementCount' in node && !!node.childElementCount);
+    super('', !closeTag && 'childElementCount' in node && Boolean(node.childElementCount));
     this._node = node;
     this._closeTag = closeTag;
     this.selectable = true;
@@ -316,7 +316,7 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
     if (ranges.length) {
       UI.UIUtils.highlightRangesWithStyleClass(this.listItemElement, ranges, cssClasses, this._highlightChanges);
     }
-    return !!this._highlightChanges.length;
+    return Boolean(this._highlightChanges.length);
   }
 
   revertHighlightChanges() {

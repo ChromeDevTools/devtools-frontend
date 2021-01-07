@@ -503,7 +503,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
   _refreshList(bestItems, overflowItems, filteredItems) {
     this._refreshListWithCurrentResult = undefined;
     filteredItems = [...bestItems, ...overflowItems, ...filteredItems];
-    this._updateNotFoundMessage(!!filteredItems.length);
+    this._updateNotFoundMessage(Boolean(filteredItems.length));
     const oldHeight = this._list.element.offsetHeight;
     this._items.replaceAll(filteredItems);
     if (filteredItems.length) {

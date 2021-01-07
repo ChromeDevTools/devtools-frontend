@@ -681,7 +681,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
     const regex =
         /** @type {!Common.Settings.RegExpSetting} */ (this._manager.workspaceFolderExcludePatternSetting()).asRegExp();
-    return !!(regex && regex.test(folderPath));
+    return Boolean(regex && regex.test(folderPath));
   }
 
   /**
@@ -739,7 +739,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
    * @return {boolean}
    */
   canExcludeFolder(path) {
-    return !!path && this.type() !== 'overrides';
+    return Boolean(path) && this.type() !== 'overrides';
   }
 
   /**

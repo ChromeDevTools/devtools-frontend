@@ -414,8 +414,8 @@ export class Automapping {
      * @this {Automapping}
      */
     function onMetadatas() {
-      const activeFiles = /** @type {!Array<!Workspace.UISourceCode.UISourceCode>} */ (
-          similarFiles.filter(file => !!file && !!this._activeFoldersIndex.closestParentFolder(file.url())));
+      const activeFiles = /** @type {!Array<!Workspace.UISourceCode.UISourceCode>} */ (similarFiles.filter(
+          file => Boolean(file) && Boolean(this._activeFoldersIndex.closestParentFolder(file.url()))));
       const networkMetadata = this._sourceCodeToMetadataMap.get(networkSourceCode);
       if (!networkMetadata || (!networkMetadata.modificationTime && typeof networkMetadata.contentSize !== 'number')) {
         // If networkSourceCode does not have metadata, try to match against active folders.

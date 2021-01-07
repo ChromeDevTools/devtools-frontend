@@ -77,7 +77,7 @@ NetworkTestRunner.dumpNetworkRequests = function() {
 NetworkTestRunner.dumpNetworkRequestsWithSignedExchangeInfo = function() {
   for (const request of SDK.NetworkLog.instance().requests()) {
     TestRunner.addResult(`* ${request.url()}`);
-    TestRunner.addResult(`  failed: ${!!request.failed}`);
+    TestRunner.addResult(`  failed: ${Boolean(request.failed)}`);
     TestRunner.addResult(`  statusCode: ${request.statusCode}`);
     TestRunner.addResult(`  resourceType: ${request.resourceType().name()}`);
     if (request.signedExchangeInfo()) {

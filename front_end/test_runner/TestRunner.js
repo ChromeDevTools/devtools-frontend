@@ -20,7 +20,7 @@ import * as Workspace from '../workspace/workspace.js';
  * @return {boolean}
  */
 export function isDebugTest() {
-  return !self.testRunner || !!Root.Runtime.queryParam('debugFrontend');
+  return !self.testRunner || Boolean(Root.Runtime.queryParam('debugFrontend'));
 }
 
 /**
@@ -260,10 +260,10 @@ export function createKeyEvent(key, ctrlKey, altKey, shiftKey, metaKey) {
     key: key,
     bubbles: true,
     cancelable: true,
-    ctrlKey: !!ctrlKey,
-    altKey: !!altKey,
-    shiftKey: !!shiftKey,
-    metaKey: !!metaKey
+    ctrlKey: Boolean(ctrlKey),
+    altKey: Boolean(altKey),
+    shiftKey: Boolean(shiftKey),
+    metaKey: Boolean(metaKey)
   });
 }
 
@@ -1149,7 +1149,7 @@ export function assertEquals(expected, found, message) {
  * @param {string} message
  */
 export function assertTrue(found, message) {
-  assertEquals(true, !!found, message);
+  assertEquals(true, Boolean(found), message);
 }
 
 /**

@@ -192,8 +192,8 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
       const locations = locationsGroupedById[idx];
       const breakpointLocation = locations[0];
       const uiLocation = breakpointLocation.uiLocation;
-      const isSelected =
-          !!selectedUILocation && locations.some(location => location.uiLocation.id() === selectedUILocation.id());
+      const isSelected = selectedUILocation !== null &&
+          locations.some(location => location.uiLocation.id() === selectedUILocation.id());
       // Wasm disassembly bytecode offsets are stored as column numbers,
       // so this showColumn setting doesn't make sense for WebAssembly.
       const showColumn = uiLocation.uiSourceCode.mimeType() !== 'application/wasm' &&

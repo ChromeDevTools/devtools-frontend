@@ -395,7 +395,7 @@ export class EventListener {
    * @return {boolean}
    */
   canRemove() {
-    return !!this._customRemoveFunction || this._origin !== EventListener.Origin.FrameworkUser;
+    return Boolean(this._customRemoveFunction) || this._origin !== EventListener.Origin.FrameworkUser;
   }
 
   /**

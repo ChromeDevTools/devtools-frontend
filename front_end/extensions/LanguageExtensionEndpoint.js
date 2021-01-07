@@ -80,7 +80,7 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
    */
   handleScript(script) {
     const language = script.scriptLanguage();
-    return !!language && !!script.debugSymbols && language === this._supportedScriptTypes.language &&
+    return language !== null && script.debugSymbols !== null && language === this._supportedScriptTypes.language &&
         this._supportedScriptTypes.symbol_types.includes(script.debugSymbols.type);
   }
 

@@ -26,7 +26,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
     /** @type {!UI.ListControl.ListControl<!SDK.DebuggerModel.DebuggerModel>} */
     this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.NonViewport);
     const currentTarget = UI.Context.Context.instance().flavor(SDK.SDKModel.Target);
-    this._selectedModel = !!currentTarget ? currentTarget.model(SDK.DebuggerModel.DebuggerModel) : null;
+    this._selectedModel = currentTarget !== null ? currentTarget.model(SDK.DebuggerModel.DebuggerModel) : null;
     this.contentElement.appendChild(this._list.element);
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.SDKModel.Target, this._targetFlavorChanged, this);
@@ -179,7 +179,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox {
     if (debuggerModel) {
       this._list.refreshItem(debuggerModel);
     }
-    if (!!this._selectedModel) {
+    if (this._selectedModel !== null) {
       this._list.refreshItem(this._selectedModel);
     }
     this._selectedModel = debuggerModel;

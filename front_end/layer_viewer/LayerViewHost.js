@@ -93,7 +93,7 @@ export class LayerSelection extends Selection {
    * @param {!SDK.LayerTreeBase.Layer} layer
    */
   constructor(layer) {
-    console.assert(!!layer, 'LayerSelection with empty layer');
+    console.assert(Boolean(layer), 'LayerSelection with empty layer');
     super(Type.Layer, layer);
   }
 

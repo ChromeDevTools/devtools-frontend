@@ -114,8 +114,8 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
     const keyRange = {};
     keyRange.lower = IndexedDBModel.keyFromIDBKey(idbKeyRange.lower);
     keyRange.upper = IndexedDBModel.keyFromIDBKey(idbKeyRange.upper);
-    keyRange.lowerOpen = !!idbKeyRange.lowerOpen;
-    keyRange.upperOpen = !!idbKeyRange.upperOpen;
+    keyRange.lowerOpen = Boolean(idbKeyRange.lowerOpen);
+    keyRange.upperOpen = Boolean(idbKeyRange.upperOpen);
     return keyRange;
   }
 
@@ -265,7 +265,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
    * @param {string} securityOrigin
    */
   _removeOrigin(securityOrigin) {
-    console.assert(!!this._databaseNamesBySecurityOrigin[securityOrigin]);
+    console.assert(Boolean(this._databaseNamesBySecurityOrigin[securityOrigin]));
     for (let i = 0; i < this._databaseNamesBySecurityOrigin[securityOrigin].length; ++i) {
       this._databaseRemoved(securityOrigin, this._databaseNamesBySecurityOrigin[securityOrigin][i]);
     }
@@ -281,7 +281,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel {
    */
   _isValidSecurityOrigin(securityOrigin) {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(securityOrigin);
-    return !!parsedURL && parsedURL.scheme.startsWith('http');
+    return parsedURL !== null && parsedURL.scheme.startsWith('http');
   }
 
   /**

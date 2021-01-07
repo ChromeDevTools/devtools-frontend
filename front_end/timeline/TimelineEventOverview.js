@@ -538,7 +538,7 @@ export class TimelineEventOverviewFrames extends TimelineEventOverview {
       return;
     }
     const height = this.height();
-    const /** @const */ padding = 1 * window.devicePixelRatio;
+    const /** @const */ padding = Number(window.devicePixelRatio);
     const /** @const */ baseFrameDurationMs = 1e3 / 60;
     const visualHeight = height - 2 * padding;
     const timeOffset = this._model.timelineModel().minimumRecordTime();

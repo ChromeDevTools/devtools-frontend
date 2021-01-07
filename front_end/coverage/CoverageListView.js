@@ -229,7 +229,7 @@ export class CoverageListView extends UI.Widget.VBox {
     let hadTreeUpdates = false;
     for (const node of this._nodeForCoverageInfo.values()) {
       const shouldBeVisible = this._isVisibleFilter(node._coverageInfo);
-      const isVisible = !!node.parent;
+      const isVisible = Boolean(node.parent);
       if (shouldBeVisible) {
         node._setHighlight(this._highlightRegExp);
       }

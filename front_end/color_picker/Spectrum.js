@@ -1040,7 +1040,7 @@ export class Spectrum extends UI.Widget.VBox {
       colorString = color.asString(cf.RGBA);
     }
 
-    console.assert(!!colorString);
+    console.assert(Boolean(colorString));
     return colorString || '';
   }
 

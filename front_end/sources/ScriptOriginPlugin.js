@@ -28,7 +28,7 @@ export class ScriptOriginPlugin extends Plugin {
    * @return {boolean}
    */
   static accepts(uiSourceCode) {
-    return uiSourceCode.contentType().hasScripts() || !!ScriptOriginPlugin._script(uiSourceCode);
+    return uiSourceCode.contentType().hasScripts() || Boolean(ScriptOriginPlugin._script(uiSourceCode));
   }
 
   /**

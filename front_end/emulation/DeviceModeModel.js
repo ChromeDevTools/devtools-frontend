@@ -32,7 +32,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     this._appliedDeviceScaleFactor = window.devicePixelRatio;
     this._appliedUserAgentType = UA.Desktop;
     this._experimentDualScreenSupport = Root.Runtime.experiments.isEnabled('dualScreenSupport');
-    this._webPlatformExperimentalFeaturesEnabled = !!eval('window.getWindowSegments');
+    this._webPlatformExperimentalFeaturesEnabled = Boolean(eval('window.getWindowSegments'));
 
     this._scaleSetting = Common.Settings.Settings.instance().createSetting('emulation.deviceScale', 1);
     // We've used to allow zero before.
@@ -186,7 +186,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     this._type = type;
 
     if (type === Type.Device && device && mode) {
-      console.assert(!!device && !!mode, 'Must pass device and mode for device emulation');
+      console.assert(Boolean(device) && Boolean(mode), 'Must pass device and mode for device emulation');
       this._mode = mode;
       this._device = device;
       if (this._initialized) {

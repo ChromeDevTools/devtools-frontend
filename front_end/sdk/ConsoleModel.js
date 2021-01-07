@@ -266,7 +266,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
     if (call.args.length && call.args[0].unserializableValue) {
       message = call.args[0].unserializableValue;
     } else if (call.args.length && (typeof call.args[0].value !== 'object' || call.args[0].value === null)) {
-      message = call.args[0].value + '';
+      message = String(call.args[0].value);
     } else if (call.args.length && call.args[0].description) {
       message = call.args[0].description;
     }
@@ -426,7 +426,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
     const executionContext = /** @type {!ExecutionContext} */ (currentExecutionContext);
 
     const result = await executionContext.globalObject(/* objectGroup */ '', /* generatePreview */ false);
-    if ('error' in result || !!result.exceptionDetails || !result.object) {
+    if ('error' in result || Boolean(result.exceptionDetails) || !result.object) {
       failedToSave('object' in result && result.object || null);
       return;
     }

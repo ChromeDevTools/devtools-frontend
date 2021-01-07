@@ -265,7 +265,7 @@ export class JavaScriptAutocomplete {
           replMode: undefined,
         },
         /* userGesture */ false, /* awaitPromise */ false);
-    if ('error' in result || !!result.exceptionDetails || result.object.subtype !== 'map') {
+    if ('error' in result || Boolean(result.exceptionDetails) || result.object.subtype !== 'map') {
       return [];
     }
     const properties = await result.object.getOwnProperties(false);
@@ -366,7 +366,7 @@ export class JavaScriptAutocomplete {
 
     const expressionString = expression;
     const dotNotation = fullText.endsWith('.');
-    const bracketNotation = !!expressionString && fullText.endsWith('[');
+    const bracketNotation = Boolean(expressionString) && fullText.endsWith('[');
 
     // User is entering float value, do not suggest anything.
     if ((expressionString && !isNaN(Number(expressionString))) ||
@@ -437,7 +437,7 @@ export class JavaScriptAutocomplete {
      * @return {!Promise<!Array<!CompletionGroup>>}
      */
     async function completionsOnGlobal(result) {
-      if ('error' in result || !!result.exceptionDetails || !result.object) {
+      if ('error' in result || Boolean(result.exceptionDetails) || !result.object) {
         return [];
       }
 

@@ -881,7 +881,7 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
    * @return {boolean}
    */
   readOnly() {
-    return !!this._codeMirror.getOption('readOnly');
+    return Boolean(this._codeMirror.getOption('readOnly'));
   }
 
   /**
@@ -1776,7 +1776,7 @@ export class SelectNextOccurrenceController {
     /** @type {?TextUtils.TextRange.TextRange} */
     let next = last;
     do {
-      next = next ? this._findNextOccurrence(next, !!this._fullWordSelection) : null;
+      next = next ? this._findNextOccurrence(next, Boolean(this._fullWordSelection)) : null;
     } while (next && this._findRange(selections, next) && !next.equal(last));
 
     if (!next) {
@@ -2021,7 +2021,7 @@ export class DevToolsAccessibleTextArea extends CodeMirror.inputStyles.textarea 
    * @param {boolean=} typing - whether the user is currently typing
    */
   reset(typing) {
-    if (this.textAreaBusy(!!typing)) {
+    if (this.textAreaBusy(Boolean(typing))) {
       super.reset(typing);
       return;
     }

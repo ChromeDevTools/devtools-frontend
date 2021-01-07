@@ -337,7 +337,7 @@ export class GenericSettingsTab extends SettingsTab {
    * @return {boolean}
    */
   static isSettingVisible(setting) {
-    return !!(setting.title && setting.category);
+    return Boolean(setting.title && setting.category);
   }
 
   /**

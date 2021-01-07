@@ -656,14 +656,15 @@ export class CSSModel extends SDKModel {
    */
   _styleSheetRemoved(id) {
     const header = this._styleSheetIdToHeader.get(id);
-    console.assert(!!header);
+    console.assert(Boolean(header));
     if (!header) {
       return;
     }
     this._styleSheetIdToHeader.delete(id);
     const url = header.resourceURL();
     const frameIdToStyleSheetIds = this._styleSheetIdsForURL.get(url);
-    console.assert(!!frameIdToStyleSheetIds, 'No frameId to styleSheetId map is available for given style sheet URL.');
+    console.assert(
+        Boolean(frameIdToStyleSheetIds), 'No frameId to styleSheetId map is available for given style sheet URL.');
     if (frameIdToStyleSheetIds) {
       const stylesheetIds = frameIdToStyleSheetIds.get(header.frameId);
       if (stylesheetIds) {
@@ -706,7 +707,7 @@ export class CSSModel extends SDKModel {
    */
   async setStyleSheetText(styleSheetId, newText, majorChange) {
     const header = /** @type {!CSSStyleSheetHeader} */ (this._styleSheetIdToHeader.get(styleSheetId));
-    console.assert(!!header);
+    console.assert(Boolean(header));
     newText = CSSModel.trimSourceURL(newText);
     if (header.hasSourceURL) {
       newText += '\n/*# sourceURL=' + header.sourceURL + ' */';

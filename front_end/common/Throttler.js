@@ -63,9 +63,9 @@ export class Throttler {
     this._process = process;
 
     // Run the first scheduled task instantly.
-    const hasScheduledTasks = !!this._processTimeout || this._isRunningProcess;
+    const hasScheduledTasks = Boolean(this._processTimeout) || this._isRunningProcess;
     const okToFire = this._getTime() - this._lastCompleteTime > this._timeout;
-    asSoonAsPossible = !!asSoonAsPossible || (!hasScheduledTasks && okToFire);
+    asSoonAsPossible = Boolean(asSoonAsPossible) || (!hasScheduledTasks && okToFire);
 
     const forceTimerUpdate = asSoonAsPossible && !this._asSoonAsPossible;
     this._asSoonAsPossible = this._asSoonAsPossible || asSoonAsPossible;

@@ -71,7 +71,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
    * @return {boolean}
    */
   _editable() {
-    return !!(this._style.styleSheetId && this._style.range);
+    return Boolean(this._style.styleSheetId && this._style.range);
   }
 
   /**
@@ -112,7 +112,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
    */
   updateFilter() {
     const regex = this._parentPane.filterRegex();
-    const matches = !!regex && (regex.test(this.property.name) || regex.test(this.property.value));
+    const matches = regex !== null && (regex.test(this.property.name) || regex.test(this.property.value));
     this.listItemElement.classList.toggle('filter-match', matches);
 
     this.onpopulate();
@@ -1124,7 +1124,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     // Prevent destructive side-effects during live-edit. crbug.com/433889
     const parentNode = this._parentPane.node();
     if (parentNode) {
-      const isPseudo = !!parentNode.pseudoType();
+      const isPseudo = Boolean(parentNode.pseudoType());
       if (isPseudo) {
         if (this.name.toLowerCase() === 'content') {
           return;

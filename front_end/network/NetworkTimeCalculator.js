@@ -95,7 +95,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
    * @return {string}
    */
   formatValue(value, precision) {
-    return Number.secondsToString(value, !!precision);
+    return Number.secondsToString(value, Boolean(precision));
   }
 
   /**
@@ -357,7 +357,7 @@ export class NetworkTransferTimeCalculator extends NetworkTimeCalculator {
    * @return {string}
    */
   formatValue(value, precision) {
-    return Number.secondsToString(value - this.zeroTime(), !!precision);
+    return Number.secondsToString(value - this.zeroTime(), Boolean(precision));
   }
 
   /**
@@ -391,7 +391,7 @@ export class NetworkTransferDurationCalculator extends NetworkTimeCalculator {
    * @return {string}
    */
   formatValue(value, precision) {
-    return Number.secondsToString(value, !!precision);
+    return Number.secondsToString(value, Boolean(precision));
   }
 
   /**

@@ -203,7 +203,7 @@ export class DeviceModeView extends UI.Widget.VBox {
    * @param {!Common.EventTarget.EventTargetEvent} event
    */
   _onResizeUpdate(widthFactor, heightFactor, event) {
-    if (event.data.shiftKey !== !!this._slowPositionStart) {
+    if (event.data.shiftKey !== Boolean(this._slowPositionStart)) {
       this._slowPositionStart = event.data.shiftKey ? {x: event.data.currentX, y: event.data.currentY} : null;
     }
 
@@ -295,7 +295,7 @@ export class DeviceModeView extends UI.Widget.VBox {
         this._cachedOutlineRect = outlineRect;
       }
     }
-    this._contentClip.classList.toggle('device-mode-outline-visible', !!this._model.outlineImage());
+    this._contentClip.classList.toggle('device-mode-outline-visible', Boolean(this._model.outlineImage()));
 
     const resizable = this._model.type() === Type.Responsive;
     if (resizable !== this._cachedResizable) {

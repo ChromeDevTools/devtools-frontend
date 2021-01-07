@@ -440,7 +440,7 @@ export class TimelineFlameChartNetworkDataProvider {
    * @return {boolean}
    */
   isExpanded() {
-    return this._group && !!this._group.expanded;
+    return this._group && Boolean(this._group.expanded);
   }
 
   /**

@@ -139,7 +139,7 @@ export class DatabaseQueryView extends UI.Widget.VBox {
    * @return {boolean}
    */
   _isOutsideViewport(element) {
-    return !!element && !element.isSelfOrDescendant(this._queryWrapper);
+    return element !== null && !element.isSelfOrDescendant(this._queryWrapper);
   }
 
   _updateFocusedItem() {

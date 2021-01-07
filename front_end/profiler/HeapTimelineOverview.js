@@ -336,7 +336,7 @@ export class OverviewCalculator {
    * @return {string}
    */
   formatValue(value, precision) {
-    return Number.secondsToString(value / 1000, !!precision);
+    return Number.secondsToString(value / 1000, Boolean(precision));
   }
 
   /**

@@ -95,7 +95,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
     }
 
     await Promise.all(promises);
-    return !!(this._cssModel || this._cpuProfilerModel);
+    return Boolean(this._cssModel || this._cpuProfilerModel);
   }
 
   /**
@@ -172,7 +172,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
     // This conditional should never trigger, as all intended ways to stop
     // polling are awaiting the `_currentPollPromise` before suspending.
     console.assert(
-        this._suspensionState !== SuspensionState.Suspended || !!this._performanceTraceRecording,
+        this._suspensionState !== SuspensionState.Suspended || Boolean(this._performanceTraceRecording),
         'CoverageModel was suspended while polling.');
     if (updates.length) {
       this.dispatchEventToListeners(Events.CoverageUpdated, updates);
@@ -592,7 +592,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
       let useFullText = false;
       for (const info of urlInfo._coverageInfoByLocation.values()) {
         if (info._lineOffset || info._columnOffset) {
-          useFullText = !!url;
+          useFullText = Boolean(url);
           break;
         }
       }
@@ -904,7 +904,7 @@ export class CoverageInfo {
         return true;
       }
     }
-    return index < this._segments.length && !!this._segments[index].count;
+    return index < this._segments.length && Boolean(this._segments[index].count);
   }
   _updateStats() {
     this._statsByTimestamp = new Map();

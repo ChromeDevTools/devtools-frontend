@@ -28,7 +28,7 @@ export class PieChart extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private chartName = '';
   private size = 0;
-  private formatter = (val: number): string => val + '';
+  private formatter = (val: number): string => String(val);
   private showLegend = false;
   private total = 0;
   private slices: readonly Slice[] = [];

@@ -96,7 +96,7 @@ export class Settings {
           setting.setTitle(extension.title());
         }
         if (userActionCondition) {
-          setting.setRequiresUserAction(!!Root.Runtime.Runtime.queryParam(userActionCondition));
+          setting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam(userActionCondition)));
         }
         setting._extension = extension;
         return setting;
@@ -113,7 +113,7 @@ export class Settings {
           setting.setTitle(registration.title);
         }
         if (registration.userActionCondition) {
-          setting.setRequiresUserAction(!!Root.Runtime.Runtime.queryParam(registration.userActionCondition));
+          setting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam(registration.userActionCondition)));
         }
         setting.setRegistration(registration);
         return setting;

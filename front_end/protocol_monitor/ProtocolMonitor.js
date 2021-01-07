@@ -348,7 +348,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
         return;
       }
       node.data.response = message.result || message.error;
-      node.hasError = !!message.error;
+      node.hasError = Boolean(message.error);
       node.refresh();
       if (this._dataGrid.selectedNode === node) {
         const data =
@@ -470,7 +470,7 @@ export class InfoWidget extends UI.Widget.VBox {
    */
   render(data) {
     const requestEnabled = data && data.direction === 'sent';
-    this._tabbedPane.setTabEnabled('request', !!requestEnabled);
+    this._tabbedPane.setTabEnabled('request', Boolean(requestEnabled));
     if (!data) {
       this._tabbedPane.changeTabView(
           'request', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected)));

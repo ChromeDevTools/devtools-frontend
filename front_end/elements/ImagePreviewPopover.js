@@ -53,7 +53,7 @@ export class ImagePreviewPopover {
         if (preview) {
           popover.contentElement.appendChild(preview);
         }
-        return !!preview;
+        return Boolean(preview);
       }
     };
   }

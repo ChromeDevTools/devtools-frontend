@@ -309,7 +309,7 @@ self.injectedExtensionAPI = function(
 
       // Only send command if we either removed an existing handler or added handler and had none before.
       if (hadHandler === !callback) {
-        extensionServer.sendRequest({command: commands.SetOpenResourceHandler, 'handlerPresent': !!callback});
+        extensionServer.sendRequest({command: commands.SetOpenResourceHandler, 'handlerPresent': Boolean(callback)});
       }
     },
 
@@ -534,7 +534,7 @@ self.injectedExtensionAPI = function(
         id: id,
         icon: iconPath,
         tooltip: tooltipText,
-        disabled: !!disabled
+        disabled: Boolean(disabled)
       };
       extensionServer.sendRequest(request);
       return new Button(id);
@@ -601,8 +601,13 @@ self.injectedExtensionAPI = function(
 
   ButtonImpl.prototype = {
     update: function(iconPath, tooltipText, disabled) {
-      const request =
-          {command: commands.UpdateButton, id: this._id, icon: iconPath, tooltip: tooltipText, disabled: !!disabled};
+      const request = {
+        command: commands.UpdateButton,
+        id: this._id,
+        icon: iconPath,
+        tooltip: tooltipText,
+        disabled: Boolean(disabled)
+      };
       extensionServer.sendRequest(request);
     }
   };
@@ -861,7 +866,7 @@ self.injectedExtensionAPI = function(
      * @return {boolean}
      */
     hasHandler: function(command) {
-      return !!this._handlers[command];
+      return Boolean(this._handlers[command]);
     },
 
     registerHandler: function(command, handler) {

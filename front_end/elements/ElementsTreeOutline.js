@@ -436,7 +436,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     // avoid calling _selectedNodeChanged() twice, first check if _selectedDOMNode is the same
     // node as the one passed in.
     if (this._selectedDOMNode === node) {
-      this._selectedNodeChanged(!!focus);
+      this._selectedNodeChanged(Boolean(focus));
     }
   }
 
@@ -885,7 +885,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     }
 
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const isPseudoElement = !!treeElement.node().pseudoType();
+    const isPseudoElement = Boolean(treeElement.node().pseudoType());
     const isTag = treeElement.node().nodeType() === Node.ELEMENT_NODE && !isPseudoElement;
     const node = /** @type {?Node} */ (event.target);
     if (!node) {
@@ -1118,7 +1118,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
    * @return {boolean}
    */
   isToggledToHidden(node) {
-    return !!node.marker('hidden-marker');
+    return Boolean(node.marker('hidden-marker'));
   }
 
   _reset() {
@@ -1371,7 +1371,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
         !node.parentNode.parentNode) {
       treeElement.setCollapsible(false);
     }
-    treeElement.selectable = !!this._selectEnabled;
+    treeElement.selectable = Boolean(this._selectEnabled);
     return treeElement;
   }
 
@@ -1474,7 +1474,7 @@ export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
     if (node.isInsertionPoint()) {
       return true;
     }
-    return !!node.childNodeCount() && !ElementsTreeElement.canShowInlineText(node);
+    return Boolean(node.childNodeCount()) && !ElementsTreeElement.canShowInlineText(node);
   }
 
   /**
@@ -1751,35 +1751,37 @@ export class UpdateRecord {
    * @return {boolean}
    */
   isAttributeModified(attributeName) {
-    return !!this._modifiedAttributes && this._modifiedAttributes.has(attributeName);
+    return this._modifiedAttributes !== null && this._modifiedAttributes !== undefined &&
+        this._modifiedAttributes.has(attributeName);
   }
 
   /**
    * @return {boolean}
    */
   hasRemovedAttributes() {
-    return !!this._removedAttributes && !!this._removedAttributes.size;
+    return this._removedAttributes !== null && this._removedAttributes !== undefined &&
+        Boolean(this._removedAttributes.size);
   }
 
   /**
    * @return {boolean}
    */
   isCharDataModified() {
-    return !!this._charDataModified;
+    return Boolean(this._charDataModified);
   }
 
   /**
    * @return {boolean}
    */
   hasChangedChildren() {
-    return !!this._hasChangedChildren;
+    return Boolean(this._hasChangedChildren);
   }
 
   /**
    * @return {boolean}
    */
   hasRemovedChildren() {
-    return !!this._hasRemovedChildren;
+    return Boolean(this._hasRemovedChildren);
   }
 }
 
@@ -1848,7 +1850,7 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
    * @return {boolean}
    */
   get hovered() {
-    return !!this._hovered;
+    return Boolean(this._hovered);
   }
 
   /**

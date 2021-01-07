@@ -225,7 +225,7 @@ export class StartView extends UI.Widget.Widget {
     if (this._warningText) {
       this._warningText.textContent = text;
       this._warningText.classList.toggle('hidden', !text);
-      this._shouldConfirm = !!text;
+      this._shouldConfirm = Boolean(text);
     }
   }
 }

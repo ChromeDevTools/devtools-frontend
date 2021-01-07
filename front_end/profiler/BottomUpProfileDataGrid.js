@@ -50,7 +50,7 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
    * @param {!TopDownProfileDataGridTree} owningTree
    */
   constructor(profileNode, owningTree) {
-    super(profileNode, owningTree, !!profileNode.parent && !!profileNode.parent.parent);
+    super(profileNode, owningTree, profileNode.parent !== null && Boolean(profileNode.parent.parent));
     /** @type {!Array<!NodeInfo> | undefined} */
     this._remainingNodeInfos = [];
   }
@@ -185,7 +185,7 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
   _willHaveChildren(profileNode) {
     // In bottom up mode, our parents are our children since we display an inverted tree.
     // However, we don't want to show the very top parent since it is redundant.
-    return !!(profileNode.parent && profileNode.parent.parent);
+    return Boolean(profileNode.parent && profileNode.parent.parent);
   }
 }
 

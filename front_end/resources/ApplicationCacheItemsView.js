@@ -243,7 +243,7 @@ export class ApplicationCacheItemsView extends UI.View.SimpleView {
      */
     function localeCompare(field, resource1, resource2) {
       return sortDirection *
-          (/** @type {*} */ (resource1)[field] + '').localeCompare(/** @type {*} */ (resource2)[field] + '');
+          String(/** @type {*} */ (resource1)[field]).localeCompare(String(/** @type {*} */ (resource2)[field]));
     }
 
     let comparator;

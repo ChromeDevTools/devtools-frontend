@@ -104,7 +104,7 @@ export class Linkifier {
     /** @type {!Map<!SDK.SDKModel.Target, !Bindings.LiveLocation.LiveLocationPool>} */
     this._locationPoolByTarget = new Map();
     this._onLiveLocationUpdate = onLiveLocationUpdate;
-    this._useLinkDecorator = !!useLinkDecorator;
+    this._useLinkDecorator = Boolean(useLinkDecorator);
     instances.add(this);
     SDK.SDKModel.TargetManager.instance().observeTargets(this);
   }
@@ -366,7 +366,7 @@ export class Linkifier {
    * @return {!HTMLElement}
    */
   linkifyStackTraceTopFrame(target, stackTrace, classes) {
-    console.assert(!!stackTrace.callFrames && !!stackTrace.callFrames.length);
+    console.assert(Boolean(stackTrace.callFrames) && Boolean(stackTrace.callFrames.length));
 
     const topFrame = stackTrace.callFrames[0];
     const fallbackAnchor = Linkifier.linkifyURL(topFrame.url, {

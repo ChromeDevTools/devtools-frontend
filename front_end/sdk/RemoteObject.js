@@ -377,7 +377,7 @@ export class RemoteObjectImpl extends RemoteObject {
         this._description = unserializableValue;
       }
       if (!this._description && (typeof value !== 'object' || value === null)) {
-        this._description = value + '';
+        this._description = String(value);
       }
       this._hasChildren = false;
       if (typeof unserializableValue === 'string') {
@@ -541,8 +541,8 @@ export class RemoteObjectImpl extends RemoteObject {
       const propertyValue = property.value ? await this._createRemoteObject(property.value) : null;
       const propertySymbol = property.symbol ? this._runtimeModel.createRemoteObject(property.symbol) : null;
       const remoteProperty = new RemoteObjectProperty(
-          property.name, propertyValue, !!property.enumerable, !!property.writable, !!property.isOwn,
-          !!property.wasThrown, propertySymbol);
+          property.name, propertyValue, Boolean(property.enumerable), Boolean(property.writable),
+          Boolean(property.isOwn), Boolean(property.wasThrown), propertySymbol);
 
       if (typeof property.value === 'undefined') {
         if (property.get && property.get.type !== 'undefined') {
@@ -666,7 +666,10 @@ export class RemoteObjectImpl extends RemoteObject {
       return {object: null, wasThrown: false};
     }
     // TODO: release exceptionDetails object
-    return {object: this._runtimeModel.createRemoteObject(response.result), wasThrown: !!response.exceptionDetails};
+    return {
+      object: this._runtimeModel.createRemoteObject(response.result),
+      wasThrown: Boolean(response.exceptionDetails)
+    };
   }
 
   /**
@@ -730,7 +733,7 @@ export class RemoteObjectImpl extends RemoteObject {
    * @return {boolean}
    */
   isNode() {
-    return !!this._objectId && this.type === 'object' && this.subtype === 'node';
+    return Boolean(this._objectId) && this.type === 'object' && this.subtype === 'node';
   }
 }
 
@@ -839,18 +842,18 @@ export class RemoteObjectProperty {
       this.value = value;
     }
     this.enumerable = typeof enumerable !== 'undefined' ? enumerable : true;
-    const isNonSyntheticOrSyntheticWritable = !synthetic || !!syntheticSetter;
+    const isNonSyntheticOrSyntheticWritable = !synthetic || Boolean(syntheticSetter);
     this.writable = typeof writable !== 'undefined' ? writable : isNonSyntheticOrSyntheticWritable;
-    this.isOwn = !!isOwn;
-    this.wasThrown = !!wasThrown;
+    this.isOwn = Boolean(isOwn);
+    this.wasThrown = Boolean(wasThrown);
     if (symbol) {
       this.symbol = symbol;
     }
-    this.synthetic = !!synthetic;
+    this.synthetic = Boolean(synthetic);
     if (syntheticSetter) {
       this.syntheticSetter = syntheticSetter;
     }
-    this.private = !!isPrivate;
+    this.private = Boolean(isPrivate);
 
     /** @type {(!RemoteObject|undefined)} */
     this.getter;
@@ -872,14 +875,14 @@ export class RemoteObjectProperty {
     if (result) {
       this.value = result;
     }
-    return !!result;
+    return Boolean(result);
   }
 
   /**
    * @return {boolean}
    */
   isAccessorProperty() {
-    return !!(this.getter || this.setter);
+    return Boolean(this.getter || this.setter);
   }
 }
 
@@ -964,7 +967,7 @@ export class LocalJSONObject extends RemoteObject {
           this._cachedDescription = this._concatenate('[', ']', formatArrayItem.bind(this));
           break;
         case 'date':
-          this._cachedDescription = '' + this._value;
+          this._cachedDescription = String(this._value);
           break;
         case 'null':
           this._cachedDescription = 'null';
@@ -1056,7 +1059,7 @@ export class LocalJSONObject extends RemoteObject {
     if ((typeof this._value !== 'object') || (this._value === null)) {
       return false;
     }
-    return !!Object.keys(/** @type {!Object} */ (this._value)).length;
+    return Boolean(Object.keys(/** @type {!Object} */ (this._value)).length);
   }
 
   /**

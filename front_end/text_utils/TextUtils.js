@@ -256,9 +256,10 @@ export class FilterParser {
       const result = splitResult[i].captureGroups;
       if (regexIndex === 0) {
         if (this._keys.indexOf(/** @type {string} */ (result[1])) !== -1) {
-          filters.push({key: result[1], regex: undefined, text: result[2], negative: !!result[0]});
+          filters.push({key: result[1], regex: undefined, text: result[2], negative: Boolean(result[0])});
         } else {
-          filters.push({key: undefined, regex: undefined, text: result[1] + ':' + result[2], negative: !!result[0]});
+          filters.push(
+              {key: undefined, regex: undefined, text: result[1] + ':' + result[2], negative: Boolean(result[0])});
         }
       } else if (regexIndex === 1) {
         try {
@@ -266,13 +267,13 @@ export class FilterParser {
             key: undefined,
             regex: new RegExp(/** @type {string} */ (result[1]), 'i'),
             text: undefined,
-            negative: !!result[0]
+            negative: Boolean(result[0])
           });
         } catch (e) {
-          filters.push({key: undefined, regex: undefined, text: '/' + result[1] + '/', negative: !!result[0]});
+          filters.push({key: undefined, regex: undefined, text: '/' + result[1] + '/', negative: Boolean(result[0])});
         }
       } else if (regexIndex === 2) {
-        filters.push({key: undefined, regex: undefined, text: result[1], negative: !!result[0]});
+        filters.push({key: undefined, regex: undefined, text: result[1], negative: Boolean(result[0])});
       }
     }
     return filters;

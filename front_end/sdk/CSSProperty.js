@@ -57,7 +57,8 @@ export class CSSProperty {
     // disabled: false
     const result = new CSSProperty(
         ownerStyle, index, payload.name, payload.value, payload.important || false, payload.disabled || false,
-        ('parsedOk' in payload) ? !!payload.parsedOk : true, !!payload.implicit, payload.text, payload.range);
+        ('parsedOk' in payload) ? Boolean(payload.parsedOk) : true, Boolean(payload.implicit), payload.text,
+        payload.range);
     return result;
   }
 

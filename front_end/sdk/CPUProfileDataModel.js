@@ -43,7 +43,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
   constructor(profile, target) {
     super(target);
     // @ts-ignore Legacy types
-    const isLegacyFormat = !!profile['head'];
+    const isLegacyFormat = Boolean(profile['head']);
     if (isLegacyFormat) {
       // Legacy format contains raw timestamps and start/stop times are in seconds.
       this.profileStartTime = profile.startTime * 1000;
@@ -133,10 +133,10 @@ export class CPUProfileDataModel extends ProfileTreeModel {
      */
     function isNativeNode(node) {
       if (node.callFrame) {
-        return !!node.callFrame.url && node.callFrame.url.startsWith('native ');
+        return Boolean(node.callFrame.url) && node.callFrame.url.startsWith('native ');
       }
       // @ts-ignore Legacy types
-      return !!node['url'] && node['url'].startsWith('native ');
+      return Boolean(node['url']) && node['url'].startsWith('native ');
     }
 
     /**
@@ -192,7 +192,8 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     buildChildrenFromParents(nodes);
     this.totalHitCount = nodes.reduce((acc, node) => acc + (node.hitCount || 0), 0);
     const sampleTime = (this.profileEndTime - this.profileStartTime) / this.totalHitCount;
-    const keepNatives = !!Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get();
+    const keepNatives =
+        Boolean(Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get());
     const root = nodes[0];
     /** @type {!Map<number, number>} */
     const idMap = new Map([[root.id, root.id]]);

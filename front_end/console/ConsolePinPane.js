@@ -356,6 +356,6 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
 
     const isError = result && !('error' in result) && result.exceptionDetails &&
         !SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result);
-    this._pinElement.classList.toggle('error-level', !!isError);
+    this._pinElement.classList.toggle('error-level', Boolean(isError));
   }
 }

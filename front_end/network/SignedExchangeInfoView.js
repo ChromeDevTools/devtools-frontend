@@ -67,7 +67,7 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
       }
       headerCategory.createLeaf(requestURLElement);
       headerCategory.createLeaf(
-          this._formatHeader(Common.UIString.UIString('Response code'), header.responseCode + ''));
+          this._formatHeader(Common.UIString.UIString('Response code'), String(header.responseCode)));
       headerCategory.createLeaf(
           this._formatHeader(Common.UIString.UIString('Header integrity hash'), header.headerIntegrity));
 

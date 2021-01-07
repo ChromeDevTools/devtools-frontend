@@ -61,7 +61,8 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
   async findTargetId(localFrame: Protocol.Runtime.PropertyDescriptor[], interestingClassNames: string[]):
       Promise<string|null|undefined> {
     const event = localFrame.find(
-        prop => !!(prop && prop.value && prop.value.className && interestingClassNames.includes(prop.value.className)));
+        prop => Boolean(
+            prop && prop.value && prop.value.className && interestingClassNames.includes(prop.value.className)));
 
     if (!event || !event.value || !event.value.objectId) {
       return null;

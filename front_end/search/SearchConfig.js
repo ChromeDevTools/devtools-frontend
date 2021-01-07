@@ -125,7 +125,7 @@ export class SearchConfig {
       return true;
     }
     for (let i = 0; i < this._fileRegexQueries.length; ++i) {
-      if (!!filePath.match(this._fileRegexQueries[i].regex) === this._fileRegexQueries[i].isNegative) {
+      if (Boolean(filePath.match(this._fileRegexQueries[i].regex)) === this._fileRegexQueries[i].isNegative) {
         return false;
       }
     }
@@ -163,7 +163,7 @@ export class SearchConfig {
     if (!match) {
       return null;
     }
-    const isNegative = !!match[1];
+    const isNegative = Boolean(match[1]);
     query = match[3];
     let result = '';
     for (let i = 0; i < query.length; ++i) {

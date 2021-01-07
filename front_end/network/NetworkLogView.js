@@ -84,7 +84,7 @@ export class NetworkLogView extends UI.Widget.VBox {
      * @this {NetworkLogView}
      */
     function updateRowHeight() {
-      this._rawRowHeight = !!this._networkLogLargeRowsSetting.get() ? 41 : 21;
+      this._rawRowHeight = Boolean(this._networkLogLargeRowsSetting.get()) ? 41 : 21;
       this._rowHeight = this._computeRowHeight();
     }
     this._rawRowHeight = 0;
@@ -478,7 +478,7 @@ export class NetworkLogView extends UI.Widget.VBox {
    * @return {boolean}
    */
   static _statusCodeFilter(value, request) {
-    return ('' + request.statusCode) === value;
+    return (String(request.statusCode)) === value;
   }
 
   /**
@@ -860,7 +860,7 @@ export class NetworkLogView extends UI.Widget.VBox {
     }
     this._hoveredNode = node;
     if (this._hoveredNode) {
-      this._hoveredNode.setHovered(true, !!highlightInitiatorChain);
+      this._hoveredNode.setHovered(true, Boolean(highlightInitiatorChain));
     }
   }
 
@@ -1350,8 +1350,8 @@ export class NetworkLogView extends UI.Widget.VBox {
         .forEach(this._suggestionBuilder.addItem.bind(this._suggestionBuilder, FilterType.Domain));
     this._suggestionBuilder.addItem(FilterType.Method, request.requestMethod);
     this._suggestionBuilder.addItem(FilterType.MimeType, request.mimeType);
-    this._suggestionBuilder.addItem(FilterType.Scheme, '' + request.scheme);
-    this._suggestionBuilder.addItem(FilterType.StatusCode, '' + request.statusCode);
+    this._suggestionBuilder.addItem(FilterType.Scheme, String(request.scheme));
+    this._suggestionBuilder.addItem(FilterType.StatusCode, String(request.statusCode));
     this._suggestionBuilder.addItem(FilterType.ResourceType, request.resourceType().name());
     this._suggestionBuilder.addItem(FilterType.Url, request.securityOrigin());
 

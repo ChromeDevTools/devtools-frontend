@@ -267,7 +267,7 @@ export class JavaScriptFormatter {
         for (let i = 0; i < declarations.length; ++i) {
           // @ts-ignore We are doing a subtype check, without properly checking whether
           // it exists. We can't fix that, unless we use proper typechecking
-          allVariablesInitialized = allVariablesInitialized && !!declarations[i].init;
+          allVariablesInitialized = allVariablesInitialized && Boolean(declarations[i].init);
         }
         return !this._inForLoopHeader(node) && allVariablesInitialized ? 'nSSts' : 'ts';
       }

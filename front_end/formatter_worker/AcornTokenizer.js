@@ -85,8 +85,9 @@ export class AcornTokenizer {
    * @return {boolean}
    */
   static keyword(token, keyword) {
-    return !!token.type.keyword && token.type !== Acorn.tokTypes['_true'] && token.type !== Acorn.tokTypes['_false'] &&
-        token.type !== Acorn.tokTypes['_null'] && (!keyword || token.type.keyword === keyword);
+    return Boolean(token.type.keyword) && token.type !== Acorn.tokTypes['_true'] &&
+        token.type !== Acorn.tokTypes['_false'] && token.type !== Acorn.tokTypes['_null'] &&
+        (!keyword || token.type.keyword === keyword);
   }
 
   /**

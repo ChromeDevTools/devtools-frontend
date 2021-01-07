@@ -272,7 +272,7 @@ export function frameworkEventListeners(object) {
      * @template T
      */
     function filterOutEmpty(object) {
-      return !!object;
+      return Boolean(object);
     }
   }
 
@@ -458,7 +458,7 @@ export function frameworkEventListeners(object) {
      */
     function toString(obj) {
       try {
-        return '' + obj;
+        return String(obj);
       } catch (e) {
         return '<error>';
       }
@@ -470,7 +470,7 @@ export function frameworkEventListeners(object) {
      * @template T
      */
     function nonEmptyObject(obj) {
-      return !!obj;
+      return Boolean(obj);
     }
 
     /**

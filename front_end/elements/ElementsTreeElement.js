@@ -187,7 +187,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    * @return {boolean}
    */
   isClosingTag() {
-    return !!this._isClosingTag;
+    return Boolean(this._isClosingTag);
   }
 
   /**
@@ -201,7 +201,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
    * @return {boolean}
    */
   isEditing() {
-    return !!this._editing;
+    return Boolean(this._editing);
   }
 
   /**

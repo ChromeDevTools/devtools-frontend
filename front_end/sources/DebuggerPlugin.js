@@ -120,7 +120,7 @@ export class DebuggerPlugin extends Plugin {
         }
         const breakpoints = this._lineBreakpointDecorations(selection.startLine)
                                 .map(decoration => decoration.breakpoint)
-                                .filter(breakpoint => !!breakpoint);
+                                .filter(breakpoint => Boolean(breakpoint));
         let breakpoint = null;
         if (breakpoints.length) {
           breakpoint = breakpoints[0];
@@ -308,7 +308,7 @@ export class DebuggerPlugin extends Plugin {
     const breakpoints =
         /** @type {!Array<!Bindings.BreakpointManager.Breakpoint>} */ (this._lineBreakpointDecorations(editorLineNumber)
                                                                            .map(decoration => decoration.breakpoint)
-                                                                           .filter(breakpoint => !!breakpoint));
+                                                                           .filter(breakpoint => Boolean(breakpoint)));
     const hasOnlyJavaScript = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                                   .scriptsForUISourceCode(this._uiSourceCode)
                                   .every(script => script.isJavaScript());
@@ -726,7 +726,7 @@ export class DebuggerPlugin extends Plugin {
     if (this._continueToLocationDecorations) {
       const target = /** @type {!Element} */ (event.target);
       const textPosition = this._textEditor.coordinatesToCursorPosition(event.x, event.y);
-      const hovering = !!target.enclosingNodeOrSelfWithClass('source-frame-async-step-in');
+      const hovering = Boolean(target.enclosingNodeOrSelfWithClass('source-frame-async-step-in'));
       this._setAsyncStepInHoveredLine(textPosition ? textPosition.startLine : null, hovering);
     }
   }
@@ -811,7 +811,7 @@ export class DebuggerPlugin extends Plugin {
   async _editBreakpointCondition(editorLineNumber, breakpoint, location, preferLogpoint) {
     const oldCondition = breakpoint ? breakpoint.condition() : '';
     const decorationElement = document.createElement('div');
-    const dialog = new BreakpointEditDialog(editorLineNumber, oldCondition, !!preferLogpoint, async result => {
+    const dialog = new BreakpointEditDialog(editorLineNumber, oldCondition, Boolean(preferLogpoint), async result => {
       dialog.detach();
       this._textEditor.removeDecoration(decorationElement, editorLineNumber);
       if (!result.committed) {
@@ -966,7 +966,7 @@ export class DebuggerPlugin extends Plugin {
                 editorLocation.lineNumber, asyncStepInRange.from, editorLocation.lineNumber, asyncStepInRange.to - 1);
             decoration = this._textEditor.highlightRange(highlightRange, 'source-frame-async-step-in');
             this._continueToLocationDecorations.set(
-                decoration, this._asyncStepIn.bind(this, location, !!isCurrentPosition));
+                decoration, this._asyncStepIn.bind(this, location, Boolean(isCurrentPosition)));
           }
         }
       }
@@ -1396,7 +1396,7 @@ export class DebuggerPlugin extends Plugin {
         const isDisabled = !decorations[0].enabled || this._muted;
         const isLogpoint = decorations[0].condition.includes(LogpointPrefix);
         const isUnbound = !decorations[0].bound;
-        const isConditionalBreakpoint = !!decorations[0].condition && !isLogpoint;
+        const isConditionalBreakpoint = Boolean(decorations[0].condition) && !isLogpoint;
 
         this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint', true);
         this._textEditor.toggleLineClass(editorLineNumber, 'cm-breakpoint-disabled', isDisabled);
@@ -1413,7 +1413,7 @@ export class DebuggerPlugin extends Plugin {
      */
     function updateInlineDecorations(editorLineNumber, decorations) {
       const actualBookmarks =
-          new Set(decorations.map(decoration => decoration.bookmark).filter(bookmark => !!bookmark));
+          new Set(decorations.map(decoration => decoration.bookmark).filter(bookmark => Boolean(bookmark)));
       const lineEnd = this._textEditor.line(editorLineNumber).length;
       const bookmarks = this._textEditor.bookmarks(
           new TextUtils.TextRange.TextRange(editorLineNumber, 0, editorLineNumber, lineEnd),
@@ -1592,7 +1592,7 @@ export class DebuggerPlugin extends Plugin {
       for (const decoration of decorations) {
         this._updateBreakpointDecoration(decoration);
       }
-      if (!decorations.some(decoration => !!decoration.breakpoint)) {
+      if (!decorations.some(decoration => Boolean(decoration.breakpoint))) {
         return;
       }
       /** @type {!Set<number>} */
@@ -1647,7 +1647,7 @@ export class DebuggerPlugin extends Plugin {
     decoration.enabled = false;
 
     const lineDecorations = this._lineBreakpointDecorations(editorLocation.lineNumber);
-    if (!lineDecorations.some(decoration => !!decoration.breakpoint)) {
+    if (!lineDecorations.some(decoration => Boolean(decoration.breakpoint))) {
       for (const lineDecoration of lineDecorations) {
         this._breakpointDecorations.delete(lineDecoration);
         this._updateBreakpointDecoration(lineDecoration);
@@ -1666,7 +1666,7 @@ export class DebuggerPlugin extends Plugin {
 
   _updateLinesWithoutMappingHighlight() {
     const isSourceMapSource =
-        !!Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this._uiSourceCode);
+        Boolean(Bindings.CompilerScriptMapping.CompilerScriptMapping.uiSourceCodeOrigin(this._uiSourceCode));
     if (isSourceMapSource) {
       const linesCount = this._textEditor.linesCount;
       for (let i = 0; i < linesCount; ++i) {
@@ -1847,7 +1847,7 @@ export class DebuggerPlugin extends Plugin {
     }
     const hasDisabled = this._textEditor.hasLineClass(editorLineNumber, 'cm-breakpoint-disabled');
     const breakpoints = /** @type {!Array<!Bindings.BreakpointManager.Breakpoint>} */ (
-        decorations.map(decoration => decoration.breakpoint).filter(breakpoint => !!breakpoint));
+        decorations.map(decoration => decoration.breakpoint).filter(breakpoint => Boolean(breakpoint)));
     for (const breakpoint of breakpoints) {
       if (onlyDisable) {
         breakpoint.setEnabled(hasDisabled);
@@ -2006,15 +2006,15 @@ export class BreakpointDecoration {
     if (decoration1.bound !== decoration2.bound) {
       return decoration1.bound ? -1 : 1;
     }
-    if (!!decoration1.condition !== !!decoration2.condition) {
-      return !!decoration1.condition ? -1 : 1;
+    if (Boolean(decoration1.condition) !== Boolean(decoration2.condition)) {
+      return Boolean(decoration1.condition) ? -1 : 1;
     }
     return 0;
   }
 
   update() {
-    const isLogpoint = !!this.condition && this.condition.includes(LogpointPrefix);
-    const isConditionalBreakpoint = !!this.condition && !isLogpoint;
+    const isLogpoint = Boolean(this.condition) && this.condition.includes(LogpointPrefix);
+    const isConditionalBreakpoint = Boolean(this.condition) && !isLogpoint;
     this.element.classList.toggle('cm-inline-logpoint', isLogpoint);
     this.element.classList.toggle('cm-inline-breakpoint-conditional', isConditionalBreakpoint);
     this.element.classList.toggle('cm-inline-disabled', !this.enabled);

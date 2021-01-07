@@ -72,7 +72,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
     const filter = /** @param {!BinaryViewObject} obj */ obj => obj.type === this._binaryViewTypeSetting.get();
     const binaryViewObject = this._binaryViewObjects.find(filter);
     console.assert(
-        !!binaryViewObject,
+        Boolean(binaryViewObject),
         `No binary view found for binary view type found in setting 'binaryViewType': ${
             this._binaryViewTypeSetting.get()}`);
     return binaryViewObject || null;

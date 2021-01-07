@@ -65,7 +65,7 @@ export class CustomPreviewSection {
    */
   _renderJSONMLTag(jsonML) {
     if (!Array.isArray(jsonML)) {
-      return document.createTextNode(jsonML + '');
+      return document.createTextNode(String(jsonML));
     }
 
     const array = /** @type {!Array.<*>} */ (jsonML);

@@ -543,7 +543,7 @@ export class LogTreeElement extends UI.TreeOutline.TreeElement {
    * @param {!SDK.PaintProfiler.PaintProfilerLogItem} logItem
    */
   constructor(ownerView, logItem) {
-    super('', !!logItem.params);
+    super('', Boolean(logItem.params));
     this._logItem = logItem;
     this._ownerView = ownerView;
     this._filled = false;

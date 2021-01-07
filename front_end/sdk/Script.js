@@ -317,7 +317,7 @@ export class Script {
       this._contentPromise = Promise.resolve({content: newSource, isEncoded: false});
     }
 
-    const needsStepIn = !!response.stackChanged;
+    const needsStepIn = Boolean(response.stackChanged);
     callback(
         response.getError() || null, response.exceptionDetails, response.callFrames, response.asyncStackTrace,
         response.asyncStackTraceId, needsStepIn);
@@ -353,7 +353,7 @@ export class Script {
    */
   isInlineScript() {
     const startsAtZero = !this.lineOffset && !this.columnOffset;
-    return !this.isWasm() && !!this.sourceURL && !startsAtZero;
+    return !this.isWasm() && Boolean(this.sourceURL) && !startsAtZero;
   }
 
   /**
@@ -367,7 +367,7 @@ export class Script {
    * @return {boolean}
    */
   isInlineScriptWithSourceURL() {
-    return !!this.hasSourceURL && this.isInlineScript();
+    return Boolean(this.hasSourceURL) && this.isInlineScript();
   }
 
   /**

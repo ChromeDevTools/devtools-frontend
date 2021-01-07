@@ -71,7 +71,7 @@ export class SimpleHistoryManager {
    * @return {boolean}
    */
   readOnly() {
-    return !!this._coalescingReadonly;
+    return Boolean(this._coalescingReadonly);
   }
 
   /**

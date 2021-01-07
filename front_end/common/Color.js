@@ -44,7 +44,7 @@ export class Color {
     this._hsla = undefined;
     this._rgba = rgba;
     this._originalText = originalText || null;
-    this._originalTextIsValid = !!this._originalText;
+    this._originalTextIsValid = Boolean(this._originalText);
     this._format = format;
     if (typeof this._rgba[3] === 'undefined') {
       this._rgba[3] = 1;

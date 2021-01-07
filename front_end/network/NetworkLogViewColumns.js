@@ -334,7 +334,7 @@ export class NetworkLogViewColumns {
     this._waterfallColumn.scheduleDraw();
   }
   _updateRowsSize() {
-    const largeRows = !!this._networkLogLargeRowsSetting.get();
+    const largeRows = Boolean(this._networkLogLargeRowsSetting.get());
 
     this._dataGrid.element.classList.toggle('small', !largeRows);
     this._dataGrid.scheduleUpdate();
@@ -496,7 +496,7 @@ export class NetworkLogViewColumns {
         columnConfig = this._addCustomHeader(setting.title, columnId) || undefined;
       }
       if (columnConfig && columnConfig.hideable && typeof setting.visible === 'boolean') {
-        columnConfig.visible = !!setting.visible;
+        columnConfig.visible = Boolean(setting.visible);
       }
       if (columnConfig && typeof setting.title === 'string') {
         columnConfig.title = setting.title;
@@ -621,7 +621,7 @@ export class NetworkLogViewColumns {
       }
     }
     const manageCustomHeaders = new NetworkManageCustomHeadersView(
-        customHeaders, headerTitle => !!this._addCustomHeader(headerTitle), this._changeCustomHeader.bind(this),
+        customHeaders, headerTitle => Boolean(this._addCustomHeader(headerTitle)), this._changeCustomHeader.bind(this),
         this._removeCustomHeader.bind(this));
     const dialog = new UI.Dialog.Dialog();
     manageCustomHeaders.show(dialog.contentElement);

@@ -426,7 +426,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
       return;
     }
 
-    this._controlButton.setEnabled(!!this._selectedGroup);
+    this._controlButton.setEnabled(Boolean(this._selectedGroup));
     if (this._selectedGroup && this._selectedGroup.paused()) {
       this._controlState = _ControlState.Play;
       this._controlButton.setToggled(true);

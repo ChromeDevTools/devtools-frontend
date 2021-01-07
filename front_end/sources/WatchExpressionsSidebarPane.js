@@ -116,7 +116,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
    * @return {boolean}
    */
   hasExpressions() {
-    return !!this._watchExpressionsSetting.get().length;
+    return Boolean(this._watchExpressionsSetting.get().length);
   }
 
   _saveExpressions() {
@@ -184,7 +184,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     if (!watchExpression.expression()) {
       Platform.ArrayUtilities.removeElement(this._watchExpressions, watchExpression);
       this._treeOutline.removeChild(watchExpression.treeElement());
-      this._emptyElement.classList.toggle('hidden', !!this._watchExpressions.length);
+      this._emptyElement.classList.toggle('hidden', Boolean(this._watchExpressions.length));
       if (this._watchExpressions.length === 0) {
         this._treeOutline.element.remove();
       }
@@ -394,7 +394,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   isEditing() {
-    return !!this._editing;
+    return Boolean(this._editing);
   }
 
   /**
@@ -480,7 +480,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
     const titleElement = headerElement.createChild('div', 'watch-expression-title tree-element-title');
     titleElement.appendChild(deleteButton);
     this._nameElement = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createNameElement(this._expression);
-    if (!!exceptionDetails || !expressionValue) {
+    if (Boolean(exceptionDetails) || !expressionValue) {
       this._valueElement = document.createElement('span');
       this._valueElement.classList.add('watch-expression-error');
       this._valueElement.classList.add('value');
@@ -493,7 +493,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
     } else {
       const propertyValue =
           ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValueWithCustomSupport(
-              expressionValue, !!exceptionDetails, false /* showPreview */, titleElement, this._linkifier);
+              expressionValue, Boolean(exceptionDetails), false /* showPreview */, titleElement, this._linkifier);
       this._valueElement = propertyValue.element;
     }
     const separatorElement = document.createElement('span');

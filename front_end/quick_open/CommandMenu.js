@@ -65,7 +65,7 @@ export class CommandMenu {
   static createSettingCommand(setting, title, value) {
     const category = setting.category() || '';
     const tags = setting.tags() || '';
-    const reloadRequired = !!setting.reloadRequired();
+    const reloadRequired = Boolean(setting.reloadRequired());
     return CommandMenu.createCommand({
       category,
       keys: tags,

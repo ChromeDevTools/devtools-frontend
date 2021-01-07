@@ -868,7 +868,7 @@ export class FilmStripRecorder {
    * @return {boolean}
    */
   isRecording() {
-    return !!this._tracingManager;
+    return Boolean(this._tracingManager);
   }
 
   /**
@@ -915,7 +915,7 @@ export class ActionDelegate {
    */
   handleAction(context, actionId) {
     const panel = UI.Context.Context.instance().flavor(NetworkPanel);
-    console.assert(!!(panel && panel instanceof NetworkPanel));
+    console.assert(Boolean(panel && panel instanceof NetworkPanel));
     if (!panel) {
       return false;
     }
@@ -1006,7 +1006,7 @@ export class SearchNetworkView extends Search.SearchView.SearchView {
   static async openSearch(query, searchImmediately) {
     await UI.ViewManager.ViewManager.instance().showView('network.search-network-tab');
     const searchView = SearchNetworkView.instance();
-    searchView.toggle(query, !!searchImmediately);
+    searchView.toggle(query, Boolean(searchImmediately));
     return searchView;
   }
 

@@ -307,7 +307,7 @@ export class ParsedURL {
     const lineColumnMatch = lineColumnRegEx.exec(pathAndAfter);
     let lineNumber;
     let columnNumber;
-    console.assert(!!lineColumnMatch);
+    console.assert(Boolean(lineColumnMatch));
     if (!lineColumnMatch) {
       return { url: string, lineNumber: 0, columnNumber: 0 };
     }

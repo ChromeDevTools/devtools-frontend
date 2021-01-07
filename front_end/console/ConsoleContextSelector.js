@@ -21,7 +21,7 @@ export class ConsoleContextSelector {
     this._toolbarItem.setEnabled(false);
     this._toolbarItem.setTitle(ls`JavaScript context: Not selected`);
     this._items.addEventListener(
-        UI.ListModel.Events.ItemsReplaced, () => this._toolbarItem.setEnabled(!!this._items.length));
+        UI.ListModel.Events.ItemsReplaced, () => this._toolbarItem.setEnabled(Boolean(this._items.length)));
 
     this._toolbarItem.element.classList.add('toolbar-has-dropdown');
 

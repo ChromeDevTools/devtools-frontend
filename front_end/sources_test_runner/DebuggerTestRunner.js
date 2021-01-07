@@ -645,13 +645,13 @@ SourcesTestRunner.createScriptMock = function(
     url, startLine, startColumn, isContentScript, source, target, preRegisterCallback) {
   target = target || self.SDK.targetManager.mainTarget();
   const debuggerModel = target.model(SDK.DebuggerModel);
-  const scriptId = ++SourcesTestRunner._lastScriptId + '';
+  const scriptId = String(++SourcesTestRunner._lastScriptId);
   const sourceLineEndings = TestRunner.findLineEndingIndexes(source);
   const lineCount = sourceLineEndings.length;
   const endLine = startLine + lineCount - 1;
   const endColumn = (lineCount === 1 ? startColumn + source.length : source.length - sourceLineEndings[lineCount - 2]);
-  const hasSourceURL =
-      !!source.match(/\/\/#\ssourceURL=\s*(\S*?)\s*$/m) || !!source.match(/\/\/@\ssourceURL=\s*(\S*?)\s*$/m);
+  const hasSourceURL = Boolean(source.match(/\/\/#\ssourceURL=\s*(\S*?)\s*$/m)) ||
+      Boolean(source.match(/\/\/@\ssourceURL=\s*(\S*?)\s*$/m));
 
   const script = new SDK.Script(
       debuggerModel, scriptId, url, startLine, startColumn, endLine, endColumn, 0, '', isContentScript, false,
@@ -828,7 +828,7 @@ SourcesTestRunner.dumpDebuggerPluginBreakpoints = function(sourceFrame) {
         'breakpoint at ' + lineNumber + ((disabled ? ' disabled' : '')) + ((conditional ? ' conditional' : '')));
     const range = new TextUtils.TextRange(lineNumber, 0, lineNumber, textEditor.line(lineNumber).length);
     let bookmarks = textEditor.bookmarks(range, Sources.DebuggerPlugin.BreakpointDecoration.bookmarkSymbol);
-    bookmarks = bookmarks.filter(bookmark => !!bookmark.position());
+    bookmarks = bookmarks.filter(bookmark => Boolean(bookmark.position()));
     bookmarks.sort((bookmark1, bookmark2) => bookmark1.position().startColumn - bookmark2.position().startColumn);
 
     for (const bookmark of bookmarks) {

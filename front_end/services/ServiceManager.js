@@ -289,7 +289,7 @@ export class RemoteServicePort {
         if (!this._socket) {
           fulfill(false);
         }
-        this._socketClosed(!!this._socket);
+        this._socketClosed(Boolean(this._socket));
       }
     }
   }

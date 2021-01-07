@@ -155,7 +155,7 @@ export class CoverageDecorationManager {
       let locations =
           await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
               uiSourceCode, line, column);
-      locations = locations.filter(location => !!location.script());
+      locations = locations.filter(location => Boolean(location.script()));
       for (const location of locations) {
         const script = location.script();
         if (!script) {

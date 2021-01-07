@@ -325,7 +325,7 @@ export class ShortcutListItem {
    * @param {boolean=} isEditing
    */
   constructor(item, settingsTab, isEditing) {
-    this._isEditing = !!isEditing;
+    this._isEditing = Boolean(isEditing);
     this._settingsTab = settingsTab;
     this._item = item;
     this.element = document.createElement('div');

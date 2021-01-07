@@ -93,7 +93,7 @@ export class DevToolsAccessibleDiffTextArea extends TextEditor.CodeMirrorTextEdi
     super.reset(typing);
     // TODO(crbug.com/1011811): Update CodeMirror typings to include this property
     const doc = /** @type {!CodeMirror.Doc} */ (/** @type {*} */ (this.cm).doc);
-    if (this.textAreaBusy(!!typing) || !(typeof doc.modeOption === 'object')) {
+    if (this.textAreaBusy(Boolean(typing)) || !(typeof doc.modeOption === 'object')) {
       return;
     }
 

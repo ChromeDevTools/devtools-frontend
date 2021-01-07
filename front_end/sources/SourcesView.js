@@ -512,7 +512,7 @@ export class SourcesView extends UI.Widget.VBox {
       currentSourceFrame.setSearchableView(this._searchableView);
     }
 
-    this._searchableView.setReplaceable(!!currentSourceFrame && currentSourceFrame.canEditSource());
+    this._searchableView.setReplaceable(Boolean(currentSourceFrame) && currentSourceFrame.canEditSource());
     this._searchableView.refreshSearch();
     this._updateToolbarChangedListener();
     this._updateScriptViewToolbarItems();
@@ -626,7 +626,7 @@ export class SourcesView extends UI.Widget.VBox {
   replaceSelectionWith(searchConfig, replacement) {
     const sourceFrame = this.currentSourceFrame();
     if (!sourceFrame) {
-      console.assert(!!sourceFrame);
+      console.assert(Boolean(sourceFrame));
       return;
     }
     sourceFrame.replaceSelectionWith(searchConfig, replacement);
@@ -640,7 +640,7 @@ export class SourcesView extends UI.Widget.VBox {
   replaceAllWith(searchConfig, replacement) {
     const sourceFrame = this.currentSourceFrame();
     if (!sourceFrame) {
-      console.assert(!!sourceFrame);
+      console.assert(Boolean(sourceFrame));
       return;
     }
     sourceFrame.replaceAllWith(searchConfig, replacement);

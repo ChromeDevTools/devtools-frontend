@@ -1087,7 +1087,7 @@ export class NetworkRequestNode extends NetworkNode {
    * @return {string}
    */
   _arrayLength(array) {
-    return array ? '' + array.length : '';
+    return array ? String(array.length) : '';
   }
 
   /**
@@ -1130,7 +1130,7 @@ export class NetworkRequestNode extends NetworkNode {
   _isFailed() {
     const signedExchangeInfo = this._request.signedExchangeInfo();
     return (this._request.failed && !this._request.statusCode) || (this._request.statusCode >= 400) ||
-        (!!signedExchangeInfo && !!signedExchangeInfo.errors);
+        (signedExchangeInfo !== null && Boolean(signedExchangeInfo.errors));
   }
 
   /**
@@ -1201,7 +1201,7 @@ export class NetworkRequestNode extends NetworkNode {
         this._setTextAndTitle(cell, failText);
       }
     } else if (this._request.statusCode) {
-      UI.UIUtils.createTextChild(cell, '' + this._request.statusCode);
+      UI.UIUtils.createTextChild(cell, String(this._request.statusCode));
       this._appendSubtitle(cell, this._request.statusText);
       UI.Tooltip.Tooltip.install(cell, this._request.statusCode + ' ' + this._request.statusText);
     } else if (this._request.parsedURL.isDataURL()) {

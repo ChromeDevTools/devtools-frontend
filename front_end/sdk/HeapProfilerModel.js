@@ -56,7 +56,7 @@ export class HeapProfilerModel extends SDKModel {
     const defaultSamplingIntervalInBytes = 16384;
     const response = await this._heapProfilerAgent.invoke_startSampling(
         {samplingInterval: samplingRateInBytes || defaultSamplingIntervalInBytes});
-    return !!response.getError();
+    return Boolean(response.getError());
   }
 
   /**
@@ -92,7 +92,7 @@ export class HeapProfilerModel extends SDKModel {
    */
   async collectGarbage() {
     const response = await this._heapProfilerAgent.invoke_collectGarbage();
-    return !!response.getError();
+    return Boolean(response.getError());
   }
 
   /**
@@ -127,7 +127,7 @@ export class HeapProfilerModel extends SDKModel {
    */
   async addInspectedHeapObject(snapshotObjectId) {
     const response = await this._heapProfilerAgent.invoke_addInspectedHeapObject({heapObjectId: snapshotObjectId});
-    return !!response.getError();
+    return Boolean(response.getError());
   }
 
   /**
@@ -146,7 +146,7 @@ export class HeapProfilerModel extends SDKModel {
   async startTrackingHeapObjects(recordAllocationStacks) {
     const response =
         await this._heapProfilerAgent.invoke_startTrackingHeapObjects({trackAllocations: recordAllocationStacks});
-    return !!response.getError();
+    return Boolean(response.getError());
   }
 
   /**
@@ -155,7 +155,7 @@ export class HeapProfilerModel extends SDKModel {
    */
   async stopTrackingHeapObjects(reportProgress) {
     const response = await this._heapProfilerAgent.invoke_stopTrackingHeapObjects({reportProgress});
-    return !!response.getError();
+    return Boolean(response.getError());
   }
 
   /**

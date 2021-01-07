@@ -141,7 +141,7 @@ export class DOMNode {
     this._shadowRootType = payload.shadowRootType;
     this._frameOwnerFrameId = payload.frameId || null;
     this._xmlVersion = payload.xmlVersion;
-    this._isSVGNode = !!payload.isSVG;
+    this._isSVGNode = Boolean(payload.isSVG);
 
     if (payload.attributes) {
       this._setAttributesPayload(payload.attributes);
@@ -284,7 +284,7 @@ export class DOMNode {
    * @return {boolean}
    */
   hasShadowRoots() {
-    return !!this._shadowRoots.length;
+    return Boolean(this._shadowRoots.length);
   }
 
   /**
@@ -454,7 +454,7 @@ export class DOMNode {
    * @return {boolean}
    */
   isShadowRoot() {
-    return !!this._shadowRootType;
+    return Boolean(this._shadowRootType);
   }
 
   /**
@@ -940,7 +940,7 @@ export class DOMNode {
    * @return {boolean}
    */
   isXMLNode() {
-    return !!this._xmlVersion;
+    return Boolean(this._xmlVersion);
   }
 
   /**

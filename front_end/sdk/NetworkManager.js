@@ -90,7 +90,8 @@ export class NetworkManager extends SDKModel {
    * @return {boolean}
    */
   static canReplayRequest(request) {
-    return !!requestToManagerMap.get(request) && request.resourceType() === Common.ResourceType.resourceTypes.XHR;
+    return Boolean(requestToManagerMap.get(request)) &&
+        request.resourceType() === Common.ResourceType.resourceTypes.XHR;
   }
 
   /**
@@ -342,7 +343,7 @@ export class NetworkDispatcher {
   _updateNetworkRequestWithRequest(networkRequest, request) {
     networkRequest.requestMethod = request.method;
     networkRequest.setRequestHeaders(this._headersMapToHeadersArray(request.headers));
-    networkRequest.setRequestFormData(!!request.hasPostData, request.postData || null);
+    networkRequest.setRequestFormData(Boolean(request.hasPostData), request.postData || null);
     networkRequest.setInitialPriority(request.initialPriority);
     networkRequest.mixedContentType = request.mixedContentType || Protocol.Security.MixedContentType.None;
     networkRequest.setReferrerPolicy(request.referrerPolicy);
@@ -676,7 +677,7 @@ export class NetworkDispatcher {
 
     networkRequest.failed = true;
     networkRequest.setResourceType(Common.ResourceType.resourceTypes[resourceType]);
-    networkRequest.canceled = !!canceled;
+    networkRequest.canceled = Boolean(canceled);
     if (blockedReason) {
       networkRequest.setBlockedReason(blockedReason);
       if (blockedReason === Protocol.Network.BlockedReason.Inspector) {
@@ -1354,7 +1355,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
    * @return {boolean}
    */
   isBlocking() {
-    return !!this._effectiveBlockedURLs.length;
+    return Boolean(this._effectiveBlockedURLs.length);
   }
 
   /**
@@ -1401,7 +1402,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
    * @return {boolean}
    */
   isIntercepting() {
-    return !!this._urlsForRequestInterceptor.size;
+    return Boolean(this._urlsForRequestInterceptor.size);
   }
 
   /**
@@ -1543,7 +1544,7 @@ export class InterceptedRequest {
     this.frameId = frameId;
     this.resourceType = resourceType;
     this.isNavigationRequest = isNavigationRequest;
-    this.isDownload = !!isDownload;
+    this.isDownload = Boolean(isDownload);
     this.redirectUrl = redirectUrl;
     this.authChallenge = authChallenge;
     this.responseErrorReason = responseErrorReason;

@@ -260,7 +260,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox {
    */
   _onWindowChanged(event) {
     const window = /** @type {!Window} */ (event.data.window);
-    const animate = !!event.data.animate;
+    const animate = Boolean(event.data.animate);
     this._mainFlameChart.setWindowTimes(window.left, window.right, animate);
     this._networkFlameChart.setWindowTimes(window.left, window.right, animate);
     this._networkDataProvider.setWindowTimes(window.left, window.right);

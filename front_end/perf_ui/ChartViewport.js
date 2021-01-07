@@ -526,7 +526,7 @@ export class ChartViewport extends UI.Widget.VBox {
         this._totalTime + this._minimumBoundary - bounds.right);
     bounds.left += timeOffset;
     bounds.right += timeOffset;
-    this._requestWindowTimes(bounds, !!animate);
+    this._requestWindowTimes(bounds, Boolean(animate));
   }
 
   /**

@@ -87,7 +87,7 @@ export class HeapProfilerPanel extends ProfilesPanel {
    */
   handleAction(context, actionId) {
     const panel = UI.Context.Context.instance().flavor(HeapProfilerPanel);
-    console.assert(!!panel && panel instanceof HeapProfilerPanel);
+    console.assert(Boolean(panel) && panel instanceof HeapProfilerPanel);
     if (panel) {
       panel.toggleRecord();
     }

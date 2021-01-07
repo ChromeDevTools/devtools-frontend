@@ -312,13 +312,13 @@ export class WebVitalsTimeline extends HTMLElement {
 
     // Render all the lanes.
     this.context.save();
-    this.context.translate(0, LINE_HEIGHT * 1);
+    this.context.translate(0, Number(LINE_HEIGHT));
     this.fcpLane.render();
-    this.context.translate(0, LINE_HEIGHT * 1);
+    this.context.translate(0, Number(LINE_HEIGHT));
     this.lcpLane.render();
-    this.context.translate(0, LINE_HEIGHT * 1);
+    this.context.translate(0, Number(LINE_HEIGHT));
     this.layoutShiftsLane.render();
-    this.context.translate(0, LINE_HEIGHT * 1);
+    this.context.translate(0, Number(LINE_HEIGHT));
     this.longTasksLane.render();
     this.context.restore();
 

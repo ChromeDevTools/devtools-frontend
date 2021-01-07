@@ -67,7 +67,7 @@ export class RequestResponseView extends UI.Widget.VBox {
       return false;
     }
     if (resourceType === Common.ResourceType.resourceTypes.Other) {
-      return !!contentData.content && !contentData.encoded;
+      return Boolean(contentData.content) && !contentData.encoded;
     }
     return false;
   }

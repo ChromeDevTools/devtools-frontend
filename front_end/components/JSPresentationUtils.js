@@ -93,7 +93,7 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
       row.createChild('td').textContent = '\n';
       row.createChild('td', 'function-name').textContent = UI.UIUtils.beautifyFunctionName(stackFrame.functionName);
       const link = linkifier.maybeLinkifyConsoleCallFrame(
-          target, stackFrame, {tabStop: !!tabStops, className: undefined, columnNumber: undefined});
+          target, stackFrame, {tabStop: Boolean(tabStops), className: undefined, columnNumber: undefined});
       if (link) {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
         const uiLocation = Linkifier.uiLocation(link);

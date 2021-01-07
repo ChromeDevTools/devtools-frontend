@@ -950,7 +950,7 @@ export class SourcesPanel extends UI.Panel.Panel {
         return this instanceof Element ? this.outerHTML : undefined;
       }
       if (subtype && typeof this === 'undefined') {
-        return subtype + '';
+        return String(subtype);
       }
       try {
         return JSON.stringify(this, null, indent);
@@ -1337,7 +1337,7 @@ export class WrapperView extends UI.Widget.VBox {
    * @return {boolean}
    */
   static isShowing() {
-    return !!wrapperViewInstance && wrapperViewInstance.isShowing();
+    return Boolean(wrapperViewInstance) && wrapperViewInstance.isShowing();
   }
 
   /**

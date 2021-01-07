@@ -833,7 +833,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return;
     }
     const screenshots = this._performanceModel.filmStripModel().frames();
-    const hasFilmStrip = !!screenshots.length;
+    const hasFilmStrip = Boolean(screenshots.length);
     this._framesHeader.collapsible = hasFilmStrip;
     this._appendHeader(Common.UIString.UIString('Frames'), this._framesHeader, false /* selectable */);
     this._frameGroup = this._timelineData.groups.peekLast();
@@ -1194,7 +1194,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     if (type === entryTypes.Event) {
       const event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
-      return !!TimelineModel.TimelineModel.TimelineData.forEvent(event).warning;
+      return Boolean(TimelineModel.TimelineModel.TimelineData.forEvent(event).warning);
     }
     return false;
   }

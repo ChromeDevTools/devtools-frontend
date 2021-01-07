@@ -220,7 +220,7 @@ export class TextSourceMap {
     /** @type {!Map<string, !TextSourceMap.SourceInfo>} */
     this._sourceInfos = new Map();
     if (this._json.sections) {
-      const sectionWithURL = !!this._json.sections.find(section => !!section.url);
+      const sectionWithURL = Boolean(this._json.sections.find(section => Boolean(section.url)));
       if (sectionWithURL) {
         Common.Console.Console.instance().warn(
             `SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);

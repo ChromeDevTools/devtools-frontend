@@ -139,7 +139,7 @@ export class WarningErrorCounter {
       this._violationCounter.classList.toggle('hidden', !violations);
     }
     this._issuesCounter.classList.toggle('hidden', !issues);
-    this._toolbarItem.setVisible(!!(errors || warnings || violations || issues));
+    this._toolbarItem.setVisible(Boolean(errors || warnings || violations || issues));
 
     /* Update consoleCounter items. */
     let errorCountTitle = '';

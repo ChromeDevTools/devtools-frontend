@@ -157,7 +157,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
    * @param {boolean=} autoPrettyPrint
    */
   setCanPrettyPrint(canPrettyPrint, autoPrettyPrint) {
-    this._shouldAutoPrettyPrint = canPrettyPrint && !!autoPrettyPrint;
+    this._shouldAutoPrettyPrint = canPrettyPrint && Boolean(autoPrettyPrint);
     this._prettyToggle.setVisible(canPrettyPrint);
   }
 
@@ -685,9 +685,10 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._resetSearch();
     this._searchConfig = searchConfig;
     if (this.loaded) {
-      this._doFindSearchMatches(searchConfig, shouldJump, !!jumpBackwards);
+      this._doFindSearchMatches(searchConfig, shouldJump, Boolean(jumpBackwards));
     } else {
-      this._delayedFindSearchMatches = this._doFindSearchMatches.bind(this, searchConfig, shouldJump, !!jumpBackwards);
+      this._delayedFindSearchMatches =
+          this._doFindSearchMatches.bind(this, searchConfig, shouldJump, Boolean(jumpBackwards));
     }
 
     this._ensureContentLoaded();

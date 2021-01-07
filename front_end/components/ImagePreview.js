@@ -88,7 +88,7 @@ export class ImagePreview {
      * @return {boolean}
      */
     function isImageResource(resource) {
-      return !!resource && resource.resourceType() === Common.ResourceType.resourceTypes.Image;
+      return resource !== null && resource.resourceType() === Common.ResourceType.resourceTypes.Image;
     }
 
     function buildContent() {

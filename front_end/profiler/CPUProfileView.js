@@ -364,7 +364,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
    */
   entryHasDeoptReason(entryIndex) {
     const node = /** @type {!SDK.CPUProfileDataModel.CPUProfileNode} */ (this.entryNodes[entryIndex]);
-    return !!node.deoptReason;
+    return Boolean(node.deoptReason);
   }
 
   /**

@@ -96,7 +96,7 @@ export class DatabaseTableView extends UI.View.SimpleView {
     this.element.removeChildren();
 
     this._dataGrid = DataGrid.SortableDataGrid.SortableDataGrid.create(columnNames, values, ls`Database`);
-    this._visibleColumnsInput.setVisible(!!this._dataGrid);
+    this._visibleColumnsInput.setVisible(Boolean(this._dataGrid));
     if (!this._dataGrid) {
       this._emptyWidget = new UI.EmptyWidget.EmptyWidget(ls`The "${this.tableName}"\ntable is empty.`);
       this._emptyWidget.show(this.element);

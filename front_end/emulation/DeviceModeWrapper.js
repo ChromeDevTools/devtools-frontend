@@ -28,7 +28,7 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
     this._toggleDeviceModeAction = UI.ActionRegistry.ActionRegistry.instance().action('emulation.toggle-device-mode');
     const model = DeviceModeModel.instance();
     this._showDeviceModeSetting = model.enabledSetting();
-    this._showDeviceModeSetting.setRequiresUserAction(!!Root.Runtime.Runtime.queryParam('hasOtherClients'));
+    this._showDeviceModeSetting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam('hasOtherClients')));
     this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.ScreenshotRequested,

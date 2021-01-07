@@ -22,7 +22,7 @@ const nodeToLayoutElement = node => {
     color: '#000',
     name: node.localName(),
     domId: node.getAttribute('id'),
-    domClasses: className ? className.split(/\s+/).filter(s => !!s) : undefined,
+    domClasses: className ? className.split(/\s+/).filter(s => Boolean(s)) : undefined,
     enabled: false,
     reveal: () => {
       ElementsPanel.instance().revealAndSelectNode(node, true, true);

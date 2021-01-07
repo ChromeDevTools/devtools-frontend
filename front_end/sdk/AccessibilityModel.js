@@ -148,7 +148,7 @@ export class AccessibilityNode {
    * @return {boolean}
    */
   isDOMNode() {
-    return !!this._backendDOMNodeId;
+    return Boolean(this._backendDOMNodeId);
   }
 
   /**

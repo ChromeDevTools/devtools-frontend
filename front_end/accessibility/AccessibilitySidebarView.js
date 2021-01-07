@@ -65,7 +65,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
    * @param {boolean=} fromAXTree
    */
   setNode(node, fromAXTree) {
-    this._skipNextPullNode = !!fromAXTree;
+    this._skipNextPullNode = Boolean(fromAXTree);
     this._node = node;
     this.update();
   }

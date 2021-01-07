@@ -332,7 +332,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
     if (bindings.has(uiSourceCode)) {
       return false;
     }
-    return !!uiSourceCode.hasCommits();
+    return Boolean(uiSourceCode.hasCommits());
   }
 
   /**

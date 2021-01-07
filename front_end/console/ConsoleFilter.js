@@ -132,7 +132,7 @@ export class ConsoleFilter {
      */
     function passesFilter(filter, value, exactMatch) {
       if (!filter.text) {
-        return !!value === filter.negative;
+        return Boolean(value) === filter.negative;
       }
       if (!value) {
         return !filter.text === !filter.negative;

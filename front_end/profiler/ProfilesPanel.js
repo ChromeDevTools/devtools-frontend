@@ -169,7 +169,8 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
    * @return {?ProfileType}
    */
   _findProfileTypeByExtension(fileName) {
-    return this._profileTypes.find(type => !!type.fileExtension() && fileName.endsWith(type.fileExtension() || '')) ||
+    return this._profileTypes.find(
+               type => Boolean(type.fileExtension()) && fileName.endsWith(type.fileExtension() || '')) ||
         null;
   }
 
@@ -187,7 +188,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
       return;
     }
 
-    if (!!profileType.profileBeingRecorded()) {
+    if (Boolean(profileType.profileBeingRecorded())) {
       Common.Console.Console.instance().error(
           Common.UIString.UIString('Can’t load profile while another profile is being recorded.'));
       return;
@@ -235,9 +236,9 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
    * @param {boolean} toggled
    */
   _updateToggleRecordAction(toggled) {
-    const hasSelectedTarget =
-        !!(UI.Context.Context.instance().flavor(SDK.CPUProfilerModel.CPUProfilerModel) ||
-           UI.Context.Context.instance().flavor(SDK.HeapProfilerModel.HeapProfilerModel));
+    const hasSelectedTarget = Boolean(
+        UI.Context.Context.instance().flavor(SDK.CPUProfilerModel.CPUProfilerModel) ||
+        UI.Context.Context.instance().flavor(SDK.HeapProfilerModel.HeapProfilerModel));
     const enable = toggled || (!SDK.SDKModel.TargetManager.instance().allTargetsSuspended() && hasSelectedTarget);
     this._toggleRecordAction.setEnabled(enable);
     this._toggleRecordAction.setToggled(toggled);

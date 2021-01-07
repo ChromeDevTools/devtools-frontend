@@ -112,7 +112,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     if (node) {
       const nodePseudoState = node.domModel().cssModel().pseudoState(node);
       for (const input of this._inputs) {
-        input.disabled = !!node.pseudoType();
+        input.disabled = Boolean(node.pseudoType());
         const state = this._inputStates.get(input);
         input.checked = nodePseudoState && state !== undefined ? nodePseudoState.indexOf(state) >= 0 : false;
       }

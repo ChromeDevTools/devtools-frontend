@@ -550,7 +550,7 @@ export let InspectorFrontendHostInstance = window.InspectorFrontendHost;
 
 class InspectorFrontendAPIImpl {
   constructor() {
-    this._debugFrontend = (!!Root.Runtime.Runtime.queryParam('debugFrontend')) ||
+    this._debugFrontend = (Boolean(Root.Runtime.Runtime.queryParam('debugFrontend'))) ||
         // @ts-ignore Compatibility hacks
         (window['InspectorTest'] && window['InspectorTest']['debugTest']);
 

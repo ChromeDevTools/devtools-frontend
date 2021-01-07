@@ -93,7 +93,7 @@
    * @param {string} opt_message User message to print if the test fails.
    */
   TestSuite.prototype.assertTrue = function(value, opt_message) {
-    this.assertEquals(true, !!value, opt_message);
+    this.assertEquals(true, Boolean(value), opt_message);
   };
 
   /**
@@ -984,7 +984,7 @@
 
       function onGotImageData(data) {
         const image = new Image();
-        test.assertTrue(!!data, 'No image data for frame');
+        test.assertTrue(Boolean(data), 'No image data for frame');
         image.addEventListener('load', onLoad);
         image.src = 'data:image/jpg;base64,' + data;
       }

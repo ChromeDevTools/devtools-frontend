@@ -2547,7 +2547,7 @@ export class TimelineCategory extends Common.ObjectWrapper.ObjectWrapper {
    * @return {boolean}
    */
   get hidden() {
-    return !!this._hidden;
+    return Boolean(this._hidden);
   }
 
   /**

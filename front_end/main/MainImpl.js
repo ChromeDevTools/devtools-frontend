@@ -119,7 +119,7 @@ export class MainImpl {
     if (Host.Platform.isCustomDevtoolsFrontend()) {
       storagePrefix = '__custom__';
     } else if (
-        !Root.Runtime.Runtime.queryParam('can_dock') && !!Root.Runtime.Runtime.queryParam('debugFrontend') &&
+        !Root.Runtime.Runtime.queryParam('can_dock') && Boolean(Root.Runtime.Runtime.queryParam('debugFrontend')) &&
         !Host.InspectorFrontendHost.isUnderTest()) {
       storagePrefix = '__bundled__';
     }
@@ -263,7 +263,7 @@ export class MainImpl {
 
     this._addMainEventListeners(document);
 
-    const canDock = !!Root.Runtime.Runtime.queryParam('can_dock');
+    const canDock = Boolean(Root.Runtime.Runtime.queryParam('can_dock'));
     // @ts-ignore layout test global
     self.UI.zoomManager = UI.ZoomManager.ZoomManager.instance(
         {forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance});

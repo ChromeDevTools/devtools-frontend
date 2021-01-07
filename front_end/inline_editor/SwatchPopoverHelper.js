@@ -119,7 +119,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     if (this._hiddenCallback) {
-      this._hiddenCallback.call(null, !!commitEdit);
+      this._hiddenCallback.call(null, Boolean(commitEdit));
     }
 
     if (this._focusRestorer) {

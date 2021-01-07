@@ -177,12 +177,12 @@ export class TimelineModelImpl {
         return true;
       case recordTypes.MarkFirstPaint:
       case recordTypes.MarkFCP:
-        return !!this._mainFrame && event.args.frame === this._mainFrame.frameId && !!event.args.data;
+        return Boolean(this._mainFrame) && event.args.frame === this._mainFrame.frameId && Boolean(event.args.data);
       case recordTypes.MarkDOMContent:
       case recordTypes.MarkLoad:
       case recordTypes.MarkLCPCandidate:
       case recordTypes.MarkLCPInvalidate:
-        return !!event.args['data']['isMainFrame'];
+        return Boolean(event.args['data']['isMainFrame']);
       default:
         return false;
     }
@@ -224,7 +224,7 @@ export class TimelineModelImpl {
    * @return {boolean}
    */
   isLCPCandidateEvent(event) {
-    return event.name === RecordType.MarkLCPCandidate && !!event.args['data']['isMainFrame'];
+    return event.name === RecordType.MarkLCPCandidate && Boolean(event.args['data']['isMainFrame']);
   }
 
   /**
@@ -232,7 +232,7 @@ export class TimelineModelImpl {
    * @return {boolean}
    */
   isLCPInvalidateEvent(event) {
-    return event.name === RecordType.MarkLCPInvalidate && !!event.args['data']['isMainFrame'];
+    return event.name === RecordType.MarkLCPInvalidate && Boolean(event.args['data']['isMainFrame']);
   }
 
   /**
@@ -240,7 +240,8 @@ export class TimelineModelImpl {
    * @return {boolean}
    */
   isFCPEvent(event) {
-    return event.name === RecordType.MarkFCP && !!this._mainFrame && event.args['frame'] === this._mainFrame.frameId;
+    return event.name === RecordType.MarkFCP && Boolean(this._mainFrame) &&
+        event.args['frame'] === this._mainFrame.frameId;
   }
 
   /**
@@ -420,7 +421,7 @@ export class TimelineModelImpl {
             if (e.args['data']['sessionId'] === this._sessionId) {
               return true;
             }
-            return !!this._pageFrames.get(TimelineModelImpl.eventFrameId(e));
+            return Boolean(this._pageFrames.get(TimelineModelImpl.eventFrameId(e)));
           });
           if (!workerMetaEvent) {
             continue;
@@ -432,8 +433,8 @@ export class TimelineModelImpl {
           workerUrl = workerMetaEvent.args['data']['url'] || '';
         }
         this._processThreadEvents(
-            tracingModel, [{from: startTime, to: endTime}], thread, thread === metaEvent.thread, !!workerUrl, true,
-            workerUrl);
+            tracingModel, [{from: startTime, to: endTime}], thread, thread === metaEvent.thread, Boolean(workerUrl),
+            true, workerUrl);
       }
       startTime = endTime;
     }
@@ -504,7 +505,7 @@ export class TimelineModelImpl {
             if (e.args['data']['workerThreadId'] !== thread.id()) {
               return false;
             }
-            return !!this._pageFrames.get(TimelineModelImpl.eventFrameId(e));
+            return Boolean(this._pageFrames.get(TimelineModelImpl.eventFrameId(e)));
           });
           if (!workerMetaEvent) {
             continue;
@@ -960,7 +961,7 @@ export class TimelineModelImpl {
             continue;
           }
           const data = lastStep.args['data'];
-          asyncEvent.causedFrame = !!(data && data['INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT']);
+          asyncEvent.causedFrame = Boolean(data && data['INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT']);
           if (asyncEvent.hasCategory(TimelineModelImpl.Category.LatencyInfo)) {
             if (lastStep.id && !this._knownInputEvents.has(lastStep.id)) {
               continue;
@@ -1272,7 +1273,7 @@ export class TimelineModelImpl {
           break;
         }
         const frameId = TimelineModelImpl.eventFrameId(event);
-        const isMainFrame = !!eventData['isMainFrame'];
+        const isMainFrame = Boolean(eventData['isMainFrame']);
         const pageFrame = this._pageFrames.get(frameId);
         if (pageFrame) {
           pageFrame.update(event.startTime, eventData);
@@ -2054,7 +2055,8 @@ export class NetworkRequest {
    * @return {boolean}
    */
   cached() {
-    return !!this._memoryCached || (!!this._maybeDiskCached && !this._transferSize && !this.fromServiceWorker);
+    return Boolean(this._memoryCached) ||
+        (Boolean(this._maybeDiskCached) && !this._transferSize && !this.fromServiceWorker);
   }
 
   /**

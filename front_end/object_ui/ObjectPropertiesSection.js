@@ -585,7 +585,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
 
     this._object = object;
     this._extraProperties = extraProperties || [];
-    this._ignoreHasOwnProperty = !!ignoreHasOwnProperty;
+    this._ignoreHasOwnProperty = Boolean(ignoreHasOwnProperty);
     this._emptyPlaceholder = emptyPlaceholder;
 
     this.setExpandable(true);
@@ -628,7 +628,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
    */
   async onpopulate() {
     const treeOutline = /** @type {?ObjectPropertiesSection} */ (this.treeOutline);
-    const skipProto = treeOutline ? !!treeOutline._skipProto : false;
+    const skipProto = treeOutline ? Boolean(treeOutline._skipProto) : false;
     return ObjectPropertyTreeElement._populate(
         this, this._object, skipProto, this._linkifier, this._emptyPlaceholder, this._ignoreHasOwnProperty,
         this._extraProperties);
@@ -871,7 +871,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
     }
 
-    return !!this._highlightChanges.length;
+    return Boolean(this._highlightChanges.length);
   }
 
   /**
@@ -932,7 +932,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     const propertyValue = /** @type {!SDK.RemoteObject.RemoteObject} */ (this.property.value);
     console.assert(typeof propertyValue !== 'undefined');
     const treeOutline = /** @type {?ObjectPropertiesSection} */ (this.treeOutline);
-    const skipProto = treeOutline ? !!treeOutline._skipProto : false;
+    const skipProto = treeOutline ? Boolean(treeOutline._skipProto) : false;
     const targetValue = this.property.name !== '__proto__' ? propertyValue : parentMap.get(this.property);
     if (targetValue) {
       await ObjectPropertyTreeElement._populate(
@@ -1408,7 +1408,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
             const name = ownPropertyNames[i];
 
             const index = Number(name) >>> 0;
-            if (('' + index) === name && fromIndex <= index && index <= toIndex) {
+            if ((String(index)) === name && fromIndex <= index && index <= toIndex) {
               yield index;
             }
           }
@@ -1781,7 +1781,7 @@ export class Renderer {
     if (!title) {
       section.titleLessMode();
     }
-    section._editable = !!options.editable;
+    section._editable = Boolean(options.editable);
     return Promise.resolve(
         /** @type {?{node: !Node, tree: ?UI.TreeOutline.TreeOutline}} */ ({node: section.element, tree: section}));
   }

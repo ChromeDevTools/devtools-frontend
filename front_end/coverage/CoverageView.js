@@ -332,11 +332,11 @@ export class CoverageView extends UI.Widget.VBox {
     if (jsCoveragePerBlock) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CoverageStartedPerBlock);
     }
-    const success = await this._model.start(!!jsCoveragePerBlock);
+    const success = await this._model.start(Boolean(jsCoveragePerBlock));
     if (!success) {
       return;
     }
-    this._selectCoverageType(!!jsCoveragePerBlock);
+    this._selectCoverageType(Boolean(jsCoveragePerBlock));
 
     this._model.addEventListener(Events.CoverageUpdated, this._onCoverageDataReceived, this);
     this._resourceTreeModel = /** @type {?SDK.ResourceTreeModel.ResourceTreeModel} */ (
@@ -425,7 +425,7 @@ export class CoverageView extends UI.Widget.VBox {
   _updateViews(updatedEntries) {
     this._updateStats();
     this._listView.update(this._model && this._model.entries() || []);
-    this._saveButton.setEnabled(!!this._model && this._model.entries().length > 0);
+    this._saveButton.setEnabled(this._model !== null && this._model.entries().length > 0);
     this._decorationManager && this._decorationManager.update(updatedEntries);
   }
 

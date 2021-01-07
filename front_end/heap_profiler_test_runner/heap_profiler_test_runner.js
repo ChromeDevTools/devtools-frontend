@@ -574,7 +574,7 @@ HeapProfilerTestRunner.findAndExpandWindow = function(callback) {
 
 HeapProfilerTestRunner.findAndExpandRow = async function(name, callback) {
   const row = HeapProfilerTestRunner.findRow(name);
-  TestRunner.assertEquals(true, !!row, `"${name}" row`);
+  TestRunner.assertEquals(true, Boolean(row), `"${name}" row`);
   await HeapProfilerTestRunner.expandRowPromise(row);
   TestRunner.safeWrap(callback)(row);
   return row;

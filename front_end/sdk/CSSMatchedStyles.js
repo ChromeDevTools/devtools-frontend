@@ -698,7 +698,7 @@ class DOMInheritanceCascade {
     const computedValue = this._innerComputeValue(availableCSSVariables, computedCSSVariables, cssVariableValue);
     const {variableName} = this._getCSSVariableNameAndFallback(cssVariableValue);
 
-    return {computedValue, fromFallback: !!variableName && !availableCSSVariables.has(variableName)};
+    return {computedValue, fromFallback: variableName !== null && !availableCSSVariables.has(variableName)};
   }
 
   /**

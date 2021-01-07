@@ -173,7 +173,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     let hadTreeUpdates = false;
     for (const node of this._nodeForItem.values()) {
       const shouldBeVisible = this._isVisibleFilter(node.item);
-      const isVisible = !!node.parent;
+      const isVisible = Boolean(node.parent);
       if (shouldBeVisible) {
         node._setHighlight(this._highlightRegExp);
       }

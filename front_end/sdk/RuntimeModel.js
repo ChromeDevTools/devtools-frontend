@@ -71,7 +71,7 @@ export class RuntimeModel extends SDKModel {
    */
   static isSideEffectFailure(response) {
     const exceptionDetails = 'exceptionDetails' in response && response.exceptionDetails;
-    return !!(
+    return Boolean(
         exceptionDetails && exceptionDetails.exception && exceptionDetails.exception.description &&
         exceptionDetails.exception.description.startsWith('EvalError: Possible side-effect in debug-evaluate'));
   }
@@ -352,7 +352,7 @@ export class RuntimeModel extends SDKModel {
   _inspectRequested(payload, hints) {
     const object = this.createRemoteObject(payload);
 
-    if (hints && 'copyToClipboard' in hints && !!hints.copyToClipboard) {
+    if (hints && 'copyToClipboard' in hints && Boolean(hints.copyToClipboard)) {
       this._copyRequested(object);
       return;
     }
@@ -418,7 +418,7 @@ export class RuntimeModel extends SDKModel {
         return this instanceof Element ? this.outerHTML : undefined;
       }
       if (subtype && typeof this === 'undefined') {
-        return subtype + '';
+        return String(subtype);
       }
       try {
         return JSON.stringify(this, null, indent);
@@ -770,7 +770,7 @@ export class ExecutionContext {
       return this.debuggerModel.evaluateOnSelectedCallFrame(options);
     }
     // Assume backends either support both throwOnSideEffect and timeout options or neither.
-    const needsTerminationOptions = !!options.throwOnSideEffect || options.timeout !== undefined;
+    const needsTerminationOptions = Boolean(options.throwOnSideEffect) || options.timeout !== undefined;
     if (!needsTerminationOptions || this.runtimeModel.hasSideEffectSupport()) {
       return this._evaluateGlobal(options, userGesture, awaitPromise);
     }

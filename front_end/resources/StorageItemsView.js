@@ -97,7 +97,7 @@ export class StorageItemsView extends UI.Widget.VBox {
    * @return {boolean}
    */
   hasFilter() {
-    return !!this._filterRegex;
+    return Boolean(this._filterRegex);
   }
 
   /**

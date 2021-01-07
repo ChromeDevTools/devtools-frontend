@@ -47,7 +47,7 @@ export class JSONView extends UI.Widget.VBox {
     this._initialized = false;
     this.registerRequiredCSS('source_frame/jsonView.css', {enableLegacyPatching: false});
     this._parsedJSON = parsedJSON;
-    this._startCollapsed = !!startCollapsed;
+    this._startCollapsed = Boolean(startCollapsed);
     this.element.classList.add('json-view');
 
     /** @type {?UI.SearchableView.SearchableView} */

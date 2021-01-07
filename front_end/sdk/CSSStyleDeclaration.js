@@ -206,7 +206,7 @@ export class CSSStyleDeclaration {
         }  // Never generate synthetic shorthands when no value is available.
 
         // Generate synthetic shorthand we have a value for.
-        const shorthandImportance = !!this._shorthandIsImportant.has(shorthand);
+        const shorthandImportance = Boolean(this._shorthandIsImportant.has(shorthand));
         const shorthandProperty = new CSSProperty(
             this, this.allProperties().length, shorthand, shorthandValue, shorthandImportance, false, true, false);
         generatedProperties.push(shorthandProperty);
@@ -225,7 +225,7 @@ export class CSSStyleDeclaration {
      * @return {boolean}
      */
     function propertyHasRange(property) {
-      return !!property.range;
+      return Boolean(property.range);
     }
 
     if (this.range) {

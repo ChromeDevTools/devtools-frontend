@@ -115,7 +115,7 @@ export class FormatterWorkerPool {
         callback(true, null);
         return;
       }
-      const isLastChunk = 'isLastChunk' in data && !!data['isLastChunk'];
+      const isLastChunk = 'isLastChunk' in data && Boolean(data['isLastChunk']);
       const chunk = 'chunk' in data && data['chunk'];
       callback(isLastChunk, chunk);
     }

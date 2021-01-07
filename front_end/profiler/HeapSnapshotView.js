@@ -304,7 +304,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
     if (this._profile.profileType().id === TrackingHeapSnapshotProfileType.TypeId && this._profile.fromFile()) {
       const samples = await heapSnapshotProxy.getSamples();
       if (samples) {
-        console.assert(!!samples.timestamps.length);
+        console.assert(Boolean(samples.timestamps.length));
         const profileSamples = new Samples();
         profileSamples.sizes = samples.sizes;
         profileSamples.ids = samples.lastAssignedIds;
@@ -1756,7 +1756,7 @@ export class HeapProfileHeader extends ProfileHeader {
    * @return {boolean}
    */
   canSaveToFile() {
-    return !this.fromFile() && !!this._snapshotProxy;
+    return !this.fromFile() && Boolean(this._snapshotProxy);
   }
 
   /**

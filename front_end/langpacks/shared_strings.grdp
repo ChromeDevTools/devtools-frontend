@@ -305,6 +305,9 @@
   <message name="IDS_DEVTOOLS_96e9bc575b5d3ed541113a249da8bd24" desc="Text to take screenshots">
     Capture screenshots
   </message>
+  <message name="IDS_DEVTOOLS_9841bdc50c4226cb6ec5db76494249e6" desc="Title of the 'Coverage' tool in the bottom drawer">
+    Coverage
+  </message>
   <message name="IDS_DEVTOOLS_9d8c209e49e328528c39c273798e98c9" desc="Text to save content as a specific file type">
     Save as...
   </message>

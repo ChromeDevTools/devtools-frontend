@@ -299,9 +299,6 @@
   "coverage/CoverageView.js | urlFilter": {
     "message": "URL filter"
   },
-  "coverage/ModuleUIStrings.js | coverage": {
-    "message": "Coverage"
-  },
   "coverage/ModuleUIStrings.js | instrumentCoverage": {
     "message": "Instrument coverage"
   },

@@ -1,15 +1,6 @@
 {
   "extensions": [
     {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "coverage",
-      "title": "Coverage",
-      "persistence": "closeable",
-      "className": "Coverage.CoverageView",
-      "order": 100
-    },
-    {
       "type": "@SourceFrame.LineDecorator",
       "className": "Coverage.CoverageView.LineDecorator",
       "decoratorType": "coverage"

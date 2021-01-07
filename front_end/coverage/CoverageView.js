@@ -94,7 +94,11 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('coverage/CoverageView.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+/** @type {!CoverageView} */
+let coverageViewInstance;
+
 export class CoverageView extends UI.Widget.VBox {
+  /** @private */
   constructor() {
     super(true);
 
@@ -212,6 +216,13 @@ export class CoverageView extends UI.Widget.VBox {
     this._statusToolbarElement = this.contentElement.createChild('div', 'coverage-toolbar-summary');
     this._statusMessageElement = this._statusToolbarElement.createChild('div', 'coverage-message');
     this._landingPage.show(this._coverageResultsElement);
+  }
+
+  static instance() {
+    if (!coverageViewInstance) {
+      coverageViewInstance = new CoverageView();
+    }
+    return coverageViewInstance;
   }
 
   /**

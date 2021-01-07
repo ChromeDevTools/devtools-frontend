@@ -5,10 +5,6 @@
 import * as i18n from '../i18n/i18n.js';
 export const UIStrings = {
   /**
-  *@description Title of the 'Coverage' tool in the bottom drawer
-  */
-  coverage: 'Coverage',
-  /**
   *@description Text for the performance of something
   */
   performance: 'Performance',

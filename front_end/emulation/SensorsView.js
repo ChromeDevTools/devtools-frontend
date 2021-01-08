@@ -11,6 +11,7 @@ import * as UI from '../ui/ui.js';
  * @type {?SensorsView}
  */
 let _instanceObject = null;
+const {ls} = Common;
 
 export class SensorsView extends UI.Widget.VBox {
   constructor() {

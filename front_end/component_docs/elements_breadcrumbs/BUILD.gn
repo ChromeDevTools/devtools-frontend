@@ -3,6 +3,18 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/copy.gni")
+import("../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  sources = [
+    "basic.ts",
+    "helpers.ts",
+    "scroll-to-active-element.ts",
+    "scroll.ts",
+  ]
+
+  deps = [ "../../elements:bundle" ]
+}
 
 copy_to_gen("elements_breadcrumbs") {
   sources = [
@@ -11,5 +23,5 @@ copy_to_gen("elements_breadcrumbs") {
     "scroll.html",
   ]
 
-  deps = [ "../../elements" ]
+  deps = [ ":ts" ]
 }

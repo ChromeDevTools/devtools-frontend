@@ -6,8 +6,9 @@ import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/Envi
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as Components from '../../ui/components/components.js';
 
-FrontendHelpers.initializeGlobalVars();
-ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent());
+ComponentHelpers.ComponentServerSetup.setup()
+    .then(() => FrontendHelpers.initializeGlobalVars())
+    .then(() => renderComponent());
 
 const renderComponent = (): void => {
   const component = new Components.DataGrid.DataGrid();

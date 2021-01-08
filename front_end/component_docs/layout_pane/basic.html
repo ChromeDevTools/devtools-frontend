@@ -20,62 +20,6 @@
     <div id="container">
     </div>
 
-    <script type="module">
-      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-      import {LayoutPane} from '../../elements/LayoutPane.js';
-
-      ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent());
-
-      const renderComponent = () => {
-        const component = new LayoutPane();
-
-        document.getElementById('container').appendChild(component);
-
-        component.data = {
-          gridElements: [
-            {
-              id: 1,
-              name: 'div',
-              domId: 'foo',
-              enabled: false,
-            },
-            {
-              id: 2,
-              name: 'div',
-              domClasses: ['for', 'bar', 'some-very-long-class-name-very-very-very-very-very-long'],
-              enabled: true,
-            }
-          ],
-          settings: [
-            {
-              name: 'showGridTracks',
-              type: 'boolean',
-              value: false,
-              title: 'Show grid tracks',
-              options: [{
-                title: 'Show grid tracks',
-                value: true,
-              }, {
-                title: 'Do not show grid tracks',
-                value: false,
-              }]
-            },
-            {
-              name: 'showGridBorders',
-              type: 'enum',
-              value: "both",
-              title: 'Show grid borders',
-              options: [{
-                title: 'Show grid borders',
-                value: "both",
-              }, {
-                title: 'Do not show grid borders',
-                value: "none",
-              }]
-            }
-          ],
-        };
-      }
-    </script>
+    <script type="module" src="./basic.js"></script>
   </body>
 </html>

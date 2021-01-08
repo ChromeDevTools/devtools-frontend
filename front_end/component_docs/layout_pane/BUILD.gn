@@ -3,9 +3,16 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/copy.gni")
+import("../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  sources = [ "basic.ts" ]
+
+  deps = [ "../../elements:bundle" ]
+}
 
 copy_to_gen("layout_pane") {
   sources = [ "basic.html" ]
 
-  deps = [ "../../elements" ]
+  deps = [ ":ts" ]
 }

@@ -3,9 +3,19 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/copy.gni")
+import("../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  sources = [ "basic.ts" ]
+
+  deps = [
+    "../../component_helpers:bundle",
+    "../../ui/components:bundle",
+  ]
+}
 
 copy_to_gen("icon_component") {
   sources = [ "basic.html" ]
 
-  deps = [ "../../elements" ]
+  deps = [ ":ts" ]
 }

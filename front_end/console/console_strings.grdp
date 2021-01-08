@@ -267,7 +267,7 @@
   <message name="IDS_DEVTOOLS_e17fdb615452f440c793b5ddad90dd5e" desc="Sdk console message message level warning of level Labels in Console View of the Console panel">
     Warnings
   </message>
-  <message name="IDS_DEVTOOLS_e1dd1b8e32626f508bd3a5612a60ab97" desc="Title of an action in the console tool to create pin">
+  <message name="IDS_DEVTOOLS_e1dd1b8e32626f508bd3a5612a60ab97" desc="Title of an action in the console tool to create pin. A live expression is code that the user can enter into the console and it will be pinned in the UI. Live expressions are constantly evaluated as the user interacts with the console (hence 'live').">
     Create live expression
   </message>
   <message name="IDS_DEVTOOLS_e3951a5d9f5fdfae4ccd5469ff230eae" desc="Note title in Console View Message of the Console panel">

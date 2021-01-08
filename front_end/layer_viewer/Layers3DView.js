@@ -64,7 +64,8 @@ export const UIStrings = {
   */
   slowScrollRects: 'Slow scroll rects',
   /**
-  *@description Text for a checkbox in the toolbar of the Layers panel to show the paints of the page
+  *@description Text for a checkbox in the toolbar of the Layers panel. It is used as a verb to display marks
+  * representing changes on the screen.
   */
   paints: 'Paints',
   /**

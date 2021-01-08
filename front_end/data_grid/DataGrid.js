@@ -269,7 +269,10 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
   updateGridAccessibleName(text) {
     // Update the label with the provided text or the current selected node
     const accessibleText = (this.selectedNode && this.selectedNode.existingElement()) ? this.selectedNode.nodeAccessibleText : '';
-    UI.ARIAUtils.alert(text ? text : accessibleText, this.element);
+    if (this.element === this.element.ownerDocument.deepActiveElement()) {
+      // Only alert if the datagrid has focus
+      UI.ARIAUtils.alert(text ? text : accessibleText, this.element);
+    }
   }
 
   updateGridAccessibleNameOnFocus() {

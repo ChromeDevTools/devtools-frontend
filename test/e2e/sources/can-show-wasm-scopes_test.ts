@@ -9,8 +9,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {addBreakpointForLine, getScopeNames, getValuesForScope, openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, RESUME_BUTTON, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
 
 describe('Source Tab', async () => {
-  // Needs to be rebaselined after Chromium DEPS roll.
-  it.skip('[crbug.com/1159309] shows and updates the module, local, and stack scope while pausing', async () => {
+  it('shows and updates the module, local, and stack scope while pausing', async () => {
     const {frontend, target} = getBrowserAndPages();
     const breakpointLine = 12;
     const numberOfLines = 16;
@@ -40,17 +39,16 @@ describe('Source Tab', async () => {
         const names = await getScopeNames();
         return names.length === 3 ? names : undefined;
       });
-      assert.deepEqual(scopeNames, ['Module', 'Local', 'Stack']);
+      assert.deepEqual(scopeNames, ['Stack', 'Local', 'Module']);
     });
 
-    await step('check that the module scope content is as expected', async () => {
-      moduleScopeValues = await getValuesForScope('Module', 0, 3);
-      // Remove occurrences of arrays.
-      const formattedValues = moduleScopeValues.map((line: string) => {
-        return line.replace(/\[[^\]]*\]/, '').trim();
-      });
-      assert.deepEqual(
-          formattedValues, ['globals: {imports.global: 24}', 'instance: Instance\xA0{}', 'memory0: Memory(1)\xA0{}']);
+    await step('expand the module scope', async () => {
+      await click('[aria-label="Module"]');
+    });
+
+    await step('check that the stack scope content is as expected', async () => {
+      const stackScopeValues = await getValuesForScope('Stack', 0, 0);
+      assert.deepEqual(stackScopeValues, []);
     });
 
     await step('check that the local scope content is as expected', async () => {
@@ -58,13 +56,18 @@ describe('Source Tab', async () => {
       assert.deepEqual(localScopeValues, ['f32_var: 5.5', 'f64_var: 2.23e-11', 'i32: 42', 'i64_var: 9221120237041090']);
     });
 
-    await step('expand the stack scope', async () => {
-      await click('[aria-label="Stack"]');
-    });
-
-    await step('check that the stack scope content is as expected', async () => {
-      const stackScopeValues = await getValuesForScope('Stack', 0, 0);
-      assert.deepEqual(stackScopeValues, []);
+    await step('check that the module scope content is as expected', async () => {
+      moduleScopeValues = await getValuesForScope('Module', 0, 4);
+      // Remove occurrences of arrays.
+      const formattedValues = moduleScopeValues.map((line: string) => {
+        return line.replace(/\[[^\]]*\]/, '').trim();
+      });
+      assert.deepEqual(formattedValues, [
+        'globals: {imports.global: 24}',
+        'instance: Instance\xA0{}',
+        'memory0: Memory(1)\xA0{}',
+        'module: Module\xA0{}',
+      ]);
     });
 
     await step('step one time', async () => {

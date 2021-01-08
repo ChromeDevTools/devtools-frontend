@@ -7,22 +7,32 @@ For more background, see the [initial proposal and design doc](https://docs.goog
 To add an example for your component:
 
 1. Create `front_end/component_docs/DIR` where `DIR` is the name of your component.
-2. Within the new `DIR`, add HTML files. Each one of these is a standalone example. You should name the HTML file based on what it's documenting, e.g. `basic.html` or `data-missing.html`. This file should import your component and render it with the data you need.
+2. Within the new `DIR`, add HTML and TypeScript files. Each one of these is a standalone example. You should name the HTML file based on what it's documenting, e.g. `basic.html` or `data-missing.html`, and add a TypeScript file with the same name. The TypeScript file should contain all the code to import and run your component, and within the HTML file you can place any HTML or CSS you need (inline style tags are fine for examples) to render the component in the right context.
 3. Create a `BUILD.gn` in your new `DIR`. This should contain the following code:
 
 ```
 import("../../../scripts/build/ninja/copy.gni")
+import("../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  sources = [
+    "basic.ts"
+  ]
+
+  deps = [
+    # As an example: anything your TS code imports needs to be listed here as a dep.
+    "../../ui/components:bundle",
+  ]
+}
 
 copy_to_gen("elements_breadcrumbs") {
   sources = [
-    "example1.html",
+    "basic.html",
     # list all other examples here
   ]
 
   deps = [
-    # Any dependencies your examples rely on.
-    # For example, if they depend on code in the elements module:
-    "../../elements"
+    ":ts"
   ]
 }
 ```

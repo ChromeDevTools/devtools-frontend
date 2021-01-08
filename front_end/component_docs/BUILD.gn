@@ -30,6 +30,9 @@ ts_library("bundle") {
   testonly = true
   sources = [
     "component_docs.ts",
+    "create_breadcrumbs.ts",
     "toggle_dark_mode.ts",
   ]
+
+  deps = [ "../third_party/lit-html:bundle" ]
 }

@@ -49,7 +49,7 @@ server.once('error', error => {
 });
 
 function createComponentIndexFile(componentPath, componentExamples) {
-  const componentName = componentPath.replace('/front_end/component_docs/', '').replace(/_/g, ' ');
+  const componentName = componentPath.replace('/front_end/component_docs/', '').replace(/_/g, ' ').replace('/', '');
   // clang-format off
   return `<!DOCTYPE html>
   <html>
@@ -64,17 +64,40 @@ function createComponentIndexFile(componentPath, componentExamples) {
           padding: 5px;
           margin: 10px;
         }
-        iframe { display: block; width: 100%; }
+
+        a:link,
+        a:visited {
+          color: blue;
+          text-decoration: underline;
+        }
+
+        a:hover {
+          text-decoration: none;
+        }
+        .example summary {
+          font-size: 20px;
+        }
+
+        .back-link {
+          padding-left: 5px;
+          font-size: 16px;
+          font-style: italic;
+        }
+
+        iframe { display: block; width: 100%; height: 400px; }
       </style>
     </head>
     <body>
-      <h1>${componentName}</h1>
+      <h1>
+        ${componentName}
+        <a class="back-link" href="/">Back to index</a>
+      </h1>
       ${componentExamples.map(example => {
         const fullPath = path.join(componentPath, example);
-        return `<div class="example">
-          <h3><a href="${fullPath}">${example}</a></h3>
+        return `<details class="example">
+          <summary><a href="${fullPath}">${example.replace('.html', '').replace(/-|_/g, ' ')}</a></summary>
           <iframe src="${fullPath}"></iframe>
-        </div>`;
+        </details>`;
       }).join('\n')}
     </body>
   </html>`;

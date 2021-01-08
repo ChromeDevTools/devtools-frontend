@@ -6,7 +6,8 @@ import("../../../scripts/build/ninja/copy.gni")
 import("../../../third_party/typescript/typescript.gni")
 
 ts_library("ts") {
-  sources = [ "url.ts" ]
+  testonly = true
+  sources = [ "simple-url.ts" ]
 
   deps = [
     "../../component_helpers:bundle",
@@ -15,6 +16,7 @@ ts_library("ts") {
 }
 
 copy_to_gen("linkifier") {
-  sources = [ "url.html" ]
+  testonly = true
+  sources = [ "simple-url.html" ]
   deps = [ ":ts" ]
 }

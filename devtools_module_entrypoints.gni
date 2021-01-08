@@ -25,7 +25,6 @@ devtools_module_entrypoint_sources = [
   "color_picker/color_picker.js",
   "common/common-legacy.js",
   "common/common.js",
-  "component_docs/component_docs.js",
   "component_helpers/component_helpers.js",
   "components/components-legacy.js",
   "components/components.js",

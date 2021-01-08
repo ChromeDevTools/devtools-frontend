@@ -6,6 +6,7 @@ import("../../../scripts/build/ninja/copy.gni")
 import("../../../third_party/typescript/typescript.gni")
 
 ts_library("ts") {
+  testonly = true
   sources = [ "webvitals.ts" ]
 
   deps = [
@@ -17,6 +18,7 @@ ts_library("ts") {
 }
 
 copy_to_gen("webvitals") {
+  testonly = true
   sources = [ "webvitals.html" ]
 
   deps = [ ":ts" ]

@@ -6,12 +6,14 @@ import("../../../scripts/build/ninja/copy.gni")
 import("../../../third_party/typescript/typescript.gni")
 
 ts_library("ts") {
+  testonly = true
   sources = [ "basic.ts" ]
 
   deps = [ "../../elements:bundle" ]
 }
 
 copy_to_gen("layout_pane") {
+  testonly = true
   sources = [ "basic.html" ]
 
   deps = [ ":ts" ]

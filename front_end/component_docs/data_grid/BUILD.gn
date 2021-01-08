@@ -6,6 +6,7 @@ import("../../../scripts/build/ninja/copy.gni")
 import("../../../third_party/typescript/typescript.gni")
 
 ts_library("ts") {
+  testonly = true
   sources = [
     "adding-data.ts",
     "basic.ts",
@@ -23,6 +24,7 @@ ts_library("ts") {
 }
 
 copy_to_gen("data_grid") {
+  testonly = true
   sources = [
     "adding-data.html",
     "basic.html",

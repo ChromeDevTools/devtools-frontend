@@ -6,6 +6,7 @@ import("../../../scripts/build/ninja/copy.gni")
 import("../../../third_party/typescript/typescript.gni")
 
 ts_library("ts") {
+  testonly = true
   sources = [
     "basic.ts",
     "helpers.ts",
@@ -17,6 +18,7 @@ ts_library("ts") {
 }
 
 copy_to_gen("elements_breadcrumbs") {
+  testonly = true
   sources = [
     "basic.html",
     "scroll-to-active-element.html",

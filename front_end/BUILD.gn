@@ -23,7 +23,6 @@ group("front_end") {
     "client_variations:bundle",
     "color_picker:bundle",
     "common:bundle",
-    "component_docs",
     "component_helpers:bundle",
     "components:bundle",
     "console:bundle",

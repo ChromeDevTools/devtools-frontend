@@ -6,6 +6,7 @@ import("../../../scripts/build/ninja/copy.gni")
 import("../../../third_party/typescript/typescript.gni")
 
 ts_library("ts") {
+  testonly = true
   sources = [
     "basic.ts",
     "change-color.ts",
@@ -15,6 +16,7 @@ ts_library("ts") {
 }
 
 copy_to_gen("color_swatch") {
+  testonly = true
   sources = [
     "basic.html",
     "change-color.html",

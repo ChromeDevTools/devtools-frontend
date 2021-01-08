@@ -10,6 +10,7 @@ template("copy_to_gen") {
                              "sources",
                              "visibility",
                              "deps",
+                             "testonly",
                            ])
 
     script = "//third_party/node/node.py"
@@ -45,6 +46,7 @@ template("copy_sources_to_resources") {
                              "sources",
                              "deps",
                              "public_deps",
+                             "testonly",
                            ])
 
     script = "//third_party/node/node.py"
@@ -98,6 +100,7 @@ template("copy_gen_to_resources") {
                              "sources",
                              "deps",
                              "public_deps",
+                             "testonly",
                            ])
 
     # Figure out what the relative path is to the front_end folder.

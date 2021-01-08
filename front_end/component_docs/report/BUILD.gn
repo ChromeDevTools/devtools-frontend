@@ -3,12 +3,20 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/copy.gni")
+import("../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  sources = [ "basic.ts" ]
+
+  deps = [
+    "../../component_helpers:bundle",
+    "../../third_party/lit-html:bundle",
+    "../../ui/components:bundle",
+  ]
+}
 
 copy_to_gen("report") {
   sources = [ "basic.html" ]
 
-  deps = [
-    "../../component_helpers:bundle",
-    "../../ui/components:bundle",
-  ]
+  deps = [ ":ts" ]
 }

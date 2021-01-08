@@ -3,12 +3,21 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/copy.gni")
+import("../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  sources = [ "webvitals.ts" ]
+
+  deps = [
+    "../../../test/unittests/front_end/helpers",
+    "../../component_helpers:bundle",
+    "../../timeline:bundle",
+    "../../ui:bundle",
+  ]
+}
 
 copy_to_gen("webvitals") {
   sources = [ "webvitals.html" ]
 
-  deps = [
-    "../../timeline:bundle",
-    "../../ui:bundle",
-  ]
+  deps = [ ":ts" ]
 }

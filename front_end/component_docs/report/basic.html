@@ -23,50 +23,6 @@
     <div id="container">
     </div>
 
-    <script type="module">
-      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-      import * as Components from '../../ui/components/components.js'
-      import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-
-      ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent());
-
-      const exampleRenderHelper = (name, value) => LitHtml.html`
-          <devtools-report-row>
-            <span slot="name">${name}</span>
-            <span slot="value">${value}</span>
-          </devtools-report-row>
-        `;
-
-      const renderComponent = () => {
-        LitHtml.render(LitHtml.html`
-          <style>
-            devtools-report {
-              --name-column-width: 300px;
-            }
-
-            .source-code {
-              font-family: monospace;
-            }
-          </style>
-
-          <devtools-report>
-            <devtools-report-section .data=${{sectionTitle: 'Section 1'}}>
-              <devtools-report-row>
-                <span slot="name">Basic plain text field</span>
-                <span slot="value">And this is the value</span>
-              </devtools-report-row>
-              <devtools-report-row>
-                <span slot="name">A field with a code value</span>
-                <span slot="value" class="source-code">SomeCodeValue</span>
-              </devtools-report-row>
-            </devtools-report-section>
-
-            <devtools-report-section .data=${{sectionTitle: 'Section 2'}}>
-              ${exampleRenderHelper('Using a small helper', 'to render report rows')}
-            </devtools-report-section>
-          </devtools-report>
-        `, document.getElementById('container'));
-      };
-    </script>
+    <script type="module" src="./basic.js"></script>
   </body>
 </html>

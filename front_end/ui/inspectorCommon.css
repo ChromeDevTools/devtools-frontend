@@ -251,7 +251,7 @@ input::placeholder {
   outline: none;
   padding-right: 20px;
   padding-left: 6px;
-  background-image: -webkit-image-set(url(Images/chromeSelect.png) 1x, url(Images/chromeSelect_2x.png) 2x);
+  background-image: url(Images/chromeSelect.svg);
   background-color: hsl(0deg 0% 98%);
   background-position: right center;
   background-repeat: no-repeat;
@@ -262,6 +262,10 @@ input::placeholder {
 
 .chrome-select:disabled {
   opacity: 38%;
+}
+
+:host-context(.-theme-with-dark-background) .chrome-select {
+  background-image: url(Images/chromeSelectDark.svg);
 }
 
 .chrome-select:enabled:active,

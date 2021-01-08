@@ -60,7 +60,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
     this._headersView = new RequestHeadersView(request);
     this.appendTab(
-        Tabs.Headers, Common.UIString.UIString('Headers'), this._headersView,
+        Tabs.Headers, Common.UIString.UIString('Request'), this._headersView,
         Common.UIString.UIString('Headers and request body'));
 
     this.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);

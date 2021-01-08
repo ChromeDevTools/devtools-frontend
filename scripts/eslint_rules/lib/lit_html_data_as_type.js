@@ -33,12 +33,13 @@ function findIndexOfDataSetterUsageForNode(taggedTemplateExpression) {
    * index, because alongside the template parts is another array of expressions
    * representing all the dynamic parts of the template.
    */
+  const indices = [];
   for (const [index, part] of templateParts.entries()) {
     if (part.value.cooked.endsWith(dataSetterText)) {
-      return index;
+      indices.push(index);
     }
   }
-  return -1;
+  return indices;
 }
 
 function dataSetterUsesTypeCast(taggedTemplateExpression, indexOfDataSetter) {
@@ -69,24 +70,21 @@ module.exports = {
         if (!isLitHtmlCall) {
           return;
         }
-        const indexOfDataSetterCall = findIndexOfDataSetterUsageForNode(node);
-        if (indexOfDataSetterCall === -1) {
-          // Didn't find a .data=${} call, so bail.
-          return -1;
-        }
-        const dataUsageHasTypeCast = dataSetterUsesTypeCast(node, indexOfDataSetterCall);
-        if (!dataUsageHasTypeCast) {
-          context.report({node: node, message: 'LitHtml .data=${} calls must be typecast (.data=${{...} as X}).'});
-          return;
-        }
 
-        if (!dataSetterAsUsesInterface(node, indexOfDataSetterCall)) {
-          context.report({
-            node: node,
-            message:
-                'LitHtml .data=${} calls must be typecast to a type reference (e.g. `as FooInterface`), not a literal.'
-          });
-          return;
+        for (const indexOfDataSetterCall of findIndexOfDataSetterUsageForNode(node)) {
+          const dataUsageHasTypeCast = dataSetterUsesTypeCast(node, indexOfDataSetterCall);
+          if (!dataUsageHasTypeCast) {
+            context.report({node: node, message: 'LitHtml .data=${} calls must be typecast (.data=${{...} as X}).'});
+            continue;
+          }
+
+          if (!dataSetterAsUsesInterface(node, indexOfDataSetterCall)) {
+            context.report({
+              node: node,
+              message:
+                  'LitHtml .data=${} calls must be typecast to a type reference (e.g. `as FooInterface`), not a literal.'
+            });
+          }
         }
       },
     };

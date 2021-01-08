@@ -161,7 +161,7 @@ export class RequestTrustTokensReport extends HTMLElement {
           <span slot="name">${ls`Status`}</span>
           <div slot="value" class="status-row">
             <devtools-icon class="status-icon"
-              .data=${getIconForStatusCode(this.trustTokenData.result.status)}>
+              .data=${getIconForStatusCode(this.trustTokenData.result.status) as Components.Icon.IconData}>
             </devtools-icon>
             <div class="status-text">
               <span><strong>${getSimplifiedStatusTextForStatusCode(this.trustTokenData.result.status)}</strong></span>

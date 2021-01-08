@@ -39,6 +39,19 @@ ruleTester.run('lit_html_data_as_type', rule, {
       errors: [{message: 'LitHtml .data=${} calls must be typecast (.data=${{...} as X}).'}]
     },
     {
+      code: 'LitHtml.html`<devtools-foo .data=${{name: "jack"} as FooData} .data=${{name: "jack"}}>`',
+      filename: 'front_end/components/test.ts',
+      errors: [{message: 'LitHtml .data=${} calls must be typecast (.data=${{...} as X}).'}]
+    },
+    {
+      code: 'LitHtml.html`<devtools-foo .data=${{name: "jack"}} .data=${{name: "jack"}}>`',
+      filename: 'front_end/components/test.ts',
+      errors: [
+        {message: 'LitHtml .data=${} calls must be typecast (.data=${{...} as X}).'},
+        {message: 'LitHtml .data=${} calls must be typecast (.data=${{...} as X}).'}
+      ]
+    },
+    {
       code: 'html`<p><span></span><devtools-foo .data=${{name: "jack"}}></devtools-foo></p>`',
       filename: 'front_end/components/test.ts',
       errors: [{message: 'LitHtml .data=${} calls must be typecast (.data=${{...} as X}).'}]

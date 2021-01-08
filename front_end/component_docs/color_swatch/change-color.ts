@@ -9,15 +9,15 @@ import * as InlineEditor from '../../inline_editor/inline_editor.js';
 const container = document.querySelector('#container');
 const picker = document.querySelector<HTMLInputElement>('#picker');
 
-ComponentHelpers.ComponentServerSetup.setup().then(() => {
-  const component = new InlineEditor.ColorSwatch.ColorSwatch();
-  document.getElementById('container')?.appendChild(component);
-  component.renderColor('#f06');
-  container?.insertBefore(component, picker);
+await ComponentHelpers.ComponentServerSetup.setup();
 
-  picker?.addEventListener('input', e => {
-    component.renderColor((e.target as HTMLInputElement).value);
-  });
+const component = new InlineEditor.ColorSwatch.ColorSwatch();
+document.getElementById('container')?.appendChild(component);
+component.renderColor('#f06');
+container?.insertBefore(component, picker);
 
-  component.addEventListener('swatch-click', () => picker?.click());
+picker?.addEventListener('input', e => {
+  component.renderColor((e.target as HTMLInputElement).value);
 });
+
+component.addEventListener('swatch-click', () => picker?.click());

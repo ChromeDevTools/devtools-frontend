@@ -6,31 +6,31 @@
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as InlineEditor from '../../inline_editor/inline_editor.js';
 
+await ComponentHelpers.ComponentServerSetup.setup();
+
 function appendExample(swatch: InlineEditor.ColorSwatch.ColorSwatch): void {
   const li = document.createElement('li');
   li.appendChild(swatch);
   document.querySelector('#container')?.appendChild(li);
 }
 
-ComponentHelpers.ComponentServerSetup.setup().then(() => {
-  // Simple
-  let component = new InlineEditor.ColorSwatch.ColorSwatch();
-  component.renderColor('#f06');
-  appendExample(component);
+// Simple
+let component = new InlineEditor.ColorSwatch.ColorSwatch();
+component.renderColor('#f06');
+appendExample(component);
 
-  // No text next to the swatch
-  component = new InlineEditor.ColorSwatch.ColorSwatch();
-  component.renderColor('gold');
-  let content = document.createElement('span');
-  content.textContent = '';
-  component.appendChild(content);
-  appendExample(component);
+// No text next to the swatch
+component = new InlineEditor.ColorSwatch.ColorSwatch();
+component.renderColor('gold');
+let content = document.createElement('span');
+content.textContent = '';
+component.appendChild(content);
+appendExample(component);
 
-  // Custom content
-  component = new InlineEditor.ColorSwatch.ColorSwatch();
-  component.renderColor('rebeccapurple');
-  content = document.createElement('span');
-  content.textContent = 'custom content';
-  component.appendChild(content);
-  appendExample(component);
-});
+// Custom content
+component = new InlineEditor.ColorSwatch.ColorSwatch();
+component.renderColor('rebeccapurple');
+content = document.createElement('span');
+content.textContent = 'custom content';
+component.appendChild(content);
+appendExample(component);

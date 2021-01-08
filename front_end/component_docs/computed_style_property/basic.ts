@@ -6,7 +6,7 @@
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as Elements from '../../elements/elements.js';
 
-FrontendHelpers.initializeGlobalVars();
+await FrontendHelpers.initializeGlobalVars();
 
 const component = new Elements.ComputedStyleProperty.ComputedStyleProperty();
 

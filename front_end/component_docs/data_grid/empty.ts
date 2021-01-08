@@ -5,19 +5,17 @@
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as Components from '../../ui/components/components.js';
 
-ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent());
+await ComponentHelpers.ComponentServerSetup.setup();
 
-const renderComponent = (): void => {
-  const component = new Components.DataGrid.DataGrid();
+const component = new Components.DataGrid.DataGrid();
 
-  component.data = {
-    columns: [
-      {id: 'key', title: 'Key', widthWeighting: 1, visible: true, hideable: false},
-      {id: 'value', title: 'Value', widthWeighting: 1, visible: true, hideable: false},
-    ],
-    rows: [],
-    activeSort: null,
-  };
-
-  document.getElementById('container')?.appendChild(component);
+component.data = {
+  columns: [
+    {id: 'key', title: 'Key', widthWeighting: 1, visible: true, hideable: false},
+    {id: 'value', title: 'Value', widthWeighting: 1, visible: true, hideable: false},
+  ],
+  rows: [],
+  activeSort: null,
 };
+
+document.getElementById('container')?.appendChild(component);

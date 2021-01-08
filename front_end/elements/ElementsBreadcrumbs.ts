@@ -15,6 +15,17 @@ export interface ElementsBreadcrumbsData {
   selectedNode: DOMNode|null;
   crumbs: DOMNode[];
 }
+export interface ElementsBreadcrumbs extends HTMLElement {
+  addEventListener<K extends keyof HTMLElementEventMap>(
+      type: K,
+      listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) =>
+          any,  // eslint-disable-line @typescript-eslint/no-explicit-any
+      options?: boolean|AddEventListenerOptions): void;
+  addEventListener(
+      type: string, listener: EventListenerOrEventListenerObject, options?: boolean|AddEventListenerOptions): void;
+  addEventListener(type: 'node-selected', callback: (event: NodeSelectedEvent) => void): void;
+}
+
 export class ElementsBreadcrumbs extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private readonly resizeObserver = new ResizeObserver(() => this.checkForOverflowOnResize());

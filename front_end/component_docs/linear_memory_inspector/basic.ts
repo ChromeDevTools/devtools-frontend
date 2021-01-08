@@ -11,28 +11,26 @@ import '../../ui/components/Icon.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as LinearMemoryInspector from '../../linear_memory_inspector/linear_memory_inspector.js';
 
-ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent());
+await ComponentHelpers.ComponentServerSetup.setup();
 
-const renderComponent = (): void => {
-  const array = [];
-  const string = 'Hello this is a string from the memory buffer!';
+const array = [];
+const string = 'Hello this is a string from the memory buffer!';
 
-  for (let i = 0; i < string.length; ++i) {
-    array.push(string.charCodeAt(i));
-  }
+for (let i = 0; i < string.length; ++i) {
+  array.push(string.charCodeAt(i));
+}
 
-  for (let i = -1000; i < 1000; ++i) {
-    array.push(i);
-  }
+for (let i = -1000; i < 1000; ++i) {
+  array.push(i);
+}
 
-  const memory = new Uint8Array(array);
-  const memoryInspector = new LinearMemoryInspector.LinearMemoryInspector.LinearMemoryInspector();
-  document.getElementById('container')?.appendChild(memoryInspector);
+const memory = new Uint8Array(array);
+const memoryInspector = new LinearMemoryInspector.LinearMemoryInspector.LinearMemoryInspector();
+document.getElementById('container')?.appendChild(memoryInspector);
 
-  memoryInspector.data = {
-    memory: memory,
-    address: 0,
-    memoryOffset: 0,
-    outerMemoryLength: memory.length,
-  };
+memoryInspector.data = {
+  memory: memory,
+  address: 0,
+  memoryOffset: 0,
+  outerMemoryLength: memory.length,
 };

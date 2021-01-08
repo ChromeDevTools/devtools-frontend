@@ -5,7 +5,7 @@
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 
-ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent());
+await ComponentHelpers.ComponentServerSetup.setup();
 
 const THEME_VARIABLES_LIGHT = new Map([
   ['--color-primary', '#1a73e8'],
@@ -122,6 +122,4 @@ class ThemeColors extends HTMLElement {
   }
 }
 
-function renderComponent(): void {
-  customElements.define('devtools-theme-colors', ThemeColors);
-}
+customElements.define('devtools-theme-colors', ThemeColors);

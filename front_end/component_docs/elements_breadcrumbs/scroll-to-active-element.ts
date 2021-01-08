@@ -5,80 +5,79 @@
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as Elements from '../../elements/elements.js';
 import {makeCrumb} from './helpers.js';
-ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent());
 
-const renderComponent = (): void => {
-  const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
-  const bodyCrumb = makeCrumb({
-    nodeType: Node.ELEMENT_NODE,
-    id: 1,
-    nodeName: 'body',
-    nodeNameNicelyCased: 'body',
-    attributes: {class: 'body-class1 body-class2'},
-  });
+await ComponentHelpers.ComponentServerSetup.setup();
 
-  const divCrumb = makeCrumb({
-    nodeType: Node.ELEMENT_NODE,
-    id: 2,
-    nodeName: 'div',
-    nodeNameNicelyCased: 'div',
-    attributes: {
-      id: 'test-id',
-      class: 'wrapper-div',
-    },
-  });
+const component = new Elements.ElementsBreadcrumbs.ElementsBreadcrumbs();
+const bodyCrumb = makeCrumb({
+  nodeType: Node.ELEMENT_NODE,
+  id: 1,
+  nodeName: 'body',
+  nodeNameNicelyCased: 'body',
+  attributes: {class: 'body-class1 body-class2'},
+});
 
-  const spanCrumb = makeCrumb({
-    nodeType: Node.ELEMENT_NODE,
-    id: 3,
-    nodeName: 'span',
-    nodeNameNicelyCased: 'span',
-    attributes: {
-      id: 'my-span-has-a-long-id',
-    },
-  });
+const divCrumb = makeCrumb({
+  nodeType: Node.ELEMENT_NODE,
+  id: 2,
+  nodeName: 'div',
+  nodeNameNicelyCased: 'div',
+  attributes: {
+    id: 'test-id',
+    class: 'wrapper-div',
+  },
+});
 
-  const strongCrumb = makeCrumb({
-    nodeType: Node.ELEMENT_NODE,
-    id: 4,
-    nodeName: 'strong',
-    nodeNameNicelyCased: 'strong',
-    attributes: {
-      id: 'gotta-be-bold',
-    },
-  });
+const spanCrumb = makeCrumb({
+  nodeType: Node.ELEMENT_NODE,
+  id: 3,
+  nodeName: 'span',
+  nodeNameNicelyCased: 'span',
+  attributes: {
+    id: 'my-span-has-a-long-id',
+  },
+});
 
-  const emCrumb = makeCrumb({
-    nodeType: Node.ELEMENT_NODE,
-    id: 5,
-    nodeName: 'em',
-    nodeNameNicelyCased: 'em',
-    attributes: {id: 'my-em-has-a-long-id', class: 'and-a-very-long-class'},
-  });
+const strongCrumb = makeCrumb({
+  nodeType: Node.ELEMENT_NODE,
+  id: 4,
+  nodeName: 'strong',
+  nodeNameNicelyCased: 'strong',
+  attributes: {
+    id: 'gotta-be-bold',
+  },
+});
 
-  document.getElementById('container')?.appendChild(component);
+const emCrumb = makeCrumb({
+  nodeType: Node.ELEMENT_NODE,
+  id: 5,
+  nodeName: 'em',
+  nodeNameNicelyCased: 'em',
+  attributes: {id: 'my-em-has-a-long-id', class: 'and-a-very-long-class'},
+});
 
-  component.data = {
-    crumbs: [emCrumb, strongCrumb, spanCrumb, divCrumb, bodyCrumb],
-    selectedNode: bodyCrumb,
-  };
+document.getElementById('container')?.appendChild(component);
+
+component.data = {
+  crumbs: [emCrumb, strongCrumb, spanCrumb, divCrumb, bodyCrumb],
+  selectedNode: bodyCrumb,
+};
 
 
-  const button = component.shadowRoot?.querySelector?.('button.overflow.right');
+const button = component.shadowRoot?.querySelector?.('button.overflow.right');
+button?.dispatchEvent(new MouseEvent('click'));
+// Each subsequent click is timed out to allow the smooth scroll to finish.
+window.setTimeout(() => {
   button?.dispatchEvent(new MouseEvent('click'));
-  // Each subsequent click is timed out to allow the smooth scroll to finish.
   window.setTimeout(() => {
     button?.dispatchEvent(new MouseEvent('click'));
-    window.setTimeout(() => {
-      button?.dispatchEvent(new MouseEvent('click'));
-    }, 200);
   }, 200);
+}, 200);
 
-  const btn = document.querySelector('button');
-  btn?.addEventListener('click', () => {
-    component.data = {
-      crumbs: [emCrumb, strongCrumb, spanCrumb, divCrumb, bodyCrumb],
-      selectedNode: divCrumb,
-    };
-  });
-};
+const btn = document.querySelector('button');
+btn?.addEventListener('click', () => {
+  component.data = {
+    crumbs: [emCrumb, strongCrumb, spanCrumb, divCrumb, bodyCrumb],
+    selectedNode: divCrumb,
+  };
+});

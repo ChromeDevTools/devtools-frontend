@@ -13018,32 +13018,6 @@ declare namespace Protocol {
       exceptionDetails?: Runtime.ExceptionDetails;
     }
 
-    export interface ExecuteWasmEvaluatorRequest {
-      /**
-       * WebAssembly call frame identifier to evaluate on.
-       */
-      callFrameId: CallFrameId;
-      /**
-       * Code of the evaluator module.
-       */
-      evaluator: binary;
-      /**
-       * Terminate execution after timing out (number of milliseconds).
-       */
-      timeout?: Runtime.TimeDelta;
-    }
-
-    export interface ExecuteWasmEvaluatorResponse extends ProtocolResponseWithError {
-      /**
-       * Object wrapper for the evaluation result.
-       */
-      result: Runtime.RemoteObject;
-      /**
-       * Exception details.
-       */
-      exceptionDetails?: Runtime.ExceptionDetails;
-    }
-
     export interface GetPossibleBreakpointsRequest {
       /**
        * Start of range to search possible breakpoint locations in.
@@ -14166,7 +14140,6 @@ declare namespace Protocol {
       Boolean = 'boolean',
       Symbol = 'symbol',
       Bigint = 'bigint',
-      Wasm = 'wasm',
     }
 
     export enum RemoteObjectSubtype {
@@ -14188,12 +14161,6 @@ declare namespace Protocol {
       Arraybuffer = 'arraybuffer',
       Dataview = 'dataview',
       Webassemblymemory = 'webassemblymemory',
-      I32 = 'i32',
-      I64 = 'i64',
-      F32 = 'f32',
-      F64 = 'f64',
-      V128 = 'v128',
-      Externref = 'externref',
     }
 
     /**
@@ -14205,7 +14172,9 @@ declare namespace Protocol {
        */
       type: RemoteObjectType;
       /**
-       * Object subtype hint. Specified for `object` or `wasm` type values only.
+       * Object subtype hint. Specified for `object` type values only.
+       * NOTE: If you change anything here, make sure to also update
+       * `subtype` in `ObjectPreview` and `PropertyPreview` below.
        */
       subtype?: RemoteObjectSubtype;
       /**
@@ -14274,6 +14243,12 @@ declare namespace Protocol {
       Iterator = 'iterator',
       Generator = 'generator',
       Error = 'error',
+      Proxy = 'proxy',
+      Promise = 'promise',
+      Typedarray = 'typedarray',
+      Arraybuffer = 'arraybuffer',
+      Dataview = 'dataview',
+      Webassemblymemory = 'webassemblymemory',
     }
 
     /**
@@ -14331,6 +14306,12 @@ declare namespace Protocol {
       Iterator = 'iterator',
       Generator = 'generator',
       Error = 'error',
+      Proxy = 'proxy',
+      Promise = 'promise',
+      Typedarray = 'typedarray',
+      Arraybuffer = 'arraybuffer',
+      Dataview = 'dataview',
+      Webassemblymemory = 'webassemblymemory',
     }
 
     export interface PropertyPreview {

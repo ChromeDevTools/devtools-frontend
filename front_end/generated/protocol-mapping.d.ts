@@ -2586,13 +2586,6 @@ export namespace ProtocolMapping {
       returnType: Protocol.Debugger.EvaluateOnCallFrameResponse;
     };
     /**
-     * Execute a Wasm Evaluator module on a given call frame.
-     */
-    'Debugger.executeWasmEvaluator': {
-      paramsType: [Protocol.Debugger.ExecuteWasmEvaluatorRequest];
-      returnType: Protocol.Debugger.ExecuteWasmEvaluatorResponse;
-    };
-    /**
      * Returns possible locations for breakpoint. scriptId in start and end range locations should be
      * the same.
      */

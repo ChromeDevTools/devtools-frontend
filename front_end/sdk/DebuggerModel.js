@@ -1011,15 +1011,6 @@ export class DebuggerModel extends SDKModel {
   }
 
   /**
-   * @param {string} callFrameId
-   * @param {string} evaluator
-   * @return {!Promise<!Protocol.Debugger.ExecuteWasmEvaluatorResponse>}
-   */
-  executeWasmEvaluator(callFrameId, evaluator) {
-    return this._agent.invoke_executeWasmEvaluator({callFrameId, evaluator});
-  }
-
-  /**
    * @param {!RemoteObject} remoteObject
    * @return {!Promise<?FunctionDetails>}
    */

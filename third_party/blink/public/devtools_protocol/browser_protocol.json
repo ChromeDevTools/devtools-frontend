@@ -19343,43 +19343,6 @@
                     ]
                 },
                 {
-                    "name": "executeWasmEvaluator",
-                    "description": "Execute a Wasm Evaluator module on a given call frame.",
-                    "experimental": true,
-                    "parameters": [
-                        {
-                            "name": "callFrameId",
-                            "description": "WebAssembly call frame identifier to evaluate on.",
-                            "$ref": "CallFrameId"
-                        },
-                        {
-                            "name": "evaluator",
-                            "description": "Code of the evaluator module.",
-                            "type": "binary"
-                        },
-                        {
-                            "name": "timeout",
-                            "description": "Terminate execution after timing out (number of milliseconds).",
-                            "experimental": true,
-                            "optional": true,
-                            "$ref": "Runtime.TimeDelta"
-                        }
-                    ],
-                    "returns": [
-                        {
-                            "name": "result",
-                            "description": "Object wrapper for the evaluation result.",
-                            "$ref": "Runtime.RemoteObject"
-                        },
-                        {
-                            "name": "exceptionDetails",
-                            "description": "Exception details.",
-                            "optional": true,
-                            "$ref": "Runtime.ExceptionDetails"
-                        }
-                    ]
-                },
-                {
                     "name": "getPossibleBreakpoints",
                     "description": "Returns possible locations for breakpoint. scriptId in start and end range locations should be\nthe same.",
                     "parameters": [
@@ -21102,13 +21065,12 @@
                                 "number",
                                 "boolean",
                                 "symbol",
-                                "bigint",
-                                "wasm"
+                                "bigint"
                             ]
                         },
                         {
                             "name": "subtype",
-                            "description": "Object subtype hint. Specified for `object` or `wasm` type values only.",
+                            "description": "Object subtype hint. Specified for `object` type values only.\nNOTE: If you change anything here, make sure to also update\n`subtype` in `ObjectPreview` and `PropertyPreview` below.",
                             "optional": true,
                             "type": "string",
                             "enum": [
@@ -21129,13 +21091,7 @@
                                 "typedarray",
                                 "arraybuffer",
                                 "dataview",
-                                "webassemblymemory",
-                                "i32",
-                                "i64",
-                                "f32",
-                                "f64",
-                                "v128",
-                                "externref"
+                                "webassemblymemory"
                             ]
                         },
                         {
@@ -21239,7 +21195,13 @@
                                 "weakset",
                                 "iterator",
                                 "generator",
-                                "error"
+                                "error",
+                                "proxy",
+                                "promise",
+                                "typedarray",
+                                "arraybuffer",
+                                "dataview",
+                                "webassemblymemory"
                             ]
                         },
                         {
@@ -21327,7 +21289,13 @@
                                 "weakset",
                                 "iterator",
                                 "generator",
-                                "error"
+                                "error",
+                                "proxy",
+                                "promise",
+                                "typedarray",
+                                "arraybuffer",
+                                "dataview",
+                                "webassemblymemory"
                             ]
                         }
                     ]

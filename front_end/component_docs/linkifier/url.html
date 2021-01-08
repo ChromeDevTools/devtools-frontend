@@ -20,31 +20,6 @@
     <div id="container">
     </div>
 
-    <script type="module">
-      import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
-      import * as Components from '../../ui/components/components.js'
-
-      ComponentHelpers.ComponentServerSetup.setup().then(() => renderComponent())
-
-      const renderComponent = () => {
-        const link = new Components.Linkifier.Linkifier();
-
-        link.data = {
-          url: 'example.com',
-          lineNumber: 11,
-          columnNumber: 1,
-        }
-
-        const container = document.getElementById('container');
-
-        container.addEventListener('linkifier-activated', function(event) {
-          const data = JSON.stringify(event.data, null, 2)
-          alert(`Linkifier click: ${data}`)
-
-        })
-        container.appendChild(link);
-      }
-
-    </script>
+    <script type="module" src="./url.js"></script>
   </body>
 </html>

@@ -3,12 +3,18 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/copy.gni")
+import("../../../third_party/typescript/typescript.gni")
 
-copy_to_gen("linkifier") {
-  sources = [ "url.html" ]
+ts_library("ts") {
+  sources = [ "url.ts" ]
 
   deps = [
     "../../component_helpers:bundle",
     "../../ui/components:bundle",
   ]
+}
+
+copy_to_gen("linkifier") {
+  sources = [ "url.html" ]
+  deps = [ ":ts" ]
 }

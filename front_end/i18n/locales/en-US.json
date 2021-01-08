@@ -1013,6 +1013,12 @@
   "media/EventDisplayTable.js | value": {
     "message": "Value"
   },
+  "media/EventTimelineView.js | bufferingStatus": {
+    "message": "Buffering Status"
+  },
+  "media/EventTimelineView.js | playbackStatus": {
+    "message": "Playback Status"
+  },
   "media/ModuleUIStrings.js | media": {
     "message": "Media"
   },

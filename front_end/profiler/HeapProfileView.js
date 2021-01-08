@@ -6,6 +6,7 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -147,7 +148,7 @@ export class HeapProfileView extends ProfileView {
   /**
    * @override
    * @param {string} columnId
-   * @return {string}
+   * @return {!Platform.UIString.LocalizedString}
    */
   columnHeader(columnId) {
     switch (columnId) {
@@ -156,7 +157,7 @@ export class HeapProfileView extends ProfileView {
       case 'total':
         return Common.UIString.UIString('Total Size (bytes)');
     }
-    return '';
+    return ls``;
   }
 
   /**

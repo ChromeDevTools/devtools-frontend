@@ -27,6 +27,8 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -64,7 +66,7 @@ export class CPUProfileView extends ProfileView {
   /**
    * @override
    * @param {string} columnId
-   * @return {string}
+   * @return {!Platform.UIString.LocalizedString}
    */
   columnHeader(columnId) {
     switch (columnId) {
@@ -73,7 +75,7 @@ export class CPUProfileView extends ProfileView {
       case 'total':
         return Common.UIString.UIString('Total Time');
     }
-    return '';
+    return ls``;
   }
 
   /**

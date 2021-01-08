@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 const ls = Common.ls;
@@ -141,7 +142,7 @@ export class Adorner extends HTMLElement {
    * Make adorner interactive by responding to click events with the provided action
    * and simulating ARIA-capable toggle button behavior.
    * @param {!EventListener} action
-   * @param {!{isToggle: (boolean|undefined), shouldPropagateOnKeydown: (boolean|undefined), ariaLabelDefault: (string|undefined), ariaLabelActive: (string|undefined)}} options
+   * @param {!{isToggle: (boolean|undefined), shouldPropagateOnKeydown: (boolean|undefined), ariaLabelDefault: (!Platform.UIString.LocalizedString|undefined), ariaLabelActive: (!Platform.UIString.LocalizedString|undefined)}} options
    */
   // @ts-ignore typedef TODO(changhaohan): properly type options once this is .ts
   addInteraction(action, options = {}) {

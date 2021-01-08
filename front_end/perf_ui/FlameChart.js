@@ -2629,7 +2629,7 @@ export const Colors = {
 
 /**
  * @typedef {!{
-  *     name: string,
+  *     name: !Platform.UIString.LocalizedString,
   *     startLevel: number,
   *     expanded: (boolean|undefined),
   *     selectable: (boolean|undefined),

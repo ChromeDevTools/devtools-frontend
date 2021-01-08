@@ -2,11 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../i18n/i18n.js';
+
 import {PlayerEvent} from './MediaModel.js';  // eslint-disable-line no-unused-vars
 import {ColdColorScheme, Event, EventProperties, HotColorScheme, TickingFlameChart} from './TickingFlameChart.js';  // eslint-disable-line no-unused-vars
 
 // Has to be a double, see https://v8.dev/blog/react-cliff
 const NO_NORMALIZED_TIMESTAMP = -1.5;
+
+export const UIStrings = {
+  /**
+  *@description Title of the 'Playback Status' button
+  */
+  playbackStatus: 'Playback Status',
+  /**
+  *@description Title of the 'Buffering Status' button
+  */
+  bufferingStatus: 'Buffering Status',
+};
+const str_ = i18n.i18n.registerUIStrings('media/EventTimelineView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class PlayerEventsTimeline extends TickingFlameChart {
   constructor() {
@@ -14,8 +29,8 @@ export class PlayerEventsTimeline extends TickingFlameChart {
 
     this._normalizedTimestamp = NO_NORMALIZED_TIMESTAMP;
 
-    this.addGroup('Playback Status', 2);
-    this.addGroup('Buffering Status', 2);  // video on top, audio on bottom
+    this.addGroup(i18nString(UIStrings.playbackStatus), 2);
+    this.addGroup(i18nString(UIStrings.bufferingStatus), 2);  // video on top, audio on bottom
 
     /** @type {?Event} */
     this._playbackStatusLastEvent = null;

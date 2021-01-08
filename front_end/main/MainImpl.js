@@ -36,6 +36,7 @@ import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Recorder from '../recorder/recorder.js';
 import * as Root from '../root/root.js';

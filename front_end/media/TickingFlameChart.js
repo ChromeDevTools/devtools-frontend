@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
+import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 
@@ -291,7 +292,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
 
   /**
    * Add a group with |name| that can contain |depth| different tracks.
-   * @param {string} name
+   * @param {!Platform.UIString.LocalizedString} name
    * @param {number} depth
    */
   addGroup(name, depth) {
@@ -458,7 +459,7 @@ class TickingFlameChartDataProvider {
 
   /**
    * Add a group with |name| that can contain |depth| different tracks.
-   * @param {string} name
+   * @param {!Platform.UIString.LocalizedString} name
    * @param {number} depth
    */
   addGroup(name, depth) {

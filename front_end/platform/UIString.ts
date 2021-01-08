@@ -31,8 +31,13 @@
 
 import * as StringUtilities from './string-utilities.js';
 
-export function UIString(string: string, ..._vararg: unknown[]): string {
-  return StringUtilities.vsprintf(localize(string), Array.prototype.slice.call(arguments, 1));
+class LocalizedStringTag {
+  private localizationTag: (string|undefined);
+}
+export type LocalizedString = string&LocalizedStringTag;
+
+export function UIString(string: string, ..._vararg: unknown[]): LocalizedString {
+  return StringUtilities.vsprintf(localize(string), Array.prototype.slice.call(arguments, 1)) as LocalizedString;
 }
 
 export function serializeUIString(string: string, values: unknown[] = []): string {
@@ -74,9 +79,9 @@ export class UIStringFormat {
 
 const _substitutionStrings = new WeakMap();
 
-export function ls(strings: ITemplateArray|string, ...vararg: unknown[]): string {
+export function ls(strings: ITemplateArray|string, ...vararg: unknown[]): LocalizedString {
   if (typeof strings === 'string') {
-    return strings;
+    return strings as LocalizedString;
   }
   let substitutionString = _substitutionStrings.get(strings);
   if (!substitutionString) {

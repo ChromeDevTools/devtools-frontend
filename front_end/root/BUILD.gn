@@ -8,7 +8,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("root") {
   sources = [ "Runtime.js" ]
 
-  deps = []
+  deps = [ "../platform:bundle" ]
 }
 
 devtools_entrypoint("bundle") {

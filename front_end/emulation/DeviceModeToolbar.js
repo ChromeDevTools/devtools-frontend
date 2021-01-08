@@ -705,6 +705,7 @@ export class DeviceModeToolbar {
       this._cachedUaType = uaType;
     }
 
+    /** @type {string} */
     let deviceItemTitle = Common.UIString.UIString('None');
     if (this._model.type() === Type.Responsive) {
       deviceItemTitle = Common.UIString.UIString('Responsive');

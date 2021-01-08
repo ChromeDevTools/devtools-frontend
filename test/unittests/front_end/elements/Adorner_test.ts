@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import type * as ElementsModule from '../../../../front_end/elements/elements.js';
+import {ls} from '../../../../front_end/platform/platform.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 
 const ADORNER_TAG_NAME = 'DEVTOOLS-ADORNER';
@@ -53,8 +54,8 @@ describeWithEnvironment('Adorner', async () => {
       clickCounter++;
     };
 
-    const ariaLabelDefault = 'adorner toggled on';
-    const ariaLabelActive = 'adorner toggled off';
+    const ariaLabelDefault = ls`adorner toggled on`;
+    const ariaLabelActive = ls`adorner toggled off`;
     adorner.addInteraction(clickListener, {
       isToggle: true,
       shouldPropagateOnKeydown: false,
@@ -102,8 +103,8 @@ describeWithEnvironment('Adorner', async () => {
     adorner.addInteraction(() => {}, {
       isToggle: true,
       shouldPropagateOnKeydown: false,
-      ariaLabelActive: '',
-      ariaLabelDefault: '',
+      ariaLabelActive: ls``,
+      ariaLabelDefault: ls``,
     });
     assert.strictEqual(
         adorner.getAttribute('aria-pressed'), 'false',

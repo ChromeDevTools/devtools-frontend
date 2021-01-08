@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 import {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
 
 import {CPUProfilerModel, EventData, Events as CPUProfilerModelEvents} from './CPUProfilerModel.js';  // eslint-disable-line no-unused-vars
@@ -468,7 +469,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper {
     function failedToSave(result) {
       let message = Common.UIString.UIString('Failed to save to temp variable.');
       if (result) {
-        message += ' ' + result.description;
+        message = /** @type {!Platform.UIString.LocalizedString} */ (message + ' ' + result.description);
       }
       Common.Console.Console.instance().error(message);
     }

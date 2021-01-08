@@ -33,6 +33,7 @@ import * as Components from '../components/components.js';
 import * as Emulation from '../emulation/emulation.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';

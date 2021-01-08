@@ -209,7 +209,7 @@ export class ProfileView extends UI.View.SimpleView {
 
   /**
    * @param {string} columnId
-   * @return {string}
+   * @return {!Platform.UIString.LocalizedString}
    */
   columnHeader(columnId) {
     throw 'Not implemented';

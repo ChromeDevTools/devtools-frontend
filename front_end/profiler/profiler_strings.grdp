@@ -356,6 +356,9 @@
   <message name="IDS_DEVTOOLS_d3d9fdef0e91fc4aba18e57475fd74ea" desc="Text in Live Heap Profile View of a profiler tool">
     VMs
   </message>
+  <message name="IDS_DEVTOOLS_d41d8cd98f00b204e9800998ecf8427e" desc="Empty string">
+    
+  </message>
   <message name="IDS_DEVTOOLS_d46b0b413885c920720180d0af60ff54" desc="Text in CPUProfile View of a profiler tool">
     Record JavaScript CPU Profile
   </message>

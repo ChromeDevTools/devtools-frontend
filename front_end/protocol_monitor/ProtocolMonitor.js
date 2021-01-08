@@ -5,6 +5,7 @@
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
+import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
@@ -490,7 +491,7 @@ export class InfoWidget extends UI.Widget.VBox {
 /**
  * @typedef {{
  *  id: string,
- *  title: string,
+ *  title: !Platform.UIString.LocalizedString,
  *  visible: boolean,
  *  sortable: boolean,
  *  hideable: boolean,

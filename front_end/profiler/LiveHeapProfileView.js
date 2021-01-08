@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -67,7 +68,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
      */
     const defaultColumnConfig = {
       id: '',
-      title: undefined,
+      title: ls``,
       width: undefined,
       fixedWidth: true,
       sortable: true,

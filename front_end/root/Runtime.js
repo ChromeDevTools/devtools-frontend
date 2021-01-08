@@ -3,6 +3,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
+
 const originalConsole = console;
 const originalAssert = console.assert;
 
@@ -15,7 +17,7 @@ let importScriptPathPrefix;
 
 let runtimePlatform = '';
 
-/** @type {function(string):string} */
+/** @type {function(string):!Platform.UIString.LocalizedString} */
 let l10nCallback;
 
 /** @type {!Runtime|undefined} */
@@ -197,7 +199,7 @@ export class Runtime {
   }
 
   /**
-   * @param {function(string):string} localizationFunction
+   * @param {function(string):!Platform.UIString.LocalizedString} localizationFunction
    */
   static setL10nCallback(localizationFunction) {
     l10nCallback = localizationFunction;
@@ -538,7 +540,7 @@ export class RuntimeExtensionDescriptor {
     /** @type {string|null} */
     this.decoratorType;
 
-    /** @type {string|null} */
+    /** @type {!Platform.UIString.LocalizedString|null} */
     this.category;
 
     /** @type {string|null} */
@@ -819,7 +821,7 @@ export class Extension {
   }
 
   /**
-  * @return {string}
+  * @return {!Platform.UIString.LocalizedString}
   */
   title() {
     // @ts-ignore Magic lookup for objects

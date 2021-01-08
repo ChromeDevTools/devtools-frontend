@@ -53,7 +53,7 @@ export function registerLocale(locale) {
  * @param {function(string, ?Object):string} str_
  * @param {string} id
  * @param {!Object} values
- * @return {string} the localized version of the
+ * @return {!Platform.UIString.LocalizedString} the localized version of the
  */
 export function getLocalizedString(str_, id, values = {}) {
   if (!registeredLocale) {
@@ -61,7 +61,7 @@ export function getLocalizedString(str_, id, values = {}) {
   }
 
   const icuMessage = str_(id, values);
-  return i18nBundle.getFormatted(icuMessage, registeredLocale);
+  return /** @type {!Platform.UIString.LocalizedString} */ (i18nBundle.getFormatted(icuMessage, registeredLocale));
 }
 
 /**

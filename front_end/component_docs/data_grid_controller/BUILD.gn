@@ -3,6 +3,22 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/copy.gni")
+import("../../../third_party/typescript/typescript.gni")
+
+ts_library("ts") {
+  sources = [
+    "basic.ts",
+    "custom-context-menu-items.ts",
+    "filter.ts",
+  ]
+
+  deps = [
+    "../../../test/unittests/front_end/helpers",
+    "../../component_helpers:bundle",
+    "../../text_utils:bundle",
+    "../../ui/components:bundle",
+  ]
+}
 
 copy_to_gen("data_grid_controller") {
   sources = [
@@ -11,9 +27,5 @@ copy_to_gen("data_grid_controller") {
     "filter.html",
   ]
 
-  deps = [
-    "../../component_helpers:bundle",
-    "../../text_utils:bundle",
-    "../../ui/components:bundle",
-  ]
+  deps = [ ":ts" ]
 }

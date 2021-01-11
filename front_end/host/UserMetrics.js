@@ -577,7 +577,6 @@ export const DevtoolsExperiments = {
   'spotlight': 21,
   'webauthnPane': 22,
   'timelineEventInitiators': 24,
-  'timelineFlowEvents': 25,
   'timelineInvalidationTracking': 26,
   'timelineShowAllEvents': 27,
   'timelineV8RuntimeCallStats': 28,

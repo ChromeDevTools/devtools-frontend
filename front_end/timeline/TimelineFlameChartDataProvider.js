@@ -516,7 +516,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     const isExtension = entryType === EntryType.ExtensionEvent;
     const openEvents = [];
-    const flowEventsEnabled = Root.Runtime.experiments.isEnabled('timelineFlowEvents');
     const ignoreListingEnabled = !isExtension && Root.Runtime.experiments.isEnabled('blackboxJSFramesOnTimeline');
     let maxStackDepth = 0;
     let group = null;
@@ -595,9 +594,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
 
       const level = this._currentLevel + openEvents.length;
-      if (flowEventsEnabled) {
-        this._appendFlowEvent(e, level);
-      }
       const index = this._appendEvent(e, level);
       if (openEvents.length) {
         this._entryParent[index] = /** @type {!SDK.TracingModel.Event} */ (openEvents.peekLast());
@@ -1284,56 +1280,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       timelineData.entryLevels[index] = level;
       timelineData.entryTotalTimes[index] = steps[i + 1].startTime - startTime;
       timelineData.entryStartTimes[index] = startTime;
-    }
-  }
-
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {number} level
-   */
-  _appendFlowEvent(event, level) {
-    const timelineData = /** @type {!PerfUI.FlameChart.TimelineData} */ (this._timelineData);
-    /**
-     * @param {!SDK.TracingModel.Event} event
-     * @return {number}
-     */
-    function pushStartFlow(event) {
-      const flowIndex = timelineData.flowStartTimes.length;
-      timelineData.flowStartTimes.push(event.startTime);
-      timelineData.flowStartLevels.push(level);
-      return flowIndex;
-    }
-
-    /**
-     * @param {!SDK.TracingModel.Event} event
-     * @param {(number|undefined)} flowIndex
-     */
-    function pushEndFlow(event, flowIndex) {
-      if (flowIndex === undefined) {
-        return;
-      }
-      timelineData.flowEndTimes[flowIndex] = event.startTime;
-      timelineData.flowEndLevels[flowIndex] = level;
-    }
-
-    const eventId = event.id;
-
-    if (!eventId) {
-      return;
-    }
-
-    switch (event.phase) {
-      case SDK.TracingModel.Phase.FlowBegin:
-        this._flowEventIndexById.set(eventId, pushStartFlow(event));
-        break;
-      case SDK.TracingModel.Phase.FlowStep:
-        pushEndFlow(event, this._flowEventIndexById.get(eventId));
-        this._flowEventIndexById.set(eventId, pushStartFlow(event));
-        break;
-      case SDK.TracingModel.Phase.FlowEnd:
-        pushEndFlow(event, this._flowEventIndexById.get(eventId));
-        this._flowEventIndexById.delete(eventId);
-        break;
     }
   }
 

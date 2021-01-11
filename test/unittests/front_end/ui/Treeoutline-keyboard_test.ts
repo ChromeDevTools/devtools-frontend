@@ -6,7 +6,8 @@ const {assert} = chai;
 
 import * as UI from '../../../../front_end/ui/ui.js';
 
-import {assertNotNull, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertNotNull} from '../../../../front_end/platform/platform.js';
+import {renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 describe('TreeOutline', () => {
   it('responds correctly to navigation keys', () => {

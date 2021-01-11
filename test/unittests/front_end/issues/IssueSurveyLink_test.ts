@@ -6,7 +6,8 @@ const {assert} = chai;
 
 import type * as IssuesModule from '../../../../front_end/issues/issues.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
-import {assertNotNull, assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertNotNull} from '../../../../front_end/platform/platform.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 function canShowSuccessfulCallback(trigger: string, callback: IssuesModule.IssueSurveyLink.CanShowSurveyCallback) {
   callback({canShowSurvey: true});

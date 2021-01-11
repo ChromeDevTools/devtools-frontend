@@ -56,15 +56,6 @@ export const resetTestDOM = () => {
 };
 
 /**
- * This is useful to keep TypeScript happy in a test - if you have a value that's potentially `null` you can use this function to assert that it isn't, and satisfy TypeScript that the value is present.
- */
-export function assertNotNull<T>(val: T): asserts val is NonNullable<T> {
-  if (val === null) {
-    assert.fail(`Expected given value to not be null but it was: ${val}`);
-  }
-}
-
-/**
  * An easy way to assert the component's shadowRoot exists so you're able to assert on its contents.
  */
 export function assertShadowRoot(shadowRoot: ShadowRoot|null): asserts shadowRoot is ShadowRoot {

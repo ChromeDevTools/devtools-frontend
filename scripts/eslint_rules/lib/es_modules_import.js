@@ -73,8 +73,9 @@ function checkImportExtension(importPath, context, node) {
   }
 }
 
-function nodeSpecifiersImportLsOnly(specifiers) {
-  return specifiers.length === 1 && specifiers[0].type === 'ImportSpecifier' && specifiers[0].imported.name === 'ls';
+function nodeSpecifiersSpecialImportsOnly(specifiers) {
+  return specifiers.length === 1 && specifiers[0].type === 'ImportSpecifier' &&
+      ['ls', 'assertNotNull'].includes(specifiers[0].imported.name);
 }
 
 function checkStarImport(context, node, importPath, importingFileName, exportingFileName) {
@@ -201,8 +202,9 @@ module.exports = {
           });
         }
 
-        if (importPath.endsWith(path.join('platform', 'platform.js')) && nodeSpecifiersImportLsOnly(node.specifiers)) {
-          /* We allow direct importing of the ls utility as it's so frequently used. */
+        if (importPath.endsWith(path.join('platform', 'platform.js')) &&
+            nodeSpecifiersSpecialImportsOnly(node.specifiers)) {
+          /* We allow direct importing of the ls and assertNotNull utility as it's so frequently used. */
           return;
         }
 

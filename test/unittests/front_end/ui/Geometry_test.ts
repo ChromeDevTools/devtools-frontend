@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as UI from '../../../../front_end/ui/ui.js';
-import {assertNotNull} from '../helpers/DOMHelpers.js';
+import {assertNotNull} from '../../../../front_end/platform/platform.js';
 
 describe('Vector', () => {
   it('can be instantiated without issues', () => {

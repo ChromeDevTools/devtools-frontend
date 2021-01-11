@@ -14,6 +14,7 @@ devtools_module("platform") {
     "number-utilities.js",
     "set-utilities.ts",
     "string-utilities.ts",
+    "typescript-utilities.ts",
     "utilities.js",
   ]
 

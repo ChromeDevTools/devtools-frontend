@@ -381,6 +381,7 @@ all_typescript_module_sources = [
   "platform/number-utilities.js",
   "platform/set-utilities.js",
   "platform/string-utilities.js",
+  "platform/typescript-utilities.js",
   "platform/utilities.js",
   "profiler/BottomUpProfileDataGrid.js",
   "profiler/CPUProfileFlameChart.js",

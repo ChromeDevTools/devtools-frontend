@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNull} from '../../../../../front_end/platform/platform.js';
 import * as UIComponents from '../../../../../front_end/ui/components/components.js';
-import {assertNotNull, assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {TEXT_NODE, withMutations, withNoMutations} from '../../helpers/MutationHelpers.js';
+
 import {getAllRows, getHeaderCellForColumnId, getValuesForColumn, getValuesOfAllBodyRows} from './DataGridHelpers.js';
 
 const {assert} = chai;

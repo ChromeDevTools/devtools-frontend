@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import * as InlineEditor from '../../../../front_end/inline_editor/inline_editor.js';
-import {assertNotNull, assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertNotNull} from '../../../../front_end/platform/platform.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 

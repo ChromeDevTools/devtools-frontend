@@ -40,7 +40,7 @@ import {RequestInitiatorView} from './RequestInitiatorView.js';
 import {RequestPreviewView} from './RequestPreviewView.js';
 import {RequestResponseView} from './RequestResponseView.js';
 import {RequestTimingView} from './RequestTimingView.js';
-import {RequestTrustTokensView} from './RequestTrustTokensView.js';
+import {RequestTrustTokensView, statusConsideredSuccess} from './RequestTrustTokensView.js';
 import {ResourceWebSocketFrameView} from './ResourceWebSocketFrameView.js';
 
 export class NetworkItemView extends UI.TabbedPane.TabbedPane {
@@ -115,7 +115,10 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         SDK.NetworkRequest.Events.RequestHeadersChanged, this._maybeAppendCookiesPanel, this);
     this._request.addEventListener(
         SDK.NetworkRequest.Events.ResponseHeadersChanged, this._maybeAppendCookiesPanel, this);
+    this._request.addEventListener(
+        SDK.NetworkRequest.Events.TrustTokenResultAdded, this._maybeShowErrorIconInTrustTokenTabHeader, this);
     this._maybeAppendCookiesPanel();
+    this._maybeShowErrorIconInTrustTokenTabHeader();
     this._selectTab(this._initialTab);
   }
 
@@ -127,6 +130,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         SDK.NetworkRequest.Events.RequestHeadersChanged, this._maybeAppendCookiesPanel, this);
     this._request.removeEventListener(
         SDK.NetworkRequest.Events.ResponseHeadersChanged, this._maybeAppendCookiesPanel, this);
+    this._request.removeEventListener(
+        SDK.NetworkRequest.Events.TrustTokenResultAdded, this._maybeShowErrorIconInTrustTokenTabHeader, this);
   }
 
   _maybeAppendCookiesPanel() {
@@ -137,6 +142,13 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       this.appendTab(
           Tabs.Cookies, Common.UIString.UIString('Cookies'), this._cookiesView,
           Common.UIString.UIString('Request and response cookies'));
+    }
+  }
+
+  _maybeShowErrorIconInTrustTokenTabHeader() {
+    const trustTokenResult = this._request.trustTokenOperationDoneEvent();
+    if (trustTokenResult && !statusConsideredSuccess(trustTokenResult.status)) {
+      this.setTabIcon(Tabs.TrustTokens, UI.Icon.Icon.create('smallicon-error'));
     }
   }
 

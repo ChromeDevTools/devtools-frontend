@@ -193,7 +193,7 @@ const FAILURE_ICON_DATA: Components.Icon.IconWithName = {
   width: '12px',
 };
 
-function statusConsideredSuccess(status: Protocol.Network.TrustTokenOperationDoneEventStatus): boolean {
+export function statusConsideredSuccess(status: Protocol.Network.TrustTokenOperationDoneEventStatus): boolean {
   return status === Protocol.Network.TrustTokenOperationDoneEventStatus.Ok ||
       status === Protocol.Network.TrustTokenOperationDoneEventStatus.AlreadyExists ||
       status === Protocol.Network.TrustTokenOperationDoneEventStatus.FulfilledLocally;

@@ -23,7 +23,7 @@
   outline: none !important;
   border: none;
   width: 100%;
-  background: white;
+  background: var(--color-background);
   padding-left: 4px;
   margin: 3px;
 }

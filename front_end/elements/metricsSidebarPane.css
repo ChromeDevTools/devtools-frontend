@@ -48,7 +48,7 @@
 
 .metrics .position {
   border: 1px rgb(66% 66% 66%) dotted;
-  background-color: white;
+  background-color: var(--color-background);
   display: inline-block;
   text-align: center;
   padding: 3px;
@@ -58,7 +58,7 @@
 
 .metrics .margin {
   border: 1px dashed rgb(48 57 66);
-  background-color: white;
+  background-color: var(--color-background);
   display: inline-block;
   text-align: center;
   vertical-align: middle;
@@ -69,7 +69,7 @@
 
 .metrics .border {
   border: 1px black solid;
-  background-color: white;
+  background-color: var(--color-background);
   display: inline-block;
   text-align: center;
   vertical-align: middle;
@@ -80,7 +80,7 @@
 
 .metrics .padding {
   border: 1px grey dashed;
-  background-color: white;
+  background-color: var(--color-background);
   display: inline-block;
   text-align: center;
   vertical-align: middle;
@@ -93,7 +93,7 @@
 .metrics .content {
   position: static;
   border: 1px gray solid;
-  background-color: white;
+  background-color: var(--color-background);
   display: inline-block;
   text-align: center;
   vertical-align: middle;

@@ -350,7 +350,7 @@
 
 .network-status-pane {
   color: #777;
-  background-color: white;
+  background-color: var(--color-background);
   z-index: 500;
   display: flex;
   justify-content: center;

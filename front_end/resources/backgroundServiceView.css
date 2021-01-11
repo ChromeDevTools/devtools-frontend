@@ -10,7 +10,7 @@
 
 .background-service-preview {
   position: absolute;
-  background-color: white;
+  background-color: var(--color-background);
   justify-content: center;
   align-items: center;
   overflow: auto;

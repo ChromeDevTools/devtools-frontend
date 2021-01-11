@@ -81,7 +81,7 @@
   transform: rotate(-45deg);
   border-style: solid;
   border-width: 1px 1px 0 0;
-  background: #fff;
+  background: var(--color-background);
   border-color: rgb(217 217 217);
 }
 
@@ -106,7 +106,7 @@
   border-style: solid;
   border-width: 1px 0;
   font-size: 15px;
-  background: #fff;
+  background: var(--color-background);
   border-color: rgb(217 217 217);
 }
 
@@ -135,7 +135,7 @@
 
 .security-explanations-main {
   margin-top: -5px;
-  background-color: #fff;
+  background-color: var(--color-background);
   border-bottom: 1px solid rgb(230 230 230);
 }
 

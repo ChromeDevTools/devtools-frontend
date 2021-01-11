@@ -102,7 +102,7 @@
 }
 
 .editor-content input.error-input {
-  background-color: white;
+  background-color: var(--color-background);
 }
 
 @media (forced-colors: active) {

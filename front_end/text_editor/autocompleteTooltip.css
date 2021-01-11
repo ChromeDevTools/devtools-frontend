@@ -15,6 +15,6 @@
   vertical-align: middle;
   line-height: 20px;
   box-shadow: var(--drop-shadow);
-  background-color: #fff;
+  background-color: var(--color-background);
   width: fit-content;
 }

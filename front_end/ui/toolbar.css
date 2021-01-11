@@ -194,7 +194,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-glyph {
-  background-color: white;
+  background-color: var(--color-background);
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-text {
@@ -259,7 +259,7 @@ select.toolbar-item:focus-visible {
 }
 
 select.toolbar-item:focus-visible > * {
-  background: white;
+  background: var(--color-background);
 }
 
 /* Input */
@@ -269,7 +269,7 @@ select.toolbar-item:focus-visible > * {
   height: 19px;
   padding: 4px 3px 3px 3px;
   margin: 1px 3px;
-  background-color: white;
+  background-color: var(--color-background);
   border: 1px solid transparent;
   min-width: 35px;
   box-shadow: var(--focus-ring-inactive-shadow);
@@ -344,7 +344,7 @@ select.toolbar-item:focus-visible > * {
 .toolbar-shadow.floating {
   flex-direction: column;
   height: auto;
-  background-color: white;
+  background-color: var(--color-background);
   border: 1px solid #ccc;
   margin-top: -1px;
   width: 28px;

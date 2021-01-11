@@ -6,7 +6,7 @@
 
 .settings-window-main {
   color: rgb(48 57 66);
-  background-color: white;
+  background-color: var(--color-background);
   padding: 11px 0 0 0;
 }
 

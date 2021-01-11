@@ -5,7 +5,7 @@
  */
 
 .root-view {
-  background-color: white;
+  background-color: var(--color-background);
   overflow: hidden;
   position: absolute !important;
   left: 0;

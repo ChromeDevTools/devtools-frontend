@@ -11,7 +11,7 @@
   /* NOTE: Keep padding in sync with padding adjustment in SoftContextMenu.js */
   padding: 4px 0 4px 0;
   border: 1px solid #b9b9b9;
-  background-color: #fff;
+  background-color: var(--color-background);
   box-shadow: var(--drop-shadow);
 
   --context-menu-hover-bg: #ebebeb;

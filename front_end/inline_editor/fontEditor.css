@@ -129,7 +129,7 @@ input::-webkit-inner-spin-button {
   line-height: 16px;
   border: 1px solid rgb(0 0 0 / 14.000000000000002%);
   color: #333;
-  background-color: #fff;
+  background-color: var(--color-background);
   text-align: center;
   font-weight: 500;
 }

@@ -70,7 +70,7 @@
 
 .issue-category + .children .issue,
 .issue.expanded {
-  background: #fff;
+  background: var(--color-background);
 }
 
 .issue.expanded {

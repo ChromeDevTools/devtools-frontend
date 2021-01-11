@@ -6,7 +6,7 @@
 
 .editing {
   box-shadow: var(--drop-shadow);
-  background-color: white;
+  background-color: var(--color-background);
   text-overflow: clip !important;
   padding-left: 2px;
   margin-left: -2px;
@@ -179,7 +179,7 @@
 }
 
 .CodeMirror {
-  background-color: white;
+  background-color: var(--color-background);
   height: 300px !important;
 }
 
@@ -297,7 +297,7 @@ select {
   display: block;
   visibility: hidden;
   transform: rotate(-90deg) scale(0.8);
-  background-color: white;
+  background-color: var(--color-background);
   position: relative;
   left: -7px;
   top: -3px;

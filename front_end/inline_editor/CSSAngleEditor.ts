@@ -112,7 +112,7 @@ export class CSSAngleEditor extends HTMLElement {
           top: 6px;
           width: 6em;
           height: 6em;
-          background-color: white;
+          background-color: var(--color-background)
           border: 0.5em solid var(--border-color);
           border-radius: 9em;
           box-shadow: var(--drop-shadow), inset 0 0 15px hsl(0 0% 0% / 25%);

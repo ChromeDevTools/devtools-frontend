@@ -85,7 +85,7 @@
 
 .bezier-preview-container {
   position: relative;
-  background-color: white;
+  background-color: var(--color-background);
   overflow: hidden;
   border-radius: 20px;
   width: 200%;

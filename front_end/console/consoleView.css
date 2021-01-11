@@ -28,7 +28,7 @@
  */
 
 .console-view {
-  background-color: white;
+  background-color: var(--color-background);
   overflow: hidden;
 
   --message-border-color: rgb(240 240 240);
@@ -192,7 +192,7 @@
 .console-message-repeat-count .expand-group-icon {
   left: 2px;
   top: 2px;
-  background-color: #fff;
+  background-color: var(--color-background);
   margin-right: 4px;
 }
 

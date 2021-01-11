@@ -37,7 +37,7 @@
 
 .network-item-view {
   display: flex;
-  background: white;
+  background: var(--color-background);
 }
 
 .network-item-preview-toolbar {

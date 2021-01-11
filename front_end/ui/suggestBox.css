@@ -35,7 +35,7 @@
 
 .suggest-box {
   flex: auto;
-  background-color: #fff;
+  background-color: var(--color-background);
   pointer-events: auto;
   margin-left: -3px;
   box-shadow: var(--drop-shadow);

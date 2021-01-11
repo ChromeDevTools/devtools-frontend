@@ -53,7 +53,7 @@
 .flame-chart-entry-info:not(:empty) {
   z-index: 2000;
   position: absolute;
-  background-color: white;
+  background-color: var(--color-background);
   pointer-events: none;
   padding: 4px 8px;
   white-space: nowrap;

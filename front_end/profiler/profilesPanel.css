@@ -35,7 +35,7 @@
 }
 
 .profile-view .data-grid table.data {
-  background: white;
+  background: var(--color-background);
 }
 
 .profile-view .data-grid tr:not(.selected) .highlight {

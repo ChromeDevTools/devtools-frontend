@@ -23,7 +23,7 @@
 
 .paint-profiler-canvas-container canvas {
   z-index: 200;
-  background-color: white;
+  background-color: var(--color-background);
   opacity: 95%;
   height: 100%;
   width: 100%;

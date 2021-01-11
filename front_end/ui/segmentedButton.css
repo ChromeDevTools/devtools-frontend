@@ -11,7 +11,7 @@
 }
 
 .segmented-button-segment {
-  background-color: white;
+  background-color: var(--color-background);
   border: var(--divider-border);
   border-right-style: none;
   color: #5a5a5a;

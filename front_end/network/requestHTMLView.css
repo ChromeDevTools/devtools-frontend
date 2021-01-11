@@ -9,7 +9,7 @@
 
   /* We always want a white background, even in dark mode, hence why we don't
   use our theme variables for this one */
-  background: #fff;
+  background: var(--color-background);
   flex-grow: 1;
   margin: 20px;
 }

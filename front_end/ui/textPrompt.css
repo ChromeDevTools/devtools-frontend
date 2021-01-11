@@ -11,7 +11,7 @@
 
 .text-prompt-editing {
   box-shadow: var(--drop-shadow);
-  background-color: white;
+  background-color: var(--color-background);
   text-overflow: clip !important;
   padding-left: 2px;
   margin-left: -2px;

@@ -71,7 +71,7 @@
 .toolbar-search-control {
   display: flex;
   position: relative;
-  background-color: white;
+  background-color: var(--color-background);
 }
 
 .toolbar-search-buttons {

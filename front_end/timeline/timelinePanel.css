@@ -289,7 +289,7 @@
 .timeline-details-view-block {
   flex: none;
   display: flex;
-  background-color: white;
+  background-color: var(--color-background);
   flex-direction: column;
   padding-bottom: 5px;
   border-bottom: var(--divider-border);
@@ -425,7 +425,7 @@
 }
 
 .timeline-tree-view .data-grid table.data {
-  background: white;
+  background: var(--color-background);
 }
 
 .timeline-tree-view .data-grid tr:not(.selected) .highlight {
@@ -540,7 +540,7 @@
 
 .timeline-landing-page {
   position: absolute;
-  background-color: white;
+  background-color: var(--color-background);
   justify-content: center;
   align-items: center;
   overflow: auto;

@@ -32,6 +32,6 @@
   line-height: 15px;
   margin-left: 3px;
   width: calc(100% - 7px);
-  background-color: #fff;
+  background-color: var(--color-background);
   cursor: text;
 }

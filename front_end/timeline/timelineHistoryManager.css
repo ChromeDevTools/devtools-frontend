@@ -7,7 +7,7 @@
 .drop-down {
   padding: 1px;
   box-shadow: var(--drop-shadow);
-  background: white;
+  background: var(--color-background);
 }
 
 .preview-item {

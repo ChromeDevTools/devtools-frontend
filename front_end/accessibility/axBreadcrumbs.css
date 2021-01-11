@@ -87,7 +87,7 @@
 }
 
 .ax-breadcrumbs .ax-node.parent.inspected:focus::before {
-  background-color: white;
+  background-color: var(--color-background);
 }
 
 .ax-breadcrumbs .ax-node.inspected:focus {

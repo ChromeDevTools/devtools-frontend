@@ -126,7 +126,7 @@ body {
   tab-size: 4;
   user-select: none;
   color: #222;
-  background: white;
+  background: var(--color-background);
 }
 
 .platform-linux {
@@ -152,7 +152,7 @@ body {
   right: 0;
   bottom: 0;
   z-index: 0;
-  background-color: white;
+  background-color: var(--color-background);
 }
 
 .panel-sidebar {

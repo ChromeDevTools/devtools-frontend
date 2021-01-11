@@ -47,7 +47,7 @@
 }
 
 #elements-crumbs {
-  background-color: white;
+  background-color: var(--color-background);
   border-top: 1px solid var(--divider-color);
   overflow: hidden;
   width: 100%;

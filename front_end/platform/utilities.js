@@ -372,18 +372,6 @@ self.createPlainTextSearchRegex = function(query, flags) {
 };
 
 /**
- * @return {?T}
- * @template T
- */
-// @ts-ignore https://crbug.com/1050549
-Set.prototype.firstValue = function() {
-  if (!this.size) {
-    return null;
-  }
-  return this.values().next().value;
-};
-
-/**
  * @return {!Multimap<K,V>}
  * @template K,V
  */

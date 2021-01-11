@@ -11,6 +11,8 @@ const DEVICE_TOOLBAR_OPTIONS_SELECTOR = '.device-mode-toolbar .device-mode-toolb
 const MEDIA_QUERY_INSPECTOR_SELECTOR = '.media-inspector-view';
 const DEVICE_LIST_DROPDOWN_SELECTOR = '.toolbar-button';
 const SURFACE_DUO_MENU_ITEM_SELECTOR = '[aria-label*="Surface Duo"]';
+const EDIT_MENU_ITEM_SELECTOR = '[aria-label*="Edit"]';
+const TEST_DEVICE_MENU_ITEM_SELECTOR = '[aria-label*="Test device"]';
 const DUAL_SCREEN_BUTTON_SELECTOR = '[aria-label="Toggle dual-screen mode"]';
 const SCREEN_DIM_INPUT_SELECTOR = '.device-mode-size-input';
 
@@ -64,6 +66,18 @@ export const selectToggleButton = async () => {
   // button that toggles between single and double screen.
   const toggleButton = await $(DUAL_SCREEN_BUTTON_SELECTOR) as puppeteer.JSHandle<HTMLButtonElement>;
   return toggleButton;
+};
+
+export const selectEdit = async () => {
+  await clickDevicesDropDown();
+  const edit = await waitFor(EDIT_MENU_ITEM_SELECTOR);
+  await click(edit);
+};
+
+export const selectTestDevice = async () => {
+  await clickDevicesDropDown();
+  const edit = await waitFor(TEST_DEVICE_MENU_ITEM_SELECTOR);
+  await click(edit);
 };
 
 // Test if span button works when emulating a dual screen device.

@@ -1,0 +1,41 @@
+<!--
+  Copyright 2021 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+
+<!DOCTYPE html>
+<script>
+function logValue(key, value) {
+  const d = document.createElement('div');
+  d.append(key + '=');
+  const s = document.createElement('span');
+  s.id = key;
+  s.append(value);
+  d.appendChild(s);
+  document.body.appendChild(d);
+}
+
+function dump() {
+  logValue('res-ua', navigator.userAgent);
+  logValue('res-mobile', navigator.userAgentData.mobile);
+  logValue('res-num-brands', navigator.userAgentData.brands.length);
+  for (let i = 0; i < navigator.userAgentData.brands.length; ++i) {
+    logValue('res-brand-' + i + '-name', navigator.userAgentData.brands[i].brand);
+    logValue('res-brand-' + i + '-version', navigator.userAgentData.brands[i].version);
+  }
+  navigator.userAgentData.getHighEntropyValues(['platform', 'platformVersion', 'architecture', 'model', 'uaFullVersion']).then(finishDump);
+}
+
+function finishDump(uaDataValues) {
+  logValue('res-platform', uaDataValues.platform);
+  logValue('res-platform-version', uaDataValues.platformVersion);
+  logValue('res-architecture', uaDataValues.architecture);
+  logValue('res-model', uaDataValues.model);
+  logValue('res-ua-full-version', uaDataValues.uaFullVersion);
+
+  logValue('res-dump-done', true);
+}
+</script>
+
+<body onload='dump()'>

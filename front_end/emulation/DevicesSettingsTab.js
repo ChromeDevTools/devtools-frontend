@@ -31,6 +31,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     const buttonsRow = this.containerElement.createChild('div', 'devices-button-row');
     this._addCustomButton =
         UI.UIUtils.createTextButton(Common.UIString.UIString('Add custom device...'), this._addCustomDevice.bind(this));
+    this._addCustomButton.id = 'custom-device-add-button';
     buttonsRow.appendChild(this._addCustomButton);
 
     this._list = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
@@ -241,8 +242,9 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
 
     const deviceFields = content.createChild('div', 'devices-edit-fields');
     UI.UIUtils.createTextChild(deviceFields.createChild('b'), ls`Device`);
-    deviceFields.createChild('div', 'hbox')
-        .appendChild(editor.createInput('title', 'text', ls`Device Name`, titleValidator));
+    const deviceNameField = editor.createInput('title', 'text', ls`Device Name`, titleValidator);
+    deviceFields.createChild('div', 'hbox').appendChild(deviceNameField);
+    deviceNameField.id = 'custom-device-name-field';
     const screen = deviceFields.createChild('div', 'hbox');
     screen.appendChild(editor.createInput('width', 'text', ls`Width`, widthValidator));
     screen.appendChild(editor.createInput('height', 'text', ls`Height`, heightValidator));

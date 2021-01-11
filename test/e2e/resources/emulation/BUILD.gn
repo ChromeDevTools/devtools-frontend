@@ -5,5 +5,8 @@
 import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("emulation") {
-  sources = [ "media-query-inspector.html" ]
+  sources = [
+    "custom-ua-ch.html",
+    "media-query-inspector.html",
+  ]
 }

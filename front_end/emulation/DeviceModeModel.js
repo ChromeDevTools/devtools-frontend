@@ -795,7 +795,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
       overlayModel.setShowViewportSizeOnResize(false);
     }
 
-    // Emulate full size device if necessary.
+    // Define the right clipping area for fullsize screenshots.
     if (fullSize) {
       const metrics = await screenCaptureModel.fetchLayoutMetrics();
       if (!metrics) {
@@ -804,35 +804,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
 
       // Cap the height to not hit the GPU limit.
       const contentHeight = Math.min((1 << 14) / this._appliedDeviceScaleFactor, metrics.contentHeight);
-      /** @type {!Protocol.Emulation.SetDeviceMetricsOverrideRequest} */
-      const deviceMetrics = {
-        width: Math.floor(metrics.contentWidth),
-        height: Math.floor(contentHeight),
-        deviceScaleFactor: this._appliedDeviceScaleFactor,
-        mobile: this._isMobile(),
-        displayFeature: undefined,
-        screenOrientation: undefined,
-      };
-
-      const displayFeature = this._getDisplayFeature();
-      if (displayFeature) {
-        deviceMetrics.displayFeature = displayFeature;
-      }
-
-      clip = {x: 0, y: 0, width: deviceMetrics.width, height: deviceMetrics.height, scale: 1};
-
-      if (this._device && this._mode) {
-        const screenOrientation = this._mode.orientation === Horizontal ?
-            Protocol.Emulation.ScreenOrientationType.LandscapePrimary :
-            Protocol.Emulation.ScreenOrientationType.PortraitPrimary;
-        const screenOrientationAngle =
-            screenOrientation === Protocol.Emulation.ScreenOrientationType.LandscapePrimary ? 90 : 0;
-        deviceMetrics.screenOrientation = {type: screenOrientation, angle: screenOrientationAngle};
-      }
-      if (this._emulationModel) {
-        await this._emulationModel.resetPageScaleFactor();
-        await this._emulationModel.emulateDevice(deviceMetrics);
-      }
+      clip = {x: 0, y: 0, width: Math.floor(metrics.contentWidth), height: Math.floor(contentHeight), scale: 1};
     }
     const screenshot =
         await screenCaptureModel.captureScreenshot(Protocol.Page.CaptureScreenshotRequestFormat.Png, 100, clip);

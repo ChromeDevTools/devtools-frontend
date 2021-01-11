@@ -53,7 +53,8 @@ describe('Source Tab', async () => {
 
     await step('check that the local scope content is as expected', async () => {
       localScopeValues = await getValuesForScope('Local', 0, 4);
-      assert.deepEqual(localScopeValues, ['f32_var: 5.5', 'f64_var: 2.23e-11', 'i32: 42', 'i64_var: 9221120237041090']);
+      assert.deepEqual(
+          localScopeValues, ['f32_var: 5.5', 'f64_var: 2.23e-11', 'i32: 42', 'i64_var: 9221120237041090n']);
     });
 
     await step('check that the module scope content is as expected', async () => {

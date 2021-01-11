@@ -345,6 +345,7 @@ all_devtools_files = [
   "front_end/test_runner/module.json",
   "front_end/text_editor/autocompleteTooltip.css",
   "front_end/text_editor/cmdevtools.css",
+  "front_end/text_editor/cmdevtools.darkmode.css",
   "front_end/text_editor/module.json",
   "front_end/text_utils/module.json",
   "front_end/theme_support/module.json",

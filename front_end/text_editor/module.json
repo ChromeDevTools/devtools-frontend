@@ -31,6 +31,7 @@
   ],
   "resources": [
     "autocompleteTooltip.css",
-    "cmdevtools.css"
+    "cmdevtools.css",
+    "cmdevtools.darkmode.css"
   ]
 }

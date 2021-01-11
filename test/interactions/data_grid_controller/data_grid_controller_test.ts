@@ -10,6 +10,15 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample} from '../helpers/shared.js';
 import {platform} from '../../shared/helper.js';
 
+function platformSpecificTextForSubMenuEntryItem(text: string): string {
+  /**
+   * On Mac the context menu adds the ▶ icon to the sub menu entry points in the
+   * context menu, but on Linux/Windows it uses an image. So if we're running on
+   * Mac, we append the search text with the icon, else we do not.
+   */
+  return platform === 'mac' ? `${text}▶` : text;
+}
+
 async function assertTopLevelContextMenuItemsText(expectedOptions: string[]): Promise<void> {
   const contextMenu = await $('.soft-context-menu');
   if (!contextMenu) {
@@ -65,13 +74,7 @@ async function activateContextMenuOnColumnHeader(headerText: string) {
 }
 
 async function findSubMenuEntryItem(text: string): Promise<puppeteer.ElementHandle<Element>> {
-  /**
-   * On Mac the context menu adds the ▶ icon to the sub menu entry points in the
-   * context menu, but on Linux/Windows it uses an image. So we search for
-   * textContent with and without the ▶ symbol to find the match regardless of
-   * the platform the tests are running on.
-   */
-  const textToSearchFor = platform === 'mac' ? `${text}▶` : text;
+  const textToSearchFor = platformSpecificTextForSubMenuEntryItem(text);
   const matchingElement = await $textContent(textToSearchFor);
 
   if (!matchingElement) {
@@ -98,14 +101,14 @@ async function activateContextMenuOnBodyCell(cellText: string) {
 
 
 describe('data grid controller', () => {
-  // Flaky on MacOS bot.
-  it.skip('[crbug.com/1164826] lets the user right click on a header to show the context menu', async () => {
+  it('lets the user right click on a header to show the context menu', async () => {
     await loadComponentDocExample('data_grid_controller/basic.html');
     await activateContextMenuOnColumnHeader('Key');
 
     const contextMenu = await $('.soft-context-menu');
     assert.isNotNull(contextMenu);
-    await assertTopLevelContextMenuItemsText(['Value', 'Sort By', 'Reset Columns']);
+    await assertTopLevelContextMenuItemsText(
+        ['Value', platformSpecificTextForSubMenuEntryItem('Sort By'), 'Reset Columns']);
   });
 
   it('lists the hideable columns in the context menu and lets the user click to toggle the visibility', async () => {
@@ -166,20 +169,25 @@ describe('data grid controller', () => {
         renderedText);
   });
 
-  // Flaky on MacOS bot.
-  it.skip('[crbug.com/1164826] lists sort by and header options when right clicking on a body row', async () => {
+  it('lists sort by and header options when right clicking on a body row', async () => {
     await loadComponentDocExample('data_grid_controller/basic.html');
     await activateContextMenuOnBodyCell('Bravo');
 
-    await assertTopLevelContextMenuItemsText(['Sort By', 'Header Options']);
+    await assertTopLevelContextMenuItemsText([
+      platformSpecificTextForSubMenuEntryItem('Sort By'),
+      platformSpecificTextForSubMenuEntryItem('Header Options'),
+    ]);
     await assertSubMenuItemsText('Header Options', ['Value', 'Reset Columns']);
     await assertSubMenuItemsText('Sort By', ['Key', 'Value']);
   });
 
-  // Flaky on MacOS bot.
-  it.skip('[crbug.com/1164826] allows the parent to add custom context menu items', async () => {
+  it('allows the parent to add custom context menu items', async () => {
     await loadComponentDocExample('data_grid_controller/custom-context-menu-items.html');
     await activateContextMenuOnBodyCell('Bravo');
-    await assertTopLevelContextMenuItemsText(['Sort By', 'Header Options', 'Hello World']);
+    await assertTopLevelContextMenuItemsText([
+      platformSpecificTextForSubMenuEntryItem('Sort By'),
+      platformSpecificTextForSubMenuEntryItem('Header Options'),
+      'Hello World',
+    ]);
   });
 });

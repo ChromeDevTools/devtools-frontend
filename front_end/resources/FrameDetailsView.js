@@ -53,6 +53,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     const link = 'https://web.dev/why-coop-coep/';
     summaryRow.appendChild(UI.Fragment.html`<div>${summaryText} ${UI.XLink.XLink.create(link, ls`Learn more`)}</div>`);
     this._apiSharedArrayBuffer = this._apiAvailability.appendField(ls`Shared Array Buffers`);
+    this._apiMeasureMemory = this._apiAvailability.appendField(ls`Measure Memory`);
 
     if (this._protocolMonitorExperimentEnabled) {
       this._additionalInfo = this._reportView.appendSection(ls`Additional Information`);
@@ -230,6 +231,19 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
         reasonHint.textContent = ls`requires cross-origin isolated context`;
       }
     }
+
+    const measureMemoryAvailable = this._frame.isCrossOriginIsolated();
+    UI.Tooltip.Tooltip.install(
+        this._apiMeasureMemory,
+        measureMemoryAvailable ?
+            ls`The performance.measureMemory() API is available (but might require enabling experimental web platform features)` :
+            ls`The performance.measureMemory() API is not available`);
+    this._apiMeasureMemory.textContent = '';
+    const status =
+        measureMemoryAvailable ? ls`available, but might require experimental web platform features` : ls`unavailable`;
+    const link = 'https://web.dev/monitor-total-page-memory-usage/';
+    this._apiMeasureMemory.appendChild(
+        UI.Fragment.html`<div>${status} ${UI.XLink.XLink.create(link, ls`Learn more`)}</div>`);
   }
 
 

@@ -172,6 +172,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_402e603c0bef562e29eb4964639eef43" desc="Tooltip for the SharedArrayBuffer availability status">
     SharedArrayBuffer constructor is available and SABs can be transferred via postMessage
   </message>
+  <message name="IDS_DEVTOOLS_423701af03125dd3d73f89a9027cbed3" desc="Entry in the API availability section of the frame details view">
+    Measure Memory
+  </message>
   <message name="IDS_DEVTOOLS_44323440df1f92dfd551c7efc0aece80" desc="Data grid name for DOM Storage Items data grids">
     DOM Storage Items
   </message>
@@ -343,6 +346,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_87e059dc2492bd5041581f05daef12f7" desc="Text in Service Worker Cache Views of the Application panel">
     Filter by Path
   </message>
+  <message name="IDS_DEVTOOLS_8967cd0fae7ddf8a6c2d647a55d5361b" desc="Tooltip for the Measure Memory availability status">
+    The performance.measureMemory() API is not available
+  </message>
   <message name="IDS_DEVTOOLS_897356954c2cd3d41b221e3f24f99bba" desc="Text in DOMStorage Items View of the Application panel">
     Key
   </message>
@@ -498,6 +504,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_bde29cba351697b187057928a827ffe5" desc="Row title for in the Frame Details view">
     Cross-Origin Isolated
   </message>
+  <message name="IDS_DEVTOOLS_be2c141e99e52c808702f202bb329827" desc="Tooltip for the Measure Memory availability status">
+    The performance.measureMemory() API is available (but might require enabling experimental web platform features)
+  </message>
   <message name="IDS_DEVTOOLS_bebc9b50966d8d2bd1913a3c25b707d4" desc="Text in Indexed DBViews of the Application panel">
     Data may be stale
   </message>
@@ -533,6 +542,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_ca72bcf0fbdc4c621360d906f930a956" desc="Warning message for icons from the manifest">
     Actual height (<ph name="IMAGE_NATURALHEIGHT">$1s<ex>100</ex></ph>px) of icon <ph name="ICONURL">$2s<ex>https://example.com/icon.png</ex></ph> does not match specified height (<ph name="HEIGHT">$3s<ex>100</ex></ph>px)
+  </message>
+  <message name="IDS_DEVTOOLS_38cb2846c1e74eeb7bc0b796c2787e03" desc="Explanation for the Measure Memory availability status">
+    available, but might require experimental web platform features
   </message>
   <message name="IDS_DEVTOOLS_cbd71dc96b9c7d3a0663a5546f3798b5" desc="Text wrapping a link pointing to more information on maskable icons in App Manifest view of the Application panel">
     Need help? Read our <ph name="DOCUMENTATIONLINK">$1s<ex>https://example.com/</ex></ph>.

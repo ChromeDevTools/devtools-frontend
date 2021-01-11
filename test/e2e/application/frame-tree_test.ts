@@ -32,6 +32,7 @@ describe('The Application Tab', async () => {
         'None',
         'UnsafeNone',
         'available, transferable⚠️ will require cross-origin isolated context in the future',
+        'unavailable Learn more',
       ];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });
@@ -100,6 +101,7 @@ describe('The Application Tab', async () => {
         'None',
         'UnsafeNone',
         'available, transferable⚠️ will require cross-origin isolated context in the future',
+        'unavailable Learn more',
       ];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });
@@ -130,6 +132,7 @@ describe('The Application Tab', async () => {
         'None',
         'UnsafeNone',
         'available, transferable⚠️ will require cross-origin isolated context in the future',
+        'unavailable Learn more',
       ];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });

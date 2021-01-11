@@ -194,6 +194,7 @@ export class MainImpl {
 
     // Dual-screen
     Root.Runtime.experiments.register('dualScreenSupport', 'Emulation: Support dual screen mode');
+    Root.Runtime.experiments.setEnabled('dualScreenSupport', true);
 
     // CSS Flexbox
     Root.Runtime.experiments.register('cssFlexboxFeatures', 'Enable new CSS Flexbox debugging features');

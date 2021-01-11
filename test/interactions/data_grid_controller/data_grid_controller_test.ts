@@ -98,14 +98,14 @@ async function activateContextMenuOnBodyCell(cellText: string) {
 
 
 describe('data grid controller', () => {
-  it('lets the user right click on a header to show the context menu', async () => {
+  // Flaky on MacOS bot.
+  it.skip('[crbug.com/1164826] lets the user right click on a header to show the context menu', async () => {
     await loadComponentDocExample('data_grid_controller/basic.html');
     await activateContextMenuOnColumnHeader('Key');
 
     const contextMenu = await $('.soft-context-menu');
     assert.isNotNull(contextMenu);
     await assertTopLevelContextMenuItemsText(['Value', 'Sort By', 'Reset Columns']);
-
   });
 
   it('lists the hideable columns in the context menu and lets the user click to toggle the visibility', async () => {
@@ -166,7 +166,8 @@ describe('data grid controller', () => {
         renderedText);
   });
 
-  it('lists sort by and header options when right clicking on a body row', async () => {
+  // Flaky on MacOS bot.
+  it.skip('[crbug.com/1164826] lists sort by and header options when right clicking on a body row', async () => {
     await loadComponentDocExample('data_grid_controller/basic.html');
     await activateContextMenuOnBodyCell('Bravo');
 
@@ -175,7 +176,8 @@ describe('data grid controller', () => {
     await assertSubMenuItemsText('Sort By', ['Key', 'Value']);
   });
 
-  it('allows the parent to add custom context menu items', async () => {
+  // Flaky on MacOS bot.
+  it.skip('[crbug.com/1164826] allows the parent to add custom context menu items', async () => {
     await loadComponentDocExample('data_grid_controller/custom-context-menu-items.html');
     await activateContextMenuOnBodyCell('Bravo');
     await assertTopLevelContextMenuItemsText(['Sort By', 'Header Options', 'Hello World']);

@@ -549,6 +549,8 @@ export function registerCommands(inspectorBackend) {
     Backdrop: 'backdrop',
     Selection: 'selection',
     TargetText: 'target-text',
+    SpellingError: 'spelling-error',
+    GrammarError: 'grammar-error',
     FirstLineInherited: 'first-line-inherited',
     Scrollbar: 'scrollbar',
     ScrollbarThumb: 'scrollbar-thumb',
@@ -2105,6 +2107,11 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Performance.setTimeDomain', [{'name': 'timeDomain', 'type': 'string', 'optional': false}], []);
   inspectorBackend.registerCommand('Performance.getMetrics', [], ['metrics']);
+
+  // PerformanceTimeline.
+  inspectorBackend.registerEvent('PerformanceTimeline.timelineEventAdded', ['event']);
+  inspectorBackend.registerCommand(
+      'PerformanceTimeline.enable', [{'name': 'eventTypes', 'type': 'object', 'optional': false}], []);
 
   // Security.
   inspectorBackend.registerEnum(

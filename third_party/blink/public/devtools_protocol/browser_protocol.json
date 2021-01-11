@@ -3831,6 +3831,8 @@
                         "backdrop",
                         "selection",
                         "target-text",
+                        "spelling-error",
+                        "grammar-error",
                         "first-line-inherited",
                         "scrollbar",
                         "scrollbar-thumb",
@@ -10355,6 +10357,12 @@
                             "description": "Cookie Priority",
                             "experimental": true,
                             "$ref": "CookiePriority"
+                        },
+                        {
+                            "name": "sameParty",
+                            "description": "True if cookie is SameParty.",
+                            "experimental": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -15405,6 +15413,170 @@
                             "name": "title",
                             "description": "Timestamp title.",
                             "type": "string"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "domain": "PerformanceTimeline",
+            "description": "Reporting of performance timeline events, as specified in\nhttps://w3c.github.io/performance-timeline/#dom-performanceobserver.",
+            "experimental": true,
+            "dependencies": [
+                "DOM",
+                "Network"
+            ],
+            "types": [
+                {
+                    "id": "LargestContentfulPaint",
+                    "description": "See https://github.com/WICG/LargestContentfulPaint and largest_contentful_paint.idl",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "renderTime",
+                            "$ref": "Network.TimeSinceEpoch"
+                        },
+                        {
+                            "name": "loadTime",
+                            "$ref": "Network.TimeSinceEpoch"
+                        },
+                        {
+                            "name": "size",
+                            "description": "The number of pixels being painted.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "elementId",
+                            "description": "The id attribute of the element, if available.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "url",
+                            "description": "The URL of the image (may be trimmed).",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "nodeId",
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
+                        }
+                    ]
+                },
+                {
+                    "id": "LayoutShiftAttribution",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "previousRect",
+                            "$ref": "DOM.Rect"
+                        },
+                        {
+                            "name": "currentRect",
+                            "$ref": "DOM.Rect"
+                        },
+                        {
+                            "name": "nodeId",
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
+                        }
+                    ]
+                },
+                {
+                    "id": "LayoutShift",
+                    "description": "See https://wicg.github.io/layout-instability/#sec-layout-shift and layout_shift.idl",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "value",
+                            "description": "Score increment produced by this event.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "hadRecentInput",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "lastInputTime",
+                            "$ref": "Network.TimeSinceEpoch"
+                        },
+                        {
+                            "name": "sources",
+                            "type": "array",
+                            "items": {
+                                "$ref": "LayoutShiftAttribution"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "TimelineEvent",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "frameId",
+                            "description": "Identifies the frame that this event is related to. Empty for non-frame targets.",
+                            "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "type",
+                            "description": "The event type, as specified in https://w3c.github.io/performance-timeline/#dom-performanceentry-entrytype\nThis determines which of the optional \"details\" fiedls is present.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "name",
+                            "description": "Name may be empty depending on the type.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "time",
+                            "description": "Time in seconds since Epoch, monotonically increasing within document lifetime.",
+                            "$ref": "Network.TimeSinceEpoch"
+                        },
+                        {
+                            "name": "duration",
+                            "description": "Event duration, if applicable.",
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "lcpDetails",
+                            "optional": true,
+                            "$ref": "LargestContentfulPaint"
+                        },
+                        {
+                            "name": "layoutShiftDetails",
+                            "optional": true,
+                            "$ref": "LayoutShift"
+                        }
+                    ]
+                }
+            ],
+            "commands": [
+                {
+                    "name": "enable",
+                    "description": "Previously buffered events would be reported before method returns.\nSee also: timelineEventAdded",
+                    "parameters": [
+                        {
+                            "name": "eventTypes",
+                            "description": "The types of event to report, as specified in\nhttps://w3c.github.io/performance-timeline/#dom-performanceentry-entrytype\nThe specified filter overrides any previous filters, passing empty\nfilter disables recording.\nNote that not all types exposed to the web platform are currently supported.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "name": "timelineEventAdded",
+                    "description": "Sent when a performance timeline event is added. See reportPerformanceTimeline method.",
+                    "parameters": [
+                        {
+                            "name": "event",
+                            "$ref": "TimelineEvent"
                         }
                     ]
                 }

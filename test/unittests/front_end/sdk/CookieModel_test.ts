@@ -28,6 +28,7 @@ describeWithMockConnection('CookieModel', () => {
           httpOnly: false,
           secure: false,
           session: true,
+          sameParty: false,
           priority: Protocol.Network.CookiePriority.Medium,
         }],
       };

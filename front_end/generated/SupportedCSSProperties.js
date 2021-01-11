@@ -208,6 +208,8 @@ export const generatedProperties = [
     'longhands': ['border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color'],
     'name': 'border-color'
   },
+  {'name': 'border-end-end-radius'},
+  {'name': 'border-end-start-radius'},
   {
     'longhands': [
       'border-image-source', 'border-image-slice', 'border-image-width', 'border-image-outset', 'border-image-repeat'
@@ -268,6 +270,8 @@ export const generatedProperties = [
     'name': 'border-spacing',
     'inherited': true
   },
+  {'name': 'border-start-end-radius'},
+  {'name': 'border-start-start-radius'},
   {
     'keywords': ['none'],
     'longhands': ['border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style'],
@@ -533,6 +537,8 @@ export const generatedProperties = [
       'disc',
       'circle',
       'square',
+      'disclosure-open',
+      'disclosure-closed',
       'decimal',
       'decimal-leading-zero',
       'arabic-indic',
@@ -1084,6 +1090,8 @@ export const generatedPropertyValues = {
       'disc',
       'circle',
       'square',
+      'disclosure-open',
+      'disclosure-closed',
       'decimal',
       'decimal-leading-zero',
       'arabic-indic',

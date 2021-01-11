@@ -69,6 +69,8 @@ declare namespace ProtocolProxyApi {
 
     Performance: PerformanceApi;
 
+    PerformanceTimeline: PerformanceTimelineApi;
+
     Security: SecurityApi;
 
     ServiceWorker: ServiceWorkerApi;
@@ -2555,6 +2557,20 @@ declare namespace ProtocolProxyApi {
      * Current values of the metrics.
      */
     metrics(params: Protocol.Performance.MetricsEvent): void;
+  }
+
+  export interface PerformanceTimelineApi {
+    /**
+     * Previously buffered events would be reported before method returns.
+     * See also: timelineEventAdded
+     */
+    invoke_enable(params: Protocol.PerformanceTimeline.EnableRequest): Promise<Protocol.ProtocolResponseWithError>;
+  }
+  export interface PerformanceTimelineDispatcher {
+    /**
+     * Sent when a performance timeline event is added. See reportPerformanceTimeline method.
+     */
+    timelineEventAdded(params: Protocol.PerformanceTimeline.TimelineEventAddedEvent): void;
   }
 
   export interface SecurityApi {

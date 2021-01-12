@@ -81,6 +81,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue('Debugger', 'disableAsyncStackTraces', false),
     createSettingValue('Debugger', 'breakpointsActive', true),
     createSettingValue('Debugger', 'javaScriptDisabled', false),
+    createSettingValue('Debugger', 'skipContentScripts', false),
+    createSettingValue('Debugger', 'skipStackFramesPattern', '', 'regex'),
     createSettingValue('Elements', 'showDetailedInspectTooltip', true),
     createSettingValue('Network', 'cacheDisabled', false),
     createSettingValue('Rendering', 'avifFormatDisabled', false),

@@ -119,6 +119,9 @@
   "components/JSPresentationUtils.js | showSMoreFrames": {
     "message": "Show {PH1} more frames"
   },
+  "components/JSPresentationUtils.js | unknownSource": {
+    "message": "unknown"
+  },
   "components/Linkifier.js | auto": {
     "message": "auto"
   },

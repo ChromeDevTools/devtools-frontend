@@ -54,6 +54,10 @@ export const UIStrings = {
   *@example {2} PH1
   */
   showSMoreFrames: 'Show {PH1} more frames',
+  /**
+   *@description Text indicating that source url of a link is currently unknown
+   */
+  unknownSource: 'unknown',
 };
 const str_ = i18n.i18n.registerUIStrings('components/JSPresentationUtils.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -104,6 +108,11 @@ export function buildStackTracePreviewContents(target, linkifier, options = {
         }
         row.createChild('td').textContent = ' @ ';
         row.createChild('td').appendChild(link);
+        // Linkifier is using a workaround with the 'zero width space' (\u200b).
+        // TODO(szuend): Remove once the Linkfier is no longer using the workaround.
+        if (!link.textContent || link.textContent === '\u200b') {
+          link.textContent = i18nString(UIStrings.unknownSource);
+        }
         links.push(link);
       }
       if (shouldHide) {

@@ -281,17 +281,19 @@ export class Linkifier {
     // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
     // in the layout engine.
     // TODO(szuend): Remove comment and workaround once the crash is fixed.
-    const anchor = /** @type {!HTMLElement} */ (Linkifier._createLink('\u200b', className, createLinkOptions));
+    const anchor = Linkifier._createLink(
+        fallbackAnchor && fallbackAnchor.textContent ? fallbackAnchor.textContent : '\u200b', className,
+        createLinkOptions);
     const info = Linkifier.linkInfo(anchor);
     if (!info) {
-      return null;
+      return fallbackAnchor;
     }
     info.enableDecorator = this._useLinkDecorator;
     info.fallback = fallbackAnchor;
 
     const pool = this._locationPoolByTarget.get(rawLocation.debuggerModel.target());
     if (!pool) {
-      return null;
+      return fallbackAnchor;
     }
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
         .createLiveLocation(rawLocation, this._updateAnchor.bind(this, anchor), pool)
@@ -395,7 +397,7 @@ export class Linkifier {
     // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
     // in the layout engine.
     // TODO(szuend): Remove comment and workaround once the crash is fixed.
-    const anchor = /** @type {!HTMLElement} */ (Linkifier._createLink('\u200b', classes || ''));
+    const anchor = Linkifier._createLink('\u200b', classes || '');
     const info = Linkifier.linkInfo(anchor);
     if (!info) {
       return fallbackAnchor;

@@ -12,6 +12,7 @@ group("front_end") {
     "client_variations",
     "common",
     "component_helpers",
+    "components",
     "coverage",
     "dom_extension",
     "elements",

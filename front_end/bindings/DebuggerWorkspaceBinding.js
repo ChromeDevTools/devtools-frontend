@@ -193,11 +193,7 @@ export class DebuggerWorkspaceBinding {
    * @return {!Promise<?Location>}
    */
   async createLiveLocation(rawLocation, updateDelegate, locationPool) {
-    const script = rawLocation.script();
-    if (!script) {
-      return null;
-    }
-    const modelData = this._debuggerModelToData.get(script.debuggerModel);
+    const modelData = this._debuggerModelToData.get(rawLocation.debuggerModel);
     if (!modelData) {
       return null;
     }
@@ -429,7 +425,7 @@ export class DebuggerWorkspaceBinding {
    * @param {!Location} location
    */
   _removeLiveLocation(location) {
-    const modelData = this._debuggerModelToData.get(location._script.debuggerModel);
+    const modelData = this._debuggerModelToData.get(location._rawLocation.debuggerModel);
     if (modelData) {
       modelData._disposeLocation(location);
     }
@@ -461,7 +457,7 @@ class ModelData {
     this._resourceMapping = new ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._compilerMapping = new CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
 
-    /** @type {!Platform.Multimap<!SDK.Script.Script, !Location>} */
+    /** @type {!Platform.Multimap<string, !Location>} */
     this._locations = new Platform.Multimap();
 
     debuggerModel.setBeforePausedCallback(this._beforePaused.bind(this));
@@ -474,10 +470,10 @@ class ModelData {
    * @return {!Promise<!Location>}
    */
   async _createLiveLocation(rawLocation, updateDelegate, locationPool) {
-    console.assert(rawLocation.script() !== null);
-    const script = /** @type {!SDK.Script.Script} */ (rawLocation.script());
-    const location = new Location(script, rawLocation, this._debuggerWorkspaceBinding, updateDelegate, locationPool);
-    this._locations.set(script, location);
+    console.assert(rawLocation.scriptId !== '');
+    const scriptId = rawLocation.scriptId;
+    const location = new Location(scriptId, rawLocation, this._debuggerWorkspaceBinding, updateDelegate, locationPool);
+    this._locations.set(scriptId, location);
     await location.update();
     return location;
   }
@@ -486,7 +482,7 @@ class ModelData {
    * @param {!Location} location
    */
   _disposeLocation(location) {
-    this._locations.delete(location._script, location);
+    this._locations.delete(location._scriptId, location);
   }
 
   /**
@@ -494,7 +490,7 @@ class ModelData {
    */
   async _updateLocations(script) {
     const promises = [];
-    for (const location of this._locations.get(script)) {
+    for (const location of this._locations.get(script.scriptId)) {
       promises.push(location.update());
     }
     await Promise.all(promises);
@@ -558,15 +554,15 @@ class ModelData {
 
 export class Location extends LiveLocationWithPool {
   /**
-   * @param {!SDK.Script.Script} script
+   * @param {string} scriptId
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @param {!DebuggerWorkspaceBinding} binding
    * @param {function(!LiveLocation): !Promise<?>} updateDelegate
    * @param {!LiveLocationPool} locationPool
    */
-  constructor(script, rawLocation, binding, updateDelegate, locationPool) {
+  constructor(scriptId, rawLocation, binding, updateDelegate, locationPool) {
     super(updateDelegate, locationPool);
-    this._script = script;
+    this._scriptId = scriptId;
     this._rawLocation = rawLocation;
     this._binding = binding;
   }

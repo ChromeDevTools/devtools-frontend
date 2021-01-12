@@ -10,6 +10,7 @@ ts_library("elements") {
     "ElementsBreadcrumbs_test.ts",
     "LayoutPane_test.ts",
     "NodeText_test.ts",
+    "StylesSidebarPane_test.ts",
   ]
 
   deps = [

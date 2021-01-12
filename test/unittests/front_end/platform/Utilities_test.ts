@@ -24,7 +24,6 @@ declare global {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface StringConstructor {
-    hashCode(value: string): number;
     naturalOrderComparator(a: string, b: string): number;
   }
 }
@@ -186,15 +185,6 @@ describe('Utilities', () => {
         }
       }
     }
-  });
-
-  it('hashes strings', () => {
-    const stringA = ' '.repeat(10000);
-    const stringB = stringA + ' ';
-    const hashA = String.hashCode(stringA);
-    assert.isTrue(hashA !== String.hashCode(stringB));
-    assert.isTrue(isFinite(hashA));
-    assert.isTrue(hashA + 1 !== hashA);
   });
 
   it('escapes regex characters', () => {

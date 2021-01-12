@@ -574,4 +574,13 @@ describe('StringUtilities', () => {
       assert.strictEqual(regex.source, '[foo]');
     });
   });
+
+  it('hashes strings', () => {
+    const stringA = ' '.repeat(10000);
+    const stringB = stringA + ' ';
+    const hashA = Platform.StringUtilities.hashCode(stringA);
+    assert.isTrue(hashA !== Platform.StringUtilities.hashCode(stringB));
+    assert.isTrue(isFinite(hashA));
+    assert.isTrue(hashA + 1 !== hashA);
+  });
 });

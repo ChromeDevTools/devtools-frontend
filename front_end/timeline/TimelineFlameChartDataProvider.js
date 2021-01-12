@@ -1030,7 +1030,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    */
   _genericTraceEventColor(event) {
     const key = event.categoriesString || event.name;
-    return key ? `hsl(${String.hashCode(key) % 300 + 30}, 40%, 70%)` : '#ccc';
+    return key ? `hsl(${Platform.StringUtilities.hashCode(key) % 300 + 30}, 40%, 70%)` : '#ccc';
   }
 
   /**

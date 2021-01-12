@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
@@ -363,7 +364,7 @@ export class CommandMenuProvider extends Provider {
     const command = this._commands[itemIndex];
     titleElement.removeChildren();
     const tagElement = /** @type {!HTMLElement} */ (titleElement.createChild('span', 'tag'));
-    const index = String.hashCode(command.category()) % MaterialPaletteColors.length;
+    const index = Platform.StringUtilities.hashCode(command.category()) % MaterialPaletteColors.length;
     tagElement.style.backgroundColor = MaterialPaletteColors[index];
     tagElement.textContent = command.category();
     UI.UIUtils.createTextChild(titleElement, command.title());

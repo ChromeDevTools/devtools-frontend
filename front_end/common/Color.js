@@ -1019,7 +1019,7 @@ export class Generator {
    * @return {string}
    */
   _generateColorForID(id) {
-    const hash = String.hashCode(id);
+    const hash = Platform.StringUtilities.hashCode(id);
     const h = this._indexToValueInSpace(hash, this._hueSpace);
     const s = this._indexToValueInSpace(hash >> 8, this._satSpace);
     const l = this._indexToValueInSpace(hash >> 16, this._lightnessSpace);

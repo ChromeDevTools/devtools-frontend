@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -205,8 +206,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       const shortFileName = encodedFileName ? encodedFileName.substr(0, 10) + '-' : '';
       const extension = Common.ParsedURL.ParsedURL.extractExtension(urlPath);
       const extensionPart = extension ? '.' + extension.substr(0, 10) : '';
-      encodedPathParts =
-          [domain, 'longurls', shortFileName + String.hashCode(encodedPath).toString(16) + extensionPart];
+      encodedPathParts = [
+        domain, 'longurls', shortFileName + Platform.StringUtilities.hashCode(encodedPath).toString(16) + extensionPart
+      ];
     }
     return encodedPathParts.join('/');
 

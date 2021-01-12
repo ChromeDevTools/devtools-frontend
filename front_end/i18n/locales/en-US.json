@@ -2096,46 +2096,46 @@
   "text_editor/CodeMirrorTextEditor.js | codeEditor": {
     "message": "Code editor"
   },
-  "web_audio/AudioContextContentBuilder.js | audiocontext": {
+  "web_audio/AudioContextContentBuilder.ts | audiocontext": {
     "message": "AudioContext"
   },
-  "web_audio/AudioContextContentBuilder.js | callbackBufferSize": {
+  "web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
     "message": "Callback Buffer Size"
   },
-  "web_audio/AudioContextContentBuilder.js | callbackInterval": {
+  "web_audio/AudioContextContentBuilder.ts | callbackInterval": {
     "message": "Callback Interval"
   },
-  "web_audio/AudioContextContentBuilder.js | currentTime": {
+  "web_audio/AudioContextContentBuilder.ts | currentTime": {
     "message": "Current Time"
   },
-  "web_audio/AudioContextContentBuilder.js | maxOutputChannels": {
+  "web_audio/AudioContextContentBuilder.ts | maxOutputChannels": {
     "message": "Max Output Channels"
   },
-  "web_audio/AudioContextContentBuilder.js | offlineaudiocontext": {
+  "web_audio/AudioContextContentBuilder.ts | offlineaudiocontext": {
     "message": "OfflineAudioContext"
   },
-  "web_audio/AudioContextContentBuilder.js | renderCapacity": {
+  "web_audio/AudioContextContentBuilder.ts | renderCapacity": {
     "message": "Render Capacity"
   },
-  "web_audio/AudioContextContentBuilder.js | sampleRate": {
+  "web_audio/AudioContextContentBuilder.ts | sampleRate": {
     "message": "Sample Rate"
   },
-  "web_audio/AudioContextContentBuilder.js | state": {
+  "web_audio/AudioContextContentBuilder.ts | state": {
     "message": "State"
   },
-  "web_audio/AudioContextSelector.js | audioContextS": {
+  "web_audio/AudioContextSelector.ts | audioContextS": {
     "message": "Audio context: {PH1}"
   },
-  "web_audio/AudioContextSelector.js | noRecordings": {
+  "web_audio/AudioContextSelector.ts | noRecordings": {
     "message": "(no recordings)"
   },
-  "web_audio/ModuleUIStrings.js | audio": {
+  "web_audio/ModuleUIStrings.ts | audio": {
     "message": "audio"
   },
-  "web_audio/ModuleUIStrings.js | webaudio": {
+  "web_audio/ModuleUIStrings.ts | webaudio": {
     "message": "WebAudio"
   },
-  "web_audio/WebAudioView.js | openAPageThatUsesWebAudioApiTo": {
+  "web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Open a page that uses Web Audio API to start monitoring."
   },
   "webauthn/ModuleUIStrings.js | webauthn": {

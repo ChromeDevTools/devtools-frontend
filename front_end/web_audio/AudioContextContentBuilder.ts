@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
@@ -43,14 +44,13 @@ export const UIStrings = {
   */
   renderCapacity: 'Render Capacity',
 };
-const str_ = i18n.i18n.registerUIStrings('web_audio/AudioContextContentBuilder.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('web_audio/AudioContextContentBuilder.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ContextDetailBuilder {
-  /**
-   * @param {!Protocol.WebAudio.BaseAudioContext} context
-   */
-  constructor(context) {
+  _fragment: DocumentFragment;
+  _container: HTMLDivElement;
+  constructor(context: Protocol.WebAudio.BaseAudioContext) {
     this._fragment = document.createDocumentFragment();
     this._container = document.createElement('div');
     this._container.classList.add('context-detail-container');
@@ -58,10 +58,7 @@ export class ContextDetailBuilder {
     this._build(context);
   }
 
-  /**
-   * @param {!Protocol.WebAudio.BaseAudioContext} context
-   */
-  _build(context) {
+  _build(context: Protocol.WebAudio.BaseAudioContext): void {
     const title = context.contextType === 'realtime' ? i18nString(UIStrings.audiocontext) :
                                                        i18nString(UIStrings.offlineaudiocontext);
     this._addTitle(title, context.contextId);
@@ -73,68 +70,50 @@ export class ContextDetailBuilder {
     this._addEntry(i18nString(UIStrings.maxOutputChannels), context.maxOutputChannelCount, 'ch');
   }
 
-  /**
-   * @param {string} title
-   * @param {string} subtitle
-   */
-  _addTitle(title, subtitle) {
+  _addTitle(title: string, subtitle: string): void {
     this._container.appendChild(UI.Fragment.html`
-      <div class="context-detail-header">
-        <div class="context-detail-title">${title}</div>
-        <div class="context-detail-subtitle">${subtitle}</div>
-      </div>
-    `);
+  <div class="context-detail-header">
+  <div class="context-detail-title">${title}</div>
+  <div class="context-detail-subtitle">${subtitle}</div>
+  </div>
+  `);
   }
 
-  /**
-   * @param {string} entry
-   * @param {(string|number)} value
-   * @param {string=} unit
-   */
-  _addEntry(entry, value, unit) {
+  _addEntry(entry: string, value: string|number, unit?: string|undefined): void {
     const valueWithUnit = value + (unit ? ` ${unit}` : '');
     this._container.appendChild(UI.Fragment.html`
-      <div class="context-detail-row">
-        <div class="context-detail-row-entry">${entry}</div>
-        <div class="context-detail-row-value">${valueWithUnit}</div>
-      </div>
-    `);
+  <div class="context-detail-row">
+  <div class="context-detail-row-entry">${entry}</div>
+  <div class="context-detail-row-value">${valueWithUnit}</div>
+  </div>
+  `);
   }
 
-  /**
-   * @return {!DocumentFragment}
-   */
-  getFragment() {
+  getFragment(): DocumentFragment {
     return this._fragment;
   }
 }
 
 export class ContextSummaryBuilder {
-  /**
-   * @param {!Protocol.WebAudio.GraphObjectId} contextId
-   * @param {!Protocol.WebAudio.ContextRealtimeData} contextRealtimeData
-   */
-  constructor(contextId, contextRealtimeData) {
+  _fragment: DocumentFragment;
+  constructor(contextId: string, contextRealtimeData: Protocol.WebAudio.ContextRealtimeData) {
     const time = contextRealtimeData.currentTime.toFixed(3);
     const mean = (contextRealtimeData.callbackIntervalMean * 1000).toFixed(3);
     const stddev = (Math.sqrt(contextRealtimeData.callbackIntervalVariance) * 1000).toFixed(3);
     const capacity = (contextRealtimeData.renderCapacity * 100).toFixed(3);
     this._fragment = document.createDocumentFragment();
     this._fragment.appendChild(UI.Fragment.html`
-      <div class="context-summary-container">
-        <span>${i18nString(UIStrings.currentTime)}: ${time} s</span>
-        <span>\u2758</span>
-        <span>${i18nString(UIStrings.callbackInterval)}: μ = ${mean} ms, σ = ${stddev} ms</span>
-        <span>\u2758</span>
-        <span>${i18nString(UIStrings.renderCapacity)}: ${capacity} %</span>
-      </div>
-    `);
+  <div class="context-summary-container">
+  <span>${i18nString(UIStrings.currentTime)}: ${time} s</span>
+  <span>\u2758</span>
+  <span>${i18nString(UIStrings.callbackInterval)}: μ = ${mean} ms, σ = ${stddev} ms</span>
+  <span>\u2758</span>
+  <span>${i18nString(UIStrings.renderCapacity)}: ${capacity} %</span>
+  </div>
+  `);
   }
 
-  /**
-   * @return {!DocumentFragment}
-   */
-  getFragment() {
+  getFragment(): DocumentFragment {
     return this._fragment;
   }
 }

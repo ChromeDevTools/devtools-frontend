@@ -13,4 +13,4 @@ export const UIStrings = {
   */
   audio: 'audio',
 };
-i18n.i18n.registerUIStrings('web_audio/ModuleUIStrings.js', UIStrings);
+i18n.i18n.registerUIStrings('web_audio/ModuleUIStrings.ts', UIStrings);

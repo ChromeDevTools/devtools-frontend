@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
@@ -17,23 +18,23 @@ export const UIStrings = {
   */
   audioContextS: 'Audio context: {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('web_audio/AudioContextSelector.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('web_audio/AudioContextSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/**
- * @implements {UI.SoftDropDown.Delegate<!Protocol.WebAudio.BaseAudioContext>}
- */
-export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
+export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper implements
+    UI.SoftDropDown.Delegate<Protocol.WebAudio.BaseAudioContext> {
+  _placeholderText: string;
+  _items: UI.ListModel.ListModel<Protocol.WebAudio.BaseAudioContext>;
+  _dropDown: UI.SoftDropDown.SoftDropDown<Protocol.WebAudio.BaseAudioContext>;
+  _toolbarItem: UI.Toolbar.ToolbarItem;
+  _selectedContext: Protocol.WebAudio.BaseAudioContext|null;
   constructor() {
     super();
 
-    /** @type {string} */
     this._placeholderText = i18nString(UIStrings.noRecordings);
 
-    /** @type {!UI.ListModel.ListModel<!Protocol.WebAudio.BaseAudioContext>} */
     this._items = new UI.ListModel.ListModel();
 
-    /** @type {!UI.SoftDropDown.SoftDropDown<!Protocol.WebAudio.BaseAudioContext>} */
     this._dropDown = new UI.SoftDropDown.SoftDropDown(this._items, this);
     this._dropDown.setPlaceholderText(this._placeholderText);
 
@@ -43,11 +44,10 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
     this._items.addEventListener(UI.ListModel.Events.ItemsReplaced, this._onListItemReplaced, this);
     this._toolbarItem.element.classList.add('toolbar-has-dropdown');
 
-    /** @type {?Protocol.WebAudio.BaseAudioContext} */
     this._selectedContext = null;
   }
 
-  _onListItemReplaced() {
+  _onListItemReplaced(): void {
     const hasItems = Boolean(this._items.length);
     this._toolbarItem.setEnabled(hasItems);
     if (!hasItems) {
@@ -55,11 +55,8 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  contextCreated(event) {
-    const context = /** @type {!Protocol.WebAudio.BaseAudioContext} */ (event.data);
+  contextCreated(event: Common.EventTarget.EventTargetEvent): void {
+    const context = (event.data as Protocol.WebAudio.BaseAudioContext);
     this._items.insert(this._items.length, context);
 
     // Select if this is the first item.
@@ -68,23 +65,19 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  contextDestroyed(event) {
-    const contextId = /** @type {!Protocol.WebAudio.GraphObjectId} */ (event.data);
-    const contextIndex = this._items.findIndex(context => context.contextId === contextId);
+  contextDestroyed(event: Common.EventTarget.EventTargetEvent): void {
+    const contextId = (event.data as string);
+    const contextIndex = this._items.findIndex(
+        (context: Protocol.WebAudio.BaseAudioContext): boolean => context.contextId === contextId);
     if (contextIndex > -1) {
       this._items.remove(contextIndex);
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  contextChanged(event) {
-    const changedContext = /** @type {!Protocol.WebAudio.BaseAudioContext} */ (event.data);
-    const contextIndex = this._items.findIndex(context => context.contextId === changedContext.contextId);
+  contextChanged(event: Common.EventTarget.EventTargetEvent): void {
+    const changedContext = (event.data as Protocol.WebAudio.BaseAudioContext);
+    const contextIndex = this._items.findIndex(
+        (context: Protocol.WebAudio.BaseAudioContext): boolean => context.contextId === changedContext.contextId);
     if (contextIndex > -1) {
       this._items.replace(contextIndex, changedContext);
 
@@ -96,12 +89,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @override
-   * @param {!Protocol.WebAudio.BaseAudioContext} item
-   * @return {!Element}
-   */
-  createElementForItem(item) {
+  createElementForItem(item: Protocol.WebAudio.BaseAudioContext): Element {
     const element = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
         element,
@@ -111,10 +99,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
     return element;
   }
 
-  /**
-   * @return {?Protocol.WebAudio.BaseAudioContext}
-   */
-  selectedContext() {
+  selectedContext(): Protocol.WebAudio.BaseAudioContext|null {
     if (!this._selectedContext) {
       return null;
     }
@@ -122,14 +107,9 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
     return this._selectedContext;
   }
 
-  /**
-   * @override
-   * @param {?Protocol.WebAudio.BaseAudioContext} from
-   * @param {?Protocol.WebAudio.BaseAudioContext} to
-   * @param {?Element} fromElement
-   * @param {?Element} toElement
-   */
-  highlightedItemChanged(from, to, fromElement, toElement) {
+  highlightedItemChanged(
+      from: Protocol.WebAudio.BaseAudioContext|null, to: Protocol.WebAudio.BaseAudioContext|null,
+      fromElement: Element|null, toElement: Element|null): void {
     if (fromElement) {
       fromElement.classList.remove('highlighted');
     }
@@ -138,20 +118,11 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @override
-   * @param {!Protocol.WebAudio.BaseAudioContext} item
-   * @return {boolean}
-   */
-  isItemSelectable(item) {
+  isItemSelectable(_item: Protocol.WebAudio.BaseAudioContext): boolean {
     return true;
   }
 
-  /**
-   * @override
-   * @param {?Protocol.WebAudio.BaseAudioContext} item
-   */
-  itemSelected(item) {
+  itemSelected(item: Protocol.WebAudio.BaseAudioContext|null): void {
     if (!item) {
       return;
     }
@@ -165,28 +136,19 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.ContextSelected, item);
   }
 
-  reset() {
+  reset(): void {
     this._items.replaceAll([]);
   }
 
-  /**
-   * @override
-   * @param {!Protocol.WebAudio.BaseAudioContext} context
-   * @return {string}
-   */
-  titleFor(context) {
+  titleFor(context: Protocol.WebAudio.BaseAudioContext): string {
     return `${context.contextType} (${context.contextId.substr(-6)})`;
   }
 
-  /**
-   * @return {!UI.Toolbar.ToolbarItem}
-   */
-  toolbarItem() {
+  toolbarItem(): UI.Toolbar.ToolbarItem {
     return this._toolbarItem;
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  ContextSelected: Symbol('ContextSelected')
-};
+export const enum Events {
+  ContextSelected = 'ContextSelected'
+}

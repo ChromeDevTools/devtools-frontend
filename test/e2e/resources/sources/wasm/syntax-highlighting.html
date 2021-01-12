@@ -1,0 +1,35 @@
+<!--
+  Copyright 2021 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Syntax Highlighting</title>
+    <script>
+      (async () => {
+        const instance = await WebAssembly.instantiateStreaming(fetch('syntax-highlighting.wasm'));
+      })().catch(console.error);
+    </script>
+  </head>
+  <body>
+    <h1>Syntax Highlightinh</h1>
+    <p>
+      As a developer, I want to be able to look at syntax highlighted raw wasm.
+    </p>
+
+    <h2>Steps</h2>
+
+    <p>
+      <ol>
+        <li>Open DevTools</li>
+        <li>Open syntax-highlighting.wasm</li>
+        <li>Check format of variable names</li>
+        <li>Check format of keywords</li>
+        <li>Check format of comment</li>
+        <li>Check format of string</li>
+      </ol>
+    </p>
+  </body>
+</html>

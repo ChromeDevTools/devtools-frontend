@@ -40,6 +40,8 @@ copy_to_gen("sources") {
     "wasm/stepping-with-state-and-threads.html",
     "wasm/stepping-with-state.html",
     "wasm/stepping-with-state.wasm",
+    "wasm/syntax-highlighting.html",
+    "wasm/syntax-highlighting.wasm",
     "wasm/unreachable.html",
     "wasm/unreachable.ll",
     "wasm/unreachable.wasm",

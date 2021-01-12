@@ -333,7 +333,7 @@ export const subtract = function(u, v) {
 
 /**
  * @param {!Vector} v
- * @param {!CSSMatrix} m
+ * @param {!DOMMatrix} m
  * @return {!Vector}
  */
 export const multiplyVectorByMatrixAndNormalize = function(v, m) {
@@ -427,7 +427,7 @@ export const turnsToRadians = function(turns) {
 };
 
 /**
- * @param {!CSSMatrix} matrix
+ * @param {!DOMMatrix} matrix
  * @param {!Array.<number>} points
  * @param {{minX: number, maxX: number, minY: number, maxY: number}=} aggregateBounds
  * @return {!{minX: number, maxX: number, minY: number, maxY: number}}

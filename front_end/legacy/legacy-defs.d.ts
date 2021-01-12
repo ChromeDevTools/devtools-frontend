@@ -31,16 +31,6 @@ interface Uint32Array {
   upperBound(value: number, comparator?: {(a: number, b: number): number}, left?: number, right?: number): number;
 }
 
-// Type alias for the Closure-supported ITemplateArray which is equivalent
-// to TemplateStringsArray in TypeScript land
-type ITemplateArray = TemplateStringsArray
-
-// Type alias for the type that has been removed in Chrome 54.
-type FileError = DOMError;
-
-// Type alias for DOMMatrix, formerly known as WebKitCSSMatrix.
-type CSSMatrix = DOMMatrix;
-
 interface String {
   compareTo(other: string): number;
   trimEndWithMaxLength(maxLength: number): string;
@@ -63,7 +53,7 @@ interface Int32Array {
   lowerBound(object: number, comparator?: {(a: number, b: number): number}, left?: number, right?: number): number;
 }
 
-declare let ls: (template: ITemplateArray|string, ...args: any[]) => string;
+declare let ls: (template: TemplateStringsArray|string, ...args: any[]) => string;
 
 declare class AnchorBox {
   x: number;

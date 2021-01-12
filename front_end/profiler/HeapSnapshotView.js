@@ -1817,7 +1817,7 @@ export class HeapProfileHeader extends ProfileHeader {
   /**
    * @override
    * @param {!File} file
-   * @return {!Promise<?FileError>}
+   * @return {!Promise<?DOMError>}
    */
   async loadFromFile(file) {
     this.updateStatus(Common.UIString.UIString('Loading…'), true);

@@ -157,7 +157,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     /**
-     * @param {!FileError} error
+     * @param {!DOMError} error
      */
     function errorHandler(error) {
       const errorMessage = IsolatedFileSystem.errorMessage(error);
@@ -339,9 +339,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     /**
-     * @param {!FileError} error
+     * @param {!DOMError} error
      * @this {IsolatedFileSystem}
-     * TODO(jsbell): Update externs replacing FileError with DOMException. https://crbug.com/496901
+     * TODO(jsbell): Update externs replacing DOMError with DOMException. https://crbug.com/496901
      */
     function errorHandler(error) {
       const errorMessage = IsolatedFileSystem.errorMessage(error);

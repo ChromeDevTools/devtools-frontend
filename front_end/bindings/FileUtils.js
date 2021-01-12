@@ -60,7 +60,7 @@ export class ChunkedReader {
   }
 
   /**
-   * @return {?FileError}
+   * @return {?DOMError}
    */
   error() {
     throw new Error('Not implemented yet');
@@ -85,7 +85,7 @@ export class ChunkedFileReader {
     this._chunkTransferredCallback = chunkTransferredCallback;
     this._decoder = new TextDecoder();
     this._isCanceled = false;
-    /** @type {?FileError} */
+    /** @type {?DOMError} */
     this._error = null;
     /** @type {function(boolean):void} */
     this._transferFinished;
@@ -145,7 +145,7 @@ export class ChunkedFileReader {
 
   /**
    * @override
-   * @return {?FileError}
+   * @return {?DOMError}
    */
   error() {
     return this._error;
@@ -206,7 +206,7 @@ export class ChunkedFileReader {
    */
   _onError(event) {
     const eventTarget = /** @type {!FileReader} */ (event.target);
-    this._error = /** @type {!FileError} */ (eventTarget.error);
+    this._error = /** @type {!DOMError} */ (eventTarget.error);
     this._transferFinished(false);
   }
 }

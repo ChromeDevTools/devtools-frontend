@@ -95,12 +95,12 @@ export class TempFile {
   /**
    * @param {!Common.StringOutputStream.OutputStream} outputStream
    * @param {function(!ChunkedReader)=} progress
-   * @return {!Promise<?FileError>}
+   * @return {!Promise<?DOMError>}
    */
   async copyToOutputStream(outputStream, progress) {
     if (!this._lastBlob) {
       outputStream.close();
-      return /** @type {?FileError} */ (null);
+      return /** @type {?DOMError} */ (null);
     }
     const reader = new ChunkedFileReader(/** @type {!File} */ (this._lastBlob), 10 * 1000 * 1000, progress);
     return reader.read(outputStream).then(success => success ? null : reader.error());
@@ -187,7 +187,7 @@ export class TempFileBackingStorage {
 
   /**
    * @param {!Common.StringOutputStream.OutputStream} outputStream
-   * @return {!Promise<?FileError>}
+   * @return {!Promise<?DOMError>}
    */
   writeToStream(outputStream) {
     return this._file ? this._file.copyToOutputStream(outputStream) : Promise.resolve(null);

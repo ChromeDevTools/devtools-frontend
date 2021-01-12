@@ -221,7 +221,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!Common.StringOutputStream.OutputStream} stream
-   * @return {!Promise<?FileError>}
+   * @return {!Promise<?DOMError>}
    */
   save(stream) {
     if (!this._tracingModel) {

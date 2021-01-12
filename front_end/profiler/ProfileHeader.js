@@ -84,7 +84,7 @@ export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!File} file
-   * @return {!Promise<?Error|?FileError>}
+   * @return {!Promise<?Error|?DOMError>}
    */
   loadFromFile(file) {
     throw new Error('Not implemented');
@@ -267,7 +267,7 @@ export class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
 
   /**
    * @param {!File} file
-   * @return {!Promise<?Error|?FileError>}
+   * @return {!Promise<?Error|?DOMError>}
    */
   loadFromFile(file) {
     let name = file.name;

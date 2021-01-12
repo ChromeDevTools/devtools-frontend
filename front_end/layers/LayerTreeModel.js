@@ -544,7 +544,7 @@ export class AgentLayer {
 
   /**
    * @param {!Array.<number>} a
-   * @return {!CSSMatrix}
+   * @return {!DOMMatrix}
    */
   _matrixFromArray(a) {
     /**
@@ -557,8 +557,8 @@ export class AgentLayer {
   }
 
   /**
-   * @param {!CSSMatrix} parentTransform
-   * @return {!CSSMatrix}
+   * @param {!DOMMatrix} parentTransform
+   * @return {!DOMMatrix}
    */
   _calculateTransformToViewport(parentTransform) {
     const offsetMatrix = new WebKitCSSMatrix().translate(this._layerPayload.offsetX, this._layerPayload.offsetY);
@@ -588,7 +588,7 @@ export class AgentLayer {
   }
 
   /**
-   * @param {!CSSMatrix} parentTransform
+   * @param {!DOMMatrix} parentTransform
    */
   _calculateQuad(parentTransform) {
     const matrix = this._calculateTransformToViewport(parentTransform);

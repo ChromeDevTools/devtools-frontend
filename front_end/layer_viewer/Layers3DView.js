@@ -428,7 +428,7 @@ export class Layers3DView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!CSSMatrix} m
+   * @param {!DOMMatrix} m
    * @return {!Float32Array}
    */
   _arrayFromMatrix(m) {
@@ -1374,7 +1374,7 @@ export class Rectangle {
 
   /**
    * Intersects quad with given transform matrix and line l(t) = (x0, y0, t)
-   * @param {!CSSMatrix} matrix
+   * @param {!DOMMatrix} matrix
    * @param {number} x0
    * @param {number} y0
    * @return {(number|undefined)}

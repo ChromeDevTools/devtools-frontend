@@ -79,7 +79,7 @@ export class UIStringFormat {
 
 const _substitutionStrings = new WeakMap();
 
-export function ls(strings: ITemplateArray|string, ...vararg: unknown[]): LocalizedString {
+export function ls(strings: TemplateStringsArray|string, ...vararg: unknown[]): LocalizedString {
   if (typeof strings === 'string') {
     return strings as LocalizedString;
   }

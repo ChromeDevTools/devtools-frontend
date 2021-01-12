@@ -251,7 +251,7 @@ export const html = (strings, ...vararg) => {
   return Fragment.cached(strings, ...vararg).element();
 };
 
-/** @typedef {(!Array<string>|!ITemplateArray)} */
+/** @typedef {(!Array<string>|!TemplateStringsArray)} */
 // @ts-ignore typedef
 export let TemplateDefinition;
 

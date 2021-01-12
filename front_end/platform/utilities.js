@@ -601,26 +601,6 @@ export function assertNever(type, message) {
   throw new Error(message);
 }
 
-const _singletonSymbol = Symbol('singleton');
-
-/**
- * @template T
- * @param {function(new:T)} constructorFunction
- * @return {!T}
- */
-// @ts-ignore https://crbug.com/1050549
-self.singleton = function(constructorFunction) {
-  if (_singletonSymbol in constructorFunction) {
-    // @ts-ignore We literally just confirmed this exists.
-    return constructorFunction[_singletonSymbol];
-  }
-  // @ts-ignore https://crbug.com/1050549
-  const instance = new constructorFunction();
-  // @ts-ignore https://crbug.com/1050549
-  constructorFunction[_singletonSymbol] = instance;
-  return instance;
-};
-
 /**
  * @param {?string} content
  * @return {number}

@@ -27,6 +27,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -200,7 +201,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         value = '\u2012';
       }
       value = value.replace(/px$/, '');
-      value = Number.toFixedIfFloating(value);
+      value = Platform.NumberUtilities.toFixedIfFloating(value);
 
       element.textContent = value;
       element.addEventListener('dblclick', this.startEditing.bind(this, element, name, propertyName, style), false);
@@ -225,7 +226,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         width = (widthValue - borderBox.left - borderBox.right - paddingBox.left - paddingBox.right).toString();
       }
 
-      return Number.toFixedIfFloating(width);
+      return Platform.NumberUtilities.toFixedIfFloating(width);
     }
 
     /**
@@ -246,7 +247,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         height = (heightValue - borderBox.top - borderBox.bottom - paddingBox.top - paddingBox.bottom).toString();
       }
 
-      return Number.toFixedIfFloating(height);
+      return Platform.NumberUtilities.toFixedIfFloating(height);
     }
 
     // Display types for which margin is ignored.

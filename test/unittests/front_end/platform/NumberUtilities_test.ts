@@ -52,4 +52,26 @@ describe('NumberUtilities', () => {
       assert.deepEqual(Platform.NumberUtilities.bytesToString(twoHundredAndTenMegabytes), '210\xA0MB');
     });
   });
+
+  describe('toFixedIfFloating', () => {
+    it('converts a decimal to a fixed string with 3 decimal places', () => {
+      const output = Platform.NumberUtilities.toFixedIfFloating('1.23456');
+      assert.strictEqual(output, '1.235');
+    });
+
+    it('leaves whole numbers alone', () => {
+      const output = Platform.NumberUtilities.toFixedIfFloating('233');
+      assert.strictEqual(output, '233');
+    });
+
+    it('leaves values that parse to NaN alone', () => {
+      const output = Platform.NumberUtilities.toFixedIfFloating('SoNotANumber');
+      assert.strictEqual(output, 'SoNotANumber');
+    });
+
+    it('leaves falsey values alone', () => {
+      const output = Platform.NumberUtilities.toFixedIfFloating('');
+      assert.strictEqual(output, '');
+    });
+  });
 });

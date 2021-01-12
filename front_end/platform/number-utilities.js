@@ -52,3 +52,15 @@ export const bytesToString = bytes => {
   }
   return UIString('%.0f\xA0MB', megabytes);
 };
+
+/**
+ * @param {string} value
+ * @return {string}
+ */
+export const toFixedIfFloating = value => {
+  if (!value || Number.isNaN(Number(value))) {
+    return value;
+  }
+  const number = Number(value);
+  return number % 1 ? number.toFixed(3) : String(number);
+};

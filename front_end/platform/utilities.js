@@ -170,18 +170,6 @@ String.naturalOrderComparator = function(a, b) {
 };
 
 /**
- * @param {string} value
- * @return {string}
- */
-Number.toFixedIfFloating = function(value) {
-  if (!value || Number.isNaN(Number(value))) {
-    return value;
-  }
-  const number = Number(value);
-  return number % 1 ? number.toFixed(3) : String(number);
-};
-
-/**
  * @param {!Array<number>} array
  * @param {function(number, number): number} comparator
  * @param {number} left

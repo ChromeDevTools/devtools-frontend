@@ -58,7 +58,6 @@ interface RegExp {
 
 interface NumberConstructor {
   withThousandsSeparator(num: number): string;
-  toFixedIfFloating(value: string): string;
   secondsToString(seconds: number, higherResolution?: boolean): string;
   millisToString(ms: number, higherResolution?: boolean): string;
   preciseMillisToString(ms: number, precision?: number): string;

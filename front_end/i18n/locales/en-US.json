@@ -2138,94 +2138,94 @@
   "web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Open a page that uses Web Audio API to start monitoring."
   },
-  "webauthn/ModuleUIStrings.js | webauthn": {
+  "webauthn/ModuleUIStrings.ts | webauthn": {
     "message": "WebAuthn"
   },
-  "webauthn/WebauthnPane.js | actions": {
+  "webauthn/WebauthnPane.ts | actions": {
     "message": "Actions"
   },
-  "webauthn/WebauthnPane.js | active": {
+  "webauthn/WebauthnPane.ts | active": {
     "message": "Active"
   },
-  "webauthn/WebauthnPane.js | add": {
+  "webauthn/WebauthnPane.ts | add": {
     "message": "Add"
   },
-  "webauthn/WebauthnPane.js | addAuthenticator": {
+  "webauthn/WebauthnPane.ts | addAuthenticator": {
     "message": "Add authenticator"
   },
-  "webauthn/WebauthnPane.js | authenticatorS": {
+  "webauthn/WebauthnPane.ts | authenticatorS": {
     "message": "Authenticator {PH1}"
   },
-  "webauthn/WebauthnPane.js | credentials": {
+  "webauthn/WebauthnPane.ts | credentials": {
     "message": "Credentials"
   },
-  "webauthn/WebauthnPane.js | editName": {
+  "webauthn/WebauthnPane.ts | editName": {
     "message": "Edit name"
   },
-  "webauthn/WebauthnPane.js | enableVirtualAuthenticator": {
+  "webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "Enable virtual authenticator environment"
   },
-  "webauthn/WebauthnPane.js | export": {
+  "webauthn/WebauthnPane.ts | export": {
     "message": "Export"
   },
-  "webauthn/WebauthnPane.js | id": {
+  "webauthn/WebauthnPane.ts | id": {
     "message": "ID"
   },
-  "webauthn/WebauthnPane.js | isResident": {
+  "webauthn/WebauthnPane.ts | isResident": {
     "message": "Is Resident"
   },
-  "webauthn/WebauthnPane.js | learnMore": {
+  "webauthn/WebauthnPane.ts | learnMore": {
     "message": "Learn more"
   },
-  "webauthn/WebauthnPane.js | newAuthenticator": {
+  "webauthn/WebauthnPane.ts | newAuthenticator": {
     "message": "New authenticator"
   },
-  "webauthn/WebauthnPane.js | no": {
+  "webauthn/WebauthnPane.ts | no": {
     "message": "No"
   },
-  "webauthn/WebauthnPane.js | noCredentialsTryCallingSFromYour": {
+  "webauthn/WebauthnPane.ts | noCredentialsTryCallingSFromYour": {
     "message": "No credentials. Try calling {PH1} from your website."
   },
-  "webauthn/WebauthnPane.js | privateKeypem": {
+  "webauthn/WebauthnPane.ts | privateKeypem": {
     "message": "Private key.pem"
   },
-  "webauthn/WebauthnPane.js | protocol": {
+  "webauthn/WebauthnPane.ts | protocol": {
     "message": "Protocol"
   },
-  "webauthn/WebauthnPane.js | remove": {
+  "webauthn/WebauthnPane.ts | remove": {
     "message": "Remove"
   },
-  "webauthn/WebauthnPane.js | rpId": {
+  "webauthn/WebauthnPane.ts | rpId": {
     "message": "RP ID"
   },
-  "webauthn/WebauthnPane.js | saveName": {
+  "webauthn/WebauthnPane.ts | saveName": {
     "message": "Save name"
   },
-  "webauthn/WebauthnPane.js | setSAsTheActiveAuthenticator": {
+  "webauthn/WebauthnPane.ts | setSAsTheActiveAuthenticator": {
     "message": "Set {PH1} as the active authenticator"
   },
-  "webauthn/WebauthnPane.js | signCount": {
+  "webauthn/WebauthnPane.ts | signCount": {
     "message": "Sign Count"
   },
-  "webauthn/WebauthnPane.js | supportsResidentKeys": {
+  "webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "Supports resident keys"
   },
-  "webauthn/WebauthnPane.js | supportsUserVerification": {
+  "webauthn/WebauthnPane.ts | supportsUserVerification": {
     "message": "Supports user verification"
   },
-  "webauthn/WebauthnPane.js | transport": {
+  "webauthn/WebauthnPane.ts | transport": {
     "message": "Transport"
   },
-  "webauthn/WebauthnPane.js | userHandle": {
+  "webauthn/WebauthnPane.ts | userHandle": {
     "message": "User Handle"
   },
-  "webauthn/WebauthnPane.js | useWebauthnForPhishingresistant": {
+  "webauthn/WebauthnPane.ts | useWebauthnForPhishingresistant": {
     "message": "Use WebAuthn for phishing-resistant authentication"
   },
-  "webauthn/WebauthnPane.js | uuid": {
+  "webauthn/WebauthnPane.ts | uuid": {
     "message": "UUID"
   },
-  "webauthn/WebauthnPane.js | yes": {
+  "webauthn/WebauthnPane.ts | yes": {
     "message": "Yes"
   },
   "workspace/UISourceCode.js | index": {

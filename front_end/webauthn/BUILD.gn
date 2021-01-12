@@ -7,8 +7,8 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("webauthn") {
   sources = [
-    "ModuleUIStrings.js",
-    "WebauthnPane.js",
+    "ModuleUIStrings.ts",
+    "WebauthnPane.ts",
   ]
 
   deps = [
@@ -28,7 +28,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "webauthn-legacy.js"
+  entrypoint = "webauthn-legacy.ts"
 
   deps = [ ":bundle" ]
 }

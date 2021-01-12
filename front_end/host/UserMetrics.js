@@ -277,6 +277,19 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(actionName, experiment, size);
     Common.EventTarget.fireEvent(actionName, {value: experiment});
   }
+
+  /**
+   * @param {!DeveloperResourceLoaded} developerResourceLoaded
+   */
+  developerResourceLoaded(developerResourceLoaded) {
+    const size = Object.keys(DeveloperResourceLoaded).length + 1;
+    if (developerResourceLoaded >= size) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.DeveloperResourceLoaded, developerResourceLoaded, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.DeveloperResourceLoaded, {value: developerResourceLoaded});
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -660,4 +673,16 @@ export const IssueCreated = {
   'SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::SetCookie': 33,
   'SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie': 34,
   'SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie': 35
+};
+
+/** @enum {number} */
+export const DeveloperResourceLoaded = {
+  LoadThroughPageViaTarget: 0,
+  LoadThroughPageViaFrame: 1,
+  LoadThroughPageFailure: 2,
+  LoadThroughPageFallback: 3,
+  FallbackAfterFailure: 4,
+  FallbackPerOverride: 5,
+  FallbackPerProtocol: 6,
+  FallbackFailure: 7,
 };

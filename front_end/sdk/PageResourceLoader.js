@@ -194,25 +194,38 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
       return this._loadOverride(url);
     }
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
-    if (getLoadThroughTargetSetting().get() && parsedURL && parsedURL.isHttpOrHttps()) {
+    const eligibleForLoadFromTarget = getLoadThroughTargetSetting().get() && parsedURL && parsedURL.isHttpOrHttps();
+    if (eligibleForLoadFromTarget) {
       try {
         if (initiator.target) {
+          Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageViaTarget);
           const result = await this._loadFromTarget(initiator.target, initiator.frameId, url);
           return result;
         }
         const frame = FrameManager.instance().getFrame(initiator.frameId || '');
         if (frame) {
+          Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageViaFrame);
           const result = await this._loadFromTarget(frame.resourceTreeModel().target(), initiator.frameId, url);
           return result;
         }
       } catch (e) {
         if (e instanceof Error) {
+          Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageFailure);
           failureReason = e.message;
         }
       }
+      Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageFallback);
       console.warn('Fallback triggered', url, initiator);
+    } else {
+      const code = getLoadThroughTargetSetting().get() ? Host.UserMetrics.DeveloperResourceLoaded.FallbackPerOverride :
+                                                         Host.UserMetrics.DeveloperResourceLoaded.FallbackPerProtocol;
+      Host.userMetrics.developerResourceLoaded(code);
     }
+
     const result = await MultitargetNetworkManager.instance().loadResource(url);
+    if (eligibleForLoadFromTarget && !result.success) {
+      Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.FallbackFailure);
+    }
     if (failureReason) {
       // In case we have a success, add a note about why the load through the target failed.
       result.errorDescription.message =

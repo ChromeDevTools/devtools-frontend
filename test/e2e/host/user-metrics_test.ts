@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {$, click, enableExperiment, getBrowserAndPages, goToResource, platform, pressKey, reloadDevTools, scrollElementIntoView, typeText, waitFor} from '../../shared/helper.js';
+import {$, click, enableExperiment, getBrowserAndPages, goToResource, platform, pressKey, reloadDevTools, scrollElementIntoView, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToCssOverviewTab} from '../helpers/css-overview-helpers.js';
 import {editCSSProperty, focusElementsTree, navigateToSidePane, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
@@ -50,6 +50,7 @@ declare global {
     __issuesPanelIssueExpanded: (evt: Event) => void;
     __issuesPanelResourceOpened: (evt: Event) => void;
     __issuesPanelIssueCreated: (evt: Event) => void;
+    __developerResourceLoaded: (evt: Event) => void;
     Host: {
       UserMetrics: UserMetrics; userMetrics: {
         actionTaken(name: number): void; colorFixed(threshold: string): void; cssEditorOpened(editorName: string): void;
@@ -140,6 +141,11 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.__caughtEvents.push({name: 'DevTools.IssueCreated', value: customEvt.detail.value});
     };
 
+    window.__developerResourceLoaded = (evt: Event) => {
+      const customEvt = evt as CustomEvent;
+      window.__caughtEvents.push({name: 'DevTools.DeveloperResourceLoaded', value: customEvt.detail.value});
+    };
+
     window.__caughtEvents = [];
     window.__beginCatchEvents = () => {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
@@ -158,6 +164,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.addEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
       window.addEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
       window.addEventListener('DevTools.IssueCreated', window.__issuesPanelIssueCreated);
+      window.addEventListener('DevTools.DeveloperResourceLoaded', window.__developerResourceLoaded);
     };
 
     window.__endCatchEvents = () => {
@@ -176,7 +183,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.removeEventListener('DevTools.ColorPicker.FixedColor', window.__colorFixed);
       window.removeEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
       window.removeEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
-      window.removeEventListener('DevTools.IssueCreated', window.__issuesPanelIssueCreated);
+      window.removeEventListener('DevTools.DeveloperResourceLoaded', window.__developerResourceLoaded);
     };
 
     window.__beginCatchEvents();
@@ -198,6 +205,14 @@ async function assertCapturedEvents(expected: UserMetric[]) {
   const events = await retrieveCapturedEvents(frontend);
 
   assert.deepEqual(events, expected);
+}
+
+async function awaitCapturedEvent(expected: UserMetric) {
+  const {frontend} = getBrowserAndPages();
+  await waitForFunction(async () => {
+    const events = await retrieveCapturedEvents(frontend);
+    return events.find(e => e.name === expected.name && e.value === expected.value);
+  });
 }
 
 describe('User Metrics', () => {
@@ -832,6 +847,21 @@ describe('User Metrics for CSS custom properties in the Styles pane', () => {
       },
     ]);
 
+    await endCatchEvents(frontend);
+  });
+});
+
+describe('User Metrics for the Page Resource Loader', () => {
+  it('dispatches an event when a source map is loaded', async () => {
+    const {frontend} = getBrowserAndPages();
+    await beginCatchEvents(frontend);
+    await goToResource('sources/script-with-sourcemap-without-mappings.html');
+    await awaitCapturedEvent(
+        {
+          name: 'DevTools.DeveloperResourceLoaded',
+          value: 0,  // LoadThroughPageViaTarget
+        },
+    );
     await endCatchEvents(frontend);
   });
 });

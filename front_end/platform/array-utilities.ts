@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @return {boolean} True, if any element got removed.
- */
 export const removeElement = <T>(array: T[], element: T, firstOnly?: boolean): boolean => {
   let index = array.indexOf(element);
   if (index === -1) {
@@ -22,3 +19,53 @@ export const removeElement = <T>(array: T[], element: T, firstOnly?: boolean): b
   array.length = index;
   return true;
 };
+
+type NumberComparator = (a: number, b: number) => number;
+
+function swap(array: number[], i1: number, i2: number): void {
+  const temp = array[i1];
+  array[i1] = array[i2];
+  array[i2] = temp;
+}
+
+function partition(
+    array: number[], comparator: NumberComparator, left: number, right: number, pivotIndex: number): number {
+  const pivotValue = array[pivotIndex];
+  swap(array, right, pivotIndex);
+  let storeIndex = left;
+  for (let i = left; i < right; ++i) {
+    if (comparator(array[i], pivotValue) < 0) {
+      swap(array, storeIndex, i);
+      ++storeIndex;
+    }
+  }
+  swap(array, right, storeIndex);
+  return storeIndex;
+}
+
+function quickSortRange(
+    array: number[], comparator: NumberComparator, left: number, right: number, sortWindowLeft: number,
+    sortWindowRight: number): void {
+  if (right <= left) {
+    return;
+  }
+  const pivotIndex = Math.floor(Math.random() * (right - left)) + left;
+  const pivotNewIndex = partition(array, comparator, left, right, pivotIndex);
+  if (sortWindowLeft < pivotNewIndex) {
+    quickSortRange(array, comparator, left, pivotNewIndex - 1, sortWindowLeft, sortWindowRight);
+  }
+  if (pivotNewIndex < sortWindowRight) {
+    quickSortRange(array, comparator, pivotNewIndex + 1, right, sortWindowLeft, sortWindowRight);
+  }
+}
+
+export function sortRange(
+    array: number[], comparator: NumberComparator, leftBound: number, rightBound: number, sortWindowLeft: number,
+    sortWindowRight: number): number[] {
+  if (leftBound === 0 && rightBound === (array.length - 1) && sortWindowLeft === 0 && sortWindowRight >= rightBound) {
+    array.sort(comparator);
+  } else {
+    quickSortRange(array, comparator, leftBound, rightBound, sortWindowLeft, sortWindowRight);
+  }
+  return array;
+}

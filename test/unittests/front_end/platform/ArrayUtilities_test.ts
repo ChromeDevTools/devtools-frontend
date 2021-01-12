@@ -6,6 +6,10 @@ import * as Platform from '../../../../front_end/platform/platform.js';
 
 const {assert} = chai;
 
+function comparator(a: number, b: number): number {
+  return a < b ? -1 : (a > b ? 1 : 0);
+}
+
 describe('ArrayUtilities', () => {
   describe('removeElement', () => {
     it('removes elements', () => {
@@ -34,4 +38,44 @@ describe('ArrayUtilities', () => {
       }
     });
   });
+
+  const fixtures = [
+    [],
+    [1],
+    [2, 1],
+    [6, 4, 2, 7, 10, 15, 1],
+    [10, 44, 3, 6, 56, 66, 10, 55, 32, 56, 2, 5],
+  ];
+  for (let i = 0; i < fixtures.length; i++) {
+    const fixture = fixtures[i];
+
+    it(`sorts ranges, fixture ${i}`, () => {
+      for (let left = 0, l = fixture.length - 1; left < l; ++left) {
+        for (let right = left, r = fixture.length; right < r; ++right) {
+          for (let first = left; first <= right; ++first) {
+            for (let count = 1, k = right - first + 1; count <= k; ++count) {
+              const actual = fixture.slice(0);
+              Platform.ArrayUtilities.sortRange(actual, comparator, left, right, first, first + count - 1);
+              assert.deepStrictEqual(
+                  fixture.slice(0, left), actual.slice(0, left), 'left ' + left + ' ' + right + ' ' + count);
+              assert.deepStrictEqual(
+                  fixture.slice(right + 1), actual.slice(right + 1), 'right ' + left + ' ' + right + ' ' + count);
+
+              const middle = fixture.slice(left, right + 1);
+              middle.sort(comparator);
+              assert.deepStrictEqual(
+                  middle.slice(first - left, first - left + count), actual.slice(first, first + count),
+                  'sorted ' + left + ' ' + right + ' ' + first + ' ' + count);
+
+              const actualRest = actual.slice(first + count, right + 1);
+              actualRest.sort(comparator);
+              assert.deepStrictEqual(
+                  middle.slice(first - left + count), actualRest,
+                  'unsorted ' + left + ' ' + right + ' ' + first + ' ' + count);
+            }
+          }
+        }
+      }
+    });
+  }
 });

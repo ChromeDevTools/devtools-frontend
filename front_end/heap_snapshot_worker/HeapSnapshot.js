@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
+import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 
 import {AllocationProfile} from './AllocationProfile.js';
@@ -3059,11 +3060,14 @@ export class HeapSnapshotEdgesProvider extends HeapSnapshotItemProvider {
     }
 
     if (fieldName1 === '!edgeName') {
-      this._iterationOrder.sortRange(compareEdgeAndNode, leftBound, rightBound, windowLeft, windowRight);
+      Platform.ArrayUtilities.sortRange(
+          this._iterationOrder, compareEdgeAndNode, leftBound, rightBound, windowLeft, windowRight);
     } else if (fieldName2 === '!edgeName') {
-      this._iterationOrder.sortRange(compareNodeAndEdge, leftBound, rightBound, windowLeft, windowRight);
+      Platform.ArrayUtilities.sortRange(
+          this._iterationOrder, compareNodeAndEdge, leftBound, rightBound, windowLeft, windowRight);
     } else {
-      this._iterationOrder.sortRange(compareNodeAndNode, leftBound, rightBound, windowLeft, windowRight);
+      Platform.ArrayUtilities.sortRange(
+          this._iterationOrder, compareNodeAndNode, leftBound, rightBound, windowLeft, windowRight);
     }
   }
 }
@@ -3169,8 +3173,8 @@ export class HeapSnapshotNodesProvider extends HeapSnapshotItemProvider {
       throw new Error('Iteration order not defined');
     }
 
-    this._iterationOrder.sortRange(
-        this._buildCompareFunction(comparator), leftBound, rightBound, windowLeft, windowRight);
+    Platform.ArrayUtilities.sortRange(
+        this._iterationOrder, this._buildCompareFunction(comparator), leftBound, rightBound, windowLeft, windowRight);
   }
 }
 

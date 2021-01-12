@@ -14,9 +14,6 @@ declare global {
     upperBound(value: T, comparator?: (a: T, b: T) => number): number;
     lowerBound(value: T, comparator?: (a: T, b: T) => number): number;
     binaryIndexOf<S>(value: S, comparator: (a: S, b: T) => number): number;
-    sortRange(
-        comparator: (a: T, b: T) => number, leftBound: number, rightBound: number, sortWindowLeft: number,
-        sortWindowRight: number): T[];
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -161,53 +158,6 @@ describe('Utilities', () => {
     for (const fixture of fixtures) {
       testArray(fixture, false);
       testArray(fixture, true);
-    }
-  });
-
-  it('sorts ranges', () => {
-    const fixtures = [
-      [],
-      [1],
-      [2, 1],
-      [6, 4, 2, 7, 10, 15, 1],
-      [10, 44, 3, 6, 56, 66, 10, 55, 32, 56, 2, 5],
-    ];
-
-    function testArray(array: number[]) {
-      function comparator(a: number, b: number) {
-        return a < b ? -1 : (a > b ? 1 : 0);
-      }
-
-      for (let left = 0, l = array.length - 1; left < l; ++left) {
-        for (let right = left, r = array.length; right < r; ++right) {
-          for (let first = left; first <= right; ++first) {
-            for (let count = 1, k = right - first + 1; count <= k; ++count) {
-              const actual = array.slice(0);
-              actual.sortRange(comparator, left, right, first, first + count - 1);
-              assert.deepStrictEqual(
-                  array.slice(0, left), actual.slice(0, left), 'left ' + left + ' ' + right + ' ' + count);
-              assert.deepStrictEqual(
-                  array.slice(right + 1), actual.slice(right + 1), 'right ' + left + ' ' + right + ' ' + count);
-
-              const middle = array.slice(left, right + 1);
-              middle.sort(comparator);
-              assert.deepStrictEqual(
-                  middle.slice(first - left, first - left + count), actual.slice(first, first + count),
-                  'sorted ' + left + ' ' + right + ' ' + first + ' ' + count);
-
-              const actualRest = actual.slice(first + count, right + 1);
-              actualRest.sort(comparator);
-              assert.deepStrictEqual(
-                  middle.slice(first - left + count), actualRest,
-                  'unsorted ' + left + ' ' + right + ' ' + first + ' ' + count);
-            }
-          }
-        }
-      }
-    }
-
-    for (const fixture of fixtures) {
-      testArray(fixture);
     }
   });
 

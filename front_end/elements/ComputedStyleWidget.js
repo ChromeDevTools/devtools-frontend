@@ -30,6 +30,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -142,7 +143,7 @@ const propertySorter = (propA, propB) => {
   }
   const canonicalA = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propA);
   const canonicalB = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propB);
-  return canonicalA.compareTo(canonicalB);
+  return Platform.StringUtilities.compare(canonicalA, canonicalB);
 };
 
 export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {

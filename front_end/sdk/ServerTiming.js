@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Platform from '../platform/platform.js';
 
 import {NameValue} from './NetworkRequest.js';  // eslint-disable-line no-unused-vars
 
@@ -38,7 +39,7 @@ export class ServerTiming {
       }));
       return memo;
     }, /** @type {!Array<!ServerTiming>} */ ([]));
-    serverTimings.sort((a, b) => a.metric.toLowerCase().compareTo(b.metric.toLowerCase()));
+    serverTimings.sort((a, b) => Platform.StringUtilities.compare(a.metric.toLowerCase(), b.metric.toLowerCase()));
     return serverTimings;
   }
 

@@ -425,3 +425,13 @@ export const hashCode = function(string?: string): number {
   s = (s + zi * (p - 1)) % p;
   return Math.abs(s | 0);
 };
+
+export const compare = (a: string, b: string): number => {
+  if (a > b) {
+    return 1;
+  }
+  if (a < b) {
+    return -1;
+  }
+  return 0;
+};

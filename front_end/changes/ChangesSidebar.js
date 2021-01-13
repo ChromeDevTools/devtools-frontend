@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
+import * as Platform from '../platform/platform.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -28,7 +29,7 @@ export class ChangesSidebar extends UI.Widget.Widget {
     this._treeoutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeoutline.setFocusable(false);
     this._treeoutline.registerRequiredCSS('changes/changesSidebar.css', {enableLegacyPatching: true});
-    this._treeoutline.setComparator((a, b) => a.titleAsText().compareTo(b.titleAsText()));
+    this._treeoutline.setComparator((a, b) => Platform.StringUtilities.compare(a.titleAsText(), b.titleAsText()));
     this._treeoutline.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged, this);
     UI.ARIAUtils.markAsTablist(this._treeoutline.contentElement);
 

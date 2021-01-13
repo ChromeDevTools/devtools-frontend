@@ -33,6 +33,7 @@ import * as ClientVariations from '../client_variations/client_variations.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -601,7 +602,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     const treeElement = this._requestHeadersCategory;
     const headers = this._request.requestHeaders().slice();
     headers.sort(function(a, b) {
-      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
     });
     const headersText = this._request.requestHeadersText();
 

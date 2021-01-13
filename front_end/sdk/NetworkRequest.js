@@ -1037,7 +1037,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
 
     this._sortedResponseHeaders = this.responseHeaders.slice();
     this._sortedResponseHeaders.sort(function(a, b) {
-      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
     });
     return this._sortedResponseHeaders;
   }

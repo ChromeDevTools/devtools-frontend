@@ -30,7 +30,6 @@ interface Uint32Array {
 }
 
 interface String {
-  compareTo(other: string): number;
   trimEndWithMaxLength(maxLength: number): string;
   escapeForRegExp(): string;
   trimMiddle(maxLength: number): string;

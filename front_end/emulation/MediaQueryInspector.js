@@ -478,7 +478,7 @@ export class MediaQueryUIModel {
       const myLocation = this.rawLocation();
       const otherLocation = other.rawLocation();
       if (!myLocation && !otherLocation) {
-        return this.mediaText().compareTo(other.mediaText());
+        return Platform.StringUtilities.compare(this.mediaText(), other.mediaText());
       }
       if (myLocation && !otherLocation) {
         return 1;
@@ -491,14 +491,14 @@ export class MediaQueryUIModel {
       }
 
       if (!myLocation || !otherLocation) {
-        // This conditional never uns, because it's dealt with above, but
+        // This conditional never runs, because it's dealt with above, but
         // TypeScript can't follow that by this point both myLocation and
         // otherLocation must exist.
         return 0;
       }
 
-      return myLocation.url.compareTo(otherLocation.url) || myLocation.lineNumber - otherLocation.lineNumber ||
-          myLocation.columnNumber - otherLocation.columnNumber;
+      return Platform.StringUtilities.compare(myLocation.url, otherLocation.url) ||
+          myLocation.lineNumber - otherLocation.lineNumber || myLocation.columnNumber - otherLocation.columnNumber;
     }
 
     const thisMaxWidthExpression = this.maxWidthExpression();

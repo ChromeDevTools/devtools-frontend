@@ -304,8 +304,8 @@ export class CommandMenuProvider extends Provider {
      * @return {number}
      */
     function commandComparator(left, right) {
-      const cats = left.category().compareTo(right.category());
-      return cats ? cats : left.title().compareTo(right.title());
+      const cats = Platform.StringUtilities.compare(left.category(), right.category());
+      return cats ? cats : Platform.StringUtilities.compare(left.title(), right.title());
     }
   }
 

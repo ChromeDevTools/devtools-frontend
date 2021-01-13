@@ -32,6 +32,7 @@ import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as i18n from '../i18n/i18n.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -473,7 +474,7 @@ export class CookiesTable extends UI.Widget.VBox {
      * @return {number}
      */
     function compareTo(property, cookie1, cookie2) {
-      return sortDirection * getValue(cookie1, property).compareTo(getValue(cookie2, property));
+      return sortDirection * Platform.StringUtilities.compare(getValue(cookie1, property), getValue(cookie2, property));
     }
 
     /**

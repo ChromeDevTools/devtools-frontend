@@ -421,7 +421,7 @@ export class EventDataNode extends DataGrid.DataGrid.DataGridNode {
     super(data);
 
     /** @const {!Array<!Protocol.BackgroundService.EventMetadata>} */
-    this._eventMetadata = eventMetadata.sort((m1, m2) => m1.key.compareTo(m2.key));
+    this._eventMetadata = eventMetadata.sort((m1, m2) => Platform.StringUtilities.compare(m1.key, m2.key));
   }
 
   /**

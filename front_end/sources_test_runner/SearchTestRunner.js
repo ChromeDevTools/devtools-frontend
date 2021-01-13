@@ -45,7 +45,9 @@ SourcesTestRunner.runSearchAndDumpResults = function(scope, searchConfig, callba
 
   function searchFinishedCallback() {
     function comparator(searchResultA, searchResultB) {
-      return searchResultA._uiSourceCode.url().compareTo(searchResultB._uiSourceCode.url());
+      const aUrl = searchResultA._uiSourceCode.url();
+      const bUrl = searchResultB._uiSourceCode.url();
+      return aUrl > bUrl ? 1 : bUrl > aUrl ? -1 : 0;
     }
 
     searchResults.sort(comparator);

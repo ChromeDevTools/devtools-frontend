@@ -575,12 +575,31 @@ describe('StringUtilities', () => {
     });
   });
 
-  it('hashes strings', () => {
-    const stringA = ' '.repeat(10000);
-    const stringB = stringA + ' ';
-    const hashA = Platform.StringUtilities.hashCode(stringA);
-    assert.isTrue(hashA !== Platform.StringUtilities.hashCode(stringB));
-    assert.isTrue(isFinite(hashA));
-    assert.isTrue(hashA + 1 !== hashA);
+  describe('hashCode', () => {
+    it('hashes strings', () => {
+      const stringA = ' '.repeat(10000);
+      const stringB = stringA + ' ';
+      const hashA = Platform.StringUtilities.hashCode(stringA);
+      assert.isTrue(hashA !== Platform.StringUtilities.hashCode(stringB));
+      assert.isTrue(isFinite(hashA));
+      assert.isTrue(hashA + 1 !== hashA);
+    });
+  });
+
+  describe('compare', () => {
+    it('returns 1 if the string is > the other string', () => {
+      const result = Platform.StringUtilities.compare('b', 'a');
+      assert.strictEqual(result, 1);
+    });
+
+    it('returns -1 if the string is < the other string', () => {
+      const result = Platform.StringUtilities.compare('a', 'b');
+      assert.strictEqual(result, -1);
+    });
+
+    it('returns 0 if the strings are equal', () => {
+      const result = Platform.StringUtilities.compare('a', 'a');
+      assert.strictEqual(result, 0);
+    });
   });
 });

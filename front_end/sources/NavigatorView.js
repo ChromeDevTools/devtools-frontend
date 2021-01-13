@@ -179,7 +179,7 @@ export class NavigatorView extends UI.Widget.VBox {
     if (typeWeight1 < typeWeight2) {
       return -1;
     }
-    return treeElement1.titleAsText().compareTo(treeElement2.titleAsText());
+    return Platform.StringUtilities.compare(treeElement1.titleAsText(), treeElement2.titleAsText());
   }
 
   /**

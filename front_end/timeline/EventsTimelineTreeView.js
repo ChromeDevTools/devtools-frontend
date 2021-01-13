@@ -86,7 +86,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 
     while (iterators.length) {
       // @ts-ignore crbug.com/1011811 there is no common iterator type between Closure and TypeScript
-      const iterator = iterators.peekLast().next();
+      const iterator = iterators[iterators.length - 1].next();
       if (iterator.done) {
         iterators.pop();
         continue;

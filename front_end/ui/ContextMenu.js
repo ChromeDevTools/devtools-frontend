@@ -375,7 +375,7 @@ export class SubMenu extends Item {
         }
         result.subItems.push(item._buildDescriptor());
       }
-      if (section !== nonEmptySections.peekLast()) {
+      if (section !== nonEmptySections[nonEmptySections.length - 1]) {
         if (!result.subItems) {
           result.subItems = [];
         }

@@ -77,7 +77,7 @@ export class CSSMatchedStyles {
       // Merge UA rules that are sequential and have similar selector/media.
       const cleanMatchedPayload = [];
       for (const ruleMatch of payload) {
-        const lastMatch = cleanMatchedPayload.peekLast();
+        const lastMatch = cleanMatchedPayload[cleanMatchedPayload.length - 1];
         if (!lastMatch || ruleMatch.rule.origin !== 'user-agent' || lastMatch.rule.origin !== 'user-agent' ||
             ruleMatch.rule.selectorList.text !== lastMatch.rule.selectorList.text ||
             mediaText(ruleMatch) !== mediaText(lastMatch)) {

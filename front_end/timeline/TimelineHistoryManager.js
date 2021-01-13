@@ -254,7 +254,8 @@ export class TimelineHistoryManager {
     container.style.width = this._totalHeight * thumbnailAspectRatio + 'px';
     container.style.height = this._totalHeight + 'px';
     const filmStripModel = performanceModel.filmStripModel();
-    const lastFrame = filmStripModel.frames().peekLast();
+    const frames = filmStripModel.frames();
+    const lastFrame = frames[frames.length - 1];
     if (!lastFrame) {
       return container;
     }

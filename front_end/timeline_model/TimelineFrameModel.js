@@ -252,7 +252,7 @@ export class TimelineFrameModel {
     if (this._lastLayerTree) {
       this._lastLayerTree._setPaints(frame._paints);
     }
-    const lastFrame = this._frames.peekLast();
+    const lastFrame = this._frames[this._frames.length - 1];
     if (this._frames.length && lastFrame &&
         (frame.startTime !== lastFrame.endTime || frame.startTime > frame.endTime)) {
       console.assert(

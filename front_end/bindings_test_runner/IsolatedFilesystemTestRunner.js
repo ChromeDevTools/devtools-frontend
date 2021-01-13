@@ -73,7 +73,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
     const pathTokens = path.split('/');
     let node = this.root;
     const folders = pathTokens.slice(0, pathTokens.length - 1);
-    const fileName = pathTokens.peekLast();
+    const fileName = pathTokens[pathTokens.length - 1];
 
     for (const folder of folders) {
       let dir = node._children.get(folder);

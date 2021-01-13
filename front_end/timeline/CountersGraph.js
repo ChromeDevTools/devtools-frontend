@@ -304,7 +304,7 @@ export class Counter {
    * @param {number} value
    */
   appendSample(time, value) {
-    if (this.values.length && this.values.peekLast() === value) {
+    if (this.values.length && this.values[this.values.length - 1] === value) {
       return;
     }
     this.times.push(time);

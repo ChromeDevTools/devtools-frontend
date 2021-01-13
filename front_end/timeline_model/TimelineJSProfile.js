@@ -141,7 +141,7 @@ export class TimelineJSProfileProcessor {
      */
     function truncateJSStack(depth, time) {
       if (lockedJsStackDepth.length) {
-        const lockedDepth = /** @type {number}*/ (lockedJsStackDepth.peekLast());
+        const lockedDepth = /** @type {number}*/ (lockedJsStackDepth[lockedJsStackDepth.length - 1]);
         if (depth < lockedDepth) {
           console.error(`Child stack is shallower (${depth}) than the parent stack (${lockedDepth}) at ${time}`);
           depth = lockedDepth;
@@ -208,7 +208,7 @@ export class TimelineJSProfileProcessor {
       const endTime = e.endTime || e.startTime;
       const minFrames = Math.min(callFrames.length, jsFramesStack.length);
       let i;
-      for (i = lockedJsStackDepth.peekLast() || 0; i < minFrames; ++i) {
+      for (i = lockedJsStackDepth[lockedJsStackDepth.length - 1] || 0; i < minFrames; ++i) {
         const newFrame = callFrames[i];
         const oldFrame = jsFramesStack[i].args['data'];
         if (!equalFrames(newFrame, oldFrame)) {

@@ -459,14 +459,14 @@ export class FilteredListWidget extends UI.Widget.VBox {
           bestItems.splice(index, 0, i);
           if (bestScores.length > bestItemsToCollect) {
             // Best list is too large -> drop last elements.
-            const bestItemLast = bestItems.peekLast();
+            const bestItemLast = bestItems[bestItems.length - 1];
             if (bestItemLast) {
               overflowItems.push(bestItemLast);
             }
             bestScores.length = bestItemsToCollect;
             bestItems.length = bestItemsToCollect;
           }
-          const bestScoreLast = bestScores.peekLast();
+          const bestScoreLast = bestScores[bestScores.length - 1];
           if (bestScoreLast) {
             minBestScore = bestScoreLast;
           }

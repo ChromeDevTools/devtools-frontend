@@ -269,7 +269,7 @@ export class RemoteObjectPreviewFormatter {
    * @return {!Element}
    */
   _renderPropertyPreviewOrAccessor(propertyPath) {
-    const property = propertyPath.peekLast();
+    const property = propertyPath[propertyPath.length - 1];
     if (!property) {
       throw new Error('Could not find property');
     }

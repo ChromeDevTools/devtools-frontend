@@ -269,7 +269,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
        * @param {!SDK.TracingModel.Event} e
        */
       function onEventStart(e) {
-        const index = categoryIndexStack.length ? categoryIndexStack.peekLast() : idleIndex;
+        const index = categoryIndexStack.length ? categoryIndexStack[categoryIndexStack.length - 1] : idleIndex;
         quantizer.appendInterval(e.startTime, /** @type {number} */ (index));
         categoryIndexStack.push(categoryToIndex.get(TimelineUIUtils.eventStyle(e).category) || otherIndex);
       }
@@ -565,7 +565,7 @@ export class TimelineEventOverviewFrames extends TimelineEventOverview {
       ctx.lineTo(x, y + tickDepth);
       ctx.lineTo(x, y);
     }
-    const lastFrame = frames.peekLast();
+    const lastFrame = frames[frames.length - 1];
     if (lastFrame) {
       x = Math.round((lastFrame.startTime + lastFrame.duration - timeOffset) * scale) + offset;
     }

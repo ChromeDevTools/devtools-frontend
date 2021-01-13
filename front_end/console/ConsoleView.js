@@ -665,7 +665,7 @@ export class ConsoleView extends UI.Widget.VBox {
     const viewMessage = this._createViewMessage(message);
     consoleMessageToViewMessage.set(message, viewMessage);
     if (message.type === SDK.ConsoleModel.MessageType.Command || message.type === SDK.ConsoleModel.MessageType.Result) {
-      const lastMessage = this._consoleMessages.peekLast();
+      const lastMessage = this._consoleMessages[this._consoleMessages.length - 1];
       const newTimestamp = lastMessage && messagesSortedBySymbol.get(lastMessage) || 0;
       messagesSortedBySymbol.set(viewMessage, newTimestamp);
     } else {
@@ -771,11 +771,12 @@ export class ConsoleView extends UI.Widget.VBox {
       return;
     }
 
-    if (!preventCollapse && this._tryToCollapseMessages(viewMessage, this._visibleViewMessages.peekLast())) {
+    if (!preventCollapse &&
+        this._tryToCollapseMessages(viewMessage, this._visibleViewMessages[this._visibleViewMessages.length - 1])) {
       return;
     }
 
-    const lastMessage = this._visibleViewMessages.peekLast();
+    const lastMessage = this._visibleViewMessages[this._visibleViewMessages.length - 1];
     if (viewMessage.consoleMessage().type === SDK.ConsoleModel.MessageType.EndGroup) {
       if (lastMessage && !this._currentGroup.messagesHidden()) {
         lastMessage.incrementCloseGroupDecorationCount();
@@ -1069,7 +1070,8 @@ export class ConsoleView extends UI.Widget.VBox {
       this._appendMessageToEnd(startGroupViewMessage);
 
       for (const viewMessageInGroup of viewMessagesInGroup) {
-        viewMessageInGroup.setInSimilarGroup(true, viewMessagesInGroup.peekLast() === viewMessageInGroup);
+        viewMessageInGroup.setInSimilarGroup(
+            true, viewMessagesInGroup[viewMessagesInGroup.length - 1] === viewMessageInGroup);
         this._appendMessageToEnd(viewMessageInGroup, true);
         alreadyAdded.add(viewMessageInGroup.consoleMessage());
       }

@@ -26,7 +26,7 @@ export class FormattedContentBuilder {
   }
 
   addToken(token: string, offset: number): void {
-    const last = this.formattedContent.peekLast();
+    const last = this.formattedContent[this.formattedContent.length - 1];
     if (this.enforceSpaceBetweenWords && last && /\w/.test(last[last.length - 1]) && /\w/.test(token)) {
       this.addSoftSpace();
     }

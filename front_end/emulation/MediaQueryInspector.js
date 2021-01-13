@@ -186,7 +186,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
   _squashAdjacentEqual(models) {
     const filtered = [];
     for (let i = 0; i < models.length; ++i) {
-      const last = filtered.peekLast();
+      const last = filtered[filtered.length - 1];
       if (!last || !last.equals(models[i])) {
         filtered.push(models[i]);
       }

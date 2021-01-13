@@ -311,7 +311,7 @@ export class HeapSnapshotView extends UI.View.SimpleView {
         profileSamples.ids = samples.lastAssignedIds;
         profileSamples.timestamps = samples.timestamps;
         profileSamples.max = samples.sizes;
-        profileSamples.totalTime = Math.max(samples.timestamps.peekLast() || 0, 10000);
+        profileSamples.totalTime = Math.max(samples.timestamps[samples.timestamps.length - 1] || 0, 10000);
         if (this._trackingOverviewGrid) {
           this._trackingOverviewGrid.setSamples(profileSamples);
         }

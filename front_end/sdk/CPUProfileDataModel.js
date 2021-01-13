@@ -287,11 +287,11 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     if (this.samples.length === timestamps.length) {
       // Support for a legacy format where were no timeDeltas.
       // Add an extra timestamp used to calculate the last sample duration.
-      const averageSample = ((timestamps.peekLast() || 0) - timestamps[0]) / (timestamps.length - 1);
-      this.timestamps.push((timestamps.peekLast() || 0) + averageSample);
+      const averageSample = ((timestamps[timestamps.length - 1] || 0) - timestamps[0]) / (timestamps.length - 1);
+      this.timestamps.push((timestamps[timestamps.length - 1] || 0) + averageSample);
     }
     this.profileStartTime = timestamps[0];
-    this.profileEndTime = /** @type {number} */ (timestamps.peekLast());
+    this.profileEndTime = /** @type {number} */ (timestamps[timestamps.length - 1]);
   }
 
   _buildIdToNodeMap() {

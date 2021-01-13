@@ -1667,7 +1667,10 @@ export class FlameChart extends UI.Widget.VBox {
     }
 
     const groupOffsets = this._groupOffsets;
-    const lastGroupOffset = Array.prototype.peekLast.call(groupOffsets);
+    if (groupOffsets === null || groupOffsets === undefined) {
+      return;
+    }
+    const lastGroupOffset = groupOffsets[groupOffsets.length - 1];
     const colorUsage = ThemeSupport.ThemeSupport.ColorUsage;
 
     context.save();
@@ -1823,13 +1826,13 @@ export class FlameChart extends UI.Widget.VBox {
       const groupTop = groupOffsets[i];
       const group = groups[i];
       let firstGroup = true;
-      let last = groupStack.peekLast();
+      let last = groupStack[groupStack.length - 1];
       while (last && last.nestingLevel >= group.style.nestingLevel) {
         groupStack.pop();
         firstGroup = false;
-        last = groupStack.peekLast();
+        last = groupStack[groupStack.length - 1];
       }
-      last = groupStack.peekLast();
+      last = groupStack[groupStack.length - 1];
       const parentGroupVisible = last ? last.visible : false;
       const thisGroupVisible = parentGroupVisible && (!this._isGroupCollapsible(i) || group.expanded);
       groupStack.push({nestingLevel: group.style.nestingLevel, visible: Boolean(thisGroupVisible)});
@@ -2138,7 +2141,7 @@ export class FlameChart extends UI.Widget.VBox {
     /** @type {!Array<{nestingLevel: number, visible: boolean}>} */
     const groupStack = [{nestingLevel: -1, visible: true}];
     const lastGroupLevel =
-        Math.max(levelCount, groups.length ? /** @type {!Group} */ (groups.peekLast()).startLevel + 1 : 0);
+        Math.max(levelCount, groups.length ? /** @type {!Group} */ (groups[groups.length - 1]).startLevel + 1 : 0);
     let level;
     for (level = 0; level < lastGroupLevel; ++level) {
       let parentGroupIsVisible = true;
@@ -2147,16 +2150,16 @@ export class FlameChart extends UI.Widget.VBox {
         ++groupIndex;
         style = groups[groupIndex].style;
         let nextLevel = true;
-        let last = groupStack.peekLast();
+        let last = groupStack[groupStack.length - 1];
         while (last && last.nestingLevel >= style.nestingLevel) {
           groupStack.pop();
           nextLevel = false;
-          last = groupStack.peekLast();
+          last = groupStack[groupStack.length - 1];
         }
         const thisGroupIsVisible =
             groupIndex >= 0 && this._isGroupCollapsible(groupIndex) ? groups[groupIndex].expanded : true;
 
-        last = groupStack.peekLast();
+        last = groupStack[groupStack.length - 1];
         parentGroupIsVisible = last ? last.visible : false;
         visible = Boolean(thisGroupIsVisible) && parentGroupIsVisible;
         groupStack.push({nestingLevel: style.nestingLevel, visible: visible});

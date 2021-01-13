@@ -1739,7 +1739,7 @@ class RedirectExtraInfoBuilder {
 
     if (this._hasExtraInfo) {
       // if we haven't gotten the last responseExtraInfo event, we have to wait for it.
-      const lastItem = this._requests.peekLast();
+      const lastItem = this._requests[this._requests.length - 1];
       if (lastItem && !lastItem.hasExtraResponseInfo()) {
         return;
       }

@@ -130,11 +130,11 @@ export class TimelineModelImpl {
       if (SDK.TracingModel.TracingModel.isAsyncPhase(e.phase) || SDK.TracingModel.TracingModel.isFlowPhase(e.phase)) {
         continue;
       }
-      let last = stack.peekLast();
+      let last = stack[stack.length - 1];
       while (last && last.endTime !== undefined && last.endTime <= e.startTime) {
         stack.pop();
         onEndEvent(last);
-        last = stack.peekLast();
+        last = stack[stack.length - 1];
       }
       if (filter && !filter(e)) {
         continue;
@@ -143,7 +143,7 @@ export class TimelineModelImpl {
         onStartEvent(e);
         stack.push(e);
       } else {
-        onInstantEvent && onInstantEvent(e, stack.peekLast() || null);
+        onInstantEvent && onInstantEvent(e, stack[stack.length - 1] || null);
       }
     }
     while (stack.length) {
@@ -470,7 +470,7 @@ export class TimelineModelImpl {
       let lastMainUrl = null;
       let hasMain = false;
       for (const item of data) {
-        const last = ranges.peekLast();
+        const last = ranges[ranges.length - 1];
         if (!last || item.from > last.to) {
           ranges.push({from: item.from, to: item.to});
         } else {
@@ -676,7 +676,8 @@ export class TimelineModelImpl {
     let target = null;
 
     // Check for legacy CpuProfile event format first.
-    let cpuProfileEvent = events.peekLast();
+    /** @type {(SDK.TracingModel.Event|undefined)} */
+    let cpuProfileEvent = events[events.length - 1];
     if (cpuProfileEvent && cpuProfileEvent.name === RecordType.CpuProfile) {
       const eventData = cpuProfileEvent.args['data'];
       cpuProfile = /** @type {?Protocol.Profiler.Profile} */ (eventData && eventData['cpuProfile']);
@@ -856,17 +857,17 @@ export class TimelineModelImpl {
           this._estimatedTotalBlockingTime += event.duration - 50;
         }
 
-        let last = eventStack.peekLast();
+        let last = eventStack[eventStack.length - 1];
         while (last && last.endTime !== undefined && last.endTime <= event.startTime) {
           eventStack.pop();
-          last = eventStack.peekLast();
+          last = eventStack[eventStack.length - 1];
         }
         if (!this._processEvent(event)) {
           continue;
         }
         if (!SDK.TracingModel.TracingModel.isAsyncPhase(event.phase) && event.duration) {
           if (eventStack.length) {
-            const parent = eventStack.peekLast();
+            const parent = eventStack[eventStack.length - 1];
             if (parent) {
               parent.selfTime -= event.duration;
               if (parent.selfTime < 0) {
@@ -952,7 +953,7 @@ export class TimelineModelImpl {
 
         if (asyncEvent.hasCategory(TimelineModelImpl.Category.LatencyInfo) ||
             asyncEvent.name === RecordType.ImplSideFling) {
-          const lastStep = asyncEvent.steps.peekLast();
+          const lastStep = asyncEvent.steps[asyncEvent.steps.length - 1];
           if (!lastStep) {
             throw new Error('AsyncEvent.steps access is out of bounds.');
           }
@@ -1037,7 +1038,7 @@ export class TimelineModelImpl {
       }
     }
     let pageFrameId = TimelineModelImpl.eventFrameId(event);
-    const last = eventStack.peekLast();
+    const last = eventStack[eventStack.length - 1];
     if (!pageFrameId && last) {
       pageFrameId = TimelineData.forEvent(last).frameId;
     }
@@ -1051,7 +1052,7 @@ export class TimelineModelImpl {
     switch (event.name) {
       case recordTypes.ResourceSendRequest:
       case recordTypes.WebSocketCreate: {
-        timelineData.setInitiator(eventStack.peekLast() || null);
+        timelineData.setInitiator(eventStack[eventStack.length - 1] || null);
         timelineData.url = eventData['url'];
         break;
       }
@@ -1834,7 +1835,7 @@ export class Track {
      * @return {number}
      */
     function peekLastEndTime() {
-      const last = stack.peekLast();
+      const last = stack[stack.length - 1];
       if (last !== undefined) {
         const endTime = last.endTime;
         if (endTime !== undefined) {

@@ -247,7 +247,7 @@ PerformanceTestRunner.forAllEvents = async function(events, callback) {
   const eventStack = [];
 
   for (const event of events) {
-    while (eventStack.length && eventStack.peekLast().endTime <= event.startTime) {
+    while (eventStack.length && eventStack[eventStack.length - 1].endTime <= event.startTime) {
       eventStack.pop();
     }
 

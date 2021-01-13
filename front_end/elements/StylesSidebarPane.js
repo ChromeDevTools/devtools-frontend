@@ -761,7 +761,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
         blocks.push(block);
       }
 
-      const lastBlock = blocks.peekLast();
+      const lastBlock = blocks[blocks.length - 1];
       if (lastBlock) {
         this._idleCallbackManager.schedule(() => {
           const section = new StylePropertiesSection(this, matchedStyles, style);
@@ -2451,7 +2451,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
   _actualRuleLocation() {
     const prefix = this._rulePrefix();
     const lines = prefix.split('\n');
-    const lastLine = lines.peekLast();
+    const lastLine = lines[lines.length - 1];
     const editRange = new TextUtils.TextRange.TextRange(0, 0, lines.length - 1, lastLine ? lastLine.length : 0);
     return this._ruleLocation.rebaseAfterTextEdit(TextUtils.TextRange.TextRange.createFromLocation(0, 0), editRange);
   }

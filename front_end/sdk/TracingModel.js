@@ -443,7 +443,7 @@ export class TracingModel {
 
       case phase.NestableAsyncInstant: {
         if (openEventsStack && openEventsStack.length) {
-          const event = openEventsStack.peekLast();
+          const event = openEventsStack[openEventsStack.length - 1];
           if (event) {
             event._addStep(event);
           }
@@ -497,7 +497,7 @@ export class TracingModel {
       return;
     }
     if (event.phase === phase.AsyncStepInto || event.phase === phase.AsyncStepPast) {
-      const lastStep = asyncEvent.steps.peekLast();
+      const lastStep = asyncEvent.steps[asyncEvent.steps.length - 1];
       if (lastStep && lastStep.phase !== phase.AsyncBegin && lastStep.phase !== event.phase) {
         console.assert(
             false, 'Async event step phase mismatch: ' + lastStep.phase + ' at ' + lastStep.startTime + ' vs. ' +

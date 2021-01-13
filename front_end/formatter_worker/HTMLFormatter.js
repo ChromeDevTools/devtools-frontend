@@ -253,7 +253,7 @@ export class HTMLModel {
       if (lastOffset >= text.length) {
         break;
       }
-      const element = this._stack.peekLast();
+      const element = this._stack[this._stack.length - 1];
       if (!element) {
         break;
       }
@@ -274,7 +274,7 @@ export class HTMLModel {
     }
 
     while (this._stack.length > 1) {
-      const element = this._stack.peekLast();
+      const element = this._stack[this._stack.length - 1];
       if (!element) {
         break;
       }
@@ -301,7 +301,7 @@ export class HTMLModel {
       this._tokens.push(token);
       this._updateDOM(token);
 
-      const element = this._stack.peekLast();
+      const element = this._stack[this._stack.length - 1];
       if (element && (element.name === 'script' || element.name === 'style') && element.openTag &&
           element.openTag.endOffset === lastOffset) {
         return AbortTokenization;
@@ -387,7 +387,7 @@ export class HTMLModel {
    */
   _onTagComplete(tag) {
     if (tag.isOpenTag) {
-      const topElement = this._stack.peekLast();
+      const topElement = this._stack[this._stack.length - 1];
       if (topElement) {
         const tagSet = AutoClosingTags.get(topElement.name);
         if (topElement !== this._document && topElement.openTag && topElement.openTag.selfClosingTag) {
@@ -400,10 +400,10 @@ export class HTMLModel {
       return;
     }
 
-    let lastTag = this._stack.peekLast();
+    let lastTag = this._stack[this._stack.length - 1];
     while (this._stack.length > 1 && lastTag && lastTag.name !== tag.name) {
       this._popElement(autocloseTag(lastTag, tag.startOffset));
-      lastTag = this._stack.peekLast();
+      lastTag = this._stack[this._stack.length - 1];
     }
     if (this._stack.length === 1) {
       return;
@@ -435,7 +435,7 @@ export class HTMLModel {
    * @param {!Tag} openTag
    */
   _pushElement(openTag) {
-    const topElement = this._stack.peekLast();
+    const topElement = this._stack[this._stack.length - 1];
     const newElement = new FormatterElement(openTag.name);
     if (topElement) {
       newElement.parent = topElement;

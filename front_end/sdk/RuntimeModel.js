@@ -529,7 +529,8 @@ export class RuntimeModel extends SDKModel {
    * @return {!Promise<boolean>}
    */
   async checkSideEffectSupport() {
-    const testContext = this.executionContexts().peekLast();
+    const contexts = this.executionContexts();
+    const testContext = contexts[contexts.length - 1];
     if (!testContext) {
       return false;
     }

@@ -367,7 +367,7 @@ class Binding {
    * @param {!Protocol.Page.FrameId} frameId
    */
   _recreateUISourceCodeIfNeeded(frameId) {
-    const sourceMap = this._referringSourceMaps.peekLast();
+    const sourceMap = this._referringSourceMaps[this._referringSourceMaps.length - 1];
     if (!sourceMap || this._activeSourceMap === sourceMap) {
       return;
     }

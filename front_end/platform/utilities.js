@@ -236,18 +236,6 @@ Object.defineProperty(Int32Array.prototype, 'upperBound', {value: Array.prototyp
 
 Object.defineProperty(Float64Array.prototype, 'lowerBound', {value: Array.prototype.lowerBound, configurable: true});
 
-Object.defineProperty(Array.prototype, 'peekLast', {
-  /**
-   * @return {!T|undefined}
-   * @this {Array.<!T>}
-   * @template T
-   */
-  value: function() {
-    return this[this.length - 1];
-  },
-  configurable: true
-});
-
 (function() {
   /**
    * @param {!Array.<T>} array1

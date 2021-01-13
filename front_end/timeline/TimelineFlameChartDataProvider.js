@@ -573,14 +573,15 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           continue;
         }
       }
-      while (openEvents.length &&
-             /** @type {number} */ (/** @type {!SDK.TracingModel.Event} */ (openEvents.peekLast()).endTime) <=
-                 e.startTime) {
+      while (
+          openEvents.length &&
+          /** @type {number} */ (/** @type {!SDK.TracingModel.Event} */ (openEvents[openEvents.length - 1]).endTime) <=
+              e.startTime) {
         openEvents.pop();
       }
       eventToDisallowRoot.set(e, false);
       if (ignoreListingEnabled && this._isIgnoreListedEvent(e)) {
-        const parent = openEvents.peekLast();
+        const parent = openEvents[openEvents.length - 1];
         if (parent && eventToDisallowRoot.get(parent)) {
           continue;
         }
@@ -596,7 +597,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const level = this._currentLevel + openEvents.length;
       const index = this._appendEvent(e, level);
       if (openEvents.length) {
-        this._entryParent[index] = /** @type {!SDK.TracingModel.Event} */ (openEvents.peekLast());
+        this._entryParent[index] = /** @type {!SDK.TracingModel.Event} */ (openEvents[openEvents.length - 1]);
       }
       if (!isExtension && this._performanceModel.timelineModel().isMarkerEvent(e)) {
         // @ts-ignore This is invalid code, but we should keep it for now
@@ -832,7 +833,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const hasFilmStrip = Boolean(screenshots.length);
     this._framesHeader.collapsible = hasFilmStrip;
     this._appendHeader(Common.UIString.UIString('Frames'), this._framesHeader, false /* selectable */);
-    this._frameGroup = this._timelineData.groups.peekLast();
+    this._frameGroup = this._timelineData.groups[this._timelineData.groups.length - 1];
     const style = TimelineUIUtils.markerStyleForFrame();
 
     this._entryTypeByLevel[this._currentLevel] = EntryType.Frame;

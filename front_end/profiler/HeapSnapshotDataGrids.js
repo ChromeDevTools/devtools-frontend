@@ -551,7 +551,7 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
    */
   revealTreeNode(pathToReveal) {
     const height = this._calculateOffset(pathToReveal);
-    const node = /** @type {!HeapSnapshotGridNode} */ (pathToReveal.peekLast());
+    const node = /** @type {!HeapSnapshotGridNode} */ (pathToReveal[pathToReveal.length - 1]);
     const scrollTop = this.scrollContainer.scrollTop;
     const scrollBottom = scrollTop + this.scrollContainer.offsetHeight;
     if (height >= scrollTop && height < scrollBottom) {
@@ -597,7 +597,7 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
       }
       parentNode = node;
     }
-    return height - /** @type {!HeapSnapshotGridNode} */ (pathToReveal.peekLast()).nodeSelfHeight();
+    return height - /** @type {!HeapSnapshotGridNode} */ (pathToReveal[pathToReveal.length - 1]).nodeSelfHeight();
   }
 
   /**

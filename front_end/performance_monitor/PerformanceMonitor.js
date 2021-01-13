@@ -399,7 +399,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
       path.moveTo(x, calcY(0));
       path.lineTo(this._width + 5, calcY(0));
       lastY = calcY(
-          /** @type {!{metrics: !Map<string, number>}} */ (this._metricsBuffer.peekLast()).metrics.get(metricName) ||
+          /** @type {!{metrics: !Map<string, number>}} */ (this._metricsBuffer[this._metricsBuffer.length - 1])
+              .metrics.get(metricName) ||
           0);
       lastX = this._width + 5;
       path.lineTo(lastX, lastY);

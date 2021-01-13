@@ -356,8 +356,8 @@ export class TimelineController {
       }
     } else {
       // Legacy backends support.
-      const mainMetaEvent =
-          metadataEvents.filter(event => event.name === metadataEventTypes.TracingStartedInPage).peekLast();
+      const filteredEvents = metadataEvents.filter(event => event.name === metadataEventTypes.TracingStartedInPage);
+      const mainMetaEvent = filteredEvents[filteredEvents.length - 1];
       if (mainMetaEvent) {
         const pid = mainMetaEvent.thread.process().id();
         if (this._tracingManager) {

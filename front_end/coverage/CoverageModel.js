@@ -478,11 +478,11 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
     const result = [];
     const stack = [];
     for (const entry of ranges) {
-      let top = stack.peekLast();
+      let top = stack[stack.length - 1];
       while (top && top.endOffset <= entry.startOffset) {
         append(top.endOffset, top.count);
         stack.pop();
-        top = stack.peekLast();
+        top = stack[stack.length - 1];
       }
       append(entry.startOffset, top ? top.count : 0);
       stack.push(entry);
@@ -497,7 +497,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
      * @param {number} count
      */
     function append(end, count) {
-      const last = result.peekLast();
+      const last = result[result.length - 1];
       if (last) {
         if (last.end === end) {
           return;
@@ -548,7 +548,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
     const coverageInfo = urlCoverage._ensureEntry(contentProvider, contentLength, startLine, startColumn, type);
     this._coverageByContentProvider.set(contentProvider, coverageInfo);
     const segments = CoverageModel._convertToDisjointSegments(ranges, stamp);
-    const last = segments.peekLast();
+    const last = segments[segments.length - 1];
     if (last && last.end < contentLength) {
       segments.push({end: contentLength, stamp: stamp, count: 0});
     }
@@ -809,7 +809,7 @@ export const mergeSegments = (segmentsA, segmentsB) => {
     const b = segmentsB[indexB];
     const count = (a.count || 0) + (b.count || 0);
     const end = Math.min(a.end, b.end);
-    const last = result.peekLast();
+    const last = result[result.length - 1];
     const stamp = Math.min(a.stamp, b.stamp);
     if (!last || last.count !== count || last.stamp !== stamp) {
       result.push({end: end, count: count, stamp: stamp});

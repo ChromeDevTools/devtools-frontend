@@ -1334,7 +1334,7 @@ export class TimelineUIUtils {
         if (index === 0) {
           value = 0;
         } else if (index === categoryCache.time.length) {
-          value = categoryCache.value.peekLast();
+          value = categoryCache.value[categoryCache.value.length - 1];
         } else {
           const t0 = categoryCache.time[index - 1];
           const t1 = categoryCache.time[index];
@@ -1397,7 +1397,7 @@ export class TimelineUIUtils {
           statsArrays = {time: [], value: []};
           aggregatedStats[category] = statsArrays;
         }
-        if (statsArrays.time.length && statsArrays.time.peekLast() === time || lastTime > time) {
+        if (statsArrays.time.length && statsArrays.time[statsArrays.time.length - 1] === time || lastTime > time) {
           return;
         }
         const lastValue = statsArrays.value.length > 0 ? statsArrays.value[statsArrays.value.length - 1] : 0;
@@ -1425,7 +1425,7 @@ export class TimelineUIUtils {
        */
       function onStartEvent(e) {
         const category = TimelineUIUtils.eventStyle(e).category.name;
-        const parentCategory = categoryStack.length ? categoryStack.peekLast() : null;
+        const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
           categoryChange(parentCategory || null, category, e.startTime);
         }
@@ -1437,7 +1437,7 @@ export class TimelineUIUtils {
        */
       function onEndEvent(e) {
         const category = categoryStack.pop();
-        const parentCategory = categoryStack.length ? categoryStack.peekLast() : null;
+        const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
           categoryChange(category || null, parentCategory || null, e.endTime || 0);
         }

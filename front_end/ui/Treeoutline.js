@@ -344,7 +344,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
       }
     } else if (event.keyCode === 8 /* Backspace */ || event.keyCode === 46 /* Delete */) {
       handled = this.selectedTreeElement.ondelete();
-    } else if (isEnterKey(event)) {
+    } else if (event.key === 'Enter') {
       handled = this.selectedTreeElement.onenter();
     } else if (event.keyCode === Keys.Space.code) {
       handled = this.selectedTreeElement.onspace();

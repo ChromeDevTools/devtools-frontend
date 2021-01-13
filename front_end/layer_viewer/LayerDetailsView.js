@@ -594,7 +594,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
       this._invokeProfilerLink();
     });
     this._paintProfilerLink.addEventListener('keydown', event => {
-      if (isEnterKey(event)) {
+      if (event.key === 'Enter') {
         event.consume();
         this._invokeProfilerLink();
       }

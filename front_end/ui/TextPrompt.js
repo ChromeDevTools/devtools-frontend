@@ -404,7 +404,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
         break;
     }
 
-    if (isEnterKey(event)) {
+    if (event.key === 'Enter') {
       event.preventDefault();
     }
 

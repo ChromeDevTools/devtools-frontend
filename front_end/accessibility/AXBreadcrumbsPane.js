@@ -159,7 +159,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
       } else {
         handled = this._preselectParent();
       }
-    } else if ((isEnterKey(keyboardEvent) ||
+    } else if ((keyboardEvent.key === 'Enter' ||
                 (keyboardEvent.key === 'ArrowRight' && !keyboardEvent.altKey &&
                  preselectedBreadcrumb.axNode().hasOnlyUnloadedChildren()))) {
       handled = this._inspectDOMNode(preselectedBreadcrumb.axNode());

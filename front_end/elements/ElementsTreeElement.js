@@ -1103,7 +1103,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
       const isMetaOrCtrl = UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlOrMeta(keyboardEvent) &&
           !keyboardEvent.altKey && !keyboardEvent.shiftKey;
-      if (isEnterKey(keyboardEvent) && (isMetaOrCtrl || keyboardEvent.isMetaOrCtrlForTest)) {
+      if (keyboardEvent.key === 'Enter' && (isMetaOrCtrl || keyboardEvent.isMetaOrCtrlForTest)) {
         keyboardEvent.consume(true);
         this._editing && this._editing.commit();
       } else if (keyboardEvent.keyCode === UI.KeyboardShortcut.Keys.Esc.code || keyboardEvent.key === 'Escape') {

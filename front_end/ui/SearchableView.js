@@ -398,7 +398,7 @@ export class SearchableView extends VBox {
       event.consume(true);
       return;
     }
-    if (!isEnterKey(event)) {
+    if (!(event.key === 'Enter')) {
       return;
     }
 
@@ -410,10 +410,10 @@ export class SearchableView extends VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    */
   _onReplaceKeyDown(event) {
-    if (isEnterKey(event)) {
+    if (event.key === 'Enter') {
       this._replace();
     }
   }

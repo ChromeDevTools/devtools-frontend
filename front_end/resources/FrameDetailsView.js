@@ -326,7 +326,7 @@ function linkifyIcon(iconType, title, eventHandler) {
     eventHandler();
   });
   span.addEventListener('keydown', event => {
-    if (isEnterKey(event)) {
+    if (event.key === 'Enter') {
       event.consume(true);
       eventHandler();
     }

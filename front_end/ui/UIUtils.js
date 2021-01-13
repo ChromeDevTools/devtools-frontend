@@ -1683,10 +1683,10 @@ export function bindInput(input, apply, validate, numeric, modifierMultiplier) {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    */
   function onKeyDown(event) {
-    if (isEnterKey(event)) {
+    if (event.key === 'Enter') {
       const {valid} = validate(input.value);
       if (valid) {
         apply(input.value);

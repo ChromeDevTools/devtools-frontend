@@ -51,11 +51,11 @@ class AffectedElementsView extends AffectedResourcesView {
   async _appendAffectedElement({backendNodeId, nodeName}) {
     const mainTarget = /** @type {!SDK.SDKModel.Target} */ (SDK.SDKModel.TargetManager.instance().mainTarget());
     const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(mainTarget, backendNodeId);
-    const anchorElement = await Common.Linkifier.Linkifier.linkify(deferredDOMNode);
+    const anchorElement = /** @type {!HTMLElement} */ (await Common.Linkifier.Linkifier.linkify(deferredDOMNode));
     anchorElement.textContent = nodeName;
     anchorElement.addEventListener('click', this._sendTelemetry);
-    anchorElement.addEventListener('keydown', /** @param {!Event} event */ event => {
-      if (isEnterKey(event)) {
+    anchorElement.addEventListener('keydown', /** @param {!KeyboardEvent} event */ event => {
+      if (event.key === 'Enter') {
         this._sendTelemetry();
       }
     });

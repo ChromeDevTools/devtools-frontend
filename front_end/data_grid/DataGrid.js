@@ -1183,7 +1183,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
         handled = true;
         this._deleteCallback(this.selectedNode);
       }
-    } else if (isEnterKey(event)) {
+    } else if (event.key === 'Enter') {
       if (this._editCallback) {
         handled = true;
         const selectedNodeElement = this.selectedNode._element;

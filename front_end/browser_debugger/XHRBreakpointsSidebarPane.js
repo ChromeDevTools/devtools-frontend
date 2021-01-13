@@ -190,7 +190,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
       if (event.key === ' ') {
         this._checkboxClicked(item, enabled);
         handled = true;
-      } else if (isEnterKey(event)) {
+      } else if (event.key === 'Enter') {
         this._labelClicked(item);
         handled = true;
       }

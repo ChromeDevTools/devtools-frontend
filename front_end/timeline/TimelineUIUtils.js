@@ -1632,7 +1632,7 @@ export class TimelineUIUtils {
             TimelineSelection.fromTraceEvent(/** @type {!SDK.TracingModel.Event} */ (initiator)));
       });
       link.addEventListener('keydown', event => {
-        if (isEnterKey(event)) {
+        if (event.key === 'Enter') {
           TimelinePanel.instance().select(
               TimelineSelection.fromTraceEvent(/** @type {!SDK.TracingModel.Event} */ (initiator)));
           event.consume(true);
@@ -1835,7 +1835,7 @@ export class TimelineUIUtils {
     container.addEventListener(
         'click', () => TimelinePanel.instance().select(TimelineSelection.fromTraceEvent(event)), false);
     container.addEventListener('keydown', keyEvent => {
-      if (isEnterKey(keyEvent)) {
+      if (keyEvent.key === 'Enter') {
         TimelinePanel.instance().select(TimelineSelection.fromTraceEvent(event));
         keyEvent.consume(true);
       }

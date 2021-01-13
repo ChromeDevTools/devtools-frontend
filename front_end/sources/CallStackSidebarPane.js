@@ -330,7 +330,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
       this._ignoreListMessageElement.classList.toggle('hidden', true);
     };
     showAllLink.addEventListener('click', showAll);
-    showAllLink.addEventListener('keydown', event => isEnterKey(event) && showAll());
+    showAllLink.addEventListener('keydown', event => event.key === 'Enter' && showAll());
     return element;
   }
 

@@ -23,7 +23,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     this._prompt.setAutocompletionTimeout(0);
     this._prompt.renderAsBlock();
 
-    const proxyElement = this._prompt.attach(this._input);
+    const proxyElement = /** @type {!HTMLElement} */ (this._prompt.attach(this._input));
     this._prompt.setPlaceholder(Common.UIString.UIString('Add new class'));
     this._prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this._onTextChanged, this);
     proxyElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
@@ -49,14 +49,14 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    */
   _onKeyDown(event) {
-    if (!isEnterKey(event) && !isEscKey(event)) {
+    if (!(event.key === 'Enter') && !isEscKey(event)) {
       return;
     }
 
-    if (isEnterKey(event)) {
+    if (event.key === 'Enter') {
       event.consume();
       if (this._prompt.acceptAutoComplete()) {
         return;

@@ -1894,14 +1894,14 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    */
   _onStackViewKeydown(event) {
     const target = /** @type {?HTMLElement} */ (event.target);
     if (!target) {
       return;
     }
-    if (isEnterKey(event)) {
+    if (event.key === 'Enter') {
       const link = stackFrameToURLElement.get(target);
       if (!link) {
         return;

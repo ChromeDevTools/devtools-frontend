@@ -300,7 +300,8 @@ export class Editor {
     this.element = document.createElement('div');
     this.element.classList.add('editor-container');
     this.element.addEventListener('keydown', onKeyDown.bind(null, isEscKey, this._cancelClicked.bind(this)), false);
-    this.element.addEventListener('keydown', onKeyDown.bind(null, isEnterKey, this._commitClicked.bind(this)), false);
+    this.element.addEventListener(
+        'keydown', onKeyDown.bind(null, event => event.key === 'Enter', this._commitClicked.bind(this)), false);
 
     this._contentElement = this.element.createChild('div', 'editor-content');
 
@@ -310,16 +311,16 @@ export class Editor {
     this._cancelButton = createTextButton(
         Common.UIString.UIString('Cancel'), this._cancelClicked.bind(this), '', true /* primary */, 'mousedown');
     this._cancelButton.addEventListener(
-        'keydown', onKeyDown.bind(null, isEnterKey, this._cancelClicked.bind(this)), false);
+        'keydown', onKeyDown.bind(null, event => event.key === 'Enter', this._cancelClicked.bind(this)), false);
     buttonsRow.appendChild(this._cancelButton);
 
     this._errorMessageContainer = this.element.createChild('div', 'list-widget-input-validation-error');
     ARIAUtils.markAsAlert(this._errorMessageContainer);
 
     /**
-     * @param {function(!Event):boolean} predicate
+     * @param {function(!KeyboardEvent):boolean} predicate
      * @param {function():void} callback
-     * @param {!Event} event
+     * @param {!KeyboardEvent} event
      */
     function onKeyDown(predicate, callback, event) {
       if (predicate(event)) {

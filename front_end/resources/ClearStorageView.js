@@ -101,7 +101,7 @@ export class ClearStorageView extends UI.ThrottledWidget.ThrottledWidget {
     this._quotaOverrideControlRow.appendChild(UI.UIUtils.createLabel(Common.UIString.UIString('MB')));
     this._quotaOverrideControlRow.classList.add('hidden');
     this._quotaOverrideEditor.addEventListener('keyup', event => {
-      if (isEnterKey(event)) {
+      if (event.key === 'Enter') {
         this._applyQuotaOverrideFromInputField();
         event.consume(true);
       }

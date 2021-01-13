@@ -265,10 +265,10 @@ export class CoverageListView extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    */
   _onKeyDown(event) {
-    if (!isEnterKey(event)) {
+    if (!(event.key === 'Enter')) {
       return;
     }
     event.consume(true);

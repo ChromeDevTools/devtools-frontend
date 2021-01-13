@@ -676,7 +676,7 @@ export class Linkifier {
         }
       }, false);
       link.addEventListener('keydown', event => {
-        if (isEnterKey(event) && Linkifier._handleClick(event)) {
+        if (event.key === 'Enter' && Linkifier._handleClick(event)) {
           event.consume(true);
         }
       }, false);

@@ -1224,7 +1224,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
    */
   _promptKeyDown(originalContent, event) {
     const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
-    if (isEnterKey(keyboardEvent)) {
+    if (keyboardEvent.key === 'Enter') {
       keyboardEvent.consume();
       this._editingCommitted(originalContent);
       return;

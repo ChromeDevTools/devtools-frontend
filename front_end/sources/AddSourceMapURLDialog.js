@@ -53,10 +53,10 @@ export class AddSourceMapURLDialog extends UI.Widget.HBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    */
   _onKeyDown(event) {
-    if (isEnterKey(event)) {
+    if (event.key === 'Enter') {
       event.consume(true);
       this._apply();
     }

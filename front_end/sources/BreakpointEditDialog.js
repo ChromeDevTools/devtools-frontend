@@ -144,7 +144,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     if (!(event instanceof KeyboardEvent) || !this._editor) {
       return;
     }
-    if (isEnterKey(event) && !event.shiftKey) {
+    if (event.key === 'Enter' && !event.shiftKey) {
       event.consume(true);
       const expression = this._editor.text();
       if (event.ctrlKey ||

@@ -516,7 +516,7 @@ export class SoftContextMenu {
        * that.
        */
       case 'Enter':
-        if (!isEnterKey(keyboardEvent)) {
+        if (!(keyboardEvent.key === 'Enter')) {
           return;
         }
         onEnterOrSpace.call(this);

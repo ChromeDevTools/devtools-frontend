@@ -213,7 +213,7 @@ export class DatabaseQueryView extends UI.Widget.VBox {
    * @param {!KeyboardEvent} event
    */
   _promptKeyDown(event) {
-    if (isEnterKey(event)) {
+    if (event.key === 'Enter') {
       this._enterKeyPressed(event);
       return;
     }

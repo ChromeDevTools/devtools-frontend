@@ -161,7 +161,7 @@ export class InplaceEditor {
      * @return {string}
      */
     function defaultFinishHandler(event) {
-      if (isEnterKey(event)) {
+      if (event.key === 'Enter') {
         return 'commit';
       }
       if (event.keyCode === Keys.Esc.code || event.key === 'Escape') {

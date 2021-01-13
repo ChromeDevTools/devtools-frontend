@@ -677,7 +677,7 @@ export class FlameChart extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Event} e
+   * @param {!KeyboardEvent} e
    */
   _onKeyDown(e) {
     if (!UI.KeyboardShortcut.KeyboardShortcut.hasNoModifiers(e) || !this._timelineData()) {
@@ -723,7 +723,7 @@ export class FlameChart extends UI.Widget.VBox {
         this._selectFirstChild();
         handled = true;
       }
-    } else if (isEnterKey(keyboardEvent)) {
+    } else if (keyboardEvent.key === 'Enter') {
       entrySelected = this._selectFirstEntryInCurrentGroup();
       handled = entrySelected;
     }
@@ -850,7 +850,7 @@ export class FlameChart extends UI.Widget.VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    * @return {boolean}
    */
   _handleSelectionNavigation(event) {
@@ -935,7 +935,7 @@ export class FlameChart extends UI.Widget.VBox {
       this.dispatchEventToListeners(Events.EntrySelected, levelIndexes[indexOnLevel]);
       return true;
     }
-    if (isEnterKey(event)) {
+    if (event.key === 'Enter') {
       event.consume(true);
       this.dispatchEventToListeners(Events.EntryInvoked, this._selectedEntryIndex);
       return true;

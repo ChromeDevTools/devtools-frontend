@@ -197,7 +197,7 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
       searchMatchElement.listItemElement.className = 'search-match';
       searchMatchElement.listItemElement.appendChild(anchor);
       searchMatchElement.listItemElement.addEventListener('keydown', event => {
-        if (isEnterKey(event)) {
+        if (event.key === 'Enter') {
           event.consume(true);
           Common.Revealer.reveal(searchResult.matchRevealable(i));
         }

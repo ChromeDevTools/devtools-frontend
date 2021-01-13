@@ -379,7 +379,8 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
     newDiv.textContent = this._nameElement.textContent;
     this._textPrompt = new ObjectUI.ObjectPropertiesSection.ObjectPropertyPrompt();
     this._textPrompt.renderAsBlock();
-    const proxyElement = this._textPrompt.attachAndStartEditing(newDiv, this._finishEditing.bind(this));
+    const proxyElement =
+        /** @type {!HTMLElement} */ (this._textPrompt.attachAndStartEditing(newDiv, this._finishEditing.bind(this)));
     this._treeElement.listItemElement.classList.add('watch-expression-editing');
     this._treeElement.collapse();
     proxyElement.classList.add('watch-expression-text-prompt-proxy');
@@ -527,7 +528,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
     this._treeElement.title = this._element;
     this._treeElement.listItemElement.classList.add('watch-expression-tree-item');
     this._treeElement.listItemElement.addEventListener('keydown', event => {
-      if (isEnterKey(event) && !this.isEditing()) {
+      if (event.key === 'Enter' && !this.isEditing()) {
         this.startEditing();
         event.consume(true);
       }
@@ -564,10 +565,10 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    */
   _promptKeyDown(event) {
-    if (isEnterKey(event) || isEscKey(event)) {
+    if (event.key === 'Enter' || isEscKey(event)) {
       this._finishEditing(event, isEscKey(event));
     }
   }

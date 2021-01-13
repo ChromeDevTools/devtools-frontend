@@ -740,17 +740,8 @@ self.onInvokeElement = function(element, callback) {
  * @param {!Event} event
  * @return {boolean}
  */
-self.isEnterKey = function(event) {
-  // Check if in IME.
-  return event.keyCode !== 229 && event.key === 'Enter';
-};
-
-/**
- * @param {!Event} event
- * @return {boolean}
- */
 self.isEnterOrSpaceKey = function(event) {
-  return self.isEnterKey(event) || event.key === ' ';
+  return event.key === 'Enter' || event.key === ' ';
 };
 
 /**

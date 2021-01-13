@@ -87,7 +87,7 @@ export const linkifyNodeReference = function(node, options = {
   link.addEventListener('mouseleave', () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(), false);
 
   if (!options.preventKeyboardFocus) {
-    link.addEventListener('keydown', event => isEnterKey(event) && Common.Revealer.reveal(node, false) && false);
+    link.addEventListener('keydown', event => event.key === 'Enter' && Common.Revealer.reveal(node, false) && false);
     link.tabIndex = 0;
     UI.ARIAUtils.markAsLink(link);
   }
@@ -113,7 +113,7 @@ export const linkifyDeferredNodeReference = function(deferredNode, options = {
   link.addEventListener('mousedown', e => e.consume(), false);
 
   if (!options.preventKeyboardFocus) {
-    link.addEventListener('keydown', event => isEnterKey(event) && deferredNode.resolve(onDeferredNodeResolved));
+    link.addEventListener('keydown', event => event.key === 'Enter' && deferredNode.resolve(onDeferredNodeResolved));
     link.tabIndex = 0;
     UI.ARIAUtils.markAsLink(link);
   }

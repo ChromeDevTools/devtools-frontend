@@ -251,9 +251,9 @@ export class FontEditor extends UI.Widget.VBox {
     // We want to prevent the Enter key from propagating to the SwatchPopoverHelper which will close the editor.
     selectInput.addEventListener(
         'keydown',
-        /** @param {!Event} event */
+        /** @param {!KeyboardEvent} event */
         event => {
-          if (isEnterKey(event)) {
+          if (event.key === 'Enter') {
             event.consume();
           }
         },
@@ -556,9 +556,9 @@ class FontPropertyInputs {
     // We want to prevent the Enter key from propagating to the SwatchPopoverHelper which will close the editor.
     unitInput.addEventListener(
         'keydown',
-        /** @param {!Event} event */
+        /** @param {!KeyboardEvent} event */
         event => {
-          if (isEnterKey(event)) {
+          if (event.key === 'Enter') {
             event.consume();
           }
         },
@@ -585,9 +585,9 @@ class FontPropertyInputs {
     // We want to prevent the Enter key from propagating to the SwatchPopoverHelper which will close the editor.
     selectInput.addEventListener(
         'keydown',
-        /** @param {!Event} event */
+        /** @param {!KeyboardEvent} event */
         event => {
-          if (isEnterKey(event)) {
+          if (event.key === 'Enter') {
             event.consume();
           }
         },
@@ -704,7 +704,7 @@ class FontPropertyInputs {
    * @param {!Event=} event
    */
   _toggleInputType(event) {
-    if (event && isEnterKey(event)) {
+    if (event && /** @type {!KeyboardEvent} */ (event).key === 'Enter') {
       event.consume();
     }
     if (this._showSliderMode) {

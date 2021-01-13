@@ -148,9 +148,10 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
     const attributeName = /** @type {!HTMLSpanElement} */ (this._nameElement).textContent || '';
     this._prompt = new ARIAAttributePrompt(ariaMetadata().valuesForProperty(attributeName), this);
     this._prompt.setAutocompletionTimeout(0);
-    const proxyElement = this._prompt.attachAndStartEditing(valueElement, blurListener.bind(this, previousContent));
+    const proxyElement = /** @type {!HTMLElement} */ (
+        this._prompt.attachAndStartEditing(valueElement, blurListener.bind(this, previousContent)));
 
-    proxyElement.addEventListener('keydown', this._editingValueKeyDown.bind(this, previousContent), false);
+    proxyElement.addEventListener('keydown', event => this._editingValueKeyDown(previousContent, event), false);
 
     const selection = valueElement.getComponentSelection();
     if (selection) {
@@ -187,14 +188,14 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
 
   /**
    * @param {string} previousContent
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    */
   _editingValueKeyDown(previousContent, event) {
     if (event.handled) {
       return;
     }
 
-    if (isEnterKey(event)) {
+    if (event.key === 'Enter') {
       const target = /** @type {!HTMLElement} */ (event.target);
       this._editingCommitted(target.textContent || '', previousContent);
       event.consume();

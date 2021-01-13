@@ -13,7 +13,8 @@ const LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR = '#tab-linear-memory-inspector';
 const LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR = DRAWER_PANEL_SELECTOR + ' .tabbed-pane';
 
 describe('Scope View', async () => {
-  it('opens linear memory inspector', async () => {
+  // Needs to be rebaselined after Chromium rolls with V8 changes.
+  it.skip('[crbug.com/1165304] opens linear memory inspector', async () => {
     await enableExperiment('wasmDWARFDebugging');
 
     const {frontend, target} = getBrowserAndPages();

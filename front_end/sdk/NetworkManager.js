@@ -1334,9 +1334,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
    * @param {?Protocol.Emulation.UserAgentMetadata} userAgentMetadataOverride
    */
   setUserAgentOverride(userAgent, userAgentMetadataOverride) {
-    if (this._userAgentOverride === userAgent) {
-      return;
-    }
+    const uaChanged = (this._userAgentOverride !== userAgent);
     this._userAgentOverride = userAgent;
     if (!this._customUserAgent) {
       this._userAgentMetadataOverride = userAgentMetadataOverride;
@@ -1344,7 +1342,10 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     } else {
       this._userAgentMetadataOverride = null;
     }
-    this.dispatchEventToListeners(MultitargetNetworkManager.Events.UserAgentChanged);
+
+    if (uaChanged) {
+      this.dispatchEventToListeners(MultitargetNetworkManager.Events.UserAgentChanged);
+    }
   }
 
   /**

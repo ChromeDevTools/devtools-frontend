@@ -526,6 +526,8 @@ export class DeviceModeToolbar {
       } else {
         this._model.emulate(Type.Responsive, null, null);
       }
+    } else {
+      this._emulateDevice(device);
     }
   }
 

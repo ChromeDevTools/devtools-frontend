@@ -37,7 +37,7 @@ describe('Custom UA-CH emulation', async () => {
     await openDeviceToolbar();
   });
 
-  it('Adding a custom device', async () => {
+  it('Adding and then editing a custom device', async () => {
     await selectEdit();
     const add = await waitFor(ADD_DEVICE_BUTTON_SELECTOR);
     await click(add);
@@ -112,5 +112,44 @@ describe('Custom UA-CH emulation', async () => {
     assert.strictEqual(await targetTextContent('#res-architecture'), 'Bipedal');
     assert.strictEqual(await targetTextContent('#res-model'), 'C-1-Gardener');
     assert.strictEqual(await targetTextContent('#res-ua-full-version'), '1.1.2345');
+
+    // Focus the first item in the device list, which should be the custom entry,
+    // and then click the edit button that should appear.
+    const firstDevice = await waitFor('.devices-list-item');
+    await firstDevice.focus();
+
+    const editButton = await waitFor('.toolbar-button[aria-label="Edit"]');
+    await editButton.click();
+
+    // Make sure the device name field is what's focused.
+    await waitFor(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
+
+    // Skip over to the version field.
+    for (let i = 0; i < 8; ++i) {
+      await tabForwardFrontend();
+    }
+
+    // Change the value.
+    await typeText('1.1.5');
+
+    // Save the changes.
+    await pressKey('Enter');
+
+    // Reload the test page, and verify things working.
+    await target.reload();
+
+    waitForDomNodeToBeVisible('#res-dump-done');
+    assert.strictEqual(await targetTextContent('#res-ua'), 'Test device browser 1.0');
+    assert.strictEqual(await targetTextContent('#res-mobile'), 'true');
+    assert.strictEqual(await targetTextContent('#res-num-brands'), '2');
+    assert.strictEqual(await targetTextContent('#res-brand-0-name'), 'Test browser');
+    assert.strictEqual(await targetTextContent('#res-brand-0-version'), '1.0');
+    assert.strictEqual(await targetTextContent('#res-brand-1-name'), 'Friendly Dragon');
+    assert.strictEqual(await targetTextContent('#res-brand-1-version'), '1.1');
+    assert.strictEqual(await targetTextContent('#res-platform'), 'Cyborg');
+    assert.strictEqual(await targetTextContent('#res-platform-version'), 'C-1');
+    assert.strictEqual(await targetTextContent('#res-architecture'), 'Bipedal');
+    assert.strictEqual(await targetTextContent('#res-model'), 'C-1-Gardener');
+    assert.strictEqual(await targetTextContent('#res-ua-full-version'), '1.1.5');
   });
 });

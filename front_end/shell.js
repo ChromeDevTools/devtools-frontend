@@ -20,4 +20,5 @@ import './sources/sources-meta.js';
 import './profiler/profiler-meta.js';
 import './console/console-meta.js';
 import './coverage/coverage-meta.js';
+import './changes/changes-meta.js';
 // We generate the descriptors in this file, which depend on the runtime.

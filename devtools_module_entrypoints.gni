@@ -18,6 +18,7 @@ devtools_module_entrypoint_sources = [
   "browser_debugger/browser_debugger.js",
   "browser_sdk/browser_sdk.js",
   "changes/changes-legacy.js",
+  "changes/changes-meta.js",
   "changes/changes.js",
   "client_variations/client_variations.js",
   "cm/cm.js",

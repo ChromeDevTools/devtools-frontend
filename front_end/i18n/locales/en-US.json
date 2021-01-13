@@ -86,9 +86,6 @@
   "changes/ChangesView.js | SkippingDMatchingLines": {
     "message": "( … Skipping {PH1} matching lines … )"
   },
-  "changes/ModuleUIStrings.js | changes": {
-    "message": "Changes"
-  },
   "changes/ModuleUIStrings.js | changesDrawer": {
     "message": "Changes drawer"
   },

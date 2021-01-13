@@ -21,6 +21,7 @@ group("front_end") {
     "browser_debugger:meta",
     "browser_sdk:bundle",
     "changes:bundle",
+    "changes:meta",
     "client_variations:bundle",
     "color_picker:bundle",
     "common:bundle",

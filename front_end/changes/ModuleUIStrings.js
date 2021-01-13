@@ -5,10 +5,6 @@
 import * as i18n from '../i18n/i18n.js';
 export const UIStrings = {
   /**
-  *@description Title of the 'Changes' tool in the bottom drawer
-  */
-  changes: 'Changes',
-  /**
   *@description The UI destination when right clicking an item that can be revealed
   */
   changesDrawer: 'Changes drawer',

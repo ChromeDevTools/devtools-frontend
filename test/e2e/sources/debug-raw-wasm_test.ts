@@ -18,7 +18,6 @@ describe('Sources Tab', async function() {
     installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
   });
 
-  // Disabled to the Chromium binary -> DevTools roller working again.
   it('shows the correct wasm source on load and reload', async () => {
     async function checkSources(frontend: puppeteer.Page) {
       await waitForAdditionalSourceFiles(frontend, 2);
@@ -182,8 +181,7 @@ describe('Sources Tab', async function() {
     assert.deepEqual(await getBreakpointDecorators(frontend), [0x023]);
   });
 
-  // Needs to be rebaselined after Chromium rolls with V8 changes.
-  it.skip('[crbug.com/1165304] is able to step with state', async () => {
+  it('is able to step with state', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await step('navigate to a page and open the Sources tab', async () => {
@@ -229,7 +227,7 @@ describe('Sources Tab', async function() {
         const local_scope_values = await localScopeView.evaluate(element => {
           return (element as HTMLElement).innerText;
         });
-        return local_scope_values === 'var0: 42\nvar1: 8\nvar2: 5';
+        return local_scope_values === '$var0: 42\n$var1: 8\n$var2: 5';
       });
     });
 
@@ -270,7 +268,7 @@ describe('Sources Tab', async function() {
         const local_scope_values = await localScopeView.evaluate(element => {
           return (element as HTMLElement).innerText;
         });
-        return local_scope_values === 'var0: 50\nvar1: 5';
+        return local_scope_values === '$var0: 50\n$var1: 5';
       });
     });
 
@@ -282,8 +280,7 @@ describe('Sources Tab', async function() {
     await checkBreakpointDidNotActivate();
   });
 
-  // Needs to be rebaselined after Chromium rolls with V8 changes.
-  it.skip('[crbug.com/1165304] is able to step with state in multi-threaded code in main thread', async () => {
+  it('is able to step with state in multi-threaded code in main thread', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await step('navigate to a page and open the Sources tab', async () => {
@@ -333,7 +330,7 @@ describe('Sources Tab', async function() {
         const local_scope_values = await localScopeView.evaluate(element => {
           return (element as HTMLElement).innerText;
         });
-        return local_scope_values === 'var0: 42\nvar1: 8\nvar2: 5';
+        return local_scope_values === '$var0: 42\n$var1: 8\n$var2: 5';
       });
     });
 
@@ -382,7 +379,7 @@ describe('Sources Tab', async function() {
         const local_scope_values = await localScopeView.evaluate(element => {
           return (element as HTMLElement).innerText;
         });
-        return local_scope_values === 'var0: 50\nvar1: 5';
+        return local_scope_values === '$var0: 50\n$var1: 5';
       });
     });
 

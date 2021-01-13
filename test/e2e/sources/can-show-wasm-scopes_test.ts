@@ -9,8 +9,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {addBreakpointForLine, getScopeNames, getValuesForScope, openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, RESUME_BUTTON, waitForSourceCodeLines} from '../helpers/sources-helpers.js';
 
 describe('Source Tab', async () => {
-  // Needs to be rebaselined after Chromium rolls with V8 changes.
-  it.skip('[crbug.com/1165304] shows and updates the module, local, and stack scope while pausing', async () => {
+  it('shows and updates the module, local, and stack scope while pausing', async () => {
     const {frontend, target} = getBrowserAndPages();
     const breakpointLine = 12;
     const numberOfLines = 16;
@@ -54,8 +53,12 @@ describe('Source Tab', async () => {
 
     await step('check that the local scope content is as expected', async () => {
       localScopeValues = await getValuesForScope('Local', 0, 4);
-      assert.deepEqual(
-          localScopeValues, ['f32_var: 5.5', 'f64_var: 2.23e-11', 'i32: 42', 'i64_var: 9221120237041090n']);
+      assert.deepEqual(localScopeValues, [
+        '$f32_var: 5.5',
+        '$f64_var: 2.23e-11',
+        '$i32: 42',
+        '$i64_var: 9221120237041090n',
+      ]);
     });
 
     await step('check that the module scope content is as expected', async () => {
@@ -65,9 +68,10 @@ describe('Source Tab', async () => {
         return line.replace(/\[[^\]]*\]/, '').trim();
       });
       assert.deepEqual(formattedValues, [
-        'globals: {imports.global: 24}',
+        'functions: Functions\xA0{$foo: ƒ}',
+        'globals: Globals\xA0{$imports.global: 24}',
         'instance: Instance\xA0{}',
-        'memory0: Memory(1)\xA0{}',
+        'memories: Memories\xA0{$memory0: Memory(1)}',
         'module: Module\xA0{}',
       ]);
     });

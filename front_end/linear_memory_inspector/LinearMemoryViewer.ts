@@ -66,6 +66,11 @@ export class LinearMemoryViewer extends HTMLElement {
     this.update();
   }
 
+  connectedCallback(): void {
+    (this.shadow.host as HTMLElement)
+        .style.setProperty('--byte-group-margin', `${LinearMemoryViewer.BYTE_GROUP_MARGIN}px`);
+  }
+
   disconnectedCallback(): void {
     this.isObservingResize = false;
     this.resizeObserver.disconnect();
@@ -195,7 +200,7 @@ export class LinearMemoryViewer extends HTMLElement {
         }
 
         .byte-group-margin {
-          margin-left: ${LinearMemoryViewer.BYTE_GROUP_MARGIN}px;
+          margin-left: var(--byte-group-margin);
         }
 
         .text-cell {

@@ -2,9 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/components.js';
+
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-import * as Components from '../../ui/components/components.js';
+
+import type * as Components from '../../ui/components/components.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 

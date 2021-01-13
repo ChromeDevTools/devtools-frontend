@@ -236,21 +236,6 @@ Object.defineProperty(Int32Array.prototype, 'upperBound', {value: Array.prototyp
 
 Object.defineProperty(Float64Array.prototype, 'lowerBound', {value: Array.prototype.lowerBound, configurable: true});
 
-Object.defineProperty(Array.prototype, 'binaryIndexOf', {
-  /**
-   * @param {!T} value
-   * @param {function(!T,!S):number} comparator
-   * @return {number}
-   * @this {Array.<!S>}
-   * @template T,S
-   */
-  value: function(value, comparator) {
-    const index = this.lowerBound(value, comparator);
-    return index < this.length && comparator(value, this[index]) === 0 ? index : -1;
-  },
-  configurable: true
-});
-
 Object.defineProperty(Array.prototype, 'peekLast', {
   /**
    * @return {!T|undefined}

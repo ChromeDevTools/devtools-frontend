@@ -1766,7 +1766,7 @@ export class TimelineUIUtils {
       return startTime - e.startTime;
     }
 
-    const index = events.binaryIndexOf(event.startTime, eventComparator);
+    const index = Platform.ArrayUtilities.binaryIndexOf(events, event.startTime, eventComparator);
     // Not a main thread event?
     if (index < 0) {
       return false;

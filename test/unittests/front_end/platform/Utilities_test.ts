@@ -77,34 +77,6 @@ describe('Utilities', () => {
     }
   });
 
-  it('calculates the binary index', () => {
-    const fixtures = [
-      [],
-      [1],
-      [1, 10],
-      [1, 10, 11, 12, 13, 14, 100],
-      [-100, -50, 0, 50, 100],
-      [-100, -14, -13, -12, -11, -10, -1],
-    ];
-
-    function testArray(array: number[]) {
-      function comparator(a: number, b: number) {
-        return a < b ? -1 : (a > b ? 1 : 0);
-      }
-
-      for (let i = -100; i <= 100; ++i) {
-        const reference = array.indexOf(i);
-        const actual = array.binaryIndexOf(i, comparator);
-        assert.deepStrictEqual(reference, actual);
-      }
-      return true;
-    }
-
-    for (const fixture of fixtures) {
-      testArray(fixture);
-    }
-  });
-
   it('calculates the lower bound', () => {
     const fixtures = [
       [],

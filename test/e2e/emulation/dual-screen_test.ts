@@ -5,7 +5,7 @@ import {assert} from 'chai';
 import {describe, it} from '../../shared/mocha-extensions.js';
 
 import {clickToggleButton, getWidthOfDevice, selectDualScreen, selectNonDualScreenDevice, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
-import {getButtonDisabled, selectToggleButton} from '../helpers/emulation-helpers.js';
+import {selectToggleButton} from '../helpers/emulation-helpers.js';
 
 const DUO_VERTICAL_SPANNED_WIDTH = '1114';
 const DUO_VERTICAL_WIDTH = '540';
@@ -28,9 +28,10 @@ describe('Dual screen mode', async () => {
 
   it('User may not click toggle dual screen button for a non-dual screen device', async () => {
     await selectNonDualScreenDevice();
-    // toggle button should be disabled.
+    // toggle button should not be found
     const toggleButton = await selectToggleButton();
-    const isDisabled = await getButtonDisabled(toggleButton);
-    assert(isDisabled);
+    const element = toggleButton.asElement();
+    const hidden = element ? element.evaluate(x => x.classList.contains('hidden')) : false;
+    assert(hidden);
   });
 });

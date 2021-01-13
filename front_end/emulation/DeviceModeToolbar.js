@@ -731,10 +731,10 @@ export class DeviceModeToolbar {
     if (this._experimentDualScreenSupport && this._experimentalButton) {
       const device = this._model.device();
       if (device && device.isDualScreen) {
-        this._spanButton.setEnabled(true);
+        this._spanButton.setVisible(true);
         this._experimentalButton.setVisible(true);
       } else {
-        this._spanButton.setEnabled(false);
+        this._spanButton.setVisible(false);
         this._experimentalButton.setVisible(false);
       }
       this._spanButton.setTitle(Common.UIString.UIString('Toggle dual-screen mode'));

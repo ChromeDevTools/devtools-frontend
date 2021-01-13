@@ -34,3 +34,9 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "developer_resources-meta.ts"
+
+  deps = [ ":bundle" ]
+}

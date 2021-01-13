@@ -45,6 +45,7 @@ devtools_module_entrypoint_sources = [
   "data_grid/data_grid-legacy.js",
   "data_grid/data_grid.js",
   "developer_resources/developer_resources-legacy.js",
+  "developer_resources/developer_resources-meta.js",
   "developer_resources/developer_resources.js",
   "devices/devices.js",
   "diff/diff-legacy.js",

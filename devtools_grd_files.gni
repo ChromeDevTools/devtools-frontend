@@ -158,6 +158,7 @@ grd_files_release_sources = [
   "front_end/data_grid/data_grid.js",
   "front_end/data_grid/data_grid_module.js",
   "front_end/developer_resources/developer_resources-legacy.js",
+  "front_end/developer_resources/developer_resources-meta.js",
   "front_end/developer_resources/developer_resources.js",
   "front_end/developer_resources/developer_resources_module.js",
   "front_end/devices/devices.js",

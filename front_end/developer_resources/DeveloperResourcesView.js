@@ -37,7 +37,11 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('developer_resources/DeveloperResourcesView.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+/** @type {!DeveloperResourcesView} */
+let developerResourcesViewInstance;
+
 export class DeveloperResourcesView extends UI.Widget.VBox {
+  /** @private */
   constructor() {
     super(true);
     this.registerRequiredCSS('developer_resources/developerResourcesView.css', {enableLegacyPatching: true});
@@ -69,6 +73,13 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
     this._loader = SDK.PageResourceLoader.PageResourceLoader.instance();
     this._loader.addEventListener(SDK.PageResourceLoader.Events.Update, this._onUpdate, this);
     this._onUpdate();
+  }
+
+  static instance() {
+    if (!developerResourcesViewInstance) {
+      developerResourcesViewInstance = new DeveloperResourcesView();
+    }
+    return developerResourcesViewInstance;
   }
 
   _onUpdate() {

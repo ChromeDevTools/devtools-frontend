@@ -362,9 +362,6 @@
   "developer_resources/DeveloperResourcesView.js | resourcesCurrentlyLoading": {
     "message": "{PH1} resources, {PH2} currently loading"
   },
-  "developer_resources/ModuleUIStrings.js | developerResources": {
-    "message": "Developer Resources"
-  },
   "devices/DevicesView.js | thisPanelHasBeenDeprecatedIn": {
     "message": "This panel has been deprecated in favor of the {PH1} interface, which has equivalent functionality."
   },

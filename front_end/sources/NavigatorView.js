@@ -883,7 +883,11 @@ export class NavigatorView extends UI.Widget.VBox {
       this._handleDeleteOverridesHelper(child);
     });
     if (node instanceof NavigatorUISourceCodeTreeNode) {
-      node.uiSourceCode().project().deleteFile(node.uiSourceCode());
+      // Only delete confirmed overrides and not just any file that happens to be in the folder.
+      const binding = Persistence.Persistence.PersistenceImpl.instance().binding(node.uiSourceCode());
+      if (binding) {
+        node.uiSourceCode().project().deleteFile(node.uiSourceCode());
+      }
     }
   }
 

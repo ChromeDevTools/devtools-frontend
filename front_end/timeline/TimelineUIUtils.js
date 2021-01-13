@@ -1482,7 +1482,7 @@ export class TimelineUIUtils {
       let textRow = Number.millisToString(fullDuration, true);
       // The time from queueing the request until the download is finished. This
       // corresponds to the total time reported for the request in the network tab.
-      const networkDuration = (request.finishTime || 0) - request.getStartTime();
+      const networkDuration = (request.finishTime || request.getStartTime()) - request.getStartTime();
       // The time it takes to make the resource available to the renderer process.
       const processingDuration = request.endTime - (request.finishTime || 0);
       if (isFinite(networkDuration) && isFinite(processingDuration)) {

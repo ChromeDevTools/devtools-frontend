@@ -73,3 +73,40 @@ export const binaryIndexOf = <T, S>(array: T[], value: S, comparator: (a: S, b: 
   const index = array.lowerBound(value, comparator);
   return index < array.length && comparator(value, array[index]) === 0 ? index : -1;
 };
+
+
+function mergeOrIntersect<T>(
+    array1: T[], array2: T[], comparator: (a: T, b: T) => number, mergeNotIntersect: boolean): T[] {
+  const result = [];
+  let i = 0;
+  let j = 0;
+  while (i < array1.length && j < array2.length) {
+    const compareValue = comparator(array1[i], array2[j]);
+    if (mergeNotIntersect || !compareValue) {
+      result.push(compareValue <= 0 ? array1[i] : array2[j]);
+    }
+    if (compareValue <= 0) {
+      i++;
+    }
+    if (compareValue >= 0) {
+      j++;
+    }
+  }
+  if (mergeNotIntersect) {
+    while (i < array1.length) {
+      result.push(array1[i++]);
+    }
+    while (j < array2.length) {
+      result.push(array2[j++]);
+    }
+  }
+  return result;
+}
+
+export const intersectOrdered = <T>(array1: T[], array2: T[], comparator: (a: T, b: T) => number): T[] => {
+  return mergeOrIntersect(array1, array2, comparator, false);
+};
+
+export const mergeOrdered = <T>(array1: T[], array2: T[], comparator: (a: T, b: T) => number): T[] => {
+  return mergeOrIntersect(array1, array2, comparator, true);
+};

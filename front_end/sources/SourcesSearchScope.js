@@ -31,6 +31,7 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Persistence from '../persistence/persistence.js';
+import * as Platform from '../platform/platform.js';
 import * as Search from '../search/search.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -197,9 +198,9 @@ export class SourcesSearchScope {
     }
 
     files.sort(String.naturalOrderComparator);
-    files = files.intersectOrdered(filesMathingFileQuery, String.naturalOrderComparator);
+    files = Platform.ArrayUtilities.intersectOrdered(files, filesMathingFileQuery, String.naturalOrderComparator);
     const dirtyFiles = this._projectFilesMatchingFileQuery(project, searchConfig, true);
-    files = files.mergeOrdered(dirtyFiles, String.naturalOrderComparator);
+    files = Platform.ArrayUtilities.mergeOrdered(files, dirtyFiles, String.naturalOrderComparator);
 
     const uiSourceCodes = [];
     for (const file of files) {
@@ -214,8 +215,8 @@ export class SourcesSearchScope {
       uiSourceCodes.push(uiSourceCode);
     }
     uiSourceCodes.sort(SourcesSearchScope._filesComparator);
-    this._searchResultCandidates =
-        this._searchResultCandidates.mergeOrdered(uiSourceCodes, SourcesSearchScope._filesComparator);
+    this._searchResultCandidates = Platform.ArrayUtilities.mergeOrdered(
+        this._searchResultCandidates, uiSourceCodes, SourcesSearchScope._filesComparator);
   }
 
   /**
@@ -301,7 +302,7 @@ export class SourcesSearchScope {
         for (let i = 0; i < queries.length; ++i) {
           const nextMatches = TextUtils.TextUtils.performSearchInContent(
               content, queries[i], !searchConfig.ignoreCase(), searchConfig.isRegex());
-          matches = matches.mergeOrdered(nextMatches, matchesComparator);
+          matches = Platform.ArrayUtilities.mergeOrdered(matches, nextMatches, matchesComparator);
         }
       }
       if (matches && this._searchResultCallback) {

@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 
@@ -779,7 +780,7 @@ export class TimelineModelImpl {
     const jsSamples =
         jsProfileModel ? TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile(jsProfileModel, thread) : null;
     if (jsSamples && jsSamples.length) {
-      events = events.mergeOrdered(jsSamples, SDK.TracingModel.Event.orderedCompareStartTime);
+      events = Platform.ArrayUtilities.mergeOrdered(events, jsSamples, SDK.TracingModel.Event.orderedCompareStartTime);
     }
     if (jsSamples || events.some(e => e.name === RecordType.JSSample)) {
       const jsFrameEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, {
@@ -788,7 +789,8 @@ export class TimelineModelImpl {
         showNativeFunctions: Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get(),
       });
       if (jsFrameEvents && jsFrameEvents.length) {
-        events = jsFrameEvents.mergeOrdered(events, SDK.TracingModel.Event.orderedCompareStartTime);
+        events =
+            Platform.ArrayUtilities.mergeOrdered(jsFrameEvents, events, SDK.TracingModel.Event.orderedCompareStartTime);
       }
     }
     return events;
@@ -990,7 +992,8 @@ export class TimelineModelImpl {
     for (const [type, events] of groups) {
       const track = this._ensureNamedTrack(type);
       track.thread = thread;
-      track.asyncEvents = track.asyncEvents.mergeOrdered(events, SDK.TracingModel.Event.compareStartTime);
+      track.asyncEvents =
+          Platform.ArrayUtilities.mergeOrdered(track.asyncEvents, events, SDK.TracingModel.Event.compareStartTime);
     }
   }
 

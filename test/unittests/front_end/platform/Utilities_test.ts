@@ -10,7 +10,6 @@ import '../../../../front_end/platform/utilities.js';
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Array<T> {
-    mergeOrdered(array: T[], comparator: (a: T, b: T) => number): T[];
     upperBound(value: T, comparator?: (a: T, b: T) => number): number;
     lowerBound(value: T, comparator?: (a: T, b: T) => number): number;
     binaryIndexOf<S>(value: S, comparator: (a: S, b: T) => number): number;
@@ -29,54 +28,6 @@ declare global {
 }
 
 describe('Utilities', () => {
-  it('orders merge intersect', () => {
-    function comparator(a: number, b: number) {
-      return a - b;
-    }
-
-    function count(a: number[], x: number) {
-      return a.upperBound(x) - a.lowerBound(x);
-    }
-
-    function testAll(a: number[], b: number[]) {
-      testOperation(a, b, a.mergeOrdered(b, comparator), Math.max, 'U');
-      testOperation(a, b, a.intersectOrdered(b, comparator), Math.min, 'x');
-    }
-
-    function testOperation(
-        a: number[], b: number[], actual: number[], checkOperation: (...values: number[]) => number, opName: string) {
-      const allValues = a.concat(b).concat(actual);
-      let expectedCount: number;
-      let actualCount: number;
-
-      for (let i = 0; i < allValues.length; ++i) {
-        const value = allValues[i];
-        expectedCount = checkOperation(count(a, value), count(b, value));
-        actualCount = count(actual, value);
-        assert.strictEqual(
-            expectedCount, actualCount,
-            'Incorrect result for value: ' + value + ' at [' + a + '] ' + opName + ' [' + b + '] -> [' + actual + ']');
-      }
-
-      const shallowCopy = [...actual];
-      assert.deepStrictEqual(actual.sort(), shallowCopy, 'Result array is ordered');
-    }
-
-    const fixtures = new Map([
-      [[], []],
-      [[1], []],
-      [[1, 2, 2, 2, 3], []],
-      [[4, 5, 5, 8, 8], [1, 1, 1, 2, 6]],
-      [[1, 2, 2, 2, 2, 3, 3, 4], [2, 2, 2, 3, 3, 3, 3]],
-      [[1, 2, 3, 4, 5], [1, 2, 3]],
-    ]);
-
-    for (const [a, b] of fixtures) {
-      testAll(a, b);
-      testAll(b, a);
-    }
-  });
-
   it('calculates the lower bound', () => {
     const fixtures = [
       [],

@@ -362,19 +362,19 @@
   "developer_resources/DeveloperResourcesView.js | resourcesCurrentlyLoading": {
     "message": "{PH1} resources, {PH2} currently loading"
   },
-  "devices/DevicesView.js | thisPanelHasBeenDeprecatedIn": {
+  "devices/DevicesView.ts | thisPanelHasBeenDeprecatedIn": {
     "message": "This panel has been deprecated in favor of the {PH1} interface, which has equivalent functionality."
   },
-  "devices/ModuleUIStrings.js | android": {
+  "devices/ModuleUIStrings.ts | android": {
     "message": "android"
   },
-  "devices/ModuleUIStrings.js | mobile": {
+  "devices/ModuleUIStrings.ts | mobile": {
     "message": "mobile"
   },
-  "devices/ModuleUIStrings.js | remoteDevices": {
+  "devices/ModuleUIStrings.ts | remoteDevices": {
     "message": "Remote devices"
   },
-  "devices/ModuleUIStrings.js | usb": {
+  "devices/ModuleUIStrings.ts | usb": {
     "message": "usb"
   },
   "help/ModuleUIStrings.js | appearance": {

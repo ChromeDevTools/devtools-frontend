@@ -7,8 +7,8 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("devices") {
   sources = [
-    "DevicesView.js",
-    "ModuleUIStrings.js",
+    "DevicesView.ts",
+    "ModuleUIStrings.ts",
   ]
 
   deps = [
@@ -19,7 +19,7 @@ devtools_module("devices") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "devices.js"
+  entrypoint = "devices.ts"
 
   deps = [ ":devices" ]
 }

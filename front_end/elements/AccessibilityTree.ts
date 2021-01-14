@@ -5,6 +5,8 @@
 import * as SDK from '../sdk/sdk.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
+import type {AccessibilityNodeData} from './AccessibilityNode.js';
+
 export interface AccessibilityTreeData {
   node: SDK.DOMModel.DOMNode|null;
 }
@@ -15,6 +17,7 @@ export class AccessibilityTree extends HTMLElement {
 
   set data(data: AccessibilityTreeData) {
     this.node = data.node;
+    this.shadow.host.setAttribute('role', 'tree');
     this.render();
   }
 
@@ -33,16 +36,17 @@ export class AccessibilityTree extends HTMLElement {
   }
 
   private render(): void {
-    const rootNode = this.refreshAccessibilityTree();
-    if (!rootNode) {
-      return;
-    }
-
-    // clang-format off
-    const output = LitHtml.html`
-    <div>TODO(crbug.com/887173): Accessibility Tree goes here</div>`;
-    // clang-format on
-    LitHtml.render(output, this.shadow);
+    this.refreshAccessibilityTree().then(rootNode => {
+      // clang-format off
+      const output = LitHtml.html`
+        <devtools-accessibility-node .data=${{
+          axNode: rootNode,
+          } as AccessibilityNodeData}>
+        </devtools-accessibility-node>
+      `;
+      // clang-format on
+      LitHtml.render(output, this.shadow);
+    });
   }
 }
 

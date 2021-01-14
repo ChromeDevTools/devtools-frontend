@@ -330,9 +330,6 @@
   <message name="IDS_DEVTOOLS_d8bd6e60adcc01ce20f509ea6800de8f" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Read-only
   </message>
-  <message name="IDS_DEVTOOLS_d96143ba1b15645919cea00ec9d1be62" desc="Ignored node element text content in AXBreadcrumbs Pane of the Accessibility panel">
-    Ignored
-  </message>
   <message name="IDS_DEVTOOLS_d98e6d7300cfa4e03c4ac9cf658449a7" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Live region root
   </message>

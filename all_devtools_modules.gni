@@ -131,6 +131,7 @@ all_typescript_module_sources = [
   "diff/DiffWrapper.js",
   "diff/diff_match_patch.js",
   "dom_extension/DOMExtension.js",
+  "elements/AccessibilityNode.js",
   "elements/AccessibilityTree.js",
   "elements/AccessibilityTreeView.js",
   "elements/Adorner.js",

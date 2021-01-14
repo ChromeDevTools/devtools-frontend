@@ -8,6 +8,7 @@ import("../../third_party/typescript/typescript.gni")
 
 devtools_module("elements") {
   sources = [
+    "AccessibilityNode.ts",
     "AccessibilityTree.ts",
     "AccessibilityTreeView.ts",
     "Adorner.js",

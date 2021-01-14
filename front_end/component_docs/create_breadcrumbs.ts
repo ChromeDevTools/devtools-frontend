@@ -10,7 +10,7 @@ export function init(): void {
   LitHtml.render(LitHtml.html`
 
   <style>
-    ul {
+    .docs-breadcrumbs {
       display: flex;
       list-style: none;
       position: absolute;
@@ -20,18 +20,18 @@ export function init(): void {
       padding: 0;
     }
 
-    li a {
+    .docs-breadcrumbs li a {
       display: block;
       padding: 10px;
       font-size: 16px;
     }
 
-    span {
+    .docs-breadcrumbs span {
       font-size: 20px;
-
+    }
   </style>
 
-  <ul>
+  <ul class="docs-breadcrumbs">
     <li><a href="/">Index</a></li>
     <li><a href=".">All component examples</a></li>
   </ul>`, container);

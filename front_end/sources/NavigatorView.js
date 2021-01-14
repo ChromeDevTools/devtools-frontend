@@ -283,25 +283,45 @@ export class NavigatorView extends UI.Widget.VBox {
    * @param {!Workspace.Workspace.WorkspaceImpl} workspace
    */
   _resetWorkspace(workspace) {
+    // Clear old event listeners first.
+    if (this._workspace) {
+      this._workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
+      this._workspace.removeEventListener(
+          Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
+      this._workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this._projectAddedCallback, this);
+      this._workspace.removeEventListener(
+          Workspace.Workspace.Events.ProjectRemoved, this._projectRemovedCallback, this);
+    }
+
     this._workspace = workspace;
     this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
     this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
-    this._workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, event => {
-      const project = /** @type {!Workspace.Workspace.Project} */ (event.data);
-      this._projectAdded(project);
-      if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
-        this._computeUniqueFileSystemProjectNames();
-      }
-    });
-    this._workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, event => {
-      const project = /** @type {!Workspace.Workspace.Project} */ (event.data);
-      this._removeProject(project);
-      if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
-        this._computeUniqueFileSystemProjectNames();
-      }
-    });
+    this._workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this._projectAddedCallback, this);
+    this._workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemovedCallback, this);
     this._workspace.projects().forEach(this._projectAdded.bind(this));
     this._computeUniqueFileSystemProjectNames();
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _projectAddedCallback(event) {
+    const project = /** @type {!Workspace.Workspace.Project} */ (event.data);
+    this._projectAdded(project);
+    if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
+      this._computeUniqueFileSystemProjectNames();
+    }
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  _projectRemovedCallback(event) {
+    const project = /** @type {!Workspace.Workspace.Project} */ (event.data);
+    this._removeProject(project);
+    if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
+      this._computeUniqueFileSystemProjectNames();
+    }
   }
 
   /**

@@ -8,6 +8,7 @@ ts_library("meta") {
   testonly = true
   sources = [
     "action_registration_test.ts",
+    "setting_registration_test.ts",
     "view_registration_test.ts",
   ]
 

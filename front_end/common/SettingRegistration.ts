@@ -8,8 +8,15 @@ import * as Root from '../root/root.js';
 import {SettingStorageType} from './Settings.js';
 
 const registeredSettings: Array<SettingRegistration> = [];
+const settingNameSet = new Set<string>();
+
 
 export function registerSettingExtension(registration: SettingRegistration): void {
+  const settingName = registration.settingName;
+  if (settingNameSet.has(settingName)) {
+    throw new Error(`Duplicate setting name '${settingName}'`);
+  }
+  settingNameSet.add(settingName);
   registeredSettings.push(registration);
 }
 

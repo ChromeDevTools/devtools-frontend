@@ -137,52 +137,52 @@
   "components/TargetDetachedDialog.js | websocketDisconnected": {
     "message": "WebSocket disconnected"
   },
-  "cookie_table/CookiesTable.js | cookies": {
+  "cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
   },
-  "cookie_table/CookiesTable.js | domain": {
+  "cookie_table/CookiesTable.ts | domain": {
     "message": "Domain"
   },
-  "cookie_table/CookiesTable.js | editableCookies": {
+  "cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Editable Cookies"
   },
-  "cookie_table/CookiesTable.js | expiresMaxage": {
+  "cookie_table/CookiesTable.ts | expiresMaxage": {
     "message": "Expires / Max-Age"
   },
-  "cookie_table/CookiesTable.js | httponly": {
+  "cookie_table/CookiesTable.ts | httponly": {
     "message": "HttpOnly"
   },
-  "cookie_table/CookiesTable.js | na": {
+  "cookie_table/CookiesTable.ts | na": {
     "message": "N/A"
   },
-  "cookie_table/CookiesTable.js | name": {
+  "cookie_table/CookiesTable.ts | name": {
     "message": "Name"
   },
-  "cookie_table/CookiesTable.js | path": {
+  "cookie_table/CookiesTable.ts | path": {
     "message": "Path"
   },
-  "cookie_table/CookiesTable.js | priority": {
+  "cookie_table/CookiesTable.ts | priority": {
     "message": "Priority"
   },
-  "cookie_table/CookiesTable.js | samesite": {
+  "cookie_table/CookiesTable.ts | samesite": {
     "message": "SameSite"
   },
-  "cookie_table/CookiesTable.js | secure": {
+  "cookie_table/CookiesTable.ts | secure": {
     "message": "Secure"
   },
-  "cookie_table/CookiesTable.js | session": {
+  "cookie_table/CookiesTable.ts | session": {
     "message": "Session"
   },
-  "cookie_table/CookiesTable.js | showIssueAssociatedWithThis": {
+  "cookie_table/CookiesTable.ts | showIssueAssociatedWithThis": {
     "message": "Show issue associated with this cookie"
   },
-  "cookie_table/CookiesTable.js | showRequestsWithThisCookie": {
+  "cookie_table/CookiesTable.ts | showRequestsWithThisCookie": {
     "message": "Show Requests With This Cookie"
   },
-  "cookie_table/CookiesTable.js | size": {
+  "cookie_table/CookiesTable.ts | size": {
     "message": "Size"
   },
-  "cookie_table/CookiesTable.js | value": {
+  "cookie_table/CookiesTable.ts | value": {
     "message": "Value"
   },
   "coverage/CoverageListView.js | Byte": {

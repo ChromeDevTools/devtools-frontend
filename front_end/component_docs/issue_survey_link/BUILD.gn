@@ -9,7 +9,11 @@ ts_library("ts") {
   testonly = true
   sources = [ "basic.ts" ]
 
-  deps = [ "../../issues:bundle" ]
+  deps = [
+    "../../../test/unittests/front_end/helpers",
+    "../../component_helpers:bundle",
+    "../../issues:bundle",
+  ]
 }
 
 copy_to_gen("issue_survey_link") {

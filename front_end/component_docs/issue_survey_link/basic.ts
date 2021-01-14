@@ -2,7 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Issues from '../../issues/issues.js';
+import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+
+await ComponentHelpers.ComponentServerSetup.setup();
+await FrontendHelpers.initializeGlobalVars();
+
+const Issues = await import('../../issues/issues.js');
 
 const link = new Issues.IssueSurveyLink.IssueSurveyLink();
 document.getElementById('container')?.appendChild(link);

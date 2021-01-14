@@ -17,6 +17,50 @@ const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control
 /** @type {!Array<!ReleaseNote>} */
 export const releaseNoteText = [
   {
+    version: 31,
+    header: 'Highlights from the Chrome 89 update',
+    highlights: [
+
+      {
+        title: 'Debugging support for Trusted Types violations',
+        subtitle: 'Breakpoint on Trusted Types violations and link to more information in the Issues tab.',
+        link: 'https://developers.google.com/web/updates/2021/01/devtools#trusted-types',
+      },
+      {
+        title: 'Capture node screenshot beyond viewport',
+        subtitle: 'Capture node screenshot for a full node including content below the fold.',
+        link: 'https://developers.google.com/web/updates/2021/01/devtools#node-screenshot',
+      },
+      {
+        title: 'New Trust Token tab for network requests',
+        subtitle: 'Display Trusted Token parameters and results of network requests.',
+        link: 'https://developers.google.com/web/updates/2021/01/devtools#trust-token',
+      },
+      {
+        title: 'Lighthouse 7',
+        subtitle: 'New audits for PWA, accessibility, third-party embeds, and more.',
+        link: 'https://developers.google.com/web/updates/2021/01/devtools#lighthouse',
+      },
+      {
+        title: 'Elements panel updates',
+        subtitle:
+            'Support forcing CSS :target state, color pickers for custom CSS properties, a new context menu to duplicate elements, and more.',
+        link: 'https://developers.google.com/web/updates/2021/01/devtools#elements-panel',
+      },
+      {
+        title: 'Cookies updates',
+        subtitle: 'Option to show URL-decoded cookies, only clear visible cookies, and more.',
+        link: 'https://developers.google.com/web/updates/2021/01/devtools#cookies',
+      },
+      {
+        title: 'User-Agent Client Hints for custom devices',
+        subtitle: 'Edit User-Agent Client Hints for custom devices.',
+        link: 'https://developers.google.com/web/updates/2021/01/devtools#ua-ch',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2021/01/devtools',
+  },
+  {
     version: 30,
     header: 'Highlights from the Chrome 88 update',
     highlights: [

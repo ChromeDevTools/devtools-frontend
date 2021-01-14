@@ -272,9 +272,6 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     const helpIconWrapper = document.createElement('a');
     helpIconWrapper.href = 'https://web.dev/user-agent-client-hints/';
     helpIconWrapper.target = '_blank';
-    // This is in the way of usual keyboard navigation, but doing this also
-    // makes it impossible to access extra help from here. Not ideal :(
-    helpIconWrapper.tabIndex = -1;
     const icon = UI.Icon.Icon.create('mediumicon-info', 'help-icon');
     helpIconWrapper.appendChild(icon);
     helpIconWrapper.title =

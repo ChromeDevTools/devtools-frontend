@@ -95,6 +95,10 @@ li .devices-edit-client-hints-heading {
   vertical-align: middle;
 }
 
+.devices-edit-client-hints-heading a:focus {
+  box-shadow: var(--focus-ring-active-shadow);
+}
+
 .devices-edit-fields input {
   flex: auto;
   margin: 8px 5px 0 5px;

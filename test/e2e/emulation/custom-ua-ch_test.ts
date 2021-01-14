@@ -56,6 +56,7 @@ describe('Custom UA-CH emulation', async () => {
     await tabForwardFrontend();  // Focus folder.
     await pressKey('ArrowRight');
 
+    await tabForwardFrontend();  // Focus help button
     await tabForwardFrontend();  // Focus brand list
 
     // Type in partial, but syntactically invalid value for brand list.
@@ -125,7 +126,7 @@ describe('Custom UA-CH emulation', async () => {
     await waitFor(FOCUSED_DEVICE_NAME_FIELD_SELECTOR);
 
     // Skip over to the version field.
-    for (let i = 0; i < 8; ++i) {
+    for (let i = 0; i < 9; ++i) {
       await tabForwardFrontend();
     }
 

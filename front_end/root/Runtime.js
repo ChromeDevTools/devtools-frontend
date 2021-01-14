@@ -540,7 +540,7 @@ export class RuntimeExtensionDescriptor {
     /** @type {string|null} */
     this.decoratorType;
 
-    /** @type {!Platform.UIString.LocalizedString|null} */
+    /** @type {string|null} */
     this.category;
 
     /** @type {string|null} */

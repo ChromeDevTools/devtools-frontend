@@ -33,6 +33,7 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
+import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
@@ -294,8 +295,9 @@ export class GenericSettingsTab extends SettingsTab {
     const unionOfSettings = [
       // TODO(crbug.com/1134103): Remove this call when all settings are migrated
       ...Root.Runtime.Runtime.instance().extensions('setting').map(extension => {
+        const category = extension.descriptor().category;
         return {
-          category: extension.descriptor().category || undefined,
+          category: category ? ls(category) : undefined,
           settingName: extension.descriptor().settingName,
           title: extension.title(),
           order: extension.descriptor().order,
@@ -520,8 +522,9 @@ export class Revealer {
     const unionOfSettings = [
       // TODO(crbug.com/1134103): Remove this call when all settings are migrated
       ...Root.Runtime.Runtime.instance().extensions('setting').map(extension => {
+        const category = extension.descriptor().category;
         return {
-          category: extension.descriptor().category || undefined,
+          category: category ? ls(category) : undefined,
           settingName: extension.descriptor().settingName,
           title: extension.title(),
           order: extension.descriptor().order,

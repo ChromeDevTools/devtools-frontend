@@ -13,7 +13,7 @@ import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import {ItemsProvider, Toolbar, ToolbarItem, ToolbarMenuButton} from './Toolbar.js';  // eslint-disable-line no-unused-vars
 import {createTextChild} from './UIUtils.js';
 import {ProvidedView, TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
-import {getRegisteredViewExtensions, registerViewExtension, ViewLocationValues, ViewPersistence, ViewRegistration} from './ViewRegistration.js';
+import {getRegisteredLocationResolvers, getRegisteredViewExtensions, registerLocationResolver, registerViewExtension, ViewLocationCategoryValues, ViewLocationValues, ViewPersistence, ViewRegistration} from './ViewRegistration.js';
 import {VBox, Widget} from './Widget.js';  // eslint-disable-line no-unused-vars
 
 /**
@@ -288,7 +288,7 @@ export class ViewManager {
 
   /**
    * @param {string} viewId
-   * @return {?View}
+   * @return {View}
    */
   view(viewId) {
     const view = this._views.get(viewId);
@@ -348,16 +348,24 @@ export class ViewManager {
     if (!location) {
       return /** @type {!Promise<?_Location>} */ (Promise.resolve(null));
     }
+    // TODO(crbug.com/1134103): Remove this call when all ViewLocationResolver lookups are migrated
+    const legacyResolverExtensions = Root.Runtime.Runtime.instance()
+                                         .extensions(ViewLocationResolver)
+                                         .filter(extension => extension.descriptor()['name'] === location);
+    const registeredResolvers = getRegisteredLocationResolvers().filter(resolver => resolver.name === location);
 
-    const resolverExtensions = Root.Runtime.Runtime.instance()
-                                   .extensions(ViewLocationResolver)
-                                   .filter(extension => extension.descriptor()['name'] === location);
-    if (!resolverExtensions.length) {
-      throw new Error('Unresolved location: ' + location);
+    if (legacyResolverExtensions.length + registeredResolvers.length > 1) {
+      throw new Error('Duplicate resolver for location: ' + location);
     }
-    const resolverExtension = resolverExtensions[0];
-    const resolver = /** @type {!ViewLocationResolver} */ (await resolverExtension.instance());
-    return /** @type {?_Location} */ (resolver.resolveLocation(location));
+    if (legacyResolverExtensions.length) {
+      const resolver = /** @type {!ViewLocationResolver} */ (await legacyResolverExtensions[0].instance());
+      return /** @type {?_Location} */ (resolver.resolveLocation(location));
+    }
+    if (registeredResolvers.length) {
+      const resolver = /** @type {!ViewLocationResolver} */ (await registeredResolvers[0].loadResolver());
+      return /** @type {?_Location} */ (resolver.resolveLocation(location));
+    }
+    throw new Error('Unresolved location: ' + location);
   }
 
   /**
@@ -1035,4 +1043,13 @@ class _StackLocation extends _Location {
   }
 }
 
-export {ViewRegistration, ViewPersistence, getRegisteredViewExtensions, registerViewExtension, ViewLocationValues};
+export {
+  ViewRegistration,
+  ViewPersistence,
+  getRegisteredViewExtensions,
+  registerViewExtension,
+  ViewLocationValues,
+  getRegisteredLocationResolvers,
+  registerLocationResolver,
+  ViewLocationCategoryValues
+};

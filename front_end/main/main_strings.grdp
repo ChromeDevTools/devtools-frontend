@@ -18,9 +18,6 @@
   <message name="IDS_DEVTOOLS_15fa1acc2a998159c4ed2a950c5c231d" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut">
     Toggle drawer
   </message>
-  <message name="IDS_DEVTOOLS_1b1ac1c7a54457ce73ddd25a5b51c47d" desc="A title of the 'Drawer sidebar' @UI.ViewLocationResolver category">
-    Drawer sidebar
-  </message>
   <message name="IDS_DEVTOOLS_1bbf48778926222bae025707b1c4f070" desc="A drop-down menu option to set the color format to rgb">
     RGB: rgb(128 255 255)
   </message>
@@ -90,9 +87,6 @@
   <message name="IDS_DEVTOOLS_9914a0ce04a7b7b6a8e39bec55064b82" desc="A drop-down menu option to switch to light theme">
     Light
   </message>
-  <message name="IDS_DEVTOOLS_9b1ed2cbe56f7a315f0a365d2b97cb59" desc="A title of the 'Drawer' @UI.ViewLocationResolver category">
-    Drawer
-  </message>
   <message name="IDS_DEVTOOLS_9df22f196a33acd0b372fe502de51211" desc="Text short for automatic">
     auto
   </message>
@@ -110,9 +104,6 @@
   </message>
   <message name="IDS_DEVTOOLS_b5109d1d6943a47dc1feff4e0680fb2f" desc="A drop-down menu option to set the color format to hsl">
     HSL: hsl(300deg 80% 90%)
-  </message>
-  <message name="IDS_DEVTOOLS_b8da6df14bf06283cbf588df6998722e" desc="A title of the 'Panel' @UI.ViewLocationResolver category">
-    Panel
   </message>
   <message name="IDS_DEVTOOLS_b9cd538a753713464d2ea17d7e975041" desc="A context menu item in the Main">
     More tools

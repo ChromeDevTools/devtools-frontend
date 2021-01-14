@@ -43,7 +43,13 @@ export interface ViewRegistration {
   tags?: Array<string>;
 }
 
+const viewIdSet = new Set<string>();
 export function registerViewExtension(registration: ViewRegistration): void {
+  const viewId = registration.id;
+  if (viewIdSet.has(viewId)) {
+    throw new Error(`Duplicate view id '${viewId}': ${new Error().stack}`);
+  }
+  viewIdSet.add(viewId);
   registeredViewExtensions.push(new PreRegisteredView(registration));
 }
 

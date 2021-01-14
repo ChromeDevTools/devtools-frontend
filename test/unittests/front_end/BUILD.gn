@@ -24,6 +24,7 @@ group("front_end") {
     "javascript_metadata",
     "linear_memory_inspector",
     "media",
+    "meta",
     "missing_entrypoints",
     "network",
     "perf_ui",

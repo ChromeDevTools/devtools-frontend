@@ -7,11 +7,11 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("changes") {
   sources = [
-    "ChangesHighlighter.js",
-    "ChangesSidebar.js",
-    "ChangesTextEditor.js",
-    "ChangesView.js",
-    "ModuleUIStrings.js",
+    "ChangesHighlighter.ts",
+    "ChangesSidebar.ts",
+    "ChangesTextEditor.ts",
+    "ChangesView.ts",
+    "ModuleUIStrings.ts",
   ]
 
   deps = [
@@ -33,7 +33,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "changes-legacy.js"
+  entrypoint = "changes-legacy.ts"
 
   deps = [ ":bundle" ]
 }

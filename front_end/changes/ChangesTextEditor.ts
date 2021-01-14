@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
 import * as i18n from '../i18n/i18n.js';
 import * as TextEditor from '../text_editor/text_editor.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
@@ -20,27 +21,18 @@ export const UIStrings = {
   */
   additions: 'Addition:{PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('changes/ChangesTextEditor.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('changes/ChangesTextEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/**
- * @extends {TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor}
- */
 export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor {
-  /**
-   * @param {!UI.TextEditor.Options} options
-   */
-  constructor(options) {
+  constructor(options: UI.TextEditor.Options) {
     options.inputStyle = 'devToolsAccessibleDiffTextArea';
     super(options);
     this.codeMirror().setOption('gutters', ['CodeMirror-linenumbers', 'changes-diff-gutter']);
     this.codeMirror().setOption('extraKeys', {
       Enter: false,
       Space: false,
-      /**
-       * @param {!CodeMirror.Editor} cm
-       */
-      Left: function(cm) {
+      Left: function(cm: CodeMirror.Editor): void {
         const scrollInfo = cm.getScrollInfo();
         // Left edge check required due to bug where line numbers would disappear when attempting to scroll left when the scrollbar is at the leftmost point.
         // CodeMirror Issue: https://github.com/codemirror/CodeMirror/issues/6139
@@ -48,21 +40,15 @@ export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
           cm.scrollTo(scrollInfo.left - Math.round(scrollInfo.clientWidth / 6), null);
         }
       },
-      /**
-       * @param {!CodeMirror.Editor} cm
-       */
-      Right: function(cm) {
+      Right: function(cm: CodeMirror.Editor): void {
         const scrollInfo = cm.getScrollInfo();
         cm.scrollTo(scrollInfo.left + Math.round(scrollInfo.clientWidth / 6), null);
-      }
+      },
     });
   }
 
-  /**
-   * @param {!Array<!Row>} diffRows
-   */
-  updateDiffGutter(diffRows) {
-    this.codeMirror().eachLine(/** @param {!CodeMirror.LineHandle} line */ line => {
+  updateDiffGutter(diffRows: Row[]): void {
+    this.codeMirror().eachLine((line: CodeMirror.LineHandle): void => {
       const lineNumber = this.codeMirror().getLineNumber(line);
       const row = diffRows[lineNumber];
       let gutterMarker;
@@ -85,14 +71,9 @@ export class ChangesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
 }
 
 export class DevToolsAccessibleDiffTextArea extends TextEditor.CodeMirrorTextEditor.DevToolsAccessibleTextArea {
-  /**
-  * @override
-  * @param {boolean=} typing - whether the user is currently typing
-  */
-  reset(typing) {
+  reset(typing?: boolean): void {
     super.reset(typing);
-    // TODO(crbug.com/1011811): Update CodeMirror typings to include this property
-    const doc = /** @type {!CodeMirror.Doc} */ (/** @type {*} */ (this.cm).doc);
+    const doc = this.cm.doc;
     if (this.textAreaBusy(Boolean(typing)) || !(typeof doc.modeOption === 'object')) {
       return;
     }
@@ -111,9 +92,5 @@ export class DevToolsAccessibleDiffTextArea extends TextEditor.CodeMirrorTextEdi
   }
 }
 
-
-/**
- * @constructor
- */
 // @ts-ignore CodeMirror integration with externals, not yet part of codemirror-legacy.d.ts
 CodeMirror.inputStyles.devToolsAccessibleDiffTextArea = DevToolsAccessibleDiffTextArea;

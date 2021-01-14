@@ -50,43 +50,49 @@
   "animation/AnimationUI.js | sSlider": {
     "message": "{PH1} slider"
   },
-  "changes/ChangesSidebar.js | sFromSourceMap": {
+  "animation/ModuleUIStrings.js | animations": {
+    "message": "Animations"
+  },
+  "changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (from source map)"
   },
-  "changes/ChangesTextEditor.js | additions": {
+  "changes/ChangesTextEditor.ts | additions": {
     "message": "Addition:{PH1}"
   },
-  "changes/ChangesTextEditor.js | deletions": {
+  "changes/ChangesTextEditor.ts | deletions": {
     "message": "Deletion:{PH1}"
   },
-  "changes/ChangesView.js | binaryData": {
+  "changes/ChangesView.ts | binaryData": {
     "message": "Binary data"
   },
-  "changes/ChangesView.js | changesDiffViewer": {
+  "changes/ChangesView.ts | changesDiffViewer": {
     "message": "Changes diff viewer"
   },
-  "changes/ChangesView.js | noChanges": {
+  "changes/ChangesView.ts | noChanges": {
     "message": "No changes"
   },
-  "changes/ChangesView.js | revertAllChangesToCurrentFile": {
+  "changes/ChangesView.ts | revertAllChangesToCurrentFile": {
     "message": "Revert all changes to current file"
   },
-  "changes/ChangesView.js | sDeletion": {
+  "changes/ChangesView.ts | sDeletion": {
     "message": "{PH1} deletion (-)"
   },
-  "changes/ChangesView.js | sDeletions": {
+  "changes/ChangesView.ts | sDeletions": {
     "message": "{PH1} deletions (-)"
   },
-  "changes/ChangesView.js | sInsertion": {
+  "changes/ChangesView.ts | sInsertion": {
     "message": "{PH1} insertion (+),"
   },
-  "changes/ChangesView.js | sInsertions": {
+  "changes/ChangesView.ts | sInsertions": {
     "message": "{PH1} insertions (+),"
   },
-  "changes/ChangesView.js | SkippingDMatchingLines": {
+  "changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Skipping {PH1} matching lines … )"
   },
-  "changes/ModuleUIStrings.js | changesDrawer": {
+  "changes/ModuleUIStrings.ts | changes": {
+    "message": "Changes"
+  },
+  "changes/ModuleUIStrings.ts | changesDrawer": {
     "message": "Changes drawer"
   },
   "components/ImagePreview.js | imageFromS": {

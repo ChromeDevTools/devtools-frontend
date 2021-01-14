@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
 import * as Common from '../common/common.js';
 import * as Diff from '../diff/diff.js';
 import * as i18n from '../i18n/i18n.js';
@@ -55,17 +56,23 @@ export const UIStrings = {
   */
   SkippingDMatchingLines: '( … Skipping {PH1} matching lines … )',
 };
-const str_ = i18n.i18n.registerUIStrings('changes/ChangesView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('changes/ChangesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/** @type {!ChangesView} */
-let changesViewInstance;
+let changesViewInstance: ChangesView;
 
 export class ChangesView extends UI.Widget.VBox {
-  /**
-   * @private
-   */
-  constructor() {
+  _emptyWidget: UI.EmptyWidget.EmptyWidget;
+  _workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
+  _changesSidebar: ChangesSidebar;
+  _selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null;
+  _diffRows: Row[];
+  _maxLineDigits: number;
+  _editor: ChangesTextEditor;
+  _toolbar: UI.Toolbar.Toolbar;
+  _diffStats: UI.Toolbar.ToolbarText;
+
+  private constructor() {
     super(true);
     this.registerRequiredCSS('changes/changesView.css', {enableLegacyPatching: true});
     const splitWidget = new UI.SplitWidget.SplitWidget(true /* vertical */, false /* sidebar on left */);
@@ -81,10 +88,8 @@ export class ChangesView extends UI.Widget.VBox {
     this._changesSidebar.addEventListener(Events.SelectedUISourceCodeChanged, this._selectedUISourceCodeChanged, this);
     splitWidget.setSidebarWidget(this._changesSidebar);
 
-    /** @type {?Workspace.UISourceCode.UISourceCode} */
     this._selectedUISourceCode = null;
 
-    /** @type {!Array<!Row>} */
     this._diffRows = [];
 
     this._maxLineDigits = 1;
@@ -123,10 +128,7 @@ export class ChangesView extends UI.Widget.VBox {
     this._selectedUISourceCodeChanged();
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ChangesView {
     const {forceNew} = opts;
     if (!changesViewInstance || forceNew) {
       changesViewInstance = new ChangesView();
@@ -135,11 +137,11 @@ export class ChangesView extends UI.Widget.VBox {
     return changesViewInstance;
   }
 
-  _selectedUISourceCodeChanged() {
+  _selectedUISourceCodeChanged(): void {
     this._revealUISourceCode(this._changesSidebar.selectedUISourceCode());
   }
 
-  _revert() {
+  _revert(): void {
     const uiSourceCode = this._selectedUISourceCode;
     if (!uiSourceCode) {
       return;
@@ -147,10 +149,7 @@ export class ChangesView extends UI.Widget.VBox {
     this._workspaceDiff.revertToOriginal(uiSourceCode);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _click(event) {
+  _click(event: Event): void {
     const selection = this._editor.selection();
     if (!selection.isEmpty() || !this._selectedUISourceCode) {
       return;
@@ -161,10 +160,7 @@ export class ChangesView extends UI.Widget.VBox {
     event.consume(true);
   }
 
-  /**
-   * @param {?Workspace.UISourceCode.UISourceCode} uiSourceCode
-   */
-  _revealUISourceCode(uiSourceCode) {
+  _revealUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode|null): void {
     if (this._selectedUISourceCode === uiSourceCode) {
       return;
     }
@@ -180,14 +176,11 @@ export class ChangesView extends UI.Widget.VBox {
     this._refreshDiff();
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._refreshDiff();
   }
 
-  _refreshDiff() {
+  _refreshDiff(): void {
     if (!this.isShowing()) {
       return;
     }
@@ -201,7 +194,7 @@ export class ChangesView extends UI.Widget.VBox {
       this._hideDiff(i18nString(UIStrings.binaryData));
       return;
     }
-    this._workspaceDiff.requestDiff(uiSourceCode).then(diff => {
+    this._workspaceDiff.requestDiff(uiSourceCode).then((diff: Diff.Diff.DiffArray|null): void => {
       if (this._selectedUISourceCode !== uiSourceCode) {
         return;
       }
@@ -209,10 +202,7 @@ export class ChangesView extends UI.Widget.VBox {
     });
   }
 
-  /**
-   * @param {string} message
-   */
-  _hideDiff(message) {
+  _hideDiff(message: string): void {
     this._diffStats.setText('');
     this._toolbar.setEnabled(false);
     this._editor.hideWidget();
@@ -220,10 +210,7 @@ export class ChangesView extends UI.Widget.VBox {
     this._emptyWidget.showWidget();
   }
 
-  /**
-   * @param {?Diff.Diff.DiffArray} diff
-   */
-  _renderDiffRows(diff) {
+  _renderDiffRows(diff: Diff.Diff.DiffArray|null): void {
     this._diffRows = [];
 
     if (!diff || (diff.length === 1 && diff[0][0] === Diff.Diff.Operation.Equal)) {
@@ -237,10 +224,8 @@ export class ChangesView extends UI.Widget.VBox {
     let baselineLineNumber = 0;
     const paddingLines = 3;
 
-    /** @type {!Array<string>} */
-    const originalLines = [];
-    /** @type {!Array<string>} */
-    const currentLines = [];
+    const originalLines: string[] = [];
+    const currentLines: string[] = [];
 
     for (let i = 0; i < diff.length; ++i) {
       const token = diff[i];
@@ -276,14 +261,14 @@ export class ChangesView extends UI.Widget.VBox {
 
     this._maxLineDigits = Math.ceil(Math.log10(Math.max(currentLineNumber, baselineLineNumber)));
 
-    let insertionText = '';
+    let insertionText: Common.UIString.LocalizedString|'' = '';
     if (insertions === 1) {
       insertionText = i18nString(UIStrings.sInsertion, {PH1: insertions});
     } else {
       insertionText = i18nString(UIStrings.sInsertions, {PH1: insertions});
     }
 
-    let deletionText = '';
+    let deletionText: Common.UIString.LocalizedString|'' = '';
     if (deletions === 1) {
       deletionText = i18nString(UIStrings.sDeletion, {PH1: deletions});
     } else {
@@ -294,27 +279,28 @@ export class ChangesView extends UI.Widget.VBox {
     this._toolbar.setEnabled(true);
     this._emptyWidget.hideWidget();
 
-    this._editor.operation(() => {
+    this._editor.operation((): void => {
       this._editor.showWidget();
       this._editor.setHighlightMode({
         name: 'devtools-diff',
         diffRows: this._diffRows,
-        mimeType: /** @type {!Workspace.UISourceCode.UISourceCode} */ (this._selectedUISourceCode).mimeType(),
+        mimeType: /** @type {!Workspace.UISourceCode.UISourceCode} */ (
+                      this._selectedUISourceCode as Workspace.UISourceCode.UISourceCode)
+                      .mimeType(),
         baselineLines: originalLines,
-        currentLines: currentLines
+        currentLines: currentLines,
       });
-      this._editor.setText(this._diffRows.map(row => row.tokens.map(t => t.text).join('')).join('\n'));
+      this._editor.setText(
+          this._diffRows
+              .map(
+                  (row: Row): string =>
+                      row.tokens.map((t: {text: string; className: string;}): string => t.text).join(''))
+              .join('\n'));
       this._editor.setLineNumberFormatter(this._lineFormatter.bind(this));
       this._editor.updateDiffGutter(this._diffRows);
     });
 
-    /**
-     * @param {!Array<string>} lines
-     * @param {boolean} atStart
-     * @param {boolean} atEnd
-     * @return {!Array<!Row>}}
-     */
-    function createEqualRows(lines, atStart, atEnd) {
+    function createEqualRows(lines: string[], atStart: boolean, atEnd: boolean): Row[] {
       const equalRows = [];
       if (!atStart) {
         for (let i = 0; i < paddingLines && i < lines.length; i++) {
@@ -343,12 +329,7 @@ export class ChangesView extends UI.Widget.VBox {
       return equalRows;
     }
 
-    /**
-     * @param {string} before
-     * @param {string} after
-     * @return {!Array<!Row>}}
-     */
-    function createModifyRows(before, after) {
+    function createModifyRows(before: string, after: string): Row[] {
       const internalDiff = Diff.Diff.DiffWrapper.charDiff(before, after, true /* cleanup diff */);
       const deletionRows = [createRow('', RowType.Deletion)];
       const insertionRows = [createRow('', RowType.Addition)];
@@ -379,12 +360,7 @@ export class ChangesView extends UI.Widget.VBox {
       return deletionRows.concat(insertionRows);
     }
 
-    /**
-     * @param {string} text
-     * @param {!RowType} type
-     * @return {!Row}
-     */
-    function createRow(text, type) {
+    function createRow(text: string, type: RowType): Row {
       if (type === RowType.Addition) {
         currentLineNumber++;
       }
@@ -400,11 +376,7 @@ export class ChangesView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {number} lineNumber
-   * @return {string}
-   */
-  _lineFormatter(lineNumber) {
+  _lineFormatter(lineNumber: number): string {
     const row = this._diffRows[lineNumber - 1];
     let showBaseNumber = row.type === RowType.Deletion;
     let showCurrentNumber = row.type === RowType.Addition;
@@ -420,25 +392,15 @@ export class ChangesView extends UI.Widget.VBox {
   }
 }
 
-/** @enum {string} */
-export const RowType = {
-  Deletion: 'deletion',
-  Addition: 'addition',
-  Equal: 'equal',
-  Spacer: 'spacer'
-};
+export const enum RowType {
+  Deletion = 'deletion',
+  Addition = 'addition',
+  Equal = 'equal',
+  Spacer = 'spacer'
+}
 
-/**
- * @implements {Common.Revealer.Revealer}
- */
-export class DiffUILocationRevealer {
-  /**
-   * @override
-   * @param {!Object} diffUILocation
-   * @param {boolean=} omitFocus
-   * @return {!Promise<void>}
-   */
-  async reveal(diffUILocation, omitFocus) {
+export class DiffUILocationRevealer implements Common.Revealer.Revealer {
+  async reveal(diffUILocation: Object, omitFocus?: boolean|undefined): Promise<void> {
     if (!(diffUILocation instanceof WorkspaceDiff.WorkspaceDiff.DiffUILocation)) {
       throw new Error('Internal error: not a diff ui location');
     }
@@ -447,13 +409,13 @@ export class DiffUILocationRevealer {
   }
 }
 
-/**
- * @typedef {!{
- *  baselineLineNumber: number,
- *  currentLineNumber: number,
- *  tokens: !Array<!{text: string, className: string}>,
- *  type: !RowType
- * }}
- */
-// @ts-ignore typedef
-export let Row;
+export interface Token {
+  text: string;
+  className: string;
+}
+export interface Row {
+  baselineLineNumber: number;
+  currentLineNumber: number;
+  tokens: Token[];
+  type: RowType;
+}

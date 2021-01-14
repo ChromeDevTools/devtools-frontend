@@ -2,32 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
 import {Row, RowType} from './ChangesView.js';  // eslint-disable-line no-unused-vars
 
-/**
- * @param {!Object} config
- * @param {{diffRows: !Array<!Row>, baselineLines: !Array<string>, currentLines: !Array<string>, mimeType: string}} parserConfig
- * @return {{
- *  startState: function():!DiffState,
- *  token: function(!CodeMirror.StringStream, !DiffState):string,
- *  blankLine: function(!DiffState):string,
- *  copyState: function(!DiffState):DiffState
- * }}
- */
-export function ChangesHighlighter(config, parserConfig) {
+interface ParserConfig {
+  diffRows: Array<Row>;
+  baselineLines: Array<string>;
+  currentLines: Array<string>;
+  mimeType: string;
+}
+
+export function ChangesHighlighter(config: Object, parserConfig: ParserConfig): {
+  startState: () => DiffState; token: (arg0: typeof CodeMirror.StringStream, arg1: DiffState) => string;
+  blankLine: (arg0: DiffState) => string;
+  copyState: (arg0: DiffState) => DiffState;
+} {
   const diffRows = parserConfig.diffRows;
   const baselineLines = parserConfig.baselineLines;
   const currentLines = parserConfig.currentLines;
   const syntaxHighlightMode = CodeMirror.getMode({}, parserConfig.mimeType);
 
-  /**
-   * @param {!DiffState} state
-   * @param {number} baselineLineNumber
-   * @param {number} currentLineNumber
-   */
-  function fastForward(state, baselineLineNumber, currentLineNumber) {
+  function fastForward(state: DiffState, baselineLineNumber: number, currentLineNumber: number): void {
     if (baselineLineNumber > state.baselineLineNumber) {
-      fastForwardSyntaxHighlighter(state.baselineSyntaxState, state.baselineLineNumber, baselineLineNumber, baselineLines);
+      fastForwardSyntaxHighlighter(
+          state.baselineSyntaxState, state.baselineLineNumber, baselineLineNumber, baselineLines);
       state.baselineLineNumber = baselineLineNumber;
     }
     if (currentLineNumber > state.currentLineNumber) {
@@ -36,13 +34,7 @@ export function ChangesHighlighter(config, parserConfig) {
     }
   }
 
-  /**
-   * @param {!Object} syntaxState
-   * @param {number} from
-   * @param {number} to
-   * @param {!Array<string>} lines
-   */
-  function fastForwardSyntaxHighlighter(syntaxState, from, to, lines) {
+  function fastForwardSyntaxHighlighter(syntaxState: Object, from: number, to: number, lines: string[]): void {
     let lineNumber = from;
     while (lineNumber < to && lineNumber < lines.length) {
       const stream = new CodeMirror.StringStream(lines[lineNumber]);
@@ -60,10 +52,7 @@ export function ChangesHighlighter(config, parserConfig) {
   }
 
   return {
-    /**
-     * @return {!DiffState}
-     */
-    startState: function() {
+    startState: function(): DiffState {
       return {
         rowNumber: 0,
         diffTokenIndex: 0,
@@ -74,16 +63,11 @@ export function ChangesHighlighter(config, parserConfig) {
         syntaxPosition: 0,
         diffPosition: 0,
         syntaxStyle: '',
-        diffStyle: ''
+        diffStyle: '',
       };
     },
 
-    /**
-     * @param {!CodeMirror.StringStream} stream
-     * @param {!DiffState} state
-     * @return {string}
-     */
-    token: function(stream, state) {
+    token: function(stream: typeof CodeMirror.StringStream, state: DiffState): string {
       const diffRow = diffRows[state.rowNumber];
       if (!diffRow) {
         // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
@@ -141,11 +125,7 @@ export function ChangesHighlighter(config, parserConfig) {
       return classes;
     },
 
-    /**
-     * @param {!DiffState} state
-     * @return {string}
-     */
-    blankLine: function(state) {
+    blankLine: function(state: DiffState): string {
       const diffRow = diffRows[state.rowNumber];
       state.rowNumber++;
       state.syntaxPosition = 0;
@@ -155,7 +135,7 @@ export function ChangesHighlighter(config, parserConfig) {
         return '';
       }
 
-      let style = '';
+      let style: void|'' = '';
       if (syntaxHighlightMode.blankLine) {
         if (diffRow.type === RowType.Equal || diffRow.type === RowType.Addition) {
           // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
@@ -170,37 +150,28 @@ export function ChangesHighlighter(config, parserConfig) {
       return style + ' line-background-' + diffRow.type + ' line-' + diffRow.type;
     },
 
-    /**
-     * @param {!DiffState} state
-     * @return {!DiffState}
-     */
-    copyState: function(state) {
+    copyState: function(state: DiffState): DiffState {
       const newState = Object.assign({}, state);
       // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
       newState.currentSyntaxState = CodeMirror.copyState(syntaxHighlightMode, state.currentSyntaxState);
       // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
       newState.baselineSyntaxState = CodeMirror.copyState(syntaxHighlightMode, state.baselineSyntaxState);
-      return /** @type {!DiffState} */ (newState);
-    }
+      return /** @type {!DiffState} */ newState as DiffState;
+    },
   };
 }
 
 // @ts-ignore TODO(crbug.com/1011811): Fix after upstream CodeMirror type fixes
 CodeMirror.defineMode('devtools-diff', ChangesHighlighter);
-
-/**
- * @typedef {!{
- *  rowNumber: number,
- *  diffTokenIndex: number,
- *  currentLineNumber: number,
- *  baselineLineNumber: number,
- *  currentSyntaxState: !Object,
- *  baselineSyntaxState: !Object,
- *  syntaxPosition: number,
- *  diffPosition: number,
- *  syntaxStyle: string,
- *  diffStyle: string
- * }}
- */
-// @ts-ignore typedef
-export let DiffState;
+export interface DiffState {
+  rowNumber: number;
+  diffTokenIndex: number;
+  currentLineNumber: number;
+  baselineLineNumber: number;
+  currentSyntaxState: Object;
+  baselineSyntaxState: Object;
+  syntaxPosition: number;
+  diffPosition: number;
+  syntaxStyle: string;
+  diffStyle: string;
+}

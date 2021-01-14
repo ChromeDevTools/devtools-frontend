@@ -1535,9 +1535,6 @@
   "protocol_monitor/ProtocolMonitor.js | noMessageSelected": {
     "message": "No message selected"
   },
-  "protocol_monitor/ProtocolMonitor.js | protocolMonitor": {
-    "message": "Protocol Monitor"
-  },
   "protocol_monitor/ProtocolMonitor.js | record": {
     "message": "Record"
   },

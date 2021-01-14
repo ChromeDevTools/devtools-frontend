@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Platform from '../../platform/platform.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
-
 import * as DataGridRenderers from './DataGridRenderers.js';
 
 /**

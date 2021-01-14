@@ -39,6 +39,21 @@ export class ColumnHeaderClickEvent extends Event {
   }
 }
 
+export class NewUserFilterTextEvent extends Event {
+  data: {filterText: string};
+
+  constructor(filterText: string) {
+    super('new-user-filter-text', {
+      composed: true,
+    });
+
+    this.data = {
+      filterText,
+    };
+  }
+}
+
+
 export class BodyCellFocusedEvent extends Event {
   /**
    * Although the DataGrid cares only about the focused cell, and has no concept
@@ -52,7 +67,9 @@ export class BodyCellFocusedEvent extends Event {
   };
 
   constructor(cell: Cell, row: Row) {
-    super('cell-focused');
+    super('cell-focused', {
+      composed: true,
+    });
     this.data = {
       cell,
       row,
@@ -67,7 +84,7 @@ export class DataGrid extends HTMLElement {
   private columns: readonly Column[] = [];
   private rows: readonly Row[] = [];
   private sortState: Readonly<SortState>|null = null;
-  private contextMenus?: DataGridContextMenusConfiguration;
+  private contextMenus?: DataGridContextMenusConfiguration = undefined;
   private currentResize: {
     rightCellCol: HTMLTableColElement,
     leftCellCol: HTMLTableColElement,
@@ -255,7 +272,6 @@ export class DataGrid extends HTMLElement {
     return undefined;
   }
 
-
   private renderFillerRow(): LitHtml.TemplateResult {
     const emptyCells = this.columns.map((col, colIndex) => {
       if (!col.visible) {
@@ -305,8 +321,7 @@ export class DataGrid extends HTMLElement {
       cellColumnIndex = leftCellContainingResizer.dataset.fillerRowColumnIndex;
       cellRowIndex = String(this.rows.length);
     }
-
-    if (!cellColumnIndex || !cellRowIndex) {
+    if (cellColumnIndex === undefined || cellRowIndex === undefined) {
       return;
     }
     const positionOfLeftCell: CellPosition =
@@ -321,6 +336,7 @@ export class DataGrid extends HTMLElement {
     const positionOfRightCell = [nextVisibleColumnIndex, positionOfLeftCell[1]];
     const selector = `[data-col-index="${positionOfRightCell[0]}"][data-row-index="${positionOfRightCell[1]}"]`;
     const cellToRight = this.shadow.querySelector<HTMLElement>(selector);
+
     if (!cellToRight) {
       return;
     }
@@ -527,7 +543,7 @@ export class DataGrid extends HTMLElement {
     <style>
       :host {
         --table-divider-color: var(--color-details-hairline);
-        --toolbar-bg-color: var(--color-background-elevation-2);
+        --toolbar-bg-color: var(--color-background-elevation-1);
         --selected-row-color: var(--color-background-elevation-1);
 
         height: 100%;

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as DataGrid from '../data_grid/data_grid.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
@@ -10,6 +9,7 @@ import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';
+import * as Components from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
 export const UIStrings = {
@@ -46,10 +46,6 @@ export const UIStrings = {
   */
   clearAll: 'Clear all',
   /**
-  *@description Data grid name for Protocol Monitor data grids
-  */
-  protocolMonitor: 'Protocol Monitor',
-  /**
   *@description Text to filter result items
   */
   filter: 'Filter',
@@ -70,55 +66,24 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('protocol_monitor/ProtocolMonitor.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+/**
+ *
+ * @param {Components.DataGridUtils.CellValue} value
+ */
+const timestampRenderer = value => {
+  return i18nString(UIStrings.sMs, {PH1: value});
+};
+
+
 export class ProtocolMonitorImpl extends UI.Widget.VBox {
   constructor() {
     super(true);
-    /**
-     * @type {!Array<!ProtocolNode>}
-     */
-    this._nodes = [];
     this._started = false;
     this._startTime = 0;
     /**
-     * @type {!Map<number, !ProtocolNode>}
+     * @type {!Map<number, !Components.DataGridUtils.Row>}
      */
-    this._nodeForId = new Map();
-    /**
-     * @param {!ProtocolNode} node
-     */
-    this._filter = node => true;
-    /**
-     * @type {!Array<!ProtocolColumnConfig>}
-     */
-    this._columns = [
-      {id: 'method', title: i18nString(UIStrings.method), visible: true, sortable: true, hideable: false, weight: 60}, {
-        id: 'direction',
-        title: i18nString(UIStrings.direction),
-        visible: false,
-        sortable: true,
-        hideable: true,
-        weight: 30
-      },
-      {id: 'request', title: i18nString(UIStrings.request), visible: true, sortable: false, hideable: true, weight: 60},
-      {
-        id: 'response',
-        title: i18nString(UIStrings.response),
-        visible: true,
-        sortable: false,
-        hideable: true,
-        weight: 60
-      },
-      {
-        id: 'timestamp',
-        title: i18nString(UIStrings.timestamp),
-        visible: false,
-        sortable: true,
-        hideable: true,
-        weight: 30
-      },
-      {id: 'target', title: i18nString(UIStrings.target), visible: false, sortable: true, hideable: true, weight: 30}
-    ];
-
+    this._dataGridRowForId = new Map();
     this.registerRequiredCSS('protocol_monitor/protocolMonitor.css', {enableLegacyPatching: true});
     const topToolbar = new UI.Toolbar.Toolbar('protocol-monitor-toolbar', this.contentElement);
     const recordButton = new UI.Toolbar.ToolbarToggle(
@@ -133,55 +98,129 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
     const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
-      this._dataGrid.rootNode().removeChildren();
-      this._nodes = [];
-      this._nodeForId.clear();
+      this._dataGridIntegrator.update({...this._dataGridIntegrator.data(), rows: []});
     });
     topToolbar.appendToolbarItem(clearButton);
 
     const split = new UI.SplitWidget.SplitWidget(true, true, 'protocol-monitor-panel-split', 250);
     split.show(this.contentElement);
-    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
-      displayName: i18nString(UIStrings.protocolMonitor),
-      columns: this._columns.map(column => ({
-                                   id: column.id,
-                                   title: column.title,
-                                   sortable: column.sortable,
-                                   weight: column.weight,
-                                   titleDOMFragment: undefined,
-                                   sort: undefined,
-                                   align: undefined,
-                                   width: undefined,
-                                   fixedWidth: undefined,
-                                   editable: undefined,
-                                   nonSelectable: undefined,
-                                   longText: undefined,
-                                   disclosure: undefined,
-                                   allowInSortByEvenWhenHidden: undefined,
-                                   dataType: undefined,
-                                   defaultWeight: undefined,
-                                 })),
-      editCallback: undefined,
-      deleteCallback: undefined,
-      refreshCallback: undefined,
-    });
-    this._dataGrid.element.style.flex = '1';
     this._infoWidget = new InfoWidget();
-    split.setMainWidget(this._dataGrid.asWidget());
+
+    /**
+     * @type {Components.DataGridController.DataGridControllerData}
+     */
+    const dataGridInitialData = {
+      columns: [
+        {
+          id: 'method',
+          title: i18nString(UIStrings.method),
+          sortable: false,
+          widthWeighting: 1,
+          visible: true,
+          hideable: false
+        },
+        {
+          id: 'direction',
+          title: i18nString(UIStrings.direction),
+          sortable: true,
+          widthWeighting: 1,
+          visible: false,
+          hideable: true
+        },
+        {
+          id: 'request',
+          title: i18nString(UIStrings.request),
+          sortable: false,
+          widthWeighting: 1,
+          visible: true,
+          hideable: true
+        },
+        {
+          id: 'response',
+          title: i18nString(UIStrings.response),
+          sortable: false,
+          widthWeighting: 1,
+          visible: true,
+          hideable: true
+        },
+        {
+          id: 'timestamp',
+          title: i18nString(UIStrings.timestamp),
+          sortable: true,
+          widthWeighting: 1,
+          visible: false,
+          hideable: true
+        },
+        {
+          id: 'target',
+          title: i18nString(UIStrings.target),
+          sortable: true,
+          widthWeighting: 1,
+          visible: false,
+          hideable: true
+        },
+      ],
+      rows: [],
+      contextMenus: {
+        bodyRow: (menu, columns, row) => {
+          const methodColumn = Components.DataGridUtils.getRowEntryForColumnId(row, 'method');
+          const directionColumn = Components.DataGridUtils.getRowEntryForColumnId(row, 'direction');
+
+          /**
+           * You can click the "Filter" item in the context menu to filter the
+           * protocol monitor entries to those that match the method of the
+           * current row.
+           */
+          menu.defaultSection().appendItem(i18nString(UIStrings.filter), () => {
+            const methodColumn = Components.DataGridUtils.getRowEntryForColumnId(row, 'method');
+            this._textFilterUI.setValue(`method:${methodColumn.value}`, true);
+          });
+
+          /**
+           * You can click the "Documentation" item in the context menu to be
+           * taken to the CDP Documentation site entry for the given method.
+           */
+          menu.defaultSection().appendItem(i18nString(UIStrings.documentation), () => {
+            if (!methodColumn.value) {
+              return;
+            }
+            const [domain, method] = String(methodColumn.value).split('.');
+            const type = directionColumn.value === 'sent' ? 'method' : 'event';
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+                `https://chromedevtools.github.io/devtools-protocol/tot/${domain}#${type}-${method}`);
+          });
+        }
+      }
+    };
+
+    this._dataGridIntegrator =
+        new Components.DataGridControllerIntegrator.DataGridControllerIntegrator(dataGridInitialData);
+
+    this._dataGridIntegrator.dataGrid.addEventListener(
+        'cell-focused', /**
+     @param {!Event} event
+     */
+        event => {
+          const focusedEvent = /** @type {Components.DataGrid.BodyCellFocusedEvent} */ (event);
+          const focusedRow = focusedEvent.data.row;
+          const infoWidgetData = {
+            request: Components.DataGridUtils.getRowEntryForColumnId(focusedRow, 'request'),
+            response: Components.DataGridUtils.getRowEntryForColumnId(focusedRow, 'response'),
+            direction: Components.DataGridUtils.getRowEntryForColumnId(focusedRow, 'direction'),
+          };
+          this._infoWidget.render(infoWidgetData);
+        });
+
+    this._dataGridIntegrator.addEventListener(
+        'new-user-filter-text', /**
+     @param {*} event
+      */
+        event => {
+          const filterTextEvent = /** @type {Components.DataGrid.NewUserFilterTextEvent} */ (event);
+          this._textFilterUI.setValue(filterTextEvent.data.filterText, /* notify listeners */ true);
+        });
+    split.setMainWidget(this._dataGridIntegrator);
     split.setSidebarWidget(this._infoWidget);
-    this._dataGrid.addEventListener(
-        DataGrid.DataGrid.Events.SelectedNode, event => this._infoWidget.render(event.data.data));
-    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, event => this._infoWidget.render(null));
-    this._dataGrid.setHeaderContextMenuCallback(this._innerHeaderContextMenu.bind(this));
-    this._dataGrid.setRowContextMenuCallback(this._innerRowContextMenu.bind(this));
-
-
-    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortDataGrid.bind(this));
-    this._dataGrid.setStickToBottom(true);
-    this._dataGrid.sortNodes(
-        DataGrid.SortableDataGrid.SortableDataGrid.NumericComparator.bind(null, 'timestamp'), false);
-    this._updateColumnVisibility();
-
     const keys = ['method', 'request', 'response', 'direction'];
     this._filterParser = new TextUtils.TextUtils.FilterParser(keys);
     this._suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(keys);
@@ -192,107 +231,11 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this._textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, event => {
       const query = /** @type {string} */ (event.data);
       const filters = this._filterParser.parse(query);
-      /**
-       * @param {!ProtocolNode} node
-       */
-      const filter = node => {
-        for (const {key, text, negative} of filters) {
-          if (!text) {
-            continue;
-          }
-          const data = key ? node.data[key] : node.data;
-          if (!data) {
-            continue;
-          }
-          const found = JSON.stringify(data).toLowerCase().indexOf(text.toLowerCase()) !== -1;
-          if (found === negative) {
-            return false;
-          }
-        }
-        return true;
-      };
-      this._filter = filter;
-      this._filterNodes();
+      this._dataGridIntegrator.update({...this._dataGridIntegrator.data(), filters});
     });
     topToolbar.appendToolbarItem(this._textFilterUI);
   }
 
-  _filterNodes() {
-    for (const node of this._nodes) {
-      if (this._filter(node)) {
-        if (!node.parent) {
-          this._dataGrid.insertChild(node);
-        }
-      } else {
-        node.remove();
-      }
-    }
-  }
-
-  /**
-   * @param {!UI.ContextMenu.SubMenu} contextMenu
-   */
-  _innerHeaderContextMenu(contextMenu) {
-    const columnConfigs = this._columns.filter(columnConfig => columnConfig.hideable);
-    for (const columnConfig of columnConfigs) {
-      contextMenu.headerSection().appendCheckboxItem(
-          columnConfig.title, this._toggleColumnVisibility.bind(this, columnConfig), columnConfig.visible);
-    }
-  }
-
-  /**
-   * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!DataGrid.DataGrid.DataGridNode<!DataGrid.ViewportDataGrid.ViewportDataGridNode<!DataGrid.SortableDataGrid.SortableDataGridNode<!ProtocolNode>>>} node
-   */
-  _innerRowContextMenu(contextMenu, node) {
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.filter), () => {
-      this._textFilterUI.setValue(`method:${node.data.method}`, true);
-    });
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.documentation), () => {
-      const [domain, method] = node.data.method.split('.');
-      const type = node.data.direction === 'sent' ? 'method' : 'event';
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-          `https://chromedevtools.github.io/devtools-protocol/tot/${domain}#${type}-${method}`);
-    });
-  }
-
-  /**
-   * @param {!ProtocolColumnConfig} columnConfig
-   */
-  _toggleColumnVisibility(columnConfig) {
-    columnConfig.visible = !columnConfig.visible;
-    this._updateColumnVisibility();
-  }
-
-  _updateColumnVisibility() {
-    const visibleColumns = new Set();
-    for (const columnConfig of this._columns) {
-      if (columnConfig.visible) {
-        visibleColumns.add(columnConfig.id);
-      }
-    }
-    this._dataGrid.setColumnsVisiblity(visibleColumns);
-  }
-
-  _sortDataGrid() {
-    const sortColumnId = this._dataGrid.sortColumnId();
-    if (!sortColumnId) {
-      return;
-    }
-
-    let columnIsNumeric = true;
-    switch (sortColumnId) {
-      case 'method':
-      case 'direction':
-        columnIsNumeric = false;
-        break;
-    }
-
-
-    const comparator = columnIsNumeric ? DataGrid.SortableDataGrid.SortableDataGrid.NumericComparator :
-                                         DataGrid.SortableDataGrid.SortableDataGrid.StringComparator;
-    this._dataGrid.sortNodes(comparator.bind(null, sortColumnId), !this._dataGrid.isSortOrderAscending());
-  }
 
   /**
    * @override
@@ -344,35 +287,62 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
    */
   _messageReceived(message, target) {
     if ('id' in message) {
-      const node = this._nodeForId.get(message.id);
-      if (!node) {
+      const existingRow = this._dataGridRowForId.get(message.id);
+      if (!existingRow) {
         return;
       }
-      node.data.response = message.result || message.error;
-      node.hasError = Boolean(message.error);
-      node.refresh();
-      if (this._dataGrid.selectedNode === node) {
-        const data =
-            /** @type {?{method: string, direction: string, request: ?Object, response: ?Object, timestamp: number}}*/ (
-                node.data);
-        this._infoWidget.render(data);
-      }
+      const allExistingRows = this._dataGridIntegrator.data().rows;
+      const matchingExistingRowIndex = allExistingRows.findIndex(r => existingRow === r);
+      const newRowWithUpdate = {
+        ...existingRow,
+        cells: existingRow.cells.map(cell => {
+          if (cell.columnId === 'response') {
+            return {
+              ...cell,
+              value: JSON.stringify(message.result || message.error),
+
+            };
+          }
+          return cell;
+        })
+      };
+
+      const newRowsArray = [...this._dataGridIntegrator.data().rows];
+      newRowsArray[matchingExistingRowIndex] = newRowWithUpdate;
+
+      // Now we've updated the message, it won't be updated again, so we can delete it from the tracking map.
+      this._dataGridRowForId.delete(message.id);
+      this._dataGridIntegrator.update({
+        ...this._dataGridIntegrator.data(),
+        rows: newRowsArray,
+      });
       return;
     }
 
     const sdkTarget = /** @type {?SDK.SDKModel.Target} */ (target);
-    const node = new ProtocolNode({
-      method: message.method,
-      direction: 'received',
-      response: message.params,
-      timestamp: Date.now() - this._startTime,
-      request: '',
-      target: this._targetToString(sdkTarget)
+    /** @type {!Components.DataGridUtils.Row} */
+    const newRow = {
+      cells: [
+        {columnId: 'method', value: message.method},
+        {columnId: 'request', value: '', renderer: Components.DataGridRenderers.codeBlockRenderer}, {
+          columnId: 'response',
+          value: JSON.stringify(message.params),
+          renderer: Components.DataGridRenderers.codeBlockRenderer
+        },
+        {
+          columnId: 'timestamp',
+          value: Date.now() - this._startTime,
+          renderer: timestampRenderer,
+        },
+        {columnId: 'direction', value: 'received'}, {columnId: 'target', value: this._targetToString(sdkTarget)}
+      ],
+      hidden: false,
+    };
+
+    this._dataGridIntegrator.update({
+      ...this._dataGridIntegrator.data(),
+      rows: this._dataGridIntegrator.data().rows.concat([newRow]),
     });
-    this._nodes.push(node);
-    if (this._filter(node)) {
-      this._dataGrid.insertChild(node);
-    }
   }
 
   /**
@@ -381,77 +351,28 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
    */
   _messageSent(message, target) {
     const sdkTarget = /** @type {?SDK.SDKModel.Target} */ (target);
-    const node = new ProtocolNode({
-      method: message.method,
-      direction: 'sent',
-      request: message.params,
-      timestamp: Date.now() - this._startTime,
-      response: '(pending)',
-      id: message.id,
-      target: this._targetToString(sdkTarget)
-    });
-    this._nodeForId.set(message.id, node);
-    this._nodes.push(node);
-    if (this._filter(node)) {
-      this._dataGrid.insertChild(node);
-    }
-  }
-}
-/**
- * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<ProtocolNode>}
- */
-export class ProtocolNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
-  /**
-   * @param {?Object.<string, *>=} data
-   */
-  constructor(data) {
-    super(data);
-    this.hasError = false;
-  }
-
-  /**
-   * @override
-   * @param {string} columnId
-   * @return {!HTMLElement}
-   */
-  createCell(columnId) {
-    const createSourceCell = () => {
-      const cell = this.createTD(columnId);
-      const obj = SDK.RemoteObject.RemoteObject.fromLocalObject(this.data[columnId]);
-      cell.textContent = obj.description ? obj.description.trimEndWithMaxLength(50) : '';
-      cell.classList.add('source-code');
-      return cell;
+    /** @type {!Components.DataGridUtils.Row} */
+    const newRow = {
+      cells: [
+        {columnId: 'method', value: message.method}, {
+          columnId: 'request',
+          value: JSON.stringify(message.params),
+          renderer: Components.DataGridRenderers.codeBlockRenderer
+        },
+        {columnId: 'response', value: '(pending)', renderer: Components.DataGridRenderers.codeBlockRenderer}, {
+          columnId: 'timestamp',
+          value: Date.now() - this._startTime,
+          renderer: timestampRenderer,
+        },
+        {columnId: 'direction', value: 'sent'}, {columnId: 'target', value: this._targetToString(sdkTarget)}
+      ],
+      hidden: false,
     };
-    switch (columnId) {
-      case 'response': {
-        if (!this.data[columnId] && this.data.direction === 'send') {
-          const cell = this.createTD(columnId);
-          cell.textContent = '(pending)';
-          return cell;
-        }
-        return createSourceCell();
-      }
-      case 'request': {
-        return createSourceCell();
-      }
-      case 'timestamp': {
-        const cell = this.createTD(columnId);
-        cell.textContent = i18nString(UIStrings.sMs, {PH1: this.data[columnId]});
-        return cell;
-      }
-    }
-    return super.createCell(columnId);
-  }
-
-  /**
-   * @override
-   */
-  element() {
-    const element = super.element();
-    element.classList.toggle('protocol-message-sent', this.data.direction === 'sent');
-    element.classList.toggle('protocol-message-received', this.data.direction !== 'sent');
-    element.classList.toggle('error', this.hasError);
-    return element;
+    this._dataGridRowForId.set(message.id, newRow);
+    this._dataGridIntegrator.update({
+      ...this._dataGridIntegrator.data(),
+      rows: this._dataGridIntegrator.data().rows.concat([newRow]),
+    });
   }
 }
 
@@ -467,36 +388,26 @@ export class InfoWidget extends UI.Widget.VBox {
   }
 
   /**
-   * @param {?{method: string, direction: string, request: ?Object, response: ?Object, timestamp: number}} data
+   * @param {{request: Components.DataGridUtils.Cell|undefined, response: Components.DataGridUtils.Cell|undefined, direction: Components.DataGridUtils.Cell|undefined}|null} data
    */
   render(data) {
-    const requestEnabled = data && data.direction === 'sent';
-    this._tabbedPane.setTabEnabled('request', Boolean(requestEnabled));
-    if (!data) {
+    if (!data || !data.request || !data.response) {
       this._tabbedPane.changeTabView(
           'request', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected)));
       this._tabbedPane.changeTabView(
           'response', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected)));
       return;
     }
+
+    const requestEnabled = data && data.direction && data.direction.value === 'sent';
+    this._tabbedPane.setTabEnabled('request', Boolean(requestEnabled));
     if (!requestEnabled) {
       this._tabbedPane.selectTab('response');
     }
 
-    this._tabbedPane.changeTabView('request', SourceFrame.JSONView.JSONView.createViewSync(data.request));
-    this._tabbedPane.changeTabView('response', SourceFrame.JSONView.JSONView.createViewSync(data.response));
+    const requestParsed = JSON.parse(String(data.request.value) || 'null');
+    this._tabbedPane.changeTabView('request', SourceFrame.JSONView.JSONView.createViewSync(requestParsed));
+    const responseParsed = JSON.parse(String(data.response.value) || 'null');
+    this._tabbedPane.changeTabView('response', SourceFrame.JSONView.JSONView.createViewSync(responseParsed));
   }
 }
-
-/**
- * @typedef {{
- *  id: string,
- *  title: !Platform.UIString.LocalizedString,
- *  visible: boolean,
- *  sortable: boolean,
- *  hideable: boolean,
- *  weight: number,
- * }}
- */
-// @ts-ignore typedef
-export let ProtocolColumnConfig;

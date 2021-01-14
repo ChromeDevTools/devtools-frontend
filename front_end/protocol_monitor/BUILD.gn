@@ -12,7 +12,6 @@ devtools_module("protocol_monitor") {
   ]
 
   deps = [
-    "../data_grid:bundle",
     "../host:bundle",
     "../i18n:bundle",
     "../protocol_client:bundle",
@@ -20,6 +19,7 @@ devtools_module("protocol_monitor") {
     "../source_frame:bundle",
     "../text_utils:bundle",
     "../ui:bundle",
+    "../ui/components:bundle",
   ]
 }
 

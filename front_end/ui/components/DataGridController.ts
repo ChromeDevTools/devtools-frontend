@@ -6,8 +6,8 @@ import './DataGrid.js';
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import type * as TextUtils from '../../text_utils/text_utils.js';
-import type {DataGridData, ColumnHeaderClickEvent, DataGridContextMenusConfiguration} from './DataGrid.js';
 import {SortDirection, SortState, Column, Row, getRowEntryForColumnId, ContextMenuColumnSortClickEvent} from './DataGridUtils.js';
+import type {DataGridData, ColumnHeaderClickEvent, DataGridContextMenusConfiguration} from './DataGrid.js';
 
 
 export interface DataGridControllerData {
@@ -29,7 +29,7 @@ export class DataGridController extends HTMLElement {
   private hasRenderedAtLeastOnce = false;
   private columns: readonly Column[] = [];
   private rows: Row[] = [];
-  private contextMenus?: DataGridContextMenusConfiguration;
+  private contextMenus?: DataGridContextMenusConfiguration = undefined;
 
   /**
    * Because the controller will sort data in place (e.g. mutate it) when we get
@@ -55,6 +55,7 @@ export class DataGridController extends HTMLElement {
   set data(data: DataGridControllerData) {
     this.originalColumns = data.columns;
     this.originalRows = data.rows;
+    this.contextMenus = data.contextMenus;
     this.filters = data.filters || [];
     this.contextMenus = data.contextMenus;
 

@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ThemeSupport from '../../../../front_end/theme_support/theme_support.js';
 import * as ComponentHelpers from '../../../../front_end/component_helpers/component_helpers.js';
+import * as ThemeSupport from '../../../../front_end/theme_support/theme_support.js';
+
 const {assert} = chai;
 
 describe('ComponentHelpers', () => {
@@ -43,6 +44,24 @@ describe('ComponentHelpers', () => {
         assert.lengthOf(sheets, 1);
         assert.instanceOf(sheets[0], CSSStyleSheet);
       });
+    });
+  });
+
+  describe('setCSSProperty', () => {
+    it('sets a property on the shadow root host element', () => {
+      class TestComponent extends HTMLElement {
+        shadow = this.attachShadow({mode: 'open'});
+
+        constructor() {
+          super();
+          ComponentHelpers.SetCSSProperty.set(this, '--test-var', 'blue');
+        }
+      }
+
+      customElements.define('set-css-property-test-component', TestComponent);
+
+      const instance = new TestComponent();
+      assert.strictEqual(instance.style.getPropertyValue('--test-var'), 'blue');
     });
   });
 });

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 import {Angle, AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNewAngleFromEvent, getRadiansFromAngle} from './CSSAngleUtils.js';
@@ -31,7 +32,7 @@ export class CSSAngleEditor extends HTMLElement {
   private mousemoveThrottler = new Common.Throttler.Throttler(16.67 /* 60fps */);
 
   connectedCallback(): void {
-    (this.shadow.host as HTMLElement).style.setProperty('--clock-dial-length', `${CLOCK_DIAL_LENGTH}px`);
+    ComponentHelpers.SetCSSProperty.set(this, '--clock-dial-length', `${CLOCK_DIAL_LENGTH}px`);
   }
   set data(data: CSSAngleEditorData) {
     this.angle = data.angle;

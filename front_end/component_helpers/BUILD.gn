@@ -11,6 +11,7 @@ devtools_module("component_helpers") {
   sources = [
     "component-server-setup.ts",
     "get-stylesheet.ts",
+    "set-css-property.ts",
   ]
 
   deps = [

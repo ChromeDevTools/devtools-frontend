@@ -34,6 +34,7 @@ import * as ProtocolClient from '../protocol_client/protocol_client.js';  // esl
 import * as Root from '../root/root.js';
 
 import {GetPropertiesResult, RemoteObject, ScopeRef} from './RemoteObject.js';  // eslint-disable-line no-unused-vars
+import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';  // eslint-disable-line no-unused-vars
 import {EvaluationOptions, EvaluationResult, ExecutionContext, RuntimeModel} from './RuntimeModel.js';  // eslint-disable-line no-unused-vars
 import {Script} from './Script.js';
 import {Capability, SDKModel, Target, Type} from './SDKModel.js';  // eslint-disable-line no-unused-vars
@@ -145,6 +146,12 @@ export class DebuggerModel extends SDKModel {
     Common.Settings.Settings.instance()
         .moduleSetting('jsSourceMapsEnabled')
         .addChangeListener(event => this._sourceMapManager.setEnabled(/** @type {boolean} */ (event.data)));
+
+    const resourceTreeModel =
+        /** @type {!ResourceTreeModel} */ (target.model(ResourceTreeModel));
+    if (resourceTreeModel) {
+      resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameNavigated, this._onFrameNavigated, this);
+    }
   }
 
   /**
@@ -223,6 +230,14 @@ export class DebuggerModel extends SDKModel {
     return enablePromise;
   }
 
+  _onFrameNavigated() {
+    if (DebuggerModel._shouldResyncDebuggerId) {
+      return;
+    }
+
+    DebuggerModel._shouldResyncDebuggerId = true;
+  }
+
   /**
    * @param {!Protocol.Debugger.EnableResponse} response
    */
@@ -245,25 +260,23 @@ export class DebuggerModel extends SDKModel {
 
   /**
    * @param {string} debuggerId
-   * @return {?DebuggerModel}
+   * @return {Promise<?DebuggerModel>}
    */
-  static _modelForDebuggerId(debuggerId) {
+  static async modelForDebuggerId(debuggerId) {
+    if (DebuggerModel._shouldResyncDebuggerId) {
+      await DebuggerModel.resyncDebuggerIdForModels();
+      DebuggerModel._shouldResyncDebuggerId = false;
+    }
     return _debuggerIdToModel.get(debuggerId) || null;
   }
 
-  /**
-   * @param {string} debuggerId
-   * @return {!Promise<?DebuggerModel>}
-   */
-  static async modelForDebuggerIdResyncIfNecessary(debuggerId) {
-    const model = DebuggerModel._modelForDebuggerId(debuggerId);
-    if (!model) {
-      const dbgModels = _debuggerIdToModel.values();
-      for (const dbgModel of dbgModels) {
+  static async resyncDebuggerIdForModels() {
+    const dbgModels = _debuggerIdToModel.values();
+    for (const dbgModel of dbgModels) {
+      if (dbgModel.debuggerEnabled()) {
         await dbgModel.syncDebuggerId();
       }
     }
-    return DebuggerModel._modelForDebuggerId(debuggerId);
   }
 
   /**
@@ -1137,6 +1150,8 @@ export class DebuggerModel extends SDKModel {
     await this._enableDebugger();
   }
 }
+
+DebuggerModel._shouldResyncDebuggerId = false;
 
 /** @type {!Map<string, !DebuggerModel>} */
 export const _debuggerIdToModel = new Map();

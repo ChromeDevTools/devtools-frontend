@@ -3,11 +3,20 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ScreencastView} from './ScreencastView.js';
 
+export const UIStrings = {
+  /**
+  *@description Tooltip text that appears when hovering over largeicon phone button in Screencast App of the Remote Devices tab when toggling screencast
+  */
+  toggleScreencast: 'Toggle screencast',
+};
+const str_ = i18n.i18n.registerUIStrings('screencast/ScreencastApp.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!ScreencastApp} */
 let _appInstance;
 
@@ -18,7 +27,7 @@ let _appInstance;
 export class ScreencastApp {
   constructor() {
     this._enabledSetting = Common.Settings.Settings.instance().createSetting('screencastEnabled', true);
-    this._toggleButton = new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Toggle screencast'), 'largeicon-phone');
+    this._toggleButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleScreencast), 'largeicon-phone');
     this._toggleButton.setToggled(this._enabledSetting.get());
     this._toggleButton.setEnabled(false);
     this._toggleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._toggleButtonClicked, this);

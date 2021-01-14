@@ -128,6 +128,7 @@ const migratedDirsSet = new Set([
   'persistence',
   'protocol_monitor',
   'recorder',
+  'screencast',
   'search',
   'security',
   'settings',

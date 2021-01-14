@@ -1550,6 +1550,30 @@
   "resources/ClearStorageView.js | storageWithCustomMarker": {
     "message": "{PH1} (custom)"
   },
+  "screencast/ScreencastApp.js | toggleScreencast": {
+    "message": "Toggle screencast"
+  },
+  "screencast/ScreencastView.js | addressBar": {
+    "message": "Address bar"
+  },
+  "screencast/ScreencastView.js | back": {
+    "message": "back"
+  },
+  "screencast/ScreencastView.js | forward": {
+    "message": "forward"
+  },
+  "screencast/ScreencastView.js | profilingInProgress": {
+    "message": "Profiling in progress"
+  },
+  "screencast/ScreencastView.js | reload": {
+    "message": "reload"
+  },
+  "screencast/ScreencastView.js | screencastViewOfDebugTarget": {
+    "message": "Screencast view of debug target"
+  },
+  "screencast/ScreencastView.js | theTabIsInactive": {
+    "message": "The tab is inactive"
+  },
   "search/SearchResultsPane.js | lineS": {
     "message": "Line {PH1}"
   },

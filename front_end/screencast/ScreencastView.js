@@ -30,10 +30,44 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {InputModel} from './InputModel.js';
+
+export const UIStrings = {
+  /**
+  *@description Accessible alt text for the screencast canvas rendering of the debug target webpage
+  */
+  screencastViewOfDebugTarget: 'Screencast view of debug target',
+  /**
+  *@description Glass pane element text content in Screencast View of the Remote Devices tab when toggling screencast
+  */
+  theTabIsInactive: 'The tab is inactive',
+  /**
+  *@description Glass pane element text content in Screencast View of the Remote Devices tab when toggling screencast
+  */
+  profilingInProgress: 'Profiling in progress',
+  /**
+  *@description Accessible text for the screencast back button
+  */
+  back: 'back',
+  /**
+  *@description Accessible text for the screencast forward button
+  */
+  forward: 'forward',
+  /**
+  *@description Accessible text for the screencast reload button
+  */
+  reload: 'reload',
+  /**
+  *@description Accessible text for the address bar in screencast view
+  */
+  addressBar: 'Address bar',
+};
+const str_ = i18n.i18n.registerUIStrings('screencast/ScreencastView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * @implements {SDK.OverlayModel.Highlighter}
@@ -107,7 +141,7 @@ export class ScreencastView extends UI.Widget.VBox {
         this._canvasContainerElement.createChild('div', 'screencast-glasspane fill hidden'));
 
     this._canvasElement = /** @type {!HTMLCanvasElement} */ (this._canvasContainerElement.createChild('canvas'));
-    UI.ARIAUtils.setAccessibleName(this._canvasElement, ls`Screencast view of debug target`);
+    UI.ARIAUtils.setAccessibleName(this._canvasElement, i18nString(UIStrings.screencastViewOfDebugTarget));
     this._canvasElement.tabIndex = 0;
     this._canvasElement.addEventListener('mousedown', this._handleMouseEvent.bind(this), false);
     this._canvasElement.addEventListener('mouseup', this._handleMouseEvent.bind(this), false);
@@ -264,10 +298,10 @@ export class ScreencastView extends UI.Widget.VBox {
 
   _updateGlasspane() {
     if (this._targetInactive) {
-      this._glassPaneElement.textContent = Common.UIString.UIString('The tab is inactive');
+      this._glassPaneElement.textContent = i18nString(UIStrings.theTabIsInactive);
       this._glassPaneElement.classList.remove('hidden');
     } else if (SDK.SDKModel.TargetManager.instance().allTargetsSuspended()) {
-      this._glassPaneElement.textContent = Common.UIString.UIString('Profiling in progress');
+      this._glassPaneElement.textContent = i18nString(UIStrings.profilingInProgress);
       this._glassPaneElement.classList.remove('hidden');
     } else {
       this._glassPaneElement.classList.add('hidden');
@@ -703,14 +737,14 @@ export class ScreencastView extends UI.Widget.VBox {
     this._navigationBar = /** @type {!HTMLElement} */ (this.element.createChild('div', 'screencast-navigation'));
     this._navigationBack = /** @type {!HTMLButtonElement} */ (this._navigationBar.createChild('button', 'back'));
     this._navigationBack.disabled = true;
-    UI.ARIAUtils.setAccessibleName(this._navigationBack, ls`back`);
+    UI.ARIAUtils.setAccessibleName(this._navigationBack, i18nString(UIStrings.back));
     this._navigationForward = /** @type {!HTMLButtonElement} */ (this._navigationBar.createChild('button', 'forward'));
     this._navigationForward.disabled = true;
-    UI.ARIAUtils.setAccessibleName(this._navigationForward, ls`forward`);
+    UI.ARIAUtils.setAccessibleName(this._navigationForward, i18nString(UIStrings.forward));
     this._navigationReload = this._navigationBar.createChild('button', 'reload');
-    UI.ARIAUtils.setAccessibleName(this._navigationReload, ls`reload`);
+    UI.ARIAUtils.setAccessibleName(this._navigationReload, i18nString(UIStrings.reload));
     this._navigationUrl = /** @type {!HTMLInputElement} */ (UI.UIUtils.createInput());
-    UI.ARIAUtils.setAccessibleName(this._navigationUrl, ls`Address bar`);
+    UI.ARIAUtils.setAccessibleName(this._navigationUrl, i18nString(UIStrings.addressBar));
     this._navigationBar.appendChild(this._navigationUrl);
     this._navigationUrl.type = 'text';
     this._navigationProgressBar = new ProgressTracker(

@@ -20,7 +20,8 @@
   ],
   "dependencies": [
     "components",
-    "emulation"
+    "emulation",
+    "i18n"
   ],
   "modules": [
     "screencast-legacy.js"

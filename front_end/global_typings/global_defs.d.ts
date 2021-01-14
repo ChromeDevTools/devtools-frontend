@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// eslint-disable-next-line spaced-comment
-/// <reference path="./resize_observer.d.ts" />
-
 /// <reference path="./request_idle_callback.d.ts" />
 
 interface CSSStyleSheet {

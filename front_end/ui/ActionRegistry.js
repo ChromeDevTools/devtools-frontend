@@ -7,7 +7,7 @@ import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 import {Action, getRegisteredActionExtensions, LegacyActionRegistration, PreRegisteredAction} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
 import {Context} from './Context.js';  // eslint-disable-line no-unused-vars
 
-/** @type {!ActionRegistry} */
+/** @type {!ActionRegistry|undefined} */
 let actionRegistryInstance;
 
 export class ActionRegistry {
@@ -30,6 +30,10 @@ export class ActionRegistry {
     }
 
     return actionRegistryInstance;
+  }
+
+  static removeInstance() {
+    actionRegistryInstance = undefined;
   }
 
   _registerActions() {

@@ -6,9 +6,13 @@ import("../../../../third_party/typescript/typescript.gni")
 
 ts_library("meta") {
   testonly = true
-  sources = [ "view_registration_test.ts" ]
+  sources = [
+    "action_registration_test.ts",
+    "view_registration_test.ts",
+  ]
 
   deps = [
+    "../../../../front_end/common:bundle",
     "../../../../front_end/quick_open:bundle",
     "../../../../front_end/ui:bundle",
     "../helpers",

@@ -14,7 +14,7 @@ import {Dialog} from './Dialog.js';
 import {Descriptor, KeyboardShortcut, Modifiers, Type} from './KeyboardShortcut.js';  // eslint-disable-line no-unused-vars
 import {isEditing} from './UIUtils.js';
 
-/** @type {!ShortcutRegistry} */
+/** @type {!ShortcutRegistry|undefined} */
 let shortcutRegistryInstance;
 
 export class ShortcutRegistry {
@@ -62,6 +62,9 @@ export class ShortcutRegistry {
     return shortcutRegistryInstance;
   }
 
+  static removeInstance() {
+    shortcutRegistryInstance = undefined;
+  }
   /**
    * @param {number} key
    * @param {!Object.<string, function():Promise.<boolean>>=} handlers

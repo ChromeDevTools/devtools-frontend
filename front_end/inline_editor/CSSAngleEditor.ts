@@ -10,7 +10,7 @@ import {Angle, AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNew
 const {render, html} = LitHtml;
 const styleMap = LitHtml.Directives.styleMap;
 
-const ClockDialLength = 6;
+const CLOCK_DIAL_LENGTH = 6;
 
 export interface CSSAngleEditorData {
   angle: Angle;
@@ -30,6 +30,9 @@ export class CSSAngleEditor extends HTMLElement {
   private dialTemplates?: LitHtml.TemplateResult[];
   private mousemoveThrottler = new Common.Throttler.Throttler(16.67 /* 60fps */);
 
+  connectedCallback(): void {
+    (this.shadow.host as HTMLElement).style.setProperty('--clock-dial-length', `${CLOCK_DIAL_LENGTH}px`);
+  }
   set data(data: CSSAngleEditorData) {
     this.angle = data.angle;
     this.onAngleUpdate = data.onAngleUpdate;
@@ -112,7 +115,7 @@ export class CSSAngleEditor extends HTMLElement {
           top: 6px;
           width: 6em;
           height: 6em;
-          background-color: var(--color-background)
+          background-color: var(--color-background);
           border: 0.5em solid var(--border-color);
           border-radius: 9em;
           box-shadow: var(--drop-shadow), inset 0 0 15px hsl(0 0% 0% / 25%);
@@ -160,7 +163,7 @@ export class CSSAngleEditor extends HTMLElement {
 
         .dial {
           width: 2px;
-          height: ${ClockDialLength}px;
+          height: var(--clock-dial-length);
           background-color: var(--dial-color);
           border-radius: 1px;
         }
@@ -218,7 +221,7 @@ export class CSSAngleEditor extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       this.dialTemplates = [0, 45, 90, 135, 180, 225, 270, 315].map(deg => {
-        const radius = this.clockRadius - ClockDialLength - 3 /* clock border */;
+        const radius = this.clockRadius - CLOCK_DIAL_LENGTH - 3 /* clock border */;
         const {translateX, translateY} = get2DTranslationsForAngle({
           value: deg,
           unit: AngleUnit.Deg,

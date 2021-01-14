@@ -15,6 +15,7 @@ module.exports = {
       'rulesdir/kebab_case_events': 2,
       'rulesdir/set_data_type_reference': 2,
       'rulesdir/lit_html_data_as_type': 2,
+      'rulesdir/lit_no_style_interpolation': 2,
     }
   }]
 };

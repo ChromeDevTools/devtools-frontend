@@ -22,8 +22,8 @@ export const releaseNoteText = [
     highlights: [
 
       {
-        title: 'Debugging support for Trusted Types violations',
-        subtitle: 'Breakpoint on Trusted Types violations and link to more information in the Issues tab.',
+        title: 'Debugging support for Trusted Type violations',
+        subtitle: 'Breakpoint on Trusted Type violations and link to more information in the Issues tab.',
         link: 'https://developers.google.com/web/updates/2021/01/devtools#trusted-types',
       },
       {

@@ -305,3 +305,12 @@ UI.ContextMenu.registerProvider({
     return Elements.ElementsPanel.ContextMenuProvider.instance();
   },
 });
+
+UI.ViewManager.registerLocationResolver({
+  name: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
+  category: UI.ViewManager.ViewLocationCategoryValues.ELEMENTS,
+  async loadResolver() {
+    const Elements = await loadElementsModule();
+    return Elements.ElementsPanel.ElementsPanel.instance();
+  },
+});

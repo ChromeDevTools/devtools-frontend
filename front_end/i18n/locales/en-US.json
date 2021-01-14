@@ -50,9 +50,6 @@
   "animation/AnimationUI.js | sSlider": {
     "message": "{PH1} slider"
   },
-  "animation/ModuleUIStrings.js | animations": {
-    "message": "Animations"
-  },
   "changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (from source map)"
   },
@@ -88,9 +85,6 @@
   },
   "changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Skipping {PH1} matching lines … )"
-  },
-  "changes/ModuleUIStrings.ts | changes": {
-    "message": "Changes"
   },
   "changes/ModuleUIStrings.ts | changesDrawer": {
     "message": "Changes drawer"

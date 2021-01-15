@@ -74,4 +74,17 @@ describe('NumberUtilities', () => {
       assert.strictEqual(output, '');
     });
   });
+
+  describe('floor', () => {
+    it('it works for integers', () => {
+      assert.strictEqual(10, Platform.NumberUtilities.floor(10));
+    });
+
+    it('it rounds down float with precision', () => {
+      assert.strictEqual(1.1, Platform.NumberUtilities.floor(1.1111, 1));
+      assert.strictEqual(1.11, Platform.NumberUtilities.floor(1.1111, 2));
+      assert.strictEqual(1.9, Platform.NumberUtilities.floor(1.9999, 1));
+      assert.strictEqual(1.99, Platform.NumberUtilities.floor(1.9999, 2));
+    });
+  });
 });

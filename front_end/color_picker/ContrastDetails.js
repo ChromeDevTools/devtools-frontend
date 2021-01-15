@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -216,7 +217,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
       this._chooseBgColor.classList.add('hidden');
       this._contrastThresholds.classList.remove('hidden');
       this._contrastValueBubble.classList.remove('contrast-unknown');
-      this._contrastValue.textContent = `${apcaContrastRatio.toFixed(2)}%`;
+      this._contrastValue.textContent = `${Platform.NumberUtilities.floor(apcaContrastRatio, 2)}%`;
 
       const apcaThreshold = this._contrastInfo.contrastRatioAPCAThreshold();
       const passesAPCA = apcaContrastRatio && apcaThreshold ? Math.abs(apcaContrastRatio) >= apcaThreshold : false;
@@ -258,7 +259,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     this._chooseBgColor.classList.add('hidden');
     this._contrastThresholds.classList.remove('hidden');
     this._contrastValueBubble.classList.remove('contrast-unknown');
-    this._contrastValue.textContent = contrastRatio.toFixed(2);
+    this._contrastValue.textContent = String(Platform.NumberUtilities.floor(contrastRatio, 2));
 
     this._bgColorSwatch.setColors(fgColor, bgColor);
 

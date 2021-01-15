@@ -485,7 +485,7 @@ function _createElementDescription(elementInfo: ElementInfo, colorFormat: string
     if (contrast.contrastAlgorithm === 'apca') {
       const percentage = contrastRatioAPCA(parsedFgColor, parsedBgColor);
       const threshold = getAPCAThreshold(contrast.fontSize, contrast.fontWeight);
-      valueSpan.textContent = String(Math.round(percentage * 100) / 100) + '%';
+      valueSpan.textContent = String(Math.floor(percentage * 100) / 100) + '%';
       createChild(
           valueElement, 'div',
           threshold === null || Math.abs(percentage) < threshold ? 'a11y-icon a11y-icon-warning' :
@@ -493,7 +493,7 @@ function _createElementDescription(elementInfo: ElementInfo, colorFormat: string
     } else if (contrast.contrastAlgorithm === 'aa' || contrast.contrastAlgorithm === 'aaa') {
       const ratio = contrastRatio(parsedFgColor, parsedBgColor);
       const threshold = getContrastThreshold(contrast.fontSize, contrast.fontWeight)[contrast.contrastAlgorithm];
-      valueSpan.textContent = String(Math.round(ratio * 100) / 100);
+      valueSpan.textContent = String(Math.floor(ratio * 100) / 100);
       createChild(valueElement, 'div', ratio < threshold ? 'a11y-icon a11y-icon-warning' : 'a11y-icon a11y-icon-ok');
     }
   }

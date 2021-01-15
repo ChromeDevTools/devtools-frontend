@@ -64,3 +64,15 @@ export const toFixedIfFloating = value => {
   const number = Number(value);
   return number % 1 ? number.toFixed(3) : String(number);
 };
+
+/**
+ * Rounds a number (including float) down.
+ *
+ * @param {number} value
+ * @param {number} precision
+ * @return {number}
+ */
+export const floor = (value, precision = 0) => {
+  const mult = Math.pow(10, precision);
+  return Math.floor(value * mult) / mult;
+};

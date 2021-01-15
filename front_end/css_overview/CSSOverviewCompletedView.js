@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
+import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
@@ -1004,8 +1005,8 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode 
     if (columnId === 'contrastRatio') {
       const cell = this.createTD(columnId);
       const showAPCA = Root.Runtime.experiments.isEnabled('APCA');
-      const contrastRatioString =
-          showAPCA ? this.data.contrastRatio.toFixed(2) + '%' : this.data.contrastRatio.toFixed(2);
+      const contrastRatio = Platform.NumberUtilities.floor(this.data.contrastRatio, 2);
+      const contrastRatioString = showAPCA ? contrastRatio + '%' : contrastRatio;
       const contrastFragment = UI.Fragment.Fragment.build`
         <div class="contrast-container-in-grid" $="container">
           <span class="contrast-preview" style="border: ${getBorderString(this.data.backgroundColor)}; color: ${

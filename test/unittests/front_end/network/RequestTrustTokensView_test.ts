@@ -24,7 +24,8 @@ describe('RequestTrustTokensView', () => {
       },
     } as Network.RequestTrustTokensView.RequestTrustTokensReportData;
 
-    const [typeSpan, refreshPolicySpan] = getElementsWithinComponent(component, 'span.code', HTMLElement);
+    const [typeSpan, refreshPolicySpan] =
+        getElementsWithinComponent(component, 'devtools-report-value.code', HTMLElement);
     assert.strictEqual(typeSpan.textContent, 'Redemption');
     assert.strictEqual(refreshPolicySpan.textContent, 'UseCached');
   });

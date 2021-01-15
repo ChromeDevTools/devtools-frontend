@@ -65,10 +65,6 @@ export class RequestTrustTokensReport extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <style>
-        devtools-report {
-          --name-column-width: 150px;
-        }
-
         .code {
           font-family: var(--monospace-font-family);
           font-size: var(--monospace-font-size);
@@ -110,12 +106,13 @@ export class RequestTrustTokensReport extends HTMLElement {
     }
 
     return LitHtml.html`
-      <devtools-report-section .data=${{sectionTitle: ls`Parameters`} as Components.ReportView.ReportSectionData}>
-        ${renderRowWithCodeValue(ls`Type`, this.trustTokenData.params.type.toString())}
-        ${this.renderRefreshPolicy(this.trustTokenData.params)}
-        ${this.renderIssuers(this.trustTokenData.params)}
-        ${this.renderIssuerAndTopLevelOriginFromResult()}
-      </devtools-report-section>`;
+      <devtools-report-section-header>${ls`Parameters`}</devtools-report-section-header>
+      ${renderRowWithCodeValue(ls`Type`, this.trustTokenData.params.type.toString())}
+      ${this.renderRefreshPolicy(this.trustTokenData.params)}
+      ${this.renderIssuers(this.trustTokenData.params)}
+      ${this.renderIssuerAndTopLevelOriginFromResult()}
+      <devtools-report-divider></devtools-report-divider>
+    `;
   }
 
   private renderRefreshPolicy(params: Protocol.Network.TrustTokenParams): LitHtml.TemplateResult|{} {
@@ -131,12 +128,13 @@ export class RequestTrustTokensReport extends HTMLElement {
     }
 
     return LitHtml.html`
-      <devtools-report-row>
-        <span slot="name">${ls`Issuers`}</span>
-        <ul slot="value" class="issuers-list">
+      <devtools-report-key>${ls`Issuers`}</devtools-report-key>
+      <devtools-report-value>
+        <ul class="issuers-list">
           ${params.issuers.map(issuer => LitHtml.html`<li>${issuer}</li>`)}
         </ul>
-      </devtools-report-row>`;
+      </devtools-report-value>
+    `;
   }
 
   // The issuer and top level origin are technically parameters but reported in the
@@ -157,21 +155,22 @@ export class RequestTrustTokensReport extends HTMLElement {
       return LitHtml.nothing;
     }
     return LitHtml.html`
-      <devtools-report-section .data=${{sectionTitle: ls`Result`} as Components.ReportView.ReportSectionData}>
-        <devtools-report-row>
-          <span slot="name">${ls`Status`}</span>
-          <div slot="value" class="status-row">
-            <devtools-icon class="status-icon"
-              .data=${getIconForStatusCode(this.trustTokenData.result.status) as Components.Icon.IconData}>
-            </devtools-icon>
-            <div class="status-text">
-              <span><strong>${getSimplifiedStatusTextForStatusCode(this.trustTokenData.result.status)}</strong></span>
-              <span>${getDetailedTextForStatusCode(this.trustTokenData.result.status)}</span>
-            </div>
+      <devtools-report-section-header>${ls`Result`}</devtools-report-section-header>
+      <devtools-report-key>${ls`Status`}</devtools-report-key>
+      <devtools-report-value>
+        <div class="status-row">
+          <devtools-icon class="status-icon"
+            .data=${getIconForStatusCode(this.trustTokenData.result.status) as Components.Icon.IconData}>
+          </devtools-icon>
+          <div class="status-text">
+            <span><strong>${getSimplifiedStatusTextForStatusCode(this.trustTokenData.result.status)}</strong></span>
+            <span>${getDetailedTextForStatusCode(this.trustTokenData.result.status)}</span>
           </div>
-        </devtools-report-row>
-        ${this.renderIssuedTokenCount(this.trustTokenData.result)}
-      </devtools-report-section>`;
+        </div>
+      </devtools-report-value>
+      ${this.renderIssuedTokenCount(this.trustTokenData.result)}
+      <devtools-report-divider></devtools-report-divider>
+      `;
   }
 
   private renderIssuedTokenCount(result: Protocol.Network.TrustTokenOperationDoneEvent): LitHtml.TemplateResult|{} {
@@ -231,24 +230,21 @@ function getDetailedTextForStatusCode(status: Protocol.Network.TrustTokenOperati
   }
 }
 
-function renderSimpleRowIfValuePresent<T>(name: string, value: T|undefined): LitHtml.TemplateResult|{} {
+function renderSimpleRowIfValuePresent<T>(key: string, value: T|undefined): LitHtml.TemplateResult|{} {
   if (value === undefined) {
     return LitHtml.nothing;
   }
 
   return LitHtml.html`
-    <devtools-report-row>
-      <span slot="name">${name}</span>
-      <span slot="value">${value}</span>
-    </devtools-report-row>`;
+    <devtools-report-key>${key}</devtools-report-key>
+    <devtools-report-value>${value}</devtools-report-value>
+  `;
 }
 
-function renderRowWithCodeValue(name: string, value: string): LitHtml.TemplateResult {
+function renderRowWithCodeValue(key: string, value: string): LitHtml.TemplateResult {
   return LitHtml.html`
-    <devtools-report-row>
-      <span slot="name">${name}</span>
-      <span slot="value" class="code">${value}</span>
-    </devtools-report-row>
+    <devtools-report-key>${key}</devtools-report-key>
+    <devtools-report-value class="code">${value}</devtools-report-value>
   `;
 }
 

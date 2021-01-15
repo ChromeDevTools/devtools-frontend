@@ -3,6 +3,7 @@
     "ui",
     "common",
     "components",
+    "i18n",
     "sdk",
     "object_ui"
   ],

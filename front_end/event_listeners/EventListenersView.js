@@ -4,13 +4,45 @@
 
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {frameworkEventListeners, FrameworkEventListenersObject} from './EventListenersUtils.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Empty holder text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+  */
+  noEventListeners: 'No event listeners',
+  /**
+  *@description Label for an item to remove something
+  */
+  remove: 'Remove',
+  /**
+  *@description Delete button title in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+  */
+  deleteEventListener: 'Delete event listener',
+  /**
+  *@description Passive button text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+  */
+  togglePassive: 'Toggle Passive',
+  /**
+  *@description Passive button title in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+  */
+  toggleWhetherEventListenerIs: 'Toggle whether event listener is passive or blocking',
+  /**
+  *@description A context menu item to reveal a node in the DOM tree of the Elements Panel
+  */
+  revealInElementsPanel: 'Reveal in Elements panel',
+  /**
+  *@description Text in Event Listeners Widget of the Elements panel
+  */
+  passive: 'Passive',
+};
+const str_ = i18n.i18n.registerUIStrings('event_listeners/EventListenersView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventListenersView extends UI.Widget.VBox {
   /**
    * @param {function():void} changeCallback
@@ -31,7 +63,7 @@ export class EventListenersView extends UI.Widget.VBox {
     this.element.appendChild(this._treeOutline.element);
     this._emptyHolder = document.createElement('div');
     this._emptyHolder.classList.add('gray-info-message');
-    this._emptyHolder.textContent = Common.UIString.UIString('No event listeners');
+    this._emptyHolder.textContent = i18nString(UIStrings.noEventListeners);
     this._emptyHolder.tabIndex = -1;
     this._linkifier = new Components.Linkifier.Linkifier();
     /** @type {!Map<string, !EventListenersTreeElement>} */
@@ -333,8 +365,8 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
 
     if (this._eventListener.canRemove()) {
       const deleteButton = title.createChild('span', 'event-listener-button');
-      deleteButton.textContent = Common.UIString.UIString('Remove');
-      UI.Tooltip.Tooltip.install(deleteButton, Common.UIString.UIString('Delete event listener'));
+      deleteButton.textContent = i18nString(UIStrings.remove);
+      UI.Tooltip.Tooltip.install(deleteButton, i18nString(UIStrings.deleteEventListener));
       deleteButton.addEventListener('click', event => {
         this._removeListener();
         event.consume();
@@ -344,9 +376,8 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
 
     if (this._eventListener.isScrollBlockingType() && this._eventListener.canTogglePassive()) {
       const passiveButton = title.createChild('span', 'event-listener-button');
-      passiveButton.textContent = Common.UIString.UIString('Toggle Passive');
-      UI.Tooltip.Tooltip.install(
-          passiveButton, Common.UIString.UIString('Toggle whether event listener is passive or blocking'));
+      passiveButton.textContent = i18nString(UIStrings.togglePassive);
+      UI.Tooltip.Tooltip.install(passiveButton, i18nString(UIStrings.toggleWhetherEventListenerIs));
       passiveButton.addEventListener('click', event => {
         this._togglePassiveListener();
         event.consume();
@@ -360,12 +391,13 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
         menu.appendApplicableItems(linkElement);
       }
       if (object.subtype === 'node') {
-        menu.defaultSection().appendItem(ls`Reveal in Elements panel`, () => Common.Revealer.reveal(object));
+        menu.defaultSection().appendItem(
+            i18nString(UIStrings.revealInElementsPanel), () => Common.Revealer.reveal(object));
       }
       menu.defaultSection().appendItem(
-          ls`Delete event listener`, this._removeListener.bind(this), !this._eventListener.canRemove());
+          i18nString(UIStrings.deleteEventListener), this._removeListener.bind(this), !this._eventListener.canRemove());
       menu.defaultSection().appendCheckboxItem(
-          ls`Passive`, this._togglePassiveListener.bind(this), this._eventListener.passive(),
+          i18nString(UIStrings.passive), this._togglePassiveListener.bind(this), this._eventListener.passive(),
           !this._eventListener.canTogglePassive());
       menu.show();
     });

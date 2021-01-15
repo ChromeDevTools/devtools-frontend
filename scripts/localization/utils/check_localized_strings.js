@@ -114,6 +114,7 @@ const migratedDirsSet = new Set([
   'coverage',
   'developer_resources',
   'devices',
+  'event_listeners',
   'help',
   'input',
   'js_profiler',

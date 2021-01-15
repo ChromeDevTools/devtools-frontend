@@ -19,6 +19,8 @@ group("component_docs") {
     "./layout_pane",
     "./linear_memory_inspector",
     "./linkifier",
+    "./markdown_image",
+    "./markdown_view",
     "./perf_piechart",
     "./report",
     "./theme_colors",

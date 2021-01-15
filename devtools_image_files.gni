@@ -60,6 +60,7 @@ devtools_image_files = [
   "ic_suggest_color.svg",
   "ic_undo_16x16_icon.svg",
   "ic_warning_black_18dp.svg",
+  "issue-text-icon.svg",
   "largeIcons.svg",
   "link_icon.svg",
   "mediumIcons.svg",

@@ -4,21 +4,6 @@
  * found in the LICENSE file.
  */
 
-.object-value-scientific-notation-exponent {
-  flex-shrink: 0;
-}
-
-.object-value-scientific-notation-mantissa {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-shrink: 1;
-  min-width: 1ex;
-}
-
-.object-value-scientific-notation-number {
-  display: flex !important;
-}
-
 .value.object-value-node:hover {
   background-color: var(--item-hover-color);
 }

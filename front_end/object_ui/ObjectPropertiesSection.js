@@ -337,12 +337,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       propertyValue = new ObjectPropertyValue(ObjectPropertiesSection.valueElementForFunctionDescription(description));
     } else if (type === 'object' && subtype === 'node' && description) {
       propertyValue = new ObjectPropertyValue(createNodeElement());
-    } else if (type === 'number' && description && description.indexOf('e') !== -1) {
-      propertyValue = new ObjectPropertyValue(createNumberWithExponentElement());
-      if (parentElement)  // FIXME: do it in the caller.
-      {
-        parentElement.classList.add('hbox');
-      }
     } else {
       const valueElement = document.createElement('span');
       valueElement.classList.add('object-value-' + (subtype || type));
@@ -439,20 +433,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       valueElement.addEventListener(
           'mousemove', () => SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(value), false);
       valueElement.addEventListener('mouseleave', () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(), false);
-      return valueElement;
-    }
-
-    /**
-     * @return {!Element}
-     */
-    function createNumberWithExponentElement() {
-      const valueElement = document.createElement('span');
-      valueElement.classList.add('object-value-number');
-      const numberParts = description.split('e');
-      valueElement.createChild('span', 'object-value-scientific-notation-mantissa').textContent = numberParts[0];
-      valueElement.createChild('span', 'object-value-scientific-notation-exponent').textContent = 'e' + numberParts[1];
-      valueElement.classList.add('object-value-scientific-notation-number');
-      UI.Tooltip.Tooltip.install(valueElement, description || '');
       return valueElement;
     }
   }

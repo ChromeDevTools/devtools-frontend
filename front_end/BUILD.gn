@@ -87,6 +87,7 @@ group("front_end") {
     "quick_open:bundle",
     "recorder:bundle",
     "resources:bundle",
+    "resources:meta",
     "screencast:bundle",
     "sdk:bundle",
     "search:bundle",

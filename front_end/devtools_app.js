@@ -12,6 +12,7 @@ import './accessibility/accessibility-meta.js';
 import './animation/animation-meta.js';
 import './developer_resources/developer_resources-meta.js';
 import './inspector_main/inspector_main-meta.js';
+import './resources/resources-meta.js';
 import * as Startup from './startup/startup.js';
 
 Startup.RuntimeInstantiator.startApplication('devtools_app');

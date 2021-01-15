@@ -59,6 +59,7 @@ group("front_end") {
     "input:bundle",
     "input:meta",
     "inspector_main:bundle",
+    "inspector_main:meta",
     "issues:bundle",
     "javascript_metadata:bundle",
     "js_main:bundle",

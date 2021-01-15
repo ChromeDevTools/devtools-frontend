@@ -253,6 +253,7 @@ grd_files_release_sources = [
   "front_end/inspector.html",
   "front_end/inspector.js",
   "front_end/inspector_main/inspector_main-legacy.js",
+  "front_end/inspector_main/inspector_main-meta.js",
   "front_end/inspector_main/inspector_main.js",
   "front_end/integration_test_runner.html",
   "front_end/issues/issues-legacy.js",

@@ -47,7 +47,13 @@ const supportsPrefersReducedData = () => {
   return window.matchMedia(query).media === query;
 };
 
+/** @type {!RenderingOptionsView} */
+let renderingOptionsViewInstance;
+
 export class RenderingOptionsView extends UI.Widget.VBox {
+  /**
+     * @private
+     */
   constructor() {
     super(true);
     this.registerRequiredCSS('inspector_main/renderingOptions.css', {enableLegacyPatching: false});
@@ -115,6 +121,18 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         Common.Settings.Settings.instance().moduleSetting('webpFormatDisabled'));
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!renderingOptionsViewInstance || forceNew) {
+      renderingOptionsViewInstance = new RenderingOptionsView();
+    }
+
+    return renderingOptionsViewInstance;
   }
 
   /**

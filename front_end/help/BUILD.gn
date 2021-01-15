@@ -7,10 +7,10 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("help") {
   sources = [
-    "HelpImpl.js",
-    "ModuleUIStrings.js",
-    "ReleaseNoteText.js",
-    "ReleaseNoteView.js",
+    "HelpImpl.ts",
+    "ModuleUIStrings.ts",
+    "ReleaseNoteText.ts",
+    "ReleaseNoteView.ts",
   ]
 
   deps = [
@@ -32,7 +32,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "help-legacy.js"
+  entrypoint = "help-legacy.ts"
 
   deps = [ ":bundle" ]
 }

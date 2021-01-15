@@ -398,37 +398,37 @@
   "event_listeners/EventListenersView.js | toggleWhetherEventListenerIs": {
     "message": "Toggle whether event listener is passive or blocking"
   },
-  "help/ModuleUIStrings.js | appearance": {
+  "help/ModuleUIStrings.ts | appearance": {
     "message": "Appearance"
   },
-  "help/ModuleUIStrings.js | bug": {
+  "help/ModuleUIStrings.ts | bug": {
     "message": "bug"
   },
-  "help/ModuleUIStrings.js | doNotShowWhatsNewAfterEachUpdate": {
+  "help/ModuleUIStrings.ts | doNotShowWhatsNewAfterEachUpdate": {
     "message": "Do not show What's New after each update"
   },
-  "help/ModuleUIStrings.js | help": {
+  "help/ModuleUIStrings.ts | help": {
     "message": "Help"
   },
-  "help/ModuleUIStrings.js | releaseNotes": {
+  "help/ModuleUIStrings.ts | releaseNotes": {
     "message": "Release notes"
   },
-  "help/ModuleUIStrings.js | reportADevtoolsIssue": {
+  "help/ModuleUIStrings.ts | reportADevtoolsIssue": {
     "message": "Report a DevTools issue"
   },
-  "help/ModuleUIStrings.js | showWhatsNewAfterEachUpdate": {
+  "help/ModuleUIStrings.ts | showWhatsNewAfterEachUpdate": {
     "message": "Show What's New after each update"
   },
-  "help/ModuleUIStrings.js | whatsNew": {
+  "help/ModuleUIStrings.ts | whatsNew": {
     "message": "What's New"
   },
-  "help/ReleaseNoteView.js | close": {
+  "help/ReleaseNoteView.ts | close": {
     "message": "Close"
   },
-  "help/ReleaseNoteView.js | learnMore": {
+  "help/ReleaseNoteView.ts | learnMore": {
     "message": "Learn more"
   },
-  "help/ReleaseNoteView.js | s": {
+  "help/ReleaseNoteView.ts | s": {
     "message": "{PH1}"
   },
   "input/InputTimeline.js | clearAll": {

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
@@ -23,10 +25,11 @@ export const UIStrings = {
   */
   close: 'Close',
 };
-const str_ = i18n.i18n.registerUIStrings('help/ReleaseNoteView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('help/ReleaseNoteView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ReleaseNoteView extends UI.Widget.VBox {
+  _releaseNoteElement: Element;
   constructor() {
     super(true);
     this.registerRequiredCSS('help/releaseNote.css', {enableLegacyPatching: true});
@@ -36,19 +39,11 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     this.contentElement.appendChild(this._releaseNoteElement);
   }
 
-  /**
-   * @override
-   * @return {!Array<!Element>}
-   */
-  elementsToRestoreScrollPositionsFor() {
+  elementsToRestoreScrollPositionsFor(): Element[] {
     return [this._releaseNoteElement];
   }
 
-  /**
-   * @param {!ReleaseNote} releaseNote
-   * @return {!Element}
-   */
-  _createReleaseNoteElement(releaseNote) {
+  _createReleaseNoteElement(releaseNote: ReleaseNote): Element {
     const hbox = document.createElement('div');
     hbox.classList.add('hbox');
     const container = hbox.createChild('div', 'release-note-container');
@@ -87,12 +82,12 @@ export class ReleaseNoteView extends UI.Widget.VBox {
       UI.InspectorView.InspectorView.instance().closeDrawerTab(releaseNoteViewId, true);
     }, 'close-release-note'));
 
-    const imageLink = /** @type {!HTMLElement} */ (UI.XLink.XLink.create(releaseNote.link, ' '));
+    const imageLink = UI.XLink.XLink.create(releaseNote.link, ' ') as HTMLElement;
     imageLink.classList.add('release-note-image');
     UI.Tooltip.Tooltip.install(imageLink, i18nString(UIStrings.s, {PH1: latestReleaseNote().header}));
 
     hbox.appendChild(imageLink);
-    const image = /** @type {!HTMLImageElement} */ (imageLink.createChild('img'));
+    const image = imageLink.createChild('img') as HTMLImageElement;
     image.src = 'Images/whatsnew.avif';
     UI.Tooltip.Tooltip.install(image, UI.Tooltip.Tooltip.getContent(imageLink));
     image.alt = UI.Tooltip.Tooltip.getContent(image);

@@ -6,6 +6,8 @@
 // be shown in Canary (e.g. make sure the release notes are accurate).
 // https://github.com/ChromeDevTools/devtools-frontend/wiki/Release-Notes
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Host from '../host/host.js';
 
 import {ReleaseNote} from './HelpImpl.js';  // eslint-disable-line no-unused-vars
@@ -14,8 +16,7 @@ const continueToHereShortcut = Host.Platform.isMac() ? 'Command' : 'Control';
 const networkSearchShortcut = Host.Platform.isMac() ? 'Command+F' : 'Control+F';
 const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control+Shift+P';
 
-/** @type {!Array<!ReleaseNote>} */
-export const releaseNoteText = [
+export const releaseNoteText: ReleaseNote[] = [
   {
     version: 31,
     header: 'Highlights from the Chrome 89 update',
@@ -878,7 +879,7 @@ export const releaseNoteText = [
         title: 'Audits panel updates',
         subtitle: 'Faster, more consisent audits, a new UI, and new audits, thanks to Lighthouse 3.0.',
         link: 'https://developers.google.com/web/updates/2018/05/devtools#lh3',
-      }
+      },
     ],
     link: 'https://developers.google.com/web/updates/2018/05/devtools',
   },
@@ -1077,7 +1078,7 @@ export const releaseNoteText = [
         title: 'Previewable cache resources in the Application panel',
         subtitle: 'Click a row in a Cache Storage table to see a preview of that resource.',
         link: 'https://developers.google.com/web/updates/2017/08/devtools-release-notes#cache-preview',
-      }
+      },
     ],
     link: 'https://developers.google.com/web/updates/2017/08/devtools-release-notes',
   },
@@ -1104,7 +1105,7 @@ export const releaseNoteText = [
         title: 'ES6 Modules support',
         subtitle: 'Debug ES6 Modules natively from the Sources panel.',
         link: 'https://developers.google.com/web/updates/2017/07/devtools-release-notes#modules',
-      }
+      },
     ],
     link: 'https://developers.google.com/web/updates/2017/07/devtools-release-notes',
   },
@@ -1144,7 +1145,7 @@ export const releaseNoteText = [
         title: 'Real-time Coverage tab updates',
         subtitle: 'See what code is being used in real-time.',
         link: 'https://developers.google.com/web/updates/2017/05/devtools-release-notes#coverage',
-      }
+      },
     ],
     link: 'https://developers.google.com/web/updates/2017/05/devtools-release-notes',
   },
@@ -1176,7 +1177,7 @@ export const releaseNoteText = [
         title: 'Unified Command Menu',
         subtitle: 'Execute commands and open files from the newly-unified Command Menu (' + commandMenuShortcut + ').',
         link: 'https://developers.google.com/web/updates/2017/04/devtools-release-notes#command-menu',
-      }
+      },
     ],
     link: 'https://developers.google.com/web/updates/2017/04/devtools-release-notes',
   },
@@ -1206,5 +1207,5 @@ export const releaseNoteText = [
       },
     ],
     link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes',
-  }
+  },
 ];

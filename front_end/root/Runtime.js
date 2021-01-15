@@ -1123,6 +1123,7 @@ export const ExperimentName = {
   CSS_OVERVIEW: 'cssOverview',
   LIVE_HEAP_PROFILE: 'liveHeapProfile',
   DEVELOPER_RESOURCES_VIEW: 'developerResourcesView',
+  TIMELINE_REPLAY_EVENT: 'timelineReplayEvent',
 };
 
 /** @enum {string} */

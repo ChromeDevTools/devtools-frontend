@@ -29,10 +29,16 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('input/InputTimeline.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+/** @type {!InputTimeline} */
+let inputTimelineInstance;
+
 /**
  * @implements {Timeline.TimelineLoader.Client}
  */
 export class InputTimeline extends UI.Widget.VBox {
+  /**
+   * @private
+   */
   constructor() {
     super(true);
     this.registerRequiredCSS('input/inputTimeline.css', {enableLegacyPatching: true});
@@ -84,6 +90,18 @@ export class InputTimeline extends UI.Widget.VBox {
     this._createFileSelector();
 
     this._updateControls();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!inputTimelineInstance || forceNew) {
+      inputTimelineInstance = new InputTimeline();
+    }
+
+    return inputTimelineInstance;
   }
 
   _reset() {

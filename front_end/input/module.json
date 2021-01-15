@@ -1,16 +1,6 @@
 {
   "extensions": [
     {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "Inputs",
-      "title": "Inputs",
-      "persistence": "closeable",
-      "order": 7,
-      "className": "Input.InputTimeline",
-      "experiment": "timelineReplayEvent"
-    },
-    {
       "type": "action",
       "actionId": "input.toggle-recording",
       "iconClass": "largeicon-start-recording",

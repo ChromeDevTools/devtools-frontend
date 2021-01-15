@@ -81,6 +81,7 @@ devtools_module_entrypoint_sources = [
   "inline_editor/inline_editor-legacy.js",
   "inline_editor/inline_editor.js",
   "input/input-legacy.js",
+  "input/input-meta.js",
   "input/input.js",
   "inspector_main/inspector_main-legacy.js",
   "inspector_main/inspector_main.js",

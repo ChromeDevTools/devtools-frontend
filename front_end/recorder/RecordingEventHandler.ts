@@ -5,7 +5,7 @@
 import * as Elements from '../elements/elements.js';
 import * as SDK from '../sdk/sdk.js';
 
-import {ChangeStep, ClickStep, RecordingSession, StepFrameContext, SubmitStep} from './RecordingSession.js';
+import {ChangeStep, ClickStep, CloseStep, RecordingSession, StepFrameContext, SubmitStep} from './RecordingSession.js';
 
 const RELEVANT_ROLES_FOR_ARIA_SELECTORS = new Set(['button', 'link', 'textbox', 'checkbox']);
 
@@ -189,6 +189,10 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     await this.resume();
   }
 
+  getTarget(): string {
+    return this.target.id() === 'main' ? 'main' : this.target.inspectedURL();
+  }
+
   getContextForFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): StepFrameContext {
     const path = [];
     let currentFrame = frame;
@@ -204,7 +208,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
       currentFrame = parentFrame;
     }
 
-    const target = this.target.id() === 'main' ? 'main' : this.target.inspectedURL();
+    const target = this.getTarget();
     return new StepFrameContext(target, path);
   }
 
@@ -258,6 +262,10 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
           this.skip();
       }
     });
+  }
+
+  targetDestroyed(): void {
+    this.session.appendStepToScript(new CloseStep(this.getTarget()));
   }
 
   breakpointResolved(): void {

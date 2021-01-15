@@ -18,21 +18,24 @@ export class StepFrameContext {
   }
 
   toString() {
-    let expression = '';
-    if (this.target === 'main') {
-      expression = 'const targetPage = page;\n';
-    } else {
-      expression = `const target = await browser.waitForTarget(p => p.url() === ${JSON.stringify(this.target)});
-        const targetPage = await target.page();
-      `;
-    }
-
+    let expression = StepFrameContext.getExpressionForTarget(this.target) + '\n';
     expression += 'const frame = targetPage.mainFrame()';
     for (const index of this.path) {
       expression += `.childFrames()[${index}]`;
     }
     expression += ';';
     return expression;
+  }
+
+  /**
+   * @param {string} target
+   */
+  static getExpressionForTarget(target) {
+    if (target === 'main') {
+      return 'const targetPage = page;';
+    }
+    return `const target = await browser.waitForTarget(p => p.url() === ${JSON.stringify(target)});
+        const targetPage = await target.page();`;
   }
 }
 
@@ -141,6 +144,26 @@ export class ChangeStep extends Step {
   }
 }
 
+export class CloseStep extends Step {
+  /**
+   * @param {string} target
+   */
+  constructor(target) {
+    super('close');
+    this.target = target;
+  }
+
+  /**
+   * @override
+   */
+  toString() {
+    return `{
+      ${StepFrameContext.getExpressionForTarget(this.target)}
+      await targetPage.close();
+    }`;
+  }
+}
+
 export class EmulateNetworkConditions extends Step {
   /**
    * @param {!SDK.NetworkManager.Conditions} conditions
@@ -206,7 +229,7 @@ export class RecordingSession {
     this._childTargetManager = target.model(SDK.ChildTargetManager.ChildTargetManager);
 
     this._target = target;
-    /** @type {Map<!SDK.SDKModel.Target, RecordingEventHandler>} */
+    /** @type {Map<string, RecordingEventHandler>} */
     this._eventHandlers = new Map();
 
     /** @type {Set<!SDK.SDKModel.Target>} */
@@ -351,7 +374,7 @@ export class RecordingSession {
   async attachToTarget(target) {
     this._targets.add(target);
     const eventHandler = new RecordingEventHandler(this, target);
-    this._eventHandlers.set(target, eventHandler);
+    this._eventHandlers.set(target.id(), eventHandler);
     target.registerDebuggerDispatcher(eventHandler);
 
     const pageAgent = target.pageAgent();
@@ -383,13 +406,14 @@ export class RecordingSession {
     await this.evaluateInAllFrames(target, setupEventListeners);
 
     childTargetManager?.addEventListener(SDK.ChildTargetManager.Events.TargetCreated, this.handleWindowOpened, this);
+    childTargetManager?.addEventListener(SDK.ChildTargetManager.Events.TargetDestroyed, this.handleWindowClosed, this);
   }
 
   /**
    * @param {!SDK.SDKModel.Target} target
    */
   async detachFromTarget(target) {
-    const eventHandler = this._eventHandlers.get(target);
+    const eventHandler = this._eventHandlers.get(target.id());
     if (!eventHandler) {
       return;
     }
@@ -455,5 +479,16 @@ export class RecordingSession {
     }
 
     this.attachToTarget(target);
+  }
+
+  /**
+   * @param {!Common.EventTarget.EventTargetEvent} event
+   */
+  async handleWindowClosed(event) {
+    const eventHandler = this._eventHandlers.get(event.data);
+    if (!eventHandler) {
+      return;
+    }
+    eventHandler.targetDestroyed();
   }
 }

@@ -2,61 +2,50 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../sdk/sdk.js';
 
 export class InputModel extends SDK.SDKModel.SDKModel {
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   */
-  constructor(target) {
+  _inputAgent: ProtocolProxyApi.InputApi;
+  _eventDispatchTimer: number;
+  _dispatchEventDataList: EventData[];
+  _finishCallback: (() => void)|null;
+  _dispatchingIndex!: number;
+  _lastEventTime?: number|null;
+  _replayPaused?: boolean;
+
+  constructor(target: SDK.SDKModel.Target) {
     super(target);
     this._inputAgent = target.inputAgent();
-    /** @type {number} */
     this._eventDispatchTimer = 0;
-    /** @type {!Array<!EventData>}*/
     this._dispatchEventDataList = [];
-    /** @type {?function():void} */
     this._finishCallback = null;
-    /** @type {number} */
-    this._dispatchingIndex;
 
     this._reset();
   }
 
-  _reset() {
-    /** @type {?number} */
+  _reset(): void {
     this._lastEventTime = null;
-    /** @type {boolean} */
     this._replayPaused = false;
-    /** @type {number} */
     this._dispatchingIndex = 0;
     window.clearTimeout(this._eventDispatchTimer);
   }
 
-  /**
-   * @param {!SDK.TracingModel.TracingModel} tracingModel
-   */
-  setEvents(tracingModel) {
+  setEvents(tracingModel: SDK.TracingModel.TracingModel): void {
     this._dispatchEventDataList = [];
     for (const process of tracingModel.sortedProcesses()) {
       for (const thread of process.sortedThreads()) {
         this._processThreadEvents(tracingModel, thread);
       }
     }
-    /**
-     * @param {!EventData} a
-     * @param {!EventData} b
-     */
-    function compareTimestamp(a, b) {
+    function compareTimestamp(a: EventData, b: EventData): number {
       return a.timestamp - b.timestamp;
     }
     this._dispatchEventDataList.sort(compareTimestamp);
   }
 
-  /**
-   * @param {?function():void} finishCallback
-   */
-  startReplay(finishCallback) {
+  startReplay(finishCallback: (() => void)|null): void {
     this._reset();
     this._finishCallback = finishCallback;
     if (this._dispatchEventDataList.length) {
@@ -66,7 +55,7 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  pause() {
+  pause(): void {
     window.clearTimeout(this._eventDispatchTimer);
     if (this._dispatchingIndex >= this._dispatchEventDataList.length) {
       this._replayStopped();
@@ -75,18 +64,14 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  resume() {
+  resume(): void {
     this._replayPaused = false;
     if (this._dispatchingIndex < this._dispatchEventDataList.length) {
       this._dispatchNextEvent();
     }
   }
 
-  /**
-   * @param {!SDK.TracingModel.TracingModel} tracingModel
-   * @param {!SDK.TracingModel.Thread} thread
-   */
-  _processThreadEvents(tracingModel, thread) {
+  _processThreadEvents(_tracingModel: SDK.TracingModel.TracingModel, thread: SDK.TracingModel.Thread): void {
     for (const event of thread.events()) {
       if (event.name === 'EventDispatch' && this._isValidInputEvent(event.args.data)) {
         this._dispatchEventDataList.push(event.args.data);
@@ -94,21 +79,11 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-
-  /**
-   * @param {!EventData} eventData
-   * @return {boolean}
-   */
-  _isValidInputEvent(eventData) {
-    return this._isMouseEvent(/** @type {!MouseEventData} */ (eventData)) ||
-        this._isKeyboardEvent(/** @type {!KeyboardEventData} */ (eventData));
+  _isValidInputEvent(eventData: EventData): boolean {
+    return this._isMouseEvent(eventData as MouseEventData) || this._isKeyboardEvent(eventData as KeyboardEventData);
   }
 
-  /**
-   * @param {!MouseEventData} eventData
-   * @return {boolean}
-   */
-  _isMouseEvent(eventData) {
+  _isMouseEvent(eventData: MouseEventData): boolean {
     if (!MOUSE_EVENT_TYPE_TO_REQUEST_TYPE.has(eventData.type)) {
       return false;
     }
@@ -118,11 +93,7 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     return true;
   }
 
-  /**
-   * @param {!KeyboardEventData} eventData
-   * @return {boolean}
-   */
-  _isKeyboardEvent(eventData) {
+  _isKeyboardEvent(eventData: KeyboardEventData): boolean {
     if (!KEYBOARD_EVENT_TYPE_TO_REQUEST_TYPE.has(eventData.type)) {
       return false;
     }
@@ -132,13 +103,13 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     return true;
   }
 
-  _dispatchNextEvent() {
+  _dispatchNextEvent(): void {
     const eventData = this._dispatchEventDataList[this._dispatchingIndex];
     this._lastEventTime = eventData.timestamp;
     if (MOUSE_EVENT_TYPE_TO_REQUEST_TYPE.has(eventData.type)) {
-      this._dispatchMouseEvent(/** @type {!MouseEventData} */ (eventData));
+      this._dispatchMouseEvent(eventData as MouseEventData);
     } else if (KEYBOARD_EVENT_TYPE_TO_REQUEST_TYPE.has(eventData.type)) {
-      this._dispatchKeyEvent(/** @type {!KeyboardEventData} */ (eventData));
+      this._dispatchKeyEvent(eventData as KeyboardEventData);
     }
 
     ++this._dispatchingIndex;
@@ -150,10 +121,7 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  /**
-   * @param {!MouseEventData} eventData
-   */
-  async _dispatchMouseEvent(eventData) {
+  async _dispatchMouseEvent(eventData: MouseEventData): Promise<void> {
     const type = MOUSE_EVENT_TYPE_TO_REQUEST_TYPE.get(eventData.type);
     if (!type) {
       throw new Error(`Could not find mouse event type for eventData ${eventData.type}`);
@@ -169,15 +137,12 @@ export class InputModel extends SDK.SDKModel.SDKModel {
       buttons: eventData.buttons,
       clickCount: eventData.clickCount,
       deltaX: eventData.deltaX,
-      deltaY: eventData.deltaY
+      deltaY: eventData.deltaY,
     };
     await this._inputAgent.invoke_dispatchMouseEvent(params);
   }
 
-  /**
-   * @param {!KeyboardEventData} eventData
-   */
-  async _dispatchKeyEvent(eventData) {
+  async _dispatchKeyEvent(eventData: KeyboardEventData): Promise<void> {
     const type = KEYBOARD_EVENT_TYPE_TO_REQUEST_TYPE.get(eventData.type);
     if (!type) {
       throw new Error(`Could not find key event type for eventData ${eventData.type}`);
@@ -189,12 +154,12 @@ export class InputModel extends SDK.SDKModel.SDKModel {
       text: text,
       unmodifiedText: text ? text.toLowerCase() : undefined,
       code: eventData.code,
-      key: eventData.key
+      key: eventData.key,
     };
     await this._inputAgent.invoke_dispatchKeyEvent(params);
   }
 
-  _replayStopped() {
+  _replayStopped(): void {
     window.clearTimeout(this._eventDispatchTimer);
     this._reset();
     if (this._finishCallback) {
@@ -203,37 +168,46 @@ export class InputModel extends SDK.SDKModel.SDKModel {
   }
 }
 
-/** @type {!Map<string, !Protocol.Input.DispatchMouseEventRequestType>} */
-const MOUSE_EVENT_TYPE_TO_REQUEST_TYPE = new Map([
+const MOUSE_EVENT_TYPE_TO_REQUEST_TYPE = new Map<string, Protocol.Input.DispatchMouseEventRequestType>([
   ['mousedown', Protocol.Input.DispatchMouseEventRequestType.MousePressed],
   ['mouseup', Protocol.Input.DispatchMouseEventRequestType.MouseReleased],
   ['mousemove', Protocol.Input.DispatchMouseEventRequestType.MouseMoved],
   ['wheel', Protocol.Input.DispatchMouseEventRequestType.MouseWheel],
 ]);
 
-/** @type {!Map<string, !Protocol.Input.DispatchKeyEventRequestType>} */
-const KEYBOARD_EVENT_TYPE_TO_REQUEST_TYPE = new Map([
+const KEYBOARD_EVENT_TYPE_TO_REQUEST_TYPE = new Map<string, Protocol.Input.DispatchKeyEventRequestType>([
   ['keydown', Protocol.Input.DispatchKeyEventRequestType.KeyDown],
   ['keyup', Protocol.Input.DispatchKeyEventRequestType.KeyUp],
   ['keypress', Protocol.Input.DispatchKeyEventRequestType.Char],
 ]);
 
-/** @type {!Map<number, !Protocol.Input.MouseButton>} */
-const BUTTONID_TO_ACTION_NAME = new Map([
-  [0, Protocol.Input.MouseButton.Left], [1, Protocol.Input.MouseButton.Middle], [2, Protocol.Input.MouseButton.Right],
-  [3, Protocol.Input.MouseButton.Back], [4, Protocol.Input.MouseButton.Forward]
+const BUTTONID_TO_ACTION_NAME = new Map<number, Protocol.Input.MouseButton>([
+  [0, Protocol.Input.MouseButton.Left],
+  [1, Protocol.Input.MouseButton.Middle],
+  [2, Protocol.Input.MouseButton.Right],
+  [3, Protocol.Input.MouseButton.Back],
+  [4, Protocol.Input.MouseButton.Forward],
 ]);
 
 SDK.SDKModel.SDKModel.register(InputModel, SDK.SDKModel.Capability.Input, false);
+export interface MouseEventData {
+  type: string;
+  modifiers: number;
+  timestamp: number;
+  x: number;
+  y: number;
+  button: number;
+  buttons: number;
+  clickCount: number;
+  deltaX: number;
+  deltaY: number;
+}
+export interface KeyboardEventData {
+  type: string;
+  modifiers: number;
+  timestamp: number;
+  code: string;
+  key: string;
+}
 
-/** @typedef {{type: string, modifiers: number, timestamp: number, x: number, y: number, button: number, buttons: number, clickCount: number, deltaX: number, deltaY: number}} */
-// @ts-ignore typedef
-export let MouseEventData;
-
-/** @typedef {{type: string, modifiers: number, timestamp: number, code: string, key: string}} */
-// @ts-ignore typedef
-export let KeyboardEventData;
-
-/** @typedef {(!MouseEventData|!KeyboardEventData)} */
-// @ts-ignore typedef
-export let EventData;
+export type EventData = MouseEventData|KeyboardEventData;

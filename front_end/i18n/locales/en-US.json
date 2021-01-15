@@ -431,31 +431,31 @@
   "help/ReleaseNoteView.ts | s": {
     "message": "{PH1}"
   },
-  "input/InputTimeline.js | clearAll": {
+  "input/InputTimeline.ts | clearAll": {
     "message": "Clear all"
   },
-  "input/InputTimeline.js | loadProfile": {
+  "input/InputTimeline.ts | loadProfile": {
     "message": "Load profile…"
   },
-  "input/InputTimeline.js | saveProfile": {
+  "input/InputTimeline.ts | saveProfile": {
     "message": "Save profile…"
   },
-  "input/ModuleUIStrings.js | inputs": {
+  "input/ModuleUIStrings.ts | inputs": {
     "message": "Inputs"
   },
-  "input/ModuleUIStrings.js | pause": {
+  "input/ModuleUIStrings.ts | pause": {
     "message": "Pause"
   },
-  "input/ModuleUIStrings.js | resume": {
+  "input/ModuleUIStrings.ts | resume": {
     "message": "Resume"
   },
-  "input/ModuleUIStrings.js | startRecording": {
+  "input/ModuleUIStrings.ts | startRecording": {
     "message": "Start recording"
   },
-  "input/ModuleUIStrings.js | startReplaying": {
+  "input/ModuleUIStrings.ts | startReplaying": {
     "message": "Start replaying"
   },
-  "input/ModuleUIStrings.js | stopRecording": {
+  "input/ModuleUIStrings.ts | stopRecording": {
     "message": "Stop recording"
   },
   "js_profiler/ModuleUIStrings.ts | profiler": {

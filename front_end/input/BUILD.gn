@@ -7,9 +7,9 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("input") {
   sources = [
-    "InputModel.js",
-    "InputTimeline.js",
-    "ModuleUIStrings.js",
+    "InputModel.ts",
+    "InputTimeline.ts",
+    "ModuleUIStrings.ts",
   ]
 
   deps = [
@@ -30,7 +30,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "input-legacy.js"
+  entrypoint = "input-legacy.ts"
 
   deps = [ ":bundle" ]
 }

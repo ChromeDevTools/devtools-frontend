@@ -69,6 +69,12 @@
       "actionId": "elements.toggle-element-search",
       "location": "main-toolbar-left",
       "order": 0
+    },
+    {
+      "type": "@UI.ViewLocationResolver",
+      "name": "elements-sidebar",
+      "category": "Elements",
+      "className": "Elements.ElementsPanel"
     }
   ],
   "dependencies": [

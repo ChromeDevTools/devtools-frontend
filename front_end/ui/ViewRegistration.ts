@@ -5,7 +5,7 @@ import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import type {ViewLocationResolver} from './View.js';
+import {ViewLocationResolver} from './View.js';  // eslint-disable-line no-unused-vars
 import {PreRegisteredView} from './ViewManager.js';
 
 import type {Widget} from './Widget.js';

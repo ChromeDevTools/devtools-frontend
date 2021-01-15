@@ -13,7 +13,8 @@ const LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR = '#tab-linear-memory-inspector';
 const LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR = DRAWER_PANEL_SELECTOR + ' .tabbed-pane';
 
 describe('Scope View', async () => {
-  it('opens linear memory inspector', async () => {
+  // Flaky on the Mac CQ bot.
+  it.skip('[crbug.com/1166106] opens linear memory inspector', async () => {
     await enableExperiment('wasmDWARFDebugging');
 
     const {frontend, target} = getBrowserAndPages();

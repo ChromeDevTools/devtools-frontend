@@ -308,58 +308,58 @@
   "coverage/ModuleUIStrings.js | stopInstrumentingCoverageAndShow": {
     "message": "Stop instrumenting coverage and show results"
   },
-  "developer_resources/DeveloperResourcesListView.js | Byte": {
+  "developer_resources/DeveloperResourcesListView.ts | Byte": {
     "message": "1 byte"
   },
-  "developer_resources/DeveloperResourcesListView.js | copyInitiatorUrl": {
+  "developer_resources/DeveloperResourcesListView.ts | copyInitiatorUrl": {
     "message": "Copy initiator URL"
   },
-  "developer_resources/DeveloperResourcesListView.js | copyUrl": {
+  "developer_resources/DeveloperResourcesListView.ts | copyUrl": {
     "message": "Copy URL"
   },
-  "developer_resources/DeveloperResourcesListView.js | developerResources": {
+  "developer_resources/DeveloperResourcesListView.ts | developerResources": {
     "message": "Developer Resources"
   },
-  "developer_resources/DeveloperResourcesListView.js | error": {
+  "developer_resources/DeveloperResourcesListView.ts | error": {
     "message": "Error"
   },
-  "developer_resources/DeveloperResourcesListView.js | failure": {
+  "developer_resources/DeveloperResourcesListView.ts | failure": {
     "message": "failure"
   },
-  "developer_resources/DeveloperResourcesListView.js | initiator": {
+  "developer_resources/DeveloperResourcesListView.ts | initiator": {
     "message": "Initiator"
   },
-  "developer_resources/DeveloperResourcesListView.js | pending": {
+  "developer_resources/DeveloperResourcesListView.ts | pending": {
     "message": "pending"
   },
-  "developer_resources/DeveloperResourcesListView.js | sBytes": {
+  "developer_resources/DeveloperResourcesListView.ts | sBytes": {
     "message": "{PH1} bytes"
   },
-  "developer_resources/DeveloperResourcesListView.js | status": {
+  "developer_resources/DeveloperResourcesListView.ts | status": {
     "message": "Status"
   },
-  "developer_resources/DeveloperResourcesListView.js | success": {
+  "developer_resources/DeveloperResourcesListView.ts | success": {
     "message": "success"
   },
-  "developer_resources/DeveloperResourcesListView.js | totalBytes": {
+  "developer_resources/DeveloperResourcesListView.ts | totalBytes": {
     "message": "Total Bytes"
   },
-  "developer_resources/DeveloperResourcesListView.js | url": {
+  "developer_resources/DeveloperResourcesListView.ts | url": {
     "message": "URL"
   },
-  "developer_resources/DeveloperResourcesView.js | enableLoadingThroughTarget": {
+  "developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
     "message": "Enable loading through target"
   },
-  "developer_resources/DeveloperResourcesView.js | enterTextToSearchTheUrlAndError": {
+  "developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "Enter text to search the URL and Error columns"
   },
-  "developer_resources/DeveloperResourcesView.js | loadHttpsDeveloperResources": {
+  "developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Load HTTP(S) developer resources through the inspected target"
   },
-  "developer_resources/DeveloperResourcesView.js | resources": {
+  "developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{PH1} resources"
   },
-  "developer_resources/DeveloperResourcesView.js | resourcesCurrentlyLoading": {
+  "developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} resources, {PH2} currently loading"
   },
   "devices/DevicesView.ts | thisPanelHasBeenDeprecatedIn": {

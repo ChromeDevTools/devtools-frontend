@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
@@ -68,28 +70,28 @@ const str_ = i18n.i18n.registerUIStrings('developer_resources/DeveloperResources
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DeveloperResourcesListView extends UI.Widget.VBox {
-  /**
-   * @param {function(!SDK.PageResourceLoader.PageResource):boolean} isVisibleFilter
-   */
-  constructor(isVisibleFilter) {
+  _nodeForItem: Map<SDK.PageResourceLoader.PageResource, GridNode>;
+  _isVisibleFilter: (arg0: SDK.PageResourceLoader.PageResource) => boolean;
+  _highlightRegExp: RegExp|null;
+  _dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<GridNode>;
+  constructor(isVisibleFilter: (arg0: SDK.PageResourceLoader.PageResource) => boolean) {
     super(true);
-    /** @type {!Map<!SDK.PageResourceLoader.PageResource, !GridNode>} */
     this._nodeForItem = new Map();
     this._isVisibleFilter = isVisibleFilter;
-    /** @type {?RegExp} */
     this._highlightRegExp = null;
     this.registerRequiredCSS('developer_resources/developerResourcesListView.css', {enableLegacyPatching: false});
 
-    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = [
       {id: 'status', title: i18nString(UIStrings.status), width: '60px', fixedWidth: true, sortable: true},
       {id: 'url', title: i18nString(UIStrings.url), width: '250px', fixedWidth: false, sortable: true},
-      {id: 'initiator', title: i18nString(UIStrings.initiator), width: '80px', fixedWidth: false, sortable: true}, {
+      {id: 'initiator', title: i18nString(UIStrings.initiator), width: '80px', fixedWidth: false, sortable: true},
+      {
         id: 'size',
         title: i18nString(UIStrings.totalBytes),
         width: '80px',
         fixedWidth: true,
         sortable: true,
-        align: DataGrid.DataGrid.Align.Right
+        align: DataGrid.DataGrid.Align.Right,
       },
       {
         id: 'errorMessage',
@@ -97,15 +99,14 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
         width: '200px',
         fixedWidth: false,
         sortable: true,
-      }
-    ]);
-    /** @type {!DataGrid.SortableDataGrid.SortableDataGrid<!GridNode>} */
+      },
+    ] as DataGrid.DataGrid.ColumnDescriptor[];
     this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.developerResources),
       columns,
       editCallback: undefined,
       refreshCallback: undefined,
-      deleteCallback: undefined
+      deleteCallback: undefined,
     });
     this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
     this._dataGrid.element.classList.add('flex-auto');
@@ -117,13 +118,12 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     this.setDefaultFocusedChild(dataGridWidget);
   }
 
-
-  /**
-   * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {!DataGrid.DataGrid.DataGridNode<!DataGrid.ViewportDataGrid.ViewportDataGridNode<!DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>>>} gridNode
-   */
-  _populateContextMenu(contextMenu, gridNode) {
-    const item = (/** @type {!GridNode} */ (gridNode)).item;
+  _populateContextMenu(
+      contextMenu: UI.ContextMenu.ContextMenu,
+      gridNode: DataGrid.DataGrid.DataGridNode<
+          DataGrid.ViewportDataGrid.ViewportDataGridNode<DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>>>):
+      void {
+    const item = (gridNode as GridNode).item;
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyUrl), () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(item.url);
     });
@@ -134,10 +134,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Iterable<!SDK.PageResourceLoader.PageResource>} items
-   */
-  update(items) {
+  update(items: Iterable<SDK.PageResourceLoader.PageResource>): void {
     let hadUpdates = false;
     const rootNode = this._dataGrid.rootNode();
     for (const item of items) {
@@ -160,15 +157,12 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     }
   }
 
-  reset() {
+  reset(): void {
     this._nodeForItem.clear();
     this._dataGrid.rootNode().removeChildren();
   }
 
-  /**
-   * @param {?RegExp} highlightRegExp
-   */
-  updateFilterAndHighlight(highlightRegExp) {
+  updateFilterAndHighlight(highlightRegExp: RegExp|null): void {
     this._highlightRegExp = highlightRegExp;
     let hadTreeUpdates = false;
     for (const node of this._nodeForItem.values()) {
@@ -192,39 +186,32 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     }
   }
 
-  _sortingChanged() {
+  _sortingChanged(): void {
     const columnId = this._dataGrid.sortColumnId();
     if (!columnId) {
       return;
     }
 
-    const sortFunction =
-        /** @type {null|function(!DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>, !DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>):number} */
-        (GridNode.sortFunctionForColumn(columnId));
+    const sortFunction = GridNode.sortFunctionForColumn(columnId) as (
+                             (arg0: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+                              arg1: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>) => number) |
+        null;
     if (sortFunction) {
       this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
     }
   }
 }
 
-/**
- * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>}
- */
-class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
-  /**
-   * @param {!SDK.PageResourceLoader.PageResource} item
-   */
-  constructor(item) {
+class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> {
+  item: SDK.PageResourceLoader.PageResource;
+  _highlightRegExp: RegExp|null;
+  constructor(item: SDK.PageResourceLoader.PageResource) {
     super();
     this.item = item;
-    /** @type {?RegExp} */
     this._highlightRegExp = null;
   }
 
-  /**
-   * @param {?RegExp} highlightRegExp
-   */
-  _setHighlight(highlightRegExp) {
+  _setHighlight(highlightRegExp: RegExp|null): void {
     if (this._highlightRegExp === highlightRegExp) {
       return;
     }
@@ -232,21 +219,13 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     this.refresh();
   }
 
-  /**
-   * @return {boolean}
-   */
-  _refreshIfNeeded() {
+  _refreshIfNeeded(): boolean {
     this.refresh();
     return true;
   }
 
-  /**
-   * @override
-   * @param {string} columnId
-   * @return {!HTMLElement}
-   */
-  createCell(columnId) {
-    const cell = /** @type {!HTMLElement} */ (this.createTD(columnId));
+  createCell(columnId: string): HTMLElement {
+    const cell = this.createTD(columnId) as HTMLElement;
     switch (columnId) {
       case 'url': {
         UI.Tooltip.Tooltip.install(cell, this.item.url);
@@ -267,13 +246,13 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         cell.textContent = url;
         UI.Tooltip.Tooltip.install(cell, url);
         this.setCellAccessibleName(url, cell, columnId);
-        cell.onmouseenter = () => {
+        cell.onmouseenter = (): void => {
           const frame = SDK.FrameManager.FrameManager.instance().getFrame(this.item.initiator.frameId || '');
           if (frame) {
             frame.highlight();
           }
         };
-        cell.onmouseleave = () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        cell.onmouseleave = (): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
         break;
       }
       case 'status': {
@@ -309,11 +288,7 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     return cell;
   }
 
-  /**
-   * @param {!Element} element
-   * @param {string} textContent
-   */
-  _highlight(element, textContent) {
+  _highlight(element: Element, textContent: string): void {
     if (!this._highlightRegExp) {
       return;
     }
@@ -325,29 +300,23 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     UI.UIUtils.highlightRangesWithStyleClass(element, [range], 'filter-highlight');
   }
 
-  /**
-   *
-   * @param {string} columnId
-   * @returns {null|function(!GridNode, !GridNode):number}
-   */
-  static sortFunctionForColumn(columnId) {
-    /**
-     * @param {*} x
-     */
-    const nullToNegative = x => x === null ? -1 : Number(x);
+  static sortFunctionForColumn(columnId: string): ((arg0: GridNode, arg1: GridNode) => number)|null {
+    const nullToNegative = (x: boolean|number|null): number => x === null ? -1 : Number(x);
     switch (columnId) {
       case 'url':
-        return (a, b) => a.item.url.localeCompare(b.item.url);
+        return (a: GridNode, b: GridNode): number => a.item.url.localeCompare(b.item.url);
       case 'status':
-        return (a, b) => {
+        return (a: GridNode, b: GridNode): number => {
           return nullToNegative(a.item.success) - nullToNegative(b.item.success);
         };
       case 'size':
-        return (a, b) => nullToNegative(a.item.size) - nullToNegative(b.item.size);
+        return (a: GridNode, b: GridNode): number => nullToNegative(a.item.size) - nullToNegative(b.item.size);
       case 'initiator':
-        return (a, b) => (a.item.initiator.initiatorUrl || '').localeCompare(b.item.initiator.initiatorUrl || '');
+        return (a: GridNode, b: GridNode): number =>
+                   (a.item.initiator.initiatorUrl || '').localeCompare(b.item.initiator.initiatorUrl || '');
       case 'errorMessage':
-        return (a, b) => (a.item.errorMessage || '').localeCompare(b.item.errorMessage || '');
+        return (a: GridNode, b: GridNode): number =>
+                   (a.item.errorMessage || '').localeCompare(b.item.errorMessage || '');
       default:
         console.assert(false, 'Unknown sort field: ' + columnId);
         return null;

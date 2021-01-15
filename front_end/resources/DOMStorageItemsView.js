@@ -26,6 +26,7 @@
 
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
+import {ls} from '../platform/platform.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';

@@ -37,6 +37,7 @@ import * as HARImporter from '../har_importer/har_importer.js';
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';

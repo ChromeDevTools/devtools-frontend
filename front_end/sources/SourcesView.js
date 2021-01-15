@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
 import * as Root from '../root/root.js';
 import * as SourceFrame from '../source_frame/source_frame.js';

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import {ls} from '../platform/platform.js';
 
 import {Location} from './DebuggerModel.js';                                // eslint-disable-line no-unused-vars
 import {DOMModel, DOMNode, Events as DOMModelEvents} from './DOMModel.js';  // eslint-disable-line no-unused-vars

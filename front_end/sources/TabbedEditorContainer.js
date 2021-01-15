@@ -31,6 +31,7 @@
 import * as Common from '../common/common.js';
 import * as Extensions from '../extensions/extensions.js';
 import * as Persistence from '../persistence/persistence.js';
+import {ls} from '../platform/platform.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';

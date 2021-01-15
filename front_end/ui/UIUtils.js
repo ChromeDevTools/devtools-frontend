@@ -33,6 +33,7 @@ import * as Common from '../common/common.js';
 import * as DOMExtension from '../dom_extension/dom_extension.js';
 import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';

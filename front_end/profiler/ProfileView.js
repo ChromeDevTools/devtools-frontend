@@ -9,6 +9,7 @@ import * as DataGrid from '../data_grid/data_grid.js';  // eslint-disable-line n
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {DataGridImpl, DataGridNode, Parameters} from './DataGrid.js';  // eslint-disable-line no-unused-vars

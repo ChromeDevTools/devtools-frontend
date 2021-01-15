@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import {ls} from '../platform/platform.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import {LoadNetworkResourceResult} from './InspectorFrontendHostAPI.js';  // eslint-disable-line no-unused-vars
@@ -242,6 +243,7 @@ export const loadAsStream = function(url, headers, stream, callback) {
    * @param {*} xhrStatus
    */
   function dataURLDecodeFailed(xhrStatus) {
+    /** @type {string} */
     const messageOverride = ls`Decoding Data URL failed`;
     finishedCallback(
         /** @type {!LoadNetworkResourceResult} */ ({statusCode: 404, messageOverride}));

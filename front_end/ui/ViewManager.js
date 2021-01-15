@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import * as ARIAUtils from './ARIAUtils.js';

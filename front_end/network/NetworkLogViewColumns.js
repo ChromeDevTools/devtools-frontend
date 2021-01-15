@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -145,7 +146,7 @@ export class NetworkLogViewColumns {
     this._popoverHelper.setTimeout(300, 300);
 
     this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid(/** @type {!DataGrid.DataGrid.Parameters} */ ({
-      displayName: ls`Network Log`,
+      displayName: /** @type {string} */ (ls`Network Log`),
       columns: this._columns.map(NetworkLogViewColumns._convertToDataGridDescriptor)
     }));
     this._dataGrid.element.addEventListener('mousedown', event => {

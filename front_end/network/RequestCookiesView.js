@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as CookieTable from '../cookie_table/cookie_table.js';  // eslint-disable-line no-unused-vars
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 

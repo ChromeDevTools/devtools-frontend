@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 export class CSSOverviewSidebarPanel extends UI.Widget.VBox {

@@ -33,6 +33,7 @@ import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 

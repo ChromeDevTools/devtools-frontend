@@ -31,12 +31,13 @@
 import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {AllocationGridNode, HeapSnapshotConstructorNode, HeapSnapshotDiffNode, HeapSnapshotGenericObjectNode, HeapSnapshotGridNode, HeapSnapshotObjectNode, HeapSnapshotRetainingObjectNode,} from './HeapSnapshotGridNodes.js';  // eslint-disable-line no-unused-vars
-import {HeapSnapshotProxy} from './HeapSnapshotProxy.js';  // eslint-disable-line no-unused-vars
-import {HeapProfileHeader} from './HeapSnapshotView.js';   // eslint-disable-line no-unused-vars
+import {HeapSnapshotProxy} from './HeapSnapshotProxy.js';               // eslint-disable-line no-unused-vars
+import {HeapProfileHeader} from './HeapSnapshotView.js';                // eslint-disable-line no-unused-vars
 import {DataDisplayDelegate, ProfileHeader} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!WeakMap<!DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>, !Array<!HeapSnapshotGridNode>>} */
@@ -840,7 +841,7 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     ]);
     // clang-format off
     super(heapProfilerModel, dataDisplayDelegate, /** @type {!DataGrid.DataGrid.Parameters} */ (
-      {displayName: ls`Heap Snapshot Constructors`, columns}));
+      {displayName: /** @type {string} */ (ls`Heap Snapshot Constructors`), columns}));
     // clang-format on
     this._profileIndex = -1;
     this._objectIdToSelect = null;
@@ -1022,7 +1023,7 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
     ]);
     // clang-format off
     super(heapProfilerModel, dataDisplayDelegate, /** @type {!DataGrid.DataGrid.Parameters} */ (
-      {displayName: ls`Heap Snapshot Diff`, columns}));
+      {displayName: /** @type {string} */ (ls`Heap Snapshot Diff`), columns}));
     // clang-format on
   }
 
@@ -1124,7 +1125,7 @@ export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
     ]);
     // clang-format off
     super(heapProfilerModel, dataDisplayDelegate, /** @type {!DataGrid.DataGrid.Parameters} */ (
-      {displayName: ls`Allocation`, columns}));
+      {displayName: /** @type {string} */ (ls`Allocation`), columns}));
     // clang-format on
     this._linkifier = new Components.Linkifier.Linkifier();
   }

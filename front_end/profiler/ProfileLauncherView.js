@@ -29,10 +29,11 @@
  */
 
 import * as Common from '../common/common.js';
+import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {IsolateSelector} from './IsolateSelector.js';
-import {ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
+import {ProfileType} from './ProfileHeader.js';    // eslint-disable-line no-unused-vars
 import {ProfilesPanel} from './ProfilesPanel.js';  // eslint-disable-line no-unused-vars
 
 export class ProfileLauncherView extends UI.Widget.VBox {

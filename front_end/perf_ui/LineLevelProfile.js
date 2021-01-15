@@ -5,6 +5,7 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as TextEditor from '../text_editor/text_editor.js';     // eslint-disable-line no-unused-vars

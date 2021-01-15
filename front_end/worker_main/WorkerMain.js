@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 
 /**

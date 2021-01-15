@@ -29,6 +29,7 @@
  */
 
 import * as Host from '../host/host.js';
+import {ls} from '../platform/platform.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 
 import * as ARIAUtils from './ARIAUtils.js';

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as ObjectUI from '../object_ui/object_ui.js';
+import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 

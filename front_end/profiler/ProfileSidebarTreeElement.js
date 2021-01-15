@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {DataDisplayDelegate, Events as ProfileHeaderEvents, ProfileHeader} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars

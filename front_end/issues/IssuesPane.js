@@ -8,6 +8,7 @@ import * as Components from '../components/components.js';
 import * as Elements from '../elements/elements.js';
 import * as Host from '../host/host.js';
 import * as Network from '../network/network.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';

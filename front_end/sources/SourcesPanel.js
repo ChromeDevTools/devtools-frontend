@@ -29,6 +29,7 @@ import * as Common from '../common/common.js';
 import * as Extensions from '../extensions/extensions.js';
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
+import {ls} from '../platform/platform.js';
 import * as Recorder from '../recorder/recorder.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';

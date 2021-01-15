@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../common/common.js';        // eslint-disable-line no-unused-vars
+import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
+import {ls} from '../platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Size} from './Geometry.js';
@@ -230,7 +232,7 @@ export class SoftDropDown {
   }
 
   /**
-   * @param {string} text
+   * @param {Platform.UIString.LocalizedString} text
    */
   setPlaceholderText(text) {
     this._placeholderText = text;

@@ -37,6 +37,7 @@ import * as Host from '../host/host.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';

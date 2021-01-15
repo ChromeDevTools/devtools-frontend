@@ -31,6 +31,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Persistence from '../persistence/persistence.js';
+import {ls} from '../platform/platform.js';
 import * as Recorder from '../recorder/recorder.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Snippets from '../snippets/snippets.js';

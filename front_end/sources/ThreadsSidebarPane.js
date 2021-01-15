@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 

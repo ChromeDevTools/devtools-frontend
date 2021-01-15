@@ -33,6 +33,7 @@ import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';

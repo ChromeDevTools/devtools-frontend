@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import {ls} from '../platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Icon} from './Icon.js';

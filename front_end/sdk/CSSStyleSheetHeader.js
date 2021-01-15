@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CSSModel} from './CSSModel.js';  // eslint-disable-line no-unused-vars
 import {DeferredDOMNode} from './DOMModel.js';
-import {FrameAssociated} from './FrameAssociated.js';  // eslint-disable-line no-unused-vars
+import {FrameAssociated} from './FrameAssociated.js';               // eslint-disable-line no-unused-vars
 import {PageResourceLoadInitiator} from './PageResourceLoader.js';  // eslint-disable-line no-unused-vars
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 

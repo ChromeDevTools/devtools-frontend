@@ -6,6 +6,7 @@
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
+import type * as Platform from '../platform/platform.js';
 
 export const UIStrings = {
   /**
@@ -23,7 +24,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper implements
     UI.SoftDropDown.Delegate<Protocol.WebAudio.BaseAudioContext> {
-  _placeholderText: string;
+  _placeholderText: Platform.UIString.LocalizedString;
   _items: UI.ListModel.ListModel<Protocol.WebAudio.BaseAudioContext>;
   _dropDown: UI.SoftDropDown.SoftDropDown<Protocol.WebAudio.BaseAudioContext>;
   _toolbarItem: UI.Toolbar.ToolbarItem;

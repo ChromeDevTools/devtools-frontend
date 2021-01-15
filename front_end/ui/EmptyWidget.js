@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ls} from '../platform/platform.js';
 import {VBox} from './Widget.js';
 import {XLink} from './XLink.js';
 

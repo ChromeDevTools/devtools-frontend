@@ -6,6 +6,7 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 

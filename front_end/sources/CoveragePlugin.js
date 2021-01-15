@@ -4,6 +4,7 @@
 
 import * as Coverage from '../coverage/coverage.js';
 import * as Formatter from '../formatter/formatter.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';

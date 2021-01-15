@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
+import {ls} from '../platform/platform.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';

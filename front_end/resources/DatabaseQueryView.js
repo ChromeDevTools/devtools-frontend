@@ -24,6 +24,7 @@
  */
 
 import * as DataGrid from '../data_grid/data_grid.js';
+import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {Database} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars

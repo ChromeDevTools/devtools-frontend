@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
+import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 

@@ -29,7 +29,9 @@
  */
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
+
 
 // TODO(1096068): remove this feature detection and expose the UI
 // unconditionally once prefers-reduced-data ships unflagged. At that

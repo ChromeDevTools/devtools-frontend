@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import {ls} from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';                                  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';

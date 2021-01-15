@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {TimelineCategory, TimelineRecordStyle} from './TimelineUIUtils.js';

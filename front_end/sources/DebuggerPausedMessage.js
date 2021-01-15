@@ -4,6 +4,7 @@
 
 import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-unused-vars
 import * as Common from '../common/common.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 

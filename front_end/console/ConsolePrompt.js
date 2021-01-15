@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
+import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -63,7 +64,7 @@ export class ConsolePrompt extends UI.Widget.Widget {
      */
     function gotFactory(factory) {
       const options = {
-        devtoolsAccessibleName: ls`Console prompt`,
+        devtoolsAccessibleName: /** @type {string} */ (ls`Console prompt`),
         lineNumbers: false,
         lineWrapping: true,
         mimeType: 'javascript',

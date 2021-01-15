@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 

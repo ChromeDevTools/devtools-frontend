@@ -28,6 +28,7 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as LinearMemoryInspector from '../linear_memory_inspector/linear_memory_inspector.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 

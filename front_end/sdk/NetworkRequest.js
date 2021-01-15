@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {Attributes, Cookie} from './Cookie.js';  // eslint-disable-line no-unused-vars

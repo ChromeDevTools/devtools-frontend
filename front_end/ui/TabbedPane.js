@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';

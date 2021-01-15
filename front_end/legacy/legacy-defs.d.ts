@@ -48,8 +48,6 @@ interface Int32Array {
   lowerBound(object: number, comparator?: {(a: number, b: number): number}, left?: number, right?: number): number;
 }
 
-declare let ls: (template: TemplateStringsArray|string, ...args: any[]) => string;
-
 declare class AnchorBox {
   x: number;
   y: number;

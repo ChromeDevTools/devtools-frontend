@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
+import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';                                  // eslint-disable-line no-unused-vars
 import * as TimelineModel from '../timeline_model/timeline_model.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';

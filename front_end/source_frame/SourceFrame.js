@@ -31,6 +31,7 @@
 import * as Common from '../common/common.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as Platform from '../platform/platform.js';
+import {ls} from '../platform/platform.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';

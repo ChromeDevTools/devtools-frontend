@@ -69,3 +69,53 @@ icon3.appendChild(otherIcon2);
 row3.appendChild(icon3);
 
 iconTable?.appendChild(row3);
+
+((): void => {
+  const div = document.createElement('div');
+  const span1 = document.createElement('span');
+  span1.textContent = 'Some text';
+  div.appendChild(span1);
+  const otherIcon3 = new UIComponents.Icon.Icon();
+  otherIcon3.classList.add('custom-color');
+  otherIcon3.data = {
+    iconName: 'node_search_icon',
+    width: '24px',
+    height: '24px',
+    color: 'black',
+  };
+  div.appendChild(otherIcon3);
+  const span2 = document.createElement('span');
+  span2.textContent = 'with a large icon';
+  div.appendChild(span2);
+  document.body.append(div);
+})();
+
+((): void => {
+  const div = document.createElement('div');
+  const span1 = document.createElement('span');
+  span1.textContent = 'Some text';
+  div.appendChild(span1);
+  const otherIcon3 = new UIComponents.Icon.Icon();
+  otherIcon3.classList.add('custom-color');
+  otherIcon3.data = {
+    iconName: 'node_search_icon',
+    width: '10px',
+    height: '10px',
+    color: 'black',
+  };
+  div.appendChild(otherIcon3);
+  const span2 = document.createElement('span');
+  span2.textContent = 'with a small icon';
+  div.appendChild(span2);
+
+  document.body.append(div);
+})();
+
+
+const iconInFlex = document.getElementById('icon-in-flex') as UIComponents.Icon.Icon;
+iconInFlex.data = {
+  iconName: 'breaking_change_icon',
+  width: '16px',
+  height: '16px',
+  color: '',
+};

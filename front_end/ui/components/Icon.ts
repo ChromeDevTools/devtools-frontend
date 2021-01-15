@@ -66,7 +66,7 @@ export class Icon extends HTMLElement {
     const commonStyles = {
       width,
       height,
-      display: 'inline-block',
+      display: 'block',
     };
     if (color) {
       return {
@@ -96,7 +96,7 @@ export class Icon extends HTMLElement {
           white-space: nowrap;
         }
       </style>
-      <span class="icon-basic" style=${LitHtml.Directives.styleMap(this.getStyles())}></span>
+      <div class="icon-basic" style=${LitHtml.Directives.styleMap(this.getStyles())}></div>
     `, this.shadow);
     // clang-format on
   }

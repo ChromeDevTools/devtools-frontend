@@ -371,7 +371,7 @@ input[is=history-input]:not(:placeholder-shown) {
 }
 
 devtools-icon.breaking-change {
-  margin: 5px 7px 0 7px;
+  margin: 0 7px;
 }
 
 @media (forced-colors: active) {

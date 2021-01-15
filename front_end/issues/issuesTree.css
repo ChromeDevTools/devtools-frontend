@@ -145,7 +145,7 @@ p {
 }
 
 devtools-icon.breaking-change {
-  margin: 5px 7px 0 7px;
+  margin: 0 7px;
 }
 
 .message {
@@ -422,10 +422,8 @@ ul > li.plain-enum::before {
 }
 
 devtools-icon.link-icon {
-  width: 28px;
-  height: 24px;
-  text-align: center;
   vertical-align: sub;
+  margin-right: 0.5ch;
 }
 
 devtools-icon.elements-panel,

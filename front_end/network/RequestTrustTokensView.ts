@@ -84,6 +84,7 @@ export class RequestTrustTokensReport extends HTMLElement {
 
         .status-row {
           display: flex;
+          align-items: center;
         }
 
         .status-icon {

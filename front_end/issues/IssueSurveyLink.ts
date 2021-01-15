@@ -97,10 +97,8 @@ export class IssueSurveyLink extends HTMLElement {
     const output = LitHtml.html`
       <style>
         .link-icon {
-          width: 28px;
-          height: 24px;
-          text-align: center;
           vertical-align: sub;
+          margin-right: 0.5ch;
         }
         .link {
           padding: 4px 0 0 0;

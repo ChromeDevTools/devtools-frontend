@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
@@ -62,12 +63,12 @@ export interface RegExpSettingItem {
 export interface SettingRegistration {
   category?: SettingCategory;
   order?: number;
-  title?: string;
-  titleMac?: string;
+  title?: () => Platform.UIString.LocalizedString;
+  titleMac?: () => Platform.UIString.LocalizedString;
   settingName: string;
   settingType: SettingType;
   defaultValue: unknown;
-  tags?: Array<string>;
+  tags?: Array<() => Platform.UIString.LocalizedString>;
   isRegex?: boolean;
   options?: Array<SettingExtensionOption>;
   reloadRequired?: boolean;
@@ -76,10 +77,16 @@ export interface SettingRegistration {
   experiment?: Root.Runtime.ExperimentName;
   condition?: Root.Runtime.ConditionName;
 }
-
-export interface SettingExtensionOption {
+interface LocalizedSettingExtensionOption {
   value: boolean|string;
-  title: string;
-  text?: string;
-  raw?: boolean;
+  title: () => Platform.UIString.LocalizedString;
+  text?: () => Platform.UIString.LocalizedString;
+  raw?: false;
 }
+interface RawSettingExtensionOption {
+  value: boolean|string;
+  title: () => Platform.UIString.LocalizedString;
+  text?: string;
+  raw: true;
+}
+export type SettingExtensionOption = LocalizedSettingExtensionOption|RawSettingExtensionOption;

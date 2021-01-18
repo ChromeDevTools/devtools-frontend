@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../../front_end/platform/platform.js';
 import {ls} from '../../../../front_end/platform/platform.js';
 import * as QuickOpen from '../../../../front_end/quick_open/quick_open.js';
 import * as UI from '../../../../front_end/ui/ui.js';
@@ -23,7 +24,7 @@ describeWithEnvironment('View registration', () => {
       location: UI.ViewManager.ViewLocationValues.PANEL,
       id: viewId,
       commandPrompt: commandPrompt,
-      title: viewTitle,
+      title: (): Platform.UIString.LocalizedString => viewTitle,
       order,
       persistence: UI.ViewManager.ViewPersistence.PERMANENT,
       hasToolbar: false,
@@ -63,7 +64,7 @@ describeWithEnvironment('View registration', () => {
       UI.ViewManager.registerViewExtension({
         id: viewId,
         commandPrompt: commandPrompt,
-        title: viewTitle,
+        title: (): Platform.UIString.LocalizedString => viewTitle,
         async loadView() {
           return new MockView();
         },

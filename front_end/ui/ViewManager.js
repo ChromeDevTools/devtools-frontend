@@ -34,7 +34,7 @@ export class PreRegisteredView {
    * @override
    */
   title() {
-    return this._viewRegistration.title;
+    return this._viewRegistration.title();
   }
 
   commandPrompt() {
@@ -76,7 +76,7 @@ export class PreRegisteredView {
   tags() {
     if (this._viewRegistration.tags) {
       // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
-      return this._viewRegistration.tags.join('\0');
+      return this._viewRegistration.tags.map(tag => tag()).join('\0');
     }
     return undefined;
   }

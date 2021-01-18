@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -23,7 +24,7 @@ async function loadAnimationModule(): Promise<typeof Animation> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'animations',
-  title: ls`Animations`,
+  title: (): Platform.UIString.LocalizedString => ls`Animations`,
   commandPrompt: 'Show Animations',
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 0,

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -23,7 +24,7 @@ async function loadConsoleModule(): Promise<typeof Console> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'console',
-  title: ls`Console`,
+  title: (): Platform.UIString.LocalizedString => ls`Console`,
   commandPrompt: 'Show Console',
   order: 20,
   async loadView() {
@@ -35,7 +36,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'console-view',
-  title: ls`Console`,
+  title: (): Platform.UIString.LocalizedString => ls`Console`,
   commandPrompt: 'Show Console',
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   order: 0,

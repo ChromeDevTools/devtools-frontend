@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -23,7 +24,7 @@ async function loadInspectorMainModule(): Promise<typeof InspectorMain> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'rendering',
-  title: ls`Rendering`,
+  title: (): Platform.UIString.LocalizedString => ls`Rendering`,
   commandPrompt: 'Show Rendering',
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 50,
@@ -32,12 +33,12 @@ UI.ViewManager.registerViewExtension({
     return InspectorMain.RenderingOptions.RenderingOptionsView.instance();
   },
   tags: [
-    ls`paint`,
-    ls`layout`,
-    ls`fps`,
-    ls`CSS media type`,
-    ls`CSS media feature`,
-    ls`vision deficiency`,
-    ls`color vision deficiency`,
+    (): Platform.UIString.LocalizedString => ls`paint`,
+    (): Platform.UIString.LocalizedString => ls`layout`,
+    (): Platform.UIString.LocalizedString => ls`fps`,
+    (): Platform.UIString.LocalizedString => ls`CSS media type`,
+    (): Platform.UIString.LocalizedString => ls`CSS media feature`,
+    (): Platform.UIString.LocalizedString => ls`vision deficiency`,
+    (): Platform.UIString.LocalizedString => ls`color vision deficiency`,
   ],
 });

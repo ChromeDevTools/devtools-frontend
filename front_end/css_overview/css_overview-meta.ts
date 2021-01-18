@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -24,7 +25,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'cssoverview',
   commandPrompt: 'Show CSS Overview',
-  title: ls`CSS Overview`,
+  title: (): Platform.UIString.LocalizedString => ls`CSS Overview`,
   order: 95,
   async loadView() {
     const CSSOverview = await loadCSSOverviewModule();

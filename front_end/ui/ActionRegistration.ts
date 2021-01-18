@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
@@ -210,7 +211,7 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
   tags(): string|void {
     if (this.actionRegistration.tags) {
       // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
-      return this.actionRegistration.tags.join('\0');
+      return this.actionRegistration.tags.map(tag => tag()).join('\0');
     }
   }
 
@@ -219,7 +220,7 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
   }
 
   title(): string {
-    let title = this.actionRegistration.title || '';
+    let title = this.actionRegistration.title ? this.actionRegistration.title() : '';
     const options = this.actionRegistration.options;
     if (options) {
       // Actions with an 'options' property don't have a title field. Instead, the displayed
@@ -229,7 +230,7 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
 
       for (const pair of options) {
         if (pair.value !== this._toggled) {
-          title = pair.title;
+          title = pair.title();
         }
       }
     }
@@ -297,7 +298,7 @@ export function getRegisteredActionExtensions(): Array<PreRegisteredAction> {
           Root.Runtime.Runtime.isDescriptorEnabled({experiment: action.experiment(), condition: action.condition()}));
 }
 
-export const enum Platform {
+export const enum Platforms {
   All = 'All platforms',
   Mac = 'mac',
   WindowsLinux = 'windows,linux',
@@ -333,12 +334,12 @@ export const enum KeybindSet {
 
 export interface ExtensionOption {
   value: boolean;
-  title: string;
+  title: () => Platform.UIString.LocalizedString;
   text?: string;
 }
 
 export interface Binding {
-  platform?: Platform;
+  platform?: Platforms;
   shortcut: string;
   keybindSets?: Array<KeybindSet>;
 }
@@ -358,7 +359,7 @@ export interface ActionRegistration {
   /**
    * The title with which the action is displayed in the UI.
    */
-  title?: string;
+  title?: () => Platform.UIString.LocalizedString;
   /**
    * The type of the icon used to trigger the action.
    */
@@ -374,7 +375,7 @@ export interface ActionRegistration {
   /**
    * Words used to find an action in the Command Menu.
    */
-  tags?: Array<string>;
+  tags?: Array<() => Platform.UIString.LocalizedString>;
   /**
    * Whether the action is toggleable.
    */

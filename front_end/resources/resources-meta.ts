@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -23,12 +24,12 @@ async function loadResourcesModule(): Promise<typeof Resources> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'resources',
-  title: ls`Application`,
+  title: (): Platform.UIString.LocalizedString => ls`Application`,
   commandPrompt: 'Show Application',
   order: 70,
   async loadView() {
     const Resources = await loadResourcesModule();
     return Resources.ResourcesPanel.ResourcesPanel.instance();
   },
-  tags: [ls`pwa`],
+  tags: [(): Platform.UIString.LocalizedString => ls`pwa`],
 });

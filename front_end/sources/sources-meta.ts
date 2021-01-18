@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -24,7 +25,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'sources',
   commandPrompt: 'Show Sources',
-  title: ls`Sources`,
+  title: (): Platform.UIString.LocalizedString => ls`Sources`,
   order: 30,
   async loadView() {
     const Sources = await loadSourcesModule();
@@ -36,7 +37,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-files',
   commandPrompt: 'Show Filesystem',
-  title: ls`Filesystem`,
+  title: (): Platform.UIString.LocalizedString => ls`Filesystem`,
   order: 3,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
@@ -49,7 +50,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-snippets',
   commandPrompt: 'Show Snippets',
-  title: ls`Snippets`,
+  title: (): Platform.UIString.LocalizedString => ls`Snippets`,
   order: 6,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
@@ -62,7 +63,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'sources.search-sources-tab',
   commandPrompt: 'Show Search',
-  title: ls`Search`,
+  title: (): Platform.UIString.LocalizedString => ls`Search`,
   order: 7,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {
@@ -75,7 +76,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-recordings',
   commandPrompt: 'Show Recordings',
-  title: ls`Recordings`,
+  title: (): Platform.UIString.LocalizedString => ls`Recordings`,
   order: 8,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   experiment: 'recorder',
@@ -89,7 +90,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'sources.quick',
   commandPrompt: 'Show Quick source',
-  title: ls`Quick source`,
+  title: (): Platform.UIString.LocalizedString => ls`Quick source`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 1000,
   async loadView() {
@@ -101,7 +102,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   id: 'sources.threads',
   commandPrompt: 'Show Threads',
-  title: ls`Threads`,
+  title: (): Platform.UIString.LocalizedString => ls`Threads`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   condition: '!sources.hide_thread_sidebar',
   async loadView() {
@@ -113,7 +114,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   id: 'sources.scopeChain',
   commandPrompt: 'Show Scope',
-  title: ls`Scope`,
+  title: (): Platform.UIString.LocalizedString => ls`Scope`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const Sources = await loadSourcesModule();
@@ -124,7 +125,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   id: 'sources.watch',
   commandPrompt: 'Show Watch',
-  title: ls`Watch`,
+  title: (): Platform.UIString.LocalizedString => ls`Watch`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const Sources = await loadSourcesModule();
@@ -136,7 +137,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   id: 'sources.jsBreakpoints',
   commandPrompt: 'Show Breakpoints',
-  title: ls`Breakpoints`,
+  title: (): Platform.UIString.LocalizedString => ls`Breakpoints`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const Sources = await loadSourcesModule();

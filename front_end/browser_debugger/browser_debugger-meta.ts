@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -28,7 +29,7 @@ UI.ViewManager.registerViewExtension({
   id: 'sources.eventListenerBreakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
   commandPrompt: 'Show Elements',
-  title: ls`Event Listener Breakpoints`,
+  title: (): Platform.UIString.LocalizedString => ls`Event Listener Breakpoints`,
   order: 9,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
 });
@@ -41,7 +42,7 @@ UI.ViewManager.registerViewExtension({
   id: 'sources.cspViolationBreakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
   commandPrompt: 'Show CSP Violation Breakpoints',
-  title: ls`CSP Violation Breakpoints`,
+  title: (): Platform.UIString.LocalizedString => ls`CSP Violation Breakpoints`,
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
 });
@@ -54,7 +55,7 @@ UI.ViewManager.registerViewExtension({
   id: 'sources.xhrBreakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
   commandPrompt: 'Show XHR/fetch Breakpoints',
-  title: ls`XHR/fetch Breakpoints`,
+  title: (): Platform.UIString.LocalizedString => ls`XHR/fetch Breakpoints`,
   order: 5,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   hasToolbar: true,
@@ -68,7 +69,7 @@ UI.ViewManager.registerViewExtension({
   id: 'sources.domBreakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
   commandPrompt: 'Show DOM Breakpoints',
-  title: ls`DOM Breakpoints`,
+  title: (): Platform.UIString.LocalizedString => ls`DOM Breakpoints`,
   order: 7,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
 });
@@ -81,7 +82,7 @@ UI.ViewManager.registerViewExtension({
   id: 'sources.globalListeners',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
   commandPrompt: 'Show Global Listeners',
-  title: ls`Global Listeners`,
+  title: (): Platform.UIString.LocalizedString => ls`Global Listeners`,
   order: 8,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   hasToolbar: true,
@@ -95,7 +96,7 @@ UI.ViewManager.registerViewExtension({
   id: 'elements.domBreakpoints',
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   commandPrompt: 'Show DOM Breakpoints',
-  title: ls`DOM Breakpoints`,
+  title: (): Platform.UIString.LocalizedString => ls`DOM Breakpoints`,
   order: 6,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
 });

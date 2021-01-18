@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -23,7 +24,7 @@ async function loadIssuesModule(): Promise<typeof Issues> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'issues-pane',
-  title: ls`Issues`,
+  title: (): Platform.UIString.LocalizedString => ls`Issues`,
   commandPrompt: 'Show Issues',
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
@@ -36,7 +37,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'csp-violations-pane',
-  title: ls`CSP Violations`,
+  title: (): Platform.UIString.LocalizedString => ls`CSP Violations`,
   commandPrompt: 'Show CSP Violations',
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,

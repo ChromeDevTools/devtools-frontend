@@ -108,9 +108,9 @@ export class Settings {
         // 'RegExpSetting' have been migrated. Also, the class 'RegExpSetting' has to be changed to extend from PreRegisteredSetting.
         const setting = this.createPreRegisteredSetting(settingName, defaultValue, storageType);
         if (registration.titleMac) {
-          setting.setTitle(registration.titleMac);
+          setting.setTitle(registration.titleMac());
         } else {
-          setting.setTitle(registration.title);
+          setting.setTitle(registration.title && registration.title());
         }
         if (registration.userActionCondition) {
           setting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam(registration.userActionCondition)));
@@ -436,7 +436,7 @@ export class Setting {
   }
 
   /**
-   * @return {!Array<!SettingExtensionOption>}
+   * @return {!Array<!SimpleSettingOption>}
    */
   options() {
     throw new Error('not implemented');
@@ -634,7 +634,7 @@ export class LegacySetting extends Setting {
 
   /**
    * @override
-   * @return {!Array<!SettingExtensionOption>}
+   * @return {!Array<!SimpleSettingOption>}
    */
   options() {
     if (this._extension) {
@@ -913,11 +913,19 @@ export class PreRegisteredSetting extends Setting {
 
   /**
    * @override
-   * @return {!Array<!SettingExtensionOption>}
+   * @return {!Array<!SimpleSettingOption>}
    */
   options() {
-    if (this._registration) {
-      return this._registration.options || [];
+    if (this._registration && this._registration.options) {
+      return this._registration.options.map(opt => {
+        const {value, title, text, raw} = opt;
+        return {
+          value: value,
+          title: title(),
+          text: typeof text === 'function' ? text() : text,
+          raw: raw,
+        };
+      });
     }
     return [];
   }
@@ -951,7 +959,7 @@ export class PreRegisteredSetting extends Setting {
   tags() {
     if (this._registration && this._registration.tags) {
       // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
-      return this._registration.tags.join('\0');
+      return this._registration.tags.map(tag => tag()).join('\0');
     }
     return null;
   }
@@ -1634,3 +1642,14 @@ export {
   SettingType,
   SettingTypeObject
 };
+
+/**
+ * @typedef {{
+  * value: (boolean|string),
+  * title: string,
+  * text: (string|undefined),
+  * raw: (boolean | undefined),
+  * }}
+  */
+// @ts-ignore typedef
+export let SimpleSettingOption;

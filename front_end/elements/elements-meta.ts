@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -31,7 +32,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'elements',
   commandPrompt: 'Show Elements',
-  title: ls`Elements`,
+  title: (): Platform.UIString.LocalizedString => ls`Elements`,
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   hasToolbar: false,
@@ -45,7 +46,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.eventListeners',
   commandPrompt: 'Show Event Listeners',
-  title: ls`Event Listeners`,
+  title: (): Platform.UIString.LocalizedString => ls`Event Listeners`,
   order: 5,
   hasToolbar: true,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -59,7 +60,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.domProperties',
   commandPrompt: 'Show Properties',
-  title: ls`Properties`,
+  title: (): Platform.UIString.LocalizedString => ls`Properties`,
   order: 7,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
@@ -73,7 +74,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.domCreation',
   commandPrompt: 'Show Stack Trace',
-  title: ls`Stack Trace`,
+  title: (): Platform.UIString.LocalizedString => ls`Stack Trace`,
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
@@ -86,7 +87,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.layout',
   commandPrompt: 'Show Layout',
-  title: ls`Layout`,
+  title: (): Platform.UIString.LocalizedString => ls`Layout`,
   order: 4,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
@@ -98,7 +99,7 @@ UI.ViewManager.registerViewExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'elements.hide-element',
   category: UI.ActionRegistration.ActionCategory.ELEMENTS,
-  title: ls`Hide element`,
+  title: (): Platform.UIString.LocalizedString => ls`Hide element`,
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
     return Elements.ElementsPanel.ElementsActionDelegate.instance();
@@ -116,7 +117,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'elements.edit-as-html',
   category: UI.ActionRegistration.ActionCategory.ELEMENTS,
-  title: ls`Edit as HTML`,
+  title: (): Platform.UIString.LocalizedString => ls`Edit as HTML`,
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
     return Elements.ElementsPanel.ElementsActionDelegate.instance();
@@ -134,7 +135,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'elements.duplicate-element',
   category: UI.ActionRegistration.ActionCategory.ELEMENTS,
-  title: ls`Duplicate element`,
+  title: (): Platform.UIString.LocalizedString => ls`Duplicate element`,
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
     return Elements.ElementsPanel.ElementsActionDelegate.instance();
@@ -152,7 +153,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'elements.undo',
   category: UI.ActionRegistration.ActionCategory.ELEMENTS,
-  title: ls`Undo`,
+  title: (): Platform.UIString.LocalizedString => ls`Undo`,
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
     return Elements.ElementsPanel.ElementsActionDelegate.instance();
@@ -163,11 +164,11 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Ctrl+Z',
-      platform: UI.ActionRegistration.Platform.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
     },
     {
       shortcut: 'Meta+Z',
-      platform: UI.ActionRegistration.Platform.Mac,
+      platform: UI.ActionRegistration.Platforms.Mac,
     },
   ],
 });
@@ -175,7 +176,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'elements.redo',
   category: UI.ActionRegistration.ActionCategory.ELEMENTS,
-  title: ls`Redo`,
+  title: (): Platform.UIString.LocalizedString => ls`Redo`,
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
     return Elements.ElementsPanel.ElementsActionDelegate.instance();
@@ -186,11 +187,11 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Ctrl+Y',
-      platform: UI.ActionRegistration.Platform.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
     },
     {
       shortcut: 'Meta+Shift+Z',
-      platform: UI.ActionRegistration.Platform.Mac,
+      platform: UI.ActionRegistration.Platforms.Mac,
     },
   ],
 });
@@ -202,7 +203,7 @@ UI.ActionRegistration.registerActionExtension({
     return Elements.InspectElementModeController.ToggleSearchActionDelegate.instance();
   },
   condition: Root.Runtime.ConditionName.CAN_DOCK,
-  title: ls`Capture area screenshot`,
+  title: (): Platform.UIString.LocalizedString => ls`Capture area screenshot`,
   category: UI.ActionRegistration.ActionCategory.SCREENSHOT,
 });
 
@@ -214,16 +215,16 @@ UI.ActionRegistration.registerActionExtension({
     const Elements = await loadElementsModule();
     return Elements.InspectElementModeController.ToggleSearchActionDelegate.instance();
   },
-  title: ls`Select an element in the page to inspect it`,
+  title: (): Platform.UIString.LocalizedString => ls`Select an element in the page to inspect it`,
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_NODE_SEARCH,
   bindings: [
     {
       shortcut: 'Ctrl+Shift+C',
-      platform: UI.ActionRegistration.Platform.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
     },
     {
       shortcut: 'Meta+Shift+C',
-      platform: UI.ActionRegistration.Platform.Mac,
+      platform: UI.ActionRegistration.Platforms.Mac,
     },
   ],
 });
@@ -231,7 +232,7 @@ UI.ActionRegistration.registerActionExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.ELEMENTS,
   order: 1,
-  title: ls`Show user agent shadow DOM`,
+  title: (): Platform.UIString.LocalizedString => ls`Show user agent shadow DOM`,
   settingName: 'showUAShadowDOM',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: false,
@@ -240,17 +241,17 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.ELEMENTS,
   order: 2,
-  title: ls`Word wrap`,
+  title: (): Platform.UIString.LocalizedString => ls`Word wrap`,
   settingName: 'domWordWrap',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   options: [
     {
       value: true,
-      title: ls`Enable DOM word wrap`,
+      title: (): Platform.UIString.LocalizedString => ls`Enable DOM word wrap`,
     },
     {
       value: false,
-      title: ls`Disable DOM word wrap`,
+      title: (): Platform.UIString.LocalizedString => ls`Disable DOM word wrap`,
     },
   ],
   defaultValue: true,
@@ -259,18 +260,18 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.ELEMENTS,
   order: 3,
-  title: ls`Show HTML comments`,
+  title: (): Platform.UIString.LocalizedString => ls`Show HTML comments`,
   settingName: 'showHTMLComments',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: true,
   options: [
     {
       value: true,
-      title: ls`Show HTML comments`,
+      title: (): Platform.UIString.LocalizedString => ls`Show HTML comments`,
     },
     {
       value: false,
-      title: ls`Hide HTML comments`,
+      title: (): Platform.UIString.LocalizedString => ls`Hide HTML comments`,
     },
   ],
 });
@@ -278,7 +279,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.ELEMENTS,
   order: 4,
-  title: ls`Reveal DOM node on hover`,
+  title: (): Platform.UIString.LocalizedString => ls`Reveal DOM node on hover`,
   settingName: 'highlightNodeOnHoverInOverlay',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: true,
@@ -287,7 +288,7 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.ELEMENTS,
   order: 5,
-  title: ls`Show detailed inspect tooltip`,
+  title: (): Platform.UIString.LocalizedString => ls`Show detailed inspect tooltip`,
   settingName: 'showDetailedInspectTooltip',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: true,

@@ -32,7 +32,7 @@ export interface ViewRegistration {
   experiment?: Root.Runtime.ExperimentName;
   condition?: Root.Runtime.ConditionName;
   commandPrompt: string;
-  title: Platform.UIString.LocalizedString;
+  title: () => Platform.UIString.LocalizedString;
   persistence?: ViewPersistence;
   id: string;
   location?: ViewLocationValues;
@@ -40,7 +40,7 @@ export interface ViewRegistration {
   loadView: () => Promise<Widget>;
   order?: number;
   settings?: Array<string>;
-  tags?: Array<string>;
+  tags?: Array<() => Platform.UIString.LocalizedString>;
 }
 
 const viewIdSet = new Set<string>();

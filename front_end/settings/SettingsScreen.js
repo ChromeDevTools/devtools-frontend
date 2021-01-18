@@ -291,7 +291,7 @@ export class GenericSettingsTab extends SettingsTab {
       this._createSectionElement(sectionName);
     }
 
-    /** @type {!Array<!Common.Settings.SettingRegistration>} */
+    /** @type {!Array<SettingDescriptor>} */
     const unionOfSettings = [
       // TODO(crbug.com/1134103): Remove this call when all settings are migrated
       ...Root.Runtime.Runtime.instance().extensions('setting').map(extension => {
@@ -303,19 +303,20 @@ export class GenericSettingsTab extends SettingsTab {
           order: extension.descriptor().order,
           settingType: extension.descriptor().settingType || '',
           defaultValue: extension.descriptor().defaultValue,
-          tags: undefined,
-          isRegex: undefined,
-          options: undefined,
-          reloadRequired: undefined,
-          storageType: undefined,
-          titleMac: undefined,
-          userActionCondition: undefined,
-          experiment: undefined,
-          condition: undefined,
         };
       }),
       ...Common.Settings.getRegisteredSettings().map(setting => {
-        return {...setting, title: setting.titleMac || setting.title};
+        const titleMac = setting.titleMac && setting.titleMac();
+        const title = setting.title && setting.title();
+        const {category, settingName, order, settingType, defaultValue} = setting;
+        return {
+          category: category || undefined,
+          settingName: settingName,
+          title: titleMac || title,
+          order: order || undefined,
+          settingType: settingType,
+          defaultValue,
+        };
       })
     ];
     // Some settings define their initial ordering.
@@ -335,7 +336,7 @@ export class GenericSettingsTab extends SettingsTab {
   }
 
   /**
-  * @param {!Common.Settings.SettingRegistration} setting
+  * @param {!SettingDescriptor} setting
    * @return {boolean}
    */
   static isSettingVisible(setting) {
@@ -343,7 +344,7 @@ export class GenericSettingsTab extends SettingsTab {
   }
 
   /**
-   * @param {!Common.Settings.SettingRegistration} settingRegistration
+   * @param {!SettingDescriptor} settingRegistration
    */
   _addSetting(settingRegistration) {
     if (!GenericSettingsTab.isSettingVisible(settingRegistration)) {
@@ -518,7 +519,7 @@ export class Revealer {
     const setting = /** @type {!Common.Settings.Setting<*>} */ (object);
     let success = false;
 
-    /** @type {!Array<!Common.Settings.SettingRegistration>} */
+    /** @type {!Array<!SettingDescriptor>} */
     const unionOfSettings = [
       // TODO(crbug.com/1134103): Remove this call when all settings are migrated
       ...Root.Runtime.Runtime.instance().extensions('setting').map(extension => {
@@ -530,19 +531,20 @@ export class Revealer {
           order: extension.descriptor().order,
           settingType: extension.descriptor().settingType || '',
           defaultValue: extension.descriptor().defaultValue,
-          tags: undefined,
-          isRegex: undefined,
-          options: undefined,
-          reloadRequired: undefined,
-          storageType: undefined,
-          titleMac: undefined,
-          userActionCondition: undefined,
-          experiment: undefined,
-          condition: undefined,
         };
       }),
       ...Common.Settings.getRegisteredSettings().map(setting => {
-        return {...setting, title: setting.titleMac || setting.title};
+        const titleMac = setting.titleMac && setting.titleMac();
+        const title = setting.title && setting.title();
+        const {category, settingName, order, settingType, defaultValue} = setting;
+        return {
+          category: category || undefined,
+          settingName: settingName,
+          title: titleMac || title,
+          order: order || undefined,
+          settingType: settingType,
+          defaultValue,
+        };
       })
     ];
     unionOfSettings.forEach(revealModuleSetting);
@@ -565,7 +567,7 @@ export class Revealer {
     return success ? Promise.resolve() : Promise.reject();
 
     /**
-     * @param {!Common.Settings.SettingRegistration} settingRegistration
+     * @param {!SettingDescriptor} settingRegistration
      */
     function revealModuleSetting(settingRegistration) {
       if (!GenericSettingsTab.isSettingVisible(settingRegistration)) {
@@ -617,3 +619,16 @@ export class Revealer {
   */
 // @ts-ignore typedef
 export let ShowSettingsScreenOptions;
+
+/**
+ * @typedef {{
+ * category: (string|undefined),
+ * settingName: string,
+ * title: (string|undefined),
+ * order: (number|undefined),
+ * settingType: string,
+ * defaultValue: unknown,
+ * }}
+ */
+// @ts-ignore typedef
+export let SettingDescriptor;

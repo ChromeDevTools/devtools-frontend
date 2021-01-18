@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -32,7 +33,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'heap_profiler',
   commandPrompt: 'Show Memory',
-  title: ls`Memory`,
+  title: (): Platform.UIString.LocalizedString => ls`Memory`,
   order: 60,
   async loadView() {
     const Profiler = await loadProfilerModule();
@@ -44,7 +45,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'live_heap_profile',
   commandPrompt: 'Show Live Heap Profile',
-  title: ls`Live Heap Profile`,
+  title: (): Platform.UIString.LocalizedString => ls`Live Heap Profile`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 100,
   async loadView() {
@@ -69,11 +70,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: ls`Start recording heap allocations`,
+      title: (): Platform.UIString.LocalizedString => ls`Start recording heap allocations`,
     },
     {
       value: false,
-      title: ls`Stop recording heap allocations`,
+      title: (): Platform.UIString.LocalizedString => ls`Stop recording heap allocations`,
     },
   ],
 });
@@ -87,14 +88,14 @@ UI.ActionRegistration.registerActionExtension({
   },
   category: UI.ActionRegistration.ActionCategory.MEMORY,
   experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
-  title: ls`Start recording heap allocations and reload the page`,
+  title: (): Platform.UIString.LocalizedString => ls`Start recording heap allocations and reload the page`,
 });
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'profiler.heap-toggle-recording',
   category: UI.ActionRegistration.ActionCategory.MEMORY,
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
-  title: ls`Start/stop recording`,
+  title: (): Platform.UIString.LocalizedString => ls`Start/stop recording`,
   toggleable: true,
   toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
   toggleWithRedColor: true,
@@ -107,11 +108,11 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platform.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
       shortcut: 'Ctrl+E',
     },
     {
-      platform: UI.ActionRegistration.Platform.Mac,
+      platform: UI.ActionRegistration.Platforms.Mac,
       shortcut: 'Meta+E',
     },
   ],
@@ -120,7 +121,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'profiler.js-toggle-recording',
   category: UI.ActionRegistration.ActionCategory.JAVASCRIPT_PROFILER,
-  title: ls`Start/stop recording`,
+  title: (): Platform.UIString.LocalizedString => ls`Start/stop recording`,
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
   toggleable: true,
   toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
@@ -134,11 +135,11 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platform.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
       shortcut: 'Ctrl+E',
     },
     {
-      platform: UI.ActionRegistration.Platform.Mac,
+      platform: UI.ActionRegistration.Platforms.Mac,
       shortcut: 'Meta+E',
     },
   ],
@@ -146,7 +147,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.PERFORMANCE,
-  title: ls`Show native functions in JS Profile`,
+  title: (): Platform.UIString.LocalizedString => ls`Show native functions in JS Profile`,
   settingName: 'showNativeFunctionsInJSProfile',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: true,

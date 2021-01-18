@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -32,7 +33,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'network',
   commandPrompt: 'Show Network',
-  title: ls`Network`,
+  title: (): Platform.UIString.LocalizedString => ls`Network`,
   order: 40,
   async loadView() {
     const Network = await loadNetworkModule();
@@ -44,7 +45,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'network.blocked-urls',
   commandPrompt: 'Show Network request blocking',
-  title: ls`Network request blocking`,
+  title: (): Platform.UIString.LocalizedString => ls`Network request blocking`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 60,
   async loadView() {
@@ -57,10 +58,16 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'network.config',
   commandPrompt: 'Show Network conditions',
-  title: ls`Network conditions`,
+  title: (): Platform.UIString.LocalizedString => ls`Network conditions`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 40,
-  tags: [ls`disk cache`, ls`network throttling`, ls`useragent`, ls`user agent`, ls`user-agent`],
+  tags: [
+    (): Platform.UIString.LocalizedString => ls`disk cache`,
+    (): Platform.UIString.LocalizedString => ls`network throttling`,
+    (): Platform.UIString.LocalizedString => ls`useragent`,
+    (): Platform.UIString.LocalizedString => ls`user agent`,
+    (): Platform.UIString.LocalizedString => ls`user-agent`,
+  ],
   async loadView() {
     const Network = await loadNetworkModule();
     return Network.NetworkConfigView.NetworkConfigView.instance();
@@ -71,7 +78,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NETWORK_SIDEBAR,
   id: 'network.search-network-tab',
   commandPrompt: 'Show Search',
-  title: ls`Search`,
+  title: (): Platform.UIString.LocalizedString => ls`Search`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const Network = await loadNetworkModule();
@@ -96,21 +103,21 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: ls`Record network log`,
+      title: (): Platform.UIString.LocalizedString => ls`Record network log`,
     },
     {
       value: false,
-      title: ls`Stop recording network log`,
+      title: (): Platform.UIString.LocalizedString => ls`Stop recording network log`,
     },
   ],
   bindings: [
     {
       shortcut: 'Ctrl+E',
-      platform: UI.ActionRegistration.Platform.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
     },
     {
       shortcut: 'Meta+E',
-      platform: UI.ActionRegistration.Platform.Mac,
+      platform: UI.ActionRegistration.Platforms.Mac,
     },
   ],
 });
@@ -118,7 +125,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'network.hide-request-details',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
-  title: ls`Hide request details`,
+  title: (): Platform.UIString.LocalizedString => ls`Hide request details`,
   contextTypes() {
     return maybeRetrieveContextTypes(Network => [Network.NetworkPanel.NetworkPanel]);
   },
@@ -136,7 +143,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'network.search',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
-  title: ls`Search`,
+  title: (): Platform.UIString.LocalizedString => ls`Search`,
   contextTypes() {
     return maybeRetrieveContextTypes(Network => [Network.NetworkPanel.NetworkPanel]);
   },
@@ -146,7 +153,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   bindings: [
     {
-      platform: UI.ActionRegistration.Platform.Mac,
+      platform: UI.ActionRegistration.Platforms.Mac,
       shortcut: 'Meta+F',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -154,7 +161,7 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
     {
-      platform: UI.ActionRegistration.Platform.WindowsLinux,
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
       shortcut: 'Ctrl+F',
       keybindSets: [
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
@@ -166,38 +173,45 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.NETWORK,
-  title: ls`Color-code resource types`,
+  title: (): Platform.UIString.LocalizedString => ls`Color-code resource types`,
   settingName: 'networkColorCodeResourceTypes',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: false,
-  tags: [ls`color code`, ls`resource type`],
+  tags: [
+    (): Platform.UIString.LocalizedString => ls`color code`,
+    (): Platform.UIString.LocalizedString => ls`resource type`,
+  ],
   options: [
     {
       value: true,
-      title: ls`Color code by resource type`,
+      title: (): Platform.UIString.LocalizedString => ls`Color code by resource type`,
     },
     {
       value: false,
-      title: ls`Use default colors`,
+      title: (): Platform.UIString.LocalizedString => ls`Use default colors`,
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.NETWORK,
-  title: ls`Group network log by frame`,
+  title: (): Platform.UIString.LocalizedString => ls`Group network log by frame`,
   settingName: 'network.group-by-frame',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: false,
-  tags: [ls`network`, ls`frame`, ls`group`],
+  tags: [
+    (): Platform.UIString.LocalizedString => ls`network`,
+    (): Platform.UIString.LocalizedString => ls`frame`,
+    (): Platform.UIString.LocalizedString => ls`group`,
+  ],
   options: [
     {
       value: true,
-      title: ls`Group network log items by frame`,
+      title: (): Platform.UIString.LocalizedString => ls`Group network log items by frame`,
     },
     {
       value: false,
-      title: ls`Don't group network log items by frame`,
+      title: (): Platform.UIString.LocalizedString => ls`Don't group network log items by frame`,
     },
   ],
 });

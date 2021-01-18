@@ -226,7 +226,7 @@ export class CommandMenu {
       }
       for (const pair of options) {
         const setting = Common.Settings.Settings.instance().moduleSetting(settingRegistration.settingName);
-        this._commands.push(CommandMenu.createSettingCommand(setting, pair.title, pair.value));
+        this._commands.push(CommandMenu.createSettingCommand(setting, pair.title(), pair.value));
       }
     }
   }

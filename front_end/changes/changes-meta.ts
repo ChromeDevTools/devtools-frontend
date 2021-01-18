@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -23,7 +24,7 @@ async function loadChangesModule(): Promise<typeof Changes> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'changes.changes',
-  title: ls`Changes`,
+  title: (): Platform.UIString.LocalizedString => ls`Changes`,
   commandPrompt: 'Show Changes',
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {

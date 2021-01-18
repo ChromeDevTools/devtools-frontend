@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -23,7 +24,7 @@ async function loadEmulationModule(): Promise<typeof Emulation> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
   commandPrompt: 'Show Devices',
-  title: ls`Devices`,
+  title: (): Platform.UIString.LocalizedString => ls`Devices`,
   order: 30,
   async loadView() {
     const Emulation = await loadEmulationModule();
@@ -39,7 +40,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   commandPrompt: 'Show Sensors',
-  title: ls`Sensors`,
+  title: (): Platform.UIString.LocalizedString => ls`Sensors`,
   id: 'sensors',
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 100,
@@ -48,12 +49,12 @@ UI.ViewManager.registerViewExtension({
     return Emulation.SensorsView.SensorsView.instance();
   },
   tags: [
-    ls`geolocation`,
-    ls`timezones`,
-    ls`locale`,
-    ls`locales`,
-    ls`accelerometer`,
-    ls`device orientation`,
+    (): Platform.UIString.LocalizedString => ls`geolocation`,
+    (): Platform.UIString.LocalizedString => ls`timezones`,
+    (): Platform.UIString.LocalizedString => ls`locale`,
+    (): Platform.UIString.LocalizedString => ls`locales`,
+    (): Platform.UIString.LocalizedString => ls`accelerometer`,
+    (): Platform.UIString.LocalizedString => ls`device orientation`,
   ],
 });
 
@@ -61,7 +62,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
   id: 'emulation-locations',
   commandPrompt: 'Show Locations',
-  title: ls`Locations`,
+  title: (): Platform.UIString.LocalizedString => ls`Locations`,
   order: 40,
   async loadView() {
     const Emulation = await loadEmulationModule();

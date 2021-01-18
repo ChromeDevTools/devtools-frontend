@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../front_end/common/common.js';
+import * as Platform from '../../../../front_end/platform/platform.js';
 import * as QuickOpen from '../../../../front_end/quick_open/quick_open.js';
 import * as UI from '../../../../front_end/ui/ui.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../helpers/EnvironmentHelpers.js';
@@ -25,7 +26,7 @@ describe('Action registration', () => {
     UI.ActionRegistration.registerActionExtension({
       actionId,
       category: UI.ActionRegistration.ActionCategory.ELEMENTS,
-      title: actionTitle,
+      title: (): Platform.UIString.LocalizedString => actionTitle as Platform.UIString.LocalizedString,
       async loadActionDelegate() {
         return new MockActionDelegate();
       },

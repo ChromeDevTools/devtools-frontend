@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../front_end/common/common.js';
+import * as Platform from '../../../../front_end/platform/platform.js';
 import * as QuickOpen from '../../../../front_end/quick_open/quick_open.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../helpers/EnvironmentHelpers.js';
 
@@ -17,18 +18,18 @@ describe('Action registration', () => {
   before(async () => {
     Common.Settings.registerSettingExtension({
       category: settingCategory,
-      title: settingTitle,
+      title: (): Platform.UIString.LocalizedString => settingTitle as Platform.UIString.LocalizedString,
       settingType: 'boolean',
       settingName,
       defaultValue: false,
       options: [
         {
           value: true,
-          title: enableTitle,
+          title: (): Platform.UIString.LocalizedString => enableTitle as Platform.UIString.LocalizedString,
         },
         {
           value: false,
-          title: disableTitle,
+          title: (): Platform.UIString.LocalizedString => disableTitle as Platform.UIString.LocalizedString,
         },
       ],
     });

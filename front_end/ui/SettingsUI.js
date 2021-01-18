@@ -65,7 +65,7 @@ export const createSettingCheckbox = function(name, setting, omitParagraphElemen
 
 /**
  * @param {string} name
- * @param {!Array<!Common.Settings.SettingExtensionOption>} options
+ * @param {!Array<!Common.Settings.SimpleSettingOption>} options
  * @param {boolean|null} requiresReload
  * @param {!Common.Settings.Setting<*>} setting
  * @param {string=} subtitle

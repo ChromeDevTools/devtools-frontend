@@ -776,13 +776,13 @@
   "layer_viewer/TransformController.js | rotateModeV": {
     "message": "Rotate mode (V)"
   },
-  "layers/LayersPanel.js | details": {
+  "layers/LayersPanel.ts | details": {
     "message": "Details"
   },
-  "layers/LayersPanel.js | profiler": {
+  "layers/LayersPanel.ts | profiler": {
     "message": "Profiler"
   },
-  "layers/ModuleUIStrings.js | layers": {
+  "layers/ModuleUIStrings.ts | layers": {
     "message": "Layers"
   },
   "lighthouse/LighthouseController.js | accessibility": {

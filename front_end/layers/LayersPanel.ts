@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
@@ -47,15 +49,21 @@ export const UIStrings = {
   */
   profiler: 'Profiler',
 };
-const str_ = i18n.i18n.registerUIStrings('layers/LayersPanel.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('layers/LayersPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {SDK.SDKModel.Observer}
- */
-export class LayersPanel extends UI.Panel.PanelWithSidebar {
+export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.SDKModel.Observer {
+  _model: LayerTreeModel|null;
+  _layerViewHost: LayerViewer.LayerViewHost.LayerViewHost;
+  _layerTreeOutline: LayerViewer.LayerTreeOutline.LayerTreeOutline;
+  _rightSplitWidget: UI.SplitWidget.SplitWidget;
+  _layers3DView: LayerViewer.Layers3DView.Layers3DView;
+  _tabbedPane: UI.TabbedPane.TabbedPane;
+  _layerDetailsView: LayerViewer.LayerDetailsView.LayerDetailsView;
+  _paintProfilerView: LayerPaintProfilerView;
+  _updateThrottler: Common.Throttler.Throttler;
+  _layerBeingProfiled?: SDK.LayerTreeBase.Layer|null;
   constructor() {
     super('layers', 225);
-    /** @type {?LayerTreeModel} */
     this._model = null;
 
     SDK.SDKModel.TargetManager.instance().observeTargets(this);
@@ -88,38 +96,25 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar {
     this._updateThrottler = new Common.Throttler.Throttler(100);
   }
 
-  /**
-   * @override
-   */
-  focus() {
+  focus(): void {
     this._layerTreeOutline.focus();
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     super.wasShown();
     if (this._model) {
       this._model.enable();
     }
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     if (this._model) {
       this._model.disable();
     }
     super.willHide();
   }
 
-  /**
-   * @override
-   * @param {!SDK.SDKModel.Target} target
-   */
-  targetAdded(target) {
+  targetAdded(target: SDK.SDKModel.Target): void {
     if (this._model) {
       return;
     }
@@ -134,11 +129,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar {
     }
   }
 
-  /**
-   * @override
-   * @param {!SDK.SDKModel.Target} target
-   */
-  targetRemoved(target) {
+  targetRemoved(target: SDK.SDKModel.Target): void {
     if (!this._model || this._model.target() !== target) {
       return;
     }
@@ -148,14 +139,11 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar {
     this._model = null;
   }
 
-  _onLayerTreeUpdated() {
+  _onLayerTreeUpdated(): void {
     this._updateThrottler.schedule(this._update.bind(this));
   }
 
-  /**
-   * @return {!Promise<*>}
-   */
-  _update() {
+  _update(): Promise<void> {
     if (this._model) {
       this._layerViewHost.setLayerTree(this._model.layerTree());
       const resourceModel = this._model.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
@@ -171,14 +159,11 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar {
     return Promise.resolve();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onLayerPainted(event) {
+  _onLayerPainted(event: Common.EventTarget.EventTargetEvent): void {
     if (!this._model) {
       return;
     }
-    const layer = /** @type {!SDK.LayerTreeBase.Layer} */ (event.data);
+    const layer = event.data as SDK.LayerTreeBase.Layer;
     const selection = this._layerViewHost.selection();
     if (selection && selection.layer() === layer) {
       this._layerDetailsView.update();
@@ -186,11 +171,8 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar {
     this._layers3DView.updateLayerSnapshot(layer);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onPaintProfileRequested(event) {
-    const selection = /** @type {!LayerViewer.LayerViewHost.Selection} */ (event.data);
+  _onPaintProfileRequested(event: Common.EventTarget.EventTargetEvent): void {
+    const selection = event.data as LayerViewer.LayerViewHost.Selection;
     this._layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
       if (!snapshotWithRect) {
         return;
@@ -205,10 +187,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar {
     });
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onTabClosed(event) {
+  _onTabClosed(event: Common.EventTarget.EventTargetEvent): void {
     if (event.data.tabId !== DetailsViewTabs.Profiler || !this._layerBeingProfiled) {
       return;
     }
@@ -217,24 +196,18 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar {
     this._layerBeingProfiled = null;
   }
 
-  /**
-   * @param {string=} imageURL
-   */
-  _showImage(imageURL) {
+  _showImage(imageURL?: string): void {
     if (this._layerBeingProfiled) {
       this._layers3DView.showImageForLayer(this._layerBeingProfiled, imageURL);
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onScaleChanged(event) {
-    this._paintProfilerView.setScale(/** @type {number} */ (event.data));
+  _onScaleChanged(event: Common.EventTarget.EventTargetEvent): void {
+    this._paintProfilerView.setScale(event.data as number);
   }
 }
 
 export const DetailsViewTabs = {
   Details: 'details',
-  Profiler: 'profiler'
+  Profiler: 'profiler',
 };

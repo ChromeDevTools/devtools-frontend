@@ -2,15 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 export class LayerPaintProfilerView extends UI.SplitWidget.SplitWidget {
-  /**
-   * @param {function(string=):void} showImageCallback
-   */
-  constructor(showImageCallback) {
+  _logTreeView: LayerViewer.PaintProfilerView.PaintProfilerCommandLogView;
+  _paintProfilerView: LayerViewer.PaintProfilerView.PaintProfilerView;
+  constructor(showImageCallback: (arg0?: string|undefined) => void) {
     super(true, false);
 
     this._logTreeView = new LayerViewer.PaintProfilerView.PaintProfilerCommandLogView();
@@ -24,22 +25,16 @@ export class LayerPaintProfilerView extends UI.SplitWidget.SplitWidget {
     this._logTreeView.focus();
   }
 
-  reset() {
+  reset(): void {
     this._paintProfilerView.setSnapshotAndLog(null, [], null);
   }
 
-  /**
-   * @param {!SDK.PaintProfiler.PaintProfilerSnapshot} snapshot
-   */
-  profile(snapshot) {
+  profile(snapshot: SDK.PaintProfiler.PaintProfilerSnapshot): void {
     snapshot.commandLog().then(log => setSnapshotAndLog.call(this, snapshot, log));
 
-    /**
-     * @param {?SDK.PaintProfiler.PaintProfilerSnapshot} snapshot
-     * @param {?Array<!SDK.PaintProfiler.PaintProfilerLogItem>} log
-     * @this {LayerPaintProfilerView}
-     */
-    function setSnapshotAndLog(snapshot, log) {
+    function setSnapshotAndLog(
+        this: LayerPaintProfilerView, snapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null,
+        log: SDK.PaintProfiler.PaintProfilerLogItem[]|null): void {
       this._logTreeView.setCommandLog(log || []);
       this._paintProfilerView.setSnapshotAndLog(snapshot, log || [], null);
       if (snapshot) {
@@ -48,14 +43,11 @@ export class LayerPaintProfilerView extends UI.SplitWidget.SplitWidget {
     }
   }
 
-  /**
-   * @param {number} scale
-   */
-  setScale(scale) {
+  setScale(scale: number): void {
     this._paintProfilerView.setScale(scale);
   }
 
-  _onWindowChanged() {
+  _onWindowChanged(): void {
     this._logTreeView.updateWindow(this._paintProfilerView.selectionWindow());
   }
 }

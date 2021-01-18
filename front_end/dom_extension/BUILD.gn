@@ -7,6 +7,8 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("dom_extension") {
   sources = [ "DOMExtension.js" ]
+
+  deps = [ "../platform:bundle" ]
 }
 
 devtools_entrypoint("bundle") {

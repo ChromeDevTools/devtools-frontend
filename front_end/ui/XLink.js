@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu, Provider} from './ContextMenu.js';  // eslint-disable-line no-unused-vars
@@ -32,7 +33,7 @@ export class XLink extends XElement {
     // TODO(dgozman): migrate css from 'devtools-link' to 'x-link'.
     const element = html`
         <x-link href='${url}' class='${className} devtools-link' ${preventClick ? 'no-click' : ''}
-        >${linkText.trimMiddle(MaxLengthForDisplayedURLs)}</x-link>`;
+        >${Platform.StringUtilities.trimMiddle(linkText, MaxLengthForDisplayedURLs)}</x-link>`;
     // clang-format on
     return /** @type {!HTMLElement} */ (element);
   }

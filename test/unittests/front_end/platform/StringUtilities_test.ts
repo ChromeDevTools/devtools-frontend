@@ -602,4 +602,24 @@ describe('StringUtilities', () => {
       assert.strictEqual(result, 0);
     });
   });
+
+  describe('trimMiddle', () => {
+    const fixtures = [
+      '',
+      '!',
+      '\u{1F648}A\u{1F648}L\u{1F648}I\u{1F648}N\u{1F648}A\u{1F648}\u{1F648}',
+      'test',
+    ];
+
+    for (let i = 0; i < fixtures.length; i++) {
+      const string = fixtures[i];
+      it(`trims the middle of strings, fixture ${i}`, () => {
+        for (let maxLength = string.length + 1; maxLength > 0; --maxLength) {
+          const trimmed = Platform.StringUtilities.trimMiddle(string, maxLength);
+          assert.isTrue(trimmed.length <= maxLength);
+        }
+      });
+    }
+  });
+
 });

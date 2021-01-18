@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as i18n from '../i18n/i18n.js';
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -40,9 +41,10 @@ export class PersistenceUtils {
       return FileSystemWorkspaceBinding.tooltipForUISourceCode(binding.fileSystem);
     }
     if (binding.network.contentType().isFromSourceMap()) {
-      return i18nString(UIStrings.linkedToSourceMapS, {PH1: binding.network.url().trimMiddle(150)});
+      return i18nString(
+          UIStrings.linkedToSourceMapS, {PH1: Platform.StringUtilities.trimMiddle(binding.network.url(), 150)});
     }
-    return i18nString(UIStrings.linkedToS, {PH1: binding.network.url().trimMiddle(150)});
+    return i18nString(UIStrings.linkedToS, {PH1: Platform.StringUtilities.trimMiddle(binding.network.url(), 150)});
   }
 
   /**

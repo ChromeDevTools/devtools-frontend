@@ -55,26 +55,6 @@ String.prototype.escapeForRegExp = function() {
  * @param {number} maxLength
  * @return {string}
  */
-String.prototype.trimMiddle = function(maxLength) {
-  if (this.length <= maxLength) {
-    return String(this);
-  }
-  let leftHalf = maxLength >> 1;
-  let rightHalf = maxLength - leftHalf - 1;
-  if (/** @type {number} */ (this.codePointAt(this.length - rightHalf - 1)) >= 0x10000) {
-    --rightHalf;
-    ++leftHalf;
-  }
-  if (leftHalf > 0 && /** @type {number} */ (this.codePointAt(leftHalf - 1)) >= 0x10000) {
-    --leftHalf;
-  }
-  return this.substr(0, leftHalf) + '…' + this.substr(this.length - rightHalf, rightHalf);
-};
-
-/**
- * @param {number} maxLength
- * @return {string}
- */
 String.prototype.trimEndWithMaxLength = function(maxLength) {
   if (this.length <= maxLength) {
     return String(this);

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -95,7 +96,7 @@ export class RemoteObjectPreviewFormatter {
   _abbreviateFullQualifiedClassName(description) {
     const abbreviatedDescription = description.split('.');
     for (let i = 0; i < abbreviatedDescription.length - 1; ++i) {
-      abbreviatedDescription[i] = abbreviatedDescription[i].trimMiddle(3);
+      abbreviatedDescription[i] = Platform.StringUtilities.trimMiddle(abbreviatedDescription[i], 3);
     }
     return abbreviatedDescription.join('.');
   }

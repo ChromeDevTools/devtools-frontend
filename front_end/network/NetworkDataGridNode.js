@@ -1173,7 +1173,7 @@ export class NetworkRequestNode extends NetworkNode {
     }
 
     if (columnId === 'name') {
-      const name = this._request.name().trimMiddle(100);
+      const name = Platform.StringUtilities.trimMiddle(this._request.name(), 100);
       const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this._request);
       UI.UIUtils.createTextChild(cell, networkManager ? networkManager.target().decorateLabel(name) : name);
       this._appendSubtitle(cell, this._request.path());

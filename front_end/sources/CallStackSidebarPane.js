@@ -27,6 +27,7 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as Persistence from '../persistence/persistence.js';
+import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -242,7 +243,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView {
     } else {
       UI.Tooltip.Tooltip.install(titleElement, item.title);
       const linkElement = element.createChild('div', 'call-frame-location');
-      linkElement.textContent = item.linkText.trimMiddle(30);
+      linkElement.textContent = Platform.StringUtilities.trimMiddle(item.linkText, 30);
       UI.Tooltip.Tooltip.install(linkElement, item.linkText);
       element.classList.toggle('ignore-listed-call-frame', item.isIgnoreListed);
       if (item.isIgnoreListed) {

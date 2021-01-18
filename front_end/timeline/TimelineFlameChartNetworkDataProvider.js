@@ -353,7 +353,7 @@ export class TimelineFlameChartNetworkDataProvider {
           /** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
       div.style.color = this._colorForPriority(request.priority) || 'black';
     }
-    contents.createChild('span').textContent = request.url.trimMiddle(maxURLChars);
+    contents.createChild('span').textContent = Platform.StringUtilities.trimMiddle(request.url, maxURLChars);
     return element;
   }
 

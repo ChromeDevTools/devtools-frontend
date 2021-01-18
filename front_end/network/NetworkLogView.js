@@ -1541,7 +1541,7 @@ export class NetworkLogView extends UI.Widget.VBox {
         contextMenu.debugSection().appendItem(
             Common.UIString.UIString('Block request URL'), addBlockedURL.bind(null, urlWithoutScheme));
       } else if (urlWithoutScheme) {
-        const croppedURL = urlWithoutScheme.trimMiddle(maxBlockedURLLength);
+        const croppedURL = Platform.StringUtilities.trimMiddle(urlWithoutScheme, maxBlockedURLLength);
         contextMenu.debugSection().appendItem(
             Common.UIString.UIString('Unblock %s', croppedURL), removeBlockedURL.bind(null, urlWithoutScheme));
       }
@@ -1551,7 +1551,7 @@ export class NetworkLogView extends UI.Widget.VBox {
         contextMenu.debugSection().appendItem(
             Common.UIString.UIString('Block request domain'), addBlockedURL.bind(null, domain));
       } else if (domain) {
-        const croppedDomain = domain.trimMiddle(maxBlockedURLLength);
+        const croppedDomain = Platform.StringUtilities.trimMiddle(domain, maxBlockedURLLength);
         contextMenu.debugSection().appendItem(
             Common.UIString.UIString('Unblock %s', croppedDomain), removeBlockedURL.bind(null, domain));
       }

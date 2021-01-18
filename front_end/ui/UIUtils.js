@@ -1773,7 +1773,7 @@ export function trimText(context, text, maxWidth, trimFunction) {
  * @return {string}
  */
 export function trimTextMiddle(context, text, maxWidth) {
-  return trimText(context, text, maxWidth, (text, width) => text.trimMiddle(width));
+  return trimText(context, text, maxWidth, (text, width) => Platform.StringUtilities.trimMiddle(text, width));
 }
 
 /**

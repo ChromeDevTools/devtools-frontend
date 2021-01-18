@@ -8,6 +8,7 @@ import * as Components from '../components/components.js';
 import * as Elements from '../elements/elements.js';
 import * as Host from '../host/host.js';
 import * as Network from '../network/network.js';
+import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as WebComponents from '../ui/components/components.js';
@@ -375,7 +376,7 @@ class AffectedRequestsView extends AffectedResourcesView {
    * @param {!SDK.NetworkRequest.NetworkRequest} request
    */
   _appendNetworkRequest(request) {
-    const nameText = request.name().trimMiddle(100);
+    const nameText = Platform.StringUtilities.trimMiddle(request.name(), 100);
     const nameElement = document.createElement('td');
     const tab = issueTypeToNetworkHeaderMap.get(this._issue.getCategory()) || Network.NetworkItemView.Tabs.Headers;
     nameElement.appendChild(UI.UIUtils.createTextButton(nameText, () => {

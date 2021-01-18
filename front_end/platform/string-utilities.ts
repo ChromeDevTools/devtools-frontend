@@ -435,3 +435,19 @@ export const compare = (a: string, b: string): number => {
   }
   return 0;
 };
+
+export const trimMiddle = (str: string, maxLength: number): string => {
+  if (str.length <= maxLength) {
+    return String(str);
+  }
+  let leftHalf = maxLength >> 1;
+  let rightHalf = maxLength - leftHalf - 1;
+  if ((str.codePointAt(str.length - rightHalf - 1) as number) >= 0x10000) {
+    --rightHalf;
+    ++leftHalf;
+  }
+  if (leftHalf > 0 && (str.codePointAt(leftHalf - 1) as number) >= 0x10000) {
+    --leftHalf;
+  }
+  return str.substr(0, leftHalf) + '…' + str.substr(str.length - rightHalf, rightHalf);
+};

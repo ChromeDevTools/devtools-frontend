@@ -1577,7 +1577,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       }
       value = value.replace(closingPunctuationRegex, '$&\u200B');
       if (value.startsWith('data:')) {
-        value = value.trimMiddle(60);
+        value = Platform.StringUtilities.trimMiddle(value, 60);
       }
       const link = node && node.nodeName().toLowerCase() === 'a' ?
           UI.XLink.XLink.create(rewrittenHref, value, '', true /* preventClick */) :

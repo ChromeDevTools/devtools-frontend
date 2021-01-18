@@ -32,6 +32,8 @@
 
 // @ts-nocheck This file is not checked by TypeScript Compiler as it has a lot of legacy code.
 
+import * as Platform from '../platform/platform.js';
+
 /**
  * @param {!Node} rootNode
  * @param {number} offset
@@ -683,7 +685,8 @@ Node.prototype.setTextContentTruncatedIfNeeded = function(text, placeholder) {
   const maxTextContentLength = 10000;
 
   if (typeof text === 'string' && text.length > maxTextContentLength) {
-    this.textContent = typeof placeholder === 'string' ? placeholder : text.trimMiddle(maxTextContentLength);
+    this.textContent =
+        typeof placeholder === 'string' ? placeholder : Platform.StringUtilities.trimMiddle(text, maxTextContentLength);
     return true;
   }
 

@@ -797,7 +797,7 @@ export class ConsoleViewMessage {
         let description = '';
         if (type !== 'function' && object.description) {
           if (type === 'string' || subtype === 'regexp' || subtype === 'trustedtype') {
-            description = object.description.trimMiddle(maxLength);
+            description = Platform.StringUtilities.trimMiddle(object.description, maxLength);
           } else {
             description = object.description.trimEndWithMaxLength(maxLength);
           }

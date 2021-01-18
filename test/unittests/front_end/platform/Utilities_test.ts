@@ -17,7 +17,6 @@ declare global {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface String {
-    trimMiddle(maxLength: number): string;
     repeat(length: number): string;
   }
 
@@ -114,20 +113,5 @@ describe('Utilities', () => {
     const inputString = '^[]{}()\\.^$*+?|-';
     const outputString = inputString.escapeForRegExp();
     assert.strictEqual(outputString, '\\^\\[\\]\\{\\}\\(\\)\\\\\\.\\^\\$\\*\\+\\?\\|\\-');
-  });
-
-  it('trims the middle of strings', () => {
-    const fixtures = [
-      '',
-      '!',
-      '\u{1F648}A\u{1F648}L\u{1F648}I\u{1F648}N\u{1F648}A\u{1F648}\u{1F648}',
-      'test',
-    ];
-    for (const string of fixtures) {
-      for (let maxLength = string.length + 1; maxLength > 0; --maxLength) {
-        const trimmed = string.trimMiddle(maxLength);
-        assert.isTrue(trimmed.length <= maxLength);
-      }
-    }
   });
 });

@@ -31,6 +31,7 @@
 import * as Common from '../common/common.js';
 import * as Extensions from '../extensions/extensions.js';
 import * as Persistence from '../persistence/persistence.js';
+import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Snippets from '../snippets/snippets.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
@@ -323,7 +324,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper {
    */
   _titleForFile(uiSourceCode) {
     const maxDisplayNameLength = 30;
-    let title = uiSourceCode.displayName(true).trimMiddle(maxDisplayNameLength);
+    let title = Platform.StringUtilities.trimMiddle(uiSourceCode.displayName(true), maxDisplayNameLength);
     if (uiSourceCode.isDirty()) {
       title += '*';
     }

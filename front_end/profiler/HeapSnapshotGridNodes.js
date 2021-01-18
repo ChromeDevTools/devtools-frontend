@@ -711,7 +711,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
     const fullURL = fullName.substring(startPos + 1, endPos).trimLeft();
     let url = Platform.StringUtilities.trimURL(fullURL);
     if (url.length > 40) {
-      url = url.trimMiddle(40);
+      url = Platform.StringUtilities.trimMiddle(url, 40);
     }
     return fullName.substr(0, startPos + 2) + url + fullName.substr(endPos);
   }

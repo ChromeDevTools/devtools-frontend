@@ -116,7 +116,7 @@ export class ImagePreview {
       }
       if (imageURL !== originalImageURL) {
         container.createChild('tr').createChild('td').createChild('span', 'description').textContent =
-            Platform.StringUtilities.sprintf('currentSrc: %s', imageURL.trimMiddle(100));
+            Platform.StringUtilities.sprintf('currentSrc: %s', Platform.StringUtilities.trimMiddle(imageURL, 100));
       }
       fulfill(container);
     }

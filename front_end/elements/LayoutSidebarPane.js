@@ -157,12 +157,19 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
 
     const nodes = [];
     for (const domModel of this._domModels) {
-      const nodeIds = await domModel.getNodesByStyle(style, true /* pierce */);
-      for (const nodeId of nodeIds) {
-        const node = domModel.nodeForId(nodeId);
-        if (node !== null && (showUAShadowDOM || !node.ancestorUserAgentShadowRoot())) {
-          nodes.push(node);
+      try {
+        const nodeIds = await domModel.getNodesByStyle(style, true /* pierce */);
+        for (const nodeId of nodeIds) {
+          const node = domModel.nodeForId(nodeId);
+          if (node !== null && (showUAShadowDOM || !node.ancestorUserAgentShadowRoot())) {
+            nodes.push(node);
+          }
         }
+      } catch (error) {
+        // TODO(crbug.com/1167706): Sometimes in E2E tests the layout panel is updated after a DOM node
+        // has been removed. This causes an error that a node has not been found.
+        // We can skip nodes that resulted in an error.
+        console.warn(error);
       }
     }
 

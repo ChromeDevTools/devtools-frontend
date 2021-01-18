@@ -84,8 +84,14 @@ export class MainImpl {
     await Root.Runtime.appStarted;
     Root.Runtime.Runtime.setPlatform(Host.Platform.platform());
     Root.Runtime.Runtime.setL10nCallback(ls);
+    const prefs = await new Promise(resolve => {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.getPreferences(resolve);
+    });
+
+    console.timeStamp('Main._gotPreferences');
+    this._createSettings(prefs);
     await this.requestAndRegisterLocaleData();
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.getPreferences(this._gotPreferences.bind(this));
+    this._createAppUI();
   }
 
   async requestAndRegisterLocaleData() {
@@ -99,15 +105,6 @@ export class MainImpl {
         i18n.i18n.registerLocaleData(locale, localizedStrings);
       }
     }
-  }
-
-  /**
-   * @param {!Object<string, string>} prefs
-   */
-  _gotPreferences(prefs) {
-    console.timeStamp('Main._gotPreferences');
-    this._createSettings(prefs);
-    this._createAppUI();
   }
 
   /**

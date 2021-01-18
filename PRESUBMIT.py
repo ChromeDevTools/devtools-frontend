@@ -236,7 +236,7 @@ def _CheckDevToolsStyleCSS(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('CSS style check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                        'scripts', 'test',
-                                       'run_lint_check_css.py')
+                                       'run_lint_check_css.js')
 
     front_end_directory = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'front_end')
@@ -270,8 +270,9 @@ def _CheckDevToolsStyleCSS(input_api, output_api):
     if should_bail_out:
         return results
 
-    return _ExecuteSubProcess(input_api, output_api, lint_path, files_to_lint,
-                              results)
+    results.extend(
+        _checkWithNodeScript(input_api, output_api, lint_path, files_to_lint))
+    return results
 
 
 def _CheckOptimizeSVGHashes(input_api, output_api):

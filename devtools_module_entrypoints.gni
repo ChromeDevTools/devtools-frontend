@@ -74,6 +74,7 @@ devtools_module_entrypoint_sources = [
   "heap_snapshot_worker/heap_snapshot_worker-legacy.js",
   "heap_snapshot_worker/heap_snapshot_worker.js",
   "help/help-legacy.js",
+  "help/help-meta.js",
   "help/help.js",
   "host/host-legacy.js",
   "host/host.js",

@@ -1,15 +1,6 @@
 {
   "extensions": [
     {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "release-note",
-      "title": "What's New",
-      "persistence": "closeable",
-      "order": 1,
-      "className": "Help.ReleaseNoteView"
-    },
-    {
       "type": "setting",
       "category": "Appearance",
       "title": "Show What's New after each update",

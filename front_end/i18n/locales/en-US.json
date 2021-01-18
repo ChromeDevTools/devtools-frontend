@@ -398,6 +398,9 @@
   "event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Toggle whether event listener is passive or blocking"
   },
+  "help/help-meta.ts | whatsNew": {
+    "message": "What's New"
+  },
   "help/ModuleUIStrings.ts | appearance": {
     "message": "Appearance"
   },
@@ -418,9 +421,6 @@
   },
   "help/ModuleUIStrings.ts | showWhatsNewAfterEachUpdate": {
     "message": "Show What's New after each update"
-  },
-  "help/ModuleUIStrings.ts | whatsNew": {
-    "message": "What's New"
   },
   "help/ReleaseNoteView.ts | close": {
     "message": "Close"

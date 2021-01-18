@@ -7,10 +7,6 @@
 import * as i18n from '../i18n/i18n.js';
 export const UIStrings = {
   /**
-  *@description Title of the 'What's New' tool in the bottom drawer
-  */
-  whatsNew: 'What\'s New',
-  /**
   *@description Text for DevTools appearance
   */
   appearance: 'Appearance',

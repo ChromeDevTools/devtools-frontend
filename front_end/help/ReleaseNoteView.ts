@@ -27,6 +27,7 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('help/ReleaseNoteView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+let releaseNoteViewInstance: ReleaseNoteView;
 
 export class ReleaseNoteView extends UI.Widget.VBox {
   _releaseNoteElement: Element;
@@ -37,6 +38,14 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     const topSection = this.contentElement.createChild('div', 'release-note-top-section');
     topSection.textContent = i18nString(UIStrings.s, {PH1: latestReleaseNote().header});
     this.contentElement.appendChild(this._releaseNoteElement);
+  }
+
+  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ReleaseNoteView {
+    const {forceNew} = opts;
+    if (!releaseNoteViewInstance || forceNew) {
+      releaseNoteViewInstance = new ReleaseNoteView();
+    }
+    return releaseNoteViewInstance;
   }
 
   elementsToRestoreScrollPositionsFor(): Element[] {

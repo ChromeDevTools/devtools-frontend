@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
@@ -75,23 +77,50 @@ export const UIStrings = {
   */
   animationPreviewS: 'Animation Preview {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('animation/AnimationTimeline.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('animation/AnimationTimeline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @type {!WeakMap<!SDK.DOMModel.DOMNode, !NodeUI>} */
-const nodeUIsByNode = new WeakMap();
+const nodeUIsByNode = new WeakMap<SDK.DOMModel.DOMNode, NodeUI>();
 
-/** @type {!WeakMap<!HTMLElement, number>} */
-const playbackRates = new WeakMap();
+const playbackRates = new WeakMap<HTMLElement, number>();
 
-/** @type {!AnimationTimeline} */
-let animationTimelineInstance;
+let animationTimelineInstance: AnimationTimeline;
 
-/**
- * @implements {SDK.SDKModel.SDKModelObserver<!AnimationModel>}
- */
-export class AnimationTimeline extends UI.Widget.VBox {
-  /** @private */
-  constructor() {
+export class AnimationTimeline extends UI.Widget.VBox implements SDK.SDKModel.SDKModelObserver<AnimationModel> {
+  _gridWrapper: HTMLElement;
+  _grid: Element;
+  _playbackRate: number;
+  _allPaused: boolean;
+  _animationsContainer: HTMLElement;
+  _playbackRateButtons!: HTMLElement[];
+  _previewContainer!: HTMLElement;
+  _timelineScrubber!: HTMLElement;
+  _currentTime!: HTMLElement;
+  _popoverHelper!: UI.PopoverHelper.PopoverHelper;
+  _clearButton!: UI.Toolbar.ToolbarButton;
+  _selectedGroup!: AnimationGroup|null;
+  _renderQueue!: AnimationUI[];
+  _defaultDuration: number;
+  _duration: number;
+  _timelineControlsWidth: number;
+  _nodesMap: Map<number, NodeUI>;
+  _uiAnimations: AnimationUI[];
+  _groupBuffer: AnimationGroup[];
+  _previewMap: Map<AnimationGroup, AnimationGroupPreviewUI>;
+  _symbol: symbol;
+  _animationsMap: Map<string, AnimationImpl>;
+  _timelineScrubberLine?: HTMLElement;
+  _pauseButton?: UI.Toolbar.ToolbarToggle;
+  _controlButton?: UI.Toolbar.ToolbarToggle;
+  _controlState?: _ControlState;
+  _redrawing?: boolean;
+  _cachedTimelineWidth?: number;
+  _cachedTimelineHeight?: number;
+  _scrubberPlayer?: Animation;
+  _gridOffsetLeft?: number;
+  _originalScrubberTime?: number|null;
+  _originalMousePosition?: number;
+
+  private constructor() {
     super(true);
     this.registerRequiredCSS('animation/animationTimeline.css', {enableLegacyPatching: false});
     this.element.classList.add('animations-timeline');
@@ -106,36 +135,14 @@ export class AnimationTimeline extends UI.Widget.VBox {
     const timelineHint = this.contentElement.createChild('div', 'animation-timeline-rows-hint');
     timelineHint.textContent = i18nString(UIStrings.selectAnEffectAboveToInspectAnd);
 
-    /** @type {!Array<!HTMLElement>} */
-    this._playbackRateButtons;
-    /** @type {!HTMLElement} */
-    this._previewContainer;
-    /** @type {!HTMLElement} */
-    this._timelineScrubber;
-    /** @type {!HTMLElement} */
-    this._currentTime;
-    /** @type {!UI.PopoverHelper.PopoverHelper} */
-    this._popoverHelper;
-    /** @type {!UI.Toolbar.ToolbarButton} */
-    this._clearButton;
-    /** @type {?AnimationGroup} */
-    this._selectedGroup;
-    /** @type {!Array<!AnimationUI>} */
-    this._renderQueue;
-
     /** @const */ this._defaultDuration = 100;
     this._duration = this._defaultDuration;
     /** @const */ this._timelineControlsWidth = 150;
-    /** @type {!Map.<!Protocol.DOM.BackendNodeId, !NodeUI>} */
     this._nodesMap = new Map();
-    /** @type {!Array<!AnimationUI>} */
     this._uiAnimations = [];
-    /** @type {!Array<!AnimationGroup>} */
     this._groupBuffer = [];
-    /** @type {!Map.<!AnimationGroup, !AnimationGroupPreviewUI>} */
     this._previewMap = new Map();
     this._symbol = Symbol('animationTimeline');
-    /** @type {!Map.<string, !AnimationImpl>} */
     this._animationsMap = new Map();
     SDK.SDKModel.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
@@ -143,26 +150,20 @@ export class AnimationTimeline extends UI.Widget.VBox {
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this._nodeChanged, this);
   }
 
-  static instance() {
+  static instance(): AnimationTimeline {
     if (!animationTimelineInstance) {
       animationTimelineInstance = new AnimationTimeline();
     }
     return animationTimelineInstance;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     for (const animationModel of SDK.SDKModel.TargetManager.instance().models(AnimationModel)) {
       this._addEventListeners(animationModel);
     }
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     for (const animationModel of SDK.SDKModel.TargetManager.instance().models(AnimationModel)) {
       this._removeEventListeners(animationModel);
     }
@@ -172,52 +173,35 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @override
-   * @param {!AnimationModel} animationModel
-   */
-  modelAdded(animationModel) {
+  modelAdded(animationModel: AnimationModel): void {
     if (this.isShowing()) {
       this._addEventListeners(animationModel);
     }
   }
 
-  /**
-   * @override
-   * @param {!AnimationModel} animationModel
-   */
-  modelRemoved(animationModel) {
+  modelRemoved(animationModel: AnimationModel): void {
     this._removeEventListeners(animationModel);
   }
 
-  /**
-   * @param {!AnimationModel} animationModel
-   */
-  _addEventListeners(animationModel) {
+  _addEventListeners(animationModel: AnimationModel): void {
     animationModel.ensureEnabled();
     animationModel.addEventListener(Events.AnimationGroupStarted, this._animationGroupStarted, this);
     animationModel.addEventListener(Events.ModelReset, this._reset, this);
   }
 
-  /**
-   * @param {!AnimationModel} animationModel
-   */
-  _removeEventListeners(animationModel) {
+  _removeEventListeners(animationModel: AnimationModel): void {
     animationModel.removeEventListener(Events.AnimationGroupStarted, this._animationGroupStarted, this);
     animationModel.removeEventListener(Events.ModelReset, this._reset, this);
   }
 
-  _nodeChanged() {
+  _nodeChanged(): void {
     for (const nodeUI of this._nodesMap.values()) {
       nodeUI._nodeChanged();
     }
   }
 
-  /**
-   * @return {!HTMLElement} element
-   */
-  _createScrubber() {
-    this._timelineScrubber = /** @type {!HTMLElement} */ (document.createElement('div'));
+  _createScrubber(): HTMLElement {
+    this._timelineScrubber = document.createElement('div');
     this._timelineScrubber.classList.add('animation-scrubber');
     this._timelineScrubber.classList.add('hidden');
     this._timelineScrubberLine = this._timelineScrubber.createChild('div', 'animation-scrubber-line');
@@ -226,7 +210,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     return this._timelineScrubber;
   }
 
-  _createHeader() {
+  _createHeader(): HTMLElement {
     const toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
     const topToolbar = new UI.Toolbar.Toolbar('animation-timeline-toolbar', toolbarContainer);
     this._clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
@@ -247,8 +231,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     /** @type {!Array<!HTMLElement>} */
     this._playbackRateButtons = [];
     for (const playbackRate of GlobalPlaybackRates) {
-      const button =
-          /** @type {!HTMLElement} */ (playbackRateControl.createChild('button', 'animation-playback-rate-button'));
+      const button = (playbackRateControl.createChild('button', 'animation-playback-rate-button') as HTMLElement);
       button.textContent = playbackRate ? i18nString(UIStrings.playbackRatePlaceholder, {PH1: playbackRate * 100}) :
                                           i18nString(UIStrings.pause);
       playbackRates.set(button, playbackRate);
@@ -259,9 +242,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
       this._playbackRateButtons.push(button);
     }
     this._updatePlaybackControls();
-
-    this._previewContainer =
-        /** @type {!HTMLElement} */ (this.contentElement.createChild('div', 'animation-timeline-buffer'));
+    this._previewContainer = (this.contentElement.createChild('div', 'animation-timeline-buffer') as HTMLElement);
     UI.ARIAUtils.markAsListBox(this._previewContainer);
     UI.ARIAUtils.setAccessibleName(this._previewContainer, i18nString(UIStrings.animationPreviews));
     this._popoverHelper =
@@ -272,8 +253,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     emptyBufferHint.textContent = i18nString(UIStrings.listeningForAnimations);
     const container = this.contentElement.createChild('div', 'animation-timeline-header');
     const controls = container.createChild('div', 'animation-controls');
-    this._currentTime =
-        /** @type {!HTMLElement} */ (controls.createChild('div', 'animation-timeline-current-time monospace'));
+    this._currentTime = (controls.createChild('div', 'animation-timeline-current-time monospace') as HTMLElement);
 
     const toolbar = new UI.Toolbar.Toolbar('animation-controls-toolbar', controls);
     this._controlButton =
@@ -299,11 +279,8 @@ export class AnimationTimeline extends UI.Widget.VBox {
     return container;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _handlePlaybackRateControlKeyDown(event) {
-    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+  _handlePlaybackRateControlKeyDown(event: Event): void {
+    const keyboardEvent = (event as KeyboardEvent);
     switch (keyboardEvent.key) {
       case 'ArrowLeft':
       case 'ArrowUp':
@@ -316,12 +293,8 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!EventTarget|null} target
-   * @param {boolean=} focusPrevious
-   */
-  _focusNextPlaybackRateButton(target, focusPrevious) {
-    const button = /** @type {!HTMLElement} */ (target);
+  _focusNextPlaybackRateButton(target: EventTarget|null, focusPrevious?: boolean): void {
+    const button = (target as HTMLElement);
     const currentIndex = this._playbackRateButtons.indexOf(button);
     const nextIndex = focusPrevious ? currentIndex - 1 : currentIndex + 1;
     if (nextIndex < 0 || nextIndex >= this._playbackRateButtons.length) {
@@ -331,23 +304,19 @@ export class AnimationTimeline extends UI.Widget.VBox {
     nextButton.tabIndex = 0;
     nextButton.focus();
     if (target) {
-      /** @type {!HTMLElement} */ (target).tabIndex = -1;
+      (target as HTMLElement).tabIndex = -1;
     }
   }
 
-  /**
-   * @param {!Event} event
-   * @return {?UI.PopoverHelper.PopoverRequest}
-   */
-  _getPopoverRequest(event) {
-    const element = /** @type {!HTMLElement} */ (event.target);
+  _getPopoverRequest(event: Event): UI.PopoverHelper.PopoverRequest|null {
+    const element = (event.target as HTMLElement);
     if (!element || !element.isDescendant(this._previewContainer)) {
       return null;
     }
 
     return {
       box: element.boxInWindow(),
-      show: popover => {
+      show: (popover: UI.GlassPane.GlassPane): Promise<boolean> => {
         let animGroup;
         for (const [group, previewUI] of this._previewMap) {
           if (previewUI.element === element.parentElement) {
@@ -363,9 +332,8 @@ export class AnimationTimeline extends UI.Widget.VBox {
           return Promise.resolve(false);
         }
 
-        /** @type {function(*):void} */
-        let fulfill;
-        const promise = new Promise(x => {
+        let fulfill: (arg0: boolean) => void;
+        const promise = new Promise<boolean>(x => {
           fulfill = x;
         });
         if (!screenshots[0].complete) {
@@ -375,19 +343,16 @@ export class AnimationTimeline extends UI.Widget.VBox {
         }
         return promise;
 
-        /**
-         * @param  {!Array.<!HTMLImageElement>} screenshots
-         */
-        function onFirstScreenshotLoaded(screenshots) {
+        function onFirstScreenshotLoaded(screenshots: HTMLImageElement[]): void {
           new AnimationScreenshotPopover(screenshots).show(popover.contentElement);
           fulfill(true);
         }
       },
-      hide: undefined
+      hide: undefined,
     };
   }
 
-  _togglePauseAll() {
+  _togglePauseAll(): void {
     this._allPaused = !this._allPaused;
     if (this._pauseButton) {
       this._pauseButton.setToggled(this._allPaused);
@@ -398,10 +363,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {number} playbackRate
-   */
-  _setPlaybackRate(playbackRate) {
+  _setPlaybackRate(playbackRate: number): void {
     this._playbackRate = playbackRate;
     for (const animationModel of SDK.SDKModel.TargetManager.instance().models(AnimationModel)) {
       animationModel.setPlaybackRate(this._allPaused ? 0 : this._playbackRate);
@@ -414,7 +376,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._updatePlaybackControls();
   }
 
-  _updatePlaybackControls() {
+  _updatePlaybackControls(): void {
     for (const button of this._playbackRateButtons) {
       const selected = this._playbackRate === playbackRates.get(button);
       button.classList.toggle('selected', selected);
@@ -422,7 +384,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  _controlButtonToggle() {
+  _controlButtonToggle(): void {
     if (this._controlState === _ControlState.Play) {
       this._togglePause(false);
     } else if (this._controlState === _ControlState.Replay) {
@@ -432,7 +394,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  _updateControlButton() {
+  _updateControlButton(): void {
     if (!this._controlButton) {
       return;
     }
@@ -458,17 +420,11 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @return {number}
-   */
-  _effectivePlaybackRate() {
+  _effectivePlaybackRate(): number {
     return (this._allPaused || (this._selectedGroup && this._selectedGroup.paused())) ? 0 : this._playbackRate;
   }
 
-  /**
-   * @param {boolean} pause
-   */
-  _togglePause(pause) {
+  _togglePause(pause: boolean): void {
     if (this._scrubberPlayer) {
       this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
     }
@@ -482,7 +438,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._updateControlButton();
   }
 
-  _replay() {
+  _replay(): void {
     if (!this._selectedGroup) {
       return;
     }
@@ -491,22 +447,16 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._updateControlButton();
   }
 
-  /**
-   * @return {number}
-   */
-  duration() {
+  duration(): number {
     return this._duration;
   }
 
-  /**
-   * @param {number} duration
-   */
-  setDuration(duration) {
+  setDuration(duration: number): void {
     this._duration = duration;
     this.scheduleRedraw();
   }
 
-  _clearTimeline() {
+  _clearTimeline(): void {
     this._uiAnimations = [];
     this._nodesMap.clear();
     this._animationsMap.clear();
@@ -522,7 +472,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._updateControlButton();
   }
 
-  _reset() {
+  _reset(): void {
     this._clearTimeline();
     if (this._allPaused) {
       this._togglePauseAll();
@@ -540,22 +490,12 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._renderGrid();
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _animationGroupStarted(event) {
-    this._addAnimationGroup(/** @type {!AnimationGroup} */ (event.data));
+  _animationGroupStarted(event: Common.EventTarget.EventTargetEvent): void {
+    this._addAnimationGroup((event.data as AnimationGroup));
   }
 
-  /**
-   * @param {!AnimationGroup} group
-   */
-  _addAnimationGroup(group) {
-    /**
-     * @param {!AnimationGroup} left
-     * @param {!AnimationGroup} right
-     */
-    function startTimeComparator(left, right) {
+  _addAnimationGroup(group: AnimationGroup): void {
+    function startTimeComparator(left: AnimationGroup, right: AnimationGroup): 0|1|- 1 {
       if (left.startTime() === right.startTime()) {
         return 0;
       }
@@ -608,11 +548,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!AnimationGroup} group
-   * @param {!KeyboardEvent} event
-   */
-  _handleAnimationGroupKeyDown(group, event) {
+  _handleAnimationGroupKeyDown(group: AnimationGroup, event: KeyboardEvent): void {
     switch (event.key) {
       case ' ':
       case 'Enter':
@@ -632,12 +568,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!AnimationGroup} group
-   * @param {!EventTarget|null} target
-   * @param {boolean=} focusPrevious
-   */
-  _focusNextGroup(group, target, focusPrevious) {
+  _focusNextGroup(group: AnimationGroup, target: EventTarget|null, focusPrevious?: boolean): void {
     const currentGroupIndex = this._groupBuffer.indexOf(group);
     const nextIndex = focusPrevious ? currentGroupIndex - 1 : currentGroupIndex + 1;
     if (nextIndex < 0 || nextIndex >= this._groupBuffer.length) {
@@ -650,15 +581,11 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
 
     if (target) {
-      /** @type {!HTMLElement} */ (target).tabIndex = -1;
+      (target as HTMLElement).tabIndex = -1;
     }
   }
 
-  /**
-   * @param {!AnimationGroup} group
-   * @param {!Event} event
-   */
-  _removeAnimationGroup(group, event) {
+  _removeAnimationGroup(group: AnimationGroup, event: Event): void {
     const currentGroupIndex = this._groupBuffer.indexOf(group);
 
     Platform.ArrayUtilities.removeElement(this._groupBuffer, group);
@@ -677,7 +604,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
 
     const groupLength = this._groupBuffer.length;
     if (groupLength === 0) {
-      /** @type {!HTMLElement} */ (this._clearButton.element).focus();
+      (this._clearButton.element as HTMLElement).focus();
       return;
     }
     const nextGroup = currentGroupIndex >= this._groupBuffer.length ?
@@ -690,16 +617,8 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!AnimationGroup} group
-   */
-  _selectAnimationGroup(group) {
-    /**
-     * @param {!AnimationGroupPreviewUI} ui
-     * @param {!AnimationGroup} group
-     * @this {!AnimationTimeline}
-     */
-    function applySelectionClass(ui, group) {
+  _selectAnimationGroup(group: AnimationGroup): void {
+    function applySelectionClass(this: AnimationTimeline, ui: AnimationGroupPreviewUI, group: AnimationGroup): void {
       ui.element.classList.toggle('selected', this._selectedGroup === group);
     }
 
@@ -721,15 +640,8 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._replay();
   }
 
-  /**
-   * @param {!AnimationImpl} animation
-   */
-  _addAnimation(animation) {
-    /**
-     * @param {?SDK.DOMModel.DOMNode} node
-     * @this {AnimationTimeline}
-     */
-    function nodeResolved(node) {
+  _addAnimation(animation: AnimationImpl): void {
+    function nodeResolved(this: AnimationTimeline, node: SDK.DOMModel.DOMNode|null): void {
       uiAnimation.setNode(node);
       if (node && nodeUI) {
         nodeUI.nodeResolved(node);
@@ -750,10 +662,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._animationsMap.set(animation.id(), animation);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _nodeRemoved(event) {
+  _nodeRemoved(event: Common.EventTarget.EventTargetEvent): void {
     const node = event.data.node;
     const nodeUI = nodeUIsByNode.get(node);
     if (nodeUI) {
@@ -761,7 +670,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  _renderGrid() {
+  _renderGrid(): void {
     /** @const */ const gridSize = 250;
     const gridWidth = (this.width() + 10).toString();
     const gridHeight = ((this._cachedTimelineHeight || 0) + 30).toString();
@@ -772,7 +681,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._grid.setAttribute('height', gridHeight.toString());
     this._grid.setAttribute('shape-rendering', 'crispEdges');
     this._grid.removeChildren();
-    let lastDraw = undefined;
+    let lastDraw: number|undefined = undefined;
     for (let time = 0; time < this.duration(); time += gridSize) {
       const line = UI.UIUtils.createSVGChild(this._grid, 'rect', 'animation-timeline-grid-line');
       line.setAttribute('x', (time * this.pixelMsRatio() + 10).toString());
@@ -792,8 +701,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  scheduleRedraw() {
-    /** @type {!Array<!AnimationUI>} */
+  scheduleRedraw(): void {
     this._renderQueue = [];
     for (const ui of this._uiAnimations) {
       this._renderQueue.push(ui);
@@ -806,10 +714,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._animationsContainer.window().requestAnimationFrame(this._render.bind(this));
   }
 
-  /**
-   * @param {number=} timestamp
-   */
-  _render(timestamp) {
+  _render(timestamp?: number): void {
     while (this._renderQueue.length && (!timestamp || window.performance.now() - timestamp < 50)) {
       const animationUI = this._renderQueue.shift();
       if (animationUI) {
@@ -823,10 +728,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @override
-   */
-  onResize() {
+  onResize(): void {
     this._cachedTimelineWidth = Math.max(0, this._animationsContainer.offsetWidth - this._timelineControlsWidth) || 0;
     this._cachedTimelineHeight = this._animationsContainer.offsetHeight;
     this.scheduleRedraw();
@@ -836,18 +738,11 @@ export class AnimationTimeline extends UI.Widget.VBox {
     delete this._gridOffsetLeft;
   }
 
-  /**
-   * @return {number}
-   */
-  width() {
+  width(): number {
     return this._cachedTimelineWidth || 0;
   }
 
-  /**
-   * @param {!AnimationImpl} animation
-   * @return {boolean}
-   */
-  _resizeWindow(animation) {
+  _resizeWindow(animation: AnimationImpl): boolean {
     let resized = false;
 
     // This shows at most 3 iterations
@@ -860,7 +755,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     return resized;
   }
 
-  _syncScrubber() {
+  _syncScrubber(): void {
     if (!this._selectedGroup) {
       return;
     }
@@ -869,10 +764,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
         .then(this._updateControlButton.bind(this));
   }
 
-  /**
-   * @param {number} currentTime
-   */
-  _animateTime(currentTime) {
+  _animateTime(currentTime: number): void {
     if (this._scrubberPlayer) {
       this._scrubberPlayer.cancel();
     }
@@ -886,17 +778,11 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this.element.window().requestAnimationFrame(this._updateScrubber.bind(this));
   }
 
-  /**
-   * @return {number}
-   */
-  pixelMsRatio() {
+  pixelMsRatio(): number {
     return this.width() / this.duration() || 0;
   }
 
-  /**
-   * @param {number} timestamp
-   */
-  _updateScrubber(timestamp) {
+  _updateScrubber(_timestamp: number): void {
     if (!this._scrubberPlayer) {
       return;
     }
@@ -908,11 +794,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Event} event
-   * @return {boolean}
-   */
-  _repositionScrubber(event) {
+  _repositionScrubber(event: Event): boolean {
     if (!this._selectedGroup) {
       return false;
     }
@@ -921,7 +803,8 @@ export class AnimationTimeline extends UI.Widget.VBox {
     if (!this._gridOffsetLeft) {
       this._gridOffsetLeft = this._grid.totalOffsetLeft() + 10;
     }
-    const {x} = /** @type {*} */ (event);
+
+    const {x} = (event as any);  // eslint-disable-line @typescript-eslint/no-explicit-any
     const seekTime = Math.max(0, x - this._gridOffsetLeft) / this.pixelMsRatio();
     this._selectedGroup.seekTo(seekTime);
     this._togglePause(true);
@@ -933,11 +816,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     return true;
   }
 
-  /**
-   * @param {!Event} event
-   * @return {boolean}
-   */
-  _scrubberDragStart(event) {
+  _scrubberDragStart(event: Event): boolean {
     if (!this._scrubberPlayer || !this._selectedGroup) {
       return false;
     }
@@ -945,19 +824,17 @@ export class AnimationTimeline extends UI.Widget.VBox {
     this._originalScrubberTime = this._scrubberPlayer.currentTime;
     this._timelineScrubber.classList.remove('animation-timeline-end');
     this._scrubberPlayer.pause();
-    const {x} = /** @type {*} */ (event);
+
+    const {x} = (event as any);  // eslint-disable-line @typescript-eslint/no-explicit-any
     this._originalMousePosition = x;
 
     this._togglePause(true);
     return true;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _scrubberDragMove(event) {
-    const {x} = /** @type {*} */ (event);
-    const delta = x - this._originalMousePosition;
+  _scrubberDragMove(event: Event): void {
+    const {x} = (event as any);  // eslint-disable-line @typescript-eslint/no-explicit-any
+    const delta = x - (this._originalMousePosition || 0);
     const currentTime =
         Math.max(0, Math.min((this._originalScrubberTime || 0) + delta / this.pixelMsRatio(), this.duration()));
     if (this._scrubberPlayer) {
@@ -970,10 +847,7 @@ export class AnimationTimeline extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _scrubberDragEnd(event) {
+  _scrubberDragEnd(_event: Event): void {
     if (this._scrubberPlayer) {
       const currentTime = Math.max(0, this._scrubberPlayer.currentTime || 0);
       this._scrubberPlayer.play();
@@ -985,18 +859,19 @@ export class AnimationTimeline extends UI.Widget.VBox {
 
 export const GlobalPlaybackRates = [1, 0.25, 0.1];
 
-/** @enum {string} */
-export const _ControlState = {
-  Play: 'play-outline',
-  Replay: 'replay-outline',
-  Pause: 'pause-outline'
-};
+export const enum _ControlState {
+  Play = 'play-outline',
+  Replay = 'replay-outline',
+  Pause = 'pause-outline'
+}
 
 export class NodeUI {
-  /**
-   * @param {!AnimationEffect} animationEffect
-   */
-  constructor(animationEffect) {
+  element: HTMLDivElement;
+  _description: HTMLElement;
+  _timelineElement: HTMLElement;
+  _node?: SDK.DOMModel.DOMNode|null;
+
+  constructor(_animationEffect: AnimationEffect) {
     this.element = document.createElement('div');
     this.element.classList.add('animation-node-row');
     this._description = this.element.createChild('div', 'animation-node-description');
@@ -1005,10 +880,7 @@ export class NodeUI {
     UI.ARIAUtils.markAsApplication(this._timelineElement);
   }
 
-  /**
-   * @param {?SDK.DOMModel.DOMNode} node
-   */
-  nodeResolved(node) {
+  nodeResolved(node: SDK.DOMModel.DOMNode|null): void {
     if (!node) {
       UI.UIUtils.createTextChild(this._description, '<node>');
       return;
@@ -1021,19 +893,16 @@ export class NodeUI {
     }
   }
 
-  /**
-   * @return {!Element}
-   */
-  createNewRow() {
+  createNewRow(): Element {
     return this._timelineElement.createChild('div', 'animation-timeline-row');
   }
 
-  nodeRemoved() {
+  nodeRemoved(): void {
     this.element.classList.add('animation-node-removed');
     this._node = null;
   }
 
-  _nodeChanged() {
+  _nodeChanged(): void {
     let animationNodeSelected = false;
     if (this._node) {
       animationNodeSelected = (this._node === UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
@@ -1044,20 +913,14 @@ export class NodeUI {
 }
 
 export class StepTimingFunction {
-  /**
-   * @param {number} steps
-   * @param {string} stepAtPosition
-   */
-  constructor(steps, stepAtPosition) {
+  steps: number;
+  stepAtPosition: string;
+  constructor(steps: number, stepAtPosition: string) {
     this.steps = steps;
     this.stepAtPosition = stepAtPosition;
   }
 
-  /**
-   * @param {string} text
-   * @return {?StepTimingFunction}
-   */
-  static parse(text) {
+  static parse(text: string): StepTimingFunction|null {
     let match = text.match(/^steps\((\d+), (start|middle)\)$/);
     if (match) {
       return new StepTimingFunction(parseInt(match[1], 10), match[2]);

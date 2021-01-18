@@ -2,13 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as UI from '../ui/ui.js';
 
 export class AnimationScreenshotPopover extends UI.Widget.VBox {
-  /**
-   * @param {!Array.<!HTMLImageElement>} images
-   */
-  constructor(images) {
+  _frames: HTMLImageElement[];
+  _rafId: number;
+  _currentFrame: number;
+  _progressBar: HTMLElement;
+  _showFrame?: boolean;
+  _endDelay?: number;
+  constructor(images: HTMLImageElement[]) {
     super(true);
     console.assert(images.length > 0);
     this.registerRequiredCSS('animation/animationScreenshotPopover.css', {enableLegacyPatching: false});
@@ -24,22 +29,16 @@ export class AnimationScreenshotPopover extends UI.Widget.VBox {
     this._progressBar = this.contentElement.createChild('div', 'animation-progress');
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._rafId = this.contentElement.window().requestAnimationFrame(this._changeFrame.bind(this));
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     this.contentElement.window().cancelAnimationFrame(this._rafId);
     delete this._endDelay;
   }
 
-  _changeFrame() {
+  _changeFrame(): void {
     this._rafId = this.contentElement.window().requestAnimationFrame(this._changeFrame.bind(this));
 
     if (this._endDelay) {

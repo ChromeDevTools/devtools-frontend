@@ -1,53 +1,53 @@
 {
-  "animation/AnimationTimeline.js | animationPreviews": {
+  "animation/AnimationTimeline.ts | animationPreviews": {
     "message": "Animation previews"
   },
-  "animation/AnimationTimeline.js | animationPreviewS": {
+  "animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "Animation Preview {PH1}"
   },
-  "animation/AnimationTimeline.js | clearAll": {
+  "animation/AnimationTimeline.ts | clearAll": {
     "message": "Clear all"
   },
-  "animation/AnimationTimeline.js | listeningForAnimations": {
+  "animation/AnimationTimeline.ts | listeningForAnimations": {
     "message": "Listening for animations..."
   },
-  "animation/AnimationTimeline.js | pause": {
+  "animation/AnimationTimeline.ts | pause": {
     "message": "Pause"
   },
-  "animation/AnimationTimeline.js | pauseAll": {
+  "animation/AnimationTimeline.ts | pauseAll": {
     "message": "Pause all"
   },
-  "animation/AnimationTimeline.js | pauseTimeline": {
+  "animation/AnimationTimeline.ts | pauseTimeline": {
     "message": "Pause timeline"
   },
-  "animation/AnimationTimeline.js | playbackRatePlaceholder": {
+  "animation/AnimationTimeline.ts | playbackRatePlaceholder": {
     "message": "{PH1}%"
   },
-  "animation/AnimationTimeline.js | playbackRates": {
+  "animation/AnimationTimeline.ts | playbackRates": {
     "message": "Playback rates"
   },
-  "animation/AnimationTimeline.js | playTimeline": {
+  "animation/AnimationTimeline.ts | playTimeline": {
     "message": "Play timeline"
   },
-  "animation/AnimationTimeline.js | replayTimeline": {
+  "animation/AnimationTimeline.ts | replayTimeline": {
     "message": "Replay timeline"
   },
-  "animation/AnimationTimeline.js | resumeAll": {
+  "animation/AnimationTimeline.ts | resumeAll": {
     "message": "Resume all"
   },
-  "animation/AnimationTimeline.js | selectAnEffectAboveToInspectAnd": {
+  "animation/AnimationTimeline.ts | selectAnEffectAboveToInspectAnd": {
     "message": "Select an effect above to inspect and modify."
   },
-  "animation/AnimationTimeline.js | setSpeedToS": {
+  "animation/AnimationTimeline.ts | setSpeedToS": {
     "message": "Set speed to {PH1}"
   },
-  "animation/AnimationUI.js | animationEndpointSlider": {
+  "animation/AnimationUI.ts | animationEndpointSlider": {
     "message": "Animation Endpoint slider"
   },
-  "animation/AnimationUI.js | animationKeyframeSlider": {
+  "animation/AnimationUI.ts | animationKeyframeSlider": {
     "message": "Animation Keyframe slider"
   },
-  "animation/AnimationUI.js | sSlider": {
+  "animation/AnimationUI.ts | sSlider": {
     "message": "{PH1} slider"
   },
   "changes/ChangesSidebar.ts | sFromSourceMap": {

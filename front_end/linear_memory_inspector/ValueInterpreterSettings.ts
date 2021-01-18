@@ -56,7 +56,7 @@ export class ValueInterpreterSettings extends HTMLElement {
         .settings {
           display: flex;
           flex-wrap: wrap;
-          margin: 0px 12px 12px 12px;
+          margin: 0 12px 12px 12px;
           column-gap: 45px;
           row-gap: 15px;
         }
@@ -66,7 +66,7 @@ export class ValueInterpreterSettings extends HTMLElement {
           flex-direction: column;
         }
 
-        .value-types-selection + value-types-selection {
+        .value-types-selection + .value-types-selection {
           margin-left: 45px;
         }
 

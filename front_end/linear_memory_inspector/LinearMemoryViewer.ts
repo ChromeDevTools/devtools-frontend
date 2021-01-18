@@ -196,7 +196,7 @@ export class LinearMemoryViewer extends HTMLElement {
 
         .byte-cell {
           min-width: 21px;
-          color: var(--color-text-primary)
+          color: var(--color-text-primary);
         }
 
         .byte-group-margin {
@@ -221,7 +221,7 @@ export class LinearMemoryViewer extends HTMLElement {
           width: 1px;
           height: inherit;
           background-color: var(--divider-color);
-          margin: 0px 4px 0px 4px;
+          margin: 0 4px 0 4px;
         }
       </style>
       <div class="view" tabindex="0" @keydown=${this.onKeyDown}>

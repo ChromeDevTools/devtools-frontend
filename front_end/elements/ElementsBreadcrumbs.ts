@@ -240,6 +240,13 @@ export class ElementsBreadcrumbs extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <style>
+        :host {
+          --node-text-label-color: var(--color-syntax-2);
+          --node-text-class-color: var(--color-syntax-4);
+          --node-text-id-color: var(--color-syntax-4);
+          --node-text-multiple-descriptors-id: var(--color-syntax-7);
+        }
+
         .crumbs {
           display: inline-flex;
           align-items: stretch;
@@ -249,6 +256,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
           cursor: default;
           white-space: nowrap;
           position: relative;
+          background: var(--color-background);
         }
 
         .crumbs-window {
@@ -277,13 +285,25 @@ export class ElementsBreadcrumbs extends HTMLElement {
           flex-grow: 0;
           flex-shrink: 0;
           text-align: center;
+          background-color: var(--color-background-elevation-1);
+          color: var(--color-text-secondary);
         }
 
         .overflow.hidden {
           display: none;
         }
 
+        .overflow:disabled {
+          opacity: 50%;
+        }
+
+        .overflow:focus {
+          outline: var(--color-primary) auto 1px;
+        }
+
         .overflow:not(:disabled):hover {
+          background-color: var(--color-background-elevation-2);
+          color: var(--color-text-primary);
           cursor: pointer;
         }
 
@@ -292,40 +312,16 @@ export class ElementsBreadcrumbs extends HTMLElement {
           color: inherit;
         }
 
-        .crumbs {
-          background: var(--color-background);
-        }
         .crumb:hover {
           background: var(--color-background-elevation-2);
         }
+
         .crumb.selected {
           background: var(--color-background-elevation-1);
         }
+
         .crumb:focus {
-         outline: var(--color-primary) auto 1px;
-        }
-        .overflow {
-          background-color: var(--color-background-elevation-1);
-          color: var(--color-text-secondary)
-        }
-        .overflow:disabled {
-          opacity: 0.5;
-        }
-        .overflow:not(:disabled):hover {
-          background-color: var(--color-background-elevation-2);
-          color: var(--color-text-primary);
-          cursor: pointer;
-        }
-
-        .overflow:focus {
-         outline: var(--color-primary) auto 1px;
-        }
-
-        :host {
-          --node-text-label-color: var(--color-syntax-2);
-          --node-text-class-color: var(--color-syntax-4);
-          --node-text-id-color: var(--color-syntax-4);
-          --node-text-multiple-descriptors-id: var(--color-syntax-7);
+          outline: var(--color-primary) auto 1px;
         }
       </style>
 

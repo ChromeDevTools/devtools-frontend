@@ -141,10 +141,6 @@ export class AccessibilityNode extends HTMLElement {
             margin-left: 16px;
           }
 
-          :host(.parent.expanded)::before {
-            -webkit-mask-position: -16px 0;
-          }
-
           :host(.parent)::before {
             box-sizing: border-box;
             user-select: none;
@@ -157,6 +153,11 @@ export class AccessibilityNode extends HTMLElement {
             -webkit-mask-position: 0 0;
             background-color: var(--color-syntax-7);
           }
+
+          :host(.parent.expanded)::before {
+            -webkit-mask-position: -16px 0;
+          }
+
       </style>
       ${parts}
       `;

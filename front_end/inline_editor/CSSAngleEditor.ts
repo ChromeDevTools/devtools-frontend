@@ -108,7 +108,11 @@ export class CSSAngleEditor extends HTMLElement {
     // clang-format off
     render(html`
       <style>
-        .clock, .pointer, .center, .hand, .dial {
+        .clock,
+        .pointer,
+        .center,
+        .hand,
+        .dial {
           position: absolute;
         }
 
@@ -119,12 +123,13 @@ export class CSSAngleEditor extends HTMLElement {
           background-color: var(--color-background);
           border: 0.5em solid var(--border-color);
           border-radius: 9em;
-          box-shadow: var(--drop-shadow), inset 0 0 15px hsl(0 0% 0% / 25%);
+          box-shadow: var(--drop-shadow), inset 0 0 15px hsl(0deg 0% 0% / 25%);
           transform: translateX(-3em);
         }
 
-        :host-context(.-theme-with-dark-background) .clock {
-          background-color: hsl(225 5% 27%);
+        .center,
+        .hand {
+          box-shadow: 0 0 2px hsl(0deg 0% 0% / 20%);
         }
 
         .pointer {
@@ -139,21 +144,14 @@ export class CSSAngleEditor extends HTMLElement {
           border-color: transparent transparent var(--border-color) transparent;
         }
 
-        .center, .hand, .dial {
+        .center,
+        .hand,
+        .dial {
           margin: auto;
           top: 0;
           left: 0;
           right: 0;
           bottom: 0;
-        }
-
-        .center, .hand {
-          box-shadow: 0 0 2px hsl(0 0% 0% / 20%);
-        }
-
-        :host-context(.-theme-with-dark-background) .center,
-        :host-context(.-theme-with-dark-background) .hand {
-          box-shadow: 0 0 2px hsl(0 0% 0% / 60%);
         }
 
         .center {
@@ -185,16 +183,25 @@ export class CSSAngleEditor extends HTMLElement {
           height: 1em;
           border-radius: 1em;
           cursor: pointer;
-          box-shadow: 0 0 5px hsl(0 0% 0% / 30%);
-        }
-
-        :host-context(.-theme-with-dark-background) .hand::before {
-          box-shadow: 0 0 5px hsl(0 0% 0% / 80%);
+          box-shadow: 0 0 5px hsl(0deg 0% 0% / 30%);
         }
 
         .hand::before,
         .center {
           background-color: var(--accent-fg-color);
+        }
+
+        :host-context(.-theme-with-dark-background) .hand::before {
+          box-shadow: 0 0 5px hsl(0deg 0% 0% / 80%);
+        }
+
+        :host-context(.-theme-with-dark-background) .center,
+        :host-context(.-theme-with-dark-background) .hand {
+          box-shadow: 0 0 2px hsl(0deg 0% 0% / 60%);
+        }
+
+        :host-context(.-theme-with-dark-background) .clock {
+          background-color: hsl(225deg 5% 27%);
         }
       </style>
 

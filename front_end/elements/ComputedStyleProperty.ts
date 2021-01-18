@@ -68,6 +68,7 @@ export class ComputedStyleProperty extends HTMLElement {
 
         .goto {
           --size: 16px;
+
           display: none;
           position: absolute;
           width: var(--size);

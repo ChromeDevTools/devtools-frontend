@@ -214,7 +214,7 @@ export class LayoutPane extends HTMLElement {
           } as NodeTextData}></devtools-node-text>
         </span>
       </label>
-      <label @keyup=${onColorLabelKeyUp} tabindex="0" class="color-picker-label" style="background:${element.color}">
+      <label @keyup=${onColorLabelKeyUp} tabindex="0" class="color-picker-label" style="background: ${element.color};">
         <input @change=${onColorChange} @input=${onColorChange} class="color-picker" type="color" value=${element.color} />
       </label>
       <button tabindex="0" @click=${onElementClick} title=${showElementButtonTitle} class="show-element"></button>

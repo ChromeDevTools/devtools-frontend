@@ -45,7 +45,7 @@ export class Report extends HTMLElement {
     LitHtml.render(LitHtml.html`
       <style>
         .content {
-          background-color:  var(--color-background);
+          background-color: var(--color-background);
           overflow: auto;
           display: grid;
           grid-template-columns: min-content auto;
@@ -59,7 +59,7 @@ export class Report extends HTMLElement {
           text-overflow: ellipsis;
           border-bottom: 1px solid var(--color-details-hairline);
           color: var(--color-text-primary);
-          background-color:  var(--color-background);
+          background-color: var(--color-background);
         }
       </style>
 
@@ -154,7 +154,7 @@ export class ReportKey extends HTMLElement {
       <style>
         :host {
           line-height: 28px;
-          margin: 8px 0px 0px 0px;
+          margin: 8px 0 0 0;
         }
 
         .key {
@@ -184,12 +184,12 @@ export class ReportValue extends HTMLElement {
       <style>
         :host {
           line-height: 28px;
-          margin: 8px 0px 0px 0px;
+          margin: 8px 0 0 0;
         }
 
         .value {
           color: var(--color-text-primary);
-          margin-inline-start: 0px;
+          margin-inline-start: 0;
           padding: 0 6px;
         }
       </style>

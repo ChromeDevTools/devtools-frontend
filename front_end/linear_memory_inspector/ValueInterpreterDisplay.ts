@@ -91,7 +91,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
         }
 
         .value-type-cell-no-mode {
-          grid-column: grid-column: 1 / 3;
+          grid-column: 1 / 3;
         }
 
       </style>

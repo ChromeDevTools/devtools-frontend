@@ -55,11 +55,12 @@ export class Linkifier extends HTMLElement {
     // clang-format off
     return LitHtml.render(LitHtml.html`
       <style>
-         .link:link, .link:visited {
+          .link:link,
+          .link:visited {
             color: var(--color-link);
             text-decoration: underline;
             cursor: pointer;
-         }
+          }
       </style>
       <a class="link" href=${this.url} @click=${this.onLinkActivation}>${LinkifierUtils.linkText(this.url, this.lineNumber)}</a>
     `, this.shadow, { eventContext: this});

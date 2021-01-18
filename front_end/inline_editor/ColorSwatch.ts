@@ -103,7 +103,7 @@ export class ColorSwatch extends HTMLElement {
     // re-format the HTML code.
     LitHtml.render(
       LitHtml.html`<span class="color-swatch" title="${this.tooltip}"><span class="color-swatch-inner"
-        style="background-color:${this.text};"
+        style="background-color: ${this.text};"
         @click=${this.onClick}
         @mousedown=${this.consume}
         @dblclick=${this.consume}></span></span><slot><span>${this.text}</span></slot>`,

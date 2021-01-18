@@ -549,9 +549,11 @@ export class DataGrid extends HTMLElement {
         height: 100%;
         display: block;
       }
+
       /* Ensure that vertically we don't overflow */
       .wrapping-container {
         overflow-y: scroll;
+
         /* Use max-height instead of height to ensure that the
            table does not use more space than necessary. */
         height: 100%;
@@ -562,6 +564,7 @@ export class DataGrid extends HTMLElement {
         border-spacing: 0;
         width: 100%;
         height: 100%;
+
         /* To make sure that we properly hide overflowing text
            when horizontal space is too narrow. */
         table-layout: fixed;
@@ -571,7 +574,6 @@ export class DataGrid extends HTMLElement {
         outline: none;
       }
 
-
       tbody tr {
         background-color: var(--color-background);
       }
@@ -580,14 +582,17 @@ export class DataGrid extends HTMLElement {
         background-color: var(--selected-row-color);
       }
 
-      td, th {
+      td,
+      th {
         padding: 1px 4px;
+
         /* Divider between each cell, except the first one (see below) */
         border-left: 1px solid var(--table-divider-color);
         color: var(--color-text-primary);
         line-height: 18px;
         height: 18px;
         user-select: text;
+
         /* Ensure that text properly cuts off if horizontal space is too narrow */
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -605,7 +610,8 @@ export class DataGrid extends HTMLElement {
       }
 
       /* There is no divider before the first cell */
-      td.firstVisibleColumn, th.firstVisibleColumn {
+      td.firstVisibleColumn,
+      th.firstVisibleColumn {
         border-left: none;
       }
 
@@ -632,9 +638,9 @@ export class DataGrid extends HTMLElement {
         height: 100%;
         pointer-events: none;
       }
+
       .filler-row td .cell-resize-handle {
         pointer-events: all;
-
       }
 
       [aria-sort]:hover {
@@ -650,6 +656,7 @@ export class DataGrid extends HTMLElement {
         right: 0.5em;
         top: 0.6em;
       }
+
       [aria-sort="ascending"]::after {
         content: " ";
         border-bottom: 0.3em solid black;

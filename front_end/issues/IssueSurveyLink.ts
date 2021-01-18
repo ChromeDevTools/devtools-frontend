@@ -100,6 +100,7 @@ export class IssueSurveyLink extends HTMLElement {
           vertical-align: sub;
           margin-right: 0.5ch;
         }
+
         .link {
           padding: 4px 0 0 0;
           text-decoration: underline;
@@ -109,15 +110,18 @@ export class IssueSurveyLink extends HTMLElement {
           border: none;
           background: none;
         }
+
         .link:focus:not(:focus-visible) {
           outline: none;
         }
+
         .pending-link {
           opacity: 75%;
           pointer-events: none;
           cursor: default;
           text-decoration: none;
         }
+
         .disabled-link {
           pointer-events: none;
           cursor: default;

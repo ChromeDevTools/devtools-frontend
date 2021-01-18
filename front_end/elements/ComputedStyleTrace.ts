@@ -49,6 +49,7 @@ export class ComputedStyleTrace extends HTMLElement {
         .goto {
           /* TODO: reuse with ComputedStyleProperty */
           --size: 16px;
+
           display: none;
           position: absolute;
           width: var(--size);

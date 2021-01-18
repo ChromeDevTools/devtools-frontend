@@ -223,6 +223,7 @@ export class CSSAngle extends HTMLElement {
         devtools-css-angle-editor {
           --dial-color: #a3a3a3;
           --border-color: var(--toolbar-bg-color);
+
           position: fixed;
           z-index: 2;
         }

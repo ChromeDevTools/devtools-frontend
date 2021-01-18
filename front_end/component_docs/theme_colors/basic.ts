@@ -80,6 +80,7 @@ class ThemeColors extends HTMLElement {
               font-size: 18px;
               border-bottom-width: 20px;
               border-bottom-style: solid;
+
               /* color is set in code */
               margin-bottom: 20px;
               text-align: center;

@@ -125,7 +125,7 @@ export class LinearMemoryNavigator extends HTMLElement {
           background: transparent;
           overflow: hidden;
           border: none;
-          padding: 0px;
+          padding: 0;
           outline: none;
           justify-content: center;
           align-items: center;

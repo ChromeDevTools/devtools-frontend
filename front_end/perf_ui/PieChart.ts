@@ -188,7 +188,7 @@ export class PieChart extends HTMLElement {
               <div class="pie-chart-legend-row ${selected ? 'selected' : ''}"
                   @click=${this.onSliceClicked(index)} tabIndex=${selected ? '0' : '-1'}>
                 <div class="pie-chart-size">${this.formatter(slice.value)}</div>
-                <div class="pie-chart-swatch" style="background-color: ${slice.color}"></div>
+                <div class="pie-chart-swatch" style="background-color: ${slice.color};"></div>
                 <div class="pie-chart-name">${slice.title}</div>
               </div>`;
           })}

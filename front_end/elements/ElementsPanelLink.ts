@@ -35,7 +35,7 @@ export class ElementsPanelLink extends HTMLElement {
           display: inline-block;
           width: 28px;
           height: 24px;
-          -webkit-mask-position:-140px 96px;
+          -webkit-mask-position: -140px 96px;
           -webkit-mask-image: url(Images/largeIcons.svg);
           background-color: rgb(110 110 110);
         }

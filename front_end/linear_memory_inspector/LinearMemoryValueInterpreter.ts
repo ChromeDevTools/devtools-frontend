@@ -78,10 +78,11 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         }
 
         .value-interpreter {
+          --text-highlight-color: #80868b;
+
           border: var(--divider-border, 1px solid #d0d0d0);
           background-color: var(--toolbar-bg-color, #f3f3f3);
           overflow: hidden;
-          --text-highlight-color: #80868b;
           width: 400px;
         }
 
@@ -120,7 +121,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
           display: block;
           height: 1px;
           margin-bottom: 12px;
-          background-color: var(--divider-color,  #d0d0d0);
+          background-color: var(--divider-color, #d0d0d0);
         }
       </style>
       <div class="value-interpreter">

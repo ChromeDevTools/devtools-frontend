@@ -27,4 +27,21 @@ describe('Rendering pane', () => {
     ].join('');
     assert.deepEqual(actual, expected);
   });
+
+  it('includes UI for emulating color-gamut media feature', async () => {
+    await openPanelViaMoreTools('Rendering');
+
+    const option = await waitFor('option[value="rec2020"]');
+    const actual = await option.evaluate(node => {
+      const select = node.closest('select');
+      return select ? select.textContent : '';
+    });
+    const expected = [
+      'No emulation',
+      'color-gamut: srgb',
+      'color-gamut: p3',
+      'color-gamut: rec2020',
+    ].join('');
+    assert.deepEqual(actual, expected);
+  });
 });

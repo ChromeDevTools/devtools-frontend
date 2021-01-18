@@ -90,6 +90,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue('Rendering', 'emulatedCSSMediaFeaturePrefersColorScheme', '', 'enum'),
     createSettingValue('Rendering', 'emulatedCSSMediaFeaturePrefersReducedMotion', '', 'enum'),
     createSettingValue('Rendering', 'emulatedCSSMediaFeaturePrefersReducedData', '', 'enum'),
+    createSettingValue('Rendering', 'emulatedCSSMediaFeatureColorGamut', '', 'enum'),
     createSettingValue('Rendering', 'emulatedVisionDeficiency', '', 'enum'),
     createSettingValue('Rendering', 'localFontsDisabled', false),
     createSettingValue('Rendering', 'showPaintRects', false),

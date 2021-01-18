@@ -78,6 +78,9 @@
   <message name="IDS_DEVTOOLS_1ccfb518c1eb59a48fa9b2c578073557" desc="Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel">
     redundant
   </message>
+  <message name="IDS_DEVTOOLS_1cfd3df0bec4403cc253099687a0dae7" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate CSS color-gamut: rec2020
+  </message>
   <message name="IDS_DEVTOOLS_1df61a3acc3068952591f72d4f410ccf" desc="Title of a setting that turns off the grid extension lines">
     Do not extend grid lines
   </message>
@@ -129,6 +132,9 @@
   <message name="IDS_DEVTOOLS_342916e27fe5384ce36e77b6070b883e" desc="Title of a setting that turns off the grid line labels">
     Hide line labels
   </message>
+  <message name="IDS_DEVTOOLS_3487a95e00a40a864b9f9180796ec50c" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    color-gamut: srgb
+  </message>
   <message name="IDS_DEVTOOLS_3ac7af4285bb17e9dbc72fdd675dd2be" desc="Title of a setting that turns on grid track size labels">
     Show track sizes
   </message>
@@ -166,6 +172,9 @@
   <message name="IDS_DEVTOOLS_580e805a3a4db8fc19fff0044e008326" desc="Title for a category of breakpoints on Trusted Type violations">
     Trusted Type Violations
   </message>
+  <message name="IDS_DEVTOOLS_58bb9ae937984804b31a983c219d4b5f" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate CSS media feature color-gamut
+  </message>
   <message name="IDS_DEVTOOLS_68379f916c7ed8dd3ab30adaa20635fe" desc="Title of a setting that turns on grid line number labels">
     Show line numbers
   </message>
@@ -183,6 +192,9 @@
   </message>
   <message name="IDS_DEVTOOLS_880e498d5a62f26071be2f50f12deb4d" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
     This cookie didn&apos;t specify a &quot;SameSite&quot; attribute when it was stored, was defaulted to &quot;SameSite=Lax&quot;, and was blocked because the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.
+  </message>
+  <message name="IDS_DEVTOOLS_8e7a5db68bb12f3fc9484d2962e45147" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    color-gamut: p3
   </message>
   <message name="IDS_DEVTOOLS_9182eda0635ccdc88276ba9e013c5c1b" desc="Title of a Rendering setting that can be invoked through the Command Menu">
     Do not emulate a focused page
@@ -202,14 +214,23 @@
   <message name="IDS_DEVTOOLS_a56491b51306fc59e63d029cb33328ee" desc="Label for the link for Schemeful Same-Site Issues">
     How <ph name="FEATURE_NAME_SCHEMEFUL_SAME_SITE">Schemeful Same-Site</ph> Works
   </message>
+  <message name="IDS_DEVTOOLS_a863f1898147e3afb5dead2280ef5bf0" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate CSS color-gamut: srgb
+  </message>
   <message name="IDS_DEVTOOLS_a96d26c470375ec54854aa5939118471" desc="Title for a checkbox that turns on breakpoints on Trusted Type policy violations">
     Policy Violations
   </message>
   <message name="IDS_DEVTOOLS_a9dbce0348c4df57c727ce7df2e7a8e6" desc="Title for CSP url link">
     Content Security Policy - Source Allowlists
   </message>
+  <message name="IDS_DEVTOOLS_ad03b93f937997dc49e586d2b62f0306" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Emulate CSS color-gamut: p3
+  </message>
   <message name="IDS_DEVTOOLS_ad8c8653a0bd48a9b9f84d84b9639f61" desc="Title for Trusted Types policy violation issue link">
     Trusted Types - Policy violation
+  </message>
+  <message name="IDS_DEVTOOLS_addd5b244ca8023b7ab87f63e93ed62f" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Do not emulate CSS color-gamut
   </message>
   <message name="IDS_DEVTOOLS_adebfaed8be7365a6da10b3a82308388" desc="Tooltip to explain why a cookie was blocked due to Schemeful Same-Site">
     This cookie was blocked because it had the &quot;SameSite=Strict&quot; attribute but the request was cross-site. This includes top-level navigation requests initiated by other sites. This request is considered cross-site because the URL has a different scheme than the current site.
@@ -636,6 +657,9 @@
   </message>
   <message name="IDS_DEVTOOLS_fa79cdac06c8d2166fd5cda17ccbc0ce" desc="Text in Server Timing">
     Extraneous trailing characters.
+  </message>
+  <message name="IDS_DEVTOOLS_fbe9889c37d0cf226324235d473f1fee" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    color-gamut: rec2020
   </message>
   <message name="IDS_DEVTOOLS_ff92304ed0236a5f972fd90e9b47fae4" desc="Text in Server Timing">
     Unrecognized parameter &quot;<ph name="PARAMNAME">$1s<ex>https</ex></ph>&quot;.

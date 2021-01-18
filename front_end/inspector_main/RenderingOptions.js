@@ -104,6 +104,9 @@ export class RenderingOptionsView extends UI.Widget.VBox {
           ls`Forces CSS prefers-reduced-data media feature`,
           Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedData'));
     }
+    this._appendSelect(
+        ls`Forces CSS color-gamut media feature`,
+        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeatureColorGamut'));
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     this._appendSelect(

@@ -437,6 +437,36 @@
     },
     {
       "type": "setting",
+      "settingName": "emulatedCSSMediaFeatureColorGamut",
+      "settingType": "enum",
+      "storageType": "session",
+      "defaultValue": "",
+      "options": [
+        {
+          "title": "Do not emulate CSS color-gamut",
+          "text": "No emulation",
+          "value": ""
+        },
+        {
+          "title": "Emulate CSS color-gamut: srgb",
+          "text": "color-gamut: srgb",
+          "value": "srgb"
+        },
+        {
+          "title": "Emulate CSS color-gamut: p3",
+          "text": "color-gamut: p3",
+          "value": "p3"
+        },
+        {
+          "title": "Emulate CSS color-gamut: rec2020",
+          "text": "color-gamut: rec2020",
+          "value": "rec2020"
+        }
+      ],
+      "title": "Emulate CSS media feature color-gamut"
+    },
+    {
+      "type": "setting",
       "category": "Rendering",
       "settingName": "emulatedVisionDeficiency",
       "settingType": "enum",

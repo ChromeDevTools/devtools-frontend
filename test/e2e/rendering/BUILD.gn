@@ -5,7 +5,7 @@
 import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("rendering") {
-  sources = [ "vision-deficiencies_test.ts" ]
+  sources = [ "Rendering_test.ts" ]
 
   deps = [
     "../../shared",

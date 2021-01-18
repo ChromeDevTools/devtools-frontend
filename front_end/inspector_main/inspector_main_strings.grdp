@@ -123,6 +123,9 @@
   <message name="IDS_DEVTOOLS_f23c9ba06e7123f0b4c906de90fbcc9f" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
     Auto-open <ph name="LOCKED_1">DevTools</ph> for popups
   </message>
+  <message name="IDS_DEVTOOLS_fdd352b84ad218eaa84a853f2c9477bf" desc="Accessibility subtitle for color-gamut select element in Rendering tool">
+    Forces CSS color-gamut media feature
+  </message>
   <message name="IDS_DEVTOOLS_fe904c39945840470511a9ff798e9812" desc="Accessibility subtitle for vision deficiency select element in Rendering tool">
     Forces vision deficiency emulation
   </message>

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
@@ -91,22 +93,40 @@ export const UIStrings = {
   */
   sOfSSUsedSoFarSUnused: '{PH1} of {PH2} ({PH3}%) used so far,\n        {PH4} unused.',
 };
-const str_ = i18n.i18n.registerUIStrings('coverage/CoverageView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('coverage/CoverageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/** @type {!CoverageView} */
-let coverageViewInstance;
+let coverageViewInstance: CoverageView;
 
 export class CoverageView extends UI.Widget.VBox {
-  /** @private */
-  constructor() {
+  _model: CoverageModel|null;
+  _decorationManager: CoverageDecorationManager|null;
+  _resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
+  _coverageTypeComboBox: UI.Toolbar.ToolbarComboBox;
+  _coverageTypeComboBoxSetting: Common.Settings.LegacySetting<number>;
+  _toggleRecordAction: UI.ActionRegistration.Action;
+  _toggleRecordButton: UI.Toolbar.ToolbarButton;
+  _inlineReloadButton: Element|null;
+  _startWithReloadButton: UI.Toolbar.ToolbarButton|undefined;
+  _clearButton: UI.Toolbar.ToolbarButton;
+  _saveButton: UI.Toolbar.ToolbarButton;
+  _textFilterRegExp: RegExp|null;
+  _filterInput: UI.Toolbar.ToolbarInput;
+  _typeFilterValue: number|null;
+  _filterByTypeComboBox: UI.Toolbar.ToolbarComboBox;
+  _showContentScriptsSetting: Common.Settings.LegacySetting<boolean>;
+  _contentScriptsCheckbox: UI.Toolbar.ToolbarSettingCheckbox;
+  _coverageResultsElement: HTMLElement;
+  _landingPage: UI.Widget.VBox;
+  _listView: CoverageListView;
+  _statusToolbarElement: HTMLElement;
+  _statusMessageElement: HTMLElement;
+
+  private constructor() {
     super(true);
 
-    /** @type {?CoverageModel} */
     this._model = null;
-    /** @type {?CoverageDecorationManager} */
     this._decorationManager = null;
-    /** @type {?SDK.ResourceTreeModel.ResourceTreeModel} */
     this._resourceTreeModel = null;
 
     this.registerRequiredCSS('coverage/coverageView.css', {enableLegacyPatching: true});
@@ -134,20 +154,17 @@ export class CoverageView extends UI.Widget.VBox {
     this._coverageTypeComboBox.setSelectedIndex(this._coverageTypeComboBoxSetting.get());
     this._coverageTypeComboBox.setEnabled(true);
     toolbar.appendToolbarItem(this._coverageTypeComboBox);
-
-    /** @type {!UI.ActionRegistration.Action }*/
-    this._toggleRecordAction = (UI.ActionRegistry.ActionRegistry.instance().action('coverage.toggle-recording'));
+    this._toggleRecordAction =
+        UI.ActionRegistry.ActionRegistry.instance().action('coverage.toggle-recording') as UI.ActionRegistration.Action;
     this._toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction);
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     const mainTargetSupportsRecordOnReload = mainTarget && mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    this._inlineReloadButton = null;
     if (mainTargetSupportsRecordOnReload) {
-      /** @type {?Element} */
-      this._inlineReloadButton = null;
-      const startWithReloadAction =
-          /** @type {!UI.ActionRegistration.Action }*/ (
-              UI.ActionRegistry.ActionRegistry.instance().action('coverage.start-with-reload'));
+      const startWithReloadAction = UI.ActionRegistry.ActionRegistry.instance().action('coverage.start-with-reload') as
+          UI.ActionRegistration.Action;
       this._startWithReloadButton = UI.Toolbar.Toolbar.createActionButton(startWithReloadAction);
       toolbar.appendToolbarItem(this._startWithReloadButton);
       this._toggleRecordButton.setEnabled(false);
@@ -159,13 +176,12 @@ export class CoverageView extends UI.Widget.VBox {
 
     toolbar.appendSeparator();
     this._saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.export), 'largeicon-download');
-    this._saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
+    this._saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
       this._exportReport();
     });
     toolbar.appendToolbarItem(this._saveButton);
     this._saveButton.setEnabled(false);
 
-    /** @type {?RegExp} */
     this._textFilterRegExp = null;
     toolbar.appendSeparator();
     this._filterInput = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.urlFilter), '', 0.4, 1);
@@ -218,17 +234,14 @@ export class CoverageView extends UI.Widget.VBox {
     this._landingPage.show(this._coverageResultsElement);
   }
 
-  static instance() {
+  static instance(): CoverageView {
     if (!coverageViewInstance) {
       coverageViewInstance = new CoverageView();
     }
     return coverageViewInstance;
   }
 
-  /**
-   * @return {!UI.Widget.VBox}
-   */
-  _buildLandingPage() {
+  _buildLandingPage(): UI.Widget.VBox {
     const widget = new UI.Widget.VBox();
     let message;
     if (this._startWithReloadButton) {
@@ -247,14 +260,14 @@ export class CoverageView extends UI.Widget.VBox {
     return widget;
   }
 
-  _clear() {
+  _clear(): void {
     if (this._model) {
       this._model.reset();
     }
     this._reset();
   }
 
-  _reset() {
+  _reset(): void {
     if (this._decorationManager) {
       this._decorationManager.dispose();
       this._decorationManager = null;
@@ -269,7 +282,7 @@ export class CoverageView extends UI.Widget.VBox {
     this._saveButton.setEnabled(false);
   }
 
-  _toggleRecording() {
+  _toggleRecording(): void {
     const enable = !this._toggleRecordAction.toggled();
 
     if (enable) {
@@ -279,29 +292,23 @@ export class CoverageView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @return {boolean}
-   */
-  isBlockCoverageSelected() {
+  isBlockCoverageSelected(): boolean {
     const option = this._coverageTypeComboBox.selectedOption();
     const coverageType = Number(option ? option.value : Number.NaN);
     // Check that Coverage.CoverageType.JavaScriptPerFunction is not present.
     return coverageType === CoverageType.JavaScript;
   }
 
-  /**
-   * @param {boolean} jsCoveragePerBlock
-   */
-  _selectCoverageType(jsCoveragePerBlock) {
+  _selectCoverageType(jsCoveragePerBlock: boolean): void {
     const selectedIndex = jsCoveragePerBlock ? 1 : 0;
     this._coverageTypeComboBox.setSelectedIndex(selectedIndex);
   }
 
-  _onCoverageTypeComboBoxSelectionChanged() {
+  _onCoverageTypeComboBoxSelectionChanged(): void {
     this._coverageTypeComboBoxSetting.set(this._coverageTypeComboBox.selectedIndex());
   }
 
-  async ensureRecordingStarted() {
+  async ensureRecordingStarted(): Promise<void> {
     const enabled = this._toggleRecordAction.toggled();
 
     if (enabled) {
@@ -310,13 +317,8 @@ export class CoverageView extends UI.Widget.VBox {
     await this._startRecording({reload: false, jsCoveragePerBlock: false});
   }
 
-  /**
-   * @param {?{reload: (boolean|undefined), jsCoveragePerBlock: (boolean|undefined)}} options - a collection of options controlling the appearance of the pane.
-   *   The options object can have the following properties:
-   *   - **reload** - `{boolean}` - Reload page for coverage recording
-   *   - **jsCoveragePerBlock** - `{boolean}` - Collect per Block coverage if `true`, per function coverage otherwise.
-   */
-  async _startRecording(options) {
+  async _startRecording(options: {reload: (boolean|undefined); jsCoveragePerBlock: (boolean | undefined);}|
+                        null): Promise<void> {
     let hadFocus, reloadButtonFocused;
     if ((this._startWithReloadButton && this._startWithReloadButton.element.hasFocus()) ||
         (this._inlineReloadButton && this._inlineReloadButton.hasFocus())) {
@@ -350,13 +352,13 @@ export class CoverageView extends UI.Widget.VBox {
     this._selectCoverageType(Boolean(jsCoveragePerBlock));
 
     this._model.addEventListener(Events.CoverageUpdated, this._onCoverageDataReceived, this);
-    this._resourceTreeModel = /** @type {?SDK.ResourceTreeModel.ResourceTreeModel} */ (
-        mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel));
+    this._resourceTreeModel =
+        mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel | null;
     if (this._resourceTreeModel) {
       this._resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
     }
-    this._decorationManager = new CoverageDecorationManager(/** @type {!CoverageModel} */ (this._model));
+    this._decorationManager = new CoverageDecorationManager(this._model as CoverageModel);
     this._toggleRecordAction.setToggled(true);
     this._clearButton.setEnabled(false);
     if (this._startWithReloadButton) {
@@ -386,15 +388,12 @@ export class CoverageView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _onCoverageDataReceived(event) {
-    const data = /** @type {!Array<!CoverageInfo>} */ (event.data);
+  _onCoverageDataReceived(event: Common.EventTarget.EventTargetEvent): void {
+    const data = event.data as CoverageInfo[];
     this._updateViews(data);
   }
 
-  async stopRecording() {
+  async stopRecording(): Promise<void> {
     if (this._resourceTreeModel) {
       this._resourceTreeModel.removeEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
@@ -419,28 +418,25 @@ export class CoverageView extends UI.Widget.VBox {
     this._clearButton.setEnabled(true);
   }
 
-  processBacklog() {
+  processBacklog(): void {
     this._model && this._model.processJSBacklog();
   }
 
-  _onMainFrameNavigated() {
+  _onMainFrameNavigated(): void {
     this._model && this._model.reset();
     this._decorationManager && this._decorationManager.reset();
     this._listView.reset();
     this._model && this._model.startPolling();
   }
 
-  /**
-   * @param {!Array<!CoverageInfo>} updatedEntries
-   */
-  _updateViews(updatedEntries) {
+  _updateViews(updatedEntries: CoverageInfo[]): void {
     this._updateStats();
     this._listView.update(this._model && this._model.entries() || []);
     this._saveButton.setEnabled(this._model !== null && this._model.entries().length > 0);
     this._decorationManager && this._decorationManager.update(updatedEntries);
   }
 
-  _updateStats() {
+  _updateStats(): void {
     const all = {total: 0, unused: 0};
     const filtered = {total: 0, unused: 0};
     let filterApplied = false;
@@ -460,24 +456,19 @@ export class CoverageView extends UI.Widget.VBox {
         i18nString(UIStrings.filteredSTotalS, {PH1: formatStat(filtered), PH2: formatStat(all)}) :
         formatStat(all);
 
-    /**
-     *
-     * @param {!{total: number, unused: number}} stat
-     * @returns {string}
-     */
-    function formatStat({total, unused}) {
+    function formatStat({total, unused}: {total: number; unused: number;}): string {
       const used = total - unused;
       const percentUsed = total ? Math.round(100 * used / total) : 0;
       return i18nString(UIStrings.sOfSSUsedSoFarSUnused, {
         PH1: Platform.NumberUtilities.bytesToString(used),
         PH2: Platform.NumberUtilities.bytesToString(total),
         PH3: percentUsed,
-        PH4: Platform.NumberUtilities.bytesToString(unused)
+        PH4: Platform.NumberUtilities.bytesToString(unused),
       });
     }
   }
 
-  _onFilterChanged() {
+  _onFilterChanged(): void {
     if (!this._listView) {
       return;
     }
@@ -487,7 +478,7 @@ export class CoverageView extends UI.Widget.VBox {
     this._updateStats();
   }
 
-  _onFilterByTypeChanged() {
+  _onFilterByTypeChanged(): void {
     if (!this._listView) {
       return;
     }
@@ -501,12 +492,7 @@ export class CoverageView extends UI.Widget.VBox {
     this._updateStats();
   }
 
-  /**
-   * @param {boolean} ignoreTextFilter
-   * @param {!URLCoverageInfo} coverageInfo
-   * @return {boolean}
-   */
-  _isVisible(ignoreTextFilter, coverageInfo) {
+  _isVisible(ignoreTextFilter: boolean, coverageInfo: URLCoverageInfo): boolean {
     const url = coverageInfo.url();
     if (url.startsWith(CoverageView._extensionBindingsURLPrefix)) {
       return false;
@@ -521,7 +507,7 @@ export class CoverageView extends UI.Widget.VBox {
     return ignoreTextFilter || !this._textFilterRegExp || this._textFilterRegExp.test(url);
   }
 
-  async _exportReport() {
+  async _exportReport(): Promise<void> {
     const fos = new Bindings.FileUtils.FileOutputStream();
     const fileName = `Coverage-${Platform.DateUtilities.toISO8601Compact(new Date())}.json`;
     const accepted = await fos.open(fileName);
@@ -531,27 +517,15 @@ export class CoverageView extends UI.Widget.VBox {
     this._model && this._model.exportReport(fos);
   }
 
-  /**
-   * @param {string} url
-   */
-  selectCoverageItemByUrl(url) {
+  selectCoverageItemByUrl(url: string): void {
     this._listView.selectByUrl(url);
   }
+
+  static readonly _extensionBindingsURLPrefix = 'extensions::';
 }
 
-CoverageView._extensionBindingsURLPrefix = 'extensions::';
-
-/**
- * @implements {UI.ActionRegistration.ActionDelegate}
- */
-export class ActionDelegate {
-  /**
-   * @override
-   * @param {!UI.Context.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
+export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
     const coverageViewId = 'coverage';
     UI.ViewManager.ViewManager.instance()
         .showView(coverageViewId, /** userGesture= */ false, /** omitFocus= */ true)
@@ -559,16 +533,12 @@ export class ActionDelegate {
           const view = UI.ViewManager.ViewManager.instance().view(coverageViewId);
           return view && view.widget();
         })
-        .then(widget => this._innerHandleAction(/** @type {!CoverageView} */ (widget), actionId));
+        .then(widget => this._innerHandleAction(widget as CoverageView, actionId));
 
     return true;
   }
 
-  /**
-   * @param {!CoverageView} coverageView
-   * @param {string} actionId
-   */
-  _innerHandleAction(coverageView, actionId) {
+  _innerHandleAction(coverageView: CoverageView, actionId: string): void {
     switch (actionId) {
       case 'coverage.toggle-recording':
         coverageView._toggleRecording();
@@ -582,39 +552,30 @@ export class ActionDelegate {
   }
 }
 
-/**
- * @implements {SourceFrame.SourceFrame.LineDecorator}
- */
-export class LineDecorator {
+export class LineDecorator implements SourceFrame.SourceFrame.LineDecorator {
+  _listeners:
+      WeakMap<SourceFrame.SourcesTextEditor.SourcesTextEditor, (arg0: Common.EventTarget.EventTargetEvent) => void>;
   constructor() {
-    /** @type {!WeakMap<!SourceFrame.SourcesTextEditor.SourcesTextEditor, function(!Common.EventTarget.EventTargetEvent): void>} */
     this._listeners = new WeakMap();
   }
 
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor
-   */
-  decorate(uiSourceCode, textEditor) {
+  decorate(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor): void {
     const decorations = uiSourceCode.decorationsForType(decoratorType);
     if (!decorations || !decorations.size) {
       this._uninstallGutter(textEditor);
       return;
     }
-    const decorationManager =
-        /** @type {!CoverageDecorationManager} */ (decorations.values().next().value.data());
+    const decorationManager = decorations.values().next().value.data() as CoverageDecorationManager;
     decorationManager.usageByLine(uiSourceCode).then(lineUsage => {
       textEditor.operation(() => this._innerDecorate(uiSourceCode, textEditor, lineUsage));
     });
   }
 
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor
-   * @param {!Array<boolean|undefined>} lineUsage
-   */
-  _innerDecorate(uiSourceCode, textEditor, lineUsage) {
+  _innerDecorate(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode, textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor,
+      lineUsage: (boolean|undefined)[]): void {
     const gutterType = LineDecorator._gutterType;
     this._uninstallGutter(textEditor);
     if (lineUsage.length) {
@@ -632,16 +593,9 @@ export class LineDecorator {
     }
   }
 
-  /**
-   * @param {string} url - the url of the file  this click handler will select in the coverage drawer
-   * @return {function(!Common.EventTarget.EventTargetEvent)}
-   */
-  makeGutterClickHandler(url) {
-    /**
-     * @param {!Common.EventTarget.EventTargetEvent} event
-     */
-    function handleGutterClick(event) {
-      const eventData = /** @type {!SourceFrame.SourcesTextEditor.GutterClickEventData} */ (event.data);
+  makeGutterClickHandler(url: string): (arg0: Common.EventTarget.EventTargetEvent) => void {
+    function handleGutterClick(event: Common.EventTarget.EventTargetEvent): void {
+      const eventData = event.data as SourceFrame.SourcesTextEditor.GutterClickEventData;
       if (eventData.gutterType !== LineDecorator._gutterType) {
         return;
       }
@@ -655,17 +609,13 @@ export class LineDecorator {
           .then(widget => {
             const matchFormattedSuffix = url.match(/(.*):formatted$/);
             const urlWithoutFormattedSuffix = (matchFormattedSuffix && matchFormattedSuffix[1]) || url;
-            /** @type {!CoverageView} */ (widget).selectCoverageItemByUrl(urlWithoutFormattedSuffix);
+            (widget as CoverageView).selectCoverageItemByUrl(urlWithoutFormattedSuffix);
           });
     }
     return handleGutterClick;
   }
 
-  /**
-     * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor - the text editor to install the gutter on
-     * @param {string} url - the url of the file in the text editor
-   */
-  _installGutter(textEditor, url) {
+  _installGutter(textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor, url: string): void {
     let listener = this._listeners.get(textEditor);
     if (!listener) {
       listener = this.makeGutterClickHandler(url);
@@ -675,10 +625,7 @@ export class LineDecorator {
     textEditor.addEventListener(SourceFrame.SourcesTextEditor.Events.GutterClick, listener, this);
   }
 
-  /**
-     * @param {!SourceFrame.SourcesTextEditor.SourcesTextEditor} textEditor  - the text editor to uninstall the gutter from
-     */
-  _uninstallGutter(textEditor) {
+  _uninstallGutter(textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor): void {
     textEditor.uninstallGutter(LineDecorator._gutterType);
     const listener = this._listeners.get(textEditor);
     if (listener) {
@@ -686,6 +633,6 @@ export class LineDecorator {
       this._listeners.delete(textEditor);
     }
   }
-}
 
-LineDecorator._gutterType = 'CodeMirror-gutter-coverage';
+  static readonly _gutterType = 'CodeMirror-gutter-coverage';
+}

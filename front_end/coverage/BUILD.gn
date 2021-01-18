@@ -7,11 +7,11 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("coverage") {
   sources = [
-    "CoverageDecorationManager.js",
-    "CoverageListView.js",
-    "CoverageModel.js",
-    "CoverageView.js",
-    "ModuleUIStrings.js",
+    "CoverageDecorationManager.ts",
+    "CoverageListView.ts",
+    "CoverageModel.ts",
+    "CoverageView.ts",
+    "ModuleUIStrings.ts",
   ]
 
   deps = [
@@ -37,7 +37,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "coverage-legacy.js"
+  entrypoint = "coverage-legacy.ts"
 
   deps = [ ":bundle" ]
 }

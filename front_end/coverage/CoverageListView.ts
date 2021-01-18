@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as Formatter from '../formatter/formatter.js';
@@ -117,14 +119,10 @@ export const UIStrings = {
   */
   sOfFileUnusedSOfFileUsed: '{PH1} % of file unused, {PH2} % of file used',
 };
-const str_ = i18n.i18n.registerUIStrings('coverage/CoverageListView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('coverage/CoverageListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/**
- * @param {!CoverageType} type
- * @returns {string}
- */
-export function coverageTypeToString(type) {
+export function coverageTypeToString(type: CoverageType): string {
   const types = [];
   if (type & CoverageType.CSS) {
     types.push(i18nString(UIStrings.css));
@@ -138,27 +136,27 @@ export function coverageTypeToString(type) {
 }
 
 export class CoverageListView extends UI.Widget.VBox {
-  /**
-   * @param {function(!URLCoverageInfo):boolean} isVisibleFilter
-   */
-  constructor(isVisibleFilter) {
+  _nodeForCoverageInfo: Map<URLCoverageInfo, GridNode>;
+  _isVisibleFilter: (arg0: URLCoverageInfo) => boolean;
+  _highlightRegExp: RegExp|null;
+  _dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<GridNode>;
+
+  constructor(isVisibleFilter: (arg0: URLCoverageInfo) => boolean) {
     super(true);
-    /** @type {!Map<!URLCoverageInfo, !GridNode>} */
     this._nodeForCoverageInfo = new Map();
     this._isVisibleFilter = isVisibleFilter;
-    /** @type {?RegExp} */
     this._highlightRegExp = null;
     this.registerRequiredCSS('coverage/coverageListView.css', {enableLegacyPatching: true});
-    /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */
-    const columns = ([
+    const columns: DataGrid.DataGrid.ColumnDescriptor[] = [
       {id: 'url', title: i18nString(UIStrings.url), width: '250px', fixedWidth: false, sortable: true},
-      {id: 'type', title: i18nString(UIStrings.type), width: '45px', fixedWidth: true, sortable: true}, {
+      {id: 'type', title: i18nString(UIStrings.type), width: '45px', fixedWidth: true, sortable: true},
+      {
         id: 'size',
         title: i18nString(UIStrings.totalBytes),
         width: '60px',
         fixedWidth: true,
         sortable: true,
-        align: DataGrid.DataGrid.Align.Right
+        align: DataGrid.DataGrid.Align.Right,
       },
       {
         id: 'unusedSize',
@@ -167,16 +165,16 @@ export class CoverageListView extends UI.Widget.VBox {
         fixedWidth: true,
         sortable: true,
         align: DataGrid.DataGrid.Align.Right,
-        sort: DataGrid.DataGrid.Order.Descending
+        sort: DataGrid.DataGrid.Order.Descending,
       },
-      {id: 'bars', title: i18nString(UIStrings.usageVisualization), width: '250px', fixedWidth: false, sortable: true}
-    ]);
-    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
+      {id: 'bars', title: i18nString(UIStrings.usageVisualization), width: '250px', fixedWidth: false, sortable: true},
+    ] as DataGrid.DataGrid.ColumnDescriptor[];
+    this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid<GridNode>({
       displayName: i18nString(UIStrings.codeCoverage),
       columns,
       editCallback: undefined,
       refreshCallback: undefined,
-      deleteCallback: undefined
+      deleteCallback: undefined,
     });
     this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
     this._dataGrid.element.classList.add('flex-auto');
@@ -189,10 +187,7 @@ export class CoverageListView extends UI.Widget.VBox {
     this.setDefaultFocusedChild(dataGridWidget);
   }
 
-  /**
-   * @param {!Array<!URLCoverageInfo>} coverageInfo
-   */
-  update(coverageInfo) {
+  update(coverageInfo: URLCoverageInfo[]): void {
     let hadUpdates = false;
     const maxSize = coverageInfo.reduce((acc, entry) => Math.max(acc, entry.size()), 0);
     const rootNode = this._dataGrid.rootNode();
@@ -216,15 +211,12 @@ export class CoverageListView extends UI.Widget.VBox {
     }
   }
 
-  reset() {
+  reset(): void {
     this._nodeForCoverageInfo.clear();
     this._dataGrid.rootNode().removeChildren();
   }
 
-  /**
-   * @param {?RegExp} highlightRegExp
-   */
-  updateFilterAndHighlight(highlightRegExp) {
+  updateFilterAndHighlight(highlightRegExp: RegExp|null): void {
     this._highlightRegExp = highlightRegExp;
     let hadTreeUpdates = false;
     for (const node of this._nodeForCoverageInfo.values()) {
@@ -248,10 +240,7 @@ export class CoverageListView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {string} url
-   */
-  selectByUrl(url) {
+  selectByUrl(url: string): void {
     for (const [info, node] of this._nodeForCoverageInfo.entries()) {
       if (info.url() === url) {
         node.revealAndSelect();
@@ -260,14 +249,11 @@ export class CoverageListView extends UI.Widget.VBox {
     }
   }
 
-  _onOpenedNode() {
+  _onOpenedNode(): void {
     this._revealSourceForSelectedNode();
   }
 
-  /**
-   * @param {!KeyboardEvent} event
-   */
-  _onKeyDown(event) {
+  _onKeyDown(event: KeyboardEvent): void {
     if (!(event.key === 'Enter')) {
       return;
     }
@@ -275,12 +261,12 @@ export class CoverageListView extends UI.Widget.VBox {
     this._revealSourceForSelectedNode();
   }
 
-  async _revealSourceForSelectedNode() {
+  async _revealSourceForSelectedNode(): Promise<void> {
     const node = this._dataGrid.selectedNode;
     if (!node) {
       return;
     }
-    const coverageInfo = /** @type {!GridNode} */ (node)._coverageInfo;
+    const coverageInfo = (node as GridNode)._coverageInfo;
     let sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(coverageInfo.url());
     if (!sourceCode) {
       return;
@@ -295,14 +281,15 @@ export class CoverageListView extends UI.Widget.VBox {
     Common.Revealer.reveal(sourceCode);
   }
 
-  _sortingChanged() {
+  _sortingChanged(): void {
     const columnId = this._dataGrid.sortColumnId();
     if (!columnId) {
       return;
     }
-    const sortFunction =
-        /** @type {null|function(!DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>, !DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>):number} */
-        (GridNode.sortFunctionForColumn(columnId));
+    const sortFunction = GridNode.sortFunctionForColumn(columnId) as (
+                             (arg0: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+                              arg1: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>) => number) |
+        null;
     if (!sortFunction) {
       return;
     }
@@ -310,29 +297,21 @@ export class CoverageListView extends UI.Widget.VBox {
   }
 }
 
-/**
- * @extends {DataGrid.SortableDataGrid.SortableDataGridNode<!GridNode>}
- */
-export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
-  /**
-   * @param {!URLCoverageInfo} coverageInfo
-   * @param {number} maxSize
-   */
-  constructor(coverageInfo, maxSize) {
+export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> {
+  _coverageInfo: URLCoverageInfo;
+  _lastUsedSize!: number|undefined;
+  _url: string;
+  _maxSize: number;
+  _highlightRegExp: RegExp|null;
+  constructor(coverageInfo: URLCoverageInfo, maxSize: number) {
     super();
     this._coverageInfo = coverageInfo;
-    /** @type {number|undefined} */
-    this._lastUsedSize;
     this._url = coverageInfo.url();
     this._maxSize = maxSize;
-    /** @type {?RegExp} */
     this._highlightRegExp = null;
   }
 
-  /**
-   * @param {?RegExp} highlightRegExp
-   */
-  _setHighlight(highlightRegExp) {
+  _setHighlight(highlightRegExp: RegExp|null): void {
     if (this._highlightRegExp === highlightRegExp) {
       return;
     }
@@ -340,11 +319,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     this.refresh();
   }
 
-  /**
-   * @param {number} maxSize
-   * @return {boolean}
-   */
-  _refreshIfNeeded(maxSize) {
+  _refreshIfNeeded(maxSize: number): boolean {
     if (this._lastUsedSize === this._coverageInfo.usedSize() && maxSize === this._maxSize) {
       return false;
     }
@@ -354,12 +329,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     return true;
   }
 
-  /**
-   * @override
-   * @param {string} columnId
-   * @return {!HTMLElement}
-   */
-  createCell(columnId) {
+  createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     switch (columnId) {
       case 'url': {
@@ -452,19 +422,11 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     return cell;
   }
 
-  /**
-   * @param {number} value
-   * @return {string}
-   */
-  _percentageString(value) {
+  _percentageString(value: number): string {
     return value.toFixed(1);
   }
 
-  /**
-   * @param {!Element} element
-   * @param {string} textContent
-   */
-  _highlight(element, textContent) {
+  _highlight(element: Element, textContent: string): void {
     if (!this._highlightRegExp) {
       return;
     }
@@ -476,31 +438,24 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     UI.UIUtils.highlightRangesWithStyleClass(element, [range], 'filter-highlight');
   }
 
-  /**
-   *
-   * @param {string} columnId
-   * @returns {null|function(!GridNode, !GridNode):number}
-   */
-  static sortFunctionForColumn(columnId) {
-    /**
-     * @param {!GridNode} a
-     * @param {!GridNode} b
-     */
-    const compareURL = (a, b) => a._url.localeCompare(b._url);
+  static sortFunctionForColumn(columnId: string): ((arg0: GridNode, arg1: GridNode) => number)|null {
+    const compareURL = (a: GridNode, b: GridNode): number => a._url.localeCompare(b._url);
     switch (columnId) {
       case 'url':
         return compareURL;
       case 'type':
-        return (a, b) => {
+        return (a: GridNode, b: GridNode): number => {
           const typeA = coverageTypeToString(a._coverageInfo.type());
           const typeB = coverageTypeToString(b._coverageInfo.type());
           return typeA.localeCompare(typeB) || compareURL(a, b);
         };
       case 'size':
-        return (a, b) => a._coverageInfo.size() - b._coverageInfo.size() || compareURL(a, b);
+        return (a: GridNode, b: GridNode): number =>
+                   a._coverageInfo.size() - b._coverageInfo.size() || compareURL(a, b);
       case 'bars':
       case 'unusedSize':
-        return (a, b) => a._coverageInfo.unusedSize() - b._coverageInfo.unusedSize() || compareURL(a, b);
+        return (a: GridNode, b: GridNode): number =>
+                   a._coverageInfo.unusedSize() - b._coverageInfo.unusedSize() || compareURL(a, b);
       default:
         console.assert(false, 'Unknown sort field: ' + columnId);
         return null;

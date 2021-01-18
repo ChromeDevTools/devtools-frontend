@@ -87,6 +87,7 @@ devtools_module_entrypoint_sources = [
   "inspector_main/inspector_main-meta.js",
   "inspector_main/inspector_main.js",
   "issues/issues-legacy.js",
+  "issues/issues-meta.js",
   "issues/issues.js",
   "javascript_metadata/javascript_metadata-legacy.js",
   "javascript_metadata/javascript_metadata.js",

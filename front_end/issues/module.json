@@ -1,31 +1,12 @@
 {
   "extensions": [
     {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "issues-pane",
-      "title": "Issues",
-      "order": 100,
-      "persistence": "closeable",
-      "className": "Issues.IssuesPane"
-    },
-    {
       "type": "@Common.Revealer",
       "contextTypes": [
         "SDK.Issue"
       ],
       "destination": "Issues view",
       "className": "Issues.IssueRevealer"
-    },
-    {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "csp-violations-pane",
-      "title": "CSP Violations",
-      "order": 100,
-      "persistence": "closeable",
-      "className": "Issues.CSPViolationsView",
-      "experiment" : "cspViolationsView"
     }
   ],
   "dependencies": [

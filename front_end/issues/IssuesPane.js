@@ -989,7 +989,14 @@ export function getGroupIssuesByCategorySetting() {
   return Common.Settings.Settings.instance().createSetting('groupIssuesByCategory', false);
 }
 
+/** @type {!IssuesPaneImpl} */
+let issuesPaneInstance;
+
+
 export class IssuesPaneImpl extends UI.Widget.VBox {
+  /**
+   * @private
+   */
   constructor() {
     super(true);
     this.registerRequiredCSS('issues/issuesPane.css', {enableLegacyPatching: false});
@@ -1024,6 +1031,18 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     }
     this._issuesManager.addEventListener(BrowserSDK.IssuesManager.Events.IssuesCountUpdated, this._updateCounts, this);
     this._updateCounts();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!issuesPaneInstance || forceNew) {
+      issuesPaneInstance = new IssuesPaneImpl();
+    }
+
+    return issuesPaneInstance;
   }
 
   /**

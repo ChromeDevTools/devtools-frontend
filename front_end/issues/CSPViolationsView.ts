@@ -11,10 +11,14 @@ import * as UI from '../ui/ui.js';
 import {ComboBoxOfCheckBoxes} from './ComboBoxOfCheckBoxes.js';
 import {CSPViolationsListView} from './CSPViolationsListView.js';
 
+let cspViolationsViewInstance: CSPViolationsView;
 export class CSPViolationsView extends UI.Widget.VBox {
   private listView = new CSPViolationsListView();
   private issuesManager = BrowserSDK.IssuesManager.IssuesManager.instance();
 
+  /**
+   * @private
+   */
   constructor() {
     super(true);
     this.registerRequiredCSS('issues/cspViolationsView.css', {enableLegacyPatching: false});
@@ -50,6 +54,15 @@ export class CSPViolationsView extends UI.Widget.VBox {
         BrowserSDK.IssuesManager.Events.FullUpdateRequired, this.onFullUpdateRequired, this);
 
     this.addAllIssues();
+  }
+
+  static instance(opts = {forceNew: null}): CSPViolationsView {
+    const {forceNew} = opts;
+    if (!cspViolationsViewInstance || forceNew) {
+      cspViolationsViewInstance = new CSPViolationsView();
+    }
+
+    return cspViolationsViewInstance;
   }
 
   private onIssueAdded(event: Common.EventTarget.EventTargetEvent): void {

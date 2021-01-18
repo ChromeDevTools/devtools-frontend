@@ -1124,6 +1124,7 @@ export const ExperimentName = {
   LIVE_HEAP_PROFILE: 'liveHeapProfile',
   DEVELOPER_RESOURCES_VIEW: 'developerResourcesView',
   TIMELINE_REPLAY_EVENT: 'timelineReplayEvent',
+  CSP_VIOLATIONS_VIEW: 'cspViolationsView',
 };
 
 /** @enum {string} */

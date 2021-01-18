@@ -4,11 +4,11 @@
 
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';
+import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as Components from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
@@ -71,7 +71,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * @param {Components.DataGridUtils.CellValue} value
  */
 const timestampRenderer = value => {
-  return i18nString(UIStrings.sMs, {PH1: value});
+  return LitHtml.html`${i18nString(UIStrings.sMs, {PH1: value})}`;
 };
 
 

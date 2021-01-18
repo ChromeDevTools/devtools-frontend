@@ -41,10 +41,7 @@ export interface Cell {
   columnId: string;
   value: CellValue;
   title?: string;
-  // The renderer function actually returns LitHtml.TemplateResult but it's a
-  // lot of work to teach the bridges generator about that.
-  // TODO (crbug.com/1011811): Fix types once TypeScriptification is complete.
-  renderer?: (value: CellValue) => unknown
+  renderer?: (value: CellValue) => LitHtml.TemplateResult;
 }
 
 export type Row = {
@@ -91,10 +88,13 @@ export function getRowEntryForColumnId(row: Row, id: string): Cell {
 }
 
 export function renderCellValue(cell: Cell): LitHtml.TemplateResult {
-  const output = cell.renderer ? cell.renderer(cell.value) as LitHtml.TemplateResult :
-                                 DataGridRenderers.primitiveRenderer(cell.value);
-  return output;
+  if (cell.renderer) {
+    return cell.renderer(cell.value);
+  }
+
+  return DataGridRenderers.primitiveRenderer(cell.value);
 }
+
 
 /**
  * When the user passes in columns we want to know how wide each one should be.

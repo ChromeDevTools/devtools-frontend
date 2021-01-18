@@ -377,25 +377,25 @@
   "devices/ModuleUIStrings.ts | usb": {
     "message": "usb"
   },
-  "event_listeners/EventListenersView.js | deleteEventListener": {
+  "event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Delete event listener"
   },
-  "event_listeners/EventListenersView.js | noEventListeners": {
+  "event_listeners/EventListenersView.ts | noEventListeners": {
     "message": "No event listeners"
   },
-  "event_listeners/EventListenersView.js | passive": {
+  "event_listeners/EventListenersView.ts | passive": {
     "message": "Passive"
   },
-  "event_listeners/EventListenersView.js | remove": {
+  "event_listeners/EventListenersView.ts | remove": {
     "message": "Remove"
   },
-  "event_listeners/EventListenersView.js | revealInElementsPanel": {
+  "event_listeners/EventListenersView.ts | revealInElementsPanel": {
     "message": "Reveal in Elements panel"
   },
-  "event_listeners/EventListenersView.js | togglePassive": {
+  "event_listeners/EventListenersView.ts | togglePassive": {
     "message": "Toggle Passive"
   },
-  "event_listeners/EventListenersView.js | toggleWhetherEventListenerIs": {
+  "event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Toggle whether event listener is passive or blocking"
   },
   "help/ModuleUIStrings.ts | appearance": {

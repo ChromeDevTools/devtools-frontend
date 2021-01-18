@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as i18n from '../i18n/i18n.js';
@@ -41,14 +43,16 @@ export const UIStrings = {
   */
   passive: 'Passive',
 };
-const str_ = i18n.i18n.registerUIStrings('event_listeners/EventListenersView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('event_listeners/EventListenersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventListenersView extends UI.Widget.VBox {
-  /**
-   * @param {function():void} changeCallback
-   * @param {boolean=} enableDefaultTreeFocus
-   */
-  constructor(changeCallback, enableDefaultTreeFocus = false) {
+  _changeCallback: () => void;
+  _enableDefaultTreeFocus: boolean;
+  _treeOutline: UI.TreeOutline.TreeOutlineInShadow;
+  _emptyHolder: HTMLDivElement;
+  _linkifier: Components.Linkifier.Linkifier;
+  _treeItemMap: Map<string, EventListenersTreeElement>;
+  constructor(changeCallback: () => void, enableDefaultTreeFocus: boolean|undefined = false) {
     super();
     this._changeCallback = changeCallback;
     this._enableDefaultTreeFocus = enableDefaultTreeFocus;
@@ -66,14 +70,10 @@ export class EventListenersView extends UI.Widget.VBox {
     this._emptyHolder.textContent = i18nString(UIStrings.noEventListeners);
     this._emptyHolder.tabIndex = -1;
     this._linkifier = new Components.Linkifier.Linkifier();
-    /** @type {!Map<string, !EventListenersTreeElement>} */
     this._treeItemMap = new Map();
   }
 
-  /**
-   * @override
-   */
-  focus() {
+  focus(): void {
     if (!this._enableDefaultTreeFocus) {
       return;
     }
@@ -84,26 +84,16 @@ export class EventListenersView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Array<?SDK.RemoteObject.RemoteObject>} objects
-   * @return {!Promise<void>}
-   */
-  async addObjects(objects) {
+  async addObjects(objects: (SDK.RemoteObject.RemoteObject|null)[]): Promise<void> {
     this.reset();
     await Promise.all(objects.map(obj => obj ? this._addObject(obj) : Promise.resolve()));
     this.addEmptyHolderIfNeeded();
     this._eventListenersArrivedForTest();
   }
 
-  /**
-   * @param {!SDK.RemoteObject.RemoteObject} object
-   * @return {!Promise<void>}
-   */
-  _addObject(object) {
-    /** @type {!Array<!SDK.DOMDebuggerModel.EventListener>} */
-    let eventListeners;
-    /** @type {?FrameworkEventListenersObject}*/
-    let frameworkEventListenersObject = null;
+  _addObject(object: SDK.RemoteObject.RemoteObject): Promise<void> {
+    let eventListeners: SDK.DOMDebuggerModel.EventListener[];
+    let frameworkEventListenersObject: (FrameworkEventListenersObject|null)|null = null;
 
     const promises = [];
     const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel.DOMDebuggerModel);
@@ -114,24 +104,15 @@ export class EventListenersView extends UI.Widget.VBox {
     promises.push(frameworkEventListeners(object).then(storeFrameworkEventListenersObject));
     return Promise.all(promises).then(markInternalEventListeners).then(addEventListeners.bind(this));
 
-    /**
-     * @param {!Array<!SDK.DOMDebuggerModel.EventListener>} result
-     */
-    function storeEventListeners(result) {
+    function storeEventListeners(result: SDK.DOMDebuggerModel.EventListener[]): void {
       eventListeners = result;
     }
 
-    /**
-     * @param {?FrameworkEventListenersObject} result
-     */
-    function storeFrameworkEventListenersObject(result) {
+    function storeFrameworkEventListenersObject(result: FrameworkEventListenersObject|null): void {
       frameworkEventListenersObject = result;
     }
 
-    /**
-     * @return {!Promise<void>}
-     */
-    function markInternalEventListeners() {
+    function markInternalEventListeners(): Promise<void> {
       if (!frameworkEventListenersObject) {
         return Promise.resolve();
       }
@@ -140,34 +121,23 @@ export class EventListenersView extends UI.Widget.VBox {
         return Promise.resolve();
       }
       return frameworkEventListenersObject.internalHandlers.object()
-          .callFunctionJSON(isInternalEventListener, eventListeners.map(handlerArgument))
+          .callFunctionJSON(isInternalEventListener as (this: Object) => boolean[], eventListeners.map(handlerArgument))
           .then(setIsInternal);
 
-      /**
-       * @param {!SDK.DOMDebuggerModel.EventListener} listener
-       * @return {!Protocol.Runtime.CallArgument}
-       */
-      function handlerArgument(listener) {
+      function handlerArgument(listener: SDK.DOMDebuggerModel.EventListener): Protocol.Runtime.CallArgument {
         return SDK.RemoteObject.RemoteObject.toCallArgument(listener.handler());
       }
 
-      /**
-       * @return {!Array<boolean>}
-       * @this {Array<*>}
-       */
-      function isInternalEventListener() {
+      function isInternalEventListener(this: Function[]): boolean[] {
         const isInternal = [];
-        const internalHandlersSet = new Set(this);
+        const internalHandlersSet = new Set<Function>(this);
         for (const handler of arguments) {
           isInternal.push(internalHandlersSet.has(handler));
         }
         return isInternal;
       }
 
-      /**
-       * @param {!Array<boolean>} isInternal
-       */
-      function setIsInternal(isInternal) {
+      function setIsInternal(isInternal: boolean[]): void {
         for (let i = 0; i < eventListeners.length; ++i) {
           if (isInternal[i]) {
             eventListeners[i].markAsFramework();
@@ -176,10 +146,7 @@ export class EventListenersView extends UI.Widget.VBox {
       }
     }
 
-    /**
-     * @this {EventListenersView}
-     */
-    function addEventListeners() {
+    function addEventListeners(this: EventListenersView): void {
       this._addObjectEventListeners(object, eventListeners);
       if (frameworkEventListenersObject) {
         this._addObjectEventListeners(object, frameworkEventListenersObject.eventListeners);
@@ -187,11 +154,8 @@ export class EventListenersView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!SDK.RemoteObject.RemoteObject} object
-   * @param {?Array<!SDK.DOMDebuggerModel.EventListener>} eventListeners
-   */
-  _addObjectEventListeners(object, eventListeners) {
+  _addObjectEventListeners(
+      object: SDK.RemoteObject.RemoteObject, eventListeners: SDK.DOMDebuggerModel.EventListener[]|null): void {
     if (!eventListeners) {
       return;
     }
@@ -201,17 +165,12 @@ export class EventListenersView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {boolean} showFramework
-   * @param {boolean} showPassive
-   * @param {boolean} showBlocking
-   */
-  showFrameworkListeners(showFramework, showPassive, showBlocking) {
+  showFrameworkListeners(showFramework: boolean, showPassive: boolean, showBlocking: boolean): void {
     const eventTypes = this._treeOutline.rootElement().children();
     for (const eventType of eventTypes) {
       let hiddenEventType = true;
       for (const listenerElement of eventType.children()) {
-        const objectListenerElement = /** @type {!ObjectEventListenerBar} */ (listenerElement);
+        const objectListenerElement = listenerElement as ObjectEventListenerBar;
         const listenerOrigin = objectListenerElement.eventListener().origin();
         let hidden = false;
         if (listenerOrigin === SDK.DOMDebuggerModel.EventListener.Origin.FrameworkUser && !showFramework) {
@@ -233,11 +192,7 @@ export class EventListenersView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {string} type
-   * @return {!EventListenersTreeElement}
-   */
-  _getOrCreateTreeElementForType(type) {
+  _getOrCreateTreeElementForType(type: string): EventListenersTreeElement {
     let treeItem = this._treeItemMap.get(type);
     if (!treeItem) {
       treeItem = new EventListenersTreeElement(type, this._linkifier, this._changeCallback);
@@ -249,9 +204,9 @@ export class EventListenersView extends UI.Widget.VBox {
     return treeItem;
   }
 
-  addEmptyHolderIfNeeded() {
+  addEmptyHolderIfNeeded(): void {
     let allHidden = true;
-    let firstVisibleChild = null;
+    let firstVisibleChild: UI.TreeOutline.TreeElement|null = null;
     for (const eventType of this._treeOutline.rootElement().children()) {
       eventType.hidden = !eventType.firstChild();
       allHidden = allHidden && eventType.hidden;
@@ -267,7 +222,7 @@ export class EventListenersView extends UI.Widget.VBox {
     }
   }
 
-  reset() {
+  reset(): void {
     const eventTypes = this._treeOutline.rootElement().children();
     for (const eventType of eventTypes) {
       eventType.removeChildren();
@@ -275,17 +230,15 @@ export class EventListenersView extends UI.Widget.VBox {
     this._linkifier.reset();
   }
 
-  _eventListenersArrivedForTest() {
+  _eventListenersArrivedForTest(): void {
   }
 }
 
 export class EventListenersTreeElement extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {string} type
-   * @param {!Components.Linkifier.Linkifier} linkifier
-   * @param {function():void} changeCallback
-   */
-  constructor(type, linkifier, changeCallback) {
+  toggleOnClick: boolean;
+  _linkifier: Components.Linkifier.Linkifier;
+  _changeCallback: () => void;
+  constructor(type: string, linkifier: Components.Linkifier.Linkifier, changeCallback: () => void) {
     super(type);
     this.toggleOnClick = true;
     this._linkifier = linkifier;
@@ -293,37 +246,28 @@ export class EventListenersTreeElement extends UI.TreeOutline.TreeElement {
     UI.ARIAUtils.setAccessibleName(this.listItemElement, `${type}, event listener`);
   }
 
-  /**
-   * @param {!UI.TreeOutline.TreeElement} element1
-   * @param {!UI.TreeOutline.TreeElement} element2
-   * @return {number}
-   */
-  static comparator(element1, element2) {
+  static comparator(element1: UI.TreeOutline.TreeElement, element2: UI.TreeOutline.TreeElement): number {
     if (element1.title === element2.title) {
       return 0;
     }
     return element1.title > element2.title ? 1 : -1;
   }
 
-  /**
-   * @param {!SDK.DOMDebuggerModel.EventListener} eventListener
-   * @param {!SDK.RemoteObject.RemoteObject} object
-   */
-  addObjectEventListener(eventListener, object) {
+  addObjectEventListener(eventListener: SDK.DOMDebuggerModel.EventListener, object: SDK.RemoteObject.RemoteObject):
+      void {
     const treeElement = new ObjectEventListenerBar(eventListener, object, this._linkifier, this._changeCallback);
-    this.appendChild(/** @type {!UI.TreeOutline.TreeElement} */ (treeElement));
+    this.appendChild(treeElement as UI.TreeOutline.TreeElement);
   }
 }
 
-
 export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {!SDK.DOMDebuggerModel.EventListener} eventListener
-   * @param {!SDK.RemoteObject.RemoteObject} object
-   * @param {!Components.Linkifier.Linkifier} linkifier
-   * @param {function():void} changeCallback
-   */
-  constructor(eventListener, object, linkifier, changeCallback) {
+  _eventListener: SDK.DOMDebuggerModel.EventListener;
+  editable: boolean;
+  _changeCallback: () => void;
+  _valueTitle?: Element;
+  constructor(
+      eventListener: SDK.DOMDebuggerModel.EventListener, object: SDK.RemoteObject.RemoteObject,
+      linkifier: Components.Linkifier.Linkifier, changeCallback: () => void) {
     super('', true);
     this._eventListener = eventListener;
     this.editable = false;
@@ -331,11 +275,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     this._changeCallback = changeCallback;
   }
 
-  /**
-   * @override
-   * @returns {!Promise<void>}
-   */
-  async onpopulate() {
+  async onpopulate(): Promise<void> {
     const properties = [];
     const eventListener = this._eventListener;
     const runtimeModel = eventListener.domDebuggerModel().runtimeModel();
@@ -348,11 +288,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(this, properties, [], true, null);
   }
 
-  /**
-   * @param {!SDK.RemoteObject.RemoteObject} object
-   * @param {!Components.Linkifier.Linkifier} linkifier
-   */
-  _setTitle(object, linkifier) {
+  _setTitle(object: SDK.RemoteObject.RemoteObject, linkifier: Components.Linkifier.Linkifier): void {
     const title = this.listItemElement.createChild('span', 'event-listener-details');
     const subtitle = this.listItemElement.createChild('span', 'event-listener-tree-subtitle');
     const linkElement = linkifier.linkifyRawLocation(this._eventListener.location(), this._eventListener.sourceURL());
@@ -403,16 +339,16 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     });
   }
 
-  _removeListener() {
+  _removeListener(): void {
     this._removeListenerBar();
     this._eventListener.remove();
   }
 
-  _togglePassiveListener() {
+  _togglePassiveListener(): void {
     this._eventListener.togglePassive().then(() => this._changeCallback());
   }
 
-  _removeListenerBar() {
+  _removeListenerBar(): void {
     const parent = this.parent;
     if (!parent) {
       return;
@@ -430,19 +366,13 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     parent.hidden = allHidden;
   }
 
-  /**
-   * @return {!SDK.DOMDebuggerModel.EventListener}
-   */
-  eventListener() {
+  eventListener(): SDK.DOMDebuggerModel.EventListener {
     return this._eventListener;
   }
 
-  /**
-   * @override
-   */
-  onenter() {
+  onenter(): boolean {
     if (this._valueTitle) {
-      /** @type {!HTMLElement} */ (this._valueTitle).click();
+      (this._valueTitle as HTMLElement).click();
       return true;
     }
 

@@ -91,6 +91,7 @@ devtools_image_files = [
   "securityIcons.svg",
   "settings_14x14_icon.svg",
   "smallIcons.svg",
+  "sources_panel_icon.svg",
   "speech.png",
   "toolbarResizerVertical.png",
   "touchCursor_2x.png",

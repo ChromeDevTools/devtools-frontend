@@ -5,5 +5,11 @@
   "resources": [
     "developerResourcesView.css",
     "developerResourcesListView.css"
+  ],
+  "dependencies": [
+    "text_utils",
+    "ui",
+    "sdk",
+    "data_grid"
   ]
 }

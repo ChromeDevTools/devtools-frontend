@@ -7,8 +7,8 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("protocol_monitor") {
   sources = [
-    "ModuleUIStrings.js",
-    "ProtocolMonitor.js",
+    "ModuleUIStrings.ts",
+    "ProtocolMonitor.ts",
   ]
 
   deps = [
@@ -31,7 +31,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "protocol_monitor-legacy.js"
+  entrypoint = "protocol_monitor-legacy.ts"
 
   deps = [ ":bundle" ]
 }

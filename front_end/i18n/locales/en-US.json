@@ -1523,43 +1523,43 @@
   "persistence/WorkspaceSettingsTab.js | workspace": {
     "message": "Workspace"
   },
-  "protocol_monitor/ModuleUIStrings.js | protocolMonitor": {
+  "protocol_monitor/ModuleUIStrings.ts | protocolMonitor": {
     "message": "Protocol monitor"
   },
-  "protocol_monitor/ProtocolMonitor.js | clearAll": {
+  "protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Clear all"
   },
-  "protocol_monitor/ProtocolMonitor.js | direction": {
+  "protocol_monitor/ProtocolMonitor.ts | direction": {
     "message": "Direction"
   },
-  "protocol_monitor/ProtocolMonitor.js | documentation": {
+  "protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Documentation"
   },
-  "protocol_monitor/ProtocolMonitor.js | filter": {
+  "protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filter"
   },
-  "protocol_monitor/ProtocolMonitor.js | method": {
+  "protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Method"
   },
-  "protocol_monitor/ProtocolMonitor.js | noMessageSelected": {
+  "protocol_monitor/ProtocolMonitor.ts | noMessageSelected": {
     "message": "No message selected"
   },
-  "protocol_monitor/ProtocolMonitor.js | record": {
+  "protocol_monitor/ProtocolMonitor.ts | record": {
     "message": "Record"
   },
-  "protocol_monitor/ProtocolMonitor.js | request": {
+  "protocol_monitor/ProtocolMonitor.ts | request": {
     "message": "Request"
   },
-  "protocol_monitor/ProtocolMonitor.js | response": {
+  "protocol_monitor/ProtocolMonitor.ts | response": {
     "message": "Response"
   },
-  "protocol_monitor/ProtocolMonitor.js | sMs": {
+  "protocol_monitor/ProtocolMonitor.ts | sMs": {
     "message": "{PH1} ms"
   },
-  "protocol_monitor/ProtocolMonitor.js | target": {
+  "protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Target"
   },
-  "protocol_monitor/ProtocolMonitor.js | timestamp": {
+  "protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Timestamp"
   },
   "recorder/RecordingFileSystem.ts | defaultRecordingName": {

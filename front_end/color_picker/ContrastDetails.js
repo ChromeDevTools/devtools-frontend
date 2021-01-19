@@ -150,7 +150,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     // We add a bit to the required contrast to make sure we are over the limit.
-    return Common.Color.Color.findFgColorForContrast(fgColor, bgColor, requiredContrast + 0.05);
+    return Common.Color.Color.findFgColorForContrast(fgColor, bgColor, requiredContrast + 0.1);
   }
 
   /**

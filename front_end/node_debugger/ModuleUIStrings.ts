@@ -9,4 +9,4 @@ export const UIStrings = {
   */
   node: 'Node',
 };
-i18n.i18n.registerUIStrings('node_debugger/ModuleUIStrings.js', UIStrings);
+i18n.i18n.registerUIStrings('node_debugger/ModuleUIStrings.ts', UIStrings);

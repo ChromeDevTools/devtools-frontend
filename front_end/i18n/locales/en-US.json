@@ -1022,172 +1022,172 @@
   "lighthouse/LighthouseStatusView.js | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]"
   },
-  "media/EventDisplayTable.js | eventDisplay": {
+  "media/EventDisplayTable.ts | eventDisplay": {
     "message": "Event display"
   },
-  "media/EventDisplayTable.js | eventName": {
+  "media/EventDisplayTable.ts | eventName": {
     "message": "Event name"
   },
-  "media/EventDisplayTable.js | timestamp": {
+  "media/EventDisplayTable.ts | timestamp": {
     "message": "Timestamp"
   },
-  "media/EventDisplayTable.js | value": {
+  "media/EventDisplayTable.ts | value": {
     "message": "Value"
   },
-  "media/EventTimelineView.js | bufferingStatus": {
+  "media/EventTimelineView.ts | bufferingStatus": {
     "message": "Buffering Status"
   },
-  "media/EventTimelineView.js | playbackStatus": {
+  "media/EventTimelineView.ts | playbackStatus": {
     "message": "Playback Status"
   },
-  "media/ModuleUIStrings.js | media": {
+  "media/ModuleUIStrings.ts | media": {
     "message": "Media"
   },
-  "media/ModuleUIStrings.js | video": {
+  "media/ModuleUIStrings.ts | video": {
     "message": "video"
   },
-  "media/PlayerDetailView.js | events": {
+  "media/PlayerDetailView.ts | events": {
     "message": "Events"
   },
-  "media/PlayerDetailView.js | messages": {
+  "media/PlayerDetailView.ts | messages": {
     "message": "Messages"
   },
-  "media/PlayerDetailView.js | playerEvents": {
+  "media/PlayerDetailView.ts | playerEvents": {
     "message": "Player events"
   },
-  "media/PlayerDetailView.js | playerMessages": {
+  "media/PlayerDetailView.ts | playerMessages": {
     "message": "Player messages"
   },
-  "media/PlayerDetailView.js | playerProperties": {
+  "media/PlayerDetailView.ts | playerProperties": {
     "message": "Player properties"
   },
-  "media/PlayerDetailView.js | playerTimeline": {
+  "media/PlayerDetailView.ts | playerTimeline": {
     "message": "Player timeline"
   },
-  "media/PlayerDetailView.js | properties": {
+  "media/PlayerDetailView.ts | properties": {
     "message": "Properties"
   },
-  "media/PlayerDetailView.js | timeline": {
+  "media/PlayerDetailView.ts | timeline": {
     "message": "Timeline"
   },
-  "media/PlayerListView.js | hideAllOthers": {
+  "media/PlayerListView.ts | hideAllOthers": {
     "message": "Hide all others"
   },
-  "media/PlayerListView.js | hidePlayer": {
+  "media/PlayerListView.ts | hidePlayer": {
     "message": "Hide player"
   },
-  "media/PlayerListView.js | players": {
+  "media/PlayerListView.ts | players": {
     "message": "Players"
   },
-  "media/PlayerListView.js | savePlayerInfo": {
+  "media/PlayerListView.ts | savePlayerInfo": {
     "message": "Save player info"
   },
-  "media/PlayerMessagesView.js | all": {
+  "media/PlayerMessagesView.ts | all": {
     "message": "All"
   },
-  "media/PlayerMessagesView.js | custom": {
+  "media/PlayerMessagesView.ts | custom": {
     "message": "Custom"
   },
-  "media/PlayerMessagesView.js | debug": {
+  "media/PlayerMessagesView.ts | debug": {
     "message": "Debug"
   },
-  "media/PlayerMessagesView.js | default": {
+  "media/PlayerMessagesView.ts | default": {
     "message": "Default"
   },
-  "media/PlayerMessagesView.js | error": {
+  "media/PlayerMessagesView.ts | error": {
     "message": "Error"
   },
-  "media/PlayerMessagesView.js | filterLogMessages": {
+  "media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "Filter log messages"
   },
-  "media/PlayerMessagesView.js | info": {
+  "media/PlayerMessagesView.ts | info": {
     "message": "Info"
   },
-  "media/PlayerMessagesView.js | logLevel": {
+  "media/PlayerMessagesView.ts | logLevel": {
     "message": "Log level:"
   },
-  "media/PlayerMessagesView.js | warning": {
+  "media/PlayerMessagesView.ts | warning": {
     "message": "Warning"
   },
-  "media/PlayerPropertiesView.js | audio": {
+  "media/PlayerPropertiesView.ts | audio": {
     "message": "Audio"
   },
-  "media/PlayerPropertiesView.js | bitrate": {
+  "media/PlayerPropertiesView.ts | bitrate": {
     "message": "Bitrate"
   },
-  "media/PlayerPropertiesView.js | decoder": {
+  "media/PlayerPropertiesView.ts | decoder": {
     "message": "Decoder"
   },
-  "media/PlayerPropertiesView.js | decoderName": {
+  "media/PlayerPropertiesView.ts | decoderName": {
     "message": "Decoder name"
   },
-  "media/PlayerPropertiesView.js | decryptingDemuxer": {
+  "media/PlayerPropertiesView.ts | decryptingDemuxer": {
     "message": "Decrypting demuxer"
   },
-  "media/PlayerPropertiesView.js | duration": {
+  "media/PlayerPropertiesView.ts | duration": {
     "message": "Duration"
   },
-  "media/PlayerPropertiesView.js | encoderName": {
+  "media/PlayerPropertiesView.ts | encoderName": {
     "message": "Encoder name"
   },
-  "media/PlayerPropertiesView.js | fileSize": {
+  "media/PlayerPropertiesView.ts | fileSize": {
     "message": "File size"
   },
-  "media/PlayerPropertiesView.js | frameRate": {
+  "media/PlayerPropertiesView.ts | frameRate": {
     "message": "Frame rate"
   },
-  "media/PlayerPropertiesView.js | hardwareDecoder": {
+  "media/PlayerPropertiesView.ts | hardwareDecoder": {
     "message": "Hardware decoder"
   },
-  "media/PlayerPropertiesView.js | hardwareEncoder": {
+  "media/PlayerPropertiesView.ts | hardwareEncoder": {
     "message": "Hardware encoder"
   },
-  "media/PlayerPropertiesView.js | noDecoder": {
+  "media/PlayerPropertiesView.ts | noDecoder": {
     "message": "No decoder"
   },
-  "media/PlayerPropertiesView.js | noEncoder": {
+  "media/PlayerPropertiesView.ts | noEncoder": {
     "message": "No encoder"
   },
-  "media/PlayerPropertiesView.js | noTextTracks": {
+  "media/PlayerPropertiesView.ts | noTextTracks": {
     "message": "No text tracks"
   },
-  "media/PlayerPropertiesView.js | playbackFrameTitle": {
+  "media/PlayerPropertiesView.ts | playbackFrameTitle": {
     "message": "Playback frame title"
   },
-  "media/PlayerPropertiesView.js | playbackFrameUrl": {
+  "media/PlayerPropertiesView.ts | playbackFrameUrl": {
     "message": "Playback frame URL"
   },
-  "media/PlayerPropertiesView.js | properties": {
+  "media/PlayerPropertiesView.ts | properties": {
     "message": "Properties"
   },
-  "media/PlayerPropertiesView.js | rangeHeaderSupport": {
+  "media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range header support"
   },
-  "media/PlayerPropertiesView.js | resolution": {
+  "media/PlayerPropertiesView.ts | resolution": {
     "message": "Resolution"
   },
-  "media/PlayerPropertiesView.js | singleoriginPlayback": {
+  "media/PlayerPropertiesView.ts | singleoriginPlayback": {
     "message": "Single-origin playback"
   },
-  "media/PlayerPropertiesView.js | startTime": {
+  "media/PlayerPropertiesView.ts | startTime": {
     "message": "Start time"
   },
-  "media/PlayerPropertiesView.js | streaming": {
+  "media/PlayerPropertiesView.ts | streaming": {
     "message": "Streaming"
   },
-  "media/PlayerPropertiesView.js | textTrack": {
+  "media/PlayerPropertiesView.ts | textTrack": {
     "message": "Text track"
   },
-  "media/PlayerPropertiesView.js | track": {
+  "media/PlayerPropertiesView.ts | track": {
     "message": "Track"
   },
-  "media/PlayerPropertiesView.js | video": {
+  "media/PlayerPropertiesView.ts | video": {
     "message": "Video"
   },
-  "media/PlayerPropertiesView.js | videoFreezingScore": {
+  "media/PlayerPropertiesView.ts | videoFreezingScore": {
     "message": "Video freezing score"
   },
-  "media/PlayerPropertiesView.js | videoPlaybackRoughness": {
+  "media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
     "message": "Video playback roughness"
   },
   "mobile_throttling/MobileThrottlingSelector.ts | advanced": {

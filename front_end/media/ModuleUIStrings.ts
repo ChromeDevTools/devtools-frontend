@@ -13,4 +13,4 @@ export const UIStrings = {
   */
   video: 'video',
 };
-i18n.i18n.registerUIStrings('media/ModuleUIStrings.js', UIStrings);
+i18n.i18n.registerUIStrings('media/ModuleUIStrings.ts', UIStrings);

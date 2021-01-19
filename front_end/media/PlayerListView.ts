@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {MainView, TriggerDispatcher} from './MainView.js';  // eslint-disable-line no-unused-vars
-import {PlayerEvent} from './MediaModel.js';      // eslint-disable-line no-unused-vars
+import {PlayerEvent} from './MediaModel.js';                // eslint-disable-line no-unused-vars
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
 
 export const UIStrings = {
@@ -27,28 +29,26 @@ export const UIStrings = {
   */
   players: 'Players',
 };
-const str_ = i18n.i18n.registerUIStrings('media/PlayerListView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('media/PlayerListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @typedef {{playerTitle: string, playerID: string, exists: boolean, playing: boolean, titleEdited: boolean}}
- */
-// @ts-ignore typedef
-export let PlayerStatus;
-
-/**
- * @typedef {{playerStatus: !PlayerStatus, playerTitleElement: ?HTMLElement}}
- */
-// @ts-ignore typedef
-export let PlayerStatusMapElement;
-
+export interface PlayerStatus {
+  playerTitle: string;
+  playerID: string;
+  exists: boolean;
+  playing: boolean;
+  titleEdited: boolean;
+}
+export interface PlayerStatusMapElement {
+  playerStatus: PlayerStatus;
+  playerTitleElement: HTMLElement|null;
+}
 
 export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {!PlayerStatus} playerStatus
-   * @param {!MainView} displayContainer
-   * @param {string} playerID
-   */
-  constructor(playerStatus, displayContainer, playerID) {
+  titleFromUrl: boolean;
+  _playerStatus: PlayerStatus;
+  _displayContainer: MainView;
+
+  constructor(playerStatus: PlayerStatus, displayContainer: MainView, playerID: string) {
     super(playerStatus.playerTitle, false);
     this.titleFromUrl = true;
     this._playerStatus = playerStatus;
@@ -58,21 +58,12 @@ export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.addEventListener('contextmenu', this._rightClickContextMenu.bind(this, playerID), false);
   }
 
-  /**
-   * @override
-   * @param {boolean=} selectedByUser
-   * @return {boolean}
-   */
-  onselect(selectedByUser) {
+  onselect(_selectedByUser?: boolean): boolean {
     this._displayContainer.renderMainPanel(this._playerStatus.playerID);
     return true;
   }
 
-  /**
-   * @param {string} playerID
-   * @param {!Event} event
-   */
-  _rightClickContextMenu(playerID, event) {
+  _rightClickContextMenu(playerID: string, event: Event): boolean {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(i18nString(UIStrings.hidePlayer), this._hidePlayer.bind(this, playerID));
     contextMenu.headerSection().appendItem(i18nString(UIStrings.hideAllOthers), this._hideOthers.bind(this, playerID));
@@ -81,30 +72,26 @@ export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
     return true;
   }
 
-  /** @param {string} playerID */
-  _hidePlayer(playerID) {
+  _hidePlayer(playerID: string): void {
     this._displayContainer.markPlayerForDeletion(playerID);
   }
 
-  /** @param {string} playerID */
-  _savePlayer(playerID) {
+  _savePlayer(playerID: string): void {
     this._displayContainer.exportPlayerData(playerID);
   }
 
-  /** @param {string} playerID */
-  _hideOthers(playerID) {
+  _hideOthers(playerID: string): void {
     this._displayContainer.markOtherPlayersForDeletion(playerID);
   }
 }
 
-/**
- * @implements TriggerDispatcher
- */
-export class PlayerListView extends UI.Widget.VBox {
-  /**
-   * @param {!MainView} mainContainer
-   */
-  constructor(mainContainer) {
+export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher {
+  _playerStatuses: Map<string, PlayerEntryTreeElement>;
+  _mainContainer: MainView;
+  _sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
+  _playerList: UI.TreeOutline.TreeElement;
+
+  constructor(mainContainer: MainView) {
     super(true);
 
     this._playerStatuses = new Map();
@@ -122,17 +109,12 @@ export class PlayerListView extends UI.Widget.VBox {
     this._playerList.listItemElement.classList.add('player-entry-header');
   }
 
-  /** @param {string} playerID */
-  deletePlayer(playerID) {
-    this._playerList.removeChild(this._playerStatuses.get(playerID));
+  deletePlayer(playerID: string): void {
+    this._playerList.removeChild(this._playerStatuses.get(playerID) as UI.TreeOutline.TreeElement);
     this._playerStatuses.delete(playerID);
   }
 
-  /**
-   * @param {string} title
-   * @return {!UI.TreeOutline.TreeElement}
-   */
-  _addListSection(title) {
+  _addListSection(title: string): UI.TreeOutline.TreeElement {
     const treeElement = new UI.TreeOutline.TreeElement(title, true);
     treeElement.listItemElement.classList.add('storage-group-list-item');
     treeElement.setCollapsible(false);
@@ -141,52 +123,38 @@ export class PlayerListView extends UI.Widget.VBox {
     return treeElement;
   }
 
-  /**
-   * @param {string} playerID
-   */
-  addMediaElementItem(playerID) {
+  addMediaElementItem(playerID: string): void {
     const playerStatus = {playerTitle: playerID, playerID: playerID, exists: true, playing: false, titleEdited: false};
     const playerElement = new PlayerEntryTreeElement(playerStatus, this._mainContainer, playerID);
     this._playerStatuses.set(playerID, playerElement);
     this._playerList.appendChild(playerElement);
   }
 
-  /**
-   * @param {string} playerID
-   * @param {string} newTitle
-   * @param {boolean} isTitleExtractedFromUrl
-   */
-  setMediaElementPlayerTitle(playerID, newTitle, isTitleExtractedFromUrl) {
+  setMediaElementPlayerTitle(playerID: string, newTitle: string, isTitleExtractedFromUrl: boolean): void {
     if (this._playerStatuses.has(playerID)) {
       const sidebarEntry = this._playerStatuses.get(playerID);
-      if (!isTitleExtractedFromUrl || sidebarEntry.titleFromUrl) {
+      if (sidebarEntry && (!isTitleExtractedFromUrl || sidebarEntry.titleFromUrl)) {
         sidebarEntry.title = newTitle;
         sidebarEntry.titleFromUrl = isTitleExtractedFromUrl;
       }
     }
   }
 
-  /**
-   * @param {string} playerID
-   * @param {string} iconName
-   */
-  setMediaElementPlayerIcon(playerID, iconName) {
+  setMediaElementPlayerIcon(playerID: string, iconName: string): void {
     if (this._playerStatuses.has(playerID)) {
       const sidebarEntry = this._playerStatuses.get(playerID);
+      if (!sidebarEntry) {
+        throw new Error('sidebarEntry is expected to not be null');
+      }
       sidebarEntry.setLeadingIcons([UI.Icon.Icon.create('smallicon-videoplayer-' + iconName, 'media-player')]);
     }
   }
 
-  /**
-   * @override
-   * @param {string} playerID
-   * @param {!Protocol.Media.PlayerProperty} property
-   */
-  onProperty(playerID, property) {
+  onProperty(playerID: string, property: Protocol.Media.PlayerProperty): void {
     // Sometimes the title will be an empty string, since this is provided
     // by the website. We don't want to swap title to an empty string.
     if (property.name === PlayerPropertyKeys.kFrameTitle && property.value) {
-      this.setMediaElementPlayerTitle(playerID, /** @type {string} */ (property.value), false);
+      this.setMediaElementPlayerTitle(playerID, property.value as string, false);
     }
 
     // Url always has a value.
@@ -196,30 +164,15 @@ export class PlayerListView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @override
-   * @param {string} playerID
-   * @param {!Protocol.Media.PlayerError} error
-   */
-  onError(playerID, error) {
+  onError(_playerID: string, _error: Protocol.Media.PlayerError): void {
     // TODO(tmathmeyer) show an error icon next to the player name
   }
 
-  /**
-   * @override
-   * @param {string} playerID
-   * @param {!Protocol.Media.PlayerMessage} message
-   */
-  onMessage(playerID, message) {
+  onMessage(_playerID: string, _message: Protocol.Media.PlayerMessage): void {
     // TODO(tmathmeyer) show a message count number next to the player name.
   }
 
-  /**
-   * @override
-   * @param {string} playerID
-   * @param {!PlayerEvent} event
-   */
-  onEvent(playerID, event) {
+  onEvent(playerID: string, event: PlayerEvent): void {
     if (event.value === 'PLAY') {
       this.setMediaElementPlayerIcon(playerID, 'playing');
     } else if (event.value === 'PAUSE') {

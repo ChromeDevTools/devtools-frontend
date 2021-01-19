@@ -2,12 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @param {number} ms
- * @param {number} decimalPlaces
- * @return {string}
- */
-export function FormatMillisecondsToSeconds(ms, decimalPlaces) {
+/* eslint-disable rulesdir/no_underscored_properties */
+
+export function FormatMillisecondsToSeconds(ms: number, decimalPlaces: number): string {
   const roundPower = Math.pow(10, 3 - decimalPlaces);
   const denominatorPower = Math.pow(10, Math.max(0, decimalPlaces));
   return `${Math.round(ms / roundPower) / denominatorPower} s`;
@@ -18,13 +15,13 @@ export function FormatMillisecondsToSeconds(ms, decimalPlaces) {
  * kept in a separate file for unit testing.
  */
 export class Bounds {
-  /**
-   * @param {number} initialLow
-   * @param {number} initialHigh
-   * @param {number} maxRange
-   * @param {number} minRange
-   */
-  constructor(initialLow, initialHigh, maxRange, minRange) {
+  _min: number;
+  _max: number;
+  _low: number;
+  _high: number;
+  _maxRange: number;
+  _minRange: number;
+  constructor(initialLow: number, initialHigh: number, maxRange: number, minRange: number) {
     this._min = initialLow;
     this._max = initialHigh;
     this._low = this._min;
@@ -33,42 +30,27 @@ export class Bounds {
     this._minRange = minRange;
   }
 
-  /**
-   * @return {number}
-   */
-  get low() {
+  get low(): number {
     return this._low;
   }
 
-  /**
-   * @return {number}
-   */
-  get high() {
+  get high(): number {
     return this._high;
   }
 
-  /**
-   * @return {number}
-   */
-  get min() {
+  get min(): number {
     return this._min;
   }
 
-  /**
-   * @return {number}
-   */
-  get max() {
+  get max(): number {
     return this._max;
   }
 
-  /**
-   * @return {number}
-   */
-  get range() {
+  get range(): number {
     return this._high - this._low;
   }
 
-  _reassertBounds() {
+  _reassertBounds(): void {
     let needsAdjustment = true;
     while (needsAdjustment) {
       needsAdjustment = false;
@@ -93,10 +75,8 @@ export class Bounds {
 
   /**
    * zoom out |amount| ticks at position [0, 1] along the current range of the timeline.
-   * @param {number} amount
-   * @param {number} position
    */
-  zoomOut(amount, position) {
+  zoomOut(amount: number, position: number): void {
     const range = this._high - this._low;
     const growSize = range * Math.pow(1.1, amount) - range;
     const lowEnd = growSize * position;
@@ -108,10 +88,8 @@ export class Bounds {
 
   /**
    * zoom in |amount| ticks at position [0, 1] along the current range of the timeline.
-   * @param {number} amount
-   * @param {number} position
    */
-  zoomIn(amount, position) {
+  zoomIn(amount: number, position: number): void {
     const range = this._high - this._low;
     if (this.range <= this._minRange) {
       return;
@@ -127,9 +105,8 @@ export class Bounds {
 
   /**
    * Add Xms to the max value, and scroll the timeline forward if the end is in sight.
-   * @param {number} amount
    */
-  addMax(amount) {
+  addMax(amount: number): void {
     const range = this._high - this._low;
     const isAtHighEnd = this._high === this._max;
     const isZoomedOut = this._low === this._min || range >= this._maxRange;
@@ -143,9 +120,8 @@ export class Bounds {
 
   /**
    * Attempt to push the maximum time up to |time| ms.
-   * @param {number} time
    */
-  pushMaxAtLeastTo(time) {
+  pushMaxAtLeastTo(time: number): boolean {
     if (this._max < time) {
       this.addMax(time - this._max);
       return true;

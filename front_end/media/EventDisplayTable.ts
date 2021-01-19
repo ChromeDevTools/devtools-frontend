@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
@@ -27,46 +29,32 @@ export const UIStrings = {
   */
   eventDisplay: 'Event display',
 };
-const str_ = i18n.i18n.registerUIStrings('media/EventDisplayTable.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('media/EventDisplayTable.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @typedef {{
- *     id: string,
- *     title: string,
- *     sortable: boolean,
- *     weight: (number|undefined),
- * }}
- */
-// @ts-ignore typedef
-export let EventDisplayColumnConfig;
+export interface EventDisplayColumnConfig {
+  id: string;
+  title: string;
+  sortable: boolean;
+  weight?: number;
+}
 
-/** @enum {string} */
-export const MediaEventColumnKeys = {
-  Timestamp: 'displayTimestamp',
-  Event: 'event',
-  Value: 'value'
-};
+export const enum MediaEventColumnKeys {
+  Timestamp = 'displayTimestamp',
+  Event = 'event',
+  Value = 'value'
+}
 
-/**
- * @extends {DataGrid.DataGrid.DataGridNode<!EventNode>}
- */
-export class EventNode extends DataGrid.DataGrid.DataGridNode {
-  /**
-   * @param {!PlayerEvent} event
-   */
-  constructor(event) {
+export class EventNode extends DataGrid.DataGrid.DataGridNode<EventNode> {
+  _expandableElement: SourceFrame.JSONView.JSONView|null;
+
+  constructor(event: PlayerEvent) {
     super(event, false);
     this._expandableElement = null;
   }
 
-  /**
-   * @override
-   * @param {string} columnId
-   * @return {!HTMLElement}
-   */
-  createCell(columnId) {
+  createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
-    const cellData = /** @type string */ (this.data[columnId]);
+    const cellData = this.data[columnId] as string;
     if (columnId === MediaEventColumnKeys.Value) {
       const enclosed = cell.createChild('div', 'event-display-table-contents-json-wrapper');
       this._expandableElement =
@@ -82,6 +70,9 @@ export class EventNode extends DataGrid.DataGrid.DataGridNode {
 }
 
 export class PlayerEventsView extends UI.Widget.VBox {
+  _dataGrid: DataGrid.DataGrid.DataGridImpl<EventNode>;
+  _firstEventTime: number;
+
   constructor() {
     super();
 
@@ -96,12 +87,13 @@ export class PlayerEventsView extends UI.Widget.VBox {
         weight: 1,
         sortable: false,
       },
-      {id: MediaEventColumnKeys.Event, title: i18nString(UIStrings.eventName), weight: 2, sortable: false}, {
+      {id: MediaEventColumnKeys.Event, title: i18nString(UIStrings.eventName), weight: 2, sortable: false},
+      {
         id: MediaEventColumnKeys.Value,
         title: i18nString(UIStrings.value),
         weight: 7,
         sortable: false,
-      }
+      },
     ]);
 
     this._firstEventTime = 0;
@@ -109,11 +101,7 @@ export class PlayerEventsView extends UI.Widget.VBox {
     this._dataGrid.asWidget().show(this.contentElement);
   }
 
-  /**
-   * @param {!Array.<!EventDisplayColumnConfig>} headers
-   * @return {!DataGrid.DataGrid.DataGridImpl<!EventNode>}
-   */
-  _createDataGrid(headers) {
+  _createDataGrid(headers: EventDisplayColumnConfig[]): DataGrid.DataGrid.DataGridImpl<EventNode> {
     const gridColumnDescs = [];
     for (const headerDesc of headers) {
       gridColumnDescs.push(PlayerEventsView._convertToGridDescriptor(headerDesc));
@@ -133,25 +121,22 @@ export class PlayerEventsView extends UI.Widget.VBox {
     return datagrid;
   }
 
-  /**
-   * @param {!PlayerEvent} event
-   */
-  onEvent(event) {
+  onEvent(event: PlayerEvent): void {
     if (this._firstEventTime === 0 && typeof event.timestamp === 'number') {
       this._firstEventTime = event.timestamp;
     }
 
     event = this._subtractFirstEventTime(event);
-    const stringified = /** @type {string} */ (event.value);
+    const stringified = event.value as string;
     try {
       const json = JSON.parse(stringified);
       event.event = json.event;
       delete json['event'];
       event.value = json;
       const node = new EventNode(event);
-      const scroll = /** @type {!HTMLElement} */ (this._dataGrid.scrollContainer);
+      const scroll = this._dataGrid.scrollContainer as HTMLElement;
       const isAtBottom = scroll.scrollTop === (scroll.scrollHeight - scroll.offsetHeight);
-      this._dataGrid.rootNode().appendChild(/** @type {!DataGrid.DataGrid.DataGridNode<!EventNode>} */ (node));
+      this._dataGrid.rootNode().appendChild(node as DataGrid.DataGrid.DataGridNode<EventNode>);
       if (isAtBottom) {
         scroll.scrollTop = scroll.scrollHeight;
       }
@@ -161,27 +146,20 @@ export class PlayerEventsView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!PlayerEvent} event
-   */
-  _subtractFirstEventTime(event) {
+  _subtractFirstEventTime(event: PlayerEvent): PlayerEvent {
     if (typeof event.timestamp === 'number') {
       event.displayTimestamp = (event.timestamp - this._firstEventTime).toFixed(3);
     }
     return event;
   }
 
-  /**
-   * @param {!EventDisplayColumnConfig} columnConfig
-   * @return {!DataGrid.DataGrid.ColumnDescriptor}
-   */
-  static _convertToGridDescriptor(columnConfig) {
-    return /** @type {!DataGrid.DataGrid.ColumnDescriptor} */ ({
+  static _convertToGridDescriptor(columnConfig: EventDisplayColumnConfig): DataGrid.DataGrid.ColumnDescriptor {
+    return {
       id: columnConfig.id,
       title: columnConfig.title,
       sortable: columnConfig.sortable,
       weight: columnConfig.weight || 0,
-      sort: DataGrid.DataGrid.Order.Ascending
-    });
+      sort: DataGrid.DataGrid.Order.Ascending,
+    } as DataGrid.DataGrid.ColumnDescriptor;
   }
 }

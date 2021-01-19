@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
-import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
+import * as SDK from '../sdk/sdk.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import * as UI from '../ui/ui.js';
 
-import {PlayerEvent} from './MediaModel.js';  // eslint-disable-line no-unused-vars
 import {Bounds, FormatMillisecondsToSeconds} from './TickingFlameChartHelpers.js';
 
 const defaultFont = '11px ' + Host.Platform.fontFamily();
@@ -27,18 +28,13 @@ const DefaultStyle = {
   itemsHeight: 20,
   shareHeaderLine: false,
   useFirstLineForOverview: false,
-  useDecoratorsForOverview: false
+  useDecoratorsForOverview: false,
 };
 
 export const HotColorScheme = ['#ffba08', '#faa307', '#f48c06', '#e85d04', '#dc2f02', '#d00000', '#9d0208'];
 export const ColdColorScheme = ['#7400b8', '#6930c3', '#5e60ce', '#5390d9', '#4ea8de', '#48bfe3', '#56cfe1', '#64dfdf'];
 
-
-/**
- * @param {string} backgroundColor
- * @return {string}
- */
-function calculateFontColor(backgroundColor) {
+function calculateFontColor(backgroundColor: string): string {
   const parsedColor = Common.Color.Color.parse(backgroundColor);
   // Dark background needs a light font.
   if (parsedColor && parsedColor.hsla()[2] < 0.5) {
@@ -47,42 +43,40 @@ function calculateFontColor(backgroundColor) {
   return '#444';
 }
 
+interface EventHandlers {
+  setLive: (arg0: number) => number;
+  setComplete: (arg0: number) => void;
+  updateMaxTime: (arg0: number) => void;
+}
 
-/**
- * @typedef {{
- *     setLive: (!function(number):number),
- *     setComplete: (!function(number):void),
- *     updateMaxTime: (!function(number):void)
- * }}
- */
-let EventHandlers;  // eslint-disable-line no-unused-vars
-
-
-/**
- * @typedef {{
- *     level: number,
- *     startTime: number,
- *     duration: (number|undefined),
- *     name: string,
- *     color: (string|undefined),
- *     hoverData: (Object|undefined|null)
- * }}
- */
-// @ts-ignore typedef
-export let EventProperties;  // eslint-disable-line no-unused-vars
+export interface EventProperties {
+  level: number;
+  startTime: number;
+  duration?: number;
+  name: string;
+  color?: string;
+  hoverData?: Object|null;
+}
 
 /**
  * Wrapper class for each event displayed on the timeline.
  */
 export class Event {
-  /**
-   * @param {*} timelineData
-   * @param {!EventHandlers} eventHandlers
-   * @param {!EventProperties=} eventProperties
-   */
+  _timelineData: PerfUI.FlameChart.TimelineData;
+  _setLive: (arg0: number) => number;
+  _setComplete: (arg0: number) => void;
+  _updateMaxTime: (arg0: number) => void;
+  _selfIndex: number;
+  _live: boolean;
+  _title: string;
+  _color: string;
+  _fontColor: string;
+  _hoverData: Object;
+
   constructor(
-      timelineData, eventHandlers,
-      eventProperties = {color: undefined, duration: undefined, hoverData: {}, level: 0, name: '', startTime: 0}) {
+      timelineData: PerfUI.FlameChart.TimelineData, eventHandlers: EventHandlers,
+      eventProperties: EventProperties|
+      undefined = {color: undefined, duration: undefined, hoverData: {}, level: 0, name: '', startTime: 0}) {
     // These allow the event to privately change it's own data in the timeline.
     this._timelineData = timelineData;
     this._setLive = eventHandlers.setLive;
@@ -96,9 +90,9 @@ export class Event {
     // Can't use the dict||or||default syntax, since NaN is a valid expected duration.
     const duration = eventProperties['duration'] === undefined ? 0 : eventProperties['duration'];
 
-    this._timelineData.entryLevels.push(eventProperties['level'] || 0);
-    this._timelineData.entryStartTimes.push(eventProperties['startTime'] || 0);
-    this._timelineData.entryTotalTimes.push(duration);  // May initially push -1
+    (this._timelineData.entryLevels as number[]).push(eventProperties['level'] || 0);
+    (this._timelineData.entryStartTimes as number[]).push(eventProperties['startTime'] || 0);
+    (this._timelineData.entryTotalTimes as number[]).push(duration);  // May initially push -1
 
     // If -1 was pushed, we need to update it. The set end time method helps with this.
     if (duration === -1) {
@@ -113,9 +107,8 @@ export class Event {
 
   /**
    * Render hovertext into the |htmlElement|
-   * @param {!HTMLElement} htmlElement
    */
-  decorate(htmlElement) {
+  decorate(htmlElement: HTMLElement): void {
     htmlElement.createChild('span').textContent = `Name: ${this._title}`;
     htmlElement.createChild('br');
 
@@ -135,7 +128,7 @@ export class Event {
    * or to be a fixed time.
    * @param {number} time
    */
-  set endTime(time) {
+  set endTime(time: number) {
     // Setting end time to -1 signals that an event becomes live
     if (time === -1) {
       this._timelineData.entryTotalTimes[this._selfIndex] = this._setLive(this._selfIndex);
@@ -149,78 +142,62 @@ export class Event {
     }
   }
 
-  /**
-   * @return {number}
-   */
-  get id() {
+  get id(): number {
     return this._selfIndex;
   }
 
-  /**
-   * @param {number} level
-   */
-  set level(level) {
+  set level(level: number) {
     this._timelineData.entryLevels[this._selfIndex] = level;
   }
 
-  /**
-   * @param {string} text
-   */
-  set title(text) {
+  set title(text: string) {
     this._title = text;
   }
 
-  /**
-   * @return {string}
-   */
-  get title() {
+  get title(): string {
     return this._title;
   }
 
-  /**
-   * @param {string} color
-   */
-  set color(color) {
+  set color(color: string) {
     this._color = color;
     this._fontColor = calculateFontColor(this._color);
   }
 
-  /**
-   * @return {string}
-   */
-  get color() {
+  get color(): string {
     return this._color;
   }
 
-  get fontColor() {
+  get fontColor(): string {
     return this._fontColor;
   }
 
-  /**
-   * @return {number}
-   */
-  get startTime() {
+  get startTime(): number {
     // Round it
     return this._timelineData.entryStartTimes[this._selfIndex];
   }
 
-  /**
-   * @return {number}
-   */
-  get duration() {
+  get duration(): number {
     return this._timelineData.entryTotalTimes[this._selfIndex];
   }
 
-  /**
-   * @return {boolean}
-   */
-  get live() {
+  get live(): boolean {
     return this._live;
   }
 }
 
-
 export class TickingFlameChart extends UI.Widget.VBox {
+  _intervalTimer: number;
+  _lastTimestamp: number;
+  _canTick: boolean;
+  _ticking: boolean;
+  _isShown: boolean;
+  _bounds: Bounds;
+  _dataProvider: TickingFlameChartDataProvider;
+  _delegate: TickingFlameChartDelegate;
+  _chartGroupExpansionSetting: Common.Settings.LegacySetting<Object>;
+  _chart: PerfUI.FlameChart.FlameChart;
+  _stoppedPermanently?: boolean;
+
   constructor() {
     super();
 
@@ -254,7 +231,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
 
     // Scrolling should change the current bounds, and repaint the chart.
     this._chart.bindCanvasEvent('wheel', e => {
-      this._onScroll(/** @type {!WheelEvent} */ (e));
+      this._onScroll(e as WheelEvent);
     });
 
     // Add the chart.
@@ -263,19 +240,16 @@ export class TickingFlameChart extends UI.Widget.VBox {
 
   /**
    * Add a marker with |properties| at |time|.
-   * @param {!EventProperties} properties
    */
-  addMarker(properties) {
+  addMarker(properties: EventProperties): void {
     properties['duration'] = NaN;
     this.startEvent(properties);
   }
 
   /**
    * Create an event which will be set to live by default.
-   * @param {!EventProperties} properties
-   * @return {!Event}
    */
-  startEvent(properties) {
+  startEvent(properties: EventProperties): Event {
     // Make sure that an unspecified event gets live duration.
     // Have to check for undefined, since NaN is allowed but evaluates to false.
     if (properties['duration'] === undefined) {
@@ -292,30 +266,22 @@ export class TickingFlameChart extends UI.Widget.VBox {
 
   /**
    * Add a group with |name| that can contain |depth| different tracks.
-   * @param {!Platform.UIString.LocalizedString} name
-   * @param {number} depth
    */
-  addGroup(name, depth) {
+  addGroup(name: Common.UIString.LocalizedString, depth: number): void {
     this._dataProvider.addGroup(name, depth);
   }
 
-  /**
-   * @param {number} time
-   */
-  _updateMaxTime(time) {
+  _updateMaxTime(time: number): void {
     if (this._bounds.pushMaxAtLeastTo(time)) {
       this._updateRender();
     }
   }
 
-  /**
-   * @param {!WheelEvent} e
-   */
-  _onScroll(e) {
+  _onScroll(e: WheelEvent): void {
     // TODO: is this a good divisor? does it account for high presicision scroll wheels?
     // low precisision scroll wheels?
     const scrollTickCount = Math.round(e.deltaY / 50);
-    const scrollPositionRatio = e.offsetX / /** @type {!HTMLElement} */ (e.srcElement).clientWidth;
+    const scrollPositionRatio = e.offsetX / (e.srcElement as HTMLElement).clientWidth;
     if (scrollTickCount > 0) {
       this._bounds.zoomOut(scrollTickCount, scrollPositionRatio);
     } else {
@@ -324,31 +290,21 @@ export class TickingFlameChart extends UI.Widget.VBox {
     this._updateRender();
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     this._isShown = false;
     if (this._ticking) {
       this._stop();
     }
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._isShown = true;
     if (this._canTick && !this._ticking) {
       this._start();
     }
   }
 
-  /**
-   * Is the timeline allowed to tick forward.
-   * @param {boolean} allowed
-   */
-  set canTick(allowed) {
+  set canTick(allowed: boolean) {
     this._canTick = allowed;
     if (this._ticking && !allowed) {
       this._stop();
@@ -358,7 +314,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
     }
   }
 
-  _start() {
+  _start(): void {
     if (this._lastTimestamp === 0) {
       this._lastTimestamp = Date.now();
     }
@@ -370,7 +326,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
     this._ticking = true;
   }
 
-  _stop(permanently = false) {
+  _stop(permanently: boolean = false): void {
     window.clearInterval(this._intervalTimer);
     this._intervalTimer = 0;
     if (permanently) {
@@ -379,7 +335,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
     this._ticking = false;
   }
 
-  _updateRender() {
+  _updateRender(): void {
     if (this._ticking) {
       const currentTimestamp = Date.now();
       const duration = currentTimestamp - this._lastTimestamp;
@@ -392,51 +348,32 @@ export class TickingFlameChart extends UI.Widget.VBox {
   }
 }
 
-
 /**
  * Doesn't do much right now, but can be used in the future for selecting events.
- * @implements {PerfUI.FlameChart.FlameChartDelegate}
  */
-class TickingFlameChartDelegate {
+class TickingFlameChartDelegate implements PerfUI.FlameChart.FlameChartDelegate {
   constructor() {
   }
 
-  /**
-   * @override
-   * @param {number} windowStartTime
-   * @param {number} windowEndTime
-   * @param {boolean} animate
-   */
-  windowChanged(windowStartTime, windowEndTime, animate) {
+  windowChanged(_windowStartTime: number, _windowEndTime: number, _animate: boolean): void {
   }
 
-  /**
-   * @override
-   * @param {number} startTime
-   * @param {number} endTime
-   */
-  updateRangeSelection(startTime, endTime) {
+  updateRangeSelection(_startTime: number, _endTime: number): void {
   }
 
-  /**
-   * @override
-   * @param {!PerfUI.FlameChart.FlameChart} flameChart
-   * @param {?PerfUI.FlameChart.Group} group
-   */
-  updateSelectedGroup(flameChart, group) {
+  updateSelectedGroup(_flameChart: PerfUI.FlameChart.FlameChart, _group: PerfUI.FlameChart.Group|null): void {
   }
 }
 
+class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
+  _updateMaxTimeHandle: (arg0: number) => void;
+  _bounds: Bounds;
+  _liveEvents: Set<number>;
+  _eventMap: Map<number, Event>;
+  _timelineData: PerfUI.FlameChart.TimelineData;
+  _maxLevel: number;
 
-/**
- * @implements {PerfUI.FlameChart.FlameChartDataProvider}
- */
-class TickingFlameChartDataProvider {
-  /**
-   * @param {!Bounds} initialBounds
-   * @param {function(number):void} updateMaxTime
-   */
-  constructor(initialBounds, updateMaxTime) {
+  constructor(initialBounds: Bounds, updateMaxTime: (arg0: number) => void) {
     // do _not_ call this method from within this class - only for passing to events.
     this._updateMaxTimeHandle = updateMaxTime;
 
@@ -459,10 +396,8 @@ class TickingFlameChartDataProvider {
 
   /**
    * Add a group with |name| that can contain |depth| different tracks.
-   * @param {!Platform.UIString.LocalizedString} name
-   * @param {number} depth
    */
-  addGroup(name, depth) {
+  addGroup(name: Common.UIString.LocalizedString, depth: number): void {
     if (this._timelineData.groups) {
       this._timelineData.groups.push({
         name: name,
@@ -470,7 +405,7 @@ class TickingFlameChartDataProvider {
         expanded: true,
         selectable: false,
         style: DefaultStyle,
-        track: null
+        track: null,
       });
     }
     this._maxLevel += depth;
@@ -478,10 +413,8 @@ class TickingFlameChartDataProvider {
 
   /**
    * Create an event which will be set to live by default.
-   * @param {!EventProperties} properties
-   * @return {!Event}
    */
-  startEvent(properties) {
+  startEvent(properties: EventProperties): Event {
     properties['level'] = properties['level'] || 0;
     if (properties['level'] > this._maxLevel) {
       throw `level ${properties['level']} is above the maximum allowed of ${this._maxLevel}`;
@@ -491,7 +424,7 @@ class TickingFlameChartDataProvider {
         this._timelineData, {
           setLive: this._setLive.bind(this),
           setComplete: this._setComplete.bind(this),
-          updateMaxTime: this._updateMaxTimeHandle
+          updateMaxTime: this._updateMaxTimeHandle,
         },
         properties);
 
@@ -499,147 +432,74 @@ class TickingFlameChartDataProvider {
     return event;
   }
 
-  /**
-   * @param {number} index
-   * @return {number}
-   */
-  _setLive(index) {
+  _setLive(index: number): number {
     this._liveEvents.add(index);
     return this._bounds.max;
   }
 
-  /**
-   * @param {number} index
-   * @return {void}
-   */
-  _setComplete(index) {
+  _setComplete(index: number): void {
     this._liveEvents.delete(index);
   }
 
-  /**
-   * @param {!Bounds} bounds
-   */
-  updateMaxTime(bounds) {
+  updateMaxTime(bounds: Bounds): void {
     this._bounds = bounds;
     for (const eventID of this._liveEvents.entries()) {
       // force recalculation of all live events.
-      this._eventMap.get(eventID[0]).endTime = -1;
+      (this._eventMap.get(eventID[0]) as Event).endTime = -1;
     }
   }
 
-
-  /**
-   * @override
-   * @return {number}
-   */
-  maxStackDepth() {
+  maxStackDepth(): number {
     return this._maxLevel + 1;
   }
 
-  /**
-   * @override
-   * @return {!PerfUI.FlameChart.TimelineData}
-   */
-  timelineData() {
+  timelineData(): PerfUI.FlameChart.TimelineData {
     return this._timelineData;
   }
 
-  /**
-   * @override
-   * @return {number} time in milliseconds
-   */
-  minimumBoundary() {
+  /** time in milliseconds
+     */
+  minimumBoundary(): number {
     return this._bounds.low;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  totalTime() {
+  totalTime(): number {
     return this._bounds.high;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {string}
-   */
-  entryColor(index) {
-    return this._eventMap.get(index).color;
+  entryColor(index: number): string {
+    return (this._eventMap.get(index) as Event).color;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {string}
-   */
-  textColor(index) {
-    return this._eventMap.get(index).fontColor;
+  textColor(index: number): string {
+    return (this._eventMap.get(index) as Event).fontColor;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {?string}
-   */
-  entryTitle(index) {
-    return this._eventMap.get(index).title;
+  entryTitle(index: number): string|null {
+    return (this._eventMap.get(index) as Event).title;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {?string}
-   */
-  entryFont(index) {
+  entryFont(_index: number): string|null {
     return defaultFont;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @param {!CanvasRenderingContext2D} context
-   * @param {?string} text
-   * @param {number} barX
-   * @param {number} barY
-   * @param {number} barWidth
-   * @param {number} barHeight
-   * @param {number} unclippedBarX
-   * @param {number} timeToPixelRatio
-   * @return {boolean}
-   */
-  decorateEntry(index, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixelRatio) {
+  decorateEntry(
+      _index: number, _context: CanvasRenderingContext2D, _text: string|null, _barX: number, _barY: number,
+      _barWidth: number, _barHeight: number, _unclippedBarX: number, _timeToPixelRatio: number): boolean {
     return false;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {boolean}
-   */
-  forceDecoration(index) {
+  forceDecoration(_index: number): boolean {
     return false;
   }
 
-  /**
-   * @override
-   * @param {number} index
-   * @return {?Element}
-   */
-  prepareHighlightedEntryInfo(index) {
+  prepareHighlightedEntryInfo(index: number): Element|null {
     const element = document.createElement('div');
-    this._eventMap.get(index).decorate(element);
+    (this._eventMap.get(index) as Event).decorate(element);
     return element;
   }
 
-  /**
-   * @override
-   * @param {number} value
-   * @param {number=} precision
-   * @return {string}
-   */
-  formatValue(value, precision) {
+  formatValue(value: number, _precision?: number): string {
     // value is always [0, X] so we need to add lower bound
     value += Math.round(this._bounds.low);
 
@@ -657,19 +517,11 @@ class TickingFlameChartDataProvider {
     return FormatMillisecondsToSeconds(value, 0);
   }
 
-  /**
-   * @override
-   * @param {number} entryIndex
-   * @return {boolean}
-   */
-  canJumpToEntry(entryIndex) {
+  canJumpToEntry(_entryIndex: number): boolean {
     return false;
   }
 
-  /**
-   * @override
-   */
-  navStartTimes() {
+  navStartTimes(): Map<string, SDK.TracingModel.Event> {
     return new Map();
   }
 }

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
@@ -46,22 +48,22 @@ export const UIStrings = {
   */
   playerTimeline: 'Player timeline',
 };
-const str_ = i18n.i18n.registerUIStrings('media/PlayerDetailView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('media/PlayerDetailView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @enum {string}
- */
-export const PlayerDetailViewTabs = {
-  Events: 'events',
-  Properties: 'properties',
-  Messages: 'messages',
-  Timeline: 'timeline'
-};
 
-/**
- * @implements TriggerHandler
- */
-export class PlayerDetailView extends UI.TabbedPane.TabbedPane {
+export const enum PlayerDetailViewTabs {
+  Events = 'events',
+  Properties = 'properties',
+  Messages = 'messages',
+  Timeline = 'timeline'
+}
+
+export class PlayerDetailView extends UI.TabbedPane.TabbedPane implements TriggerHandler {
+  _eventView: PlayerEventsView;
+  _propertyView: PlayerPropertiesView;
+  _messageView: PlayerMessagesView;
+  _timelineView: PlayerEventsTimeline;
+
   constructor() {
     super();
 
@@ -73,47 +75,28 @@ export class PlayerDetailView extends UI.TabbedPane.TabbedPane {
     this.appendTab(
         PlayerDetailViewTabs.Properties, i18nString(UIStrings.properties), this._propertyView,
         i18nString(UIStrings.playerProperties));
-
     this.appendTab(
         PlayerDetailViewTabs.Events, i18nString(UIStrings.events), this._eventView, i18nString(UIStrings.playerEvents));
-
     this.appendTab(
         PlayerDetailViewTabs.Messages, i18nString(UIStrings.messages), this._messageView,
         i18nString(UIStrings.playerMessages));
-
     this.appendTab(
         PlayerDetailViewTabs.Timeline, i18nString(UIStrings.timeline), this._timelineView,
         i18nString(UIStrings.playerTimeline));
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Media.PlayerProperty} property
-   */
-  onProperty(property) {
+  onProperty(property: Protocol.Media.PlayerProperty): void {
     this._propertyView.onProperty(property);
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Media.PlayerError} error
-   */
-  onError(error) {
+  onError(_error: Protocol.Media.PlayerError): void {
   }
 
-  /**
-   * @override
-   * @param {!Protocol.Media.PlayerMessage} message
-   */
-  onMessage(message) {
+  onMessage(message: Protocol.Media.PlayerMessage): void {
     this._messageView.addMessage(message);
   }
 
-  /**
-   * @override
-   * @param {!PlayerEvent} event
-   */
-  onEvent(event) {
+  onEvent(event: PlayerEvent): void {
     this._eventView.onEvent(event);
     this._timelineView.onEvent(event);
   }

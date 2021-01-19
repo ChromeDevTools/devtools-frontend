@@ -16,3 +16,12 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":js_profiler" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "js_profiler-meta.ts"
+
+  deps = [
+    ":bundle",
+    "../profiler:bundle",
+  ]
+}

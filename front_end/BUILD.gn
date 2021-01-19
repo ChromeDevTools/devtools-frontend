@@ -66,6 +66,7 @@ group("front_end") {
     "javascript_metadata:bundle",
     "js_main:bundle",
     "js_profiler:bundle",
+    "js_profiler:meta",
     "layer_viewer:bundle",
     "layers:bundle",
     "layers:meta",

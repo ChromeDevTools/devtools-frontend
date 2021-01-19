@@ -94,6 +94,7 @@ devtools_module_entrypoint_sources = [
   "javascript_metadata/javascript_metadata.js",
   "js_main/js_main-legacy.js",
   "js_main/js_main.js",
+  "js_profiler/js_profiler-meta.js",
   "js_profiler/js_profiler.js",
   "layer_viewer/layer_viewer-legacy.js",
   "layer_viewer/layer_viewer.js",

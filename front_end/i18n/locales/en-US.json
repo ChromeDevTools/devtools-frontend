@@ -458,7 +458,7 @@
   "input/ModuleUIStrings.ts | stopRecording": {
     "message": "Stop recording"
   },
-  "js_profiler/ModuleUIStrings.ts | profiler": {
+  "js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Profiler"
   },
   "layer_viewer/LayerDetailsView.js | compositingReasons": {

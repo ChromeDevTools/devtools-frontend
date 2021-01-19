@@ -6,13 +6,13 @@ use_relative_paths = True
 
 vars = {
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '5e4c76e7780d7681aff5d19d2998790d3b2ae534',
+  'build_revision': '83d82f493795542fdb8d6b3fefaaec7d6026706a',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': 'c38b5ab1c6f5a4913afe49709f7acde15229f400',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'dabd9655278a9ba3ce753496cd4f6c4b17f5d779',
+  'depot_tools_revision': '13466d016b58af609e3e86534768d95750716429',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '62c7be86bf5728a7b18a74408d77c07bd40ef383',

@@ -32,7 +32,10 @@ export class SharedArrayBufferTransferIssue extends Issue {
       file: 'issues/descriptions/sharedArrayBufferTransfer.md',
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
-      links: [{link: 'https://web.dev/enabling-shared-array-buffer/', linkTitle: ls`Enabling Shared Array Buffer`}],
+      links: [{
+        link: 'https://developer.chrome.com/blog/enabling-shared-array-buffer/',
+        linkTitle: ls`Enabling Shared Array Buffer`,
+      }],
     };
   }
 

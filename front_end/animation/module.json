@@ -1,7 +1,5 @@
 {
-  "modules": [
-    "animation-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "animationScreenshotPopover.css",
     "animationTimeline.css"

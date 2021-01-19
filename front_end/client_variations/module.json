@@ -1,5 +1,3 @@
-{  "modules": [
-    "client_variations.js",
-    "../third_party/chromium/client-variations/ClientVariations.js"
-  ]
+{
+  "modules": []
 }

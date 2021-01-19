@@ -3,9 +3,7 @@
     "ui",
     "sdk"
   ],
-  "modules": [
-    "color_picker-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "spectrum.css"
   ]

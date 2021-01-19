@@ -5,26 +5,5 @@
     "services",
     "workspace"
   ],
-  "modules": [
-    "bindings.js",
-    "bindings-legacy.js",
-    "LiveLocation.js",
-    "ResourceMapping.js",
-    "CompilerScriptMapping.js",
-    "ResourceScriptMapping.js",
-    "SASSSourceMapping.js",
-    "StylesSourceMapping.js",
-    "CSSWorkspaceBinding.js",
-    "DebuggerWorkspaceBinding.js",
-    "DebuggerLanguagePlugins.js",
-    "BreakpointManager.js",
-    "ContentProviderBasedProject.js",
-    "DefaultScriptMapping.js",
-    "FileUtils.js",
-    "IgnoreListManager.js",
-    "NetworkProject.js",
-    "PresentationConsoleMessageHelper.js",
-    "ResourceUtils.js",
-    "TempFile.js"
-  ]
+  "modules": []
 }

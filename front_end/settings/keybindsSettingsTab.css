@@ -177,8 +177,8 @@ button.text-button {
 
 .docs-link.devtools-link {
   align-self: flex-start;
-  height: 24px;
-  line-height: 24px;
+  min-height: 2em;
+  line-height: 2em;
 }
 
 .keybinds-footer {

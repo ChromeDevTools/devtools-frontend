@@ -1007,7 +1007,7 @@ export class ExperimentsSupport {
   }
 }
 
-class Experiment {
+export class Experiment {
   /**
   * @param {!ExperimentsSupport} experiments
   * @param {string} name

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
@@ -69,13 +71,17 @@ export const UIStrings = {
   */
   patternMustBeAValidRegular: 'Pattern must be a valid regular expression',
 };
-const str_ = i18n.i18n.registerUIStrings('settings/FrameworkIgnoreListSettingsTab.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('settings/FrameworkIgnoreListSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/**
- * @implements {UI.ListWidget.Delegate<Common.Settings.RegExpSettingItem>}
- */
-export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
+export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
+    UI.ListWidget.Delegate<Common.Settings.RegExpSettingItem> {
+  _ignoreListLabel: Common.UIString.LocalizedString;
+  _disabledLabel: Common.UIString.LocalizedString;
+  _list: UI.ListWidget.ListWidget<Common.Settings.RegExpSettingItem>;
+  _setting: Common.Settings.RegExpSetting;
+  _editor?: UI.ListWidget.Editor<Common.Settings.RegExpSettingItem>;
+
   constructor() {
     super(true);
     this.registerRequiredCSS('settings/frameworkIgnoreListSettingsTab.css', {enableLegacyPatching: true});
@@ -107,24 +113,19 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
         UI.UIUtils.createTextButton(i18nString(UIStrings.addPattern), this._addButtonClicked.bind(this), 'add-button');
     UI.ARIAUtils.setAccessibleName(addPatternButton, i18nString(UIStrings.addFilenamePattern));
     this.contentElement.appendChild(addPatternButton);
-
-    /** @type {!Common.Settings.RegExpSetting} */
-    this._setting = /** @type {!Common.Settings.RegExpSetting} */ (
-        Common.Settings.Settings.instance().moduleSetting('skipStackFramesPattern'));
+    this._setting =
+        Common.Settings.Settings.instance().moduleSetting('skipStackFramesPattern') as Common.Settings.RegExpSetting;
     this._setting.addChangeListener(this._settingUpdated, this);
 
     this.setDefaultFocusedElement(addPatternButton);
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     super.wasShown();
     this._settingUpdated();
   }
 
-  _settingUpdated() {
+  _settingUpdated(): void {
     this._list.clear();
     const patterns = this._setting.getAsArray();
     for (let i = 0; i < patterns.length; ++i) {
@@ -132,17 +133,11 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
     }
   }
 
-  _addButtonClicked() {
+  _addButtonClicked(): void {
     this._list.addNewItem(this._setting.getAsArray().length, {pattern: '', disabled: false});
   }
 
-  /**
-   * @override
-   * @param {!Common.Settings.RegExpSettingItem} item
-   * @param {boolean} editable
-   * @return {!Element}
-   */
-  renderItem(item, editable) {
+  renderItem(item: Common.Settings.RegExpSettingItem, _editable: boolean): Element {
     const element = document.createElement('div');
     element.classList.add('ignore-list-item');
     const pattern = element.createChild('div', 'ignore-list-pattern');
@@ -157,24 +152,15 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
     return element;
   }
 
-  /**
-   * @override
-   * @param {!Common.Settings.RegExpSettingItem} item
-   * @param {number} index
-   */
-  removeItemRequested(item, index) {
+  removeItemRequested(item: Common.Settings.RegExpSettingItem, index: number): void {
     const patterns = this._setting.getAsArray();
     patterns.splice(index, 1);
     this._setting.setAsArray(patterns);
   }
 
-  /**
-   * @override
-   * @param {!Common.Settings.RegExpSettingItem} item
-   * @param {!UI.ListWidget.Editor<!Common.Settings.RegExpSettingItem>} editor
-   * @param {boolean} isNew
-   */
-  commitEdit(item, editor, isNew) {
+  commitEdit(
+      item: Common.Settings.RegExpSettingItem, editor: UI.ListWidget.Editor<Common.Settings.RegExpSettingItem>,
+      isNew: boolean): void {
     item.pattern = editor.control('pattern').value.trim();
     item.disabled = editor.control('behavior').value === this._disabledLabel;
 
@@ -185,27 +171,19 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
     this._setting.setAsArray(list);
   }
 
-  /**
-   * @override
-   * @param {!Common.Settings.RegExpSettingItem} item
-   * @return {!UI.ListWidget.Editor<!Common.Settings.RegExpSettingItem>}
-   */
-  beginEdit(item) {
+  beginEdit(item: Common.Settings.RegExpSettingItem): UI.ListWidget.Editor<Common.Settings.RegExpSettingItem> {
     const editor = this._createEditor();
     editor.control('pattern').value = item.pattern;
     editor.control('behavior').value = item.disabled ? this._disabledLabel : this._ignoreListLabel;
     return editor;
   }
 
-  /**
-   * @return {!UI.ListWidget.Editor<!Common.Settings.RegExpSettingItem>}
-   */
-  _createEditor() {
+  _createEditor(): UI.ListWidget.Editor<Common.Settings.RegExpSettingItem> {
     if (this._editor) {
       return this._editor;
     }
 
-    const editor = new UI.ListWidget.Editor();
+    const editor = new UI.ListWidget.Editor<Common.Settings.RegExpSettingItem>();
     this._editor = editor;
     const content = editor.contentElement();
 
@@ -225,14 +203,9 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
 
     return editor;
 
-    /**
-     * @param {!Common.Settings.RegExpSettingItem} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @this {FrameworkIgnoreListSettingsTab}
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function patternValidator(item, index, input) {
+    function patternValidator(
+        this: FrameworkIgnoreListSettingsTab, item: Common.Settings.RegExpSettingItem, index: number,
+        input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
       const pattern = input.value.trim();
       const patterns = this._setting.getAsArray();
 
@@ -257,13 +230,9 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox {
       return {valid: true, errorMessage: undefined};
     }
 
-    /**
-     * @param {!Common.Settings.RegExpSettingItem} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function behaviorValidator(item, index, input) {
+    function behaviorValidator(
+        _item: Common.Settings.RegExpSettingItem, _index: number,
+        _input: HTMLInputElement|HTMLSelectElement): UI.ListWidget.ValidatorResult {
       return {valid: true, errorMessage: undefined};
     }
   }

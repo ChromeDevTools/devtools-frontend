@@ -1988,139 +1988,139 @@
   "security/SecurityPanel.js | yourPageRequestedNonsecure": {
     "message": "Your page requested non-secure resources that were blocked."
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | addFilenamePattern": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Add filename pattern"
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | addPattern": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "Add pattern..."
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | behavior": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "Behavior"
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | debuggerWillSkipThroughThe": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
     "message": "Debugger will skip through the scripts and will not stop on exceptions thrown by them."
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | disabled": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | disabled": {
     "message": "Disabled"
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | frameworkIgnoreList": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
     "message": "Framework Ignore List"
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | ignoreList": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | ignoreList": {
     "message": "Ignore List"
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | ignoreListContentScripts": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Add content scripts to ignore list"
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | ignoreListContentScriptsExtension": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
     "message": "Add content scripts to ignore list (extension scripts in the page)"
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | ignoreScriptsWhoseNamesMatchS": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Ignore scripts whose names match '{PH1}'"
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | noIgnoreListPatterns": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "No ignore list patterns"
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | pattern": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "Pattern"
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | patternAlreadyExists": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "Pattern already exists"
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | patternCannotBeEmpty": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | patternCannotBeEmpty": {
     "message": "Pattern cannot be empty"
   },
-  "settings/FrameworkIgnoreListSettingsTab.js | patternMustBeAValidRegular": {
+  "settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
     "message": "Pattern must be a valid regular expression"
   },
-  "settings/KeybindsSettingsTab.js | addAShortcut": {
+  "settings/KeybindsSettingsTab.ts | addAShortcut": {
     "message": "Add a shortcut"
   },
-  "settings/KeybindsSettingsTab.js | confirmChanges": {
+  "settings/KeybindsSettingsTab.ts | confirmChanges": {
     "message": "Confirm changes"
   },
-  "settings/KeybindsSettingsTab.js | discardChanges": {
+  "settings/KeybindsSettingsTab.ts | discardChanges": {
     "message": "Discard changes"
   },
-  "settings/KeybindsSettingsTab.js | editShortcut": {
+  "settings/KeybindsSettingsTab.ts | editShortcut": {
     "message": "Edit shortcut"
   },
-  "settings/KeybindsSettingsTab.js | FullListOfDevtoolsKeyboard": {
+  "settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
     "message": "Full list of DevTools keyboard shortcuts and gestures"
   },
-  "settings/KeybindsSettingsTab.js | keyboardShortcutsList": {
+  "settings/KeybindsSettingsTab.ts | keyboardShortcutsList": {
     "message": "Keyboard shortcuts list"
   },
-  "settings/KeybindsSettingsTab.js | matchShortcutsFromPreset": {
+  "settings/KeybindsSettingsTab.ts | matchShortcutsFromPreset": {
     "message": "Match shortcuts from preset"
   },
-  "settings/KeybindsSettingsTab.js | noShortcutForAction": {
+  "settings/KeybindsSettingsTab.ts | noShortcutForAction": {
     "message": "No shortcut for action"
   },
-  "settings/KeybindsSettingsTab.js | removeShortcut": {
+  "settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Remove shortcut"
   },
-  "settings/KeybindsSettingsTab.js | ResetShortcutsForAction": {
+  "settings/KeybindsSettingsTab.ts | ResetShortcutsForAction": {
     "message": "Reset shortcuts for action"
   },
-  "settings/KeybindsSettingsTab.js | RestoreDefaultShortcuts": {
+  "settings/KeybindsSettingsTab.ts | RestoreDefaultShortcuts": {
     "message": "Restore default shortcuts"
   },
-  "settings/KeybindsSettingsTab.js | shortcutModified": {
+  "settings/KeybindsSettingsTab.ts | shortcutModified": {
     "message": "Shortcut modified"
   },
-  "settings/KeybindsSettingsTab.js | shortcuts": {
+  "settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "Shortcuts"
   },
-  "settings/KeybindsSettingsTab.js | shortcutsCannotContainOnly": {
+  "settings/KeybindsSettingsTab.ts | shortcutsCannotContainOnly": {
     "message": "Shortcuts cannot contain only modifier keys."
   },
-  "settings/KeybindsSettingsTab.js | thisShortcutIsInUseByS": {
+  "settings/KeybindsSettingsTab.ts | thisShortcutIsInUseByS": {
     "message": "This shortcut is in use by {PH1}: {PH2}."
   },
-  "settings/ModuleUIStrings.js | documentation": {
+  "settings/ModuleUIStrings.ts | documentation": {
     "message": "Documentation"
   },
-  "settings/ModuleUIStrings.js | experiments": {
+  "settings/ModuleUIStrings.ts | experiments": {
     "message": "Experiments"
   },
-  "settings/ModuleUIStrings.js | ignoreList": {
+  "settings/ModuleUIStrings.ts | ignoreList": {
     "message": "Ignore List"
   },
-  "settings/ModuleUIStrings.js | preferences": {
+  "settings/ModuleUIStrings.ts | preferences": {
     "message": "Preferences"
   },
-  "settings/ModuleUIStrings.js | settings": {
+  "settings/ModuleUIStrings.ts | settings": {
     "message": "Settings"
   },
-  "settings/ModuleUIStrings.js | shortcuts": {
+  "settings/ModuleUIStrings.ts | shortcuts": {
     "message": "Shortcuts"
   },
-  "settings/SettingsScreen.js | experiments": {
+  "settings/SettingsScreen.ts | experiments": {
     "message": "Experiments"
   },
-  "settings/SettingsScreen.js | oneOrMoreSettingsHaveChanged": {
+  "settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
     "message": "One or more settings have changed which requires a reload to take effect."
   },
-  "settings/SettingsScreen.js | preferences": {
+  "settings/SettingsScreen.ts | preferences": {
     "message": "Preferences"
   },
-  "settings/SettingsScreen.js | restoreDefaultsAndReload": {
+  "settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Restore defaults and reload"
   },
-  "settings/SettingsScreen.js | settings": {
+  "settings/SettingsScreen.ts | settings": {
     "message": "Settings"
   },
-  "settings/SettingsScreen.js | shortcuts": {
+  "settings/SettingsScreen.ts | shortcuts": {
     "message": "Shortcuts"
   },
-  "settings/SettingsScreen.js | theseExperimentsAreParticularly": {
+  "settings/SettingsScreen.ts | theseExperimentsAreParticularly": {
     "message": "These experiments are particularly unstable. Enable at your own risk."
   },
-  "settings/SettingsScreen.js | theseExperimentsCouldBeUnstable": {
+  "settings/SettingsScreen.ts | theseExperimentsCouldBeUnstable": {
     "message": "These experiments could be unstable or unreliable and may require you to restart DevTools."
   },
-  "settings/SettingsScreen.js | warning": {
+  "settings/SettingsScreen.ts | warning": {
     "message": "WARNING:"
   },
   "snippets/ModuleUIStrings.ts | runSnippet": {

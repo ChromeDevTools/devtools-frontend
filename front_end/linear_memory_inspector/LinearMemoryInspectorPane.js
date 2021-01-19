@@ -13,10 +13,26 @@ import {LazyUint8Array, LinearMemoryInspectorController} from './LinearMemoryIns
 /** @type {!LinearMemoryInspectorPaneImpl} */
 let inspectorInstance;
 
+/** @type {!Wrapper} */
+let wrapperInstance;
+
 export class Wrapper extends UI.Widget.VBox {
+  /** @private */
   constructor() {
     super();
     this.view = LinearMemoryInspectorPaneImpl.instance();
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!wrapperInstance || forceNew) {
+      wrapperInstance = new Wrapper();
+    }
+
+    return wrapperInstance;
   }
 
   /**

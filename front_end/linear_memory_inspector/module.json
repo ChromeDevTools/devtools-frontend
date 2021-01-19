@@ -1,16 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "linear-memory-inspector",
-      "title": "Memory Inspector",
-      "order": 100,
-      "persistence": "closeable",
-      "className": "LinearMemoryInspector.LinearMemoryInspectorPane.Wrapper",
-      "experiment": "wasmDWARFDebugging"
-    }
-  ],
   "modules": [
     "linear_memory_inspector-legacy.js"
   ]

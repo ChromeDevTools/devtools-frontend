@@ -1125,6 +1125,7 @@ export const ExperimentName = {
   DEVELOPER_RESOURCES_VIEW: 'developerResourcesView',
   TIMELINE_REPLAY_EVENT: 'timelineReplayEvent',
   CSP_VIOLATIONS_VIEW: 'cspViolationsView',
+  WASM_DWARF_DEBUGGING: 'wasmDWARFDebugging',
 };
 
 /** @enum {string} */

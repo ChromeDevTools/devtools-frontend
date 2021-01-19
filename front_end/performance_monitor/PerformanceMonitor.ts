@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
@@ -52,18 +54,30 @@ export const UIStrings = {
   */
   styleRecalcsSec: 'Style recalcs / sec',
 };
-const str_ = i18n.i18n.registerUIStrings('performance_monitor/PerformanceMonitor.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('performance_monitor/PerformanceMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/**
- * @implements {SDK.SDKModel.SDKModelObserver<!SDK.PerformanceMetricsModel.PerformanceMetricsModel>}
- */
-export class PerformanceMonitorImpl extends UI.Widget.HBox {
+export class PerformanceMonitorImpl extends UI.Widget.HBox implements
+    SDK.SDKModel.SDKModelObserver<SDK.PerformanceMetricsModel.PerformanceMetricsModel> {
+  _metricsBuffer: {timestamp: number; metrics: Map<string, number>;}[];
+  _pixelsPerMs: number;
+  _pollIntervalMs: number;
+  _scaleHeight: number;
+  _graphHeight: number;
+  _gridColor: string;
+  _controlPane: ControlPane;
+  _canvas: HTMLCanvasElement;
+  _animationId!: number;
+  _width!: number;
+  _height!: number;
+  _model?: SDK.PerformanceMetricsModel.PerformanceMetricsModel|null;
+  _startTimestamp?: number;
+  _pollTimer?: number;
+
   constructor() {
     super(true);
     this.registerRequiredCSS('performance_monitor/performanceMonitor.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('perfmon-pane');
-    /** @type {!Array<!{timestamp: number, metrics: !Map<string, number>}>} */
     this._metricsBuffer = [];
     /** @const */
     this._pixelsPerMs = 10 / 1000;
@@ -77,26 +91,16 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
         'rgba(0, 0, 0, 0.08)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     this._controlPane = new ControlPane(this.contentElement);
     const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
-    /** @type {!HTMLCanvasElement} */
-    this._canvas = /** @type {!HTMLCanvasElement} */ (chartContainer.createChild('canvas'));
+    this._canvas = chartContainer.createChild('canvas') as HTMLCanvasElement;
     this._canvas.tabIndex = -1;
     UI.ARIAUtils.setAccessibleName(this._canvas, i18nString(UIStrings.graphsDisplayingARealtimeViewOf));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
         i18nString(UIStrings.paused);
     this._controlPane.addEventListener(Events.MetricChanged, this._recalcChartHeight, this);
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.PerformanceMetricsModel.PerformanceMetricsModel, this);
-    /** @type {number} */
-    this._animationId;
-    /** @type {number} */
-    this._width;
-    /** @type {number} */
-    this._height;
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     if (!this._model) {
       return;
     }
@@ -106,10 +110,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     this._suspendStateChanged();
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     if (!this._model) {
       return;
     }
@@ -119,11 +120,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     this._model.disable();
   }
 
-  /**
-   * @override
-   * @param {!SDK.PerformanceMetricsModel.PerformanceMetricsModel} model
-   */
-  modelAdded(model) {
+  modelAdded(model: SDK.PerformanceMetricsModel.PerformanceMetricsModel): void {
     if (this._model) {
       return;
     }
@@ -133,11 +130,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     }
   }
 
-  /**
-   * @override
-   * @param {!SDK.PerformanceMetricsModel.PerformanceMetricsModel} model
-   */
-  modelRemoved(model) {
+  modelRemoved(model: SDK.PerformanceMetricsModel.PerformanceMetricsModel): void {
     if (this._model !== model) {
       return;
     }
@@ -147,7 +140,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     this._model = null;
   }
 
-  _suspendStateChanged() {
+  _suspendStateChanged(): void {
     const suspended = SDK.SDKModel.TargetManager.instance().allTargetsSuspended();
     if (suspended) {
       this._stopPolling();
@@ -157,11 +150,11 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     this.contentElement.classList.toggle('suspended', suspended);
   }
 
-  _startPolling() {
+  _startPolling(): void {
     this._startTimestamp = 0;
     this._pollTimer = window.setInterval(() => this._poll(), this._pollIntervalMs);
     this.onResize();
-    const animate = () => {
+    const animate = (): void => {
       this._draw();
       this._animationId = this.contentElement.window().requestAnimationFrame(() => {
         animate();
@@ -170,13 +163,13 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     animate();
   }
 
-  _stopPolling() {
+  _stopPolling(): void {
     window.clearInterval(this._pollTimer);
     this.contentElement.window().cancelAnimationFrame(this._animationId);
     this._metricsBuffer = [];
   }
 
-  async _poll() {
+  async _poll(): Promise<void> {
     if (!this._model) {
       return;
     }
@@ -194,8 +187,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     this._controlPane.updateMetrics(metrics);
   }
 
-  _draw() {
-    const ctx = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
+  _draw(): void {
+    const ctx = this._canvas.getContext('2d') as CanvasRenderingContext2D;
     ctx.save();
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     ctx.clearRect(0, 0, this._width, this._height);
@@ -213,10 +206,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     ctx.restore();
   }
 
-  /**
-   * @param {!CanvasRenderingContext2D} ctx
-   */
-  _drawHorizontalGrid(ctx) {
+  _drawHorizontalGrid(ctx: CanvasRenderingContext2D): void {
     const labelDistanceSeconds = 10;
     const lightGray = ThemeSupport.ThemeSupport.instance().patchColorText(
         'rgba(0, 0, 0, 0.02)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
@@ -240,12 +230,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     }
   }
 
-  /**
-   * @param {!CanvasRenderingContext2D} ctx
-   * @param {!ChartInfo} chartInfo
-   * @param {number} height
-   */
-  _drawChart(ctx, chartInfo, height) {
+  _drawChart(ctx: CanvasRenderingContext2D, chartInfo: ChartInfo, height: number): void {
     ctx.save();
     ctx.rect(0, 0, this._width, height);
     ctx.clip();
@@ -259,7 +244,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
       paths.push({
         path: this._buildMetricPath(
             chartInfo, metricInfo, height - bottomPadding, max, i ? stackedChartBaseLandscape : null),
-        color: metricInfo.color
+        color: metricInfo.color,
       });
     }
     const backgroundColor = Common.Color.Color.parse(
@@ -288,17 +273,13 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     ctx.restore();
   }
 
-  /**
-   * @param {!ChartInfo} chartInfo
-   * @return {number}
-   */
-  _calcMax(chartInfo) {
+  _calcMax(chartInfo: ChartInfo): number {
     if (chartInfo.max) {
       return chartInfo.max;
     }
     const width = this._width;
     const startTime = performance.now() - this._pollIntervalMs - width / this._pixelsPerMs;
-    let max = -Infinity;
+    let max: number = -Infinity;
     for (const metricInfo of chartInfo.metrics) {
       for (let i = this._metricsBuffer.length - 1; i >= 0; --i) {
         const metrics = this._metricsBuffer[i];
@@ -323,13 +304,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     return chartInfo.currentMax;
   }
 
-  /**
-   * @param {!CanvasRenderingContext2D} ctx
-   * @param {number} height
-   * @param {number} max
-   * @param {!ChartInfo} info
-   */
-  _drawVerticalGrid(ctx, height, max, info) {
+  _drawVerticalGrid(ctx: CanvasRenderingContext2D, height: number, max: number, info: ChartInfo): void {
     let base = Math.pow(10, Math.floor(Math.log10(max)));
     const firstDigit = Math.floor(max / base);
     if (firstDigit !== 1 && firstDigit % 2 === 1) {
@@ -361,24 +336,14 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     ctx.strokeStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
         'rgba(0, 0, 0, 0.2)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
     ctx.stroke();
-    /**
-     * @param {number} value
-     * @return {number}
-     */
-    function calcY(value) {
+    function calcY(value: number): number {
       return Math.round(height - visibleHeight * value / span) + 0.5;
     }
   }
 
-  /**
-   * @param {!ChartInfo} chartInfo
-   * @param {!MetricInfo} metricInfo
-   * @param {number} height
-   * @param {number} scaleMax
-   * @param {?Map<number, number>} stackedChartBaseLandscape
-   * @return {!Path2D}
-   */
-  _buildMetricPath(chartInfo, metricInfo, height, scaleMax, stackedChartBaseLandscape) {
+  _buildMetricPath(
+      chartInfo: ChartInfo, metricInfo: MetricInfo, height: number, scaleMax: number,
+      stackedChartBaseLandscape: Map<number, number>|null): Path2D {
     const path = new Path2D();
     const topPadding = 18;
     const visibleHeight = height - topPadding;
@@ -399,8 +364,9 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
       path.moveTo(x, calcY(0));
       path.lineTo(this._width + 5, calcY(0));
       lastY = calcY(
-          /** @type {!{metrics: !Map<string, number>}} */ (this._metricsBuffer[this._metricsBuffer.length - 1])
-              .metrics.get(metricName) ||
+          (this._metricsBuffer[this._metricsBuffer.length - 1] as {
+            metrics: Map<string, number>;
+          }).metrics.get(metricName) ||
           0);
       lastX = this._width + 5;
       path.lineTo(lastX, lastY);
@@ -408,7 +374,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     for (let i = this._metricsBuffer.length - 1; i >= 0; --i) {
       const metrics = this._metricsBuffer[i];
       const timestamp = metrics.timestamp;
-      let value = metrics.metrics.get(metricName) || 0;
+      let value: number = metrics.metrics.get(metricName) || 0;
       if (stackedChartBaseLandscape) {
         value += stackedChartBaseLandscape.get(timestamp) || 0;
         value = Platform.NumberUtilities.clamp(value, 0, 1);
@@ -431,26 +397,19 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
     }
     return path;
 
-    /**
-     * @param {number} value
-     * @return {number}
-     */
-    function calcY(value) {
+    function calcY(value: number): number {
       return Math.round(height - visibleHeight * value / span) + 0.5;
     }
   }
 
-  /**
-   * @override
-   */
-  onResize() {
+  onResize(): void {
     super.onResize();
     this._width = this._canvas.offsetWidth;
     this._canvas.width = Math.round(this._width * window.devicePixelRatio);
     this._recalcChartHeight();
   }
 
-  _recalcChartHeight() {
+  _recalcChartHeight(): void {
     let height = this._scaleHeight;
     for (const chartInfo of this._controlPane.charts()) {
       if (this._controlPane.isActive(chartInfo.metrics[0].name)) {
@@ -463,25 +422,25 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox {
   }
 }
 
-/** @enum {symbol} */
-export const Format = {
-  Percent: Symbol('Percent'),
-  Bytes: Symbol('Bytes'),
-};
+export const enum Format {
+  Percent = 'Percent',
+  Bytes = 'Bytes'
+}
 
 export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {!Element} parent
-   */
-  constructor(parent) {
+  element: Element;
+  _enabledChartsSetting: Common.Settings.LegacySetting<string[]>;
+  _enabledCharts: Set<string>;
+  _chartsInfo: ChartInfo[];
+  _indicators: Map<string, MetricIndicator>;
+
+  constructor(parent: Element) {
     super();
     this.element = parent.createChild('div', 'perfmon-control-pane');
 
     this._enabledChartsSetting = Common.Settings.Settings.instance().createSetting(
         'perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
-    /** @type {!Set<string>} */
     this._enabledCharts = new Set(this._enabledChartsSetting.get());
-    const format = Format;
 
     const defaults = {
       color: undefined,
@@ -492,16 +451,17 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
       stacked: undefined,
     };
 
-    /** @type {!Array<!ChartInfo>} */
     this._chartsInfo = [
       {
         ...defaults,
         title: i18nString(UIStrings.cpuUsage),
         metrics: [
-          {name: 'TaskDuration', color: '#999'}, {name: 'ScriptDuration', color: 'orange'},
-          {name: 'LayoutDuration', color: 'blueviolet'}, {name: 'RecalcStyleDuration', color: 'violet'}
+          {name: 'TaskDuration', color: '#999'},
+          {name: 'ScriptDuration', color: 'orange'},
+          {name: 'LayoutDuration', color: 'blueviolet'},
+          {name: 'RecalcStyleDuration', color: 'violet'},
         ],
-        format: format.Percent,
+        format: Format.Percent,
         smooth: true,
         stacked: true,
         color: 'red',
@@ -512,21 +472,23 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
         ...defaults,
         title: i18nString(UIStrings.jsHeapSize),
         metrics: [{name: 'JSHeapTotalSize', color: '#99f'}, {name: 'JSHeapUsedSize', color: 'blue'}],
-        format: format.Bytes,
+        format: Format.Bytes,
         color: 'blue',
       },
-      {...defaults, title: i18nString(UIStrings.domNodes), metrics: [{name: 'Nodes', color: 'green'}]}, {
+      {...defaults, title: i18nString(UIStrings.domNodes), metrics: [{name: 'Nodes', color: 'green'}]},
+      {
         ...defaults,
         title: i18nString(UIStrings.jsEventListeners),
-        metrics: [{name: 'JSEventListeners', color: 'yellowgreen'}]
+        metrics: [{name: 'JSEventListeners', color: 'yellowgreen'}],
       },
       {...defaults, title: i18nString(UIStrings.documents), metrics: [{name: 'Documents', color: 'darkblue'}]},
       {...defaults, title: i18nString(UIStrings.documentFrames), metrics: [{name: 'Frames', color: 'darkcyan'}]},
-      {...defaults, title: i18nString(UIStrings.layoutsSec), metrics: [{name: 'LayoutCount', color: 'hotpink'}]}, {
+      {...defaults, title: i18nString(UIStrings.layoutsSec), metrics: [{name: 'LayoutCount', color: 'hotpink'}]},
+      {
         ...defaults,
         title: i18nString(UIStrings.styleRecalcsSec),
-        metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}]
-      }
+        metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}],
+      },
     ];
     for (const info of this._chartsInfo) {
       if (info.color) {
@@ -539,7 +501,6 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
 
-    /** @type {!Map<string, !MetricIndicator>} */
     this._indicators = new Map();
     for (const chartInfo of this._chartsInfo) {
       const chartName = chartInfo.metrics[0].name;
@@ -549,11 +510,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {string} chartName
-   * @param {boolean} active
-   */
-  _onToggle(chartName, active) {
+  _onToggle(chartName: string, active: boolean): void {
     if (active) {
       this._enabledCharts.add(chartName);
     } else {
@@ -563,25 +520,15 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.MetricChanged);
   }
 
-  /**
-   * @return {!Array<!ChartInfo>}
-   */
-  charts() {
+  charts(): ChartInfo[] {
     return this._chartsInfo;
   }
 
-  /**
-   * @param {string} metricName
-   * @return {boolean}
-   */
-  isActive(metricName) {
+  isActive(metricName: string): boolean {
     return this._enabledCharts.has(metricName);
   }
 
-  /**
-   * @param {!Map<string, number>} metrics
-   */
-  updateMetrics(metrics) {
+  updateMetrics(metrics: Map<string, number>): void {
     for (const name of this._indicators.keys()) {
       const metric = metrics.get(name);
       if (metric !== undefined) {
@@ -594,36 +541,32 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  MetricChanged: Symbol('MetricChanged')
-};
+export const enum Events {
+  MetricChanged = 'MetricChanged'
+}
 
-/** @type {!Intl.NumberFormat} */
-let numberFormatter;
-/** @type {!Intl.NumberFormat} */
-let percentFormatter;
+let numberFormatter: Intl.NumberFormat;
+let percentFormatter: Intl.NumberFormat;
 
 export class MetricIndicator {
-  /**
-   * @param {!Element} parent
-   * @param {!ChartInfo} info
-   * @param {boolean} active
-   * @param {function(boolean):void} onToggle
-   */
-  constructor(parent, info, active, onToggle) {
+  _info: ChartInfo;
+  _active: boolean;
+  _onToggle: (arg0: boolean) => void;
+  element: HTMLElement;
+  _swatchElement: UI.Icon.Icon;
+  _valueElement: HTMLElement;
+
+  constructor(parent: Element, info: ChartInfo, active: boolean, onToggle: (arg0: boolean) => void) {
     const color = info.color || info.metrics[0].color;
     this._info = info;
     this._active = active;
     this._onToggle = onToggle;
-    /** @type {!HTMLElement} */
-    this.element = /** @type {!HTMLElement} */ (parent.createChild('div', 'perfmon-indicator'));
+    this.element = parent.createChild('div', 'perfmon-indicator') as HTMLElement;
     this._swatchElement = UI.Icon.Icon.create('smallicon-checkmark-square', 'perfmon-indicator-swatch');
     this._swatchElement.style.backgroundColor = color;
     this.element.appendChild(this._swatchElement);
     this.element.createChild('div', 'perfmon-indicator-title').textContent = info.title;
-    /** @type {!HTMLElement} */
-    this._valueElement = /** @type {!HTMLElement} */ (this.element.createChild('div', 'perfmon-indicator-value'));
+    this._valueElement = this.element.createChild('div', 'perfmon-indicator-value') as HTMLElement;
     this._valueElement.style.color = color;
     this.element.addEventListener('click', () => this._toggleIndicator());
     this.element.addEventListener('keypress', event => this._handleKeypress(event));
@@ -633,12 +576,7 @@ export class MetricIndicator {
     this.element.tabIndex = 0;
   }
 
-  /**
-   * @param {number} value
-   * @param {!ChartInfo} info
-   * @return {string}
-   */
-  static _formatNumber(value, info) {
+  static _formatNumber(value: number, info: ChartInfo): string {
     if (!numberFormatter) {
       numberFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
       percentFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1, style: 'percent'});
@@ -653,25 +591,19 @@ export class MetricIndicator {
     }
   }
 
-  /**
-   * @param {number} value
-   */
-  setValue(value) {
+  setValue(value: number): void {
     this._valueElement.textContent = MetricIndicator._formatNumber(value, this._info);
   }
 
-  _toggleIndicator() {
+  _toggleIndicator(): void {
     this._active = !this._active;
     this.element.classList.toggle('active', this._active);
     UI.ARIAUtils.setChecked(this.element, this._active);
     this._onToggle(this._active);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _handleKeypress(event) {
-    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+  _handleKeypress(event: Event): void {
+    const keyboardEvent = event as KeyboardEvent;
     if (keyboardEvent.key === ' ' || keyboardEvent.key === 'Enter') {
       this._toggleIndicator();
     }
@@ -679,27 +611,17 @@ export class MetricIndicator {
 }
 
 export const format = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
-
-/**
- * @typedef {!{
- *   name: string,
- *   color: string
- * }}
- */
-// @ts-ignore typedef
-export let MetricInfo;
-
-/**
- * @typedef {!{
- *   title: string,
- *   metrics: !Array<!MetricInfo>,
- *   max: (number|undefined),
- *   currentMax: (number|undefined),
- *   format: (!Format|undefined),
- *   smooth: (boolean|undefined),
- *   color: (string|undefined),
- *   stacked: (boolean|undefined),
- * }}
- */
-// @ts-ignore typedef
-export let ChartInfo;
+export interface MetricInfo {
+  name: string;
+  color: string;
+}
+export interface ChartInfo {
+  title: string;
+  metrics: {name: string; color: string;}[];
+  max?: number;
+  currentMax?: number;
+  format?: Format;
+  smooth?: boolean;
+  color?: string;
+  stacked?: boolean;
+}

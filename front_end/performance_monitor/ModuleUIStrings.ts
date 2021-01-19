@@ -29,4 +29,4 @@ export const UIStrings = {
   */
   metrics: 'metrics',
 };
-i18n.i18n.registerUIStrings('performance_monitor/ModuleUIStrings.js', UIStrings);
+i18n.i18n.registerUIStrings('performance_monitor/ModuleUIStrings.ts', UIStrings);

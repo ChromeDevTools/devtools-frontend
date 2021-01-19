@@ -786,6 +786,7 @@ all_typescript_module_sources = [
   "ui/XLink.js",
   "ui/XWidget.js",
   "ui/ZoomManager.js",
+  "ui/components/CounterButton.js",
   "ui/components/DataGrid.js",
   "ui/components/DataGridContextMenuUtils.js",
   "ui/components/DataGridController.js",

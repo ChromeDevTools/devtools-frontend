@@ -14,6 +14,7 @@ devtools_module("console_counters") {
     "../host:bundle",
     "../sdk:bundle",
     "../ui:bundle",
+    "../ui/components:bundle",
   ]
 }
 

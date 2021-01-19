@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as CounterButton from './CounterButton.js';
 import * as DataGrid from './DataGrid.js';
 import * as DataGridController from './DataGridController.js';
 import * as DataGridControllerIntegrator from './DataGridControllerIntegrator.js';
@@ -12,6 +13,7 @@ import * as Linkifier from './Linkifier.js';
 import * as ReportView from './ReportView.js';
 
 export {
+  CounterButton,
   DataGrid,
   DataGridController,
   DataGridControllerIntegrator,

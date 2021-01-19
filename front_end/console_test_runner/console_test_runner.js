@@ -360,8 +360,8 @@ ConsoleTestRunner.dumpConsoleCounters = async function() {
   if (counter._updatingForTest) {
     await TestRunner.addSnifferPromise(counter, '_updatedForTest');
   }
-  if (counter._titles) {
-    TestRunner.addResult(counter._titles);
+  if (counter.titlesForTesting) {
+    TestRunner.addResult(counter.titlesForTesting);
   }
   await ConsoleTestRunner.dumpConsoleClassesBrief();
 };

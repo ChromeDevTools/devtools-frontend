@@ -1190,6 +1190,7 @@ grd_files_debug_sources = [
   "front_end/ui/XLink.js",
   "front_end/ui/XWidget.js",
   "front_end/ui/ZoomManager.js",
+  "front_end/ui/components/CounterButton.js",
   "front_end/ui/components/DataGrid.js",
   "front_end/ui/components/DataGridContextMenuUtils.js",
   "front_end/ui/components/DataGridController.js",

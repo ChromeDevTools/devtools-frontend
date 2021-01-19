@@ -11,6 +11,7 @@ group("component_docs") {
     "./color_swatch",
     "./computed_style_property",
     "./computed_style_trace",
+    "./counter_button",
     "./data_grid",
     "./data_grid_controller",
     "./elements_breadcrumbs",

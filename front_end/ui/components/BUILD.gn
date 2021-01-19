@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("components") {
   sources = [
+    "CounterButton.ts",
     "DataGrid.ts",
     "DataGridContextMenuUtils.ts",
     "DataGridController.ts",

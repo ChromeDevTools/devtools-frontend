@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
 
 import * as i18n from '../i18n/i18n.js';
 import * as QuickOpen from '../quick_open/quick_open.js';
@@ -15,76 +16,43 @@ export const UIStrings = {
   */
   noSnippetsFound: 'No snippets found.',
 };
-const str_ = i18n.i18n.registerUIStrings('snippets/SnippetsQuickOpen.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('snippets/SnippetsQuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
+  _snippets: Workspace.UISourceCode.UISourceCode[];
   constructor() {
     super();
-    /** @type {!Array<!Workspace.UISourceCode.UISourceCode>} */
     this._snippets = [];
   }
-  /**
-   * @override
-   * @param {?number} itemIndex
-   * @param {string} promptValue
-   */
-  selectItem(itemIndex, promptValue) {
+  selectItem(itemIndex: number|null, _promptValue: string): void {
     if (itemIndex === null) {
       return;
     }
     evaluateScriptSnippet(this._snippets[itemIndex]);
   }
 
-  /**
-   * @override
-   * @param {string} query
-   * @return {string}
-   */
-  notFoundText(query) {
+  notFoundText(_query: string): string {
     return i18nString(UIStrings.noSnippetsFound);
   }
 
-  /**
-   * @override
-   */
-  attach() {
+  attach(): void {
     this._snippets = findSnippetsProject().uiSourceCodes();
   }
 
-  /**
-   * @override
-   */
-  detach() {
+  detach(): void {
     this._snippets = [];
   }
 
-
-  /**
-   * @override
-   * @return {number}
-   */
-  itemCount() {
+  itemCount(): number {
     return this._snippets.length;
   }
 
-  /**
-   * @override
-   * @param {number} itemIndex
-   * @return {string}
-   */
-  itemKeyAt(itemIndex) {
+  itemKeyAt(itemIndex: number): string {
     return this._snippets[itemIndex].name();
   }
 
-  /**
-   * @override
-   * @param {number} itemIndex
-   * @param {string} query
-   * @param {!Element} titleElement
-   * @param {!Element} subtitleElement
-   */
-  renderItem(itemIndex, query, titleElement, subtitleElement) {
+  renderItem(itemIndex: number, query: string, titleElement: Element, _subtitleElement: Element): void {
     titleElement.textContent = unescape(this._snippets[itemIndex].name());
     titleElement.classList.add('monospace');
     QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query, true);

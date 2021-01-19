@@ -7,9 +7,9 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("snippets") {
   sources = [
-    "ModuleUIStrings.js",
-    "ScriptSnippetFileSystem.js",
-    "SnippetsQuickOpen.js",
+    "ModuleUIStrings.ts",
+    "ScriptSnippetFileSystem.ts",
+    "SnippetsQuickOpen.ts",
   ]
 
   deps = [
@@ -30,7 +30,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "snippets-legacy.js"
+  entrypoint = "snippets-legacy.ts"
 
   deps = [ ":bundle" ]
 }

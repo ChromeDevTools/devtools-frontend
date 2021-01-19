@@ -9,4 +9,4 @@ export const UIStrings = {
   */
   runSnippet: 'Run snippet',
 };
-i18n.i18n.registerUIStrings('snippets/ModuleUIStrings.js', UIStrings);
+i18n.i18n.registerUIStrings('snippets/ModuleUIStrings.ts', UIStrings);

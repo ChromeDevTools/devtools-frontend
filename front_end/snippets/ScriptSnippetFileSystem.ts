@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
@@ -23,26 +24,20 @@ export const UIStrings = {
   */
   linkedTo: 'Linked to {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('snippets/ScriptSnippetFileSystem.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('snippets/ScriptSnippetFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/**
- * @param {string} name
- * @return {string}
- */
-function escapeSnippetName(name) {
+function escapeSnippetName(name: string): string {
   return escape(name);
 }
 
-/**
- * @param {string} name
- * @return {string}
- */
-function unescapeSnippetName(name) {
+function unescapeSnippetName(name: string): string {
   return unescape(name);
 }
 
 export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSystem {
+  _lastSnippetIdentifierSetting: Common.Settings.LegacySetting<number>;
+  _snippetsSetting: Common.Settings.LegacySetting<Snippet[]>;
   constructor() {
     super('snippet://', 'snippets');
     this._lastSnippetIdentifierSetting =
@@ -50,23 +45,12 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     this._snippetsSetting = Common.Settings.Settings.instance().createSetting('scriptSnippets', []);
   }
 
-  /**
-   * @override
-   * @return {!Array<string>}
-   */
-  initialFilePaths() {
-    /** @type {!Array<!Snippet>} */
-    const savedSnippets = this._snippetsSetting.get();
+  initialFilePaths(): string[] {
+    const savedSnippets: Snippet[] = this._snippetsSetting.get();
     return savedSnippets.map(snippet => escapeSnippetName(snippet.name));
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @param {?string} name
-   * @return {!Promise<?string>}
-   */
-  async createFile(path, name) {
+  async createFile(_path: string, _name: string|null): Promise<string|null> {
     const nextId = this._lastSnippetIdentifierSetting.get() + 1;
     this._lastSnippetIdentifierSetting.set(nextId);
 
@@ -78,15 +62,9 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return escapeSnippetName(snippetName);
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @return {!Promise<boolean>}
-   */
-  async deleteFile(path) {
+  async deleteFile(path: string): Promise<boolean> {
     const name = unescapeSnippetName(path.substring(1));
-    /** @type {!Array<!Snippet>} */
-    const allSnippets = this._snippetsSetting.get();
+    const allSnippets: Snippet[] = this._snippetsSetting.get();
     const snippets = allSnippets.filter(snippet => snippet.name !== name);
     if (allSnippets.length !== snippets.length) {
       this._snippetsSetting.set(snippets);
@@ -95,15 +73,9 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return false;
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
-   */
-  async requestFileContent(path) {
+  async requestFileContent(path: string): Promise<TextUtils.ContentProvider.DeferredContent> {
     const name = unescapeSnippetName(path.substring(1));
-    /** @type {!Array<!Snippet>} */
-    const snippets = this._snippetsSetting.get();
+    const snippets: Snippet[] = this._snippetsSetting.get();
     const snippet = snippets.find(snippet => snippet.name === name);
     if (snippet) {
       return {content: snippet.content, isEncoded: false};
@@ -111,16 +83,9 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return {content: null, isEncoded: false, error: `A snippet with name '${name}' was not found`};
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @param {string} content
-   * @param {boolean} isBase64
-   */
-  async setFileContent(path, content, isBase64) {
+  async setFileContent(path: string, content: string, _isBase64: boolean): Promise<boolean> {
     const name = unescapeSnippetName(path.substring(1));
-    /** @type {!Array<!Snippet>} */
-    const snippets = this._snippetsSetting.get();
+    const snippets: Snippet[] = this._snippetsSetting.get();
     const snippet = snippets.find(snippet => snippet.name === name);
     if (snippet) {
       snippet.content = content;
@@ -130,16 +95,9 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return false;
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @param {string} newName
-   * @param {function(boolean, string=):void} callback
-   */
-  renameFile(path, newName, callback) {
+  renameFile(path: string, newName: string, callback: (arg0: boolean, arg1?: string|undefined) => void): void {
     const name = unescapeSnippetName(path.substring(1));
-    /** @type {!Array<!Snippet>} */
-    const snippets = this._snippetsSetting.get();
+    const snippets: Snippet[] = this._snippetsSetting.get();
     const snippet = snippets.find(snippet => snippet.name === name);
     newName = newName.trim();
     if (!snippet || newName.length === 0 || snippets.find(snippet => snippet.name === newName)) {
@@ -151,60 +109,31 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     callback(true, newName);
   }
 
-  /**
-   * @override
-   * @param {string} query
-   * @param {!Common.Progress.Progress} progress
-   * @return {!Promise<!Array<string>>}
-   */
-  async searchInPath(query, progress) {
+  async searchInPath(query: string, _progress: Common.Progress.Progress): Promise<string[]> {
     const re = new RegExp(query.escapeForRegExp(), 'i');
-    /** @type {!Array<!Snippet>} */
-    const allSnippets = this._snippetsSetting.get();
+    const allSnippets: Snippet[] = this._snippetsSetting.get();
     const matchedSnippets = allSnippets.filter(snippet => snippet.content.match(re));
     return matchedSnippets.map(snippet => `snippet:///${escapeSnippetName(snippet.name)}`);
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @return {string}
-   */
-  mimeFromPath(path) {
+  mimeFromPath(_path: string): string {
     return 'text/javascript';
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @return {!Common.ResourceType.ResourceType}
-   */
-  contentType(path) {
+  contentType(_path: string): Common.ResourceType.ResourceType {
     return Common.ResourceType.resourceTypes.Script;
   }
 
-  /**
-   * @override
-   * @param {string} url
-   * @return {string}
-   */
-  tooltipForURL(url) {
+  tooltipForURL(url: string): string {
     return i18nString(UIStrings.linkedTo, {PH1: unescapeSnippetName(url.substring(this.path().length))});
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsAutomapping() {
+  supportsAutomapping(): boolean {
     return true;
   }
 }
 
-/**
- * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
- */
-export async function evaluateScriptSnippet(uiSourceCode) {
+export async function evaluateScriptSnippet(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
   if (!uiSourceCode.url().startsWith('snippet://')) {
     return;
   }
@@ -223,7 +152,7 @@ export async function evaluateScriptSnippet(uiSourceCode) {
   const url = uiSourceCode.url();
 
   const result = await executionContext.evaluate(
-      /** @type {!SDK.RuntimeModel.EvaluationOptions} */ ({
+      {
         expression: `${expression}\n//# sourceURL=${url}`,
         objectGroup: 'console',
         silent: false,
@@ -231,9 +160,8 @@ export async function evaluateScriptSnippet(uiSourceCode) {
         returnByValue: false,
         generatePreview: true,
         replMode: true,
-      }),
-      /* userGesture */ false,
-      /* awaitPromise */ true);
+      } as SDK.RuntimeModel.EvaluationOptions,
+      false, true);
 
   if ('exceptionDetails' in result && result.exceptionDetails) {
     SDK.ConsoleModel.ConsoleModel.instance().addMessage(SDK.ConsoleModel.ConsoleMessage.fromException(
@@ -255,27 +183,16 @@ export async function evaluateScriptSnippet(uiSourceCode) {
       executionContext.id, scriptId));
 }
 
-/**
- * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
- * @return {boolean}
- */
-export function isSnippetsUISourceCode(uiSourceCode) {
+export function isSnippetsUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
   return uiSourceCode.url().startsWith('snippet://');
 }
 
-/**
- * @param {!Workspace.Workspace.Project} project
- * @return {boolean}
- */
-export function isSnippetsProject(project) {
+export function isSnippetsProject(project: Workspace.Workspace.Project): boolean {
   return project.type() === Workspace.Workspace.projectTypes.FileSystem &&
       Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) === 'snippets';
 }
 
-/**
- * @return {!Workspace.Workspace.Project}
- */
-export function findSnippetsProject() {
+export function findSnippetsProject(): Workspace.Workspace.Project {
   const workspaceProject =
       Workspace.Workspace.WorkspaceImpl.instance()
           .projectsForType(Workspace.Workspace.projectTypes.FileSystem)
@@ -289,12 +206,7 @@ export function findSnippetsProject() {
 
   return workspaceProject;
 }
-
-/**
-* @typedef {{
-  * name:string,
-  * content:string,
-  * }}
-  */
-// @ts-ignore typedef
-export let Snippet;
+export interface Snippet {
+  name: string;
+  content: string;
+}

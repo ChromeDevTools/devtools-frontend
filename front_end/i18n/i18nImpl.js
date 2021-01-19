@@ -49,6 +49,21 @@ export function registerLocale(locale) {
 }
 
 /**
+ * Returns an anonymous function that wraps a call to retrieve a localized string.
+ * This is introduced so that localized strings can be declared in environments where
+ * the i18n system has not been configured and so, cannot be directly invoked. Instead,
+ * strings are lazily localized when they are used. This is used for instance in the
+ * meta files used to register module extensions.
+ * @param {function(string, ?Object):string} str_
+ * @param {string} id
+ * @param {!Object} values
+ * @return {function(): !Platform.UIString.LocalizedString} the localized version of the
+ */
+export function getLazilyComputedLocalizedString(str_, id, values = {}) {
+  return () => getLocalizedString(str_, id, values);
+}
+
+/**
  * Retrieve the localized string.
  * @param {function(string, ?Object):string} str_
  * @param {string} id

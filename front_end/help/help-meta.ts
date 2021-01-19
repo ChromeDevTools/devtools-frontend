@@ -16,7 +16,7 @@ export const UIStrings = {
   whatsNew: 'What\'s New',
 };
 const str_ = i18n.i18n.registerUIStrings('help/help-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedHelpModule: (typeof Help|undefined);
 
@@ -32,7 +32,7 @@ async function loadHelpModule(): Promise<typeof Help> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'release-note',
-  title: () => i18nString(UIStrings.whatsNew),
+  title: i18nString(UIStrings.whatsNew),
   commandPrompt: 'Show What\'s New',
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 1,

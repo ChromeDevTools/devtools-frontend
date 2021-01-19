@@ -45,6 +45,9 @@ def run_tests(chrome_binary,
               test_suite_path,
               test_suite,
               test_file=None):
+    # Silence CI step in old branch
+    if test_suite == "interactions":
+        return False
     env = os.environ.copy()
     env['CHROME_BIN'] = chrome_binary
     if chrome_features:

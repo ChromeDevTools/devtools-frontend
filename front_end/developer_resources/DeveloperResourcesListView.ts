@@ -66,7 +66,7 @@ export const UIStrings = {
   */
   sBytes: '{PH1} bytes',
 };
-const str_ = i18n.i18n.registerUIStrings('developer_resources/DeveloperResourcesListView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('developer_resources/DeveloperResourcesListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DeveloperResourcesListView extends UI.Widget.VBox {

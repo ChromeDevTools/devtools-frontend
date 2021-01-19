@@ -308,6 +308,9 @@
   "coverage/ModuleUIStrings.ts | stopInstrumentingCoverageAndShow": {
     "message": "Stop instrumenting coverage and show results"
   },
+  "developer_resources/developer_resources-meta.ts | developerResources": {
+    "message": "Developer Resources"
+  },
   "developer_resources/DeveloperResourcesListView.ts | Byte": {
     "message": "1 byte"
   },

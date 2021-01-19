@@ -36,7 +36,7 @@ export const UIStrings = {
    */
   resources: '{PH1} resources',
 };
-const str_ = i18n.i18n.registerUIStrings('developer_resources/DeveloperResourcesView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('developer_resources/DeveloperResourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let developerResourcesViewInstance: DeveloperResourcesView;

@@ -349,7 +349,7 @@ def _CollectStrings(input_api, output_api):
     devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
     affected_front_end_files = _getAffectedFiles(input_api,
                                                  [devtools_front_end], ['D'],
-                                                 ['.js'])
+                                                 ['.js', '.ts'])
     if len(affected_front_end_files) == 0:
         return [
             output_api.PresubmitNotifyResult(

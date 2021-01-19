@@ -3,12 +3,21 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as DeveloperResources from './developer_resources.js';
+
+export const UIStrings = {
+  /**
+   * @description Title for developer resources panel
+   */
+  developerResources: 'Developer Resources',
+};
+const str_ = i18n.i18n.registerUIStrings('developer_resources/developer_resources-meta.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let loadedDeveloperResourcesModule: (typeof DeveloperResources|undefined);
 
@@ -24,7 +33,7 @@ async function loadDeveloperResourcesModule(): Promise<typeof DeveloperResources
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'resource-loading-pane',
-  title: (): Platform.UIString.LocalizedString => ls`Developer Resources`,
+  title: (): Platform.UIString.LocalizedString => i18nString(UIStrings.developerResources),
   commandPrompt: 'Show Developer Resources',
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,

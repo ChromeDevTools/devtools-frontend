@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Persistence from '../persistence/persistence.js';
@@ -20,26 +22,21 @@ export const UIStrings = {
   */
   linkedToS: 'Linked to {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('recorder/RecordingFileSystem.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('recorder/RecordingFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/**
- * @param {string} name
- * @return {string}
- */
-function escapeRecordingName(name) {
+function escapeRecordingName(name: string): string {
   return escape(name);
 }
 
-/**
- * @param {string} name
- * @return {string}
- */
-function unescapeRecordingName(name) {
+function unescapeRecordingName(name: string): string {
   return unescape(name);
 }
 
 export class RecordingFileSystem extends Persistence.PlatformFileSystem.PlatformFileSystem {
+  _lastRecordingIdentifierSetting: Common.Settings.LegacySetting<number>;
+  _recordingsSetting: Common.Settings.LegacySetting<Recording[]>;
+
   constructor() {
     super('recording://', 'recordings');
     this._lastRecordingIdentifierSetting =
@@ -47,23 +44,12 @@ export class RecordingFileSystem extends Persistence.PlatformFileSystem.Platform
     this._recordingsSetting = Common.Settings.Settings.instance().createSetting('recorder_recordings', []);
   }
 
-  /**
-   * @override
-   * @return {!Array<string>}
-   */
-  initialFilePaths() {
-    /** @type {!Array<!Recording>} */
-    const savedRecordings = this._recordingsSetting.get();
+  initialFilePaths(): string[] {
+    const savedRecordings: Recording[] = this._recordingsSetting.get();
     return savedRecordings.map(recording => escapeRecordingName(recording.name));
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @param {?string} name
-   * @return {!Promise<?string>}
-   */
-  async createFile(path, name) {
+  async createFile(_path: string, _name: string|null): Promise<string|null> {
     const nextId = this._lastRecordingIdentifierSetting.get() + 1;
     this._lastRecordingIdentifierSetting.set(nextId);
 
@@ -75,15 +61,9 @@ export class RecordingFileSystem extends Persistence.PlatformFileSystem.Platform
     return escapeRecordingName(recordingName);
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @return {!Promise<boolean>}
-   */
-  async deleteFile(path) {
+  async deleteFile(path: string): Promise<boolean> {
     const name = unescapeRecordingName(path.substring(1));
-    /** @type {!Array<!Recording>} */
-    const allRecordings = this._recordingsSetting.get();
+    const allRecordings: Recording[] = this._recordingsSetting.get();
     const recordings = allRecordings.filter(recording => recording.name !== name);
     if (allRecordings.length !== recordings.length) {
       this._recordingsSetting.set(recordings);
@@ -92,15 +72,9 @@ export class RecordingFileSystem extends Persistence.PlatformFileSystem.Platform
     return false;
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
-   */
-  async requestFileContent(path) {
+  async requestFileContent(path: string): Promise<TextUtils.ContentProvider.DeferredContent> {
     const name = unescapeRecordingName(path.substring(1));
-    /** @type {!Array<!Recording>} */
-    const recordings = this._recordingsSetting.get();
+    const recordings: Recording[] = this._recordingsSetting.get();
     const recording = recordings.find(recording => recording.name === name);
     if (recording) {
       return {content: recording.content, isEncoded: false};
@@ -108,16 +82,9 @@ export class RecordingFileSystem extends Persistence.PlatformFileSystem.Platform
     return {content: null, isEncoded: false, error: `A recording with name '${name}' was not found`};
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @param {string} content
-   * @param {boolean} isBase64
-   */
-  async setFileContent(path, content, isBase64) {
+  async setFileContent(path: string, content: string, _isBase64: boolean): Promise<boolean> {
     const name = unescapeRecordingName(path.substring(1));
-    /** @type {!Array<!Recording>} */
-    const recordings = this._recordingsSetting.get();
+    const recordings: Recording[] = this._recordingsSetting.get();
     const recording = recordings.find(recording => recording.name === name);
     if (recording) {
       recording.content = content;
@@ -127,16 +94,9 @@ export class RecordingFileSystem extends Persistence.PlatformFileSystem.Platform
     return false;
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @param {string} newName
-   * @param {function(boolean, string=):void} callback
-   */
-  renameFile(path, newName, callback) {
+  renameFile(path: string, newName: string, callback: (arg0: boolean, arg1?: string|undefined) => void): void {
     const name = unescapeRecordingName(path.substring(1));
-    /** @type {!Array<!Recording>} */
-    const recordings = this._recordingsSetting.get();
+    const recordings: Recording[] = this._recordingsSetting.get();
     const recording = recordings.find(recording => recording.name === name);
     newName = newName.trim();
     if (!recording || newName.length === 0 || recordings.find(recording => recording.name === newName)) {
@@ -148,77 +108,40 @@ export class RecordingFileSystem extends Persistence.PlatformFileSystem.Platform
     callback(true, newName);
   }
 
-  /**
-   * @override
-   * @param {string} query
-   * @param {!Common.Progress.Progress} progress
-   * @return {!Promise<!Array<string>>}
-   */
-  async searchInPath(query, progress) {
+  async searchInPath(query: string, _progress: Common.Progress.Progress): Promise<string[]> {
     const re = new RegExp(query.escapeForRegExp(), 'i');
-    /** @type {!Array<!Recording>} */
-    const allRecordings = this._recordingsSetting.get();
+    const allRecordings: Recording[] = this._recordingsSetting.get();
     const matchedRecordings = allRecordings.filter(recording => recording.content.match(re));
     return matchedRecordings.map(recording => `recording:///${escapeRecordingName(recording.name)}`);
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @return {string}
-   */
-  mimeFromPath(path) {
+  mimeFromPath(_path: string): string {
     return 'text/javascript';
   }
 
-  /**
-   * @override
-   * @param {string} path
-   * @return {!Common.ResourceType.ResourceType}
-   */
-  contentType(path) {
+  contentType(_path: string): Common.ResourceType.ResourceType {
     return Common.ResourceType.resourceTypes.Script;
   }
 
-  /**
-   * @override
-   * @param {string} url
-   * @return {string}
-   */
-  tooltipForURL(url) {
+  tooltipForURL(url: string): string {
     return i18nString(UIStrings.linkedToS, {PH1: unescapeRecordingName(url.substring(this.path().length))});
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsAutomapping() {
+  supportsAutomapping(): boolean {
     return true;
   }
 }
 
-/**
- * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
- * @return {boolean}
- */
-export function isRecordingUISourceCode(uiSourceCode) {
+export function isRecordingUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
   return uiSourceCode.url().startsWith('recording://');
 }
 
-/**
- * @param {!Workspace.Workspace.Project} project
- * @return {boolean}
- */
-export function isRecordingProject(project) {
+export function isRecordingProject(project: Workspace.Workspace.Project): boolean {
   return project.type() === Workspace.Workspace.projectTypes.FileSystem &&
       Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) === 'recordings';
 }
 
-/**
- * @return {!Workspace.Workspace.Project}
- * */
-export function findRecordingsProject() {
+export function findRecordingsProject(): Workspace.Workspace.Project {
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();
   const projects = workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem);
   const project = projects.find(project => {
@@ -230,12 +153,7 @@ export function findRecordingsProject() {
   }
   return project;
 }
-
-/**
-* @typedef {{
-  * name:string,
-  * content:string,
-  * }}
-  */
-// @ts-ignore typedef
-export let Recording;
+export interface Recording {
+  name: string;
+  content: string;
+}

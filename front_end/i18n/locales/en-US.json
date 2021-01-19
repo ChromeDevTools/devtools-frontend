@@ -1553,10 +1553,10 @@
   "protocol_monitor/ProtocolMonitor.js | timestamp": {
     "message": "Timestamp"
   },
-  "recorder/RecordingFileSystem.js | defaultRecordingName": {
+  "recorder/RecordingFileSystem.ts | defaultRecordingName": {
     "message": "Recording #{nextId}"
   },
-  "recorder/RecordingFileSystem.js | linkedToS": {
+  "recorder/RecordingFileSystem.ts | linkedToS": {
     "message": "Linked to {PH1}"
   },
   "resources/ClearStorageView.js | storageQuotaUsed": {

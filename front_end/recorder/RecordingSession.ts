@@ -2,22 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 import {RecordingEventHandler} from './RecordingEventHandler.js';
 
 export class StepFrameContext {
-  /**
-   * @param {!string} target
-   * @param {!Array<number>} path
-   */
-  constructor(target, path = []) {
+  path: number[];
+  target: string;
+  constructor(target: string, path: number[] = []) {
     this.path = path;
     this.target = target;
   }
 
-  toString() {
+  toString(): string {
     let expression = StepFrameContext.getExpressionForTarget(this.target) + '\n';
     expression += 'const frame = targetPage.mainFrame()';
     for (const index of this.path) {
@@ -27,183 +27,162 @@ export class StepFrameContext {
     return expression;
   }
 
-  /**
-   * @param {string} target
-   */
-  static getExpressionForTarget(target) {
+  static getExpressionForTarget(target: string): string {
     if (target === 'main') {
       return 'const targetPage = page;';
     }
     return `const target = await browser.waitForTarget(p => p.url() === ${JSON.stringify(target)});
-        const targetPage = await target.page();`;
+  const targetPage = await target.page();`;
   }
 }
 
 export class Step {
-  /**
-   * @param {string} action
-   */
-  constructor(action) {
+  action: string;
+  constructor(action: string) {
     this.action = action;
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  toString() {
+  toString(): string {
     throw new Error('Must be implemented in subclass.');
   }
 }
 
 export class ClickStep extends Step {
-  /**
-   * @param {!StepFrameContext} context
-   * @param {string} selector
-   */
-  constructor(context, selector) {
+  context: StepFrameContext;
+  selector: string;
+  constructor(context: StepFrameContext, selector: string) {
     super('click');
     this.context = context;
     this.selector = selector;
   }
 
-  /**
-   * @override
-   */
-  toString() {
+  toString(): string {
     return `{
-      ${this.context}
-      const element = await frame.waitForSelector(${JSON.stringify(this.selector)});
-      await element.click();
-    }`;
+  ${this.context}
+  const element = await frame.waitForSelector(${JSON.stringify(this.selector)});
+  await element.click();
+  }`;
   }
 }
 
 export class NavigationStep extends Step {
-  /**
-   * @param {string} url
-   */
-  constructor(url) {
+  url: string;
+  constructor(url: string) {
     super('navigate');
     this.url = url;
   }
 
-  /**
-   * @override
-   */
-  toString() {
+  toString(): string {
     return `await page.goto(${JSON.stringify(this.url)});`;
   }
 }
 
 export class SubmitStep extends Step {
-  /**
-   * @param {!StepFrameContext} context
-   * @param {string} selector
-   */
-  constructor(context, selector) {
+  context: StepFrameContext;
+  selector: string;
+  constructor(context: StepFrameContext, selector: string) {
     super('submit');
     this.context = context;
     this.selector = selector;
   }
 
-  /**
-   * @override
-   */
-  toString() {
+  toString(): string {
     return `{
-      ${this.context}
-      const element = await frame.waitForSelector(${JSON.stringify(this.selector)});
-      await element.evaluate(form => form.submit());
-    }`;
+  ${this.context}
+  const element = await frame.waitForSelector(${JSON.stringify(this.selector)});
+  await element.evaluate(form => form.submit());
+  }`;
   }
 }
 
 export class ChangeStep extends Step {
-  /**
-   * @param {!StepFrameContext} context
-   * @param {string} selector
-   * @param {string} value
-   */
-  constructor(context, selector, value) {
+  context: StepFrameContext;
+  selector: string;
+  value: string;
+  constructor(context: StepFrameContext, selector: string, value: string) {
     super('change');
     this.context = context;
     this.selector = selector;
     this.value = value;
   }
 
-  /**
-   * @override
-   */
-  toString() {
+  toString(): string {
     return `{
-      ${this.context}
-      const element = await frame.waitForSelector(${JSON.stringify(this.selector)});
-      await element.type(${JSON.stringify(this.value)});
-    }`;
+  ${this.context}
+  const element = await frame.waitForSelector(${JSON.stringify(this.selector)});
+  await element.type(${JSON.stringify(this.value)});
+  }`;
   }
 }
 
 export class CloseStep extends Step {
-  /**
-   * @param {string} target
-   */
-  constructor(target) {
+  target: string;
+  constructor(target: string) {
     super('close');
     this.target = target;
   }
 
-  /**
-   * @override
-   */
-  toString() {
+  toString(): string {
     return `{
-      ${StepFrameContext.getExpressionForTarget(this.target)}
-      await targetPage.close();
-    }`;
+  ${StepFrameContext.getExpressionForTarget(this.target)}
+  await targetPage.close();
+  }`;
   }
 }
 
 export class EmulateNetworkConditions extends Step {
-  /**
-   * @param {!SDK.NetworkManager.Conditions} conditions
-   */
-  constructor(conditions) {
+  conditions: SDK.NetworkManager.Conditions;
+  constructor(conditions: SDK.NetworkManager.Conditions) {
     super('emulateNetworkConditions');
     this.conditions = conditions;
   }
 
-  /**
-   * @override
-   */
-  toString() {
+  toString(): string {
     // TODO(crbug.com/1161438): Update once puppeteer has better support for this
     return `{
       // Simulated network throttling (${this.conditions.title})
       const client = await page.target().createCDPSession();
       await client.send('Network.enable');
       await client.send('Network.emulateNetworkConditions', {
-        // Network connectivity is absent
-        offline: ${!this.conditions.download && !this.conditions.upload},
-        // Download speed (bytes/s)
-        downloadThroughput: ${this.conditions.download},
-        // Upload speed (bytes/s)
-        uploadThroughput: ${this.conditions.upload},
-        // Latency (ms)
-        latency: ${this.conditions.latency},
+      // Network connectivity is absent
+      offline: ${!this.conditions.download && !this.conditions.upload},
+      // Download speed (bytes/s)
+      downloadThroughput: ${this.conditions.download},
+      // Upload speed (bytes/s)
+      uploadThroughput: ${this.conditions.upload},
+      // Latency (ms)
+      latency: ${this.conditions.latency},
       });
-    }`;
+  }`;
   }
 }
 
-const DOM_BREAKPOINTS = new Set(['Mouse:click', 'Control:change', 'Control:submit']);
+const DOM_BREAKPOINTS = new Set<string>(['Mouse:click', 'Control:change', 'Control:submit']);
 
 export class RecordingSession {
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   */
-  constructor(target, uiSourceCode) {
+  _target: SDK.SDKModel.Target;
+  _uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  _currentIndentation: number;
+  _debuggerAgent: ProtocolProxyApi.DebuggerApi;
+  _domDebuggerAgent: ProtocolProxyApi.DOMDebuggerApi;
+  _runtimeAgent: ProtocolProxyApi.RuntimeApi;
+  _accessibilityAgent: ProtocolProxyApi.AccessibilityApi;
+  _pageAgent: ProtocolProxyApi.PageApi;
+  _targetAgent: ProtocolProxyApi.TargetApi;
+  _networkManager: SDK.NetworkManager.MultitargetNetworkManager;
+  _domModel: SDK.DOMModel.DOMModel;
+  _axModel: SDK.AccessibilityModel.AccessibilityModel;
+  _debuggerModel: SDK.DebuggerModel.DebuggerModel;
+  _resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel;
+  _runtimeModel: SDK.RuntimeModel.RuntimeModel;
+  _childTargetManager: SDK.ChildTargetManager.ChildTargetManager|null;
+  _eventHandlers: Map<string, RecordingEventHandler>;
+  _targets: Set<SDK.SDKModel.Target>;
+  _initialDomBreakpointState: Map<SDK.DOMDebuggerModel.EventListenerBreakpoint, boolean>;
+  _interestingBreakpoints: SDK.DOMDebuggerModel.EventListenerBreakpoint[];
+  _newDocumentScriptIdentifier: string|null;
+
+  constructor(target: SDK.SDKModel.Target, uiSourceCode: Workspace.UISourceCode.UISourceCode) {
     this._target = target;
     this._uiSourceCode = uiSourceCode;
     this._currentIndentation = 0;
@@ -216,36 +195,28 @@ export class RecordingSession {
     this._targetAgent = target.targetAgent();
 
     this._networkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
-
-    this._domModel = /** @type {!SDK.DOMModel.DOMModel} */ (target.model(SDK.DOMModel.DOMModel));
-    this._axModel = /** @type {!SDK.AccessibilityModel.AccessibilityModel} */ (
-        target.model(SDK.AccessibilityModel.AccessibilityModel));
-    this._debuggerModel =
-        /** @type {!SDK.DebuggerModel.DebuggerModel} */ (target.model(SDK.DebuggerModel.DebuggerModel));
-
+    this._domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+    this._axModel =
+        target.model(SDK.AccessibilityModel.AccessibilityModel) as SDK.AccessibilityModel.AccessibilityModel;
+    this._debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
     this._resourceTreeModel =
-        /** @type {!SDK.ResourceTreeModel.ResourceTreeModel} */ (target.model(SDK.ResourceTreeModel.ResourceTreeModel));
-    this._runtimeModel = /** @type {!SDK.RuntimeModel.RuntimeModel} */ (target.model(SDK.RuntimeModel.RuntimeModel));
+        target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel;
+    this._runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel;
     this._childTargetManager = target.model(SDK.ChildTargetManager.ChildTargetManager);
 
     this._target = target;
-    /** @type {Map<string, RecordingEventHandler>} */
     this._eventHandlers = new Map();
 
-    /** @type {Set<!SDK.SDKModel.Target>} */
     this._targets = new Set();
 
-    /** @type {Map<!SDK.DOMDebuggerModel.EventListenerBreakpoint, boolean>} */
     this._initialDomBreakpointState = new Map();
 
-    /** @type {Array<!SDK.DOMDebuggerModel.EventListenerBreakpoint>} */
     this._interestingBreakpoints = [];
 
-    /** @type {?Protocol.Page.ScriptIdentifier} */
     this._newDocumentScriptIdentifier = null;
   }
 
-  async start() {
+  async start(): Promise<void> {
     const allDomBreakpoints = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().eventListenerBreakpoints();
     this._interestingBreakpoints =
         allDomBreakpoints.filter(breakpoint => DOM_BREAKPOINTS.has(breakpoint.category() + ':' + breakpoint.title()));
@@ -282,7 +253,6 @@ export class RecordingSession {
     await this.appendLineToScript('const page = await browser.newPage();');
     await this.appendLineToScript('');
 
-
     const networkConditions = this._networkManager.networkConditions();
     if (networkConditions !== SDK.NetworkManager.NoThrottlingConditions) {
       await this.appendStepToScript(new EmulateNetworkConditions(networkConditions));
@@ -291,12 +261,12 @@ export class RecordingSession {
     await this.appendStepToScript(new NavigationStep(mainFrame.url));
   }
 
-  _handleNetworkConditionsChanged() {
+  _handleNetworkConditionsChanged(): void {
     const networkConditions = this._networkManager.networkConditions();
     this.appendStepToScript(new EmulateNetworkConditions(networkConditions));
   }
 
-  async stop() {
+  async stop(): Promise<void> {
     for (const target of this._targets) {
       await this.detachFromTarget(target);
     }
@@ -322,10 +292,7 @@ export class RecordingSession {
     }
   }
 
-  /**
-   * @param {string} line
-   */
-  async appendLineToScript(line) {
+  async appendLineToScript(line: string): Promise<void> {
     let content = this._uiSourceCode.content();
     const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
     content += (indent.repeat(this._currentIndentation) + line).trimRight() + '\n';
@@ -334,10 +301,7 @@ export class RecordingSession {
     Common.Revealer.reveal(this._uiSourceCode.uiLocation(lastLine), true);
   }
 
-  /**
-   * @param {!Step} step
-   */
-  async appendStepToScript(step) {
+  async appendStepToScript(step: Step): Promise<void> {
     const lines = step.toString().split('\n').map(l => l.trim());
     for (const line of lines) {
       if (line === '}') {
@@ -350,14 +314,8 @@ export class RecordingSession {
     }
   }
 
-  /**
-   * @param {string} targetId
-   */
-  async isSubmitButton(targetId) {
-    /**
-     * @this {!HTMLButtonElement}
-     */
-    function innerIsSubmitButton() {
+  async isSubmitButton(targetId: string): Promise<boolean> {
+    function innerIsSubmitButton(this: HTMLButtonElement): boolean {
       return this.tagName === 'BUTTON' && this.type === 'submit' && this.form !== null;
     }
 
@@ -368,10 +326,7 @@ export class RecordingSession {
     return result.value;
   }
 
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   */
-  async attachToTarget(target) {
+  async attachToTarget(target: SDK.SDKModel.Target): Promise<void> {
     this._targets.add(target);
     const eventHandler = new RecordingEventHandler(this, target);
     this._eventHandlers.set(target.id(), eventHandler);
@@ -379,20 +334,19 @@ export class RecordingSession {
 
     const pageAgent = target.pageAgent();
 
-    const debuggerModel =
-        /** @type {!SDK.DebuggerModel.DebuggerModel} */ (target.model(SDK.DebuggerModel.DebuggerModel));
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
 
     const childTargetManager = target.model(SDK.ChildTargetManager.ChildTargetManager);
 
     const setupEventListeners = `
-      if (!window.__recorderEventListener) {
-        const recorderEventListener = (event) => { };
-        window.addEventListener('click', recorderEventListener, true);
-        window.addEventListener('submit', recorderEventListener, true);
-        window.addEventListener('change', recorderEventListener, true);
-        window.__recorderEventListener = recorderEventListener;
-      }
-    `;
+  if (!window.__recorderEventListener) {
+  const recorderEventListener = (event) => { };
+  window.addEventListener('click', recorderEventListener, true);
+  window.addEventListener('submit', recorderEventListener, true);
+  window.addEventListener('change', recorderEventListener, true);
+  window.__recorderEventListener = recorderEventListener;
+  }
+  `;
 
     // This uses the setEventListenerBreakpoint method from the debugger
     // to get notified about new events. Therefor disable the normal debugger
@@ -409,30 +363,22 @@ export class RecordingSession {
     childTargetManager?.addEventListener(SDK.ChildTargetManager.Events.TargetDestroyed, this.handleWindowClosed, this);
   }
 
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   */
-  async detachFromTarget(target) {
+  async detachFromTarget(target: SDK.SDKModel.Target): Promise<void> {
     const eventHandler = this._eventHandlers.get(target.id());
     if (!eventHandler) {
       return;
     }
     target.unregisterDebuggerDispatcher(eventHandler);
 
-    const debuggerModel =
-        /** @type {!SDK.DebuggerModel.DebuggerModel} */ (target.model(SDK.DebuggerModel.DebuggerModel));
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
 
     await debuggerModel.ignoreDebuggerPausedEvents(false);
   }
 
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   * @param {string} expression
-   */
-  async evaluateInAllFrames(target, expression) {
+  async evaluateInAllFrames(target: SDK.SDKModel.Target, expression: string): Promise<void> {
     const resourceTreeModel =
-        /** @type {!SDK.ResourceTreeModel.ResourceTreeModel} */ (target.model(SDK.ResourceTreeModel.ResourceTreeModel));
-    const runtimeModel = /** @type {!SDK.RuntimeModel.RuntimeModel} */ (target.model(SDK.RuntimeModel.RuntimeModel));
+        target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel;
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel;
     const executionContexts = runtimeModel.executionContexts();
     for (const frame of resourceTreeModel.frames()) {
       const executionContext = executionContexts.find(context => context.frameId === frame.id);
@@ -458,10 +404,7 @@ export class RecordingSession {
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  async handleWindowOpened(event) {
+  async handleWindowOpened(event: Common.EventTarget.EventTargetEvent): Promise<void> {
     if (event.data.type !== 'page') {
       return;
     }
@@ -481,10 +424,7 @@ export class RecordingSession {
     this.attachToTarget(target);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  async handleWindowClosed(event) {
+  async handleWindowClosed(event: Common.EventTarget.EventTargetEvent): Promise<void> {
     const eventHandler = this._eventHandlers.get(event.data);
     if (!eventHandler) {
       return;

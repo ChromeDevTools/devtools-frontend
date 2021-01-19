@@ -7,7 +7,7 @@ import * as SDK from '../sdk/sdk.js';
 
 import {ChangeStep, ClickStep, CloseStep, RecordingSession, StepFrameContext, SubmitStep} from './RecordingSession.js';
 
-const RELEVANT_ROLES_FOR_ARIA_SELECTORS = new Set(['button', 'link', 'textbox', 'checkbox']);
+const RELEVANT_ROLES_FOR_ARIA_SELECTORS = new Set<string>(['button', 'link', 'textbox', 'checkbox']);
 
 export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatcher {
   private target: SDK.SDKModel.Target;
@@ -184,8 +184,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
       functionDeclaration: getValue.toString(),
       objectId: targetId,
     });
-
-    this.session.appendStepToScript(new ChangeStep(context, selector, /** @type {string} */ (result.value)));
+    this.session.appendStepToScript(new ChangeStep(context, selector, result.value as string));
     await this.resume();
   }
 
@@ -195,7 +194,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
 
   getContextForFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): StepFrameContext {
     const path = [];
-    let currentFrame = frame;
+    let currentFrame: SDK.ResourceTreeModel.ResourceTreeFrame = frame;
     while (currentFrame) {
       const parentFrame = currentFrame.parentFrame();
       if (!parentFrame) {

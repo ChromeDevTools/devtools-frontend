@@ -2,56 +2,51 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
 
 import {RecordingSession} from './RecordingSession.js';
 
-/**
- * @enum {symbol}
- */
-const RecorderState = {
-  Recording: Symbol('Recording'),
-  Idle: Symbol('Idle'),
-};
+const enum RecorderState {
+  Recording = 'Recording',
+  Idle = 'Idle'
+}
 
 export class RecorderModel extends SDK.SDKModel.SDKModel {
-  /**
-  * @param {!SDK.SDKModel.Target} target
-  */
-  constructor(target) {
+  _debuggerAgent: ProtocolProxyApi.DebuggerApi;
+  _domDebuggerAgent: ProtocolProxyApi.DOMDebuggerApi;
+  _runtimeAgent: ProtocolProxyApi.RuntimeApi;
+  _accessibilityAgent: ProtocolProxyApi.AccessibilityApi;
+  _toggleRecordAction: UI.ActionRegistration.Action;
+  _state: RecorderState;
+  _currentRecordingSession: RecordingSession|null;
+
+  constructor(target: SDK.SDKModel.Target) {
     super(target);
     this._debuggerAgent = target.debuggerAgent();
     this._domDebuggerAgent = target.domdebuggerAgent();
     this._runtimeAgent = target.runtimeAgent();
     this._accessibilityAgent = target.accessibilityAgent();
-
-    /** @type {!UI.ActionRegistration.Action}*/
-    this._toggleRecordAction = /** @type {!UI.ActionRegistration.Action}*/ (
-        UI.ActionRegistry.ActionRegistry.instance().action('recorder.toggle-recording'));
+    this._toggleRecordAction =
+        UI.ActionRegistry.ActionRegistry.instance().action('recorder.toggle-recording') as UI.ActionRegistration.Action;
 
     this._state = RecorderState.Idle;
-    /** @type {?RecordingSession} */
     this._currentRecordingSession = null;
   }
 
-  /**
-   * @param {!RecorderState} newState
-   */
-  async updateState(newState) {
+  async updateState(newState: RecorderState): Promise<void> {
     this._state = newState;
     this._toggleRecordAction.setToggled(this._state === RecorderState.Recording);
   }
 
-  isRecording() {
+  isRecording(): boolean {
     return this._state === RecorderState.Recording;
   }
 
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   */
-  async toggleRecording(uiSourceCode) {
+  async toggleRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     if (this._state === RecorderState.Idle) {
       await this.startRecording(uiSourceCode);
       await this.updateState(RecorderState.Recording);
@@ -61,15 +56,12 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
     }
   }
 
-  /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   */
-  async startRecording(uiSourceCode) {
+  async startRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     this._currentRecordingSession = new RecordingSession(this.target(), uiSourceCode);
     await this._currentRecordingSession.start();
   }
 
-  async stopRecording() {
+  async stopRecording(): Promise<void> {
     if (!this._currentRecordingSession) {
       return;
     }

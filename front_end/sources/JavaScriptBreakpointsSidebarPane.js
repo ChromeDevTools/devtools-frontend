@@ -290,8 +290,8 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     if (item.text && lineNumber < item.text.lineCount()) {
       const lineText = item.text.lineAt(lineNumber);
       const maxSnippetLength = 200;
-      snippetElement.textContent = lineText.substring(item.showColumn ? (uiLocation.columnNumber || 0) : 0)
-                                       .trimEndWithMaxLength(maxSnippetLength);
+      snippetElement.textContent = Platform.StringUtilities.trimEndWithMaxLength(
+          lineText.substring(item.showColumn ? (uiLocation.columnNumber || 0) : 0), maxSnippetLength);
     }
 
     elementToBreakpointMap.set(element, item.locations);

@@ -255,7 +255,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     } else {
       addElements('\u0192', text, nameAndArguments(text));
     }
-    UI.Tooltip.Tooltip.install(valueElement, description.trimEndWithMaxLength(500));
+    UI.Tooltip.Tooltip.install(valueElement, Platform.StringUtilities.trimEndWithMaxLength(description, 500));
     return valueElement;
 
     /**
@@ -285,7 +285,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         valueElement.createChild('span', 'object-value-function-prefix').textContent = prefix + ' ';
       }
       if (includePreview) {
-        UI.UIUtils.createTextChild(valueElement, body.trim().trimEndWithMaxLength(maxFunctionBodyLength));
+        UI.UIUtils.createTextChild(
+            valueElement, Platform.StringUtilities.trimEndWithMaxLength(body.trim(), maxFunctionBodyLength));
       } else {
         UI.UIUtils.createTextChild(valueElement, abbreviation.replace(/\n/g, ' '));
       }

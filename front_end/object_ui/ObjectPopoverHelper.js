@@ -29,6 +29,7 @@
  */
 
 import * as Components from '../components/components.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -60,7 +61,7 @@ export class ObjectPopoverHelper {
    * @return {!Promise<?ObjectPopoverHelper>}
    */
   static async buildObjectPopover(result, popover) {
-    const description = (result.description || '').trimEndWithMaxLength(MaxPopoverTextLength);
+    const description = Platform.StringUtilities.trimEndWithMaxLength(result.description || '', MaxPopoverTextLength);
     let popoverContentElement = null;
     if (result.type === 'object') {
       let linkifier = null;

@@ -451,3 +451,10 @@ export const trimMiddle = (str: string, maxLength: number): string => {
   }
   return str.substr(0, leftHalf) + '…' + str.substr(str.length - rightHalf, rightHalf);
 };
+
+export const trimEndWithMaxLength = (str: string, maxLength: number): string => {
+  if (str.length <= maxLength) {
+    return String(str);
+  }
+  return str.substr(0, maxLength - 1) + '…';
+};

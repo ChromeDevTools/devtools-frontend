@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
@@ -365,7 +366,7 @@ export class TextEditorAutocompleteController {
       return;
     }
     const suffix = hint.substring(query.length).split('\n')[0];
-    this._hintElement.textContent = suffix.trimEndWithMaxLength(10000);
+    this._hintElement.textContent = Platform.StringUtilities.trimEndWithMaxLength(suffix, 10000);
     // @ts-ignore CodeMirror types are wrong.
     const cursor = this._codeMirror.getCursor('to');
     if (this._hintMarker) {

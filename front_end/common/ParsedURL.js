@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 export class ParsedURL {
@@ -385,7 +386,7 @@ export class ParsedURL {
     if (!this.isDataURL()) {
       return '';
     }
-    this._dataURLDisplayName = this.url.trimEndWithMaxLength(20);
+    this._dataURLDisplayName = Platform.StringUtilities.trimEndWithMaxLength(this.url, 20);
     return this._dataURLDisplayName;
   }
 

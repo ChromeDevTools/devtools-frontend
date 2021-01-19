@@ -799,7 +799,7 @@ export class ConsoleViewMessage {
           if (type === 'string' || subtype === 'regexp' || subtype === 'trustedtype') {
             description = Platform.StringUtilities.trimMiddle(object.description, maxLength);
           } else {
-            description = object.description.trimEndWithMaxLength(maxLength);
+            description = Platform.StringUtilities.trimEndWithMaxLength(object.description, maxLength);
           }
         }
         rootElement.appendChild(

@@ -220,7 +220,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
    */
   static setElementText(element, newText, longText) {
     if (longText && newText.length > 1000) {
-      element.textContent = newText.trimEndWithMaxLength(1000);
+      element.textContent = Platform.StringUtilities.trimEndWithMaxLength(newText, 1000);
       UI.Tooltip.Tooltip.install(element, newText);
       elementToLongTextMap.set(element, newText);
     } else {

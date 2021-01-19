@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
+
 let _id = 0;
 
 /**
@@ -649,5 +651,5 @@ export function alert(message, element) {
   // We first set the textContent to blank so that the string will announce even if it is replaced
   // with the same string.
   alertElement.textContent = '';
-  alertElement.textContent = message.trimEndWithMaxLength(10000);
+  alertElement.textContent = Platform.StringUtilities.trimEndWithMaxLength(message, 10000);
 }

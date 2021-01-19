@@ -165,7 +165,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
       }
     } catch (error) {
     }
-    return skipTrim ? name : name.trimEndWithMaxLength(100);
+    return skipTrim ? name : Platform.StringUtilities.trimEndWithMaxLength(name, 100);
   }
 
   /**

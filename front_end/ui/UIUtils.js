@@ -1783,7 +1783,7 @@ export function trimTextMiddle(context, text, maxWidth) {
  * @return {string}
  */
 export function trimTextEnd(context, text, maxWidth) {
-  return trimText(context, text, maxWidth, (text, width) => text.trimEndWithMaxLength(width));
+  return trimText(context, text, maxWidth, (text, width) => Platform.StringUtilities.trimEndWithMaxLength(text, width));
 }
 
 /**

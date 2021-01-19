@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -104,8 +105,8 @@ export class JavaScriptREPL {
     if (preview && type === 'object' && subtype !== 'node' && subtype !== 'trustedtype') {
       formatter.appendObjectPreview(fragment, preview, false /* isEntry */);
     } else {
-      const nonObjectPreview =
-          formatter.renderPropertyPreview(type, subtype, className, (description || '').trimEndWithMaxLength(400));
+      const nonObjectPreview = formatter.renderPropertyPreview(
+          type, subtype, className, Platform.StringUtilities.trimEndWithMaxLength(description || '', 400));
       fragment.appendChild(nonObjectPreview);
     }
     return fragment;

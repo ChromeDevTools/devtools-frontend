@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
@@ -224,7 +225,8 @@ export class SuggestBox {
     }
     element.tabIndex = -1;
     const maxTextLength = 50 + query.length;
-    const displayText = (item.title || item.text).trim().trimEndWithMaxLength(maxTextLength).replace(/\n/g, '\u21B5');
+    const displayText = Platform.StringUtilities.trimEndWithMaxLength((item.title || item.text).trim(), maxTextLength)
+                            .replace(/\n/g, '\u21B5');
 
     const titleElement = element.createChild('span', 'suggestion-title');
     const index = displayText.toLowerCase().indexOf(query.toLowerCase());
@@ -242,7 +244,8 @@ export class SuggestBox {
       element.appendChild(subtitleElement);
     } else if (item.subtitle) {
       const subtitleElement = element.createChild('span', 'suggestion-subtitle');
-      subtitleElement.textContent = item.subtitle.trimEndWithMaxLength(maxTextLength - displayText.length);
+      subtitleElement.textContent =
+          Platform.StringUtilities.trimEndWithMaxLength(item.subtitle, maxTextLength - displayText.length);
     }
     if (item.iconElement) {
       element.appendChild(item.iconElement);

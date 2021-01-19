@@ -74,9 +74,6 @@
 
 .select-settings {
   margin-top: 16px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 150px);
-  gap: 16px;
 }
 
 .select-label {
@@ -119,6 +116,11 @@
 .show-element:focus,
 .show-element:hover {
   background-color: #6e6e6e;
+}
+
+.chrome-select {
+  min-width: 0;
+  max-width: 150px;
 }
 
 :host-context(.-theme-with-dark-background) .show-element {

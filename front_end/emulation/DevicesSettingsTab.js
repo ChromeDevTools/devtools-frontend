@@ -277,6 +277,12 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     helpIconWrapper.appendChild(icon);
     helpIconWrapper.title =
         ls`User agent client hints are an alternative to the user agent string that identify the browser and the device in a more structured way with better privacy accounting. Click the button to learn more.`;
+    // Prevent the editor grabbing the enter key, letting the default behavior happen.
+    helpIconWrapper.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.stopPropagation();
+      }
+    });
     uaChFields.appendChild(helpIconWrapper);
 
     const tree = new UI.TreeOutline.TreeOutlineInShadow();

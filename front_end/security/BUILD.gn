@@ -7,9 +7,9 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("security") {
   sources = [
-    "ModuleUIStrings.js",
-    "SecurityModel.js",
-    "SecurityPanel.js",
+    "ModuleUIStrings.ts",
+    "SecurityModel.ts",
+    "SecurityPanel.ts",
   ]
 
   deps = [
@@ -29,7 +29,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "security-legacy.js"
+  entrypoint = "security-legacy.ts"
 
   deps = [ ":bundle" ]
 }

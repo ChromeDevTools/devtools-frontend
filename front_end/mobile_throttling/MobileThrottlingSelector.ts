@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 
@@ -22,46 +24,42 @@ export const UIStrings = {
   */
   advanced: 'Advanced',
 };
-const str_ = i18n.i18n.registerUIStrings('mobile_throttling/MobileThrottlingSelector.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('mobile_throttling/MobileThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export class MobileThrottlingSelector {
-  /**
-   * @param {function(!Array<!MobileThrottlingConditionsGroup>):!ConditionsList} populateCallback
-   * @param {function(number):void} selectCallback
-   */
-  constructor(populateCallback, selectCallback) {
+  _populateCallback: (arg0: Array<MobileThrottlingConditionsGroup>) => ConditionsList;
+  _selectCallback: (arg0: number) => void;
+  _options: ConditionsList;
+
+  constructor(
+      populateCallback: (arg0: Array<MobileThrottlingConditionsGroup>) => ConditionsList,
+      selectCallback: (arg0: number) => void) {
     this._populateCallback = populateCallback;
     this._selectCallback = selectCallback;
     throttlingManager().addEventListener(Events.RateChanged, this._conditionsChanged, this);
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this._conditionsChanged, this);
-    /** @type {!ConditionsList} */
     this._options = this._populateOptions();
     this._conditionsChanged();
   }
 
-  /**
-   * @param {!Conditions} conditions
-   */
-  optionSelected(conditions) {
+  optionSelected(conditions: Conditions): void {
     SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(conditions.network);
     throttlingManager().setCPUThrottlingRate(conditions.cpuThrottlingRate);
   }
 
-  /**
-   * @return {!ConditionsList}
-   */
-  _populateOptions() {
+  _populateOptions(): ConditionsList {
     const disabledGroup = {
       title: i18nString(UIStrings.disabled),
-      items: [ThrottlingPresets.getNoThrottlingConditions()]
+      items: [ThrottlingPresets.getNoThrottlingConditions()],
     };
     const presetsGroup = {title: i18nString(UIStrings.presets), items: ThrottlingPresets.getMobilePresets()};
     const advancedGroup = {title: i18nString(UIStrings.advanced), items: ThrottlingPresets.getAdvancedMobilePresets()};
     return this._populateCallback([disabledGroup, presetsGroup, advancedGroup]);
   }
 
-  _conditionsChanged() {
+  _conditionsChanged(): void {
     const networkConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
     const cpuThrottlingRate = throttlingManager().cpuThrottlingRate();
     for (let index = 0; index < this._options.length; ++index) {

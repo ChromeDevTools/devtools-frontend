@@ -7,13 +7,13 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("mobile_throttling") {
   sources = [
-    "MobileThrottlingSelector.js",
-    "ModuleUIStrings.js",
-    "NetworkPanelIndicator.js",
-    "NetworkThrottlingSelector.js",
-    "ThrottlingManager.js",
-    "ThrottlingPresets.js",
-    "ThrottlingSettingsTab.js",
+    "MobileThrottlingSelector.ts",
+    "ModuleUIStrings.ts",
+    "NetworkPanelIndicator.ts",
+    "NetworkThrottlingSelector.ts",
+    "ThrottlingManager.ts",
+    "ThrottlingPresets.ts",
+    "ThrottlingSettingsTab.ts",
   ]
 
   deps = [
@@ -30,13 +30,13 @@ copy_to_gen("legacy_css") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "mobile_throttling.js"
+  entrypoint = "mobile_throttling.ts"
 
   deps = [ ":mobile_throttling" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "mobile_throttling-legacy.js"
+  entrypoint = "mobile_throttling-legacy.ts"
 
   deps = [ ":bundle" ]
 }

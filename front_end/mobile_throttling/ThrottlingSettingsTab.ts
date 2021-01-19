@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
@@ -80,12 +82,13 @@ export const UIStrings = {
   */
   fsmbs: '{PH1}{PH2}MB/s',
 };
-const str_ = i18n.i18n.registerUIStrings('mobile_throttling/ThrottlingSettingsTab.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('mobile_throttling/ThrottlingSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {UI.ListWidget.Delegate<!SDK.NetworkManager.Conditions>}
- */
-export class ThrottlingSettingsTab extends UI.Widget.VBox {
+export class ThrottlingSettingsTab extends UI.Widget.VBox implements
+    UI.ListWidget.Delegate<SDK.NetworkManager.Conditions> {
+  _list: UI.ListWidget.ListWidget<SDK.NetworkManager.Conditions>;
+  _customSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
+  _editor?: UI.ListWidget.Editor<SDK.NetworkManager.Conditions>;
   constructor() {
     super(true);
     this.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css', {enableLegacyPatching: true});
@@ -109,15 +112,12 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
     this.setDefaultFocusedElement(addButton);
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     super.wasShown();
     this._conditionsUpdated();
   }
 
-  _conditionsUpdated() {
+  _conditionsUpdated(): void {
     this._list.clear();
 
     const conditions = this._customSetting.get();
@@ -128,17 +128,11 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
     this._list.appendSeparator();
   }
 
-  _addButtonClicked() {
+  _addButtonClicked(): void {
     this._list.addNewItem(this._customSetting.get().length, {title: '', download: -1, upload: -1, latency: 0});
   }
 
-  /**
-   * @override
-   * @param {!SDK.NetworkManager.Conditions} conditions
-   * @param {boolean} editable
-   * @return {!Element}
-   */
-  renderItem(conditions, editable) {
+  renderItem(conditions: SDK.NetworkManager.Conditions, _editable: boolean): Element {
     const element = document.createElement('div');
     element.classList.add('conditions-list-item');
     const title = element.createChild('div', 'conditions-list-text conditions-list-title');
@@ -155,24 +149,15 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
     return element;
   }
 
-  /**
-   * @override
-   * @param {*} item
-   * @param {number} index
-   */
-  removeItemRequested(item, index) {
+  removeItemRequested(_item: SDK.NetworkManager.Conditions, index: number): void {
     const list = this._customSetting.get();
     list.splice(index, 1);
     this._customSetting.set(list);
   }
 
-  /**
-   * @override
-   * @param {!SDK.NetworkManager.Conditions} conditions
-   * @param {!UI.ListWidget.Editor<!SDK.NetworkManager.Conditions>} editor
-   * @param {boolean} isNew
-   */
-  commitEdit(conditions, editor, isNew) {
+  commitEdit(
+      conditions: SDK.NetworkManager.Conditions, editor: UI.ListWidget.Editor<SDK.NetworkManager.Conditions>,
+      isNew: boolean): void {
     conditions.title = editor.control('title').value.trim();
     const download = editor.control('download').value.trim();
     conditions.download = download ? parseInt(download, 10) * (1000 / 8) : -1;
@@ -188,12 +173,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
     this._customSetting.set(list);
   }
 
-  /**
-   * @override
-   * @param {!SDK.NetworkManager.Conditions} conditions
-   * @return {!UI.ListWidget.Editor<!SDK.NetworkManager.Conditions>}
-   */
-  beginEdit(conditions) {
+  beginEdit(conditions: SDK.NetworkManager.Conditions): UI.ListWidget.Editor<SDK.NetworkManager.Conditions> {
     const editor = this._createEditor();
     editor.control('title').value = conditions.title;
     editor.control('download').value = conditions.download <= 0 ? '' : String(conditions.download / (1000 / 8));
@@ -202,15 +182,12 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
     return editor;
   }
 
-  /**
-   * @return {!UI.ListWidget.Editor<!SDK.NetworkManager.Conditions>}
-   */
-  _createEditor() {
+  _createEditor(): UI.ListWidget.Editor<SDK.NetworkManager.Conditions> {
     if (this._editor) {
       return this._editor;
     }
 
-    const editor = new UI.ListWidget.Editor();
+    const editor = new UI.ListWidget.Editor<SDK.NetworkManager.Conditions>();
     this._editor = editor;
     const content = editor.contentElement();
 
@@ -266,13 +243,9 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
 
     return editor;
 
-    /**
-     * @param {!SDK.NetworkManager.Conditions} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function titleValidator(item, index, input) {
+    function titleValidator(
+        _item: SDK.NetworkManager.Conditions, _index: number,
+        input: HTMLSelectElement|HTMLInputElement): UI.ListWidget.ValidatorResult {
       const maxLength = 49;
       const value = input.value.trim();
       const valid = value.length > 0 && value.length <= maxLength;
@@ -283,13 +256,9 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
       return {valid, errorMessage: undefined};
     }
 
-    /**
-     * @param {!SDK.NetworkManager.Conditions} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function throughputValidator(item, index, input) {
+    function throughputValidator(
+        _item: SDK.NetworkManager.Conditions, _index: number,
+        input: HTMLSelectElement|HTMLInputElement): UI.ListWidget.ValidatorResult {
       const minThroughput = 0;
       const maxThroughput = 10000000;
       const value = input.value.trim();
@@ -304,13 +273,9 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
       return {valid, errorMessage: undefined};
     }
 
-    /**
-     * @param {!SDK.NetworkManager.Conditions} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {!UI.ListWidget.ValidatorResult}
-     */
-    function latencyValidator(item, index, input) {
+    function latencyValidator(
+        _item: SDK.NetworkManager.Conditions, _index: number,
+        input: HTMLSelectElement|HTMLInputElement): UI.ListWidget.ValidatorResult {
       const minLatency = 0;
       const maxLatency = 1000000;
       const value = input.value.trim();
@@ -325,12 +290,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
   }
 }
 
-/**
- * @param {number} throughput
- * @param {boolean=} plainText
- * @return {string}
- */
-export function throughputText(throughput, plainText) {
+export function throughputText(throughput: number, plainText?: boolean): string {
   if (throughput < 0) {
     return '';
   }

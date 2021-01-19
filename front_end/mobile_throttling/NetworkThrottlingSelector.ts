@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
@@ -22,15 +24,18 @@ export const UIStrings = {
   */
   custom: 'Custom',
 };
-const str_ = i18n.i18n.registerUIStrings('mobile_throttling/NetworkThrottlingSelector.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('mobile_throttling/NetworkThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkThrottlingSelector {
-  /**
-   * @param {function(!Array<!NetworkThrottlingConditionsGroup>):!Array<?SDK.NetworkManager.Conditions>} populateCallback
-   * @param {function(number):void} selectCallback
-   * @param {!Common.Settings.Setting<!Array<!SDK.NetworkManager.Conditions>>} customNetworkConditionsSetting
-   */
-  constructor(populateCallback, selectCallback, customNetworkConditionsSetting) {
+  _populateCallback: (arg0: Array<NetworkThrottlingConditionsGroup>) => Array<SDK.NetworkManager.Conditions|null>;
+  _selectCallback: (arg0: number) => void;
+  _customNetworkConditionsSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
+  _options!: (SDK.NetworkManager.Conditions|null)[];
+
+  constructor(
+      populateCallback: (arg0: Array<NetworkThrottlingConditionsGroup>) => Array<SDK.NetworkManager.Conditions|null>,
+      selectCallback: (arg0: number) => void,
+      customNetworkConditionsSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>) {
     this._populateCallback = populateCallback;
     this._selectCallback = selectCallback;
     this._customNetworkConditionsSetting = customNetworkConditionsSetting;
@@ -39,24 +44,19 @@ export class NetworkThrottlingSelector {
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, () => {
           this._networkConditionsChanged();
         }, this);
-    /** @type {!Array<?SDK.NetworkManager.Conditions>} */
-    this._options;
     this._populateOptions();
   }
 
-  revealAndUpdate() {
+  revealAndUpdate(): void {
     Common.Revealer.reveal(this._customNetworkConditionsSetting);
     this._networkConditionsChanged();
   }
 
-  /**
-   * @param {!SDK.NetworkManager.Conditions} conditions
-   */
-  optionSelected(conditions) {
+  optionSelected(conditions: SDK.NetworkManager.Conditions): void {
     SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(conditions);
   }
 
-  _populateOptions() {
+  _populateOptions(): void {
     const disabledGroup = {title: i18nString(UIStrings.disabled), items: [SDK.NetworkManager.NoThrottlingConditions]};
     const presetsGroup = {title: i18nString(UIStrings.presets), items: ThrottlingPresets.networkPresets};
     const customGroup = {title: i18nString(UIStrings.custom), items: this._customNetworkConditionsSetting.get()};
@@ -64,7 +64,7 @@ export class NetworkThrottlingSelector {
     if (!this._networkConditionsChanged()) {
       for (let i = this._options.length - 1; i >= 0; i--) {
         if (this._options[i]) {
-          this.optionSelected(/** @type {!SDK.NetworkManager.Conditions} */ (this._options[i]));
+          this.optionSelected(this._options[i] as SDK.NetworkManager.Conditions);
           break;
         }
       }
@@ -72,9 +72,9 @@ export class NetworkThrottlingSelector {
   }
 
   /**
-   * @return {boolean} returns false if selected condition no longer exists
+   * returns false if selected condition no longer exists
    */
-  _networkConditionsChanged() {
+  _networkConditionsChanged(): boolean {
     const value = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
     for (let index = 0; index < this._options.length; ++index) {
       const option = this._options[index];

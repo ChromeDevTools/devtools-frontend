@@ -29,7 +29,7 @@ MobileThrottling.ThrottlingManager.ActionDelegate = MobileThrottlingModule.Throt
 MobileThrottling.throttlingManager = MobileThrottlingModule.ThrottlingManager.throttlingManager;
 
 /** @enum {number} */
-MobileThrottling.CPUThrottlingRates = MobileThrottlingModule.ThrottlingPresets.ThrottlingPresets.CPUThrottlingRates;
+MobileThrottling.CPUThrottlingRates = MobileThrottlingModule.ThrottlingPresets.CPUThrottlingRates;
 
 MobileThrottling.NoThrottlingConditions =
     MobileThrottlingModule.ThrottlingPresets.ThrottlingPresets.getNoThrottlingConditions;

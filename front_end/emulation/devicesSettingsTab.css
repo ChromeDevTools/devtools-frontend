@@ -89,9 +89,13 @@ li .devices-edit-client-hints-heading {
   margin-bottom: 0;
 }
 
+.devices-edit-client-hints-heading b {
+  margin-inline-end: 2px;
+}
+
 .devices-edit-client-hints-heading .help-icon {
-  margin-left: 4px;
-  margin-right: 4px;
+  margin-left: 2px;
+  margin-right: 2px;
   vertical-align: middle;
 }
 

@@ -16,6 +16,7 @@ import './resources/resources-meta.js';
 import './issues/issues-meta.js';
 import './help/help-meta.js';
 import './layers/layers-meta.js';
+import './lighthouse/lighthouse-meta.js';
 import * as Startup from './startup/startup.js';
 
 Startup.RuntimeInstantiator.startApplication('devtools_app');

@@ -50,7 +50,14 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthousePanel.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+/** @type {!LighthousePanel} */
+let lighthousePanelInstace;
+
 export class LighthousePanel extends UI.Panel.Panel {
+  /**
+   * @private
+   */
   constructor() {
     super('lighthouse');
     this.registerRequiredCSS('third_party/lighthouse/report-assets/report.css', {enableLegacyPatching: false});
@@ -111,6 +118,17 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._showSettingsPaneSetting;
   }
 
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!lighthousePanelInstace || forceNew) {
+      lighthousePanelInstace = new LighthousePanel();
+    }
+
+    return lighthousePanelInstace;
+  }
   static getEvents() {
     return Events;
   }

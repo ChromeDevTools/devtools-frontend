@@ -1,15 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "view",
-      "location": "panel",
-      "id": "lighthouse",
-      "title": "Lighthouse",
-      "order": 90,
-      "className": "Lighthouse.LighthousePanel",
-      "tags": "lighthouse, pwa"
-    }
-  ],
   "dependencies": [
     "components",
     "emulation",

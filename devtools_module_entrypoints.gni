@@ -102,6 +102,7 @@ devtools_module_entrypoint_sources = [
   "layers/layers-meta.js",
   "layers/layers.js",
   "lighthouse/lighthouse-legacy.js",
+  "lighthouse/lighthouse-meta.js",
   "lighthouse/lighthouse.js",
   "lighthouse_worker/LighthouseService.js",
   "lighthouse_worker/lighthouse_worker.js",

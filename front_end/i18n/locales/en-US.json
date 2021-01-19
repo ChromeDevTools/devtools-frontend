@@ -788,6 +788,15 @@
   "layers/LayersPanel.ts | profiler": {
     "message": "Profiler"
   },
+  "lighthouse/lighthouse-meta.ts | lighthouse": {
+    "message": "Lighthouse"
+  },
+  "lighthouse/lighthouse-meta.ts | lighthouseTag": {
+    "message": "lighthouse"
+  },
+  "lighthouse/lighthouse-meta.ts | pwa": {
+    "message": "pwa"
+  },
   "lighthouse/LighthouseController.js | accessibility": {
     "message": "Accessibility"
   },
@@ -1012,9 +1021,6 @@
   },
   "lighthouse/LighthouseStatusView.js | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]"
-  },
-  "lighthouse/ModuleUIStrings.js | pwa": {
-    "message": "pwa"
   },
   "media/EventDisplayTable.js | eventDisplay": {
     "message": "Event display"

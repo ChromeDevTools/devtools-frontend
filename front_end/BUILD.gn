@@ -68,6 +68,7 @@ group("front_end") {
     "js_profiler:bundle",
     "layer_viewer:bundle",
     "layers:bundle",
+    "layers:meta",
     "lighthouse:bundle",
     "lighthouse_worker:bundle",
     "linear_memory_inspector:bundle",

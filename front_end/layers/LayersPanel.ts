@@ -51,6 +51,9 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('layers/LayersPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+let layersPanelInstance: LayersPanel;
+
 export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.SDKModel.Observer {
   _model: LayerTreeModel|null;
   _layerViewHost: LayerViewer.LayerViewHost.LayerViewHost;
@@ -94,6 +97,15 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.SDKMod
     this._paintProfilerView = new LayerPaintProfilerView(this._showImage.bind(this));
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this._onTabClosed, this);
     this._updateThrottler = new Common.Throttler.Throttler(100);
+  }
+
+  static instance(opts = {forceNew: null}): LayersPanel {
+    const {forceNew} = opts;
+    if (!layersPanelInstance || forceNew) {
+      layersPanelInstance = new LayersPanel();
+    }
+
+    return layersPanelInstance;
   }
 
   focus(): void {

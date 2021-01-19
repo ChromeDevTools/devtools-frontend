@@ -98,6 +98,7 @@ devtools_module_entrypoint_sources = [
   "layer_viewer/layer_viewer-legacy.js",
   "layer_viewer/layer_viewer.js",
   "layers/layers-legacy.js",
+  "layers/layers-meta.js",
   "layers/layers.js",
   "lighthouse/lighthouse-legacy.js",
   "lighthouse/lighthouse.js",

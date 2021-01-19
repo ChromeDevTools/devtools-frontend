@@ -1,15 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "view",
-      "location": "panel",
-      "id": "layers",
-      "title": "Layers",
-      "order": 100,
-      "persistence": "closeable",
-      "className": "Layers.LayersPanel"
-    }
-  ],
   "dependencies": [
     "i18n",
     "layer_viewer"

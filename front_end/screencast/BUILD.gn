@@ -7,9 +7,9 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("screencast") {
   sources = [
-    "InputModel.js",
-    "ScreencastApp.js",
-    "ScreencastView.js",
+    "InputModel.ts",
+    "ScreencastApp.ts",
+    "ScreencastView.ts",
   ]
 
   deps = [
@@ -28,7 +28,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "screencast-legacy.js"
+  entrypoint = "screencast-legacy.ts"
 
   deps = [ ":bundle" ]
 }

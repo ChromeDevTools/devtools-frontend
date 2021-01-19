@@ -2,26 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as SDK from '../sdk/sdk.js';
 
 export class InputModel extends SDK.SDKModel.SDKModel {
-  /**
-   * @param {!SDK.SDKModel.Target} target
-   */
-  constructor(target) {
+  _inputAgent: ProtocolProxyApi.InputApi;
+  _activeTouchOffsetTop: number|null;
+  _activeTouchParams: Protocol.Input.EmulateTouchFromMouseEventRequest|null;
+
+  constructor(target: SDK.SDKModel.Target) {
     super(target);
     this._inputAgent = target.inputAgent();
-    /** @type {?number} */
     this._activeTouchOffsetTop = null;
     this._activeTouchParams = null;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  emitKeyEvent(event) {
-    /** @type {!Protocol.Input.DispatchKeyEventRequestType} */
-    let type;
+  emitKeyEvent(event: Event): void {
+    let type: Protocol.Input.DispatchKeyEventRequestType;
     switch (event.type) {
       case 'keydown':
         type = Protocol.Input.DispatchKeyEventRequestType.KeyDown;
@@ -35,45 +33,39 @@ export class InputModel extends SDK.SDKModel.SDKModel {
       default:
         return;
     }
-    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    const keyboardEvent = event as KeyboardEvent;
     const text = event.type === 'keypress' ? String.fromCharCode(keyboardEvent.charCode) : undefined;
     this._inputAgent.invoke_dispatchKeyEvent({
       type: type,
       modifiers: this._modifiersForEvent(keyboardEvent),
       text: text,
       unmodifiedText: text ? text.toLowerCase() : undefined,
-      // TODO: keyIdentifier is non-standard deprecated event property https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyIdentifier.
-      keyIdentifier: /** @type {*} */ (keyboardEvent).keyIdentifier,
+      keyIdentifier: (keyboardEvent as {keyIdentifier?: string}).keyIdentifier,
       code: keyboardEvent.code,
       key: keyboardEvent.key,
       windowsVirtualKeyCode: keyboardEvent.keyCode,
       nativeVirtualKeyCode: keyboardEvent.keyCode,
       autoRepeat: false,
       isKeypad: false,
-      isSystemKey: false
+      isSystemKey: false,
     });
   }
 
-  /**
-   * @param {!Event} event
-   * @param {number} offsetTop
-   * @param {number} zoom
-   */
-  emitTouchFromMouseEvent(event, offsetTop, zoom) {
-    const buttons = /** @type {!Array<!Protocol.Input.MouseButton>} */ (['none', 'left', 'middle', 'right']);
-    const types = /** @type {*} */
-        ({
-          mousedown: 'mousePressed',
-          mouseup: 'mouseReleased',
-          mousemove: 'mouseMoved',
-          mousewheel: 'mouseWheel',
-        });
-    const eventType = /** @type {string} */ (event.type);
+  emitTouchFromMouseEvent(event: Event, offsetTop: number, zoom: number): void {
+    const buttons = ['none', 'left', 'middle', 'right'] as Protocol.Input.MouseButton[];
+    const types: {[key: string]: Protocol.Input.EmulateTouchFromMouseEventRequestType} = {
+      mousedown: Protocol.Input.EmulateTouchFromMouseEventRequestType.MousePressed,
+      mouseup: Protocol.Input.EmulateTouchFromMouseEventRequestType.MouseReleased,
+      mousemove: Protocol.Input.EmulateTouchFromMouseEventRequestType.MouseMoved,
+      mousewheel: Protocol.Input.EmulateTouchFromMouseEventRequestType.MouseWheel,
+    };
+
+    const eventType = event.type as string;
     if (!(eventType in types)) {
       return;
     }
 
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
+    const mouseEvent = event as MouseEvent;
 
     if (!(mouseEvent.which in buttons)) {
       return;
@@ -89,8 +81,7 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     const x = Math.round(mouseEvent.offsetX / zoom);
     let y = Math.round(mouseEvent.offsetY / zoom);
     y = Math.round(y - this._activeTouchOffsetTop);
-    /** @type {!Protocol.Input.EmulateTouchFromMouseEventRequest} */
-    const params = {
+    const params: Protocol.Input.EmulateTouchFromMouseEventRequest = {
       type: types[eventType],
       x: x,
       y: y,
@@ -99,7 +90,7 @@ export class InputModel extends SDK.SDKModel.SDKModel {
       clickCount: 0,
     };
     if (event.type === 'mousewheel') {
-      const wheelEvent = /** @type {!WheelEvent} */ (mouseEvent);
+      const wheelEvent = mouseEvent as WheelEvent;
       params.deltaX = wheelEvent.deltaX / zoom;
       params.deltaY = -wheelEvent.deltaY / zoom;
     } else {
@@ -111,20 +102,16 @@ export class InputModel extends SDK.SDKModel.SDKModel {
     this._inputAgent.invoke_emulateTouchFromMouseEvent(params);
   }
 
-  cancelTouch() {
+  cancelTouch(): void {
     if (this._activeTouchParams !== null) {
       const params = this._activeTouchParams;
       this._activeTouchParams = null;
-      params.type = /** @type {!Protocol.Input.EmulateTouchFromMouseEventRequestType} */ ('mouseReleased');
+      params.type = 'mouseReleased' as Protocol.Input.EmulateTouchFromMouseEventRequestType;
       this._inputAgent.invoke_emulateTouchFromMouseEvent(params);
     }
   }
 
-  /**
-   * @param {!KeyboardEvent} event
-   * @return {number}
-   */
-  _modifiersForEvent(event) {
+  _modifiersForEvent(event: KeyboardEvent): number {
     return (event.altKey ? 1 : 0) | (event.ctrlKey ? 2 : 0) | (event.metaKey ? 4 : 0) | (event.shiftKey ? 8 : 0);
   }
 }

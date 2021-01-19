@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
@@ -15,16 +17,17 @@ export const UIStrings = {
   */
   toggleScreencast: 'Toggle screencast',
 };
-const str_ = i18n.i18n.registerUIStrings('screencast/ScreencastApp.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('screencast/ScreencastApp.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @type {!ScreencastApp} */
-let _appInstance;
+let _appInstance: ScreencastApp;
 
-/**
- * @implements {Common.App.App}
- * @implements {SDK.SDKModel.SDKModelObserver<!SDK.ScreenCaptureModel.ScreenCaptureModel>}
- */
-export class ScreencastApp {
+export class ScreencastApp implements Common.App.App,
+                                      SDK.SDKModel.SDKModelObserver<SDK.ScreenCaptureModel.ScreenCaptureModel> {
+  _enabledSetting: Common.Settings.LegacySetting<boolean>;
+  _toggleButton: UI.Toolbar.ToolbarToggle;
+  _rootSplitWidget?: UI.SplitWidget.SplitWidget;
+  _screenCaptureModel?: SDK.ScreenCaptureModel.ScreenCaptureModel;
+  _screencastView?: ScreencastView;
   constructor() {
     this._enabledSetting = Common.Settings.Settings.instance().createSetting('screencastEnabled', true);
     this._toggleButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleScreencast), 'largeicon-phone');
@@ -34,21 +37,14 @@ export class ScreencastApp {
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.ScreenCaptureModel.ScreenCaptureModel, this);
   }
 
-  /**
-   * @return {!ScreencastApp}
-   */
-  static _instance() {
+  static _instance(): ScreencastApp {
     if (!_appInstance) {
       _appInstance = new ScreencastApp();
     }
     return _appInstance;
   }
 
-  /**
-   * @override
-   * @param {!Document} document
-   */
-  presentUI(document) {
+  presentUI(document: Document): void {
     const rootView = new UI.RootView.RootView();
 
     this._rootSplitWidget =
@@ -64,11 +60,7 @@ export class ScreencastApp {
     rootView.focus();
   }
 
-  /**
-   * @override
-   * @param {!SDK.ScreenCaptureModel.ScreenCaptureModel} screenCaptureModel
-   */
-  modelAdded(screenCaptureModel) {
+  modelAdded(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel): void {
     if (this._screenCaptureModel) {
       return;
     }
@@ -82,11 +74,7 @@ export class ScreencastApp {
     this._onScreencastEnabledChanged();
   }
 
-  /**
-   * @override
-   * @param {!SDK.ScreenCaptureModel.ScreenCaptureModel} screenCaptureModel
-   */
-  modelRemoved(screenCaptureModel) {
+  modelRemoved(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel): void {
     if (this._screenCaptureModel !== screenCaptureModel) {
       return;
     }
@@ -99,17 +87,17 @@ export class ScreencastApp {
     this._onScreencastEnabledChanged();
   }
 
-  _toggleButtonClicked() {
+  _toggleButtonClicked(): void {
     const enabled = !this._toggleButton.toggled();
     this._enabledSetting.set(enabled);
     this._onScreencastEnabledChanged();
   }
 
-  _onScreencastEnabledChanged() {
+  _onScreencastEnabledChanged(): void {
     if (!this._rootSplitWidget) {
       return;
     }
-    const enabled = this._enabledSetting.get() && this._screencastView;
+    const enabled = Boolean(this._enabledSetting.get() && this._screencastView);
     this._toggleButton.setToggled(enabled);
     if (enabled) {
       this._rootSplitWidget.showBoth();
@@ -119,28 +107,14 @@ export class ScreencastApp {
   }
 }
 
-/**
- * @implements {UI.Toolbar.Provider}
- */
-export class ToolbarButtonProvider {
-  /**
-   * @override
-   * @return {?UI.Toolbar.ToolbarItem}
-   */
-  item() {
+export class ToolbarButtonProvider implements UI.Toolbar.Provider {
+  item(): UI.Toolbar.ToolbarItem|null {
     return ScreencastApp._instance()._toggleButton;
   }
 }
 
-/**
- * @implements {Common.AppProvider.AppProvider}
- */
-export class ScreencastAppProvider {
-  /**
-   * @override
-   * @return {!Common.App.App}
-   */
-  createApp() {
+export class ScreencastAppProvider implements Common.AppProvider.AppProvider {
+  createApp(): Common.App.App {
     return ScreencastApp._instance();
   }
 }

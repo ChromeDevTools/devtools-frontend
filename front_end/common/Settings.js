@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
@@ -108,9 +109,9 @@ export class Settings {
         // 'RegExpSetting' have been migrated. Also, the class 'RegExpSetting' has to be changed to extend from PreRegisteredSetting.
         const setting = this.createPreRegisteredSetting(settingName, defaultValue, storageType);
         if (registration.titleMac) {
-          setting.setTitle(registration.titleMac());
+          setting.setTitleFunction(registration.titleMac);
         } else {
-          setting.setTitle(registration.title && registration.title());
+          setting.setTitleFunction(registration.title);
         }
         if (registration.userActionCondition) {
           setting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam(registration.userActionCondition)));
@@ -783,8 +784,8 @@ export class PreRegisteredSetting extends Setting {
     this._defaultValue = defaultValue;
     this._eventSupport = eventSupport;
     this._storage = storage;
-    /** @type {string} */
-    this._title = '';
+    /** @type {function():Platform.UIString.LocalizedString} */
+    this._titleFunction;
     /** @type {?SettingRegistration} */
     this._registration = null;
   }
@@ -816,19 +817,22 @@ export class PreRegisteredSetting extends Setting {
 
   /**
    * @override
-   * @return {string}
+   * @return {Platform.UIString.LocalizedString}
    */
   title() {
-    return this._title;
+    if (!this._titleFunction) {
+      return /** @type {Platform.UIString.LocalizedString} */ ('');
+    }
+    return this._titleFunction();
   }
 
   /**
    * @override
-   * @param {string=} title
+   * @param {undefined|function():Platform.UIString.LocalizedString} titleFunction
    */
-  setTitle(title) {
-    if (title) {
-      this._title = title;
+  setTitleFunction(titleFunction) {
+    if (titleFunction) {
+      this._titleFunction = titleFunction;
     }
   }
 

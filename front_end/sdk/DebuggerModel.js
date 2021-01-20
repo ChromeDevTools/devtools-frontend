@@ -30,6 +30,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';  // eslint-disable-line no-unused-vars
 import * as Root from '../root/root.js';
 
@@ -432,7 +433,8 @@ export class DebuggerModel extends SDKModel {
     let urlRegex;
     if (this.target().type() === Type.Node) {
       const platformPath = Common.ParsedURL.ParsedURL.urlToPlatformPath(url, Host.Platform.isWin());
-      urlRegex = `${platformPath.escapeForRegExp()}|${url.escapeForRegExp()}`;
+      urlRegex =
+          `${Platform.StringUtilities.escapeForRegExp(platformPath)}|${Platform.StringUtilities.escapeForRegExp(url)}`;
     }
     // Adjust column if needed.
     let minColumnNumber = 0;

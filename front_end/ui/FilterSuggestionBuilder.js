@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
+
 import {Suggestion, Suggestions} from './SuggestBox.js';  // eslint-disable-line no-unused-vars
 
 export class FilterSuggestionBuilder {
@@ -37,7 +39,7 @@ export class FilterSuggestionBuilder {
     /** @type {!Suggestions} */
     const suggestions = [];
     if (valueDelimiterIndex === -1) {
-      const matcher = new RegExp('^' + prefix.escapeForRegExp(), 'i');
+      const matcher = new RegExp('^' + Platform.StringUtilities.escapeForRegExp(prefix), 'i');
       for (const key of this._keys) {
         if (matcher.test(key)) {
           suggestions.push(/** @type {!Suggestion} */ ({text: modifier + key + ':'}));
@@ -46,7 +48,7 @@ export class FilterSuggestionBuilder {
     } else {
       const key = prefix.substring(0, valueDelimiterIndex).toLowerCase();
       const value = prefix.substring(valueDelimiterIndex + 1);
-      const matcher = new RegExp('^' + value.escapeForRegExp(), 'i');
+      const matcher = new RegExp('^' + Platform.StringUtilities.escapeForRegExp(value), 'i');
       const values = Array.from(this._valuesMap.get(key) || new Set());
       this._valueSorter(key, values);
       for (const item of values) {

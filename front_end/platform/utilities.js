@@ -33,7 +33,7 @@
  * that has been migrated, it will need to be imported.
  */
 import {inverse} from './map-utilities.js';
-import {caseInsensetiveComparator, escapeCharacters, regexSpecialCharacters, sprintf} from './string-utilities.js';
+import {caseInsensetiveComparator, regexSpecialCharacters, sprintf} from './string-utilities.js';
 
 // Still used in the test runners that can't use ES modules :(
 String.sprintf = sprintf;
@@ -42,14 +42,6 @@ String.sprintf = sprintf;
 String.regexSpecialCharacters = regexSpecialCharacters;
 // @ts-ignore https://crbug.com/1050549
 String.caseInsensetiveComparator = caseInsensetiveComparator;
-
-/**
- * @this {string}
- * @return {string}
- */
-String.prototype.escapeForRegExp = function() {
-  return escapeCharacters(this, regexSpecialCharacters());
-};
 
 /**
  * @param {string} a

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -366,7 +367,7 @@ export class IgnoreListManager {
       return '';
     }
     if (!parsedURL.isValid) {
-      return '^' + url.escapeForRegExp() + '$';
+      return '^' + Platform.StringUtilities.escapeForRegExp(url) + '$';
     }
     let name = parsedURL.lastPathComponent;
     if (name) {
@@ -389,7 +390,7 @@ export class IgnoreListManager {
       }
       prefix += '.*';
     }
-    return prefix + name.escapeForRegExp() + (url.endsWith(name) ? '$' : '\\b');
+    return prefix + Platform.StringUtilities.escapeForRegExp(name) + (url.endsWith(name) ? '$' : '\\b');
   }
 }
 

@@ -1862,7 +1862,7 @@ export class SelectNextOccurrenceController {
       return undefined;
     }
 
-    let regexSource = textToFind.escapeForRegExp();
+    let regexSource = Platform.StringUtilities.escapeForRegExp(textToFind);
     if (fullWord) {
       regexSource = '\\b' + regexSource + '\\b';
     }

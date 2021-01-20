@@ -357,16 +357,17 @@ export const removeURLFragment = (inputStr: string): string => {
   return url.toString();
 };
 
+const SPECIAL_REGEX_CHARACTERS = '^[]{}()\\.^$*+?|-,';
+
 export const regexSpecialCharacters = function(): string {
-  return '^[]{}()\\.^$*+?|-,';
+  return SPECIAL_REGEX_CHARACTERS;
 };
 
 export const filterRegex = function(query: string): RegExp {
-  const toEscape = regexSpecialCharacters();
   let regexString = '';
   for (let i = 0; i < query.length; ++i) {
     let c = query.charAt(i);
-    if (toEscape.indexOf(c) !== -1) {
+    if (SPECIAL_REGEX_CHARACTERS.indexOf(c) !== -1) {
       c = '\\' + c;
     }
     if (i) {
@@ -457,4 +458,8 @@ export const trimEndWithMaxLength = (str: string, maxLength: number): string => 
     return String(str);
   }
   return str.substr(0, maxLength - 1) + '…';
+};
+
+export const escapeForRegExp = (str: string): string => {
+  return escapeCharacters(str, SPECIAL_REGEX_CHARACTERS);
 };

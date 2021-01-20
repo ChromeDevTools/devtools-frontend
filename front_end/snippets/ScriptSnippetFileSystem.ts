@@ -7,6 +7,7 @@
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Persistence from '../persistence/persistence.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
@@ -110,7 +111,7 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
   }
 
   async searchInPath(query: string, _progress: Common.Progress.Progress): Promise<string[]> {
-    const re = new RegExp(query.escapeForRegExp(), 'i');
+    const re = new RegExp(Platform.StringUtilities.escapeForRegExp(query), 'i');
     const allSnippets: Snippet[] = this._snippetsSetting.get();
     const matchedSnippets = allSnippets.filter(snippet => snippet.content.match(re));
     return matchedSnippets.map(snippet => `snippet:///${escapeSnippetName(snippet.name)}`);

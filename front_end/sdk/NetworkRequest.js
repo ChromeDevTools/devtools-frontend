@@ -1234,7 +1234,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
    * @return {!Array.<!NameValue>}
    */
   _parseMultipartFormDataParameters(data, boundary) {
-    const sanitizedBoundary = boundary.escapeForRegExp();
+    const sanitizedBoundary = Platform.StringUtilities.escapeForRegExp(boundary);
     const keyValuePattern = new RegExp(
         // Header with an optional file name.
         '^\\r\\ncontent-disposition\\s*:\\s*form-data\\s*;\\s*name="([^"]*)"(?:\\s*;\\s*filename="([^"]*)")?' +

@@ -282,14 +282,7 @@ export class NetworkLogView extends UI.Widget.VBox {
    * @return {!Filter}
    */
   static _createRequestDomainFilter(value) {
-    /**
-     * @param {string} string
-     * @return {string}
-     */
-    function escapeForRegExp(string) {
-      return string.escapeForRegExp();
-    }
-    const escapedPattern = value.split('*').map(escapeForRegExp).join('.*');
+    const escapedPattern = value.split('*').map(Platform.StringUtilities.escapeForRegExp).join('.*');
     return NetworkLogView._requestDomainFilter.bind(null, new RegExp('^' + escapedPattern + '$', 'i'));
   }
 
@@ -506,7 +499,7 @@ export class NetworkLogView extends UI.Widget.VBox {
    * @return {boolean}
    */
   static _requestUrlFilter(value, request) {
-    const regex = new RegExp(value.escapeForRegExp(), 'i');
+    const regex = new RegExp(Platform.StringUtilities.escapeForRegExp(value), 'i');
     return regex.test(request.url());
   }
 
@@ -1713,13 +1706,14 @@ export class NetworkLogView extends UI.Widget.VBox {
       const regex = descriptor.regex;
       let filter;
       if (key) {
-        const defaultText = (key + ':' + text).escapeForRegExp();
+        const defaultText = Platform.StringUtilities.escapeForRegExp(key + ':' + text);
         filter = this._createSpecialFilter(/** @type {!FilterType} */ (key), text) ||
             NetworkLogView._requestPathFilter.bind(null, new RegExp(defaultText, 'i'));
       } else if (descriptor.regex) {
         filter = NetworkLogView._requestPathFilter.bind(null, /** @type {!RegExp} */ (regex));
       } else {
-        filter = NetworkLogView._requestPathFilter.bind(null, new RegExp(text.escapeForRegExp(), 'i'));
+        filter = NetworkLogView._requestPathFilter.bind(
+            null, new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i'));
       }
       return descriptor.negative ? NetworkLogView._negativeFilter.bind(null, filter) : filter;
     });

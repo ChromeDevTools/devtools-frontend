@@ -108,10 +108,4 @@ describe('Utilities', () => {
       }
     }
   });
-
-  it('escapes regex characters', () => {
-    const inputString = '^[]{}()\\.^$*+?|-';
-    const outputString = inputString.escapeForRegExp();
-    assert.strictEqual(outputString, '\\^\\[\\]\\{\\}\\(\\)\\\\\\.\\^\\$\\*\\+\\?\\|\\-');
-  });
 });

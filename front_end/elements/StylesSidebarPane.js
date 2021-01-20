@@ -32,6 +32,7 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
 import * as InlineEditor from '../inline_editor/inline_editor.js';
+import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
@@ -250,7 +251,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     input.placeholder = placeholder;
 
     function searchHandler() {
-      const regex = input.value ? new RegExp(input.value.escapeForRegExp(), 'i') : null;
+      const regex = input.value ? new RegExp(Platform.StringUtilities.escapeForRegExp(input.value), 'i') : null;
       filterCallback(regex);
     }
     input.addEventListener('input', searchHandler, false);

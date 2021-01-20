@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 export class StorageItemsView extends UI.Widget.VBox {
@@ -74,7 +75,7 @@ export class StorageItemsView extends UI.Widget.VBox {
    */
   _filterChanged(event) {
     const text = /** @type {?string} */ (event.data);
-    this._filterRegex = text ? new RegExp(text.escapeForRegExp(), 'i') : null;
+    this._filterRegex = text ? new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i') : null;
     this.refreshItems();
   }
 

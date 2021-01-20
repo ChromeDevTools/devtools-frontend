@@ -27,10 +27,6 @@ interface Uint32Array {
   upperBound(value: number, comparator?: {(a: number, b: number): number}, left?: number, right?: number): number;
 }
 
-interface String {
-  escapeForRegExp(): string;
-}
-
 interface RegExp {
   __fromRegExpQuery: boolean;
 }

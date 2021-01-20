@@ -737,7 +737,7 @@ export class SwitchFileActionDelegate {
         candidates.push(uiSourceCode.name());
       }
     }
-    candidates.sort(String.naturalOrderComparator);
+    candidates.sort(Platform.StringUtilities.naturalOrderComparator);
     const index = Platform.NumberUtilities.mod(candidates.indexOf(name) + 1, candidates.length);
     const fullURL = (url ? url + '/' : '') + candidates[index];
     const nextUISourceCode = currentUISourceCode.project().uiSourceCodeForURL(fullURL);

@@ -463,3 +463,46 @@ export const trimEndWithMaxLength = (str: string, maxLength: number): string => 
 export const escapeForRegExp = (str: string): string => {
   return escapeCharacters(str, SPECIAL_REGEX_CHARACTERS);
 };
+
+export const naturalOrderComparator = (a: string, b: string): number => {
+  const chunk = /^\d+|^\D+/;
+  let chunka, chunkb, anum, bnum;
+  while (true) {
+    if (a) {
+      if (!b) {
+        return 1;
+      }
+    } else {
+      if (b) {
+        return -1;
+      }
+      return 0;
+    }
+    chunka = (a.match(chunk) as string[])[0];
+    chunkb = (b.match(chunk) as string[])[0];
+    anum = !Number.isNaN(Number(chunka));
+    bnum = !Number.isNaN(Number(chunkb));
+    if (anum && !bnum) {
+      return -1;
+    }
+    if (bnum && !anum) {
+      return 1;
+    }
+    if (anum && bnum) {
+      const diff = Number(chunka) - Number(chunkb);
+      if (diff) {
+        return diff;
+      }
+      if (chunka.length !== chunkb.length) {
+        if (!Number(chunka) && !Number(chunkb)) {  // chunks are strings of all 0s (special case)
+          return chunka.length - chunkb.length;
+        }
+        return chunkb.length - chunka.length;
+      }
+    } else if (chunka !== chunkb) {
+      return (chunka < chunkb) ? -1 : 1;
+    }
+    a = a.substring(chunka.length);
+    b = b.substring(chunkb.length);
+  }
+};

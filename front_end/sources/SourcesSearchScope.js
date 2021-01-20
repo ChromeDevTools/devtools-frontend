@@ -80,7 +80,8 @@ export class SourcesSearchScope {
     if (!url1 && url2) {
       return 1;
     }
-    return String.naturalOrderComparator(uiSourceCode1.fullDisplayName(), uiSourceCode2.fullDisplayName());
+    return Platform.StringUtilities.naturalOrderComparator(
+        uiSourceCode1.fullDisplayName(), uiSourceCode2.fullDisplayName());
   }
 
   /**
@@ -180,7 +181,7 @@ export class SourcesSearchScope {
         result.push(uiSourceCode.url());
       }
     }
-    result.sort(String.naturalOrderComparator);
+    result.sort(Platform.StringUtilities.naturalOrderComparator);
     return result;
   }
 
@@ -197,10 +198,11 @@ export class SourcesSearchScope {
       return;
     }
 
-    files.sort(String.naturalOrderComparator);
-    files = Platform.ArrayUtilities.intersectOrdered(files, filesMathingFileQuery, String.naturalOrderComparator);
+    files.sort(Platform.StringUtilities.naturalOrderComparator);
+    files = Platform.ArrayUtilities.intersectOrdered(
+        files, filesMathingFileQuery, Platform.StringUtilities.naturalOrderComparator);
     const dirtyFiles = this._projectFilesMatchingFileQuery(project, searchConfig, true);
-    files = Platform.ArrayUtilities.mergeOrdered(files, dirtyFiles, String.naturalOrderComparator);
+    files = Platform.ArrayUtilities.mergeOrdered(files, dirtyFiles, Platform.StringUtilities.naturalOrderComparator);
 
     const uiSourceCodes = [];
     for (const file of files) {

@@ -6,6 +6,7 @@
 
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as Platform from '../platform/platform.js';
 import * as ProtocolClientModule from '../protocol_client/protocol_client.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -1277,7 +1278,7 @@ export function loadedModules() {
 export function dumpLoadedModules(relativeTo) {
   const previous = new Set(relativeTo || []);
   function moduleSorter(left, right) {
-    return String.naturalOrderComparator(left._descriptor.name, right._descriptor.name);
+    return Platform.StringUtilities.naturalOrderComparator(left._descriptor.name, right._descriptor.name);
   }
 
   addResult('Loaded modules:');

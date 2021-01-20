@@ -306,7 +306,7 @@ export class JavaScriptAutocomplete {
       endChar = ', ';
     }
 
-    const sorter = rawKeys.length < 1000 ? String.naturalOrderComparator : undefined;
+    const sorter = rawKeys.length < 1000 ? Platform.StringUtilities.naturalOrderComparator : undefined;
     const keys = rawKeys.sort(sorter).map(key => quoteChar + key + quoteChar);
 
     for (const key of keys) {
@@ -732,7 +732,7 @@ export class JavaScriptAutocomplete {
     if (bStartsWithUnderscore && !aStartsWithUnderscore) {
       return -1;
     }
-    return String.naturalOrderComparator(a, b);
+    return Platform.StringUtilities.naturalOrderComparator(a, b);
   }
 
   /**

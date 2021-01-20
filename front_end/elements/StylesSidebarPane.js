@@ -426,7 +426,7 @@ export class StylesSidebarPane extends ElementsSidebarPane {
      * @return {number}
      */
     function compareDescriptors(descriptor1, descriptor2) {
-      return String.naturalOrderComparator(descriptor1.text, descriptor2.text);
+      return Platform.StringUtilities.naturalOrderComparator(descriptor1.text, descriptor2.text);
     }
 
     /**
@@ -2702,7 +2702,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     this._isEditingName = isEditingName;
     this._cssVariables = treeElement.matchedStyles().availableCSSVariables(treeElement.property.ownerStyle);
     if (this._cssVariables.length < 1000) {
-      this._cssVariables.sort(String.naturalOrderComparator);
+      this._cssVariables.sort(Platform.StringUtilities.naturalOrderComparator);
     } else {
       this._cssVariables.sort();
     }

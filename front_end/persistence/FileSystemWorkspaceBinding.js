@@ -432,7 +432,8 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
 
     for (const query of queriesToRun) {
       const files = await this._fileSystem.searchInPath(searchConfig.isRegex() ? '' : query, progress);
-      result = Platform.ArrayUtilities.intersectOrdered(result, files.sort(), String.naturalOrderComparator);
+      result = Platform.ArrayUtilities.intersectOrdered(
+          result, files.sort(), Platform.StringUtilities.naturalOrderComparator);
       progress.worked(1);
     }
 

@@ -43,54 +43,6 @@ String.regexSpecialCharacters = regexSpecialCharacters;
 // @ts-ignore https://crbug.com/1050549
 String.caseInsensetiveComparator = caseInsensetiveComparator;
 
-/**
- * @param {string} a
- * @param {string} b
- * @return {number}
- */
-String.naturalOrderComparator = function(a, b) {
-  const chunk = /^\d+|^\D+/;
-  let chunka, chunkb, anum, bnum;
-  while (true) {
-    if (a) {
-      if (!b) {
-        return 1;
-      }
-    } else {
-      if (b) {
-        return -1;
-      }
-      return 0;
-    }
-    chunka = /** @type {!Array<string>} */ (a.match(chunk))[0];
-    chunkb = /** @type {!Array<string>} */ (b.match(chunk))[0];
-    anum = !Number.isNaN(Number(chunka));
-    bnum = !Number.isNaN(Number(chunkb));
-    if (anum && !bnum) {
-      return -1;
-    }
-    if (bnum && !anum) {
-      return 1;
-    }
-    if (anum && bnum) {
-      const diff = Number(chunka) - Number(chunkb);
-      if (diff) {
-        return diff;
-      }
-      if (chunka.length !== chunkb.length) {
-        if (!Number(chunka) && !Number(chunkb)) {  // chunks are strings of all 0s (special case)
-          return chunka.length - chunkb.length;
-        }
-        return chunkb.length - chunka.length;
-      }
-    } else if (chunka !== chunkb) {
-      return (chunka < chunkb) ? -1 : 1;
-    }
-    a = a.substring(chunka.length);
-    b = b.substring(chunkb.length);
-  }
-};
-
 Object.defineProperty(Array.prototype, 'lowerBound', {
   /**
    * Return index of the leftmost element that is equal or greater

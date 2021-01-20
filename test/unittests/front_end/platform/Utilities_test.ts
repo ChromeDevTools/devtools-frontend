@@ -19,11 +19,6 @@ declare global {
   interface String {
     repeat(length: number): string;
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface StringConstructor {
-    naturalOrderComparator(a: string, b: string): number;
-  }
 }
 
 describe('Utilities', () => {
@@ -76,36 +71,6 @@ describe('Utilities', () => {
     for (const fixture of fixtures) {
       testArray(fixture, false);
       testArray(fixture, true);
-    }
-  });
-
-  it('sorts natural order', () => {
-    const testArray = [
-      'dup', 'a1',   'a4222',  'a91',       'a07',      'dup', 'a7',        'a007',      'abc00',     'abc0',
-      'abc', 'abcd', 'abc000', 'x10y20z30', 'x9y19z29', 'dup', 'x09y19z29', 'x10y22z23', 'x10y19z43', '1',
-      '10',  '11',   'dup',    '2',         '2',        '2',   '555555',    '5',         '5555',      'dup',
-    ];
-
-    for (let i = 0, n = testArray.length; i < n; ++i) {
-      assert.strictEqual(0, String.naturalOrderComparator(testArray[i], testArray[i]), 'comparing equal strings');
-    }
-
-    testArray.sort(String.naturalOrderComparator);
-
-    // Check comparator's transitivity.
-    for (let i = 0, n = testArray.length; i < n; ++i) {
-      for (let j = 0; j < n; ++j) {
-        const a = testArray[i];
-        const b = testArray[j];
-        const diff = String.naturalOrderComparator(a, b);
-        if (diff === 0) {
-          assert.strictEqual(a, b, 'zero diff');
-        } else if (diff < 0) {
-          assert.isTrue(i < j);
-        } else {
-          assert.isTrue(i > j);
-        }
-      }
     }
   });
 });

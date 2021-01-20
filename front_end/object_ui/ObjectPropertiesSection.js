@@ -174,7 +174,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     if (propertyB.private && !propertyA.private) {
       return -1;
     }
-    return String.naturalOrderComparator(a, b);
+    return Platform.StringUtilities.naturalOrderComparator(a, b);
   }
 
   /**

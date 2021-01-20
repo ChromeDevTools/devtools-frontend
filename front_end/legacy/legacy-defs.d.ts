@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 interface StringConstructor {
   sprintf(format: string, ...var_arg: any): string;
-  naturalOrderComparator(a: string, b: string): number;
 }
 
 interface Window {

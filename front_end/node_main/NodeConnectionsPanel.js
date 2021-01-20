@@ -34,7 +34,11 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('node_main/NodeConnectionsPanel.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+/** @type {!NodeConnectionsPanel} */
+let nodeConnectionsPanelInstance;
+
 export class NodeConnectionsPanel extends UI.Panel.Panel {
+  /** @private */
   constructor() {
     super('node-connection');
     this.registerRequiredCSS('node_main/nodeConnectionsPanel.css', {enableLegacyPatching: false});
@@ -63,6 +67,18 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.setDevicesDiscoveryConfig(this._config);
     });
     this._networkDiscoveryView.show(container);
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!nodeConnectionsPanelInstance || forceNew) {
+      nodeConnectionsPanelInstance = new NodeConnectionsPanel();
+    }
+
+    return nodeConnectionsPanelInstance;
   }
 
   /**

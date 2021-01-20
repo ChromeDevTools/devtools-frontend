@@ -82,6 +82,7 @@ group("front_end") {
     "network:meta",
     "node_debugger:bundle",
     "node_main:bundle",
+    "node_main:meta",
     "object_ui:bundle",
     "perf_ui:bundle",
     "performance_monitor:bundle",

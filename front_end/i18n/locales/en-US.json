@@ -1430,10 +1430,10 @@
   "node_debugger/ModuleUIStrings.ts | node": {
     "message": "Node"
   },
-  "node_main/ModuleUIStrings.js | connection": {
+  "node_main/node_main-meta.ts | connection": {
     "message": "Connection"
   },
-  "node_main/ModuleUIStrings.js | node": {
+  "node_main/node_main-meta.ts | node": {
     "message": "node"
   },
   "node_main/NodeConnectionsPanel.js | addConnection": {

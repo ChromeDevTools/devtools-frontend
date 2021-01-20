@@ -3,15 +3,6 @@
     {
       "type": "early-initialization",
       "className": "NodeMain.NodeMain"
-    },
-    {
-      "type": "view",
-      "location": "panel",
-      "id": "node-connection",
-      "title": "Connection",
-      "order": 0,
-      "className": "NodeMain.NodeConnectionsPanel",
-      "tags": "node"
     }
   ],
   "dependencies": [

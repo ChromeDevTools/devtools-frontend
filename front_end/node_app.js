@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import './shell.js';
 import './js_profiler/js_profiler-meta.js';
+import './node_main/node_main-meta.js';
 import * as Startup from './startup/startup.js';
 
 Startup.RuntimeInstantiator.startApplication('node_app');

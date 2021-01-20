@@ -126,6 +126,7 @@ class PlayerDataDownloadManager implements TriggerDispatcher {
   }
 }
 
+let mainViewInstance: MainView;
 export class MainView extends UI.Panel.PanelWithSidebar implements SDK.SDKModel.SDKModelObserver<MediaModel> {
   _detailPanels: Map<string, PlayerDetailView>;
   _deletedPlayers: Set<string>;
@@ -146,6 +147,15 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.SDKModel.
     this._sidebar.show(this.panelSidebarElement());
 
     SDK.SDKModel.TargetManager.instance().observeModels(MediaModel, this);
+  }
+
+  static instance(opts = {forceNew: null}): MainView {
+    const {forceNew} = opts;
+    if (!mainViewInstance || forceNew) {
+      mainViewInstance = new MainView();
+    }
+
+    return mainViewInstance;
   }
 
   renderMainPanel(playerID: string): void {

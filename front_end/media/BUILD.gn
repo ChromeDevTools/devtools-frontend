@@ -43,3 +43,9 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "media-meta.ts"
+
+  deps = [ ":bundle" ]
+}

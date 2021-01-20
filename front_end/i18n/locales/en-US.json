@@ -1130,10 +1130,10 @@
   "media/EventTimelineView.ts | playbackStatus": {
     "message": "Playback Status"
   },
-  "media/ModuleUIStrings.ts | media": {
+  "media/media-meta.ts | media": {
     "message": "Media"
   },
-  "media/ModuleUIStrings.ts | video": {
+  "media/media-meta.ts | video": {
     "message": "video"
   },
   "media/PlayerDetailView.ts | events": {

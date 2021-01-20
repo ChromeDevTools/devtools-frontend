@@ -1,16 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "view",
-      "location": "panel",
-      "id": "media",
-      "title": "Media",
-      "persistence": "closeable",
-      "order": 100,
-      "className": "Media.MainView",
-      "tags": "media, video"
-    }
-  ],
   "dependencies": [
     "i18n",
     "components",

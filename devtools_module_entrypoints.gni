@@ -112,6 +112,7 @@ devtools_module_entrypoint_sources = [
   "main/main-legacy.js",
   "main/main.js",
   "media/media-legacy.js",
+  "media/media-meta.js",
   "media/media.js",
   "mobile_throttling/mobile_throttling-legacy.js",
   "mobile_throttling/mobile_throttling.js",

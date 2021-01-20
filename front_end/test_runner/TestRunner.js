@@ -17,6 +17,11 @@ import * as Workspace from '../workspace/workspace.js';
 
 /* eslint-disable no-console */
 
+self.Platform = self.Platform || {};
+self.Platform.StringUtilities = Platform.StringUtilities;
+self.Platform.MapUtilities = Platform.MapUtilities;
+self.Platform.ArrayUtilities = Platform.ArrayUtilities;
+
 /**
  * @return {boolean}
  */

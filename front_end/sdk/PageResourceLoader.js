@@ -195,6 +195,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     }
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
     const eligibleForLoadFromTarget = getLoadThroughTargetSetting().get() && parsedURL && parsedURL.isHttpOrHttps();
+    Host.userMetrics.developerResourceScheme(this._getDeveloperResourceScheme(parsedURL));
     if (eligibleForLoadFromTarget) {
       try {
         if (initiator.target) {
@@ -217,8 +218,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
       Host.userMetrics.developerResourceLoaded(Host.UserMetrics.DeveloperResourceLoaded.LoadThroughPageFallback);
       console.warn('Fallback triggered', url, initiator);
     } else {
-      const code = getLoadThroughTargetSetting().get() ? Host.UserMetrics.DeveloperResourceLoaded.FallbackPerOverride :
-                                                         Host.UserMetrics.DeveloperResourceLoaded.FallbackPerProtocol;
+      const code = getLoadThroughTargetSetting().get() ? Host.UserMetrics.DeveloperResourceLoaded.FallbackPerProtocol :
+                                                         Host.UserMetrics.DeveloperResourceLoaded.FallbackPerOverride;
       Host.userMetrics.developerResourceLoaded(code);
     }
 
@@ -232,6 +233,33 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
           `Fetch through target failed: ${failureReason}; Fallback: ${result.errorDescription.message}`;
     }
     return result;
+  }
+
+  /**
+   *
+   * @param {Common.ParsedURL.ParsedURL|null} parsedURL
+   * @returns {Host.UserMetrics.DeveloperResourceScheme}
+   */
+  _getDeveloperResourceScheme(parsedURL) {
+    if (!parsedURL) {
+      return Host.UserMetrics.DeveloperResourceScheme.SchemeUnknown;
+    }
+    const isLocalhost = parsedURL.host === 'localhost' || parsedURL.host.endsWith('.localhost');
+    switch (parsedURL.scheme) {
+      case 'file':
+        return Host.UserMetrics.DeveloperResourceScheme.SchemeFile;
+      case 'data':
+        return Host.UserMetrics.DeveloperResourceScheme.SchemeData;
+      case 'blob':
+        return Host.UserMetrics.DeveloperResourceScheme.SchemeBlob;
+      case 'http':
+        return isLocalhost ? Host.UserMetrics.DeveloperResourceScheme.SchemeHttpLocalhost :
+                             Host.UserMetrics.DeveloperResourceScheme.SchemeHttp;
+      case 'https':
+        return isLocalhost ? Host.UserMetrics.DeveloperResourceScheme.SchemeHttpsLocalhost :
+                             Host.UserMetrics.DeveloperResourceScheme.SchemeHttps;
+    }
+    return Host.UserMetrics.DeveloperResourceScheme.SchemeOther;
   }
 
   /**

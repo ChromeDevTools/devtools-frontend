@@ -455,4 +455,5 @@ export const EnumeratedHistogram = {
   ExperimentDisabled: 'DevTools.ExperimentDisabled',
   CssEditorOpened: 'DevTools.CssEditorOpened',
   DeveloperResourceLoaded: 'DevTools.DeveloperResourceLoaded',
+  DeveloperResourceScheme: 'DevTools.DeveloperResourceScheme',
 };

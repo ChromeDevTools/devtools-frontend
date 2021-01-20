@@ -18,6 +18,10 @@ interface UserMetric {
   name: string;
   value: string|number|LoadMetric;
 }
+interface UserMetricWithOptionalValue {
+  name: string;
+  value?: string|number|LoadMetric;
+}
 
 interface LoadMetric {
   histogramName: string;
@@ -51,6 +55,7 @@ declare global {
     __issuesPanelResourceOpened: (evt: Event) => void;
     __issuesPanelIssueCreated: (evt: Event) => void;
     __developerResourceLoaded: (evt: Event) => void;
+    __developerResourceScheme: (evt: Event) => void;
     Host: {
       UserMetrics: UserMetrics; userMetrics: {
         actionTaken(name: number): void; colorFixed(threshold: string): void; cssEditorOpened(editorName: string): void;
@@ -61,91 +66,28 @@ declare global {
 
 async function beginCatchEvents(frontend: puppeteer.Page) {
   await frontend.evaluate(() => {
-    window.__panelShown = (evt: Event) => {
+    const makeHandler = (eventName: string) => (evt: Event) => {
       const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.PanelShown', value: customEvt.detail.value});
+      window.__caughtEvents.push({name: eventName, value: customEvt.detail.value});
     };
-
-    window.__panelClosed = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.PanelClosed', value: customEvt.detail.value});
-    };
-
-    window.__panelLoaded = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.PanelLoaded', value: customEvt.detail.value});
-    };
-
-    window.__sidebarPaneShown = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.SidebarPaneShown', value: customEvt.detail.value});
-    };
-
-    window.__actionTaken = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.ActionTaken', value: customEvt.detail.value});
-    };
-
-    window.__keyboardShortcutFired = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.KeyboardShortcutFired', value: customEvt.detail.value});
-    };
-
-    window.__issuesPanelOpenedFrom = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.IssuesPanelOpenedFrom', value: customEvt.detail.value});
-    };
-
-    window.__keybindSetSettingChanged = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.KeybindSetSettingChanged', value: customEvt.detail.value});
-    };
-
-    window.__dualScreenDeviceEmulated = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.DualScreenDeviceEmulated', value: customEvt.detail.value});
-    };
-
-    window.__cssEditorOpened = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.CssEditorOpened', value: customEvt.detail.value});
-    };
-
-    window.__experimentDisabled = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.ExperimentDisabled', value: customEvt.detail.value});
-    };
-
-    window.__experimentEnabled = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.ExperimentEnabled', value: customEvt.detail.value});
-    };
-
-    window.__colorFixed = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.ColorPicker.FixedColor', value: customEvt.detail.value});
-    };
-
-    window.__issuesPanelIssueExpanded = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.IssuesPanelIssueExpanded', value: customEvt.detail.value});
-    };
-
-    window.__issuesPanelResourceOpened = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.IssuesPanelResourceOpened', value: customEvt.detail.value});
-    };
-
-    window.__issuesPanelIssueCreated = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.IssueCreated', value: customEvt.detail.value});
-    };
-
-    window.__developerResourceLoaded = (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: 'DevTools.DeveloperResourceLoaded', value: customEvt.detail.value});
-    };
-
+    window.__panelShown = makeHandler('DevTools.PanelShown');
+    window.__panelClosed = makeHandler('DevTools.PanelClosed');
+    window.__panelLoaded = makeHandler('DevTools.PanelLoaded');
+    window.__sidebarPaneShown = makeHandler('DevTools.SidebarPaneShown');
+    window.__actionTaken = makeHandler('DevTools.ActionTaken');
+    window.__keyboardShortcutFired = makeHandler('DevTools.KeyboardShortcutFired');
+    window.__issuesPanelOpenedFrom = makeHandler('DevTools.IssuesPanelOpenedFrom');
+    window.__keybindSetSettingChanged = makeHandler('DevTools.KeybindSetSettingChanged');
+    window.__dualScreenDeviceEmulated = makeHandler('DevTools.DualScreenDeviceEmulated');
+    window.__cssEditorOpened = makeHandler('DevTools.CssEditorOpened');
+    window.__experimentDisabled = makeHandler('DevTools.ExperimentDisabled');
+    window.__experimentEnabled = makeHandler('DevTools.ExperimentEnabled');
+    window.__colorFixed = makeHandler('DevTools.ColorPicker.FixedColor');
+    window.__issuesPanelIssueExpanded = makeHandler('DevTools.IssuesPanelIssueExpanded');
+    window.__issuesPanelResourceOpened = makeHandler('DevTools.IssuesPanelResourceOpened');
+    window.__issuesPanelIssueCreated = makeHandler('DevTools.IssueCreated');
+    window.__developerResourceLoaded = makeHandler('DevTools.DeveloperResourceLoaded');
+    window.__developerResourceScheme = makeHandler('DevTools.DeveloperResourceScheme');
     window.__caughtEvents = [];
     window.__beginCatchEvents = () => {
       window.addEventListener('DevTools.PanelShown', window.__panelShown);
@@ -165,6 +107,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.addEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
       window.addEventListener('DevTools.IssueCreated', window.__issuesPanelIssueCreated);
       window.addEventListener('DevTools.DeveloperResourceLoaded', window.__developerResourceLoaded);
+      window.addEventListener('DevTools.DeveloperResourceScheme', window.__developerResourceScheme);
     };
 
     window.__endCatchEvents = () => {
@@ -184,6 +127,7 @@ async function beginCatchEvents(frontend: puppeteer.Page) {
       window.removeEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
       window.removeEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
       window.removeEventListener('DevTools.DeveloperResourceLoaded', window.__developerResourceLoaded);
+      window.removeEventListener('DevTools.DeveloperResourceScheme', window.__developerResourceScheme);
     };
 
     window.__beginCatchEvents();
@@ -207,11 +151,11 @@ async function assertCapturedEvents(expected: UserMetric[]) {
   assert.deepEqual(events, expected);
 }
 
-async function awaitCapturedEvent(expected: UserMetric) {
+async function awaitCapturedEvent(expected: UserMetricWithOptionalValue) {
   const {frontend} = getBrowserAndPages();
   await waitForFunction(async () => {
     const events = await retrieveCapturedEvents(frontend);
-    return events.find(e => e.name === expected.name && e.value === expected.value);
+    return events.find(e => e.name === expected.name && (!('value' in expected) || e.value === expected.value));
   });
 }
 
@@ -860,6 +804,11 @@ describe('User Metrics for the Page Resource Loader', () => {
         {
           name: 'DevTools.DeveloperResourceLoaded',
           value: 0,  // LoadThroughPageViaTarget
+        },
+    );
+    await awaitCapturedEvent(
+        {
+          name: 'DevTools.DeveloperResourceScheme',
         },
     );
     await endCatchEvents(frontend);

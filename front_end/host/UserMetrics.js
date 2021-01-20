@@ -290,6 +290,19 @@ export class UserMetrics {
         EnumeratedHistogram.DeveloperResourceLoaded, developerResourceLoaded, size);
     Common.EventTarget.fireEvent(EnumeratedHistogram.DeveloperResourceLoaded, {value: developerResourceLoaded});
   }
+
+  /**
+   * @param {!DeveloperResourceScheme} developerResourceScheme
+   */
+  developerResourceScheme(developerResourceScheme) {
+    const size = Object.keys(DeveloperResourceScheme).length + 1;
+    if (developerResourceScheme >= size) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.DeveloperResourceScheme, developerResourceScheme, size);
+    Common.EventTarget.fireEvent(EnumeratedHistogram.DeveloperResourceScheme, {value: developerResourceScheme});
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -685,4 +698,17 @@ export const DeveloperResourceLoaded = {
   FallbackPerOverride: 5,
   FallbackPerProtocol: 6,
   FallbackFailure: 7,
+};
+
+/** @enum {number} */
+export const DeveloperResourceScheme = {
+  SchemeOther: 0,
+  SchemeUnknown: 1,
+  SchemeHttp: 2,
+  SchemeHttps: 3,
+  SchemeHttpLocalhost: 4,
+  SchemeHttpsLocalhost: 5,
+  SchemeData: 6,
+  SchemeFile: 7,
+  SchemeBlob: 8,
 };

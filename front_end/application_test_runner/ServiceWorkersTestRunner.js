@@ -44,7 +44,10 @@ ApplicationTestRunner.dumpServiceWorkersView = function() {
         if (node.textContent === 'Received ' + (new Date(0)).toLocaleString()) {
           return 'Invalid scriptResponseTime (unix epoch)';
         }
-        return node.textContent.replace(/Received.*/, 'Received').replace(/#\d+/, '#N');
+        return node.textContent.replace(/Received.*/, 'Received')
+            .replace(/#\d+/, '#N')
+            .replace(/Start time.*/, 'Start time')
+            .replace(/End time.*/, 'End time');
       })
       .join('\n');
 };

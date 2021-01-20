@@ -25,6 +25,7 @@
 .content-section {
   padding: 16px;
   border-bottom: var(--divider-border, 1px solid #d0d0d0);
+  overflow-x: hidden;
 }
 
 .content-section-title {

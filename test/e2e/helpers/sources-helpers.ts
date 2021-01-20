@@ -381,6 +381,11 @@ export async function clickOnContextMenu(selector: string, label: string) {
   await click(labelSelector);
 }
 
+export async function inspectMemory(variableName: string) {
+  await clickOnContextMenu(
+      `[data-object-property-name-for-test="${variableName}"]`, 'Reveal in Memory Inspector panel');
+}
+
 export async function typeIntoSourcesAndSave(text: string) {
   const pane = await waitFor('.sources');
   await pane.type(text);

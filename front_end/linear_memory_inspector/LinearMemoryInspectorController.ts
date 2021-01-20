@@ -55,7 +55,8 @@ export async function getUint8ArrayFromObject(obj: SDK.RemoteObject.RemoteObject
     Promise<SDK.RemoteObject.RemoteObject> {
   const response = await obj.runtimeModel()._agent.invoke_callFunctionOn({
     objectId: obj.objectId,
-    functionDeclaration: 'function() { return new Uint8Array(this instanceof ArrayBuffer? this : this.buffer); }',
+    functionDeclaration:
+        'function() { return new Uint8Array(this instanceof ArrayBuffer || this instanceof SharedArrayBuffer ? this : this.buffer); }',
     silent: true,
     // Set object group in order to bind the object lifetime to the linear memory inspector.
     objectGroup: LINEAR_MEMORY_INSPECTOR_OBJECT_GROUP,
@@ -68,9 +69,37 @@ export async function getUint8ArrayFromObject(obj: SDK.RemoteObject.RemoteObject
   return obj.runtimeModel().createRemoteObject(response.result);
 }
 
+export async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<SDK.RemoteObject.RemoteObject> {
+  const response = await obj.runtimeModel()._agent.invoke_callFunctionOn({
+    objectId: obj.objectId,
+    functionDeclaration:
+        'function() { return this instanceof ArrayBuffer || this instanceof SharedArrayBuffer ? this : this.buffer; }',
+    silent: true,
+    // Set object group in order to bind the object lifetime to the linear memory inspector.
+    objectGroup: LINEAR_MEMORY_INSPECTOR_OBJECT_GROUP,
+  });
+
+  const error = response.getError();
+  if (error) {
+    throw new Error(`Remote object representing ArrayBuffer could not be retrieved: ${error}`);
+  }
+  return obj.runtimeModel().createRemoteObject(response.result);
+}
+
+export async function getBufferIdFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<string> {
+  const bufferObj = await getBufferFromObject(obj);
+  const properties = await bufferObj.getOwnProperties(false);
+  const idProperty = properties.internalProperties?.find(prop => prop.name === '[[ArrayBufferData]]');
+  const id = idProperty?.value?.value;
+  if (!id) {
+    throw new Error('Unable to find backing store id for array buffer');
+  }
+  return id;
+}
+
 export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
   private paneInstance = LinearMemoryInspectorPaneImpl.instance();
-  private scriptIdToRemoteObject: Map<string, SDK.RemoteObject.RemoteObject> = new Map();
+  private bufferIdToRemoteObject: Map<string, SDK.RemoteObject.RemoteObject> = new Map();
 
   private constructor() {
     super();
@@ -115,48 +144,48 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
   }
 
   async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address: number): Promise<void> {
+    const bufferId = await getBufferIdFromObject(obj);
+
+    if (this.bufferIdToRemoteObject.has(bufferId)) {
+      this.paneInstance.reveal(bufferId);
+      UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
+      return;
+    }
+
     const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
     if (!callFrame) {
       throw new Error(`Cannot find call frame for ${obj.description}.`);
     }
-    const scriptId = callFrame.script.scriptId;
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(callFrame.script.sourceURL);
 
     if (!uiSourceCode) {
       throw new Error(`Cannot find source code object for source url: ${callFrame.script.sourceURL}`);
     }
     const title = uiSourceCode.displayName();
-
-    // TODO(kimanh): scriptIds are not unique, find a different way to uniquely identify this object
-    if (this.scriptIdToRemoteObject.has(scriptId)) {
-      this.paneInstance.reveal(scriptId);
-      UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
-      return;
-    }
     const objBoundToLMI = await getUint8ArrayFromObject(obj);
 
-    this.scriptIdToRemoteObject.set(scriptId, objBoundToLMI);
+    this.bufferIdToRemoteObject.set(bufferId, objBoundToLMI);
     const remoteArray = new SDK.RemoteObject.RemoteArray(objBoundToLMI);
     const arrayWrapper = new RemoteArrayWrapper(remoteArray);
 
-    this.paneInstance.create(scriptId, title, arrayWrapper, address);
+    this.paneInstance.create(bufferId, title, arrayWrapper, address);
     UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
   }
 
   modelRemoved(model: SDK.RuntimeModel.RuntimeModel): void {
-    for (const [scriptId, remoteObject] of this.scriptIdToRemoteObject) {
+    for (const [bufferId, remoteObject] of this.bufferIdToRemoteObject) {
       if (model === remoteObject.runtimeModel()) {
-        this.scriptIdToRemoteObject.delete(scriptId);
-        this.paneInstance.close(scriptId);
+        this.bufferIdToRemoteObject.delete(bufferId);
+        this.paneInstance.close(bufferId);
       }
     }
   }
 
   private onDebuggerPause(event: Common.EventTarget.EventTargetEvent): void {
     const debuggerModel = event.data as SDK.DebuggerModel.DebuggerModel;
-    for (const [scriptId, remoteObject] of this.scriptIdToRemoteObject) {
+    for (const [bufferId, remoteObject] of this.bufferIdToRemoteObject) {
       if (debuggerModel.runtimeModel() === remoteObject.runtimeModel()) {
-        this.paneInstance.refreshView(scriptId);
+        this.paneInstance.refreshView(bufferId);
       }
     }
   }
@@ -167,11 +196,11 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
   }
 
   private viewClosed(event: Common.EventTarget.EventTargetEvent): void {
-    const scriptId = event.data;
-    const remoteObj = this.scriptIdToRemoteObject.get(scriptId);
+    const bufferId = event.data;
+    const remoteObj = this.bufferIdToRemoteObject.get(bufferId);
     if (remoteObj) {
       remoteObj.release();
     }
-    this.scriptIdToRemoteObject.delete(event.data);
+    this.bufferIdToRemoteObject.delete(event.data);
   }
 }

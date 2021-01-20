@@ -78,6 +78,9 @@
   <message name="IDS_DEVTOOLS_1bea0f12b50db07ee7f2265b790417ff" desc="Text in App Manifest View of the Application panel">
     Installability
   </message>
+  <message name="IDS_DEVTOOLS_1cf4b3e6402b5f51cbe53b97b40bb147" desc="Text in App Manifest View of the Application panel">
+    Screenshot #<ph name="SCREENSHOTINDEX">$1s<ex>1</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_1dacfb77b471afe19dc1b591c8c9f0a3" desc="Manifest installability error in the Application panel">
     Manifest contains &apos;<ph name="LOCKED_1">display_override</ph>&apos; field, and the first supported display mode must be one of &apos;<ph name="LOCKED_2">standalone</ph>&apos;, &apos;<ph name="LOCKED_3">fullscreen</ph>&apos;, or &apos;<ph name="LOCKED_4">minimal-ui</ph>&apos;
   </message>
@@ -96,6 +99,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_285fab11101a84ace7c3b14e5d0a3c1c" desc="Title for a link to the Network panel">
     Click to reveal in Network panel
+  </message>
+  <message name="IDS_DEVTOOLS_28bbea7c4fc887e7fed4ef47983c9b32" desc="Warning message for image resources from the manifest">
+    <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> <ph name="IMAGEURL">$2s<ex>https://example.com/image.png</ex></ph> does not specify its size in the manifest
   </message>
   <message name="IDS_DEVTOOLS_29104d3ede0231043a4b92a90b9c2873" desc="Title of needs refresh in indexed dbviews of the application panel">
     Some entries may have been modified
@@ -126,9 +132,6 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_368d9ac76af05f714092bc808a426bfc" desc="Text in App Manifest View of the Application panel">
     Background color
-  </message>
-  <message name="IDS_DEVTOOLS_36ade12d9ad04b9411343828de870437" desc="Warning message for icons from the manifest">
-    Icon <ph name="ICONURL">$1s<ex>https://example.com/icon.png</ex></ph> does not specify its size in the manifest
   </message>
   <message name="IDS_DEVTOOLS_36c6b76be5e3e5d310c5da0657880c54" desc="Label for a checkbox that toggles the inclusion of 3rd party cookies when clearing site data">
     including third-party cookies
@@ -162,9 +165,6 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_3edf8ca26a1ec14dd6e91dd277ae1de6" desc="Text for the origin of something">
     Origin
-  </message>
-  <message name="IDS_DEVTOOLS_3f80ff94f029e6a0d990eb528b9a3e29" desc="Text in App Manifest View of the Application panel">
-    Icon <ph name="ICONURL">$1s<ex>>https://example.com</ex></ph> dimensions should be square
   </message>
   <message name="IDS_DEVTOOLS_3fe657bc615d0d1c37f1d6d5f8b5587e" desc="Description for the 'Access to Opener' field">
     Shows whether the opened window is able to access its opener and vice versa
@@ -289,11 +289,11 @@ table is empty.
   <message name="IDS_DEVTOOLS_76c18f2b1e4155961e10434e3d83317f" desc="Text in Indexed DBViews of the Application panel">
     Key generator value: <ph name="STRING_METADATA_KEYGENERATORVALUE_">$1s<ex>2</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_77952efe90f90702bd195cc729e41086" desc="Warning message for icons from the manifest">
-    Icon src is not set
-  </message>
   <message name="IDS_DEVTOOLS_795a813f20a4d4b04f85ddb86287fce4" desc="Quota row title in Clear Storage View of the Application panel">
     Storage quota is limited in Incognito mode
+  </message>
+  <message name="IDS_DEVTOOLS_79893cb33c3ff952ad2181412b7ba7ea" desc="Warning message for image resources from the manifest">
+    Actual width (<ph name="IMAGE_NATURALWIDTH">$1s<ex>100</ex></ph>px) of <ph name="RESOURCENAME">$2s<ex>Image</ex></ph> <ph name="IMAGEURL">$3s<ex>https://example.com/image.png</ex></ph> does not match specified width (<ph name="WIDTH">$4s<ex>200</ex></ph>px)
   </message>
   <message name="IDS_DEVTOOLS_798a0aef3a97a3eab63d88a0b6c07341" desc="Text in Background Service View of the Application panel">
     SW Scope
@@ -318,6 +318,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_1a9c7bf3cdba253c6a3f5da142989bdb" desc="Description for ad frame type">
     This frame has been identified as the a child frame of an ad
+  </message>
+  <message name="IDS_DEVTOOLS_817434295a673aed431435658b65d9a7" desc="Text in App Manifest View of the Application panel">
+    Icon
   </message>
   <message name="IDS_DEVTOOLS_817f5e98888edb4bb357c3410879476c" desc="Section header in the Frame Details view">
     Security &amp; Isolation
@@ -352,6 +355,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_897356954c2cd3d41b221e3f24f99bba" desc="Text in DOMStorage Items View of the Application panel">
     Key
   </message>
+  <message name="IDS_DEVTOOLS_8b4f357c936cc1df5301402bb21b4377" desc="Warning message for image resources from the manifest">
+    Actual height (<ph name="IMAGE_NATURALHEIGHT">$1s<ex>100</ex></ph>px) of <ph name="RESOURCENAME">$2s<ex>Image</ex></ph> <ph name="IMAGEURL">$3s<ex>https://example.com/image.png</ex></ph> does not match specified height (<ph name="HEIGHT">$4s<ex>100</ex></ph>px)
+  </message>
   <message name="IDS_DEVTOOLS_8bd78132dbb5d2bbc6752e961a914e4b" desc="Manifest installability error in the Application panel">
     Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least <ph name="MINIMUM_ICON_SIZE">$1s<ex>100</ex></ph>px is required, the sizes attribute must be set, and the purpose attribute, if set, must include &quot;any&quot; and should not include &quot;maskable&quot;.
   </message>
@@ -363,9 +369,6 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_884fee51c5c21aa538a2b95ac4e0d956" desc="Explanation for the SharedArrayBuffer availability status">
     ⚠️ will require cross-origin isolated context in the future
-  </message>
-  <message name="IDS_DEVTOOLS_8e935d9783802795a2abb7a31cacba1a" desc="Warning message for icons from the manifest">
-    Icon <ph name="ICONURL">$1s<ex>https://example.com/icon.png</ex></ph> failed to load
   </message>
   <message name="IDS_DEVTOOLS_8f67973007158337346584551b093be8" desc="Text in App Manifest View of the Application panel">
     Icons
@@ -388,6 +391,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_94aa6cfa461998abe42d53963f1344c3" desc="Error msg element text content in Database Table View of the Application panel">
     An error occurred trying to
 read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
+  </message>
+  <message name="IDS_DEVTOOLS_966449681e03d7c362d19c08ee337985" desc="Warning message for image resources from the manifest">
+    <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> URL &apos;<ph name="IMAGERESOURCE__SRC__">$2s<ex>https://example.com/image.png</ex></ph>&apos; failed to parse
   </message>
   <message name="IDS_DEVTOOLS_98fc9226c3fe878e39cd048fbd1c3692" desc="Text in App Manifest View of the Application panel">
     Short name
@@ -441,6 +447,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_a89edb1e05005c844b684d1eb0de111a" desc="Text in Application Panel Sidebar of the Application panel">
     Cache Storage
   </message>
+  <message name="IDS_DEVTOOLS_a917b9ae330cd89250c7477c9018c2d2" desc="Warning message for image resources from the manifest">
+    <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> <ph name="IMAGEURL">$2s<ex>https://example.com/image.png</ex></ph> failed to load
+  </message>
   <message name="IDS_DEVTOOLS_a9cd2046f50376846feaa11c68e56e2f" desc="Inform users that DevTools are recording/waiting for events in the Periodic Background Sync tool of the Application panel">
     <ph name="LOCKED_1">DevTools</ph> will record all <ph name="FEATURENAME">$1s<ex>Background Fetch</ex></ph> activity for up to 3 days, even when closed.
   </message>
@@ -456,11 +465,20 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_acb91a6bfd0644c5b90280f9ebf38774" desc="Text in Service Worker Cache Views of the Application panel">
     Response-Type
   </message>
+  <message name="IDS_DEVTOOLS_ad14311efe16cf05b5d53011ab560301" desc="Warning message for image resources from the manifest">
+    Actual size (<ph name="IMAGE_NATURALWIDTH">$1s<ex>100</ex></ph>×<ph name="IMAGE_NATURALHEIGHT">$2s<ex>100</ex></ph>)px of <ph name="RESOURCENAME">$3s<ex>Image</ex></ph> <ph name="IMAGEURL">$4s<ex>https://example.com/image.png</ex></ph> does not match specified size (<ph name="WIDTH">$5s<ex>200</ex></ph>×<ph name="HEIGHT">$6s<ex>200</ex></ph>px)
+  </message>
   <message name="IDS_DEVTOOLS_ad2669a90d3964bc67a1a34152122845" desc="Span text content in Service Worker Cache Views of the Application panel">
     Matching entries: <ph name="THIS__RETURNCOUNT">$1s<ex>2</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_ae262bf758227f7e319ba799a861681a" desc="Text in Clear Storage View of the Application panel">
     Local and session storage
+  </message>
+  <message name="IDS_DEVTOOLS_af1b98adf7f686b84cd0b443e022b7a0" desc="Text in App Manifest View of the Application panel">
+    Categories
+  </message>
+  <message name="IDS_DEVTOOLS_b0fc7aefe34679e27237645908be3214" desc="Warning message for image resources from the manifest">
+    <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> <ph name="IMAGEURL">$2s<ex>https://example.com/image.png</ex></ph> dimensions should be square
   </message>
   <message name="IDS_DEVTOOLS_b1fd5dd85050cf9faca8b1c533874ab0" desc="Row title for in the Frame Details view">
     Secure Context
@@ -479,6 +497,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_b61822e8357dcaff77eaaccf348d9134" desc="Default name for worker">
     worker
+  </message>
+  <message name="IDS_DEVTOOLS_b6522feb8180c7e283bd7ff030008d9d" desc="Warning message for image resources from the manifest">
+    <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> src is not set
   </message>
   <message name="IDS_DEVTOOLS_b66b856833f34a841b51c7207dbc601f" desc="Text in Application Panel Sidebar of the Application panel">
     IndexedDB
@@ -540,9 +561,6 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_c9c5c65fb4af9cf90eb99b3b84424189" desc="Text in App Manifest View of the Application panel">
     Identity
   </message>
-  <message name="IDS_DEVTOOLS_ca72bcf0fbdc4c621360d906f930a956" desc="Warning message for icons from the manifest">
-    Actual height (<ph name="IMAGE_NATURALHEIGHT">$1s<ex>100</ex></ph>px) of icon <ph name="ICONURL">$2s<ex>https://example.com/icon.png</ex></ph> does not match specified height (<ph name="HEIGHT">$3s<ex>100</ex></ph>px)
-  </message>
   <message name="IDS_DEVTOOLS_38cb2846c1e74eeb7bc0b796c2787e03" desc="Explanation for the Measure Memory availability status">
     available, but might require experimental web platform features
   </message>
@@ -582,17 +600,8 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_d4f61ad886e0b169b0394d97bb1a649a" desc="Text in Background Service View of the Application panel">
     Recording <ph name="RESOURCES_BACKGROUNDSERVICEVIEW_GETUISTRING_THIS__SERVICENAME_">$1s<ex>Background Fetch</ex></ph> activity...
   </message>
-  <message name="IDS_DEVTOOLS_d4fb95445aa92443f4d7df47107c83f6" desc="Warning message for icons from the manifest">
-    Actual size (<ph name="IMAGE_NATURALWIDTH">$1s<ex>100</ex></ph>×<ph name="IMAGE_NATURALHEIGHT">$2s<ex>100</ex></ph>)px of icon <ph name="ICONURL">$3s<ex>https://example.com/icon.png</ex></ph> does not match specified size (<ph name="WIDTH">$4s<ex>100</ex></ph>×<ph name="HEIGHT">$5s<ex>100</ex></ph>px)
-  </message>
   <message name="IDS_DEVTOOLS_d6f875d9f87efbee1a96b8c4f5784d47" desc="Text in Indexed DBViews of the Application panel">
     Primary key
-  </message>
-  <message name="IDS_DEVTOOLS_d7a1e7204fe33d28b31758538536c9d9" desc="Warning message for icons from the manifest">
-    Icon URL &apos;<ph name="ICON__SRC__">$1s<ex>foo/icon.png</ex></ph>&apos; failed to parse
-  </message>
-  <message name="IDS_DEVTOOLS_d86027c2f92aae9917280fee9bca244d" desc="Warning message for icons from the manifest">
-    Actual width (<ph name="IMAGE_NATURALWIDTH">$1s<ex>100</ex></ph>px) of icon <ph name="ICONURL">$2s<ex>https://example.com/icon.png</ex></ph> does not match specified width (<ph name="WIDTH">$3s<ex>100</ex></ph>px)
   </message>
   <message name="IDS_DEVTOOLS_d892ca11530be1235ec05eb368ecaf37" desc="Text in Indexed DBViews of the Application panel">
     Start from key
@@ -678,6 +687,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_edfea37d34e2f56d9ef6c2fc90487f28" desc="Manifest installability error in the Application panel">
     No matching <ph name="LOCKED_TERM">service worker</ph> detected. You may need to reload the page, or check that the scope of the <ph name="LOCKED_TERM">service worker</ph> for the current page encloses the scope and start URL from the manifest.
   </message>
+  <message name="IDS_DEVTOOLS_ee9fd2fe7108a313aec328849f9fbc72" desc="Warning message for image resources from the manifest">
+    <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> <ph name="IMAGEURL">$2s<ex>https://example.com/image.png</ex></ph> size should be at least 320x320
+  </message>
   <message name="IDS_DEVTOOLS_eeb6ddeed2e08678ebc14eb39c8340bf" desc="Text in Indexed DBViews of the Application panel">
     IDB
   </message>
@@ -708,11 +720,11 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_fb1508747fe448fd8b006e923ba1c3ef" desc="Text in Background Service View of the Application panel">
     Payment Handler
   </message>
+  <message name="IDS_DEVTOOLS_fc0bfc969bbfc347549b7899230ec7b4" desc="Warning message for image resources from the manifest">
+    <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> <ph name="IMAGEURL">$2s<ex>https://example.com/image.png</ex></ph> should specify its size as `{width}x{height}`
+  </message>
   <message name="IDS_DEVTOOLS_fcb17e3f7fb9c2de779eccd730e36c99" desc="Description of the SharedArrayBuffer status">
     available, not transferable
-  </message>
-  <message name="IDS_DEVTOOLS_fe1c53e07b8cdf5e766595be09672b29" desc="Warning message for icons from the manifest">
-    Icon <ph name="ICONURL">$1s<ex>https://example.com/icon.png</ex></ph> should specify its size as `{width}x{height}`
   </message>
   <message name="IDS_DEVTOOLS_ffd2f812cf202d121661e957feb8bbc9" desc="Label for checkbox to show url decoded cookie values">
     Show URL decoded

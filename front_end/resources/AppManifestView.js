@@ -44,9 +44,13 @@ export class AppManifestView extends UI.Widget.VBox {
     this._iconsSection = this._reportView.appendSection(Common.UIString.UIString('Icons'), 'report-section-icons');
     /** @type {!Array<!UI.ReportView.Section>} */
     this._shortcutSections = [];
+    /** @type {!Array<!UI.ReportView.Section>} */
+    this._screenshotsSections = [];
 
     this._nameField = this._identitySection.appendField(Common.UIString.UIString('Name'));
     this._shortNameField = this._identitySection.appendField(Common.UIString.UIString('Short name'));
+    this._descriptionField = this._identitySection.appendField(Common.UIString.UIString('Description'));
+    this._categoriesField = this._identitySection.appendField(Common.UIString.UIString('Categories'));
 
     this._startURLField = this._presentationSection.appendField(Common.UIString.UIString('Start URL'));
 
@@ -166,6 +170,10 @@ export class AppManifestView extends UI.Widget.VBox {
     const parsedManifest = JSON.parse(data);
     this._nameField.textContent = stringProperty('name');
     this._shortNameField.textContent = stringProperty('short_name');
+    this._descriptionField.textContent = stringProperty('description');
+
+    const categories = parsedManifest['categories'] || [];
+    this._categoriesField.textContent = categories.join(', ');
 
     this._startURLField.removeChildren();
     const startURL = stringProperty('start_url');
@@ -199,7 +207,12 @@ export class AppManifestView extends UI.Widget.VBox {
 
     const shortcuts = parsedManifest['shortcuts'] || [];
     for (const shortcutsSection of this._shortcutSections) {
-      shortcutsSection.detach(/* overrideHideOnDetach=*/ true);
+      shortcutsSection.detach(/** overrideHideOnDetach= */ true);
+    }
+
+    const screenshots = parsedManifest['screenshots'] || [];
+    for (const screenshotSection of this._screenshotsSections) {
+      screenshotSection.detach(/** overrideHideOnDetach= */ true);
     }
 
     const imageErrors = [];
@@ -231,7 +244,8 @@ export class AppManifestView extends UI.Widget.VBox {
     }
 
     for (const icon of icons) {
-      const iconErrors = await this._appendIconResourceToSection(url, icon, this._iconsSection);
+      const iconErrors =
+          await this._appendImageResourceToSection(url, icon, this._iconsSection, /** isScreenshot= */ false);
       imageErrors.push(...iconErrors);
     }
 
@@ -257,10 +271,9 @@ export class AppManifestView extends UI.Widget.VBox {
       const shortcutIcons = shortcut.icons || [];
       let hasShorcutIconLargeEnough = false;
       for (const shortcutIcon of shortcutIcons) {
-        const shortcutIconErrors = await this._appendIconResourceToSection(url, shortcutIcon, shortcutSection);
-        if (shortcutIconErrors.length > 0) {
-          imageErrors.push(...shortcutIconErrors);
-        }
+        const shortcutIconErrors =
+            await this._appendImageResourceToSection(url, shortcutIcon, shortcutSection, /** isScreenshot= */ false);
+        imageErrors.push(...shortcutIconErrors);
         if (!hasShorcutIconLargeEnough && shortcutIcon.sizes) {
           const shortcutIconSize = shortcutIcon.sizes.match(/^(\d+)x(\d+)$/);
           if (shortcutIconSize && shortcutIconSize[1] >= 96 && shortcutIconSize[2] >= 96) {
@@ -272,6 +285,16 @@ export class AppManifestView extends UI.Widget.VBox {
         imageErrors.push(ls`Shortcut #${shortcutIndex} should include a 96x96 pixel icon`);
       }
       shortcutIndex++;
+    }
+
+    let screenshotIndex = 1;
+    for (const screenshot of screenshots) {
+      const screenshotSection = this._reportView.appendSection(ls`Screenshot #${screenshotIndex}`);
+      this._screenshotsSections.push(screenshotSection);
+      const screenshotErrors =
+          await this._appendImageResourceToSection(url, screenshot, screenshotSection, /** isScreenshot= */ true);
+      imageErrors.push(...screenshotErrors);
+      screenshotIndex++;
     }
 
     this._installabilitySection.clearContent();
@@ -434,51 +457,55 @@ export class AppManifestView extends UI.Widget.VBox {
 
   /**
    * @param {string} baseUrl
-   * @param {*} icon
+   * @param {*} imageResource
    * @param {!UI.ReportView.Section} section
+   * @param {boolean} isScreenshot
    * @return {!Promise<!Array<string>>}
    */
-  async _appendIconResourceToSection(baseUrl, icon, section) {
-    const iconErrors = [];
-    if (!icon.src) {
-      iconErrors.push(ls`Icon src is not set`);
-      return iconErrors;
+  async _appendImageResourceToSection(baseUrl, imageResource, section, isScreenshot) {
+    const imageResourceErrors = [];
+    const resourceName = isScreenshot ? ls`Screenshot` : ls`Icon`;
+    if (!imageResource.src) {
+      imageResourceErrors.push(ls`${resourceName} src is not set`);
+      return imageResourceErrors;
     }
-    const iconUrl = Common.ParsedURL.ParsedURL.completeURL(baseUrl, icon['src']);
-    if (!iconUrl) {
-      iconErrors.push(ls`Icon URL '${icon['src']}' failed to parse`);
-      return iconErrors;
+    const imageUrl = Common.ParsedURL.ParsedURL.completeURL(baseUrl, imageResource['src']);
+    if (!imageUrl) {
+      imageResourceErrors.push(ls`${resourceName} URL '${imageResource['src']}' failed to parse`);
+      return imageResourceErrors;
     }
-    const result = await this._loadImage(iconUrl);
+    const result = await this._loadImage(imageUrl);
     if (!result) {
-      iconErrors.push(ls`Icon ${iconUrl} failed to load`);
-      return iconErrors;
+      imageResourceErrors.push(ls`${resourceName} ${imageUrl} failed to load`);
+      return imageResourceErrors;
     }
     const {wrapper, image} = result;
-    const sizes = icon['sizes'] ? icon['sizes'].replace('x', '×') + 'px' : '';
-    const title = sizes + '\n' + (icon['type'] || '');
+    const sizes = imageResource['sizes'] ? imageResource['sizes'].replace('x', '×') + 'px' : '';
+    const title = sizes + '\n' + (imageResource['type'] || '');
     const field = section.appendFlexedField(title);
-    if (!icon.sizes) {
-      iconErrors.push(ls`Icon ${iconUrl} does not specify its size in the manifest`);
-    } else if (!/^\d+x\d+$/.test(icon.sizes)) {
-      iconErrors.push(ls`Icon ${iconUrl} should specify its size as \`{width}x{height}\``);
+    if (!imageResource.sizes) {
+      imageResourceErrors.push(ls`${resourceName} ${imageUrl} does not specify its size in the manifest`);
+    } else if (!/^\d+x\d+$/.test(imageResource.sizes)) {
+      imageResourceErrors.push(ls`${resourceName} ${imageUrl} should specify its size as \`{width}x{height}\``);
     } else {
-      const [width, height] = icon.sizes.split('x').map(/** @param {*} x*/ x => parseInt(x, 10));
-      if (width !== height) {
-        iconErrors.push(ls`Icon ${iconUrl} dimensions should be square`);
+      const [width, height] = imageResource.sizes.split('x').map(/** @param {*} x*/ x => parseInt(x, 10));
+      if (!isScreenshot && (width !== height)) {
+        imageResourceErrors.push(ls`${resourceName} ${imageUrl} dimensions should be square`);
       } else if (image.naturalWidth !== width && image.naturalHeight !== height) {
-        iconErrors.push(ls`Actual size (${image.naturalWidth}×${image.naturalHeight})px of icon ${
-            iconUrl} does not match specified size (${width}×${height}px)`);
+        imageResourceErrors.push(ls`Actual size (${image.naturalWidth}×${image.naturalHeight})px of ${resourceName} ${
+            imageUrl} does not match specified size (${width}×${height}px)`);
       } else if (image.naturalWidth !== width) {
-        iconErrors.push(
+        imageResourceErrors.push(
             ls
-            `Actual width (${image.naturalWidth}px) of icon ${iconUrl} does not match specified width (${width}px)`);
+            `Actual width (${image.naturalWidth}px) of ${resourceName} ${imageUrl} does not match specified width (${width}px)`);
       } else if (image.naturalHeight !== height) {
-        iconErrors.push(ls`Actual height (${image.naturalHeight}px) of icon ${
-            iconUrl} does not match specified height (${height}px)`);
+        imageResourceErrors.push(ls`Actual height (${image.naturalHeight}px) of ${resourceName} ${
+            imageUrl} does not match specified height (${height}px)`);
+      } else if (isScreenshot && (width < 320 || height < 320)) {
+        imageResourceErrors.push(ls`${resourceName} ${imageUrl} size should be at least 320x320`);
       }
     }
     field.appendChild(wrapper);
-    return iconErrors;
+    return imageResourceErrors;
   }
 }

@@ -4,6 +4,7 @@
 import './shell.js';
 import './js_profiler/js_profiler-meta.js';
 import './node_main/node_main-meta.js';
+import './node_debugger/node_debugger-meta.js';
 import * as Startup from './startup/startup.js';
 
 Startup.RuntimeInstantiator.startApplication('node_app');

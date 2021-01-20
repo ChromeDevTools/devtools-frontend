@@ -16,3 +16,12 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":node_debugger" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "node_debugger-meta.ts"
+
+  deps = [
+    ":bundle",
+    "../sources:bundle",
+  ]
+}

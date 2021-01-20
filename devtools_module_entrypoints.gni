@@ -119,6 +119,7 @@ devtools_module_entrypoint_sources = [
   "network/network-legacy.js",
   "network/network-meta.js",
   "network/network.js",
+  "node_debugger/node_debugger-meta.js",
   "node_debugger/node_debugger.js",
   "node_main/node_main-legacy.js",
   "node_main/node_main-meta.js",

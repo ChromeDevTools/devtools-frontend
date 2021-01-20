@@ -1,15 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "view",
-      "location": "navigator-view",
-      "id": "navigator-network",
-      "title": "Node",
-      "order": 2,
-      "persistence": "permanent",
-      "className": "Sources.NetworkNavigatorView"
-    }
-  ],
   "dependencies": [
     "i18n",
     "sources"

@@ -40,7 +40,11 @@ import * as Workspace from '../workspace/workspace.js';
 
 import {NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';  // eslint-disable-line no-unused-vars
 
+/** @type {!NetworkNavigatorView} */
+let networkNavigatorViewInstance;
+
 export class NetworkNavigatorView extends NavigatorView {
+  /** @private */
   constructor() {
     super();
     SDK.SDKModel.TargetManager.instance().addEventListener(
@@ -48,6 +52,18 @@ export class NetworkNavigatorView extends NavigatorView {
 
     // Record the sources tool load time after the file navigator has loaded.
     Host.userMetrics.panelLoaded('sources', 'DevTools.Launch.Sources');
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!networkNavigatorViewInstance || forceNew) {
+      networkNavigatorViewInstance = new NetworkNavigatorView();
+    }
+
+    return networkNavigatorViewInstance;
   }
 
   /**

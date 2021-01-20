@@ -1427,7 +1427,7 @@
   "mobile_throttling/ThrottlingSettingsTab.ts | upload": {
     "message": "Upload"
   },
-  "node_debugger/ModuleUIStrings.ts | node": {
+  "node_debugger/node_debugger-meta.ts | node": {
     "message": "Node"
   },
   "node_main/node_main-meta.ts | connection": {

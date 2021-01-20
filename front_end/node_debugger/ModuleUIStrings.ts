@@ -4,9 +4,5 @@
 
 import * as i18n from '../i18n/i18n.js';
 export const UIStrings = {
-  /**
-  *@description Title of the 'Node' tool in the Network Navigator View, which is part of the Sources tool
-  */
-  node: 'Node',
 };
 i18n.i18n.registerUIStrings('node_debugger/ModuleUIStrings.ts', UIStrings);

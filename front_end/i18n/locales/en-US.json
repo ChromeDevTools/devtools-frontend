@@ -434,6 +434,96 @@
   "help/ReleaseNoteView.ts | s": {
     "message": "{PH1}"
   },
+  "inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
+    "message": "Shift-click to change color format"
+  },
+  "inline_editor/CSSShadowEditor.js | blur": {
+    "message": "Blur"
+  },
+  "inline_editor/CSSShadowEditor.js | inset": {
+    "message": "Inset"
+  },
+  "inline_editor/CSSShadowEditor.js | outset": {
+    "message": "Outset"
+  },
+  "inline_editor/CSSShadowEditor.js | spread": {
+    "message": "Spread"
+  },
+  "inline_editor/CSSShadowEditor.js | type": {
+    "message": "Type"
+  },
+  "inline_editor/CSSShadowEditor.js | xOffset": {
+    "message": "X offset"
+  },
+  "inline_editor/CSSShadowEditor.js | yOffset": {
+    "message": "Y offset"
+  },
+  "inline_editor/CSSVarSwatch.ts | jumpToDefinition": {
+    "message": "Jump to definition"
+  },
+  "inline_editor/CSSVarSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} is not defined"
+  },
+  "inline_editor/FontEditor.js | cssProperties": {
+    "message": "CSS Properties"
+  },
+  "inline_editor/FontEditor.js | deleteS": {
+    "message": "Delete {PH1}"
+  },
+  "inline_editor/FontEditor.js | fallbackS": {
+    "message": "Fallback {PH1}"
+  },
+  "inline_editor/FontEditor.js | fontFamily": {
+    "message": "Font Family"
+  },
+  "inline_editor/FontEditor.js | fontSelectorDeletedAtIndexS": {
+    "message": "Font Selector deleted at index: {PH1}"
+  },
+  "inline_editor/FontEditor.js | fontSize": {
+    "message": "Font Size"
+  },
+  "inline_editor/FontEditor.js | fontWeight": {
+    "message": "Font Weight"
+  },
+  "inline_editor/FontEditor.js | lineHeight": {
+    "message": "Line Height"
+  },
+  "inline_editor/FontEditor.js | PleaseEnterAValidValueForSText": {
+    "message": "* Please enter a valid value for {PH1} text input"
+  },
+  "inline_editor/FontEditor.js | selectorInputMode": {
+    "message": "Selector Input Mode"
+  },
+  "inline_editor/FontEditor.js | sKeyValueSelector": {
+    "message": "{PH1} Key Value Selector"
+  },
+  "inline_editor/FontEditor.js | sliderInputMode": {
+    "message": "Slider Input Mode"
+  },
+  "inline_editor/FontEditor.js | spacing": {
+    "message": "Spacing"
+  },
+  "inline_editor/FontEditor.js | sSliderInput": {
+    "message": "{PH1} Slider Input"
+  },
+  "inline_editor/FontEditor.js | sTextInput": {
+    "message": "{PH1} Text Input"
+  },
+  "inline_editor/FontEditor.js | sToggleInputType": {
+    "message": "{PH1} Toggle Input Type"
+  },
+  "inline_editor/FontEditor.js | sUnitInput": {
+    "message": "{PH1} Unit Input"
+  },
+  "inline_editor/FontEditor.js | thereIsNoValueToDeleteAtIndexS": {
+    "message": "There is no value to delete at index: {PH1}"
+  },
+  "inline_editor/FontEditor.js | thisPropertyIsSetToContainUnits": {
+    "message": "This property is set to contain units but does not have a defined corresponding unitsArray: {PH1}"
+  },
+  "inline_editor/FontEditor.js | units": {
+    "message": "Units"
+  },
   "input/InputTimeline.ts | clearAll": {
     "message": "Clear all"
   },

@@ -2,12 +2,109 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import * as FontEditorUnitConverter from './FontEditorUnitConverter.js';
 import * as FontEditorUtils from './FontEditorUtils.js';
+
+export const UIStrings = {
+  /**
+  *@description Font editor label for font family selector
+  */
+  fontFamily: 'Font Family',
+  /**
+  *@description Section header for CSS property inputs
+  */
+  cssProperties: 'CSS Properties',
+  /**
+  *@description Font size slider label for Font Editor
+  */
+  fontSize: 'Font Size',
+  /**
+  *@description Line height slider label for Font Editor
+  */
+  lineHeight: 'Line Height',
+  /**
+  *@description Font weight slider label for Font Editor
+  */
+  fontWeight: 'Font Weight',
+  /**
+  *@description Label for letter-spacing labels
+  */
+  spacing: 'Spacing',
+  /**
+  *@description Label for numbered fallback selectors
+  *@example {2} PH1
+  */
+  fallbackS: 'Fallback {PH1}',
+  /**
+  *@description Announcement for deleting an empty font family selector in the Font Editor
+  *@example {2} PH1
+  */
+  thereIsNoValueToDeleteAtIndexS: 'There is no value to delete at index: {PH1}',
+  /**
+  *@description Announcement when deleting a font selector in the Font Editor
+  *@example {2} PH1
+  */
+  fontSelectorDeletedAtIndexS: 'Font Selector deleted at index: {PH1}',
+  /**
+  *@description Label for Font Editor button to delete font family/fallback selectors
+  *@example {Fallback 1} PH1
+  */
+  deleteS: 'Delete {PH1}',
+  /**
+  *@description Warning message for Font Editor invalid text input
+  *@example {font-size} PH1
+  */
+  PleaseEnterAValidValueForSText: '* Please enter a valid value for {PH1} text input',
+  /**
+  *@description Error text in Font Editor
+  *@example {font-size} PH1
+  */
+  thisPropertyIsSetToContainUnits:
+      'This property is set to contain units but does not have a defined corresponding unitsArray: {PH1}',
+  /**
+  *@description Label for slider input in the Font Editor.
+  *@example {font-size} PH1
+  */
+  sSliderInput: '{PH1} Slider Input',
+  /**
+  *@description Label for Font Editor property text input
+  *@example {font-size} PH1
+  */
+  sTextInput: '{PH1} Text Input',
+  /**
+  *@description Font Editor units text box label
+  */
+  units: 'Units',
+  /**
+  *@description Label for Font Editor unit input
+  *@example {font-size} PH1
+  */
+  sUnitInput: '{PH1} Unit Input',
+  /**
+  *@description Text used in the Font Editor for the key values selector
+  *@example {font-size} PH1
+  */
+  sKeyValueSelector: '{PH1} Key Value Selector',
+  /**
+  *@description Label for Font Editor toggle input type button
+  *@example {font-size} PH1
+  */
+  sToggleInputType: '{PH1} Toggle Input Type',
+  /**
+  *@description Label for Font Editor alert in CSS Properties section when toggling inputs
+  */
+  selectorInputMode: 'Selector Input Mode',
+  /**
+  *@description Label for Font Editor alert in CSS Properties section when toggling inputs
+  */
+  sliderInputMode: 'Slider Input Mode',
+};
+const str_ = i18n.i18n.registerUIStrings('inline_editor/FontEditor.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FontEditor extends UI.Widget.VBox {
   /**
@@ -24,7 +121,7 @@ export class FontEditor extends UI.Widget.VBox {
 
     // Font Selector Section
     this._fontSelectorSection = this.contentElement.createChild('div', 'font-selector-section');
-    this._fontSelectorSection.createChild('h2', 'font-section-header').textContent = ls`Font Family`;
+    this._fontSelectorSection.createChild('h2', 'font-section-header').textContent = i18nString(UIStrings.fontFamily);
 
     /** @type {!Array<!FontEditor.FontSelectorObject>} */
     this._fontSelectors = [];
@@ -39,7 +136,7 @@ export class FontEditor extends UI.Widget.VBox {
 
     //  CSS Font Property Section
     const cssPropertySection = this.contentElement.createChild('div', 'font-section');
-    cssPropertySection.createChild('h2', 'font-section-header').textContent = ls`CSS Properties`;
+    cssPropertySection.createChild('h2', 'font-section-header').textContent = i18nString(UIStrings.cssProperties);
 
     // The regexes only handle valid property values as invalid values are not passed into the property map.
     const fontSizePropertyInfo = this._getPropertyInfo('font-size', FontEditorUtils.FontSizeStaticParams.regex);
@@ -52,18 +149,19 @@ export class FontEditor extends UI.Widget.VBox {
         this._getPropertyInfo('letter-spacing', FontEditorUtils.LetterSpacingStaticParams.regex);
 
     new FontPropertyInputs(
-        'font-size', ls`Font Size`, cssPropertySection, fontSizePropertyInfo, FontEditorUtils.FontSizeStaticParams,
-        this._updatePropertyValue.bind(this), this._resizePopout.bind(this), /** hasUnits= */ true);
+        'font-size', i18nString(UIStrings.fontSize), cssPropertySection, fontSizePropertyInfo,
+        FontEditorUtils.FontSizeStaticParams, this._updatePropertyValue.bind(this), this._resizePopout.bind(this),
+        /** hasUnits= */ true);
     new FontPropertyInputs(
-        'line-height', ls`Line Height`, cssPropertySection, lineHeightPropertyInfo,
+        'line-height', i18nString(UIStrings.lineHeight), cssPropertySection, lineHeightPropertyInfo,
         FontEditorUtils.LineHeightStaticParams, this._updatePropertyValue.bind(this), this._resizePopout.bind(this),
         /** hasUnits= */ true);
     new FontPropertyInputs(
-        'font-weight', ls`Font Weight`, cssPropertySection, fontWeightPropertyInfo,
+        'font-weight', i18nString(UIStrings.fontWeight), cssPropertySection, fontWeightPropertyInfo,
         FontEditorUtils.FontWeightStaticParams, this._updatePropertyValue.bind(this), this._resizePopout.bind(this),
         /** hasUnits= */ false);
     new FontPropertyInputs(
-        'letter-spacing', ls`Spacing`, cssPropertySection, letterSpacingPropertyInfo,
+        'letter-spacing', i18nString(UIStrings.spacing), cssPropertySection, letterSpacingPropertyInfo,
         FontEditorUtils.LetterSpacingStaticParams, this._updatePropertyValue.bind(this), this._resizePopout.bind(this),
         /** hasUnits= */ true);
   }
@@ -153,13 +251,13 @@ export class FontEditor extends UI.Widget.VBox {
     }
     let label;
     if (isPrimary) {
-      label = ls`Font Family`;
+      label = i18nString(UIStrings.fontFamily);
       const globalValuesMap = new Map([['Global Values', FontEditorUtils.GlobalValues]]);
       const primaryFontList = [...this._fontsList];
       primaryFontList.push(globalValuesMap);
       this._createSelector(selectorField, label, primaryFontList, value.trim());
     } else {
-      label = ls`Fallback ${this._fontSelectors.length}`;
+      label = i18nString(UIStrings.fallbackS, {PH1: this._fontSelectors.length});
       this._createSelector(selectorField, label, this._fontsList, value.trim());
     }
   }
@@ -172,7 +270,7 @@ export class FontEditor extends UI.Widget.VBox {
     let fontSelectorObject = this._fontSelectors[index];
     const isPrimary = index === 0;
     if (fontSelectorObject.input.value === '' && !isGlobalValue) {
-      UI.ARIAUtils.alert(ls`There is no value to delete at index: ${index}`, this.contentElement);
+      UI.ARIAUtils.alert(i18nString(UIStrings.thereIsNoValueToDeleteAtIndexS, {PH1: index}), this.contentElement);
       return;
     }
     if (isPrimary) {
@@ -192,7 +290,7 @@ export class FontEditor extends UI.Widget.VBox {
       this._fontSelectorSection.removeChild(fontSelectorObject.input.parentNode);
       this._fontSelectors.splice(index, 1);
       this._updateFontSelectorList();
-      UI.ARIAUtils.alert(ls`Font Selector deleted at index: ${index}`, this.contentElement);
+      UI.ARIAUtils.alert(i18nString(UIStrings.fontSelectorDeletedAtIndexS, {PH1: index}), this.contentElement);
     }
     this._onFontSelectorChanged();
     this._resizePopout();
@@ -205,13 +303,13 @@ export class FontEditor extends UI.Widget.VBox {
       const fontSelectorObject = this._fontSelectors[i];
       let label;
       if (i === 0) {
-        label = ls`Font Family`;
+        label = i18nString(UIStrings.fontFamily);
       } else {
-        label = ls`Fallback ${i}`;
+        label = i18nString(UIStrings.fallbackS, {PH1: i});
       }
       fontSelectorObject.label.textContent = label;
       UI.ARIAUtils.setAccessibleName(fontSelectorObject.input, label);
-      fontSelectorObject.deleteButton.setTitle(ls`Delete ${label}`);
+      fontSelectorObject.deleteButton.setTitle(i18nString(UIStrings.deleteS, {PH1: label}));
       fontSelectorObject.index = i;
     }
   }
@@ -263,7 +361,8 @@ export class FontEditor extends UI.Widget.VBox {
     field.appendChild(selectInput);
 
     const deleteToolbar = new UI.Toolbar.Toolbar('', field);
-    const deleteButton = new UI.Toolbar.ToolbarButton(ls`Delete ${label}`, 'largeicon-trash-bin');
+    const deleteButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteS, {PH1: label}), 'largeicon-trash-bin');
     deleteToolbar.appendToolbarItem(deleteButton);
     const fontSelectorObject = {label: selectLabel, input: selectInput, deleteButton, index};
     deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
@@ -366,7 +465,7 @@ class FontPropertyInputs {
     const propertyField = field.createChild('div', 'shadow-editor-field shadow-editor-flex-field');
     /** @type {!HTMLElement} */
     this._errorText = /** @type {!HTMLElement} */ (field.createChild('div', 'error-text'));
-    this._errorText.textContent = ls`* Please enter a valid value for ${propertyName} text input`;
+    this._errorText.textContent = i18nString(UIStrings.PleaseEnterAValidValueForSText, {PH1: propertyName});
     this._errorText.hidden = true;
     UI.ARIAUtils.markAsAlert(this._errorText);
     this._propertyInfo = propertyInfo;
@@ -380,8 +479,7 @@ class FontPropertyInputs {
       this._units = propertyInfo.units !== null ? propertyInfo.units : defaultUnits;
       this._addedUnit = !this._staticParams.units.has(this._units);
     } else if (this._hasUnits) {
-      throw new Error(ls`This property is set to contain units but does not have a defined corresponding unitsArray: ${
-          this._propertyName}`);
+      throw new Error(i18nString(UIStrings.thisPropertyIsSetToContainUnits, {PH1: propertyName}));
     } else {
       this._units = '';
     }
@@ -504,7 +602,7 @@ class FontPropertyInputs {
     });
     field.appendChild(sliderLabel);
     field.appendChild(slider);
-    UI.ARIAUtils.setAccessibleName(slider.sliderElement, ls`${this._propertyName} Slider Input`);
+    UI.ARIAUtils.setAccessibleName(slider.sliderElement, i18nString(UIStrings.sSliderInput, {PH1: this._propertyName}));
     return slider;
   }
 
@@ -527,7 +625,7 @@ class FontPropertyInputs {
     textBoxInput.step = 'any';
     textBoxInput.addEventListener('input', this._onTextBoxInput.bind(this), false);
     field.appendChild(textBoxInput);
-    UI.ARIAUtils.setAccessibleName(textBoxInput, ls`${this._propertyName} Text Input`);
+    UI.ARIAUtils.setAccessibleName(textBoxInput, i18nString(UIStrings.sTextInput, {PH1: this._propertyName}));
     return textBoxInput;
   }
 
@@ -540,7 +638,7 @@ class FontPropertyInputs {
     if (this._hasUnits && this._staticParams.units) {
       const currentValue = this._propertyInfo.units;
       const options = this._staticParams.units;
-      unitInput = UI.UIUtils.createSelect(ls`Units`, options);
+      unitInput = UI.UIUtils.createSelect(i18nString(UIStrings.units), options);
       unitInput.classList.add('font-editor-select');
       if (this._addedUnit && currentValue) {
         unitInput.add(new Option(currentValue, currentValue));
@@ -550,7 +648,7 @@ class FontPropertyInputs {
       }
       unitInput.addEventListener('change', this._onUnitInput.bind(this), false);
     } else {
-      unitInput = UI.UIUtils.createSelect(ls`Units`, []);
+      unitInput = UI.UIUtils.createSelect(i18nString(UIStrings.units), []);
       unitInput.classList.add('font-editor-select');
       unitInput.disabled = true;
     }
@@ -565,7 +663,7 @@ class FontPropertyInputs {
         },
         false);
     field.appendChild(unitInput);
-    UI.ARIAUtils.setAccessibleName(unitInput, ls`${this._propertyName} Unit Input`);
+    UI.ARIAUtils.setAccessibleName(unitInput, i18nString(UIStrings.sUnitInput, {PH1: this._propertyName}));
 
     return unitInput;
   }
@@ -576,8 +674,8 @@ class FontPropertyInputs {
    */
   _createSelectorInput(field) {
     /** @type {!HTMLSelectElement} */
-    const selectInput =
-        UI.UIUtils.createSelect(ls`${this._propertyName} Key Value Selector`, this._staticParams.keyValues);
+    const selectInput = UI.UIUtils.createSelect(
+        i18nString(UIStrings.sKeyValueSelector, {PH1: this._propertyName}), this._staticParams.keyValues);
     selectInput.classList.add('font-selector-input');
     if (this._propertyInfo.value) {
       selectInput.value = this._propertyInfo.value;
@@ -687,7 +785,7 @@ class FontPropertyInputs {
     appendSwitcherIcon(displaySwitcher);
     displaySwitcher.tabIndex = 0;
     self.onInvokeElement(displaySwitcher, this._toggleInputType.bind(this));
-    UI.ARIAUtils.setAccessibleName(displaySwitcher, ls`${this._propertyName} Toggle Input Type`);
+    UI.ARIAUtils.setAccessibleName(displaySwitcher, i18nString(UIStrings.sToggleInputType, {PH1: this._propertyName}));
     UI.ARIAUtils.markAsButton(displaySwitcher);
 
     /** @param {!HTMLElement} parentElement */
@@ -715,7 +813,7 @@ class FontPropertyInputs {
       this._unitInput.hidden = true;
       this._selectorInput.hidden = false;
       this._showSliderMode = false;
-      UI.ARIAUtils.alert(ls`Selector Input Mode`, this._textBoxInput);
+      UI.ARIAUtils.alert(i18nString(UIStrings.selectorInputMode), this._textBoxInput);
     } else {
       // Show sliderinput type
       this._sliderInput.hidden = false;
@@ -723,7 +821,7 @@ class FontPropertyInputs {
       this._unitInput.hidden = false;
       this._selectorInput.hidden = true;
       this._showSliderMode = true;
-      UI.ARIAUtils.alert(ls`Slider Input Mode`, this._textBoxInput);
+      UI.ARIAUtils.alert(i18nString(UIStrings.sliderInputMode), this._textBoxInput);
     }
   }
 

@@ -2,11 +2,44 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {CSSLength, CSSShadowModel} from './CSSShadowModel.js';  // eslint-disable-line no-unused-vars
+
+export const UIStrings = {
+  /**
+  *@description Text that refers to some types
+  */
+  type: 'Type',
+  /**
+  *@description Outset button text content in CSSShadow Editor of the inline editor in the Styles tab
+  */
+  outset: 'Outset',
+  /**
+  *@description Inset button text content in CSSShadow Editor of the inline editor in the Styles tab
+  */
+  inset: 'Inset',
+  /**
+  *@description Text in CSSShadow Editor of the inline editor in the Styles tab
+  */
+  xOffset: 'X offset',
+  /**
+  *@description Text in CSSShadow Editor of the inline editor in the Styles tab
+  */
+  yOffset: 'Y offset',
+  /**
+  *@description Text in CSSShadow Editor of the inline editor in the Styles tab
+  */
+  blur: 'Blur',
+  /**
+  *@description Text in CSSShadow Editor of the inline editor in the Styles tab
+  */
+  spread: 'Spread',
+};
+const str_ = i18n.i18n.registerUIStrings('inline_editor/CSSShadowEditor.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /** @type {number} */
 const maxRange = 20;
@@ -25,18 +58,18 @@ export class CSSShadowEditor extends UI.Widget.VBox {
     this.setDefaultFocusedElement(this.contentElement);
 
     this._typeField = this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field');
-    this._typeField.createChild('label', 'shadow-editor-label').textContent = Common.UIString.UIString('Type');
+    this._typeField.createChild('label', 'shadow-editor-label').textContent = i18nString(UIStrings.type);
     this._outsetButton = this._typeField.createChild('button', 'shadow-editor-button-left');
-    this._outsetButton.textContent = Common.UIString.UIString('Outset');
+    this._outsetButton.textContent = i18nString(UIStrings.outset);
     this._outsetButton.addEventListener('click', this._onButtonClick.bind(this), false);
     this._insetButton = this._typeField.createChild('button', 'shadow-editor-button-right');
-    this._insetButton.textContent = Common.UIString.UIString('Inset');
+    this._insetButton.textContent = i18nString(UIStrings.inset);
     this._insetButton.addEventListener('click', this._onButtonClick.bind(this), false);
 
     const xField = this.contentElement.createChild('div', 'shadow-editor-field');
-    this._xInput = this._createTextInput(xField, Common.UIString.UIString('X offset'));
+    this._xInput = this._createTextInput(xField, i18nString(UIStrings.xOffset));
     const yField = this.contentElement.createChild('div', 'shadow-editor-field');
-    this._yInput = this._createTextInput(yField, Common.UIString.UIString('Y offset'));
+    this._yInput = this._createTextInput(yField, i18nString(UIStrings.yOffset));
 
     /** @type {!HTMLCanvasElement} */
     this._xySlider = /** @type {!HTMLCanvasElement} */ (xField.createChild('canvas', 'shadow-editor-2D-slider'));
@@ -52,11 +85,11 @@ export class CSSShadowEditor extends UI.Widget.VBox {
 
     const blurField =
         this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field shadow-editor-blur-field');
-    this._blurInput = this._createTextInput(blurField, Common.UIString.UIString('Blur'));
+    this._blurInput = this._createTextInput(blurField, i18nString(UIStrings.blur));
     this._blurSlider = this._createSlider(blurField);
 
     this._spreadField = this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field');
-    this._spreadInput = this._createTextInput(this._spreadField, Common.UIString.UIString('Spread'));
+    this._spreadInput = this._createTextInput(this._spreadField, i18nString(UIStrings.spread));
     this._spreadSlider = this._createSlider(this._spreadField);
 
     /** @type {!CSSShadowModel} */

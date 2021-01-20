@@ -31,6 +31,7 @@ devtools_module("inline_editor") {
     "../component_helpers:bundle",
     "../components:bundle",
     "../css_overview:bundle",
+    "../i18n:bundle",
     "../platform:bundle",
     "../sdk:bundle",
     "../text_utils:bundle",

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
@@ -96,7 +95,7 @@ export class BezierEditor extends UI.Widget.VBox {
   _updateUI() {
     const labelText = this._selectedCategory ? this._selectedCategory.presets[this._selectedCategory.presetIndex].name :
                                                this._bezier.asCSSText().replace(/\s(-\d\.\d)/g, '$1');
-    this._label.textContent = Common.UIString.UIString(labelText);
+    this._label.textContent = labelText;
     this._curveUI.drawCurve(this._bezier, this._curve);
     this._previewOnion.removeChildren();
   }

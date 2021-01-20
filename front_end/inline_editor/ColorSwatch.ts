@@ -4,9 +4,18 @@
 
 import * as Common from '../common/common.js';
 import * as ComponentHelpers from '../component_helpers/component_helpers.js';
+import * as i18n from '../i18n/i18n.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-const ls = Common.ls;
+export const UIStrings = {
+  /**
+  *@description Icon element title in Color Swatch of the inline editor in the Styles tab
+  */
+  shiftclickToChangeColorFormat: 'Shift-click to change color format',
+};
+const str_ = i18n.i18n.registerUIStrings('inline_editor/ColorSwatch.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 const getStyleSheets = ComponentHelpers.GetStylesheet.getStyleSheets;
 
 interface KeyboardModifiedEvent extends Event {
@@ -24,7 +33,7 @@ export class FormatChangedEvent extends Event {
 
 export class ColorSwatch extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private tooltip: string = ls`Shift-click to change color format`;
+  private tooltip: string = i18nString(UIStrings.shiftclickToChangeColorFormat);
   private text: string|null = null;
   private _color: Common.Color.Color|null = null;
   private _format: string|null = null;

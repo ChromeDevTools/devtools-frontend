@@ -46,7 +46,8 @@ describe('Scope View', async () => {
     });
 
     await step('open linear memory inspector from context menu', async () => {
-      await clickOnContextMenu('[data-object-property-name-for-test="$imports.memory"]', 'Inspect memory');
+      await clickOnContextMenu(
+          '[data-object-property-name-for-test="$imports.memory"]', 'Reveal in Memory Inspector panel');
     });
 
     await step('check that linear memory inspector drawer is open', async () => {

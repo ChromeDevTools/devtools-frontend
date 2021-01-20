@@ -30,9 +30,6 @@
   <message name="IDS_DEVTOOLS_06c883a79771ecda24de1687ed7915ba" desc="Text for Coverage Status Bar Item in Sources Panel">
     Show Details
   </message>
-  <message name="IDS_DEVTOOLS_075cef1bc4f8f2e12cac76a45ff0de77" desc="A context menu item in the Scope View of the Sources Panel">
-    Inspect memory
-  </message>
   <message name="IDS_DEVTOOLS_08355a3ae65d425a4a6bac94ce97dcb4" desc="A context menu item in the Debugger Plugin of the Sources panel">
     Edit breakpoint…
   </message>
@@ -638,6 +635,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f395c33fe9c382316b99128e087cb697" desc="Title of an action in the sources tool to close all">
     Close All
+  </message>
+  <message name="IDS_DEVTOOLS_f425574b0fcc6bd5222da692e902b630" desc="A context menu item in the Scope View of the Sources Panel">
+    Reveal in Memory Inspector panel
   </message>
   <message name="IDS_DEVTOOLS_f515d5945239e7a61fa267bd058134f1" desc="Title of an action in the sources tool to add folder to workspace">
     Add folder to workspace

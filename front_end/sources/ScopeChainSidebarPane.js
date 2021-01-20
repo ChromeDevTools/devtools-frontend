@@ -249,7 +249,7 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox {
     if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement) {
       if (target.property && target.property.value && this._isMemoryObjectProperty(target.property.value)) {
         contextMenu.debugSection().appendItem(
-            ls`Inspect memory`, this._openMemoryInspector.bind(this, target.property.value));
+            ls`Reveal in Memory Inspector panel`, this._openMemoryInspector.bind(this, target.property.value));
       }
     }
   }

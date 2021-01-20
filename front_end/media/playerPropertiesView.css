@@ -43,4 +43,5 @@
 
 .media-properties-frame {
   display: block;
+  overflow: hidden;
 }

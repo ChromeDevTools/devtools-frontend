@@ -200,7 +200,7 @@ export class DebuggerModel extends SDKModel {
    */
   async _enableDebugger() {
     if (this._debuggerEnabled) {
-      return Promise.resolve();
+      return;
     }
     this._debuggerEnabled = true;
 
@@ -284,7 +284,7 @@ export class DebuggerModel extends SDKModel {
    */
   async _disableDebugger() {
     if (!this._debuggerEnabled) {
-      return Promise.resolve();
+      return;
     }
     this._debuggerEnabled = false;
 

@@ -1,0 +1,125 @@
+/*
+ * Copyright 2020 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+.resource-service-worker-update-view {
+  display: block;
+  margin: 6px;
+  color: rgb(30% 30% 30%);
+  overflow: auto;
+}
+
+.service-worker-update-timing-table {
+  width: 380px;
+  border-spacing: 0;
+  padding-left: 10px;
+  padding-right: 10px;
+  line-height: initial;
+  table-layout: fixed;
+}
+
+.service-worker-update-timing-start {
+  border-top: 5px solid transparent;
+}
+
+.service-worker-update-timing-start th span.service-worker-update-timing-hidden-header {
+  height: 1px;
+  width: 1px;
+  position: absolute;
+  overflow: hidden;
+}
+
+.service-worker-update-timing-row {
+  position: relative;
+  height: 20px;
+}
+
+.service-worker-update-timing-bar {
+  position: absolute;
+  min-width: 1px;
+  top: 0;
+  bottom: 0;
+}
+
+.service-worker-update-timing-bar-title {
+  color: #222;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.service-worker-update-timing-bar-clickable::before {
+  user-select: none;
+  -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
+  -webkit-mask-position: 0 0;
+  -webkit-mask-size: 32px 24px;
+  float: left;
+  width: 8px;
+  height: 12px;
+  margin-right: 2px;
+  content: "";
+  position: relative;
+  top: 3px;
+  background-color: rgb(110 110 110);
+}
+
+.service-worker-update-timing-bar-clickable {
+  position: relative;
+  left: -12px;
+}
+
+.service-worker-update-timing-bar-clickable:focus-visible {
+  background-color: var(--toolbar-bg-color);
+}
+
+.service-worker-update-timing-bar-clickable[aria-checked="true"]::before {
+  -webkit-mask-position: -16px 0;
+}
+
+.service-worker-update-timing-bar-details-collapsed {
+  display: none;
+}
+
+.service-worker-update-timing-bar-details-expanded {
+  display: block;
+}
+
+.service-worker-update-timing-bar-details {
+  padding-left: 11px;
+  width: fit-content;
+}
+
+.service-worker-update-timing-bar.activate {
+  top: 5px;
+  height: 10px;
+  background-color: #ff9800;
+}
+
+.service-worker-update-timing-bar.wait {
+  top: 5px;
+  height: 10px;
+  background-color: #9c27b0;
+}
+
+.service-worker-update-timing-bar.install {
+  top: 5px;
+  height: 10px;
+  background-color: #009688;
+}
+
+.service-worker-update-details-treeitem {
+  width: max-content;
+}
+
+.service-worker-update-timing-table-header td {
+  border-top: 5px solid transparent;
+  color: #737373;
+}
+
+.service-worker-update-timing-table td {
+  padding: 4px 0;
+}
+
+table.service-worker-update-timing-table > tr:not(.service-worker-update-timing-table-header) > td:first-child {
+  padding-left: 12px;
+}

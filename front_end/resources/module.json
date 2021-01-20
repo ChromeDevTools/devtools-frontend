@@ -90,6 +90,7 @@
     "resourcesSidebar.css",
     "serviceWorkerCacheViews.css",
     "serviceWorkersView.css",
+    "serviceWorkerUpdateCycleView.css",
     "cookieItemsView.css",
     "frameDetailsReportView.css"
   ]

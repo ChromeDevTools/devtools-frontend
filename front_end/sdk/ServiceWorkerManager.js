@@ -336,6 +336,29 @@ class ServiceWorkerDispatcher {
   }
 }
 
+/**
+ * For every version, we keep a history of ServiceWorkerVersionState. Every time
+ * a version is updated we will add a new state at the head of the history chain.
+ * This history tells us information such as what the current state is, or when
+ * the version becomes installed.
+ */
+export class ServiceWorkerVersionState {
+  /**
+   *
+   * @param {!Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus} runningStatus
+   * @param {!Protocol.ServiceWorker.ServiceWorkerVersionStatus} status
+   * @param {?ServiceWorkerVersionState} previousState
+   * @param {number} timestamp
+   */
+  constructor(runningStatus, status, previousState, timestamp) {
+    this.runningStatus = runningStatus;
+    this.status = status;
+    /** @type {number} */
+    this.last_updated_timestamp = timestamp;
+    this.previousState = previousState;
+  }
+}
+
 export class ServiceWorkerVersion {
   /**
    * @param {!ServiceWorkerRegistration} registration
@@ -346,12 +369,11 @@ export class ServiceWorkerVersion {
     /** @type {string} */ this.scriptURL;
     /** @type {!Common.ParsedURL.ParsedURL} */ this.parsedURL;
     /** @type {string} */ this.securityOrigin;
-    /** @type {!Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus} */ this.runningStatus;
-    /** @type {!Protocol.ServiceWorker.ServiceWorkerVersionStatus} */ this.status;
     /** @type {number|undefined} */ this.scriptLastModified;
     /** @type {number|undefined} */ this.scriptResponseTime;
     /** @type {!Array<!Protocol.Target.TargetID>} */ this.controlledClients;
     /** @type {?Protocol.Target.TargetID} */ this.targetId;
+    /** @type {!ServiceWorkerVersionState} */ this.currentState;
     this.registration = registration;
     this._update(payload);
   }
@@ -364,8 +386,8 @@ export class ServiceWorkerVersion {
     this.scriptURL = payload.scriptURL;
     const parsedURL = new Common.ParsedURL.ParsedURL(payload.scriptURL);
     this.securityOrigin = parsedURL.securityOrigin();
-    this.runningStatus = payload.runningStatus;
-    this.status = payload.status;
+    this.currentState =
+        new ServiceWorkerVersionState(payload.runningStatus, payload.status, this.currentState, Date.now());
     this.scriptLastModified = payload.scriptLastModified;
     this.scriptResponseTime = payload.scriptResponseTime;
     if (payload.controlledClients) {
@@ -459,6 +481,20 @@ export class ServiceWorkerVersion {
    */
   isRedundant() {
     return this.status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant;
+  }
+
+  /**
+   * @returns {!Protocol.ServiceWorker.ServiceWorkerVersionStatus}
+   */
+  get status() {
+    return this.currentState.status;
+  }
+
+  /**
+   * @returns {!Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus}
+   */
+  get runningStatus() {
+    return this.currentState.runningStatus;
   }
 
   /**

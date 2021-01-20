@@ -13,6 +13,11 @@ export async function navigateToApplicationTab(target: puppeteer.Page, testName:
   await waitFor('.storage-group-list-item');
 }
 
+export async function navigateToServiceWorkers() {
+  const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service Workers"]';
+  await click(SERVICE_WORKER_ROW_SELECTOR);
+}
+
 export async function doubleClickSourceTreeItem(selector: string) {
   const element = await waitFor(selector);
   element.evaluate(el => el.scrollIntoView(true));

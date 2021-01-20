@@ -21,6 +21,7 @@ import * as IndexedDBViews from './IndexedDBViews.js';
 import * as ResourcesPanel from './ResourcesPanel.js';
 import * as ServiceWorkerCacheViews from './ServiceWorkerCacheViews.js';
 import * as ServiceWorkersView from './ServiceWorkersView.js';
+import * as ServiceWorkerUpdateCycleHelper from './ServiceWorkerUpdateCycleHelper.js';
 import * as StorageItemsView from './StorageItemsView.js';
 
 export {
@@ -43,5 +44,6 @@ export {
   ResourcesPanel,
   ServiceWorkerCacheViews,
   ServiceWorkersView,
+  ServiceWorkerUpdateCycleHelper,
   StorageItemsView,
 };

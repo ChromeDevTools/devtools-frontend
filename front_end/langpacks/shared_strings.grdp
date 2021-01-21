@@ -25,9 +25,6 @@
   <message name="IDS_DEVTOOLS_0eaadb4fcb48a0a0ed7bc9868be9fbaa" desc="Text to indicate an item is a warning">
     Warning
   </message>
-  <message name="IDS_DEVTOOLS_105078d294d30c978ca2badf7f376934" desc="The action to scroll">
-    Scroll
-  </message>
   <message name="IDS_DEVTOOLS_1063e38cb53d94d386f21227fcd84717" desc="Label for an item to remove something">
     Remove
   </message>
@@ -118,18 +115,9 @@
   <message name="IDS_DEVTOOLS_3bb3e8c8a24891ba0f7608bcc96f8b0a" desc="Text for a rendering frame">
     Frame
   </message>
-  <message name="IDS_DEVTOOLS_3c4684d2d502d7f9d20e05451c2f581c" desc="Next button title in Film Strip View of the Performance panel">
-    Next frame
-  </message>
-  <message name="IDS_DEVTOOLS_3e56c011b37f0bc78fb9eb175c1181c6" desc="A unit">
-    kB
-  </message>
   <message name="IDS_DEVTOOLS_3f8f88e3686b2345cecc9530e19e6172" desc="Text to store an HTML element or JavaScript variable or expression result as a global variable">
     Store as global variable
   </message>
-  </message>
-  <message name="IDS_DEVTOOLS_4252b72e6ebcd4d4b4c2e46a786f03d2" desc="Text for zooming in">
-    Zoom
   </message>
   <message name="IDS_DEVTOOLS_4789f23283b3a61f858b641a1bef19a3" desc="Text for the memory of the page">
     Memory
@@ -160,9 +148,6 @@
   </message>
   <message name="IDS_DEVTOOLS_5174d1309f275ba6f275db3af9eb3e18" desc="Title of a section on CSS Grid tooling">
     Grid
-  </message>
-  <message name="IDS_DEVTOOLS_529a032eab49b8ddc6f49f8bcc086607" desc="Prev button title in Film Strip View of the Performance panel">
-    Previous frame
   </message>
   <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Text for the execution stack trace">
     Stack Trace
@@ -272,9 +257,6 @@
   <message name="IDS_DEVTOOLS_886f598a8a9e6a4bfe0c09fcf7779611" desc="Title of a Rendering setting that can be invoked through the Command Menu">
     Emulate a focused page
   </message>
-  <message name="IDS_DEVTOOLS_8d8fcc1abd550c5f25dbfaa57d59cb67" desc="Unit for data size in DevTools">
-    MB
-  </message>
   <message name="IDS_DEVTOOLS_8d9da4bc0e49a50e09ac9f7e56789d39" desc="Text to indicate the network connectivity is offline">
     Offline
   </message>
@@ -298,9 +280,6 @@
   </message>
   <message name="IDS_DEVTOOLS_95bbad55f11c237ed89546e748093ba7" desc="Text for the request animation frame event">
     Request Animation Frame
-  </message>
-  <message name="IDS_DEVTOOLS_96b0141273eabab320119c467cdcaf17" desc="Text for sum">
-    Total
   </message>
   <message name="IDS_DEVTOOLS_96e9bc575b5d3ed541113a249da8bd24" desc="Text to take screenshots">
     Capture screenshots

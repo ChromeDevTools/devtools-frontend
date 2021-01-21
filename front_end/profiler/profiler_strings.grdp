@@ -99,6 +99,9 @@
   <message name="IDS_DEVTOOLS_3ce9ab6602763824b2f317965c6a1a20" desc="Heap div title in Isolate Selector of a profiler tool">
     Heap size in use by live JS objects.
   </message>
+  <message name="IDS_DEVTOOLS_3e56c011b37f0bc78fb9eb175c1181c6" desc="A unit">
+    kB
+  </message>
   <message name="IDS_DEVTOOLS_3e6defd685231cdd12065add41996c89" desc="Text in Heap Snapshot View of a profiler tool">
     All objects
   </message>

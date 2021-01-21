@@ -2,11 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-const ls = Common.ls;
 const {render, html, svg} = LitHtml;
+
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Text for sum
+  */
+  total: 'Total',
+};
+const str_ = i18n.i18n.registerUIStrings('perf_ui/PieChart.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface Slice {
   value: number, color: string, title: string
@@ -196,7 +204,7 @@ export class PieChart extends HTMLElement {
               @click=${this.selectTotal} tabIndex=${this.totalSelected ? '0' : '-1'}>
             <div class="pie-chart-size">${this.formatter(this.total)}</div>
             <div class="pie-chart-swatch pie-chart-empty-swatch"></div>
-            <div class="pie-chart-name">${ls`Total`}</div>
+            <div class="pie-chart-name">${i18nString(UIStrings.total)}</div>
           </div>
         </div>
         ` : ''}

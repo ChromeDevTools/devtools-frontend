@@ -39,6 +39,9 @@
   <message name="IDS_DEVTOOLS_391e4e3cd855d914f85f3a4e1b9a00ea" desc="Title of the rotate/screen orientation button">
     Screen orientation options
   </message>
+  <message name="IDS_DEVTOOLS_4252b72e6ebcd4d4b4c2e46a786f03d2" desc="Text for zooming in">
+    Zoom
+  </message>
   <message name="IDS_DEVTOOLS_445b8178609bbfdf97fe430bc7448fa7" desc="Title of foldable group of options in Devices pane letting customize what information is sent about the browser and device via user agent client hints functionality">
     User agent client hints
   </message>

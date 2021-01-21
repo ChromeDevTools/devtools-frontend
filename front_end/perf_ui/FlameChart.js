@@ -30,8 +30,8 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as ThemeSupport from '../theme_support/theme_support.js';
@@ -41,6 +41,34 @@ import * as UI from '../ui/ui.js';
 import {ChartViewport, ChartViewportDelegate} from './ChartViewport.js';  // eslint-disable-line no-unused-vars
 import {Calculator, TimelineGrid} from './TimelineGrid.js';               // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Aria accessible name in Flame Chart of the Performance panel
+  */
+  flameChart: 'Flame Chart',
+  /**
+  *@description Text for the screen reader to announce a hovered group
+  *@example {Network} PH1
+  */
+  sHovered: '{PH1} hovered',
+  /**
+  *@description Text for screen reader to announce a selected group.
+  *@example {Network} PH1
+  */
+  sSelected: '{PH1} selected',
+  /**
+  *@description Text for screen reader to announce an expanded group
+  *@example {Network} PH1
+  */
+  sExpanded: '{PH1} expanded',
+  /**
+  *@description Text for screen reader to announce a collapsed group
+  *@example {Network} PH1
+  */
+  sCollapsed: '{PH1} collapsed',
+};
+const str_ = i18n.i18n.registerUIStrings('perf_ui/FlameChart.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @interface
  */
@@ -104,7 +132,7 @@ export class FlameChart extends UI.Widget.VBox {
     this._canvas = /** @type {!HTMLCanvasElement} */ (this._viewportElement.createChild('canvas', 'fill'));
 
     this._canvas.tabIndex = 0;
-    UI.ARIAUtils.setAccessibleName(this._canvas, ls`Flame Chart`);
+    UI.ARIAUtils.setAccessibleName(this._canvas, i18nString(UIStrings.flameChart));
     UI.ARIAUtils.markAsTree(this._canvas);
     this.setDefaultFocusedElement(this._canvas);
     this._canvas.classList.add('flame-chart-canvas');
@@ -547,13 +575,13 @@ export class FlameChart extends UI.Widget.VBox {
     const groupName = groups[groupIndex].name;
     if (!groups[groupIndex].selectable) {
       this._deselectAllGroups();
-      UI.ARIAUtils.alert(ls`${groupName} hovered`, this._canvas);
+      UI.ARIAUtils.alert(i18nString(UIStrings.sHovered, {PH1: groupName}), this._canvas);
     } else {
       this._selectedGroup = groupIndex;
       this._flameChartDelegate.updateSelectedGroup(this, groups[groupIndex]);
       this._resetCanvas();
       this._draw();
-      UI.ARIAUtils.alert(ls`${groupName} selected`, this._canvas);
+      UI.ARIAUtils.alert(i18nString(UIStrings.sSelected, {PH1: groupName}), this._canvas);
     }
   }
 
@@ -672,7 +700,8 @@ export class FlameChart extends UI.Widget.VBox {
     // We only want to read expanded/collapsed state on user inputted expand/collapse
     if (!propagatedExpand) {
       const groupName = groups[groupIndex].name;
-      const content = group.expanded ? ls`${groupName} expanded` : ls`${groupName} collapsed`;
+      const content = group.expanded ? i18nString(UIStrings.sExpanded, {PH1: groupName}) :
+                                       i18nString(UIStrings.sCollapsed, {PH1: groupName});
       UI.ARIAUtils.alert(content, this._canvas);
     }
   }

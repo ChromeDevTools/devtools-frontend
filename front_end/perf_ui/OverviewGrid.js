@@ -29,12 +29,28 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {Calculator, TimelineGrid} from './TimelineGrid.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Label for the window for Overview grids
+  */
+  overviewGridWindow: 'Overview grid window',
+  /**
+  *@description Label for left window resizer for Overview grids
+  */
+  leftResizer: 'Left Resizer',
+  /**
+  *@description Label for right window resizer for Overview grids
+  */
+  rightResizer: 'Right Resizer',
+};
+const str_ = i18n.i18n.registerUIStrings('perf_ui/OverviewGrid.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class OverviewGrid {
   /**
    * @param {string} prefix
@@ -154,7 +170,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     UI.ARIAUtils.markAsGroup(this._parentElement);
     this._calculator = calculator;
 
-    UI.ARIAUtils.setAccessibleName(this._parentElement, ls`Overview grid window`);
+    UI.ARIAUtils.setAccessibleName(this._parentElement, i18nString(UIStrings.overviewGridWindow));
 
     UI.UIUtils.installDragHandle(
         this._parentElement, this._startWindowSelectorDragging.bind(this), this._windowSelectorDragging.bind(this),
@@ -183,7 +199,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
         this._rightResizeElement, this._resizerElementStartDragging.bind(this),
         this._rightResizeElementDragging.bind(this), null, 'ew-resize');
 
-    UI.ARIAUtils.setAccessibleName(this._leftResizeElement, ls`Left Resizer`);
+    UI.ARIAUtils.setAccessibleName(this._leftResizeElement, i18nString(UIStrings.leftResizer));
     UI.ARIAUtils.markAsSlider(this._leftResizeElement);
     /**
      * @param {!Event} event
@@ -191,7 +207,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     const leftKeyDown = event => this._handleKeyboardResizing(event, false);
     this._leftResizeElement.addEventListener('keydown', leftKeyDown);
 
-    UI.ARIAUtils.setAccessibleName(this._rightResizeElement, ls`Right Resizer`);
+    UI.ARIAUtils.setAccessibleName(this._rightResizeElement, i18nString(UIStrings.rightResizer));
     UI.ARIAUtils.markAsSlider(this._rightResizeElement);
 
     /**

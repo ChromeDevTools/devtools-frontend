@@ -474,6 +474,9 @@
   <message name="IDS_DEVTOOLS_95059da3555281e1df90b77ce4ff7554" desc="Text in Request Timing View of the Network panel">
     respondWith
   </message>
+  <message name="IDS_DEVTOOLS_96b0141273eabab320119c467cdcaf17" desc="Text for sum">
+    Total
+  </message>
   <message name="IDS_DEVTOOLS_9b5e92790ca7fec879dfd28355a224d1" desc="Text used to show that serviceworker fetch response source is HTTP cache">
     From HTTP cache
   </message>

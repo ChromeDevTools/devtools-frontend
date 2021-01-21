@@ -31,7 +31,6 @@
       <part file="../main/main_strings.grdp" />
       <part file="../network/network_strings.grdp" />
       <part file="../object_ui/object_ui_strings.grdp" />
-      <part file="../perf_ui/perf_ui_strings.grdp" />
       <part file="../platform/platform_strings.grdp" />
       <part file="../profiler/profiler_strings.grdp" />
       <part file="../issues/issues_strings.grdp" />

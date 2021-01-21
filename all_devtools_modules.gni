@@ -357,6 +357,7 @@ all_typescript_module_sources = [
   "perf_ui/GCActionDelegate.js",
   "perf_ui/LineLevelProfile.js",
   "perf_ui/LiveHeapProfile.js",
+  "perf_ui/ModuleUIStrings.js",
   "perf_ui/NetworkPriorities.js",
   "perf_ui/OverviewGrid.js",
   "perf_ui/PieChart.js",

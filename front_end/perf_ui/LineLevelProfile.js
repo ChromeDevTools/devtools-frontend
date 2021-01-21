@@ -3,14 +3,29 @@
 // found in the LICENSE file.
 
 import * as Bindings from '../bindings/bindings.js';
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as SourceFrame from '../source_frame/source_frame.js';  // eslint-disable-line no-unused-vars
 import * as TextEditor from '../text_editor/text_editor.js';     // eslint-disable-line no-unused-vars
 import * as Workspace from '../workspace/workspace.js';          // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description The milisecond unit
+  */
+  ms: 'ms',
+  /**
+  *@description Unit for data size in DevTools
+  */
+  mb: 'MB',
+  /**
+  *@description A unit
+  */
+  kb: 'kB',
+};
+const str_ = i18n.i18n.registerUIStrings('perf_ui/LineLevelProfile.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!Performance} */
 let performanceInstance;
 
@@ -310,9 +325,9 @@ export class LineDecorator {
     element.classList.add('text-editor-line-marker-text');
     if (type === 'performance') {
       const intensity = Platform.NumberUtilities.clamp(Math.log10(1 + 10 * value) / 5, 0.02, 1);
-      element.textContent = Common.UIString.UIString('%.1f', value);
+      element.textContent = value.toFixed(1);
       element.style.backgroundColor = `hsla(44, 100%, 50%, ${intensity.toFixed(3)})`;
-      element.createChild('span', 'line-marker-units').textContent = ls`ms`;
+      element.createChild('span', 'line-marker-units').textContent = i18nString(UIStrings.ms);
     } else {
       const intensity = Platform.NumberUtilities.clamp(Math.log10(1 + 2e-3 * value) / 5, 0.02, 1);
       element.style.backgroundColor = `hsla(217, 100%, 70%, ${intensity.toFixed(3)})`;
@@ -320,14 +335,14 @@ export class LineDecorator {
       let units;
       let fractionDigits;
       if (value >= 1e3) {
-        units = ls`MB`;
+        units = i18nString(UIStrings.mb);
         value /= 1e3;
         fractionDigits = value >= 20 ? 0 : 1;
       } else {
-        units = ls`kB`;
+        units = i18nString(UIStrings.kb);
         fractionDigits = 0;
       }
-      element.textContent = Common.UIString.UIString(`%.${fractionDigits}f`, value);
+      element.textContent = value.toFixed(fractionDigits);
       element.createChild('span', 'line-marker-units').textContent = units;
     }
     return element;

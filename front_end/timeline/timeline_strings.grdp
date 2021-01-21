@@ -97,6 +97,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_0e8dfe937d359c7df31b16ea7e9cca81" desc="Title of a setting under the Performance category in Settings">
     Hide <ph name="LOCKED_1">chrome</ph> frame in Layers view
   </message>
+  <message name="IDS_DEVTOOLS_105078d294d30c978ca2badf7f376934" desc="The action to scroll">
+    Scroll
+  </message>
   <message name="IDS_DEVTOOLS_10aab9f12eca6bca3a6215914bab2745" desc="Text in Timeline UIUtils of the Performance panel">
     Allotted Time
   </message>
@@ -277,6 +280,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_3b419ceb25fddb807ea9483f65fded06" desc="Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in timeline panel of the performance panel">
     Capture settings
   </message>
+  <message name="IDS_DEVTOOLS_3c4684d2d502d7f9d20e05451c2f581c" desc="Next button title in Film Strip View of the Performance panel">
+    Next frame
+  </message>
   <message name="IDS_DEVTOOLS_3de9387fc230ce74214446e58c4fefde" desc="Text in Timeline UIUtils of the Performance panel">
     Compile
   </message>
@@ -369,6 +375,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_5288680dbe452673259047491b87d17d" desc="Text in Timeline UIUtils of the Performance panel">
     CPU time
+  </message>
+  <message name="IDS_DEVTOOLS_529a032eab49b8ddc6f49f8bcc086607" desc="Prev button title in Film Strip View of the Performance panel">
+    Previous frame
   </message>
   <message name="IDS_DEVTOOLS_52f9ec21735243ad9917cda3ca077d32" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     GPU

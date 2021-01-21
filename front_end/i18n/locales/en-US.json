@@ -1460,6 +1460,99 @@
   "node_main/NodeMain.js | nodejsS": {
     "message": "Node.js: {PH1}"
   },
+  "perf_ui/FilmStripView.js | doubleclickToZoomImageClickTo": {
+    "message": "Doubleclick to zoom image. Click to view preceding requests."
+  },
+  "perf_ui/FilmStripView.js | nextFrame": {
+    "message": "Next frame"
+  },
+  "perf_ui/FilmStripView.js | previousFrame": {
+    "message": "Previous frame"
+  },
+  "perf_ui/FilmStripView.js | screenshot": {
+    "message": "Screenshot"
+  },
+  "perf_ui/FilmStripView.js | screenshotForSSelectToView": {
+    "message": "Screenshot for {PH1} - select to view preceding requests."
+  },
+  "perf_ui/FlameChart.js | flameChart": {
+    "message": "Flame Chart"
+  },
+  "perf_ui/FlameChart.js | sCollapsed": {
+    "message": "{PH1} collapsed"
+  },
+  "perf_ui/FlameChart.js | sExpanded": {
+    "message": "{PH1} expanded"
+  },
+  "perf_ui/FlameChart.js | sHovered": {
+    "message": "{PH1} hovered"
+  },
+  "perf_ui/FlameChart.js | sSelected": {
+    "message": "{PH1} selected"
+  },
+  "perf_ui/LineLevelProfile.js | kb": {
+    "message": "kB"
+  },
+  "perf_ui/LineLevelProfile.js | mb": {
+    "message": "MB"
+  },
+  "perf_ui/LineLevelProfile.js | ms": {
+    "message": "ms"
+  },
+  "perf_ui/ModuleUIStrings.js | collectGarbage": {
+    "message": "Collect garbage"
+  },
+  "perf_ui/ModuleUIStrings.js | flamechartMouseWheelAction": {
+    "message": "Flamechart mouse wheel action:"
+  },
+  "perf_ui/ModuleUIStrings.js | hideLiveMemoryAllocation": {
+    "message": "Hide live memory allocation annotations"
+  },
+  "perf_ui/ModuleUIStrings.js | liveMemoryAllocationAnnotations": {
+    "message": "Live memory allocation annotations"
+  },
+  "perf_ui/ModuleUIStrings.js | memory": {
+    "message": "Memory"
+  },
+  "perf_ui/ModuleUIStrings.js | performance": {
+    "message": "Performance"
+  },
+  "perf_ui/ModuleUIStrings.js | scroll": {
+    "message": "Scroll"
+  },
+  "perf_ui/ModuleUIStrings.js | showLiveMemoryAllocation": {
+    "message": "Show live memory allocation annotations"
+  },
+  "perf_ui/ModuleUIStrings.js | zoom": {
+    "message": "Zoom"
+  },
+  "perf_ui/NetworkPriorities.js | high": {
+    "message": "High"
+  },
+  "perf_ui/NetworkPriorities.js | highest": {
+    "message": "Highest"
+  },
+  "perf_ui/NetworkPriorities.js | low": {
+    "message": "Low"
+  },
+  "perf_ui/NetworkPriorities.js | lowest": {
+    "message": "Lowest"
+  },
+  "perf_ui/NetworkPriorities.js | medium": {
+    "message": "Medium"
+  },
+  "perf_ui/OverviewGrid.js | leftResizer": {
+    "message": "Left Resizer"
+  },
+  "perf_ui/OverviewGrid.js | overviewGridWindow": {
+    "message": "Overview grid window"
+  },
+  "perf_ui/OverviewGrid.js | rightResizer": {
+    "message": "Right Resizer"
+  },
+  "perf_ui/PieChart.ts | total": {
+    "message": "Total"
+  },
   "performance_monitor/ModuleUIStrings.ts | activity": {
     "message": "activity"
   },

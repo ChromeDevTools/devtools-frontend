@@ -53,7 +53,6 @@ export class NetworkNavigatorView extends NavigatorView {
     // Record the sources tool load time after the file navigator has loaded.
     Host.userMetrics.panelLoaded('sources', 'DevTools.Launch.Sources');
   }
-
   /**
    * @param {{forceNew: ?boolean}} opts
    */
@@ -166,7 +165,11 @@ export class FilesNavigatorView extends NavigatorView {
   }
 }
 
+/** @type {!OverridesNavigatorView} */
+let overridesNavigatorViewInstance;
+
 export class OverridesNavigatorView extends NavigatorView {
+  /** @private */
   constructor() {
     super();
     const placeholder = new UI.EmptyWidget.EmptyWidget('');
@@ -186,6 +189,19 @@ export class OverridesNavigatorView extends NavigatorView {
     this.workspace().addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._onProjectAddOrRemoved, this);
     this._updateProjectAndUI();
   }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!overridesNavigatorViewInstance || forceNew) {
+      overridesNavigatorViewInstance = new OverridesNavigatorView();
+    }
+
+    return overridesNavigatorViewInstance;
+  }
+
 
   /**
    * @param {!Common.EventTarget.EventTargetEvent} event
@@ -252,7 +268,11 @@ export class OverridesNavigatorView extends NavigatorView {
   }
 }
 
+/** @type {!ContentScriptsNavigatorView} */
+let contentScriptsNavigatorViewInstance;
+
 export class ContentScriptsNavigatorView extends NavigatorView {
+  /** @private */
   constructor() {
     super();
     const placeholder = new UI.EmptyWidget.EmptyWidget('');
@@ -262,6 +282,19 @@ export class ContentScriptsNavigatorView extends NavigatorView {
       ${UI.XLink.XLink.create('https://developer.chrome.com/extensions/content_scripts', ls`Learn more`)}
     `);
   }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!contentScriptsNavigatorViewInstance || forceNew) {
+      contentScriptsNavigatorViewInstance = new ContentScriptsNavigatorView();
+    }
+
+    return contentScriptsNavigatorViewInstance;
+  }
+
 
   /**
    * @override

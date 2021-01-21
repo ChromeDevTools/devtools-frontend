@@ -29,33 +29,6 @@
       "className": "BrowserDebugger.DOMBreakpointsSidebarPane"
     },
     {
-      "type": "view",
-      "location": "navigator-view",
-      "id": "navigator-network",
-      "title": "Page",
-      "order": 2,
-      "persistence": "permanent",
-      "className": "Sources.NetworkNavigatorView"
-    },
-    {
-      "type": "view",
-      "location": "navigator-view",
-      "id": "navigator-overrides",
-      "title": "Overrides",
-      "order": 4,
-      "persistence": "permanent",
-      "className": "Sources.OverridesNavigatorView"
-    },
-    {
-      "type": "view",
-      "location": "navigator-view",
-      "id": "navigator-contentScripts",
-      "title": "Content scripts",
-      "order": 5,
-      "persistence": "permanent",
-      "className": "Sources.ContentScriptsNavigatorView"
-    },
-    {
       "type": "@Sources.NavigatorView",
       "viewId": "navigator-overrides",
       "className": "Sources.OverridesNavigatorView"

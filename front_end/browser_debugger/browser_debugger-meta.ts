@@ -9,6 +9,7 @@ import * as UI from '../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as BrowserDebugger from './browser_debugger.js';
+import type * as Sources from '../sources/sources.js';
 
 let loadedBrowserDebuggerModule: (typeof BrowserDebugger|undefined);
 
@@ -19,6 +20,22 @@ async function loadBrowserDebuggerModule(): Promise<typeof BrowserDebugger> {
     loadedBrowserDebuggerModule = await import('./browser_debugger.js');
   }
   return loadedBrowserDebuggerModule;
+}
+
+let loadedSourcesModule: (typeof Sources|undefined);
+
+//  The sources module is imported here because the view with id `navigator-network`
+//  is implemented by `NetworkNavigatorView` in sources. It cannot be registered
+//  in the sources module as it belongs to the shell app and thus all apps
+//  that extend from shell will have such view registered. This would cause a
+//  collision with node_app as a separate view with the same id is registered in it.
+async function loadSourcesModule(): Promise<typeof Sources> {
+  if (!loadedSourcesModule) {
+    // Side-effect import resources in module.json
+    await Root.Runtime.Runtime.instance().loadModulePromise('sources');
+    loadedSourcesModule = await import('../sources/sources.js');
+  }
+  return loadedSourcesModule;
 }
 
 UI.ViewManager.registerViewExtension({
@@ -99,4 +116,44 @@ UI.ViewManager.registerViewExtension({
   title: (): Platform.UIString.LocalizedString => ls`DOM Breakpoints`,
   order: 6,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
+});
+
+
+UI.ViewManager.registerViewExtension({
+  location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
+  id: 'navigator-network',
+  title: (): Platform.UIString.LocalizedString => ls`Page`,
+  commandPrompt: 'Show Page',
+  order: 2,
+  persistence: UI.ViewManager.ViewPersistence.PERMANENT,
+  async loadView() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesNavigator.NetworkNavigatorView.instance();
+  },
+});
+
+UI.ViewManager.registerViewExtension({
+  location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
+  id: 'navigator-overrides',
+  title: (): Platform.UIString.LocalizedString => ls`Overrides`,
+  commandPrompt: 'Show Overrides',
+  order: 4,
+  persistence: UI.ViewManager.ViewPersistence.PERMANENT,
+  async loadView() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesNavigator.OverridesNavigatorView.instance();
+  },
+});
+
+UI.ViewManager.registerViewExtension({
+  location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
+  id: 'navigator-contentScripts',
+  title: (): Platform.UIString.LocalizedString => ls`Content scripts`,
+  commandPrompt: 'Show Content scripts',
+  order: 5,
+  persistence: UI.ViewManager.ViewPersistence.PERMANENT,
+  async loadView() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesNavigator.ContentScriptsNavigatorView.instance();
+  },
 });

@@ -69,9 +69,6 @@ Resources.DatabaseQueryView.Events = ResourcesModule.DatabaseQueryView.Events;
 Resources.DatabaseTableView = ResourcesModule.DatabaseTableView.DatabaseTableView;
 
 /** @constructor */
-Resources.FrameDetailsView = ResourcesModule.FrameDetailsView.FrameDetailsView;
-
-/** @constructor */
 Resources.IndexedDBModel = ResourcesModule.IndexedDBModel.IndexedDBModel;
 
 /** @enum {symbol} */
@@ -91,6 +88,9 @@ Resources.IDBDatabaseView = ResourcesModule.IndexedDBViews.IDBDatabaseView;
 
 /** @constructor */
 Resources.IDBDataView = ResourcesModule.IndexedDBViews.IDBDataView;
+
+/** @constructor */
+Resources.OpenedWindowDetailsView = ResourcesModule.OpenedWindowDetailsView.OpenedWindowDetailsView;
 
 /** @constructor */
 Resources.ResourcesPanel = ResourcesModule.ResourcesPanel.ResourcesPanel;

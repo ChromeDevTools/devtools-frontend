@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Network from '../network/network.js';
@@ -11,16 +13,29 @@ import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
-/**
- * @param {boolean} b
- */
-const booleanToYesNo = b => b ? ls`Yes` : ls`No`;
+const booleanToYesNo = (b: boolean): Common.UIString.LocalizedString => b ? ls`Yes` : ls`No`;
 
 export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
-  /**
-   * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
-   */
-  constructor(frame) {
+  _protocolMonitorExperimentEnabled: boolean;
+  _frame: SDK.ResourceTreeModel.ResourceTreeFrame;
+  _reportView: UI.ReportView.ReportView;
+  _generalSection: UI.ReportView.Section;
+  _urlFieldValue: HTMLElement;
+  _urlStringElement: HTMLElement;
+  _unreachableURL: HTMLElement;
+  _originStringElement: HTMLElement;
+  _ownerFieldValue: HTMLElement;
+  _adStatus: HTMLElement;
+  _isolationSection: UI.ReportView.Section;
+  _secureContext: HTMLElement;
+  _crossOriginIsolatedContext: HTMLElement;
+  _coepPolicy: HTMLElement;
+  _coopPolicy: HTMLElement;
+  _apiAvailability: UI.ReportView.Section;
+  _apiSharedArrayBuffer: HTMLElement;
+  _apiMeasureMemory: HTMLElement;
+  _additionalInfo: UI.ReportView.Section|undefined;
+  constructor(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super();
     this._protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
     this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
@@ -67,11 +82,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this.update();
   }
 
-  /**
-   * @override
-   * @return {!Promise<?>}
-   */
-  async doUpdate() {
+  async doUpdate(): Promise<void> {
     this._urlFieldValue.removeChildren();
     this._urlStringElement.textContent = this._frame.url;
     UI.Tooltip.Tooltip.install(this._urlStringElement, this._frame.url);
@@ -102,11 +113,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._updateApiAvailability();
   }
 
-  /**
-   * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
-   * @return {?Workspace.UISourceCode.UISourceCode}
-   */
-  uiSourceCodeForFrame(frame) {
+  uiSourceCodeForFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): Workspace.UISourceCode.UISourceCode|null {
     for (const project of Workspace.Workspace.WorkspaceImpl.instance().projects()) {
       const projectTarget = Bindings.NetworkProject.NetworkProject.getTargetForProject(project);
       if (projectTarget && projectTarget === frame.resourceTreeModel().target()) {
@@ -119,13 +126,12 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     return null;
   }
 
-  /**
-   *
-   * @param {!HTMLElement} field
-   * @param {function((!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue)):boolean} isEnabled
-   * @param {?Protocol.Network.CrossOriginEmbedderPolicyStatus|?Protocol.Network.CrossOriginOpenerPolicyStatus|undefined} info
-   */
-  static fillCrossOriginPolicy(field, isEnabled, info) {
+  static fillCrossOriginPolicy(
+      field: HTMLElement,
+      isEnabled: (value: Protocol.Network.CrossOriginEmbedderPolicyValue|
+                  Protocol.Network.CrossOriginOpenerPolicyValue) => boolean,
+      info: Protocol.Network.CrossOriginEmbedderPolicyStatus|Protocol.Network.CrossOriginOpenerPolicyStatus|null|
+      undefined): void {
     if (!info) {
       field.textContent = '';
       return;
@@ -147,32 +153,26 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  async _updateCoopCoepStatus() {
+  async _updateCoopCoepStatus(): Promise<void> {
     const model = this._frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
     const info = model && await model.getSecurityIsolationStatus(this._frame.id);
     if (!info) {
       return;
     }
-    /**
-     * @param {!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue} value
-     */
-    const coepIsEnabled = value => value !== Protocol.Network.CrossOriginEmbedderPolicyValue.None;
+    const coepIsEnabled =
+        (value: Protocol.Network.CrossOriginEmbedderPolicyValue|Protocol.Network.CrossOriginOpenerPolicyValue):
+            boolean => value !== Protocol.Network.CrossOriginEmbedderPolicyValue.None;
     FrameDetailsView.fillCrossOriginPolicy(this._coepPolicy, coepIsEnabled, info.coep);
     this._isolationSection.setFieldVisible(ls`Cross-Origin Embedder Policy`, Boolean(info.coep));
 
-    /**
-     * @param {!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue} value
-     */
-    const coopIsEnabled = value => value !== Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone;
+    const coopIsEnabled =
+        (value: Protocol.Network.CrossOriginEmbedderPolicyValue|Protocol.Network.CrossOriginOpenerPolicyValue):
+            boolean => value !== Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone;
     FrameDetailsView.fillCrossOriginPolicy(this._coopPolicy, coopIsEnabled, info.coop);
     this._isolationSection.setFieldVisible(ls`Cross-Origin Opener Policy`, Boolean(info.coop));
   }
 
-  /**
-   * @param {?Protocol.Page.SecureContextType} type
-   * @returns {?string}
-   */
-  _explanationFromSecureContextType(type) {
+  _explanationFromSecureContextType(type: Protocol.Page.SecureContextType|null): string|null {
     switch (type) {
       case Protocol.Page.SecureContextType.Secure:
         return null;
@@ -186,7 +186,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     return null;
   }
 
-  _updateContextStatus() {
+  _updateContextStatus(): void {
     if (this._frame.unreachableUrl()) {
       this._isolationSection.setFieldVisible(ls`Secure Context`, false);
       this._isolationSection.setFieldVisible(ls`Cross-Origin Isolated`, false);
@@ -204,7 +204,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._crossOriginIsolatedContext.textContent = booleanToYesNo(this._frame.isCrossOriginIsolated());
   }
 
-  _updateApiAvailability() {
+  _updateApiAvailability(): void {
     const features = this._frame.getGatedAPIFeatures();
     this._apiAvailability.setFieldVisible(ls`Shared Array Buffers`, Boolean(features));
 
@@ -247,12 +247,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
         UI.Fragment.html`<div>${status} ${UI.XLink.XLink.create(link, ls`Learn more`)}</div>`);
   }
 
-
-  /**
-   * @param {!Element} element
-   * @param {?SDK.Resource.Resource} resource
-   */
-  static maybeAppendLinkToRequest(element, resource) {
+  static maybeAppendLinkToRequest(element: Element, resource: SDK.Resource.Resource|null): void {
     if (resource && resource.request) {
       const request = resource.request;
       const revealRequest = linkifyIcon(
@@ -262,7 +257,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  _maybeAppendLinkForUnreachableUrl() {
+  _maybeAppendLinkForUnreachableUrl(): void {
     if (!this._frame.unreachableUrl()) {
       this._generalSection.setFieldVisible(ls`Unreachable URL`, false);
       return;
@@ -284,13 +279,13 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
             {
               filterType: null,
               filterValue: unreachableUrl.path,
-            }
+            },
           ]);
         });
     this._unreachableURL.appendChild(revealRequest);
   }
 
-  _updateAdStatus() {
+  _updateAdStatus(): void {
     switch (this._frame.adFrameType()) {
       case Protocol.Page.AdFrameType.Root:
         this._generalSection.setFieldVisible(ls`Ad Status`, true);
@@ -309,13 +304,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   }
 }
 
-/**
- * @param {string} iconType
- * @param {string} title
- * @param {function():(void|!Promise<void>)} eventHandler
- * @return {!Element}
- */
-function linkifyIcon(iconType, title, eventHandler) {
+function linkifyIcon(iconType: string, title: string, eventHandler: () => (void|Promise<void>)): Element {
   const icon = UI.Icon.Icon.create(iconType, 'icon-link devtools-link');
   const span = document.createElement('span');
   UI.Tooltip.Tooltip.install(span, title);
@@ -335,13 +324,9 @@ function linkifyIcon(iconType, title, eventHandler) {
   return span;
 }
 
-/**
- * @param {!SDK.ResourceTreeModel.ResourceTreeFrame|!Protocol.Page.FrameId|undefined} opener
- * @return {!Promise<?Element>}
- */
-async function maybeCreateLinkToElementsPanel(opener) {
-  /** @type {?SDK.ResourceTreeModel.ResourceTreeFrame} */
-  let openerFrame = null;
+async function maybeCreateLinkToElementsPanel(opener: string|SDK.ResourceTreeModel.ResourceTreeFrame|
+                                              undefined): Promise<Element|null> {
+  let openerFrame: SDK.ResourceTreeModel.ResourceTreeFrame|null = null;
   if (opener instanceof SDK.ResourceTreeModel.ResourceTreeFrame) {
     openerFrame = opener;
   } else if (opener) {
@@ -369,146 +354,4 @@ async function maybeCreateLinkToElementsPanel(opener) {
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
   });
   return linkElement;
-}
-
-export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget {
-  /**
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   * @param {boolean} isWindowClosed
-   */
-  constructor(targetInfo, isWindowClosed) {
-    super();
-    this._targetInfo = targetInfo;
-    this._isWindowClosed = isWindowClosed;
-    this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
-    this.contentElement.classList.add('frame-details-container');
-    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-    this._reportView = new UI.ReportView.ReportView(this.buildTitle());
-    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
-    this._reportView.show(this.contentElement);
-    this._reportView.element.classList.add('frame-details-report-container');
-
-    this._documentSection = this._reportView.appendSection(ls`Document`);
-    this._URLFieldValue = this._documentSection.appendField(ls`URL`);
-
-    this._securitySection = this._reportView.appendSection(ls`Security`);
-    this._openerElementField = this._securitySection.appendField(ls`Opener Frame`);
-    this._securitySection.setFieldVisible(ls`Opener Frame`, false);
-    this._hasDOMAccessValue = this._securitySection.appendField(ls`Access to opener`);
-    UI.Tooltip.Tooltip.install(
-        this._hasDOMAccessValue, ls`Shows whether the opened window is able to access its opener and vice versa`);
-    this.update();
-  }
-
-  /**
-   * @override
-   * @return {!Promise<?>}
-   */
-  async doUpdate() {
-    this._reportView.setTitle(this.buildTitle());
-    this._URLFieldValue.textContent = this._targetInfo.url;
-    this._hasDOMAccessValue.textContent = booleanToYesNo(this._targetInfo.canAccessOpener);
-    this.maybeDisplayOpenerFrame();
-  }
-
-  async maybeDisplayOpenerFrame() {
-    this._openerElementField.removeChildren();
-    const linkElement = await maybeCreateLinkToElementsPanel(this._targetInfo.openerFrameId);
-    if (linkElement) {
-      this._openerElementField.append(linkElement);
-      this._securitySection.setFieldVisible(ls`Opener Frame`, true);
-      return;
-    }
-    this._securitySection.setFieldVisible(ls`Opener Frame`, false);
-  }
-
-  /**
-   * @return {string}
-   */
-  buildTitle() {
-    let title = this._targetInfo.title || ls`Window without title`;
-    if (this._isWindowClosed) {
-      title += ` (${ls`closed`})`;
-    }
-    return title;
-  }
-
-  /**
-   * @param {boolean} isWindowClosed
-   */
-  setIsWindowClosed(isWindowClosed) {
-    this._isWindowClosed = isWindowClosed;
-  }
-
-  /**
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   */
-  setTargetInfo(targetInfo) {
-    this._targetInfo = targetInfo;
-  }
-}
-
-export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
-  /**
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   */
-  constructor(targetInfo) {
-    super();
-    this._targetInfo = targetInfo;
-    this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
-    this.contentElement.classList.add('frame-details-container');
-    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-    this._reportView = new UI.ReportView.ReportView(this._targetInfo.title || this._targetInfo.url || ls`worker`);
-    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
-    this._reportView.show(this.contentElement);
-    this._reportView.element.classList.add('frame-details-report-container');
-
-    this._documentSection = this._reportView.appendSection(ls`Document`);
-    this._URLFieldValue = this._documentSection.appendField(ls`URL`);
-    this._URLFieldValue.textContent = this._targetInfo.url;
-    const workerType = this._documentSection.appendField(ls`Type`);
-    workerType.textContent = this.workerTypeToString(this._targetInfo.type);
-
-    this._isolationSection = this._reportView.appendSection(ls`Security & Isolation`);
-    this._coepPolicy = this._isolationSection.appendField(ls`Cross-Origin Embedder Policy`);
-    this.update();
-  }
-
-  /**
-   * @param {string} type
-   */
-  workerTypeToString(type) {
-    if (type === 'worker') {
-      return ls`Web Worker`;
-    }
-    if (type === 'service_worker') {
-      return ls`Service Worker`;
-    }
-    return ls`Unknown`;
-  }
-
-  async _updateCoopCoepStatus() {
-    const target = SDK.SDKModel.TargetManager.instance().targetById(this._targetInfo.targetId);
-    if (!target) {
-      return;
-    }
-    const model = target.model(SDK.NetworkManager.NetworkManager);
-    const info = model && await model.getSecurityIsolationStatus('');
-    if (!info) {
-      return;
-    }
-    /**
-    * @param {!Protocol.Network.CrossOriginEmbedderPolicyValue|!Protocol.Network.CrossOriginOpenerPolicyValue} value
-    */
-    const coepIsEnabled = value => value !== Protocol.Network.CrossOriginEmbedderPolicyValue.None;
-    FrameDetailsView.fillCrossOriginPolicy(this._coepPolicy, coepIsEnabled, info.coep);
-  }
-
-  /**
-   * @override
-   * @return {!Promise<?>}
-   */
-  async doUpdate() {
-    await this._updateCoopCoepStatus();
-  }
 }

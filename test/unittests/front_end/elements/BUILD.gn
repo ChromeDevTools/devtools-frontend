@@ -3,6 +3,7 @@ import("../../../../third_party/typescript/typescript.gni")
 ts_library("elements") {
   testonly = true
   sources = [
+    "AccessibilityNode_test.ts",
     "Adorner_test.ts",
     "CSSPropertyIconResolver_test.ts",
     "ComputedStyleProperty_test.ts",

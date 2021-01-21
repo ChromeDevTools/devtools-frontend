@@ -5,6 +5,7 @@
 import * as SDK from '../sdk/sdk.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
+import {SDKNodeToAXNode} from './AccessibilityTreeUtils.js';
 import type {AccessibilityNodeData} from './AccessibilityNode.js';
 
 export interface AccessibilityTreeData {
@@ -37,10 +38,14 @@ export class AccessibilityTree extends HTMLElement {
 
   private render(): void {
     this.refreshAccessibilityTree().then(rootNode => {
+      if (!rootNode) {
+        return;
+      }
+
       // clang-format off
       const output = LitHtml.html`
         <devtools-accessibility-node .data=${{
-          axNode: rootNode,
+          axNode: SDKNodeToAXNode(null, rootNode),
           } as AccessibilityNodeData}>
         </devtools-accessibility-node>
       `;

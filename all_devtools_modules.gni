@@ -134,6 +134,7 @@ all_typescript_module_sources = [
   "dom_extension/DOMExtension.js",
   "elements/AccessibilityNode.js",
   "elements/AccessibilityTree.js",
+  "elements/AccessibilityTreeUtils.js",
   "elements/AccessibilityTreeView.js",
   "elements/Adorner.js",
   "elements/CSSPropertyIconResolver.js",

@@ -2,6 +2,9 @@
   "modules": [
     "security-legacy.js"
   ],
+  "dependencies": [
+    "network"
+  ],
   "resources": [
     "lockIcon.css",
     "mainView.css",

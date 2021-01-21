@@ -2447,6 +2447,14 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
     this.showView(this._view);
     return false;
   }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  get itemURL() {
+    return this._targetInfo.url;
+  }
 }
 
 class WorkerTreeElement extends ApplicationPanelTreeElement {
@@ -2484,6 +2492,6 @@ class WorkerTreeElement extends ApplicationPanelTreeElement {
    * @return {string}
    */
   get itemURL() {
-    return 'dedicated-workers://';
+    return this._targetInfo.url;
   }
 }

@@ -9,6 +9,7 @@ import {doubleClickSourceTreeItem, getReportValues, navigateToApplicationTab} fr
 const TOP_FRAME_SELECTOR = '[aria-label="top"]';
 const WEB_WORKERS_SELECTOR = '[aria-label="Web Workers"]';
 const SERVICE_WORKERS_SELECTOR = '[aria-label="top"] ~ ol [aria-label="Service Workers"]';
+const OPENED_WINDOWS_SELECTOR = '[aria-label="Opened Windows"]';
 const IFRAME_SELECTOR = '[aria-label="frameId (iframe.html)"]';
 const MAIN_FRAME_SELECTOR = '[aria-label="frameId (main-frame.html)"]';
 
@@ -33,6 +34,31 @@ describe('The Application Tab', async () => {
         'UnsafeNone',
         'available, transferable⚠️ will require cross-origin isolated context in the future',
         'unavailable Learn more',
+      ];
+      return JSON.stringify(fieldValues) === JSON.stringify(expected);
+    });
+  });
+
+  it('shows details for opened windows in the frame tree', async () => {
+    const {target} = getBrowserAndPages();
+    await navigateToApplicationTab(target, 'frame-tree');
+    await click('#tab-resources');
+    await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);
+
+    await target.evaluate(() => {
+      window.open('iframe.html');
+    });
+
+    await doubleClickSourceTreeItem(OPENED_WINDOWS_SELECTOR);
+    await waitFor(`${OPENED_WINDOWS_SELECTOR} + ol li:first-child`);
+    pressKey('ArrowDown');
+
+    await waitForFunction(async () => {
+      const fieldValues = await getReportValues();
+      const expected = [
+        `https://localhost:${getTestServerPort()}/test/e2e/resources/application/iframe.html`,
+        '<#document>',
+        'Yes',
       ];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });

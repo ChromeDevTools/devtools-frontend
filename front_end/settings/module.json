@@ -81,39 +81,6 @@
       "actionId": "settings.documentation"
     },
     {
-      "type": "view",
-      "location": "settings-view",
-      "id": "preferences",
-      "title": "Preferences",
-      "order": 0,
-      "className": "Settings.GenericSettingsTab"
-    },
-    {
-      "type": "view",
-      "location": "settings-view",
-      "id": "experiments",
-      "title": "Experiments",
-      "order": 3,
-      "experiment": "*",
-      "className": "Settings.ExperimentsSettingsTab"
-    },
-    {
-      "type": "view",
-      "location": "settings-view",
-      "id": "blackbox",
-      "title": "Ignore List",
-      "order": 4,
-      "className": "Settings.FrameworkIgnoreListSettingsTab"
-    },
-    {
-      "type": "view",
-      "location": "settings-view",
-      "id": "keybinds",
-      "title": "Shortcuts",
-      "order": 100,
-      "className": "Settings.KeybindsSettingsTab"
-    },
-    {
       "type": "@UI.ViewLocationResolver",
       "name": "settings-view",
       "category": "Settings",

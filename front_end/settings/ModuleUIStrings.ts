@@ -13,21 +13,5 @@ export const UIStrings = {
   *@description Text for the documentation of something
   */
   documentation: 'Documentation',
-  /**
-  *@description Text for keyboard shortcuts
-  */
-  shortcuts: 'Shortcuts',
-  /**
-  *@description Text in Settings Screen of the Settings
-  */
-  preferences: 'Preferences',
-  /**
-  *@description Text in Settings Screen of the Settings
-  */
-  experiments: 'Experiments',
-  /**
-  *@description Title of Ignore List settings
-  */
-  ignoreList: 'Ignore List',
 };
 i18n.i18n.registerUIStrings('settings/ModuleUIStrings.ts', UIStrings);

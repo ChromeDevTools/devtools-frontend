@@ -161,6 +161,7 @@ devtools_module_entrypoint_sources = [
   "services/services-legacy.js",
   "services/services.js",
   "settings/settings-legacy.js",
+  "settings/settings-meta.js",
   "settings/settings.js",
   "snippets/snippets-legacy.js",
   "snippets/snippets.js",

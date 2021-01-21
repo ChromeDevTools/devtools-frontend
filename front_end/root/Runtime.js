@@ -1126,6 +1126,7 @@ export const ExperimentName = {
   TIMELINE_REPLAY_EVENT: 'timelineReplayEvent',
   CSP_VIOLATIONS_VIEW: 'cspViolationsView',
   WASM_DWARF_DEBUGGING: 'wasmDWARFDebugging',
+  ALL: '*',
 };
 
 /** @enum {string} */

@@ -105,6 +105,7 @@ group("front_end") {
     "security:meta",
     "services:bundle",
     "settings:bundle",
+    "settings:meta",
     "snippets:bundle",
     "source_frame:bundle",
     "sources:bundle",

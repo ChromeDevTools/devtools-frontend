@@ -74,6 +74,7 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('settings/FrameworkIgnoreListSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+let frameworkIgnoreListSettingsTabInstance: FrameworkIgnoreListSettingsTab;
 export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<Common.Settings.RegExpSettingItem> {
   _ignoreListLabel: Common.UIString.LocalizedString;
@@ -118,6 +119,15 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     this._setting.addChangeListener(this._settingUpdated, this);
 
     this.setDefaultFocusedElement(addPatternButton);
+  }
+
+  static instance(opts = {forceNew: null}): FrameworkIgnoreListSettingsTab {
+    const {forceNew} = opts;
+    if (!frameworkIgnoreListSettingsTabInstance || forceNew) {
+      frameworkIgnoreListSettingsTabInstance = new FrameworkIgnoreListSettingsTab();
+    }
+
+    return frameworkIgnoreListSettingsTabInstance;
   }
 
   wasShown(): void {

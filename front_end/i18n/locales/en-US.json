@@ -2267,19 +2267,19 @@
   "settings/ModuleUIStrings.ts | documentation": {
     "message": "Documentation"
   },
-  "settings/ModuleUIStrings.ts | experiments": {
-    "message": "Experiments"
-  },
-  "settings/ModuleUIStrings.ts | ignoreList": {
-    "message": "Ignore List"
-  },
-  "settings/ModuleUIStrings.ts | preferences": {
-    "message": "Preferences"
-  },
   "settings/ModuleUIStrings.ts | settings": {
     "message": "Settings"
   },
-  "settings/ModuleUIStrings.ts | shortcuts": {
+  "settings/settings-meta.ts | experiments": {
+    "message": "Experiments"
+  },
+  "settings/settings-meta.ts | ignoreList": {
+    "message": "Ignore List"
+  },
+  "settings/settings-meta.ts | preferences": {
+    "message": "Preferences"
+  },
+  "settings/settings-meta.ts | shortcuts": {
     "message": "Shortcuts"
   },
   "settings/SettingsScreen.ts | experiments": {

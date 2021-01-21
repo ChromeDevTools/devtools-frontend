@@ -77,6 +77,7 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('settings/KeybindsSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+let keybindsSettingsTabInstance: KeybindsSettingsTab;
 export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListControl.ListDelegate<KeybindsItem> {
   _items: UI.ListModel.ListModel<KeybindsItem>;
   _list: UI.ListControl.ListControl<string|UI.ActionRegistration.Action>;
@@ -121,6 +122,16 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
 
     this.update();
   }
+
+  static instance(opts = {forceNew: null}): KeybindsSettingsTab {
+    const {forceNew} = opts;
+    if (!keybindsSettingsTabInstance || forceNew) {
+      keybindsSettingsTabInstance = new KeybindsSettingsTab();
+    }
+
+    return keybindsSettingsTabInstance;
+  }
+
 
   createElementForItem(item: KeybindsItem): Element {
     let itemElement = document.createElement('div');

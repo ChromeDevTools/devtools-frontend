@@ -241,6 +241,9 @@ class SettingsTab extends UI.Widget.VBox {
   }
 }
 
+let genericSettingsTabInstance: GenericSettingsTab;
+
+
 export class GenericSettingsTab extends SettingsTab {
   _nameToSection: Map<string, Element>;
 
@@ -309,6 +312,15 @@ export class GenericSettingsTab extends SettingsTab {
     }
   }
 
+  static instance(opts = {forceNew: null}): GenericSettingsTab {
+    const {forceNew} = opts;
+    if (!genericSettingsTabInstance || forceNew) {
+      genericSettingsTabInstance = new GenericSettingsTab();
+    }
+
+    return genericSettingsTabInstance;
+  }
+
   static isSettingVisible(setting: SettingDescriptor): boolean {
     return Boolean(setting.title && setting.category);
   }
@@ -362,6 +374,9 @@ export class GenericSettingsTab extends SettingsTab {
   }
 }
 
+
+let experimentsSettingsTabInstance: ExperimentsSettingsTab;
+
 export class ExperimentsSettingsTab extends SettingsTab {
   constructor() {
     super(i18nString(UIStrings.experiments), 'experiments-tab-content');
@@ -389,6 +404,16 @@ export class ExperimentsSettingsTab extends SettingsTab {
       }
     }
   }
+
+  static instance(opts = {forceNew: null}): ExperimentsSettingsTab {
+    const {forceNew} = opts;
+    if (!experimentsSettingsTabInstance || forceNew) {
+      experimentsSettingsTabInstance = new ExperimentsSettingsTab();
+    }
+
+    return experimentsSettingsTabInstance;
+  }
+
 
   _createExperimentsWarningSubsection(warningMessage: string): Element {
     const subsection = document.createElement('div');

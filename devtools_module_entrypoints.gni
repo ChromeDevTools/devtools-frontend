@@ -115,6 +115,7 @@ devtools_module_entrypoint_sources = [
   "media/media-meta.js",
   "media/media.js",
   "mobile_throttling/mobile_throttling-legacy.js",
+  "mobile_throttling/mobile_throttling-meta.js",
   "mobile_throttling/mobile_throttling.js",
   "network/network-legacy.js",
   "network/network-meta.js",

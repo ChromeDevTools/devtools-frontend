@@ -40,3 +40,9 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "mobile_throttling-meta.ts"
+
+  deps = [ ":bundle" ]
+}

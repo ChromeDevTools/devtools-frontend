@@ -84,6 +84,9 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('mobile_throttling/ThrottlingSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+let throttlingSettingsTabInstance: ThrottlingSettingsTab;
+
 export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<SDK.NetworkManager.Conditions> {
   _list: UI.ListWidget.ListWidget<SDK.NetworkManager.Conditions>;
@@ -110,6 +113,15 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     this._customSetting.addChangeListener(this._conditionsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);
+  }
+
+  static instance(opts = {forceNew: null}): ThrottlingSettingsTab {
+    const {forceNew} = opts;
+    if (!throttlingSettingsTabInstance || forceNew) {
+      throttlingSettingsTabInstance = new ThrottlingSettingsTab();
+    }
+
+    return throttlingSettingsTabInstance;
   }
 
   wasShown(): void {

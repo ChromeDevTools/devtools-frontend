@@ -79,6 +79,7 @@ group("front_end") {
     "media:bundle",
     "media:meta",
     "mobile_throttling:bundle",
+    "mobile_throttling:meta",
     "network:bundle",
     "network:meta",
     "node_debugger:bundle",

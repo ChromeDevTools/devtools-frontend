@@ -37,17 +37,6 @@
       "title": "Go online",
       "className": "MobileThrottling.ThrottlingManager.ActionDelegate",
       "tags": "device, throttling"
-    },
-    {
-      "type": "view",
-      "location": "settings-view",
-      "id": "throttling-conditions",
-      "title": "Throttling",
-      "order": 35,
-      "className": "MobileThrottling.ThrottlingSettingsTab",
-      "settings": [
-        "customNetworkConditions"
-      ]
     }
   ],
   "dependencies": [

@@ -105,8 +105,8 @@ export class BlockedURLsPane extends UI.Widget.VBox {
     checkbox.disabled = !this._manager.blockingEnabled();
     element.createChild('div', 'blocked-url-label').textContent = pattern.url;
     element.createChild('div', 'blocked-url-count').textContent = Common.UIString.UIString('%d blocked', count);
-    element.addEventListener('click', event => this._togglePattern(pattern, event), false);
-    checkbox.addEventListener('click', event => this._togglePattern(pattern, event), false);
+    element.addEventListener('click', event => this._togglePattern(pattern, event));
+    checkbox.addEventListener('click', event => this._togglePattern(pattern, event));
     return element;
   }
 

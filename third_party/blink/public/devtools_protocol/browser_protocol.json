@@ -13099,6 +13099,16 @@
                     ]
                 },
                 {
+                    "name": "setShowWebVitals",
+                    "description": "Request that backend shows an overlay with web vital metrics.",
+                    "parameters": [
+                        {
+                            "name": "show",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "name": "setShowViewportSizeOnResize",
                     "description": "Paints viewport size upon main frame resize.",
                     "parameters": [

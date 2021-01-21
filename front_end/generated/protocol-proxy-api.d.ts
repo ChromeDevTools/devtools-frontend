@@ -2075,6 +2075,12 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Request that backend shows an overlay with web vital metrics.
+     */
+    invoke_setShowWebVitals(params: Protocol.Overlay.SetShowWebVitalsRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Paints viewport size upon main frame resize.
      */
     invoke_setShowViewportSizeOnResize(params: Protocol.Overlay.SetShowViewportSizeOnResizeRequest):

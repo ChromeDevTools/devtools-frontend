@@ -1789,6 +1789,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Overlay.setShowHitTestBorders', [{'name': 'show', 'type': 'boolean', 'optional': false}], []);
   inspectorBackend.registerCommand(
+      'Overlay.setShowWebVitals', [{'name': 'show', 'type': 'boolean', 'optional': false}], []);
+  inspectorBackend.registerCommand(
       'Overlay.setShowViewportSizeOnResize', [{'name': 'show', 'type': 'boolean', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Overlay.setShowHinge', [{'name': 'hingeConfig', 'type': 'object', 'optional': true}], []);

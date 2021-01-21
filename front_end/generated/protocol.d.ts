@@ -8938,6 +8938,10 @@ declare namespace Protocol {
       show: boolean;
     }
 
+    export interface SetShowWebVitalsRequest {
+      show: boolean;
+    }
+
     export interface SetShowViewportSizeOnResizeRequest {
       /**
        * Whether to paint size or not.

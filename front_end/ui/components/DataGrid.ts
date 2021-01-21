@@ -297,7 +297,7 @@ export class DataGrid extends HTMLElement {
   private onResizePointerDown(event: PointerEvent): void {
     if (event.buttons !== 1 || (Host.Platform.isMac() && event.ctrlKey)) {
       // Ensure we only react to a left click drag mouse down event.
-      // On Mac we ignorre Ctrl-click which can be used to bring up context menus, etc.
+      // On Mac we ignore Ctrl-click which can be used to bring up context menus, etc.
       return;
     }
     event.preventDefault();

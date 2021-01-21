@@ -37,7 +37,9 @@ async function debugCheck(dirName) {
 
       return false;
     }
-    return false;
+    // By default, a DevTools build is always a debug build,
+    // unless `is_debug` is explicitly set to false
+    return true;
   } catch (error) {
     return false;
   }

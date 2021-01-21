@@ -330,9 +330,6 @@
   <message name="IDS_DEVTOOLS_5101cdda28ea3097ac00cdbfdcedc353" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Use default colors
   </message>
-  <message name="IDS_DEVTOOLS_51360304ea03557e79bdf5ff9cd2e234" desc="Text for the issuer of an item">
-    Issuer
-  </message>
   <message name="IDS_DEVTOOLS_5223b56f806ed0547f295a2c643061ec" desc="Text in Headers View of the Network panel">
     To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:
   </message>

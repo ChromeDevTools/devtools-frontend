@@ -238,6 +238,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_625bee64c286ac3018d57e87162f44e9" desc="Text of button in Indexed DBViews of the Application panel">
     Delete database
   </message>
+  <message name="IDS_DEVTOOLS_625fcab2f0afc677a449264d3a065898" desc="Column header for Trust Token table">
+    Stored token count
+  </message>
   <message name="IDS_DEVTOOLS_626e8008b253bc4fbef9dca0a3f63903" desc="Text in Background Service View of the Application panel">
     Instance ID
   </message>
@@ -470,6 +473,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_ab0cf104f39708eabd07b8cb67e149ba" desc="Text in Application Panel Sidebar of the Application panel">
     Cache
+  </message>
+  <message name="IDS_DEVTOOLS_ab481a1002cbb1b6fd9600f15f64f235" desc="Hover text for an info icon in the Trust Token panel">
+    All stored Trust Tokens available in this browser instance.
   </message>
   <message name="IDS_DEVTOOLS_ab6ee23f23d1d5f342588e64297efc1c" desc="Text in Application Panel Sidebar of the Application panel">
     Session Storage

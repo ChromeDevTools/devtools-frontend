@@ -146,6 +146,9 @@
   <message name="IDS_DEVTOOLS_502996d9790340c5fd7b86a5b93b1c9f" desc="Text to show the priority of an item">
     Priority
   </message>
+  <message name="IDS_DEVTOOLS_51360304ea03557e79bdf5ff9cd2e234" desc="Text for the issuer of an item">
+    Issuer
+  </message>
   <message name="IDS_DEVTOOLS_5174d1309f275ba6f275db3af9eb3e18" desc="Title of a section on CSS Grid tooling">
     Grid
   </message>

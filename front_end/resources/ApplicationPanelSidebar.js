@@ -55,6 +55,7 @@ import {IDBDatabaseView, IDBDataView} from './IndexedDBViews.js';
 import {OpenedWindowDetailsView, WorkerDetailsView} from './OpenedWindowDetailsView.js';
 import {ResourcesPanel} from './ResourcesPanel.js';  // eslint-disable-line no-unused-vars
 import {ServiceWorkersView} from './ServiceWorkersView.js';
+import {TrustTokensTreeElement} from './TrustTokensView.js';
 
 /**
  * @implements {SDK.SDKModel.Observer}
@@ -130,6 +131,9 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     const cookieIcon = UI.Icon.Icon.create('mediumicon-cookie', 'resource-tree-item');
     this.cookieListTreeElement.setLeadingIcons([cookieIcon]);
     storageTreeElement.appendChild(this.cookieListTreeElement);
+
+    this.trustTokensTreeElement = new TrustTokensTreeElement(panel);
+    storageTreeElement.appendChild(this.trustTokensTreeElement);
 
     const cacheSectionTitle = ls`Cache`;
     const cacheTreeElement = this._addSidebarSection(cacheSectionTitle);

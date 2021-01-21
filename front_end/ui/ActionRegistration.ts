@@ -381,7 +381,27 @@ export interface ActionRegistration {
    */
   toggleable?: boolean;
   /**
-   * Loads the class that handles the action when it is triggered.
+   * Loads the class that handles the action when it is triggered. The common pattern for implementing
+   * this function relies on having the module that contains the action’s handler lazily loaded. For example:
+   * ```js
+   *  let loadedElementsModule;
+   *
+   *  async function loadElementsModule() {
+   *
+   *    if (!loadedElementsModule) {
+   *      loadedElementsModule = await import('./elements.js');
+   *    }
+   *    return loadedElementsModule;
+   *  }
+   *  UI.ActionRegistration.registerActionExtension({
+   *   <...>
+   *    async loadActionDelegate() {
+   *      const Elements = await loadElementsModule();
+   *      return Elements.ElementsPanel.ElementsActionDelegate.instance();
+   *    },
+   *   <...>
+   *  });
+   * ```
    */
   loadActionDelegate?: () => Promise<ActionDelegate>;
   /**
@@ -427,7 +447,7 @@ export interface ActionRegistration {
    */
   contextTypes?: () => Array<unknown>;
   /**
-   * The descriptions for each of the two states in which toggleable can be.
+   * The descriptions for each of the two states in which a toggleable action can be.
    */
   options?: Array<ExtensionOption>;
   /**
@@ -440,11 +460,15 @@ export interface ActionRegistration {
    */
   bindings?: Array<Binding>;
   /**
-   * The name of the experiment an action is associated with.
+   * The name of the experiment an action is associated with. Enabling and disabling the declared
+   * experiment will enable and disable the action respectively.
    */
   experiment?: Root.Runtime.ExperimentName;
   /**
-   * A condition represented as a string the action's availability depends on.
+   * A condition represented as a string the action's availability depends on. Conditions come
+   * from the queryParamsObject defined in Runtime and just as the experiment field, they determine the availability
+   * of the setting. A condition can be negated by prepending a ‘!’ to the value of the condition
+   * property and in that case the behaviour of the action's availability will be inverted.
    */
   condition?: Root.Runtime.ConditionName;
 }

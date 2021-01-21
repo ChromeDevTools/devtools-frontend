@@ -28,10 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
 import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 
 import {AllocationProfile} from './AllocationProfile.js';
 import {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';  // eslint-disable-line no-unused-vars
@@ -844,7 +843,7 @@ export class HeapSnapshotProgress {
    * @param {string} status
    */
   updateStatus(status) {
-    this._sendUpdateEvent(Common.UIString.serializeUIString(status));
+    this._sendUpdateEvent(i18n.i18n.serializeUIString(status));
   }
 
   /**
@@ -854,7 +853,7 @@ export class HeapSnapshotProgress {
    */
   updateProgress(title, value, total) {
     const percentValue = ((total ? (value / total) : 0) * 100).toFixed(0);
-    this._sendUpdateEvent(Common.UIString.serializeUIString(title, [percentValue]));
+    this._sendUpdateEvent(i18n.i18n.serializeUIString(title, {PH1: percentValue}));
   }
 
   /**
@@ -1278,36 +1277,36 @@ export class HeapSnapshot {
     this._firstDominatedNodeIndex = new Uint32Array(this.nodeCount + 1);
     this._dominatedNodes = new Uint32Array(this.nodeCount - 1);
 
-    this._progress.updateStatus(ls`Building edge indexes…`);
+    this._progress.updateStatus('Building edge indexes…');
     this._buildEdgeIndexes();
-    this._progress.updateStatus(ls`Building retainers…`);
+    this._progress.updateStatus('Building retainers…');
     this._buildRetainers();
-    this._progress.updateStatus(ls`Propagating DOM state…`);
+    this._progress.updateStatus('Propagating DOM state…');
     this._propagateDOMState();
-    this._progress.updateStatus(ls`Calculating node flags…`);
+    this._progress.updateStatus('Calculating node flags…');
     this.calculateFlags();
-    this._progress.updateStatus(ls`Calculating distances…`);
+    this._progress.updateStatus('Calculating distances…');
     this.calculateDistances();
-    this._progress.updateStatus(ls`Building postorder index…`);
+    this._progress.updateStatus('Building postorder index…');
     const result = this._buildPostOrderIndex();
     // Actually it is array that maps node ordinal number to dominator node ordinal number.
-    this._progress.updateStatus(ls`Building dominator tree…`);
+    this._progress.updateStatus('Building dominator tree…');
     this._dominatorsTree =
         this._buildDominatorTree(result.postOrderIndex2NodeOrdinal, result.nodeOrdinal2PostOrderIndex);
-    this._progress.updateStatus(ls`Calculating retained sizes…`);
+    this._progress.updateStatus('Calculating retained sizes…');
     this._calculateRetainedSizes(result.postOrderIndex2NodeOrdinal);
-    this._progress.updateStatus(ls`Building dominated nodes…`);
+    this._progress.updateStatus('Building dominated nodes…');
     this._buildDominatedNodes();
-    this._progress.updateStatus(ls`Calculating statistics…`);
+    this._progress.updateStatus('Calculating statistics…');
     this.calculateStatistics();
-    this._progress.updateStatus(ls`Calculating samples…`);
+    this._progress.updateStatus('Calculating samples…');
     this._buildSamples();
-    this._progress.updateStatus(ls`Building locations…`);
+    this._progress.updateStatus('Building locations…');
     this._buildLocationMap();
-    this._progress.updateStatus(ls`Finished processing.`);
+    this._progress.updateStatus('Finished processing.');
 
     if (this._profile.snapshot.trace_function_count) {
-      this._progress.updateStatus(ls`Building allocation statistics…`);
+      this._progress.updateStatus('Building allocation statistics…');
       const nodes = this.nodes;
       const nodesLength = nodes.length;
       const nodeFieldCount = this._nodeFieldCount;
@@ -1328,7 +1327,7 @@ export class HeapSnapshot {
         stats.ids.push(node.id());
       }
       this._allocationProfile = new AllocationProfile(this._profile, liveObjects);
-      this._progress.updateStatus(ls`Done`);
+      this._progress.updateStatus('done');
     }
   }
 

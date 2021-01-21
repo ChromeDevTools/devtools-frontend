@@ -24,7 +24,6 @@
       <part file="../elements/elements_strings.grdp" />
       <part file="../emulated_devices/emulated_devices_strings.grdp" />
       <part file="../emulation/emulation_strings.grdp" />
-      <part file="../heap_snapshot_worker/heap_snapshot_worker_strings.grdp" />
       <part file="../host/host_strings.grdp" />
       <part file="../inspector_main/inspector_main_strings.grdp" />
       <part file="../linear_memory_inspector/linear_memory_inspector_strings.grdp" />

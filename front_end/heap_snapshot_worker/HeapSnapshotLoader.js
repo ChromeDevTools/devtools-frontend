@@ -28,11 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
-
 import {HeapSnapshotHeader, HeapSnapshotProgress, JSHeapSnapshot, Profile} from './HeapSnapshot.js';  // eslint-disable-line no-unused-vars
 import {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';  // eslint-disable-line no-unused-vars
+
 
 export class HeapSnapshotLoader {
   /**
@@ -84,7 +83,7 @@ export class HeapSnapshotLoader {
   buildSnapshot() {
     this._snapshot = this._snapshot || {};
 
-    this._progress.updateStatus(ls`Processing snapshot…`);
+    this._progress.updateStatus('Processing snapshot…');
     const result = new JSHeapSnapshot(/** @type {!Profile} */ (this._snapshot), this._progress);
     this._reset();
     return result;
@@ -134,7 +133,7 @@ export class HeapSnapshotLoader {
   }
 
   _parseStringsArray() {
-    this._progress.updateStatus(ls`Parsing strings…`);
+    this._progress.updateStatus('Parsing strings…');
     const closingBracketIndex = this._json.lastIndexOf(']');
     if (closingBracketIndex === -1) {
       throw new Error('Incomplete JSON');
@@ -213,7 +212,7 @@ export class HeapSnapshotLoader {
       throw new Error('Snapshot token not found');
     }
 
-    this._progress.updateStatus(ls`Loading snapshot info…`);
+    this._progress.updateStatus('Loading snapshot info…');
     const json = this._json.slice(snapshotTokenIndex + snapshotToken.length + 1);
     this._jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(metaJSON => {
       this._json = this._jsonTokenizer.remainder();
@@ -229,20 +228,20 @@ export class HeapSnapshotLoader {
 
     this._snapshot = this._snapshot || {};
     const nodes = await this._parseArray(
-        '"nodes"', ls`Loading nodes… %d%%`,
+        '"nodes"', 'Loading nodes… {PH1}%',
         this._snapshot.snapshot.meta.node_fields.length * this._snapshot.snapshot.node_count);
 
     this._snapshot.nodes = /** @type {!Uint32Array} */ (nodes);
 
     const edges = await this._parseArray(
-        '"edges"', ls`Loading edges… %d%%`,
+        '"edges"', 'Loading edges… {PH1}%',
         this._snapshot.snapshot.meta.edge_fields.length * this._snapshot.snapshot.edge_count);
 
     this._snapshot.edges = /** @type {!Uint32Array} */ (edges);
 
     if (this._snapshot.snapshot.trace_function_count) {
       const trace_function_infos = await this._parseArray(
-          '"trace_function_infos"', ls`Loading allocation traces… %d%%`,
+          '"trace_function_infos"', 'Loading allocation traces… {PH1}%',
           this._snapshot.snapshot.meta.trace_function_info_fields.length *
               this._snapshot.snapshot.trace_function_count);
 
@@ -257,18 +256,18 @@ export class HeapSnapshotLoader {
     }
 
     if (this._snapshot.snapshot.meta.sample_fields) {
-      const samples = await this._parseArray('"samples"', ls`Loading samples…`);
+      const samples = await this._parseArray('"samples"', 'Loading samples…');
       this._snapshot.samples = /** @type {!Array<number>} */ (samples);
     }
 
     if (this._snapshot.snapshot.meta['location_fields']) {
-      const locations = await this._parseArray('"locations"', ls`Loading locations…`);
+      const locations = await this._parseArray('"locations"', 'Loading locations…');
       this._snapshot.locations = /** @type {!Array<number>} */ (locations);
     } else {
       this._snapshot.locations = [];
     }
 
-    this._progress.updateStatus(ls`Loading strings…`);
+    this._progress.updateStatus('Loading strings…');
     const stringsTokenIndex = await this._findToken('"strings"');
     const bracketIndex = await this._findToken('[', stringsTokenIndex);
     this._json = this._json.slice(bracketIndex);

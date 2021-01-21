@@ -187,6 +187,7 @@ devtools_module_entrypoint_sources = [
   "third_party/marked/marked.js",
   "third_party/puppeteer/puppeteer.js",
   "timeline/timeline-legacy.js",
+  "timeline/timeline-meta.js",
   "timeline/timeline.js",
   "timeline_model/timeline_model-legacy.js",
   "timeline_model/timeline_model.js",

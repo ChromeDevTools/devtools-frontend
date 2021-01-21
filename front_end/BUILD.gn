@@ -121,6 +121,7 @@ group("front_end") {
     "third_party/lighthouse",
     "third_party/puppeteer:bundle",
     "timeline:bundle",
+    "timeline:meta",
     "timeline_model:bundle",
     "toolbox_bootstrap:bundle",
     "ui:bundle",

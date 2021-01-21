@@ -1,14 +1,6 @@
 {
   "extensions": [
     {
-      "type": "view",
-      "location": "panel",
-      "id": "timeline",
-      "title": "Performance",
-      "order": 50,
-      "className": "Timeline.TimelinePanel"
-    },
-    {
       "type": "setting",
       "category": "Performance",
       "title": "Hide chrome frame in Layers view",
@@ -183,15 +175,6 @@
           "shortcut": "Meta+Y"
         }
       ]
-    },
-    {
-      "type": "view",
-      "location": "panel",
-      "id": "js_profiler",
-      "title": "JavaScript Profiler",
-      "persistence": "closeable",
-      "order": 65,
-      "className": "Profiler.JSProfilerPanel"
     },
     {
       "type": "action",

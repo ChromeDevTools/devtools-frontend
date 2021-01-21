@@ -1127,6 +1127,7 @@ export const ExperimentName = {
   CSP_VIOLATIONS_VIEW: 'cspViolationsView',
   WASM_DWARF_DEBUGGING: 'wasmDWARFDebugging',
   ALL: '*',
+  PROTOCOL_MONITOR: 'protocolMonitor',
 };
 
 /** @enum {string} */

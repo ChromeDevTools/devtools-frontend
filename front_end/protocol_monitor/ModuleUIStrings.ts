@@ -6,9 +6,5 @@
 
 import * as i18n from '../i18n/i18n.js';
 export const UIStrings = {
-  /**
-  *@description Title of the 'Protocol monitor' tool in the bottom drawer
-  */
-  protocolMonitor: 'Protocol monitor',
 };
 i18n.i18n.registerUIStrings('protocol_monitor/ModuleUIStrings.ts', UIStrings);

@@ -24,4 +24,5 @@ import './changes/changes-meta.js';
 import './input/input-meta.js';
 import './linear_memory_inspector/linear_memory_inspector-meta.js';
 import './settings/settings-meta.js';
+import './protocol_monitor/protocol_monitor-meta.js';
 // We generate the descriptors in this file, which depend on the runtime.

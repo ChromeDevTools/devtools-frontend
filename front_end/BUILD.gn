@@ -94,6 +94,7 @@ group("front_end") {
     "profiler:meta",
     "protocol_client:bundle",
     "protocol_monitor:bundle",
+    "protocol_monitor:meta",
     "quick_open:bundle",
     "recorder:bundle",
     "resources:bundle",

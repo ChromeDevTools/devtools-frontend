@@ -1709,7 +1709,7 @@
   "persistence/WorkspaceSettingsTab.js | workspace": {
     "message": "Workspace"
   },
-  "protocol_monitor/ModuleUIStrings.ts | protocolMonitor": {
+  "protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protocol monitor"
   },
   "protocol_monitor/ProtocolMonitor.ts | clearAll": {

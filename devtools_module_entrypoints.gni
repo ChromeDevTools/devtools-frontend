@@ -140,6 +140,7 @@ devtools_module_entrypoint_sources = [
   "protocol_client/protocol_client-legacy.js",
   "protocol_client/protocol_client.js",
   "protocol_monitor/protocol_monitor-legacy.js",
+  "protocol_monitor/protocol_monitor-meta.js",
   "protocol_monitor/protocol_monitor.js",
   "quick_open/quick_open-legacy.js",
   "quick_open/quick_open.js",

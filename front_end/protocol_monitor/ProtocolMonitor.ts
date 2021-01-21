@@ -80,6 +80,7 @@ export interface Message {
   params: Object;
 }
 
+let protocolMonitorImplInstance: ProtocolMonitorImpl;
 export class ProtocolMonitorImpl extends UI.Widget.VBox {
   _started: boolean;
   _startTime: number;
@@ -236,6 +237,15 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       this._dataGridIntegrator.update({...this._dataGridIntegrator.data(), filters});
     });
     topToolbar.appendToolbarItem(this._textFilterUI);
+  }
+
+  static instance(opts = {forceNew: null}): ProtocolMonitorImpl {
+    const {forceNew} = opts;
+    if (!protocolMonitorImplInstance || forceNew) {
+      protocolMonitorImplInstance = new ProtocolMonitorImpl();
+    }
+
+    return protocolMonitorImplInstance;
   }
 
   wasShown(): void {

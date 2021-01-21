@@ -16358,6 +16358,22 @@
                             "type": "number"
                         }
                     ]
+                },
+                {
+                    "id": "TrustTokens",
+                    "description": "Pair of issuer origin and number of available (signed, but not used) Trust\nTokens from that issuer.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "issuerOrigin",
+                            "type": "string"
+                        },
+                        {
+                            "name": "count",
+                            "type": "number"
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -16526,6 +16542,20 @@
                             "name": "origin",
                             "description": "Security origin.",
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "getTrustTokens",
+                    "description": "Returns the number of stored Trust Tokens per issuer for the\ncurrent browsing context.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "tokens",
+                            "type": "array",
+                            "items": {
+                                "$ref": "TrustTokens"
+                            }
                         }
                     ]
                 }

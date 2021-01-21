@@ -2260,6 +2260,7 @@ export function registerCommands(inspectorBackend) {
       'Storage.untrackCacheStorageForOrigin', [{'name': 'origin', 'type': 'string', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Storage.untrackIndexedDBForOrigin', [{'name': 'origin', 'type': 'string', 'optional': false}], []);
+  inspectorBackend.registerCommand('Storage.getTrustTokens', [], ['tokens']);
 
   // SystemInfo.
   inspectorBackend.registerEnum('SystemInfo.SubsamplingFormat', {Yuv420: 'yuv420', Yuv422: 'yuv422', Yuv444: 'yuv444'});

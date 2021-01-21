@@ -2727,6 +2727,12 @@ declare namespace ProtocolProxyApi {
      */
     invoke_untrackIndexedDBForOrigin(params: Protocol.Storage.UntrackIndexedDBForOriginRequest):
         Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Returns the number of stored Trust Tokens per issuer for the
+     * current browsing context.
+     */
+    invoke_getTrustTokens(): Promise<Protocol.Storage.GetTrustTokensResponse>;
   }
   export interface StorageDispatcher {
     /**

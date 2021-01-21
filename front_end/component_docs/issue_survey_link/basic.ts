@@ -4,13 +4,12 @@
 
 import * as FrontendHelpers from '../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
+import * as Components from '../../ui/components/components.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const Issues = await import('../../issues/issues.js');
-
-const link = new Issues.IssueSurveyLink.IssueSurveyLink();
+const link = new Components.SurveyLink.SurveyLink();
 document.getElementById('container')?.appendChild(link);
 
 // TODO(petermarshall): The icon doesn't render because importing sub-components cross-module

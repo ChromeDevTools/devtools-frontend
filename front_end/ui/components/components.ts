@@ -11,6 +11,7 @@ import * as DataGridUtils from './DataGridUtils.js';
 import * as Icon from './Icon.js';
 import * as Linkifier from './Linkifier.js';
 import * as ReportView from './ReportView.js';
+import * as SurveyLink from './SurveyLink.js';
 
 export {
   CounterButton,
@@ -22,4 +23,5 @@ export {
   Icon,
   Linkifier,
   ReportView,
+  SurveyLink,
 };

@@ -6,7 +6,6 @@ import * as CSPViolationsView from './CSPViolationsView.js';
 import * as IssueAggregator from './IssueAggregator.js';
 import * as IssueRevealer from './IssueRevealer.js';
 import * as IssuesPane from './IssuesPane.js';
-import * as IssueSurveyLink from './IssueSurveyLink.js';
 import * as MarkdownImage from './MarkdownImage.js';
 import * as MarkdownImagesMap from './MarkdownImagesMap.js';
 import * as MarkdownIssueDescription from './MarkdownIssueDescription.js';
@@ -19,7 +18,6 @@ export {
   IssueAggregator,
   IssueRevealer,
   IssuesPane,
-  IssueSurveyLink,
   MarkdownImage,
   MarkdownImagesMap,
   MarkdownIssueDescription,

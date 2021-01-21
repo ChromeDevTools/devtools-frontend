@@ -18,6 +18,7 @@ devtools_module("components") {
     "Linkifier.ts",
     "LinkifierUtils.ts",
     "ReportView.ts",
+    "SurveyLink.ts",
   ]
   deps = [
     "../../bindings:bundle",

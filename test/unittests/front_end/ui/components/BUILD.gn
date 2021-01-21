@@ -9,6 +9,7 @@ ts_library("components") {
     "DataGrid_test.ts",
     "Linkifier_test.ts",
     "ReportView_test.ts",
+    "SurveyLink_test.ts",
   ]
 
   deps = [

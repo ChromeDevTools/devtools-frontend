@@ -17,7 +17,6 @@ import * as UI from '../ui/ui.js';
 import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
 import {AffectedSharedArrayBufferTransferDetailsView} from './AffectedSharedArrayBufferTransferDetailsView.js';
 import {AggregatedIssue, Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
-import {IssueSurveyLink} from './IssueSurveyLink.js';
 import {createIssueDescriptionFromMarkdown} from './MarkdownIssueDescription.js';
 
 class AffectedElementsView extends AffectedResourcesView {
@@ -957,7 +956,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     const surveyTrigger = issueSurveyTriggers.get(this._issue.getCategory());
     if (surveyTrigger) {
       // This part of the UI is async so be careful relying on it being available.
-      const surveyLink = new IssueSurveyLink();
+      const surveyLink = new WebComponents.SurveyLink.SurveyLink();
       surveyLink.data = {
         trigger: surveyTrigger,
         canShowSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.canShowSurvey,

@@ -2,17 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';  // eslint-disable-line no-unused-vars
-import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as Components from '../ui/components/components.js';
+import * as Common from '../../common/common.js';
+import * as Host from '../../host/host.js';  // eslint-disable-line no-unused-vars
+import * as LitHtml from '../../third_party/lit-html/lit-html.js';
+
+import type {IconData} from './Icon.js';
 
 const ls = Common.ls;
 
 export type CanShowSurveyCallback = (result: Host.InspectorFrontendHostAPI.CanShowSurveyResult) => void;
 export type ShowSurveyCallback = (result: Host.InspectorFrontendHostAPI.ShowSurveyResult) => void;
 
-export interface IssueSurveyLinkData {
+export interface SurveyLinkData {
   trigger: string;
   canShowSurvey: (trigger: string, callback: CanShowSurveyCallback) => void;
   showSurvey: (trigger: string, callback: ShowSurveyCallback) => void;
@@ -29,7 +30,7 @@ const enum State {
 
 // A link to a survey. The link is rendered aysnchronously because we need to first check if
 // canShowSurvey succeeds.
-export class IssueSurveyLink extends HTMLElement {
+export class SurveyLink extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private trigger = '';
   private canShowSurvey: (trigger: string, callback: CanShowSurveyCallback) => void = () => {};
@@ -37,7 +38,7 @@ export class IssueSurveyLink extends HTMLElement {
   private state: State = State.Checking;
 
   // Re-setting data will cause the state to go back to 'Checking' which hides the link.
-  set data(data: IssueSurveyLinkData) {
+  set data(data: SurveyLinkData) {
     this.trigger = data.trigger;
     this.canShowSurvey = data.canShowSurvey;
     this.showSurvey = data.showSurvey;
@@ -129,7 +130,7 @@ export class IssueSurveyLink extends HTMLElement {
         }
       </style>
       <button class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} aria-disabled=${ariaDisabled} @click=${this.sendSurvey}>
-        <devtools-icon class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--issue-link)', width: '16px', height: '16px'} as Components.Icon.IconData}></devtools-icon><!--
+        <devtools-icon class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--issue-link)', width: '16px', height: '16px'} as IconData}></devtools-icon><!--
       -->${linkText}
       </button>
     `;
@@ -138,11 +139,11 @@ export class IssueSurveyLink extends HTMLElement {
   }
 }
 
-customElements.define('devtools-issue-survey-link', IssueSurveyLink);
+customElements.define('devtools-survey-link', SurveyLink);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
-    'devtools-issue-survey-link': IssueSurveyLink;
+    'devtools-survey-link': SurveyLink;
   }
 }

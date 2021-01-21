@@ -4,7 +4,6 @@ ts_library("issues") {
   testonly = true
   sources = [
     "IssueAggregator_test.ts",
-    "IssueSurveyLink_test.ts",
     "MarkdownImage_test.ts",
     "MarkdownIssueDescription_test.ts",
     "MarkdownLink_test.ts",

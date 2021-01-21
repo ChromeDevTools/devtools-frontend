@@ -5,7 +5,7 @@
 import * as LitHtml from '../../../../../front_end/third_party/lit-html/lit-html.js';
 import * as UIComponents from '../../../../../front_end/ui/components/components.js';
 
-import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, getEventPromise, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, getEventPromise, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {withMutations} from '../../helpers/MutationHelpers.js';
 
 import {assertCurrentFocusedCellIs, emulateUserFocusingCellAt, emulateUserKeyboardNavigation, focusTableCell, getAllRows, getCellByIndexes, getFocusableCell, getHeaderCellForColumnId, getHeaderCells, getValuesOfAllBodyRows, getValuesOfBodyRowByAriaIndex} from './DataGridHelpers.js';
@@ -57,6 +57,14 @@ Object.freeze(columns);
 Object.freeze(columnsWithNoneSortable);
 Object.freeze(rows);
 
+/**
+  * It's useful to use innerHTML in the tests to have full confidence in the
+  * renderer output, but LitHtml uses comment nodes to split dynamic from
+  * static parts of a template, and we don't want our tests full of noise
+  * from those.
+  */
+const stripLitHtmlCommentNodes = (text: string) => text.replaceAll('<!---->', '');
+
 const renderDataGrid = (data: Partial<UIComponents.DataGrid.DataGridData>): UIComponents.DataGrid.DataGrid => {
   const component = new UIComponents.DataGrid.DataGrid();
   component.data = {
@@ -79,14 +87,36 @@ describe('DataGrid', () => {
       const values = Array.from(headerCells, cell => cell.textContent || '');
       assert.deepEqual(values, ['City', 'Country', 'Population']);
 
-      const renderedRows = component.shadowRoot.querySelectorAll('tbody tr');
-      assertElements(renderedRows, HTMLTableRowElement);
-
       const rowValues = getValuesOfAllBodyRows(component.shadowRoot);
       assert.deepEqual(rowValues, [
         ['London', 'UK', '8.98m'],
         ['Munich', 'Germany', '1.47m'],
         ['Barcelona', 'Spain', '1.62m'],
+      ]);
+    });
+
+    it('does not render DOM within a cell whose column is hidden', () => {
+      const columnsWithFirstHidden = createColumns();
+      columnsWithFirstHidden[0].hideable = true;
+      columnsWithFirstHidden[0].visible = false;
+      const component = renderDataGrid({rows, columns: columnsWithFirstHidden});
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+
+      const renderedRows = Array.from(component.shadowRoot.querySelectorAll('tbody tr:not(.filler-row)'));
+      const cellsHaveChildren = renderedRows.map(row => {
+        const cells = Array.from(row.querySelectorAll('td'), cell => {
+          // Figure out if the cell has any children.
+          return stripLitHtmlCommentNodes(cell.innerHTML).length > 0;
+        });
+        return cells;
+      });
+      assert.deepEqual(cellsHaveChildren, [
+        // False for column 1 as it is hidden, true for the rest which are
+        // visible.
+        [false, true, true],
+        [false, true, true],
+        [false, true, true],
       ]);
     });
 
@@ -159,13 +189,6 @@ describe('DataGrid', () => {
   });
 
   describe('data-grid renderers', () => {
-    /**
-     * It's useful to use innerHTML in the tests to have full confidence in the
-     * renderer output, but LitHtml uses comment nodes to split dynamic from
-     * static parts of a template, and we don't want our tests full of noise
-     * from those.
-     */
-    const stripLitHtmlCommentNodes = (text: string) => text.replaceAll('<!---->', '');
 
     it('uses the string renderer by default', () => {
       const columns: UIComponents.DataGridUtils.Column[] =
@@ -583,7 +606,9 @@ describe('DataGrid', () => {
         rows: [...rows, newRow],
         activeSort: null,
       };
-      assert.strictEqual(scrolledElement.scrollTop, 63);
+      requestAnimationFrame(() => {
+        assert.strictEqual(scrolledElement.scrollTop, 63);
+      });
     });
 
     it('does not auto scroll if the user has a cell selected', () => {

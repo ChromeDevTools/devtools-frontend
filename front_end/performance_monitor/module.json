@@ -1,16 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "performance.monitor",
-      "title": "Performance monitor",
-      "persistence": "closeable",
-      "order": 100,
-      "className": "PerformanceMonitor.PerformanceMonitor",
-      "tags": "performance, system monitor, monitor, activity, metrics"
-    }
-  ],
   "dependencies": [
     "i18n",
     "sdk",

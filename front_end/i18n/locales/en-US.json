@@ -1553,22 +1553,22 @@
   "perf_ui/PieChart.ts | total": {
     "message": "Total"
   },
-  "performance_monitor/ModuleUIStrings.ts | activity": {
+  "performance_monitor/performance_monitor-meta.ts | activity": {
     "message": "activity"
   },
-  "performance_monitor/ModuleUIStrings.ts | metrics": {
+  "performance_monitor/performance_monitor-meta.ts | metrics": {
     "message": "metrics"
   },
-  "performance_monitor/ModuleUIStrings.ts | monitor": {
+  "performance_monitor/performance_monitor-meta.ts | monitor": {
     "message": "monitor"
   },
-  "performance_monitor/ModuleUIStrings.ts | performance": {
+  "performance_monitor/performance_monitor-meta.ts | performance": {
     "message": "performance"
   },
-  "performance_monitor/ModuleUIStrings.ts | performanceMonitor": {
+  "performance_monitor/performance_monitor-meta.ts | performanceMonitor": {
     "message": "Performance monitor"
   },
-  "performance_monitor/ModuleUIStrings.ts | systemMonitor": {
+  "performance_monitor/performance_monitor-meta.ts | systemMonitor": {
     "message": "system monitor"
   },
   "performance_monitor/PerformanceMonitor.ts | cpuUsage": {

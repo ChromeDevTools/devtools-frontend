@@ -57,6 +57,9 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('performance_monitor/PerformanceMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+let performanceMonitorImplInstance: PerformanceMonitorImpl;
+
+
 export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     SDK.SDKModel.SDKModelObserver<SDK.PerformanceMetricsModel.PerformanceMetricsModel> {
   _metricsBuffer: {timestamp: number; metrics: Map<string, number>;}[];
@@ -98,6 +101,15 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
         i18nString(UIStrings.paused);
     this._controlPane.addEventListener(Events.MetricChanged, this._recalcChartHeight, this);
     SDK.SDKModel.TargetManager.instance().observeModels(SDK.PerformanceMetricsModel.PerformanceMetricsModel, this);
+  }
+
+  static instance(opts = {forceNew: null}): PerformanceMonitorImpl {
+    const {forceNew} = opts;
+    if (!performanceMonitorImplInstance || forceNew) {
+      performanceMonitorImplInstance = new PerformanceMonitorImpl();
+    }
+
+    return performanceMonitorImplInstance;
   }
 
   wasShown(): void {

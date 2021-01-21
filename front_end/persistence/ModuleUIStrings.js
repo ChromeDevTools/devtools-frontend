@@ -5,10 +5,6 @@
 import * as i18n from '../i18n/i18n.js';
 export const UIStrings = {
   /**
-  *@description Text of a DOM element in Workspace Settings Tab of the Workspace settings in Settings
-  */
-  workspace: 'Workspace',
-  /**
   *@description A title of the 'Persistence' setting category
   */
   persistence: 'Persistence',

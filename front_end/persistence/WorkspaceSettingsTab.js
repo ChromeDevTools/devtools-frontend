@@ -36,7 +36,12 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('persistence/WorkspaceSettingsTab.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+/** @type {!WorkspaceSettingsTab} */
+let workspaceSettingsTabInstance;
+
 export class WorkspaceSettingsTab extends UI.Widget.VBox {
+  /** @private */
   constructor() {
     super();
     this.registerRequiredCSS('persistence/workspaceSettingsTab.css', {enableLegacyPatching: true});
@@ -77,6 +82,18 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     for (let i = 0; i < fileSystems.length; ++i) {
       this._addItem(fileSystems[i]);
     }
+  }
+
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!workspaceSettingsTabInstance || forceNew) {
+      workspaceSettingsTabInstance = new WorkspaceSettingsTab();
+    }
+
+    return workspaceSettingsTabInstance;
   }
 
   /**

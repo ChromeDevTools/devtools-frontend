@@ -8,14 +8,6 @@
   ],
   "extensions": [
     {
-      "type": "view",
-      "location": "settings-view",
-      "id": "workspace",
-      "title": "Workspace",
-      "order": 1,
-      "className": "Persistence.WorkspaceSettingsTab"
-    },
-    {
       "type": "setting",
       "category": "Persistence",
       "title": "Enable Local Overrides",

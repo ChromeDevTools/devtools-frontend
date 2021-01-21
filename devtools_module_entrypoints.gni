@@ -132,6 +132,7 @@ devtools_module_entrypoint_sources = [
   "performance_monitor/performance_monitor-legacy.js",
   "performance_monitor/performance_monitor.js",
   "persistence/persistence-legacy.js",
+  "persistence/persistence-meta.js",
   "persistence/persistence.js",
   "platform/platform.js",
   "profiler/profiler-legacy.js",

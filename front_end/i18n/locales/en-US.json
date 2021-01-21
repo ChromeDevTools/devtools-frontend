@@ -1670,7 +1670,7 @@
   "persistence/ModuleUIStrings.js | rewrite": {
     "message": "rewrite"
   },
-  "persistence/ModuleUIStrings.js | workspace": {
+  "persistence/persistence-meta.ts | workspace": {
     "message": "Workspace"
   },
   "persistence/PersistenceActions.js | openInContainingFolder": {

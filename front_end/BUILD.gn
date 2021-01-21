@@ -90,6 +90,7 @@ group("front_end") {
     "perf_ui:bundle",
     "performance_monitor:bundle",
     "persistence:bundle",
+    "persistence:meta",
     "profiler:bundle",
     "profiler:meta",
     "protocol_client:bundle",

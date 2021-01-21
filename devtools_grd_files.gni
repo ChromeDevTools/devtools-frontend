@@ -323,6 +323,7 @@ grd_files_release_sources = [
   "front_end/performance_monitor/performance_monitor.js",
   "front_end/performance_monitor/performance_monitor_module.js",
   "front_end/persistence/persistence-legacy.js",
+  "front_end/persistence/persistence-meta.js",
   "front_end/persistence/persistence.js",
   "front_end/platform/platform.js",
   "front_end/profiler/profiler-legacy.js",

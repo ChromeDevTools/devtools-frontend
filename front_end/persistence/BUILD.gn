@@ -53,3 +53,9 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "persistence-meta.ts"
+
+  deps = [ ":bundle" ]
+}

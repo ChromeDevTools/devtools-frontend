@@ -2,12 +2,37 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {DataDisplayDelegate, Events as ProfileHeaderEvents, ProfileHeader} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text to save something
+  */
+  save: 'Save',
+  /**
+  *@description Text to save something (with ellipsis)
+  */
+  saveWithEllipsis: 'Save…',
+  /**
+  *@description Text that only contain a placeholder
+  *@example {100ms (at 200ms)} PH1
+  */
+  singlePlaceholder: '{PH1}',
+  /**
+  *@description A context menu item in the Profiles Panel of a profiler tool
+  */
+  load: 'Load…',
+  /**
+  *@description Text to delete something
+  */
+  delete: 'Delete',
+};
+const str_ = i18n.i18n.registerUIStrings('profiler/ProfileSidebarTreeElement.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @type {?HTMLInputElement}
  */
@@ -59,7 +84,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
 
   _createSaveLink() {
     this._saveLinkElement = this._titleContainer.createChild('span', 'save-link');
-    this._saveLinkElement.textContent = Common.UIString.UIString('Save');
+    this._saveLinkElement.textContent = i18nString(UIStrings.save);
     this._saveLinkElement.addEventListener('click', this._saveProfile.bind(this), false);
   }
 
@@ -158,7 +183,8 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.append(this._iconElement, this._titlesElement);
     this.listItemElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), true);
 
-    UI.ARIAUtils.setDescription(this.listItemElement, ls`${this.profile.profileType().name}`);
+    UI.ARIAUtils.setDescription(
+        this.listItemElement, i18nString(UIStrings.singlePlaceholder, {PH1: this.profile.profileType().name}));
   }
 
   /**
@@ -173,11 +199,11 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
       throw new Error('File selector element shared by ProfilePanel instances is missing');
     }
     contextMenu.headerSection().appendItem(
-        Common.UIString.UIString('Load…'), sharedFileSelectorElement.click.bind(sharedFileSelectorElement));
+        i18nString(UIStrings.load), sharedFileSelectorElement.click.bind(sharedFileSelectorElement));
     if (profile.canSaveToFile()) {
-      contextMenu.saveSection().appendItem(Common.UIString.UIString('Save…'), profile.saveToFile.bind(profile));
+      contextMenu.saveSection().appendItem(i18nString(UIStrings.saveWithEllipsis), profile.saveToFile.bind(profile));
     }
-    contextMenu.footerSection().appendItem(Common.UIString.UIString('Delete'), this.ondelete.bind(this));
+    contextMenu.footerSection().appendItem(i18nString(UIStrings.delete), this.ondelete.bind(this));
     contextMenu.show();
   }
 

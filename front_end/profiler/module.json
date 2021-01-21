@@ -13,6 +13,7 @@
     "perf_ui",
     "data_grid",
     "heap_snapshot_model",
+    "i18n",
     "object_ui"
   ],
   "modules": [

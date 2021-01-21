@@ -4,13 +4,58 @@
 
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {SamplingHeapProfileNode} from './HeapProfileView.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Empty string
+  */
+  emptyString: '',
+  /**
+  *@description Text for a heap profile type
+  */
+  jsHeap: 'JS Heap',
+  /**
+  *@description Text in Live Heap Profile View of a profiler tool
+  */
+  allocatedJsHeapSizeCurrentlyIn: 'Allocated JS heap size currently in use',
+  /**
+  *@description Text in Live Heap Profile View of a profiler tool
+  */
+  vms: 'VMs',
+  /**
+  *@description Text in Live Heap Profile View of a profiler tool
+  */
+  numberOfVmsSharingTheSameScript: 'Number of VMs sharing the same script source',
+  /**
+  *@description Text in Live Heap Profile View of a profiler tool
+  */
+  scriptUrl: 'Script URL',
+  /**
+  *@description Text in Live Heap Profile View of a profiler tool
+  */
+  urlOfTheScriptSource: 'URL of the script source',
+  /**
+  *@description Data grid name for Heap Profile data grids
+  */
+  heapProfile: 'Heap Profile',
+  /**
+  *@description Text in Live Heap Profile View of a profiler tool
+  *@example {1} PH1
+  */
+  anonymousScriptS: '(Anonymous Script {PH1})',
+  /**
+  *@description A unit
+  */
+  kb: 'kB',
+};
+const str_ = i18n.i18n.registerUIStrings('profiler/LiveHeapProfileView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {LiveHeapProfileView} */
 let liveHeapProfileViewInstance;
 /**
@@ -68,7 +113,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
      */
     const defaultColumnConfig = {
       id: '',
-      title: ls``,
+      title: i18nString(UIStrings.emptyString),
       width: undefined,
       fixedWidth: true,
       sortable: true,
@@ -88,34 +133,34 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
       {
         ...defaultColumnConfig,
         id: 'size',
-        title: ls`JS Heap`,
+        title: i18nString(UIStrings.jsHeap),
         width: '72px',
         fixedWidth: true,
         sortable: true,
         align: DataGrid.DataGrid.Align.Right,
         sort: DataGrid.DataGrid.Order.Descending,
-        tooltip: ls`Allocated JS heap size currently in use`,
+        tooltip: i18nString(UIStrings.allocatedJsHeapSizeCurrentlyIn),
       },
       {
         ...defaultColumnConfig,
         id: 'isolates',
-        title: ls`VMs`,
+        title: i18nString(UIStrings.vms),
         width: '40px',
         fixedWidth: true,
         align: DataGrid.DataGrid.Align.Right,
-        tooltip: ls`Number of VMs sharing the same script source`
+        tooltip: i18nString(UIStrings.numberOfVmsSharingTheSameScript)
       },
       {
         ...defaultColumnConfig,
         id: 'url',
-        title: ls`Script URL`,
+        title: i18nString(UIStrings.scriptUrl),
         fixedWidth: false,
         sortable: true,
-        tooltip: ls`URL of the script source`
+        tooltip: i18nString(UIStrings.urlOfTheScriptSource)
       },
     ];
     const dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
-      displayName: ls`Heap Profile`,
+      displayName: i18nString(UIStrings.heapProfile),
       columns,
       editCallback: undefined,
       deleteCallback: undefined,
@@ -256,9 +301,8 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
      * @return {string}
      */
     function anonymousScriptName(node) {
-      return Number(node.callFrame.scriptId) ?
-          Common.UIString.UIString('(Anonymous Script %s)', node.callFrame.scriptId) :
-          '';
+      return Number(node.callFrame.scriptId) ? i18nString(UIStrings.anonymousScriptS, {PH1: node.callFrame.scriptId}) :
+                                               '';
     }
   }
 
@@ -385,7 +429,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
         break;
       case 'size':
         cell.textContent = Number.withThousandsSeparator(Math.round(this._size / 1e3));
-        cell.createChild('span', 'size-units').textContent = ls`kB`;
+        cell.createChild('span', 'size-units').textContent = i18nString(UIStrings.kb);
         break;
       case 'isolates':
         cell.textContent = `${this._isolateCount}`;

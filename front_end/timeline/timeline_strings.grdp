@@ -136,8 +136,14 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_1ea4e2d272090544b2c4c492b67cb7ce" desc="Text in Timeline UIUtils of the Performance panel">
     Waiting for Network
   </message>
+  <message name="IDS_DEVTOOLS_1eaeeaeb638fdf7f6eeb047abbfd0f1a" desc="Time of a single activity, as opposed to the total time">
+    Self Time
+  </message>
   <message name="IDS_DEVTOOLS_1f114223c455157e25d2544f39d50397" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="DURATIONTEXT">$1s<ex>Took 3ms</ex></ph>. Long frame times are an indication of <ph name="LINK">$2s<ex>jank</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_1f1e990a1d2ba8ab4dd873a192237c30" desc="Time in miliseconds">
+    <ph name="VALUE">$1.1f<ex>30.1</ex></ph> ms
   </message>
   <message name="IDS_DEVTOOLS_205fd38626b73da9d837e61b2c7af71f" desc="Text in Timeline UIUtils of the Performance panel">
     Evaluate Script
@@ -180,6 +186,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_2875ec54afbd9922e0553f4b441aa54b" desc="Text in Timeline UIUtils of the Performance panel">
     Painting
+  </message>
+  <message name="IDS_DEVTOOLS_290612199861c31d1036b185b4e69b75" desc="Text for the summary view">
+    Summary
   </message>
   <message name="IDS_DEVTOOLS_2a0e96bf571559add541036a25ca1d36" desc="Text in Timeline UIUtils of the Performance panel">
     Call Stacks
@@ -267,6 +276,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_361beede47de122bfb91fe1da6e3f1a7" desc="Text in Timeline Loader of the Performance panel">
     Legacy Timeline format is not supported.
+  </message>
+  <message name="IDS_DEVTOOLS_36917e785bd31d786ab9dd7790a9a4c2" desc="Text for a heap profile type">
+    JS Heap
   </message>
   <message name="IDS_DEVTOOLS_38108192a74ae7b3deda8762ff299109" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="TITLE">$1s<ex>title</ex></ph> - Details
@@ -502,6 +514,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_6a389f626da11df07508bf251de59c23" desc="Text in Timeline UIUtils of the Performance panel">
     Frame Start
   </message>
+  <message name="IDS_DEVTOOLS_6bb61b1a929f2a0186f2671cd8258bd9" desc="Text to show something is not optimized">
+    Not optimized: <ph name="REASON">$1s<ex>Optimized too many times</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_6c906c5f560faeb38f51683bc22fb212" desc="Text in Timeline Tree View of the Performance panel">
     Group by Subdomain
   </message>
@@ -597,6 +612,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_84497a704396fa5a9e67913f67fc465a" desc="Text in Timeline UIUtils of the Performance panel">
     ''' (from memory cache)
+  </message>
+  <message name="IDS_DEVTOOLS_86408593c34af77fdd90df932f8b5261" desc="Text for a programming function">
+    Function
   </message>
   <message name="IDS_DEVTOOLS_86c8559f4d7d1d74dc3e04baf2b65cc6" desc="Text in Timeline UIUtils of the Performance panel">
     Decoded Body
@@ -720,6 +738,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_9d2ee5f9ab058df4d72a137e13bd4df2" desc="Node span text content in Timeline UIUtils of the Performance panel">
     [ <ph name="INVALIDATION_NODENAME">$1s<ex>node1</ex></ph> ]
   </message>
+  <message name="IDS_DEVTOOLS_9f29da220ed82809ec5dd70af4e52904" desc="Text for the total time of something">
+    Total Time
+  </message>
   <message name="IDS_DEVTOOLS_a10717d996573373c8f9a01c49bbb6a5" desc="Text in Timeline Panel of the Performance panel">
     Loading profile…
   </message>
@@ -746,6 +767,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_aa40d845ecb78d5bd01ff8b0cc9e213e" desc="Text in Timeline UIUtils of the Performance panel">
     Receive Data
+  </message>
+  <message name="IDS_DEVTOOLS_aab112fba39c10ed5df335ae0e47f329" desc="Text that indicates something is not optimized">
+    Not optimized
   </message>
   <message name="IDS_DEVTOOLS_ab0b54125d50a09e75f3829e7e90b8ea" desc="Text in Timeline UIUtils of the Performance panel">
     WebSocket Protocol

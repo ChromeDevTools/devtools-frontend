@@ -33,6 +33,9 @@
   <message name="IDS_DEVTOOLS_24b3f6c325e961ac4f102e9d5463fa2e" desc="Field in Devices pane letting customize which operating system the edited device presents via User Agent Client Hints. Example should be kept exactly.">
     Platform (e.g. Android)
   </message>
+  <message name="IDS_DEVTOOLS_29296fcb28eb4edf5d0049b6cac7bbd1" desc="Text for a percentage value">
+    <ph name="SCALE">$1.0f<ex>13.0</ex></ph>%%
+  </message>
   <message name="IDS_DEVTOOLS_33485fcae7737ceb110576dc3ef1a316" desc="Description of the Touch select in Sensors tab">
     Forces touch instead of click
   </message>

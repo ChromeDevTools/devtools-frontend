@@ -30,9 +30,18 @@
 
 import * as Common from '../common/common.js';
 import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';  // eslint-disable-line no-unused-vars
-
+import * as i18n from '../i18n/i18n.js';
 import {ChildrenProvider} from './ChildrenProvider.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Heap Snapshot Proxy of a profiler tool
+  *@example {functionName} PH1
+  */
+  anErrorOccurredWhenACallToMethod: 'An error occurred when a call to method \'{PH1}\' was requested',
+};
+const str_ = i18n.i18n.registerUIStrings('profiler/HeapSnapshotProxy.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {function(string, *):void} eventHandler
@@ -187,8 +196,8 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
     }
     if (data.error) {
       if (data.errorMethodName) {
-        Common.Console.Console.instance().error(Common.UIString.UIString(
-            'An error occurred when a call to method \'%s\' was requested', data.errorMethodName));
+        Common.Console.Console.instance().error(
+            i18nString(UIStrings.anErrorOccurredWhenACallToMethod, {PH1: data.errorMethodName}));
       }
       Common.Console.Console.instance().error(data['errorCallStack']);
       this._callbacks.delete(data.callId);

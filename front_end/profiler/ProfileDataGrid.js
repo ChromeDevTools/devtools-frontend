@@ -23,12 +23,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to show something is not optimized
+  *@example {Optimized too many times} PH1
+  */
+  notOptimizedS: 'Not optimized: {PH1}',
+  /**
+  *@description Generic text with two placeholders separated by a comma
+  *@example {1 613 680} PH1
+  *@example {44 %} PH2
+  */
+  genericTextTwoPlaceholders: '{PH1}, {PH2}',
+};
+const str_ = i18n.i18n.registerUIStrings('profiler/ProfileDataGrid.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @extends DataGrid.DataGrid.DataGridNode<*>
  */
@@ -187,7 +201,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
         if (this._deoptReason) {
           cell.classList.add('not-optimized');
           const warningIcon = UI.Icon.Icon.create('smallicon-warning', 'profile-warn-marker');
-          UI.Tooltip.Tooltip.install(warningIcon, Common.UIString.UIString('Not optimized: %s', this._deoptReason));
+          UI.Tooltip.Tooltip.install(warningIcon, i18nString(UIStrings.notOptimizedS, {PH1: this._deoptReason}));
           cell.appendChild(warningIcon);
         }
         UI.UIUtils.createTextChild(cell, this.functionName);
@@ -224,7 +238,8 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode {
     const percentText = this.tree._formatter.formatPercent(percent, this);
     percentSpan.textContent = percentText;
     const valueAccessibleText = this.tree._formatter.formatValueAccessibleText(value, this);
-    this.setCellAccessibleName(ls`${valueAccessibleText}, ${percentText}`, cell, columnId);
+    this.setCellAccessibleName(
+        i18nString(UIStrings.genericTextTwoPlaceholders, {PH1: valueAccessibleText, PH2: percentText}), cell, columnId);
     return cell;
   }
 

@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
 
@@ -11,6 +11,14 @@ import {HeapSnapshotView} from './HeapSnapshotView.js';  // eslint-disable-line 
 import {ProfilesPanel} from './ProfilesPanel.js';
 import {instance} from './ProfileTypeRegistry.js';
 
+export const UIStrings = {
+  /**
+  *@description A context menu item in the Heap Profiler Panel of a profiler tool
+  */
+  revealInSummaryView: 'Reveal in Summary view',
+};
+const str_ = i18n.i18n.registerUIStrings('profiler/HeapProfilerPanel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {HeapProfilerPanel} */
 let heapProfilerPanelInstance;
 /**
@@ -76,7 +84,7 @@ export class HeapProfilerPanel extends ProfilesPanel {
     }
 
     contextMenu.revealSection().appendItem(
-        Common.UIString.UIString('Reveal in Summary view'), revealInView.bind(this, 'Summary'));
+        i18nString(UIStrings.revealInSummaryView), revealInView.bind(this, 'Summary'));
   }
 
   /**

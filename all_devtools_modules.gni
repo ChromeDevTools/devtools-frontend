@@ -398,6 +398,7 @@ all_typescript_module_sources = [
   "profiler/HeapTimelineOverview.js",
   "profiler/IsolateSelector.js",
   "profiler/LiveHeapProfileView.js",
+  "profiler/ModuleUIStrings.js",
   "profiler/ProfileDataGrid.js",
   "profiler/ProfileHeader.js",
   "profiler/ProfileLauncherView.js",

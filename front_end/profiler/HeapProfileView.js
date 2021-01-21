@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Components from '../components/components.js';
+import * as i18n from '../i18n/i18n.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
@@ -17,6 +17,96 @@ import {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';           /
 import {ProfileEvents, ProfileHeader, ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
 import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Heap Profile View of a profiler tool
+  *@example {3 MB} PH1
+  */
+  selectedSizeS: 'Selected size: {PH1}',
+  /**
+  *@description Text in Heap Profile View of a profiler tool
+  */
+  selfSizeBytes: 'Self Size (bytes)',
+  /**
+  *@description Text in Heap Profile View of a profiler tool
+  */
+  totalSizeBytes: 'Total Size (bytes)',
+  /**
+  *@description Empty string
+  */
+  emptyString: '',
+  /**
+  *@description Text in Heap Profile View of a profiler tool
+  */
+  stopHeapProfiling: 'Stop heap profiling',
+  /**
+  *@description Text in Heap Profile View of a profiler tool
+  */
+  startHeapProfiling: 'Start heap profiling',
+  /**
+  *@description Text in CPUProfile View of a profiler tool
+  */
+  recording: 'Recording…',
+  /**
+  *@description Icon title in Heap Profile View of a profiler tool
+  */
+  heapProfilerIsRecording: 'Heap profiler is recording',
+  /**
+  *@description Text in Heap Profile View of a profiler tool
+  */
+  stopping: 'Stopping…',
+  /**
+  *@description Text in Heap Profile View of a profiler tool
+  */
+  allocationSampling: 'Allocation sampling',
+  /**
+  *@description Text in Heap Profile View of a profiler tool
+  */
+  samplingProfiles: 'SAMPLING PROFILES',
+  /**
+  *@description Text in Heap Profile View of a profiler tool
+  */
+  recordMemoryAllocationsUsing:
+      'Record memory allocations using sampling method.\n              This profile type has minimal performance overhead and can be used for long running operations.\n              It provides good approximation of allocations broken down by JavaScript execution stack.',
+  /**
+  *@description Name of a profile
+  *@example {2} PH1
+  */
+  profileD: 'Profile {PH1}',
+  /**
+  *@description Accessible text for the value in bytes in memory allocation or coverage view.
+  *@example {12345} PH1
+  */
+  sBytes: '{PH1} bytes',
+  /**
+  *@description Text in CPUProfile View of a profiler tool
+  *@example {21.33} PH1
+  */
+  formatPercent: '{PH1} %',
+  /**
+  *@description Text in Heap Profile View of a profiler tool
+  *@example {1,021} PH1
+  */
+  skb: '{PH1} kB',
+  /**
+  *@description Text for the name of something
+  */
+  name: 'Name',
+  /**
+  *@description Text in Heap Profile View of a profiler tool
+  */
+  selfSize: 'Self size',
+  /**
+  *@description Text in Heap Profile View of a profiler tool
+  */
+  totalSize: 'Total size',
+  /**
+  *@description Text for web URLs
+  */
+  url: 'URL',
+};
+const str_ = i18n.i18n.registerUIStrings('profiler/HeapProfileView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @param {!SamplingHeapProfileHeader} profileHeader
  * @return {!Protocol.HeapProfiler.SamplingHeapProfile}
@@ -88,7 +178,8 @@ export class HeapProfileView extends ProfileView {
   _onIdsRangeChanged(event) {
     const minId = /** @type {number} */ (event.data.minId);
     const maxId = /** @type {number} */ (event.data.maxId);
-    this._selectedSizeText.setText(ls`Selected size: ${Platform.NumberUtilities.bytesToString(event.data.size)}`);
+    this._selectedSizeText.setText(
+        i18nString(UIStrings.selectedSizeS, {PH1: Platform.NumberUtilities.bytesToString(event.data.size)}));
     this._setSelectionRange(minId, maxId);
   }
 
@@ -153,11 +244,11 @@ export class HeapProfileView extends ProfileView {
   columnHeader(columnId) {
     switch (columnId) {
       case 'self':
-        return Common.UIString.UIString('Self Size (bytes)');
+        return i18nString(UIStrings.selfSizeBytes);
       case 'total':
-        return Common.UIString.UIString('Total Size (bytes)');
+        return i18nString(UIStrings.totalSizeBytes);
     }
-    return ls``;
+    return i18nString(UIStrings.emptyString);
   }
 
   /**
@@ -209,7 +300,7 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
    * @override
    */
   get buttonTooltip() {
-    return this._recording ? ls`Stop heap profiling` : ls`Start heap profiling`;
+    return this._recording ? i18nString(UIStrings.stopHeapProfiling) : i18nString(UIStrings.startHeapProfiling);
   }
 
   /**
@@ -233,10 +324,10 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
     const profileHeader = new SamplingHeapProfileHeader(heapProfilerModel, this);
     this.setProfileBeingRecorded(profileHeader);
     this.addProfile(profileHeader);
-    profileHeader.updateStatus(ls`Recording…`);
+    profileHeader.updateStatus(i18nString(UIStrings.recording));
 
     const icon = UI.Icon.Icon.create('smallicon-warning');
-    UI.Tooltip.Tooltip.install(icon, ls`Heap profiler is recording`);
+    UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.heapProfilerIsRecording));
     UI.InspectorView.InspectorView.instance().setPanelIcon('heap_profiler', icon);
 
     this._recording = true;
@@ -250,7 +341,7 @@ export class SamplingHeapProfileTypeBase extends ProfileType {
       return;
     }
 
-    recordedProfile.updateStatus(ls`Stopping…`);
+    recordedProfile.updateStatus(i18nString(UIStrings.stopping));
     const profile = await this._stopSampling();
     if (recordedProfile) {
       console.assert(profile !== undefined);
@@ -295,7 +386,7 @@ let samplingHeapProfileTypeInstance;
 
 export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
   constructor() {
-    super(SamplingHeapProfileType.TypeId, ls`Allocation sampling`);
+    super(SamplingHeapProfileType.TypeId, i18nString(UIStrings.allocationSampling));
     if (!samplingHeapProfileTypeInstance) {
       samplingHeapProfileTypeInstance = this;
     }
@@ -313,16 +404,14 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
    * @override
    */
   get treeItemTitle() {
-    return ls`SAMPLING PROFILES`;
+    return i18nString(UIStrings.samplingProfiles);
   }
 
   /**
    * @override
    */
   get description() {
-    return ls`Record memory allocations using sampling method.
-              This profile type has minimal performance overhead and can be used for long running operations.
-              It provides good approximation of allocations broken down by JavaScript execution stack.`;
+    return i18nString(UIStrings.recordMemoryAllocationsUsing);
   }
 
   /**
@@ -416,7 +505,7 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
   constructor(heapProfilerModel, type, title) {
     super(
         heapProfilerModel && heapProfilerModel.debuggerModel(), type,
-        title || Common.UIString.UIString('Profile %d', type.nextProfileUid()));
+        title || i18nString(UIStrings.profileD, {PH1: type.nextProfileUid()}));
     this._heapProfilerModel = heapProfilerModel;
     this._protocolProfile = {
       head: {
@@ -573,7 +662,7 @@ export class NodeFormatter {
    * @return {string}
    */
   formatValueAccessibleText(value) {
-    return ls`${value} bytes`;
+    return i18nString(UIStrings.sBytes, {PH1: value});
   }
 
   /**
@@ -583,7 +672,7 @@ export class NodeFormatter {
    * @return {string}
    */
   formatPercent(value, node) {
-    return Common.UIString.UIString('%.2f\xa0%%', value);
+    return i18nString(UIStrings.formatPercent, {PH1: value.toFixed(2)});
   }
 
   /**
@@ -648,7 +737,7 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
    * @return {string}
    */
   formatValue(value, precision) {
-    return Common.UIString.UIString('%s\xa0kB', Number.withThousandsSeparator(value / 1e3));
+    return i18nString(UIStrings.skb, {PH1: Number.withThousandsSeparator(value / 1e3)});
   }
 
   /**
@@ -718,14 +807,14 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     function pushEntryInfoRow(title, value) {
       entryInfo.push({title: title, value: value});
     }
-    pushEntryInfoRow(ls`Name`, UI.UIUtils.beautifyFunctionName(node.functionName));
-    pushEntryInfoRow(ls`Self size`, Platform.NumberUtilities.bytesToString(node.self));
-    pushEntryInfoRow(ls`Total size`, Platform.NumberUtilities.bytesToString(node.total));
+    pushEntryInfoRow(i18nString(UIStrings.name), UI.UIUtils.beautifyFunctionName(node.functionName));
+    pushEntryInfoRow(i18nString(UIStrings.selfSize), Platform.NumberUtilities.bytesToString(node.self));
+    pushEntryInfoRow(i18nString(UIStrings.totalSize), Platform.NumberUtilities.bytesToString(node.total));
     const linkifier = new Components.Linkifier.Linkifier();
     const link = linkifier.maybeLinkifyConsoleCallFrame(
         this._heapProfilerModel ? this._heapProfilerModel.target() : null, node.callFrame);
     if (link) {
-      pushEntryInfoRow(ls`URL`, /** @type {string} */ (link.textContent));
+      pushEntryInfoRow(i18nString(UIStrings.url), /** @type {string} */ (link.textContent));
     }
     linkifier.dispose();
     return ProfileView.buildPopoverTable(entryInfo);

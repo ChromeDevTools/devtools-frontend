@@ -817,6 +817,7 @@ grd_files_debug_sources = [
   "front_end/profiler/HeapTimelineOverview.js",
   "front_end/profiler/IsolateSelector.js",
   "front_end/profiler/LiveHeapProfileView.js",
+  "front_end/profiler/ModuleUIStrings.js",
   "front_end/profiler/ProfileDataGrid.js",
   "front_end/profiler/ProfileHeader.js",
   "front_end/profiler/ProfileLauncherView.js",

@@ -58,14 +58,8 @@
   <message name="IDS_DEVTOOLS_1c481aa99d081c32182011a758f73d33" desc="Text that only contain a placeholder">
     <ph name="DURATIONTEXT">$1s<ex>100ms (at 200ms)</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_1eaeeaeb638fdf7f6eeb047abbfd0f1a" desc="Time of a single activity, as opposed to the total time">
-    Self Time
-  </message>
   <message name="IDS_DEVTOOLS_1ebc7540a5327b857144f04cf1435b4e" desc="Text to replay an XHR request">
     Replay XHR
-  </message>
-  <message name="IDS_DEVTOOLS_1f1e990a1d2ba8ab4dd873a192237c30" desc="Time in miliseconds">
-    <ph name="VALUE">$1.1f<ex>30.1</ex></ph> ms
   </message>
   <message name="IDS_DEVTOOLS_22b6fe30dec1ae9c09480cce01cd4065" desc="Text to run commands">
     Run command
@@ -73,14 +67,8 @@
   <message name="IDS_DEVTOOLS_231afe47f3f37d3808096b36c28b4ded" desc="Label for the column in the element list in the CSS Overview report">
     Element
   </message>
-  <message name="IDS_DEVTOOLS_290612199861c31d1036b185b4e69b75" desc="Text for the summary view">
-    Summary
-  </message>
   <message name="IDS_DEVTOOLS_29260f495ba8adcc62fd1307c758ff4e" desc="Text to show the measuring rulers on the target">
     Show rulers
-  </message>
-  <message name="IDS_DEVTOOLS_29296fcb28eb4edf5d0049b6cac7bbd1" desc="Text for a percentage value">
-    <ph name="SCALE">$1.0f<ex>13.0</ex></ph>%%
   </message>
   <message name="IDS_DEVTOOLS_2b81bb9b3deebcbfa05edad7a845005a" desc="Text for rendering frames">
     Frames
@@ -97,9 +85,6 @@
   <message name="IDS_DEVTOOLS_31fde7b05ac8952dacf4af8a704074ec" desc="Text for previewing items">
     Preview
   </message>
-  <message name="IDS_DEVTOOLS_36917e785bd31d786ab9dd7790a9a4c2" desc="Text for a heap profile type">
-    JS Heap
-  </message>
   <message name="IDS_DEVTOOLS_3793ea52a7be2d7deafd858fda50775c" desc="Text exposed to screen readers on checked items.">
     checked
   </message>
@@ -115,10 +100,7 @@
   <message name="IDS_DEVTOOLS_3bb3e8c8a24891ba0f7608bcc96f8b0a" desc="Text for a rendering frame">
     Frame
   </message>
-  <message name="IDS_DEVTOOLS_3f8f88e3686b2345cecc9530e19e6172" desc="Text to store an HTML element or JavaScript variable or expression result as a global variable">
-    Store as global variable
-  </message>
-  </message>
+
   <message name="IDS_DEVTOOLS_4789f23283b3a61f858b641a1bef19a3" desc="Text for the memory of the page">
     Memory
   </message>
@@ -209,9 +191,6 @@
   <message name="IDS_DEVTOOLS_6ba3a9ac3e0d57683c56299484b7ee3b" desc="Text to remove all breakpoints">
     Remove all breakpoints
   </message>
-  <message name="IDS_DEVTOOLS_6bb61b1a929f2a0186f2671cd8258bd9" desc="Text to show something is not optimized">
-    Not optimized: <ph name="REASON">$1s<ex>Optimized too many times</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_6e68a529a38966508d348e9f65d7ea31" desc="Title of an action in the network tool to toggle recording">
     Record network log
   </message>
@@ -244,9 +223,6 @@
   </message>
   <message name="IDS_DEVTOOLS_850985cd851d0fe440f03f77762e2590" desc="Text for the network request Content-Length header">
     <ph name="LOCKED_1">Content-Length</ph>
-  </message>
-  <message name="IDS_DEVTOOLS_86408593c34af77fdd90df932f8b5261" desc="Text for a programming function">
-    Function
   </message>
   <message name="IDS_DEVTOOLS_87d17f4624a514e81dc7c8e016a7405c" desc="Text for the mobile platform, as opposed to desktop">
     Mobile
@@ -296,12 +272,6 @@
   <message name="IDS_DEVTOOLS_9d8c209e49e328528c39c273798e98c9" desc="Text to save content as a specific file type">
     Save as...
   </message>
-  <message name="IDS_DEVTOOLS_9e65b51e82f2a9b9f72ebe3e083582bb" desc="Text to show an item is empty">
-    (empty)
-  </message>
-  <message name="IDS_DEVTOOLS_9f29da220ed82809ec5dd70af4e52904" desc="Text for the total time of something">
-    Total Time
-  </message>
   <message name="IDS_DEVTOOLS_a02c83a7dbd96295beaefb72c2bee2de" desc="Text that refers to the main target">
     Main
   </message>
@@ -328,9 +298,6 @@
   </message>
   <message name="IDS_DEVTOOLS_aa56a2e65d8106aef3c61e4f6bf94fdb" desc="Title of the Elements Panel">
     Elements
-  </message>
-  <message name="IDS_DEVTOOLS_aab112fba39c10ed5df335ae0e47f329" desc="Text that indicates something is not optimized">
-    Not optimized
   </message>
   <message name="IDS_DEVTOOLS_abbd64f40c34c537d3a571af068fce29" desc="Text for the orientation of something">
     Orientation
@@ -497,9 +464,6 @@
   <message name="IDS_DEVTOOLS_f0f31c9700c6b10d8a20dc487b2ae6a8" desc="Text for the touch type to simulate on a device">
     Touch
   </message>
-  <message name="IDS_DEVTOOLS_f19dbf2edb3a0bd74b0524d960ff21eb" desc="Text to load something">
-    Load
-  </message>
   <message name="IDS_DEVTOOLS_f28128b38efbc6134dc40751ee21fd29" desc="Text for documents, a type of resources">
     Documents
   </message>
@@ -517,9 +481,6 @@
   </message>
   <message name="IDS_DEVTOOLS_fb61758d0f0fda4ba867c3d5a46c16a7" desc="Name of the Sources panel">
     Sources
-  </message>
-  <message name="IDS_DEVTOOLS_fdbd92f0c6b67291ca954b74885d434e" desc="Name of a profile">
-    Profile <ph name="NUMBER">$1d<ex>2</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_fe7fb037b290768d6a6be30b237e183d" desc="Text to dock the DevTools to the right of the browser tab">
     Dock to right

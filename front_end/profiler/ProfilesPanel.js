@@ -24,6 +24,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -34,6 +35,41 @@ import {Events as ProfileLauncherEvents, ProfileLauncherView} from './ProfileLau
 import {ProfileSidebarTreeElement, setSharedFileSelectorElement} from './ProfileSidebarTreeElement.js';  // eslint-disable-line no-unused-vars
 import {instance} from './ProfileTypeRegistry.js';
 
+export const UIStrings = {
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon clear button in the Profiles Panel of a profiler tool
+  */
+  clearAllProfiles: 'Clear all profiles',
+  /**
+  *@description Text in Profiles Panel of a profiler tool
+  *@example {'.js', '.json'} PH1
+  */
+  cantLoadFileSupportedFile: 'Can’t load file. Supported file extensions: \'{PH1}.\'',
+  /**
+  *@description Text in Profiles Panel of a profiler tool
+  */
+  cantLoadProfileWhileAnother: 'Can’t load profile while another profile is being recorded.',
+  /**
+  *@description Text in Profiles Panel of a profiler tool
+  *@example {cannot open file} PH1
+  */
+  profileLoadingFailedS: 'Profile loading failed: {PH1}.',
+  /**
+  *@description A context menu item in the Profiles Panel of a profiler tool
+  */
+  load: 'Load…',
+  /**
+  *@description Text in Profiles Panel of a profiler tool
+  *@example {2} PH1
+  */
+  runD: 'Run {PH1}',
+  /**
+  *@description Text in Profiles Panel of a profiler tool
+  */
+  profiles: 'Profiles',
+};
+const str_ = i18n.i18n.registerUIStrings('profiler/ProfilesPanel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {DataDisplayDelegate}
  */
@@ -86,8 +122,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
     this._toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction);
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
-    this.clearResultsButton =
-        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Clear all profiles'), 'largeicon-clear');
+    this.clearResultsButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAllProfiles), 'largeicon-clear');
     this.clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._reset, this);
     toolbar.appendToolbarItem(this.clearResultsButton);
     toolbar.appendSeparator();
@@ -183,20 +218,19 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
     const profileType = this._findProfileTypeByExtension(file.name);
     if (!profileType) {
       const extensions = new Set(this._profileTypes.map(type => type.fileExtension()).filter(ext => ext));
-      Common.Console.Console.instance().error(Common.UIString.UIString(
-          'Can’t load file. Supported file extensions: `%s`.', Array.from(extensions).join("', '")));
+      Common.Console.Console.instance().error(
+          i18nString(UIStrings.cantLoadFileSupportedFile, {PH1: Array.from(extensions).join('\', \'')}));
       return;
     }
 
     if (Boolean(profileType.profileBeingRecorded())) {
-      Common.Console.Console.instance().error(
-          Common.UIString.UIString('Can’t load profile while another profile is being recorded.'));
+      Common.Console.Console.instance().error(i18nString(UIStrings.cantLoadProfileWhileAnother));
       return;
     }
 
     const error = await profileType.loadFromFile(file);
     if (error && 'message' in error) {
-      UI.UIUtils.MessageDialog.show(Common.UIString.UIString('Profile loading failed: %s.', error.message));
+      UI.UIUtils.MessageDialog.show(i18nString(UIStrings.profileLoadingFailedS, {PH1: error.message}));
     }
   }
 
@@ -350,7 +384,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (this.panelSidebarElement().isSelfOrAncestor(/** @type {?Node} */ (event.target))) {
       contextMenu.defaultSection().appendItem(
-          Common.UIString.UIString('Load…'), this._fileSelectorElement.click.bind(this._fileSelectorElement));
+          i18nString(UIStrings.load), this._fileSelectorElement.click.bind(this._fileSelectorElement));
     }
     contextMenu.show();
   }
@@ -545,7 +579,7 @@ export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
         }
 
         firstProfileTreeElement.setSmall(true);
-        firstProfileTreeElement.setMainTitle(Common.UIString.UIString('Run %d', 1));
+        firstProfileTreeElement.setMainTitle(i18nString(UIStrings.runD, {PH1: 1}));
 
         if (this.treeOutline) {
           this.treeOutline.element.classList.add('some-expandable');
@@ -555,7 +589,7 @@ export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
       if (groupSize >= 2) {
         sidebarParent = group.sidebarTreeElement;
         profileTreeElement.setSmall(true);
-        profileTreeElement.setMainTitle(Common.UIString.UIString('Run %d', groupSize));
+        profileTreeElement.setMainTitle(i18nString(UIStrings.runD, {PH1: groupSize}));
       }
     }
 
@@ -722,7 +756,7 @@ export class ProfilesSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.createChild('div', 'titles no-subtitle')
         .createChild('span', 'title-container')
         .createChild('span', 'title')
-        .textContent = Common.UIString.UIString('Profiles');
+        .textContent = i18nString(UIStrings.profiles);
   }
 }
 

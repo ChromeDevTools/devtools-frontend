@@ -31,8 +31,8 @@
 import * as Common from '../common/common.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 import * as HeapSnapshotModel from '../heap_snapshot_model/heap_snapshot_model.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -41,6 +41,60 @@ import {AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotDiffDa
 import {HeapSnapshotProviderProxy, HeapSnapshotProxy} from './HeapSnapshotProxy.js';  // eslint-disable-line no-unused-vars
 import {DataDisplayDelegate} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Heap Snapshot Grid Nodes of a profiler tool
+  *@example {2} PH1
+  */
+  emptyPlaceholder: '{PH1}',
+  /**
+  *@description Generic text with two placeholders separated by a comma
+  *@example {1 613 680} PH1
+  *@example {44 %} PH2
+  */
+  genericStringsTwoPlaceholders: '{PH1}, {PH2}',
+  /**
+  *@description Text in Heap Snapshot Grid Nodes of a profiler tool
+  */
+  internalArray: '(internal array)[]',
+  /**
+  *@description Text in Heap Snapshot Grid Nodes of a profiler tool
+  */
+  userObjectReachableFromWindow: 'User object reachable from window',
+  /**
+  *@description Text in Heap Snapshot Grid Nodes of a profiler tool
+  */
+  detachedFromDomTree: 'Detached from DOM tree',
+  /**
+  *@description Text in Heap Snapshot Grid Nodes of a profiler tool
+  */
+  previewIsNotAvailable: 'Preview is not available',
+  /**
+  *@description A context menu item in the Heap Profiler Panel of a profiler tool
+  */
+  revealInSummaryView: 'Reveal in Summary view',
+  /**
+  *@description Text for the summary view
+  */
+  summary: 'Summary',
+  /**
+  *@description A context menu item in the Heap Profiler Panel of a profiler tool
+  *@example {SomeClassConstructor} PH1
+  *@example {12345} PH2
+  */
+  revealObjectSWithIdSInSummary: 'Reveal object \'{PH1}\' with id @{PH2} in Summary view',
+  /**
+  *@description Text to store an HTML element or JavaScript variable or expression result as a global variable
+  */
+  storeAsGlobalVariable: 'Store as global variable',
+  /**
+  *@description Text in Heap Snapshot Grid Nodes of a profiler tool that indicates an element contained in another
+  * element.
+  */
+  inElement: 'in',
+};
+const str_ = i18n.i18n.registerUIStrings('profiler/HeapSnapshotGridNodes.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @abstract
  * @extends {DataGrid.DataGrid.DataGridNode<!HeapSnapshotGridNode>}
@@ -207,8 +261,8 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
    */
   _toUIDistance(distance) {
     const baseSystemDistance = HeapSnapshotModel.HeapSnapshotModel.baseSystemDistance;
-    return distance >= 0 && distance < baseSystemDistance ? Common.UIString.UIString('%d', distance) :
-                                                            Common.UIString.UIString('\u2212');
+    return distance >= 0 && distance < baseSystemDistance ? i18nString(UIStrings.emptyPlaceholder, {PH1: distance}) :
+                                                            '\u2212';
   }
 
   /**
@@ -260,7 +314,10 @@ export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode {
         div.classList.add('profile-multiple-values');
         UI.ARIAUtils.markAsHidden(valueSpan);
         UI.ARIAUtils.markAsHidden(percentSpan);
-        this.setCellAccessibleName(ls`${this.data[columnId]}, ${this.data[percentColumn]}`, cell, columnId);
+        this.setCellAccessibleName(
+            i18nString(
+                UIStrings.genericStringsTwoPlaceholders, {PH1: this.data[columnId], PH2: this.data[percentColumn]}),
+            cell, columnId);
       }
       cell.appendChild(div);
     }
@@ -607,7 +664,7 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
         valueStyle = 'null';
         break;
       case 'array':
-        value = value ? `${value}[]` : ls`(internal array)[]`;
+        value = value ? `${value}[]` : i18nString(UIStrings.internalArray);
         break;
     }
     return this._createObjectCellWithValue(valueStyle, value || '');
@@ -630,10 +687,11 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
     this._prefixObjectCell(div);
     if (this._reachableFromWindow) {
       div.appendChild(UI.Fragment.html
-                      `<span class="heap-object-tag" title="${ls`User object reachable from window`}">🗖</span>`);
+                      `<span class="heap-object-tag" title="${i18nString(UIStrings.userObjectReachableFromWindow)}">🗖</span>`);
     }
     if (this.detachedDOMTreeNode) {
-      div.appendChild(UI.Fragment.html`<span class="heap-object-tag" title="${ls`Detached from DOM tree`}">✀</span>`);
+      div.appendChild(UI.Fragment.html`<span class="heap-object-tag" title="${
+          i18nString(UIStrings.detachedFromDomTree)}">✀</span>`);
     }
     this._appendSourceLocation(div);
     const cell = /** @type {!HTMLElement} */ (fragment.element());
@@ -676,7 +734,8 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
   async queryObjectContent(heapProfilerModel, objectGroupName) {
     const remoteObject = await this.tryQueryObjectContent(heapProfilerModel, objectGroupName);
     return remoteObject ||
-        heapProfilerModel.runtimeModel().createRemoteObjectFromPrimitiveValue(ls`Preview is not available`);
+        heapProfilerModel.runtimeModel().createRemoteObjectFromPrimitiveValue(
+            i18nString(UIStrings.previewIsNotAvailable));
   }
 
   /**
@@ -723,26 +782,26 @@ export class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
    * @param {?SDK.HeapProfilerModel.HeapProfilerModel} heapProfilerModel
    */
   populateContextMenu(contextMenu, dataDisplayDelegate, heapProfilerModel) {
-    contextMenu.revealSection().appendItem(ls`Reveal in Summary view`, () => {
-      dataDisplayDelegate.showObject(String(this.snapshotNodeId), ls`Summary`);
+    contextMenu.revealSection().appendItem(i18nString(UIStrings.revealInSummaryView), () => {
+      dataDisplayDelegate.showObject(String(this.snapshotNodeId), i18nString(UIStrings.summary));
     });
 
     if (this._referenceName) {
       for (const match of this._referenceName.matchAll(/\((?<objectName>[^@)]*) @(?<snapshotNodeId>\d+)\)/g)) {
         const {objectName, snapshotNodeId} = /** @type {!{objectName:string, snapshotNodeId:string}} */ (match.groups);
         contextMenu.revealSection().appendItem(
-            ls`Reveal object '${objectName}' with id @${snapshotNodeId} in Summary view`, () => {
-              dataDisplayDelegate.showObject(snapshotNodeId, ls`Summary`);
+            i18nString(UIStrings.revealObjectSWithIdSInSummary, {PH1: objectName, PH2: snapshotNodeId}), () => {
+              dataDisplayDelegate.showObject(snapshotNodeId, i18nString(UIStrings.summary));
             });
       }
     }
 
     if (heapProfilerModel) {
-      contextMenu.revealSection().appendItem(ls`Store as global variable`, async () => {
+      contextMenu.revealSection().appendItem(i18nString(UIStrings.storeAsGlobalVariable), async () => {
         const remoteObject = await this.tryQueryObjectContent(
             /** @type {!SDK.HeapProfilerModel.HeapProfilerModel} */ (heapProfilerModel), '');
         if (!remoteObject) {
-          Common.Console.Console.instance().error(ls`Preview is not available`);
+          Common.Console.Console.instance().error(i18nString(UIStrings.previewIsNotAvailable));
         } else {
           await SDK.ConsoleModel.ConsoleModel.instance().saveToTempVariable(
               UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext), remoteObject);
@@ -928,7 +987,8 @@ export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
    * @return {string}
    */
   _edgeNodeSeparator() {
-    return ls`in`;
+    // TODO(l10n): improve description or clarify intention.
+    return i18nString(UIStrings.inElement);
   }
 
   /**

@@ -29,13 +29,41 @@
  */
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {IsolateSelector} from './IsolateSelector.js';
 import {ProfileType} from './ProfileHeader.js';    // eslint-disable-line no-unused-vars
 import {ProfilesPanel} from './ProfilesPanel.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Profile Launcher View of a profiler tool
+  */
+  selectJavascriptVmInstance: 'Select JavaScript VM instance',
+  /**
+  *@description Text to load something
+  */
+  load: 'Load',
+  /**
+  *@description Control button text content in Profile Launcher View of a profiler tool
+  */
+  takeSnapshot: 'Take snapshot',
+  /**
+  *@description Text of an item that stops the running task
+  */
+  stop: 'Stop',
+  /**
+  *@description Control button text content in Profile Launcher View of a profiler tool
+  */
+  start: 'Start',
+  /**
+  *@description Profile type header element text content in Profile Launcher View of a profiler tool
+  */
+  selectProfilingType: 'Select profiling type',
+};
+const str_ = i18n.i18n.registerUIStrings('profiler/ProfileLauncherView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileLauncherView extends UI.Widget.VBox {
   /**
    * @param {!ProfilesPanel} profilesPanel
@@ -55,7 +83,7 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     UI.ARIAUtils.markAsRadioGroup(this._profileTypeSelectorForm);
 
     const isolateSelectorElement = this._contentElement.createChild('div', 'vbox profile-isolate-selector-block');
-    isolateSelectorElement.createChild('h1').textContent = ls`Select JavaScript VM instance`;
+    isolateSelectorElement.createChild('h1').textContent = i18nString(UIStrings.selectJavascriptVmInstance);
     const isolateSelector = new IsolateSelector();
     isolateSelector.show(isolateSelectorElement.createChild('div', 'vbox profile-launcher-target-list'));
     isolateSelectorElement.appendChild(isolateSelector.totalMemoryElement());
@@ -63,7 +91,7 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     const buttonsDiv = this._contentElement.createChild('div', 'hbox profile-launcher-buttons');
     this._controlButton =
         UI.UIUtils.createTextButton('', this._controlButtonClicked.bind(this), '', /* primary */ true);
-    this._loadButton = UI.UIUtils.createTextButton(ls`Load`, this._loadButtonClicked.bind(this), '');
+    this._loadButton = UI.UIUtils.createTextButton(i18nString(UIStrings.load), this._loadButtonClicked.bind(this), '');
     buttonsDiv.appendChild(this._controlButton);
     buttonsDiv.appendChild(this._loadButton);
     this._recordButtonEnabled = true;
@@ -87,15 +115,15 @@ export class ProfileLauncherView extends UI.Widget.VBox {
     if (this._isInstantProfile) {
       this._controlButton.classList.remove('running');
       this._controlButton.classList.add('primary-button');
-      this._controlButton.textContent = Common.UIString.UIString('Take snapshot');
+      this._controlButton.textContent = i18nString(UIStrings.takeSnapshot);
     } else if (this._isProfiling) {
       this._controlButton.classList.add('running');
       this._controlButton.classList.remove('primary-button');
-      this._controlButton.textContent = Common.UIString.UIString('Stop');
+      this._controlButton.textContent = i18nString(UIStrings.stop);
     } else {
       this._controlButton.classList.remove('running');
       this._controlButton.classList.add('primary-button');
-      this._controlButton.textContent = Common.UIString.UIString('Start');
+      this._controlButton.textContent = i18nString(UIStrings.start);
     }
     for (const {optionElement} of this._typeIdToOptionElementAndProfileType.values()) {
       optionElement.disabled = Boolean(this._isProfiling);
@@ -140,8 +168,8 @@ export class ProfileLauncherView extends UI.Widget.VBox {
       this._profileTypeSelectorForm.createChild('p').appendChild(customContent);
       profileType.setCustomContentEnabled(false);
     }
-    const headerText =
-        this._typeIdToOptionElementAndProfileType.size > 1 ? ls`Select profiling type` : profileType.name;
+    const headerText = this._typeIdToOptionElementAndProfileType.size > 1 ? i18nString(UIStrings.selectProfilingType) :
+                                                                            profileType.name;
     this._profileTypeHeaderElement.textContent = headerText;
     UI.ARIAUtils.setAccessibleName(this._profileTypeSelectorForm, headerText);
   }

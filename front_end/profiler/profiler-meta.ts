@@ -3,8 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import type * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
@@ -12,6 +11,40 @@ import * as UI from '../ui/ui.js';
 import type * as Profiler from './profiler.js';
 
 let loadedProfilerModule: (typeof Profiler|undefined);
+
+export const UIStrings = {
+  /**
+  *@description Title for the profiler tab
+  */
+  memory: 'Memory',
+  /**
+  *@description Title of the 'Live Heap Profile' tool in the bottom drawer
+  */
+  liveHeapProfile: 'Live Heap Profile',
+  /**
+  *@description Title of an action under the Performance category that can be invoked through the Command Menu
+  */
+  startRecordingHeapAllocations: 'Start recording heap allocations',
+  /**
+  *@description Title of an action under the Performance category that can be invoked through the Command Menu
+  */
+  stopRecordingHeapAllocations: 'Stop recording heap allocations',
+  /**
+  *@description Title of an action in the live heap profile tool to start with reload
+  */
+  startRecordingHeapAllocationsAndReload: 'Start recording heap allocations and reload the page',
+  /**
+  *@description Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)
+  */
+  startStopRecording: 'Start/stop recording',
+  /**
+  *@description Title of a setting under the Performance category in Settings
+  */
+  showNativeFunctions: 'Show native functions in JS Profile',
+
+};
+const str_ = i18n.i18n.registerUIStrings('profiler/profiler-meta.ts', UIStrings);
+const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 async function loadProfilerModule(): Promise<typeof Profiler> {
   if (!loadedProfilerModule) {
@@ -33,7 +66,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'heap_profiler',
   commandPrompt: 'Show Memory',
-  title: (): Platform.UIString.LocalizedString => ls`Memory`,
+  title: i18nString(UIStrings.memory),
   order: 60,
   async loadView() {
     const Profiler = await loadProfilerModule();
@@ -45,7 +78,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'live_heap_profile',
   commandPrompt: 'Show Live Heap Profile',
-  title: (): Platform.UIString.LocalizedString => ls`Live Heap Profile`,
+  title: i18nString(UIStrings.liveHeapProfile),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 100,
   async loadView() {
@@ -70,11 +103,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Start recording heap allocations`,
+      title: i18nString(UIStrings.startRecordingHeapAllocations),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Stop recording heap allocations`,
+      title: i18nString(UIStrings.stopRecordingHeapAllocations),
     },
   ],
 });
@@ -88,14 +121,14 @@ UI.ActionRegistration.registerActionExtension({
   },
   category: UI.ActionRegistration.ActionCategory.MEMORY,
   experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
-  title: (): Platform.UIString.LocalizedString => ls`Start recording heap allocations and reload the page`,
+  title: i18nString(UIStrings.startRecordingHeapAllocationsAndReload),
 });
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'profiler.heap-toggle-recording',
   category: UI.ActionRegistration.ActionCategory.MEMORY,
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
-  title: (): Platform.UIString.LocalizedString => ls`Start/stop recording`,
+  title: i18nString(UIStrings.startStopRecording),
   toggleable: true,
   toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
   toggleWithRedColor: true,
@@ -121,7 +154,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'profiler.js-toggle-recording',
   category: UI.ActionRegistration.ActionCategory.JAVASCRIPT_PROFILER,
-  title: (): Platform.UIString.LocalizedString => ls`Start/stop recording`,
+  title: i18nString(UIStrings.startStopRecording),
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
   toggleable: true,
   toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
@@ -147,7 +180,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.PERFORMANCE,
-  title: (): Platform.UIString.LocalizedString => ls`Show native functions in JS Profile`,
+  title: i18nString(UIStrings.showNativeFunctions),
   settingName: 'showNativeFunctionsInJSProfile',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: true,

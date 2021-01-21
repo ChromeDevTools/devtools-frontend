@@ -23,12 +23,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
 import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -37,6 +37,76 @@ import {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';           /
 import {ProfileEvents, ProfileHeader, ProfileType} from './ProfileHeader.js';  // eslint-disable-line no-unused-vars
 import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
+export const UIStrings = {
+  /**
+  *@description Time of a single activity, as opposed to the total time
+  */
+  selfTime: 'Self Time',
+  /**
+  *@description Text for the total time of something
+  */
+  totalTime: 'Total Time',
+  /**
+  *@description Empty string
+  */
+  empty: '',
+  /**
+  *@description Text in CPUProfile View of a profiler tool
+  */
+  recordJavascriptCpuProfile: 'Record JavaScript CPU Profile',
+  /**
+  *@description Text in CPUProfile View of a profiler tool
+  */
+  stopCpuProfiling: 'Stop CPU profiling',
+  /**
+  *@description Text in CPUProfile View of a profiler tool
+  */
+  startCpuProfiling: 'Start CPU profiling',
+  /**
+  *@description Text in CPUProfile View of a profiler tool
+  */
+  cpuProfiles: 'CPU PROFILES',
+  /**
+  *@description Text in CPUProfile View of a profiler tool, that show how much time a script spend executing a function.
+  */
+  cpuProfilesShow: 'CPU profiles show where the execution time is spent in your page\'s JavaScript functions.',
+  /**
+  *@description Text in CPUProfile View of a profiler tool
+  */
+  recording: 'Recording…',
+  /**
+  *@description Time in miliseconds
+  *@example {30.1} PH1
+  */
+  fms: '{PH1} ms',
+  /**
+  *@description Text in CPUProfile View of a profiler tool
+  *@example {21.33} PH1
+  */
+  formatPercent: '{PH1} %',
+  /**
+  *@description Text for the name of something
+  */
+  name: 'Name',
+  /**
+  *@description Text for web URLs
+  */
+  url: 'URL',
+  /**
+  *@description Text in CPUProfile View of a profiler tool
+  */
+  aggregatedSelfTime: 'Aggregated self time',
+  /**
+  *@description Text in CPUProfile View of a profiler tool
+  */
+  aggregatedTotalTime: 'Aggregated total time',
+  /**
+  *@description Text that indicates something is not optimized
+  */
+  notOptimized: 'Not optimized',
+};
+const str_ = i18n.i18n.registerUIStrings('profiler/CPUProfileView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {UI.SearchableView.Searchable}
  */
@@ -71,11 +141,11 @@ export class CPUProfileView extends ProfileView {
   columnHeader(columnId) {
     switch (columnId) {
       case 'self':
-        return Common.UIString.UIString('Self Time');
+        return i18nString(UIStrings.selfTime);
       case 'total':
-        return Common.UIString.UIString('Total Time');
+        return i18nString(UIStrings.totalTime);
     }
-    return ls``;
+    return i18nString(UIStrings.empty);
   }
 
   /**
@@ -89,7 +159,7 @@ export class CPUProfileView extends ProfileView {
 
 export class CPUProfileType extends ProfileType {
   constructor() {
-    super(CPUProfileType.TypeId, Common.UIString.UIString('Record JavaScript CPU Profile'));
+    super(CPUProfileType.TypeId, i18nString(UIStrings.recordJavascriptCpuProfile));
     this._recording = false;
 
     SDK.SDKModel.TargetManager.instance().addModelListener(
@@ -125,8 +195,7 @@ export class CPUProfileType extends ProfileType {
    * @override
    */
   get buttonTooltip() {
-    return this._recording ? Common.UIString.UIString('Stop CPU profiling') :
-                             Common.UIString.UIString('Start CPU profiling');
+    return this._recording ? i18nString(UIStrings.stopCpuProfiling) : i18nString(UIStrings.startCpuProfiling);
   }
 
   /**
@@ -146,15 +215,14 @@ export class CPUProfileType extends ProfileType {
    * @override
    */
   get treeItemTitle() {
-    return Common.UIString.UIString('CPU PROFILES');
+    return i18nString(UIStrings.cpuProfiles);
   }
 
   /**
    * @override
    */
   get description() {
-    return Common.UIString.UIString(
-        'CPU profiles show where the execution time is spent in your page\'s JavaScript functions.');
+    return i18nString(UIStrings.cpuProfilesShow);
   }
 
   /**
@@ -177,7 +245,7 @@ export class CPUProfileType extends ProfileType {
     this.setProfileBeingRecorded(profile);
     SDK.SDKModel.TargetManager.instance().suspendAllTargets();
     this.addProfile(profile);
-    profile.updateStatus(Common.UIString.UIString('Recording…'));
+    profile.updateStatus(i18nString(UIStrings.recording));
     this._recording = true;
     cpuProfilerModel.startRecording();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ProfilesCPUProfileTaken);
@@ -290,7 +358,7 @@ export class NodeFormatter {
    * @return {string}
    */
   formatValue(value) {
-    return Common.UIString.UIString('%.1f\xa0ms', value);
+    return i18nString(UIStrings.fms, {PH1: value.toFixed(1)});
   }
 
   /**
@@ -313,7 +381,7 @@ export class NodeFormatter {
       const profile = this._profileView.profile();
       if (profile &&
           node.profileNode !== /** @type {!SDK.CPUProfileDataModel.CPUProfileDataModel} */ (profile).idleNode) {
-        return Common.UIString.UIString('%.2f\xa0%%', value);
+        return i18nString(UIStrings.formatPercent, {PH1: value.toFixed(2)});
       }
     }
     return '';
@@ -458,29 +526,29 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
         return '0';
       }
       if (ms < 1000) {
-        return Common.UIString.UIString('%.1f\xa0ms', ms);
+        return i18nString(UIStrings.fms, {PH1: ms.toFixed(1)});
       }
       return Number.secondsToString(ms / 1000, true);
     }
     const name = UI.UIUtils.beautifyFunctionName(node.functionName);
-    pushEntryInfoRow(ls`Name`, name);
+    pushEntryInfoRow(i18nString(UIStrings.name), name);
     const selfTime = millisecondsToString(/** @type {!Float32Array} */ (this._entrySelfTimes)[entryIndex]);
     const totalTime =
         millisecondsToString(/** @type {!PerfUI.FlameChart.TimelineData} */ (timelineData).entryTotalTimes[entryIndex]);
-    pushEntryInfoRow(ls`Self time`, selfTime);
-    pushEntryInfoRow(ls`Total time`, totalTime);
+    pushEntryInfoRow(i18nString(UIStrings.selfTime), selfTime);
+    pushEntryInfoRow(i18nString(UIStrings.totalTime), totalTime);
     const linkifier = new Components.Linkifier.Linkifier();
     const link = linkifier.maybeLinkifyConsoleCallFrame(
         this._cpuProfilerModel && this._cpuProfilerModel.target(), node.callFrame);
     if (link) {
-      pushEntryInfoRow(ls`URL`, link.textContent || '');
+      pushEntryInfoRow(i18nString(UIStrings.url), link.textContent || '');
     }
     linkifier.dispose();
-    pushEntryInfoRow(ls`Aggregated self time`, Number.secondsToString(node.self / 1000, true));
-    pushEntryInfoRow(ls`Aggregated total time`, Number.secondsToString(node.total / 1000, true));
+    pushEntryInfoRow(i18nString(UIStrings.aggregatedSelfTime), Number.secondsToString(node.self / 1000, true));
+    pushEntryInfoRow(i18nString(UIStrings.aggregatedTotalTime), Number.secondsToString(node.total / 1000, true));
     const deoptReason = /** @type {!SDK.CPUProfileDataModel.CPUProfileNode} */ (node).deoptReason;
     if (deoptReason) {
-      pushEntryInfoRow(ls`Not optimized`, deoptReason);
+      pushEntryInfoRow(i18nString(UIStrings.notOptimized), deoptReason);
     }
 
     return ProfileView.buildPopoverTable(entryInfo);

@@ -22,7 +22,12 @@ async function checkUIStrings(shouldAutoFix) {
   const errorMap = new Map();
   for (const [filePath, uiStringsEntries] of uiStringsMap.entries()) {
     let errorList;
-    if (/ModuleUIStrings\.(js|ts)$/.test(filePath)) {
+    if (/profiler(\\|\/)ModuleUIStrings\.(js|ts)$/.test(filePath)) {
+      // heap_snapshot is a web worker and has its own memory space, it's strings are
+      // not displayed but serialized and sent over to the profiler to be displayed.
+      // As they are displayed on the profiler they need to be declared there.
+      continue;
+    } else if (/ModuleUIStrings\.(js|ts)$/.test(filePath)) {
       const newFilePath = filePath.replace(/ModuleUIStrings\.(js|ts)$/, 'module.json');
       const stringIdSet = getStringIdsFromCallSites(localizationCallsMap.get(newFilePath));
       errorList = checkStringEntries(uiStringsEntries, stringIdSet, true);

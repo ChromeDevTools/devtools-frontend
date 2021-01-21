@@ -3,11 +3,60 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description aria label for javascript VM instances target list in heap profiler
+  */
+  javascriptVmInstances: 'JavaScript VM instances',
+  /**
+  *@description Text in Isolate Selector of a profiler tool
+  */
+  totalJsHeapSize: 'Total JS heap size',
+  /**
+  *@description Total trend div title in Isolate Selector of a profiler tool
+  *@example {3} PH1
+  */
+  totalPageJsHeapSizeChangeTrend: 'Total page JS heap size change trend over the last {PH1} minutes.',
+  /**
+  *@description Total value div title in Isolate Selector of a profiler tool
+  */
+  totalPageJsHeapSizeAcrossAllVm: 'Total page JS heap size across all VM instances.',
+  /**
+  *@description Text in Isolate Selector of a profiler tool
+  *@example {2 kB} PH1
+  */
+  changeRate: '{PH1}/s',
+  /**
+  *@description Text for isolate selector list items with positive change rate
+  *@example {1.0 kB} PH1
+  */
+  increasingBySPerSecond: 'increasing by {PH1} per second',
+  /**
+  *@description Text for isolate selector list items with negative change rate
+  *@example {1.0 kB} PH1
+  */
+  decreasingBySPerSecond: 'decreasing by {PH1} per second',
+  /**
+  *@description Heap div title in Isolate Selector of a profiler tool
+  */
+  heapSizeInUseByLiveJsObjects: 'Heap size in use by live JS objects.',
+  /**
+  *@description Trend div title in Isolate Selector of a profiler tool
+  *@example {3} PH1
+  */
+  heapSizeChangeTrendOverTheLastS: 'Heap size change trend over the last {PH1} minutes.',
+  /**
+  *@description Text to show an item is empty
+  */
+  empty: '(empty)',
+};
+const str_ = i18n.i18n.registerUIStrings('profiler/IsolateSelector.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {UI.ListControl.ListDelegate<!ListItem>}
  * @implements {SDK.IsolateManager.Observer}
@@ -21,7 +70,7 @@ export class IsolateSelector extends UI.Widget.VBox {
     /** @type {!UI.ListControl.ListControl<!ListItem>} */
     this._list = new UI.ListControl.ListControl(this._items, this, UI.ListControl.ListMode.NonViewport);
     this._list.element.classList.add('javascript-vm-instances-list');
-    UI.ARIAUtils.setAccessibleName(this._list.element, ls`JavaScript VM instances`);
+    UI.ARIAUtils.setAccessibleName(this._list.element, i18nString(UIStrings.javascriptVmInstances));
     this.contentElement.appendChild(this._list.element);
 
     /** @type {!Map<!SDK.IsolateManager.Isolate, !ListItem>} */
@@ -32,11 +81,11 @@ export class IsolateSelector extends UI.Widget.VBox {
     this._totalElement.classList.add('hbox');
     this._totalValueDiv = this._totalElement.createChild('div', 'profile-memory-usage-item-size');
     this._totalTrendDiv = this._totalElement.createChild('div', 'profile-memory-usage-item-trend');
-    this._totalElement.createChild('div').textContent = ls`Total JS heap size`;
+    this._totalElement.createChild('div').textContent = i18nString(UIStrings.totalJsHeapSize);
     const trendIntervalMinutes = Math.round(SDK.IsolateManager.MemoryTrendWindowMs / 60e3);
     UI.Tooltip.Tooltip.install(
-        this._totalTrendDiv, ls`Total page JS heap size change trend over the last ${trendIntervalMinutes} minutes.`);
-    UI.Tooltip.Tooltip.install(this._totalValueDiv, ls`Total page JS heap size across all VM instances.`);
+        this._totalTrendDiv, i18nString(UIStrings.totalPageJsHeapSizeChangeTrend, {PH1: trendIntervalMinutes}));
+    UI.Tooltip.Tooltip.install(this._totalValueDiv, i18nString(UIStrings.totalPageJsHeapSizeAcrossAllVm));
 
     SDK.IsolateManager.IsolateManager.instance().observeIsolates(this);
     SDK.SDKModel.TargetManager.instance().addEventListener(SDK.SDKModel.Events.NameChanged, this._targetChanged, this);
@@ -159,13 +208,13 @@ export class IsolateSelector extends UI.Widget.VBox {
     const changeRateText = Platform.NumberUtilities.bytesToString(Math.abs(changeRateBytesPerSecond));
     let changeText, changeLabel;
     if (changeRateBytesPerSecond > 0) {
-      changeText = ls`\u2B06${changeRateText}/s`;
+      changeText = '\u2B06' + i18nString(UIStrings.changeRate, {PH1: changeRateText});
       element.classList.toggle('increasing', true);
-      changeLabel = ls`increasing by ${changeRateText} per second`;
+      changeLabel = i18nString(UIStrings.increasingBySPerSecond, {PH1: changeRateText});
     } else {
-      changeText = ls`\u2B07${changeRateText}/s`;
+      changeText = '\u2B07' + i18nString(UIStrings.changeRate, {PH1: changeRateText});
       element.classList.toggle('increasing', false);
-      changeLabel = ls`decreasing by ${changeRateText} per second`;
+      changeLabel = i18nString(UIStrings.decreasingBySPerSecond, {PH1: changeRateText});
     }
     element.textContent = changeText;
     UI.ARIAUtils.setAccessibleName(element, changeLabel);
@@ -255,10 +304,10 @@ export class ListItem {
     this.element.classList.add('hbox');
     UI.ARIAUtils.markAsOption(this.element);
     this._heapDiv = this.element.createChild('div', 'profile-memory-usage-item-size');
-    UI.Tooltip.Tooltip.install(this._heapDiv, ls`Heap size in use by live JS objects.`);
+    UI.Tooltip.Tooltip.install(this._heapDiv, i18nString(UIStrings.heapSizeInUseByLiveJsObjects));
     this._trendDiv = this.element.createChild('div', 'profile-memory-usage-item-trend');
     UI.Tooltip.Tooltip.install(
-        this._trendDiv, ls`Heap size change trend over the last ${trendIntervalMinutes} minutes.`);
+        this._trendDiv, i18nString(UIStrings.heapSizeChangeTrendOverTheLastS, {PH1: trendIntervalMinutes}));
     this._nameDiv = this.element.createChild('div', 'profile-memory-usage-item-name');
     this.updateTitle();
   }
@@ -283,7 +332,8 @@ export class ListItem {
       const name = SDK.SDKModel.TargetManager.instance().mainTarget() !== target ? target.name() : '';
       const parsedURL = new Common.ParsedURL.ParsedURL(target.inspectedURL());
       const domain = parsedURL.isValid ? parsedURL.domain() : '';
-      const title = target.decorateLabel(domain && name ? `${domain}: ${name}` : name || domain || ls`(empty)`);
+      const title =
+          target.decorateLabel(domain && name ? `${domain}: ${name}` : name || domain || i18nString(UIStrings.empty));
       modelCountByName.set(title, (modelCountByName.get(title) || 0) + 1);
     }
     this._nameDiv.removeChildren();

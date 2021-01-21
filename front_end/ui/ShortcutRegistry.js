@@ -23,8 +23,8 @@ export class ShortcutRegistry {
    */
   constructor(actionRegistry) {
     this._actionRegistry = actionRegistry;
-    /** @type {!Platform.Multimap.<string, !KeyboardShortcut>} */
-    this._actionToShortcut = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap.<string, !KeyboardShortcut>} */
+    this._actionToShortcut = new Platform.MapUtilities.Multimap();
     this._keyMap = new ShortcutTreeNode(0, 0);
     /** @type {?ShortcutTreeNode} */
     this._activePrefixKey = null;
@@ -34,8 +34,8 @@ export class ShortcutRegistry {
     this._consumePrefix = null;
     /** @type {!Set.<string>} */
     this._devToolsDefaultShortcutActions = new Set();
-    /** @type {!Platform.Multimap.<string, !KeyboardShortcut>} */
-    this._disabledDefaultShortcutsForAction = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap.<string, !KeyboardShortcut>} */
+    this._disabledDefaultShortcutsForAction = new Platform.MapUtilities.Multimap();
     this._keybindSetSetting = Common.Settings.Settings.instance().moduleSetting('activeKeybindSet');
     this._keybindSetSetting.addChangeListener(event => {
       Host.userMetrics.keybindSetSettingChanged(event.data);

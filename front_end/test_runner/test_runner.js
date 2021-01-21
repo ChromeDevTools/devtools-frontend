@@ -3,12 +3,15 @@
 // found in the LICENSE file.
 
 // @ts-nocheck This file is not checked by TypeScript as it has a lot of legacy code.
-
+import * as Platform from '../platform/platform.js';
 import * as TestRunner from './TestRunner.js';
 
 export {
   TestRunner,
 };
+
+self.Platform = self.Platform || {};
+self.Platform.StringUtilities = Platform.StringUtilities;
 
 /**
  * @param {!SDK.Target} target

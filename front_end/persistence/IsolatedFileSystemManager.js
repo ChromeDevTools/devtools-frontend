@@ -272,12 +272,12 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
 
     /**
      * @param {!Array<string>} embedderPaths
-     * @return {!Platform.Multimap<string, string>}
+     * @return {!Platform.MapUtilities.Multimap<string, string>}
      * @this {IsolatedFileSystemManager}
      */
     function groupFilePathsIntoFileSystemPaths(embedderPaths) {
-      /** @type {!Platform.Multimap.<string, string>} */
-      const paths = new Platform.Multimap();
+      /** @type {!Platform.MapUtilities.Multimap.<string, string>} */
+      const paths = new Platform.MapUtilities.Multimap();
       for (const embedderPath of embedderPaths) {
         const filePath = Common.ParsedURL.ParsedURL.platformPathToURL(embedderPath);
         for (const fileSystemPath of this._fileSystems.keys()) {

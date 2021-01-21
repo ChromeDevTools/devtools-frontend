@@ -34,10 +34,10 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
 
     /** @type {!Map<string, !SourceMap>} */
     this._sourceMapById = new Map();
-    /** @type {!Platform.Multimap<string, !T>} */
-    this._sourceMapIdToLoadingClients = new Platform.Multimap();
-    /** @type {!Platform.Multimap<string, !T>} */
-    this._sourceMapIdToClients = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<string, !T>} */
+    this._sourceMapIdToLoadingClients = new Platform.MapUtilities.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<string, !T>} */
+    this._sourceMapIdToClients = new Platform.MapUtilities.Multimap();
 
     TargetManager.instance().addEventListener(TargetManagerEvents.InspectedURLChanged, this._inspectedURLChanged, this);
   }

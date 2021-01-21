@@ -18,12 +18,12 @@ export class CoverageDecorationManager {
   _coverageModel: CoverageModel;
   _textByProvider: Map<TextUtils.ContentProvider.ContentProvider, TextUtils.Text.Text|null>;
   _uiSourceCodeByContentProvider:
-      Platform.Multimap<TextUtils.ContentProvider.ContentProvider, Workspace.UISourceCode.UISourceCode>;
+      Platform.MapUtilities.Multimap<TextUtils.ContentProvider.ContentProvider, Workspace.UISourceCode.UISourceCode>;
 
   constructor(coverageModel: CoverageModel) {
     this._coverageModel = coverageModel;
     this._textByProvider = new Map();
-    this._uiSourceCodeByContentProvider = new Platform.Multimap();
+    this._uiSourceCodeByContentProvider = new Platform.MapUtilities.Multimap();
 
     for (const uiSourceCode of Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes()) {
       uiSourceCode.addLineDecoration(0, decoratorType, this);

@@ -595,6 +595,6 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
 /** @type {!WeakMap<!Workspace.UISourceCode.UISourceCode, !Promise<?Workspace.UISourceCode.UISourceCodeMetadata>>} */
 const sourceCodeToMetadataMap = new WeakMap();
 
-/** @typedef {!{changed:!Platform.Multimap<string, string>, added:!Platform.Multimap<string, string>, removed:!Platform.Multimap<string, string>}} */
+/** @typedef {!{changed:!Platform.MapUtilities.Multimap<string, string>, added:!Platform.MapUtilities.Multimap<string, string>, removed:!Platform.MapUtilities.Multimap<string, string>}} */
 // @ts-ignore typedef
 export let FilesChangedData;

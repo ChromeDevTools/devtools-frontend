@@ -237,8 +237,8 @@ export class CodeMirrorTextEditor extends UI.Widget.VBox {
     this._codeMirrorElement.classList.add('source-code');
     this._codeMirrorElement.classList.add('fill');
 
-    /** @type {!Platform.Multimap<number, !Decoration>} */
-    this._decorations = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<number, !Decoration>} */
+    this._decorations = new Platform.MapUtilities.Multimap();
 
     this.element.addEventListener('keydown', this._handleKeyDown.bind(this), true);
     this.element.addEventListener('keydown', this._handlePostKeyDown.bind(this), false);

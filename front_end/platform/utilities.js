@@ -32,7 +32,6 @@
  * extensions but in the mean time if an old func in here depends on one
  * that has been migrated, it will need to be imported.
  */
-import {inverse} from './map-utilities.js';
 import {caseInsensetiveComparator, regexSpecialCharacters, sprintf} from './string-utilities.js';
 
 // Still used in the test runners that can't use ES modules :(
@@ -154,120 +153,6 @@ self.createPlainTextSearchRegex = function(query, flags) {
 };
 
 /**
- * @return {!Multimap<K,V>}
- * @template K,V
- */
-// @ts-ignore https://crbug.com/1050549
-Map.prototype.inverse = function() {
-  return inverse(this);
-};
-
-/**
- * @template K, V
- */
-export class Multimap {
-  constructor() {
-    /** @type {!Map.<K, !Set.<!V>>} */
-    this._map = new Map();
-  }
-
-  /**
-   * @param {K} key
-   * @param {V} value
-   */
-  set(key, value) {
-    let set = this._map.get(key);
-    if (!set) {
-      set = new Set();
-      this._map.set(key, set);
-    }
-    set.add(value);
-  }
-
-  /**
-   * @param {K} key
-   * @return {!Set<!V>}
-   */
-  get(key) {
-    return this._map.get(key) || new Set();
-  }
-
-  /**
-   * @param {K} key
-   * @return {boolean}
-   */
-  has(key) {
-    return this._map.has(key);
-  }
-
-  /**
-   * @param {K} key
-   * @param {V} value
-   * @return {boolean}
-   */
-  hasValue(key, value) {
-    const set = this._map.get(key);
-    if (!set) {
-      return false;
-    }
-    return set.has(value);
-  }
-
-  /**
-   * @return {number}
-   */
-  get size() {
-    return this._map.size;
-  }
-
-  /**
-   * @param {K} key
-   * @param {V} value
-   * @return {boolean}
-   */
-  delete(key, value) {
-    const values = this.get(key);
-    if (!values) {
-      return false;
-    }
-    const result = values.delete(value);
-    if (!values.size) {
-      this._map.delete(key);
-    }
-    return result;
-  }
-
-  /**
-   * @param {K} key
-   */
-  deleteAll(key) {
-    this._map.delete(key);
-  }
-
-  /**
-   * @return {!Array.<K>}
-   */
-  keysArray() {
-    return [...this._map.keys()];
-  }
-
-  /**
-   * @return {!Array.<!V>}
-   */
-  valuesArray() {
-    const result = [];
-    for (const set of this._map.values()) {
-      result.push(...set.values());
-    }
-    return result;
-  }
-
-  clear() {
-    this._map.clear();
-  }
-}
-
-/**
  * @param {function():void} callback
  */
 export function runOnWindowLoad(callback) {
@@ -309,11 +194,3 @@ self.base64ToSize = function(content) {
   }
   return size;
 };
-
-// @ts-ignore
-self.Platform = self.Platform || {};
-// @ts-ignore
-Platform = Platform || {};
-
-/** @constructor */
-Platform.Multimap = Multimap;

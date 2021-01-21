@@ -27,8 +27,8 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
     /** @type {!Map<string, number>} */
     this._filePathPrefixesToBindingCount = new Map();
 
-    /** @type {!Platform.Multimap<!Workspace.UISourceCode.UISourceCode, function():void>} */
-    this._subscribedBindingEventListeners = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<!Workspace.UISourceCode.UISourceCode, function():void>} */
+    this._subscribedBindingEventListeners = new Platform.MapUtilities.Multimap();
 
     const linkDecorator = new LinkDecorator(this);
     Components.Linkifier.Linkifier.setLinkDecorator(linkDecorator);

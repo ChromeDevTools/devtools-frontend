@@ -237,10 +237,10 @@ export class ModelInfo {
     const sourceMapManager = cssModel.sourceMapManager();
     this._sassSourceMapping = new SASSSourceMapping(cssModel.target(), sourceMapManager, workspace);
 
-    /** @type {!Platform.Multimap<!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, !LiveLocation>} */
-    this._locations = new Platform.Multimap();
-    /** @type {!Platform.Multimap<string, !LiveLocation>} */
-    this._unboundLocations = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<!SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, !LiveLocation>} */
+    this._locations = new Platform.MapUtilities.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<string, !LiveLocation>} */
+    this._unboundLocations = new Platform.MapUtilities.Multimap();
   }
 
   /**

@@ -276,8 +276,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const processGroupStyle = this._buildGroupStyle({shareHeaderLine: false});
     const threadGroupStyle = this._buildGroupStyle({padding: 2, nestingLevel: 1, shareHeaderLine: false});
     const eventEntryType = EntryType.Event;
-    /** @type {!Platform.Multimap<!SDK.TracingModel.Process, !TimelineModel.TimelineModel.Track>} */
-    const tracksByProcess = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<!SDK.TracingModel.Process, !TimelineModel.TimelineModel.Track>} */
+    const tracksByProcess = new Platform.MapUtilities.Multimap();
     if (!this._model) {
       return;
     }

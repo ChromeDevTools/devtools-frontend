@@ -367,10 +367,10 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
     this._targets = new Set();
     /** @type {!Set.<!Observer>} */
     this._observers = new Set();
-    /** @type {!Platform.Multimap<symbol, !{modelClass: function(new:SDKModel, !Target), thisObject: (!Object|undefined), listener: function(!Common.EventTarget.EventTargetEvent):void}>} */
-    this._modelListeners = new Platform.Multimap();
-    /** @type {!Platform.Multimap<function(new:SDKModel, !Target), !SDKModelObserver<?>>} */
-    this._modelObservers = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<symbol, !{modelClass: function(new:SDKModel, !Target), thisObject: (!Object|undefined), listener: function(!Common.EventTarget.EventTargetEvent):void}>} */
+    this._modelListeners = new Platform.MapUtilities.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<function(new:SDKModel, !Target), !SDKModelObserver<?>>} */
+    this._modelObservers = new Platform.MapUtilities.Multimap();
     this._isSuspended = false;
   }
 

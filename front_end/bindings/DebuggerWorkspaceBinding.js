@@ -457,8 +457,8 @@ class ModelData {
     this._resourceMapping = new ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._compilerMapping = new CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
 
-    /** @type {!Platform.Multimap<string, !Location>} */
-    this._locations = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<string, !Location>} */
+    this._locations = new Platform.MapUtilities.Multimap();
 
     debuggerModel.setBeforePausedCallback(this._beforePaused.bind(this));
   }

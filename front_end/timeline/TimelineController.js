@@ -294,8 +294,8 @@ export class TimelineController {
       return null;
     }
 
-    /** @type {!Platform.Multimap<string, string>} */
-    const pseudoPidToFrames = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<string, string>} */
+    const pseudoPidToFrames = new Platform.MapUtilities.Multimap();
     /** @type {!Map<string, number>} */
     const targetIdToPid = new Map();
     /** @type {!Array<*>} */

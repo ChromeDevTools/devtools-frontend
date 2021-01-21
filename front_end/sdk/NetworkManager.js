@@ -1114,8 +1114,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     this._effectiveBlockedURLs = [];
     this._updateBlockedPatterns();
 
-    /** @type {!Platform.Multimap<!RequestInterceptor, !InterceptionPattern>} */
-    this._urlsForRequestInterceptor = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<!RequestInterceptor, !InterceptionPattern>} */
+    this._urlsForRequestInterceptor = new Platform.MapUtilities.Multimap();
 
     TargetManager.instance().observeModels(NetworkManager, this);
   }

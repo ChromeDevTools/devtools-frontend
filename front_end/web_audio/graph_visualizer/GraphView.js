@@ -26,15 +26,15 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
 
     /**
      * For each node ID, keep a set of all out-bound edge IDs.
-     * @type {!Platform.Multimap<!Protocol.WebAudio.GraphObjectId, string>}
+     * @type {!Platform.MapUtilities.Multimap<!Protocol.WebAudio.GraphObjectId, string>}
      */
-    this._outboundEdgeMap = new Platform.Multimap();
+    this._outboundEdgeMap = new Platform.MapUtilities.Multimap();
 
     /**
      * For each node ID, keep a set of all in-bound edge IDs.
-     * @type {!Platform.Multimap<!Protocol.WebAudio.GraphObjectId, string>}
+     * @type {!Platform.MapUtilities.Multimap<!Protocol.WebAudio.GraphObjectId, string>}
      */
-    this._inboundEdgeMap = new Platform.Multimap();
+    this._inboundEdgeMap = new Platform.MapUtilities.Multimap();
 
     // Use concise node label to replace the long UUID.
     // Each graph has its own label generator so that the label starts from 0.

@@ -80,7 +80,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     this._contentType = contentType;
     /** @type {?Promise<!TextUtils.ContentProvider.DeferredContent>} */
     this._requestContentPromise = null;
-    /** @type {?Platform.Multimap<string, !LineMarker>} */
+    /** @type {?Platform.MapUtilities.Multimap<string, !LineMarker>} */
     this._decorations = null;
     this._hasCommits = false;
     /** @type {?Set<!Message>} */
@@ -601,7 +601,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
   addDecoration(range, type, data) {
     const marker = new LineMarker(range, type, data);
     if (!this._decorations) {
-      this._decorations = new Platform.Multimap();
+      this._decorations = new Platform.MapUtilities.Multimap();
     }
     this._decorations.set(type, marker);
     this.dispatchEventToListeners(Events.LineDecorationAdded, marker);

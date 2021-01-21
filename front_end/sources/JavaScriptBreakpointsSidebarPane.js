@@ -90,8 +90,8 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
    * @return {!Array<!Array<!BreakpointLocation>>}
    */
   _groupBreakpointLocationsById(breakpointLocations) {
-    /** @type {!Platform.Multimap<string, !BreakpointLocation>} */
-    const map = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<string, !BreakpointLocation>} */
+    const map = new Platform.MapUtilities.Multimap();
     for (const breakpointLocation of breakpointLocations) {
       const uiLocation = breakpointLocation.uiLocation;
       map.set(uiLocation.id(), breakpointLocation);
@@ -109,11 +109,11 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
 
   /**
    * @param {!Array<!BreakpointLocation>} breakpointLocations
-   * @return {!Platform.Multimap<string, string>}
+   * @return {!Platform.MapUtilities.Multimap<string, string>}
    */
   _getLocationIdsByLineId(breakpointLocations) {
-    /** @type {!Platform.Multimap<string, string>} */
-    const result = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<string, string>} */
+    const result = new Platform.MapUtilities.Multimap();
 
     for (const breakpointLocation of breakpointLocations) {
       const uiLocation = breakpointLocation.uiLocation;

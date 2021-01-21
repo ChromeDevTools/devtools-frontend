@@ -82,8 +82,8 @@ export class NavigatorView extends UI.Widget.VBox {
     this.contentElement.appendChild(this._scriptsTree.element);
     this.setDefaultFocusedElement(this._scriptsTree.element);
 
-    /** @type {!Platform.Multimap<!Workspace.UISourceCode.UISourceCode, !NavigatorUISourceCodeTreeNode>} */
-    this._uiSourceCodeNodes = new Platform.Multimap();
+    /** @type {!Platform.MapUtilities.Multimap<!Workspace.UISourceCode.UISourceCode, !NavigatorUISourceCodeTreeNode>} */
+    this._uiSourceCodeNodes = new Platform.MapUtilities.Multimap();
     /** @type {!Map.<string, !NavigatorFolderTreeNode>} */
     this._subfolderNodes = new Map();
 

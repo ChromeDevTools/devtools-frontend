@@ -50,7 +50,7 @@ export const {ls} = UIString;
  */
 export {assertNotNull} from './typescript-utilities.js';
 
-export {Multimap, runOnWindowLoad, assertNever} from './utilities.js';
+export {runOnWindowLoad, assertNever} from './utilities.js';
 export {
   ArrayUtilities,
   TypeScriptUtilities,

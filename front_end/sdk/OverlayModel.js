@@ -72,6 +72,7 @@ export class OverlayModel extends SDKModel {
     this._showScrollBottleneckRectsSetting =
         Common.Settings.Settings.instance().moduleSetting('showScrollBottleneckRects');
     this._showHitTestBordersSetting = Common.Settings.Settings.instance().moduleSetting('showHitTestBorders');
+    this._showWebVitalsSetting = Common.Settings.Settings.instance().moduleSetting('showWebVitals');
 
     /**
      * @type {!Array<!Common.EventTarget.EventDescriptor>}
@@ -181,7 +182,9 @@ export class OverlayModel extends SDKModel {
           () => this._overlayAgent.invoke_setShowScrollBottleneckRects(
               {show: this._showScrollBottleneckRectsSetting.get()})),
       this._showHitTestBordersSetting.addChangeListener(
-          () => this._overlayAgent.invoke_setShowHitTestBorders({show: this._showHitTestBordersSetting.get()}))
+          () => this._overlayAgent.invoke_setShowHitTestBorders({show: this._showHitTestBordersSetting.get()})),
+      this._showWebVitalsSetting.addChangeListener(
+          () => this._overlayAgent.invoke_setShowWebVitals({show: this._showWebVitalsSetting.get()}))
     ];
 
     if (this._showPaintRectsSetting.get()) {
@@ -204,6 +207,9 @@ export class OverlayModel extends SDKModel {
     }
     if (this._showHitTestBordersSetting.get()) {
       this._overlayAgent.invoke_setShowHitTestBorders({show: true});
+    }
+    if (this._showWebVitalsSetting.get()) {
+      this._overlayAgent.invoke_setShowWebVitals({show: true});
     }
     if (this._debuggerModel && this._debuggerModel.isPaused()) {
       this._updatePausedInDebuggerMessage();

@@ -269,6 +269,24 @@
     {
       "type": "setting",
       "category": "Rendering",
+      "settingName": "showWebVitals",
+      "settingType": "boolean",
+      "storageType": "session",
+      "options": [
+        {
+          "value": true,
+          "title": "Show Core Web Vitals overlay"
+        },
+        {
+          "value": false,
+          "title": "Hide Core Web Vitals overlay"
+        }
+      ],
+      "defaultValue": false
+    },
+    {
+      "type": "setting",
+      "category": "Rendering",
       "settingName": "showFPSCounter",
       "settingType": "boolean",
       "storageType": "session",

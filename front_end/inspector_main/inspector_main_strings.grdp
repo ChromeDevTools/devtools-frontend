@@ -90,6 +90,9 @@
   <message name="IDS_DEVTOOLS_86f849e1a655c2df19f28cb3dfe07bc9" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Block ads on this site
   </message>
+  <message name="IDS_DEVTOOLS_8d9527c8877888035e66d174475c7af7" desc="Title of checkbox in Rendering Options">
+    Core Web Vitals
+  </message>
   <message name="IDS_DEVTOOLS_960568e27eb66ea554c3be4cfbefe3d0" desc="Text in Rendering Options">
     Layer borders
   </message>
@@ -104,6 +107,9 @@
   </message>
   <message name="IDS_DEVTOOLS_acedccca82f1cf8be95ce70905a0c9be" desc="Subtitle for a select box under the Rendering drawer">
     Forces CSS prefers-reduced-data media feature
+  </message>
+  <message name="IDS_DEVTOOLS_bea298cdd1ce1733c227ca2ff2484114" desc="Text in Rendering Options">
+    Shows an overlay with Core Web Vitals.
   </message>
   <message name="IDS_DEVTOOLS_c1940aeeb9693a02e28c52eb85ce261c" desc="Command Menu search query that points to the Rendering tool">
     paint

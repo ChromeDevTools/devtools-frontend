@@ -100,6 +100,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue('Rendering', 'showFPSCounter', false),
     createSettingValue('Rendering', 'showScrollBottleneckRects', false),
     createSettingValue('Rendering', 'showHitTestBorders', false),
+    createSettingValue('Rendering', 'showWebVitals', false),
     createSettingValue('Rendering', 'webpFormatDisabled', false),
     createSettingValue('Sources', 'cssSourceMapsEnabled', true),
     createSettingValue('Sources', 'jsSourceMapsEnabled', true),

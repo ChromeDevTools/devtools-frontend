@@ -135,6 +135,9 @@
   <message name="IDS_DEVTOOLS_3487a95e00a40a864b9f9180796ec50c" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     color-gamut: srgb
   </message>
+  <message name="IDS_DEVTOOLS_380595aaae2209975028145f7318a567" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Hide Core Web Vitals overlay
+  </message>
   <message name="IDS_DEVTOOLS_3ac7af4285bb17e9dbc72fdd675dd2be" desc="Title of a setting that turns on grid track size labels">
     Show track sizes
   </message>
@@ -540,6 +543,9 @@
   </message>
   <message name="IDS_DEVTOOLS_c64d5c0d5233c7d6e85a41c6dd3c3a3f" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Resume AudioContext
+  </message>
+  <message name="IDS_DEVTOOLS_c877598b1ee228457cf269ab268bbfb8" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
+    Show Core Web Vitals overlay
   </message>
   <message name="IDS_DEVTOOLS_c89686a387d2b12b3c729ce35a0bcb5b" desc="Text in DOMDebugger Model">
     Window

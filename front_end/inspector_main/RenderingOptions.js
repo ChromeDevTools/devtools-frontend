@@ -83,6 +83,9 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         ls`Hit-test borders`, ls`Shows borders around hit-test regions.`,
         Common.Settings.Settings.instance().moduleSetting('showHitTestBorders'));
     this._appendCheckbox(
+        ls`Core Web Vitals`, ls`Shows an overlay with Core Web Vitals.`,
+        Common.Settings.Settings.instance().moduleSetting('showWebVitals'));
+    this._appendCheckbox(
         ls`Disable local fonts`, ls`Disables local() sources in @font-face rules. Requires a page reload to apply.`,
         Common.Settings.Settings.instance().moduleSetting('localFontsDisabled'));
     this._appendCheckbox(

@@ -1,16 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "web-audio",
-      "title": "WebAudio",
-      "persistence": "closeable",
-      "order": 100,
-      "className": "WebAudio.WebAudioView",
-      "tags": "audio"
-    }
-  ],
   "dependencies": [
     "components",
     "i18n",

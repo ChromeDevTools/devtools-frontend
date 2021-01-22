@@ -3104,10 +3104,10 @@
   "web_audio/AudioContextSelector.ts | noRecordings": {
     "message": "(no recordings)"
   },
-  "web_audio/ModuleUIStrings.ts | audio": {
+  "web_audio/web_audio-meta.ts | audio": {
     "message": "audio"
   },
-  "web_audio/ModuleUIStrings.ts | webaudio": {
+  "web_audio/web_audio-meta.ts | webaudio": {
     "message": "WebAudio"
   },
   "web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {

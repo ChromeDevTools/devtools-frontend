@@ -200,6 +200,7 @@ devtools_module_entrypoint_sources = [
   "wasmparser_worker/wasmparser_worker.js",
   "web_audio/graph_visualizer/graph_visualizer.js",
   "web_audio/web_audio-legacy.js",
+  "web_audio/web_audio-meta.js",
   "web_audio/web_audio.js",
   "webauthn/webauthn-legacy.js",
   "webauthn/webauthn.js",

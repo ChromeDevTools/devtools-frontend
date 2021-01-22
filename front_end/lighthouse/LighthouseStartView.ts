@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import * as i18n from '../i18n/i18n.js';
-import * as UI from '../ui/ui.js';  // eslint-disable-line no-unused-vars
+/* eslint-disable rulesdir/no_underscored_properties */
 
-import {Events, LighthouseController, Presets, RuntimeSettings} from './LighthouseController.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
+import * as UI from '../ui/ui.js';
+
+import {Events, LighthouseController, Presets, RuntimeSettings} from './LighthouseController.js';
 import {RadioSetting} from './RadioSetting.js';
 
 export const UIStrings = {
@@ -36,13 +38,17 @@ export const UIStrings = {
   identifyAndFixCommonProblemsThat:
       'Identify and fix common problems that affect your site\'s performance, accessibility, and user experience.',
 };
-const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseStartView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseStartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class StartView extends UI.Widget.Widget {
-  /**
-   * @param {!LighthouseController} controller
-   */
-  constructor(controller) {
+  _controller: LighthouseController;
+  _settingsToolbar: UI.Toolbar.Toolbar;
+  _startButton!: HTMLButtonElement;
+  _helpText?: Element;
+  _warningText?: Element;
+  _shouldConfirm?: boolean;
+
+  constructor(controller: LighthouseController) {
     super();
     this.registerRequiredCSS('lighthouse/lighthouseStartView.css', {enableLegacyPatching: false});
     this._controller = controller;
@@ -50,54 +56,41 @@ export class StartView extends UI.Widget.Widget {
     this._render();
   }
 
-  /**
-   * @return {!UI.Toolbar.Toolbar}
-   */
-  settingsToolbar() {
+  settingsToolbar(): UI.Toolbar.Toolbar {
     return this._settingsToolbar;
   }
 
-  /**
-   * @param {string} settingName
-   * @param {string} label
-   * @param {!Element} parentElement
-   */
-  _populateRuntimeSettingAsRadio(settingName, label, parentElement) {
+  _populateRuntimeSettingAsRadio(settingName: string, label: string, parentElement: Element): void {
     const runtimeSetting = RuntimeSettings.find(item => item.setting.name === settingName);
     if (!runtimeSetting || !runtimeSetting.options) {
       throw new Error(`${settingName} is not a setting with options`);
     }
 
-    const control = new RadioSetting(runtimeSetting.options, runtimeSetting.setting, runtimeSetting.description);
+    const control = new RadioSetting(
+        runtimeSetting.options, runtimeSetting.setting as Common.Settings.Setting<string>, runtimeSetting.description);
     parentElement.appendChild(control.element);
     UI.ARIAUtils.setAccessibleName(control.element, label);
   }
 
-  /**
-   * @param {string} settingName
-   * @param {!UI.Toolbar.Toolbar} toolbar
-   */
-  _populateRuntimeSettingAsToolbarCheckbox(settingName, toolbar) {
+  _populateRuntimeSettingAsToolbarCheckbox(settingName: string, toolbar: UI.Toolbar.Toolbar): void {
     const runtimeSetting = RuntimeSettings.find(item => item.setting.name === settingName);
     if (!runtimeSetting || !runtimeSetting.title) {
       throw new Error(`${settingName} is not a setting with a title`);
     }
 
     runtimeSetting.setting.setTitle(runtimeSetting.title);
-    const control = new UI.Toolbar.ToolbarSettingCheckbox(runtimeSetting.setting, runtimeSetting.description);
+    const control = new UI.Toolbar.ToolbarSettingCheckbox(
+        runtimeSetting.setting as Common.Settings.Setting<boolean>, runtimeSetting.description);
     toolbar.appendToolbarItem(control);
     if (runtimeSetting.learnMore) {
-      const link = /** @type {!HTMLElement} */ (
-          UI.XLink.XLink.create(runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more'));
+      const link =
+          UI.XLink.XLink.create(runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more');
       link.style.padding = '5px';
       control.element.appendChild(link);
     }
   }
 
-  /**
-   * @param {!UI.Fragment.Fragment} fragment
-   */
-  _populateFormControls(fragment) {
+  _populateFormControls(fragment: UI.Fragment.Fragment): void {
     // Populate the device type
     const deviceTypeFormElements = fragment.$('device-type-form-elements');
     this._populateRuntimeSettingAsRadio('lighthouse.device_type', i18nString(UIStrings.device), deviceTypeFormElements);
@@ -118,7 +111,7 @@ export class StartView extends UI.Widget.Widget {
     UI.ARIAUtils.setAccessibleName(pluginFormElements, i18nString(UIStrings.communityPluginsBeta));
   }
 
-  _render() {
+  _render(): void {
     this._populateRuntimeSettingAsToolbarCheckbox('lighthouse.clear_storage', this._settingsToolbar);
     this._populateRuntimeSettingAsToolbarCheckbox('lighthouse.throttling', this._settingsToolbar);
 
@@ -133,44 +126,43 @@ export class StartView extends UI.Widget.Widget {
     const auditsDescription = i18nString(UIStrings.identifyAndFixCommonProblemsThat);  // crbug.com/972969
 
     const fragment = UI.Fragment.Fragment.build`
-      <div class="vbox lighthouse-start-view">
-        <header>
-          <div class="lighthouse-logo"></div>
-          <div class="lighthouse-start-button-container hbox">
-            ${this._startButton}
-            </div>
-          <div $="help-text" class="lighthouse-help-text hidden"></div>
-          <div class="lighthouse-start-view-text">
-            <span>${auditsDescription}</span>
-            ${
-        UI.XLink.XLink.create('https://developers.google.com/web/tools/lighthouse/', i18nString(UIStrings.learnMore))}
-          </div>
-          <div $="warning-text" class="lighthouse-warning-text hidden"></div>
-        </header>
-        <form>
-          <div class="lighthouse-form-categories">
-            <div class="lighthouse-form-section">
-              <div class="lighthouse-form-section-label">
-                ${i18nString(UIStrings.categories)}
-              </div>
-              <div class="lighthouse-form-elements" $="categories-form-elements"></div>
-            </div>
-            <div class="lighthouse-form-section">
-              <div class="lighthouse-form-section-label">
-                <div class="lighthouse-icon-label">${i18nString(UIStrings.communityPluginsBeta)}</div>
-              </div>
-              <div class="lighthouse-form-elements" $="plugins-form-elements"></div>
-            </div>
-          </div>
-          <div class="lighthouse-form-section">
-            <div class="lighthouse-form-section-label">
-              ${i18nString(UIStrings.device)}
-            </div>
-            <div class="lighthouse-form-elements" $="device-type-form-elements"></div>
-          </div>
-        </form>
-      </div>
-    `;
+  <div class="vbox lighthouse-start-view">
+  <header>
+  <div class="lighthouse-logo"></div>
+  <div class="lighthouse-start-button-container hbox">
+  ${this._startButton}
+  </div>
+  <div $="help-text" class="lighthouse-help-text hidden"></div>
+  <div class="lighthouse-start-view-text">
+  <span>${auditsDescription}</span>
+  ${UI.XLink.XLink.create('https://developers.google.com/web/tools/lighthouse/', i18nString(UIStrings.learnMore))}
+  </div>
+  <div $="warning-text" class="lighthouse-warning-text hidden"></div>
+  </header>
+  <form>
+  <div class="lighthouse-form-categories">
+  <div class="lighthouse-form-section">
+  <div class="lighthouse-form-section-label">
+  ${i18nString(UIStrings.categories)}
+  </div>
+  <div class="lighthouse-form-elements" $="categories-form-elements"></div>
+  </div>
+  <div class="lighthouse-form-section">
+  <div class="lighthouse-form-section-label">
+  <div class="lighthouse-icon-label">${i18nString(UIStrings.communityPluginsBeta)}</div>
+  </div>
+  <div class="lighthouse-form-elements" $="plugins-form-elements"></div>
+  </div>
+  </div>
+  <div class="lighthouse-form-section">
+  <div class="lighthouse-form-section-label">
+  ${i18nString(UIStrings.device)}
+  </div>
+  <div class="lighthouse-form-elements" $="device-type-form-elements"></div>
+  </div>
+  </form>
+  </div>
+  `;
 
     this._helpText = fragment.$('help-text');
     this._warningText = fragment.$('warning-text');
@@ -179,10 +171,7 @@ export class StartView extends UI.Widget.Widget {
     this.contentElement.style.overflow = 'auto';
   }
 
-  /**
-   * @override
-   */
-  onResize() {
+  onResize(): void {
     const useNarrowLayout = this.contentElement.offsetWidth < 560;
     const startViewEl = this.contentElement.querySelector('.lighthouse-start-view');
     if (!startViewEl) {
@@ -192,14 +181,11 @@ export class StartView extends UI.Widget.Widget {
     startViewEl.classList.toggle('vbox', useNarrowLayout);
   }
 
-  focusStartButton() {
+  focusStartButton(): void {
     this._startButton.focus();
   }
 
-  /**
-   * @param {boolean} isEnabled
-   */
-  setStartButtonEnabled(isEnabled) {
+  setStartButtonEnabled(isEnabled: boolean): void {
     if (this._helpText) {
       this._helpText.classList.toggle('hidden', isEnabled);
     }
@@ -209,19 +195,13 @@ export class StartView extends UI.Widget.Widget {
     }
   }
 
-  /**
-   * @param {?string} text
-   */
-  setUnauditableExplanation(text) {
+  setUnauditableExplanation(text: string|null): void {
     if (this._helpText) {
       this._helpText.textContent = text;
     }
   }
 
-  /**
-   * @param {?string} text
-   */
-  setWarningText(text) {
+  setWarningText(text: string|null): void {
     if (this._warningText) {
       this._warningText.textContent = text;
       this._warningText.classList.toggle('hidden', !text);

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Emulation from '../emulation/emulation.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
@@ -48,17 +50,34 @@ export const UIStrings = {
   */
   cancelling: 'Cancelling',
 };
-const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthousePanel.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthousePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/** @type {!LighthousePanel} */
-let lighthousePanelInstace;
+let lighthousePanelInstace: LighthousePanel;
 
 export class LighthousePanel extends UI.Panel.Panel {
-  /**
-   * @private
-   */
-  constructor() {
+  _protocolService: ProtocolService;
+  _controller: LighthouseController;
+  _startView: StartView;
+  _statusView: StatusView;
+  _warningText: null;
+  _unauditableExplanation: null;
+  _cachedRenderedReports: Map<ReportRenderer.ReportJSON, HTMLElement>;
+  _dropTarget: UI.DropTarget.DropTarget;
+  _auditResultsElement: HTMLElement;
+  _clearButton!: UI.Toolbar.ToolbarButton;
+  _newButton!: UI.Toolbar.ToolbarButton;
+  _reportSelector!: ReportSelector;
+  _settingsPane!: UI.Widget.Widget;
+  _rightToolbar!: UI.Toolbar.Toolbar;
+  _showSettingsPaneSetting!: Common.Settings.Setting<boolean>;
+  _stateBefore?: {
+    emulation: {enabled: boolean; outlineEnabled: boolean; toolbarControlsEnabled: boolean;};
+    network: {conditions: SDK.NetworkManager.Conditions;};
+  };
+  _isLHAttached?: boolean;
+
+  private constructor() {
     super('lighthouse');
     this.registerRequiredCSS('third_party/lighthouse/report-assets/report.css', {enableLegacyPatching: false});
     this.registerRequiredCSS('lighthouse/lighthousePanel.css', {enableLegacyPatching: false});
@@ -82,7 +101,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._controller.addEventListener(Events.RequestLighthouseStart, event => {
       this._startLighthouse(event);
     });
-    this._controller.addEventListener(Events.RequestLighthouseCancel, event => {
+    this._controller.addEventListener(Events.RequestLighthouseCancel, _event => {
       this._cancelLighthouse();
     });
 
@@ -91,37 +110,9 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._renderStartView();
 
     this._controller.recomputePageAuditability();
-
-    /**
-     * @type {!UI.Toolbar.ToolbarButton}
-     */
-    this._clearButton;
-    /**
-     * @type {!UI.Toolbar.ToolbarButton}
-     */
-    this._newButton;
-    /**
-     * @type {!ReportSelector}
-     */
-    this._reportSelector;
-    /**
-     * @type {!UI.Widget.Widget}
-     */
-    this._settingsPane;
-    /**
-     * @type {!UI.Toolbar.Toolbar}
-     */
-    this._rightToolbar;
-    /**
-     * @type {!Common.Settings.Setting<boolean>}
-     */
-    this._showSettingsPaneSetting;
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts = {forceNew: null}): LighthousePanel {
     const {forceNew} = opts;
     if (!lighthousePanelInstace || forceNew) {
       lighthousePanelInstace = new LighthousePanel();
@@ -129,14 +120,12 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     return lighthousePanelInstace;
   }
-  static getEvents() {
+
+  static getEvents(): typeof Events {
     return Events;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} evt
-   */
-  _refreshWarningsUI(evt) {
+  _refreshWarningsUI(evt: Common.EventTarget.EventTargetEvent): void {
     // PageWarningsChanged fires multiple times during an audit, which we want to ignore.
     if (this._isLHAttached) {
       return;
@@ -146,10 +135,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._startView.setWarningText(evt.data.warning);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} evt
-   */
-  _refreshStartAuditUI(evt) {
+  _refreshStartAuditUI(evt: Common.EventTarget.EventTargetEvent): void {
     // PageAuditabilityChanged fires multiple times during an audit, which we want to ignore.
     if (this._isLHAttached) {
       return;
@@ -160,24 +146,21 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._startView.setStartButtonEnabled(!evt.data.helpText);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} evt
-   */
-  _refreshStatusUI(evt) {
+  _refreshStatusUI(evt: Common.EventTarget.EventTargetEvent): void {
     this._statusView.updateStatus(evt.data.message);
   }
 
-  _refreshToolbarUI() {
+  _refreshToolbarUI(): void {
     this._clearButton.setEnabled(this._reportSelector.hasItems());
   }
 
-  _clearAll() {
+  _clearAll(): void {
     this._reportSelector.clearAll();
     this._renderStartView();
     this._refreshToolbarUI();
   }
 
-  _renderToolbar() {
+  _renderToolbar(): void {
     const lighthouseToolbarContainer = this.element.createChild('div', 'lighthouse-toolbar-container');
 
     const toolbar = new UI.Toolbar.Toolbar('', lighthouseToolbarContainer);
@@ -212,20 +195,17 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._refreshToolbarUI();
   }
 
-  _updateSettingsPaneVisibility() {
+  _updateSettingsPaneVisibility(): void {
     this._settingsPane.element.classList.toggle('hidden', !this._showSettingsPaneSetting.get());
   }
 
-  /**
-   * @param {boolean} show
-   */
-  _toggleSettingsDisplay(show) {
+  _toggleSettingsDisplay(show: boolean): void {
     this._rightToolbar.element.classList.toggle('hidden', !show);
     this._settingsPane.element.classList.toggle('hidden', !show);
     this._updateSettingsPaneVisibility();
   }
 
-  _renderStartView() {
+  _renderStartView(): void {
     this._auditResultsElement.removeChildren();
     this._statusView.hide();
 
@@ -246,31 +226,24 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.setDefaultFocusedChild(this._startView);
   }
 
-  /**
-   * @param {string} inspectedURL
-   */
-  _renderStatusView(inspectedURL) {
+  _renderStatusView(inspectedURL: string): void {
     this.contentElement.classList.toggle('in-progress', true);
     this._statusView.setInspectedURL(inspectedURL);
     this._statusView.show(this.contentElement);
   }
 
-  _beforePrint() {
+  _beforePrint(): void {
     this._statusView.show(this.contentElement);
     this._statusView.toggleCancelButton(false);
     this._statusView.renderText(i18nString(UIStrings.printing), i18nString(UIStrings.thePrintPopupWindowIsOpenPlease));
   }
 
-  _afterPrint() {
+  _afterPrint(): void {
     this._statusView.hide();
     this._statusView.toggleCancelButton(true);
   }
 
-  /**
-   * @param {!ReportRenderer.ReportJSON} lighthouseResult
-   * @param {!ReportRenderer.RunnerResultArtifacts=} artifacts
-   */
-  _renderReport(lighthouseResult, artifacts) {
+  _renderReport(lighthouseResult: ReportRenderer.ReportJSON, artifacts?: ReportRenderer.RunnerResultArtifacts): void {
     this._toggleSettingsDisplay(false);
     this.contentElement.classList.toggle('in-progress', false);
     this._startView.hideWidget();
@@ -287,8 +260,8 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     const reportContainer = this._auditResultsElement.createChild('div', 'lh-vars lh-root lh-devtools');
 
-    const dom = new DOM(/** @type {!Document} */ (this._auditResultsElement.ownerDocument));
-    const renderer = /** @type {!ReportRenderer.ReportRenderer} */ (new LighthouseReportRenderer(dom));
+    const dom = new DOM(this._auditResultsElement.ownerDocument as Document);
+    const renderer = new LighthouseReportRenderer(dom) as ReportRenderer.ReportRenderer;
 
     const templatesHTML = Root.Runtime.cachedResources.get('third_party/lighthouse/report-assets/templates.html');
     if (!templatesHTML) {
@@ -311,8 +284,8 @@ export class LighthousePanel extends UI.Panel.Panel {
     });
     LighthouseReportRenderer.handleDarkMode(el);
 
-    const features =
-        /** @type {!ReportRenderer.ReportUIFeatures} */ (/** @type {*} */ (new LighthouseReportUIFeatures(dom)));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const features = new LighthouseReportUIFeatures(dom) as any;
     features.setBeforePrint(this._beforePrint.bind(this));
     features.setAfterPrint(this._afterPrint.bind(this));
     features.setTemplateContext(templatesDOM);
@@ -321,7 +294,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._cachedRenderedReports.set(lighthouseResult, reportContainer);
   }
 
-  async _waitForMainTargetLoad() {
+  async _waitForMainTargetLoad(): Promise<void> {
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       return;
@@ -333,11 +306,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     return resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
   }
 
-  /**
-   * @param {!ReportRenderer.ReportJSON} lighthouseResult
-   * @param {!ReportRenderer.RunnerResultArtifacts=} artifacts
-   */
-  _buildReportUI(lighthouseResult, artifacts) {
+  _buildReportUI(lighthouseResult: ReportRenderer.ReportJSON, artifacts?: ReportRenderer.RunnerResultArtifacts): void {
     if (lighthouseResult === null) {
       return;
     }
@@ -349,10 +318,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._renderReport(lighthouseResult);
   }
 
-  /**
-   * @param {!DataTransfer} dataTransfer
-   */
-  _handleDrop(dataTransfer) {
+  _handleDrop(dataTransfer: DataTransfer): void {
     const items = dataTransfer.items;
     if (!items.length) {
       return;
@@ -363,33 +329,23 @@ export class LighthousePanel extends UI.Panel.Panel {
       if (!entry.isFile) {
         return;
       }
-      entry.file(
-          /**
-           * @param {!Blob} file
-           */
-          file => {
-            const reader = new FileReader();
-            reader.onload = () => this._loadedFromFile(/** @type {string} */ (reader.result));
-            reader.readAsText(file);
-          });
+      entry.file((file: Blob) => {
+        const reader = new FileReader();
+        reader.onload = (): void => this._loadedFromFile(reader.result as string);
+        reader.readAsText(file);
+      });
     }
   }
 
-  /**
-   * @param {string} report
-   */
-  _loadedFromFile(report) {
+  _loadedFromFile(report: string): void {
     const data = JSON.parse(report);
     if (!data['lighthouseVersion']) {
       return;
     }
-    this._buildReportUI(/** @type {!ReportRenderer.ReportJSON} */ (data));
+    this._buildReportUI(data as ReportRenderer.ReportJSON);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  async _startLighthouse(event) {
+  async _startLighthouse(_event: Common.EventTarget.EventTargetEvent): Promise<void> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseStarted);
 
     try {
@@ -427,7 +383,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     }
   }
 
-  async _cancelLighthouse() {
+  async _cancelLighthouse(): Promise<void> {
     this._statusView.updateStatus(i18nString(UIStrings.cancelling));
     await this._resetEmulationAndProtocolConnection();
     this._renderStartView();
@@ -440,7 +396,7 @@ export class LighthousePanel extends UI.Panel.Panel {
    *
    * We also set flags.internalDisableDeviceScreenEmulation = true to let LH only apply UA emulation
    */
-  async _setupEmulationAndProtocolConnection() {
+  async _setupEmulationAndProtocolConnection(): Promise<void> {
     const flags = this._controller.getFlags();
 
     const emulationModel = Emulation.DeviceModeModel.DeviceModeModel.instance();
@@ -448,9 +404,9 @@ export class LighthousePanel extends UI.Panel.Panel {
       emulation: {
         enabled: emulationModel.enabledSetting().get(),
         outlineEnabled: emulationModel.deviceOutlineSetting().get(),
-        toolbarControlsEnabled: emulationModel.toolbarControlsEnabledSetting().get()
+        toolbarControlsEnabled: emulationModel.toolbarControlsEnabledSetting().get(),
       },
-      network: {conditions: SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions()}
+      network: {conditions: SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions()},
     };
 
     emulationModel.toolbarControlsEnabledSetting().set(false);
@@ -472,7 +428,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this._isLHAttached = true;
   }
 
-  async _resetEmulationAndProtocolConnection() {
+  async _resetEmulationAndProtocolConnection(): Promise<void> {
     if (!this._isLHAttached) {
       return;
     }

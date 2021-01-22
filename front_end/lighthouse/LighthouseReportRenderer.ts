@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
@@ -31,27 +33,17 @@ export const UIStrings = {
   thePerformanceMetricsAboveAre:
       'The performance metrics above are simulated and won\'t match the timings found in this trace. Disable simulated throttling in "Lighthouse Settings" if you want the timings to match.',
 };
-const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseReportRenderer.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseReportRenderer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MaxLengthForLinks = 40;
 
-/**
- * @override
- * @extends {ReportRenderer.ReportRenderer}
- */
 // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
 export class LighthouseReportRenderer extends self.ReportRenderer {
-  /**
-   * @param {!DOM} dom
-   */
-  constructor(dom) {
+  constructor(dom: DOM) {
     super(dom);
   }
-  /**
-   * @param {!Element} el Parent element to render the report into.
-   * @param {!ReportRenderer.RunnerResultArtifacts=} artifacts
-   */
-  static addViewTraceButton(el, artifacts) {
+
+  static addViewTraceButton(el: Element, artifacts?: ReportRenderer.RunnerResultArtifacts): void {
     if (!artifacts || !artifacts.traces || !artifacts.traces.defaultPass) {
       return;
     }
@@ -75,17 +67,14 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
     }
     container.insertBefore(timelineButton, disclaimerEl.nextSibling);
 
-    async function onViewTraceClick() {
+    async function onViewTraceClick(): Promise<void> {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseViewTrace);
       await UI.InspectorView.InspectorView.instance().showPanel('timeline');
       Timeline.TimelinePanel.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
     }
   }
 
-  /**
-   * @param {!Element} el
-   */
-  static async linkifyNodeDetails(el) {
+  static async linkifyNodeDetails(el: Element): Promise<void> {
     const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       return;
@@ -96,8 +85,8 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
     }
 
     for (const origElement of el.getElementsByClassName('lh-node')) {
-      const origHTMLElement = /** @type {!HTMLElement} */ (origElement);
-      const detailsItem = /** @type {!ReportRenderer.NodeDetailsJSON} */ (origHTMLElement.dataset);
+      const origHTMLElement = origElement as HTMLElement;
+      const detailsItem = origHTMLElement.dataset as unknown as ReportRenderer.NodeDetailsJSON;
       if (!detailsItem.path) {
         continue;
       }
@@ -125,13 +114,10 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
     }
   }
 
-  /**
-   * @param {!Element} el
-   */
-  static async linkifySourceLocationDetails(el) {
+  static async linkifySourceLocationDetails(el: Element): Promise<void> {
     for (const origElement of el.getElementsByClassName('lh-source-location')) {
-      const origHTMLElement = /** @type {!HTMLElement} */ (origElement);
-      const detailsItem = /** @type {!ReportRenderer.SourceLocationDetailsJSON} */ (origHTMLElement.dataset);
+      const origHTMLElement = origElement as HTMLElement;
+      const detailsItem = origHTMLElement.dataset as ReportRenderer.SourceLocationDetailsJSON;
       if (!detailsItem.sourceUrl || !detailsItem.sourceLine || !detailsItem.sourceColumn) {
         continue;
       }
@@ -146,7 +132,7 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
         className: undefined,
         preventClick: undefined,
         tabStop: undefined,
-        text: undefined
+        text: undefined,
       });
       UI.Tooltip.Tooltip.install(origHTMLElement, '');
       origHTMLElement.textContent = '';
@@ -154,53 +140,36 @@ export class LighthouseReportRenderer extends self.ReportRenderer {
     }
   }
 
-  /**
-   * @param {!Element} el
-   */
-  static handleDarkMode(el) {
+  static handleDarkMode(el: Element): void {
     if (ThemeSupport.ThemeSupport.instance().themeName() === 'dark') {
       el.classList.add('dark');
     }
   }
 }
 
-/**
- * @override
- * @extends {ReportRenderer.ReportUIFeatures}
- */
 // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
 export class LighthouseReportUIFeatures extends self.ReportUIFeatures {
-  /**
-   * @param {!DOM} dom
-   */
-  constructor(dom) {
+  _beforePrint: (() => void)|null;
+  _afterPrint: (() => void)|null;
+
+  constructor(dom: DOM) {
     super(dom);
     this._beforePrint = null;
     this._afterPrint = null;
   }
 
-  /**
-   * @override
-   * @param {?function():void} beforePrint
-   */
-  setBeforePrint(beforePrint) {
+  setBeforePrint(beforePrint: (() => void)|null): void {
     this._beforePrint = beforePrint;
   }
 
-  /**
-   * @override
-   * @param {?function():void} afterPrint
-   */
-  setAfterPrint(afterPrint) {
+  setAfterPrint(afterPrint: (() => void)|null): void {
     this._afterPrint = afterPrint;
   }
 
   /**
    * Returns the html that recreates this report.
-   * @return {string}
-   * @protected
    */
-  getReportHtml() {
+  getReportHtml(): string {
     this.resetUIState();
     // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
     return Lighthouse.ReportGenerator.generateReportHtml(this.json);
@@ -208,11 +177,12 @@ export class LighthouseReportUIFeatures extends self.ReportUIFeatures {
 
   /**
    * Downloads a file (blob) using the system dialog prompt.
-   * @param {!Blob|!File} blob The file to save.
    */
-  async _saveFile(blob) {
+  async _saveFile(blob: Blob|File): Promise<void> {
+    // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
     const domain = new Common.ParsedURL.ParsedURL(this.json.finalUrl).domain();
     const sanitizedDomain = domain.replace(/[^a-z0-9.-]+/gi, '_');
+    // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
     const timestamp = Platform.DateUtilities.toISO8601Compact(new Date(this.json.fetchTime));
     const ext = blob.type.match('json') ? '.json' : '.html';
     const basename = `${sanitizedDomain}-${timestamp}${ext}`;
@@ -220,9 +190,9 @@ export class LighthouseReportUIFeatures extends self.ReportUIFeatures {
     Workspace.FileManager.FileManager.instance().save(basename, text, true /* forceSaveAs */);
   }
 
-  async _print() {
+  async _print(): Promise<void> {
     const document = this.getDocument();
-    const clonedReport = /** @type {!HTMLElement} */ (document.querySelector('.lh-root')).cloneNode(true /* deep */);
+    const clonedReport = (document.querySelector('.lh-root') as HTMLElement).cloneNode(true);
     const printWindow = window.open('', '_blank', 'channelmode=1,status=1,resizable=1');
     if (!printWindow) {
       return;
@@ -232,7 +202,7 @@ export class LighthouseReportUIFeatures extends self.ReportUIFeatures {
     printWindow.document.head.appendChild(style);
     printWindow.document.body.replaceWith(clonedReport);
     // Linkified nodes are shadow elements, which aren't exposed via `cloneNode`.
-    await LighthouseReportRenderer.linkifyNodeDetails(/** @type {!HTMLElement} */ (clonedReport));
+    await LighthouseReportRenderer.linkifyNodeDetails(clonedReport as HTMLElement);
 
     if (this._beforePrint) {
       this._beforePrint();
@@ -245,13 +215,12 @@ export class LighthouseReportUIFeatures extends self.ReportUIFeatures {
     }
   }
 
-  /**
-   * @return {!Document}
-   */
-  getDocument() {
+  getDocument(): Document {
+    // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
     return this._document;
   }
-  resetUIState() {
+  resetUIState(): void {
+    // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
     this._resetUIState();
   }
 }

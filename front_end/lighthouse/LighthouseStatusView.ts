@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
@@ -142,13 +144,25 @@ export const UIStrings = {
   lighthouseOnlySimulatesMobile:
       '`Lighthouse` only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: `Lighthouse` team]',
 };
-const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseStatusView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseStatusView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class StatusView {
-  /**
-   * @param {!LighthouseController} controller
-   */
-  constructor(controller) {
+  _controller: LighthouseController;
+  _statusView: Element|null;
+  _statusHeader: Element|null;
+  _progressWrapper: Element|null;
+  _progressBar: Element|null;
+  _statusText: Element|null;
+  _cancelButton: HTMLButtonElement|null;
+  _inspectedURL: string;
+  _textChangedAt: number;
+  _fastFactsQueued: Common.UIString.LocalizedString[];
+  _currentPhase: {id: string; message: string; progressBarClass: string; statusMessagePrefix: string;}|null;
+  _scheduledTextChangeTimeout: number|null;
+  _scheduledFastFactTimeout: number|null;
+  _dialog: UI.Dialog.Dialog;
+
+  constructor(controller: LighthouseController) {
     this._controller = controller;
 
     this._statusView = null;
@@ -161,9 +175,6 @@ export class StatusView {
     this._inspectedURL = '';
     this._textChangedAt = 0;
     this._fastFactsQueued = FastFacts.slice();
-    /**
-     * @type {{id: string, message: string, progressBarClass: string, statusMessagePrefix: string} | null}
-     */
     this._currentPhase = null;
     this._scheduledTextChangeTimeout = null;
     this._scheduledFastFactTimeout = null;
@@ -175,7 +186,7 @@ export class StatusView {
     this._render();
   }
 
-  _render() {
+  _render(): void {
     const dialogRoot = UI.Utils.createShadowRootWithCoreStyles(
         this._dialog.contentElement,
         {cssFile: 'lighthouse/lighthouseDialog.css', enableLegacyPatching: false, delegatesFocus: undefined});
@@ -183,17 +194,17 @@ export class StatusView {
 
     const cancelButton = UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), this._cancel.bind(this));
     const fragment = UI.Fragment.Fragment.build`
-      <div class="lighthouse-view vbox">
-        <h2 $="status-header">Auditing your web page…</h2>
-        <div class="lighthouse-status vbox" $="status-view">
-          <div class="lighthouse-progress-wrapper" $="progress-wrapper">
-            <div class="lighthouse-progress-bar" $="progress-bar"></div>
-          </div>
-          <div class="lighthouse-status-text" $="status-text"></div>
-        </div>
-        ${cancelButton}
-      </div>
-    `;
+  <div class="lighthouse-view vbox">
+  <h2 $="status-header">Auditing your web page…</h2>
+  <div class="lighthouse-status vbox" $="status-view">
+  <div class="lighthouse-progress-wrapper" $="progress-wrapper">
+  <div class="lighthouse-progress-bar" $="progress-bar"></div>
+  </div>
+  <div class="lighthouse-status-text" $="status-text"></div>
+  </div>
+  ${cancelButton}
+  </div>
+  `;
 
     lighthouseViewElement.appendChild(fragment.element());
 
@@ -212,9 +223,9 @@ export class StatusView {
     this._dialog.setMaxContentSize(new UI.Geometry.Size(500, 400));
   }
 
-  _reset() {
+  _reset(): void {
     this._resetProgressBarClasses();
-    clearTimeout(this._scheduledFastFactTimeout);
+    clearTimeout(this._scheduledFastFactTimeout as number);
 
     this._textChangedAt = 0;
     this._fastFactsQueued = FastFacts.slice();
@@ -223,10 +234,7 @@ export class StatusView {
     this._scheduledFastFactTimeout = null;
   }
 
-  /**
-   * @param {!Element} dialogRenderElement
-   */
-  show(dialogRenderElement) {
+  show(dialogRenderElement: Element): void {
     this._reset();
     this.updateStatus(i18nString(UIStrings.loading));
 
@@ -239,39 +247,30 @@ export class StatusView {
     this._dialog.show(dialogRenderElement);
   }
 
-  /**
-   * @param {string=} statusHeader
-   */
-  _renderStatusHeader(statusHeader) {
+  _renderStatusHeader(statusHeader?: string): void {
     if (this._statusHeader) {
       this._statusHeader.textContent = `${statusHeader}…`;
     }
   }
 
-  hide() {
+  hide(): void {
     if (this._dialog.isShowing()) {
       this._dialog.hide();
     }
   }
 
-  /**
-   * @param {string=} url
-   */
-  setInspectedURL(url = '') {
+  setInspectedURL(url: string = ''): void {
     this._inspectedURL = url;
   }
 
-  /**
-   * @param {?string} message
-   */
-  updateStatus(message) {
+  updateStatus(message: string|null): void {
     if (!message || !this._statusText) {
       return;
     }
 
     if (message.startsWith('Cancel')) {
       this._commitTextChange(i18nString(UIStrings.cancelling));
-      clearTimeout(this._scheduledFastFactTimeout);
+      clearTimeout(this._scheduledFastFactTimeout as number);
       return;
     }
 
@@ -284,7 +283,7 @@ export class StatusView {
     const currentPhaseIndex = StatusPhases.indexOf(this._currentPhase);
     if (!nextPhase && !this._currentPhase) {
       this._commitTextChange(i18nString(UIStrings.lighthouseIsWarmingUp));
-      clearTimeout(this._scheduledFastFactTimeout);
+      clearTimeout(this._scheduledFastFactTimeout as number);
     } else if (nextPhase && (!this._currentPhase || currentPhaseIndex < nextPhaseIndex)) {
       this._currentPhase = nextPhase;
       const text = this._getMessageForPhase(nextPhase);
@@ -299,15 +298,11 @@ export class StatusView {
     }
   }
 
-  _cancel() {
+  _cancel(): void {
     this._controller.dispatchEventToListeners(Events.RequestLighthouseCancel);
   }
 
-  /**
-   * @param {!StatusPhases} phase
-   * @return {string}
-   */
-  _getMessageForPhase(phase) {
+  _getMessageForPhase(phase: StatusPhase): string {
     if (phase.message) {
       return phase.message;
     }
@@ -323,26 +318,22 @@ export class StatusView {
     return match ? match.message : i18nString(UIStrings.lighthouseIsLoadingYourPage);
   }
 
-  /**
-   * @param {string} message
-   * @return {?StatusPhases}
-   */
-  _getPhaseForMessage(message) {
+  _getPhaseForMessage(message: string): StatusPhase|null {
     return StatusPhases.find(phase => message.startsWith(phase.statusMessagePrefix)) || null;
   }
 
-  _resetProgressBarClasses() {
+  _resetProgressBarClasses(): void {
     if (this._progressBar) {
       this._progressBar.className = 'lighthouse-progress-bar';
     }
   }
 
-  _scheduleFastFactCheck() {
+  _scheduleFastFactCheck(): void {
     if (!this._currentPhase || this._scheduledFastFactTimeout) {
       return;
     }
 
-    this._scheduledFastFactTimeout = setTimeout(() => {
+    this._scheduledFastFactTimeout = window.setTimeout(() => {
       this._updateFastFactIfNecessary();
       this._scheduledFastFactTimeout = null;
 
@@ -350,7 +341,7 @@ export class StatusView {
     }, 100);
   }
 
-  _updateFastFactIfNecessary() {
+  _updateFastFactIfNecessary(): void {
     const now = performance.now();
     if (now - this._textChangedAt < fastFactRotationInterval) {
       return;
@@ -365,10 +356,7 @@ export class StatusView {
     this._fastFactsQueued.splice(fastFactIndex, 1);
   }
 
-  /**
-   * @param {string} text
-   */
-  _commitTextChange(text) {
+  _commitTextChange(text: string): void {
     if (!this._statusText) {
       return;
     }
@@ -376,10 +364,7 @@ export class StatusView {
     this._statusText.textContent = text;
   }
 
-  /**
-   * @param {string} text
-   */
-  _scheduleTextChange(text) {
+  _scheduleTextChange(text: string): void {
     if (this._scheduledTextChangeTimeout) {
       clearTimeout(this._scheduledTextChangeTimeout);
     }
@@ -387,15 +372,12 @@ export class StatusView {
     const msSinceLastChange = performance.now() - this._textChangedAt;
     const msToTextChange = minimumTextVisibilityDuration - msSinceLastChange;
 
-    this._scheduledTextChangeTimeout = setTimeout(() => {
+    this._scheduledTextChangeTimeout = window.setTimeout(() => {
       this._commitTextChange(text);
     }, Math.max(msToTextChange, 0));
   }
 
-  /**
-   * @param {!Error} err
-   */
-  renderBugReport(err) {
+  renderBugReport(err: Error): void {
     console.error(err);
     if (this._scheduledFastFactTimeout) {
       window.clearTimeout(this._scheduledFastFactTimeout);
@@ -423,29 +405,18 @@ export class StatusView {
     }
   }
 
-  /**
-   * @param {string} statusHeader
-   * @param {string} text
-   */
-  renderText(statusHeader, text) {
+  renderText(statusHeader: string, text: string): void {
     this._renderStatusHeader(statusHeader);
     this._commitTextChange(text);
   }
 
-  /**
-   * @param {boolean} show
-   */
-  toggleCancelButton(show) {
+  toggleCancelButton(show: boolean): void {
     if (this._cancelButton) {
       this._cancelButton.style.visibility = show ? 'visible' : 'hidden';
     }
   }
 
-  /**
-   * @param {!Error} err
-   * @param {string} auditURL
-   */
-  _renderBugReportBody(err, auditURL) {
+  _renderBugReportBody(err: Error, auditURL: string): void {
     const chromeVersion = navigator.userAgent.match(/Chrome\/(\S+)/) || ['', 'Unknown'];
     // @ts-ignore Lighthouse sets `friendlyMessage` on certain
     // important errors such as PROTOCOL_TIMEOUT.
@@ -467,14 +438,11 @@ Stack Trace: ${err.stack}
   }
 }
 
-/** @const */
 export const fastFactRotationInterval = 6000;
 
-/** @const */
 export const minimumTextVisibilityDuration = 3000;
 
-/** @type {!Array.<!RegExp>} */
-const KnownBugPatterns = [
+const KnownBugPatterns: RegExp[] = [
   /PARSING_PROBLEM/,
   /DOCUMENT_REQUEST/,
   /READ_FAILED/,
@@ -483,8 +451,14 @@ const KnownBugPatterns = [
   /^You probably have multiple tabs open/,
 ];
 
-/** @typedef {{id: string, message: string, progressBarClass: string, statusMessagePrefix: string}} */
-export const StatusPhases = [
+export interface StatusPhase {
+  id: string;
+  progressBarClass: string;
+  message: string;
+  statusMessagePrefix: string;
+}
+
+export const StatusPhases: StatusPhase[] = [
   {
     id: 'loading',
     progressBarClass: 'loading',
@@ -502,10 +476,10 @@ export const StatusPhases = [
     progressBarClass: 'auditing',
     message: i18nString(UIStrings.almostThereLighthouseIsNow),
     statusMessagePrefix: 'Auditing',
-  }
+  },
 ];
 
-/** @typedef {{message: string, deviceType: string, throttling: string}} */
+
 const LoadingMessages = [
   {
     deviceType: 'mobile',
@@ -530,11 +504,17 @@ const LoadingMessages = [
 ];
 
 const FastFacts = [
-  i18nString(UIStrings.mbTakesAMinimumOfSecondsTo), i18nString(UIStrings.rebuildingPinterestPagesFor),
-  i18nString(UIStrings.byReducingTheResponseSizeOfJson), i18nString(UIStrings.walmartSawAIncreaseInRevenueFor),
-  i18nString(UIStrings.ifASiteTakesSecondToBecome), i18nString(UIStrings.OfGlobalMobileUsersInWereOnGOrG),
-  i18nString(UIStrings.theAverageUserDeviceCostsLess), i18nString(UIStrings.SecondsIsTheAverageTimeAMobile),
-  i18nString(UIStrings.OfMobilePagesTakeNearlySeconds), i18nString(UIStrings.asPageLoadTimeIncreasesFromOne),
-  i18nString(UIStrings.asTheNumberOfElementsOnAPage), i18nString(UIStrings.OfMobilePagesTakeNearlySeconds),
-  i18nString(UIStrings.lighthouseOnlySimulatesMobile)
+  i18nString(UIStrings.mbTakesAMinimumOfSecondsTo),
+  i18nString(UIStrings.rebuildingPinterestPagesFor),
+  i18nString(UIStrings.byReducingTheResponseSizeOfJson),
+  i18nString(UIStrings.walmartSawAIncreaseInRevenueFor),
+  i18nString(UIStrings.ifASiteTakesSecondToBecome),
+  i18nString(UIStrings.OfGlobalMobileUsersInWereOnGOrG),
+  i18nString(UIStrings.theAverageUserDeviceCostsLess),
+  i18nString(UIStrings.SecondsIsTheAverageTimeAMobile),
+  i18nString(UIStrings.OfMobilePagesTakeNearlySeconds),
+  i18nString(UIStrings.asPageLoadTimeIncreasesFromOne),
+  i18nString(UIStrings.asTheNumberOfElementsOnAPage),
+  i18nString(UIStrings.OfMobilePagesTakeNearlySeconds),
+  i18nString(UIStrings.lighthouseOnlySimulatesMobile),
 ];

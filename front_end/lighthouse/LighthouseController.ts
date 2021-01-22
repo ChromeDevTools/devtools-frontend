@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
@@ -128,18 +130,17 @@ export const UIStrings = {
   *@description Text in Lighthouse Controller
   */
   resetStorageLocalstorage:
-      'Reset storage (localStorage, IndexedDB, etc) before auditing. (Good for performance & PWA testing)'
+      'Reset storage (localStorage, IndexedDB, etc) before auditing. (Good for performance & PWA testing)',
 };
-const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseController.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {SDK.SDKModel.SDKModelObserver<!SDK.ServiceWorkerManager.ServiceWorkerManager>}
- */
-export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {!ProtocolService} protocolService
-   */
-  constructor(protocolService) {
+export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper implements
+    SDK.SDKModel.SDKModelObserver<SDK.ServiceWorkerManager.ServiceWorkerManager> {
+  _manager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
+  _serviceWorkerListeners?: Common.EventTarget.EventDescriptor[];
+  _inspectedURL?: string;
+
+  constructor(protocolService: ProtocolService) {
     super();
 
     protocolService.registerStatusCallback(
@@ -158,11 +159,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
         SDK.SDKModel.Events.InspectedURLChanged, this.recomputePageAuditability, this);
   }
 
-  /**
-   * @override
-   * @param {!SDK.ServiceWorkerManager.ServiceWorkerManager} serviceWorkerManager
-   */
-  modelAdded(serviceWorkerManager) {
+  modelAdded(serviceWorkerManager: SDK.ServiceWorkerManager.ServiceWorkerManager): void {
     if (this._manager) {
       return;
     }
@@ -178,11 +175,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
     this.recomputePageAuditability();
   }
 
-  /**
-   * @override
-   * @param {!SDK.ServiceWorkerManager.ServiceWorkerManager} serviceWorkerManager
-   */
-  modelRemoved(serviceWorkerManager) {
+  modelRemoved(serviceWorkerManager: SDK.ServiceWorkerManager.ServiceWorkerManager): void {
     if (this._manager !== serviceWorkerManager) {
       return;
     }
@@ -193,10 +186,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
     this.recomputePageAuditability();
   }
 
-  /**
-   * @return {boolean}
-   */
-  _hasActiveServiceWorker() {
+  _hasActiveServiceWorker(): boolean {
     if (!this._manager) {
       return false;
     }
@@ -223,17 +213,11 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
     return false;
   }
 
-  /**
-   * @return {boolean}
-   */
-  _hasAtLeastOneCategory() {
+  _hasAtLeastOneCategory(): boolean {
     return Presets.some(preset => preset.setting.get());
   }
 
-  /**
-   * @return {?string}
-   */
-  _unauditablePageMessage() {
+  _unauditablePageMessage(): string|null {
     if (!this._manager) {
       return null;
     }
@@ -247,10 +231,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
     return null;
   }
 
-  /**
-   * @return {!Promise<string>}
-   */
-  async _hasImportantResourcesNotCleared() {
+  async _hasImportantResourcesNotCleared(): Promise<string> {
     const clearStorageSetting =
         RuntimeSettings.find(runtimeSetting => runtimeSetting.setting.name === 'lighthouse.clear_storage');
     if (clearStorageSetting && !clearStorageSetting.setting.get()) {
@@ -273,10 +254,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
     return '';
   }
 
-  /**
-   * @return {!Promise<string>}
-   */
-  async _evaluateInspectedURL() {
+  async _evaluateInspectedURL(): Promise<string> {
     if (!this._manager) {
       return '';
     }
@@ -317,25 +295,22 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
     return inspectedURL;
   }
 
-  /**
-   * @return {{internalDisableDeviceScreenEmulation: boolean, emulatedFormFactor: (string|undefined)}}
-   */
-  getFlags() {
+  getFlags(): {internalDisableDeviceScreenEmulation: boolean; emulatedFormFactor: (string | undefined);} {
     const flags = {
       // DevTools handles all the emulation. This tells Lighthouse to not bother with emulation.
-      internalDisableDeviceScreenEmulation: true
+      internalDisableDeviceScreenEmulation: true,
     };
     for (const runtimeSetting of RuntimeSettings) {
       runtimeSetting.setFlags(flags, runtimeSetting.setting.get());
     }
-    return /** @type {{internalDisableDeviceScreenEmulation: boolean, emulatedFormFactor: (string|undefined)}} */ (
-        flags);
+    return /** @type {{internalDisableDeviceScreenEmulation: boolean, emulatedFormFactor: (string|undefined)}} */ flags as
+    {
+      internalDisableDeviceScreenEmulation: boolean;
+      emulatedFormFactor: (string|undefined);
+    };
   }
 
-  /**
-   * @return {!Array<string>}
-   */
-  getCategoryIDs() {
+  getCategoryIDs(): string[] {
     const categoryIDs = [];
     for (const preset of Presets) {
       if (preset.setting.get()) {
@@ -345,18 +320,14 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper {
     return categoryIDs;
   }
 
-  /**
-   * @param {{force: boolean}=} options
-   * @return {!Promise<string>}
-   */
-  async getInspectedURL(options) {
+  async getInspectedURL(options?: {force: boolean;}): Promise<string> {
     if (options && options.force || !this._inspectedURL) {
       this._inspectedURL = await this._evaluateInspectedURL();
     }
     return this._inspectedURL;
   }
 
-  recomputePageAuditability() {
+  recomputePageAuditability(): void {
     const hasActiveServiceWorker = this._hasActiveServiceWorker();
     const hasAtLeastOneCategory = this._hasAtLeastOneCategory();
     const unauditablePageMessage = this._unauditablePageMessage();
@@ -384,8 +355,7 @@ const STORAGE_TYPE_NAMES = new Map([
   [Protocol.Storage.StorageType.Websql, i18nString(UIStrings.webSql)],
 ]);
 
-/** @type {!Array.<!Preset>} */
-export const Presets = [
+export const Presets: Preset[] = [
   // configID maps to Lighthouse's Object.keys(config.categories)[0] value
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat_perf', true),
@@ -427,17 +397,20 @@ export const Presets = [
     plugin: true,
     configID: 'lighthouse-plugin-publisher-ads',
     title: i18nString(UIStrings.publisherAds),
-    description: i18nString(UIStrings.isThisPageOptimizedForAdSpeedAnd)
+    description: i18nString(UIStrings.isThisPageOptimizedForAdSpeedAnd),
   },
 ];
 
-/** @type {!Array.<!RuntimeSetting>} */
-export const RuntimeSettings = [
+export type Flags = {
+  [flag: string]: string|boolean
+};
+
+export const RuntimeSettings: RuntimeSetting[] = [
   {
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.device_type', 'mobile'),
     title: i18nString(UIStrings.applyMobileEmulation),
     description: i18nString(UIStrings.applyMobileEmulationDuring),
-    setFlags: (flags, value) => {
+    setFlags: (flags: Flags, value: string|boolean): void => {
       // See Audits.AuditsPanel._setupEmulationAndProtocolConnection()
       flags.emulatedFormFactor = value;
     },
@@ -455,7 +428,7 @@ export const RuntimeSettings = [
     learnMore:
         'https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#devtools-lighthouse-panel-throttling',
     description: i18nString(UIStrings.simulateASlowerPageLoadBasedOn),
-    setFlags: (flags, value) => {
+    setFlags: (flags: Flags, value: string|boolean): void => {
       flags.throttlingMethod = value ? 'simulate' : 'devtools';
     },
     options: undefined,
@@ -464,7 +437,7 @@ export const RuntimeSettings = [
     setting: Common.Settings.Settings.instance().createSetting('lighthouse.clear_storage', true),
     title: i18nString(UIStrings.clearStorage),
     description: i18nString(UIStrings.resetStorageLocalstorage),
-    setFlags: (flags, value) => {
+    setFlags: (flags: Flags, value: string|boolean): void => {
       flags.disableStorageReset = !value;
     },
     options: undefined,
@@ -479,11 +452,18 @@ export const Events = {
   RequestLighthouseStart: Symbol('RequestLighthouseStart'),
   RequestLighthouseCancel: Symbol('RequestLighthouseCancel'),
 };
-
-/** @typedef {{setting: !Common.Settings.Setting<?>, configID: string, title: string, description: string, plugin: boolean}} */
-// @ts-ignore typedef
-export let Preset;
-
-/** @typedef {{setting: !Common.Settings.Setting<?>, description: string, setFlags: function(!Object<string, *>, string):void, options: (!Array<?>|undefined), title: (string|undefined), learnMore: (string|undefined)}} */
-// @ts-ignore typedef
-export let RuntimeSetting;
+export interface Preset {
+  setting: Common.Settings.Setting<boolean>;
+  configID: string;
+  title: string;
+  description: string;
+  plugin: boolean;
+}
+export interface RuntimeSetting {
+  setting: Common.Settings.Setting<string|boolean>;
+  description: string;
+  setFlags: (flags: Flags, value: string|boolean) => void;
+  options?: {label: string, value: string}[];
+  title?: string;
+  learnMore?: string;
+}

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
@@ -18,13 +20,15 @@ export const UIStrings = {
   */
   newReport: '(new report)',
 };
-const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseReportSelector.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('lighthouse/LighthouseReportSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ReportSelector {
-  /**
-   * @param {function():void} renderNewLighthouseView
-   */
-  constructor(renderNewLighthouseView) {
+  _renderNewLighthouseView: () => void;
+  _newLighthouseItem: HTMLOptionElement;
+  _comboBox: UI.Toolbar.ToolbarComboBox;
+  _itemByOptionElement: Map<Element, Item>;
+
+  constructor(renderNewLighthouseView: () => void) {
     this._renderNewLighthouseView = renderNewLighthouseView;
     this._newLighthouseItem = document.createElement('option');
     this._comboBox = new UI.Toolbar.ToolbarComboBox(
@@ -35,7 +39,7 @@ export class ReportSelector {
     this._setEmptyState();
   }
 
-  _setEmptyState() {
+  _setEmptyState(): void {
     this._comboBox.selectElement().removeChildren();
 
     this._comboBox.setEnabled(false);
@@ -45,10 +49,7 @@ export class ReportSelector {
     this._comboBox.select(this._newLighthouseItem);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _handleChange(event) {
+  _handleChange(_event: Event): void {
     const item = this._selectedItem();
     if (item) {
       item.select();
@@ -57,39 +58,24 @@ export class ReportSelector {
     }
   }
 
-  /**
-   * @return {!Item}
-   */
-  _selectedItem() {
+  _selectedItem(): Item {
     const option = this._comboBox.selectedOption();
-    return this._itemByOptionElement.get(option);
+    return this._itemByOptionElement.get(option as Element) as Item;
   }
 
-  /**
-   * @return {boolean}
-   */
-  hasCurrentSelection() {
+  hasCurrentSelection(): boolean {
     return Boolean(this._selectedItem());
   }
 
-  /**
-   * @return {boolean}
-   */
-  hasItems() {
+  hasItems(): boolean {
     return this._itemByOptionElement.size > 0;
   }
 
-  /**
-   * @return {!UI.Toolbar.ToolbarComboBox}
-   */
-  comboBox() {
+  comboBox(): UI.Toolbar.ToolbarComboBox {
     return this._comboBox;
   }
 
-  /**
-   * @param {!Item} item
-   */
-  prepend(item) {
+  prepend(item: Item): void {
     const optionEl = item.optionElement();
     const selectEl = this._comboBox.selectElement();
 
@@ -100,31 +86,31 @@ export class ReportSelector {
     item.select();
   }
 
-  clearAll() {
+  clearAll(): void {
     for (const elem of this._comboBox.options()) {
       if (elem === this._newLighthouseItem) {
         continue;
       }
 
-      this._itemByOptionElement.get(elem).delete();
+      this._itemByOptionElement.get(elem)?.delete();
       this._itemByOptionElement.delete(elem);
     }
 
     this._setEmptyState();
   }
 
-  selectNewReport() {
+  selectNewReport(): void {
     this._comboBox.select(this._newLighthouseItem);
   }
 }
 
 export class Item {
-  /**
-   * @param {!ReportRenderer.ReportJSON} lighthouseResult
-   * @param {function():void} renderReport
-   * @param {function():void} showLandingCallback
-   */
-  constructor(lighthouseResult, renderReport, showLandingCallback) {
+  _lighthouseResult: ReportRenderer.ReportJSON;
+  _renderReport: () => void;
+  _showLandingCallback: () => void;
+  _element: HTMLOptionElement;
+
+  constructor(lighthouseResult: ReportRenderer.ReportJSON, renderReport: () => void, showLandingCallback: () => void) {
     this._lighthouseResult = lighthouseResult;
     this._renderReport = renderReport;
     this._showLandingCallback = showLandingCallback;
@@ -135,18 +121,15 @@ export class Item {
     this._element.label = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;
   }
 
-  select() {
+  select(): void {
     this._renderReport();
   }
 
-  /**
-   * @return {!Element}
-   */
-  optionElement() {
+  optionElement(): Element {
     return this._element;
   }
 
-  delete() {
+  delete(): void {
     if (this._element) {
       this._element.remove();
     }

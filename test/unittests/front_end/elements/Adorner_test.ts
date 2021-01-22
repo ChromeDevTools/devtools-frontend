@@ -4,6 +4,7 @@
 
 const {assert} = chai;
 
+import * as Common from '../../../../front_end/common/common.js';
 import type * as ElementsModule from '../../../../front_end/elements/elements.js';
 import {ls} from '../../../../front_end/platform/platform.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
@@ -103,8 +104,8 @@ describeWithEnvironment('Adorner', async () => {
     adorner.addInteraction(() => {}, {
       isToggle: true,
       shouldPropagateOnKeydown: false,
-      ariaLabelActive: ls``,
-      ariaLabelDefault: ls``,
+      ariaLabelActive: Common.UIString.LocalizedEmptyString,
+      ariaLabelDefault: Common.UIString.LocalizedEmptyString,
     });
     assert.strictEqual(
         adorner.getAttribute('aria-pressed'), 'false',

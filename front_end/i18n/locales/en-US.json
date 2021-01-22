@@ -1868,9 +1868,6 @@
   "profiler/CPUProfileView.js | cpuProfilesShow": {
     "message": "CPU profiles show where the execution time is spent in your page's JavaScript functions."
   },
-  "profiler/CPUProfileView.js | empty": {
-    "message": ""
-  },
   "profiler/CPUProfileView.js | fms": {
     "message": "{PH1} ms"
   },
@@ -1909,9 +1906,6 @@
   },
   "profiler/HeapProfileView.js | allocationSampling": {
     "message": "Allocation sampling"
-  },
-  "profiler/HeapProfileView.js | emptyString": {
-    "message": ""
   },
   "profiler/HeapProfileView.js | formatPercent": {
     "message": "{PH1} %"
@@ -2233,9 +2227,6 @@
   },
   "profiler/LiveHeapProfileView.js | anonymousScriptS": {
     "message": "(Anonymous Script {PH1})"
-  },
-  "profiler/LiveHeapProfileView.js | emptyString": {
-    "message": ""
   },
   "profiler/LiveHeapProfileView.js | heapProfile": {
     "message": "Heap Profile"

@@ -32,10 +32,6 @@ export const UIStrings = {
   */
   totalSizeBytes: 'Total Size (bytes)',
   /**
-  *@description Empty string
-  */
-  emptyString: '',
-  /**
   *@description Text in Heap Profile View of a profiler tool
   */
   stopHeapProfiling: 'Stop heap profiling',
@@ -248,7 +244,7 @@ export class HeapProfileView extends ProfileView {
       case 'total':
         return i18nString(UIStrings.totalSizeBytes);
     }
-    return i18nString(UIStrings.emptyString);
+    return Common.UIString.LocalizedEmptyString;
   }
 
   /**

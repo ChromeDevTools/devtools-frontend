@@ -47,10 +47,6 @@ export const UIStrings = {
   */
   totalTime: 'Total Time',
   /**
-  *@description Empty string
-  */
-  empty: '',
-  /**
   *@description Text in CPUProfile View of a profiler tool
   */
   recordJavascriptCpuProfile: 'Record JavaScript CPU Profile',
@@ -145,7 +141,7 @@ export class CPUProfileView extends ProfileView {
       case 'total':
         return i18nString(UIStrings.totalTime);
     }
-    return i18nString(UIStrings.empty);
+    return Common.UIString.LocalizedEmptyString;
   }
 
   /**

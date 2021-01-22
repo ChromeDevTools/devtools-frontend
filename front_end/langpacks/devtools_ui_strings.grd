@@ -19,7 +19,6 @@
       <part file="../common/common_strings.grdp" />
       <part file="../console/console_strings.grdp" />
       <part file="../console_counters/console_counters_strings.grdp" />
-      <part file="../css_overview/css_overview_strings.grdp" />
       <part file="../data_grid/data_grid_strings.grdp" />
       <part file="../elements/elements_strings.grdp" />
       <part file="../emulated_devices/emulated_devices_strings.grdp" />

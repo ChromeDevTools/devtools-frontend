@@ -144,6 +144,9 @@
   <message name="IDS_DEVTOOLS_ad2ac1967f0165ebf04a84bc1819e0de" desc="Text for context menu action to move a tab to the drawer">
     Move to bottom
   </message>
+  <message name="IDS_DEVTOOLS_ea4788705e6873b424c65e91c2846b19" desc="Text to cancel something">
+    Cancel
+  </message>
   <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="A title of the 'Settings' @UI.ViewLocationResolver category">
     Settings
   </message>

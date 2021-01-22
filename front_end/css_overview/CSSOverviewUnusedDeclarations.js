@@ -2,8 +2,40 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 
+export const UIStrings = {
+  /**
+  *@description Label to explain why top values are ignored
+  */
+  topAppliedToAStatically: 'Top applied to a statically positioned element',
+  /**
+  *@description Label to explain why left values are ignored
+  */
+  leftAppliedToAStatically: 'Left applied to a statically positioned element',
+  /**
+  *@description Label to explain why right values are ignored
+  */
+  rightAppliedToAStatically: 'Right applied to a statically positioned element',
+  /**
+  *@description Label to explain why bottom values are ignored
+  */
+  bottomAppliedToAStatically: 'Bottom applied to a statically positioned element',
+  /**
+  *@description Label to explain why width values are ignored
+  */
+  widthAppliedToAnInlineElement: 'Width applied to an inline element',
+  /**
+  *@description Label to explain why height values are ignored
+  */
+  heightAppliedToAnInlineElement: 'Height applied to an inline element',
+  /**
+  *@description Label to explain why vertical-align values are ignored
+  */
+  verticalAlignmentAppliedTo: 'Vertical alignment applied to element which is neither inline nor table-cell',
+};
+const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewUnusedDeclarations.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @typedef {{
  * declaration:string,
@@ -42,7 +74,7 @@ export class CSSOverviewUnusedDeclarations {
     }
 
     if (strings[topIdx] !== 'auto') {
-      const reason = ls`Top applied to a statically positioned element`;
+      const reason = i18nString(UIStrings.topAppliedToAStatically);
       this._add(unusedDeclarations, reason, {
         declaration: `top: ${strings[topIdx]}`,
         nodeId,
@@ -50,7 +82,7 @@ export class CSSOverviewUnusedDeclarations {
     }
 
     if (strings[leftIdx] !== 'auto') {
-      const reason = ls`Left applied to a statically positioned element`;
+      const reason = i18nString(UIStrings.leftAppliedToAStatically);
       this._add(unusedDeclarations, reason, {
         declaration: `left: ${strings[leftIdx]}`,
         nodeId,
@@ -58,7 +90,7 @@ export class CSSOverviewUnusedDeclarations {
     }
 
     if (strings[rightIdx] !== 'auto') {
-      const reason = ls`Right applied to a statically positioned element`;
+      const reason = i18nString(UIStrings.rightAppliedToAStatically);
       this._add(unusedDeclarations, reason, {
         declaration: `right: ${strings[rightIdx]}`,
         nodeId,
@@ -66,7 +98,7 @@ export class CSSOverviewUnusedDeclarations {
     }
 
     if (strings[bottomIdx] !== 'auto') {
-      const reason = ls`Bottom applied to a statically positioned element`;
+      const reason = i18nString(UIStrings.bottomAppliedToAStatically);
       this._add(unusedDeclarations, reason, {
         declaration: `bottom: ${strings[bottomIdx]}`,
         nodeId,
@@ -88,7 +120,7 @@ export class CSSOverviewUnusedDeclarations {
     }
 
     if (strings[widthIdx] !== 'auto') {
-      const reason = ls`Width applied to an inline element`;
+      const reason = i18nString(UIStrings.widthAppliedToAnInlineElement);
       this._add(unusedDeclarations, reason, {
         declaration: `width: ${strings[widthIdx]}`,
         nodeId,
@@ -96,7 +128,7 @@ export class CSSOverviewUnusedDeclarations {
     }
 
     if (strings[heightIdx] !== 'auto') {
-      const reason = ls`Height applied to an inline element`;
+      const reason = i18nString(UIStrings.heightAppliedToAnInlineElement);
       this._add(unusedDeclarations, reason, {
         declaration: `height: ${strings[heightIdx]}`,
         nodeId,
@@ -117,7 +149,7 @@ export class CSSOverviewUnusedDeclarations {
     }
 
     if (strings[verticalAlignIdx] !== 'baseline') {
-      const reason = ls`Vertical alignment applied to element which is neither inline nor table-cell`;
+      const reason = i18nString(UIStrings.verticalAlignmentAppliedTo);
       this._add(unusedDeclarations, reason, {
         declaration: `vertical-align: ${strings[verticalAlignIdx]}`,
         nodeId,

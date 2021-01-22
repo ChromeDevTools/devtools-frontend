@@ -2,13 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as CSSOverview from './css_overview.js';
+
+export const UIStrings = {
+  /**
+  *@description Title of the CSS Overview Panel
+  */
+  cssOverview: 'CSS Overview',
+};
+
+const str_ = i18n.i18n.registerUIStrings('css_overview/css_overview-meta.ts', UIStrings);
+const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedCSSOverviewModule: (typeof CSSOverview|undefined);
 
@@ -25,7 +34,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'cssoverview',
   commandPrompt: 'Show CSS Overview',
-  title: (): Platform.UIString.LocalizedString => ls`CSS Overview`,
+  title: i18nString(UIStrings.cssOverview),
   order: 95,
   async loadView() {
     const CSSOverview = await loadCSSOverviewModule();

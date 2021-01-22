@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_1a69884106a145da88d3caa3390ef962" desc="Indicates that a CSP error should be treated as a warning">
     report-only
   </message>
+  <message name="IDS_DEVTOOLS_231afe47f3f37d3808096b36c28b4ded" desc="Label for the column in the element list in the CSS Overview report">
+    Element
+  </message>
   <message name="IDS_DEVTOOLS_26d528c2e706eb2c3f4d4f90fc72632a" desc="Reason for a Heavy Ad being flagged in issue view">
     CPU peak limit
   </message>

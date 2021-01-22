@@ -2,9 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Label for the 'Clear overview' button in the CSS Overview report
+  */
+  clearOverview: 'Clear overview',
+};
+const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewSidebarPanel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
   static get ITEM_CLASS_NAME() {
     return 'overview-sidebar-panel-item';
@@ -22,7 +30,7 @@ export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
     this.contentElement.addEventListener('click', this._onItemClick.bind(this));
 
     // Clear overview.
-    const clearResultsButton = new UI.Toolbar.ToolbarButton(ls`Clear overview`, 'largeicon-clear');
+    const clearResultsButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearOverview), 'largeicon-clear');
     clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._reset, this);
 
     // Toolbar.

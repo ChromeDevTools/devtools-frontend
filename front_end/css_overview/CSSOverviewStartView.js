@@ -2,11 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
 import {Events, OverviewController} from './CSSOverviewController.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Label for the capture button in the CSS Overview Panel
+  */
+  captureOverview: 'Capture overview',
+  /**
+  *@description Title of the CSS Overview Panel
+  */
+  cssOverview: 'CSS Overview',
+};
+const str_ = i18n.i18n.registerUIStrings('css_overview/CSSOverviewStartView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CSSOverviewStartView extends UI.Widget.Widget {
   /**
    * @param {!OverviewController} controller
@@ -21,14 +33,14 @@ export class CSSOverviewStartView extends UI.Widget.Widget {
 
   _render() {
     const startButton = UI.UIUtils.createTextButton(
-        ls`Capture overview`, () => this._controller.dispatchEventToListeners(Events.RequestOverviewStart), '',
-        true /* primary */);
+        i18nString(UIStrings.captureOverview),
+        () => this._controller.dispatchEventToListeners(Events.RequestOverviewStart), '', true /* primary */);
 
     this.setDefaultFocusedElement(startButton);
 
     const fragment = UI.Fragment.Fragment.build`
       <div class="vbox overview-start-view">
-        <h1>${ls`CSS Overview`}</h1>
+        <h1>${i18nString(UIStrings.cssOverview)}</h1>
         <div>${startButton}</div>
       </div>
     `;

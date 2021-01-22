@@ -23,6 +23,7 @@ devtools_module("css_overview") {
     "../components:bundle",
     "../data_grid:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../sdk:bundle",
     "../text_utils:bundle",
     "../ui:bundle",

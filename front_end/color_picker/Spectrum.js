@@ -28,8 +28,8 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -37,6 +37,83 @@ import {ContrastDetails, Events as ContrastDetailsEvents} from './ContrastDetail
 import {ContrastInfo} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
 import {ContrastOverlay} from './ContrastOverlay.js';
 
+export const UIStrings = {
+  /**
+  *@description Tooltip text that appears when hovering over largeicon eyedropper button in Spectrum of the Color Picker
+  */
+  toggleColorPicker: 'Toggle color picker',
+  /**
+  *@description Aria label for hue slider in Color Picker
+  */
+  changeHue: 'Change hue',
+  /**
+  *@description Aria label for alpha slider in Color Picker
+  */
+  changeAlpha: 'Change alpha',
+  /**
+  *@description Aria label for HEX color format input
+  */
+  hex: 'HEX',
+  /**
+  *@description Aria label for color format switcher button in Color Picker
+  */
+  changeColorFormat: 'Change color format',
+  /**
+  *@description Screen reader reads this text when palette switcher button receives focus
+  */
+  previewPalettes: 'Preview palettes',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon add button in the Spectrum of the Color Picker
+  */
+  addToPalette: 'Add to palette',
+  /**
+  *@description Title text content in Spectrum of the Color Picker
+  */
+  colorPalettes: 'Color Palettes',
+  /**
+  *@description Label for close button in Color Picker
+  */
+  returnToColorPicker: 'Return to color picker',
+  /**
+  *@description Aria label which declares hex value of a swatch in the Color Picker
+  *@example {#969696} PH1
+  */
+  colorS: 'Color {PH1}',
+  /**
+  *@description Color element title in Spectrum of the Color Picker
+  *@example {#9c1724} PH1
+  */
+  longclickOrLongpressSpaceToShow: 'Long-click or long-press space to show alternate shades of {PH1}',
+  /**
+  *@description A context menu item in the Spectrum of the Color Picker
+  */
+  removeColor: 'Remove color',
+  /**
+  *@description A context menu item in the Spectrum of the Color Picker
+  */
+  removeAllToTheRight: 'Remove all to the right',
+  /**
+  *@description A context menu item in the Spectrum of the Color Picker
+  */
+  clearPalette: 'Clear palette',
+  /**
+  *@description Aria label for RGBA and HSLA color format inputs in Color Picker
+  *@example {R} PH1
+  *@example {RGBA} PH2
+  */
+  sInS: '{PH1} in {PH2}',
+  /**
+  *@description Swatch copy icon title in Spectrum of the Color Picker
+  */
+  copyColorToClipboard: 'Copy color to clipboard',
+  /**
+  *@description Aria text for the swatch position. Swatch is the color picker spectrum tool.
+  */
+  pressArrowKeysMessage:
+      'Press arrow keys with or without modifiers to move swatch position. Arrow key with Shift key moves position largely, with Ctrl key it is less and with Alt key it is even less'
+};
+const str_ = i18n.i18n.registerUIStrings('color_picker/Spectrum.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @type {!WeakMap<!HTMLElement, boolean>}
  */
@@ -72,8 +149,7 @@ export class Spectrum extends UI.Widget.VBox {
     this._colorElement.tabIndex = 0;
     this.setDefaultFocusedElement(this._colorElement);
     this._colorElement.addEventListener('keydown', this._onSliderKeydown.bind(this, positionColor.bind(this)));
-    const swatchAriaText = ls
-    `Press arrow keys with or without modifiers to move swatch position. Arrow key with Shift key moves position largely, with Ctrl key it is less and with Alt key it is even less`;
+    const swatchAriaText = i18nString(UIStrings.pressArrowKeysMessage);
     UI.ARIAUtils.setAccessibleName(this._colorElement, swatchAriaText);
     UI.ARIAUtils.markAsApplication(this._colorElement);
     this._colorDragElement = this._colorElement.createChild('div', 'spectrum-sat fill')
@@ -86,7 +162,7 @@ export class Spectrum extends UI.Widget.VBox {
     const toolsContainer = /** @type {!HTMLElement} */ (this.contentElement.createChild('div', 'spectrum-tools'));
     const toolbar = new UI.Toolbar.Toolbar('spectrum-eye-dropper', toolsContainer);
     this._colorPickerButton =
-        new UI.Toolbar.ToolbarToggle(Common.UIString.UIString('Toggle color picker'), 'largeicon-eyedropper');
+        new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleColorPicker), 'largeicon-eyedropper');
     this._colorPickerButton.setToggled(true);
     this._colorPickerButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this._toggleColorPicker.bind(this, undefined));
@@ -97,13 +173,13 @@ export class Spectrum extends UI.Widget.VBox {
     this._hueElement = toolsContainer.createChild('div', 'spectrum-hue');
     this._hueElement.tabIndex = 0;
     this._hueElement.addEventListener('keydown', this._onSliderKeydown.bind(this, positionHue.bind(this)));
-    UI.ARIAUtils.setAccessibleName(this._hueElement, ls`Change hue`);
+    UI.ARIAUtils.setAccessibleName(this._hueElement, i18nString(UIStrings.changeHue));
     UI.ARIAUtils.markAsSlider(this._hueElement, 0, 360);
     this._hueSlider = this._hueElement.createChild('div', 'spectrum-slider');
     this._alphaElement = toolsContainer.createChild('div', 'spectrum-alpha');
     this._alphaElement.tabIndex = 0;
     this._alphaElement.addEventListener('keydown', this._onSliderKeydown.bind(this, positionAlpha.bind(this)));
-    UI.ARIAUtils.setAccessibleName(this._alphaElement, ls`Change alpha`);
+    UI.ARIAUtils.setAccessibleName(this._alphaElement, i18nString(UIStrings.changeAlpha));
     UI.ARIAUtils.markAsSlider(this._alphaElement, 0, 1);
     this._alphaElementBackground = this._alphaElement.createChild('div', 'spectrum-alpha-background');
     this._alphaSlider = this._alphaElement.createChild('div', 'spectrum-slider');
@@ -137,7 +213,7 @@ export class Spectrum extends UI.Widget.VBox {
     this._hexValue.addEventListener('paste', this._pasted.bind(this), false);
 
     const label = this._hexContainer.createChild('div', 'spectrum-text-label');
-    label.textContent = ls`HEX`;
+    label.textContent = i18nString(UIStrings.hex);
     UI.ARIAUtils.setAccessibleName(this._hexValue, label.textContent);
 
     const displaySwitcher = toolsContainer.createChild('div', 'spectrum-display-switcher spectrum-switcher');
@@ -147,7 +223,7 @@ export class Spectrum extends UI.Widget.VBox {
       this._formatViewSwitch();
       event.consume(true);
     });
-    UI.ARIAUtils.setAccessibleName(displaySwitcher, ls`Change color format`);
+    UI.ARIAUtils.setAccessibleName(displaySwitcher, i18nString(UIStrings.changeColorFormat));
     UI.ARIAUtils.markAsButton(displaySwitcher);
 
     UI.UIUtils.installDragHandle(
@@ -188,7 +264,7 @@ export class Spectrum extends UI.Widget.VBox {
         this._paletteSectionContainer.createChild('div', 'spectrum-palette-switcher spectrum-switcher');
     appendSwitcherIcon(paletteSwitcher);
     UI.ARIAUtils.markAsButton(paletteSwitcher);
-    UI.ARIAUtils.setAccessibleName(paletteSwitcher, ls`Preview palettes`);
+    UI.ARIAUtils.setAccessibleName(paletteSwitcher, i18nString(UIStrings.previewPalettes));
     paletteSwitcher.tabIndex = 0;
     self.onInvokeElement(paletteSwitcher, event => {
       this._togglePalettePanel(true);
@@ -203,7 +279,7 @@ export class Spectrum extends UI.Widget.VBox {
     overlay.addEventListener('click', this._togglePalettePanel.bind(this, false));
 
     this._addColorToolbar = new UI.Toolbar.Toolbar('add-color-toolbar');
-    const addColorButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Add to palette'), 'largeicon-add');
+    const addColorButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addToPalette), 'largeicon-add');
     addColorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._onAddColorMousedown.bind(this));
     addColorButton.element.addEventListener('keydown', this._onAddColorKeydown.bind(this));
     this._addColorToolbar.appendToolbarItem(addColorButton);
@@ -397,9 +473,9 @@ export class Spectrum extends UI.Widget.VBox {
   _updatePalettePanel() {
     this._palettePanel.removeChildren();
     const title = this._palettePanel.createChild('div', 'palette-title');
-    title.textContent = Common.UIString.UIString('Color Palettes');
+    title.textContent = i18nString(UIStrings.colorPalettes);
     const toolbar = new UI.Toolbar.Toolbar('', this._palettePanel);
-    this._closeButton = new UI.Toolbar.ToolbarButton(ls`Return to color picker`, 'largeicon-delete');
+    this._closeButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.returnToColorPicker), 'largeicon-delete');
     this._closeButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this._togglePalettePanel.bind(this, false));
     this._closeButton.element.addEventListener('keydown', this._onCloseBtnKeydown.bind(this));
@@ -494,7 +570,7 @@ export class Spectrum extends UI.Widget.VBox {
       const animationDelay = animate ? i * 100 / palette.colors.length : 0;
       const colorElement = this._createPaletteColor(palette.colors[i], palette.colorNames[i], animationDelay);
       UI.ARIAUtils.markAsButton(colorElement);
-      UI.ARIAUtils.setAccessibleName(colorElement, ls`Color ${palette.colors[i]}`);
+      UI.ARIAUtils.setAccessibleName(colorElement, i18nString(UIStrings.colorS, {PH1: palette.colors[i]}));
       colorElement.tabIndex = -1;
       colorElement.addEventListener(
           'mousedown',
@@ -516,7 +592,7 @@ export class Spectrum extends UI.Widget.VBox {
         shadow = colorElement.createChild('div', 'spectrum-palette-color spectrum-palette-color-shadow');
         shadow.style.background = palette.colors[i];
         UI.Tooltip.Tooltip.install(
-            colorElement, ls`Long-click or long-press space to show alternate shades of ${palette.colors[i]}`);
+            colorElement, i18nString(UIStrings.longclickOrLongpressSpaceToShow, {PH1: palette.colors[i]}));
         UI.ARIAUtils.setAccessibleName(colorElement, UI.Tooltip.Tooltip.getContent(colorElement));
         new UI.UIUtils.LongClickController(
             colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
@@ -582,7 +658,7 @@ export class Spectrum extends UI.Widget.VBox {
       const shadeElement =
           this._createPaletteColor(shades[i], undefined /* colorName */, i * 200 / shades.length + 100);
       UI.ARIAUtils.markAsButton(shadeElement);
-      UI.ARIAUtils.setAccessibleName(shadeElement, ls`Color ${shades[i]}`);
+      UI.ARIAUtils.setAccessibleName(shadeElement, i18nString(UIStrings.colorS, {PH1: shades[i]}));
       shadeElement.tabIndex = -1;
       shadeElement.addEventListener('mousedown', this._paletteColorSelected.bind(this, shades[i], shades[i], false));
       shadeElement.addEventListener('focus', this._paletteColorSelected.bind(this, shades[i], shades[i], false));
@@ -912,12 +988,12 @@ export class Spectrum extends UI.Widget.VBox {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (colorIndex !== -1) {
       contextMenu.defaultSection().appendItem(
-          Common.UIString.UIString('Remove color'), this._deletePaletteColors.bind(this, colorIndex, false));
+          i18nString(UIStrings.removeColor), this._deletePaletteColors.bind(this, colorIndex, false));
       contextMenu.defaultSection().appendItem(
-          Common.UIString.UIString('Remove all to the right'), this._deletePaletteColors.bind(this, colorIndex, true));
+          i18nString(UIStrings.removeAllToTheRight), this._deletePaletteColors.bind(this, colorIndex, true));
     }
     contextMenu.defaultSection().appendItem(
-        Common.UIString.UIString('Clear palette'), this._deletePaletteColors.bind(this, -1, true));
+        i18nString(UIStrings.clearPalette), this._deletePaletteColors.bind(this, -1, true));
     contextMenu.show();
   }
 
@@ -1091,7 +1167,10 @@ export class Spectrum extends UI.Widget.VBox {
       for (let i = 0; i < 3; ++i) {
         UI.ARIAUtils.setAccessibleName(
             this._textValues[i],
-            /** R in RGBA */ ls`${this._textLabels.textContent.charAt(i)} in ${this._textLabels.textContent}`);
+            /** R in RGBA */ i18nString(UIStrings.sInS, {
+              PH1: this._textLabels.textContent.charAt(i),
+              PH2: this._textLabels.textContent
+            }));
         this._textValues[i].value = String(colorValues[i]);
         if (!isRgb && (i === 1 || i === 2)) {
           this._textValues[i].value += '%';
@@ -1099,7 +1178,10 @@ export class Spectrum extends UI.Widget.VBox {
       }
       UI.ARIAUtils.setAccessibleName(
           this._textValues[3],
-          /** A in RGBA */ ls`${this._textLabels.textContent.charAt(3)} in ${this._textLabels.textContent}`);
+          /** A in RGBA */ i18nString(UIStrings.sInS, {
+            PH1: this._textLabels.textContent.charAt(3),
+            PH2: this._textLabels.textContent
+          }));
       this._textValues[3].value = String(Math.round(colorValues[3] * 100) / 100);
     }
   }
@@ -1444,7 +1526,7 @@ export class Swatch {
     this._swatchOverlayElement.addEventListener('mouseout', this._onCopyIconMouseout.bind(this));
     this._swatchOverlayElement.addEventListener('blur', this._onCopyIconMouseout.bind(this));
     this._swatchCopyIcon = UI.Icon.Icon.create('largeicon-copy', 'copy-color-icon');
-    UI.Tooltip.Tooltip.install(this._swatchCopyIcon, ls`Copy color to clipboard`);
+    UI.Tooltip.Tooltip.install(this._swatchCopyIcon, i18nString(UIStrings.copyColorToClipboard));
     this._swatchOverlayElement.appendChild(this._swatchCopyIcon);
     UI.ARIAUtils.setAccessibleName(this._swatchOverlayElement, this._swatchCopyIcon.title);
   }

@@ -89,6 +89,90 @@
   "changes/ModuleUIStrings.ts | changesDrawer": {
     "message": "Changes drawer"
   },
+  "color_picker/ContrastDetails.js | aa": {
+    "message": "AA"
+  },
+  "color_picker/ContrastDetails.js | aaa": {
+    "message": "AAA"
+  },
+  "color_picker/ContrastDetails.js | apca": {
+    "message": "APCA"
+  },
+  "color_picker/ContrastDetails.js | contrastRatio": {
+    "message": "Contrast ratio"
+  },
+  "color_picker/ContrastDetails.js | noContrastInformationAvailable": {
+    "message": "No contrast information available"
+  },
+  "color_picker/ContrastDetails.js | pickBackgroundColor": {
+    "message": "Pick background color"
+  },
+  "color_picker/ContrastDetails.js | placeholderWithColon": {
+    "message": ": {PH1}"
+  },
+  "color_picker/ContrastDetails.js | showLess": {
+    "message": "Show less"
+  },
+  "color_picker/ContrastDetails.js | showMore": {
+    "message": "Show more"
+  },
+  "color_picker/ContrastDetails.js | toggleBackgroundColorPicker": {
+    "message": "Toggle background color picker"
+  },
+  "color_picker/ContrastDetails.js | useSuggestedColorStoFixLow": {
+    "message": "Use suggested color {PH1}to fix low contrast"
+  },
+  "color_picker/Spectrum.js | addToPalette": {
+    "message": "Add to palette"
+  },
+  "color_picker/Spectrum.js | changeAlpha": {
+    "message": "Change alpha"
+  },
+  "color_picker/Spectrum.js | changeColorFormat": {
+    "message": "Change color format"
+  },
+  "color_picker/Spectrum.js | changeHue": {
+    "message": "Change hue"
+  },
+  "color_picker/Spectrum.js | clearPalette": {
+    "message": "Clear palette"
+  },
+  "color_picker/Spectrum.js | colorPalettes": {
+    "message": "Color Palettes"
+  },
+  "color_picker/Spectrum.js | colorS": {
+    "message": "Color {PH1}"
+  },
+  "color_picker/Spectrum.js | copyColorToClipboard": {
+    "message": "Copy color to clipboard"
+  },
+  "color_picker/Spectrum.js | hex": {
+    "message": "HEX"
+  },
+  "color_picker/Spectrum.js | longclickOrLongpressSpaceToShow": {
+    "message": "Long-click or long-press space to show alternate shades of {PH1}"
+  },
+  "color_picker/Spectrum.js | pressArrowKeysMessage": {
+    "message": "Press arrow keys with or without modifiers to move swatch position. Arrow key with Shift key moves position largely, with Ctrl key it is less and with Alt key it is even less"
+  },
+  "color_picker/Spectrum.js | previewPalettes": {
+    "message": "Preview palettes"
+  },
+  "color_picker/Spectrum.js | removeAllToTheRight": {
+    "message": "Remove all to the right"
+  },
+  "color_picker/Spectrum.js | removeColor": {
+    "message": "Remove color"
+  },
+  "color_picker/Spectrum.js | returnToColorPicker": {
+    "message": "Return to color picker"
+  },
+  "color_picker/Spectrum.js | sInS": {
+    "message": "{PH1} in {PH2}"
+  },
+  "color_picker/Spectrum.js | toggleColorPicker": {
+    "message": "Toggle color picker"
+  },
   "components/ImagePreview.js | imageFromS": {
     "message": "Image from {PH1}"
   },

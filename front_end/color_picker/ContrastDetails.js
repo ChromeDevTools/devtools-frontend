@@ -4,13 +4,63 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 import {ContrastInfo, Events as ContrastInfoEvents} from './ContrastInfo.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Label for when no contrast information is available in the color picker
+  */
+  noContrastInformationAvailable: 'No contrast information available',
+  /**
+  *@description Text of a DOM element in Contrast Details of the Color Picker
+  */
+  contrastRatio: 'Contrast ratio',
+  /**
+  *@description Text to show more content
+  */
+  showMore: 'Show more',
+  /**
+  *@description Choose bg color text content in Contrast Details of the Color Picker
+  */
+  pickBackgroundColor: 'Pick background color',
+  /**
+  *@description Tooltip text that appears when hovering over largeicon eyedropper button in Contrast Details of the Color Picker
+  */
+  toggleBackgroundColorPicker: 'Toggle background color picker',
+  /**
+  *@description Text of a button in Contrast Details of the Color Picker
+  *@example {rgba(0 0 0 / 100%) } PH1
+  */
+  useSuggestedColorStoFixLow: 'Use suggested color {PH1}to fix low contrast',
+  /**
+  *@description Label for the APCA contrast in Color Picker
+  */
+  apca: 'APCA',
+  /**
+  *@description Label aa text content in Contrast Details of the Color Picker
+  */
+  aa: 'AA',
+  /**
+  *@description Text that starts with a colon and includes a placeholder
+  *@example {3.0} PH1
+  */
+  placeholderWithColon: ': {PH1}',
+  /**
+  *@description Label aaa text content in Contrast Details of the Color Picker
+  */
+  aaa: 'AAA',
+  /**
+  *@description Text to show less content
+  */
+  showLess: 'Show less',
+};
+const str_ = i18n.i18n.registerUIStrings('color_picker/ContrastDetails.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!ContrastInfo} contrastInfo
@@ -56,13 +106,13 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
 
     /** @type {!Element} */
     this._noContrastInfoAvailable = contentElement.createChild('div', 'no-contrast-info-available');
-    this._noContrastInfoAvailable.textContent = ls`No contrast information available`;
+    this._noContrastInfoAvailable.textContent = i18nString(UIStrings.noContrastInformationAvailable);
     this._noContrastInfoAvailable.classList.add('hidden');
 
     const contrastValueRow = this._element.createChild('div');
     contrastValueRow.addEventListener('click', this._topRowClicked.bind(this));
     const contrastValueRowContents = contrastValueRow.createChild('div', 'container');
-    UI.UIUtils.createTextChild(contrastValueRowContents, Common.UIString.UIString('Contrast ratio'));
+    UI.UIUtils.createTextChild(contrastValueRowContents, i18nString(UIStrings.contrastRatio));
 
     this._contrastValueBubble = contrastValueRowContents.createChild('span', 'contrast-details-value');
     this._contrastValue = this._contrastValueBubble.createChild('span');
@@ -80,7 +130,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
         }));
 
     const expandToolbar = new UI.Toolbar.Toolbar('expand', contrastValueRowContents);
-    this._expandButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Show more'), 'smallicon-expand-more');
+    this._expandButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showMore), 'smallicon-expand-more');
     this._expandButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._expandButtonClicked.bind(this));
     UI.ARIAUtils.setExpanded(this._expandButton.element, false);
     expandToolbar.appendToolbarItem(this._expandButton);
@@ -100,13 +150,13 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     this._contrastPassFailAPCA = this._contrastAPCA.createChild('div', 'contrast-pass-fail');
 
     this._chooseBgColor = this._expandedDetails.createChild('div', 'contrast-choose-bg-color');
-    this._chooseBgColor.textContent = Common.UIString.UIString('Pick background color');
+    this._chooseBgColor.textContent = i18nString(UIStrings.pickBackgroundColor);
 
     const bgColorContainer = this._expandedDetails.createChild('div', 'background-color');
 
     const pickerToolbar = new UI.Toolbar.Toolbar('spectrum-eye-dropper', bgColorContainer);
-    this._bgColorPickerButton = new UI.Toolbar.ToolbarToggle(
-        Common.UIString.UIString('Toggle background color picker'), 'largeicon-eyedropper');
+    this._bgColorPickerButton =
+        new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleBackgroundColorPicker), 'largeicon-eyedropper');
     this._bgColorPickerButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this._toggleBackgroundColorPicker.bind(this, undefined, true));
     pickerToolbar.appendToolbarItem(this._bgColorPickerButton);
@@ -177,7 +227,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
         Common.Color.Format.HEXA;
     const formattedColor = suggestedColor.asString(colorFormat);
     const suggestedColorString = formattedColor ? formattedColor + ' ' : '';
-    const label = ls`Use suggested color ${suggestedColorString}to fix low contrast`;
+    const label = i18nString(UIStrings.useSuggestedColorStoFixLow, {PH1: suggestedColorString});
     UI.ARIAUtils.setAccessibleName(button, label);
     UI.Tooltip.Tooltip.install(button, label);
     button.tabIndex = 0;
@@ -223,7 +273,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
       const passesAPCA = apcaContrastRatio && apcaThreshold ? Math.abs(apcaContrastRatio) >= apcaThreshold : false;
       this._contrastPassFailAPCA.removeChildren();
       const labelAPCA = this._contrastPassFailAPCA.createChild('span', 'contrast-link-label');
-      labelAPCA.textContent = Common.UIString.UIString('APCA');
+      labelAPCA.textContent = i18nString(UIStrings.apca);
       if (apcaThreshold !== null) {
         this._contrastPassFailAPCA.createChild('span').textContent = `: ${apcaThreshold.toFixed(2)}%`;
       }
@@ -268,8 +318,9 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     this._passesAA = (this._contrastInfo.contrastRatio() || 0) >= aa;
     this._contrastPassFailAA.removeChildren();
     const labelAA = this._contrastPassFailAA.createChild('span', 'contrast-link-label');
-    labelAA.textContent = Common.UIString.UIString('AA');
-    this._contrastPassFailAA.createChild('span').textContent = Common.UIString.UIString(': %s', aa.toFixed(1));
+    labelAA.textContent = i18nString(UIStrings.aa);
+    this._contrastPassFailAA.createChild('span').textContent =
+        i18nString(UIStrings.placeholderWithColon, aa.toFixed(1));
     if (this._passesAA) {
       this._contrastPassFailAA.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
     } else {
@@ -286,8 +337,9 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     const passesAAA = (this._contrastInfo.contrastRatio() || 0) >= aaa;
     this._contrastPassFailAAA.removeChildren();
     const labelAAA = this._contrastPassFailAAA.createChild('span', 'contrast-link-label');
-    labelAAA.textContent = Common.UIString.UIString('AAA');
-    this._contrastPassFailAAA.createChild('span').textContent = Common.UIString.UIString(': %s', aaa.toFixed(1));
+    labelAAA.textContent = i18nString(UIStrings.aaa);
+    this._contrastPassFailAAA.createChild('span').textContent =
+        i18nString(i18nString(UIStrings.placeholderWithColon), aaa.toFixed(1));
     if (passesAAA) {
       this._contrastPassFailAAA.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
     } else {
@@ -364,14 +416,14 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     if (this._expanded) {
       this._toggleMainColorPicker(false);
       this._expandButton.setGlyph('smallicon-expand-less');
-      this._expandButton.setTitle(Common.UIString.UIString('Show less'));
+      this._expandButton.setTitle(i18nString(UIStrings.showLess));
       if (this._contrastUnknown) {
         this._toggleBackgroundColorPicker(true);
       }
     } else {
       this._toggleBackgroundColorPicker(false);
       this._expandButton.setGlyph('smallicon-expand-more');
-      this._expandButton.setTitle(Common.UIString.UIString('Show more'));
+      this._expandButton.setTitle(i18nString(UIStrings.showMore));
     }
     this._expandedChangedCallback();
   }

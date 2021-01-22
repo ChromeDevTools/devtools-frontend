@@ -912,6 +912,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_cdfb064314e94077caa817714d943c6f" desc="Text in Timeline UIUtils of the Performance panel">
     Elements Affected
   </message>
+  <message name="IDS_DEVTOOLS_ce82e07fa1f0521f5cee30e368fe2e73" desc="Text that starts with a colon and includes a placeholder">
+    : <ph name="AA_NUMBER">$1s<ex>3.0</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_cf56f8ebb3727b1d4d5a17fb18d4df74" desc="Text in Timeline UIUtils of the Performance panel">
     Paint Setup
   </message>

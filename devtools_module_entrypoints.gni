@@ -203,6 +203,7 @@ devtools_module_entrypoint_sources = [
   "web_audio/web_audio-meta.js",
   "web_audio/web_audio.js",
   "webauthn/webauthn-legacy.js",
+  "webauthn/webauthn-meta.js",
   "webauthn/webauthn.js",
   "worker_main/worker_main-legacy.js",
   "worker_main/worker_main.js",

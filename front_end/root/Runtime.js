@@ -1128,6 +1128,7 @@ export const ExperimentName = {
   WASM_DWARF_DEBUGGING: 'wasmDWARFDebugging',
   ALL: '*',
   PROTOCOL_MONITOR: 'protocolMonitor',
+  WEBAUTHN_PANE: 'webauthnPane',
 };
 
 /** @enum {string} */

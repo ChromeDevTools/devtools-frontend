@@ -130,6 +130,7 @@ group("front_end") {
     "web_audio:bundle",
     "web_audio:meta",
     "webauthn:bundle",
+    "webauthn:meta",
     "worker_main:bundle",
     "worker_service:bundle",
     "workspace:bundle",

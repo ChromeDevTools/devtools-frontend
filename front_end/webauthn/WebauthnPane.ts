@@ -201,6 +201,8 @@ type AvailableAuthenticatorOptions = Protocol.WebAuthn.VirtualAuthenticatorOptio
   authenticatorId: Protocol.WebAuthn.AuthenticatorId;
 };
 
+let webauthnPaneImplInstance: WebauthnPaneImpl;
+
 export class WebauthnPaneImpl extends UI.Widget.VBox {
   _enabled: boolean;
   _activeAuthId: string|null;
@@ -245,6 +247,15 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this._authenticatorsView = this.contentElement.createChild('div', 'authenticators-view');
     this._createNewAuthenticatorSection();
     this._updateVisibility(false);
+  }
+
+  static instance(opts = {forceNew: null}): WebauthnPaneImpl {
+    const {forceNew} = opts;
+    if (!webauthnPaneImplInstance || forceNew) {
+      webauthnPaneImplInstance = new WebauthnPaneImpl();
+    }
+
+    return webauthnPaneImplInstance;
   }
 
   async _loadInitialAuthenticators(): Promise<void> {

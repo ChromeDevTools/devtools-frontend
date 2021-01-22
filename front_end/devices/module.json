@@ -1,16 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "remote-devices",
-      "title": "Remote devices",
-      "persistence": "closeable",
-      "order": 50,
-      "className": "Devices.DevicesView",
-      "tags": "usb, android, mobile"
-    }
-  ],
   "dependencies": [
     "platform",
     "ui",

@@ -3200,6 +3200,9 @@
   "webauthn/ModuleUIStrings.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "webauthn/webauthn-meta.ts | webauthn": {
+    "message": "WebAuthn"
+  },
   "webauthn/WebauthnPane.ts | actions": {
     "message": "Actions"
   },

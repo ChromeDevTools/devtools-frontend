@@ -1,16 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "view",
-      "location": "drawer-view",
-      "id": "webauthn-pane",
-      "title": "WebAuthn",
-      "order": 100,
-      "persistence": "closeable",
-      "className": "Webauthn.WebauthnPane",
-      "experiment": "webauthnPane"
-    }
-  ],
   "dependencies": [
     "common",
     "data_grid",

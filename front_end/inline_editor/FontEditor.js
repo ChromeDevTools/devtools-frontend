@@ -287,9 +287,15 @@ export class FontEditor extends UI.Widget.VBox {
       index = 1;
     }
     if (fontSelectorObject.input.parentNode) {
-      this._fontSelectorSection.removeChild(fontSelectorObject.input.parentNode);
-      this._fontSelectors.splice(index, 1);
-      this._updateFontSelectorList();
+      const hasSecondarySelector = this._fontSelectors.length > 1;
+      if (!isPrimary || hasSecondarySelector) {
+        const selectorElement = fontSelectorObject.input.parentElement;
+        if (selectorElement) {
+          selectorElement.remove();
+          this._fontSelectors.splice(index, 1);
+          this._updateFontSelectorList();
+        }
+      }
       UI.ARIAUtils.alert(i18nString(UIStrings.fontSelectorDeletedAtIndexS, {PH1: index}), this.contentElement);
     }
     this._onFontSelectorChanged();

@@ -93,7 +93,7 @@ export const UIStrings = {
   *@description Label for Font Editor toggle input type button
   *@example {font-size} PH1
   */
-  sToggleInputType: '{PH1} Toggle Input Type',
+  sToggleInputType: '{PH1} toggle input type',
   /**
   *@description Label for Font Editor alert in CSS Properties section when toggling inputs
   */
@@ -789,9 +789,9 @@ class FontPropertyInputs {
   _createTypeToggle(field) {
     const displaySwitcher = /** @type {!HTMLElement} */ (field.createChild('div', 'spectrum-switcher'));
     appendSwitcherIcon(displaySwitcher);
+    UI.UIUtils.setTitle(displaySwitcher, i18nString(UIStrings.sToggleInputType, {PH1: this._propertyName}));
     displaySwitcher.tabIndex = 0;
     self.onInvokeElement(displaySwitcher, this._toggleInputType.bind(this));
-    UI.ARIAUtils.setAccessibleName(displaySwitcher, i18nString(UIStrings.sToggleInputType, {PH1: this._propertyName}));
     UI.ARIAUtils.markAsButton(displaySwitcher);
 
     /** @param {!HTMLElement} parentElement */

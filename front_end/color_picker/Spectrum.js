@@ -218,12 +218,12 @@ export class Spectrum extends UI.Widget.VBox {
 
     const displaySwitcher = toolsContainer.createChild('div', 'spectrum-display-switcher spectrum-switcher');
     appendSwitcherIcon(displaySwitcher);
+    UI.UIUtils.setTitle(displaySwitcher, i18nString(UIStrings.changeColorFormat));
     displaySwitcher.tabIndex = 0;
     self.onInvokeElement(displaySwitcher, event => {
       this._formatViewSwitch();
       event.consume(true);
     });
-    UI.ARIAUtils.setAccessibleName(displaySwitcher, i18nString(UIStrings.changeColorFormat));
     UI.ARIAUtils.markAsButton(displaySwitcher);
 
     UI.UIUtils.installDragHandle(
@@ -263,8 +263,8 @@ export class Spectrum extends UI.Widget.VBox {
     const paletteSwitcher =
         this._paletteSectionContainer.createChild('div', 'spectrum-palette-switcher spectrum-switcher');
     appendSwitcherIcon(paletteSwitcher);
+    UI.UIUtils.setTitle(paletteSwitcher, i18nString(UIStrings.previewPalettes));
     UI.ARIAUtils.markAsButton(paletteSwitcher);
-    UI.ARIAUtils.setAccessibleName(paletteSwitcher, i18nString(UIStrings.previewPalettes));
     paletteSwitcher.tabIndex = 0;
     self.onInvokeElement(paletteSwitcher, event => {
       this._togglePalettePanel(true);

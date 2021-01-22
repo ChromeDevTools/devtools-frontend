@@ -236,9 +236,8 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     const measureMemoryAvailable = this._frame.isCrossOriginIsolated();
     UI.Tooltip.Tooltip.install(
         this._apiMeasureMemory,
-        measureMemoryAvailable ?
-            ls`The performance.measureMemory() API is available (but might require enabling experimental web platform features)` :
-            ls`The performance.measureMemory() API is not available`);
+        measureMemoryAvailable ? ls`The performance.measureUserAgentSpecificMemory() API is available` :
+                                 ls`The performance.measureUserAgentSpecificMemory() API is not available`);
     this._apiMeasureMemory.textContent = '';
     const status =
         measureMemoryAvailable ? ls`available, but might require experimental web platform features` : ls`unavailable`;

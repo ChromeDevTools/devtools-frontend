@@ -84,7 +84,8 @@ export class DataGrid extends HTMLElement {
   private columns: readonly Column[] = [];
   private rows: readonly Row[] = [];
   private sortState: Readonly<SortState>|null = null;
-  private pendingScroll = -1;
+  private pendingScroll = 0;
+  private scheduledRenderId = 0;
   private contextMenus?: DataGridContextMenusConfiguration = undefined;
   private currentResize: {
     rightCellCol: HTMLTableColElement,
@@ -120,6 +121,7 @@ export class DataGrid extends HTMLElement {
    */
   private focusableCell: CellPosition = [0, 1];
   private hasRenderedAtLeastOnce = false;
+  private pendingScrollUpdate = false;
 
   get data(): DataGridData {
     return {
@@ -174,7 +176,7 @@ export class DataGrid extends HTMLElement {
       }
     }
 
-    this.render();
+    this.scheduleRender();
   }
 
   private scrollToBottomIfRequired(): void {
@@ -225,7 +227,7 @@ export class DataGrid extends HTMLElement {
      * focus, ensure we actually focus the cell.
      */
     cellElement.focus();
-    this.render();
+    this.scheduleRender();
   }
 
   private onTableKeyDown(event: KeyboardEvent): void {
@@ -284,8 +286,7 @@ export class DataGrid extends HTMLElement {
       const emptyCellClasses = LitHtml.Directives.classMap({
         firstVisibleColumn: colIndex === 0,
       });
-      return LitHtml.html`<td tabindex="-1" class=${emptyCellClasses} data-filler-row-column-index=${colIndex}>
-    ${this.renderResizeForCell([colIndex + 1, this.rows.length])}</td>`;
+      return LitHtml.html`<td tabindex="-1" class=${emptyCellClasses} data-filler-row-column-index=${colIndex}></td>`;
     });
     return LitHtml.html`<tr tabindex="-1" class="filler-row">${emptyCells}</tr>`;
   }
@@ -296,6 +297,7 @@ export class DataGrid extends HTMLElement {
     }
     this.currentResize.documentForCursorChange.body.style.cursor = this.currentResize.cursorToRestore;
     this.currentResize = null;
+    this.scheduleRender();
   }
 
   private onResizePointerDown(event: PointerEvent): void {
@@ -305,51 +307,32 @@ export class DataGrid extends HTMLElement {
       return;
     }
     event.preventDefault();
-
     const resizerElement = event.target as HTMLElement;
     if (!resizerElement) {
       return;
     }
-
-    const leftCellContainingResizer = resizerElement.parentElement;
-    if (!leftCellContainingResizer) {
+    const leftColumnIndex = resizerElement.dataset.columnIndex;
+    if (!leftColumnIndex) {
       return;
     }
-    let cellColumnIndex = leftCellContainingResizer.dataset.colIndex;
-    let cellRowIndex = leftCellContainingResizer.dataset.rowIndex;
-
-    /* If the user is dragging via the filler row we use slightly different
-     * attributes to figure out the columns involved in the resize.
-     */
-    if (leftCellContainingResizer.hasAttribute('data-filler-row-column-index')) {
-      cellColumnIndex = leftCellContainingResizer.dataset.fillerRowColumnIndex;
-      cellRowIndex = String(this.rows.length);
-    }
-    if (cellColumnIndex === undefined || cellRowIndex === undefined) {
-      return;
-    }
-    const positionOfLeftCell: CellPosition =
-        [globalThis.parseInt(cellColumnIndex, 10), globalThis.parseInt(cellRowIndex, 10)];
-
+    const leftColumnIndexAsNumber = globalThis.parseInt(leftColumnIndex, 10);
     /* To find the cell to the right we can't just go +1 as it might be hidden,
      * so find the next index that is visible.
      */
-    const nextVisibleColumnIndex = this.columns.findIndex((column, index) => {
-      return index > positionOfLeftCell[0] && column.visible === true;
+    const rightColumnIndexAsNumber = this.columns.findIndex((column, index) => {
+      return index > leftColumnIndexAsNumber && column.visible === true;
     });
-    const positionOfRightCell = [nextVisibleColumnIndex, positionOfLeftCell[1]];
-    const selector = `[data-col-index="${positionOfRightCell[0]}"][data-row-index="${positionOfRightCell[1]}"]`;
-    const cellToRight = this.shadow.querySelector<HTMLElement>(selector);
 
-    if (!cellToRight) {
+    const leftCell = this.shadow.querySelector(`td[data-filler-row-column-index="${leftColumnIndexAsNumber}"]`);
+    const rightCell = this.shadow.querySelector(`td[data-filler-row-column-index="${rightColumnIndexAsNumber}"]`);
+    if (!leftCell || !rightCell) {
       return;
     }
-
     // We query for the <col> elements as they are the elements that we put the actual width on.
     const leftCellCol =
-        this.shadow.querySelector<HTMLTableColElement>(`col[data-col-column-index="${positionOfLeftCell[0]}"]`);
+        this.shadow.querySelector<HTMLTableColElement>(`col[data-col-column-index="${leftColumnIndexAsNumber}"]`);
     const rightCellCol =
-        this.shadow.querySelector<HTMLTableColElement>(`col[data-col-column-index="${positionOfRightCell[0]}"]`);
+        this.shadow.querySelector<HTMLTableColElement>(`col[data-col-column-index="${rightColumnIndexAsNumber}"]`);
     if (!leftCellCol || !rightCellCol) {
       return;
     }
@@ -358,15 +341,14 @@ export class DataGrid extends HTMLElement {
     if (!targetDocumentForCursorChange) {
       return;
     }
-
     // We now store values that we'll make use of in the mousemouse event to calculate how much to resize the table by.
     this.currentResize = {
       leftCellCol,
       rightCellCol,
       leftCellColInitialPercentageWidth: globalThis.parseInt(leftCellCol.style.width, 10),
       rightCellColInitialPercentageWidth: globalThis.parseInt(rightCellCol.style.width, 10),
-      initialLeftCellWidth: leftCellContainingResizer.clientWidth,
-      initialRightCellWidth: cellToRight.clientWidth,
+      initialLeftCellWidth: leftCell.clientWidth,
+      initialRightCellWidth: rightCell.clientWidth,
       initialMouseX: event.x,
       documentForCursorChange: targetDocumentForCursorChange,
       cursorToRestore: resizerElement.style.cursor,
@@ -441,7 +423,7 @@ export class DataGrid extends HTMLElement {
     this.cleanUpAfterResizeColumnComplete();
   }
 
-  private renderResizeForCell(position: CellPosition): LitHtml.TemplateResult {
+  private renderResizeForCell(column: Column, position: CellPosition): LitHtml.TemplateResult {
     /**
      * A resizer for a column is placed at the far right of the _previous column
      * cell_. So when we get called with [1, 0] that means this dragger is
@@ -449,16 +431,17 @@ export class DataGrid extends HTMLElement {
      * need the column to the left because when you resize a column you're not
      * only resizing it but also the column to its left.
      */
-    const cellToLeftOfResizingCell = position[0] - 1;
+    const [columnIndex] = position;
     const lastVisibleColumnIndex = this.getIndexOfLastVisibleColumn();
     // If we are in the very last column, there is no column to the right to resize, so don't render a resizer.
-    if (cellToLeftOfResizingCell === lastVisibleColumnIndex) {
+    if (columnIndex === lastVisibleColumnIndex || !column.visible) {
       return LitHtml.html``;
     }
 
     return LitHtml.html`<span class="cell-resize-handle"
      @pointerdown=${this.boundOnResizePointerDown}
      @pointerup=${this.boundOnResizePointerUp}
+     data-column-index=${columnIndex}
     ></span>`;
   }
 
@@ -538,6 +521,48 @@ export class DataGrid extends HTMLElement {
     menu.show();
   }
 
+  private onScroll(): void {
+    this.pendingScrollUpdate = true;
+    this.scheduleRender();
+  }
+
+  private scheduleRender(): void {
+    if (this.scheduledRenderId !== 0) {
+      return;
+    }
+
+    this.scheduledRenderId = requestAnimationFrame(() => {
+      // Running this at the start of the frame means we can query the scroll
+      // position without triggering layout.
+      if (this.pendingScrollUpdate) {
+        this.pendingScrollUpdate = false;
+      } else {
+        this.scrollToBottomIfRequired();
+      }
+
+      this.render();
+      this.alignScrollHandlers();
+      this.scheduledRenderId = 0;
+    });
+  }
+
+  private alignScrollHandlers(): void {
+    requestAnimationFrame(() => {
+      const columnHeaders = this.shadow.querySelectorAll('th:not(.hidden)');
+      const handlers = this.shadow.querySelectorAll<HTMLElement>('.cell-resize-handle');
+      const table = this.shadow.querySelector<HTMLTableElement>('table');
+      if (!table) {
+        return;
+      }
+      columnHeaders.forEach((header, index) => {
+        const {right} = header.getBoundingClientRect();
+        if (handlers[index]) {
+          handlers[index].style.left = `${right - 20}px`;
+        }
+      });
+    });
+  }
+
   private render(): void {
     const indexOfFirstVisibleColumn = this.columns.findIndex(col => col.visible);
     const anyColumnsSortable = this.columns.some(col => col.sortable === true);
@@ -605,9 +630,9 @@ export class DataGrid extends HTMLElement {
       }
 
       .cell-resize-handle {
-        right: 0;
         top: 0;
         height: 100%;
+        z-index: 3;
         width: 20px;
         cursor: col-resize;
         position: absolute;
@@ -671,7 +696,16 @@ export class DataGrid extends HTMLElement {
         top: 0.6em;
       }
     </style>
-    <div class="wrapping-container">
+    ${this.columns.map((col, columnIndex) => {
+      /**
+       * We render the resizers outside of the table. One is rendered for each
+       * column, and they are positioned absolutely at the right position. They
+       * have 100% height so they sit over the entire table and can be grabbed
+       * by the user.
+       */
+      return this.renderResizeForCell(col, [columnIndex, 0]);
+    })}
+    <div class="wrapping-container" @scroll=${this.onScroll}>
       <table
         aria-rowcount=${this.rows.length}
         aria-colcount=${this.columns.length}
@@ -709,15 +743,14 @@ export class DataGrid extends HTMLElement {
                 data-row-index='0'
                 data-col-index=${columnIndex}
                 tabindex=${LitHtml.Directives.ifDefined(anyColumnsSortable ? (cellIsFocusableCell ? '0' : '-1') : undefined)}
-              >${col.title}${this.renderResizeForCell([columnIndex + 1, 0])}</th>`;
+              >${col.title}</th>`;
             })}
           </tr>
         </thead>
         <tbody>
-          ${this.rows.map((row, rowIndex): LitHtml.TemplateResult => {
+          ${LitHtml.Directives.repeat(this.rows, row => this.rows.indexOf(row), (row, rowIndex): LitHtml.TemplateResult => {
             const focusableCell = this.getCurrentlyFocusableCell();
             const [,focusableCellRowIndex] = this.focusableCell;
-
             // Remember that row 0 is considered the header row, so the first tbody row is row 1.
             const tableRowIndex = rowIndex + 1;
 
@@ -744,9 +777,9 @@ export class DataGrid extends HTMLElement {
                 const cellOutput = col.visible ? renderCellValue(cell) : null;
                 return LitHtml.html`<td
                   class=${cellClasses}
-                  title=${cell.title || String(cell.value)}
                   tabindex=${cellIsFocusableCell ? '0' : '-1'}
                   aria-colindex=${columnIndex + 1}
+                  title=${cell.title || String(cell.value)}
                   data-row-index=${tableRowIndex}
                   data-col-index=${columnIndex}
                   data-grid-value-cell-for-column=${col.id}
@@ -756,7 +789,7 @@ export class DataGrid extends HTMLElement {
                   @click=${(): void => {
                     this.focusCell([columnIndex, tableRowIndex]);
                   }}
-                >${cellOutput}${col.visible ? this.renderResizeForCell([columnIndex + 1, tableRowIndex]) : null}</span></td>`;
+                >${cellOutput}</td>`;
               })}
             `;
           })}
@@ -768,8 +801,6 @@ export class DataGrid extends HTMLElement {
       eventContext: this,
     });
     // clang-format on
-
-    this.scrollToBottomIfRequired();
     this.hasRenderedAtLeastOnce = true;
   }
 }

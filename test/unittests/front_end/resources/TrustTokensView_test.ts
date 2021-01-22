@@ -4,14 +4,14 @@
 
 import * as Resources from '../../../../front_end/resources/resources.js';
 import * as Components from '../../../../front_end/ui/components/components.js';
-import {assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertShadowRoot, getElementWithinComponent, raf, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
 import {getValuesOfAllBodyRows} from '../ui/components/DataGridHelpers.js';
 
 
 const {assert} = chai;
 
 describe('TrustTokensView', () => {
-  it('renders trust token data', () => {
+  it('renders trust token data', async () => {
     const component = new Resources.TrustTokensView.TrustTokensView();
     renderElementIntoDOM(component);
 
@@ -21,6 +21,9 @@ describe('TrustTokensView', () => {
         {issuerOrigin: 'bar.org', count: 7},
       ],
     };
+    // The data-grid's renderer is scheduled on requestAnimationFrame, so we
+    // need to wait a frame to let it render before we can test against it.
+    await raf();
 
     const dataGrid = getElementWithinComponent(component, 'devtools-data-grid', Components.DataGrid.DataGrid);
     assertShadowRoot(dataGrid.shadowRoot);
@@ -31,7 +34,7 @@ describe('TrustTokensView', () => {
     ]);
   });
 
-  it('does not display issuers with zero stored tokens', () => {
+  it('does not display issuers with zero stored tokens', async () => {
     const component = new Resources.TrustTokensView.TrustTokensView();
     renderElementIntoDOM(component);
 
@@ -41,6 +44,7 @@ describe('TrustTokensView', () => {
         {issuerOrigin: 'foo.com', count: 42},
       ],
     };
+    await raf();
 
     const dataGrid = getElementWithinComponent(component, 'devtools-data-grid', Components.DataGrid.DataGrid);
     assertShadowRoot(dataGrid.shadowRoot);

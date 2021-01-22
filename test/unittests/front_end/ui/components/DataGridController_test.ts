@@ -4,7 +4,7 @@
 
 import {assertNotNull} from '../../../../../front_end/platform/platform.js';
 import * as UIComponents from '../../../../../front_end/ui/components/components.js';
-import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {assertShadowRoot, dispatchClickEvent, raf, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {TEXT_NODE, withMutations, withNoMutations} from '../../helpers/MutationHelpers.js';
 
 import {getAllRows, getHeaderCellForColumnId, getValuesForColumn, getValuesOfAllBodyRows} from './DataGridHelpers.js';
@@ -38,11 +38,12 @@ describe('DataGridController', () => {
     ];
 
     it('lets the user click to sort the column in ASC order', async () => {
+      await raf();
       const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns};
-
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
 
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
 
@@ -53,9 +54,10 @@ describe('DataGridController', () => {
             target: TEXT_NODE,
             max: 2,
           }],
-          internalDataGridShadow, shadowRoot => {
+          internalDataGridShadow, async shadowRoot => {
             const keyHeader = getHeaderCellForColumnId(shadowRoot, 'key');
             dispatchClickEvent(keyHeader);
+            await raf();
             const cellValues = getValuesForColumn(shadowRoot, 'key');
             assert.deepEqual(cellValues, ['Alpha', 'Bravo', 'Charlie']);
           });
@@ -64,17 +66,19 @@ describe('DataGridController', () => {
     it('supports sorting numeric columns', async () => {
       const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows: numericRows, columns};
-
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
 
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
 
       const keyHeader = getHeaderCellForColumnId(internalDataGridShadow, 'key');
       dispatchClickEvent(keyHeader);  // ASC order
+      await raf();
       let cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['1', '2', '3']);
       dispatchClickEvent(keyHeader);  // DESC order
+      await raf();
       cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['3', '2', '1']);
     });
@@ -92,6 +96,7 @@ describe('DataGridController', () => {
 
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
 
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const cellValues = getValuesForColumn(internalDataGridShadow, 'key');
@@ -111,50 +116,59 @@ describe('DataGridController', () => {
 
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
 
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const keyHeader = getHeaderCellForColumnId(internalDataGridShadow, 'key');
       let cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['Alpha', 'Bravo', 'Charlie']);
       dispatchClickEvent(keyHeader);  // DESC order
+      await raf();
       cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['Charlie', 'Bravo', 'Alpha']);
     });
 
-    it('lets the user click twice to sort the column in DESC order', () => {
+    it('lets the user click twice to sort the column in DESC order', async () => {
       const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns};
 
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
 
       const keyHeader = getHeaderCellForColumnId(internalDataGridShadow, 'key');
       dispatchClickEvent(keyHeader);  // ASC order
+      await raf();
       let cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['Alpha', 'Bravo', 'Charlie']);
       dispatchClickEvent(keyHeader);  // DESC order
+      await raf();
       cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['Charlie', 'Bravo', 'Alpha']);
     });
 
-    it('resets the sort if the user clicks after setting the sort to DESC', () => {
+    it('resets the sort if the user clicks after setting the sort to DESC', async () => {
       const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns};
 
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
 
       const keyHeader = getHeaderCellForColumnId(internalDataGridShadow, 'key');
       const originalCellValues = getValuesForColumn(internalDataGridShadow, 'key');
       dispatchClickEvent(keyHeader);  // ASC order
+      await raf();
       let cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['Alpha', 'Bravo', 'Charlie']);
       dispatchClickEvent(keyHeader);  // DESC order
+      await raf();
       cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['Charlie', 'Bravo', 'Alpha']);
       dispatchClickEvent(keyHeader);  // Now reset!
+      await raf();
       const finalCellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(finalCellValues, originalCellValues);
     });
@@ -207,11 +221,12 @@ describe('DataGridController', () => {
       negative: false,
     });
 
-    it('only shows rows with values that match the filter', () => {
+    it('only shows rows with values that match the filter', async () => {
       const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.deepEqual(renderedRowValues, [
@@ -224,10 +239,12 @@ describe('DataGridController', () => {
       component.data = {rows, columns};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
 
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
-      await withNoMutations(internalDataGridShadow, internalShadowRoot => {
+      await withNoMutations(internalDataGridShadow, async internalShadowRoot => {
         component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
+        await raf();
         const renderedRowValues = getValuesOfAllBodyRows(internalShadowRoot, {onlyVisible: true});
         assert.deepEqual(renderedRowValues, [
           ['Letter B', 'Bravo'],
@@ -236,12 +253,13 @@ describe('DataGridController', () => {
     });
 
     it('renders all rows but applies a hidden class to hide non-matching rows, maintaining proper aria-rowindex labels',
-       () => {
+       async () => {
          const component = new UIComponents.DataGridController.DataGridController();
          component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
 
          renderElementIntoDOM(component);
          assertShadowRoot(component.shadowRoot);
+         await raf();
          const internalDataGridShadow = getInternalDataGridShadowRoot(component);
          const renderedRows = getAllRows(internalDataGridShadow);
          assert.lengthOf(renderedRows, 3);
@@ -249,12 +267,13 @@ describe('DataGridController', () => {
          assert.deepEqual(renderedRows.map(row => row.getAttribute('aria-rowindex')), ['1', '2', '3']);
        });
 
-    it('shows all rows if the filter is then cleared', () => {
+    it('shows all rows if the filter is then cleared', async () => {
       const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
-
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
+
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       let renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.lengthOf(renderedRowValues, 1);
@@ -262,15 +281,17 @@ describe('DataGridController', () => {
         ...component.data,
         filters: [],
       };
+      await raf();
       renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow);
       assert.lengthOf(renderedRowValues, 3);
     });
 
-    it('supports a regex filter', () => {
+    it('supports a regex filter', async () => {
       const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns, filters: [createRegexFilter('bravo')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.deepEqual(renderedRowValues, [
@@ -278,13 +299,14 @@ describe('DataGridController', () => {
       ]);
     });
 
-    it('inverts the filter if given a negative filter', () => {
+    it('inverts the filter if given a negative filter', async () => {
       const component = new UIComponents.DataGridController.DataGridController();
       const filter = createPlainTextFilter('bravo');
       filter.negative = true;
       component.data = {rows, columns, filters: [filter]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.deepEqual(renderedRowValues, [
@@ -293,23 +315,25 @@ describe('DataGridController', () => {
       ]);
     });
 
-    it('only shows rows that match all filters when given multiple filters', () => {
+    it('only shows rows that match all filters when given multiple filters', async () => {
       const component = new UIComponents.DataGridController.DataGridController();
       // This matches no rows, as no row can match both of these filters
       component.data = {rows, columns, filters: [createPlainTextFilter('alpha'), createPlainTextFilter('charlie')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.deepEqual(renderedRowValues, []);
     });
 
-    it('supports filtering by column key', () => {
+    it('supports filtering by column key', async () => {
       const component = new UIComponents.DataGridController.DataGridController();
       // By filtering for values with `e` we expect to only get the "Letter C: Charlie" row as it's the only value field with an `e` in.
       component.data = {rows, columns, filters: [createColumnFilter('value', 'e')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.deepEqual(renderedRowValues, [
@@ -317,13 +341,14 @@ describe('DataGridController', () => {
       ]);
     });
 
-    it('supports negative filtering by column key', () => {
+    it('supports negative filtering by column key', async () => {
       const component = new UIComponents.DataGridController.DataGridController();
       const filter = createColumnFilter('value', 'e');
       filter.negative = true;
       component.data = {rows, columns, filters: [filter]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
+      await raf();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.deepEqual(renderedRowValues, [

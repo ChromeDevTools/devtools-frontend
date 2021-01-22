@@ -9,5 +9,12 @@ export const primitiveRenderer = (value: CellValue): LitHtml.TemplateResult => {
 };
 
 export const codeBlockRenderer = (value: CellValue): LitHtml.TemplateResult => {
-  return LitHtml.html`<code>${value}</code>`;
+  if (!value) {
+    return LitHtml.nothing as LitHtml.TemplateResult;
+  }
+  const MAX_LENGTH = 13;
+  const stringValue = String(value);
+  const truncatedValue =
+      stringValue.length > MAX_LENGTH ? stringValue.substring(0, MAX_LENGTH - 3) + '...' : stringValue;
+  return LitHtml.html`<code>${truncatedValue}</code>`;
 };

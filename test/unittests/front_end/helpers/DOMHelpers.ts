@@ -159,5 +159,9 @@ export function getEventPromise<T extends Event>(element: HTMLElement, eventName
 }
 
 export async function doubleRaf() {
-  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+}
+
+export async function raf() {
+  return new Promise(resolve => requestAnimationFrame(resolve));
 }

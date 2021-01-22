@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertElement, assertElements, dispatchClickEvent, dispatchKeyDownEvent} from '../../helpers/DOMHelpers.js';
+import {assertElement, assertElements, dispatchClickEvent, dispatchKeyDownEvent, raf} from '../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
@@ -77,9 +77,10 @@ export const emulateUserKeyboardNavigation =
       dispatchKeyDownEvent(table, {key});
     };
 
-export const emulateUserFocusingCellAt = (shadowRoot: ShadowRoot, position: {column: number, row: number}) => {
+export const emulateUserFocusingCellAt = async (shadowRoot: ShadowRoot, position: {column: number, row: number}) => {
   const cellToFocus = getCellByIndexes(shadowRoot, position);
   dispatchClickEvent(cellToFocus);
+  await raf();
   assertCurrentFocusedCellIs(shadowRoot, position);
 };
 

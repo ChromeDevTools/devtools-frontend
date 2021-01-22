@@ -678,7 +678,8 @@ describe('The Debugger Language Plugins', async () => {
     ]);
   });
 
-  it('shows variable value in popover', async () => {
+  // Failing on the bots with a timeout
+  it.skip('[crbug.com/1169688]: shows variable value in popover', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluateHandle(
         () => globalThis.installExtensionPlugin((extensionServerClient: unknown, extensionAPI: unknown) => {

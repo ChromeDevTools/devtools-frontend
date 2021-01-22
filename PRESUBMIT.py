@@ -99,6 +99,30 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
     return results
 
 
+def _CheckBugAssociation(input_api, output_api, is_committing):
+    results = [output_api.PresubmitNotifyResult('Bug Association Check:')]
+    bugs = input_api.change.BugsFromDescription()
+    message = (
+        "Each CL should be associated with a bug, use \'Bug:\' or \'Fixed:\' lines in\n"
+        "the footer of the commit description. If you explicitly don\'t want to\n"
+        "set a bug, use \'Bug: none\' in the footer of the commit description.\n\n"
+        "Note: The footer of the commit description is the last block of lines in\n"
+        "the commit description that doesn't contain empty lines. This means that\n"
+        "any \'Bug:\' or \'Fixed:\' lines that are eventually followed by an empty\n"
+        "line are not detected by this presubmit check.")
+
+    if not bugs:
+        if is_committing:
+            results.append(output_api.PresubmitError(message))
+        else:
+            results.append(output_api.PresubmitNotifyResult(message))
+
+    for bug in bugs:
+        results.append(output_api.PresubmitNotifyResult(('%s') % bug))
+
+    return results
+
+
 def _CheckBuildGN(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('Running BUILD.GN check:')]
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts', 'check_gn.js')
@@ -476,6 +500,7 @@ def CheckChangeOnUpload(input_api, output_api):
     results.extend(_CollectStrings(input_api, output_api))
     # Run checks that rely on output from other DevTool checks
     results.extend(_SideEffectChecks(input_api, output_api))
+    results.extend(_CheckBugAssociation(input_api, output_api, False))
     return results
 
 
@@ -488,6 +513,7 @@ def CheckChangeOnCommit(input_api, output_api):
     # Run checks that rely on output from other DevTool checks
     results.extend(_SideEffectChecks(input_api, output_api))
     results.extend(input_api.canned_checks.CheckChangeHasDescription(input_api, output_api))
+    results.extend(_CheckBugAssociation(input_api, output_api, True))
     return results
 
 

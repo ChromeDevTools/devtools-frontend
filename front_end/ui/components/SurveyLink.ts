@@ -15,6 +15,7 @@ export type ShowSurveyCallback = (result: Host.InspectorFrontendHostAPI.ShowSurv
 
 export interface SurveyLinkData {
   trigger: string;
+  promptText: Common.UIString.LocalizedString;
   canShowSurvey: (trigger: string, callback: CanShowSurveyCallback) => void;
   showSurvey: (trigger: string, callback: ShowSurveyCallback) => void;
 }
@@ -33,6 +34,7 @@ const enum State {
 export class SurveyLink extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private trigger = '';
+  private promptText = Common.UIString.LocalizedEmptyString;
   private canShowSurvey: (trigger: string, callback: CanShowSurveyCallback) => void = () => {};
   private showSurvey: (trigger: string, callback: ShowSurveyCallback) => void = () => {};
   private state: State = State.Checking;
@@ -40,6 +42,7 @@ export class SurveyLink extends HTMLElement {
   // Re-setting data will cause the state to go back to 'Checking' which hides the link.
   set data(data: SurveyLinkData) {
     this.trigger = data.trigger;
+    this.promptText = data.promptText;
     this.canShowSurvey = data.canShowSurvey;
     this.showSurvey = data.showSurvey;
 
@@ -76,7 +79,7 @@ export class SurveyLink extends HTMLElement {
       return;
     }
 
-    let linkText = ls`Is this issue message helpful to you?`;
+    let linkText = this.promptText;
     if (this.state === State.Sending) {
       linkText = ls`Opening survey …`;
     } else if (this.state === State.SurveyShown) {

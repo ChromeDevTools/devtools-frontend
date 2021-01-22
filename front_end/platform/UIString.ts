@@ -36,6 +36,8 @@ class LocalizedStringTag {
 }
 export type LocalizedString = string&LocalizedStringTag;
 
+export const LocalizedEmptyString = '' as LocalizedString;
+
 export function UIString(string: string, ..._vararg: unknown[]): LocalizedString {
   return StringUtilities.vsprintf(localize(string), Array.prototype.slice.call(arguments, 1)) as LocalizedString;
 }

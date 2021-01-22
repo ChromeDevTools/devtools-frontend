@@ -75,6 +75,9 @@
   <message name="IDS_DEVTOOLS_7b83d3f08fa392b79e3f553b585971cd" desc="Value for the status column in Shared Array Buffer issues">
     warning
   </message>
+  <message name="IDS_DEVTOOLS_8c83906ca63318aa18a820cbb91176a1" desc="Link text for opening a survey in the expended view of an Issue in the issue view">
+    Is this issue message helpful to you?
+  </message>
   <message name="IDS_DEVTOOLS_8e2dcfd7e7e24b1ca76c1193f645902b" desc="Singular label for number of affected element resource indication in issue view">
     element
   </message>

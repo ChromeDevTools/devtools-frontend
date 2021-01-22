@@ -959,6 +959,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       const surveyLink = new WebComponents.SurveyLink.SurveyLink();
       surveyLink.data = {
         trigger: surveyTrigger,
+        promptText: ls`Is this issue message helpful to you?`,
         canShowSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.canShowSurvey,
         showSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.showSurvey
       };

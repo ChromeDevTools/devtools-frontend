@@ -5,18 +5,28 @@
 import {assert} from 'chai';
 import * as puppeteer from 'puppeteer';
 
-import {getBrowserAndPages, step, waitFor, waitForFunction} from '../../../shared/helper.js';
+import {$, getBrowserAndPages, step, waitFor, waitForElementWithTextContent, waitForFunction} from '../../../shared/helper.js';
 import {describe, it} from '../../../shared/mocha-extensions.js';
-import {ACTIVITY_COLUMN_SELECTOR, navigateToCallTreeTab} from '../../helpers/performance-helpers.js';
-import {clickOnFunctionLink, getTotalTimeFromSummary, navigateToBottomUpTab, navigateToPerformanceTab, retrieveActivity, searchForComponent, startRecording, stopRecording} from '../../helpers/performance-helpers.js';
+import {clickOnFunctionLink, getTotalTimeFromSummary, navigateToBottomUpTab, navigateToCallTreeTab, navigateToPerformanceTab, searchForComponent, startRecording, stopRecording} from '../../helpers/performance-helpers.js';
 
 async function expandAndCheckActivityTree(frontend: puppeteer.Page, expectedActivities: string[]) {
   let index = 0;
+  let parentItem: puppeteer.ElementHandle<Element>|undefined = undefined;
   do {
     await waitForFunction(async () => {
-      const tree_item = await waitFor('.data-grid-data-grid-node.selected.revealed .activity-name');
-      const tree_item_text = await frontend.evaluate(el => el.innerText, tree_item);
-      return expectedActivities[index] === tree_item_text;
+      if (parentItem) {
+        parentItem.evaluate(e => e.scrollIntoView());
+      }
+      const treeItem = await $('.data-grid-data-grid-node.selected.revealed .activity-name');
+      if (!treeItem) {
+        return false;
+      }
+      const treeItemText = await frontend.evaluate(el => el.innerText, treeItem);
+      if (expectedActivities[index] === treeItemText) {
+        parentItem = treeItem;
+        return true;
+      }
+      return false;
     });
     index++;
     await frontend.keyboard.press('ArrowRight');
@@ -87,8 +97,7 @@ describe('The Performance panel', async function() {
     });
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1149827] is able to inspect the call stack for a wasm function from the bottom up', async () => {
+  it('is able to inspect the call stack for a wasm function from the bottom up', async () => {
     const {frontend} = getBrowserAndPages();
     const expectedActivities = ['mainWasm', 'js-to-wasm::i', '(anonymous)', 'Run Microtasks'];
 
@@ -98,24 +107,24 @@ describe('The Performance panel', async function() {
 
     await step(
         'expand the tree for the "mainWasm" activity and check that it displays the correct values', async () => {
-          await waitFor(ACTIVITY_COLUMN_SELECTOR);
-          const mainWasmActivity = await retrieveActivity(frontend, 'mainWasm');
-          if (!mainWasmActivity) {
-            assert.fail('Could not find mainWasmActivity in frontend.');
+          const timelineTree = await $('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
+          const rootActivity = await waitForElementWithTextContent(expectedActivities[0], timelineTree);
+          if (!rootActivity) {
+            assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
           }
-          await mainWasmActivity.click();
+          await rootActivity.click();
           await expandAndCheckActivityTree(frontend, expectedActivities);
         });
   });
 
-  // Broken test
-  it.skip('[crbug.com/1156555]: is able to inspect the call stack for a wasm function from the call tree', async () => {
+  it('is able to inspect the call stack for a wasm function from the call tree', async () => {
     const {frontend} = getBrowserAndPages();
     const expectedActivities = [
       'Run Microtasks',
       '(anonymous)',
       'js-to-wasm::i',
       'mainWasm',
+      'wasm-to-js::l-imports.getTime',
       'getTime',
     ];
 
@@ -125,6 +134,12 @@ describe('The Performance panel', async function() {
 
     await step(
         'expand the tree for the "Run Microtasks" activity and check that it displays the correct values', async () => {
+          const timelineTree = await $('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
+          const rootActivity = await waitForElementWithTextContent(expectedActivities[0], timelineTree);
+          if (!rootActivity) {
+            assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
+          }
+          await rootActivity.click();
           await expandAndCheckActivityTree(frontend, expectedActivities);
         });
   });

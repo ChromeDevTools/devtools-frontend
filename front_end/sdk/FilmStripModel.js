@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
+
 import {Event, ObjectSnapshot, TracingModel} from './TracingModel.js';  // eslint-disable-line no-unused-vars
 
 
@@ -82,7 +84,9 @@ export class FilmStripModel {
    * @return {?Frame}
    */
   frameByTimestamp(timestamp) {
-    const index = this._frames.upperBound(timestamp, (timestamp, frame) => timestamp - frame.timestamp) - 1;
+    const index =
+        Platform.ArrayUtilities.upperBound(this._frames, timestamp, (timestamp, frame) => timestamp - frame.timestamp) -
+        1;
     return index >= 0 ? this._frames[index] : null;
   }
 }

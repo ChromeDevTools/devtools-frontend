@@ -113,7 +113,7 @@ describe('ArrayUtilities', () => {
       }
 
       function count(a: number[], x: number) {
-        return a.upperBound(x) - a.lowerBound(x);
+        return Platform.ArrayUtilities.upperBound(a, x, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - a.lowerBound(x);
       }
 
       function testAll(a: number[], b: number[]) {

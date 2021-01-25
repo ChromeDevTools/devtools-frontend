@@ -946,7 +946,7 @@ export class FlameChart extends UI.Widget.VBox {
       const entryTime = timelineData.entryStartTimes[this._selectedEntryIndex] +
           timelineData.entryTotalTimes[this._selectedEntryIndex] / 2;
       const levelIndexes = this._timelineLevels ? this._timelineLevels[level] : [];
-      let indexOnLevel = levelIndexes.upperBound(entryTime, timeComparator) - 1;
+      let indexOnLevel = Platform.ArrayUtilities.upperBound(levelIndexes, entryTime, timeComparator) - 1;
       if (!entriesIntersect(this._selectedEntryIndex, levelIndexes[indexOnLevel])) {
         ++indexOnLevel;
         if (indexOnLevel >= levelIndexes.length ||
@@ -990,7 +990,9 @@ export class FlameChart extends UI.Widget.VBox {
     if (!this._visibleLevelOffsets) {
       throw new Error('No visible level offsets');
     }
-    const cursorLevel = this._visibleLevelOffsets.upperBound(y) - 1;
+    const cursorLevel =
+        Platform.ArrayUtilities.upperBound(this._visibleLevelOffsets, y, Platform.ArrayUtilities.DEFAULT_COMPARATOR) -
+        1;
     if (cursorLevel < 0 || (this._visibleLevels && !this._visibleLevels[cursorLevel])) {
       return -1;
     }
@@ -1019,7 +1021,10 @@ export class FlameChart extends UI.Widget.VBox {
 
     const cursorTime = this._chartViewport.pixelToTime(x);
     const indexOnLevel = Math.max(
-        entriesOnLevel.upperBound(cursorTime, (time, entryIndex) => time - entryStartTimes[entryIndex]) - 1, 0);
+        Platform.ArrayUtilities.upperBound(
+            entriesOnLevel, cursorTime, (time, entryIndex) => time - entryStartTimes[entryIndex]) -
+            1,
+        0);
 
     /**
      * @this {FlameChart}
@@ -1070,7 +1075,8 @@ export class FlameChart extends UI.Widget.VBox {
     }
     y += this._chartViewport.scrollOffset();
     const groups = this._rawTimelineData.groups || [];
-    const group = this._groupOffsets.upperBound(y) - 1;
+    const group =
+        Platform.ArrayUtilities.upperBound(this._groupOffsets, y, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1;
     if (group < 0 || group >= groups.length) {
       return -1;
     }
@@ -1149,7 +1155,7 @@ export class FlameChart extends UI.Widget.VBox {
       return;
     }
 
-    const visibleLevelOffsets = this._visibleLevelOffsets ? this._visibleLevelOffsets : [];
+    const visibleLevelOffsets = this._visibleLevelOffsets ? this._visibleLevelOffsets : new Uint32Array();
 
     const width = this._offsetWidth;
     const height = this._offsetHeight;
@@ -1176,7 +1182,9 @@ export class FlameChart extends UI.Widget.VBox {
     const textPadding = this._textPadding;
     const minTextWidth = 2 * textPadding + UI.UIUtils.measureTextWidth(context, '…');
     const minTextWidthDuration = this._chartViewport.pixelToTimeOffset(minTextWidth);
-    const minVisibleBarLevel = Math.max(visibleLevelOffsets.upperBound(top) - 1, 0);
+    const minVisibleBarLevel = Math.max(
+        Platform.ArrayUtilities.upperBound(visibleLevelOffsets, top, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1,
+        0);
     this._markerPositions.clear();
 
     let mainThreadTopLevel = -1;

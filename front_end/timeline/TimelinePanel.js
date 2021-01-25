@@ -1064,7 +1064,8 @@ export class TimelinePanel extends UI.Panel.Panel {
       return;
     }
     // Find best match, then backtrack to the first visible entry.
-    for (let index = events.upperBound(time, (time, event) => time - event.startTime) - 1; index >= 0; --index) {
+    for (let index = Platform.ArrayUtilities.upperBound(events, time, (time, event) => time - event.startTime) - 1;
+         index >= 0; --index) {
       const event = events[index];
       const endTime = event.endTime || event.startTime;
       if (SDK.TracingModel.TracingModel.isTopLevelEvent(event) && endTime < time) {

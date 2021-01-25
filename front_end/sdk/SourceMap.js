@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
@@ -317,8 +318,8 @@ export class TextSourceMap {
    */
   findEntry(lineNumber, columnNumber) {
     const mappings = this.mappings();
-    const index = mappings.upperBound(
-        undefined, (unused, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
+    const index = Platform.ArrayUtilities.upperBound(
+        mappings, undefined, (unused, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
     return index ? mappings[index - 1] : null;
   }
 
@@ -332,7 +333,7 @@ export class TextSourceMap {
   sourceLineMapping(sourceURL, lineNumber, columnNumber) {
     const mappings = this._reversedMappings(sourceURL);
     const first = mappings.lowerBound(lineNumber, lineComparator);
-    const last = mappings.upperBound(lineNumber, lineComparator);
+    const last = Platform.ArrayUtilities.upperBound(mappings, lineNumber, lineComparator);
     if (first >= mappings.length || mappings[first].sourceLineNumber !== lineNumber) {
       return null;
     }
@@ -362,8 +363,9 @@ export class TextSourceMap {
    */
   findReverseEntries(sourceURL, lineNumber, columnNumber) {
     const mappings = this._reversedMappings(sourceURL);
-    const endIndex = mappings.upperBound(
-        undefined, (unused, entry) => lineNumber - entry.sourceLineNumber || columnNumber - entry.sourceColumnNumber);
+    const endIndex = Platform.ArrayUtilities.upperBound(
+        mappings, undefined,
+        (unused, entry) => lineNumber - entry.sourceLineNumber || columnNumber - entry.sourceColumnNumber);
     let startIndex = endIndex;
     while (startIndex > 0 && mappings[startIndex - 1].sourceLineNumber === mappings[endIndex - 1].sourceLineNumber &&
            mappings[startIndex - 1].sourceColumnNumber === mappings[endIndex - 1].sourceColumnNumber) {
@@ -581,8 +583,8 @@ export class TextSourceMap {
     }
     const startIndex =
         mappings.lowerBound({lineNumber: textRange.startLine, columnNumber: textRange.startColumn}, comparator);
-    const endIndex =
-        mappings.upperBound({lineNumber: textRange.endLine, columnNumber: textRange.endColumn}, comparator);
+    const endIndex = Platform.ArrayUtilities.upperBound(
+        mappings, {lineNumber: textRange.endLine, columnNumber: textRange.endColumn}, comparator);
 
     const startMapping = mappings[startIndex];
     const endMapping = mappings[endIndex];

@@ -15,15 +15,6 @@ declare class DOM {
 
 interface Array<T> {
   lowerBound<S>(object: S, comparator?: {(a: S, b: T): number}, left?: number, right?: number): number;
-  upperBound<S>(object: S, comparator?: {(a: S, b: T): number}, left?: number, right?: number): number;
-}
-
-interface Uint8Array {
-  upperBound(value: number, comparator?: {(a: number, b: number): number}, left?: number, right?: number): number;
-}
-
-interface Uint32Array {
-  upperBound(value: number, comparator?: {(a: number, b: number): number}, left?: number, right?: number): number;
 }
 
 interface RegExp {

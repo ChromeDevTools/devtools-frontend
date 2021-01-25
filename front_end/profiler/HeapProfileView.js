@@ -211,7 +211,9 @@ export class HeapProfileView extends ProfileView {
     this._ordinals.push(this._lastOrdinal + 1);
     for (const sample of profile.samples) {
       this._lastOrdinal = Math.max(this._lastOrdinal, sample.ordinal);
-      const bucket = this._ordinals.upperBound(sample.ordinal) - 1;
+      const bucket = Platform.ArrayUtilities.upperBound(
+                         this._ordinals, sample.ordinal, Platform.ArrayUtilities.DEFAULT_COMPARATOR) -
+          1;
       this._sizes[bucket] += sample.size;
     }
     this._max.push(this._sizes[this._sizes.length - 1]);

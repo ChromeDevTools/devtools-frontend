@@ -110,3 +110,34 @@ export const intersectOrdered = <T>(array1: T[], array2: T[], comparator: (a: T,
 export const mergeOrdered = <T>(array1: T[], array2: T[], comparator: (a: T, b: T) => number): T[] => {
   return mergeOrIntersect(array1, array2, comparator, true);
 };
+
+export const DEFAULT_COMPARATOR = (a: string|number, b: string|number): number => {
+  return a < b ? -1 : (a > b ? 1 : 0);
+};
+
+/**
+ * Return index of the leftmost element that is greater
+ * than the specimen object. If there's no such element (i.e. all
+ * elements are smaller or equal to the specimen) returns right bound.
+ * The function works for sorted array.
+ * When specified, |left| (inclusive) and |right| (exclusive) indices
+ * define the search window.
+ */
+export function upperBound<T>(
+    array: Uint32Array, needle: T, comparator: (needle: T, b: number) => number, left?: number, right?: number): number;
+export function upperBound<S, T>(
+    array: S[], needle: T, comparator: (needle: T, b: S) => number, left?: number, right?: number): number;
+export function upperBound<S, T, A extends S[]>(
+    array: A, needle: T, comparator: (needle: T, b: S) => number, left?: number, right?: number): number {
+  let l = left || 0;
+  let r = right !== undefined ? right : array.length;
+  while (l < r) {
+    const m = (l + r) >> 1;
+    if (comparator(needle, array[m]) >= 0) {
+      l = m + 1;
+    } else {
+      r = m;
+    }
+  }
+  return r;
+}

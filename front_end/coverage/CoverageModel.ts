@@ -6,6 +6,7 @@
 
 import * as Bindings from '../bindings/bindings.js';  // eslint-disable-line no-unused-vars
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
@@ -733,7 +734,8 @@ export class CoverageInfo {
   }
 
   usageForRange(start: number, end: number): boolean {
-    let index = this._segments.upperBound(start, (position, segment) => position - segment.end);
+    let index =
+        Platform.ArrayUtilities.upperBound(this._segments, start, (position, segment) => position - segment.end);
     for (; index < this._segments.length && this._segments[index].end < end; ++index) {
       if (this._segments[index].count) {
         return true;

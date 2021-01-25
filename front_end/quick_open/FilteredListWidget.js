@@ -260,7 +260,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     if (this._loadTimeout || provider !== this._provider) {
       return;
     }
-    this._loadTimeout = setTimeout(this._updateAfterItemsLoaded.bind(this), 0);
+    this._loadTimeout = window.setTimeout(this._updateAfterItemsLoaded.bind(this), 0);
   }
 
   _updateAfterItemsLoaded() {
@@ -455,7 +455,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
 
         // Find its index in the scores array (earlier elements have bigger scores).
         if (score > minBestScore || bestScores.length < bestItemsToCollect) {
-          const index = bestScores.upperBound(score, compareIntegers);
+          const index = Platform.ArrayUtilities.upperBound(bestScores, score, compareIntegers);
           bestScores.splice(index, 0, score);
           bestItems.splice(index, 0, i);
           if (bestScores.length > bestItemsToCollect) {
@@ -480,7 +480,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
 
       // Process everything in chunks.
       if (i < this._provider.itemCount()) {
-        this._scoringTimer = setTimeout(scoreItems.bind(this, i), 0);
+        this._scoringTimer = window.setTimeout(scoreItems.bind(this, i), 0);
         if (window.performance.now() - scoreStartTime > 50) {
           this._progressBarElement.style.transform = 'scaleX(' + i / this._provider.itemCount() + ')';
         }
@@ -586,7 +586,7 @@ export class FilteredListWidget extends UI.Widget.VBox {
     if (this._filterTimer) {
       return;
     }
-    this._filterTimer = setTimeout(this._filterItems.bind(this), 0);
+    this._filterTimer = window.setTimeout(this._filterItems.bind(this), 0);
   }
 
   /**

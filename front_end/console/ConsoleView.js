@@ -678,7 +678,7 @@ export class ConsoleView extends UI.Widget.VBox {
         timeComparator(viewMessage, this._consoleMessages[this._consoleMessages.length - 1]) > 0) {
       insertAt = this._consoleMessages.length;
     } else {
-      insertAt = this._consoleMessages.upperBound(viewMessage, timeComparator);
+      insertAt = Platform.ArrayUtilities.upperBound(this._consoleMessages, viewMessage, timeComparator);
     }
     const insertedInMiddle = insertAt < this._consoleMessages.length;
     this._consoleMessages.splice(insertAt, 0, viewMessage);

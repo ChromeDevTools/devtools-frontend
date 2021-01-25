@@ -4,6 +4,7 @@
 
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -140,7 +141,7 @@ export class FilmStripView extends UI.Widget.HBox {
     // Using the first frame to fill the interval between recording start
     // and a moment the frame is taken.
     const frames = this._model.frames();
-    const index = Math.max(frames.upperBound(time, comparator) - 1, 0);
+    const index = Math.max(Platform.ArrayUtilities.upperBound(frames, time, comparator) - 1, 0);
     return frames[index];
   }
 

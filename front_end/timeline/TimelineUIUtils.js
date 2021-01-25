@@ -1330,7 +1330,8 @@ export class TimelineUIUtils {
       const cache = events[categoryBreakdownCacheSymbol];
       for (const category in cache) {
         const categoryCache = cache[category];
-        const index = categoryCache.time.upperBound(time);
+        const index =
+            Platform.ArrayUtilities.upperBound(categoryCache.time, time, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
         let value;
         if (index === 0) {
           value = 0;

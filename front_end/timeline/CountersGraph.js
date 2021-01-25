@@ -357,7 +357,9 @@ export class Counter {
     const end = calculator.maximumBoundary();
 
     // Maximum index of element whose time <= start.
-    this._minimumIndex = Platform.NumberUtilities.clamp(this.times.upperBound(start) - 1, 0, this.times.length - 1);
+    this._minimumIndex = Platform.NumberUtilities.clamp(
+        Platform.ArrayUtilities.upperBound(this.times, start, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1, 0,
+        this.times.length - 1);
 
     // Minimum index of element whose time >= end.
     this._maximumIndex = Platform.NumberUtilities.clamp(this.times.lowerBound(end), 0, this.times.length - 1);
@@ -456,8 +458,9 @@ export class CounterUI {
    * @return {number}
    */
   _recordIndexAt(x) {
-    return this.counter.x.upperBound(
-               x * window.devicePixelRatio, undefined, this.counter._minimumIndex + 1, this.counter._maximumIndex + 1) -
+    return Platform.ArrayUtilities.upperBound(
+               this.counter.x, x * window.devicePixelRatio, Platform.ArrayUtilities.DEFAULT_COMPARATOR,
+               this.counter._minimumIndex + 1, this.counter._maximumIndex + 1) -
         1;
   }
 

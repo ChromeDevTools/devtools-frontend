@@ -121,8 +121,8 @@ export class CSSModel extends SDKModel {
   createRawLocationsByURL(sourceURL, lineNumber, columnNumber = 0) {
     const headers = this.headersForSourceURL(sourceURL);
     headers.sort(stylesheetComparator);
-    const endIndex = headers.upperBound(
-        undefined, (_, header) => lineNumber - header.startLine || columnNumber - header.startColumn);
+    const endIndex = Platform.ArrayUtilities.upperBound(
+        headers, undefined, (_, header) => lineNumber - header.startLine || columnNumber - header.startColumn);
     if (!endIndex) {
       return [];
     }

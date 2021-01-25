@@ -161,7 +161,7 @@ export class TimelineModelImpl {
    * @param {number} time
    */
   static _topLevelEventEndingAfter(events, time) {
-    let index = events.upperBound(time, (time, event) => time - event.startTime) - 1;
+    let index = Platform.ArrayUtilities.upperBound(events, time, (time, event) => time - event.startTime) - 1;
     while (index > 0 && !SDK.TracingModel.TracingModel.isTopLevelEvent(events[index])) {
       index--;
     }

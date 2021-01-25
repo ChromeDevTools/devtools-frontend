@@ -47,30 +47,4 @@ describe('Utilities', () => {
       testArray(fixture, true);
     }
   });
-
-  it('calculates the upper bound', () => {
-    const fixtures = [
-      [],
-      [1],
-      [-1, -1, 0, 0, 0, 0, 2, 3, 4, 4, 4, 7, 9, 9, 9],
-    ];
-
-    function testArray(array: number[], useComparator: boolean) {
-      function comparator(a: number, b: number) {
-        return a < b ? -1 : (a > b ? 1 : 0);
-      }
-
-      for (let value = -2; value <= 12; ++value) {
-        const index = useComparator ? array.upperBound(value, comparator) : array.upperBound(value);
-        assert.isTrue(0 <= index && index <= array.length, 'index is out of bounds');
-        assert.isTrue(index === 0 || array[index - 1] <= value, 'array[index - 1] > value');
-        assert.isTrue(index === array.length || array[index] > value, 'array[index] <= value');
-      }
-    }
-
-    for (const fixture of fixtures) {
-      testArray(fixture, false);
-      testArray(fixture, true);
-    }
-  });
 });

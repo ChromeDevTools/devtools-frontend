@@ -1,6 +1,9 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import * as Platform from '../platform/platform.js';
+
 import {ColumnDescriptor, Events, Parameters} from './DataGrid.js';  // eslint-disable-line no-unused-vars
 import {ViewportDataGrid, ViewportDataGridNode} from './ViewportDataGrid.js';
 
@@ -177,8 +180,9 @@ export class SortableDataGridNode extends ViewportDataGridNode {
     if (dataGrid) {
       this.insertChild(
           node,
-          (/** @type {!Array<!SortableDataGridNode<!NODE_TYPE>>} */ (this.children))
-              .upperBound(node, dataGrid._sortingFunction));
+          Platform.ArrayUtilities.upperBound(
+              /** @type {!Array<!SortableDataGridNode<!NODE_TYPE>>} */ (this.children), node,
+              dataGrid._sortingFunction));
     }
   }
 

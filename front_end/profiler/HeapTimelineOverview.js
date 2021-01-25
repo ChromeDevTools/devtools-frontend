@@ -245,7 +245,8 @@ export class HeapTimelineOverview extends UI.Widget.VBox {
     const timeLeft = startTime + totalTime * this._windowLeft;
     const timeRight = startTime + totalTime * this._windowRight;
     const minIndex = timestamps.lowerBound(timeLeft);
-    const maxIndex = timestamps.upperBound(timeRight);
+    const maxIndex =
+        Platform.ArrayUtilities.upperBound(timestamps, timeRight, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
     let size = 0;
     for (let i = minIndex; i <= maxIndex; ++i) {
       size += sizes[i];

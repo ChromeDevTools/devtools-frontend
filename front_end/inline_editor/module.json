@@ -3,9 +3,7 @@
     "i18n",
     "ui"
   ],
-  "modules": [
-    "inline_editor-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "bezierEditor.css",
     "colorSwatch.css",

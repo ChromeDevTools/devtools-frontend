@@ -4,14 +4,5 @@
     "browser_sdk",
     "common"
   ],
-  "modules": [
-    "extensions.js",
-    "extensions-legacy.js",
-    "ExtensionAPI.js",
-    "ExtensionTraceProvider.js",
-    "ExtensionServer.js",
-    "ExtensionPanel.js",
-    "ExtensionView.js",
-    "LanguageExtensionEndpoint.js"
-  ]
+  "modules": []
 }

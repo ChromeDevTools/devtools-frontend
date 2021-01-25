@@ -10,6 +10,7 @@ devtools_module("platform") {
     "UIString.ts",
     "array-utilities.ts",
     "date-utilities.ts",
+    "keyboard-utilities.ts",
     "map-utilities.ts",
     "number-utilities.js",
     "set-utilities.ts",

@@ -10,7 +10,7 @@ import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as UI from '../../ui/ui.js';
 
 import {addColumnVisibilityCheckboxes, addSortableColumnItems} from './DataGridContextMenuUtils.js';
-import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, Cell, CellPosition, Column, ContextMenuHeaderResetClickEvent, getRowEntryForColumnId, handleArrowKeyNavigation, keyIsArrowKey, renderCellValue, Row, SortDirection, SortState} from './DataGridUtils.js';
+import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, Cell, CellPosition, Column, ContextMenuHeaderResetClickEvent, getRowEntryForColumnId, handleArrowKeyNavigation, renderCellValue, Row, SortDirection, SortState} from './DataGridUtils.js';
 
 export interface DataGridContextMenusConfiguration {
   headerRow?: (menu: UI.ContextMenu.ContextMenu, columns: readonly Column[]) => void;
@@ -242,7 +242,7 @@ export class DataGrid extends HTMLElement {
       }
     }
 
-    if (!keyIsArrowKey(key)) {
+    if (!Platform.KeyboardUtilities.keyIsArrowKey(key)) {
       return;
     }
 

@@ -32,6 +32,7 @@ import './utilities.js';
 
 import * as ArrayUtilities from './array-utilities.js';
 import * as DateUtilities from './date-utilities.js';
+import * as KeyboardUtilities from './keyboard-utilities.js';
 import * as MapUtilities from './map-utilities.js';
 import * as NumberUtilities from './number-utilities.js';
 import * as SetUtilities from './set-utilities.js';
@@ -56,6 +57,7 @@ export {
   TypeScriptUtilities,
   DateUtilities,
   MapUtilities,
+  KeyboardUtilities,
   NumberUtilities,
   SetUtilities,
   StringUtilities,

@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../../../front_end/platform/platform.js';
 import * as LitHtml from '../../../../../front_end/third_party/lit-html/lit-html.js';
 import * as UIComponents from '../../../../../front_end/ui/components/components.js';
-
 import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, doubleRaf, getEventPromise, raf, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {withMutations} from '../../helpers/MutationHelpers.js';
 
@@ -569,7 +569,7 @@ describe('DataGrid', () => {
     const table = component.shadowRoot.querySelector('table');
     assertElement(table, HTMLTableElement);
     // Navigate up to the column header
-    dispatchKeyDownEvent(table, {key: UIComponents.DataGridUtils.ArrowKey.UP});
+    dispatchKeyDownEvent(table, {key: Platform.KeyboardUtilities.ArrowKey.UP});
     const newFocusedCell = getFocusableCell(component.shadowRoot);
     assert.strictEqual(newFocusedCell.getAttribute('data-row-index'), '0');
     assert.strictEqual(newFocusedCell.getAttribute('data-col-index'), '0');
@@ -800,7 +800,7 @@ describe('DataGrid', () => {
     describe('navigating left', () => {
       it('does not let the user move further left than the first column', async () => {
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.LEFT,
+          key: Platform.KeyboardUtilities.ArrowKey.LEFT,
           currentFocusedCell: [0, 1],
           columns: makeColumns(),
           rows: makeRows(),
@@ -812,7 +812,7 @@ describe('DataGrid', () => {
         const columnsWithFirstHidden = makeColumns();
         columnsWithFirstHidden[0].visible = false;
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.LEFT,
+          key: Platform.KeyboardUtilities.ArrowKey.LEFT,
           currentFocusedCell: [1, 1],
           columns: columnsWithFirstHidden,
           rows: makeRows(),
@@ -822,7 +822,7 @@ describe('DataGrid', () => {
 
       it('lets the user move left if the column to the left is visible', async () => {
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.LEFT,
+          key: Platform.KeyboardUtilities.ArrowKey.LEFT,
           currentFocusedCell: [1, 1],
           columns: makeColumns(),
           rows: makeRows(),
@@ -834,7 +834,7 @@ describe('DataGrid', () => {
         const withSecondColumnHidden = makeColumns();
         withSecondColumnHidden[1].visible = false;
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.LEFT,
+          key: Platform.KeyboardUtilities.ArrowKey.LEFT,
           currentFocusedCell: [2, 1],
           columns: withSecondColumnHidden,
           rows,
@@ -846,7 +846,7 @@ describe('DataGrid', () => {
     describe('navigating right', () => {
       it('does not let the user move further right than the last column', async () => {
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.RIGHT,
+          key: Platform.KeyboardUtilities.ArrowKey.RIGHT,
           currentFocusedCell: [2, 1],
           columns: makeColumns(),
           rows: makeRows(),
@@ -858,7 +858,7 @@ describe('DataGrid', () => {
         const columnsWithLastHidden = makeColumns();
         columnsWithLastHidden[2].visible = false;
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.RIGHT,
+          key: Platform.KeyboardUtilities.ArrowKey.RIGHT,
           currentFocusedCell: [1, 1],
           columns: columnsWithLastHidden,
           rows: makeRows(),
@@ -868,7 +868,7 @@ describe('DataGrid', () => {
 
       it('lets the user move right if the column to the right is visible', async () => {
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.RIGHT,
+          key: Platform.KeyboardUtilities.ArrowKey.RIGHT,
           currentFocusedCell: [1, 1],
           columns: makeColumns(),
           rows: makeRows(),
@@ -880,7 +880,7 @@ describe('DataGrid', () => {
         const withSecondColumnHidden = makeColumns();
         withSecondColumnHidden[1].visible = false;
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.RIGHT,
+          key: Platform.KeyboardUtilities.ArrowKey.RIGHT,
           currentFocusedCell: [0, 1],
           columns: withSecondColumnHidden,
           rows,
@@ -892,7 +892,7 @@ describe('DataGrid', () => {
     describe('navigating up', () => {
       it('does not let the user go into the columns row when none are sortable', async () => {
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.UP,
+          key: Platform.KeyboardUtilities.ArrowKey.UP,
           currentFocusedCell: [0, 1],
           columns: makeColumns(),
           rows: makeRows(),
@@ -908,7 +908,7 @@ describe('DataGrid', () => {
 
         it('does let the user go into the columns row', async () => {
           const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-            key: UIComponents.DataGridUtils.ArrowKey.UP,
+            key: Platform.KeyboardUtilities.ArrowKey.UP,
             currentFocusedCell: [0, 1],
             columns: sortableColumns,
             rows: makeRows(),
@@ -918,7 +918,7 @@ describe('DataGrid', () => {
 
         it('does not let the user go up if they are in the column header', async () => {
           const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-            key: UIComponents.DataGridUtils.ArrowKey.UP,
+            key: Platform.KeyboardUtilities.ArrowKey.UP,
             currentFocusedCell: [0, 0],
             columns: sortableColumns,
             rows: makeRows(),
@@ -930,7 +930,7 @@ describe('DataGrid', () => {
           const rowsWithFirstHidden = makeRows();
           rowsWithFirstHidden[0].hidden = true;
           const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-            key: UIComponents.DataGridUtils.ArrowKey.UP,
+            key: Platform.KeyboardUtilities.ArrowKey.UP,
             currentFocusedCell: [0, 2],
             columns: sortableColumns,
             rows: rowsWithFirstHidden,
@@ -943,7 +943,7 @@ describe('DataGrid', () => {
         const rowsWithSecondHidden = makeRows();
         rowsWithSecondHidden[1].hidden = true;
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.UP,
+          key: Platform.KeyboardUtilities.ArrowKey.UP,
           currentFocusedCell: [0, 3],
           columns: makeColumns(),
           rows: rowsWithSecondHidden,
@@ -956,7 +956,7 @@ describe('DataGrid', () => {
         rowsWithFirstAndSecondHidden[0].hidden = true;
         rowsWithFirstAndSecondHidden[1].hidden = true;
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.UP,
+          key: Platform.KeyboardUtilities.ArrowKey.UP,
           currentFocusedCell: [0, 3],
           columns: makeColumns(),
           rows: rowsWithFirstAndSecondHidden,
@@ -974,7 +974,7 @@ describe('DataGrid', () => {
 
         it('lets the user navigate from the columns into the body', async () => {
           const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-            key: UIComponents.DataGridUtils.ArrowKey.DOWN,
+            key: Platform.KeyboardUtilities.ArrowKey.DOWN,
             currentFocusedCell: [0, 0],
             columns: sortableColumns,
             rows: makeRows(),
@@ -986,7 +986,7 @@ describe('DataGrid', () => {
           const rowsWithFirstHidden = makeRows();
           rowsWithFirstHidden[0].hidden = true;
           const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-            key: UIComponents.DataGridUtils.ArrowKey.DOWN,
+            key: Platform.KeyboardUtilities.ArrowKey.DOWN,
             currentFocusedCell: [0, 0],
             columns: sortableColumns,
             rows: rowsWithFirstHidden,
@@ -999,7 +999,7 @@ describe('DataGrid', () => {
         const rowsWithSecondHidden = makeRows();
         rowsWithSecondHidden[1].hidden = true;
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.DOWN,
+          key: Platform.KeyboardUtilities.ArrowKey.DOWN,
           currentFocusedCell: [0, 1],
           columns: makeColumns(),
           rows: rowsWithSecondHidden,
@@ -1012,7 +1012,7 @@ describe('DataGrid', () => {
         rowsWithFirstAndSecondHidden[1].hidden = true;
         rowsWithFirstAndSecondHidden[2].hidden = true;
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.DOWN,
+          key: Platform.KeyboardUtilities.ArrowKey.DOWN,
           currentFocusedCell: [0, 1],
           columns: makeColumns(),
           rows: rowsWithFirstAndSecondHidden,
@@ -1030,7 +1030,7 @@ describe('DataGrid', () => {
           return col;
         });
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.DOWN,
+          key: Platform.KeyboardUtilities.ArrowKey.DOWN,
           currentFocusedCell: [0, 0],
           columns: sortableColumns,
           rows: rowsAllHidden,
@@ -1040,7 +1040,7 @@ describe('DataGrid', () => {
 
       it('does not let the user move down if they are on the last row', async () => {
         const newFocusedCell = UIComponents.DataGridUtils.handleArrowKeyNavigation({
-          key: UIComponents.DataGridUtils.ArrowKey.DOWN,
+          key: Platform.KeyboardUtilities.ArrowKey.DOWN,
           currentFocusedCell: [0, 3],
           columns: makeColumns(),
           rows: makeRows(),

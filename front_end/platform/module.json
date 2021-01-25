@@ -5,6 +5,7 @@
     "utilities.js",
     "date-utilities.js",
     "map-utilities.js",
+    "keyboard-utilities.js",
     "set-utilities.js",
     "string-utilities.js",
     "number-utilities.js",

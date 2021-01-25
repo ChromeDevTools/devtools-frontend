@@ -28,13 +28,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
-import {LayerSelection, LayerView, LayerViewHost, ScrollRectSelection, Selection, SnapshotSelection, Type,} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
+import {LayerSelection, LayerView, LayerViewHost, ScrollRectSelection, Selection, SnapshotSelection, Type} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
 import {Events as TransformControllerEvents, TransformController} from './TransformController.js';
 
 export const UIStrings = {
@@ -89,35 +91,53 @@ export const UIStrings = {
   */
   mousewheelEventListener: 'mousewheel event listener',
 };
-const str_ = i18n.i18n.registerUIStrings('layer_viewer/Layers3DView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('layer_viewer/Layers3DView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/** @type {!Map<!WebGLProgram, number>} */
-const vertexPositionAttributes = new Map();
 
-/** @type {!Map<!WebGLProgram, number>} */
-const vertexColorAttributes = new Map();
+const vertexPositionAttributes = new Map<WebGLProgram, number>();
 
-/** @type {!Map<!WebGLProgram, number>} */
-const textureCoordAttributes = new Map();
+const vertexColorAttributes = new Map<WebGLProgram, number>();
 
-/** @type {!Map<!WebGLProgram, ?WebGLUniformLocation>} */
-const uniformMatrixLocations = new Map();
+const textureCoordAttributes = new Map<WebGLProgram, number>();
 
-/** @type {!Map<!WebGLProgram, ?WebGLUniformLocation>} */
-const uniformSamplerLocations = new Map();
+const uniformMatrixLocations = new Map<WebGLProgram, WebGLUniformLocation|null>();
 
-/** @type {!Map<!WebGLTexture, !HTMLImageElement>} */
-const imageForTexture = new Map();
+const uniformSamplerLocations = new Map<WebGLProgram, WebGLUniformLocation|null>();
 
-/**
- * @implements {LayerView}
- */
-export class Layers3DView extends UI.Widget.VBox {
-  /**
-   * @param {!LayerViewHost} layerViewHost
-   */
-  constructor(layerViewHost) {
+const imageForTexture = new Map<WebGLTexture, HTMLImageElement>();
+
+export class Layers3DView extends UI.Widget.VBox implements LayerView {
+  _failBanner: UI.Widget.VBox;
+  _layerViewHost: LayerViewHost;
+  _transformController: TransformController;
+  _canvasElement: HTMLCanvasElement;
+  _lastSelection: {[x: string]: Selection|null;};
+  _layerTree: SDK.LayerTreeBase.LayerTreeBase|null;
+  _textureManager: LayerTextureManager;
+  _chromeTextures: (WebGLTexture|undefined)[];
+  _rects: Rectangle[];
+  _snapshotLayers: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
+  _shaderProgram!: WebGLProgram|null;
+  _oldTextureScale!: number|undefined;
+  _depthByLayerId!: Map<string, number>;
+  _visibleLayers!: Set<SDK.LayerTreeBase.Layer>;
+  _maxDepth!: number;
+  _scale!: number;
+  _layerTexture?: {layer: SDK.LayerTreeBase.Layer; texture: WebGLTexture;}|null;
+  _projectionMatrix?: DOMMatrix;
+  _whiteTexture?: WebGLTexture|null;
+  _gl?: WebGLRenderingContext|null;
+  _dimensionsForAutoscale?: {width: number; height: number;};
+  _needsUpdate?: boolean;
+  _panelToolbar?: UI.Toolbar.Toolbar;
+  _showSlowScrollRectsSetting?: Common.Settings.Setting<boolean>;
+  _showPaintsSetting?: Common.Settings.Setting<boolean>;
+  _mouseDownX?: number;
+  _mouseDownY?: number;
+
+  constructor(layerViewHost: LayerViewHost) {
     super(true);
+
     this.registerRequiredCSS('layer_viewer/layers3DView.css', {enableLegacyPatching: true});
     this.contentElement.classList.add('layers-3d-view');
     this._failBanner = new UI.Widget.VBox();
@@ -126,13 +146,10 @@ export class Layers3DView extends UI.Widget.VBox {
 
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
-
-    this._transformController = new TransformController(/** @type {!HTMLElement} */ (this.contentElement));
+    this._transformController = new TransformController(this.contentElement as HTMLElement);
     this._transformController.addEventListener(TransformControllerEvents.TransformChanged, this._update, this);
     this._initToolbar();
-
-    /** @type {!HTMLCanvasElement} */
-    this._canvasElement = /** @type {!HTMLCanvasElement} */ (this.contentElement.createChild('canvas'));
+    this._canvasElement = this.contentElement.createChild('canvas') as HTMLCanvasElement;
     this._canvasElement.tabIndex = 0;
     this._canvasElement.addEventListener('dblclick', this._onDoubleClick.bind(this), false);
     this._canvasElement.addEventListener('mousedown', this._onMouseDown.bind(this), false);
@@ -142,48 +159,22 @@ export class Layers3DView extends UI.Widget.VBox {
     this._canvasElement.addEventListener('contextmenu', this._onContextMenu.bind(this), false);
     UI.ARIAUtils.setAccessibleName(this._canvasElement, i18nString(UIStrings.dLayersView));
 
-    /** @type {!Object.<string, ?Selection>} */
     this._lastSelection = {};
     this._layerTree = null;
 
     this._textureManager = new LayerTextureManager(this._update.bind(this));
 
-    /** @type {!Array.<!WebGLTexture|undefined>} */
     this._chromeTextures = [];
 
-    /** @type {!Array.<!Rectangle>} */
     this._rects = [];
 
-    /** @type {!Map<!SDK.LayerTreeBase.Layer, !SnapshotSelection>} */
     this._snapshotLayers = new Map();
     this._layerViewHost.setLayerSnapshotMap(this._snapshotLayers);
 
     this._layerViewHost.showInternalLayersSetting().addChangeListener(this._update, this);
-
-    /** @type {?WebGLProgram} */
-    this._shaderProgram;
-
-    /** @type {number|undefined} */
-    this._oldTextureScale;
-
-    /** @type {!Map<string, number>} */
-    this._depthByLayerId;
-
-    /** @type {!Set<!SDK.LayerTreeBase.Layer>} */
-    this._visibleLayers;
-
-    /** @type {number} */
-    this._maxDepth;
-
-    /** @type {number} */
-    this._scale;
   }
 
-  /**
-   * @param {?SDK.LayerTreeBase.LayerTreeBase} layerTree
-   * @override
-   */
-  setLayerTree(layerTree) {
+  setLayerTree(layerTree: SDK.LayerTreeBase.LayerTreeBase|null): void {
     this._layerTree = layerTree;
     this._layerTexture = null;
     delete this._oldTextureScale;
@@ -193,11 +184,7 @@ export class Layers3DView extends UI.Widget.VBox {
     this._update();
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   * @param {string=} imageURL
-   */
-  showImageForLayer(layer, imageURL) {
+  showImageForLayer(layer: SDK.LayerTreeBase.Layer, imageURL?: string): void {
     if (!imageURL) {
       this._layerTexture = null;
       this._update();
@@ -210,25 +197,16 @@ export class Layers3DView extends UI.Widget.VBox {
     });
   }
 
-  /**
-   * @override
-   */
-  onResize() {
+  onResize(): void {
     this._resizeCanvas();
     this._update();
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  willHide(): void {
     this._textureManager.suspend();
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     this._textureManager.resume();
     if (!this._needsUpdate) {
       return;
@@ -237,48 +215,30 @@ export class Layers3DView extends UI.Widget.VBox {
     this._update();
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   */
-  updateLayerSnapshot(layer) {
+  updateLayerSnapshot(layer: SDK.LayerTreeBase.Layer): void {
     this._textureManager.layerNeedsUpdate(layer);
   }
 
-  /**
-   * @param {!OutlineType} type
-   * @param {?Selection} selection
-   */
-  _setOutline(type, selection) {
+  _setOutline(type: OutlineType, selection: Selection|null): void {
     this._lastSelection[type] = selection;
     this._update();
   }
 
-  /**
-   * @param {?Selection} selection
-   * @override
-   */
-  hoverObject(selection) {
+  hoverObject(selection: Selection|null): void {
     this._setOutline(OutlineType.Hovered, selection);
   }
 
-  /**
-   * @param {?Selection} selection
-   * @override
-   */
-  selectObject(selection) {
+  selectObject(selection: Selection|null): void {
     this._setOutline(OutlineType.Hovered, null);
     this._setOutline(OutlineType.Selected, selection);
   }
 
-  /**
-   * @param {!Selection} selection
-   * @return {!Promise<?SDK.PaintProfiler.SnapshotWithRect>}
-   */
-  snapshotForSelection(selection) {
+  snapshotForSelection(selection: Selection): Promise<SDK.PaintProfiler.SnapshotWithRect|null> {
     if (selection.type() === Type.Snapshot) {
-      const snapshotWithRect = /** @type {!SnapshotSelection} */ (selection).snapshot();
+      const snapshotWithRect = (selection as SnapshotSelection).snapshot();
       snapshotWithRect.snapshot.addReference();
-      return /** @type {!Promise<?SDK.PaintProfiler.SnapshotWithRect>} */ (Promise.resolve(snapshotWithRect));
+      return /** @type {!Promise<?SDK.PaintProfiler.SnapshotWithRect>} */ Promise.resolve(snapshotWithRect) as
+          Promise<SDK.PaintProfiler.SnapshotWithRect|null>;
     }
     if (selection.layer()) {
       const promise = selection.layer().snapshots()[0];
@@ -286,14 +246,11 @@ export class Layers3DView extends UI.Widget.VBox {
         return promise;
       }
     }
-    return /** @type {!Promise<?SDK.PaintProfiler.SnapshotWithRect>} */ (Promise.resolve(null));
+    return /** @type {!Promise<?SDK.PaintProfiler.SnapshotWithRect>} */ Promise.resolve(null) as
+        Promise<SDK.PaintProfiler.SnapshotWithRect|null>;
   }
 
-  /**
-   * @param {!HTMLCanvasElement} canvas
-   * @return {?WebGLRenderingContext}
-   */
-  _initGL(canvas) {
+  _initGL(canvas: HTMLCanvasElement): WebGLRenderingContext|null {
     const gl = canvas.getContext('webgl');
     if (!gl) {
       return null;
@@ -302,14 +259,10 @@ export class Layers3DView extends UI.Widget.VBox {
     gl.enable(gl.BLEND);
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.enable(gl.DEPTH_TEST);
-    return /** @type {!WebGLRenderingContext} */ (gl);
+    return /** @type {!WebGLRenderingContext} */ gl as WebGLRenderingContext;
   }
 
-  /**
-   * @param {number} type
-   * @param {string} script
-   */
-  _createShader(type, script) {
+  _createShader(type: number, script: string): void {
     if (!this._gl) {
       return;
     }
@@ -322,7 +275,7 @@ export class Layers3DView extends UI.Widget.VBox {
     }
   }
 
-  _initShaders() {
+  _initShaders(): void {
     if (!this._gl) {
       return;
     }
@@ -355,12 +308,12 @@ export class Layers3DView extends UI.Widget.VBox {
     uniformSamplerLocations.set(this._shaderProgram, uSamplerLocation);
   }
 
-  _resizeCanvas() {
+  _resizeCanvas(): void {
     this._canvasElement.width = this._canvasElement.offsetWidth * window.devicePixelRatio;
     this._canvasElement.height = this._canvasElement.offsetHeight * window.devicePixelRatio;
   }
 
-  _updateTransformAndConstraints() {
+  _updateTransformAndConstraints(): void {
     const paddingFraction = 0.1;
     const dimensionsForAutoscale = this._dimensionsForAutoscale || {width: 0, height: 0};
     const viewport = this._layerTree ? this._layerTree.viewportSize() : null;
@@ -427,17 +380,28 @@ export class Layers3DView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!DOMMatrix} m
-   * @return {!Float32Array}
-   */
-  _arrayFromMatrix(m) {
+  _arrayFromMatrix(m: DOMMatrix): Float32Array {
     return new Float32Array([
-      m.m11, m.m12, m.m13, m.m14, m.m21, m.m22, m.m23, m.m24, m.m31, m.m32, m.m33, m.m34, m.m41, m.m42, m.m43, m.m44
+      m.m11,
+      m.m12,
+      m.m13,
+      m.m14,
+      m.m21,
+      m.m22,
+      m.m23,
+      m.m24,
+      m.m31,
+      m.m32,
+      m.m33,
+      m.m34,
+      m.m41,
+      m.m42,
+      m.m43,
+      m.m44,
     ]);
   }
 
-  _initWhiteTexture() {
+  _initWhiteTexture(): void {
     if (!this._gl) {
       return;
     }
@@ -449,13 +413,8 @@ export class Layers3DView extends UI.Widget.VBox {
         this._gl.TEXTURE_2D, 0, this._gl.RGBA, 1, 1, 0, this._gl.RGBA, this._gl.UNSIGNED_BYTE, whitePixel);
   }
 
-  _initChromeTextures() {
-    /**
-     * @this {Layers3DView}
-     * @param {!ChromeTexture} index
-     * @param {string} url
-     */
-    function loadChromeTexture(index, url) {
+  _initChromeTextures(): void {
+    function loadChromeTexture(this: Layers3DView, index: ChromeTexture, url: string): void {
       UI.UIUtils.loadImage(url).then(image => {
         this._chromeTextures[index] =
             image && LayerTextureManager._createTextureForImage(this._gl || null, image) || undefined;
@@ -466,10 +425,7 @@ export class Layers3DView extends UI.Widget.VBox {
     loadChromeTexture.call(this, ChromeTexture.Right, 'Images/chromeRight.avif');
   }
 
-  /**
-   * @return {?WebGLRenderingContext}
-   */
-  _initGLIfNecessary() {
+  _initGLIfNecessary(): WebGLRenderingContext|null {
     if (this._gl) {
       return this._gl;
     }
@@ -484,7 +440,7 @@ export class Layers3DView extends UI.Widget.VBox {
     return this._gl;
   }
 
-  _calculateDepthsAndVisibility() {
+  _calculateDepthsAndVisibility(): void {
     /** @type {!Map<string, number>} */
     this._depthByLayerId = new Map();
     let depth = 0;
@@ -521,27 +477,15 @@ export class Layers3DView extends UI.Widget.VBox {
     this._maxDepth = depth;
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   * @return {number}
-   */
-  _depthForLayer(layer) {
+  _depthForLayer(layer: SDK.LayerTreeBase.Layer): number {
     return (this._depthByLayerId.get(layer.id()) || 0) * LayerSpacing;
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   * @param {number} index
-   * @return {number}
-   */
-  _calculateScrollRectDepth(layer, index) {
+  _calculateScrollRectDepth(layer: SDK.LayerTreeBase.Layer, index: number): number {
     return this._depthForLayer(layer) + index * ScrollRectSpacing + 1;
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   */
-  _updateDimensionsForAutoscale(layer) {
+  _updateDimensionsForAutoscale(layer: SDK.LayerTreeBase.Layer): void {
     // We don't want to be precise, but rather pick something least affected by
     // animationtransforms, so that we don't change scale too often. So let's
     // disregard transforms, scrolling and relative layer positioning and choose
@@ -554,10 +498,7 @@ export class Layers3DView extends UI.Widget.VBox {
     this._dimensionsForAutoscale.height = Math.max(layer.height(), this._dimensionsForAutoscale.height);
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   */
-  _calculateLayerRect(layer) {
+  _calculateLayerRect(layer: SDK.LayerTreeBase.Layer): void {
     if (!this._visibleLayers.has(layer)) {
       return;
     }
@@ -568,10 +509,7 @@ export class Layers3DView extends UI.Widget.VBox {
     this._updateDimensionsForAutoscale(layer);
   }
 
-  /**
-   * @param {!Rectangle} rect
-   */
-  _appendRect(rect) {
+  _appendRect(rect: Rectangle): void {
     const selection = rect.relatedObject;
     const isSelected = Selection.isEqual(this._lastSelection[OutlineType.Selected], selection);
     const isHovered = Selection.isEqual(this._lastSelection[OutlineType.Hovered], selection);
@@ -582,8 +520,10 @@ export class Layers3DView extends UI.Widget.VBox {
       const fillColor = rect.fillColor || [255, 255, 255, 1];
       const maskColor = HoveredImageMaskColor;
       rect.fillColor = [
-        fillColor[0] * maskColor[0] / 255, fillColor[1] * maskColor[1] / 255, fillColor[2] * maskColor[2] / 255,
-        fillColor[3] * maskColor[3]
+        fillColor[0] * maskColor[0] / 255,
+        fillColor[1] * maskColor[1] / 255,
+        fillColor[2] * maskColor[2] / 255,
+        fillColor[3] * maskColor[3],
       ];
     } else {
       rect.borderColor = BorderColor;
@@ -592,10 +532,7 @@ export class Layers3DView extends UI.Widget.VBox {
     this._rects.push(rect);
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   */
-  _calculateLayerScrollRects(layer) {
+  _calculateLayerScrollRects(layer: SDK.LayerTreeBase.Layer): void {
     const scrollRects = layer.scrollRects();
     for (let i = 0; i < scrollRects.length; ++i) {
       const selection = new ScrollRectSelection(layer, i);
@@ -606,10 +543,7 @@ export class Layers3DView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   */
-  _calculateLayerTileRects(layer) {
+  _calculateLayerTileRects(layer: SDK.LayerTreeBase.Layer): void {
     const tiles = this._textureManager.tilesForLayer(layer);
     for (let i = 0; i < tiles.length; ++i) {
       const tile = tiles[i];
@@ -628,7 +562,7 @@ export class Layers3DView extends UI.Widget.VBox {
     }
   }
 
-  _calculateRects() {
+  _calculateRects(): void {
     this._rects = [];
     this._snapshotLayers.clear();
     this._dimensionsForAutoscale = {width: 0, height: 0};
@@ -652,13 +586,8 @@ export class Layers3DView extends UI.Widget.VBox {
     }
   }
 
-  /**
-   * @param {!Array.<number>} color
-   * @return {!Array.<number>}
-   */
-  _makeColorsArray(color) {
-    /** @type {!Array.<number>} */
-    let colors = [];
+  _makeColorsArray(color: number[]): number[] {
+    let colors: number[] = [];
     const normalizedColor = [color[0] / 255, color[1] / 255, color[2] / 255, color[3]];
     for (let i = 0; i < 4; i++) {
       colors = colors.concat(normalizedColor);
@@ -666,12 +595,7 @@ export class Layers3DView extends UI.Widget.VBox {
     return colors;
   }
 
-  /**
-   * @param {number} attribute
-   * @param {!Array.<number>} array
-   * @param {number} length
-   */
-  _setVertexAttribute(attribute, array, length) {
+  _setVertexAttribute(attribute: number, array: number[], length: number): void {
     const gl = this._gl;
     if (!gl) {
       return;
@@ -683,13 +607,7 @@ export class Layers3DView extends UI.Widget.VBox {
     gl.vertexAttribPointer(attribute, length, gl.FLOAT, false, 0, 0);
   }
 
-  /**
-   * @param {!Array.<number>} vertices
-   * @param {number} mode
-   * @param {!Array.<number>=} color
-   * @param {!Object=} texture
-   */
-  _drawRectangle(vertices, mode, color, texture) {
+  _drawRectangle(vertices: number[], mode: number, color?: number[], texture?: Object): void {
     const gl = this._gl;
     const white = [255, 255, 255, 1];
     color = color || white;
@@ -710,7 +628,6 @@ export class Layers3DView extends UI.Widget.VBox {
       this._setVertexAttribute(vertexColorAttribute, this._makeColorsArray(color), color.length);
     }
 
-
     if (!gl) {
       return;
     }
@@ -730,12 +647,7 @@ export class Layers3DView extends UI.Widget.VBox {
     gl.drawArrays(mode, 0, numberOfVertices);
   }
 
-  /**
-   * @param {!Array.<number>} vertices
-   * @param {!WebGLTexture} texture
-   * @param {!Array.<number>=} color
-   */
-  _drawTexture(vertices, texture, color) {
+  _drawTexture(vertices: number[], texture: WebGLTexture, color?: number[]): void {
     if (!this._gl) {
       return;
     }
@@ -743,7 +655,7 @@ export class Layers3DView extends UI.Widget.VBox {
     this._drawRectangle(vertices, this._gl.TRIANGLE_FAN, color, texture);
   }
 
-  _drawViewportAndChrome() {
+  _drawViewportAndChrome(): void {
     if (!this._layerTree) {
       return;
     }
@@ -757,7 +669,7 @@ export class Layers3DView extends UI.Widget.VBox {
         this._chromeTextures.length >= 3 && this._chromeTextures.indexOf(undefined) < 0;
     const z = (this._maxDepth + 1) * LayerSpacing;
     const borderWidth = Math.ceil(ViewportBorderWidth * this._scale);
-    let vertices = [viewport.width, 0, z, viewport.width, viewport.height, z, 0, viewport.height, z, 0, 0, z];
+    let vertices: number[] = [viewport.width, 0, z, viewport.width, viewport.height, z, 0, viewport.height, z, 0, 0, z];
     if (!this._gl) {
       return;
     }
@@ -777,12 +689,12 @@ export class Layers3DView extends UI.Widget.VBox {
     const borderAdjustment = ViewportBorderWidth / 2;
     const viewportWidth = viewportSize.width + 2 * borderAdjustment;
     if (this._chromeTextures[0] && this._chromeTextures[2]) {
-      const chromeTextureImage = imageForTexture.get(/** @type {!WebGLTexture} */ (this._chromeTextures[0])) ||
-          {naturalHeight: 0, naturalWidth: 0};
+      const chromeTextureImage =
+          imageForTexture.get(this._chromeTextures[0] as WebGLTexture) || {naturalHeight: 0, naturalWidth: 0};
       const chromeHeight = chromeTextureImage.naturalHeight;
 
-      const middleTextureImage = imageForTexture.get(/** @type {!WebGLTexture} */ (this._chromeTextures[2])) ||
-          {naturalHeight: 0, naturalWidth: 0};
+      const middleTextureImage =
+          imageForTexture.get(this._chromeTextures[2] as WebGLTexture) || {naturalHeight: 0, naturalWidth: 0};
       const middleFragmentWidth = viewportWidth - chromeTextureImage.naturalWidth - middleTextureImage.naturalWidth;
       let x = -borderAdjustment;
       const y = -chromeHeight;
@@ -801,16 +713,13 @@ export class Layers3DView extends UI.Widget.VBox {
           break;
         }
         vertices = [x, y, z, x + width, y, z, x + width, y + chromeHeight, z, x, y + chromeHeight, z];
-        this._drawTexture(vertices, /** @type {!WebGLTexture} */ (this._chromeTextures[i]));
+        this._drawTexture(vertices, this._chromeTextures[i] as WebGLTexture);
         x += width;
       }
     }
   }
 
-  /**
-   * @param {!Rectangle} rect
-   */
-  _drawViewRect(rect) {
+  _drawViewRect(rect: Rectangle): void {
     if (!this._gl) {
       return;
     }
@@ -827,7 +736,7 @@ export class Layers3DView extends UI.Widget.VBox {
     }
   }
 
-  _update() {
+  _update(): void {
     if (!this.isShowing()) {
       this._needsUpdate = true;
       return;
@@ -858,10 +767,7 @@ export class Layers3DView extends UI.Widget.VBox {
     this._drawViewportAndChrome();
   }
 
-  /**
-   * @return {!Node}
-   */
-  _webglDisabledBanner() {
+  _webglDisabledBanner(): Node {
     const fragment = this.contentElement.ownerDocument.createDocumentFragment();
     fragment.createChild('div').textContent = i18nString(UIStrings.cantDisplayLayers);
     fragment.createChild('div').textContent = i18nString(UIStrings.webglSupportIsDisabledInYour);
@@ -870,26 +776,19 @@ export class Layers3DView extends UI.Widget.VBox {
     return fragment;
   }
 
-  /**
-   * @param {!Event} event
-   * @return {?Selection}
-   */
-  _selectionFromEventPoint(event) {
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
+  _selectionFromEventPoint(event: Event): Selection|null {
+    const mouseEvent = event as MouseEvent;
     if (!this._layerTree) {
       return null;
     }
-    let closestIntersectionPoint = Infinity;
-    let closestObject = null;
+    let closestIntersectionPoint: number = Infinity;
+    let closestObject: Selection|null = null;
     const projectionMatrix =
         new WebKitCSSMatrix().scale(1, -1, -1).translate(-1, -1, 0).multiply(this._projectionMatrix);
     const x0 = (mouseEvent.clientX - this._canvasElement.totalOffsetLeft()) * window.devicePixelRatio;
     const y0 = -(mouseEvent.clientY - this._canvasElement.totalOffsetTop()) * window.devicePixelRatio;
 
-    /**
-     * @param {!Rectangle} rect
-     */
-    function checkIntersection(rect) {
+    function checkIntersection(rect: Rectangle): void {
       if (!rect.relatedObject) {
         return;
       }
@@ -904,14 +803,8 @@ export class Layers3DView extends UI.Widget.VBox {
     return closestObject;
   }
 
-  /**
-   * @param {string} caption
-   * @param {string} name
-   * @param {boolean} value
-   * @param {!UI.Toolbar.Toolbar} toolbar
-   * @return {!Common.Settings.Setting<boolean>}
-   */
-  _createVisibilitySetting(caption, name, value, toolbar) {
+  _createVisibilitySetting(caption: string, name: string, value: boolean, toolbar: UI.Toolbar.Toolbar):
+      Common.Settings.Setting<boolean> {
     const setting = Common.Settings.Settings.instance().createSetting(name, value);
     setting.setTitle(i18nString(caption));
     setting.addChangeListener(this._update, this);
@@ -919,7 +812,7 @@ export class Layers3DView extends UI.Widget.VBox {
     return setting;
   }
 
-  _initToolbar() {
+  _initToolbar(): void {
     this._panelToolbar = this._transformController.toolbar();
     this.contentElement.appendChild(this._panelToolbar.element);
     this._showSlowScrollRectsSetting = this._createVisibilitySetting(
@@ -932,10 +825,7 @@ export class Layers3DView extends UI.Widget.VBox {
         .addChangeListener(this._update, this);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onContextMenu(event) {
+  _onContextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
         i18nString(UIStrings.resetView), () => this._transformController.resetAndNotify(), false);
@@ -948,31 +838,22 @@ export class Layers3DView extends UI.Widget.VBox {
     this._layerViewHost.showContextMenu(contextMenu, selection);
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onMouseMove(event) {
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
+  _onMouseMove(event: Event): void {
+    const mouseEvent = event as MouseEvent;
     if (mouseEvent.which) {
       return;
     }
     this._layerViewHost.hoverObject(this._selectionFromEventPoint(event));
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onMouseDown(event) {
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
+  _onMouseDown(event: Event): void {
+    const mouseEvent = event as MouseEvent;
     this._mouseDownX = mouseEvent.clientX;
     this._mouseDownY = mouseEvent.clientY;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onMouseUp(event) {
-    const mouseEvent = /** @type {!MouseEvent} */ (event);
+  _onMouseUp(event: Event): void {
+    const mouseEvent = event as MouseEvent;
     const maxDistanceInPixels = 6;
     if (this._mouseDownX && Math.abs(mouseEvent.clientX - this._mouseDownX) < maxDistanceInPixels &&
         Math.abs(mouseEvent.clientY - (this._mouseDownY || 0)) < maxDistanceInPixels) {
@@ -982,10 +863,7 @@ export class Layers3DView extends UI.Widget.VBox {
     delete this._mouseDownY;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onDoubleClick(event) {
+  _onDoubleClick(event: Event): void {
     const selection = this._selectionFromEventPoint(event);
     if (selection && (selection.type() === Type.Snapshot || selection.layer())) {
       this.dispatchEventToListeners(Events.PaintProfilerRequested, selection);
@@ -993,7 +871,7 @@ export class Layers3DView extends UI.Widget.VBox {
     event.stopPropagation();
   }
 
-  _updatePaints() {
+  _updatePaints(): void {
     if (this._showPaints()) {
       this._textureManager.setLayerTree(this._layerTree);
       this._textureManager.forceUpdate();
@@ -1003,44 +881,35 @@ export class Layers3DView extends UI.Widget.VBox {
     this._update();
   }
 
-  /**
-   * @return {boolean}
-   */
-  _showPaints() {
+  _showPaints(): boolean {
     return this._showPaintsSetting ? this._showPaintsSetting.get() : false;
   }
 }
 
-/**
- * @enum {string}
- */
-export const OutlineType = {
-  Hovered: 'hovered',
-  Selected: 'selected'
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum OutlineType {
+  Hovered = 'hovered',
+  Selected = 'selected'
+}
 
-/** @enum {symbol} */
-export const Events = {
-  PaintProfilerRequested: Symbol('PaintProfilerRequested'),
-  ScaleChanged: Symbol('ScaleChanged')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  PaintProfilerRequested = 'PaintProfilerRequested',
+  ScaleChanged = 'ScaleChanged'
+}
 
-/**
- * @enum {number}
- */
-export const ChromeTexture = {
-  Left: 0,
-  Middle: 1,
-  Right: 2
-};
+export const enum ChromeTexture {
+  Left = 0,
+  Middle = 1,
+  Right = 2
+}
 
-/**
- * @enum {string}
- */
 export const ScrollRectTitles = {
   RepaintsOnScroll: i18nString(UIStrings.repaintsOnScroll),
   TouchEventHandler: i18nString(UIStrings.touchEventListener),
-  WheelEventHandler: i18nString(UIStrings.mousewheelEventListener)
+  WheelEventHandler: i18nString(UIStrings.mousewheelEventListener),
 };
 
 export const FragmentShader = '' +
@@ -1081,29 +950,22 @@ export const LayerSpacing = 20;
 export const ScrollRectSpacing = 4;
 
 export class LayerTextureManager {
-  /**
-   * @param {function():void} textureUpdatedCallback
-   */
-  constructor(textureUpdatedCallback) {
+  _textureUpdatedCallback: () => void;
+  _throttler: Common.Throttler.Throttler;
+  _scale: number;
+  _active: boolean;
+  _queue!: SDK.LayerTreeBase.Layer[];
+  _tilesByLayer!: Map<SDK.LayerTreeBase.Layer, Tile[]>;
+  _gl?: WebGLRenderingContext;
+  constructor(textureUpdatedCallback: () => void) {
     this._textureUpdatedCallback = textureUpdatedCallback;
     this._throttler = new Common.Throttler.Throttler(0);
     this._scale = 0;
     this._active = false;
     this.reset();
-
-    /** @type {!Array<!SDK.LayerTreeBase.Layer>} */
-    this._queue;
-
-    /** @type {!Map<!SDK.LayerTreeBase.Layer, !Array<!Tile>>} */
-    this._tilesByLayer;
   }
 
-  /**
-   * @param {!HTMLImageElement} image
-   * @param {?WebGLRenderingContext} gl
-   * @return {!WebGLTexture} texture
-   */
-  static _createTextureForImage(gl, image) {
+  static _createTextureForImage(gl: WebGLRenderingContext|null, image: HTMLImageElement): WebGLTexture {
     if (!gl) {
       throw new Error('WebGLRenderingContext not provided');
     }
@@ -1124,7 +986,7 @@ export class LayerTextureManager {
     return texture;
   }
 
-  reset() {
+  reset(): void {
     if (this._tilesByLayer) {
       this.setLayerTree(null);
     }
@@ -1135,32 +997,26 @@ export class LayerTextureManager {
     this._queue = [];
   }
 
-  /**
-   * @param {!WebGLRenderingContext} glContext
-   */
-  setContext(glContext) {
+  setContext(glContext: WebGLRenderingContext): void {
     this._gl = glContext;
     if (this._scale) {
       this._updateTextures();
     }
   }
 
-  suspend() {
+  suspend(): void {
     this._active = false;
   }
 
-  resume() {
+  resume(): void {
     this._active = true;
     if (this._queue.length) {
       this._update();
     }
   }
 
-  /**
-   * @param {?SDK.LayerTreeBase.LayerTreeBase} layerTree
-   */
-  setLayerTree(layerTree) {
-    const newLayers = new Set();
+  setLayerTree(layerTree: SDK.LayerTreeBase.LayerTreeBase|null): void {
+    const newLayers = new Set<SDK.LayerTreeBase.Layer>();
     const oldLayers = Array.from(this._tilesByLayer.keys());
     if (layerTree) {
       layerTree.forEachLayer(layer => {
@@ -1189,12 +1045,8 @@ export class LayerTextureManager {
     }
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   * @param {!Array<!SDK.PaintProfiler.SnapshotWithRect>} snapshots
-   * @return {!Promise<void>}
-   */
-  _setSnapshotsForLayer(layer, snapshots) {
+  _setSnapshotsForLayer(layer: SDK.LayerTreeBase.Layer, snapshots: SDK.PaintProfiler.SnapshotWithRect[]):
+      Promise<void> {
     const oldSnapshotsToTiles = new Map((this._tilesByLayer.get(layer) || []).map(tile => [tile.snapshot, tile]));
     const newTiles = [];
     const reusedTiles = [];
@@ -1218,10 +1070,7 @@ export class LayerTextureManager {
     return Promise.all(newTiles.map(tile => tile.update(gl, this._scale))).then(this._textureUpdatedCallback);
   }
 
-  /**
-   * @param {number} scale
-   */
-  setScale(scale) {
+  setScale(scale: number): void {
     if (this._scale && this._scale >= scale) {
       return;
     }
@@ -1229,18 +1078,11 @@ export class LayerTextureManager {
     this._updateTextures();
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   * @return {!Array<!Tile>}
-   */
-  tilesForLayer(layer) {
+  tilesForLayer(layer: SDK.LayerTreeBase.Layer): Tile[] {
     return this._tilesByLayer.get(layer) || [];
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   */
-  layerNeedsUpdate(layer) {
+  layerNeedsUpdate(layer: SDK.LayerTreeBase.Layer): void {
     if (this._queue.indexOf(layer) < 0) {
       this._queue.push(layer);
     }
@@ -1249,16 +1091,13 @@ export class LayerTextureManager {
     }
   }
 
-  forceUpdate() {
+  forceUpdate(): void {
     this._queue.forEach(layer => this._updateLayer(layer));
     this._queue = [];
     this._update();
   }
 
-  /**
-   * @return {!Promise<void>}
-   */
-  _update() {
+  _update(): Promise<void> {
     const layer = this._queue.shift();
     if (!layer) {
       return Promise.resolve();
@@ -1269,19 +1108,14 @@ export class LayerTextureManager {
     return this._updateLayer(layer);
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   * @return {!Promise<void>}
-   */
-  _updateLayer(layer) {
+  _updateLayer(layer: SDK.LayerTreeBase.Layer): Promise<void> {
     return Promise.all(layer.snapshots())
         .then(
             snapshots => this._setSnapshotsForLayer(
-                layer, /** @type {!Array<!SDK.PaintProfiler.SnapshotWithRect>} */
-                (snapshots.filter(snapshot => snapshot !== null))));
+                layer, snapshots.filter(snapshot => snapshot !== null) as SDK.PaintProfiler.SnapshotWithRect[]));
   }
 
-  _updateTextures() {
+  _updateTextures(): void {
     if (!this._gl) {
       return;
     }
@@ -1301,40 +1135,29 @@ export class LayerTextureManager {
 }
 
 export class Rectangle {
-  /**
-   * @param {?Selection} relatedObject
-   */
-  constructor(relatedObject) {
+  relatedObject: Selection|null;
+  lineWidth: number;
+  borderColor: number[]|null;
+  fillColor: number[]|null;
+  texture: WebGLTexture|null;
+  vertices!: number[];
+  constructor(relatedObject: Selection|null) {
     this.relatedObject = relatedObject;
-    /** @type {number} */
     this.lineWidth = 1;
-    /** @type {?Array.<number>} */
     this.borderColor = null;
-    /** @type {?Array.<number>} */
     this.fillColor = null;
-    /** @type {?WebGLTexture} */
     this.texture = null;
-    /** @type {!Array.<number>} */
-    this.vertices;
   }
 
-  /**
-   * @param {!Array.<number>} quad
-   * @param {number} z
-   */
-  setVertices(quad, z) {
+  setVertices(quad: number[], z: number): void {
     this.vertices = [quad[0], quad[1], z, quad[2], quad[3], z, quad[4], quad[5], z, quad[6], quad[7], z];
   }
 
   /**
    * Finds coordinates of point on layer quad, having offsets (ratioX * width) and (ratioY * height)
    * from the left corner of the initial layer rect, where width and heigth are layer bounds.
-   * @param {!Array.<number>} quad
-   * @param {number} ratioX
-   * @param {number} ratioY
-   * @return {!Array.<number>}
    */
-  _calculatePointOnQuad(quad, ratioX, ratioY) {
+  _calculatePointOnQuad(quad: number[], ratioX: number, ratioY: number): number[] {
     const x0 = quad[0];
     const y0 = quad[1];
     const x1 = quad[2];
@@ -1354,12 +1177,7 @@ export class Rectangle {
     return [x, y];
   }
 
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   * @param {!Protocol.DOM.Rect} rect
-   * @param {number} z
-   */
-  calculateVerticesFromRect(layer, rect, z) {
+  calculateVerticesFromRect(layer: SDK.LayerTreeBase.Layer, rect: Protocol.DOM.Rect, z: number): void {
     const quad = layer.quad();
     const rx1 = rect.x / layer.width();
     const rx2 = (rect.x + rect.width) / layer.width();
@@ -1374,12 +1192,8 @@ export class Rectangle {
 
   /**
    * Intersects quad with given transform matrix and line l(t) = (x0, y0, t)
-   * @param {!DOMMatrix} matrix
-   * @param {number} x0
-   * @param {number} y0
-   * @return {(number|undefined)}
    */
-  intersectWithLine(matrix, x0, y0) {
+  intersectWithLine(matrix: DOMMatrix, x0: number, y0: number): number|undefined {
     let i;
     // Vertices of the quad with transform matrix applied
     const points = [];
@@ -1415,21 +1229,19 @@ export class Rectangle {
 }
 
 export class Tile {
-  /**
-   * @param {!SDK.PaintProfiler.SnapshotWithRect} snapshotWithRect
-   */
-  constructor(snapshotWithRect) {
+  snapshot: SDK.PaintProfiler.PaintProfilerSnapshot;
+  rect: Protocol.DOM.Rect;
+  scale: number;
+  texture: WebGLTexture|null;
+  _gl!: WebGLRenderingContext;
+  constructor(snapshotWithRect: SDK.PaintProfiler.SnapshotWithRect) {
     this.snapshot = snapshotWithRect.snapshot;
     this.rect = snapshotWithRect.rect;
     this.scale = 0;
-    /** @type {?WebGLTexture} */
     this.texture = null;
-
-    /** @type {!WebGLRenderingContext} */
-    this._gl;
   }
 
-  dispose() {
+  dispose(): void {
     this.snapshot.release();
     if (this.texture) {
       this._gl.deleteTexture(this.texture);
@@ -1437,24 +1249,14 @@ export class Tile {
     }
   }
 
-  /**
-   * @param {!WebGLRenderingContext} glContext
-   * @param {number} scale
-   * @return {?Promise<void>}
-   */
-  updateScale(glContext, scale) {
+  updateScale(glContext: WebGLRenderingContext, scale: number): Promise<void>|null {
     if (this.texture && this.scale >= scale) {
       return null;
     }
     return this.update(glContext, scale);
   }
 
-  /**
-   * @param {!WebGLRenderingContext} glContext
-   * @param {number} scale
-   * @return {!Promise<void>}
-   */
-  async update(glContext, scale) {
+  async update(glContext: WebGLRenderingContext, scale: number): Promise<void> {
     this._gl = glContext;
     this.scale = scale;
     const imageURL = await this.snapshot.replay(scale);

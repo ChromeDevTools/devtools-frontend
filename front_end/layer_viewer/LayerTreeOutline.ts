@@ -28,12 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
-import {LayerSelection, LayerView, LayerViewHost, Selection} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
+import {LayerSelection, LayerView, LayerViewHost, Selection, SnapshotSelection} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
 
 export const UIStrings = {
   /**
@@ -51,45 +53,38 @@ export const UIStrings = {
   */
   updateChildDimension: ' ({PH1} × {PH2})',
 };
-const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerTreeOutline.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {LayerView}
- */
-export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {!LayerViewHost} layerViewHost
-   */
-  constructor(layerViewHost) {
+export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper implements LayerView {
+  _layerViewHost: LayerViewHost;
+  _treeOutline: UI.TreeOutline.TreeOutlineInShadow;
+  _lastHoveredNode: LayerTreeElement|null;
+  element: HTMLElement;
+  _layerTree?: SDK.LayerTreeBase.LayerTreeBase|null;
+  _layerSnapshotMap?: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
+
+  constructor(layerViewHost: LayerViewHost) {
     super();
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
 
     this._treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this._treeOutline.element.classList.add('layer-tree', 'overflow-auto');
-    this._treeOutline.element.addEventListener(
-        'mousemove', /** @type {!EventListener} */ (this._onMouseMove.bind(this)), false);
-    this._treeOutline.element.addEventListener(
-        'mouseout', /** @type {!EventListener} */ (this._onMouseMove.bind(this)), false);
-    this._treeOutline.element.addEventListener(
-        'contextmenu', /** @type {!EventListener} */ (this._onContextMenu.bind(this)), true);
+    this._treeOutline.element.addEventListener('mousemove', this._onMouseMove.bind(this) as EventListener, false);
+    this._treeOutline.element.addEventListener('mouseout', this._onMouseMove.bind(this) as EventListener, false);
+    this._treeOutline.element.addEventListener('contextmenu', this._onContextMenu.bind(this) as EventListener, true);
     UI.ARIAUtils.setAccessibleName(this._treeOutline.contentElement, i18nString(UIStrings.layersTreePane));
 
-    /** @type {?LayerTreeElement} */
     this._lastHoveredNode = null;
     this.element = this._treeOutline.element;
     this._layerViewHost.showInternalLayersSetting().addChangeListener(this._update, this);
   }
 
-  focus() {
+  focus(): void {
     this._treeOutline.focus();
   }
 
-  /**
-   * @param {?Selection} selection
-   * @override
-   */
-  selectObject(selection) {
+  selectObject(selection: Selection|null): void {
     this.hoverObject(null);
     const layer = selection && selection.layer();
     const node = layer && layerToTreeElement.get(layer);
@@ -100,11 +95,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {?Selection} selection
-   * @override
-   */
-  hoverObject(selection) {
+  hoverObject(selection: Selection|null): void {
     const layer = selection && selection.layer();
     const node = layer && layerToTreeElement.get(layer);
     if (node === this._lastHoveredNode) {
@@ -116,23 +107,18 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     if (node) {
       node.setHovered(true);
     }
-    this._lastHoveredNode = /** @type {!LayerTreeElement} */ (node);
+    this._lastHoveredNode = node as LayerTreeElement;
   }
 
-  /**
-   * @param {?SDK.LayerTreeBase.LayerTreeBase} layerTree
-   * @override
-   */
-  setLayerTree(layerTree) {
+  setLayerTree(layerTree: SDK.LayerTreeBase.LayerTreeBase|null): void {
     this._layerTree = layerTree;
     this._update();
   }
 
-  _update() {
+  _update(): void {
     const showInternalLayers = this._layerViewHost.showInternalLayersSetting().get();
-    const seenLayers = new Map();
-    /** @type {?SDK.LayerTreeBase.Layer} */
-    let root = null;
+    const seenLayers = new Map<SDK.LayerTreeBase.Layer, boolean>();
+    let root: (SDK.LayerTreeBase.Layer|null)|null = null;
     if (this._layerTree) {
       if (!showInternalLayers) {
         root = this._layerTree.contentRoot();
@@ -142,11 +128,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
 
-    /**
-     * @param {!SDK.LayerTreeBase.Layer} layer
-     * @this {LayerTreeOutline}
-     */
-    function updateLayer(layer) {
+    function updateLayer(this: LayerTreeOutline, layer: SDK.LayerTreeBase.Layer): void {
       if (!layer.drawsContent() && !showInternalLayers) {
         return;
       }
@@ -154,8 +136,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
         console.assert(false, 'Duplicate layer: ' + layer.id());
       }
       seenLayers.set(layer, true);
-      /** @type {?LayerTreeElement} */
-      let node = layerToTreeElement.get(layer) || null;
+      let node: LayerTreeElement|null = layerToTreeElement.get(layer) || null;
       let parentLayer = layer.parent();
       // Skip till nearest visible ancestor.
       while (parentLayer && parentLayer !== root && !parentLayer.drawsContent() && !showInternalLayers) {
@@ -218,30 +199,20 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!MouseEvent} event
-   */
-  _onMouseMove(event) {
-    const node = /** @type {?LayerTreeElement} */ (this._treeOutline.treeElementFromEvent(event));
+  _onMouseMove(event: MouseEvent): void {
+    const node = this._treeOutline.treeElementFromEvent(event) as LayerTreeElement | null;
     if (node === this._lastHoveredNode) {
       return;
     }
     this._layerViewHost.hoverObject(this._selectionForNode(node));
   }
 
-  /**
-   * @param {!LayerTreeElement} node
-   */
-  _selectedNodeChanged(node) {
+  _selectedNodeChanged(node: LayerTreeElement): void {
     this._layerViewHost.selectObject(this._selectionForNode(node));
   }
 
-  /**
-   * @param {!MouseEvent} event
-   */
-  _onContextMenu(event) {
-    const selection =
-        this._selectionForNode(/** @type {?LayerTreeElement} */ (this._treeOutline.treeElementFromEvent(event)));
+  _onContextMenu(event: MouseEvent): void {
+    const selection = this._selectionForNode(this._treeOutline.treeElementFromEvent(event) as LayerTreeElement | null);
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const layer = selection && selection.layer();
     if (layer) {
@@ -255,28 +226,22 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     this._layerViewHost.showContextMenu(contextMenu, selection);
   }
 
-  /**
-   * @param {?LayerTreeElement} node
-   * @return {?Selection}
-   */
-  _selectionForNode(node) {
+  _selectionForNode(node: LayerTreeElement|null): Selection|null {
     return node && node._layer ? new LayerSelection(node._layer) : null;
   }
 }
 
-/**
- * @enum {symbol}
- */
-export const Events = {
-  PaintProfilerRequested: Symbol('PaintProfilerRequested')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  PaintProfilerRequested = 'PaintProfilerRequested'
+}
 
 export class LayerTreeElement extends UI.TreeOutline.TreeElement {
-  /**
-   * @param {!LayerTreeOutline} tree
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   */
-  constructor(tree, layer) {
+  _treeOutline: LayerTreeOutline;
+  _layer: SDK.LayerTreeBase.Layer;
+
+  constructor(tree: LayerTreeOutline, layer: SDK.LayerTreeBase.Layer) {
     super();
     this._treeOutline = tree;
     this._layer = layer;
@@ -284,7 +249,7 @@ export class LayerTreeElement extends UI.TreeOutline.TreeElement {
     this._update();
   }
 
-  _update() {
+  _update(): void {
     const node = this._layer.nodeForSelfOrAncestor();
     const title = document.createDocumentFragment();
     UI.UIUtils.createTextChild(title, node ? node.simpleSelector() : '#' + this._layer.id());
@@ -294,22 +259,14 @@ export class LayerTreeElement extends UI.TreeOutline.TreeElement {
     this.title = title;
   }
 
-  /**
-   * @override
-   * @return {boolean}
-   */
-  onselect() {
+  onselect(): boolean {
     this._treeOutline._selectedNodeChanged(this);
     return false;
   }
 
-  /**
-   * @param {boolean} hovered
-   */
-  setHovered(hovered) {
+  setHovered(hovered: boolean): void {
     this.listItemElement.classList.toggle('hovered', hovered);
   }
 }
 
-/** @type {!WeakMap<!SDK.LayerTreeBase.Layer, !LayerTreeElement>} */
-export const layerToTreeElement = new WeakMap();
+export const layerToTreeElement = new WeakMap<SDK.LayerTreeBase.Layer, LayerTreeElement>();

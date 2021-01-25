@@ -28,12 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-import {LayerView, LayerViewHost, ScrollRectSelection, Selection, SnapshotSelection, Type,} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
+import {LayerView, LayerViewHost, ScrollRectSelection, Selection, SnapshotSelection, Type} from './LayerViewHost.js';  // eslint-disable-line no-unused-vars
 
 export const UIStrings = {
   /**
@@ -342,16 +344,24 @@ export const UIStrings = {
   */
   mainThreadScrollingReason: 'Main thread scrolling reason',
 };
-const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerDetailsView.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @implements {LayerView}
- */
-export class LayerDetailsView extends UI.Widget.Widget {
-  /**
-   * @param {!LayerViewHost} layerViewHost
-   */
-  constructor(layerViewHost) {
+export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
+  _layerViewHost: LayerViewHost;
+  _emptyWidget: UI.EmptyWidget.EmptyWidget;
+  _layerSnapshotMap: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
+  _tableElement!: HTMLElement;
+  _tbodyElement!: HTMLElement;
+  _sizeCell!: HTMLElement;
+  _compositingReasonsCell!: HTMLElement;
+  _memoryEstimateCell!: HTMLElement;
+  _paintCountCell!: HTMLElement;
+  _scrollRectsCell!: HTMLElement;
+  _stickyPositionConstraintCell!: HTMLElement;
+  _paintProfilerLink!: HTMLElement;
+  _selection: Selection|null;
+
+  constructor(layerViewHost: LayerViewHost) {
     super(true);
     this.registerRequiredCSS('layer_viewer/layerDetailsView.css', {enableLegacyPatching: true});
     this._layerViewHost = layerViewHost;
@@ -359,89 +369,30 @@ export class LayerDetailsView extends UI.Widget.Widget {
     this._emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectALayerToSeeItsDetails));
     this._layerSnapshotMap = this._layerViewHost.getLayerSnapshotMap();
 
-    /**
-     * @type {!HTMLElement}
-     */
-    this._tableElement;
-    /**
-     * @type {!HTMLElement}
-     */
-    this._tbodyElement;
-    /**
-     * @type {!HTMLElement}
-     */
-    this._sizeCell;
-    /**
-     * @type {!HTMLElement}
-     */
-    this._compositingReasonsCell;
-    /**
-     * @type {!HTMLElement}
-     */
-    this._memoryEstimateCell;
-    /**
-     * @type {!HTMLElement}
-     */
-    this._paintCountCell;
-    /**
-     * @type {!HTMLElement}
-     */
-    this._scrollRectsCell;
-    /**
-     * @type {!HTMLElement}
-     */
-    this._stickyPositionConstraintCell;
-    /**
-     * @type {!HTMLElement}
-     */
-    this._paintProfilerLink;
-
     this._buildContent();
-    /**
-     * @type {?Selection}
-     */
     this._selection = null;
   }
 
-  /**
-   * @param {?Selection} selection
-   * @override
-   */
-  hoverObject(selection) {
+  hoverObject(_selection: Selection|null): void {
   }
 
-  /**
-   * @param {?Selection} selection
-   * @override
-   */
-  selectObject(selection) {
+  selectObject(selection: Selection|null): void {
     this._selection = selection;
     if (this.isShowing()) {
       this.update();
     }
   }
 
-  /**
-   * @param {?SDK.LayerTreeBase.LayerTreeBase} layerTree
-   * @override
-   */
-  setLayerTree(layerTree) {
+  setLayerTree(_layerTree: SDK.LayerTreeBase.LayerTreeBase|null): void {
   }
 
-  /**
-   * @override
-   */
-  wasShown() {
+  wasShown(): void {
     super.wasShown();
     this.update();
   }
 
-  /**
-   * @param {number} index
-   * @param {!Event} event
-   */
-  _onScrollRectClicked(index, event) {
-    if (/** @type {!KeyboardEvent} */ (event).which !== 1) {
+  _onScrollRectClicked(index: number, event: Event): void {
+    if ((event as KeyboardEvent).which !== 1) {
       return;
     }
     if (!this._selection) {
@@ -450,7 +401,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
     this._layerViewHost.selectObject(new ScrollRectSelection(this._selection.layer(), index));
   }
 
-  _invokeProfilerLink() {
+  _invokeProfilerLink(): void {
     if (!this._selection) {
       return;
     }
@@ -462,16 +413,12 @@ export class LayerDetailsView extends UI.Widget.Widget {
     }
   }
 
-  /**
-   * @param {!Protocol.LayerTree.ScrollRect} scrollRect
-   * @param {number} index
-   */
-  _createScrollRectElement(scrollRect, index) {
+  _createScrollRectElement(scrollRect: Protocol.LayerTree.ScrollRect, index: number): void {
     if (index) {
       UI.UIUtils.createTextChild(this._scrollRectsCell, ', ');
     }
     const element = this._scrollRectsCell.createChild('span', 'scroll-rect');
-    if (this._selection && /** @type {!ScrollRectSelection} */ (this._selection).scrollRectIndex === index) {
+    if (this._selection && (this._selection as ScrollRectSelection).scrollRectIndex === index) {
       element.classList.add('active');
     }
     element.textContent = i18nString(UIStrings.scrollRectangleDimensions, {
@@ -479,17 +426,12 @@ export class LayerDetailsView extends UI.Widget.Widget {
       PH2: scrollRect.rect.width,
       PH3: scrollRect.rect.height,
       PH4: scrollRect.rect.x,
-      PH5: scrollRect.rect.y
+      PH5: scrollRect.rect.y,
     });
     element.addEventListener('click', this._onScrollRectClicked.bind(this, index), false);
   }
 
-  /**
-   * @param {string} title
-   * @param {?SDK.LayerTreeBase.Layer} layer
-   * @return {string}
-   */
-  _formatStickyAncestorLayer(title, layer) {
+  _formatStickyAncestorLayer(title: string, layer: SDK.LayerTreeBase.Layer|null): string {
     if (!layer) {
       return '';
     }
@@ -499,11 +441,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
     return i18nString(UIStrings.stickyAncenstorLayersS, {PH1: title, PH2: name, PH3: layer.id()});
   }
 
-  /**
-   * @param {string} title
-   * @param {?SDK.LayerTreeBase.Layer} layer
-   */
-  _createStickyAncestorChild(title, layer) {
+  _createStickyAncestorChild(title: string, layer: SDK.LayerTreeBase.Layer|null): void {
     if (!layer) {
       return;
     }
@@ -513,10 +451,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
     child.textContent = this._formatStickyAncestorLayer(title, layer);
   }
 
-  /**
-   * @param {?SDK.LayerTreeBase.StickyPositionConstraint} constraint
-   */
-  _populateStickyPositionConstraintCell(constraint) {
+  _populateStickyPositionConstraintCell(constraint: SDK.LayerTreeBase.StickyPositionConstraint|null): void {
     this._stickyPositionConstraintCell.removeChildren();
     if (!constraint) {
       return;
@@ -536,7 +471,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
       PH1: containingBlockRect.width,
       PH2: containingBlockRect.height,
       PH3: containingBlockRect.x,
-      PH4: containingBlockRect.y
+      PH4: containingBlockRect.y,
     });
 
     this._createStickyAncestorChild(
@@ -545,7 +480,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
         i18nString(UIStrings.nearestLayerShiftingContaining), constraint.nearestLayerShiftingContainingBlock());
   }
 
-  update() {
+  update(): void {
     const layer = this._selection && this._selection.layer();
     if (!layer) {
       this._tableElement.remove();
@@ -569,15 +504,15 @@ export class LayerDetailsView extends UI.Widget.Widget {
     layer.scrollRects().forEach(this._createScrollRectElement.bind(this));
     this._populateStickyPositionConstraintCell(layer.stickyPositionConstraint());
     const snapshot = this._selection && this._selection.type() === Type.Snapshot ?
-        /** @type {!SnapshotSelection} */ (this._selection).snapshot() :
+        (this._selection as SnapshotSelection).snapshot() :
         null;
 
     this._paintProfilerLink.classList.toggle('hidden', !(this._layerSnapshotMap.has(layer) || snapshot));
   }
 
-  _buildContent() {
-    this._tableElement = /** @type {!HTMLElement} */ (this.contentElement.createChild('table'));
-    this._tbodyElement = /** @type {!HTMLElement} */ (this._tableElement.createChild('tbody'));
+  _buildContent(): void {
+    this._tableElement = this.contentElement.createChild('table') as HTMLElement;
+    this._tbodyElement = this._tableElement.createChild('tbody') as HTMLElement;
     this._sizeCell = this._createRow(i18nString(UIStrings.size));
     this._compositingReasonsCell = this._createRow(i18nString(UIStrings.compositingReasons));
     this._memoryEstimateCell = this._createRow(i18nString(UIStrings.memoryEstimate));
@@ -585,7 +520,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
     this._scrollRectsCell = this._createRow(i18nString(UIStrings.slowScrollRegions));
     this._stickyPositionConstraintCell = this._createRow(i18nString(UIStrings.stickyPositionConstraint));
     this._paintProfilerLink =
-        /** @type {!HTMLElement} */ (this.contentElement.createChild('span', 'hidden devtools-link link-margin'));
+        this.contentElement.createChild('span', 'hidden devtools-link link-margin') as HTMLElement;
     UI.ARIAUtils.markAsLink(this._paintProfilerLink);
     this._paintProfilerLink.textContent = i18nString(UIStrings.paintProfiler);
     this._paintProfilerLink.tabIndex = 0;
@@ -601,20 +536,14 @@ export class LayerDetailsView extends UI.Widget.Widget {
     });
   }
 
-  /**
-   * @param {string} title
-   */
-  _createRow(title) {
+  _createRow(title: string): HTMLElement {
     const tr = this._tbodyElement.createChild('tr');
     const titleCell = tr.createChild('td');
     titleCell.textContent = title;
     return tr.createChild('td');
   }
 
-  /**
-   * @param {!Array.<string>} compositingReasonIds
-   */
-  _updateCompositingReasons(compositingReasonIds) {
+  _updateCompositingReasons(compositingReasonIds: string[]): void {
     if (!compositingReasonIds || !compositingReasonIds.length) {
       this._compositingReasonsCell.textContent = 'n/a';
       return;
@@ -627,10 +556,7 @@ export class LayerDetailsView extends UI.Widget.Widget {
     }
   }
 
-  /**
-   * @param {!Array.<string>} compositingReasonIds
-   */
-  static getCompositingReasons(compositingReasonIds) {
+  static getCompositingReasons(compositingReasonIds: string[]): Platform.UIString.LocalizedString[] {
     const compositingReasons = [];
     for (const compositingReasonId of compositingReasonIds) {
       const compositingReason = compositingReasonIdToReason.get(compositingReasonId);
@@ -693,19 +619,19 @@ const compositingReasonIdToReason = new Map([
   ['layerForForeground', i18nString(UIStrings.secondaryLayerToContainAnyNormal)],
   ['layerForMask', i18nString(UIStrings.secondaryLayerToContainTheMask)],
   ['layerForDecoration', i18nString(UIStrings.layerPaintedOnTopOfOtherLayersAs)],
-  ['layerForOther', i18nString(UIStrings.layerForLinkHighlightFrame)]
+  ['layerForOther', i18nString(UIStrings.layerForLinkHighlightFrame)],
 ]);
 
-
-/** @enum {symbol} */
-export const Events = {
-  PaintProfilerRequested: Symbol('PaintProfilerRequested')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  PaintProfilerRequested = 'PaintProfilerRequested'
+}
 
 export const slowScrollRectNames = new Map([
   [SDK.LayerTreeBase.Layer.ScrollRectType.NonFastScrollable, i18nString(UIStrings.nonFastScrollable)],
   [SDK.LayerTreeBase.Layer.ScrollRectType.TouchEventHandler, i18nString(UIStrings.touchEventHandler)],
   [SDK.LayerTreeBase.Layer.ScrollRectType.WheelEventHandler, i18nString(UIStrings.wheelEventHandler)],
   [SDK.LayerTreeBase.Layer.ScrollRectType.RepaintsOnScroll, i18nString(UIStrings.repaintsOnScroll)],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.MainThreadScrollingReason, i18nString(UIStrings.mainThreadScrollingReason)]
+  [SDK.LayerTreeBase.Layer.ScrollRectType.MainThreadScrollingReason, i18nString(UIStrings.mainThreadScrollingReason)],
 ]);

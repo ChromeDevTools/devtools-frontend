@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
@@ -13,186 +15,119 @@ export const UIStrings = {
   */
   showInternalLayers: 'Show internal layers',
 };
-const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerViewHost.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('layer_viewer/LayerViewHost.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/**
- * @interface
- */
-export class LayerView {
-  /**
-   * @param {?Selection} selection
-   */
-  hoverObject(selection) {
-  }
 
-  /**
-   * @param {?Selection} selection
-   */
-  selectObject(selection) {
-  }
 
-  /**
-   * @param {?SDK.LayerTreeBase.LayerTreeBase} layerTree
-   */
-  setLayerTree(layerTree) {}
+export abstract class LayerView {
+  abstract hoverObject(selection: Selection|null): void;
+  abstract selectObject(selection: Selection|null): void;
+  abstract setLayerTree(layerTree: SDK.LayerTreeBase.LayerTreeBase|null): void;
 }
 
 export class Selection {
-  /**
-   * @param {!Type} type
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   */
-  constructor(type, layer) {
+  _type: Type;
+  _layer: SDK.LayerTreeBase.Layer;
+
+  constructor(type: Type, layer: SDK.LayerTreeBase.Layer) {
     this._type = type;
     this._layer = layer;
   }
 
-  /**
-   * @param {?Selection} a
-   * @param {?Selection} b
-   * @return {boolean}
-   */
-  static isEqual(a, b) {
+  static isEqual(a: Selection|null, b: Selection|null): boolean {
     return a && b ? a._isEqual(b) : a === b;
   }
 
-  /**
-   * @return {!Type}
-   */
-  type() {
+  type(): Type {
     return this._type;
   }
 
-  /**
-   * @return {!SDK.LayerTreeBase.Layer}
-   */
-  layer() {
+  layer(): SDK.LayerTreeBase.Layer {
     return this._layer;
   }
 
-  /**
-   * @param {!Selection} other
-   * @return {boolean}
-   */
-  _isEqual(other) {
+  _isEqual(_other: Selection): boolean {
     return false;
   }
 }
 
-/**
- * @enum {symbol}
- */
-export const Type = {
-  Layer: Symbol('Layer'),
-  ScrollRect: Symbol('ScrollRect'),
-  Snapshot: Symbol('Snapshot')
-};
+export const enum Type {
+  Layer = 'Layer',
+  ScrollRect = 'ScrollRect',
+  Snapshot = 'Snapshot'
+}
+
 
 export class LayerSelection extends Selection {
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   */
-  constructor(layer) {
+  constructor(layer: SDK.LayerTreeBase.Layer) {
     console.assert(Boolean(layer), 'LayerSelection with empty layer');
     super(Type.Layer, layer);
   }
 
-  /**
-   * @override
-   * @param {!Selection} other
-   * @return {boolean}
-   */
-  _isEqual(other) {
+  _isEqual(other: Selection): boolean {
     return other._type === Type.Layer && other.layer().id() === this.layer().id();
   }
 }
 
 export class ScrollRectSelection extends Selection {
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   * @param {number} scrollRectIndex
-   */
-  constructor(layer, scrollRectIndex) {
+  scrollRectIndex: number;
+  constructor(layer: SDK.LayerTreeBase.Layer, scrollRectIndex: number) {
     super(Type.ScrollRect, layer);
     this.scrollRectIndex = scrollRectIndex;
   }
 
-  /**
-   * @override
-   * @param {!Selection} other
-   * @return {boolean}
-   */
-  _isEqual(other) {
+  _isEqual(other: Selection): boolean {
     return other._type === Type.ScrollRect && this.layer().id() === other.layer().id() &&
-        this.scrollRectIndex === /** @type {!ScrollRectSelection} */ (other).scrollRectIndex;
+        this.scrollRectIndex === (other as ScrollRectSelection).scrollRectIndex;
   }
 }
 
 export class SnapshotSelection extends Selection {
-  /**
-   * @param {!SDK.LayerTreeBase.Layer} layer
-   * @param {!SDK.PaintProfiler.SnapshotWithRect} snapshot
-   */
-  constructor(layer, snapshot) {
+  _snapshot: SDK.PaintProfiler.SnapshotWithRect;
+  constructor(layer: SDK.LayerTreeBase.Layer, snapshot: SDK.PaintProfiler.SnapshotWithRect) {
     super(Type.Snapshot, layer);
     this._snapshot = snapshot;
   }
 
-  /**
-   * @override
-   * @param {!Selection} other
-   * @return {boolean}
-   */
-  _isEqual(other) {
+  _isEqual(other: Selection): boolean {
     return other._type === Type.Snapshot && this.layer().id() === other.layer().id() &&
-        this._snapshot === /** @type {!SnapshotSelection} */ (other)._snapshot;
+        this._snapshot === (other as SnapshotSelection)._snapshot;
   }
 
-  /**
-   * @return {!SDK.PaintProfiler.SnapshotWithRect}
-   */
-  snapshot() {
+  snapshot(): SDK.PaintProfiler.SnapshotWithRect {
     return this._snapshot;
   }
 }
 
 export class LayerViewHost {
+  _views: LayerView[];
+  _selectedObject: Selection|null;
+  _hoveredObject: Selection|null;
+  _showInternalLayersSetting: Common.Settings.LegacySetting<boolean>;
+  _snapshotLayers: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
+  _target?: SDK.SDKModel.Target|null;
   constructor() {
-    /** @type {!Array.<!LayerView>} */
     this._views = [];
     this._selectedObject = null;
     this._hoveredObject = null;
     this._showInternalLayersSetting =
         Common.Settings.Settings.instance().createSetting('layersShowInternalLayers', false);
-    /** @type {!Map<!SDK.LayerTreeBase.Layer, !SnapshotSelection>} */
     this._snapshotLayers = new Map();
   }
 
-  /**
-   * @param {!LayerView} layerView
-   */
-  registerView(layerView) {
+  registerView(layerView: LayerView): void {
     this._views.push(layerView);
   }
 
-  /**
-   * @param {!Map<!SDK.LayerTreeBase.Layer, !SnapshotSelection>} snapshotLayers
-   */
-  setLayerSnapshotMap(snapshotLayers) {
+  setLayerSnapshotMap(snapshotLayers: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>): void {
     this._snapshotLayers = snapshotLayers;
   }
 
-  /**
-   * @return {!Map<!SDK.LayerTreeBase.Layer, !SnapshotSelection>}
-   */
-  getLayerSnapshotMap() {
+  getLayerSnapshotMap(): Map<SDK.LayerTreeBase.Layer, SnapshotSelection> {
     return this._snapshotLayers;
   }
 
-  /**
-   * @param {?SDK.LayerTreeBase.LayerTreeBase} layerTree
-   */
-  setLayerTree(layerTree) {
+  setLayerTree(layerTree: SDK.LayerTreeBase.LayerTreeBase|null): void {
     if (!layerTree) {
       return;
     }
@@ -210,10 +145,7 @@ export class LayerViewHost {
     }
   }
 
-  /**
-   * @param {?Selection} selection
-   */
-  hoverObject(selection) {
+  hoverObject(selection: Selection|null): void {
     if (Selection.isEqual(this._hoveredObject, selection)) {
       return;
     }
@@ -225,10 +157,7 @@ export class LayerViewHost {
     }
   }
 
-  /**
-   * @param {?Selection} selection
-   */
-  selectObject(selection) {
+  selectObject(selection: Selection|null): void {
     if (Selection.isEqual(this._selectedObject, selection)) {
       return;
     }
@@ -238,18 +167,11 @@ export class LayerViewHost {
     }
   }
 
-  /**
-   * @return {?Selection}
-   */
-  selection() {
+  selection(): Selection|null {
     return this._selectedObject;
   }
 
-  /**
-   * @param {!UI.ContextMenu.ContextMenu} contextMenu
-   * @param {?Selection} selection
-   */
-  showContextMenu(contextMenu, selection) {
+  showContextMenu(contextMenu: UI.ContextMenu.ContextMenu, selection: Selection|null): void {
     contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.showInternalLayers), this._toggleShowInternalLayers.bind(this),
         this._showInternalLayersSetting.get());
@@ -260,21 +182,15 @@ export class LayerViewHost {
     contextMenu.show();
   }
 
-  /**
-   * @return {!Common.Settings.Setting<*>}
-   */
-  showInternalLayersSetting() {
+  showInternalLayersSetting(): Common.Settings.Setting<boolean> {
     return this._showInternalLayersSetting;
   }
 
-  _toggleShowInternalLayers() {
+  _toggleShowInternalLayers(): void {
     this._showInternalLayersSetting.set(!this._showInternalLayersSetting.get());
   }
 
-  /**
-   * @param {?SDK.DOMModel.DOMNode} node
-   */
-  _toggleNodeHighlight(node) {
+  _toggleNodeHighlight(node: SDK.DOMModel.DOMNode|null): void {
     if (node) {
       node.highlightForTwoSeconds();
       return;

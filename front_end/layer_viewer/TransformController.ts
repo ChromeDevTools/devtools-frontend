@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
@@ -21,19 +23,26 @@ export const UIStrings = {
   */
   resetTransform: 'Reset transform (0)',
 };
-const str_ = i18n.i18n.registerUIStrings('layer_viewer/TransformController.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('layer_viewer/TransformController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {!HTMLElement} element
-   * @param {boolean=} disableRotate
-   */
-  constructor(element, disableRotate) {
+  _mode!: Modes;
+  _scale: number;
+  _offsetX: number;
+  _offsetY: number;
+  _rotateX: number;
+  _rotateY: number;
+  _oldRotateX: number;
+  _oldRotateY: number;
+  _originX: number;
+  _originY: number;
+  element: HTMLElement;
+  _minScale: number;
+  _maxScale: number;
+  _controlPanelToolbar: UI.Toolbar.Toolbar;
+  _modeButtons: {[x: string]: UI.Toolbar.ToolbarToggle;};
+  constructor(element: HTMLElement, disableRotate?: boolean) {
     super();
-    /**
-     * @type {!Modes}
-     */
-    this._mode;
     this._scale = 1;
     this._offsetX = 0;
     this._offsetY = 0;
@@ -53,7 +62,6 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
 
     this._controlPanelToolbar = new UI.Toolbar.Toolbar('transform-control-panel');
 
-    /** @type {!Object<string, !UI.Toolbar.ToolbarToggle>} */
     this._modeButtons = {};
     if (!disableRotate) {
       const panModeButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.panModeX), 'largeicon-pan');
@@ -74,25 +82,22 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     this._reset();
   }
 
-  /**
-   * @return {!UI.Toolbar.Toolbar}
-   */
-  toolbar() {
+  toolbar(): UI.Toolbar.Toolbar {
     return this._controlPanelToolbar;
   }
 
-  _registerShortcuts() {
+  _registerShortcuts(): void {
     const zoomFactor = 1.1;
     UI.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(this.element, {
-      'layers.reset-view': async () => {
+      'layers.reset-view': async(): Promise<true> => {
         this.resetAndNotify();
         return true;
       },
-      'layers.pan-mode': async () => {
+      'layers.pan-mode': async(): Promise<true> => {
         this._setMode(Modes.Pan);
         return true;
       },
-      'layers.rotate-mode': async () => {
+      'layers.rotate-mode': async(): Promise<true> => {
         this._setMode(Modes.Rotate);
         return true;
       },
@@ -105,11 +110,11 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     });
   }
 
-  _postChangeEvent() {
+  _postChangeEvent(): void {
     this.dispatchEventToListeners(Events.TransformChanged);
   }
 
-  _reset() {
+  _reset(): void {
     this._scale = 1;
     this._offsetX = 0;
     this._offsetY = 0;
@@ -117,10 +122,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     this._rotateY = 0;
   }
 
-  /**
-   * @param {!Modes} mode
-   */
-  _setMode(mode) {
+  _setMode(mode: Modes): void {
     if (this._mode === mode) {
       return;
     }
@@ -128,16 +130,13 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     this._updateModeButtons();
   }
 
-  _updateModeButtons() {
+  _updateModeButtons(): void {
     for (const mode in this._modeButtons) {
       this._modeButtons[mode].setToggled(mode === this._mode);
     }
   }
 
-  /**
-   * @param {!Event=} event
-   */
-  resetAndNotify(event) {
+  resetAndNotify(event?: Event): void {
     this._reset();
     this._postChangeEvent();
     if (event) {
@@ -146,68 +145,38 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     this.element.focus();
   }
 
-  /**
-   * @param {number} minScale
-   * @param {number} maxScale
-   */
-  setScaleConstraints(minScale, maxScale) {
+  setScaleConstraints(minScale: number, maxScale: number): void {
     this._minScale = minScale;
     this._maxScale = maxScale;
     this._scale = Platform.NumberUtilities.clamp(this._scale, minScale, maxScale);
   }
 
-  /**
-   * @param {number} minX
-   * @param {number} maxX
-   * @param {number} minY
-   * @param {number} maxY
-   */
-  clampOffsets(minX, maxX, minY, maxY) {
+  clampOffsets(minX: number, maxX: number, minY: number, maxY: number): void {
     this._offsetX = Platform.NumberUtilities.clamp(this._offsetX, minX, maxX);
     this._offsetY = Platform.NumberUtilities.clamp(this._offsetY, minY, maxY);
   }
 
-  /**
-   * @return {number}
-   */
-  scale() {
+  scale(): number {
     return this._scale;
   }
 
-  /**
-   * @return {number}
-   */
-  offsetX() {
+  offsetX(): number {
     return this._offsetX;
   }
 
-  /**
-   * @return {number}
-   */
-  offsetY() {
+  offsetY(): number {
     return this._offsetY;
   }
 
-  /**
-   * @return {number}
-   */
-  rotateX() {
+  rotateX(): number {
     return this._rotateX;
   }
 
-  /**
-   * @return {number}
-   */
-  rotateY() {
+  rotateY(): number {
     return this._rotateY;
   }
 
-  /**
-   * @param {number} scaleFactor
-   * @param {number} x
-   * @param {number} y
-   */
-  _onScale(scaleFactor, x, y) {
+  _onScale(scaleFactor: number, x: number, y: number): void {
     scaleFactor =
         Platform.NumberUtilities.clamp(this._scale * scaleFactor, this._minScale, this._maxScale) / this._scale;
     this._scale *= scaleFactor;
@@ -216,41 +185,24 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     this._postChangeEvent();
   }
 
-  /**
-   * @param {number} offsetX
-   * @param {number} offsetY
-   */
-  _onPan(offsetX, offsetY) {
+  _onPan(offsetX: number, offsetY: number): void {
     this._offsetX += offsetX;
     this._offsetY += offsetY;
     this._postChangeEvent();
   }
 
-  /**
-   * @param {number} rotateX
-   * @param {number} rotateY
-   */
-  _onRotate(rotateX, rotateY) {
+  _onRotate(rotateX: number, rotateY: number): void {
     this._rotateX = rotateX;
     this._rotateY = rotateY;
     this._postChangeEvent();
   }
 
-  /**
-   * @param {number} zoomFactor
-   * @return {!Promise.<boolean>}
-   */
-  async _onKeyboardZoom(zoomFactor) {
+  async _onKeyboardZoom(zoomFactor: number): Promise<boolean> {
     this._onScale(zoomFactor, this.element.clientWidth / 2, this.element.clientHeight / 2);
     return true;
   }
 
-  /**
-   * @param {number} xMultiplier
-   * @param {number} yMultiplier
-   * @return {!Promise.<boolean>}
-   */
-  async _onKeyboardPanOrRotate(xMultiplier, yMultiplier) {
+  async _onKeyboardPanOrRotate(xMultiplier: number, yMultiplier: number): Promise<boolean> {
     const panStepInPixels = 6;
     const rotateStepInDegrees = 5;
 
@@ -264,26 +216,20 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     return true;
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onMouseWheel(event) {
+  _onMouseWheel(event: Event): void {
     /** @const */
     const zoomFactor = 1.1;
     /** @const */
     const wheelZoomSpeed = 1 / 53;
-    const mouseEvent = /** @type {!WheelEvent} */ (event);
+    const mouseEvent = event as WheelEvent;
     const scaleFactor = Math.pow(zoomFactor, -mouseEvent.deltaY * wheelZoomSpeed);
     this._onScale(
         scaleFactor, mouseEvent.clientX - this.element.totalOffsetLeft(),
         mouseEvent.clientY - this.element.totalOffsetTop());
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _onDrag(event) {
-    const {clientX, clientY} = /** @type {!MouseEvent} */ (event);
+  _onDrag(event: Event): void {
+    const {clientX, clientY} = event as MouseEvent;
     if (this._mode === Modes.Rotate) {
       this._onRotate(
           this._oldRotateX + (this._originY - clientY) / this.element.clientHeight * 180,
@@ -295,10 +241,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {!MouseEvent} event
-   */
-  _onDragStart(event) {
+  _onDragStart(event: MouseEvent): boolean {
     this.element.focus();
     this._originX = event.clientX;
     this._originY = event.clientY;
@@ -307,7 +250,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
     return true;
   }
 
-  _onDragEnd() {
+  _onDragEnd(): void {
     this._originX = 0;
     this._originY = 0;
     this._oldRotateX = 0;
@@ -315,15 +258,13 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  TransformChanged: Symbol('TransformChanged')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  TransformChanged = 'TransformChanged'
+}
 
-/**
- * @enum {string}
- */
-export const Modes = {
-  Pan: 'Pan',
-  Rotate: 'Rotate',
-};
+export const enum Modes {
+  Pan = 'Pan',
+  Rotate = 'Rotate'
+}

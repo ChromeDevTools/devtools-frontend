@@ -28,111 +28,85 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 
 export class PaintProfilerModel extends SDKModel {
-  /**
-   * @param {!Target} target
-   */
-  constructor(target) {
+  _layerTreeAgent: ProtocolProxyApi.LayerTreeApi;
+
+  constructor(target: Target) {
     super(target);
     this._layerTreeAgent = target.layerTreeAgent();
   }
 
-  /**
-   * @param {!Array.<!Protocol.LayerTree.PictureTile>} tiles
-   * @return {!Promise<?PaintProfilerSnapshot>}
-   */
-  async loadSnapshotFromFragments(tiles) {
+  async loadSnapshotFromFragments(tiles: Protocol.LayerTree.PictureTile[]): Promise<PaintProfilerSnapshot|null> {
     const {snapshotId} = await this._layerTreeAgent.invoke_loadSnapshot({tiles});
     return snapshotId ? new PaintProfilerSnapshot(this, snapshotId) : null;
   }
 
-  /**
-   * @param {!Protocol.binary} encodedPicture
-   * @return {!Promise<?PaintProfilerSnapshot>}
-   */
-  loadSnapshot(encodedPicture) {
+  loadSnapshot(encodedPicture: Protocol.binary): Promise<PaintProfilerSnapshot|null> {
     const fragment = {x: 0, y: 0, picture: encodedPicture};
     return this.loadSnapshotFromFragments([fragment]);
   }
 
-  /**
-   * @param {!Protocol.LayerTree.LayerId} layerId
-   * @return {!Promise<?PaintProfilerSnapshot>}
-   */
-  async makeSnapshot(layerId) {
+  async makeSnapshot(layerId: Protocol.LayerTree.LayerId): Promise<PaintProfilerSnapshot|null> {
     const {snapshotId} = await this._layerTreeAgent.invoke_makeSnapshot({layerId});
     return snapshotId ? new PaintProfilerSnapshot(this, snapshotId) : null;
   }
 }
 
 export class PaintProfilerSnapshot {
-  /**
-   * @param {!PaintProfilerModel} paintProfilerModel
-   * @param {!Protocol.LayerTree.SnapshotId} snapshotId
-   */
-  constructor(paintProfilerModel, snapshotId) {
+  _paintProfilerModel: PaintProfilerModel;
+  _id: Protocol.LayerTree.SnapshotId;
+  _refCount: number;
+
+  constructor(paintProfilerModel: PaintProfilerModel, snapshotId: Protocol.LayerTree.SnapshotId) {
     this._paintProfilerModel = paintProfilerModel;
     this._id = snapshotId;
     this._refCount = 1;
   }
 
-  release() {
+  release(): void {
     console.assert(this._refCount > 0, 'release is already called on the object');
     if (!--this._refCount) {
       this._paintProfilerModel._layerTreeAgent.invoke_releaseSnapshot({snapshotId: this._id});
     }
   }
 
-  addReference() {
+  addReference(): void {
     ++this._refCount;
     console.assert(this._refCount > 0, 'Referencing a dead object');
   }
 
-  /**
-   * @param {number=} scale
-   * @param {number=} fromStep
-   * @param {number=} toStep
-   * @return {!Promise<?string>}
-   */
-  async replay(scale, fromStep, toStep) {
+  async replay(scale?: number, fromStep?: number, toStep?: number): Promise<string|null> {
     const response = await this._paintProfilerModel._layerTreeAgent.invoke_replaySnapshot(
         {snapshotId: this._id, fromStep, toStep, scale: scale || 1.0});
     return response.dataURL;
   }
 
-  /**
-   * @param {?Protocol.DOM.Rect} clipRect
-   * @return {!Promise<?Array<!Protocol.LayerTree.PaintProfile>>}
-   */
-  async profile(clipRect) {
+  async profile(clipRect: Protocol.DOM.Rect|null): Promise<Protocol.LayerTree.PaintProfile[]> {
     const response = await this._paintProfilerModel._layerTreeAgent.invoke_profileSnapshot(
         {snapshotId: this._id, minRepeatCount: 5, minDuration: 1, clipRect: clipRect || undefined});
 
     return response.timings;
   }
 
-  /**
-   * @return {!Promise<?Array<!PaintProfilerLogItem>>}
-   */
-  async commandLog() {
+  async commandLog(): Promise<PaintProfilerLogItem[]|null> {
     const response = await this._paintProfilerModel._layerTreeAgent.invoke_snapshotCommandLog({snapshotId: this._id});
 
-    return response.commandLog ?
-        response.commandLog.map(
-            (entry, index) => new PaintProfilerLogItem(/** @type {!RawPaintProfilerLogItem} */ (entry), index)) :
-        null;
+    return response.commandLog ? response.commandLog.map((entry, index) => new PaintProfilerLogItem(entry, index)) :
+                                 null;
   }
 }
 
 
 export class PaintProfilerLogItem {
-  /**
-   * @param {!RawPaintProfilerLogItem} rawEntry
-   * @param {number} commandIndex
-   */
-  constructor(rawEntry, commandIndex) {
+  method: string;
+  params: RawPaintProfilerLogItemParams|null;
+  commandIndex: number;
+
+  constructor(rawEntry: RawPaintProfilerLogItem, commandIndex: number) {
     this.method = rawEntry.method;
     this.params = rawEntry.params;
     this.commandIndex = commandIndex;
@@ -141,22 +115,23 @@ export class PaintProfilerLogItem {
 
 SDKModel.register(PaintProfilerModel, Capability.DOM, false);
 
-/** @typedef {!{
-        rect: !Protocol.DOM.Rect,
-        snapshot: !PaintProfilerSnapshot
-    }}
-*/
-// @ts-ignore typedef
-export let SnapshotWithRect;
+export type RawPaintProfilerLogItemParamValue = string|{[key: string]: RawPaintProfilerLogItemParamValue};
+export type RawPaintProfilerLogItemParams = {
+  [key: string]: RawPaintProfilerLogItemParamValue
+};
 
-/**
- * @typedef {!{x: number, y: number, picture: string}}
- */
-// @ts-ignore typedef
-export let PictureFragment;
+export interface SnapshotWithRect {
+  rect: Protocol.DOM.Rect;
+  snapshot: PaintProfilerSnapshot;
+}
 
-/**
- * @typedef {!{method: string, params: ?Object<string, *>}}
- */
-// @ts-ignore typedef
-export let RawPaintProfilerLogItem;
+export interface PictureFragment {
+  x: number;
+  y: number;
+  picture: string;
+}
+
+export interface RawPaintProfilerLogItem {
+  method: string;
+  params: RawPaintProfilerLogItemParams|null
+}

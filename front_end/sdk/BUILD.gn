@@ -54,7 +54,7 @@ devtools_module("sdk") {
     "OverlayModel.js",
     "OverlayPersistentHighlighter.js",
     "PageResourceLoader.js",
-    "PaintProfiler.js",
+    "PaintProfiler.ts",
     "PerformanceMetricsModel.js",
     "ProfileTreeModel.js",
     "RemoteObject.js",

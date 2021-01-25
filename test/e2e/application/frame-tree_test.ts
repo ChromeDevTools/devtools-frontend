@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {click, getBrowserAndPages, getTestServerPort, goToResource, pressKey, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {doubleClickSourceTreeItem, getReportValues, navigateToApplicationTab} from '../helpers/application-helpers.js';
+import {doubleClickSourceTreeItem, getFrameTreeTitles, getReportValues, navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const TOP_FRAME_SELECTOR = '[aria-label="top"]';
 const WEB_WORKERS_SELECTOR = '[aria-label="Web Workers"]';
@@ -14,6 +16,16 @@ const IFRAME_SELECTOR = '[aria-label="frameId (iframe.html)"]';
 const MAIN_FRAME_SELECTOR = '[aria-label="frameId (main-frame.html)"]';
 
 describe('The Application Tab', async () => {
+  afterEach(async () => {
+    const {target} = getBrowserAndPages();
+    await target.evaluate(async () => {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const registration of registrations) {
+        registration.unregister();
+      }
+    });
+  });
+
   it('shows details for a frame when clicked on in the frame tree', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'frame-tree');
@@ -132,6 +144,8 @@ describe('The Application Tab', async () => {
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });
 
+    assert.deepEqual(await getFrameTreeTitles(), ['top', 'frameId (iframe.html)', 'iframe.html', 'main-frame.html']);
+
     // write to the iframe using 'document.write()'
     await target.evaluate(() => {
       const frame = document.getElementById('frameId') as HTMLIFrameElement;
@@ -162,5 +176,8 @@ describe('The Application Tab', async () => {
       ];
       return JSON.stringify(fieldValues) === JSON.stringify(expected);
     });
+
+    assert.deepEqual(
+        await getFrameTreeTitles(), ['top', 'frameId (main-frame.html)', 'Document not available', 'main-frame.html']);
   });
 });

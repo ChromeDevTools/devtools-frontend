@@ -247,6 +247,21 @@ export class ResourceTreeModel extends SDKModel {
   }
 
   /**
+   * @param {!Protocol.Page.Frame} framePayload
+   */
+  _documentOpened(framePayload) {
+    this._frameNavigated(framePayload);
+    const frame = this._frames.get(framePayload.id);
+    if (frame && !frame._resourcesMap.get(framePayload.url)) {
+      const frameResource = this._createResourceFromFramePayload(
+          framePayload, framePayload.url, Common.ResourceType.resourceTypes.Document, framePayload.mimeType, null,
+          null);
+      frameResource.isGenerated = true;
+      frame.addResource(frameResource);
+    }
+  }
+
+  /**
    * @param {!Protocol.Page.FrameId} frameId
    */
   _frameDetached(frameId) {
@@ -1060,7 +1075,7 @@ export class PageDispatcher {
  * @param {!Protocol.Page.DocumentOpenedEvent} event
  */
   documentOpened({frame}) {
-    this._resourceTreeModel._frameNavigated(frame);
+    this._resourceTreeModel._documentOpened(frame);
   }
 
   /**

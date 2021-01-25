@@ -416,6 +416,9 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_966449681e03d7c362d19c08ee337985" desc="Warning message for image resources from the manifest">
     <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> URL &apos;<ph name="IMAGERESOURCE__SRC__">$2s<ex>https://example.com/image.png</ex></ph>&apos; failed to parse
   </message>
+  <message name="IDS_DEVTOOLS_98d5617f2d5d9a55432d93b8019c22b3" desc="Label in frame tree for unavailable document">
+    Document not available
+  </message>
   <message name="IDS_DEVTOOLS_98fc9226c3fe878e39cd048fbd1c3692" desc="Text in App Manifest View of the Application panel">
     Short name
   </message>
@@ -599,6 +602,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_cd461eb091b5b58a6fe5a1b5edba4c5f" desc="A context menu item in the Application Panel Sidebar of the Application panel">
     Refresh Caches
+  </message>
+  <message name="IDS_DEVTOOLS_cd5e7f51462dc55f1f1036108a8ba60f" desc="Description of content of unavailable document in Application panel">
+    The content of this document has been generated dynamically via &apos;document.write()&apos;.
   </message>
   <message name="IDS_DEVTOOLS_ce0540adc848ff5957d4d857984592d1" desc="Text in Clear Storage View of the Application panel">
     Cache storage

@@ -46,6 +46,11 @@ export async function getReportValues() {
   return Promise.all(fields.map(node => node.evaluate(e => e.textContent)));
 }
 
+export async function getFrameTreeTitles() {
+  const treeTitles = await $$('[aria-label="Resources Section"] ~ ol .tree-element-title');
+  return Promise.all(treeTitles.map(node => node.evaluate(e => e.textContent)));
+}
+
 export async function getStorageItemsData(columns: string[]) {
   return getDataGridData('.storage-view table', columns);
 }

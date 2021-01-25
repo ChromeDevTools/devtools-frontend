@@ -62,6 +62,7 @@ export class Resource {
     this._loaderId = loaderId;
     this._type = type || Common.ResourceType.resourceTypes.Other;
     this._mimeType = mimeType;
+    this._isGenerated = false;
 
     this._lastModified = lastModified && Platfrom.DateUtilities.isValid(lastModified) ? lastModified : null;
     this._contentSize = contentSize;
@@ -172,6 +173,20 @@ export class Resource {
    */
   get content() {
     return this._content;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  get isGenerated() {
+    return this._isGenerated;
+  }
+
+  /**
+   * @param {boolean} val
+   */
+  set isGenerated(val) {
+    this._isGenerated = val;
   }
 
   /**

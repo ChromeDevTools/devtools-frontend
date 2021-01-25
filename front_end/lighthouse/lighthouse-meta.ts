@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../i18n/i18n.js';
-import type * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
@@ -23,10 +22,14 @@ export const UIStrings = {
    *@description A tag of Lighthouse tool that can be searched in the command menu
    */
   lighthouseTag: 'lighthouse',
+  /**
+  *@description Command for showing the 'Lighthouse' tool
+  */
+  showLighthouse: 'Show Lighthouse',
 };
 
 const str_ = i18n.i18n.registerUIStrings('lighthouse/lighthouse-meta.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedLighthouseModule: (typeof Lighthouse|undefined);
 
@@ -42,15 +45,15 @@ async function loadLighthouseModule(): Promise<typeof Lighthouse> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'lighthouse',
-  title: (): Platform.UIString.LocalizedString => i18nString(UIStrings.lighthouse),
-  commandPrompt: 'Show Lighthouse',
+  title: i18nString(UIStrings.lighthouse),
+  commandPrompt: i18nString(UIStrings.showLighthouse),
   order: 90,
   async loadView() {
     const Lighthouse = await loadLighthouseModule();
     return Lighthouse.LighthousePanel.LighthousePanel.instance();
   },
   tags: [
-    (): Platform.UIString.LocalizedString => i18nString(UIStrings.lighthouseTag),
-    (): Platform.UIString.LocalizedString => i18nString(UIStrings.pwa),
+    i18nString(UIStrings.lighthouseTag),
+    i18nString(UIStrings.pwa),
   ],
 });

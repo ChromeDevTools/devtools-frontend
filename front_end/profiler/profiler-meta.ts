@@ -41,6 +41,14 @@ export const UIStrings = {
   *@description Title of a setting under the Performance category in Settings
   */
   showNativeFunctions: 'Show native functions in JS Profile',
+  /**
+  *@description Command for shwoing the profiler tab
+  */
+  showMemory: 'Show Memory',
+  /**
+  *@description Command for showing the 'Live Heap Profile' tool in the bottom drawer
+  */
+  showLiveHeapProfile: 'Show Live Heap Profile',
 
 };
 const str_ = i18n.i18n.registerUIStrings('profiler/profiler-meta.ts', UIStrings);
@@ -65,7 +73,7 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (profilerModul
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'heap_profiler',
-  commandPrompt: 'Show Memory',
+  commandPrompt: i18nString(UIStrings.showMemory),
   title: i18nString(UIStrings.memory),
   order: 60,
   async loadView() {
@@ -77,7 +85,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'live_heap_profile',
-  commandPrompt: 'Show Live Heap Profile',
+  commandPrompt: i18nString(UIStrings.showLiveHeapProfile),
   title: i18nString(UIStrings.liveHeapProfile),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 100,

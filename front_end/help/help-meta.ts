@@ -14,6 +14,10 @@ export const UIStrings = {
   *@description Title of the 'What's New' tool in the bottom drawer
   */
   whatsNew: 'What\'s New',
+  /**
+  *@description Command for showing the 'What's New' tool in the bottom drawer
+  */
+  showWhatsNew: 'Show What\'s New',
 };
 const str_ = i18n.i18n.registerUIStrings('help/help-meta.ts', UIStrings);
 const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -33,7 +37,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'release-note',
   title: i18nString(UIStrings.whatsNew),
-  commandPrompt: 'Show What\'s New',
+  commandPrompt: i18nString(UIStrings.showWhatsNew),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 1,
   async loadView() {

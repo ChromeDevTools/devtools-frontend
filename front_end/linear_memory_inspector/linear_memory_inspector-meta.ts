@@ -25,7 +25,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'linear-memory-inspector',
   title: (): Platform.UIString.LocalizedString => ls`Memory Inspector`,
-  commandPrompt: 'Show Memory Inspector',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Memory Inspector`,
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {

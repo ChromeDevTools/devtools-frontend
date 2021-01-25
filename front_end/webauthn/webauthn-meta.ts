@@ -14,6 +14,10 @@ export const UIStrings = {
   *@description Title of WebAuthn tab in bottom drawer.
   */
   webauthn: 'WebAuthn',
+  /**
+  *@description Command for showing the WebAuthn tab in bottom drawer.
+  */
+  showWebauthn: 'Show WebAuthn',
 };
 const str_ = i18n.i18n.registerUIStrings('webauthn/webauthn-meta.ts', UIStrings);
 const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -33,7 +37,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'webauthn-pane',
   title: i18nString(UIStrings.webauthn),
-  commandPrompt: 'Show WebAuthn',
+  commandPrompt: i18nString(UIStrings.showWebauthn),
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {

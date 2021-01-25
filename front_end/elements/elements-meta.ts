@@ -31,7 +31,7 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (elementsModul
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'elements',
-  commandPrompt: 'Show Elements',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Elements`,
   title: (): Platform.UIString.LocalizedString => ls`Elements`,
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -45,7 +45,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.eventListeners',
-  commandPrompt: 'Show Event Listeners',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Event Listeners`,
   title: (): Platform.UIString.LocalizedString => ls`Event Listeners`,
   order: 5,
   hasToolbar: true,
@@ -59,7 +59,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.domProperties',
-  commandPrompt: 'Show Properties',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Properties`,
   title: (): Platform.UIString.LocalizedString => ls`Properties`,
   order: 7,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -73,7 +73,7 @@ UI.ViewManager.registerViewExtension({
   experiment: Root.Runtime.ExperimentName.CAPTURE_NODE_CREATION_STACKS,
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.domCreation',
-  commandPrompt: 'Show Stack Trace',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Stack Trace`,
   title: (): Platform.UIString.LocalizedString => ls`Stack Trace`,
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -86,7 +86,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'elements.layout',
-  commandPrompt: 'Show Layout',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Layout`,
   title: (): Platform.UIString.LocalizedString => ls`Layout`,
   order: 4,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,

@@ -45,7 +45,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'timeline',
   title: (): Platform.UIString.LocalizedString => ls`Performance`,
-  commandPrompt: 'Show Performance',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Performance`,
   order: 50,
   async loadView() {
     const Timeline = await loadTimelineModule();
@@ -57,7 +57,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'js_profiler',
   title: (): Platform.UIString.LocalizedString => ls`JavaScript Profiler`,
-  commandPrompt: 'Show JavaScript Profiler',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show JavaScript Profiler`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 65,
   async loadView() {

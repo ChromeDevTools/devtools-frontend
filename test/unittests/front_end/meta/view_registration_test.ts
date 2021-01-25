@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../../front_end/platform/platform.js';
-import {ls} from '../../../../front_end/platform/platform.js';
 import * as QuickOpen from '../../../../front_end/quick_open/quick_open.js';
 import * as UI from '../../../../front_end/ui/ui.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
@@ -15,7 +14,7 @@ class MockView extends UI.Widget.Widget implements UI.View.ViewLocationResolver 
   }
 }
 const viewId = 'mockView';
-const viewTitle = ls`Mock`;
+const viewTitle = 'Mock';
 const commandPrompt = 'Show Mock';
 const order = 10;
 describeWithEnvironment('View registration', () => {
@@ -23,8 +22,8 @@ describeWithEnvironment('View registration', () => {
     UI.ViewManager.registerViewExtension({
       location: UI.ViewManager.ViewLocationValues.PANEL,
       id: viewId,
-      commandPrompt: commandPrompt,
-      title: (): Platform.UIString.LocalizedString => viewTitle,
+      commandPrompt: (): Platform.UIString.LocalizedString => commandPrompt as Platform.UIString.LocalizedString,
+      title: (): Platform.UIString.LocalizedString => viewTitle as Platform.UIString.LocalizedString,
       order,
       persistence: UI.ViewManager.ViewPersistence.PERMANENT,
       hasToolbar: false,
@@ -63,8 +62,8 @@ describeWithEnvironment('View registration', () => {
     assert.throws(() => {
       UI.ViewManager.registerViewExtension({
         id: viewId,
-        commandPrompt: commandPrompt,
-        title: (): Platform.UIString.LocalizedString => viewTitle,
+        commandPrompt: (): Platform.UIString.LocalizedString => commandPrompt as Platform.UIString.LocalizedString,
+        title: (): Platform.UIString.LocalizedString => viewTitle as Platform.UIString.LocalizedString,
         async loadView() {
           return new MockView();
         },

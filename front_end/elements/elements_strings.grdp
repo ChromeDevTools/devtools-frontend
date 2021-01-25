@@ -21,8 +21,14 @@
   <message name="IDS_DEVTOOLS_084cd932d6dd317197a20945c76603e2" desc="Text of a DOM element in Styles Sidebar Pane of the Elements panel">
     Inherited from<ph name="___">$1s<ex>''' '''</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_19c8cfef89a0b0409f4502b3bcc4860e" desc="Command for showing the 'Layout' tool">
+    Show Layout
+  </message>
   <message name="IDS_DEVTOOLS_220e24dec914bdfff417ebca7eff61d3" desc="Title of the switch to DOM tree button in the Elements panel">
     Switch to DOM Tree view
+  </message>
+  <message name="IDS_DEVTOOLS_2a71cc1c7c0a11a942cd272851c119db" desc="Command for showing the 'Event Listeners' tool">
+    Show Event Listeners
   </message>
   <message name="IDS_DEVTOOLS_2ddaa8e6378b906b42429dc4003edbd3" desc="A context menu item to reveal a node in the DOM tree of the Elements Panel">
     Reveal in Elements panel
@@ -35,6 +41,9 @@
   </message>
   <message name="IDS_DEVTOOLS_54a90000e87f16d949b02dedc6f40a11" desc="Title of the switch to accessibility tree button in the Elements panel">
     Switch to Accessibility Tree view
+  </message>
+  <message name="IDS_DEVTOOLS_6ed21c263d202a0661fb4105bf73f20a" desc="Command for showing the 'Properties' tool">
+    Show Properties
   </message>
   <message name="IDS_DEVTOOLS_9df0e8cc86e20861ac1440068aa6b49a" desc="A context menu item in Styles panel to copy CSS rule">
     Copy rule
@@ -362,6 +371,9 @@
   </message>
   <message name="IDS_DEVTOOLS_eeb9a8e813f34f5f036332efc0257246" desc="Title of an action in the elements tool to capture area screenshot">
     Capture area screenshot
+  </message>
+  <message name="IDS_DEVTOOLS_f0b96c80f1fdd499ab37915e356a5924" desc="Command for showing the 'Stack Trace' tool">
+    Show Stack Trace
   </message>
   <message name="IDS_DEVTOOLS_f0e82f268931d7aed566ed41457fceb4" desc="Screen reader announcement string when adding a class via the Classes Pane Widget.">
     Class <ph name="ANNOUNCEMENTSTRING">$1s<ex>title-container</ex></ph> added.

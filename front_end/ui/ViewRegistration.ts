@@ -47,7 +47,8 @@ export interface ViewRegistration {
    * The existing duplication of the declaration of the title is expected to be removed once the migration to the version
    * 2 of the localization model has been completed (crbug.com/1136655).
    */
-  commandPrompt: string;
+  commandPrompt: () => Platform.UIString.LocalizedString;
+
   /**
    * A UI string used as the title of the view.
    */

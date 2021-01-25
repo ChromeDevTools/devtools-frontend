@@ -25,7 +25,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'changes.changes',
   title: (): Platform.UIString.LocalizedString => ls`Changes`,
-  commandPrompt: 'Show Changes',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Changes`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {
     const Changes = await loadChangesModule();

@@ -93,6 +93,9 @@
   <message name="IDS_DEVTOOLS_960568e27eb66ea554c3be4cfbefe3d0" desc="Text in Rendering Options">
     Layer borders
   </message>
+  <message name="IDS_DEVTOOLS_9f703f62e9f4a65a9d118ddb2511f05c" desc="Command for showing the 'Rendering' tool">
+    Show Rendering
+  </message>
   <message name="IDS_DEVTOOLS_a15932c4dfbbcbc1ac6f5c27c6fa530f" desc="Text in Rendering Options">
     Highlights elements (teal) that can slow down scrolling, including touch &amp; wheel event handlers and other main-thread scrolling situations.
   </message>

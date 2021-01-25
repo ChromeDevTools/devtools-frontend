@@ -25,7 +25,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'accessibility.view',
   title: (): Platform.UIString.LocalizedString => ls`Accessibility`,
-  commandPrompt: 'Show Accessibility',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Accessibility`,
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {

@@ -25,7 +25,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'rendering',
   title: (): Platform.UIString.LocalizedString => ls`Rendering`,
-  commandPrompt: 'Show Rendering',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Rendering`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 50,
   async loadView() {

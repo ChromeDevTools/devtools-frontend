@@ -14,6 +14,10 @@ export const UIStrings = {
   *@description Title of the 'Protocol monitor' tool in the bottom drawer
   */
   protocolMonitor: 'Protocol monitor',
+  /**
+  *@description Command for showing the 'Protocol monitor' tool in the bottom drawer
+  */
+  showProtocolMonitor: 'Show Protocol monitor',
 };
 const str_ = i18n.i18n.registerUIStrings('protocol_monitor/protocol_monitor-meta.ts', UIStrings);
 const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -33,7 +37,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'protocol-monitor',
   title: i18nString(UIStrings.protocolMonitor),
-  commandPrompt: 'Show Protocol monitor',
+  commandPrompt: i18nString(UIStrings.showProtocolMonitor),
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {

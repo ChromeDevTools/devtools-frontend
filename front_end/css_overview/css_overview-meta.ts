@@ -14,6 +14,10 @@ export const UIStrings = {
   *@description Title of the CSS Overview Panel
   */
   cssOverview: 'CSS Overview',
+  /**
+  *@description Title of the CSS Overview Panel
+  */
+  showCssOverview: 'Show CSS Overview',
 };
 
 const str_ = i18n.i18n.registerUIStrings('css_overview/css_overview-meta.ts', UIStrings);
@@ -33,7 +37,7 @@ async function loadCSSOverviewModule(): Promise<typeof CSSOverview> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'cssoverview',
-  commandPrompt: 'Show CSS Overview',
+  commandPrompt: i18nString(UIStrings.showCssOverview),
   title: i18nString(UIStrings.cssOverview),
   order: 95,
   async loadView() {

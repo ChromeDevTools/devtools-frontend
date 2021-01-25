@@ -32,7 +32,7 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (loadedNetwork
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'network',
-  commandPrompt: 'Show Network',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Network`,
   title: (): Platform.UIString.LocalizedString => ls`Network`,
   order: 40,
   async loadView() {
@@ -44,7 +44,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'network.blocked-urls',
-  commandPrompt: 'Show Network request blocking',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Network request blocking`,
   title: (): Platform.UIString.LocalizedString => ls`Network request blocking`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 60,
@@ -57,7 +57,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'network.config',
-  commandPrompt: 'Show Network conditions',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Network conditions`,
   title: (): Platform.UIString.LocalizedString => ls`Network conditions`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 40,
@@ -77,7 +77,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NETWORK_SIDEBAR,
   id: 'network.search-network-tab',
-  commandPrompt: 'Show Search',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Search`,
   title: (): Platform.UIString.LocalizedString => ls`Search`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {

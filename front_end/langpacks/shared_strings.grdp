@@ -82,6 +82,9 @@
   <message name="IDS_DEVTOOLS_3793ea52a7be2d7deafd858fda50775c" desc="Text exposed to screen readers on checked items.">
     checked
   </message>
+  <message name="IDS_DEVTOOLS_3a5f3e3efbfecf638c713e6701349ae2" desc="Command for showing the 'Search' tool">
+    Show Search
+  </message>
   <message name="IDS_DEVTOOLS_3afbd9828e011526955ca93b48b57524" desc="Text for one or a group of screenshots">
     Screenshot
   </message>
@@ -92,6 +95,9 @@
     Frame
   </message>
 
+  <message name="IDS_DEVTOOLS_3f08ab5159cf45a5c7472053c971eb28" desc="Command for showing the 'Elements' tool">
+    Show Elements
+  </message>
   <message name="IDS_DEVTOOLS_4789f23283b3a61f858b641a1bef19a3" desc="Text for the memory of the page">
     Memory
   </message>

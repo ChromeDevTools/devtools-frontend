@@ -18,6 +18,10 @@ export const UIStrings = {
  *@description A tag of Node.js Connection Panel that can be searched in the command menu
  */
   node: 'node',
+  /**
+   *@description Command for showing the Connection tool
+   */
+  showConnection: 'Show Connection',
 };
 
 const str_ = i18n.i18n.registerUIStrings('node_main/node_main-meta.ts', UIStrings);
@@ -38,7 +42,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'node-connection',
   title: i18nString(UIStrings.connection),
-  commandPrompt: 'Show Connection',
+  commandPrompt: i18nString(UIStrings.showConnection),
   order: 0,
   async loadView() {
     const NodeMain = await loadNodeMainModule();

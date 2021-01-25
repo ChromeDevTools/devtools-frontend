@@ -12,6 +12,9 @@
   <message name="IDS_DEVTOOLS_01f0097c3b7f0774139005734eacbae4" desc="A context menu item in the Watch Expressions Sidebar Pane of the Sources panel">
     Add property path to watch
   </message>
+  <message name="IDS_DEVTOOLS_032db5cd0e888893ae621ff6c5fa1e1c" desc="Command for showing the 'Recordings' tool">
+    Show Recordings
+  </message>
   <message name="IDS_DEVTOOLS_035e70b676c1a7f341f758eb10a3bd1d" desc="A context menu item in the Debugger Plugin of the Sources panel">
     Add conditional breakpoint…
   </message>
@@ -114,6 +117,9 @@
   <message name="IDS_DEVTOOLS_2a7465e1c9bb68e86a204cab633b27fb" desc="A context menu item in the Console that stores selection as a temporary global variable">
     Store <ph name="REMOTEOBJECT_TYPE">$1s<ex>string</ex></ph> as global variable
   </message>
+  <message name="IDS_DEVTOOLS_2f3fc8df7b113c2466760acb5071151e" desc="Command for showing the 'Sources' tool">
+    Show Sources
+  </message>
   <message name="IDS_DEVTOOLS_30af0d86fe286708503f94e65c4da3f6" desc="Text in Debugger Paused Message of the Sources panel">
     Paused on breakpoint
   </message>
@@ -167,6 +173,9 @@
   </message>
   <message name="IDS_DEVTOOLS_434a4d8ac15ff124add730be03574f41" desc="Text in Java Script Breakpoints Sidebar Pane of the Sources panel">
     Enable all breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_44c9b925953e6fde7bfc62daf611c038" desc="Command for showing the 'Scope' tool">
+    Show Scope
   </message>
   <message name="IDS_DEVTOOLS_4541d5953fd7db4d62ef89e9717f845a" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Disable autocompletion
@@ -261,11 +270,17 @@
   <message name="IDS_DEVTOOLS_6700b68e0b1cd0ed13778682cc1b376d" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Enable code folding
   </message>
+  <message name="IDS_DEVTOOLS_67c6dd34953aa3f460f3dfa3bd4cd7fe" desc="Command for showing the 'Threads' tool">
+    Show Threads
+  </message>
   <message name="IDS_DEVTOOLS_681e10aecbafd7dd385fa51798ca0fd6" desc="A context menu item in the Navigator View of the Sources panel">
     New file
   </message>
   <message name="IDS_DEVTOOLS_686182a69271ee4d9caa32b17ad56e9f" desc="Title of a setting under the Sources category in Settings">
     Show whitespace characters:
+  </message>
+  <message name="IDS_DEVTOOLS_68b107c3d93f52d9c24fd0195cfda56f" desc="Command for showing the 'Breakpoints' tool">
+    Show Breakpoints
   </message>
   <message name="IDS_DEVTOOLS_68b3c10a88384bc903eb0bcb08f5e17c" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Disable JavaScript source maps
@@ -375,6 +390,9 @@
   <message name="IDS_DEVTOOLS_89345110b204ed302eddff2ddbd0f4d9" desc="Text in the Shortcuts page to explain a keyboard shortcut (enable toggle breakpoint shortcut in debugger)">
     Toggle breakpoint enabled
   </message>
+  <message name="IDS_DEVTOOLS_8a6ba1209747e84442fc26c1ab33d185" desc="Command for showing the 'Quick source' tool">
+    Show Quick source
+  </message>
   <message name="IDS_DEVTOOLS_904a8304056d77e4547744781b7ceb50" desc="Title of a sources panel action that renames a file">
     Rename
   </message>
@@ -383,6 +401,9 @@
   </message>
   <message name="IDS_DEVTOOLS_923dab99a01b578dbf1ec09277a0ed2e" desc="A context menu item in the Navigator View of the Sources panel">
     Rename…
+  </message>
+  <message name="IDS_DEVTOOLS_92fe45684fd55b27a208e5354827e6d3" desc="Command for showing the 'Filesystem' tool">
+    Show Filesystem
   </message>
   <message name="IDS_DEVTOOLS_945efe35b9e3950bd1a796a9310736a6" desc="Text in Go To Line Quick Open of the Sources panel">
     Go to line <ph name="POSITION_LINE">$1s<ex>2</ex></ph> and column <ph name="POSITION_COLUMN">$2s<ex>2</ex></ph>.
@@ -401,6 +422,9 @@
   </message>
   <message name="IDS_DEVTOOLS_985edc3140c77213ce3e2f9877288ecb" desc="Text in Java Script Breakpoints Sidebar Pane of the Sources panel">
     Enable breakpoints in file
+  </message>
+  <message name="IDS_DEVTOOLS_9981cc5d62d0d889f638d62ce0678623" desc="Command for showing the 'Snippets' tool">
+    Show Snippets
   </message>
   <message name="IDS_DEVTOOLS_9a2f15bd263b082aefaada87510f972f" desc="A context menu item in the Console, Sources, and Network panel">
     Copy <ph name="REMOTEOBJECT_TYPE">$1s<ex>string</ex></ph>
@@ -539,6 +563,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d48a0b796559f82f7dad6167c77ae40c" desc="Text for scripts that should not be stepped into when debugging">
     Add script to ignore list
+  </message>
+  <message name="IDS_DEVTOOLS_d73bf4cc90c1cf3da05515764aa97722" desc="Command for showing the 'Watch' tool">
+    Show Watch
   </message>
   <message name="IDS_DEVTOOLS_dbd92f0d69c038a1dba721deba3b7d90" desc="Label for the button to add a new recording">
     Add recording

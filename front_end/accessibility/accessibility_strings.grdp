@@ -57,6 +57,9 @@
   <message name="IDS_DEVTOOLS_1e3c246d40f5f65d98e6865f989207bb" desc="Tooltip text that appears when hovering over the 'Live region' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Whether and what priority of live updates may be expected for this element.
   </message>
+  <message name="IDS_DEVTOOLS_22311a7177ed0a566acfeba7863004a1" desc="Command for showing the 'Accessibility' tool">
+    Show Accessibility
+  </message>
   <message name="IDS_DEVTOOLS_24b44c7e76bab574ef8f632e607200c6" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     From attribute
   </message>

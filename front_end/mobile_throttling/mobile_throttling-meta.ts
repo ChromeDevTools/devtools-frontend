@@ -14,6 +14,10 @@ export const UIStrings = {
   *@description Text for throttling the network
   */
   throttling: 'Throttling',
+  /**
+  *@description Command for showing the Mobile Throttling tool.
+  */
+  showThrottling: 'Show Throttling',
 };
 const str_ = i18n.i18n.registerUIStrings('mobile_throttling/mobile_throttling-meta.ts', UIStrings);
 const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -33,7 +37,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
   id: 'throttling-conditions',
   title: i18nString(UIStrings.throttling),
-  commandPrompt: 'Show Throttling',
+  commandPrompt: i18nString(UIStrings.showThrottling),
   order: 35,
   async loadView() {
     const MobileThrottling = await loadMobileThrottlingModule();

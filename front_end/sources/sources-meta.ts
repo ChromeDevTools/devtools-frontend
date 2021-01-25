@@ -24,7 +24,7 @@ async function loadSourcesModule(): Promise<typeof Sources> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'sources',
-  commandPrompt: 'Show Sources',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Sources`,
   title: (): Platform.UIString.LocalizedString => ls`Sources`,
   order: 30,
   async loadView() {
@@ -36,7 +36,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-files',
-  commandPrompt: 'Show Filesystem',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Filesystem`,
   title: (): Platform.UIString.LocalizedString => ls`Filesystem`,
   order: 3,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -49,7 +49,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-snippets',
-  commandPrompt: 'Show Snippets',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Snippets`,
   title: (): Platform.UIString.LocalizedString => ls`Snippets`,
   order: 6,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -62,7 +62,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'sources.search-sources-tab',
-  commandPrompt: 'Show Search',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Search`,
   title: (): Platform.UIString.LocalizedString => ls`Search`,
   order: 7,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
@@ -75,7 +75,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-recordings',
-  commandPrompt: 'Show Recordings',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Recordings`,
   title: (): Platform.UIString.LocalizedString => ls`Recordings`,
   order: 8,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
@@ -89,7 +89,7 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'sources.quick',
-  commandPrompt: 'Show Quick source',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Quick source`,
   title: (): Platform.UIString.LocalizedString => ls`Quick source`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 1000,
@@ -101,7 +101,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   id: 'sources.threads',
-  commandPrompt: 'Show Threads',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Threads`,
   title: (): Platform.UIString.LocalizedString => ls`Threads`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   condition: '!sources.hide_thread_sidebar',
@@ -113,7 +113,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   id: 'sources.scopeChain',
-  commandPrompt: 'Show Scope',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Scope`,
   title: (): Platform.UIString.LocalizedString => ls`Scope`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
@@ -124,7 +124,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   id: 'sources.watch',
-  commandPrompt: 'Show Watch',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Watch`,
   title: (): Platform.UIString.LocalizedString => ls`Watch`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
@@ -136,7 +136,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ViewManager.registerViewExtension({
   id: 'sources.jsBreakpoints',
-  commandPrompt: 'Show Breakpoints',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Breakpoints`,
   title: (): Platform.UIString.LocalizedString => ls`Breakpoints`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {

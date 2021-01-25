@@ -14,6 +14,10 @@ export const UIStrings = {
   *@description Text of a DOM element in Workspace Settings Tab of the Workspace settings in Settings
   */
   workspace: 'Workspace',
+  /**
+  *@description Command for showing the Workspace tool in Settings
+  */
+  showWorkspace: 'Show Workspace',
 };
 const str_ = i18n.i18n.registerUIStrings('persistence/persistence-meta.ts', UIStrings);
 const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -33,7 +37,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
   id: 'workspace',
   title: i18nString(UIStrings.workspace),
-  commandPrompt: 'Show Workspace',
+  commandPrompt: i18nString(UIStrings.showWorkspace),
   order: 1,
   async loadView() {
     const Persistence = await loadPersistenceModule();

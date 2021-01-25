@@ -25,7 +25,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'console',
   title: (): Platform.UIString.LocalizedString => ls`Console`,
-  commandPrompt: 'Show Console',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Console`,
   order: 20,
   async loadView() {
     const Console = await loadConsoleModule();
@@ -37,7 +37,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'console-view',
   title: (): Platform.UIString.LocalizedString => ls`Console`,
-  commandPrompt: 'Show Console',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Console`,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   order: 0,
   async loadView() {

@@ -586,6 +586,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_7b8c1a72c279c468ba1729548e05181c" desc="Screen reader label for the Timeline History dropdown button">
     Current Session: <ph name="THIS__TITLE_PERFORMANCEMODEL_">$1s<ex>example.com #3</ex></ph>. <ph name="THIS__BUTTON_GETTITLE__">$2s<ex>Show recent timeline sessions</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_7c0730c0212972bcf1d2f094a0c6e278" desc="Command for showing the 'Performance' tool">
+    Show Performance
+  </message>
   <message name="IDS_DEVTOOLS_7c880e07f865ea4661fc6317f9b9de60" desc="Title of an action that opens the previous recording in the performance panel">
     Previous recording
   </message>
@@ -719,6 +722,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_97c091732895087b8900d81105e54446" desc="Text in Timeline UIUtils of the Performance panel">
     Frame Start (main thread)
+  </message>
+  <message name="IDS_DEVTOOLS_98c73d6c3224147daa72bc8489788a4f" desc="Command for showing the 'JavaScript Profiler' tool">
+    Show JavaScript Profiler
   </message>
   <message name="IDS_DEVTOOLS_997a8c473db4f81c5fb3d5900030d44d" desc="Text that shows there is no recording">
     (no recordings)

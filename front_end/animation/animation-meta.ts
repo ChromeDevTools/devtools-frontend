@@ -25,7 +25,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'animations',
   title: (): Platform.UIString.LocalizedString => ls`Animations`,
-  commandPrompt: 'Show Animations',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Animations`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 0,
   async loadView() {

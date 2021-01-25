@@ -18,6 +18,10 @@ export const UIStrings = {
     *@description The type of media. Lower case.
     */
   video: 'video',
+  /**
+    *@description Command for showing the media tool.
+    */
+  showMedia: 'Show Media',
 };
 const str_ = i18n.i18n.registerUIStrings('media/media-meta.ts', UIStrings);
 const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -37,7 +41,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'medias',
   title: i18nString(UIStrings.media),
-  commandPrompt: 'Show Media',
+  commandPrompt: i18nString(UIStrings.showMedia),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 100,
   async loadView() {

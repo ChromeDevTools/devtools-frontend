@@ -25,7 +25,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'Inputs',
   title: (): Platform.UIString.LocalizedString => ls`Inputs`,
-  commandPrompt: 'Show Inputs',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Inputs`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 7,
   async loadView() {

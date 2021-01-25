@@ -309,6 +309,9 @@
   <message name="IDS_DEVTOOLS_4dec8df20c6bc162fd77420b6f17edc5" desc="Aria accessible name in Network Log View of the Network panel">
     Resource types to include
   </message>
+  <message name="IDS_DEVTOOLS_4e3191af3a0f7e5277ce861a537b744a" desc="Command for showing the 'Network' tool">
+    Show Network
+  </message>
   <message name="IDS_DEVTOOLS_4e88c13fb97f356a81c48bf2644bef51" desc="Text in Request Timing View of the Network panel">
     Connection Start
   </message>
@@ -380,6 +383,9 @@
   </message>
   <message name="IDS_DEVTOOLS_5e2f683aacb9d5f3635b3f88583dec80" desc="Text in Network Config View of the Network panel">
     Custom...
+  </message>
+  <message name="IDS_DEVTOOLS_5e33c800c0b741b25427f8d425f701a4" desc="Command for showing the 'Network conditions' tool">
+    Show Network conditions
   </message>
   <message name="IDS_DEVTOOLS_5eaea9a02277cdf6078b3885fecc4abe" desc="An option in the user agent dropdown menu in the Network conditions tool">
     Safari — iPhone iOS 13.2
@@ -506,6 +512,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a6ab3a18d43f3c5d2590fb86e9659c38" desc="Column header in the Network log view of the Network panel">
     Initiator Address Space
+  </message>
+  <message name="IDS_DEVTOOLS_a8b6bc068408dfae0f24cda0642b7bbb" desc="Command for showing the 'Network request blocking' tool">
+    Show Network request blocking
   </message>
   <message name="IDS_DEVTOOLS_b2844b8e17ecaaeae68d018fe9418af0" desc="Text to indicate the expiry date">
     Valid until

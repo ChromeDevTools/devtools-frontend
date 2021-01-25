@@ -25,7 +25,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'coverage',
   title: (): Platform.UIString.LocalizedString => ls`Coverage`,
-  commandPrompt: 'Show Coverage',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Coverage`,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 100,
   async loadView() {

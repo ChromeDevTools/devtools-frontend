@@ -25,7 +25,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'resources',
   title: (): Platform.UIString.LocalizedString => ls`Application`,
-  commandPrompt: 'Show Application',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Application`,
   order: 70,
   async loadView() {
     const Resources = await loadResourcesModule();

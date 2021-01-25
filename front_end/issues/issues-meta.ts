@@ -25,7 +25,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'issues-pane',
   title: (): Platform.UIString.LocalizedString => ls`Issues`,
-  commandPrompt: 'Show Issues',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Issues`,
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {
@@ -38,7 +38,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'csp-violations-pane',
   title: (): Platform.UIString.LocalizedString => ls`CSP Violations`,
-  commandPrompt: 'Show CSP Violations',
+  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show CSP Violations`,
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {

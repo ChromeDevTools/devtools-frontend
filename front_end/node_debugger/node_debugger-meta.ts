@@ -14,6 +14,10 @@ export const UIStrings = {
     *@description Title of the 'Node' tool in the Network Navigator View, which is part of the Sources tool
     */
   node: 'Node',
+  /**
+   *@description Command for showing the 'Node' tool in the Network Navigator View, which is part of the Sources tool
+   */
+  showNode: 'Node',
 };
 
 const str_ = i18n.i18n.registerUIStrings('node_debugger/node_debugger-meta.ts', UIStrings);
@@ -34,7 +38,7 @@ UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-network',
   title: i18nString(UIStrings.node),
-  commandPrompt: 'Show Node',
+  commandPrompt: i18nString(UIStrings.showNode),
   order: 2,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {

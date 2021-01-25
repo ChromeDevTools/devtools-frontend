@@ -78,6 +78,9 @@
   <message name="IDS_DEVTOOLS_7cc843457525ef424db9f857de4939a2" desc="Title of an option in Sensors tab idle emulation select">
     User active, screen locked
   </message>
+  <message name="IDS_DEVTOOLS_7f43b617cd76ddbbe953426f4f9634db" desc="Command for showing the 'Locations' tool">
+    Show Locations
+  </message>
   <message name="IDS_DEVTOOLS_89999eac57e5838aa3adb04ad831f5d3" desc="Text in Sensors View of the Device Toolbar">
     Custom orientation
   </message>
@@ -321,6 +324,9 @@
   <message name="IDS_DEVTOOLS_ba4ff28193ef85288d9658df2a6f6138" desc="Error message in the Device settings pane that shows that the entered brands list has wrong syntax">
     Brands list is not a valid structured fields list.
   </message>
+  <message name="IDS_DEVTOOLS_bcdc793ba9db0fb4cb3e6f9a2b706a14" desc="Command for showing the 'Sensors' tool">
+    Show Sensors
+  </message>
   <message name="IDS_DEVTOOLS_c15b53cb50624f0e86e1a9ef5a9dd120" desc="Title of the span/un-span button">
     Toggle dual-screen mode
   </message>
@@ -332,6 +338,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e80db117a6c2bad899068992535b3436" desc="Field in Devices pane letting customize which operating system version the edited device presents via User Agent Client Hints">
     Platform version
+  </message>
+  <message name="IDS_DEVTOOLS_eba743b98ec6a08b71ed80486f5cde13" desc="Command for showing the 'Devices' tool">
+    Show Devices
   </message>
   <message name="IDS_DEVTOOLS_eebd338ddbd547e41e4a1296de82963a" desc="Title of Locations settings">
     Locations

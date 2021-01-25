@@ -6,6 +6,9 @@
   <message name="IDS_DEVTOOLS_16ded2dc32322d80ce2362a47f4d7ef4" desc="Tooltip text that appears when hovering over the page back icon in the Linear Memory Navigator">
     Previous page
   </message>
+  <message name="IDS_DEVTOOLS_223707971a1b582e15c9ad6dde68687d" desc="Command for showing the 'Memory Inspector' tool">
+    Show Memory Inspector
+  </message>
   <message name="IDS_DEVTOOLS_374bea6cf8bd1e8fd64570b629cc6562" desc="Tooltip text that appears when hovering over the next page icon in the Linear Memory Navigator">
     Next page
   </message>

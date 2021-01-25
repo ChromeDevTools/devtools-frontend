@@ -114,6 +114,9 @@
   <message name="IDS_DEVTOOLS_b404999a151ab49a38d35be7e094e7e7" desc="Title for a checkbox which toggles grouping by category in the issues tab">
     Group displayed issues under associated categories
   </message>
+  <message name="IDS_DEVTOOLS_b644deb404aa2228860444d0bd2605e7" desc="Command for showing the 'CSP Violations' tool">
+    Show CSP Violations
+  </message>
   <message name="IDS_DEVTOOLS_ba514415c6a7f5b7aa2b54d0914a122d" desc="Title for a column in an Heavy Ads issue view">
     Resolution Status
   </message>
@@ -140,6 +143,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e1317e393c4c13c1bba0195dd20eceb8" desc="Singular label for number of affected directive resource indication in issue view">
     directive
+  </message>
+  <message name="IDS_DEVTOOLS_e21335099ca6f3a347cc7b0237cccca7" desc="Command for showing the 'Issues' tool">
+    Show Issues
   </message>
   <message name="IDS_DEVTOOLS_ee02b74d0caebce3dabaf3b3e79b6a65" desc="The UI destination when right clicking an item that can be revealed">
     Issues view

@@ -36,6 +36,7 @@
     "SourceFrameIssuesManager.js"
   ],
   "dependencies": [
+    "i18n",
     "common",
     "sdk"
   ],

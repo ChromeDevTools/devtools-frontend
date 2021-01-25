@@ -14,7 +14,6 @@
       <part file="../accessibility/accessibility_strings.grdp" />
       <part file="../bindings/bindings_strings.grdp" />
       <part file="../browser_debugger/browser_debugger_strings.grdp" />
-      <part file="../browser_sdk/browser_sdk_strings.grdp" />
       <part file="../common/common_strings.grdp" />
       <part file="../console/console_strings.grdp" />
       <part file="../console_counters/console_counters_strings.grdp" />

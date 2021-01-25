@@ -435,6 +435,9 @@
   <message name="IDS_DEVTOOLS_6e458346abf37cc727a811ea1d71034a" desc="Data grid name for Event Source data grids">
     Event Source
   </message>
+  <message name="IDS_DEVTOOLS_6e68a529a38966508d348e9f65d7ea31" desc="Title of an action in the network tool to toggle recording">
+    Record network log
+  </message>
   <message name="IDS_DEVTOOLS_71f5989793ddede100da3fde07d1f9f9" desc="An option in the user agent dropdown menu in the Network conditions tool">
     <ph name="LOCKED_1">Opera Mini — iOS</ph>
   </message>

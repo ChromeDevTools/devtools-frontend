@@ -50,6 +50,30 @@
   "animation/AnimationUI.ts | sSlider": {
     "message": "{PH1} slider"
   },
+  "browser_sdk/ModuleUIStrings.js | clear": {
+    "message": "clear"
+  },
+  "browser_sdk/ModuleUIStrings.js | doNotPreserveLogOnPageReload": {
+    "message": "Do not preserve log on page reload / navigation"
+  },
+  "browser_sdk/ModuleUIStrings.js | network": {
+    "message": "Network"
+  },
+  "browser_sdk/ModuleUIStrings.js | preserve": {
+    "message": "preserve"
+  },
+  "browser_sdk/ModuleUIStrings.js | preserveLog": {
+    "message": "Preserve log"
+  },
+  "browser_sdk/ModuleUIStrings.js | preserveLogOnPageReload": {
+    "message": "Preserve log on page reload / navigation"
+  },
+  "browser_sdk/ModuleUIStrings.js | recordNetworkLog": {
+    "message": "Record network log"
+  },
+  "browser_sdk/ModuleUIStrings.js | reset": {
+    "message": "reset"
+  },
   "changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (from source map)"
   },

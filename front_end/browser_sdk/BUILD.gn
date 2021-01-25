@@ -10,6 +10,7 @@ devtools_module("browser_sdk") {
     "IssuesManager.js",
     "LogManager.js",
     "MarkdownHelpers.ts",
+    "ModuleUIStrings.js",
     "RelatedIssue.js",
     "SourceFrameIssuesManager.ts",
   ]
@@ -17,6 +18,7 @@ devtools_module("browser_sdk") {
   deps = [
     "../bindings:bundle",
     "../common:bundle",
+    "../i18n:bundle",
     "../sdk:bundle",
     "../third_party/marked:bundle",
     "../workspace:bundle",

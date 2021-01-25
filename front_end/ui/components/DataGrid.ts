@@ -192,13 +192,11 @@ export class DataGrid extends HTMLElement {
       return;
     }
 
-    // Scroll to the bottom, but pick the last visible row, not the last entry
-    // of this.rows, which might be hidden.
-    const lastVisibleRow = this.shadow.querySelector('tbody tr:not(.hidden):last-child');
-    if (lastVisibleRow) {
+    const wrapper = this.shadow.querySelector('.wrapping-container');
+    if (wrapper) {
       cancelAnimationFrame(this.pendingScroll);
       this.pendingScroll = requestAnimationFrame(() => {
-        lastVisibleRow.scrollIntoView();
+        wrapper.scrollTo(0, wrapper.scrollHeight);
       });
     }
   }

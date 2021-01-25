@@ -936,6 +936,31 @@ declare namespace Protocol {
       isWarning: boolean;
     }
 
+    export enum TwaQualityEnforcementViolationType {
+      KHttpError = 'kHttpError',
+      KUnavailableOffline = 'kUnavailableOffline',
+      KDigitalAssetLinks = 'kDigitalAssetLinks',
+    }
+
+    export interface TrustedWebActivityIssueDetails {
+      /**
+       * The url that triggers the violation.
+       */
+      url: string;
+      violationType: TwaQualityEnforcementViolationType;
+      httpStatusCode?: integer;
+      /**
+       * The package name of the Trusted Web Activity client app. This field is
+       * only used when violation type is kDigitalAssetLinks.
+       */
+      packageName?: string;
+      /**
+       * The signature of the Trusted Web Activity client app. This field is only
+       * used when violation type is kDigitalAssetLinks.
+       */
+      signature?: string;
+    }
+
     /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
@@ -948,6 +973,7 @@ declare namespace Protocol {
       HeavyAdIssue = 'HeavyAdIssue',
       ContentSecurityPolicyIssue = 'ContentSecurityPolicyIssue',
       SharedArrayBufferTransferIssue = 'SharedArrayBufferTransferIssue',
+      TrustedWebActivityIssue = 'TrustedWebActivityIssue',
     }
 
     /**
@@ -962,6 +988,7 @@ declare namespace Protocol {
       heavyAdIssueDetails?: HeavyAdIssueDetails;
       contentSecurityPolicyIssueDetails?: ContentSecurityPolicyIssueDetails;
       sharedArrayBufferTransferIssueDetails?: SharedArrayBufferTransferIssueDetails;
+      twaQualityEnforcementDetails?: TrustedWebActivityIssueDetails;
     }
 
     /**

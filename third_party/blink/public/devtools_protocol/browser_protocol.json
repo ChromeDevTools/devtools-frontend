@@ -1357,6 +1357,47 @@
                     ]
                 },
                 {
+                    "id": "TwaQualityEnforcementViolationType",
+                    "type": "string",
+                    "enum": [
+                        "kHttpError",
+                        "kUnavailableOffline",
+                        "kDigitalAssetLinks"
+                    ]
+                },
+                {
+                    "id": "TrustedWebActivityIssueDetails",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "url",
+                            "description": "The url that triggers the violation.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "violationType",
+                            "$ref": "TwaQualityEnforcementViolationType"
+                        },
+                        {
+                            "name": "httpStatusCode",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "packageName",
+                            "description": "The package name of the Trusted Web Activity client app. This field is\nonly used when violation type is kDigitalAssetLinks.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "signature",
+                            "description": "The signature of the Trusted Web Activity client app. This field is only\nused when violation type is kDigitalAssetLinks.",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
@@ -1366,7 +1407,8 @@
                         "BlockedByResponseIssue",
                         "HeavyAdIssue",
                         "ContentSecurityPolicyIssue",
-                        "SharedArrayBufferTransferIssue"
+                        "SharedArrayBufferTransferIssue",
+                        "TrustedWebActivityIssue"
                     ]
                 },
                 {
@@ -1403,6 +1445,11 @@
                             "name": "sharedArrayBufferTransferIssueDetails",
                             "optional": true,
                             "$ref": "SharedArrayBufferTransferIssueDetails"
+                        },
+                        {
+                            "name": "twaQualityEnforcementDetails",
+                            "optional": true,
+                            "$ref": "TrustedWebActivityIssueDetails"
                         }
                     ]
                 },

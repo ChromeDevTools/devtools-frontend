@@ -332,7 +332,7 @@ export class TextSourceMap {
    */
   sourceLineMapping(sourceURL, lineNumber, columnNumber) {
     const mappings = this._reversedMappings(sourceURL);
-    const first = mappings.lowerBound(lineNumber, lineComparator);
+    const first = Platform.ArrayUtilities.lowerBound(mappings, lineNumber, lineComparator);
     const last = Platform.ArrayUtilities.upperBound(mappings, lineNumber, lineComparator);
     if (first >= mappings.length || mappings[first].sourceLineNumber !== lineNumber) {
       return null;
@@ -341,8 +341,8 @@ export class TextSourceMap {
     if (!columnMappings.length) {
       return null;
     }
-    const index =
-        columnMappings.lowerBound(columnNumber, (columnNumber, mapping) => columnNumber - mapping.sourceColumnNumber);
+    const index = Platform.ArrayUtilities.lowerBound(
+        columnMappings, columnNumber, (columnNumber, mapping) => columnNumber - mapping.sourceColumnNumber);
     return index >= columnMappings.length ? columnMappings[columnMappings.length - 1] : columnMappings[index];
 
     /**
@@ -581,8 +581,8 @@ export class TextSourceMap {
     if (!mappings.length) {
       return null;
     }
-    const startIndex =
-        mappings.lowerBound({lineNumber: textRange.startLine, columnNumber: textRange.startColumn}, comparator);
+    const startIndex = Platform.ArrayUtilities.lowerBound(
+        mappings, {lineNumber: textRange.startLine, columnNumber: textRange.startColumn}, comparator);
     const endIndex = Platform.ArrayUtilities.upperBound(
         mappings, {lineNumber: textRange.endLine, columnNumber: textRange.endColumn}, comparator);
 

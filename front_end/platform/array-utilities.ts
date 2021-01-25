@@ -70,7 +70,7 @@ export function sortRange(
   return array;
 }
 export const binaryIndexOf = <T, S>(array: T[], value: S, comparator: (a: S, b: T) => number): number => {
-  const index = array.lowerBound(value, comparator);
+  const index = lowerBound(array, value, comparator);
   return index < array.length && comparator(value, array[index]) === 0 ? index : -1;
 };
 
@@ -114,6 +114,34 @@ export const mergeOrdered = <T>(array1: T[], array2: T[], comparator: (a: T, b: 
 export const DEFAULT_COMPARATOR = (a: string|number, b: string|number): number => {
   return a < b ? -1 : (a > b ? 1 : 0);
 };
+
+/**
+ * Return index of the leftmost element that is equal or greater
+ * than the specimen object. If there's no such element (i.e. all
+ * elements are smaller than the specimen) returns right bound.
+ * The function works for sorted array.
+ * When specified, |left| (inclusive) and |right| (exclusive) indices
+ * define the search window.
+ */
+export function lowerBound<T>(
+    array: Uint32Array|Int32Array, needle: T, comparator: (needle: T, b: number) => number, left?: number,
+    right?: number): number;
+export function lowerBound<S, T>(
+    array: S[], needle: T, comparator: (needle: T, b: S) => number, left?: number, right?: number): number;
+export function lowerBound<S, T, A extends S[]>(
+    array: A, needle: T, comparator: (needle: T, b: S) => number, left?: number, right?: number): number {
+  let l = left || 0;
+  let r = right !== undefined ? right : array.length;
+  while (l < r) {
+    const m = (l + r) >> 1;
+    if (comparator(needle, array[m]) > 0) {
+      l = m + 1;
+    } else {
+      r = m;
+    }
+  }
+  return r;
+}
 
 /**
  * Return index of the leftmost element that is greater

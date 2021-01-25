@@ -10,7 +10,6 @@ ts_library("platform") {
     "SetUtilities_test.ts",
     "StringUtilities_test.ts",
     "UIString_test.ts",
-    "Utilities_test.ts",
   ]
 
   deps = [ "../../../../front_end/platform:bundle" ]

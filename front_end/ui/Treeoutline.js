@@ -31,6 +31,7 @@
  */
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Icon} from './Icon.js';                            // eslint-disable-line no-unused-vars
@@ -638,9 +639,9 @@ export class TreeElement {
 
     let insertionIndex;
     if (comparator) {
-      insertionIndex = this._children.lowerBound(child, comparator);
+      insertionIndex = Platform.ArrayUtilities.lowerBound(this._children, child, comparator);
     } else if (this.treeOutline && this.treeOutline._comparator) {
-      insertionIndex = this._children.lowerBound(child, this.treeOutline._comparator);
+      insertionIndex = Platform.ArrayUtilities.lowerBound(this._children, child, this.treeOutline._comparator);
     } else {
       insertionIndex = this._children.length;
     }

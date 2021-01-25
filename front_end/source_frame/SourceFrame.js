@@ -737,8 +737,8 @@ export class SourceFrameImpl extends UI.View.SimpleView {
    * @return {number}
    */
   _searchResultIndexForCurrentSelection() {
-    return this._searchResults.lowerBound(
-        this._textEditor.selection().collapseToEnd(), TextUtils.TextRange.TextRange.comparator);
+    return Platform.ArrayUtilities.lowerBound(
+        this._searchResults, this._textEditor.selection().collapseToEnd(), TextUtils.TextRange.TextRange.comparator);
   }
 
   /**
@@ -842,7 +842,8 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     }
 
     // Calculate the position of the end of the last range to be edited.
-    const currentRangeIndex = ranges.lowerBound(this._textEditor.selection(), TextUtils.TextRange.TextRange.comparator);
+    const currentRangeIndex = Platform.ArrayUtilities.lowerBound(
+        ranges, this._textEditor.selection(), TextUtils.TextRange.TextRange.comparator);
     const lastRangeIndex = Platform.NumberUtilities.mod(currentRangeIndex - 1, ranges.length);
     const lastRange = ranges[lastRangeIndex];
     const replacementLineEndings = Platform.StringUtilities.findLineEndingIndexes(replacement);

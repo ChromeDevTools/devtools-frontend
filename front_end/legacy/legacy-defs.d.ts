@@ -13,10 +13,6 @@ declare class DOM {
   constructor(doc: Document);
 }
 
-interface Array<T> {
-  lowerBound<S>(object: S, comparator?: {(a: S, b: T): number}, left?: number, right?: number): number;
-}
-
 interface RegExp {
   __fromRegExpQuery: boolean;
 }
@@ -26,10 +22,6 @@ interface NumberConstructor {
   secondsToString(seconds: number, higherResolution?: boolean): string;
   millisToString(ms: number, higherResolution?: boolean): string;
   preciseMillisToString(ms: number, precision?: number): string;
-}
-
-interface Int32Array {
-  lowerBound(object: number, comparator?: {(a: number, b: number): number}, left?: number, right?: number): number;
 }
 
 declare class AnchorBox {

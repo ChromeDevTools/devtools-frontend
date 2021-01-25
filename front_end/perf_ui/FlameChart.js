@@ -1146,7 +1146,8 @@ export class FlameChart extends UI.Widget.VBox {
       throw new Error('No timeline markers');
     }
 
-    return timelineData.markers.lowerBound(time, (markerTimestamp, marker) => markerTimestamp - marker.startTime());
+    return Platform.ArrayUtilities.lowerBound(
+        timelineData.markers, time, (markerTimestamp, marker) => markerTimestamp - marker.startTime());
   }
 
   _draw() {
@@ -1220,9 +1221,9 @@ export class FlameChart extends UI.Widget.VBox {
       // Entries are ordered by start time within a level, so find the last visible entry.
       /** @type {!Array.<number>} */
       const levelIndexes = this._timelineLevels[level];
-      const rightIndexOnLevel =
-          levelIndexes.lowerBound(
-              this._chartViewport.windowRightTime(), (time, entryIndex) => time - entryStartTimes[entryIndex]) -
+      const rightIndexOnLevel = Platform.ArrayUtilities.lowerBound(
+                                    levelIndexes, this._chartViewport.windowRightTime(),
+                                    (time, entryIndex) => time - entryStartTimes[entryIndex]) -
           1;
       let lastDrawOffset = Infinity;
       for (let entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
@@ -1930,7 +1931,9 @@ export class FlameChart extends UI.Widget.VBox {
       /** @type {!Array.<number>} */
       const levelIndexes = this._timelineLevels ? this._timelineLevels[level] : [];
       const rightIndexOnLevel =
-          levelIndexes.lowerBound(timeWindowRight, (time, entryIndex) => time - entryStartTimes[entryIndex]) - 1;
+          Platform.ArrayUtilities.lowerBound(
+              levelIndexes, timeWindowRight, (time, entryIndex) => time - entryStartTimes[entryIndex]) -
+          1;
       let lastDrawOffset = Infinity;
 
       for (let entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
@@ -2006,7 +2009,8 @@ export class FlameChart extends UI.Widget.VBox {
       return;
     }
 
-    const endIndex = td.flowStartTimes.lowerBound(this._chartViewport.windowRightTime());
+    const endIndex = Platform.ArrayUtilities.lowerBound(
+        td.flowStartTimes, this._chartViewport.windowRightTime(), Platform.ArrayUtilities.DEFAULT_COMPARATOR);
 
     context.lineWidth = 0.5;
     for (let i = 0; i < endIndex; ++i) {

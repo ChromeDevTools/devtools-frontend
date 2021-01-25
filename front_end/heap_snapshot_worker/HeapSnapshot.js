@@ -2480,7 +2480,8 @@ export class HeapSnapshot {
       if (nodeId % 2 === 0) {
         continue;
       }
-      const rangeIndex = lastAssignedIds.lowerBound(nodeId);
+      const rangeIndex =
+          Platform.ArrayUtilities.lowerBound(lastAssignedIds, nodeId, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
       if (rangeIndex === sampleCount) {
         // TODO: make heap profiler not allocate while taking snapshot
         continue;

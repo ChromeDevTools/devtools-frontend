@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 
 import {ProfileNode, ProfileTreeModel} from './ProfileTreeModel.js';
@@ -394,7 +395,8 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     const idToNode = this._idToNode;
     const gcNode = this.gcNode;
     const samplesCount = samples.length;
-    const startIndex = timestamps.lowerBound(startTime);
+    const startIndex =
+        Platform.ArrayUtilities.lowerBound(timestamps, startTime, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
     let stackTop = 0;
     const stackNodes = [];
     let prevId = this.profileHead.id;

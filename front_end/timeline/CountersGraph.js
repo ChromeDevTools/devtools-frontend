@@ -362,7 +362,9 @@ export class Counter {
         this.times.length - 1);
 
     // Minimum index of element whose time >= end.
-    this._maximumIndex = Platform.NumberUtilities.clamp(this.times.lowerBound(end), 0, this.times.length - 1);
+    this._maximumIndex = Platform.NumberUtilities.clamp(
+        Platform.ArrayUtilities.lowerBound(this.times, end, Platform.ArrayUtilities.DEFAULT_COMPARATOR), 0,
+        this.times.length - 1);
 
     // Current window bounds.
     this._minTime = start;

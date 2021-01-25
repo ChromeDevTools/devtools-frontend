@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
+
 export class TextCursor {
   /**
    * @param {!Array<number>} lineEndings
@@ -36,7 +38,8 @@ export class TextCursor {
    */
   resetTo(offset) {
     this._offset = offset;
-    this._lineNumber = this._lineEndings.lowerBound(offset);
+    this._lineNumber =
+        Platform.ArrayUtilities.lowerBound(this._lineEndings, offset, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
     this._columnNumber = this._lineNumber ? this._offset - this._lineEndings[this._lineNumber - 1] - 1 : this._offset;
   }
 

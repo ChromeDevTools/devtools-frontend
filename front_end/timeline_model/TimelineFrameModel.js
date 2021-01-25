@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {RecordType, TimelineData} from './TimelineModel.js';
@@ -74,8 +75,10 @@ export class TimelineFrameModel {
     if (!startTime && !endTime) {
       return this._frames;
     }
-    const firstFrame = this._frames.lowerBound(startTime || 0, (time, frame) => time - frame.endTime);
-    const lastFrame = this._frames.lowerBound(endTime || Infinity, (time, frame) => time - frame.startTime);
+    const firstFrame =
+        Platform.ArrayUtilities.lowerBound(this._frames, startTime || 0, (time, frame) => time - frame.endTime);
+    const lastFrame =
+        Platform.ArrayUtilities.lowerBound(this._frames, endTime || Infinity, (time, frame) => time - frame.startTime);
     return this._frames.slice(firstFrame, lastFrame);
   }
 

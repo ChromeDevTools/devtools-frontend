@@ -113,7 +113,8 @@ describe('ArrayUtilities', () => {
       }
 
       function count(a: number[], x: number) {
-        return Platform.ArrayUtilities.upperBound(a, x, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - a.lowerBound(x);
+        return Platform.ArrayUtilities.upperBound(a, x, Platform.ArrayUtilities.DEFAULT_COMPARATOR) -
+            Platform.ArrayUtilities.lowerBound(a, x, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
       }
 
       function testAll(a: number[], b: number[]) {
@@ -153,6 +154,64 @@ describe('ArrayUtilities', () => {
       for (const [a, b] of fixtures) {
         testAll(a, b);
         testAll(b, a);
+      }
+    });
+  });
+
+  describe('calculates bounds', () => {
+    it('calculates the lower bound', () => {
+      const fixtures = [
+        [],
+        [1],
+        [-1, -1, 0, 0, 0, 0, 2, 3, 4, 4, 4, 7, 9, 9, 9],
+      ];
+
+      function testArray(array: number[], useComparator: boolean) {
+        function comparator(a: number, b: number) {
+          return a < b ? -1 : (a > b ? 1 : 0);
+        }
+
+        for (let value = -2; value <= 12; ++value) {
+          const index = useComparator ?
+              Platform.ArrayUtilities.lowerBound(array, value, comparator) :
+              Platform.ArrayUtilities.lowerBound(array, value, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
+          assert.isTrue(0 <= index && index <= array.length, 'index is not within bounds');
+          assert.isTrue(index === 0 || array[index - 1] < value, 'array[index - 1] >= value');
+          assert.isTrue(index === array.length || array[index] >= value, 'array[index] < value');
+        }
+      }
+
+      for (const fixture of fixtures) {
+        testArray(fixture, false);
+        testArray(fixture, true);
+      }
+    });
+
+    it('calculates the upper bound', () => {
+      const fixtures = [
+        [],
+        [1],
+        [-1, -1, 0, 0, 0, 0, 2, 3, 4, 4, 4, 7, 9, 9, 9],
+      ];
+
+      function testArray(array: number[], useComparator: boolean) {
+        function comparator(a: number, b: number) {
+          return a < b ? -1 : (a > b ? 1 : 0);
+        }
+
+        for (let value = -2; value <= 12; ++value) {
+          const index = useComparator ?
+              Platform.ArrayUtilities.upperBound(array, value, comparator) :
+              Platform.ArrayUtilities.upperBound(array, value, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
+          assert.isTrue(0 <= index && index <= array.length, 'index is out of bounds');
+          assert.isTrue(index === 0 || array[index - 1] <= value, 'array[index - 1] > value');
+          assert.isTrue(index === array.length || array[index] > value, 'array[index] <= value');
+        }
+      }
+
+      for (const fixture of fixtures) {
+        testArray(fixture, false);
+        testArray(fixture, true);
       }
     });
   });

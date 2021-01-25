@@ -450,7 +450,9 @@ export class ListControl {
     }
     if (this._mode === ListMode.VariousHeightItems) {
       return Math.min(
-          this._model.length - 1, this._variableOffsets.lowerBound(offset, undefined, 0, this._model.length));
+          this._model.length - 1,
+          Platform.ArrayUtilities.lowerBound(
+              this._variableOffsets, offset, Platform.ArrayUtilities.DEFAULT_COMPARATOR, 0, this._model.length));
     }
     if (!this._fixedHeight) {
       this._measureHeight();

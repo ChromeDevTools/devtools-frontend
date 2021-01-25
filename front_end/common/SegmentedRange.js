@@ -1,6 +1,9 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+import * as Platform from '../platform/platform.js';
+
 export class Segment {
   /**
    * @param {number} begin
@@ -40,7 +43,7 @@ export class SegmentedRange {
    */
   append(newSegment) {
     // 1. Find the proper insertion point for new segment
-    let startIndex = this._segments.lowerBound(newSegment, (a, b) => a.begin - b.begin);
+    let startIndex = Platform.ArrayUtilities.lowerBound(this._segments, newSegment, (a, b) => a.begin - b.begin);
     let endIndex = startIndex;
     let merged = null;
     if (startIndex > 0) {

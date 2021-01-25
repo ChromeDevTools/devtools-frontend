@@ -28,9 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 import * as Components from '../components/components.js';
+import * as Platform from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
+
 import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
 
 export class ConsoleViewport {
@@ -529,8 +530,11 @@ export class ConsoleViewport {
           Math.max(this._itemCount - Math.ceil(activeHeight / this._provider.minimumRowHeight()), 0);
       this._lastActiveIndex = this._itemCount - 1;
     } else {
-      this._firstActiveIndex =
-          Math.max(this._cumulativeHeights.lowerBound(visibleFrom + 1 - (activeHeight - visibleHeight) / 2), 0);
+      this._firstActiveIndex = Math.max(
+          Platform.ArrayUtilities.lowerBound(
+              this._cumulativeHeights, visibleFrom + 1 - (activeHeight - visibleHeight) / 2,
+              Platform.ArrayUtilities.DEFAULT_COMPARATOR),
+          0);
       // Proactively render more rows in case some of them will be collapsed without triggering refresh. @see crbug.com/390169
       this._lastActiveIndex = this._firstActiveIndex + Math.ceil(activeHeight / this._provider.minimumRowHeight()) - 1;
       this._lastActiveIndex = Math.min(this._lastActiveIndex, this._itemCount - 1);
@@ -713,7 +717,8 @@ export class ConsoleViewport {
       return -1;
     }
     this._rebuildCumulativeHeightsIfNeeded();
-    return this._cumulativeHeights.lowerBound(this.element.scrollTop + 1);
+    return Platform.ArrayUtilities.lowerBound(
+        this._cumulativeHeights, this.element.scrollTop + 1, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
   }
 
   /**
@@ -726,7 +731,8 @@ export class ConsoleViewport {
     this._rebuildCumulativeHeightsIfNeeded();
     const scrollBottom = this.element.scrollTop + this.element.clientHeight;
     const right = this._itemCount - 1;
-    return this._cumulativeHeights.lowerBound(scrollBottom, undefined, undefined, right);
+    return Platform.ArrayUtilities.lowerBound(
+        this._cumulativeHeights, scrollBottom, Platform.ArrayUtilities.DEFAULT_COMPARATOR, undefined, right);
   }
 
   /**

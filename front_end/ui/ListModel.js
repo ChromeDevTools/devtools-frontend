@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 
 /**
  * @implements {Iterable<T>}
@@ -95,7 +96,7 @@ export class ListModel extends Common.ObjectWrapper.ObjectWrapper {
    * @param {function(T, T):number} comparator
    */
   insertWithComparator(value, comparator) {
-    this.insert(this._items.lowerBound(value, comparator), value);
+    this.insert(Platform.ArrayUtilities.lowerBound(this._items, value, comparator), value);
   }
 
   /**

@@ -840,7 +840,7 @@ export class TimelineModelImpl {
     }
 
     for (const range of ranges) {
-      let i = events.lowerBound(range.from, (time, event) => time - event.startTime);
+      let i = Platform.ArrayUtilities.lowerBound(events, range.from, (time, event) => time - event.startTime);
       for (; i < events.length; i++) {
         const event = events[i];
         if (event.startTime >= range.to) {
@@ -929,7 +929,7 @@ export class TimelineModelImpl {
     }
 
     for (const range of ranges) {
-      let i = asyncEvents.lowerBound(range.from, function(time, asyncEvent) {
+      let i = Platform.ArrayUtilities.lowerBound(asyncEvents, range.from, function(time, asyncEvent) {
         return time - asyncEvent.startTime;
       });
 

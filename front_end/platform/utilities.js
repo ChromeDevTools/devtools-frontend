@@ -42,53 +42,6 @@ String.regexSpecialCharacters = regexSpecialCharacters;
 // @ts-ignore https://crbug.com/1050549
 String.caseInsensetiveComparator = caseInsensetiveComparator;
 
-Object.defineProperty(Array.prototype, 'lowerBound', {
-  /**
-   * Return index of the leftmost element that is equal or greater
-   * than the specimen object. If there's no such element (i.e. all
-   * elements are smaller than the specimen) returns right bound.
-   * The function works for sorted array.
-   * When specified, |left| (inclusive) and |right| (exclusive) indices
-   * define the search window.
-   *
-   * @param {!T} object
-   * @param {function(!T,!S):number} comparator
-   * @param {number=} left
-   * @param {number=} right
-   * @return {number}
-   * @this {Array.<!S>}
-   * @template T,S
-   */
-  value: function(object, comparator, left, right) {
-    /**
-     * @param {string|number} a
-     * @param {string|number} b
-     */
-    function defaultComparator(a, b) {
-      return a < b ? -1 : (a > b ? 1 : 0);
-    }
-    comparator = comparator || defaultComparator;
-    let l = left || 0;
-    let r = right !== undefined ? right : this.length;
-    while (l < r) {
-      const m = (l + r) >> 1;
-      if (comparator(object, this[m]) > 0) {
-        l = m + 1;
-      } else {
-        r = m;
-      }
-    }
-    return r;
-  },
-  configurable: true
-});
-
-Object.defineProperty(Uint32Array.prototype, 'lowerBound', {value: Array.prototype.lowerBound, configurable: true});
-
-Object.defineProperty(Int32Array.prototype, 'lowerBound', {value: Array.prototype.lowerBound, configurable: true});
-
-Object.defineProperty(Float64Array.prototype, 'lowerBound', {value: Array.prototype.lowerBound, configurable: true});
-
 /**
  * @param {string} query
  * @param {string=} flags

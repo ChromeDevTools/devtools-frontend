@@ -239,8 +239,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
         measureMemoryAvailable ? ls`The performance.measureUserAgentSpecificMemory() API is available` :
                                  ls`The performance.measureUserAgentSpecificMemory() API is not available`);
     this._apiMeasureMemory.textContent = '';
-    const status =
-        measureMemoryAvailable ? ls`available, but might require experimental web platform features` : ls`unavailable`;
+    const status = measureMemoryAvailable ? ls`available` : ls`unavailable`;
     const link = 'https://web.dev/monitor-total-page-memory-usage/';
     this._apiMeasureMemory.appendChild(
         UI.Fragment.html`<div>${status} ${UI.XLink.XLink.create(link, ls`Learn more`)}</div>`);

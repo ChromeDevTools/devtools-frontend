@@ -579,9 +579,6 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_c9c5c65fb4af9cf90eb99b3b84424189" desc="Text in App Manifest View of the Application panel">
     Identity
   </message>
-  <message name="IDS_DEVTOOLS_38cb2846c1e74eeb7bc0b796c2787e03" desc="Explanation for the Measure Memory availability status">
-    available, but might require experimental web platform features
-  </message>
   <message name="IDS_DEVTOOLS_cbd71dc96b9c7d3a0663a5546f3798b5" desc="Text wrapping a link pointing to more information on maskable icons in App Manifest view of the Application panel">
     Need help? Read our <ph name="DOCUMENTATIONLINK">$1s<ex>https://example.com/</ex></ph>.
   </message>
@@ -677,6 +674,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_e44ec1cd1aa0128f893c1c815ea1abe0" desc="Text in Background Service View of the Application panel">
     Click the record button <ph name="UI_CREATEINLINEBUTTON_LANDINGRECORDBUTTON_">$1s<ex>record</ex></ph> or hit <ph name="RECORDKEY">$2s<ex>Ctrl + R</ex></ph> to start recording.
+  </message>
+  <message name="IDS_DEVTOOLS_e4894ca167b08880bfc35862f18575eb" desc="Explanation for the Measure Memory availability status">
+    available
   </message>
   <message name="IDS_DEVTOOLS_e498749f3c42246d50b15c81c101d988" desc="Text in Application Panel Sidebar of the Application panel">
     Application

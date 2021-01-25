@@ -16,7 +16,6 @@
       <part file="../browser_debugger/browser_debugger_strings.grdp" />
       <part file="../common/common_strings.grdp" />
       <part file="../console/console_strings.grdp" />
-      <part file="../console_counters/console_counters_strings.grdp" />
       <part file="../data_grid/data_grid_strings.grdp" />
       <part file="../elements/elements_strings.grdp" />
       <part file="../emulated_devices/emulated_devices_strings.grdp" />

@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_214864980ac9b83ff82c6e9b8c9a44c7" desc="Aria alert to read the suggestion for the suggestion box when typing in text editor">
     <ph name="THIS__ONLYCOMPLETION_TEXT">$1s<ex>name</ex></ph>, suggestion <ph name="THIS__LIST_SELECTEDINDEX______">$2s<ex>2</ex></ph> of <ph name="THIS__ITEMS_LENGTH">$3s<ex>5</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_2ce2fc341b0bd9219a3634ff43a90bde" desc="Generic text with two placeholders separated by a comma">
+    <ph name="ITEM_LABEL">$1s<ex>1 613 680</ex></ph>, <ph name="CHECKEDSTATE">$2s<ex>44 %</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_2d56db467b153fe19f6f059f7f29be97" desc="Hours format in UIUtils">
     <ph name="PH1">$1.1f<ex>2.2</ex></ph> hrs
   </message>

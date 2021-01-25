@@ -8,6 +8,7 @@
     }
   ],
   "dependencies": [
+    "i18n",
     "browser_sdk",
     "common",
     "host",

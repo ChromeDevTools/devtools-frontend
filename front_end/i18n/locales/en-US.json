@@ -245,6 +245,39 @@
   "components/TargetDetachedDialog.js | websocketDisconnected": {
     "message": "WebSocket disconnected"
   },
+  "console_counters/WarningErrorCounter.js | openConsoleToViewS": {
+    "message": "Open Console to view {PH1}"
+  },
+  "console_counters/WarningErrorCounter.js | openIssuesToViewS": {
+    "message": "Open Issues to view {PH1}"
+  },
+  "console_counters/WarningErrorCounter.js | openLighthouseToViewS": {
+    "message": "Open Lighthouse to view {PH1}"
+  },
+  "console_counters/WarningErrorCounter.js | sError": {
+    "message": "{PH1} error"
+  },
+  "console_counters/WarningErrorCounter.js | sErrors": {
+    "message": "{PH1} errors"
+  },
+  "console_counters/WarningErrorCounter.js | sIssue": {
+    "message": "{PH1} issue"
+  },
+  "console_counters/WarningErrorCounter.js | sIssues": {
+    "message": "{PH1} issues"
+  },
+  "console_counters/WarningErrorCounter.js | sViolation": {
+    "message": "{PH1} violation"
+  },
+  "console_counters/WarningErrorCounter.js | sViolations": {
+    "message": "{PH1} violations"
+  },
+  "console_counters/WarningErrorCounter.js | sWarning": {
+    "message": "{PH1} warning"
+  },
+  "console_counters/WarningErrorCounter.js | sWarnings": {
+    "message": "{PH1} warnings"
+  },
   "cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
   },

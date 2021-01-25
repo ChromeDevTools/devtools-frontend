@@ -12,6 +12,7 @@ devtools_module("console_counters") {
     "../browser_sdk:bundle",
     "../common:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../sdk:bundle",
     "../ui:bundle",
     "../ui/components:bundle",

@@ -73,9 +73,6 @@
   <message name="IDS_DEVTOOLS_2bbc845892f400626baab5af687527c5" desc="Text for the start time of an activity">
     Start Time
   </message>
-  <message name="IDS_DEVTOOLS_2ce2fc341b0bd9219a3634ff43a90bde" desc="Generic text with two placeholders separated by a comma">
-    <ph name="ITEM_LABEL">$1s<ex>1 613 680</ex></ph>, <ph name="CHECKEDSTATE">$2s<ex>44 %</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_2fae32629d4ef4fc6341f1751b405e45" desc="Title of the 'Security' tool">
     Security
   </message>

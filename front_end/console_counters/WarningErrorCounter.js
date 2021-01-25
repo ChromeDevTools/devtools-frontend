@@ -5,12 +5,71 @@
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Components from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Error count title in Warning Error Counter of the Console panel
+  *@example {1} PH1
+  */
+  sError: '{PH1} error',
+  /**
+  *@description Error count title in Warning Error Counter of the Console panel
+  *@example {3} PH1
+  */
+  sErrors: '{PH1} errors',
+  /**
+  *@description Warning count title in Warning Error Counter of the Console panel
+  *@example {1} PH1
+  */
+  sWarning: '{PH1} warning',
+  /**
+  *@description Warning count title in Warning Error Counter of the Console panel
+  *@example {3} PH1
+  */
+  sWarnings: '{PH1} warnings',
+  /**
+  *@description Tooltip shown for a main toolbar button that opens the Console panel
+  *@example {2 errors, 1 warning} PH1
+  */
+  openConsoleToViewS: 'Open Console to view {PH1}',
+  /**
+  *@description Violation count title in Warning Error Counter of the Console panel
+  *@example {1} PH1
+  */
+  sViolation: '{PH1} violation',
+  /**
+  *@description Violation count title in Warning Error Counter of the Console panel
+  *@example {3} PH1
+  */
+  sViolations: '{PH1} violations',
+  /**
+  *@description Tooltip shown for a main toolbar button that opens the Lighthouse panel
+  *@example {1 violation} PH1
+  */
+  openLighthouseToViewS: 'Open Lighthouse to view {PH1}',
+  /**
+  *@description Issues count title in the Issues Error Counter shown in the main toolbar
+  *@example {1} PH1
+  */
+  sIssue: '{PH1} issue',
+  /**
+  *@description Issues count title in the Issues Error Counter shown in the main toolbar
+  *@example {3} PH1
+  */
+  sIssues: '{PH1} issues',
+  /**
+  *@description Tooltip shown for a main toolbar button that opens the Issues panel
+  *@example {1 issue} PH1
+  */
+  openIssuesToViewS: 'Open Issues to view {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('console_counters/WarningErrorCounter.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {UI.Toolbar.Provider}
  */
@@ -88,26 +147,26 @@ export class WarningErrorCounter {
     /* Update consoleCounter items. */
     let errorCountTitle = '';
     if (errors === 1) {
-      errorCountTitle = ls`${errors} error`;
+      errorCountTitle = i18nString(UIStrings.sError, {PH1: errors});
     } else {
-      errorCountTitle = ls`${errors} errors`;
+      errorCountTitle = i18nString(UIStrings.sErrors, {PH1: errors});
     }
     let warningCountTitle = '';
     if (warnings === 1) {
-      warningCountTitle = ls`${warnings} warning`;
+      warningCountTitle = i18nString(UIStrings.sWarning, {PH1: warnings});
     } else {
-      warningCountTitle = ls`${warnings} warnings`;
+      warningCountTitle = i18nString(UIStrings.sWarnings, {PH1: warnings});
     }
     this._consoleCounter.setCounts([errors, warnings]);
     let consoleSummary = '';
     if (errors && warnings) {
-      consoleSummary = ls`${errorCountTitle}, ${warningCountTitle}`;
+      consoleSummary = `${errorCountTitle}, ${warningCountTitle}`;
     } else if (errors) {
       consoleSummary = errorCountTitle;
     } else if (warnings) {
       consoleSummary = warningCountTitle;
     }
-    const consoleTitle = ls`Open Console to view ${consoleSummary}`;
+    const consoleTitle = i18nString(UIStrings.openConsoleToViewS, {PH1: consoleSummary});
     // TODO(chromium:1167711): Let the component handle the title and ARIA label.
     UI.Tooltip.Tooltip.install(this._consoleCounter, consoleTitle);
     UI.ARIAUtils.setAccessibleName(this._consoleCounter, consoleTitle);
@@ -118,11 +177,11 @@ export class WarningErrorCounter {
       this._violationCounter.setCounts([violations]);
       let violationSummary = '';
       if (violations === 1) {
-        violationSummary = ls`${violations} violation`;
+        violationSummary = i18nString(UIStrings.sViolation, {PH1: violations});
       } else {
-        violationSummary = ls`${violations} violations`;
+        violationSummary = i18nString(UIStrings.sViolations, {PH1: violations});
       }
-      const violationTitle = ls`Open Lighthouse to view ${violationSummary}`;
+      const violationTitle = i18nString(UIStrings.openLighthouseToViewS, {PH1: violationSummary});
       // TODO(chromium:1167711): Let the component handle the title and ARIA label.
       UI.Tooltip.Tooltip.install(this._violationCounter, violationTitle);
       UI.ARIAUtils.setAccessibleName(this._violationCounter, violationTitle);
@@ -133,11 +192,11 @@ export class WarningErrorCounter {
     this._issuesCounter.setCounts([issues]);
     let issuesSummary = '';
     if (issues === 1) {
-      issuesSummary = ls`${issues} issue`;
+      issuesSummary = i18nString(UIStrings.sIssue, {PH1: issues});
     } else {
-      issuesSummary = ls`${issues} issues`;
+      issuesSummary = i18nString(UIStrings.sIssues, {PH1: issues});
     }
-    const issuesTitle = ls`Open Issues to view ${issuesSummary}`;
+    const issuesTitle = i18nString(UIStrings.openIssuesToViewS, {PH1: issuesSummary});
     // TODO(chromium:1167711): Let the component handle the title and ARIA label.
     UI.Tooltip.Tooltip.install(this._issuesCounter, issuesTitle);
     UI.ARIAUtils.setAccessibleName(this._issuesCounter, issuesTitle);

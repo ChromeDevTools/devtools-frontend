@@ -1,7 +1,5 @@
 {
-  "modules": [
-    "developer_resources-legacy.js"
-  ],
+  "modules": [],
   "resources": [
     "developerResourcesView.css",
     "developerResourcesListView.css"

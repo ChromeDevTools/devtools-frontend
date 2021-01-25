@@ -2,10 +2,5 @@
   "dependencies": [
     "common"
   ],
-  "modules": [
-    "diff.js",
-    "diff-legacy.js",
-    "DiffWrapper.js",
-    "diff_match_patch.js"
-  ]
+  "modules": []
 }

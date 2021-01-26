@@ -1,34 +1,5 @@
 {
-  "extensions": [
-    {
-      "type": "setting",
-      "category": "Network",
-      "title": "Preserve log",
-      "settingName": "network_log.preserve-log",
-      "settingType": "boolean",
-      "defaultValue": false,
-      "tags": "preserve, clear, reset",
-      "options": [
-        {
-          "value": true,
-          "title": "Preserve log on page reload / navigation"
-        },
-        {
-          "value": false,
-          "title": "Do not preserve log on page reload / navigation"
-        }
-      ]
-    },
-    {
-      "type": "setting",
-      "category": "Network",
-      "title": "Record network log",
-      "settingName": "network_log.record-log",
-      "settingType": "boolean",
-      "storageType": "session",
-      "defaultValue": true
-    }
-  ],  "modules": [
+  "modules": [
     "browser_sdk.js",
     "LogManager.js",
     "IssuesManager.js",

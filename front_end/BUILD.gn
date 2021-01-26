@@ -20,6 +20,7 @@ group("front_end") {
     "browser_debugger:bundle",
     "browser_debugger:meta",
     "browser_sdk:bundle",
+    "browser_sdk:meta",
     "changes:bundle",
     "changes:meta",
     "client_variations:bundle",

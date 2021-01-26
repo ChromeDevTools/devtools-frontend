@@ -50,28 +50,28 @@
   "animation/AnimationUI.ts | sSlider": {
     "message": "{PH1} slider"
   },
-  "browser_sdk/ModuleUIStrings.js | clear": {
+  "browser_sdk/browser_sdk-meta.ts | clear": {
     "message": "clear"
   },
-  "browser_sdk/ModuleUIStrings.js | doNotPreserveLogOnPageReload": {
+  "browser_sdk/browser_sdk-meta.ts | doNotPreserveLogOnPageReload": {
     "message": "Do not preserve log on page reload / navigation"
   },
-  "browser_sdk/ModuleUIStrings.js | network": {
+  "browser_sdk/browser_sdk-meta.ts | network": {
     "message": "Network"
   },
-  "browser_sdk/ModuleUIStrings.js | preserve": {
+  "browser_sdk/browser_sdk-meta.ts | preserve": {
     "message": "preserve"
   },
-  "browser_sdk/ModuleUIStrings.js | preserveLog": {
+  "browser_sdk/browser_sdk-meta.ts | preserveLog": {
     "message": "Preserve log"
   },
-  "browser_sdk/ModuleUIStrings.js | preserveLogOnPageReload": {
+  "browser_sdk/browser_sdk-meta.ts | preserveLogOnPageReload": {
     "message": "Preserve log on page reload / navigation"
   },
-  "browser_sdk/ModuleUIStrings.js | recordNetworkLog": {
+  "browser_sdk/browser_sdk-meta.ts | recordNetworkLog": {
     "message": "Record network log"
   },
-  "browser_sdk/ModuleUIStrings.js | reset": {
+  "browser_sdk/browser_sdk-meta.ts | reset": {
     "message": "reset"
   },
   "changes/ChangesSidebar.ts | sFromSourceMap": {

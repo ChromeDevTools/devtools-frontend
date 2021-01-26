@@ -11,60 +11,22 @@ const {LinearMemoryInspectorController} = LinearMemoryInspector;
 class MockRemoteObject extends SDK.RemoteObject.LocalJSONObject {
   private objSubtype?: string;
 
-  constructor(array: Uint8Array, subType?: string) {
+  constructor(array: ArrayBuffer) {
     super(array);
-    if (subType) {
-      this.objSubtype = subType;
-    }
   }
 
-  get subtype(): string {
-    return this.subtype;
-  }
-
-  set(index: number, value: number) {
-    this._value[index] = value;
-  }
-
-  arrayLength() {
-    return this._value.length;
-  }
-
-  callFunction<T>(
-      _functionDeclaration: (this: Object, ...args: unknown[]) => T, args: Array<Protocol.Runtime.CallArgument>) {
-    if (args) {
-      const object = new SDK.RemoteObject.LocalJSONObject(this._value[args[0].value]);
-      const result = {object, wasThrown: false};
-      return Promise.resolve(result);
-    }
-    return Promise.resolve({object: null, wasThrown: true});
+  arrayBufferByteLength() {
+    return this._value.byteLength;
   }
 }
 
 function createWrapper(array: Uint8Array) {
-  const mockRemoteObj = new MockRemoteObject(array);
-  const mockRemoteArray = new SDK.RemoteObject.RemoteArray(mockRemoteObj);
-  return new LinearMemoryInspectorController.RemoteArrayWrapper(mockRemoteArray);
+  const mockRemoteObj = new MockRemoteObject(array.buffer);
+  const mockRemoteArrayBuffer = new SDK.RemoteObject.RemoteArrayBuffer(mockRemoteObj);
+  return new LinearMemoryInspectorController.RemoteArrayBufferWrapper(mockRemoteArrayBuffer);
 }
 
-describe('LinearMemoryInspectorController', async () => {
-  async function assertInvalidArrayBufferObject(mockObj: SDK.RemoteObject.RemoteObject) {
-    try {
-      await LinearMemoryInspector.LinearMemoryInspectorController.getUint8ArrayFromObject(mockObj);
-    } catch (e) {
-      return;
-    }
-    throw new Error('Should not accept non-array buffer types.');
-  }
-
-  async function assertValidArrayBufferObject(mockObj: SDK.RemoteObject.RemoteObject) {
-    try {
-      await LinearMemoryInspector.LinearMemoryInspectorController.getUint8ArrayFromObject(mockObj);
-    } catch (e) {
-      throw new Error('Should not accept non-array buffer types.');
-    }
-  }
-
+describe('LinearMemoryInspectorController', () => {
   it('throws an error on an invalid (out-of-bounds) memory range request', async () => {
     const array = new Uint8Array([2, 4, 6, 2, 4]);
     const wrapper = createWrapper(array);
@@ -91,9 +53,7 @@ describe('LinearMemoryInspectorController', async () => {
 
   it('can pull updated data on memory range request', async () => {
     const array = new Uint8Array([2, 4, 6, 2, 4]);
-    const mockRemoteObj = new MockRemoteObject(array);
-    const mockRemoteArray = new SDK.RemoteObject.RemoteArray(mockRemoteObj);
-    const wrapper = new LinearMemoryInspectorController.RemoteArrayWrapper(mockRemoteArray);
+    const wrapper = createWrapper(array);
     const valuesBefore =
         await LinearMemoryInspectorController.LinearMemoryInspectorController.getMemoryRange(wrapper, 0, array.length);
 
@@ -104,7 +64,7 @@ describe('LinearMemoryInspectorController', async () => {
 
     const changedIndex = 0;
     const changedValue = 10;
-    mockRemoteObj.set(changedIndex, changedValue);
+    array[changedIndex] = changedValue;
     const valuesAfter =
         await LinearMemoryInspectorController.LinearMemoryInspectorController.getMemoryRange(wrapper, 0, array.length);
 
@@ -117,23 +77,9 @@ describe('LinearMemoryInspectorController', async () => {
       }
     }
   });
-
-  it('only accepts remote object types with array buffers', async () => {
-    const allowedTypes = ['webassemblymemory', 'typedarray', 'dataview', 'arraybuffer'];
-    const array = new Uint8Array();
-    const subtypes = Object.values(Protocol.Runtime.RemoteObjectSubtype);
-    subtypes.forEach(async subtype => {
-      const mockObj = new MockRemoteObject(array, subtype);
-      if (allowedTypes.includes(subtype)) {
-        assertValidArrayBufferObject(mockObj);
-      } else {
-        assertInvalidArrayBufferObject(mockObj);
-      }
-    });
-  });
 });
 
-describe('RemoteArrayWrapper', async () => {
+describe('RemoteArrayBufferWrapper', async () => {
   it('correctly wraps the remote object', async () => {
     const array = new Uint8Array([2, 4, 6, 2, 4]);
     const wrapper = createWrapper(array);

@@ -85,6 +85,18 @@ export class RemoteObject {
   }
 
   /**
+   * @param {!RemoteObject|!Protocol.Runtime.RemoteObject|!Protocol.Runtime.ObjectPreview} object
+   * @return {number}
+   */
+  static arrayBufferByteLength(object) {
+    if (object.subtype !== 'arraybuffer') {
+      return 0;
+    }
+    const matches = object.description && object.description.match(_descriptionLengthParenRegex);
+    return matches ? parseInt(matches[1], 10) : 0;
+  }
+
+  /**
    * @param {*} object
    * @return {?string}
    */
@@ -260,6 +272,13 @@ export class RemoteObject {
    * @return {number}
    */
   arrayLength() {
+    throw 'Not implemented';
+  }
+
+  /**
+   * @return {number}
+   */
+  arrayBufferByteLength() {
     throw 'Not implemented';
   }
 
@@ -714,6 +733,14 @@ export class RemoteObjectImpl extends RemoteObject {
 
   /**
    * @override
+   * @return {number}
+   */
+  arrayBufferByteLength() {
+    return RemoteObject.arrayBufferByteLength(this);
+  }
+
+  /**
+   * @override
    * @return {!DebuggerModel}
    */
   debuggerModel() {
@@ -1048,6 +1075,10 @@ export class LocalJSONObject extends RemoteObject {
       return 'date';
     }
 
+    if (this._value instanceof ArrayBuffer || this._value instanceof SharedArrayBuffer) {
+      return 'arraybuffer';
+    }
+
     return undefined;
   }
 
@@ -1164,6 +1195,58 @@ export class LocalJSONObject extends RemoteObject {
     }
 
     return Promise.resolve(/** @type {T} */ (result));
+  }
+}
+
+export class RemoteArrayBuffer {
+  /**
+   * @param {!RemoteObject} object
+   */
+  constructor(object) {
+    if (object.type !== 'object' || object.subtype !== 'arraybuffer') {
+      throw new Error('Object is not an arraybuffer');
+    }
+    this._object = object;
+  }
+
+  /**
+   * @return {number}
+   */
+  byteLength() {
+    return this._object.arrayBufferByteLength();
+  }
+
+  /**
+   * @param {*} start
+   * @param {*} end
+   * @return {!Promise<!Array<number>>}
+   */
+  async bytes(start = 0, end = this.byteLength()) {
+    if (start < 0 || start >= this.byteLength()) {
+      throw new RangeError('start is out of range');
+    }
+    if (end < start || end > this.byteLength()) {
+      throw new RangeError('end is out of range');
+    }
+
+    return await this._object.callFunctionJSON(bytes, [{value: start}, {value: end - start}]);
+
+    /**
+     * @param {number} offset
+     * @param {number} length
+     * @return {!Array<number>}
+     * @this {*}
+     */
+    function bytes(offset, length) {
+      return [...new Uint8Array(this, offset, length)];
+    }
+  }
+
+  /**
+   * @return {!RemoteObject}
+   */
+  object() {
+    return this._object;
   }
 }
 

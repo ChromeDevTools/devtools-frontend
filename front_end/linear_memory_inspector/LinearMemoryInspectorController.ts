@@ -20,56 +20,31 @@ export interface LazyUint8Array {
   length(): number;
 }
 
-export class RemoteArrayWrapper implements LazyUint8Array {
-  private remoteArray: SDK.RemoteObject.RemoteArray;
+export class RemoteArrayBufferWrapper implements LazyUint8Array {
+  private remoteArrayBuffer: SDK.RemoteObject.RemoteArrayBuffer;
 
-  constructor(array: SDK.RemoteObject.RemoteArray) {
-    this.remoteArray = array;
+  constructor(arrayBuffer: SDK.RemoteObject.RemoteArrayBuffer) {
+    this.remoteArrayBuffer = arrayBuffer;
   }
 
   length(): number {
-    return this.remoteArray.length();
+    return this.remoteArrayBuffer.byteLength();
   }
 
   async getRange(start: number, end: number): Promise<Uint8Array> {
-    const newEnd = Math.min(end, this.remoteArray.length());
+    const newEnd = Math.min(end, this.length());
     if (start < 0 || start > newEnd) {
       console.error(`Requesting invalid range of memory: (${start}, ${end})`);
-      return Promise.resolve(new Uint8Array(0));
+      return new Uint8Array(0);
     }
-    const array = await this.extractByteArray(start, newEnd);
+    const array = await this.remoteArrayBuffer.bytes(start, newEnd);
     return new Uint8Array(array);
   }
-
-  private async extractByteArray(start: number, end: number): Promise<number[]> {
-    const promises = [];
-    for (let i = start; i < end; ++i) {
-      // TODO(kimanh): encode requested range in base64 string.
-      promises.push(this.remoteArray.at(i).then(x => x.value));
-    }
-    return await Promise.all(promises);
-  }
 }
 
-export async function getUint8ArrayFromObject(obj: SDK.RemoteObject.RemoteObject):
-    Promise<SDK.RemoteObject.RemoteObject> {
-  const response = await obj.runtimeModel()._agent.invoke_callFunctionOn({
-    objectId: obj.objectId,
-    functionDeclaration:
-        'function() { return new Uint8Array(this instanceof ArrayBuffer || this instanceof SharedArrayBuffer ? this : this.buffer); }',
-    silent: true,
-    // Set object group in order to bind the object lifetime to the linear memory inspector.
-    objectGroup: LINEAR_MEMORY_INSPECTOR_OBJECT_GROUP,
-  });
-
-  const error = response.getError();
-  if (error) {
-    throw new Error(`Remote object representing Uint8Array could not be retrieved: ${error}`);
-  }
-  return obj.runtimeModel().createRemoteObject(response.result);
-}
-
-export async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<SDK.RemoteObject.RemoteObject> {
+async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<SDK.RemoteObject.RemoteArrayBuffer> {
+  console.assert(obj.type === 'object');
+  console.assert(obj.subtype !== undefined && ACCEPTED_MEMORY_TYPES.includes(obj.subtype));
   const response = await obj.runtimeModel()._agent.invoke_callFunctionOn({
     objectId: obj.objectId,
     functionDeclaration:
@@ -83,12 +58,12 @@ export async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): P
   if (error) {
     throw new Error(`Remote object representing ArrayBuffer could not be retrieved: ${error}`);
   }
-  return obj.runtimeModel().createRemoteObject(response.result);
+  obj = obj.runtimeModel().createRemoteObject(response.result);
+  return new SDK.RemoteObject.RemoteArrayBuffer(obj);
 }
 
-export async function getBufferIdFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<string> {
-  const bufferObj = await getBufferFromObject(obj);
-  const properties = await bufferObj.getOwnProperties(false);
+async function getBufferId(buffer: SDK.RemoteObject.RemoteArrayBuffer): Promise<string> {
+  const properties = await buffer.object().getOwnProperties(false);
   const idProperty = properties.internalProperties?.find(prop => prop.name === '[[ArrayBufferData]]');
   const id = idProperty?.value?.value;
   if (!id) {
@@ -144,7 +119,8 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
   }
 
   async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address: number): Promise<void> {
-    const bufferId = await getBufferIdFromObject(obj);
+    const buffer = await getBufferFromObject(obj);
+    const bufferId = await getBufferId(buffer);
 
     if (this.bufferIdToRemoteObject.has(bufferId)) {
       this.paneInstance.reveal(bufferId);
@@ -162,13 +138,11 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
       throw new Error(`Cannot find source code object for source url: ${callFrame.script.sourceURL}`);
     }
     const title = uiSourceCode.displayName();
-    const objBoundToLMI = await getUint8ArrayFromObject(obj);
 
-    this.bufferIdToRemoteObject.set(bufferId, objBoundToLMI);
-    const remoteArray = new SDK.RemoteObject.RemoteArray(objBoundToLMI);
-    const arrayWrapper = new RemoteArrayWrapper(remoteArray);
+    this.bufferIdToRemoteObject.set(bufferId, buffer.object());
+    const arrayBufferWrapper = new RemoteArrayBufferWrapper(buffer);
 
-    this.paneInstance.create(bufferId, title, arrayWrapper, address);
+    this.paneInstance.create(bufferId, title, arrayBufferWrapper, address);
     UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
   }
 

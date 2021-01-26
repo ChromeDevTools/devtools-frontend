@@ -20,6 +20,7 @@ devtools_module("object_ui") {
     "../components:bundle",
     "../formatter:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../platform:bundle",
     "../sdk:bundle",
     "../text_utils:bundle",

@@ -1757,6 +1757,75 @@
   "node_main/NodeMain.js | nodejsS": {
     "message": "Node.js: {PH1}"
   },
+  "object_ui/CustomPreviewComponent.js | showAsJavascriptObject": {
+    "message": "Show as JavaScript object"
+  },
+  "object_ui/JavaScriptAutocomplete.js | keys": {
+    "message": "Keys"
+  },
+  "object_ui/JavaScriptAutocomplete.js | keywords": {
+    "message": "keywords"
+  },
+  "object_ui/JavaScriptAutocomplete.js | lexicalScopeVariables": {
+    "message": "Lexical scope variables"
+  },
+  "object_ui/ObjectPropertiesSection.js | collapseChildren": {
+    "message": "Collapse children"
+  },
+  "object_ui/ObjectPropertiesSection.js | copy": {
+    "message": "Copy"
+  },
+  "object_ui/ObjectPropertiesSection.js | copyPropertyPath": {
+    "message": "Copy property path"
+  },
+  "object_ui/ObjectPropertiesSection.js | copyValue": {
+    "message": "Copy value"
+  },
+  "object_ui/ObjectPropertiesSection.js | dots": {
+    "message": "(...)"
+  },
+  "object_ui/ObjectPropertiesSection.js | exceptionS": {
+    "message": "[Exception: {PH1}]"
+  },
+  "object_ui/ObjectPropertiesSection.js | expandRecursively": {
+    "message": "Expand recursively"
+  },
+  "object_ui/ObjectPropertiesSection.js | invokePropertyGetter": {
+    "message": "Invoke property getter"
+  },
+  "object_ui/ObjectPropertiesSection.js | longTextWasTruncatedS": {
+    "message": "long text was truncated ({PH1})"
+  },
+  "object_ui/ObjectPropertiesSection.js | noProperties": {
+    "message": "No properties"
+  },
+  "object_ui/ObjectPropertiesSection.js | noPropertyGetter": {
+    "message": "No property getter"
+  },
+  "object_ui/ObjectPropertiesSection.js | showAllD": {
+    "message": "Show all {PH1}"
+  },
+  "object_ui/ObjectPropertiesSection.js | showMoreS": {
+    "message": "Show more ({PH1})"
+  },
+  "object_ui/ObjectPropertiesSection.js | stringIsTooLargeToEdit": {
+    "message": "<string is too large to edit>"
+  },
+  "object_ui/ObjectPropertiesSection.js | unknown": {
+    "message": "unknown"
+  },
+  "object_ui/ObjectPropertiesSection.js | unreadable": {
+    "message": "<unreadable>"
+  },
+  "object_ui/RemoteObjectPreviewFormatter.js | empty": {
+    "message": "empty"
+  },
+  "object_ui/RemoteObjectPreviewFormatter.js | emptyD": {
+    "message": "empty × {PH1}"
+  },
+  "object_ui/RemoteObjectPreviewFormatter.js | thePropertyIsComputedWithAGetter": {
+    "message": "The property is computed with a getter"
+  },
   "perf_ui/FilmStripView.js | doubleclickToZoomImageClickTo": {
     "message": "Doubleclick to zoom image. Click to view preceding requests."
   },

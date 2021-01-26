@@ -450,6 +450,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_a274f4d4670213a9045ce258c6c56b80" desc="Text in Background Service View of the Application panel">
     Notifications
   </message>
+  <message name="IDS_DEVTOOLS_a2e4822a98337283e39f7b60acf85ec9" desc="Text to show an item is empty">
+    empty
+  </message>
   <message name="IDS_DEVTOOLS_a355b60c9b21eeba5dbbf8c3dc767257" desc="Manifest installability error in the Application panel">
     <ph name="LOCKED_1">prefer_related_applications</ph> is only supported on <ph name="LOCKED_2">Chrome</ph> Beta and Stable channels on <ph name="LOCKED_3">Android</ph>.
   </message>

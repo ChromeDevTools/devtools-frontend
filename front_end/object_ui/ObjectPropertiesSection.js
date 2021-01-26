@@ -27,8 +27,8 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -38,6 +38,78 @@ import {JavaScriptAutocomplete} from './JavaScriptAutocomplete.js';
 import {JavaScriptREPL} from './JavaScriptREPL.js';
 import {createSpansForNodeTitle, RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Object Properties Section
+  *@example {function alert()  [native code] } PH1
+  */
+  exceptionS: '[Exception: {PH1}]',
+  /**
+  *@description Text in Object Properties Section
+  */
+  unknown: 'unknown',
+  /**
+  *@description Text to expand something recursively
+  */
+  expandRecursively: 'Expand recursively',
+  /**
+  *@description Text to collapse children of a parent group
+  */
+  collapseChildren: 'Collapse children',
+  /**
+  *@description Text in Object Properties Section
+  */
+  noProperties: 'No properties',
+  /**
+  *@description Element text content in Object Properties Section
+  */
+  dots: '(...)',
+  /**
+  *@description Element title in Object Properties Section
+  */
+  invokePropertyGetter: 'Invoke property getter',
+  /**
+  *@description Show all text content in Show More Data Grid Node of a data grid
+  *@example {50} PH1
+  */
+  showAllD: 'Show all {PH1}',
+  /**
+  *@description Value element text content in Object Properties Section
+  */
+  unreadable: '<unreadable>',
+  /**
+  *@description Value element title in Object Properties Section
+  */
+  noPropertyGetter: 'No property getter',
+  /**
+  *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
+  */
+  copyValue: 'Copy value',
+  /**
+  *@description A context menu item in the Object Properties Section
+  */
+  copyPropertyPath: 'Copy property path',
+  /**
+  *@description Text in Object Properties Section
+  */
+  stringIsTooLargeToEdit: '<string is too large to edit>',
+  /**
+  *@description Text of attribute value when text is too long
+  *@example {30 MB} PH1
+  */
+  showMoreS: 'Show more ({PH1})',
+  /**
+  *@description Text of attribute value when text is too long
+  *@example {30 MB} PH1
+  */
+  longTextWasTruncatedS: 'long text was truncated ({PH1})',
+  /**
+  *@description Text for copying
+  */
+  copy: 'Copy',
+};
+const str_ = i18n.i18n.registerUIStrings('object_ui/ObjectPropertiesSection.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const EXPANDABLE_MAX_LENGTH = 50;
 
 /** @type {!WeakMap<!SDK.RemoteObject.RemoteObjectProperty, ?SDK.RemoteObject.RemoteObject>} */
@@ -362,7 +434,8 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       const wrapperElement = document.createElement('span');
       wrapperElement.classList.add('error');
       wrapperElement.classList.add('value');
-      wrapperElement.appendChild(UI.UIUtils.formatLocalized('[Exception: %s]', [propertyValue.element]));
+      wrapperElement.appendChild(
+          i18n.i18n.getFormatLocalizedString(str_, UIStrings.exceptionS, {PH1: propertyValue.element}));
       propertyValue.element = wrapperElement;
     }
     propertyValue.element.classList.add('value');
@@ -373,7 +446,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
      */
     function createUnknownInternalLocationElement() {
       const valueElement = document.createElement('span');
-      valueElement.textContent = '<' + Common.UIString.UIString('unknown') + '>';
+      valueElement.textContent = '<' + i18nString(UIStrings.unknown) + '>';
       UI.Tooltip.Tooltip.install(valueElement, description || '');
       return valueElement;
     }
@@ -517,10 +590,11 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     contextMenu.appendApplicableItems(this._object);
     if (this._object instanceof SDK.RemoteObject.LocalJSONObject) {
       contextMenu.viewSection().appendItem(
-          ls`Expand recursively`,
+          i18nString(UIStrings.expandRecursively),
           this._objectTreeElement.expandRecursively.bind(this._objectTreeElement, Number.MAX_VALUE));
       contextMenu.viewSection().appendItem(
-          ls`Collapse children`, this._objectTreeElement.collapseChildren.bind(this._objectTreeElement));
+          i18nString(UIStrings.collapseChildren),
+          this._objectTreeElement.collapseChildren.bind(this._objectTreeElement));
     }
     contextMenu.show();
   }
@@ -781,7 +855,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     const title = document.createElement('div');
     title.classList.add('gray-info-message');
-    title.textContent = emptyPlaceholder || Common.UIString.UIString('No properties');
+    title.textContent = emptyPlaceholder || i18nString(UIStrings.noProperties);
     const infoElement = new UI.TreeOutline.TreeElement(title);
     treeNode.appendChild(infoElement);
   }
@@ -795,12 +869,12 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   static createRemoteObjectAccessorPropertySpan(object, propertyPath, callback) {
     const rootElement = /** @type {!HTMLElement} */ (document.createElement('span'));
     const element = rootElement.createChild('span');
-    element.textContent = Common.UIString.UIString('(...)');
+    element.textContent = i18nString(UIStrings.dots);
     if (!object) {
       return rootElement;
     }
     element.classList.add('object-value-calculate-value-button');
-    UI.Tooltip.Tooltip.install(element, Common.UIString.UIString('Invoke property getter'));
+    UI.Tooltip.Tooltip.install(element, i18nString(UIStrings.invokePropertyGetter));
     element.addEventListener('click', onInvokeGetterClick, false);
 
     /**
@@ -890,8 +964,8 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   _createShowAllPropertiesButton() {
     const element = document.createElement('div');
     element.classList.add('object-value-calculate-value-button');
-    element.textContent = Common.UIString.UIString('(...)');
-    UI.Tooltip.Tooltip.install(element, Common.UIString.UIString('Show all %d', this.childCount()));
+    element.textContent = i18nString(UIStrings.dots);
+    UI.Tooltip.Tooltip.install(element, i18nString(UIStrings.showAllD, {PH1: this.childCount()}));
     const children = this.children();
     for (let i = this._maxNumPropertiesToShow; i < this.childCount(); ++i) {
       children[i].hidden = true;
@@ -1041,8 +1115,8 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     } else {
       this.valueElement = /** @type {!HTMLElement} */ (document.createElement('span'));
       this.valueElement.classList.add('object-value-undefined');
-      this.valueElement.textContent = Common.UIString.UIString('<unreadable>');
-      UI.Tooltip.Tooltip.install(this.valueElement, Common.UIString.UIString('No property getter'));
+      this.valueElement.textContent = i18nString(UIStrings.unreadable);
+      UI.Tooltip.Tooltip.install(this.valueElement, i18nString(UIStrings.noPropertyGetter));
     }
 
     const valueText = this.valueElement.textContent;
@@ -1111,17 +1185,18 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
           Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(
               /** @type {string|undefined} */ (propertyValue));
         };
-        contextMenu.clipboardSection().appendItem(ls`Copy value`, copyValueHandler);
+        contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyValue), copyValueHandler);
       }
     }
     if (!this.property.synthetic && this.nameElement && UI.Tooltip.Tooltip.getContent(this.nameElement)) {
       const copyPathHandler = Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
           Host.InspectorFrontendHost.InspectorFrontendHostInstance, UI.Tooltip.Tooltip.getContent(this.nameElement));
-      contextMenu.clipboardSection().appendItem(ls`Copy property path`, copyPathHandler);
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyPropertyPath), copyPathHandler);
     }
     if (parentMap.get(this.property) instanceof SDK.RemoteObject.LocalJSONObject) {
-      contextMenu.viewSection().appendItem(ls`Expand recursively`, this.expandRecursively.bind(this, Number.MAX_VALUE));
-      contextMenu.viewSection().appendItem(ls`Collapse children`, this.collapseChildren.bind(this));
+      contextMenu.viewSection().appendItem(
+          i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this, Number.MAX_VALUE));
+      contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this));
     }
     if (this.propertyValue) {
       this.propertyValue.appendApplicableItems(event, contextMenu, {});
@@ -1143,8 +1218,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         text = `"${text}"`;
       }
 
-      this._editableDiv.setTextContentTruncatedIfNeeded(
-          text, Common.UIString.UIString('<string is too large to edit>'));
+      this._editableDiv.setTextContentTruncatedIfNeeded(text, i18nString(UIStrings.stringIsTooLargeToEdit));
     }
 
     const originalContent = this._editableDiv.textContent || '';
@@ -1812,7 +1886,7 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
     const byteCount = Platform.StringUtilities.countWtf8Bytes(text);
     const totalBytesText = Platform.NumberUtilities.bytesToString(byteCount);
     if (this._text.length < this._maxDisplayableTextLength) {
-      this._expandElementText = ls`Show more (${totalBytesText})`;
+      this._expandElementText = i18nString(UIStrings.showMoreS, {PH1: totalBytesText});
       this._expandElement.setAttribute('data-text', this._expandElementText);
       this._expandElement.classList.add('expandable-inline-button');
       this._expandElement.addEventListener('click', this._expandText.bind(this));
@@ -1829,11 +1903,11 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
           });
       UI.ARIAUtils.markAsButton(this._expandElement);
     } else {
-      this._expandElement.setAttribute('data-text', ls`long text was truncated (${totalBytesText})`);
+      this._expandElement.setAttribute('data-text', i18nString(UIStrings.longTextWasTruncatedS, {PH1: totalBytesText}));
       this._expandElement.classList.add('undisplayable-text');
     }
 
-    this._copyButtonText = ls`Copy`;
+    this._copyButtonText = i18nString(UIStrings.copy);
     const copyButton = container.createChild('span', 'expandable-inline-button');
     copyButton.setAttribute('data-text', this._copyButtonText);
     copyButton.addEventListener('click', this._copyText.bind(this));

@@ -3,11 +3,20 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
 
+export const UIStrings = {
+  /**
+  *@description A context menu item in the Custom Preview Component
+  */
+  showAsJavascriptObject: 'Show as JavaScript object',
+};
+const str_ = i18n.i18n.registerUIStrings('object_ui/CustomPreviewComponent.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CustomPreviewSection {
   /**
    * @param {!SDK.RemoteObject.RemoteObject} object
@@ -209,7 +218,7 @@ export class CustomPreviewComponent {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (this._customPreviewSection) {
       contextMenu.revealSection().appendItem(
-          Common.UIString.UIString('Show as JavaScript object'), this._disassemble.bind(this));
+          i18nString(UIStrings.showAsJavascriptObject), this._disassemble.bind(this));
     }
     contextMenu.appendApplicableItems(this._object);
     contextMenu.show();

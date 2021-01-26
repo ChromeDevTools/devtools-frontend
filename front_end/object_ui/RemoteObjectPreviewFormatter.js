@@ -2,11 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Remote Object Preview Formatter
+  *@example {3} PH1
+  */
+  emptyD: 'empty × {PH1}',
+  /**
+  *@description Text to show an item is empty
+  */
+  empty: 'empty',
+  /**
+  *@description Span title in Remote Object Preview Formatter
+  */
+  thePropertyIsComputedWithAGetter: 'The property is computed with a getter',
+};
+const str_ = i18n.i18n.registerUIStrings('object_ui/RemoteObjectPreviewFormatter.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RemoteObjectPreviewFormatter {
   /**
    * @param {!Protocol.Runtime.PropertyPreview} a
@@ -225,8 +242,7 @@ export class RemoteObjectPreviewFormatter {
     function appendUndefined(index) {
       const span = parentElement.createChild('span', 'object-value-undefined');
       const count = index - lastNonEmptyArrayIndex - 1;
-      span.textContent =
-          count !== 1 ? Common.UIString.UIString('empty × %d', count) : Common.UIString.UIString('empty');
+      span.textContent = count !== 1 ? i18nString(UIStrings.emptyD, {PH1: count}) : i18nString(UIStrings.empty);
       elementsAdded = true;
     }
   }
@@ -292,7 +308,7 @@ export class RemoteObjectPreviewFormatter {
 
     if (type === 'accessor') {
       span.textContent = '(...)';
-      UI.Tooltip.Tooltip.install(span, Common.UIString.UIString('The property is computed with a getter'));
+      UI.Tooltip.Tooltip.install(span, i18nString(UIStrings.thePropertyIsComputedWithAGetter));
       return span;
     }
 

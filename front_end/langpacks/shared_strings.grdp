@@ -161,9 +161,6 @@
   <message name="IDS_DEVTOOLS_61326117ed4a9ddf3f754e71e119e5b3" desc="The kind of resolution for a mixed content issue">
     blocked
   </message>
-  <message name="IDS_DEVTOOLS_63041e09c8660107e507c9c27c08199c" desc="Text to expand something recursively">
-    Expand recursively
-  </message>
   <message name="IDS_DEVTOOLS_6311ae17c1ee52b36e68aaf4ad066387" desc="Text for other types of items">
     Other
   </message>
@@ -269,9 +266,6 @@
   <message name="IDS_DEVTOOLS_a1fa27779242b4902f7ae3bdd5c6d508" desc="Text that refers to some types">
     Type
   </message>
-  <message name="IDS_DEVTOOLS_a2e4822a98337283e39f7b60acf85ec9" desc="Text to show an item is empty">
-    empty
-  </message>
   <message name="IDS_DEVTOOLS_a3d5de3eac8bb00ae86fd1a1005f1500" desc="Text for timestamps of items">
     Timestamp
   </message>
@@ -292,9 +286,6 @@
   </message>
   <message name="IDS_DEVTOOLS_ac70412e939d72a9234cdebb1af5867b" desc="Text that refers to a file path">
     Path
-  </message>
-  <message name="IDS_DEVTOOLS_acc24772ac31677d076f17d9002b57cd" desc="Text to collapse children of a parent group">
-    Collapse children
   </message>
   <message name="IDS_DEVTOOLS_ad91a1da588ce256d30b1af38f78f84e" desc="Text exposed to screen readers on unchecked items.">
     unchecked
@@ -391,9 +382,6 @@
   </message>
   <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="Text that refers to device such as a phone">
     Device
-  </message>
-  <message name="IDS_DEVTOOLS_e199c6bb662785b037c5f330f58878ce" desc="Show all text content in Show More Data Grid Node of a data grid">
-    Show all <ph name="TOTALSIZE">$1d<ex>50</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_e3de97b1a66edbe3fceddb1d5db2df2d" desc="A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.">
     Copy value

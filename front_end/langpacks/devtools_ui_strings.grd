@@ -25,7 +25,6 @@
       <part file="../linear_memory_inspector/linear_memory_inspector_strings.grdp" />
       <part file="../main/main_strings.grdp" />
       <part file="../network/network_strings.grdp" />
-      <part file="../object_ui/object_ui_strings.grdp" />
       <part file="../platform/platform_strings.grdp" />
       <part file="../issues/issues_strings.grdp" />
       <part file="../quick_open/quick_open_strings.grdp" />

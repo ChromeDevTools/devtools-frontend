@@ -4,13 +4,29 @@
 
 import * as Common from '../common/common.js';
 import * as Formatter from '../formatter/formatter.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description 0 of suggestions in Java Script Autocomplete
+  */
+  keys: 'Keys',
+  /**
+  *@description Text in Java Script Autocomplete
+  */
+  lexicalScopeVariables: 'Lexical scope variables',
+  /**
+  *@description Text in Java Script Autocomplete
+  */
+  keywords: 'keywords',
+};
+const str_ = i18n.i18n.registerUIStrings('object_ui/JavaScriptAutocomplete.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const DEFAULT_TIMEOUT = 500;
 
 /** @type {!JavaScriptAutocomplete} */
@@ -334,7 +350,7 @@ export class JavaScriptAutocomplete {
     const suggestions =
         caseSensitivePrefix.concat(caseInsensitivePrefix, caseSensitiveAnywhere, caseInsensitiveAnywhere);
     if (suggestions.length) {
-      suggestions[0].subtitle = Common.UIString.UIString('Keys');
+      suggestions[0].subtitle = i18nString(UIStrings.keys);
     }
     return suggestions;
   }
@@ -501,7 +517,7 @@ export class JavaScriptAutocomplete {
           if (completions.length) {
             completions[0].items = completions[0].items.concat(globalNames);
           } else {
-            completions.push({items: globalNames.sort(), title: Common.UIString.UIString('Lexical scope variables')});
+            completions.push({items: globalNames.sort(), title: i18nString(UIStrings.lexicalScopeVariables)});
           }
         }
       }
@@ -645,7 +661,7 @@ export class JavaScriptAutocomplete {
         // Other keywords not explicitly reserved by spec.
         'async', 'of'
       ];
-      propertyGroups.push({title: ls`keywords`, items: keywords.sort()});
+      propertyGroups.push({title: i18nString(UIStrings.keywords), items: keywords.sort()});
     }
 
     /** @type {!Set<string>} */

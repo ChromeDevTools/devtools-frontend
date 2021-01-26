@@ -72,3 +72,69 @@ UI.ViewManager.registerViewExtension({
     'emulation.locations',
   ],
 });
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.MOBILE,
+  actionId: 'emulation.toggle-device-mode',
+  toggleable: true,
+  async loadActionDelegate() {
+    const Emulation = await loadEmulationModule();
+    return Emulation.DeviceModeWrapper.ActionDelegate.instance();
+  },
+  condition: Root.Runtime.ConditionName.CAN_DOCK,
+  title: (): Platform.UIString.LocalizedString => ls`Toggle device toolbar`,
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_PHONE,
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Shift+Ctrl+M',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Shift+Meta+M',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'emulation.capture-screenshot',
+  category: UI.ActionRegistration.ActionCategory.SCREENSHOT,
+  async loadActionDelegate() {
+    const Emulation = await loadEmulationModule();
+    return Emulation.DeviceModeWrapper.ActionDelegate.instance();
+  },
+  condition: Root.Runtime.ConditionName.CAN_DOCK,
+  title: (): Platform.UIString.LocalizedString => ls`Capture screenshot`,
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'emulation.capture-full-height-screenshot',
+  category: UI.ActionRegistration.ActionCategory.SCREENSHOT,
+  async loadActionDelegate() {
+    const Emulation = await loadEmulationModule();
+    return Emulation.DeviceModeWrapper.ActionDelegate.instance();
+  },
+  condition: Root.Runtime.ConditionName.CAN_DOCK,
+  title: (): Platform.UIString.LocalizedString => ls`Capture full size screenshot`,
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'emulation.capture-node-screenshot',
+  category: UI.ActionRegistration.ActionCategory.SCREENSHOT,
+  async loadActionDelegate() {
+    const Emulation = await loadEmulationModule();
+    return Emulation.DeviceModeWrapper.ActionDelegate.instance();
+  },
+  condition: Root.Runtime.ConditionName.CAN_DOCK,
+  title: (): Platform.UIString.LocalizedString => ls`Capture node screenshot`,
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'emulation.show-sensors',
+  category: UI.ActionRegistration.ActionCategory.SENSORS,
+  async loadActionDelegate() {
+    const Emulation = await loadEmulationModule();
+    return Emulation.SensorsView.ShowActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Sensors`,
+});

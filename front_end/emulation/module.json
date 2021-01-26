@@ -7,34 +7,6 @@
       "order": 0
     },
     {
-      "type": "action",
-      "category": "Mobile",
-      "actionId": "emulation.toggle-device-mode",
-      "toggleable": true,
-      "className": "Emulation.DeviceModeWrapper.ActionDelegate",
-      "condition": "can_dock",
-      "title": "Toggle device toolbar",
-      "iconClass": "largeicon-phone",
-      "bindings": [
-        {
-          "platform": "windows,linux",
-          "shortcut": "Shift+Ctrl+M"
-        },
-        {
-          "platform": "mac",
-          "shortcut": "Shift+Meta+M"
-        }
-      ]
-    },
-    {
-      "type": "action",
-      "actionId": "emulation.capture-screenshot",
-      "category": "Screenshot",
-      "className": "Emulation.DeviceModeWrapper.ActionDelegate",
-      "condition": "can_dock",
-      "title": "Capture screenshot"
-    },
-    {
       "type": "context-menu-item",
       "location": "deviceModeMenu/save",
       "order": 12,
@@ -46,22 +18,6 @@
       "condition": "can_dock",
       "location": "main-toolbar-left",
       "order": 1
-    },
-    {
-      "type": "action",
-      "actionId": "emulation.capture-full-height-screenshot",
-      "category": "Screenshot",
-      "className": "Emulation.DeviceModeWrapper.ActionDelegate",
-      "condition": "can_dock",
-      "title": "Capture full size screenshot"
-    },
-    {
-      "type": "action",
-      "actionId": "emulation.capture-node-screenshot",
-      "category": "Screenshot",
-      "className": "Emulation.DeviceModeWrapper.ActionDelegate",
-      "condition": "can_dock",
-      "title": "Capture node screenshot"
     },
     {
       "type": "context-menu-item",
@@ -122,13 +78,6 @@
         }
       ],
       "tags": "device"
-    },
-    {
-      "type": "action",
-      "actionId": "emulation.show-sensors",
-      "category": "Sensors",
-      "title": "Sensors",
-      "className": "Emulation.SensorsView.ShowActionDelegate"
     },
     {
       "type": "setting",

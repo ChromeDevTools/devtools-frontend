@@ -348,9 +348,6 @@
   <message name="IDS_DEVTOOLS_a9c9b04b4bb57da48b29b4f40ffb2e89" desc="A tag of Sensors tool that can be searched in the command menu">
     device orientation
   </message>
-  <message name="IDS_DEVTOOLS_af29aa178ae43211319e28f627e96590" desc="Title of an action in the emulation tool to show sensors">
-    Sensors
-  </message>
   <message name="IDS_DEVTOOLS_b0ac9a67aaac87b4b70f5e1b7292b2cc" desc="A context menu item in the Device Mode Toolbar of the Device Toolbar">
     Fit to window (<ph name="THIS__MODEL_FITSCALE________">$1.0f<ex>30.0</ex></ph>%%)
   </message>

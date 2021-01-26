@@ -739,6 +739,9 @@ export const PresetOrientations = [{
   ]
 }];
 
+/** @type {!ShowActionDelegate} */
+let showActionDelegateInstance;
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
@@ -752,6 +755,17 @@ export class ShowActionDelegate {
   handleAction(context, actionId) {
     UI.ViewManager.ViewManager.instance().showView('sensors');
     return true;
+  }
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!showActionDelegateInstance || forceNew) {
+      showActionDelegateInstance = new ShowActionDelegate();
+    }
+
+    return showActionDelegateInstance;
   }
 }
 

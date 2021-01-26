@@ -1058,6 +1058,9 @@ export class NetworkDispatcher {
     this._startNetworkRequest(networkRequest, null);
   }
 
+  webTransportConnectionEstablished() {
+  }
+
   /**
    * @override
    * @param {!Protocol.Network.WebTransportClosedEvent} request

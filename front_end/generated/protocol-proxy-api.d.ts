@@ -1926,6 +1926,14 @@ declare namespace ProtocolProxyApi {
      */
     webTransportCreated(params: Protocol.Network.WebTransportCreatedEvent): void;
 
+    /**
+     * Fired when WebTransport handshake is finished.
+     */
+    webTransportConnectionEstablished(params: Protocol.Network.WebTransportConnectionEstablishedEvent): void;
+
+    /**
+     * Fired when WebTransport is disposed.
+     */
     webTransportClosed(params: Protocol.Network.WebTransportClosedEvent): void;
 
     /**

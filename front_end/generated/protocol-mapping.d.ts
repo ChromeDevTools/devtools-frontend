@@ -233,6 +233,13 @@ export namespace ProtocolMapping {
      * Fired upon WebTransport creation.
      */
     'Network.webTransportCreated': [Protocol.Network.WebTransportCreatedEvent];
+    /**
+     * Fired when WebTransport handshake is finished.
+     */
+    'Network.webTransportConnectionEstablished': [Protocol.Network.WebTransportConnectionEstablishedEvent];
+    /**
+     * Fired when WebTransport is disposed.
+     */
     'Network.webTransportClosed': [Protocol.Network.WebTransportClosedEvent];
     /**
      * Fired when additional information about a requestWillBeSent event is available from the

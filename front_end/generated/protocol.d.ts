@@ -8305,6 +8305,23 @@ declare namespace Protocol {
       initiator?: Initiator;
     }
 
+    /**
+     * Fired when WebTransport handshake is finished.
+     */
+    export interface WebTransportConnectionEstablishedEvent {
+      /**
+       * WebTransport identifier.
+       */
+      transportId: RequestId;
+      /**
+       * Timestamp.
+       */
+      timestamp: MonotonicTime;
+    }
+
+    /**
+     * Fired when WebTransport is disposed.
+     */
     export interface WebTransportClosedEvent {
       /**
        * WebTransport identifier.

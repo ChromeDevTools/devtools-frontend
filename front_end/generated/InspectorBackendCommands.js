@@ -1546,6 +1546,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent(
       'Network.webSocketWillSendHandshakeRequest', ['requestId', 'timestamp', 'wallTime', 'request']);
   inspectorBackend.registerEvent('Network.webTransportCreated', ['transportId', 'url', 'timestamp', 'initiator']);
+  inspectorBackend.registerEvent('Network.webTransportConnectionEstablished', ['transportId', 'timestamp']);
   inspectorBackend.registerEvent('Network.webTransportClosed', ['transportId', 'timestamp']);
   inspectorBackend.registerEvent(
       'Network.requestWillBeSentExtraInfo', ['requestId', 'associatedCookies', 'headers', 'clientSecurityState']);

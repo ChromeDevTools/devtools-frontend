@@ -32,6 +32,7 @@
     }
   ],
   "dependencies": [
+    "i18n",
     "text_editor",
     "ui",
     "platform",

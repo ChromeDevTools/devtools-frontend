@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -12,6 +13,14 @@ import {JSONView} from './JSONView.js';
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
 import {XMLView} from './XMLView.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Preview Factory of the Sources panel
+  */
+  nothingToPreview: 'Nothing to preview',
+};
+const str_ = i18n.i18n.registerUIStrings('source_frame/PreviewFactory.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PreviewFactory {
   /**
    * @param {!TextUtils.ContentProvider.ContentProvider} provider
@@ -36,7 +45,7 @@ export class PreviewFactory {
       return new UI.EmptyWidget.EmptyWidget(deferredContent.error);
     }
     if (!deferredContent.content) {
-      return new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Nothing to preview'));
+      return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.nothingToPreview));
     }
 
     let content = deferredContent.content;

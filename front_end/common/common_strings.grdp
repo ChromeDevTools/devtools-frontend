@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_194f5394ae2e9c74dc3c441b92862d1d" desc="Text that appears on a button for the font resource type filter.">
+    Font
+  </message>
   <message name="IDS_DEVTOOLS_1a318f774732db8f0e011aa3a75a751e" desc="Name of a network resource type">
     WebTransport
   </message>
@@ -47,6 +50,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b85815d04cec053ce6deb8021f2df1b8" desc="Name of a network resource type">
     Ping
+  </message>
+  <message name="IDS_DEVTOOLS_be53a0541a6d36f6ecb879fa2c584b08" desc="Text in Image View of the Sources panel">
+    Image
   </message>
   <message name="IDS_DEVTOOLS_bef61d7d03206d267fdbab45fdca247d" desc="Name of a network resource type">
     SignedExchange

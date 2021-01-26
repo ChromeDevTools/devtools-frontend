@@ -30,7 +30,6 @@
       <part file="../quick_open/quick_open_strings.grdp" />
       <part file="../resources/resources_strings.grdp" />
       <part file="../sdk/sdk_strings.grdp" />
-      <part file="../source_frame/source_frame_strings.grdp" />
       <part file="../sources/sources_strings.grdp" />
       <part file="../timeline/timeline_strings.grdp" />
       <part file="../timeline_model/timeline_model_strings.grdp" />

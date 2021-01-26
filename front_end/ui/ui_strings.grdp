@@ -36,6 +36,9 @@
   <message name="IDS_DEVTOOLS_3b41735478b3a3fd8bcc06f6c7a6b56c" desc="label to copy link address">
     Copy link address
   </message>
+  <message name="IDS_DEVTOOLS_4cfa6c981549e990fe2344e4c805405e" desc="Text to find an item">
+    Find
+  </message>
   <message name="IDS_DEVTOOLS_727b701bcc5f26422461f10c07a58d48" desc="Text for context menu action to move a tab to the main panel">
     Move to top
   </message>

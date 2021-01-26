@@ -30,8 +30,8 @@
 
 import * as Common from '../common/common.js';
 import * as Formatter from '../formatter/formatter.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
@@ -39,6 +39,49 @@ import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line 
 
 import {Events, SourcesTextEditor, SourcesTextEditorDelegate} from './SourcesTextEditor.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text for the source of something
+  */
+  source: 'Source',
+  /**
+  *@description Text to pretty print a file
+  */
+  prettyPrint: 'Pretty print',
+  /**
+  *@description Text when something is loading
+  */
+  loading: 'Loading…',
+  /**
+  *@description Text in Source Frame of the Sources panel
+  *@example {2} PH1
+  */
+  dSelectionRegions: '{PH1} selection regions',
+  /**
+  *@description Position indicator in Source Frame of the Sources panel
+  *@example {abc} PH1
+  */
+  bytecodePositionXs: 'Bytecode position 0x{PH1}',
+  /**
+  *@description Text in Source Frame of the Sources panel
+  *@example {2} PH1
+  *@example {2} PH2
+  */
+  lineSColumnS: 'Line {PH1}, Column {PH2}',
+  /**
+  *@description Text in Source Frame of the Sources panel
+  *@example {2} PH1
+  */
+  dCharactersSelected: '{PH1} characters selected',
+  /**
+  *@description Text in Source Frame of the Sources panel
+  *@example {2} PH1
+  *@example {2} PH2
+  */
+  dLinesDCharactersSelected: '{PH1} lines, {PH2} characters selected',
+};
+const str_ = i18n.i18n.registerUIStrings('source_frame/SourceFrame.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {UI.SearchableView.Searchable}
  * @implements {UI.SearchableView.Replaceable}
@@ -51,7 +94,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
    * @param {!UI.TextEditor.Options=} codeMirrorOptions
    */
   constructor(lazyContent, codeMirrorOptions) {
-    super(Common.UIString.UIString('Source'));
+    super(i18nString(UIStrings.source));
 
     this._lazyContent = lazyContent;
 
@@ -62,7 +105,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
     this._formattedContentPromise = null;
     /** @type {?Formatter.ScriptFormatter.FormatterSourceMapping} */
     this._formattedMap = null;
-    this._prettyToggle = new UI.Toolbar.ToolbarToggle(ls`Pretty print`, 'largeicon-pretty-print');
+    this._prettyToggle = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.prettyPrint), 'largeicon-pretty-print');
     this._prettyToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this._setPretty(!this._prettyToggle.toggled());
     });
@@ -316,7 +359,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
       this._contentRequested = true;
 
       const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
-      progressIndicator.setTitle(Common.UIString.UIString('Loading…'));
+      progressIndicator.setTitle(i18nString(UIStrings.loading));
       progressIndicator.setTotalWork(100);
       this._progressToolbarItem.element.appendChild(progressIndicator.element);
 
@@ -918,7 +961,7 @@ export class SourceFrameImpl extends UI.View.SimpleView {
       return;
     }
     if (selections.length > 1) {
-      this._sourcePosition.setText(Common.UIString.UIString('%d selection regions', selections.length));
+      this._sourcePosition.setText(i18nString(UIStrings.dSelectionRegions, {PH1: selections.length}));
       return;
     }
     let textRange = selections[0];
@@ -930,10 +973,10 @@ export class SourceFrameImpl extends UI.View.SimpleView {
         const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
         const bytecodeOffset = disassembly.lineNumberToBytecodeOffset(location[0]);
 
-        this._sourcePosition.setText(
-            ls`Bytecode position 0x${bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0')}`);
+        this._sourcePosition.setText(i18nString(
+            UIStrings.bytecodePositionXs, {PH1: bytecodeOffset.toString(16).padStart(bytecodeOffsetDigits, '0')}));
       } else {
-        this._sourcePosition.setText(ls`Line ${location[0] + 1}, Column ${location[1] + 1}`);
+        this._sourcePosition.setText(i18nString(UIStrings.lineSColumnS, {PH1: location[0] + 1, PH2: location[1] + 1}));
       }
       return;
     }
@@ -941,10 +984,11 @@ export class SourceFrameImpl extends UI.View.SimpleView {
 
     const selectedText = this._textEditor.text(textRange);
     if (textRange.startLine === textRange.endLine) {
-      this._sourcePosition.setText(Common.UIString.UIString('%d characters selected', selectedText.length));
+      this._sourcePosition.setText(i18nString(UIStrings.dCharactersSelected, {PH1: selectedText.length}));
     } else {
-      this._sourcePosition.setText(Common.UIString.UIString(
-          '%d lines, %d characters selected', textRange.endLine - textRange.startLine + 1, selectedText.length));
+      this._sourcePosition.setText(i18nString(
+          UIStrings.dLinesDCharactersSelected,
+          {PH1: textRange.endLine - textRange.startLine + 1, PH2: selectedText.length}));
     }
   }
 }

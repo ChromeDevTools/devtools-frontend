@@ -28,19 +28,62 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Image View of the Sources panel
+  */
+  image: 'Image',
+  /**
+  *@description Text that appears when user drag and drop something (for example, a file) in Image View of the Sources panel
+  */
+  dropImageFileHere: 'Drop image file here',
+  /**
+  *@description Text to indicate the source of an image
+  *@example {example.com} PH1
+  */
+  imageFromS: 'Image from {PH1}',
+  /**
+  *@description Text in Image View of the Sources panel
+  *@example {2} PH1
+  *@example {2} PH2
+  */
+  dD: '{PH1} × {PH2}',
+  /**
+  *@description A context menu item in the Image View of the Sources panel
+  */
+  copyImageUrl: 'Copy image URL',
+  /**
+  *@description A context menu item in the Image View of the Sources panel
+  */
+  copyImageAsDataUri: 'Copy image as data URI',
+  /**
+  *@description A context menu item in the Image View of the Sources panel
+  */
+  openImageInNewTab: 'Open image in new tab',
+  /**
+  *@description A context menu item in the Image Preview
+  */
+  saveImageAs: 'Save image as...',
+  /**
+  *@description The default file name when downloading a file
+  */
+  download: 'download',
+};
+const str_ = i18n.i18n.registerUIStrings('source_frame/ImageView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ImageView extends UI.View.SimpleView {
   /**
    * @param {string} mimeType
    * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
    */
   constructor(mimeType, contentProvider) {
-    super(Common.UIString.UIString('Image'));
+    super(i18nString(UIStrings.image));
     this.registerRequiredCSS('source_frame/imageView.css', {enableLegacyPatching: false});
     this.element.tabIndex = -1;
     this.element.classList.add('image-view');
@@ -55,8 +98,8 @@ export class ImageView extends UI.View.SimpleView {
       this._uiSourceCode.addEventListener(
           Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
       new UI.DropTarget.DropTarget(
-          this.element, [UI.DropTarget.Type.ImageFile, UI.DropTarget.Type.URI],
-          Common.UIString.UIString('Drop image file here'), this._handleDrop.bind(this));
+          this.element, [UI.DropTarget.Type.ImageFile, UI.DropTarget.Type.URI], i18nString(UIStrings.dropImageFileHere),
+          this._handleDrop.bind(this));
     }
     this._sizeLabel = new UI.Toolbar.ToolbarText();
     this._dimensionsLabel = new UI.Toolbar.ToolbarText();
@@ -115,12 +158,12 @@ export class ImageView extends UI.View.SimpleView {
       this._imagePreviewElement.onload = x;
     });
     this._imagePreviewElement.src = imageSrc;
-    this._imagePreviewElement.alt = ls`Image from ${this._url}`;
+    this._imagePreviewElement.alt = i18nString(UIStrings.imageFromS, {PH1: this._url});
     const size = content && !contentEncoded ? content.length : base64ToSize(content);
     this._sizeLabel.setText(Platform.NumberUtilities.bytesToString(size));
     await loadPromise;
-    this._dimensionsLabel.setText(Common.UIString.UIString(
-        '%d × %d', this._imagePreviewElement.naturalWidth, this._imagePreviewElement.naturalHeight));
+    this._dimensionsLabel.setText(i18nString(
+        UIStrings.dD, {PH1: this._imagePreviewElement.naturalWidth, PH2: this._imagePreviewElement.naturalHeight}));
   }
 
   /**
@@ -130,17 +173,15 @@ export class ImageView extends UI.View.SimpleView {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const parsedSrc = new Common.ParsedURL.ParsedURL(this._imagePreviewElement.src);
     if (!this._parsedURL.isDataURL()) {
-      contextMenu.clipboardSection().appendItem(
-          Common.UIString.UIString('Copy image URL'), this._copyImageURL.bind(this));
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyImageUrl), this._copyImageURL.bind(this));
     }
     if (parsedSrc.isDataURL()) {
       contextMenu.clipboardSection().appendItem(
-          Common.UIString.UIString('Copy image as data URI'), this._copyImageAsDataURL.bind(this));
+          i18nString(UIStrings.copyImageAsDataUri), this._copyImageAsDataURL.bind(this));
     }
 
-    contextMenu.clipboardSection().appendItem(
-        Common.UIString.UIString('Open image in new tab'), this._openInNewTab.bind(this));
-    contextMenu.clipboardSection().appendItem(ls`Save image as...`, async () => {
+    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.openImageInNewTab), this._openInNewTab.bind(this));
+    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.saveImageAs), async () => {
       await this._saveImage();
     });
 
@@ -175,7 +216,8 @@ export class ImageView extends UI.View.SimpleView {
     // When chrome saves a file, the file name characters that are not supported
     // by the OS will be replaced automatically. For example, in the Mac,
     // `:` it will be replaced with `_`.
-    link.download = this._parsedURL.isDataURL() ? ls`download` : decodeURIComponent(this._parsedURL.displayName);
+    link.download =
+        this._parsedURL.isDataURL() ? i18nString(UIStrings.download) : decodeURIComponent(this._parsedURL.displayName);
     link.click();
     link.remove();
   }

@@ -27,12 +27,20 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {SourceFrameImpl} from './SourceFrame.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to find an item
+  */
+  find: 'Find',
+};
+const str_ = i18n.i18n.registerUIStrings('source_frame/ResourceSourceFrame.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ResourceSourceFrame extends SourceFrameImpl {
   /**
    * @param {!TextUtils.ContentProvider.ContentProvider} resource
@@ -92,7 +100,7 @@ export class SearchableContainer extends UI.Widget.VBox {
     sourceFrame.setHighlighterType(highlighterType);
     const searchableView = new UI.SearchableView.SearchableView(sourceFrame, sourceFrame);
     searchableView.element.classList.add('searchable-view');
-    searchableView.setPlaceholder(ls`Find`);
+    searchableView.setPlaceholder(i18nString(UIStrings.find));
     sourceFrame.show(searchableView.element);
     sourceFrame.setSearchableView(searchableView);
     searchableView.show(this.contentElement);

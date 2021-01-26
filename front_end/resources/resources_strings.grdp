@@ -72,6 +72,9 @@
   <message name="IDS_DEVTOOLS_1484c5da7e524d160aa2b2d37e754479" desc="Tooltip in Application Panel Sidebar of the Application panel">
     Cookies used by frames from <ph name="COOKIEDOMAIN">$1s<ex>https://example.com</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_1583d36995134f9120fac115c08e0174" desc="Text when something is loading">
+    Loading…
+  </message>
   <message name="IDS_DEVTOOLS_15fa5e18dc110ac96ef35fd19abc78b3" desc="Text in Service Worker Cache Views of the Application panel">
     Time Cached
   </message>
@@ -210,6 +213,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_536cf547cb6ecfe32be6ed3ffdabf893" desc="Text of button in Clear Storage View of the Application panel">
     Clear site data
+  </message>
+  <message name="IDS_DEVTOOLS_53cd8180752335dce4f9b9ed493ef58d" desc="Text to indicate the source of an image">
+    Image from <ph name="URL">$1s<ex>example.com</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_54f664c70c22054ea0d8d26fc3997ce7" desc="Text to indicate the network connectivity is online">
     Online
@@ -731,6 +737,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_f18cd4b9f925d85b3a669adc015a9797" desc="Text used to show that data was retrieved from ServiceWorker Cache">
     <ph name="LOCKED_TERM">Service Worker</ph> Cache
+  </message>
+  <message name="IDS_DEVTOOLS_f31bbdd1b3e85bccd652680e16935819" desc="Text for the source of something">
+    Source
   </message>
   <message name="IDS_DEVTOOLS_f4d6426949b935ced95ef5e5d0bc5ef5" desc="Manifest installability error in the Application panel">
     No Play store ID provided

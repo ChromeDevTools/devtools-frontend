@@ -539,6 +539,7 @@ all_typescript_module_sources = [
   "source_frame/FontView.js",
   "source_frame/ImageView.js",
   "source_frame/JSONView.js",
+  "source_frame/ModuleUIStrings.js",
   "source_frame/PreviewFactory.js",
   "source_frame/ResourceSourceFrame.js",
   "source_frame/SourceCodeDiff.js",

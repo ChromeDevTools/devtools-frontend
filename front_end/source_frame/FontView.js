@@ -26,23 +26,35 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text that appears on a button for the font resource type filter.
+  */
+  font: 'Font',
+  /**
+  *@description Aria accessible name in Font View of the Sources panel
+  *@example {https://example.com} PH1
+  */
+  previewOfFontFromS: 'Preview of font from {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('source_frame/FontView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FontView extends UI.View.SimpleView {
   /**
    * @param {string} mimeType
    * @param {!TextUtils.ContentProvider.ContentProvider} contentProvider
    */
   constructor(mimeType, contentProvider) {
-    super(Common.UIString.UIString('Font'));
+    super(i18nString(UIStrings.font));
     this.registerRequiredCSS('source_frame/fontView.css', {enableLegacyPatching: false});
     this.element.classList.add('font-view');
     this._url = contentProvider.contentURL();
-    UI.ARIAUtils.setAccessibleName(this.element, ls`Preview of font from ${this._url}`);
+    UI.ARIAUtils.setAccessibleName(this.element, i18nString(UIStrings.previewOfFontFromS, {PH1: this._url}));
     this._mimeType = mimeType;
     this._contentProvider = contentProvider;
     this._mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);

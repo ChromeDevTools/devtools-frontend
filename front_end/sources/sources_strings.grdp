@@ -225,6 +225,9 @@
   <message name="IDS_DEVTOOLS_590d0b32e1139c6c3bcb0f99ed978dff" desc="Text in Debugger Paused Message of the Sources panel">
     subtree modifications
   </message>
+  <message name="IDS_DEVTOOLS_59cc7cb8dfb2491cc5dfe8ebc546d797" desc="Text to pretty print a file">
+    Pretty print
+  </message>
   <message name="IDS_DEVTOOLS_59fe6bacadef75366d20976814bd7e78" desc="Label of a button in the Sources panel to pretty-print the current file">
     Pretty-print
   </message>

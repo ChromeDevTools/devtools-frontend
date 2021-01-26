@@ -28,12 +28,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to find an item
+  */
+  find: 'Find',
+};
+const str_ = i18n.i18n.registerUIStrings('source_frame/JSONView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {UI.SearchableView.Searchable}
  */
@@ -75,7 +83,7 @@ export class JSONView extends UI.Widget.VBox {
 
     const jsonView = new JSONView(parsedJSON);
     const searchableView = new UI.SearchableView.SearchableView(jsonView, null);
-    searchableView.setPlaceholder(Common.UIString.UIString('Find'));
+    searchableView.setPlaceholder(i18nString(UIStrings.find));
     jsonView._searchableView = searchableView;
     jsonView.show(searchableView.element);
     return searchableView;
@@ -88,7 +96,7 @@ export class JSONView extends UI.Widget.VBox {
   static createViewSync(obj) {
     const jsonView = new JSONView(new ParsedJSON(obj, '', ''));
     const searchableView = new UI.SearchableView.SearchableView(jsonView, null);
-    searchableView.setPlaceholder(Common.UIString.UIString('Find'));
+    searchableView.setPlaceholder(i18nString(UIStrings.find));
     jsonView._searchableView = searchableView;
     jsonView.show(searchableView.element);
     jsonView.element.tabIndex = 0;

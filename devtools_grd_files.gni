@@ -961,6 +961,7 @@ grd_files_debug_sources = [
   "front_end/source_frame/FontView.js",
   "front_end/source_frame/ImageView.js",
   "front_end/source_frame/JSONView.js",
+  "front_end/source_frame/ModuleUIStrings.js",
   "front_end/source_frame/PreviewFactory.js",
   "front_end/source_frame/ResourceSourceFrame.js",
   "front_end/source_frame/SourceCodeDiff.js",

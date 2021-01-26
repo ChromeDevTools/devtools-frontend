@@ -40,9 +40,6 @@
   <message name="IDS_DEVTOOLS_146ffe2fd9fa5bec3b63b52543793ec7" desc="Text to show more content">
     Show more
   </message>
-  <message name="IDS_DEVTOOLS_1583d36995134f9120fac115c08e0174" desc="Text when something is loading">
-    Loading…
-  </message>
   <message name="IDS_DEVTOOLS_16f78b9465f03f7ec5a03c24918fbde3" desc="Status code of an event">
     Status Code
   </message>
@@ -54,9 +51,6 @@
   </message>
   <message name="IDS_DEVTOOLS_193cfc9be3b995831c6af2fea6650e60" desc="Text that refers to one or a group of webpages">
     Page
-  </message>
-  <message name="IDS_DEVTOOLS_194f5394ae2e9c74dc3c441b92862d1d" desc="Text that appears on a button for the font resource type filter.">
-    Font
   </message>
   <message name="IDS_DEVTOOLS_1b1ac1c7a54457ce73ddd25a5b51c47d" desc="A title of the 'Drawer sidebar' @UI.ViewLocationResolver category">
     Drawer sidebar
@@ -125,9 +119,6 @@
   <message name="IDS_DEVTOOLS_4cc6684df7b4a92b1dec6fce3264fac8" desc="Text describing global shortcuts and settings that are available throughout the DevTools">
     Global
   </message>
-  <message name="IDS_DEVTOOLS_4cfa6c981549e990fe2344e4c805405e" desc="Text to find an item">
-    Find
-  </message>
   <message name="IDS_DEVTOOLS_4dab36ac83853282fc0d7bae20c19e90" desc="Text to show more options">
     More options
   </message>
@@ -143,14 +134,8 @@
   <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Text for the execution stack trace">
     Stack Trace
   </message>
-  <message name="IDS_DEVTOOLS_53cd8180752335dce4f9b9ed493ef58d" desc="Text to indicate the source of an image">
-    Image from <ph name="URL">$1s<ex>example.com</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_597b56e53847cd6a4712ac183f61fa68" desc="Text for web cookies">
     Cookies
-  </message>
-  <message name="IDS_DEVTOOLS_59cc7cb8dfb2491cc5dfe8ebc546d797" desc="Text to pretty print a file">
-    Pretty print
   </message>
   <message name="IDS_DEVTOOLS_5de39fa1bce4bbf9232597a2120bc4d4" desc="Text to open the cubic bezier editor">
     Open cubic bezier editor.
@@ -335,9 +320,6 @@
   <message name="IDS_DEVTOOLS_bccaa4aa80831b76c11240a16447975f" desc="Title of the Console tool">
     Console
   </message>
-  <message name="IDS_DEVTOOLS_be53a0541a6d36f6ecb879fa2c584b08" desc="Text in Image View of the Sources panel">
-    Image
-  </message>
   <message name="IDS_DEVTOOLS_be8545ae7ab0276e15898aae7acfbd7a" desc="Text that refers to the resources of the web page">
     Resource
   </message>
@@ -442,9 +424,6 @@
   </message>
   <message name="IDS_DEVTOOLS_f2a6c498fb90ee345d997f888fce3b18" desc="Text to delete something">
     Delete
-  </message>
-  <message name="IDS_DEVTOOLS_f31bbdd1b3e85bccd652680e16935819" desc="Text for the source of something">
-    Source
   </message>
   <message name="IDS_DEVTOOLS_f53944c3a55bdb5ad65c6226e358a626" desc="Text to undock the DevTools">
     Undock into separate window

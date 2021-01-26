@@ -8,45 +8,30 @@ import("../third_party/typescript/typescript.gni")
 
 group("front_end") {
   public_deps = [
+    ":devtools_app",
     ":entrypoint_copy",
     ":html_entrypoints",
+    ":inspector",
+    ":js_app",
     ":legacy_entrypoints",
+    ":ndb_app",
+    ":node_app",
+    ":shell",
+    ":toolbox",
     ":ts_library-verification",
-    "accessibility:bundle",
-    "accessibility:meta",
-    "animation:bundle",
-    "animation:meta",
+    ":worker_app",
     "bindings:bundle",
-    "browser_debugger:bundle",
-    "browser_debugger:meta",
-    "browser_sdk:bundle",
-    "browser_sdk:meta",
-    "changes:bundle",
-    "changes:meta",
     "client_variations:bundle",
     "color_picker:bundle",
     "common:bundle",
     "component_helpers:bundle",
     "components:bundle",
-    "console:bundle",
-    "console:meta",
     "console_counters:bundle",
     "cookie_table:bundle",
-    "coverage:bundle",
-    "coverage:meta",
-    "css_overview:bundle",
-    "css_overview:meta",
     "data_grid:bundle",
-    "developer_resources:bundle",
-    "developer_resources:meta",
     "devices:bundle",
     "diff:bundle",
-    "dom_extension:bundle",
-    "elements:bundle",
-    "elements:meta",
     "emulated_devices/optimized:optimized_emulated_devices",
-    "emulation:bundle",
-    "emulation:meta",
     "event_listeners:bundle",
     "extensions:bundle",
     "formatter:bundle",
@@ -54,66 +39,24 @@ group("front_end") {
     "har_importer:bundle",
     "heap_snapshot_model:bundle",
     "heap_snapshot_worker:worker_entrypoint",
-    "help:bundle",
-    "help:meta",
     "i18n:bundle",
     "inline_editor:bundle",
-    "input:bundle",
-    "input:meta",
-    "inspector_main:bundle",
-    "inspector_main:meta",
-    "issues:bundle",
-    "issues:meta",
     "javascript_metadata:bundle",
     "js_main:bundle",
-    "js_profiler:bundle",
-    "js_profiler:meta",
     "layer_viewer:bundle",
-    "layers:bundle",
-    "layers:meta",
-    "lighthouse:bundle",
-    "lighthouse:meta",
     "lighthouse_worker:bundle",
-    "linear_memory_inspector:bundle",
-    "linear_memory_inspector:meta",
     "main:bundle",
-    "media:bundle",
-    "media:meta",
-    "mobile_throttling:bundle",
-    "mobile_throttling:meta",
-    "network:bundle",
-    "network:meta",
-    "node_debugger:bundle",
-    "node_debugger:meta",
-    "node_main:bundle",
-    "node_main:meta",
     "object_ui:bundle",
     "perf_ui:bundle",
-    "performance_monitor:bundle",
-    "performance_monitor:meta",
-    "persistence:bundle",
-    "persistence:meta",
-    "profiler:bundle",
-    "profiler:meta",
     "protocol_client:bundle",
-    "protocol_monitor:bundle",
-    "protocol_monitor:meta",
     "quick_open:bundle",
     "recorder:bundle",
-    "resources:bundle",
-    "resources:meta",
     "screencast:bundle",
     "sdk:bundle",
     "search:bundle",
-    "security:bundle",
-    "security:meta",
     "services:bundle",
-    "settings:bundle",
-    "settings:meta",
     "snippets:bundle",
     "source_frame:bundle",
-    "sources:bundle",
-    "sources:meta",
     "startup:bundle",
     "test_runner:bundle",
     "text_editor:bundle",
@@ -121,17 +64,11 @@ group("front_end") {
     "theme_support:bundle",
     "third_party/lighthouse",
     "third_party/puppeteer:bundle",
-    "timeline:bundle",
-    "timeline:meta",
     "timeline_model:bundle",
     "toolbox_bootstrap:bundle",
     "ui:bundle",
     "ui/components:bundle",
     "wasmparser_worker:worker_entrypoint",
-    "web_audio:bundle",
-    "web_audio:meta",
-    "webauthn:bundle",
-    "webauthn:meta",
     "worker_main:bundle",
     "worker_service:bundle",
     "workspace:bundle",
@@ -260,6 +197,122 @@ group("legacy_entrypoints") {
     "worker_main:legacy",
     "workspace:legacy",
     "workspace_diff:legacy",
+  ]
+}
+
+ts_library("shell") {
+  sources = [ "shell.js" ]
+
+  deps = [
+    "bindings:legacy",
+    "browser_sdk:meta",
+    "changes:meta",
+    "components:legacy",
+    "console:meta",
+    "console_counters:legacy",
+    "coverage:meta",
+    "dom_extension:bundle",
+    "extensions:legacy",
+    "host:legacy",
+    "input:meta",
+    "linear_memory_inspector:meta",
+    "persistence:legacy",
+    "persistence:meta",
+    "profiler:meta",
+    "protocol_client:legacy",
+    "protocol_monitor:meta",
+    "sdk:legacy",
+    "services:legacy",
+    "settings:meta",
+    "sources:meta",
+    "startup:bundle",
+    "ui:legacy",
+    "workspace:legacy",
+  ]
+}
+
+ts_library("devtools_app") {
+  sources = [ "devtools_app.js" ]
+
+  deps = [
+    ":shell",
+    "accessibility:meta",
+    "animation:meta",
+    "browser_debugger:meta",
+    "css_overview:meta",
+    "developer_resources:meta",
+    "elements:meta",
+    "emulation:meta",
+    "help:meta",
+    "inspector_main:meta",
+    "issues:meta",
+    "layers:meta",
+    "lighthouse:meta",
+    "media:meta",
+    "mobile_throttling:meta",
+    "network:meta",
+    "performance_monitor:meta",
+    "resources:meta",
+    "security:meta",
+    "startup:bundle",
+    "timeline:meta",
+    "web_audio:meta",
+    "webauthn:meta",
+  ]
+}
+
+ts_library("inspector") {
+  sources = [ "inspector.js" ]
+
+  deps = [
+    ":devtools_app",
+    "startup:bundle",
+  ]
+}
+
+ts_library("js_app") {
+  sources = [ "js_app.js" ]
+
+  deps = [
+    ":shell",
+    "js_profiler:meta",
+    "startup:bundle",
+  ]
+}
+
+ts_library("ndb_app") {
+  sources = [ "ndb_app.js" ]
+
+  deps = [
+    ":shell",
+    "startup:bundle",
+  ]
+}
+
+ts_library("node_app") {
+  sources = [ "node_app.js" ]
+
+  deps = [
+    ":shell",
+    "js_profiler:meta",
+    "node_debugger:meta",
+    "node_main:meta",
+    "startup:bundle",
+  ]
+}
+
+ts_library("toolbox") {
+  sources = [ "toolbox.js" ]
+
+  deps = [ "startup:bundle" ]
+}
+
+ts_library("worker_app") {
+  sources = [ "worker_app.js" ]
+
+  deps = [
+    ":shell",
+    "startup:bundle",
   ]
 }
 

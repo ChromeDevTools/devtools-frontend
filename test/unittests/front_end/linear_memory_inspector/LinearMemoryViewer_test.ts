@@ -87,7 +87,7 @@ describe('LinearMemoryViewer', () => {
     assert.strictEqual(event.data, expectedAddress);
   }
 
-  it('correctly renders bytes given a memory offset greater than zero', async () => {
+  it('correctly renders bytes given a memory offset greater than zero', () => {
     const data = createComponentData();
     data.memoryOffset = 1;
     assert.isAbove(data.address, data.memoryOffset);
@@ -111,7 +111,6 @@ describe('LinearMemoryViewer', () => {
     thinWrapper.style.display = 'flex';
     thinWrapper.appendChild(component);
     renderElementIntoDOM(thinWrapper);
-
 
     const eventPromise = getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ResizeEvent>(component, 'resize');
     thinWrapper.style.width = '800px';
@@ -146,7 +145,7 @@ describe('LinearMemoryViewer', () => {
     }
   });
 
-  it('renders unsplittable byte group', async () => {
+  it('renders unsplittable byte group', () => {
     const thinWrapper = document.createElement('div');
     thinWrapper.style.width = '10px';
 
@@ -234,7 +233,7 @@ describe('LinearMemoryViewer', () => {
     assert.strictEqual(address, data.memoryOffset);
   });
 
-  it('highlights selected byte value on setting an address', async () => {
+  it('highlights selected byte value on setting an address', () => {
     const component = new LinearMemoryInspector.LinearMemoryViewer.LinearMemoryViewer();
     const memory = new Uint8Array([2, 3, 5, 3]);
     const address = 2;

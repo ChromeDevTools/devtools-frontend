@@ -25,7 +25,7 @@ describe('ValueInterpreterSettings', () => {
     return {component, data};
   }
 
-  it('renders all checkboxes', async () => {
+  it('renders all checkboxes', () => {
     const {component} = setUpComponent();
     const checkboxes = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, HTMLLabelElement);
     const checkboxLabels = Array.from(checkboxes, checkbox => checkbox.getAttribute('title'));
@@ -61,7 +61,7 @@ describe('ValueInterpreterSettings', () => {
     }
   });
 
-  it('correctly shows checkboxes as checked/unchecked', async () => {
+  it('correctly shows checkboxes as checked/unchecked', () => {
     const {component, data} = setUpComponent();
     const labels = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, HTMLLabelElement);
     const elements = Array.from(labels).map(label => {

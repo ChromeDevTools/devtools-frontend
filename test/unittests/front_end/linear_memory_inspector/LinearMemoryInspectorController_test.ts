@@ -79,7 +79,7 @@ describe('LinearMemoryInspectorController', () => {
   });
 });
 
-describe('RemoteArrayBufferWrapper', async () => {
+describe('RemoteArrayBufferWrapper', () => {
   it('correctly wraps the remote object', async () => {
     const array = new Uint8Array([2, 4, 6, 2, 4]);
     const wrapper = createWrapper(array);

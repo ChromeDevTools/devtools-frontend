@@ -43,18 +43,18 @@ describe('LinearMemoryValueInterpreter', () => {
     return component;
   }
 
-  it('renders the settings toolbar', async () => {
+  it('renders the settings toolbar', () => {
     const component = setUpComponent();
     const settingsToolbar = getElementWithinComponent(component, TOOLBAR_SELECTOR, HTMLDivElement);
     assert.isNotNull(settingsToolbar);
   });
 
-  it('renders value display as default', async () => {
+  it('renders value display as default', () => {
     const component = setUpComponent();
     assertDisplayRenders(component);
   });
 
-  it('switches between value display and value settings', async () => {
+  it('switches between value display and value settings', () => {
     const component = setUpComponent();
     assertDisplayRenders(component);
 
@@ -82,7 +82,7 @@ describe('LinearMemoryValueInterpreter', () => {
     assert.strictEqual(event.data.checked, expectedChecked);
   });
 
-  it('renders the endianness options', async () => {
+  it('renders the endianness options', () => {
     const component = setUpComponent();
     const input = getElementWithinComponent(component, ENDIANNESS_SELECTOR, HTMLSelectElement);
     assert.deepEqual(input.value, LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness.Little);

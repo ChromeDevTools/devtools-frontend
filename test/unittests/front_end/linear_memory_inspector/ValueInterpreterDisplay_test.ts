@@ -65,7 +65,7 @@ describe('ValueInterpreterDisplay', () => {
   }
 
   it('correctly formats signed/unsigned and endianness for Integer 8-bit (decimal)',
-     async () => {
+     () => {
        const formatData = {
          buffer: new ArrayBuffer(1),
          type: LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int8,
@@ -75,7 +75,7 @@ describe('ValueInterpreterDisplay', () => {
      });
 
   it('correctly formats signed/unsigned and endianness for Integer 16-bit (decimal)',
-     async () => {
+     () => {
        const formatData = {
          buffer: new ArrayBuffer(2),
          type: LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int16,
@@ -86,7 +86,7 @@ describe('ValueInterpreterDisplay', () => {
      });
 
   it('correctly formats signed/unsigned and endianness for Integer 32-bit (decimal)',
-     async () => {
+     () => {
        const formatData = {
          buffer: new ArrayBuffer(4),
          type: LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int32,
@@ -97,7 +97,7 @@ describe('ValueInterpreterDisplay', () => {
      });
 
   it('correctly formats signed/unsigned and endianness for Integer 64-bit (decimal)',
-     async () => {
+     () => {
        const formatData = {
          buffer: new ArrayBuffer(8),
          type: LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Int64,
@@ -108,7 +108,7 @@ describe('ValueInterpreterDisplay', () => {
      });
 
   it('correctly formats endianness for Float 32-bit (decimal)',
-     async () => {
+     () => {
        const formatData = {
          buffer: new ArrayBuffer(4),
          type: LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float32,
@@ -119,7 +119,7 @@ describe('ValueInterpreterDisplay', () => {
      });
 
   it('correctly formats endianness for Float 64-bit (decimal)',
-     async () => {
+     () => {
        const formatData = {
          buffer: new ArrayBuffer(8),
          type: LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType.Float64,
@@ -129,49 +129,49 @@ describe('ValueInterpreterDisplay', () => {
        testNumberFormatCombinations(formatData, combinationsForNumbers);
      });
 
-  it('correctly formats floats in decimal mode', async () => {
+  it('correctly formats floats in decimal mode', () => {
     const expectedFloat = 341.34;
     const actualValue = LinearMemoryInspector.ValueInterpreterDisplayUtils.formatFloat(
         expectedFloat, LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal);
     assert.strictEqual(actualValue, '341.34');
   });
 
-  it('correctly formats floats in scientific mode', async () => {
+  it('correctly formats floats in scientific mode', () => {
     const expectedFloat = 341.34;
     const actualValue = LinearMemoryInspector.ValueInterpreterDisplayUtils.formatFloat(
         expectedFloat, LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Scientific);
     assert.strictEqual(actualValue, '3.41e+2');
   });
 
-  it('correctly formats integers in decimal mode', async () => {
+  it('correctly formats integers in decimal mode', () => {
     const expectedInteger = 120;
     const actualValue = LinearMemoryInspector.ValueInterpreterDisplayUtils.formatInteger(
         expectedInteger, LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal);
     assert.strictEqual(actualValue, '120');
   });
 
-  it('correctly formats integers in hexadecimal mode', async () => {
+  it('correctly formats integers in hexadecimal mode', () => {
     const expectedInteger = 16;
     const actualValue = LinearMemoryInspector.ValueInterpreterDisplayUtils.formatInteger(
         expectedInteger, LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal);
     assert.strictEqual(actualValue, '10');
   });
 
-  it('correctly formats integers in octal mode', async () => {
+  it('correctly formats integers in octal mode', () => {
     const expectedInteger = 16;
     const actualValue = LinearMemoryInspector.ValueInterpreterDisplayUtils.formatInteger(
         expectedInteger, LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Octal);
     assert.strictEqual(actualValue, '20');
   });
 
-  it('correctly formats integers in octal mode', async () => {
+  it('correctly formats integers in octal mode', () => {
     const expectedInteger = 16;
     const actualValue = LinearMemoryInspector.ValueInterpreterDisplayUtils.formatInteger(
         expectedInteger, LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode.Octal);
     assert.strictEqual(actualValue, '20');
   });
 
-  it('renders value in selected LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypes', async () => {
+  it('renders value in selected LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypes', () => {
     const component = new LinearMemoryInspector.ValueInterpreterDisplay.ValueInterpreterDisplay();
     const array = [1, 132, 172, 71];
     component.data = {

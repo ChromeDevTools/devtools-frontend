@@ -51,7 +51,7 @@ describe('LinearMemoryNavigator', () => {
     ]);
   }
 
-  it('renders navigator address', async () => {
+  it('renders navigator address', () => {
     const shadowRoot = component.shadowRoot;
     assertShadowRoot(shadowRoot);
     const input = shadowRoot.querySelector(NAVIGATOR_ADDRESS_SELECTOR);
@@ -59,7 +59,7 @@ describe('LinearMemoryNavigator', () => {
     assert.strictEqual(input.value, '20');
   });
 
-  it('re-renders address on address change', async () => {
+  it('re-renders address on address change', () => {
     component.data = {
       address: '16',
       valid: true,
@@ -95,12 +95,12 @@ describe('LinearMemoryNavigator', () => {
     await assertNavigationEvents('page-navigation');
   });
 
-  it('shows tooltip on hovering over address', async () => {
+  it('shows tooltip on hovering over address', () => {
     const input = getElementWithinComponent(component, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);
     assert.strictEqual(input.title, 'Enter address');
   });
 
-  it('shows tooltip with error and selects all text on submitting invalid address input', async () => {
+  it('shows tooltip with error and selects all text on submitting invalid address input', () => {
     const error = 'Address is invalid';
     const invalidAddress = '60';
     component.data = {
@@ -119,7 +119,7 @@ describe('LinearMemoryNavigator', () => {
     }
   });
 
-  it('shows tooltip with invalid address on hovering over address', async () => {
+  it('shows tooltip with invalid address on hovering over address', () => {
     const error = 'Address is invalid';
     component.data = {
       address: '60',
@@ -131,7 +131,7 @@ describe('LinearMemoryNavigator', () => {
     assert.strictEqual(input.title, error);
   });
 
-  it('shows tooltip on page navigation buttons', async () => {
+  it('shows tooltip on page navigation buttons', () => {
     const buttons = getElementsWithinComponent(component, NAVIGATOR_PAGE_BUTTON_SELECTOR, HTMLButtonElement);
     assert.lengthOf(buttons, 2);
     const pageBack = buttons[0];
@@ -141,7 +141,7 @@ describe('LinearMemoryNavigator', () => {
     assert.strictEqual(pageForward.title, 'Next page');
   });
 
-  it('shows tooltip on history navigation buttons', async () => {
+  it('shows tooltip on history navigation buttons', () => {
     const buttons = getElementsWithinComponent(component, NAVIGATOR_HISTORY_BUTTON_SELECTOR, HTMLButtonElement);
     assert.lengthOf(buttons, 2);
     const historyBack = buttons[0];
@@ -151,7 +151,7 @@ describe('LinearMemoryNavigator', () => {
     assert.strictEqual(historyForward.title, 'Go forward in address history');
   });
 
-  it('shows tooltip on refresh button', async () => {
+  it('shows tooltip on refresh button', () => {
     const refreshButton = getElementWithinComponent(component, NAVIGATOR_REFRESH_BUTTON_SELECTOR, HTMLButtonElement);
 
     assert.strictEqual(refreshButton.title, 'Refresh');

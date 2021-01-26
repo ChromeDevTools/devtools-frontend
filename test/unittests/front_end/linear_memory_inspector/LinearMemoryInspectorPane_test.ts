@@ -15,7 +15,7 @@ function createArray() {
   return new Uint8Array(array);
 }
 
-describeWithEnvironment('LinearMemoryInspectorPane', async () => {
+describeWithEnvironment('LinearMemoryInspectorPane', () => {
   let LinearMemoryInspector: typeof LinearMemoryInspectorModule;
 
   before(async () => {

@@ -75,19 +75,19 @@ describe('LinearMemoryInspector', () => {
     assert.strictEqual(address.title, expectedTooltip);
   }
 
-  it('renders the navigator component', async () => {
+  it('renders the navigator component', () => {
     const {component} = setUpComponent();
     const navigator = getNavigator(component);
     assert.isNotNull(navigator);
   });
 
-  it('renders the viewer component', async () => {
+  it('renders the viewer component', () => {
     const {component} = setUpComponent();
     const viewer = getViewer(component);
     assert.isNotNull(viewer);
   });
 
-  it('renders the interpreter component', async () => {
+  it('renders the interpreter component', () => {
     const {component} = setUpComponent();
     const interpreter = getValueInterpreter(component);
     assert.isNotNull(interpreter);
@@ -130,7 +130,7 @@ describe('LinearMemoryInspector', () => {
     }
   });
 
-  it('can turn the page back and forth', async () => {
+  it('can turn the page back and forth', () => {
     const {component} = setUpComponent();
     const navigator = getNavigator(component);
     const buttons = getElementsWithinComponent(navigator, NAVIGATOR_PAGE_BUTTON_SELECTOR, HTMLButtonElement);
@@ -154,7 +154,7 @@ describe('LinearMemoryInspector', () => {
     assert.strictEqual(addressAfter, Math.max(0, expectedAddressAfter));
   });
 
-  it('synchronizes selected addresses in navigator and viewer', async () => {
+  it('synchronizes selected addresses in navigator and viewer', () => {
     const {component, data} = setUpComponent();
     const navigator = getNavigator(component);
 
@@ -167,7 +167,7 @@ describe('LinearMemoryInspector', () => {
     assert.strictEqual(actualByteValue, expectedByteValue);
   });
 
-  it('can change endianness settings on event', async () => {
+  it('can change endianness settings on event', () => {
     const {component} = setUpComponent();
     const interpreter = getValueInterpreter(component);
     const select = getElementWithinComponent(interpreter, ENDIANNESS_SELECTOR, HTMLSelectElement);
@@ -257,37 +257,37 @@ describe('LinearMemoryInspector', () => {
         LinearMemoryInspector.LinearMemoryInspectorUtils.toHexString({number, pad: 0, prefix: false}), '17');
   });
 
-  it('formats a hexadecimal number and adds padding', async () => {
+  it('formats a hexadecimal number and adds padding', () => {
     const number = 23;
     assert.strictEqual(
         LinearMemoryInspector.LinearMemoryInspectorUtils.toHexString({number, pad: 5, prefix: false}), '00017');
   });
 
-  it('formats a hexadecimal number and adds prefix', async () => {
+  it('formats a hexadecimal number and adds prefix', () => {
     const number = 23;
     assert.strictEqual(
         LinearMemoryInspector.LinearMemoryInspectorUtils.toHexString({number, pad: 5, prefix: true}), '0x00017');
   });
 
-  it('can parse a valid hexadecimal address', async () => {
+  it('can parse a valid hexadecimal address', () => {
     const address = '0xa';
     const parsedAddress = LinearMemoryInspector.LinearMemoryInspectorUtils.parseAddress(address);
     assert.strictEqual(parsedAddress, 10);
   });
 
-  it('can parse a valid decimal address', async () => {
+  it('can parse a valid decimal address', () => {
     const address = '20';
     const parsedAddress = LinearMemoryInspector.LinearMemoryInspectorUtils.parseAddress(address);
     assert.strictEqual(parsedAddress, 20);
   });
 
-  it('returns undefined on parsing invalid address', async () => {
+  it('returns undefined on parsing invalid address', () => {
     const address = '20a';
     const parsedAddress = LinearMemoryInspector.LinearMemoryInspectorUtils.parseAddress(address);
     assert.strictEqual(parsedAddress, undefined);
   });
 
-  it('returns undefined on parsing negative address', async () => {
+  it('returns undefined on parsing negative address', () => {
     const address = '-20';
     const parsedAddress = LinearMemoryInspector.LinearMemoryInspectorUtils.parseAddress(address);
     assert.strictEqual(parsedAddress, undefined);

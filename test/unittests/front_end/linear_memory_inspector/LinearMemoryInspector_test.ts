@@ -94,7 +94,7 @@ describe('LinearMemoryInspector', () => {
   });
 
   it('can navigate addresses back and forth in history', async () => {
-    const {component} = setUpComponent();
+    const {component, data: {address}} = setUpComponent();
 
     const navigator = getNavigator(component);
     const buttons = getElementsWithinComponent(navigator, NAVIGATOR_HISTORY_BUTTON_SELECTOR, HTMLButtonElement);
@@ -103,10 +103,10 @@ describe('LinearMemoryInspector', () => {
     const viewer = getViewer(component);
     const byteCells = getElementsWithinComponent(viewer, VIEWER_BYTE_CELL_SELECTOR, HTMLSpanElement);
 
-    const visitedByteValue = [];
+    const visitedByteValue = [address];
     const historyLength = Math.min(byteCells.length, 10);
 
-    for (let i = 0; i < historyLength; ++i) {
+    for (let i = 1; i < historyLength; ++i) {
       const byteSelectedPromise =
           getEventPromise<LinearMemoryInspector.LinearMemoryViewer.ByteSelectedEvent>(viewer, 'byte-selected');
       byteCells[i].click();

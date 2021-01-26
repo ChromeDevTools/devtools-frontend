@@ -96,10 +96,9 @@ export class LinearMemoryInspector extends HTMLElement {
     }
 
     this.memory = data.memory;
-    this.address = data.address;
     this.memoryOffset = data.memoryOffset;
     this.outerMemoryLength = data.outerMemoryLength;
-    this.dispatchEvent(new AddressChangedEvent(this.address));
+    this.setAddress(data.address);
     this.render();
   }
 
@@ -236,10 +235,7 @@ export class LinearMemoryInspector extends HTMLElement {
       console.warn(`Specified address is out of bounds: ${address}`);
       return;
     }
-    const historyEntry = new AddressHistoryEntry(address, () => this.jumpToAddress(address));
-    this.history.push(historyEntry);
-    this.address = address;
-    this.dispatchEvent(new AddressChangedEvent(this.address));
+    this.setAddress(address);
     this.update();
   }
 
@@ -262,6 +258,13 @@ export class LinearMemoryInspector extends HTMLElement {
     } else {
       this.render();
     }
+  }
+
+  private setAddress(address: number): void {
+    const historyEntry = new AddressHistoryEntry(address, () => this.jumpToAddress(address));
+    this.history.push(historyEntry);
+    this.address = address;
+    this.dispatchEvent(new AddressChangedEvent(this.address));
   }
 }
 

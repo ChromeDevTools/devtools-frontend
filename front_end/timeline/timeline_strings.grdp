@@ -723,6 +723,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_97c091732895087b8900d81105e54446" desc="Text in Timeline UIUtils of the Performance panel">
     Frame Start (main thread)
   </message>
+  <message name="IDS_DEVTOOLS_9841bdc50c4226cb6ec5db76494249e6" desc="Title of the 'Coverage' tool in the bottom drawer">
+    Coverage
+  </message>
   <message name="IDS_DEVTOOLS_98c73d6c3224147daa72bc8489788a4f" desc="Command for showing the 'JavaScript Profiler' tool">
     Show JavaScript Profiler
   </message>

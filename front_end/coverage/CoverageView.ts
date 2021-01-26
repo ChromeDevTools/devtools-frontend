@@ -524,6 +524,8 @@ export class CoverageView extends UI.Widget.VBox {
   static readonly _extensionBindingsURLPrefix = 'extensions::';
 }
 
+let actionDelegateInstance: ActionDelegate;
+
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     const coverageViewId = 'coverage';
@@ -536,6 +538,13 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         .then(widget => this._innerHandleAction(widget as CoverageView, actionId));
 
     return true;
+  }
+  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ActionDelegate {
+    const {forceNew} = opts;
+    if (!actionDelegateInstance || forceNew) {
+      actionDelegateInstance = new ActionDelegate();
+    }
+    return actionDelegateInstance;
   }
 
   _innerHandleAction(coverageView: CoverageView, actionId: string): void {

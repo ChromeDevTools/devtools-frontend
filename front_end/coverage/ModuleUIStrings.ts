@@ -6,21 +6,5 @@
 
 import * as i18n from '../i18n/i18n.js';
 export const UIStrings = {
-  /**
-  *@description Text for the performance of something
-  */
-  performance: 'Performance',
-  /**
-  *@description Title of an action under the Performance category that can be invoked through the Command Menu
-  */
-  instrumentCoverage: 'Instrument coverage',
-  /**
-  *@description Title of an action under the Performance category that can be invoked through the Command Menu
-  */
-  stopInstrumentingCoverageAndShow: 'Stop instrumenting coverage and show results',
-  /**
-  *@description Title of an action in the coverage tool to start with reload
-  */
-  startInstrumentingCoverageAnd: 'Start instrumenting coverage and reload page',
 };
 i18n.i18n.registerUIStrings('coverage/ModuleUIStrings.ts', UIStrings);

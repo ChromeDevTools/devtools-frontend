@@ -317,6 +317,7 @@ export const ActionCategory = {
   MEMORY: ls`Memory`,
   JAVASCRIPT_PROFILER: ls`JavaScript Profiler`,
   CONSOLE: ls`Console`,
+  PERFORMANCE: ls`Performance`,
 };
 
 type ActionCategory = typeof ActionCategory[keyof typeof ActionCategory];

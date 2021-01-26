@@ -317,6 +317,21 @@
   "cookie_table/CookiesTable.ts | value": {
     "message": "Value"
   },
+  "coverage/coverage-meta.ts | coverage": {
+    "message": "Coverage"
+  },
+  "coverage/coverage-meta.ts | instrumentCoverage": {
+    "message": "Instrument coverage"
+  },
+  "coverage/coverage-meta.ts | showCoverage": {
+    "message": "Show Coverage"
+  },
+  "coverage/coverage-meta.ts | startInstrumentingCoverageAnd": {
+    "message": "Start instrumenting coverage and reload page"
+  },
+  "coverage/coverage-meta.ts | stopInstrumentingCoverageAndShow": {
+    "message": "Stop instrumenting coverage and show results"
+  },
   "coverage/CoverageListView.ts | Byte": {
     "message": "1 byte"
   },
@@ -427,18 +442,6 @@
   },
   "coverage/CoverageView.ts | urlFilter": {
     "message": "URL filter"
-  },
-  "coverage/ModuleUIStrings.ts | instrumentCoverage": {
-    "message": "Instrument coverage"
-  },
-  "coverage/ModuleUIStrings.ts | performance": {
-    "message": "Performance"
-  },
-  "coverage/ModuleUIStrings.ts | startInstrumentingCoverageAnd": {
-    "message": "Start instrumenting coverage and reload page"
-  },
-  "coverage/ModuleUIStrings.ts | stopInstrumentingCoverageAndShow": {
-    "message": "Stop instrumenting coverage and show results"
   },
   "css_overview/css_overview-meta.ts | cssOverview": {
     "message": "CSS Overview"

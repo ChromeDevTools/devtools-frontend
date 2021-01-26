@@ -63,7 +63,8 @@ kGrdTemplate = '''<?xml version="1.0" encoding="UTF-8"?>
 
 class ParsedArgs:
 
-    def __init__(self, file_list, relative_path_dirs, image_dirs, output_filename):
+    def __init__(self, file_list, relative_path_dirs, image_dirs,
+                 output_filename, compress):
         self.file_list = file_list
         file_list_file = open(file_list, 'r')
         file_list_contents = file_list_file.read();
@@ -71,6 +72,7 @@ class ParsedArgs:
         self.relative_path_dirs = relative_path_dirs
         self.image_dirs = image_dirs
         self.output_filename = output_filename
+        self.compress = compress
 
 
 def parse_args(argv):
@@ -79,6 +81,7 @@ def parse_args(argv):
     #   --relative_path_dirs [ <directory> ]*
     #   --images [ <image_dirs> ]*
     #   --output <output_file>
+    #   --compress
     file_list_position = argv.index('--file_list')
     relative_path_dirs_position = argv.index('--relative_path_dirs')
     images_position = argv.index('--images')
@@ -86,14 +89,16 @@ def parse_args(argv):
     file_list = argv[file_list_position + 1]
     relative_path_dirs = argv[relative_path_dirs_position + 1:images_position]
     image_dirs = argv[images_position + 1:output_position]
-    return ParsedArgs(file_list, relative_path_dirs, image_dirs, argv[output_position + 1])
+    compress = argv.count('--compress') > 0
+    return ParsedArgs(file_list, relative_path_dirs, image_dirs,
+                      argv[output_position + 1], compress)
 
 
 def make_name_from_filename(filename):
     return (filename.replace('/', '_').replace('\\', '_').replace('-', '_').replace('.', '_')).upper()
 
 
-def add_file_to_grd(grd_doc, relative_filename):
+def add_file_to_grd(grd_doc, relative_filename, compress):
     includes_node = grd_doc.getElementsByTagName('includes')[0]
     includes_node.appendChild(grd_doc.createTextNode('\n      '))
 
@@ -102,8 +107,9 @@ def add_file_to_grd(grd_doc, relative_filename):
     new_include_node.setAttribute('file', relative_filename)
     new_include_node.setAttribute('type', 'BINDATA')
     ext = os.path.splitext(relative_filename)[1]
-    if ext in ['.css', '.html', '.js', '.svg']:
-        new_include_node.setAttribute('compress', 'brotli')
+    if compress:
+        if ext in ['.css', '.html', '.js', '.svg']:
+            new_include_node.setAttribute('compress', 'brotli')
     includes_node.appendChild(new_include_node)
 
 
@@ -138,7 +144,7 @@ def main(argv):
         if not path.exists(target_dir):
             os.makedirs(target_dir)
         shutil.copy(filename, target_dir)
-        add_file_to_grd(doc, relative_filename)
+        add_file_to_grd(doc, relative_filename, parsed_args.compress)
 
     for dirname in parsed_args.image_dirs:
         for filename in sorted(os.listdir(dirname)):
@@ -148,7 +154,8 @@ def main(argv):
                             'avif') and not filename.endswith('webp'):
                 continue
             shutil.copy(path.join(dirname, filename), path.join(output_directory, 'Images'))
-            add_file_to_grd(doc, path.join('Images', filename))
+            add_file_to_grd(doc, path.join('Images', filename),
+                            parsed_args.compress)
 
     with open(parsed_args.output_filename, 'wb') as output_file:
         output_file.write(doc.toxml(encoding='UTF-8'))

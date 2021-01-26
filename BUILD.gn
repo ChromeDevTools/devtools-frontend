@@ -298,6 +298,11 @@ action("generate_devtools_grd") {
            "--output",
            rebase_path(outfile, root_build_dir),
          ]
+  if (!is_debug) {
+    # Compression is slow, particularly in debug builds, so only compress in
+    # non-debug builds.
+    args += [ "--compress" ]
+  }
 }
 
 build_release_devtools_args = []

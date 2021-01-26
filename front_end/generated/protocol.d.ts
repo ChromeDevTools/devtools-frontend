@@ -926,14 +926,20 @@ declare namespace Protocol {
       violatingNodeId?: DOM.BackendNodeId;
     }
 
+    export enum SharedArrayBufferIssueType {
+      TransferIssue = 'TransferIssue',
+      CreationIssue = 'CreationIssue',
+    }
+
     /**
      * Details for a request that has been blocked with the BLOCKED_BY_RESPONSE
      * code. Currently only used for COEP/COOP, but may be extended to include
      * some CSP errors in the future.
      */
-    export interface SharedArrayBufferTransferIssueDetails {
+    export interface SharedArrayBufferIssueDetails {
       sourceCodeLocation: SourceCodeLocation;
       isWarning: boolean;
+      type: SharedArrayBufferIssueType;
     }
 
     export enum TwaQualityEnforcementViolationType {
@@ -972,7 +978,7 @@ declare namespace Protocol {
       BlockedByResponseIssue = 'BlockedByResponseIssue',
       HeavyAdIssue = 'HeavyAdIssue',
       ContentSecurityPolicyIssue = 'ContentSecurityPolicyIssue',
-      SharedArrayBufferTransferIssue = 'SharedArrayBufferTransferIssue',
+      SharedArrayBufferIssue = 'SharedArrayBufferIssue',
       TrustedWebActivityIssue = 'TrustedWebActivityIssue',
     }
 
@@ -987,7 +993,7 @@ declare namespace Protocol {
       blockedByResponseIssueDetails?: BlockedByResponseIssueDetails;
       heavyAdIssueDetails?: HeavyAdIssueDetails;
       contentSecurityPolicyIssueDetails?: ContentSecurityPolicyIssueDetails;
-      sharedArrayBufferTransferIssueDetails?: SharedArrayBufferTransferIssueDetails;
+      sharedArrayBufferIssueDetails?: SharedArrayBufferIssueDetails;
       twaQualityEnforcementDetails?: TrustedWebActivityIssueDetails;
     }
 

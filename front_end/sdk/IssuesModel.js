@@ -178,7 +178,7 @@ function createIssuesForBlockedByResponseIssue(issuesModel, inspectorDetails) {
  * @return {!Array<!Issue>}
  */
 function createIssuesForSharedArrayBufferTransferIssue(issuesModel, inspectorDetails) {
-  const sabIssueDetails = inspectorDetails.sharedArrayBufferTransferIssueDetails;
+  const sabIssueDetails = inspectorDetails.sharedArrayBufferIssueDetails;
   if (!sabIssueDetails) {
     console.warn('SAB transfer issue without details received.');
     return [];
@@ -195,7 +195,7 @@ const issueCodeHandlers = new Map([
   [Protocol.Audits.InspectorIssueCode.HeavyAdIssue, createIssuesForHeavyAdIssue],
   [Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue, createIssuesForContentSecurityPolicyIssue],
   [Protocol.Audits.InspectorIssueCode.BlockedByResponseIssue, createIssuesForBlockedByResponseIssue],
-  [Protocol.Audits.InspectorIssueCode.SharedArrayBufferTransferIssue, createIssuesForSharedArrayBufferTransferIssue],
+  [Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, createIssuesForSharedArrayBufferTransferIssue],
 ]);
 
 /** @enum {symbol} */

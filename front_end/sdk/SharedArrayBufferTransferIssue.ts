@@ -8,10 +8,10 @@ import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue
 import {IssuesModel} from './IssuesModel.js';  // eslint-disable-line no-unused-vars
 
 export class SharedArrayBufferTransferIssue extends Issue {
-  private issueDetails: Protocol.Audits.SharedArrayBufferTransferIssueDetails;
+  private issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.SharedArrayBufferTransferIssueDetails, issuesModel: IssuesModel) {
-    super(Protocol.Audits.InspectorIssueCode.SharedArrayBufferTransferIssue, issuesModel);
+  constructor(issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails, issuesModel: IssuesModel) {
+    super(Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, issuesModel);
     this.issueDetails = issueDetails;
   }
 
@@ -19,11 +19,11 @@ export class SharedArrayBufferTransferIssue extends Issue {
     return IssueCategory.Other;
   }
 
-  sharedArrayBufferTransfers(): Protocol.Audits.SharedArrayBufferTransferIssueDetails[] {
+  sharedArrayBufferTransfers(): Protocol.Audits.SharedArrayBufferIssueDetails[] {
     return [this.issueDetails];
   }
 
-  details(): Protocol.Audits.SharedArrayBufferTransferIssueDetails {
+  details(): Protocol.Audits.SharedArrayBufferIssueDetails {
     return this.issueDetails;
   }
 

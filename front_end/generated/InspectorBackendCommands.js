@@ -249,6 +249,8 @@ export function registerCommands(inspectorBackend) {
     KTrustedTypesPolicyViolation: 'kTrustedTypesPolicyViolation'
   });
   inspectorBackend.registerEnum(
+      'Audits.SharedArrayBufferIssueType', {TransferIssue: 'TransferIssue', CreationIssue: 'CreationIssue'});
+  inspectorBackend.registerEnum(
       'Audits.TwaQualityEnforcementViolationType',
       {KHttpError: 'kHttpError', KUnavailableOffline: 'kUnavailableOffline', KDigitalAssetLinks: 'kDigitalAssetLinks'});
   inspectorBackend.registerEnum('Audits.InspectorIssueCode', {
@@ -257,7 +259,7 @@ export function registerCommands(inspectorBackend) {
     BlockedByResponseIssue: 'BlockedByResponseIssue',
     HeavyAdIssue: 'HeavyAdIssue',
     ContentSecurityPolicyIssue: 'ContentSecurityPolicyIssue',
-    SharedArrayBufferTransferIssue: 'SharedArrayBufferTransferIssue',
+    SharedArrayBufferIssue: 'SharedArrayBufferIssue',
     TrustedWebActivityIssue: 'TrustedWebActivityIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);

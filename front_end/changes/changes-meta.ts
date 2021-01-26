@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
@@ -11,6 +10,19 @@ import * as UI from '../ui/ui.js';
 import type * as Changes from './changes.js';
 
 let loadedChangesModule: (typeof Changes|undefined);
+
+export const UIStrings = {
+  /**
+   * @description Title of the 'Changes' tool in the bottom drawer
+   */
+  changes: 'Changes',
+  /**
+   * @description Command for showing the 'Changes' tool in the bottom drawer
+   */
+  showChanges: 'Show Changes',
+};
+const str_ = i18n.i18n.registerUIStrings('changes/changes-meta.ts', UIStrings);
+const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 async function loadChangesModule(): Promise<typeof Changes> {
   if (!loadedChangesModule) {
@@ -24,8 +36,8 @@ async function loadChangesModule(): Promise<typeof Changes> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'changes.changes',
-  title: (): Platform.UIString.LocalizedString => ls`Changes`,
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Changes`,
+  title: i18nString(UIStrings.changes),
+  commandPrompt: i18nString(UIStrings.showChanges),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {
     const Changes = await loadChangesModule();

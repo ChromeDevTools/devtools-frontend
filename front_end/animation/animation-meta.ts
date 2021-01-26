@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
@@ -11,6 +10,19 @@ import * as UI from '../ui/ui.js';
 import type * as Animation from './animation.js';
 
 let loadedAnimationModule: (typeof Animation|undefined);
+
+export const UIStrings = {
+  /**
+   * @description Title for the 'Animations' tool in the bottom drawer
+   */
+  animations: 'Animations',
+  /**
+   * @description Command for showing the 'Animations' tool in the bottom drawer
+   */
+  showAnimations: 'Show Animations',
+};
+const str_ = i18n.i18n.registerUIStrings('animation/animation-meta.ts', UIStrings);
+const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 async function loadAnimationModule(): Promise<typeof Animation> {
   if (!loadedAnimationModule) {
@@ -24,8 +36,8 @@ async function loadAnimationModule(): Promise<typeof Animation> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'animations',
-  title: (): Platform.UIString.LocalizedString => ls`Animations`,
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Animations`,
+  title: i18nString(UIStrings.animations),
+  commandPrompt: i18nString(UIStrings.showAnimations),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 0,
   async loadView() {

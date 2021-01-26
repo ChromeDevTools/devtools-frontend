@@ -1,4 +1,10 @@
 {
+  "animation/animation-meta.ts | animations": {
+    "message": "Animations"
+  },
+  "animation/animation-meta.ts | showAnimations": {
+    "message": "Show Animations"
+  },
   "animation/AnimationTimeline.ts | animationPreviews": {
     "message": "Animation previews"
   },
@@ -73,6 +79,12 @@
   },
   "browser_sdk/browser_sdk-meta.ts | reset": {
     "message": "reset"
+  },
+  "changes/changes-meta.ts | changes": {
+    "message": "Changes"
+  },
+  "changes/changes-meta.ts | showChanges": {
+    "message": "Show Changes"
   },
   "changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (from source map)"

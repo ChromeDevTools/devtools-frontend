@@ -15,6 +15,7 @@ export class AccessibilityNode extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private axNode: AXNode|null = null;
   private expanded: boolean = true;
+  private loadedChildren: boolean = false;
 
   constructor() {
     super();
@@ -33,20 +34,28 @@ export class AccessibilityNode extends HTMLElement {
   }
 
   private toggleChildren(): void {
-    if (!this.axNode) {
-      return;
-    }
-
-    const children = this.axNode.children;
-    if (!children) {
+    if (!this.axNode || !this.axNode.children) {
       return;
     }
 
     this.expanded = !this.expanded;
     this.classList.toggle('expanded', this.expanded);
+
+    if (this.axNode.hasOnlyUnloadedChildren && !this.loadedChildren) {
+      this.getChildAXNodes();
+    }
   }
 
-  // TODO(annabelzhou): Track whether the children should be expanded and change arrow accordingly
+  private async getChildAXNodes(): Promise<void> {
+    if (!this.axNode) {
+      return;
+    }
+
+    await this.axNode.loadChildren();
+    this.loadedChildren = true;
+    this.render();
+  }
+
   private renderChildren(node: AXNode): LitHtml.TemplateResult {
     if (!node) {
       return LitHtml.html``;
@@ -113,7 +122,9 @@ export class AccessibilityNode extends HTMLElement {
 
       if (this.axNode.hasOnlyUnloadedChildren) {
         this.shadow.host.classList.add('parent');
-        this.expanded = false;
+        if (!this.loadedChildren) {
+          this.expanded = false;
+        }
       } else if (this.axNode.numChildren) {
         this.shadow.host.classList.add('parent', 'expanded');
       } else {

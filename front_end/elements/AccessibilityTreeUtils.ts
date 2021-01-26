@@ -13,12 +13,13 @@ export interface AXNode {
   children: AXNode[];
   numChildren: number;
   hasOnlyUnloadedChildren: boolean;
+  loadChildren: () => Promise<void>;
 }
 
 export function SDKNodeToAXNode(parent: AXNode|null, sdkNode: SDK.AccessibilityModel.AccessibilityNode): AXNode {
   const axChildren: AXNode[] = [];
   const axNode = {
-    id: sdkNode._id,
+    id: sdkNode.id(),
     role: sdkNode.role()?.value,
     name: sdkNode.name()?.value,
     ignored: sdkNode.ignored(),
@@ -26,6 +27,14 @@ export function SDKNodeToAXNode(parent: AXNode|null, sdkNode: SDK.AccessibilityM
     children: axChildren,
     numChildren: sdkNode.numChildren(),
     hasOnlyUnloadedChildren: sdkNode.hasOnlyUnloadedChildren(),
+    loadChildren: async(): Promise<void> => {
+      const loadedChildren = await sdkNode.accessibilityModel().requestAXChildren(sdkNode.id());
+      if (loadedChildren) {
+        for (const child of loadedChildren) {
+          axChildren.push(SDKNodeToAXNode(parent, child));
+        }
+      }
+    },
   };
 
   for (const child of sdkNode.children()) {

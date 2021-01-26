@@ -55,6 +55,13 @@ export class AccessibilityNode {
   }
 
   /**
+   * @return {string}
+   */
+  id() {
+    return this._id;
+  }
+
+  /**
    * @return {!AccessibilityModel}
    */
   accessibilityModel() {
@@ -222,6 +229,7 @@ export class AccessibilityModel extends SDKModel {
   constructor(target) {
     super(target);
     this._agent = target.accessibilityAgent();
+    this.resumeModel();
 
     /** @type {!Map<string, !AccessibilityNode>} */
     this._axIdToAXNode = new Map();
@@ -230,6 +238,22 @@ export class AccessibilityModel extends SDKModel {
 
   clear() {
     this._axIdToAXNode.clear();
+  }
+
+  /**
+   * @override
+   * @return {!Promise<void>}
+   */
+  async resumeModel() {
+    await this._agent.invoke_enable();
+  }
+
+  /**
+   * @override
+   * @return {!Promise<void>}
+   */
+  async suspendModel() {
+    await this._agent.invoke_disable();
   }
 
   /**
@@ -271,7 +295,32 @@ export class AccessibilityModel extends SDKModel {
         axChild._setParentNode(axNode);
       }
     }
+
     return axNodes[0];
+  }
+
+  /**
+   * @param {!string} nodeId
+   * @return ?{!Promise<AccessibilityNode[]>}
+   */
+  async requestAXChildren(nodeId) {
+    const {nodes} = await this._agent.invoke_getChildAXNodes({id: nodeId});
+    if (!nodes) {
+      return;
+    }
+
+    const axNodes = [];
+    for (const payload of nodes) {
+      axNodes.push(new AccessibilityNode(this, payload));
+    }
+
+    for (const axNode of this._axIdToAXNode.values()) {
+      for (const axChild of axNode.children()) {
+        axChild._setParentNode(axNode);
+      }
+    }
+
+    return axNodes;
   }
 
   /**

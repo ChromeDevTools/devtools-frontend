@@ -129,6 +129,7 @@ export class LinearMemoryNavigator extends HTMLElement {
           outline: none;
           justify-content: center;
           align-items: center;
+          cursor: pointer;
         }
 
         .navigator-button devtools-icon {

@@ -104,6 +104,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
           height: 20px;
           border: none;
           background-color: transparent;
+          cursor: pointer;
         }
 
         .settings-toolbar-button devtools-icon {

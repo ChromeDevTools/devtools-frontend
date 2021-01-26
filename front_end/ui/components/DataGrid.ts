@@ -9,6 +9,8 @@ import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import * as UI from '../../ui/ui.js';
 
+const {ls} = Common;
+
 import {addColumnVisibilityCheckboxes, addSortableColumnItems} from './DataGridContextMenuUtils.js';
 import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, Cell, CellPosition, Column, ContextMenuHeaderResetClickEvent, getRowEntryForColumnId, handleArrowKeyNavigation, renderCellValue, Row, SortDirection, SortState} from './DataGridUtils.js';
 
@@ -467,10 +469,10 @@ export class DataGrid extends HTMLElement {
 
     const menu = new UI.ContextMenu.ContextMenu(event);
     addColumnVisibilityCheckboxes(this, menu);
-    const sortMenu = menu.defaultSection().appendSubMenuItem(Common.ls`Sort By`);
+    const sortMenu = menu.defaultSection().appendSubMenuItem(ls`Sort By`);
     addSortableColumnItems(this, sortMenu);
 
-    menu.defaultSection().appendItem(Common.ls`Reset Columns`, () => {
+    menu.defaultSection().appendItem(ls`Reset Columns`, () => {
       this.dispatchEvent(new ContextMenuHeaderResetClickEvent());
     });
 
@@ -504,12 +506,12 @@ export class DataGrid extends HTMLElement {
     const rowThatWasClicked = this.rows[rowIndex - 1];
 
     const menu = new UI.ContextMenu.ContextMenu(event);
-    const sortMenu = menu.defaultSection().appendSubMenuItem(Common.ls`Sort By`);
+    const sortMenu = menu.defaultSection().appendSubMenuItem(ls`Sort By`);
     addSortableColumnItems(this, sortMenu);
 
-    const headerOptionsMenu = menu.defaultSection().appendSubMenuItem(Common.ls`Header Options`);
+    const headerOptionsMenu = menu.defaultSection().appendSubMenuItem(ls`Header Options`);
     addColumnVisibilityCheckboxes(this, headerOptionsMenu);
-    headerOptionsMenu.defaultSection().appendItem(Common.ls`Reset Columns`, () => {
+    headerOptionsMenu.defaultSection().appendItem(ls`Reset Columns`, () => {
       this.dispatchEvent(new ContextMenuHeaderResetClickEvent());
     });
 

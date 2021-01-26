@@ -3,20 +3,11 @@
   <message name="IDS_DEVTOOLS_01af6ef8107ccd81c1f0c06bd0df43f3" desc="Accessible text for datagrid">
     <ph name="THIS__DISPLAYNAME">$1s<ex>Coverage grid</ex></ph> Row <ph name="EXPANDTEXT">$2s<ex>expanded</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_059a1aa256b770eca2d69c096f759ad0" desc="A context menu item in the Data Grid of a data grid">
-    Sort By
-  </message>
-  <message name="IDS_DEVTOOLS_17022809d53876ba5d6b97c67c364614" desc="A context menu item in data grids to list header options.">
-    Header Options
-  </message>
   <message name="IDS_DEVTOOLS_1a6130a21d7d578d81a168ebcf0d9921" desc="Accessible text label for expandible nodes in datagrids">
     expanded
   </message>
   <message name="IDS_DEVTOOLS_28de94c6a82d4419a4014addb8aba93c" desc="Show last text content in Show More Data Grid Node of a data grid">
     Show <ph name="THIS__CHUNKSIZE">$1d<ex>5</ex></ph> after
-  </message>
-  <message name="IDS_DEVTOOLS_2d1a0357b8c9e3ec6634b8dad39764c5" desc="A context menu item in data grids to reset the columns to their default weight">
-    Reset Columns
   </message>
   <message name="IDS_DEVTOOLS_3338c02fe80ef02fc4bfb78f90bf173c" desc="accessible name for expandible nodes in datagrids">
     collapsed

@@ -10,6 +10,9 @@
   <message name="IDS_DEVTOOLS_0511551e6cf7d61acd9b62f9304efa93" desc="Tooltip text that appears on the setting to preserve log when hovering over the item">
     Do not clear log on page reload / navigation
   </message>
+  <message name="IDS_DEVTOOLS_059a1aa256b770eca2d69c096f759ad0" desc="A context menu item in the Data Grid of a data grid">
+    Sort By
+  </message>
   <message name="IDS_DEVTOOLS_0945359809dad1fbf3dea1c95a0da951" desc="Name of a network resource type">
     Document
   </message>
@@ -43,6 +46,9 @@
   <message name="IDS_DEVTOOLS_16f78b9465f03f7ec5a03c24918fbde3" desc="Status code of an event">
     Status Code
   </message>
+  <message name="IDS_DEVTOOLS_17022809d53876ba5d6b97c67c364614" desc="A context menu item in data grids to list header options.">
+    Header Options
+  </message>
   <message name="IDS_DEVTOOLS_17145319aba079a26c6d3bb2b1d58894" desc="Text in Request Timing View of the Network panel">
     <ph name="LOCKED_TERM">Service Worker</ph>
   </message>
@@ -72,6 +78,9 @@
   </message>
   <message name="IDS_DEVTOOLS_2bbc845892f400626baab5af687527c5" desc="Text for the start time of an activity">
     Start Time
+  </message>
+  <message name="IDS_DEVTOOLS_2d1a0357b8c9e3ec6634b8dad39764c5" desc="A context menu item in data grids to reset the columns to their default weight">
+    Reset Columns
   </message>
   <message name="IDS_DEVTOOLS_2fae32629d4ef4fc6341f1751b405e45" desc="Title of the 'Security' tool">
     Security

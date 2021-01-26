@@ -56,37 +56,9 @@ export const UIStrings = {
   */
   value: 'Value',
   /**
-  *@description Text for the domain of a website
-  */
-  domain: 'Domain',
-  /**
-  *@description Text that refers to a file path
-  */
-  path: 'Path',
-  /**
-  *@description Text in Cookies Table of the Cookies table in the Application panel
-  */
-  expiresMaxage: 'Expires / Max-Age',
-  /**
   *@description Text for the size of something
   */
   size: 'Size',
-  /**
-  *@description Text in Cookies Table of the Cookies table in the Application panel
-  */
-  httponly: 'HttpOnly',
-  /**
-  *@description Text to show something is secure
-  */
-  secure: 'Secure',
-  /**
-  *@description Text in Cookies Table of the Cookies table in the Application panel
-  */
-  samesite: 'SameSite',
-  /**
-  *@description Text to show the priority of an item
-  */
-  priority: 'Priority',
   /**
   *@description Data grid name for Editable Cookies data grid
   */
@@ -159,21 +131,21 @@ export class CookiesTable extends UI.Widget.VBox {
       },
       {
         id: SDK.Cookie.Attributes.Domain,
-        title: i18nString(UIStrings.domain),
+        title: 'Domain',
         sortable: true,
         weight: 7,
         editable: editable,
       },
       {
         id: SDK.Cookie.Attributes.Path,
-        title: i18nString(UIStrings.path),
+        title: 'Path',
         sortable: true,
         weight: 7,
         editable: editable,
       },
       {
         id: SDK.Cookie.Attributes.Expires,
-        title: i18nString(UIStrings.expiresMaxage),
+        title: 'Expires / Max-Age',
         sortable: true,
         weight: 7,
         editable: editable,
@@ -187,7 +159,7 @@ export class CookiesTable extends UI.Widget.VBox {
       },
       {
         id: SDK.Cookie.Attributes.HttpOnly,
-        title: i18nString(UIStrings.httponly),
+        title: 'HttpOnly',
         sortable: true,
         align: DataGrid.DataGrid.Align.Center,
         weight: 7,
@@ -196,7 +168,7 @@ export class CookiesTable extends UI.Widget.VBox {
       },
       {
         id: SDK.Cookie.Attributes.Secure,
-        title: i18nString(UIStrings.secure),
+        title: 'Secure',
         sortable: true,
         align: DataGrid.DataGrid.Align.Center,
         weight: 7,
@@ -205,14 +177,23 @@ export class CookiesTable extends UI.Widget.VBox {
       },
       {
         id: SDK.Cookie.Attributes.SameSite,
-        title: i18nString(UIStrings.samesite),
+        title: 'SameSite',
         sortable: true,
         weight: 7,
         editable: editable,
       },
       {
+        id: SDK.Cookie.Attributes.SameParty,
+        title: 'SameParty',
+        sortable: true,
+        align: DataGrid.DataGrid.Align.Center,
+        weight: 7,
+        dataType: DataGrid.DataGrid.DataType.Boolean,
+        editable: false,
+      },
+      {
         id: SDK.Cookie.Attributes.Priority,
-        title: i18nString(UIStrings.priority),
+        title: 'Priority',
         sortable: true,
         sort: DataGrid.DataGrid.Order.Descending,
         weight: 7,
@@ -346,6 +327,7 @@ export class CookiesTable extends UI.Widget.VBox {
         groupData[SDK.Cookie.Attributes.HttpOnly] = '';
         groupData[SDK.Cookie.Attributes.Secure] = '';
         groupData[SDK.Cookie.Attributes.SameSite] = '';
+        groupData[SDK.Cookie.Attributes.SameParty] = '';
         groupData[SDK.Cookie.Attributes.Priority] = '';
 
         const groupNode = new DataGrid.DataGrid.DataGridNode(groupData) as DataGrid.DataGrid.DataGridNode<DataGridNode>;
@@ -426,6 +408,8 @@ export class CookiesTable extends UI.Widget.VBox {
           return String(cookie.secure());
         case SDK.Cookie.Attributes.SameSite:
           return String(cookie.sameSite());
+        case SDK.Cookie.Attributes.SameParty:
+          return String(cookie.sameParty());
         default:
           return String(cookie.name());
       }
@@ -515,6 +499,7 @@ export class CookiesTable extends UI.Widget.VBox {
     data[SDK.Cookie.Attributes.HttpOnly] = cookie.httpOnly();
     data[SDK.Cookie.Attributes.Secure] = cookie.secure();
     data[SDK.Cookie.Attributes.SameSite] = cookie.sameSite() || '';
+    data[SDK.Cookie.Attributes.SameParty] = cookie.sameParty();
     data[SDK.Cookie.Attributes.Priority] = cookie.priority() || '';
 
     const blockedReasons = this._cookieToBlockedReasons ? this._cookieToBlockedReasons.get(cookie) : null;
@@ -591,6 +576,9 @@ export class CookiesTable extends UI.Widget.VBox {
     }
     if (data[SDK.Cookie.Attributes.SameSite]) {
       cookie.addAttribute(SDK.Cookie.Attributes.SameSite, data[SDK.Cookie.Attributes.SameSite]);
+    }
+    if (data[SDK.Cookie.Attributes.SameParty]) {
+      cookie.addAttribute(SDK.Cookie.Attributes.SameParty);
     }
     cookie.setSize(data[SDK.Cookie.Attributes.Name].length + data[SDK.Cookie.Attributes.Value].length);
     return cookie;

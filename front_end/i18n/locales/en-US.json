@@ -281,35 +281,14 @@
   "cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
   },
-  "cookie_table/CookiesTable.ts | domain": {
-    "message": "Domain"
-  },
   "cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Editable Cookies"
-  },
-  "cookie_table/CookiesTable.ts | expiresMaxage": {
-    "message": "Expires / Max-Age"
-  },
-  "cookie_table/CookiesTable.ts | httponly": {
-    "message": "HttpOnly"
   },
   "cookie_table/CookiesTable.ts | na": {
     "message": "N/A"
   },
   "cookie_table/CookiesTable.ts | name": {
     "message": "Name"
-  },
-  "cookie_table/CookiesTable.ts | path": {
-    "message": "Path"
-  },
-  "cookie_table/CookiesTable.ts | priority": {
-    "message": "Priority"
-  },
-  "cookie_table/CookiesTable.ts | samesite": {
-    "message": "SameSite"
-  },
-  "cookie_table/CookiesTable.ts | secure": {
-    "message": "Secure"
   },
   "cookie_table/CookiesTable.ts | session": {
     "message": "Session"

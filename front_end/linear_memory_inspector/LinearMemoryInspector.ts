@@ -126,7 +126,8 @@ export class LinearMemoryInspector extends HTMLElement {
           display: flex;
           flex: 1;
           flex-direction: column;
-          font-family: monospace;
+          font-family: var(--monospace-font-family);
+          font-size: var(--monospace-font-size);
           padding: 9px 12px 9px 7px;
         }
 

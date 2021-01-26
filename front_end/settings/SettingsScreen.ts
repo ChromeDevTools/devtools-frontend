@@ -501,21 +501,22 @@ export class Revealer implements Common.Revealer.Revealer {
     ];
     unionOfSettings.forEach(revealModuleSetting);
     Root.Runtime.Runtime.instance().extensions(UI.SettingsUI.SettingUI).forEach(revealSettingUI);
-    const unionOfViews = [
-      // TODO(crbug.com/1134103): Remove this call when all views are migrated
-      ...Root.Runtime.Runtime.instance().extensions('view').map(extension => {
-        return {
-          location: extension.descriptor().location,
-          settings: extension.descriptor().settings,
-          id: extension.descriptor().id,
-        };
-      }),
-      ...UI.ViewManager.getRegisteredViewExtensions().map(view => {
-        return {location: view.location(), settings: view.settings(), id: view.viewId()};
-      }),
-    ];
 
-    unionOfViews.forEach(revealSettingsView);
+    // Reveal settings views
+    for (const view of UI.ViewManager.getRegisteredViewExtensions()) {
+      const id = view.viewId();
+      const location = view.location();
+      if (location !== UI.ViewManager.ViewLocationValues.SETTINGS_VIEW) {
+        continue;
+      }
+      const settings = view.settings();
+      if (settings && settings.indexOf(setting.name) !== -1) {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
+        SettingsScreen._showSettingsScreen({name: id} as ShowSettingsScreenOptions);
+        success = true;
+      }
+    }
+
     return success ? Promise.resolve() : Promise.reject();
 
     function revealModuleSetting(settingRegistration: SettingDescriptor): void {
@@ -534,20 +535,6 @@ export class Revealer implements Common.Revealer.Revealer {
       if (settings && settings.indexOf(setting.name) !== -1) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
         SettingsScreen._showSettingsScreen();
-        success = true;
-      }
-    }
-
-    function revealSettingsView(
-        extension: {settings: (Array<string>|undefined); location: ((string | undefined) | null); id: string;}): void {
-      const location = extension.location;
-      if (location !== UI.ViewManager.ViewLocationValues.SETTINGS_VIEW) {
-        return;
-      }
-      const settings = extension.settings;
-      if (settings && settings.indexOf(setting.name) !== -1) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
-        SettingsScreen._showSettingsScreen({name: extension.id} as ShowSettingsScreenOptions);
         success = true;
       }
     }

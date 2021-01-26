@@ -305,9 +305,6 @@
   <message name="IDS_DEVTOOLS_af4bb376939e77df0e7c2332b837a866" desc="Text that refers to closure as a programming term">
     Closure
   </message>
-  <message name="IDS_DEVTOOLS_af9ccba3ec4346e3acf785f9bea514d8" desc="Text to show a tool or panel">
-    Show <ph name="EXTENSION_TITLE">$1s<ex>Audits</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_b1c94ca2fbc3e78fc30069c8d0f01680" desc="Text for everything">
     All
   </message>

@@ -151,34 +151,6 @@ export class CommandMenu {
       }
     }
 
-    // TODO(crbug.com/1134103): Remove this call when all views are migrated
-    const viewExtensions = Root.Runtime.Runtime.instance().extensions('view');
-    for (const extension of viewExtensions) {
-      const category = locations.get(extension.descriptor()['location']);
-      if (!category) {
-        continue;
-      }
-      const extensionDescriptor = extension.descriptor();
-
-      const keys = extensionDescriptor.tags || '';
-      // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
-      const keyList = keys.split(',');
-      let tags = '';
-      keyList.forEach(k => {
-        tags += (ls(k.trim()) + '\0');
-      });
-
-      /** @type {!RevealViewCommandOptions} */
-      const options = {
-        id: extensionDescriptor.id,
-        title: Common.UIString.UIString('Show %s', extensionDescriptor.title),
-        tags,
-        category,
-        userActionCode: undefined
-      };
-      this._commands.push(CommandMenu.createRevealViewCommand(options));
-    }
-
     // Populate allowlisted settings.
     // TODO(crbug.com/1134103): Remove this call when all settings are migrated
     const settingExtensions = Root.Runtime.Runtime.instance().extensions('setting');

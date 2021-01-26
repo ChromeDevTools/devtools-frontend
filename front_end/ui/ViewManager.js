@@ -143,43 +143,24 @@ export class ViewManager {
     this._locationOverrideSetting = Common.Settings.Settings.instance().createSetting('viewsLocationOverride', {});
     const preferredExtensionLocations = this._locationOverrideSetting.get();
 
-    /** @type {!Array<!ViewRegistry>} */
-    const unionOfViewExtensions = [
-      // TODO(crbug.com/1134103): Remove this call when all views are migrated
-      ...Root.Runtime.Runtime.instance().extensions('view').map(extension => {
-        return {
-          viewId: extension.descriptor().id,
-          location: extension.descriptor()['location'],
-          view: new ProvidedView(extension),
-        };
-      }),
-      ...getRegisteredViewExtensions().map(registeredView => {
-        return {
-          viewId: registeredView.viewId(),
-          location: registeredView.location() || null,
-          view: registeredView,
-        };
-      }),
-    ];
-
     // Views may define their initial ordering within a location. When the user has not reordered, we use the
     // default ordering as defined by the views themselves.
 
-    /** @type {!Map<string, !Array<!ViewRegistry>>} */
+    /** @type {!Map<string, !Array<!PreRegisteredView>>} */
     const viewsByLocation = new Map();
-    for (const view of unionOfViewExtensions) {
-      const location = view.location || 'none';
+    for (const view of getRegisteredViewExtensions()) {
+      const location = view.location() || 'none';
       const views = viewsByLocation.get(location) || [];
       views.push(view);
       viewsByLocation.set(location, views);
     }
 
-    /** @type {!Array<!ViewRegistry>} */
+    /** @type {!Array<!PreRegisteredView>} */
     let sortedViewExtensions = [];
     for (const views of viewsByLocation.values()) {
       views.sort((firstView, secondView) => {
-        const firstViewOrder = firstView.view.order();
-        const secondViewOrder = secondView.view.order();
+        const firstViewOrder = firstView.order();
+        const secondViewOrder = secondView.order();
         if (firstViewOrder && secondViewOrder) {
           return firstViewOrder - secondViewOrder;
         }
@@ -188,7 +169,9 @@ export class ViewManager {
       sortedViewExtensions = sortedViewExtensions.concat(views);
     }
 
-    for (const {viewId, view, location} of sortedViewExtensions) {
+    for (const view of sortedViewExtensions) {
+      const viewId = view.viewId();
+      const location = view.location();
       if (this._views.has(viewId)) {
         throw new Error(`Duplicate view id '${viewId}'`);
       }

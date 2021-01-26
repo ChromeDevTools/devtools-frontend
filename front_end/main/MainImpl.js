@@ -749,48 +749,35 @@ export class MainMenuItem {
                                                                     Common.UIString.UIString('Show console drawer'));
     contextMenu.appendItemsAtLocation('mainMenu');
     const moreTools = contextMenu.defaultSection().appendSubMenuItem(Common.UIString.UIString('More tools'));
-    const unionOfViewExtensions = [
-      // TODO(crbug.com/1134103): Remove this call when all views are migrated
-      ...Root.Runtime.Runtime.instance().extensions('view').map(extension => {
-        return {
-          location: extension.descriptor().location,
-          persistence: extension.descriptor().persistence,
-          title: extension.title(),
-          id: extension.descriptor().id,
-        };
-      }),
-      ...UI.ViewManager.getRegisteredViewExtensions().map(view => {
-        return {
-          location: view.location(),
-          persistence: view.persistence(),
-          title: view.title(),
-          id: view.viewId(),
-        };
-      }),
-    ];
-    unionOfViewExtensions.sort((extension1, extension2) => {
-      const title1 = extension1.title || '';
-      const title2 = extension2.title || '';
+    const viewExtensions = UI.ViewManager.getRegisteredViewExtensions();
+    viewExtensions.sort((extension1, extension2) => {
+      const title1 = extension1.title();
+      const title2 = extension2.title();
       return title1.localeCompare(title2);
     });
 
-    for (const viewExtension of unionOfViewExtensions) {
-      if (viewExtension.id === 'issues-pane') {
-        moreTools.defaultSection().appendItem(viewExtension.title, () => {
+    for (const viewExtension of viewExtensions) {
+      const location = viewExtension.location();
+      const persistence = viewExtension.persistence();
+      const title = viewExtension.title();
+      const id = viewExtension.viewId();
+
+      if (id === 'issues-pane') {
+        moreTools.defaultSection().appendItem(title, () => {
           Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HamburgerMenu);
           UI.ViewManager.ViewManager.instance().showView('issues-pane', /* userGesture */ true);
         });
         continue;
       }
 
-      if (viewExtension.persistence !== 'closeable') {
+      if (persistence !== 'closeable') {
         continue;
       }
-      if (viewExtension.location !== 'drawer-view' && viewExtension.location !== 'panel') {
+      if (location !== 'drawer-view' && location !== 'panel') {
         continue;
       }
-      moreTools.defaultSection().appendItem(viewExtension.title, () => {
-        UI.ViewManager.ViewManager.instance().showView(viewExtension.id, true, false);
+      moreTools.defaultSection().appendItem(title, () => {
+        UI.ViewManager.ViewManager.instance().showView(id, true, false);
       });
     }
 

@@ -235,17 +235,20 @@ async function mapFrontendDirsToGrdpFiles() {
   const getGrdpFilePromises = devtoolsFrontendDirs.map(dir => {
     const files = [];
     dirToGrdpFiles.set(dir, files);
-    return localizationUtils.getFilesFromDirectory(dir, files, ['.grdp']);
+    // We already have subdirectories in devtoolsFrontendDirs.
+    const recursively = false;
+    return localizationUtils.getFilesFromDirectory(dir, files, ['.grdp'], recursively);
   });
   await Promise.all(getGrdpFilePromises);
   return dirToGrdpFiles;
 }
 
 function validateGrdpFile(dir, grdpFiles, grdFileContent, shouldAutoFix, renameFilePromises, grdpFilesToAddToGrd) {
-  let error = '';
   const expectedGrdpFile = expectedGrdpFilePath(dir);
   if (grdpFiles.length === 0) {
-    return error;
+    // No GRDP file found. Not necessarily an error unless there are some localization calls in
+    // that directory, which we will check later.
+    return '';
   }
   if (grdpFiles.length > 1) {
     throw new Error(`${grdpFiles.length} GRDP files found under ${
@@ -259,11 +262,10 @@ function validateGrdpFile(dir, grdpFiles, grdFileContent, shouldAutoFix, renameF
     if (shouldAutoFix) {
       renameFilePromises.push(renameFileAsync(grdpFiles[0], expectedGrdpFile));
       grdpFilesToAddToGrd.push(expectedGrdpFile);
-    } else {
-      error += `${localizationUtils.getRelativeFilePathFromSrc(grdpFiles[0])} should be renamed to ${
-          localizationUtils.getRelativeFilePathFromSrc(expectedGrdpFile)}.`;
+      return '';
     }
-    return error;
+    return `${localizationUtils.getRelativeFilePathFromSrc(grdpFiles[0])} should be renamed to ${
+        localizationUtils.getRelativeFilePathFromSrc(expectedGrdpFile)}.`;
   }
 
   // Only one grdp file and its name follows the naming convention
@@ -271,11 +273,11 @@ function validateGrdpFile(dir, grdpFiles, grdFileContent, shouldAutoFix, renameF
     if (shouldAutoFix) {
       grdpFilesToAddToGrd.push(grdpFiles[0]);
     } else {
-      error += `Please add ${localizationUtils.createPartFileEntry(grdpFiles[0]).trim()} to ${
+      return `Please add ${localizationUtils.createPartFileEntry(grdpFiles[0]).trim()} to ${
           localizationUtils.getRelativeFilePathFromSrc(grdpFiles[0])}.`;
     }
   }
-  return error;
+  return '';
 }
 
 /**
@@ -624,7 +626,7 @@ function addString(str, code, filePath, location, argumentNodes) {
  * Check if the file is in a directory that has been migrated to V2
  */
 function isInMigratedDirectory(filePath) {
-  const dirName = path.basename(path.dirname(filePath));
+  const dirName = path.dirname(localizationUtils.getRelativeFilePathFromFrontEnd(filePath));
   return migratedDirsSet.has(dirName);
 }
 

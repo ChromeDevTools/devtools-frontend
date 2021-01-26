@@ -3,11 +3,18 @@
 // found in the LICENSE file.
 
 const ts = require('typescript');
-const {isLocalizationCall, espree, getLocalizationCaseAndVersion, isLocalizationV2Call} =
-    require('../localization_utils');
+const {
+  espree,
+  getChildDirectoriesFromDirectory,
+  getLocalizationCaseAndVersion,
+  isLocalizationCall,
+  isLocalizationV2Call,
+  getFilesFromDirectory
+} = require('../localization_utils');
 const {removeUnusedEntries} = require('../../localizationV2Checks');
 const {findUIStringsNode} = require('../check_localized_strings');
 const {assert} = require('chai');
+const path = require('path');
 
 const parseCode = code => espree.parse(code, {ecmaVersion: 11, sourceType: 'module', range: true, loc: true});
 
@@ -162,5 +169,40 @@ describe('findUIStringsNode', () => {
     const contentWithoutUIStrings = 'const notUIStrings = "HELLO";';
     const sourceFile = ts.createSourceFile('fakeFile.js', contentWithoutUIStrings, ts.ScriptTarget.ESNext, true);
     assert.isNull(findUIStringsNode(sourceFile));
+  });
+});
+
+describe('getChildDirectoriesFromDirectory', () => {
+  it('recurses into subdirectories', async () => {
+    const testDataDir = path.join(__dirname, 'test_data');
+    const results = await getChildDirectoriesFromDirectory(testDataDir);
+
+    const relatives = results.map(absolute => path.relative(testDataDir, absolute));
+    assert.deepEqual(relatives, ['subdir1', 'subdir1/subsubdir1', 'subdir2']);
+  });
+});
+
+
+describe('getFilesFromDirectory', () => {
+  it('does not recurse for recursively = false', async () => {
+    const testDataDir = path.join(__dirname, 'test_data');
+    const results = [];
+    await getFilesFromDirectory(testDataDir, results, ['.txt'], false);
+
+    const relatives = results.map(absolute => path.relative(testDataDir, absolute));
+    assert.deepEqual(relatives, ['file0.txt']);
+  });
+  it('recurses for recursively = ture', async () => {
+    const testDataDir = path.join(__dirname, 'test_data');
+    const results = [];
+    await getFilesFromDirectory(testDataDir, results, ['.txt'], true);
+
+    const relatives = results.map(absolute => path.relative(testDataDir, absolute));
+    assert.deepEqual(relatives, [
+      'file0.txt',
+      'subdir1/file1.txt',
+      'subdir2/file2.txt',
+      'subdir1/subsubdir1/file3.txt',
+    ]);
   });
 });

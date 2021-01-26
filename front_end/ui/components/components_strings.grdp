@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_7f7208f102493356f51e7eb55dd157a1" desc="Text displayed instead of the survey link after the survey link is clicked, if the survey was shown successfully">
+    Thank you for your feedback
+  </message>
+  <message name="IDS_DEVTOOLS_d47d1a9538df32f314e56fd640ddc754" desc="Text displayed instead of the survey link after the survey link is clicked, if the survey was not shown successfully">
+    An error occurred with the survey
+  </message>
+  <message name="IDS_DEVTOOLS_fb5f2364eb32a3ea2051c7a7792569a3" desc="Text shown when the link to open a survey is clicked but the survey has not yet appeared">
+    Opening survey …
+  </message>
+</grit-part>

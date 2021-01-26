@@ -261,9 +261,9 @@ function sanitizeStringIntoCppFormat(str) {
   return sanitizeString(str, cppSpecialCharactersMap);
 }
 
-async function getFilesFromItem(itemPath, filePaths, acceptedFileEndings) {
+async function getFilesFromItem(itemPath, filePaths, acceptedFileEndings, recursively) {
   const stat = await statAsync(itemPath);
-  if (stat.isDirectory() && shouldParseDirectory(itemPath)) {
+  if (stat.isDirectory() && shouldParseDirectory(itemPath) && recursively) {
     return await getFilesFromDirectory(itemPath, filePaths, acceptedFileEndings);
   }
 
@@ -274,12 +274,12 @@ async function getFilesFromItem(itemPath, filePaths, acceptedFileEndings) {
   }
 }
 
-async function getFilesFromDirectory(directoryPath, filePaths, acceptedFileEndings) {
+async function getFilesFromDirectory(directoryPath, filePaths, acceptedFileEndings, recursively = true) {
   const itemNames = await readDirAsync(directoryPath);
   const promises = [];
   for (const itemName of itemNames) {
     const itemPath = path.resolve(directoryPath, itemName);
-    promises.push(getFilesFromItem(itemPath, filePaths, acceptedFileEndings));
+    promises.push(getFilesFromItem(itemPath, filePaths, acceptedFileEndings, recursively));
   }
   return Promise.all(promises);
 }
@@ -292,6 +292,7 @@ async function getChildDirectoriesFromDirectory(directoryPath) {
     const stat = await statAsync(itemPath);
     if (stat.isDirectory() && shouldParseDirectory(itemPath)) {
       dirPaths.push(itemPath);
+      dirPaths.push(...await getChildDirectoriesFromDirectory(itemPath));
     }
   }
   return dirPaths;

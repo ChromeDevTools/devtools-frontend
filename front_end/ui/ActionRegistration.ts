@@ -316,6 +316,7 @@ export const ActionCategory = {
   NETWORK: ls`Network`,
   MEMORY: ls`Memory`,
   JAVASCRIPT_PROFILER: ls`JavaScript Profiler`,
+  CONSOLE: ls`Console`,
 };
 
 type ActionCategory = typeof ActionCategory[keyof typeof ActionCategory];
@@ -325,6 +326,8 @@ export const enum IconClass {
   LARGEICON_START_RECORDING = 'largeicon-start-recording',
   LARGEICON_STOP_RECORDING = 'largeicon-stop-recording',
   LARGEICON_REFRESH = 'largeicon-refresh',
+  LARGEICON_CLEAR = 'largeicon-clear',
+  LARGEICON_VISIBILITY = 'largeicon-visibility',
 }
 
 export const enum KeybindSet {
@@ -363,11 +366,11 @@ export interface ActionRegistration {
   /**
    * The type of the icon used to trigger the action.
    */
-  iconClass?: string;
+  iconClass?: IconClass;
   /**
    * Whether the style of the icon toggles on interaction.
    */
-  toggledIconClass?: string;
+  toggledIconClass?: IconClass;
   /**
    * Whether the class 'toolbar-toggle-with-red-color' is toggled on the icon on interaction.
    */

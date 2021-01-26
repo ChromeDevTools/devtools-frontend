@@ -8,57 +8,6 @@
       "className": "Console.ConsolePanel.ConsoleRevealer"
     },
     {
-      "type": "action",
-      "actionId": "console.show",
-      "category": "Console",
-      "title": "Show Console",
-      "className": "Console.ConsoleView.ActionDelegate",
-      "bindings": [
-        {
-          "shortcut": "Ctrl+`",
-          "keybindSets": [
-            "devToolsDefault",
-            "vsCode"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "action",
-      "category": "Console",
-      "contextTypes": [
-        "Console.ConsoleView"
-      ],
-      "actionId": "console.clear",
-      "title": "Clear console",
-      "iconClass": "largeicon-clear",
-      "className": "Console.ConsoleView.ActionDelegate",
-      "bindings": [
-        {
-          "shortcut": "Ctrl+L"
-        },
-        {
-          "platform": "mac",
-          "shortcut": "Meta+K"
-        }
-      ]
-    },
-    {
-      "type": "action",
-      "category": "Console",
-      "actionId": "console.clear.history",
-      "title": "Clear console history",
-      "className": "Console.ConsoleView.ActionDelegate"
-    },
-    {
-      "type": "action",
-      "category": "Console",
-      "actionId": "console.create-pin",
-      "iconClass": "largeicon-visibility",
-      "className": "Console.ConsoleView.ActionDelegate",
-      "title": "Create live expression"
-    },
-    {
       "type": "setting",
       "category": "Console",
       "title": "Hide network messages",

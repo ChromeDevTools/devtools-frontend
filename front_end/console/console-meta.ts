@@ -21,6 +21,13 @@ async function loadConsoleModule(): Promise<typeof Console> {
   return loadedConsoleModule;
 }
 
+function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (consoleModule: typeof Console) => T[]): T[] {
+  if (loadedConsoleModule === undefined) {
+    return [];
+  }
+  return getClassCallBack(loadedConsoleModule);
+}
+
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'console',
@@ -43,5 +50,68 @@ UI.ViewManager.registerViewExtension({
   async loadView() {
     const Console = await loadConsoleModule();
     return Console.ConsolePanel.WrapperView.instance();
+  },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'console.show',
+  category: UI.ActionRegistration.ActionCategory.CONSOLE,
+  title: (): Platform.UIString.LocalizedString => ls`Show Console`,
+  async loadActionDelegate() {
+    const Console = await loadConsoleModule();
+    return Console.ConsoleView.ActionDelegate.instance();
+  },
+  bindings: [
+    {
+      shortcut: 'Ctrl+`',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'console.clear',
+  category: UI.ActionRegistration.ActionCategory.CONSOLE,
+  title: (): Platform.UIString.LocalizedString => ls`Clear console`,
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_CLEAR,
+  async loadActionDelegate() {
+    const Console = await loadConsoleModule();
+    return Console.ConsoleView.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Console => [Console.ConsoleView.ConsoleView]);
+  },
+  bindings: [
+    {
+      shortcut: 'Ctrl+L',
+    },
+    {
+      shortcut: 'Meta+K',
+      platform: UI.ActionRegistration.Platforms.Mac,
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'console.clear.history',
+  category: UI.ActionRegistration.ActionCategory.CONSOLE,
+  title: (): Platform.UIString.LocalizedString => ls`Clear console history`,
+  async loadActionDelegate() {
+    const Console = await loadConsoleModule();
+    return Console.ConsoleView.ActionDelegate.instance();
+  },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'console.create-pin',
+  category: UI.ActionRegistration.ActionCategory.CONSOLE,
+  title: (): Platform.UIString.LocalizedString => ls`Create live expression`,
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_VISIBILITY,
+  async loadActionDelegate() {
+    const Console = await loadConsoleModule();
+    return Console.ConsoleView.ActionDelegate.instance();
   },
 });

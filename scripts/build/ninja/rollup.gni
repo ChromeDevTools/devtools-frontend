@@ -2,14 +2,15 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("./node.gni")
 import("./vars.gni")
 
 template("rollup") {
   assert(defined(invoker.entrypoint),
          "You must define the 'entrypoint' for a rollup target")
 
-  action(target_name) {
-    script = "//third_party/node/node.py"
+  node_action(target_name) {
+    script = "node_modules/rollup/dist/bin/rollup"
 
     forward_variables_from(invoker,
                            [
@@ -20,15 +21,10 @@ template("rollup") {
 
     inputs = [
       invoker.entrypoint,
-      devtools_location_prepend + "node_modules/rollup/dist/bin/rollup",
       devtools_location_prepend + "front_end/rollup.config.js",
     ]
 
     args = [
-      rebase_path(
-          devtools_location_prepend + "node_modules/rollup/dist/bin/rollup",
-          root_build_dir),
-
       # TODO(crbug.com/1098074): We need to hide warnings that are written stderr,
       # as Chromium does not process the returncode of the subprocess correctly
       # and instead looks if `stderr` is empty.

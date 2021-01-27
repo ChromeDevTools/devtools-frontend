@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("../scripts/build/ninja/copy.gni")
+import("../scripts/build/ninja/node.gni")
 import("../scripts/build/ninja/vars.gni")
 import("../third_party/typescript/typescript.gni")
 
@@ -319,18 +320,12 @@ copy_sources_to_resources("entrypoint_copy") {
   sources = [ "integration_test_runner.html" ]
 }
 
-action("html_entrypoints") {
-  inputs = [
-    "entrypoint_template.html",
-    devtools_location_prepend + "scripts/build/generate_html_entrypoint.js",
-  ]
+node_action("html_entrypoints") {
+  inputs = [ "entrypoint_template.html" ]
 
-  script = "//third_party/node/node.py"
+  script = "scripts/build/generate_html_entrypoint.js"
 
   args = [
-    rebase_path(
-        devtools_location_prepend + "scripts/build/generate_html_entrypoint.js",
-        root_build_dir),
     "--template",
     rebase_path("entrypoint_template.html", root_build_dir),
     "--out-directory",

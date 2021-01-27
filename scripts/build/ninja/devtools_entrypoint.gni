@@ -5,6 +5,7 @@
 import("../../../devtools_module_entrypoints.gni")
 import("../../../third_party/typescript/typescript.gni")
 import("./copy.gni")
+import("./node.gni")
 import("./rollup.gni")
 import("./vars.gni")
 
@@ -99,13 +100,10 @@ template("devtools_entrypoint") {
     _rollup_target_name = _entrypoint_target_name + "-rollup"
     _prebundle_target_name = _entrypoint_target_name + "-tsconfig"
 
-    action(_copy_target_name) {
-      script = "//third_party/node/node.py"
+    node_action(_copy_target_name) {
+      script = "scripts/build/ninja/copy-file.js"
 
-      inputs = [
-        devtools_location_prepend + "scripts/build/ninja/copy-file.js",
-        invoker.entrypoint,
-      ]
+      inputs = [ invoker.entrypoint ]
 
       outputs = [ _copy_output_file_name ]
 
@@ -113,9 +111,6 @@ template("devtools_entrypoint") {
       _copy_dest = rebase_path(_copy_output_file_name, root_build_dir)
 
       args = [
-        rebase_path(
-            devtools_location_prepend + "scripts/build/ninja/copy-file.js",
-            root_build_dir),
         _copy_src,
         _copy_dest,
       ]
@@ -154,16 +149,10 @@ template("devtools_entrypoint") {
     # the public API of the `module.js` entrypoint. To do so, we copy
     # the generated `prebundle.d.ts` over, as the public API for a
     # rolled up bundle remains the same.
-    action(_ts_library_target_name) {
-      script = "//third_party/node/node.py"
-
-      inputs = [ devtools_location_prepend +
-                 "scripts/build/ninja/generate-declaration.js" ]
+    node_action(_ts_library_target_name) {
+      script = "scripts/build/ninja/generate-declaration.js"
 
       args = [
-        rebase_path(devtools_location_prepend +
-                        "scripts/build/ninja/generate-declaration.js",
-                    root_build_dir),
         rebase_path(target_gen_dir, root_build_dir),
         invoker.entrypoint,
       ]
@@ -195,16 +184,10 @@ template("devtools_entrypoint") {
   _generated_tsconfig_location =
       target_gen_dir + "/" + invoker.target_name + "-tsconfig.json"
 
-  action(_entrypoint_target_name) {
-    script = "//third_party/node/node.py"
-
-    inputs = [ devtools_location_prepend +
-               "scripts/build/ninja/generate-tsconfig.js" ]
+  node_action(_entrypoint_target_name) {
+    script = "scripts/build/ninja/generate-tsconfig.js"
 
     args = [
-             rebase_path(devtools_location_prepend +
-                             "scripts/build/ninja/generate-tsconfig.js",
-                         root_build_dir),
              rebase_path(_generated_tsconfig_location, root_build_dir),
              rebase_path(invoker.entrypoint, root_build_dir),
            ] + invoker.deps

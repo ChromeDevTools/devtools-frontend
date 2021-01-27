@@ -251,7 +251,7 @@ all_devtools_files = [
   "front_end/issues/descriptions/cspTrustedTypesSinkViolation.md",
   "front_end/issues/descriptions/cspTrustedTypesPolicyViolation.md",
   "front_end/issues/descriptions/mixedContent.md",
-  "front_end/issues/descriptions/sharedArrayBufferTransfer.md",
+  "front_end/issues/descriptions/sharedArrayBuffer.md",
   "front_end/issues/descriptions/SameSiteExcludeContextDowngradeRead.md",
   "front_end/issues/descriptions/SameSiteExcludeContextDowngradeSet.md",
   "front_end/issues/descriptions/SameSiteExcludeNavigationContextDowngrade.md",

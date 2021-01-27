@@ -34,7 +34,7 @@
     "descriptions/cspTrustedTypesSinkViolation.md",
     "descriptions/cspTrustedTypesPolicyViolation.md",
     "descriptions/mixedContent.md",
-    "descriptions/sharedArrayBufferTransfer.md",
+    "descriptions/sharedArrayBuffer.md",
     "descriptions/SameSiteExcludeContextDowngradeRead.md",
     "descriptions/SameSiteExcludeContextDowngradeSet.md",
     "descriptions/SameSiteExcludeNavigationContextDowngrade.md",

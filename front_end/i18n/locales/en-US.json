@@ -653,21 +653,6 @@
   "developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} resources, {PH2} currently loading"
   },
-  "devices/DevicesView.ts | thisPanelHasBeenDeprecatedIn": {
-    "message": "This panel has been deprecated in favor of the {PH1} interface, which has equivalent functionality."
-  },
-  "devices/ModuleUIStrings.ts | android": {
-    "message": "android"
-  },
-  "devices/ModuleUIStrings.ts | mobile": {
-    "message": "mobile"
-  },
-  "devices/ModuleUIStrings.ts | remoteDevices": {
-    "message": "Remote devices"
-  },
-  "devices/ModuleUIStrings.ts | usb": {
-    "message": "usb"
-  },
   "event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Delete event listener"
   },

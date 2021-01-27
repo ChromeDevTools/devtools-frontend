@@ -17,6 +17,7 @@ template("node_action") {
                              "deps",
                              "public_deps",
                              "outputs",
+                             "sources",
                              "inputs",
                              "testonly",
                            ])

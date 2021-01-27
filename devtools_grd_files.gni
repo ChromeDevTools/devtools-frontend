@@ -101,6 +101,7 @@ grd_files_release_sources = [
   "front_end/Images/smallIcons.svg",
   "front_end/Images/sources_panel_icon.svg",
   "front_end/Images/speech.png",
+  "front_end/Images/switcherIcon.svg",
   "front_end/Images/toolbarResizerVertical.png",
   "front_end/Images/touchCursor.png",
   "front_end/Images/touchCursor_2x.png",

@@ -4,6 +4,7 @@
 
 import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
+import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
 import * as FontEditorUnitConverter from './FontEditorUnitConverter.js';
@@ -788,21 +789,13 @@ class FontPropertyInputs {
    */
   _createTypeToggle(field) {
     const displaySwitcher = /** @type {!HTMLElement} */ (field.createChild('div', 'spectrum-switcher'));
-    appendSwitcherIcon(displaySwitcher);
+    const icon = new WebComponents.Icon.Icon();
+    icon.data = {iconName: 'switcherIcon', color: 'var(--color-text-primary)', width: '16px', height: '16px'};
+    displaySwitcher.appendChild(icon);
     UI.UIUtils.setTitle(displaySwitcher, i18nString(UIStrings.sToggleInputType, {PH1: this._propertyName}));
     displaySwitcher.tabIndex = 0;
     self.onInvokeElement(displaySwitcher, this._toggleInputType.bind(this));
     UI.ARIAUtils.markAsButton(displaySwitcher);
-
-    /** @param {!HTMLElement} parentElement */
-    function appendSwitcherIcon(parentElement) {
-      const icon = UI.UIUtils.createSVGChild(parentElement, 'svg');
-      icon.setAttribute('height', '16');
-      icon.setAttribute('width', '16');
-      const path = UI.UIUtils.createSVGChild(icon, 'path');
-      path.setAttribute('d', 'M5,6 L11,6 L8,2 Z M5,10 L11,10 L8,14 Z');
-      return icon;
-    }
   }
 
   /**

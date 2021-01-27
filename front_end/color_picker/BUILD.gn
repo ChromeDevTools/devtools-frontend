@@ -20,6 +20,7 @@ devtools_module("color_picker") {
     "../platform:bundle",
     "../sdk:bundle",
     "../ui:bundle",
+    "../ui/components:bundle",
   ]
 }
 

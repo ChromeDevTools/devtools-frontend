@@ -43,6 +43,7 @@ group("front_end") {
     "inline_editor:bundle",
     "javascript_metadata:bundle",
     "js_main:bundle",
+    "layer_viewer:bundle",
     "lighthouse_worker:bundle",
     "main:bundle",
     "object_ui:bundle",
@@ -245,7 +246,6 @@ ts_library("devtools_app") {
     "help:meta",
     "inspector_main:meta",
     "issues:meta",
-    "layer_viewer:meta",
     "layers:meta",
     "lighthouse:meta",
     "media:meta",
@@ -312,7 +312,6 @@ ts_library("worker_app") {
 
   deps = [
     ":shell",
-    "layer_viewer:meta",
     "startup:bundle",
   ]
 }

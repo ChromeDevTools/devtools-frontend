@@ -203,9 +203,6 @@
   <message name="IDS_DEVTOOLS_850985cd851d0fe440f03f77762e2590" desc="Text for the network request Content-Length header">
     <ph name="LOCKED_1">Content-Length</ph>
   </message>
-  <message name="IDS_DEVTOOLS_87bfda183c4f851a101e97bbb1bbace7" desc="Title of the Layers tool">
-    Layers
-  </message>
   <message name="IDS_DEVTOOLS_87d17f4624a514e81dc7c8e016a7405c" desc="Text for the mobile platform, as opposed to desktop">
     Mobile
   </message>

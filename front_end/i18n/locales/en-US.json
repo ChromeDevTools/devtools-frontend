@@ -827,33 +827,6 @@
   "js_profiler/js_profiler-meta.ts | showProfiler": {
     "message": "Show Profiler"
   },
-  "layer_viewer/layer_viewer-meta.ts | panOrRotateDown": {
-    "message": "Pan or rotate down"
-  },
-  "layer_viewer/layer_viewer-meta.ts | panOrRotateLeft": {
-    "message": "Pan or rotate left"
-  },
-  "layer_viewer/layer_viewer-meta.ts | panOrRotateRight": {
-    "message": "Pan or rotate right"
-  },
-  "layer_viewer/layer_viewer-meta.ts | panOrRotateUp": {
-    "message": "Pan or rotate up"
-  },
-  "layer_viewer/layer_viewer-meta.ts | resetView": {
-    "message": "Reset view"
-  },
-  "layer_viewer/layer_viewer-meta.ts | switchToPanMode": {
-    "message": "Switch to pan mode"
-  },
-  "layer_viewer/layer_viewer-meta.ts | switchToRotateMode": {
-    "message": "Switch to rotate mode"
-  },
-  "layer_viewer/layer_viewer-meta.ts | zoomIn": {
-    "message": "Zoom in"
-  },
-  "layer_viewer/layer_viewer-meta.ts | zoomOut": {
-    "message": "Zoom out"
-  },
   "layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Compositing Reasons"
   },
@@ -1108,6 +1081,36 @@
   },
   "layer_viewer/LayerViewHost.ts | showInternalLayers": {
     "message": "Show internal layers"
+  },
+  "layer_viewer/ModuleUIStrings.ts | layers": {
+    "message": "Layers"
+  },
+  "layer_viewer/ModuleUIStrings.ts | panOrRotateDown": {
+    "message": "Pan or rotate down"
+  },
+  "layer_viewer/ModuleUIStrings.ts | panOrRotateLeft": {
+    "message": "Pan or rotate left"
+  },
+  "layer_viewer/ModuleUIStrings.ts | panOrRotateRight": {
+    "message": "Pan or rotate right"
+  },
+  "layer_viewer/ModuleUIStrings.ts | panOrRotateUp": {
+    "message": "Pan or rotate up"
+  },
+  "layer_viewer/ModuleUIStrings.ts | resetView": {
+    "message": "Reset view"
+  },
+  "layer_viewer/ModuleUIStrings.ts | switchToPanMode": {
+    "message": "Switch to pan mode"
+  },
+  "layer_viewer/ModuleUIStrings.ts | switchToRotateMode": {
+    "message": "Switch to rotate mode"
+  },
+  "layer_viewer/ModuleUIStrings.ts | zoomIn": {
+    "message": "Zoom in"
+  },
+  "layer_viewer/ModuleUIStrings.ts | zoomOut": {
+    "message": "Zoom out"
   },
   "layer_viewer/PaintProfilerView.ts | bitmap": {
     "message": "Bitmap"

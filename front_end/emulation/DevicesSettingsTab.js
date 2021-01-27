@@ -219,8 +219,8 @@ export class DevicesSettingsTab extends UI.Widget.VBox {
     }
     editor.control('ua-type').value = uaType;
     if (device.userAgentMetadata) {
-      editor.control('brands').value = serializeBrandsList(device.userAgentMetadata.brands);
-      editor.control('full-version').value = device.userAgentMetadata.fullVersion;
+      editor.control('brands').value = serializeBrandsList(device.userAgentMetadata.brands || []);
+      editor.control('full-version').value = device.userAgentMetadata.fullVersion || '';
       editor.control('platform').value = device.userAgentMetadata.platform;
       editor.control('platform-version').value = device.userAgentMetadata.platformVersion;
       editor.control('arch').value = device.userAgentMetadata.architecture;

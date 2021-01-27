@@ -337,6 +337,8 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       computedStyleQueue.push({propertyName, propertyValue, isInherited});
     }
 
+    this._propertiesOutline.contentElement.classList.add('render-flash');
+
     // Render computed style properties in batches via idle callbacks to avoid a
     // very long task. The batchSize and timeoutInterval should be tweaked in
     // pair. Currently, updating, laying-out, rendering, and painting 20 items
@@ -363,6 +365,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     }
 
     await this._idleCallbackManager.awaitDone();
+    this._propertiesOutline.contentElement.classList.remove('render-flash');
   }
 
   /**

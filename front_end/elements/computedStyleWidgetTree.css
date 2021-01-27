@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+.alphabetical-list.render-flash {
+  min-height: 100vh;
+}
+
 .tree-outline,
 .tree-outline ol {
   padding-left: 0;

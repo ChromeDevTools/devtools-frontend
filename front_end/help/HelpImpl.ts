@@ -59,36 +59,18 @@ export class HelpLateInitialization implements Common.Runnable.Runnable {
   }
 }
 
-let releaseNotesActionDelegateInstance: ReleaseNotesActionDelegate;
 export class ReleaseNotesActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(latestReleaseNote().link);
     return true;
   }
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ReleaseNotesActionDelegate {
-    const {forceNew} = opts;
-    if (!releaseNotesActionDelegateInstance || forceNew) {
-      releaseNotesActionDelegateInstance = new ReleaseNotesActionDelegate();
-    }
-
-    return releaseNotesActionDelegateInstance;
-  }
 }
 
-let reportIssueActionDelegateInstance: ReportIssueActionDelegate;
 export class ReportIssueActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
         'https://bugs.chromium.org/p/chromium/issues/entry?template=DevTools+issue');
     return true;
-  }
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ReportIssueActionDelegate {
-    const {forceNew} = opts;
-    if (!reportIssueActionDelegateInstance || forceNew) {
-      reportIssueActionDelegateInstance = new ReportIssueActionDelegate();
-    }
-
-    return reportIssueActionDelegateInstance;
   }
 }
 export interface ReleaseNoteHighlight {

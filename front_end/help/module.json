@@ -1,10 +1,43 @@
 {
   "extensions": [
     {
+      "type": "setting",
+      "category": "Appearance",
+      "title": "Show What's New after each update",
+      "settingName": "help.show-release-note",
+      "settingType": "boolean",
+      "defaultValue": true,
+      "options": [
+        {
+          "value": true,
+          "title": "Show What's New after each update"
+        },
+        {
+          "value": false,
+          "title": "Do not show What's New after each update"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "category": "Help",
+      "actionId": "help.release-notes",
+      "title": "Release notes",
+      "className": "Help.ReleaseNotesActionDelegate"
+    },
+    {
       "type": "context-menu-item",
       "location": "mainMenuHelp/default",
       "actionId": "help.release-notes",
       "order": 10
+    },
+    {
+      "type": "action",
+      "category": "Help",
+      "actionId": "help.report-issue",
+      "title": "Report a DevTools issue",
+      "className": "Help.ReportIssueActionDelegate",
+      "tags": "bug"
     },
     {
       "type": "context-menu-item",

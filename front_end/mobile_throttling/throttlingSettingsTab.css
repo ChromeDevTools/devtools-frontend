@@ -41,7 +41,7 @@
 .conditions-list-text {
   white-space: nowrap;
   text-overflow: ellipsis;
-  flex: 0 0 100px;
+  flex: 0 0 70px;
   user-select: none;
   color: #222;
   text-align: end;
@@ -50,8 +50,8 @@
 
 .conditions-list-title {
   text-align: start;
-  flex: auto;
   display: flex;
+  flex: auto;
   align-items: flex-start;
 }
 

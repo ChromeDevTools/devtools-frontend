@@ -158,7 +158,7 @@ export class NetworkManager extends SDKModel {
       }
     }
     console.error('No network manager for request');
-    return /** @type {!Promise<?string>} */ (Promise.resolve(null));
+    return null;
   }
 
   /**
@@ -1464,7 +1464,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   /**
    * @return {!Promise<void>}
    */
-  _updateInterceptionPatterns() {
+  async _updateInterceptionPatterns() {
     if (!Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
       Common.Settings.Settings.instance().moduleSetting('cacheDisabled').set(true);
     }
@@ -1474,7 +1474,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       promises.push(agent.invoke_setRequestInterception({patterns: this._urlsForRequestInterceptor.valuesArray()}));
     }
     this.dispatchEventToListeners(MultitargetNetworkManager.Events.InterceptorsChanged);
-    return Promise.all(promises).then(values => Promise.resolve());
+    await Promise.all(promises);
   }
 
   /**
@@ -1508,13 +1508,16 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
    * @param {string} origin
    * @return {!Promise<!Array<string>>}
    */
-  getCertificate(origin) {
+  async getCertificate(origin) {
     const target = TargetManager.instance().mainTarget();
     if (!target) {
-      return Promise.resolve([]);
+      return [];
     }
-    return target.networkAgent().invoke_getCertificate({origin}).then(
-        certificate => (certificate && certificate.tableNames) || []);
+    const certificate = await target.networkAgent().invoke_getCertificate({origin});
+    if (!certificate) {
+      return [];
+    }
+    return certificate.tableNames;
   }
 
   /**

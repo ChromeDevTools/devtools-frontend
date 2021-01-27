@@ -10,7 +10,6 @@ import * as ProtocolClient from '../protocol_client/protocol_client.js';
 /** @type {!Map<function(new:SDKModel, !Target), !{capabilities: number, autostart: boolean}>} */
 const _registeredModels = new Map();
 
-
 export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
   /**
    * @param {!Target} target
@@ -33,23 +32,20 @@ export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string=} reason - optionally provide a reason, the model can respond accordingly
    * @return {!Promise<void>}
    */
-  preSuspendModel(reason) {
-    return Promise.resolve();
+  async preSuspendModel(reason) {
   }
 
   /**
    * @param {string=} reason - optionally provide a reason, the model can respond accordingly
    * @return {!Promise<void>}
    */
-  suspendModel(reason) {
-    return Promise.resolve();
+  async suspendModel(reason) {
   }
 
   /**
    * @return {!Promise<void>}
    */
-  resumeModel() {
-    return Promise.resolve();
+  async resumeModel() {
   }
 
   /**
@@ -57,8 +53,7 @@ export class SDKModel extends Common.ObjectWrapper.ObjectWrapper {
    * the model and that require all models already in an unsuspended state.
    * @return {!Promise<void>}
    */
-  postResumeModel() {
-    return Promise.resolve();
+  async postResumeModel() {
   }
 
   dispose() {
@@ -286,7 +281,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
    */
   async suspend(reason) {
     if (this._isSuspended) {
-      return Promise.resolve();
+      return;
     }
     this._isSuspended = true;
 
@@ -299,7 +294,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
    */
   async resume() {
     if (!this._isSuspended) {
-      return Promise.resolve();
+      return;
     }
     this._isSuspended = false;
 

@@ -83,7 +83,7 @@ export class MainConnection {
    * @override
    * @return {!Promise<void>}
    */
-  disconnect() {
+  async disconnect() {
     const onDisconnect = this._onDisconnect;
     Common.EventTarget.EventTarget.removeEventListeners(this._eventListeners);
     this._onDisconnect = null;
@@ -92,7 +92,6 @@ export class MainConnection {
     if (onDisconnect) {
       onDisconnect.call(null, 'force disconnect');
     }
-    return Promise.resolve();
   }
 }
 
@@ -268,13 +267,12 @@ export class StubConnection {
    * @override
    * @return {!Promise<void>}
    */
-  disconnect() {
+  async disconnect() {
     if (this._onDisconnect) {
       this._onDisconnect.call(null, 'force disconnect');
     }
     this._onDisconnect = null;
     this._onMessage = null;
-    return Promise.resolve();
   }
 }
 
@@ -326,13 +324,12 @@ export class ParallelConnection {
    * @override
    * @return {!Promise<void>}
    */
-  disconnect() {
+  async disconnect() {
     if (this._onDisconnect) {
       this._onDisconnect.call(null, 'force disconnect');
     }
     this._onDisconnect = null;
     this._onMessage = null;
-    return Promise.resolve();
   }
 }
 
@@ -356,7 +353,6 @@ export async function initMainConnection(createMainTarget, websocketConnectionLo
         }
         createMainTarget();
       });
-  return Promise.resolve();
 }
 
 /**

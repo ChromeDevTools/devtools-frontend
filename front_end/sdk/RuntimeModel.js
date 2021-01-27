@@ -765,7 +765,7 @@ export class ExecutionContext {
    * @param {boolean} awaitPromise
    * @return {!Promise<!EvaluationResult>}
    */
-  evaluate(options, userGesture, awaitPromise) {
+  async evaluate(options, userGesture, awaitPromise) {
     // FIXME: It will be moved to separate ExecutionContext.
     if (this.debuggerModel.selectedCallFrame()) {
       return this.debuggerModel.evaluateOnSelectedCallFrame(options);
@@ -777,17 +777,13 @@ export class ExecutionContext {
     }
 
     /** @type {!EvaluationResult} */
-    const unsupportedError = {error: 'Side-effect checks not supported by backend.'};
-    if (this.runtimeModel.hasSideEffectSupport() === false) {
-      return Promise.resolve(unsupportedError);
-    }
-
-    return this.runtimeModel.checkSideEffectSupport().then(() => {
+    if (this.runtimeModel.hasSideEffectSupport() !== false) {
+      await this.runtimeModel.checkSideEffectSupport();
       if (this.runtimeModel.hasSideEffectSupport()) {
         return this._evaluateGlobal(options, userGesture, awaitPromise);
       }
-      return Promise.resolve(unsupportedError);
-    });
+    }
+    return {error: 'Side-effect checks not supported by backend.'};
   }
 
   /**

@@ -197,8 +197,8 @@ export class Script {
    * @override
    * @return {!Promise<boolean>}
    */
-  contentEncoded() {
-    return Promise.resolve(false);
+  async contentEncoded() {
+    return false;
   }
 
   /**

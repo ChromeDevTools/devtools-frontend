@@ -529,9 +529,10 @@ export class RemoteObjectImpl extends RemoteObject {
 
   /**
    * @param {!Protocol.Runtime.RemoteObject} object
+   * @return {!Promise<!RemoteObject>}
    */
-  _createRemoteObject(object) {
-    return Promise.resolve(this._runtimeModel.createRemoteObject(object));
+  async _createRemoteObject(object) {
+    return this._runtimeModel.createRemoteObject(object);
   }
 
   /**
@@ -1098,9 +1099,8 @@ export class LocalJSONObject extends RemoteObject {
    * @param {boolean} generatePreview
    * @return {!Promise<!GetPropertiesResult>}
    */
-  getOwnProperties(generatePreview) {
-    return Promise.resolve(
-        /** @type {!GetPropertiesResult} */ ({properties: this._children(), internalProperties: null}));
+  async getOwnProperties(generatePreview) {
+    return /** @type {!GetPropertiesResult} */ ({properties: this._children(), internalProperties: null});
   }
 
   /**
@@ -1109,12 +1109,11 @@ export class LocalJSONObject extends RemoteObject {
    * @param {boolean} generatePreview
    * @return {!Promise<!GetPropertiesResult>}
    */
-  getAllProperties(accessorPropertiesOnly, generatePreview) {
+  async getAllProperties(accessorPropertiesOnly, generatePreview) {
     if (accessorPropertiesOnly) {
-      return Promise.resolve(/** @type {!GetPropertiesResult} */ ({properties: [], internalProperties: null}));
+      return /** @type {!GetPropertiesResult} */ ({properties: [], internalProperties: null});
     }
-    return Promise.resolve(
-        /** @type {!GetPropertiesResult} */ ({properties: this._children(), internalProperties: null}));
+    return /** @type {!GetPropertiesResult} */ ({properties: this._children(), internalProperties: null});
   }
 
   /**
@@ -1158,7 +1157,7 @@ export class LocalJSONObject extends RemoteObject {
    * @return {!Promise<!CallFunctionResult>}
    * @template T
    */
-  callFunction(functionDeclaration, args) {
+  async callFunction(functionDeclaration, args) {
     const target = /** @type {!Object} */ (this._value);
     const rawArgs = args ? args.map(arg => arg.value) : [];
 
@@ -1172,8 +1171,7 @@ export class LocalJSONObject extends RemoteObject {
 
     const object = RemoteObject.fromLocalObject(result);
 
-    return Promise.resolve(
-        /** @type {!CallFunctionResult} */ ({object, wasThrown}));
+    return /** @type {!CallFunctionResult} */ ({object, wasThrown});
   }
 
   /**
@@ -1183,7 +1181,7 @@ export class LocalJSONObject extends RemoteObject {
    * @return {!Promise<T>}
    * @template T
    */
-  callFunctionJSON(functionDeclaration, args) {
+  async callFunctionJSON(functionDeclaration, args) {
     const target = /** @type {!Object} */ (this._value);
     const rawArgs = args ? args.map(arg => arg.value) : [];
 
@@ -1194,7 +1192,7 @@ export class LocalJSONObject extends RemoteObject {
       result = null;
     }
 
-    return Promise.resolve(/** @type {T} */ (result));
+    return /** @type {T} */ (result);
   }
 }
 

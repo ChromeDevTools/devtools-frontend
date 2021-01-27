@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
@@ -137,4 +138,182 @@ UI.ActionRegistration.registerActionExtension({
     return Emulation.SensorsView.ShowActionDelegate.instance();
   },
   title: (): Platform.UIString.LocalizedString => ls`Sensors`,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.MOBILE,
+  settingName: 'showMediaQueryInspector',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: false,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Show media queries`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Hide media queries`,
+    },
+  ],
+  tags: [(): Platform.UIString.LocalizedString => ls`device`],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.MOBILE,
+  settingName: 'emulation.showRulers',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: false,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Show rulers`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Hide rulers`,
+    },
+  ],
+  tags: [(): Platform.UIString.LocalizedString => ls`device`],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.MOBILE,
+  settingName: 'emulation.showDeviceOutline',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: false,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Show device frame`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Hide device frame`,
+    },
+  ],
+  tags: [(): Platform.UIString.LocalizedString => ls`device`],
+});
+
+Common.Settings.registerSettingExtension({
+  settingName: 'emulation.locations',
+  settingType: Common.Settings.SettingTypeObject.ARRAY,
+  defaultValue: [
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Berlin`,
+      lat: 52.520007,
+      long: 13.404954,
+      timezoneId: 'Europe/Berlin',
+      locale: 'de_DE',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`London`,
+      lat: 51.507351,
+      long: -0.127758,
+      timezoneId: 'Europe/London',
+      locale: 'en_GB',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Moscow`,
+      lat: 55.755826,
+      long: 37.6173,
+      timezoneId: 'Europe/Moscow',
+      locale: 'ru_RU',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Mountain View`,
+      lat: 37.386052,
+      long: -122.083851,
+      timezoneId: 'US/Pacific',
+      locale: 'en_US',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Mumbai`,
+      lat: 19.075984,
+      long: 72.877656,
+      timezoneId: 'Asia/Kolkata',
+      locale: 'mr_IN',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`San Francisco`,
+      lat: 37.774929,
+      long: -122.419416,
+      timezoneId: 'US/Pacific',
+      locale: 'en_US',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Shanghai`,
+      lat: 31.230416,
+      long: 121.473701,
+      timezoneId: 'Asia/Shanghai',
+      locale: 'zh_Hans_CN',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`São Paulo`,
+      lat: -23.55052,
+      long: -46.633309,
+      timezoneId: 'America/Sao_Paulo',
+      locale: 'pt_BR',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Tokyo`,
+      lat: 35.689487,
+      long: 139.691706,
+      timezoneId: 'Asia/Tokyo',
+      locale: 'ja_JP',
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  title: (): Platform.UIString.LocalizedString => ls`Touch`,
+  reloadRequired: true,
+  settingName: 'emulation.touch',
+  settingType: Common.Settings.SettingTypeObject.ENUM,
+  defaultValue: 'none',
+  options: [
+    {
+      value: 'none',
+      title: (): Platform.UIString.LocalizedString => ls`Device-based`,
+      text: (): Platform.UIString.LocalizedString => ls`Device-based`,
+    },
+    {
+      value: 'force',
+      title: (): Platform.UIString.LocalizedString => ls`Force enabled`,
+      text: (): Platform.UIString.LocalizedString => ls`Force enabled`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  title: (): Platform.UIString.LocalizedString => ls`Emulate Idle Detector state`,
+  settingName: 'emulation.idleDetection',
+  settingType: Common.Settings.SettingTypeObject.ENUM,
+  defaultValue: 'none',
+  options: [
+    {
+      value: 'none',
+      title: (): Platform.UIString.LocalizedString => ls`No idle emulation`,
+      text: (): Platform.UIString.LocalizedString => ls`No idle emulation`,
+    },
+    {
+      value: '{\"isUserActive\":true,\"isScreenUnlocked\":true}',
+      title: (): Platform.UIString.LocalizedString => ls`User active, screen unlocked`,
+      text: (): Platform.UIString.LocalizedString => ls`User active, screen unlocked`,
+    },
+    {
+      value: '{\"isUserActive\":true,\"isScreenUnlocked\":false}',
+      title: (): Platform.UIString.LocalizedString => ls`User active, screen locked`,
+      text: (): Platform.UIString.LocalizedString => ls`User active, screen locked`,
+    },
+    {
+      value: '{\"isUserActive\":false,\"isScreenUnlocked\":true}',
+      title: (): Platform.UIString.LocalizedString => ls`User idle, screen unlocked`,
+      text: (): Platform.UIString.LocalizedString => ls`User idle, screen unlocked`,
+    },
+    {
+      value: '{\"isUserActive\":false,\"isScreenUnlocked\":false}',
+      title: (): Platform.UIString.LocalizedString => ls`User idle, screen locked`,
+      text: (): Platform.UIString.LocalizedString => ls`User idle, screen locked`,
+    },
+  ],
 });

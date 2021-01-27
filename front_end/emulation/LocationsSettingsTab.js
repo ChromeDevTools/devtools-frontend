@@ -55,8 +55,8 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
     this._list.clear();
 
     const conditions = this._customSetting.get();
-    for (let i = 0; i < conditions.length; ++i) {
-      this._list.appendItem(conditions[i], true);
+    for (const condition of conditions) {
+      this._list.appendItem({...condition, title: condition.title()}, true);
     }
 
     this._list.appendSeparator();

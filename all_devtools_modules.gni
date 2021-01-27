@@ -128,8 +128,6 @@ all_typescript_module_sources = [
   "developer_resources/DeveloperResourcesListView.js",
   "developer_resources/DeveloperResourcesView.js",
   "developer_resources/ModuleUIStrings.js",
-  "devices/DevicesView.js",
-  "devices/ModuleUIStrings.js",
   "diff/DiffWrapper.js",
   "diff/diff_match_patch.js",
   "dom_extension/DOMExtension.js",

@@ -29,7 +29,6 @@ group("front_end") {
     "console_counters:bundle",
     "cookie_table:bundle",
     "data_grid:bundle",
-    "devices:bundle",
     "diff:bundle",
     "emulated_devices/optimized:optimized_emulated_devices",
     "event_listeners:bundle",

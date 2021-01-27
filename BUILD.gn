@@ -127,7 +127,6 @@ generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/coverage/coverage_module.js",
   "$resources_out_dir/css_overview/css_overview_module.js",
   "$resources_out_dir/data_grid/data_grid_module.js",
-  "$resources_out_dir/devices/devices_module.js",
   "$resources_out_dir/diff/diff_module.js",
   "$resources_out_dir/elements/elements_module.js",
   "$resources_out_dir/event_listeners/event_listeners_module.js",

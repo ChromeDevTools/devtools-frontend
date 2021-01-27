@@ -10,7 +10,6 @@
     { "name": "browser_debugger" },
     { "name": "css_overview" },
     { "name": "cookie_table" },
-    { "name": "devices" },
     { "name": "elements" },
     { "name": "emulated_devices" },
     { "name": "issues" },

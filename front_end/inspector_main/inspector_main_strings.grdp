@@ -81,9 +81,6 @@
   <message name="IDS_DEVTOOLS_8339f28e0c74e2c821b05332280c754b" desc="Title of a setting under the Network category in Settings">
     Force ad blocking on this site
   </message>
-  <message name="IDS_DEVTOOLS_846495f9ceed11accf8879f555936a7d" desc="A title of the 'Navigation' action category">
-    Navigation
-  </message>
   <message name="IDS_DEVTOOLS_8634af2a16e41305fc8dca2d67360810" desc="Title of button in inspector main">
     Open dedicated <ph name="LOCKED_1">DevTools</ph> for Node.js
   </message>

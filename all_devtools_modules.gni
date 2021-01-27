@@ -422,6 +422,7 @@ all_typescript_module_sources = [
   "recorder/RecordingEventHandler.js",
   "recorder/RecordingFileSystem.js",
   "recorder/RecordingSession.js",
+  "render_coordinator/RenderCoordinator.js",
   "resources/AppManifestView.js",
   "resources/ApplicationCacheItemsView.js",
   "resources/ApplicationCacheModel.js",

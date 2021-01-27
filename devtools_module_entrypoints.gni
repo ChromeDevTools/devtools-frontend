@@ -147,6 +147,7 @@ devtools_module_entrypoint_sources = [
   "quick_open/quick_open-legacy.js",
   "quick_open/quick_open.js",
   "recorder/recorder.js",
+  "render_coordinator/render_coordinator.js",
   "resources/resources-legacy.js",
   "resources/resources-meta.js",
   "resources/resources.js",

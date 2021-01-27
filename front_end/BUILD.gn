@@ -51,6 +51,7 @@ group("front_end") {
     "protocol_client:bundle",
     "quick_open:bundle",
     "recorder:bundle",
+    "render_coordinator:bundle",
     "screencast:bundle",
     "sdk:bundle",
     "search:bundle",

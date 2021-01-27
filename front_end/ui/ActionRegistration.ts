@@ -322,6 +322,7 @@ export const ActionCategory = {
   SENSORS: ls`Sensors`,
   HELP: ls`Help`,
   INPUTS: ls`Inputs`,
+  LAYERS: ls`Layers`,
 };
 
 type ActionCategory = typeof ActionCategory[keyof typeof ActionCategory];

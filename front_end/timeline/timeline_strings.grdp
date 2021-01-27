@@ -634,9 +634,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_87ba2ecc8b6915e8bd6f5089918229fd" desc="Text in Timeline UIUtils of the Performance panel">
     Range
   </message>
-  <message name="IDS_DEVTOOLS_87bfda183c4f851a101e97bbb1bbace7" desc="Title of the Layers tool">
-    Layers
-  </message>
   <message name="IDS_DEVTOOLS_883b293ae308d8e3caf1614c8a2fda61" desc="Text in Timeline Tree View of the Performance panel">
     Group by Frame
   </message>

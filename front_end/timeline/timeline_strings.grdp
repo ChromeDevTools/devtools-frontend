@@ -583,6 +583,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_7ac6c415cd08c0ba2c0a1f54c0a62a52" desc="Text in Timeline UIUtils of the Performance panel">
     ''' (from push)
   </message>
+  <message name="IDS_DEVTOOLS_7b3a6b02f467b95f2b5267aa94708c07" desc="Text for the name of a thread of the page">
+    Thread <ph name="TID">$1s<ex>1</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_7b8c1a72c279c468ba1729548e05181c" desc="Screen reader label for the Timeline History dropdown button">
     Current Session: <ph name="THIS__TITLE_PERFORMANCEMODEL_">$1s<ex>example.com #3</ex></ph>. <ph name="THIS__BUTTON_GETTITLE__">$2s<ex>Show recent timeline sessions</ex></ph>
   </message>

@@ -29,13 +29,37 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 
+export const UIStrings = {
+  /**
+  *@description Text for the name of a thread of the page
+  *@example {1} PH1
+  */
+  threadS: 'Thread {PH1}',
+  /**
+  *@description Title of a worker in the timeline flame chart of the Performance panel
+  *@example {https://google.com} PH1
+  */
+  workerS: '`Worker` — {PH1}',
+  /**
+  *@description Title of a worker in the timeline flame chart of the Performance panel
+  */
+  dedicatedWorker: 'Dedicated `Worker`',
+  /**
+  *@description Title of a worker in the timeline flame chart of the Performance panel
+  *@example {FormatterWorker} PH1
+  *@example {https://google.com} PH2
+  */
+  workerSS: '`Worker`: {PH1} — {PH2}',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline_model/TimelineModel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineModelImpl {
   constructor() {
     // The following fields are set by a call to _reset().
@@ -808,7 +832,7 @@ export class TimelineModelImpl {
    */
   _processThreadEvents(tracingModel, ranges, thread, isMainThread, isWorker, forMainFrame, url) {
     const track = new Track();
-    track.name = thread.name() || ls`Thread ${thread.id()}`;
+    track.name = thread.name() || i18nString(UIStrings.threadS, {PH1: thread.id()});
     track.type = TrackType.Other;
     track.thread = thread;
     if (isMainThread) {
@@ -818,7 +842,7 @@ export class TimelineModelImpl {
     } else if (isWorker) {
       track.type = TrackType.Worker;
       track.url = url || '';
-      track.name = track.url ? ls`Worker — ${track.url}` : ls`Dedicated Worker`;
+      track.name = track.url ? i18nString(UIStrings.workerS, {PH1: track.url}) : i18nString(UIStrings.dedicatedWorker);
     } else if (thread.name().startsWith('CompositorTileWorker')) {
       track.type = TrackType.Raster;
     }
@@ -834,7 +858,7 @@ export class TimelineModelImpl {
       if (cpuProfileEvent) {
         const target = this.targetByEvent(cpuProfileEvent);
         if (target) {
-          track.name = ls`Worker: ${target.name()} — ${track.url}`;
+          track.name = i18nString(UIStrings.workerSS, {PH1: target.name(), PH2: track.url});
         }
       }
     }

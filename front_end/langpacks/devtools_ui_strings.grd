@@ -32,7 +32,6 @@
       <part file="../sdk/sdk_strings.grdp" />
       <part file="../sources/sources_strings.grdp" />
       <part file="../timeline/timeline_strings.grdp" />
-      <part file="../timeline_model/timeline_model_strings.grdp" />
       <part file="../ui/components/components_strings.grdp" />
       <part file="../ui/ui_strings.grdp" />
       <part file="shared_strings.grdp" />

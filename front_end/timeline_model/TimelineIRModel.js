@@ -3,10 +3,27 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 
 import {RecordType} from './TimelineModel.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Timeline IRModel of the Performance panel
+  *@example {2s} PH1
+  *@example {3s} PH2
+  */
+  twoFlingsAtTheSameTimeSVsS: 'Two flings at the same time? {PH1} vs {PH2}',
+  /**
+  *@description Text in Timeline IRModel of the Performance panel
+  *@example {2s} PH1
+  *@example {3s} PH2
+  */
+  twoTouchesAtTheSameTimeSVsS: 'Two touches at the same time? {PH1} vs {PH2}',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline_model/TimelineIRModel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @type {!WeakMap<!SDK.TracingModel.Event, !Phases>}
  */
@@ -103,8 +120,8 @@ export class TimelineIRModel {
 
         case eventTypes.FlingStart:
           if (flingStart) {
-            Common.Console.Console.instance().error(Common.UIString.UIString(
-                'Two flings at the same time? %s vs %s', flingStart.startTime, event.startTime));
+            Common.Console.Console.instance().error(
+                i18nString(UIStrings.twoFlingsAtTheSameTimeSVsS, {PH1: flingStart.startTime, PH2: event.startTime}));
             break;
           }
           flingStart = event;
@@ -138,8 +155,8 @@ export class TimelineIRModel {
           // We do not produce any response segment for TouchStart -- there's either going to be one upon
           // TouchMove for drag, or one for GestureTap.
           if (touchStart) {
-            Common.Console.Console.instance().error(Common.UIString.UIString(
-                'Two touches at the same time? %s vs %s', touchStart.startTime, event.startTime));
+            Common.Console.Console.instance().error(
+                i18nString(UIStrings.twoTouchesAtTheSameTimeSVsS, {PH1: touchStart.startTime, PH2: event.startTime}));
             break;
           }
           touchStart = event;

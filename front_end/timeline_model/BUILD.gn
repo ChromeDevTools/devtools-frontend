@@ -18,6 +18,7 @@ devtools_module("timeline_model") {
 
   deps = [
     "../common:bundle",
+    "../i18n:bundle",
     "../sdk:bundle",
   ]
 }

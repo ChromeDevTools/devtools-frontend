@@ -3416,6 +3416,27 @@
   "text_editor/CodeMirrorTextEditor.js | codeEditor": {
     "message": "Code editor"
   },
+  "timeline_model/TimelineIRModel.js | twoFlingsAtTheSameTimeSVsS": {
+    "message": "Two flings at the same time? {PH1} vs {PH2}"
+  },
+  "timeline_model/TimelineIRModel.js | twoTouchesAtTheSameTimeSVsS": {
+    "message": "Two touches at the same time? {PH1} vs {PH2}"
+  },
+  "timeline_model/TimelineJSProfile.js | threadS": {
+    "message": "Thread {PH1}"
+  },
+  "timeline_model/TimelineModel.js | dedicatedWorker": {
+    "message": "Dedicated Worker"
+  },
+  "timeline_model/TimelineModel.js | threadS": {
+    "message": "Thread {PH1}"
+  },
+  "timeline_model/TimelineModel.js | workerS": {
+    "message": "Worker — {PH1}"
+  },
+  "timeline_model/TimelineModel.js | workerSS": {
+    "message": "Worker: {PH1} — {PH2}"
+  },
   "web_audio/AudioContextContentBuilder.ts | audiocontext": {
     "message": "AudioContext"
   },

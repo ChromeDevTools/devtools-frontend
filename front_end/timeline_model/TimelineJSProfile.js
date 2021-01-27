@@ -2,11 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 
+export const UIStrings = {
+  /**
+  *@description Text for the name of a thread of the page
+  *@example {1} PH1
+  */
+  threadS: 'Thread {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('timeline_model/TimelineJSProfile.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineJSProfileProcessor {
   /**
    * @param {!SDK.CPUProfileDataModel.CPUProfileDataModel} jsProfileModel
@@ -273,7 +282,7 @@ export class TimelineJSProfileProcessor {
       appendEvent('TracingStartedInPage', {data: {'sessionId': '1'}}, 0, 0, 'M');
     }
     if (!name) {
-      name = ls`Thread ${tid}`;
+      name = i18nString(UIStrings.threadS, {PH1: tid});
     }
     appendEvent(SDK.TracingModel.MetadataEvent.ThreadName, {name}, 0, 0, 'M', '__metadata');
     if (!profile) {

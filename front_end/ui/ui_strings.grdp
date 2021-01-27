@@ -87,9 +87,6 @@
   <message name="IDS_DEVTOOLS_805cc3d38ed574dd03e4483501c0d34e" desc="Note when a setting change will require the user to reload DevTools">
     <ph name="___">$1s<ex>*</ex></ph>Requires reload
   </message>
-  <message name="IDS_DEVTOOLS_846495f9ceed11accf8879f555936a7d" desc="A title of the 'Navigation' action category">
-    Navigation
-  </message>
   <message name="IDS_DEVTOOLS_84e1d403df34bad00840ee636021698c" desc="Text in Tabbed Pane">
     Close <ph name="THIS_TITLE">$1s<ex>tab</ex></ph>
   </message>

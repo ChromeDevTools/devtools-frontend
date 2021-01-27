@@ -59,25 +59,10 @@ export class InspectorMainImpl extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-/** @type {!ReloadActionDelegate} */
-let reloadActionDelegateInstance;
-
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ReloadActionDelegate {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
-    const {forceNew} = opts;
-    if (!reloadActionDelegateInstance || forceNew) {
-      reloadActionDelegateInstance = new ReloadActionDelegate();
-    }
-
-    return reloadActionDelegateInstance;
-  }
-
   /**
    * @override
    * @param {!UI.Context.Context} context

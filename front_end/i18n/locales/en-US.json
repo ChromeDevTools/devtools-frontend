@@ -1397,6 +1397,90 @@
   "lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]"
   },
+  "linear_memory_inspector/linear_memory_inspector-meta.ts | memoryInspector": {
+    "message": "Memory Inspector"
+  },
+  "linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
+    "message": "Show Memory Inspector"
+  },
+  "linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
+    "message": "Address has to be a number between {PH1} and {PH2}"
+  },
+  "linear_memory_inspector/LinearMemoryInspectorPane.js | noOpenInspections": {
+    "message": "No open inspections"
+  },
+  "linear_memory_inspector/LinearMemoryNavigator.ts | enterAddress": {
+    "message": "Enter address"
+  },
+  "linear_memory_inspector/LinearMemoryNavigator.ts | goBackInAddressHistory": {
+    "message": "Go back in address history"
+  },
+  "linear_memory_inspector/LinearMemoryNavigator.ts | goForwardInAddressHistory": {
+    "message": "Go forward in address history"
+  },
+  "linear_memory_inspector/LinearMemoryNavigator.ts | nextPage": {
+    "message": "Next page"
+  },
+  "linear_memory_inspector/LinearMemoryNavigator.ts | previousPage": {
+    "message": "Previous page"
+  },
+  "linear_memory_inspector/LinearMemoryNavigator.ts | refresh": {
+    "message": "Refresh"
+  },
+  "linear_memory_inspector/LinearMemoryValueInterpreter.ts | changeEndianness": {
+    "message": "Change Endianness"
+  },
+  "linear_memory_inspector/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
+    "message": "Toggle value type settings"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplay.ts | signedValue": {
+    "message": "Signed value"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplay.ts | unsignedValue": {
+    "message": "Unsigned value"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | bigEndian": {
+    "message": "Big Endian"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | dec": {
+    "message": "dec"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | float64Bit": {
+    "message": "Float 64-bit"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | floatBit": {
+    "message": "Float 32-bit"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | hex": {
+    "message": "hex"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer16Bit": {
+    "message": "Integer 16-bit"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer32Bit": {
+    "message": "Integer 32-bit"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integer64Bit": {
+    "message": "Integer 64-bit"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | integerBit": {
+    "message": "Integer 8-bit"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | littleEndian": {
+    "message": "Little Endian"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | none": {
+    "message": "none"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | oct": {
+    "message": "oct"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | sci": {
+    "message": "sci"
+  },
+  "linear_memory_inspector/ValueInterpreterDisplayUtils.ts | string": {
+    "message": "String"
+  },
   "media/EventDisplayTable.ts | eventDisplay": {
     "message": "Event display"
   },

@@ -2,14 +2,40 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as Components from '../ui/components/components.js';
 
+export const UIStrings = {
+  /**
+  *@description Tooltip text that appears when hovering over a valid address in the address line in the Linear Memory Inspector
+  */
+  enterAddress: 'Enter address',
+  /**
+  *@description Tooltip text that appears when hovering over the button to go back in history in the Linear Memory Navigator
+  */
+  goBackInAddressHistory: 'Go back in address history',
+  /**
+  *@description Tooltip text that appears when hovering over the button to go forward in history in the Linear Memory Navigator
+  */
+  goForwardInAddressHistory: 'Go forward in address history',
+  /**
+  *@description Tooltip text that appears when hovering over the page back icon in the Linear Memory Navigator
+  */
+  previousPage: 'Previous page',
+  /**
+  *@description Tooltip text that appears when hovering over the next page icon in the Linear Memory Navigator
+  */
+  nextPage: 'Next page',
+  /**
+  *@description Text to refresh the page
+  */
+  refresh: 'Refresh',
+};
+const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/LinearMemoryNavigator.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = LitHtml;
-const ls = Common.ls;
 
-const ENTER_ADDRESS_TITLE = ls`Enter address`;
 
 export const enum Navigation {
   Backward = 'Backward',
@@ -149,15 +175,15 @@ export class LinearMemoryNavigator extends HTMLElement {
         </style>
       <div class="navigator">
         <div class="navigator-item">
-          ${this.createButton('ic_undo_16x16_icon', ls`Go back in address history`, new HistoryNavigationEvent(Navigation.Backward))}
-          ${this.createButton('ic_redo_16x16_icon', ls`Go forward in address history`, new HistoryNavigationEvent(Navigation.Forward))}
+          ${this.createButton('ic_undo_16x16_icon', i18nString(UIStrings.goBackInAddressHistory), new HistoryNavigationEvent(Navigation.Backward))}
+          ${this.createButton('ic_redo_16x16_icon', i18nString(UIStrings.goForwardInAddressHistory), new HistoryNavigationEvent(Navigation.Forward))}
         </div>
         <div class="navigator-item">
-          ${this.createButton('ic_page_prev_16x16_icon', ls`Previous page`, new PageNavigationEvent(Navigation.Backward))}
+          ${this.createButton('ic_page_prev_16x16_icon', i18nString(UIStrings.previousPage), new PageNavigationEvent(Navigation.Backward))}
           ${this.createAddressInput()}
-          ${this.createButton('ic_page_next_16x16_icon', ls`Next page`, new PageNavigationEvent(Navigation.Forward))}
+          ${this.createButton('ic_page_next_16x16_icon', i18nString(UIStrings.nextPage), new PageNavigationEvent(Navigation.Forward))}
         </div>
-        ${this.createButton('refresh_12x12_icon', ls`Refresh`, new RefreshRequestedEvent())}
+        ${this.createButton('refresh_12x12_icon', i18nString(UIStrings.refresh), new RefreshRequestedEvent())}
       </div>
       `;
       render(result, this.shadow, {eventContext: this});
@@ -171,7 +197,7 @@ export class LinearMemoryNavigator extends HTMLElement {
     };
     return html`
       <input class=${LitHtml.Directives.classMap(classMap)} data-input="true" .value=${this.address}
-        title=${this.valid ? ENTER_ADDRESS_TITLE : this.error} @change=${
+        title=${this.valid ? i18nString(UIStrings.enterAddress) : this.error} @change=${
         this.onAddressChange.bind(this, Mode.Submitted)} @input=${this.onAddressChange.bind(this, Mode.Edit)}/>`;
   }
 

@@ -24,6 +24,7 @@ devtools_module("linear_memory_inspector") {
     "../component_helpers:bundle",
     "../components:bundle",
     "../elements:bundle",
+    "../i18n:bundle",
     "../third_party/lit-html:bundle",
   ]
 

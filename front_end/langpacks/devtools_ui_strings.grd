@@ -22,7 +22,6 @@
       <part file="../emulation/emulation_strings.grdp" />
       <part file="../host/host_strings.grdp" />
       <part file="../inspector_main/inspector_main_strings.grdp" />
-      <part file="../linear_memory_inspector/linear_memory_inspector_strings.grdp" />
       <part file="../main/main_strings.grdp" />
       <part file="../network/network_strings.grdp" />
       <part file="../platform/platform_strings.grdp" />

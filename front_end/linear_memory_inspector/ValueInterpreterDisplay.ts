@@ -2,12 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
 import {Endianness, format, isNumber, isValidMode, ValueType, ValueTypeMode, valueTypeModeToLocalizedString, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 
-import ls = Common.ls;
+export const UIStrings = {
+  /**
+  *@description Tooltip text that appears when hovering over an unsigned interpretation of the memory under the Value Interpreter
+  */
+  unsignedValue: 'Unsigned value',
+  /**
+  *@description Tooltip text that appears when hovering over a signed interpretation of the memory under the Value Interpreter
+  */
+  signedValue: 'Signed value',
+};
+const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/ValueInterpreterDisplay.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = LitHtml;
 
 const DEFAULT_MODE_MAPPING = new Map([
@@ -127,9 +138,9 @@ export class ValueInterpreterDisplay extends HTMLElement {
         ${showSignedAndUnsigned ?
         html`
           <div class="value-type-cell-multiple-values value-type-cell">
-            <span data-value="true" title=${ls`Unsigned value`}>${unsignedValue}</span>
+            <span data-value="true" title=${i18nString(UIStrings.unsignedValue)}>${unsignedValue}</span>
             <span>/<span>
-            <span data-value="true" title=${ls`Signed value`}>${signedValue}</span>
+            <span data-value="true" title=${i18nString(UIStrings.signedValue)}>${signedValue}</span>
           </div>` :
         html`
           <span class="value-type-cell" data-value="true">${unsignedValue}</span>`}

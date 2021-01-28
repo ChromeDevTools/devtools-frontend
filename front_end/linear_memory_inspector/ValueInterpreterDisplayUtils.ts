@@ -2,9 +2,69 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-const ls = Common.ls;
+
+export const UIStrings = {
+  /**
+  *@description Text that describes the representation of a value in the Linear Memory Inspector, short for decimal
+  */
+  dec: 'dec',
+  /**
+  *@description Text that describes the representation of a value in the Linear Memory Inspector
+  */
+  hex: 'hex',
+  /**
+  *@description Text that describes the representation of a value in the Linear Memory Inspector, short for octal
+  */
+  oct: 'oct',
+  /**
+  *@description Text that describes the representation of a value in the Linear Memory Inspector, short for scientific
+  */
+  sci: 'sci',
+  /**
+  *@description Text that describes the type of a value in the Linear Memory Inspector
+  */
+  none: 'none',
+  /**
+  *@description Text that describes the Endianness setting that can be selected in the select item in the Linear Memory Inspector
+  */
+  littleEndian: 'Little Endian',
+  /**
+  *@description Text that describes the Endianness setting that can be selected in the select item in the Linear Memory Inspector
+  */
+  bigEndian: 'Big Endian',
+  /**
+  *@description Text that describes the type of a value in the Linear Memory Inspector
+  */
+  integerBit: 'Integer 8-bit',
+  /**
+  *@description Text that describes the type of a value in the Linear Memory Inspector
+  */
+  integer16Bit: 'Integer 16-bit',
+  /**
+  *@description Text that describes the type of a value in the Linear Memory Inspector
+  */
+  integer32Bit: 'Integer 32-bit',
+  /**
+  *@description Text that describes the type of a value in the Linear Memory Inspector
+  */
+  integer64Bit: 'Integer 64-bit',
+  /**
+  *@description Text that describes the type of a value in the Linear Memory Inspector
+  */
+  floatBit: 'Float 32-bit',
+  /**
+  *@description Text that describes the type of a value in the Linear Memory Inspector
+  */
+  float64Bit: 'Float 64-bit',
+  /**
+  *@description Text that describes the type of a value in the Linear Memory Inspector
+  */
+  string: 'String',
+};
+const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/ValueInterpreterDisplayUtils.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const VALUE_INTEPRETER_MAX_NUM_BYTES = 8;
 
@@ -34,15 +94,15 @@ export const enum ValueTypeMode {
 export function valueTypeModeToLocalizedString(mode: ValueTypeMode): string {
   switch (mode) {
     case ValueTypeMode.Decimal:
-      return ls`dec`;
+      return i18nString(UIStrings.dec);
     case ValueTypeMode.Hexadecimal:
-      return ls`hex`;
+      return i18nString(UIStrings.hex);
     case ValueTypeMode.Octal:
-      return ls`oct`;
+      return i18nString(UIStrings.oct);
     case ValueTypeMode.Scientific:
-      return ls`sci`;
+      return i18nString(UIStrings.sci);
     case ValueTypeMode.None:
-      return ls`none`;
+      return i18nString(UIStrings.none);
     default:
       return Platform.assertNever(mode, `Unknown mode: ${mode}`);
   }
@@ -51,9 +111,9 @@ export function valueTypeModeToLocalizedString(mode: ValueTypeMode): string {
 export function endiannessToLocalizedString(endianness: Endianness): string {
   switch (endianness) {
     case Endianness.Little:
-      return ls`Little Endian`;
+      return i18nString(UIStrings.littleEndian);
     case Endianness.Big:
-      return ls`Big Endian`;
+      return i18nString(UIStrings.bigEndian);
     default:
       return Platform.assertNever(endianness, `Unknown endianness: ${endianness}`);
   }
@@ -62,19 +122,19 @@ export function endiannessToLocalizedString(endianness: Endianness): string {
 export function valueTypeToLocalizedString(valueType: ValueType): string {
   switch (valueType) {
     case ValueType.Int8:
-      return ls`Integer 8-bit`;
+      return i18nString(UIStrings.integerBit);
     case ValueType.Int16:
-      return ls`Integer 16-bit`;
+      return i18nString(UIStrings.integer16Bit);
     case ValueType.Int32:
-      return ls`Integer 32-bit`;
+      return i18nString(UIStrings.integer32Bit);
     case ValueType.Int64:
-      return ls`Integer 64-bit`;
+      return i18nString(UIStrings.integer64Bit);
     case ValueType.Float32:
-      return ls`Float 32-bit`;
+      return i18nString(UIStrings.floatBit);
     case ValueType.Float64:
-      return ls`Float 64-bit`;
+      return i18nString(UIStrings.float64Bit);
     case ValueType.String:
-      return ls`String`;
+      return i18nString(UIStrings.string);
     default:
       return Platform.assertNever(valueType, `Unknown value type: ${valueType}`);
   }

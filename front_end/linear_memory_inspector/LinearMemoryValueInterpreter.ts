@@ -5,7 +5,6 @@
 import './ValueInterpreterDisplay.js';
 import './ValueInterpreterSettings.js';
 
-import * as Common from '../common/common.js';
 import * as ComponentHelpers from '../component_helpers/component_helpers.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as Components from '../ui/components/components.js';
@@ -14,7 +13,20 @@ import type {ValueDisplayData} from './ValueInterpreterDisplay.js';
 import {Endianness, endiannessToLocalizedString, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 import type {TypeToggleEvent, ValueInterpreterSettingsData} from './ValueInterpreterSettings.js';
 
-const ls = Common.ls;
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Tooltip text that appears when hovering over the gear button to open and close settings in the Linear Memory Inspector
+  */
+  toggleValueTypeSettings: 'Toggle value type settings',
+  /**
+  *@description Tooltip text that appears when hovering over the 'Little Endian' or 'Big Endian' setting in the Linear Memory Inspector
+  */
+  changeEndianness: 'Change Endianness',
+};
+const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/LinearMemoryValueInterpreter.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 const {render, html} = LitHtml;
 const getStyleSheets = ComponentHelpers.GetStylesheet.getStyleSheets;
 
@@ -128,7 +140,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
       <div class="value-interpreter">
         <div class="settings-toolbar">
           ${this.renderSetting()}
-          <button data-settings="true" class="settings-toolbar-button ${this.showSettings ? 'active' : ''}" title=${ls`Toggle value type settings`} @click=${this.onSettingsToggle}>
+          <button data-settings="true" class="settings-toolbar-button ${this.showSettings ? 'active' : ''}" title=${i18nString(UIStrings.toggleValueTypeSettings)} @click=${this.onSettingsToggle}>
             <devtools-icon
               .data=${{ iconName: 'settings_14x14_icon', color: 'var(--color-text-secondary)', width: '14px' } as Components.Icon.IconWithName}>
             </devtools-icon>
@@ -169,7 +181,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
   private renderSetting(): LitHtml.TemplateResult {
     const onEnumSettingChange = this.onEndiannessChange.bind(this);
     return html`
-    <label data-endianness-setting="true" title=${ls`Change Endianness`}>
+    <label data-endianness-setting="true" title=${i18nString(UIStrings.changeEndianness)}>
       <select class="chrome-select" data-endianness="true" @change=${onEnumSettingChange}>
         ${[Endianness.Little, Endianness.Big].map(endianness => {
       return html`<option value=${endianness} .selected=${this.endianness === endianness}>${

@@ -9,7 +9,6 @@ import './LinearMemoryViewer.js';
 import * as Common from '../common/common.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 
-const ls = Common.ls;
 const {render, html} = LitHtml;
 
 import {Mode, AddressInputChangedEvent, HistoryNavigationEvent, LinearMemoryNavigatorData, Navigation, PageNavigationEvent} from './LinearMemoryNavigator.js';
@@ -18,6 +17,17 @@ import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './Lin
 import {VALUE_INTEPRETER_MAX_NUM_BYTES, ValueType, Endianness} from './ValueInterpreterDisplayUtils.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Tooltip text that appears when hovering over an invalid address in the address line in the Linear Memory Inspector
+  *@example {0x00000000} PH1
+  *@example {0x00400000} PH2
+  */
+  addressHasToBeANumberBetweenSAnd: 'Address has to be a number between {PH1} and {PH2}',
+};
+const str_ = i18n.i18n.registerUIStrings('linear_memory_inspector/LinearMemoryInspector.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // If the LinearMemoryInspector only receives a portion
 // of the original Uint8Array to show, it requires information
 // on the 1. memoryOffset (at which index this portion starts),
@@ -109,8 +119,9 @@ export class LinearMemoryInspector extends HTMLElement {
         this.currentNavigatorMode === Mode.Submitted ? formatAddress(this.address) : this.currentNavigatorAddressLine;
     const navigatorAddressIsValid = this.isValidAddress(navigatorAddressToShow);
 
-    const invalidAddressMsg =
-        ls`Address has to be a number between ${formatAddress(0)} and ${formatAddress(this.outerMemoryLength)}`;
+    const invalidAddressMsg = i18nString(
+        UIStrings.addressHasToBeANumberBetweenSAnd,
+        {PH1: formatAddress(0), PH2: formatAddress(this.outerMemoryLength)});
     const errorMsg = navigatorAddressIsValid ? undefined : invalidAddressMsg;
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off

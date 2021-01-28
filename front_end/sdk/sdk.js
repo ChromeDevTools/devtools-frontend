@@ -69,7 +69,7 @@ import * as SecurityOriginManager from './SecurityOriginManager.js';
 import * as ServerTiming from './ServerTiming.js';
 import * as ServiceWorkerCacheModel from './ServiceWorkerCacheModel.js';
 import * as ServiceWorkerManager from './ServiceWorkerManager.js';
-import * as SharedArrayBufferTransferIssue from './SharedArrayBufferTransferIssue.js';
+import * as SharedArrayBufferIssue from './SharedArrayBufferIssue.js';
 import * as SourceMap from './SourceMap.js';
 import * as SourceMapManager from './SourceMapManager.js';
 import * as TracingManager from './TracingManager.js';
@@ -136,7 +136,7 @@ export {
   ServerTiming,
   ServiceWorkerCacheModel,
   ServiceWorkerManager,
-  SharedArrayBufferTransferIssue,
+  SharedArrayBufferIssue,
   SourceMap,
   SourceMapManager,
   TracingManager,

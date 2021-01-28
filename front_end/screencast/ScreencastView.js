@@ -265,9 +265,8 @@ export class ScreencastView extends UI.Widget.VBox {
       this._viewportElement.style.width = metadata.deviceWidth * this._screenZoom + bordersSize + 'px';
       this._viewportElement.style.height = metadata.deviceHeight * this._screenZoom + bordersSize + 'px';
 
-      if (this._highlightNode) {
-        this.highlightInOverlay({node: this._highlightNode, selectorList: undefined}, this._highlightConfig);
-      }
+      const data = this._highlightNode ? {node: this._highlightNode, selectorList: undefined} : {clear: true};
+      this.highlightInOverlay(data, this._highlightConfig);
     };
     this._imageElement.src = 'data:image/jpg;base64,' + base64Data;
   }

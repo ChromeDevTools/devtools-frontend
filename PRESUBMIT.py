@@ -471,6 +471,7 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))
+    results.extend(_CheckI18nWasBundled(input_api, output_api))
     # Run the canned checks from `depot_tools` after the custom DevTools checks.
     # The canned checks for example check that lines have line endings. The
     # DevTools presubmit checks automatically fix these issues. If we would run
@@ -603,3 +604,23 @@ def _getFilesToLint(input_api, output_api, lint_config_files,
 
     should_bail_out = len(files_to_lint) is 0 and not run_full_check
     return should_bail_out, files_to_lint
+
+
+def _CheckI18nWasBundled(input_api, output_api):
+    affected_files = _getAffectedFiles(input_api, [
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
+                               'third_party', 'i18n', 'lib')
+    ], [], ['.js'])
+
+    if len(affected_files) == 0:
+        return [
+            output_api.PresubmitNotifyResult(
+                'No affected files for i18n bundle check')
+        ]
+
+    results = [output_api.PresubmitNotifyResult('Running buildi18nBundle.js:')]
+    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                         'scripts', 'localizationV2',
+                                         'buildi18nBundle.js')
+    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
+    return results

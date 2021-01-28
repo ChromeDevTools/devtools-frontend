@@ -250,6 +250,7 @@ all_devtools_files = [
   "front_end/issues/descriptions/cspURLViolation.md",
   "front_end/issues/descriptions/cspTrustedTypesSinkViolation.md",
   "front_end/issues/descriptions/cspTrustedTypesPolicyViolation.md",
+  "front_end/issues/descriptions/heavyAd.md",
   "front_end/issues/descriptions/mixedContent.md",
   "front_end/issues/descriptions/sharedArrayBuffer.md",
   "front_end/issues/descriptions/SameSiteExcludeContextDowngradeRead.md",

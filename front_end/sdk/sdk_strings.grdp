@@ -18,9 +18,6 @@
   <message name="IDS_DEVTOOLS_07ba1c48fc0b478df5462700f993fa5e" desc="Message in Network Manager">
     <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s<ex>XHR</ex></ph> failed loading: <ph name="NETWORKREQUEST_REQUESTMETHOD">$2s<ex>GET</ex></ph> &quot;<ph name="NETWORKREQUEST_URL__">$3s<ex>https://example.com</ex></ph>&quot;.
   </message>
-  <message name="IDS_DEVTOOLS_07d2b6742c9e7e9d87e07d29cf823079" desc="Text leading up to enumeration of resource limits for Heavy Ads issue description">
-    An ad is considered heavy if the user has not interacted with it (for example, has not tapped or clicked it) and it meets any of the following criteria:
-  </message>
   <message name="IDS_DEVTOOLS_08a0eff6ec6a38189b8f84511b42ab4a" desc="Tooltip to explain why a cookie was blocked">
     This cookie was blocked because it had the &quot;SameSite=Lax&quot; attribute and the request was made from a different site and was not initiated by a top-level navigation.
   </message>
@@ -33,14 +30,8 @@
   <message name="IDS_DEVTOOLS_0c94f752d037fd8475e98b0711b543a6" desc="Label for the link for SameSiteCookies Issues">
     SameSite cookies explained
   </message>
-  <message name="IDS_DEVTOOLS_0cd2d0b4afad7ca0ce11b209afa435d8" desc="Resource limit for Heavy Ads issue description">
-    Uses the main thread for more than 15 seconds in any 30 second window (CPU peak limit)
-  </message>
   <message name="IDS_DEVTOOLS_0d66520dddd8718f59f517582fafaebb" desc="Title of a media query that can be emulated via the Rendering drawer">
     prefers-color-scheme: light
-  </message>
-  <message name="IDS_DEVTOOLS_0e2921b95cb34ab1467f98f26a725c3f" desc="Resource limit for Heavy Ads issue description">
-    Uses the main thread for more than 60 seconds in total (CPU total limit)
   </message>
   <message name="IDS_DEVTOOLS_0fe1f9158e2f164da1332501f9e65702" desc="Text in Console Model">
     Navigated to <ph name="EVENT_DATA_URL">$1s<ex>https://example.com</ex></ph>
@@ -155,10 +146,6 @@
   </message>
   <message name="IDS_DEVTOOLS_3f23f0e9da2803d48c2d67aa09f01bf5" desc="Tooltip to explain why a cookie was blocked">
     This Set-Cookie didn&apos;t specify a &quot;SameSite&quot; attribute and was defaulted to &quot;SameSite=Lax,&quot; and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with &quot;SameSite=None&quot; to enable cross-site usage.
-  </message>
-  <message name="IDS_DEVTOOLS_46141cdfd02fdac3a846783c4acb7c8e" desc="Context for Heavy Ads issue description">
-    '''
-  Chrome identifies heavy ads on your site that use too many resources without a user gesture. Heavy ads have an impact on performance and harm the user’s browsing experience. They increase battery drain, consume mobile data, and make your site slow. To improve the user experience, Chrome warns about or removes heavy ads.
   </message>
   <message name="IDS_DEVTOOLS_47ff9951b01a6b094431ff82dc68e266" desc="The kind of resolution for a mixed content issue">
     warned
@@ -478,9 +465,6 @@
   <message name="IDS_DEVTOOLS_ac4aac1ba23d844f4976e9fcd1fd4a61" desc="Text in DOMDebugger Model">
     WebGL Error Fired (<ph name="ERRORNAME">$1s<ex>Snag Error</ex></ph>)
   </message>
-  <message name="IDS_DEVTOOLS_acd03ba2ec36eef79177aa99a71caf5e" desc="Resource limit for Heavy Ads issue description">
-    Uses more than 4 megabytes of network bandwidth (Network limit)
-  </message>
   <message name="IDS_DEVTOOLS_aec445acc1539341cf9a79c3a336131d" desc="Tooltip to explain why a cookie was blocked">
     This cookie was blocked due to user preferences.
   </message>
@@ -535,9 +519,6 @@
   <message name="IDS_DEVTOOLS_c432f4e5fdec5760a2f06b38f646168e" desc="Text in Console Model">
     Profile &apos;<ph name="DATA_TITLE">$1s<ex>title</ex></ph>&apos; started.
   </message>
-  <message name="IDS_DEVTOOLS_c561fb3e02584dda306acf61d28cc03b" desc="Resolution for Heavy Ads issue description">
-    Stop this from happening by only showing ads that stay within resource limits.
-  </message>
   <message name="IDS_DEVTOOLS_c5d59568835d0760e318829b800ee06d" desc="Text in Debugger Model">
     Catch
   </message>
@@ -549,9 +530,6 @@
   </message>
   <message name="IDS_DEVTOOLS_c89686a387d2b12b3c729ce35a0bcb5b" desc="Text in DOMDebugger Model">
     Window
-  </message>
-  <message name="IDS_DEVTOOLS_bafb7f4720e58a8100dde1d476eb361e" desc="Title for Heavy Ads issue">
-    An ad on your site has exceeded resource limits
   </message>
   <message name="IDS_DEVTOOLS_c9d5135171a5ebdf8e5d6d1247bc7b31" desc="Link text for a link to external documentation">
     COOP and COEP

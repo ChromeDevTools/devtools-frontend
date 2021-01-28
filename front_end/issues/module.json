@@ -33,6 +33,7 @@
     "descriptions/cspURLViolation.md",
     "descriptions/cspTrustedTypesSinkViolation.md",
     "descriptions/cspTrustedTypesPolicyViolation.md",
+    "descriptions/heavyAd.md",
     "descriptions/mixedContent.md",
     "descriptions/sharedArrayBuffer.md",
     "descriptions/SameSiteExcludeContextDowngradeRead.md",

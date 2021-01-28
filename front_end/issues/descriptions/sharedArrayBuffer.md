@@ -1,4 +1,4 @@
-#  SharedArrayBuffer usage is restricted to cross-origin isolated sites
+# SharedArrayBuffer usage is restricted to cross-origin isolated sites
 
 SharedArrayBuffers (SABs) can be used to construct high-resolution timers. High-resolution timers simplify Spectre attacks on cross-origin resources.
 

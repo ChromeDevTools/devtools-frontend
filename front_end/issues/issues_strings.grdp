@@ -30,20 +30,11 @@
   <message name="IDS_DEVTOOLS_2dccd1ab3e03990aea77359831c85ca2" desc="Label for number of affected resources indication in issue view">
     cookie
   </message>
-  <message name="IDS_DEVTOOLS_3145c2ef4c310129fb265093244c9c1a" desc="Label for number of affected resources indication in issue view">
-    violation
-  </message>
   <message name="IDS_DEVTOOLS_3298f13049d19cffaa37ca931dd4d421" desc="Label for number of affected resources indication in issue view">
     requests
   </message>
   <message name="IDS_DEVTOOLS_330c6bbd83d7bbec5d92acd8fb8161c1" desc="Category title for a group of SameSite cookie issues">
     SameSite Cookie
-  </message>
-  <message name="IDS_DEVTOOLS_403b65677d39097086593415b650ca21" desc="Label for number of affected resources indication in issue view">
-    violations
-  </message>
-  <message name="IDS_DEVTOOLS_419e6b38ca87eb4bdf5b4b956d7f96f1" desc="Tooltip for the 'Trigger' column in the SAB affected resources list">
-    SharedArrayBuffer was transfered to a context that is not cross-origin isolated
   </message>
   <message name="IDS_DEVTOOLS_518dbfcc162c16f899d0df7b7dfaabbb" desc="Category title for a group of mixed content issues">
     Mixed Content
@@ -65,9 +56,6 @@
   </message>
   <message name="IDS_DEVTOOLS_64c7927762778c9380d74b0bc7ca5a89" desc="Label on the issues tab">
     Only third-party cookie issues detected so far
-  </message>
-  <message name="IDS_DEVTOOLS_6950810f0d2bba97a6f710c7b965b84e" desc="Value for the 'Trigger' column in the SAB affected resources list">
-    Transfer
   </message>
   <message name="IDS_DEVTOOLS_6a7f245843454cf4f28ad7c5e2572aa2" desc="Plural label for number of affected element resource indication in issue view">
     elements
@@ -123,9 +111,6 @@
   <message name="IDS_DEVTOOLS_93f07b720ebf7d1246512569761a5804" desc="The kind of resolution for a Heavy Ads issue">
     Removed
   </message>
-  <message name="IDS_DEVTOOLS_b3883ebf20e1a15153c409854410c59e" desc="Value for the 'Trigger' column in the SAB affected resources list">
-    Instantiation
-  </message>
   <message name="IDS_DEVTOOLS_b404999a151ab49a38d35be7e094e7e7" desc="Title for a checkbox which toggles grouping by category in the issues tab">
     Group displayed issues under associated categories
   </message>
@@ -170,12 +155,6 @@
   </message>
   <message name="IDS_DEVTOOLS_f2ab5fb218da8b84623f45579aa4ba11" desc="Plural label for number of affected source resource indication in issue view">
     sources
-  </message>
-  <message name="IDS_DEVTOOLS_f698f67f5666aff10729d8a1cb1c14d2" desc="Title for the 'Trigger' column in the SAB affected resources list">
-    Trigger
-  </message>
-  <message name="IDS_DEVTOOLS_f90c4582af8bd0572c6544cb74fbe523" desc="Tooltip for the 'Trigger' column in the SAB affected resources list">
-    A SharedArrayBuffer was instantiated in a context that is not cross-origin isolated
   </message>
   <message name="IDS_DEVTOOLS_faa6cbbf56829034b2653e796abdd062" desc="Tooltip shown for the issues count in several places of the UI">
     Issues pertaining to <ph name="ISSUES">$1s<ex>1</ex></ph> operation detected.

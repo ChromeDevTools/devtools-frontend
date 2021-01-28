@@ -8,7 +8,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("issues") {
   sources = [
     "AffectedResourcesView.ts",
-    "AffectedSharedArrayBufferIssueDetailsView.ts",
+    "AffectedSharedArrayBufferTransferDetailsView.ts",
     "CSPViolationsListView.ts",
     "CSPViolationsView.ts",
     "ComboBoxOfCheckBoxes.ts",

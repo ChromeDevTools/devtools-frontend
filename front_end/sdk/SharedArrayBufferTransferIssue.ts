@@ -7,7 +7,7 @@ import {ls} from '../common/common.js';  // eslint-disable-line rulesdir/es_modu
 import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {IssuesModel} from './IssuesModel.js';  // eslint-disable-line no-unused-vars
 
-export class SharedArrayBufferIssue extends Issue {
+export class SharedArrayBufferTransferIssue extends Issue {
   private issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails, issuesModel: IssuesModel) {
@@ -19,13 +19,17 @@ export class SharedArrayBufferIssue extends Issue {
     return IssueCategory.Other;
   }
 
+  sharedArrayBufferTransfers(): Protocol.Audits.SharedArrayBufferIssueDetails[] {
+    return [this.issueDetails];
+  }
+
   details(): Protocol.Audits.SharedArrayBufferIssueDetails {
     return this.issueDetails;
   }
 
   getDescription(): MarkdownIssueDescription {
     return {
-      file: 'issues/descriptions/sharedArrayBuffer.md',
+      file: 'issues/descriptions/sharedArrayBufferTransfer.md',
       substitutions: undefined,
       issueKind: IssueKind.BreakingChange,
       links: [{

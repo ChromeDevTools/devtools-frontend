@@ -32,8 +32,8 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     /** @type {!Map<string, !Protocol.Audits.BlockedByResponseIssueDetails>} */
     this._blockedByResponseDetails = new Map();
     this._aggregatedIssuesCount = 0;
-    /** @type {Set<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue>} */
-    this._sharedArrayBufferIssues = new Set();
+    /** @type {Set<SDK.SharedArrayBufferTransferIssue.SharedArrayBufferTransferIssue>} */
+    this._sharedArrayBufferTransferIssues = new Set();
   }
 
   /**
@@ -99,10 +99,10 @@ export class AggregatedIssue extends SDK.Issue.Issue {
   }
 
   /**
-   * @return {Iterable<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue>}
+   * @return {Iterable<SDK.SharedArrayBufferTransferIssue.SharedArrayBufferTransferIssue>}
    */
-  sharedArrayBufferIssues() {
-    return this._sharedArrayBufferIssues;
+  sharedArrayBufferTransfersIssues() {
+    return this._sharedArrayBufferTransferIssues;
   }
 
   /**
@@ -179,8 +179,8 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     if (issue instanceof SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
       this._cspIssues.add(issue);
     }
-    if (issue instanceof SDK.SharedArrayBufferIssue.SharedArrayBufferIssue) {
-      this._sharedArrayBufferIssues.add(issue);
+    if (issue instanceof SDK.SharedArrayBufferTransferIssue.SharedArrayBufferTransferIssue) {
+      this._sharedArrayBufferTransferIssues.add(issue);
     }
   }
 }

@@ -4629,10 +4629,11 @@ declare namespace Protocol {
 
     /**
      * Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints
+     * Missing optional values will be filled in by the target with what it would normally use.
      */
     export interface UserAgentMetadata {
-      brands: UserAgentBrandVersion[];
-      fullVersion: string;
+      brands?: UserAgentBrandVersion[];
+      fullVersion?: string;
       platform: string;
       platformVersion: string;
       architecture: string;
@@ -8386,6 +8387,11 @@ declare namespace Protocol {
        * Raw response headers as they were received over the wire.
        */
       headers: Headers;
+      /**
+       * The IP address space of the resource. The address space can only be determined once the transport
+       * established the connection, so we can't send it in `requestWillBeSentExtraInfo`.
+       */
+      resourceIPAddressSpace: IPAddressSpace;
       /**
        * Raw response header text as it was received over the wire. The raw text may not always be
        * available, such as in the case of HTTP/2 or QUIC.

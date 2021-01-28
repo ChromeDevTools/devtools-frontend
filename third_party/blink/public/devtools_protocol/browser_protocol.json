@@ -6951,12 +6951,13 @@
                 },
                 {
                     "id": "UserAgentMetadata",
-                    "description": "Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints",
+                    "description": "Used to specify User Agent Cient Hints to emulate. See https://wicg.github.io/ua-client-hints\nMissing optional values will be filled in by the target with what it would normally use.",
                     "experimental": true,
                     "type": "object",
                     "properties": [
                         {
                             "name": "brands",
+                            "optional": true,
                             "type": "array",
                             "items": {
                                 "$ref": "UserAgentBrandVersion"
@@ -6964,6 +6965,7 @@
                         },
                         {
                             "name": "fullVersion",
+                            "optional": true,
                             "type": "string"
                         },
                         {
@@ -12295,6 +12297,11 @@
                             "name": "headers",
                             "description": "Raw response headers as they were received over the wire.",
                             "$ref": "Headers"
+                        },
+                        {
+                            "name": "resourceIPAddressSpace",
+                            "description": "The IP address space of the resource. The address space can only be determined once the transport\nestablished the connection, so we can't send it in `requestWillBeSentExtraInfo`.",
+                            "$ref": "IPAddressSpace"
                         },
                         {
                             "name": "headersText",

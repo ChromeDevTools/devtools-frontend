@@ -1553,7 +1553,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent(
       'Network.requestWillBeSentExtraInfo', ['requestId', 'associatedCookies', 'headers', 'clientSecurityState']);
   inspectorBackend.registerEvent(
-      'Network.responseReceivedExtraInfo', ['requestId', 'blockedCookies', 'headers', 'headersText']);
+      'Network.responseReceivedExtraInfo',
+      ['requestId', 'blockedCookies', 'headers', 'resourceIPAddressSpace', 'headersText']);
   inspectorBackend.registerEnum('Network.TrustTokenOperationDoneEventStatus', {
     Ok: 'Ok',
     InvalidArgument: 'InvalidArgument',

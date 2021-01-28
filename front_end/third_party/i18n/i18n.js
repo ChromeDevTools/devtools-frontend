@@ -1,24 +1,28 @@
 // lighthouse.i18n 1.0.0, created with rollup.
 // DO NOT MODIFY: Generated with buildi18nBundle.js.
-// @ts-nocheck
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
-function createCommonjsModule(fn, basedir, module) {
-	return module = {
-	  path: basedir,
-	  exports: {},
-	  require: function (path, base) {
-      return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
-    }
-	}, fn(module, module.exports), module.exports;
+function getAugmentedNamespace(n) {
+	if (n.__esModule) return n;
+	var a = Object.defineProperty({}, '__esModule', {value: true});
+	Object.keys(n).forEach(function (k) {
+		var d = Object.getOwnPropertyDescriptor(n, k);
+		Object.defineProperty(a, k, d.get ? d : {
+			enumerable: true,
+			get: function () {
+				return n[k];
+			}
+		});
+	});
+	return a;
 }
 
-function commonjsRequire () {
-	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+function createCommonjsModule(fn) {
+  var module = { exports: {} };
+	return fn(module, module.exports), module.exports;
 }
 
-var _package = createCommonjsModule(function (module, exports) {
 /**
  * Lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -28,6 +32,7 @@ var _package = createCommonjsModule(function (module, exports) {
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  */
 
+var _package = createCommonjsModule(function (module, exports) {
 /** Used as the size to enable large array optimizations. */
 var LARGE_ARRAY_SIZE = 200;
 
@@ -3868,6 +3873,20 @@ const locales = {
   'en-XL': {'title': 'value'}, // local pseudolocalization
 };
 
+var locales$1 = /*#__PURE__*/Object.freeze({
+	__proto__: null,
+	'default': locales
+});
+
+var LOCALES = /*@__PURE__*/getAugmentedNamespace(locales$1);
+
+/**
+ * @license Copyright 2018 The Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
+
 const MessageFormat = intlMessageformat.default;
 
 
@@ -3913,7 +3932,7 @@ function lookupLocale(locale) {
   // TODO: could do more work to sniff out default locale
   const canonicalLocale = Intl.getCanonicalLocales(locale)[0];
 
-  const closestLocale = lookupClosestLocale(canonicalLocale, locales);
+  const closestLocale = lookupClosestLocale(canonicalLocale, LOCALES);
   return closestLocale || 'en-US';
 }
 
@@ -4042,7 +4061,7 @@ const _ICUMsgNotFoundMsg = 'ICU message not found in destination locale';
  * @return {{localeMessage: string, formatter: MessageFormat}}
  */
 function _getLocaleMessageAndCreateFormatter(locale, icuMessageId, uiStringMessage) {
-  const localeMessages = locales[locale];
+  const localeMessages = LOCALES[locale];
   if (!localeMessages) throw new Error(`Unsupported locale '${locale}'`);
   let localeMessage = localeMessages[icuMessageId] && localeMessages[icuMessageId].message;
 
@@ -4053,7 +4072,7 @@ function _getLocaleMessageAndCreateFormatter(locale, icuMessageId, uiStringMessa
     localeMessage = uiStringMessage;
 
     // Warn the user that the UIString message != the `en-US` message ∴ they should update the strings
-    if (!locales['en-US'][icuMessageId] || localeMessage !== locales['en-US'][icuMessageId].message) {
+    if (!LOCALES['en-US'][icuMessageId] || localeMessage !== LOCALES['en-US'][icuMessageId].message) {
       console.log('i18n', `Message "${icuMessageId}" does not match its 'en-US' counterpart. ` +
         `Run 'i18n' to update.`);
     }
@@ -4106,7 +4125,7 @@ function _formatPathAsString(pathInLHR) {
  * @return {LH.I18NRendererStrings}
  */
 function getRendererFormattedStrings(locale) {
-  const localeMessages = locales[locale];
+  const localeMessages = LOCALES[locale];
   if (!localeMessages) throw new Error(`Unsupported locale '${locale}'`);
 
   const icuMessageIds = Object.keys(localeMessages).filter(f => f.includes('ModuleUIStrings'));
@@ -4289,7 +4308,7 @@ function replaceIcuMessageInstanceIds(inputObject, locale) {
  * @param {LhlMessages} lhlMessages
  */
 function registerLocaleData(locale, lhlMessages) {
-  locales[locale] = lhlMessages;
+  LOCALES[locale] = lhlMessages;
 }
 
 /**

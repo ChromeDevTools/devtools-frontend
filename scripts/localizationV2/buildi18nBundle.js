@@ -4,29 +4,32 @@
 
 /**
  * This is a helper script to bundle the i18n.js library.
- * From the folder containing i18n.js, locales.js, and this script, run node buildI18nBundle.js
+ * Run this script from your checkout with
+ * $ third_party/node/node.py scripts/localizationV2/buildi18nBundle.js
+ * This script takes front_end/third_party/i18n/lib/i18n.js as input and bundles
+ * it, creating front_end/third_party/i18n/i18n.js as output.
  * This will generate an unminified-i18n-bundle.js file that exports a module called i18n
  */
 
 const commonjs = require('@rollup/plugin-commonjs');
 const path = require('path');
-const rollup = require('rollup');
+const rollup = require('rollup/dist/rollup.js');
 const terser = require('rollup-plugin-terser');
 const yargs = require('yargs');
 
 const usageMessage = `A helper script to bundle the i18n.js library.
-  From the folder containing i18n.js, locales.js, and this script, run:
-    node buildI18nBundle.js [--minify].
+  Run:
+  third_party/node/node.py scripts/localizationV2/buildi18nBundle.js [--minify]
   This will generate an unminified or a minified (if --minify is present)
-  i18n-bundle.js that exports a module called i18n.`;
+  front_end/third_party/i18n/i18n.js.`;
 const prependHeaders = '// lighthouse.i18n 1.0.0, created with rollup.\n';
 const prependWarn = '// DO NOT MODIFY: Generated with buildi18nBundle.js.\n';
 
 async function main() {
   const args = yargs.parse(process.argv);
   let shouldMinify = false;
-  let outputPath = __dirname;
-  let i18nPath = path.normalize(path.join(__dirname, 'i18n.js'));
+  let outputPath = path.join(__dirname, '..', '..', 'front_end', 'third_party', 'i18n');
+  let i18nPath = path.normalize(path.join(outputPath, 'lib', 'i18n.js'));
 
   if (args.output_path) {
     outputPath = args.output_path;

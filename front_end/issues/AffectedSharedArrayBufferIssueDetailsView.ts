@@ -67,7 +67,7 @@ export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResources
     element.classList.add('affected-resource-directive');
 
     const sabIssueDetails = sabIssue.details();
-    this.appendSourceLocation(element, sabIssueDetails.sourceCodeLocation);
+    this.appendSourceLocation(element, sabIssueDetails.sourceCodeLocation, sabIssue.model()?.getTargetIfNotDisposed());
     this.appendType(element, sabIssueDetails.type);
     this.appendStatus(element, sabIssueDetails.isWarning);
 

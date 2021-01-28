@@ -221,26 +221,27 @@ class AffectedDirectivesView extends AffectedResourcesView {
 
     const cspIssueDetails = cspIssue.details();
     const model = cspIssue.model();
+    const maybeTarget = cspIssue.model()?.getTargetIfNotDisposed();
     if (this._issue.code() === SDK.ContentSecurityPolicyIssue.inlineViolationCode && model) {
       this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this._appendBlockedElement(element, cspIssueDetails.violatingNodeId, model);
-      this.appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
+      this.appendSourceLocation(element, cspIssueDetails.sourceCodeLocation, maybeTarget);
       this._appendStatus(element, cspIssueDetails.isReportOnly);
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.urlViolationCode) {
       const url = cspIssueDetails.blockedURL ? cspIssueDetails.blockedURL : '';
       this._appendBlockedURL(element, url);
       this._appendStatus(element, cspIssueDetails.isReportOnly);
       this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
-      this.appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
+      this.appendSourceLocation(element, cspIssueDetails.sourceCodeLocation, maybeTarget);
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.evalViolationCode) {
-      this.appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
+      this.appendSourceLocation(element, cspIssueDetails.sourceCodeLocation, maybeTarget);
       this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this._appendStatus(element, cspIssueDetails.isReportOnly);
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
-      this.appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
+      this.appendSourceLocation(element, cspIssueDetails.sourceCodeLocation, maybeTarget);
       this._appendStatus(element, cspIssueDetails.isReportOnly);
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
-      this.appendSourceLocation(element, cspIssueDetails.sourceCodeLocation);
+      this.appendSourceLocation(element, cspIssueDetails.sourceCodeLocation, maybeTarget);
       this._appendViolatedDirective(element, cspIssueDetails.violatedDirective);
       this._appendStatus(element, cspIssueDetails.isReportOnly);
     } else {

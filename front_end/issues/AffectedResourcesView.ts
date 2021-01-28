@@ -239,19 +239,17 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     return requestCell;
   }
 
-  // TODO(chromium:1158753): Provide `target` and `scriptId` at call sites once
-  // available from the back-end.
   protected appendSourceLocation(
       element: HTMLElement, sourceLocation: Protocol.Audits.SourceCodeLocation|undefined,
-      target: SDK.SDKModel.Target|null = null, scriptId: string|null = null): void {
+      target: SDK.SDKModel.Target|null|undefined): void {
     const sourceCodeLocation = document.createElement('td');
     sourceCodeLocation.classList.add('affected-source-location');
     if (sourceLocation) {
       const maxLengthForDisplayedURLs = 40;  // Same as console messages.
       // TODO(crbug.com/1108503): Add some mechanism to be able to add telemetry to this element.
       const linkifier = new Components.Linkifier.Linkifier(maxLengthForDisplayedURLs);
-      const sourceAnchor =
-          linkifier.linkifyScriptLocation(target, scriptId, sourceLocation.url, sourceLocation.lineNumber);
+      const sourceAnchor = linkifier.linkifyScriptLocation(
+          target || null, sourceLocation.scriptId || null, sourceLocation.url, sourceLocation.lineNumber);
       sourceCodeLocation.appendChild(sourceAnchor);
     }
     element.appendChild(sourceCodeLocation);

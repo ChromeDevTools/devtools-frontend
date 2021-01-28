@@ -1145,7 +1145,7 @@ export class ToolbarCheckbox extends ToolbarItem {
   /**
    * @param {string} text
    * @param {string=} tooltip
-   * @param {function():void=} listener
+   * @param {function(MouseEvent):void=} listener
    */
   constructor(text, tooltip, listener) {
     super(CheckboxLabel.create(text));

@@ -225,6 +225,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
   _userVerificationCheckboxLabel: UI.UIUtils.CheckboxLabel|undefined;
   _userVerificationCheckbox: HTMLInputElement|undefined;
   _addAuthenticatorButton: HTMLButtonElement|undefined;
+  _isEnabling?: Promise<void>;
+
   constructor() {
     super(true);
     this.registerRequiredCSS('webauthn/webauthnPane.css', {enableLegacyPatching: true});
@@ -385,25 +387,28 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
   }
 
   async _setVirtualAuthEnvEnabled(enable: boolean): Promise<void> {
-    this._enableCheckbox.setEnabled(false);
-    if (enable && !this._hasBeenEnabled) {
-      // Ensures metric is only tracked once per session.
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.VirtualAuthenticatorEnvironmentEnabled);
-      this._hasBeenEnabled = true;
-    }
-    this._enabled = enable;
-    if (this._model) {
-      this._model.setVirtualAuthEnvEnabled(enable);
-    }
+    await this._isEnabling;
+    this._isEnabling = new Promise<void>(async (resolve: (value: void) => void) => {
+      if (enable && !this._hasBeenEnabled) {
+        // Ensures metric is only tracked once per session.
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.VirtualAuthenticatorEnvironmentEnabled);
+        this._hasBeenEnabled = true;
+      }
+      this._enabled = enable;
+      if (this._model) {
+        await this._model.setVirtualAuthEnvEnabled(enable);
+      }
 
-    if (enable) {
-      await this._loadInitialAuthenticators();
-    } else {
-      this._removeAuthenticatorSections();
-    }
+      if (enable) {
+        await this._loadInitialAuthenticators();
+      } else {
+        this._removeAuthenticatorSections();
+      }
 
-    this._updateVisibility(enable);
-    this._enableCheckbox.setEnabled(true);
+      this._updateVisibility(enable);
+      this._isEnabling = undefined;
+      resolve();
+    });
   }
 
   _updateVisibility(enabled: boolean): void {
@@ -415,8 +420,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this._dataGrids.clear();
   }
 
-  _handleCheckboxToggle(): void {
-    this._setVirtualAuthEnvEnabled(!this._enabled);
+  _handleCheckboxToggle(e: MouseEvent): void {
+    this._setVirtualAuthEnvEnabled((e.target as HTMLInputElement).checked);
   }
 
   _updateEnabledTransportOptions(enabledOptions: Protocol.WebAuthn.AuthenticatorTransport[]): void {

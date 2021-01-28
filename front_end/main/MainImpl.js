@@ -568,10 +568,25 @@ export class MainImpl {
 /** @type {?MainImpl} */
 MainImpl._instanceForTest = null;
 
+/** @type {!ZoomActionDelegate} */
+let zoomActionDelegateInstance;
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ZoomActionDelegate {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!zoomActionDelegateInstance || forceNew) {
+      zoomActionDelegateInstance = new ZoomActionDelegate();
+    }
+
+    return zoomActionDelegateInstance;
+  }
+
   /**
    * @override
    * @param {!UI.Context.Context} context
@@ -598,10 +613,25 @@ export class ZoomActionDelegate {
   }
 }
 
+/** @type {!SearchActionDelegate} */
+let searchActionDelegateInstance;
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class SearchActionDelegate {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!searchActionDelegateInstance || forceNew) {
+      searchActionDelegateInstance = new SearchActionDelegate();
+    }
+
+    return searchActionDelegateInstance;
+  }
+
   /**
    * @override
    * @param {!UI.Context.Context} context
@@ -844,10 +874,25 @@ export function sendOverProtocol(method, params) {
   });
 }
 
+/** @type {!ReloadActionDelegate} */
+let reloadActionDelegateInstance;
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ReloadActionDelegate {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!reloadActionDelegateInstance || forceNew) {
+      reloadActionDelegateInstance = new ReloadActionDelegate();
+    }
+
+    return reloadActionDelegateInstance;
+  }
+
   /**
    * @override
    * @param {!UI.Context.Context} context

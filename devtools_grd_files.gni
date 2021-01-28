@@ -292,6 +292,7 @@ grd_files_release_sources = [
   "front_end/linear_memory_inspector/linear_memory_inspector.js",
   "front_end/linear_memory_inspector/linear_memory_inspector_module.js",
   "front_end/main/main-legacy.js",
+  "front_end/main/main-meta.js",
   "front_end/main/main.js",
   "front_end/media/media-legacy.js",
   "front_end/media/media-meta.js",

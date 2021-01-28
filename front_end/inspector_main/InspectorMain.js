@@ -97,10 +97,24 @@ export class ReloadActionDelegate {
   }
 }
 
+/** @type {!FocusDebuggeeActionDelegate} */
+let focusDebuggeeActionDelegateInstance;
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class FocusDebuggeeActionDelegate {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!focusDebuggeeActionDelegateInstance || forceNew) {
+      focusDebuggeeActionDelegateInstance = new FocusDebuggeeActionDelegate();
+    }
+
+    return focusDebuggeeActionDelegateInstance;
+  }
   /**
    * @override
    * @param {!UI.Context.Context} context

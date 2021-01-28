@@ -8,7 +8,7 @@ import {enableExperiment, getBrowserAndPages, timeout, waitFor, waitForFunction,
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getSelectedItemText, QUICK_OPEN_SELECTOR} from '../helpers/quick_open-helpers.js';
 import {openSettingsTab} from '../helpers/settings-helpers.js';
-import {ADD_SHORTCUT_LINK_TEXT, clickAddShortcutLink, clickShortcutCancelButton, clickShortcutConfirmButton, clickShortcutDeleteButton, clickShortcutResetButton, CONSOLE_SHORTCUT_DISPLAY_TEXT, CONSOLE_SHORTCUT_INPUT_TEXT, CONTROL_1_CONTROL_2_CHORD_DISPLAY_TEXT, CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT, CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT, CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT, CONTROL_2_SHORTCUT_DISPLAY_TEXT, CONTROL_2_SHORTCUT_INPUT_TEXT, editShortcutListItem, selectKeyboardShortcutPreset, SHORTCUT_CHORD_TIMEOUT, shortcutInputValues, shortcutsForAction, VS_CODE_PAUSE_SHORTCUTS, VS_CODE_SETTINGS_SHORTCUTS, VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT, VS_CODE_SHORTCUTS_SHORTCUTS, waitForEmptyShortcutInput, waitForVSCodeShortcutPreset} from '../helpers/settings-shortcuts-helpers.js';
+import {ADD_SHORTCUT_LINK_TEXT, clickAddShortcutLink, clickShortcutCancelButton, clickShortcutConfirmButton, clickShortcutDeleteButton, clickShortcutResetButton, CONSOLE_SHORTCUT_DISPLAY_TEXT, CONSOLE_SHORTCUT_INPUT_TEXT, CONTROL_1_CONTROL_2_CHORD_DISPLAY_TEXT, CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT, CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT, CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT, CONTROL_2_SHORTCUT_DISPLAY_TEXT, CONTROL_2_SHORTCUT_INPUT_TEXT, CONTROL_ALT_C_SHORTCUT_INPUT_TEXT, editShortcutListItem, selectKeyboardShortcutPreset, SHORTCUT_CHORD_TIMEOUT, shortcutInputValues, shortcutsForAction, VS_CODE_PAUSE_SHORTCUTS, VS_CODE_SETTINGS_SHORTCUTS, VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT, VS_CODE_SHORTCUTS_SHORTCUTS, waitForEmptyShortcutInput, waitForVSCodeShortcutPreset} from '../helpers/settings-shortcuts-helpers.js';
 
 describe('Shortcuts Settings tab', async () => {
   it('should update when the shortcuts preset is changed ', async () => {
@@ -168,6 +168,23 @@ describe('Shortcuts Settings tab', async () => {
 
     const shortcuts = await shortcutsForAction('Show Console');
     assert.deepStrictEqual(shortcuts, CONTROL_1_CONTROL_2_CHORD_DISPLAY_TEXT);
+  });
+
+  it('should display the physical key that is pressed rather than special characters', async () => {
+    const {frontend} = getBrowserAndPages();
+    await enableExperiment('keyboardShortcutEditor');
+
+    await openSettingsTab('Shortcuts');
+    await editShortcutListItem('Show Console');
+
+    await frontend.keyboard.down('Control');
+    await frontend.keyboard.down('Alt');
+    await frontend.keyboard.press('c');
+    await frontend.keyboard.up('Alt');
+    await frontend.keyboard.up('Control');
+
+    const shortcutInputsText = await shortcutInputValues();
+    assert.deepStrictEqual(shortcutInputsText, CONTROL_ALT_C_SHORTCUT_INPUT_TEXT);
   });
 
   // Flaky test

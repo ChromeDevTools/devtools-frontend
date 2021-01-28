@@ -408,6 +408,7 @@ export class ShortcutListItem {
     if (this._isEditing) {
       const shortcutInput = shortcutElement.createChild('input', 'harmony-input') as HTMLInputElement;
       shortcutInput.spellcheck = false;
+      shortcutInput.maxLength = 0;
       this._shortcutInputs.set(shortcut, shortcutInput);
       if (!this._elementToFocus) {
         this._elementToFocus = shortcutInput;
@@ -498,7 +499,20 @@ export class ShortcutListItem {
   _descriptorForEvent(event: KeyboardEvent): UI.KeyboardShortcut.Descriptor {
     const userKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(event as KeyboardEvent);
     const codeAndModifiers = UI.KeyboardShortcut.KeyboardShortcut.keyCodeAndModifiersFromKey(userKey);
-    const key = UI.KeyboardShortcut.Keys[event.key] || UI.KeyboardShortcut.KeyBindings[event.key];
+    let key: UI.KeyboardShortcut.Key|string =
+        UI.KeyboardShortcut.Keys[event.key] || UI.KeyboardShortcut.KeyBindings[event.key];
+
+    if (!key && !/^[a-z]$/i.test(event.key)) {
+      const keyCode = event.code;
+      // if we still don't have a key name, let's try the code before falling back to the raw key
+      key = UI.KeyboardShortcut.Keys[keyCode] || UI.KeyboardShortcut.KeyBindings[keyCode];
+      if (keyCode.startsWith('Digit')) {
+        key = keyCode.slice(5);
+      } else if (keyCode.startsWith('Key')) {
+        key = keyCode.slice(3);
+      }
+    }
+
     return UI.KeyboardShortcut.KeyboardShortcut.makeDescriptor(key || event.key, codeAndModifiers.modifiers);
   }
 

@@ -337,6 +337,18 @@ const spaceKey = {
   code: 32,
   name: 'Space'
 };
+const plusKey = {
+  code: 187,
+  name: '+'
+};
+const backquoteKey = {
+  code: 192,
+  name: '`'
+};
+const quoteKey = {
+  code: 222,
+  name: '\''
+};
 
 /** @type {!Object.<string, !Key>} */
 export const Keys = {
@@ -385,18 +397,22 @@ export const Keys = {
   NumpadPlus: {code: 107, name: 'Numpad +'},
   NumpadMinus: {code: 109, name: 'Numpad -'},
   Numpad0: {code: 96, name: 'Numpad 0'},
-  Plus: {code: 187, name: '+'},
+  Plus: plusKey,
+  Equal: plusKey,
   Comma: {code: 188, name: ','},
   Minus: {code: 189, name: '-'},
   Period: {code: 190, name: '.'},
   Slash: {code: 191, name: '/'},
   QuestionMark: {code: 191, name: '?'},
-  Apostrophe: {code: 192, name: '`'},
+  Apostrophe: backquoteKey,
   Tilde: {code: 192, name: 'Tilde'},
+  Backquote: backquoteKey,
+  IntlBackslash: backquoteKey,
   LeftSquareBracket: {code: 219, name: '['},
   RightSquareBracket: {code: 221, name: ']'},
   Backslash: {code: 220, name: '\\'},
-  SingleQuote: {code: 222, name: '\''},
+  SingleQuote: quoteKey,
+  Quote: quoteKey,
   get CtrlOrMeta() {
     // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
     return Host.Platform.isMac() ? this.Meta : this.Ctrl;

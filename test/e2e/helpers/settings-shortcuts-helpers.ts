@@ -28,6 +28,7 @@ export let CONTROL_1_CONTROL_2_CHORD_DISPLAY_TEXT = ['Ctrl1Ctrl2'];
 export let CONTROL_2_SHORTCUT_DISPLAY_TEXT = ['Ctrl2'];
 export let CONSOLE_SHORTCUT_INPUT_TEXT = ['Ctrl + `'];
 export let CONSOLE_SHORTCUT_DISPLAY_TEXT = ['Ctrl`'];
+export let CONTROL_ALT_C_SHORTCUT_INPUT_TEXT = ['Ctrl + Alt + C'];
 if (platform === 'mac') {
   VS_CODE_SHORTCUTS_SHORTCUTS = ['⌘ K⌘ S'];
   VS_CODE_SETTINGS_SHORTCUTS = ['⇧ ?', '⌘ ,'];
@@ -41,6 +42,7 @@ if (platform === 'mac') {
   CONTROL_2_SHORTCUT_DISPLAY_TEXT = CONTROL_2_SHORTCUT_INPUT_TEXT;
   CONSOLE_SHORTCUT_INPUT_TEXT = ['Ctrl `'];
   CONSOLE_SHORTCUT_DISPLAY_TEXT = CONSOLE_SHORTCUT_INPUT_TEXT;
+  CONTROL_ALT_C_SHORTCUT_INPUT_TEXT = ['Ctrl ⌥ C'];
 }
 
 export const selectKeyboardShortcutPreset = async (option: string) => {

@@ -28,9 +28,9 @@ component.data = {
 
 document.getElementById('container')?.appendChild(component);
 
-const key = Math.floor(Math.random() * 10);
-const value = Math.floor(Math.random() * 10);
 window.setInterval(() => {
+  const key = Math.floor(Math.random() * 10);
+  const value = Math.floor(Math.random() * 10);
   const randomDataRow = {
     cells: [
       {columnId: 'key', value: `Key: ${key}`, title: `Key: ${key}`},
@@ -41,4 +41,4 @@ window.setInterval(() => {
     ...component.data,
     rows: [...component.data.rows, randomDataRow],
   };
-}, 10000);
+}, 2000);

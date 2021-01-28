@@ -8,7 +8,7 @@ import {$, $$, waitFor, waitForFunction} from '../../shared/helper.js';
 export async function getDataGridRows(
     expectedNumberOfRows: number, root?: ElementHandle<Element>): Promise<ElementHandle<Element>[][]> {
   const dataGrid = await waitFor('devtools-data-grid', root);
-  const rowsSelector = 'tbody > tr:not(.filler-row):not(.hidden)';
+  const rowsSelector = 'tbody > tr:not(.padding-row):not(.hidden)';
   const rowsHandler = await waitForFunction(async () => {
     const rows = (await $$(rowsSelector, dataGrid));
     return (rows.length === expectedNumberOfRows) ? rows : undefined;

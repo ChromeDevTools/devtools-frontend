@@ -104,7 +104,7 @@ describe('DataGrid', () => {
       assertShadowRoot(component.shadowRoot);
       await raf();
 
-      const renderedRows = Array.from(component.shadowRoot.querySelectorAll('tbody tr:not(.filler-row)'));
+      const renderedRows = Array.from(component.shadowRoot.querySelectorAll('tbody tr:not(.padding-row)'));
       const cellsHaveChildren = renderedRows.map(row => {
         const cells = Array.from(row.querySelectorAll('td'), cell => {
           // Figure out if the cell has any children.
@@ -498,46 +498,6 @@ describe('DataGrid', () => {
       };
       await raf();
       assertCurrentFocusedCellIs(component.shadowRoot, {column: 0, row: 2});
-    });
-
-    it('resets the user to the first focusable cell if their row is hidden', async () => {
-      const component = renderDataGrid({rows: createRows(), columns: columnsWithNoneSortable});
-      assertShadowRoot(component.shadowRoot);
-      await raf();
-      focusTableCell(component.shadowRoot);
-      emulateUserKeyboardNavigation(component.shadowRoot, 'ArrowDown');
-      await raf();
-      emulateUserKeyboardNavigation(component.shadowRoot, 'ArrowDown');
-      await raf();
-      assertCurrentFocusedCellIs(component.shadowRoot, {column: 0, row: 3});
-      const rowsWithLastHidden = createRows();
-      rowsWithLastHidden[2].hidden = true;
-      component.data = {
-        columns: columnsWithNoneSortable,
-        rows: rowsWithLastHidden,
-        activeSort: null,
-      };
-      await raf();
-      assertCurrentFocusedCellIs(component.shadowRoot, {column: 0, row: 1});
-    });
-
-    it('resets the user to the first focusable cell if their column is hidden', async () => {
-      const component = renderDataGrid({rows: createRows(), columns: columnsWithNoneSortable});
-      assertShadowRoot(component.shadowRoot);
-      await raf();
-      focusTableCell(component.shadowRoot);
-      emulateUserKeyboardNavigation(component.shadowRoot, 'ArrowRight');
-      await raf();
-      assertCurrentFocusedCellIs(component.shadowRoot, {column: 1, row: 1});
-      const columnsWithFirstHidden = createColumns();
-      columnsWithFirstHidden[0].visible = false;
-      component.data = {
-        columns: columnsWithFirstHidden,
-        rows: createRows(),
-        activeSort: null,
-      };
-      await raf();
-      assertCurrentFocusedCellIs(component.shadowRoot, {column: 1, row: 0});
     });
   });
 

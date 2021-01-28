@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../common/common.js';
+import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as Host from '../../host/host.js';
 import * as Platform from '../../platform/platform.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
@@ -81,6 +82,9 @@ export class BodyCellFocusedEvent extends Event {
 
 const KEYS_TREATED_AS_CLICKS = new Set([' ', 'Enter']);
 
+const ROW_HEIGHT_PIXELS = 18;
+const PADDING_ROWS_COUNT = 10;
+
 export class DataGrid extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private columns: readonly Column[] = [];
@@ -100,6 +104,11 @@ export class DataGrid extends HTMLElement {
     documentForCursorChange: Document,
     cursorToRestore: string,
   }|null = null;
+  // Because we only render a subset of rows, we need a way to look up the
+  // actual row index from the original dataset. We could use this.rows[index]
+  // but that's O(n) and will slow as the dataset grows. A weakmap makes the
+  // lookup constant.
+  private readonly rowIndexMap = new WeakMap<Row, number>();
 
   // These have to be bound as they are put onto the global document, not onto
   // this element, so LitHtml does not bind them for us.
@@ -123,7 +132,12 @@ export class DataGrid extends HTMLElement {
    */
   private focusableCell: CellPosition = [0, 1];
   private hasRenderedAtLeastOnce = false;
-  private pendingScrollUpdate = false;
+  private userHasFocused: boolean = false;
+  private userHasScrolled: boolean = false;
+
+  connectedCallback(): void {
+    ComponentHelpers.SetCSSProperty.set(this, '--table-row-height', `${ROW_HEIGHT_PIXELS}px`);
+  }
 
   get data(): DataGridData {
     return {
@@ -137,6 +151,9 @@ export class DataGrid extends HTMLElement {
   set data(data: DataGridData) {
     this.columns = data.columns;
     this.rows = data.rows;
+    this.rows.forEach((row, index) => {
+      this.rowIndexMap.set(row, index);
+    });
     this.sortState = data.activeSort;
     this.contextMenus = data.contextMenus;
 
@@ -172,18 +189,17 @@ export class DataGrid extends HTMLElement {
           columnOutOfBounds ? this.columns.length : selectedColIndex,
           rowOutOfBounds ? this.rows.length : selectedRowIndex,
         ];
-      } else {
-        /** If the user was on some cell that is now hidden, the logic to figure out the best cell to move them to is complex. We're deferring this for now and instead reset them back to the first focusable cell. */
-        this.focusableCell = calculateFirstFocusableCell({columns: this.columns, rows: this.rows});
       }
     }
 
-    this.scheduleRender();
+    this.render();
   }
 
   private scrollToBottomIfRequired(): void {
-    if (this.hasRenderedAtLeastOnce === false) {
-      // On the first render we don't want to assume the user wants to scroll to the bottom;
+    if (this.hasRenderedAtLeastOnce === false || this.userHasFocused || this.userHasScrolled) {
+      // On the first render we don't want to assume the user wants to scroll to the bottom.
+      // And if they have focused a cell we don't want to scroll them away from it.
+      // If they have scrolled the table manually we also won't scroll and disrupt their scroll position.
       return;
     }
 
@@ -211,23 +227,26 @@ export class DataGrid extends HTMLElement {
   }
 
   private focusCell([newColumnIndex, newRowIndex]: CellPosition): void {
+    this.userHasFocused = true;
+
     const [currentColumnIndex, currentRowIndex] = this.focusableCell;
     const newCellIsCurrentlyFocusedCell = (currentColumnIndex === newColumnIndex && currentRowIndex === newRowIndex);
 
     if (!newCellIsCurrentlyFocusedCell) {
       this.focusableCell = [newColumnIndex, newRowIndex];
+      this.render();
     }
 
     const cellElement = this.getCurrentlyFocusableCell();
     if (!cellElement) {
-      throw new Error('Unexpected error: could not find cell marked as focusable');
+      // Return in case the cell is out of bounds and we do nothing
+      return;
     }
     /* The cell may already be focused if the user clicked into it, but we also
      * add arrow key support, so in the case where we're programatically moving the
      * focus, ensure we actually focus the cell.
      */
     cellElement.focus();
-    this.scheduleRender();
   }
 
   private onTableKeyDown(event: KeyboardEvent): void {
@@ -252,6 +271,7 @@ export class DataGrid extends HTMLElement {
       columns: this.columns,
       rows: this.rows,
     });
+    event.preventDefault();
     this.focusCell(nextFocusedCell);
   }
 
@@ -278,7 +298,7 @@ export class DataGrid extends HTMLElement {
     return undefined;
   }
 
-  private renderFillerRow(): LitHtml.TemplateResult {
+  private renderEmptyFillerRow(): LitHtml.TemplateResult {
     const emptyCells = this.columns.map((col, colIndex) => {
       if (!col.visible) {
         return LitHtml.nothing;
@@ -288,7 +308,7 @@ export class DataGrid extends HTMLElement {
       });
       return LitHtml.html`<td tabindex="-1" class=${emptyCellClasses} data-filler-row-column-index=${colIndex}></td>`;
     });
-    return LitHtml.html`<tr tabindex="-1" class="filler-row">${emptyCells}</tr>`;
+    return LitHtml.html`<tr tabindex="-1" class="filler-row padding-row">${emptyCells}</tr>`;
   }
 
   private cleanUpAfterResizeColumnComplete(): void {
@@ -297,7 +317,8 @@ export class DataGrid extends HTMLElement {
     }
     this.currentResize.documentForCursorChange.body.style.cursor = this.currentResize.cursorToRestore;
     this.currentResize = null;
-    this.scheduleRender();
+    // Realign the scroll handlers now the table columns have been resized.
+    this.alignScrollHandlers();
   }
 
   private onResizePointerDown(event: PointerEvent): void {
@@ -522,28 +543,11 @@ export class DataGrid extends HTMLElement {
   }
 
   private onScroll(): void {
-    this.pendingScrollUpdate = true;
-    this.scheduleRender();
+    this.render();
   }
 
-  private scheduleRender(): void {
-    if (this.scheduledRenderId !== 0) {
-      return;
-    }
-
-    this.scheduledRenderId = requestAnimationFrame(() => {
-      // Running this at the start of the frame means we can query the scroll
-      // position without triggering layout.
-      if (this.pendingScrollUpdate) {
-        this.pendingScrollUpdate = false;
-      } else {
-        this.scrollToBottomIfRequired();
-      }
-
-      this.render();
-      this.alignScrollHandlers();
-      this.scheduledRenderId = 0;
-    });
+  private onWheel(): void {
+    this.userHasScrolled = true;
   }
 
   private alignScrollHandlers(): void {
@@ -557,251 +561,317 @@ export class DataGrid extends HTMLElement {
       columnHeaders.forEach((header, index) => {
         const {right} = header.getBoundingClientRect();
         if (handlers[index]) {
-          handlers[index].style.left = `${right - 20}px`;
+          /**
+           * 40px here because the handler is 20px wide, and we use the right
+           * boundary of the cell to position it. So we move it back 20px
+           * because it's 20px wide, but then need to pull it back another 20px
+           * so it sits over The very right hand edge of the column.
+           */
+          handlers[index].style.left = `${right - 40}px`;
         }
       });
     });
   }
 
+  /**
+   * Calculates the index of the first row we want to render, and the last row we want to render.
+   * Pads in each direction by PADDING_ROWS_COUNT so we render some rows that are off scren.
+   */
+  private calculateTopAndBottomRowIndexes(): {topVisibleRow: number, bottomVisibleRow: number} {
+    const wrapper = this.shadow.querySelector('.wrapping-container');
+
+    // On first render we don't have a wrapper, so we can't get at its
+    // scroll/height values. So we default to the inner height of the window as
+    // the limit for rendering. This means we may over-render by a few rows, but
+    // better that than either render everything, or rendering too few rows.
+    let scrollTop = 0;
+    let clientHeight = window.innerHeight;
+    if (wrapper) {
+      scrollTop = wrapper.scrollTop;
+      clientHeight = wrapper.clientHeight;
+    }
+    const padding = ROW_HEIGHT_PIXELS * PADDING_ROWS_COUNT;
+    let topVisibleRow = Math.floor((scrollTop - padding) / ROW_HEIGHT_PIXELS);
+    let bottomVisibleRow = Math.ceil((scrollTop + clientHeight + padding) / ROW_HEIGHT_PIXELS);
+
+    topVisibleRow = Math.max(0, topVisibleRow);
+    bottomVisibleRow = Math.min(this.rows.length, bottomVisibleRow);
+
+    return {
+      topVisibleRow,
+      bottomVisibleRow,
+    };
+  }
+
+  /**
+   * Renders the data-grid table. Note that we do not render all rows; the
+   * performance cost are too high once you have a large enough table. Instead
+   * we calculate the size of the container we are rendering into, and then
+   * render only the rows required to fill that table (plus a bit extra for
+   * padding).
+   */
   private render(): void {
-    const indexOfFirstVisibleColumn = this.columns.findIndex(col => col.visible);
-    const anyColumnsSortable = this.columns.some(col => col.sortable === true);
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    LitHtml.render(LitHtml.html`
-    <style>
-      :host {
-        --table-divider-color: var(--color-details-hairline);
-        --toolbar-bg-color: var(--color-background-elevation-1);
-        --selected-row-color: var(--color-background-elevation-1);
+    if (this.scheduledRenderId !== 0) {
+      return;
+    }
 
-        height: 100%;
-        display: block;
-      }
+    this.scheduledRenderId = requestAnimationFrame(() => {
+      const {topVisibleRow, bottomVisibleRow} = this.calculateTopAndBottomRowIndexes();
+      const renderableRows = this.rows.filter((_, idx) => idx >= topVisibleRow && idx <= bottomVisibleRow);
+      const indexOfFirstVisibleColumn = this.columns.findIndex(col => col.visible);
+      const anyColumnsSortable = this.columns.some(col => col.sortable === true);
 
-      /* Ensure that vertically we don't overflow */
-      .wrapping-container {
-        overflow-y: scroll;
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
+      LitHtml.render(LitHtml.html`
+      <style>
+        :host {
+          --table-divider-color: var(--color-details-hairline);
+          --toolbar-bg-color: var(--color-background-elevation-1);
+          --selected-row-color: var(--color-background-elevation-1);
 
-        /* Use max-height instead of height to ensure that the
-           table does not use more space than necessary. */
-        height: 100%;
-        position: relative;
-      }
+          height: 100%;
+          display: block;
+          position: relative;
+        }
 
-      table {
-        border-spacing: 0;
-        width: 100%;
-        height: 100%;
+        /* Ensure that vertically we don't overflow */
+        .wrapping-container {
+          overflow-y: scroll;
 
-        /* To make sure that we properly hide overflowing text
-           when horizontal space is too narrow. */
-        table-layout: fixed;
-      }
+          /* Use max-height instead of height to ensure that the
+            table does not use more space than necessary. */
+          height: 100%;
+        }
 
-      tr {
-        outline: none;
-      }
+        table {
+          border-spacing: 0;
+          width: 100%;
+          height: 100%;
 
-      tbody tr {
-        background-color: var(--color-background);
-      }
+          /* To make sure that we properly hide overflowing text
+            when horizontal space is too narrow. */
+          table-layout: fixed;
+        }
 
-      tbody tr.selected {
-        background-color: var(--selected-row-color);
-      }
+        tr {
+          outline: none;
+        }
 
-      td,
-      th {
-        padding: 1px 4px;
+        tbody tr {
+          background-color: var(--color-background);
+        }
 
-        /* Divider between each cell, except the first one (see below) */
-        border-left: 1px solid var(--table-divider-color);
-        color: var(--color-text-primary);
-        line-height: 18px;
-        height: 18px;
-        user-select: text;
+        tbody tr.selected {
+          background-color: var(--selected-row-color);
+        }
 
-        /* Ensure that text properly cuts off if horizontal space is too narrow */
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        position: relative;
-      }
+        td,
+        th {
+          padding: 1px 4px;
 
-      .cell-resize-handle {
-        top: 0;
-        height: 100%;
-        z-index: 3;
-        width: 20px;
-        cursor: col-resize;
-        position: absolute;
-      }
+          /* Divider between each cell, except the first one (see below) */
+          border-left: 1px solid var(--table-divider-color);
+          color: var(--color-text-primary);
+          line-height: var(--table-row-height);
+          height: var(--table-row-height);
+          user-select: text;
 
-      /* There is no divider before the first cell */
-      td.firstVisibleColumn,
-      th.firstVisibleColumn {
-        border-left: none;
-      }
+          /* Ensure that text properly cuts off if horizontal space is too narrow */
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
 
-      th {
-        font-weight: normal;
-        text-align: left;
-        border-bottom: 1px solid var(--table-divider-color);
-        position: sticky;
-        top: 0;
-        z-index: 2;
-        background-color: var(--toolbar-bg-color);
-      }
+        .cell-resize-handle {
+          top: 0;
+          height: 100%;
+          z-index: 3;
+          width: 20px;
+          cursor: col-resize;
+          position: absolute;
+        }
 
-      .hidden {
-        display: none;
-      }
+        /* There is no divider before the first cell */
+        td.firstVisibleColumn,
+        th.firstVisibleColumn {
+          border-left: none;
+        }
 
-      .filler-row td {
-        /* By making the filler row cells 100% they take up any extra height,
-         * leaving the cells with content to be the regular height, and the
-         * final filler row to be as high as it needs to be to fill the empty
-         * space.
-         */
-        height: 100%;
-        pointer-events: none;
-      }
+        th {
+          font-weight: normal;
+          text-align: left;
+          border-bottom: 1px solid var(--table-divider-color);
+          position: sticky;
+          top: 0;
+          z-index: 2;
+          background-color: var(--toolbar-bg-color);
+        }
 
-      .filler-row td .cell-resize-handle {
-        pointer-events: all;
-      }
+        .hidden {
+          display: none;
+        }
 
-      [aria-sort]:hover {
-        cursor: pointer;
-      }
+        .filler-row td {
+          /* By making the filler row cells 100% they take up any extra height,
+          * leaving the cells with content to be the regular height, and the
+          * final filler row to be as high as it needs to be to fill the empty
+          * space.
+          */
+          height: 100%;
+          pointer-events: none;
+        }
 
-      [aria-sort="descending"]::after {
-        content: " ";
-        border-left: 0.3em solid transparent;
-        border-right: 0.3em solid transparent;
-        border-top: 0.3em solid black;
-        position: absolute;
-        right: 0.5em;
-        top: 0.6em;
-      }
+        [aria-sort]:hover {
+          cursor: pointer;
+        }
 
-      [aria-sort="ascending"]::after {
-        content: " ";
-        border-bottom: 0.3em solid black;
-        border-left: 0.3em solid transparent;
-        border-right: 0.3em solid transparent;
-        position: absolute;
-        right: 0.5em;
-        top: 0.6em;
-      }
-    </style>
-    ${this.columns.map((col, columnIndex) => {
-      /**
-       * We render the resizers outside of the table. One is rendered for each
-       * column, and they are positioned absolutely at the right position. They
-       * have 100% height so they sit over the entire table and can be grabbed
-       * by the user.
-       */
-      return this.renderResizeForCell(col, [columnIndex, 0]);
-    })}
-    <div class="wrapping-container" @scroll=${this.onScroll}>
-      <table
-        aria-rowcount=${this.rows.length}
-        aria-colcount=${this.columns.length}
-        @keydown=${this.onTableKeyDown}
-      >
-        <colgroup>
-          ${this.columns.map((col, colIndex) => {
-            const width = calculateColumnWidthPercentageFromWeighting(this.columns, col.id);
-            const style = `width: ${width}%`;
-            if (!col.visible) {
-              return LitHtml.nothing;
-            }
+        [aria-sort="descending"]::after {
+          content: " ";
+          border-left: 0.3em solid transparent;
+          border-right: 0.3em solid transparent;
+          border-top: 0.3em solid black;
+          position: absolute;
+          right: 0.5em;
+          top: 0.6em;
+        }
 
-            return LitHtml.html`<col style=${style} data-col-column-index=${colIndex}>`;
-          })}
-        </colgroup>
-        <thead>
-          <tr @contextmenu=${this.onHeaderContextMenu}>
-            ${this.columns.map((col, columnIndex) => {
-              const thClasses = LitHtml.Directives.classMap({
-                hidden: !col.visible,
-                firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
-              });
-              const cellIsFocusableCell = anyColumnsSortable && columnIndex === this.focusableCell[0] && this.focusableCell[1] === 0;
+        [aria-sort="ascending"]::after {
+          content: " ";
+          border-bottom: 0.3em solid black;
+          border-left: 0.3em solid transparent;
+          border-right: 0.3em solid transparent;
+          position: absolute;
+          right: 0.5em;
+          top: 0.6em;
+        }
+      </style>
+      ${this.columns.map((col, columnIndex) => {
+        /**
+        * We render the resizers outside of the table. One is rendered for each
+        * column, and they are positioned absolutely at the right position. They
+        * have 100% height so they sit over the entire table and can be grabbed
+        * by the user.
+        */
+        return this.renderResizeForCell(col, [columnIndex, 0]);
+      })}
+      <div class="wrapping-container" @scroll=${this.onScroll} @wheel=${this.onWheel}>
+        <table
+          aria-rowcount=${this.rows.length}
+          aria-colcount=${this.columns.length}
+          @keydown=${this.onTableKeyDown}
+        >
+          <colgroup>
+            ${this.columns.map((col, colIndex) => {
+              const width = calculateColumnWidthPercentageFromWeighting(this.columns, col.id);
+              const style = `width: ${width}%`;
+              if (!col.visible) {
+                return LitHtml.nothing;
+              }
 
-              return LitHtml.html`<th class=${thClasses}
-                data-grid-header-cell=${col.id}
-                @click=${(): void => {
-                  this.focusCell([columnIndex, 0]);
-                  this.onColumnHeaderClick(col, columnIndex);
-                }}
-                title=${col.title}
-                aria-sort=${LitHtml.Directives.ifDefined(this.ariaSortForHeader(col))}
-                aria-colindex=${columnIndex + 1}
-                data-row-index='0'
-                data-col-index=${columnIndex}
-                tabindex=${LitHtml.Directives.ifDefined(anyColumnsSortable ? (cellIsFocusableCell ? '0' : '-1') : undefined)}
-              >${col.title}</th>`;
+              return LitHtml.html`<col style=${style} data-col-column-index=${colIndex}>`;
             })}
-          </tr>
-        </thead>
-        <tbody>
-          ${LitHtml.Directives.repeat(this.rows, row => this.rows.indexOf(row), (row, rowIndex): LitHtml.TemplateResult => {
-            const focusableCell = this.getCurrentlyFocusableCell();
-            const [,focusableCellRowIndex] = this.focusableCell;
-            // Remember that row 0 is considered the header row, so the first tbody row is row 1.
-            const tableRowIndex = rowIndex + 1;
-
-            // Have to check for focusableCell existing as this runs on the
-            // first render before it's ever been created.
-            const rowIsSelected = focusableCell ? focusableCell === this.shadow.activeElement && tableRowIndex === focusableCellRowIndex : false;
-
-            const rowClasses = LitHtml.Directives.classMap({
-              selected: rowIsSelected,
-              hidden: row.hidden === true,
-            });
-            return LitHtml.html`
-              <tr
-                aria-rowindex=${rowIndex + 1}
-                class=${rowClasses}
-                @contextmenu=${this.onBodyRowContextMenu}
-              >${this.columns.map((col, columnIndex) => {
-                const cell = getRowEntryForColumnId(row, col.id);
-                const cellClasses = LitHtml.Directives.classMap({
+          </colgroup>
+          <thead>
+            <tr @contextmenu=${this.onHeaderContextMenu}>
+              ${this.columns.map((col, columnIndex) => {
+                const thClasses = LitHtml.Directives.classMap({
                   hidden: !col.visible,
                   firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
                 });
-                const cellIsFocusableCell = columnIndex === this.focusableCell[0] && tableRowIndex === this.focusableCell[1];
-                const cellOutput = col.visible ? renderCellValue(cell) : null;
-                return LitHtml.html`<td
-                  class=${cellClasses}
-                  tabindex=${cellIsFocusableCell ? '0' : '-1'}
-                  aria-colindex=${columnIndex + 1}
-                  title=${cell.title || String(cell.value)}
-                  data-row-index=${tableRowIndex}
-                  data-col-index=${columnIndex}
-                  data-grid-value-cell-for-column=${col.id}
-                  @focus=${(): void => {
-                    this.dispatchEvent(new BodyCellFocusedEvent(cell, row));
-                  }}
+                const cellIsFocusableCell = anyColumnsSortable && columnIndex === this.focusableCell[0] && this.focusableCell[1] === 0;
+
+                return LitHtml.html`<th class=${thClasses}
+                  data-grid-header-cell=${col.id}
                   @click=${(): void => {
-                    this.focusCell([columnIndex, tableRowIndex]);
+                    this.focusCell([columnIndex, 0]);
+                    this.onColumnHeaderClick(col, columnIndex);
                   }}
-                >${cellOutput}</td>`;
+                  title=${col.title}
+                  aria-sort=${LitHtml.Directives.ifDefined(this.ariaSortForHeader(col))}
+                  aria-colindex=${columnIndex + 1}
+                  data-row-index='0'
+                  data-col-index=${columnIndex}
+                  tabindex=${LitHtml.Directives.ifDefined(anyColumnsSortable ? (cellIsFocusableCell ? '0' : '-1') : undefined)}
+                >${col.title}</th>`;
               })}
-            `;
-          })}
-         ${this.renderFillerRow()}
-        </tbody>
-      </table>
-    </div>
-    `, this.shadow, {
-      eventContext: this,
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="filler-row-top padding-row" style=${LitHtml.Directives.styleMap({
+              height: `${topVisibleRow * ROW_HEIGHT_PIXELS}px`,
+            })}></tr>
+            ${LitHtml.Directives.repeat(renderableRows, row => this.rowIndexMap.get(row), (row): LitHtml.TemplateResult => {
+              const rowIndex = this.rowIndexMap.get(row);
+              if (rowIndex === undefined) {
+                throw new Error('Trying to render a row that has no index in the rowIndexMap');
+              }
+              const focusableCell = this.getCurrentlyFocusableCell();
+              const [,focusableCellRowIndex] = this.focusableCell;
+              // Remember that row 0 is considered the header row, so the first tbody row is row 1.
+              const tableRowIndex = rowIndex + 1;
+
+              // Have to check for focusableCell existing as this runs on the
+              // first render before it's ever been created.
+              const rowIsSelected = focusableCell ? focusableCell === this.shadow.activeElement && tableRowIndex === focusableCellRowIndex : false;
+
+              const rowClasses = LitHtml.Directives.classMap({
+                selected: rowIsSelected,
+                hidden: row.hidden === true,
+              });
+              return LitHtml.html`
+                <tr
+                  aria-rowindex=${rowIndex + 1}
+                  class=${rowClasses}
+                  @contextmenu=${this.onBodyRowContextMenu}
+                >${this.columns.map((col, columnIndex) => {
+                  const cell = getRowEntryForColumnId(row, col.id);
+                  const cellClasses = LitHtml.Directives.classMap({
+                    hidden: !col.visible,
+                    firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
+                  });
+                  const cellIsFocusableCell = columnIndex === this.focusableCell[0] && tableRowIndex === this.focusableCell[1];
+                  const cellOutput = col.visible ? renderCellValue(cell) : null;
+                  return LitHtml.html`<td
+                    class=${cellClasses}
+                    tabindex=${cellIsFocusableCell ? '0' : '-1'}
+                    aria-colindex=${columnIndex + 1}
+                    title=${cell.title || String(cell.value).substr(0, 20)}
+                    data-row-index=${tableRowIndex}
+                    data-col-index=${columnIndex}
+                    data-grid-value-cell-for-column=${col.id}
+                    @focus=${(): void => {
+                      this.dispatchEvent(new BodyCellFocusedEvent(cell, row));
+                    }}
+                    @click=${(): void => {
+                      this.focusCell([columnIndex, tableRowIndex]);
+                    }}
+                  >${cellOutput}</td>`;
+                })}
+              `;
+            })}
+            ${this.renderEmptyFillerRow()}
+            <tr class="filler-row-bottom padding-row" style=${LitHtml.Directives.styleMap({
+              height: `${(this.rows.length - bottomVisibleRow) * ROW_HEIGHT_PIXELS}px`,
+            })}></tr>
+          </tbody>
+        </table>
+      </div>
+      `, this.shadow, {
+        eventContext: this,
+      });
+      // clang-format on
+      if (this.userHasFocused) {
+        // This ensures if the user has a cell focused, but then scrolls so that
+        // the focused cell is now not rendered, that when it then gets scrolled
+        // back in, that it becomes rendered.
+        this.focusCell(this.focusableCell);
+      }
+      this.scrollToBottomIfRequired();
+      this.alignScrollHandlers();
+      this.hasRenderedAtLeastOnce = true;
+      this.scheduledRenderId = 0;
     });
-    // clang-format on
-    this.hasRenderedAtLeastOnce = true;
   }
 }
 

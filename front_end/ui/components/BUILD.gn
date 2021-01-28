@@ -23,6 +23,7 @@ devtools_module("components") {
   deps = [
     "../../bindings:bundle",
     "../../common:bundle",
+    "../../component_helpers:bundle",
     "../../host:bundle",
     "../../platform:bundle",
     "../../text_utils:bundle",

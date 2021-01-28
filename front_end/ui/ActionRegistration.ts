@@ -277,6 +277,10 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
   condition(): string|undefined {
     return this.actionRegistration.condition;
   }
+
+  order(): number|undefined {
+    return this.actionRegistration.order;
+  }
 }
 
 const registeredActionExtensions: Array<PreRegisteredAction> = [];
@@ -293,9 +297,15 @@ export function registerActionExtension(registration: ActionRegistration): void 
 }
 
 export function getRegisteredActionExtensions(): Array<PreRegisteredAction> {
-  return registeredActionExtensions.filter(
-      action =>
-          Root.Runtime.Runtime.isDescriptorEnabled({experiment: action.experiment(), condition: action.condition()}));
+  return registeredActionExtensions
+      .filter(
+          action => Root.Runtime.Runtime.isDescriptorEnabled(
+              {experiment: action.experiment(), condition: action.condition()}))
+      .sort((firstAction, secondAction) => {
+        const order1 = firstAction.order() || 0;
+        const order2 = secondAction.order() || 0;
+        return order1 - order2;
+      });
 }
 
 export const enum Platforms {
@@ -485,4 +495,8 @@ export interface ActionRegistration {
    * property and in that case the behaviour of the action's availability will be inverted.
    */
   condition?: Root.Runtime.ConditionName;
+  /**
+   * Used to sort actions when all registered actions are queried.
+   */
+  order?: number;
 }

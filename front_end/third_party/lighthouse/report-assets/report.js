@@ -66,6 +66,10 @@ class Util {
     if (!clone.configSettings.locale) {
       clone.configSettings.locale = 'en';
     }
+    if (!clone.configSettings.formFactor) {
+      // @ts-expect-error fallback handling for emulatedFormFactor
+      clone.configSettings.formFactor = clone.configSettings.emulatedFormFactor;
+    }
 
     for (const audit of Object.values(clone.audits)) {
       // Turn 'not-applicable' (LHR <4.0) and 'not_applicable' (older proto versions)
@@ -425,9 +429,10 @@ class Util {
     }
 
     // TODO(paulirish): revise Runtime Settings strings: https://github.com/GoogleChrome/lighthouse/pull/11796
-    const deviceEmulation = settings.formFactor === 'mobile'
-      ? Util.i18n.strings.runtimeMobileEmulation
-      : Util.i18n.strings.runtimeDesktopEmulation;
+    const deviceEmulation = {
+      mobile: Util.i18n.strings.runtimeMobileEmulation,
+      desktop: Util.i18n.strings.runtimeDesktopEmulation,
+    }[settings.formFactor] || Util.i18n.strings.runtimeNoEmulation;
 
     return {
       deviceEmulation,
@@ -526,8 +531,6 @@ Util.UIStrings = {
   errorLabel: 'Error!',
   /** This label is shown above a bulleted list of warnings. It is shown directly below an audit that produced warnings. Warnings describe situations the user should be aware of, as Lighthouse was unable to complete all the work required on this audit. For example, The 'Unable to decode image (biglogo.jpg)' warning may show up below an image encoding audit. */
   warningHeader: 'Warnings: ',
-  /** The tooltip text on an expandable chevron icon. Clicking the icon expands a section to reveal a list of audit results that was hidden by default. */
-  auditGroupExpandTooltip: 'Show audits',
   /** Section heading shown above a list of passed audits that contain warnings. Audits under this section do not negatively impact the score, but Lighthouse has generated some potentially actionable suggestions that should be reviewed. This section is expanded by default and displays after the failing audits. */
   warningAuditsGroupTitle: 'Passed audits but with warnings',
   /** Section heading shown above a list of audits that are passing. 'Passed' here refers to a passing grade. This section is collapsed by default, as the user should be focusing on the failed audits instead. Users can click this heading to reveal the list. */
@@ -835,12 +838,11 @@ class DOM {
   /**
    * Guaranteed context.querySelector. Always returns an element or throws if
    * nothing matches query.
-   * @param {string} query
+   * @template {string} T
+   * @param {T} query
    * @param {ParentNode} context
-   * @return {!HTMLElement}
    */
   find(query, context) {
-    /** @type {?HTMLElement} */
     const result = context.querySelector(query);
     if (result === null) {
       throw new Error(`query ${query} not found`);
@@ -850,12 +852,13 @@ class DOM {
 
   /**
    * Helper for context.querySelectorAll. Returns an Array instead of a NodeList.
-   * @param {string} query
+   * @template {string} T
+   * @param {T} query
    * @param {ParentNode} context
-   * @return {!Array<HTMLElement>}
    */
   findAll(query, context) {
-    return Array.from(context.querySelectorAll(query));
+    const elements = Array.from(context.querySelectorAll(query));
+    return elements;
   }
 }
 
@@ -1206,7 +1209,7 @@ class DetailsRenderer {
 
   /**
    * @param {{text: string, url: string}} details
-   * @return {Element}
+   * @return {HTMLElement}
    */
   _renderLink(details) {
     const allowedProtocols = ['https:', 'http:'];
@@ -1585,9 +1588,8 @@ class DetailsRenderer {
 
     if (!this._fullPageScreenshot) return element;
 
-    const rect =
-      (item.lhId ? this._fullPageScreenshot.nodes[item.lhId] : null) || item.boundingRect;
-    if (!rect) return element;
+    const rect = item.lhId && this._fullPageScreenshot.nodes[item.lhId];
+    if (!rect || rect.width === 0 || rect.height === 0) return element;
 
     const maxThumbnailSize = {width: 147, height: 100};
     const elementScreenshot = ElementScreenshotRenderer.render(
@@ -1613,15 +1615,31 @@ class DetailsRenderer {
     }
 
     // Lines are shown as one-indexed.
-    const line = item.line + 1;
-    const column = item.column;
+    const generatedLocation = `${item.url}:${item.line + 1}:${item.column}`;
+    let sourceMappedOriginalLocation;
+    if (item.original) {
+      const file = item.original.file || '<unmapped>';
+      sourceMappedOriginalLocation = `${file}:${item.original.line + 1}:${item.original.column}`;
+    }
 
+    // We render slightly differently based on presence of source map and provenance of URL.
     let element;
-    if (item.urlProvider === 'network') {
+    if (item.urlProvider === 'network' && sourceMappedOriginalLocation) {
+      element = this._renderLink({
+        url: item.url,
+        text: sourceMappedOriginalLocation,
+      });
+      element.title = `maps to generated location ${generatedLocation}`;
+    } else if (item.urlProvider === 'network' && !sourceMappedOriginalLocation) {
       element = this.renderTextURL(item.url);
-      this._dom.find('.lh-link', element).textContent += `:${line}:${column}`;
+      this._dom.find('.lh-link', element).textContent += `:${item.line + 1}:${item.column}`;
+    } else if (item.urlProvider === 'comment' && sourceMappedOriginalLocation) {
+      element = this._renderText(`${sourceMappedOriginalLocation} (from source map)`);
+      element.title = `${generatedLocation} (from sourceURL)`;
+    } else if (item.urlProvider === 'comment' && !sourceMappedOriginalLocation) {
+      element = this._renderText(`${generatedLocation} (from sourceURL)`);
     } else {
-      element = this._renderText(`${item.url}:${line}:${column} (from sourceURL)`);
+      return null;
     }
 
     element.classList.add('lh-source-location');
@@ -1629,6 +1647,7 @@ class DetailsRenderer {
     // DevTools expects zero-indexed lines.
     element.setAttribute('data-source-line', String(item.line));
     element.setAttribute('data-source-column', String(item.column));
+
     return element;
   }
 
@@ -2474,7 +2493,7 @@ class ElementScreenshotRenderer {
     }
 
     const tmpl = dom.cloneTemplate('#tmpl-lh-element-screenshot', templateContext);
-    const containerEl = dom.find('.lh-element-screenshot', tmpl);
+    const containerEl = dom.find('div.lh-element-screenshot', tmpl);
 
     containerEl.dataset['rectWidth'] = elementRectSC.width.toString();
     containerEl.dataset['rectHeight'] = elementRectSC.height.toString();
@@ -2502,10 +2521,10 @@ class ElementScreenshotRenderer {
       {width: screenshot.width, height: screenshot.height}
     );
 
-    const contentEl = dom.find('.lh-element-screenshot__content', containerEl);
+    const contentEl = dom.find('div.lh-element-screenshot__content', containerEl);
     contentEl.style.top = `-${elementPreviewSizeDC.height}px`;
 
-    const imageEl = dom.find('.lh-element-screenshot__image', containerEl);
+    const imageEl = dom.find('div.lh-element-screenshot__image', containerEl);
     imageEl.style.width = elementPreviewSizeDC.width + 'px';
     imageEl.style.height = elementPreviewSizeDC.height + 'px';
 
@@ -2514,13 +2533,13 @@ class ElementScreenshotRenderer {
     imageEl.style.backgroundSize =
       `${screenshot.width * zoomFactor}px ${screenshot.height * zoomFactor}px`;
 
-    const markerEl = dom.find('.lh-element-screenshot__element-marker', containerEl);
+    const markerEl = dom.find('div.lh-element-screenshot__element-marker', containerEl);
     markerEl.style.width = elementRectSC.width * zoomFactor + 'px';
     markerEl.style.height = elementRectSC.height * zoomFactor + 'px';
     markerEl.style.left = positions.clip.left * zoomFactor + 'px';
     markerEl.style.top = positions.clip.top * zoomFactor + 'px';
 
-    const maskEl = dom.find('.lh-element-screenshot__mask', containerEl);
+    const maskEl = dom.find('div.lh-element-screenshot__mask', containerEl);
     maskEl.style.width = elementPreviewSizeDC.width + 'px';
     maskEl.style.height = elementPreviewSizeDC.height + 'px';
 
@@ -2611,7 +2630,6 @@ class Logger {
    * @param {Element} element
    */
   constructor(element) {
-    /** @type {Element} */
     this.el = element;
     this._id = undefined;
   }
@@ -2816,8 +2834,7 @@ class ReportUIFeatures {
     const hasMetricError = report.categories.performance && report.categories.performance.auditRefs
       .some(audit => Boolean(audit.group === 'metrics' && report.audits[audit.id].errorMessage));
     if (hasMetricError) {
-      const toggleInputEl = /** @type {HTMLInputElement} */ (
-        this._dom.find('.lh-metrics-toggle__input', this._document));
+      const toggleInputEl = this._dom.find('input.lh-metrics-toggle__input', this._document);
       toggleInputEl.checked = true;
     }
 
@@ -2841,7 +2858,7 @@ class ReportUIFeatures {
 
   /**
    * Finds the first scrollable ancestor of `element`. Falls back to the document.
-   * @param {HTMLElement} element
+   * @param {Element} element
    * @return {Node}
    */
   _getScrollParent(element) {
@@ -2908,8 +2925,7 @@ class ReportUIFeatures {
     ];
 
     // Get all tables with a text url column.
-    /** @type {Array<HTMLTableElement>} */
-    const tables = Array.from(this._document.querySelectorAll('.lh-table'));
+    const tables = Array.from(this._document.querySelectorAll('table.lh-table'));
     const tablesWithUrls = tables
       .filter(el =>
         el.querySelector('td.lh-table-column--url, td.lh-table-column--source-location'))
@@ -2925,8 +2941,7 @@ class ReportUIFeatures {
 
       // create input box
       const filterTemplate = this._dom.cloneTemplate('#tmpl-lh-3p-filter', this._templateContext);
-      const filterInput =
-        /** @type {HTMLInputElement} */ (this._dom.find('input', filterTemplate));
+      const filterInput = this._dom.find('input', filterTemplate);
       const id = `lh-3p-filter-label--${index}`;
 
       filterInput.id = id;
@@ -3006,8 +3021,7 @@ class ReportUIFeatures {
     for (const rowEl of rowEls) {
       if (rowEl.classList.contains('lh-sub-item-row')) continue;
 
-      /** @type {HTMLElement|null} */
-      const urlItem = rowEl.querySelector('.lh-text__url');
+      const urlItem = rowEl.querySelector('div.lh-text__url');
       if (!urlItem) continue;
 
       const datasetUrl = urlItem.dataset.url;
@@ -3021,19 +3035,10 @@ class ReportUIFeatures {
     return thirdPartyRows;
   }
 
-  /**
-   * From a table, finds and returns URL items.
-   * @param {HTMLTableElement} tableEl
-   * @return {Array<HTMLElement>}
-   */
-  _getUrlItems(tableEl) {
-    return this._dom.findAll('.lh-text__url', tableEl);
-  }
-
   _setupStickyHeaderElements() {
-    this.topbarEl = this._dom.find('.lh-topbar', this._document);
-    this.scoreScaleEl = this._dom.find('.lh-scorescale', this._document);
-    this.stickyHeaderEl = this._dom.find('.lh-sticky-header', this._document);
+    this.topbarEl = this._dom.find('div.lh-topbar', this._document);
+    this.scoreScaleEl = this._dom.find('div.lh-scorescale', this._document);
+    this.stickyHeaderEl = this._dom.find('div.lh-sticky-header', this._document);
 
     // Highlighter will be absolutely positioned at first gauge, then transformed on scroll.
     this.highlightEl = this._dom.createChildOf(this.stickyHeaderEl, 'div', 'lh-highlighter');
@@ -3239,8 +3244,7 @@ class ReportUIFeatures {
    * open a `<details>` element.
    */
   expandAllDetails() {
-    const details = /** @type {Array<HTMLDetailsElement>} */ (this._dom.findAll(
-        '.lh-categories details', this._document));
+    const details = this._dom.findAll('.lh-categories details', this._document);
     details.map(detail => detail.open = true);
   }
 
@@ -3249,8 +3253,7 @@ class ReportUIFeatures {
    * open a `<details>` element.
    */
   collapseAllDetails() {
-    const details = /** @type {Array<HTMLDetailsElement>} */ (this._dom.findAll(
-        '.lh-categories details', this._document));
+    const details = this._dom.findAll('.lh-categories details', this._document);
     details.map(detail => detail.open = false);
   }
 
@@ -3387,11 +3390,11 @@ class DropDown {
    * @param {function(MouseEvent): any} menuClickHandler
    */
   setup(menuClickHandler) {
-    this._toggleEl = this._dom.find('.lh-tools__button', this._dom.document());
+    this._toggleEl = this._dom.find('button.lh-tools__button', this._dom.document());
     this._toggleEl.addEventListener('click', this.onToggleClick);
     this._toggleEl.addEventListener('keydown', this.onToggleKeydown);
 
-    this._menuEl = this._dom.find('.lh-tools__dropdown', this._dom.document());
+    this._menuEl = this._dom.find('div.lh-tools__dropdown', this._dom.document());
     this._menuEl.addEventListener('keydown', this.onMenuKeydown);
     this._menuEl.addEventListener('click', menuClickHandler);
   }
@@ -3516,11 +3519,11 @@ class DropDown {
 
   /**
    * @param {Array<Node>} allNodes
-   * @param {?Node=} startNode
-   * @returns {Node}
+   * @param {?HTMLElement=} startNode
+   * @returns {HTMLElement}
    */
   _getNextSelectableNode(allNodes, startNode) {
-    const nodes = allNodes.filter((node) => {
+    const nodes = allNodes.filter(/** @return {node is HTMLElement} */ (node) => {
       if (!(node instanceof HTMLElement)) {
         return false;
       }
@@ -3547,21 +3550,21 @@ class DropDown {
   }
 
   /**
-   * @param {?Element=} startEl
+   * @param {?HTMLElement=} startEl
    * @returns {HTMLElement}
    */
   _getNextMenuItem(startEl) {
     const nodes = Array.from(this._menuEl.childNodes);
-    return /** @type {HTMLElement} */ (this._getNextSelectableNode(nodes, startEl));
+    return this._getNextSelectableNode(nodes, startEl);
   }
 
   /**
-   * @param {?Element=} startEl
+   * @param {?HTMLElement=} startEl
    * @returns {HTMLElement}
    */
   _getPreviousMenuItem(startEl) {
     const nodes = Array.from(this._menuEl.childNodes).reverse();
-    return /** @type {HTMLElement} */ (this._getNextSelectableNode(nodes, startEl));
+    return this._getNextSelectableNode(nodes, startEl);
   }
 }
 
@@ -3673,7 +3676,7 @@ class CategoryRenderer {
       });
     }
 
-    const header = /** @type {HTMLDetailsElement} */ (this.dom.find('details', auditEl));
+    const header = this.dom.find('details', auditEl);
     if (audit.result.details) {
       const elem = this.detailsRenderer.render(audit.result.details);
       if (elem) {
@@ -3717,11 +3720,11 @@ class CategoryRenderer {
   }
 
   /**
-   * @return {HTMLElement}
+   * @return {Element}
    */
   _createChevron() {
     const chevronTmpl = this.dom.cloneTemplate('#tmpl-lh-chevron', this.templateContext);
-    const chevronEl = this.dom.find('.lh-chevron', chevronTmpl);
+    const chevronEl = this.dom.find('svg.lh-chevron', chevronTmpl);
     return chevronEl;
   }
 
@@ -3743,7 +3746,7 @@ class CategoryRenderer {
   /**
    * @param {LH.ReportResult.Category} category
    * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
-   * @return {Element}
+   * @return {DocumentFragment}
    */
   renderCategoryHeader(category, groupDefinitions) {
     const tmpl = this.dom.cloneTemplate('#tmpl-lh-category-header', this.templateContext);
@@ -3757,7 +3760,7 @@ class CategoryRenderer {
       this.dom.find('.lh-category-header__description', tmpl).appendChild(descEl);
     }
 
-    return /** @type {Element} */ (tmpl.firstElementChild);
+    return tmpl;
   }
 
   /**
@@ -3860,9 +3863,8 @@ class CategoryRenderer {
       clumpElement.setAttribute('open', '');
     }
 
-    const summaryInnerEl = this.dom.find('.lh-audit-group__summary', clumpElement);
-    const chevronEl = summaryInnerEl.appendChild(this._createChevron());
-    chevronEl.title = Util.i18n.strings.auditGroupExpandTooltip;
+    const summaryInnerEl = this.dom.find('div.lh-audit-group__summary', clumpElement);
+    summaryInnerEl.appendChild(this._createChevron());
 
     const headerEl = this.dom.find('.lh-audit-group__header', clumpElement);
     const title = this._clumpTitles[clumpId];
@@ -3899,7 +3901,7 @@ class CategoryRenderer {
    */
   renderScoreGauge(category, groupDefinitions) { // eslint-disable-line no-unused-vars
     const tmpl = this.dom.cloneTemplate('#tmpl-lh-gauge', this.templateContext);
-    const wrapper = /** @type {HTMLAnchorElement} */ (this.dom.find('.lh-gauge__wrapper', tmpl));
+    const wrapper = this.dom.find('a.lh-gauge__wrapper', tmpl);
     wrapper.href = `#${category.id}`;
 
     if (Util.isPluginCategory(category.id)) {
@@ -3909,13 +3911,12 @@ class CategoryRenderer {
     // Cast `null` to 0
     const numericScore = Number(category.score);
     const gauge = this.dom.find('.lh-gauge', tmpl);
-    /** @type {?SVGCircleElement} */
-    const gaugeArc = gauge.querySelector('.lh-gauge-arc');
+    const gaugeArc = this.dom.find('circle.lh-gauge-arc', gauge);
 
     if (gaugeArc) this._setGaugeArc(gaugeArc, numericScore);
 
     const scoreOutOf100 = Math.round(numericScore * 100);
-    const percentageEl = this.dom.find('.lh-gauge__percentage', tmpl);
+    const percentageEl = this.dom.find('div.lh-gauge__percentage', tmpl);
     percentageEl.textContent = scoreOutOf100.toString();
     if (category.score === null) {
       percentageEl.textContent = '?';
@@ -4149,15 +4150,17 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     }
 
     // Overwrite the displayValue with opportunity's wastedMs
-    const displayEl = this.dom.find('.lh-audit__display-text', element);
+    // TODO: normalize this to one tagName.
+    const displayEl =
+      this.dom.find('span.lh-audit__display-text, div.lh-audit__display-text', element);
     const sparklineWidthPct = `${details.overallSavingsMs / scale * 100}%`;
-    this.dom.find('.lh-sparkline__bar', element).style.width = sparklineWidthPct;
+    this.dom.find('div.lh-sparkline__bar', element).style.width = sparklineWidthPct;
     displayEl.textContent = Util.i18n.formatSeconds(details.overallSavingsMs, 0.01);
 
     // Set [title] tooltips
     if (audit.result.displayValue) {
       const displayValue = audit.result.displayValue;
-      this.dom.find('.lh-load-opportunity__sparkline', element).title = displayValue;
+      this.dom.find('div.lh-load-opportunity__sparkline', element).title = displayValue;
       displayEl.title = displayValue;
     }
 
@@ -4443,8 +4446,7 @@ class PwaCategoryRenderer extends CategoryRenderer {
     }
 
     const tmpl = this.dom.cloneTemplate('#tmpl-lh-gauge--pwa', this.templateContext);
-    const wrapper = /** @type {HTMLAnchorElement} */ (this.dom.find('.lh-gauge--pwa__wrapper',
-      tmpl));
+    const wrapper = this.dom.find('a.lh-gauge--pwa__wrapper', tmpl);
     wrapper.href = `#${category.id}`;
 
     // Correct IDs in case multiple instances end up in the page.
@@ -4649,7 +4651,7 @@ class ReportRenderer {
    */
   _renderReportTopbar(report) {
     const el = this._dom.cloneTemplate('#tmpl-lh-topbar', this._templateContext);
-    const metadataUrl = /** @type {HTMLAnchorElement} */ (this._dom.find('.lh-topbar__url', el));
+    const metadataUrl = this._dom.find('a.lh-topbar__url', el);
     metadataUrl.href = metadataUrl.textContent = report.finalUrl;
     metadataUrl.title = report.finalUrl;
     return el;
@@ -4662,7 +4664,7 @@ class ReportRenderer {
     const el = this._dom.cloneTemplate('#tmpl-lh-heading', this._templateContext);
     const domFragment = this._dom.cloneTemplate('#tmpl-lh-scores-wrapper', this._templateContext);
     const placeholder = this._dom.find('.lh-scores-wrapper-placeholder', el);
-    /** @type {HTMLDivElement} */ (placeholder.parentNode).replaceChild(domFragment, placeholder);
+    placeholder.replaceWith(domFragment);
     return el;
   }
 

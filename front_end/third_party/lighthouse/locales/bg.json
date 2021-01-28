@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Избягва да иска разрешение за геолокация при зареждането на страницата"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "Тип на проблема"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Проблемите, регистрирани в панела `Issues` на Chrome DevTools, указват наличието на неотстранени неизправности. Те може да се дължат на неуспешни заявки в мрежата, недостатъчни контроли за сигурност и други проблеми с браузъра. Отворете панела „Проблеми“ в Chrome DevTools, за да видите повече подробности за всеки проблем."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "В панела `Issues` на Chrome DevTools бяха регистрирани проблеми"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Блокирано от правило за външни източници"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "Рекламите използват много ресурси"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Няма проблеми в панела `Issues` на Chrome DevTools"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Версия"
   },
@@ -717,7 +735,7 @@
     "message": "Протокол"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 предлага много предимства спрямо HTTP/1.1, включително заглавки в двоичен формат, мултиплексиране и самостоятелно изпращане на информация от сървъра. [Научете повече](https://web.dev/uses-http2/)."
+    "message": "HTTP/2 предлага много предимства спрямо HTTP/1.1, включително заглавки в двоичен формат и мултиплексиране. [Научете повече](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 заявка не е обслужена през HTTP/2}other{# заявки не са обслужени през HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "Изображенията се показват с подходяща разделителна способност"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "Приложението вече е инсталирано"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "Изтегленият файл за икона бе празен или повреден"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "Причина за проблема"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Браузърите могат проактивно да подканват потребителите да добавят приложението ви към началния екран, което може да повиши ангажираността. [Научете повече](https://web.dev/installable-manifest/)."
+    "message": "Service worker е технологията, която дава възможност на приложението ви да използва много от функциите на прогресивните уеб приложения (PWA), като например работа офлайн, добавяне към началния екран и насочени известия. Правилното внедряване на файл service worker и манифест дава възможност на браузърите проактивно да подканват потребителите да добавят приложението ви към началния екран, което може да повиши ангажираността. [Научете повече](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 причина}other{# причини}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "Манифестът на уеб приложението не отговаря на изискванията за възможност за инсталиране"
+    "message": "Манифестът или файлът service worker на уеб приложението не отговарят на изискванията за възможност за инсталиране"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "URL адресът на приложението в Google Play Магазин и идентификаторът за Google Play Магазин не съвпадат"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "Страницата се зарежда в прозорец в режим „инкогнито“"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "Стойността на свойството display в манифеста трябва да е standalone, fullscreen или minimal-ui"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "Манифестът съдържа поле display_override и първият поддържан режим на екрана трябва да е standalone, fullscreen или minimal-ui"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "Манифестът не бе извлечен, не съдържа нищо или не бе анализиран синтактично"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "По време на извличането на манифеста URL адресът му бе променен."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "Манифестът не съдържа поле name или short_name"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "Манифестът не съдържа подходяща икона – изисква се файл във формат PNG, SVG или WebP с поне {value0} пиксела, атрибутът за размери трябва да е зададен, а атрибутът за предназначение, ако е зададен, трябва да включва стойността any или maskable."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "Никоя от предоставените икони не е квадрат с размери поне {value0} пиксела във формат PNG, SVG или WebP"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "Изтегленият файл за икона бе празен или повреден"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Не е предоставен идентификатор за Google Play Магазин"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "В страницата не е зададен URL адрес на манифеста чрез маркера <link>"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "Не бе открит съответстващ файл service worker. Може да се наложи да презаредите страницата или да се уверите, че зададените в манифеста обхват и URL адрес за стартиране попадат в обхвата на service worker за текущата страница."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "Файлът service worker не бе проверен, тъй като за него липсваше поле start_url в манифеста"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "Идентификаторът на грешката, свързана с възможността за инсталиране, {errorId} не е разпознат"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "Страницата не се показва от защитен източник"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "Страницата не се зарежда в основната рамка"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "Страницата не работи офлайн"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "Посочената платформа за приложения не се поддържа от Android"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "В манифеста е посочено prefer_related_applications: true"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "prefer_related_applications се поддържа само в бета- и стабилния канал на Chrome за Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "URL адресът за стартиране в манифеста не е валиден"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "Манифестът на уеб приложението отговаря на изискванията за възможност за инсталиране"
+    "message": "Манифестът и файлът service worker на уеб приложението отговарят на изискванията за възможност за инсталиране"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "В манифеста има URL адрес, който съдържа потребителско име, парола или порт"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "Страницата не работи офлайн. Тя няма да бъде считана за страница с възможност за инсталиране след пускането на Chrome 93 в стабилния канал през август 2021 г."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "Разрешено"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Зададен е тематичен цвят за адресната лента."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (поддръжка на клиенти)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (маркетинг)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (социални контакти)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (видеосъдържание)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Продукт"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Зареждането на някои вградени елементи на трети страни може да бъде забавено. Бихте могли да ги замените с фасада, докато не станат необходими. [Научете повече](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{Налице е # алтернативна фасада}other{Налице са # алтернативни фасади}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Зареждането на някои ресурси на трети страни може да бъде забавено с помощта на фасада"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Забавете зареждането на ресурсите на трети страни с помощта на фасади"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Трета страна"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Възможно е страницата да не се зарежда нормално, тъй като тестовият ви URL адрес ({requested}) бе пренасочен към {final}. Тествайте директно втория URL адрес."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "Изглежда, че процесорът на тестваното устройство е по-бавен от очакваното от Lighthouse. Това може да повлияе отрицателно на резултата за ефективността. Научете повече за [калибрирането на подходящ множител за забавянето на процесора](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Страницата се зареждаше твърде бавно и зареждането не завърши в определеното време. Резултатите може да са непълни."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Време на блокиране на основната нишка"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "Време на валидност на кеша"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Описание"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Продължителност"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Друго"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Други ресурси"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Скрипт"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Задължителният механизъм за събиране на {artifactName} не се изпълни."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "На страницата не бе изобразено съдържание. Уверете се, че прозорецът на браузъра е на преден план при зареждането, и опитайте отново. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "Предоставената страница не е в HTML формат (дефинирана от тип MIME {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Предоставеният от вас URL адрес изглежда невалиден."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Показване на проверките"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Вижте калкулатора."
@@ -1926,7 +2067,7 @@
     "message": "Добре е да качите GIF файла си в услуга, която ще даде възможност да бъде вграден като видеоклип с HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Инсталирайте [приставка за Joomla за забавено зареждане](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading), която дава възможност за отлагане на зареждането на изображенията извън видимата част на екрана, или преминете към шаблон с такава функционалност. В Joomla 4.0 имате възможност да активирате специализирана приставка за целта, като използвате Content – Lazy Loading Images. Можете също да използвате [приставка за AMP](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "Инсталирайте [приставка за Joomla за забавено зареждане](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading), която дава възможност за отлагане на зареждането на изображенията извън видимата част на екрана, или преминете към шаблон с такава функционалност. В Joomla 4.0 и следващи версии всички нови изображения [автоматично](https://github.com/joomla/joomla-cms/pull/30748) ще получават атрибута `loading` от основния код."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "Има различни приставки за Joomla, с чиято помощ можете [да вградите важни активи](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) или [да отложите зареждането на не толкова важни ресурси](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). Имайте предвид, че оптимизациите, извършвани чрез тези приставки, може да възпрепятстват работата на функциите на шаблоните или приставките ви, така че ще се наложи да ги тествате обстойно."
@@ -1999,6 +2140,48 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Потърсете [пазара на Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) за разширения от трети страни, позволяващи работа с по-нови графични формати."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[Заменете анимираните GIF файлове с видеосъдържание](https://web.dev/replace-gifs-with-videos/), за да ускорите зареждането на уеб страницата, и помислете за използването на съвременни файлови формати, като [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) или [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), за да подобрите ефективността при компресиране с повече от 30% спрямо най-модерния понастоящем видеокодек VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Бихте могли да инсталирате [приставка за забавено зареждане](https://octobercms.com/plugins?search=lazy), която дава възможност за отлагане на зареждането на изображенията извън видимата част на екрана, или да преминете към тема с такава функционалност. Можете също да използвате [приставката за AMP](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "Има много приставки, с чиято помощ [да вградите важни активи](https://octobercms.com/plugins?search=css). Тези приставки може да възпрепятстват работата на други, така че е добре да ги тествате обстойно."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "Времето за реакция на сървъра зависи от спецификациите му, темите и приставките. Добре е да намерите по-оптимизирана тема, внимателно да изберете приставка за оптимизиране и/или да надстроите сървъра. Системата за управление на съдържанието October също така дава възможност на програмистите да използват [`Queues`](https://octobercms.com/docs/services/queues), за да отлагат обработването на времеемки задачи, като например изпращане на имейли. Това драстично повишава скоростта на заявките в мрежата."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Бихте могли да показвате извадки в списъците с публикации (напр. чрез бутон `show more`), да намалите броя на публикациите, извеждани на дадена уеб страница, да разделите дългите публикации на няколко страници или да използвате приставка, която да забави зареждането на коментарите."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "Има много [приставки](https://octobercms.com/plugins?search=css), които могат да подобрят скоростта на уебсайта чрез обединяване, минимизиране и компресиране на стиловете. Предварителното минимизиране посредством компилиране може да ускори процеса на разработване."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "Има много [приставки](https://octobercms.com/plugins?search=javascript), които могат да подобрят скоростта на уебсайта чрез обединяване, минимизиране и компресиране на скриптовете. Предварителното минимизиране посредством компилиране може да ускори процеса на разработване."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Добре е да прегледате [приставките](https://octobercms.com/plugins), които зареждат неизползван CSS код в уебсайта. За да откриете тези, които добавят ненужен CSS код, стартирайте инструмента за [обхват на кода](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) в Chrome DevTools. Намерете проблемната тема/приставка в URL адреса на стиловия лист. Търсете приставки с много стилови листове, за които преобладава червеният цвят в диаграмата на инструмента. Дадена приставка трябва да добавя стилов лист само ако той действително се използва в уеб страницата."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Добре е да прегледате [приставките](https://octobercms.com/plugins?search=javascript), които зареждат неизползван JavaScript код в уеб страницата. За да откриете тези, които добавят ненужен JavaScript код, стартирайте инструмента за [обхват на кода](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) в Chrome DevTools. Намерете проблемната тема/приставка в URL адреса на скрипта. Търсете приставки с много скриптове, за които преобладава червеният цвят в диаграмата на инструмента. Дадена приставка трябва да добавя скрипт само ако той действително се използва в уеб страницата."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "Прочетете как [да избегнете ненужните заявки в мрежата с помощта на HTTP кеширане](https://web.dev/http-cache/#caching-checklist). Има много [приставки](https://octobercms.com/plugins?search=Caching), които могат да се използват за ускоряване на кеширането."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Добре е да използвате [приставка за оптимизиране на изображенията](https://octobercms.com/plugins?search=image), която компресира графичните файлове, като същевременно запазва качеството им."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "Качвайте изображенията директно в мултимедийния мениджър, за да разполагате с графични файлове с необходимите размери. Добре е да използвате [филтъра за преоразмеряване](https://octobercms.com/docs/markup/filter-resize) или [приставка за целта](https://octobercms.com/plugins?search=image), така че изображенията да бъдат с оптимални размери."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "Активирайте компресирането на текста в конфигурацията на уеб сървъра."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Добре е да използвате [приставка](https://octobercms.com/plugins?search=image) или услуга за автоматично преобразуване на качените изображения в оптималния формат. Размерът на [графичните файлове в беззагубния формат WebP](https://developers.google.com/speed/webp) е с 26% по-малък в сравнение с PNG и с 25 – 34% по-малък от този на съответните JPEG изображения с еквивалентен SSIM индекс за качество. Друг препоръчителен графичен формат от следващо поколение е [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "Бихте могли да използвате библиотека за виртуализиране, като `react-window`, за да сведете до минимум броя създавани възли в DOM, ако на страницата се рендерират множество повтарящи се елементи. [Научете повече](https://web.dev/virtualize-long-lists-react-window/). Също така намалете ненужните повторни рендерирания чрез [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) или [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) и [пропускайте ефекти](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects), докато не се променят определени зависимости, ако използвате „кукичката“ `Effect` за повишаване на ефективността при изпълнение."

@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Menghindari meminta izin geolokasi pada pemuatan halaman"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "Jenis masalah"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Masalah yang dicatat pada panel `Issues` di Chrome DevTools menunjukkan masalah yang belum terselesaikan. Error dapat berasal dari kegagalan permintaan jaringan, kontrol keamanan yang tidak cukup, dan masalah browser lainnya. Buka panel Issues di Chrome DevTools untuk melihat detail setiap masalah selengkapnya."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Masalah dicatat di panel `Issues` di Chrome DevTools"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Diblokir oleh kebijakan lintas asal"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "Penggunaan resource yang berat oleh iklan"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Tidak ada masalah pada panel `Issues` di Chrome DevTools"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Versi"
   },
@@ -717,7 +735,7 @@
     "message": "Protokol"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 menawarkan banyak manfaat dibandingkan HTTP/1.1, termasuk header biner, multiplexing, dan push server. [Pelajari lebih lanjut](https://web.dev/uses-http2/)."
+    "message": "HTTP/2 memiliki banyak manfaat dibandingkan HTTP/1.1, termasuk header biner dan multiplexing. [Pelajari lebih lanjut](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 permintaan tidak dilayani melalui HTTP/2}other{# permintaan tidak dilayani melalui HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "Menampilkan gambar dengan resolusi yang sesuai"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "Aplikasi sudah diinstal"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "Ikon yang didownload kosong atau rusak"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "Alasan kegagalan"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Browser dapat secara proaktif meminta pengguna untuk menambahkan aplikasi Anda ke layar utama mereka sehingga interaksi menjadi lebih tinggi. [Pelajari lebih lanjut](https://web.dev/installable-manifest/)."
+    "message": "Pekerja layanan adalah teknologi yang memungkinkan aplikasi Anda menggunakan banyak fitur Progressive Web App, seperti fitur offline, tambahkan ke layar utama, dan notifikasi push. Dengan implementasi pekerja layanan dan manifes yang benar, browser dapat meminta pengguna secara proaktif untuk menambahkan aplikasi Anda ke layar utama pengguna sehingga tingkat interaksi menjadi lebih tinggi. [Pelajari lebih lanjut](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 alasan}other{# alasan}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "Manifes aplikasi web tidak memenuhi persyaratan kemampuan penginstalan"
+    "message": "Manifes aplikasi web atau pekerja layanan tidak memenuhi persyaratan kemampuan penginstalan"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "URL aplikasi Play Store dan ID Play Store tidak cocok"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "Halaman dimuat di jendela Samaran"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "Properti 'display' manifest harus berupa salah satu dari 'standalone', 'fullscreen', atau 'minimal-ui'"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "Manifes berisi kolom 'display_override', dan nilai pertama di kolom tersebut harus salah satu dari 'standalone', 'fullscreen', atau 'minimal-ui'"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "Manifes tidak dapat diambil, kosong, atau tidak dapat diurai"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "URL manifes berubah saat manifes sedang diambil."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "Manifes tidak berisi kolom 'name' atau 'short_name'"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "Manifes tidak berisi ikon yang cocok - perlu format PNG, SVG, atau WebP minimal {value0} piksel, atribut sizes harus disetel, dan atribut purpose harus menyertakan \"any\" atau \"maskable\" jika disetel."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "Tidak tersedia ikon berukuran minimal {value0} piksel persegi dalam format PNG, SVG, atau WebP"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "Ikon yang didownload kosong atau rusak"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "ID Play Store tidak ada"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "Halaman tidak memiliki URL <link> manifes"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "Pekerja layanan yang cocok tidak terdeteksi. Anda harus memuat ulang halaman, atau memeriksa apakah cakupan pekerja layanan untuk halaman saat ini menyertakan scope dan start_URL dari manifes."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "Tidak dapat memeriksa pekerja layanan tanpa kolom 'start_url' di manifes"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "ID error kemampuan penginstalan '{errorId}' tidak dikenali"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "Halaman tidak ditayangkan dari asal yang aman"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "Halaman tidak dimuat di frame utama"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "Halaman tidak berfungsi saat offline"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "Platform aplikasi yang ditentukan tidak didukung di Android"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "Manifes menentukan prefer_related_applications: benar (true)"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "prefer_related_applications hanya didukung di saluran Beta dan Stabil Chrome di Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "URL mulai manifes tidak valid"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "Manifes aplikasi web memenuhi persyaratan kemampuan penginstalan"
+    "message": "Manifes aplikasi web dan pekerja layanan memenuhi persyaratan kemampuan penginstalan"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "URL di manifes berisi nama pengguna, sandi, atau port"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "Halaman tidak berfungsi saat offline. Halaman tidak akan dianggap sebagai dapat diinstal setelah rilis stabil Chrome 93 pada Agustus 2021."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "Diizinkan"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Menyetel warna tema untuk kolom URL."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (Keberhasilan Dukungan Pelanggan)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (Pemasaran)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (Media Sosial)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (Video)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Produk"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Beberapa sematan pihak ketiga dapat lambat dimuat. Sebaiknya ganti sematan dengan fasad sampai diperlukan. [Pelajari lebih lanjut](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{# alternatif fasad tersedia}other{# alternatif fasad tersedia}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Beberapa resource pihak ketiga dapat lambat dimuat dengan fasad"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Memuat lambat resource pihak ketiga dengan fasad"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Pihak Ketiga"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Halaman tersebut mungkin tidak dimuat sesuai harapan karena URL uji Anda ({requested}) dialihkan ke {final}. Coba uji URL kedua secara langsung."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "Perangkat yang diuji sepertinya memiliki CPU yang lebih lambat daripada perkiraan Lighthouse. Hal ini dapat berdampak buruk pada skor performa Anda. Pelajari lebih lanjut [cara mengalibrasi pengali pelambatan CPU yang sesuai](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Pemuatan halaman terlalu lambat untuk bisa selesai tepat waktu. Hasil mungkin tidak lengkap."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Waktu Pemblokiran Thread Utama"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "TTL Cache"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Deskripsi"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Durasi"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Lainnya"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Resource lainnya"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Skrip"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Pengumpul {artifactName} yang diperlukan tidak berjalan."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "Halaman tidak menampilkan konten apa pun. Pastikan jendela browser tetap di latar depan selama pemuatan, lalu coba lagi. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "Halaman yang diberikan bukan HTML (ditayangkan sebagai jenis MIME {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "URL yang Anda berikan tampaknya tidak valid."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Tampilkan audit"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Lihat kalkulator."
@@ -1926,7 +2067,7 @@
     "message": "Sebaiknya upload GIF ke layanan yang akan menyediakannya untuk disematkan sebagai video HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Instal [plugin pemuatan lambat di Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) yang menyediakan kemampuan untuk menunda pemuatan gambar di bagian halaman yang belum ditampilkan, atau beralihlah ke template yang menyediakan fungsi tersebut. Mulai dari Joomla 4.0, plugin pemuatan lambat khusus dapat diaktifkan menggunakan plugin \"Content - Lazy Loading Images\". Selain itu, sebaiknya gunakan [plugin AMP](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "Instal [plugin pemuatan lambat di Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) yang menyediakan kemampuan untuk menunda pemuatan gambar di bagian halaman yang belum ditampilkan, atau beralihlah ke template yang menyediakan fungsi tersebut. Mulai dari Joomla 4.0, semua gambar baru akan [otomatis](https://github.com/joomla/joomla-cms/pull/30748) mendapatkan atribut `loading` dari core."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "Terdapat sejumlah plugin di Joomla yang dapat membantu Anda [menyejajarkan aset penting](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) atau [menunda resource yang kurang penting](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). Harap berhati-hati karena pengoptimalan yang disediakan oleh plugin ini dapat merusak fitur template atau plugin, sehingga Anda akan perlu mengujinya secara menyeluruh."
@@ -1999,6 +2140,48 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Pertimbangkan untuk menelusuri [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) guna menemukan berbagai ekstensi pihak ketiga untuk memanfaatkan format gambar terbaru."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[Ganti animasi GIF dengan video](https://web.dev/replace-gifs-with-videos/) untuk pemuatan halaman yang lebih cepat dan sebaiknya gunakan format file modern seperti [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) atau [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) untuk meningkatkan efisiensi kompresi lebih dari 30% dibandingkan codec video tercanggih saat ini, VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Sebaiknya instal [plugin pemuatan lambat gambar](https://octobercms.com/plugins?search=lazy) yang menyediakan kemampuan untuk menunda pemuatan gambar di bagian halaman yang belum ditampilkan, atau beralihlah ke tema yang menyediakan fungsi tersebut. Selain itu, sebaiknya gunakan [plugin AMP](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "Terdapat banyak plugin yang membantu [menyejajarkan aset penting](https://octobercms.com/plugins?search=css). Plugin ini dapat merusak plugin lain, sehingga Anda perlu mengujinya secara menyeluruh."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "Semua spesifikasi tema, plugin, dan server berkontribusi pada waktu respons server. Sebaiknya cari tema yang lebih optimal, pilih plugin pengoptimalan dengan hati-hati, dan/atau upgrade server. CMS Oktober juga memungkinkan developer menggunakan [`Queues`](https://octobercms.com/docs/services/queues) untuk menunda pemrosesan tugas yang memakan waktu lama, seperti pengiriman email. Ini mempercepat permintaan web secara drastis."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Sebaiknya tampilkan kutipan dalam daftar postingan (misalnya menggunakan tombol `show more`), kurangi jumlah postingan yang ditampilkan pada halaman web yang ada, bagi postingan panjang menjadi beberapa halaman web, atau gunakan plugin untuk memuat komentar dengan lambat."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "Terdapat banyak [plugin](https://octobercms.com/plugins?search=css) yang dapat mempercepat situs dengan menyambungkan, meminifikasi, dan mengompresi gaya. Menggunakan proses build untuk melakukan minifikasi ini di tahap awal dapat mempercepat pengembangan."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "Terdapat banyak [plugin](https://octobercms.com/plugins?search=javascript) yang dapat mempercepat situs dengan menyambungkan, meminifikasi, dan mengompresi skrip. Menggunakan proses build untuk melakukan minifikasi ini di tahap awal dapat mempercepat pengembangan."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Sebaiknya tinjau [plugin](https://octobercms.com/plugins) yang memuat CSS yang tidak digunakan di situs. Untuk mengidentifikasi plugin yang menambahkan CSS yang tidak diperlukan, jalankan [cakupan kode](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) di Chrome DevTools. Identifikasi tema/plugin yang bertanggung jawab dari URL stylesheet. Cari plugin dengan banyak stylesheet yang memiliki banyak warna merah dalam cakupan kode. Plugin sebaiknya hanya menambahkan stylesheet jika memang benar digunakan di halaman web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Sebaiknya tinjau [plugin](https://octobercms.com/plugins?search=javascript) yang memuat JavaScript yang tidak digunakan di halaman web. Untuk mengidentifikasi plugin yang menambahkan JavaScript yang tidak diperlukan, jalankan [cakupan kode](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) di Chrome DevTools. Identifikasi tema/plugin yang bertanggung jawab dari URL skrip. Cari plugin dengan banyak skrip yang memiliki banyak warna merah dalam cakupan kode. Plugin sebaiknya hanya menambahkan skrip jika memang benar digunakan di halaman web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "Baca [cara mencegah permintaan jaringan yang tidak diperlukan dengan Cache HTTP](https://web.dev/http-cache/#caching-checklist). Terdapat banyak [plugin](https://octobercms.com/plugins?search=Caching) yang dapat digunakan untuk mempercepat proses penyimpanan ke cache."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Sebaiknya gunakan [plugin pengoptimalan gambar](https://octobercms.com/plugins?search=image) untuk mengompresi gambar dengan tetap mempertahankan kualitas."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "Upload gambar langsung di pengelola media untuk memastikan ukuran gambar yang diperlukan tersedia. Sebaiknya gunakan [filter ubah ukuran](https://octobercms.com/docs/markup/filter-resize) atau [plugin pengubah ukuran gambar](https://octobercms.com/plugins?search=image) untuk memastikan penggunaan ukuran gambar yang optimal."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "Aktifkan kompresi teks di konfigurasi server web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Sebaiknya gunakan [plugin](https://octobercms.com/plugins?search=image) atau layanan yang otomatis mengonversi gambar yang diupload ke format optimal. [Gambar WebP lossless](https://developers.google.com/speed/webp) berukuran 26% lebih kecil daripada PNG dan 25-34% lebih kecil daripada gambar JPEG yang sebanding pada indeks kualitas SSIM yang setara. [AVIF](https://jakearchibald.com/2020/avif-has-landed/) juga bisa dipertimbangkan sebagai format gambar generasi berikutnya."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "Sebaiknya gunakan library “windowing” seperti `react-window` untuk meminimalkan jumlah node DOM yang dibuat jika Anda merender banyak elemen berulang pada halaman. [Pelajari lebih lanjut](https://web.dev/virtualize-long-lists-react-window/). Selain itu, minimalkan render ulang yang tidak perlu menggunakan [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), atau [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) dan [lewati efek](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) hanya sampai dependensi tertentu berubah jika Anda menggunakan hook `Effect` untuk meningkatkan performa runtime."

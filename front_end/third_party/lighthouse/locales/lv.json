@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Netiek pieprasīta ģeogrāfiskās atrašanās vietas noteikšanas atļauja lapas ielādei"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "Problēmas veids"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Chrome izstrādātāja rīku panelī `Issues` ir reģistrētas neatrisinātas problēmas, kas jāatrisina. Tās var rasties no tīkla pieprasījuma kļūmēm, nepietiekamām drošības vadīklām un citām pārlūkprogrammas problēmām. Lai skatītu sīkāku informāciju par katru problēmu, Chrome izstrādātāja rīkos atveriet paneli Issues (Problēmas)."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Chrome izstrādātāja rīku panelī `Issues` tika reģistrētas problēmas"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Bloķēts saskaņā ar politiku par citas izcelsmes resursu kopīgošanu"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "Reklāmas patērē daudz resursu"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Chrome izstrādātāja rīku panelī `Issues` netika reģistrētas problēmas"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Versija"
   },
@@ -717,7 +735,7 @@
     "message": "Protokols"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 piedāvā daudzas priekšrocības salīdzinājumā ar HTTP/1.1, tostarp binārās galvenes, multipleksēšanu un servera tiešu darbību (server push). [Uzziniet vairāk](https://web.dev/uses-http2/)."
+    "message": "HTTP/2 piedāvā daudzas priekšrocības salīdzinājumā ar HTTP/1.1, tostarp binārās galvenes un multipleksēšanu. [Uzziniet vairāk](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 pieprasījums nav parādīts, izmantojot HTTP/2}zero{# pieprasījumi nav parādīti, izmantojot HTTP/2}one{# pieprasījums nav parādīts, izmantojot HTTP/2}other{# pieprasījumi nav parādīti, izmantojot HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "Attēli tiek rādīti piemērotā izšķirtspējā"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "Lietotne jau ir instalēta"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "Lejupielādētā ikona bija tukša vai bojāta"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "Atteices iemesls"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Pārlūkprogrammās var aktīvi rādīt lietotājiem uzvednes ar ierosinājumu pievienot jūsu lietotni sākuma ekrānam. Tādējādi var izdoties palielināt iesaisti. [Uzziniet vairāk](https://web.dev/installable-manifest/)."
+    "message": "Pakalpojumu skripts ir tehnoloģija, kas palīdz nodrošināt daudzas progresīvo tīmekļa lietotņu funkcijas, piemēram, lietotnes izmantošanu bezsaistē, pievienošanu sākuma ekrānam un informatīvos paziņojumus. Atbilstoši ieviešot pakalpojumu skriptu un manifestu, pārlūkprogrammās var aktīvi rādīt lietotājiem uzvednes ar ierosinājumu pievienot jūsu lietotni sākuma ekrānam. Tādējādi var izdoties palielināt iesaisti. [Uzziniet vairāk](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{Viens iemesls}zero{# iemeslu}one{# iemesls}other{# iemesli}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "Tīmekļa lietotnes manifests neatbilst instalējamības prasībām"
+    "message": "Tīmekļa lietotnes manifests vai pakalpojumu skripts neatbilst instalējamības prasībām"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "Play veikala ID neatbilst Play veikala lietotnes vietrādim URL"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "Lapa ir ielādēta inkognito logā"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "Manifestā norādītā rekvizīta “display” vērtībai ir jābūt “standalone”, “fullscreen” vai “minimal-ui”"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "Manifestā ir ietverts lauks “display_override”, un pirmajam atbalstītajam attēlošanas režīmam jābūt “standalone”, “fullscreen” vai “minimal-ui”"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "Manifestu nevarēja ienest, tas ir tukšs, vai to nevarēja parsēt"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "Manifesta ienešanas laikā mainījās manifesta URL."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "Manifestā nav lauka “name” vai “short_name”"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "Manifestā nav piemērotas ikonas. Nepieciešams PNG, SVG vai WebP formāta fails, kura izmēram jābūt vismaz {value0} px un atribūtam “sizes” jābūt iestatītam. Ja ir iestatīts atribūts “purpose”, tā vērtībām jāietver “any” vai “maskable”."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "Nav norādīta PNG, SVG vai WebP formāta ikona, kurai abi izmēri būtu vismaz {value0} px"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "Lejupielādētā ikona bija tukša vai bojāta"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Nav norādīts Play veikala ID"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "Lapā nav <link> taga ar manifesta vietrādi URL"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "Netika atrasts atbilstošs pakalpojumu skripts. Iespējams, būs atkārtoti jāielādē lapa vai jāpārliecinās, ka pašreizējās lapas pakalpojumu skripta tvērumā ir iekļauts manifestā norādītais tvērums un sākuma URL."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "Nevarēja pārbaudīt pakalpojumu skriptu, jo manifestā nav lauka “start_url”"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "Instalējamības kļūdas ID {errorId} netika atpazīts"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "Lapas rādīšanai vajadzīgie dati netiek ienesti no droša sākotnējā servera"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "Lapa nav ielādēta galvenajā ietvarā"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "Lapa nedarbojas bezsaistē"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "Norādītā lietojumprogrammu platforma netiek atbalstīta operētājsistēmā Android"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "Rekvizītam “prefer_related_applications” manifestā ir norādīta vērtība “true”"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "Rekvizīts “prefer_related_applications” tiek atbalstīts tikai pārlūkprogrammas Chrome beta un stabilās versijās operētājsistēmā Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "Manifesta sākuma URL nav derīgs"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "Tīmekļa lietotnes manifests atbilst instalējamības prasībām"
+    "message": "Tīmekļa lietotnes manifests un pakalpojumu skripts atbilst instalējamības prasībām"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "Manifestā ir norādīts URL, kas satur lietotājvārdu, paroli vai portu"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "Lapa nedarbojas bezsaistē. Lapa vairs netiks uzskatīta par instalējamu, kad 2021. gada augustā būs izlaista Chrome 93 stabilā versija."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "Atļauts"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Lapa iestata adreses joslas motīva krāsu."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (klientu atbalsts)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (mārketings)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (sociālie tīkli)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (video)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Produkts"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Dažu trešo pušu iegulto resursu ielādi var atlikt. Apsveriet iespēju aizstāt tos ar fasādi, līdz tie būs vajadzīgi. [Uzziniet vairāk](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{Pieejama # fasāde, ar ko var aizstāt resursu}zero{Pieejamas # fasādes, ar ko var aizstāt resursus}one{Pieejama # fasāde, ar ko var aizstāt resursus}other{Pieejamas # fasādes, ar ko var aizstāt resursus}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Dažu trešo pušu resursu ielādi var atlikt, izmantojot fasādi"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Trešo pušu resursu ielādes atlikšana, izmantojot fasādes"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Trešā puse"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Iespējams, lapa netiek ielādēta, kā paredzēts, jo jūsu testa URL ({requested}) tika novirzīts uz: {final}. Mēģiniet tieši testēt otro URL."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "Šķiet, testējamās ierīces centrālā procesora ātrums ir mazāks, nekā paredzēts Lighthouse prasībās. Tas var negatīvi ietekmēt veiktspējas rezultātu. Uzziniet vairāk par to, [kā kalibrēt atbilstošu centrālā procesora palēninājuma reizinātāju](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Lapa tika ielādēta pārāk lēni, lai ielāde tiktu pabeigta noteiktajā laika ierobežojumā. Rezultāti var būt nepilnīgi."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Galvenā pavediena bloķēšanas laiks"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "Kešatmiņas TTL vērtība"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Apraksts"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Ilgums"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Cits"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Citi resursi"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Skripts"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Nepieciešamais parametra “{artifactName}” vācējs nedarbojās."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "Lapā netika atveidots saturs. Mēģiniet vēlreiz, ielādes laikā paturot pārlūkprogrammas logu priekšplānā. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "Norādītā lapa nav valodā HTML (tā tiek rādīta MIME veidā {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Šķiet, ka jūsu norādītais URL nav derīgs."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Rādīt pārbaudes"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Skatiet kalkulatoru."
@@ -1926,7 +2067,7 @@
     "message": "Ieteicams augšupielādēt GIF failu pakalpojumā, kuru varēs izmantot, lai iegultu GIF failu kā HTML5 videoklipu."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Instalējiet [atliktās ielādes Joomla spraudni](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading), kas sniedz iespēju atlikt jebkādu ārpus ekrāna esošu attēlu ielādi vai mainīt veidni uz tādu, kurā šī funkcija tiek nodrošināta. Sākot ar versiju Joomla 4.0, var iespējot atvēlētu atliktās ielādes spraudni, izmantojot spraudni “Saturs — attēlu atliktā ielāde”. Ieteicams izmantot arī [AMP spraudni](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "Instalējiet [atliktās ielādes Joomla spraudni](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading), kas sniedz iespēju atlikt ārpus ekrāna esošu attēlu ielādi, vai mainiet veidni uz tādu, kurā šī funkcionalitāte tiek nodrošināta. Sākot ar versiju Joomla 4.0, visiem jaunajiem attēliem tiks [automātiski](https://github.com/joomla/joomla-cms/pull/30748) pievienots atribūts `loading` no kodola."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "Ir vairāki Joomla spraudņi, kas var palīdzēt [iekļaut būtiskus līdzekļus](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) vai [atlikt mazāk svarīgus resursus](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). Ņemiet vērā, ka šo spraudņu nodrošinātā optimizācija var traucēt funkciju darbībai jūsu veidnēs vai spraudņos, tādēļ tie būs rūpīgi jāpārbauda."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Veikalā [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) varat atrast dažādus trešo pušu paplašinājumus jaunāku attēlu formātu izmantošanai."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[Aizstājiet animētus GIF attēlus ar videoklipiem](https://web.dev/replace-gifs-with-videos/), lai paātrinātu tīmekļa lapas ielādi, un apsveriet iespēju izmantot modernus failu formātus, piemēram, [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) vai [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), lai uzlabotu saspiešanas efektivitāti par vairāk nekā 30%, salīdzinot ar pašreizējo nozarē vadošo video kodeku VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Apsveriet iespēju instalēt [attēlu atliktās ielādes spraudni](https://octobercms.com/plugins?search=lazy), kas sniedz iespēju atlikt ārpus ekrāna esošu attēlu ielādi, vai mainīt motīvu uz tādu, kurā šī funkcionalitāte ir nodrošināta. Ieteicams izmantot arī [AMP spraudni](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "Ir vairāki spraudņi, kas palīdz [iekļaut būtiskus līdzekļus](https://octobercms.com/plugins?search=css). Šie spraudņi var traucēt citu spraudņu darbību, tāpēc ieteicams tos rūpīgi testēt."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "Motīvi, spraudņi un servera specifikācijas ietekmē servera atbildes laiku. Ieteicams atrast optimizētu motīvu, rūpīgi izvēlēties optimizācijas spraudni un/vai jaunināt serveri. Satura pārvaldības sistēmā October izstrādātāji var izmantot arī [`Queues`](https://octobercms.com/docs/services/queues), lai atliktu laikietilpīgu uzdevumu apstrādi, piemēram, e-pasta ziņojumu nosūtīšanu. Tas krietni paātrina tīmekļa pieprasījumus."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Ieteicams ziņu sarakstos rādīt fragmentus (piemēram, izmantojot pogu `show more`), samazināt vienā tīmekļa lapā rādāmo ziņu skaitu, sadalīt garas ziņas starp vairākām tīmekļa lapām vai izmantot spraudni, lai atliktu komentāru ielādi."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "Daudzi [spraudņi](https://octobercms.com/plugins?search=css) var paātrināt tīmekļa vietnes darbību, savienojot, samazinot un saspiežot stilus. Lai paātrinātu izstrādi, varat paveikt šo samazināšanu jau iepriekš, būvēšanas procesā."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "Daudzi [spraudņi](https://octobercms.com/plugins?search=javascript) var paātrināt tīmekļa vietnes darbību, savienojot, samazinot un saspiežot skriptus. Lai paātrinātu izstrādi, varat paveikt šo samazināšanu jau iepriekš, būvēšanas procesā."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Ieteicams pārskatīt [spraudņus](https://octobercms.com/plugins), kuri tīmekļa vietnē ielādē nelietotu CSS kodu. Lai noteiktu, kuri spraudņi pievieno lieku CSS kodu, Chrome izstrādātāja rīkos izpildiet [koda lietojuma](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) komandu. Stilu lapas vietrādī URL atrodiet attiecīgo motīvu vai spraudni. Meklējiet spraudņus, kuriem ir daudz stilu lapu ar daudzām sarkanām atzīmēm koda lietojuma cilnē. Spraudnim vajadzētu pievienot tikai tādas stilu lapas, kas tīmekļa lapā tiek izmantotas."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Ieteicams pārskatīt [spraudņus](https://octobercms.com/plugins?search=javascript), kuri tīmekļa lapā ielādē neizmantotu JavaScript kodu. Lai noteiktu, kuri spraudņi pievieno lieku JavaScript kodu, Chrome izstrādātāja rīkos izpildiet [koda lietojuma](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) komandu. Skripta vietrādī URL atrodiet attiecīgo motīvu vai spraudni. Meklējiet spraudņus, kuriem ir daudz skriptu ar daudzām sarkanām atzīmēm koda lietojuma cilnē. Spraudnim vajadzētu pievienot tikai tādus skriptus, kas tīmekļa lapā tiek izmantoti."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "Lasiet par [lieku tīkla pieprasījumu novēršanu, izmantojot HTTP kešatmiņu](https://web.dev/http-cache/#caching-checklist). Daudzus [spraudņus](https://octobercms.com/plugins?search=Caching) var izmantot, lai paātrinātu datu saglabāšanu kešatmiņā."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Ieteicams izmantot [attēlu optimizācijas spraudni](https://octobercms.com/plugins?search=image), lai saspiestu attēlus, vienlaikus saglabājot kvalitāti."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "Lai vajadzīgie attēlu lielumi būtu pieejami, tieši augšupielādējiet attēlus multivides pārvaldniekā. Apsveriet iespēju izmantot [lieluma mainīšanas filtru](https://octobercms.com/docs/markup/filter-resize) vai [attēlu lieluma mainīšanas spraudni](https://octobercms.com/plugins?search=image), lai nodrošinātu pareizo attēlu lielumu lietošanu."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "Iespējojiet teksta saspiešanu tīmekļa servera konfigurācijā."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Ieteicams izmantot [spraudni](https://octobercms.com/plugins?search=image) vai pakalpojumu, lai automātiski pārveidotu augšupielādētos attēlus optimālos formātos. [WebP bezzudumu attēlu](https://developers.google.com/speed/webp) faili ir par 26% mazāki nekā PNG faili un par 25–34% mazāki nekā salīdzināmu JPEG attēlu faili ar līdzvērtīgu SSIM kvalitātes rādītāju. Varat izmantot arī citu nākamās paaudzes attēlu formātu — [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "Ja lapā renderējat daudzus atkārtotus elementus, apsveriet iespēju izmantot logošanas bibliotēku, piemēram, `react-window`, lai samazinātu izveidoto DOM mezglu skaitu. [Uzziniet vairāk](https://web.dev/virtualize-long-lists-react-window/). Turklāt, ja izmantojat `Effect` aizķeri izpildlaika veiktspējas uzlabošanai, varat samazināt lieko atkārtoto renderēšanu, izmantojot [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) vai [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) un [izlaišanas efektus](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) tikai līdz noteiktu atkarību maiņas brīdim."
+    "message": "Ja lapā atveidojat daudzus atkārtotus elementus, apsveriet iespēju izmantot logošanas bibliotēku, piemēram, `react-window`, lai samazinātu izveidoto DOM mezglu skaitu. [Uzziniet vairāk](https://web.dev/virtualize-long-lists-react-window/). Turklāt, ja izmantojat `Effect` aizķeri izpildlaika veiktspējas uzlabošanai, varat samazināt lieko atkārtoto atveidošanu, izmantojot [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) vai [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) un [izlaišanas efektus](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) tikai līdz noteiktu atkarību maiņas brīdim."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "Ja izmantojat bibliotēku React Router, samaziniet komponenta `<Redirect>` lietojumu [maršrutu navigācijai](https://reacttraining.com/react-router/web/api/Redirect)."

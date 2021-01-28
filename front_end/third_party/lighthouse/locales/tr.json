@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Sayfa yüklemede coğrafi konum izni istemiyor"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "Sorun türü"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Chrome Geliştirici Araçları'ndaki `Issues` paneline kaydedilen sorunlar, çözülmemiş sorunları ifade eder. Bunlar ağ istek hatalarından, yetersiz güvenlik kontrollerinden ve diğer tarayıcı sorunlarından gelebilir. Tüm sorunlarla ilgili ayrıntılı bilgiyi, Chrome Geliştirici Araçları'nın Issues panelinde bulabilirsiniz."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Sorunlar, Chrome Geliştirici Araçları'ndaki `Issues` paneline kaydedildi"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Çapraz kaynak politikası tarafından engellendi"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "Reklamlar tarafından yoğun kaynak kullanımı"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Chrome Geliştirici Araçları'ndaki `Issues` panelinde hiç sorun yok"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Sürüm"
   },
@@ -717,7 +735,7 @@
     "message": "Protokol"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2, HTTP/1.1'e kıyasla ikili başlıklar, çoğullama ve sunucu push mesajları dahil olmak üzere birçok avantaj sunar. [Daha fazla bilgi](https://web.dev/uses-http2/)."
+    "message": "HTTP/2, HTTP/1.1'e kıyasla ikili başlıklar ve çoğullama gibi birçok avantaj sunar. [Daha fazla bilgi edinin](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 istek HTTP/2 üzerinden sunulmuyor}other{# istek HTTP/2 üzerinden sunulmuyor}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "Çözünürlüğü uygun olan resimleri sunar"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "Uygulama zaten yüklenmiş"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "İndirilen simge boş veya bozuktu"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "Hata nedeni"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Tarayıcılar proaktif olarak kullanıcılardan uygulamanızı ana ekranlarına eklemelerini isteyebilirler ve bu da daha yüksek etkileşim sağlayabilir. [Daha fazla bilgi](https://web.dev/installable-manifest/)."
+    "message": "Servis çalışanı, uygulamanızın çevrimdışı çalışma, ana ekrana ekleme ve push bildirimleri gibi pek çok Progresif Web Uygulaması (PWA) özelliğini kullanmasını sağlayan teknolojidir. Doğru hizmet çalışanı ve manifest uygulamalarıyla tarayıcılar proaktif olarak kullanıcılardan uygulamanızı ana ekranlarına eklemelerini isteyebilir, böylece daha yüksek etkileşim sağlanabilir. [Daha fazla bilgi edinin](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 neden}other{# neden}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "Web uygulaması manifest dosyası yüklenebilir olma gerekliliklerini karşılamıyor"
+    "message": "Web uygulaması manifest dosyası veya hizmet çalışanı, yüklenebilir olma gerekliliklerini karşılamıyor"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "Play Store uygulama URL'si ve Play Store kimliği eşleşmiyor"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "Sayfa, gizli pencerede yüklenmiş"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "Manifest dosyasındaki \"display\" özelliği; \"standalone\", \"fullscreen\" veya \"minimal-ui\"den biri olmalıdır"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "Manifest dosyası \"display_override\" alanını içeriyor ve desteklenen ilk görüntü modunun \"standalone\", \"fullscreen\" veya \"minimal-ui\"den biri olması gerekiyor"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "Manifest dosyası getirilemedi, boş veya ayrıştırılamadı"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "Manifest dosyası getirilirken manifest URL'si değiştirildi."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "Manifest dosyası bir \"name\" veya \"short_name\" alanı içermiyor"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "Manifest dosyası uygun bir simge içermiyor. En az {value0} piksel değerinde bir PNG, SVG veya WebP biçimi gerekli olup sizes özelliği ayarlanmalıdır. Ayrıca purpose özelliği ayarlanacaksa \"any\" veya \"maskable\" değerini içermelidir."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "Sağlanan simgelerden hiçbiri en az {value0} piksel kare değerinde ve PNG, SVG ya da WebP biçiminde değil"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "İndirilen simge boş veya bozuktu"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Play Store kimliği sağlanmamış"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "Sayfada hiç manifest <link> URL'si yok"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "Eşleşen hizmet çalışanı algılanamadı. Sayfayı yeniden yüklemeniz veya mevcut sayfaya ait hizmet çalışanı kapsamının, manifest dosyasındaki kapsamı ve başlangıç URL'sini içerdiğinden emin olmanız gerekir."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "Manifest dosyasında \"start_url\" alanı olmadığından hizmet çalışanı kontrol edilemedi"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "Yüklenebilirlik hata kimliği \"{errorId}\" tanınmıyor"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "Sayfa, güvenli bir kaynaktan yayınlanmıyor"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "Sayfa, ana çerçeveye yüklenmiyor"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "Sayfa çevrimdışı çalışmıyor"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "Belirtilen uygulama platformu, Android'de desteklenmiyor"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "Manifest dosyasında prefer_related_applications: true değeri belirtilmiş"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "prefer_related_applications, Android'de yalnızca Chrome Beta ve Mevcut ürün kanallarında desteklenir."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "Manifest başlangıç URL'si geçerli değil"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "Web uygulaması manifest dosyası yüklenebilir olma gereklerini karşılar"
+    "message": "Web uygulaması manifest dosyası ve hizmet çalışanı, yüklenebilir olma gerekliliklerini karşılıyor"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "Manifest dosyasındaki bir URL; kullanıcı adı, şifre veya bağlantı noktası içeriyor"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "Sayfa çevrimdışı çalışmıyor. Sayfa, Ağustos 2021'de çıkacak Chrome 93 kararlı sürümünden sonra yüklenebilir olarak değerlendirilmeyecek."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "İzin verildi"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Adres çubuğu için tema rengi ayarlar."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (Müşteri Başarısı)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (Pazarlama)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (Sosyal)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (Video)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Ürün"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Bazı üçüncü taraf yerleşik öğeleri geç yüklenebilir. Gerekli olana kadar bunların yerine hafif bileşen kullanmayı düşünebilirsiniz. [Daha fazla bilgi edinin](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{# hafif bileşen alternatifi mevcut}other{# hafif bileşen alternatifi mevcut}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Bazı üçüncü taraf kaynakları, hafif bileşen ile geç yüklenebilir"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Hafif bileşen kullanarak üçüncü taraf kaynaklarını geç yükleme"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Üçüncü Taraf"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Sayfa, test URL'niz ({requested}) {final} adresine yönlendirildiğinden beklendiği gibi yüklenmiyor olabilir. İkinci URL'yi doğrudan test etmeyi deneyin."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "Test edilen cihazın CPU'sunun, Lighthouse'un beklediğinden daha yavaş olduğu anlaşılıyor. Bu durum, performans skorunuzu olumsuz etkileyebilir. [Uygun CPU yavaşlama katsayısını ayarlama](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling) hakkında daha fazla bilgi edinin."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Sayfa, zaman sınırı içinde bitmeyecek kadar yavaş yüklendi. Sonuçlar eksik olabilir."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Ana İleti Dizisi Engelleme Süresi"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "TTL'yi Önbelleğe Alma"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Açıklama"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Süre"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Diğer"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Diğer kaynaklar"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Komut dosyası"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Zorunlu {artifactName} toplayıcı çalışmadı."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "Sayfa hiçbir içeriği boyamadı. Lütfen yükleme sırasında tarayıcı penceresini ön planda tuttuğunuzdan emin olup tekrar deneyin. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "Sağlanan sayfa HTML değil ({mimeType} MIME türü olarak sunuldu)."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Sağladığınız URL'nin geçersiz olduğu anlaşılıyor."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Denetimleri göster"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Hesap makinesini göster."
@@ -1926,7 +2067,7 @@
     "message": "GIF dosyanızı, HTML5 videosu olarak yerleştirmek için kullanılabilmesini sağlayacak bir hizmete yüklemeyi düşünün."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Ekran dışı görüntüleri erteleme veya bu işlevselliği sağlayan bir şablona geçiş yapma olanağı veren bir [Joomla geç yükleme eklentisi](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) yükleyin. Joomla 4.0'dan başlayarak özel bir yavaş yükleme eklentisi, \"Content - Lazy Loading Images\" eklentisi kullanılarak etkinleştirilebilir. Ayrıca [bir AMP eklentisi](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp) kullanmayı değerlendirin."
+    "message": "Ekran dışı görüntüleri erteleme veya bu işlevselliği sağlayan bir şablona geçiş yapma olanağı veren bir [Joomla geç yükleme eklentisi](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) yükleyin. Joomla 4.0 sürümünden itibaren tüm yeni görüntüler [otomatik olarak](https://github.com/joomla/joomla-cms/pull/30748) çekirdekten `loading` özelliğini alacaktır."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "[Kritik öğeleri satır içi yapmanıza](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) veya [daha az önemli kaynakları ertelemenize](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) yardımcı olabilecek çeşitli Joomla eklentileri vardır. Bu eklentilerin sağlayacağı optimizasyonların şablon veya eklentilerinizin özelliklerini bozabileceğine dikkat edin. Bunu engellemek için bunları iyice test etmeniz gerekecektir."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Daha yeni görüntü biçimlerinden yararlanmak için [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp)'te çeşitli üçüncü taraf uzantılarını arama seçeneğini değerlendirin."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "Web sayfalarının daha hızlı yüklenmesi için [animasyonlu GIF'lerin yerine video koyun](https://web.dev/replace-gifs-with-videos/) ve mevcut son teknoloji video codec'i VP9'da sıkıştırma etkinliğini %30'dan fazla artırmak için [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) veya [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) gibi modern dosya biçimlerini kullanın."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Ekran dışı görüntüleri erteleme veya bu işlevi sağlayan bir temaya geçiş yapma olanağı veren [görüntü geç yükleme eklentisi](https://octobercms.com/plugins?search=lazy) yükleme seçeneğini düşünün. Ayrıca [AMP eklentisini](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages) kullanmayı da düşünün."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "[Kritik öğelerin satır içi yapılmasına](https://octobercms.com/plugins?search=css) yardımcı olan birçok eklenti bulunmaktadır. Diğer eklentileri bozabileceğinden bu eklentileri iyice test etmeniz gerekir."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "Temalar, eklentiler ve sunucu özellikleri öğelerinin tümü sunucunun yanıt süresini etkiler. Bir optimizasyon eklentisini dikkatle seçerek ve/veya sunucuyu yeni sürüme geçirerek, daha ileri düzeyde optimize edilmiş bir tema bulmayı düşünün. Ekim CMS ayrıca geliştiricilerin e-posta gönderme gibi zaman alan görevlerin işlenmesini ertelemek için [`Queues`](https://octobercms.com/docs/services/queues) kullanmasına olanak tanır. Bu sayede web istekleri önemli ölçüde hızlanır."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Yayın listelerinde altınılar göstermeyi (ör. `show more` düğmesini kullanarak), belirli bir web sayfasında gösterilen yayınların sayısını azaltmayı, uzun yayınları birden fazla web sayfasına bölmeyi veya yorumların geç yüklenmesi için bir eklenti kullanmayı düşünün."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "Stilleri birleştirerek, küçülterek ve sıkıştırarak bir web sitesini hızlandırabilen birçok [eklenti](https://octobercms.com/plugins?search=css) vardır. Baştan bu sadeleştirmeyi yapmak için bir derleme işlemi kullanmak, geliştirme sürecini hızlandırabilir."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "Komut dosyalarını birleştirerek, küçülterek ve sıkıştırarak bir web sitesini hızlandırabilen birçok [eklenti](https://octobercms.com/plugins?search=javascript) vardır. Baştan bu sadeleştirmeyi yapmak için bir derleme işlemi kullanmak, geliştirme sürecini hızlandırabilir."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Web sitesinde kullanılmayan CSS'ler yükleyen [eklentileri](https://octobercms.com/plugins) gözden geçirin. Gereksiz CSS'ler ekleyen eklentileri belirlemek için Chrome Geliştirici Araçları'nda [kod kapsamını](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) çalıştırın. Sorumlu temayı/eklentiyi stil sayfasının URL'sinden belirleyin. Çok sayıda stil sayfasına sahip olan ve kod kapsamında çok sayıda kırmızı işaret taşıyan eklentileri arayın. Bir eklenti sadece web sayfasında gerçekten kullanılan bir stil sayfasını eklemelidir."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Web sayfasında kullanılmayan JavaScript'ler yükleyen [eklentileri](https://octobercms.com/plugins?search=javascript) gözden geçirin. Gereksiz JavaScript'ler ekleyen eklentileri belirlemek için Chrome Geliştirici Araçları'nda [kod kapsamını](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) çalıştırın. Sorumlu temayı/eklentiyi komut dosyasının URL'sinden belirleyin. Çok sayıda komut dosyasına sahip olan ve kod kapsamında çok sayıda kırmızı işaret taşıyan eklentileri arayın. Bir eklenti sadece web sayfasında gerçekten kullanılan bir komut dosyasını eklemelidir."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "[HTTP Önbelleği ile gereksiz ağ isteklerini önleme](https://web.dev/http-cache/#caching-checklist) hakkında bilgi edinin. Önbelleğe alma işlemini hızlandırmak için kullanılabilecek birçok [eklenti](https://octobercms.com/plugins?search=Caching) vardır."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Kaliteden ödün vermeden resimlerinizi sıkıştırmak için bir [resim optimizasyonu eklentisi](https://octobercms.com/plugins?search=image) kullanmayı düşünün."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "Gerekli resim boyutlarının kullanılabilmesi için resimleri doğrudan medya yöneticisine yükleyin. İdeal resim boyutlarının kullanıldığından emin olmak için [yeniden boyutlandırma filtresini](https://octobercms.com/docs/markup/filter-resize) veya bir [görüntü yeniden boyutlandırma eklentisi](https://octobercms.com/plugins?search=image) kullanabilirsiniz."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "Web sunucusu yapılandırmasında metin sıkıştırmayı etkinleştirin."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Yüklediğiniz resimleri ideal biçimlere otomatik olarak dönüştürecek bir [eklenti](https://octobercms.com/plugins?search=image) veya hizmet kullanmayı düşünün. [WebP kayıpsız görüntüler](https://developers.google.com/speed/webp), eşdeğer SSIM kalite endeksindeki benzer JPEG resimlerinden %25-34, PNG'lerden ise boyut olarak %26 daha küçüktür. Kullanmayı düşünebileceğiniz diğer bir yeni nesil resim biçimi de [AVIF](https://jakearchibald.com/2020/avif-has-landed/)'dir."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "Sayfada çok sayıda yinelenen öğe oluşturuyorsanız oluşturulan DOM düğümlerinin sayısını en aza indirmek için `react-window` gibi bir \"pencereleme\" kitaplığı kullanmayı düşünün. [Daha fazla bilgi edinin](https://web.dev/virtualize-long-lists-react-window/). Ayrıca, çalışma zamanı performansını iyileştirmek için `Effect` kancası kullanıyorsanız bazı bağımlılıklar değişinceye kadar [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) veya [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) ve [atlama efektleri](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) kullanarak gereksiz yeniden oluşturma sayısını en aza indirin."
+    "message": "Sayfada çok sayıda yinelenen öğe oluşturuyorsanız oluşturulan DOM düğümlerinin sayısını en aza indirmek için `react-window` gibi bir \"pencereleme\" kitaplığı kullanmayı düşünün. [Daha fazla bilgi edinin](https://web.dev/virtualize-long-lists-react-window/). Ayrıca, çalışma zamanı performansını yükseltmek için `Effect` kancası kullanıyorsanız bazı bağımlılıklar değişinceye kadar [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) veya [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) ve [atlama efektleri](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) kullanarak gereksiz yeniden oluşturma sayısını en aza indirin."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "React Router kullanıyorsanız [rota gezinmeleri](https://reacttraining.com/react-router/web/api/Redirect) için `<Redirect>` bileşeninin kullanımını en aza indirin."

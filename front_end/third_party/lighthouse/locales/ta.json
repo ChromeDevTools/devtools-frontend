@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "பக்கம் ஏற்றப்படும்போது உங்கள் புவி இருப்பிடத்தைத் தெரிந்துகொள்வதற்கான அனுமதியைக் கோராது"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "சிக்கல் வகை"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Chrome டெவெலப்பர் கருவிகளில் `Issues` பேனலில் பதிவுசெய்யப்படும் சிக்கல்கள் குறித்த தகவல்கள் தீர்க்கப்படாத சிக்கல்களைக் குறிக்கின்றன. நெட்வொர்க் கோரிக்கைப் பிழைகள், குறைவான பாதுகாப்புக் கட்டுப்பாடுகள், மேலும் பிற உலாவி சிக்கல்களினாலும் அவை ஏற்பட்டிருக்கும். ஒவ்வொரு சிக்கல் குறித்தும் கூடுதல் விவரங்களைப் பெற, Chrome டெவெலப்பர் கருவிகளில் ’சிக்கல்கள்’ பேனலைத் திறக்கவும்."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Chrome டெவெலப்பர் கருவிகளில் `Issues` பேனலில் சிக்கல்கள் குறித்த தகவல்கள் பதிவுசெய்யப்பட்டன"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "கிராஸ் ஆரிஜின் கொள்கை காரணமாகத் தடுக்கப்பட்டுள்ளது"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "விளம்பரங்கள் அதிக மூலங்களை உபயோகித்தல்"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Chrome டெவெலப்பர் கருவிகளில் `Issues` பேனலில் சிக்கல்கள் குறித்த தகவல்கள் எதுவுமில்லை"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "பதிப்பு"
   },
@@ -717,7 +735,7 @@
     "message": "நெறிமுறை"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/1.1ஐ விட அதிகப் பலன்களை HTTP/2 வழங்குகிறது. அவற்றில் பைனரி ஹெட்டர்கள், மல்டிஃபிளெக்ஸிங் மற்றும் சர்வர் ஃபுஷ் போன்றவை அடங்கும். [மேலும் அறிக](https://web.dev/uses-http2/)."
+    "message": "HTTP/1.1ஐ விட அதிக பலன்களை HTTP/2 வழங்குகிறது. அவற்றில் பைனரி ஹெடர்கள், மல்டிபிளெக்ஸிங் ஆகியவையும் அடங்கும். [மேலும் அறிக](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{HTTP/2 வழியாக 1 கோரிக்கை பதிலளிக்கப்படவில்லை}other{HTTP/2 வழியாக # கோரிக்கைகள் பதிலளிக்கப்படவில்லை}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "பொருத்தமான தெளிவுத்திறனைக் கொண்ட படங்களை வழங்குதல்"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "இந்த ஆப்ஸ் ஏற்கெனவே நிறுவப்பட்டுள்ளது"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "பதிவிறக்கிய ஐகான் காலியாக உள்ளது அல்லது சிதைந்துள்ளது"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "தோல்விக்கான காரணம்"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "முக்கியத்துவத்தின் காரணமாக ஆப்ஸை முகப்புத் திரையில் சேர்க்குமாறு முன்னெச்சரிக்கையாக உலாவிகள் பயனர்களுக்கு அறிவிக்கும். [மேலும் அறிக](https://web.dev/installable-manifest/)."
+    "message": "Service worker என்பது ஆஃப்லைனில் பணிபுரிவது, முகப்புத்திரையில் சேர்ப்பது, புஷ் அறிவிப்புகள் போன்ற இணைய ஆப்ஸின் பல்வேறு மேம்பட்ட அம்சங்களை உங்கள் ஆப்ஸ் பயன்படுத்த அனுமதிக்கும் தொழில்நுட்பமாகும். சரியான service worker, மெனிஃபெஸ்ட் செயலாக்கங்கள் ஆகியவற்றின் மூலம் உலாவிகள் உங்கள் ஆப்ஸை முகப்புத்திரையில் சேர்க்குமாறு பயனர்களுக்கு முன்கூட்டியே அறிவிக்கும். இவ்வாறு செய்வது அதிகப் பயனர்களைப் பெற வழிவகுக்கும். [மேலும் அறிக](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 காரணம்}other{# காரணங்கள்}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "இணைய ஆப்ஸ் மெனிஃபெஸ்ட் நிறுவுதலுக்கான தேவைகளைப் பூர்த்தி செய்யவில்லை"
+    "message": "இணைய ஆப்ஸ் மெனிஃபெஸ்ட், service worker போன்றவை நிறுவுதல் தேவைகளைப் பூர்த்தி செய்யவில்லை"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "Play ஸ்டோர் ஆப்ஸின் URLலும் Play ஸ்டோரின் ஐடியும் பொருந்தவில்லை"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "மறைநிலை சாளரத்தில் பக்கம் ஏற்றப்பட்டுள்ளது"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "மெனிஃபெஸ்ட் 'display' அம்சமானது 'standalone', 'fullscreen', 'minimal-ui' போன்றவற்றில் ஏதேனும் ஒன்றாக இருக்க வேண்டும்"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "மெனிஃபெஸ்ட் 'display_override' புலத்தைக் கொண்டிருக்கும், மேலும் முதலில் ஆதரிக்கப்படும் காட்சிப் பயன்முறையானது 'standalone', 'fullscreen', 'minimal-ui' போன்றவற்றில் ஒன்றாக இருக்க வேண்டும்"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "மெனிஃபெஸ்ட்டைப் பெறவோ பாகுபடுத்தவோ முடியவில்லை அல்லது அது காலியாக இருக்கக்கூடும்"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "மெனிஃபெஸ்ட் பெறப்படும்போது மெனிஃபெஸ்ட் URL மாறியது."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "'name' அல்லது 'short_name' புலத்தை மெனிஃபெஸ்ட் கொண்டிருக்கவில்லை"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "பொருத்தமான ஐகானை மெனிஃபெஸ்ட் கொண்டிருக்கவில்லை. PNG, SVG, WebP போன்ற வடிவமைப்பில் குறைந்தபட்சம் {value0} பிக்சல்களுடன் இருக்க வேண்டும், sizes பண்புக்கூறு அமைக்கப்பட வேண்டும், purpose பண்புக்கூறு அமைக்கப்பட்டால் அது “any” அல்லது “maskable” என்பதைக் கொண்டிருக்க வேண்டும்."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "வழங்கப்பட்ட எந்தவொரு ஐகானும் PNG, SVG, WebP போன்ற வடிவமைப்பில் குறைந்தபட்சம் {value0} சதுர பிக்சல்களுடன் இல்லை"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "பதிவிறக்கிய ஐகான் காலியாக உள்ளது அல்லது சிதைந்துள்ளது"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Play ஸ்டோர் ஐடி வழங்கப்படவில்லை"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "பக்கம் மெனிஃபெஸ்ட் <link> URLலைக் கொண்டிருக்கவில்லை"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "பொருந்தும் service worker எதுவும் கண்டறியப்படவில்லை. பக்கத்தை ரெஃப்ரெஷ் செய்ய வேண்டியிருக்கலாம் அல்லது தற்போதைய பக்கத்திற்கான service workerரின் நோக்கம் மெனிஃபெஸ்ட்டின் ஸ்கோப் மற்றும் ஸ்டார்ட் URLலைக் கொண்டுள்ளதா எனச் சரிபார்க்கவும்."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "மெனிஃபெஸ்ட்டில், 'start_url' இல்லாத service workerரைச் சரிபார்க்க முடியவில்லை"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "'{errorId}' என்ற நிறுவுதல் பிழை ஐடியை அடையாளம் காண முடியவில்லை"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "பாதுகாப்பான மூலத்திலிருந்து பக்கம் காட்டப்படவில்லை"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "முதன்மை ஃபிரேமில் பக்கம் ஏற்றப்படவில்லை"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "பக்கம் ஆஃப்லைனில் காட்டப்படாது"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "குறிப்பிடப்பட்ட ஆப்ஸ் பிளாட்ஃபார்ம், Androidல் ஆதரிக்கப்படவில்லை"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "prefer_related_applicationsஸை மெனிஃபெஸ்ட் ’true' எனக் குறிக்கிறது"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "Chrome பீட்டாவிலும் Androidல் நிலையான சேனல்களிலும் மட்டுமே prefer_related_applications ஆதரிக்கப்படும்."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "மெனிஃபெஸ்ட் ஸ்டார்ட் URL தவறானது"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "இணைய ஆப்ஸ் மெனிஃபெஸ்ட்டானது நிறுவுதலுக்கான தேவைகளைப் பூர்த்தி செய்கிறது"
+    "message": "இணைய ஆப்ஸ் மெனிஃபெஸ்ட், service worker ஆகியவை நிறுவுதல் தேவைகளைப் பூர்த்தி செய்கின்றன"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "பயனர்பெயர், கடவுச்சொல், போர்ட் போன்றவற்றை மெனிஃபெஸ்ட்டில் உள்ள URL கொண்டுள்ளது"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "பக்கம் ஆஃப்லைனில் காட்டப்படாது. ஆகஸ்ட் 2021ல் Chrome 93 இன் நிலையான பதிப்பு வெளியிடப்பட்ட பிறகு, பக்கம் நிறுவக்கூடியதாகக் கருதப்படாது."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "அனுமதிக்கப்பட்டது"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "முகவரிப் பட்டிக்கான தீம் வண்ணத்தை அமைக்கும்."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (வாடிக்கையாளர் சேவை)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (மார்க்கெட்டிங்)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (சமூகம்)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (வீடியோ)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "தயாரிப்பு"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "உட்பொதிக்கப்பட்ட சில மூன்றாம் தரப்புக் குறியீடுகள் மெதுவாக ஏற்றப்படும். தேவைப்படாத வரை அவற்றுக்குப் பதிலாக ஃபஸாடைப் பயன்படுத்தவும். [மேலும் அறிக](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{# மாற்று ஃபஸாடு உள்ளது}other{# மாற்று ஃபஸாடுகள் உள்ளன}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "சில மூன்றாம் தரப்பு மூலங்கள் ஃபஸாடு மூலம் மெதுவாக ஏற்றப்படும்"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "ஃபஸாடுகளுடன் மூன்றாம் தரப்பு மூலங்களைத் தேவையுள்ளபோது ஏற்றுதல்"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "மூன்றாம் தரப்பு"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "உங்கள் சோதனை URL ({requested}) {final}என்பதற்குத் திசைதிருப்பப்பட்டதால் எதிர்பரர்த்த அளவிற்குப் பக்கம் ஏற்றப்படாமல் போகக்கூடும். நேரடியாக இரண்டாவது URLலை சோதித்துப் பாருங்கள்."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "சோதனை செய்யப்பட்ட சாதனம் Lighthouse எதிர்பார்ப்பதை விட வேகம் குறைவான CPUவைக் கொண்டிருப்பதுபோல் தெரிகிறது. இது உங்கள் செயல்திறனைப் பாதிக்கும். [பொருத்தமான CPU ஸ்லோடவுன் மல்டிபிளையரை அளவிடுதல்](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling) குறித்து மேலும் அறிக."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "நேர வரம்பிற்குள் பக்கத்தை முழுமையாக ஏற்ற முடியவில்லை. இதனால் முடிவுகள் காட்டப்படாமல் போகலாம்."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "முக்கியத் தொடரிழையில் தடுப்பதற்குச் செலவிட்ட நேரம்"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "தற்காலிக நினைவக TTL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "விளக்கம்"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "கால அளவு"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "மற்றவை"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "இதர மூலங்கள்"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "ஸ்கிரிப்ட்"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "தேவைப்படும் {artifactName} சேகரிப்பான் இயங்கவில்லை."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "பக்கம் எந்தவொரு உள்ளடக்கத்தையும் காட்சிப்படுத்தவில்லை. பக்கம் ஏற்றப்படும்போது உலாவிச் சாளரத்தை முன்புலத்திலேயே வைத்துக்கொண்டு மீண்டும் முயலவும். ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "வழங்கிய பக்கம் HTML அல்ல ({mimeType} என்ற MIME வகையாக வழங்கப்பட்டுள்ளது)."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "நீங்கள் அளித்துள்ள URL செல்லாததெனத் தோன்றுகிறது."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "தணிக்கைகளைக் காட்டு"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "கால்குலேட்டரைக் காட்டு."
@@ -1926,7 +2067,7 @@
     "message": "GIFஃபை HTML5 வீடியோவாக உட்பொதிக்க உதவும் சேவையில் அதைப் பதிவேற்றவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "திரைக்கு வெளியில் உள்ள படங்களை மெதுவாக ஏற்றும் வசதியை வழங்குகிற [தேவையுள்ளபோது ஏற்றும் Joomla செருகுநிரலை](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) நிறுவவும் அல்லது அந்த வசதியை வழங்கும் டெம்ப்ளேட்டிற்கு மாறவும். Joomla 4.0 ஐப் பயன்படுத்தித் தொடங்குவதன் மூலம் “உள்ளடக்கப் படங்களைத் தேவையுள்ளபோது ஏற்றும்” செருகுநிரலைப் பயன்படுத்தி, தேவையுள்ளபோது ஏற்றும் பிரத்தியேகச் செருகுநிரலை இயக்கலாம். அத்துடன் [AMP செருகுநிரலையும்](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp) பயன்படுத்தவும்."
+    "message": "திரைக்கு வெளியில் உள்ள படங்களை மெதுவாக ஏற்றும் வசதியை வழங்குகிற [தேவையுள்ளபோது ஏற்றும் Joomla செருகுநிரலை](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) நிறுவவும் அல்லது அந்த வசதியை வழங்கும் டெம்ப்ளேட்டிற்கு மாறவும். Joomla 4.0 ஐப் பயன்படுத்தித் தொடங்குவதன் மூலம் புதிய படங்கள் அனைத்தும் `loading` பண்புக்கூறு முழுவதையும் [தானாகவே](https://github.com/joomla/joomla-cms/pull/30748) பெறும்."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "[முக்கியமான அசெட்டுகளை முன்னிலைப்படுத்த](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)/[முக்கியத்துவம் குறைவான ஆதாரங்களைத் தவிர்க்க](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) பல Joomla செருகுநிரல்கள் உதவுகின்றன. இந்தச் செருகுநிரல்கள் வழங்கும் மேம்படுத்துதல்கள் உங்கள் டெம்ப்ளேட்டுகள்/செருகுநிரல்களில் உள்ள அம்சங்களைப் பாதிக்கலாம் என்பதால் இவற்றை நீங்கள் முற்றிலும் சோதனை செய்ய வேண்டும்."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "பல்வேறு மூன்றாம் தரப்பு நீட்டிப்புகள் புதிய பட ஃபார்மேட்டுகளை அளவிட [Magento சந்தையைத்](https://marketplace.magento.com/catalogsearch/result/?q=webp) தேடுவதைப் பரிசீலிக்கவும்."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "இணையப் பக்கம் விரைவாக ஏற்றப்படுவதற்கு, [வீடியோவிற்குப் பதிலாக அனிமேஷன் செய்யப்பட்ட GIFகளைப் பயன்படுத்தவும்](https://web.dev/replace-gifs-with-videos/). மேலும் சுருக்குதல் செயல்திறனைத் தற்போதைய அதிநவீன VP9 வீடியோ கோடெக்கை விட 30% கூடுதலாக மேம்படுத்த [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos), [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) போன்ற நவீன கோப்பு வடிவமைப்புகளைப் பயன்படுத்தவும்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "திரைக்கு வெளியில் உள்ள படங்களை மெதுவாக ஏற்றும் வசதியை வழங்கும் [படத்தைத் தேவையுள்ளபோது ஏற்றும் செருகுநிரலை](https://octobercms.com/plugins?search=lazy) நிறுவவும் அல்லது அந்த வசதியை வழங்கும் தீமிற்கு மாறவும். [AMP செருகுநிரலையும்](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages) பயன்படுத்தவும்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "[முக்கியமான இன்லைன் அசெட்டுகளுக்கு](https://octobercms.com/plugins?search=css) உதவும் பல செருகுநிரல்கள் உள்ளன. இந்தச் செருகுநிரல்கள் பிற செருகுநிரல்களின் செயல்பாட்டைப் பாதிக்கக்கூடும் என்பதால் அவற்றை முழுமையாகச் சோதனை செய்ய வேண்டும்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "தீம்கள், செருகுநிரல்கள், சேவையக விவரக்குறிப்புகள் ஆகிய அனைத்தும் சேவையகத்தின் வேகத்தை நிர்ணயிக்கும். மேலும் மேம்படுத்தப்பட்ட தீமினைக் கண்டறிந்து, மேம்படுத்தல் நீட்டிப்பைக் கவனமாகத் தேர்ந்தெடுக்கவும் மற்றும்/அல்லது சேவையகத்தை மேம்படுத்தவும். மின்னஞ்சல் அனுப்புவது போன்ற அதிக நேரம் எடுத்துக்கொள்ளும் பணியின் செயலாக்கத்தைத் தாமதப்படுத்த [`Queues`](https://octobercms.com/docs/services/queues) ஐ டெவெலப்பர்கள் பயன்படுத்துவதற்கு October CMS அனுமதிக்கிறது. இது இணைய கோரிக்கைகளை நன்கு வேகப்படுத்துகிறது."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "இடுகைப் பட்டியல்களில் முக்கியமான பகுதியை மட்டும் காட்டவும் (உதாரணமாக `show more` பட்டனைப் பயன்படுத்துவதன் மூலம்), இணையப் பக்கத்தில் இடுகைகளின் எண்ணிக்கையைக் குறைக்கவும், பெரிய இடுகைகளை ஒன்றுக்கும் மேற்பட்ட இணையப் பக்கங்களாகப் பிரிக்கவும் அல்லது செருகுநிரல் மூலம் தேவையுள்ளபோது மட்டும் கருத்துகளை ஏற்றவும்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "ஸ்டைல்களை ஒன்றிணைத்தும் சிறிதாக்கியும் சுருக்கியும் தளத்தின் செயல்பாட்டை வேகப்படுத்தும் பல [செருகுநிரல்கள்](https://octobercms.com/plugins?search=css) உள்ளன. இந்தச் சிறிதாக்குதலை முன்னதாகவே மேற்கொள்ள பதிப்பு முறைமையைப் பயன்படுத்துவது டெவெலப்மெண்ட்டை வேகப்படுத்தும்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "ஸ்கிரிப்ட்டுகளை ஒன்றிணைத்தும் சிறிதாக்கியும் சுருக்கியும் தளத்தின் செயல்பாட்டை வேகப்படுத்தும் பல [செருகுநிரல்கள்](https://octobercms.com/plugins?search=javascript) உள்ளன. இந்தச் சிறிதாக்குதலை முன்னதாகவே மேற்கொள்ள பதிப்பு முறைமையைப் பயன்படுத்துவது டெவெலப்மெண்ட்டை வேகப்படுத்தும்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "இணையதளத்தில் பயன்படுத்தப்படாத CSSஸை ஏற்றும் [செருகுநிரல்களைச்](https://octobercms.com/plugins) சரிபார்க்கவும். தேவையற்ற CSSஸைச் சேர்க்கும் செருகுநிரல்களைக் கண்டறிய, Chrome டெவெலப்பர் கருவிகளில் [குறியீட்டுக் கவரேஜை](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) இயக்கவும். ஸ்டைல்ஷீட்டின் URLலில் இதற்குக் காரணமான தீம்/செருகுநிரலைக் கண்டறியவும். குறியீட்டுக் கவரேஜில் அதிக சிவப்பைக் கொண்ட பல ஸ்கிரிப்ட்டுகளுடன் கூடிய ஸ்டைல்ஷீட்டுகளைக் கண்டறியவும். இணையப் பக்கத்தில் பயன்படுத்தும் பட்சத்தில் ஒரு செருகுநிரல் ஒரு ஸ்டைல்ஷீட்டை மட்டுமே சேர்க்க வேண்டும்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "இணையப் பக்கத்தில் ‘பயன்படுத்தப்படாத JavaScriptடை’ ஏற்றும் [செருகுநிரல்களைச்](https://octobercms.com/plugins?search=javascript) சரிபார்க்கவும். தேவையற்ற JavaScriptடைச் சேர்க்கும் செருகுநிரல்களைக் கண்டறிய, Chrome டெவெலப்பர் கருவிகளில் [குறியீட்டுக் கவரேஜை](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) இயக்கவும். ஸ்கிரிப்ட்டின் URLலில் இதற்குக் காரணமான தீம்/செருகுநிரலைக் கண்டறியவும். குறியீட்டுக் கவரேஜில் அதிக சிவப்பைக் கொண்ட பல ஸ்கிரிப்ட்டுகளுடன் கூடிய செருகுநிரல்களைக் கண்டறியவும். இணையப் பக்கத்தில் பயன்படுத்தும் பட்சத்தில் ஒரு செருகுநிரல் ஒரு ஸ்கிரிப்ட்டை மட்டுமே சேர்க்க வேண்டும்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "[HTTP தற்காலிகச் சேமிப்பின் மூலம் தேவையற்ற நெட்வொர்க் கோரிக்கைகளைத் தடுப்பது](https://web.dev/http-cache/#caching-checklist) குறித்துத் தெரிந்துகொள்ளவும். தற்காலிகமாகச் சேமிப்பதை வேகப்படுத்துவதற்காகப் பயன்படுத்தப்படக்கூடிய பல [செருகுநிரல்கள்](https://octobercms.com/plugins?search=Caching) உள்ளன."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "படங்களின் தரம் குறையாமல் அவற்றைச் சுருக்க, [படத்தை மேம்படுத்தும் செருகுநிரலைப்](https://octobercms.com/plugins?search=image) பயன்படுத்தவும்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "மீடியா நிர்வாகியில் படங்களை நேரடியாகப் பதிவேற்றி சரியான அளவில் கிடைக்கிறதா என உறுதிப்படுத்திக் கொள்ளலாம். சரியான பட அளவுகள் பயன்படுத்தப்பட்டிருப்பதை உறுதிசெய்துகொள்ள, [அளவை மாற்றும் வடிப்பானையோ](https://octobercms.com/docs/markup/filter-resize) [படத்தின் அளவை மாற்றும் செருகுநிரலையோ](https://octobercms.com/plugins?search=image) பயன்படுத்தவும்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "இணையச் சேவையக உள்ளமைவில் உரைச் சுருக்குதலை இயக்கவும்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "பதிவேற்றிய படங்களை மேம்படுத்தப்பட்ட வடிவமைப்புகளுக்குத் தானாக மாற்றும் [செருகுநிரல்](https://octobercms.com/plugins?search=image)/சேவையைப் பயன்படுத்தவும். SSIM தரக் குறியீட்டின்படி [தரம் குறையாத WebP படங்கள்](https://developers.google.com/speed/webp) PNGகளுடன் ஒப்பிடும்போது 26% சிறியதாகவும் ஒப்பிடக்கூடிய JPEG படங்களைக் காட்டிலும் 25-34% சிறியதாகவும் இருக்கும். [AVIF](https://jakearchibald.com/2020/avif-has-landed/) என்ற மற்றொரு புதிய பட வடிவமைப்பைப் பயன்படுத்தவும்."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "தொடர்ந்து நிகழ்கின்ற பல கூறுகளை ஒரு பக்கத்தில் ரெண்டரிங் செய்கிறீர்கள் என்றால் DOM கணுக்கள் உருவாக்கப்படும் எண்ணிக்கையைக் குறைக்கும் வகையில் `react-window` போன்ற “விண்டோவிங்” லைப்ரரியைப் பயன்படுத்தவும். [மேலும் அறிக](https://web.dev/virtualize-long-lists-react-window/). இயங்கும் நேரச் செயல்திறனை மேம்படுத்த `Effect` ஹுக்கைப் பயன்படுத்துகிறீர்கள் எனில் குறிப்பிட்ட சார்புநிலைகள் மாறும் வரை மட்டும் [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) போன்றவற்றைப் பயன்படுத்தித் தேவையற்ற மறு ரெண்டரிங்குகளைக் குறைத்துக்கொள்ளவும் [விளைவுகளைத் தவிர்க்கவும்](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) வேண்டும்."
+    "message": "ஒரு பக்கத்தில் தொடர்ந்து நிகழ்கின்ற பல கூறுகளை ரெண்டரிங் செய்கிறீர்கள் எனில் DOM கணுக்கள் உருவாக்கப்படும் எண்ணிக்கையைக் குறைக்கும் வகையில் `react-window` போன்ற “விண்டோவிங்” லைப்ரரியைப் பயன்படுத்தவும். [மேலும் அறிக](https://web.dev/virtualize-long-lists-react-window/). இயங்கும் நேரச் செயல்திறனை மேம்படுத்த `Effect` ஹுக்கைப் பயன்படுத்துகிறீர்கள் எனில் குறிப்பிட்ட சார்புநிலைகள் மாறும் வரை மட்டும் [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) போன்றவற்றைப் பயன்படுத்தித் தேவையற்ற மறு ரெண்டரிங்குகளைக் குறைத்துக்கொள்ளவும் [விளைவுகளைத் தவிர்க்கவும்](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) வேண்டும்."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "நீங்கள் ரியாக்ட் ரூட்டரைப் பயன்படுத்தினால் [ரூட் வழிசெலுத்தல்களுக்கு](https://reacttraining.com/react-router/web/api/Redirect) `<Redirect>` உறுப்பைப் பயன்படுத்துவதைக் குறைத்துக்கொள்ளவும்."

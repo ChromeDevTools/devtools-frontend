@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "يتم تجنُب طلب إذن رصد الموقع الجغرافي عند تحميل الصفحة"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "نوع المشكلة"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "تشير المشاكل التي تم تسجيلها في لوحة `Issues` ضِمن \"أدوات مطوري البرامج في Chrome\" إلى وجود مشاكل لم يتم حلها. قد تنتج هذه المشاكل بسبب إخفاقات في طلبات الشبكة وعدم توفّر عناصر كافية للتحكّم في الأمان ومشاكل أخرى تتعلق بالمتصفِّح. للاطّلاع على مزيد من التفاصيل عن كل مشكلة، يمكنك الانتقال إلى لوحة Issues (لوحة \"المشاكل\") ضِمن \"أدوات مطوري البرامج في Chrome\"."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "تم تسجيل المشاكل في لوحة `Issues` ضِمن \"أدوات مطوري البرامج في Chrome\""
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "تم حظر المورد وفقًا لسياسة مشاركة الموارد عبر المصادر الخاصة بالموقع الإلكتروني."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "تستخدم الإعلانات موارد المتصفِّح بكثافة."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "ما مِن مشاكل في لوحة `Issues` ضِمن \"أدوات مطوري البرامج في Chrome\""
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "الإصدار"
   },
@@ -717,7 +735,7 @@
     "message": "البروتوكول"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "يوفّر HTTP/2 العديد من المزايا على HTTP/1.1، بما في ذلك عناوين البرامج الثنائية وعملية مضاعفة توجيه الإشارات ودفع الخادم. [مزيد من المعلومات](https://web.dev/uses-http2/)"
+    "message": "يوفّر HTTP/2 العديد من المزايا مقارنةً بـ HTTP/1.1، بما في ذلك عناوين البرامج الثنائية وعملية مضاعفة توجيه الإشارات. [مزيد من المعلومات](https://web.dev/uses-http2/)"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{لم يتم عرض طلب واحد عبر HTTP/2}zero{لم يتم عرض # طلب عبر HTTP/2}two{لم يتم عرض طلبين (#) عبر HTTP/2}few{لم يتم عرض # طلبات عبر HTTP/2}many{لم يتم عرض # طلبًا عبر HTTP/2}other{لم يتم عرض # طلب عبر HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "يتم عرض الصور بدقة مناسبة"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "سبق وتم تثبيت هذا التطبيق."
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "الرمز الذي تم تحميله فارغ أو تالف"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "سبب الإخفاق"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "يمكن للمتصفحات أن تطلب من المستخدمين بشكل مسبق إضافة تطبيقك إلى الشاشة الرئيسية، ويمكن بذلك زيادة التفاعل. [مزيد من المعلومات](https://web.dev/installable-manifest/)"
+    "message": "مشغّل الخدمات هو التكنولوجيا التي تمكّن تطبيقك من استخدام ميزات عديدة من \"تطبيق الويب التقدّمي\"، مثل الاستجابة عند عدم الاتصال بالإنترنت والإضافة إلى الشاشة الرئيسية والإشعارات الفورية. من خلال مشغّل الخدمات المناسب وعمليات تنفيذ ملفات البيان، يمكن للمتصفِّحات أن تطلب من المستخدمين بشكل مسبق إضافة تطبيقك إلى الشاشة الرئيسية، ويمكن بذلك زيادة التفاعل. [مزيد من المعلومات](https://web.dev/installable-manifest/)"
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{سبب واحد}zero{# أسباب}two{سببان}few{# أسباب}many{# سببًا}other{# سبب}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "عدم استيفاء بيان تطبيق الويب متطلبات التثبيت"
+    "message": "عدم استيفاء ملف بيان تطبيق الويب أو مشغّل الخدمات لمتطلبات التثبيت"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "لا يتطابق عنوان URL الخاص بالتطبيق في \"متجر Play\" مع رقم تعريف التطبيق في \"متجر Play\"."
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "تم تحميل الصفحة في نافذة تصفُّح متخفٍ."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "يجب أن تكون خاصية \"display\" في ملف البيان بالقيمة \"standalone\" أو \"fullscreen\" أو \"minimal-ui\"."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "يتضمن ملف البيان حقل \"display_override\"، لذا يجب أن يكون وضع العرض الأول المتاح بالقيمة \"standalone\" أو \"fullscreen\" أو \"minimal-ui\"."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "البيان فارغ أو تعذّر استرجاعه أو لم يتم تحليله."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "تم تغيير عنوان URL لملف البيان أثناء استرجاع الملف."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "لا يتضمّن ملف البيان حقل \"name\" أو \"short_name\"."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "لا يتضمّن ملف البيان رمزًا مناسبًا. يجب استخدام تنسيق PNG أو SVG أو WebP بحجم {value0} بكسل على الأقل، ويجب ضبط السمة \"sizes\" (الأحجام) وأن تتضمّن السمة \"purpose\" (الغرض) القيمة \"any\" أو \"maskable\" حال ضبطها."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "لا يتوفّر رمز بحجم {value0} بكسل مربّع على الأقل بتنسيق PNG أو SVG أو WebP."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "الرمز الذي تم تحميله فارغ أو تالف"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "لم يتم توفير رقم تعريف \"متجر Play\"."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "لا تتضمّن الصفحة عنوان URL <link> لملف البيان."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "لم يتم رصد مشغّل خدمات مطابق. قد تحتاج إلى إعادة تحميل الصفحة، أو التأكّد أن نطاق مشغّل الخدمات للصفحة الحالية يشتمل على النطاق وعنوان URL البداية من ملف البيان."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "تعذّر التحقّق من مشغّل الخدمات بدون توفّر حقل \"start_url\" في ملف البيان."
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "لم يتم التعرّف على رقم تعريف خطأ قابلية التثبيت \"{errorId}\"."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "لا يتم عرض الصفحة من مصدر آمن."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "لا يتم تحميل الصفحة في الإطار الرئيسي."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "لا تعمل هذه الصفحة بلا إنترنت."
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "لا تتوفّر منصة التطبيقات المحدّدة على Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "يضبط ملف البيان قيمة prefer_related_applications على true."
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "لا يتوافق حقل الإدخال prefer_related_applications إلا مع الإصدار التجريبي من متصفِّح Chrome والقنوات الثابتة على Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "عنوان URL البداية لملف البيان غير صالح."
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "استيفاء بيان تطبيق الويب متطلبات التثبيت"
+    "message": "استيفاء ملف بيان تطبيق الويب ومشغّل الخدمات لمتطلبات التثبيت"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "يحتوي عنوان URL في ملف البيان على اسم مستخدم أو كلمة مرور أو منفذ."
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "لا تعمل هذه الصفحة بلا إنترنت. وستصبح هذه الصفحة غير قابلة للتثبيت بعد إطلاق الإصدار الثابت من Chrome 93 في آب (أغسطس) 2021."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "مسموح به"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "ضبط لون تصميم لشريط العناوين"
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (منتج متعلق بخدمة العملاء)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (منتج متعلق بالتسويق)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (منتج متعلق بوسائل التواصل الاجتماعي)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (منتج متعلق بالفيديو)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "المنتج"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "بعض الرموز المضمّنة التابعة لجهات خارجية يمكن تحميلها ببطء. ويمكنك استبدال هذه الرموز المضمّنة بإحدى الواجهات إلى حين الحاجة إليها. [مزيد من المعلومات](https://web.dev/third-party-facades/)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{تتوفّر واجهة واحدة بديلة.}zero{تتوفّر # واجهة بديلة.}two{تتوفّر واجهتان بديلتان.}few{تتوفّر # واجهات بديلة.}many{تتوفّر # واجهة بديلة.}other{تتوفّر # واجهة بديلة.}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "بعض الموارد التابعة لجهات خارجية يمكن تحميلها ببطء مع واجهة"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "تحميل الموارد التابعة لجهات خارجية ببطء مع واجهات"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "الجهة الخارجية"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "قد لا يتم تحميل الصفحة كما هو متوقَع لأن عنوان URL للاختبار ({requested}) تمت إعادة توجيهه إلى {final}. يُرجى محاولة اختبار عنوان URL الثاني مباشرةً."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "يبدو أنّ الجهاز المختبَر يحتوي على وحدة معالجة مركزية (CPU) أبطأ مما توقعته أداة Lighthouse. قد يؤثر ذلك سلبيًا على نتيجة الأداء. تعرّف على المزيد من المعلومات عن [معايرة مُضاعِف بطء وحدة المعالجة المركزية (CPU) المناسب](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "أدّى عدم تحميل الصفحة بسرعة كافية إلى تعذّر انتهاء تحميلها في الوقت المحدّد. وقد تكون النتائج غير مكتملة."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "وقت حظر سلسلة المحادثات الأساسية"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "ذاكرة التخزين المؤقت TTL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "الوصف"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "المدة"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "غير ذلك"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "موارد أخرى"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "النص البرمجي"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "كان من المطلوب تجميع {artifactName} ولكن لم يتم تنفيذ ذلك."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "لم تعرض الصفحة أي محتوى. يُرجى التأكّد من إبقاء نافذة المتصفّح في المقدّمة أثناء التحميل ثم إعادة المحاولة. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "الصفحة المقدّمة غير متوفّرة بتنسيق HTML (يتم عرضها كصفحة من النوع MIME {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "يبدو أن عنوان URL الذي قدمته غير صحيح."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "عرض عمليات التدقيق"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "اطّلِع على الآلة الحاسبة."
@@ -1926,7 +2067,7 @@
     "message": "يمكنك تحميل ملف GIF إلى خدمة ستتيح تضمينه في شكل فيديو HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "يمكنك تثبيت [مكوِّن Joomla الإضافي للتحميل البطيء](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) والذي يتيح تأجيل أي صور خارج الشاشة، أو التبديل إلى نموذج يوفّر هذه الوظيفة. بدءًا من الإصدار Joomla 4.0، سيصبح بالإمكان تفعيل مكوِّن إضافي مخصّص للتحميل البطيء باستخدام المكوِّن الإضافي \"Content - Lazy Loading Images\". ويمكنك أيضًا استخدام [مكوِّن AMP إضافي](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "يمكنك تثبيت [مكوِّن Joomla الإضافي المُساعِد في التحميل البطيء](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) والذي يتيح لك إمكانية تأجيل أي صور خارج الشاشة، أو يمكنك الانتقال إلى نموذج يوفّر هذه الوظيفة. وبدءًا من الإصدار Joomla 4.0، تحصل كل الصور الجديدة [تلقائيًا](https://github.com/joomla/joomla-cms/pull/30748) على السمة `loading` من الحزمة الأساسية."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "هناك عدد من مكوّنات Joomla الإضافية التي يمكنها مساعدتك على [تضمين الأصول المهمة](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) أو [تأجيل الموارد الأقل أهمية](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). يجب الانتباه إلى أنّ التحسينات التي توفّرها هذه المكوّنات قد توقف ميزات النماذج أو المكوّنات الإضافية، لذلك ستحتاج إلى اختبارها بدقة تامّة."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "عليك البحث عن [سوق Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) للحصول على مجموعة متنوعة من إضافات الجهات الخارجية للاستفادة من تنسيقات الصور الأحدث."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[يمكنك استخدام الفيديو بدلاً من صور GIF المتحركة](https://web.dev/replace-gifs-with-videos/) لتحميل صفحات الويب بشكل أسرع، بالإضافة إلى استخدام تنسيقات ملفات حديثة، مثل [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) أو [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) لتحسين كفاءة الضغط بنسبة تزيد عن 30% على برنامج ترميز الفيديو المتطوّر الحالي، VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "يمكنك تثبيت [مكوّن إضافي لتحميل الصور ببطء](https://octobercms.com/plugins?search=lazy) يتيح لك إمكانية تأجيل عرض أي صور خارج الشاشة، أو يمكنك الانتقال إلى مظهر يوفّر هذه الوظيفة. يمكنك أيضًا استخدام [مكون AMP الإضافي](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "ثمّة مكوّنات إضافية تساعد على تشغيل [مواد العرض المهمة المضمَّنة](https://octobercms.com/plugins?search=css) على نحو سليم. قد تتسبب هذه المكوّنات الإضافية في إيقاف مكونّات إضافية أخرى، لذا يجب اختبارها جيدًا."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "تساهم المظاهر والمكونات الإضافية ومواصفات الخادم في تحسين وقت استجابة الخادم. ابحث عن مظهر محسَّن للغاية و/أو اختَر مكوّنًا إضافيًا و/أو قم بترقية الخادم. إنّ منصّة October لإدارة المحتوى تتيح لمطوّري البرامج إمكانية استخدام [`Queues`](https://octobercms.com/docs/services/queues) لتأجيل معالجة أي مَهمّة تستهلك الوقت، مثل إرسال رسالة إلكترونية. ويساعد ذلك على تسريع تنفيذ طلبات الويب بشدّة."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "يمكنك عرض مقتطفات في قائمة المشاركات (مثلاً، باستخدام زر `show more`) أو تقليل عدد المشاركات المعروضة في صفحة ويب معيّنة أو تقسيم المشاركات الطويلة إلى صفحات ويب متعدّدة أو استخدام مكوّن إضافي لتحميل التعليقات ببطء."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "يمكن لعدد من [المكوّنات الإضافية](https://octobercms.com/plugins?search=css) زيادة سرعة موقعك الإلكتروني من خلال دمج الأنماط وتصغيرها وضغطها. يمكن تسريع عملية التطوير من خلال استخدام عملية تصميم تتيح تصغير الأنماط في البداية."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "يمكن لعدد من [المكوّنات الإضافية](https://octobercms.com/plugins?search=javascript) زيادة سرعة الموقع الإلكتروني من خلال دمج النصوص البرمجية وضغطها وتصغيرها. يمكن تسريع عملية التطوير من خلال استخدام عملية تصميم تتيح تصغير الأنماط في البداية."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "يمكنك مراجعة [المكوّنات الإضافية](https://octobercms.com/plugins) التي تُحمِّل على الموقع الإلكتروني صفحات الأنماط المتتالية (CSS) غير المستخدَمة. لتحديد المكوّنات الإضافية التي تضيف صفحات الأنماط المتتالية (CSS) غير الضرورية، يمكنك تشغيل مقياس [نسبة استخدام رموز الصفحة](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) في \"أدوات مطوري البرامج في Chrome\". يمكنك تحديد المظهر/المكوّن الإضافي المسؤول من عنوان URL لورقة الأنماط. ابحث عن المكونات الإضافية التي تتضمّن العديد من أوراق الأنماط المشتمِلة على الكثير من اللون الأحمر في مقياس نسبة استخدام رموز الصفحة. ومن المفترض أن يضيف المكوّن الإضافي ورقة أنماط فقط إذا كانت مُستخدَمة حاليًا في الصفحة."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "يمكنك مراجعة [المكوّنات الإضافية](https://octobercms.com/plugins?search=javascript) التي تُحمِّل في صفحة الويب ملفات JavaScript غير مستخدَمة. لتحديد المكوّنات الإضافية التي تضيف ملفات JavaScript غير ضرورية، يمكنك تشغيل مقياس [نسبة استخدام رموز الصفحة](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) في \"أدوات مطوري البرامج في Chrome\". ويمكن تحديد المظهر/المكوّن الإضافي المعنيّ من عنوان URL للنص البرمجي. ابحث عن المكونات الإضافية التي تتضمّن العديد من النصوص البرمجية المشتمِلة على الكثير من اللون الأحمر في مقياس نسبة استخدام رموز الصفحة. ومن المفترض أن يضيف المكوّن الإضافي نصًا برمجيًا فقط إذا كان مُستخدَمًا حاليًا في صفحة الويب."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "يمكنك الاطّلاع على قسم [منع الطلبات غير الضرورية من الشبكة باستخدام ذاكرة التخزين المؤقت عبر HTTP](https://web.dev/http-cache/#caching-checklist). ويمكن استخدام العديد من [المكوّنات الإضافية](https://octobercms.com/plugins?search=Caching) لتسريع التخزين المؤقت."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "يمكنك استخدام [مكوّن إضافي لتحسين الصور](https://octobercms.com/plugins?search=image) لضغط الصور مع الاحتفاظ بمستوى الجودة."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "يمكنك تحميل الصور مباشرةً من خلال مدير الوسائط للتأكّد من توفّر أحجام الصور المطلوبة. وبإمكانك استخدام [فلتر تغيير الحجم](https://octobercms.com/docs/markup/filter-resize) أو [مكوّن إضافي لتغيير حجم الصور](https://octobercms.com/plugins?search=image) للتأكّد من استخدام أفضل الأحجام للصور."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "يمكنك تفعيل ضغط النص في إعداد خادم الويب."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "يمكنك استخدام [مكوّن إضافي](https://octobercms.com/plugins?search=image) أو خدمة تتيح تحويل الصور المحمَّلة إلى أفضل التنسيقات تلقائيًا. يقل [حجم صور WebP بدون فقدان أي تفاصيل](https://developers.google.com/speed/webp) بنسبة 26% مقارنةً بصور PNG، ويقل بنسبة تتراوح بين 25% و34% مقارنةً بصور JPEG في مؤشر الجودة المعادِلة وفق مقياس مؤشر التشابه الهيكلي (SSIM). يمكن استخدام تنسيق [AVIF](https://jakearchibald.com/2020/avif-has-landed/) لعرض الصور بتنسيقات الجيل القادم."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "يمكنك استخدام مكتبة \"نوافذ\" مثل `react-window` لتقليل عدد عُقَد DOM التي يتم إنشاؤها في حال كنت تعرض العديد من العناصر المتكررة في الصفحة. [مزيد من المعلومات](https://web.dev/virtualize-long-lists-react-window/) ويمكنك تقليل عمليات إعادة العرض غير الضرورية باستخدام [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action) أو [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) أو [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) و[تخطِّ التأثيرات](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) فقط حتى يتم تغيير تبعيات معيّنة في حال كنت تستخدم عنصر `Effect` لتحسين مستوى أداء وقت التشغيل."
+    "message": "يمكنك استخدام مكتبة \"عرض المحتوى في النافذة الحالية\" مثل `react-window` لتقليل عدد عُقَد DOM التي يتم إنشاؤها في حال عرض العديد من العناصر المتكررة على الصفحة. [يُرجى الاطّلاع على مزيد من المعلومات.](https://web.dev/virtualize-long-lists-react-window/) ويمكنك تقليل عمليات إعادة العرض غير الضرورية باستخدام [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action) أو [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) أو [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) و[تخطّي التأثيرات](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) فقط حتى يتم تغيير اعتماديات معيّنة في حال استخدام موضع الإدراج `Effect` لتحسين مستوى أداء وقت التشغيل."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "في حال استخدام React Router، عليك تقليل استخدام المكوّن `<Redirect>` في [عمليات تنقل المسار](https://reacttraining.com/react-router/web/api/Redirect)."

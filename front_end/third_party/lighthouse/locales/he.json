@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "הדף לא מבקש הרשאות למיקום גאוגרפי במהלך טעינת הדף"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "סוג הבעיה"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "שגיאות שנרשמו בחלונית `Issues` ב-Chrome Devtools מעידות על בעיות לא פתורות. הן עשויות להופיע בעקבות כשל בבקשות ברשת, אמצעי אבטחה לא מספיקים או בעיות אחרות בדפדפן. יש לפתוח את חלונית הבעיות ב-Chrome DevTools כדי לקבל פרטים נוספים על כל בעיה."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "נרשמו בעיות בחלונית `Issues` ב-Chrome Devtools"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "נחסם עקב מדיניות ממקורות שונים"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "המודעות מנצלות הרבה מקורות"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "אין בעיות בחלונית `Issues` ב-Chrome Devtools"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "גרסה"
   },
@@ -717,7 +735,7 @@
     "message": "פרוטוקול"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "ל-HTTP/2 יש הרבה יתרונות על-פני HTTP/1.1, ביניהם כותרות בינאריות, ריבוב והקצאות שרת מוקדמות (Server Push). [מידע נוסף](https://web.dev/uses-http2/)."
+    "message": "ל-HTTP/2 יש הרבה יתרונות על-פני HTTP/1.1, ביניהם כותרות בינאריות וריבוב. [למידע נוסף](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{בקשה אחת לא מולאה דרך HTTP/2}two{# בקשות לא מולאו דרך HTTP/2}many{# בקשות לא מולאו דרך HTTP/2}other{# בקשות לא מולאו דרך HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "מציג תמונות עם רזולוציה מתאימה"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "האפליקציה כבר מותקנת"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "הסמל שהורד היה ריק או פגום"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "סיבה לכשל"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "הדפדפנים יכולים לבקש ממשתמשים באופן יזום להוסיף את האפליקציה שלך אל מסך הבית שלהם, פעולה שמגדילה את הסיכוי להשגת מעורבות גבוהה יותר. [מידע נוסף](https://web.dev/installable-manifest/)."
+    "message": "קובץ השירות (service worker) הוא הטכנולוגיה שמאפשרת לאפליקציה שלך להשתמש במספר תכונות Progressive Web App, כמו 'מצב אופליין', 'הוספה לדף הבית' ו'התראות'. בעזרת הטמעה נכונה של קובצי מניפסט וקובצי שירות (service worker), הדפדפנים יכולים לבקש ממשתמשים באופן יזום להוסיף את האפליקציה שלך למסך הבית שלהם. פעולה זו מגדילה את הסיכוי להשגת מעורבות גבוהה יותר. [למידע נוסף](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{סיבה אחת}two{שתי סיבות}many{# סיבות}other{# סיבות}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "המניפסט של אפליקציית האינטרנט לא עומד בדרישות יכולת ההתקנה"
+    "message": "קובץ המניפסט של האפליקציה או קובץ השירות (service worker) אינם עומדים בדרישות יכולת ההתקנה"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "כתובת ה-URL של האפליקציה בחנות Play והמזהה בחנות Play אינם תואמים"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "הדף נטען בחלון אנונימי"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "המאפיין 'display' במניפסט צריך לכלול את אחד מהערכים האלה: 'standalone',‏ 'fullscreen' או 'minimal-ui'"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "המניפסט מכיל את השדה 'display_override' ומצב התצוגה הראשון הנתמך צריך להיות 'standalone',‏ 'fullscreen' או 'minimal-ui'"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "לא ניתן לאחזר או לנתח את קובץ המניפסט, או שהוא ריק"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "כתובת ה-URL של המניפסט השתנתה במהלך אחזור המניפסט."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "קובץ המניפסט אינו מכיל את השדות 'שם' או 'שם מקוצר'"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "קובץ המניפסט אינו מכיל סמל מתאים. דרוש פורמט PNG ‏, SVG או WebP ברזולוציה של ‎{value0}px לפחות, ויש להגדיר את מאפיין הגודל. אם הוגדר המאפיין 'שימוש', יש לציין אם הוא \"הכול\" או \"ניתן למיסוך\"."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "לא סופק סמל ברזולוצייה של {value0}‏ px לפחות, בצורת ריבוע, בפורמט PNG‏, SVG או WebP"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "הסמל שהורד היה ריק או פגום"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "לא סופק מזהה חנות Play"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "אין לדף כתובת URL של מניפסט <link>"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "לא נמצא קובץ שירות (service worker) תואם. ייתכן שצריך לטעון מחדש את הדף, או לבדוק אם ההיקף של קובץ השירות (service worker) של הדף הנוכחי כולל את ההיקף ואת כתובת ה-URL להתחלה של קובץ המניפסט."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "לא ניתן לבדוק את קובץ השירות (service worker) ללא השדה 'כתובת url להתחלה'"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "המזהה '{errorId}' של השגיאה ביכולת ההתקנה אינו מוכר"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "הדף מוצג ממקור לא מאובטח"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "הדף לא נטען במסגרת הראשית"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "הדף לא פועל ללא חיבור לאינטרנט"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "פלטפורמת האפליקציה שסופקה לא נתמכת ב-Android"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "המניפסט מפרט אפליקציות שקשורות להעדפות: TRUE"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "התכונה prefer_related_applications נתמכת רק בגרסת הבטא של Chrome ובערוצים יציבים ב-Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "כתובת ה-URL להתחלה של המניפסט לא חוקית"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "המניפסט של אפליקציית האינטרנט עומד בדרישות יכולת ההתקנה"
+    "message": "המניפסט של אפליקציית האינטרנט וקובץ השירות (service worker) עומדים בדרישות יכולת ההתקנה"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "המניפסט מכיל כתובת URL הכוללת שם משתמש, סיסמה או יציאה"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "הדף לא פועל ללא חיבור לאינטרנט. הדף לא ייחשב כדף שניתן להתקנה אחרי Chrome 93, בגרסה היציבה של אוגוסט 2021."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "הכתובת אושרה"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "מגדיר צבע עיצוב עבור סרגל הכתובות."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (הצלחה של לקוחות)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (שיווק)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (רשתות חברתיות)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (סרטון)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "מוצר"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "טעינה מדורגת אפשרית לרכיבים מסוימים שהוטמעו בדף, שיצרו צדדים שלישיים. ניתן להחליף רכיבים אלה בתבנית Facade עד שהם יידרשו. [למידע נוסף](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{יש תבנית Facade אחת שזמינה כחלופה}two{יש # תבניות Facade שזמינות כחלופות}many{יש # תבניות Facade שזמינות כחלופות}other{יש # תבניות Facade שזמינות כחלופות}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "טעינה מדורגת אפשרית במשאבים מסוימים של צדדים שלישיים בעזרת תבנית Facade"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "טעינה מדורגת של משאבים של צדדים שלישיים באמצעות תבניות Facade"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "צד שלישי"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "ייתכן שהדף לא נטען כמו שציפית כי כתובת ה-URL הנבדקת ({requested}) הופנתה לכתובת {final}. כדאי לנסות לבדוק ישירות את כתובת ה-URL השנייה."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "יחידת העיבוד המרכזית (CPU) במכשיר שנבדק איטית ממה שצפוי ב-Lighthouse. זה עשוי להשפיע לרעה על ציון הביצועים שלך. בקישור הבא אפשר למצוא מידע נוסף על [כיול של מכפיל מתאים להאטה ביחידת העיבוד המרכזית (CPU)](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "הדף נטען לאט מדי והפעולה לא הסתיימה במסגרת הזמן שהוקצבה. ייתכן שהתוצאות לא יהיו מלאות."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "משך החסימה של התהליכון הראשי"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "אורך חיים (TTL) של מטמון"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "תיאור"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "משך זמן"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "אחר"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "משאבים אחרים"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "סקריפט"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "פעולת האיסוף של המשאב הנדרש {artifactName} לא בוצעה."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "לא בוצע רינדור של תוכן בדף. יש לוודא שהחלון של הדפדפן נמצא בחזית בזמן הטעינה, ולנסות שוב. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "הדף שסופק אינו מסוג HTML (הוא הוגדר כסוג ה-MIME הבא: {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "נראה שכתובת ה-URL שסיפקת אינה חוקית."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "הצגת בדיקות"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "להצגת המחשבון."
@@ -1926,7 +2067,7 @@
     "message": "כדאי לשקול העלאה של ה-GIF לשירות שיאפשר להטמיע אותו כסרטון HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "ניתן להתקין [פלאגין של Joomla לטעינה מדורגת](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) שמאפשר לדחות את הטעינה של תמונות שאינן מופיעות מייד במסך. ניתן גם לעבור לתבנית שמספקת את הפונקציונליות הזו. החל מגרסה 4.0 ואילך של Joomla ניתן להפעיל פלאגין ייעודי לטעינה מדורגת באמצעות הפלאגין \"תוכן – תמונות בטעינה מדורגת\". כמו כן, כדאי לשקול שימוש ב-[פלאגין AMP](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "ניתן להתקין [פלאגין של Joomla לטעינה מדורגת](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) שמאפשר לדחות את הטעינה של תמונות שאינן מופיעות מיד במסך. ניתן גם לעבור לתבנית שמספקת את הפונקציונליות הזו. בגרסה 4.0 ואילך של Joomla, כל התמונות החדשות יקבלו את המאפיין `loading` [באופן אוטומטי](https://github.com/joomla/joomla-cms/pull/30748) מהליבה."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "יש כמה יישומי פלאגין של Joomla שיכולים לעזור לך [להטביע נכסים קריטיים](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) או [לדחות טעינה של משאבים פחות חשובים](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). חשוב: ייתכן שהאופטימיזציות המבוצעות על ידי יישומי הפלאגין האלה יגרמו לתקלות בתכונות של התבניות או יישומי הפלאגין האחרים, ולכן יהיה צורך לבדוק אותם באופן יסודי."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "ב-[Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) אפשר למצוא מגוון תוספים של צד שלישי שבעזרתם ניתן להשתמש בפורמטים חדשים של תמונות, וכדאי לשקול לבצע בו חיפוש."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[כדאי להחליף אנימציות GIF בסרטונים](https://web.dev/replace-gifs-with-videos/) כדי להאיץ את הטעינה של דפי אינטרנט. מומלץ גם להשתמש בפורמטים מודרניים של קבצים כמו [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) או [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) כדי לייעל את דחיסת הנתונים ביותר מ-30% עם קידוד הווידאו המתקדם ביותר, VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "כדאי לשקול להתקין [פלאגין לטעינה מדורגת של תמונות](https://octobercms.com/plugins?search=lazy) שמאפשר לדחות את הטעינה של תמונות שאינן מופיעות מיד במסך. ניתן גם לעבור לעיצוב שמספק את הפונקציונליות הזו. אפשרות נוספת היא להשתמש ב[פלאגין של AMP](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "יש הרבה יישומי פלאגין שעוזרים [להטביע נכסים קריטיים](https://octobercms.com/plugins?search=css). יישומי הפלאגין האלה עשויים לגרום לתקלות ביישומי פלאגין אחרים, לכן כדאי לבדוק אותם באופן יסודי."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "עיצובים, יישומי פלאגין ומפרטי שרתים משפיעים על זמן התגובה של השרת. אפשר להשתמש בעיצוב שעבר אופטימיזציה, לבחור בקפידה פלאגין לאופטימיזציה ו/או לשדרג את השרת. מערכת ניהול התוכן October גם מאפשרת למפתחים להשתמש ב[`Queues`](https://octobercms.com/docs/services/queues) כדי לדחות את העיבוד של משימה שגוזלת זמן רב, כמו שליחת אימייל. אפשרות זו מאיצה בקשות אינטרנט באופן משמעותי."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "אפשר להציג קטעים ברשימות הפוסטים (למשל, עם לחצן `show more`), לצמצם את מספר הפוסטים המוצגים בדף נתון, לחלק פוסטים ארוכים למספר דפים או להשתמש בפלאגין כדי לטעון תגובות בצורה מדורגת."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "יש הרבה [יישומי פלאגין](https://octobercms.com/plugins?search=css) שיכולים להאיץ את האתר בעזרת שרשור, הקטנה ודחיסה של סגנונות. ניתן להאיץ את הפיתוח בעזרת הקטנה מראש בתהליך build."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "יש הרבה [יישומי פלאגין](https://octobercms.com/plugins?search=javascript) שיכולים להאיץ את האתר בעזרת שרשור, הקטנה ודחיסה של סקריפטים. ניתן להאיץ את הפיתוח בעזרת הקטנה מראש בתהליך build."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "כדאי לעיין ב[יישומי פלאגין](https://octobercms.com/plugins) שטוענים תוכן CSS שאינו בשימוש בדף האינטרנט. כדי לזהות יישומי פלאגין שמוסיפים תוכן CSS מיותר, יש להפעיל את [רמת הכיסוי של הקוד](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) ב-Chrome DevTools. זיהוי העיצוב/הפלאגין שאחראים להוספת התוכן המיותר לפי כתובת ה-URL שבגיליון הסגנונות. יש לשים לב ליישומי פלאגין שיש להם הרבה גיליונות סגנונות שכמות גדולה של רמת כיסוי הקוד שלהם מופיעה באדום. פלאגין צריך להוסיף גיליון סגנונות רק אם נעשה בו שימוש בדף האינטרנט."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "כדאי לעיין [ביישומי פלאגין](https://octobercms.com/plugins?search=javascript) שטוענים תוכן JavaScript שאינו בשימוש בדף האינטרנט. כדי לזהות יישומי פלאגין שמוסיפים תוכן JavaScript מיותר, יש להפעיל את [רמת הכיסוי של הקוד](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) ב-Chrome DevTools. זיהוי העיצוב/הפלאגין שאחראים להוספת התוכן המיותר לפי כתובת ה-URL שבסקריפט. יש לשים לב ליישומי פלאגין שכמות גדולה של רמת כיסוי הקוד שלהם מופיעה באדום. פלאגין צריך להוסיף סקריפט רק אם נעשה בו שימוש בדף האינטרנט."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "אפשר לקרוא על [מניעת בקשות מיותרות ברשת באמצעות מטמון HTTP](https://web.dev/http-cache/#caching-checklist). יש הרבה [יישומי פלאגין](https://octobercms.com/plugins?search=Caching) שיכולים להאיץ את השמירה במטמון."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "כדאי לשקול להשתמש ב[פלאגין לאופטימיזציית תמונות](https://octobercms.com/plugins?search=image) כדי לדחוס את תמונות בלי לפגוע באיכות שלהן."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "העלאה של תמונות באופן ישיר למנהל המדיה תאפשר לך לוודא שהתמונות זמינות בגודל הדרוש. כדאי לשקול להשתמש ב[מסנן לשינוי גודל](https://octobercms.com/docs/markup/filter-resize) או ב[פלאגין לשינוי גודל תמונות](https://octobercms.com/plugins?search=image) כדי לוודא שהגודל של התמונות אופטימלי."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "יש להפעיל דחיסת טקסט בהגדרות של שרת האינטרנט."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "כדאי לשקול להשתמש ב[פלאגין](https://octobercms.com/plugins?search=image) או בשירות שימירו את התמונות שהועלו לפורמטים האופטימליים באופן אוטומטי. הגודל של [תמונות WebP ללא אובדן נתונים](https://developers.google.com/speed/webp) קטן ב-26% ביחס לתמונות בפורמט PNG וקטן ב-25-34% ביחס לתמונות JPEG דומות באינדקס המתאים של ציוני איכות SSIM. אפשר גם להשתמש בפורמט תמונות נוסף מהדור הבא, [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "כדאי לשקול להשתמש בספריית \"windowing\", כמו `react-window`, כדי לצמצם את מספר צומתי DOM שנוצרים כשמתבצע רינדור של רכיבים רבים שחוזרים בדף. [מידע נוסף](https://web.dev/virtualize-long-lists-react-window/). כמו כן, אם בחרת להשתמש ב-hook של `Effect` כדי לשפר את הביצועים בזמן ריצה, יש להשתמש ב-[`shouldComponentUpdate`,‏ ](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) או ב-[`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) ו[לוותר על אפקטים](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects), כדי לצמצם רינדור מחדש שאינו נחוץ עד לשינוי של יחסי תלות מסוימים בלבד."
+    "message": "כדאי לשקול להשתמש בספריית \"windowing\", כמו `react-window`, כדי לצמצם את מספר צומתי DOM שנוצרים כשמתבצע רינדור של רכיבים רבים שחוזרים בדף. [למידע נוסף](https://web.dev/virtualize-long-lists-react-window/). כמו כן, אם בחרת להשתמש ב-hook של `Effect` כדי לשפר את הביצועים בזמן ריצה, יש להשתמש ב-[`shouldComponentUpdate`,‏ ](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) או ב-[`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) ו[לוותר על אפקטים](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects), כדי לצמצם רינדור מחדש שאינו נחוץ עד לשינוי של יחסי תלות מסוימים בלבד."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "אם בחרת להשתמש ב-React Router, יש לצמצם את השימוש ברכיב `<Redirect>` בשביל [ניווט במסלול](https://reacttraining.com/react-router/web/api/Redirect)."

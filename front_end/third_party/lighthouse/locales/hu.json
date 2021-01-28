@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Kerüli a földrajzi helyre vonatkozó engedély kérését oldalbetöltéskor"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "A probléma típusa"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "A Chrome fejlesztői eszközök `Issues` panelén feltüntetett problémák megoldatlan problémákat jeleznek. A problémák okai lehetnek sikertelen hálózati kérések, nem megfelelő biztonsági vezérlők, valamint más, böngészővel kapcsolatos tényezők is. Nyissa meg a Chrome fejlesztői eszközök Issues (Problémák) panelét, ahol további információkat találhat az egyes problémákról."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Problémák találhatók a(z) `Issues` panelen a Chrome fejlesztői eszközökben"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Eredeteken átívelő kérelmekre vonatkozó házirend tiltja"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "A hirdetések magas erőforráshasználata"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Nem találhatók problémák a Chrome fejlesztői eszközök `Issues` panelén"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Verzió"
   },
@@ -717,7 +735,7 @@
     "message": "Protokoll"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "A HTTP/2 számos előnyt nyújt a HTTP/1.1-hez képest, például bináris fejléceket, multiplexelést és előzetes adatküldést (server push). [További információ](https://web.dev/uses-http2/)."
+    "message": "A HTTP/2 számos előnyt nyújt a HTTP/1.1-hez képest, például bináris fejléceket és multiplexelést. [További információ](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 nem HTTP/2-t használó kérés}other{# nem HTTP/2-t használó kérés}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "A képek megjelenítése megfelelő felbontásban történik"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "Az alkalmazás már telepítve van."
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "A letöltött ikon üres vagy sérült"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "A hiba oka"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "A böngészők proaktív módon kérhetik a felhasználókat, hogy adják hozzá az Ön alkalmazását a kezdőképernyőjükhöz, ami erősebb elköteleződéshez vezethet. [További információ](https://web.dev/installable-manifest/)."
+    "message": "A service worker elnevezésű technológia lehető teszi az alkalmazás számára a progresszív webes alkalmazások funkcióinak használatát. Ilyen funkció például az offline működés, a kezdőképernyőhöz való hozzáadás és a leküldött (push) értesítések. A megfelelő service worker- és manifestmegvalósítással rendelkező böngészők proaktív módon kérhetik a felhasználókat, hogy adják hozzá az Ön alkalmazását a kezdőképernyőjükhöz, ami erősebb elköteleződéshez vezethet. [További információ](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 ok}other{# ok}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "Az internetes alkalmazás manifestje nem felel meg a telepíthetőségi követelményeknek"
+    "message": "Az internetes alkalmazás manifestje vagy service workere nem felel meg a telepíthetőségi követelményeknek"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "A Play Áruház alkalmazás-URL-je és a Play Áruház azonosítója nem egyezik."
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "Az oldal inkognitó módban lett betöltve."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "A manifest „display” tulajdonságának a következők egyikének kell lennie: „standalone”, „fullscreen” vagy „minimal-ui”."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "A manifest tartalmazza a „display_override” mezőt, és az első támogatott megjelenítési módnak a következők egyikének kell lennie: „standalone”, „fullscreen” vagy „minimal-ui”."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "Nem sikerült a manifest lekérése vagy elemzése, vagy üres a manifest."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "A manifest URL-je módosítva lett a manifest lekérése során."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "A manifest nem tartalmaz „name” vagy „short_name” mezőt."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "A manifest nem tartalmaz megfelelő ikont. PNG-, SVG- vagy WebP-formátumra van szükség legalább {value0} px méretben. Be kell állítani a méretek attribútumát. Ha be van állítva a cél attribútuma, tartalmaznia kell az „any” (bármilyen) vagy a „maskable” (maszkolható) értéket."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "Nincs megadva ikon legalább {value0} px négyzetes méretben PNG-, SVG- vagy WebP-formátumban."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "A letöltött ikon üres vagy sérült"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Nincs megadva Play Áruház-azonosító."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "Az oldalon nem található manifest-URL (<link>)"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "Nem található egyező service worker. Elképzelhető, hogy újra be kell töltenie az oldalt, vagy ellenőriznie kell, hogy a service worker jelenlegi oldalra vonatkozó scope-ja tartalmazza-e a manifestben található scope-ot és start_url-t."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "Nem sikerült a service worker ellenőrzése, mivel nem található „start_url” mező a manifestben."
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "Nem lehet felismerni a következő telepíthetőségi hibaazonosítót: {errorId}"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "Az oldal megjelenítése nem biztonságos eredetről történik"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "Az oldal nem töltődött be a fő keretbe."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "Az oldal nem működik offline állapotban"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "A megadott alkalmazásplatform nem támogatott Androidon."
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "A manifest meghatározza a következőt: „prefer_related_applications: true”"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "A prefer_related_applications csak a Chrome bétaverziójában és a Stabil csatornákon támogatott Androidon."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "A manifest kezdési URL-je érvénytelen"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "Az internetes alkalmazás manifestje megfelel a telepíthetőségi követelményeknek"
+    "message": "Az internetes alkalmazás manifestje és a service worker nem felel meg a telepíthetőségi követelményeknek"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "A manifestben található URL felhasználónevet, jelszót vagy portot tartalmaz."
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "Az oldal nem működik offline állapotban. A rendszer nem tekinti telepíthetőnek az oldalt a Chrome 93-as verziója után (stabil kiadás: 2021. augusztus)."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "Engedélyezve"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "A téma színét állítja be a címsávon."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (Ügyfélszolgálat)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (Marketing)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (Közösségi)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (Videó)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Termék"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Egyes külső forrásoktól származó beágyazásoknál késleltetett betöltés lehet észlelhető. Fontolja meg a facade-ra való lecserélésüket, amíg nincs rájuk szükség. [További információ](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{# facade-alternatíva áll rendelkezésre}other{# facade-alternatíva áll rendelkezésre}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Egyes külső forrásoknál késleltetett betöltés lehet észlelhető facade-dal"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Külső források késleltetett betöltése facade-okkal"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Harmadik fél"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Előfordulhat, hogy az oldal nem az elvártaknak megfelelően töltődik be, mert a teszt-URL ({requested}) átirányít ide: {final}. Próbálkozzon a második URL közvetlen tesztelésével."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "Úgy tűnik, a tesztelt eszköz lassabb CPU-val rendelkezik, mint amire a Lighthouse számít. Ez negatív hatással lehet a teljesítményre kapott pontszámra. További információ a [megfelelő CPU-lassulási szorzó kalibrálásáról](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Az oldal túl lassan töltődött be, és túllépte az időkeretet. Az eredmények hiányosak lehetnek."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Fő szál akadályozásának időtartama"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "Gyorsítótár-TTL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Leírás"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Időtartam"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Egyéb"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Egyéb források"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Szkript"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "A kötelező {artifactName} nem futott le."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "Az oldal nem jelenített meg semmilyen tartalmat. Gondoskodjon arról, hogy a böngészőablak legyen az előtérben a betöltés során, majd próbálja újra. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "A megadott oldal nem HTML formátumú ({mimeType} MIME-típusként jelent meg)."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Úgy tűnik, a megadott URL érvénytelen."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Ellenőrzések megjelenítése"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Számológép megtekintése"
@@ -1926,7 +2067,7 @@
     "message": "Fontolja meg a GIF-fájlok olyan szolgáltatóhoz való feltöltését, amely lehetővé teszi a fájlok HTML5-videóként történő beágyazását."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Telepítsen [késleltetett betöltést biztosító Joomla beépülő modult](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading), amely lehetőséget ad a képernyőn kívül eső képek késleltetett betöltésére – vagy váltson olyan sablonra, amely rendelkezik ezzel a funkcióval. A Joomla 4.0 óta a „Content - Lazy Loading Images” beépülő modullal késleltetett betöltés engedélyezhető. Fontolja meg az [AMP beépülő modulok](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp) használatát is."
+    "message": "Telepítsen [késleltetett betöltést biztosító Joomla-bővítményt](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading), amely lehetőséget ad a képernyőn kívül eső képek késleltetett betöltésére; vagy váltson olyan sablonra, amely rendelkezik ezzel a funkcióval. A Joomla 4.0-tól kezdődően az összes új kép [automatikusan](https://github.com/joomla/joomla-cms/pull/30748) megkapja a(z) `loading` attribútumot a core-tól."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "Számos Joomla-bővítmény segíthet a [kritikus elemek beágyazásában](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) és a [kevésbé fontos források](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) késleltetésében. Fontos, hogy az ilyen jellegű beépülő modulok által nyújtott optimalizációk működésképtelenné tehetik a sablonok vagy más modulok funkcióit, ezért körültekintően tesztelni kell majd őket."
@@ -1999,6 +2140,48 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Ha ki szeretné használni az újabb képformátumok előnyeit, keressen harmadik felektől származó bővítményeket a [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) webhelyén."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[Cserélje le az animált GIF-eket videókra](https://web.dev/replace-gifs-with-videos/) a gyorsabban betöltődő weboldalak érdekében, és fontolja meg modern fájlformátumok (pl. [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) vagy [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)) használatát, amelyekkel a tömörítési hatékonyságot több mint 30%-kal javíthatja a jelenlegi legmodernebb videokodekkel, a VP9-cel szemben."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Fontolja meg [késleltetett képbetöltési bővítmény](https://octobercms.com/plugins?search=lazy) telepítését, amely lehetőséget ad a képernyőn kívül eső képek késleltetett betöltésére, vagy váltson olyan témára, amely rendelkezik ezzel a funkcióval. Fontolja meg az [AMP-bővítmény](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages) használatát is."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "Számos bővítmény segíthet a [kritikus elemek beágyazásában](https://octobercms.com/plugins?search=css). Ezek a bővítmények elronthatják más bővítmények működését, ezért végezzen alapos tesztelést."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "A témák, a bővítmények és a szerver specifikációi mind befolyásolják a szerver válaszidejét. Érdemes lehet jobban optimalizált témát keresnie, megfelelő optimalizáló bővítményt választania és/vagy nagyobb teljesítményű szerverre váltania. Az October CMS a(z) [`Queues`](https://octobercms.com/docs/services/queues) használatát is lehetővé teszi a fejlesztőknek az időigényes feladatok (pl. e-mail-küldés) feldolgozásának késleltetéséhez. Ez drámaian felgyorsítja a webes kéréseket."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Fontolja meg kivonatok megjelenítését a bejegyzéslistákban (pl. a[z] `show more` gombbal), az oldalanként megjelenített bejegyzések számának csökkentését, a hosszabb bejegyzések több oldalra tördelését, valamint a hozzászólások késleltetett betöltését bővítmény segítségével."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "Számos olyan [bővítmény](https://octobercms.com/plugins?search=css) létezik, amely felgyorsíthatja webhelyét a stílusok összefűzésével, minimalizálásával és tömörítésével. Felgyorsíthatja a fejlesztést, ha a minimalizálást buildfolyamat használatával előre elvégzi."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "Számos olyan [bővítmény](https://octobercms.com/plugins?search=javascript) létezik, amely felgyorsíthatja webhelyét a szkriptek összefűzésével, minimalizálásával és tömörítésével. Felgyorsíthatja a fejlesztést, ha a minimalizálást buildfolyamat használatával előre elvégzi."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Fontolja meg a webhelyen nem használt CSS-t betöltő [bővítmények](https://octobercms.com/plugins) ellenőrzését. A szükségtelen CSS-t hozzáadó bővítmény azonosításához futtassa a Chrome fejlesztői eszközök [kódlefedettség](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) mutatóját. A felelős téma vagy bővítmény a stíluslap URL-je alapján azonosítható. Keressen olyan stíluslapokkal rendelkező bővítményt, amelyben sok a piros a kódlefedettségben. Ideális esetben a bővítmények csak a weboldalon ténylegesen használt stíluslapokat állítják sorba."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Fontolja meg annak a [bővítménynek](https://octobercms.com/plugins?search=javascript) az eltávolítását, amely nem használt JavaScriptet tölt be a weboldalon. A szükségtelen JavaScriptet hozzáadó bővítmény azonosításához futtassa a Chrome fejlesztői eszközök [kódlefedettség](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) mutatóját. A felelős téma vagy bővítmény a szkript URL-je alapján azonosítható. Keressen olyan szkriptekkel rendelkező bővítményt, amelyben sok a piros a kódlefedettségben. Ideális esetben a bővítmények csak a weboldalon ténylegesen használt szkripteket állítják sorba."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "További információ a [szükségtelen hálózati kérések megakadályozásáról a HTTP Cache segítségével](https://web.dev/http-cache/#caching-checklist). Számos [bővítmény](https://octobercms.com/plugins?search=Caching) használható a gyorsítótárazás felgyorsításához."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Fontolja meg olyan [képoptimalizáló bővítmény](https://octobercms.com/plugins?search=image) használatát, amellyel minőségromlás nélkül tömöríthetők a képek."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "A képeket közvetlenül a médiakezelőbe töltse fel, hogy biztosan minden szükséges képméret rendelkezésre álljon. Fontolja meg az [átméretezési szűrő](https://octobercms.com/docs/markup/filter-resize) vagy [képátméretező bővítmény](https://octobercms.com/plugins?search=image) használatát annak biztosításához, hogy az optimális méretű képeket használja."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "A szövegtömörítést a webszerver konfigurációjában engedélyezheti."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Érdemes olyan [bővítményt](https://octobercms.com/plugins?search=image) vagy szolgáltatást használnia, amely automatikusan az optimális formátumba konvertálja a feltöltött képeket. A [WebP veszteségmentes képek](https://developers.google.com/speed/webp) mérete 26%-kal kisebb a PNG-knél, és 25-34%-kal kisebb a hasonló JPEG-képeknél azonos SSIM minőségi index mellett. Érdemes megfontolni az [AVIF](https://jakearchibald.com/2020/avif-has-landed/) következő generációs képformátum használatát is."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "Ha sok ismétlődő elemet jelenít meg az oldalon, fontolja meg „windowing” függvénytár (pl. `react-window`) használatát annak érdekében, hogy csökkentse a létrehozott DOM-csomópontok számát. [További információ](https://web.dev/virtualize-long-lists-react-window/). Ezenkívül csökkentse a szükségtelen újrarenderelések számát a [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), a [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) vagy a [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) segítségével, valamint [hagyja ki az effektusokat](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects), amíg bizonyos függőségek nem módosulnak, amennyiben az `Effect` hook használatával javítja a futásidejű teljesítményt."

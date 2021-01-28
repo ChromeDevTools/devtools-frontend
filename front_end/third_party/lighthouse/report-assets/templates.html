@@ -34,7 +34,7 @@ limitations under the License.
 
 <!-- Toggle arrow chevron -->
 <template id="tmpl-lh-chevron">
-  <svg class="lh-chevron" title="See audits" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 100 100">
+  <svg class="lh-chevron" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 100 100">
     <g class="lh-chevron__lines">
       <path class="lh-chevron__line lh-chevron__line-left" d="M10 50h40"></path>
       <path class="lh-chevron__line lh-chevron__line-right" d="M90 50H50"></path>
@@ -134,7 +134,7 @@ limitations under the License.
                   <div class="lh-sparkline"><div class="lh-sparkline__bar"></div></div>
                 </div>
                 <div class="lh-audit__display-text"></div>
-                <div class="lh-chevron-container" title="See resources"></div>
+                <div class="lh-chevron-container"></div>
               </div>
             </div>
           </div>
@@ -410,7 +410,6 @@ limitations under the License.
         </svg>
       </button>
       <div id="lh-tools-dropdown" role="menu" class="lh-tools__dropdown" aria-labelledby="lh-tools-button">
-         <!-- TODO(i18n): localize tools dropdown -->
         <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--print" data-i18n="dropdownPrintSummary" data-action="print-summary"></a>
         <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--print" data-i18n="dropdownPrintExpanded" data-action="print-expanded"></a>
         <a role="menuitem" tabindex="-1" href="#" class="report-icon report-icon--copy" data-i18n="dropdownCopyJSON" data-action="copy"></a>

@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "ページの読み込み時に位置情報の許可はリクエストされません"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "問題の種類"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Chrome デベロッパー ツールの [`Issues`] パネルに記録された問題は未解決のものです。ネットワーク リクエストの失敗、不十分なセキュリティ コントロールや、他のブラウザの問題が原因で表示される可能性があります。各問題について詳しくは、Chrome DevTools の [Issues] パネルを開いてご確認ください。"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "問題が Chrome デベロッパー ツールの [`Issues`] パネルに記録されました"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "クロスオリジンのポリシーによってブロック"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "広告によるリソース使用量が多い"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Chrome デベロッパー ツールの [`Issues`] パネルに記録されている問題はありません"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "バージョン"
   },
@@ -717,7 +735,7 @@
     "message": "プロトコル"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 には、バイナリ ヘッダー、多重化、サーバー プッシュなど、HTTP/1.1 と比べて多くのメリットがあります。[詳細](https://web.dev/uses-http2/)"
+    "message": "HTTP/2 には、バイナリ ヘッダー、多重化など、HTTP/1.1 と比べて多くのメリットがあります。[詳細](https://web.dev/uses-http2/)"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{HTTP/2 経由で配信されなかったリクエストが 1 件あります}other{HTTP/2 経由で配信されなかったリクエストが # 件あります}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "画像が適切な解像度で表示されています"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "このアプリはすでにインストールされています"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "ダウンロードしたアイコンが空か、破損しています"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "失敗の理由"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "ブラウザではホーム画面へのアプリの追加を促すメッセージを事前にユーザーに表示できます。これによりエンゲージメントが向上します。[詳細](https://web.dev/installable-manifest/)"
+    "message": "Service Worker は、多くのプログレッシブ ウェブアプリ機能（オフライン、ホーム画面への追加、プッシュ通知など）をアプリで使用できるようにするための技術です。適切な Service Worker とマニフェストの実装により、ホーム画面にアプリを追加するようユーザーに促すメッセージをブラウザに自動的に表示でき、これによりエンゲージメントを高めることができます。[詳細](https://web.dev/installable-manifest/)"
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{理由: 1 件}other{理由: # 件}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "ウェブアプリのマニフェストはインストール可能となる要件を満たしていません"
+    "message": "ウェブアプリ マニフェストまたは Service Worker がインストール可能となる要件を満たしていません"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "Play ストア アプリの URL と Play ストアの ID が一致しません"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "ページがシークレット ウィンドウで読み込まれます"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "マニフェストの「display」プロパティは、「standalone」、「fullscreen」、「minimal-ui」のいずれかに設定する必要があります"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "マニフェストの「display_override」フィールドで、最初のサポート表示モードを「standalone」、「fullscreen」、「minimal-ui」のいずれかに設定する必要があります"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "マニフェストを取得または解析できなかったか、マニフェストが空です"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "マニフェストの取得中にマニフェストの URL が変更されました。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "マニフェストに「name」または「short_name」フィールドがありません"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "マニフェストに適切なアイコンが含まれていません。{value0} ピクセル以上の PNG、SVG、または WebP 形式とし、sizes 属性を設定し、purpose 属性が設定されている場合は、「any」または「maskable」を含める必要があります。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "PNG、SVG、または WebP 形式で {value0} ピクセル以上の正方形のアイコンが提供されていません"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "ダウンロードしたアイコンが空か、破損しています"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Play ストアの ID が提供されていません"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "ページにマニフェストの <link> URL がありません"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "一致する Service Worker が検出されませんでした。ページを再読み込みするか、現在のページの Service Worker のスコープにマニフェストのスコープと開始 URL が含まれていることを確認する必要があります。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "マニフェストに「start_url」フィールドがないため Service Worker をチェックできませんでした"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "インストール可能エラー ID「{errorId}」は認識されません"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "ページが安全な提供元から配信されていません"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "ページがメインフレームに読み込まれません"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "ページがオフラインに対応していません"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "指定されたアプリ プラットフォームは Android でサポートされていません"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "マニフェストの prefer_related_applications が true に指定されています"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "Android の Chrome の Beta チャンネルと Stable チャンネルでサポートされるのは、prefer_related_applications のみです。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "マニフェストの開始 URL が無効です"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "ウェブアプリのマニフェストはインストール可能となる要件を満たしています"
+    "message": "ウェブアプリ マニフェストと Service Worker はインストール可能となる要件を満たしています"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "マニフェストの URL にユーザー名、パスワード、またはポートが含まれています"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "ページがオフラインに対応していません。このページは、Chrome 93（2021 年 8 月の安定版リリース）以後はインストール可能と見なされません。"
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "許可"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "アドレスバーにテーマの色が設定されています。"
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName}（カスタマー サポート）"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName}（マーケティング）"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName}（ソーシャル）"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName}（動画）"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "プロダクト"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "一部のサードパーティ埋め込みは遅延読み込みできます。必要になるまで、ファサードと置き換えることをご検討ください。[詳細](https://web.dev/third-party-facades/)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{利用可能な代替ファサード: # 件}other{利用可能な代替ファサード: # 件}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "一部のサードパーティ リソースはファサードで遅延読み込みできます。"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "ファサードでのサードパーティ リソースの遅延読み込み"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "第三者"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "テスト URL（{requested}）が「{final}」にリダイレクトされているため、このページは想定どおりに読み込まれない可能性があります。2 番目の URL を直接テストしてみてください。"
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "テストしたデバイスの CPU が Lighthouse の推定より遅いようです。これは、パフォーマンス スコアに悪影響を与える可能性があります。詳しくは、[適切な CPU 速度低下乗数の調整](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)についての説明をご覧ください。"
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "ページの読み込みに時間がかかり、制限時間内に完了できませんでした。結果は不完全な場合があります。"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "メインスレッドのブロック時間"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "キャッシュの TTL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "説明"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "継続時間"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "その他"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "その他のリソース"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "スクリプト"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "必須の {artifactName} の収集は行われませんでした。"
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "ページにコンテンツが描画されませんでした。読み込みの際にブラウザ ウィンドウをフォアグラウンドのままにして、もう一度お試しください（{errorCode}）。"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "指定されたページは HTML ではありません（MIME タイプ {mimeType} として配信されています）。"
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "指定した URL は無効の可能性があります。"
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "監査を表示"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "計算ツールはこちら。"
@@ -1926,7 +2067,7 @@
     "message": "GIF を HTML5 動画として埋め込み可能なサービスにアップロードすることをご検討ください。"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "[Joomla の遅延読み込みプラグイン](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)をインストールすると、画面外の画像の読み込みを遅らせるか、遅延読み込み機能のあるテンプレートに切り替えることができます。Joomla 4.0 以降では、「Content - Lazy Loading Images」プラグインを使って、専用の遅延読み込みプラグインを有効にできます。また、[AMP プラグイン](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)の使用も検討してください。"
+    "message": "[Joomla の遅延読み込みプラグイン](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)をインストールして画面外の画像の読み込みを遅らせるか、遅延読み込み機能のあるテンプレートに切り替えてください。Joomla 4.0 より、新しい画像はすべて、コアから[自動的に](https://github.com/joomla/joomla-cms/pull/30748) `loading` 属性を取得します。"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "[重要なアセットをインラインで読み込む](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)または[重要度が低いリソースの読み込みを遅らせる](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)ために役立つ、さまざまな Joomla プラグインがあります。ただし、これらのプラグインの最適化処理によって、テンプレートやプラグインの機能が阻害されることがあります。これらのプラグインを使用する場合は、十分にテストする必要があります。"
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "より新しい画像形式を活用するには、[Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) にさまざまな第三者の拡張機能がありますので、検索してみてください。"
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[アニメーション GIF を動画に置き換えて](https://web.dev/replace-gifs-with-videos/)ウェブページの読み込みを速くし、[WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos)、[AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) などの最先端のファイル形式を使用して、圧縮効率を現在の最新の動画コーデック VP9 より 30% 以上改善することをご検討ください。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "[画像遅延読み込みプラグイン](https://octobercms.com/plugins?search=lazy)をインストールして画面外の画像の読み込みを遅らせるか、遅延読み込み機能のあるテーマに切り替えることをご検討ください。[AMP プラグイン](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)の使用もご検討ください。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "[重要なアセットをインラインで読み込む](https://octobercms.com/plugins?search=css)ために役立つさまざまなプラグインがあります。これらのプラグインは他のプラグインを阻害することがあるため、十分にテストする必要があります。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "テーマ、プラグイン、サーバー仕様はすべてサーバーの応答時間に影響します。より最適化されたテーマを探す、最適化プラグインを慎重に選ぶ、サーバーをアップグレードすることをご検討ください。October CMS でも、デベロッパーは [`Queues`](https://octobercms.com/docs/services/queues) を使用して、メールの送信など、時間のかかるタスクの処理を遅延させることができます。この方法を使用すると、ウェブ リクエストの処理が大幅に迅速化されます。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "[`show more`] ボタンなどを使用して投稿リストに抜粋を表示する、所定のウェブページに表示する投稿の数を減らず、長い投稿を複数のページに分けて表示する、またはコメントを遅延読み込みするプラグインを使用することをご検討ください。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "スタイルを結合、軽量化、圧縮してウェブサイトの動作を速くする、さまざまな[プラグイン](https://octobercms.com/plugins?search=css)があります。ビルドプロセスで事前にこの軽量化を行っておくと、開発時間を短縮できます。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "スクリプトを結合、軽量化、圧縮してウェブサイトの動作を速くする、さまざまな[プラグイン](https://octobercms.com/plugins?search=javascript)があります。ビルドプロセスで事前にこの軽量化を行っておくと、開発時間を短縮できます。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "ウェブサイトで使用されていない CSS を読み込んでいる[プラグイン](https://octobercms.com/plugins)を確認することをご検討ください。不要な CSS を読み込むプラグインを特定するには、Chrome デベロッパー ツールで[コード カバレッジ](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)を実行します。該当するテーマやプラグインは、スタイルシートの URL から特定できます。多くのスタイルシートを使用しているプラグイン（コード カバレッジで赤色の部分が多いもの）を探します。プラグインによって追加されるスタイルシートは、実際にウェブページで使用されるもののみにする必要があります。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "ウェブページで使用されていない JavaScript を読み込む[プラグイン](https://octobercms.com/plugins?search=javascript)を確認することをご検討ください。不要な JavaScript を読み込むプラグインを特定するには、Chrome デベロッパー ツールで[コード カバレッジ](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)を実行します。該当するテーマやプラグインは、スクリプトの URL から特定できます。多くのスクリプトを使用しているプラグイン（コード カバレッジで赤色の部分が多いもの）を探します。プラグインによって追加されるスクリプトは、実際にウェブページで使用されるもののみにする必要があります。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "[HTTP キャッシュで不要なネットワーク リクエストを防ぐ](https://web.dev/http-cache/#caching-checklist)方法についての説明をご覧ください。キャッシュ保存を高速化するためのさまざまな[プラグイン](https://octobercms.com/plugins?search=Caching)があります。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "画質を落とさずに画像を圧縮できる[画像最適化プラグイン](https://octobercms.com/plugins?search=image)の使用をご検討ください。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "メディア マネージャーに画像を直接アップロードして、必要な画像サイズを利用できるようにします。[サイズ変更フィルタ](https://octobercms.com/docs/markup/filter-resize)または[画像サイズ変更プラグイン](https://octobercms.com/plugins?search=image)を使用して、最適な画像サイズが使用されるようにすることをご検討ください。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "ウェブサーバーの設定でテキスト圧縮を有効にしてください"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "アップロードした画像を最適なフォーマットに自動変換する[プラグイン](https://octobercms.com/plugins?search=image)またはサービスの使用をご検討ください。[WebP の非可逆圧縮画像](https://developers.google.com/speed/webp)のサイズは、PNG に比べて 26%、SSIM 画質指標が同等の JPEG 画像より 25～34% 小さくなります。検討すべきもう 1 つの次世代画像形式は [AVIF](https://jakearchibald.com/2020/avif-has-landed/) です。"
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "ページに多くの繰り返し要素をレンダリングする場合は、作成される DOM ノードの数が最小限で済むように、`react-window` などの「ウィンドウ設定」用のライブラリを使用することを検討してください。[詳細](https://web.dev/virtualize-long-lists-react-window/)また、ランタイム パフォーマンスの向上に `Effect` フックを使用している場合は、[`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action)、[`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent)、または [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) を使用した不要な再レンダリングを抑えるとともに、特定の依存関係が変化するところまでのみ[効果をスキップ](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)します。"
+    "message": "ページに多くの繰り返し要素をレンダリングする場合は、作成される DOM ノードの数が最小限で済むように、`react-window` などの「ウィンドウ処理」用のライブラリを使用することを検討してください。[詳細](https://web.dev/virtualize-long-lists-react-window/)をご確認ください。また、ランタイム パフォーマンスの向上に `Effect` フックを使用している場合は、[`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action)、[`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent)、または [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) を使用した不要な再レンダリングを抑えるとともに、特定の依存関係が変化するところまでのみ[効果をスキップ](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)します。"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "React Router を使用している場合、`<Redirect>` コンポーネントを使った[ナビゲーションのルーティング](https://reacttraining.com/react-router/web/api/Redirect)は最小限にします。"

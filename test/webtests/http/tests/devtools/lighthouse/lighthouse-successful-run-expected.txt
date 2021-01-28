@@ -380,7 +380,7 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 7.0.0
+Version: 7.0.1
 ViewportDimensions: {
   "innerWidth": 980,
   "innerHeight": 1743,
@@ -427,7 +427,7 @@ charset: pass
 color-contrast: pass
 content-width: fail
 crawlable-anchors: pass
-critical-request-chains: informative
+critical-request-chains: notApplicable
 cumulative-ad-shift: notApplicable
 cumulative-layout-shift: numeric
 custom-controls-labels: manual

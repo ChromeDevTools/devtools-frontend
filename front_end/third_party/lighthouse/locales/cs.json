@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Nežádá při načtení stránky o oprávnění ke geolokaci"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "Typ problému"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Problémy uvedené na panelu `Issues` v Chrome DevTools ukazují na nevyřešené problémy. Mohou být důsledkem selhání síťových požadavků, nedostatečného zabezpečení nebo jiných problémů v prohlížeči. Podrobnosti o jednotlivých problémech najdete na panelu Issues (Problémy) v Chrome DevTools."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Problémy byly zaprotokolovány na panelu `Issues` v Chrome DevTools"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Zablokováno kvůli zásadě pro požadavky z různých zdrojů"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "Intenzivní využívání zdrojů reklamami"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Na panelu `Issues` v Chrome DevTools nejsou žádné problémy"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Verze"
   },
@@ -717,7 +735,7 @@
     "message": "Protokol"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "Protokol HTTP/2 oproti protokolu HTTP/1.1 nabízí mnoho výhod, včetně binárních záhlaví, multiplexingu a přenášení metodou push ze serveru. [Další informace](https://web.dev/uses-http2/)"
+    "message": "Protokol HTTP/2 oproti protokolu HTTP/1.1 nabízí mnoho výhod, včetně binárních záhlaví a multiplexingu. [Další informace](https://web.dev/uses-http2/)"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 požadavek nebyl realizován pomocí protokolu HTTP/2}few{# požadavky nebyly realizovány pomocí protokolu HTTP/2}many{# požadavku nebylo realizováno pomocí protokolu HTTP/2}other{# požadavků nebylo realizováno pomocí protokolu HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "Zobrazuje obrázky se správným rozlišením"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "Aplikace je již nainstalovaná"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "Stažená ikona byla prázdná nebo poškozená"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "Příčina selhání"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Prohlížeče mohou uživatele aktivně vyzývat, aby si vaši aplikaci přidali na plochu, což může vést k vyšší míře interakce. [Další informace](https://web.dev/installable-manifest/)"
+    "message": "Service worker je technologie, která aplikaci umožňuje využívat mnoho funkcí progresivních webových aplikací, jako jsou režim offline, přidání na plochu nebo oznámení push. Při správné implementaci skriptu service worker a manifestu mohou prohlížeče uživatele aktivně vyzývat, aby si aplikaci přidali na plochu, což může vést k vyšší míře interakce. [Další informace](https://web.dev/installable-manifest/)"
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 důvod}few{# důvody}many{# důvodu}other{# důvodů}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "Manifest webové aplikace nesplňuje instalační požadavky"
+    "message": "Manifest webové aplikace nebo service worker nesplňují instalační požadavky"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "Adresa URL aplikace v Obchodu Play a ID Obchodu Play si vzájemně neodpovídají"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "Stránka je načtena v anonymním okně"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "Vlastnost „display“ v manifestu musí být „standalone“, „fullscreen“ nebo „minimal-ui“"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "Manifest obsahuje pole „display_override“ a první podporovaný režim zobrazení musí být „standalone“, „fullscreen“ nebo „minimal-ui“"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "Manifest nelze načíst, analyzovat nebo je prázdný"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "Adresa URL manifestu se během jeho načítání změnila."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "Manifest neobsahuje pole „name“ nebo „short_name“"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "Manifest neobsahuje vhodnou ikonu – je vyžadován formát PNG, SVG nebo WebP o velikosti alespoň {value0} px, musí být nastaven atribut velikostí a atribut účelu, pokud je nastaven, musí zahrnovat hodnoty „any“ nebo „maskable“."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "Žádná z dodaných ikon není čtverec o straně alespoň {value0} px ve formátu PNG, SVG nebo WebP"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "Stažená ikona byla prázdná nebo poškozená"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "K dispozici není žádné ID Obchodu Play"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "Stránka neobsahuje prvek <link> s adresou URL manifestu"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "Nebyl nalezen žádný odpovídající service worker. Je možné, že stránku budete muset načíst znovu nebo zkontrolovat, zda rozsah (scope) skriptu service worker pro aktuální stránku zahrnuje rozsah a počáteční URL (start_url) z manifestu."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "Skript service worker nelze zkontrolovat bez pole „start_url“ v manifestu"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "ID chyby nestability {errorId} nelze rozpoznat"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "Stránka se nenačítá z bezpečného zdroje"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "Stránka se nenačítá v hlavním rámci"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "Stránka nefunguje offline"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "Zadaná aplikační platforma v systému Android není podporována"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "V manifestu je zadáno prefer_related_applications: true"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "Parametr prefer_related_applications je podporován pouze v beta verzi Chromu a ve stabilních verzích v systému Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "Počáteční URL (start_url) v manifestu není platná"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "Manifest webové aplikace splňuje instalační požadavky"
+    "message": "Manifest webové aplikace a service worker splňují instalační požadavky"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "Adresa URL v manifestu obsahuje uživatelské jméno, heslo nebo port"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "Stránka nefunguje offline. Stránka nebude po vydání stabilní verze Chromu 93 v srpnu 2021 pokládána za instalovatelnou."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "Povoleno"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Nastavuje barvu motivu adresního řádku."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (zákaznická podpora)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (marketing)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (sociální sítě)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (video)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Produkt"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Některé vložené prvky třetích stran lze načíst líně. Zvažte, zda by je nebylo možné nahradit fasádou, dokud nebudou potřeba. [Další informace](https://web.dev/third-party-facades/)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{K dispozici je # alternativní fasáda}few{K dispozici jsou # alternativní fasády}many{K dispozici je # alternativní fasády}other{K dispozici je # alternativních fasád}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Některé zdroje třetích stran lze líně načíst pomocí fasády"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Líné načítání zdrojů třetích stran pomocí fasád"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Třetí strana"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Stránka se možná nenačítá očekávaným způsobem, protože testovací adresa URL ({requested}) byla přesměrována na adresu {final}. Zkuste přímo otestovat druhou URL."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "Testovací zařízení má patrně pomalejší procesor, než Lighthouse očekává. To může negativně ovlivnit skóre výkonu. Přečtěte si další informace o [kalibrování vhodného multiplikátoru zpomalení procesoru](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Stránka se načítala příliš pomalu, a test se proto do časového limitu nepodařilo dokončit. Výsledky mohou být neúplné."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Doba blokování hlavního podprocesu"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "Hodnota TTL (Time to Live) mezipaměti"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Popis"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Trvání"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Jiné"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Jiné zdroje"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Skript"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Požadovaný shromažďovací nástroj zdroje {artifactName} se nespustil."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "Stránka nevykreslila žádný obsah. Zajistěte, aby se okno prohlížeče při načítání nacházelo v popředí, a zkuste to znovu. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "Poskytnutá stránka není ve formátu HTML (byla dodána s typem MIME {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Adresa URL, kterou jste poskytli, se zdá být neplatná."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Zobrazit audity"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Zobrazit kalkulačku."
@@ -1902,10 +2043,10 @@
     "message": "Na stránce Administrace » Konfigurace » Vývoj aktivujte funkci Agregovat javascriptové soubory. Můžete také nakonfigurovat pokročilejší možnosti agregace prostřednictvím [dodatečných modulů](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search). Díky zřetězení, minifikaci a kompresi javascriptových zdrojů tak zrychlíte svůj web."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
-    "message": "Zvažte odstranění nepoužívaných pravidel CSS a k odpovídající stránce nebo komponentě stránky připojte pouze nezbytné knihovny Drupal. Podrobnosti naleznete v [dokumentaci Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Připojené knihovny, které přidávají nadbytečný kód CSS, můžete vyhledat pomocí funkce [Coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědný motiv či modul můžete identifikovat podle adresy URL šablony stylů, když je na vašem webu Drupal deaktivována agregace CSS. Hledejte motivy či moduly, které v seznamu mají mnoho šablon stylů, u nichž je při použití funkce Coverage velké množství kódu označeno červeně. Motiv či modul by měl šablonu stylů do fronty zařadit jen v případě, že se na stránce opravdu používá."
+    "message": "Zvažte odstranění nepoužívaných pravidel CSS a k odpovídající stránce nebo komponentě stránky připojte pouze nezbytné knihovny Drupal. Podrobnosti naleznete v [dokumentaci Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Připojené knihovny, které přidávají nadbytečný kód CSS, můžete vyhledat pomocí funkce [„využití kódu“](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědný motiv či modul můžete identifikovat podle adresy URL šablony stylů, když je na vašem webu Drupal deaktivována agregace CSS. Hledejte motivy či moduly, které v seznamu mají mnoho šablon stylů, u nichž je při použití funkce „využití kódu“ velké množství kódu označeno červeně. Motiv či modul by měl šablonu stylů do fronty zařadit jen v případě, že se na stránce opravdu používá."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-javascript": {
-    "message": "Zvažte odstranění nepoužívaných javascriptových zdrojů a k odpovídající stránce nebo komponentě stránky připojte pouze nezbytné knihovny Drupal. Podrobnosti naleznete v [dokumentaci Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Připojené knihovny, které přidávají nadbytečný javascriptový kód, můžete vyhledat pomocí funkce [Coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědný motiv či modul můžete identifikovat podle adresy URL skriptu, když je na vašem webu Drupal deaktivována agregace JavaScriptu. Hledejte motivy či moduly, které v seznamu mají mnoho skriptů, u nichž je při použití funkce Coverage velké množství kódu označeno červeně. Motiv či modul by měl skript do fronty zařadit jen v případě, že se na stránce opravdu používá."
+    "message": "Zvažte odstranění nepoužívaných javascriptových zdrojů a k odpovídající stránce nebo komponentě stránky připojte pouze nezbytné knihovny Drupal. Podrobnosti naleznete v [dokumentaci Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Připojené knihovny, které přidávají nadbytečný javascriptový kód, můžete vyhledat pomocí funkce [„využití kódu“](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědný motiv či modul můžete identifikovat podle adresy URL skriptu, když je na vašem webu Drupal deaktivována agregace JavaScriptu. Hledejte motivy či moduly, které v seznamu mají mnoho skriptů, u nichž je při použití funkce „využití kódu“ velké množství kódu označeno červeně. Motiv či modul by měl skript do fronty zařadit jen v případě, že se na stránce opravdu používá."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-long-cache-ttl": {
     "message": "Na stránce Administrace » Konfigurace » Vývoj nastavte možnost Maximální věk pro mezipaměť a proxy server. Přečtěte si o [mezipaměti systému Drupal a optimalizaci pro vyšší výkon](https://www.drupal.org/docs/7/managing-site-performance-and-scalability/caching-to-improve-performance/caching-overview#s-drupal-performance-resources)."
@@ -1926,7 +2067,7 @@
     "message": "Zvažte nahrání souboru GIF do služby, pomocí které ho bude možné vložit jako video HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Nainstalujte [plugin Joomla pro líné načítání](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading), který umožňuje odložit načítání obrázků mimo obrazovku, nebo přejděte na šablonu, která tuto funkci poskytuje. Od verze Joomla 4.0 lze vyhrazený plugin pro líné načítání aktivovat pomocí pluginu Content - Lazy Loading Images. Zvažte také použití [pluginu AMP](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "Nainstalujte [plugin Joomla pro líné načítání](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading), který umožňuje odložit načítání obrázků mimo obrazovku, nebo přejděte na šablonu, která tuto funkci poskytuje. Od verze Joomla 4.0 získají všechny nové obrázky atribut `loading` [automaticky](https://github.com/joomla/joomla-cms/pull/30748) z jádra."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "K dispozici je celá řada pluginů Joomla, které vám pomohou [vložit kritické zdroje přímo do kódu](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) nebo [odložit načítání méně důležitých zdrojů](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). Upozorňujeme, že optimalizace pomocí těchto pluginů může narušit funkčnost vašich šablon nebo pluginů. Bude potřeba provést důkladné testování."
@@ -1944,10 +2085,10 @@
     "message": "K dispozici je celá řada [rozšíření Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance), která váš web mohou zrychlit zřetězením, minifikací a zkomprimováním skriptů. Tuto funkci také poskytují některé šablony."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | unused-css-rules": {
-    "message": "Zvažte snížení nebo přepnutí počtu [rozšíření Joomla](https://extensions.joomla.org/), které na stránce načítají nepoužívané styly CSS. Rozšíření, která přidávají nadbytečné styly CSS, můžete vyhledat pomocí funkce [Coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědný motiv či plugin můžete identifikovat podle adresy URL šablony stylů. Hledejte pluginy, které v seznamu mají mnoho šablon stylů, u nichž je při použití funkce Coverage velké množství kódu označeno červeně. Plugin by měl šablonu stylů do fronty zařadit jen v případě, že je na stránce opravdu použita."
+    "message": "Zvažte snížení nebo přepnutí počtu [rozšíření Joomla](https://extensions.joomla.org/), které na stránce načítají nepoužívané styly CSS. Rozšíření, která přidávají nadbytečné styly CSS, můžete vyhledat pomocí funkce [„využití kódu“](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědný motiv či plugin můžete identifikovat podle adresy URL šablony stylů. Hledejte pluginy, které v seznamu mají mnoho šablon stylů, u nichž je při použití funkce „využití kódu“ velké množství kódu označeno červeně. Plugin by měl šablonu stylů do fronty zařadit jen v případě, že je na stránce opravdu použita."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | unused-javascript": {
-    "message": "Zvažte snížení nebo přepnutí počtu [rozšíření Joomla](https://extensions.joomla.org/), které na stránce načítají nepoužívaný kód JavaScript. Pluginy, které přidávají nadbytečný javascriptový kód, můžete vyhledat pomocí funkce [Coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědné rozšíření poznáte podle adresy URL skriptu. Hledejte rozšíření, která v seznamu mají mnoho skriptů, u nichž je při použití funkce Coverage velké množství kódu označeno červeně. Rozšíření by mělo skript do fronty zařadit jen v případě, že se na stránce opravdu používá."
+    "message": "Zvažte snížení nebo přepnutí počtu [rozšíření Joomla](https://extensions.joomla.org/), které na stránce načítají nepoužívaný kód JavaScript. Pluginy, které přidávají nadbytečný javascriptový kód, můžete vyhledat pomocí funkce [„využití kódu“](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědné rozšíření poznáte podle adresy URL skriptu. Hledejte rozšíření, která v seznamu mají mnoho skriptů, u nichž je při použití funkce „využití kódu“ velké množství kódu označeno červeně. Rozšíření by mělo skript do fronty zařadit jen v případě, že se na stránce opravdu používá."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-long-cache-ttl": {
     "message": "Přečtěte si o [ukládání do mezipaměti prohlížeče v systému Joomla](https://docs.joomla.org/Cache)."
@@ -2000,6 +2141,48 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Zkuste v online tržišti [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) vyhledat rozšíření třetích stran, která umožňují použití novějších formátů obrázků."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[Když animované obrázky GIF nahradí video](https://web.dev/replace-gifs-with-videos/), budou se webové stránky načítat rychleji. Zvažte použití moderních formátů, jako je [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) nebo [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), které v porovnání se současným videokodekem VP9 zvýší efektivitu komprese o více než 30 %."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Zvažte instalaci [pluginu pro líné načítání](https://octobercms.com/plugins?search=lazy), který umožňuje odložit načítání obrázků mimo obrazovku, nebo přejděte na motiv, který tuto funkci poskytuje. Zvažte také použití [pluginu AMP](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "K dispozici je celá řada pluginů, které zlepšují chod [kritických podkladů](https://octobercms.com/plugins?search=css). Tyto pluginy mohou narušit funkčnost jiných pluginů, proto byste je měli důkladně otestovat."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "Na reakční dobu serveru mají vliv motivy, pluginy a specifikace serverů. Zvažte vyhledání optimalizovaného motivu, pečlivý výběr optimalizačního modulu či upgradování serveru. Systém pro správu obsahu October vývojářům také umožňuje odložit zpracování časově náročných úloh, například odeslání e‑mailu, pomocí front ([`Queues`](https://octobercms.com/docs/services/queues)). To webové požadavky výrazně urychlí."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Zvažte zobrazování ukázek v seznamech příspěvků (např. prostřednictvím tlačítka `show more`), snížení počtu příspěvků zobrazených na jedné webové stránce, rozdělení dlouhých příspěvků na několik webových stránek nebo použití pluginu k línému načítání komentářů."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "K dispozici je řada [pluginů](https://octobercms.com/plugins?search=css), které web mohou zrychlit zřetězením, minifikací a zkomprimováním stylů. Vývoj lze urychlit použitím procesu sestavení, který tuto minifikaci provede předem."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "K dispozici je řada [pluginů](https://octobercms.com/plugins?search=javascript), které web mohou zrychlit zřetězením, minifikací a zkomprimováním skriptů. Vývoj lze urychlit použitím procesu sestavení, který tuto minifikaci provede předem."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Zvažte kontrolu [pluginů](https://octobercms.com/plugins), které na webu načítají nepoužívané styly CSS. Pluginy, které přidávají zbytečné styly CSS, můžete vyhledat pomocí přehledu [pokrytí kódu](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v Chrome DevTools. Odpovědný motiv či plugin poznáte podle adresy URL šablony stylů. Hledejte pluginy s velkým počtem šablon stylů se spoustou červené barvy v grafu využití kódu. Plugin by měl šablonu stylů přidat jen v případě, že je na stránce opravdu použita."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Zvažte kontrolu [pluginů](https://octobercms.com/plugins?search=javascript), které na webové stránce načítají nepoužívaný javascriptový kód. Pluginy, které přidávají zbytečný javascriptový kód, můžete vyhledat pomocí přehledu [pokrytí kódu](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v Chrome DevTools. Odpovědný motiv či plugin poznáte podle adresy URL skriptu. Hledejte pluginy s velkým počtem skriptů se spoustou červené barvy v grafu využití kódu. Plugin by měl přidat jen skripty, které se na webové stránce opravdu používají."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "Přečtěte si, jak [pomocí mezipaměti HTTP předcházet zbytečným síťovým požadavkům](https://web.dev/http-cache/#caching-checklist). K dispozici je řada [pluginů](https://octobercms.com/plugins?search=Caching), pomocí nichž lze ukládání do mezipaměti zrychlit."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Zvažte použití [pluginu na optimalizaci obrázků](https://octobercms.com/plugins?search=image), který obrázky komprimuje, přičemž zachovává jejich kvalitu."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "Nahrajte obrázky přímo prostřednictvím správce médií, abyste zajistili dostupnost potřebných velikostí obrázků. Zvažte použití [filtru pro změnu velikosti](https://octobercms.com/docs/markup/filter-resize) nebo [pluginu pro změnu velikosti](https://octobercms.com/plugins?search=image), abyste zajistili, že budou použity obrázky optimální velikosti."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "V konfiguraci webového serveru povolte kompresi textu."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Zvažte použití [pluginu](https://octobercms.com/plugins?search=image) nebo služby, která nahrané obrázky automaticky převede na optimální formáty. [Bezztrátové obrázky WebP](https://developers.google.com/speed/webp) jsou o 26 % menší než obrázky PNG a o 25–34 % menší než obrázky JPEG při ekvivalentním indexu kvality SSIM. Dalším formátem obrázku příští generace, který můžete zvážit, je [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "Pokud na stránce vykreslujete mnoho opakujících se prvků, zvažte použití windowingové knihovny, jako je `react-window`, která minimalizuje počet vytvářených uzlů DOM. [Další informace](https://web.dev/virtualize-long-lists-react-window/) Minimalizujte také počet překreslení pomocí funkcí [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) nebo [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo), a pokud používáte hooky `Effect`, [přeskakujte efekty](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects), dokud se nezmění určité závislosti."
   },
@@ -2043,10 +2226,10 @@
     "message": "K dispozici je celá řada [pluginů služby WordPress](https://wordpress.org/plugins/search/minify+javascript/), které váš web mohou zrychlit zřetězením, minifikací a zkomprimováním skriptů. Pokud je to možné, můžete minifikaci provést také předem pomocí procesu sestavení."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | unused-css-rules": {
-    "message": "Zvažte snížení počtu [pluginů služby WordPress](https://wordpress.org/plugins/), které na stránce načítají nevyužité styly CSS. Pluginy, které přidávají nadbytečné styly CSS, můžete vyhledat pomocí funkce [Coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědný motiv či plugin můžete identifikovat podle adresy URL šablony stylů. Hledejte pluginy, které v seznamu mají mnoho šablon stylů, u nichž je při použití funkce Coverage velké množství kódu označeno červeně. Plugin by měl šablonu stylů do fronty zařadit jen v případě, že je na stránce opravdu použita."
+    "message": "Zvažte snížení počtu [pluginů služby WordPress](https://wordpress.org/plugins/), které na stránce načítají nevyužité styly CSS. Pluginy, které přidávají nadbytečné styly CSS, můžete vyhledat pomocí funkce [„využití kódu“](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědný motiv či plugin můžete identifikovat podle adresy URL šablony stylů. Hledejte pluginy, které v seznamu mají mnoho šablon stylů, u nichž je při použití funkce „využití kódu“ velké množství kódu označeno červeně. Plugin by měl šablonu stylů do fronty zařadit jen v případě, že je na stránce opravdu použita."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | unused-javascript": {
-    "message": "Zvažte snížení počtu [pluginů služby WordPress](https://wordpress.org/plugins/), které na stránce načítají nepoužívaný kód JavaScript. Pluginy, které přidávají nadbytečný javascriptový kód, můžete vyhledat pomocí funkce [Coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědný motiv či plugin poznáte podle adresy URL skriptu. Hledejte pluginy, které v seznamu mají mnoho skriptů, u nichž je při použití funkce Coverage velké množství kódu označeno červeně. Plugin by měl skript do fronty zařadit jen v případě, že se na stránce opravdu používá."
+    "message": "Zvažte snížení počtu [pluginů služby WordPress](https://wordpress.org/plugins/), které na stránce načítají nepoužívaný kód JavaScript. Pluginy, které přidávají nadbytečný javascriptový kód, můžete vyhledat pomocí funkce [„využití kódu“](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědný motiv či plugin poznáte podle adresy URL skriptu. Hledejte pluginy, které v seznamu mají mnoho skriptů, u nichž je při použití funkce „využití kódu“ velké množství kódu označeno červeně. Plugin by měl skript do fronty zařadit jen v případě, že se na stránce opravdu používá."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-long-cache-ttl": {
     "message": "Přečtěte si o [ukládání do mezipaměti prohlížeče ve službě WordPress](https://wordpress.org/support/article/optimization/#browser-caching)."

@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Evita sol·licitar el permís de geolocalització en carregar la pàgina"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "Tipus de problema"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Els problemes registrats al tauler `Issues` de Chrome DevTools indiquen que hi ha problemes sense resoldre. Poden provenir d'errors de sol·licitud de la xarxa, de controls de seguretat insuficients i d'altres problemes del navegador. Obre el tauler Issues de Chrome DevTools per obtenir més informació sobre cada problema."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "S'han registrat problemes al tauler `Issues` de Chrome Devtools"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Bloquejat per una política de diversos orígens"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "Els anuncis utilitzen molts recursos"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "No s'han detectat problemes al tauler `Issues` de Chrome Devtools"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Versió"
   },
@@ -717,7 +735,7 @@
     "message": "Protocol"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 ofereix molts avantatges respecte a HTTP/1.1, com ara capçaleres binàries, multiplexatge i tramesa automàtica de servidor. [Obtén més informació](https://web.dev/uses-http2/)."
+    "message": "HTTP/2 ofereix molts avantatges respecte a HTTP/1.1, com ara capçaleres binàries i multiplexatge. [Obtén més informació](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{No s'ha atès 1 sol·licitud mitjançant HTTP/2}other{No s'han atès # sol·licituds mitjançant HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "Utilitza imatges amb una resolució adequada"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "L'aplicació ja està instal·lada"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "La icona baixada era buida o estava malmesa"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "Motiu de l'error"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Els navegadors poden demanar de manera proactiva als usuaris que afegeixin la teva aplicació a la pantalla d'inici, cosa que permet que hi interaccionin més. [Obtén més informació](https://web.dev/installable-manifest/)."
+    "message": "Service Worker és la tecnologia que fa possible que la teva aplicació utilitzi moltes funcions d'aplicació web progressiva, com ara funcionar sense connexió, poder afegir-se a la pàgina d'inici i mostrar notificacions automàtiques. Amb un Service Worker adequat i implementacions del fitxer de manifest, els navegadors poden demanar als usuaris de manera proactiva que afegeixin la teva aplicació a la pantalla d'inici, cosa que permet obtenir més interaccions. [Obtén més informació](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 motiu}other{# motius}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "El fitxer de manifest de l'aplicació web no compleix els requisits d'instal·lació"
+    "message": "El fitxer de manifest de l'aplicació web o el Service Worker no compleixen els requisits d'instal·lació"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "L'identificador i l'URL de l'aplicació Play Store no coincideixen"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "La pàgina es carrega en una finestra d'incògnit"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "La propietat \"display\" del fitxer de manifest ha de ser \"standalone\", \"fullscreen\" o \"minimal-ui\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "El fitxer de manifest conté el camp \"display_override\" i el primer mode de visualització admès ha de ser \"standalone\", \"fullscreen\" o \"minimal-ui\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "El fitxer de manifest no s'ha pogut obtenir, és buit o no s'ha pogut analitzar"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "L'URL del fitxer de manifest ha canviat mentre s'estava recollint el fitxer de manifest."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "El fitxer de manifest no conté cap camp \"name\" o \"short_name\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "El fitxer de manifest no conté cap icona adequada. Es requereix un format PNG, SVG o WebP de com a mínim {value0} píxels, l'atribut sizes ha d'estar establert i l'atribut purpose, si s'estableix, ha de ser \"any\" o \"maskable\"."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "No s'ha proporcionat cap icona que tingui com a mínim {value0} píxels quadrats en format PNG, SVG o WebP"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "La icona baixada era buida o estava malmesa"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "No s'ha proporcionat cap identificador de Play Store"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "La pàgina no té cap URL <link> del fitxer de manifest"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "No s'ha detectat cap Service Worker coincident. Pot ser que hagis de tornar a carregar la pàgina o comprovar que l'abast del Service Worker per a la pàgina actual englobi l'abast i l'URL d'inici del fitxer de manifest."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "No s'ha pogut comprovar el Service Worker perquè el fitxer de manifest no té cap camp \"start_url\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "No es reconeix l'identificador d'error d'instal·lació \"{errorId}\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "La pàgina no es publica des d'un origen segur"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "La pàgina no es carrega al marc principal"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "La pàgina no funciona sense connexió"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "La plataforma de l'aplicació especificada no s'admet a Android"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "El fitxer de manifest especifica prefer_related_applications: true"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "prefer_related_applications només s'admet a Chrome beta i als canals estables a Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "L'URL d'inici del fitxer de manifest no és vàlid"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "El fitxer de manifest de l'aplicació web compleix els requisits d'instal·lació"
+    "message": "El fitxer de manifest de l'aplicació web i el Service Worker no compleixen els requisits d'instal·lació"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "Un URL del fitxer de manifest conté un nom d'usuari, una contrasenya o un port"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "La pàgina no funciona sense connexió. A partir de Chrome 93, versió estable d'agost de 2021, es considerarà que la pàgina no es pot instal·lar."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "Permès"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Estableix un color temàtic per a la barra d'adreces."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (històries d'èxit)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (màrqueting)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (social)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (vídeo)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Producte"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Pot ser que algunes insercions de tercers es carreguin lentament. Pots substituir-les per una façana fins que s'hagin de fer servir. [Obtén més informació](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{# alternativa de façana disponible}other{# alternatives de façana disponibles}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Pot ser que alguns recursos de tercers es carreguin lentament amb una façana"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Carrega lentament recursos externs amb façanes"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Tercers"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "És possible que la pàgina no s'estigui carregant com s'esperava perquè s'ha redirigit el teu URL de prova ({requested}) a {final}. Intenta provar el segon URL directament."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "Sembla que el dispositiu provat té una CPU més lenta que la que espera Lighthouse. Això pot repercutir negativament en el teu resultat del rendiment. Obtén més informació sobre com pots [calibrar un multiplicador de retenció de la CPU adequat](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "La pàgina s'ha carregat molt lentament i ha sobrepassat el límit de temps. És possible que els resultats siguin incomplets."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Temps de bloqueig del fil principal"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "TTL de la memòria cau"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Descripció"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Durada"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Altres"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Altres recursos"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Script"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "El recopilador obligatori {artifactName} no s'ha executat."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "La pàgina no ha renderitzat contingut. Assegura't de mantenir la finestra del navegador en primer pla durant la càrrega i torna-ho a provar. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "La pàgina proporcionada no és HTML (s'ha publicat com a tipus MIME {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Sembla que l'URL que has proporcionat no és vàlid."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Mostra les auditories"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Consulta la calculadora."
@@ -1926,7 +2067,7 @@
     "message": "Pots penjar el GIF en un servei que permeti inserir-lo com un vídeo HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Instal·la un [connector de Joomla de càrrega lenta](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) que t'ofereixi la possibilitat d'ajornar les imatges fora de pantalla o de canviar a una plantilla que t'ofereixi aquesta funcionalitat. A partir de Joomla 4.0, es pot activar un connector de càrrega lenta dedicat utilitzant el connector \"Content - Lazy Loading Images\" (Contingut > Imatges de càrrega lenta). També pots fer servir [un connector AMP](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "Instal·la un [connector de Joomla de càrrega lenta](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) que t'ofereixi la possibilitat d'ajornar les imatges fora de pantalla o bé canvia a una plantilla que t'ofereixi aquesta funcionalitat. A partir de Joomla 4.0, totes les imatges noves obtenen [automàticament](https://github.com/joomla/joomla-cms/pull/30748) l'atribut `loading` del nucli."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "Hi ha diversos connectors de Joomla que et poden ajudar a [inserir recursos essencials](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) o a [ajornar els recursos menys importants](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). Tingues en compte que les optimitzacions que proporcionen aquests connectors poden afectar les funcions de les plantilles o dels connectors, de manera que hi hauràs de fer proves minucioses."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Pots optar per cercar diverses extensions de tercers a [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) per utilitzar formats d'imatge més nous."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[Suprimeix els GIF animats amb vídeo](https://web.dev/replace-gifs-with-videos/) per carregar les pàgines web més ràpidament i planteja't l'opció d'utilitzar formats de fitxer moderns, com ara [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) o [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), per millorar l'eficàcia de compressió en més d'un 30% respecte al còdec de vídeo actual més avançat, VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Pots instal·lar un [connector de càrrega lenta d'imatges](https://octobercms.com/plugins?search=lazy) que t'ofereixi la possibilitat d'ajornar les imatges fora de pantalla o bé canviar a un tema que t'ofereixi aquesta funcionalitat. També pots fer servir [el connector AMP](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "Hi ha molts connectors que ajuden a [inserir recursos essencials](https://octobercms.com/plugins?search=css). Aquests connectors, però, poden malmetre altres connectors; et recomanem que els provis a fons."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "Els temes, els connectors i les especificacions del servidor contribueixen al temps de resposta del servidor. Pots buscar un tema més optimitzat, seleccionar amb cura un connector d'optimització o actualitzar el servidor. El CMS d'October també permet als desenvolupadors fer servir [`Queues`](https://octobercms.com/docs/services/queues) per ajornar el processament d'una tasca llarga, com ara enviar un correu electrònic. Això accelera enormement les sol·licituds web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Pots mostrar extractes a les llistes de publicacions (per exemple, utilitzar un botó `show more`), reduir el nombre de publicacions que es mostren en una pàgina web determinada, dividir les publicacions llargues en diverses pàgines web o utilitzar un connector per carregar lentament els comentaris."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "Hi ha molts [connectors](https://octobercms.com/plugins?search=css) que poden accelerar un lloc web mitjançant la concatenació, minimització i compressió dels estils. Utilitzar un procés de compilació per dur a terme aquesta minimització de manera anticipada pot accelerar el desenvolupament."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "Hi ha molts [connectors](https://octobercms.com/plugins?search=javascript) que poden accelerar un lloc web mitjançant la concatenació, minimització i compressió dels scripts. Utilitzar un procés de compilació per dur a terme aquesta minimització de manera anticipada pot accelerar el desenvolupament."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Pots revisar els [connectors](https://octobercms.com/plugins) que carreguen fitxers CSS que no s'utilitzen al lloc web. Per identificar aquest tipus de connectors, executa la [cobertura del codi](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) a Chrome DevTools. Identifica el tema o connector responsable de l'URL del full d'estil. Cerca connectors que tinguin molts fulls d'estil i molt de vermell a la cobertura del codi. Un connector només hauria d'afegir un full d'estil si aquest full d'estil s'utilitza a la pàgina web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Pots revisar els [connectors](https://octobercms.com/plugins?search=javascript) que carreguen fitxers JavaScript que no s'utilitzen a la pàgina web. Per identificar aquest tipus de connectors, executa la [cobertura del codi](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) a Chrome DevTools. Identifica el tema o connector responsable de l'URL de l'script. Cerca connectors que tinguin molts scripts i molt de vermell a la cobertura del codi. Un connector només hauria d'afegir un script si aquest script s'utilitza a la pàgina web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "Informa't sobre com pots [evitar sol·licituds de xarxa innecessàries amb la memòria cau HTTP](https://web.dev/http-cache/#caching-checklist). Hi ha molts [connectors](https://octobercms.com/plugins?search=Caching) que es poden utilitzar per accelerar l'emmagatzematge a la memòria cau."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Pots utilitzar un [connector d'optimització d'imatges](https://octobercms.com/plugins?search=image) per comprimir les imatges sense perdre qualitat."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "Penja imatges directament al gestor multimèdia per assegurar-te que estan disponibles les mides d'imatge necessàries. Pots utilitzar el [filtre per canviar de mida](https://octobercms.com/docs/markup/filter-resize) o un [connector per canviar la mida de la imatge](https://octobercms.com/plugins?search=image) per assegurar-te que s'utilitzen les mides d'imatge òptimes."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "Activa la compressió de text a la configuració del servidor web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Pots fer servir un [connector](https://octobercms.com/plugins?search=image) o un servei que converteixi automàticament les imatges penjades als formats òptims. [Les imatges WebP sense pèrdua](https://developers.google.com/speed/webp) són un 26% més petites en comparació amb les imatges PNG i entre un 25 i un 34% més petites que les imatges JPEG comparables a l'índex de qualitat SSIM equivalent. Un altre format d'imatge d'última generació que cal tenir en compte és [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "Pots utilitzar una biblioteca que s'obri en finestres, com ara `react-window`, per minimitzar el nombre de nodes DOM que es crea en renderitzar molts elements repetits a la pàgina. [Obtén més informació](https://web.dev/virtualize-long-lists-react-window/). Si estàs utilitzant el hook `Effect` per millorar el rendiment en temps d'execució, també pots [ometre els efectes](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) només fins que certes dependències canviïn i minimitzar les renderitzacions repetides innecessàries utilitzant [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) o [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo)."
+    "message": "Pots utilitzar una biblioteca d'enfinestrament, com ara `react-window`, per minimitzar el nombre de nodes DOM que es crea en renderitzar molts elements repetits a la pàgina. [Obtén més informació](https://web.dev/virtualize-long-lists-react-window/). Si estàs utilitzant el hook `Effect` per millorar el rendiment en temps d'execució, també pots [ometre els efectes](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) només fins que certes dependències canviïn i minimitzar les renderitzacions repetides innecessàries utilitzant [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) o [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "Si estàs utilitzant un encaminador de React, redueix l'ús del component `<Redirect>` a les [navegacions per rutes](https://reacttraining.com/react-router/web/api/Redirect)."

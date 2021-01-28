@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "పేజీ లోడ్ సమయంలో భౌగోళిక స్థానం అనుమతిని అభ్యర్థించడం నివారిస్తుంది"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "సమస్య రకం"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Chrome డెవలపర్ టూల్స్‌లో `Issues` ప్యానెల్‌కు లాగ్ చేసిన సమస్యలు పరిష్కారం కాని సమస్యలను సూచిస్తాయి. నెట్‌వర్క్ రిక్వెస్ట్ వైఫల్యాలు, తగిన మేరకు లేని సెక్యూరిటీ కంట్రోల్‌లు, ఇతర బ్రౌజర్ ఇబ్బందుల వలన అవి ఏర్పడి ఉంటాయి. ప్రతి సమస్య గురించి మరిన్ని వివరాల కోసం Chrome డెవలపర్ టూల్స్‌లోని సమస్యల ప్యానెల్‌ని తెరవండి."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Chrome డెవలపర్ టూల్స్‌లోని `Issues` ప్యానెల్‌లో సమస్యలు లాగ్ అయ్యాయి"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "క్రాస్-ఆరిజిన్ పాలసీ కారణంగా బ్లాక్ అయింది"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "యాడ్‌ల ద్వారా అధిక రిసోర్స్ వినియోగం"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Chrome డెవలపర్ టూల్స్‌లోని `Issues` ప్యానెల్‌లో సమస్యలు లేవు"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "వెర్షన్"
   },
@@ -717,7 +735,7 @@
     "message": "ప్రోటోకాల్"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 ద్వారా HTTP/1.1 కంటే ఎక్కువ ప్రయోజనాలు, అలాగే బైనరీ హెడర్‌లు, మల్టీప్లెక్సింగ్, సర్వర్ పుష్ కూడా అందించబడతాయి. [మరింత తెలుసుకోండి](https://web.dev/uses-http2/)."
+    "message": "HTTP/2 అన్నది HTTP/1.1 కంటే ఎక్కువ ప్రయోజనాలను అలాగే బైనరీ హెడర్‌లు, మల్టీప్లెక్సింగ్ కూడా అందిస్తుంది. [మరింత తెలుసుకోండి](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 అభ్యర్థన 'HTTP/2' ద్వారా అందించబడలేదు}other{# అభ్యర్థనలు 'HTTP/2' ద్వారా అందించబడలేదు}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "తగిన రిజల్యూషన్‌తో ఇమేజ్‌లను అందిస్తుంది"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "యాప్ ఇప్పటికే ఇన్‌స్టాల్ అయింది"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "డౌన్‌లోడ్ చేసిన చిహ్నం ఖాళీగా ఉంది లేదా పాడైంది"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "వైఫల్యానికి కారణం"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "మీ యాప్‌ను హోమ్ స్క్రీన్‌కు జోడించుకోవాల్సిందిగా బ్రౌజర్‌లు క్రియాశీలంగా వినియోగదారులను ప్రాంప్ట్ చేయగలవు, దీని వలన అధిక మంది జనాభాకు చేరువయ్యే అవకాశం పెరగవచ్చు. [మరింత తెలుసుకోండి](https://web.dev/installable-manifest/)."
+    "message": "'సర్వీస్ వర్కర్' సాంకేతిక పరిజ్ఞానం సహాయంతో మీ యాప్ - 'ఆఫ్‌లైన్ వినియోగం', 'హోమ్ స్క్రీన్‌కు యాడ్ చేయడం', 'పుష్ నోటిఫికేషన్‌లు' లాంటి అనేక ప్రోగ్రెసివ్ వెబ్ యాప్ ఫీచర్‌లను ఉపయోగించగలుగుతుంది. తగిన సర్వీస్ వర్కర్ మరియు మ్యానిఫెస్ట్ అమలు విధానాలతో, బ్రౌజర్‌లు మీ యాప్‌ను తమ హోమ్‌స్క్రీన్‌కు యాడ్ చేయడానికి చాలా యాక్టివ్‌గా వినియోగదారులను ప్రాంప్ట్ చేయగలవు, దీని వలన అధిక మంది జనాభాకు చేరువయ్యే అవకాశం పెరగవచ్చు. [మరింత తెలుసుకోండి](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 కారణం}other{# కారణాలు}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "ఇన్‌స్టాల్ సామర్థ్య అవసరాలకు అనుగుణంగా వెబ్ యాప్ మానిఫెస్ట్ లేదు"
+    "message": "ఇన్‌స్టాల్ సామర్థ్య అవసరాలకు అనుగుణంగా వెబ్ యాప్ మానిఫెస్ట్ లేదా సర్వీస్ వర్కర్ లేదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "Play స్టోర్ యాప్ URL, Play స్టోర్ ID మ్యాచ్ కావడం లేదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "పేజీ అజ్ఞాత విండోలో లోడ్ అయింది"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "మ్యానిఫెస్ట్ 'display' ప్రాపర్టీ తప్పనిసరిగా 'standalone', 'fullscreen' లేదా 'minimal-ui'లో ఒకటి అయి ఉండాలి"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "మ్యానిఫెస్ట్‌లో 'display_override' ఫీల్డ్ ఉంది, సపోర్ట్ ఉండే మొదటి ప్రదర్శన మోడ్ తప్పనిసరిగా 'standalone', 'fullscreen' లేదా 'minimal-ui'లో ఒకటి అయి ఉండాలి"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "మ్యానిఫెస్ట్‌ని పొందడం సాధ్యపడలేదు, ఖాళీగా ఉంది లేదా అన్వయించడం సాధ్యపడలేదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "మ్యానిఫెస్ట్‌ను డౌన్‌లోడ్ చేస్తున్న సమయంలో మ్యానిఫెస్ట్ URL మారింది."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "మ్యానిఫెస్ట్‌లో 'name' లేదా 'short_name' ఫీల్డ్‌ను అందించలేదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "మ్యానిఫెస్ట్‌లో తగిన చిహ్నం లేదు - కనీసం {value0} px ఉండే PNG, SVG లేదా WebP ఫార్మాట్ అవసరం, సైజ్‌ల లక్షణాన్ని తప్పనిసరిగా సెట్ చేయాలి, అలాగే ప్రయోజన లక్షణం, సెట్ చేసి ఉంటే, తప్పనిసరిగా \"ఏదైనా\" లేదా \"మాస్క్ ఉండేది\" ఎంపికను కలిగి ఉండాలి."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "కనీసం {value0} px స్క్వేర్‌తో PNG, SVG లేదా WebP ఫార్మాట్ చిహ్నం ఏదీ అందించలేదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "డౌన్‌లోడ్ చేసిన చిహ్నం ఖాళీగా ఉంది లేదా పాడైంది"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Play స్టోర్ IDని అందించలేదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "పేజీకి మ్యానిఫెస్ట్ <link> URL లేదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "మ్యాచ్ అవుతున్న సర్వీస్ వర్కర్ ఏదీ గుర్తించలేదు. మీరు పేజీని రీలోడ్ చేయాల్సి రావచ్చు లేదా ప్రస్తుత పేజీ కోసం సర్వీస్ వర్కర్ పరిధిలో మానిఫెస్ట్ నుండి పరిధి, ప్రారంభ URL ఉన్నాయో లేదో చూసుకోండి."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "మ్యానిఫెస్ట్‌లో 'start_url' ఫీల్డ్ లేకుండా సర్వీస్ వర్కర్‌ను తనిఖీ చేయడం సాధ్యపడదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "ఇన్‌స్టాల్ సామర్థ్యం ఎర్రర్ id '{errorId}'ని గుర్తించలేదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "పేజీని సురక్షిత ఆరిజిన్ నుండి అందించలేదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "ప్రధాన ఫ్రేమ్‌లో పేజీ లోడ్ కాలేదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "ఆఫ్‌లైన్‌లో పేజీ పని చేయదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "పేర్కొన్న అప్లికేషన్ ప్లాట్‌ఫామ్‌కు Androidలో సపోర్ట్ లేదు"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "మ్యానిఫెస్ట్ prefer_related_applicationsని ఈ విధంగా పేర్కొంటుంది: true"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "కేవలం Chrome బీటా మరియు Androidలోని స్థిర ఛానెల్‌లలో మాత్రమే prefer_related_applicationsకి సపోర్ట్ ఉంది."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "మ్యానిఫెస్ట్ ప్రారంభ URL చెల్లదు"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "ఇన్‌స్టాల్ సామర్థ్య అవసరాలకు అనుగుణంగా వెబ్ యాప్ మానిఫెస్ట్ ఉంది"
+    "message": "ఇన్‌స్టాల్ సామర్థ్య అవసరాలకు అనుగుణంగా వెబ్ యాప్ మ్యానిఫెస్ట్, సర్వీస్ వర్కర్ ఉన్నాయి"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "మ్యానిఫెస్ట్‌లోని URLలో యూజర్‌నేమ్, పాస్‌వర్డ్‌ లేదా పోర్ట్ ఉన్నాయి"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "ఆఫ్‌లైన్‌లో పేజీ పని చేయదు. Chrome 93, స్థిరమైన వెర్షన్ రిలీజ్, ఆగస్ట్ 2021 తర్వాత పేజీ ఇన్‌స్టాల్ చేయలేరు."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "అనుమతించబడింది"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "చిరునామా బార్ కోసం థీమ్ రంగు సెట్ చేయబడింది."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (కస్టమర్ విజయం)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (మార్కెటింగ్)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (సామాజికం)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (వీడియో)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "ప్రోడక్ట్"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "కొన్ని థర్డ్ పార్టీ ఎంబెడ్‌లు లేజీగా లోడ్ కావచ్చు. అవి అవసరపడే వరకు వాటిని ఫసాడ్‌తో భర్తీ చేసే అంశాన్ని పరిశీలించండి. [మరింత తెలుసుకోండి](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{# ఫసాడ్ ప్రత్యామ్నాయం అందుబాటులో ఉంది}other{# ఫసాడ్ ప్రత్యామ్నాయాలు అందుబాటులో ఉన్నాయి}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "కొన్ని థర్డ్-పార్టీ రిసోర్స్‌లను ఫసాడ్‌తో లేజీ లోడ్ చేయగలరు"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "ఫసాడ్‌లతో థర్డ్-పార్టీ రీసోర్స్‌లు లేజీ లోడ్ అవుతాయి"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "మూడవ పక్షం"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "మీ పరీక్ష URL ({requested})ను {final}కు మళ్లించినందున, పేజీ అనుకున్న విధంగా లోడ్ కాలేకపోతుండవచ్చు. నేరుగా రెండవ URLను పరీక్షించడం ట్రై చేయండి."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "పరీక్షించిన పరికరం Lighthouse ఆశించే దాని కంటే తక్కువ CPUని కలిగి ఉన్నట్లుంది. మీ పనితీరు స్కోర్‌పై ఇది ప్రతికూల ప్రభావం చూపగలదు. [సముచిత CPU నెమ్మది చలనం మల్టీప్లయర్‌ను క్యాలిబ్రేట్ చేయడం](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling) గురించి మరింత తెలుసుకోండి."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "సమయ పరిమితి లోపల పూర్తి కావడానికి పేజీ మరీ నిదానంగా లోడ్ అయ్యింది. ఫలితాలు సంపూర్ణంగా ఉండకపోవచ్చు."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "ప్రధాన థ్రెడ్ బ్లాక్ చేయబడే సమయం"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "కాష్ TTL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "వివరణ"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "వ్యవధి"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "ఇతరం"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "ఇతర రిసోర్స్‌లు"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "స్క్రిప్ట్"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "అవసరమైన '{artifactName}' గ్యాదరర్ అమలు కాలేదు."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "పేజీలోని కంటెంట్ దేనికీ పెయింట్ లేదు. బ్రౌజర్ విండోను లోడ్ చేసే సమయంలో దాన్ని తప్పకుండా ముందు భాగంలో ఉంచి, ఆ తర్వాత మళ్లీ ట్రై చేయండి. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "అందించబడిన పేజీ HTML కాదు (MIME రకం {mimeType}గా అందించబడింది)."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "మీరు అందించిన URL చెల్లనిదిగా కనిపిస్తోంది."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "ఆడిట్‌లను చూపించండి"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "కాలిక్యులేటర్‌ను చూడండి."
@@ -1926,7 +2067,7 @@
     "message": "మీ GIFను HTML5 వీడియోగా పొందుపరచడానికి అందుబాటులో ఉండేలా చేసే సర్వీస్‌కు దానిని అప్‌లోడ్ చేయవచ్చు, దాన్ని పరిశీలించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "ఏవైనా ఆఫ్‌స్క్రీన్ ఇమేజ్‌లు ఉంటే, వాటిని మినహాయించగల సామర్థ్యాన్ని అందించే, లేదా ఆ ఫంక్షనాలిటీని అందించే టెంప్లేట్‌కు స్విచ్ చేయగలిగే [లేజీ-లోడ్ Joomla ప్లగ్ఇన్](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)ను ఇన్‌స్టాల్ చేయండి. Joomla 4.0తో ప్రారంభించి, \"కంటెంట్ - లేజీ లోడింగ్ ఇమేజ్‌ల\" ప్లగ్ఇన్‌ను ఉపయోగించడం ద్వారా, ఒక ప్రత్యేకమైన లేజీ-లోడింగ్ ప్లగ్ఇన్ ఎనేబుల్ చేయబడుతుంది. అలాగే [AMP ప్లగ్ఇన్](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)ను ఉపయోగించడానికి ప్రయత్నించండి."
+    "message": "ఏవైనా ఆఫ్‌స్క్రీన్ ఇమేజ్‌లు ఉంటే, వాటిని మినహాయించగల సామర్థ్యాన్ని అందించే లేదా ఆ ఫంక్షనాలిటీని అందించే టెంప్లేట్‌కు స్విచ్ చేయగలిగే [లేజీ-లోడ్ Joomla ప్లగ్ఇన్‌](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)ను ఇన్‌స్టాల్ చేయండి. Joomla 4.0 నుండి, అన్ని కొత్త ఇమేజ్‌లు ప్రధాన భాగం నుండి [ఆటోమేటిక్‌గా](https://github.com/joomla/joomla-cms/pull/30748) `loading` లక్షణాన్ని పొందుతాయి."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "[కీలకమైన అస్సెట్‌లను ఇన్‌లైన్‌లో ఉంచడానికి](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) లేదా [తక్కువ ప్రాముఖ్యత ఉన్న రిసోర్స్‌లను మినహాయించడానికి](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) మీకు సహాయపడగల అనేక Joomla ప్లగ్ఇన్‌లు ఉన్నాయి. ఈ ప్లగ్ఇన్‌ల ద్వారా అందించబడే ఆప్టిమైజేషన్‌లు మీ టెంప్లేట్‌ల లేదా ప్లగ్ఇన్‌ల ఫీచర్‌లను విడగొట్టవచ్చని గుర్తుంచుకోండి, కనుక మీరు వీటిని బాగా పరీక్షించవలసి ఉంటుంది."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "సరికొత్త చిత్ర ఫార్మాట్‌లను అందించే వివిధ రకాల మూడవ పక్ష ఎక్స్‌టెన్షన్‌ల కోసం [Magento మార్కెట్‌ప్లేస్](https://marketplace.magento.com/catalogsearch/result/?q=webp)‌లో వెతకడానికి ప్రయత్నించండి."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "వెబ్ పేజీ మరింత వేగంగా లోడ్ కేవడానికి [యానిమేట్ చేసిన GIFలను వీడియోతో భర్తీ చేయండి](https://web.dev/replace-gifs-with-videos/), అలాగే కుదింపు సామర్థ్యాన్ని ప్రస్తుత స్టేట్-ఆఫ్-ది-ఆర్ట్ వీడియో కోడెక్, VP9 కంటే 30% ఎక్కువగా ఉంటే [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) లేదా [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) లాంటి ఆధునిక ఫైల్ ఫార్మాట్‌లను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "ఏవైనా ఆఫ్‌స్క్రీన్ ఇమేజ్‌లు ఉంటే, వాటిని మినహాయించగల సామర్థ్యాన్ని అందించే లేదా ఆ ఫంక్షనాలిటీ అందించే టెంప్లేట్‌ను స్విచ్ చేయగలిగే [ఇమేజ్ లేజీ లోడింగ్ ప్లగ్ఇన్‌](https://octobercms.com/plugins?search=lazy)ను ఇన్‌స్టాల్ చేయవచ్చు, దాన్ని పరిశీలించండి. అలాగే, [AMP ప్లగ్ఇన్‌](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)ను ఉపయోగించడం కూడా పరిశీలించండి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "[కీలకమైన అస్సెట్‌లను ఇన్‌లైన్‌లో ఉంచడానికి](https://octobercms.com/plugins?search=css) సహాయపడే అనేక ప్లగ్ఇన్‌లు ఉన్నాయి. ఈ ప్లగ్ఇన్‌లు ఇతర ప్లగ్ఇన్‌లను నిరోధించవచ్చు, కనుక మీరు వీటిని బాగా పరీక్షించవలసి ఉంటుంది."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "థీమ్‌లు, ప్లగ్ఇన్‌లు, సర్వర్ లక్షణాలన్నీ కూడా సర్వర్ ప్రతిస్పందన సమయాన్ని ప్రభావితం చేస్తాయి. చాలా జాగ్రత్తగా ఆప్టిమైజేషన్ ప్లగ్ఇన్‌ను ఎంచుకోవడం మరియు/లేదా సర్వర్‌ను అప్‌గ్రేడ్ చేయడం ద్వారా మరింత ఆప్టిమైజ్ చేసిన థీమ్‌ను కనుగొనడానికి ప్రయత్నించండి. October CMS ఇ-మెయిల్ పంపడం లాంటి సమయం తీసుకునే పనిని మినహాయించడానికి [`Queues`](https://octobercms.com/docs/services/queues)ని ఉపయోగించేందుకు డెవలపర్‌లను అనుమతిస్తుంది. ఇది వెబ్ రిక్వెస్ట్‌లను చాలా వేగవంతం చేస్తుంది."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "ఇవ్వబడిన వెబ్ పేజీలో చూపించే పోస్ట్‌ల సంఖ్యను తగ్గించడం, పొడవైన పోస్ట్‌లను అనేక పేజీలుగా విడగొట్టడం లేదా కామెంట్‌లను లేజీ-లోడ్ చేయడానికి ప్లగ్ఇన్‌ను ఉపయోగించడం ద్వారా (ఉదా. `show more` బటన్‌ను ఉపయోగించడం) పోస్ట్ లిస్ట్‌లలో సారాంశాలను చూపించవచ్చు, దాన్ని పరిశీలించండి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "స్టైల్‌లను గొలుసుగా జోడించడం, కనిష్ఠ స్థాయికి తగ్గించడం, కుదించడం ద్వారా వెబ్‌సైట్‌ను వేగవంతం చేసే అనేక [ప్లగ్ఇన్‌లు](https://octobercms.com/plugins?search=css) ఉన్నాయి. ఈ కనిష్ఠీకరణను ముందుగానే నిర్వహించడానికి బిల్డ్ ప్రాసెస్‌ను ఉపయోగించడం వలన డెవలప్‌మెంట్ వేగవంతం కాగలదు."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "స్క్రిప్ట్‌లను గొలుసుగా జోడించడం, కనిష్ఠ స్థాయికి తగ్గించడం, కుదించడం ద్వారా వెబ్‌సైట్‌ను వేగవంతం చేసే అనేక [ప్లగ్ఇన్‌లు](https://octobercms.com/plugins?search=javascript) ఉన్నాయి. ఈ కనిష్ఠీకరణను ముందుగానే నిర్వహించడానికి బిల్డ్ ప్రాసెస్‌ను ఉపయోగించడం వలన డెవలప్‌మెంట్ వేగవంతం కాగలదు."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "వెబ్‌సైట్‌లో నిరుపయోగమైన CSSని లోడ్ చేస్తున్న [ప్లగ్ఇన్‌లను](https://octobercms.com/plugins) రివ్యూ చేయవచ్చు, దాన్ని పరిశీలించండి. అనవసరమైన CSSని యాడ్ చేసే ప్లగ్ఇన్‌లను గుర్తించడానికి, Chrome డెవలపర్ టూల్స్‌లో [కోడ్ కవరేజీ](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)ని రన్ చేయండి. స్టైల్‌షీట్ URL నుండి బాధ్యత కలిగి ఉండే థీమ్/ప్లగ్ఇన్‌ని గుర్తించండి. కోడ్ కవరేజీలో ఎక్కువ ఎరుపు రంగుతో అనేక స్టైల్‌షీట్‌లను కలిగి ఉండే ప్లగ్ఇన్‌ల కోసం చూడండి. నిజంగా ప్లగ్ఇన్‌ను వెబ్ పేజీలో ఉపయోగించినప్పుడు మాత్రమే దానికి స్టైల్‌షీట్‌ను యాడ్ చేయాలి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "వెబ్ పేజీలో ఉపయోగించని JavaScriptను లోడ్ చేసే [ప్లగ్ఇన్‌లను](https://octobercms.com/plugins?search=javascript)ను రివ్యూ చేయడం పరిశీలించండి. అనవసరమైన JavaScriptను యాడ్ చేసే ప్లగ్ఇన్‌లను గుర్తించడానికి, డెవలపర్ టూల్స్‌లో [కోడ్ కవరేజీ](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)ని రన్ చేయండి. స్క్రిప్ట్ URL నుండి బాధ్యత కలిగి ఉండే థీమ్/ప్లగ్ఇన్‌ను గుర్తించండి. కోడ్ కవరేజీలో ఎక్కువ ఎరుపు రంగుతో అనేక స్క్రిప్ట్‌లను కలిగి ఉండే ప్లగ్ఇన్‌ల కోసం చూడండి. వాస్తవానికి ప్లగ్ఇన్‌ను వెబ్ పేజీలో ఉపయోగిస్తున్నప్పుడు మాత్రమే దానికి స్క్రిప్ట్‌ను యాడ్ చేయాలి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "[HTTP కాష్‌తో అనవసరమైన నెట్‌వర్క్ రిక్వెస్ట్‌లను నిరోధించడం](https://web.dev/http-cache/#caching-checklist) గురించి చదవండి. కాష్ చేయడం వేగవంతం చేయడానికి అనేక [ప్లగ్ఇన్‌లు](https://octobercms.com/plugins?search=Caching) ఉన్నాయి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "క్వాలిటీని కొనసాగిస్తూ ఇమేజ్‌లను కుదించే [ఇమేజ్ ఆప్టిమైజేషన్ ప్లగ్ఇన్‌](https://octobercms.com/plugins?search=image)ను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "అవసరమైన ఇమేజ్ సైజ్‌లు అందుబాటులో ఉన్నాయో లేదో నిర్ధారించుకోవడానికి ఇమేజ్‌లను నేరుగా మీడియా మేనేజర్‌లో అప్‌లోడ్ చేయండి. అనుకూలమైన ఇమేజ్ సైజ్‌లను ఉపయోగించేలా చూడటానికి [సైజ్ మార్పు ఫిల్టర్](https://octobercms.com/docs/markup/filter-resize) లేదా [ఇమేజ్ సైజ్ మార్పు ప్లగ్ఇన్‌](https://octobercms.com/plugins?search=image)ను ఉపయోగించేందుకు పరిశీలించండి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "వెబ్ సర్వర్ కాన్ఫిగరేషన్‌లో టెక్స్ట్ కుదింపును ఎనేబుల్ చేయండి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "అప్‌లోడ్ చేసిన ఇమేజ్‌లను అనుకూలమైన ఫార్మాట్‌లలోకి ఆటోమేటిక్‌గా మార్చే [ప్లగ్ఇన్](https://octobercms.com/plugins?search=image) లేదా సర్వీస్‌ను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి. [WebP నష్టరహిత ఇమేజ్‌లు](https://developers.google.com/speed/webp) PNG ఇమేజ్‌లతో పోల్చితే 26% తక్కువ సైజ్, JPEG ఇమేజ్‌లతో పోల్చితే 25-34% తక్కువ సైజ్ ఉంటూ సమానమైన SSIM క్వాలిటీ ఇండెక్స్‌ను కలిగి ఉంటాయి. పరిగణనలోకి తీసుకోవాల్సిన మరొక తర్వాతి తరం ఇమేజ్ ఫార్మాట్, [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "మీరు పేజీలోని అనేక రిపీట్ అయ్యే ఎలిమెంట్‌లను రెండరింగ్ చేస్తున్నట్లయితే, క్రియేట్ చేయబడే DOM నోడ్‌ల నంబర్‌ను కనిష్ఠ స్థాయికి తగ్గించడానికి, `react-window` లాంటి “విండో తరహా” లైబ్రరీని ఉపయోగించేందుకు ప్రయత్నించండి. [మరింత తెలుసుకోండి](https://web.dev/virtualize-long-lists-react-window/). అలాగే, [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), లేదా [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo)ను ఉపయోగించి అనవసరమైన రీ-రెండర్‌లను తగ్గించండి, అలాగే మీరు రన్‌టైమ్ పనితీరును మెరుగుపరచడానికి `Effect` హుక్‌ను ఉపయోగిస్తున్నప్పుడు కొన్ని ఆధారిత అంశాలు మారినప్పుడు మాత్రమే[ఎఫెక్ట్‌లను స్కిప్ చేయండి](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)."
+    "message": "మీరు పేజీలోని అనేక రిపీట్ అయ్యే ఎలిమెంట్‌లను రెండరింగ్ చేస్తున్నట్లయితే, క్రియేట్ చేసే DOM నోడ్‌ల సంఖ్యను కనిష్ఠ స్థాయికి తగ్గించడానికి, `react-window` లాంటి “విండో తరహా” లైబ్రరీని ఉపయోగించచవచ్చు, దాన్ని పరిశీలించండి. [మరింత తెలుసుకోండి](https://web.dev/virtualize-long-lists-react-window/). అలాగే, [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), లేదా [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo)ను ఉపయోగించి అనవసరమైన రీ-రెండర్‌లను తగ్గించండి, అలాగే మీరు రన్‌టైమ్ పనితీరును మెరుగుపరచడానికి `Effect` హుక్‌ను ఉపయోగిస్తున్నప్పుడు కొన్ని ఆధారిత అంశాలు మారినప్పుడు మాత్రమే[ఎఫెక్ట్‌లను స్కిప్ చేయండి](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "మీరు 'రియాక్ట్ రూటర్'ను ఉపయోగిస్తున్నట్లయితే, [మార్గం నావిగేషన్‌ల](https://reacttraining.com/react-router/web/api/Redirect) కోసం `<Redirect>` కాంపొనెంట్ వినియోగాన్ని కనీస స్థాయికి తగ్గించండి."

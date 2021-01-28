@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Nepožaduje povolenie na geolokáciu pri načítaní stránky"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "Typ problému"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Problémy zaznamenané v paneli `Issues` Nástrojov pre vývojárov v prehliadači Chrome označujú, že sú nevyriešené. Môžu pochádzať z neúspešných požiadaviek siete, nedostatočného ovládania zabezpečenia a ďalších problémov prehliadača. Viac sa o jednotlivých problémoch dozviete po otvorení panela Problémy v Nástrojoch pre vývojárov v prehliadači Chrome."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Problémy boli zaznamenané v paneli `Issues` Nástrojov pre vývojárov v prehliadači Chrome"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Blokované pravidlami pre cross origin"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "Intenzívne využívanie zdrojov reklamami"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "V paneli `Issues` Nástrojov pre vývojárov v prehliadači Chrome nie sú žiadne problémy"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Verzia"
   },
@@ -717,7 +735,7 @@
     "message": "Protokol"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 ponúka oproti HTTP/1.1 mnoho výhod vrátane binárnych hlavičiek, multiplexovania a technológie push na strane servera. [Ďalšie informácie](https://web.dev/uses-http2/)"
+    "message": "HTTP/2 ponúka v porovnaní s HTTP/1.1 mnoho výhod vrátane binárnych hlavičiek a multiplexovania. [Ďalšie informácie](https://web.dev/uses-http2/)"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 žiadosť nebola odoslaná cez HTTP/2}few{# žiadosti neboli odoslané cez HTTP/2}many{# requests not served via HTTP/2}other{# žiadostí nebolo odoslaných cez HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "Zobrazuje obrázky v príslušnom rozlíšení"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "Aplikácia je už nainštalovaná"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "Stiahnutá ikona bola prázdna alebo poškodená"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "Dôvod neúspechu"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Prehliadače môžu proaktívne vyzývať používateľov, aby si pridali vašu aplikáciu na plochu, čo môže viesť k ich lepšiemu zapojeniu. [Ďalšie informácie](https://web.dev/installable-manifest/)"
+    "message": "Obsluha je technológia, ktorá umožňuje vašej aplikácii používať mnoho funkcií progresívnej webovej aplikácie, napríklad offline režim, pridanie na plochu a upozornenia aplikácie. So správnou implementáciou obsluhy a manifestu môžu prehliadače proaktívne vyzývať používateľov, aby si pridali vašu aplikáciu na plochu, čo môže viesť k ich lepšiemu zapojeniu. [Ďalšie informácie](https://web.dev/installable-manifest/)"
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 dôvod}few{# dôvody}many{# reasons}other{# dôvodov}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "Manifest webovej aplikácie nespĺňa požiadavky na inštaláciu"
+    "message": "Manifest webovej aplikácie alebo obsluha nespĺňajú požiadavky na inštaláciu"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "Webová adresa aplikácie a jej identifikátor v Obchode Play sa nezhodujú"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "Stránka je načítaná v okne inkognito"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "Parameter manifestu „display“ musí mať hodnotu „standalone“, „fullscreen“ alebo „minimal-ui“"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "Manifest obsahuje pole „display_override“ a prvý podporovaný režim obrazovky musí mať hodnotu „standalone“, „fullscreen“ alebo „minimal-ui“"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "Manifest sa nepodarilo načítať alebo analyzovať, prípadne je prázdny"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "Počas načítavania manifestu sa zmenila jeho webová adresa."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "Manifest neobsahuje pole „name“ alebo „short_name“"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "Manifest neobsahuje vhodnú ikonu. Vyžaduje sa formát PNG, SVG alebo WebP s minimálnou veľkosťou {value0} px, musí byť nastavený atribút „sizes“ a ak je nastavený atribút „purpose“, musí zahrnovať hodnoty „any“ alebo „maskable“."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "Žiadna dodaná ikona nie je štvorec s minimálnou veľkosťou {value0} px vo formáte PNG, SVG alebo WebP"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "Stiahnutá ikona bola prázdna alebo poškodená"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Nie je uvedený identifikátor Obchodu Play"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "Stránka nemá webovú adresu <link> manifestu"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "Nezistila sa žiadna zodpovedajúca obsluha. Stránku budete musieť zrejme znova načítať. Prípadne skontrolujte, či rozsah obsluhy pre aktuálnu stránku zahrnuje rozsah a začiatočnú webovú adresu z manifestu."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "Nepodarilo sa skontrolovať obsluhu bez poľa „start_url“ v manifeste"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "Identifikátor chyby inštalácie {errorId} nebol rozpoznaný"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "Stránka sa nenačíta z bezpečného zdroja"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "Stránka nie je načítaná v hlavnom rámci"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "Stránka nefunguje offline"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "Špecifikovaná platforma aplikácie nie je v Androide podporovaná"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "Manifest špecifikuje parameter prefer_related_applications: pravda"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "Parameter prefer_related_applications je podporovaný iba v beta verzii a stabilných verziách Chromu v Androide."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "Začiatočná webová adresa manifestu nie je platná"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "Manifest webovej aplikácie spĺňa požiadavky na inštaláciu"
+    "message": "Manifest webovej aplikácie a obsluha spĺňajú požiadavky na inštaláciu"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "Webová adresa v manifeste obsahuje používateľské meno, heslo alebo port"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "Stránka nefunguje offline. Od stabilnej verzie Chromu 93 (august 2021) už stránku nebude možné inštalovať."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "Povolené"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Nastavuje farbu motívu pre panel s adresou."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (zákaznícka podpora)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (marketing)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (sociálne)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (video)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Služba"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Niektoré vložené prvky tretej strany je možné načítať odložene. Než budú požadované, zvážte ich nahradenie fasádou. [Ďalšie informácie](https://web.dev/third-party-facades/)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{K dispozícii je # alternatíva fasády}few{K dispozícii sú # alternatívy fasády}many{# facade alternatives available}other{K dispozícii je # alternatív fasády}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Niektoré zdroje tretej strany je možné odložene načítať s fasádou"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Odložené načítanie zdrojov tretej strany s fasádami"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Tretia strana"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Táto stránka sa nemusí načítavať podľa očakávaní, pretože testovacia webová adresa ({requested}) bola presmerovaná na {final}. Skúste priamo otestovať druhú webovú adresu."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "Testované zariadenie má zrejme pomalší procesor ako Lighthouse očakáva. Môže to záporne ovplyvniť vaše skóre výkonnosti. [Ďalšie informácie o kalibrácii vhodného multiplikátora spomalenia procesora](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)"
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Načítanie stránky bolo príliš pomalé, aby sa dokončilo v časovom limite. Výsledky nemusia byť úplné."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Čas blokovania hlavného vlákna"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "TTL vyrovnávacej pamäte"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Popis"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Trvanie"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Iné"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Ďalšie zdroje"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Skript"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Požadovaný zberač {artifactName} nebol spustený."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "Stránka nevykreslila žiadny obsah. Zaistite, aby bolo okno prehliadača počas načítavania v popredí, a skúste to znova. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "Poskytnutá stránka nie je vo formáte HTML (zobrazená ako typ média {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Poskytnutá webová adresa je zrejme neplatná."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Zobraziť kontroly"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Zobraziť kalkulačku"
@@ -1926,7 +2067,7 @@
     "message": "Zvážte nahranie gifu do služby, ktorá umožní jeho vloženie v podobe videa HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Nainštalujte si [doplnok Joomla na načítavanie až v poslednej chvíli](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) poskytujúci možnosť odložiť všetky obrázky mimo obrazovky alebo prepnúť na šablónu, ktorá túto funkciu poskytuje. Od verzie Joomla 4.0 je možné pomocou doplnku „Content - Lazy Loading Images“ možné aktivovať vyhradený doplnok na načítavanie až v poslednej chvíli. Tiež zvážte použitie [doplnku AMP](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "Nainštalujte si [doplnok Joomla na odložené načítavanie](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) umožňujúci odloženie načítania všetkých obrázkov mimo obrazovky alebo prejdite na šablónu, ktorá poskytuje túto funkciu. Od verzie Joomla 4.0 budú všetky nové obrázky [automaticky](https://github.com/joomla/joomla-cms/pull/30748) získavať z jadra atribút `loading`."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "Existuje niekoľko doplnkov Joomla, ktoré vám pomôžu [vložiť do textu kľúčové podklady](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) alebo [odložiť menej dôležité zdroje](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). Dávajte pozor, pretože optimalizácie poskytované týmito doplnkami môžu porušiť funkcie vašich šablón či doplnkov, takže ich budete musieť dôkladne otestovať."
@@ -1999,6 +2140,48 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Na trhovisku [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) nájdete veľké množstvo rozšírení tretích strán, ktoré podporujú nové formáty obrázkov."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[Nahraďte animované obrázky GIF videom](https://web.dev/replace-gifs-with-videos/), aby ste zrýchlili načítavanie stránok. Zvážte použitie moderných formátov súborov, napríklad [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) alebo [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), ktoré v porovnaní s aktuálnym špičkovým videokodekom VP9 zvyšujú účinnosť kompresie o viac ako 30 %."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Zvážte inštaláciu [doplnku na odložené načítavanie obrázkov](https://octobercms.com/plugins?search=lazy), ktorý umožňuje odložiť načítanie všetkých obrázkov mimo obrazovky, alebo prejdite na motív, ktorý poskytuje túto funkciu. Tiež zvážte použitie [doplnku AMP](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "Existuje mnoho doplnkov, ktoré zlepšujú fungovanie [vložených kľúčových podkladov](https://octobercms.com/plugins?search=css). Tieto doplnky môžu narušiť fungovanie iných, takže to dôsledne otestujte."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "Čas odpovede servera ovplyvňujú motívy, doplnky a jeho špecifikácie. Odporúčame nájsť optimalizovanejší motív, opatrne vybrať doplnok na optimalizáciu alebo server aktualizovať. October CMS tiež vývojárom umožňuje odložiť spracovanie časovo náročnej úlohy, napríklad odoslanie e‑mailu, pomocou funkcie [`Queues`](https://octobercms.com/docs/services/queues). To výrazne zrýchli webové požiadavky."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Zvážte zobrazovanie úryvkov v zoznamoch príspevkov (napríklad pomocou tlačidla `show more`), zníženie počtu príspevkov zobrazovaných na danej webovej stránke alebo rozdelenie dlhých príspevkov na niekoľko stránok, prípadne použitie doplnku na odložené načítanie komentárov."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "Existuje mnoho [doplnkov](https://octobercms.com/plugins?search=css), ktoré môžu zrýchliť web zreťazením, minifikáciou a kompresiou štýlov. Vývoj môžete zrýchliť pomocou procesu kompilácie, ktorý dokáže túto minifikáciu vykonať vopred."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "Existuje mnoho [doplnkov](https://octobercms.com/plugins?search=javascript), ktoré môžu zrýchliť web zreťazením, minifikáciou a kompresiou skriptov. Vývoj môžete zrýchliť pomocou procesu kompilácie, ktorý dokáže túto minifikáciu vykonať vopred."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Zvážte kontrolu [doplnkov](https://octobercms.com/plugins), ktoré na webe načítavajú nevyužité šablóny CSS. Ak chcete zistiť, ktoré to sú, spustite v Nástrojoch pre vývojárov v prehliadači Chrome [využitie kódu](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage). Z webovej adresy šablóny so štýlmi identifikujte príslušný motív alebo doplnok. Hľadajte doplnky, ktoré majú vo využití kódu mnoho šablón so štýlmi s veľkým množstvom červeného kódu. Doplnok by mal pridať šablónu so štýlmi iba v prípade, ak sa na webovej stránke skutočne použije."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Zvážte kontrolu [doplnkov](https://octobercms.com/plugins?search=javascript), ktoré do webovej stránky načítavajú nevyužitý JavaScript. Ak chcete zistiť, ktoré to sú, spustite v Nástrojoch pre vývojárov v prehliadači Chrome [využitie kódu](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage). Z webovej adresy skriptu identifikujte príslušný motív alebo doplnok. Hľadajte doplnky, ktoré majú vo využití kódu mnoho skriptov s veľkým množstvom červeného kódu. Doplnok by mal pridať skript iba v prípade, že sa na webovej stránke skutočne používa."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "Prečítajte si, ako [zabrániť nepotrebným požiadavkám siete pomocou vyrovnávacej pamäte HTTP](https://web.dev/http-cache/#caching-checklist). Existuje mnoho [doplnkov](https://octobercms.com/plugins?search=Caching), pomocou ktorých je možné zrýchliť ukladanie do vyrovnávacej pamäte."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Zvážte použitie [doplnku na optimalizáciu obrázkov](https://octobercms.com/plugins?search=image), ktorý komprimuje obrázky, ale zachová ich kvalitu."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "Obrázky nahrávajte priamo do správcu médií, aby ste tak zaistili dostupnosť ich požadovaných veľkostí. Zvážte použitie [filtra zmeny veľkosti](https://octobercms.com/docs/markup/filter-resize) alebo [doplnku na zmenu veľkosti obrázkov](https://octobercms.com/plugins?search=image), aby boli použité optimálne veľkosti obrázkov."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "Povoľte kompresiu textu v konfigurácii webového servera."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Zvážte použitie [doplnku](https://octobercms.com/plugins?search=image) alebo služby, ktorá automaticky konvertuje nahrané obrázky do optimálnych formátov. Veľkosť [bezstratových obrázkov WebP](https://developers.google.com/speed/webp) je o 26 % menšia než veľkosť obrázkov PNG a o 25 až 34 % menšia ako veľkosť porovnateľných obrázkov JPEG pri ekvivalentnom indexe kvality SSIM. Prípadne zvážte formát obrázkov ďalšej generácie [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "Ak na stránke opakovane vykresľujete určité prvky, zvážte použitie „okennej“ knižnice, ako je `react-window`, ktorá vám pomôže minimalizovať počet vytvorených uzlov DOM. [Ďalšie informácie](https://web.dev/virtualize-long-lists-react-window/) Minimalizujte aj zbytočné opakované vykresľovanie. Môžete na to použiť funkciu [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) alebo [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo). [Efekty preskakujte](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) iba v prípade, ak sa zmenili určité závislosti a zlepšujete výkonnosť počas spustenia pomocou nástroja `Effect`."

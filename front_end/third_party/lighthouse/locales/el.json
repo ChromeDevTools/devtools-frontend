@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Αποφυγή αιτήματος για άδεια εντοπισμού γεωγραφικής τοποθεσίας κατά τη φόρτωση σελίδων"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "Κατηγορία ζητήματος"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Τα ζητήματα που έχουν καταγραφεί στο πλαίσιο `Issues` στο Chrome Devtools υποδεικνύουν ότι υπάρχουν προβλήματα τα οποία δεν έχουν επιλυθεί. Μπορεί να σχετίζονται με σφάλματα αιτημάτων δικτύου, ανεπαρκή στοιχεία ελέγχου ασφαλείας ή με άλλα ζητήματα του προγράμματος περιήγησης. Ανοίξτε το πλαίσιο Ζητήματα στο Chrome DevTools για περισσότερες λεπτομέρειες σχετικά με κάθε ζήτημα."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Καταγράφηκαν ζητήματα στο πλαίσιο `Issues` στο Chrome Devtools"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Αποκλείστηκε από την πολιτική διασταυρούμενων προελεύσεων."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "Αυξημένη χρήση πόρων από διαφημίσεις"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Δεν υπάρχουν ζητήματα στο πλαίσιο `Issues` στο Chrome Devtools"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Έκδοση"
   },
@@ -717,7 +735,7 @@
     "message": "Πρωτόκολλο"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "Το HTTP/2 παρέχει περισσότερα πλεονεκτήματα σε σχέση με το HTTP/1.1, όπως οι δυαδικές κεφαλίδες, η πολυπλεξία και η λειτουργία αποστολής push από διακομιστή. [Μάθετε περισσότερα](https://web.dev/uses-http2/)."
+    "message": "Το HTTP/2 παρέχει περισσότερα πλεονεκτήματα σε σχέση με το HTTP/1.1, όπως οι δυαδικές κεφαλίδες και η πολυπλεξία. [Μάθετε περισσότερα](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 αίτημα δεν εξυπηρετήθηκε μεσω HTTP/2}other{# αιτήματα δεν εξυπηρετήθηκαν μέσω HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "Προβάλλει εικόνες με κατάλληλη ανάλυση"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "Η εφαρμογή έχει εγκατασταθεί ήδη."
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "Το εικονίδιο λήψης ήταν κενό ή κατεστραμμένο."
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "Αιτία αποτυχίας"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Τα προγράμματα περιήγησης μπορούν προληπτικά να ζητήσουν από τους χρήστες να προσθέσουν την εφαρμογή σας στην αρχική οθόνη τους, το οποίο μπορεί να οδηγήσει σε μεγαλύτερη αφοσίωση. [Μάθετε περισσότερα](https://web.dev/installable-manifest/)."
+    "message": "Το service worker είναι η τεχνολογία που επιτρέπει στην εφαρμογή σας να χρησιμοποιεί πολλές λειτουργίες προηγμένων εφαρμογών ιστού, όπως η λειτουργία εκτός σύνδεσης, η προσθήκη στην αρχική οθόνη και οι ειδοποιήσεις push. Με τη σωστή υλοποίηση service worker και μανιφέστου, τα προγράμματα περιήγησης μπορούν να ζητήσουν προληπτικά από τους χρήστες να προσθέσουν την εφαρμογή σας στην αρχική οθόνη τους, το οποίο μπορεί να οδηγήσει σε μεγαλύτερη αφοσίωση. [Μάθετε περισσότερα](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 αιτία}other{# αιτίες}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "Το μανιφέστο της εφαρμογής ιστού δεν ικανοποιεί τις απαιτήσεις εγκαταστασιμότητας"
+    "message": "Το μανιφέστο της εφαρμογής ιστού ή το service worker δεν ικανοποιούν τις απαιτήσεις εγκαταστασιμότητας"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "Το URL της εφαρμογής Play Store και το αναγνωριστικό του Play Store δεν ταιριάζουν."
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "Η σελίδα φορτώθηκε σε ένα παράθυρο ανώνυμης περιήγησης."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "Η ιδιοκτησία \"display\" θα πρέπει να είναι μία από τις εξής \"standalone\", \"fullscreen\" ή \"minimal-ui\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "Το μανιφέστο περιέχει το πεδίο \"display_override\" και η πρώτη υποστηριζόμενη μέθοδος εμφάνισης θα πρέπει να είναι μία από τις εξής \"standalone\", \"fullscreen\" ή \"minimal-ui\"."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "Δεν ήταν δυνατή η ανάκτηση του μανιφέστου, το μανιφέστο είναι κενό ή δεν ήταν δυνατή η ανάλυσή του."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "Το URL μανιφέστου άλλαξε κατά τη λήψη του μανιφέστου."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "Το μανιφέστο δεν περιέχει το πεδίο \"name\" η \"short_name\"."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "Το μανιφέστο δεν περιέχει κατάλληλο εικονίδιο. Απαιτείται μορφή PNG, SVG ή WebP, μεγέθους τουλάχιστον {value0} px. Το χαρακτηριστικό μεγέθους θα πρέπει να οριστεί και το χαρακτηριστικό σκοπού, εάν οριστεί, θα πρέπει να περιλαμβάνει τις τιμές \"any\" ή \"maskable\"."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "Κανένα παρεχόμενο εικονίδιο δεν είναι τετράγωνο μεγέθους τουλάχιστον {value0} px σε μορφή PNG, SVG ή WebP."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "Το εικονίδιο λήψης ήταν κενό ή κατεστραμμένο."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Δεν παρασχέθηκε αναγνωριστικό Play Store"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "Η σελίδα δεν περιέχει <link> URL μανιφέστου"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "Δεν εντοπίστηκε service worker που να αντιστοιχεί. Μπορεί να χρειαστεί να επαναφορτώσετε τη σελίδα ή να ελέγξετε ότι το εύρος του service worker για την τρέχουσα σελίδα περικλείει το εύρος του URL έναρξης από το μανιφέστο."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "Δεν ήταν δυνατός ο έλεγχος του service worker χωρίς πεδίο \"start_url\" στο μανιφέστο."
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "Το αναγνωριστικό σφάλματος εγκαταστασιμότητας \"{errorId}\" δεν αναγνωρίζεται."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "Η σελίδα δεν προβάλλεται από ασφαλή προέλευση."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "Η σελίδα δεν φορτώνεται στο κύριο πλαίσιο."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "Η σελίδα δεν λειτουργεί εκτός σύνδεσης."
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "Η καθορισμένη πλατφόρμα εφαρμογών δεν υποστηρίζεται σε Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "Το μανιφέστο καθορίζει prefer_related_applications: true"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "Η παράμετρος prefer_related_applications υποστηρίζεται μόνο σε κανάλια Chrome Beta και κανάλια σταθερής έκδοσης σε Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "Το URL έναρξης μανιφέστου δεν είναι έγκυρο"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "Το μανιφέστο εφαρμογής ιστού ικανοποιεί τις απαιτήσεις εγκαταστασιμότητας"
+    "message": "Το μανιφέστο της εφαρμογής ιστού και το service worker δεν ικανοποιούν τις απαιτήσεις εγκαταστασιμότητας"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "Ένα URL στο μανιφέστο περιέχει όνομα χρήστη, κωδικό πρόσβασης ή θύρα."
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "Η σελίδα δεν λειτουργεί εκτός σύνδεσης. Η σελίδα δεν θα θεωρείται ως εγκαταστάσιμη μετά τη σταθερή κυκλοφορία της έκδοσης Chrome 93 τον Αύγουστο του 2021."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "Επιτρέπεται"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Ορίζει ένα χρώμα θέματος για τη γραμμή διευθύνσεων."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (Επιτυχία πελάτη)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (Μάρκετινγκ)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (Κοινωνικά δίκτυα)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (Βίντεο)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Προϊόν"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Ορισμένες ενσωματώσεις τρίτου μέρους μπορούν να φορτωθούν αργά. Μπορείτε να τις αντικαταστήσετε με μια πρόσοψη μέχρι να ζητηθούν. [Μάθετε περισσότερα](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{# διαθέσιμη εναλλακτική επιλογή για την πρόσοψη}other{# διαθέσιμες εναλλακτικές επιλογές για την πρόσοψη}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Ορισμένοι πόροι τρίτου μέρους μπορούν να φορτωθούν αργά με μια πρόσοψη"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Αργή φόρτωση πόρων τρίτου μέρους με προσόψεις"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Τρίτο μέρος"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Η σελίδα μπορεί να μην φορτώνεται με τον αναμενόμενο τρόπο επειδή το URL δοκιμής ({requested}) ανακατευθύνθηκε στο {final}. Προσπαθήστε να δοκιμάσετε απευθείας το δεύτερο URL."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "Η δοκιμασμένη συσκευή φαίνεται να έχει πιο αργή CPU από ό,τι αναμένει το Lighthouse. Αυτό μπορεί να επηρεάσει αρνητικά τη βαθμολογία απόδοσης. Μάθετε περισσότερα σχετικά με τη [βαθμονόμηση ενός κατάλληλου πολλαπλασιαστή επιβράδυνσης CPU](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Η φόρτωση της σελίδας ήταν υπερβολικά αργή και δεν ολοκληρώθηκε εντός του χρονικού ορίου. Τα αποτελέσματα ενδέχεται να μην είναι ολοκληρωμένα."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Χρόνος αποκλεισμού κύριου νήματος"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "TTL κρυφής μνήμης"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Περιγραφή"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Διάρκεια"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Άλλο"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Άλλοι πόροι"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Σενάριο"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Δεν εκτελέστηκε η λειτουργία συγκέντρωσης για τον απαιτούμενο πόρο {artifactName}."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "Η σελίδα δεν σχεδιάζει κανένα περιεχόμενο. Βεβαιωθείτε ότι διατηρείτε το παράθυρο του προγράμματος περιήγησης στο προσκήνιο κατά τη φόρτωση και προσπαθήστε ξανά. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "Η σελίδα που καταχωρίσατε δεν είναι HTML (προβάλλεται ως τύπος MIME {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Το URL που παρείχατε φαίνεται ότι δεν είναι έγκυρο."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Εμφάνιση ελέγχων"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Προβολή αριθμομηχανής."
@@ -1926,7 +2067,7 @@
     "message": "Εξετάστε το ενδεχόμενο μεταφόρτωσης του GIF σε μια υπηρεσία η οποία θα το διαθέσει για ενσωμάτωση ως βίντεο HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Εγκαταστήστε μια [προσθήκη Joomla αργής φόρτωσης](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) η οποία παρέχει τη δυνατότητα αναβολής φόρτωσης των εικόνων εκτός οθόνης. Εναλλακτικά, χρησιμοποιήστε ένα πρότυπο που παρέχει αυτήν τη δυνατότητα. Ξεκινώντας από το Joomla 4.0, μια ειδική προσθήκη αργής φόρτωσης μπορεί να ενεργοποιηθεί μέσω χρήσης της προσθήκης Περιεχόμενο - Αργή φόρτωση εικόνων. Εξετάστε επίσης το ενδεχόμενο χρήσης μιας [προσθήκης AMP](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "Εγκαταστήστε μια προσθήκη [Joomla αργής φόρτωσης](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) η οποία παρέχει τη δυνατότητα αναβολής φόρτωσης των εικόνων εκτός οθόνης. Εναλλακτικά, χρησιμοποιήστε ένα πρότυπο που παρέχει αυτήν τη δυνατότητα. Από το Joomla 4.0, όλες οι νέες εικόνες θα λαμβάνουν [αυτόματα](https://github.com/joomla/joomla-cms/pull/30748) το χαρακτηριστικό `loading` από τη βασική ρύθμιση."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "Υπάρχουν διάφορες προσθήκες Joomla που μπορούν να σας βοηθήσουν στην [ενσωμάτωση των σημαντικών στοιχείων](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) ή στην [καθυστέρηση των λιγότερο σημαντικών πόρων](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). Λάβετε υπόψη ότι οι βελτιστοποιήσεις που παρέχονται από αυτές τις προσθήκες μπορεί να προκαλέσουν προβλήματα στις λειτουργίες των προτύπων ή των προσθηκών σας. Συνεπώς, είναι πιθανό να χρειαστεί να τις ελέγξετε προσεκτικά."
@@ -1999,6 +2140,48 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Μπορείτε να πραγματοποιήσετε αναζήτηση στο [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) για διάφορες επεκτάσεις τρίτων μερών, ώστε να αξιοποιήσετε νεότερες μορφές εικόνας."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[Αντικαταστήστε τις κινούμενες εικόνες GIF με βίντεο](https://web.dev/replace-gifs-with-videos/) για ταχύτερη φόρτωση ιστοσελίδας, ενώ μπορείτε επίσης να χρησιμοποιήσετε σύγχρονες μορφές αρχείων όπως [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) ή [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) για τη βελτίωση της απόδοσης συμπίεσης κατά περισσότερο από 30% σε σχέση με τον τρέχοντα υπερσύγχρονο κωδικοποιητή βίντεο, VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Μπορείτε να εγκαταστήσετε μια [προσθήκη αργής φόρτωσης εικόνας](https://octobercms.com/plugins?search=lazy) η οποία παρέχει τη δυνατότητα αναβολής φόρτωσης των εικόνων εκτός οθόνης. Εναλλακτικά, χρησιμοποιήστε ένα θέμα που παρέχει αυτήν τη δυνατότητα. Εξετάστε επίσης το ενδεχόμενο χρήσης της [προσθήκης AMP](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "Υπάρχουν πολλές προσθήκες που βοηθούν στην [ενσωμάτωση των σημαντικών στοιχείων](https://octobercms.com/plugins?search=css). Αυτές οι προσθήκες ενδέχεται να καταστρέψουν άλλα προσθήκες, επομένως θα πρέπει να τις ελέγξετε προσεκτικά."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "Τα θέματα, οι προσθήκες και οι προδιαγραφές διακομιστή συμβάλλουν στον χρόνο απόκρισης του διακομιστή. Μπορείτε να αναζητήσετε ένα περισσότερο βελτιστοποιημένο θέμα, να επιλέξετε προσεκτικά μια προσθήκη βελτιστοποίησης ή/και να αναβαθμίσετε τον διακομιστή σας. Το CMS του Οκτωβρίου επιτρέπει επίσης στους προγραμματιστές να χρησιμοποιήσουν [`Queues`](https://octobercms.com/docs/services/queues) για την αναβολή της επεξεργασίας μιας χρονοβόρας εργασίας, όπως η αποστολή ενός μηνύματος ηλεκτρονικού ταχυδρομείου. Αυτό επιταχύνει σημαντικά τα αιτήματα ιστού."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Εξετάστε το ενδεχόμενο εμφάνισης αποσπασμάτων στις λίστες αναρτήσεών σας (π.χ. χρησιμοποιώντας ένα κουμπί `show more`), μειώνοντας τον αριθμό των αναρτήσεων που εμφανίζονται σε μια συγκεκριμένη ιστοσελίδα, χωρίζοντας τις μεγάλες αναρτήσεις σε πολλές ιστοσελίδες ή χρησιμοποιώντας μια προσθήκη για φόρτωση με καθυστέρηση των σχολίων."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "Υπάρχουν πολλές [προσθήκες](https://octobercms.com/plugins?search=css) που μπορούν να αυξήσουν την ταχύτητα του ιστοτόπου σας συνενώνοντας, ελαχιστοποιώντας και συμπιέζοντας τα στιλ. Η χρήση μιας διαδικασίας κατασκευής για την εκ των προτέρων πραγματοποίηση αυτής της ελαχιστοποίησης μπορεί να επιταχύνει την ανάπτυξη."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "Υπάρχουν πολλές [προσθήκες](https://octobercms.com/plugins?search=javascript) που μπορούν να αυξήσουν την ταχύτητα του ιστοτόπου σας συνενώνοντας, ελαχιστοποιώντας και συμπιέζοντας τα σενάρια. Η χρήση μιας διαδικασίας κατασκευής για την εκ των προτέρων πραγματοποίηση αυτής της ελαχιστοποίησης μπορεί να επιταχύνει την ανάπτυξη."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Μπορείτε να χρησιμοποιήσετε τις [προσθήκες](https://octobercms.com/plugins) που φορτώνουν μη χρησιμοποιούμενο κώδικα CSS στη σελίδα σας. Για να προσδιορίσετε τις προσθήκες που προσθέτουν περιττό κώδικα CSS, εκτελέστε την [κάλυψη κώδικα](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) στο Chrome DevTools. Εντοπίστε το θέμα/την προσθήκη που ευθύνεται μέσω του URL φύλλου στιλ. Αναζητήστε προσθήκες με πολλά φύλλα στιλ στα οποία ένα μεγάλο μέρος της κάλυψης κώδικα έχει κόκκινο χρώμα. Μια προσθήκη θα πρέπει να προσθέτει ένα φύλλο στιλ, μόνο εάν χρησιμοποιείται στην ιστοσελίδα."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Μπορείτε να ελέγξετε τις [προσθήκες](https://octobercms.com/plugins?search=javascript) που φορτώνουν μη χρησιμοποιούμενα JavaScript στην ιστοσελίδα. Για να προσδιορίσετε τις προσθήκες που προσθέτουν περιττό κώδικα JavaScript, εκτελέστε την [κάλυψη κώδικα](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) στο Chrome DevTools. Προσδιορίστε το θέμα/την προσθήκη που ευθύνεται μέσω του URL του σεναρίου. Αναζητήστε προσθήκες με πολλά σενάρια στα οποία ένα μεγάλο μέρος της κάλυψης κώδικα έχει κόκκινο χρώμα. Μια προσθήκη θα πρέπει να προσθέτει ένα σενάριο, μόνο εάν χρησιμοποιείται στην ιστοσελίδα."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "Διαβάστε σχετικά με την [πρόληψη των περιττών αιτημάτων δικτύου με την Κρυφή μνήμη HTTP](https://web.dev/http-cache/#caching-checklist). Υπάρχουν πολλές [προσθήκες](https://octobercms.com/plugins?search=Caching) που μπορούν να χρησιμοποιηθούν για την επιτάχυνση της αποθήκευσης στην κρυφή μνήμη."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Εξετάστε το ενδεχόμενο να χρησιμοποιήσετε μια [προσθήκη βελτιστοποίησης εικόνων](https://octobercms.com/plugins?search=image) που συμπιέζει τις εικόνες διατηρώντας όμως την ποιότητά τους."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "Ανεβάστε εικόνες απευθείας στη διαχείριση μέσων για να διασφαλίσετε ότι τα απαιτούμενα μεγέθη εικόνων είναι διαθέσιμα. Μπορείτε να χρησιμοποιήσετε το [φίλτρο αλλαγής μεγέθους](https://octobercms.com/docs/markup/filter-resize) ή μια [προσθήκη αλλαγής μεγέθους εικόνας](https://octobercms.com/plugins?search=image) για να διασφαλίσετε ότι χρησιμοποιούνται τα βέλτιστα μεγέθη εικόνων."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "Ενεργοποίηση συμπίεσης κειμένου στη διαμόρφωση διακομιστή ιστού."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Εξετάστε το ενδεχόμενο να χρησιμοποιήσετε μια [προσθήκη](https://octobercms.com/plugins?search=image) ή μια υπηρεσία που θα μετατρέπει αυτόματα τις μεταφορτωμένες εικόνες σας στη βέλτιστη μορφή. Οι [Εικόνες WebP χωρίς απώλειες](https://developers.google.com/speed/webp) έχουν 26% μικρότερο μέγεθος σε σχέση με τις εικόνες PNG και 25-34% μικρότερο μέγεθος σε σχέση με τις συγκρίσιμες εικόνες JPEG στον αντίστοιχο δείκτη ποιότητας SSIM. Μια άλλη μορφή εικόνας επόμενης γενιάς που μπορείτε να χρησιμοποιήσετε είναι η μορφή [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
     "message": "Μπορείτε να χρησιμοποιήσετε μια βιβλιοθήκη \"παραθύρων\", όπως η `react-window` για να ελαχιστοποιήσετε τον αριθμό κόμβων DOM που δημιουργήθηκαν, εάν αποδίδετε πολλά επαναλαμβανόμενα στοιχεία στη σελίδα. [Μάθετε περισσότερα](https://web.dev/virtualize-long-lists-react-window/). Επίσης, ελαχιστοποιήστε τις περιττές εκ νέου αποδόσεις, χρησιμοποιώντας το [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) ή το [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) και [παραβλέψτε τα εφέ](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) μόνο μέχρι να αλλάξουν συγκεκριμένες εξαρτήσεις, εάν χρησιμοποιείτε το άγκιστρο `Effect` για να βελτιώσετε την απόδοση χρόνου εκτέλεσης (runtime)."

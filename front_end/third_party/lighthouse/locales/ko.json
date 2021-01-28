@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "페이지 로드 시 위치정보 권한 요청 방지하기"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "문제 유형"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Chrome Devtools의 `Issues` 패널에 로그된 문제는 아직 해결되지 않은 문제들입니다. 이러한 문제는 네트워크 요청 실패, 충분하지 않은 보안 제어를 비롯한 기타 브라우저 문제로 인해 발생할 수 있습니다. 각 문제에 관한 자세한 내용은 Chrome DevTools의 문제 패널에서 확인하세요."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "문제가 Chrome Devtools의 `Issues` 패널에 로그됨"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "교차 도메인 정책에 의해 차단됨"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "광고에서 과도한 리소스 사용"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Chrome Devtools의 `Issues` 패널에 문제 없음"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "버전"
   },
@@ -717,7 +735,7 @@
     "message": "프로토콜"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2는 HTTP/1.1에 비해 바이너리 헤더, 멀티플렉싱, 서버 푸시 등의 다양한 이점을 제공합니다. [자세히 알아보기](https://web.dev/uses-http2/)"
+    "message": "HTTP/2는 HTTP/1.1에 비해 바이너리 헤더, 멀티플렉싱 등의 다양한 이점을 제공합니다. [자세히 알아보기](https://web.dev/uses-http2/)"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{HTTP/2를 통해 게재되지 않는 요청 1건}other{HTTP/2를 통해 게재되지 않는 요청 #건}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "이미지가 적절한 해상도로 제공됨"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "앱이 이미 설치되어 있습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "다운로드된 아이콘이 비어 있거나 손상되었습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "실패 이유"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "브라우저는 사용자에게 홈 화면에 앱을 추가하라는 메시지를 사전에 표시할 수 있으며 이렇게 하면 참여도가 높아질 수 있습니다. [자세히 알아보기](https://web.dev/installable-manifest/)"
+    "message": "서비스 워커는 앱에서 오프라인, 홈 화면에 추가, 푸시 알림 등 다양한 프로그레시브 웹 앱 기능을 사용할 수 있도록 설정하는 기술입니다. 적절한 서비스 워커와 매니페스트를 구현할 경우 브라우저는 사용자에게 홈 화면에 앱을 추가하라는 메시지를 사전에 표시할 수 있으며 이렇게 하면 참여도가 높아질 수 있습니다. [자세히 알아보기](https://web.dev/installable-manifest/)"
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{이유: 1개}other{이유: #개}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "웹 앱 매니페스트가 설치 가능 요건을 충족하지 않음"
+    "message": "웹 앱 매니페스트 또는 서비스 워커가 설치 가능 요건을 충족하지 않음"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "Play 스토어 앱 URL 및 Play 스토어 ID가 일치하지 않습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "페이지가 시크릿 창에 로드되었습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "매니페스트 'display' 속성은 'standalone', 'fullscreen', 'minimal-ui' 중 하나여야 합니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "매니페스트에 'display_override' 입력란이 포함되어 있으며 첫 번째 지원되는 디스플레이 모드는 'standalone', 'fullscreen', 'minimal-ui' 중 하나여야 합니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "매니페스트를 가져올 수 없거나 비어있거나 파싱할 수 없습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "매니페스트를 가져오는 중에 매니페스트 URL이 변경되었습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "매니페스트에 'name' 또는 'short_name' 필드가 포함되어 있지 않습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "매니페스트에 적절한 아이콘이 포함되어 있지 않습니다. 아이콘은 최소 {value0}px 크기의 PNG, SVG 또는 WebP 형식으로 sizes 속성이 설정되어야 하며 purpose 속성이 설정된 경우 'any' 또는 'maskable'을 포함해야 합니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "지원되는 아이콘이 없습니다. 아이콘은 최소 {value0}px 크기의 정사각형으로 PNG, SVG 또는 WebP 형식이어야 합니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "다운로드된 아이콘이 비어 있거나 손상되었습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "제공된 Play 스토어 ID 없음"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "페이지에 매니페스트 <link> URL이 없습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "일치하는 서비스 워커가 감지되지 않았습니다. 페이지를 새로고침하거나 현재 페이지에 관한 서비스 워커의 범위가 범위와 매니페스트의 시작 URL을 포괄하는지 확인하세요."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "매니페스트에 'start_url' 필드가 없는 서비스 워크를 확인할 수 없습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "설치 가능 오류 ID ‘{errorId}’을(를) 인식할 수 없습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "페이지가 보안이 설정된 출처에서 제공되지 않았습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "메인 프레임에 페이지가 로드되지 않았습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "페이지가 오프라인에서 작동하지 않습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "지정된 애플리케이션 플랫폼이 Android에서 지원되지 않습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "매니페스트에서 다음과 같이 지정합니다. prefer_related_applications: true"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "prefer_related_applications는 Android의 Chrome 베타 및 공개 버전 채널에서만 지원됩니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "잘못된 매니페스트 시작 URL입니다."
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "웹 앱 매니페스트가 설치 가능 요건을 충족함"
+    "message": "웹 앱 매니페스트 및 서비스 워커가 설치 가능 요건을 충족함"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "매니페스트의 URL에 사용자 이름, 비밀번호 또는 포트가 포함되어 있습니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "페이지가 오프라인에서 작동하지 않습니다. Chrome 93 안정화 버전이 2021년 8월 출시된 이후에는 이 페이지가 설치 가능한 것으로 간주되지 않을 것입니다."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "허용됨"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "주소 표시줄의 테마 색상을 설정함"
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName}(고객 성공 사례)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName}(마케팅)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName}(소셜)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName}(동영상)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "제품"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "일부 타사 임베딩은 지연 로드될 수 있습니다. 필요할 때까지 파사드로 대체해 보세요. [자세히 알아보기](https://web.dev/third-party-facades/)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{대체 퍼사드 #개 사용 가능}other{대체 퍼사드 #개 사용 가능}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "일부 타사 리소스는 퍼사드와 함께 지연 로드될 수 있음"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "퍼사드로 타사 리소스 지연 로드"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "타사"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "테스트 URL({requested})이 {final}(으)로 리디렉션되었기 때문에 페이지가 예상대로 로드되지 않을 수 있습니다. 두 번째 URL을 직접 테스트해 보세요."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "테스트된 기기의 CPU가 Lighthouse의 예상보다 느린 것으로 보입니다. 이는 성능 점수에 부정적인 영향을 줄 수 있습니다. [적절한 CPU 감속 배율기 보정](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)에 관해 자세히 알아보세요."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "페이지 로드가 너무 느려 시간 제한 내에 완료되지 않았습니다. 결과가 불완전할 수 있습니다."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "기본 스레드 차단 시간"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "캐시 TTL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "설명"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "시간"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "기타"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "기타 리소스"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "스크립트"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "필수 {artifactName} 수집기가 실행되지 않았습니다."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "페이지에서 콘텐츠를 페인트하지 않았습니다. 로드 중 포그라운드에서 브라우저 창이 실행되었는지 확인 후 다시 시도해 보세요. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "입력한 페이지가 HTML이 아닙니다(MIME {mimeType} 유형으로 게시됨)."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "사용자가 제공한 URL이 잘못되었습니다."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "감사 보기"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "계산기 보기"
@@ -1926,7 +2067,7 @@
     "message": "GIF를 HTML5 동영상으로 삽입할 수 있게 해 주는 서비스에 GIF를 업로드해 보세요."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "[지연 로드 Joomla 플러그인](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)을 설치하세요. 플러그인을 통해 모든 오프스크린 이미지를 지연하거나 이 기능을 제공하는 템플릿으로 전환할 수 있습니다. Joomla 4.0부터 'Content - Lazy Loading Images' 플러그인을 사용하면 전용 지연 로드 플러그인을 사용 설정할 수 있습니다. [AMP 플러그인](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)을 사용하는 것도 고려해 보세요."
+    "message": "[지연 로드 Joomla 플러그인](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)을 설치하면 모든 오프스크린 이미지를 지연하거나 이 기능을 제공하는 템플릿으로 전환할 수 있습니다. Joomla 4.0부터 모든 새 이미지가 [자동으로](https://github.com/joomla/joomla-cms/pull/30748) 코어로부터 `loading` 속성을 받게 됩니다."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "[중요한 애셋을 인라인으로 로드](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)하거나 [덜 중요한 리소스를 지연](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)할 수 있게 도와주는 다양한 Joomla 플러그인이 있습니다. 이러한 플러그인에서 제공하는 최적화로 인해 사용 중인 템플릿 또는 플러그인의 기능이 제대로 작동하지 않을 수 있으므로 신중하게 테스트해야 합니다."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "[Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp)에서 새 이미지 형식을 활용하는 다양한 타사 확장 프로그램을 검색해 보세요."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "빠른 웹페이지 로딩을 위해서는 [애니메이션 GIF를 동영상으로 대체](https://web.dev/replace-gifs-with-videos/)하고 [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) 또는 [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)과 같은 최신 파일 형식을 사용하여 압축 효율성을 현재 최첨단으로 여겨지는 동영상 코덱 VP9 대비 30% 이상 높여 보세요."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "[이미지 지연 로드 플러그인](https://octobercms.com/plugins?search=lazy)을 설치하면 모든 오프스크린 이미지를 지연하거나 이 기능을 제공하는 테마로 전환할 수 있습니다. [AMP 플러그인](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages) 사용도 고려해 보세요."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "[중요한 애셋을 인라인하게 로드](https://octobercms.com/plugins?search=css)할 수 있도록 도와주는 다양한 플러그인이 있습니다. 이러한 플러그인으로 인해 다른 플러그인이 작동하지 않을 수 있으니 신중하게 테스트해야 합니다."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "테마, 플러그인, 서버 사양은 모두 서버 응답 시간을 길어지게 만듭니다. 더욱 최적화된 테마를 찾고, 최적화 플러그인을 신중하게 선택하고, 서버를 업그레이드해 보세요. October CMS는 또한 개발자가 [`Queues`](https://octobercms.com/docs/services/queues)을(를) 사용해 이메일 전송과 같이 시간이 많이 소모되는 작업 처리를 지연하도록 도와줍니다. 이는 웹 요청 속도를 크기 높여줍니다."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "게시물 목록에 발췌문을 표시하거나(예: `show more` 사용), 특정 웹페이지에 표시되는 게시물의 개수를 줄이거나, 길이가 긴 게시물을 여러 웹페이지로 나누거나, 플러그인을 사용하여 댓글을 지연 로드하는 것이 좋습니다."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "다양한 [플러그인](https://octobercms.com/plugins?search=css)을 사용해 스타일을 연결, 축소, 압축함으로써 웹사이트 속도를 높일 수 있습니다. 빌드 프로세스로 축소 작업을 미리 실행하면 개발 속도를 높일 수 있습니다."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "다양한 [플러그인](https://octobercms.com/plugins?search=javascript)을 사용해 스크립트를 연결, 축소, 압축함으로써 웹사이트 속도를 높일 수 있습니다. 빌드 프로세스로 축소 작업을 미리 실행하면 개발 속도를 높일 수 있습니다."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "웹사이트에서 사용되지 않는 CSS를 로드하는 [플러그인](https://octobercms.com/plugins)을 검토해 보세요. 불필요한 CSS를 추가하는 플러그인을 확인하려면 Chrome Devtools에서 [코드 범위](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)를 실행하세요. 스타일시트 URL에서 원인이 되는 테마 또는 플러그인을 확인하세요. 코드 범위에 빨간색이 많이 보이는 스타일시트가 여러 개 있는 플러그인을 찾아보세요. 플러그인은 웹페이지에서 실제 사용되는 스타일시트만 추가해야 합니다."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "웹페이지에서 사용되지 않은 자바스크립트를 로드하는 [플러그인](https://octobercms.com/plugins?search=javascript)을 검토해 보세요. 불필요한 자바스크립트를 추가시키는 플러그인을 확인하려면 Chrome Devtools에서 [코드 범위](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)를 실행하세요. 스크립트의 URL에서 이러한 현상을 유발하는 테마나 플러그인을 확인하세요. 코드 적용 범위에 빨간색이 많이 보이는 스크립트가 여러 개 있는 플러그인을 찾아보세요. 플러그인은 웹페이지에서 실제 사용되는 스크립트만 추가해야 합니다."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "[HTTP 캐시를 이용한 불필요한 네트워크 요청 예방](https://web.dev/http-cache/#caching-checklist)에 관해 알아보세요. 다양한 [플러그인](https://octobercms.com/plugins?search=Caching)을 사용하여 캐싱 속도를 높일 수 있습니다."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "품질은 유지하면서 이미지를 압축해 주는 [이미지 최적화 플러그인](https://octobercms.com/plugins?search=image)을 사용해 보세요."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "필수 이미지 크기를 사용할 수 있도록 미디어 매니저에서 직접 이미지를 업로드하세요. [크기 조절 필터](https://octobercms.com/docs/markup/filter-resize) 또는 [이미지 크기 조절 플러그인](https://octobercms.com/plugins?search=image)을 사용하여 최적의 이미지 크기를 사용하는지 확인하세요."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "웹 서버 구성에서 텍스트 압축을 사용 설정하세요."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "업로드한 이미지를 최적화된 형식으로 자동 변환해 주는 [플러그인](https://octobercms.com/plugins?search=image) 또는 서비스를 사용해 보세요. [WebP 무손실 이미지](https://developers.google.com/speed/webp)는 동등한 SSIM 품질 색인에서 PNG 이미지보다 26% 더 작고, JPEG 이미지보다 25~34% 더 작습니다. 고려해 볼 만한 또 다른 차세대 이미지 형식으로는 [AVIF](https://jakearchibald.com/2020/avif-has-landed/)가 있습니다."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "페이지에서 많은 반복 구성요소를 렌더링하는 경우 `react-window`와 같은 '창' 라이브러리를 사용하여 생성된 DOM 노드의 수를 최소화해 보세요. [자세히 알아보기](https://web.dev/virtualize-long-lists-react-window/) 또한 [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) 또는 [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo)를 사용하여 불필요한 재렌더링을 최소화하고 `Effect` 후크를 사용하는 경우 특정 종속 항목이 변경될 때까지만 [효과를 건너뛰어](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) 런타임 성능을 개선하세요."
+    "message": "페이지에서 많은 반복 구성요소를 렌더링하는 경우 `react-window`와 같은 '윈도윙' 라이브러리를 사용하여 생성된 DOM 노드의 수를 최소화해 보세요. [자세히 알아보기](https://web.dev/virtualize-long-lists-react-window/) 또한 [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) 또는 [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo)를 사용하여 불필요한 재렌더링을 최소화하고 `Effect` 후크를 사용하는 경우 특정 종속 항목이 변경될 때까지만 [효과를 건너뛰어](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) 런타임 성능을 개선하세요."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "React Router를 사용하는 경우 [경로 탐색](https://reacttraining.com/react-router/web/api/Redirect)의 `<Redirect>` 구성요소 사용량을 축소합니다."

@@ -855,7 +855,7 @@
     "message": "T̂h́ê áp̂ṕ îś âĺr̂éâd́ŷ ín̂śt̂ál̂ĺêd́"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "D̂óŵńl̂óâd́êd́ îćôń ŵáŝ ém̂ṕt̂ý ôŕ ĉór̂ŕûṕt̂éd̂"
+    "message": "Ĉóûĺd̂ ńôt́ d̂óŵńl̂óâd́ â ŕêq́ûír̂éd̂ íĉón̂ f́r̂óm̂ t́ĥé m̂án̂íf̂éŝt́"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "F̂áîĺûŕê ŕêáŝón̂"
@@ -1894,9 +1894,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "T̂h́ê ÚR̂Ĺ ŷóû h́âv́ê ṕr̂óv̂íd̂éd̂ áp̂ṕêár̂ś t̂ó b̂é îńv̂ál̂íd̂."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Ŝh́ôẃ âúd̂ít̂ś"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Ŝéê ćâĺĉúl̂át̂ór̂."

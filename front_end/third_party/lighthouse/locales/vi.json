@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Tránh yêu cầu quyền truy cập vị trí địa lý khi tải trang"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "Loại vấn đề"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Các vấn đề được ghi vào bảng điều khiển `Issues` trong công cụ cho nhà phát triển của Chrome là những vấn đề chưa giải quyết. Những vấn đề này có thể do lỗi yêu cầu mạng, do không có đủ biện pháp kiểm soát bảo mật, cũng như do các vấn đề khác của trình duyệt gây ra. Hãy mở bảng điều khiển Vấn đề trong công cụ cho nhà phát triển của Chrome để biết thêm thông tin chi tiết về từng vấn đề."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Các vấn đề được ghi vào bảng điều khiển `Issues` trong công cụ cho nhà phát triển của Chrome"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Bị chặn theo chính sách trên nhiều nguồn gốc"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "Quảng cáo sử dụng nhiều tài nguyên"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Không có vấn đề nào ở bảng điều khiển `Issues` trong công cụ cho nhà phát triển của Chrome"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Phiên bản"
   },
@@ -717,7 +735,7 @@
     "message": "Giao thức"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 mang lại nhiều lợi ích hơn HTTP/1.1, trong đó có tiêu đề nhị phân, đa hợp và máy chủ tự quyết. [Tìm hiểu thêm](https://web.dev/uses-http2/)."
+    "message": "So với HTTP/1.1 thì HTTP/2 mang lại nhiều lợi ích hơn, trong đó có khả năng đa hợp và tiêu đề nhị phân. [Tìm hiểu thêm](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{Chưa phân phát 1 yêu cầu qua HTTP/2}other{Chưa phân phát # yêu cầu qua HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "Phân phối hình ảnh có độ phân giải phù hợp"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "Ứng dụng này đã được cài đặt"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "Biểu tượng đã tải xuống bị trống hoặc hỏng"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "Lý do xảy ra lỗi"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Các trình duyệt có thể chủ động nhắc người dùng thêm ứng dụng của bạn vào màn hình chính để tăng mức độ tương tác. [Tìm hiểu thêm](https://web.dev/installable-manifest/)"
+    "message": "Trình chạy dịch vụ là công nghệ cho phép ứng dụng của bạn dùng nhiều tính năng của Ứng dụng web tiến bộ, chẳng hạn như hoạt động khi không có mạng, thêm vào màn hình chính và thông báo đẩy. Khi triển khai trình chạy dịch vụ và tệp kê khai đúng cách, trình duyệt có thể chủ động nhắc người dùng thêm ứng dụng của bạn vào màn hình chính của họ, nhờ đó có thể tăng mức độ tương tác. [Tìm hiểu thêm](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 lý do}other{# lý do}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "Tệp kê khai ứng dụng web không đáp ứng các yêu cầu về khả năng cài đặt"
+    "message": "Tệp kê khai ứng dụng web hoặc trình chạy dịch vụ không đáp ứng các yêu cầu về khả năng cài đặt"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "URL ứng dụng trong Cửa hàng Play và mã nhận dạng trong Cửa hàng Play không khớp"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "Trang được tải trong cửa sổ ẩn danh"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "Thuộc tính \"display\" của tệp kê khai phải là một trong các chế độ \"standalone\", \"fullscreen\" hoặc \"minimal-ui\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "Tệp kê khai chứa trường \"display_override\" và chế độ hiển thị được hỗ trợ đầu tiên phải là một trong các chế độ \"standalone\", \"fullscreen\" hoặc \"minimal-ui\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "Không thể tìm nạp/phân tích cú pháp tệp kê khai hoặc tệp kê khai bị trống"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "URL của tệp kê khai đã thay đổi khi đang tìm nạp tệp kê khai đó."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "Tệp kê khai không chứa trường \"name\" hoặc \"short_name\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "Tệp kê khai chứa biểu tượng không phù hợp. Yêu cầu tệp phải ở định dạng PNG, SVG hoặc WebP với kích thước tối thiểu {value0} px, thuộc tính \"sizes\" phải được đặt, còn thuộc tính \"purpose\" (nếu được đặt) phải bao gồm \"any\" hoặc \"maskable\"."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "Không có biểu tượng nào được cung cấp ở định dạng PNG, SVG hoặc WebP với kích thước tối thiểu {value0} px vuông"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "Biểu tượng đã tải xuống bị trống hoặc hỏng"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Chưa cung cấp mã nhận dạng trong Cửa hàng Play"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "Trang không có URL <link> của tệp kê khai"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "Không phát hiện thấy trình chạy dịch vụ phù hợp. Bạn có thể cần tải lại trang hoặc kiểm tra để đảm bảo rằng phạm vi của trình chạy dịch vụ cho trang hiện tại có bao gồm phạm vi và URL bắt đầu của tệp kê khai."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "Không thể kiểm tra trình chạy dịch vụ nếu không có trường \"start_url\" trong tệp kê khai"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "Không nhận ra mã lỗi liên quan đến khả năng cài đặt \"{errorId}\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "Trang không được phân phối từ một nguồn gốc an toàn"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "Trang không được tải trong khung chính"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "Trang không hoạt động khi không có mạng"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "Nền tảng ứng dụng đã chỉ định chưa được hỗ trợ trên Android"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "Tệp kê khai chỉ định prefer_related_applications: true"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "Chỉ hỗ trợ prefer_related_applications cho các kênh Chính thức và Thử nghiệm của Chrome trên Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "URL bắt đầu của tệp kê khai là không hợp lệ"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "Tệp kê khai ứng dụng web đáp ứng các yêu cầu về khả năng cài đặt"
+    "message": "Tệp kê khai ứng dụng web và trình chạy dịch vụ đáp ứng các yêu cầu về khả năng cài đặt"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "Một URL trong tệp kê khai chứa tên người dùng, mật khẩu hoặc cổng"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "Trang không hoạt động khi không có mạng. Trang này sẽ không được xem là có thể cài đặt sau khi Chrome 93 chính thức phát hành vào tháng 8 năm 2021."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "Được phép"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Đặt màu giao diện cho thanh địa chỉ."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (Sự thành công của khách hàng)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (Tiếp thị)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (Xã hội)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (Video)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Sản phẩm"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Có thể tải từng phần một số nội dung nhúng của bên thứ ba. Hãy cân nhắc thay bằng một thành phần dung lượng nhẹ cho đến khi cần đến các nội dung này. [Tìm hiểu thêm](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{Có # thành phần thay thế dung lượng nhẹ}other{Có # thành phần thay thế dung lượng nhẹ}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Có thể tải từng phần một số tài nguyên của bên thứ ba bằng một thành phần dung lượng nhẹ"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Tải từng phần các tài nguyên của bên thứ ba bằng thành phần dung lượng nhẹ"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Bên thứ ba"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Trang có thể không tải như dự kiến do URL kiểm tra của bạn ({requested}) đã được chuyển hướng tới {final}. Hãy thử kiểm tra trực tiếp URL thứ hai."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "Có vẻ như thiết bị được thử nghiệm có CPU chậm hơn mức Lighthouse mong đợi. Điều này có thể ảnh hưởng tiêu cực đến điểm hiệu suất của bạn. Tìm hiểu thêm về cách [hiệu chỉnh một hệ số giảm tốc CPU phù hợp](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Trang này tải quá chậm nên không hoàn tất được trong giới hạn thời gian. Các kết quả có thể chưa hoàn chỉnh."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Thời gian chặn chuỗi chính"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "Thời gian tồn tại (TTL) của bộ nhớ đệm"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Nội dung mô tả"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Thời lượng"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Khác"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Tài nguyên khác"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Tập lệnh"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Trình thu thập {artifactName} bắt buộc không chạy."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "Trang này chưa có nội dung nào. Hãy đảm bảo bạn hiển thị cửa sổ trình duyệt ở nền trước trong khi tải rồi thử lại. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "Trang đã cung cấp không phải là HTML (được phân phối ở dạng loại MIME {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "URL bạn cung cấp có vẻ không hợp lệ."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Hiển thị kết quả kiểm tra"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Xem máy tính."
@@ -1926,7 +2067,7 @@
     "message": "Hãy cân nhắc tải ảnh GIF lên một dịch vụ để có thể nhúng ảnh này ở dạng video HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Hãy cài đặt một [plugin tải từng phần của Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) giúp trì hoãn mọi hình ảnh ngoài màn hình, hoặc chuyển sang một mẫu cung cấp chức năng đó. Kể từ Joomla 4.0, bạn có thể bật plugin tải từng phần chuyên dụng bằng cách sử dụng plugin \"Content – Lazy Loading Images\". Ngoài ra, hãy cân nhắc sử dụng [plugin Accelerated Mobile Pages (AMP)](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "Hãy cài đặt một [trình bổ trợ tải từng phần của Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) giúp trì hoãn mọi hình ảnh ngoài màn hình, hoặc chuyển sang một mẫu cung cấp chức năng đó. Kể từ Joomla 4.0, mọi hình ảnh mới sẽ [tự động](https://github.com/joomla/joomla-cms/pull/30748) có thuộc tính`loading` nhận được từ lõi."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "Một số trình bổ trợ của Joomla có thể giúp bạn [đưa các tài sản quan trọng vào cùng dòng](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) hoặc [trì hoãn những tài nguyên ít quan trọng hơn](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). Hãy lưu ý rằng những tùy chọn tối ưu hóa mà các trình bổ trợ này cung cấp có thể phá hỏng tính năng của mẫu hoặc trình bổ trợ. Do đó, bạn cần thử nghiệm kỹ lưỡng các tùy chọn này."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Cân nhắc tìm kiếm nhiều tiện ích của bên thứ ba trên [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) để tận dụng những định dạng hình ảnh mới."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[Thay thế ảnh GIF động bằng video](https://web.dev/replace-gifs-with-videos/) để tải trang web nhanh hơn, đồng thời cân nhắc sử dụng các định dạng tệp hiện đại như [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) hay [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) để cải thiện hiệu quả nén thêm hơn 30% so với codec video tiên tiến hiện tại là VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Hãy cân nhắc cài đặt một [trình bổ trợ giúp tải hình ảnh theo từng phần](https://octobercms.com/plugins?search=lazy) để trì hoãn mọi hình ảnh ngoài màn hình, hoặc chuyển sang một giao diện cung cấp chức năng đó. Ngoài ra, hãy cân nhắc sử dụng [trình bổ trợ Accelerated Mobile Pages (AMP)](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "Có nhiều trình bổ trợ giúp [đưa các tài sản quan trọng vào cùng dòng](https://octobercms.com/plugins?search=css). Các trình bổ trợ này có thể phá hỏng những trình bổ trợ khác. Do đó, bạn nên thử nghiệm kỹ lưỡng."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "Giao diện, trình bổ trợ và thông số máy chủ đều tác động đến thời gian phản hồi của máy chủ. Hãy cân nhắc tìm một giao diện tối ưu hóa hơn, lựa chọn cẩn thận trình bổ trợ tối ưu hóa và/hoặc nâng cấp máy chủ. October CMS cũng cho phép nhà phát triển dùng [`Queues`](https://octobercms.com/docs/services/queues) để trì hoãn quá trình xử lý một nhiệm vụ tốn nhiều thời gian, chẳng hạn như gửi email. Điều này giúp tăng tốc đáng kể cho các yêu cầu web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Hãy cân nhắc hiển thị phần trích dẫn trong danh sách bài đăng (ví dụ: sử dụng nút `show more`), giảm số lượng bài đăng hiển thị trên một trang web cụ thể, chia các bài đăng dài thành nhiều trang web hoặc sử dụng một trình bổ trợ để tải bình luận theo từng phần."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "Có nhiều [trình bổ trợ](https://octobercms.com/plugins?search=css) có thể làm tăng tốc độ của trang web bằng cách ghép nối, giảm kích thước và nén các kiểu. Việc sử dụng quy trình xây dựng để thực hiện trước quá trình giảm kích thước này có thể đẩy nhanh tốc độ phát triển."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "Có nhiều [trình bổ trợ](https://octobercms.com/plugins?search=javascript) có thể làm tăng tốc độ của trang web bằng cách ghép nối, giảm kích thước và nén các tập lệnh. Việc sử dụng quy trình xây dựng để thực hiện trước quá trình giảm kích thước này có thể đẩy nhanh tốc độ phát triển."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Hãy xem xét những [trình bổ trợ](https://octobercms.com/plugins) tải tệp CSS không dùng đến trên trang web. Để xác định các trình bổ trợ thêm tệp CSS không cần thiết, hãy chạy phần [mức độ sử dụng mã](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) trong công cụ cho nhà phát triển của Chrome. Bạn có thể xác định giao diện/trình bổ trợ gây ra tình trạng này từ URL biểu định kiểu. Hãy tìm các trình bổ trợ chứa nhiều biểu định kiểu có nhiều màu đỏ trong phần mức độ sử dụng mã. Mỗi trình bổ trợ chỉ nên thêm một biểu định kiểu nếu biểu định kiểu đó thực sự được sử dụng trên trang web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Hãy xem xét những [trình bổ trợ](https://octobercms.com/plugins?search=javascript) tải các tệp JavaScript không dùng đến trên trang web. Để xác định các trình bổ trợ thêm tệp JavaScript không cần thiết, hãy chạy phần [mức độ sử dụng mã](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) trong công cụ cho nhà phát triển của Chrome. Bạn có thể xác định giao diện/trình bổ trợ gây ra tình trạng này từ URL của tập lệnh. Hãy tìm các trình bổ trợ chứa nhiều tập lệnh có nhiều màu đỏ trong phần mức độ sử dụng mã. Mỗi trình bổ trợ chỉ nên thêm một tập lệnh nếu tập lệnh đó thực sự được sử dụng trên trang web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "Hãy đọc cách [tránh những yêu cầu không cần thiết về mạng nhờ Bộ nhớ đệm HTTP](https://web.dev/http-cache/#caching-checklist). Có nhiều [trình bổ trợ](https://octobercms.com/plugins?search=Caching) mà bạn có thể dùng để tăng tốc độ lưu vào bộ nhớ đệm."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Hãy cân nhắc sử dụng một [trình bổ trợ tối ưu hóa hình ảnh](https://octobercms.com/plugins?search=image) để nén hình ảnh mà vẫn giữ được chất lượng."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "Trực tiếp tải hình ảnh lên trong trình quản lý nội dung nghe nhìn để đảm bảo có sẵn các kích thước hình ảnh theo yêu cầu. Hãy cân nhắc dùng [bộ lọc đổi kích thước](https://octobercms.com/docs/markup/filter-resize) hoặc một [trình bổ trợ đổi kích thước hình ảnh](https://octobercms.com/plugins?search=image) để đảm bảo sử dụng kích thước hình ảnh tối ưu."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "Bật tính năng nén văn bản trong cấu hình máy chủ web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Hãy cân nhắc sử dụng một [trình bổ trợ](https://octobercms.com/plugins?search=image) hoặc dịch vụ tự động chuyển đổi các hình ảnh đã tải lên sang định dạng tối ưu. [Hình ảnh ở định dạng WebP không suy hao](https://developers.google.com/speed/webp) có kích thước nhỏ hơn 26% so với hình ảnh ở định dạng PNG và 25 – 34% so với hình ảnh JPEG tương đương với chỉ số chất lượng SSIM như nhau. Một định dạng hình ảnh mới khác nên cân nhắc là [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "Hãy cân nhắc dùng một thư viện “tạo cửa sổ” như `react-window` để giảm thiểu số nút DOM được tạo nếu bạn đang hiển thị nhiều phần tử lặp lại trên trang. [Tìm hiểu thêm](https://web.dev/virtualize-long-lists-react-window/). Đồng thời, hãy giảm thiểu các thao tác hiển thị lại không cần thiết bằng [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) hoặc [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) và tùy chọn [bỏ qua hiệu ứng](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) cho đến khi một số phần phụ thuộc thay đổi, nếu bạn đang dùng `Effect` hook để cải thiện hiệu suất trong thời gian chạy."
+    "message": "Hãy cân nhắc dùng một thư viện \"tạo cửa sổ\" như `react-window` để giảm thiểu số nút DOM được tạo nếu bạn đang hiển thị nhiều phần tử lặp lại trên trang. [Tìm hiểu thêm](https://web.dev/virtualize-long-lists-react-window/). Đồng thời, hãy giảm thiểu các thao tác hiển thị lại không cần thiết bằng [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) hoặc [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) và tùy chọn [bỏ qua hiệu ứng](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) cho đến khi một số phần phụ thuộc thay đổi, nếu bạn đang dùng hook `Effect` để cải thiện hiệu suất trong thời gian chạy."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "Nếu bạn đang dùng React Router, hãy giảm thiểu mức sử dụng thành phần `<Redirect>` để [định tuyến](https://reacttraining.com/react-router/web/api/Redirect)."

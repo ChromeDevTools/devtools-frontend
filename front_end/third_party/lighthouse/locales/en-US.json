@@ -855,7 +855,7 @@
     "message": "The app is already installed"
   },
   "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
-    "message": "Downloaded icon was empty or corrupted"
+    "message": "Could not download a required icon from the manifest"
   },
   "lighthouse-core/audits/installable-manifest.js | columnValue": {
     "message": "Failure reason"
@@ -1894,9 +1894,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "The URL you have provided appears to be invalid."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Show audits"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "See calculator."

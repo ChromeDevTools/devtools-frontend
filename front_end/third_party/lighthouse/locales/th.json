@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "หลีกเลี่ยงการขอสิทธิ์เข้าถึงตำแหน่งทางภูมิศาสตร์ในการโหลดหน้าเว็บ"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "ประเภทปัญหา"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "ปัญหาต่างๆ ที่บันทึกไว้ในแผง `Issues` ในเครื่องมือสำหรับนักพัฒนาเว็บใน Chrome บ่งบอกว่าเป็นปัญหาที่ยังไม่ได้รับการแก้ไข โดยอาจมาจากคำขอเครือข่ายที่ไม่ประสบความสำเร็จ การควบคุมด้านความปลอดภัยที่ไม่เพียงพอ และข้อกังวลอื่นๆ เกี่ยวกับเบราว์เซอร์ เปิดแผง \"ปัญหา\" ในเครื่องมือสำหรับนักพัฒนาเว็บใน Chrome เพื่อดูรายละเอียดเพิ่มเติมของแต่ละปัญหา"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "บันทึกปัญหาไว้แล้วในแผง `Issues` ในเครื่องมือสำหรับนักพัฒนาเว็บใน Chrome"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "ถูกบล็อกโดยนโยบายข้ามต้นทาง"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "การใช้ทรัพยากรปริมาณมากของโฆษณา"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "ไม่พบปัญหาในแผง `Issues` ในเครื่องมือสำหรับนักพัฒนาเว็บใน Chrome"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "เวอร์ชัน"
   },
@@ -717,7 +735,7 @@
     "message": "โปรโตคอล"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 มีข้อดีที่มากกว่า HTTP/1.1 คือ ส่วนหัวแบบไบนารี การทำมัลติเพล็กซิง และการ Push ไปที่เซิร์ฟเวอร์ [ดูข้อมูลเพิ่มเติม](https://web.dev/uses-http2/)"
+    "message": "HTTP/2 มีข้อดีมากกว่า HTTP/1.1 หลายประการ เช่น การมีส่วนหัวแบบไบนารีและการมัลติเพล็กซ์ [ดูข้อมูลเพิ่มเติม](https://web.dev/uses-http2/)"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{คำขอ 1 รายการไม่ได้แสดงผ่าน HTTP/2}other{คำขอ # รายการไม่ได้แสดงผ่าน HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "แสดงรูปภาพที่มีความละเอียดเหมาะสม"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "มีการติดตั้งแอปนี้ไว้แล้ว"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "ไอคอนที่ดาวน์โหลดว่างเปล่าหรือเกิดความเสียหาย"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "เหตุผลที่ไม่สำเร็จ"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "เบราว์เซอร์แจ้งผู้ใช้อย่างชัดแจ้งให้เพิ่มแอปของคุณในหน้าจอหลัก ซึ่งจะทำให้ผู้ใช้มีส่วนร่วมเพิ่มขึ้นได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/installable-manifest/)"
+    "message": "Service Worker เป็นเทคโนโลยีที่ช่วยให้แอปของคุณใช้ฟีเจอร์ของ Progressive Web App ได้หลายฟีเจอร์ เช่น ออฟไลน์ เพิ่มไปยังหน้าจอหลัก และข้อความ Push เมื่อใช้ Service Worker และไฟล์ Manifest อย่างเหมาะสม เบราว์เซอร์จะแจ้งผู้ใช้อย่างชัดแจ้งให้เพิ่มแอปของคุณในหน้าจอหลัก ซึ่งจะทำให้ผู้ใช้มีส่วนร่วมเพิ่มขึ้นได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/installable-manifest/)"
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{เหตุผล 1 ข้อ}other{เหตุผล # ข้อ}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "ไฟล์ Manifest ของเว็บแอปไม่ตรงตามข้อกำหนดด้านความสามารถในการติดตั้ง"
+    "message": "ไฟล์ Manifest ของเว็บแอปหรือ Service Worker ไม่ตรงตามข้อกำหนดด้านความสามารถในการติดตั้ง"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "URL ของแอปใน Play Store และรหัส Play Store ไม่ตรงกัน"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "หน้าโหลดในหน้าต่างที่ไม่ระบุตัวตน"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "พร็อพเพอร์ตี้ \"การแสดงผล\" ของไฟล์ Manifest ต้องเป็นอย่างใดอย่างหนึ่งระหว่าง \"standalone\", \"fullscreen\" หรือ \"minimal-ui\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "ไฟล์ Manifest มีช่อง \"display_override\" และโหมดการแสดงผลโหมดแรกที่รองรับต้องเป็นอย่างใดอย่างหนึ่งระหว่าง \"standalone\", \"fullscreen\" หรือ \"minimal-ui\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "ดึงข้อมูลไฟล์ Manifest ไม่ได้ ไฟล์ดังกล่าวว่างเปล่า หรือแยกวิเคราะห์ไม่ได้"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "URL ของไฟล์ Manifest เปลี่ยนไปขณะดึงข้อมูลไฟล์ Manifest"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "ไฟล์ Manifest ไม่มีช่อง \"name\" หรือ \"short_name\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "ไฟล์ Manifest ไม่มีไอคอนที่เหมาะสม ซึ่งต้องอยู่ในรูปแบบ PNG, SVG หรือ WebP และมีขนาดอย่างน้อย {value0} พิกเซล ต้องตั้งค่าแอตทริบิวต์ขนาด และหากมีการตั้งค่าแอตทริบิวต์จุดประสงค์ แอตทริบิวต์นั้นต้องมี \"any\" หรือ \"maskable\" รวมอยู่ด้วย"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "ไม่ได้ให้ไอคอนที่เป็นรูปสี่เหลี่ยมจัตุรัสและมีขนาดอย่างน้อย {value0} พิกเซลในรูปแบบ PNG, SVG หรือ WebP"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "ไอคอนที่ดาวน์โหลดว่างเปล่าหรือเกิดความเสียหาย"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "ไม่ได้ระบุรหัส Play Store"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "หน้านี้ไม่มี <link> URL ของไฟล์ Manifest"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "ไม่พบ Service Worker ที่ตรงกัน คุณอาจต้องโหลดหน้านี้ซ้ำหรือตรวจสอบว่าขอบเขตของ Service Worker สำหรับหน้าปัจจุบันครอบคลุมขอบเขตและ URL เริ่มต้นจากไฟล์ Manifest"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "ตรวจสอบ Service Worker โดยไม่มีช่อง \"start_url\" ในไฟล์ Manifest ไม่ได้"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "ไม่รู้จักรหัสข้อผิดพลาดด้านความสามารถในการติดตั้ง \"{errorId}\""
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "หน้าไม่ได้แสดงผลจากต้นทางที่ปลอดภัย"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "หน้าไม่ได้โหลดในเฟรมหลัก"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "หน้าใช้งานแบบออฟไลน์ไม่ได้"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "แพลตฟอร์มแอปพลิเคชันที่ระบุไว้ใช้ไม่ได้ใน Android"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "ไฟล์ Manifest ระบุ prefer_related_applications: true"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "prefer_related_applications ใช้ได้เฉพาะใน Chrome เบต้า และเวอร์ชันเสถียรใน Android เท่านั้น"
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "URL เริ่มต้นของไฟล์ Manifest ไม่ถูกต้อง"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "ไฟล์ Manifest ของเว็บแอปตรงตามข้อกำหนดด้านความสามารถในการติดตั้ง"
+    "message": "ไฟล์ Manifest ของเว็บแอปและ Service Worker ตรงตามข้อกำหนดด้านความสามารถในการติดตั้ง"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "URL ในไฟล์ Manifest มีชื่อผู้ใช้ รหัสผ่าน หรือพอร์ต"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "หน้าใช้งานแบบออฟไลน์ไม่ได้ หน้านี้จะไม่ถือว่าติดตั้งได้หลังจาก Chrome 93 ซึ่งเป็นรุ่นที่เสถียรและเปิดตัวในเดือนสิงหาคม 2021"
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "อนุญาต"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "กำหนดสีธีมของแถบที่อยู่"
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (การสนับสนุนลูกค้า)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (การตลาด)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (โซเชียล)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (วิดีโอ)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "ผลิตภัณฑ์"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "โค้ดของบุคคลที่สามที่ฝังไว้บางโค้ดจะโหลดแบบ Lazy Loading ได้ ลองนำ Facade มาแทนโค้ดไว้จนกว่าจะต้องใช้โค้ดที่ฝังไว้ดังกล่าว [ดูข้อมูลเพิ่มเติม](https://web.dev/third-party-facades/)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{มี Facade ที่ใช้แทนได้ # รายการ}other{มี Facade ที่ใช้แทนได้ # รายการ}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "ทรัพยากรของบุคคลที่สามบางส่วนโหลดแบบ Lazy Loading ได้ด้วย Facade"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "โหลดทรัพยากรของบุคคลที่สามแบบ Lazy Loading ด้วย Facade"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "บุคคลที่สาม"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "หน้านี้อาจไม่โหลดขึ้นตามที่คาดไว้เนื่องจาก URL ทดสอบของคุณ ({requested}) มีการเปลี่ยนเส้นทางไปยัง {final} ลองทดสอบ URL ที่ 2 โดยตรง"
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "ดูเหมือนว่า CPU ของอุปกรณ์ที่ใช้ทดสอบจะช้ากว่าที่ Lighthouse คาดไว้ ซึ่งอาจส่งผลเสียต่อคะแนนประสิทธิภาพของคุณ ดูข้อมูลเพิ่มเติมเกี่ยวกับ[การปรับเทียบตัวคูณการชะลอตัวของ CPU ที่เหมาะสม](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "หน้าโหลดช้าเกินกำหนดเวลา หน้าที่โหลดมาได้อาจไม่ครบถ้วน"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "เวลาในการบล็อกเทรดหลัก"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "แคช TTL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "รายละเอียด"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "ระยะเวลา"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "อื่นๆ"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "ทรัพยากรอื่นๆ"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "สคริปต์"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "ตัวรวบรวม {artifactName} ที่จำเป็นไม่ทำงาน"
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "หน้านี้ไม่ได้แสดงเนื้อหาใดเลย โปรดตรวจสอบว่าหน้าต่างเบราว์เซอร์อยู่เบื้องหน้าเสมอระหว่างการโหลดแล้วลองอีกครั้ง ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "หน้าที่ระบุไม่ใช่ HTML (แสดงเป็นประเภท MIME {mimeType})"
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "ดูเหมือนว่า URL ที่ระบุจะไม่ถูกต้อง"
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "แสดงการตรวจสอบ"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "ดูเครื่องคิดเลข"
@@ -1926,7 +2067,7 @@
     "message": "ลองอัปโหลด GIF ไปยังบริการซึ่งจะทำให้ใช้ GIF เพื่อฝังเป็นวิดีโอ HTML5 ได้"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "ติดตั้ง[ปลั๊กอินการโหลดแบบ Lazy Loading ของ Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) ที่จะช่วยให้เลื่อนเวลาโหลดรูปภาพนอกจอภาพได้ หรือเปลี่ยนไปใช้เทมเพลตที่มีฟังก์ชันดังกล่าว ตั้งแต่ Joomla 4.0 เป็นต้นไป คุณเปิดใช้ปลั๊กอินสำหรับการโหลดแบบ Lazy Loading โดยเฉพาะได้ โดยใช้ปลั๊กอิน \"เนื้อหา - รูปภาพสำหรับการโหลดแบบ Lazy Loading\" และอาจลองใช้[ปลั๊กอิน AMP](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp) ด้วย"
+    "message": "ติดตั้ง[ปลั๊กอินการโหลดแบบ Lazy Loading ของ Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) ที่จะช่วยให้เลื่อนเวลาโหลดรูปภาพนอกจอภาพได้ หรือเปลี่ยนไปใช้เทมเพลตที่มีฟังก์ชันดังกล่าว เริ่มตั้งแต่ Joomla 4.0 เป็นต้นไป รูปภาพใหม่ทั้งหมดจะได้รับแอตทริบิวต์ `loading` จาก Core [โดยอัตโนมัติ](https://github.com/joomla/joomla-cms/pull/30748)"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "มีปลั๊กอิน Joomla หลายรายการที่ช่วยคุณ[แทรกเนื้อหาสำคัญในหน้า](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)หรือ[เลื่อนเวลาโหลดทรัพยากรที่สำคัญน้อยกว่า](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)ได้ โปรดทราบว่าการเพิ่มประสิทธิภาพที่ได้จากปลั๊กอินเหล่านี้อาจทำให้ฟีเจอร์ของเทมเพลตหรือปลั๊กอินเสียหาย คุณจึงจะต้องทดสอบปลั๊กอินเหล่านี้อย่างละเอียด"
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "ลองค้นหาใน[ตลาดกลางของ Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) เพื่อหาส่วนขยายต่างๆ ของบุคคลที่สามเพื่อใช้ประโยชน์จากรูปแบบรูปภาพที่ใหม่กว่า"
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[นำวิดีโอมาแทนที่ GIF แบบภาพเคลื่อนไหว](https://web.dev/replace-gifs-with-videos/)เพื่อให้หน้าเว็บโหลดเร็วขึ้น และลองใช้รูปแบบไฟล์สมัยใหม่ เช่น [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) หรือ [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) เพื่อปรับปรุงประสิทธิภาพในการบีบอัดมากกว่า 30% เมื่อเทียบกับ VP9 ซึ่งเป็นตัวแปลงรหัสวิดีโอที่ทันสมัยซึ่งใช้อยู่ในปัจจุบัน"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "ลองติดตั้ง[ปลั๊กอินการโหลดรูปภาพแบบ Lazy Loading](https://octobercms.com/plugins?search=lazy) ที่จะช่วยให้เลื่อนเวลาโหลดรูปภาพนอกจอภาพได้ หรือเปลี่ยนไปใช้ธีมที่มีฟังก์ชันดังกล่าว และอาจลองใช้[ปลั๊กอิน AMP](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages) ด้วย"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "มีปลั๊กอินจำนวนมากที่ช่วยให้ใช้งาน[เนื้อหาสำคัญในหน้า](https://octobercms.com/plugins?search=css)ได้ดีขึ้น ปลั๊กอินเหล่านี้อาจทำให้ปลั๊กอินอื่นๆ ทำงานผิดพลาด คุณจึงควรทดสอบอย่างละเอียดถี่ถ้วน"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "ข้อกำหนดของธีม ปลั๊กอิน และเซิร์ฟเวอร์ล้วนส่งผลต่อเวลาการตอบสนองของเซิร์ฟเวอร์ ลองหาธีมที่เพิ่มประสิทธิภาพมากขึ้น เลือกปลั๊กอินการเพิ่มประสิทธิภาพอย่างระมัดระวัง และ/หรืออัปเกรดเซิร์ฟเวอร์ October CMS ช่วยให้นักพัฒนาซอฟต์แวร์สามารถใช้ [`Queues`](https://octobercms.com/docs/services/queues) เพื่อเลื่อนการประมวลผลงานที่ใช้เวลานานออกไป เช่น การส่งอีเมล ซึ่งทำให้คำขอเว็บทำงานเร็วขึ้นอย่างมาก"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "ลองแสดงข้อความที่ตัดตอนมาในรายการโพสต์ (เช่น การใช้ปุ่ม `show more`) ลดจำนวนโพสต์ที่แสดงในหน้าเว็บหนึ่งๆ แบ่งโพสต์ยาวๆ เป็นหลายหน้า หรือใช้ปลั๊กอินเพื่อโหลดความคิดเห็นแบบ Lazy Loading"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "มี[ปลั๊กอิน](https://octobercms.com/plugins?search=css)จำนวนมากที่ช่วยให้เว็บไซต์เร็วขึ้นได้ด้วยการเชื่อมโยง การลดขนาด และการบีบอัดสไตล์ การใช้กระบวนการบิลด์เพื่อลดขนาดล่วงหน้าจะช่วยให้การพัฒนาเร็วขึ้นได้"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "มี[ปลั๊กอิน](https://octobercms.com/plugins?search=javascript)จำนวนมากที่ช่วยให้เว็บไซต์เร็วขึ้นได้ด้วยการเชื่อมโยง การลดขนาด และการบีบอัดสคริปต์ การใช้กระบวนการบิลด์เพื่อลดขนาดล่วงหน้าจะช่วยให้การพัฒนาเร็วขึ้นได้"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "ลองตรวจสอบ[ปลั๊กอิน](https://octobercms.com/plugins)ที่โหลด CSS ที่ไม่ได้ใช้งานในเว็บไซต์ หากต้องการระบุปลั๊กอินที่เพิ่ม CSS โดยที่ไม่จำเป็น ให้เรียกใช้[การครอบคลุมของโค้ด](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)ในเครื่องมือสำหรับนักพัฒนาเว็บใน Chrome ระบุธีม/ปลั๊กอินที่ดำเนินการดังกล่าวได้จาก URL ของสไตล์ชีต หาปลั๊กอินที่มีสไตล์ชีตจำนวนมากซึ่งมีสีแดงอยู่หลายแห่งในการครอบคลุมของโค้ด ปลั๊กอินควรจะเพิ่มสไตล์ชีตเฉพาะเมื่อมีการใช้งานจริงๆ ในหน้าเว็บเท่านั้น"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "ลองตรวจสอบ[ปลั๊กอิน](https://octobercms.com/plugins?search=javascript)ที่โหลด JavaScript ที่ไม่ได้ใช้งานในหน้าเว็บ หากต้องการระบุปลั๊กอินที่เพิ่ม JavaScript โดยที่ไม่จำเป็น ให้เรียกใช้[การครอบคลุมของโค้ด](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)ในเครื่องมือสำหรับนักพัฒนาเว็บใน Chrome ระบุธีม/ปลั๊กอินที่ดำเนินการดังกล่าวได้จาก URL ของสคริปต์ หาปลั๊กอินที่มีสคริปต์จำนวนมากซึ่งมีสีแดงอยู่หลายแห่งในการครอบคลุมของโค้ด ปลั๊กอินควรจะเพิ่มสคริปต์เฉพาะเมื่อมีการใช้งานจริงๆ ในหน้าเว็บเท่านั้น"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "อ่านเกี่ยวกับ[การป้องกันคำขอเครือข่ายที่ไม่จำเป็นด้วยแคช HTTP](https://web.dev/http-cache/#caching-checklist) มี[ปลั๊กอิน](https://octobercms.com/plugins?search=Caching)จำนวนมากที่ช่วยให้การแคชเร็วขึ้นได้"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "ลองใช้[ปลั๊กอินการเพิ่มประสิทธิภาพรูปภาพ](https://octobercms.com/plugins?search=image)เพื่อบีบอัดรูปภาพโดยยังคงคุณภาพไว้ดังเดิม"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "อัปโหลดรูปภาพโดยตรงในโปรแกรมจัดการสื่อเพื่อให้แน่ใจว่าจะมีรูปภาพขนาดตามที่กำหนดให้ใช้งาน ลองใช้[ฟิลเตอร์การปรับขนาด](https://octobercms.com/docs/markup/filter-resize)หรือ[ปลั๊กอินการปรับขนาดรูปภาพ](https://octobercms.com/plugins?search=image)เพื่อให้มีการใช้รูปภาพที่มีขนาดเหมาะสมที่สุด"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "เปิดใช้การบีบอัดข้อความในการกำหนดค่าเว็บเซิร์ฟเวอร์"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "ลองใช้[ปลั๊กอิน](https://octobercms.com/plugins?search=image)หรือบริการที่จะแปลงรูปภาพที่อัปโหลดเป็นรูปแบบที่เหมาะสมที่สุดโดยอัตโนมัติ [รูปภาพ WebP ที่ไม่เสียรายละเอียด](https://developers.google.com/speed/webp)มีขนาดเล็กกว่ารูปภาพ PNG 26% และมีขนาดเล็กกว่ารูปภาพ JPEG ที่เทียบกันได้ 25-34% ที่ดัชนีคุณภาพ SSIM ที่เทียบเท่า คุณอาจลองใช้รูปแบบสมัยใหม่สำหรับรูปภาพอีกรูปแบบหนึ่ง นั่นคือ [AVIF](https://jakearchibald.com/2020/avif-has-landed/)"
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "ลองใช้ไลบรารี \"การสร้างกรอบเวลา\" เช่น `react-window` เพื่อลดจำนวนโหนดของ DOM ที่สร้างขึ้นหากคุณแสดงผลเอลิเมนต์ซ้ำกันหลายรายการในหน้านั้น [ดูข้อมูลเพิ่มเติม](https://web.dev/virtualize-long-lists-react-window/) นอกจากนี้ให้ลดการแสดงผลซ้ำที่ไม่จำเป็นโดยใช้ [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) หรือ [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) และ[ข้ามเอฟเฟกต์](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)เฉพาะเมื่อทรัพยากร Dependency บางรายการมีการเปลี่ยนแปลงในกรณีที่คุณใช้ฮุก `Effect` เพื่อปรับปรุงประสิทธิภาพของรันไทม์"
+    "message": "ลองใช้ไลบรารี \"การสร้างกรอบเวลา\" เช่น `react-window` เพื่อลดจำนวนโหนดของ DOM ที่สร้างขึ้นให้เหลือน้อยที่สุดหากคุณแสดงผลองค์ประกอบซ้ำกันหลายรายการในหน้านั้น [ดูข้อมูลเพิ่มเติม](https://web.dev/virtualize-long-lists-react-window/) นอกจากนี้ให้ลดการแสดงผลซ้ำที่ไม่จำเป็นให้เหลือน้อยที่สุดโดยใช้ [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) หรือ [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) และ[ข้ามเอฟเฟกต์](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)ไปจนกว่าทรัพยากร Dependency บางรายการจะมีการเปลี่ยนแปลงในกรณีที่คุณใช้ฮุก `Effect` เพื่อปรับปรุงประสิทธิภาพของรันไทม์"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "หากคุณกำลังใช้ React Router ให้ลดการใช้ของคอมโพเนนต์ `<Redirect>` ในการ[ไปยังเส้นทางต่างๆ](https://reacttraining.com/react-router/web/api/Redirect)"

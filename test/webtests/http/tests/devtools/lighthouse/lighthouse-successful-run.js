@@ -82,15 +82,5 @@
   TestRunner.addResult(`\n# of .lh-audit divs: ${auditElements.length}`);
   TestRunner.addResult(`\n.lh-audit divs:\n${auditElementNames.join('\n')}`);
 
-  // Ensure duplicate events are not recieved.
-  // See https://github.com/GoogleChrome/lighthouse/issues/11415
-  const devtoolsLog = artifacts.devtoolsLogs.defaultPass;
-  const networkResponseRecievedEvents = devtoolsLog.filter(
-      log => log.method === 'Network.responseReceived' && log.params.response.url.endsWith('lighthouse-basic.html'));
-  if (networkResponseRecievedEvents.length !== 1) {
-    TestRunner.addResult(`ERROR: Network.responseReceived events for main resource; expected 1, got ${
-        networkResponseRecievedEvents.length}`);
-  }
-
   TestRunner.completeTest();
 })();

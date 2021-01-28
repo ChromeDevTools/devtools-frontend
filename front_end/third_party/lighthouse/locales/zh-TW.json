@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "避免在載入網頁時要求存取使用者的位置資訊"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "問題類型"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Chrome 開發人員工具的 `Issues` 面板中記錄的問題指出有未解決的狀況。這些狀況可能起因於網路要求失敗、安全性控制項不足，以及其他瀏覽器方面的疑慮。請開啟 Chrome 開發人員工具的 Issues 面板，查看每個問題的詳細資訊。"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Chrome 開發人員工具的 `Issues` 面板中有問題記錄"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "依跨來源政策封鎖"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "廣告耗用大量資源"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Chrome 開發人員工具的 `Issues` 面板中沒有任何問題"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "版本"
   },
@@ -717,7 +735,7 @@
     "message": "通訊協定"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 具備許多 HTTP/1.1 沒有的優點，包括二進位標題、多工處理和伺服器推送。[瞭解詳情](https://web.dev/uses-http2/)。"
+    "message": "HTTP/2 提供許多 HTTP/1.1 沒有的優點，包括二進位標頭和多工處理。[瞭解詳情](https://web.dev/uses-http2/)。"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{有 1 項要求未透過 HTTP/2 傳送}other{有 # 項要求未透過 HTTP/2 傳送}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "提供的圖片解析度適當"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "先前已安裝這個應用程式"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "下載的圖示空白或已損毀"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "失敗原因"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "瀏覽器可以主動提示使用者，建議他們將你的應用程式新增到主螢幕，藉此提高參與度。[瞭解詳情](https://web.dev/installable-manifest/)。"
+    "message": "透過 Service Worker 技術，你的應用程式可以使用漸進式網頁應用程式的許多功能，例如離線功能、新增至主畫面，以及推播通知。正確導入 Service Worker 和資訊清單後，瀏覽器可主動提示使用者將你的應用程式新增至主畫面，進而提升參與度。[瞭解詳情](https://web.dev/installable-manifest/)。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 個原因}other{# 個原因}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "網頁應用程式資訊清單不符合安裝規定"
+    "message": "網頁應用程式資訊清單或 Service Worker 不符合安裝規定"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "Play 商店應用程式網址與 Play 商店 ID 不符"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "網頁透過無痕式視窗載入"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "資訊清單的「display」屬性必須設為「standalone」、「fullscreen」或「minimal-ui」"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "資訊清單包含「display_override」欄位，且第一個支援的顯示模式必須是「standalone」、「fullscreen」或「minimal-ui」"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "無法擷取或剖析資訊清單，或是資訊清單沒有任何內容"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "資訊清單網址在資訊清單擷取期間已變更。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "資訊清單未包含「name」或「short_name」欄位"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "資訊清單未包含適當圖示；圖示必須為 {value0} px 以上的 PNG、SVG 或 WebP 檔案，同時必須設定 sizes 屬性，且如果設有 purpose 屬性，當中必須包含「any」或「maskable」。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "未提供任何大小在 {value0} px 以上，且格式為 PNG、SVG 或 WebP 的正方形圖示"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "下載的圖示空白或已損毀"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "未提供 Play 商店 ID"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "網頁沒有資訊清單 <link> 網址"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "未偵測到相符的 Service Worker。你可能需要重新載入網頁，或是檢查目前網頁的 Service Worker 範圍是否涵蓋資訊清單的範圍和開始網址。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "資訊清單中沒有「start_url」欄位，因此無法檢查 Service Worker"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "無法辨識安裝錯誤 ID「{errorId}」"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "網頁的提供來源不安全"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "網頁未在主頁框中載入"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "網頁無法離線運作"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "Android 不支援指定的應用程式平台"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "資訊清單指定了 prefer_related_applications: true"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "prefer_related_applications 僅適用於 Android 上的 Chrome Beta 版和穩定版。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "資訊清單開始網址無效"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "網頁應用程式資訊清單符合安裝規定"
+    "message": "網頁應用程式資訊清單和 Service Worker 符合安裝規定"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "資訊清單中的某個網址包含使用者名稱、密碼或通訊埠"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "網頁無法離線運作。Chrome 從 2021 年 8 月推出 93 穩定版開始，就不會再將這個網頁視為可安裝。"
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "已允許"
@@ -852,7 +954,7 @@
     "message": "對 CLS 的影響"
   },
   "lighthouse-core/audits/layout-shift-elements.js | description": {
-    "message": "這些 DOM 元素對於頁面的「累計版面配置轉移」(CLS) 影響最大。"
+    "message": "這些 DOM 元素對於頁面的「累計版面配置位移」(CLS) 影響最大。"
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "避免大量版面配置轉移"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "設定網址列的主題顏色。"
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (客戶成功案例)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (行銷)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (社交)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (影片)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "產品"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "某些第三方內嵌內容可延遲載入。建議你以門面元件取代這些內容，等到需要顯示時再載入。[瞭解詳情](https://web.dev/third-party-facades/)。"
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{# 個可用的替代門面元件}other{# 個可用的替代門面元件}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "某些第三方資源可使用門面元件延遲載入"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "使用門面元件延遲載入第三方資源"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "第三方"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "你的測試網址 ({requested}) 已重新導向至 {final}，因此頁面可能無法如預期載入。請直接測試第二個網址。"
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "測試裝置的 CPU 速度似乎比 Lighthouse 預期要慢。這可能會對效能分數造成負面影響。進一步瞭解[如何校準至適當的 CPU 減速倍頻](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)。"
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "頁面載入速度過慢，無法在時限內完成，因此結果可能不完整。"
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "主要執行緒封鎖時間"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "快取 TTL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "說明"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "時間長度"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "其他"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "其他資源"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "指令碼"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "未執行必要的 {artifactName} 收集程式。"
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "網頁未繪製任何內容。請確認載入期間瀏覽器視窗皆保持在前景，然後再試一次。({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "提供的頁面未採用 HTML 格式 (以 MIME 類型 {mimeType} 提供)。"
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "你所提供的網址無效。"
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "顯示稽核結果"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "查看計算機。"
@@ -1926,7 +2067,7 @@
     "message": "建議你將 GIF 上傳到可將 GIF 做為 HTML5 影片嵌入的服務。"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "安裝可延遲載入所有畫面外圖片的[延遲載入 Joomla 外掛程式](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)，或改用提供這項功能的範本。從 Joomla 4.0 版本開始，你可以使用「內容 - 延遲載入圖片」外掛程式，啟用專用的延遲載入外掛程式。你也可以考慮使用 [AMP 外掛程式](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)。"
+    "message": "安裝可延遲載入所有畫面外圖片的[延遲載入 Joomla 外掛程式](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)，或是改用提供這項功能的範本。自 Joomla 4.0 開始，所有新圖片都會[自動](https://github.com/joomla/joomla-cms/pull/30748)從系統核心取得 `loading` 屬性。"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "有些 Joomla 外掛程式能協助你[內嵌重要的素材資源](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)，或是[延後載入較不重要的資源](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance)。請注意，這些外掛程式的最佳化設定可能會對現有範本或外掛程式的功能有不良影響，因此你需要全面測試這些外掛程式。"
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "建議你在 [Magento Marketplace](https://marketplace.magento.com/catalogsearch/result/?q=webp) 搜尋多種第三方擴充功能，以運用較新的圖片格式。"
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[用影片取代 GIF 動畫](https://web.dev/replace-gifs-with-videos/)以加快載入網頁，並考慮使用 [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) 或 [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) 等新型檔案格式，這樣可讓目前最先進的影片轉碼器 VP9 的壓縮效率再提高超過 30%。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "建議你安裝可延遲載入所有畫面外圖片的[圖片延遲載入外掛程式](https://octobercms.com/plugins?search=lazy)，或是改用提供這項功能的主題。你也可以考慮使用 [AMP 外掛程式](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "有許多外掛程式可協助[內嵌重要的素材資源](https://octobercms.com/plugins?search=css)。這些外掛程式可能會導致其他外掛程式無法正常運作，因此你需要仔細測試。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "主題、外掛程式和伺服器規格都會影響伺服器回應時間。建議你尋找最佳化設定更完善的主題、謹慎選擇最佳化外掛程式，以及/或是升級伺服器。透過 October CMS，開發人員也能使用 [`Queues`](https://octobercms.com/docs/services/queues) 延遲處理耗時的工作，例如電子郵件傳送工作。這可大幅加快網頁要求執行速度。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "建議你在文章清單中顯示摘錄 (例如加入 [`show more`] 按鈕)、減少特定網頁顯示的文章數量、將較長的文章分為多個網頁，或是使用可延遲載入留言的外掛程式。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "有許多[外掛程式](https://octobercms.com/plugins?search=css)可透過串連、縮小及壓縮樣式提升網站執行速度。如果預先透過建構程序執行這項壓縮作業，將可加快開發速度。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "有許多[外掛程式](https://octobercms.com/plugins?search=javascript)可透過串連、縮小及壓縮指令碼提升網站執行速度。如果預先透過建構程序執行這項壓縮作業，將可加快開發速度。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "有些[外掛程式](https://octobercms.com/plugins)會在網站中載入未使用的 CSS，建議你進行檢查。如要找出這些會加入多餘 CSS 的外掛程式，請在 Chrome 開發人員工具中執行[程式碼涵蓋率](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)計算功能。接著，透過樣式表網址找出有問題的主題/外掛程式。在程式碼涵蓋率資料中，如果外掛程式有許多指令碼呈現高比例的紅色，代表可能有問題。外掛程式只應加入網頁中實際用到的樣式表。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "有些[外掛程式](https://octobercms.com/plugins?search=javascript)會在網頁中載入未使用的 JavaScript，建議你進行檢查。如要找出這些會加入多餘 JavaScript 的外掛程式，請在 Chrome 開發人員工具中執行[程式碼涵蓋率](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)計算功能。接著，透過指令碼網址找出有問題的主題/外掛程式。在程式碼涵蓋率資料中，如果外掛程式有許多指令碼呈現高比例的紅色，代表可能有問題。外掛程式只應加入網頁中實際用到的指令碼。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "閱讀[這篇文章](https://web.dev/http-cache/#caching-checklist)，瞭解如何透過 HTTP 快取防止不必要的網路要求。有許多[外掛程式](https://octobercms.com/plugins?search=Caching)可用於提升快取速度。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "建議你使用[圖片最佳化外掛程式](https://octobercms.com/plugins?search=image)壓縮圖片，這樣可以保持原始畫質。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "直接在媒體管理員中上傳圖片，確保你提供的圖片大小符合系統規定。建議你使用[調整大小篩選器](https://octobercms.com/docs/markup/filter-resize)或[圖片大小調整外掛程式](https://octobercms.com/plugins?search=image)，確保使用的是最佳圖片大小。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "在網路伺服器設定中啟用文字壓縮功能。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "建議你使用可自動將上傳圖片轉換成最佳格式的[外掛程式](https://octobercms.com/plugins?search=image)或服務。[WebP 無失真圖片](https://developers.google.com/speed/webp)的大小比 PNG 小 26%，與 SSIM 畫質指數相等的類似 JPEG 圖片相比，則小 25-34%。另一種可考慮使用的新一代圖片格式為 [AVIF](https://jakearchibald.com/2020/avif-has-landed/)。"
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "如要在網頁上轉譯許多重複的元素，建議使用「視窗化」程式庫 (例如 `react-window`)，盡可能減少系統建立的 DOM 節點數量。[瞭解詳情](https://web.dev/virtualize-long-lists-react-window/)。此外，如果你使用 `Effect` Hook 改善執行階段的效能，請使用 [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action)、[`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) 或 [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) 以及[略過效果](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)，盡量減少不必要的重新轉譯，但某些相依性已變更時除外。"
+    "message": "如要在網頁上轉譯許多重複的元素，建議你使用「視窗化」程式庫 (例如 `react-window`)，盡可能減少系統建立的 DOM 節點數量。[瞭解詳情](https://web.dev/virtualize-long-lists-react-window/)。此外，如果你使用 `Effect` Hook 改善執行階段的效能，請使用 [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action)、[`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) 或 [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) 以及[略過效果](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)，盡量減少不必要的重新轉譯，但某些相依性已變更時除外。"
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "如果使用 React Router，請盡量避免在[路徑導航](https://reacttraining.com/react-router/web/api/Redirect)中使用 `<Redirect>` 元件。"

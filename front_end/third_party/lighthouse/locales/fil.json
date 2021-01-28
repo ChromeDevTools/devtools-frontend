@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Iniiwasan ang paghiling ng pahintulot sa geolocation sa pag-load ng page"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "Uri ng isyu"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Nagsasaad ng mga hindi naresolbang problema ang mga isyung naka-log sa panel na `Issues`. Puwedeng magmula ang mga ito sa mga hindi naisagawang kahilingan sa network, hindi sapat na kontrol sa seguridad, at iba pang alalahanin sa browser. Buksan ang panel na Mga Isyu sa Chrome DevTools para sa higit pang detalye tungkol sa bawat isyu."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Na-log ang mga isyu sa panel na `Issues` sa Chrome Devtools"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Na-block ng patakaran sa cross-origin"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "Labis na paggamit ng resource ng mga ad"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Walang isyu sa panel na `Issues` sa Chrome Devtools"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Bersyon"
   },
@@ -717,7 +735,7 @@
     "message": "Protocol"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "Nag-aalok ang HTTP/2 ng mas maraming benepisyo kaysa sa HTTP/1.1, kasama ang mga binary header, multiplexing, at server push. [Matuto pa](https://web.dev/uses-http2/)."
+    "message": "Nag-aalok ang HTTP/2 ng mas maraming benepisyo kaysa sa HTTP/1.1, kasama ang mga binary header at multiplexing. [Matuto pa](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 kahilingan ang hindi naihatid sa pamamagitan ng HTTP/2}one{# kahilingan ang hindi naihatid sa pamamagitan ng HTTP/2}other{# na kahilingan ang hindi naihatid sa pamamagitan ng HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "Nagpapakita ng mga larawang may naaangkop na resolution"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "Naka-install na ang app"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "Walang laman o sira ang na-download na icon"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "Dahilan ng pagpalya"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Puwedeng proactive na i-prompt ng mga browser ang mga user na idagdag ang iyong app sa kanilang homescreen, na puwedeng magresulta sa mas maraming pakikipag-ugnayan. [Matuto pa](https://web.dev/installable-manifest/)."
+    "message": "Ang service worker ay ang teknolohiyang nagbibigay-daan sa iyong app na gumamit ng maraming feature ng Progressive Web App, gaya ng offline, pagdaragdag sa homescreen, at mga push notification. Gamit ang naaangkop na service worker at mga pagpapatupad ng manifest, puwedeng proactive na i-prompt ng mga browser ang mga user na idagdag ang iyong app sa kanilang homescreen, na puwedeng magresulta sa mas maraming engagement. [Matuto pa](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 dahilan}one{# dahilan}other{# na dahilan}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "Hindi natutugunan ng manifest ng web app ang mga kinakailangan sa pag-install"
+    "message": "Hindi natutugunan ng manifest ng web app o service worker ang mga kinakailangan sa installability"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "Hindi magkatugma ang URL ng app sa Play Store at Play Store ID"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "Na-load ang page sa incognito window"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "Dapat ay isa sa 'standalone,' 'fullscreen,' o 'minimal-ui' ang property na 'display' ng manifest."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "Naglalaman ang manifest ng field na 'display_override,' at ang unang sinusuportahang display mode ay dapat isa sa 'standalone,' 'fullscreen,' o 'minimal-ui'"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "Hindi ma-fetch, walang laman, o hindi ma-parse ang manifest"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "Nagbago ang manifest URL habang fine-fetch ang manifest."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "Walang field na 'name' o 'short_name' ang manifest"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "Walang naaangkop na icon sa manifest - kinakailangang nasa format na PNG, SVG, o WebP at may sukat na hindi bababa sa {value0} px, dapat nakatakda ang attribute na sizes, at kung nakatakda ang attribute na purpose, dapat ay \"any\" o \"maskable\" ang nakalagay dito."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "Wala sa mga ibinigay na icon ang may sukat na kahit {value0} px square, at nasa format na PNG, SVG, o WebP"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "Walang laman o sira ang na-download na icon"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Walang ibinigay na Play store ID"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "Walang URL ng manifest <link> ang page"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "Walang na-detect na tumutugmang service worker. Posibleng kailanganin mong i-reload ang page, o tingnan kung nakapaloob sa saklaw ng service worker para sa kasalukuyang page ang saklaw at start URL mula sa manifest."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "Hindi masusuri ang service worker kapag walang field na 'start_url' sa manifest"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "Hindi natutukoy ang installability error id na '{errorId}'"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "Hindi inihahatid ang page mula sa isang secure na pinagmulan"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "Hindi na-load ang page sa pangunahing frame"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "Hindi gumagana offline ang page"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "Hindi sinusuportahan ang tinukoy na platform ng application sa Android"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "Itinatakda ng manifest ang prefer_related_applications sa: true"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "Sinusuportahan lang ang prefer_related_applications sa Chrome Beta at mga Stable na channel sa Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "Hindi valid ang start URL ng manifest"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "Natutugunan ng manifest ng web app ang mga kinakailangan sa pag-install"
+    "message": "Natutugunan ng manifest ng web app at service worker ang mga kinakailangan sa installability"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "Naglalaman ang URL sa manifest ng username, password, o port"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "Hindi gumagana offline ang page. Hindi ituturing na nai-install ang page kapag nailunsad na ang stable release ng Chrome 93 sa Agosto 2021."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "Pinapayagan"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Nagtatakda ng kulay ng tema para sa address bar."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (Tagumpay ng Customer)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (Marketing)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (Social)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (Video)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Produkto"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Puwedeng i-lazy load ang ilang third-party na embed. Pag-isipang palitan ang mga ito ng facade hanggang sa kailanganin na ang mga ito. [Matuto pa](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{# alternatibo sa facade ang available}one{# alternatibo sa facade ang available}other{# na alternatibo sa facade ang available}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Puwedeng mag-lazy load ng facade sa ilang third-party na resource"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Mag-lazy load ng mga facade sa mga third-party na resource"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Third-Party"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Posibleng hindi naglo-load ang page gaya ng inaasahan dahil na-redirect ang iyong pansubok na URL ({requested}) sa {final}. Direktang subukan ang pangalawang URL."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "Mukhang mas mabagal ang CPU ng tine-test na device kaysa sa inaasahan ng Lighthouse. Puwede itong magkaroon ng negatibong epekto sa score ng iyong performance. Matuto pa tungkol sa [pag-calibrate ng naaangkop na CPU slowdown multiplier](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Masyadong matagal ang pag-load ng page para matapos sa inilaang limitasyon sa oras. Posibleng hindi kumpleto ang mga resulta."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Oras ng Pag-block ng Pangunahing Thread"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "TTL ng Cache"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Paglalarawan"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Tagal"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Iba pa"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Iba pang resource"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Script"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Hindi tumakbo ang kinakailangang gatherer na {artifactName}."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "Hindi nag-paint ang page ng anumang content. Pakitiyak na papanatilihin mong nasa foreground ang window ng browser habang naglo-load at subukan ulit. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "Hindi HTML ang ibinigay na page (inihatid bilang uri ng MIME {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Mukhang invalid ang URL na ibinigay mo."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Ipakita ang mga pag-audit"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Tingnan ang calculator."
@@ -1926,7 +2067,7 @@
     "message": "Pag-isipang i-upload ang iyong GIF sa isang serbisyo kung saan gagawin itong available para i-embed bilang HTML5 video."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Mag-install ng [lazy-load na plugin sa Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) na nagbibigay ng kakayahang ipagpaliban ang anumang offscreen na larawan, o lumipat sa isang template na nagbibigay ng functionality na iyon. Simula sa Joomla 4.0, mae-enable ang nakatalagang plugin sa pag-lazy load sa pamamagitan ng paggamit sa plugin na \"Content - Pag-lazy Load ng Mga Larawan.\" Pag-isipan ding gumamit [ng AMP na plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "Mag-install ng [lazy-load na plugin sa Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) na nagbibigay ng kakayahang ipagpaliban ang anumang offscreen na larawan, o lumipat sa isang template na nagbibigay ng functionality na iyon. Simula sa Joomla 4.0, [awtomatikong](https://github.com/joomla/joomla-cms/pull/30748) kukunin ng lahat ng bagong larawan ang attribute na `loading` mula sa core."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "May ilang plugin sa Joomla na makakatulong sa iyong [i-inline ang mahahalagang asset](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) o [ipagpaliban ang hindi masyadong mahahalagang resource](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). Tandaang puwedeng makasira sa mga feature ng iyong mga template o plugin ang mga pag-optimize na mula sa mga plugin na ito, kaya kakailanganin mong subukang mabuti ang mga ito."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Pag-isipang maghanap sa [Marketplace ng Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) para sa iba't ibang third-party na extension para magamit ang mga mas bagong format ng imahe."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[Palitan ang mga animated na GIF ng video](https://web.dev/replace-gifs-with-videos/) para sa mas mabibilis na pag-load ng web page at pag-isipang gumamit ng mga modernong format ng file gaya ng [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) o [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) para mapahusay ang efficiency ng pag-compress nang mahigit 30% kaysa sa kasalukuyang state-of-the-art na video codec na VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Pag-isipang mag-install ng [plugin sa pag-lazy load ng larawan](https://octobercms.com/plugins?search=lazy) na nagbibigay ng kakayahang ipagpaliban ang anumang offscreen na larawan, o lumipat sa isang temang nagbibigay ng naturang functionality. Pag-isipan ding gamitin [ang AMP na plugin](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "Maraming plugin ang makakatulong na [i-inline ang mahahalagang asset](https://octobercms.com/plugins?search=css). Puwedeng masira ng mga plugin na ito ang iba pang plugin, kaya dapat kang mag-test nang masinsinan."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "Nakakaapekto ang mga tema, plugin, at detalye ng server sa tagal ng pagtugon ng server. Pag-isipang maghanap ng mas naka-optimize na tema, maingat na pumili ng plugin sa pag-optimize, at/o i-upgrade ang server. Binibigyang-daan din ng October CMS ang mga developer na gamitin ang [`Queues`](https://octobercms.com/docs/services/queues) para ipagpaliban ang pagpoproseso ng gawaing nakakaubos ng oras, gaya ng pagpapadala ng e-mail. Talagang pinapabilis nito ang mga kahilingan sa web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Pag-isipang magpakita ng mga sipi sa mga listahan ng post (hal. gamit ang button na `show more`), bawasan ang bilang ng mga post na ipinapakita sa isang web page, o gumamit ng plugin para mag-lazy load ng mga komento."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "Maraming [plugin](https://octobercms.com/plugins?search=css) na makakapagpabilis ng website sa pamamagitan ng pag-concatenate, pagpapaliit, at pag-compress sa mga istilo. Kapag gumamit ng proseso ng build para gawin ang pagpapaliit na ito nang mas maaga, puwedeng mapabilis ang pag-develop."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "Maraming [plugin](https://octobercms.com/plugins?search=javascript) na makakapagpabilis ng website sa pamamagitan ng pag-concatenate, pagpapaliit, at pag-compress sa mga script. Kapag gumamit ng proseso ng build para gawin ang pagpapaliit na ito nang mas maaga, puwedeng mapabilis ang pag-develop."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Pag-isipang suriin ang [mga plugin](https://octobercms.com/plugins) na naglo-load ng hindi ginagamit na CSS sa website. Para matukoy ang mga plugin na nagdaragdag ng hindi kinakailangang CSS, patakbuhin ang [code coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) sa Chrome DevTools. Tukuyin ang tema/plugin na responsable mula sa URL ng stylesheet. Hanapin ang mga plugin na maraming stylesheet na may napakaraming pula sa code coverage. Dapat lang magdagdag ang isang plugin ng stylesheet kung talagang ginagamit ito sa web page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Pag-isipang suriin ang [mga plugin](https://octobercms.com/plugins?search=javascript) na naglo-load ng hindi ginagamit na JavaScript sa web page. Para matukoy ang mga plugin na nagdaragdag ng hindi kinakailangang JavaScript, patakbuhin ang [code coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) sa Chrome DevTools. Tukuyin ang tema/plugin na responsable mula sa URL ng script. Hanapin ang mga plugin na maraming script na may napakaraming pula sa code coverage. Dapat lang magdagdag ang isang plugin ng script kung talagang ginagamit ito sa web page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "Magbasa tungkol sa [pagpigil sa mga hindi kinakailangang kahilingan sa network gamit ang HTTP Cache](https://web.dev/http-cache/#caching-checklist). Maraming [plugin](https://octobercms.com/plugins?search=Caching) na magagamit para mapabilis ang pag-cache."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Pag-isipang gumamit ng [plugin sa pag-optimize ng larawan](https://octobercms.com/plugins?search=image) para mag-compress ng mga larawan habang pinapanatili ang kalidad."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "Direktang i-upload ang mga larawan sa media manager para matiyak na available ang mga kinakailangang laki ng larawan. Pag-isipang gumamit ng [filter na i-resize](https://octobercms.com/docs/markup/filter-resize) o [plugin sa pag-resize ng larawan](https://octobercms.com/plugins?search=image) para matiyak na ginagamit ang mga pinakanaaangkop na laki ng larawan."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "I-enable ang pag-compress ng text sa configuration ng server sa web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Pag-isipang gumamit ng [plugin](https://octobercms.com/plugins?search=image) o serbisyong awtomatikong magko-convert ng mga na-upload na larawan sa mga pinakamagandang format. Mas maliit nang 26% ang [mga WebP lossless na larawan](https://developers.google.com/speed/webp) kaysa sa mga PNG at 25-34% mas maliit kaysa sa mga JPEG na larawan sa katumbas ng index ng kalidad ng SSIM. Ang isa pang next-gen na format ng larawan na dapat pag-isipang gamitin ay ang [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "Pag-isipang gumamit ng “windowing” library na tulad ng `react-window` para mabawasan ang bilang ng mga node ng DOM na nagagawa kung nagre-render ka ng maraming umuulit na element sa page. [Matuto pa](https://web.dev/virtualize-long-lists-react-window/). Gayundin, bawasan ang mga hindi kinakailangang pag-render ulit gamit ang [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), o [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) at [laktawan lang ang mga effect](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) hanggang sa may ilang partikular na dependency na magbago kung ginagamit mo ang hook na `Effect` para mapahusay ang performance ng runtime."
+    "message": "Pag-isipang gumamit ng \"windowing\" library tulad ng `react-window` para mabawasan ang bilang ng mga node ng DOM na nagagawa kung nagre-render ka ng maraming umuulit na element sa page. [Matuto pa](https://web.dev/virtualize-long-lists-react-window/). Gayundin, bawasan ang mga hindi kinakailangang pag-render ulit gamit ang [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent), o [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) at [laktawan lang ang mga effect](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) hanggang sa may ilang partikular na dependency na magbago kung ginagamit mo ang hook na `Effect` para mapahusay ang performance sa runtime."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "Kung gumagamit ka ng Router ng React, bawasan ang paggamit ng bahaging `<Redirect>` para sa [mga pag-navigate sa ruta](https://reacttraining.com/react-router/web/api/Redirect)."

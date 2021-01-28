@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Vermijdt verzoeken om de geolocatierechten bij laden van pagina"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "Type probleem"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Problemen die in het deelvenster `Issues` in Chrome DevTools worden geregistreerd, geven aan dat er onopgeloste problemen zijn. Ze kunnen afkomstig zijn van niet-uitgevoerde netwerkverzoeken, onvoldoende beveiligingsbeheer en andere problemen met de browser. Open het deelvenster met problemen in Chrome DevTools voor meer informatie over elk probleem."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Problemen zijn geregistreerd in het deelvenster `Issues` Chrome DevTools"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Geblokkeerd door cross-origin-beleid"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "Hoog bronverbruik door advertenties"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Geen problemen in het deelvenster `Issues` in Chrome DevTools"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Versie"
   },
@@ -717,7 +735,7 @@
     "message": "Protocol"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 beschikt over veel voordelen ten opzichte van HTTP/1.1, waaronder binaire headers, multiplexing en serverpush. [Meer informatie](https://web.dev/uses-http2/)"
+    "message": "HTTP/2 beschikt over veel voordelen ten opzichte van HTTP/1.1, waaronder binaire headers en multiplexing. [Meer informatie](https://web.dev/uses-http2/)"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 verzoek niet weergegeven via HTTP/2}other{# verzoeken niet weergegeven via HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "Levert afbeeldingen met de juiste resolutie"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "De app is al geïnstalleerd"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "Het gedownloade icoon is leeg of beschadigd"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "Oorzaak van fout"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Browsers kunnen gebruikers proactief vragen je app aan hun startscherm toe te voegen. Dit kan leiden tot grotere betrokkenheid. [Meer informatie](https://web.dev/installable-manifest/)"
+    "message": "De service worker is de technologie waarmee je app veel functies van progressive web-apps kan gebruiken, zoals offline functionaliteit, toevoegen aan het startscherm en pushmeldingen. Met goede implementaties van de service worker en het manifest kunnen browsers gebruikers proactief vragen je app aan hun startscherm toe te voegen. Dit kan leiden tot grotere betrokkenheid. [Meer informatie](https://web.dev/installable-manifest/)"
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 reden}other{# redenen}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "Het manifest van de web-app voldoet niet aan de vereisten voor installeerbaarheid"
+    "message": "Het manifest van de web-app of de service worker voldoet niet aan de vereisten voor installeerbaarheid"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "De app-URL en de ID van de Play Store komen niet overeen"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "Je laadt de pagina in een incognitovenster"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "De eigenschap 'display' van het manifest moet 'standalone', 'fullscreen' of 'minimal-ui' zijn"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "Het manifest bevat het veld 'display_override'. De eerste ondersteunde weergavemodus moet 'standalone', 'fullscreen' of 'minimal-ui' zijn."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "Het manifest kan niet worden opgehaald, is leeg of kan niet worden geparseerd"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "De manifest-URL is gewijzigd tijdens het ophalen van het manifest."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "Het manifest bevat geen veld 'name' of 'short_name'"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "Het manifest bevat geen geschikt icoon. Een png-, svg- of webp-indeling van ten minste {value0} pixels is vereist, het kenmerk voor de afmetingen moet zijn ingesteld en het doelkenmerk (indien ingesteld) moet 'any' of 'maskable' bevatten."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "Geen van de opgegeven iconen is een vierkant van ten minste {value0} pixels in png-, svg- of webp-indeling"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "Het gedownloade icoon is leeg of beschadigd"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Geen Play Store-ID opgegeven"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "De pagina heeft geen manifest-URL <link>"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "Geen overeenkomende service worker gevonden. Laad de pagina opnieuw of check of het bereik van de service worker voor de huidige pagina het bereik en de start-URL van het manifest omvat."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "Kan de service worker niet checken zonder een veld 'start_url' in het manifest"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "De ID van de installeerbaarheidsfout '{errorId}' wordt niet herkend"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "De pagina wordt niet weergegeven via een beveiligde bron"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "De pagina wordt niet in het hoofdframe geladen"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "De pagina werkt niet offline"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "Het opgegeven app-platform wordt niet ondersteund op Android"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "Het manifest specificeert prefer_related_applications: true"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "prefer_related_applications wordt alleen ondersteund op bèta- en stabiele kanalen van Chrome op Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "De start-URL voor het manifest is ongeldig"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "Het manifest van de web-app voldoet aan de vereisten voor installeerbaarheid"
+    "message": "Het manifest van de web-app en de service worker voldoen aan de vereisten voor installeerbaarheid"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "Een URL in het manifest bevat een gebruikersnaam, wachtwoord of poort"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "De pagina werkt niet offline. Vanaf de stabiele release van Chrome 93 in augustus 2021 wordt deze pagina niet meer als installeerbaar beschouwd."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "Toegestaan"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Hiermee wordt een themakleur voor de adresbalk ingesteld."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (succesverhalen)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (marketing)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (sociaal)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (video)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Product"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Bepaalde insluitingen van derden kunnen via lazy loading worden geladen. Overweeg deze door een façade te vervangen tot ze vereist zijn. [Meer informatie](https://web.dev/third-party-facades/)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{# alternatief beschikbaar voor façade}other{# alternatieven beschikbaar voor façade}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Bepaalde resources van derden kunnen via lazy loading worden geladen met een façade"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Resources van derden laden via lazy loading met façades"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Derden"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "De pagina wordt mogelijk niet geladen zoals verwacht omdat je test-URL ({requested}) is omgeleid naar {final}. Probeer de tweede URL rechtstreeks te testen."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "Zo te zien heeft het geteste apparaat een langzamere CPU dan Lighthouse verwachtte. Dit kan je prestatiescore negatief beïnvloeden. Meer informatie over hoe je [de juiste vertragingsvermenigvuldiger voor de CPU kalibreert](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)"
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "De pagina is te langzaam geladen om binnen de tijdslimiet te voltooien. De resultaten kunnen onvolledig zijn."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Tijd dat primaire thread is geblokkeerd"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "Cache-TTL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Beschrijving"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Duur"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Anders"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Andere bronnen"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Script"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Vereiste {artifactName}-verzamelaar is niet uitgevoerd."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "De pagina geeft geen content weer. Zorg dat het browservenster tijdens het laden op de voorgrond blijft en probeer het opnieuw. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "De opgegeven pagina is geen HTML-pagina (weergegeven als MIME-type {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Het lijkt erop dat je een ongeldige URL hebt opgegeven."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Controles weergeven"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Rekenmachine bekijken"
@@ -1926,7 +2067,7 @@
     "message": "Overweeg je gif te uploaden naar een service waarmee het mogelijk is de gif in te sluiten als html5-video."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Installeer een [Joomla-plug-in voor lazy loading](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) waarmee afbeeldingen die niet in beeld zijn, kunnen worden uitgesteld, of schakel over naar een template met deze functionaliteit. Vanaf Joomla 4.0 kan een speciale plug-in voor lazy loading worden ingeschakeld via de plug-in 'Content - Lazy Loading Images'. Je kunt ook overwegen [een AMP-plug-in](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp) te gebruiken."
+    "message": "Installeer een [Joomla-plug-in voor lazy loading](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) waarmee afbeeldingen die niet in beeld zijn, kunnen worden uitgesteld, of schakel over naar een template met deze functionaliteit. Vanaf Joomla 4.0 krijgen alle nieuwe afbeeldingen [automatisch](https://github.com/joomla/joomla-cms/pull/30748) het kenmerk `loading` vanuit de kern."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "Er zijn een aantal Joomla-plug-ins om [kritieke items inline te plaatsen](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) of [minder belangrijke bronnen uit te stellen](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). Bedenk wel dat de optimalisaties die deze plug-ins bieden, bepaalde functies van je templates of plug-ins kunnen verstoren. Je moet ze daarom grondig testen."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "Overweeg te zoeken in de [Magento-marktplaats](https://marketplace.magento.com/catalogsearch/result/?q=webp) voor verschillende extensies van derden om nieuwere afbeeldingsindelingen te gebruiken."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[Vervang geanimeerde gif's door video](https://web.dev/replace-gifs-with-videos/) zodat de webpagina sneller laadt en overweeg moderne bestandsindelingen zoals [webm](https://web.dev/replace-gifs-with-videos/#create-webm-videos) of [av1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) te gebruiken voor een tot 30% efficiëntere compressie vergeleken met de huidige geavanceerde videocodec, vp9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Overweeg een [plug-in voor lazy loading van afbeeldingen](https://octobercms.com/plugins?search=lazy) te installeren waarmee je afbeeldingen die niet in beeld zijn, kunt uitstellen of kunt overschakelen naar een thema met deze functionaliteit. Je kunt ook overwegen [de AMP-plug-in](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages) te gebruiken."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "Er zijn veel plug-ins waarmee [essentiële inline items](https://octobercms.com/plugins?search=css) beter werken. Deze plug-ins kunnen andere plug-ins verstoren. Je moet ze daarom grondig testen."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "Thema's, plug-ins en serverspecificaties zijn allemaal van invloed op de reactietijd van de server. Overweeg een thema te gebruiken dat beter is geoptimaliseerd, kies met zorg een optimalisatieplug-in en/of upgrade de server. Met de CMS van oktober kunnen ontwikkelaars ook [`Queues`](https://octobercms.com/docs/services/queues) gebruiken om de verwerking van tijdrovende taken uit te stellen, zoals het sturen van een e-mail. Dit kan webverzoeken drastisch versnellen."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Overweeg fragmenten te tonen in de postlijsten (bijvoorbeeld met een knop `show more`), zodat er per webpagina minder posts worden getoond. Ook kun je lange posts verdelen over meerdere webpagina's of een plug-in voor lazy loading van reacties gebruiken."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "Er zijn veel [plug-ins](https://octobercms.com/plugins?search=css) die een website sneller kunnen maken door de stijlen in te korten, te verkleinen of te comprimeren. Het ontwikkelen kan sneller gaan als je een ontwerpproces gebruikt dat deze verkleining van tevoren toepast."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "Er zijn veel [plug-ins](https://octobercms.com/plugins?search=javascript) die een website sneller kunnen maken door de scripts in te korten, te verkleinen of te comprimeren. Het ontwikkelen kan sneller gaan als je een ontwerpproces gebruikt dat deze verkleining van tevoren toepast."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Overweeg de [plug-ins](https://octobercms.com/plugins) te checken die ongebruikte css laden op de website. Voer [codedekking](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) uit in Chrome DevTools als je plug-ins wilt identificeren die onnodige css toevoegen. Identificeer via de URL van de stylesheet welk thema/welke plug-in verantwoordelijk is. Zoek naar plug-ins met veel stylesheets en veel rood in de codedekking. Een plug-in zou een stylesheet alleen moeten toevoegen als het daadwerkelijk wordt gebruikt op de webpagina."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Overweeg de [plug-ins](https://octobercms.com/plugins?search=javascript) te checken die ongebruikte JavaScript laden op de webpagina. Voer [codedekking](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) uit in Chrome DevTools als je plug-ins wilt identificeren die onnodige JavaScript toevoegen. Identificeer via de URL van het script welk thema/welke plug-in verantwoordelijk is. Zoek naar plug-ins met veel scripts en veel rood in de codedekking. Een plug-in zou een script alleen moeten toevoegen als het daadwerkelijk wordt gebruikt op de webpagina."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "Meer informatie over [hoe je onnodige netwerkverzoeken voorkomt met de HTTP-cache](https://web.dev/http-cache/#caching-checklist) Er zijn veel [plug-ins](https://octobercms.com/plugins?search=Caching) waarmee je caching kunt versnellen."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Overweeg een [beeldoptimalisatieplug-in](https://octobercms.com/plugins?search=image) te gebruiken om de afbeeldingen te comprimeren terwijl de beeldkwaliteit behouden blijft."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "Upload afbeeldingen rechtstreeks in de mediabeheerder om er zeker van te zijn dat de vereiste afbeeldingsformaten beschikbaar zijn. Overweeg het [filter](https://octobercms.com/docs/markup/filter-resize) of een [plug-in](https://octobercms.com/plugins?search=image) voor het aanpassen van het formaat te gebruiken zodat je de optimale afbeeldingsformaten gebruikt."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "Hiermee kun je tekstcompressie aanzetten in de webserverinstellingen."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Overweeg een [plug-in](https://octobercms.com/plugins?search=image) of service te gebruiken die de geüploade afbeeldingen automatisch converteert naar de optimale indelingen. [Webp-afbeeldingen zonder verlies](https://developers.google.com/speed/webp) zijn 26% kleiner vergeleken met png-afbeeldingen en zijn 25-34% kleiner dan vergelijkbare jpeg-afbeeldingen met dezelfde SSIM-kwaliteitsindex. Je kunt ook de moderne bestandsindeling [avif](https://jakearchibald.com/2020/avif-has-landed/) overwegen."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "Overweeg het gebruik van een vensterbibliotheek zoals `react-window` om het aantal gemaakte DOM-nodes te minimaliseren als je veel herhaalde elementen op de pagina weergeeft. [Meer informatie](https://web.dev/virtualize-long-lists-react-window/) Minimaliseer daarnaast onnodige nieuwe weergaven met [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) of [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) en [sla effecten alleen over](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) totdat bepaalde afhankelijkheden zijn gewijzigd als je de `Effect`-hook gebruikt om de runtime-prestaties te verbeteren."
+    "message": "Overweeg een vensterbibliotheek zoals `react-window` te gebruiken om het aantal gemaakte DOM-nodes te minimaliseren als je veel herhaalde elementen op de pagina weergeeft. [Meer informatie](https://web.dev/virtualize-long-lists-react-window/) Minimaliseer daarnaast onnodige nieuwe weergaven met [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) of [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) en [sla effecten alleen over](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) totdat bepaalde afhankelijkheden zijn gewijzigd als je de `Effect`-hook gebruikt om de runtime-prestaties te verbeteren."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "Als je React Router gebruikt, moet je het gebruik van de `<Redirect>`-component voor [routenavigatie](https://reacttraining.com/react-router/web/api/Redirect) minimaliseren."

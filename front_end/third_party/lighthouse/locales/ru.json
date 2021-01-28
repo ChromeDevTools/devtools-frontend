@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "Разрешение на определение местоположения не запрашивается при загрузке страницы"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "Тип нарушения"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Ошибки, записанные на панели`Issues` в Инструментах разработчика Chrome, указывают на нерешенные проблемы. Это могут быть невыполненные сетевые запросы, низкий уровень защиты и другие сбои в работе браузера. Чтобы получить подробную информацию о каждой неполадке, откройте панель."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Ошибки были записаны на панели `Issues` в Инструментах разработчика Chrome"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "Заблокировано в соответствии с правилами использования междоменных запросов."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "Объявления используют слишком много ресурсов"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Нет записей ошибок на панели `Issues` в Инструментах разработчика Chrome"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "Версия"
   },
@@ -717,7 +735,7 @@
     "message": "Протокол"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "Протокол HTTP/2 отличается от HTTP/1.1 массой преимуществ, включая бинарность, мультиплексирование запросов, а также возможность отправки данных по инициативе сервера. [Подробнее…](https://web.dev/uses-http2/)"
+    "message": "Протокол HTTP/2 отличается от HTTP/1.1 массой преимуществ, включая бинарность и мультиплексирование запросов. [Подробнее…](https://web.dev/uses-http2/)"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 запрос не передан через HTTP/2}one{# запрос не передан через HTTP/2}few{# запроса не передано через HTTP/2}many{# запросов не передано через HTTP/2}other{# запроса не передано через HTTP/2}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "Изображения показываются в нужном разрешении"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "Приложение уже установлено."
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "Скачанный значок пуст или поврежден."
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "Причина ошибки"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "Для увеличения частоты использования браузеры могут предлагать пользователям добавлять приложение на главный экран. [Подробнее…](https://web.dev/installable-manifest/)"
+    "message": "Service worker — это технология, добавляющая в приложение преимущества современных веб-приложений, такие как поддержка офлайн-режима, push-уведомлений и добавления на главный экран. Браузеры могут предлагать пользователям добавлять приложение на главный экран, за счет чего они наверняка будут чаще его открывать. [Подробнее…](https://web.dev/installable-manifest/)"
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 причина}one{# причина}few{# причины}many{# причин}other{# причины}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "Манифест веб-приложения не соответствует условиям, необходимым для установки"
+    "message": "Манифест веб-приложения или файл service worker не соответствует условиям, необходимым для установки"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "URL приложения и его идентификатор в Google Play не соответствуют друг другу."
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "Эта страница открыта в режиме инкогнито."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "У свойства display манифеста должно быть значение standalone, fullscreen или minimal-ui."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "Файл манифеста содержит поле display_override, поэтому первый поддерживаемый режим отображения должен быть следующим: standalone (стандартный), fullscreen (полноэкранный) или minimal-ui (минимальный)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "Файл манифеста нельзя загрузить или обработать, либо он пуст."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "Во время загрузки манифеста его URL был изменен."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "Файл манифеста не содержит поле name или short_name."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "В файле манифеста отсутствует допустимый значок. Добавьте значок в формате PNG, SVG или WebP с разрешением не менее {value0} пкс и атрибутом sizes. Атрибут purpose, если он есть, должен иметь значение any или maskable."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "В файле манифеста нет значка в формате PNG, SVG или WebP с разрешением не менее {value0} пкс."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "Скачанный значок пуст или поврежден."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "Укажите идентификатор Google Play."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "Страница не содержит URL манифеста <link>."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "Подходящих файлов service worker не найдено. Перезагрузите страницу или убедитесь, что файлы service worker текущей страницы включают область действия и стартовый URL из манифеста."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "Для проверки файла service worker в манифесте должно быть поле start_url."
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "Идентификатор ошибки установки {errorId} не распознан."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "Страница загружена из незащищенного источника."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "Страница не загружается в основном фрейме."
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "Эта страница не поддерживается в офлайн-режиме."
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "Указанная платформа приложения не поддерживается на устройствах Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "Значение атрибута prefer_related_applications в манифесте: true."
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "Атрибут prefer_related_applications поддерживается только в бета-версии Chrome и стабильной версии на устройствах Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "Недействительный URL стартовой страницы манифеста."
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "Манифест веб-приложения соответствует условиям, необходимым для установки"
+    "message": "Манифест веб-приложения и файл service worker соответствуют условиям, необходимым для установки"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "URL в манифесте содержит имя пользователя, пароль или порт."
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "Эта страница не работает в офлайн-режиме. Она не будет считаться доступной для установки после выхода Chrome 93 в августе 2021 года."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "Разрешено"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "Изменяет цвет адресной строки в соответствии с темой"
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (истории успеха)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (маркетинг)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (социальные сети)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (видео)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "Продукт"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "Некоторые из сторонних встроенных объектов поддерживают отложенную загрузку. Замените их фасадными объектами до тех пор, пока они не понадобятся. [Подробнее…](https://web.dev/third-party-facades/)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{Доступен # альтернативный фасадный объект}one{Доступен # альтернативный фасадный объект}few{Доступно # альтернативных фасадных объекта}many{Доступно # альтернативных фасадных объектов}other{Доступно # альтернативного фасадного объекта}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "Для отложенной загрузки с фасадными объектами доступно несколько сторонних ресурсов"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "Фасадные объекты сторонних ресурсов для отложенной загрузки"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "Сторонний поставщик"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "Эта страница может загружаться неправильно, потому что тестовый URL ({requested}) был перенаправлен на {final}. Попробуйте напрямую проверить второй URL."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "У тестируемого устройства недостаточно быстрый процессор. Это может негативно повлиять на показатель производительности. Подробнее [о калибровке множителя замедления процессора](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling)…"
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "Страница загружалась слишком медленно и не загрузилась в отведенное время. Результаты могут быть неполными."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "Время блокировки основного потока"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "Время жизни кеша"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "Описание"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "Длительность"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "Другой"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "Другие ресурсы"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "Скрипт"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "Не удалось собрать данные ресурса {artifactName}."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "Контент на этой странице не был отрисован. Убедитесь, что окно браузера находится в активном режиме во время загрузки, и повторите попытку. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "Указана страница не в формате HTML (MIME-тип {mimeType})."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Недействительный URL."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "Показать аудиты"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "Показать калькулятор"
@@ -1926,7 +2067,7 @@
     "message": "Используйте сервисы, которые позволяют встраивать GIF-файлы на страницы сайта в формате видео HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "Чтобы отложить загрузку скрытых изображений, установите [плагин отложенной загрузки Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) или подберите шаблон, который поддерживает такую возможность. В Joomla 4.0 и более поздних версий плагин отложенной загрузки можно включить с помощью плагина Content – Lazy Loading Images. Мы также рекомендуем [плагин AMP](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp)."
+    "message": "Чтобы отложить загрузку скрытых изображений, установите [плагин Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) или подберите шаблон, который поддерживает такую возможность. С версии Joomla 4.0 все новые изображения [автоматически](https://github.com/joomla/joomla-cms/pull/30748) получают атрибут `loading`."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "Используйте один из плагинов Joomla, которые позволяют [встраивать критически важный код](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) или [откладывать загрузку менее важных ресурсов](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance). Обратите внимание, что такие плагины могут привести к сбоям в работе других шаблонов и плагинов на сайте, поэтому их понадобится тщательно протестировать."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "В [магазине Magento](https://marketplace.magento.com/catalogsearch/result/?q=webp) можно найти множество сторонних расширений для использования новых графических форматов."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "[Смените анимированные GIF-файлы на видео](https://web.dev/replace-gifs-with-videos/), чтобы ускорить загрузку страниц. Также рекомендуем использовать современные форматы файлов, такие как [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) и [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder). Это позволит повысить эффективность сжатия более чем на 30 % по сравнению с показателями новейшего видеокодека VP9."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "Чтобы отложить загрузку скрытых изображений, установите [плагин отложенной загрузки](https://octobercms.com/plugins?search=lazy) или подберите тему, которая поддерживает такую возможность. Мы также рекомендуем [плагин AMP](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "Используйте один из плагинов, которые позволяют [встраивать критически важный код](https://octobercms.com/plugins?search=css). Такие плагины могут привести к сбоям в работе других плагинов на сайте, поэтому перед внедрением тщательно протестируйте их."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "Темы, плагины и спецификации сервера – все это влияет на время ответа сервера. Советуем найти более оптимизированную тему, тщательно подобрать плагин для оптимизации и/или обновить сервер. October CMS также позволяет разработчикам использовать [`Queues`](https://octobercms.com/docs/services/queues), чтобы отложить обработку ресурсозатратной задачи, например отправку электронного письма. Это значительно ускоряет веб-запросы."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "Рекомендуем показывать в списках записей только начальные фрагменты материалов (например, с кнопкой `show more`). Советуем также сократить количество материалов на одной странице, разбить длинные записи на несколько страниц или использовать плагин для отложенной загрузки комментариев."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "Существует множество [плагинов](https://octobercms.com/plugins?search=css), которые ускоряют загрузку сайтов, объединяя, уменьшая или сжимая стили. Рекомендуем использовать такие плагины на этапе сборки."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "Существует множество [плагинов](https://octobercms.com/plugins?search=javascript), которые ускоряют загрузку сайтов, объединяя, уменьшая или сжимая скрипты. Рекомендуем использовать такие плагины на этапе сборки."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "Рекомендуем проверить [плагины](https://octobercms.com/plugins), которые загружают неиспользуемый код CSS на сайт. Чтобы найти такие плагины, запустите [анализ покрытия кода](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) в Инструментах разработчика Chrome. Определить проблемный плагин или тему можно по URL-адресу таблицы стилей. Обращайте внимание на плагины с большим количеством таблиц стилей, где при анализе покрытия кода преобладает красный цвет. Таблица стилей должна добавляться, только если она используется на странице."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "Проверьте [плагины](https://octobercms.com/plugins?search=javascript), которые загружают неиспользуемый код JavaScript. Чтобы найти такие плагины, запустите [анализ покрытия кода](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) в Инструментах разработчика Chrome. Определить проблемный плагин или тему можно по URL-адресу скрипта. Обращайте внимание на плагины с большим количеством скриптов, в которых при анализе покрытия кода преобладает красный цвет. Плагин должен добавлять скрипт, только если он используется на странице."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "Ознакомьтесь с информацией о том, [как предотвратить ненужные сетевые запросы с помощью кеширования HTTP](https://web.dev/http-cache/#caching-checklist). Вы можете использовать [плагины для ускорения скорости кеширования](https://octobercms.com/plugins?search=Caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "Рекомендуем использовать [плагин для сжатия изображений без потери качества](https://octobercms.com/plugins?search=image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "Загружайте изображения напрямую из менеджера медиафайлов, чтобы убедиться, что их размеры соответствуют требованиям. Чтобы обеспечить оптимальный размер изображений, используйте [фильтр](https://octobercms.com/docs/markup/filter-resize) или [плагин](https://octobercms.com/plugins?search=image) для изменения размера."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "Включите в настройках веб-сервера сжатие текста."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "Чтобы загружаемые изображения автоматически конвертировались в оптимальный формат, используйте специальный [плагин](https://octobercms.com/plugins?search=image) или сервис. [Изображения без потери качества в формате WebP](https://developers.google.com/speed/webp) на 26 % меньше по размеру изображений в формате PNG и на 25–34 % меньше изображений в формате JPEG при одинаковом значении индекса структурного сходства. Мы также рекомендуем использовать такой современный формат изображения, как [AVIF](https://jakearchibald.com/2020/avif-has-landed/)."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "Рекомендуем использовать библиотеку оконного доступа, например `react-window`, чтобы уменьшить количество создаваемых узлов DOM, если на одной странице выполняется отрисовка множества повторяющихся элементов. [Подробнее…](https://web.dev/virtualize-long-lists-react-window/) Кроме того, если для повышения скорости загрузки применяется хук `Effect`, используйте [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) или [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo), чтобы исключить повторные отрисовки, и [пропускайте эффекты](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects), пока не изменятся определенные зависимости."
+    "message": "Рекомендуем использовать библиотеку для виртуализации списков, например `react-window`, чтобы уменьшить количество создаваемых узлов DOM, если на одной странице выполняется отрисовка множества повторяющихся элементов. [Подробнее…](https://web.dev/virtualize-long-lists-react-window/) Кроме того, если для повышения скорости загрузки применяется обработчик `Effect`, используйте [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) или [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo), чтобы исключить повторные отрисовки, и [пропускайте эффекты](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects), пока не изменятся определенные зависимости."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "Если вы используете React Router, максимально ограничьте применение компонента `<Redirect>` для [перехода по маршрутам](https://reacttraining.com/react-router/web/api/Redirect)."

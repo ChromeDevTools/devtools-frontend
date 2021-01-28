@@ -647,6 +647,24 @@
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | title": {
     "message": "पेज लोड पर भौगोलिक स्थान जानने की मंज़ूरी का अनुरोध नहीं किया जाता"
   },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | columnIssueType": {
+    "message": "इस तरह की समस्या है"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | description": {
+    "message": "Chrome डेवलपर टूल के `Issues` पैनल में मौजूद वेबसाइट से जुड़ी समस्याएं उन मुश्किलों की तरफ़ इशारा करती हैं जिनका समाधान करना बाकी है. ये मुश्किलें, नेटवर्क अनुरोधों के काम न करने और ब्राउज़र से जुड़ी अन्य वजहों से हो सकती हैं. साथ ही, ये तब भी हो सकती हैं, जब सुरक्षा कंट्रोल काफ़ी न हों. हर समस्या के बारे में ज़्यादा जानकारी पाने के लिए, Chrome डेवलपर टूल में 'समस्याएं' पैनल खोलें."
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | failureTitle": {
+    "message": "Chrome डेवलपर टूल के `Issues` पैनल में वेबसाइट से जुड़ी समस्याएं मौजूद हैं"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
+    "message": "क्रॉस-ओरिजन नीति ने ब्लॉक किया"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
+    "message": "विज्ञापनों में बड़े साइज़ के संसाधनों का इस्तेमाल"
+  },
+  "lighthouse-core/audits/dobetterweb/inspector-issues.js | title": {
+    "message": "Chrome डेवलपर टूल के `Issues` पैनल में वेबसाइट से जुड़ी कोई भी समस्या मौजूद नहीं है"
+  },
   "lighthouse-core/audits/dobetterweb/js-libraries.js | columnVersion": {
     "message": "वर्शन"
   },
@@ -717,7 +735,7 @@
     "message": "प्रोटोकॉल"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | description": {
-    "message": "HTTP/2 , HTTP/1.1 से ज़्यादा फ़ायदे ऑफ़र करता है जिनमें बाइनरी हैडर, मल्टीप्लेक्सिंग, और सर्वर पुश शामिल हैं. [ज़्यादा जानें](https://web.dev/uses-http2/)."
+    "message": "HTTP/2 , HTTP/1.1 से ज़्यादा फ़ायदे देता है. इन फ़ायदों में बाइनरी हैडर और मल्टिप्लेक्सिंग शामिल हैं. [ज़्यादा जानें](https://web.dev/uses-http2/)."
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
     "message": "{itemCount,plural, =1{1 अनुरोध HTTP/2 से सर्व नहीं किया गया}one{# अनुरोध HTTP/2 से सर्व नहीं किए गए}other{# अनुरोध HTTP/2 से सर्व नहीं किए गए}}"
@@ -788,14 +806,98 @@
   "lighthouse-core/audits/image-size-responsive.js | title": {
     "message": "पेज पर दिख रही इमेज का रिज़ॉल्यूशन ठीक है"
   },
+  "lighthouse-core/audits/installable-manifest.js | already-installed": {
+    "message": "यह ऐप्लिकेशन पहले से इंस्टॉल किया जा चुका है"
+  },
+  "lighthouse-core/audits/installable-manifest.js | cannot-download-icon": {
+    "message": "डाउनलोड किया गया आइकॉन खाली या खराब था"
+  },
+  "lighthouse-core/audits/installable-manifest.js | columnValue": {
+    "message": "इंस्टॉल न हो पाने की वजह"
+  },
   "lighthouse-core/audits/installable-manifest.js | description": {
-    "message": "ब्राउज़र अपनी ओर से उपयोगकर्ताओं को आपके ऐप्लिकेशन को उनकी होमस्क्रीन पर जोड़ने का सुझाव दे सकते हैं. इससे उपयोगकर्ताओं के साथ बेहतर तरीके से जुड़ने में मदद मिलती है. [ज़्यादा जानें](https://web.dev/installable-manifest/)."
+    "message": "सर्विस वर्कर एक ऐसी टेक्नोलॉजी है जो आपके ऐप्लिकेशन के लिए कई प्रगतिशील वेब ऐप्लिकेशन फ़ीचर चालू करती है, जैसे कि ऑफ़लाइन मोड, होमस्क्रीन पर जोड़ना, और पुश नोटिफ़िकेशन. सर्विस वर्कर और मेनिफ़ेस्ट में सही तरीके से किए गए बदलावों की मदद से, ब्राउज़र अपने-आप उपयोगकर्ताओं को आपके ऐप्लिकेशन को उनकी होमस्क्रीन पर जोड़ने का सुझाव दे सकते हैं. इस तरह, आपको उपयोगकर्ताओं के साथ बेहतर तरीके से जुड़ने में मदद मिल सकती है. [ज़्यादा जानें](https://web.dev/installable-manifest/)."
+  },
+  "lighthouse-core/audits/installable-manifest.js | displayValue": {
+    "message": "{itemCount,plural, =1{1 गड़बड़ी}one{# गड़बड़ी}other{# गड़बड़ियां}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
-    "message": "वेब ऐप्लिकेशन का मेनिफ़ेस्ट, इंस्टॉल करने की ज़रूरतों को पूरा नहीं करता है"
+    "message": "वेब ऐप्लिकेशन मेनिफ़ेस्ट या सर्विस वर्कर, इंस्टॉल करने की ज़रूरी शर्तों को नहीं पूरा करते"
+  },
+  "lighthouse-core/audits/installable-manifest.js | ids-do-not-match": {
+    "message": "Play स्टोर ऐप्लिकेशन का यूआरएल और आईडी आपस में मेल नहीं खाते"
+  },
+  "lighthouse-core/audits/installable-manifest.js | in-incognito": {
+    "message": "पेज को गुप्त विंडो में लोड किया गया है"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-not-supported": {
+    "message": "'standalone', 'fullscreen' या 'minimal-ui' में से किसी एक मेनिफ़ेस्ट 'display' प्रॉपर्टी का होना ज़रूरी है"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-display-override-not-supported": {
+    "message": "मेनिफ़ेस्ट में 'display_override' फ़ील्ड है, जबकि इसमें 'standalone', 'fullscreen' या 'minimal-ui' में से कोई एक डिसप्ले मोड होना ज़रूरी है. यह पहले डिसप्ले मोड के तौर पर काम करता है"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-empty": {
+    "message": "मेनिफ़ेस्ट को फ़ेच नहीं किया जा सका, वह खाली है या उसे पार्स नहीं किया जा सका"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-location-changed": {
+    "message": "मेनिफ़ेस्ट को फ़ेच करते समय उसका यूआरएल बदल गया."
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
+    "message": "मेनिफ़ेस्ट में 'name' या 'short_name' फ़ील्ड नहीं है"
+  },
+  "lighthouse-core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
+    "message": "मेनिफ़ेस्ट में सही आइकॉन नहीं है. इसमें PNG, SVG या WebP फ़ॉर्मैट में ऐसा आइकॉन होना ज़रूरी है जो कम से कम {value0} पिक्सल का हो. साथ ही, sizes एट्रिब्यूट को सेट करना ज़रूरी है. अगर purpose एट्रिब्यूट को भी सेट किया जाता है, तो उसमें \"any\" या \"maskable\" शामिल करना ज़रूरी है."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-acceptable-icon": {
+    "message": "दिया गया कोई भी आइकॉन ऐसे PNG, SVG या WebP फ़ॉर्मैट में नहीं है जो कम से कम {value0} पिक्सल स्क्वेयर का हो"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-icon-available": {
+    "message": "डाउनलोड किया गया आइकॉन खाली या खराब था"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-id-specified": {
+    "message": "'Play स्टोर' आईडी नहीं दिया गया"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-manifest": {
+    "message": "पेज में कोई भी मेनिफ़ेस्ट <link> यूआरएल नहीं है"
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-matching-service-worker": {
+    "message": "कोई भी मिलता-जुलता सर्विस वर्कर नहीं मिला. हो सकता है कि आपको पेज फिर से लोड करना पड़े या यह जांच करनी पड़े कि मौजूदा पेज के लिए सर्विस वर्कर का दायरा, मेनिफ़ेस्ट के दायरे और स्टार्ट यूआरएल जितना हो."
+  },
+  "lighthouse-core/audits/installable-manifest.js | no-url-for-service-worker": {
+    "message": "मेनिफ़ेस्ट में 'start_url' फ़ील्ड न होने की वजह से सर्विस वर्कर की जांच नहीं की जा सकती"
+  },
+  "lighthouse-core/audits/installable-manifest.js | noErrorId": {
+    "message": "इंस्टॉल करने के दौरान हुई गड़बड़ी के '{errorId}' आईडी की पहचान नहीं हो पाई"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-from-secure-origin": {
+    "message": "पेज को किसी सुरक्षित ओरिजन पर नहीं खोला गया है"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-in-main-frame": {
+    "message": "पेज को मुख्य फ़्रेम में लोड नहीं किया गया"
+  },
+  "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
+    "message": "यह पेज, ऑफ़लाइन मोड में काम नहीं करता"
+  },
+  "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
+    "message": "बताया गया ऐप्लिकेशन प्लैटफ़ॉर्म, Android पर काम नहीं करता"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications": {
+    "message": "मेनिफ़ेस्ट, prefer_related_applications देता है: सही"
+  },
+  "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
+    "message": "prefer_related_applications सिर्फ़ Chrome बीटा और Android पर स्थिर चैनलों पर काम करता है."
+  },
+  "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
+    "message": "दिया गया मेनिफ़ेस्ट स्टार्ट यूआरएल मान्य नहीं है"
   },
   "lighthouse-core/audits/installable-manifest.js | title": {
-    "message": "वेब ऐप्लिकेशन का मेनिफ़ेस्ट, इंस्टॉल करने की ज़रूरतों को पूरा करता है"
+    "message": "वेब ऐप्लिकेशन मेनिफ़ेस्ट और सर्विस वर्कर, इंस्टॉल करने की ज़रूरी शर्तों को पूरा करते हैं"
+  },
+  "lighthouse-core/audits/installable-manifest.js | url-not-supported-for-webapk": {
+    "message": "मेनिफ़ेस्ट में मौजूद किसी यूआरएल में एक उपयोगकर्ता नाम, पासवर्ड या पोर्ट है"
+  },
+  "lighthouse-core/audits/installable-manifest.js | warn-not-offline-capable": {
+    "message": "यह पेज, ऑफ़लाइन मोड में काम नहीं करता. अगस्त 2021 में Chrome 93 स्थिर चैनल रिलीज़ होने के बाद इस पेज को इंस्टॉल नहीं किया जा सकेगा."
   },
   "lighthouse-core/audits/is-on-https.js | allowed": {
     "message": "अनुमति दी गई"
@@ -1262,6 +1364,33 @@
   "lighthouse-core/audits/themed-omnibox.js | title": {
     "message": "'पता बार' के लिए थीम का रंग सेट करता है."
   },
+  "lighthouse-core/audits/third-party-facades.js | categoryCustomerSuccess": {
+    "message": "{productName} (ग्राहक सहायता)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryMarketing": {
+    "message": "{productName} (मार्केटिंग)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categorySocial": {
+    "message": "{productName} (सोशल)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | categoryVideo": {
+    "message": "{productName} (वीडियो)"
+  },
+  "lighthouse-core/audits/third-party-facades.js | columnProduct": {
+    "message": "प्रॉडक्ट"
+  },
+  "lighthouse-core/audits/third-party-facades.js | description": {
+    "message": "तीसरे पक्ष के एम्बेड किए गए कुछ ऑब्जेक्ट को धीमी रफ़्तार से लोड किया जा सकता है. जब तक ये ऑब्जेक्ट ज़रूरी न हों, तब तक इनकी जगह फ़साड का इस्तेमाल करें. [ज़्यादा जानें](https://web.dev/third-party-facades/)."
+  },
+  "lighthouse-core/audits/third-party-facades.js | displayValue": {
+    "message": "{itemCount,plural, =1{विकल्प के तौर पर # फ़साड उपलब्ध है}one{विकल्प के तौर पर # फ़साड उपलब्ध है}other{विकल्प के तौर पर # फ़साड उपलब्ध हैं}}"
+  },
+  "lighthouse-core/audits/third-party-facades.js | failureTitle": {
+    "message": "तीसरे पक्ष के कुछ संसाधनों को फ़साड की मदद से धीमी रफ़्तार से लोड किया जा सकता है"
+  },
+  "lighthouse-core/audits/third-party-facades.js | title": {
+    "message": "तीसरे पक्ष के संसाधनों को फ़साड की मदद से धीमी रफ़्तार से लोड करें"
+  },
   "lighthouse-core/audits/third-party-summary.js | columnThirdParty": {
     "message": "तीसरा पक्ष"
   },
@@ -1520,11 +1649,20 @@
   "lighthouse-core/gather/gather-runner.js | warningRedirected": {
     "message": "शायद पेज उम्मीद के मुताबिक लोड नहीं हो रहा है, क्योंकि आपके टेस्ट यूआरएल ({requested}) को {final} की ओर रीडायरेक्ट किया गया था. टेस्टिंग के लिए दूसरा यूआरएल आज़माएं."
   },
+  "lighthouse-core/gather/gather-runner.js | warningSlowHostCpu": {
+    "message": "ऐसा लगता है कि जांचे गए डिवाइस का सीपीयू, अनुमानित Lighthouse बेसलाइन से धीमा है. इससे आपके परफ़ॉर्मेंस स्कोर पर बुरा असर पड़ सकता है. [सही सीपीयू स्लोडाउन मल्टिप्लायर को कैलिब्रेट करने](https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#cpu-throttling) के बारे में ज़्यादा जानें."
+  },
   "lighthouse-core/gather/gather-runner.js | warningTimeout": {
     "message": "धीरे लोड होने की वजह से, पेज तय समयसीमा में पूरी तरह लोड नहीं हो पाया. नतीजे अधूरे हो सकते हैं."
   },
+  "lighthouse-core/lib/i18n/i18n.js | columnBlockingTime": {
+    "message": "मुख्य थ्रेड ब्लॉक होने का समय"
+  },
   "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL": {
     "message": "कैश TTL"
+  },
+  "lighthouse-core/lib/i18n/i18n.js | columnDescription": {
+    "message": "ब्यौरा"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnDuration": {
     "message": "कुल समय"
@@ -1628,6 +1766,9 @@
   "lighthouse-core/lib/i18n/i18n.js | otherResourceType": {
     "message": "कोई दूसरा विकल्प"
   },
+  "lighthouse-core/lib/i18n/i18n.js | otherResourcesLabel": {
+    "message": "अन्य संसाधन"
+  },
   "lighthouse-core/lib/i18n/i18n.js | scriptResourceType": {
     "message": "स्क्रिप्ट"
   },
@@ -1670,6 +1811,9 @@
   "lighthouse-core/lib/lh-error.js | missingRequiredArtifact": {
     "message": "ज़रूरी {artifactName} इकट्ठा करने वाला संसाधन नहीं चलाया जा सका."
   },
+  "lighthouse-core/lib/lh-error.js | noFcp": {
+    "message": "पेज ने किसी भी कॉन्टेंट को पेंट नहीं किया. कृपया पक्का करें कि आप पेज को लोड करते समय, ब्राउज़र विंडो को फ़ोरग्राउंड में रखें और फिर से कोशिश करें. ({errorCode})"
+  },
   "lighthouse-core/lib/lh-error.js | notHtml": {
     "message": "यह पेज, एचटीएमएल भाषा कोड में नहीं है. यह MIME टाइप {mimeType} में दिया गया है."
   },
@@ -1705,9 +1849,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "आपका दिया हुआ यूआरएल गलत लगता है."
-  },
-  "lighthouse-core/report/html/renderer/util.js | auditGroupExpandTooltip": {
-    "message": "ऑडिट दिखाएं"
   },
   "lighthouse-core/report/html/renderer/util.js | calculatorLink": {
     "message": "कैलकुलेटर देखें."
@@ -1926,7 +2067,7 @@
     "message": "किसी ऐसी सेवा में अपनी GIF अपलोड करें जो उसे HTML5 वीडियो में जोड़ने के लिए तैयार रख सके."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
-    "message": "[धीमे लोड होने वाला ऐसा Joomla प्लग इन](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) इंस्टॉल करें जिसमें किसी भी ऑफ़स्क्रीन इमेज को अलग करने की सुविधा हो. अगर नहीं, तो किसी ऐसे टेंप्लेट पर जाएं जो यह सुविधा मुहैया कराता हो. Joomla के 4.0 वर्शन से शुरुआत करते हुए, \"Content - Lazy Loading Images\" प्लग इन का इस्तेमाल करके, धीमे लोड होने वाले असरदार प्लग इन को चालू किया जा सकता है. किसी [AMP प्लग इन](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=amp) का भी इस्तेमाल किया जा सकता है."
+    "message": "[धीमी रफ़्तार से लोड करने वाला ऐसा Joomla प्लग इन](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) इंस्टॉल करें जिसमें किसी भी ऑफ़स्क्रीन इमेज को अलग करने की सुविधा हो या किसी ऐसे टेंप्लेट का इस्तेमाल करें जो यह सुविधा मुहैया कराता हो. Joomla 4.0 से शुरू करते हुए, सभी नई इमेज में `loading` एट्रिब्यूट [अपने-आप](https://github.com/joomla/joomla-cms/pull/30748) शामिल हो जाएगा."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | render-blocking-resources": {
     "message": "ऐसे कई Joomla प्लग इन हैं जो [क्रिटिकल एसेट इनलाइन करने ](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) या [कम ज़रूरी संसाधनों को अलग करने](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=performance) में आपकी मदद कर सकते हैं. ध्यान रखें कि ऐसे प्लग इन से मिलने वाली ऑप्टिमाइज़ेशन आपके टेंप्लेट या प्लग इन की सुविधाओं में दिक्कतें पैदा कर सकती हैं. इसलिए, आपको पूरी तरह इनकी जांच करनी होगी."
@@ -2000,8 +2141,50 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-webp-images": {
     "message": "तीसरे पक्ष के कई तरह के एक्सटेंशन [Magento मार्केटप्लेस](https://marketplace.magento.com/catalogsearch/result/?q=webp) में खोजें, ताकि आप नए इमेज फ़ॉर्मैट का फ़ायदा पा सकें."
   },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
+    "message": "वेब पेजों को तेज़ी से लोड करने के लिए, [ऐनिमेट किए गए GIF की जगह वीडियो का इस्तेमाल करें](https://web.dev/replace-gifs-with-videos/). साथ ही, [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) या [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) जैसे मॉडर्न फ़ाइल फ़ॉर्मैट इस्तेमाल करें, ताकि कंप्रेस करने पर क्वालिटी, मौजूदा state-of-the-art वीडियो कोडेक VP9 के मुकाबले 30% से ज़्यादा हो."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | offscreen-images": {
+    "message": "[इमेज को धीमी रफ़्तार से लोड करने वाला ऐसा प्लग इन](https://octobercms.com/plugins?search=lazy) इंस्टॉल करें जो किसी भी ऑफ़स्क्रीन इमेज को अलग करने की सुविधा देता हो या किसी ऐसी थीम का इस्तेमाल करें जो यह सुविधा मुहैया कराती हो. साथ ही, [एएमपी प्लग इन](https://octobercms.com/plugins?search=Accelerated+Mobile+Pages) का इस्तेमाल करें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | render-blocking-resources": {
+    "message": "ऐसे कई प्लग इन हैं जो [क्रिटिकल एसेट को इनलाइन](https://octobercms.com/plugins?search=css) करने में आपकी मदद कर सकते हैं. ये प्लग इन अन्य प्लग इन के काम में रुकावट डाल सकते हैं, इसलिए आपको इनकी अच्छी तरह जांच करनी चाहिए."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | time-to-first-byte": {
+    "message": "थीम, प्लग इन, और सर्वर की विशेषताओं से तय होता है कि सर्वर से कितनी देर में रिस्पॉन्स मिलेगा. ज़्यादा ऑप्टिमाइज़ की गई थीम ढूंढें, किसी ऑप्टिमाइज़ेशन प्लग इन को सावधानी से चुनें, और/या अपना सर्वर अपग्रेड करें. October CMS, डेवलपर को [`Queues`](https://octobercms.com/docs/services/queues) का भी इस्तेमाल करने देता है, ताकि वे किसी ऐसे टास्क की प्रोसेस को अलग कर सकें जिसमें ज़्यादा समय लगता हो. जैसे, ईमेल भेजना. इससे, वेब अनुरोधों की रफ़्तार बहुत ज़्यादा बढ़ जाती है."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
+    "message": "पोस्ट की सूचियों में खास हिस्से दिखाएं (जैसे, `show more` बटन की मदद से), किसी वेब पेज पर दिखाई गई पोस्ट की संख्या कम करें, लंबी पोस्ट को कई वेब पेजों में बांटें या टिप्पणियों को धीमी रफ़्तार से लोड करने वाले प्लग इन का इस्तेमाल करें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
+    "message": "ऐसे कई [प्लग इन](https://octobercms.com/plugins?search=css) हैं जो किसी वेबसाइट के लोड होने की रफ़्तार बढ़ा सकते हैं. इसके लिए, आपको स्टाइल को जोड़ना, उनमें काट-छांट करना, और उन्हें कंप्रेस करना होगा. पहले से काट-छांट करने के लिए बिल्ड प्रोसेस का इस्तेमाल करने से डेवलपमेंट की रफ़्तार बढ़ सकती है."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-javascript": {
+    "message": "ऐसे कई [प्लग इन](https://octobercms.com/plugins?search=javascript) हैं जो किसी वेबसाइट के लोड होने की रफ़्तार बढ़ा सकते हैं. इसके लिए, आपको स्क्रिप्ट को जोड़ना, उनमें काट-छांट करना, और उन्हें कंप्रेस करना होगा. पहले से काट-छांट करने के लिए बिल्ड प्रोसेस का इस्तेमाल करने से डेवलपमेंट की रफ़्तार बढ़ सकती है."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-css-rules": {
+    "message": "वेबसाइट पर, इस्तेमाल न किए जाने वाले सीएसएस लोड करने वाले [प्लग इन](https://octobercms.com/plugins) की समीक्षा करें. ग़ैर-ज़रूरी सीएसएस जोड़ने वाले प्लग इन पहचानने के लिए, Chrome डेवलपर टूल में [कोड कवरेज](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) चलाएं. इसके बाद, स्टाइलशीट के यूआरएल से उस थीम या प्लग इन को पहचानें. ऐसी कई स्टाइलशीट वाले प्लग इन ढूंढें जिनके कोड कवरेज में बहुत सारे लाल निशान हों. किसी प्लग इन को कोई स्टाइलशीट सिर्फ़ तब जोड़नी चाहिए, जब वेब पेज पर उस स्टाइलशीट को वाकई में इस्तेमाल किया जाता हो."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
+    "message": "वेब पेज में, इस्तेमाल न की जाने वाली JavaScript फ़ाइलें लोड करने वाले [प्लग इन](https://octobercms.com/plugins?search=javascript) की समीक्षा करें. ग़ैर-ज़रूरी JavaScript फ़ाइलें जोड़ने वाले प्लग इन पहचानने के लिए, Chrome डेवलपर टूल में [कोड कवरेज](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) चलाएं. इसके बाद, स्क्रिप्ट के यूआरएल से उस थीम या प्लग इन को पहचानें. ऐसी कई स्क्रिप्ट वाले प्लग इन ढूंढें जिनके कोड कवरेज में बहुत सारे लाल निशान हों. किसी प्लग इन को कोई स्क्रिप्ट सिर्फ़ तब जोड़नी चाहिए, जब वेब पेज पर उस स्क्रिप्ट को वाकई में इस्तेमाल किया जाता हो."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
+    "message": "[एचटीटीपी कैश मेमोरी की मदद से ग़ैर-ज़रूरी नेटवर्क अनुरोधों से बचने](https://web.dev/http-cache/#caching-checklist) के बारे में पढ़ें. ऐसे कई [प्लग इन](https://octobercms.com/plugins?search=Caching) हैं जो कैश मेमोरी में डेटा सेव करने की रफ़्तार बढ़ाने के लिए इस्तेमाल किए जा सकते हैं."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-optimized-images": {
+    "message": "इमेज की क्वालिटी को बरकरार रखते हुए, उसे कंप्रेस करने के लिए, [इमेज ऑप्टिमाइज़ेशन प्लग इन](https://octobercms.com/plugins?search=image) का इस्तेमाल करें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-responsive-images": {
+    "message": "सीधे मीडिया मैनेजर में इमेज अपलोड करें, ताकि आप यह पक्का कर सकें कि इमेज के ज़रूरी साइज़ उपलब्ध हैं. [साइज़ बदलने वाला फ़िल्टर](https://octobercms.com/docs/markup/filter-resize) या [इमेज का साइज़ बदलने वाला प्लग इन](https://octobercms.com/plugins?search=image) इस्तेमाल करें, ताकि आप यह पक्का कर सकें कि सबसे सही साइज़ की इमेज इस्तेमाल की जाएं."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-text-compression": {
+    "message": "वेब सर्वर कॉन्फ़िगरेशन में टेक्स्ट कंप्रेस करने की सुविधा चालू करें."
+  },
+  "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-webp-images": {
+    "message": "ऐसे [प्लग इन](https://octobercms.com/plugins?search=image) या सेवा का इस्तेमाल करें जो अपलोड की गई इमेज को अपने-आप सबसे सही फ़ॉर्मैट में बदल दे. [WebP लॉसलेस इमेज](https://developers.google.com/speed/webp), PNG इमेज से साइज़ में 26% छोटी होती हैं. साथ ही, इक्विवैलेंट SSIM क्वालिटी इंडेक्स में JPEG इमेज से 25-34% छोटी होती हैं. आप अगली जनरेशन के [AVIF](https://jakearchibald.com/2020/avif-has-landed/) इमेज फ़ॉर्मैट का भी इस्तेमाल कर सकते हैं."
+  },
   "node_modules/lighthouse-stack-packs/packs/react.js | dom-size": {
-    "message": "अगर आप पेज पर कई एलिमेंट एक से ज़्यादा बार रेंडर कर रहे हैं, तो बनाए गए DOM नोड की संख्या कम करने के लिए, `react-window` जैसी “छोटी विंडो वाली” लाइब्रेरी का इस्तेमाल करें. [ज़्यादा जानें](https://web.dev/virtualize-long-lists-react-window/). साथ ही, ज़रूरी न होने पर बार-बार रेंडर करने से बचने के लिए, [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) या [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo), और [इफ़ेक्ट छोड़ें](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) का इस्तेमाल करें. ऐसा तब तक करें, जब तक कुछ और करने की ज़रूरत न हो. साथ ही, जब आप रनटाइम परफ़ॉर्मेंस को बेहतर बनाने के लिए `Effect` हुक का इस्तेमाल कर रहे हों."
+    "message": "अगर आप पेज पर कई एलिमेंट एक से ज़्यादा बार रेंडर कर रहे हैं, तो बनाए गए डीओएम नोड की संख्या कम करने के लिए, `react-window` जैसी \"छोटी विंडो वाली\" लाइब्रेरी का इस्तेमाल करें. [ज़्यादा जानें](https://web.dev/virtualize-long-lists-react-window/). साथ ही, ज़रूरी न होने पर बार-बार रेंडर करने से बचने के लिए, [`shouldComponentUpdate`](https://reactjs.org/docs/optimizing-performance.html#shouldcomponentupdate-in-action), [`PureComponent`](https://reactjs.org/docs/react-api.html#reactpurecomponent) या [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) और [इफ़ेक्ट छोड़ें](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects) का इस्तेमाल करें. ऐसा तब तक करें, जब तक कुछ और करने की ज़रूरत न हो. साथ ही, जब आप रनटाइम परफ़ॉर्मेंस को बेहतर बनाने के लिए `Effect` हुक का इस्तेमाल कर रहे हों."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | redirects": {
     "message": "अगर आप React Router इस्तेमाल कर रहे हैं, तो [रूट नेविगेशन](https://reacttraining.com/react-router/web/api/Redirect) के लिए `<Redirect>` कॉम्पोनेंट का इस्तेमाल कम करें."

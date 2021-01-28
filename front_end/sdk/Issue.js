@@ -29,17 +29,6 @@ export function getShowThirdPartyIssuesSetting() {
 
 /**
  * @typedef {{
-  *            title:string,
-  *            message: (function():!Element),
-  *            issueKind: !IssueKind,
-  *            links: !Array<!{link: string, linkTitle: string}>
-  *          }}
-  */
-// @ts-ignore typedef
-export let IssueDescription;  // eslint-disable-line no-unused-vars
-
-/**
- * @typedef {{
   *             file: string,
   *             substitutions: (!Map<string, string>|undefined),
   *             issueKind: !IssueKind,
@@ -169,7 +158,7 @@ export class Issue extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   /**
-   * @return {?(!IssueDescription|!MarkdownIssueDescription)}
+   * @return {?MarkdownIssueDescription}
    */
   getDescription() {
     throw new Error('Not implemented');

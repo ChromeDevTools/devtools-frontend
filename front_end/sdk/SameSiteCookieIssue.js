@@ -7,7 +7,7 @@ import * as Common from '../common/common.js';
 import {ls} from '../platform/platform.js';
 
 import {FrameManager} from './FrameManager.js';
-import {Issue, IssueCategory, IssueDescription, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
+import {Issue, IssueCategory, IssueKind, MarkdownIssueDescription} from './Issue.js';  // eslint-disable-line no-unused-vars
 import {IssuesModel} from './IssuesModel.js';                                  // eslint-disable-line no-unused-vars
 import {ResourceTreeFrame} from './ResourceTreeModel.js';                      // eslint-disable-line no-unused-vars
 

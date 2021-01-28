@@ -8,8 +8,14 @@ import * as Marked from '../third_party/marked/marked.js';
 
 import {MarkdownView} from './MarkdownView.js';
 
-export function createIssueDescriptionFromMarkdown(description: SDK.Issue.MarkdownIssueDescription):
-    SDK.Issue.IssueDescription {
+export interface IssueDescription {
+  title: string;
+  view: MarkdownView;
+  issueKind: SDK.Issue.IssueKind;
+  links: {link: string, linkTitle: string}[];
+}
+
+export function createIssueDescriptionFromMarkdown(description: SDK.Issue.MarkdownIssueDescription): IssueDescription {
   const rawMarkdown = getMarkdownFileContent(description.file);
   const rawMarkdownWithPlaceholdersReplaced = substitutePlaceholders(rawMarkdown, description.substitutions);
   return createIssueDescriptionFromRawMarkdown(rawMarkdownWithPlaceholdersReplaced, description);
@@ -70,7 +76,7 @@ function validatePlaceholders(placeholders: Set<string>): void {
  * This function is exported separately for unit testing.
  */
 export function createIssueDescriptionFromRawMarkdown(
-    markdown: string, description: SDK.Issue.MarkdownIssueDescription): SDK.Issue.IssueDescription {
+    markdown: string, description: SDK.Issue.MarkdownIssueDescription): IssueDescription {
   const markdownAst = Marked.Marked.lexer(markdown);
   const title = findTitleFromMarkdownAst(markdownAst);
   if (!title) {
@@ -81,9 +87,7 @@ export function createIssueDescriptionFromRawMarkdown(
   markdownComponent.data = {tokens: markdownAst.slice(1)};
   return {
     title,
-    message(): MarkdownView {
-      return markdownComponent;
-    },
+    view: markdownComponent,
     issueKind: SDK.Issue.IssueKind.BreakingChange,
     links: description.links,
   };

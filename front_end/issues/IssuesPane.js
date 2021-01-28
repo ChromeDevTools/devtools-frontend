@@ -17,7 +17,7 @@ import * as UI from '../ui/ui.js';
 import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
 import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBufferIssueDetailsView.js';
 import {AggregatedIssue, Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
-import {createIssueDescriptionFromMarkdown} from './MarkdownIssueDescription.js';
+import {createIssueDescriptionFromMarkdown, IssueDescription} from './MarkdownIssueDescription.js';  // eslint-disable-line no-unused-vars
 
 class AffectedElementsView extends AffectedResourcesView {
   /**
@@ -796,13 +796,13 @@ export class IssueView extends UI.TreeOutline.TreeElement {
    *
    * @param {!IssuesPaneImpl} parent
    * @param {!AggregatedIssue} issue
-   * @param {!SDK.Issue.IssueDescription} description
+   * @param {!IssueDescription} description
    */
   constructor(parent, issue, description) {
     super();
     this._parent = parent;
     this._issue = issue;
-    /** @type {!SDK.Issue.IssueDescription} */
+    /** @type {!IssueDescription} */
     this._description = description;
 
     this.toggleOnClick = true;
@@ -921,8 +921,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     const messageElement = new UI.TreeOutline.TreeElement();
     messageElement.setCollapsible(false);
     messageElement.selectable = false;
-    const message = this._description.message();
-    messageElement.listItemElement.appendChild(message);
+    messageElement.listItemElement.appendChild(this._description.view);
     this.appendChild(messageElement);
   }
 
@@ -1115,15 +1114,13 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
    */
   _updateIssueView(issue) {
     if (!this._issueViews.has(issue.code())) {
-      let description = issue.getDescription();
+      const description = issue.getDescription();
       if (!description) {
         console.warn('Could not find description for issue code:', issue.code());
         return;
       }
-      if ('file' in description) {
-        description = createIssueDescriptionFromMarkdown(description);
-      }
-      const view = new IssueView(this, issue, description);
+      const markdownDescription = createIssueDescriptionFromMarkdown(description);
+      const view = new IssueView(this, issue, markdownDescription);
       this._issueViews.set(issue.code(), view);
       const parent = this._getIssueViewParent(issue);
       parent.appendChild(view, (a, b) => {

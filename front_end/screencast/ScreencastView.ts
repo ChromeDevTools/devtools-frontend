@@ -263,7 +263,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
       this._viewportElement.style.height = metadata.deviceHeight * this._screenZoom + bordersSize + 'px';
 
       const data = this._highlightNode ? {node: this._highlightNode, selectorList: undefined} : {clear: true};
-      this.highlightInOverlay(data, this._highlightConfig);
+      this._updateHighlightInOverlayAndRepaint(data, this._highlightConfig);
     };
     this._imageElement.src = 'data:image/jpg;base64,' + base64Data;
   }
@@ -331,7 +331,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     }
 
     if (event.type === 'mousemove') {
-      this.highlightInOverlay({node, selectorList: undefined}, this._inspectModeConfig);
+      this._updateHighlightInOverlayAndRepaint({node, selectorList: undefined}, this._inspectModeConfig);
       this._domModel.overlayModel().nodeHighlightRequested({nodeId: node.id as number});
     } else if (event.type === 'click') {
       this._domModel.overlayModel().inspectNodeRequested({backendNodeId: node.backendNodeId()});
@@ -386,11 +386,11 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   }
 
   highlightInOverlay(data: SDK.OverlayModel.HighlightData, config: Protocol.Overlay.HighlightConfig|null): void {
-    this._highlightInOverlay(data, config);
+    this._updateHighlightInOverlayAndRepaint(data, config);
   }
 
-  async _highlightInOverlay(data: SDK.OverlayModel.HighlightData, config: Protocol.Overlay.HighlightConfig|null):
-      Promise<void> {
+  async _updateHighlightInOverlayAndRepaint(
+      data: SDK.OverlayModel.HighlightData, config: Protocol.Overlay.HighlightConfig|null): Promise<void> {
     let node: SDK.DOMModel.DOMNode|null = null;
     if ('node' in data) {
       node = data.node;

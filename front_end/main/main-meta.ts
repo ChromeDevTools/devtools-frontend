@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
@@ -377,4 +378,155 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
   ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.APPEARANCE,
+  title: (): Platform.UIString.LocalizedString => ls`Theme:`,
+  settingName: 'uiTheme',
+  settingType: Common.Settings.SettingTypeObject.ENUM,
+  defaultValue: 'systemPreferred',
+  reloadRequired: true,
+  options: [
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Switch to system preferred color theme`,
+      text: (): Platform.UIString.LocalizedString => ls`System preference`,
+      value: 'systemPreferred',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Switch to light theme`,
+      text: (): Platform.UIString.LocalizedString => ls`Light`,
+      value: 'default',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Switch to dark theme`,
+      text: (): Platform.UIString.LocalizedString => ls`Dark`,
+      value: 'dark',
+    },
+  ],
+  tags: [
+    (): Platform.UIString.LocalizedString => ls`dark`,
+    (): Platform.UIString.LocalizedString => ls`light`,
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.APPEARANCE,
+  title: (): Platform.UIString.LocalizedString => ls`Panel layout:`,
+  settingName: 'sidebarPosition',
+  settingType: Common.Settings.SettingTypeObject.ENUM,
+  defaultValue: 'auto',
+  options: [
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Use horizontal panel layout`,
+      text: (): Platform.UIString.LocalizedString => ls`horizontal`,
+      value: 'bottom',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Use vertical panel layout`,
+      text: (): Platform.UIString.LocalizedString => ls`vertical`,
+      value: 'right',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Use automatic panel layout`,
+      text: (): Platform.UIString.LocalizedString => ls`auto`,
+      value: 'auto',
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.APPEARANCE,
+  title: (): Platform.UIString.LocalizedString => ls`Color format:`,
+  settingName: 'colorFormat',
+  settingType: Common.Settings.SettingTypeObject.ENUM,
+  defaultValue: 'original',
+  options: [
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Set color format as authored`,
+      text: (): Platform.UIString.LocalizedString => ls`As authored`,
+      value: 'original',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Set color format to HEX`,
+      text: 'HEX: #dac0de',
+      value: 'hex',
+      raw: true,
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Set color format to RGB`,
+      text: 'RGB: rgb(128 255 255)',
+      value: 'rgb',
+      raw: true,
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Set color format to HSL`,
+      text: 'HSL: hsl(300deg 80% 90%)',
+      value: 'hsl',
+      raw: true,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.APPEARANCE,
+  title: (): Platform.UIString.LocalizedString => ls`Enable Ctrl + 1-9 shortcut to switch panels`,
+  titleMac: (): Platform.UIString.LocalizedString => ls`Enable ⌘ + 1-9 shortcut to switch panels`,
+  settingName: 'shortcutPanelSwitch',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: false,
+});
+
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.GLOBAL,
+  settingName: 'currentDockState',
+  settingType: Common.Settings.SettingTypeObject.ENUM,
+  defaultValue: 'right',
+  options: [
+    {
+      value: 'right',
+      text: (): Platform.UIString.LocalizedString => ls`Right`,
+      title: (): Platform.UIString.LocalizedString => ls`Dock to right`,
+    },
+    {
+      value: 'bottom',
+      text: (): Platform.UIString.LocalizedString => ls`Bottom`,
+      title: (): Platform.UIString.LocalizedString => ls`Dock to bottom`,
+    },
+    {
+      value: 'left',
+      text: (): Platform.UIString.LocalizedString => ls`Left`,
+      title: (): Platform.UIString.LocalizedString => ls`Dock to left`,
+    },
+    {
+      value: 'undocked',
+      text: (): Platform.UIString.LocalizedString => ls`Undocked`,
+      title: (): Platform.UIString.LocalizedString => ls`Undock into separate window`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  settingName: 'activeKeybindSet',
+  settingType: Common.Settings.SettingTypeObject.ENUM,
+  defaultValue: 'devToolsDefault',
+  options: [
+    {
+      value: 'devToolsDefault',
+      title: (): Platform.UIString.LocalizedString => ls`DevTools (Default)`,
+      text: (): Platform.UIString.LocalizedString => ls`DevTools (Default)`,
+    },
+    {
+      value: 'vsCode',
+      title: (): Platform.UIString.LocalizedString => ls`Visual Studio Code`,
+      text: (): Platform.UIString.LocalizedString => ls`Visual Studio Code`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  settingName: 'userShortcuts',
+  settingType: Common.Settings.SettingTypeObject.ARRAY,
+  defaultValue: [],
 });

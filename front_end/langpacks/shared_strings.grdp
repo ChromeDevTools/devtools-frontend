@@ -251,9 +251,6 @@
   <message name="IDS_DEVTOOLS_a02c83a7dbd96295beaefb72c2bee2de" desc="Text that refers to the main target">
     Main
   </message>
-  <message name="IDS_DEVTOOLS_a1c58e94227389415de133efdf78ea6e" desc="Text for DevTools appearance">
-    Appearance
-  </message>
   <message name="IDS_DEVTOOLS_a1fa27779242b4902f7ae3bdd5c6d508" desc="Text that refers to some types">
     Type
   </message>

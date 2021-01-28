@@ -674,32 +674,26 @@
   "event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Toggle whether event listener is passive or blocking"
   },
+  "help/help-meta.ts | bug": {
+    "message": "bug"
+  },
+  "help/help-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
+    "message": "Do not show What's New after each update"
+  },
+  "help/help-meta.ts | releaseNotes": {
+    "message": "Release notes"
+  },
+  "help/help-meta.ts | reportADevtoolsIssue": {
+    "message": "Report a DevTools issue"
+  },
   "help/help-meta.ts | showWhatsNew": {
     "message": "Show What's New"
   },
+  "help/help-meta.ts | showWhatsNewAfterEachUpdate": {
+    "message": "Show What's New after each update"
+  },
   "help/help-meta.ts | whatsNew": {
     "message": "What's New"
-  },
-  "help/ModuleUIStrings.ts | appearance": {
-    "message": "Appearance"
-  },
-  "help/ModuleUIStrings.ts | bug": {
-    "message": "bug"
-  },
-  "help/ModuleUIStrings.ts | doNotShowWhatsNewAfterEachUpdate": {
-    "message": "Do not show What's New after each update"
-  },
-  "help/ModuleUIStrings.ts | help": {
-    "message": "Help"
-  },
-  "help/ModuleUIStrings.ts | releaseNotes": {
-    "message": "Release notes"
-  },
-  "help/ModuleUIStrings.ts | reportADevtoolsIssue": {
-    "message": "Report a DevTools issue"
-  },
-  "help/ModuleUIStrings.ts | showWhatsNewAfterEachUpdate": {
-    "message": "Show What's New after each update"
   },
   "help/ReleaseNoteView.ts | close": {
     "message": "Close"

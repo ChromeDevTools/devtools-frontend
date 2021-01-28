@@ -5,7 +5,6 @@
 import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
-import * as Workspace from '../workspace/workspace.js';
 
 import {LinearMemoryInspectorPaneImpl} from './LinearMemoryInspectorPane.js';
 
@@ -62,16 +61,6 @@ async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<
   return new SDK.RemoteObject.RemoteArrayBuffer(obj);
 }
 
-async function getBufferId(buffer: SDK.RemoteObject.RemoteArrayBuffer): Promise<string> {
-  const properties = await buffer.object().getOwnProperties(false);
-  const idProperty = properties.internalProperties?.find(prop => prop.name === '[[ArrayBufferData]]');
-  const id = idProperty?.value?.value;
-  if (!id) {
-    throw new Error('Unable to find backing store id for array buffer');
-  }
-  return id;
-}
-
 export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
   private paneInstance = LinearMemoryInspectorPaneImpl.instance();
   private bufferIdToRemoteObject: Map<string, SDK.RemoteObject.RemoteObject> = new Map();
@@ -120,29 +109,26 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
 
   async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address: number): Promise<void> {
     const buffer = await getBufferFromObject(obj);
-    const bufferId = await getBufferId(buffer);
+    const {internalProperties} = await buffer.object().getOwnProperties(false);
+    const idProperty = internalProperties?.find(({name}) => name === '[[ArrayBufferData]]');
+    const id = idProperty?.value?.value;
+    if (!id) {
+      throw new Error('Unable to find backing store id for array buffer');
+    }
+    const memoryProperty = internalProperties?.find(({name}) => name === '[[WebAssemblyMemory]]');
+    const memory = memoryProperty?.value;
 
-    if (this.bufferIdToRemoteObject.has(bufferId)) {
-      this.paneInstance.reveal(bufferId);
+    if (this.bufferIdToRemoteObject.has(id)) {
+      this.paneInstance.reveal(id);
       UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
       return;
     }
 
-    const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
-    if (!callFrame) {
-      throw new Error(`Cannot find call frame for ${obj.description}.`);
-    }
-    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(callFrame.script.sourceURL);
-
-    if (!uiSourceCode) {
-      throw new Error(`Cannot find source code object for source url: ${callFrame.script.sourceURL}`);
-    }
-    const title = uiSourceCode.displayName();
-
-    this.bufferIdToRemoteObject.set(bufferId, buffer.object());
+    const title = String(memory ? memory.description : buffer.object().description);
+    this.bufferIdToRemoteObject.set(id, buffer.object());
     const arrayBufferWrapper = new RemoteArrayBufferWrapper(buffer);
 
-    this.paneInstance.create(bufferId, title, arrayBufferWrapper, address);
+    this.paneInstance.create(id, title, arrayBufferWrapper, address);
     UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
   }
 

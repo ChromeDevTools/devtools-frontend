@@ -14,6 +14,8 @@ export interface AXNode {
   numChildren: number;
   hasOnlyUnloadedChildren: boolean;
   loadChildren: () => Promise<void>;
+  highlightNode: () => void;
+  clearHighlight: () => void;
 }
 
 export function SDKNodeToAXNode(parent: AXNode|null, sdkNode: SDK.AccessibilityModel.AccessibilityNode): AXNode {
@@ -35,6 +37,8 @@ export function SDKNodeToAXNode(parent: AXNode|null, sdkNode: SDK.AccessibilityM
         }
       }
     },
+    highlightNode: (): void => sdkNode.highlightDOMNode(),
+    clearHighlight: (): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(),
   };
 
   for (const child of sdkNode.children()) {

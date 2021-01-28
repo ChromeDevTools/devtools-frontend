@@ -16,10 +16,13 @@ export class AccessibilityNode extends HTMLElement {
   private axNode: AXNode|null = null;
   private expanded: boolean = true;
   private loadedChildren: boolean = false;
+  private hovered: boolean = false;
 
   constructor() {
     super();
     this.addEventListener('click', this.onClick.bind(this));
+    this.addEventListener('mousemove', this.onMouseMove.bind(this));
+    this.addEventListener('mouseleave', this.onMouseLeave.bind(this));
   }
 
   set data(data: AccessibilityNodeData) {
@@ -31,6 +34,27 @@ export class AccessibilityNode extends HTMLElement {
   private onClick(e: MouseEvent): void {
     e.stopPropagation();
     this.toggleChildren();
+  }
+
+  private onMouseMove(): void {
+    this.setHovered(true);
+  }
+
+  private onMouseLeave(): void {
+    this.setHovered(false);
+  }
+
+  private setHovered(hovered: boolean): void {
+    if (this.hovered === hovered || !this.axNode) {
+      return;
+    }
+
+    this.hovered = hovered;
+    if (this.hovered) {
+      this.axNode.highlightNode();
+    } else {
+      this.axNode.clearHighlight();
+    }
   }
 
   private toggleChildren(): void {
@@ -130,7 +154,7 @@ export class AccessibilityNode extends HTMLElement {
       } else {
         this.shadow.host.classList.add('no-children');
       }
-      parts.push(LitHtml.html`${nodeContent}`);
+      parts.push(LitHtml.html`<div class='wrapper'>${nodeContent}</div>`);
     }
 
     const children = this.renderChildren(this.axNode);
@@ -199,6 +223,15 @@ export class AccessibilityNode extends HTMLElement {
 
           :host(.parent.expanded)::before {
             -webkit-mask-position: -16px 0;
+          }
+
+          .wrapper {
+            display: inline-block;
+          }
+
+          .wrapper:hover {
+            background: var(--color-background-elevation-2);
+            width: 96%;
           }
 
       </style>

@@ -147,6 +147,22 @@ export function dispatchKeyDownEvent<T extends Element>(element: T, options: Key
 }
 
 /**
+ * Dispatches a mouse move event.
+ */
+export function dispatchMouseMoveEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
+  const moveEvent = new MouseEvent('mousemove', options);
+  element.dispatchEvent(moveEvent);
+}
+
+/**
+ * Dispatches a mouse leave event.
+ */
+export function dispatchMouseLeaveEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
+  const leaveEvent = new MouseEvent('mouseleave', options);
+  element.dispatchEvent(leaveEvent);
+}
+
+/**
  * Listens to an event of an element and returns a Promise that resolves to the
  * specified event type.
  */

@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import type * as ElementsModule from '../../../../front_end/elements/elements.js';
-import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertShadowRoot, dispatchClickEvent, dispatchMouseMoveEvent, dispatchMouseLeaveEvent, renderElementIntoDOM, assertElement} from '../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
+import {withNoMutations} from '../helpers/MutationHelpers.js';
 
 const {assert} = chai;
 
@@ -19,6 +20,8 @@ const makeAXNode = (overrides: Partial<ElementsModule.AccessibilityTreeUtils.AXN
     numChildren: 0,
     hasOnlyUnloadedChildren: false,
     loadChildren: async () => {},
+    highlightNode: () => {},
+    clearHighlight: () => {},
     ...overrides,
   };
   return axNode;
@@ -129,6 +132,31 @@ describeWithEnvironment('AccessibilityTree', () => {
 
       dispatchClickEvent(component);
       assert.isTrue(component.classList.contains('expanded'));
+    });
+  });
+
+  describe('mouse behaviour of accessibility nodes', () => {
+    it('node is highlighted on mouse hover', () => {
+      const node = makeAXNode({role: 'paragraph', name: 'text'});
+      const component = new Elements.AccessibilityNode.AccessibilityNode();
+      renderElementIntoDOM(component);
+      component.data = {
+        axNode: node,
+      };
+
+      assertShadowRoot(component.shadowRoot);
+      withNoMutations(component.shadowRoot, shadowRoot => {
+        const nodeWrapper = shadowRoot.querySelector('.wrapper');
+        assertElement(nodeWrapper, HTMLDivElement);
+
+        assert.isUndefined(window.getComputedStyle(nodeWrapper, ':hover'));
+
+        dispatchMouseMoveEvent(component);
+        assert.isDefined(window.getComputedStyle(nodeWrapper, ':hover'));
+
+        dispatchMouseLeaveEvent(component);
+        assert.isUndefined(window.getComputedStyle(nodeWrapper, ':hover'));
+      });
     });
   });
 });

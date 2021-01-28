@@ -201,6 +201,12 @@ export class LayoutPane extends HTMLElement {
       input.click();
       event.preventDefault();
     };
+    const onColorLabelKeyDown = (event: KeyboardEvent): void => {
+      // Prevent default scrolling when the Space key is pressed.
+      if (event.key === ' ') {
+        event.preventDefault();
+      }
+    };
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`<div class="element">
@@ -214,7 +220,7 @@ export class LayoutPane extends HTMLElement {
           } as NodeTextData}></devtools-node-text>
         </span>
       </label>
-      <label @keyup=${onColorLabelKeyUp} tabindex="0" class="color-picker-label" style="background: ${element.color};">
+      <label @keyup=${onColorLabelKeyUp} @keydown=${onColorLabelKeyDown} tabindex="0" class="color-picker-label" style="background: ${element.color};">
         <input @change=${onColorChange} @input=${onColorChange} class="color-picker" type="color" value=${element.color} />
       </label>
       <button tabindex="0" @click=${onElementClick} title=${showElementButtonTitle} class="show-element"></button>

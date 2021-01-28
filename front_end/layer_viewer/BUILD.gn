@@ -37,3 +37,9 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "layer_viewer-meta.ts"
+
+  deps = [ ":bundle" ]
+}

@@ -5,6 +5,9 @@
 use_relative_paths = True
 
 vars = {
+  # By default, do not checkout the re-client binaries.
+  'checkout_reclient': False,
+
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
   'build_revision': '6ccec8c9baef137d227e3f72bbb03cee1edc2138',
 
@@ -24,6 +27,9 @@ vars = {
 
   # GN CIPD package version.
   'gn_version': 'git_revision:55ad154c961d8326315b1c8147f4e504cd95e9e6',
+
+  # reclient CIPD package version
+  'reclient_version': 're_client_version:0.19.2.319f839',
 
   # Chromium build number for unit tests. It should be regularly updated to
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE
@@ -74,6 +80,16 @@ deps = {
     ],
     'dep_type': 'cipd',
     'condition': 'host_os == "win"',
+  },
+  'buildtools/reclient': {
+    'packages': [
+      {
+        'package': 'infra/rbe/client/${{platform}}',
+        'version': Var('reclient_version'),
+      }
+    ],
+    'dep_type': 'cipd',
+    'condition': '(host_os == "linux" or host_os == "win") and checkout_reclient',
   },
   'build':
     Var('build_url') + '@' + Var('build_revision'),

@@ -905,6 +905,7 @@ declare namespace Protocol {
     }
 
     export interface SourceCodeLocation {
+      scriptId?: Runtime.ScriptId;
       url: string;
       lineNumber: integer;
       columnNumber: integer;

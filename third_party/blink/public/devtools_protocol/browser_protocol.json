@@ -1288,6 +1288,11 @@
                     "type": "object",
                     "properties": [
                         {
+                            "name": "scriptId",
+                            "optional": true,
+                            "$ref": "Runtime.ScriptId"
+                        },
+                        {
                             "name": "url",
                             "type": "string"
                         },

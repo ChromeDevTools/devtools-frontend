@@ -153,6 +153,9 @@ module.exports = {
       // run just the TypeScript semi rule, else we get duplicate errors
       'semi': 0,
       '@typescript-eslint/semi': 2,
+      // func-call-spacing doesn't work well with .ts
+      'func-call-spacing': 0,
+      '@typescript-eslint/func-call-spacing': 2,
 
       /**
        * Enforce that enum members are explicitly defined:

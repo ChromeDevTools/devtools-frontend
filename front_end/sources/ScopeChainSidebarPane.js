@@ -24,6 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as LinearMemoryInspector from '../linear_memory_inspector/linear_memory_inspector.js';
@@ -235,8 +236,18 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox {
    * @param {!SDK.RemoteObject.RemoteObject} obj
    */
   _isMemoryObjectProperty(obj) {
-    return obj.type === 'object' && obj.subtype &&
+    const isWasmMemory = obj.type === 'object' && obj.subtype &&
         LinearMemoryInspector.LinearMemoryInspectorController.ACCEPTED_MEMORY_TYPES.includes(obj.subtype);
+    if (isWasmMemory) {
+      return true;
+    }
+
+    if (obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode) {
+      const valueNode = /** @type {!Bindings.DebuggerLanguagePlugins.ValueNode} */ obj;
+      return valueNode.inspectableAddress !== undefined;
+    }
+
+    return false;
   }
 
   /**
@@ -259,7 +270,25 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox {
    */
   async _openMemoryInspector(obj) {
     const controller = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
-    const address = 0;
-    controller.openInspectorView(obj, address);
+    let address = 0;
+    let memoryObj = obj;
+
+    if (obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode) {
+      const valueNode = /** @type {!Bindings.DebuggerLanguagePlugins.ValueNode} */ obj;
+      address = valueNode.inspectableAddress || 0;
+      const callFrame = valueNode.callFrame;
+      const response = await obj.debuggerModel()._agent.invoke_evaluateOnCallFrame({
+        callFrameId: callFrame.id,
+        expression: 'memories[0]',
+      });
+      const error = response.getError();
+      if (error) {
+        console.error(error);
+        Common.Console.Console.instance().error(ls`Could not open linear memory inspector: failed locating buffer.`);
+      }
+      const runtimeModel = obj.debuggerModel().runtimeModel();
+      memoryObj = runtimeModel.createRemoteObject(response.result);
+    }
+    controller.openInspectorView(memoryObj, address);
   }
 }

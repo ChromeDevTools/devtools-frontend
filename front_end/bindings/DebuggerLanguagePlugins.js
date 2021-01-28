@@ -94,6 +94,32 @@ async function resolveRemoteObject(callFrame, object) {
   return result.value;
 }
 
+export class ValueNode extends SDK.RemoteObject.RemoteObjectImpl {
+  /**
+   * @param {!SDK.DebuggerModel.CallFrame} callFrame
+   * @param {string|undefined} objectId
+   * @param {string} type
+   * @param {string|undefined} subtype
+   * @param {*} value
+   * @param {number|undefined} inspectableAddress
+   * @param {!Protocol.Runtime.UnserializableValue=} unserializableValue
+   * @param {string=} description
+   * @param {!Protocol.Runtime.ObjectPreview=} preview
+   * @param {!Protocol.Runtime.CustomPreview=} customPreview
+   * @param {string=} className
+   */
+  constructor(
+      callFrame, objectId, type, subtype, value, inspectableAddress, unserializableValue, description, preview,
+      customPreview, className) {
+    super(
+        callFrame.debuggerModel.runtimeModel(), objectId, type, subtype, value, unserializableValue, description,
+        preview, customPreview, className);
+
+    this.inspectableAddress = inspectableAddress;
+    this.callFrame = callFrame;
+  }
+}
+
 // Debugger language plugins present source-language values as trees with mixed dynamic and static structural
 // information. The static structure is defined by the variable's static type in the source language. Formatters are
 // able to present source-language values in an arbitrary user-friendly way, which contributes the dynamic structural
@@ -158,7 +184,8 @@ async function getValueTreeForExpression(callFrame, plugin, expression, evalOpti
   }
 
   // Create a new value tree with static information for the root.
-  return new StaticallyTypedValueNode(callFrame, plugin, sourceType, base, [], evalOptions);
+  const address = await StaticallyTypedValueNode.getInspectableAddress(callFrame, plugin, base, [], evalOptions);
+  return new StaticallyTypedValueNode(callFrame, plugin, sourceType, base, [], evalOptions, address);
 }
 
 /** Run the formatter for the value defined by the pair of base and fieldChain.
@@ -198,7 +225,7 @@ async function formatSourceValue(callFrame, plugin, sourceType, base, field, eva
     throw new FormattingError(callFrame.debuggerModel.runtimeModel().createRemoteObject(result), exceptionDetails);
   }
   // Wrap the formatted result into a FormattedValueNode.
-  const object = new FormattedValueNode(callFrame, sourceType, plugin, result, null, evalOptions);
+  const object = new FormattedValueNode(callFrame, sourceType, plugin, result, null, evalOptions, undefined);
   // Check whether the formatter returned a plain object or and object alongisde a formatter tag.
   const unpackedResultObject = await unpackResultObject(object);
   const node = unpackedResultObject || object;
@@ -214,7 +241,7 @@ async function formatSourceValue(callFrame, plugin, sourceType, base, field, eva
    * @return {!Promise<?FormattedValueNode>}
    */
   async function unpackResultObject(object) {
-    const {tag, value} = await object.findProperties('tag', 'value');
+    const {tag, value, inspectableAddress} = await object.findProperties('tag', 'value', 'inspectableAddress');
     if (!tag || !value) {
       return null;
     }
@@ -228,6 +255,7 @@ async function formatSourceValue(callFrame, plugin, sourceType, base, field, eva
     }
 
     value.formatterTag = {symbol: symbol.objectId, className: resolvedClassName};
+    value.inspectableAddress = inspectableAddress ? inspectableAddress.value : undefined;
     return value;
   }
 }
@@ -241,23 +269,23 @@ async function formatSourceValue(callFrame, plugin, sourceType, base, field, eva
 // A FormattedValueNode is a RemoteObject whose properties can be either FormattedValueNodes or
 // StaticallyTypedValueNodes. The class hooks into the creation of RemoteObjects for properties to check whether a
 // property is a marker.
-class FormattedValueNode extends SDK.RemoteObject.RemoteObjectImpl {
+class FormattedValueNode extends ValueNode {
   /**
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
    * @param {!DebuggerLanguagePlugin} plugin
    * @param {!SourceType} sourceType
    * @param {!Protocol.Runtime.RemoteObject} object
-   * @param {?{className: string, symbol: string }} formatterTag
+   * @param {?{className: string, symbol: string}} formatterTag
    * @param {!SDK.RuntimeModel.EvaluationOptions} evalOptions
+   * @param {number|undefined} inspectableAddress
    */
-  constructor(callFrame, sourceType, plugin, object, formatterTag, evalOptions) {
+  constructor(callFrame, sourceType, plugin, object, formatterTag, evalOptions, inspectableAddress) {
     super(
-        callFrame.debuggerModel.runtimeModel(), object.objectId, object.type, object.subtype, object.value,
+        callFrame, object.objectId, object.type, object.subtype, object.value, inspectableAddress,
         object.unserializableValue, object.description, object.preview, object.customPreview, object.className);
 
     this._plugin = plugin;
     this._sourceType = sourceType;
-    this._callFrame = callFrame;
 
     // The tag describes how to identify a marker by its className and its identifier symbol's object id.
     /** @type {?{className: string, symbol: string }} */
@@ -293,7 +321,7 @@ class FormattedValueNode extends SDK.RemoteObject.RemoteObjectImpl {
     const base = await this._getEvalBaseFromObject(newObject);
     if (!base) {
       return new FormattedValueNode(
-          this._callFrame, this._sourceType, this._plugin, newObject, this.formatterTag, this._evalOptions);
+          this.callFrame, this._sourceType, this._plugin, newObject, this.formatterTag, this._evalOptions, undefined);
     }
 
     // Property is a marker, check if it's just static type information or if we need to run formatters for the value.
@@ -303,11 +331,14 @@ class FormattedValueNode extends SDK.RemoteObject.RemoteObjectImpl {
     }
     // The marker refers to a value that needs to be formatted, so run the formatter.
     if (base.rootType.hasValue && !base.rootType.canExpand && base) {
-      return formatSourceValue(this._callFrame, this._plugin, newSourceType, base, [], this._evalOptions);
+      return formatSourceValue(this.callFrame, this._plugin, newSourceType, base, [], this._evalOptions);
     }
 
     // The marker is just static information, so start a new subtree with a static type info root.
-    return new StaticallyTypedValueNode(this._callFrame, this._plugin, newSourceType, base, [], this._evalOptions);
+    const address =
+        await StaticallyTypedValueNode.getInspectableAddress(this.callFrame, this._plugin, base, [], this._evalOptions);
+    return new StaticallyTypedValueNode(
+        this.callFrame, this._plugin, newSourceType, base, [], this._evalOptions, address);
   }
 
   /**
@@ -337,13 +368,13 @@ class FormattedValueNode extends SDK.RemoteObject.RemoteObjectImpl {
 
     // The object is a marker, so pull the static type information from its symbol property. The symbol property is not
     // a formatted value per se, but we wrap it as one to be able to call `findProperties`.
-    const baseObject =
-        new FormattedValueNode(this._callFrame, this._sourceType, this._plugin, result, null, this._evalOptions);
+    const baseObject = new FormattedValueNode(
+        this.callFrame, this._sourceType, this._plugin, result, null, this._evalOptions, undefined);
     const {payload, rootType} = await baseObject.findProperties('payload', 'rootType');
     if (typeof payload === 'undefined' || typeof rootType === 'undefined') {
       return null;
     }
-    const value = await resolveRemoteObject(this._callFrame, payload);
+    const value = await resolveRemoteObject(this.callFrame, payload);
     const {typeId} = await rootType.findProperties('typeId', 'rootType');
     if (typeof value === 'undefined' || typeof typeId === 'undefined') {
       return null;
@@ -392,7 +423,7 @@ class FormattingError extends Error {
 // static type information. Static type information is expressed by an `EvalBase` together with a `fieldChain`. The
 // latter is necessary to express navigating through type members. We don't know how to make sense of an `EvalBase`'s
 // payload here, which is why member navigation is relayed to the formatter via the `fieldChain`.
-class StaticallyTypedValueNode extends SDK.RemoteObject.RemoteObjectImpl {
+class StaticallyTypedValueNode extends ValueNode {
   /**
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
    * @param {!DebuggerLanguagePlugin} plugin
@@ -400,18 +431,18 @@ class StaticallyTypedValueNode extends SDK.RemoteObject.RemoteObjectImpl {
    * @param {?EvalBase} base Base type information for the root of the current statically typed subtree.
    * @param {!Array<!FieldInfo>} fieldChain A sequence of `FieldInfo`s gathered on the path from the base to this node.
    * @param {!SDK.RuntimeModel.EvaluationOptions} evalOptions
+   * @param {number|undefined} inspectableAddress
    */
-  constructor(callFrame, plugin, sourceType, base, fieldChain, evalOptions) {
+  constructor(callFrame, plugin, sourceType, base, fieldChain, evalOptions, inspectableAddress) {
     const typeName = sourceType.typeInfo.typeNames[0] || '<anonymous>';
     const variableType = 'object';
     super(
-        callFrame.debuggerModel.runtimeModel(),
+        callFrame,
         /* objectId=*/ undefined,
         /* type=*/ variableType,
-        /* subtype=*/ undefined, /* value=*/ null, /* unserializableValue=*/ undefined,
+        /* subtype=*/ undefined, /* value=*/ null, inspectableAddress, /* unserializableValue=*/ undefined,
         /* description=*/ typeName, /* preview=*/ undefined, /* customPreview=*/ undefined, /* className=*/ typeName);
     this._variableType = variableType;
-    this._callFrame = callFrame;
     this._plugin = plugin;
     /** @type {!SourceType} */
     this._sourceType = sourceType;
@@ -435,12 +466,63 @@ class StaticallyTypedValueNode extends SDK.RemoteObject.RemoteObjectImpl {
    * @return {!Promise<!SDK.RemoteObject.RemoteObject>}
    */
   async _expandMember(sourceType, fieldInfo) {
+    const fieldChain = this._fieldChain.concat(fieldInfo);
     if (sourceType.typeInfo.hasValue && !sourceType.typeInfo.canExpand && this._base) {
-      return formatSourceValue(
-          this._callFrame, this._plugin, sourceType, this._base, this._fieldChain.concat(fieldInfo), this._evalOptions);
+      return formatSourceValue(this.callFrame, this._plugin, sourceType, this._base, fieldChain, this._evalOptions);
     }
+
+    const address = this.inspectableAddress !== undefined ? this.inspectableAddress + fieldInfo.offset : undefined;
     return new StaticallyTypedValueNode(
-        this._callFrame, this._plugin, sourceType, this._base, this._fieldChain.concat(fieldInfo), this._evalOptions);
+        this.callFrame, this._plugin, sourceType, this._base, fieldChain, this._evalOptions, address);
+  }
+
+
+  /**
+   * @param {!SDK.DebuggerModel.CallFrame} callFrame
+   * @param {!DebuggerLanguagePlugin} plugin
+   * @param {EvalBase?} base
+   * @param {!Array<!FieldInfo>} field
+   * @param {!SDK.RuntimeModel.EvaluationOptions} evalOptions
+   * @return {!Promise<number|undefined>}
+   */
+  static async getInspectableAddress(callFrame, plugin, base, field, evalOptions) {
+    if (!base) {
+      return undefined;
+    }
+
+    const addressCode = await plugin.getInspectableAddress({base, field});
+    if (!addressCode.js) {
+      return undefined;
+    }
+    const response = await callFrame.debuggerModel.target().debuggerAgent().invoke_evaluateOnCallFrame({
+      callFrameId: callFrame.id,
+      expression: addressCode.js,
+      objectGroup: evalOptions.objectGroup,
+      includeCommandLineAPI: evalOptions.includeCommandLineAPI,
+      silent: evalOptions.silent,
+      returnByValue: true,
+      generatePreview: evalOptions.generatePreview,
+      throwOnSideEffect: evalOptions.throwOnSideEffect,
+      timeout: evalOptions.timeout,
+    });
+
+    const error = response.getError();
+    if (error) {
+      throw new Error(error);
+    }
+
+    const {result, exceptionDetails} = response;
+    if (exceptionDetails) {
+      throw new FormattingError(callFrame.debuggerModel.runtimeModel().createRemoteObject(result), exceptionDetails);
+    }
+
+    const address = result.value;
+    if (!Number.isSafeInteger(address) || address < 0) {
+      console.error(`Inspectable address is not a positive, safe integer: ${address}`);
+      return undefined;
+    }
+
+    return address;
   }
 
   /**
@@ -1574,6 +1656,15 @@ export class DebuggerLanguagePlugin {
    * @return {!Promise<?{js:string}>}
    */
   getFormatter(expressionOrField, context) {
+    throw new Error('Not implemented yet');
+  }
+
+
+  /**
+   * @param {!{base: !EvalBase, field: !Array<!FieldInfo>}} field
+   * @return {!Promise<!{js:string}>}
+   */
+  getInspectableAddress(field) {
     throw new Error('Not implemented yet');
   }
 

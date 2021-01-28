@@ -67,7 +67,6 @@ export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
     return inspectorInstance;
   }
 
-
   /**
    * @param {string} tabId
    * @param {string} title
@@ -90,8 +89,17 @@ export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
 
   /**
    * @param {string} tabId
+   * @param {number=} address
    */
-  reveal(tabId) {
+  reveal(tabId, address) {
+    const view = this._tabIdToInspectorView.get(tabId);
+    if (!view) {
+      throw new Error(`No linear memory inspector view for given tab id: ${tabId}`);
+    }
+
+    if (address !== undefined) {
+      view.updateAddress(address);
+    }
     this.refreshView(tabId);
     this._tabbedPane.selectTab(tabId);
   }
@@ -126,8 +134,8 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
   constructor(memoryWrapper, address) {
     super(false);
 
-    if (address < 0 || address > memoryWrapper.length()) {
-      throw new Error('Invalid address to show');
+    if (address < 0 || address >= memoryWrapper.length()) {
+      throw new Error('Requested address is out of bounds.');
     }
 
     this._memoryWrapper = memoryWrapper;
@@ -137,7 +145,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
       this._memoryRequested(/** @type {?} */ (event));
     });
     this._inspector.addEventListener('address-changed', /** @param {?} event */ event => {
-      this._address = event.data;
+      this.updateAddress(event.data);
     });
     this.contentElement.appendChild(this._inspector);
   }
@@ -147,6 +155,16 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
    */
   wasShown() {
     this.refreshData();
+  }
+
+  /**
+   * @param {number} address
+   */
+  updateAddress(address) {
+    if (address < 0 || address >= this._memoryWrapper.length()) {
+      throw new Error('Requested address is out of bounds.');
+    }
+    this._address = address;
   }
 
   refreshData() {

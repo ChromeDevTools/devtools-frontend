@@ -98,6 +98,7 @@ export function defineCommonExtensionSymbols(apiPrivate) {
     EvaluateVariable: 'evaluateVariable',
     GetTypeInfo: 'getTypeInfo',
     GetFormatter: 'getFormatter',
+    GetInspectableAddress: 'getInspectableAddress',
     GetFunctionInfo: 'getFunctionInfo',
     GetInlinedFunctionRanges: 'getInlinedFunctionRanges',
     GetInlinedCalleesRanges: 'getInlinedCalleesRanges',
@@ -425,6 +426,11 @@ self.injectedExtensionAPI = function(
             return plugin.getTypeInfo(parameters.expression, parameters.context);
           case languageExtensionPluginCommands.GetFormatter:
             return plugin.getFormatter(parameters.expressionOrField, parameters.context);
+          case languageExtensionPluginCommands.GetInspectableAddress:
+            if ('getInspectableAddress' in plugin) {
+              return plugin.getInspectableAddress(parameters.field);
+            }
+            return Promise.resolve({js: ''});
           case languageExtensionPluginCommands.GetFunctionInfo:
             return plugin.getFunctionInfo(parameters.rawLocation);
           case languageExtensionPluginCommands.GetInlinedFunctionRanges:

@@ -396,6 +396,9 @@
   <message name="IDS_DEVTOOLS_8a6ba1209747e84442fc26c1ab33d185" desc="Command for showing the 'Quick source' tool">
     Show Quick source
   </message>
+  <message name="IDS_DEVTOOLS_8b86092355ebf3d7d9ab48cbfb406747" desc="Error message that shows up in the console if a buffer to be opened in the lienar memory inspector cannot be found.">
+    Could not open linear memory inspector: failed locating buffer.
+  </message>
   <message name="IDS_DEVTOOLS_904a8304056d77e4547744781b7ceb50" desc="Title of a sources panel action that renames a file">
     Rename
   </message>

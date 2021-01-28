@@ -119,7 +119,7 @@ export class LinearMemoryInspectorController extends SDK.SDKModel.SDKModelObserv
     const memory = memoryProperty?.value;
 
     if (this.bufferIdToRemoteObject.has(id)) {
-      this.paneInstance.reveal(id);
+      this.paneInstance.reveal(id, address);
       UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
       return;
     }

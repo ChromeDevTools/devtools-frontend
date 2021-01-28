@@ -335,6 +335,9 @@ export const enum IconClass {
   LARGEICON_CLEAR = 'largeicon-clear',
   LARGEICON_VISIBILITY = 'largeicon-visibility',
   LARGEICON_PHONE = 'largeicon-phone',
+  LARGEICON_PLAY = 'largeicon-play',
+  LARGEICON_PAUSE = 'largeicon-pause',
+  LARGEICON_RESUME = 'largeicon-resume',
 }
 
 export const enum KeybindSet {

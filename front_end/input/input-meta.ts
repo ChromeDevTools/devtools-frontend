@@ -34,3 +34,68 @@ UI.ViewManager.registerViewExtension({
   },
   experiment: Root.Runtime.ExperimentName.TIMELINE_REPLAY_EVENT,
 });
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'input.toggle-recording',
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
+  toggleable: true,
+  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
+  toggleWithRedColor: true,
+  async loadActionDelegate() {
+    const Input = await loadInputModule();
+    return Input.InputTimeline.ActionDelegate.instance();
+  },
+  category: UI.ActionRegistration.ActionCategory.INPUTS,
+  experiment: Root.Runtime.ExperimentName.TIMELINE_REPLAY_EVENT,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Start recording`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Stop recording`,
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'input.start-replaying',
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_PLAY,
+  toggleable: false,
+  async loadActionDelegate() {
+    const Input = await loadInputModule();
+    return Input.InputTimeline.ActionDelegate.instance();
+  },
+  category: UI.ActionRegistration.ActionCategory.INPUTS,
+  experiment: Root.Runtime.ExperimentName.TIMELINE_REPLAY_EVENT,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Start replaying`,
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'input.toggle-pause',
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_PAUSE,
+  toggleable: true,
+  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_RESUME,
+  async loadActionDelegate() {
+    const Input = await loadInputModule();
+    return Input.InputTimeline.ActionDelegate.instance();
+  },
+  category: UI.ActionRegistration.ActionCategory.INPUTS,
+  experiment: Root.Runtime.ExperimentName.TIMELINE_REPLAY_EVENT,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Pause`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Resume`,
+    },
+  ],
+});

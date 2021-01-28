@@ -504,9 +504,6 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_ae262bf758227f7e319ba799a861681a" desc="Text in Clear Storage View of the Application panel">
     Local and session storage
   </message>
-  <message name="IDS_DEVTOOLS_af1b98adf7f686b84cd0b443e022b7a0" desc="Text in App Manifest View of the Application panel">
-    Categories
-  </message>
   <message name="IDS_DEVTOOLS_b0fc7aefe34679e27237645908be3214" desc="Warning message for image resources from the manifest">
     <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> <ph name="IMAGEURL">$2s<ex>https://example.com/image.png</ex></ph> dimensions should be square
   </message>

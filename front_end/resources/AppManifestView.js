@@ -170,7 +170,14 @@ export class AppManifestView extends UI.Widget.VBox {
     const parsedManifest = JSON.parse(data);
     this._nameField.textContent = stringProperty('name');
     this._shortNameField.textContent = stringProperty('short_name');
-    this._descriptionField.textContent = stringProperty('description');
+
+    const warnings = [];
+
+    const description = stringProperty('description');
+    this._descriptionField.textContent = description;
+    if (description.length > 324) {
+      warnings.push(ls`Description may be truncated.`);
+    }
 
     const categories = parsedManifest['categories'] || [];
     this._categoriesField.textContent = categories.join(', ');
@@ -304,7 +311,10 @@ export class AppManifestView extends UI.Widget.VBox {
       this._installabilitySection.appendRow().appendChild(UI.UIUtils.createIconLabel(error, 'smallicon-warning'));
     }
 
-    this._errorsSection.element.classList.toggle('hidden', !errors.length && !imageErrors.length);
+    this._errorsSection.element.classList.toggle('hidden', !errors.length && !imageErrors.length && !warnings.length);
+    for (const warning of warnings) {
+      this._errorsSection.appendRow().appendChild(UI.UIUtils.createIconLabel(warning, 'smallicon-warning'));
+    }
     for (const error of imageErrors) {
       this._errorsSection.appendRow().appendChild(UI.UIUtils.createIconLabel(error, 'smallicon-warning'));
     }

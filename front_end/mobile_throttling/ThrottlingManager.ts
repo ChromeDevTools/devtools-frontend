@@ -282,8 +282,16 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implem
 export enum Events {
   RateChanged = 'RateChanged'
 }
-
+let actionDelegateInstance: ActionDelegate;
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ActionDelegate {
+    const {forceNew} = opts;
+    if (!actionDelegateInstance || forceNew) {
+      actionDelegateInstance = new ActionDelegate();
+    }
+    return actionDelegateInstance;
+  }
+
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     if (actionId === 'network-conditions.network-online') {
       SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(

@@ -2054,11 +2054,29 @@
   "media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
     "message": "Video playback roughness"
   },
+  "mobile_throttling/mobile_throttling-meta.ts | device": {
+    "message": "device"
+  },
+  "mobile_throttling/mobile_throttling-meta.ts | enableFastGThrottling": {
+    "message": "Enable fast 3G throttling"
+  },
+  "mobile_throttling/mobile_throttling-meta.ts | enableSlowGThrottling": {
+    "message": "Enable slow 3G throttling"
+  },
+  "mobile_throttling/mobile_throttling-meta.ts | goOffline": {
+    "message": "Go offline"
+  },
+  "mobile_throttling/mobile_throttling-meta.ts | goOnline": {
+    "message": "Go online"
+  },
   "mobile_throttling/mobile_throttling-meta.ts | showThrottling": {
     "message": "Show Throttling"
   },
   "mobile_throttling/mobile_throttling-meta.ts | throttling": {
     "message": "Throttling"
+  },
+  "mobile_throttling/mobile_throttling-meta.ts | throttlingTag": {
+    "message": "throttling"
   },
   "mobile_throttling/MobileThrottlingSelector.ts | advanced": {
     "message": "Advanced"
@@ -2068,27 +2086,6 @@
   },
   "mobile_throttling/MobileThrottlingSelector.ts | presets": {
     "message": "Presets"
-  },
-  "mobile_throttling/ModuleUIStrings.ts | device": {
-    "message": "device"
-  },
-  "mobile_throttling/ModuleUIStrings.ts | enableFastGThrottling": {
-    "message": "Enable fast 3G throttling"
-  },
-  "mobile_throttling/ModuleUIStrings.ts | enableSlowGThrottling": {
-    "message": "Enable slow 3G throttling"
-  },
-  "mobile_throttling/ModuleUIStrings.ts | goOffline": {
-    "message": "Go offline"
-  },
-  "mobile_throttling/ModuleUIStrings.ts | goOnline": {
-    "message": "Go online"
-  },
-  "mobile_throttling/ModuleUIStrings.ts | network": {
-    "message": "Network"
-  },
-  "mobile_throttling/ModuleUIStrings.ts | throttling": {
-    "message": "throttling"
   },
   "mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Network throttling is enabled"

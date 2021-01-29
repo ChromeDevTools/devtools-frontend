@@ -73,15 +73,15 @@ export let AffectedSource;  // eslint-disable-line no-unused-vars
  */
 export class Issue extends Common.ObjectWrapper.ObjectWrapper {
   /**
-   * @param {string} code
+   * @param {string|{code:string, umaCode:string}} code
    * @param {IssuesModel|null} issuesModel
    */
   constructor(code, issuesModel = null) {
     super();
     /** @type {string} */
-    this._code = code;
+    this._code = typeof code === 'string' ? code : code.code;
     this._issuesModel = issuesModel;
-    Host.userMetrics.issueCreated(code);
+    Host.userMetrics.issueCreated(typeof code === 'string' ? code : code.umaCode);
   }
 
   /**

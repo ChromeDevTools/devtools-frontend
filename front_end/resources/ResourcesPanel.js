@@ -133,6 +133,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.visibleView = view;
 
     this._storageViewToolbar.removeToolbarItems();
+    this._storageViewToolbar.element.classList.toggle('hidden', true);
     if (view instanceof UI.View.SimpleView) {
       view.toolbarItems().then(items => {
         items.map(item => this._storageViewToolbar.appendToolbarItem(item));

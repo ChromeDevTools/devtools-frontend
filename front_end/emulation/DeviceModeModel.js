@@ -948,8 +948,6 @@ export const _defaultMobileUserAgent =
     SDK.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(_mobileUserAgent);
 
 export const _defaultMobileUserAgentMetadata = {
-  brands: SDK.NetworkManager.MultitargetNetworkManager.getChromeBrands(),
-  fullVersion: SDK.NetworkManager.MultitargetNetworkManager.getChromeVersion(),
   platform: 'Android',
   platformVersion: '6.0',
   architecture: '',

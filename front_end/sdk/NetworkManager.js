@@ -1148,56 +1148,6 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     return '';
   }
 
-
-  /**
-    * Generate a brand version list for Chrome, including some randomization
-    * to try to ensure proper parsing behavior. See
-    *
-    * https://wicg.github.io/ua-client-hints/#grease
-    *
-    * This implementation matches GenerateBrandVersionList() in
-    * chrome_content_browser_client.cc
-    * @param {number} seed
-    * @param {string} brand
-    * @param {string} majorVersion
-    *
-    * @return {!Array<!Protocol.Emulation.UserAgentBrandVersion>}
-    */
-  static _generateBrandVersionList(seed, brand, majorVersion) {
-    // Pick a stable permutation seeded by major version number. any values here
-    // and in order should be under three.
-    const orders = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
-    const permutation = seed % orders.length;
-    const order = orders[permutation];
-
-    const escapedChars = ['\\', '\"', ';'];
-    const greaseyBrand =
-        escapedChars[order[0]] + 'Not' + escapedChars[order[1]] + 'A' + escapedChars[order[2]] + 'Brand';
-
-    const greasey = {brand: greaseyBrand, version: '99'};
-    const chromium = {brand: 'Chromium', version: majorVersion};
-    const branded = {brand: brand, version: majorVersion};
-
-    const greasedBrandVersionList = /** @type {!Array<!Protocol.Emulation.UserAgentBrandVersion>} */ ([]);
-    greasedBrandVersionList[order[0]] = greasey;
-    greasedBrandVersionList[order[1]] = chromium;
-    greasedBrandVersionList[order[2]] = branded;
-    return greasedBrandVersionList;
-  }
-
-  /**
-   * @return {!Array<!Protocol.Emulation.UserAgentBrandVersion>}
-   */
-  static getChromeBrands() {
-    const chromeVersion = MultitargetNetworkManager.getChromeVersion();
-    if (chromeVersion.length > 0) {
-      const majorVersion = chromeVersion.split('.', 1)[0];
-      return MultitargetNetworkManager._generateBrandVersionList(
-          Number.parseInt(majorVersion, 10), 'Google Chrome', majorVersion);
-    }
-    return [];
-  }
-
   /**
    * @param {string} uaString
    * @return {string}

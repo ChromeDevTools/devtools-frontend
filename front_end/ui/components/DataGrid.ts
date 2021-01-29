@@ -134,8 +134,9 @@ export class DataGrid extends HTMLElement {
    */
   private focusableCell: CellPosition = [0, 1];
   private hasRenderedAtLeastOnce = false;
-  private userHasFocused: boolean = false;
-  private userHasScrolled: boolean = false;
+  private userHasFocused = false;
+  private userHasScrolled = false;
+  private enqueuedRender = false;
 
   connectedCallback(): void {
     ComponentHelpers.SetCSSProperty.set(this, '--table-row-height', `${ROW_HEIGHT_PIXELS}px`);
@@ -624,6 +625,11 @@ export class DataGrid extends HTMLElement {
    */
   private render(): void {
     if (this.scheduledRender) {
+      // If we receive a request to render during a previous render call, we block
+      // the newly requested render (since we could receive a lot of them in quick
+      // succession), but we do ensure that at the end of the current render we
+      // go again with the latest data.
+      this.enqueuedRender = true;
       return;
     }
     this.scheduledRender = true;
@@ -887,6 +893,13 @@ export class DataGrid extends HTMLElement {
       await this.alignScrollHandlers();
       this.scheduledRender = false;
       this.hasRenderedAtLeastOnce = true;
+
+      // If we've received more data mid-render we will do one extra render at
+      // the end with the most recent data.
+      if (this.enqueuedRender) {
+        this.enqueuedRender = false;
+        this.render();
+      }
     });
   }
 }

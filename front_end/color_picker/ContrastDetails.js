@@ -320,7 +320,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     const labelAA = this._contrastPassFailAA.createChild('span', 'contrast-link-label');
     labelAA.textContent = i18nString(UIStrings.aa);
     this._contrastPassFailAA.createChild('span').textContent =
-        i18nString(UIStrings.placeholderWithColon, aa.toFixed(1));
+        i18nString(UIStrings.placeholderWithColon, {PH1: aa.toFixed(1)});
     if (this._passesAA) {
       this._contrastPassFailAA.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
     } else {
@@ -339,7 +339,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
     const labelAAA = this._contrastPassFailAAA.createChild('span', 'contrast-link-label');
     labelAAA.textContent = i18nString(UIStrings.aaa);
     this._contrastPassFailAAA.createChild('span').textContent =
-        i18nString(i18nString(UIStrings.placeholderWithColon), aaa.toFixed(1));
+        i18nString(UIStrings.placeholderWithColon, {PH1: aaa.toFixed(1)});
     if (passesAAA) {
       this._contrastPassFailAAA.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
     } else {

@@ -219,6 +219,57 @@ export class Cookie {
   getCookieLine() {
     return this._cookieLine;
   }
+
+  /**
+   * @param {string} securityOrigin
+   * @returns {boolean}
+   */
+  matchesSecurityOrigin(securityOrigin) {
+    const hostname = new URL(securityOrigin).hostname;
+    return Cookie.isDomainMatch(this.domain(), hostname);
+  }
+
+  /**
+   * @param {string} domain
+   * @param {string} hostname
+   * @returns {boolean}
+   */
+  static isDomainMatch(domain, hostname) {
+    // This implementation mirrors
+    // https://source.chromium.org/search?q=net::cookie_util::IsDomainMatch()
+    //
+    // Can domain match in two ways; as a domain cookie (where the cookie
+    // domain begins with ".") or as a host cookie (where it doesn't).
+
+    // Some consumers of the CookieMonster expect to set cookies on
+    // URLs like http://.strange.url.  To retrieve cookies in this instance,
+    // we allow matching as a host cookie even when the domain_ starts with
+    // a period.
+    if (hostname === domain) {
+      return true;
+    }
+
+    // Domain cookie must have an initial ".".  To match, it must be
+    // equal to url's host with initial period removed, or a suffix of
+    // it.
+
+    // Arguably this should only apply to "http" or "https" cookies, but
+    // extension cookie tests currently use the funtionality, and if we
+    // ever decide to implement that it should be done by preventing
+    // such cookies from being set.
+    if (!domain || domain[0] !== '.') {
+      return false;
+    }
+
+    // The host with a "." prefixed.
+    if (domain.substr(1) === hostname) {
+      return true;
+    }
+
+    // A pure suffix of the host (ok since we know the domain already
+    // starts with a ".")
+    return hostname.length > domain.length && hostname.endsWith(domain);
+  }
 }
 
 /**

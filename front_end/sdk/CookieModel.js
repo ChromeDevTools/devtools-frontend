@@ -69,7 +69,7 @@ export class CookieModel extends SDKModel {
     const cookies = await this.getCookiesForDomain(domain || null);
     if (securityOrigin) {
       const cookiesToDelete = cookies.filter(cookie => {
-        return securityOrigin.endsWith(cookie.domain());
+        return cookie.matchesSecurityOrigin(securityOrigin);
       });
       await this.deleteCookies(cookiesToDelete);
     } else {

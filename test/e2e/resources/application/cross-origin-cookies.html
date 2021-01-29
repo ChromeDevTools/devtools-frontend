@@ -7,6 +7,7 @@
   document.cookie = 'foo=bar;path=/';
   document.cookie = 'foo2=bar;path=/';
 
+  // Load cross origin resource by switching the hostname to 127.0.0.1
   const url = new URL('./set-cookies.rawresponse', document.location);
   const image = new Image();
   image.src = url.toString().replace('localhost', '127.0.0.1');

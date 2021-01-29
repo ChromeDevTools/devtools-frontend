@@ -38,7 +38,6 @@ describe('The Application Tab', async () => {
       return data.length ? data : undefined;
     });
 
-
     assert.sameDeepMembers(dataGridRowValuesBefore, [
       {
         name: 'third_party',

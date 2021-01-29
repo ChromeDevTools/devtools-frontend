@@ -174,4 +174,19 @@ describeWithEnvironment('Cookie', () => {
     assertNotNull(expiresDate);
     assert.strictEqual(expiresDate.toISOString(), new Date(expires).toISOString());
   });
+
+  it('can check if a cookie domain matches a given host', () => {
+    assert.isTrue(SDK.Cookie.Cookie.isDomainMatch('example.com', 'example.com'));
+    assert.isFalse(SDK.Cookie.Cookie.isDomainMatch('www.example.com', 'example.com'));
+
+    assert.isTrue(SDK.Cookie.Cookie.isDomainMatch('.example.com', 'example.com'));
+    assert.isTrue(SDK.Cookie.Cookie.isDomainMatch('.example.com', 'www.example.com'));
+    assert.isFalse(SDK.Cookie.Cookie.isDomainMatch('.www.example.com', 'example.com'));
+
+    assert.isFalse(SDK.Cookie.Cookie.isDomainMatch('example.com', 'example.de'));
+    assert.isFalse(SDK.Cookie.Cookie.isDomainMatch('.example.com', 'example.de'));
+    assert.isFalse(SDK.Cookie.Cookie.isDomainMatch('.example.de', 'example.de.vu'));
+
+    assert.isFalse(SDK.Cookie.Cookie.isDomainMatch('example.com', 'notexample.com'));
+  });
 });

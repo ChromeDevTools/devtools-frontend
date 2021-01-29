@@ -248,7 +248,7 @@
 
 .data-grid tr.dirty {
   background-color: hsl(0deg 100% 92%);
-  color: red;
+  color: #f00;
   font-style: normal;
 }
 

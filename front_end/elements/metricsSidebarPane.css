@@ -68,7 +68,7 @@
 }
 
 .metrics .border {
-  border: 1px black solid;
+  border: 1px #000 solid;
   background-color: var(--color-background);
   display: inline-block;
   text-align: center;
@@ -79,7 +79,7 @@
 }
 
 .metrics .padding {
-  border: 1px grey dashed;
+  border: 1px #808080 dashed;
   background-color: var(--color-background);
   display: inline-block;
   text-align: center;
@@ -92,7 +92,7 @@
 
 .metrics .content {
   position: static;
-  border: 1px gray solid;
+  border: 1px #808080 solid;
   background-color: var(--color-background);
   display: inline-block;
   text-align: center;

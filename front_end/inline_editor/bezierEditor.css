@@ -37,7 +37,7 @@
 }
 
 .bezier-preset path.bezier-path {
-  stroke: black;
+  stroke: #000;
   stroke-width: 2;
   stroke-linecap: round;
   fill: none;
@@ -45,11 +45,11 @@
 
 .bezier-preset-selected path.bezier-path,
 .bezier-preset-selected line.bezier-control-line {
-  stroke: white;
+  stroke: #fff;
 }
 
 .bezier-preset-selected circle.bezier-control-circle {
-  fill: white;
+  fill: #fff;
 }
 
 .bezier-curve line.linear-line {
@@ -77,7 +77,7 @@
 }
 
 .bezier-curve path.bezier-path {
-  stroke: black;
+  stroke: #000;
   stroke-width: 3;
   stroke-linecap: round;
   fill: none;
@@ -134,7 +134,7 @@ svg.bezier-preset-modify:hover,
 
 .bezier-preset-modify path {
   stroke-width: 2;
-  stroke: black;
+  stroke: #000;
   fill: none;
 }
 
@@ -192,5 +192,5 @@ svg.bezier-preset-modify:active {
 }
 
 .bezier-preset-modify:active path {
-  stroke: white;
+  stroke: #fff;
 }

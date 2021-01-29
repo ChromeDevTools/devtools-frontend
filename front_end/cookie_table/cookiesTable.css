@@ -5,7 +5,7 @@
  */
 
 .cookies-table .flagged-cookie-row {
-  background-color: yellow;
+  background-color: #ff0;
 }
 
 .cookies-table .cookie-warning-icon {

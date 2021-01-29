@@ -62,7 +62,7 @@
 
   10% {
     background-color: rgb(158 54 153);
-    color: white;
+    color: #fff;
   }
 
   to {
@@ -130,8 +130,8 @@
 }
 
 @keyframes source-line-modification-foreground-fadeout {
-  from { color: white; }
-  50% { color: white; }
+  from { color: #fff; }
+  50% { color: #fff; }
   90% { color: initial; }
   to { color: initial; }
 }

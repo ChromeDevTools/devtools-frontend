@@ -63,7 +63,7 @@ input.dt-checkbox-themed:checked::after {
 }
 
 .dt-checkbox-subtitle {
-  color: gray;
+  color: #808080;
 }
 
 @media (forced-colors: active) {

@@ -47,7 +47,7 @@
   --input-validation-error: #db1600;
   --toolbar-bg-color: #f3f3f3;
   --toolbar-hover-bg-color: #eaeaea;
-  --selection-fg-color: white;
+  --selection-fg-color: #fff;
   --selection-bg-color: var(--accent-color);
   --selection-inactive-fg-color: #5a5a5a;
   --selection-inactive-bg-color: #dadada;

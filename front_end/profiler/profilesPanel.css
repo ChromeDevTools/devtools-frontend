@@ -96,7 +96,7 @@
 
 .profile-node-file {
   float: right;
-  color: gray;
+  color: #808080;
 }
 
 .profile-warn-marker {
@@ -109,7 +109,7 @@
 }
 
 .data-grid:focus tr.selected .profile-node-file {
-  color: white;
+  color: #fff;
 }
 
 .highlighted-row {

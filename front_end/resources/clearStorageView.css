@@ -46,7 +46,7 @@
 
 .quota-override-error {
   padding-top: 10px;
-  color: red;
+  color: #f00;
 }
 
 .usage-breakdown-row {

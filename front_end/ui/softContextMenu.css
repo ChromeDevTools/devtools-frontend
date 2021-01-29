@@ -102,7 +102,7 @@
 }
 
 .soft-context-menu-shortcut {
-  color: gray;
+  color: #808080;
   pointer-events: none;
   flex: 1 1 auto;
   text-align: right;

@@ -34,7 +34,7 @@
   --message-border-color: rgb(240 240 240);
   --warning-border-color: hsl(50deg 100% 88%);
   --error-border-color: hsl(0deg 100% 92%);
-  --error-text-color: red;
+  --error-text-color: #f00;
 }
 
 .-theme-with-dark-background .console-view {
@@ -112,7 +112,7 @@
 }
 
 .console-timestamp {
-  color: gray;
+  color: #808080;
   user-select: none;
   flex: none;
   margin-right: 5px;
@@ -350,7 +350,7 @@
 }
 
 .console-system-type.console-info-level {
-  color: blue;
+  color: #00f;
 }
 
 .-theme-with-dark-background .console-verbose-level:not(.console-warning-level) .console-message-text,
@@ -454,7 +454,7 @@
   display: inline-block;
   width: 11px;
   height: 11px;
-  color: white;
+  color: #fff;
   text-align: center;
   border-radius: 3px;
   line-height: 13px;

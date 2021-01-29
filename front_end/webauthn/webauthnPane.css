@@ -93,7 +93,7 @@
 }
 
 .authenticator-section-title.editing-name .authenticator-name-field {
-  border-bottom: 2px solid grey;
+  border-bottom: 2px solid #808080;
   font-weight: normal;
   animation: none;
 }

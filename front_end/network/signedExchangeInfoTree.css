@@ -71,7 +71,7 @@
 }
 
 .tree-outline .error-log {
-  color: red;
+  color: #f00;
   display: inline-block;
   margin-right: 0.25em;
   margin-left: 0.25em;
@@ -87,5 +87,5 @@
 }
 
 .tree-outline .error-field {
-  color: red;
+  color: #f00;
 }

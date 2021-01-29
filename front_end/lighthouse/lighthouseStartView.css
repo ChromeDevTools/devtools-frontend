@@ -115,14 +115,14 @@ input[type="radio"]:focus {
 
 .lighthouse-help-text {
   text-align: center;
-  color: red;
+  color: #f00;
   font-weight: bold;
   padding-left: 10px;
 }
 
 .lighthouse-warning-text {
   text-align: left;
-  color: darkorange;
+  color: #ff8c00;
   font-weight: bold;
   padding-left: 10px;
   padding-top: 10px;

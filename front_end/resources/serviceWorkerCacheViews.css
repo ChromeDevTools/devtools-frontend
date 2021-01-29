@@ -30,7 +30,7 @@
 
 .service-worker-cache-data-view .data-grid:focus .data-container tr.selected {
   background-color: var(--selection-bg-color);
-  color: white;
+  color: #fff;
 }
 
 .service-worker-cache-data-view .section,

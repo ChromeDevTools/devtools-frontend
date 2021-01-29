@@ -291,7 +291,7 @@ input::placeholder {
 
 .chrome-select-label p {
   margin-top: 0;
-  color: gray;
+  color: #808080;
 }
 
 .chrome-select optgroup,
@@ -561,7 +561,7 @@ input.custom-search-input::-webkit-search-cancel-button {
   display: block;
   width: var(--dimension, 24px);
   height: var(--dimension, 24px);
-  border: var(--spinner-size, 3px) solid var(--spinner-color, grey);
+  border: var(--spinner-size, 3px) solid var(--spinner-color, #808080);
   border-radius: 12px;
   clip: rect(0, var(--clip-size, 15px), var(--clip-size, 15px), 0);
   content: "";

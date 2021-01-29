@@ -82,7 +82,7 @@
 }
 
 .timeline.panel .status-pane-container.tinted {
-  background-color: lightgray;
+  background-color: #d3d3d3;
   pointer-events: auto;
 }
 
@@ -230,7 +230,7 @@
 
 #counter-values-bar {
   flex: 0 0 20px;
-  border-top: solid 1px lightgray;
+  border-top: solid 1px #d3d3d3;
   width: 100%;
   overflow: hidden;
   line-height: 18px;
@@ -323,7 +323,7 @@
 }
 
 .timeline-details-warning .timeline-details-view-row-title {
-  color: red;
+  color: #f00;
 }
 
 .timeline-details-view-row-value {
@@ -488,7 +488,7 @@
 }
 
 .timeline-tree-view .data-grid tr.selected .name-container .activity-warning::after {
-  color: white;
+  color: #fff;
 }
 
 .timeline-tree-view .data-grid .name-container .activity-link {

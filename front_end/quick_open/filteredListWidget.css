@@ -107,7 +107,7 @@
 }
 
 .tag {
-  color: white;
+  color: #fff;
   padding: 1px 3px;
   margin-right: 5px;
   border-radius: 2px;
@@ -115,7 +115,7 @@
 }
 
 .filtered-list-widget-item .tag .highlight {
-  color: white;
+  color: #fff;
 }
 
 .not-found-text {

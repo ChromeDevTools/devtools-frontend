@@ -56,7 +56,7 @@
 }
 
 .watch-expression-error {
-  color: red;
+  color: #f00;
 }
 
 :host-context(.-theme-with-dark-background) .watch-expression-error {

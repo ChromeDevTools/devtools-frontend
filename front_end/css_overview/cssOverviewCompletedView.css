@@ -324,7 +324,7 @@
 }
 
 [is=ui-icon].smallicon-no {
-  background-color: red;
+  background-color: #f00;
 }
 
 .data .nodeId-column {

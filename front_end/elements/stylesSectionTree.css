@@ -139,7 +139,7 @@ ol.expanded {
 }
 
 .has-ignorable-error {
-  color: gray;
+  color: #808080;
 }
 
 .tree-outline li.editing {

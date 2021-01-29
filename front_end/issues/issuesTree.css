@@ -321,7 +321,7 @@ ul > li.plain-enum::before {
 }
 
 .affected-resource-blocked-status {
-  color: red;
+  color: #f00;
 }
 
 .affected-resource-report-only-status {

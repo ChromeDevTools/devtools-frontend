@@ -4,6 +4,7 @@
     "alpha-value-notation": "percentage",
     "color-function-notation": "modern",
     "hue-degree-notation": "angle",
+    "color-named": "never",
     "property-no-vendor-prefix": [
       true,
       {

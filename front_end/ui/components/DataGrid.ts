@@ -750,7 +750,7 @@ export class DataGrid extends HTMLElement {
             content: " ";
             border-left: 0.3em solid transparent;
             border-right: 0.3em solid transparent;
-            border-top: 0.3em solid black;
+            border-top: 0.3em solid #000;
             position: absolute;
             right: 0.5em;
             top: 0.6em;
@@ -758,7 +758,7 @@ export class DataGrid extends HTMLElement {
 
           [aria-sort="ascending"]::after {
             content: " ";
-            border-bottom: 0.3em solid black;
+            border-bottom: 0.3em solid #000;
             border-left: 0.3em solid transparent;
             border-right: 0.3em solid transparent;
             position: absolute;

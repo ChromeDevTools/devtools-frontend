@@ -15,14 +15,14 @@
 
 .media-messages-level-dropdown-element {
   background-color: var(--toolbar-bg-color);
-  color: black;
+  color: #000;
   height: 18px;
   line-height: 18px;
 }
 
 .media-messages-level-dropdown-element:hover {
   background-color: var(--accent-color-hover);
-  color: white;
+  color: #fff;
 }
 
 .media-messages-level-dropdown-text {

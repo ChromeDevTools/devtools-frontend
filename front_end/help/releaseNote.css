@@ -22,7 +22,7 @@
 }
 
 :host-context(.-theme-with-dark-background) .release-note-top-section {
-  color: white;
+  color: #fff;
 }
 
 .release-note-container {

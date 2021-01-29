@@ -8,8 +8,8 @@
 }
 
 :selection {
-  background-color: blue;
-  color: white;
+  background-color: #00f;
+  color: #fff;
 }
 
 .spectrum-color {
@@ -30,12 +30,12 @@
   border-radius: 12px;
   height: 12px;
   width: 12px;
-  border: 1px solid white;
+  border: 1px solid #fff;
   cursor: pointer;
   position: absolute;
   top: 0;
   left: 0;
-  background: black;
+  background: #000;
   box-shadow: 0 0 2px 0 rgb(0 0 0 / 24%);
 }
 
@@ -96,12 +96,12 @@
 
 .spectrum-sat,
 .-theme-preserve {
-  background-image: linear-gradient(to right, white, rgb(204 154 129 / 0%));
+  background-image: linear-gradient(to right, #fff, rgb(204 154 129 / 0%));
 }
 
 .spectrum-val,
 .-theme-preserve {
-  background-image: linear-gradient(to top, black, rgb(204 154 129 / 0%));
+  background-image: linear-gradient(to top, #000, rgb(204 154 129 / 0%));
 }
 
 .spectrum-contrast-details {
@@ -250,7 +250,7 @@
 }
 
 [is=ui-icon].smallicon-no {
-  background-color: red;
+  background-color: #f00;
 }
 
 .contrast-pass-fail span[is=ui-icon] {
@@ -571,7 +571,7 @@ div.palette-preview {
 .spectrum-contrast-line,
 :host-context(.-theme-with-dark-background) .spectrum-contrast-line {
   fill: none;
-  stroke: white;
+  stroke: #fff;
   opacity: 70%;
   stroke-width: 1.5px;
 }
@@ -608,7 +608,7 @@ div.palette-preview {
 
 .delete-color-toolbar-active {
   background-color: #ddd;
-  color: white;
+  color: #fff;
 }
 
 .swatch.contrast {
@@ -630,7 +630,7 @@ div.palette-preview {
 }
 
 .background-color .text-preview {
-  color: black;
+  color: #000;
   font-size: 16px;
   position: relative;
   padding-bottom: 2px;

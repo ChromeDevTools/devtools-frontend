@@ -81,7 +81,7 @@
 .filter-bitset-filter span.selected,
 .filter-bitset-filter span:hover,
 .filter-bitset-filter span:active {
-  color: white;
+  color: #fff;
   text-shadow: rgb(0 0 0 / 40%) 0 1px 0;
 }
 

@@ -22,9 +22,9 @@ body {
 .tooltip-content {
   position: absolute;
   user-select: none;
-  background-color: white;
+  background-color: #fff;
   padding: 5px 8px;
-  border: 1px solid white;
+  border: 1px solid #fff;
   border-radius: 3px;
   box-sizing: border-box;
   min-width: 100px;
@@ -39,7 +39,7 @@ body {
 
 .tooltip-content::after {
   content: "";
-  background: white;
+  background: #fff;
   width: var(--arrow-width);
   height: var(--arrow-height);
   clip-path: var(--arrow);

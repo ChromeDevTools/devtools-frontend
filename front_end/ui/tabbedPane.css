@@ -42,7 +42,7 @@
 }
 
 .tabbed-pane-content.has-no-tabs {
-  background-color: lightgray;
+  background-color: #d3d3d3;
 }
 
 .tabbed-pane-placeholder {

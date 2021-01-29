@@ -143,7 +143,7 @@
 
 .network-cell-subtitle {
   font-weight: normal;
-  color: gray;
+  color: #808080;
 }
 
 .network-badge {
@@ -182,7 +182,7 @@
 }
 
 .network-header-subtitle {
-  color: gray;
+  color: #808080;
 }
 
 .network-log-grid.data-grid.small .network-cell-subtitle,
@@ -317,7 +317,7 @@
    extracted out. */
 /* stylelint-disable-next-line no-descending-specificity */
 .network-dim-cell {
-  color: grey;
+  color: #808080;
 }
 
 .network-frame-divider {

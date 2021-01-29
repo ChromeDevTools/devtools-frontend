@@ -89,7 +89,7 @@ li.wait.small .spinner::before {
 }
 
 li.wait.selected .spinner::before {
-  --spinner-color: white;
+  --spinner-color: #fff;
 }
 
 @keyframes spinner-animation {

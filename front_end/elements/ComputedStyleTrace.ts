@@ -73,7 +73,7 @@ export class ComputedStyleTrace extends HTMLElement {
         }
 
         .trace-selector {
-          color: gray;
+          color: #808080;
           padding-left: 2em;
         }
 

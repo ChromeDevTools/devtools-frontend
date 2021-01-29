@@ -28,16 +28,16 @@
 }
 
 .data-grid .selected td .bar {
-  border-top: 1px white solid;
-  border-bottom: 1px white solid;
+  border-top: 1px #fff solid;
+  border-bottom: 1px #fff solid;
 }
 
 .data-grid .selected td .bar:last-child {
-  border-right: 1px white solid;
+  border-right: 1px #fff solid;
 }
 
 .data-grid .selected td .bar:first-child {
-  border-left: 1px white solid;
+  border-left: 1px #fff solid;
 }
 
 .data-grid td .bar-unused-size {

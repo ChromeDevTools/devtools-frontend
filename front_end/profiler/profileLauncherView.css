@@ -105,11 +105,11 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
 
 .profile-memory-usage-item-trend {
   min-width: 5em;
-  color: green;
+  color: #008000;
 }
 
 .profile-memory-usage-item-trend.increasing {
-  color: red;
+  color: #f00;
 }
 
 .profile-launcher-buttons {

@@ -21,7 +21,7 @@
 }
 
 .header-decode-error {
-  color: red;
+  color: #f00;
 }
 
 .-theme-with-dark-background .header-decode-error {

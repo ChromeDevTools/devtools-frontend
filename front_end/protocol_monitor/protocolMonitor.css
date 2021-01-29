@@ -30,5 +30,5 @@
 
 .error {
   background-color: hsl(0deg 100% 97%);
-  color: red;
+  color: #f00;
 }

@@ -54,7 +54,7 @@
 }
 
 .tree-outline li .status-from-cache {
-  color: gray;
+  color: #808080;
 }
 
 .tree-outline li.expanded .header-toggle {
@@ -97,7 +97,7 @@
   display: inline;
   margin-right: 0.75em;
   background-color: var(--error-background-color);
-  color: white;
+  color: #fff;
   border-radius: 100vh;
   padding-left: 6px;
   padding-right: 6px;

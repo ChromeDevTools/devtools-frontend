@@ -56,7 +56,7 @@
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.in-clipboard .highlight {
-  outline: 1px dotted darkgrey;
+  outline: 1px dotted #a9a9a9;
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {

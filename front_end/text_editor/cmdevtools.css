@@ -112,7 +112,7 @@
 }
 
 .CodeMirror-cursor {
-  border-left: 1px solid black;
+  border-left: 1px solid #000;
   border-right: none;
   width: 0;
 }
@@ -220,7 +220,7 @@
 
 .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .-theme-preserve {
-  color: white;
+  color: #fff;
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234285f4" stroke="%231a73e8"/></svg>') 1 3 1 1;
 }
 
@@ -441,7 +441,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .cm-token-highlight::before {
   position: absolute;
-  border: 1px solid gray;
+  border: 1px solid #808080;
   border-radius: 3px;
   top: 0;
   bottom: -1px;
@@ -462,8 +462,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   position: absolute;
   border-top-style: solid;
   border-bottom-style: solid;
-  border-top-color: gray;
-  border-bottom-color: gray;
+  border-top-color: #808080;
+  border-bottom-color: #808080;
   border-top-width: 1px;
   border-bottom-width: 1px;
   top: -1px;
@@ -474,7 +474,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .cm-search-highlight-full::before {
-  border: 1px solid gray;
+  border: 1px solid #808080;
   border-radius: 3px;
 }
 
@@ -483,7 +483,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
   border-left-style: solid;
-  border-left-color: gray;
+  border-left-color: #808080;
 }
 
 .cm-search-highlight-end::before {
@@ -491,7 +491,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
   border-right-style: solid;
-  border-right-color: gray;
+  border-right-color: #808080;
 }
 
 .cm-line-with-selection .cm-column-with-selection.cm-search-highlight-full::before {
@@ -681,7 +681,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 /* Shown when moving in bi-directional text */
 
 .CodeMirror div.CodeMirror-secondarycursor {
-  border-left: 1px solid silver;
+  border-left: 1px solid #c0c0c0;
 }
 
 .CodeMirror-composing {

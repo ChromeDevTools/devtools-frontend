@@ -17,7 +17,7 @@
 
   --error-background-color: hsl(0deg 100% 97%);
   --error-border-color: hsl(0deg 100% 92%);
-  --error-text-color: red;
+  --error-text-color: #f00;
 }
 
 .console-pins:not(:empty) {

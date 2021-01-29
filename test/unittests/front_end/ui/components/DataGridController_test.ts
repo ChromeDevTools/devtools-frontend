@@ -40,7 +40,6 @@ describe('DataGridController', () => {
     ];
 
     it('lets the user click to sort the column in ASC order', async () => {
-      await coordinator.done();
       const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns};
       renderElementIntoDOM(component);

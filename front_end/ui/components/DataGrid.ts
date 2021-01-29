@@ -111,6 +111,9 @@ export class DataGrid extends HTMLElement {
   // but that's O(n) and will slow as the dataset grows. A weakmap makes the
   // lookup constant.
   private readonly rowIndexMap = new WeakMap<Row, number>();
+  private readonly resizeObserver = new ResizeObserver(() => {
+    this.alignScrollHandlers();
+  });
 
   // These have to be bound as they are put onto the global document, not onto
   // this element, so LitHtml does not bind them for us.
@@ -223,6 +226,12 @@ export class DataGrid extends HTMLElement {
         wrapper.scrollTo(0, scrollHeight);
       });
     });
+  }
+
+  private engageResizeObserver(): void {
+    if (!this.hasRenderedAtLeastOnce) {
+      this.resizeObserver.observe(this.shadow.host);
+    }
   }
 
   private getCurrentlyFocusableCell(): HTMLTableCellElement|null {
@@ -890,7 +899,7 @@ export class DataGrid extends HTMLElement {
         this.focusCell(this.focusableCell);
       }
       this.scrollToBottomIfRequired();
-      await this.alignScrollHandlers();
+      this.engageResizeObserver();
       this.scheduledRender = false;
       this.hasRenderedAtLeastOnce = true;
 

@@ -627,7 +627,6 @@ describe('DataGrid', () => {
         rows: [...rows, newRow],
         activeSort: null,
       };
-      // Double RAF here because rendering is RAF'd, and then the scroll is subsequently RAF'd
       await coordinator.done();
       assert.strictEqual(scrolledElement.scrollTop, 63);
     });
@@ -673,7 +672,6 @@ describe('DataGrid', () => {
         rows: [...rows, newRow],
         activeSort: null,
       };
-      // Double RAF here because rendering is RAF'd, and then the scroll is subsequently RAF'd
       await coordinator.done();
       assert.strictEqual(scrolledElement.scrollTop, 0);
     });

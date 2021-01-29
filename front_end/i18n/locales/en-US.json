@@ -3653,10 +3653,10 @@
   "webauthn/WebauthnPane.ts | yes": {
     "message": "Yes"
   },
-  "workspace/UISourceCode.js | index": {
+  "workspace/UISourceCode.ts | index": {
     "message": "(index)"
   },
-  "workspace/UISourceCode.js | thisFileWasChangedExternally": {
+  "workspace/UISourceCode.ts | thisFileWasChangedExternally": {
     "message": "This file was changed externally. Would you like to reload it?"
   }
 }

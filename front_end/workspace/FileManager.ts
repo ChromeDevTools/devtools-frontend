@@ -28,19 +28,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 
-/** @type {?FileManager} */
-let fileManagerInstance;
+let fileManagerInstance: FileManager|null;
+
+interface SaveCallbackParam {
+  fileSystemPath?: string;
+}
 
 export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @private
-   */
-  constructor() {
+  _saveCallbacks: Map<string, (arg0: SaveCallbackParam|null) => void>;
+  private constructor() {
     super();
-    /** @type {!Map<string, function(?{fileSystemPath: (string|undefined)}):void>} */
     this._saveCallbacks = new Map();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SavedURL, this._savedURL, this);
@@ -50,10 +52,7 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
         Host.InspectorFrontendHostAPI.Events.AppendedToURL, this._appendedToURL, this);
   }
 
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
+  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): FileManager {
     const {forceNew} = opts;
     if (!fileManagerInstance || forceNew) {
       fileManagerInstance = new FileManager();
@@ -62,36 +61,24 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
     return fileManagerInstance;
   }
 
-  /**
-   * @param {string} url
-   * @param {string} content
-   * @param {boolean} forceSaveAs
-   * @return {!Promise<?{fileSystemPath: (string|undefined)}>}
-   */
-  save(url, content, forceSaveAs) {
+  save(url: string, content: string, forceSaveAs: boolean): Promise<SaveCallbackParam|null> {
     // Remove this url from the saved URLs while it is being saved.
-    const result = new Promise(resolve => this._saveCallbacks.set(url, resolve));
+    const result = new Promise<SaveCallbackParam|null>(resolve => this._saveCallbacks.set(url, resolve));
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.save(url, content, forceSaveAs);
     return result;
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _savedURL(event) {
-    const url = /** @type {string} */ (event.data.url);
+  _savedURL(event: Common.EventTarget.EventTargetEvent): void {
+    const url = event.data.url as string;
     const callback = this._saveCallbacks.get(url);
     this._saveCallbacks.delete(url);
     if (callback) {
-      callback({fileSystemPath: /** @type {string} */ (event.data.fileSystemPath)});
+      callback({fileSystemPath: event.data.fileSystemPath as string});
     }
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _canceledSavedURL(event) {
-    const url = /** @type {string} */ (event.data);
+  _canceledSavedURL(event: Common.EventTarget.EventTargetEvent): void {
+    const url = event.data as string;
     const callback = this._saveCallbacks.get(url);
     this._saveCallbacks.delete(url);
     if (callback) {
@@ -99,31 +86,22 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {string} url
-   * @param {string} content
-   */
-  append(url, content) {
+  append(url: string, content: string): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.append(url, content);
   }
 
-  /**
-   * @param {string} url
-   */
-  close(url) {
+  close(url: string): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.close(url);
   }
 
-  /**
-   * @param {!Common.EventTarget.EventTargetEvent} event
-   */
-  _appendedToURL(event) {
-    const url = /** @type {string} */ (event.data);
+  _appendedToURL(event: Common.EventTarget.EventTargetEvent): void {
+    const url = event.data as string;
     this.dispatchEventToListeners(Events.AppendedToURL, url);
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  AppendedToURL: Symbol('AppendedToURL')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  AppendedToURL = 'AppendedToURL'
+}

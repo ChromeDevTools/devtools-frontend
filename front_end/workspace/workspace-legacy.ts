@@ -21,6 +21,9 @@ Workspace.UISourceCode.Events = WorkspaceModule.UISourceCode.Events;
 /** @constructor */
 Workspace.UISourceCode.Message = WorkspaceModule.UISourceCode.Message;
 
+/** @enum {string} */
+Workspace.UISourceCode.Message.Level = WorkspaceModule.UISourceCode.Message.Level;
+
 /** @constructor */
 Workspace.UILocation = WorkspaceModule.UISourceCode.UILocation;
 

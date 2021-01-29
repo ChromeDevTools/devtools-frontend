@@ -28,6 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* eslint-disable rulesdir/no_underscored_properties */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
@@ -45,22 +48,34 @@ export const UIStrings = {
   */
   thisFileWasChangedExternally: 'This file was changed externally. Would you like to reload it?',
 };
-const str_ = i18n.i18n.registerUIStrings('workspace/UISourceCode.js', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('workspace/UISourceCode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/**
- * @implements {TextUtils.ContentProvider.ContentProvider}
- */
-export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
-  /**
-   * @param {!Project} project
-   * @param {string} url
-   * @param {!Common.ResourceType.ResourceType} contentType
-   */
-  constructor(project, url, contentType) {
+export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper implements
+    TextUtils.ContentProvider.ContentProvider {
+  _project: Project;
+  _url: string;
+  _origin: string;
+  _parentURL: string;
+  _name: string;
+  _contentType: Common.ResourceType.ResourceType;
+  _requestContentPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
+  _decorations: Platform.MapUtilities.Multimap<string, LineMarker>|null;
+  _hasCommits: boolean;
+  _messages: Set<Message>|null;
+  _contentLoaded: boolean;
+  _content: TextUtils.ContentProvider.DeferredContent|null;
+  _forceLoadOnCheckContent: boolean;
+  _checkingContent: boolean;
+  _lastAcceptedContent: string|null;
+  _workingCopy: string|null;
+  _workingCopyGetter: (() => string)|null;
+  _disableEdit: boolean;
+  _contentEncoded?: boolean;
+
+  constructor(project: Project, url: string, contentType: Common.ResourceType.ResourceType) {
     super();
     this._project = project;
-    /** @type {string} */
     this._url = url;
 
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
@@ -78,85 +93,53 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     this._contentType = contentType;
-    /** @type {?Promise<!TextUtils.ContentProvider.DeferredContent>} */
     this._requestContentPromise = null;
-    /** @type {?Platform.MapUtilities.Multimap<string, !LineMarker>} */
     this._decorations = null;
     this._hasCommits = false;
-    /** @type {?Set<!Message>} */
     this._messages = null;
     this._contentLoaded = false;
-    /** @type {?TextUtils.ContentProvider.DeferredContent} */
     this._content = null;
     this._forceLoadOnCheckContent = false;
     this._checkingContent = false;
-    /** @type {?string} */
     this._lastAcceptedContent = null;
-    /** @type {?string} */
     this._workingCopy = null;
-    /** @type {?function() : string} */
     this._workingCopyGetter = null;
     this._disableEdit = false;
   }
 
-  /**
-   * @return {!Promise<?UISourceCodeMetadata>}
-   */
-  requestMetadata() {
+  requestMetadata(): Promise<UISourceCodeMetadata|null> {
     return this._project.requestMetadata(this);
   }
 
-  /**
-   * @return {string}
-   */
-  name() {
+  name(): string {
     return this._name;
   }
 
-  /**
-   * @return {string}
-   */
-  mimeType() {
+  mimeType(): string {
     return this._project.mimeType(this);
   }
 
-  /**
-   * @return {string}
-   */
-  url() {
+  url(): string {
     return this._url;
   }
 
-  /**
-   * @return {string}
-   */
-  parentURL() {
+  parentURL(): string {
     return this._parentURL;
   }
 
-  /**
-   * @return {string}
-   */
-  origin() {
+  origin(): string {
     return this._origin;
   }
 
-  /**
-   * @return {string}
-   */
-  fullDisplayName() {
+  fullDisplayName(): string {
     return this._project.fullDisplayName(this);
   }
 
-  /**
-   * @param {boolean=} skipTrim
-   * @return {string}
-   */
-  displayName(skipTrim) {
+  displayName(skipTrim?: boolean): string {
     if (!this._name) {
       return i18nString(UIStrings.index);
     }
-    let name = this._name;
+    let name: string = this._name;
     try {
       if (this.project().type() === projectTypes.FileSystem) {
         name = unescape(name);
@@ -168,53 +151,33 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     return skipTrim ? name : Platform.StringUtilities.trimEndWithMaxLength(name, 100);
   }
 
-  /**
-   * @return {boolean}
-   */
-  canRename() {
+  canRename(): boolean {
     return this._project.canRename();
   }
 
-  /**
-   * @param {string} newName
-   * @return {!Promise<boolean>}
-   */
-  rename(newName) {
-    /** @type {function(boolean):void} */
-    let fulfill;
-    const promise = new Promise(x => {
+  rename(newName: string): Promise<boolean> {
+    let fulfill: (arg0: boolean) => void;
+    const promise = new Promise<boolean>(x => {
       fulfill = x;
     });
     this._project.rename(this, newName, innerCallback.bind(this));
     return promise;
 
-    /**
-     * @param {boolean} success
-     * @param {string=} newName
-     * @param {string=} newURL
-     * @param {!Common.ResourceType.ResourceType=} newContentType
-     * @this {UISourceCode}
-     */
-    function innerCallback(success, newName, newURL, newContentType) {
+    function innerCallback(
+        this: UISourceCode, success: boolean, newName?: string, newURL?: string,
+        newContentType?: Common.ResourceType.ResourceType): void {
       if (success) {
-        this._updateName(
-            /** @type {string} */ (newName), /** @type {string} */ (newURL),
-            /** @type {!Common.ResourceType.ResourceType} */ (newContentType));
+        this._updateName(newName as string, newURL as string, newContentType as Common.ResourceType.ResourceType);
       }
       fulfill(success);
     }
   }
 
-  remove() {
+  remove(): void {
     this._project.deleteFile(this);
   }
 
-  /**
-   * @param {string} name
-   * @param {string} url
-   * @param {!Common.ResourceType.ResourceType=} contentType
-   */
-  _updateName(name, url, contentType) {
+  _updateName(name: string, url: string, contentType?: Common.ResourceType.ResourceType): void {
     const oldURL = this._url;
     this._url = this._url.substring(0, this._url.length - this._name.length) + name;
     this._name = name;
@@ -229,60 +192,37 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
         WorkspaceImplEvents.UISourceCodeRenamed, {oldURL: oldURL, uiSourceCode: this});
   }
 
-  /**
-   * @override
-   * @return {string}
-   */
-  contentURL() {
+  contentURL(): string {
     return this.url();
   }
 
-  /**
-   * @override
-   * @return {!Common.ResourceType.ResourceType}
-   */
-  contentType() {
+  contentType(): Common.ResourceType.ResourceType {
     return this._contentType;
   }
 
-  /**
-   * @override
-   * @return {!Promise<boolean>}
-   */
-  async contentEncoded() {
+  async contentEncoded(): Promise<boolean> {
     await this.requestContent();
     return this._contentEncoded || false;
   }
 
-  /**
-   * @return {!Project}
-   */
-  project() {
+  project(): Project {
     return this._project;
   }
 
-  /**
-   * @override
-   * @return {!Promise<!TextUtils.ContentProvider.DeferredContent>}
-   */
-  requestContent() {
+  requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
     if (this._requestContentPromise) {
       return this._requestContentPromise;
     }
 
     if (this._contentLoaded) {
-      return Promise.resolve(/** @type {!TextUtils.ContentProvider.DeferredContent} */ (this._content));
+      return Promise.resolve(this._content as TextUtils.ContentProvider.DeferredContent);
     }
-
 
     this._requestContentPromise = this._requestContentImpl();
     return this._requestContentPromise;
   }
 
-  /**
-   * @returns {!Promise<!TextUtils.ContentProvider.DeferredContent>}
-   */
-  async _requestContentImpl() {
+  async _requestContentImpl(): Promise<TextUtils.ContentProvider.DeferredContent> {
     try {
       const content = await this._project.requestFileContent(this);
       if (!this._contentLoaded) {
@@ -295,10 +235,10 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
       this._content = {content: null, error: err ? String(err) : '', isEncoded: false};
     }
 
-    return /** @type {!TextUtils.ContentProvider.DeferredContent} */ (this._content);
+    return this._content as TextUtils.ContentProvider.DeferredContent;
   }
 
-  async checkContentUpdated() {
+  async checkContentUpdated(): Promise<void> {
     if (!this._contentLoaded && !this._forceLoadOnCheckContent) {
       return;
     }
@@ -329,7 +269,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     }
 
     if (!this.isDirty() || this._workingCopy === updatedContent.content) {
-      this._contentCommitted(/** @type {string} */ (updatedContent.content), false);
+      this._contentCommitted(updatedContent.content as string, false);
       return;
     }
 
@@ -340,31 +280,24 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
 
     const shouldUpdate = window.confirm(i18nString(UIStrings.thisFileWasChangedExternally));
     if (shouldUpdate) {
-      this._contentCommitted(/** @type {string} */ (updatedContent.content), false);
+      this._contentCommitted(updatedContent.content as string, false);
     } else {
       this._lastAcceptedContent = updatedContent.content;
     }
   }
 
-  forceLoadOnCheckContent() {
+  forceLoadOnCheckContent(): void {
     this._forceLoadOnCheckContent = true;
   }
 
-  /**
-   * @param {string} content
-   */
-  _commitContent(content) {
+  _commitContent(content: string): void {
     if (this._project.canSetFileContent()) {
       this._project.setFileContent(this, content, false);
     }
     this._contentCommitted(content, true);
   }
 
-  /**
-   * @param {string} content
-   * @param {boolean} committedByUser
-   */
-  _contentCommitted(content, committedByUser) {
+  _contentCommitted(content: string, committedByUser: boolean): void {
     this._lastAcceptedContent = null;
     this._content = {content, isEncoded: false};
     this._contentLoaded = true;
@@ -381,58 +314,42 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  /**
-   * @param {string} content
-   */
-  addRevision(content) {
+  addRevision(content: string): void {
     this._commitContent(content);
   }
 
-  /**
-   * @return {boolean}
-   */
-  hasCommits() {
+  hasCommits(): boolean {
     return this._hasCommits;
   }
 
-  /**
-   * @return {string}
-   */
-  workingCopy() {
+  workingCopy(): string {
     if (this._workingCopyGetter) {
       this._workingCopy = this._workingCopyGetter();
       this._workingCopyGetter = null;
     }
     if (this.isDirty()) {
-      return /** @type {string} */ (this._workingCopy);
+      return this._workingCopy as string;
     }
     return (this._content && 'content' in this._content && this._content.content) || '';
   }
 
-  resetWorkingCopy() {
+  resetWorkingCopy(): void {
     this._innerResetWorkingCopy();
     this._workingCopyChanged();
   }
 
-  _innerResetWorkingCopy() {
+  _innerResetWorkingCopy(): void {
     this._workingCopy = null;
     this._workingCopyGetter = null;
   }
 
-  /**
-   * @param {string} newWorkingCopy
-   */
-  setWorkingCopy(newWorkingCopy) {
+  setWorkingCopy(newWorkingCopy: string): void {
     this._workingCopy = newWorkingCopy;
     this._workingCopyGetter = null;
     this._workingCopyChanged();
   }
 
-  /**
-   * @param {string} content
-   * @param {boolean} isBase64
-   */
-  setContent(content, isBase64) {
+  setContent(content: string, isBase64: boolean): void {
     this._contentEncoded = isBase64;
     if (this._project.canSetFileContent()) {
       this._project.setFileContent(this, content, isBase64);
@@ -440,21 +357,18 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     this._contentCommitted(content, true);
   }
 
-  /**
-  * @param {function(): string } workingCopyGetter
-  */
-  setWorkingCopyGetter(workingCopyGetter) {
+  setWorkingCopyGetter(workingCopyGetter: () => string): void {
     this._workingCopyGetter = workingCopyGetter;
     this._workingCopyChanged();
   }
 
-  _workingCopyChanged() {
+  _workingCopyChanged(): void {
     this._removeAllMessages();
     this.dispatchEventToListeners(Events.WorkingCopyChanged, this);
     this._project.workspace().dispatchEventToListeners(WorkspaceImplEvents.WorkingCopyChanged, {uiSourceCode: this});
   }
 
-  removeWorkingCopyGetter() {
+  removeWorkingCopyGetter(): void {
     if (!this._workingCopyGetter) {
       return;
     }
@@ -462,48 +376,30 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     this._workingCopyGetter = null;
   }
 
-  commitWorkingCopy() {
+  commitWorkingCopy(): void {
     if (this.isDirty()) {
       this._commitContent(this.workingCopy());
     }
   }
 
-  /**
-   * @return {boolean}
-   */
-  isDirty() {
+  isDirty(): boolean {
     return this._workingCopy !== null || this._workingCopyGetter !== null;
   }
 
-  /**
-   * @return {string}
-   */
-  extension() {
+  extension(): string {
     return Common.ParsedURL.ParsedURL.extractExtension(this._name);
   }
 
-  /**
-   * @return {string}
-   */
-  content() {
+  content(): string {
     return (this._content && 'content' in this._content && this._content.content) || '';
   }
 
-  /**
-   * @return {?string}
-   */
-  loadError() {
+  loadError(): string|null {
     return (this._content && 'error' in this._content && this._content.error) || null;
   }
 
-  /**
-   * @override
-   * @param {string} query
-   * @param {boolean} caseSensitive
-   * @param {boolean} isRegex
-   * @return {!Promise<!Array<!TextUtils.ContentProvider.SearchMatch>>}
-   */
-  searchInContent(query, caseSensitive, isRegex) {
+  searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
+      Promise<TextUtils.ContentProvider.SearchMatch[]> {
     const content = this.content();
     if (!content) {
       return this._project.searchInFileContent(this, query, caseSensitive, isRegex);
@@ -511,51 +407,28 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     return Promise.resolve(TextUtils.TextUtils.performSearchInContent(content, query, caseSensitive, isRegex));
   }
 
-  /**
-   * @return {boolean}
-   */
-  contentLoaded() {
+  contentLoaded(): boolean {
     return this._contentLoaded;
   }
 
-  /**
-   * @param {number} lineNumber
-   * @param {number=} columnNumber
-   * @return {!UILocation}
-   */
-  uiLocation(lineNumber, columnNumber) {
+  uiLocation(lineNumber: number, columnNumber?: number): UILocation {
     return new UILocation(this, lineNumber, columnNumber);
   }
 
-  /**
-   * @return {!Set<!Message>}
-   */
-  messages() {
+  messages(): Set<Message> {
     return this._messages ? new Set(this._messages) : new Set();
   }
 
-  /**
-   * @param {!Message.Level} level
-   * @param {string} text
-   * @param {number} lineNumber
-   * @param {number=} columnNumber
-   * @param {(() => void )=} clickHandler
-   * @return {!Message} message
-   */
-  addLineMessage(level, text, lineNumber, columnNumber, clickHandler) {
+  addLineMessage(
+      level: Message.Level, text: string, lineNumber: number, columnNumber?: number,
+      clickHandler?: (() => void)): Message {
     return this.addMessage(
         level, text, new TextUtils.TextRange.TextRange(lineNumber, columnNumber || 0, lineNumber, columnNumber || 0),
         clickHandler);
   }
 
-  /**
-   * @param {!Message.Level} level
-   * @param {string} text
-   * @param {!TextUtils.TextRange.TextRange} range
-   * @param {(() => void )=} clickHandler
-   * @return {!Message} message
-   */
-  addMessage(level, text, range, clickHandler) {
+  addMessage(level: Message.Level, text: string, range: TextUtils.TextRange.TextRange, clickHandler?: (() => void)):
+      Message {
     const message = new Message(this, level, text, range, clickHandler);
     if (!this._messages) {
       this._messages = new Set();
@@ -565,16 +438,13 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     return message;
   }
 
-  /**
-   * @param {!Message} message
-   */
-  removeMessage(message) {
+  removeMessage(message: Message): void {
     if (this._messages && this._messages.delete(message)) {
       this.dispatchEventToListeners(Events.MessageRemoved, message);
     }
   }
 
-  _removeAllMessages() {
+  _removeAllMessages(): void {
     if (!this._messages) {
       return;
     }
@@ -584,21 +454,11 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     this._messages = null;
   }
 
-  /**
-   * @param {number} lineNumber
-   * @param {string} type
-   * @param {?} data
-   */
-  addLineDecoration(lineNumber, type, data) {
+  addLineDecoration(lineNumber: number, type: string, data: any): void {
     this.addDecoration(TextUtils.TextRange.TextRange.createFromLocation(lineNumber, 0), type, data);
   }
 
-  /**
-   * @param {!TextUtils.TextRange.TextRange} range
-   * @param {string} type
-   * @param {?} data
-   */
-  addDecoration(range, type, data) {
+  addDecoration(range: TextUtils.TextRange.TextRange, type: string, data: any): void {
     const marker = new LineMarker(range, type, data);
     if (!this._decorations) {
       this._decorations = new Platform.MapUtilities.Multimap();
@@ -607,10 +467,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.LineDecorationAdded, marker);
   }
 
-  /**
-   * @param {string} type
-   */
-  removeDecorationsForType(type) {
+  removeDecorationsForType(type: string): void {
     if (!this._decorations) {
       return;
     }
@@ -621,14 +478,11 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     });
   }
 
-  /**
-   * @return {!Array<!LineMarker>}
-   */
-  allDecorations() {
+  allDecorations(): LineMarker[] {
     return this._decorations ? this._decorations.valuesArray() : [];
   }
 
-  removeAllDecorations() {
+  removeAllDecorations(): void {
     if (!this._decorations) {
       return;
     }
@@ -637,54 +491,42 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper {
     decorationList.forEach(marker => this.dispatchEventToListeners(Events.LineDecorationRemoved, marker));
   }
 
-  /**
-   * @param {string} type
-   * @return {?Set<!LineMarker>}
-   */
-  decorationsForType(type) {
+  decorationsForType(type: string): Set<LineMarker>|null {
     return this._decorations ? this._decorations.get(type) : null;
   }
 
-  disableEdit() {
+  disableEdit(): void {
     this._disableEdit = true;
   }
 
-  /**
-   * @return {boolean}
-   */
-  editDisabled() {
+  editDisabled(): boolean {
     return this._disableEdit;
   }
 }
 
-/** @enum {symbol} */
-export const Events = {
-  WorkingCopyChanged: Symbol('WorkingCopyChanged'),
-  WorkingCopyCommitted: Symbol('WorkingCopyCommitted'),
-  TitleChanged: Symbol('TitleChanged'),
-  MessageAdded: Symbol('MessageAdded'),
-  MessageRemoved: Symbol('MessageRemoved'),
-  LineDecorationAdded: Symbol('LineDecorationAdded'),
-  LineDecorationRemoved: Symbol('LineDecorationRemoved')
-};
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  WorkingCopyChanged = 'WorkingCopyChanged',
+  WorkingCopyCommitted = 'WorkingCopyCommitted',
+  TitleChanged = 'TitleChanged',
+  MessageAdded = 'MessageAdded',
+  MessageRemoved = 'MessageRemoved',
+  LineDecorationAdded = 'LineDecorationAdded',
+  LineDecorationRemoved = 'LineDecorationRemoved'
+}
 
 export class UILocation {
-  /**
-   * @param {!UISourceCode} uiSourceCode
-   * @param {number} lineNumber
-   * @param {number=} columnNumber
-   */
-  constructor(uiSourceCode, lineNumber, columnNumber) {
+  uiSourceCode: UISourceCode;
+  lineNumber: number;
+  columnNumber: number|undefined;
+  constructor(uiSourceCode: UISourceCode, lineNumber: number, columnNumber?: number) {
     this.uiSourceCode = uiSourceCode;
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
   }
 
-  /**
-   * @param {boolean=} skipTrim
-   * @return {string}
-   */
-  linkText(skipTrim) {
+  linkText(skipTrim?: boolean): string {
     let linkText = this.uiSourceCode.displayName(skipTrim);
     if (this.uiSourceCode.mimeType() === 'application/wasm') {
       // For WebAssembly locations, we follow the conventions described in
@@ -698,10 +540,7 @@ export class UILocation {
     return linkText;
   }
 
-  /**
-   * @return {string}
-   */
-  id() {
+  id(): string {
     if (typeof this.columnNumber === 'number') {
       return this.uiSourceCode.project().id() + ':' + this.uiSourceCode.url() + ':' + this.lineNumber + ':' +
           this.columnNumber;
@@ -709,34 +548,19 @@ export class UILocation {
     return this.lineId();
   }
 
-  /**
-   * @return {string}
-   */
-  lineId() {
+  lineId(): string {
     return this.uiSourceCode.project().id() + ':' + this.uiSourceCode.url() + ':' + this.lineNumber;
   }
 
-  /**
-   * @return {string}
-   */
-  toUIString() {
+  toUIString(): string {
     return this.uiSourceCode.url() + ':' + (this.lineNumber + 1);
   }
 
-  /**
-   * @param {!UILocation} location1
-   * @param {!UILocation} location2
-   * @return {number}
-   */
-  static comparator(location1, location2) {
+  static comparator(location1: UILocation, location2: UILocation): number {
     return location1.compareTo(location2);
   }
 
-  /**
-   * @param {!UILocation} other
-   * @return {number}
-   */
-  compareTo(other) {
+  compareTo(other: UILocation): number {
     if (this.uiSourceCode.url() !== other.uiSourceCode.url()) {
       return this.uiSourceCode.url() > other.uiSourceCode.url() ? 1 : -1;
     }
@@ -759,14 +583,15 @@ export class UILocation {
 }
 
 export class Message {
-  /**
-   * @param {!UISourceCode} uiSourceCode
-   * @param {!Message.Level} level
-   * @param {string} text
-   * @param {!TextUtils.TextRange.TextRange} range
-   * @param {(() => void )=} clickHandler
-   */
-  constructor(uiSourceCode, level, text, range, clickHandler) {
+  _uiSourceCode: UISourceCode;
+  _level: Message.Level;
+  _text: string;
+  _range: TextUtils.TextRange.TextRange;
+  _clickHandler?: (() => void);
+
+  constructor(
+      uiSourceCode: UISourceCode, level: Message.Level, text: string, range: TextUtils.TextRange.TextRange,
+      clickHandler?: (() => void)) {
     this._uiSourceCode = uiSourceCode;
     this._level = level;
     this._text = text;
@@ -774,118 +599,82 @@ export class Message {
     this._clickHandler = clickHandler;
   }
 
-  /**
-   * @return {!UISourceCode}
-   */
-  uiSourceCode() {
+  uiSourceCode(): UISourceCode {
     return this._uiSourceCode;
   }
 
-  /**
-   * @return {!Message.Level}
-   */
-  level() {
+  level(): Message.Level {
     return this._level;
   }
 
-  /**
-   * @return {string}
-   */
-  text() {
+  text(): string {
     return this._text;
   }
 
-  /**
-   * @return {!TextUtils.TextRange.TextRange}
-   */
-  range() {
+  range(): TextUtils.TextRange.TextRange {
     return this._range;
   }
 
-  /**
-   * @return {(() => void ) | undefined}
-   */
-  clickHandler() {
+  clickHandler(): (() => void)|undefined {
     return this._clickHandler;
   }
 
-  /**
-   * @return {number}
-   */
-  lineNumber() {
+  lineNumber(): number {
     return this._range.startLine;
   }
 
-  /**
-   * @return {(number|undefined)}
-   */
-  columnNumber() {
+  columnNumber(): number|undefined {
     return this._range.startColumn;
   }
 
-  /**
-   * @param {!Message} another
-   * @return {boolean}
-   */
-  isEqual(another) {
+  isEqual(another: Message): boolean {
     return this._uiSourceCode === another._uiSourceCode && this.text() === another.text() &&
         this.level() === another.level() && this.range().equal(another.range());
   }
 
-  remove() {
+  remove(): void {
     this._uiSourceCode.removeMessage(this);
   }
 }
-
-/**
- * @enum {string}
- */
-Message.Level = {
-  Error: 'Error',
-  Issue: 'Issue',
-  Warning: 'Warning'
-};
+export namespace Message {
+  // TODO(crbug.com/1167717): Make this a const enum again
+  // eslint-disable-next-line rulesdir/const_enum
+  export enum Level {
+    Error = 'Error',
+    Issue = 'Issue',
+    Warning = 'Warning',
+  }
+}
 
 export class LineMarker {
-  /**
-   * @param {!TextUtils.TextRange.TextRange} range
-   * @param {string} type
-   * @param {?} data
-   */
-  constructor(range, type, data) {
+  _range: TextUtils.TextRange.TextRange;
+  _type: string;
+  _data: any;
+
+  constructor(range: TextUtils.TextRange.TextRange, type: string, data: any) {
     this._range = range;
     this._type = type;
     this._data = data;
   }
 
-  /**
-   * @return {!TextUtils.TextRange.TextRange}
-   */
-  range() {
+  range(): TextUtils.TextRange.TextRange {
     return this._range;
   }
 
-  /**
-   * @return {string}
-   */
-  type() {
+  type(): string {
     return this._type;
   }
 
-  /**
-   * @return {*}
-   */
-  data() {
+  data(): any {
     return this._data;
   }
 }
 
 export class UISourceCodeMetadata {
-  /**
-   * @param {?Date} modificationTime
-   * @param {?number} contentSize
-   */
-  constructor(modificationTime, contentSize) {
+  modificationTime: Date|null;
+  contentSize: number|null;
+
+  constructor(modificationTime: Date|null, contentSize: number|null) {
     this.modificationTime = modificationTime;
     this.contentSize = contentSize;
   }

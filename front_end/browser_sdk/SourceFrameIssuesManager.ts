@@ -94,7 +94,7 @@ export class SourceFrameIssuesManager {
 
 export class IssueMessage {
   private text: string;
-  private level: string;
+  private level: Workspace.UISourceCode.Message.Level;
   private uiMessage?: Workspace.UISourceCode.Message;
   private clickHandler: () => void;
 

@@ -7,9 +7,9 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("workspace") {
   sources = [
-    "FileManager.js",
-    "UISourceCode.js",
-    "WorkspaceImpl.js",
+    "FileManager.ts",
+    "UISourceCode.ts",
+    "WorkspaceImpl.ts",
   ]
 
   deps = [
@@ -22,13 +22,13 @@ devtools_module("workspace") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "workspace.js"
+  entrypoint = "workspace.ts"
 
   deps = [ ":workspace" ]
 }
 
 devtools_entrypoint("legacy") {
-  entrypoint = "workspace-legacy.js"
+  entrypoint = "workspace-legacy.ts"
 
   deps = [ ":bundle" ]
 }

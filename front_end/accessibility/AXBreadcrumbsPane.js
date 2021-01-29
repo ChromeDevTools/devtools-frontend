@@ -3,19 +3,35 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {AccessibilitySidebarView} from './AccessibilitySidebarView.js';  // eslint-disable-line no-unused-vars
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in AXBreadcrumbs Pane of the Accessibility panel
+  */
+  accessibilityTree: 'Accessibility Tree',
+  /**
+  *@description Text to scroll the displayed content into view
+  */
+  scrollIntoView: 'Scroll into view',
+  /**
+  *@description Ignored node element text content in AXBreadcrumbs Pane of the Accessibility panel
+  */
+  ignored: 'Ignored',
+};
+const str_ = i18n.i18n.registerUIStrings('accessibility/AXBreadcrumbsPane.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXBreadcrumbsPane extends AccessibilitySubPane {
   /**
    * @param {!AccessibilitySidebarView} axSidebarView
    */
   constructor(axSidebarView) {
-    super(ls`Accessibility Tree`);
+    super(i18nString(UIStrings.accessibilityTree));
 
     this.element.classList.add('ax-subpane');
     UI.ARIAUtils.markAsTree(this.element);
@@ -390,7 +406,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     }
 
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.viewSection().appendItem(ls`Scroll into view`, () => {
+    contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => {
       const deferredNode = axNode.deferredDOMNode();
       if (!deferredNode) {
         return;
@@ -650,7 +666,7 @@ export class AXBreadcrumb {
   _appendIgnoredNodeElement() {
     const ignoredNodeElement = document.createElement('span');
     ignoredNodeElement.classList.add('monospace');
-    ignoredNodeElement.textContent = ls`Ignored`;
+    ignoredNodeElement.textContent = i18nString(UIStrings.ignored);
     ignoredNodeElement.classList.add('ax-breadcrumbs-ignored-node');
     this._nodeWrapper.appendChild(ignoredNodeElement);
   }

@@ -3,24 +3,44 @@
 // found in the LICENSE file.
 
 import * as Host from '../host/host.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Source Order Viewer of the Accessibility panel
+  */
+  sourceOrderViewer: 'Source Order Viewer',
+  /**
+  *@description Text in Source Order Viewer of the Accessibility panel shown when the selected node has no child elements
+  */
+  noSourceOrderInformation: 'No source order information available',
+  /**
+  *@description Text in Source Order Viewer of the Accessibility panel shown when the selected node has many child elements
+  */
+  thereMayBeADelayInDisplaying: 'There may be a delay in displaying source order for elements with many children',
+  /**
+  *@description Checkbox label in Source Order Viewer of the Accessibility panel
+  */
+  showSourceOrder: 'Show source order',
+};
+const str_ = i18n.i18n.registerUIStrings('accessibility/SourceOrderView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MAX_CHILD_ELEMENTS_THRESHOLD = 300;
 
 export class SourceOrderPane extends AccessibilitySubPane {
   constructor() {
-    super(ls`Source Order Viewer`);
+    super(i18nString(UIStrings.sourceOrderViewer));
 
-    this._noNodeInfo = this.createInfo(ls`No source order information available`);
-    this._warning =
-        this.createInfo(ls`There may be a delay in displaying source order for elements with many children`);
+    this._noNodeInfo = this.createInfo(i18nString(UIStrings.noSourceOrderInformation));
+    this._warning = this.createInfo(i18nString(UIStrings.thereMayBeADelayInDisplaying));
     this._warning.id = 'source-order-warning';
     this._checked = false;
-    this._checkboxLabel = UI.UIUtils.CheckboxLabel.create(/* title */ ls`Show source order`, /* checked */ false);
+    this._checkboxLabel =
+        UI.UIUtils.CheckboxLabel.create(/* title */ i18nString(UIStrings.showSourceOrder), /* checked */ false);
     this._checkboxElement = this._checkboxLabel.checkboxElement;
 
     this._checkboxLabel.classList.add('source-order-checkbox');

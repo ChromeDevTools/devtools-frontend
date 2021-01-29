@@ -2,7 +2,8 @@
   "dependencies": [
     "test_runner",
     "accessibility",
-    "elements_test_runner"
+    "elements_test_runner",
+    "i18n"
   ],
   "modules": [
     "accessibility_test_runner.js"

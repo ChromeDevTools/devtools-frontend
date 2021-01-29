@@ -227,9 +227,6 @@
   <message name="IDS_DEVTOOLS_90da6f38945a1c7e7ba11e3adcbe6919" desc="Text for pausing the debugger on exceptions">
     Pause on exceptions
   </message>
-  <message name="IDS_DEVTOOLS_939aaa05e0943b39eab3a34fd609384d" desc="Text to scroll the displayed content into view">
-    Scroll into view
-  </message>
   <message name="IDS_DEVTOOLS_93cba07454f06a4a960172bbd6e2a435" desc="Text in Timeline indicating that input has happened recently">
     Yes
   </message>
@@ -355,9 +352,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d7778d0c64b6ba21494c97f77a66885a" desc="Text to filter result items">
     Filter
-  </message>
-  <message name="IDS_DEVTOOLS_d96143ba1b15645919cea00ec9d1be62" desc="Ignored node element text content in AXBreadcrumbs Pane of the Accessibility panel">
-    Ignored
   </message>
   <message name="IDS_DEVTOOLS_dc30bc0c7914db5918da4263fce93ad2" desc="Text to clear content">
     Clear

@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
@@ -11,6 +10,19 @@ import * as UI from '../ui/ui.js';
 import type * as Accessibility from './accessibility.js';
 
 let loadedAccessibilityModule: (typeof Accessibility|undefined);
+
+export const UIStrings = {
+  /**
+   * @description Text for accessibility of the web page
+   */
+  accessibility: 'Accessibility',
+  /**
+   * @description Command for showing the 'Accessibility' tool
+   */
+  shoAccessibility: 'Show Accessibility',
+};
+const str_ = i18n.i18n.registerUIStrings('accessibility/accessibility-meta.ts', UIStrings);
+const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 async function loadAccessibilityModule(): Promise<typeof Accessibility> {
   if (!loadedAccessibilityModule) {
@@ -24,8 +36,8 @@ async function loadAccessibilityModule(): Promise<typeof Accessibility> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
   id: 'accessibility.view',
-  title: (): Platform.UIString.LocalizedString => ls`Accessibility`,
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Accessibility`,
+  title: i18nString(UIStrings.accessibility),
+  commandPrompt: i18nString(UIStrings.shoAccessibility),
   order: 10,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {

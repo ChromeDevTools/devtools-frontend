@@ -48,6 +48,9 @@
   <message name="IDS_DEVTOOLS_63041e09c8660107e507c9c27c08199c" desc="Text to expand something recursively">
     Expand recursively
   </message>
+  <message name="IDS_DEVTOOLS_939aaa05e0943b39eab3a34fd609384d" desc="Text to scroll the displayed content into view">
+    Scroll into view
+  </message>
   <message name="IDS_DEVTOOLS_9df0e8cc86e20861ac1440068aa6b49a" desc="A context menu item in Styles panel to copy CSS rule">
     Copy rule
   </message>
@@ -359,6 +362,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d42f4851e770aa0f758b01388874f67b" desc="Label of the margin property on the styles box diagram, represent the property name.">
      <ph name="LOCKED_1">margin</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_d96143ba1b15645919cea00ec9d1be62" desc="Ignored node element text content in AXBreadcrumbs Pane of the Accessibility panel">
+    Ignored
   </message>
   <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="Text to focus on something">
     Focus

@@ -107,6 +107,7 @@ let devtoolsFrontendDirs;
 // e.g. const migratedDirsSet = new Set(['settings', 'console']);
 // TODO(crbug.com/941561): Remove once localization V1 is no longer used.
 const migratedDirsSet = new Set([
+  'accessibility',
   'animation',
   'browser_sdk',
   'changes',

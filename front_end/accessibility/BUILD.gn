@@ -21,6 +21,7 @@ devtools_module("accessibility") {
     "../common:bundle",
     "../generated",
     "../host:bundle",
+    "../i18n:bundle",
     "../sdk:bundle",
     "../ui:bundle",
   ]

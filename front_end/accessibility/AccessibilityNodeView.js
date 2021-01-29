@@ -3,16 +3,116 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Accessibility Node View of the Accessibility panel
+  */
+  computedProperties: 'Computed Properties',
+  /**
+  *@description Text in Accessibility Node View of the Accessibility panel
+  */
+  noAccessibilityNode: 'No accessibility node',
+  /**
+  *@description Text in Accessibility Node View of the Accessibility panel
+  */
+  accessibilityNodeNotExposed: 'Accessibility node not exposed',
+  /**
+  *@description Text in Accessibility Node View of the Accessibility panel
+  */
+  invalidSource: 'Invalid source.',
+  /**
+  *@description Text in Accessibility Node View of the Accessibility panel
+  */
+  notSpecified: 'Not specified',
+  /**
+  *@description Text in Accessibility Node View of the Accessibility panel
+  */
+  noNodeWithThisId: 'No node with this ID.',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  */
+  elementIsHiddenBy: 'Element is hidden by active modal dialog:\xA0',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  */
+  ancestorChildrenAreAll: 'Ancestor\'s children are all presentational:\xA0',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  @example {aria-hidden} PH1
+  */
+  elementIsPlaceholder: 'Element is {PH1}.',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  *@example {aria-hidden} PH1
+  *@example {true} PH2
+  */
+  placeholderIsPlaceholderOnAncestor: '{PH1} is {PH2} on ancestor:\xA0',
+  /**
+  *@description Text in Accessibility Node View of the Accessibility panel
+  */
+  elementHasEmptyAltText: 'Element has empty alt text.',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  */
+  noTextContent: 'No text content.',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  */
+  elementIsInert: 'Element is inert.',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  */
+  elementIsInAnInertSubTree: 'Element is in an inert subtree from\xA0',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  */
+  elementsInheritsPresentational: 'Element inherits presentational role from\xA0',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  */
+  partOfLabelElement: 'Part of label element:\xA0',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  */
+  labelFor: 'Label for\xA0',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  */
+  elementIsNotRendered: 'Element is not rendered.',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  */
+  elementIsNotVisible: 'Element is not visible.',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  @example {role=link} PH1
+  */
+  elementHasPlaceholder: 'Element has {PH1}.',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  */
+  elementIsPresentational: 'Element is presentational.',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility panel
+  */
+  staticTextNodeIsUsed: 'Static text node is used as name for\xA0',
+  /**
+  *@description Reason element in Accessibility Node View of the Accessibility pane
+  */
+  elementNotInteresting: 'Element not interesting for accessibility.',
+};
+const str_ = i18n.i18n.registerUIStrings('accessibility/AccessibilityNodeView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXNodeSubPane extends AccessibilitySubPane {
   constructor() {
-    super(ls`Computed Properties`);
+    super(i18nString(UIStrings.computedProperties));
 
     /**
      * @protected
@@ -22,8 +122,8 @@ export class AXNodeSubPane extends AccessibilitySubPane {
 
     this.contentElement.classList.add('ax-subpane');
 
-    this._noNodeInfo = this.createInfo(ls`No accessibility node`);
-    this._ignoredInfo = this.createInfo(ls`Accessibility node not exposed`, 'ax-ignored-info hidden');
+    this._noNodeInfo = this.createInfo(i18nString(UIStrings.noAccessibilityNode));
+    this._ignoredInfo = this.createInfo(i18nString(UIStrings.accessibilityNodeNotExposed), 'ax-ignored-info hidden');
 
     this._treeOutline = this.createTreeOutline();
     this._ignoredReasonsTree = this.createTreeOutline();
@@ -192,8 +292,8 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (name in AXAttributes) {
       // @ts-ignore TS can't cast name here but we checked it's valid.
       const attribute = AXAttributes[name];
-      nameElement.textContent = attribute.name;
-      UI.Tooltip.Tooltip.install(nameElement, attribute.description);
+      nameElement.textContent = attribute.name();
+      UI.Tooltip.Tooltip.install(nameElement, attribute.description());
       nameElement.classList.add('ax-readable-name');
     } else {
       nameElement.textContent = name;
@@ -425,8 +525,8 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
       case AXValueSourceType.RelatedElement:
         if (source.nativeSource) {
           const nativeSource = source.nativeSource;
-          nameElement.textContent = AXNativeSourceTypes[nativeSource].name;
-          UI.Tooltip.Tooltip.install(nameElement, AXNativeSourceTypes[nativeSource].description);
+          nameElement.textContent = AXNativeSourceTypes[nativeSource].name();
+          UI.Tooltip.Tooltip.install(nameElement, AXNativeSourceTypes[nativeSource].description());
           nameElement.classList.add('ax-readable-name');
           break;
         }
@@ -436,8 +536,8 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
         break;
       default:
         if (type in AXSourceTypes) {
-          nameElement.textContent = AXSourceTypes[type].name;
-          UI.Tooltip.Tooltip.install(nameElement, AXSourceTypes[type].description);
+          nameElement.textContent = AXSourceTypes[type].name();
+          UI.Tooltip.Tooltip.install(nameElement, AXSourceTypes[type].description());
           nameElement.classList.add('ax-readable-name');
         } else {
           console.warn(type, 'not in AXSourceTypes');
@@ -451,7 +551,7 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
     this.listItemElement.removeChildren();
 
     if (this._source.invalid) {
-      const exclamationMark = AXNodePropertyTreeElement.createExclamationMark(ls`Invalid source.`);
+      const exclamationMark = AXNodePropertyTreeElement.createExclamationMark(i18nString(UIStrings.invalidSource));
       this.listItemElement.appendChild(exclamationMark);
       this.listItemElement.classList.add('ax-value-source-invalid');
     } else if (this._source.superseded) {
@@ -475,7 +575,7 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
       this.appendValueElement(this._source.value);
     } else {
       const valueElement = AXNodePropertyTreeElement.createSimpleValueElement(
-          Protocol.Accessibility.AXValueType.ValueUndefined, ls`Not specified`);
+          Protocol.Accessibility.AXValueType.ValueUndefined, i18nString(UIStrings.notSpecified));
       this.listItemElement.appendChild(valueElement);
       this.listItemElement.classList.add('ax-value-source-unused');
     }
@@ -549,7 +649,7 @@ export class AXRelatedNodeElement {
       });
     } else if (this._idref) {
       element.classList.add('invalid');
-      const valueElement = AXNodePropertyTreeElement.createExclamationMark(ls`No node with this ID.`);
+      const valueElement = AXNodePropertyTreeElement.createExclamationMark(i18nString(UIStrings.noNodeWithThisId));
       UI.UIUtils.createTextChild(valueElement, this._idref);
       element.appendChild(valueElement);
     }
@@ -589,63 +689,65 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
     let reasonElement = null;
     switch (reason) {
       case 'activeModalDialog':
-        reasonElement = UI.UIUtils.formatLocalized('Element is hidden by active modal dialog:\xA0', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementIsHiddenBy, {});
         break;
       case 'ancestorIsLeafNode':
-        reasonElement = UI.UIUtils.formatLocalized('Ancestor\'s children are all presentational:\xA0', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.ancestorChildrenAreAll, {});
         break;
       case 'ariaHiddenElement': {
         const ariaHiddenSpan = document.createElement('span', {is: 'source-code'}).textContent = 'aria-hidden';
-        reasonElement = UI.UIUtils.formatLocalized('Element is %s.', [ariaHiddenSpan]);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementIsPlaceholder, {PH1: ariaHiddenSpan});
         break;
       }
       case 'ariaHiddenSubtree': {
         const ariaHiddenSpan = document.createElement('span', {is: 'source-code'}).textContent = 'aria-hidden';
         const trueSpan = document.createElement('span', {is: 'source-code'}).textContent = 'true';
-        reasonElement = UI.UIUtils.formatLocalized('%s is %s on ancestor:\xA0', [ariaHiddenSpan, trueSpan]);
+        reasonElement = i18n.i18n.getFormatLocalizedString(
+            str_, UIStrings.placeholderIsPlaceholderOnAncestor, {PH1: ariaHiddenSpan, PH2: trueSpan});
         break;
       }
       case 'emptyAlt':
-        reasonElement = UI.UIUtils.formatLocalized('Element has empty alt text.', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementHasEmptyAltText, {});
         break;
       case 'emptyText':
-        reasonElement = UI.UIUtils.formatLocalized('No text content.', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.noTextContent, {});
         break;
       case 'inertElement':
-        reasonElement = UI.UIUtils.formatLocalized('Element is inert.', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementIsInert, {});
         break;
       case 'inertSubtree':
-        reasonElement = UI.UIUtils.formatLocalized('Element is in an inert subtree from\xA0', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementIsInAnInertSubTree, {});
         break;
       case 'inheritsPresentation':
-        reasonElement = UI.UIUtils.formatLocalized('Element inherits presentational role from\xA0', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementsInheritsPresentational, {});
         break;
       case 'labelContainer':
-        reasonElement = UI.UIUtils.formatLocalized('Part of label element:\xA0', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.partOfLabelElement, {});
         break;
       case 'labelFor':
-        reasonElement = UI.UIUtils.formatLocalized('Label for\xA0', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.labelFor, {});
         break;
       case 'notRendered':
-        reasonElement = UI.UIUtils.formatLocalized('Element is not rendered.', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementIsNotRendered, {});
         break;
       case 'notVisible':
-        reasonElement = UI.UIUtils.formatLocalized('Element is not visible.', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementIsNotVisible, {});
         break;
       case 'presentationalRole': {
         const role = axNode && axNode.role() || '';
         const rolePresentationSpan = document.createElement('span', {is: 'source-code'}).textContent = 'role=' + role;
-        reasonElement = UI.UIUtils.formatLocalized('Element has %s.', [rolePresentationSpan]);
+        reasonElement =
+            i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementHasPlaceholder, {PH1: rolePresentationSpan});
         break;
       }
       case 'probablyPresentational':
-        reasonElement = UI.UIUtils.formatLocalized('Element is presentational.', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementIsPresentational, {});
         break;
       case 'staticTextUsedAsNameFor':
-        reasonElement = UI.UIUtils.formatLocalized('Static text node is used as name for\xA0', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.staticTextNodeIsUsed, {});
         break;
       case 'uninteresting':
-        reasonElement = UI.UIUtils.formatLocalized('Element not interesting for accessibility.', []);
+        reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementNotInteresting, {});
         break;
     }
     if (reasonElement) {

@@ -2,18 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 import {ariaMetadata} from './ARIAMetadata.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in ARIAAttributes View of the Accessibility panel
+  */
+  ariaAttributes: 'ARIA Attributes',
+  /**
+  *@description Text in ARIAAttributes View of the Accessibility panel
+  */
+  noAriaAttributes: 'No ARIA attributes',
+};
+const str_ = i18n.i18n.registerUIStrings('accessibility/ARIAAttributesView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ARIAAttributesPane extends AccessibilitySubPane {
   constructor() {
-    super(ls`ARIA Attributes`);
+    super(i18nString(UIStrings.ariaAttributes));
 
-    this._noPropertiesInfo = this.createInfo(ls`No ARIA attributes`);
+    this._noPropertiesInfo = this.createInfo(i18nString(UIStrings.noAriaAttributes));
     this._treeOutline = this.createTreeOutline();
   }
 

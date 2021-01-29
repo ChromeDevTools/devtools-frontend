@@ -182,7 +182,7 @@ export function serializeUIString(string, values = {}) {
 }
 
 /**
- * @param {?string} serializedMessage
+ * @param {string} serializedMessage
  * @return {!{string: string, values: !Object<string, ?Object|undefined>}}
  */
 export function deserializeUIString(serializedMessage) {

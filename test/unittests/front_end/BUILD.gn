@@ -19,6 +19,7 @@ group("front_end") {
     "emulation",
     "formatter_worker",
     "har_importer",
+    "i18n",
     "inline_editor",
     "issues",
     "javascript_metadata",

@@ -42,20 +42,6 @@ export function UIString(string: string, ..._vararg: unknown[]): LocalizedString
   return StringUtilities.vsprintf(localize(string), Array.prototype.slice.call(arguments, 1)) as LocalizedString;
 }
 
-export function serializeUIString(string: string, values: unknown[] = []): string {
-  const messageParts = [string];
-  const serializedMessage = {messageParts, values};
-  return JSON.stringify(serializedMessage);
-}
-
-export function deserializeUIString(serializedMessage?: string): unknown {
-  if (!serializedMessage) {
-    return {};
-  }
-
-  return JSON.parse(serializedMessage);
-}
-
 export function localize(string: string): string {
   return string;
 }

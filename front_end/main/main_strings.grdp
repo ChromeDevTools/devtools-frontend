@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_15fa1acc2a998159c4ed2a950c5c231d" desc="Text in the Shortcuts page in settings to explain a keyboard shortcut">
     Toggle drawer
   </message>
+  <message name="IDS_DEVTOOLS_1bbf48778926222bae025707b1c4f070" desc="A drop-down menu option to set the color format to rgb">
+    RGB: rgb(128 255 255)
+  </message>
   <message name="IDS_DEVTOOLS_2ac43aa43bf473f9a9c09b4b608619d3" desc="A tag of theme preference settings that can be searched in the command menu">
     light
   </message>
@@ -99,6 +102,9 @@
   <message name="IDS_DEVTOOLS_b3bf148a3dc8b3367191419e52380982" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Use vertical panel layout
   </message>
+  <message name="IDS_DEVTOOLS_b5109d1d6943a47dc1feff4e0680fb2f" desc="A drop-down menu option to set the color format to hsl">
+    HSL: hsl(300deg 80% 90%)
+  </message>
   <message name="IDS_DEVTOOLS_b9cd538a753713464d2ea17d7e975041" desc="A context menu item in the Main">
     More tools
   </message>
@@ -113,6 +119,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d51a768a01445deddc409dc4b3c07517" desc="Name of a set of keyboard shortcuts from Visual Studio Code">
     Visual Studio Code
+  </message>
+  <message name="IDS_DEVTOOLS_d838bef326860912aa08d977cf3a5f8b" desc="A drop-down menu option to set color format to hex">
+    HEX: #dac0de
   </message>
   <message name="IDS_DEVTOOLS_d981fcf0c74837202331700aca88c801" desc="A drop-down menu option to set color format as authored">
     As authored

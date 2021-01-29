@@ -59,9 +59,156 @@
       "location": "main-toolbar-right"
     },
     {
+      "type": "setting",
+      "category": "Appearance",
+      "title": "Theme:",
+      "settingName": "uiTheme",
+      "settingType": "enum",
+      "defaultValue": "systemPreferred",
+      "reloadRequired": true,
+      "options": [
+        {
+          "title": "Switch to system preferred color theme",
+          "text": "System preference",
+          "value": "systemPreferred"
+        },
+        {
+          "title": "Switch to light theme",
+          "text": "Light",
+          "value": "default"
+        },
+        {
+          "title": "Switch to dark theme",
+          "text": "Dark",
+          "value": "dark"
+        }
+      ],
+      "tags": "dark, light"
+    },
+    {
+      "type": "setting",
+      "category": "Appearance",
+      "title": "Panel layout:",
+      "settingName": "sidebarPosition",
+      "settingType": "enum",
+      "defaultValue": "auto",
+      "options": [
+        {
+          "title": "Use horizontal panel layout",
+          "text": "horizontal",
+          "value": "bottom"
+        },
+        {
+          "title": "Use vertical panel layout",
+          "text": "vertical",
+          "value": "right"
+        },
+        {
+          "title": "Use automatic panel layout",
+          "text": "auto",
+          "value": "auto"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Appearance",
+      "title": "Color format:",
+      "settingName": "colorFormat",
+      "settingType": "enum",
+      "defaultValue": "original",
+      "options": [
+        {
+          "title": "Set color format as authored",
+          "text": "As authored",
+          "value": "original"
+        },
+        {
+          "title": "Set color format to HEX",
+          "text": "HEX: #dac0de",
+          "value": "hex",
+          "raw": true
+        },
+        {
+          "title": "Set color format to RGB",
+          "text": "RGB: rgb(128 255 255)",
+          "value": "rgb",
+          "raw": true
+        },
+        {
+          "title": "Set color format to HSL",
+          "text": "HSL: hsl(300deg 80% 90%)",
+          "value": "hsl",
+          "raw": true
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "category": "Appearance",
+      "title": "Enable Ctrl + 1-9 shortcut to switch panels",
+      "title-mac": "Enable ⌘ + 1-9 shortcut to switch panels",
+      "settingName": "shortcutPanelSwitch",
+      "settingType": "boolean",
+      "defaultValue": false
+    },
+    {
       "type": "@UI.SettingUI",
       "category": "Extensions",
       "className": "Components.Linkifier.LinkHandlerSettingUI"
+    },
+    {
+      "type": "setting",
+      "category": "Global",
+      "settingName": "currentDockState",
+      "settingType": "enum",
+      "defaultValue": "right",
+      "options": [
+        {
+          "value": "right",
+          "text": "Right",
+          "title": "Dock to right"
+        },
+        {
+          "value": "bottom",
+          "text": "Bottom",
+          "title": "Dock to bottom"
+        },
+        {
+          "value": "left",
+          "text": "Left",
+          "title": "Dock to left"
+        },
+        {
+          "value": "undocked",
+          "text": "Undocked",
+          "title": "Undock into separate window"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "settingName": "activeKeybindSet",
+      "settingType": "enum",
+      "defaultValue": "devToolsDefault",
+      "options": [
+        {
+          "value": "devToolsDefault",
+          "title": "DevTools (Default)",
+          "text": "DevTools (Default)"
+        },
+        {
+          "value": "vsCode",
+          "title": "Visual Studio Code",
+          "text": "Visual Studio Code"
+        }
+      ]
+    },
+    {
+      "type": "setting",
+      "settingName": "userShortcuts",
+      "settingType": "array",
+      "defaultValue": []
     },
     {
       "type": "@UI.ViewLocationResolver",

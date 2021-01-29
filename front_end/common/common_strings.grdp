@@ -45,9 +45,6 @@
   <message name="IDS_DEVTOOLS_8cf6dd5e7b4fe7b6df3319b9803278f3" desc="Name of a network resource type">
     EventSource
   </message>
-  <message name="IDS_DEVTOOLS_a1c58e94227389415de133efdf78ea6e" desc="Text for DevTools appearance">
-    Appearance
-  </message>
   <message name="IDS_DEVTOOLS_a83f1ca5ad00b39773d9e6a26b0e70b2" desc="Text that appears in a tooltip for the JavaScript types filter.">
     Scripts
   </message>

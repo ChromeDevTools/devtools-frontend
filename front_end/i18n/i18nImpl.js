@@ -56,7 +56,7 @@ export function registerLocale(locale) {
  * meta files used to register module extensions.
  * @param {function(string, ?Object):string} str_
  * @param {string} id
- * @param {!Object} values
+ * @param {!Object<string, ?Object|undefined>} values
  * @return {function(): !Platform.UIString.LocalizedString} the localized version of the
  */
 export function getLazilyComputedLocalizedString(str_, id, values = {}) {
@@ -67,7 +67,7 @@ export function getLazilyComputedLocalizedString(str_, id, values = {}) {
  * Retrieve the localized string.
  * @param {function(string, ?Object):string} str_
  * @param {string} id
- * @param {!Object} values
+ * @param {!Object<string, ?Object|undefined>} values
  * @return {!Platform.UIString.LocalizedString} the localized version of the
  */
 export function getLocalizedString(str_, id, values = {}) {
@@ -173,20 +173,21 @@ export function formatLocalized(formattedString, args) {
 
 /**
  * @param {string} string
- * @param {*} values
+ * @param {!Object<string, ?Object|undefined>} values
  * @return {string} the serialized string.
  */
-export function serializeUIString(string, values = []) {
+export function serializeUIString(string, values = {}) {
   const serializedMessage = {string, values};
   return JSON.stringify(serializedMessage);
 }
 
 /**
  * @param {?string} serializedMessage
+ * @return {!{string: string, values: !Object<string, ?Object|undefined>}}
  */
 export function deserializeUIString(serializedMessage) {
   if (!serializedMessage) {
-    return {};
+    return {string: '', values: {}};
   }
 
   return JSON.parse(serializedMessage);

@@ -1872,11 +1872,10 @@ export class HeapProfileHeader extends ProfileHeader {
       return;
     }
     const serializedMessage = /** @type {string} */ (data);
-    const messageObject =
-        /** @type {!{messageParts: string, values: !Array<*>}} */ (i18n.i18n.deserializeUIString(serializedMessage));
+    const messageObject = i18n.i18n.deserializeUIString(serializedMessage);
     // We know all strings from the worker are declared inside a single file so we can
     // use a custom function.
-    this.updateStatus(moduleI18nString(messageObject.messageParts, messageObject.values));
+    this.updateStatus(moduleI18nString(messageObject.string, messageObject.values));
   }
 
   /**

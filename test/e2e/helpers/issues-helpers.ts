@@ -101,6 +101,9 @@ export async function getResourcesElement(
 }
 
 export async function expandResourceSection(section: IssueResourceSection) {
+  await section.label.evaluate(el => {
+    el.scrollIntoView();
+  });
   await section.label.click();
   await waitForClass(section.content, 'expanded');
 }

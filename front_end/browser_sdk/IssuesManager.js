@@ -204,3 +204,13 @@ export const Events = {
   IssueAdded: Symbol('IssueAdded'),
   FullUpdateRequired: Symbol('FullUpdateRequired'),
 };
+
+/**
+ * @param {Protocol.Audits.InspectorIssue} issue
+ */
+// @ts-ignore
+globalThis.addIssueForTest = issue => {
+  const mainTarget = SDK.SDKModel.TargetManager.instance().mainTarget();
+  const issuesModel = mainTarget?.model(SDK.IssuesModel.IssuesModel);
+  issuesModel?.issueAdded({issue});
+};

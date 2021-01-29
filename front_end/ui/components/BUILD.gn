@@ -26,6 +26,7 @@ devtools_module("components") {
     "../../component_helpers:bundle",
     "../../host:bundle",
     "../../platform:bundle",
+    "../../render_coordinator:bundle",
     "../../text_utils:bundle",
     "../../third_party/lit-html:bundle",
     "../../ui:bundle",

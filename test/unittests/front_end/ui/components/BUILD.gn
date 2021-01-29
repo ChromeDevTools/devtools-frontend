@@ -14,6 +14,7 @@ ts_library("components") {
 
   deps = [
     "../../../../../front_end/platform:bundle",
+    "../../../../../front_end/render_coordinator:bundle",
     "../../../../../front_end/third_party/lit-html",
     "../../../../../front_end/ui/components:bundle",
     "../../helpers",

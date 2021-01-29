@@ -3,14 +3,16 @@
 // found in the LICENSE file.
 
 import {assertNotNull} from '../../../../../front_end/platform/platform.js';
+import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
 import * as UIComponents from '../../../../../front_end/ui/components/components.js';
-import {assertShadowRoot, dispatchClickEvent, raf, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {TEXT_NODE, withMutations, withNoMutations} from '../../helpers/MutationHelpers.js';
 
 import {getAllRows, getHeaderCellForColumnId, getValuesForColumn, getValuesOfAllBodyRows} from './DataGridHelpers.js';
 
 const {assert} = chai;
 
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const getInternalDataGridShadowRoot = (component: UIComponents.DataGridController.DataGridController): ShadowRoot => {
   assertShadowRoot(component.shadowRoot);
@@ -38,12 +40,12 @@ describe('DataGridController', () => {
     ];
 
     it('lets the user click to sort the column in ASC order', async () => {
-      await raf();
+      await coordinator.done();
       const component = new UIComponents.DataGridController.DataGridController();
       component.data = {rows, columns};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
 
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
 
@@ -57,7 +59,7 @@ describe('DataGridController', () => {
           internalDataGridShadow, async shadowRoot => {
             const keyHeader = getHeaderCellForColumnId(shadowRoot, 'key');
             dispatchClickEvent(keyHeader);
-            await raf();
+            await coordinator.done();
             const cellValues = getValuesForColumn(shadowRoot, 'key');
             assert.deepEqual(cellValues, ['Alpha', 'Bravo', 'Charlie']);
           });
@@ -68,17 +70,17 @@ describe('DataGridController', () => {
       component.data = {rows: numericRows, columns};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
 
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
 
       const keyHeader = getHeaderCellForColumnId(internalDataGridShadow, 'key');
       dispatchClickEvent(keyHeader);  // ASC order
-      await raf();
+      await coordinator.done();
       let cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['1', '2', '3']);
       dispatchClickEvent(keyHeader);  // DESC order
-      await raf();
+      await coordinator.done();
       cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['3', '2', '1']);
     });
@@ -96,7 +98,7 @@ describe('DataGridController', () => {
 
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
 
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const cellValues = getValuesForColumn(internalDataGridShadow, 'key');
@@ -116,14 +118,14 @@ describe('DataGridController', () => {
 
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
 
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const keyHeader = getHeaderCellForColumnId(internalDataGridShadow, 'key');
       let cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['Alpha', 'Bravo', 'Charlie']);
       dispatchClickEvent(keyHeader);  // DESC order
-      await raf();
+      await coordinator.done();
       cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['Charlie', 'Bravo', 'Alpha']);
     });
@@ -134,16 +136,16 @@ describe('DataGridController', () => {
 
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
 
       const keyHeader = getHeaderCellForColumnId(internalDataGridShadow, 'key');
       dispatchClickEvent(keyHeader);  // ASC order
-      await raf();
+      await coordinator.done();
       let cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['Alpha', 'Bravo', 'Charlie']);
       dispatchClickEvent(keyHeader);  // DESC order
-      await raf();
+      await coordinator.done();
       cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['Charlie', 'Bravo', 'Alpha']);
     });
@@ -154,21 +156,21 @@ describe('DataGridController', () => {
 
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
 
       const keyHeader = getHeaderCellForColumnId(internalDataGridShadow, 'key');
       const originalCellValues = getValuesForColumn(internalDataGridShadow, 'key');
       dispatchClickEvent(keyHeader);  // ASC order
-      await raf();
+      await coordinator.done();
       let cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['Alpha', 'Bravo', 'Charlie']);
       dispatchClickEvent(keyHeader);  // DESC order
-      await raf();
+      await coordinator.done();
       cellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(cellValues, ['Charlie', 'Bravo', 'Alpha']);
       dispatchClickEvent(keyHeader);  // Now reset!
-      await raf();
+      await coordinator.done();
       const finalCellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(finalCellValues, originalCellValues);
     });
@@ -226,7 +228,7 @@ describe('DataGridController', () => {
       component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.deepEqual(renderedRowValues, [
@@ -239,12 +241,12 @@ describe('DataGridController', () => {
       component.data = {rows, columns};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
 
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       await withNoMutations(internalDataGridShadow, async internalShadowRoot => {
         component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
-        await raf();
+        await coordinator.done();
         const renderedRowValues = getValuesOfAllBodyRows(internalShadowRoot, {onlyVisible: true});
         assert.deepEqual(renderedRowValues, [
           ['Letter B', 'Bravo'],
@@ -259,7 +261,7 @@ describe('DataGridController', () => {
 
          renderElementIntoDOM(component);
          assertShadowRoot(component.shadowRoot);
-         await raf();
+         await coordinator.done();
          const internalDataGridShadow = getInternalDataGridShadowRoot(component);
          const renderedRows = getAllRows(internalDataGridShadow);
          assert.lengthOf(renderedRows, 3);
@@ -272,7 +274,7 @@ describe('DataGridController', () => {
       component.data = {rows, columns, filters: [createPlainTextFilter('bravo')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
 
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       let renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
@@ -281,7 +283,7 @@ describe('DataGridController', () => {
         ...component.data,
         filters: [],
       };
-      await raf();
+      await coordinator.done();
       renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow);
       assert.lengthOf(renderedRowValues, 3);
     });
@@ -291,7 +293,7 @@ describe('DataGridController', () => {
       component.data = {rows, columns, filters: [createRegexFilter('bravo')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.deepEqual(renderedRowValues, [
@@ -306,7 +308,7 @@ describe('DataGridController', () => {
       component.data = {rows, columns, filters: [filter]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.deepEqual(renderedRowValues, [
@@ -321,7 +323,7 @@ describe('DataGridController', () => {
       component.data = {rows, columns, filters: [createPlainTextFilter('alpha'), createPlainTextFilter('charlie')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.deepEqual(renderedRowValues, []);
@@ -333,7 +335,7 @@ describe('DataGridController', () => {
       component.data = {rows, columns, filters: [createColumnFilter('value', 'e')]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.deepEqual(renderedRowValues, [
@@ -348,7 +350,7 @@ describe('DataGridController', () => {
       component.data = {rows, columns, filters: [filter]};
       renderElementIntoDOM(component);
       assertShadowRoot(component.shadowRoot);
-      await raf();
+      await coordinator.done();
       const internalDataGridShadow = getInternalDataGridShadowRoot(component);
       const renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
       assert.deepEqual(renderedRowValues, [

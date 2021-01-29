@@ -6,11 +6,14 @@ import * as Common from '../../common/common.js';
 import * as ComponentHelpers from '../../component_helpers/component_helpers.js';
 import * as Host from '../../host/host.js';
 import * as Platform from '../../platform/platform.js';
+import * as Coordinator from '../../render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import * as UI from '../../ui/ui.js';
 
 const {ls} = Common;
+
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 import {addColumnVisibilityCheckboxes, addSortableColumnItems} from './DataGridContextMenuUtils.js';
 import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, Cell, CellPosition, Column, ContextMenuHeaderResetClickEvent, getRowEntryForColumnId, handleArrowKeyNavigation, renderCellValue, Row, SortDirection, SortState} from './DataGridUtils.js';
@@ -90,8 +93,7 @@ export class DataGrid extends HTMLElement {
   private columns: readonly Column[] = [];
   private rows: readonly Row[] = [];
   private sortState: Readonly<SortState>|null = null;
-  private pendingScroll = 0;
-  private scheduledRenderId = 0;
+  private scheduledRender = false;
   private contextMenus?: DataGridContextMenusConfiguration = undefined;
   private currentResize: {
     rightCellCol: HTMLTableColElement,
@@ -210,13 +212,16 @@ export class DataGrid extends HTMLElement {
       return;
     }
 
-    const wrapper = this.shadow.querySelector('.wrapping-container');
-    if (wrapper) {
-      cancelAnimationFrame(this.pendingScroll);
-      this.pendingScroll = requestAnimationFrame(() => {
-        wrapper.scrollTo(0, wrapper.scrollHeight);
+    coordinator.read(() => {
+      const wrapper = this.shadow.querySelector('.wrapping-container');
+      if (!wrapper) {
+        return;
+      }
+      const scrollHeight = wrapper.scrollHeight;
+      coordinator.scroll(() => {
+        wrapper.scrollTo(0, scrollHeight);
       });
-    }
+    });
   }
 
   private getCurrentlyFocusableCell(): HTMLTableCellElement|null {
@@ -246,7 +251,9 @@ export class DataGrid extends HTMLElement {
      * add arrow key support, so in the case where we're programatically moving the
      * focus, ensure we actually focus the cell.
      */
-    cellElement.focus();
+    coordinator.write(() => {
+      cellElement.focus();
+    });
   }
 
   private onTableKeyDown(event: KeyboardEvent): void {
@@ -456,7 +463,7 @@ export class DataGrid extends HTMLElement {
     const lastVisibleColumnIndex = this.getIndexOfLastVisibleColumn();
     // If we are in the very last column, there is no column to the right to resize, so don't render a resizer.
     if (columnIndex === lastVisibleColumnIndex || !column.visible) {
-      return LitHtml.html``;
+      return LitHtml.nothing as LitHtml.TemplateResult;
     }
 
     return LitHtml.html`<span class="cell-resize-handle"
@@ -550,15 +557,16 @@ export class DataGrid extends HTMLElement {
     this.userHasScrolled = true;
   }
 
-  private alignScrollHandlers(): void {
-    requestAnimationFrame(() => {
+  private alignScrollHandlers(): Promise<void> {
+    return coordinator.read(() => {
       const columnHeaders = this.shadow.querySelectorAll('th:not(.hidden)');
       const handlers = this.shadow.querySelectorAll<HTMLElement>('.cell-resize-handle');
       const table = this.shadow.querySelector<HTMLTableElement>('table');
       if (!table) {
         return;
       }
-      columnHeaders.forEach((header, index) => {
+
+      columnHeaders.forEach(async (header, index) => {
         const {right} = header.getBoundingClientRect();
         if (handlers[index]) {
           /**
@@ -567,7 +575,9 @@ export class DataGrid extends HTMLElement {
            * because it's 20px wide, but then need to pull it back another 20px
            * so it sits over The very right hand edge of the column.
            */
-          handlers[index].style.left = `${right - 40}px`;
+          coordinator.write(() => {
+            handlers[index].style.left = `${right - 40}px`;
+          });
         }
       });
     });
@@ -577,30 +587,32 @@ export class DataGrid extends HTMLElement {
    * Calculates the index of the first row we want to render, and the last row we want to render.
    * Pads in each direction by PADDING_ROWS_COUNT so we render some rows that are off scren.
    */
-  private calculateTopAndBottomRowIndexes(): {topVisibleRow: number, bottomVisibleRow: number} {
-    const wrapper = this.shadow.querySelector('.wrapping-container');
+  private calculateTopAndBottomRowIndexes(): Promise<{topVisibleRow: number, bottomVisibleRow: number}> {
+    return coordinator.read(() => {
+      const wrapper = this.shadow.querySelector('.wrapping-container');
 
-    // On first render we don't have a wrapper, so we can't get at its
-    // scroll/height values. So we default to the inner height of the window as
-    // the limit for rendering. This means we may over-render by a few rows, but
-    // better that than either render everything, or rendering too few rows.
-    let scrollTop = 0;
-    let clientHeight = window.innerHeight;
-    if (wrapper) {
-      scrollTop = wrapper.scrollTop;
-      clientHeight = wrapper.clientHeight;
-    }
-    const padding = ROW_HEIGHT_PIXELS * PADDING_ROWS_COUNT;
-    let topVisibleRow = Math.floor((scrollTop - padding) / ROW_HEIGHT_PIXELS);
-    let bottomVisibleRow = Math.ceil((scrollTop + clientHeight + padding) / ROW_HEIGHT_PIXELS);
+      // On first render we don't have a wrapper, so we can't get at its
+      // scroll/height values. So we default to the inner height of the window as
+      // the limit for rendering. This means we may over-render by a few rows, but
+      // better that than either render everything, or rendering too few rows.
+      let scrollTop = 0;
+      let clientHeight = window.innerHeight;
+      if (wrapper) {
+        scrollTop = wrapper.scrollTop;
+        clientHeight = wrapper.clientHeight;
+      }
+      const padding = ROW_HEIGHT_PIXELS * PADDING_ROWS_COUNT;
+      let topVisibleRow = Math.floor((scrollTop - padding) / ROW_HEIGHT_PIXELS);
+      let bottomVisibleRow = Math.ceil((scrollTop + clientHeight + padding) / ROW_HEIGHT_PIXELS);
 
-    topVisibleRow = Math.max(0, topVisibleRow);
-    bottomVisibleRow = Math.min(this.rows.length, bottomVisibleRow);
+      topVisibleRow = Math.max(0, topVisibleRow);
+      bottomVisibleRow = Math.min(this.rows.length, bottomVisibleRow);
 
-    return {
-      topVisibleRow,
-      bottomVisibleRow,
-    };
+      return {
+        topVisibleRow,
+        bottomVisibleRow,
+      };
+    });
   }
 
   /**
@@ -611,256 +623,260 @@ export class DataGrid extends HTMLElement {
    * padding).
    */
   private render(): void {
-    if (this.scheduledRenderId !== 0) {
+    if (this.scheduledRender) {
       return;
     }
+    this.scheduledRender = true;
 
-    this.scheduledRenderId = requestAnimationFrame(() => {
-      const {topVisibleRow, bottomVisibleRow} = this.calculateTopAndBottomRowIndexes();
+    coordinator.read(async () => {
+      const {topVisibleRow, bottomVisibleRow} = await this.calculateTopAndBottomRowIndexes();
       const renderableRows = this.rows.filter((_, idx) => idx >= topVisibleRow && idx <= bottomVisibleRow);
       const indexOfFirstVisibleColumn = this.columns.findIndex(col => col.visible);
       const anyColumnsSortable = this.columns.some(col => col.sortable === true);
 
-      // Disabled until https://crbug.com/1079231 is fixed.
-      // clang-format off
-      LitHtml.render(LitHtml.html`
-      <style>
-        :host {
-          --table-divider-color: var(--color-details-hairline);
-          --toolbar-bg-color: var(--color-background-elevation-1);
-          --selected-row-color: var(--color-background-elevation-1);
+      await coordinator.write(() => {
+        // Disabled until https://crbug.com/1079231 is fixed.
+        // clang-format off
+        LitHtml.render(LitHtml.html`
+        <style>
+          :host {
+            --table-divider-color: var(--color-details-hairline);
+            --toolbar-bg-color: var(--color-background-elevation-1);
+            --selected-row-color: var(--color-background-elevation-1);
 
-          height: 100%;
-          display: block;
-          position: relative;
-        }
+            height: 100%;
+            display: block;
+            position: relative;
+          }
 
-        /* Ensure that vertically we don't overflow */
-        .wrapping-container {
-          overflow-y: scroll;
+          /* Ensure that vertically we don't overflow */
+          .wrapping-container {
+            overflow-y: scroll;
 
-          /* Use max-height instead of height to ensure that the
-            table does not use more space than necessary. */
-          height: 100%;
-        }
+            /* Use max-height instead of height to ensure that the
+              table does not use more space than necessary. */
+            height: 100%;
+          }
 
-        table {
-          border-spacing: 0;
-          width: 100%;
-          height: 100%;
+          table {
+            border-spacing: 0;
+            width: 100%;
+            height: 100%;
 
-          /* To make sure that we properly hide overflowing text
-            when horizontal space is too narrow. */
-          table-layout: fixed;
-        }
+            /* To make sure that we properly hide overflowing text
+              when horizontal space is too narrow. */
+            table-layout: fixed;
+          }
 
-        tr {
-          outline: none;
-        }
+          tr {
+            outline: none;
+          }
 
-        tbody tr {
-          background-color: var(--color-background);
-        }
+          tbody tr {
+            background-color: var(--color-background);
+          }
 
-        tbody tr.selected {
-          background-color: var(--selected-row-color);
-        }
+          tbody tr.selected {
+            background-color: var(--selected-row-color);
+          }
 
-        td,
-        th {
-          padding: 1px 4px;
+          td,
+          th {
+            padding: 1px 4px;
 
-          /* Divider between each cell, except the first one (see below) */
-          border-left: 1px solid var(--table-divider-color);
-          color: var(--color-text-primary);
-          line-height: var(--table-row-height);
-          height: var(--table-row-height);
-          user-select: text;
+            /* Divider between each cell, except the first one (see below) */
+            border-left: 1px solid var(--table-divider-color);
+            color: var(--color-text-primary);
+            line-height: var(--table-row-height);
+            height: var(--table-row-height);
+            user-select: text;
 
-          /* Ensure that text properly cuts off if horizontal space is too narrow */
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
+            /* Ensure that text properly cuts off if horizontal space is too narrow */
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
 
-        .cell-resize-handle {
-          top: 0;
-          height: 100%;
-          z-index: 3;
-          width: 20px;
-          cursor: col-resize;
-          position: absolute;
-        }
+          .cell-resize-handle {
+            top: 0;
+            height: 100%;
+            z-index: 3;
+            width: 20px;
+            cursor: col-resize;
+            position: absolute;
+          }
 
-        /* There is no divider before the first cell */
-        td.firstVisibleColumn,
-        th.firstVisibleColumn {
-          border-left: none;
-        }
+          /* There is no divider before the first cell */
+          td.firstVisibleColumn,
+          th.firstVisibleColumn {
+            border-left: none;
+          }
 
-        th {
-          font-weight: normal;
-          text-align: left;
-          border-bottom: 1px solid var(--table-divider-color);
-          position: sticky;
-          top: 0;
-          z-index: 2;
-          background-color: var(--toolbar-bg-color);
-        }
+          th {
+            font-weight: normal;
+            text-align: left;
+            border-bottom: 1px solid var(--table-divider-color);
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background-color: var(--toolbar-bg-color);
+          }
 
-        .hidden {
-          display: none;
-        }
+          .hidden {
+            display: none;
+          }
 
-        .filler-row td {
-          /* By making the filler row cells 100% they take up any extra height,
-          * leaving the cells with content to be the regular height, and the
-          * final filler row to be as high as it needs to be to fill the empty
-          * space.
+          .filler-row td {
+            /* By making the filler row cells 100% they take up any extra height,
+            * leaving the cells with content to be the regular height, and the
+            * final filler row to be as high as it needs to be to fill the empty
+            * space.
+            */
+            height: 100%;
+            pointer-events: none;
+          }
+
+          [aria-sort]:hover {
+            cursor: pointer;
+          }
+
+          [aria-sort="descending"]::after {
+            content: " ";
+            border-left: 0.3em solid transparent;
+            border-right: 0.3em solid transparent;
+            border-top: 0.3em solid black;
+            position: absolute;
+            right: 0.5em;
+            top: 0.6em;
+          }
+
+          [aria-sort="ascending"]::after {
+            content: " ";
+            border-bottom: 0.3em solid black;
+            border-left: 0.3em solid transparent;
+            border-right: 0.3em solid transparent;
+            position: absolute;
+            right: 0.5em;
+            top: 0.6em;
+          }
+        </style>
+        ${this.columns.map((col, columnIndex) => {
+          /**
+          * We render the resizers outside of the table. One is rendered for each
+          * column, and they are positioned absolutely at the right position. They
+          * have 100% height so they sit over the entire table and can be grabbed
+          * by the user.
           */
-          height: 100%;
-          pointer-events: none;
-        }
+          return this.renderResizeForCell(col, [columnIndex, 0]);
+        })}
+        <div class="wrapping-container" @scroll=${this.onScroll} @wheel=${this.onWheel}>
+          <table
+            aria-rowcount=${this.rows.length}
+            aria-colcount=${this.columns.length}
+            @keydown=${this.onTableKeyDown}
+          >
+            <colgroup>
+              ${this.columns.map((col, colIndex) => {
+                const width = calculateColumnWidthPercentageFromWeighting(this.columns, col.id);
+                const style = `width: ${width}%`;
+                if (!col.visible) {
+                  return LitHtml.nothing;
+                }
 
-        [aria-sort]:hover {
-          cursor: pointer;
-        }
-
-        [aria-sort="descending"]::after {
-          content: " ";
-          border-left: 0.3em solid transparent;
-          border-right: 0.3em solid transparent;
-          border-top: 0.3em solid black;
-          position: absolute;
-          right: 0.5em;
-          top: 0.6em;
-        }
-
-        [aria-sort="ascending"]::after {
-          content: " ";
-          border-bottom: 0.3em solid black;
-          border-left: 0.3em solid transparent;
-          border-right: 0.3em solid transparent;
-          position: absolute;
-          right: 0.5em;
-          top: 0.6em;
-        }
-      </style>
-      ${this.columns.map((col, columnIndex) => {
-        /**
-        * We render the resizers outside of the table. One is rendered for each
-        * column, and they are positioned absolutely at the right position. They
-        * have 100% height so they sit over the entire table and can be grabbed
-        * by the user.
-        */
-        return this.renderResizeForCell(col, [columnIndex, 0]);
-      })}
-      <div class="wrapping-container" @scroll=${this.onScroll} @wheel=${this.onWheel}>
-        <table
-          aria-rowcount=${this.rows.length}
-          aria-colcount=${this.columns.length}
-          @keydown=${this.onTableKeyDown}
-        >
-          <colgroup>
-            ${this.columns.map((col, colIndex) => {
-              const width = calculateColumnWidthPercentageFromWeighting(this.columns, col.id);
-              const style = `width: ${width}%`;
-              if (!col.visible) {
-                return LitHtml.nothing;
-              }
-
-              return LitHtml.html`<col style=${style} data-col-column-index=${colIndex}>`;
-            })}
-          </colgroup>
-          <thead>
-            <tr @contextmenu=${this.onHeaderContextMenu}>
-              ${this.columns.map((col, columnIndex) => {
-                const thClasses = LitHtml.Directives.classMap({
-                  hidden: !col.visible,
-                  firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
-                });
-                const cellIsFocusableCell = anyColumnsSortable && columnIndex === this.focusableCell[0] && this.focusableCell[1] === 0;
-
-                return LitHtml.html`<th class=${thClasses}
-                  data-grid-header-cell=${col.id}
-                  @click=${(): void => {
-                    this.focusCell([columnIndex, 0]);
-                    this.onColumnHeaderClick(col, columnIndex);
-                  }}
-                  title=${col.title}
-                  aria-sort=${LitHtml.Directives.ifDefined(this.ariaSortForHeader(col))}
-                  aria-colindex=${columnIndex + 1}
-                  data-row-index='0'
-                  data-col-index=${columnIndex}
-                  tabindex=${LitHtml.Directives.ifDefined(anyColumnsSortable ? (cellIsFocusableCell ? '0' : '-1') : undefined)}
-                >${col.title}</th>`;
+                return LitHtml.html`<col style=${style} data-col-column-index=${colIndex}>`;
               })}
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="filler-row-top padding-row" style=${LitHtml.Directives.styleMap({
-              height: `${topVisibleRow * ROW_HEIGHT_PIXELS}px`,
-            })}></tr>
-            ${LitHtml.Directives.repeat(renderableRows, row => this.rowIndexMap.get(row), (row): LitHtml.TemplateResult => {
-              const rowIndex = this.rowIndexMap.get(row);
-              if (rowIndex === undefined) {
-                throw new Error('Trying to render a row that has no index in the rowIndexMap');
-              }
-              const focusableCell = this.getCurrentlyFocusableCell();
-              const [,focusableCellRowIndex] = this.focusableCell;
-              // Remember that row 0 is considered the header row, so the first tbody row is row 1.
-              const tableRowIndex = rowIndex + 1;
-
-              // Have to check for focusableCell existing as this runs on the
-              // first render before it's ever been created.
-              const rowIsSelected = focusableCell ? focusableCell === this.shadow.activeElement && tableRowIndex === focusableCellRowIndex : false;
-
-              const rowClasses = LitHtml.Directives.classMap({
-                selected: rowIsSelected,
-                hidden: row.hidden === true,
-              });
-              return LitHtml.html`
-                <tr
-                  aria-rowindex=${rowIndex + 1}
-                  class=${rowClasses}
-                  @contextmenu=${this.onBodyRowContextMenu}
-                >${this.columns.map((col, columnIndex) => {
-                  const cell = getRowEntryForColumnId(row, col.id);
-                  const cellClasses = LitHtml.Directives.classMap({
+            </colgroup>
+            <thead>
+              <tr @contextmenu=${this.onHeaderContextMenu}>
+                ${this.columns.map((col, columnIndex) => {
+                  const thClasses = LitHtml.Directives.classMap({
                     hidden: !col.visible,
                     firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
                   });
-                  const cellIsFocusableCell = columnIndex === this.focusableCell[0] && tableRowIndex === this.focusableCell[1];
-                  const cellOutput = col.visible ? renderCellValue(cell) : null;
-                  return LitHtml.html`<td
-                    class=${cellClasses}
-                    tabindex=${cellIsFocusableCell ? '0' : '-1'}
-                    aria-colindex=${columnIndex + 1}
-                    title=${cell.title || String(cell.value).substr(0, 20)}
-                    data-row-index=${tableRowIndex}
-                    data-col-index=${columnIndex}
-                    data-grid-value-cell-for-column=${col.id}
-                    @focus=${(): void => {
-                      this.dispatchEvent(new BodyCellFocusedEvent(cell, row));
-                    }}
+                  const cellIsFocusableCell = anyColumnsSortable && columnIndex === this.focusableCell[0] && this.focusableCell[1] === 0;
+
+                  return LitHtml.html`<th class=${thClasses}
+                    data-grid-header-cell=${col.id}
                     @click=${(): void => {
-                      this.focusCell([columnIndex, tableRowIndex]);
+                      this.focusCell([columnIndex, 0]);
+                      this.onColumnHeaderClick(col, columnIndex);
                     }}
-                  >${cellOutput}</td>`;
+                    title=${col.title}
+                    aria-sort=${LitHtml.Directives.ifDefined(this.ariaSortForHeader(col))}
+                    aria-colindex=${columnIndex + 1}
+                    data-row-index='0'
+                    data-col-index=${columnIndex}
+                    tabindex=${LitHtml.Directives.ifDefined(anyColumnsSortable ? (cellIsFocusableCell ? '0' : '-1') : undefined)}
+                  >${col.title}</th>`;
                 })}
-              `;
-            })}
-            ${this.renderEmptyFillerRow()}
-            <tr class="filler-row-bottom padding-row" style=${LitHtml.Directives.styleMap({
-              height: `${(this.rows.length - bottomVisibleRow) * ROW_HEIGHT_PIXELS}px`,
-            })}></tr>
-          </tbody>
-        </table>
-      </div>
-      `, this.shadow, {
-        eventContext: this,
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="filler-row-top padding-row" style=${LitHtml.Directives.styleMap({
+                height: `${topVisibleRow * ROW_HEIGHT_PIXELS}px`,
+              })}></tr>
+              ${LitHtml.Directives.repeat(renderableRows, row => this.rowIndexMap.get(row), (row): LitHtml.TemplateResult => {
+                const rowIndex = this.rowIndexMap.get(row);
+                if (rowIndex === undefined) {
+                  throw new Error('Trying to render a row that has no index in the rowIndexMap');
+                }
+                const focusableCell = this.getCurrentlyFocusableCell();
+                const [,focusableCellRowIndex] = this.focusableCell;
+                // Remember that row 0 is considered the header row, so the first tbody row is row 1.
+                const tableRowIndex = rowIndex + 1;
+
+                // Have to check for focusableCell existing as this runs on the
+                // first render before it's ever been created.
+                const rowIsSelected = focusableCell ? focusableCell === this.shadow.activeElement && tableRowIndex === focusableCellRowIndex : false;
+
+                const rowClasses = LitHtml.Directives.classMap({
+                  selected: rowIsSelected,
+                  hidden: row.hidden === true,
+                });
+                return LitHtml.html`
+                  <tr
+                    aria-rowindex=${rowIndex + 1}
+                    class=${rowClasses}
+                    @contextmenu=${this.onBodyRowContextMenu}
+                  >${this.columns.map((col, columnIndex) => {
+                    const cell = getRowEntryForColumnId(row, col.id);
+                    const cellClasses = LitHtml.Directives.classMap({
+                      hidden: !col.visible,
+                      firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
+                    });
+                    const cellIsFocusableCell = columnIndex === this.focusableCell[0] && tableRowIndex === this.focusableCell[1];
+                    const cellOutput = col.visible ? renderCellValue(cell) : null;
+                    return LitHtml.html`<td
+                      class=${cellClasses}
+                      tabindex=${cellIsFocusableCell ? '0' : '-1'}
+                      aria-colindex=${columnIndex + 1}
+                      title=${cell.title || String(cell.value).substr(0, 20)}
+                      data-row-index=${tableRowIndex}
+                      data-col-index=${columnIndex}
+                      data-grid-value-cell-for-column=${col.id}
+                      @focus=${(): void => {
+                        this.dispatchEvent(new BodyCellFocusedEvent(cell, row));
+                      }}
+                      @click=${(): void => {
+                        this.focusCell([columnIndex, tableRowIndex]);
+                      }}
+                    >${cellOutput}</td>`;
+                  })}
+                `;
+              })}
+              ${this.renderEmptyFillerRow()}
+              <tr class="filler-row-bottom padding-row" style=${LitHtml.Directives.styleMap({
+                height: `${(this.rows.length - bottomVisibleRow) * ROW_HEIGHT_PIXELS}px`,
+              })}></tr>
+            </tbody>
+          </table>
+        </div>
+        `, this.shadow, {
+          eventContext: this,
+        });
       });
       // clang-format on
+
       if (this.userHasFocused) {
         // This ensures if the user has a cell focused, but then scrolls so that
         // the focused cell is now not rendered, that when it then gets scrolled
@@ -868,9 +884,9 @@ export class DataGrid extends HTMLElement {
         this.focusCell(this.focusableCell);
       }
       this.scrollToBottomIfRequired();
-      this.alignScrollHandlers();
+      await this.alignScrollHandlers();
+      this.scheduledRender = false;
       this.hasRenderedAtLeastOnce = true;
-      this.scheduledRenderId = 0;
     });
   }
 }

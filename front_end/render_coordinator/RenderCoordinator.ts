@@ -59,6 +59,13 @@ export class RenderCoordinator extends EventTarget {
   private readonly resolvers = new WeakMap<CoordinatorCallback, RenderCoordinatorResolverCallback>();
   private scheduledWorkId = 0;
 
+  done(): Promise<void> {
+    if (this.pendingWorkFrames.length === 0) {
+      return Promise.resolve();
+    }
+    return new Promise(resolve => this.addEventListener('queueempty', () => resolve(), {once: true}));
+  }
+
   async read<T extends unknown>(callback: CoordinatorCallback): Promise<T> {
     return this.enqueueHandler<T>(callback, ACTION.READ);
   }
@@ -123,18 +130,21 @@ export class RenderCoordinator extends EventTarget {
   }
 
   private scheduleWork(): void {
-    const hasPendingFrames = this.pendingWorkFrames.length > 0;
     const hasScheduledWork = this.scheduledWorkId !== 0;
-    if (!hasPendingFrames || hasScheduledWork) {
-      // No pending frames means all pending work has completed.
-      // The event dispatched below is mostly for testing contexts.
-      if (!hasPendingFrames) {
-        this.dispatchEvent(new RenderCoordinatorQueueEmptyEvent());
-      }
+    if (hasScheduledWork) {
       return;
     }
 
     this.scheduledWorkId = requestAnimationFrame(() => {
+      const hasPendingFrames = this.pendingWorkFrames.length > 0;
+      if (!hasPendingFrames) {
+        // No pending frames means all pending work has completed.
+        // The event dispatched below is mostly for testing contexts.
+        this.dispatchEvent(new RenderCoordinatorQueueEmptyEvent());
+        this.scheduledWorkId = 0;
+        return;
+      }
+
       this.dispatchEvent(new RenderCoordinatorNewFrameEvent());
 
       const frame = this.pendingWorkFrames.shift();

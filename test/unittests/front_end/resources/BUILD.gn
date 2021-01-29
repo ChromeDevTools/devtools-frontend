@@ -12,6 +12,7 @@ ts_library("resources") {
   ]
 
   deps = [
+    "../../../../front_end/render_coordinator:bundle",
     "../../../../front_end/resources:bundle",
     "../../../../front_end/ui/components:bundle",
     "../helpers",

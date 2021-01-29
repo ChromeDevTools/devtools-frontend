@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertElement, assertElements, dispatchClickEvent, dispatchKeyDownEvent, raf} from '../../helpers/DOMHelpers.js';
+import * as Coordinator from '../../../../../front_end/render_coordinator/render_coordinator.js';
+import {assertElement, assertElements, dispatchClickEvent, dispatchKeyDownEvent} from '../../helpers/DOMHelpers.js';
 
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 const {assert} = chai;
 
 export const getFocusableCell = (shadowRoot: ShadowRoot) => {
@@ -80,7 +82,7 @@ export const emulateUserKeyboardNavigation =
 export const emulateUserFocusingCellAt = async (shadowRoot: ShadowRoot, position: {column: number, row: number}) => {
   const cellToFocus = getCellByIndexes(shadowRoot, position);
   dispatchClickEvent(cellToFocus);
-  await raf();
+  await coordinator.done();
   assertCurrentFocusedCellIs(shadowRoot, position);
 };
 

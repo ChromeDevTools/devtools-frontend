@@ -6,6 +6,7 @@ const {assert} = chai;
 
 import type * as IssuesModule from '../../../../front_end/issues/issues.js';
 import type * as BrowserSDKModule from '../../../../front_end/browser_sdk/browser_sdk.js';
+import type * as SDKModule from '../../../../front_end/sdk/sdk.js';
 import {describeWithEnvironment} from '../helpers/EnvironmentHelpers.js';
 import {StubIssue} from '../sdk/StubIssue.js';
 import {MockIssuesModel} from '../sdk/MockIssuesModel.js';
@@ -107,5 +108,47 @@ describeWithEnvironment('IssueAggregator', async () => {
     assert.strictEqual(issues.length, 3);
     const issueCodes = issues.map(r => r.code()).sort((a, b) => a.localeCompare(b));
     assert.deepStrictEqual(issueCodes, ['codeA', 'codeB', 'codeC']);
+  });
+});
+
+describeWithEnvironment('IssueAggregator', async () => {
+  let BrowserSDK: typeof BrowserSDKModule;
+  let Issues: typeof IssuesModule;
+  let SDK: typeof SDKModule;
+  before(async () => {
+    Issues = await import('../../../../front_end/issues/issues.js');
+    BrowserSDK = await import('../../../../front_end/browser_sdk/browser_sdk.js');
+    SDK = await import('../../../../front_end/sdk/sdk.js');
+  });
+
+  it('aggregates heavy ad issues correctly', () => {
+    const mockModel = new MockIssuesModel([]) as unknown as SDKModule.IssuesModel.IssuesModel;
+    const details1 = {
+      resolution: Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked,
+      reason: Protocol.Audits.HeavyAdReason.CpuPeakLimit,
+      frame: {frameId: 'main'},
+    };
+    const issue1 = new SDK.HeavyAdIssue.HeavyAdIssue(details1, mockModel);
+    const details2 = {
+      resolution: Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning,
+      reason: Protocol.Audits.HeavyAdReason.NetworkTotalLimit,
+      frame: {frameId: 'main'},
+    };
+    const issue2 = new SDK.HeavyAdIssue.HeavyAdIssue(details2, mockModel);
+
+    const aggregator = new Issues.IssueAggregator.IssueAggregator(
+        (mockModel as unknown) as BrowserSDKModule.IssuesManager.IssuesManager);
+    mockModel.dispatchEventToListeners(
+        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
+    mockModel.dispatchEventToListeners(
+        BrowserSDK.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
+
+    const issues = Array.from(aggregator.aggregatedIssues());
+    assert.strictEqual(issues.length, 1);
+    const resolutions = [...issues[0].heavyAds()].map(r => r.resolution).sort();
+    assert.deepStrictEqual(resolutions, [
+      Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked,
+      Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning,
+    ]);
   });
 });

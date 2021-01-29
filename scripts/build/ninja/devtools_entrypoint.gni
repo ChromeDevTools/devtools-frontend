@@ -2,7 +2,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("//build/toolchain/rbe.gni")
 import("../../../devtools_module_entrypoints.gni")
 import("../../../third_party/typescript/typescript.gni")
 import("./copy.gni")
@@ -127,10 +126,6 @@ template("devtools_entrypoint") {
       public_deps = [ ":$_copy_target_name" ]
 
       is_web_worker = _is_web_worker
-
-      if (defined(use_rbe) && use_rbe) {
-        use_rbe = false
-      }
     }
 
     rollup(_rollup_target_name) {

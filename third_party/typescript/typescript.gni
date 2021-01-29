@@ -2,16 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("//build/toolchain/rbe.gni")
 import("../../scripts/build/ninja/vars.gni")
-
-declare_args() {
-  # Set to true to enable remote compilation of TypeScript using RBE.
-  # This flag is temporarily until DevTools RBE support has stabilized.
-  # At that point, this flag will be folded together with "use_rbe".
-  # TODO(crbug.com/1139220): Remove the flag once we are confident.
-  devtools_use_rbe = false
-}
 
 # Defines a target that compiles .ts files using TypeScript.
 # A temporary tsconfig.json is generated which uses the
@@ -132,19 +123,6 @@ template("ts_library") {
 
     if (defined(invoker.is_web_worker) && invoker.is_web_worker) {
       args += [ "--is_web_worker" ]
-    }
-
-    if (defined(use_rbe) && use_rbe && defined(devtools_use_rbe) &&
-        devtools_use_rbe) {
-      # Allow ts_library template invocations to override user provided flags.
-      if (!defined(invoker.use_rbe) || invoker.use_rbe) {
-        args += [
-          "--use-rbe",
-          "--rewrapper-binary=${rbe_bin_dir}/rewrapper",
-          "--rewrapper-cfg=${cfg_file}",
-          "--rewrapper-exec-root=${rbe_exec_root}",
-        ]
-      }
     }
 
     output_files = [ "$target_gen_dir/$_typescript_config_name-tsconfig.json" ]

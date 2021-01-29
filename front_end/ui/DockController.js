@@ -191,25 +191,10 @@ export const Events = {
   AfterDockSideChanged: Symbol('AfterDockSideChanged')
 };
 
-/** @type {!ToggleDockActionDelegate} */
-let toggleDockActionDelegateInstance;
-
 /**
  * @implements {ActionDelegate}
  */
 export class ToggleDockActionDelegate {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
-    const {forceNew} = opts;
-    if (!toggleDockActionDelegateInstance || forceNew) {
-      toggleDockActionDelegateInstance = new ToggleDockActionDelegate();
-    }
-
-    return toggleDockActionDelegateInstance;
-  }
-
   /**
    * @override
    * @param {!Context} context

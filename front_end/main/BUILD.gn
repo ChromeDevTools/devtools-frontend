@@ -42,12 +42,3 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
-
-devtools_entrypoint("meta") {
-  entrypoint = "main-meta.ts"
-
-  deps = [
-    ":bundle",
-    "../inspector_main:bundle",
-  ]
-}

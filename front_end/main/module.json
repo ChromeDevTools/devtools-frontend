@@ -29,6 +29,313 @@
       "className": "Components.Linkifier.LinkContextMenuProvider"
     },
     {
+      "type": "action",
+      "category": "Drawer",
+      "actionId": "inspector_main.focus-debuggee",
+      "className": "InspectorMain.FocusDebuggeeActionDelegate",
+      "order": 100,
+      "title": "Focus debuggee"
+    },
+    {
+      "type": "action",
+      "category": "Drawer",
+      "actionId": "main.toggle-drawer",
+      "className": "UI.InspectorView.ActionDelegate",
+      "order": 101,
+      "title": "Toggle drawer",
+      "bindings": [
+        {
+          "shortcut": "Esc"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.next-tab",
+      "category": "Global",
+      "title": "Next panel",
+      "className": "UI.InspectorView.ActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+]"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+]"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.previous-tab",
+      "category": "Global",
+      "title": "Previous panel",
+      "className": "UI.InspectorView.ActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+["
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+["
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.debug-reload",
+      "category": "Global",
+      "title": "Reload DevTools",
+      "className": "Main.ReloadActionDelegate",
+      "bindings": [
+        {
+          "shortcut": "Alt+R"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "category": "Global",
+      "title": "Restore last dock position",
+      "actionId": "main.toggle-dock",
+      "className": "UI.DockController.ToggleDockActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+D"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Shift+D"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.zoom-in",
+      "category": "Global",
+      "title": "Zoom in",
+      "className": "Main.Main.ZoomActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Plus",
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+Plus"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+NumpadPlus"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+NumpadPlus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Plus",
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Shift+Plus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+NumpadPlus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Shift+NumpadPlus"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.zoom-out",
+      "category": "Global",
+      "title": "Zoom out",
+      "className": "Main.Main.ZoomActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Minus",
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+Minus"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+NumpadMinus"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+NumpadMinus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Minus",
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Shift+Minus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+NumpadMinus"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Shift+NumpadMinus"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.zoom-reset",
+      "category": "Global",
+      "title": "Reset zoom level",
+      "className": "Main.Main.ZoomActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+0"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Numpad0"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Numpad0"
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+0"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.search-in-panel.find",
+      "category": "Global",
+      "title": "Search in panel",
+      "className": "Main.Main.SearchActionDelegate",
+      "bindings": [
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+F",
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
+        },
+        {
+          "platform": "mac",
+          "shortcut": "Meta+F",
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
+        },
+        {
+          "platform": "mac",
+          "shortcut": "F3"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.search-in-panel.cancel",
+      "category": "Global",
+      "title": "Cancel search",
+      "className": "Main.Main.SearchActionDelegate",
+      "order": 10,
+      "bindings": [
+        {
+          "shortcut": "Esc"
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.search-in-panel.find-next",
+      "category": "Global",
+      "title": "Find next result",
+      "className": "Main.Main.SearchActionDelegate",
+      "bindings": [
+        {
+          "platform": "mac",
+          "shortcut": "Meta+G",
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+G"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "F3",
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "action",
+      "actionId": "main.search-in-panel.find-previous",
+      "category": "Global",
+      "title": "Find previous result",
+      "className": "Main.Main.SearchActionDelegate",
+      "bindings": [
+        {
+          "platform": "mac",
+          "shortcut": "Meta+Shift+G",
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Ctrl+Shift+G"
+        },
+        {
+          "platform": "windows,linux",
+          "shortcut": "Shift+F3",
+          "keybindSets": [
+            "devToolsDefault",
+            "vsCode"
+          ]
+        }
+      ]
+    },
+    {
       "type": "@UI.ToolbarItem.Provider",
       "separator": true,
       "location": "main-toolbar-left",

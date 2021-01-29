@@ -460,25 +460,10 @@ export class InspectorView extends VBox {
   }
 }
 
-/** @type {!ActionDelegate} */
-let actionDelegateInstance;
-
 /**
  * @implements {ActionDelegateInterface}
  */
 export class ActionDelegate {
-  /**
-   * @param {{forceNew: ?boolean}} opts
-   */
-  static instance(opts = {forceNew: null}) {
-    const {forceNew} = opts;
-    if (!actionDelegateInstance || forceNew) {
-      actionDelegateInstance = new ActionDelegate();
-    }
-
-    return actionDelegateInstance;
-  }
-
   /**
    * @override
    * @param {!Context} context

@@ -111,7 +111,6 @@ devtools_module_entrypoint_sources = [
   "linear_memory_inspector/linear_memory_inspector-meta.js",
   "linear_memory_inspector/linear_memory_inspector.js",
   "main/main-legacy.js",
-  "main/main-meta.js",
   "main/main.js",
   "media/media-legacy.js",
   "media/media-meta.js",

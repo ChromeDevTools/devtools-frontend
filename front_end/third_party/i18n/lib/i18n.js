@@ -440,7 +440,7 @@ function lookupClosestLocale(locale, available) {
   const localeParts = locale.split('-');
   while (localeParts.length) {
     let candidate = localeParts.join('-');
-    if (available[candidate]) {
+    if (available[candidate] || (available.default && available.default[candidate])) {
       return candidate;
     }
     localeParts.pop();

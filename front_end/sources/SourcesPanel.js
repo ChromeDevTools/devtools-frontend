@@ -520,7 +520,7 @@ export class SourcesPanel extends UI.Panel.Panel {
     const enabled = Common.Settings.Settings.instance().moduleSetting('pauseOnExceptionEnabled').get();
     const button = /** @type {!UI.Toolbar.ToolbarToggle} */ (this._pauseOnExceptionButton);
     button.setToggled(enabled);
-    button.setTitle(enabled ? ls`Don't pause on exceptions` : ls`Pause on exceptions`);
+    button.setTitle(enabled ? ls`Pause on exceptions` : ls`Don't pause on exceptions`);
     this._debugToolbarDrawer.classList.toggle('expanded', enabled);
   }
 

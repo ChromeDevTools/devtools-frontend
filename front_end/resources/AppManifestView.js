@@ -23,8 +23,7 @@ export class AppManifestView extends UI.Widget.VBox {
         .addChangeListener(this._updateManifest.bind(this, true));
 
     this._emptyView = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('No manifest detected'));
-    this._emptyView.appendLink(
-        'https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/?utm_source=devtools');
+    this._emptyView.appendLink('https://web.dev/add-manifest/');
 
     this._emptyView.show(this.contentElement);
     this._emptyView.hideWidget();

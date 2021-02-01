@@ -818,17 +818,16 @@ export class TimelineUIUtils {
    */
   static buildDetailsNodeForPerformanceEvent(event) {
     /** @type {string} */
-    let link =
-        'https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics#user-centric_performance_metrics';
+    let link = 'https://web.dev/user-centric-performance-metrics/';
     let name = 'page performance metrics';
     const recordType = TimelineModel.TimelineModel.RecordType;
     switch (event.name) {
       case recordType.MarkLCPCandidate:
-        link = 'https://web.dev/largest-contentful-paint';
+        link = 'https://web.dev/lcp/';
         name = 'largest contentful paint';
         break;
       case recordType.MarkFCP:
-        link = 'https://web.dev/first-contentful-paint';
+        link = 'https://web.dev/first-contentful-paint/';
         name = 'first contentful paint';
         break;
       default:

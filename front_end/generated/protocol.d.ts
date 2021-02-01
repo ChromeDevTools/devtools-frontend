@@ -968,6 +968,16 @@ declare namespace Protocol {
       signature?: string;
     }
 
+    export interface LowTextContrastIssueDetails {
+      violatingNodeId: DOM.BackendNodeId;
+      violatingNodeSelector: string;
+      contrastRatio: number;
+      thresholdAA: number;
+      thresholdAAA: number;
+      fontSize: string;
+      fontWeight: string;
+    }
+
     /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
@@ -981,6 +991,7 @@ declare namespace Protocol {
       ContentSecurityPolicyIssue = 'ContentSecurityPolicyIssue',
       SharedArrayBufferIssue = 'SharedArrayBufferIssue',
       TrustedWebActivityIssue = 'TrustedWebActivityIssue',
+      LowTextContrastIssue = 'LowTextContrastIssue',
     }
 
     /**
@@ -996,6 +1007,7 @@ declare namespace Protocol {
       contentSecurityPolicyIssueDetails?: ContentSecurityPolicyIssueDetails;
       sharedArrayBufferIssueDetails?: SharedArrayBufferIssueDetails;
       twaQualityEnforcementDetails?: TrustedWebActivityIssueDetails;
+      lowTextContrastIssueDetails?: LowTextContrastIssueDetails;
     }
 
     /**

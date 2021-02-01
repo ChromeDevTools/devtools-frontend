@@ -269,6 +269,12 @@ declare namespace ProtocolProxyApi {
      * `issueAdded` event.
      */
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Runs the contrast check for the target page. Found issues are reported
+     * using Audits.issueAdded event.
+     */
+    invoke_checkContrast(): Promise<Protocol.ProtocolResponseWithError>;
   }
   export interface AuditsDispatcher {
     issueAdded(params: Protocol.Audits.IssueAddedEvent): void;

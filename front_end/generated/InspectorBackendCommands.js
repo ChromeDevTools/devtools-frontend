@@ -260,7 +260,8 @@ export function registerCommands(inspectorBackend) {
     HeavyAdIssue: 'HeavyAdIssue',
     ContentSecurityPolicyIssue: 'ContentSecurityPolicyIssue',
     SharedArrayBufferIssue: 'SharedArrayBufferIssue',
-    TrustedWebActivityIssue: 'TrustedWebActivityIssue'
+    TrustedWebActivityIssue: 'TrustedWebActivityIssue',
+    LowTextContrastIssue: 'LowTextContrastIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});
@@ -275,6 +276,7 @@ export function registerCommands(inspectorBackend) {
       ['body', 'originalSize', 'encodedSize']);
   inspectorBackend.registerCommand('Audits.disable', [], []);
   inspectorBackend.registerCommand('Audits.enable', [], []);
+  inspectorBackend.registerCommand('Audits.checkContrast', [], []);
 
   // BackgroundService.
   inspectorBackend.registerEnum('BackgroundService.ServiceName', {

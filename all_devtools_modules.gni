@@ -632,6 +632,7 @@ all_typescript_module_sources = [
   "third_party/lit-html/package/directives/live.js",
   "third_party/lit-html/package/directives/repeat.js",
   "third_party/lit-html/package/directives/style-map.js",
+  "third_party/lit-html/package/directives/until.js",
   "third_party/lit-html/package/lib/default-template-processor.js",
   "third_party/lit-html/package/lib/directive.js",
   "third_party/lit-html/package/lib/dom.js",

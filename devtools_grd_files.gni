@@ -1054,6 +1054,7 @@ grd_files_debug_sources = [
   "front_end/third_party/lit-html/package/directives/live.js",
   "front_end/third_party/lit-html/package/directives/repeat.js",
   "front_end/third_party/lit-html/package/directives/style-map.js",
+  "front_end/third_party/lit-html/package/directives/until.js",
   "front_end/third_party/lit-html/package/lib/default-template-processor.js",
   "front_end/third_party/lit-html/package/lib/directive.js",
   "front_end/third_party/lit-html/package/lib/dom.js",

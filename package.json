@@ -25,6 +25,7 @@
     "auto-interactionstest": "autoninja -C out/Default && scripts/test/run_test_suite.py --test-suite=interactions",
     "auto-unittest": "scripts/test/run_auto_unittests.py --no-text-coverage",
     "check": "npm run check-json && npm run check-gn && npm run check-lint && npm run check-loc",
+    "check-external-links": "third_party/node/node.py --output scripts/check_external_links.js",
     "check-gn": "third_party/node/node.py --output scripts/check_gn.js",
     "check-grdp": "third_party/node/node.py --output scripts/localization/check_localizable_resources.js",
     "check-json": "third_party/node/node.py --output scripts/json_validator/validate_module_json.js",

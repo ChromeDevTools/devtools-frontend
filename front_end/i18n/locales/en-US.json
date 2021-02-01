@@ -2489,31 +2489,28 @@
   "persistence/IsolatedFileSystemManager.js | unableToAddFilesystemS": {
     "message": "Unable to add filesystem: {PH1}"
   },
-  "persistence/ModuleUIStrings.js | disableOverrideNetworkRequests": {
+  "persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Disable override network requests"
   },
-  "persistence/ModuleUIStrings.js | enableLocalOverrides": {
+  "persistence/persistence-meta.ts | enableLocalOverrides": {
     "message": "Enable Local Overrides"
   },
-  "persistence/ModuleUIStrings.js | enableOverrideNetworkRequests": {
+  "persistence/persistence-meta.ts | enableOverrideNetworkRequests": {
     "message": "Enable override network requests"
   },
-  "persistence/ModuleUIStrings.js | interception": {
+  "persistence/persistence-meta.ts | interception": {
     "message": "interception"
   },
-  "persistence/ModuleUIStrings.js | network": {
+  "persistence/persistence-meta.ts | network": {
     "message": "network"
   },
-  "persistence/ModuleUIStrings.js | override": {
+  "persistence/persistence-meta.ts | override": {
     "message": "override"
   },
-  "persistence/ModuleUIStrings.js | persistence": {
-    "message": "Persistence"
-  },
-  "persistence/ModuleUIStrings.js | request": {
+  "persistence/persistence-meta.ts | request": {
     "message": "request"
   },
-  "persistence/ModuleUIStrings.js | rewrite": {
+  "persistence/persistence-meta.ts | rewrite": {
     "message": "rewrite"
   },
   "persistence/persistence-meta.ts | showWorkspace": {

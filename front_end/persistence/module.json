@@ -8,25 +8,6 @@
   ],
   "extensions": [
     {
-      "type": "setting",
-      "category": "Persistence",
-      "title": "Enable Local Overrides",
-      "settingName": "persistenceNetworkOverridesEnabled",
-      "settingType": "boolean",
-      "defaultValue": false,
-      "tags": "interception, override, network, rewrite, request",
-      "options": [
-        {
-          "value": true,
-          "title": "Enable override network requests"
-        },
-        {
-          "value": false,
-          "title": "Disable override network requests"
-        }
-      ]
-    },
-    {
       "type": "@UI.ContextMenu.Provider",
       "contextTypes": [
         "Workspace.UISourceCode",

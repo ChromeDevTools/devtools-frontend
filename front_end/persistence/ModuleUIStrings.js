@@ -3,42 +3,5 @@
 // found in the LICENSE file.
 
 import * as i18n from '../i18n/i18n.js';
-export const UIStrings = {
-  /**
-  *@description A title of the 'Persistence' setting category
-  */
-  persistence: 'Persistence',
-  /**
-  *@description Title of a setting under the Persistence category in Settings
-  */
-  enableLocalOverrides: 'Enable Local Overrides',
-  /**
-  *@description A tag of Enable Local Overrides setting that can be searched in the command menu
-  */
-  interception: 'interception',
-  /**
-  *@description A tag of Enable Local Overrides setting that can be searched in the command menu
-  */
-  override: 'override',
-  /**
-  *@description A tag of Group Network by frame setting that can be searched in the command menu
-  */
-  network: 'network',
-  /**
-  *@description A tag of Enable Local Overrides setting that can be searched in the command menu
-  */
-  rewrite: 'rewrite',
-  /**
-  *@description A tag of Enable Local Overrides setting that can be searched in the command menu
-  */
-  request: 'request',
-  /**
-  *@description Title of a setting under the Persistence category that can be invoked through the Command Menu
-  */
-  enableOverrideNetworkRequests: 'Enable override network requests',
-  /**
-  *@description Title of a setting under the Persistence category that can be invoked through the Command Menu
-  */
-  disableOverrideNetworkRequests: 'Disable override network requests',
-};
+export const UIStrings = {};
 i18n.i18n.registerUIStrings('persistence/ModuleUIStrings.js', UIStrings);

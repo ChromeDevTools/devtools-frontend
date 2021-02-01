@@ -351,6 +351,7 @@ export const enum IconClass {
   LARGEICON_PLAY = 'largeicon-play',
   LARGEICON_PAUSE = 'largeicon-pause',
   LARGEICON_RESUME = 'largeicon-resume',
+  LARGEICON_TRASH_BIN = 'largeicon-trash-bin',
 }
 
 export const enum KeybindSet {

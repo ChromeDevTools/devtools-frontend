@@ -54,3 +54,9 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "perf_ui-meta.ts"
+
+  deps = [ ":bundle" ]
+}

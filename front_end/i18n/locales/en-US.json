@@ -2348,33 +2348,6 @@
   "perf_ui/LineLevelProfile.js | ms": {
     "message": "ms"
   },
-  "perf_ui/ModuleUIStrings.js | collectGarbage": {
-    "message": "Collect garbage"
-  },
-  "perf_ui/ModuleUIStrings.js | flamechartMouseWheelAction": {
-    "message": "Flamechart mouse wheel action:"
-  },
-  "perf_ui/ModuleUIStrings.js | hideLiveMemoryAllocation": {
-    "message": "Hide live memory allocation annotations"
-  },
-  "perf_ui/ModuleUIStrings.js | liveMemoryAllocationAnnotations": {
-    "message": "Live memory allocation annotations"
-  },
-  "perf_ui/ModuleUIStrings.js | memory": {
-    "message": "Memory"
-  },
-  "perf_ui/ModuleUIStrings.js | performance": {
-    "message": "Performance"
-  },
-  "perf_ui/ModuleUIStrings.js | scroll": {
-    "message": "Scroll"
-  },
-  "perf_ui/ModuleUIStrings.js | showLiveMemoryAllocation": {
-    "message": "Show live memory allocation annotations"
-  },
-  "perf_ui/ModuleUIStrings.js | zoom": {
-    "message": "Zoom"
-  },
   "perf_ui/NetworkPriorities.js | high": {
     "message": "High"
   },
@@ -2398,6 +2371,27 @@
   },
   "perf_ui/OverviewGrid.js | rightResizer": {
     "message": "Right Resizer"
+  },
+  "perf_ui/perf_ui-meta.ts | collectGarbage": {
+    "message": "Collect garbage"
+  },
+  "perf_ui/perf_ui-meta.ts | flamechartMouseWheelAction": {
+    "message": "Flamechart mouse wheel action:"
+  },
+  "perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
+    "message": "Hide live memory allocation annotations"
+  },
+  "perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
+    "message": "Live memory allocation annotations"
+  },
+  "perf_ui/perf_ui-meta.ts | scroll": {
+    "message": "Scroll"
+  },
+  "perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
+    "message": "Show live memory allocation annotations"
+  },
+  "perf_ui/perf_ui-meta.ts | zoom": {
+    "message": "Zoom"
   },
   "perf_ui/PieChart.ts | total": {
     "message": "Total"

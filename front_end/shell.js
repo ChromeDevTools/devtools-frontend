@@ -28,4 +28,5 @@ import './protocol_monitor/protocol_monitor-meta.js';
 import './persistence/persistence-meta.js';
 import './browser_sdk/browser_sdk-meta.js';
 import './main/main-meta.js';
+import './perf_ui/perf_ui-meta.js';
 // We generate the descriptors in this file, which depend on the runtime.

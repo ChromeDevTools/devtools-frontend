@@ -15,53 +15,6 @@
       "type": "@SourceFrame.LineDecorator",
       "className": "PerfUI.LineLevelProfile.LineDecorator",
       "decoratorType": "memory"
-    },
-    {
-      "type": "setting",
-      "category": "Performance",
-      "title": "Flamechart mouse wheel action:",
-      "settingName": "flamechartMouseWheelAction",
-      "settingType": "enum",
-      "defaultValue": "zoom",
-      "options": [
-        {
-          "title": "Scroll",
-          "text": "Scroll",
-          "value": "scroll"
-        },
-        {
-          "title": "Zoom",
-          "text": "Zoom",
-          "value": "zoom"
-        }
-      ]
-    },
-    {
-      "type": "setting",
-      "category": "Memory",
-      "experiment": "liveHeapProfile",
-      "title": "Live memory allocation annotations",
-      "settingName": "memoryLiveHeapProfile",
-      "settingType": "boolean",
-      "defaultValue": false,
-      "options": [
-        {
-          "value": true,
-          "title": "Show live memory allocation annotations"
-        },
-        {
-          "value": false,
-          "title": "Hide live memory allocation annotations"
-        }
-      ]
-    },
-    {
-      "type": "action",
-      "actionId": "components.collect-garbage",
-      "category": "Performance",
-      "title": "Collect garbage",
-      "iconClass": "largeicon-trash-bin",
-      "className": "PerfUI.GCActionDelegate"
     }
   ],
   "dependencies": [

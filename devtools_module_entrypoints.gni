@@ -130,6 +130,7 @@ devtools_module_entrypoint_sources = [
   "object_ui/object_ui-legacy.js",
   "object_ui/object_ui.js",
   "perf_ui/perf_ui-legacy.js",
+  "perf_ui/perf_ui-meta.js",
   "perf_ui/perf_ui.js",
   "performance_monitor/performance_monitor-legacy.js",
   "performance_monitor/performance_monitor-meta.js",

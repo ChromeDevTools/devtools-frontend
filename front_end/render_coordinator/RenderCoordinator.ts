@@ -25,6 +25,11 @@ interface CoordinatorFrame {
   writers: CoordinatorCallback[];
 }
 
+interface CoordinatorLogEntry {
+  time: number;
+  value: string;
+}
+
 const enum ACTION {
   READ = 'read',
   WRITE = 'write'
@@ -46,6 +51,10 @@ type RenderCoordinatorResolverCallback = (value: unknown) => void;
 
 let renderCoordinatorInstance: RenderCoordinator;
 
+const UNNAMED_READ = 'Unnamed read';
+const UNNAMED_WRITE = 'Unnamed write';
+const UNNAMED_SCROLL = 'Unnamed scroll';
+
 export class RenderCoordinator extends EventTarget {
   static instance({forceNew = false} = {}): RenderCoordinator {
     if (!renderCoordinatorInstance || forceNew) {
@@ -55,8 +64,20 @@ export class RenderCoordinator extends EventTarget {
     return renderCoordinatorInstance;
   }
 
+  // Toggle on to start tracking. You must call takeRecords() to
+  // obtain the records. Please note: records are limited by maxRecordSize below.
+  observe = false;
+  recordStorageLimit = 100;
+
+  // If true, only log activity with an explicit label.
+  // This does not affect logging frames or queue empty events.
+  observeOnlyNamed = true;
+
+  private readonly logInternal: CoordinatorLogEntry[] = [];
+
   private readonly pendingWorkFrames: CoordinatorFrame[] = [];
   private readonly resolvers = new WeakMap<CoordinatorCallback, RenderCoordinatorResolverCallback>();
+  private readonly labels = new WeakMap<CoordinatorCallback, string>();
   private scheduledWorkId = 0;
 
   done(): Promise<void> {
@@ -66,12 +87,38 @@ export class RenderCoordinator extends EventTarget {
     return new Promise(resolve => this.addEventListener('queueempty', () => resolve(), {once: true}));
   }
 
-  async read<T extends unknown>(callback: CoordinatorCallback): Promise<T> {
-    return this.enqueueHandler<T>(callback, ACTION.READ);
+  async read<T extends unknown>(callback: CoordinatorCallback): Promise<T>;
+  async read<T extends unknown>(label: string, callback: CoordinatorCallback): Promise<T>;
+  async read<T extends unknown>(labelOrCallback: CoordinatorCallback|string, callback?: CoordinatorCallback):
+      Promise<T> {
+    if (typeof labelOrCallback === 'string') {
+      if (!callback) {
+        throw new Error('Read called with label but no callback');
+      }
+      return this.enqueueHandler<T>(callback, ACTION.READ, labelOrCallback);
+    }
+
+    return this.enqueueHandler<T>(labelOrCallback, ACTION.READ, UNNAMED_READ);
   }
 
-  async write<T extends unknown>(callback: CoordinatorCallback): Promise<T> {
-    return this.enqueueHandler<T>(callback, ACTION.WRITE);
+  async write<T extends unknown>(callback: CoordinatorCallback): Promise<T>;
+  async write<T extends unknown>(label: string, callback: CoordinatorCallback): Promise<T>;
+  async write<T extends unknown>(labelOrCallback: CoordinatorCallback|string, callback?: CoordinatorCallback):
+      Promise<T> {
+    if (typeof labelOrCallback === 'string') {
+      if (!callback) {
+        throw new Error('Write called with label but no callback');
+      }
+      return this.enqueueHandler<T>(callback, ACTION.WRITE, labelOrCallback);
+    }
+
+    return this.enqueueHandler<T>(labelOrCallback, ACTION.WRITE, UNNAMED_WRITE);
+  }
+
+  takeRecords(): CoordinatorLogEntry[] {
+    const logs = [...this.logInternal];
+    this.logInternal.length = 0;
+    return logs;
   }
 
   /**
@@ -80,11 +127,23 @@ export class RenderCoordinator extends EventTarget {
    * the layout-triggering work has been completed then it should be possible to scroll without
    * first forcing layout.
    */
-  async scroll<T extends unknown>(callback: CoordinatorCallback): Promise<T> {
-    return this.read(callback);
+  async scroll<T extends unknown>(callback: CoordinatorCallback): Promise<T>;
+  async scroll<T extends unknown>(label: string, callback: CoordinatorCallback): Promise<T>;
+  async scroll<T extends unknown>(labelOrCallback: CoordinatorCallback|string, callback?: CoordinatorCallback):
+      Promise<T> {
+    if (typeof labelOrCallback === 'string') {
+      if (!callback) {
+        throw new Error('Scroll called with label but no callback');
+      }
+      return this.enqueueHandler<T>(callback, ACTION.READ, labelOrCallback);
+    }
+
+    return this.enqueueHandler<T>(labelOrCallback, ACTION.READ, UNNAMED_SCROLL);
   }
 
-  private enqueueHandler<T = unknown>(callback: CoordinatorCallback, action: ACTION): Promise<T> {
+  private enqueueHandler<T = unknown>(callback: CoordinatorCallback, action: ACTION, label = ''): Promise<T> {
+    this.labels.set(callback, `${action === ACTION.READ ? '[Read]' : '[Write]'}: ${label}`);
+
     if (this.pendingWorkFrames.length === 0) {
       this.pendingWorkFrames.push({
         readers: [],
@@ -141,11 +200,13 @@ export class RenderCoordinator extends EventTarget {
         // No pending frames means all pending work has completed.
         // The event dispatched below is mostly for testing contexts.
         this.dispatchEvent(new RenderCoordinatorQueueEmptyEvent());
+        this.logIfEnabled('[Queue empty]');
         this.scheduledWorkId = 0;
         return;
       }
 
       this.dispatchEvent(new RenderCoordinatorNewFrameEvent());
+      this.logIfEnabled('[New frame]');
 
       const frame = this.pendingWorkFrames.shift();
       if (!frame) {
@@ -153,10 +214,12 @@ export class RenderCoordinator extends EventTarget {
       }
 
       for (const reader of frame.readers) {
+        this.logIfEnabled(this.labels.get(reader));
         this.handleWork(reader);
       }
 
       for (const writer of frame.writers) {
+        this.logIfEnabled(this.labels.get(writer));
         this.handleWork(writer);
       }
 
@@ -166,5 +229,22 @@ export class RenderCoordinator extends EventTarget {
       this.scheduledWorkId = 0;
       this.scheduleWork();
     });
+  }
+
+  private logIfEnabled(value: string|undefined): void {
+    if (!this.observe || !value) {
+      return;
+    }
+    const hasNoName = value.endsWith(UNNAMED_READ) || value.endsWith(UNNAMED_WRITE) || value.endsWith(UNNAMED_SCROLL);
+    if (hasNoName && this.observeOnlyNamed) {
+      return;
+    }
+
+    this.logInternal.push({time: performance.now(), value});
+
+    // Keep the log at the log size.
+    while (this.logInternal.length > this.recordStorageLimit) {
+      this.logInternal.shift();
+    }
   }
 }

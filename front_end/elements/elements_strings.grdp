@@ -24,6 +24,9 @@
   <message name="IDS_DEVTOOLS_19c8cfef89a0b0409f4502b3bcc4860e" desc="Command for showing the 'Layout' tool">
     Show Layout
   </message>
+  <message name="IDS_DEVTOOLS_bea4c2c8eb82d05891ddd71584881b56" desc="Text of a link to a HaTS survey in the Layout panel">
+    Feedback
+  </message>
   <message name="IDS_DEVTOOLS_220e24dec914bdfff417ebca7eff61d3" desc="Title of the switch to DOM tree button in the Elements panel">
     Switch to DOM Tree view
   </message>

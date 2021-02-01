@@ -171,3 +171,41 @@ that uses the dimensions to draw an outline around the element. */
 .node-text-container:hover {
   background-color: var(--item-hover-color);
 }
+
+.feedback {
+  display: flex;
+  flex-direction: row;
+}
+
+.feedback-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.feedback-container div:nth-child(1) {
+  flex-grow: 1;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.feedback-container div:nth-child(2) {
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-direction: row;
+  align-items: center;
+}
+
+devtools-survey-link {
+  --icon-color: var(--color-primary);
+  --issue-link: var(--color-primary);
+  --issue-link-text-decoration: none;
+  --issue-link-font-size: 12px;
+  --issue-link-padding: 0;
+  --issue-link-icon-size: 14px;
+}

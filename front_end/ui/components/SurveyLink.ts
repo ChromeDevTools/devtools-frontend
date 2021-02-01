@@ -106,13 +106,14 @@ export class SurveyLink extends HTMLElement {
         }
 
         .link {
-          padding: 4px 0 0 0;
-          text-decoration: underline;
+          padding: var(--issue-link-padding, 4px 0 0 0);
+          text-decoration: var(--issue-link-text-decoration, underline);
           cursor: pointer;
-          font-size: 14px;
+          font-size: var(--issue-link-font-size, 14px);
           color: var(--issue-link);
           border: none;
           background: none;
+          font-family: inherit;
         }
 
         .link:focus:not(:focus-visible) {
@@ -133,7 +134,7 @@ export class SurveyLink extends HTMLElement {
         }
       </style>
       <button class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} aria-disabled=${ariaDisabled} @click=${this.sendSurvey}>
-        <devtools-icon class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--issue-link)', width: '16px', height: '16px'} as IconData}></devtools-icon><!--
+        <devtools-icon class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--issue-link)', width: 'var(--issue-link-icon-size, 16px)', height: 'var(--issue-link-icon-size, 16px)'} as IconData}></devtools-icon><!--
       -->${linkText}
       </button>
     `;

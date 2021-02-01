@@ -6,7 +6,9 @@ import './NodeText.js';
 
 import * as Common from '../common/common.js';
 import * as ComponentHelpers from '../component_helpers/component_helpers.js';
+import * as Host from '../host/host.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
+import * as Components from '../ui/components/components.js';
 
 import {BooleanSetting, EnumSetting, LayoutElement, Setting, SettingType} from './LayoutPaneUtils.js';
 
@@ -97,7 +99,19 @@ export class LayoutPane extends HTMLElement {
           ${ls`Grid`}
         </summary>
         <div class="content-section">
-          <h3 class="content-section-title">${ls`Overlay display settings`}</h3>
+          <div class="feedback-container">
+            <div>
+              <h3 class="content-section-title">${ls`Overlay display settings`}</h3>
+            </div>
+            <div class="feedback">
+              <devtools-survey-link .data=${{
+                trigger: 'devtools-layout-panel',
+                promptText: ls`Feedback`,
+                canShowSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.canShowSurvey,
+                showSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.showSurvey,
+              } as Components.SurveyLink.SurveyLinkData}></devtools-survey-link>
+            </div>
+          </div>
           <div class="select-settings">
             ${this.getEnumSettings().map(setting => this.renderEnumSetting(setting))}
           </div>

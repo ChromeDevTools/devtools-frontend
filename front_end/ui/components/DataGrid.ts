@@ -444,10 +444,11 @@ export class DataGrid extends HTMLElement {
       return;
     }
 
-    // We floor one value and ceil the other so we work in whole numbers rather than vast amounts of decimal places.
-    // This stops the cells from stuttering when you barely move the mouse.
-    this.currentResize.leftCellCol.style.width = Math.floor(newLeftColumnPercentage) + '%';
-    this.currentResize.rightCellCol.style.width = Math.ceil(newRightColumnPercentage) + '%';
+    // We limit the values to two decimal places to not work with huge decimals.
+    // It also prevents stuttering if the user barely moves the mouse, as the
+    // browser won't try to move the column by 0.0000001% or similar.
+    this.currentResize.leftCellCol.style.width = newLeftColumnPercentage.toFixed(2) + '%';
+    this.currentResize.rightCellCol.style.width = newRightColumnPercentage.toFixed(2) + '%';
   }
 
   private onResizePointerUp(event: PointerEvent): void {

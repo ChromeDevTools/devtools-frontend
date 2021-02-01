@@ -40,7 +40,7 @@ async function getColumnPixelWidths(columns: ElementHandle<Element>[]) {
 async function getColumnPercentageWidths(dataGrid: ElementHandle<Element>) {
   const cols = await $$('col', dataGrid);
   return Promise.all(cols.map(col => {
-    return col.evaluate(cell => window.parseInt((cell as HTMLElement).style.width, 10));
+    return col.evaluate(cell => window.parseFloat((cell as HTMLElement).style.width));
   }));
 }
 
@@ -140,13 +140,13 @@ describe('data grid', () => {
     const newColumnPercentageWidths = await getColumnPercentageWidths(dataGrid);
     assert.deepEqual(
         [
-          16,  // 33 - 16.6 rounded
-          50,  // 33 + 16.6 rounded
-          33,  // left alone
+          16.31,  // 33 - 16.6 rounded
+          49.69,  // 33 + 16.6 rounded
+          33,     // left alone
         ],
         newColumnPercentageWidths);
     columnWidths = await getColumnPixelWidths(columns);
-    assertNumberBetween(columnWidths[0], 143, 148);  // 16% of 900 = 144
+    assertNumberBetween(columnWidths[0], 145, 150);  // 16.31% of 900 = 146.79
     assertNumberBetween(columnWidths[1], 447, 454);  // 50% of 900 = 450
     assertNumberBetween(columnWidths[2], 297, 304);  // 33% of 900 = 300
   });
@@ -256,12 +256,12 @@ describe('data grid', () => {
     assert.deepEqual(
         newColumnPercentageWidths,
         [
-          58,  // 50 + 8.3 rounded
-          42,  // 50 - 8.3 rounded
+          58.35,  // 50 + 8.3 rounded
+          41.65,  // 50 - 8.3 rounded
         ]);
     columnPixelWidths = await getColumnPixelWidths(columns);
-    assertNumberBetween(columnPixelWidths[0], 346, 350);  // 58% of 600 = 348
-    assertNumberBetween(columnPixelWidths[1], 250, 255);  // 42% of 600 = 252
+    assertNumberBetween(columnPixelWidths[0], 348, 352);  // 58.35% of 600 = ~350
+    assertNumberBetween(columnPixelWidths[1], 247, 252);  // 42% of 600 = ~249
 
     const addButton = await waitFor('#add');
     await click(addButton);

@@ -67,6 +67,7 @@
     "requestHeadersView.css",
     "requestHTMLView.css",
     "requestInitiatorView.css",
+    "requestInitiatorViewTree.css",
     "signedExchangeInfoTree.css",
     "signedExchangeInfoView.css",
     "webSocketFrameView.css"

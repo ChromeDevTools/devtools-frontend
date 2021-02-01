@@ -8,28 +8,3 @@
   display: block;
   margin: 6px;
 }
-
-.request-initiator-view-section-title {
-  font-weight: bold;
-  padding: 4px;
-}
-
-.request-initiator-view-section-title:focus-visible {
-  background-color: var(--color-background-elevation-2);
-}
-
-.request-initiator-view-section-content {
-  margin-left: 6px;
-}
-
-@media (forced-colors: active) {
-  .request-initiator-view-section-title:focus-visible [is=ui-icon].icon-mask {
-    background-color: HighlightText;
-  }
-
-  .request-initiator-view-section-title:focus-visible {
-    forced-color-adjust: none;
-    background-color: Highlight;
-    color: HighlightText;
-  }
-}

@@ -205,6 +205,7 @@ all_devtools_files = [
   "front_end/network/requestHeadersView.css",
   "front_end/network/requestHTMLView.css",
   "front_end/network/requestInitiatorView.css",
+  "front_end/network/requestInitiatorViewTree.css",
   "front_end/network/signedExchangeInfoTree.css",
   "front_end/network/signedExchangeInfoView.css",
   "front_end/network/webSocketFrameView.css",

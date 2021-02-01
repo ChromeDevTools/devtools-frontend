@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_0203e27fe44545283879b18e7084391b" desc="Error message when failing to load a script source text">
     Unable to fetch script source.
   </message>
+  <message name="IDS_DEVTOOLS_46334eeb893715e9aefe809c08ce92b9" desc="Label for the link for Trusted Web Activity issue">
+    Changes to quality criteria for PWAs using Trusted Web Activity
+  </message>
   <message name="IDS_DEVTOOLS_03be52f72503b516a6e445c8a7a59c70" desc="Text that refers to enabling local fonts">
     Enable local fonts
   </message>

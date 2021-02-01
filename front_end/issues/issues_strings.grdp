@@ -156,6 +156,9 @@
   <message name="IDS_DEVTOOLS_d63605063a480a98396822bd7ee88a11" desc="Title for a column in an issue view">
     Parent Frame
   </message>
+  <message name="IDS_DEVTOOLS_dfdd5e5ef794e40c0022cd63fc3aedbf" desc="Title for a column in a Trusted Web Activity issue view">
+    Status code
+  </message>
   <message name="IDS_DEVTOOLS_e1317e393c4c13c1bba0195dd20eceb8" desc="Singular label for number of affected directive resource indication in issue view">
     directive
   </message>
@@ -168,6 +171,12 @@
   <message name="IDS_DEVTOOLS_80b768b15c3693e345a436b9dc0ea36f" desc="Label for the issues pane">
     Issues
   </message>
+  <message name="IDS_DEVTOOLS_22cf75b5b63a018e623f6cba3ccbb169" desc="Title for a column in a Trusted Web Activity issue view">
+    Package signature
+  </message>
+  <message name="IDS_DEVTOOLS_f23405b7f8242157f8cf3d1dcebe1d0b" desc="Title for a column in a Trusted Web Activity issue view">
+    Package name
+  </message>
   <message name="IDS_DEVTOOLS_f2ab5fb218da8b84623f45579aa4ba11" desc="Plural label for number of affected source resource indication in issue view">
     sources
   </message>
@@ -176,6 +185,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f90c4582af8bd0572c6544cb74fbe523" desc="Tooltip for the 'Trigger' column in the SAB affected resources list">
     A SharedArrayBuffer was instantiated in a context that is not cross-origin isolated
+  </message>
+  <message name="IDS_DEVTOOLS_f36c1b704a084889d621f62e509e7408" desc="Category title for a group of trusted web activity issues">
+    Trusted Web Activity
   </message>
   <message name="IDS_DEVTOOLS_faa6cbbf56829034b2653e796abdd062" desc="Tooltip shown for the issues count in several places of the UI">
     Issues pertaining to <ph name="ISSUES">$1s<ex>1</ex></ph> operation detected.

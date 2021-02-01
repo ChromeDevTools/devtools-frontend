@@ -14,6 +14,7 @@ export const IssueCategory = {
   SameSiteCookie: Symbol('SameSiteCookie'),
   HeavyAd: Symbol('HeavyAd'),
   ContentSecurityPolicy: Symbol('ContentSecurityPolicy'),
+  TrustedWebActivity: Symbol('TrustedWebActivity'),
   Other: Symbol('Other')
 };
 

@@ -9,6 +9,7 @@ devtools_module("issues") {
   sources = [
     "AffectedResourcesView.ts",
     "AffectedSharedArrayBufferIssueDetailsView.ts",
+    "AffectedTrustedWebActivityIssueDetailsView.ts",
     "CSPViolationsListView.ts",
     "CSPViolationsView.ts",
     "ComboBoxOfCheckBoxes.ts",

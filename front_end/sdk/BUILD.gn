@@ -74,6 +74,7 @@ devtools_module("sdk") {
     "SourceMapManager.js",
     "TracingManager.js",
     "TracingModel.js",
+    "TrustedWebActivityIssue.ts",
     "WebAuthnModel.js",
   ]
 

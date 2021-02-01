@@ -8,6 +8,7 @@ ts_library("issues") {
     "MarkdownIssueDescription_test.ts",
     "MarkdownLink_test.ts",
     "MarkdownView_test.ts",
+    "TrustedWebActivityIssuesAggregation_test.ts",
   ]
 
   deps = [

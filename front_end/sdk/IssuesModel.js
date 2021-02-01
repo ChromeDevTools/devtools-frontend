@@ -10,6 +10,7 @@ import {MixedContentIssue} from './MixedContentIssue.js';
 import {SameSiteCookieIssue} from './SameSiteCookieIssue.js';
 import {Capability, SDKModel, Target} from './SDKModel.js';  // eslint-disable-line no-unused-vars
 import {SharedArrayBufferIssue} from './SharedArrayBufferIssue.js';
+import {TrustedWebActivityIssue} from './TrustedWebActivityIssue.js';
 
 
 /**
@@ -187,6 +188,20 @@ function createIssuesForSharedArrayBufferIssue(issuesModel, inspectorDetails) {
 }
 
 /**
+ * @param {!IssuesModel} issuesModel
+ * @param {!Protocol.Audits.InspectorIssueDetails} inspectorDetails
+ * @return {!Array<!Issue>}
+ */
+function createIssuesForTrustedWebActivityIssue(issuesModel, inspectorDetails) {
+  const twaQualityEnforcementDetails = inspectorDetails.twaQualityEnforcementDetails;
+  if (!twaQualityEnforcementDetails) {
+    console.warn('TWA Quality Enforcement issue without details received.');
+    return [];
+  }
+  return [new TrustedWebActivityIssue(twaQualityEnforcementDetails)];
+}
+
+/**
  * @type {!Map<!Protocol.Audits.InspectorIssueCode, function(!IssuesModel, !Protocol.Audits.InspectorIssueDetails):!Array<!Issue>>}
  */
 const issueCodeHandlers = new Map([
@@ -196,6 +211,7 @@ const issueCodeHandlers = new Map([
   [Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue, createIssuesForContentSecurityPolicyIssue],
   [Protocol.Audits.InspectorIssueCode.BlockedByResponseIssue, createIssuesForBlockedByResponseIssue],
   [Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, createIssuesForSharedArrayBufferIssue],
+  [Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue, createIssuesForTrustedWebActivityIssue],
 ]);
 
 /** @enum {symbol} */

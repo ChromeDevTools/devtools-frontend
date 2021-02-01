@@ -31,6 +31,8 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     this._cspIssues = new Set();
     /** @type {!Map<string, !Protocol.Audits.BlockedByResponseIssueDetails>} */
     this._blockedByResponseDetails = new Map();
+    /** @type {!Set<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue>} */
+    this._trustedWebActivityIssues = new Set();
     this._aggregatedIssuesCount = 0;
     /** @type {Set<SDK.SharedArrayBufferIssue.SharedArrayBufferIssue>} */
     this._sharedArrayBufferIssues = new Set();
@@ -82,6 +84,15 @@ export class AggregatedIssue extends SDK.Issue.Issue {
   mixedContents() {
     return this._mixedContents.values();
   }
+
+  /**
+   * @override
+   * @returns {!Iterable<!SDK.TrustedWebActivityIssue.TrustedWebActivityIssue>}
+   */
+  trustedWebActivityIssues() {
+    return this._trustedWebActivityIssues;
+  }
+
 
   /**
    * @returns {!Iterable<!SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>}
@@ -175,6 +186,9 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     for (const details of issue.blockedByResponseDetails()) {
       const key = JSON.stringify(details, ['parentFrame', 'blockedFrame', 'requestId', 'frameId', 'reason', 'request']);
       this._blockedByResponseDetails.set(key, details);
+    }
+    if (issue instanceof SDK.TrustedWebActivityIssue.TrustedWebActivityIssue) {
+      this._trustedWebActivityIssues.add(issue);
     }
     if (issue instanceof SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
       this._cspIssues.add(issue);

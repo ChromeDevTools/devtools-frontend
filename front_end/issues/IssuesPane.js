@@ -16,6 +16,7 @@ import * as UI from '../ui/ui.js';
 
 import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
 import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBufferIssueDetailsView.js';
+import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebActivityIssueDetailsView.js';
 import {AggregatedIssue, Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
 import {createIssueDescriptionFromMarkdown, IssueDescription} from './MarkdownIssueDescription.js';  // eslint-disable-line no-unused-vars
 
@@ -740,7 +741,7 @@ export const IssueCategoryNames = new Map([
   [SDK.Issue.IssueCategory.MixedContent, ls`Mixed Content`],
   [SDK.Issue.IssueCategory.SameSiteCookie, ls`SameSite Cookie`], [SDK.Issue.IssueCategory.HeavyAd, ls`Heavy Ads`],
   [SDK.Issue.IssueCategory.ContentSecurityPolicy, ls`Content Security Policy`],
-  [SDK.Issue.IssueCategory.Other, ls`Other`]
+  [SDK.Issue.IssueCategory.TrustedWebActivity, ls`Trusted Web Activity`], [SDK.Issue.IssueCategory.Other, ls`Other`]
 ]);
 
 class IssueCategoryView extends UI.TreeOutline.TreeElement {
@@ -816,7 +817,8 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new AffectedRequestsView(this, this._issue), new AffectedMixedContentView(this, this._issue),
       new AffectedSourcesView(this, this._issue), new AffectedHeavyAdView(this, this._issue),
       new AffectedDirectivesView(this, this._issue), new AffectedBlockedByResponseView(this, this._issue),
-      new AffectedSharedArrayBufferIssueDetailsView(this, this._issue)
+      new AffectedSharedArrayBufferIssueDetailsView(this, this._issue),
+      new AffectedTrustedWebActivityIssueDetailsView(this, this._issue)
     ];
 
     this._aggregatedIssuesCount = null;

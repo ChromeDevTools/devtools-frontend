@@ -667,6 +667,7 @@
     "FrameManager.js",
     "HARLog.js",
     "HeavyAdIssue.js",
+    "TrustedWebActivityIssue.js",
     "LayerTreeBase.js",
     "LogModel.js",
     "ServiceWorkerManager.js",

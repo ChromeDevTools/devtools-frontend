@@ -11,6 +11,7 @@ node_ts_library("issues") {
     "heavy-ad-issues_test.ts",
     "report-only_test.ts",
     "sab-issues_test.ts",
+    "twa-issues_test.ts",
   ]
 
   deps = [

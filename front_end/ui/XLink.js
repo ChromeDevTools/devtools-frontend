@@ -28,7 +28,6 @@ export class XLink extends XElement {
       linkText = url;
     }
     className = className || '';
-    url = addReferrerToURLIfNecessary(url);
     // clang-format off
     // TODO(dgozman): migrate css from 'devtools-link' to 'x-link'.
     const element = html`
@@ -95,7 +94,7 @@ export class XLink extends XElement {
       let href = null;
       let url = null;
       try {
-        url = new URL(newValue);
+        url = new URL(addReferrerToURLIfNecessary(newValue));
         href = url.toString();
       } catch {
       }

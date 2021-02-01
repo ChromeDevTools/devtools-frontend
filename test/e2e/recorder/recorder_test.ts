@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {enableExperiment, getBrowserAndPages, getTestServerPort, goToResource, waitForFunction} from '../../shared/helper.js';
+import {click, enableExperiment, getBrowserAndPages, getTestServerPort, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 import {createNewRecording, openRecorderSubPane, openSourcesPanel} from '../helpers/sources-helpers.js';
 
 function retrieveCodeMirrorEditorContent() {
@@ -43,8 +43,7 @@ describe('Recorder', function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
   this.timeout(10000);
 
-  // crbug.com/1154575 failing on linux and windows due to crbug.com/1157828
-  it.skip('[crbug.com/1154575] should record the interactions with the browser as a script', async () => {
+  it('should record the interactions with the browser as a script', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await enableExperiment('recorder');
     await goToResource('recorder/recorder.html');
@@ -68,9 +67,10 @@ describe('Recorder', function() {
     await waitForScriptToChange();
     await target.click('#span2');
     await waitForScriptToChange();
-    await target.type('#input', 'test');
-    await target.keyboard.press('Enter');
-    await waitForScriptToChange();
+    // TODO(crbug.com/1157828): Enable again once this is fixed
+    // await target.type('#input', 'test');
+    // await target.keyboard.press('Enter');
+    // await waitForScriptToChange();
     await target.click('pierce/#inner-span');
     await waitForScriptToChange();
 
@@ -129,12 +129,6 @@ describe('Recorder', function() {
     {
         const targetPage = page;
         const frame = targetPage.mainFrame();
-        const element = await frame.waitForSelector("aria/Input");
-        await element.type("test");
-    }
-    {
-        const targetPage = page;
-        const frame = targetPage.mainFrame();
         const element = await frame.waitForSelector("aria/Hello World");
         await element.click();
     }
@@ -163,14 +157,18 @@ describe('Recorder', function() {
         const element = await frame.waitForSelector("aria/Button in Popup");
         await element.click();
     }
+    {
+        const target = await browser.waitForTarget(p => p.url() === "https://<url>/test/e2e/resources/recorder/popup.html");
+        const targetPage = await target.page();
+        await targetPage.close();
+    }
     await browser.close();
 })();
 
 `);
   });
 
-  // crbug.com/1154575 failing on linux and windows due to crbug.com/1157828
-  it.skip('[crbug.com/1154575] should also record network conditions', async () => {
+  it('should also record network conditions', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await enableExperiment('recorder');
     await goToResource('recorder/recorder.html');
@@ -184,24 +182,24 @@ describe('Recorder', function() {
     await createNewRecording('New recording');
 
     // Record
-    await frontend.click('aria/Record');
-    await frontend.waitForSelector('aria/Stop');
+    await click('[aria-label="Record"]');
+    await waitFor('[aria-label="Stop"]');
     await waitForScriptToChange();
     await target.bringToFront();
-    await target.click('#test');
-    await waitForScriptToChange();
-
-
-    await frontend.bringToFront();
-    await changeNetworkConditions('Slow 3G');
-    await target.bringToFront();
-
     await target.click('#test');
     await waitForScriptToChange();
 
     await frontend.bringToFront();
-    await frontend.waitForSelector('aria/Stop');
-    await frontend.click('aria/Stop');
+    await changeNetworkConditions('Slow 3G');
+    await openSourcesPanel();
+    await target.bringToFront();
+
+    await target.click('#test');
+    await waitForScriptToChange();
+
+    await frontend.bringToFront();
+    await waitFor('[aria-label="Stop"]');
+    await click('[aria-label="Stop"]');
     await waitForScriptToChange();
     const textContent = await getCode();
 

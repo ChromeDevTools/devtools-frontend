@@ -148,6 +148,7 @@ devtools_module_entrypoint_sources = [
   "protocol_monitor/protocol_monitor-meta.js",
   "protocol_monitor/protocol_monitor.js",
   "quick_open/quick_open-legacy.js",
+  "quick_open/quick_open-meta.js",
   "quick_open/quick_open.js",
   "recorder/recorder.js",
   "render_coordinator/render_coordinator.js",

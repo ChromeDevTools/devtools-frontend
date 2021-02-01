@@ -12,82 +12,9 @@
       "className": "QuickOpen.HelpQuickOpen"
     },
     {
-      "type": "action",
-      "actionId": "commandMenu.show",
-      "category": "Global",
-      "title": "Run command",
-      "className": "QuickOpen.CommandMenu.ShowActionDelegate",
-      "bindings": [
-        {
-          "platform": "windows,linux",
-          "shortcut": "Ctrl+Shift+P",
-          "keybindSets": [
-            "devToolsDefault",
-            "vsCode"
-          ]
-        },
-        {
-          "platform": "mac",
-          "shortcut": "Meta+Shift+P",
-          "keybindSets": [
-            "devToolsDefault",
-            "vsCode"
-          ]
-        },
-        {
-          "shortcut": "F1",
-          "keybindSets": [
-            "vsCode"
-          ]
-        }
-      ]
-    },
-    {
       "type": "context-menu-item",
       "location": "mainMenu/default",
       "actionId": "commandMenu.show"
-    },
-    {
-      "type": "action",
-      "actionId": "quickOpen.show",
-      "category": "Global",
-      "title": "Open file",
-      "className": "QuickOpen.QuickOpen.ShowActionDelegate",
-      "order": 100,
-      "bindings": [
-        {
-          "platform": "mac",
-          "shortcut": "Meta+P",
-          "keybindSets": [
-            "devToolsDefault",
-            "vsCode"
-          ]
-        },
-        {
-          "platform": "mac",
-          "shortcut": "Meta+O",
-          "keybindSets": [
-            "devToolsDefault",
-            "vsCode"
-          ]
-        },
-        {
-          "platform": "windows,linux",
-          "shortcut": "Ctrl+P",
-          "keybindSets": [
-            "devToolsDefault",
-            "vsCode"
-          ]
-        },
-        {
-          "platform": "windows,linux",
-          "shortcut": "Ctrl+O",
-          "keybindSets": [
-            "devToolsDefault",
-            "vsCode"
-          ]
-        }
-      ]
     },
     {
       "type": "context-menu-item",

@@ -88,10 +88,25 @@ export class QuickOpenImpl {
   }
 }
 
+/** @type {!ShowActionDelegate} */
+let showActionDelegateInstance;
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ShowActionDelegate {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!showActionDelegateInstance || forceNew) {
+      showActionDelegateInstance = new ShowActionDelegate();
+    }
+
+    return showActionDelegateInstance;
+  }
+
   /**
    * @override
    * @param {!UI.Context.Context} context

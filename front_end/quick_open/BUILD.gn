@@ -36,3 +36,9 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "quick_open-meta.ts"
+
+  deps = [ ":bundle" ]
+}

@@ -341,6 +341,7 @@ grd_files_release_sources = [
   "front_end/protocol_monitor/protocol_monitor.js",
   "front_end/protocol_monitor/protocol_monitor_module.js",
   "front_end/quick_open/quick_open-legacy.js",
+  "front_end/quick_open/quick_open-meta.js",
   "front_end/quick_open/quick_open.js",
   "front_end/quick_open/quick_open_module.js",
   "front_end/recorder/recorder.js",

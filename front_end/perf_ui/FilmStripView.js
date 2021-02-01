@@ -267,11 +267,11 @@ export class Dialog {
     this._fragment = UI.Fragment.Fragment.build`
       <x-widget flex=none margin=12px>
         <x-hbox overflow=auto border='1px solid #ddd'>
-          <img $=image style="max-height: 80vh; max-width: 80vw"></img>
+          <img $='image' style="max-height: 80vh; max-width: 80vw"></img>
         </x-hbox>
         <x-hbox x-center justify-content=center margin-top=10px>
           ${prevButton}
-          <x-hbox $=time margin=8px></x-hbox>
+          <x-hbox $='time' margin=8px></x-hbox>
           ${nextButton}
         </x-hbox>
       </x-widget>
@@ -366,9 +366,9 @@ export class Dialog {
     const frame = this._frames[this._index];
     this._fragment.$('time').textContent = Number.millisToString(frame.timestamp - this._zeroTime);
     return frame.imageDataPromise()
-        .then(() => {
+        .then(imageData => {
           const image = /** @type {!HTMLImageElement} */ (this._fragment.$('image'));
-          return FilmStripView._setImageData(image, null);
+          return FilmStripView._setImageData(image, imageData);
         })
         .then(this._resize.bind(this));
   }

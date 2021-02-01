@@ -207,6 +207,10 @@ export class MainImpl {
     // Font Editor
     Root.Runtime.experiments.register('fontEditor', 'Enable new Font Editor tool within the Styles Pane.');
 
+    // Contrast issues reported via the Issues panel.
+    Root.Runtime.experiments.register(
+        'contrastIssues', 'Enable automatic contrast issue reporting via the Issues panel');
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'cssFlexboxFeatures',
     ]);

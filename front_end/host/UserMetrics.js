@@ -618,7 +618,8 @@ export const DevtoolsExperiments = {
   'fontEditor': 41,
   'fullAccessibilityTree': 42,
   'ignoreListJSFramesOnTimeline': 43,
-  '__lastValidEnumPosition': 43,
+  'contrastIssues': 44,
+  '__lastValidEnumPosition': 44,
 };
 
 /** @type {!Object<string, number>} */

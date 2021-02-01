@@ -1233,7 +1233,7 @@ export class TimelineUIUtils {
 
       case recordTypes.LayoutShift: {
         const warning = document.createElement('span');
-        const clsLink = UI.UIUtils.createWebDevLink('cls/', ls`Cumulative Layout Shifts`);
+        const clsLink = UI.XLink.XLink.create('https://web.dev/cls/', ls`Cumulative Layout Shifts`);
         warning.appendChild(UI.UIUtils.formatLocalized('%s can result in poor user experiences.', [clsLink]));
         contentHelper.appendElementRow(ls`Warning`, warning, true);
 
@@ -2250,8 +2250,8 @@ export class TimelineUIUtils {
     switch (warning) {
       case warnings.ForcedStyle:
       case warnings.ForcedLayout: {
-        const forcedReflowLink = UI.UIUtils.createDocumentationLink(
-            '../../fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts',
+        const forcedReflowLink = UI.XLink.XLink.create(
+            'https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts',
             ls`Forced reflow`);
         span.appendChild(UI.UIUtils.formatLocalized('%s is a likely performance bottleneck.', [forcedReflowLink]));
         break;
@@ -2276,8 +2276,8 @@ export class TimelineUIUtils {
       }
 
       case warnings.LongTask: {
-        const longTaskLink = UI.UIUtils.createDocumentationLink(
-            '../../fundamentals/performance/rail#goals-and-guidelines', ls`Long task`);
+        const longTaskLink = UI.XLink.XLink.create(
+            'https://developers.google.com/web/fundamentals/performance/rail#goals-and-guidelines', ls`Long task`);
         span.appendChild(UI.UIUtils.formatLocalized(
             '%s took %s.', [longTaskLink, Number.millisToString((event.duration || 0), true)]));
         break;

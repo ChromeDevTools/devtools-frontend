@@ -53,7 +53,6 @@ import {focusChanged} from './utils/focus-changed.js';
 import {injectCoreStyles} from './utils/inject-core-styles.js';
 import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
 import {registerCustomElement} from './utils/register-custom-element.js';
-import {XLink} from './XLink.js';
 
 export const highlightedSearchResultClassName = 'highlighted-search-result';
 export const highlightedCurrentSearchResultClassName = 'current-search-result';
@@ -1829,24 +1828,6 @@ export function measureTextWidth(context, text) {
 
 /** @type {?Map<string, !Map<string, number>>} */
 let measureTextWidthCache = null;
-
-/**
- * @param {string} article
- * @param {string} title
- * @return {!Element}
- */
-export function createDocumentationLink(article, title) {
-  return XLink.create('https://developers.google.com/web/tools/chrome-devtools/' + article, title);
-}
-
-/**
- * @param {string} article
- * @param {string} title
- * @return {!Element}
- */
-export function createWebDevLink(article, title) {
-  return XLink.create('https://web.dev/' + article, title);
-}
 
 /**
  * Adds a 'utm_source=devtools' as query parameter to the url.

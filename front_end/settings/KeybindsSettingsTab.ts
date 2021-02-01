@@ -109,8 +109,9 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     UI.ARIAUtils.setAccessibleName(this._list.element, i18nString(UIStrings.keyboardShortcutsList));
     const footer = this.contentElement.createChild('div');
     footer.classList.add('keybinds-footer');
-    const docsLink = UI.UIUtils.createDocumentationLink(
-        'iterate/inspect-styles/shortcuts', i18nString(UIStrings.FullListOfDevtoolsKeyboard));
+    const docsLink = UI.XLink.XLink.create(
+        'https://developers.google.com/web/tools/chrome-devtools/iterate/inspect-styles/shortcuts',
+        i18nString(UIStrings.FullListOfDevtoolsKeyboard));
     docsLink.classList.add('docs-link');
     footer.appendChild(docsLink);
     footer.appendChild(UI.UIUtils.createTextButton(i18nString(UIStrings.RestoreDefaultShortcuts), () => {

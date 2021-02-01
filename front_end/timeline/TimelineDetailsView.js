@@ -94,7 +94,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       const message = ls`Total blocking time: ${time.toFixed(2)}ms${isEstimate}`;
 
       const warning = document.createElement('span');
-      const clsLink = /** @type {!UI.XLink.XLink} */ (UI.UIUtils.createWebDevLink('tbt/', ls`Learn more`));
+      const clsLink = UI.XLink.XLink.create('https://web.dev/tbt/', ls`Learn more`);
       // crbug.com/1103188: In dark mode the focus ring is hidden by the surrounding
       // container of this link. For some additional spacing on the right to make
       // sure the ring is fully visible.

@@ -22,17 +22,19 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(SERVICE_WORKER_ROW_SELECTOR);
   });
 
-  it('Clicking on Network requests for service worker should open Network panel in drawer and closing should move it back',
-     async () => {
-       await step('Click on network requests for service worker should open network panel in drawer', async () => {
-         await click(SERVICE_WORKER_NETWORK_SELECTOR);
-         const networkTabInDrawer = await checkIfTabExistsInDrawer(NETWORK_TAB_SELECTOR);
-         assert.isTrue(networkTabInDrawer);
-       });
+  // Flaky test
+  it.skip(
+      '[crbug.com/1172924]Clicking on Network requests for service worker should open Network panel in drawer and closing should move it back',
+      async () => {
+        await step('Click on network requests for service worker should open network panel in drawer', async () => {
+          await click(SERVICE_WORKER_NETWORK_SELECTOR);
+          const networkTabInDrawer = await checkIfTabExistsInDrawer(NETWORK_TAB_SELECTOR);
+          assert.isTrue(networkTabInDrawer);
+        });
 
-       await step('Close drawer and network tab should move back to main panel', async () => {
-         await closeDrawer();
-         await tabExistsInMainPanel(NETWORK_TAB_SELECTOR);
-       });
-     });
+        await step('Close drawer and network tab should move back to main panel', async () => {
+          await closeDrawer();
+          await tabExistsInMainPanel(NETWORK_TAB_SELECTOR);
+        });
+      });
 });

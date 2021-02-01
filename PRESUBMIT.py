@@ -299,6 +299,21 @@ def _CheckDevToolsStyleCSS(input_api, output_api):
     return results
 
 
+def _CheckDarkModeStyleSheetsUpToDate(input_api, output_api):
+    devtools_root = input_api.PresubmitLocalPath()
+    devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
+    affected_css_files = _getAffectedFiles(input_api, [devtools_front_end], [],
+                                           ['.css'])
+    results = [output_api.PresubmitNotifyResult('Dark Mode CSS check:')]
+    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                         'scripts', 'dark_mode',
+                                         'check_darkmode_css_up_to_date.js')
+    results.extend(
+        _checkWithNodeScript(input_api, output_api, script_path,
+                             affected_css_files))
+    return results
+
+
 def _CheckOptimizeSVGHashes(input_api, output_api):
     if not input_api.platform.startswith('linux'):
         return [output_api.PresubmitNotifyResult('Skipping SVG hash check')]
@@ -468,6 +483,7 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckJSON(input_api, output_api))
     results.extend(_CheckDevToolsStyleJS(input_api, output_api))
     results.extend(_CheckDevToolsStyleCSS(input_api, output_api))
+    results.extend(_CheckDarkModeStyleSheetsUpToDate(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckOptimizeSVGHashes(input_api, output_api))
     results.extend(_CheckChangesAreExclusiveToDirectory(input_api, output_api))

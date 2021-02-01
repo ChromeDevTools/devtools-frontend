@@ -145,10 +145,20 @@ function stylelintExecutablePath() {
   return path.join(nodeModulesPath(), 'stylelint', 'bin', 'stylelint.js');
 }
 
+function downloadedChromeBinaryPath() {
+  const paths = {
+    'linux': path.join('chrome-linux', 'chrome'),
+    'darwin': path.join('chrome', 'chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium'),
+    'win32': path.join('chrome-win', 'chrome.exe'),
+  };
+  return path.join(thirdPartyPath(), 'chrome', paths[os.platform()]);
+}
+
 module.exports = {
   thirdPartyPath,
   nodePath,
   devtoolsRootPath,
   nodeModulesPath,
-  stylelintExecutablePath
+  stylelintExecutablePath,
+  downloadedChromeBinaryPath
 };

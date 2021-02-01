@@ -14,6 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
 const {argv} = require('yargs');
+const devtoolsPaths = require('../devtools_paths.js');
 
 /**
  * @param {string} chromeBinary
@@ -26,7 +27,12 @@ async function generateDarkModeStyleSheet(chromeBinary, sheetFilePath) {
 
   const browser = await puppeteer.launch({executablePath: chromeBinary, args: ['--ignore-certificate-errors']});
   const page = await browser.newPage();
-  await page.goto('https://localhost:8090/');
+  try {
+    await page.goto('https://localhost:8090/');
+  } catch (e) {
+    console.log('Could not connect. Is the hosted server running on port 8090?');
+    process.exit(1);
+  }
 
   const darkModeStyles = await page.evaluate(async contents => {
     const ThemeSupport = await import('./front_end/theme_support/theme_support.js');
@@ -67,7 +73,7 @@ async function generateDarkModeStyleSheet(chromeBinary, sheetFilePath) {
   const outputFilePath = path.join(process.cwd(), path.dirname(sheetFilePath), outputFileName);
 
   const output = `/* This file was automatically generated via:
-npm run generate-dark-mode-styles -- --file=${path.relative(process.cwd(), inputFile)}
+npm run generate-dark-mode-styles ${path.relative(process.cwd(), inputFile)}
 */
 /* stylelint-disable */
 ${darkModeStyles}
@@ -81,17 +87,17 @@ async function run(chromeBinaryPath, inputFile) {
   await generateDarkModeStyleSheet(chromeBinaryPath, inputFile);
 }
 
-const [chromeBinaryPath, inputFile] = argv._;
+const [inputFile] = argv._;
 
-if (!chromeBinaryPath || !inputFile) {
+if (!inputFile) {
   console.log(`Usage:
-  generate_dark_theme_sheet.js chromeBinaryPath inputFile
+  generate_dark_theme_sheet.js inputFile
 
   example:
-    generate_dark_theme_sheet.js ./third_party/chrome/chrome-linux/chrome front_end/text_editor/cmdevtools.css
+    generate_dark_theme_sheet.js front_end/text_editor/cmdevtools.css
   `);
 
   process.exit(1);
 }
 
-run(chromeBinaryPath, inputFile);
+run(devtoolsPaths.downloadedChromeBinaryPath(), inputFile);

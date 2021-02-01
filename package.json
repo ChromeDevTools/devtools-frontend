@@ -38,7 +38,7 @@
     "debug-unittest": "DEBUG=1 npm run unittest",
     "e2etest": "scripts/test/run_test_suite.py --test-suite=e2e",
     "eslint-test": "mocha \"./scripts/eslint_rules/tests/*_test.js\"",
-    "generate-dark-mode-styles": "scripts/dark_mode/run_dark_theme_generator.py",
+    "generate-dark-mode-styles": "third_party/node/node.py --output scripts/dark_mode/generate_dark_theme_sheet.js",
     "generate-protocol-resources": "scripts/deps/generate_protocol_resources.py && git cl format --js",
     "grdp-utils-test": "mocha \"./scripts/localization/utils/tests/*_test.js\"",
     "install-deps": "scripts/deps/manage_node_deps.py",

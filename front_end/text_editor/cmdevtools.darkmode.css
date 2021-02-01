@@ -1,15 +1,15 @@
 /* This file was automatically generated via:
-npm run generate-dark-mode-styles -- --file=front_end/text_editor/cmdevtools.css
+npm run generate-dark-mode-styles front_end/text_editor/cmdevtools.css
 */
 /* stylelint-disable */
 :host-context(.-theme-with-dark-background) .CodeMirror, .-theme-with-dark-background .CodeMirror{
 color:rgb(213 213 213);}
 :host-context(.-theme-with-dark-background) .CodeMirror-gutter-performance, .-theme-with-dark-background .CodeMirror-gutter-performance{
-background-color:rgb(36 36 36);}
+background-color:var(--color-background);}
 :host-context(.-theme-with-dark-background) .CodeMirror-gutter-memory, .-theme-with-dark-background .CodeMirror-gutter-memory{
-background-color:rgb(36 36 36);}
+background-color:var(--color-background);}
 :host-context(.-theme-with-dark-background) .CodeMirror-gutter-coverage, .-theme-with-dark-background .CodeMirror-gutter-coverage{
-background-color:rgb(36 36 36);}
+background-color:var(--color-background);}
 :host-context(.-theme-with-dark-background) .CodeMirror .source-frame-eval-expression, .-theme-with-dark-background .CodeMirror .source-frame-eval-expression{
 border-top-color:rgb(221 99 92);border-right-color:rgb(221 99 92);border-bottom-color:rgb(221 99 92);border-left-color:rgb(221 99 92);background-color:rgb(102 102 0);}
 :host-context(.-theme-with-dark-background) .CodeMirror .source-frame-continue-to-location, .-theme-with-dark-background .CodeMirror .source-frame-continue-to-location{
@@ -23,7 +23,7 @@ background-color:rgb(80 137 42);border-top-color:rgb(101 155 101);border-right-c
 :host-context(.-theme-with-dark-background) .CodeMirror-cursor, .-theme-with-dark-background .CodeMirror-cursor{
 border-left-color:rgb(230 230 230);}
 :host-context(.-theme-with-dark-background) .CodeMirror-gutters, .-theme-with-dark-background .CodeMirror-gutters{
-background-color:rgb(36 36 36);}
+background-color:var(--color-background);}
 :host-context(.-theme-with-dark-background) .CodeMirror-linenumber, .-theme-with-dark-background .CodeMirror-linenumber{
 color:rgb(138 138 138);}
 :host-context(.-theme-with-dark-background) .pretty-printed .CodeMirror-linenumber, .-theme-with-dark-background .pretty-printed .CodeMirror-linenumber{
@@ -47,7 +47,7 @@ border-top-color:rgb(221 99 92);border-right-color:rgb(221 99 92);border-bottom-
 :host-context(.-theme-with-dark-background) .cm-inline-breakpoint.cm-execution-line-tail, .-theme-with-dark-background .cm-inline-breakpoint.cm-execution-line-tail{
 background-color:rgb(1 36 150);}
 :host-context(.-theme-with-dark-background) .cm-execution-line-tail .cm-inline-breakpoint, .-theme-with-dark-background .cm-execution-line-tail .cm-inline-breakpoint{
-background-color:rgb(36 36 36);}
+background-color:var(--color-background);}
 :host-context(.-theme-with-dark-background) .cm-inline-breakpoint.cm-inline-conditional, .-theme-with-dark-background .cm-inline-breakpoint.cm-inline-conditional{
 background-color:rgb(242 160 16);}
 :host-context(.-theme-with-dark-background) div.CodeMirror:focus-within span.CodeMirror-matchingbracket, .-theme-with-dark-background div.CodeMirror:focus-within span.CodeMirror-matchingbracket{

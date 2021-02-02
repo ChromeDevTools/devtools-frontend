@@ -99,3 +99,9 @@ devtools_entrypoint("legacy") {
 
   deps = [ ":bundle" ]
 }
+
+devtools_entrypoint("meta") {
+  entrypoint = "sdk-meta.ts"
+
+  deps = [ ":bundle" ]
+}

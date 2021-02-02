@@ -86,12 +86,8 @@ export class Settings {
             storageType = SettingStorageType.Global;
         }
         const {settingName, defaultValue, userActionCondition} = descriptor;
-        const isRegex = descriptor.settingType === SettingTypeObject.REGEX;
 
-        // This cast is done so that the assignation to setting._extension below is type valid.
-        const setting = isRegex && typeof defaultValue === 'string' ?
-            this.createRegExpSetting(settingName, defaultValue, undefined, storageType) :
-            this.createSetting(settingName, defaultValue, storageType);
+        const setting = this.createSetting(settingName, defaultValue, storageType);
 
         if (extension.title()) {
           setting.setTitle(extension.title());
@@ -104,10 +100,12 @@ export class Settings {
       }),
       ...getRegisteredSettings().map(registration => {
         const {settingName, defaultValue, storageType} = registration;
+        const isRegex = registration.settingType === SettingTypeObject.REGEX;
 
-        // TODO(crbug.com/1134103): implement one liner if to call createRegExpSetting when 'registration.isRegex' is true, once all extensions of type
-        // 'RegExpSetting' have been migrated. Also, the class 'RegExpSetting' has to be changed to extend from PreRegisteredSetting.
-        const setting = this.createPreRegisteredSetting(settingName, defaultValue, storageType);
+        const setting = isRegex && typeof defaultValue === 'string' ?
+            this.createRegExpSetting(settingName, defaultValue, undefined, storageType) :
+            this.createPreRegisteredSetting(settingName, defaultValue, storageType);
+
         if (registration.titleMac) {
           setting.setTitleFunction(registration.titleMac);
         } else {
@@ -995,9 +993,9 @@ export class PreRegisteredSetting extends Setting {
 }
 
 /**
- * @extends LegacySetting<*>
+ * @extends PreRegisteredSetting<*>
  */
-export class RegExpSetting extends LegacySetting {
+export class RegExpSetting extends PreRegisteredSetting {
   /**
    * @param {!Settings} settings
    * @param {string} name

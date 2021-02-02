@@ -30,4 +30,5 @@ import './browser_sdk/browser_sdk-meta.js';
 import './main/main-meta.js';
 import './perf_ui/perf_ui-meta.js';
 import './quick_open/quick_open-meta.js';
+import './sdk/sdk-meta.js';
 // We generate the descriptors in this file, which depend on the runtime.

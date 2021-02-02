@@ -355,6 +355,7 @@ grd_files_release_sources = [
   "front_end/screencast/screencast-legacy.js",
   "front_end/screencast/screencast.js",
   "front_end/sdk/sdk-legacy.js",
+  "front_end/sdk/sdk-meta.js",
   "front_end/sdk/sdk.js",
   "front_end/search/search-legacy.js",
   "front_end/search/search.js",

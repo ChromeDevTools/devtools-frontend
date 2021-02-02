@@ -160,6 +160,7 @@ devtools_module_entrypoint_sources = [
   "screencast/screencast-legacy.js",
   "screencast/screencast.js",
   "sdk/sdk-legacy.js",
+  "sdk/sdk-meta.js",
   "sdk/sdk.js",
   "search/search-legacy.js",
   "search/search.js",

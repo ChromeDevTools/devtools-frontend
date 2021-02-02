@@ -564,9 +564,6 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_c13af79d63bfcb3f07bc3810418c99f8" desc="Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel">
     Delete Selected
   </message>
-  <message name="IDS_DEVTOOLS_c1ea3facd2946b59df718d8dd2737cfa" desc="Text in Application Panel Sidebar of the Application panel">
-    Background Services
-  </message>
   <message name="IDS_DEVTOOLS_c3ce3e7083dd535c002d6bd81f01aec5" desc="Warning message for offline capability check">
     Page does not work offline. The page will not be regarded as installable after Chrome 93, stable release August 2021.
   </message>
@@ -668,9 +665,6 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_dda1715022c892b6b6d0566e00087c9b" desc="Entry in the API availability section of the frame details view">
     Shared Array Buffers
-  </message>
-  <message name="IDS_DEVTOOLS_ddcf50c29294d4414f3f7c1bbc892cb5" desc="A title of the 'Resources' action category">
-    Resources
   </message>
   <message name="IDS_DEVTOOLS_8ef2e5358b2e3b2af0212e3dc8668188" desc="Text in App Manifest View of the Application panel">
     Description may be truncated.

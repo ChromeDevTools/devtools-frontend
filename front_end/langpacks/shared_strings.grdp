@@ -320,6 +320,9 @@
   <message name="IDS_DEVTOOLS_bec25a46972e4fa86df9413508add5c2" desc="Text that refers to disabling local fonts">
     Disable local fonts
   </message>
+  <message name="IDS_DEVTOOLS_c1ea3facd2946b59df718d8dd2737cfa" desc="Text in Application Panel Sidebar of the Application panel">
+    Background Services
+  </message>
   <message name="IDS_DEVTOOLS_c9ad95228aa735bdda1aebf38da022af" desc="Text to parse something">
     Parse
   </message>

@@ -336,6 +336,8 @@ export const ActionCategory = {
   NAVIGATION: ls`Navigation`,
   DRAWER: ls`Drawer`,
   GLOBAL: ls`Global`,
+  RESOURCES: ls`Resources`,
+  BACKGROUND_SERVICES: ls`Background Services`,
 };
 
 type ActionCategory = typeof ActionCategory[keyof typeof ActionCategory];

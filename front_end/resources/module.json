@@ -15,53 +15,6 @@
       ],
       "destination": "Application panel",
       "className": "Resources.ResourcesPanel.CookieReferenceRevealer"
-    },
-    {
-      "type": "action",
-      "category": "Resources",
-      "actionId": "resources.clear",
-      "title": "Clear site data",
-      "className": "Resources.ClearStorageView.ActionDelegate"
-    },
-    {
-      "type": "action",
-      "category": "Resources",
-      "actionId": "resources.clear-incl-third-party-cookies",
-      "title": "Clear site data (including third-party cookies)",
-      "className": "Resources.ClearStorageView.ActionDelegate"
-    },
-    {
-      "type": "action",
-      "actionId": "background-service.toggle-recording",
-      "iconClass": "largeicon-start-recording",
-      "toggleable": true,
-      "toggledIconClass": "largeicon-stop-recording",
-      "toggleWithRedColor": true,
-      "contextTypes": [
-        "Resources.BackgroundServiceView"
-      ],
-      "className": "Resources.BackgroundServiceView.ActionDelegate",
-      "category": "Background Services",
-      "options": [
-        {
-          "value": true,
-          "title": "Start recording events"
-        },
-        {
-          "value": false,
-          "title": "Stop recording events"
-        }
-      ],
-      "bindings": [
-        {
-          "platform": "windows,linux",
-          "shortcut": "Ctrl+E"
-        },
-        {
-          "platform": "mac",
-          "shortcut": "Meta+E"
-        }
-      ]
     }
   ],
   "dependencies": [

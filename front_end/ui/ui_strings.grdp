@@ -144,6 +144,9 @@
   <message name="IDS_DEVTOOLS_d916eea6390ddc39ee5fbc5c984e940c" desc="Seconds format in UIUtils">
     <ph name="PH1">$1.2f<ex>2.14</ex></ph> s
   </message>
+  <message name="IDS_DEVTOOLS_ddcf50c29294d4414f3f7c1bbc892cb5" desc="A title of the 'Resources' action category">
+    Resources
+  </message>
   <message name="IDS_DEVTOOLS_e0aa021e21dddbd6d8cecec71e9cf564" desc="Text on a button for message dialog">
     OK
   </message>

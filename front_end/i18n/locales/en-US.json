@@ -3851,11 +3851,8 @@
   "settings/KeybindsSettingsTab.ts | thisShortcutIsInUseByS": {
     "message": "This shortcut is in use by {PH1}: {PH2}."
   },
-  "settings/ModuleUIStrings.ts | documentation": {
+  "settings/settings-meta.ts | documentation": {
     "message": "Documentation"
-  },
-  "settings/ModuleUIStrings.ts | settings": {
-    "message": "Settings"
   },
   "settings/settings-meta.ts | experiments": {
     "message": "Experiments"
@@ -3865,6 +3862,9 @@
   },
   "settings/settings-meta.ts | preferences": {
     "message": "Preferences"
+  },
+  "settings/settings-meta.ts | settings": {
+    "message": "Settings"
   },
   "settings/settings-meta.ts | shortcuts": {
     "message": "Shortcuts"

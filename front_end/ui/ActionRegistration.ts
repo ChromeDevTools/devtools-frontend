@@ -338,6 +338,7 @@ export const ActionCategory = {
   GLOBAL: ls`Global`,
   RESOURCES: ls`Resources`,
   BACKGROUND_SERVICES: ls`Background Services`,
+  SETTINGS: ls`Settings`,
 };
 
 type ActionCategory = typeof ActionCategory[keyof typeof ActionCategory];
@@ -354,6 +355,7 @@ export const enum IconClass {
   LARGEICON_PAUSE = 'largeicon-pause',
   LARGEICON_RESUME = 'largeicon-resume',
   LARGEICON_TRASH_BIN = 'largeicon-trash-bin',
+  LARGEICON_SETTINGS_GEAR = 'largeicon-settings-gear',
 }
 
 export const enum KeybindSet {

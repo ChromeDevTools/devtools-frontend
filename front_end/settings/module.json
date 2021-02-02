@@ -1,69 +1,6 @@
 {
   "extensions": [
     {
-      "type": "action",
-      "category": "Settings",
-      "actionId": "settings.show",
-      "title": "Settings",
-      "className": "Settings.SettingsScreen.ActionDelegate",
-      "iconClass": "largeicon-settings-gear",
-      "bindings": [
-        {
-          "shortcut": "F1",
-          "keybindSets": [
-            "devToolsDefault"
-          ]
-        },
-        {
-          "shortcut": "Shift+?"
-        },
-        {
-          "platform": "windows,linux",
-          "shortcut": "Ctrl+,",
-          "keybindSets": [
-            "vsCode"
-          ]
-        },
-        {
-          "platform": "mac",
-          "shortcut": "Meta+,",
-          "keybindSets": [
-            "vsCode"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "action",
-      "category": "Settings",
-      "actionId": "settings.documentation",
-      "title": "Documentation",
-      "className": "Settings.SettingsScreen.ActionDelegate"
-    },
-    {
-      "type": "action",
-      "category": "Settings",
-      "actionId": "settings.shortcuts",
-      "title": "Shortcuts",
-      "className": "Settings.SettingsScreen.ActionDelegate",
-      "bindings": [
-        {
-          "platform": "windows,linux",
-          "shortcut": "Ctrl+K Ctrl+S",
-          "keybindSets": [
-            "vsCode"
-          ]
-        },
-        {
-          "platform": "mac",
-          "shortcut": "Meta+K Meta+S",
-          "keybindSets": [
-            "vsCode"
-          ]
-        }
-      ]
-    },
-    {
       "type": "@Common.Revealer",
       "contextTypes": [
         "Common.Setting"

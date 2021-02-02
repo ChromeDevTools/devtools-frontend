@@ -447,7 +447,17 @@ export class ExperimentsSettingsTab extends SettingsTab {
   }
 }
 
+let actionDelegateInstance: ActionDelegate;
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ActionDelegate {
+    const {forceNew} = opts;
+    if (!actionDelegateInstance || forceNew) {
+      actionDelegateInstance = new ActionDelegate();
+    }
+
+    return actionDelegateInstance;
+  }
+
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'settings.show':

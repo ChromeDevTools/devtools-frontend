@@ -42,6 +42,14 @@ export const UIStrings = {
    *@description Command for showing the Ignore List settings
    */
   showIgnoreList: 'Show Ignore List',
+  /**
+  *@description Name of the Settings view
+  */
+  settings: 'Settings',
+  /**
+   *@description Text for the documentation of something
+  */
+  documentation: 'Documentation',
 };
 
 const str_ = i18n.i18n.registerUIStrings('settings/settings-meta.ts', UIStrings);
@@ -105,4 +113,76 @@ UI.ViewManager.registerViewExtension({
     const Settings = await loadSettingsModule();
     return Settings.KeybindsSettingsTab.KeybindsSettingsTab.instance();
   },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.SETTINGS,
+  actionId: 'settings.show',
+  title: i18nString(UIStrings.settings),
+  async loadActionDelegate() {
+    const Settings = await loadSettingsModule();
+    return Settings.SettingsScreen.ActionDelegate.instance();
+  },
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_SETTINGS_GEAR,
+  bindings: [
+    {
+      shortcut: 'F1',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+      ],
+    },
+    {
+      shortcut: 'Shift+?',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+,',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+,',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.SETTINGS,
+  actionId: 'settings.documentation',
+  title: i18nString(UIStrings.documentation),
+  async loadActionDelegate() {
+    const Settings = await loadSettingsModule();
+    return Settings.SettingsScreen.ActionDelegate.instance();
+  },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.SETTINGS,
+  actionId: 'settings.shortcuts',
+  title: i18nString(UIStrings.shortcuts),
+  async loadActionDelegate() {
+    const Settings = await loadSettingsModule();
+    return Settings.SettingsScreen.ActionDelegate.instance();
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+K Ctrl+S',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+K Meta+S',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
 });

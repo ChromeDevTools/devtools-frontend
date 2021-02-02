@@ -4,14 +4,5 @@
 
 import * as i18n from '../i18n/i18n.js';
 
-export const UIStrings = {
-  /**
-  *@description Name of the Settings view
-  */
-  settings: 'Settings',
-  /**
-  *@description Text for the documentation of something
-  */
-  documentation: 'Documentation',
-};
+export const UIStrings = {};
 i18n.i18n.registerUIStrings('settings/ModuleUIStrings.ts', UIStrings);

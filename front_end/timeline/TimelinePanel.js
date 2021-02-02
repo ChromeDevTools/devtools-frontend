@@ -1408,10 +1408,27 @@ export class LoadTimelineHandler {
   }
 }
 
+/** @type {!ActionDelegate} */
+let actionDelegateInstance;
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ActionDelegate {
+  /**
+   * @param {{forceNew: ?boolean}=} opts
+   * @return {!ActionDelegate}
+  }
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!actionDelegateInstance || forceNew) {
+      actionDelegateInstance = new ActionDelegate();
+    }
+
+    return actionDelegateInstance;
+  }
+
   /**
    * @override
    * @param {!UI.Context.Context} context

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
@@ -41,6 +42,13 @@ async function loadProfilerModule(): Promise<typeof Profiler> {
   return loadedProfilerModule;
 }
 
+function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (timelineModule: typeof Timeline) => T[]): T[] {
+  if (loadedTimelineModule === undefined) {
+    return [];
+  }
+  return getClassCallBack(loadedTimelineModule);
+}
+
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'timeline',
@@ -64,4 +72,224 @@ UI.ViewManager.registerViewExtension({
     const Profiler = await loadProfilerModule();
     return Profiler.ProfilesPanel.JSProfilerPanel.instance();
   },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'timeline.toggle-recording',
+  category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
+  toggleable: true,
+  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
+  toggleWithRedColor: true,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
+  },
+  async loadActionDelegate() {
+    const Timeline = await loadTimelineModule();
+    return Timeline.TimelinePanel.ActionDelegate.instance();
+  },
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Record`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Stop`,
+    },
+  ],
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+E',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+E',
+    },
+  ],
+});
+
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'timeline.record-reload',
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_REFRESH,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
+  },
+  category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+  title: (): Platform.UIString.LocalizedString => ls`Start profiling and reload page`,
+  async loadActionDelegate() {
+    const Timeline = await loadTimelineModule();
+    return Timeline.TimelinePanel.ActionDelegate.instance();
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+Shift+E',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Shift+E',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+  actionId: 'timeline.save-to-file',
+  contextTypes() {
+    return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
+  },
+  async loadActionDelegate() {
+    const Timeline = await loadTimelineModule();
+    return Timeline.TimelinePanel.ActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Save profile…`,
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+S',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+S',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+  actionId: 'timeline.load-from-file',
+  contextTypes() {
+    return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
+  },
+  async loadActionDelegate() {
+    const Timeline = await loadTimelineModule();
+    return Timeline.TimelinePanel.ActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Load profile…`,
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+0',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+0',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'timeline.jump-to-previous-frame',
+  category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+  title: (): Platform.UIString.LocalizedString => ls`Previous frame`,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
+  },
+  async loadActionDelegate() {
+    const Timeline = await loadTimelineModule();
+    return Timeline.TimelinePanel.ActionDelegate.instance();
+  },
+  bindings: [
+    {
+      shortcut: '[',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'timeline.jump-to-next-frame',
+  category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+  title: (): Platform.UIString.LocalizedString => ls`Next frame`,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
+  },
+  async loadActionDelegate() {
+    const Timeline = await loadTimelineModule();
+    return Timeline.TimelinePanel.ActionDelegate.instance();
+  },
+  bindings: [
+    {
+      shortcut: ']',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'timeline.show-history',
+  async loadActionDelegate() {
+    const Timeline = await loadTimelineModule();
+    return Timeline.TimelinePanel.ActionDelegate.instance();
+  },
+  category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+  title: (): Platform.UIString.LocalizedString => ls`Show recent timeline sessions`,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+H',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Y',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'timeline.previous-recording',
+  category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+  async loadActionDelegate() {
+    const Timeline = await loadTimelineModule();
+    return Timeline.TimelinePanel.ActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Previous recording`,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Alt+Left',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Left',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'timeline.next-recording',
+  category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
+  async loadActionDelegate() {
+    const Timeline = await loadTimelineModule();
+    return Timeline.TimelinePanel.ActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Next recording`,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Alt+Right',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Right',
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.PERFORMANCE,
+  title: (): Platform.UIString.LocalizedString => ls`Hide chrome frame in Layers view`,
+  settingName: 'frameViewerHideChromeWindow',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: false,
 });

@@ -464,10 +464,25 @@ export class RecordingsNavigatorView extends NavigatorView {
   }
 }
 
+/** @type {!ActionDelegate} */
+let actionDelegateInstance;
+
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ActionDelegate {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!actionDelegateInstance || forceNew) {
+      actionDelegateInstance = new ActionDelegate();
+    }
+
+    return actionDelegateInstance;
+  }
   /**
    * @override
    * @param {!UI.Context.Context} context

@@ -537,3 +537,357 @@ UI.ActionRegistration.registerActionExtension({
     },
   ],
 });
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.close-editor-tab',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Close the active tab`,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesView.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      shortcut: 'Alt+w',
+    },
+    {
+      shortcut: 'Ctrl+W',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Windows,
+      shortcut: 'Ctrl+F4',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.go-to-line',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Go to line`,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesView.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      shortcut: 'Ctrl+g',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.go-to-member',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Go to a function declaration/rule set`,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesView.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+Shift+o',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Shift+o',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+T',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+T',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      shortcut: 'F12',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'debugger.toggle-breakpoint',
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  title: (): Platform.UIString.LocalizedString => ls`Toggle breakpoint`,
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+b',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+b',
+    },
+    {
+      shortcut: 'F9',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'debugger.toggle-breakpoint-enabled',
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  title: (): Platform.UIString.LocalizedString => ls`Toggle breakpoint enabled`,
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+Shift+b',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Shift+b',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'debugger.breakpoint-input-window',
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  title: (): Platform.UIString.LocalizedString => ls`Toggle breakpoint input window`,
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+Alt+b',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Alt+b',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.save',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Save`,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesView.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+s',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+s',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.save-all',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Save all`,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesView.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+Shift+s',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Alt+s',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+K S',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Alt+S',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  actionId: 'sources.create-snippet',
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesNavigator.ActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Create new snippet`,
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  actionId: 'sources.add-folder-to-workspace',
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesNavigator.ActionDelegate.instance();
+  },
+  iconClass: UI.ActionRegistration.IconClass.LARGE_ICON_ADD,
+  title: (): Platform.UIString.LocalizedString => ls`Add folder to workspace`,
+  condition: Root.Runtime.ConditionName.NOT_SOURCES_HIDE_ADD_FOLDER,
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  actionId: 'debugger.previous-call-frame',
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.CallStackSidebarPane.ActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Previous call frame`,
+  contextTypes() {
+    return [SDK.DebuggerModel.DebuggerPausedDetails];
+  },
+  bindings: [
+    {
+      shortcut: 'Ctrl+,',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  actionId: 'debugger.next-call-frame',
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.CallStackSidebarPane.ActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Next call frame`,
+  contextTypes() {
+    return [SDK.DebuggerModel.DebuggerPausedDetails];
+  },
+  bindings: [
+    {
+      shortcut: 'Ctrl+.',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.search',
+  title: (): Platform.UIString.LocalizedString => ls`Search`,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SearchSourcesView.ActionDelegate.instance();
+  },
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Alt+F',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+Shift+F',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+Shift+J',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Shift+F',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Shift+J',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.increment-css',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Increment CSS unit by 1`,
+  bindings: [
+    {
+      shortcut: 'Alt+Up',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.increment-css-by-ten',
+  title: (): Platform.UIString.LocalizedString => ls`Increment CSS unit by 10`,
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  bindings: [
+    {
+      shortcut: 'Alt+PageUp',
+    },
+  ],
+});

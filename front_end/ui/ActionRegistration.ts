@@ -313,6 +313,7 @@ export const enum Platforms {
   Mac = 'mac',
   WindowsLinux = 'windows,linux',
   Android = 'Android',
+  Windows = 'windows',
 }
 
 export const Events = {
@@ -364,6 +365,7 @@ export const enum IconClass {
   LARGE_ICON_STEP = 'largeicon-step',
   LARGE_ICON_STEP_OUT = 'largeicon-step-out',
   LARGE_ICON_DEACTIVATE_BREAKPOINTS = 'largeicon-deactivate-breakpoints',
+  LARGE_ICON_ADD = 'largeicon-add',
 }
 
 export const enum KeybindSet {

@@ -1707,7 +1707,6 @@ export class ActionDelegate {
   /**
    * @param {{forceNew: ?boolean}=} opts
    * @return {!ActionDelegate}
-  }
    */
   static instance(opts = {forceNew: null}) {
     const {forceNew} = opts;

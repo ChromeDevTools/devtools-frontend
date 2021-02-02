@@ -1135,4 +1135,5 @@ export const ExperimentName = {
 /** @enum {string} */
 export const ConditionName = {
   CAN_DOCK: 'can_dock',
+  NOT_SOURCES_HIDE_ADD_FOLDER: '!sources.hide_add_folder',
 };

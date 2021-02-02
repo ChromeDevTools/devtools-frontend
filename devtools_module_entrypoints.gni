@@ -175,6 +175,7 @@ devtools_module_entrypoint_sources = [
   "snippets/snippets-legacy.js",
   "snippets/snippets.js",
   "source_frame/source_frame-legacy.js",
+  "source_frame/source_frame-meta.js",
   "source_frame/source_frame.js",
   "sources/sources-legacy.js",
   "sources/sources-meta.js",

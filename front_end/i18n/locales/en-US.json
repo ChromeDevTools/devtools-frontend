@@ -3956,41 +3956,38 @@
   "source_frame/JSONView.js | find": {
     "message": "Find"
   },
-  "source_frame/ModuleUIStrings.js | defaultIndentation": {
-    "message": "Default indentation:"
-  },
-  "source_frame/ModuleUIStrings.js | eSpaces": {
-    "message": "8 spaces"
-  },
-  "source_frame/ModuleUIStrings.js | fSpaces": {
-    "message": "4 spaces"
-  },
-  "source_frame/ModuleUIStrings.js | setIndentationToESpaces": {
-    "message": "Set indentation to 8 spaces"
-  },
-  "source_frame/ModuleUIStrings.js | setIndentationToFSpaces": {
-    "message": "Set indentation to 4 spaces"
-  },
-  "source_frame/ModuleUIStrings.js | setIndentationToSpaces": {
-    "message": "Set indentation to 2 spaces"
-  },
-  "source_frame/ModuleUIStrings.js | setIndentationToTabCharacter": {
-    "message": "Set indentation to tab character"
-  },
-  "source_frame/ModuleUIStrings.js | sources": {
-    "message": "Sources"
-  },
-  "source_frame/ModuleUIStrings.js | Spaces": {
-    "message": "2 spaces"
-  },
-  "source_frame/ModuleUIStrings.js | tabCharacter": {
-    "message": "Tab character"
-  },
   "source_frame/PreviewFactory.js | nothingToPreview": {
     "message": "Nothing to preview"
   },
   "source_frame/ResourceSourceFrame.js | find": {
     "message": "Find"
+  },
+  "source_frame/source_frame-meta.ts | defaultIndentation": {
+    "message": "Default indentation:"
+  },
+  "source_frame/source_frame-meta.ts | eSpaces": {
+    "message": "8 spaces"
+  },
+  "source_frame/source_frame-meta.ts | fSpaces": {
+    "message": "4 spaces"
+  },
+  "source_frame/source_frame-meta.ts | setIndentationToESpaces": {
+    "message": "Set indentation to 8 spaces"
+  },
+  "source_frame/source_frame-meta.ts | setIndentationToFSpaces": {
+    "message": "Set indentation to 4 spaces"
+  },
+  "source_frame/source_frame-meta.ts | setIndentationToSpaces": {
+    "message": "Set indentation to 2 spaces"
+  },
+  "source_frame/source_frame-meta.ts | setIndentationToTabCharacter": {
+    "message": "Set indentation to tab character"
+  },
+  "source_frame/source_frame-meta.ts | Spaces": {
+    "message": "2 spaces"
+  },
+  "source_frame/source_frame-meta.ts | tabCharacter": {
+    "message": "Tab character"
   },
   "source_frame/SourceFrame.js | bytecodePositionXs": {
     "message": "Bytecode position 0x{PH1}"

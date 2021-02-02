@@ -1,36 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "setting",
-      "category": "Sources",
-      "title": "Default indentation:",
-      "settingName": "textEditorIndent",
-      "settingType": "enum",
-      "defaultValue": "    ",
-      "options": [
-        {
-          "title": "Set indentation to 2 spaces",
-          "text": "2 spaces",
-          "value": "  "
-        },
-        {
-          "title": "Set indentation to 4 spaces",
-          "text": "4 spaces",
-          "value": "    "
-        },
-        {
-          "title": "Set indentation to 8 spaces",
-          "text": "8 spaces",
-          "value": "        "
-        },
-        {
-          "title": "Set indentation to tab character",
-          "text": "Tab character",
-          "value": "\t"
-        }
-      ]
-    }
-  ],
   "dependencies": [
     "i18n",
     "text_editor",

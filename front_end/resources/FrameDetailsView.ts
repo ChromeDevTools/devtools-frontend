@@ -4,8 +4,11 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import type * as Components from '../ui/components/components.js';
+
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
+import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as Network from '../network/network.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
@@ -16,6 +19,8 @@ import * as Workspace from '../workspace/workspace.js';
 const booleanToYesNo = (b: boolean): Common.UIString.LocalizedString => b ? ls`Yes` : ls`No`;
 
 export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
+  private readonly reportView = new FrameDetailsReportView();
+
   _protocolMonitorExperimentEnabled: boolean;
   _frame: SDK.ResourceTreeModel.ResourceTreeFrame;
   _reportView: UI.ReportView.ReportView;
@@ -35,6 +40,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   _apiSharedArrayBuffer: HTMLElement;
   _apiMeasureMemory: HTMLElement;
   _additionalInfo: UI.ReportView.Section|undefined;
+
   constructor(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super();
     this._protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
@@ -42,8 +48,10 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._frame = frame;
     this.contentElement.classList.add('frame-details-container');
 
+    this.contentElement.appendChild(this.reportView);
+
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-    this._reportView = new UI.ReportView.ReportView(frame.displayName());
+    this._reportView = new UI.ReportView.ReportView();
     this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
     this._reportView.show(this.contentElement);
     this._reportView.element.classList.add('frame-details-report-container');
@@ -83,6 +91,8 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   async doUpdate(): Promise<void> {
+    this.reportView.data = {frame: this._frame};
+
     this._urlFieldValue.removeChildren();
     this._urlStringElement.textContent = this._frame.url;
     UI.Tooltip.Tooltip.install(this._urlStringElement, this._frame.url);
@@ -299,6 +309,43 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
         this._generalSection.setFieldVisible(ls`Ad Status`, false);
         break;
     }
+  }
+}
+
+export interface FrameDetailsReportViewData {
+  frame: SDK.ResourceTreeModel.ResourceTreeFrame;
+}
+
+export class FrameDetailsReportView extends HTMLElement {
+  private readonly shadow = this.attachShadow({mode: 'open'});
+  private frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
+
+  set data(data: FrameDetailsReportViewData) {
+    this.frame = data.frame;
+    this.render();
+  }
+
+  private async render(): Promise<void> {
+    if (!this.frame) {
+      return;
+    }
+
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    LitHtml.render(LitHtml.html`
+      <devtools-report .data=${{reportTitle: this.frame.displayName()} as Components.ReportView.ReportData}>
+      </devtools-report>
+    `, this.shadow);
+    // clang-format on
+  }
+}
+
+customElements.define('devtools-resources-frame-details-view', FrameDetailsReportView);
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface HTMLElementTagNameMap {
+    'devtools-resources-frame-details-view': FrameDetailsReportView;
   }
 }
 

@@ -18,3 +18,4 @@ import { isNode } from '../environment.js';
 export const getFetch = async () => {
     return isNode ? await import('node-fetch') : globalThis.fetch;
 };
+//# sourceMappingURL=fetch.js.map

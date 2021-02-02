@@ -107,3 +107,4 @@ export class WebWorker extends EventEmitter {
         return (await this._executionContextPromise).evaluateHandle(pageFunction, ...args);
     }
 }
+//# sourceMappingURL=WebWorker.js.map

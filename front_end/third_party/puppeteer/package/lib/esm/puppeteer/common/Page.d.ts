@@ -29,7 +29,7 @@ import { HTTPResponse } from './HTTPResponse.js';
 import { Keyboard, Mouse, MouseButton , Touchscreen} from './Input.js';
 import { ElementHandle , JSHandle} from './JSHandle.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
-import { Credentials } from './NetworkManager.js';
+import { Credentials, NetworkConditions } from './NetworkManager.js';
 import { PDFOptions } from './PDFOptions.js';
 import { Viewport } from './PuppeteerViewport.js';
 import { Target } from './Target.js';
@@ -421,6 +421,7 @@ export declare class Page extends EventEmitter {
      * @param enabled - When `true`, enables offline mode for the page.
      */
     setOfflineMode(enabled: boolean): Promise<void>;
+    emulateNetworkConditions(networkConditions: NetworkConditions | null): Promise<void>;
     /**
      * @param timeout - Maximum navigation time in milliseconds.
      */

@@ -518,3 +518,4 @@ class BrowserContext extends EventEmitter_js_1.EventEmitter {
     }
 }
 exports.BrowserContext = BrowserContext;
+//# sourceMappingURL=Browser.js.map

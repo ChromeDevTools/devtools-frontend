@@ -84,3 +84,4 @@ exports.Events = {
         Disconnected: Symbol('Events.CDPSession.Disconnected'),
     },
 };
+//# sourceMappingURL=Events.js.map

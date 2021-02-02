@@ -37,3 +37,4 @@ export const initializePuppeteerNode = (packageName) => {
         productName: productName,
     });
 };
+//# sourceMappingURL=initialize-node.js.map

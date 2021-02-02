@@ -143,3 +143,4 @@ export class LifecycleWatcher {
         clearTimeout(this._maximumTimer);
     }
 }
+//# sourceMappingURL=LifecycleWatcher.js.map

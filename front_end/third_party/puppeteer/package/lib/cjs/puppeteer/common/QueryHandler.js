@@ -163,3 +163,4 @@ function getQueryHandlerAndSelector(selector) {
     };
 }
 exports.getQueryHandlerAndSelector = getQueryHandlerAndSelector;
+//# sourceMappingURL=QueryHandler.js.map

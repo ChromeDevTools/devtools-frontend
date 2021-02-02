@@ -32,3 +32,4 @@ class BrowserWebSocketTransport {
     }
 }
 exports.BrowserWebSocketTransport = BrowserWebSocketTransport;
+//# sourceMappingURL=BrowserWebSocketTransport.js.map

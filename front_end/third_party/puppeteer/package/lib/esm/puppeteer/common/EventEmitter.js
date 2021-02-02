@@ -107,3 +107,4 @@ export class EventEmitter {
         return this.eventsMap.has(event) ? this.eventsMap.get(event).length : 0;
     }
 }
+//# sourceMappingURL=EventEmitter.js.map

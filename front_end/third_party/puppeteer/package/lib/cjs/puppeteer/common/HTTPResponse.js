@@ -152,3 +152,4 @@ class HTTPResponse {
     }
 }
 exports.HTTPResponse = HTTPResponse;
+//# sourceMappingURL=HTTPResponse.js.map

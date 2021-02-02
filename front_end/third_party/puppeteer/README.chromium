@@ -1,7 +1,7 @@
 Name: Puppeteer
 Short Name: Puppeteer
 URL: https://github.com/puppeteer/puppeteer
-Version: 5.5.0
+Version: 6.0.0
 License: Apache-2.0
 License File: LICENSE
 Security Critical: no
@@ -12,5 +12,5 @@ Puppeteer is a Node library which provides a high-level API to control Chrome or
 To update this package, run the following command (replace version number with updated version number):
 
 ```bash
-wget -qO- https://registry.npmjs.org/puppeteer/-/puppeteer-5.5.0.tgz | tar xzf -
+wget -qO- https://registry.npmjs.org/puppeteer/-/puppeteer-6.0.0.tgz | tar xzf -
 ```

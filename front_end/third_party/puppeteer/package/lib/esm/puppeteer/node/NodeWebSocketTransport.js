@@ -32,3 +32,4 @@ export class NodeWebSocketTransport {
         this._ws.close();
     }
 }
+//# sourceMappingURL=NodeWebSocketTransport.js.map

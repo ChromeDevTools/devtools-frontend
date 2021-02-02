@@ -35,3 +35,4 @@ class EmulationManager {
     }
 }
 exports.EmulationManager = EmulationManager;
+//# sourceMappingURL=EmulationManager.js.map

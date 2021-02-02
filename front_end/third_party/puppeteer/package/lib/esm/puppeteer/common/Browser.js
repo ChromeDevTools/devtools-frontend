@@ -514,3 +514,4 @@ export class BrowserContext extends EventEmitter {
         await this._browser._disposeContext(this._id);
     }
 }
+//# sourceMappingURL=Browser.js.map

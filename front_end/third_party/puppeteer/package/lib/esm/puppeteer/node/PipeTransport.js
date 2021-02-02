@@ -59,3 +59,4 @@ export class PipeTransport {
         helper.removeEventListeners(this._eventListeners);
     }
 }
+//# sourceMappingURL=PipeTransport.js.map

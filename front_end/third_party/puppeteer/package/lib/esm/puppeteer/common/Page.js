@@ -28,7 +28,7 @@ import { FrameManager, FrameManagerEmittedEvents, } from './FrameManager.js';
 import { debugError , helper} from './helper.js';
 import { Keyboard, Mouse, Touchscreen } from './Input.js';
 import { createJSHandle } from './JSHandle.js';
-import { NetworkManagerEmittedEvents } from './NetworkManager.js';
+import { NetworkManagerEmittedEvents, } from './NetworkManager.js';
 import { paperFormats } from './PDFOptions.js';
 import { TimeoutSettings } from './TimeoutSettings.js';
 import { Tracing } from './Tracing.js';
@@ -349,6 +349,11 @@ export class Page extends EventEmitter {
      */
     setOfflineMode(enabled) {
         return this._frameManager.networkManager().setOfflineMode(enabled);
+    }
+    emulateNetworkConditions(networkConditions) {
+        return this._frameManager
+            .networkManager()
+            .emulateNetworkConditions(networkConditions);
     }
     /**
      * @param timeout - Maximum navigation time in milliseconds.
@@ -809,11 +814,11 @@ export class Page extends EventEmitter {
     }
     async waitForResponse(urlOrPredicate, options = {}) {
         const { timeout = this._timeoutSettings.timeout() } = options;
-        return helper.waitForEvent(this._frameManager.networkManager(), NetworkManagerEmittedEvents.Response, (response) => {
+        return helper.waitForEvent(this._frameManager.networkManager(), NetworkManagerEmittedEvents.Response, async (response) => {
             if (helper.isString(urlOrPredicate))
                 return urlOrPredicate === response.url();
             if (typeof urlOrPredicate === 'function')
-                return !!urlOrPredicate(response);
+                return !!(await urlOrPredicate(response));
             return false;
         }, timeout, this._sessionClosePromise());
     }
@@ -1341,3 +1346,4 @@ function convertPrintParameterToInches(parameter) {
     }
     return pixels / 96;
 }
+//# sourceMappingURL=Page.js.map

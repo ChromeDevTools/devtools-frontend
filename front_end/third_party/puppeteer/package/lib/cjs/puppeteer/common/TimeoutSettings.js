@@ -45,3 +45,4 @@ class TimeoutSettings {
     }
 }
 exports.TimeoutSettings = TimeoutSettings;
+//# sourceMappingURL=TimeoutSettings.js.map

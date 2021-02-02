@@ -358,3 +358,4 @@ class AXNode {
         return nodeById.values().next().value;
     }
 }
+//# sourceMappingURL=Accessibility.js.map

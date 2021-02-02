@@ -155,3 +155,4 @@ function logPolitely(toBeLogged) {
         console.log(toBeLogged);
 }
 exports.logPolitely = logPolitely;
+//# sourceMappingURL=install.js.map

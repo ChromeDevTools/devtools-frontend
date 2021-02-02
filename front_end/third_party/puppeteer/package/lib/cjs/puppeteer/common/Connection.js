@@ -269,3 +269,4 @@ function rewriteError(error, message) {
     error.message = message;
     return error;
 }
+//# sourceMappingURL=Connection.js.map

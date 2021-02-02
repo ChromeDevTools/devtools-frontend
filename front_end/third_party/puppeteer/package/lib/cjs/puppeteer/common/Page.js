@@ -351,6 +351,11 @@ class Page extends EventEmitter_js_1.EventEmitter {
     setOfflineMode(enabled) {
         return this._frameManager.networkManager().setOfflineMode(enabled);
     }
+    emulateNetworkConditions(networkConditions) {
+        return this._frameManager
+            .networkManager()
+            .emulateNetworkConditions(networkConditions);
+    }
     /**
      * @param timeout - Maximum navigation time in milliseconds.
      */
@@ -810,11 +815,11 @@ class Page extends EventEmitter_js_1.EventEmitter {
     }
     async waitForResponse(urlOrPredicate, options = {}) {
         const { timeout = this._timeoutSettings.timeout() } = options;
-        return helper_js_1.helper.waitForEvent(this._frameManager.networkManager(), NetworkManager_js_1.NetworkManagerEmittedEvents.Response, (response) => {
+        return helper_js_1.helper.waitForEvent(this._frameManager.networkManager(), NetworkManager_js_1.NetworkManagerEmittedEvents.Response, async (response) => {
             if (helper_js_1.helper.isString(urlOrPredicate))
                 return urlOrPredicate === response.url();
             if (typeof urlOrPredicate === 'function')
-                return !!urlOrPredicate(response);
+                return !!(await urlOrPredicate(response));
             return false;
         }, timeout, this._sessionClosePromise());
     }
@@ -1343,3 +1348,4 @@ function convertPrintParameterToInches(parameter) {
     }
     return pixels / 96;
 }
+//# sourceMappingURL=Page.js.map

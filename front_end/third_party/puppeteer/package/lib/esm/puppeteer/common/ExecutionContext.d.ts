@@ -55,6 +55,10 @@ export declare class ExecutionContext {
     /**
      * @internal
      */
+    _contextName: string;
+    /**
+     * @internal
+     */
     constructor(client: CDPSession, contextPayload: Protocol.Runtime.ExecutionContextDescription, world: DOMWorld);
     /**
      * @remarks

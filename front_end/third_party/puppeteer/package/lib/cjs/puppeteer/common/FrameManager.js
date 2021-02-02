@@ -224,14 +224,15 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         await this._client.send('Page.addScriptToEvaluateOnNewDocument', {
             source: `//# sourceURL=${ExecutionContext_js_1.EVALUATION_SCRIPT_URL}`,
             worldName: name,
-        }),
-            await Promise.all(this.frames().map((frame) => this._client
-                .send('Page.createIsolatedWorld', {
-                frameId: frame._id,
-                grantUniveralAccess: true,
-                worldName: name,
-            })
-                .catch(helper_js_1.debugError))); // frames might be removed before we send this
+        });
+        // Frames might be removed before we send this.
+        await Promise.all(this.frames().map((frame) => this._client
+            .send('Page.createIsolatedWorld', {
+            frameId: frame._id,
+            worldName: name,
+            grantUniveralAccess: true,
+        })
+            .catch(helper_js_1.debugError)));
     }
     _onFrameNavigatedWithinDocument(frameId, url) {
         const frame = this._frames.get(frameId);
@@ -263,8 +264,6 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
                 world = frame._secondaryWorld;
             }
         }
-        if (contextPayload.auxData && contextPayload.auxData['type'] === 'isolated')
-            this._isolatedWorlds.add(contextPayload.name);
         const context = new ExecutionContext_js_1.ExecutionContext(this._client, contextPayload, world);
         if (world)
             world._setContext(context);
@@ -963,3 +962,4 @@ function assertNoLegacyNavigationOptions(options) {
     assert_js_1.assert(options['networkIdleInflight'] === undefined, 'ERROR: networkIdleInflight option is no longer supported.');
     assert_js_1.assert(options.waitUntil !== 'networkidle', 'ERROR: "networkidle" option is no longer supported. Use "networkidle2" instead');
 }
+//# sourceMappingURL=FrameManager.js.map

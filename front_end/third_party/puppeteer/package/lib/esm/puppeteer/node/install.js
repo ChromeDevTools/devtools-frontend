@@ -149,3 +149,4 @@ export function logPolitely(toBeLogged) {
     if (!logLevelDisplay)
         console.log(toBeLogged);
 }
+//# sourceMappingURL=install.js.map

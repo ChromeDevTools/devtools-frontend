@@ -43,6 +43,7 @@ export class ExecutionContext {
         this._client = client;
         this._world = world;
         this._contextId = contextPayload.id;
+        this._contextName = contextPayload.name;
     }
     /**
      * @remarks
@@ -311,3 +312,4 @@ export class ExecutionContext {
         return this._adoptBackendNodeId(nodeInfo.node.backendNodeId);
     }
 }
+//# sourceMappingURL=ExecutionContext.js.map

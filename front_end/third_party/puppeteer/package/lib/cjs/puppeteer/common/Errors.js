@@ -39,3 +39,4 @@ exports.TimeoutError = TimeoutError;
 exports.puppeteerErrors = {
     TimeoutError,
 };
+//# sourceMappingURL=Errors.js.map

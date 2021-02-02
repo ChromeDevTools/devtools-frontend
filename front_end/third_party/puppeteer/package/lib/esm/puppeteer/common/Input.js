@@ -461,3 +461,4 @@ export class Touchscreen {
         });
     }
 }
+//# sourceMappingURL=Input.js.map

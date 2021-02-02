@@ -467,3 +467,4 @@ class Touchscreen {
     }
 }
 exports.Touchscreen = Touchscreen;
+//# sourceMappingURL=Input.js.map

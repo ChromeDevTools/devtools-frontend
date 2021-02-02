@@ -20,3 +20,4 @@ if (!isNode) {
     throw new Error('Trying to run Puppeteer-Node in a web environment.');
 }
 export default initializePuppeteerNode('puppeteer');
+//# sourceMappingURL=node.js.map

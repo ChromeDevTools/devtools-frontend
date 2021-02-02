@@ -28,8 +28,37 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
     this._list.element.classList.add('locations-list');
     this._list.registerRequiredCSS('emulation/locationsSettingsTab.css', {enableLegacyPatching: true});
     this._list.show(this.contentElement);
+    /** @type {Common.Settings.PreRegisteredSetting<Array<LocationDescription>>} */
+    this._customSetting = /** @type {Common.Settings.PreRegisteredSetting<Array<LocationDescription>>} */ (
+        Common.Settings.Settings.instance().moduleSetting('emulation.locations'));
+    const list = /** @type {Array<*>} */ (this._customSetting.get())
+                     .map(location => replaceLocationTitles(location, this._customSetting.defaultValue()));
 
-    this._customSetting = Common.Settings.Settings.instance().moduleSetting('emulation.locations');
+    /**
+       * @param {LocationDescription} location
+       * @param {Array<LocationDescription>} defaultValues
+       */
+    function replaceLocationTitles(location, defaultValues) {
+      // This check is done for locations that might had been cached wrongly due to crbug.com/1171670.
+      // Each of the default values would have been stored without a title if the user had added a new location
+      // while the bug was present in the application. This means that getting the setting's default value with the `get`
+      // method would return the default locations without a title. To cope with this, the setting values are
+      // preemptively checked and corrected so that any default value mistakenly stored without a title is replaced
+      // with the corresponding declared value in the pre-registered setting.
+      if (!location.title) {
+        const replacement = defaultValues.find(
+            defaultLocation => defaultLocation.lat === location.lat && defaultLocation.long === location.long &&
+                defaultLocation.timezoneId === location.timezoneId && defaultLocation.locale === location.locale);
+        if (!replacement) {
+          console.error('Could not determine a location setting title');
+        } else {
+          return replacement;
+        }
+      }
+      return location;
+    }
+
+    this._customSetting.set(list);
     this._customSetting.addChangeListener(this._locationsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);
@@ -56,7 +85,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
 
     const conditions = this._customSetting.get();
     for (const condition of conditions) {
-      this._list.appendItem({...condition, title: condition.title()}, true);
+      this._list.appendItem(condition, true);
     }
 
     this._list.appendSeparator();
@@ -319,3 +348,15 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
 /** @typedef {{title: string, lat: number, long: number, timezoneId: string, locale: string}} */
 // @ts-ignore typedef
 export let Item;
+
+/**
+  * @typedef {{
+  * title: (undefined | string ),
+  * lat: number,
+  * long: number,
+  * timezoneId: string,
+  * locale: string
+  * }}
+  */
+// @ts-ignore typedef
+export let LocationDescription;

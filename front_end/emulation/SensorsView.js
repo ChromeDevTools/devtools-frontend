@@ -201,8 +201,7 @@ export class SensorsView extends UI.Widget.VBox {
       }
       this._customLocationsGroup.removeChildren();
       for (const [i, customLocation] of customLocations.get().entries()) {
-        this._customLocationsGroup.appendChild(
-            new Option(customLocation.title(), JSON.stringify({...customLocation, title: customLocation.title()})));
+        this._customLocationsGroup.appendChild(new Option(customLocation.title, JSON.stringify(customLocation)));
         if (location.latitude === customLocation.lat && location.longitude === customLocation.long) {
           // If the location coming from settings matches the custom location, use its index to select the option
           selectedIndex = i + 1;

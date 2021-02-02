@@ -18,11 +18,11 @@ Please be aware that DevTools follows additional [development guidelines](docs/d
 
 ### Issue triage
 
-The issue triage guidelines can be found [here](docs/triage_guidelines.md).
+The issue triage guidelines can be found [in docs/triage_guidelines.md](docs/triage_guidelines.md).
 
 ### Workflows
 
-Instructions to set up, use, and maintain a DevTools frontend checkout can be found [here](docs/workflows.md).
+Instructions to set up, use, and maintain a DevTools frontend checkout can be found [in docs/workflows.md](docs/workflows.md).
 
 ### Additional references
 

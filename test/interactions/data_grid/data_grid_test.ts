@@ -6,6 +6,7 @@ import {assert} from 'chai';
 
 import {getDataGrid, getDataGridCellAtIndex, getDataGridFillerCellAtColumnIndex, getDataGridRows, getInnerTextOfDataGridCells} from '../../e2e/helpers/datagrid-helpers.js';
 import {$, $$, click, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/helper.js';
+import {it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample} from '../helpers/shared.js';
 
 import type {ElementHandle} from 'puppeteer';
@@ -150,9 +151,8 @@ describe('data grid', () => {
     assertNumberBetween(columnWidths[2], 297, 304);  // 33% of 900 = 300
   });
 
-  // Flaky test
-  it.skip(
-      '[crbug.com/1172902]lets the user resize columns when there is a middle hidden column inbetween', async () => {
+  it(
+      'lets the user resize columns when there is a middle hidden column inbetween', async () => {
         /** Imagine we have a data grid with 3 columns:
      * A | B | C And then we hide B, so the user sees:
      * A | C
@@ -174,7 +174,9 @@ describe('data grid', () => {
         await waitForFunction(async () => {
           const dataGrid = await getDataGrid();
           const hiddenCells = await $$('tbody td.hidden', dataGrid);
-          return hiddenCells.length === 3;
+          const resizerHandlers = await $$('.cell-resize-handle', dataGrid);
+          // Now there are only 2 columns visible, there should be 1 resize handler.
+          return hiddenCells.length === 3 && resizerHandlers.length === 1;
         });
 
         const dataGrid = await getDataGrid();

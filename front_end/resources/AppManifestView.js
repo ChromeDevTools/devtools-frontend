@@ -506,8 +506,16 @@ export class AppManifestView extends UI.Widget.VBox {
       } else if (image.naturalHeight !== height) {
         imageResourceErrors.push(ls`Actual height (${image.naturalHeight}px) of ${resourceName} ${
             imageUrl} does not match specified height (${height}px)`);
-      } else if (isScreenshot && (width < 320 || height < 320)) {
-        imageResourceErrors.push(ls`${resourceName} ${imageUrl} size should be at least 320x320`);
+      } else if (isScreenshot) {
+        if (width < 320 || height < 320) {
+          imageResourceErrors.push(ls`${resourceName} ${imageUrl} size should be at least 320×320`);
+        } else if (width > 3840 || height > 3840) {
+          imageResourceErrors.push(ls`${resourceName} ${imageUrl} size should be at least 3840×3840`);
+        } else if (width > height * 2) {
+          imageResourceErrors.push(ls`${resourceName} ${imageUrl} width should be less than twice the height`);
+        } else if (height > width * 2) {
+          imageResourceErrors.push(ls`${resourceName} ${imageUrl} height should be less than twice the width`);
+        }
       }
     }
     field.appendChild(wrapper);

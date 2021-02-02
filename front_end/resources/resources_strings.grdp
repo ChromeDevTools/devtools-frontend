@@ -15,6 +15,9 @@
   <message name="IDS_DEVTOOLS_03ea25886ec5efba7a20fbeb6c7070fa" desc="Manifest installability error in the Application panel">
     The specified application platform is not supported on <ph name="LOCKED_1">Android</ph>
   </message>
+  <message name="IDS_DEVTOOLS_04288adc8ed806c546be44120fa96ea9" desc="Warning message for image resources from the manifest">
+      <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> <ph name="IMAGEURL">$2s<ex>https://example.com/image.png</ex></ph> height should be less than twice the width
+  </message>
   <message name="IDS_DEVTOOLS_05b2812ab435addb8ae4853ead93f1b3" desc="Text in Service Workers View of the Application panel">
     Received <ph name="NEW_DATE_VERSION_SCRIPTRESPONSETIME_________TOLOCALESTRING__">$1s<ex>7/3/2019, 3:38:37 PM</ex></ph>
   </message>
@@ -310,6 +313,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_76c18f2b1e4155961e10434e3d83317f" desc="Text in Indexed DBViews of the Application panel">
     Key generator value: <ph name="STRING_METADATA_KEYGENERATORVALUE_">$1s<ex>2</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_76e61346e5a08a1f2f40b184c7bce03b" desc="Warning message for image resources from the manifest">
+    <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> <ph name="IMAGEURL">$2s<ex>https://example.com/image.png</ex></ph> size should be at least 320×320
+  </message>
   <message name="IDS_DEVTOOLS_795a813f20a4d4b04f85ddb86287fce4" desc="Quota row title in Clear Storage View of the Application panel">
     Storage quota is limited in Incognito mode
   </message>
@@ -549,6 +555,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_bbed5775ecfc6157ab497ab72716ccaf" desc="Tooltip for the SharedArrayBuffer availability status">
     SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage
   </message>
+  <message name="IDS_DEVTOOLS_bc0a1c6d08cccd8722383fdaa26cc9e7" desc="Warning message for image resources from the manifest">
+    <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> <ph name="IMAGEURL">$2s<ex>https://example.com/image.png</ex></ph> width should be less than twice the height
+  </message>
   <message name="IDS_DEVTOOLS_bd0c1dbb1b437cd840dbc57852fb8ec6" desc="Link text for more information on maskable icons in App Manifest view of the Application panel">
     documentation on maskable icons
   </message>
@@ -669,6 +678,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   <message name="IDS_DEVTOOLS_8ef2e5358b2e3b2af0212e3dc8668188" desc="Text in App Manifest View of the Application panel">
     Description may be truncated.
   </message>
+  <message name="IDS_DEVTOOLS_de7e4b8f3a01bd0e43aae6aac37417b2" desc="Warning message for image resources from the manifest">
+    <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> <ph name="IMAGEURL">$2s<ex>https://example.com/image.png</ex></ph> size should be at least 3840×3840
+  </message>
   <message name="IDS_DEVTOOLS_e00a7ac13697ba51e098449fd644935b" desc="Text in Background Service View of the Application panel">
     Show events from other domains
   </message>
@@ -716,9 +728,6 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_edfea37d34e2f56d9ef6c2fc90487f28" desc="Manifest installability error in the Application panel">
     No matching <ph name="LOCKED_TERM">service worker</ph> detected. You may need to reload the page, or check that the scope of the <ph name="LOCKED_TERM">service worker</ph> for the current page encloses the scope and start URL from the manifest.
-  </message>
-  <message name="IDS_DEVTOOLS_ee9fd2fe7108a313aec328849f9fbc72" desc="Warning message for image resources from the manifest">
-    <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> <ph name="IMAGEURL">$2s<ex>https://example.com/image.png</ex></ph> size should be at least 320x320
   </message>
   <message name="IDS_DEVTOOLS_eeb6ddeed2e08678ebc14eb39c8340bf" desc="Text in Indexed DBViews of the Application panel">
     IDB

@@ -64,6 +64,9 @@ export class DataGridController extends HTMLElement {
 
     if (!this.hasRenderedAtLeastOnce && data.initialSort) {
       this.sortState = data.initialSort;
+    }
+
+    if (this.sortState) {
       this.sortRows(this.sortState);
     }
 

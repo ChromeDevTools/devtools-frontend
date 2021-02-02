@@ -173,6 +173,32 @@ describe('DataGridController', () => {
       const finalCellValues = getValuesForColumn(internalDataGridShadow, 'key');
       assert.deepEqual(finalCellValues, originalCellValues);
     });
+
+    it('persists the sort as new data is added and inserts new data into the right place', async () => {
+      const component = new UIComponents.DataGridController.DataGridController();
+      component.data = {rows, columns};
+
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      await coordinator.done();
+      const internalDataGridShadow = getInternalDataGridShadowRoot(component);
+
+      const keyHeader = getHeaderCellForColumnId(internalDataGridShadow, 'key');
+      dispatchClickEvent(keyHeader);  // ASC order
+      await coordinator.done();
+      let cellValues = getValuesForColumn(internalDataGridShadow, 'key');
+      // Ensure we are in ASC order
+      assert.deepEqual(cellValues, ['Alpha', 'Bravo', 'Charlie']);
+      const newRow = {cells: [{columnId: 'key', value: 'Baz'}]};
+      const newRows = [...rows, newRow];
+      component.data = {
+        ...component.data,
+        rows: newRows,
+      };
+      await coordinator.done();
+      cellValues = getValuesForColumn(internalDataGridShadow, 'key');
+      assert.deepEqual(cellValues, ['Alpha', 'Baz', 'Bravo', 'Charlie']);
+    });
   });
 
   describe('filtering rows', () => {

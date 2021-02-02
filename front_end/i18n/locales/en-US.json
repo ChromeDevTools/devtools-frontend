@@ -497,8 +497,8 @@
   "browser_debugger/browser_debugger-meta.ts | showDomBreakpoints": {
     "message": "Show DOM Breakpoints"
   },
-  "browser_debugger/browser_debugger-meta.ts | showElements": {
-    "message": "Show Elements"
+  "browser_debugger/browser_debugger-meta.ts | showEventListenerBreakpoints": {
+    "message": "Show Event Listener Breakpoints"
   },
   "browser_debugger/browser_debugger-meta.ts | showGlobalListeners": {
     "message": "Show Global Listeners"

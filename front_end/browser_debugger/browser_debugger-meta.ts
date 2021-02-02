@@ -12,9 +12,9 @@ import type * as Sources from '../sources/sources.js';
 import * as i18n from '../i18n/i18n.js';
 export const UIStrings = {
   /**
-  *@description Command for showing the 'Elements' tool
+  *@description Command for showing the 'Event Listener Breakpoints' tool
   */
-  showElements: 'Show Elements',
+  showEventListenerBreakpoints: 'Show Event Listener Breakpoints',
   /**
   *@description Title of the 'Event Listener Breakpoints' tool in the bottom sidebar of the Sources tool
   */
@@ -112,7 +112,7 @@ UI.ViewManager.registerViewExtension({
   },
   id: 'sources.eventListenerBreakpoints',
   location: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
-  commandPrompt: i18nString(UIStrings.showElements),
+  commandPrompt: i18nString(UIStrings.showEventListenerBreakpoints),
   title: i18nString(UIStrings.eventListenerBreakpoints),
   order: 9,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,

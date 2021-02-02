@@ -40,3 +40,4 @@ const environment_js_1 = require("../environment.js");
 exports.getFetch = async () => {
     return environment_js_1.isNode ? await Promise.resolve().then(() => __importStar(require('node-fetch'))) : globalThis.fetch;
 };
+//# sourceMappingURL=fetch.js.map

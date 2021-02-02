@@ -110,3 +110,4 @@ class WebWorker extends EventEmitter_js_1.EventEmitter {
     }
 }
 exports.WebWorker = WebWorker;
+//# sourceMappingURL=WebWorker.js.map

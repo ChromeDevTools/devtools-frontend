@@ -39,3 +39,4 @@ class NodeWebSocketTransport {
     }
 }
 exports.NodeWebSocketTransport = NodeWebSocketTransport;
+//# sourceMappingURL=NodeWebSocketTransport.js.map

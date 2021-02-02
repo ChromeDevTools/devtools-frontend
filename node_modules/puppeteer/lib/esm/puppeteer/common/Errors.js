@@ -35,3 +35,4 @@ export class TimeoutError extends CustomError {
 export const puppeteerErrors = {
     TimeoutError,
 };
+//# sourceMappingURL=Errors.js.map

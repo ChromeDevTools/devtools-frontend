@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export const isNode = !!(typeof process !== 'undefined' && process.version);
+//# sourceMappingURL=environment.js.map

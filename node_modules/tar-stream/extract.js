@@ -120,7 +120,7 @@ var Extract = function (opts) {
     var offset = self._offset
     var header
     try {
-      header = self._header = headers.decode(b.slice(0, 512), opts.filenameEncoding)
+      header = self._header = headers.decode(b.slice(0, 512), opts.filenameEncoding, opts.allowUnknownFormat)
     } catch (err) {
       self.emit('error', err)
     }

@@ -28,3 +28,4 @@ export class BrowserWebSocketTransport {
         this._ws.close();
     }
 }
+//# sourceMappingURL=BrowserWebSocketTransport.js.map

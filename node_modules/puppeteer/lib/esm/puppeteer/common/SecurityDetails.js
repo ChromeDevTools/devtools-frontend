@@ -70,3 +70,4 @@ export class SecurityDetails {
         return this._sanList;
     }
 }
+//# sourceMappingURL=SecurityDetails.js.map

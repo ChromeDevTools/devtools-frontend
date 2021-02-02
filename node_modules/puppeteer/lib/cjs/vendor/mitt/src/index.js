@@ -54,3 +54,4 @@ function mitt(all) {
     };
 }
 exports.default = mitt;
+//# sourceMappingURL=index.js.map

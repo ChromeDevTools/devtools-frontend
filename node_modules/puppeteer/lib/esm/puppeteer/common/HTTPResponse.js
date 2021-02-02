@@ -148,3 +148,4 @@ export class HTTPResponse {
         return this._request.frame();
     }
 }
+//# sourceMappingURL=HTTPResponse.js.map

@@ -21,3 +21,4 @@ if (!environment_js_1.isNode) {
     throw new Error('Trying to run Puppeteer-Node in a web environment.');
 }
 exports.default = initialize_node_js_1.initializePuppeteerNode('puppeteer');
+//# sourceMappingURL=node.js.map

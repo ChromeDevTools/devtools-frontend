@@ -74,3 +74,4 @@ __exportStar(require("./common/TimeoutSettings.js"), exports);
 __exportStar(require("./common/LifecycleWatcher.js"), exports);
 __exportStar(require("./common/QueryHandler.js"), exports);
 __exportStar(require("devtools-protocol/types/protocol"), exports);
+//# sourceMappingURL=api-docs-entry.js.map

@@ -17,6 +17,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PUPPETEER_REVISIONS = void 0;
 exports.PUPPETEER_REVISIONS = {
-    chromium: '818858',
+    chromium: '843427',
     firefox: 'latest',
 };
+//# sourceMappingURL=revisions.js.map

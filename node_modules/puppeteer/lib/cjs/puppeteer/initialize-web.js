@@ -23,3 +23,4 @@ exports.initializePuppeteerWeb = (packageName) => {
         isPuppeteerCore,
     });
 };
+//# sourceMappingURL=initialize-web.js.map

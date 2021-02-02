@@ -237,7 +237,7 @@ exports.encode = function (opts) {
   return buf
 }
 
-exports.decode = function (buf, filenameEncoding) {
+exports.decode = function (buf, filenameEncoding, allowUnknownFormat) {
   var typeflag = buf[156] === 0 ? 0 : buf[156] - ZERO_OFFSET
 
   var name = decodeStr(buf, 0, 100, filenameEncoding)
@@ -270,7 +270,9 @@ exports.decode = function (buf, filenameEncoding) {
     // 'gnu'/'oldgnu' format. Similar to ustar, but has support for incremental and
     // multi-volume tarballs.
   } else {
-    throw new Error('Invalid tar header: unknown format.')
+    if (!allowUnknownFormat) {
+      throw new Error('Invalid tar header: unknown format.')
+    }
   }
 
   // to support old tar versions that use trailing / to indicate dirs

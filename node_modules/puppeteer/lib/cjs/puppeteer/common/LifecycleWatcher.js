@@ -146,3 +146,4 @@ class LifecycleWatcher {
     }
 }
 exports.LifecycleWatcher = LifecycleWatcher;
+//# sourceMappingURL=LifecycleWatcher.js.map

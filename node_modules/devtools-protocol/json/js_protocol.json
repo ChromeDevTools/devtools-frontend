@@ -489,7 +489,7 @@
                         },
                         {
                             "name": "evaluator",
-                            "description": "Code of the evaluator module.",
+                            "description": "Code of the evaluator module. (Encoded as a base64 string when passed over JSON)",
                             "type": "string"
                         },
                         {
@@ -565,7 +565,7 @@
                         },
                         {
                             "name": "bytecode",
-                            "description": "Wasm bytecode.",
+                            "description": "Wasm bytecode. (Encoded as a base64 string when passed over JSON)",
                             "optional": true,
                             "type": "string"
                         }
@@ -585,7 +585,7 @@
                     "returns": [
                         {
                             "name": "bytecode",
-                            "description": "Script source.",
+                            "description": "Script source. (Encoded as a base64 string when passed over JSON)",
                             "type": "string"
                         }
                     ]

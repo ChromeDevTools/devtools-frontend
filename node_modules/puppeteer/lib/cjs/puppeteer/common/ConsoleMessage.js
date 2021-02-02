@@ -62,3 +62,4 @@ class ConsoleMessage {
     }
 }
 exports.ConsoleMessage = ConsoleMessage;
+//# sourceMappingURL=ConsoleMessage.js.map

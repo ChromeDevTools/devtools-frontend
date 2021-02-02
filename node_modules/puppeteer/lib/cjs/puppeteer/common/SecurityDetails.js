@@ -74,3 +74,4 @@ class SecurityDetails {
     }
 }
 exports.SecurityDetails = SecurityDetails;
+//# sourceMappingURL=SecurityDetails.js.map

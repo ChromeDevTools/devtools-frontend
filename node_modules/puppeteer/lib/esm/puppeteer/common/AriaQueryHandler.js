@@ -79,3 +79,4 @@ export const ariaHandler = {
     queryAll,
     queryAllArray,
 };
+//# sourceMappingURL=AriaQueryHandler.js.map

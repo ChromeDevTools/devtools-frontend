@@ -65,7 +65,7 @@ DEPS = {
     "karma-spec-reporter": "0.0.32",
     "license-checker": "25.0.1",
     "mocha": "8.2.1",
-    "puppeteer": "5.5.0",
+    "puppeteer": "6.0.0",
     "recast": "0.20.4",
     "rimraf": "3.0.2",
     "rollup": "2.34.0",

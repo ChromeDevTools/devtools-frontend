@@ -317,3 +317,4 @@ function convertToDisjointRanges(nestedRanges) {
     // Filter out empty ranges.
     return results.filter((range) => range.end - range.start > 1);
 }
+//# sourceMappingURL=Coverage.js.map

@@ -78,3 +78,4 @@ exports.debug = (prefix) => {
         console.log(`${prefix}:`, ...logArgs);
     };
 };
+//# sourceMappingURL=Debug.js.map

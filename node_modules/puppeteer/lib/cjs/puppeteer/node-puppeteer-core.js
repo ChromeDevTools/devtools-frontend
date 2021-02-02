@@ -22,3 +22,4 @@ if (!environment_js_1.isNode) {
 }
 const puppeteer = initialize_node_js_1.initializePuppeteerNode('puppeteer-core');
 exports.default = puppeteer;
+//# sourceMappingURL=node-puppeteer-core.js.map

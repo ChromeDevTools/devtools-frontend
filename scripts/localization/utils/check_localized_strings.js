@@ -109,6 +109,7 @@ let devtoolsFrontendDirs;
 const migratedDirsSet = new Set([
   'accessibility',
   'animation',
+  'browser_debugger',
   'browser_sdk',
   'changes',
   'color_picker',

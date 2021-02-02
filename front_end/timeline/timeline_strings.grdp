@@ -124,6 +124,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_18fe96f0c47fa8c62afe3be31d97b880" desc="Text in Timeline UIUtils of the Performance panel">
     Finish Loading
   </message>
+  <message name="IDS_DEVTOOLS_193cfc9be3b995831c6af2fea6650e60" desc="Text that refers to one or a group of webpages">
+    Page
+  </message>
   <message name="IDS_DEVTOOLS_1b01d1ef7772f8e0c0e0427e4faad653" desc="Text in Counters Graph of the Performance panel">
     Listeners: <ph name="NUMBER_OF_LISTENERS">$1s<ex>17</ex></ph>
   </message>
@@ -594,6 +597,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_7c880e07f865ea4661fc6317f9b9de60" desc="Title of an action that opens the previous recording in the performance panel">
     Previous recording
+  </message>
+  <message name="IDS_DEVTOOLS_7d341c08fd102f0b86285b5ff2e26ea7" desc="Text with two placeholders separated by a colon">
+    <ph name="BREAKPOINT_TYPE_LABEL">$1s<ex>Node removed</ex></ph>: <ph name="LINKIFIED_CONTENT">$2s<ex>div#id1</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_80a4b8755d836d50c19e6eefb976bc2e" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="SELFCATEGORY_TITLE">$1s<ex>blink.console</ex></ph> (self)

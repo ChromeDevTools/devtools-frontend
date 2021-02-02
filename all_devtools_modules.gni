@@ -43,6 +43,7 @@ all_typescript_module_sources = [
   "browser_debugger/CategorizedBreakpointsSidebarPane.js",
   "browser_debugger/DOMBreakpointsSidebarPane.js",
   "browser_debugger/EventListenerBreakpointsSidebarPane.js",
+  "browser_debugger/ModuleUIStrings.js",
   "browser_debugger/ObjectEventListenersSidebarPane.js",
   "browser_debugger/XHRBreakpointsSidebarPane.js",
   "browser_sdk/IssuesManager.js",

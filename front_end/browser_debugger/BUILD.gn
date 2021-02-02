@@ -11,6 +11,7 @@ devtools_module("browser_debugger") {
     "CategorizedBreakpointsSidebarPane.js",
     "DOMBreakpointsSidebarPane.js",
     "EventListenerBreakpointsSidebarPane.js",
+    "ModuleUIStrings.js",
     "ObjectEventListenersSidebarPane.js",
     "XHRBreakpointsSidebarPane.js",
   ]
@@ -18,6 +19,7 @@ devtools_module("browser_debugger") {
   deps = [
     "../common:bundle",
     "../event_listeners:bundle",
+    "../i18n:bundle",
     "../sdk:bundle",
     "../sources:bundle",
     "../ui:bundle",

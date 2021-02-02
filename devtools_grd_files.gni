@@ -470,6 +470,7 @@ grd_files_debug_sources = [
   "front_end/browser_debugger/CategorizedBreakpointsSidebarPane.js",
   "front_end/browser_debugger/DOMBreakpointsSidebarPane.js",
   "front_end/browser_debugger/EventListenerBreakpointsSidebarPane.js",
+  "front_end/browser_debugger/ModuleUIStrings.js",
   "front_end/browser_debugger/ObjectEventListenersSidebarPane.js",
   "front_end/browser_debugger/XHRBreakpointsSidebarPane.js",
   "front_end/browser_sdk/IssuesManager.js",

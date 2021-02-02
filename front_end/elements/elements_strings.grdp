@@ -36,6 +36,9 @@
   <message name="IDS_DEVTOOLS_2ddaa8e6378b906b42429dc4003edbd3" desc="A context menu item to reveal a node in the DOM tree of the Elements Panel">
     Reveal in Elements panel
   </message>
+  <message name="IDS_DEVTOOLS_3f08ab5159cf45a5c7472053c971eb28" desc="Command for showing the 'Elements' tool">
+    Show Elements
+  </message>
   <message name="IDS_DEVTOOLS_3f8f88e3686b2345cecc9530e19e6172" desc="A context menu item to store a value as a global variable the Elements Panel">
     Store as global variable
   </message>

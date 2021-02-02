@@ -22,9 +22,6 @@
   <message name="IDS_DEVTOOLS_0be7b7d0111a248185e7b1bebaf8595b" desc="Text to enable blocking of network requests">
     Enable network request blocking
   </message>
-  <message name="IDS_DEVTOOLS_0ca08f8f4a8a19f7f1ae87c119494327" desc="Title as part of a tool to override existing configurations">
-    Overrides
-  </message>
   <message name="IDS_DEVTOOLS_0eaadb4fcb48a0a0ed7bc9868be9fbaa" desc="Text to indicate an item is a warning">
     Warning
   </message>
@@ -48,9 +45,6 @@
   </message>
   <message name="IDS_DEVTOOLS_17145319aba079a26c6d3bb2b1d58894" desc="Text in Request Timing View of the Network panel">
     <ph name="LOCKED_TERM">Service Worker</ph>
-  </message>
-  <message name="IDS_DEVTOOLS_193cfc9be3b995831c6af2fea6650e60" desc="Text that refers to one or a group of webpages">
-    Page
   </message>
   <message name="IDS_DEVTOOLS_1b1ac1c7a54457ce73ddd25a5b51c47d" desc="A title of the 'Drawer sidebar' @UI.ViewLocationResolver category">
     Drawer sidebar
@@ -98,14 +92,8 @@
     Frame
   </message>
 
-  <message name="IDS_DEVTOOLS_3f08ab5159cf45a5c7472053c971eb28" desc="Command for showing the 'Elements' tool">
-    Show Elements
-  </message>
   <message name="IDS_DEVTOOLS_4789f23283b3a61f858b641a1bef19a3" desc="Text for the memory of the page">
     Memory
-  </message>
-  <message name="IDS_DEVTOOLS_47bda3033cb8fe0e76c45c293db011b5" desc="Text to indicate there are no breakpoints">
-    No breakpoints
   </message>
   <message name="IDS_DEVTOOLS_49ee3087348e8d44e1feda1917443987" desc="Text for the name of something">
     Name
@@ -173,9 +161,6 @@
   <message name="IDS_DEVTOOLS_6adf97f83acf6453d4a6a4b1070f3754" desc="Text to show there is nothing">
     None
   </message>
-  <message name="IDS_DEVTOOLS_6ba3a9ac3e0d57683c56299484b7ee3b" desc="Text to remove all breakpoints">
-    Remove all breakpoints
-  </message>
   <message name="IDS_DEVTOOLS_6f6cb72d544962fa333e2e34ce64f719" desc="Text for the size of something">
     Size
   </message>
@@ -190,9 +175,6 @@
   </message>
   <message name="IDS_DEVTOOLS_76c3e002d3c052bd6a909366a8dc3845" desc="Text that appears on a button for the manifest resource type filter.">
     Manifest
-  </message>
-  <message name="IDS_DEVTOOLS_7d341c08fd102f0b86285b5ff2e26ea7" desc="Text with two placeholders separated by a colon">
-    <ph name="BREAKPOINT_TYPE_LABEL">$1s<ex>Node removed</ex></ph>: <ph name="LINKIFIED_CONTENT">$2s<ex>div#id1</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_8166a4b3fb4979da3a24ed21ced7fdf7" desc="Text for an option to learn more about something">
     Learn more
@@ -217,9 +199,6 @@
   </message>
   <message name="IDS_DEVTOOLS_8d9da4bc0e49a50e09ac9f7e56789d39" desc="Text to indicate the network connectivity is offline">
     Offline
-  </message>
-  <message name="IDS_DEVTOOLS_8fc1dde0c79d8adcaf674b3d679d3596" desc="Accessibility label for hit breakpoints in the Sources panel.">
-    <ph name="CHECKEDSTATETEXT">$1s<ex>checked</ex></ph> breakpoint hit
   </message>
   <message name="IDS_DEVTOOLS_902b0d55fddef6f8d651fe1035b7d4bd" desc="Text for errors">
     Error
@@ -287,9 +266,6 @@
   <message name="IDS_DEVTOOLS_b1c94ca2fbc3e78fc30069c8d0f01680" desc="Text for everything">
     All
   </message>
-  <message name="IDS_DEVTOOLS_b4e79b551a1ceae24b7de243ab1fd27c" desc="Text to add a breakpoint">
-    Add breakpoint
-  </message>
   <message name="IDS_DEVTOOLS_b5a7adde1af5c87d7fd797b6245c2a39" desc="Text for the description of something">
     Description
   </message>
@@ -340,9 +316,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d59048f21fd887ad520398ce677be586" desc="Text that is usually a hyperlink to more documentation">
     Learn more
-  </message>
-  <message name="IDS_DEVTOOLS_d5bfaaca8e28f8b9b9211038f86a4494" desc="Text to remove a breakpoint">
-    Remove breakpoint
   </message>
   <message name="IDS_DEVTOOLS_d64ed3e9c10229648e069f56e32f4c8e" desc="Text for a network response">
     Response

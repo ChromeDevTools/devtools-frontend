@@ -12,6 +12,9 @@
   <message name="IDS_DEVTOOLS_0c78cd3aa4c94a64675bc6aa77802843" desc="Text in Sensors View of the Device Toolbar">
     Device-based
   </message>
+  <message name="IDS_DEVTOOLS_0ca08f8f4a8a19f7f1ae87c119494327" desc="Title as part of a tool to override existing configurations">
+    Overrides
+  </message>
   <message name="IDS_DEVTOOLS_0e1275697d4c40b4b0640fbfa3907afa" desc="A tag of Sensors tool that can be searched in the command menu">
     accelerometer
   </message>

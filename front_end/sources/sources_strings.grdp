@@ -183,6 +183,9 @@
   <message name="IDS_DEVTOOLS_46e8256224399a2d32a2f988a21d6562" desc="Text in Sources Navigator of the Sources panel">
     Select folder for overrides
   </message>
+  <message name="IDS_DEVTOOLS_47bda3033cb8fe0e76c45c293db011b5" desc="Text to indicate there are no breakpoints">
+    No breakpoints
+  </message>
   <message name="IDS_DEVTOOLS_47dbdb85aee276cd77a84a067af48aa5" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Enable tab moves focus
   </message>
@@ -291,6 +294,9 @@
   <message name="IDS_DEVTOOLS_69a309503a6b6e3265981a5db92c82ac" desc="Text in Debugger Paused Message of the Sources panel">
     Paused on promise rejection
   </message>
+  <message name="IDS_DEVTOOLS_6ba3a9ac3e0d57683c56299484b7ee3b" desc="Text to remove all breakpoints">
+    Remove all breakpoints
+  </message>
   <message name="IDS_DEVTOOLS_6bb8aa3b54918eeb27dafcace1e5addd" desc="Text in Navigator View of the Sources panel">
     (no domain)
   </message>
@@ -398,6 +404,9 @@
   </message>
   <message name="IDS_DEVTOOLS_8b86092355ebf3d7d9ab48cbfb406747" desc="Error message that shows up in the console if a buffer to be opened in the lienar memory inspector cannot be found.">
     Could not open linear memory inspector: failed locating buffer.
+  </message>
+  <message name="IDS_DEVTOOLS_8fc1dde0c79d8adcaf674b3d679d3596" desc="Accessibility label for hit breakpoints in the Sources panel.">
+    <ph name="CHECKEDSTATETEXT">$1s<ex>checked</ex></ph> breakpoint hit
   </message>
   <message name="IDS_DEVTOOLS_904a8304056d77e4547744781b7ceb50" desc="Title of a sources panel action that renames a file">
     Rename
@@ -513,6 +522,9 @@
   <message name="IDS_DEVTOOLS_b402b605feaea6029ac976f4963e20cd" desc="Text in Tabbed Editor Container of the Sources panel">
     Are you sure you want to close unsaved file: <ph name="UISOURCECODE_NAME__">$1s<ex>example.file</ex></ph>?
   </message>
+  <message name="IDS_DEVTOOLS_b4e79b551a1ceae24b7de243ab1fd27c" desc="Text to add a breakpoint">
+    Add breakpoint
+  </message>
   <message name="IDS_DEVTOOLS_b526d5bfa95ab0d53b118425336d52a3" desc="Text in Navigator View of the Sources panel">
     Are you sure you want to remove this folder?
   </message>
@@ -569,6 +581,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d48a0b796559f82f7dad6167c77ae40c" desc="Text for scripts that should not be stepped into when debugging">
     Add script to ignore list
+  </message>
+  <message name="IDS_DEVTOOLS_d5bfaaca8e28f8b9b9211038f86a4494" desc="Text to remove a breakpoint">
+    Remove breakpoint
   </message>
   <message name="IDS_DEVTOOLS_d73bf4cc90c1cf3da05515764aa97722" desc="Command for showing the 'Watch' tool">
     Show Watch

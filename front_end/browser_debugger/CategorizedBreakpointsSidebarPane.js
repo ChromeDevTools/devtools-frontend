@@ -2,10 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Screen reader description of a hit breakpoint in the Sources panel
+  */
+  breakpointHit: 'breakpoint hit',
+};
+const str_ = i18n.i18n.registerUIStrings('browser_debugger/CategorizedBreakpointsSidebarPane.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @abstract
  */
@@ -149,7 +157,7 @@ export class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     const matchingBreakpoint = this._breakpoints.get(breakpoint);
     if (matchingBreakpoint) {
       this._highlightedElement = matchingBreakpoint.element.listItemElement;
-      UI.ARIAUtils.setDescription(this._highlightedElement, ls`breakpoint hit`);
+      UI.ARIAUtils.setDescription(this._highlightedElement, i18nString(UIStrings.breakpointHit));
       this._highlightedElement.classList.add('breakpoint-hit');
     }
   }

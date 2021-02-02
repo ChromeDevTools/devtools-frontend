@@ -4,10 +4,18 @@
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as EventListeners from '../event_listeners/event_listeners.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Label for a button in the sources panel that refreshes the list of global event listeners.
+  */
+  refreshGlobalListeners: 'Refresh global listeners',
+};
+const str_ = i18n.i18n.registerUIStrings('browser_debugger/ObjectEventListenersSidebarPane.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!ObjectEventListenersSidebarPane} */
 let objectEventListenersSidebarPaneInstance;
 
@@ -20,7 +28,8 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox {
    */
   constructor() {
     super();
-    this._refreshButton = new UI.Toolbar.ToolbarButton(ls`Refresh global listeners`, 'largeicon-refresh');
+    this._refreshButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refreshGlobalListeners), 'largeicon-refresh');
     this._refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._refreshClick, this);
     this._refreshButton.setEnabled(false);
 

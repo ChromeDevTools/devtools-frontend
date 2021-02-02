@@ -2,11 +2,59 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Title of the 'XHR/fetch Breakpoints' tool in the bottom sidebar of the Sources tool
+  */
+  xhrfetchBreakpoints: 'XHR/fetch Breakpoints',
+  /**
+  *@description Text to indicate there are no breakpoints
+  */
+  noBreakpoints: 'No breakpoints',
+  /**
+  *@description Label for a button in the Sources panel that opens the input field to create a new XHR/fetch breakpoint.
+  */
+  addXhrfetchBreakpoint: 'Add XHR/fetch breakpoint',
+  /**
+  *@description Text to add a breakpoint
+  */
+  addBreakpoint: 'Add breakpoint',
+  /**
+  *@description Input element container text content in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
+  */
+  breakWhenUrlContains: 'Break when URL contains:',
+  /**
+  *@description Accessible label for XHR/fetch breakpoint text input
+  */
+  urlBreakpoint: 'URL Breakpoint',
+  /**
+  *@description Text in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
+  *@example {example.com} PH1
+  */
+  urlContainsS: 'URL contains "{PH1}"',
+  /**
+  *@description Text in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel
+  */
+  anyXhrOrFetch: 'Any XHR or fetch',
+  /**
+  *@description Screen reader description of a hit breakpoint in the Sources panel
+  */
+  breakpointHit: 'breakpoint hit',
+  /**
+  *@description Text to remove all breakpoints
+  */
+  removeAllBreakpoints: 'Remove all breakpoints',
+  /**
+  *@description Text to remove a breakpoint
+  */
+  removeBreakpoint: 'Remove breakpoint',
+};
+const str_ = i18n.i18n.registerUIStrings('browser_debugger/XHRBreakpointsSidebarPane.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @type {!WeakMap<!Element, !HTMLElement>}
  */
@@ -39,14 +87,14 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
     this.contentElement.appendChild(this._list.element);
     this._list.element.classList.add('breakpoint-list', 'hidden');
     UI.ARIAUtils.markAsList(this._list.element);
-    UI.ARIAUtils.setAccessibleName(this._list.element, ls`XHR/fetch Breakpoints`);
+    UI.ARIAUtils.setAccessibleName(this._list.element, i18nString(UIStrings.xhrfetchBreakpoints));
     this._emptyElement = this.contentElement.createChild('div', 'gray-info-message');
-    this._emptyElement.textContent = Common.UIString.UIString('No breakpoints');
+    this._emptyElement.textContent = i18nString(UIStrings.noBreakpoints);
 
     /** @type {!Map.<string, !Element>} */
     this._breakpointElements = new Map();
 
-    this._addButton = new UI.Toolbar.ToolbarButton(ls`Add XHR/fetch breakpoint`, 'largeicon-add');
+    this._addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addXhrfetchBreakpoint), 'largeicon-add');
     this._addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this._addButtonClicked();
     });
@@ -77,8 +125,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
    */
   _emptyElementContextMenu(event) {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(
-        Common.UIString.UIString('Add breakpoint'), this._addButtonClicked.bind(this));
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.addBreakpoint), this._addButtonClicked.bind(this));
     contextMenu.show();
   }
 
@@ -87,10 +134,10 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
 
     const inputElementContainer = document.createElement('p');
     inputElementContainer.classList.add('breakpoint-condition');
-    inputElementContainer.textContent = Common.UIString.UIString('Break when URL contains:');
+    inputElementContainer.textContent = i18nString(UIStrings.breakWhenUrlContains);
 
     const inputElement = inputElementContainer.createChild('span', 'breakpoint-condition-input');
-    UI.ARIAUtils.setAccessibleName(inputElement, ls`URL Breakpoint`);
+    UI.ARIAUtils.setAccessibleName(inputElement, i18nString(UIStrings.urlBreakpoint));
     this._addListElement(inputElementContainer, /** @type {?Element} */ (this._list.element.firstChild));
 
     /**
@@ -167,8 +214,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
     UI.ARIAUtils.setChecked(element, enabled);
     element.addEventListener('contextmenu', this._contextMenu.bind(this, item), true);
 
-    const title =
-        item ? Common.UIString.UIString('URL contains "%s"', item) : Common.UIString.UIString('Any XHR or fetch');
+    const title = item ? i18nString(UIStrings.urlContainsS, {PH1: item}) : i18nString(UIStrings.anyXhrOrFetch);
     const label = UI.UIUtils.CheckboxLabel.create(title, enabled);
     UI.ARIAUtils.markAsHidden(label);
     UI.ARIAUtils.setAccessibleName(element, title);
@@ -203,7 +249,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
 
     if (item === this._hitBreakpoint) {
       element.classList.add('breakpoint-hit');
-      UI.ARIAUtils.setDescription(element, ls`breakpoint hit`);
+      UI.ARIAUtils.setDescription(element, i18nString(UIStrings.breakpointHit));
     }
 
     label.classList.add('cursor-auto');
@@ -307,11 +353,10 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox {
       }
       this._update();
     }
-    const removeAllTitle = Common.UIString.UIString('Remove all breakpoints');
+    const removeAllTitle = i18nString(UIStrings.removeAllBreakpoints);
 
-    contextMenu.defaultSection().appendItem(
-        Common.UIString.UIString('Add breakpoint'), this._addButtonClicked.bind(this));
-    contextMenu.defaultSection().appendItem(Common.UIString.UIString('Remove breakpoint'), removeBreakpoint.bind(this));
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.addBreakpoint), this._addButtonClicked.bind(this));
+    contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), removeBreakpoint.bind(this));
     contextMenu.defaultSection().appendItem(removeAllTitle, removeAllBreakpoints.bind(this));
     contextMenu.show();
   }

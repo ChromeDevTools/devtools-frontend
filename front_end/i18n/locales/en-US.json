@@ -467,6 +467,138 @@
   "animation/AnimationUI.ts | sSlider": {
     "message": "{PH1} slider"
   },
+  "browser_debugger/browser_debugger-meta.ts | contentScripts": {
+    "message": "Content scripts"
+  },
+  "browser_debugger/browser_debugger-meta.ts | cspViolationBreakpoints": {
+    "message": "CSP Violation Breakpoints"
+  },
+  "browser_debugger/browser_debugger-meta.ts | domBreakpoints": {
+    "message": "DOM Breakpoints"
+  },
+  "browser_debugger/browser_debugger-meta.ts | eventListenerBreakpoints": {
+    "message": "Event Listener Breakpoints"
+  },
+  "browser_debugger/browser_debugger-meta.ts | globalListeners": {
+    "message": "Global Listeners"
+  },
+  "browser_debugger/browser_debugger-meta.ts | overrides": {
+    "message": "Overrides"
+  },
+  "browser_debugger/browser_debugger-meta.ts | page": {
+    "message": "Page"
+  },
+  "browser_debugger/browser_debugger-meta.ts | showContentScripts": {
+    "message": "Show Content scripts"
+  },
+  "browser_debugger/browser_debugger-meta.ts | showCspViolationBreakpoints": {
+    "message": "Show CSP Violation Breakpoints"
+  },
+  "browser_debugger/browser_debugger-meta.ts | showDomBreakpoints": {
+    "message": "Show DOM Breakpoints"
+  },
+  "browser_debugger/browser_debugger-meta.ts | showElements": {
+    "message": "Show Elements"
+  },
+  "browser_debugger/browser_debugger-meta.ts | showGlobalListeners": {
+    "message": "Show Global Listeners"
+  },
+  "browser_debugger/browser_debugger-meta.ts | showOverrides": {
+    "message": "Show Overrides"
+  },
+  "browser_debugger/browser_debugger-meta.ts | showPage": {
+    "message": "Show Page"
+  },
+  "browser_debugger/browser_debugger-meta.ts | showXhrfetchBreakpoints": {
+    "message": "Show XHR/fetch Breakpoints"
+  },
+  "browser_debugger/browser_debugger-meta.ts | xhrfetchBreakpoints": {
+    "message": "XHR/fetch Breakpoints"
+  },
+  "browser_debugger/CategorizedBreakpointsSidebarPane.js | breakpointHit": {
+    "message": "breakpoint hit"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | attributeModified": {
+    "message": "Attribute modified"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | breakOn": {
+    "message": "Break on"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | breakpointHit": {
+    "message": "breakpoint hit"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | checked": {
+    "message": "checked"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | domBreakpointsList": {
+    "message": "DOM Breakpoints list"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | noBreakpoints": {
+    "message": "No breakpoints"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | nodeRemoved": {
+    "message": "Node removed"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | removeAllDomBreakpoints": {
+    "message": "Remove all DOM breakpoints"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | removeBreakpoint": {
+    "message": "Remove breakpoint"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | revealDomNodeInElementsPanel": {
+    "message": "Reveal DOM node in Elements panel"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | sBreakpointHit": {
+    "message": "{PH1} breakpoint hit"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | sS": {
+    "message": "{PH1}: {PH2}"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | subtreeModified": {
+    "message": "Subtree modified"
+  },
+  "browser_debugger/DOMBreakpointsSidebarPane.js | unchecked": {
+    "message": "unchecked"
+  },
+  "browser_debugger/ModuleUIStrings.js | domBreakpoint": {
+    "message": "DOM Breakpoint"
+  },
+  "browser_debugger/ObjectEventListenersSidebarPane.js | refreshGlobalListeners": {
+    "message": "Refresh global listeners"
+  },
+  "browser_debugger/XHRBreakpointsSidebarPane.js | addBreakpoint": {
+    "message": "Add breakpoint"
+  },
+  "browser_debugger/XHRBreakpointsSidebarPane.js | addXhrfetchBreakpoint": {
+    "message": "Add XHR/fetch breakpoint"
+  },
+  "browser_debugger/XHRBreakpointsSidebarPane.js | anyXhrOrFetch": {
+    "message": "Any XHR or fetch"
+  },
+  "browser_debugger/XHRBreakpointsSidebarPane.js | breakpointHit": {
+    "message": "breakpoint hit"
+  },
+  "browser_debugger/XHRBreakpointsSidebarPane.js | breakWhenUrlContains": {
+    "message": "Break when URL contains:"
+  },
+  "browser_debugger/XHRBreakpointsSidebarPane.js | noBreakpoints": {
+    "message": "No breakpoints"
+  },
+  "browser_debugger/XHRBreakpointsSidebarPane.js | removeAllBreakpoints": {
+    "message": "Remove all breakpoints"
+  },
+  "browser_debugger/XHRBreakpointsSidebarPane.js | removeBreakpoint": {
+    "message": "Remove breakpoint"
+  },
+  "browser_debugger/XHRBreakpointsSidebarPane.js | urlBreakpoint": {
+    "message": "URL Breakpoint"
+  },
+  "browser_debugger/XHRBreakpointsSidebarPane.js | urlContainsS": {
+    "message": "URL contains \"{PH1}\""
+  },
+  "browser_debugger/XHRBreakpointsSidebarPane.js | xhrfetchBreakpoints": {
+    "message": "XHR/fetch Breakpoints"
+  },
   "browser_sdk/browser_sdk-meta.ts | clear": {
     "message": "clear"
   },

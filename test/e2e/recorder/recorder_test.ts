@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {click, enableExperiment, getBrowserAndPages, getTestServerPort, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {createNewRecording, openRecorderSubPane, openSourcesPanel} from '../helpers/sources-helpers.js';
 
 function retrieveCodeMirrorEditorContent() {

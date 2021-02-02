@@ -364,6 +364,20 @@ export class DebuggerWorkspaceBinding {
   }
 
   /**
+   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
+   * @return {boolean}
+   */
+  supportsConditionalBreakpoints(uiSourceCode) {
+    // DevTools traditionally supported (JavaScript) conditions
+    // for breakpoints everywhere, so we keep that behavior...
+    if (!this.pluginManager) {
+      return true;
+    }
+    const scripts = this.pluginManager.scriptsForUISourceCode(uiSourceCode);
+    return scripts.every(script => script.isJavaScript());
+  }
+
+  /**
    * @param {!SDK.Script.Script} script
    * @return {?SDK.SourceMap.SourceMap}
    */

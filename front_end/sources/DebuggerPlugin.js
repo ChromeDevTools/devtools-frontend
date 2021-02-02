@@ -310,17 +310,15 @@ export class DebuggerPlugin extends Plugin {
         /** @type {!Array<!Bindings.BreakpointManager.Breakpoint>} */ (this._lineBreakpointDecorations(editorLineNumber)
                                                                            .map(decoration => decoration.breakpoint)
                                                                            .filter(breakpoint => Boolean(breakpoint)));
-    const hasOnlyJavaScript = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-                                  .scriptsForUISourceCode(this._uiSourceCode)
-                                  .every(script => script.isJavaScript());
+    const supportsConditionalBreakpoints =
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().supportsConditionalBreakpoints(
+            this._uiSourceCode);
     if (!breakpoints.length) {
       if (!this._textEditor.hasLineClass(editorLineNumber, 'cm-non-breakable-line')) {
         contextMenu.debugSection().appendItem(
             Common.UIString.UIString('Add breakpoint'),
             this._createNewBreakpoint.bind(this, editorLineNumber, '', true));
-        // Conditional breakpoints, logpoints and 'Never pause here'
-        // are currently only available for JavaScript debugging.
-        if (hasOnlyJavaScript) {
+        if (supportsConditionalBreakpoints) {
           contextMenu.debugSection().appendItem(
               Common.UIString.UIString('Add conditional breakpoint…'),
               this._editBreakpointCondition.bind(this, editorLineNumber, null, null, false /* preferLogpoint */));
@@ -337,7 +335,7 @@ export class DebuggerPlugin extends Plugin {
       const removeTitle = hasOneBreakpoint ? Common.UIString.UIString('Remove breakpoint') :
                                              Common.UIString.UIString('Remove all breakpoints in line');
       contextMenu.debugSection().appendItem(removeTitle, () => breakpoints.map(breakpoint => breakpoint.remove(false)));
-      if (hasOneBreakpoint && hasOnlyJavaScript) {
+      if (hasOneBreakpoint && supportsConditionalBreakpoints) {
         // Editing breakpoints only make sense for conditional breakpoints
         // and logpoints and both are currently only available for JavaScript
         // debugging.
@@ -1482,12 +1480,10 @@ export class DebuggerPlugin extends Plugin {
     if (this._textEditor.hasLineClass(editorLocation.lineNumber, 'cm-non-breakable-line')) {
       return;
     }
-    if (!Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-             .scriptsForUISourceCode(this._uiSourceCode)
-             .every(script => script.isJavaScript())) {
+    if (!Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().supportsConditionalBreakpoints(
+            this._uiSourceCode)) {
       // Editing breakpoints only make sense for conditional breakpoints
-      // and logpoints and both are currently only available for JavaScript
-      // debugging.
+      // and logpoints.
       return;
     }
     const location =

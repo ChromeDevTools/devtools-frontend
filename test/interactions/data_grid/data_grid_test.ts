@@ -221,12 +221,12 @@ describe('data grid', () => {
         assert.deepEqual(
             newColumnPercentageWidths,
             [
-              55,  // 66.66 - 11.1 rounded
-              45,  // 33.33 + 11.1 rounded
+              55.88,  // 66.66 - 11.1 rounded
+              44.12,  // 33.33 + 11.1 rounded
             ]);
         columnWidths = await getColumnPixelWidths(columns);
-        assertNumberBetween(columnWidths[0], 493, 498);  // 55% of 900 = 495
-        assertNumberBetween(columnWidths[1], 402, 408);  // 45% of 900 = 405
+        assertNumberBetween(columnWidths[0], 500, 504);  // 55.8% of 900 = 502
+        assertNumberBetween(columnWidths[1], 395, 400);  // 44.12% of 900 = 397
       });
 
   it('persists the column resizes when new data is added', async () => {

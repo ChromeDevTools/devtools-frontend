@@ -322,7 +322,7 @@ copy_sources_to_resources("entrypoint_copy") {
   sources = [ "integration_test_runner.html" ]
 }
 
-node_action("html_entrypoints") {
+node_action("html_entrypoints-generation") {
   inputs = [ "entrypoint_template.html" ]
 
   script = "scripts/build/generate_html_entrypoint.js"
@@ -331,18 +331,34 @@ node_action("html_entrypoints") {
     "--template",
     rebase_path("entrypoint_template.html", root_build_dir),
     "--out-directory",
-    rebase_path(resources_out_dir, root_build_dir),
+    rebase_path(target_gen_dir, root_build_dir),
   ]
 
   outputs = [
-    "$resources_out_dir/devtools_app.html",
-    "$resources_out_dir/inspector.html",
-    "$resources_out_dir/js_app.html",
-    "$resources_out_dir/ndb_app.html",
-    "$resources_out_dir/node_app.html",
-    "$resources_out_dir/toolbox.html",
-    "$resources_out_dir/worker_app.html",
+    "$target_gen_dir/devtools_app.html",
+    "$target_gen_dir/inspector.html",
+    "$target_gen_dir/js_app.html",
+    "$target_gen_dir/ndb_app.html",
+    "$target_gen_dir/node_app.html",
+    "$target_gen_dir/toolbox.html",
+    "$target_gen_dir/worker_app.html",
   ]
+}
+
+copy("html_entrypoints") {
+  sources = [
+    "$target_gen_dir/devtools_app.html",
+    "$target_gen_dir/inspector.html",
+    "$target_gen_dir/js_app.html",
+    "$target_gen_dir/ndb_app.html",
+    "$target_gen_dir/node_app.html",
+    "$target_gen_dir/toolbox.html",
+    "$target_gen_dir/worker_app.html",
+  ]
+
+  outputs = [ "$resources_out_dir/{{source_file_part}}" ]
+
+  deps = [ ":html_entrypoints-generation" ]
 }
 
 copy_sources_to_resources("embedder-scripts") {

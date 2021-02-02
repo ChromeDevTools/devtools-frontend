@@ -160,8 +160,6 @@ describe('The Memory Panel', async function() {
       assert.fail('Could not find data-grid row with "shared in leaking()" text.');
     }
 
-    // TODO(jacktfranklin): Consider some helpers to make asserting on contents
-    // of the data-grid in the heap snapshot UI easier.
     const textOfEl = await sharedInLeakingElementRow.evaluate(e => e.textContent || '');
     // Double check we got the right element to avoid a confusing text failure
     // later down the line.

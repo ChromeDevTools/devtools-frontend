@@ -220,18 +220,12 @@ class AffectedCookiesView extends AffectedResourcesView {
    */
   _appendAffectedCookies(cookies) {
     const header = document.createElement('tr');
-
-    const name = document.createElement('td');
-    name.classList.add('affected-resource-header');
-    name.textContent = 'Name';
-    header.appendChild(name);
-
-    const info = document.createElement('td');
-    info.classList.add('affected-resource-header');
-    info.classList.add('affected-resource-cookie-info-header');
-    info.textContent = ls`Domain` +
-        ' & ' + ls`Path`;
-    header.appendChild(info);
+    this.appendColumnTitle(header, ls`Name`);
+    this.appendColumnTitle(
+        header,
+        ls`Domain` +
+            ' & ' + ls`Path`,
+        'affected-resource-cookie-info-header');
 
     this.affectedResources.appendChild(header);
 
@@ -426,16 +420,8 @@ class AffectedMixedContentView extends AffectedResourcesView {
    */
   _appendAffectedMixedContents(mixedContents) {
     const header = document.createElement('tr');
-
-    const name = document.createElement('td');
-    name.classList.add('affected-resource-header');
-    name.textContent = ls`Name`;
-    header.appendChild(name);
-
-    const info = document.createElement('td');
-    info.classList.add('affected-resource-header');
-    info.textContent = ls`Restriction Status`;
-    header.appendChild(info);
+    this.appendColumnTitle(header, ls`Name`);
+    this.appendColumnTitle(header, ls`Restriction Status`);
 
     this.affectedResources.appendChild(header);
 
@@ -511,21 +497,9 @@ class AffectedHeavyAdView extends AffectedResourcesView {
    */
   _appendAffectedHeavyAds(heavyAds) {
     const header = document.createElement('tr');
-
-    const reason = document.createElement('td');
-    reason.classList.add('affected-resource-header');
-    reason.textContent = ls`Limit exceeded`;
-    header.appendChild(reason);
-
-    const resolution = document.createElement('td');
-    resolution.classList.add('affected-resource-header');
-    resolution.textContent = ls`Resolution Status`;
-    header.appendChild(resolution);
-
-    const frame = document.createElement('td');
-    frame.classList.add('affected-resource-header');
-    frame.textContent = ls`Frame URL`;
-    header.appendChild(frame);
+    this.appendColumnTitle(header, ls`Limit exceeded`);
+    this.appendColumnTitle(header, ls`Resolution Status`);
+    this.appendColumnTitle(header, ls`Frame URL`);
 
     this.affectedResources.appendChild(header);
 
@@ -616,21 +590,9 @@ class AffectedBlockedByResponseView extends AffectedResourcesView {
    */
   _appendDetails(details) {
     const header = document.createElement('tr');
-
-    const request = document.createElement('td');
-    request.classList.add('affected-resource-header');
-    request.textContent = ls`Request`;
-    header.appendChild(request);
-
-    const name = document.createElement('td');
-    name.classList.add('affected-resource-header');
-    name.textContent = ls`Parent Frame`;
-    header.appendChild(name);
-
-    const frame = document.createElement('td');
-    frame.classList.add('affected-resource-header');
-    frame.textContent = ls`Blocked Resource`;
-    header.appendChild(frame);
+    this.appendColumnTitle(header, ls`Request`);
+    this.appendColumnTitle(header, ls`Parent Frame`);
+    this.appendColumnTitle(header, ls`Blocked Resource`);
 
     this.affectedResources.appendChild(header);
 

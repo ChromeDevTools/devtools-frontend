@@ -17,20 +17,6 @@ export class AffectedTrustedWebActivityIssueDetailsView extends AffectedResource
     this.issue = issue;
   }
 
-  private appendHeaderCell(element: HTMLElement, textContent: string): void {
-    const cell = document.createElement('td');
-    cell.classList.add('affected-resource-header');
-    cell.textContent = textContent;
-    element.append(cell);
-  }
-
-  private appendIssueDetailCell(element: HTMLElement, textContent: string): void {
-    const cell = document.createElement('td');
-    cell.classList.add('affected-resource-cell');
-    cell.textContent = textContent;
-    element.append(cell);
-  }
-
   private appendDetail(twaIssue: SDK.TrustedWebActivityIssue.TrustedWebActivityIssue): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-row');
@@ -53,14 +39,14 @@ export class AffectedTrustedWebActivityIssueDetailsView extends AffectedResource
   private appendDetails(twaIssues: Iterable<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue>): void {
     const header = document.createElement('tr');
     if (this.issue.code() === SDK.TrustedWebActivityIssue.httpViolationCode) {
-      this.appendHeaderCell(header, ls`Status code`);
-      this.appendHeaderCell(header, ls`Url`);
+      this.appendColumnTitle(header, ls`Status code`);
+      this.appendColumnTitle(header, ls`Url`);
     } else if (this.issue.code() === SDK.TrustedWebActivityIssue.offlineViolationCode) {
-      this.appendHeaderCell(header, ls`Url`);
+      this.appendColumnTitle(header, ls`Url`);
     } else if (this.issue.code() === SDK.TrustedWebActivityIssue.assetlinkViolationCode) {
-      this.appendHeaderCell(header, ls`Package name`);
-      this.appendHeaderCell(header, ls`Url`);
-      this.appendHeaderCell(header, ls`Package signature`);
+      this.appendColumnTitle(header, ls`Package name`);
+      this.appendColumnTitle(header, ls`Url`);
+      this.appendColumnTitle(header, ls`Package signature`);
     }
     this.affectedResources.appendChild(header);
 

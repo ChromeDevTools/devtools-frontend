@@ -265,6 +265,12 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     header.appendChild(info);
   }
 
+  protected appendIssueDetailCell(element: HTMLElement, textContent: string): void {
+    const cell = document.createElement('td');
+    cell.textContent = textContent;
+    element.append(cell);
+  }
+
   update(): void {
     throw new Error('This should never be called, did you forget to override?');
   }

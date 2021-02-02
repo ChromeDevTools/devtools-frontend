@@ -893,10 +893,14 @@ export class DataGrid extends HTMLElement {
       });
       // clang-format on
 
-      if (this.userHasFocused) {
-        // This ensures if the user has a cell focused, but then scrolls so that
-        // the focused cell is now not rendered, that when it then gets scrolled
-        // back in, that it becomes rendered.
+
+      // This ensures if the user has a cell focused, but then scrolls so that
+      // the focused cell is now not rendered, that when it then gets scrolled
+      // back in, that it becomes rendered.
+      // However, if the cell is a column header, we don't do this, as that
+      // can never be not-rendered.
+      const currentlyFocusedRowIndex = this.focusableCell[1];
+      if (this.userHasFocused && currentlyFocusedRowIndex > 0) {
         this.focusCell(this.focusableCell);
       }
       this.scrollToBottomIfRequired();

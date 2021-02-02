@@ -25,3 +25,21 @@ component.data = {
 };
 
 document.getElementById('container')?.appendChild(component);
+
+function createRandomString(): string {
+  let ret = '';
+  for (let i = 0; i < 16; i++) {
+    const letter = String.fromCharCode(Math.floor(65 + Math.random() * 26));
+    ret += letter;
+  }
+  return ret;
+}
+document.getElementById('add')?.addEventListener('click', () => {
+  const newRow = {
+    cells: [{columnId: 'key', value: createRandomString()}, {columnId: 'value', value: createRandomString()}],
+  };
+  component.data = {
+    ...component.data,
+    rows: [...component.data.rows, newRow],
+  };
+});

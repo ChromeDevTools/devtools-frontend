@@ -27,7 +27,9 @@ describe('TrustTokensView', () => {
     // is done before we can test against it.
     await coordinator.done();
 
-    const dataGrid = getElementWithinComponent(component, 'devtools-data-grid', Components.DataGrid.DataGrid);
+    const dataGridController = getElementWithinComponent(
+        component, 'devtools-data-grid-controller', Components.DataGridController.DataGridController);
+    const dataGrid = getElementWithinComponent(dataGridController, 'devtools-data-grid', Components.DataGrid.DataGrid);
     assertShadowRoot(dataGrid.shadowRoot);
     const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);
     assert.deepEqual(rowValues, [
@@ -48,7 +50,9 @@ describe('TrustTokensView', () => {
     };
     await coordinator.done();
 
-    const dataGrid = getElementWithinComponent(component, 'devtools-data-grid', Components.DataGrid.DataGrid);
+    const dataGridController = getElementWithinComponent(
+        component, 'devtools-data-grid-controller', Components.DataGridController.DataGridController);
+    const dataGrid = getElementWithinComponent(dataGridController, 'devtools-data-grid', Components.DataGrid.DataGrid);
     assertShadowRoot(dataGrid.shadowRoot);
     const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);
     assert.deepEqual(rowValues, [['foo.com', '42']]);

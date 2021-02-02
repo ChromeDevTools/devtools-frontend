@@ -672,6 +672,7 @@ grd_files_debug_sources = [
   "front_end/input/ModuleUIStrings.js",
   "front_end/inspector_main/InspectorMain.js",
   "front_end/inspector_main/RenderingOptions.js",
+  "front_end/issues/AffectedElementsView.js",
   "front_end/issues/AffectedResourcesView.js",
   "front_end/issues/AffectedSharedArrayBufferIssueDetailsView.js",
   "front_end/issues/AffectedTrustedWebActivityIssueDetailsView.js",

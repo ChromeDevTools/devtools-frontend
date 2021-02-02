@@ -245,6 +245,7 @@ all_typescript_module_sources = [
   "input/ModuleUIStrings.js",
   "inspector_main/InspectorMain.js",
   "inspector_main/RenderingOptions.js",
+  "issues/AffectedElementsView.js",
   "issues/AffectedResourcesView.js",
   "issues/AffectedSharedArrayBufferIssueDetailsView.js",
   "issues/AffectedTrustedWebActivityIssueDetailsView.js",

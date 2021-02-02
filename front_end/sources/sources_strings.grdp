@@ -66,9 +66,6 @@
   <message name="IDS_DEVTOOLS_1749108fc3206b646dec4fa2be51a822" desc="A context menu item in the Call Stack Sidebar Pane of the Sources panel">
     Add all content scripts to ignore list
   </message>
-  <message name="IDS_DEVTOOLS_1aff765143dc4bf8ef68f698234e10f6" desc="Name of the category that hold recording related actions">
-    Recorder
-  </message>
   <message name="IDS_DEVTOOLS_1cd54499835432c724e9654327ca5788" desc="Title of a setting under the Sources category in Settings">
     Code folding
   </message>

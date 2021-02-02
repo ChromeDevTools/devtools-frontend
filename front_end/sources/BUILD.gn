@@ -87,5 +87,8 @@ devtools_entrypoint("legacy") {
 devtools_entrypoint("meta") {
   entrypoint = "sources-meta.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../sdk:bundle",
+  ]
 }

@@ -1129,6 +1129,7 @@ export const ExperimentName = {
   ALL: '*',
   PROTOCOL_MONITOR: 'protocolMonitor',
   WEBAUTHN_PANE: 'webauthnPane',
+  RECORDER: 'recorder',
 };
 
 /** @enum {string} */

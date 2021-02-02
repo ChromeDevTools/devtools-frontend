@@ -45,6 +45,9 @@
   <message name="IDS_DEVTOOLS_45ed537c6d17178db23db9e579f4f6c3" desc="A context menu item in Styles panel to copy CSS declaration">
     Copy declaration
   </message>
+  <message name="IDS_DEVTOOLS_5134111907df828fc575c69e22480c1e" desc="Text to hide an element">
+    Hide element
+  </message>
   <message name="IDS_DEVTOOLS_54a90000e87f16d949b02dedc6f40a11" desc="Title of the switch to accessibility tree button in the Elements panel">
     Switch to Accessibility Tree view
   </message>
@@ -182,9 +185,6 @@
   </message>
   <message name="IDS_DEVTOOLS_4d9468d79ef34f71ba78a28688fa5d31" desc="Alternative title text of a setting in Event Listeners Widget of the Elements panel">
     Ancestors
-  </message>
-  <message name="IDS_DEVTOOLS_5134111907df828fc575c69e22480c1e" desc="Text to hide an element">
-    Hide element
   </message>
   <message name="IDS_DEVTOOLS_581b87189d0bd86aa707e42553032a3e" desc="Element text content in Elements Tree Element of the Elements panel">
     Children:

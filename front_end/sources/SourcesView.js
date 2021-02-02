@@ -704,10 +704,25 @@ export class EditorAction {
   }
 }
 
+/** @type {!SwitchFileActionDelegate} */
+let switchFileActionDelegateInstance;
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class SwitchFileActionDelegate {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!switchFileActionDelegateInstance || forceNew) {
+      switchFileActionDelegateInstance = new SwitchFileActionDelegate();
+    }
+
+    return switchFileActionDelegateInstance;
+  }
+
   /**
    * @param {!Workspace.UISourceCode.UISourceCode} currentUISourceCode
    * @return {?Workspace.UISourceCode.UISourceCode}
@@ -768,10 +783,26 @@ export class SwitchFileActionDelegate {
   }
 }
 
+/** @type {!ActionDelegate} */
+let actionDelegateInstance;
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class ActionDelegate {
+  /**
+   * @param {{forceNew: ?boolean}=} opts
+   * @return {!ActionDelegate}
+  }
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!actionDelegateInstance || forceNew) {
+      actionDelegateInstance = new ActionDelegate();
+    }
+
+    return actionDelegateInstance;
+  }
+
   /**
    * @override
    * @param {!UI.Context.Context} context

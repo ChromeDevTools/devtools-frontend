@@ -6,6 +6,7 @@ import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
+import * as SDK from '../sdk/sdk.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Sources from './sources.js';
@@ -19,6 +20,13 @@ async function loadSourcesModule(): Promise<typeof Sources> {
     loadedSourcesModule = await import('./sources.js');
   }
   return loadedSourcesModule;
+}
+
+function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (sourcesModule: typeof Sources) => T[]): T[] {
+  if (loadedSourcesModule === undefined) {
+    return [];
+  }
+  return getClassCallBack(loadedSourcesModule);
 }
 
 UI.ViewManager.registerViewExtension({
@@ -143,4 +151,389 @@ UI.ViewManager.registerViewExtension({
     const Sources = await loadSourcesModule();
     return Sources.JavaScriptBreakpointsSidebarPane.JavaScriptBreakpointsSidebarPane.instance();
   },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  actionId: 'debugger.toggle-pause',
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_PAUSE,
+  toggleable: true,
+  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_RESUME,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.RevealingActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(
+        Sources =>
+            [Sources.SourcesView.SourcesView,
+             UI.ShortcutRegistry.ForwardedShortcut,
+    ]);
+  },
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Pause script execution`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Resume script execution`,
+    },
+  ],
+  bindings: [
+    {
+      shortcut: 'F8',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+\\',
+    },
+    {
+      shortcut: 'F5',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      shortcut: 'Shift+F5',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+\\',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  actionId: 'debugger.step-over',
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
+  },
+
+  title: (): Platform.UIString.LocalizedString => ls`Step over next function call`,
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_STEP_OVER,
+  contextTypes() {
+    return [SDK.DebuggerModel.DebuggerPausedDetails];
+  },
+  bindings: [
+    {
+      shortcut: 'F10',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+\'',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+\'',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  actionId: 'debugger.step-into',
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Step into next function call`,
+  iconClass: UI.ActionRegistration.IconClass.LARGE_ICON_STEP_INTO,
+  contextTypes() {
+    return [SDK.DebuggerModel.DebuggerPausedDetails];
+  },
+  bindings: [
+    {
+      shortcut: 'F11',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+;',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+;',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  actionId: 'debugger.step',
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Step`,
+  iconClass: UI.ActionRegistration.IconClass.LARGE_ICON_STEP,
+  contextTypes() {
+    return [SDK.DebuggerModel.DebuggerPausedDetails];
+  },
+  bindings: [
+    {
+      shortcut: 'F9',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+      ],
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  actionId: 'debugger.step-out',
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Step out of current function`,
+  iconClass: UI.ActionRegistration.IconClass.LARGE_ICON_STEP_OUT,
+  contextTypes() {
+    return [SDK.DebuggerModel.DebuggerPausedDetails];
+  },
+  bindings: [
+    {
+      shortcut: 'Shift+F11',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Shift+Ctrl+;',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Shift+Meta+;',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'debugger.run-snippet',
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Run snippet`,
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_PLAY,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+Enter',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+Enter',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'recorder.toggle-recording',
+  experiment: Root.Runtime.ExperimentName.RECORDER,
+  category: UI.ActionRegistration.ActionCategory.RECORDER,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Start Recording`,
+  iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
+  toggleable: true,
+  toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_STOP_RECORDING,
+  toggleWithRedColor: true,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Record`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Stop`,
+    },
+  ],
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+E',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+E',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  actionId: 'debugger.toggle-breakpoints-active',
+  iconClass: UI.ActionRegistration.IconClass.LARGE_ICON_DEACTIVATE_BREAKPOINTS,
+  toggleable: true,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Deactivate breakpoints`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Activate breakpoints`,
+    },
+  ],
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+F8',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+F8',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.add-to-watch',
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane.instance();
+  },
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  title: (): Platform.UIString.LocalizedString => ls`Add selected text to watches`,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.UISourceCodeFrame.UISourceCodeFrame]);
+  },
+  bindings: [
+    {
+      shortcut: 'Ctrl+Shift+A',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'debugger.evaluate-selection',
+  category: UI.ActionRegistration.ActionCategory.DEBUGGER,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.DebuggingActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Evaluate selected text in console`,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.UISourceCodeFrame.UISourceCodeFrame]);
+  },
+  bindings: [
+    {
+      shortcut: 'Ctrl+Shift+E',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.switch-file',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Switch file`,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesView.SwitchFileActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      shortcut: 'Alt+O',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.rename',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Rename`,
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'F2',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Enter',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  actionId: 'sources.close-all',
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesView.ActionDelegate.instance();
+  },
+  title: (): Platform.UIString.LocalizedString => ls`Close All`,
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.jump-to-previous-location',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Jump to previous editing location`,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesView.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      shortcut: 'Alt+Minus',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.jump-to-next-location',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Jump to next editing location`,
+  async loadActionDelegate() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesView.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
+  },
+  bindings: [
+    {
+      shortcut: 'Alt+Plus',
+    },
+  ],
 });

@@ -1232,10 +1232,24 @@ export class DebuggerPausedDetailsRevealer {
   }
 }
 
+/** @type {!RevealingActionDelegate} */
+let revealingActionDelegateInstance;
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class RevealingActionDelegate {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!revealingActionDelegateInstance || forceNew) {
+      revealingActionDelegateInstance = new RevealingActionDelegate();
+    }
+
+    return revealingActionDelegateInstance;
+  }
   /**
    * @override
    * @param {!UI.Context.Context} context
@@ -1256,10 +1270,24 @@ export class RevealingActionDelegate {
   }
 }
 
+/** @type {!DebuggingActionDelegate} */
+let debuggingActionDelegateInstance;
+
 /**
  * @implements {UI.ActionRegistration.ActionDelegate}
  */
 export class DebuggingActionDelegate {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!debuggingActionDelegateInstance || forceNew) {
+      debuggingActionDelegateInstance = new DebuggingActionDelegate();
+    }
+
+    return debuggingActionDelegateInstance;
+  }
   /**
    * @override
    * @param {!UI.Context.Context} context

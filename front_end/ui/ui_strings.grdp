@@ -15,6 +15,9 @@
   <message name="IDS_DEVTOOLS_1886cc68b0d9c0a0f4a9436258cf11e1" desc="Days format in UIUtils">
     <ph name="PH1">$1.1f<ex>2.2</ex></ph> days
   </message>
+  <message name="IDS_DEVTOOLS_1aff765143dc4bf8ef68f698234e10f6" desc="Name of the category that hold recording related actions">
+    Recorder
+  </message>
   <message name="IDS_DEVTOOLS_214864980ac9b83ff82c6e9b8c9a44c7" desc="Aria alert to read the suggestion for the suggestion box when typing in text editor">
     <ph name="THIS__ONLYCOMPLETION_TEXT">$1s<ex>name</ex></ph>, suggestion <ph name="THIS__LIST_SELECTEDINDEX______">$2s<ex>2</ex></ph> of <ph name="THIS__ITEMS_LENGTH">$3s<ex>5</ex></ph>
   </message>

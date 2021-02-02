@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
@@ -888,6 +889,257 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Alt+PageUp',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.decrement-css',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Decrement CSS unit by 1`,
+  bindings: [
+    {
+      shortcut: 'Alt+Down',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'sources.decrement-css-by-ten',
+  category: UI.ActionRegistration.ActionCategory.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Decrement CSS unit by 10`,
+  bindings: [
+    {
+      shortcut: 'Alt+PageDown',
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  settingName: 'navigatorGroupByFolder',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: true,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Search in anonymous and content scripts`,
+  settingName: 'searchInAnonymousAndContentScripts',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: false,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Search in anonymous and content scripts`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Do not search in anonymous and content scripts`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Automatically reveal files in sidebar`,
+  settingName: 'autoRevealInNavigator',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: false,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Automatically reveal files in sidebar`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Do not automatically reveal files in sidebar`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Enable JavaScript source maps`,
+  settingName: 'jsSourceMapsEnabled',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Enable JavaScript source maps`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Disable JavaScript source maps`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Enable tab moves focus`,
+  settingName: 'textEditorTabMovesFocus',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: false,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Enable tab moves focus`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Disable tab moves focus`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Detect indentation`,
+  settingName: 'textEditorAutoDetectIndent',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Detect indentation`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Do not detect indentation`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Autocompletion`,
+  settingName: 'textEditorAutocompletion',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Enable autocompletion`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Disable autocompletion`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Bracket matching`,
+  settingName: 'textEditorBracketMatching',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Enable bracket matching`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Disable bracket matching`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Code folding`,
+  settingName: 'textEditorCodeFolding',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: false,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Enable code folding`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Disable code folding`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Show whitespace characters:`,
+  settingName: 'showWhitespacesInEditor',
+  settingType: Common.Settings.SettingTypeObject.ENUM,
+  defaultValue: 'original',
+  options: [
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Do not show whitespace characters`,
+      text: (): Platform.UIString.LocalizedString => ls`None`,
+      value: 'none',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Show all whitespace characters`,
+      text: (): Platform.UIString.LocalizedString => ls`All`,
+      value: 'all',
+    },
+    {
+      title: (): Platform.UIString.LocalizedString => ls`Show trailing whitespace characters`,
+      text: (): Platform.UIString.LocalizedString => ls`Trailing`,
+      value: 'trailing',
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Display variable values inline while debugging`,
+  settingName: 'inlineVariableValues',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Display variable values inline while debugging`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Do not display variable values inline while debugging`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Enable CSS source maps`,
+  settingName: 'cssSourceMapsEnabled',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Enable CSS source maps`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Disable CSS source maps`,
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategoryObject.SOURCES,
+  title: (): Platform.UIString.LocalizedString => ls`Allow scrolling past end of file`,
+  settingName: 'allowScrollPastEof',
+  settingType: Common.Settings.SettingTypeObject.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: (): Platform.UIString.LocalizedString => ls`Allow scrolling past end of file`,
+    },
+    {
+      value: false,
+      title: (): Platform.UIString.LocalizedString => ls`Disallow scrolling past end of file`,
     },
   ],
 });

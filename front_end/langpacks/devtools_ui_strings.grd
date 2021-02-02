@@ -14,7 +14,6 @@
       <part file="../bindings/bindings_strings.grdp" />
       <part file="../common/common_strings.grdp" />
       <part file="../console/console_strings.grdp" />
-      <part file="../data_grid/data_grid_strings.grdp" />
       <part file="../elements/elements_strings.grdp" />
       <part file="../emulated_devices/emulated_devices_strings.grdp" />
       <part file="../emulation/emulation_strings.grdp" />

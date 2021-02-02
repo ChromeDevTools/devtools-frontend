@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_059a1aa256b770eca2d69c096f759ad0" desc="A context menu item in the Data Grid of a data grid">
+    Sort By
+  </message>
+  <message name="IDS_DEVTOOLS_17022809d53876ba5d6b97c67c364614" desc="A context menu item in data grids to list header options.">
+    Header Options
+  </message>
+  <message name="IDS_DEVTOOLS_2d1a0357b8c9e3ec6634b8dad39764c5" desc="A context menu item in data grids to reset the columns to their default weight">
+    Reset Columns
+  </message>
   <message name="IDS_DEVTOOLS_7f7208f102493356f51e7eb55dd157a1" desc="Text displayed instead of the survey link after the survey link is clicked, if the survey was shown successfully">
     Thank you for your feedback
   </message>

@@ -2,12 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
 import {DataGridImpl, DataGridNode, Parameters} from './DataGrid.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description accessible name for expandible nodes in datagrids
+  */
+  collapsed: 'collapsed',
+};
+const str_ = i18n.i18n.registerUIStrings('data_grid/ViewportDataGrid.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @extends {DataGridImpl<!ViewportDataGridNode<!NODE_TYPE>>}
  * @template NODE_TYPE
@@ -486,7 +494,8 @@ export class ViewportDataGridNode extends DataGridNode {
       existingElement.classList.remove('expanded');
     }
     if (this.selected) {
-      (/** @type {!ViewportDataGrid<!NODE_TYPE>} */ (this.dataGrid)).updateGridAccessibleName(/* text */ ls`collapsed`);
+      (/** @type {!ViewportDataGrid<!NODE_TYPE>} */ (this.dataGrid))
+          .updateGridAccessibleName(/* text */ i18nString(UIStrings.collapsed));
     }
     (/** @type {!ViewportDataGrid<!NODE_TYPE>} */ (this.dataGrid)).scheduleUpdateStructure();
   }

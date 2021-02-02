@@ -28,10 +28,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 
 import {DataGridNode} from './DataGrid.js';
 
+export const UIStrings = {
+  /**
+  *@description Show next text content in Show More Data Grid Node of a data grid
+  *@example {5} PH1
+  */
+  showDBefore: 'Show {PH1} before',
+  /**
+  *@description Show last text content in Show More Data Grid Node of a data grid
+  *@example {5} PH1
+  */
+  showDAfter: 'Show {PH1} after',
+  /**
+  *@description Show all text content in Show More Data Grid Node of a data grid
+  *@example {50} PH1
+  */
+  showAllD: 'Show all {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('data_grid/ShowMoreDataGridNode.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @extends {DataGridNode<!ShowMoreDataGridNode>}
  */
@@ -53,7 +72,7 @@ export class ShowMoreDataGridNode extends DataGridNode {
     this.showNext.classList.add('text-button');
     this.showNext.type = 'button';
     this.showNext.addEventListener('click', this._showNextChunk.bind(this), false);
-    this.showNext.textContent = Common.UIString.UIString('Show %d before', this._chunkSize);
+    this.showNext.textContent = i18nString(UIStrings.showDBefore, {PH1: this._chunkSize});
 
     this.showAll = document.createElement('button');
     this.showAll.classList.add('text-button');
@@ -64,7 +83,7 @@ export class ShowMoreDataGridNode extends DataGridNode {
     this.showLast.classList.add('text-button');
     this.showLast.type = 'button';
     this.showLast.addEventListener('click', this._showLastChunk.bind(this), false);
-    this.showLast.textContent = Common.UIString.UIString('Show %d after', this._chunkSize);
+    this.showLast.textContent = i18nString(UIStrings.showDAfter, {PH1: this._chunkSize});
 
     this._updateLabels();
     this.selectable = false;
@@ -91,7 +110,7 @@ export class ShowMoreDataGridNode extends DataGridNode {
       this.showNext.classList.add('hidden');
       this.showLast.classList.add('hidden');
     }
-    this.showAll.textContent = Common.UIString.UIString('Show all %d', totalSize);
+    this.showAll.textContent = i18nString(UIStrings.showAllD, {PH1: totalSize});
   }
 
   /**

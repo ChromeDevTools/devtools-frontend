@@ -1,5 +1,6 @@
 {
   "dependencies": [
+    "i18n",
     "ui"
   ],
   "resources": [

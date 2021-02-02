@@ -24,10 +24,78 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Accessible text label for expandible nodes in datagrids
+  */
+  expanded: 'expanded',
+  /**
+  *@description accessible name for expandible nodes in datagrids
+  */
+  collapsed: 'collapsed',
+  /**
+  *@description Accessible text for datagrid
+  *@example {Coverage grid} PH1
+  *@example {expanded} PH2
+  */
+  sRowS: '{PH1} Row {PH2}',
+  /**
+  *@description Number of rows in a grid
+  *@example {1} PH1
+  */
+  rowsS: 'Rows: {PH1}',
+  /**
+  *@description Default Accessible Text for a Datagrid
+  *@example {Network} PH1
+  *@example {Rows: 27} PH2
+  */
+  sSUseTheUpAndDownArrowKeysTo:
+      '{PH1} {PH2}, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.',
+  /**
+  *@description A context menu item in the Data Grid of a data grid
+  */
+  sortByString: 'Sort By',
+  /**
+  *@description A context menu item in data grids to reset the columns to their default weight
+  */
+  resetColumns: 'Reset Columns',
+  /**
+  *@description A context menu item in data grids to list header options.
+  */
+  headerOptions: 'Header Options',
+  /**
+  *@description Text to refresh the page
+  */
+  refresh: 'Refresh',
+  /**
+  *@description A context menu item in the Data Grid of a data grid
+  */
+  addNew: 'Add new',
+  /**
+  *@description A context menu item in the Data Grid of a data grid
+  *@example {pattern} PH1
+  */
+  editS: 'Edit "{PH1}"',
+  /**
+  *@description Text to delete something
+  */
+  delete: 'Delete',
+  /**
+  *@description Depth of a node in the datagrid
+  *@example {1} PH1
+  */
+  levelS: 'level {PH1}',
+  /**
+  *@description Text exposed to screen readers on checked items.
+  */
+  checked: 'checked',
+};
+const str_ = i18n.i18n.registerUIStrings('data_grid/DataGrid.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /** @type {!WeakMap<!Element, string>} */
 const elementToLongTextMap = new WeakMap();
@@ -283,9 +351,9 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     if (this.selectedNode && this.selectedNode.existingElement()) {
       let expandText = '';
       if (this.selectedNode.hasChildren()) {
-        expandText = this.selectedNode.expanded ? ls`expanded` : ls`collapsed`;
+        expandText = this.selectedNode.expanded ? i18nString(UIStrings.expanded) : i18nString(UIStrings.collapsed);
       }
-      const rowHeader = ls`${this._displayName} Row ${expandText}`;
+      const rowHeader = i18nString(UIStrings.sRowS, {PH1: this._displayName, PH2: expandText});
       accessibleText = `${rowHeader} ${this.selectedNode.nodeAccessibleText}`;
     } else {
       // 2) If there is no selected item - Read the name of the grid and give instructions
@@ -293,9 +361,8 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
         return;
       }
       const children = this._enumerateChildren(this._rootNode, [], 1);
-      const items = ls`Rows: ${children.length}`;
-      accessibleText = ls`${
-          this._displayName} ${items}, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.`;
+      const items = i18nString(UIStrings.rowsS, {PH1: children.length});
+      accessibleText = i18nString(UIStrings.sSUseTheUpAndDownArrowKeysTo, {PH1: items});
     }
     UI.ARIAUtils.alert(accessibleText, this.element);
   }
@@ -1396,7 +1463,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 
     const sortableColumns = [...sortableVisibleColumns, ...sortableHiddenColumns];
     if (sortableColumns.length > 0) {
-      const sortMenu = contextMenu.defaultSection().appendSubMenuItem(ls`Sort By`);
+      const sortMenu = contextMenu.defaultSection().appendSubMenuItem(i18nString(UIStrings.sortByString));
       for (const column of sortableColumns) {
         const headerCell = this._headerTableHeaders[column.id];
         sortMenu.defaultSection().appendItem(
@@ -1408,19 +1475,17 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
       if (this._headerContextMenuCallback) {
         this._headerContextMenuCallback(contextMenu);
       }
-      contextMenu.defaultSection().appendItem(
-          Common.UIString.UIString('Reset Columns'), this._resetColumnWeights.bind(this));
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.resetColumns), this._resetColumnWeights.bind(this));
       contextMenu.show();
       return;
     }
 
     // Add header context menu to a subsection available from the body
-    const headerSubMenu = contextMenu.defaultSection().appendSubMenuItem(ls`Header Options`);
+    const headerSubMenu = contextMenu.defaultSection().appendSubMenuItem(i18nString(UIStrings.headerOptions));
     if (this._headerContextMenuCallback) {
       this._headerContextMenuCallback(headerSubMenu);
     }
-    headerSubMenu.defaultSection().appendItem(
-        Common.UIString.UIString('Reset Columns'), this._resetColumnWeights.bind(this));
+    headerSubMenu.defaultSection().appendItem(i18nString(UIStrings.resetColumns), this._resetColumnWeights.bind(this));
 
     const isContextMenuKey = (event.button === 0);
     const gridNode = isContextMenuKey ? this.selectedNode : this.dataGridNodeFromNode(target);
@@ -1435,7 +1500,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
       }
     }
     if (this._refreshCallback && (!gridNode || gridNode !== this.creationNode)) {
-      contextMenu.defaultSection().appendItem(Common.UIString.UIString('Refresh'), this._refreshCallback.bind(this));
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.refresh), this._refreshCallback.bind(this));
     }
 
     if (gridNode && gridNode.selectable && !gridNode.isEventWithinDisclosureTriangle(event)) {
@@ -1444,14 +1509,14 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
           const firstEditColumnIndex = this._nextEditableColumn(-1);
           const tableCellElement = gridNode.element().children[firstEditColumnIndex];
           contextMenu.defaultSection().appendItem(
-              Common.UIString.UIString('Add new'), this._startEditing.bind(this, tableCellElement));
+              i18nString(UIStrings.addNew), this._startEditing.bind(this, tableCellElement));
         } else if (isContextMenuKey) {
           const firstEditColumnIndex = this._nextEditableColumn(-1);
           if (firstEditColumnIndex > -1) {
             const firstColumn = this.visibleColumnsArray[firstEditColumnIndex];
             if (firstColumn && firstColumn.editable) {
               contextMenu.defaultSection().appendItem(
-                  ls`Edit "${firstColumn.title}"`,
+                  i18nString(UIStrings.editS, {PH1: firstColumn.title}),
                   this._startEditingColumnOfDataGridNode.bind(this, gridNode, firstEditColumnIndex));
             }
           }
@@ -1459,14 +1524,14 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
           const columnId = this.columnIdFromNode(target);
           if (columnId && this._columns[columnId].editable) {
             contextMenu.defaultSection().appendItem(
-                Common.UIString.UIString('Edit "%s"', this._columns[columnId].title),
+                i18nString(UIStrings.editS, {PH1: this._columns[columnId].title}),
                 this._startEditing.bind(this, target));
           }
         }
       }
       if (this._deleteCallback && gridNode !== this.creationNode) {
         contextMenu.defaultSection().appendItem(
-            Common.UIString.UIString('Delete'), this._deleteCallback.bind(this, gridNode));
+            i18nString(UIStrings.delete), this._deleteCallback.bind(this, gridNode));
       }
       if (this._rowContextMenuCallback) {
         this._rowContextMenuCallback(contextMenu, gridNode);
@@ -1811,19 +1876,18 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
     const accessibleTextArray = [];
     // Add depth if node is part of a tree
     if (this._hasChildren || !this.parent._isRoot) {
-      accessibleTextArray.push(ls`level ${this.depth + 1}`);
+      accessibleTextArray.push(i18nString(UIStrings.levelS, {PH1: this.depth + 1}));
     }
     for (let i = 0; i < columnsArray.length; ++i) {
       const column = columnsArray[i];
       const cell = element.appendChild(this.createCell(column.id));
       // Add each visibile cell to the node's accessible text by gathering 'Column Title: content'
-      const localizedTitle = ls`${column.title}`;
 
       if (column.dataType === DataType.Boolean && this.data[column.id] === true) {
-        this.setCellAccessibleName(ls`checked`, cell, column.id);
+        this.setCellAccessibleName(i18nString(UIStrings.checked), cell, column.id);
       }
 
-      accessibleTextArray.push(`${localizedTitle}: ${this.cellAccessibleTextMap.get(column.id) || cell.textContent}`);
+      accessibleTextArray.push(`${column.title}: ${this.cellAccessibleTextMap.get(column.id) || cell.textContent}`);
     }
     this.nodeAccessibleText = accessibleTextArray.join(', ');
     element.appendChild(this.createTDWithClass('corner'));
@@ -2279,7 +2343,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
 
     this._expanded = false;
     if (this.selected && this.dataGrid) {
-      this.dataGrid.updateGridAccessibleName(/* text */ ls`collapsed`);
+      this.dataGrid.updateGridAccessibleName(/* text */ i18nString(UIStrings.collapsed));
     }
 
     for (let i = 0; i < this.children.length; ++i) {
@@ -2339,7 +2403,7 @@ export class DataGridNode extends Common.ObjectWrapper.ObjectWrapper {
       this._element.classList.add('expanded');
     }
     if (this.selected && this.dataGrid) {
-      this.dataGrid.updateGridAccessibleName(/* text */ ls`expanded`);
+      this.dataGrid.updateGridAccessibleName(/* text */ i18nString(UIStrings.expanded));
     }
 
     this._expanded = true;

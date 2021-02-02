@@ -1136,6 +1136,60 @@
   "css_overview/CSSOverviewUnusedDeclarations.js | widthAppliedToAnInlineElement": {
     "message": "Width applied to an inline element"
   },
+  "data_grid/DataGrid.js | addNew": {
+    "message": "Add new"
+  },
+  "data_grid/DataGrid.js | checked": {
+    "message": "checked"
+  },
+  "data_grid/DataGrid.js | collapsed": {
+    "message": "collapsed"
+  },
+  "data_grid/DataGrid.js | delete": {
+    "message": "Delete"
+  },
+  "data_grid/DataGrid.js | editS": {
+    "message": "Edit \"{PH1}\""
+  },
+  "data_grid/DataGrid.js | expanded": {
+    "message": "expanded"
+  },
+  "data_grid/DataGrid.js | headerOptions": {
+    "message": "Header Options"
+  },
+  "data_grid/DataGrid.js | levelS": {
+    "message": "level {PH1}"
+  },
+  "data_grid/DataGrid.js | refresh": {
+    "message": "Refresh"
+  },
+  "data_grid/DataGrid.js | resetColumns": {
+    "message": "Reset Columns"
+  },
+  "data_grid/DataGrid.js | rowsS": {
+    "message": "Rows: {PH1}"
+  },
+  "data_grid/DataGrid.js | sortByString": {
+    "message": "Sort By"
+  },
+  "data_grid/DataGrid.js | sRowS": {
+    "message": "{PH1} Row {PH2}"
+  },
+  "data_grid/DataGrid.js | sSUseTheUpAndDownArrowKeysTo": {
+    "message": "{PH1} {PH2}, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell."
+  },
+  "data_grid/ShowMoreDataGridNode.js | showAllD": {
+    "message": "Show all {PH1}"
+  },
+  "data_grid/ShowMoreDataGridNode.js | showDAfter": {
+    "message": "Show {PH1} after"
+  },
+  "data_grid/ShowMoreDataGridNode.js | showDBefore": {
+    "message": "Show {PH1} before"
+  },
+  "data_grid/ViewportDataGrid.js | collapsed": {
+    "message": "collapsed"
+  },
   "developer_resources/developer_resources-meta.ts | developerResources": {
     "message": "Developer Resources"
   },

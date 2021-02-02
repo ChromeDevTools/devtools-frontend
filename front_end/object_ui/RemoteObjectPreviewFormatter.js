@@ -63,7 +63,16 @@ export class RemoteObjectPreviewFormatter {
    */
   appendObjectPreview(parentElement, preview, isEntry) {
     const description = preview.description;
-    const subTypesWithoutValuePreview = new Set(['null', 'regexp', 'error', 'internal#entry', 'trustedtype']);
+    const subTypesWithoutValuePreview = new Set([
+      Protocol.Runtime.ObjectPreviewSubtype.Arraybuffer,
+      Protocol.Runtime.ObjectPreviewSubtype.Dataview,
+      Protocol.Runtime.ObjectPreviewSubtype.Error,
+      Protocol.Runtime.ObjectPreviewSubtype.Null,
+      Protocol.Runtime.ObjectPreviewSubtype.Regexp,
+      Protocol.Runtime.ObjectPreviewSubtype.Webassemblymemory,
+      'internal#entry',
+      'trustedtype',
+    ]);
     if (preview.type !== Protocol.Runtime.ObjectPreviewType.Object ||
         (preview.subtype && subTypesWithoutValuePreview.has(preview.subtype)) || isEntry) {
       parentElement.appendChild(

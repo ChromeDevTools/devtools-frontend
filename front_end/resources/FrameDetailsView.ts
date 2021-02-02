@@ -10,11 +10,12 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import * as Network from '../network/network.js';
-import {ls} from '../platform/platform.js';
+import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
+import {ls} from '../platform/platform.js';
 
 const booleanToYesNo = (b: boolean): Common.UIString.LocalizedString => b ? ls`Yes` : ls`No`;
 
@@ -24,13 +25,6 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   _protocolMonitorExperimentEnabled: boolean;
   _frame: SDK.ResourceTreeModel.ResourceTreeFrame;
   _reportView: UI.ReportView.ReportView;
-  _generalSection: UI.ReportView.Section;
-  _urlFieldValue: HTMLElement;
-  _urlStringElement: HTMLElement;
-  _unreachableURL: HTMLElement;
-  _originStringElement: HTMLElement;
-  _ownerFieldValue: HTMLElement;
-  _adStatus: HTMLElement;
   _isolationSection: UI.ReportView.Section;
   _secureContext: HTMLElement;
   _crossOriginIsolatedContext: HTMLElement;
@@ -55,15 +49,6 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
     this._reportView.show(this.contentElement);
     this._reportView.element.classList.add('frame-details-report-container');
-
-    this._generalSection = this._reportView.appendSection(ls`Document`);
-    this._urlFieldValue = this._generalSection.appendField(ls`URL`);
-    this._urlStringElement = this._urlFieldValue.createChild('div', 'text-ellipsis');
-    this._unreachableURL = this._generalSection.appendField(ls`Unreachable URL`);
-    const originFieldValue = this._generalSection.appendField(ls`Origin`);
-    this._originStringElement = originFieldValue.createChild('div', 'text-ellipsis');
-    this._ownerFieldValue = this._generalSection.appendField(ls`Owner Element`);
-    this._adStatus = this._generalSection.appendField(ls`Ad Status`);
 
     this._isolationSection = this._reportView.appendSection(ls`Security & Isolation`);
     this._secureContext = this._isolationSection.appendField(ls`Secure Context`);
@@ -92,48 +77,9 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
 
   async doUpdate(): Promise<void> {
     this.reportView.data = {frame: this._frame};
-
-    this._urlFieldValue.removeChildren();
-    this._urlStringElement.textContent = this._frame.url;
-    UI.Tooltip.Tooltip.install(this._urlStringElement, this._frame.url);
-    this._urlFieldValue.appendChild(this._urlStringElement);
-    if (!this._frame.unreachableUrl()) {
-      const sourceCode = this.uiSourceCodeForFrame(this._frame);
-      const revealSource = linkifyIcon(
-          'mediumicon-sources-panel', ls`Click to reveal in Sources panel`, () => Common.Revealer.reveal(sourceCode));
-      this._urlFieldValue.appendChild(revealSource);
-    }
-    FrameDetailsView.maybeAppendLinkToRequest(this._urlFieldValue, this._frame.resourceForURL(this._frame.url));
-    this._maybeAppendLinkForUnreachableUrl();
-    if (this._frame.securityOrigin && this._frame.securityOrigin !== '://') {
-      this._originStringElement.textContent = this._frame.securityOrigin;
-      UI.Tooltip.Tooltip.install(this._originStringElement, this._frame.securityOrigin);
-      this._generalSection.setFieldVisible(ls`Origin`, true);
-    } else {
-      this._generalSection.setFieldVisible(ls`Origin`, false);
-    }
-    this._updateAdStatus();
-    this._ownerFieldValue.removeChildren();
-    const linkElement = await maybeCreateLinkToElementsPanel(this._frame);
-    if (linkElement) {
-      this._ownerFieldValue.appendChild(linkElement);
-    }
     await this._updateCoopCoepStatus();
     this._updateContextStatus();
     this._updateApiAvailability();
-  }
-
-  uiSourceCodeForFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): Workspace.UISourceCode.UISourceCode|null {
-    for (const project of Workspace.Workspace.WorkspaceImpl.instance().projects()) {
-      const projectTarget = Bindings.NetworkProject.NetworkProject.getTargetForProject(project);
-      if (projectTarget && projectTarget === frame.resourceTreeModel().target()) {
-        const uiSourceCode = project.uiSourceCodeForURL(frame.url);
-        if (uiSourceCode) {
-          return uiSourceCode;
-        }
-      }
-    }
-    return null;
   }
 
   static fillCrossOriginPolicy(
@@ -254,62 +200,6 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._apiMeasureMemory.appendChild(
         UI.Fragment.html`<div>${status} ${UI.XLink.XLink.create(link, ls`Learn more`)}</div>`);
   }
-
-  static maybeAppendLinkToRequest(element: Element, resource: SDK.Resource.Resource|null): void {
-    if (resource && resource.request) {
-      const request = resource.request;
-      const revealRequest = linkifyIcon(
-          'mediumicon-network-panel', ls`Click to reveal in Network panel`,
-          () => Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, Network.NetworkItemView.Tabs.Headers));
-      element.appendChild(revealRequest);
-    }
-  }
-
-  _maybeAppendLinkForUnreachableUrl(): void {
-    if (!this._frame.unreachableUrl()) {
-      this._generalSection.setFieldVisible(ls`Unreachable URL`, false);
-      return;
-    }
-    this._generalSection.setFieldVisible(ls`Unreachable URL`, true);
-    this._unreachableURL.textContent = this._frame.unreachableUrl();
-    const unreachableUrl = Common.ParsedURL.ParsedURL.fromString(this._frame.unreachableUrl());
-    if (!unreachableUrl) {
-      return;
-    }
-
-    const revealRequest = linkifyIcon(
-        'mediumicon-network-panel', ls`Click to reveal in Network panel (might require page reload)`, () => {
-          Network.NetworkPanel.NetworkPanel.revealAndFilter([
-            {
-              filterType: 'domain',
-              filterValue: unreachableUrl.domain(),
-            },
-            {
-              filterType: null,
-              filterValue: unreachableUrl.path,
-            },
-          ]);
-        });
-    this._unreachableURL.appendChild(revealRequest);
-  }
-
-  _updateAdStatus(): void {
-    switch (this._frame.adFrameType()) {
-      case Protocol.Page.AdFrameType.Root:
-        this._generalSection.setFieldVisible(ls`Ad Status`, true);
-        this._adStatus.textContent = ls`root`;
-        UI.Tooltip.Tooltip.install(this._adStatus, ls`This frame has been identified as the root frame of an ad`);
-        break;
-      case Protocol.Page.AdFrameType.Child:
-        this._generalSection.setFieldVisible(ls`Ad Status`, true);
-        this._adStatus.textContent = ls`child`;
-        UI.Tooltip.Tooltip.install(this._adStatus, ls`This frame has been identified as the a child frame of an ad`);
-        break;
-      default:
-        this._generalSection.setFieldVisible(ls`Ad Status`, false);
-        break;
-    }
-  }
 }
 
 export interface FrameDetailsReportViewData {
@@ -333,10 +223,236 @@ export class FrameDetailsReportView extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
+      <style>
+        .text-ellipsis {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        button ~ .text-ellipsis {
+          padding-left: 2px;
+        }
+
+        .link {
+          color: var(--color-link);
+          text-decoration: underline;
+          cursor: pointer;
+          padding: 2px 0; /* adjust focus ring size */
+        }
+
+        button.link {
+          border: none;
+          background: none;
+          font-family: inherit;
+          font-size: inherit;
+        }
+
+        .inline-items {
+          display: flex;
+        }
+      </style>
       <devtools-report .data=${{reportTitle: this.frame.displayName()} as Components.ReportView.ReportData}>
+      ${this.renderDocumentSection()}
       </devtools-report>
     `, this.shadow);
     // clang-format on
+  }
+
+  private renderDocumentSection(): LitHtml.TemplateResult|{} {
+    if (!this.frame) {
+      return LitHtml.nothing;
+    }
+
+    return LitHtml.html`
+      <devtools-report-section-header>${ls`Document`}</devtools-report-section-header>
+      <devtools-report-key>${ls`URL`}</devtools-report-key>
+      <devtools-report-value>
+        <div class="inline-items">
+          ${this.maybeRenderSourcesLinkForURL()}
+          ${this.maybeRenderNetworkLinkForURL()}
+          <div class="text-ellipsis" title=${this.frame.url}>${this.frame.url}</div>
+        </div>
+      </devtools-report-value>
+      ${this.maybeRenderUnreachableURL()}
+      ${this.maybeRenderOrigin()}
+      ${LitHtml.Directives.until(this.renderOwnerElement(), LitHtml.nothing)}
+      ${this.maybeRenderAdStatus()}
+      <devtools-report-divider></devtools-report-divider>
+    `;
+  }
+
+  private maybeRenderSourcesLinkForURL(): LitHtml.TemplateResult|{} {
+    if (!this.frame || this.frame.unreachableUrl()) {
+      return LitHtml.nothing;
+    }
+    const sourceCode = this.uiSourceCodeForFrame(this.frame);
+    return this.renderIconLink(
+        'sources_panel_icon',
+        ls`Click to reveal in Sources panel`,
+        (): Promise<void> => Common.Revealer.reveal(sourceCode),
+    );
+  }
+
+  private maybeRenderNetworkLinkForURL(): LitHtml.TemplateResult|{} {
+    if (this.frame) {
+      const resource = this.frame.resourceForURL(this.frame.url);
+      if (resource && resource.request) {
+        const request = resource.request;
+        return this.renderIconLink(
+            'network_panel_icon',
+            ls`Click to reveal in Network panel`,
+            (): Promise<void> =>
+                Network.NetworkPanel.NetworkPanel.selectAndShowRequest(request, Network.NetworkItemView.Tabs.Headers),
+        );
+      }
+    }
+    return LitHtml.nothing;
+  }
+
+  private renderIconLink(
+      iconName: string, title: Platform.UIString.LocalizedString,
+      clickHandler: (() => void)|(() => Promise<void>)): LitHtml.TemplateResult {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return LitHtml.html`
+      <button class="link" role="link" tabindex=0 @click=${clickHandler} title=${title}>
+        <devtools-icon .data=${{
+          iconName: iconName,
+          color: 'var(--color-primary)',
+          width: '16px',
+          height: '16px',
+        } as Components.Icon.IconData}>
+      </button>
+    `;
+    // clang-format on
+  }
+
+  private uiSourceCodeForFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): Workspace.UISourceCode.UISourceCode
+      |null {
+    for (const project of Workspace.Workspace.WorkspaceImpl.instance().projects()) {
+      const projectTarget = Bindings.NetworkProject.NetworkProject.getTargetForProject(project);
+      if (projectTarget && projectTarget === frame.resourceTreeModel().target()) {
+        const uiSourceCode = project.uiSourceCodeForURL(frame.url);
+        if (uiSourceCode) {
+          return uiSourceCode;
+        }
+      }
+    }
+    return null;
+  }
+
+  private maybeRenderUnreachableURL(): LitHtml.TemplateResult|{} {
+    if (!this.frame || !this.frame.unreachableUrl()) {
+      return LitHtml.nothing;
+    }
+    return LitHtml.html`
+      <devtools-report-key>${ls`Unreachable URL`}</devtools-report-key>
+      <devtools-report-value>
+        <div class="inline-items">
+          ${this.renderNetworkLinkForUnreachableURL()}
+          <div class="text-ellipsis" title=${this.frame.unreachableUrl()}>${this.frame.unreachableUrl()}</div>
+        </div>
+      </devtools-report-value>
+    `;
+  }
+
+  private renderNetworkLinkForUnreachableURL(): LitHtml.TemplateResult|{} {
+    if (this.frame) {
+      const unreachableUrl = Common.ParsedURL.ParsedURL.fromString(this.frame.unreachableUrl());
+      if (unreachableUrl) {
+        return this.renderIconLink(
+            'network_panel_icon',
+            ls`Click to reveal in Network panel (might require page reload)`,
+            ():
+                void => {
+                  Network.NetworkPanel.NetworkPanel.revealAndFilter([
+                    {
+                      filterType: 'domain',
+                      filterValue: unreachableUrl.domain(),
+                    },
+                    {
+                      filterType: null,
+                      filterValue: unreachableUrl.path,
+                    },
+                  ]);
+                },
+        );
+      }
+    }
+    return LitHtml.nothing;
+  }
+
+  private maybeRenderOrigin(): LitHtml.TemplateResult|{} {
+    if (this.frame && this.frame.securityOrigin && this.frame.securityOrigin !== '://') {
+      return LitHtml.html`
+        <devtools-report-key>${ls`Origin`}</devtools-report-key>
+        <devtools-report-value>
+          <div class="text-ellipsis" title=${this.frame.securityOrigin}>${this.frame.securityOrigin}</div>
+        </devtools-report-value>
+      `;
+    }
+    return LitHtml.nothing;
+  }
+
+  private async renderOwnerElement(): Promise<LitHtml.TemplateResult|{}> {
+    if (this.frame) {
+      const openerFrame = this.frame instanceof SDK.ResourceTreeModel.ResourceTreeFrame ?
+          this.frame :
+          SDK.FrameManager.FrameManager.instance().getFrame(this.frame);
+      if (openerFrame) {
+        const linkTargetDOMNode = await openerFrame.getOwnerDOMNodeOrDocument();
+        if (linkTargetDOMNode) {
+          // Disabled until https://crbug.com/1079231 is fixed.
+          // clang-format off
+          return LitHtml.html`
+            <style>
+               .button-icon-with-text {
+                vertical-align: sub;
+              }
+            </style>
+            <devtools-report-key>${ls`Owner Element`}</devtools-report-key>
+            <devtools-report-value>
+              <button class="link" role="link" tabindex=0 title=${ls`Click to reveal in Elements panel`}
+                @mouseenter=${(): Promise<void> => openerFrame.highlight()}
+                @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
+                @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
+              >
+                <devtools-icon class="button-icon-with-text" .data=${{
+                  iconName: 'elements_panel_icon',
+                  color: 'var(--color-primary)',
+                  width: '16px',
+                  height: '16px',
+                } as Components.Icon.IconData}></devtools-icon>
+                <${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>
+              </a>
+            </devtools-report-value>
+          `;
+          // clang-format on
+        }
+      }
+    }
+    return LitHtml.nothing;
+  }
+
+  private maybeRenderAdStatus(): LitHtml.TemplateResult|{} {
+    if (this.frame) {
+      if (this.frame.adFrameType() === Protocol.Page.AdFrameType.Root) {
+        return LitHtml.html`
+          <devtools-report-key>${ls`Ad Status`}</devtools-report-key>
+          <devtools-report-value title=${ls`This frame has been identified as the root frame of an ad`}>${
+            ls`root`}</devtools-report-value>
+        `;
+      }
+      if (this.frame.adFrameType() === Protocol.Page.AdFrameType.Child) {
+        return LitHtml.html`
+          <devtools-report-key>${ls`Ad Status`}</devtools-report-key>
+          <devtools-report-value title=${ls`This frame has been identified as the a child frame of an ad`}>${
+            ls`child`}</devtools-report-value>
+        `;
+      }
+    }
+    return LitHtml.nothing;
   }
 }
 
@@ -347,56 +463,4 @@ declare global {
   interface HTMLElementTagNameMap {
     'devtools-resources-frame-details-view': FrameDetailsReportView;
   }
-}
-
-function linkifyIcon(iconType: string, title: string, eventHandler: () => (void|Promise<void>)): Element {
-  const icon = UI.Icon.Icon.create(iconType, 'icon-link devtools-link');
-  const span = document.createElement('span');
-  UI.Tooltip.Tooltip.install(span, title);
-  span.classList.add('devtools-link');
-  span.tabIndex = 0;
-  span.appendChild(icon);
-  span.addEventListener('click', event => {
-    event.consume(true);
-    eventHandler();
-  });
-  span.addEventListener('keydown', event => {
-    if (event.key === 'Enter') {
-      event.consume(true);
-      eventHandler();
-    }
-  });
-  return span;
-}
-
-async function maybeCreateLinkToElementsPanel(opener: string|SDK.ResourceTreeModel.ResourceTreeFrame|
-                                              undefined): Promise<Element|null> {
-  let openerFrame: SDK.ResourceTreeModel.ResourceTreeFrame|null = null;
-  if (opener instanceof SDK.ResourceTreeModel.ResourceTreeFrame) {
-    openerFrame = opener;
-  } else if (opener) {
-    openerFrame = SDK.FrameManager.FrameManager.instance().getFrame(opener);
-  }
-  if (!openerFrame) {
-    return null;
-  }
-  const linkTargetDOMNode = await openerFrame.getOwnerDOMNodeOrDocument();
-  if (!linkTargetDOMNode) {
-    return null;
-  }
-  const linkElement = linkifyIcon(
-      'mediumicon-elements-panel', ls`Click to reveal in Elements panel`,
-      () => Common.Revealer.reveal(linkTargetDOMNode));
-  const label = document.createElement('span');
-  label.textContent = `<${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>`;
-  linkElement.insertBefore(label, linkElement.firstChild);
-  linkElement.addEventListener('mouseenter', () => {
-    if (openerFrame) {
-      openerFrame.highlight();
-    }
-  });
-  linkElement.addEventListener('mouseleave', () => {
-    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
-  });
-  return linkElement;
 }

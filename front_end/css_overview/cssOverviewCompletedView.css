@@ -66,7 +66,6 @@
   border-left: none;
   border-right: none;
 }
-
 /** Ensure links are rendered at the correct height */
 
 .unused-rules-grid .monospace {
@@ -320,11 +319,13 @@
 }
 
 [is=ui-icon].smallicon-checkmark-square {
-  background-color: #00b06f;
+  background-color: #00b06f; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 [is=ui-icon].smallicon-no {
-  background-color: #f00;
+  background-color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .data .nodeId-column {

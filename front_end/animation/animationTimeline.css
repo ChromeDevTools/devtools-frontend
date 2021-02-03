@@ -354,7 +354,8 @@ text.animation-timeline-grid-label {
 .animation-paused {
   align-items: center;
   justify-content: center;
-  background-color: hsl(0deg 0% 70% / 50%);
+  background-color: hsl(0deg 0% 70% / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: none;
 }
 

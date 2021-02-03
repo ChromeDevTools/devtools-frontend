@@ -14,7 +14,6 @@
 
   user-select: text;
 }
-
 /* for View Trace button */
 
 .lh-audit-group {
@@ -28,7 +27,6 @@ button.view-trace {
 .lighthouse-results-container {
   position: relative;
 }
-
 /** `window.opener` is null for windows opened from DevTools. This breaks
     the LH viewer app, so disable this feature. */
 

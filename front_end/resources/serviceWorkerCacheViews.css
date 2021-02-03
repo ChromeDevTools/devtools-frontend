@@ -6,7 +6,8 @@
 
 .service-worker-cache-data-view .data-view-toolbar {
   position: relative;
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-bottom: 1px solid #ccc;
   padding-right: 10px;
 }
@@ -24,13 +25,15 @@
 }
 
 .service-worker-cache-data-view .data-grid .data-container tr.selected {
-  background-color: rgb(212 212 212);
+  background-color: rgb(212 212 212); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   color: inherit;
 }
 
 .service-worker-cache-data-view .data-grid:focus .data-container tr.selected {
   background-color: var(--selection-bg-color);
-  color: #fff;
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .service-worker-cache-data-view .section,
@@ -48,7 +51,8 @@
 }
 
 .cache-preview-panel-resizer {
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   height: 4px;
   border-bottom: 1px solid rgb(64% 64% 64%);
 }
@@ -57,7 +61,8 @@
   flex: 0 0 27px;
   line-height: 27px;
   padding-left: 5px;
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-top: 1px solid #ccc;
   white-space: nowrap;
   text-overflow: ellipsis;

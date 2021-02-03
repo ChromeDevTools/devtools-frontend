@@ -4,4 +4,7 @@ karma-coverage
 node_modules
 out
 test/**/fixtures
+test/**/*.css
+test/**/*.ts
 third_party
+front_end/component_docs

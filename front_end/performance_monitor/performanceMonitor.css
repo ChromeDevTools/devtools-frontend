@@ -52,11 +52,13 @@
 }
 
 .perfmon-indicator:hover {
-  background-color: #f8f8f8;
+  background-color: #f8f8f8; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .perfmon-indicator:focus-visible {
-  background-color: #f8f8f8;
+  background-color: #f8f8f8; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .perfmon-indicator-swatch {
@@ -64,7 +66,8 @@
 }
 
 .perfmon-indicator:not(.active) .perfmon-indicator-swatch {
-  background-color: #eee !important;
+  background-color: #eee !important; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .perfmon-indicator-title {
@@ -72,7 +75,8 @@
 }
 
 .perfmon-indicator:not(.active) .perfmon-indicator-title {
-  color: #aaa;
+  color: #aaa; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .perfmon-indicator-value {

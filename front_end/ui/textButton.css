@@ -31,7 +31,8 @@
 }
 
 .text-button:not(:disabled):active {
-  background-color: #f2f2f2;
+  background-color: #f2f2f2; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .text-button:not(:disabled):focus {
@@ -48,7 +49,8 @@
 .-theme-preserve {
   background-color: var(--accent-color);
   border: none;
-  color: #fff;
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .text-button.link-style {
@@ -65,7 +67,8 @@
 .text-button.primary-button:not(:disabled):active,
 .-theme-preserve {
   background-color: var(--accent-color-hover);
-  color: #fff;
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):focus,

@@ -6,7 +6,6 @@
 
 .html-preview-frame {
   box-shadow: var(--drop-shadow);
-
   /* We always want a white background, even in dark mode, hence why we don't
   use our theme variables for this one */
   background: var(--color-background);

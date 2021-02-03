@@ -14,7 +14,8 @@
 }
 
 .data-grid tr:not(.selected) td .size-units {
-  color: #999;
+  color: #999; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .toolbar {

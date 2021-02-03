@@ -7,7 +7,8 @@
 :host {
   z-index: 30;
   padding: 4px;
-  background-color: #e6e6e6;
+  background-color: #e6e6e6; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 7px;
   border: 2px solid #bababa;
   width: 90%;

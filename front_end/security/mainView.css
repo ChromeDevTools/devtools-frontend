@@ -35,7 +35,6 @@
   height: 16px;
   margin: 0 0;
 }
-
 /* Separate the middle icon from the other two. */
 
 .security-summary .lock-icon-neutral {
@@ -46,7 +45,8 @@
 .security-summary:not(.security-summary-neutral) .lock-icon-neutral,
 .security-summary:not(.security-summary-insecure) .lock-icon-insecure,
 .security-summary:not(.security-summary-insecure-broken) .lock-icon-insecure-broken {
-  background-color: rgb(90 90 90 / 25%);
+  background-color: rgb(90 90 90 / 25%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 @media (forced-colors: active) {
@@ -113,7 +113,8 @@
 .security-summary-secure .triangle-pointer,
 .security-summary-secure .security-summary-text,
 .security-explanation-title-secure {
-  color: #0b8043;
+  color: #0b8043; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .security-summary-insecure-broken .triangle-pointer,
@@ -121,7 +122,8 @@
 .security-explanation-title-neutral,
 .security-explanation-title-insecure,
 .security-explanation-title-insecure-broken {
-  color: #cb3626;
+  color: #cb3626; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .security-explanation-list {
@@ -148,7 +150,8 @@
   display: flex;
   white-space: nowrap;
   border: none;
-  color: rgb(90 90 90);
+  color: rgb(90 90 90); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .security-explanation-text {
@@ -165,7 +168,8 @@
 }
 
 .security-explanation-title {
-  color: rgb(48 57 66);
+  color: rgb(48 57 66); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-top: 1px;
   margin-bottom: 8px;
 }

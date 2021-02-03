@@ -30,6 +30,7 @@
     "check-grdp": "third_party/node/node.py --output scripts/localization/check_localizable_resources.js",
     "check-json": "third_party/node/node.py --output scripts/json_validator/validate_module_json.js",
     "check-lint": "third_party/node/node.py --output scripts/test/run_lint_check_js.js && third_party/node/node.py --output scripts/test/run_lint_check_css.js && npm run check-lint-components-css",
+    "check-lint-css": "third_party/node/node.py --output scripts/test/run_lint_check_css.js && npm run check-lint-components-css",
     "check-lint-components-css": "third_party/node/node.py --output scripts/test/run_lint_check_css.js --glob 'front_end/**/*.ts' --syntax html",
     "check-loc": "scripts/test/run_localization_check.py",
     "components-server": "third_party/node/node.py --output scripts/component_server/server.js",

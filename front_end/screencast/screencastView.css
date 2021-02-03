@@ -92,7 +92,8 @@
 }
 
 .screencast-navigation .progress {
-  background-color: rgb(66 129 235);
+  background-color: rgb(66 129 235); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   height: 3px;
   left: 0;
   position: absolute;
@@ -108,7 +109,8 @@
   flex: none;
   padding: 20px;
   margin: 10px;
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .screencast-canvas-container {
@@ -131,21 +133,25 @@
 
 .-theme-not-patched .screencast-tag-name {
   /* Keep this in sync with inspectorSyntaxHighlight.css (--dom-tag-name-color) */
-  color: rgb(136 18 128);
+  color: rgb(136 18 128); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .-theme-not-patched .screencast-attribute {
   /* Keep this in sync with inspectorSyntaxHighlight.css (.webkit-html-attribute-value) */
-  color: rgb(26 26 166);
+  color: rgb(26 26 166); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .-theme-not-patched .screencast-dimension {
   /* Keep this in sync with tool_highlight.css (.dimensions) */
-  color: hsl(0deg 0% 45%);
+  color: hsl(0deg 0% 45%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .screencast-glasspane {
-  background-color: rgb(255 255 255 / 80%);
+  background-color: rgb(255 255 255 / 80%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-size: 30px;
   z-index: 100;
   display: flex;

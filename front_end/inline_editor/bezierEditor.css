@@ -21,23 +21,27 @@
   height: 50px;
   padding: 5px;
   margin: auto;
-  background-color: #f5f5f5;
+  background-color: #f5f5f5; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 3px;
 }
 
 .bezier-preset line.bezier-control-line {
-  stroke: #666;
+  stroke: #666; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   stroke-width: 1;
   stroke-linecap: round;
   fill: none;
 }
 
 .bezier-preset circle.bezier-control-circle {
-  fill: #666;
+  fill: #666; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .bezier-preset path.bezier-path {
-  stroke: #000;
+  stroke: #000; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   stroke-width: 2;
   stroke-linecap: round;
   fill: none;
@@ -45,15 +49,18 @@
 
 .bezier-preset-selected path.bezier-path,
 .bezier-preset-selected line.bezier-control-line {
-  stroke: #fff;
+  stroke: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .bezier-preset-selected circle.bezier-control-circle {
-  fill: #fff;
+  fill: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .bezier-curve line.linear-line {
-  stroke: rgb(238 238 238);
+  stroke: rgb(238 238 238); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   stroke-width: 2;
   stroke-linecap: round;
   fill: none;
@@ -64,7 +71,8 @@
 }
 
 .bezier-curve line.bezier-control-line {
-  stroke: #9c27b0;
+  stroke: #9c27b0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   stroke-width: 2;
   stroke-linecap: round;
   fill: none;
@@ -72,12 +80,14 @@
 }
 
 .bezier-curve circle.bezier-control-circle {
-  fill: #9c27b0;
+  fill: #9c27b0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   cursor: pointer;
 }
 
 .bezier-curve path.bezier-path {
-  stroke: #000;
+  stroke: #000; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   stroke-width: 3;
   stroke-linecap: round;
   fill: none;
@@ -96,7 +106,8 @@
 }
 
 .bezier-preview-animation {
-  background-color: #9c27b0;
+  background-color: #9c27b0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   width: 20px;
   height: 20px;
   border-radius: 20px;
@@ -114,7 +125,8 @@
 }
 
 svg.bezier-preset-modify {
-  background-color: #f5f5f5;
+  background-color: #f5f5f5; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 35px;
   display: inline-block;
   visibility: hidden;
@@ -125,7 +137,8 @@ svg.bezier-preset-modify {
 
 svg.bezier-preset-modify:hover,
 .bezier-preset:hover {
-  background-color: #999;
+  background-color: #999; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .bezier-preset-selected .bezier-preset:hover {
@@ -134,7 +147,8 @@ svg.bezier-preset-modify:hover,
 
 .bezier-preset-modify path {
   stroke-width: 2;
-  stroke: #000;
+  stroke: #000; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   fill: none;
 }
 
@@ -192,5 +206,6 @@ svg.bezier-preset-modify:active {
 }
 
 .bezier-preset-modify:active path {
-  stroke: #fff;
+  stroke: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }

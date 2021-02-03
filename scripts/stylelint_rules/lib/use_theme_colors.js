@@ -77,25 +77,13 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
         result: postcssResult,
       });
     }
-
-    /**
-     * @param {postcss.Node} declaration
-     */
-    function dealWithError(declaration) {
-      if (context.fix) {
-        // Unfortunately if you add crbug.com/X to the same comment as the
-        // stylelint-disable-line, it doesn't work, hence why we add two
-        // comments, one to disable and one with the tracking bug.
-        declaration.after(' /* stylelint-disable-line plugin/use_theme_colors */ /* crbug.com/1152736 */');
-      } else {
-        reportError(declaration);
-      }
-    }
     const sourceFile = postcssResult.opts.from;
-    // For now, only apply this linting to CSS within our components.
-    if (sourceFile && path.extname(sourceFile) !== '.ts') {
+    if (sourceFile && !sourceFile.includes('front_end') && sourceFile.includes('inspector_overlay')) {
+      // The inspector overlay sits outside of front_end and does not get loaded
+      // with the same CSS variables. So we don't want to apply this rule to it.
       return;
     }
+
     postcssRoot.walkRules(rule => {
       // If you are providing a selector specifically for dark mode, you can use
       // any colors you want, as it means you are purposefully deviating. This
@@ -110,7 +98,7 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
       for (const declaration of declarationsToCheck) {
         for (const indicator of COLOR_INDICATOR_REGEXES) {
           if (indicator.test(declaration.value)) {
-            dealWithError(declaration);
+            reportError(declaration);
           }
         }
 
@@ -122,7 +110,7 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
           const variableIsValid =
               DEFINED_INSPECTOR_STYLE_VARIABLES.has(variableName) || DEFINED_THEME_COLOR_VARIABLES.has(variableName);
           if (!variableIsValid) {
-            dealWithError(declaration);
+            reportError(declaration);
           }
         }
       }

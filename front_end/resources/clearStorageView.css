@@ -46,7 +46,8 @@
 
 .quota-override-error {
   padding-top: 10px;
-  color: #f00;
+  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .usage-breakdown-row {

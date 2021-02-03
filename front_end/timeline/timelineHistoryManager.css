@@ -43,7 +43,8 @@
 }
 
 .text-details span.time {
-  color: #555;
+  color: #555; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   text-align: right;
 }
 

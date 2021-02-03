@@ -61,7 +61,8 @@
   margin: auto 2px;
   padding: 3px;
   background: transparent;
-  text-shadow: rgb(255 255 255 / 50%) 0 1px 0;
+  text-shadow: rgb(255 255 255 / 50%) 0 1px 0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 6px;
   overflow: hidden;
 }
@@ -71,7 +72,8 @@
 }
 
 .filter-bitset-filter-divider {
-  background-color: #ccc;
+  background-color: #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   height: 16px;
   width: 1px;
   margin: auto 2px;
@@ -81,8 +83,10 @@
 .filter-bitset-filter span.selected,
 .filter-bitset-filter span:hover,
 .filter-bitset-filter span:active {
-  color: #fff;
-  text-shadow: rgb(0 0 0 / 40%) 0 1px 0;
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  text-shadow: rgb(0 0 0 / 40%) 0 1px 0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .filter-bitset-filter span:hover {

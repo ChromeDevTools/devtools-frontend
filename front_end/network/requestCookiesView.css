@@ -14,7 +14,8 @@
   font-size: 12px;
   font-weight: bold;
   margin-right: 30px;
-  color: rgb(97 97 97);
+  color: rgb(97 97 97); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .request-cookies-view .cookie-line {

@@ -32,7 +32,6 @@
   visibility: collapse;
   height: 0;
 }
-
 /* The font we use on Windows takes up more vertical space, so adjust
  * the height of the metrics sidebar pane accordingly.
  */
@@ -130,7 +129,6 @@
 .metrics .bottom {
   display: inline-block;
 }
-
 /* All computed layout attributes except position have a quite light
  * background color applied to them, so the default light font in dark
  * mode is very low contrast. Therefore we swap back to a dark font by
@@ -142,7 +140,6 @@
 :host-context(.-theme-with-dark-background) .metrics .content {
   color: #222;
 }
-
 /* When you hover over margin the rest of the items get given a black
  * background and so then the black text we set above means the numbers
  * are invisible. So if you're hovering over the margin we set the

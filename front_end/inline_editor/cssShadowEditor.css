@@ -55,7 +55,8 @@
   padding: 3px 7px;
   line-height: 16px;
   border: 1px solid rgb(0 0 0 / 14.000000000000002%);
-  color: #333;
+  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: var(--color-background);
   text-align: center;
   font-weight: 500;
@@ -77,20 +78,24 @@
 
 .shadow-editor-button-left:focus,
 .shadow-editor-button-right:focus {
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .shadow-editor-button-left.enabled,
 .shadow-editor-button-right.enabled,
 .-theme-preserve {
-  background-color: #4285f4;
-  color: #fff;
+  background-color: #4285f4; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .shadow-editor-button-left.enabled:focus,
 .shadow-editor-button-right.enabled:focus,
 .-theme-preserve {
-  background-color: #3b78e7;
+  background-color: #3b78e7; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .shadow-editor-text-input {

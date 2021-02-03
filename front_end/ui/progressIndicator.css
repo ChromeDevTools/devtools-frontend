@@ -5,7 +5,8 @@
  */
 
 .progress-indicator-shadow-stop-button {
-  background-color: rgb(216 0 0) !important;
+  background-color: rgb(216 0 0) !important; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border: 0;
   width: 10px;
   height: 12px;
@@ -23,7 +24,8 @@
   overflow: hidden;
   max-width: 150px;
   margin-right: 2px;
-  color: #777;
+  color: #777; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .progress-indicator-shadow-container progress {

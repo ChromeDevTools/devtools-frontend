@@ -11,14 +11,16 @@
   left: 0;
   right: 0;
   display: flex;
-  background-color: rgb(255 255 255 / 80%);
+  background-color: rgb(255 255 255 / 80%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   z-index: 1000;
 }
 
 .drop-target-message {
   flex: auto;
   font-size: 30px;
-  color: #999;
+  color: #999; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: flex;
   justify-content: center;
   align-items: center;

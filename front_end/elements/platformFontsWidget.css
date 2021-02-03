@@ -17,7 +17,8 @@
 }
 
 .font-usage {
-  color: #888;
+  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding-left: 3px;
 }
 
@@ -30,7 +31,8 @@
   text-overflow: ellipsis;
   overflow: hidden;
   height: 24px;
-  background-color: #f1f1f1;
+  background-color: #f1f1f1; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: flex;
   align-items: center;
 }

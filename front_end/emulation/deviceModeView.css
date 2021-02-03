@@ -8,12 +8,14 @@
   overflow: hidden;
   align-items: stretch;
   flex: auto;
-  background-color: hsl(0deg 0% 98%);
+  background-color: hsl(0deg 0% 98%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-toolbar {
   flex: none;
-  background-color: hsl(0deg 0% 98%);
+  background-color: hsl(0deg 0% 98%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-bottom: 1px solid #ccc;
   display: flex;
   flex-direction: row;
@@ -67,7 +69,8 @@
   flex: auto;
   justify-content: center;
   position: relative;
-  background-color: hsl(0deg 0% 90%);
+  background-color: hsl(0deg 0% 90%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border: 2px solid hsl(0deg 0% 98%);
   border-bottom: 2px solid hsl(0deg 0% 98%);
 }
@@ -91,7 +94,8 @@
   text-align: center;
   flex: none;
   cursor: pointer;
-  color: #5a5a5a;
+  color: #5a5a5a; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -102,7 +106,8 @@
 .device-mode-preset-bar:hover {
   transition: background-color 0.1s;
   transition-delay: 50ms;
-  background-color: #d6d6d6;
+  background-color: #d6d6d6; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-preset-bar > span {
@@ -127,11 +132,13 @@
   right: 0;
   width: 0;
   height: 0;
-  background-color: #171717;
+  background-color: #171717; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-content-clip:not(.device-mode-outline-visible) .device-mode-screen-area {
-  box-shadow: hsl(240deg 3% 84%) 0 0 0 0.5px, hsl(0deg 0% 80% / 40%) 0 0 20px;
+  box-shadow: hsl(240deg 3% 84%) 0 0 0 0.5px, hsl(0deg 0% 80% / 40%) 0 0 20px; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-screen-image {
@@ -152,7 +159,8 @@
 }
 
 .device-mode-resizer:hover {
-  background-color: hsl(0deg 0% 0% / 10%);
+  background-color: hsl(0deg 0% 0% / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   opacity: 100%;
 }
 
@@ -187,7 +195,8 @@
   top: 0;
   right: -20px;
   bottom: -20px;
-  background-color: hsl(0deg 0% 0% / 2%);
+  background-color: hsl(0deg 0% 0% / 2%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-bottom-left-resizer {
@@ -243,7 +252,8 @@
   width: 0;
   height: 0;
   display: flex;
-  background-color: #fcfcfc;
+  background-color: #fcfcfc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-ruler {
@@ -272,7 +282,8 @@
   border-top: 1px solid transparent;
   right: 0;
   bottom: 20px;
-  background-color: hsl(0deg 0% 98% / 90%);
+  background-color: hsl(0deg 0% 98% / 90%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-ruler-left .device-mode-ruler-content {
@@ -309,7 +320,8 @@
   top: 19px;
   bottom: 0;
   border-right: 1px solid hsl(0deg 0% 50%);
-  background-color: hsl(0deg 0% 98% / 90%);
+  background-color: hsl(0deg 0% 98% / 90%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-ruler-marker {
@@ -349,13 +361,15 @@
 }
 
 .device-mode-ruler-text {
-  color: hsl(0deg 0% 50%);
+  color: hsl(0deg 0% 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   position: relative;
   pointer-events: auto;
 }
 
 .device-mode-ruler-text:hover {
-  color: hsl(0deg 0% 10%);
+  color: hsl(0deg 0% 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-ruler-top .device-mode-ruler-text {

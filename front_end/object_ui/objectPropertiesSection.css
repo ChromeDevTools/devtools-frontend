@@ -10,7 +10,8 @@
 
 .object-properties-section {
   padding: 0 0 0 0;
-  color: rgb(33 33 33) !important;
+  color: rgb(33 33 33) !important; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: flex;
   flex-direction: column;
 }
@@ -43,7 +44,8 @@
 }
 
 .object-properties-section .private-property-hash {
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .object-properties-section-root-element {

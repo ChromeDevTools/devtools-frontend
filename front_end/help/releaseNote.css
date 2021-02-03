@@ -48,7 +48,8 @@
 }
 
 .release-note-container li:hover {
-  color: #039be5;
+  color: #039be5; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .release-note-container .release-note-link {
@@ -76,12 +77,14 @@
 }
 
 .release-note-container li:not(:hover) .release-note-subtitle {
-  color: #999;
+  color: #999; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .release-note-action-container > button {
   margin: 10px 0 20px 20px;
-  color: #757575;
+  color: #757575; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .release-note-action-container {

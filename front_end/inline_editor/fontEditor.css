@@ -14,7 +14,8 @@
 }
 
 .error-text {
-  color: #ff1a00;
+  color: #ff1a00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 6px 0;
 }
 
@@ -128,7 +129,8 @@ input::-webkit-inner-spin-button {
   padding: 3px 7px;
   line-height: 16px;
   border: 1px solid rgb(0 0 0 / 14.000000000000002%);
-  color: #333;
+  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: var(--color-background);
   text-align: center;
   font-weight: 500;
@@ -150,7 +152,8 @@ input::-webkit-inner-spin-button {
 
 .shadow-editor-button-left:focus,
 .shadow-editor-button-right:focus {
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .shadow-editor-text-input {
@@ -169,7 +172,8 @@ input::-webkit-inner-spin-button {
 }
 
 .spectrum-switcher:hover {
-  background-color: #ddd;
+  background-color: #ddd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .spectrum-switcher:focus-visible {

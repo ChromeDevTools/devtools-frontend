@@ -54,7 +54,8 @@
 }
 
 #timeline-overview-grid {
-  background-color: rgb(255 255 255);
+  background-color: rgb(255 255 255); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 #timeline-overview-grid .timeline-grid-header {
@@ -82,7 +83,8 @@
 }
 
 .timeline.panel .status-pane-container.tinted {
-  background-color: #d3d3d3;
+  background-color: #d3d3d3; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   pointer-events: auto;
 }
 
@@ -92,11 +94,13 @@
 }
 
 #timeline-overview-panel .overview-strip .timeline-overview-strip-title {
-  color: #666;
+  color: #666; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-size: 10px;
   font-weight: bold;
   z-index: 100;
-  background-color: rgb(255 255 255 / 70%);
+  background-color: rgb(255 255 255 / 70%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 0 4px;
   position: absolute;
   top: -2px;
@@ -179,10 +183,12 @@
   right: 0;
   bottom: 0;
   font-size: 9px;
-  color: #888;
+  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   white-space: nowrap;
   padding: 0 4px;
-  background-color: hsl(0deg 0% 100% / 80%);
+  background-color: hsl(0deg 0% 100% / 80%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 #memory-graphs-canvas-container {
@@ -206,7 +212,8 @@
 
 #memory-graphs-container .timeline-memory-header {
   flex: 0 0 26px;
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-bottom: 1px solid #ddd;
   justify-content: space-between;
 }
@@ -245,10 +252,12 @@
   right: 0;
   bottom: 0;
   font-size: 9px;
-  color: #888;
+  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   white-space: nowrap;
   padding: 0 4px;
-  background-color: hsl(0deg 0% 100% / 80%);
+  background-color: hsl(0deg 0% 100% / 80%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-details {
@@ -274,7 +283,8 @@
 }
 
 .timeline-details-view {
-  color: #333;
+  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   overflow: hidden;
 }
 
@@ -312,18 +322,21 @@
 }
 
 .timeline-details-view-row-title:not(:empty) {
-  color: rgb(152 152 152);
+  color: rgb(152 152 152); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   overflow: hidden;
   padding-right: 10px;
   display: inline-block;
 }
 
 .timeline-details-warning {
-  background-color: rgb(250 209 209 / 48%);
+  background-color: rgb(250 209 209 / 48%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-details-warning .timeline-details-view-row-title {
-  color: #f00;
+  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-details-view-row-value {
@@ -429,11 +442,13 @@
 }
 
 .timeline-tree-view .data-grid tr:not(.selected) .highlight {
-  background-color: rgb(255 230 179);
+  background-color: rgb(255 230 179); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-tree-view .data-grid tr:hover td:not(.bottom-filler-td) {
-  background-color: rgb(0 0 0 / 10%);
+  background-color: rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-tree-view .data-grid td.numeric-column {
@@ -446,7 +461,8 @@
 }
 
 .timeline-tree-view .data-grid span.percent-column {
-  color: #888;
+  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   width: 45px;
   display: inline-block;
 }
@@ -484,11 +500,13 @@
   margin: 0 4px;
   line-height: 12px;
   font-size: 10px;
-  color: #777;
+  color: #777; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-tree-view .data-grid tr.selected .name-container .activity-warning::after {
-  color: #fff;
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-tree-view .data-grid .name-container .activity-link {
@@ -508,13 +526,16 @@
 .timeline-tree-view .data-grid .background-bar {
   float: right;
   height: 18px;
-  background-color: hsl(43deg 84% 64% / 20%);
+  background-color: hsl(43deg 84% 64% / 20%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-bottom: 1px solid hsl(43deg 84% 64%);
 }
 
 .timeline-tree-view .data-grid .selected .background-bar {
-  background-color: rgb(255 255 255 / 30%);
-  border-bottom-color: rgb(255 255 255 / 90%);
+  background-color: rgb(255 255 255 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom-color: rgb(255 255 255 / 90%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-tree-view .timeline-details-view-body .full-widget-dimmed-banner {
@@ -533,7 +554,8 @@
   height: 27px;
   background-color: var(--toolbar-bg-color);
   padding: 6px 10px;
-  color: #5a5a5a;
+  color: #5a5a5a; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   white-space: nowrap;
   border-bottom: var(--divider-border);
 }
@@ -545,7 +567,8 @@
   align-items: center;
   overflow: auto;
   font-size: 13px;
-  color: #777;
+  color: #777; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 @media (forced-colors: active) {
@@ -605,13 +628,15 @@
 }
 
 .timeline-paint-profiler-log-split > div:last-child {
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   z-index: 0;
 }
 
 .timeline-layers-view > div:last-child,
 .timeline-layers-view-properties > div:last-child {
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline.panel .status-pane-container > div {

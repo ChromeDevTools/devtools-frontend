@@ -8,8 +8,10 @@
 }
 
 :selection {
-  background-color: #00f;
-  color: #fff;
+  background-color: #00f; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .spectrum-color {
@@ -46,7 +48,8 @@
   width: 13px;
   height: 13px;
   border-radius: 13px;
-  background-color: rgb(248 248 248);
+  background-color: rgb(248 248 248); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   box-shadow: 0 1px 4px 0 rgb(0 0 0 / 37%);
 }
 
@@ -111,7 +114,8 @@
   height: 83px;
   top: 0;
   font-size: 13px;
-  color: #333;
+  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-top: var(--divider-border);
   line-height: initial;
   overflow: hidden;
@@ -234,7 +238,8 @@
 }
 
 .contrast-details-value {
-  color: #333;
+  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin: 1px 5px;
   user-select: text;
 }
@@ -242,15 +247,18 @@
 .contrast-details-value [is=ui-icon] {
   display: none;
   margin-left: 5px;
-  background-color: #333;
+  background-color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .spectrum-contrast-details .toolbar-state-on [is=ui-icon] {
-  background-color: rgb(110 110 110);
+  background-color: rgb(110 110 110); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 [is=ui-icon].smallicon-no {
-  background-color: #f00;
+  background-color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .contrast-pass-fail span[is=ui-icon] {
@@ -259,12 +267,14 @@
 
 [is=ui-icon].smallicon-checkmark-square,
 [is=ui-icon].smallicon-checkmark-behind {
-  background-color: #00b06f;
+  background-color: #00b06f; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .spectrum-contrast-details .contrast-details-value.contrast-unknown {
   background-color: var(--color-background);
-  color: #333;
+  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   width: 3em;
   text-align: center;
 }
@@ -317,12 +327,14 @@
 
 .swatch-overlay:hover,
 .swatch-overlay:focus-visible {
-  background-color: rgb(0 0 0 / 30%);
+  background-color: rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   opacity: 100%;
 }
 
 .swatch-overlay:active {
-  background-color: rgb(0 0 0 / 50%);
+  background-color: rgb(0 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 [is=ui-icon].icon-mask.copy-color-icon {
@@ -343,7 +355,8 @@
   margin-right: 6px;
   line-height: 20px;
   padding: 0;
-  color: #333;
+  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   white-space: nowrap;
   box-shadow: var(--focus-ring-inactive-shadow);
 }
@@ -352,7 +365,8 @@
   letter-spacing: 39.5px;
   margin-top: 8px;
   display: block;
-  color: #969696;
+  color: #969696; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-left: 16px;
   width: 174px;
 }
@@ -381,7 +395,8 @@
 }
 
 .spectrum-switcher:hover {
-  background-color: #ddd;
+  background-color: #ddd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .spectrum-switcher:focus-visible {
@@ -525,13 +540,15 @@
   border-bottom: var(--divider-border);
   padding: 12px;
   line-height: 14px;
-  color: #333;
+  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .palette-panel > div.palette-title {
   font-size: 14px;
   line-height: 16px;
-  color: #333;
+  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   flex-basis: 40px;
 }
 
@@ -546,13 +563,15 @@ div.palette-preview {
 
 .palette-preview:focus-visible,
 .palette-preview:hover {
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .spectrum-overlay {
   z-index: 13;
   visibility: hidden;
-  background-color: hsl(0deg 0% 0% / 50%);
+  background-color: hsl(0deg 0% 0% / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   opacity: 0%;
   transition: opacity 100ms cubic-bezier(0, 0, 0.2, 1), visibility 0s 100ms;
 }
@@ -571,7 +590,8 @@ div.palette-preview {
 .spectrum-contrast-line,
 :host-context(.-theme-with-dark-background) .spectrum-contrast-line {
   fill: none;
-  stroke: #fff;
+  stroke: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   opacity: 70%;
   stroke-width: 1.5px;
 }
@@ -580,7 +600,8 @@ div.palette-preview {
   position: absolute;
   right: 0;
   top: 0;
-  background-color: #efefef;
+  background-color: #efefef; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   visibility: hidden;
   z-index: 3;
   width: 36px;
@@ -607,8 +628,10 @@ div.palette-preview {
 }
 
 .delete-color-toolbar-active {
-  background-color: #ddd;
-  color: #fff;
+  background-color: #ddd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .swatch.contrast {
@@ -630,7 +653,8 @@ div.palette-preview {
 }
 
 .background-color .text-preview {
-  color: #000;
+  color: #000; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-size: 16px;
   position: relative;
   padding-bottom: 2px;

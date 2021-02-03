@@ -24,30 +24,37 @@ ol.tree-outline {
 }
 
 .shadow-xml-view-tag {
-  color: rgb(136 18 128);
+  color: rgb(136 18 128); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .shadow-xml-view-comment {
-  color: rgb(35 110 37);
+  color: rgb(35 110 37); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .shadow-xml-view-processing-instruction {
-  color: rgb(35 110 37);
+  color: rgb(35 110 37); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .shadow-xml-view-attribute-name {
-  color: rgb(153 69 0);
+  color: rgb(153 69 0); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .shadow-xml-view-attribute-value {
-  color: rgb(26 26 166);
+  color: rgb(26 26 166); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .shadow-xml-view-text {
-  color: rgb(0 0 0);
+  color: rgb(0 0 0); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   white-space: pre;
 }
 
 .shadow-xml-view-cdata {
-  color: rgb(0 0 0);
+  color: rgb(0 0 0); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }

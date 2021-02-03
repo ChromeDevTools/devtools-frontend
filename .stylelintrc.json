@@ -1,9 +1,14 @@
 {
   "extends": "stylelint-config-standard",
+  "plugins": [
+    "./scripts/stylelint_rules/lib/use_theme_colors.js"
+  ],
   "rules": {
+    "plugin/use_theme_colors": true,
     "alpha-value-notation": "percentage",
     "color-function-notation": "modern",
     "hue-degree-notation": "angle",
+    "comment-empty-line-before": "never",
     "color-named": "never",
     "property-no-vendor-prefix": [
       true,

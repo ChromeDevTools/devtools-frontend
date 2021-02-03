@@ -39,7 +39,8 @@ changedCSSFiles.forEach(file => {
     const darkFileMTime = fs.statSync(darkModeFile).mtime;
     // If the source file was modified more recently than the dark file, the dark file needs to be regenerated.
     if (sourceFileMTime > darkFileMTime) {
-      errors.push(`${sourcePathRelative} has been modified and ${darkModePathRelative} should be regenerated.`);
+      errors.push(`${sourcePathRelative} has been modified (${sourceFileMTime}) and ${
+          darkModePathRelative} should be regenerated (${darkFileMTime}).`);
     }
   }
 });

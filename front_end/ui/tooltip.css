@@ -7,7 +7,8 @@
 .tooltip {
   background: hsl(0deg 0% 95%);
   border-radius: 2px;
-  color: hsl(0deg 0% 20%);
+  color: hsl(0deg 0% 20%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 5px 8px;
   line-height: 14px;
   display: flex;
@@ -43,7 +44,8 @@
 }
 
 .tooltip-shortcut {
-  color: hsl(0deg 0% 45%);
+  color: hsl(0deg 0% 45%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: inline-block;
   margin-left: 8px;
   flex: 0 0 auto;

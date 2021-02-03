@@ -23,7 +23,8 @@
 .film-strip-view .label {
   margin: auto;
   font-size: 18px;
-  color: #999;
+  color: #999; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .film-strip-view .frame {

@@ -6,7 +6,8 @@
 
 .search-bar {
   flex: 0 0 31px;
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-top: 1px solid #ccc;
   display: flex;
   overflow: hidden;
@@ -124,7 +125,8 @@
   display: inline-block;
   text-align: right;
   padding: 0 4px;
-  color: rgb(165 165 165);
+  color: rgb(165 165 165); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   align-self: center;
 }
 

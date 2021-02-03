@@ -6,7 +6,8 @@
 
 .tree-outline {
   padding-left: 0;
-  color: rgb(90 90 90);
+  color: rgb(90 90 90); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .tree-outline > ol {
@@ -30,7 +31,8 @@ li.storage-group-list-item::before {
 }
 
 .icons-container .red-icon {
-  background-color: rgb(235 57 65);
+  background-color: rgb(235 57 65); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .navigator-file-tree-item {

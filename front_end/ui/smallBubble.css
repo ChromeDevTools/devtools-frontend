@@ -15,23 +15,28 @@ div {
   line-height: normal;
   font-weight: bold;
   text-shadow: none;
-  color: #fff;
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-top: -1px;
   border-radius: 7px;
 }
 
 div.verbose {
-  background-color: rgb(0 0 255);
+  background-color: rgb(0 0 255); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 div.info {
-  background-color: rgb(128 151 189);
+  background-color: rgb(128 151 189); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 div.warning {
-  background-color: rgb(232 164 0);
+  background-color: rgb(232 164 0); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 div.error {
-  background-color: rgb(216 35 35);
+  background-color: rgb(216 35 35); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }

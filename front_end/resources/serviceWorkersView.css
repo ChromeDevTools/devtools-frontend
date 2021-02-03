@@ -45,14 +45,15 @@
   border: 1px solid var(--color-text-secondary);
   align-self: center;
 }
-
 /* The circle's color does not change for light/dark mode on purpose */
 .service-worker-active-circle {
-  background-color: #50b04f;
+  background-color: #50b04f; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .service-worker-waiting-circle {
-  background-color: #f38e24;
+  background-color: #f38e24; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .service-worker-installing-circle {
@@ -60,7 +61,8 @@
 }
 
 .service-worker-redundant-circle {
-  background-color: #808080;
+  background-color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .service-worker-subtitle {

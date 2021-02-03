@@ -30,7 +30,8 @@
 }
 
 .tree-outline-disclosure .name {
-  color: rgb(136 19 145);
+  color: rgb(136 19 145); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .tree-outline-disclosure .object-value-node {
@@ -50,7 +51,8 @@
 
 .event-listener-button {
   padding: 0 3px;
-  background-color: #f2f2f2;
+  background-color: #f2f2f2; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 3px;
   border: 1px solid #c3c3c3;
   margin-left: 10px;
@@ -61,7 +63,8 @@
 }
 
 .event-listener-button:hover {
-  background-color: #e0e0e0;
+  background-color: #e0e0e0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   opacity: 100%;
 }
 

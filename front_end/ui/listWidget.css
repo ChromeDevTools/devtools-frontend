@@ -63,7 +63,8 @@
 
 .list-item:focus-within .controls-buttons,
 .list-item:hover .controls-buttons {
-  background-color: hsl(0deg 0% 96%);
+  background-color: hsl(0deg 0% 96%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   visibility: visible;
 }
 

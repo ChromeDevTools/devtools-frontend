@@ -36,7 +36,8 @@
   flex: auto 1 1;
   cursor: pointer;
   overflow: hidden;
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   user-select: none;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -80,7 +81,6 @@
   align-items: center;
   margin-bottom: 5px;
 }
-
 /* Don't want the bottom margin in the specific case of the folding one;
  * it messes with alignment with the arrow (which is a ::before) and  it's
  * spaced reasonably without it anyway

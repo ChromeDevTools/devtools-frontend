@@ -14,7 +14,8 @@
   background-color: var(--color-background);
   border: var(--divider-border);
   border-right-style: none;
-  color: #5a5a5a;
+  color: #5a5a5a; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   flex: 1 1 0;
   font-weight: 700;
   margin-left: -1px;
@@ -22,8 +23,10 @@
 }
 
 .segmented-button-segment:hover {
-  background-color: #f4f4f4;
-  color: #333;
+  background-color: #f4f4f4; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .segmented-button-segment:first-child {
@@ -38,16 +41,19 @@
 }
 
 .segmented-button-segment.segmented-button-segment-selected {
-  background-color: hsl(218deg 81% 59%);
+  background-color: hsl(218deg 81% 59%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-color: transparent;
-  color: #fafafa;
+  color: #fafafa; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .segmented-button-segment.segmented-button-segment-selected:hover {
-  background-color: hsl(218deg 81% 62%);
-  color: #fff;
+  background-color: hsl(218deg 81% 62%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
-
 /* Remove a border between the selected button and its siblin */
 
 .segmented-button-segment-selected + .segmented-button-segment {

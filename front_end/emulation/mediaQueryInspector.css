@@ -3,7 +3,6 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 /* Media query bars */
 
 .media-inspector-view {
@@ -47,17 +46,20 @@
 }
 
 .media-inspector-marker-max-width {
-  background-color: hsl(207deg 90% 77%);
+  background-color: hsl(207deg 90% 77%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-right: 2px solid hsl(207deg 90% 61%);
   border-left: 2px solid hsl(207deg 90% 61%);
 }
 
 .media-inspector-marker-inactive .media-inspector-marker-max-width:not(:hover) {
-  background-color: hsl(199deg 94% 94%);
+  background-color: hsl(199deg 94% 94%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .media-inspector-marker-min-max-width {
-  background-color: hsl(88deg 50% 76%);
+  background-color: hsl(88deg 50% 76%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-left: 2px solid #689f38;
   border-right: 2px solid hsl(92deg 48% 42%);
 }
@@ -67,16 +69,19 @@
 }
 
 .media-inspector-marker-inactive .media-inspector-marker-min-max-width:not(:hover) {
-  background-color: hsl(125deg 39% 94%);
+  background-color: hsl(125deg 39% 94%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .media-inspector-marker-min-width {
-  background-color: hsl(36deg 100% 75%);
+  background-color: hsl(36deg 100% 75%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   flex: auto;
 }
 
 .media-inspector-marker-inactive .media-inspector-marker-min-width:not(:hover) {
-  background-color: hsl(37deg 100% 94%);
+  background-color: hsl(37deg 100% 94%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .media-inspector-marker-min-width-right {
@@ -86,7 +91,6 @@
 .media-inspector-marker-min-width-left {
   border-right: 2px solid hsl(30deg 100% 48%);
 }
-
 /* Media query labels */
 
 .media-inspector-marker-label-container {
@@ -107,7 +111,8 @@
 }
 
 .media-inspector-marker-label {
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   position: absolute;
   top: 1px;
   bottom: 0;

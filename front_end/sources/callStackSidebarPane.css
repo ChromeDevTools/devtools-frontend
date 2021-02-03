@@ -8,8 +8,10 @@
   text-align: center;
   font-style: italic;
   padding: 4px;
-  color: #888;
-  background-color: #ffffc2;
+  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: #ffffc2; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .show-more-message > .link {
@@ -61,7 +63,8 @@
 
 .async-header .call-frame-item-title {
   font-weight: bold;
-  color: #999;
+  color: #999; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: var(--color-background);
   margin-left: -5px;
   padding: 0 5px;
@@ -74,11 +77,13 @@
 }
 
 .call-frame-item:not(.async-header):hover {
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .call-frame-location {
-  color: #888;
+  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-left: auto;
   padding: 0 10px 0 10px;
 }

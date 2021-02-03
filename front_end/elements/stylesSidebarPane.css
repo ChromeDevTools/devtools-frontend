@@ -22,7 +22,8 @@
 }
 
 .styles-section.read-only {
-  background-color: #fafafa;
+  background-color: #fafafa; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-style: italic;
 }
 
@@ -31,15 +32,18 @@
 }
 
 .styles-section:focus-visible {
-  background-color: hsl(214deg 48% 95%);
+  background-color: hsl(214deg 48% 95%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .styles-section.read-only:focus-visible {
-  background-color: hsl(215deg 25% 87%);
+  background-color: hsl(215deg 25% 87%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .styles-section .simple-selector.filter-match {
-  background-color: rgb(255 255 0 / 50%);
+  background-color: rgb(255 255 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 :host-context(.-theme-with-dark-background) .styles-section .simple-selector.filter-match {
@@ -58,16 +62,19 @@
 }
 
 .styles-section-title .media-list {
-  color: hsl(0deg 0% 46%);
+  color: hsl(0deg 0% 46%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .styles-section-title .media-list.media-matches .media.editable-media {
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .styles-section-title .media .subtitle {
   float: right;
-  color: hsl(0deg 0% 34%);
+  color: hsl(0deg 0% 34%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .styles-section-title .media:not(.editing-media),
@@ -76,7 +83,8 @@
 }
 
 .styles-section-subtitle {
-  color: hsl(0deg 0% 44%);
+  color: hsl(0deg 0% 44%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   float: right;
   padding-left: 15px;
   max-width: 100%;
@@ -89,7 +97,8 @@
 
 .sidebar-pane-open-brace,
 .sidebar-pane-closing-brace {
-  color: hsl(0deg 0% 46%);
+  color: hsl(0deg 0% 46%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .styles-section .devtools-link {
@@ -97,17 +106,20 @@
 }
 
 .styles-section .styles-section-subtitle .devtools-link {
-  color: hsl(0deg 0% 44%);
+  color: hsl(0deg 0% 44%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   text-decoration-color: hsl(0deg 0% 60%);
 }
 
 .styles-section .selector {
-  color: hsl(0deg 0% 46%);
+  color: hsl(0deg 0% 46%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .styles-section .simple-selector.selector-matches,
 .styles-section.keyframe-key {
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .styles-section .style-properties {
@@ -200,7 +212,8 @@
 }
 
 .styles-sidebar-pane-filter-box > input::placeholder {
-  color: rgb(0 0 0 / 54%);
+  color: rgb(0 0 0 / 54%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .styles-section.styles-panel-hovered:not(.read-only) span.simple-selector:hover,
@@ -213,7 +226,8 @@
   background-color: var(--toolbar-bg-color);
   padding: 0 5px;
   border-bottom: 1px solid var(--divider-color);
-  color: hsl(0deg 0% 32% / 100%);
+  color: hsl(0deg 0% 32% / 100%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -233,7 +247,8 @@
   position: absolute;
   right: 0;
   bottom: 0;
-  background-color: rgb(255 255 255 / 90%);
+  background-color: rgb(255 255 255 / 90%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   z-index: 0;
 }
 
@@ -242,7 +257,8 @@
 }
 
 .styles-section:focus-visible .sidebar-pane-section-toolbar {
-  background-color: hsl(214deg 67% 95% / 90%);
+  background-color: hsl(214deg 67% 95% / 90%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .styles-pane:not(.is-editing-style) .styles-section.matched-styles:not(.read-only):hover .sidebar-pane-section-toolbar.new-rule-toolbar {

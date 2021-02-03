@@ -43,7 +43,8 @@
   text-overflow: ellipsis;
   flex: 0 0 70px;
   user-select: none;
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   text-align: end;
   position: relative;
 }
@@ -64,7 +65,8 @@
 
 .conditions-list-separator {
   flex: 0 0 1px;
-  background-color: rgb(231 231 231);
+  background-color: rgb(231 231 231); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   height: 30px;
   margin: 0 4px;
 }
@@ -90,5 +92,6 @@
   position: absolute;
   bottom: -20px;
   right: 0;
-  color: rgb(128 128 128);
+  color: rgb(128 128 128); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }

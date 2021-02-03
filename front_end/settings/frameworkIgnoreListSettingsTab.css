@@ -64,7 +64,8 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   user-select: none;
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   overflow: hidden;
 }
 
@@ -83,7 +84,8 @@
 
 .ignore-list-separator {
   flex: 0 0 1px;
-  background-color: rgb(231 231 231);
+  background-color: rgb(231 231 231); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   height: 30px;
   margin: 0 4px;
 }

@@ -36,7 +36,8 @@ export class MarkdownView extends HTMLElement {
       .message {
         line-height: 20px;
         font-size: 14px;
-        color: var(--issue-gray);
+        color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
+        /* See: crbug.com/1152736 for color variable migration. */
         margin-bottom: 4px;
         user-select: text;
       }
@@ -66,7 +67,8 @@ export class MarkdownView extends HTMLElement {
       }
 
       .message code {
-        color: var(--issue-black);
+        color: var(--issue-black); /* stylelint-disable-line plugin/use_theme_colors */
+        /* See: crbug.com/1152736 for color variable migration. */
         font-size: 12px;
         user-select: text;
         cursor: text;

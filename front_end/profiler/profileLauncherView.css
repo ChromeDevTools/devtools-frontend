@@ -24,7 +24,8 @@
 }
 
 .profile-launcher-view-content p {
-  color: hsl(0deg 0% 45%);
+  color: hsl(0deg 0% 45%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-top: 1px;
   margin-left: 22px;
 }
@@ -34,11 +35,13 @@
 }
 
 .profile-launcher-view-content button.running {
-  color: hsl(0deg 100% 58%);
+  color: hsl(0deg 100% 58%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .profile-launcher-view-content button.running:hover {
-  color: hsl(0deg 100% 42%);
+  color: hsl(0deg 100% 42%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .profile-launcher-view-content button:not(:disabled):hover.running {
@@ -46,7 +49,8 @@
 }
 
 body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
-  color: rgb(220 130 130);
+  color: rgb(220 130 130); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .profile-launcher-view-content > div {
@@ -105,11 +109,13 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
 
 .profile-memory-usage-item-trend {
   min-width: 5em;
-  color: #008000;
+  color: #008000; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .profile-memory-usage-item-trend.increasing {
-  color: #f00;
+  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .profile-launcher-buttons {

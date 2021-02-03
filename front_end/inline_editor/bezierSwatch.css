@@ -15,10 +15,12 @@
   top: 1px;
   user-select: none;
   line-height: 10px;
-  background-color: #9c27b0;
+  background-color: #9c27b0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   cursor: default;
 }
 
 .bezier-swatch-icon:hover {
-  background-color: #800080;
+  background-color: #800080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }

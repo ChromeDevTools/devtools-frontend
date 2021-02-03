@@ -24,7 +24,8 @@
   display: inline-block;
   width: 80px;
   text-align: right;
-  color: #aaa;
+  color: #aaa; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-right: 10px;
 }
 
@@ -32,11 +33,13 @@
   display: inline-block;
   width: 200px;
   height: 8px;
-  background-color: #f4f4f4;
+  background-color: #f4f4f4; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-status-dialog .progress .indicator {
-  background-color: rgb(112 166 255);
+  background-color: rgb(112 166 255); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   height: 100%;
   width: 0;
   margin: 0;

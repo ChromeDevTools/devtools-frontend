@@ -14,7 +14,8 @@
 }
 
 .tree-outline li.filter-match {
-  background-color: rgb(255 255 0 / 50%);
+  background-color: rgb(255 255 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 :host-context(.-theme-with-dark-background) .tree-outline li.filter-match {
@@ -22,7 +23,8 @@
 }
 
 .tree-outline li.overloaded.filter-match {
-  background-color: rgb(255 255 0 / 25%);
+  background-color: rgb(255 255 0 / 25%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 :host-context(.-theme-with-dark-background) .tree-outline li.overloaded.filter-match {
@@ -139,7 +141,8 @@ ol.expanded {
 }
 
 .has-ignorable-error {
-  color: #808080;
+  color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .tree-outline li.editing {
@@ -185,7 +188,6 @@ ol.expanded {
 .tree-outline li.child-editing .styles-clipboard-only {
   display: none;
 }
-
 /* Matched styles */
 
 :host-context(.matched-styles) .tree-outline li {

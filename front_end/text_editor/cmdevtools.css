@@ -8,7 +8,8 @@
 .CodeMirror {
   line-height: 1.2em !important;
   background-color: transparent !important;
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   height: 300px;
 }
 
@@ -39,7 +40,8 @@
   border: 1px solid rgb(163 41 34);
   border-left-width: 0;
   border-right-width: 0;
-  background-color: rgb(255 255 194);
+  background-color: rgb(255 255 194); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror .source-frame-eval-expression-start {
@@ -57,13 +59,15 @@
   border: 1px solid transparent;
   border-left-width: 0;
   border-right-width: 0;
-  background-color: rgb(230 236 255);
+  background-color: rgb(230 236 255); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   cursor: pointer;
 }
 
 .CodeMirror .source-frame-continue-to-location:hover {
   border: 1px solid rgb(121 141 254);
-  background-color: rgb(171 191 254);
+  background-color: rgb(171 191 254); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .-theme-with-dark-background .CodeMirror .source-frame-continue-to-location,
@@ -89,7 +93,8 @@
 
 .CodeMirror .source-frame-async-step-in {
   outline: 0;
-  background-color: hsl(100deg 46% 80% / 100%);
+  background-color: hsl(100deg 46% 80% / 100%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   cursor: pointer;
   border: 1px solid transparent;
   border-left-width: 0;
@@ -97,7 +102,8 @@
 }
 
 .source-frame-async-step-in-hovered .source-frame-async-step-in {
-  background-color: hsl(96deg 53% 65%);
+  background-color: hsl(96deg 53% 65%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-color: rgb(100 154 100);
 }
 
@@ -128,7 +134,8 @@
 }
 
 .CodeMirror-linenumber {
-  color: hsl(0deg 0% 46%);
+  color: hsl(0deg 0% 46%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 0 3px 0 9px;
   min-width: 28px;
   text-align: right;
@@ -140,7 +147,8 @@
 }
 
 .cm-non-breakable-line .CodeMirror-linenumber {
-  color: rgb(128 128 128 / 40%);
+  color: rgb(128 128 128 / 40%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .cm-highlight {
@@ -153,17 +161,22 @@
 }
 
 @keyframes fadeout {
-  from { background-color: rgb(255 255 120); }
+  from {
+    background-color: rgb(255 255 120); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
   to { background-color: var(--color-background); }
 }
 
 @keyframes fadeout-dark {
-  from { background-color: hsl(133deg 100% 30% / 50%); }
+  from {
+    background-color: hsl(133deg 100% 30% / 50%); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
   to { background-color: transparent; }
 }
 
 .cm-readonly-highlight {
-  background-color: rgb(255 255 120);
+  background-color: rgb(255 255 120); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .-theme-with-dark-background .cm-readonly-highlight,
@@ -181,13 +194,23 @@
 }
 
 @keyframes fadeout-execution-line {
-  from { background-color: rgb(121 141 254); }
-  to { background-color: rgb(171 191 254); }
+  from {
+    background-color: rgb(121 141 254); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
+
+  to {
+    background-color: rgb(171 191 254); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
 }
 
 @keyframes fadeout-execution-line-dark {
-  from { background-color: #208043; }
-  to { background-color: #14522b; }
+  from {
+    background-color: #208043; /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
+
+  to {
+    background-color: #14522b; /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
 }
 
 .CodeMirror-linenumber:hover,
@@ -200,12 +223,10 @@
   line-height: 12px;
   border-style: solid;
   position: relative;
-
   /* The line number jumps slightly on hover when the minify banner is showing
      if this fractional value is not there. */
   top: -0.15px;
 }
-
 /* stylelint-disable no-descending-specificity */
 
 .CodeMirror-linenumber:hover {
@@ -220,13 +241,15 @@
 
 .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .-theme-preserve {
-  color: #fff;
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234285f4" stroke="%231a73e8"/></svg>') 1 3 1 1;
 }
 
 .cm-breakpoint-disabled .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .breakpoints-deactivated .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
-  color: #1a73e8;
+  color: #1a73e8; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23d9e7fd" stroke="%231a73e8"/></svg>') 1 3 1 1;
 }
 
@@ -245,7 +268,8 @@
 
 .cm-breakpoint-disabled.cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .breakpoints-deactivated .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
-  color: #e37400;
+  color: #e37400; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23fcebcc" stroke="%23e37400"/></svg>') 1 3 1 1;
 }
 
@@ -264,7 +288,8 @@
 
 .cm-breakpoint-disabled.cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .breakpoints-deactivated .cm-breakpoint-logpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
-  color: #d01884;
+  color: #d01884; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%23fdd7ec" stroke="%23f439a0"/></svg>') 1 3 1 1;
 }
 
@@ -275,7 +300,6 @@
   color: #d01884;
   -webkit-border-image: url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="%234e283d" stroke="%23f439a0"/></svg>') 1 3 1 1;
 }
-
 /* stylelint-enable no-descending-specificity */
 
 .cm-breakpoint-conditional .CodeMirror-gutter-wrapper .CodeMirror-linenumber::before,
@@ -326,18 +350,21 @@
 }
 
 .cm-execution-line-tail + .CodeMirror-widget {
-  background-color: #abbffe;
+  background-color: #abbffe; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .source-frame-eval-expression + .CodeMirror-widget {
   border: 1px solid rgb(163 41 34);
   border-left-width: 0;
   border-right-width: 0;
-  background-color: rgb(255 255 194);
+  background-color: rgb(255 255 194); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .cm-inline-breakpoint.cm-execution-line-tail {
-  background-color: #698cfe;
+  background-color: #698cfe; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .cm-execution-line-tail .cm-inline-breakpoint {
@@ -345,7 +372,8 @@
 }
 
 .cm-inline-breakpoint.cm-inline-conditional {
-  background-color: #ef9d0d;
+  background-color: #ef9d0d; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .cm-continue-to-location {
@@ -360,12 +388,14 @@
 }
 
 div.CodeMirror:focus-within span.CodeMirror-matchingbracket {
-  background-color: rgb(0 0 0 / 7.000000000000001%);
+  background-color: rgb(0 0 0 / 7.000000000000001%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-bottom: 1px solid rgb(0 0 0 / 50%);
 }
 
 div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
-  background-color: rgb(255 0 0 / 7.000000000000001%);
+  background-color: rgb(255 0 0 / 7.000000000000001%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-bottom: 1px solid rgb(255 0 0 / 50%);
 }
 
@@ -384,7 +414,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .cm-whitespace::before {
   position: absolute;
   pointer-events: none;
-  color: rgb(175 175 175);
+  color: rgb(175 175 175); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .cm-tab {
@@ -409,7 +440,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .cm-execution-line {
-  background-color: rgb(0 59 255 / 10%);
+  background-color: rgb(0 59 255 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .cm-execution-line-outline {
@@ -417,7 +449,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .cm-execution-line-tail {
-  background-color: rgb(171 191 254);
+  background-color: rgb(171 191 254); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .-theme-with-dark-background .cm-execution-line,
@@ -462,8 +495,10 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   position: absolute;
   border-top-style: solid;
   border-bottom-style: solid;
-  border-top-color: #808080;
-  border-bottom-color: #808080;
+  border-top-color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom-color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-top-width: 1px;
   border-bottom-width: 1px;
   top: -1px;
@@ -483,7 +518,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
   border-left-style: solid;
-  border-left-color: #808080;
+  border-left-color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .cm-search-highlight-end::before {
@@ -491,7 +527,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
   border-right-style: solid;
-  border-right-color: #808080;
+  border-right-color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .cm-line-with-selection .cm-column-with-selection.cm-search-highlight-full::before {
@@ -510,7 +547,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .cm-line-with-selection .cm-column-with-selection.cm-search-highlight::before {
   margin: -1px -1px -1px -1px;
-  background-color: rgb(241 234 0);
+  background-color: rgb(241 234 0); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   z-index: -1;
 }
 
@@ -531,7 +569,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .text-editor-line-marker-text span.line-marker-units {
-  color: #555;
+  color: #555; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-size: 75%;
   margin-left: 3px;
 }
@@ -539,7 +578,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror .text-editor-coverage-unused-marker {
   text-align: right;
   padding-right: 2px;
-  background-color: #ee442f;
+  background-color: #ee442f; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror .text-editor-coverage-unused-marker::after {
@@ -549,7 +589,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror .text-editor-coverage-used-marker {
   text-align: right;
   padding-right: 2px;
-  background-color: #63acbe;
+  background-color: #63acbe; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror .text-editor-coverage-used-marker::after {
@@ -580,10 +621,12 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   text-overflow: ellipsis;
   max-width: 1000px;
   opacity: 80%;
-  background-color: #ffe3c7;
+  background-color: #ffe3c7; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-left: 10px;
   padding-left: 5px;
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   user-select: text;
 }
 
@@ -609,13 +652,14 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .text-editor-line-with-warning:not(.cm-execution-line):not(.cm-readonly-highlight) {
-  background-color: rgb(241 230 0 / 10%);
+  background-color: rgb(241 230 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror .text-editor-line-with-error:not(.cm-execution-line):not(.cm-readonly-highlight) {
-  background-color: rgb(255 0 0 / 5%);
+  background-color: rgb(255 0 0 / 5%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
-
 /** @see crbug.com/358161 */
 
 .CodeMirror .CodeMirror-vscrollbar,
@@ -624,7 +668,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .cm-trailing-whitespace {
-  background-color: rgb(255 0 0 / 5%);
+  background-color: rgb(255 0 0 / 5%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror-activeline .cm-trailing-whitespace {
@@ -650,14 +695,15 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .auto-complete-text {
-  color: rgb(128 128 128);
+  color: rgb(128 128 128); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror .placeholder-text {
   height: 0;
-  color: rgb(128 128 128);
+  color: rgb(128 128 128); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
-
 /** Prevent the codemirror textarea from stealing PageUp events **/
 
 .CodeMirror textarea {
@@ -677,7 +723,6 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror-gutter-filler {
   background-color: transparent; /* The little square between H and V scrollbars */
 }
-
 /* Shown when moving in bi-directional text */
 
 .CodeMirror div.CodeMirror-secondarycursor {
@@ -698,7 +743,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror-foldmarker::before {
   content: '\2026';
   font-size: 13px;
-  color: #666;
+  color: #666; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror-foldgutter {
@@ -726,7 +772,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-foldgutter-open::before,
 .CodeMirror-foldgutter-folded::before {
-  background-color: #727272;
+  background-color: #727272; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   user-select: none;
   -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
   -webkit-mask-size: 32px 24px;

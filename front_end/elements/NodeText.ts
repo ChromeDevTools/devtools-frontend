@@ -53,23 +53,28 @@ export class NodeText extends HTMLElement {
     render(html`
       <style>
         .node-label-name {
-          color: var(--node-text-label-color, --dom-tag-name-color);
+          color: var(--node-text-label-color, --dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */
+          /* See: crbug.com/1152736 for color variable migration. */
         }
 
         .node-label-class {
-          color: var(--node-text-class-color, --dom-attribute-name-color);
+          color: var(--node-text-class-color, --dom-attribute-name-color); /* stylelint-disable-line plugin/use_theme_colors */
+          /* See: crbug.com/1152736 for color variable migration. */
         }
 
         .node-label-id {
-          color: var(--node-text-id-color);
+          color: var(--node-text-id-color); /* stylelint-disable-line plugin/use_theme_colors */
+          /* See: crbug.com/1152736 for color variable migration. */
         }
 
         .node-label-class.node-multiple-descriptors {
-          color: var(--node-text-multiple-descriptors-class, var(--node-text-class-color, --dom-attribute-name-color));
+          color: var(--node-text-multiple-descriptors-class, var(--node-text-class-color, --dom-attribute-name-color)); /* stylelint-disable-line plugin/use_theme_colors */
+          /* See: crbug.com/1152736 for color variable migration. */
         }
 
         .node-label-id.node-multiple-descriptors {
-          color: var(--node-text-multiple-descriptors-id, var(--node-text-id-color, --dom-attribute-name-color));
+          color: var(--node-text-multiple-descriptors-id, var(--node-text-id-color, --dom-attribute-name-color)); /* stylelint-disable-line plugin/use_theme_colors */
+          /* See: crbug.com/1152736 for color variable migration. */
         }
       </style>
       ${parts}

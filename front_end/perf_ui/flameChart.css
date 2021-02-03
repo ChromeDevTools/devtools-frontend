@@ -26,14 +26,16 @@
 .flame-chart-highlight-element {
   position: absolute;
   pointer-events: none;
-  background-color: rgb(56 121 217 / 10%);
+  background-color: rgb(56 121 217 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .flame-chart-selected-element {
   position: absolute;
   pointer-events: none;
   outline: 2px solid var(--selection-bg-color);
-  background-color: rgb(56 121 217 / 10%);
+  background-color: rgb(56 121 217 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .flame-chart-unfocused-selected-element {

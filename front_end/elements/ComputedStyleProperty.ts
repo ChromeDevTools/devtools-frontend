@@ -86,7 +86,6 @@ export class ComputedStyleProperty extends HTMLElement {
         .hidden {
           display: none;
         }
-
         /* narrowed styles */
         :host-context(.computed-narrow) .computed-style-property {
           white-space: normal;
@@ -104,7 +103,6 @@ export class ComputedStyleProperty extends HTMLElement {
         :host-context(.computed-narrow) .goto {
           display: none;
         }
-
         /* high-contrast styles */
         @media (forced-colors: active) {
           .computed-style-property.inherited {

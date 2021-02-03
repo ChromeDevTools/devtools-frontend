@@ -9,79 +9,94 @@
   width: 16px;
   -webkit-mask-image: url(Images/securityIcons.svg);
   -webkit-mask-size: 80px 32px;
-  background-color: #888;
+  background-color: #888; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .lock-icon-secure {
   -webkit-mask-position: 0 0;
-  background-color: #0b8043;
+  background-color: #0b8043; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .lock-icon-unknown,
 .lock-icon-neutral {
   -webkit-mask-position: -16px 0;
-  background-color: #000; /* Black for clarity on lower DPI screens */
+  background-color: #000; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */ /* Black for clarity on lower DPI screens */
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.1) {
   .lock-icon-unknown,
   .lock-icon-neutral {
-    background-color: #5a5a5a; /* Gray for hiDPI screens */
+    background-color: #5a5a5a; /* stylelint-disable-line plugin/use_theme_colors */
+    /* See: crbug.com/1152736 for color variable migration. */ /* Gray for hiDPI screens */
   }
 }
 
 .lock-icon-insecure {
   -webkit-mask-position: -32px 0;
-  background-color: #5a5a5a;
+  background-color: #5a5a5a; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .lock-icon-insecure-broken {
   -webkit-mask-position: -32px 0;
-  background-color: #c63626;
+  background-color: #c63626; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .security-property-secure {
   -webkit-mask-position: 0 -16px;
-  background-color: #0b8043;
+  background-color: #0b8043; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .security-property-neutral {
   -webkit-mask-position: -16px -16px;
-  background-color: #c63626;
+  background-color: #c63626; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .security-property-insecure {
   -webkit-mask-position: -32px -16px;
-  background-color: #c63626;
+  background-color: #c63626; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .security-property-insecure-broken {
   -webkit-mask-position: -32px -16px;
-  background-color: #c63626;
+  background-color: #c63626; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .security-property-info {
   -webkit-mask-position: -48px -16px;
-  background-color: rgb(0 0 0 / 50%);
+  background-color: rgb(0 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .security-property-unknown {
   -webkit-mask-position: -64px -16px;
-  background-color: rgb(0 0 0 / 50%);
+  background-color: rgb(0 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .url-scheme-secure {
-  color: #0b8043;
+  color: #0b8043; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .url-scheme-neutral,
 .url-scheme-insecure,
 .url-scheme-insecure-broken {
-  color: #cb3626;
+  color: #cb3626; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .url-scheme-separator {
-  color: #8a8a8a;
+  color: #8a8a8a; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 @media (forced-colors: active) {

@@ -47,7 +47,8 @@
 }
 
 .source-frame-debugger-script {
-  background-color: rgb(255 255 194 / 50%);
+  background-color: rgb(255 255 194 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .-theme-with-dark-background .source-frame-debugger-script {
@@ -61,8 +62,10 @@
   }
 
   10% {
-    background-color: rgb(158 54 153);
-    color: #fff;
+    background-color: rgb(158 54 153); /* stylelint-disable-line plugin/use_theme_colors */
+    /* See: crbug.com/1152736 for color variable migration. */
+    color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+    /* See: crbug.com/1152736 for color variable migration. */
   }
 
   to {
@@ -81,7 +84,8 @@
 }
 
 .diff-entry-insert .CodeMirror-gutter-background {
-  background-color: hsl(144deg 55% 49% / 20%);
+  background-color: hsl(144deg 55% 49% / 20%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .diff-entry-modify .diff-marker {
@@ -89,7 +93,8 @@
 }
 
 .diff-entry-modify .CodeMirror-gutter-background {
-  background-color: rgb(186 104 200 / 20%);
+  background-color: rgb(186 104 200 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .diff-entry-delete .diff-marker {
@@ -123,15 +128,28 @@
 }
 
 @keyframes source-line-modification-background-fadeout {
-  from { background-color: rgb(158 54 153 / 50%); }
-  50% { background-color: rgb(158 54 153 / 50%); }
-  90% { background-color: rgb(158 54 153 / 0%); }
+  from {
+    background-color: rgb(158 54 153 / 50%); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
+
+  50% {
+    background-color: rgb(158 54 153 / 50%); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
+
+  90% {
+    background-color: rgb(158 54 153 / 0%); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
   to { background-color: transparent; }
 }
 
 @keyframes source-line-modification-foreground-fadeout {
-  from { color: #fff; }
-  50% { color: #fff; }
+  from {
+    color: #fff; /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
+
+  50% {
+    color: #fff; /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  }
   90% { color: initial; }
   to { color: initial; }
 }

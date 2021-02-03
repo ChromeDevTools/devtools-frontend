@@ -32,11 +32,13 @@ li.search-result {
 }
 
 li.search-result:hover {
-  background-color: rgb(121 121 121 / 10%);
+  background-color: rgb(121 121 121 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 li.search-result .search-result-file-name {
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   flex: 1 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -44,7 +46,8 @@ li.search-result .search-result-file-name {
 }
 
 li.search-result .search-result-matches-count {
-  color: #888;
+  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin: 0 8px;
 }
 
@@ -53,7 +56,8 @@ li.search-result.expanded .search-result-matches-count {
 }
 
 li.show-more-matches {
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   cursor: pointer;
   margin: 8px 0 0 -4px;
 }
@@ -73,7 +77,8 @@ li.search-match::before {
 }
 
 li.search-match .search-match-line-number {
-  color: rgb(128 128 128);
+  color: rgb(128 128 128); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   text-align: right;
   vertical-align: top;
   word-break: normal;
@@ -86,7 +91,8 @@ li.search-match:hover {
 }
 
 li.search-match .highlighted-match {
-  background-color: #f1ea00;
+  background-color: #f1ea00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 :host-context(.-theme-with-dark-background) li.search-match .highlighted-match {
@@ -100,7 +106,8 @@ li.search-match .highlighted-match {
 }
 
 li.search-match .search-match-content {
-  color: #000;
+  color: #000; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 ol.children.expanded {
@@ -114,10 +121,12 @@ ol.children.expanded {
 }
 
 .search-result-qualifier {
-  color: #aaa;
+  color: #aaa; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .search-result-dash {
-  color: #aaa;
+  color: #aaa; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin: 0 4px;
 }

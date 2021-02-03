@@ -9,19 +9,23 @@
 
 .data-grid td {
   /* border-bottom: 1px solid #ccc; */
-  border-left-color: #ccc;
+  border-left-color: #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .data-grid tr.selected {
-  background-color: #def;
+  background-color: #def; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .data-grid th {
-  border-left-color: #ccc;
+  border-left-color: #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .protocol-message-sent {
-  background-color: hsl(281deg 64% 95%);
+  background-color: hsl(281deg 64% 95%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .protocol-monitor-toolbar {
@@ -29,6 +33,8 @@
 }
 
 .error {
-  background-color: hsl(0deg 100% 97%);
-  color: #f00;
+  background-color: hsl(0deg 100% 97%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }

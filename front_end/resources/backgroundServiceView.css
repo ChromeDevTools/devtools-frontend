@@ -15,7 +15,8 @@
   align-items: center;
   overflow: auto;
   font-size: 13px;
-  color: #777;
+  color: #777; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .background-service-preview > div {
@@ -30,7 +31,8 @@
 }
 
 .background-service-shortcut {
-  color: hsl(0deg 0% 50% / 100%);
+  color: hsl(0deg 0% 50% / 100%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .background-service-metadata {
@@ -44,7 +46,8 @@
 }
 
 .background-service-metadata-name {
-  color: rgb(33% 33% 33%);
+  color: rgb(33% 33% 33%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: inline-block;
   margin-right: 0.25em;
   font-weight: bold;
@@ -59,7 +62,8 @@
 }
 
 .background-service-empty-value {
-  color: #888;
+  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-style: italic;
 }
 

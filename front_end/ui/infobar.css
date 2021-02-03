@@ -5,7 +5,8 @@
  */
 
 .infobar {
-  color: rgb(34 34 34);
+  color: rgb(34 34 34); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: flex;
   flex: auto;
   border-bottom: 1px solid rgb(171 171 171);
@@ -19,12 +20,14 @@
 }
 
 .infobar-warning {
-  background-color: rgb(253 242 192);
+  background-color: rgb(253 242 192); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .infobar-info,
 .infobar-issue {
-  background-color: rgb(255 255 255);
+  background-color: rgb(255 255 255); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .infobar-main-row {
@@ -74,24 +77,28 @@
 }
 
 .infobar-button {
-  color: #757575;
+  color: #757575; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   cursor: pointer;
   padding: 0 4px;
 }
 
 .info-icon {
   -webkit-mask-image: url(Images/ic_info_black_18dp.svg);
-  background-color: hsl(214deg 92% 50%);
+  background-color: hsl(214deg 92% 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .warning-icon {
   -webkit-mask-image: url(Images/ic_warning_black_18dp.svg);
-  background-color: hsl(44deg 92% 50%);
+  background-color: hsl(44deg 92% 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .issue-icon {
   -webkit-mask-image: url(Images/issue-text-icon.svg);
-  background-color: #1a73e8;
+  background-color: #1a73e8; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .icon {
@@ -100,12 +107,12 @@
   height: 18px;
   flex-shrink: 0;
 }
-
 /* .infobar-issue style overrides to mimic console messages. */
 
 .infobar.infobar-issue {
   border: none;
-  color: rgb(48 57 66);
+  color: rgb(48 57 66); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding-top: 3px;
   line-height: 1.2;
   background-color: transparent;
@@ -131,18 +138,21 @@
   margin: 0;
   height: auto;
   font-size: inherit;
-  color: rgb(33% 33% 33%);
+  color: rgb(33% 33% 33%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: transparent;
 }
 
 .infobar.infobar-issue .infobar-button:hover {
-  color: rgb(15% 15% 15%);
+  color: rgb(15% 15% 15%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: transparent;
   box-shadow: none;
 }
 
 .infobar.infobar-issue .infobar-button:focus {
-  color: rgb(33% 33% 33%);
+  color: rgb(33% 33% 33%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: transparent;
   box-shadow: none;
   outline-width: unset;

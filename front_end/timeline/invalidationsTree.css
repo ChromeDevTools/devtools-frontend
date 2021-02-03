@@ -10,9 +10,7 @@
   min-height: initial;
   line-height: initial;
 }
-
 /* This TreeElement is always expanded and has no arrow.   */
-
 /* FIXME(crbug.com/475618): Implement this in TreeElement. */
 
 .children li::before {

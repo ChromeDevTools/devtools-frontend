@@ -19,7 +19,8 @@
 
 :focus.selected {
   background-color: var(--selection-bg-color);
-  color: #fff;
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror-lines:not(:active) {
@@ -28,13 +29,16 @@
 
 .CodeMirror-line:hover {
   cursor: default !important;
-  background-color: rgb(0 0 255 / 5%);
+  background-color: rgb(0 0 255 / 5%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror .CodeMirror-linebackground.spacer {
   text-align: center;
-  color: rgb(0 0 0 / 50%);
-  background-color: rgb(0 0 255 / 10%);
+  color: rgb(0 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: rgb(0 0 255 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror .equal > span > span {
@@ -48,23 +52,27 @@
 .CodeMirror .CodeMirror-linebackground.addition,
 .-theme-preserve,
 .changes-diff-gutter-marker.addition {
-  background-color: hsl(144deg 55% 49% / 20%);
+  background-color: hsl(144deg 55% 49% / 20%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror .CodeMirror-linebackground.deletion,
 .-theme-preserve,
 .changes-diff-gutter-marker.deletion {
-  background-color: rgb(255 0 0 / 20%);
+  background-color: rgb(255 0 0 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror .addition .cm-inner-diff:not(.CodeMirror-selectedtext),
 .-theme-preserve {
-  background-color: hsl(144deg 55% 49% / 30%);
+  background-color: hsl(144deg 55% 49% / 30%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror .deletion .cm-inner-diff:not(.CodeMirror-selectedtext),
 .-theme-preserve {
-  background-color: rgb(255 0 0 / 30%);
+  background-color: rgb(255 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .changes-toolbar {

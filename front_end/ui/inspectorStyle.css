@@ -30,7 +30,6 @@
 :root {
   height: 100%;
   overflow: hidden;
-
   /**
    * NOTE: please don't add to these colours!
    * We are migrating to a new set of theme colors (see below for details) and over time these colors will be deprecated / removed.
@@ -125,17 +124,20 @@ body {
   font-size: 12px;
   tab-size: 4;
   user-select: none;
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background: var(--color-background);
 }
 
 .platform-linux {
-  color: rgb(48 57 66);
+  color: rgb(48 57 66); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-family: Roboto, Ubuntu, Arial, sans-serif;
 }
 
 .platform-mac {
-  color: rgb(48 57 66);
+  color: rgb(48 57 66); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
 }
 

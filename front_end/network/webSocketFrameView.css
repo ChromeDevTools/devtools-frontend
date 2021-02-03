@@ -22,38 +22,46 @@
 }
 
 .websocket-frame-view .data-grid tr.selected {
-  background-color: #def;
+  background-color: #def; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .websocket-frame-view .data-grid td,
 .websocket-frame-view .data-grid th {
-  border-left-color: #ccc;
+  border-left-color: #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .websocket-frame-view-row-send td:first-child::before {
   content: "\2B06";
-  color: #080;
+  color: #080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding-right: 4px;
 }
 
 .websocket-frame-view-row-receive td:first-child::before {
   content: "\2B07";
-  color: #e65100;
+  color: #e65100; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding-right: 4px;
 }
 
 .data-grid:focus .websocket-frame-view-row-send.selected td:first-child::before,
 .data-grid:focus .websocket-frame-view-row-receive.selected td:first-child::before {
-  color: #fff;
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .websocket-frame-view-row-send {
-  background-color: rgb(226 247 218);
+  background-color: rgb(226 247 218); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .websocket-frame-view-row-error {
-  background-color: rgb(255 237 237);
-  color: rgb(182 0 0);
+  background-color: rgb(255 237 237); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: rgb(182 0 0); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .websocket-frame-view .toolbar {

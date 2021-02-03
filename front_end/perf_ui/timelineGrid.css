@@ -28,7 +28,8 @@
   top: 0;
   left: 0;
   right: 0;
-  background-color: rgb(255 255 255 / 85%);
+  background-color: rgb(255 255 255 / 85%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-clip: padding-box;
   height: 20px;
   z-index: 200;
@@ -41,7 +42,8 @@
   width: 1px;
   top: 0;
   bottom: 0;
-  background-color: rgb(0 0 0 / 10%);
+  background-color: rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .resources-event-divider {

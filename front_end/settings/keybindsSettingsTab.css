@@ -27,8 +27,10 @@ h1 {
   padding: 0.1em 0.6em;
   border: 1px solid #ccc;
   font-size: 11px;
-  background-color: #f7f7f7;
-  color: #333;
+  background-color: #f7f7f7; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   box-shadow: 0 1px 0 rgb(0 0 0 / 20%), 0 0 0 2px #fff inset;
   border-radius: 3px;
   display: inline-block;
@@ -55,7 +57,8 @@ h1 {
 }
 
 .keybinds-list-item.keybinds-editing {
-  background-color: rgb(0 0 0 / 5%);
+  background-color: rgb(0 0 0 / 5%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .keybinds-action-name {
@@ -96,7 +99,8 @@ h1 {
 }
 
 .keybinds-list-item button:hover .icon-mask {
-  background-color: #333;
+  background-color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .keybinds-list-item button:focus-visible {
@@ -132,7 +136,8 @@ h1 {
   text-overflow: ellipsis;
   overflow: hidden;
   user-select: none;
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   text-align: start;
   position: relative;
   margin-right: 0;
@@ -159,7 +164,8 @@ h1 {
 
 .keybinds-set-select label p {
   display: inline;
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .keybinds-set-select select {

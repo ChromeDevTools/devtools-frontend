@@ -74,6 +74,7 @@ async function generateDarkModeStyleSheet(chromeBinary, sheetFilePath) {
 
   const output = `/* This file was automatically generated via:
 npm run generate-dark-mode-styles ${path.relative(process.cwd(), inputFile)}
+* Last Updated: ${String(new Date())}
 */
 /* stylelint-disable */
 ${darkModeStyles}

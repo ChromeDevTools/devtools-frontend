@@ -18,7 +18,8 @@
 }
 
 .thread-item:hover {
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .thread-item:focus-visible {
@@ -33,7 +34,8 @@
 }
 
 .thread-item-paused-state {
-  color: #888;
+  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-left: auto;
   padding: 0 10px 0 10px;
 }

@@ -36,7 +36,8 @@
 }
 
 .filtered-list-widget-progress-bar {
-  background-color: #2196f3;
+  background-color: #2196f3; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   height: 2px;
   width: 100%;
   transform: scaleX(0);
@@ -61,11 +62,13 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  color: rgb(95 95 95);
+  color: rgb(95 95 95); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .filtered-list-widget-item.selected {
-  background-color: #f0f0f0;
+  background-color: #f0f0f0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 :host-context(.-theme-with-dark-background) .filtered-list-widget-item.selected {
@@ -73,7 +76,8 @@
 }
 
 .filtered-list-widget-item span.highlight {
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-weight: bold;
 }
 
@@ -87,7 +91,8 @@
   flex: none;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: rgb(155 155 155);
+  color: rgb(155 155 155); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: flex;
   white-space: pre;
 }
@@ -107,7 +112,8 @@
 }
 
 .tag {
-  color: #fff;
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 1px 3px;
   margin-right: 5px;
   border-radius: 2px;
@@ -115,7 +121,8 @@
 }
 
 .filtered-list-widget-item .tag .highlight {
-  color: #fff;
+  color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .not-found-text {
@@ -123,7 +130,8 @@
   line-height: 34px;
   padding-left: 4px;
   font-style: italic;
-  color: #888;
+  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background: #fbfbfb;
 }
 
@@ -131,7 +139,8 @@
   flex: none;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: rgb(155 155 155);
+  color: rgb(155 155 155); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding-left: 15px;
 }
 

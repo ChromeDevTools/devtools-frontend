@@ -19,7 +19,8 @@
 
 .editing,
 .editing * {
-  color: #222 !important;
+  color: #222 !important; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   text-decoration: none !important;
 }
 
@@ -71,7 +72,8 @@
   text-shadow: none;
   margin-right: -3px;
   -webkit-mask-position: 0 0;
-  background-color: #727272;
+  background-color: #727272; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .elements-disclosure li.parent.expanded::before {
@@ -125,7 +127,6 @@
 
 .elements-disclosure ol {
   list-style-type: none;
-
   /** Keep it in sync with ElementsTreeElements.updateDecorators **/
   padding-inline-start: 12px;
   margin: 0;
@@ -154,19 +155,23 @@
 }
 
 .elements-tree-outline ol.shadow-root-depth-4 {
-  background-color: rgb(0 0 0 / 4%);
+  background-color: rgb(0 0 0 / 4%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .elements-tree-outline ol.shadow-root-depth-3 {
-  background-color: rgb(0 0 0 / 3%);
+  background-color: rgb(0 0 0 / 3%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .elements-tree-outline ol.shadow-root-depth-2 {
-  background-color: rgb(0 0 0 / 2%);
+  background-color: rgb(0 0 0 / 2%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .elements-tree-outline ol.shadow-root-depth-1 {
-  background-color: rgb(0 0 0 / 1%);
+  background-color: rgb(0 0 0 / 1%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .elements-tree-outline ol.shadow-root-deep {
@@ -206,7 +211,8 @@ select {
   width: 9px;
   border-radius: 5px;
   border: 1px solid #ffa500;
-  background-color: #ffa500;
+  background-color: #ffa500; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   cursor: pointer;
 }
 
@@ -228,16 +234,18 @@ select {
 .elements-disclosure .elements-tree-nowrap li {
   word-wrap: normal;
 }
-
 /* DOM update highlight */
 @keyframes dom-update-highlight-animation {
   from {
-    background-color: rgb(158 54 153);
-    color: #fff;
+    background-color: rgb(158 54 153); /* stylelint-disable-line plugin/use_theme_colors */
+    /* See: crbug.com/1152736 for color variable migration. */
+    color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+    /* See: crbug.com/1152736 for color variable migration. */
   }
 
   80% {
-    background-color: rgb(245 219 244);
+    background-color: rgb(245 219 244); /* stylelint-disable-line plugin/use_theme_colors */
+    /* See: crbug.com/1152736 for color variable migration. */
     color: inherit;
   }
 
@@ -248,12 +256,15 @@ select {
 
 @keyframes dom-update-highlight-animation-dark {
   from {
-    background-color: rgb(158 54 153);
-    color: #fff;
+    background-color: rgb(158 54 153); /* stylelint-disable-line plugin/use_theme_colors */
+    /* See: crbug.com/1152736 for color variable migration. */
+    color: #fff; /* stylelint-disable-line plugin/use_theme_colors */
+    /* See: crbug.com/1152736 for color variable migration. */
   }
 
   80% {
-    background-color: #333;
+    background-color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+    /* See: crbug.com/1152736 for color variable migration. */
     color: inherit;
   }
 
@@ -277,7 +288,8 @@ select {
 
 .elements-tree-shortcut-title,
 .elements-tree-shortcut-link {
-  color: rgb(87 87 87);
+  color: rgb(87 87 87); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .elements-disclosure .gutter-container {
@@ -306,7 +318,6 @@ select {
 .elements-disclosure li.selected .gutter-container:not(.has-decorations) .gutter-menu-icon {
   visibility: visible;
 }
-
 /** Guide line */
 
 li.selected {

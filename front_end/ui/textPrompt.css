@@ -32,18 +32,21 @@
 }
 
 .text-prompt-editing > .text-prompt {
-  color: #222 !important;
+  color: #222 !important; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   text-decoration: none !important;
   white-space: pre;
 }
 
 .text-prompt > .auto-complete-text {
-  color: rgb(128 128 128) !important;
+  color: rgb(128 128 128) !important; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .text-prompt[data-placeholder]:empty::before {
   content: attr(data-placeholder);
-  color: rgb(128 128 128);
+  color: rgb(128 128 128); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .text-prompt:not([data-placeholder]):empty::after {

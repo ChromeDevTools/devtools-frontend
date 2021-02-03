@@ -73,7 +73,8 @@ export class ComputedStyleTrace extends HTMLElement {
         }
 
         .trace-selector {
-          color: #808080;
+          color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
+          /* See: crbug.com/1152736 for color variable migration. */
           padding-left: 2em;
         }
 
@@ -84,7 +85,6 @@ export class ComputedStyleTrace extends HTMLElement {
           position: relative;
           z-index: 1;
         }
-
         /* high-contrast styles */
         @media (forced-colors: active) {
           :host-context(.monospace.computed-properties) .computed-style-trace:hover {

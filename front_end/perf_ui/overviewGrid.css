@@ -8,7 +8,8 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  background-color: rgb(125 173 217 / 50%);
+  background-color: rgb(125 173 217 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   z-index: 250;
   pointer-events: none;
 }
@@ -19,7 +20,8 @@
   height: 20px;
   width: 6px;
   margin-left: -3px;
-  background-color: rgb(153 153 153);
+  background-color: rgb(153 153 153); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border: 1px solid #fff;
   z-index: 500;
 }
@@ -43,7 +45,8 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background-color: hsl(220deg 95% 50% / 70%);
+  background-color: hsl(220deg 95% 50% / 70%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   z-index: 500;
   pointer-events: none;
   visibility: hidden;
@@ -52,7 +55,8 @@
 
 .window-curtain-left,
 .window-curtain-right {
-  background-color: hsl(0deg 0% 80% / 50%);
+  background-color: hsl(0deg 0% 80% / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   position: absolute;
   top: 0;
   height: 100%;

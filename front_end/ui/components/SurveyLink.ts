@@ -110,7 +110,8 @@ export class SurveyLink extends HTMLElement {
           text-decoration: var(--issue-link-text-decoration, underline);
           cursor: pointer;
           font-size: var(--issue-link-font-size, 14px);
-          color: var(--issue-link);
+          color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
+          /* See: crbug.com/1152736 for color variable migration. */
           border: none;
           background: none;
           font-family: inherit;

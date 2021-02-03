@@ -30,7 +30,8 @@
 }
 
 .network-timing-table-header td {
-  color: #737373;
+  color: #737373; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-timing-table td {
@@ -60,7 +61,8 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 
 .network-timing-table td.caution {
   font-weight: bold;
-  color: rgb(255 128 0);
+  color: rgb(255 128 0); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 2px 0;
 }
 
@@ -83,7 +85,8 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 }
 
 .network-timing-bar-title {
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   white-space: nowrap;
   text-align: right;
 }
@@ -95,34 +98,40 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 
 .network-timing-bar.blocking,
 .-theme-preserve {
-  background-color: #aaa;
+  background-color: #aaa; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-timing-bar.proxy,
 .-theme-preserve {
-  background-color: #a1887f;
+  background-color: #a1887f; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-timing-bar.dns,
 .-theme-preserve {
-  background-color: #009688;
+  background-color: #009688; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-timing-bar.connecting,
 .network-timing-bar.serviceworker,
 .network-timing-bar.serviceworker-preparation,
 .-theme-preserve {
-  background-color: #ff9800;
+  background-color: #ff9800; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-timing-bar.ssl,
 .-theme-preserve {
-  background-color: #9c27b0;
+  background-color: #9c27b0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-timing-bar.serviceworker-respondwith,
 .-theme-preserve {
-  background-color: #a8a3ff;
+  background-color: #a8a3ff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-fetch-timing-bar-clickable::before {
@@ -137,7 +146,8 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
   content: "";
   position: relative;
   top: 3px;
-  background-color: rgb(110 110 110);
+  background-color: rgb(110 110 110); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-fetch-timing-bar-clickable {
@@ -172,28 +182,33 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 
 .network-timing-bar.sending,
 .-theme-preserve {
-  background-color: #b0bec5;
+  background-color: #b0bec5; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-timing-bar.waiting,
 .-theme-preserve {
-  background-color: #00c853;
+  background-color: #00c853; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-timing-bar.receiving,
 .network-timing-bar.receiving-push,
 .-theme-preserve {
-  background-color: #03a9f4;
+  background-color: #03a9f4; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-timing-bar.push,
 .-theme-preserve {
-  background-color: #8cdbff;
+  background-color: #8cdbff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-timing-bar.server-timing,
 .-theme-preserve {
-  background-color: #ddd;
+  background-color: #ddd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-timing-table td.network-timing-metric {

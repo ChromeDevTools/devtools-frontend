@@ -163,7 +163,8 @@ export class CSSAngleEditor extends HTMLElement {
         .dial {
           width: 2px;
           height: var(--clock-dial-length);
-          background-color: var(--dial-color);
+          background-color: var(--dial-color); /* stylelint-disable-line plugin/use_theme_colors */
+          /* See: crbug.com/1152736 for color variable migration. */
           border-radius: 1px;
         }
 

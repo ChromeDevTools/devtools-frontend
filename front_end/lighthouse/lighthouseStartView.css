@@ -3,14 +3,12 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 /* <3 */
 
 .lighthouse-start-view {
   font-family: Roboto, sans-serif;
   font-size: var(--font-size);
   line-height: 18px;
-
   /* for buttons */
   --accent-color: #0535c1;
   --accent-color-hover: #17b;
@@ -115,14 +113,16 @@ input[type="radio"]:focus {
 
 .lighthouse-help-text {
   text-align: center;
-  color: #f00;
+  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-weight: bold;
   padding-left: 10px;
 }
 
 .lighthouse-warning-text {
   text-align: left;
-  color: #ff8c00;
+  color: #ff8c00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-weight: bold;
   padding-left: 10px;
   padding-top: 10px;

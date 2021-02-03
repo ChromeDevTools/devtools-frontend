@@ -8,8 +8,10 @@
   padding: 6px;
   border-bottom: 1px solid transparent;
   border-top: 1px solid rgb(189 189 189);
-  background-color: hsl(50deg 100% 95%);
-  color: rgb(107 97 48);
+  background-color: hsl(50deg 100% 95%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: rgb(107 97 48); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .-theme-with-dark-background .paused-status {
@@ -18,8 +20,10 @@
 }
 
 .paused-status.error-reason {
-  background-color: hsl(0deg 100% 97%);
-  color: #6b3b3b;
+  background-color: hsl(0deg 100% 97%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: #6b3b3b; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .status-main {
@@ -36,7 +40,8 @@
 }
 
 .paused-status.error-reason .status-sub {
-  color: #f00;
+  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   line-height: 11px;
   max-height: 27px;
   user-select: text;

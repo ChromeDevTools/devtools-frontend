@@ -95,7 +95,8 @@ p.folder-exclude-pattern > input {
 }
 
 .settings-info-message {
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 10px;
   margin: 20px 0;
 }
@@ -105,7 +106,6 @@ p.folder-exclude-pattern > input {
   overflow: hidden;
   padding-right: 10px;
 }
-
 /*
  * Always show an outline. Needed because we have a white background here.
  */

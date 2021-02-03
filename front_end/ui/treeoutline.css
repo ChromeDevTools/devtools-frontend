@@ -112,7 +112,8 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
   -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
   -webkit-mask-size: 32px 24px;
   -webkit-mask-position: 0 0;
-  background-color: #727272;
+  background-color: #727272; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   content: "\A0\A0";
   text-shadow: none;
   margin-right: -2px;

@@ -30,7 +30,6 @@
 .webauthn-pane.enabled .authenticators-view {
   display: block;
 }
-
 /* New Authenticator Section */
 .new-authenticator-title {
   line-height: 24px;
@@ -57,7 +56,6 @@
 .webauthn-pane .chrome-select {
   width: 120px;
 }
-
 /* Active Authenticator Section */
 .authenticator-section {
   display: block;
@@ -116,7 +114,8 @@
 }
 
 .authenticator-option-label {
-  color: var(--main-fg-color);
+  color: var(--main-fg-color); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   text-align: right;
   width: 200px;
   display: inline-block;
@@ -154,7 +153,6 @@ td .text-button {
   from { opacity: 0%; }
   to { opacity: 100%; }
 }
-
 /* Credentials Table */
 
 .data-grid-data-grid-node.centered {

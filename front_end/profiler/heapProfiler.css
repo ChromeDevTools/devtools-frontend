@@ -60,11 +60,13 @@
 .heap-snapshot-view td.object-column .objects-count {
   margin-left: 10px;
   font-size: 11px;
-  color: #808080;
+  color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .heap-snapshot-view tr:not(.selected) .object-value-id {
-  color: #808080;
+  color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .profile-view .heap-tracking-overview {
@@ -78,7 +80,8 @@
 
 .heap-snapshot-view .heap-snapshot-view-resizer {
   background-image: url(Images/toolbarResizerVertical.png);
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-bottom: 1px solid rgb(179 179 179);
   background-repeat: no-repeat;
   background-position: right center, center;
@@ -133,11 +136,13 @@
 }
 
 .heap-snapshot-view tr:not(.selected) td.object-column span.heap-object-tag {
-  color: #888;
+  color: #888; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .heap-snapshot-view td.object-column span.grayed {
-  color: #808080;
+  color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .cycled-ancessor-node {
@@ -199,11 +204,13 @@
 }
 
 .heap-allocation-stack .stack-frame:hover:not(:focus) {
-  background-color: rgb(0 0 0 / 10%);
+  background-color: rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .heap-allocation-stack .stack-frame .devtools-link {
-  color: rgb(33% 33% 33%);
+  color: rgb(33% 33% 33%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .heap-allocation-stack .stack-frame:focus .devtools-link {

@@ -664,11 +664,9 @@ export class DataGrid extends HTMLElement {
             display: block;
             position: relative;
           }
-
           /* Ensure that vertically we don't overflow */
           .wrapping-container {
             overflow-y: scroll;
-
             /* Use max-height instead of height to ensure that the
               table does not use more space than necessary. */
             height: 100%;
@@ -678,7 +676,6 @@ export class DataGrid extends HTMLElement {
             border-spacing: 0;
             width: 100%;
             height: 100%;
-
             /* To make sure that we properly hide overflowing text
               when horizontal space is too narrow. */
             table-layout: fixed;
@@ -693,20 +690,19 @@ export class DataGrid extends HTMLElement {
           }
 
           tbody tr.selected {
-            background-color: var(--selected-row-color);
+            background-color: var(--selected-row-color); /* stylelint-disable-line plugin/use_theme_colors */
+            /* See: crbug.com/1152736 for color variable migration. */
           }
 
           td,
           th {
             padding: 1px 4px;
-
             /* Divider between each cell, except the first one (see below) */
             border-left: 1px solid var(--table-divider-color);
             color: var(--color-text-primary);
             line-height: var(--table-row-height);
             height: var(--table-row-height);
             user-select: text;
-
             /* Ensure that text properly cuts off if horizontal space is too narrow */
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -721,7 +717,6 @@ export class DataGrid extends HTMLElement {
             cursor: col-resize;
             position: absolute;
           }
-
           /* There is no divider before the first cell */
           td.firstVisibleColumn,
           th.firstVisibleColumn {

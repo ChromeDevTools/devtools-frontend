@@ -42,13 +42,15 @@
 
 .network-item-preview-toolbar {
   border-top: 1px solid #ccc;
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .resource-timing-view {
   display: block;
   margin: 6px;
-  color: rgb(30% 30% 30%);
+  color: rgb(30% 30% 30%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   overflow: auto;
 }
 
@@ -76,7 +78,8 @@
 }
 
 .network-overview .resources-dividers-label-bar {
-  background-color: rgb(255 255 255 / 95%);
+  background-color: rgb(255 255 255 / 95%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 #network-overview-grid .resources-dividers-label-bar {

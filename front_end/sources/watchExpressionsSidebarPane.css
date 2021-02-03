@@ -48,7 +48,8 @@
 }
 
 .watch-expressions .name {
-  color: rgb(136 19 145);
+  color: rgb(136 19 145); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   flex: none;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -56,7 +57,8 @@
 }
 
 .watch-expression-error {
-  color: #f00;
+  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 :host-context(.-theme-with-dark-background) .watch-expression-error {
@@ -98,7 +100,8 @@ li.watch-expression-tree-item {
 }
 
 li.watch-expression-tree-item:hover {
-  background-color: #f0f0f0;
+  background-color: #f0f0f0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .watch-expression-header:focus-visible {

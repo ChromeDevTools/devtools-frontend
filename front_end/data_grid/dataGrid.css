@@ -90,7 +90,8 @@
 
 .striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd),
 .striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even) {
-  background-color: hsl(214deg 70% 97%);
+  background-color: hsl(214deg 70% 97%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .data-grid td,
@@ -153,7 +154,8 @@
   right: 0;
   top: 0;
   bottom: 0;
-  background-color: rgb(0 0 0 / 15%);
+  background-color: rgb(0 0 0 / 15%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .data-grid th .sort-order-icon-container {
@@ -177,7 +179,8 @@
 }
 
 .data-grid th.sortable:hover {
-  background-color: hsl(0deg 0% 90% / 100%);
+  background-color: hsl(0deg 0% 90% / 100%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .data-grid .top-filler-td {
@@ -202,7 +205,8 @@
   content: "";
   position: relative;
   top: 3px;
-  background-color: rgb(110 110 110);
+  background-color: rgb(110 110 110); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .data-grid tr:not(.parent) td.disclosure::before {
@@ -214,7 +218,8 @@
 }
 
 .data-grid table.data tr.revealed.selected {
-  background-color: rgb(212 212 212);
+  background-color: rgb(212 212 212); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   color: inherit;
 }
 
@@ -242,18 +247,22 @@
 }
 
 .data-grid tr.inactive {
-  color: rgb(128 128 128);
+  color: rgb(128 128 128); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-style: italic;
 }
 
 .data-grid tr.dirty {
-  background-color: hsl(0deg 100% 92%);
-  color: #f00;
+  background-color: hsl(0deg 100% 92%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-style: normal;
 }
 
 .data-grid:focus tr.selected.dirty {
-  background-color: hsl(0deg 100% 70%);
+  background-color: hsl(0deg 100% 70%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .data-grid td.show-more {

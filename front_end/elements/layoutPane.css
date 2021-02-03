@@ -13,7 +13,8 @@
 }
 
 .header::marker {
-  color: rgb(110 110 110);
+  color: rgb(110 110 110); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-size: 11px;
   line-height: 1;
 }
@@ -88,7 +89,8 @@
 
 .elements {
   margin-top: 12px;
-  color: var(--dom-tag-name-color);
+  color: var(--dom-tag-name-color); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
   gap: 8px;
@@ -106,7 +108,8 @@
   background: none;
   border: none;
   -webkit-mask-image: url(Images/ic_show_node_16x16.svg);
-  background-color: #333;
+  background-color: #333; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   width: 16px;
   height: 16px;
   display: block;
@@ -116,7 +119,8 @@
 
 .show-element:focus,
 .show-element:hover {
-  background-color: #6e6e6e;
+  background-color: #6e6e6e; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .chrome-select {
@@ -147,7 +151,6 @@
   width: 10px;
   position: relative;
 }
-
 /* We set dimensions for the invisible input to support quick highlight a11y feature
 that uses the dimensions to draw an outline around the element. */
 .color-picker-label input[type=color] {

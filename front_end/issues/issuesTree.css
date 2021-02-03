@@ -3,7 +3,6 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 /* Remove container padding from TreeOutline.
  * Allows issues to touch the edges of the container. */
 
@@ -31,19 +30,16 @@
   --issue-code: #0f0f0f;
   --affected-resource-background: #3a3a3a;
 }
-
 /* Override whitespace behavior for tree items to allow wrapping */
 
 .issues li {
   white-space: normal;
 }
-
 /* Hide toggle for tree items which cannot be collapsed */
 
 .issues .always-parent::before {
   display: none;
 }
-
 /* Override TreeOutline toggle switching to allow animation */
 
 .issues li.parent::before {
@@ -81,7 +77,6 @@ p {
   margin-block-start: 2px;
   margin-block-end: 2px;
 }
-
 /* Override selected tree item styles for issues to avoid changing width. */
 
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .issue-category.selected:focus-visible,
@@ -107,7 +102,8 @@ p {
 .title {
   flex: 1;
   font-size: 14px;
-  color: var(--issue-black);
+  color: var(--issue-black); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-weight: normal;
   user-select: text;
 }
@@ -130,7 +126,6 @@ p {
 
   padding-left: 0;
 }
-
 /* Show a colored border on the left side of opened issues. */
 
 .body::before {
@@ -151,7 +146,8 @@ devtools-icon.breaking-change {
 .message {
   line-height: 20px;
   font-size: 14px;
-  color: var(--issue-gray);
+  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-bottom: 4px;
   user-select: text;
 }
@@ -165,7 +161,8 @@ devtools-icon.breaking-change {
 }
 
 .message code {
-  color: var(--issue-black);
+  color: var(--issue-black); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-size: 12px;
   user-select: text;
   cursor: text;
@@ -180,7 +177,8 @@ devtools-icon.breaking-change {
 
 .link {
   font-size: 14px;
-  color: var(--issue-link);
+  color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .link-wrapper {
@@ -195,7 +193,8 @@ devtools-icon.breaking-change {
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--issue-black);
+  color: var(--issue-black); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: inline-block;
 }
 
@@ -210,7 +209,6 @@ devtools-icon.breaking-change {
   list-style-position: inside;
   padding-inline-start: 0;
 }
-
 /* We inherit all the styles from treeoutline, but these are simple text <li>, so we override some styles */
 
 .link-list li::before {
@@ -233,7 +231,6 @@ devtools-icon.breaking-change {
 ul > li.plain-enum {
   display: list-item;
 }
-
 /* This is a hack because the tree view's CSS overrides list styling in a non-compositional way. This
    can be removed once we've moved to proper components. */
 ul > li.plain-enum::before {
@@ -252,7 +249,8 @@ ul > li.plain-enum::before {
 .affected-resource-label {
   font-size: 14px;
   line-height: 20px;
-  color: var(--issue-black);
+  color: var(--issue-black); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   position: relative;
   cursor: pointer;
 }
@@ -267,7 +265,8 @@ ul > li.plain-enum::before {
 .affected-resource-element {
   font-size: 14px;
   line-height: 20px;
-  color: var(--issue-link);
+  color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border: 0;
   border-collapse: collapse;
 }
@@ -304,7 +303,8 @@ ul > li.plain-enum::before {
 .affected-resource-source {
   font-size: 14px;
   line-height: 20px;
-  color: var(--issue-link);
+  color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border: 0;
   border-collapse: collapse;
 }
@@ -316,20 +316,24 @@ ul > li.plain-enum::before {
 
 .affected-resource-header {
   font-size: 12px;
-  color: var(--issue-black);
+  color: var(--issue-black); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding-left: 2px;
 }
 
 .affected-resource-blocked-status {
-  color: #f00;
+  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .affected-resource-report-only-status {
-  color: var(--issue-warning);
+  color: var(--issue-warning); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .affected-resource-cookie-info {
-  color: var(--issue-gray);
+  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 2px;
   text-align: right;
 }
@@ -339,29 +343,34 @@ ul > li.plain-enum::before {
 }
 
 .affected-resource-mixed-content-info {
-  color: var(--issue-gray);
+  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 2px;
 }
 
 .affected-resource-heavy-ad-info {
-  color: var(--issue-gray);
+  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 2px;
 }
 
 .affected-resource-heavy-ad-info-frame {
   display: flex;
   align-items: center;
-  color: var(--issue-gray);
+  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 2px;
 }
 
 .affected-resource-cell {
-  color: var(--issue-gray);
+  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 2px;
 }
 
 .affected-resource-cell.link {
-  color: var(--issue-link);
+  color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .affected-resource-cell span.icon {
@@ -370,15 +379,18 @@ ul > li.plain-enum::before {
 }
 
 .affected-resource-cell [is=ui-icon].icon-mask.link {
-  background-color: var(--issue-link);
+  background-color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .link [is=ui-icon].icon-mask.link {
-  background-color: var(--issue-link);
+  background-color: var(--issue-link); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .affected-resource-cell [is=ui-icon].icon-mask.unavailable {
-  background-color: var(--issue-warning);
+  background-color: var(--issue-warning); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .affected-resources > .parent {
@@ -412,7 +424,8 @@ ul > li.plain-enum::before {
 }
 
 .affected-resource-directive-info {
-  color: var(--issue-gray);
+  color: var(--issue-gray); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 2px;
   text-align: left;
 }

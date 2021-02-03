@@ -75,7 +75,8 @@ export class ValueInterpreterDisplay extends HTMLElement {
         }
 
         .mode-type {
-          color: var(--text-highlight-color);
+          color: var(--text-highlight-color); /* stylelint-disable-line plugin/use_theme_colors */
+          /* See: crbug.com/1152736 for color variable migration. */
         }
 
         .value-types {

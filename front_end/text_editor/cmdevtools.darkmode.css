@@ -1,5 +1,6 @@
 /* This file was automatically generated via:
 npm run generate-dark-mode-styles front_end/text_editor/cmdevtools.css
+* Last Updated: Wed Feb 03 2021 10:07:13 GMT+0000 (Coordinated Universal Time)
 */
 /* stylelint-disable */
 :host-context(.-theme-with-dark-background) .CodeMirror, .-theme-with-dark-background .CodeMirror{

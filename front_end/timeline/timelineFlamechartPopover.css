@@ -13,15 +13,18 @@
 }
 
 .timeline-flamechart-popover span.timeline-info-network-time {
-  color: #009;
+  color: #009; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-flamechart-popover span.timeline-info-time {
-  color: #282;
+  color: #282; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-flamechart-popover span.timeline-info-warning {
-  color: #e44;
+  color: #e44; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-flamechart-popover span.timeline-info-warning * {

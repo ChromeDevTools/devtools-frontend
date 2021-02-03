@@ -21,7 +21,8 @@
 }
 
 .header-decode-error {
-  color: #f00;
+  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .-theme-with-dark-background .header-decode-error {

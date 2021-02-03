@@ -21,7 +21,8 @@
 }
 
 :not(.breakpoints-list-deactivated) > .breakpoint-entry:hover {
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .breakpoint-entry > .source-text {
@@ -33,12 +34,14 @@
 }
 
 .breakpoints-list-deactivated {
-  background-color: #eee;
+  background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   opacity: 30%;
 }
 
 .breakpoint-hit {
-  background-color: rgb(255 255 194);
+  background-color: rgb(255 255 194); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-right: 3px solid rgb(107 97 48);
 }
 

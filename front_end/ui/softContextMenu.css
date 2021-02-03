@@ -7,7 +7,6 @@
 .soft-context-menu {
   overflow-y: auto;
   min-width: 160px !important;
-
   /* NOTE: Keep padding in sync with padding adjustment in SoftContextMenu.js */
   padding: 4px 0 4px 0;
   border: 1px solid #b9b9b9;
@@ -30,7 +29,8 @@
   border: 1px solid rgb(196 196 196 / 90%);
   border-top: 1px solid rgb(196 196 196 / 50%);
   border-radius: 4px;
-  background-color: rgb(240 240 240);
+  background-color: rgb(240 240 240); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   box-shadow: 0 5px 10px rgb(0 0 0 / 25%);
 
   --context-menu-hover-color: #fff;
@@ -49,7 +49,8 @@
 }
 
 .soft-context-menu-disabled {
-  color: #999;
+  color: #999; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   pointer-events: none;
 }
 
@@ -68,8 +69,10 @@
 .soft-context-menu-item-mouse-over {
   border-top: 1px solid var(--context-menu-hover-bg);
   border-bottom: 1px solid var(--context-menu-hover-bg);
-  background-color: var(--context-menu-hover-bg);
-  color: var(--context-menu-hover-color);
+  background-color: var(--context-menu-hover-bg); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--context-menu-hover-color); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 :host:host-context(.platform-mac):host-context(html:not(.-theme-with-dark-background)) .soft-context-menu-item-mouse-over {
@@ -102,7 +105,8 @@
 }
 
 .soft-context-menu-shortcut {
-  color: #808080;
+  color: #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   pointer-events: none;
   flex: 1 1 auto;
   text-align: right;

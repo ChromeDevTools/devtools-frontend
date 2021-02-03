@@ -6,7 +6,8 @@
 .resource-service-worker-update-view {
   display: block;
   margin: 6px;
-  color: rgb(30% 30% 30%);
+  color: rgb(30% 30% 30%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   overflow: auto;
 }
 
@@ -43,7 +44,8 @@
 }
 
 .service-worker-update-timing-bar-title {
-  color: #222;
+  color: #222; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   white-space: nowrap;
   text-align: right;
 }
@@ -60,7 +62,8 @@
   content: "";
   position: relative;
   top: 3px;
-  background-color: rgb(110 110 110);
+  background-color: rgb(110 110 110); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .service-worker-update-timing-bar-clickable {
@@ -92,19 +95,22 @@
 .service-worker-update-timing-bar.activate {
   top: 5px;
   height: 10px;
-  background-color: #ff9800;
+  background-color: #ff9800; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .service-worker-update-timing-bar.wait {
   top: 5px;
   height: 10px;
-  background-color: #9c27b0;
+  background-color: #9c27b0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .service-worker-update-timing-bar.install {
   top: 5px;
   height: 10px;
-  background-color: #009688;
+  background-color: #009688; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .service-worker-update-details-treeitem {
@@ -113,7 +119,8 @@
 
 .service-worker-update-timing-table-header td {
   border-top: 5px solid transparent;
-  color: #737373;
+  color: #737373; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .service-worker-update-timing-table td {

@@ -42,8 +42,10 @@
 }
 
 .console-pin.error-level:not(:focus-within) {
-  background-color: var(--error-background-color);
-  color: var(--error-text-color);
+  background-color: var(--error-background-color); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--error-text-color); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .console-pin:not(:last-child).error-level:not(:focus-within) {

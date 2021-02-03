@@ -34,7 +34,8 @@
 }
 
 .styles-sidebar-pane-filter-box > input::placeholder {
-  color: rgb(0 0 0 / 54%);
+  color: rgb(0 0 0 / 54%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 @media (forced-colors: active) {

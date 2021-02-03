@@ -31,7 +31,6 @@
   margin-bottom: 10px;
   background: #f0f0f0;
 }
-
 /* Disable cache */
 
 .network-config-disable-cache {
@@ -48,7 +47,6 @@
 .network-config-input-validation-error:empty {
   display: none;
 }
-
 /* Network throttling */
 
 .network-config-throttling .chrome-select {
@@ -59,7 +57,6 @@
 .network-config-throttling > .network-config-title {
   line-height: 24px;
 }
-
 /* User agent */
 
 .network-config-ua > .network-config-title {
@@ -76,7 +73,8 @@
 }
 
 .network-config-ua input[readonly] {
-  background-color: rgb(235 235 228);
+  background-color: rgb(235 235 228); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-config-ua input[type=text],

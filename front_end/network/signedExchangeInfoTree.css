@@ -16,7 +16,8 @@
 .tree-outline > .parent {
   user-select: none;
   font-weight: bold;
-  color: #616161;
+  color: #616161; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-top: -1px;
   display: flex;
   align-items: center;
@@ -38,7 +39,8 @@
 }
 
 .tree-outline .header-name {
-  color: rgb(33% 33% 33%);
+  color: rgb(33% 33% 33%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: inline-block;
   margin-right: 0.25em;
   font-weight: bold;
@@ -62,16 +64,19 @@
   display: inline;
   margin-left: 30px;
   font-weight: normal;
-  color: rgb(45% 45% 45%);
+  color: rgb(45% 45% 45%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .tree-outline .header-toggle:hover {
-  color: rgb(20% 20% 45%);
+  color: rgb(20% 20% 45%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   cursor: pointer;
 }
 
 .tree-outline .error-log {
-  color: #f00;
+  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: inline-block;
   margin-right: 0.25em;
   margin-left: 0.25em;
@@ -87,5 +92,6 @@
 }
 
 .tree-outline .error-field {
-  color: #f00;
+  color: #f00; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }

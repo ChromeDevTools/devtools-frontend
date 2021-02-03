@@ -2276,8 +2276,7 @@ export class TimelineUIUtils {
       }
 
       case warnings.LongTask: {
-        const longTaskLink = UI.XLink.XLink.create(
-            'https://developers.google.com/web/fundamentals/performance/rail#goals-and-guidelines', ls`Long task`);
+        const longTaskLink = UI.XLink.XLink.create('https://web.dev/rail/#goals-and-guidelines', ls`Long task`);
         span.appendChild(UI.UIUtils.formatLocalized(
             '%s took %s.', [longTaskLink, Number.millisToString((event.duration || 0), true)]));
         break;

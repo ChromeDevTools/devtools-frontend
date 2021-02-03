@@ -491,7 +491,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     const note = /** @type {!HTMLTableCellElement} */ (footer.createChild('td'));
     note.colSpan = 1;
     note.appendChild(UI.XLink.XLink.create(
-        'https://developers.google.com/web/tools/chrome-devtools/network-performance/reference#timing-explanation',
+        'https://developers.google.com/web/tools/chrome-devtools/network/reference#timing-explanation',
         i18nString(UIStrings.explanation)));
     footer.createChild('td');
     UI.UIUtils.createTextChild(footer.createChild('td'), Number.secondsToString(totalDuration, true));

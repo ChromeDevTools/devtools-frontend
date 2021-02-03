@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../../front_end/common/common.js';
 import * as Platform from '../../../../front_end/platform/platform.js';
 import * as QuickOpen from '../../../../front_end/quick_open/quick_open.js';
 import * as UI from '../../../../front_end/ui/ui.js';
@@ -34,18 +33,6 @@ describe('Action registration', () => {
         return [MockContextType];
       },
     });
-    // These settings need to be registered to test the execution of an action from CommandMenu
-    Common.Settings.registerSettingExtension({
-      defaultValue: '',
-      settingType: 'enum',
-      settingName: 'activeKeybindSet',
-    });
-    Common.Settings.registerSettingExtension({
-      defaultValue: [],
-      settingType: 'array',
-      settingName: 'userShortcuts',
-    });
-
     await initializeGlobalVars();
     // A ShortcutRegistry instance is needed to add a command to execute an action to the
     // command menu and an instance of ActionRegistry is needed to instatiate the ShorcutRegistry.

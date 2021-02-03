@@ -5,6 +5,7 @@
 import * as Common from '../../../../front_end/common/common.js';
 import * as Host from '../../../../front_end/host/host.js';
 import * as i18n from '../../../../front_end/i18n/i18n.js';
+import * as Platform from '../../../../front_end/platform/platform.js';
 import * as Root from '../../../../front_end/root/root.js';
 import * as SDK from '../../../../front_end/sdk/sdk.js';
 
@@ -65,8 +66,10 @@ export function createTarget({id = 'test', name = 'test', type = SDK.SDKModel.Ty
   return targetManager.createTarget(id, name, type, null);
 }
 
-function createSettingValue(category: string, settingName: string, defaultValue: unknown, settingType = 'boolean') {
-  return {type: 'setting', category, settingName, defaultValue, settingType} as Root.Runtime.RuntimeExtensionDescriptor;
+function createSettingValue(category: string, settingName: string, defaultValue: unknown, settingType = 'boolean'):
+    Common.Settings.SettingRegistration {
+  const settingCategory = category as Platform.UIString.LocalizedString;
+  return {category: settingCategory, settingName, defaultValue, settingType};
 }
 
 export async function initializeGlobalVars({reset = true} = {}) {
@@ -110,14 +113,19 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue('Grid', 'extendGridLines', true),
     createSettingValue('Grid', 'showGridAreas', true),
     createSettingValue('Grid', 'showGridTrackSizes', true),
+    createSettingValue('', 'activeKeybindSet', '', 'enum'),
+    createSettingValue('', 'userShortcuts', [], 'array'),
   ];
 
-  // Instantiate the runtime.
+  // We instantiate a Runtime with an empty module as the settings needed to boot up are
+  // provided via the Common.Settings.registerSettingExtension system. Nevertheless,
+  // several unit test rely on a singleton instace so we stil need this call.
+  // TODO(crbug.com/1134103): Remove this call once all extensions have been migrated.
   Root.Runtime.Runtime.instance({
     forceNew: reset,
     moduleDescriptors: [{
       name: 'Test',
-      extensions,
+      extensions: [],
       dependencies: [],
       modules: [],
       scripts: [],
@@ -126,6 +134,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
       experiment: '',
     }],
   });
+
+  Common.Settings.registerSettingExtengionsForTest(extensions, reset);
 
   // Instantiate the storage.
   const storageVals = new Map<string, string>();

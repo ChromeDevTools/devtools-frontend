@@ -8,7 +8,7 @@ import * as Root from '../root/root.js';
 
 import {SettingStorageType} from './Settings.js';
 
-const registeredSettings: Array<SettingRegistration> = [];
+let registeredSettings: Array<SettingRegistration> = [];
 const settingNameSet = new Set<string>();
 
 
@@ -25,6 +25,21 @@ export function getRegisteredSettings(): Array<SettingRegistration> {
   return registeredSettings.filter(
       setting =>
           Root.Runtime.Runtime.isDescriptorEnabled({experiment: setting.experiment, condition: setting.condition}));
+}
+
+export function registerSettingExtengionsForTest(
+    settings: Array<SettingRegistration>, forceReset: boolean = false): void {
+  if (registeredSettings.length === 0 || forceReset) {
+    registeredSettings = settings;
+    settingNameSet.clear();
+    for (const setting of settings) {
+      const settingName = setting.settingName;
+      if (settingNameSet.has(settingName)) {
+        throw new Error(`Duplicate setting name '${settingName}'`);
+      }
+      settingNameSet.add(settingName);
+    }
+  }
 }
 
 export const SettingCategoryObject = {

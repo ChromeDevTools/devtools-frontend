@@ -4,6 +4,7 @@
 
 /* eslint-disable rulesdir/no_underscored_properties */
 
+import * as Common from '../common/common.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';  // eslint-disable-line no-unused-vars
@@ -23,6 +24,7 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
   _toggleRecordAction: UI.ActionRegistration.Action;
   _state: RecorderState;
   _currentRecordingSession: RecordingSession|null;
+  _indentation: string;
 
   constructor(target: SDK.SDKModel.Target) {
     super(target);
@@ -35,6 +37,7 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
 
     this._state = RecorderState.Idle;
     this._currentRecordingSession = null;
+    this._indentation = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
   }
 
   async updateState(newState: RecorderState): Promise<void> {
@@ -57,7 +60,7 @@ export class RecorderModel extends SDK.SDKModel.SDKModel {
   }
 
   async startRecording(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
-    this._currentRecordingSession = new RecordingSession(this.target(), uiSourceCode);
+    this._currentRecordingSession = new RecordingSession(this.target(), uiSourceCode, this._indentation);
     await this._currentRecordingSession.start();
   }
 

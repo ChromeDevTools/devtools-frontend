@@ -7,10 +7,13 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("recorder") {
   sources = [
+    "Conditions.ts",
     "RecorderModel.ts",
     "RecordingEventHandler.ts",
     "RecordingFileSystem.ts",
+    "RecordingScriptWriter.ts",
     "RecordingSession.ts",
+    "Steps.ts",
   ]
 
   deps = [

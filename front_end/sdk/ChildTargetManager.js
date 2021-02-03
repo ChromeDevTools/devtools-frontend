@@ -56,6 +56,13 @@ export class ChildTargetManager extends SDKModel {
   }
 
   /**
+   * @return {!Array<!Target>}
+   */
+  childTargets() {
+    return Array.from(this._childTargets.values());
+  }
+
+  /**
    * @override
    * @return {!Promise<?>}
    */
@@ -96,6 +103,10 @@ export class ChildTargetManager extends SDKModel {
    */
   targetInfoChanged({targetInfo}) {
     this._targetInfos.set(targetInfo.targetId, targetInfo);
+    const target = this._childTargets.get(targetInfo.targetId);
+    if (target) {
+      target.updateTargetInfo(targetInfo);
+    }
     this._fireAvailableTargetsChanged();
     this.dispatchEventToListeners(Events.TargetInfoChanged, targetInfo);
   }
@@ -162,8 +173,8 @@ export class ChildTargetManager extends SDKModel {
       type = Type.ServiceWorker;
     }
 
-    const target =
-        this._targetManager.createTarget(targetInfo.targetId, targetName, type, this._parentTarget, sessionId);
+    const target = this._targetManager.createTarget(
+        targetInfo.targetId, targetName, type, this._parentTarget, sessionId, undefined, undefined, targetInfo);
     this._childTargets.set(sessionId, target);
 
     if (_attachCallback) {

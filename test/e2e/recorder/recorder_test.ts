@@ -17,7 +17,9 @@ async function getCode() {
   const {frontend} = getBrowserAndPages();
   const textContent = await frontend.evaluate(retrieveCodeMirrorEditorContent);
   // TODO: Change to replaceAll once it's supported in Node.js.
-  return textContent.replace(new RegExp(`localhost:${getTestServerPort()}`, 'g'), '<url>').replace(/\u200b/g, '');
+  return textContent.replace(new RegExp(`localhost:${getTestServerPort()}`, 'g'), '<url>')
+      .replace(/\u200b/g, '')
+      .trim();
 }
 
 function getWaitForScriptToChangeFunction() {
@@ -86,15 +88,24 @@ describe('Recorder', function() {
     await target.click('aria/Open Popup');
     const newTarget = await newTargetPromise;
     const newPage = await newTarget.page();
-    await newPage.waitFor('aria/Button in Popup');
+    await newPage.waitForSelector('aria/Button in Popup');
     await newPage.click('aria/Button in Popup');
     await waitForScriptToChange();
     await newPage.close();
+    await waitForScriptToChange();
+
+    await target.click('aria/Page 2');
+    await waitForScriptToChange();
+    await target.waitForSelector('aria/Back to Page 1');
+    const promise = target.waitForNavigation();
+    await target.click('aria/Back to Page 1');
+    await waitForScriptToChange();
+    await promise;
+
 
     await frontend.bringToFront();
     await frontend.waitForSelector('aria/Stop');
     await frontend.click('aria/Stop');
-    await waitForScriptToChange();
     const textContent = await getCode();
 
     assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
@@ -156,18 +167,34 @@ describe('Recorder', function() {
         const target = await browser.waitForTarget(p => p.url() === "https://<url>/test/e2e/resources/recorder/popup.html");
         const targetPage = await target.page();
         const frame = targetPage.mainFrame();
+        const promise = targetPage.waitForNavigation();
         const element = await frame.waitForSelector("aria/Button in Popup");
         await element.click();
+        await promise;
     }
     {
         const target = await browser.waitForTarget(p => p.url() === "https://<url>/test/e2e/resources/recorder/popup.html");
         const targetPage = await target.page();
         await targetPage.close();
     }
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const promise = targetPage.waitForNavigation();
+        const element = await frame.waitForSelector("aria/Page 2");
+        await element.click();
+        await promise;
+    }
+    {
+        const targetPage = page;
+        const frame = targetPage.mainFrame();
+        const promise = targetPage.waitForNavigation();
+        const element = await frame.waitForSelector("aria/Back to Page 1");
+        await element.click();
+        await promise;
+    }
     await browser.close();
-})();
-
-`);
+})();`);
   });
 
   it('should also record network conditions', async () => {
@@ -195,14 +222,12 @@ describe('Recorder', function() {
     await changeNetworkConditions('Slow 3G');
     await openSourcesPanel();
     await target.bringToFront();
-
     await target.click('#test');
     await waitForScriptToChange();
 
     await frontend.bringToFront();
     await waitFor('[aria-label="Stop"]');
     await click('[aria-label="Stop"]');
-    await waitForScriptToChange();
     const textContent = await getCode();
 
     assert.strictEqual(textContent, `const puppeteer = require('puppeteer');
@@ -255,8 +280,6 @@ describe('Recorder', function() {
         await element.click();
     }
     await browser.close();
-})();
-
-`);
+})();`);
   });
 });

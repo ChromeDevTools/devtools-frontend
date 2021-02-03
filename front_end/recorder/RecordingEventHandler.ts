@@ -4,8 +4,9 @@
 
 import * as Elements from '../elements/elements.js';
 import * as SDK from '../sdk/sdk.js';
-
-import {ChangeStep, ClickStep, CloseStep, RecordingSession, StepFrameContext, SubmitStep} from './RecordingSession.js';
+import {Condition, WaitForNavigationCondition} from './Conditions.js';
+import {RecordingSession} from './RecordingSession.js';
+import {ChangeStep, ClickStep, CloseStep, Step, StepFrameContext, SubmitStep} from './Steps.js';
 
 const RELEVANT_ROLES_FOR_ARIA_SELECTORS = new Set<string>(['button', 'link', 'textbox', 'checkbox']);
 
@@ -18,10 +19,14 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
   private runtimeAgent: ProtocolProxyApi.RuntimeApi;
   private domModel: SDK.DOMModel.DOMModel;
   private axModel: SDK.AccessibilityModel.AccessibilityModel;
+  private lastStep: Step|null;
+  private lastStepTimeout: number|null;
 
   constructor(session: RecordingSession, target: SDK.SDKModel.Target) {
     this.target = target;
     this.session = session;
+    this.lastStep = null;
+    this.lastStepTimeout = null;
 
     this.runtimeAgent = target.runtimeAgent();
     this.debuggerAgent = target.debuggerAgent();
@@ -128,7 +133,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     if (!selector) {
       throw new Error('Could not find selector');
     }
-    this.session.appendStepToScript(new ClickStep(context, selector));
+    this.appendStep(new ClickStep(context, selector));
     await this.resume();
   }
 
@@ -152,7 +157,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
       throw new Error('Could not find selector');
     }
 
-    this.session.appendStepToScript(new SubmitStep(context, selector));
+    this.appendStep(new SubmitStep(context, selector));
     await this.resume();
   }
 
@@ -184,7 +189,7 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
       functionDeclaration: getValue.toString(),
       objectId: targetId,
     });
-    this.session.appendStepToScript(new ChangeStep(context, selector, result.value as string));
+    this.appendStep(new ChangeStep(context, selector, result.value as string));
     await this.resume();
   }
 
@@ -263,8 +268,32 @@ export class RecordingEventHandler implements ProtocolProxyApi.DebuggerDispatche
     });
   }
 
+  appendStep(step: Step): void {
+    this.session.appendStep(step);
+    this.lastStep = step;
+    if (this.lastStepTimeout) {
+      window.clearTimeout(this.lastStepTimeout);
+    }
+    this.lastStepTimeout = window.setTimeout(() => {
+      this.lastStep = null;
+      this.lastStepTimeout = null;
+    }, 1000);
+  }
+
+  addConditionToLastStep(condition: Condition): void {
+    if (!this.lastStep) {
+      return;
+    }
+
+    this.lastStep.addCondition(condition);
+  }
+
   targetDestroyed(): void {
-    this.session.appendStepToScript(new CloseStep(this.getTarget()));
+    this.appendStep(new CloseStep(this.getTarget()));
+  }
+
+  targetInfoChanged(url: string): void {
+    this.addConditionToLastStep(new WaitForNavigationCondition(url));
   }
 
   breakpointResolved(): void {

@@ -83,8 +83,9 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
    * @param {string} sessionId
    * @param {boolean} suspended
    * @param {?ProtocolClient.InspectorBackend.Connection} connection
+   * @param {!Protocol.Target.TargetInfo=} targetInfo
    */
-  constructor(targetManager, id, name, type, parentTarget, sessionId, suspended, connection) {
+  constructor(targetManager, id, name, type, parentTarget, sessionId, suspended, connection, targetInfo) {
     const needsNodeJSPatching = type === Type.Node;
     super(needsNodeJSPatching, parentTarget, sessionId, connection);
     this._targetManager = targetManager;
@@ -129,6 +130,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     /** @type {Map<function(new:SDKModel, Target), SDKModel>}} */
     this._modelByConstructor = new Map();
     this._isSuspended = suspended;
+    this._targetInfo = targetInfo;
   }
 
   /**
@@ -307,6 +309,17 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
    */
   suspended() {
     return this._isSuspended;
+  }
+
+  /**
+   * @param {!Protocol.Target.TargetInfo} targetInfo
+   */
+  updateTargetInfo(targetInfo) {
+    this._targetInfo = targetInfo;
+  }
+
+  targetInfo() {
+    return this._targetInfo;
   }
 }
 
@@ -549,11 +562,12 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
    * @param {string=} sessionId
    * @param {boolean=} waitForDebuggerInPage
    * @param {!ProtocolClient.InspectorBackend.Connection=} connection
+   * @param {!Protocol.Target.TargetInfo=} targetInfo
    * @return {!Target}
    */
-  createTarget(id, name, type, parentTarget, sessionId, waitForDebuggerInPage, connection) {
-    const target =
-        new Target(this, id, name, type, parentTarget, sessionId || '', this._isSuspended, connection || null);
+  createTarget(id, name, type, parentTarget, sessionId, waitForDebuggerInPage, connection, targetInfo) {
+    const target = new Target(
+        this, id, name, type, parentTarget, sessionId || '', this._isSuspended, connection || null, targetInfo);
     if (waitForDebuggerInPage) {
       // @ts-ignore TODO(1063322): Find out where pageAgent() is set on Target/TargetBase.
       target.pageAgent().waitForDebugger();

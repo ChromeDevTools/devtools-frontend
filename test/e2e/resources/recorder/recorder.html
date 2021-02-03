@@ -13,9 +13,14 @@
   <a id="shadow-root" role="link">Hello&nbsp;</a>
   <iframe id="iframe"></iframe>
   <button id="popup">Open Popup</button>
+  <a href="recorder2.html">Page 2</a>
 </div>
 <script>
-  window.addEventListener('submit', (event) => { event.preventDefault(); });
+  window.addEventListener('submit', (event) => {
+    if(!event.target.classList.contains('submittable')) {
+      event.preventDefault();
+    }
+  });
   const link = document.getElementById('shadow-root');
   const span1 = document.createElement('span');
   link.append(span1);

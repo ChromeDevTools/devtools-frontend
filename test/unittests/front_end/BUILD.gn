@@ -32,6 +32,7 @@ group("front_end") {
     "persistence",
     "platform",
     "protocol_client",
+    "recorder",
     "render_coordinator",
     "resources",
     "root",

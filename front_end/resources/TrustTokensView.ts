@@ -73,16 +73,13 @@ export class TrustTokensView extends HTMLElement {
   }
 
   private render(): void {
-    const gridData: Components.DataGridController.DataGridControllerData = {
+    const gridData: Components.DataGrid.DataGridData = {
       columns: [
-        {id: 'issuer', title: ls`Issuer`, widthWeighting: 2, hideable: false, visible: true, sortable: true},
-        {id: 'count', title: ls`Stored token count`, widthWeighting: 1, hideable: false, visible: true, sortable: true},
+        {id: 'issuer', title: ls`Issuer`, widthWeighting: 2, hideable: false, visible: true},
+        {id: 'count', title: ls`Stored token count`, widthWeighting: 1, hideable: false, visible: true},
       ],
       rows: this.buildRowsFromTokens(),
-      initialSort: {
-        columnId: 'issuer',
-        direction: Components.DataGridUtils.SortDirection.ASC,
-      },
+      activeSort: null,
     };
 
     LitHtml.render(
@@ -96,7 +93,7 @@ export class TrustTokensView extends HTMLElement {
           font-size: 15px;
         }
 
-        devtools-data-grid-controller {
+        devtools-data-grid {
           border: 1px solid var(--color-details-hairline);
           margin-top: 20px;
         }
@@ -113,8 +110,7 @@ export class TrustTokensView extends HTMLElement {
             {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '14px'} as
             Components.Icon.IconWithName}>
         </devtools-icon>
-        <devtools-data-grid-controller .data=${
-            gridData as Components.DataGridController.DataGridControllerData}></devtools-data-grid-controller>
+        <devtools-data-grid .data=${gridData as Components.DataGrid.DataGridData}></devtools-data-grid>
       </div>
     `,
         this.shadow);

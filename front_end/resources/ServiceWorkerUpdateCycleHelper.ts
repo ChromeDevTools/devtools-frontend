@@ -144,10 +144,10 @@ export class ServiceWorkerUpdateCycleHelper {
       UI.UIUtils.createTextChild(timingBarVersionElement, '#' + range.id);
       timingBarVersionElement.classList.add('service-worker-update-timing-bar-clickable');
       timingBarVersionElement.setAttribute('tabindex', '0');
+      timingBarVersionElement.setAttribute('role', 'switch');
+      UI.ARIAUtils.setChecked(timingBarVersionElement, false);
       const timingBarTitleElement = tr.createChild('td');
       UI.UIUtils.createTextChild(timingBarTitleElement, phaseName);
-      timingBarTitleElement.setAttribute('role', 'switch');
-      UI.ARIAUtils.setChecked(timingBarTitleElement, false);
       this.constructUpdateDetails(tableElement, tr, range);
       const barContainer = tr.createChild('td').createChild('div', 'service-worker-update-timing-row');
       const bar = <HTMLElement>(

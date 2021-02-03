@@ -124,11 +124,15 @@ export class TrustTokensView extends HTMLElement {
     const tokens = this.tokens.filter(token => token.count > 0);
     return tokens.map(token => ({
                         cells: [
-                          {columnId: 'issuer', value: token.issuerOrigin},
+                          {columnId: 'issuer', value: removeTrailingSlash(token.issuerOrigin)},
                           {columnId: 'count', value: token.count},
                         ],
                       }));
   }
+}
+
+function removeTrailingSlash(s: string): string {
+  return s.replace(/\/$/, '');
 }
 
 customElements.define('devtools-trust-tokens-storage-view', TrustTokensView);

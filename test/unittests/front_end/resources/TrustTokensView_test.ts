@@ -12,26 +12,36 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
+async function renderTrustTokensView(tokens: Protocol.Storage.TrustTokens[]):
+    Promise<Resources.TrustTokensView.TrustTokensView> {
+  const component = new Resources.TrustTokensView.TrustTokensView();
+  renderElementIntoDOM(component);
+  component.data = {tokens};
+
+  // The data-grid's renderer is scheduled, so we need to wait until the coordinator
+  // is done before we can test against it.
+  await coordinator.done();
+
+  return component;
+}
+
+function getInternalDataGridShadowRoot(component: Resources.TrustTokensView.TrustTokensView): ShadowRoot {
+  const dataGridController = getElementWithinComponent(
+      component, 'devtools-data-grid-controller', Components.DataGridController.DataGridController);
+  const dataGrid = getElementWithinComponent(dataGridController, 'devtools-data-grid', Components.DataGrid.DataGrid);
+  assertShadowRoot(dataGrid.shadowRoot);
+  return dataGrid.shadowRoot;
+}
+
 describe('TrustTokensView', () => {
   it('renders trust token data', async () => {
-    const component = new Resources.TrustTokensView.TrustTokensView();
-    renderElementIntoDOM(component);
+    const component = await renderTrustTokensView([
+      {issuerOrigin: 'foo.com', count: 42},
+      {issuerOrigin: 'bar.org', count: 7},
+    ]);
 
-    component.data = {
-      tokens: [
-        {issuerOrigin: 'foo.com', count: 42},
-        {issuerOrigin: 'bar.org', count: 7},
-      ],
-    };
-    // The data-grid's renderer is scheduled, so we need to wait until the coordinator
-    // is done before we can test against it.
-    await coordinator.done();
-
-    const dataGridController = getElementWithinComponent(
-        component, 'devtools-data-grid-controller', Components.DataGridController.DataGridController);
-    const dataGrid = getElementWithinComponent(dataGridController, 'devtools-data-grid', Components.DataGrid.DataGrid);
-    assertShadowRoot(dataGrid.shadowRoot);
-    const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);
+    const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
+    const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);
     assert.deepEqual(rowValues, [
       ['bar.org', '7'],
       ['foo.com', '42'],
@@ -39,22 +49,27 @@ describe('TrustTokensView', () => {
   });
 
   it('does not display issuers with zero stored tokens', async () => {
-    const component = new Resources.TrustTokensView.TrustTokensView();
-    renderElementIntoDOM(component);
+    const component = await renderTrustTokensView([
+      {issuerOrigin: 'no-issuer.org', count: 0},
+      {issuerOrigin: 'foo.com', count: 42},
+    ]);
 
-    component.data = {
-      tokens: [
-        {issuerOrigin: 'no-issuer.org', count: 0},
-        {issuerOrigin: 'foo.com', count: 42},
-      ],
-    };
-    await coordinator.done();
-
-    const dataGridController = getElementWithinComponent(
-        component, 'devtools-data-grid-controller', Components.DataGridController.DataGridController);
-    const dataGrid = getElementWithinComponent(dataGridController, 'devtools-data-grid', Components.DataGrid.DataGrid);
-    assertShadowRoot(dataGrid.shadowRoot);
-    const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);
+    const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
+    const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);
     assert.deepEqual(rowValues, [['foo.com', '42']]);
+  });
+
+  it('removes trailing slashes from issuer origins', async () => {
+    const component = await renderTrustTokensView([
+      {issuerOrigin: 'example.com/', count: 20},
+      {issuerOrigin: 'sub.domain.org/', count: 14},
+    ]);
+
+    const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
+    const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);
+    assert.deepEqual(rowValues, [
+      ['example.com', '20'],
+      ['sub.domain.org', '14'],
+    ]);
   });
 });

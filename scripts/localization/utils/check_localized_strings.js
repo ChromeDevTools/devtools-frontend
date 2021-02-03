@@ -139,6 +139,7 @@ const migratedDirsSet = new Set([
   'perf_ui',
   'performance_monitor',
   'persistence',
+  'platform',
   'protocol_monitor',
   'profiler',
   'recorder',

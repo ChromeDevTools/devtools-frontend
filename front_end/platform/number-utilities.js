@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {UIString} from './UIString.js';
+import * as StringUtilities from './string-utilities.js';
+import {localize} from './UIString.js';
 
 /**
  * @param {number} num
@@ -35,22 +36,22 @@ export const mod = (m, n) => {
  */
 export const bytesToString = bytes => {
   if (bytes < 1000) {
-    return UIString('%.0f\xA0B', bytes);
+    return StringUtilities.vsprintf(localize('%.0f\xA0B'), [bytes]);
   }
 
   const kilobytes = bytes / 1000;
   if (kilobytes < 100) {
-    return UIString('%.1f\xA0kB', kilobytes);
+    return StringUtilities.vsprintf(localize('%.1f\xA0kB'), [kilobytes]);
   }
   if (kilobytes < 1000) {
-    return UIString('%.0f\xA0kB', kilobytes);
+    return StringUtilities.vsprintf(localize('%.0f\xA0kB'), [kilobytes]);
   }
 
   const megabytes = kilobytes / 1000;
   if (megabytes < 100) {
-    return UIString('%.1f\xA0MB', megabytes);
+    return StringUtilities.vsprintf(localize('%.1f\xA0MB'), [megabytes]);
   }
-  return UIString('%.0f\xA0MB', megabytes);
+  return StringUtilities.vsprintf(localize('%.0f\xA0MB'), [megabytes]);
 };
 
 /**

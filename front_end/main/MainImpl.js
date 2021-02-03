@@ -99,7 +99,8 @@ export class MainImpl {
     i18n.i18n.registerLocale(hostLocale);
     const locale = i18n.i18n.registeredLocale;
     if (locale) {
-      const data = await Root.Runtime.loadResourcePromise(`i18n/locales/${locale}.json`);
+      const data =
+          await Root.Runtime.loadResourcePromise(new URL(`../i18n/locales/${locale}.json`, import.meta.url).toString());
       if (data) {
         const localizedStrings = JSON.parse(data);
         i18n.i18n.registerLocaleData(locale, localizedStrings);

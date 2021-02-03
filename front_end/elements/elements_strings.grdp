@@ -51,6 +51,9 @@
   <message name="IDS_DEVTOOLS_54a90000e87f16d949b02dedc6f40a11" desc="Title of the switch to accessibility tree button in the Elements panel">
     Switch to Accessibility Tree view
   </message>
+  <message name="IDS_DEVTOOLS_5fb63579fc981698f97d55bfecb213ea" desc="Text for copying">
+    Copy
+  </message>
   <message name="IDS_DEVTOOLS_6ed21c263d202a0661fb4105bf73f20a" desc="Command for showing the 'Properties' tool">
     Show Properties
   </message>

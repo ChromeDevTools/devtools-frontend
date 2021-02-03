@@ -321,6 +321,7 @@ all_typescript_module_sources = [
   "network/BlockedURLsPane.js",
   "network/EventSourceMessagesView.js",
   "network/HARWriter.js",
+  "network/ModuleUIStrings.js",
   "network/NetworkConfigView.js",
   "network/NetworkDataGridNode.js",
   "network/NetworkFrameGrouper.js",

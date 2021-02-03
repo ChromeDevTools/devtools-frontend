@@ -111,6 +111,9 @@
   <message name="IDS_DEVTOOLS_a4d7581ea74e5240c4a1a7c32532d6f8" desc="Label for mixed content issue's restriction status">
     Restriction Status
   </message>
+  <message name="IDS_DEVTOOLS_ac70412e939d72a9234cdebb1af5867b" desc="Text that refers to a file path">
+    Path
+  </message>
   <message name="IDS_DEVTOOLS_af54fb3a43842c87e975974597a1623a" desc="Label in the issues panel">
     No issues detected so far
   </message>
@@ -164,6 +167,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e21335099ca6f3a347cc7b0237cccca7" desc="Command for showing the 'Issues' tool">
     Show Issues
+  </message>
+  <message name="IDS_DEVTOOLS_eae639a70006feff484a39363c977e24" desc="Text for the domain of a website">
+    Domain
   </message>
   <message name="IDS_DEVTOOLS_ee02b74d0caebce3dabaf3b3e79b6a65" desc="The UI destination when right clicking an item that can be revealed">
     Issues view

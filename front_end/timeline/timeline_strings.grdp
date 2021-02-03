@@ -21,6 +21,9 @@
   <message name="IDS_DEVTOOLS_01ea16e89d02c33ef2a6a5db67665e0a" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Main — <ph name="TRACK_URL">$1s<ex>example.com</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_040c4b52a3c06c6067fac76c4c7c3a2c" desc="Title of the 'Network conditions' tool in the bottom drawer">
+    Network conditions
+  </message>
   <message name="IDS_DEVTOOLS_04cbdd8baeb482d9ff2e48b186479a06" desc="Text in Timeline UIUtils of the Performance panel">
     Streaming Wasm Response
   </message>
@@ -111,6 +114,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_16bfbf9c462762cf1cba4134ec53c504" desc="Text in Timeline UIUtils of the Performance panel">
     Loading
+  </message>
+  <message name="IDS_DEVTOOLS_16f78b9465f03f7ec5a03c24918fbde3" desc="Status code of an event">
+    Status Code
   </message>
   <message name="IDS_DEVTOOLS_177845b60fde99c43c2af204188dd7c6" desc="Text in Timeline Tree View of the Performance panel">
     No Grouping
@@ -219,6 +225,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_2b912aa1a87361a536122b08c7d08829" desc="Label for Cumulative Layout records, indicating where they moved to">
     Moved to
+  </message>
+  <message name="IDS_DEVTOOLS_2bbc845892f400626baab5af687527c5" desc="Text for the start time of an activity">
+    Start Time
   </message>
   <message name="IDS_DEVTOOLS_2c36802bed2effbf9044276283fac3ef" desc="The label for estimated total blocking time in the performance panel">
     estimated
@@ -370,6 +379,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_4bbc0d1543b5258061fd5c8590fdbe9e" desc="Text in Timeline UIUtils of the Performance panel">
     Encoded Data
   </message>
+  <message name="IDS_DEVTOOLS_4bd7c2ff07dcc66801a9368957d4bff8" desc="Text for the initiator of something">
+    Initiator
+  </message>
   <message name="IDS_DEVTOOLS_4c2a8fe7eaf24721cc7a9f0175115bd4" desc="Text in Timeline UIUtils of the Performance panel">
     Message
   </message>
@@ -384,6 +396,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_50294a317f78ab6caf9ad2558a4b7484" desc="Text in Timeline UIUtils of the Performance panel">
     Invalidations
+  </message>
+  <message name="IDS_DEVTOOLS_502996d9790340c5fd7b86a5b93b1c9f" desc="Text to show the priority of an item">
+    Priority
   </message>
   <message name="IDS_DEVTOOLS_504d75604f56770c3c513de2c49ecbe8" desc="Text in Timeline UIUtils of the Performance panel">
     Wasm Module Cache Hit
@@ -610,6 +625,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_8142fed2a67d3ac62f9d85fde68bf489" desc="Text in Timeline UIUtils of the Performance panel">
     script not eligible
   </message>
+  <message name="IDS_DEVTOOLS_8166a4b3fb4979da3a24ed21ced7fdf7" desc="Text for an option to learn more about something">
+    Learn more
+  </message>
   <message name="IDS_DEVTOOLS_81e91be8db96be69e372f0c715ec7444" desc="Text in Timeline UIUtils of the Performance panel">
     Collected
   </message>
@@ -726,6 +744,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_9669f96ca9d2e20feda07d349d3cac86" desc="Text in Timeline UIUtils of the Performance panel">
     Key Up
   </message>
+  <message name="IDS_DEVTOOLS_96e9bc575b5d3ed541113a249da8bd24" desc="Text to take screenshots">
+    Capture screenshots
+  </message>
   <message name="IDS_DEVTOOLS_97c091732895087b8900d81105e54446" desc="Text in Timeline UIUtils of the Performance panel">
     Frame Start (main thread)
   </message>
@@ -773,6 +794,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_a6f22a2373839a1d417d7a4078f0383a" desc="Text in Timeline Panel of the Performance panel">
     - CPU throttling is enabled
+  </message>
+  <message name="IDS_DEVTOOLS_a76d4ef5f3f6a672bbfab2865563e530" desc="Text that refers to the time">
+    Time
   </message>
   <message name="IDS_DEVTOOLS_a7c815fafe60ae637d38216fa6300395" desc="Text in Timeline UIUtils of the Performance panel">
     FCP
@@ -842,6 +866,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_b59387e4d62a4e3fe4285a1311dcd272" desc="Text in Timeline Details View of the Performance panel">
     Event Log
+  </message>
+  <message name="IDS_DEVTOOLS_b6434258c743f8673997b5aeb3721c27" desc="Text that refers to the network request method">
+    Request Method
   </message>
   <message name="IDS_DEVTOOLS_b6722804f5872cdd88347da194d42087" desc="Text in Timeline Event Overview of the Performance panel">
     HEAP
@@ -972,6 +999,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_d5f967961bccf06a9eb7989d69d94a15" desc="Text in Timeline UIUtils of the Performance panel">
     network transfer
   </message>
+  <message name="IDS_DEVTOOLS_d64ed3e9c10229648e069f56e32f4c8e" desc="Text for a network response">
+    Response
+  </message>
   <message name="IDS_DEVTOOLS_d6ef31f5b235ec815c3b62fc6f236804" desc="Aria-label for the filter bar in Bottom-Up view">
     Filter bottom-up
   </message>
@@ -1019,6 +1049,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_dfe67b764ba5e3f6b674f049db64e165" desc="Call site stack label in Timeline UIUtils of the Performance panel">
     First Layout Invalidation
+  </message>
+  <message name="IDS_DEVTOOLS_e02d2ae03de9d493df2b6b2d2813d302" desc="Text for the duration of something">
+    Duration
   </message>
   <message name="IDS_DEVTOOLS_e0421c199e321b5a5c4379892d6e16e9" desc="Text in UIDevtools Utils of the Performance panel">
     RasterTask

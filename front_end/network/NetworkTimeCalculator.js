@@ -29,9 +29,41 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';  // eslint-disable-line no-unused-vars
 import * as SDK from '../sdk/sdk.js';             // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Latency download total format in Network Time Calculator of the Network panel
+  *@example {20ms} PH1
+  *@example {20ms} PH2
+  *@example {40ms} PH3
+  */
+  sLatencySDownloadSTotal: '{PH1} latency, {PH2} download ({PH3} total)',
+  /**
+  *@description Latency format in Network Time Calculator of the Network panel
+  *@example {20ms} PH1
+  */
+  sLatency: '{PH1} latency',
+  /**
+  *@description Download format in Network Time Calculator of the Network panel
+  *@example {5} PH1
+  */
+  sDownload: '{PH1} download',
+  /**
+  *@description From service worker format in Network Time Calculator of the Network panel
+  *@example {20ms latency} PH1
+  */
+  sFromServiceworker: '{PH1} (from `ServiceWorker`)',
+  /**
+  *@description From cache format in Network Time Calculator of the Network panel
+  *@example {20ms latency} PH1
+  */
+  sFromCache: '{PH1} (from cache)',
+};
+const str_ = i18n.i18n.registerUIStrings('network/NetworkTimeCalculator.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkTimeBoundary {
   /**
    * @param {number} minimum
@@ -255,17 +287,17 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper {
     let tooltip;
     if (hasLatency && rightLabel) {
       const total = Number.secondsToString(request.duration);
-      tooltip = _latencyDownloadTotalFormat.format(leftLabel, rightLabel, total);
+      tooltip = i18nString(UIStrings.sLatencySDownloadSTotal, {PH1: leftLabel, PH2: rightLabel, PH3: total});
     } else if (hasLatency) {
-      tooltip = _latencyFormat.format(leftLabel);
+      tooltip = i18nString(UIStrings.sLatency, {PH1: leftLabel});
     } else if (rightLabel) {
-      tooltip = _downloadFormat.format(rightLabel);
+      tooltip = i18nString(UIStrings.sDownload, {PH1: rightLabel});
     }
 
     if (request.fetchedViaServiceWorker) {
-      tooltip = _fromServiceWorkerFormat.format(tooltip);
+      tooltip = i18nString(UIStrings.sFromServiceworker, {PH1: tooltip});
     } else if (request.cached()) {
-      tooltip = _fromCacheFormat.format(tooltip);
+      tooltip = i18nString(UIStrings.sFromCache, {PH1: tooltip});
     }
     return {left: leftLabel, right: rightLabel, tooltip: tooltip};
   }
@@ -329,21 +361,6 @@ export const _minimumSpread = 0.1;
 export const Events = {
   BoundariesChanged: Symbol('BoundariesChanged')
 };
-
-/** @type {!Common.UIString.UIStringFormat} */
-export const _latencyDownloadTotalFormat = new Common.UIString.UIStringFormat('%s latency, %s download (%s total)');
-
-/** @type {!Common.UIString.UIStringFormat} */
-export const _latencyFormat = new Common.UIString.UIStringFormat('%s latency');
-
-/** @type {!Common.UIString.UIStringFormat} */
-export const _downloadFormat = new Common.UIString.UIStringFormat('%s download');
-
-/** @type {!Common.UIString.UIStringFormat} */
-export const _fromServiceWorkerFormat = new Common.UIString.UIStringFormat('%s (from ServiceWorker)');
-
-/** @type {!Common.UIString.UIStringFormat} */
-export const _fromCacheFormat = new Common.UIString.UIStringFormat('%s (from cache)');
 
 export class NetworkTransferTimeCalculator extends NetworkTimeCalculator {
   constructor() {

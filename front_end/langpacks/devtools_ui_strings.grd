@@ -20,7 +20,6 @@
       <part file="../host/host_strings.grdp" />
       <part file="../inspector_main/inspector_main_strings.grdp" />
       <part file="../main/main_strings.grdp" />
-      <part file="../network/network_strings.grdp" />
       <part file="../platform/platform_strings.grdp" />
       <part file="../issues/issues_strings.grdp" />
       <part file="../quick_open/quick_open_strings.grdp" />

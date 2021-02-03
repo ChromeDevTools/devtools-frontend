@@ -30,13 +30,192 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {Events, NetworkTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  receivingPush: 'Receiving Push',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  queueing: 'Queueing',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  stalled: 'Stalled',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  initialConnection: 'Initial connection',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  dnsLookup: 'DNS Lookup',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  proxyNegotiation: 'Proxy negotiation',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  readingPush: 'Reading Push',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  contentDownload: 'Content Download',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  requestSent: 'Request sent',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  requestToServiceworker: 'Request to `ServiceWorker`',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  startup: 'Startup',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  respondwith: 'respondWith',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  ssl: 'SSL',
+  /**
+  *@description Text for sum
+  */
+  total: 'Total',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  waitingTtfb: 'Waiting (TTFB)',
+  /**
+  *@description Text in Signed Exchange Info View of the Network panel
+  */
+  label: 'Label',
+  /**
+  *@description Inner element text content in Network Log View Columns of the Network panel
+  */
+  waterfall: 'Waterfall',
+  /**
+  *@description Text for the duration of something
+  */
+  duration: 'Duration',
+  /**
+  *@description Text of a DOM element in Request Timing View of the Network panel
+  *@example {120.39ms} PH1
+  */
+  queuedAtS: 'Queued at {PH1}',
+  /**
+  *@description Text of a DOM element in Request Timing View of the Network panel
+  *@example {120.39ms} PH1
+  */
+  startedAtS: 'Started at {PH1}',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  serverPush: 'Server Push',
+  /**
+  *@description Text of a DOM element in Request Timing View of the Network panel
+  */
+  resourceScheduling: 'Resource Scheduling',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  connectionStart: 'Connection Start',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  requestresponse: 'Request/Response',
+  /**
+  *@description Text of a DOM element in Request Timing View of the Network panel
+  */
+  cautionRequestIsNotFinishedYet: 'CAUTION: request is not finished yet!',
+  /**
+  *@description Text in Request Timing View of the Network panel
+  */
+  explanation: 'Explanation',
+  /**
+  *@description Text of a DOM element in Request Timing View of the Network panel
+  */
+  serverTiming: 'Server Timing',
+  /**
+  *@description Text of a DOM element in Request Timing View of the Network panel
+  */
+  time: 'TIME',
+  /**
+  *@description Label for the Server Timing API
+  */
+  theServerTimingApi: 'the Server Timing API',
+  /**
+  *@description Text to inform about the ServerTiming API
+  *@example {https://example.com} PH1
+  */
+  duringDevelopmentYouCanUseSToAdd:
+      'During development, you can use {PH1} to add insights into the server-side timing of this request.',
+  /**
+  *@description Header for last column of network timing tab.
+  */
+  durationC: 'DURATION',
+  /**
+  *@description Description for treeitem in ServiceWorker Fetch Details
+  */
+  originalRequest: 'Original Request',
+  /**
+  *@description Description for treeitem in ServiceWorker Fetch Details
+  */
+  responseReceived: 'Response Received',
+  /**
+  *@description Text for an unspecified service worker response source
+  */
+  unknown: 'Unknown',
+  /**
+  *@description Displays how a particular response was fetched
+  *@example {Network fetch} PH1
+  */
+  sourceOfResponseS: 'Source of response: {PH1}',
+  /**
+  *@description Name of storage cache from which a response was fetched
+  *@example {v1} PH1
+  */
+  cacheStorageCacheNameS: 'Cache storage cache name: {PH1}',
+  /**
+  *@description Text for unknown cache storage name
+  */
+  cacheStorageCacheNameUnknown: 'Cache storage cache name: Unknown',
+  /**
+  *@description Time at which a response was retrieved
+  *@example {Fri Apr 10 2020 17:20:27 GMT-0700 (Pacific Daylight Time)} PH1
+  */
+  retrievalTimeS: 'Retrieval Time: {PH1}',
+  /**
+  *@description Text used to show that serviceworker fetch response source is ServiceWorker Cache Storage
+  */
+  serviceworkerCacheStorage: '`ServiceWorker` cache storage',
+  /**
+  *@description Text used to show that serviceworker fetch response source is HTTP cache
+  */
+  fromHttpCache: 'From HTTP cache',
+  /**
+  *@description Text used to show that data was retrieved via a Network fetch
+  */
+  networkFetch: 'Network fetch',
+  /**
+  *@description Text used to show that data was retrieved using ServiceWorker fallback code
+  */
+  fallbackCode: 'Fallback code',
+};
+const str_ = i18n.i18n.registerUIStrings('network/RequestTimingView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestTimingView extends UI.Widget.VBox {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
@@ -57,37 +236,37 @@ export class RequestTimingView extends UI.Widget.VBox {
   static _timeRangeTitle(name) {
     switch (name) {
       case RequestTimeRangeNames.Push:
-        return Common.UIString.UIString('Receiving Push');
+        return i18nString(UIStrings.receivingPush);
       case RequestTimeRangeNames.Queueing:
-        return Common.UIString.UIString('Queueing');
+        return i18nString(UIStrings.queueing);
       case RequestTimeRangeNames.Blocking:
-        return Common.UIString.UIString('Stalled');
+        return i18nString(UIStrings.stalled);
       case RequestTimeRangeNames.Connecting:
-        return Common.UIString.UIString('Initial connection');
+        return i18nString(UIStrings.initialConnection);
       case RequestTimeRangeNames.DNS:
-        return Common.UIString.UIString('DNS Lookup');
+        return i18nString(UIStrings.dnsLookup);
       case RequestTimeRangeNames.Proxy:
-        return Common.UIString.UIString('Proxy negotiation');
+        return i18nString(UIStrings.proxyNegotiation);
       case RequestTimeRangeNames.ReceivingPush:
-        return Common.UIString.UIString('Reading Push');
+        return i18nString(UIStrings.readingPush);
       case RequestTimeRangeNames.Receiving:
-        return Common.UIString.UIString('Content Download');
+        return i18nString(UIStrings.contentDownload);
       case RequestTimeRangeNames.Sending:
-        return Common.UIString.UIString('Request sent');
+        return i18nString(UIStrings.requestSent);
       case RequestTimeRangeNames.ServiceWorker:
-        return Common.UIString.UIString('Request to ServiceWorker');
+        return i18nString(UIStrings.requestToServiceworker);
       case RequestTimeRangeNames.ServiceWorkerPreparation:
-        return Common.UIString.UIString('Startup');
+        return i18nString(UIStrings.startup);
       case RequestTimeRangeNames.ServiceWorkerRespondWith:
-        return Common.UIString.UIString('respondWith');
+        return i18nString(UIStrings.respondwith);
       case RequestTimeRangeNames.SSL:
-        return Common.UIString.UIString('SSL');
+        return i18nString(UIStrings.ssl);
       case RequestTimeRangeNames.Total:
-        return Common.UIString.UIString('Total');
+        return i18nString(UIStrings.total);
       case RequestTimeRangeNames.Waiting:
-        return Common.UIString.UIString('Waiting (TTFB)');
+        return i18nString(UIStrings.waitingTtfb);
       default:
-        return Common.UIString.UIString(name);
+        return name;
     }
   }
 
@@ -222,15 +401,16 @@ export class RequestTimingView extends UI.Widget.VBox {
     const tableHeaderRow = startTimeHeader.createChild('tr');
     /** @type {!HTMLTableCellElement} */
     const activityHeaderCell = /** @type {!HTMLTableCellElement} */ (tableHeaderRow.createChild('th'));
-    activityHeaderCell.createChild('span', 'network-timing-hidden-header').textContent = ls`Label`;
+    activityHeaderCell.createChild('span', 'network-timing-hidden-header').textContent = i18nString(UIStrings.label);
     activityHeaderCell.scope = 'col';
     /** @type {!HTMLTableCellElement} */
     const waterfallHeaderCell = /** @type {!HTMLTableCellElement} */ (tableHeaderRow.createChild('th'));
-    waterfallHeaderCell.createChild('span', 'network-timing-hidden-header').textContent = ls`Waterfall`;
+    waterfallHeaderCell.createChild('span', 'network-timing-hidden-header').textContent =
+        i18nString(UIStrings.waterfall);
     waterfallHeaderCell.scope = 'col';
     /** @type {!HTMLTableCellElement} */
     const durationHeaderCell = /** @type {!HTMLTableCellElement} */ (tableHeaderRow.createChild('th'));
-    durationHeaderCell.createChild('span', 'network-timing-hidden-header').textContent = ls`Duration`;
+    durationHeaderCell.createChild('span', 'network-timing-hidden-header').textContent = i18nString(UIStrings.duration);
     durationHeaderCell.scope = 'col';
 
     /** @type {!HTMLTableCellElement} */
@@ -239,9 +419,9 @@ export class RequestTimingView extends UI.Widget.VBox {
     const startedCell = /** @type {!HTMLTableCellElement} */ (startTimeHeader.createChild('tr').createChild('td'));
     queuedCell.colSpan = startedCell.colSpan = 3;
     UI.UIUtils.createTextChild(
-        queuedCell, Common.UIString.UIString('Queued at %s', calculator.formatValue(request.issueTime(), 2)));
+        queuedCell, i18nString(UIStrings.queuedAtS, {PH1: calculator.formatValue(request.issueTime(), 2)}));
     UI.UIUtils.createTextChild(
-        startedCell, Common.UIString.UIString('Started at %s', calculator.formatValue(request.startTime, 2)));
+        startedCell, i18nString(UIStrings.startedAtS, {PH1: calculator.formatValue(request.startTime, 2)}));
 
     let right;
     for (let i = 0; i < timeRanges.length; ++i) {
@@ -252,22 +432,22 @@ export class RequestTimingView extends UI.Widget.VBox {
         continue;
       }
       if (rangeName === RequestTimeRangeNames.Push) {
-        createHeader(Common.UIString.UIString('Server Push'));
+        createHeader(i18nString(UIStrings.serverPush));
       } else if (rangeName === RequestTimeRangeNames.Queueing) {
         if (!queueingHeader) {
-          queueingHeader = createHeader(ls`Resource Scheduling`);
+          queueingHeader = createHeader(i18nString(UIStrings.resourceScheduling));
         }
       } else if (ConnectionSetupRangeNames.has(rangeName)) {
         if (!connectionHeader) {
-          connectionHeader = createHeader(Common.UIString.UIString('Connection Start'));
+          connectionHeader = createHeader(i18nString(UIStrings.connectionStart));
         }
       } else if (ServiceWorkerRangeNames.has(rangeName)) {
         if (!serviceworkerHeader) {
-          serviceworkerHeader = createHeader(ls`Service Worker`);
+          serviceworkerHeader = createHeader('Service Worker');
         }
       } else {
         if (!dataHeader) {
-          dataHeader = createHeader(Common.UIString.UIString('Request/Response'));
+          dataHeader = createHeader(i18nString(UIStrings.requestresponse));
         }
       }
 
@@ -284,7 +464,8 @@ export class RequestTimingView extends UI.Widget.VBox {
       bar.style.left = left + '%';
       bar.style.right = right + '%';
       bar.textContent = '\u200B';  // Important for 0-time items to have 0 width.
-      UI.ARIAUtils.setAccessibleName(row, ls`Started at ${calculator.formatValue(range.start, 2)}`);
+      UI.ARIAUtils.setAccessibleName(
+          row, i18nString(UIStrings.startedAtS, {PH1: calculator.formatValue(range.start, 2)}));
       const label = tr.createChild('td').createChild('div', 'network-timing-bar-title');
       label.textContent = Number.secondsToString(duration, true);
 
@@ -302,7 +483,7 @@ export class RequestTimingView extends UI.Widget.VBox {
       /** @type {!HTMLTableCellElement} */
       const cell = /** @type {!HTMLTableCellElement} */ (tableElement.createChild('tr').createChild('td', 'caution'));
       cell.colSpan = 3;
-      UI.UIUtils.createTextChild(cell, Common.UIString.UIString('CAUTION: request is not finished yet!'));
+      UI.UIUtils.createTextChild(cell, i18nString(UIStrings.cautionRequestIsNotFinishedYet));
     }
 
     const footer = tableElement.createChild('tr', 'network-timing-footer');
@@ -311,7 +492,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     note.colSpan = 1;
     note.appendChild(UI.XLink.XLink.create(
         'https://developers.google.com/web/tools/chrome-devtools/network-performance/reference#timing-explanation',
-        Common.UIString.UIString('Explanation')));
+        i18nString(UIStrings.explanation)));
     footer.createChild('td');
     UI.UIUtils.createTextChild(footer.createChild('td'), Number.secondsToString(totalDuration, true));
 
@@ -326,9 +507,9 @@ export class RequestTimingView extends UI.Widget.VBox {
     breakElement.createChild('hr', 'break');
 
     const serverHeader = tableElement.createChild('tr', 'network-timing-table-header');
-    UI.UIUtils.createTextChild(serverHeader.createChild('td'), Common.UIString.UIString('Server Timing'));
+    UI.UIUtils.createTextChild(serverHeader.createChild('td'), i18nString(UIStrings.serverTiming));
     serverHeader.createChild('td');
-    UI.UIUtils.createTextChild(serverHeader.createChild('td'), Common.UIString.UIString('TIME'));
+    UI.UIUtils.createTextChild(serverHeader.createChild('td'), i18nString(UIStrings.time));
 
     if (!serverTimings) {
       const informationRow = tableElement.createChild('tr');
@@ -336,9 +517,10 @@ export class RequestTimingView extends UI.Widget.VBox {
       const information = /** @type {!HTMLTableCellElement} */ (informationRow.createChild('td'));
       information.colSpan = 3;
 
-      const link = UI.XLink.XLink.create('https://web.dev/custom-metrics/#server-timing-api', ls`the Server Timing API`);
-      information.appendChild(UI.UIUtils.formatLocalized(
-          'During development, you can use %s to add insights into the server-side timing of this request.', [link]));
+      const link = UI.XLink.XLink.create(
+          'https://web.dev/custom-metrics/#server-timing-api', i18nString(UIStrings.theServerTimingApi));
+      information.appendChild(
+          i18n.i18n.getFormatLocalizedString(str_, UIStrings.duringDevelopmentYouCanUseSToAdd, {PH1: link}));
 
       return tableElement;
     }
@@ -392,7 +574,7 @@ export class RequestTimingView extends UI.Widget.VBox {
       UI.UIUtils.createTextChild(headerCell, title);
       UI.ARIAUtils.markAsHeading(headerCell, 2);
       UI.UIUtils.createTextChild(dataHeader.createChild('td'), '');
-      UI.UIUtils.createTextChild(dataHeader.createChild('td'), ls`DURATION`);
+      UI.UIUtils.createTextChild(dataHeader.createChild('td'), i18nString(UIStrings.durationC));
       return dataHeader;
     }
   }
@@ -420,7 +602,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     if (origRequest) {
       const requestObject = SDK.RemoteObject.RemoteObject.fromLocalObject(origRequest);
       const requestTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(requestObject);
-      requestTreeElement.title = ls`Original Request`;
+      requestTreeElement.title = i18nString(UIStrings.originalRequest);
       detailsView.appendChild(requestTreeElement);
     }
 
@@ -428,17 +610,17 @@ export class RequestTimingView extends UI.Widget.VBox {
     if (response) {
       const responseObject = SDK.RemoteObject.RemoteObject.fromLocalObject(response);
       const responseTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(responseObject);
-      responseTreeElement.title = ls`Response Received`;
+      responseTreeElement.title = i18nString(UIStrings.responseReceived);
       detailsView.appendChild(responseTreeElement);
     }
 
     const serviceWorkerResponseSource = document.createElementWithClass('div', 'network-fetch-details-treeitem');
-    let swResponseSourceString = ls`Unknown`;
+    let swResponseSourceString = i18nString(UIStrings.unknown);
     const swResponseSource = this._request.serviceWorkerResponseSource();
     if (swResponseSource) {
       swResponseSourceString = this._getLocalizedResponseSourceForCode(swResponseSource);
     }
-    serviceWorkerResponseSource.textContent = ls`Source of response: ${swResponseSourceString}`;
+    serviceWorkerResponseSource.textContent = i18nString(UIStrings.sourceOfResponseS, {PH1: swResponseSourceString});
 
     const responseSourceTreeElement = new UI.TreeOutline.TreeElement(serviceWorkerResponseSource);
     detailsView.appendChild(responseSourceTreeElement);
@@ -446,9 +628,9 @@ export class RequestTimingView extends UI.Widget.VBox {
     const cacheNameElement = document.createElementWithClass('div', 'network-fetch-details-treeitem');
     const responseCacheStorageName = this._request.getResponseCacheStorageCacheName();
     if (responseCacheStorageName) {
-      cacheNameElement.textContent = ls`Cache storage cache name: ${responseCacheStorageName}`;
+      cacheNameElement.textContent = i18nString(UIStrings.cacheStorageCacheNameS, {PH1: responseCacheStorageName});
     } else {
-      cacheNameElement.textContent = ls`Cache storage cache name: Unknown`;
+      cacheNameElement.textContent = i18nString(UIStrings.cacheStorageCacheNameUnknown);
     }
 
     const cacheNameTreeElement = new UI.TreeOutline.TreeElement(cacheNameElement);
@@ -457,7 +639,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     const retrievalTime = this._request.getResponseRetrievalTime();
     if (retrievalTime) {
       const responseTimeElement = document.createElementWithClass('div', 'network-fetch-details-treeitem');
-      responseTimeElement.textContent = ls`Retrieval Time: ${retrievalTime}`;
+      responseTimeElement.textContent = i18nString(UIStrings.retrievalTimeS, {PH1: retrievalTime});
       const responseTimeTreeElement = new UI.TreeOutline.TreeElement(responseTimeElement);
       detailsView.appendChild(responseTimeTreeElement);
     }
@@ -469,13 +651,13 @@ export class RequestTimingView extends UI.Widget.VBox {
   _getLocalizedResponseSourceForCode(swResponseSource) {
     switch (swResponseSource) {
       case Protocol.Network.ServiceWorkerResponseSource.CacheStorage:
-        return ls`ServiceWorker cache storage`;
+        return i18nString(UIStrings.serviceworkerCacheStorage);
       case Protocol.Network.ServiceWorkerResponseSource.HttpCache:
-        return ls`From HTTP cache`;
+        return i18nString(UIStrings.fromHttpCache);
       case Protocol.Network.ServiceWorkerResponseSource.Network:
-        return ls`Network fetch`;
+        return i18nString(UIStrings.networkFetch);
       default:
-        return ls`Fallback code`;
+        return i18nString(UIStrings.fallbackCode);
     }
   }
 

@@ -24,6 +24,9 @@
   <message name="IDS_DEVTOOLS_45edc1b96407d9d213dd1135962a32a0" desc="Name of a network resource type">
     WebSocket
   </message>
+  <message name="IDS_DEVTOOLS_4cafcd8bd18c79335c2484f1750ce3dd" desc="Name of a network initiator type">
+    Preflight
+  </message>
   <message name="IDS_DEVTOOLS_4ea7755f84f02d23876d90be2f9765cf" desc="Name of a network resource type">
     Fetch
   </message>

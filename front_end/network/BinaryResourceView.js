@@ -4,11 +4,59 @@
 
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Binary Resource View of the Network panel
+  */
+  base: 'Base64',
+  /**
+  *@description Text in Binary Resource View of the Network panel
+  */
+  copiedAsBase: 'Copied as Base64',
+  /**
+  *@description Text in Binary Resource View of the Network panel
+  */
+  hexViewer: 'Hex Viewer',
+  /**
+  *@description Text in Binary Resource View of the Network panel
+  */
+  copiedAsHex: 'Copied as Hex',
+  /**
+  *@description Text in Binary Resource View of the Network panel
+  */
+  utf: 'UTF-8',
+  /**
+  *@description Text in Binary Resource View of the Network panel
+  */
+  copiedAsUtf: 'Copied as UTF-8',
+  /**
+  *@description Screen reader label for a select box that chooses how to display binary data in the Network panel
+  */
+  binaryViewType: 'Binary view type',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon copy button in the Binary Resource View of the Network panel
+  */
+  copyToClipboard: 'Copy to clipboard',
+  /**
+  *@description Text in Binary Resource View of the Network panel
+  */
+  copyAsBase: 'Copy as Base64',
+  /**
+  *@description Text in Binary Resource View of the Network panel
+  */
+  copyAsHex: 'Copy as Hex',
+  /**
+  *@description Text in Binary Resource View of the Network panel
+  */
+  copyAsUtf: 'Copy as UTF-8',
+};
+const str_ = i18n.i18n.registerUIStrings('network/BinaryResourceView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class BinaryResourceView extends UI.Widget.VBox {
   /**
    * @param {string} base64content
@@ -27,28 +75,28 @@ export class BinaryResourceView extends UI.Widget.VBox {
     /** @type {!Array<!BinaryViewObject>} */
     this._binaryViewObjects = [
       new BinaryViewObject(
-          'base64', ls`Base64`, ls`Copied as Base64`,
+          'base64', i18nString(UIStrings.base), i18nString(UIStrings.copiedAsBase),
           this._binaryResourceViewFactory.createBase64View.bind(this._binaryResourceViewFactory),
           this._binaryResourceViewFactory.base64.bind(this._binaryResourceViewFactory)),
       new BinaryViewObject(
-          'hex', ls`Hex Viewer`, ls`Copied as Hex`,
+          'hex', i18nString(UIStrings.hexViewer), i18nString(UIStrings.copiedAsHex),
           this._binaryResourceViewFactory.createHexView.bind(this._binaryResourceViewFactory),
           this._binaryResourceViewFactory.hex.bind(this._binaryResourceViewFactory)),
       new BinaryViewObject(
-          'utf8', ls`UTF-8`, ls`Copied as UTF-8`,
+          'utf8', i18nString(UIStrings.utf), i18nString(UIStrings.copiedAsUtf),
           this._binaryResourceViewFactory.createUtf8View.bind(this._binaryResourceViewFactory),
           this._binaryResourceViewFactory.utf8.bind(this._binaryResourceViewFactory)),
     ];
     this._binaryViewTypeSetting = Common.Settings.Settings.instance().createSetting('binaryViewType', 'hex');
     this._binaryViewTypeCombobox =
-        new UI.Toolbar.ToolbarComboBox(this._binaryViewTypeChanged.bind(this), ls`Binary view type`);
+        new UI.Toolbar.ToolbarComboBox(this._binaryViewTypeChanged.bind(this), i18nString(UIStrings.binaryViewType));
     for (const viewObject of this._binaryViewObjects) {
       this._binaryViewTypeCombobox.addOption(
           this._binaryViewTypeCombobox.createOption(viewObject.label, viewObject.type));
     }
     this._toolbar.appendToolbarItem(this._binaryViewTypeCombobox);
 
-    const copyButton = new UI.Toolbar.ToolbarButton(ls`Copy to clipboard`, 'largeicon-copy');
+    const copyButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyToClipboard), 'largeicon-copy');
     copyButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this._copySelectedViewToClipboard();
     }, this);
@@ -148,15 +196,15 @@ export class BinaryResourceView extends UI.Widget.VBox {
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(submenuItemText);
     const footerSection = copyMenu.footerSection();
 
-    footerSection.appendItem(ls`Copy as Base64`, async () => {
+    footerSection.appendItem(i18nString(UIStrings.copyAsBase), async () => {
       const content = await this._binaryResourceViewFactory.base64();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content.content);
     });
-    footerSection.appendItem(ls`Copy as Hex`, async () => {
+    footerSection.appendItem(i18nString(UIStrings.copyAsHex), async () => {
       const content = await this._binaryResourceViewFactory.hex();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content.content);
     });
-    footerSection.appendItem(ls`Copy as UTF-8`, async () => {
+    footerSection.appendItem(i18nString(UIStrings.copyAsUtf), async () => {
       const content = await this._binaryResourceViewFactory.utf8();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(content.content);
     });

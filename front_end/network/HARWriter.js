@@ -29,9 +29,22 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 
+export const UIStrings = {
+  /**
+  *@description Title of progress in harwriter of the network panel
+  */
+  collectingContent: 'Collecting content…',
+  /**
+  *@description Text to indicate DevTools is writing to a file
+  */
+  writingFile: 'Writing file…',
+};
+const str_ = i18n.i18n.registerUIStrings('network/HARWriter.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class HARWriter {
   /**
    * @param {!Common.StringOutputStream.OutputStream} stream
@@ -56,7 +69,7 @@ export class HARWriter {
    */
   static async _harStringForRequests(requests, compositeProgress) {
     const progress = compositeProgress.createSubProgress();
-    progress.setTitle(Common.UIString.UIString('Collecting content…'));
+    progress.setTitle(i18nString(UIStrings.collectingContent));
     progress.setTotalWork(requests.length);
 
     // Sort by issueTime because this is recorded as startedDateTime in HAR logs.
@@ -123,7 +136,7 @@ export class HARWriter {
    */
   static async _writeToStream(stream, compositeProgress, fileContent) {
     const progress = compositeProgress.createSubProgress();
-    progress.setTitle(Common.UIString.UIString('Writing file…'));
+    progress.setTitle(i18nString(UIStrings.writingFile));
     progress.setTotalWork(fileContent.length);
     for (let i = 0; i < fileContent.length && !progress.isCanceled(); i += _chunkSize) {
       const chunk = fileContent.substr(i, _chunkSize);

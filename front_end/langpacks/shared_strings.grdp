@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Strings in this file are shared, i.e. they appear multiple times. -->
 <grit-part>
-  <message name="IDS_DEVTOOLS_040c4b52a3c06c6067fac76c4c7c3a2c" desc="Title of the 'Network conditions' tool in the bottom drawer">
-    Network conditions
-  </message>
   <message name="IDS_DEVTOOLS_02a3a357710cc2a5dfdfb74ed012fb59" desc="Text in Timeline UIUtils of the Performance panel">
     Url
-  </message>
-  <message name="IDS_DEVTOOLS_0511551e6cf7d61acd9b62f9304efa93" desc="Tooltip text that appears on the setting to preserve log when hovering over the item">
-    Do not clear log on page reload / navigation
   </message>
   <message name="IDS_DEVTOOLS_0945359809dad1fbf3dea1c95a0da951" desc="Name of a network resource type">
     Document
   </message>
   <message name="IDS_DEVTOOLS_0b484cfcf50c8fabff48c0aad426f544" desc="Text to dock the DevTools to the left of the browser tab">
     Dock to left
-  </message>
-  <message name="IDS_DEVTOOLS_0be7b7d0111a248185e7b1bebaf8595b" desc="Text to enable blocking of network requests">
-    Enable network request blocking
   </message>
   <message name="IDS_DEVTOOLS_0eaadb4fcb48a0a0ed7bc9868be9fbaa" desc="Text to indicate an item is a warning">
     Warning
@@ -28,26 +19,11 @@
   <message name="IDS_DEVTOOLS_11a755d598c0c417f9a36758c3da7481" desc="Text of an item that stops the running task">
     Stop
   </message>
-  <message name="IDS_DEVTOOLS_13348442cc6a27032d2b4aa28b75a5d3" desc="Title of a search bar or tool">
-    Search
-  </message>
-  <message name="IDS_DEVTOOLS_146ffe2fd9fa5bec3b63b52543793ec7" desc="Text to show more content">
-    Show more
-  </message>
-  <message name="IDS_DEVTOOLS_16f78b9465f03f7ec5a03c24918fbde3" desc="Status code of an event">
-    Status Code
-  </message>
-  <message name="IDS_DEVTOOLS_17145319aba079a26c6d3bb2b1d58894" desc="Text in Request Timing View of the Network panel">
-    <ph name="LOCKED_TERM">Service Worker</ph>
-  </message>
   <message name="IDS_DEVTOOLS_1b1ac1c7a54457ce73ddd25a5b51c47d" desc="A title of the 'Drawer sidebar' @UI.ViewLocationResolver category">
     Drawer sidebar
   </message>
   <message name="IDS_DEVTOOLS_1c481aa99d081c32182011a758f73d33" desc="Text that only contain a placeholder">
     <ph name="DURATIONTEXT">$1s<ex>100ms (at 200ms)</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_1ebc7540a5327b857144f04cf1435b4e" desc="Text to replay an XHR request">
-    Replay XHR
   </message>
   <message name="IDS_DEVTOOLS_22b6fe30dec1ae9c09480cce01cd4065" desc="Text to run commands">
     Run command
@@ -58,9 +34,6 @@
   <message name="IDS_DEVTOOLS_2b81bb9b3deebcbfa05edad7a845005a" desc="Text for rendering frames">
     Frames
   </message>
-  <message name="IDS_DEVTOOLS_2bbc845892f400626baab5af687527c5" desc="Text for the start time of an activity">
-    Start Time
-  </message>
   <message name="IDS_DEVTOOLS_2fae32629d4ef4fc6341f1751b405e45" desc="Title of the 'Security' tool">
     Security
   </message>
@@ -69,9 +42,6 @@
   </message>
   <message name="IDS_DEVTOOLS_3793ea52a7be2d7deafd858fda50775c" desc="Text exposed to screen readers on checked items.">
     checked
-  </message>
-  <message name="IDS_DEVTOOLS_3a5f3e3efbfecf638c713e6701349ae2" desc="Command for showing the 'Search' tool">
-    Show Search
   </message>
   <message name="IDS_DEVTOOLS_3afbd9828e011526955ca93b48b57524" desc="Text for one or a group of screenshots">
     Screenshot
@@ -89,23 +59,11 @@
   <message name="IDS_DEVTOOLS_49ee3087348e8d44e1feda1917443987" desc="Text for the name of something">
     Name
   </message>
-  <message name="IDS_DEVTOOLS_4bd7c2ff07dcc66801a9368957d4bff8" desc="Text for the initiator of something">
-    Initiator
-  </message>
-  <message name="IDS_DEVTOOLS_4cafcd8bd18c79335c2484f1750ce3dd" desc="Name of a network initiator type">
-    Preflight
-  </message>
   <message name="IDS_DEVTOOLS_4cc6684df7b4a92b1dec6fce3264fac8" desc="Text describing global shortcuts and settings that are available throughout the DevTools">
     Global
   </message>
   <message name="IDS_DEVTOOLS_4dab36ac83853282fc0d7bae20c19e90" desc="Text to show more options">
     More options
-  </message>
-  <message name="IDS_DEVTOOLS_502996d9790340c5fd7b86a5b93b1c9f" desc="Text to show the priority of an item">
-    Priority
-  </message>
-  <message name="IDS_DEVTOOLS_51360304ea03557e79bdf5ff9cd2e234" desc="Text for the issuer of an item">
-    Issuer
   </message>
   <message name="IDS_DEVTOOLS_5174d1309f275ba6f275db3af9eb3e18" desc="Title of a section on CSS Grid tooling">
     Grid
@@ -113,23 +71,8 @@
   <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Text for the execution stack trace">
     Stack Trace
   </message>
-  <message name="IDS_DEVTOOLS_597b56e53847cd6a4712ac183f61fa68" desc="Text for web cookies">
-    Cookies
-  </message>
   <message name="IDS_DEVTOOLS_5de39fa1bce4bbf9232597a2120bc4d4" desc="Text to open the cubic bezier editor">
     Open cubic bezier editor.
-  </message>
-  <message name="IDS_DEVTOOLS_5ef0c737746fae2ca90e66c39333f8f6" desc="Text for errors">
-    Errors
-  </message>
-  <message name="IDS_DEVTOOLS_5f0ea62e5bc9f795512ef292ff162a2a" desc="Text to disable cache while DevTools is open">
-    Disable cache (while <ph name="LOCKED_1">DevTools</ph> is open)
-  </message>
-  <message name="IDS_DEVTOOLS_5f8442a46861496e9d2a3d11be13692b" desc="Text to indicate DevTools is writing to a file">
-    Writing file…
-  </message>
-  <message name="IDS_DEVTOOLS_5fb63579fc981698f97d55bfecb213ea" desc="Text for copying">
-    Copy
   </message>
   <message name="IDS_DEVTOOLS_61326117ed4a9ddf3f754e71e119e5b3" desc="The kind of resolution for a mixed content issue">
     blocked
@@ -167,23 +110,11 @@
   <message name="IDS_DEVTOOLS_76c3e002d3c052bd6a909366a8dc3845" desc="Text that appears on a button for the manifest resource type filter.">
     Manifest
   </message>
-  <message name="IDS_DEVTOOLS_8166a4b3fb4979da3a24ed21ced7fdf7" desc="Text for an option to learn more about something">
-    Learn more
-  </message>
-  <message name="IDS_DEVTOOLS_850985cd851d0fe440f03f77762e2590" desc="Text for the network request Content-Length header">
-    <ph name="LOCKED_1">Content-Length</ph>
-  </message>
   <message name="IDS_DEVTOOLS_87bfda183c4f851a101e97bbb1bbace7" desc="Title of the Layers tool">
     Layers
   </message>
   <message name="IDS_DEVTOOLS_87d17f4624a514e81dc7c8e016a7405c" desc="Text for the mobile platform, as opposed to desktop">
     Mobile
-  </message>
-  <message name="IDS_DEVTOOLS_88183b946cc5f0e8c96b2e66e1c74a7e" desc="Text for an unspecified service worker response source">
-    Unknown
-  </message>
-  <message name="IDS_DEVTOOLS_883d7615c4d2de3fa1218f1298c46d0e" desc="Text for network request headers">
-    Headers
   </message>
   <message name="IDS_DEVTOOLS_886f598a8a9e6a4bfe0c09fcf7779611" desc="Title of a Rendering setting that can be invoked through the Command Menu">
     Emulate a focused page
@@ -206,9 +137,6 @@
   <message name="IDS_DEVTOOLS_95bbad55f11c237ed89546e748093ba7" desc="Text for the request animation frame event">
     Request Animation Frame
   </message>
-  <message name="IDS_DEVTOOLS_96e9bc575b5d3ed541113a249da8bd24" desc="Text to take screenshots">
-    Capture screenshots
-  </message>
   <message name="IDS_DEVTOOLS_9b1ed2cbe56f7a315f0a365d2b97cb59" desc="A title of the 'Drawer' @UI.ViewLocationResolver category">
     Drawer
   </message>
@@ -230,17 +158,11 @@
   <message name="IDS_DEVTOOLS_a6e8f9aed2ac6481dc25a18a33342d03" desc="Title of the Rendering tool">
     Rendering
   </message>
-  <message name="IDS_DEVTOOLS_a76d4ef5f3f6a672bbfab2865563e530" desc="Text that refers to the time">
-    Time
-  </message>
   <message name="IDS_DEVTOOLS_aa56a2e65d8106aef3c61e4f6bf94fdb" desc="Title of the Elements Panel">
     Elements
   </message>
   <message name="IDS_DEVTOOLS_abbd64f40c34c537d3a571af068fce29" desc="Text for the orientation of something">
     Orientation
-  </message>
-  <message name="IDS_DEVTOOLS_ac70412e939d72a9234cdebb1af5867b" desc="Text that refers to a file path">
-    Path
   </message>
   <message name="IDS_DEVTOOLS_ad91a1da588ce256d30b1af38f78f84e" desc="Text exposed to screen readers on unchecked items.">
     unchecked
@@ -259,9 +181,6 @@
   </message>
   <message name="IDS_DEVTOOLS_b5a7adde1af5c87d7fd797b6245c2a39" desc="Text for the description of something">
     Description
-  </message>
-  <message name="IDS_DEVTOOLS_b6434258c743f8673997b5aeb3721c27" desc="Text that refers to the network request method">
-    Request Method
   </message>
   <message name="IDS_DEVTOOLS_b8da6df14bf06283cbf588df6998722e" desc="A title of the 'Panel' @UI.ViewLocationResolver category">
     Panel
@@ -308,9 +227,6 @@
   <message name="IDS_DEVTOOLS_d59048f21fd887ad520398ce677be586" desc="Text that is usually a hyperlink to more documentation">
     Learn more
   </message>
-  <message name="IDS_DEVTOOLS_d64ed3e9c10229648e069f56e32f4c8e" desc="Text for a network response">
-    Response
-  </message>
   <message name="IDS_DEVTOOLS_d6b6b668dbca9d4fe774bb654226ebe3" desc="Text that refers to the animation of the web page">
     Animation
   </message>
@@ -322,9 +238,6 @@
   </message>
   <message name="IDS_DEVTOOLS_dde38f333e095c2293593f504fd701a2" desc="Title of the 'JavaScript Profiler' tool">
     JavaScript Profiler
-  </message>
-  <message name="IDS_DEVTOOLS_e02d2ae03de9d493df2b6b2d2813d302" desc="Text for the duration of something">
-    Duration
   </message>
   <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="Text that refers to device such as a phone">
     Device
@@ -344,12 +257,6 @@
   <message name="IDS_DEVTOOLS_e6b391a8d2c4d45902a23a8b6585703d" desc="Text for web URLs">
     URL
   </message>
-  <message name="IDS_DEVTOOLS_e77fef0167598bb39846637ac3915f4e" desc="Text to clear everything">
-    Clear All
-  </message>
-  <message name="IDS_DEVTOOLS_eae639a70006feff484a39363c977e24" desc="Text for the domain of a website">
-    Domain
-  </message>
   <message name="IDS_DEVTOOLS_ebd9bec4d70abc789d439c1f136b0538" desc="Text in Timeline UIUtils of the Performance panel">
     Layout
   </message>
@@ -361,9 +268,6 @@
   </message>
   <message name="IDS_DEVTOOLS_ec53a8c4f07baed5d8825072c89799be" desc="Text for the status of something">
     Status
-  </message>
-  <message name="IDS_DEVTOOLS_edd24cce7afedea5a1b2f90675880687" desc="Text to preserve the log after refreshing">
-    Preserve log
   </message>
   <message name="IDS_DEVTOOLS_ee1cab1975e28575b1631ee8fc4ea749" desc="Title of an action in the emulation tool to capture node screenshot">
     Capture node screenshot

@@ -3,10 +3,52 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to enable blocking of network requests
+  */
+  enableNetworkRequestBlocking: 'Enable network request blocking',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon add button in the Blocked URLs Pane of the Network panel
+  */
+  addPattern: 'Add pattern',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon clear button in the Blocked URLs Pane of the Network panel
+  */
+  removeAllPatterns: 'Remove all patterns',
+  /**
+  *@description Accessible label for the button to add request blocking patterns in the network request blocking tool
+  */
+  addNetworkRequestBlockingPattern: 'Add network request blocking pattern',
+  /**
+  *@description Button to add a pattern to block netwrok requests in the Network request blocking tool
+  *@example {Add pattern} PH1
+  */
+  networkRequestsAreNotBlockedS: 'Network requests are not blocked. {PH1}',
+  /**
+  *@description Text in Blocked URLs Pane of the Network panel
+  *@example {4} PH1
+  */
+  dBlocked: '{PH1} blocked',
+  /**
+  *@description Text in Blocked URLs Pane of the Network panel
+  */
+  textPatternToBlockMatching: 'Text pattern to block matching requests; use * for wildcard',
+  /**
+  *@description Error text for empty list widget input in Request Blocking tool
+  */
+  patternInputCannotBeEmpty: 'Pattern input cannot be empty.',
+  /**
+  *@description Error text for duplicate list widget input in Request Blocking tool
+  */
+  patternAlreadyExists: 'Pattern already exists.',
+};
+const str_ = i18n.i18n.registerUIStrings('network/BlockedURLsPane.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {?BlockedURLsPane} */
 export let blockedURLsPaneInstance = null;
 
@@ -25,14 +67,13 @@ export class BlockedURLsPane extends UI.Widget.VBox {
 
     this._toolbar = new UI.Toolbar.Toolbar('', this.contentElement);
     this._enabledCheckbox = new UI.Toolbar.ToolbarCheckbox(
-        Common.UIString.UIString('Enable network request blocking'), undefined, this._toggleEnabled.bind(this));
+        i18nString(UIStrings.enableNetworkRequestBlocking), undefined, this._toggleEnabled.bind(this));
     this._toolbar.appendToolbarItem(this._enabledCheckbox);
     this._toolbar.appendSeparator();
-    const addButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Add pattern'), 'largeicon-add');
+    const addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addPattern), 'largeicon-add');
     addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._addButtonClicked, this);
     this._toolbar.appendToolbarItem(addButton);
-    const clearButton =
-        new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Remove all patterns'), 'largeicon-clear');
+    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.removeAllPatterns), 'largeicon-clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._removeAll, this);
     this._toolbar.appendToolbarItem(clearButton);
 
@@ -72,9 +113,11 @@ export class BlockedURLsPane extends UI.Widget.VBox {
    */
   _createEmptyPlaceholder() {
     const element = this.contentElement.createChild('div', 'no-blocked-urls');
-    const addButton = UI.UIUtils.createTextButton(ls`Add pattern`, this._addButtonClicked.bind(this), 'add-button');
-    UI.ARIAUtils.setAccessibleName(addButton, ls`Add network request blocking pattern`);
-    element.appendChild(UI.UIUtils.formatLocalized('Network requests are not blocked. %s', [addButton]));
+    const addButton =
+        UI.UIUtils.createTextButton(i18nString(UIStrings.addPattern), this._addButtonClicked.bind(this), 'add-button');
+    UI.ARIAUtils.setAccessibleName(addButton, i18nString(UIStrings.addNetworkRequestBlockingPattern));
+    element.appendChild(
+        i18n.i18n.getFormatLocalizedString(str_, UIStrings.networkRequestsAreNotBlockedS, {PH1: addButton}));
     return element;
   }
 
@@ -104,7 +147,7 @@ export class BlockedURLsPane extends UI.Widget.VBox {
     checkbox.checked = pattern.enabled;
     checkbox.disabled = !this._manager.blockingEnabled();
     element.createChild('div', 'blocked-url-label').textContent = pattern.url;
-    element.createChild('div', 'blocked-url-count').textContent = Common.UIString.UIString('%d blocked', count);
+    element.createChild('div', 'blocked-url-count').textContent = i18nString(UIStrings.dBlocked, {PH1: count});
     element.addEventListener('click', event => this._togglePattern(pattern, event));
     checkbox.addEventListener('click', event => this._togglePattern(pattern, event));
     return element;
@@ -177,8 +220,7 @@ export class BlockedURLsPane extends UI.Widget.VBox {
     const editor = new UI.ListWidget.Editor();
     const content = editor.contentElement();
     const titles = content.createChild('div', 'blocked-url-edit-row');
-    titles.createChild('div').textContent =
-        Common.UIString.UIString('Text pattern to block matching requests; use * for wildcard');
+    titles.createChild('div').textContent = i18nString(UIStrings.textPatternToBlockMatching);
     const fields = content.createChild('div', 'blocked-url-edit-row');
     /**
      * @param {!SDK.NetworkManager.BlockedPattern} item
@@ -189,10 +231,10 @@ export class BlockedURLsPane extends UI.Widget.VBox {
       let valid = true;
       let errorMessage;
       if (!input.value) {
-        errorMessage = ls`Pattern input cannot be empty.`;
+        errorMessage = i18nString(UIStrings.patternInputCannotBeEmpty);
         valid = false;
       } else if (this._manager.blockedPatterns().find(pattern => pattern.url === input.value)) {
-        errorMessage = ls`Pattern already exists.`;
+        errorMessage = i18nString(UIStrings.patternAlreadyExists);
         valid = false;
       }
       return {valid, errorMessage};

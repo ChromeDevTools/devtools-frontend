@@ -54,6 +54,12 @@
   <message name="IDS_DEVTOOLS_127c3c0187f2be68a7c19273f4d8a71b" desc="A context menu item in the Watch Expressions Sidebar Pane of the Sources panel">
     Delete all watch expressions
   </message>
+  <message name="IDS_DEVTOOLS_13348442cc6a27032d2b4aa28b75a5d3" desc="Title of a search bar or tool">
+    Search
+  </message>
+  <message name="IDS_DEVTOOLS_146ffe2fd9fa5bec3b63b52543793ec7" desc="Text to show more content">
+    Show more
+  </message>
   <message name="IDS_DEVTOOLS_14acf8c40287aedb6124add396f6d1c5" desc="A context menu item in the Gutter Diff Plugin of the Sources panel">
     Local Modifications...
   </message>
@@ -149,6 +155,9 @@
   </message>
   <message name="IDS_DEVTOOLS_3831f64f248899a06a6bbc8b82fccfdf" desc="Text in Breakpoint Edit Dialog of the Sources panel">
     Log message, e.g. &apos;x is&apos;, x
+  </message>
+  <message name="IDS_DEVTOOLS_3a5f3e3efbfecf638c713e6701349ae2" desc="Command for showing the 'Search' tool">
+    Show Search
   </message>
   <message name="IDS_DEVTOOLS_3a9bd88b445fd1f4d4d8c3ce995be74a" desc="Title of an action in the debugger tool to step over">
     Step over next function call

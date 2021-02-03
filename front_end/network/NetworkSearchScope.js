@@ -2,11 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
-import * as SDK from '../sdk/sdk.js';           // eslint-disable-line no-unused-vars
-import * as Search from '../search/search.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
+import * as i18n from '../i18n/i18n.js';
+import * as SDK from '../sdk/sdk.js';                      // eslint-disable-line no-unused-vars
+import * as Search from '../search/search.js';             // eslint-disable-line no-unused-vars
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text for web URLs
+  */
+  url: 'URL',
+};
+const str_ = i18n.i18n.registerUIStrings('network/NetworkSearchScope.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {Search.SearchConfig.SearchScope}
  */
@@ -246,7 +255,7 @@ export class NetworkSearchResult {
   matchLabel(index) {
     const location = this._locations[index];
     if (location.isUrlMatch) {
-      return Common.UIString.UIString('URL');
+      return i18nString(UIStrings.url);
     }
     const header = location.requestHeader || location.responseHeader;
     if (header) {

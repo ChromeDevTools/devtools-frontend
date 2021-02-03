@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -38,6 +38,18 @@ import {RequestHTMLView} from './RequestHTMLView.js';
 import {RequestResponseView} from './RequestResponseView.js';
 import {SignedExchangeInfoView} from './SignedExchangeInfoView.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Request Preview View of the Network panel
+  */
+  failedToLoadResponseData: 'Failed to load response data',
+  /**
+  *@description Text in Request Preview View of the Network panel
+  */
+  previewNotAvailable: 'Preview not available',
+};
+const str_ = i18n.i18n.registerUIStrings('network/RequestPreviewView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestPreviewView extends RequestResponseView {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
@@ -69,7 +81,7 @@ export class RequestPreviewView extends RequestResponseView {
   async _htmlPreview() {
     const contentData = await this.request.contentData();
     if (contentData.error) {
-      return new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Failed to load response data'));
+      return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData));
     }
 
     const allowlist = new Set(['text/html', 'text/plain', 'application/xhtml+xml']);
@@ -111,6 +123,6 @@ export class RequestPreviewView extends RequestResponseView {
       return provided;
     }
 
-    return new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Preview not available'));
+    return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.previewNotAvailable));
   }
 }

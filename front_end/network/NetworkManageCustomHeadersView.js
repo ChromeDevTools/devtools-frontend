@@ -2,9 +2,29 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Network Manage Custom Headers View of the Network panel
+  */
+  manageHeaderColumns: 'Manage Header Columns',
+  /**
+  *@description Placeholder text content in Network Manage Custom Headers View of the Network panel
+  */
+  noCustomHeaders: 'No custom headers',
+  /**
+  *@description Text of add button in Network Manage Custom Headers View of the Network panel
+  */
+  addCustomHeader: 'Add custom header…',
+  /**
+  *@description Text in Network Manage Custom Headers View of the Network panel
+  */
+  headerName: 'Header Name',
+};
+const str_ = i18n.i18n.registerUIStrings('network/NetworkManageCustomHeadersView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {UI.ListWidget.Delegate<!{header: string}>}
  */
@@ -20,7 +40,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
     this.registerRequiredCSS('network/networkManageCustomHeadersView.css', {enableLegacyPatching: false});
 
     this.contentElement.classList.add('custom-headers-wrapper');
-    this.contentElement.createChild('div', 'header').textContent = Common.UIString.UIString('Manage Header Columns');
+    this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.manageHeaderColumns);
 
     /** @type {!UI.ListWidget.ListWidget<!{header: string}>} */
     this._list = new UI.ListWidget.ListWidget(this);
@@ -29,11 +49,11 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('custom-headers-list-list-empty');
-    placeholder.textContent = Common.UIString.UIString('No custom headers');
+    placeholder.textContent = i18nString(UIStrings.noCustomHeaders);
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.contentElement);
     this.contentElement.appendChild(UI.UIUtils.createTextButton(
-        Common.UIString.UIString('Add custom header…'), this._addButtonClicked.bind(this), 'add-button'));
+        i18nString(UIStrings.addCustomHeader), this._addButtonClicked.bind(this), 'add-button'));
 
     /** @type {!Map.<string, !{title: string, editable: boolean}>} */
     this._columnConfigs = new Map();
@@ -137,7 +157,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox {
     const content = editor.contentElement();
 
     const titles = content.createChild('div', 'custom-headers-edit-row');
-    titles.createChild('div', 'custom-headers-header').textContent = Common.UIString.UIString('Header Name');
+    titles.createChild('div', 'custom-headers-header').textContent = i18nString(UIStrings.headerName);
 
     const fields = content.createChild('div', 'custom-headers-edit-row');
     fields.createChild('div', 'custom-headers-header')

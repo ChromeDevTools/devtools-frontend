@@ -749,6 +749,7 @@ grd_files_debug_sources = [
   "front_end/network/BlockedURLsPane.js",
   "front_end/network/EventSourceMessagesView.js",
   "front_end/network/HARWriter.js",
+  "front_end/network/ModuleUIStrings.js",
   "front_end/network/NetworkConfigView.js",
   "front_end/network/NetworkDataGridNode.js",
   "front_end/network/NetworkFrameGrouper.js",

@@ -3,14 +3,125 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import type * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Network from './network.js';
 
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Command for showing the 'Network' tool
+  */
+  showNetwork: 'Show Network',
+  /**
+  *@description Title of the Network tool
+  */
+  network: 'Network',
+  /**
+  *@description Command for showing the 'Network request blocking' tool
+  */
+  showNetworkRequestBlocking: 'Show Network request blocking',
+  /**
+  *@description Title of the 'Network request blocking' tool in the bottom drawer
+  */
+  networkRequestBlocking: 'Network request blocking',
+  /**
+  *@description Command for showing the 'Network conditions' tool
+  */
+  showNetworkConditions: 'Show Network conditions',
+  /**
+  *@description Title of the 'Network conditions' tool in the bottom drawer
+  */
+  networkConditions: 'Network conditions',
+  /**
+  *@description A tag of Network Conditions tool that can be searched in the command menu
+  */
+  diskCache: 'disk cache',
+  /**
+  *@description A tag of Network Conditions tool that can be searched in the command menu
+  */
+  networkThrottling: 'network throttling',
+  /**
+  *@description A tag of Network Conditions tool that can be searched in the command menu
+  */
+  useragent: 'useragent',
+  /**
+  *@description A tag of Network Conditions tool that can be searched in the command menu
+  */
+  userAgent: 'user agent',
+  /**
+  *@description A tag of Network Conditions tool that can be searched in the command menu
+  */
+  userdagent: 'user-agent',
+  /**
+  *@description Command for showing the 'Search' tool
+  */
+  showSearch: 'Show Search',
+  /**
+  *@description Title of a search bar or tool
+  */
+  search: 'Search',
+  /**
+  *@description Title of an action in the network tool to toggle recording
+  */
+  recordNetworkLog: 'Record network log',
+  /**
+  *@description Title of an action in the network tool to toggle recording
+  */
+  stopRecordingNetworkLog: 'Stop recording network log',
+  /**
+  *@description Title of an action that hides network request details
+  */
+  hideRequestDetails: 'Hide request details',
+  /**
+  *@description Title of a setting under the Network category in Settings
+  */
+  colorcodeResourceTypes: 'Color-code resource types',
+  /**
+  *@description A tag of Network color-code resource types that can be searched in the command menu
+  */
+  colorCode: 'color code',
+  /**
+  *@description A tag of Network color-code resource types that can be searched in the command menu
+  */
+  resourceType: 'resource type',
+  /**
+  *@description Title of a setting under the Network category that can be invoked through the Command Menu
+  */
+  colorCodeByResourceType: 'Color code by resource type',
+  /**
+  *@description Title of a setting under the Network category that can be invoked through the Command Menu
+  */
+  useDefaultColors: 'Use default colors',
+  /**
+  *@description Title of a setting under the Network category in Settings
+  */
+  groupNetworkLogByFrame: 'Group network log by frame',
+  /**
+  *@description A tag of Group Network by frame setting that can be searched in the command menu
+  */
+  netWork: 'network',
+  /**
+  *@description A tag of Group Network by frame setting that can be searched in the command menu
+  */
+  frame: 'frame',
+  /**
+  *@description A tag of Group Network by frame setting that can be searched in the command menu
+  */
+  group: 'group',
+  /**
+  *@description Title of a setting under the Network category that can be invoked through the Command Menu
+  */
+  groupNetworkLogItemsByFrame: 'Group network log items by frame',
+  /**
+  *@description Title of a setting under the Network category that can be invoked through the Command Menu
+  */
+  dontGroupNetworkLogItemsByFrame: 'Don\'t group network log items by frame',
+};
+const str_ = i18n.i18n.registerUIStrings('network/network-meta.ts', UIStrings);
+const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedNetworkModule: (typeof Network|undefined);
 
 async function loadNetworkModule(): Promise<typeof Network> {
@@ -32,8 +143,8 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (loadedNetwork
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'network',
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Network`,
-  title: (): Platform.UIString.LocalizedString => ls`Network`,
+  commandPrompt: i18nString(UIStrings.showNetwork),
+  title: i18nString(UIStrings.network),
   order: 40,
   async loadView() {
     const Network = await loadNetworkModule();
@@ -44,8 +155,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'network.blocked-urls',
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Network request blocking`,
-  title: (): Platform.UIString.LocalizedString => ls`Network request blocking`,
+  commandPrompt: i18nString(UIStrings.showNetworkRequestBlocking),
+  title: i18nString(UIStrings.networkRequestBlocking),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 60,
   async loadView() {
@@ -57,16 +168,16 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'network.config',
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Network conditions`,
-  title: (): Platform.UIString.LocalizedString => ls`Network conditions`,
+  commandPrompt: i18nString(UIStrings.showNetworkConditions),
+  title: i18nString(UIStrings.networkConditions),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 40,
   tags: [
-    (): Platform.UIString.LocalizedString => ls`disk cache`,
-    (): Platform.UIString.LocalizedString => ls`network throttling`,
-    (): Platform.UIString.LocalizedString => ls`useragent`,
-    (): Platform.UIString.LocalizedString => ls`user agent`,
-    (): Platform.UIString.LocalizedString => ls`user-agent`,
+    i18nString(UIStrings.diskCache),
+    i18nString(UIStrings.networkThrottling),
+    i18nString(UIStrings.userdagent),
+    i18nString(UIStrings.userAgent),
+    i18nString(UIStrings.userdagent),
   ],
   async loadView() {
     const Network = await loadNetworkModule();
@@ -77,8 +188,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NETWORK_SIDEBAR,
   id: 'network.search-network-tab',
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Search`,
-  title: (): Platform.UIString.LocalizedString => ls`Search`,
+  commandPrompt: i18nString(UIStrings.showSearch),
+  title: i18nString(UIStrings.search),
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const Network = await loadNetworkModule();
@@ -103,11 +214,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Record network log`,
+      title: i18nString(UIStrings.recordNetworkLog),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Stop recording network log`,
+      title: i18nString(UIStrings.stopRecordingNetworkLog),
     },
   ],
   bindings: [
@@ -125,7 +236,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'network.hide-request-details',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
-  title: (): Platform.UIString.LocalizedString => ls`Hide request details`,
+  title: i18nString(UIStrings.hideRequestDetails),
   contextTypes() {
     return maybeRetrieveContextTypes(Network => [Network.NetworkPanel.NetworkPanel]);
   },
@@ -143,7 +254,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'network.search',
   category: UI.ActionRegistration.ActionCategory.NETWORK,
-  title: (): Platform.UIString.LocalizedString => ls`Search`,
+  title: i18nString(UIStrings.search),
   contextTypes() {
     return maybeRetrieveContextTypes(Network => [Network.NetworkPanel.NetworkPanel]);
   },
@@ -173,45 +284,45 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.NETWORK,
-  title: (): Platform.UIString.LocalizedString => ls`Color-code resource types`,
+  title: i18nString(UIStrings.colorcodeResourceTypes),
   settingName: 'networkColorCodeResourceTypes',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: false,
   tags: [
-    (): Platform.UIString.LocalizedString => ls`color code`,
-    (): Platform.UIString.LocalizedString => ls`resource type`,
+    i18nString(UIStrings.colorCode),
+    i18nString(UIStrings.resourceType),
   ],
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Color code by resource type`,
+      title: i18nString(UIStrings.colorCodeByResourceType),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Use default colors`,
+      title: i18nString(UIStrings.useDefaultColors),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.NETWORK,
-  title: (): Platform.UIString.LocalizedString => ls`Group network log by frame`,
+  title: i18nString(UIStrings.groupNetworkLogByFrame),
   settingName: 'network.group-by-frame',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: false,
   tags: [
-    (): Platform.UIString.LocalizedString => ls`network`,
-    (): Platform.UIString.LocalizedString => ls`frame`,
-    (): Platform.UIString.LocalizedString => ls`group`,
+    i18nString(UIStrings.netWork),
+    i18nString(UIStrings.frame),
+    i18nString(UIStrings.group),
   ],
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Group network log items by frame`,
+      title: i18nString(UIStrings.groupNetworkLogItemsByFrame),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Don't group network log items by frame`,
+      title: i18nString(UIStrings.dontGroupNetworkLogItemsByFrame),
     },
   ],
 });

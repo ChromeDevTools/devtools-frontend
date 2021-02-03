@@ -40,6 +40,7 @@
     "data_grid",
     "har_importer",
     "host",
+    "i18n",
     "mobile_throttling",
     "object_ui",
     "perf_ui",

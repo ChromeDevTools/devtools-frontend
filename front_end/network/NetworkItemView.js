@@ -29,7 +29,7 @@
  */
 
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
@@ -44,6 +44,82 @@ import {RequestTimingView} from './RequestTimingView.js';
 import {RequestTrustTokensView, statusConsideredSuccess} from './RequestTrustTokensView.js';
 import {ResourceWebSocketFrameView} from './ResourceWebSocketFrameView.js';
 
+export const UIStrings = {
+  /**
+  *@description Text for network request headers
+  */
+  headers: 'Headers',
+  /**
+  *@description Text in Network Item View of the Network panel
+  */
+  headersAndRequestBody: 'Headers and request body',
+  /**
+  *@description Text in Network Item View of the Network panel
+  */
+  messages: 'Messages',
+  /**
+  *@description Text in Network Item View of the Network panel
+  */
+  websocketMessages: 'WebSocket messages',
+  /**
+  *@description Text in Network Item View of the Network panel
+  */
+  eventstream: 'EventStream',
+  /**
+  *@description Text for previewing items
+  */
+  preview: 'Preview',
+  /**
+  *@description Text in Network Item View of the Network panel
+  */
+  responsePreview: 'Response preview',
+  /**
+  *@description Icon title in Network Item View of the Network panel
+  */
+  signedexchangeError: 'SignedExchange error',
+  /**
+  *@description Text for a network response
+  */
+  response: 'Response',
+  /**
+  *@description Text in Network Item View of the Network panel
+  */
+  rawResponseData: 'Raw response data',
+  /**
+  *@description Text for the initiator of something
+  */
+  initiator: 'Initiator',
+  /**
+  *@description Tooltip for initiator view in Network panel
+  */
+  requestInitiatorCallStack: 'Request initiator call stack',
+  /**
+  *@description Text in Network Item View of the Network panel
+  */
+  timing: 'Timing',
+  /**
+  *@description Text in Network Item View of the Network panel
+  */
+  requestAndResponseTimeline: 'Request and response timeline',
+  /**
+  *@description Label of a tab in the network panel
+  */
+  trustTokens: 'Trust Tokens',
+  /**
+  *@description Title of the Trust token tab in the Network panel
+  */
+  trustTokenOperationDetails: 'Trust Token operation details',
+  /**
+  *@description Text for web cookies
+  */
+  cookies: 'Cookies',
+  /**
+  *@description Text in Network Item View of the Network panel
+  */
+  requestAndResponseCookies: 'Request and response cookies',
+};
+const str_ = i18n.i18n.registerUIStrings('network/NetworkItemView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
@@ -61,43 +137,41 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
     this._headersView = new RequestHeadersView(request);
     this.appendTab(
-        Tabs.Headers, Common.UIString.UIString('Headers'), this._headersView,
-        Common.UIString.UIString('Headers and request body'));
+        Tabs.Headers, i18nString(UIStrings.headers), this._headersView, i18nString(UIStrings.headersAndRequestBody));
 
     this.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
 
     if (request.resourceType() === Common.ResourceType.resourceTypes.WebSocket) {
       const frameView = new ResourceWebSocketFrameView(request);
-      this.appendTab(
-          Tabs.WsFrames, Common.UIString.UIString('Messages'), frameView,
-          Common.UIString.UIString('WebSocket messages'));
+      this.appendTab(Tabs.WsFrames, i18nString(UIStrings.messages), frameView, i18nString(UIStrings.websocketMessages));
     } else if (request.mimeType === 'text/event-stream') {
-      this.appendTab(Tabs.EventSource, Common.UIString.UIString('EventStream'), new EventSourceMessagesView(request));
+      this.appendTab(Tabs.EventSource, i18nString(UIStrings.eventstream), new EventSourceMessagesView(request));
     } else {
       this._responseView = new RequestResponseView(request);
       const previewView = new RequestPreviewView(request);
-      this.appendTab(
-          Tabs.Preview, Common.UIString.UIString('Preview'), previewView, Common.UIString.UIString('Response preview'));
+      this.appendTab(Tabs.Preview, i18nString(UIStrings.preview), previewView, i18nString(UIStrings.responsePreview));
       const signedExchangeInfo = request.signedExchangeInfo();
       if (signedExchangeInfo && signedExchangeInfo.errors && signedExchangeInfo.errors.length) {
         const icon = UI.Icon.Icon.create('smallicon-error');
-        UI.Tooltip.Tooltip.install(icon, Common.UIString.UIString('SignedExchange error'));
+        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.signedexchangeError));
         this.setTabIcon(Tabs.Preview, icon);
       }
       this.appendTab(
-          Tabs.Response, Common.UIString.UIString('Response'), this._responseView,
-          Common.UIString.UIString('Raw response data'));
+          Tabs.Response, i18nString(UIStrings.response), this._responseView, i18nString(UIStrings.rawResponseData));
     }
 
-    this.appendTab(Tabs.Initiator, ls`Initiator`, new RequestInitiatorView(request), ls`Request initiator call stack`);
+    this.appendTab(
+        Tabs.Initiator, i18nString(UIStrings.initiator), new RequestInitiatorView(request),
+        i18nString(UIStrings.requestInitiatorCallStack));
 
     this.appendTab(
-        Tabs.Timing, Common.UIString.UIString('Timing'), new RequestTimingView(request, calculator),
-        Common.UIString.UIString('Request and response timeline'));
+        Tabs.Timing, i18nString(UIStrings.timing), new RequestTimingView(request, calculator),
+        i18nString(UIStrings.requestAndResponseTimeline));
 
     if (request.trustTokenParams()) {
       this.appendTab(
-          Tabs.TrustTokens, ls`Trust Tokens`, new RequestTrustTokensView(request), ls`Trust Token operation details`);
+          Tabs.TrustTokens, i18nString(UIStrings.trustTokens), new RequestTrustTokensView(request),
+          i18nString(UIStrings.trustTokenOperationDetails));
     }
 
     /** @type {?RequestCookiesView} */
@@ -141,8 +215,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     if (cookiesPresent && !this._cookiesView) {
       this._cookiesView = new RequestCookiesView(this._request);
       this.appendTab(
-          Tabs.Cookies, Common.UIString.UIString('Cookies'), this._cookiesView,
-          Common.UIString.UIString('Request and response cookies'));
+          Tabs.Cookies, i18nString(UIStrings.cookies), this._cookiesView,
+          i18nString(UIStrings.requestAndResponseCookies));
     }
   }
 

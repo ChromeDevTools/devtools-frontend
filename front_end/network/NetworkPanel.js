@@ -31,9 +31,9 @@
 import * as Bindings from '../bindings/bindings.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as PerfUI from '../perf_ui/perf_ui.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as Search from '../search/search.js';
 import * as UI from '../ui/ui.js';
@@ -47,6 +47,103 @@ import {NetworkOverview} from './NetworkOverview.js';
 import {NetworkSearchScope, UIRequestLocation} from './NetworkSearchScope.js';  // eslint-disable-line no-unused-vars
 import {NetworkTimeCalculator, NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Text to close something
+  */
+  close: 'Close',
+  /**
+  *@description Title of a search bar or tool
+  */
+  search: 'Search',
+  /**
+  *@description Text to clear content
+  */
+  clear: 'Clear',
+  /**
+  *@description Tooltip text that appears on the setting to preserve log when hovering over the item
+  */
+  doNotClearLogOnPageReload: 'Do not clear log on page reload / navigation',
+  /**
+  *@description Text to preserve the log after refreshing
+  */
+  preserveLog: 'Preserve log',
+  /**
+  *@description Text to disable cache while DevTools is open
+  */
+  disableCacheWhileDevtoolsIsOpen: 'Disable cache (while DevTools is open)',
+  /**
+  *@description Text in Network Config View of the Network panel
+  */
+  disableCache: 'Disable cache',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in network panel of the network panel
+  */
+  networkSettings: 'Network settings',
+  /**
+  *@description Tooltip for expanding network request row setting
+  */
+  showMoreInformationInRequestRows: 'Show more information in request rows',
+  /**
+  *@description Text in Network Panel of the Network panel
+  */
+  useLargeRequestRows: 'Use large request rows',
+  /**
+  *@description Tooltip text for network request overview setting
+  */
+  showOverviewOfNetworkRequests: 'Show overview of network requests',
+  /**
+  *@description Text in Network Panel of the Network panel
+  */
+  showOverview: 'Show overview',
+  /**
+  *@description Tooltip for group by frame network setting
+  */
+  groupRequestsByTopLevelRequest: 'Group requests by top level request frame',
+  /**
+  *@description Text in Network Panel of the Network panel
+  */
+  groupByFrame: 'Group by frame',
+  /**
+  *@description Tooltip for capture screenshot network setting
+  */
+  captureScreenshotsWhenLoadingA: 'Capture screenshots when loading a page',
+  /**
+  *@description Text to take screenshots
+  */
+  captureScreenshots: 'Capture screenshots',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon load button in the Network Panel of the Network panel
+  */
+  importHarFile: 'Import HAR file...',
+  /**
+  *@description Tooltip text that appears when hovering over the largeicon download button in the Network Panel of the Network panel
+  */
+  exportHar: 'Export HAR...',
+  /**
+  *@description Text for throttling the network
+  */
+  throttling: 'Throttling',
+  /**
+  *@description Text in Network Panel of the Network panel
+  *@example {Ctrl + R} PH1
+  */
+  hitSToReloadAndCaptureFilmstrip: 'Hit {PH1} to reload and capture filmstrip.',
+  /**
+  *@description A context menu item in the Network Panel of the Network panel
+  */
+  revealInNetworkPanel: 'Reveal in Network panel',
+  /**
+  *@description Text in Network Panel of the Network panel
+  */
+  recordingFrames: 'Recording frames...',
+  /**
+  *@description Text in Network Panel of the Network panel
+  */
+  fetchingFrames: 'Fetching frames...',
+};
+const str_ = i18n.i18n.registerUIStrings('network/NetworkPanel.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!NetworkPanel} */
 let networkPanelInstance;
 
@@ -134,7 +231,7 @@ export class NetworkPanel extends UI.Panel.Panel {
       splitWidget.hideSidebar();
       event.consume();
     });
-    const closeSidebar = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Close'), 'largeicon-delete');
+    const closeSidebar = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.close), 'largeicon-delete');
     closeSidebar.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => splitWidget.hideSidebar());
     tabbedPane.rightToolbar().appendToolbarItem(closeSidebar);
     splitWidget.setSidebarWidget(tabbedPane);
@@ -274,7 +371,7 @@ export class NetworkPanel extends UI.Panel.Panel {
    * @param {!UI.SplitWidget.SplitWidget} splitWidget
    */
   _setupToolbarButtons(splitWidget) {
-    const searchToggle = new UI.Toolbar.ToolbarToggle(ls`Search`, 'largeicon-search');
+    const searchToggle = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.search), 'largeicon-search');
     function updateSidebarToggle() {
       const isSidebarShowing = splitWidget.showMode() !== UI.SplitWidget.ShowMode.OnlyMain;
       searchToggle.setToggled(isSidebarShowing);
@@ -283,7 +380,7 @@ export class NetworkPanel extends UI.Panel.Panel {
       }
     }
     this._panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this._toggleRecordAction));
-    const clearButton = new UI.Toolbar.ToolbarButton(Common.UIString.UIString('Clear'), 'largeicon-clear');
+    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'largeicon-clear');
     clearButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, () => SDK.NetworkLog.NetworkLog.instance().reset(), this);
     this._panelToolbar.appendToolbarItem(clearButton);
@@ -299,12 +396,11 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._panelToolbar.appendSeparator();
 
     this._panelToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this._preserveLogSetting, Common.UIString.UIString('Do not clear log on page reload / navigation'),
-        Common.UIString.UIString('Preserve log')));
+        this._preserveLogSetting, i18nString(UIStrings.doNotClearLogOnPageReload), i18nString(UIStrings.preserveLog)));
 
     const disableCacheCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
         Common.Settings.Settings.instance().moduleSetting('cacheDisabled'),
-        Common.UIString.UIString('Disable cache (while DevTools is open)'), Common.UIString.UIString('Disable cache'));
+        i18nString(UIStrings.disableCacheWhileDevtoolsIsOpen), i18nString(UIStrings.disableCache));
     this._panelToolbar.appendToolbarItem(disableCacheCheckbox);
 
     this._panelToolbar.appendSeparator();
@@ -313,29 +409,32 @@ export class NetworkPanel extends UI.Panel.Panel {
     this._rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this._progressBarContainer));
     this._rightToolbar.appendSeparator();
     this._rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingToggle(
-        this._showSettingsPaneSetting, 'largeicon-settings-gear', ls`Network settings`));
+        this._showSettingsPaneSetting, 'largeicon-settings-gear', i18nString(UIStrings.networkSettings)));
 
     const settingsToolbarLeft = new UI.Toolbar.Toolbar('', this._settingsPane.element);
     settingsToolbarLeft.makeVertical();
     settingsToolbarLeft.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this._networkLogLargeRowsSetting, ls`Show more information in request rows`, ls`Use large request rows`));
+        this._networkLogLargeRowsSetting, i18nString(UIStrings.showMoreInformationInRequestRows),
+        i18nString(UIStrings.useLargeRequestRows)));
     settingsToolbarLeft.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this._networkLogShowOverviewSetting, ls`Show overview of network requests`, ls`Show overview`));
+        this._networkLogShowOverviewSetting, i18nString(UIStrings.showOverviewOfNetworkRequests),
+        i18nString(UIStrings.showOverview)));
 
     const settingsToolbarRight = new UI.Toolbar.Toolbar('', this._settingsPane.element);
     settingsToolbarRight.makeVertical();
     settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
         Common.Settings.Settings.instance().moduleSetting('network.group-by-frame'),
-        ls`Group requests by top level request frame`, ls`Group by frame`));
+        i18nString(UIStrings.groupRequestsByTopLevelRequest), i18nString(UIStrings.groupByFrame)));
     settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this._networkRecordFilmStripSetting, ls`Capture screenshots when loading a page`, ls`Capture screenshots`));
+        this._networkRecordFilmStripSetting, i18nString(UIStrings.captureScreenshotsWhenLoadingA),
+        i18nString(UIStrings.captureScreenshots)));
 
     this._panelToolbar.appendSeparator();
-    const importHarButton = new UI.Toolbar.ToolbarButton(ls`Import HAR file...`, 'largeicon-load');
+    const importHarButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.importHarFile), 'largeicon-load');
     importHarButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, () => this._fileSelectorElement.click(), this);
     this._panelToolbar.appendToolbarItem(importHarButton);
-    const exportHarButton = new UI.Toolbar.ToolbarButton(ls`Export HAR...`, 'largeicon-download');
+    const exportHarButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.exportHar), 'largeicon-download');
     exportHarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
       this._networkLogView.exportAll();
     }, this);
@@ -350,7 +449,7 @@ export class NetworkPanel extends UI.Panel.Panel {
    * @return {!UI.Toolbar.ToolbarComboBox}
    */
   _createThrottlingConditionsSelect() {
-    const toolbarItem = new UI.Toolbar.ToolbarComboBox(null, ls`Throttling`);
+    const toolbarItem = new UI.Toolbar.ToolbarComboBox(null, i18nString(UIStrings.throttling));
     toolbarItem.setMaxWidth(160);
     MobileThrottling.ThrottlingManager.throttlingManager().decorateSelectWithNetworkThrottling(
         toolbarItem.selectElement());
@@ -483,7 +582,7 @@ export class NetworkPanel extends UI.Panel.Panel {
       this._filmStripView.reset();
       if (reloadShortcut) {
         this._filmStripView.setStatusText(
-            Common.UIString.UIString('Hit %s to reload and capture filmstrip.', reloadShortcut.title()));
+            i18nString(UIStrings.hitSToReloadAndCaptureFilmstrip, {PH1: reloadShortcut.title()}));
       }
     }
   }
@@ -658,8 +757,7 @@ export class NetworkPanel extends UI.Panel.Panel {
      * @param {!SDK.NetworkRequest.NetworkRequest} request
      */
     function appendRevealItem(request) {
-      contextMenu.revealSection().appendItem(
-          Common.UIString.UIString('Reveal in Network panel'), reveal.bind(this, request));
+      contextMenu.revealSection().appendItem(i18nString(UIStrings.revealInNetworkPanel), reveal.bind(this, request));
     }
 
     if (/** @type {!Node} */ (event.target).isSelfOrDescendant(this.element)) {
@@ -845,7 +943,7 @@ export class FilmStripRecorder {
 
   startRecording() {
     this._filmStripView.reset();
-    this._filmStripView.setStatusText(Common.UIString.UIString('Recording frames...'));
+    this._filmStripView.setStatusText(i18nString(UIStrings.recordingFrames));
     const tracingManagers = SDK.SDKModel.TargetManager.instance().models(SDK.TracingManager.TracingManager);
     if (this._tracingManager || !tracingManagers.length) {
       return;
@@ -885,7 +983,7 @@ export class FilmStripRecorder {
       this._resourceTreeModel.suspendReload();
     }
     this._callback = callback;
-    this._filmStripView.setStatusText(Common.UIString.UIString('Fetching frames...'));
+    this._filmStripView.setStatusText(i18nString(UIStrings.fetchingFrames));
   }
 }
 

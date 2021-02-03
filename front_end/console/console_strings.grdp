@@ -15,6 +15,9 @@
   <message name="IDS_DEVTOOLS_04c247c2ba261c7511e4f479728bd7ea" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Do not treat evaluation as user activation
   </message>
+  <message name="IDS_DEVTOOLS_0511551e6cf7d61acd9b62f9304efa93" desc="Tooltip text that appears on the setting to preserve log when hovering over the item">
+    Do not clear log on page reload / navigation
+  </message>
   <message name="IDS_DEVTOOLS_0598dbc1dda8ffdd9f5015fccf675ae1" desc="Text in Console Sidebar of the Console panel to show that there are no user messages">
     No user messages
   </message>
@@ -35,6 +38,9 @@
   </message>
   <message name="IDS_DEVTOOLS_1a37d25ba6689d174f51ba8e2425fde6" desc="Filter name in Console Sidebar of the Console panel">
     &lt;other&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_1ebc7540a5327b857144f04cf1435b4e" desc="Text to replay an XHR request">
+    Replay XHR
   </message>
   <message name="IDS_DEVTOOLS_20b290881fd9c9f310c38f92e963193f" desc="Text in Console Sidebar of the Console panel to show that there are more than 1 verbose messages">
     <ph name="PH1">$1d<ex>2</ex></ph> verbose
@@ -116,6 +122,12 @@
   </message>
   <message name="IDS_DEVTOOLS_5cc9e9d6312328b3f61b7aa86b0b5b5e" desc="Text in Console Sidebar of the Console panel to show that there is 1 user message">
     1 user message
+  </message>
+  <message name="IDS_DEVTOOLS_5ef0c737746fae2ca90e66c39333f8f6" desc="Text for errors">
+    Errors
+  </message>
+  <message name="IDS_DEVTOOLS_5f8442a46861496e9d2a3d11be13692b" desc="Text to indicate DevTools is writing to a file">
+    Writing file…
   </message>
   <message name="IDS_DEVTOOLS_6047a6c9fb775557639afb3fbc90b4e7" desc="Text in Console View of the Console panel">
     Log levels
@@ -287,6 +299,9 @@
   </message>
   <message name="IDS_DEVTOOLS_ebfab4df1bb91688c62d4523eba870a5" desc="Title of a setting under the Console category in Settings">
     Evaluate triggers user activation
+  </message>
+  <message name="IDS_DEVTOOLS_edd24cce7afedea5a1b2f90675880687" desc="Text to preserve the log after refreshing">
+    Preserve log
   </message>
   <message name="IDS_DEVTOOLS_f0b0e075af71ecd9b3435697417c1f05" desc="Title of level menu button in console view of the console panel">
     Log level: <ph name="TEXT">$1s<ex>All levels</ex></ph>

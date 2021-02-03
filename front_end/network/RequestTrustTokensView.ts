@@ -7,11 +7,83 @@ import '../ui/components/components.js';
 import type * as Components from '../ui/components/components.js';
 
 import * as LitHtml from '../third_party/lit-html/lit-html.js';
-import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
-const ls = Platform.UIString.ls;
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Section heading in the Trust Token tab
+  */
+  parameters: 'Parameters',
+  /**
+  *@description Text that refers to some types
+  */
+  type: 'Type',
+  /**
+  *@description Label for a Trust Token parameter
+  */
+  refreshPolicy: 'Refresh policy',
+  /**
+  *@description Label for a list if origins in the Trust Token tab
+  */
+  issuers: 'Issuers',
+  /**
+  *@description Label for a report field in the Network panel
+  */
+  topLevelOrigin: 'Top level origin',
+  /**
+  *@description Text for the issuer of an item
+  */
+  issuer: 'Issuer',
+  /**
+  *@description Heading of a report section in the Network panel
+  */
+  result: 'Result',
+  /**
+  *@description Text for the status of something
+  */
+  status: 'Status',
+  /**
+  *@description Label for a field in the Network panel
+  */
+  numberOfIssuedTokens: 'Number of issued tokens',
+  /**
+  *@description Text for the success status in the Network panel
+  */
+  success: 'Success',
+  /**
+  *@description Text in the network panel for an error status
+  */
+  failure: 'Failure',
+  /**
+  *@description Detailed text for a success status in the Network panel
+  */
+  theOperationsResultWasServedFrom: 'The operations result was served from cache.',
+  /**
+  *@description Detailed text for a success status in the Network panel
+  */
+  theOperationWasFulfilledLocally: 'The operation was fulfilled locally, no request was sent.',
+  /**
+  *@description Text for an error status in the Network panel
+  */
+  aClientprovidedArgumentWas: 'A client-provided argument was malformed or otherwise invalid.',
+  /**
+  *@description Text for an error status in the Network panel
+  */
+  eitherNoInputsForThisOperation:
+      'Either no inputs for this operation are available or the output exceeds the operations quota.',
+  /**
+  *@description Text for an error status in the Network panel
+  */
+  theServersResponseWasMalformedOr: 'The servers response was malformed or otherwise invalid.',
+  /**
+  *@description Text for an error status in the Network panel
+  */
+  theOperationFailedForAnUnknown: 'The operation failed for an unknown reason.',
+};
+const str_ = i18n.i18n.registerUIStrings('network/RequestTrustTokensView.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class RequestTrustTokensView extends UI.Widget.VBox {
   private readonly reportView = new RequestTrustTokensReport();
@@ -106,8 +178,8 @@ export class RequestTrustTokensReport extends HTMLElement {
     }
 
     return LitHtml.html`
-      <devtools-report-section-header>${ls`Parameters`}</devtools-report-section-header>
-      ${renderRowWithCodeValue(ls`Type`, this.trustTokenData.params.type.toString())}
+      <devtools-report-section-header>${i18nString(UIStrings.parameters)}</devtools-report-section-header>
+      ${renderRowWithCodeValue(i18nString(UIStrings.type), this.trustTokenData.params.type.toString())}
       ${this.renderRefreshPolicy(this.trustTokenData.params)}
       ${this.renderIssuers(this.trustTokenData.params)}
       ${this.renderIssuerAndTopLevelOriginFromResult()}
@@ -119,7 +191,7 @@ export class RequestTrustTokensReport extends HTMLElement {
     if (params.type !== Protocol.Network.TrustTokenOperationType.Redemption) {
       return LitHtml.nothing;
     }
-    return renderRowWithCodeValue(ls`Refresh policy`, params.refreshPolicy.toString());
+    return renderRowWithCodeValue(i18nString(UIStrings.refreshPolicy), params.refreshPolicy.toString());
   }
 
   private renderIssuers(params: Protocol.Network.TrustTokenParams): LitHtml.TemplateResult|{} {
@@ -128,7 +200,7 @@ export class RequestTrustTokensReport extends HTMLElement {
     }
 
     return LitHtml.html`
-      <devtools-report-key>${ls`Issuers`}</devtools-report-key>
+      <devtools-report-key>${i18nString(UIStrings.issuers)}</devtools-report-key>
       <devtools-report-value>
         <ul class="issuers-list">
           ${params.issuers.map(issuer => LitHtml.html`<li>${issuer}</li>`)}
@@ -146,8 +218,8 @@ export class RequestTrustTokensReport extends HTMLElement {
     }
 
     return LitHtml.html`
-      ${renderSimpleRowIfValuePresent(ls`Top level origin`, this.trustTokenData.result.topLevelOrigin)}
-      ${renderSimpleRowIfValuePresent(ls`Issuer`, this.trustTokenData.result.issuerOrigin)}`;
+      ${renderSimpleRowIfValuePresent(i18nString(UIStrings.topLevelOrigin), this.trustTokenData.result.topLevelOrigin)}
+      ${renderSimpleRowIfValuePresent(i18nString(UIStrings.issuer), this.trustTokenData.result.issuerOrigin)}`;
   }
 
   private renderResultSection(): LitHtml.TemplateResult|{} {
@@ -155,8 +227,8 @@ export class RequestTrustTokensReport extends HTMLElement {
       return LitHtml.nothing;
     }
     return LitHtml.html`
-      <devtools-report-section-header>${ls`Result`}</devtools-report-section-header>
-      <devtools-report-key>${ls`Status`}</devtools-report-key>
+      <devtools-report-section-header>${i18nString(UIStrings.result)}</devtools-report-section-header>
+      <devtools-report-key>${i18nString(UIStrings.status)}</devtools-report-key>
       <devtools-report-value>
         <div class="status-row">
           <devtools-icon class="status-icon"
@@ -177,7 +249,7 @@ export class RequestTrustTokensReport extends HTMLElement {
     if (result.type !== Protocol.Network.TrustTokenOperationType.Issuance) {
       return LitHtml.nothing;
     }
-    return renderSimpleRowIfValuePresent(ls`Number of issued tokens`, result.issuedTokenCount);
+    return renderSimpleRowIfValuePresent(i18nString(UIStrings.numberOfIssuedTokens), result.issuedTokenCount);
   }
 }
 
@@ -205,7 +277,7 @@ function getIconForStatusCode(status: Protocol.Network.TrustTokenOperationDoneEv
 }
 
 function getSimplifiedStatusTextForStatusCode(status: Protocol.Network.TrustTokenOperationDoneEventStatus): string {
-  return statusConsideredSuccess(status) ? ls`Success` : ls`Failure`;
+  return statusConsideredSuccess(status) ? i18nString(UIStrings.success) : i18nString(UIStrings.failure);
 }
 
 function getDetailedTextForStatusCode(status: Protocol.Network.TrustTokenOperationDoneEventStatus): string|null {
@@ -213,20 +285,20 @@ function getDetailedTextForStatusCode(status: Protocol.Network.TrustTokenOperati
     case Protocol.Network.TrustTokenOperationDoneEventStatus.Ok:
       return null;
     case Protocol.Network.TrustTokenOperationDoneEventStatus.AlreadyExists:
-      return ls`The operations result was served from cache.`;
+      return i18nString(UIStrings.theOperationsResultWasServedFrom);
     case Protocol.Network.TrustTokenOperationDoneEventStatus.FulfilledLocally:
-      return ls`The operation was fulfilled locally, no request was sent.`;
+      return i18nString(UIStrings.theOperationWasFulfilledLocally);
     case Protocol.Network.TrustTokenOperationDoneEventStatus.InvalidArgument:
-      return ls`A client-provided argument was malformed or otherwise invalid.`;
+      return i18nString(UIStrings.aClientprovidedArgumentWas);
     case Protocol.Network.TrustTokenOperationDoneEventStatus.ResourceExhausted:
-      return ls`Either no inputs for this operation are available or the output exceeds the operations quota.`;
+      return i18nString(UIStrings.eitherNoInputsForThisOperation);
     case Protocol.Network.TrustTokenOperationDoneEventStatus.BadResponse:
-      return ls`The servers response was malformed or otherwise invalid.`;
+      return i18nString(UIStrings.theServersResponseWasMalformedOr);
     case Protocol.Network.TrustTokenOperationDoneEventStatus.FailedPrecondition:
     case Protocol.Network.TrustTokenOperationDoneEventStatus.Unavailable:
     case Protocol.Network.TrustTokenOperationDoneEventStatus.InternalError:
     case Protocol.Network.TrustTokenOperationDoneEventStatus.UnknownError:
-      return ls`The operation failed for an unknown reason.`;
+      return i18nString(UIStrings.theOperationFailedForAnUnknown);
   }
 }
 

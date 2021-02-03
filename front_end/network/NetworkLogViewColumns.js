@@ -5,7 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
@@ -15,6 +15,164 @@ import {NetworkManageCustomHeadersView} from './NetworkManageCustomHeadersView.j
 import {NetworkTimeCalculator, NetworkTransferDurationCalculator, NetworkTransferTimeCalculator,} from './NetworkTimeCalculator.js';  // eslint-disable-line no-unused-vars
 import {NetworkWaterfallColumn} from './NetworkWaterfallColumn.js';
 import {RequestInitiatorView} from './RequestInitiatorView.js';
+
+export const UIStrings = {
+  /**
+  *@description Data grid name for Network Log data grids
+  */
+  networkLog: 'Network Log',
+  /**
+  *@description Inner element text content in Network Log View Columns of the Network panel
+  */
+  waterfall: 'Waterfall',
+  /**
+  *@description A context menu item in the Network Log View Columns of the Network panel
+  */
+  responseHeaders: 'Response Headers',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  manageHeaderColumns: 'Manage Header Columns…',
+  /**
+  *@description Text for the start time of an activity
+  */
+  startTime: 'Start Time',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  responseTime: 'Response Time',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  endTime: 'End Time',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  totalDuration: 'Total Duration',
+  /**
+  *@description Text for the latency of a task
+  */
+  latency: 'Latency',
+  /**
+  *@description Text for the name of something
+  */
+  name: 'Name',
+  /**
+  *@description Text that refers to a file path
+  */
+  path: 'Path',
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
+  url: 'Url',
+  /**
+  *@description Text for one or a group of functions
+  */
+  method: 'Method',
+  /**
+  *@description Text for the status of something
+  */
+  status: 'Status',
+  /**
+  *@description Generic label for any text
+  */
+  text: 'Text',
+  /**
+  *@description Text for security or network protocol
+  */
+  protocol: 'Protocol',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  scheme: 'Scheme',
+  /**
+  *@description Text for the domain of a website
+  */
+  domain: 'Domain',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  remoteAddress: 'Remote Address',
+  /**
+  *@description Text that refers to some types
+  */
+  type: 'Type',
+  /**
+  *@description Text for the initiator of something
+  */
+  initiator: 'Initiator',
+  /**
+  *@description Column header in the Network log view of the Network panel
+  */
+  initiatorAddressSpace: 'Initiator Address Space',
+  /**
+  *@description Text for web cookies
+  */
+  cookies: 'Cookies',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  setCookies: 'Set Cookies',
+  /**
+  *@description Text for the size of something
+  */
+  size: 'Size',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  content: 'Content',
+  /**
+  *@description Text that refers to the time
+  */
+  time: 'Time',
+  /**
+  *@description Text to show the priority of an item
+  */
+  priority: 'Priority',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  connectionId: 'Connection ID',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  cachecontrol: '`Cache-Control`',
+  /**
+  *@description Text that only contain a placeholder
+  *@example {100ms (at 200ms)} PH1
+  */
+  s: '{PH1}',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  contentencoding: '`Content-Encoding`',
+  /**
+  *@description Text for the network request Content-Length header
+  */
+  contentlength: '`Content-Length`',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  etag: '`ETag`',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  keepalive: '`Keep-Alive`',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  lastmodified: '`Last-Modified`',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  server: '`Server`',
+  /**
+  *@description Text in Network Log View Columns of the Network panel
+  */
+  vary: '`Vary`',
+};
+const str_ = i18n.i18n.registerUIStrings('network/NetworkLogViewColumns.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class NetworkLogViewColumns {
   /**
@@ -146,7 +304,7 @@ export class NetworkLogViewColumns {
     this._popoverHelper.setTimeout(300, 300);
 
     this._dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid(/** @type {!DataGrid.DataGrid.Parameters} */ ({
-      displayName: /** @type {string} */ (ls`Network Log`),
+      displayName: /** @type {string} */ (i18nString(UIStrings.networkLog)),
       columns: this._columns.map(NetworkLogViewColumns._convertToDataGridDescriptor)
     }));
     this._dataGrid.element.addEventListener('mousedown', event => {
@@ -306,7 +464,7 @@ export class NetworkLogViewColumns {
     this._waterfallHeaderElement.addEventListener(
         'contextmenu', event => this._innerHeaderContextMenu(new UI.ContextMenu.ContextMenu(event)));
     const innerElement = this._waterfallHeaderElement.createChild('div');
-    innerElement.textContent = Common.UIString.UIString('Waterfall');
+    innerElement.textContent = i18nString(UIStrings.waterfall);
     this._waterfallColumnSortIcon = UI.Icon.Icon.create('', 'sort-order-icon');
     this._waterfallHeaderElement.createChild('div', 'sort-order-icon-container')
         .appendChild(this._waterfallColumnSortIcon);
@@ -568,7 +726,7 @@ export class NetworkLogViewColumns {
           columnConfig.title, this._toggleColumnVisibility.bind(this, columnConfig), columnConfig.visible);
     }
 
-    const responseSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString.UIString('Response Headers'));
+    const responseSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.responseHeaders));
     const responseHeaders = columnConfigs.filter(columnConfig => columnConfig.isResponseHeader);
     for (const columnConfig of responseHeaders) {
       responseSubMenu.defaultSection().appendCheckboxItem(
@@ -576,24 +734,24 @@ export class NetworkLogViewColumns {
     }
 
     responseSubMenu.footerSection().appendItem(
-        Common.UIString.UIString('Manage Header Columns…'), this._manageCustomHeaderDialog.bind(this));
+        i18nString(UIStrings.manageHeaderColumns), this._manageCustomHeaderDialog.bind(this));
 
     const waterfallSortIds = WaterfallSortIds;
-    const waterfallSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString.UIString('Waterfall'));
+    const waterfallSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.waterfall));
     waterfallSubMenu.defaultSection().appendCheckboxItem(
-        Common.UIString.UIString('Start Time'), setWaterfallMode.bind(this, waterfallSortIds.StartTime),
+        i18nString(UIStrings.startTime), setWaterfallMode.bind(this, waterfallSortIds.StartTime),
         this._activeWaterfallSortId === waterfallSortIds.StartTime);
     waterfallSubMenu.defaultSection().appendCheckboxItem(
-        Common.UIString.UIString('Response Time'), setWaterfallMode.bind(this, waterfallSortIds.ResponseTime),
+        i18nString(UIStrings.responseTime), setWaterfallMode.bind(this, waterfallSortIds.ResponseTime),
         this._activeWaterfallSortId === waterfallSortIds.ResponseTime);
     waterfallSubMenu.defaultSection().appendCheckboxItem(
-        Common.UIString.UIString('End Time'), setWaterfallMode.bind(this, waterfallSortIds.EndTime),
+        i18nString(UIStrings.endTime), setWaterfallMode.bind(this, waterfallSortIds.EndTime),
         this._activeWaterfallSortId === waterfallSortIds.EndTime);
     waterfallSubMenu.defaultSection().appendCheckboxItem(
-        Common.UIString.UIString('Total Duration'), setWaterfallMode.bind(this, waterfallSortIds.Duration),
+        i18nString(UIStrings.totalDuration), setWaterfallMode.bind(this, waterfallSortIds.Duration),
         this._activeWaterfallSortId === waterfallSortIds.Duration);
     waterfallSubMenu.defaultSection().appendCheckboxItem(
-        Common.UIString.UIString('Latency'), setWaterfallMode.bind(this, waterfallSortIds.Latency),
+        i18nString(UIStrings.latency), setWaterfallMode.bind(this, waterfallSortIds.Latency),
         this._activeWaterfallSortId === waterfallSortIds.Latency);
 
     /**
@@ -830,8 +988,8 @@ export const _defaultColumnConfig = {
 const _temporaryDefaultColumns = [
   {
     id: 'name',
-    title: Common.UIString.UIString('Name'),
-    subtitle: Common.UIString.UIString('Path'),
+    title: i18nString(UIStrings.name),
+    subtitle: i18nString(UIStrings.path),
     visible: true,
     weight: 20,
     hideable: true,
@@ -840,110 +998,105 @@ const _temporaryDefaultColumns = [
   },
   {
     id: 'path',
-    title: ls`Path`,
+    title: i18nString(UIStrings.path),
     hideable: true,
     hideableGroup: 'path',
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'pathname')
   },
   {
     id: 'url',
-    title: ls`Url`,
+    title: i18nString(UIStrings.url),
     hideable: true,
     hideableGroup: 'path',
     sortingFunction: NetworkRequestNode.RequestURLComparator
   },
   {
     id: 'method',
-    title: Common.UIString.UIString('Method'),
+    title: i18nString(UIStrings.method),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'requestMethod')
   },
   {
     id: 'status',
-    title: Common.UIString.UIString('Status'),
+    title: i18nString(UIStrings.status),
     visible: true,
-    subtitle: Common.UIString.UIString('Text'),
+    subtitle: i18nString(UIStrings.text),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'statusCode')
   },
   {
     id: 'protocol',
-    title: Common.UIString.UIString('Protocol'),
+    title: i18nString(UIStrings.protocol),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'protocol')
   },
   {
     id: 'scheme',
-    title: Common.UIString.UIString('Scheme'),
+    title: i18nString(UIStrings.scheme),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'scheme')
   },
   {
     id: 'domain',
-    title: Common.UIString.UIString('Domain'),
+    title: i18nString(UIStrings.domain),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'domain')
   },
   {
     id: 'remoteaddress',
-    title: Common.UIString.UIString('Remote Address'),
+    title: i18nString(UIStrings.remoteAddress),
     weight: 10,
     align: DataGrid.DataGrid.Align.Right,
     sortingFunction: NetworkRequestNode.RemoteAddressComparator
   },
-  {
-    id: 'type',
-    title: Common.UIString.UIString('Type'),
-    visible: true,
-    sortingFunction: NetworkRequestNode.TypeComparator
-  },
+  {id: 'type', title: i18nString(UIStrings.type), visible: true, sortingFunction: NetworkRequestNode.TypeComparator},
   {
     id: 'initiator',
-    title: Common.UIString.UIString('Initiator'),
+    title: i18nString(UIStrings.initiator),
     visible: true,
     weight: 10,
     sortingFunction: NetworkRequestNode.InitiatorComparator
   },
   {
     id: 'initiator-address-space',
-    title: Common.UIString.UIString('Initiator Address Space'),
+    title: i18nString(UIStrings.initiatorAddressSpace),
     visible: false,
     weight: 10,
     sortingFunction: NetworkRequestNode.InitiatorAddressSpaceComparator
   },
   {
     id: 'cookies',
-    title: Common.UIString.UIString('Cookies'),
+    title: i18nString(UIStrings.cookies),
     align: DataGrid.DataGrid.Align.Right,
     sortingFunction: NetworkRequestNode.RequestCookiesCountComparator
   },
   {
     id: 'setcookies',
-    title: Common.UIString.UIString('Set Cookies'),
+    title: i18nString(UIStrings.setCookies),
     align: DataGrid.DataGrid.Align.Right,
     sortingFunction: NetworkRequestNode.ResponseCookiesCountComparator
   },
   {
     id: 'size',
-    title: Common.UIString.UIString('Size'),
+    title: i18nString(UIStrings.size),
     visible: true,
-    subtitle: Common.UIString.UIString('Content'),
+    subtitle: i18nString(UIStrings.content),
     align: DataGrid.DataGrid.Align.Right,
     sortingFunction: NetworkRequestNode.SizeComparator
   },
   {
     id: 'time',
-    title: Common.UIString.UIString('Time'),
+    title: i18nString(UIStrings.time),
     visible: true,
-    subtitle: Common.UIString.UIString('Latency'),
+    subtitle: i18nString(UIStrings.latency),
     align: DataGrid.DataGrid.Align.Right,
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'duration')
   },
-  {id: 'priority', title: Common.UIString.UIString('Priority'), sortingFunction: NetworkRequestNode.PriorityComparator},
+  {id: 'priority', title: i18nString(UIStrings.priority), sortingFunction: NetworkRequestNode.PriorityComparator},
   {
     id: 'connectionid',
-    title: Common.UIString.UIString('Connection ID'),
+    title: i18nString(UIStrings.connectionId),
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, 'connectionId')
   },
   {
     id: 'cache-control',
     isResponseHeader: true,
-    title: Common.UIString.UIString('Cache-Control'),
+    title: i18nString(UIStrings.cachecontrol),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'cache-control')
   },
   {
@@ -951,54 +1104,60 @@ const _temporaryDefaultColumns = [
     isResponseHeader: true,
     // until IDs are supported for strings, the placeholder is used to workaround the limitation that
     // having multiple translations for a string is not supported
-    title: ls`${'Connection'}`,
+    title: i18nString(UIStrings.s, {PH1: 'Connection'}),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'connection')
   },
   {
     id: 'content-encoding',
     isResponseHeader: true,
-    title: Common.UIString.UIString('Content-Encoding'),
+    title: i18nString(UIStrings.contentencoding),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'content-encoding')
   },
   {
     id: 'content-length',
     isResponseHeader: true,
-    title: Common.UIString.UIString('Content-Length'),
+    title: i18nString(UIStrings.contentlength),
     align: DataGrid.DataGrid.Align.Right,
     sortingFunction: NetworkRequestNode.ResponseHeaderNumberComparator.bind(null, 'content-length')
   },
   {
     id: 'etag',
     isResponseHeader: true,
-    title: Common.UIString.UIString('ETag'),
+    title: i18nString(UIStrings.etag),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'etag')
   },
   {
     id: 'keep-alive',
     isResponseHeader: true,
-    title: Common.UIString.UIString('Keep-Alive'),
+    title: i18nString(UIStrings.keepalive),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'keep-alive')
   },
   {
     id: 'last-modified',
     isResponseHeader: true,
-    title: Common.UIString.UIString('Last-Modified'),
+    title: i18nString(UIStrings.lastmodified),
     sortingFunction: NetworkRequestNode.ResponseHeaderDateComparator.bind(null, 'last-modified')
   },
   {
     id: 'server',
     isResponseHeader: true,
-    title: Common.UIString.UIString('Server'),
+    title: i18nString(UIStrings.server),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'server')
   },
   {
     id: 'vary',
     isResponseHeader: true,
-    title: Common.UIString.UIString('Vary'),
+    title: i18nString(UIStrings.vary),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'vary')
   },
   // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
-  {id: 'waterfall', title: ls`Waterfall`, visible: false, hideable: false, allowInSortByEvenWhenHidden: true}
+  {
+    id: 'waterfall',
+    title: i18nString(UIStrings.waterfall),
+    visible: false,
+    hideable: false,
+    allowInSortByEvenWhenHidden: true
+  }
 ];
 
 /** @type {!Array<!Descriptor>} */

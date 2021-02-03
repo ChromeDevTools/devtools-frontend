@@ -2,12 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Request Initiator View of the Network panel
+  */
+  thisRequestHasNoInitiatorData: 'This request has no initiator data.',
+  /**
+  *@description Title of a section in Request Initiator view of the Network Panel
+  */
+  requestCallStack: 'Request call stack',
+  /**
+  *@description Title of a section in Request Initiator view of the Network Panel
+  */
+  requestInitiatorChain: 'Request initiator chain',
+};
+const str_ = i18n.i18n.registerUIStrings('network/RequestInitiatorView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestInitiatorView extends UI.Widget.VBox {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
@@ -19,7 +34,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     /** @type {!Components.Linkifier.Linkifier} */
     this._linkifier = new Components.Linkifier.Linkifier();
     this._request = request;
-    this._emptyWidget = new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('This request has no initiator data.'));
+    this._emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoInitiatorData));
     this._emptyWidget.show(this.element);
     this._hasShown = false;
   }
@@ -145,14 +160,14 @@ export class RequestInitiatorView extends UI.Widget.VBox {
 
     if (stackTracePreview) {
       initiatorDataPresent = true;
-      this._buildStackTraceSection(stackTracePreview.element, ls`Request call stack`, containerTree);
+      this._buildStackTraceSection(stackTracePreview.element, i18nString(UIStrings.requestCallStack), containerTree);
     }
 
     const initiatorGraph = SDK.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this._request);
 
     if (initiatorGraph.initiators.size > 1 || initiatorGraph.initiated.size > 1) {
       initiatorDataPresent = true;
-      this._buildRequestChainTree(initiatorGraph, ls`Request initiator chain`, containerTree);
+      this._buildRequestChainTree(initiatorGraph, i18nString(UIStrings.requestInitiatorChain), containerTree);
     }
 
     const firstChild = containerTree.firstChild();

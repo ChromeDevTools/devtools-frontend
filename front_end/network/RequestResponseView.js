@@ -29,10 +29,23 @@
  */
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';  // eslint-disable-line no-unused-vars
 import * as SourceFrame from '../source_frame/source_frame.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Request Response View of the Network panel
+  */
+  thisRequestHasNoResponseData: 'This request has no response data available.',
+  /**
+  *@description Text in Request Preview View of the Network panel
+  */
+  failedToLoadResponseData: 'Failed to load response data',
+};
+const str_ = i18n.i18n.registerUIStrings('network/RequestResponseView.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestResponseView extends UI.Widget.VBox {
   /**
    * @param {!SDK.NetworkRequest.NetworkRequest} request
@@ -131,12 +144,12 @@ export class RequestResponseView extends UI.Widget.VBox {
     const contentData = await this.request.contentData();
     const sourceView = await RequestResponseView.sourceViewForRequest(this.request);
     if ((!contentData.content || !sourceView) && !contentData.error) {
-      return new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('This request has no response data available.'));
+      return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoResponseData));
     }
     if (contentData.content && sourceView) {
       return sourceView;
     }
-    return new UI.EmptyWidget.EmptyWidget(Common.UIString.UIString('Failed to load response data'));
+    return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData));
   }
 
   /**

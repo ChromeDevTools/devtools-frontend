@@ -30,6 +30,9 @@
   <message name="IDS_DEVTOOLS_09cdd6a7321c64bae05b8cca859f1461" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Enable cache
   </message>
+  <message name="IDS_DEVTOOLS_0be7b7d0111a248185e7b1bebaf8595b" desc="Text to enable blocking of network requests">
+    Enable network request blocking
+  </message>
   <message name="IDS_DEVTOOLS_0c94f752d037fd8475e98b0711b543a6" desc="Label for the link for SameSiteCookies Issues">
     SameSite cookies explained
   </message>
@@ -167,6 +170,9 @@
   </message>
   <message name="IDS_DEVTOOLS_58bb9ae937984804b31a983c219d4b5f" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Emulate CSS media feature color-gamut
+  </message>
+  <message name="IDS_DEVTOOLS_5f0ea62e5bc9f795512ef292ff162a2a" desc="Text to disable cache while DevTools is open">
+    Disable cache (while <ph name="LOCKED_1">DevTools</ph> is open)
   </message>
   <message name="IDS_DEVTOOLS_68379f916c7ed8dd3ab30adaa20635fe" desc="Title of a setting that turns on grid line number labels">
     Show line numbers

@@ -81,6 +81,9 @@
   <message name="IDS_DEVTOOLS_15fa5e18dc110ac96ef35fd19abc78b3" desc="Text in Service Worker Cache Views of the Application panel">
     Time Cached
   </message>
+  <message name="IDS_DEVTOOLS_17145319aba079a26c6d3bb2b1d58894" desc="Text in Request Timing View of the Network panel">
+    <ph name="LOCKED_TERM">Service Worker</ph>
+  </message>
   <message name="IDS_DEVTOOLS_1818d506396d77b3d035f719885c4cd1" desc="Text in Service Workers View of the Application panel">
     focus
   </message>
@@ -214,6 +217,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_50868c2251b0c3b64ca50052891aec4c" desc="Text in Service Workers View of the Application panel">
     Push data
   </message>
+  <message name="IDS_DEVTOOLS_51360304ea03557e79bdf5ff9cd2e234" desc="Text for the issuer of an item">
+    Issuer
+  </message>
   <message name="IDS_DEVTOOLS_536cf547cb6ecfe32be6ed3ffdabf893" desc="Text of button in Clear Storage View of the Application panel">
     Clear site data
   </message>
@@ -228,6 +234,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_579fdc74b6520ab8906ecddf3e62d951" desc="Text in Application Panel Sidebar of the Application panel">
     Application Cache
+  </message>
+  <message name="IDS_DEVTOOLS_597b56e53847cd6a4712ac183f61fa68" desc="Text for web cookies">
+    Cookies
   </message>
   <message name="IDS_DEVTOOLS_5af7e09b8b3d8b201c0621de9815bcb0" desc="Manifest installability error in the Application panel">
     Downloaded icon was empty or corrupted
@@ -358,6 +367,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_83b33e9633245178cb76ecb91dd424d8" desc="Text in DOMStorage Items View of the Application panel">
     Select a value to preview
   </message>
+  <message name="IDS_DEVTOOLS_850985cd851d0fe440f03f77762e2590" desc="Text for the network request Content-Length header">
+    <ph name="LOCKED_1">Content-Length</ph>
+  </message>
   <message name="IDS_DEVTOOLS_85227db7fd939316f51910ce690955a0" desc="Manifest installability error in the Application panel">
     Manifest could not be fetched, is empty, or could not be parsed
   </message>
@@ -375,6 +387,12 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_87e059dc2492bd5041581f05daef12f7" desc="Text in Service Worker Cache Views of the Application panel">
     Filter by Path
+  </message>
+  <message name="IDS_DEVTOOLS_88183b946cc5f0e8c96b2e66e1c74a7e" desc="Text for an unspecified service worker response source">
+    Unknown
+  </message>
+  <message name="IDS_DEVTOOLS_883d7615c4d2de3fa1218f1298c46d0e" desc="Text for network request headers">
+    Headers
   </message>
   <message name="IDS_DEVTOOLS_897356954c2cd3d41b221e3f24f99bba" desc="Text in DOMStorage Items View of the Application panel">
     Key
@@ -707,6 +725,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_e60593abb5603af48307343eb862d86a" desc="Text in DOMStorage Items View of the Application panel">
     DOM Storage
+  </message>
+  <message name="IDS_DEVTOOLS_e77fef0167598bb39846637ac3915f4e" desc="Text to clear everything">
+    Clear All
   </message>
   <message name="IDS_DEVTOOLS_e918a12b0b4a962aff8b7119643af250" desc="Text in Service Workers View of the Application panel">
     skipWaiting

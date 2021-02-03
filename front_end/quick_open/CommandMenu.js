@@ -151,20 +151,6 @@ export class CommandMenu {
       }
     }
 
-    // Populate allowlisted settings.
-    // TODO(crbug.com/1134103): Remove this call when all settings are migrated
-    const settingExtensions = Root.Runtime.Runtime.instance().extensions('setting');
-    for (const extension of settingExtensions) {
-      const descriptor = extension.descriptor();
-      const options = descriptor.options;
-      if (!options || !descriptor.category) {
-        continue;
-      }
-      for (const pair of options) {
-        const setting = Common.Settings.Settings.instance().moduleSetting(descriptor.settingName);
-        this._commands.push(CommandMenu.createSettingCommand(setting, ls(pair['title']), pair['value']));
-      }
-    }
     this._loadCommandsFromPreRegisteredExtensions(locations);
   }
 
@@ -190,6 +176,7 @@ export class CommandMenu {
       };
       this._commands.push(CommandMenu.createRevealViewCommand(options));
     }
+    // Populate allowlisted settings.
     const settingsRegistrations = Common.Settings.getRegisteredSettings();
     for (const settingRegistration of settingsRegistrations) {
       const options = settingRegistration.options;

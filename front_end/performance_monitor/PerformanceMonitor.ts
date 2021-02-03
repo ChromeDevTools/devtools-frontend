@@ -441,7 +441,7 @@ export const enum Format {
 
 export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
   element: Element;
-  _enabledChartsSetting: Common.Settings.LegacySetting<string[]>;
+  _enabledChartsSetting: Common.Settings.Setting<string[]>;
   _enabledCharts: Set<string>;
   _chartsInfo: ChartInfo[];
   _indicators: Map<string, MetricIndicator>;

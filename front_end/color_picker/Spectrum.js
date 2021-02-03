@@ -305,11 +305,11 @@ export class Spectrum extends UI.Widget.VBox {
 
     this._loadPalettes();
     /**
-     * @type {!Common.Settings.LegacySetting<*>}
+     * @type {!Common.Settings.Setting<*>}
      */
     this._selectedColorPalette;
     /**
-     * @type {!Common.Settings.LegacySetting<*>}
+     * @type {!Common.Settings.Setting<*>}
      */
     this._customPaletteSetting;
     new PaletteGenerator(palette => {

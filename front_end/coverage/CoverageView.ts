@@ -103,7 +103,7 @@ export class CoverageView extends UI.Widget.VBox {
   _decorationManager: CoverageDecorationManager|null;
   _resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
   _coverageTypeComboBox: UI.Toolbar.ToolbarComboBox;
-  _coverageTypeComboBoxSetting: Common.Settings.LegacySetting<number>;
+  _coverageTypeComboBoxSetting: Common.Settings.Setting<number>;
   _toggleRecordAction: UI.ActionRegistration.Action;
   _toggleRecordButton: UI.Toolbar.ToolbarButton;
   _inlineReloadButton: Element|null;
@@ -114,7 +114,7 @@ export class CoverageView extends UI.Widget.VBox {
   _filterInput: UI.Toolbar.ToolbarInput;
   _typeFilterValue: number|null;
   _filterByTypeComboBox: UI.Toolbar.ToolbarComboBox;
-  _showContentScriptsSetting: Common.Settings.LegacySetting<boolean>;
+  _showContentScriptsSetting: Common.Settings.Setting<boolean>;
   _contentScriptsCheckbox: UI.Toolbar.ToolbarSettingCheckbox;
   _coverageResultsElement: HTMLElement;
   _landingPage: UI.Widget.VBox;

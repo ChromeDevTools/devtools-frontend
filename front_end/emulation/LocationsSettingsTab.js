@@ -28,8 +28,8 @@ export class LocationsSettingsTab extends UI.Widget.VBox {
     this._list.element.classList.add('locations-list');
     this._list.registerRequiredCSS('emulation/locationsSettingsTab.css', {enableLegacyPatching: true});
     this._list.show(this.contentElement);
-    /** @type {Common.Settings.PreRegisteredSetting<Array<LocationDescription>>} */
-    this._customSetting = /** @type {Common.Settings.PreRegisteredSetting<Array<LocationDescription>>} */ (
+    /** @type {Common.Settings.Setting<Array<LocationDescription>>} */
+    this._customSetting = /** @type {Common.Settings.Setting<Array<LocationDescription>>} */ (
         Common.Settings.Settings.instance().moduleSetting('emulation.locations'));
     const list = /** @type {Array<*>} */ (this._customSetting.get())
                      .map(location => replaceLocationTitles(location, this._customSetting.defaultValue()));

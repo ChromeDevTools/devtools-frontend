@@ -23,7 +23,7 @@ let _appInstance: ScreencastApp;
 
 export class ScreencastApp implements Common.App.App,
                                       SDK.SDKModel.SDKModelObserver<SDK.ScreenCaptureModel.ScreenCaptureModel> {
-  _enabledSetting: Common.Settings.LegacySetting<boolean>;
+  _enabledSetting: Common.Settings.Setting<boolean>;
   _toggleButton: UI.Toolbar.ToolbarToggle;
   _rootSplitWidget?: UI.SplitWidget.SplitWidget;
   _screenCaptureModel?: SDK.ScreenCaptureModel.ScreenCaptureModel;

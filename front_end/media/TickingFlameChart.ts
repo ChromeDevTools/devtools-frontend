@@ -194,7 +194,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
   _bounds: Bounds;
   _dataProvider: TickingFlameChartDataProvider;
   _delegate: TickingFlameChartDelegate;
-  _chartGroupExpansionSetting: Common.Settings.LegacySetting<Object>;
+  _chartGroupExpansionSetting: Common.Settings.Setting<Object>;
   _chart: PerfUI.FlameChart.FlameChart;
   _stoppedPermanently?: boolean;
 

@@ -103,7 +103,7 @@ export class LayerViewHost {
   _views: LayerView[];
   _selectedObject: Selection|null;
   _hoveredObject: Selection|null;
-  _showInternalLayersSetting: Common.Settings.LegacySetting<boolean>;
+  _showInternalLayersSetting: Common.Settings.Setting<boolean>;
   _snapshotLayers: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
   _target?: SDK.SDKModel.Target|null;
   constructor() {

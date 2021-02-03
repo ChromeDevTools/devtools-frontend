@@ -205,6 +205,9 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
     if (!selection.length) {
       manifestTreeElement.select();
     }
+    // Work-around for crbug.com/1152713: Something is wrong with custom scrollbars and size containment.
+    // @ts-ignore
+    this.contentElement.style.contain = 'layout style';
   }
 
   /**

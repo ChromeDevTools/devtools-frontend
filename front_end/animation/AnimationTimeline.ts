@@ -111,7 +111,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.SDKModel.SD
   _timelineScrubberLine?: HTMLElement;
   _pauseButton?: UI.Toolbar.ToolbarToggle;
   _controlButton?: UI.Toolbar.ToolbarToggle;
-  _controlState?: _ControlState;
+  _controlState?: ControlState;
   _redrawing?: boolean;
   _cachedTimelineWidth?: number;
   _cachedTimelineHeight?: number;
@@ -258,7 +258,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.SDKModel.SD
     const toolbar = new UI.Toolbar.Toolbar('animation-controls-toolbar', controls);
     this._controlButton =
         new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.replayTimeline), 'largeicon-replay-animation');
-    this._controlState = _ControlState.Replay;
+    this._controlState = ControlState.Replay;
     this._controlButton.setToggled(true);
     this._controlButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this._controlButtonToggle.bind(this));
     toolbar.appendToolbarItem(this._controlButton);
@@ -385,9 +385,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.SDKModel.SD
   }
 
   _controlButtonToggle(): void {
-    if (this._controlState === _ControlState.Play) {
+    if (this._controlState === ControlState.Play) {
       this._togglePause(false);
-    } else if (this._controlState === _ControlState.Replay) {
+    } else if (this._controlState === ControlState.Replay) {
       this._replay();
     } else {
       this._togglePause(true);
@@ -401,19 +401,19 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.SDKModel.SD
 
     this._controlButton.setEnabled(Boolean(this._selectedGroup));
     if (this._selectedGroup && this._selectedGroup.paused()) {
-      this._controlState = _ControlState.Play;
+      this._controlState = ControlState.Play;
       this._controlButton.setToggled(true);
       this._controlButton.setTitle(i18nString(UIStrings.playTimeline));
       this._controlButton.setGlyph('largeicon-play-animation');
     } else if (
         !this._scrubberPlayer || !this._scrubberPlayer.currentTime ||
         this._scrubberPlayer.currentTime >= this.duration()) {
-      this._controlState = _ControlState.Replay;
+      this._controlState = ControlState.Replay;
       this._controlButton.setToggled(true);
       this._controlButton.setTitle(i18nString(UIStrings.replayTimeline));
       this._controlButton.setGlyph('largeicon-replay-animation');
     } else {
-      this._controlState = _ControlState.Pause;
+      this._controlState = ControlState.Pause;
       this._controlButton.setToggled(false);
       this._controlButton.setTitle(i18nString(UIStrings.pauseTimeline));
       this._controlButton.setGlyph('largeicon-pause-animation');
@@ -859,7 +859,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.SDKModel.SD
 
 export const GlobalPlaybackRates = [1, 0.25, 0.1];
 
-export const enum _ControlState {
+const enum ControlState {
   Play = 'play-outline',
   Replay = 'replay-outline',
   Pause = 'pause-outline',

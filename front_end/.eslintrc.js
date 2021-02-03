@@ -26,6 +26,18 @@ module.exports = {
           'selector': 'method',
           'modifiers': ['private', 'protected'],
           'format': ['camelCase'],
+        },
+        {
+          'selector': 'accessor',
+          'format': ['camelCase'],
+        },
+        {
+          'selector': 'enum',
+          'format': ['PascalCase'],
+        },
+        {
+          'selector': 'class',
+          'format': ['PascalCase'],
         }
       ]
     }

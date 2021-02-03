@@ -81,7 +81,7 @@ export abstract class Project {
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
+// eslint-disable-next-line rulesdir/const_enum, @typescript-eslint/naming-convention
 export enum projectTypes {
   Debugger = 'debugger',
   Formatter = 'formatter',

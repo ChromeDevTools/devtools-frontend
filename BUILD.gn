@@ -4,7 +4,6 @@
 
 import("//build/config/python.gni")
 
-import("//third_party/blink/public/public_features.gni")
 import("./all_devtools_files.gni")
 import("./all_devtools_modules.gni")
 import("./devtools_grd_files.gni")
@@ -12,6 +11,7 @@ import("./devtools_image_files.gni")
 import("./devtools_module_entrypoints.gni")
 import("./front_end/emulated_devices/optimized/optimized_images.gni")
 import("./scripts/build/ninja/vars.gni")
+import("./third_party/blink/public/public_features.gni")
 
 devtools_test_files = [
   "front_end/third_party/axe-core/axe.js",

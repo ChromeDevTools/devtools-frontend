@@ -44,7 +44,8 @@ describe('Recorder', function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
   this.timeout(10000);
 
-  it('should record the interactions with the browser as a script', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1173993] should record the interactions with the browser as a script', async () => {
     const waitForScriptToChange = getWaitForScriptToChangeFunction();
     await enableExperiment('recorder');
     await goToResource('recorder/recorder.html');

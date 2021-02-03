@@ -193,7 +193,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
     if (this._loadOverride) {
       return this._loadOverride(url);
     }
-    const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
+    const parsedURL = new Common.ParsedURL.ParsedURL(url);
     const eligibleForLoadFromTarget = getLoadThroughTargetSetting().get() && parsedURL && parsedURL.isHttpOrHttps();
     Host.userMetrics.developerResourceScheme(this._getDeveloperResourceScheme(parsedURL));
     if (eligibleForLoadFromTarget) {
@@ -241,7 +241,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
    * @returns {Host.UserMetrics.DeveloperResourceScheme}
    */
   _getDeveloperResourceScheme(parsedURL) {
-    if (!parsedURL) {
+    if (!parsedURL || parsedURL.scheme === '') {
       return Host.UserMetrics.DeveloperResourceScheme.SchemeUnknown;
     }
     const isLocalhost = parsedURL.host === 'localhost' || parsedURL.host.endsWith('.localhost');

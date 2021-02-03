@@ -9,155 +9,11 @@ import * as Root from '../root/root.js';
 
 import {Context} from './Context.js';
 
-class ActionRuntimeExtensionDescriptor extends Root.Runtime.RuntimeExtensionDescriptor {
-  iconClass?: string;
-  toggledIconClass?: string;
-  toggleWithRedColor?: boolean;
-  toggleable?: boolean;
-
-  constructor() {
-    super();
-  }
-}
-
-export interface Action extends Common.EventTarget.EventTarget {
-  id(): string;
-
-  execute(): Promise<boolean>;
-
-  icon(): string|undefined;
-
-  toggledIcon(): string|undefined;
-
-  toggleWithRedColor(): boolean;
-
-  setEnabled(_enabled: boolean): void;
-
-  enabled(): boolean;
-
-  category(): string;
-
-  tags(): string|void;
-
-  toggleable(): boolean;
-
-  title(): string;
-
-  toggled(): boolean;
-
-  setToggled(_toggled: boolean): void
-}
-
-export class LegacyActionRegistration extends Common.ObjectWrapper.ObjectWrapper implements Action {
-  _extension: Root.Runtime.Extension;
-  _enabled: boolean;
-  _toggled: boolean;
-
-  constructor(extension: Root.Runtime.Extension) {
-    super();
-    this._extension = extension;
-    this._enabled = true;
-    this._toggled = false;
-  }
-
-  id(): string {
-    return this.actionDescriptor().actionId || '';
-  }
-
-  extension(): Root.Runtime.Extension {
-    return this._extension;
-  }
-
-  async execute(): Promise<boolean> {
-    if (!this._extension.canInstantiate()) {
-      return false;
-    }
-    const delegate = await this._extension.instance() as ActionDelegate;
-    const actionId = this.id();
-    return delegate.handleAction(Context.instance(), actionId);
-  }
-
-  icon(): string {
-    return this.actionDescriptor().iconClass || '';
-  }
-
-  toggledIcon(): string {
-    return this.actionDescriptor().toggledIconClass || '';
-  }
-
-  toggleWithRedColor(): boolean {
-    return Boolean(this.actionDescriptor().toggleWithRedColor);
-  }
-
-  setEnabled(enabled: boolean): void {
-    if (this._enabled === enabled) {
-      return;
-    }
-
-    this._enabled = enabled;
-    this.dispatchEventToListeners(Events.Enabled, enabled);
-  }
-
-  enabled(): boolean {
-    return this._enabled;
-  }
-
-  category(): string {
-    return ls`${this.actionDescriptor().category || ''}`;
-  }
-
-  tags(): string {
-    const keys = this.actionDescriptor().tags || '';
-    // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
-    const keyList = keys.split(',');
-    let key = '';
-    keyList.forEach(k => {
-      key += (ls(k.trim()) + '\0');
-    });
-    return key;
-  }
-
-  toggleable(): boolean {
-    return Boolean(this.actionDescriptor().toggleable);
-  }
-
-  title(): string {
-    let title = this._extension.title() || '';
-    const options = this.actionDescriptor().options;
-    if (options) {
-      for (const pair of options) {
-        if (pair.value !== this._toggled) {
-          title = ls`${pair.title}`;
-        }
-      }
-    }
-    return title;
-  }
-
-  toggled(): boolean {
-    return this._toggled;
-  }
-
-  setToggled(toggled: boolean): void {
-    console.assert(this.toggleable(), 'Shouldn\'t be toggling an untoggleable action', this.id());
-    if (this._toggled === toggled) {
-      return;
-    }
-
-    this._toggled = toggled;
-    this.dispatchEventToListeners(Events.Toggled, toggled);
-  }
-
-  private actionDescriptor(): ActionRuntimeExtensionDescriptor {
-    return this._extension.descriptor() as ActionRuntimeExtensionDescriptor;
-  }
-}
-
 export interface ActionDelegate {
   handleAction(_context: Context, _actionId: string): boolean;
 }
 
-export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper implements Action {
+export class Action extends Common.ObjectWrapper.ObjectWrapper {
   _enabled = true;
   _toggled = false;
   private actionRegistration: ActionRegistration;
@@ -283,7 +139,7 @@ export class PreRegisteredAction extends Common.ObjectWrapper.ObjectWrapper impl
   }
 }
 
-const registeredActionExtensions: Array<PreRegisteredAction> = [];
+const registeredActionExtensions: Array<Action> = [];
 
 const actionIdSet = new Set<string>();
 
@@ -293,10 +149,10 @@ export function registerActionExtension(registration: ActionRegistration): void 
     throw new Error(`Duplicate Action id '${actionId}': ${new Error().stack}`);
   }
   actionIdSet.add(actionId);
-  registeredActionExtensions.push(new PreRegisteredAction(registration));
+  registeredActionExtensions.push(new Action(registration));
 }
 
-export function getRegisteredActionExtensions(): Array<PreRegisteredAction> {
+export function getRegisteredActionExtensions(): Array<Action> {
   return registeredActionExtensions
       .filter(
           action => Root.Runtime.Runtime.isDescriptorEnabled(

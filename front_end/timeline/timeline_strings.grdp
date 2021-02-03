@@ -139,6 +139,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_1b2c363066d5912ae8b27a1527f3d45e" desc="Text in Timeline Tree View of the Performance panel">
     Group by Domain
   </message>
+  <message name="IDS_DEVTOOLS_1c481aa99d081c32182011a758f73d33" desc="Text that only contain a placeholder">
+    <ph name="DURATIONTEXT">$1s<ex>100ms (at 200ms)</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_1e3eaaac8d3c9cffea8ee7f03a8a6121" desc="Text in Timeline UIUtils of the Performance panel">
     DOMContentLoaded Event
   </message>

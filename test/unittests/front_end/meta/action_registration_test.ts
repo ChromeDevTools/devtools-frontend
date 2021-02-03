@@ -78,7 +78,7 @@ describe('Action registration', () => {
   it('executes a pre registered action', async () => {
     actionExecuted = false;
     const preRegisteredAction =
-        UI.ActionRegistry.ActionRegistry.instance().action(actionId) as UI.ActionRegistration.PreRegisteredAction;
+        UI.ActionRegistry.ActionRegistry.instance().action(actionId) as UI.ActionRegistration.Action;
     if (preRegisteredAction) {
       await preRegisteredAction.execute();
       assert.isTrue(actionExecuted, 'Action was not executed');

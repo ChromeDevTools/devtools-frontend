@@ -7,7 +7,7 @@ import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import {Action, Binding, getRegisteredActionExtensions, KeybindSet} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
+import {Action, getRegisteredActionExtensions, KeybindSet} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
 import {ActionRegistry} from './ActionRegistry.js';  // eslint-disable-line no-unused-vars
 import {Context} from './Context.js';
 import {Dialog} from './Dialog.js';
@@ -395,9 +395,6 @@ export class ShortcutRegistry {
     this._actionToShortcut.clear();
     this._keyMap.clear();
     const keybindSet = this._keybindSetSetting.get();
-    // This call is done for the legacy Actions in module.json
-    // TODO(crbug.com/1134103): Remove this call when all actions are migrated
-    const extensions = Root.Runtime.Runtime.instance().extensions('action');
     this._disabledDefaultShortcutsForAction.clear();
     this._devToolsDefaultShortcutActions.clear();
     /** @type {!Array<!{keyCode: number, modifiers: number}>} */
@@ -418,26 +415,9 @@ export class ShortcutRegistry {
         }
       }
     }
-    const unionOfActionExtension = [
-      ...extensions.map(extension => {
-        return {
-          actionId: extension.descriptor().actionId,
-          bindings: extension.descriptor().bindings,
-        };
-      }),
-      ...getRegisteredActionExtensions().map(registeredAction => {
-        return {actionId: registeredAction.id(), bindings: registeredAction.bindings()};
-      })
-    ];
-    unionOfActionExtension.forEach(registerActionExtension, this);
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setWhitelistedShortcuts(JSON.stringify(forwardedKeys));
-
-    /**
-     * @param {!{actionId:?string, bindings: (!Array<!{shortcut: string, platform?: string, keybindSets?: string[] }>|undefined)}} actionExtension
-     * @this {ShortcutRegistry}
-     */
-    function registerActionExtension(actionExtension) {
-      const bindings = actionExtension.bindings;
+    for (const actionExtension of getRegisteredActionExtensions()) {
+      const actionId = actionExtension.id();
+      const bindings = actionExtension.bindings();
       for (let i = 0; bindings && i < bindings.length; ++i) {
         const keybindSets = bindings[i].keybindSets;
         if (!platformMatches(bindings[i].platform) || !keybindSetsMatch(keybindSets)) {
@@ -446,7 +426,6 @@ export class ShortcutRegistry {
         const keys = bindings[i].shortcut.split(/\s+/);
         const shortcutDescriptors = keys.map(KeyboardShortcut.makeDescriptorFromBindingShortcut);
         if (shortcutDescriptors.length > 0) {
-          const actionId = /** @type {string} */ (actionExtension.actionId);
 
           if (this._isDisabledDefault(shortcutDescriptors, actionId)) {
             this._devToolsDefaultShortcutActions.add(actionId);
@@ -470,6 +449,7 @@ export class ShortcutRegistry {
         }
       }
     }
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setWhitelistedShortcuts(JSON.stringify(forwardedKeys));
 
     /**
      * @param {string=} platformsString

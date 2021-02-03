@@ -22,9 +22,6 @@
   <message name="IDS_DEVTOOLS_1b1ac1c7a54457ce73ddd25a5b51c47d" desc="A title of the 'Drawer sidebar' @UI.ViewLocationResolver category">
     Drawer sidebar
   </message>
-  <message name="IDS_DEVTOOLS_1c481aa99d081c32182011a758f73d33" desc="Text that only contain a placeholder">
-    <ph name="DURATIONTEXT">$1s<ex>100ms (at 200ms)</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_22b6fe30dec1ae9c09480cce01cd4065" desc="Text to run commands">
     Run command
   </message>

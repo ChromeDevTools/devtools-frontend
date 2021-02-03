@@ -4,7 +4,7 @@
 
 import * as Root from '../root/root.js';  // eslint-disable-line no-unused-vars
 
-import {Action, getRegisteredActionExtensions, LegacyActionRegistration, PreRegisteredAction} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
+import {Action, getRegisteredActionExtensions} from './ActionRegistration.js';  // eslint-disable-line no-unused-vars
 import {Context} from './Context.js';  // eslint-disable-line no-unused-vars
 
 /** @type {!ActionRegistry|undefined} */
@@ -37,39 +37,9 @@ export class ActionRegistry {
   }
 
   _registerActions() {
-    const registeredActionExtensions = getRegisteredActionExtensions();
-    for (const action of registeredActionExtensions) {
+    for (const action of getRegisteredActionExtensions()) {
       this._actionsById.set(action.id(), action);
       if (!action.canInstantiate()) {
-        action.setEnabled(false);
-      }
-    }
-    // This call is done for the legacy Actions in module.json
-    // TODO(crbug.com/1134103): Remove this call when all actions are migrated
-    Root.Runtime.Runtime.instance().extensions('action').forEach(registerExtension, this);
-
-    /**
-     * @param {!Root.Runtime.Extension} extension
-     * @this {ActionRegistry}
-     */
-    function registerExtension(extension) {
-      const actionId = extension.descriptor().actionId;
-      if (!actionId) {
-        console.error(`No actionId provided for extension ${extension.descriptor().name}`);
-        return;
-      }
-      if (this._actionsById.get(actionId)) {
-        throw new Error(`Duplicate action id '${actionId}'`);
-      }
-      console.assert(!this._actionsById.get(actionId));
-
-      const action = new LegacyActionRegistration(extension);
-      if (!action.category() || action.title()) {
-        this._actionsById.set(actionId, action);
-      } else {
-        console.error(`Category actions require a title for command menu: ${actionId}`);
-      }
-      if (!extension.canInstantiate()) {
         action.setEnabled(false);
       }
     }
@@ -95,42 +65,21 @@ export class ActionRegistry {
    * @return {!Array.<!Action>}
    */
   applicableActions(actionIds, context) {
-    /** @type {!Array<!Root.Runtime.Extension>} */
-    const extensions = [];
-    /** @type {!Array<!PreRegisteredAction>} */
-    const applicablePreRegisteredActions = [];
+    /** @type {!Array<!Action>} */
+    const applicableActions = [];
     for (const actionId of actionIds) {
       const action = this._actionsById.get(actionId);
       if (action && action.enabled()) {
-        if (action instanceof LegacyActionRegistration) {
-          // This call is done for the legacy Actions in module.json
-          // TODO(crbug.com/1134103): Remove this call when all actions are migrated
-          extensions.push(action.extension());
-        } else if (isActionApplicableToContextTypes(
-                       /** @type {!PreRegisteredAction} */ (action), context.flavors())) {
-          applicablePreRegisteredActions.push(/** @type {!PreRegisteredAction} */ (action));
+        if (isActionApplicableToContextTypes(
+                /** @type {!Action} */ (action), context.flavors())) {
+          applicableActions.push(/** @type {!Action} */ (action));
         }
       }
     }
-    // The call done to Context.applicableExtensions to validate if a legacy Runtime Action extension is applicable
-    // will be replaced by isActionApplicableToContextTypes(), which does not rely on Runtime to do the validation.
-    // TODO(crbug.com/1134103): Remove this call when all actions are migrated.
-    const applicableActionExtensions = [...context.applicableExtensions(extensions)].map(extensionToAction.bind(this));
-
-    return [...applicableActionExtensions, ...applicablePreRegisteredActions];
+    return applicableActions;
 
     /**
-     * @param {!Root.Runtime.Extension} extension
-     * @return {!Action}
-     * @this {ActionRegistry}
-     */
-    function extensionToAction(extension) {
-      const actionId = /** @type {string} */ (extension.descriptor().actionId);
-      return /** @type {!Action} */ (this.action(actionId));
-    }
-
-    /**
-     * @param {!PreRegisteredAction} action
+     * @param {!Action} action
      * @param {!Set.<?>} currentContextTypes
      * @return {boolean}
      */

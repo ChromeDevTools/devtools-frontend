@@ -16,6 +16,18 @@ module.exports = {
       'rulesdir/set_data_type_reference': 2,
       'rulesdir/lit_html_data_as_type': 2,
       'rulesdir/lit_no_style_interpolation': 2,
+      '@typescript-eslint/naming-convention': [
+        'error', {
+          'selector': 'property',
+          'modifiers': ['private', 'protected'],
+          'format': ['camelCase'],
+        },
+        {
+          'selector': 'method',
+          'modifiers': ['private', 'protected'],
+          'format': ['camelCase'],
+        }
+      ]
     }
   }]
 };

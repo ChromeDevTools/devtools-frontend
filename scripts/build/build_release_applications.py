@@ -46,6 +46,8 @@ def main(argv):
         input_path = argv[input_path_flag_index + 1]
         output_path_flag_index = argv.index('--output_path')
         output_path = argv[output_path_flag_index + 1]
+        output_path_gen_flag_index = argv.index('--output_path_gen')
+        output_path_gen = argv[output_path_gen_flag_index + 1]
         application_names = argv[1:input_path_flag_index]
         use_rollup = '--rollup' in argv
     except:
@@ -55,7 +57,8 @@ def main(argv):
     loader = modular_build.DescriptorLoader(input_path)
     for app in application_names:
         descriptors = loader.load_application(app)
-        builder = ReleaseBuilder(app, descriptors, input_path, output_path, use_rollup)
+        builder = ReleaseBuilder(app, descriptors, input_path, output_path,
+                                 output_path_gen, use_rollup)
         builder.build_app()
 
 
@@ -76,11 +79,13 @@ def concatenated_module_filename(module_name, output_dir):
 #   <module_name>_module.js
 class ReleaseBuilder(object):
 
-    def __init__(self, application_name, descriptors, application_dir, output_dir, use_rollup):
+    def __init__(self, application_name, descriptors, application_dir,
+                 output_dir, output_path_gen_dir, use_rollup):
         self.application_name = application_name
         self.descriptors = descriptors
         self.application_dir = application_dir
         self.output_dir = output_dir
+        self.output_path_gen_dir = output_path_gen_dir
         self.use_rollup = use_rollup
         self._special_case_namespaces = special_case_namespaces.special_case_namespaces
 
@@ -110,7 +115,10 @@ class ReleaseBuilder(object):
         script_name = self.app_file('js')
         output = StringIO()
         self._concatenate_application_script(output)
-        write_file(join(self.output_dir, script_name), minify_js(output.getvalue()))
+        minified_content = minify_js(output.getvalue())
+        write_file(join(self.output_dir, script_name), minified_content)
+        write_file(join(self.output_path_gen_dir, script_name),
+                   minified_content)
         output.close()
 
     def _release_module_descriptors(self):
@@ -194,8 +202,13 @@ class ReleaseBuilder(object):
         if resources:
             output.write("import * as RootModule from '../root/root.js';")
             self._write_module_resources(resources, output)
-        output_file_path = concatenated_module_filename(module_name, self.output_dir)
-        write_file(output_file_path, minify_js(output.getvalue()))
+        minified_content = minify_js(output.getvalue())
+        write_file(concatenated_module_filename(module_name, self.output_dir),
+                   minified_content)
+        write_file(
+            concatenated_module_filename(module_name,
+                                         self.output_path_gen_dir),
+            minified_content)
         output.close()
 
 

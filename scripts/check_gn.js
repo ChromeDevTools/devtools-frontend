@@ -25,7 +25,7 @@ const gnLines = gnFile.split('\n');
  */
 function checkNonAutostartNonRemoteModules() {
   const errors = [];
-  const gnVariable = 'generated_non_autostart_non_remote_modules';
+  const gnVariable = 'non_autostart_non_remote_modules';
   const lines = selectGNLines(`${gnVariable} = [`, ']');
   if (!lines.length) {
     return [
@@ -42,7 +42,7 @@ function checkNonAutostartNonRemoteModules() {
   }
 
   // e.g. "$resources_out_dir/lighthouse/lighthouse_module.js" => "lighthouse"
-  const mapLineToModuleName = line => line.split('/')[2].split('_module')[0];
+  const mapLineToModuleName = line => line.split('/')[1].split('_module')[0];
 
   const extraneousModules = lines.map(mapLineToModuleName).filter(module => !modules.includes(module));
   if (extraneousModules.length) {

@@ -126,6 +126,7 @@ def main():
     parser.add_argument('-dir', '--front_end_directory', required=True, help='Folder that contains source files')
     parser.add_argument('-b', '--tsconfig_output_location', required=True)
     parser.add_argument('--test-only', action='store_true')
+    parser.add_argument('--no-emit', action='store_true')
     parser.add_argument('--verify-lib-check', action='store_true')
     parser.add_argument('--is_web_worker', action='store_true')
     parser.add_argument('--module', required=False)
@@ -134,6 +135,7 @@ def main():
     parser.add_argument('--rewrapper-cfg', required=False)
     parser.add_argument('--rewrapper-exec-root', required=False)
     parser.set_defaults(test_only=False,
+                        no_emit=False,
                         verify_lib_check=False,
                         module='esnext')
 
@@ -168,6 +170,8 @@ def main():
     ] or []
     if opts.test_only:
         tsconfig['compilerOptions']['moduleResolution'] = 'node'
+    if opts.no_emit:
+        tsconfig['compilerOptions']['emitDeclarationOnly'] = True
     tsconfig['compilerOptions']['outDir'] = '.'
     tsconfig['compilerOptions']['tsBuildInfoFile'] = tsbuildinfo_name
     tsconfig['compilerOptions']['lib'] = ['esnext'] + (

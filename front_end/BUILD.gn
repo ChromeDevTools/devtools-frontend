@@ -196,6 +196,7 @@ group("legacy_entrypoints") {
 }
 
 ts_library("shell") {
+  no_emit = true
   sources = [ "shell.js" ]
 
   deps = [
@@ -232,6 +233,7 @@ ts_library("shell") {
 }
 
 ts_library("devtools_app") {
+  no_emit = true
   sources = [ "devtools_app.js" ]
 
   deps = [
@@ -263,6 +265,7 @@ ts_library("devtools_app") {
 }
 
 ts_library("inspector") {
+  no_emit = true
   sources = [ "inspector.js" ]
 
   deps = [
@@ -272,6 +275,7 @@ ts_library("inspector") {
 }
 
 ts_library("js_app") {
+  no_emit = true
   sources = [ "js_app.js" ]
 
   deps = [
@@ -282,6 +286,7 @@ ts_library("js_app") {
 }
 
 ts_library("ndb_app") {
+  no_emit = true
   sources = [ "ndb_app.js" ]
 
   deps = [
@@ -291,6 +296,7 @@ ts_library("ndb_app") {
 }
 
 ts_library("node_app") {
+  no_emit = true
   sources = [ "node_app.js" ]
 
   deps = [
@@ -303,12 +309,14 @@ ts_library("node_app") {
 }
 
 ts_library("toolbox") {
+  no_emit = true
   sources = [ "toolbox.js" ]
 
   deps = [ "startup:bundle" ]
 }
 
 ts_library("worker_app") {
+  no_emit = true
   sources = [ "worker_app.js" ]
 
   deps = [

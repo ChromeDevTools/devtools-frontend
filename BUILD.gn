@@ -103,95 +103,121 @@ generated_applications_html = [
   "$resources_out_dir/worker_app.html",
 ]
 
-generated_applications_js = [
-  "$resources_out_dir/lighthouse_worker.js",
-  "$resources_out_dir/devtools_app.js",
-  "$resources_out_dir/inspector.js",
-  "$resources_out_dir/js_app.js",
-  "$resources_out_dir/node_app.js",
-  "$resources_out_dir/shell.js",
-  "$resources_out_dir/toolbox.js",
-  "$resources_out_dir/worker_app.js",
+applications_js = [
+  "lighthouse_worker.js",
+  "devtools_app.js",
+  "inspector.js",
+  "js_app.js",
+  "node_app.js",
+  "shell.js",
+  "toolbox.js",
+  "worker_app.js",
 ]
 
-generated_non_autostart_non_remote_modules = [
-  "$resources_out_dir/accessibility/accessibility_module.js",
-  "$resources_out_dir/animation/animation_module.js",
-  "$resources_out_dir/browser_debugger/browser_debugger_module.js",
-  "$resources_out_dir/changes/changes_module.js",
-  "$resources_out_dir/client_variations/client_variations_module.js",
-  "$resources_out_dir/cm/cm_module.js",
-  "$resources_out_dir/color_picker/color_picker_module.js",
-  "$resources_out_dir/console/console_module.js",
-  "$resources_out_dir/cookie_table/cookie_table_module.js",
-  "$resources_out_dir/coverage/coverage_module.js",
-  "$resources_out_dir/css_overview/css_overview_module.js",
-  "$resources_out_dir/data_grid/data_grid_module.js",
-  "$resources_out_dir/diff/diff_module.js",
-  "$resources_out_dir/elements/elements_module.js",
-  "$resources_out_dir/event_listeners/event_listeners_module.js",
-  "$resources_out_dir/formatter/formatter_module.js",
-  "$resources_out_dir/har_importer/har_importer_module.js",
-  "$resources_out_dir/heap_snapshot_model/heap_snapshot_model_module.js",
-  "$resources_out_dir/help/help_module.js",
-  "$resources_out_dir/inline_editor/inline_editor_module.js",
-  "$resources_out_dir/input/input_module.js",
-  "$resources_out_dir/javascript_metadata/javascript_metadata_module.js",
-  "$resources_out_dir/js_profiler/js_profiler_module.js",
-  "$resources_out_dir/layer_viewer/layer_viewer_module.js",
-  "$resources_out_dir/layers/layers_module.js",
-  "$resources_out_dir/lighthouse/lighthouse_module.js",
-  "$resources_out_dir/linear_memory_inspector/linear_memory_inspector_module.js",
-  "$resources_out_dir/media/media_module.js",
-  "$resources_out_dir/network/network_module.js",
-  "$resources_out_dir/node_debugger/node_debugger_module.js",
-  "$resources_out_dir/object_ui/object_ui_module.js",
-  "$resources_out_dir/perf_ui/perf_ui_module.js",
-  "$resources_out_dir/performance_monitor/performance_monitor_module.js",
-  "$resources_out_dir/profiler/profiler_module.js",
-  "$resources_out_dir/issues/issues_module.js",
-  "$resources_out_dir/developer_resources/developer_resources_module.js",
-  "$resources_out_dir/protocol_monitor/protocol_monitor_module.js",
-  "$resources_out_dir/quick_open/quick_open_module.js",
-  "$resources_out_dir/resources/resources_module.js",
-  "$resources_out_dir/search/search_module.js",
-  "$resources_out_dir/security/security_module.js",
-  "$resources_out_dir/settings/settings_module.js",
-  "$resources_out_dir/snippets/snippets_module.js",
-  "$resources_out_dir/source_frame/source_frame_module.js",
-  "$resources_out_dir/sources/sources_module.js",
-  "$resources_out_dir/text_editor/text_editor_module.js",
-  "$resources_out_dir/timeline_model/timeline_model_module.js",
-  "$resources_out_dir/timeline/timeline_module.js",
-  "$resources_out_dir/web_audio/web_audio_module.js",
-  "$resources_out_dir/webauthn/webauthn_module.js",
-  "$resources_out_dir/workspace_diff/workspace_diff_module.js",
-  "$resources_out_dir/emulated_devices/emulated_devices_module.js",
+resources_generated_applications_js = []
+gen_generated_applications_js = []
+
+foreach(application, applications_js) {
+  resources_generated_applications_js += [ "$resources_out_dir/$application" ]
+  gen_generated_applications_js += [ "$target_gen_dir/front_end/$application" ]
+}
+
+non_autostart_non_remote_modules = [
+  "accessibility/accessibility_module.js",
+  "animation/animation_module.js",
+  "browser_debugger/browser_debugger_module.js",
+  "changes/changes_module.js",
+  "client_variations/client_variations_module.js",
+  "cm/cm_module.js",
+  "color_picker/color_picker_module.js",
+  "console/console_module.js",
+  "cookie_table/cookie_table_module.js",
+  "coverage/coverage_module.js",
+  "css_overview/css_overview_module.js",
+  "data_grid/data_grid_module.js",
+  "diff/diff_module.js",
+  "elements/elements_module.js",
+  "event_listeners/event_listeners_module.js",
+  "formatter/formatter_module.js",
+  "har_importer/har_importer_module.js",
+  "heap_snapshot_model/heap_snapshot_model_module.js",
+  "help/help_module.js",
+  "inline_editor/inline_editor_module.js",
+  "input/input_module.js",
+  "javascript_metadata/javascript_metadata_module.js",
+  "js_profiler/js_profiler_module.js",
+  "layer_viewer/layer_viewer_module.js",
+  "layers/layers_module.js",
+  "lighthouse/lighthouse_module.js",
+  "linear_memory_inspector/linear_memory_inspector_module.js",
+  "media/media_module.js",
+  "network/network_module.js",
+  "node_debugger/node_debugger_module.js",
+  "object_ui/object_ui_module.js",
+  "perf_ui/perf_ui_module.js",
+  "performance_monitor/performance_monitor_module.js",
+  "profiler/profiler_module.js",
+  "issues/issues_module.js",
+  "developer_resources/developer_resources_module.js",
+  "protocol_monitor/protocol_monitor_module.js",
+  "quick_open/quick_open_module.js",
+  "resources/resources_module.js",
+  "search/search_module.js",
+  "security/security_module.js",
+  "settings/settings_module.js",
+  "snippets/snippets_module.js",
+  "source_frame/source_frame_module.js",
+  "sources/sources_module.js",
+  "text_editor/text_editor_module.js",
+  "timeline_model/timeline_model_module.js",
+  "timeline/timeline_module.js",
+  "web_audio/web_audio_module.js",
+  "webauthn/webauthn_module.js",
+  "workspace_diff/workspace_diff_module.js",
+  "emulated_devices/emulated_devices_module.js",
 ]
 
-generated_test_modules = [
-  "$resources_out_dir/accessibility_test_runner/accessibility_test_runner_module.js",
-  "$resources_out_dir/application_test_runner/application_test_runner_module.js",
-  "$resources_out_dir/lighthouse_test_runner/lighthouse_test_runner_module.js",
-  "$resources_out_dir/axe_core_test_runner/axe_core_test_runner_module.js",
-  "$resources_out_dir/bindings_test_runner/bindings_test_runner_module.js",
-  "$resources_out_dir/console_test_runner/console_test_runner_module.js",
-  "$resources_out_dir/coverage_test_runner/coverage_test_runner_module.js",
-  "$resources_out_dir/cpu_profiler_test_runner/cpu_profiler_test_runner_module.js",
-  "$resources_out_dir/data_grid_test_runner/data_grid_test_runner_module.js",
-  "$resources_out_dir/device_mode_test_runner/device_mode_test_runner_module.js",
-  "$resources_out_dir/elements_test_runner/elements_test_runner_module.js",
-  "$resources_out_dir/extensions_test_runner/extensions_test_runner_module.js",
-  "$resources_out_dir/heap_profiler_test_runner/heap_profiler_test_runner_module.js",
-  "$resources_out_dir/heap_snapshot_worker/heap_snapshot_worker_module.js",
-  "$resources_out_dir/integration_test_runner.js",
-  "$resources_out_dir/layers_test_runner/layers_test_runner_module.js",
-  "$resources_out_dir/network_test_runner/network_test_runner_module.js",
-  "$resources_out_dir/performance_test_runner/performance_test_runner_module.js",
-  "$resources_out_dir/sdk_test_runner/sdk_test_runner_module.js",
-  "$resources_out_dir/security_test_runner/security_test_runner_module.js",
-  "$resources_out_dir/sources_test_runner/sources_test_runner_module.js",
+resources_non_autostart_non_remote_modules = []
+gen_non_autostart_non_remote_modules = []
+
+foreach(module_file, non_autostart_non_remote_modules) {
+  resources_non_autostart_non_remote_modules +=
+      [ "$resources_out_dir/$module_file" ]
+  gen_non_autostart_non_remote_modules +=
+      [ "$target_gen_dir/front_end/$module_file" ]
+}
+
+test_modules = [
+  "accessibility_test_runner/accessibility_test_runner_module.js",
+  "application_test_runner/application_test_runner_module.js",
+  "lighthouse_test_runner/lighthouse_test_runner_module.js",
+  "axe_core_test_runner/axe_core_test_runner_module.js",
+  "bindings_test_runner/bindings_test_runner_module.js",
+  "console_test_runner/console_test_runner_module.js",
+  "coverage_test_runner/coverage_test_runner_module.js",
+  "cpu_profiler_test_runner/cpu_profiler_test_runner_module.js",
+  "data_grid_test_runner/data_grid_test_runner_module.js",
+  "device_mode_test_runner/device_mode_test_runner_module.js",
+  "elements_test_runner/elements_test_runner_module.js",
+  "extensions_test_runner/extensions_test_runner_module.js",
+  "heap_profiler_test_runner/heap_profiler_test_runner_module.js",
+  "heap_snapshot_worker/heap_snapshot_worker_module.js",
+  "integration_test_runner.js",
+  "layers_test_runner/layers_test_runner_module.js",
+  "network_test_runner/network_test_runner_module.js",
+  "performance_test_runner/performance_test_runner_module.js",
+  "sdk_test_runner/sdk_test_runner_module.js",
+  "security_test_runner/security_test_runner_module.js",
+  "sources_test_runner/sources_test_runner_module.js",
 ]
+
+resources_test_modules = []
+gen_test_modules = []
+
+foreach(module_file, test_modules) {
+  resources_test_modules += [ "$resources_out_dir/$module_file" ]
+  gen_test_modules += [ "$target_gen_dir/front_end/$module_file" ]
+}
 
 devtools_applications = [
   "lighthouse_worker",
@@ -240,8 +266,8 @@ action("generate_devtools_grd") {
   deps = [ ":devtools_frontend_resources" ]
 
   grd_files =
-      generated_applications_html + generated_applications_js +
-      generated_non_autostart_non_remote_modules + devtools_embedder_scripts +
+      generated_applications_html + resources_generated_applications_js +
+      resources_non_autostart_non_remote_modules + devtools_embedder_scripts +
       generated_module_entrypoint_sources + generated_typescript_modules +
       generated_devtools_locale_files + generated_emulated_device_images +
       [ "$resources_out_dir/third_party/acorn/package/dist/acorn.mjs" ]
@@ -327,13 +353,20 @@ python2_action("build_release_devtools") {
 
   inputs = helper_scripts + all_devtools_files + devtools_test_files +
            application_templates
-  outputs = generated_applications_js +
-            generated_non_autostart_non_remote_modules + generated_test_modules
+  outputs =
+      resources_generated_applications_js + gen_generated_applications_js +
+      resources_non_autostart_non_remote_modules +
+      gen_non_autostart_non_remote_modules + resources_test_modules +
+      gen_test_modules
 
   args = devtools_applications + [
            "--input_path",
            rebase_path("front_end", root_build_dir),
+
+           # TODO(crbug.com/1174013): Remove output to resources_out_dir
            "--output_path",
            rebase_path(resources_out_dir, root_build_dir),
+           "--output_path_gen",
+           rebase_path("$target_gen_dir/front_end", root_build_dir),
          ] + build_release_devtools_args
 }

@@ -85,6 +85,7 @@ template("ts_library") {
         "You must either specify an array of 'sources' or 'deps' for $target_name")
 
     _test_only = defined(invoker.testonly) && invoker.testonly
+    _no_emit = defined(invoker.no_emit) && invoker.no_emit
     _verify_lib_check =
         defined(invoker.verify_lib_check) && invoker.verify_lib_check
     _rootdir = "."
@@ -120,6 +121,10 @@ template("ts_library") {
 
     if (_test_only) {
       args += [ "--test-only" ]
+    }
+
+    if (_no_emit) {
+      args += [ "--no-emit" ]
     }
 
     if (_verify_lib_check) {
@@ -170,10 +175,12 @@ template("ts_library") {
           # Any file checked by TypeScript that is jsdoc-typed will be also
           # generating a js file in the gen folder
         } else if (_extension == "js" || _extension == "ts") {
-          output_files += [
-            "$target_gen_dir/$_fileName.js",
-            "$target_gen_dir/$_fileName.js.map",
-          ]
+          if (!_no_emit) {
+            output_files += [
+              "$target_gen_dir/$_fileName.js",
+              "$target_gen_dir/$_fileName.js.map",
+            ]
+          }
         } else {
           assert(false,
                  "Incorrect extension on '$src' with extension '$_extension'")

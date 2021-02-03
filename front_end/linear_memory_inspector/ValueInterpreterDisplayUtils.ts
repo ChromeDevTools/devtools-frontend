@@ -75,12 +75,12 @@ export const enum ValueType {
   Int64 = 'Integer 64-bit',
   Float32 = 'Float 32-bit',
   Float64 = 'Float 64-bit',
-  String = 'String'
+  String = 'String',
 }
 
 export const enum Endianness {
   Little = 'Little Endian',
-  Big = 'Big Endian'
+  Big = 'Big Endian',
 }
 
 export const enum ValueTypeMode {
@@ -88,7 +88,7 @@ export const enum ValueTypeMode {
   Hexadecimal = 'hex',
   Octal = 'oct',
   Scientific = 'sci',
-  None = 'none'
+  None = 'none',
 }
 
 export function valueTypeModeToLocalizedString(mode: ValueTypeMode): string {

@@ -890,20 +890,20 @@ export class Layers3DView extends UI.Widget.VBox implements LayerView {
 // eslint-disable-next-line rulesdir/const_enum
 export enum OutlineType {
   Hovered = 'hovered',
-  Selected = 'selected'
+  Selected = 'selected',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   PaintProfilerRequested = 'PaintProfilerRequested',
-  ScaleChanged = 'ScaleChanged'
+  ScaleChanged = 'ScaleChanged',
 }
 
 export const enum ChromeTexture {
   Left = 0,
   Middle = 1,
-  Right = 2
+  Right = 2,
 }
 
 export const ScrollRectTitles = {

@@ -51,7 +51,7 @@ export interface BoxStyle {
 const enum LinePattern {
   Solid = 'solid',
   Dotted = 'dotted',
-  Dashed = 'dashed'
+  Dashed = 'dashed',
 }
 
 export function drawPathWithLineStyle(

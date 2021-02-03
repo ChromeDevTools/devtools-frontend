@@ -412,7 +412,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
-  WindowChanged = 'WindowChanged'
+  WindowChanged = 'WindowChanged',
 }
 
 export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWidget {

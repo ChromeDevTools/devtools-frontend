@@ -26,7 +26,7 @@ const enum State {
   Sending = 'Sending',    // -> SurveyShown | Failed
   SurveyShown = 'SurveyShown',
   Failed = 'Failed',
-  DontShowLink = 'DontShowLink'
+  DontShowLink = 'DontShowLink',
 }
 
 // A link to a survey. The link is rendered aysnchronously because we need to first check if

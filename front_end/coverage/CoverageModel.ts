@@ -13,14 +13,14 @@ import * as TextUtils from '../text_utils/text_utils.js';
 export const enum CoverageType {
   CSS = (1 << 0),
   JavaScript = (1 << 1),
-  JavaScriptPerFunction = (1 << 2)
+  JavaScriptPerFunction = (1 << 2),
 }
 
 
 export const enum SuspensionState {
   Active = 'Active',
   Suspending = 'Suspending',
-  Suspended = 'Suspended'
+  Suspended = 'Suspended',
 }
 
 
@@ -28,7 +28,7 @@ export const enum SuspensionState {
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   CoverageUpdated = 'CoverageUpdated',
-  CoverageReset = 'CoverageReset'
+  CoverageReset = 'CoverageReset',
 }
 
 

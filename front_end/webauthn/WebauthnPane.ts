@@ -137,7 +137,7 @@ const TIMEOUT = 1000;
 
 const enum Events {
   ExportCredential = 'ExportCredential',
-  RemoveCredential = 'RemoveCredential'
+  RemoveCredential = 'RemoveCredential',
 }
 
 

@@ -32,7 +32,7 @@ interface CoordinatorLogEntry {
 
 const enum ACTION {
   READ = 'read',
-  WRITE = 'write'
+  WRITE = 'write',
 }
 
 export class RenderCoordinatorQueueEmptyEvent extends Event {

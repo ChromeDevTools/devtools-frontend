@@ -16,7 +16,7 @@ export const enum ProtocolTriggers {
   PlayerEventsAdded = 'PlayerEventsAdded',
   PlayerMessagesLogged = 'PlayerMessagesLogged',
   PlayerErrorsRaised = 'PlayerErrorsRaised',
-  PlayersCreated = 'PlayersCreated'
+  PlayersCreated = 'PlayersCreated',
 }
 
 export class MediaModel extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.MediaDispatcher {

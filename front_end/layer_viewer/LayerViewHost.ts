@@ -54,7 +54,7 @@ export class Selection {
 export const enum Type {
   Layer = 'Layer',
   ScrollRect = 'ScrollRect',
-  Snapshot = 'Snapshot'
+  Snapshot = 'Snapshot',
 }
 
 

@@ -88,7 +88,7 @@ export enum projectTypes {
   Network = 'network',
   FileSystem = 'filesystem',
   ContentScripts = 'contentscripts',
-  Service = 'service'
+  Service = 'service',
 }
 
 export class ProjectStore {
@@ -293,5 +293,5 @@ export enum Events {
   WorkingCopyCommitted = 'WorkingCopyCommitted',
   WorkingCopyCommittedByUser = 'WorkingCopyCommittedByUser',
   ProjectAdded = 'ProjectAdded',
-  ProjectRemoved = 'ProjectRemoved'
+  ProjectRemoved = 'ProjectRemoved',
 }

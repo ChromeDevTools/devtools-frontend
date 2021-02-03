@@ -209,7 +209,7 @@ export class ServiceWorkerUpdateCycleHelper {
 export const enum ServiceWorkerUpdateNames {
   Install = 'Install',
   Wait = 'Wait',
-  Activate = 'Activate'
+  Activate = 'Activate',
 }
 
 

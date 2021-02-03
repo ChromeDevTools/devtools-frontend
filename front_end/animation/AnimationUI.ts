@@ -464,7 +464,7 @@ export const enum Events {
   AnimationDrag = 'AnimationDrag',
   KeyframeMove = 'KeyframeMove',
   StartEndpointMove = 'StartEndpointMove',
-  FinishEndpointMove = 'FinishEndpointMove'
+  FinishEndpointMove = 'FinishEndpointMove',
 }
 
 

@@ -39,7 +39,7 @@ const {render, html} = LitHtml;
 
 export const enum Navigation {
   Backward = 'Backward',
-  Forward = 'Forward'
+  Forward = 'Forward',
 }
 
 export class AddressInputChangedEvent extends Event {
@@ -85,7 +85,7 @@ export interface LinearMemoryNavigatorData {
 export const enum Mode {
   Edit = 'Edit',
   Submitted = 'Submitted',
-  InvalidSubmit = 'InvalidSubmit'
+  InvalidSubmit = 'InvalidSubmit',
 }
 
 export class LinearMemoryNavigator extends HTMLElement {

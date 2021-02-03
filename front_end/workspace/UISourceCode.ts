@@ -513,7 +513,7 @@ export enum Events {
   MessageAdded = 'MessageAdded',
   MessageRemoved = 'MessageRemoved',
   LineDecorationAdded = 'LineDecorationAdded',
-  LineDecorationRemoved = 'LineDecorationRemoved'
+  LineDecorationRemoved = 'LineDecorationRemoved',
 }
 
 export class UILocation {

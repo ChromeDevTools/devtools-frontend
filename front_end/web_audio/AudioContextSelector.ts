@@ -151,5 +151,5 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper imp
 }
 
 export const enum Events {
-  ContextSelected = 'ContextSelected'
+  ContextSelected = 'ContextSelected',
 }

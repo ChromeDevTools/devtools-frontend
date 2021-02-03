@@ -55,7 +55,7 @@ export const enum PlayerDetailViewTabs {
   Events = 'events',
   Properties = 'properties',
   Messages = 'messages',
-  Timeline = 'timeline'
+  Timeline = 'timeline',
 }
 
 export class PlayerDetailView extends UI.TabbedPane.TabbedPane implements TriggerHandler {

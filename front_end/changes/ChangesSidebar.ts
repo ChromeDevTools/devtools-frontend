@@ -101,7 +101,7 @@ export class ChangesSidebar extends UI.Widget.Widget {
 }
 
 export const enum Events {
-  SelectedUISourceCodeChanged = 'SelectedUISourceCodeChanged'
+  SelectedUISourceCodeChanged = 'SelectedUISourceCodeChanged',
 }
 
 export class UISourceCodeTreeElement extends UI.TreeOutline.TreeElement {

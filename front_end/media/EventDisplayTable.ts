@@ -41,7 +41,7 @@ export interface EventDisplayColumnConfig {
 export const enum MediaEventColumnKeys {
   Timestamp = 'displayTimestamp',
   Event = 'event',
-  Value = 'value'
+  Value = 'value',
 }
 
 export class EventNode extends DataGrid.DataGrid.DataGridNode<EventNode> {

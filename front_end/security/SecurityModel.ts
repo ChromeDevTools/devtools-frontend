@@ -98,7 +98,7 @@ SDK.SDKModel.SDKModel.register(SecurityModel, SDK.SDKModel.Capability.Security, 
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   SecurityStateChanged = 'SecurityStateChanged',
-  VisibleSecurityStateChanged = 'VisibleSecurityStateChanged'
+  VisibleSecurityStateChanged = 'VisibleSecurityStateChanged',
 }
 
 export const SummaryMessages: {[x: string]: string;} = {

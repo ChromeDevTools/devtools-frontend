@@ -57,7 +57,7 @@ const enum MessageLevelBitfield {
 
   Default = 0b0111,  // Error, Warning, Info
   All = 0b1111,      // Error, Warning, Info, Debug
-  Custom = 0
+  Custom = 0,
 }
 
 interface SelectableLevel {

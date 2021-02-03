@@ -862,7 +862,7 @@ export const GlobalPlaybackRates = [1, 0.25, 0.1];
 export const enum _ControlState {
   Play = 'play-outline',
   Replay = 'replay-outline',
-  Pause = 'pause-outline'
+  Pause = 'pause-outline',
 }
 
 export class NodeUI {

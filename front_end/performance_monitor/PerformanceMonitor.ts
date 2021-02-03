@@ -436,7 +436,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
 
 export const enum Format {
   Percent = 'Percent',
-  Bytes = 'Bytes'
+  Bytes = 'Bytes',
 }
 
 export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
@@ -554,7 +554,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
 }
 
 export const enum Events {
-  MetricChanged = 'MetricChanged'
+  MetricChanged = 'MetricChanged',
 }
 
 let numberFormatter: Intl.NumberFormat;

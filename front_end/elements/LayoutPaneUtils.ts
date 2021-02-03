@@ -4,7 +4,7 @@
 
 export const enum SettingType {
   BOOLEAN = 'boolean',
-  ENUM = 'enum'
+  ENUM = 'enum',
 }
 export interface BaseSettingOption {
   title: string;

@@ -62,7 +62,7 @@ export interface Marker {
 export const enum MarkerType {
   Good = 'Good',
   Medium = 'Medium',
-  Bad = 'Bad'
+  Bad = 'Bad',
 }
 
 export const LINE_HEIGHT = 24;

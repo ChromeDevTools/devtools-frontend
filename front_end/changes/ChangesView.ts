@@ -396,7 +396,7 @@ export const enum RowType {
   Deletion = 'deletion',
   Addition = 'addition',
   Equal = 'equal',
-  Spacer = 'spacer'
+  Spacer = 'spacer',
 }
 
 export class DiffUILocationRevealer implements Common.Revealer.Revealer {

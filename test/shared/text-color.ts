@@ -7,7 +7,7 @@ export const enum TextColor {
   GREEN = 'GREEN',
   RED = 'RED',
   MAGENTA = 'MAGENTA',
-  CYAN = 'CYAN'
+  CYAN = 'CYAN',
 }
 
 export function color(msg: string, color: TextColor) {

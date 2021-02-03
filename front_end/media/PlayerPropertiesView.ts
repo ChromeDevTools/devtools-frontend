@@ -152,7 +152,7 @@ export const enum PlayerPropertyKeys {
   kVideoTracks = 'kVideoTracks',
   kFramerate = 'kFramerate',
   kVideoPlaybackRoughness = 'kVideoPlaybackRoughness',
-  kVideoPlaybackFreezing = 'kVideoPlaybackFreezing'
+  kVideoPlaybackFreezing = 'kVideoPlaybackFreezing',
 }
 
 export class PropertyRenderer extends UI.Widget.VBox {

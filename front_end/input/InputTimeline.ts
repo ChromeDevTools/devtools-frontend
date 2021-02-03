@@ -295,7 +295,7 @@ export const enum State {
   StopPending = 'StopPending',
   Replaying = 'Replaying',
   ReplayPaused = 'ReplayPaused',
-  Loading = 'Loading'
+  Loading = 'Loading',
 }
 
 let actionDelegateInstance: ActionDelegate;

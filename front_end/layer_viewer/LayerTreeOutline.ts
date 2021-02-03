@@ -234,7 +234,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.ObjectWrapper impleme
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
-  PaintProfilerRequested = 'PaintProfilerRequested'
+  PaintProfilerRequested = 'PaintProfilerRequested',
 }
 
 export class LayerTreeElement extends UI.TreeOutline.TreeElement {

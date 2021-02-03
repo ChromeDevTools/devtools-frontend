@@ -12,7 +12,7 @@ import {RecordingSession} from './RecordingSession.js';
 
 const enum RecorderState {
   Recording = 'Recording',
-  Idle = 'Idle'
+  Idle = 'Idle',
 }
 
 export class RecorderModel extends SDK.SDKModel.SDKModel {

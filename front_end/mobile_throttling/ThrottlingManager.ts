@@ -280,7 +280,7 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implem
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
-  RateChanged = 'RateChanged'
+  RateChanged = 'RateChanged',
 }
 let actionDelegateInstance: ActionDelegate;
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {

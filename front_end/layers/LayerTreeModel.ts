@@ -146,7 +146,7 @@ SDK.SDKModel.SDKModel.register(LayerTreeModel, SDK.SDKModel.Capability.DOM, fals
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   LayerTreeChanged = 'LayerTreeChanged',
-  LayerPainted = 'LayerPainted'
+  LayerPainted = 'LayerPainted',
 }
 
 export class AgentLayerTree extends SDK.LayerTreeBase.LayerTreeBase {

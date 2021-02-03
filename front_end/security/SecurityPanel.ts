@@ -928,7 +928,7 @@ export enum OriginGroup {
   MainOrigin = 'MainOrigin',
   NonSecure = 'NonSecure',
   Secure = 'Secure',
-  Unknown = 'Unknown'
+  Unknown = 'Unknown',
 }
 
 export class SecurityPanelSidebarTreeElement extends UI.TreeOutline.TreeElement {

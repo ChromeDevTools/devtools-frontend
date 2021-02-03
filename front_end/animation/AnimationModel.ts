@@ -164,7 +164,7 @@ export class AnimationModel extends SDK.SDKModel.SDKModel {
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   AnimationGroupStarted = 'AnimationGroupStarted',
-  ModelReset = 'ModelReset'
+  ModelReset = 'ModelReset',
 }
 
 export class AnimationImpl {

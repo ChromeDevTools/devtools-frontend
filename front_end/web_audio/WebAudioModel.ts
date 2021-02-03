@@ -135,5 +135,5 @@ export const enum Events {
   NodesConnected = 'NodesConnected',
   NodesDisconnected = 'NodesDisconnected',
   NodeParamConnected = 'NodeParamConnected',
-  NodeParamDisconnected = 'NodeParamDisconnected'
+  NodeParamDisconnected = 'NodeParamDisconnected',
 }

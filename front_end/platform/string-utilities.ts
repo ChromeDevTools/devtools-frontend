@@ -117,7 +117,7 @@ export const tokenizeFormatString = function(
   return tokens;
 };
 
-type FormatterFunction<T> = (input: string|{description: string}|undefined|T, token: FormatterToken) => unknown;
+export type FormatterFunction<T> = (input: string|{description: string}|undefined|T, token: FormatterToken) => unknown;
 
 export const format = function<T, U>(
     formatString: string, substitutions: ArrayLike<U>|null, formatters: Record<string, FormatterFunction<U>>,

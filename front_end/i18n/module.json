@@ -2,8 +2,6 @@
   "dependencies": [
     "platform"
   ],  "modules":[
-    "i18n.js",
-    "i18nImpl.js",
     "../third_party/i18n/i18n.js"
   ]
 }

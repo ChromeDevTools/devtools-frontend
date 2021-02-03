@@ -653,6 +653,7 @@ grd_files_debug_sources = [
   "front_end/host/ResourceLoader.js",
   "front_end/host/UserMetrics.js",
   "front_end/i18n/i18nImpl.js",
+  "front_end/i18n/i18nTypes.js",
   "front_end/inline_editor/BezierEditor.js",
   "front_end/inline_editor/BezierUI.js",
   "front_end/inline_editor/CSSAngle.js",

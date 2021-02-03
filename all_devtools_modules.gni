@@ -225,6 +225,7 @@ all_typescript_module_sources = [
   "host/ResourceLoader.js",
   "host/UserMetrics.js",
   "i18n/i18nImpl.js",
+  "i18n/i18nTypes.js",
   "inline_editor/BezierEditor.js",
   "inline_editor/BezierUI.js",
   "inline_editor/CSSAngle.js",

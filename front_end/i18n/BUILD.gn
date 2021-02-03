@@ -8,7 +8,10 @@ import("../../scripts/build/ninja/devtools_module.gni")
 import("../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_module("i18n") {
-  sources = [ "i18nImpl.js" ]
+  sources = [
+    "i18nImpl.ts",
+    "i18nTypes.ts",
+  ]
 
   deps = [
     "../platform:bundle",
@@ -17,7 +20,7 @@ devtools_module("i18n") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "i18n.js"
+  entrypoint = "i18n.ts"
   deps = [
     ":i18n",
     ":i18n_locales",

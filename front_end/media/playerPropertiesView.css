@@ -25,7 +25,7 @@
 .media-property-renderer-contents {
   position: absolute;
   left: 200px;
-  overflow: hidden;
+  overflow-x: hidden;
   height: 20px;
 }
 

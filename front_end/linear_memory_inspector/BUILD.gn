@@ -23,9 +23,9 @@ devtools_module("linear_memory_inspector") {
     "../common:bundle",
     "../component_helpers:bundle",
     "../components:bundle",
-    "../elements:bundle",
     "../i18n:bundle",
     "../third_party/lit-html:bundle",
+    "../ui/components:bundle",
   ]
 
   visibility = [ "../component_docs/*" ]

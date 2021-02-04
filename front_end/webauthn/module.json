@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "data_grid",
-    "i18n",
     "platform",
     "ui",
     "host"

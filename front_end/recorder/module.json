@@ -1,8 +1,6 @@
 {
   "dependencies": [
-    "i18n",
     "ui",
-    "i18n",
     "persistence",
     "accessibility",
     "elements"

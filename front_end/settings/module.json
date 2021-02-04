@@ -19,8 +19,7 @@
     }
   ],
   "dependencies": [
-    "components",
-    "i18n"
+    "components"
   ],
   "modules": [
     "settings-legacy.js"

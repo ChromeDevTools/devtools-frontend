@@ -28,8 +28,7 @@
     "mobile_throttling",
     "network",
     "sources",
-    "browser_sdk",
-    "i18n"
+    "browser_sdk"
   ],
   "modules": [
     "resources-legacy.js"

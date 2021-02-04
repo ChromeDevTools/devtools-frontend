@@ -8,7 +8,6 @@
     }
   ],
   "dependencies": [
-    "i18n",
     "quick_open",
     "persistence"
   ],

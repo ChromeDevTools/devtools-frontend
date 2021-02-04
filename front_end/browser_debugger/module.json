@@ -42,8 +42,7 @@
   "dependencies": [
     "elements",
     "sources",
-    "console",
-    "i18n"
+    "console"
   ],
   "modules": [
     "browser_debugger-legacy.js"

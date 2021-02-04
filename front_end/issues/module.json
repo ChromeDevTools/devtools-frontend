@@ -13,7 +13,6 @@
     "browser_sdk",
     "components",
     "host",
-    "i18n",
     "network",
     "platform",
     "sdk",

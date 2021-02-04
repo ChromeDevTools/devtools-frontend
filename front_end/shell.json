@@ -6,7 +6,6 @@
     { "name": "dom_extension", "type": "autostart" },
     { "name": "extensions", "type": "autostart" },
     { "name": "host", "type": "autostart" },
-    { "name": "i18n", "type": "autostart" },
     { "name": "main", "type": "autostart" },
     { "name": "persistence", "type": "autostart" },
     { "name": "platform", "type": "autostart" },

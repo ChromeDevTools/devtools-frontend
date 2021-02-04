@@ -9,7 +9,6 @@
     }
   ],
   "dependencies": [
-    "i18n",
     "ui",
     "sdk",
     "components",

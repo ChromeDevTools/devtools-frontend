@@ -8,7 +8,6 @@
     "SourceFrameIssuesManager.js"
   ],
   "dependencies": [
-    "i18n",
     "sdk"
   ],
   "resources": [

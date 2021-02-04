@@ -4,7 +4,6 @@
   ],
   "dependencies": [
     "heap_snapshot_model",
-    "i18n",
     "platform"
   ]
 }

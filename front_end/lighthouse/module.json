@@ -3,7 +3,6 @@
     "components",
     "emulation",
     "timeline",
-    "i18n",
     "inspector_main",
     "sdk",
     "services",

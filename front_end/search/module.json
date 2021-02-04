@@ -1,7 +1,6 @@
 {
   "dependencies": [
-    "components",
-    "i18n"
+    "components"
   ],
   "modules": [
     "search-legacy.js"

@@ -1,6 +1,5 @@
 {
   "modules": [],
-  "dependencies":["i18n"],
   "resources": [
     "accessibilityNode.css",
     "accessibilityProperties.css",

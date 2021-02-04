@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "host",
-    "i18n",
     "platform"
   ],
   "modules": [

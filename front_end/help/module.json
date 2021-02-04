@@ -18,7 +18,6 @@
     }
   ],
   "dependencies": [
-    "i18n",
     "ui",
     "host"
   ],

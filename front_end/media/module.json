@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "i18n",
     "components",
     "sdk",
     "ui",

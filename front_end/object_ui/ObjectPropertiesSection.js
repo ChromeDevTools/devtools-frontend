@@ -389,15 +389,20 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
    * @param {!SDK.RemoteObject.RemoteObject} obj
    */
   static appendMemoryIcon(element, obj) {
-    if (obj.type !== 'object' || !obj.subtype) {
-      return;
-    }
-    if (!LinearMemoryInspector.LinearMemoryInspectorController.ACCEPTED_MEMORY_TYPES.includes(obj.subtype)) {
+    // We show the memory icon only on ArrayBuffer and WebAssembly.Memory instances.
+    // TypedArrays DataViews are also supported, but showing the icon next to their
+    // previews is quite a significant visual overhead, and users can easily get to
+    // their buffers and open the memory inspector from there.
+    if (obj.type !== 'object' || (obj.subtype !== 'arraybuffer' && obj.subtype !== 'webassemblymemory')) {
       return;
     }
     const memoryIcon = new WebComponents.Icon.Icon();
-    memoryIcon
-        .data = {iconName: 'ic_memory_16x16', color: 'var(--color-text-secondary)', width: '13px', height: '13px'};
+    memoryIcon.data = {
+      iconName: 'ic_memory_16x16',
+      color: 'var(--color-text-secondary)',
+      width: '13px',
+      height: '13px',
+    };
     memoryIcon.onclick = event => {
       LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance()
           .openInspectorView(obj, 0);

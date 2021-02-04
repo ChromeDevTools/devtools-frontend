@@ -1,6 +1,5 @@
 {
   "modules" : [
-    { "name": "bindings", "type": "autostart" },
     { "name": "browser_sdk", "type": "autostart" },
     { "name": "common", "type": "autostart" },
     { "name": "components", "type": "autostart"},

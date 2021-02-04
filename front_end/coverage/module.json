@@ -7,7 +7,6 @@
     }
   ],
   "dependencies": [
-    "bindings",
     "common",
     "data_grid",
     "formatter",

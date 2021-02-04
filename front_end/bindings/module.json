@@ -1,9 +1,0 @@
-{
-  "dependencies": [
-    "sdk",
-    "platform",
-    "services",
-    "workspace"
-  ],
-  "modules": []
-}

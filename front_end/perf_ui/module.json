@@ -21,7 +21,6 @@
     "i18n",
     "ui",
     "sdk",
-    "bindings",
     "source_frame",
     "text_editor"
   ],

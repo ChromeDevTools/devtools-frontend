@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "i18n",
-    "bindings",
     "workspace",
     "components",
     "sdk"

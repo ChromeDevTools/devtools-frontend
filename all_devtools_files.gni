@@ -50,7 +50,6 @@ all_devtools_files = [
   "front_end/bindings_test_runner/module.json",
   "front_end/bindings_test_runner/OverridesTestRunner.js",
   "front_end/bindings_test_runner/PersistenceTestRunner.js",
-  "front_end/bindings/module.json",
   "front_end/browser_debugger/domBreakpointsSidebarPane.css",
   "front_end/browser_debugger/categorizedBreakpointsSidebarPane.css",
   "front_end/browser_debugger/module.json",

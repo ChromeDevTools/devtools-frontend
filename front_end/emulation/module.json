@@ -27,7 +27,6 @@
     }
   ],
   "dependencies": [
-    "bindings",
     "components",
     "host",
     "platform",

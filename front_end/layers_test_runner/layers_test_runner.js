@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../test_runner/test_runner.js';
+import '../layers/layers-legacy.js';
+import '../elements/elements-legacy.js';
+import '../components/components-legacy.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */

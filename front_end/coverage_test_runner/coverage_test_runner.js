@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../test_runner/test_runner.js';
+import '../coverage/coverage-legacy.js';
+import '../sources_test_runner/sources_test_runner.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */

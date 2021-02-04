@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../test_runner/test_runner.js';
+import '../console/console-legacy.js';
+import '../object_ui/object_ui-legacy.js';
+import '../console_counters/console_counters-legacy.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */

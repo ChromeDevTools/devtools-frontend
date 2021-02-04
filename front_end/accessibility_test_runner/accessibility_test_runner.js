@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../test_runner/test_runner.js';
+import '../accessibility/accessibility-legacy.js';
+import '../elements_test_runner/elements_test_runner.js';
+import '../i18n/i18n.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */

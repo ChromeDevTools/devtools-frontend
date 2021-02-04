@@ -2,5 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../test_runner/test_runner.js';
+import '../extensions/extensions-legacy.js';
+
 import './ExtensionsNetworkTestRunner.js';
 import './ExtensionsTestRunner.js';

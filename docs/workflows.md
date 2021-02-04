@@ -30,7 +30,7 @@ gn gen out/Default
 autoninja -C out/Default
 ```
 
-The resulting build artifacts can be found in `out/Default/resources/inspector`.
+The resulting build artifacts can be found in `out/Default/gen/front_end`.
 
 #### Update to latest
 
@@ -52,10 +52,10 @@ This works with Chromium 79 or later.
 **(Requires `brew install coreutils` on Mac.)**
 
 ```bash
-<path-to-chrome>/chrome --custom-devtools-frontend=file://$(realpath out/Default/resources/inspector)
+<path-to-chrome>/chrome --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
 ```
 
-Note that `$(realpath out/Default/resources/inspector)` expands to the absolute path to build artifacts for DevTools frontend.
+Note that `$(realpath out/Default/gen/front_end)` expands to the absolute path to build artifacts for DevTools frontend.
 
 Open DevTools via F12 on Windows/Linux or Cmd+Option+I on Mac.
 
@@ -67,7 +67,7 @@ Tip: You can inspect DevTools with DevTools by undocking DevTools and then openi
 
 This works with Chromium 85 or later.
 
-Serve the content of `out/Default/resources/inspector` on a web server, e.g. via `python -m http.server`.
+Serve the content of `out/Default/gen/front_end` on a web server, e.g. via `python -m http.server`.
 
 Then point to that web server when starting Chromium, for example:
 
@@ -79,7 +79,7 @@ Open DevTools via F12 on Windows/Linux or Cmd+Option+I on Mac.
 
 ##### Running in hosted mode
 
-Serve the content of `out/Default/resources/inspector` on a web server, e.g. via `python -m http.server`.
+Serve the content of `out/Default/gen/front_end` on a web server, e.g. via `python -m http.server`.
 
 Then point to that web server when starting Chromium, for example:
 
@@ -208,7 +208,9 @@ Follow [instructions](https://www.chromium.org/developers/how-tos/get-the-code) 
 
 #### Build
 
-Refer to [instructions](https://www.chromium.org/developers/how-tos/get-the-code) to build Chromium. To only build DevTools frontend, use `devtools_frontend_resources` as build target. The resulting build artifacts for DevTools frontend can be found in `out/Default/resources/inspector`.
+Refer to [instructions](https://www.chromium.org/developers/how-tos/get-the-code) to build Chromium.
+To only build DevTools frontend, use `devtools_frontend_resources` as build target.
+The resulting build artifacts for DevTools frontend can be found in `out/Default/gen/third_party/devtools-frontend/src/front_end`.
 
 #### Run
 

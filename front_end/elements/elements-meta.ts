@@ -6,6 +6,7 @@ import * as Common from '../common/common.js';
 import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
+import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -301,6 +302,13 @@ Common.Settings.registerSettingExtension({
 });
 
 UI.ContextMenu.registerProvider({
+  async contextTypes() {
+    return [
+      SDK.RemoteObject.RemoteObject,
+      SDK.DOMModel.DOMNode,
+      SDK.DOMModel.DeferredDOMNode,
+    ];
+  },
   async loadProvider() {
     const Elements = await loadElementsModule();
     return Elements.ElementsPanel.ContextMenuProvider.instance();

@@ -628,7 +628,7 @@ export class ContextMenu extends SubMenu {
     // promises. Since the `_pendingTargets` array requires each of its indices
     // to have a matching array of providers, we need to duplicate the target
     // in that array as well.
-    this._pendingPromises.push(loadRegisteredProviders());
+    this._pendingPromises.push(loadApplicableRegisteredProviders(target));
     this._pendingTargets.push(target);
   }
 }
@@ -662,13 +662,36 @@ export function registerProvider(registration) {
   registeredProviders.push(registration);
 }
 
-async function loadRegisteredProviders() {
-  return Promise.all(registeredProviders.map(registration => registration.loadProvider()));
+/**
+ * @param {!Object} target
+ * @return {!Promise<Array<Provider>>} target
+ */
+async function loadApplicableRegisteredProviders(target) {
+  const markedIndices = await Promise.all(registeredProviders.map(isProviderApplicableToContextTypes));
+  return Promise.all(
+      registeredProviders.filter((_, i) => markedIndices[i]).map(registration => registration.loadProvider()));
+
+  /**
+   * @param {!ProviderRegistration} providerRegistration
+   * @return {Promise<boolean>}
+   */
+  async function isProviderApplicableToContextTypes(providerRegistration) {
+    if (!providerRegistration.contextTypes) {
+      return true;
+    }
+    for (const contextType of await providerRegistration.contextTypes()) {
+      if (target instanceof contextType) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 /**
  * @typedef {{
- *   loadProvider: function(): !Promise<!Provider>
+ *  contextTypes: function(): !Promise<!Array<?>>
+ *  loadProvider: function(): !Promise<!Provider>
  * }} */
 // @ts-ignore typedef
 export let ProviderRegistration;

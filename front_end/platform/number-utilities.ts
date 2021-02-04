@@ -5,13 +5,7 @@
 import * as StringUtilities from './string-utilities.js';
 import {localize} from './UIString.js';
 
-/**
- * @param {number} num
- * @param {number} min
- * @param {number} max
- * @return {number}
- */
-export const clamp = (num, min, max) => {
+export const clamp = (num: number, min: number, max: number): number => {
   let clampedNumber = num;
   if (num < min) {
     clampedNumber = min;
@@ -21,20 +15,11 @@ export const clamp = (num, min, max) => {
   return clampedNumber;
 };
 
-/**
- * @param {number} m
- * @param {number} n
- * @return {number}
- */
-export const mod = (m, n) => {
+export const mod = (m: number, n: number): number => {
   return ((m % n) + n) % n;
 };
 
-/**
- * @param {number} bytes
- * @return {string}
- */
-export const bytesToString = bytes => {
+export const bytesToString = (bytes: number): string => {
   if (bytes < 1000) {
     return StringUtilities.vsprintf(localize('%.0f\xA0B'), [bytes]);
   }
@@ -54,11 +39,7 @@ export const bytesToString = bytes => {
   return StringUtilities.vsprintf(localize('%.0f\xA0MB'), [megabytes]);
 };
 
-/**
- * @param {string} value
- * @return {string}
- */
-export const toFixedIfFloating = value => {
+export const toFixedIfFloating = (value: string): string => {
   if (!value || Number.isNaN(Number(value))) {
     return value;
   }
@@ -68,12 +49,8 @@ export const toFixedIfFloating = value => {
 
 /**
  * Rounds a number (including float) down.
- *
- * @param {number} value
- * @param {number} precision
- * @return {number}
  */
-export const floor = (value, precision = 0) => {
+export const floor = (value: number, precision: number = 0): number => {
   const mult = Math.pow(10, precision);
   return Math.floor(value * mult) / mult;
 };

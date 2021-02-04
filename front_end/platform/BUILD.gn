@@ -12,7 +12,7 @@ devtools_module("platform") {
     "date-utilities.ts",
     "keyboard-utilities.ts",
     "map-utilities.ts",
-    "number-utilities.js",
+    "number-utilities.ts",
     "set-utilities.ts",
     "string-utilities.ts",
     "typescript-utilities.ts",

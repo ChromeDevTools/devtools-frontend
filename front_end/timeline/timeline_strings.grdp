@@ -21,6 +21,9 @@
   <message name="IDS_DEVTOOLS_01ea16e89d02c33ef2a6a5db67665e0a" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Main — <ph name="TRACK_URL">$1s<ex>example.com</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_02a3a357710cc2a5dfdfb74ed012fb59" desc="Text in Timeline UIUtils of the Performance panel">
+    Url
+  </message>
   <message name="IDS_DEVTOOLS_040c4b52a3c06c6067fac76c4c7c3a2c" desc="Title of the 'Network conditions' tool in the bottom drawer">
     Network conditions
   </message>
@@ -824,6 +827,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_ac5bb077c33753116b5e91ff1766e7bc" desc="Text in Timeline Panel of the Performance panel">
     Received
+  </message>
+  <message name="IDS_DEVTOOLS_ad921d60486366258809553a3db49a4a" desc="Text in Object Properties Section">
+    unknown
   </message>
   <message name="IDS_DEVTOOLS_aed0e2bd848c2ac9dddb03d8c21c67b6" desc="Text in Timeline UIUtils of the Performance panel">
     Touch Cancel

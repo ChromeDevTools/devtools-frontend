@@ -4,13 +4,21 @@
 
 import * as BrowserSDK from '../browser_sdk/browser_sdk.js';
 import * as Common from '../common/common.js';  // eslint-disable-line no-unused-vars
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 import {ComboBoxOfCheckBoxes} from './ComboBoxOfCheckBoxes.js';
 import {CSPViolationsListView} from './CSPViolationsListView.js';
 
+export const UIStrings = {
+  /**
+  *@description Text to filter result items
+  */
+  filter: 'Filter',
+};
+const str_ = i18n.i18n.registerUIStrings('issues/CSPViolationsView.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let cspViolationsViewInstance: CSPViolationsView;
 export class CSPViolationsView extends UI.Widget.VBox {
   private listView = new CSPViolationsListView();
@@ -25,7 +33,7 @@ export class CSPViolationsView extends UI.Widget.VBox {
     this.contentElement.classList.add('csp-violations-pane');
 
     const topToolbar = new UI.Toolbar.Toolbar('csp-violations-toolbar', this.contentElement);
-    const textFilterUI = new UI.Toolbar.ToolbarInput(ls`Filter`, '', 1, .2, '');
+    const textFilterUI = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.filter), '', 1, .2, '');
     textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, () => {
       this.listView.updateTextFilter(textFilterUI.value());
     });

@@ -23,6 +23,7 @@ devtools_module("issues") {
     "MarkdownLink.ts",
     "MarkdownLinksMap.ts",
     "MarkdownView.ts",
+    "ModuleUIStrings.js",
   ]
 
   deps = [
@@ -30,6 +31,7 @@ devtools_module("issues") {
     "../common:bundle",
     "../components:bundle",
     "../elements:bundle",
+    "../i18n:bundle",
     "../network:bundle",
     "../sdk:bundle",
     "../third_party/lit-html:bundle",

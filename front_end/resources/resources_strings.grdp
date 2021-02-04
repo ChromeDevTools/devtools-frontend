@@ -205,6 +205,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_45e035baf33a8e403766a606457f8b10" desc="Text in App Manifest View of the Application panel">
     Theme color
   </message>
+  <message name="IDS_DEVTOOLS_49ee3087348e8d44e1feda1917443987" desc="Text for the name of something">
+    Name
+  </message>
   <message name="IDS_DEVTOOLS_4e2c9304fbfcf372640326c445711323" desc="Title for filter in the Cookies View of the Application panel">
     Only show cookies which have an associated issue
   </message>

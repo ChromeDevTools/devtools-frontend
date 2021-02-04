@@ -262,6 +262,7 @@ all_typescript_module_sources = [
   "issues/MarkdownLink.js",
   "issues/MarkdownLinksMap.js",
   "issues/MarkdownView.js",
+  "issues/ModuleUIStrings.js",
   "javascript_metadata/JavaScriptMetadata.js",
   "javascript_metadata/NativeFunctions.js",
   "js_main/JsMain.js",

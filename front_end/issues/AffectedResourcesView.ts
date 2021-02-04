@@ -5,14 +5,34 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Network from '../network/network.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
 import {IssueView} from './IssuesPane.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Object Properties Section
+  */
+  unknown: 'unknown',
+  /**
+  *@description Tooltip for button linking to the Elements panel
+  */
+  clickToRevealTheFramesDomNodeIn: 'Click to reveal the frame\'s DOM node in the Elements panel',
+  /**
+  *@description Title for a link to a request in the network panel
+  */
+  clickToShowRequestInTheNetwork: 'Click to show request in the network panel',
+  /**
+  *@description Title for an unavailable link a request in the network panel
+  */
+  requestUnavailableInTheNetwork: 'Request unavailable in the network panel, try reloading the inspected page',
+};
+const str_ = i18n.i18n.registerUIStrings('issues/AffectedResourcesView.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const enum AffectedItem {
   Cookie = 'Cookie',
@@ -175,7 +195,7 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
 
   protected createFrameCell(frameId: Protocol.Page.FrameId, issue: SDK.Issue.Issue): HTMLElement {
     const frame = this.resolveFrameId(frameId);
-    const url = frame && (frame.unreachableUrl() || frame.url) || ls`unknown`;
+    const url = frame && (frame.unreachableUrl() || frame.url) || i18nString(UIStrings.unknown);
 
     const frameCell = document.createElement('td');
     frameCell.classList.add('affected-resource-cell');
@@ -193,7 +213,7 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
           }
         }
       };
-      UI.Tooltip.Tooltip.install(icon, ls`Click to reveal the frame's DOM node in the Elements panel`);
+      UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.clickToRevealTheFramesDomNodeIn));
       frameCell.appendChild(icon);
     }
     frameCell.appendChild(document.createTextNode(url));
@@ -227,9 +247,9 @@ export class AffectedResourcesView extends UI.TreeOutline.TreeElement {
       icon.classList.add('link');
       url = request.url();
       filename = extractShortPath(url);
-      UI.Tooltip.Tooltip.install(icon, ls`Click to show request in the network panel`);
+      UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.clickToShowRequestInTheNetwork));
     } else {
-      UI.Tooltip.Tooltip.install(icon, ls`Request unavailable in the network panel, try reloading the inspected page`);
+      UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestUnavailableInTheNetwork));
       icon.classList.add('unavailable');
     }
     if (url) {

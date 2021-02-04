@@ -7,9 +7,9 @@ import * as Common from '../common/common.js';  // eslint-disable-line no-unused
 import * as Components from '../components/components.js';
 import * as Elements from '../elements/elements.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Network from '../network/network.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
@@ -21,13 +21,224 @@ import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebAc
 import {AggregatedIssue, Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';  // eslint-disable-line no-unused-vars
 import {createIssueDescriptionFromMarkdown, IssueDescription} from './MarkdownIssueDescription.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Singular label for number of affected directive resource indication in issue view
+  */
+  directive: 'directive',
+  /**
+  *@description Plural label for number of affected directive resource indication in issue view
+  */
+  directives: 'directives',
+  /**
+  *@description Indicates that a CSP error should be treated as a warning
+  */
+  reportonly: 'report-only',
+  /**
+  *@description The kind of resolution for a mixed content issue
+  */
+  blocked: 'blocked',
+  /**
+  *@description Tooltip for button linking to the Elements panel
+  */
+  clickToRevealTheViolatingDomNode: 'Click to reveal the violating DOM node in the Elements panel',
+  /**
+  *@description Header for the section listing affected directives
+  */
+  directiveC: 'Directive',
+  /**
+  *@description Label for the column in the element list in the CSS Overview report
+  */
+  element: 'Element',
+  /**
+  *@description Header for the source location column
+  */
+  sourceLocation: 'Source Location',
+  /**
+  *@description Text for the status of something
+  */
+  status: 'Status',
+  /**
+  *@description Text that refers to the resources of the web page
+  */
+  resourceC: 'Resource',
+  /**
+  *@description Label for number of affected resources indication in issue view
+  */
+  cookie: 'cookie',
+  /**
+  *@description Label for number of affected resources indication in issue view
+  */
+  cookies: 'cookies',
+  /**
+  *@description Text for the name of something
+  */
+  name: 'Name',
+  /**
+  *@description Text for the domain of a website
+  */
+  domain: 'Domain',
+  /**
+  *@description Text that refers to a file path
+  */
+  path: 'Path',
+  /**
+  *@description A tag of Enable Local Overrides setting that can be searched in the command menu
+  */
+  request: 'request',
+  /**
+  *@description Label for number of affected resources indication in issue view
+  */
+  requests: 'requests',
+  /**
+  *@description Singular label for number of affected source resource indication in issue view
+  */
+  source: 'source',
+  /**
+  *@description Plural label for number of affected source resource indication in issue view
+  */
+  sources: 'sources',
+  /**
+  *@description Label for number of affected resources indication in issue view
+  */
+  resource: 'resource',
+  /**
+  *@description Label for number of affected resources indication in issue view
+  */
+  resources: 'resources',
+  /**
+  *@description Label for mixed content issue's restriction status
+  */
+  restrictionStatus: 'Restriction Status',
+  /**
+  *@description Title for a column in an Heavy Ads issue view
+  */
+  limitExceeded: 'Limit exceeded',
+  /**
+  *@description Title for a column in an Heavy Ads issue view
+  */
+  resolutionStatus: 'Resolution Status',
+  /**
+  *@description Title for a column in an Heavy Ads issue view
+  */
+  frameUrl: 'Frame URL',
+  /**
+  *@description The kind of resolution for a Heavy Ads issue
+  */
+  removed: 'Removed',
+  /**
+  *@description The kind of resolution for a Heavy Ads issue
+  */
+  warned: 'Warned',
+  /**
+  *@description Reason for a Heavy Ad being flagged in issue view
+  */
+  cpuPeakLimit: 'CPU peak limit',
+  /**
+  *@description Reason for a Heavy Ad being flagged in issue view
+  */
+  cpuTotalLimit: 'CPU total limit',
+  /**
+  *@description Reason for a Heavy Ad being flagged in issue view
+  */
+  networkLimit: 'Network limit',
+  /**
+  *@description Label for the category of affected resources in issue view
+  */
+  requestC: 'Request',
+  /**
+  *@description Title for a column in an issue view
+  */
+  parentFrame: 'Parent Frame',
+  /**
+  *@description Title for a column in an issue view
+  */
+  blockedResource: 'Blocked Resource',
+  /**
+  *@description Category title for a group of cross origin embedder policy (COEP) issues
+  */
+  crossOriginEmbedderPolicy: 'Cross Origin Embedder Policy',
+  /**
+  *@description Category title for a group of mixed content issues
+  */
+  mixedContent: 'Mixed Content',
+  /**
+  *@description Category title for a group of SameSite cookie issues
+  */
+  samesiteCookie: 'SameSite Cookie',
+  /**
+  *@description Category title for a group of heavy ads issues
+  */
+  heavyAds: 'Heavy Ads',
+  /**
+  *@description Category title for a group of content security policy (CSP) issues
+  */
+  contentSecurityPolicy: 'Content Security Policy',
+  /**
+  *@description Category title for a group of trusted web activity issues
+  */
+  trustedWebActivity: 'Trusted Web Activity',
+  /**
+  *@description Text for other types of items
+  */
+  other: 'Other',
+  /**
+  *@description Header for the section listing affected resources
+  */
+  affectedResources: 'Affected Resources',
+  /**
+  *@description Title for a link to further information in issue view
+  *@example {SameSite Cookies Explained} PH1
+  */
+  learnMoreS: 'Learn more: {PH1}',
+  /**
+  *@description Link text for opening a survey in the expended view of an Issue in the issue view
+  */
+  isThisIssueMessageHelpfulToYou: 'Is this issue message helpful to you?',
+  /**
+  *@description Title for a checkbox which toggles grouping by category in the issues tab
+  */
+  groupDisplayedIssuesUnder: 'Group displayed issues under associated categories',
+  /**
+  *@description Label for a checkbox which toggles grouping by category in the issues tab
+  */
+  groupByCategory: 'Group by category',
+  /**
+  *@description Title for a checkbox. Whether the issues tab should include third-party issues or not.
+  */
+  includeCookieIssuesCausedBy: 'Include cookie Issues caused by third-party sites',
+  /**
+  *@description Label for a checkbox. Whether the issues tab should include third-party issues or not.
+  */
+  includeThirdpartyCookieIssues: 'Include third-party cookie issues',
+  /**
+  *@description Tooltip shown for the issues count in several places of the UI
+  *@example {1} PH1
+  */
+  issuesPertainingToSOperation: 'Issues pertaining to {PH1} operation detected.',
+  /**
+  *@description Tooltip shown for the issues count in several places of the UI
+  *@example {13} PH1
+  */
+  issuesPertainingToSOperations: 'Issues pertaining to {PH1} operations detected.',
+  /**
+  *@description Label on the issues tab
+  */
+  onlyThirdpartyCookieIssues: 'Only third-party cookie issues detected so far',
+  /**
+  *@description Label in the issues panel
+  */
+  noIssuesDetectedSoFar: 'No issues detected so far',
+};
+const str_ = i18n.i18n.registerUIStrings('issues/IssuesPane.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 class AffectedDirectivesView extends AffectedResourcesView {
   /**
    * @param {!IssueView} parent
    * @param {!AggregatedIssue} issue
    */
   constructor(parent, issue) {
-    super(parent, {singular: ls`directive`, plural: ls`directives`});
+    super(parent, {singular: i18nString(UIStrings.directive), plural: i18nString(UIStrings.directives)});
     /** @type {!AggregatedIssue} */
     this._issue = issue;
   }
@@ -40,10 +251,10 @@ class AffectedDirectivesView extends AffectedResourcesView {
     const status = document.createElement('td');
     if (isReportOnly) {
       status.classList.add('affected-resource-report-only-status');
-      status.textContent = ls`report-only`;
+      status.textContent = i18nString(UIStrings.reportonly);
     } else {
       status.classList.add('affected-resource-blocked-status');
-      status.textContent = ls`blocked`;
+      status.textContent = i18nString(UIStrings.blocked);
     }
     element.appendChild(status);
   }
@@ -78,8 +289,7 @@ class AffectedDirectivesView extends AffectedResourcesView {
     const elementsPanelLinkComponent = new Elements.ElementsPanelLink.ElementsPanelLink();
     if (nodeId) {
       const violatingNodeId = nodeId;
-      UI.Tooltip.Tooltip.install(
-          elementsPanelLinkComponent, ls`Click to reveal the violating DOM node in the Elements panel`);
+      UI.Tooltip.Tooltip.install(elementsPanelLinkComponent, i18nString(UIStrings.clickToRevealTheViolatingDomNode));
 
       /** @type {function(!Event=):void} */
       const onElementRevealIconClick = () => {
@@ -123,26 +333,26 @@ class AffectedDirectivesView extends AffectedResourcesView {
   _appendAffectedContentSecurityPolicyDetails(cspIssues) {
     const header = document.createElement('tr');
     if (this._issue.code() === SDK.ContentSecurityPolicyIssue.inlineViolationCode) {
-      this.appendColumnTitle(header, ls`Directive`);
-      this.appendColumnTitle(header, ls`Element`);
-      this.appendColumnTitle(header, ls`Source Location`);
-      this.appendColumnTitle(header, ls`Status`);
+      this.appendColumnTitle(header, i18nString(UIStrings.directiveC));
+      this.appendColumnTitle(header, i18nString(UIStrings.element));
+      this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
+      this.appendColumnTitle(header, i18nString(UIStrings.status));
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.urlViolationCode) {
-      this.appendColumnTitle(header, ls`Resource`, 'affected-resource-directive-info-header');
-      this.appendColumnTitle(header, ls`Status`);
-      this.appendColumnTitle(header, ls`Directive`);
-      this.appendColumnTitle(header, ls`Source Location`);
+      this.appendColumnTitle(header, i18nString(UIStrings.resourceC), 'affected-resource-directive-info-header');
+      this.appendColumnTitle(header, i18nString(UIStrings.status));
+      this.appendColumnTitle(header, i18nString(UIStrings.directiveC));
+      this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.evalViolationCode) {
-      this.appendColumnTitle(header, ls`Source Location`);
-      this.appendColumnTitle(header, ls`Directive`);
-      this.appendColumnTitle(header, ls`Status`);
+      this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
+      this.appendColumnTitle(header, i18nString(UIStrings.directiveC));
+      this.appendColumnTitle(header, i18nString(UIStrings.status));
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesSinkViolationCode) {
-      this.appendColumnTitle(header, ls`Source Location`);
-      this.appendColumnTitle(header, ls`Status`);
+      this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
+      this.appendColumnTitle(header, i18nString(UIStrings.status));
     } else if (this._issue.code() === SDK.ContentSecurityPolicyIssue.trustedTypesPolicyViolationCode) {
-      this.appendColumnTitle(header, ls`Source Location`);
-      this.appendColumnTitle(header, ls`Directive`);
-      this.appendColumnTitle(header, ls`Status`);
+      this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
+      this.appendColumnTitle(header, i18nString(UIStrings.directiveC));
+      this.appendColumnTitle(header, i18nString(UIStrings.status));
     } else {
       this.updateAffectedResourceCount(0);
       return;
@@ -210,7 +420,7 @@ class AffectedCookiesView extends AffectedResourcesView {
    * @param {!AggregatedIssue} issue
    */
   constructor(parent, issue) {
-    super(parent, {singular: ls`cookie`, plural: ls`cookies`});
+    super(parent, {singular: i18nString(UIStrings.cookie), plural: i18nString(UIStrings.cookies)});
     /** @type {!AggregatedIssue} */
     this._issue = issue;
   }
@@ -220,11 +430,9 @@ class AffectedCookiesView extends AffectedResourcesView {
    */
   _appendAffectedCookies(cookies) {
     const header = document.createElement('tr');
-    this.appendColumnTitle(header, ls`Name`);
+    this.appendColumnTitle(header, i18nString(UIStrings.name));
     this.appendColumnTitle(
-        header,
-        ls`Domain` +
-            ' & ' + ls`Path`,
+        header, i18nString(UIStrings.domain) + ' & ' + i18nString(UIStrings.path),
         'affected-resource-cookie-info-header');
 
     this.affectedResources.appendChild(header);
@@ -290,7 +498,7 @@ class AffectedRequestsView extends AffectedResourcesView {
    * @param {!SDK.Issue.Issue} issue
    */
   constructor(parent, issue) {
-    super(parent, {singular: ls`request`, plural: ls`requests`});
+    super(parent, {singular: i18nString(UIStrings.request), plural: i18nString(UIStrings.requests)});
     /** @type {!SDK.Issue.Issue} */
     this._issue = issue;
   }
@@ -349,7 +557,7 @@ class AffectedSourcesView extends AffectedResourcesView {
    * @param {!SDK.Issue.Issue} issue
    */
   constructor(parent, issue) {
-    super(parent, {singular: ls`source`, plural: ls`sources`});
+    super(parent, {singular: i18nString(UIStrings.source), plural: i18nString(UIStrings.sources)});
     /** @type {!SDK.Issue.Issue} */
     this._issue = issue;
   }
@@ -410,7 +618,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
    * @param {!SDK.Issue.Issue} issue
    */
   constructor(parent, issue) {
-    super(parent, {singular: ls`resource`, plural: ls`resources`});
+    super(parent, {singular: i18nString(UIStrings.resource), plural: i18nString(UIStrings.resources)});
     /** @type {!SDK.Issue.Issue} */
     this._issue = issue;
   }
@@ -420,8 +628,8 @@ class AffectedMixedContentView extends AffectedResourcesView {
    */
   _appendAffectedMixedContents(mixedContents) {
     const header = document.createElement('tr');
-    this.appendColumnTitle(header, ls`Name`);
-    this.appendColumnTitle(header, ls`Restriction Status`);
+    this.appendColumnTitle(header, i18nString(UIStrings.name));
+    this.appendColumnTitle(header, i18nString(UIStrings.restrictionStatus));
 
     this.affectedResources.appendChild(header);
 
@@ -487,7 +695,7 @@ class AffectedHeavyAdView extends AffectedResourcesView {
    * @param {!SDK.Issue.Issue} issue
    */
   constructor(parent, issue) {
-    super(parent, {singular: ls`resource`, plural: ls`resources`});
+    super(parent, {singular: i18nString(UIStrings.resource), plural: i18nString(UIStrings.resources)});
     /** @type {!SDK.Issue.Issue} */
     this._issue = issue;
   }
@@ -497,9 +705,9 @@ class AffectedHeavyAdView extends AffectedResourcesView {
    */
   _appendAffectedHeavyAds(heavyAds) {
     const header = document.createElement('tr');
-    this.appendColumnTitle(header, ls`Limit exceeded`);
-    this.appendColumnTitle(header, ls`Resolution Status`);
-    this.appendColumnTitle(header, ls`Frame URL`);
+    this.appendColumnTitle(header, i18nString(UIStrings.limitExceeded));
+    this.appendColumnTitle(header, i18nString(UIStrings.resolutionStatus));
+    this.appendColumnTitle(header, i18nString(UIStrings.frameUrl));
 
     this.affectedResources.appendChild(header);
 
@@ -518,9 +726,9 @@ class AffectedHeavyAdView extends AffectedResourcesView {
   _statusToString(status) {
     switch (status) {
       case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked:
-        return ls`Removed`;
+        return i18nString(UIStrings.removed);
       case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning:
-        return ls`Warned`;
+        return i18nString(UIStrings.warned);
     }
     return '';
   }
@@ -532,11 +740,11 @@ class AffectedHeavyAdView extends AffectedResourcesView {
   _limitToString(status) {
     switch (status) {
       case Protocol.Audits.HeavyAdReason.CpuPeakLimit:
-        return ls`CPU peak limit`;
+        return i18nString(UIStrings.cpuPeakLimit);
       case Protocol.Audits.HeavyAdReason.CpuTotalLimit:
-        return ls`CPU total limit`;
+        return i18nString(UIStrings.cpuTotalLimit);
       case Protocol.Audits.HeavyAdReason.NetworkTotalLimit:
-        return ls`Network limit`;
+        return i18nString(UIStrings.networkLimit);
     }
     return '';
   }
@@ -580,7 +788,7 @@ class AffectedBlockedByResponseView extends AffectedResourcesView {
    * @param {!SDK.Issue.Issue} issue
    */
   constructor(parent, issue) {
-    super(parent, {singular: ls`request`, plural: ls`requests`});
+    super(parent, {singular: i18nString(UIStrings.request), plural: i18nString(UIStrings.requests)});
     /** @type {!SDK.Issue.Issue} */
     this._issue = issue;
   }
@@ -590,9 +798,9 @@ class AffectedBlockedByResponseView extends AffectedResourcesView {
    */
   _appendDetails(details) {
     const header = document.createElement('tr');
-    this.appendColumnTitle(header, ls`Request`);
-    this.appendColumnTitle(header, ls`Parent Frame`);
-    this.appendColumnTitle(header, ls`Blocked Resource`);
+    this.appendColumnTitle(header, i18nString(UIStrings.requestC));
+    this.appendColumnTitle(header, i18nString(UIStrings.parentFrame));
+    this.appendColumnTitle(header, i18nString(UIStrings.blockedResource));
 
     this.affectedResources.appendChild(header);
 
@@ -642,11 +850,13 @@ class AffectedBlockedByResponseView extends AffectedResourcesView {
 
 /** @type {!Map<!SDK.Issue.IssueCategory, string>} */
 export const IssueCategoryNames = new Map([
-  [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, ls`Cross Origin Embedder Policy`],
-  [SDK.Issue.IssueCategory.MixedContent, ls`Mixed Content`],
-  [SDK.Issue.IssueCategory.SameSiteCookie, ls`SameSite Cookie`], [SDK.Issue.IssueCategory.HeavyAd, ls`Heavy Ads`],
-  [SDK.Issue.IssueCategory.ContentSecurityPolicy, ls`Content Security Policy`],
-  [SDK.Issue.IssueCategory.TrustedWebActivity, ls`Trusted Web Activity`], [SDK.Issue.IssueCategory.Other, ls`Other`]
+  [SDK.Issue.IssueCategory.CrossOriginEmbedderPolicy, i18nString(UIStrings.crossOriginEmbedderPolicy)],
+  [SDK.Issue.IssueCategory.MixedContent, i18nString(UIStrings.mixedContent)],
+  [SDK.Issue.IssueCategory.SameSiteCookie, i18nString(UIStrings.samesiteCookie)],
+  [SDK.Issue.IssueCategory.HeavyAd, i18nString(UIStrings.heavyAds)],
+  [SDK.Issue.IssueCategory.ContentSecurityPolicy, i18nString(UIStrings.contentSecurityPolicy)],
+  [SDK.Issue.IssueCategory.TrustedWebActivity, i18nString(UIStrings.trustedWebActivity)],
+  [SDK.Issue.IssueCategory.Other, i18nString(UIStrings.other)]
 ]);
 
 class IssueCategoryView extends UI.TreeOutline.TreeElement {
@@ -664,7 +874,7 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
   }
 
   getCategoryName() {
-    return IssueCategoryNames.get(this._category) || ls`Other`;
+    return IssueCategoryNames.get(this._category) || i18nString(UIStrings.other);
   }
 
   /**
@@ -819,7 +1029,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     wrapper.expand();
     wrapper.selectable = false;
     wrapper.listItemElement.classList.add('affected-resources-label');
-    wrapper.listItemElement.textContent = ls`Affected Resources`;
+    wrapper.listItemElement.textContent = i18nString(UIStrings.affectedResources);
     wrapper.childrenListElement.classList.add('affected-resources');
     return wrapper;
   }
@@ -841,7 +1051,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     for (const description of this._description.links) {
       const link = UI.Fragment.html
       `<a class="link devtools-link" role="link" tabindex="0" href=${description.link}>${
-          ls`Learn more: ${description.linkTitle}`}</a>`;
+          i18nString(UIStrings.learnMoreS, {PH1: description.linkTitle})}</a>`;
       const linkIcon = new WebComponents.Icon.Icon();
       linkIcon.data = {iconName: 'link_icon', color: 'var(--issue-link)', width: '16px', height: '16px'};
       linkIcon.classList.add('link-icon');
@@ -866,7 +1076,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       const surveyLink = new WebComponents.SurveyLink.SurveyLink();
       surveyLink.data = {
         trigger: surveyTrigger,
-        promptText: ls`Is this issue message helpful to you?`,
+        promptText: i18nString(UIStrings.isThisIssueMessageHelpfulToYou),
         canShowSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.canShowSurvey,
         showSurvey: Host.InspectorFrontendHost.InspectorFrontendHostInstance.showSurvey
       };
@@ -971,7 +1181,7 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
 
     const groupByCategorySetting = getGroupIssuesByCategorySetting();
     const groupByCategoryCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        groupByCategorySetting, ls`Group displayed issues under associated categories`, ls`Group by category`);
+        groupByCategorySetting, i18nString(UIStrings.groupDisplayedIssuesUnder), i18nString(UIStrings.groupByCategory));
     // Hide the option to toggle category grouping for now.
     groupByCategoryCheckbox.setVisible(false);
     rightToolbar.appendToolbarItem(groupByCategoryCheckbox);
@@ -981,8 +1191,8 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
 
     const thirdPartySetting = SDK.Issue.getShowThirdPartyIssuesSetting();
     this._showThirdPartyCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        thirdPartySetting, ls`Include cookie Issues caused by third-party sites`,
-        ls`Include third-party cookie issues`);
+        thirdPartySetting, i18nString(UIStrings.includeCookieIssuesCausedBy),
+        i18nString(UIStrings.includeThirdpartyCookieIssues));
     rightToolbar.appendToolbarItem(this._showThirdPartyCheckbox);
     this.setDefaultFocusedElement(this._showThirdPartyCheckbox.inputElement);
 
@@ -1000,9 +1210,9 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
     const updateToolbarIssuesCount = count => {
       toolbarIssuesCount.textContent = `${count}`;
       if (count === 1) {
-        toolbarIssuesItem.setTitle(ls`Issues pertaining to ${count} operation detected.`);
+        toolbarIssuesItem.setTitle(i18nString(UIStrings.issuesPertainingToSOperation, {PH1: count}));
       } else {
-        toolbarIssuesItem.setTitle(ls`Issues pertaining to ${count} operations detected.`);
+        toolbarIssuesItem.setTitle(i18nString(UIStrings.issuesPertainingToSOperations, {PH1: count}));
       }
     };
     return {toolbarContainer, updateToolbarIssuesCount};
@@ -1114,8 +1324,9 @@ export class IssuesPaneImpl extends UI.Widget.VBox {
       }
       // We alreay know that issesCount is zero here.
       const hasOnlyThirdPartyIssues = this._issuesManager.numberOfAllStoredIssues() > 0;
-      this._noIssuesMessageDiv.textContent =
-          hasOnlyThirdPartyIssues ? ls`Only third-party cookie issues detected so far` : ls`No issues detected so far`;
+      this._noIssuesMessageDiv.textContent = hasOnlyThirdPartyIssues ?
+          i18nString(UIStrings.onlyThirdpartyCookieIssues) :
+          i18nString(UIStrings.noIssuesDetectedSoFar);
       this._noIssuesMessageDiv.style.display = 'flex';
     }
   }

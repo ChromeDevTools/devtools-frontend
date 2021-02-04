@@ -126,6 +126,7 @@ const migratedDirsSet = new Set([
   'heap_snapshot_worker',
   'inline_editor',
   'input',
+  'issues',
   'js_profiler',
   'layers',
   'layer_viewer',

@@ -10,14 +10,15 @@
     }
   ],
   "dependencies": [
+    "browser_sdk",
     "common",
-    "platform",
-    "ui",
-    "host",
     "components",
-    "sdk",
+    "host",
+    "i18n",
     "network",
-    "browser_sdk"
+    "platform",
+    "sdk",
+    "ui"
   ],
   "modules": [
     "issues-legacy.js"

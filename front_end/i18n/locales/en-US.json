@@ -1418,6 +1418,246 @@
   "input/ModuleUIStrings.ts | stopRecording": {
     "message": "Stop recording"
   },
+  "issues/AffectedElementsView.ts | element": {
+    "message": "element"
+  },
+  "issues/AffectedElementsView.ts | elements": {
+    "message": "elements"
+  },
+  "issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
+    "message": "Click to reveal the frame's DOM node in the Elements panel"
+  },
+  "issues/AffectedResourcesView.ts | clickToShowRequestInTheNetwork": {
+    "message": "Click to show request in the network panel"
+  },
+  "issues/AffectedResourcesView.ts | requestUnavailableInTheNetwork": {
+    "message": "Request unavailable in the network panel, try reloading the inspected page"
+  },
+  "issues/AffectedResourcesView.ts | unknown": {
+    "message": "unknown"
+  },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | aSharedarraybufferWas": {
+    "message": "A SharedArrayBuffer was instantiated in a context that is not cross-origin isolated"
+  },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | blocked": {
+    "message": "blocked"
+  },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | instantiation": {
+    "message": "Instantiation"
+  },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
+    "message": "SharedArrayBuffer was transfered to a context that is not cross-origin isolated"
+  },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | sourceLocation": {
+    "message": "Source Location"
+  },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | status": {
+    "message": "Status"
+  },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | transfer": {
+    "message": "Transfer"
+  },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | trigger": {
+    "message": "Trigger"
+  },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | violation": {
+    "message": "violation"
+  },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | violations": {
+    "message": "violations"
+  },
+  "issues/AffectedSharedArrayBufferIssueDetailsView.ts | warning": {
+    "message": "warning"
+  },
+  "issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
+    "message": "Package name"
+  },
+  "issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
+    "message": "Package signature"
+  },
+  "issues/AffectedTrustedWebActivityIssueDetailsView.ts | resource": {
+    "message": "resource"
+  },
+  "issues/AffectedTrustedWebActivityIssueDetailsView.ts | resources": {
+    "message": "resources"
+  },
+  "issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
+    "message": "Status code"
+  },
+  "issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
+    "message": "Url"
+  },
+  "issues/CSPViolationsView.ts | filter": {
+    "message": "Filter"
+  },
+  "issues/issues-meta.ts | cspViolations": {
+    "message": "CSP Violations"
+  },
+  "issues/issues-meta.ts | issues": {
+    "message": "Issues"
+  },
+  "issues/issues-meta.ts | showCspViolations": {
+    "message": "Show CSP Violations"
+  },
+  "issues/issues-meta.ts | showIssues": {
+    "message": "Show Issues"
+  },
+  "issues/IssuesPane.js | affectedResources": {
+    "message": "Affected Resources"
+  },
+  "issues/IssuesPane.js | blocked": {
+    "message": "blocked"
+  },
+  "issues/IssuesPane.js | blockedResource": {
+    "message": "Blocked Resource"
+  },
+  "issues/IssuesPane.js | clickToRevealTheViolatingDomNode": {
+    "message": "Click to reveal the violating DOM node in the Elements panel"
+  },
+  "issues/IssuesPane.js | contentSecurityPolicy": {
+    "message": "Content Security Policy"
+  },
+  "issues/IssuesPane.js | cookie": {
+    "message": "cookie"
+  },
+  "issues/IssuesPane.js | cookies": {
+    "message": "cookies"
+  },
+  "issues/IssuesPane.js | cpuPeakLimit": {
+    "message": "CPU peak limit"
+  },
+  "issues/IssuesPane.js | cpuTotalLimit": {
+    "message": "CPU total limit"
+  },
+  "issues/IssuesPane.js | crossOriginEmbedderPolicy": {
+    "message": "Cross Origin Embedder Policy"
+  },
+  "issues/IssuesPane.js | directive": {
+    "message": "directive"
+  },
+  "issues/IssuesPane.js | directiveC": {
+    "message": "Directive"
+  },
+  "issues/IssuesPane.js | directives": {
+    "message": "directives"
+  },
+  "issues/IssuesPane.js | domain": {
+    "message": "Domain"
+  },
+  "issues/IssuesPane.js | element": {
+    "message": "Element"
+  },
+  "issues/IssuesPane.js | frameUrl": {
+    "message": "Frame URL"
+  },
+  "issues/IssuesPane.js | groupByCategory": {
+    "message": "Group by category"
+  },
+  "issues/IssuesPane.js | groupDisplayedIssuesUnder": {
+    "message": "Group displayed issues under associated categories"
+  },
+  "issues/IssuesPane.js | heavyAds": {
+    "message": "Heavy Ads"
+  },
+  "issues/IssuesPane.js | includeCookieIssuesCausedBy": {
+    "message": "Include cookie Issues caused by third-party sites"
+  },
+  "issues/IssuesPane.js | includeThirdpartyCookieIssues": {
+    "message": "Include third-party cookie issues"
+  },
+  "issues/IssuesPane.js | issuesPertainingToSOperation": {
+    "message": "Issues pertaining to {PH1} operation detected."
+  },
+  "issues/IssuesPane.js | issuesPertainingToSOperations": {
+    "message": "Issues pertaining to {PH1} operations detected."
+  },
+  "issues/IssuesPane.js | isThisIssueMessageHelpfulToYou": {
+    "message": "Is this issue message helpful to you?"
+  },
+  "issues/IssuesPane.js | learnMoreS": {
+    "message": "Learn more: {PH1}"
+  },
+  "issues/IssuesPane.js | limitExceeded": {
+    "message": "Limit exceeded"
+  },
+  "issues/IssuesPane.js | mixedContent": {
+    "message": "Mixed Content"
+  },
+  "issues/IssuesPane.js | name": {
+    "message": "Name"
+  },
+  "issues/IssuesPane.js | networkLimit": {
+    "message": "Network limit"
+  },
+  "issues/IssuesPane.js | noIssuesDetectedSoFar": {
+    "message": "No issues detected so far"
+  },
+  "issues/IssuesPane.js | onlyThirdpartyCookieIssues": {
+    "message": "Only third-party cookie issues detected so far"
+  },
+  "issues/IssuesPane.js | other": {
+    "message": "Other"
+  },
+  "issues/IssuesPane.js | parentFrame": {
+    "message": "Parent Frame"
+  },
+  "issues/IssuesPane.js | path": {
+    "message": "Path"
+  },
+  "issues/IssuesPane.js | removed": {
+    "message": "Removed"
+  },
+  "issues/IssuesPane.js | reportonly": {
+    "message": "report-only"
+  },
+  "issues/IssuesPane.js | request": {
+    "message": "request"
+  },
+  "issues/IssuesPane.js | requestC": {
+    "message": "Request"
+  },
+  "issues/IssuesPane.js | requests": {
+    "message": "requests"
+  },
+  "issues/IssuesPane.js | resolutionStatus": {
+    "message": "Resolution Status"
+  },
+  "issues/IssuesPane.js | resource": {
+    "message": "resource"
+  },
+  "issues/IssuesPane.js | resourceC": {
+    "message": "Resource"
+  },
+  "issues/IssuesPane.js | resources": {
+    "message": "resources"
+  },
+  "issues/IssuesPane.js | restrictionStatus": {
+    "message": "Restriction Status"
+  },
+  "issues/IssuesPane.js | samesiteCookie": {
+    "message": "SameSite Cookie"
+  },
+  "issues/IssuesPane.js | source": {
+    "message": "source"
+  },
+  "issues/IssuesPane.js | sourceLocation": {
+    "message": "Source Location"
+  },
+  "issues/IssuesPane.js | sources": {
+    "message": "sources"
+  },
+  "issues/IssuesPane.js | status": {
+    "message": "Status"
+  },
+  "issues/IssuesPane.js | trustedWebActivity": {
+    "message": "Trusted Web Activity"
+  },
+  "issues/IssuesPane.js | warned": {
+    "message": "Warned"
+  },
+  "issues/ModuleUIStrings.js | issuesView": {
+    "message": "Issues view"
+  },
   "js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Profiler"
   },

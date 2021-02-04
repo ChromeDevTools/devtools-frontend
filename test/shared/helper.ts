@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {AssertionError} from 'chai';
+import {assert, AssertionError} from 'chai';
 import * as os from 'os';
 import * as puppeteer from 'puppeteer';
 
@@ -503,5 +503,9 @@ export const waitForClass = async(element: puppeteer.ElementHandle<Element>, cla
     return await element.evaluate((el, classname) => el.classList.contains(classname), classname);
   });
 };
+
+export function assertNotNull<T>(val: T): asserts val is NonNullable<T> {
+  assert.isNotNull(val);
+}
 
 export {getBrowserAndPages, getTestServerPort as getTestServerPort, reloadDevTools};

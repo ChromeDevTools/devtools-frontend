@@ -3,6 +3,7 @@
     "browser_sdk.js",
     "LogManager.js",
     "IssuesManager.js",
+    "ContrastCheckTrigger.js",
     "RelatedIssue.js",
     "SourceFrameIssuesManager.js"
   ],

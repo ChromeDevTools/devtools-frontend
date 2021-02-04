@@ -29,6 +29,8 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     this._heavyAdIssueDetails = new Map();
     /** @type {!Set<!SDK.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>} */
     this._cspIssues = new Set();
+    /** @type {!Set<!SDK.LowTextContrastIssue.LowTextContrastIssue>} */
+    this._lowContrastIssues = new Set();
     /** @type {!Map<string, !Protocol.Audits.BlockedByResponseIssueDetails>} */
     this._blockedByResponseDetails = new Map();
     /** @type {!Set<SDK.TrustedWebActivityIssue.TrustedWebActivityIssue>} */
@@ -99,6 +101,13 @@ export class AggregatedIssue extends SDK.Issue.Issue {
    */
   cspIssues() {
     return this._cspIssues;
+  }
+
+  /**
+   * @returns {!Iterable<!SDK.LowTextContrastIssue.LowTextContrastIssue>}
+   */
+  lowContrastIssues() {
+    return this._lowContrastIssues;
   }
 
   /**
@@ -195,6 +204,9 @@ export class AggregatedIssue extends SDK.Issue.Issue {
     }
     if (issue instanceof SDK.SharedArrayBufferIssue.SharedArrayBufferIssue) {
       this._sharedArrayBufferIssues.add(issue);
+    }
+    if (issue instanceof SDK.LowTextContrastIssue.LowTextContrastIssue) {
+      this._lowContrastIssues.add(issue);
     }
   }
 }

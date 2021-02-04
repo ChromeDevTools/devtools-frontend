@@ -15,6 +15,7 @@ import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
 import {AffectedElementsView} from './AffectedElementsView.js';
+import {AffectedElementsWithLowContrastView} from './AffectedElementsWithLowContrastView.js';
 import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
 import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBufferIssueDetailsView.js';
 import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebActivityIssueDetailsView.js';
@@ -928,12 +929,17 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     this.affectedResources = this._createAffectedResources();
     /** @type {!Array<!AffectedResourcesView>} */
     this._affectedResourceViews = [
-      new AffectedCookiesView(this, this._issue), new AffectedElementsView(this, this._issue),
-      new AffectedRequestsView(this, this._issue), new AffectedMixedContentView(this, this._issue),
-      new AffectedSourcesView(this, this._issue), new AffectedHeavyAdView(this, this._issue),
-      new AffectedDirectivesView(this, this._issue), new AffectedBlockedByResponseView(this, this._issue),
+      new AffectedCookiesView(this, this._issue),
+      new AffectedElementsView(this, this._issue),
+      new AffectedRequestsView(this, this._issue),
+      new AffectedMixedContentView(this, this._issue),
+      new AffectedSourcesView(this, this._issue),
+      new AffectedHeavyAdView(this, this._issue),
+      new AffectedDirectivesView(this, this._issue),
+      new AffectedBlockedByResponseView(this, this._issue),
       new AffectedSharedArrayBufferIssueDetailsView(this, this._issue),
-      new AffectedTrustedWebActivityIssueDetailsView(this, this._issue)
+      new AffectedElementsWithLowContrastView(this, this._issue),
+      new AffectedTrustedWebActivityIssueDetailsView(this, this._issue),
     ];
 
     this._aggregatedIssuesCount = null;

@@ -46,6 +46,7 @@ devtools_module("sdk") {
     "IssuesModel.js",
     "LayerTreeBase.js",
     "LogModel.js",
+    "LowTextContrastIssue.ts",
     "MixedContentIssue.js",
     "NetworkLog.js",
     "NetworkManager.js",

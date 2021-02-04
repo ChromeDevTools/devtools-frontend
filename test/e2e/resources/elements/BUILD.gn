@@ -15,6 +15,7 @@ copy_to_gen("elements") {
     "element-reveal-inline-issue.html",
     "focus.html",
     "hover.html",
+    "low-contrast.html",
     "multiple-constructed-stylesheets.html",
     "selection-after-delete.html",
     "shadow-roots.html",

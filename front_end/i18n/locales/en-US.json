@@ -1424,6 +1424,24 @@
   "issues/AffectedElementsView.ts | elements": {
     "message": "elements"
   },
+  "issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
+    "message": "Contrast ratio"
+  },
+  "issues/AffectedElementsWithLowContrastView.ts | element": {
+    "message": "Element"
+  },
+  "issues/AffectedElementsWithLowContrastView.ts | minimumAA": {
+    "message": "Minimum AA ratio"
+  },
+  "issues/AffectedElementsWithLowContrastView.ts | minimumAAA": {
+    "message": "Minimum AAA ratio"
+  },
+  "issues/AffectedElementsWithLowContrastView.ts | textSize": {
+    "message": "Text size"
+  },
+  "issues/AffectedElementsWithLowContrastView.ts | textWeight": {
+    "message": "Text weight"
+  },
   "issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Click to reveal the frame's DOM node in the Elements panel"
   },

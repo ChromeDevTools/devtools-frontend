@@ -249,6 +249,7 @@ all_devtools_files = [
   "front_end/issues/descriptions/cspEvalViolation.md",
   "front_end/issues/descriptions/cspInlineViolation.md",
   "front_end/issues/descriptions/cspURLViolation.md",
+  "front_end/issues/descriptions/LowTextContrast.md",
   "front_end/issues/descriptions/cspTrustedTypesSinkViolation.md",
   "front_end/issues/descriptions/cspTrustedTypesPolicyViolation.md",
   "front_end/issues/descriptions/heavyAd.md",

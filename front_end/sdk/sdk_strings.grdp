@@ -540,6 +540,9 @@
   <message name="IDS_DEVTOOLS_c877598b1ee228457cf269ab268bbfb8" desc="Title of a setting under the Rendering drawer that can be invoked through the Command Menu">
     Show Core Web Vitals overlay
   </message>
+  <message name="IDS_DEVTOOLS_c7c8911ca9af2d3d46730ee87c1f6599" desc="Link title for the Low Text Contrast issue in the Issues panel">
+    Color and contrast accessibility
+  </message>
   <message name="IDS_DEVTOOLS_c89686a387d2b12b3c729ce35a0bcb5b" desc="Text in DOMDebugger Model">
     Window
   </message>

@@ -15,6 +15,7 @@ export const IssueCategory = {
   HeavyAd: Symbol('HeavyAd'),
   ContentSecurityPolicy: Symbol('ContentSecurityPolicy'),
   TrustedWebActivity: Symbol('TrustedWebActivity'),
+  LowTextContrast: Symbol('LowTextContrast'),
   Other: Symbol('Other')
 };
 

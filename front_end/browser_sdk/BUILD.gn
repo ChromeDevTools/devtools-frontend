@@ -7,6 +7,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("browser_sdk") {
   sources = [
+    "ContrastCheckTrigger.ts",
     "IssuesManager.js",
     "LogManager.js",
     "MarkdownHelpers.ts",

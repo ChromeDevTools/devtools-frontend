@@ -8,6 +8,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 devtools_module("issues") {
   sources = [
     "AffectedElementsView.ts",
+    "AffectedElementsWithLowContrastView.ts",
     "AffectedResourcesView.ts",
     "AffectedSharedArrayBufferIssueDetailsView.ts",
     "AffectedTrustedWebActivityIssueDetailsView.ts",

@@ -65,6 +65,20 @@
   display: inline-block;
 }
 
+.object-value-arraybuffer,
+.object-value-dataview,
+.object-value-typedarray,
+.object-value-webassemblymemory {
+  display: inline-flex;
+}
+
+.object-value-arraybuffer devtools-icon,
+.object-value-dataview devtools-icon,
+.object-value-typedarray devtools-icon,
+.object-value-webassemblymemory devtools-icon {
+  cursor: pointer;
+}
+
 .object-value-null,
 .object-value-undefined {
   color: rgb(94 94 94); /* stylelint-disable-line plugin/use_theme_colors */

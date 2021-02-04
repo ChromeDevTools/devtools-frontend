@@ -60,6 +60,7 @@ grd_files_release_sources = [
   "front_end/Images/ic_delete_filter.svg",
   "front_end/Images/ic_delete_list.svg",
   "front_end/Images/ic_info_black_18dp.svg",
+  "front_end/Images/ic_memory_16x16.svg",
   "front_end/Images/ic_page_next_16x16_icon.svg",
   "front_end/Images/ic_page_prev_16x16_icon.svg",
   "front_end/Images/ic_redo_16x16_icon.svg",

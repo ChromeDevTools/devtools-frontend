@@ -28,9 +28,11 @@ import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';  // eslint-disable-line no-unused-vars
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
+import * as LinearMemoryInspector from '../linear_memory_inspector/linear_memory_inspector.js';
 import * as Platform from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
+import * as WebComponents from '../ui/components/components.js';
 import * as UI from '../ui/ui.js';
 
 import {CustomPreviewComponent} from './CustomPreviewComponent.js';
@@ -383,6 +385,29 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
   }
 
   /**
+   * @param {!Element} element
+   * @param {!SDK.RemoteObject.RemoteObject} obj
+   */
+  static appendMemoryIcon(element, obj) {
+    if (obj.type !== 'object' || !obj.subtype) {
+      return;
+    }
+    if (!LinearMemoryInspector.LinearMemoryInspectorController.ACCEPTED_MEMORY_TYPES.includes(obj.subtype)) {
+      return;
+    }
+    const memoryIcon = new WebComponents.Icon.Icon();
+    memoryIcon
+        .data = {iconName: 'ic_memory_16x16', color: 'var(--color-text-secondary)', width: '13px', height: '13px'};
+    memoryIcon.onclick = event => {
+      LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance()
+          .openInspectorView(obj, 0);
+      event.stopPropagation();
+    };
+    UI.Tooltip.Tooltip.install(memoryIcon, 'Reveal in Memory Inspector panel');
+    element.appendChild(memoryIcon);
+  }
+
+  /**
    * @param {!SDK.RemoteObject.RemoteObject} value
    * @param {boolean} wasThrown
    * @param {boolean} showPreview
@@ -428,6 +453,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         propertyValue.element.textContent = description;
         UI.Tooltip.Tooltip.install(propertyValue.element, description);
       }
+      this.appendMemoryIcon(valueElement, value);
     }
 
     if (wasThrown) {
@@ -1084,6 +1110,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     valueElement.classList.add('object-value-' + (value.subtype || value.type));
     UI.Tooltip.Tooltip.install(valueElement, value.description || '');
+    ObjectPropertiesSection.appendMemoryIcon(valueElement, value);
     return valueElement;
   }
 

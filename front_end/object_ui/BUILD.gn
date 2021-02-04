@@ -21,10 +21,12 @@ devtools_module("object_ui") {
     "../formatter:bundle",
     "../host:bundle",
     "../i18n:bundle",
+    "../linear_memory_inspector:bundle",
     "../platform:bundle",
     "../sdk:bundle",
     "../text_utils:bundle",
     "../ui:bundle",
+    "../ui/components:bundle",
   ]
 }
 

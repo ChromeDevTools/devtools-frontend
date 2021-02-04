@@ -53,6 +53,7 @@ devtools_image_files = [
   "baseline-icon.svg",
   "ic_checkmark_16x16.svg",
   "ic_info_black_18dp.svg",
+  "ic_memory_16x16.svg",
   "ic_page_next_16x16_icon.svg",
   "ic_page_prev_16x16_icon.svg",
   "ic_redo_16x16_icon.svg",

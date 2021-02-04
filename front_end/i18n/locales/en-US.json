@@ -981,7 +981,7 @@
     "message": "Per function"
   },
   "coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
-    "message": "{PH1} of {PH2} ({PH3}%) used so far,\n        {PH4} unused."
+    "message": "{PH1} of {PH2} ({PH3}%) used so far, {PH4} unused."
   },
   "coverage/CoverageView.ts | urlFilter": {
     "message": "URL filter"
@@ -4292,6 +4292,9 @@
   "profiler/HeapProfileView.js | heapProfilerIsRecording": {
     "message": "Heap profiler is recording"
   },
+  "profiler/HeapProfileView.js | itProvidesGoodApproximation": {
+    "message": "It provides good approximation of allocations broken down by JavaScript execution stack."
+  },
   "profiler/HeapProfileView.js | name": {
     "message": "Name"
   },
@@ -4301,8 +4304,8 @@
   "profiler/HeapProfileView.js | recording": {
     "message": "Recording…"
   },
-  "profiler/HeapProfileView.js | recordMemoryAllocationsUsing": {
-    "message": "Record memory allocations using sampling method.\n              This profile type has minimal performance overhead and can be used for long running operations.\n              It provides good approximation of allocations broken down by JavaScript execution stack."
+  "profiler/HeapProfileView.js | recordMemoryAllocations": {
+    "message": "Record memory allocations using sampling method."
   },
   "profiler/HeapProfileView.js | samplingProfiles": {
     "message": "SAMPLING PROFILES"
@@ -4330,6 +4333,9 @@
   },
   "profiler/HeapProfileView.js | stopping": {
     "message": "Stopping…"
+  },
+  "profiler/HeapProfileView.js | thisProfileTypeHasMinimal": {
+    "message": "This profile type has minimal performance overhead and can be used for long running operations."
   },
   "profiler/HeapProfileView.js | totalSize": {
     "message": "Total size"
@@ -4460,8 +4466,8 @@
   "profiler/HeapSnapshotView.js | allocationTimelines": {
     "message": "ALLOCATION TIMELINES"
   },
-  "profiler/HeapSnapshotView.js | AllocationTimelinesShow": {
-    "message": "\n        Allocation timelines show instrumented JavaScript memory allocations over time.\n        Once profile is recorded you can select a time interval to see objects that\n        were allocated within it and still alive by the end of recording.\n        Use this profile type to isolate memory leaks."
+  "profiler/HeapSnapshotView.js | AllocationTimelinesShowInstrumented": {
+    "message": "Allocation timelines show instrumented JavaScript memory allocations over time."
   },
   "profiler/HeapSnapshotView.js | baseSnapshot": {
     "message": "Base snapshot"
@@ -4510,6 +4516,9 @@
   },
   "profiler/HeapSnapshotView.js | objectsAllocatedBetweenSAndS": {
     "message": "Objects allocated between {PH1} and {PH2}"
+  },
+  "profiler/HeapSnapshotView.js | OnceProfileIsRecorded": {
+    "message": "Once profile is recorded you can select a time interval to see objects that"
   },
   "profiler/HeapSnapshotView.js | percentagePlaceholder": {
     "message": "{PH1}%"
@@ -4570,6 +4579,12 @@
   },
   "profiler/HeapSnapshotView.js | typedArrays": {
     "message": "Typed arrays"
+  },
+  "profiler/HeapSnapshotView.js | UseThisProfileTypeToIsolate": {
+    "message": "Use this profile type to isolate memory leaks."
+  },
+  "profiler/HeapSnapshotView.js | WereAllocatedWithinIt": {
+    "message": "were allocated within it and still alive by the end of recording."
   },
   "profiler/IsolateSelector.js | changeRate": {
     "message": "{PH1}/s"
@@ -5018,8 +5033,8 @@
   "security/SecurityPanel.ts | certificateTransparency": {
     "message": "Certificate Transparency"
   },
-  "security/SecurityPanel.ts | chromeHasDeterminedThatThisSite": {
-    "message": "Chrome has determined that this site could be fake or fraudulent.\n\nIf you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals."
+  "security/SecurityPanel.ts | chromeHasDeterminedThatThisSiteS": {
+    "message": "Chrome has determined that this site could be fake or fraudulent."
   },
   "security/SecurityPanel.ts | cipher": {
     "message": "Cipher"
@@ -5044,6 +5059,12 @@
   },
   "security/SecurityPanel.ts | hideFullDetails": {
     "message": "Hide full details"
+  },
+  "security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
+    "message": "If you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals."
+  },
+  "security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
+    "message": "If you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals."
   },
   "security/SecurityPanel.ts | info": {
     "message": "Info"
@@ -5264,8 +5285,8 @@
   "security/SecurityPanel.ts | thisSiteIsMissingAValidTrusted": {
     "message": "This site is missing a valid, trusted certificate ({PH1})."
   },
-  "security/SecurityPanel.ts | thisSitesHostnameLooksSimilarToS": {
-    "message": "This site's hostname looks similar to {PH1}. Attackers sometimes mimic sites by making small, hard-to-see changes to the domain name.\n\nIf you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals."
+  "security/SecurityPanel.ts | thisSitesHostnameLooksSimilarToP": {
+    "message": "This site's hostname looks similar to {PH1}. Attackers sometimes mimic sites by making small, hard-to-see changes to the domain name."
   },
   "security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
     "message": "To check this page's status, visit g.co/safebrowsingstatus."

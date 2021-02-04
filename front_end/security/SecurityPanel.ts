@@ -126,8 +126,12 @@ export const UIStrings = {
   /**
   *@description Body of message to display in devtools security tab when you are viewing a page that triggered a safety tip.
   */
-  chromeHasDeterminedThatThisSite:
-      'Chrome has determined that this site could be fake or fraudulent.\n\nIf you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals.',
+  chromeHasDeterminedThatThisSiteS: 'Chrome has determined that this site could be fake or fraudulent.',
+  /**
+  *@description Second part of the body of message to display in devtools security tab when you are viewing a page that triggered a safety tip.
+  */
+  ifYouBelieveThisIsShownIn:
+      'If you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals.',
   /**
   *@description Summary of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.
   */
@@ -136,8 +140,13 @@ export const UIStrings = {
   *@description Body of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.
   *@example {wikipedia.org} PH1
   */
-  thisSitesHostnameLooksSimilarToS:
-      'This site\'s hostname looks similar to {PH1}. Attackers sometimes mimic sites by making small, hard-to-see changes to the domain name.\n\nIf you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals.',
+  thisSitesHostnameLooksSimilarToP:
+      'This site\'s hostname looks similar to {PH1}. Attackers sometimes mimic sites by making small, hard-to-see changes to the domain name.',
+  /**
+  *@description second part of body of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.
+  */
+  ifYouBelieveThisIsShownInErrorSafety:
+      'If you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals.',
   /**
   *@description Title of the devtools security tab when the page you are on triggered a safety tip.
   */
@@ -1197,16 +1206,20 @@ export class SecurityMainView extends UI.Widget.VBox {
     const currentExplanations = [];
 
     if (securityStateIssueIds.includes('bad_reputation')) {
+      const formatedDescription = `${i18nString(UIStrings.chromeHasDeterminedThatThisSiteS)}\n\n${
+          i18nString(UIStrings.ifYouBelieveThisIsShownIn)}`;
       currentExplanations.push({
         summary: i18nString(UIStrings.thisPageIsSuspicious),
-        description: i18nString(UIStrings.chromeHasDeterminedThatThisSite),
+        description: formatedDescription,
       });
     } else if (securityStateIssueIds.includes('lookalike') && safetyTipInfo && safetyTipInfo.safeUrl) {
       const hostname = new URL(safetyTipInfo.safeUrl).hostname;
-      currentExplanations.push({
-        summary: i18nString(UIStrings.possibleSpoofingUrl),
-        description: i18nString(UIStrings.thisSitesHostnameLooksSimilarToS, {PH1: hostname}),
-      });
+      const hostnamePlaceholder = {PH1: hostname};
+      const formatedDescriptionSafety =
+          `${i18nString(UIStrings.thisSitesHostnameLooksSimilarToP, hostnamePlaceholder)}\n\n${
+              i18nString(UIStrings.ifYouBelieveThisIsShownInErrorSafety)}`;
+      currentExplanations.push(
+          {summary: i18nString(UIStrings.possibleSpoofingUrl), description: formatedDescriptionSafety});
     }
 
     if (currentExplanations.length > 0) {

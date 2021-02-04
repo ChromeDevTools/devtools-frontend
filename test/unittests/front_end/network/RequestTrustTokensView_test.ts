@@ -56,7 +56,7 @@ describe('RequestTrustTokensView', () => {
       },
     };
 
-    const simpleText = getElementWithinComponent(component, 'div.status-text > span', HTMLElement);
+    const simpleText = getElementWithinComponent(component, 'span > strong', HTMLElement);
     assertNotNull(simpleText);
     assert.strictEqual(simpleText.textContent, 'Success');
   });
@@ -71,7 +71,7 @@ describe('RequestTrustTokensView', () => {
       },
     };
 
-    const simpleText = getElementWithinComponent(component, 'div.status-text > span', HTMLElement);
+    const simpleText = getElementWithinComponent(component, 'span > strong', HTMLElement);
     assertNotNull(simpleText);
     assert.strictEqual(simpleText.textContent, 'Failure');
   });

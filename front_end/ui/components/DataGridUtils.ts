@@ -45,8 +45,8 @@ export interface Cell {
 }
 
 export type Row = {
-  cells: Cell[];
-  hidden?: boolean;
+  cells: Cell[],
+  hidden?: boolean,
 };
 
 export const enum SortDirection {
@@ -119,8 +119,10 @@ export function calculateColumnWidthPercentageFromWeighting(allColumns: readonly
 }
 
 export interface HandleArrowKeyOptions {
-  key: Platform.KeyboardUtilities.ArrowKey, currentFocusedCell: readonly[number, number], columns: readonly Column[],
-      rows: readonly Row[],
+  key: Platform.KeyboardUtilities.ArrowKey;
+  currentFocusedCell: readonly[number, number];
+  columns: readonly Column[];
+  rows: readonly Row[];
 }
 
 export function handleArrowKeyNavigation(options: HandleArrowKeyOptions): CellPosition {

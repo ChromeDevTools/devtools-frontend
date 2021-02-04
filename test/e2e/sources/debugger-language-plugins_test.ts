@@ -23,51 +23,51 @@ declare global {
 
 type RawModule = {
   url: string,
-  code?: ArrayBuffer
+  code?: ArrayBuffer,
 };
 
 type RawLocationRange = {
   rawModuleId: string,
   startOffset: number,
-  endOffset: number
+  endOffset: number,
 };
 
 type RawLocation = {
   rawModuleId: string,
   codeOffset: number,
-  inlineFrameIndex?: number
+  inlineFrameIndex?: number,
 };
 
 type SourceLocation = {
   rawModuleId: string,
   sourceFileURL: string,
   lineNumber: number,
-  columnNumber: number
+  columnNumber: number,
 };
 
 type Variable = {
   scope: string,
   name: string,
   type: string,
-  nestedName?: Array<string>
+  nestedName?: Array<string>,
 };
 
 type VariableValue = {
   value: string|Array<VariableValue>,
   js_type: string,
   type: string,
-  name: string
+  name: string,
 };
 
 type EvaluatorModule = {
   code?: ArrayBuffer,
-  constantValue?: VariableValue
+  constantValue?: VariableValue,
 };
 
 type ScopeInfo = {
   type: string,
   typeName: string,
-  icon?: string
+  icon?: string,
 };
 
 interface EvalBase {
@@ -92,7 +92,7 @@ interface TypeInfo {
   hasValue: boolean;
 }
 type FunctionInfo = {
-  name?: string
+  name?: string,
 };
 
 interface TestPluginImpl {

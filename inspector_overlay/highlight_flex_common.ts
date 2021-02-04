@@ -20,14 +20,14 @@ export interface FlexContainerHighlight {
   mainGap: number;
   crossGap: number;
   flexContainerHighlightConfig: {
-    containerBorder?: LineStyle;
-    lineSeparator?: LineStyle;
-    itemSeparator?: LineStyle;
-    mainDistributedSpace?: BoxStyle;
-    crossDistributedSpace?: BoxStyle;
-    rowGapSpace?: BoxStyle;
-    columnGapSpace?: BoxStyle;
-    crossAlignment?: LineStyle;
+    containerBorder?: LineStyle,
+    lineSeparator?: LineStyle,
+    itemSeparator?: LineStyle,
+    mainDistributedSpace?: BoxStyle,
+    crossDistributedSpace?: BoxStyle,
+    rowGapSpace?: BoxStyle,
+    columnGapSpace?: BoxStyle,
+    crossAlignment?: LineStyle,
   };
 }
 

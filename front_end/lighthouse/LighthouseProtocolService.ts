@@ -80,8 +80,8 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
     //   * the message does not have a sessionId (is for the "Main session"), but only for the Target domain
     //     (to kickstart autoAttach in LH).
     const protocolMessage = message as {
-      sessionId?: string;
-      method?: string;
+      sessionId?: string,
+      method?: string,
     };
     if (protocolMessage.sessionId || (protocolMessage.method && protocolMessage.method.startsWith('Target'))) {
       this._send('dispatchProtocolMessage', {message: JSON.stringify(message)});
@@ -118,7 +118,7 @@ export class ProtocolService extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  async _send(method: string, params?: {[x: string]: string|string[]|Object;}): Promise<ReportRenderer.RunnerResult> {
+  async _send(method: string, params?: {[x: string]: string|string[]|Object}): Promise<ReportRenderer.RunnerResult> {
     let backendPromise = this._backendPromise;
     if (!backendPromise) {
       backendPromise = this._initWorker();

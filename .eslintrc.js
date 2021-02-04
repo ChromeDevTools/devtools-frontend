@@ -153,7 +153,23 @@ module.exports = {
       '@typescript-eslint/no-unused-vars': [2, {'argsIgnorePattern': '^_'}],
       // run just the TypeScript semi rule, else we get duplicate errors
       'semi': 0,
-      '@typescript-eslint/semi': 2,
+      '@typescript-eslint/semi': ['error'],
+      '@typescript-eslint/member-delimiter-style': [
+        'error', {
+          'multiline': {'delimiter': 'semi', 'requireLast': true},
+          'singleline': {'delimiter': 'comma', 'requireLast': false},
+          'overrides': {
+            'interface': {
+              'singleline': {'delimiter': 'semi', 'requireLast': false},
+              'multiline': {'delimiter': 'semi', 'requireLast': true}
+            },
+            'typeLiteral': {
+              'singleline': {'delimiter': 'comma', 'requireLast': false},
+              'multiline': {'delimiter': 'comma', 'requireLast': true}
+            }
+          }
+        }
+      ],
       // func-call-spacing doesn't work well with .ts
       'func-call-spacing': 0,
       '@typescript-eslint/func-call-spacing': 2,

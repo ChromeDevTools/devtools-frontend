@@ -40,7 +40,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     this.contentElement.appendChild(this._releaseNoteElement);
   }
 
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ReleaseNoteView {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ReleaseNoteView {
     const {forceNew} = opts;
     if (!releaseNoteViewInstance || forceNew) {
       releaseNoteViewInstance = new ReleaseNoteView();

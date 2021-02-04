@@ -70,7 +70,7 @@ interface PositionData {
 }
 
 type PositionDataWithNames = PositionData&{
-  names: string[][];
+  names: string[][],
 };
 
 interface TracksPositionData {
@@ -248,8 +248,8 @@ const first = <T>(array: T[]) => array[0];
 /**
  * Massage the list of line name positions given by the backend for easier consumption.
  */
-function _normalizeNameData(namePositions: {name: string; x: number; y: number;}[]):
-    {positions: {x: number; y: number;}[]; names: string[][];} {
+function _normalizeNameData(namePositions: {name: string, x: number, y: number}[]):
+    {positions: {x: number, y: number}[], names: string[][]} {
   const positions = [];
   const names = [];
 
@@ -531,8 +531,8 @@ function _createLabelElement(
 /**
  * Get the start and end points of the edge where labels are displayed.
  */
-function _getLabelSideEdgePoints(gridBounds: Bounds, direction: string, side: string):
-    {start: {x: number; y: number;}; end: {x: number; y: number;};} {
+function _getLabelSideEdgePoints(
+    gridBounds: Bounds, direction: string, side: string): {start: {x: number, y: number}, end: {x: number, y: number}} {
   const [p1, p2, p3, p4] = gridBounds.allPoints;
 
   // Here are where all the points are in standard, untransformed, horizontal-tb mode:
@@ -555,7 +555,7 @@ function _getLabelSideEdgePoints(gridBounds: Bounds, direction: string, side: st
  * hence, the x axis.
  * In vertical writing modes, the axes are swapped.
  */
-function _getAxes(writingMode: string): {main: 'x'|'y'; cross: 'x' | 'y';} {
+function _getAxes(writingMode: string): {main: 'x'|'y', cross: 'x'|'y'} {
   return writingMode.startsWith('vertical') ? {main: 'y', cross: 'x'} : {main: 'x', cross: 'y'};
 }
 
@@ -565,7 +565,7 @@ function _getAxes(writingMode: string): {main: 'x'|'y'; cross: 'x' | 'y';} {
  * hence, the main size of the canvas is its width, and its cross size is its height.
  * In vertical writing modes, those sizes are swapped.
  */
-function _getCanvasSizes(writingMode: string, canvasSize: CanvasSize): {mainSize: number; crossSize: number;} {
+function _getCanvasSizes(writingMode: string, canvasSize: CanvasSize): {mainSize: number, crossSize: number} {
   return writingMode.startsWith('vertical') ? {mainSize: canvasSize.canvasHeight, crossSize: canvasSize.canvasWidth} :
                                               {mainSize: canvasSize.canvasWidth, crossSize: canvasSize.canvasHeight};
 }

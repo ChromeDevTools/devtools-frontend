@@ -317,7 +317,7 @@ export class CoverageView extends UI.Widget.VBox {
     await this._startRecording({reload: false, jsCoveragePerBlock: false});
   }
 
-  async _startRecording(options: {reload: (boolean|undefined); jsCoveragePerBlock: (boolean | undefined);}|
+  async _startRecording(options: {reload: (boolean|undefined), jsCoveragePerBlock: (boolean|undefined)}|
                         null): Promise<void> {
     let hadFocus, reloadButtonFocused;
     if ((this._startWithReloadButton && this._startWithReloadButton.element.hasFocus()) ||
@@ -456,7 +456,7 @@ export class CoverageView extends UI.Widget.VBox {
         i18nString(UIStrings.filteredSTotalS, {PH1: formatStat(filtered), PH2: formatStat(all)}) :
         formatStat(all);
 
-    function formatStat({total, unused}: {total: number; unused: number;}): string {
+    function formatStat({total, unused}: {total: number, unused: number}): string {
       const used = total - unused;
       const percentUsed = total ? Math.round(100 * used / total) : 0;
       return i18nString(UIStrings.sOfSSUsedSoFarSUnused, {
@@ -539,7 +539,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 
     return true;
   }
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ActionDelegate {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ActionDelegate {
     const {forceNew} = opts;
     if (!actionDelegateInstance || forceNew) {
       actionDelegateInstance = new ActionDelegate();

@@ -26,7 +26,7 @@ const str_ = i18n.i18n.registerUIStrings('media/EventTimelineView.ts', UIStrings
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 type State = {
-  [key: string]: string
+  [key: string]: string,
 };
 
 export class PlayerEventsTimeline extends TickingFlameChart {

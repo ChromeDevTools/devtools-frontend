@@ -8,7 +8,7 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 import {AXNode} from './AccessibilityTreeUtils.js';
 
 export interface AccessibilityNodeData {
-  axNode: AXNode,
+  axNode: AXNode;
 }
 
 export class AccessibilityNode extends HTMLElement {

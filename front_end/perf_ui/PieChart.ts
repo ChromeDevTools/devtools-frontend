@@ -17,7 +17,9 @@ const str_ = i18n.i18n.registerUIStrings('perf_ui/PieChart.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface Slice {
-  value: number, color: string, title: string
+  value: number;
+  color: string;
+  title: string;
 }
 
 export interface PieChartData {

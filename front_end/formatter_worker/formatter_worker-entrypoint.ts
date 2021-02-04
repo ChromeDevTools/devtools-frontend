@@ -13,7 +13,7 @@ import {FormatterActions} from './FormatterActions.js';
 
 self.onmessage = function(event: MessageEvent): void {
   const method: FormatterActions = event.data.method;
-  const params: {indentString: string; content: string; mimeType: string;} = event.data.params;
+  const params: {indentString: string, content: string, mimeType: string} = event.data.params;
   if (!method) {
     return;
   }

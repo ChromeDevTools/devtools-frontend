@@ -72,8 +72,8 @@ export class LighthousePanel extends UI.Panel.Panel {
   _rightToolbar!: UI.Toolbar.Toolbar;
   _showSettingsPaneSetting!: Common.Settings.Setting<boolean>;
   _stateBefore?: {
-    emulation: {enabled: boolean; outlineEnabled: boolean; toolbarControlsEnabled: boolean;};
-    network: {conditions: SDK.NetworkManager.Conditions;};
+    emulation: {enabled: boolean, outlineEnabled: boolean, toolbarControlsEnabled: boolean},
+    network: {conditions: SDK.NetworkManager.Conditions},
   };
   _isLHAttached?: boolean;
 

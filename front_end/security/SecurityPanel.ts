@@ -499,7 +499,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements SDK.SDKM
     this._securityModel = null;
   }
 
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): SecurityPanel {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): SecurityPanel {
     const {forceNew} = opts;
     if (!securityPanelInstance || forceNew) {
       securityPanelInstance = new SecurityPanel();
@@ -1145,7 +1145,7 @@ export class SecurityMainView extends UI.Widget.VBox {
   }
 
   _getSecuritySummaryAndExplanations(visibleSecurityState: PageVisibleSecurityState):
-      {summary: (string|undefined); explanations: Array<SecurityStyleExplanation>;} {
+      {summary: (string|undefined), explanations: Array<SecurityStyleExplanation>} {
     const {securityState, securityStateIssueIds} = visibleSecurityState;
     let summary;
     const explanations: SecurityStyleExplanation[] = [];

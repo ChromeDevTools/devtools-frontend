@@ -91,14 +91,14 @@ export interface ReportJSON {
   lighthouseVersion: string;
   userAgent: string;
   fetchTime: string;
-  timing: {total: number;};
+  timing: {total: number};
   requestedUrl: string;
   finalUrl: string;
   runWarnings?: string[];
-  artifacts: {traces: {defaultPass: {traceEvents: Array<unknown>;};};};
-  audits: {[x: string]: AuditResultJSON;};
-  categories: {[x: string]: CategoryJSON;};
-  categoryGroups: {[x: string]: GroupJSON;};
+  artifacts: {traces: {defaultPass: {traceEvents: Array<unknown>}}};
+  audits: {[x: string]: AuditResultJSON};
+  categories: {[x: string]: CategoryJSON};
+  categoryGroups: {[x: string]: GroupJSON};
 }
 export interface DetailsJSON {
   type: string;
@@ -108,8 +108,8 @@ export interface DetailsJSON {
   displayUnit?: string;
 }
 export interface RunnerResultArtifacts {
-  traces: {defaultPass: {traceEvents: SDK.TracingManager.EventPayload[];};};
-  settings: {throttlingMethod: string;};
+  traces: {defaultPass: {traceEvents: SDK.TracingManager.EventPayload[]}};
+  settings: {throttlingMethod: string};
 }
 export interface RunnerResult {
   lhr: ReportJSON;

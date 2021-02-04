@@ -62,7 +62,7 @@ let performanceMonitorImplInstance: PerformanceMonitorImpl;
 
 export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     SDK.SDKModel.SDKModelObserver<SDK.PerformanceMetricsModel.PerformanceMetricsModel> {
-  _metricsBuffer: {timestamp: number; metrics: Map<string, number>;}[];
+  _metricsBuffer: {timestamp: number, metrics: Map<string, number>}[];
   _pixelsPerMs: number;
   _pollIntervalMs: number;
   _scaleHeight: number;
@@ -377,7 +377,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
       path.lineTo(this._width + 5, calcY(0));
       lastY = calcY(
           (this._metricsBuffer[this._metricsBuffer.length - 1] as {
-            metrics: Map<string, number>;
+            metrics: Map<string, number>,
           }).metrics.get(metricName) ||
           0);
       lastX = this._width + 5;
@@ -629,7 +629,7 @@ export interface MetricInfo {
 }
 export interface ChartInfo {
   title: string;
-  metrics: {name: string; color: string;}[];
+  metrics: {name: string, color: string}[];
   max?: number;
   currentMax?: number;
   format?: Format;

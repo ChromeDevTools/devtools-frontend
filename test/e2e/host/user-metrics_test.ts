@@ -57,9 +57,12 @@ declare global {
     __developerResourceLoaded: (evt: Event) => void;
     __developerResourceScheme: (evt: Event) => void;
     Host: {
-      UserMetrics: UserMetrics; userMetrics: {
-        actionTaken(name: number): void; colorFixed(threshold: string): void; cssEditorOpened(editorName: string): void;
-      }
+      UserMetrics: UserMetrics,
+      userMetrics: {
+        actionTaken(name: number): void,
+        colorFixed(threshold: string): void,
+        cssEditorOpened(editorName: string): void,
+      },
     };
   }
 }

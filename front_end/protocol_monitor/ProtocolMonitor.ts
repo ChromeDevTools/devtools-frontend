@@ -345,7 +345,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
   }
 
   _messageSent(
-      message: {domain: string; method: string; params: Object; id: number;},
+      message: {domain: string, method: string, params: Object, id: number},
       target: ProtocolClient.InspectorBackend.TargetBase|null): void {
     const sdkTarget = target as SDK.SDKModel.Target | null;
     const newRow: Components.DataGridUtils.Row = {
@@ -388,8 +388,9 @@ export class InfoWidget extends UI.Widget.VBox {
   }
 
   render(data: {
-    request: Components.DataGridUtils.Cell|undefined; response: Components.DataGridUtils.Cell | undefined;
-    direction: Components.DataGridUtils.Cell | undefined;
+    request: Components.DataGridUtils.Cell|undefined,
+    response: Components.DataGridUtils.Cell|undefined,
+    direction: Components.DataGridUtils.Cell|undefined,
   }|null): void {
     if (!data || !data.request || !data.response) {
       this._tabbedPane.changeTabView(

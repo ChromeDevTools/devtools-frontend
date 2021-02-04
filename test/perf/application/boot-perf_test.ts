@@ -8,7 +8,11 @@ import {reloadDevTools} from '../../shared/helper.js';
 import {mean, percentile, storeGeneratedResults} from '../helpers/perf-helper.js';
 
 interface PerfTimings {
-  bootperf: number[], mean: number, percentile_50: number, percentile_90: number, percentile_99: number
+  bootperf: number[];
+  mean: number;
+  percentile_50: number;
+  percentile_90: number;
+  percentile_99: number;
 }
 
 const RUNS = 37;

@@ -56,8 +56,10 @@ class PlayerDataCollection implements TriggerHandler {
   }
 
   export(): {
-    properties: Map<string, string>; messages: Protocol.Media.PlayerMessage[]; events: PlayerEvent[];
-    errors: Protocol.Media.PlayerError[];
+    properties: Map<string, string>,
+    messages: Protocol.Media.PlayerMessage[],
+    events: PlayerEvent[],
+    errors: Protocol.Media.PlayerError[],
   } {
     return {'properties': this._properties, 'messages': this._messages, 'events': this._events, 'errors': this._errors};
   }
@@ -110,8 +112,10 @@ class PlayerDataDownloadManager implements TriggerDispatcher {
   }
 
   exportPlayerData(playerID: string): {
-    properties: Map<string, string>; messages: Protocol.Media.PlayerMessage[]; events: PlayerEvent[];
-    errors: Protocol.Media.PlayerError[];
+    properties: Map<string, string>,
+    messages: Protocol.Media.PlayerMessage[],
+    events: PlayerEvent[],
+    errors: Protocol.Media.PlayerError[],
   } {
     const playerProperty = this._playerDataCollection.get(playerID);
     if (!playerProperty) {

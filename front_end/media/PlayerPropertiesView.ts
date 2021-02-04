@@ -123,7 +123,7 @@ const str_ = i18n.i18n.registerUIStrings('media/PlayerPropertiesView.ts', UIStri
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 type TabData = {
-  [x: string]: string
+  [x: string]: string,
 };
 
 // Keep this enum in sync with media/base/media_log_properties.h

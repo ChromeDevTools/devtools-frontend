@@ -65,7 +65,7 @@ export class ReleaseNotesActionDelegate implements UI.ActionRegistration.ActionD
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(latestReleaseNote().link);
     return true;
   }
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ReleaseNotesActionDelegate {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ReleaseNotesActionDelegate {
     const {forceNew} = opts;
     if (!releaseNotesActionDelegateInstance || forceNew) {
       releaseNotesActionDelegateInstance = new ReleaseNotesActionDelegate();
@@ -82,7 +82,7 @@ export class ReportIssueActionDelegate implements UI.ActionRegistration.ActionDe
         'https://bugs.chromium.org/p/chromium/issues/entry?template=DevTools+issue');
     return true;
   }
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ReportIssueActionDelegate {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ReportIssueActionDelegate {
     const {forceNew} = opts;
     if (!reportIssueActionDelegateInstance || forceNew) {
       reportIssueActionDelegateInstance = new ReportIssueActionDelegate();
@@ -99,6 +99,6 @@ export interface ReleaseNoteHighlight {
 export interface ReleaseNote {
   version: number;
   header: string;
-  highlights: {title: string; subtitle: string; link: string;}[];
+  highlights: {title: string, subtitle: string, link: string}[];
   link: string;
 }

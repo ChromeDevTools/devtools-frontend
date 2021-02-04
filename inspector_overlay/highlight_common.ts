@@ -32,10 +32,10 @@ import {rgbaToHsla} from '../front_end/common/ColorUtils.js';
 import {Bounds, Quad} from './common.js';
 
 export type PathBounds = Bounds&{
-  leftmostXForY: {[key: string]: number};
-  rightmostXForY: {[key: string]: number};
-  topmostYForX: {[key: string]: number};
-  bottommostYForX: {[key: string]: number};
+  leftmostXForY: {[key: string]: number},
+  rightmostXForY: {[key: string]: number},
+  topmostYForX: {[key: string]: number},
+  bottommostYForX: {[key: string]: number},
 };
 
 export interface LineStyle {
@@ -140,7 +140,7 @@ export function emptyBounds(): PathBounds {
   return bounds;
 }
 
-export function applyMatrixToPoint(point: {x: number; y: number;}, matrix: DOMMatrix): {x: number; y: number;} {
+export function applyMatrixToPoint(point: {x: number, y: number}, matrix: DOMMatrix): {x: number, y: number} {
   let domPoint = new DOMPoint(point.x, point.y);
   domPoint = domPoint.matrixTransform(matrix);
   return {x: domPoint.x, y: domPoint.y};

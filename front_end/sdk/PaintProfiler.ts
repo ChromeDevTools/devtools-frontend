@@ -117,7 +117,7 @@ SDKModel.register(PaintProfilerModel, Capability.DOM, false);
 
 export type RawPaintProfilerLogItemParamValue = string|{[key: string]: RawPaintProfilerLogItemParamValue};
 export type RawPaintProfilerLogItemParams = {
-  [key: string]: RawPaintProfilerLogItemParamValue
+  [key: string]: RawPaintProfilerLogItemParamValue,
 };
 
 export interface SnapshotWithRect {
@@ -133,5 +133,5 @@ export interface PictureFragment {
 
 export interface RawPaintProfilerLogItem {
   method: string;
-  params: RawPaintProfilerLogItemParams|null
+  params: RawPaintProfilerLogItemParams|null;
 }

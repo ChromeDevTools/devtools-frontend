@@ -214,5 +214,8 @@ export const enum ServiceWorkerUpdateNames {
 
 
 export interface ServiceWorkerUpdateRange {
-  id: string, phase: ServiceWorkerUpdateNames, start: number, end: number
+  id: string;
+  phase: ServiceWorkerUpdateNames;
+  start: number;
+  end: number;
 }

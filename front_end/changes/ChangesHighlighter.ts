@@ -13,9 +13,10 @@ interface ParserConfig {
 }
 
 export function ChangesHighlighter(config: Object, parserConfig: ParserConfig): {
-  startState: () => DiffState; token: (arg0: typeof CodeMirror.StringStream, arg1: DiffState) => string;
-  blankLine: (arg0: DiffState) => string;
-  copyState: (arg0: DiffState) => DiffState;
+  startState: () => DiffState,
+  token: (arg0: typeof CodeMirror.StringStream, arg1: DiffState) => string,
+  blankLine: (arg0: DiffState) => string,
+  copyState: (arg0: DiffState) => DiffState,
 } {
   const diffRows = parserConfig.diffRows;
   const baselineLines = parserConfig.baselineLines;

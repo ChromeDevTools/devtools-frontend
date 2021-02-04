@@ -101,7 +101,7 @@ export enum Events {
   VisibleSecurityStateChanged = 'VisibleSecurityStateChanged',
 }
 
-export const SummaryMessages: {[x: string]: string;} = {
+export const SummaryMessages: {[x: string]: string} = {
   [Protocol.Security.SecurityState.Unknown]: i18nString(UIStrings.theSecurityOfThisPageIsUnknown),
   [Protocol.Security.SecurityState.Insecure]: i18nString(UIStrings.thisPageIsNotSecure),
   [Protocol.Security.SecurityState.Neutral]: i18nString(UIStrings.thisPageIsNotSecure),

@@ -32,7 +32,8 @@ import {Bounds, createChild, Overlay, ResetData} from './common.js';
 import {buildPath, emptyBounds, PathBounds} from './highlight_common.js';
 
 interface Path {
-  path: Array<string|number>, outlineColor: string;
+  path: Array<string|number>;
+  outlineColor: string;
   name: string;
 }
 
@@ -172,7 +173,7 @@ export const LabelTypes = {
  * Calculates the coordinates to place the label based on position type
  */
 export function _getPositionFromLabelType(positionType: string, bounds: Omit<Bounds, 'allPoints'>, labelHeight: number):
-    {contentTop: number; contentLeft: number} {
+    {contentTop: number, contentLeft: number} {
   let contentTop = 0;
   switch (positionType) {
     case LabelTypes.topCorner:

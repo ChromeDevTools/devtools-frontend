@@ -276,7 +276,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
     if (this._suspensionState !== SuspensionState.Active) {
       return [];
     }
-    const ascendingByTimestamp = (x: {stamp: number;}, y: {stamp: number;}): number => x.stamp - y.stamp;
+    const ascendingByTimestamp = (x: {stamp: number}, y: {stamp: number}): number => x.stamp - y.stamp;
     const results = [];
     for (const {rawCoverageData, stamp} of this._jsBacklog.sort(ascendingByTimestamp)) {
       results.push(this._processJSCoverage(rawCoverageData, stamp));
@@ -347,7 +347,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
     if (this._suspensionState !== SuspensionState.Active) {
       return [];
     }
-    const ascendingByTimestamp = (x: {stamp: number;}, y: {stamp: number;}): number => x.stamp - y.stamp;
+    const ascendingByTimestamp = (x: {stamp: number}, y: {stamp: number}): number => x.stamp - y.stamp;
     const results = [];
     for (const {rawCoverageData, stamp} of this._cssBacklog.sort(ascendingByTimestamp)) {
       results.push(this._processCSSCoverage(rawCoverageData, stamp));
@@ -462,7 +462,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
   }
 
   async exportReport(fos: Bindings.FileUtils.FileOutputStream): Promise<void> {
-    const result: {url: string; ranges: {start: number; end: number;}[]; text: string | null;}[] = [];
+    const result: {url: string, ranges: {start: number, end: number}[], text: string|null}[] = [];
     function locationCompare(a: string, b: string): number {
       const [aLine, aPos] = a.split(':');
       const [bLine, bPos] = b.split(':');
@@ -502,8 +502,11 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
 
       // We have full text for this resource, resolve the offsets using the text line endings.
       if (fullText) {
-        const entry: {url: string; ranges: {start: number; end: number;}[];
-                      text: string;} = {url, ranges: [], text: fullText.value()};
+        const entry: {
+          url: string,
+          ranges: {start: number, end: number}[],
+          text: string,
+        } = {url, ranges: [], text: fullText.value()};
         for (const infoKey of coverageByLocationKeys) {
           const info = urlInfo._coverageInfoByLocation.get(infoKey);
           if (!info) {
@@ -529,8 +532,11 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
         if (!info) {
           continue;
         }
-        const entry: {url: string; ranges: {start: number; end: number;}[]; text: string |
-                          null;} = {url, ranges: [], text: (await info.contentProvider().requestContent()).content};
+        const entry: {
+          url: string,
+          ranges: {start: number, end: number}[],
+          text: string|null,
+        } = {url, ranges: [], text: (await info.contentProvider().requestContent()).content};
         let start = 0;
         for (const segment of info._segments) {
           if (segment.count) {

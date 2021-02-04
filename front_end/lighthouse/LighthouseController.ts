@@ -295,7 +295,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
     return inspectedURL;
   }
 
-  getFlags(): {internalDisableDeviceScreenEmulation: boolean; emulatedFormFactor: (string | undefined);} {
+  getFlags(): {internalDisableDeviceScreenEmulation: boolean, emulatedFormFactor: (string|undefined)} {
     const flags = {
       // DevTools handles all the emulation. This tells Lighthouse to not bother with emulation.
       internalDisableDeviceScreenEmulation: true,
@@ -304,10 +304,10 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
       runtimeSetting.setFlags(flags, runtimeSetting.setting.get());
     }
     return /** @type {{internalDisableDeviceScreenEmulation: boolean, emulatedFormFactor: (string|undefined)}} */ flags as
-    {
-      internalDisableDeviceScreenEmulation: boolean;
-      emulatedFormFactor: (string|undefined);
-    };
+        {
+          internalDisableDeviceScreenEmulation: boolean,
+          emulatedFormFactor: (string | undefined),
+        };
   }
 
   getCategoryIDs(): string[] {
@@ -320,7 +320,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper imp
     return categoryIDs;
   }
 
-  async getInspectedURL(options?: {force: boolean;}): Promise<string> {
+  async getInspectedURL(options?: {force: boolean}): Promise<string> {
     if (options && options.force || !this._inspectedURL) {
       this._inspectedURL = await this._evaluateInspectedURL();
     }
@@ -402,7 +402,7 @@ export const Presets: Preset[] = [
 ];
 
 export type Flags = {
-  [flag: string]: string|boolean
+  [flag: string]: string|boolean,
 };
 
 export const RuntimeSettings: RuntimeSetting[] = [

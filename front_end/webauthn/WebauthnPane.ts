@@ -197,8 +197,8 @@ class EmptyDataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
 }
 
 type AvailableAuthenticatorOptions = Protocol.WebAuthn.VirtualAuthenticatorOptions&{
-  active: boolean;
-  authenticatorId: Protocol.WebAuthn.AuthenticatorId;
+  active: boolean,
+  authenticatorId: Protocol.WebAuthn.AuthenticatorId,
 };
 
 let webauthnPaneImplInstance: WebauthnPaneImpl;
@@ -347,11 +347,11 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     return dataGrid;
   }
 
-  _handleExportCredential(e: {data: Protocol.WebAuthn.Credential;}): void {
+  _handleExportCredential(e: {data: Protocol.WebAuthn.Credential}): void {
     this._exportCredential(e.data);
   }
 
-  _handleRemoveCredential(authenticatorId: string, e: {data: Protocol.WebAuthn.Credential;}): void {
+  _handleRemoveCredential(authenticatorId: string, e: {data: Protocol.WebAuthn.Credential}): void {
     this._removeCredential(authenticatorId, e.data.credentialId);
   }
 

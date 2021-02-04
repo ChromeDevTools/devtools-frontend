@@ -82,7 +82,8 @@ export async function expandIssue() {
 }
 
 interface IssueResourceSection {
-  label: puppeteer.ElementHandle<Element>, content: puppeteer.ElementHandle<Element>
+  label: puppeteer.ElementHandle<Element>;
+  content: puppeteer.ElementHandle<Element>;
 }
 
 export async function getResourcesElement(

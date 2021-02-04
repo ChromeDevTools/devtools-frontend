@@ -83,7 +83,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   _resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
   _networkManager: SDK.NetworkManager.NetworkManager|null;
   _inputModel: InputModel|null;
-  _shortcuts: {[x: number]: (arg0?: Event|undefined) => boolean;};
+  _shortcuts: {[x: number]: (arg0?: Event|undefined) => boolean};
   _scrollOffsetX: number;
   _scrollOffsetY: number;
   _screenZoom: number;
@@ -131,7 +131,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.setMinimumSize(150, 150);
     this.registerRequiredCSS('screencast/screencastView.css', {enableLegacyPatching: true});
     this._shortcuts = {} as {
-      [x: number]: (arg0?: Event|undefined) => boolean;
+      [x: number]: (arg0?: Event|undefined) => boolean,
     };
     this._scrollOffsetX = 0;
     this._scrollOffsetY = 0;
@@ -618,7 +618,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this._titleElement.style.left = (boxX + 3) + 'px';
   }
 
-  _viewportDimensions(): {width: number; height: number;} {
+  _viewportDimensions(): {width: number, height: number} {
     const gutterSize = 30;
     const bordersSize = _bordersSize;
     const width = this.element.offsetWidth - bordersSize - gutterSize;

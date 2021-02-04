@@ -91,7 +91,7 @@ export class CookiesTable extends UI.Widget.VBox {
   _deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void);
   _dataGrid: DataGrid.DataGrid.DataGridImpl<DataGridNode>;
   _lastEditedColumnId: string|null;
-  _data: {folderName: string|null; cookies: Array<SDK.Cookie.Cookie>| null;}[];
+  _data: {folderName: string|null, cookies: Array<SDK.Cookie.Cookie>|null}[];
   _cookieDomain: string;
   _cookieToBlockedReasons: Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>|null;
   constructor(
@@ -248,7 +248,7 @@ export class CookiesTable extends UI.Widget.VBox {
   }
 
   setCookieFolders(
-      cookieFolders: {folderName: string|null; cookies: Array<SDK.Cookie.Cookie>| null;}[],
+      cookieFolders: {folderName: string|null, cookies: Array<SDK.Cookie.Cookie>|null}[],
       cookieToBlockedReasons?: Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>): void {
     this._data = cookieFolders;
     this._cookieToBlockedReasons = cookieToBlockedReasons || null;
@@ -264,7 +264,7 @@ export class CookiesTable extends UI.Widget.VBox {
     return node ? node.cookie : null;
   }
 
-  _getSelectionCookies(): {current: SDK.Cookie.Cookie|null; neighbor: SDK.Cookie.Cookie | null;} {
+  _getSelectionCookies(): {current: SDK.Cookie.Cookie|null, neighbor: SDK.Cookie.Cookie|null} {
     const node = this._dataGrid.selectedNode as DataGridNode | null;
     const nextNeighbor = node && node.traverseNextNode(true) as DataGridNode | null;
     const previousNeighbor = node && node.traversePreviousNode(true) as DataGridNode | null;
@@ -280,7 +280,7 @@ export class CookiesTable extends UI.Widget.VBox {
   }
 
   _findSelectedCookie(
-      selectionCookies: {current: SDK.Cookie.Cookie|null; neighbor: SDK.Cookie.Cookie | null;},
+      selectionCookies: {current: SDK.Cookie.Cookie|null, neighbor: SDK.Cookie.Cookie|null},
       cookies: SDK.Cookie.Cookie[]|null): SDK.Cookie.Cookie|null {
     if (!cookies) {
       return null;
@@ -316,7 +316,7 @@ export class CookiesTable extends UI.Widget.VBox {
       const selectedCookie = this._findSelectedCookie(selectionCookies, item.cookies);
       if (item.folderName) {
         const groupData = {} as {
-          [x: string]: string|number;
+          [x: string]: string | number,
         };
         groupData[SDK.Cookie.Attributes.Name] = item.folderName;
         groupData[SDK.Cookie.Attributes.Value] = '';
@@ -469,7 +469,7 @@ export class CookiesTable extends UI.Widget.VBox {
 
   _createGridNode(cookie: SDK.Cookie.Cookie): DataGridNode {
     const data = {} as {
-      [x: string]: string|number|boolean;
+      [x: string]: string | number | boolean,
     };
     data[SDK.Cookie.Attributes.Name] = cookie.name();
     data[SDK.Cookie.Attributes.Value] = cookie.value();
@@ -558,7 +558,7 @@ export class CookiesTable extends UI.Widget.VBox {
     });
   }
 
-  _createCookieFromData(data: {[x: string]: string;}): SDK.Cookie.Cookie {
+  _createCookieFromData(data: {[x: string]: string}): SDK.Cookie.Cookie {
     const cookie = new SDK.Cookie.Cookie(
         data[SDK.Cookie.Attributes.Name], data[SDK.Cookie.Attributes.Value], null,
         data[SDK.Cookie.Attributes.Priority] as Protocol.Network.CookiePriority);
@@ -584,7 +584,7 @@ export class CookiesTable extends UI.Widget.VBox {
     return cookie;
   }
 
-  _isValidCookieData(data: {[x: string]: string;}): boolean {
+  _isValidCookieData(data: {[x: string]: string}): boolean {
     return (Boolean(data.name) || Boolean(data.value)) && this._isValidDomain(data.domain) &&
         this._isValidPath(data.path) && this._isValidDate(data.expires);
   }
@@ -651,7 +651,7 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
   cookie: SDK.Cookie.Cookie;
   _blockedReasons: SDK.CookieModel.BlockedReason[]|null;
   constructor(
-      data: {[x: string]: string|number|boolean;}, cookie: SDK.Cookie.Cookie,
+      data: {[x: string]: string|number|boolean}, cookie: SDK.Cookie.Cookie,
       blockedReasons: SDK.CookieModel.BlockedReason[]|null) {
     super(data);
     this.cookie = cookie;

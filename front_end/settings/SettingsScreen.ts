@@ -124,7 +124,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     this._reportTabOnReveal = false;
   }
 
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): SettingsScreen {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): SettingsScreen {
     const {forceNew} = opts;
     if (!settingsScreenInstance || forceNew) {
       settingsScreenInstance = new SettingsScreen();
@@ -449,7 +449,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
 
 let actionDelegateInstance: ActionDelegate;
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ActionDelegate {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ActionDelegate {
     const {forceNew} = opts;
     if (!actionDelegateInstance || forceNew) {
       actionDelegateInstance = new ActionDelegate();

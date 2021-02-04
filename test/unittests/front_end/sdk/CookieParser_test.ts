@@ -16,9 +16,17 @@ function ensureCookiesExistOrFailTest(cookies: SDKModule.Cookie.Cookie[]|null): 
 }
 
 interface CookieExpectation {
-  name: string, value: string, httpOnly?: boolean, sameSite?: Protocol.Network.CookieSameSite, secure?: boolean,
-      session?: boolean, path?: string, domain?: string, expires?: null|number|string, size?: number,
-      priority?: Protocol.Network.CookiePriority,
+  name: string;
+  value: string;
+  httpOnly?: boolean;
+  sameSite?: Protocol.Network.CookieSameSite;
+  secure?: boolean;
+  session?: boolean;
+  path?: string;
+  domain?: string;
+  expires?: null|number|string;
+  size?: number;
+  priority?: Protocol.Network.CookiePriority;
 }
 
 const requestDate = new Date('Mon Oct 18 2010 17:00:00 GMT+0000');

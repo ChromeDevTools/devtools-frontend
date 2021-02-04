@@ -29,7 +29,7 @@ export interface Crumb {
 
 export interface CrumbTitle {
   main: string;
-  extras: {id?: string; classes?: string[];};
+  extras: {id?: string, classes?: string[]};
 }
 
 export const crumbsToRender = (crumbs: readonly DOMNode[], selectedNode: Readonly<DOMNode>|null): Crumb[] => {

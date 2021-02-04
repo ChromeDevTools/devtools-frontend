@@ -52,7 +52,7 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
         Host.InspectorFrontendHostAPI.Events.AppendedToURL, this._appendedToURL, this);
   }
 
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): FileManager {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): FileManager {
     const {forceNew} = opts;
     if (!fileManagerInstance || forceNew) {
       fileManagerInstance = new FileManager();

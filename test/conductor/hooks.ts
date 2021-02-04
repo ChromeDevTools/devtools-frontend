@@ -243,7 +243,7 @@ export async function resetPages() {
 type ReloadDevToolsOptions = {
   selectedPanel?: {name: string, selector?: string},
   canDock?: boolean,
-  queryParams?: {panel?: string}
+  queryParams?: {panel?: string},
 };
 
 export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {

@@ -13,7 +13,7 @@ function assertSwatch(swatch: InlineEditor.CSSVarSwatchImpl.CSSVarSwatch, expect
   linkTooltip: string,
   isDefined: boolean,
   varText: string,
-  parsedColor?: string
+  parsedColor?: string,
 }) {
   assertShadowRoot(swatch.shadowRoot);
   const container = swatch.shadowRoot.querySelector('span');

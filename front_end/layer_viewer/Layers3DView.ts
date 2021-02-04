@@ -111,7 +111,7 @@ export class Layers3DView extends UI.Widget.VBox implements LayerView {
   _layerViewHost: LayerViewHost;
   _transformController: TransformController;
   _canvasElement: HTMLCanvasElement;
-  _lastSelection: {[x: string]: Selection|null;};
+  _lastSelection: {[x: string]: Selection|null};
   _layerTree: SDK.LayerTreeBase.LayerTreeBase|null;
   _textureManager: LayerTextureManager;
   _chromeTextures: (WebGLTexture|undefined)[];
@@ -123,11 +123,11 @@ export class Layers3DView extends UI.Widget.VBox implements LayerView {
   _visibleLayers!: Set<SDK.LayerTreeBase.Layer>;
   _maxDepth!: number;
   _scale!: number;
-  _layerTexture?: {layer: SDK.LayerTreeBase.Layer; texture: WebGLTexture;}|null;
+  _layerTexture?: {layer: SDK.LayerTreeBase.Layer, texture: WebGLTexture}|null;
   _projectionMatrix?: DOMMatrix;
   _whiteTexture?: WebGLTexture|null;
   _gl?: WebGLRenderingContext|null;
-  _dimensionsForAutoscale?: {width: number; height: number;};
+  _dimensionsForAutoscale?: {width: number, height: number};
   _needsUpdate?: boolean;
   _panelToolbar?: UI.Toolbar.Toolbar;
   _showSlowScrollRectsSetting?: Common.Settings.Setting<boolean>;

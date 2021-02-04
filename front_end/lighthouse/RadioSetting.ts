@@ -9,13 +9,13 @@ import * as UI from '../ui/ui.js';
 
 export class RadioSetting {
   _setting: Common.Settings.Setting<string>;
-  _options: {value: string; label: string;}[];
+  _options: {value: string, label: string}[];
   element: HTMLDivElement;
   _radioElements: HTMLInputElement[];
   _ignoreChangeEvents: boolean;
   _selectedIndex: number;
   constructor(
-      options: {value: string; label: string;}[], setting: Common.Settings.Setting<string>, description: string) {
+      options: {value: string, label: string}[], setting: Common.Settings.Setting<string>, description: string) {
     this._setting = setting;
     this._options = options;
 

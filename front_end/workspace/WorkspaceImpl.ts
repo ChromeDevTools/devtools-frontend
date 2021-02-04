@@ -96,11 +96,10 @@ export class ProjectStore {
   _id: string;
   _type: projectTypes;
   _displayName: string;
-  _uiSourceCodesMap: Map < string, {
-    uiSourceCode: UISourceCode;
-    index: number;
-  }
-  > ;
+  _uiSourceCodesMap: Map<string, {
+    uiSourceCode: UISourceCode,
+    index: number,
+  }>;
   _uiSourceCodesList: UISourceCode[];
   _project: Project;
 
@@ -186,8 +185,8 @@ export class ProjectStore {
     const oldPath = uiSourceCode.url();
     const newPath = uiSourceCode.parentURL() ? uiSourceCode.parentURL() + '/' + newName : newName;
     const value = this._uiSourceCodesMap.get(oldPath) as {
-      uiSourceCode: UISourceCode;
-      index: number;
+      uiSourceCode: UISourceCode,
+      index: number,
     };
     this._uiSourceCodesMap.set(newPath, value);
     this._uiSourceCodesMap.delete(oldPath);
@@ -206,7 +205,7 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
     this._hasResourceContentTrackingExtensions = false;
   }
 
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): WorkspaceImpl {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): WorkspaceImpl {
     const {forceNew} = opts;
     if (!workspaceInstance || forceNew) {
       workspaceInstance = new WorkspaceImpl();

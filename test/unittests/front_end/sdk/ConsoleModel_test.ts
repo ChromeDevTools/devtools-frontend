@@ -17,7 +17,7 @@ describe('ConsoleMessage', () => {
     message?: string,
     url?: string,
     scriptId?: string,
-    executionContextId?: number
+    executionContextId?: number,
   }) {
     return new SDK.ConsoleModel.ConsoleMessage(
         null, options.source || SDK.ConsoleModel.MessageSource.ConsoleAPI, null, options.message || 'Message',

@@ -218,25 +218,29 @@ export interface GridHighlight {
   gridBorder: Array<string|number>;
   writingMode: string;
   rowGaps: Array<string|number>;
-  rotationAngle: number, columnGaps: Array<string|number>;
+  rotationAngle: number;
+  columnGaps: Array<string|number>;
   rows: Array<string|number>;
   columns: Array<string|number>;
   areaNames: {[key: string]: Array<string|number>};
   gridHighlightConfig: {
-    gridBackgroundColor?: string;
-    gridBorderColor?: string;
-    rowGapColor?: string;
-    columnGapColor?: string;
-    areaBorderColor?: string; gridBorderDash: boolean; rowLineDash: boolean; columnLineDash: boolean;
-    showGridExtensionLines: boolean;
-    showPositiveLineNumbers: boolean;
-    showNegativeLineNumbers: boolean;
-    rowLineColor: string;
-    columnLineColor: string;
-    rowHatchColor: string;
-    columnHatchColor: string;
-    showLineNames: boolean;
-  }
+    gridBackgroundColor?: string,
+    gridBorderColor?: string,
+    rowGapColor?: string,
+    columnGapColor?: string,
+    areaBorderColor?: string,
+                   gridBorderDash: boolean,
+                   rowLineDash: boolean,
+                   columnLineDash: boolean,
+                   showGridExtensionLines: boolean,
+                   showPositiveLineNumbers: boolean,
+                   showNegativeLineNumbers: boolean,
+                   rowLineColor: string,
+                   columnLineColor: string,
+                   rowHatchColor: string,
+                   columnHatchColor: string,
+                   showLineNames: boolean,
+  };
 }
 
 export function drawLayoutGridHighlight(

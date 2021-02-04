@@ -14,7 +14,7 @@ const {assert} = chai;
 const TEST_CONTAINER_ID = '__devtools-test-container-id';
 
 interface RenderOptions {
-  allowMultipleChildren?: boolean
+  allowMultipleChildren?: boolean;
 }
 
 /**
@@ -63,7 +63,7 @@ export function assertShadowRoot(shadowRoot: ShadowRoot|null): asserts shadowRoo
 }
 
 type Constructor<T> = {
-  new (...args: unknown[]): T
+  new (...args: unknown[]): T,
 };
 
 /**

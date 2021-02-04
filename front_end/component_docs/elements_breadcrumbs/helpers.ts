@@ -4,7 +4,7 @@
 import type * as Elements from '../../elements/elements.js';
 
 interface CrumbOverrides extends Partial<Elements.ElementsBreadcrumbsUtils.DOMNode> {
-  attributes?: {[x: string]: string|undefined}
+  attributes?: {[x: string]: string|undefined};
 }
 
 let id = 0;

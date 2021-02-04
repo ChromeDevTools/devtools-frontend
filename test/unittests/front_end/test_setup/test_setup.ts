@@ -15,7 +15,7 @@ import {resetTestDOM} from '../helpers/DOMHelpers.js';
 beforeEach(resetTestDOM);
 
 interface KarmaConfig {
-  config: {targetDir: string}
+  config: {targetDir: string};
 }
 
 before(async function() {

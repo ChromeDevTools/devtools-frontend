@@ -157,7 +157,7 @@ export class StatusView {
   _inspectedURL: string;
   _textChangedAt: number;
   _fastFactsQueued: Common.UIString.LocalizedString[];
-  _currentPhase: {id: string; message: string; progressBarClass: string; statusMessagePrefix: string;}|null;
+  _currentPhase: {id: string, message: string, progressBarClass: string, statusMessagePrefix: string}|null;
   _scheduledTextChangeTimeout: number|null;
   _scheduledFastFactTimeout: number|null;
   _dialog: UI.Dialog.Dialog;

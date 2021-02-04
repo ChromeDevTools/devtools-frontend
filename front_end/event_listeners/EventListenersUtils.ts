@@ -212,7 +212,7 @@ export function frameworkEventListeners(object: SDK.RemoteObject.RemoteObject): 
           ]
         }
     */
-  function frameworkEventListenersImpl(this: Object): {eventListeners: Array<EventListenerObjectInInspectedPage>;} {
+  function frameworkEventListenersImpl(this: Object): {eventListeners: Array<EventListenerObjectInInspectedPage>} {
     const errorLines = [];
     let eventListeners: EventListenerObjectInInspectedPage[] = [];
     let internalHandlers: (() => void)[] = [];
@@ -253,9 +253,9 @@ export function frameworkEventListeners(object: SDK.RemoteObject.RemoteObject): 
       }
     }
     const result: {
-      eventListeners: EventListenerObjectInInspectedPage[];
-      internalHandlers?: (() => void)[];
-      errorString?: string;
+      eventListeners: EventListenerObjectInInspectedPage[],
+      internalHandlers?: (() => void)[],
+      errorString?: string,
     } = {
       eventListeners: eventListeners,
       internalHandlers: internalHandlers.length ? internalHandlers : undefined,
@@ -373,8 +373,8 @@ export function frameworkEventListeners(object: SDK.RemoteObject.RemoteObject): 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function jQueryFetcher(node: any): {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      eventListeners: {handler: any; useCapture: boolean; passive: boolean; once: boolean; type: string;}[];
-      internalHandlers?: (() => void)[];
+      eventListeners: {handler: any, useCapture: boolean, passive: boolean, once: boolean, type: string}[],
+      internalHandlers?: (() => void)[],
     } {
       if (!node || !(node instanceof Node)) {
         return {eventListeners: []};
@@ -444,7 +444,7 @@ export function frameworkEventListeners(object: SDK.RemoteObject.RemoteObject): 
         return;
       }
       const jQueryFunction = jQuery as (arg0: Node) => {
-        off: Function;
+        off: Function,
       };
       jQueryFunction(node).off(type, selector, handler);
     }

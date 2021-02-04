@@ -37,7 +37,8 @@ import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js
 import {PersistentOverlay} from './tool_persistent.js';
 
 interface Path {
-  path: PathCommands, outlineColor: string;
+  path: PathCommands;
+  outlineColor: string;
   fillColor: string;
   name: string;
 }

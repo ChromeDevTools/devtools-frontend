@@ -300,7 +300,7 @@ export const enum State {
 
 let actionDelegateInstance: ActionDelegate;
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ActionDelegate {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ActionDelegate {
     const {forceNew} = opts;
     if (!actionDelegateInstance || forceNew) {
       actionDelegateInstance = new ActionDelegate();

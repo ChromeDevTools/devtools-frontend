@@ -68,9 +68,9 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('layer_viewer/PaintProfilerView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let categories: {[x: string]: PaintProfilerCategory;}|null = null;
+let categories: {[x: string]: PaintProfilerCategory}|null = null;
 
-let logItemCategoriesMap: {[x: string]: PaintProfilerCategory;}|null = null;
+let logItemCategoriesMap: {[x: string]: PaintProfilerCategory}|null = null;
 
 export class PaintProfilerView extends UI.Widget.HBox {
   _canvasContainer: HTMLElement;
@@ -123,7 +123,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
     this._reset();
   }
 
-  static categories(): {[x: string]: PaintProfilerCategory;} {
+  static categories(): {[x: string]: PaintProfilerCategory} {
     if (!categories) {
       categories = {
         shapes: new PaintProfilerCategory('shapes', i18nString(UIStrings.shapes), 'rgb(255, 161, 129)'),
@@ -135,11 +135,11 @@ export class PaintProfilerView extends UI.Widget.HBox {
     return categories;
   }
 
-  static _initLogItemCategories(): {[x: string]: PaintProfilerCategory;} {
+  static _initLogItemCategories(): {[x: string]: PaintProfilerCategory} {
     if (!logItemCategoriesMap) {
       const categories = PaintProfilerView.categories();
 
-      const logItemCategories: {[x: string]: PaintProfilerCategory;} = {};
+      const logItemCategories: {[x: string]: PaintProfilerCategory} = {};
       logItemCategories['Clear'] = categories['misc'];
       logItemCategories['DrawPaint'] = categories['misc'];
       logItemCategories['DrawData'] = categories['misc'];
@@ -293,7 +293,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
     }
   }
 
-  _renderBar(index: number, heightByCategory: {[x: string]: number;}): void {
+  _renderBar(index: number, heightByCategory: {[x: string]: number}): void {
     const categories = PaintProfilerView.categories();
     let currentHeight = 0;
     const x = this._barPaddingWidth + index * this._outerBarWidth;
@@ -322,13 +322,13 @@ export class PaintProfilerView extends UI.Widget.HBox {
     this._populatePieChart(total, slices);
   }
 
-  _calculatePieChart(): {total: number; slices: Array<{value: number; color: string; title: string;}>;} {
+  _calculatePieChart(): {total: number, slices: Array<{value: number, color: string, title: string}>} {
     const window = this.selectionWindow();
     if (!this._profiles || !this._profiles.length || !window) {
       return {total: 0, slices: []};
     }
     let totalTime = 0;
-    const timeByCategory: {[x: string]: number;} = {};
+    const timeByCategory: {[x: string]: number} = {};
     for (let i = window.left; i < window.right; ++i) {
       const logEntry = this._log[i];
       const category = PaintProfilerView._categoryForLogItem(logEntry);
@@ -361,7 +361,7 @@ export class PaintProfilerView extends UI.Widget.HBox {
     return Number.millisToString(value * 1000, true);
   }
 
-  selectionWindow(): {left: number; right: number;}|null {
+  selectionWindow(): {left: number, right: number}|null {
     if (!this._log) {
       return null;
     }
@@ -419,7 +419,7 @@ export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWid
   _treeOutline: UI.TreeOutline.TreeOutlineInShadow;
   _log: SDK.PaintProfiler.PaintProfilerLogItem[];
   _treeItemCache: Map<SDK.PaintProfiler.PaintProfilerLogItem, LogTreeElement>;
-  _selectionWindow?: {left: number; right: number;}|null;
+  _selectionWindow?: {left: number, right: number}|null;
   constructor() {
     super();
     this.setMinimumSize(100, 25);
@@ -451,7 +451,7 @@ export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWid
     this._treeOutline.appendChild(treeElement);
   }
 
-  updateWindow(selectionWindow: {left: number; right: number;}|null): void {
+  updateWindow(selectionWindow: {left: number, right: number}|null): void {
     this._selectionWindow = selectionWindow;
     this.update();
   }
@@ -543,9 +543,9 @@ export class LogTreeElement extends UI.TreeOutline.TreeElement {
 }
 
 export class LogPropertyTreeElement extends UI.TreeOutline.TreeElement {
-  _property: {name: string; value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue;};
+  _property: {name: string, value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue};
 
-  constructor(property: {name: string; value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue;}) {
+  constructor(property: {name: string, value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue}) {
     super();
     this._property = property;
   }

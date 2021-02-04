@@ -7,7 +7,9 @@ import * as LitHtml from '../third_party/lit-html/lit-html.js';
 const {render, html} = LitHtml;
 
 export interface NodeTextData {
-  nodeTitle: string, nodeId?: string, nodeClasses?: string[]
+  nodeTitle: string;
+  nodeId?: string;
+  nodeClasses?: string[];
 }
 
 export class NodeText extends HTMLElement {

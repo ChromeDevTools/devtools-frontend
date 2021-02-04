@@ -19,7 +19,7 @@ describe('ValueInterpreterDisplay', () => {
       baseData: {
         buffer: ArrayBuffer,
         type: LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueType,
-        mode: LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode
+        mode: LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypeMode,
       },
       combinations:
           Array<{endianness: LinearMemoryInspector.ValueInterpreterDisplayUtils.Endianness, signed: boolean}>) {

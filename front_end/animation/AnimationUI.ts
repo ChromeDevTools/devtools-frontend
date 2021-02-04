@@ -33,8 +33,10 @@ const str_ = i18n.i18n.registerUIStrings('animation/AnimationUI.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 type CachedElement = {
-  group: HTMLElement|null; animationLine: HTMLElement | null; keyframePoints: {[x: number]: HTMLElement;};
-  keyframeRender: {[x: number]: HTMLElement;};
+  group: HTMLElement|null,
+  animationLine: HTMLElement|null,
+  keyframePoints: {[x: number]: HTMLElement},
+  keyframeRender: {[x: number]: HTMLElement},
 };
 
 export class AnimationUI {
@@ -234,7 +236,7 @@ export class AnimationUI {
     } else {
       const stepFunction = StepTimingFunction.parse(easing);
       group.removeChildren();
-      const offsetMap: {[x: string]: number;} = {'start': 0, 'middle': 0.5, 'end': 1};
+      const offsetMap: {[x: string]: number} = {'start': 0, 'middle': 0.5, 'end': 1};
       if (stepFunction) {
         const offsetWeight = offsetMap[stepFunction.stepAtPosition];
         for (let i = 0; i < stepFunction.steps; i++) {

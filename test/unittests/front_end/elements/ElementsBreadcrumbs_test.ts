@@ -11,7 +11,7 @@ const {assert} = chai;
 
 
 interface MakeCrumbOptions extends Partial<ElementsModule.ElementsBreadcrumbsUtils.DOMNode> {
-  attributes?: {[x: string]: string}
+  attributes?: {[x: string]: string};
 }
 
 const makeCrumb = (overrides: MakeCrumbOptions = {}) => {

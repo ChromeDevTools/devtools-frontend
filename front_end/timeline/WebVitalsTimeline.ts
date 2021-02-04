@@ -14,7 +14,7 @@ declare global {
 }
 
 export interface Event {
-  timestamp: number
+  timestamp: number;
 }
 
 export interface Timebox {
@@ -54,9 +54,9 @@ export interface Marker {
   type: MarkerType;
   timestamp: number;
   timestampLabel: string;
-  timestampMetrics: TextMetrics
-  widthIncludingLabel: number
-  widthIncludingTimestamp: number
+  timestampMetrics: TextMetrics;
+  widthIncludingLabel: number;
+  widthIncludingTimestamp: number;
 }
 
 export const enum MarkerType {
@@ -79,7 +79,7 @@ export const enum Colors {
 }
 
 type Constructor<T> = {
-  new (...args: unknown[]): T
+  new (...args: unknown[]): T,
 };
 
 //  eslint-disable-next-line

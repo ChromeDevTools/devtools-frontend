@@ -128,7 +128,7 @@ export class ChangesView extends UI.Widget.VBox {
     this._selectedUISourceCodeChanged();
   }
 
-  static instance(opts: {forceNew: boolean|null;} = {forceNew: null}): ChangesView {
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ChangesView {
     const {forceNew} = opts;
     if (!changesViewInstance || forceNew) {
       changesViewInstance = new ChangesView();
@@ -294,7 +294,7 @@ export class ChangesView extends UI.Widget.VBox {
           this._diffRows
               .map(
                   (row: Row): string =>
-                      row.tokens.map((t: {text: string; className: string;}): string => t.text).join(''))
+                      row.tokens.map((t: {text: string, className: string}): string => t.text).join(''))
               .join('\n'));
       this._editor.setLineNumberFormatter(this._lineFormatter.bind(this));
       this._editor.updateDiffGutter(this._diffRows);

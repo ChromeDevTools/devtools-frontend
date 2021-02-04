@@ -310,9 +310,6 @@ table is empty.
   <message name="IDS_DEVTOOLS_7060e0481896e00b3f7d20f1e8e2749a" desc="Explanation for the SharedArrayBuffer availability status">
     unavailable
   </message>
-  <message name="IDS_DEVTOOLS_7091ed290cfa49f60364af4d4b3c42b9" desc="Section header in the Frame Details view">
-    API availablity
-  </message>
   <message name="IDS_DEVTOOLS_71a0e1bcf6a6d241aa509e0b9befbe4d" desc="Text for end time of an event">
     End time: <ph name="ENDTIME">$1s<ex>2</ex></ph>
   </message>
@@ -701,6 +698,9 @@ as used by <ph name="LOCKED_1">Chrome</ph>
   </message>
   <message name="IDS_DEVTOOLS_de7e4b8f3a01bd0e43aae6aac37417b2" desc="Warning message for image resources from the manifest">
     <ph name="RESOURCENAME">$1s<ex>Image</ex></ph> <ph name="IMAGEURL">$2s<ex>https://example.com/image.png</ex></ph> size should be at least 3840×3840
+  </message>
+  <message name="IDS_DEVTOOLS_de5b8b7e806f772ed10c35ecf898a4e7" desc="Section header in the Frame Details view">
+    API availability
   </message>
   <message name="IDS_DEVTOOLS_e00a7ac13697ba51e098449fd644935b" desc="Text in Background Service View of the Application panel">
     Show events from other domains

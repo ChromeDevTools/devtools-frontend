@@ -23,9 +23,6 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   _protocolMonitorExperimentEnabled: boolean;
   _frame: SDK.ResourceTreeModel.ResourceTreeFrame;
   _reportView: UI.ReportView.ReportView;
-  _apiAvailability: UI.ReportView.Section;
-  _apiSharedArrayBuffer: HTMLElement;
-  _apiMeasureMemory: HTMLElement;
   _additionalInfo: UI.ReportView.Section|undefined;
 
   constructor(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
@@ -43,14 +40,6 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._reportView.show(this.contentElement);
     this._reportView.element.classList.add('frame-details-report-container');
 
-    this._apiAvailability = this._reportView.appendSection(ls`API availablity`);
-    const summaryRow = this._apiAvailability.appendRow();
-    const summaryText = ls`Availability of certain APIs depends on the document being cross-origin isolated.`;
-    const link = 'https://web.dev/why-coop-coep/';
-    summaryRow.appendChild(UI.Fragment.html`<div>${summaryText} ${UI.XLink.XLink.create(link, ls`Learn more`)}</div>`);
-    this._apiSharedArrayBuffer = this._apiAvailability.appendField(ls`Shared Array Buffers`);
-    this._apiMeasureMemory = this._apiAvailability.appendField(ls`Measure Memory`);
-
     if (this._protocolMonitorExperimentEnabled) {
       this._additionalInfo = this._reportView.appendSection(ls`Additional Information`);
       this._additionalInfo.setTitle(
@@ -64,48 +53,6 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
 
   async doUpdate(): Promise<void> {
     this.reportView.data = {frame: this._frame};
-    this._updateApiAvailability();
-  }
-
-  _updateApiAvailability(): void {
-    const features = this._frame.getGatedAPIFeatures();
-    this._apiAvailability.setFieldVisible(ls`Shared Array Buffers`, Boolean(features));
-
-    if (!features) {
-      return;
-    }
-    const sabAvailable = features.includes(Protocol.Page.GatedAPIFeatures.SharedArrayBuffers);
-    if (sabAvailable) {
-      const sabTransferAvailable = features.includes(Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed);
-      this._apiSharedArrayBuffer.textContent =
-          sabTransferAvailable ? ls`available, transferable` : ls`available, not transferable`;
-      UI.Tooltip.Tooltip.install(
-          this._apiSharedArrayBuffer,
-          sabTransferAvailable ?
-              ls`SharedArrayBuffer constructor is available and SABs can be transferred via postMessage` :
-              ls`SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage`);
-      if (!this._frame.isCrossOriginIsolated()) {
-        const reasonHint = this._apiSharedArrayBuffer.createChild('span', 'inline-span');
-        reasonHint.textContent = ls`⚠️ will require cross-origin isolated context in the future`;
-      }
-    } else {
-      this._apiSharedArrayBuffer.textContent = ls`unavailable`;
-      if (!this._frame.isCrossOriginIsolated()) {
-        const reasonHint = this._apiSharedArrayBuffer.createChild('span', 'inline-comment');
-        reasonHint.textContent = ls`requires cross-origin isolated context`;
-      }
-    }
-
-    const measureMemoryAvailable = this._frame.isCrossOriginIsolated();
-    UI.Tooltip.Tooltip.install(
-        this._apiMeasureMemory,
-        measureMemoryAvailable ? ls`The performance.measureUserAgentSpecificMemory() API is available` :
-                                 ls`The performance.measureUserAgentSpecificMemory() API is not available`);
-    this._apiMeasureMemory.textContent = '';
-    const status = measureMemoryAvailable ? ls`available` : ls`unavailable`;
-    const link = 'https://web.dev/monitor-total-page-memory-usage/';
-    this._apiMeasureMemory.appendChild(
-        UI.Fragment.html`<div>${status} ${UI.XLink.XLink.create(link, ls`Learn more`)}</div>`);
   }
 }
 
@@ -186,6 +133,7 @@ export class FrameDetailsReportView extends HTMLElement {
       <devtools-report .data=${{reportTitle: this.frame.displayName()} as Components.ReportView.ReportData}>
       ${this.renderDocumentSection()}
       ${this.renderIsolationSection()}
+      ${this.renderApiAvailabilitySection()}
       </devtools-report>
     `, this.shadow);
     // clang-format on
@@ -468,6 +416,84 @@ export class FrameDetailsReportView extends HTMLElement {
         ${endpoint ? LitHtml.html`<span class="inline-name">${ls`reporting to`}</span>${endpoint}` : LitHtml.nothing}
       </devtools-report-value>
     `;
+  }
+
+  private renderApiAvailabilitySection(): LitHtml.TemplateResult|{} {
+    if (!this.frame) {
+      return LitHtml.nothing;
+    }
+
+    return LitHtml.html`
+      <style>
+        .span-cols {
+          grid-column-start: span 2;
+          margin: 0 0 8px 30px;
+          line-height: 28px
+        }
+      </style>
+      <devtools-report-section-header>${ls`API availability`}</devtools-report-section-header>
+      <div class="span-cols">
+        ${ls`Availability of certain APIs depends on the document being cross-origin isolated.`}
+        <x-link href="https://web.dev/why-coop-coep/" class="link">Learn more</x-link>
+      </div>
+      ${this.renderSharedArrayBufferAvailability()}
+      ${this.renderMeasureMemoryAvailability()}
+      <devtools-report-divider></devtools-report-divider>
+    `;
+  }
+
+  private renderSharedArrayBufferAvailability(): LitHtml.TemplateResult|{} {
+    if (this.frame) {
+      const features = this.frame.getGatedAPIFeatures();
+      if (features) {
+        const sabAvailable = features.includes(Protocol.Page.GatedAPIFeatures.SharedArrayBuffers);
+        const sabTransferAvailable =
+            sabAvailable && features.includes(Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed);
+        const availabilityText = sabTransferAvailable ?
+            ls`available, transferable` :
+            (sabAvailable ? ls`available, not transferable` : ls`unavailable`);
+        const tooltipText = sabTransferAvailable ?
+            ls`SharedArrayBuffer constructor is available and SABs can be transferred via postMessage` :
+            (sabAvailable ?
+                 ls`SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage` :
+                 '');
+
+        // Disabled until https://crbug.com/1079231 is fixed.
+        // clang-format off
+        return LitHtml.html`
+          <devtools-report-key>${ls`Shared Array Buffers`}</devtools-report-key>
+          <devtools-report-value title=${tooltipText}>
+            ${availabilityText}
+            ${!this.frame.isCrossOriginIsolated() ?
+              (sabAvailable ?
+                LitHtml.html`<span class="inline-comment">${
+                  ls`⚠️ will require cross-origin isolated context in the future`}</span>` :
+                LitHtml.html`<span class="inline-comment">${ls`requires cross-origin isolated context`}</span>`) :
+              LitHtml.nothing}
+          </devtools-report-value>
+        `;
+        // clang-format on
+      }
+    }
+    return LitHtml.nothing;
+  }
+
+  private renderMeasureMemoryAvailability(): LitHtml.TemplateResult|{} {
+    if (this.frame) {
+      const measureMemoryAvailable = this.frame.isCrossOriginIsolated();
+      const availabilityText = measureMemoryAvailable ? ls`available` : ls`unavailable`;
+      const tooltipText = measureMemoryAvailable ?
+          ls`The performance.measureUserAgentSpecificMemory() API is available` :
+          ls`The performance.measureUserAgentSpecificMemory() API is not available`;
+      return LitHtml.html`
+        <devtools-report-key>${ls`Measure Memory`}</devtools-report-key>
+        <devtools-report-value>
+          <span title=${tooltipText}>${availabilityText}</span>
+          <x-link class="link" href="https://web.dev/monitor-total-page-memory-usage/">${ls`Learn more`}</a>
+        </devtools-report-value>
+      `;
+    }
+    return LitHtml.nothing;
   }
 }
 

@@ -1143,3 +1143,39 @@ Common.Settings.registerSettingExtension({
     },
   ],
 });
+
+UI.ViewManager.registerLocationResolver({
+  name: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
+  category: UI.ViewManager.ViewLocationCategoryValues.SOURCES,
+  async loadResolver() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.SourcesPanel.instance();
+  },
+});
+
+UI.ViewManager.registerLocationResolver({
+  name: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_TOP,
+  category: UI.ViewManager.ViewLocationCategoryValues.SOURCES,
+  async loadResolver() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.SourcesPanel.instance();
+  },
+});
+
+UI.ViewManager.registerLocationResolver({
+  name: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_BOTTOM,
+  category: UI.ViewManager.ViewLocationCategoryValues.SOURCES,
+  async loadResolver() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.SourcesPanel.instance();
+  },
+});
+
+UI.ViewManager.registerLocationResolver({
+  name: UI.ViewManager.ViewLocationValues.SOURCES_SIDEBAR_TABS,
+  category: UI.ViewManager.ViewLocationCategoryValues.SOURCES,
+  async loadResolver() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.SourcesPanel.instance();
+  },
+});

@@ -326,3 +326,12 @@ Common.Settings.registerSettingExtension({
     },
   ],
 });
+
+UI.ViewManager.registerLocationResolver({
+  name: UI.ViewManager.ViewLocationValues.NETWORK_SIDEBAR,
+  category: UI.ViewManager.ViewLocationCategoryValues.NETWORK,
+  async loadResolver() {
+    const Network = await loadNetworkModule();
+    return Network.NetworkPanel.NetworkPanel.instance();
+  },
+});

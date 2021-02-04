@@ -16,9 +16,6 @@
   <message name="IDS_DEVTOOLS_11a755d598c0c417f9a36758c3da7481" desc="Text of an item that stops the running task">
     Stop
   </message>
-  <message name="IDS_DEVTOOLS_1b1ac1c7a54457ce73ddd25a5b51c47d" desc="A title of the 'Drawer sidebar' @UI.ViewLocationResolver category">
-    Drawer sidebar
-  </message>
   <message name="IDS_DEVTOOLS_22b6fe30dec1ae9c09480cce01cd4065" desc="Text to run commands">
     Run command
   </message>
@@ -125,9 +122,6 @@
   <message name="IDS_DEVTOOLS_95bbad55f11c237ed89546e748093ba7" desc="Text for the request animation frame event">
     Request Animation Frame
   </message>
-  <message name="IDS_DEVTOOLS_9b1ed2cbe56f7a315f0a365d2b97cb59" desc="A title of the 'Drawer' @UI.ViewLocationResolver category">
-    Drawer
-  </message>
   <message name="IDS_DEVTOOLS_9d8c209e49e328528c39c273798e98c9" desc="Text to save content as a specific file type">
     Save as...
   </message>
@@ -166,9 +160,6 @@
   </message>
   <message name="IDS_DEVTOOLS_b5a7adde1af5c87d7fd797b6245c2a39" desc="Text for the description of something">
     Description
-  </message>
-  <message name="IDS_DEVTOOLS_b8da6df14bf06283cbf588df6998722e" desc="A title of the 'Panel' @UI.ViewLocationResolver category">
-    Panel
   </message>
   <message name="IDS_DEVTOOLS_b94d8a074eddd267702810179875737f" desc="Text that refers to the debugger">
     Debugger

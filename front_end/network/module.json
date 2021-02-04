@@ -23,12 +23,6 @@
         "Network.UIRequestLocation"
       ],
       "className": "Network.NetworkPanel.RequestLocationRevealer"
-    },
-    {
-      "type": "@UI.ViewLocationResolver",
-      "name": "network-sidebar",
-      "category": "Network",
-      "className": "Network.NetworkPanel"
     }
   ],
   "dependencies": [

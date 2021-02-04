@@ -530,3 +530,27 @@ Common.Settings.registerSettingExtension({
   settingType: Common.Settings.SettingTypeObject.ARRAY,
   defaultValue: [],
 });
+
+UI.ViewManager.registerLocationResolver({
+  name: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
+  category: UI.ViewManager.ViewLocationCategoryValues.DRAWER,
+  async loadResolver() {
+    return UI.InspectorView.InspectorView.instance();
+  },
+});
+
+UI.ViewManager.registerLocationResolver({
+  name: UI.ViewManager.ViewLocationValues.DRAWER_SIDEBAR,
+  category: UI.ViewManager.ViewLocationCategoryValues.DRAWER_SIDEBAR,
+  async loadResolver() {
+    return UI.InspectorView.InspectorView.instance();
+  },
+});
+
+UI.ViewManager.registerLocationResolver({
+  name: UI.ViewManager.ViewLocationValues.PANEL,
+  category: UI.ViewManager.ViewLocationCategoryValues.PANEL,
+  async loadResolver() {
+    return UI.InspectorView.InspectorView.instance();
+  },
+});

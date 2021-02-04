@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_1aff765143dc4bf8ef68f698234e10f6" desc="Name of the category that hold recording related actions">
     Recorder
   </message>
+  <message name="IDS_DEVTOOLS_1b1ac1c7a54457ce73ddd25a5b51c47d" desc="A title of the 'Drawer sidebar' @UI.ViewLocationResolver category">
+    Drawer sidebar
+  </message>
   <message name="IDS_DEVTOOLS_214864980ac9b83ff82c6e9b8c9a44c7" desc="Aria alert to read the suggestion for the suggestion box when typing in text editor">
     <ph name="THIS__ONLYCOMPLETION_TEXT">$1s<ex>name</ex></ph>, suggestion <ph name="THIS__LIST_SELECTEDINDEX______">$2s<ex>2</ex></ph> of <ph name="THIS__ITEMS_LENGTH">$3s<ex>5</ex></ph>
   </message>
@@ -114,6 +117,9 @@
   <message name="IDS_DEVTOOLS_96fb9e0d650af5b1fc4ec6c7bc11b49b" desc="Title of more tabs button in inspector view">
     More Tools
   </message>
+  <message name="IDS_DEVTOOLS_9b1ed2cbe56f7a315f0a365d2b97cb59" desc="A title of the 'Drawer' @UI.ViewLocationResolver category">
+    Drawer
+  </message>
   <message name="IDS_DEVTOOLS_a169aab715858133b50d2e72ece74f14" desc="Accessibility label for checkable SoftContextMenuItems with shortcuts">
     <ph name="ITEM_LABEL">$1s<ex>Open File</ex></ph>, <ph name="ITEM_SHORTCUT">$2s<ex>Ctrl + P</ex></ph>, <ph name="CHECKEDSTATE">$3s<ex>checked</ex></ph>
   </message>
@@ -131,6 +137,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b79f0c59be8253d3acb4515071312bda" desc="Text on a button to hide sidebar">
     Hide <ph name="THIS__SHOWHIDESIDEBARBUTTONTITLE">$1s<ex>Setting</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_b8da6df14bf06283cbf588df6998722e" desc="A title of the 'Panel' @UI.ViewLocationResolver category">
+    Panel
   </message>
   <message name="IDS_DEVTOOLS_b94d1b250ba62f06dadf0edc4a947f5c" desc="Text in UIUtils">
     Promise resolved (async)

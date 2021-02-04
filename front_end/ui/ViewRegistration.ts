@@ -25,7 +25,10 @@ export const enum ViewLocationValues {
   SOURCES_SIDEBAR_BOTTOM = 'sources.sidebar-bottom',
   NAVIGATOR_VIEW = 'navigator-view',
   DRAWER_VIEW = 'drawer-view',
+  DRAWER_SIDEBAR = 'drawer-sidebar',
   NETWORK_SIDEBAR = 'network-sidebar',
+  SOURCES_SIDEBAR_TOP = 'sources.sidebar-top',
+  SOURCES_SIDEBAR_TABS = 'sources.sidebar-tabs',
 }
 
 export interface ViewRegistration {

@@ -2732,9 +2732,6 @@
   "network/HARWriter.js | writingFile": {
     "message": "Writing file…"
   },
-  "network/ModuleUIStrings.js | network": {
-    "message": "Network"
-  },
   "network/ModuleUIStrings.js | networkPanel": {
     "message": "Network panel"
   },

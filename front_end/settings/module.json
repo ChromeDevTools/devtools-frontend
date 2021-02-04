@@ -16,12 +16,6 @@
       "type": "context-menu-item",
       "location": "mainMenuHelp/default",
       "actionId": "settings.documentation"
-    },
-    {
-      "type": "@UI.ViewLocationResolver",
-      "name": "settings-view",
-      "category": "Settings",
-      "className": "Settings.SettingsScreen"
     }
   ],
   "dependencies": [

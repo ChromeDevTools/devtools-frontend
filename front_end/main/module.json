@@ -62,24 +62,6 @@
       "type": "@UI.SettingUI",
       "category": "Extensions",
       "className": "Components.Linkifier.LinkHandlerSettingUI"
-    },
-    {
-      "type": "@UI.ViewLocationResolver",
-      "name": "drawer-view",
-      "category": "Drawer",
-      "className": "UI.InspectorView"
-    },
-    {
-      "type": "@UI.ViewLocationResolver",
-      "name": "drawer-sidebar",
-      "category": "Drawer sidebar",
-      "className": "UI.InspectorView"
-    },
-    {
-      "type": "@UI.ViewLocationResolver",
-      "name": "panel",
-      "category": "Panel",
-      "className": "UI.InspectorView"
     }
   ],
   "dependencies": [

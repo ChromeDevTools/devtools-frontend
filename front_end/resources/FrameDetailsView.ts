@@ -17,19 +17,12 @@ import * as UI from '../ui/ui.js';
 import * as Workspace from '../workspace/workspace.js';
 import {ls} from '../platform/platform.js';
 
-const booleanToYesNo = (b: boolean): Common.UIString.LocalizedString => b ? ls`Yes` : ls`No`;
-
 export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   private readonly reportView = new FrameDetailsReportView();
 
   _protocolMonitorExperimentEnabled: boolean;
   _frame: SDK.ResourceTreeModel.ResourceTreeFrame;
   _reportView: UI.ReportView.ReportView;
-  _isolationSection: UI.ReportView.Section;
-  _secureContext: HTMLElement;
-  _crossOriginIsolatedContext: HTMLElement;
-  _coepPolicy: HTMLElement;
-  _coopPolicy: HTMLElement;
   _apiAvailability: UI.ReportView.Section;
   _apiSharedArrayBuffer: HTMLElement;
   _apiMeasureMemory: HTMLElement;
@@ -49,12 +42,6 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
     this._reportView.show(this.contentElement);
     this._reportView.element.classList.add('frame-details-report-container');
-
-    this._isolationSection = this._reportView.appendSection(ls`Security & Isolation`);
-    this._secureContext = this._isolationSection.appendField(ls`Secure Context`);
-    this._crossOriginIsolatedContext = this._isolationSection.appendField(ls`Cross-Origin Isolated`);
-    this._coepPolicy = this._isolationSection.appendField(ls`Cross-Origin Embedder Policy`);
-    this._coopPolicy = this._isolationSection.appendField(ls`Cross-Origin Opener Policy`);
 
     this._apiAvailability = this._reportView.appendSection(ls`API availablity`);
     const summaryRow = this._apiAvailability.appendRow();
@@ -77,87 +64,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
 
   async doUpdate(): Promise<void> {
     this.reportView.data = {frame: this._frame};
-    await this._updateCoopCoepStatus();
-    this._updateContextStatus();
     this._updateApiAvailability();
-  }
-
-  static fillCrossOriginPolicy(
-      field: HTMLElement,
-      isEnabled: (value: Protocol.Network.CrossOriginEmbedderPolicyValue|
-                  Protocol.Network.CrossOriginOpenerPolicyValue) => boolean,
-      info: Protocol.Network.CrossOriginEmbedderPolicyStatus|Protocol.Network.CrossOriginOpenerPolicyStatus|null|
-      undefined): void {
-    if (!info) {
-      field.textContent = '';
-      return;
-    }
-    const enabled = isEnabled(info.value);
-    field.textContent = enabled ? info.value : info.reportOnlyValue;
-    if (!enabled && isEnabled(info.reportOnlyValue)) {
-      const reportOnly = document.createElement('span');
-      reportOnly.classList.add('inline-comment');
-      reportOnly.textContent = 'report-only';
-      field.appendChild(reportOnly);
-    }
-    const endpoint = enabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
-    if (endpoint) {
-      const reportingEndpointPrefix = field.createChild('span', 'inline-name');
-      reportingEndpointPrefix.textContent = ls`reporting to`;
-      const reportingEndpointName = field.createChild('span');
-      reportingEndpointName.textContent = endpoint;
-    }
-  }
-
-  async _updateCoopCoepStatus(): Promise<void> {
-    const model = this._frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
-    const info = model && await model.getSecurityIsolationStatus(this._frame.id);
-    if (!info) {
-      return;
-    }
-    const coepIsEnabled =
-        (value: Protocol.Network.CrossOriginEmbedderPolicyValue|Protocol.Network.CrossOriginOpenerPolicyValue):
-            boolean => value !== Protocol.Network.CrossOriginEmbedderPolicyValue.None;
-    FrameDetailsView.fillCrossOriginPolicy(this._coepPolicy, coepIsEnabled, info.coep);
-    this._isolationSection.setFieldVisible(ls`Cross-Origin Embedder Policy`, Boolean(info.coep));
-
-    const coopIsEnabled =
-        (value: Protocol.Network.CrossOriginEmbedderPolicyValue|Protocol.Network.CrossOriginOpenerPolicyValue):
-            boolean => value !== Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone;
-    FrameDetailsView.fillCrossOriginPolicy(this._coopPolicy, coopIsEnabled, info.coop);
-    this._isolationSection.setFieldVisible(ls`Cross-Origin Opener Policy`, Boolean(info.coop));
-  }
-
-  _explanationFromSecureContextType(type: Protocol.Page.SecureContextType|null): string|null {
-    switch (type) {
-      case Protocol.Page.SecureContextType.Secure:
-        return null;
-      case Protocol.Page.SecureContextType.SecureLocalhost:
-        return ls`Localhost is always a secure context`;
-      case Protocol.Page.SecureContextType.InsecureAncestor:
-        return ls`A frame ancestor is an insecure context`;
-      case Protocol.Page.SecureContextType.InsecureScheme:
-        return ls`The frame's scheme is insecure`;
-    }
-    return null;
-  }
-
-  _updateContextStatus(): void {
-    if (this._frame.unreachableUrl()) {
-      this._isolationSection.setFieldVisible(ls`Secure Context`, false);
-      this._isolationSection.setFieldVisible(ls`Cross-Origin Isolated`, false);
-      return;
-    }
-    this._isolationSection.setFieldVisible(ls`Secure Context`, true);
-    this._isolationSection.setFieldVisible(ls`Cross-Origin Isolated`, true);
-
-    this._secureContext.textContent = booleanToYesNo(this._frame.isSecureContext());
-    const secureContextExplanation = this._explanationFromSecureContextType(this._frame.getSecureContextType());
-    if (secureContextExplanation) {
-      const secureContextType = this._secureContext.createChild('span', 'inline-comment');
-      secureContextType.textContent = secureContextExplanation;
-    }
-    this._crossOriginIsolatedContext.textContent = booleanToYesNo(this._frame.isCrossOriginIsolated());
   }
 
   _updateApiAvailability(): void {
@@ -248,12 +155,37 @@ export class FrameDetailsReportView extends HTMLElement {
           font-size: inherit;
         }
 
+        .inline-comment {
+          padding-left: 1ex;
+          white-space: pre-line;
+        }
+
+        .inline-comment::before {
+          content: "(";
+        }
+
+        .inline-comment::after {
+          content: ")";
+        }
+
+        .inline-name {
+          color: var(--color-text-secondary);
+          padding-left: 2ex;
+          user-select: none;
+          white-space: pre-line;
+        }
+
+        .inline-name::after {
+          content: ':\u00a0';
+        }
+
         .inline-items {
           display: flex;
         }
       </style>
       <devtools-report .data=${{reportTitle: this.frame.displayName()} as Components.ReportView.ReportData}>
       ${this.renderDocumentSection()}
+      ${this.renderIsolationSection()}
       </devtools-report>
     `, this.shadow);
     // clang-format on
@@ -453,6 +385,89 @@ export class FrameDetailsReportView extends HTMLElement {
       }
     }
     return LitHtml.nothing;
+  }
+
+  private renderIsolationSection(): LitHtml.TemplateResult|{} {
+    if (!this.frame) {
+      return LitHtml.nothing;
+    }
+    return LitHtml.html`
+      <devtools-report-section-header>${ls`Security & Isolation`}</devtools-report-section-header>
+      <devtools-report-key>${ls`Secure Context`}</devtools-report-key>
+      <devtools-report-value>
+        ${this.frame.isSecureContext() ? ls`Yes` : ls`No`}
+        ${this.maybeRenderSecureContextExplanation()}
+      </devtools-report-value>
+      <devtools-report-key>${ls`Cross-Origin Isolated`}</devtools-report-key>
+      <devtools-report-value>
+        ${this.frame.isCrossOriginIsolated() ? ls`Yes` : ls`No`}
+      </devtools-report-value>
+      ${LitHtml.Directives.until(this.maybeRenderCoopCoepStatus(), LitHtml.nothing)}
+      <devtools-report-divider></devtools-report-divider>
+    `;
+  }
+
+  private maybeRenderSecureContextExplanation(): LitHtml.TemplateResult|{} {
+    const explanation = this.getSecureContextExplanation();
+    if (explanation) {
+      return LitHtml.html`
+        <span class="inline-comment">${explanation}</span>
+      `;
+    }
+    return LitHtml.nothing;
+  }
+
+  private getSecureContextExplanation(): Platform.UIString.LocalizedString|null {
+    switch (this.frame?.getSecureContextType()) {
+      case Protocol.Page.SecureContextType.Secure:
+        return null;
+      case Protocol.Page.SecureContextType.SecureLocalhost:
+        return ls`Localhost is always a secure context`;
+      case Protocol.Page.SecureContextType.InsecureAncestor:
+        return ls`A frame ancestor is an insecure context`;
+      case Protocol.Page.SecureContextType.InsecureScheme:
+        return ls`The frame's scheme is insecure`;
+    }
+    return null;
+  }
+
+  private async maybeRenderCoopCoepStatus(): Promise<LitHtml.TemplateResult|{}> {
+    if (this.frame) {
+      const model = this.frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
+      const info = model && await model.getSecurityIsolationStatus(this.frame.id);
+      if (info) {
+        return LitHtml.html`
+          ${
+            this.maybeRenderCrossOriginStatus(
+                info.coep, ls`Cross-Origin Embedder Policy`, Protocol.Network.CrossOriginEmbedderPolicyValue.None)}
+          ${
+            this.maybeRenderCrossOriginStatus(
+                info.coop, ls`Cross-Origin Opener Policy`, Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone)}
+        `;
+      }
+    }
+    return LitHtml.nothing;
+  }
+
+  private maybeRenderCrossOriginStatus(
+      info: Protocol.Network.CrossOriginEmbedderPolicyStatus|Protocol.Network.CrossOriginOpenerPolicyStatus|undefined,
+      policyName: string,
+      noneValue: Protocol.Network.CrossOriginEmbedderPolicyValue|
+      Protocol.Network.CrossOriginOpenerPolicyValue): LitHtml.TemplateResult|{} {
+    if (!info) {
+      return LitHtml.nothing;
+    }
+    const isEnabled = info.value !== noneValue;
+    const isReportOnly = (!isEnabled && info.reportOnlyValue !== noneValue);
+    const endpoint = isEnabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
+    return LitHtml.html`
+      <devtools-report-key>${policyName}</devtools-report-key>
+      <devtools-report-value>
+        ${isEnabled ? info.value : info.reportOnlyValue}
+        ${isReportOnly ? LitHtml.html`<span class="inline-comment">report-only</span>` : LitHtml.nothing}
+        ${endpoint ? LitHtml.html`<span class="inline-name">${ls`reporting to`}</span>${endpoint}` : LitHtml.nothing}
+      </devtools-report-value>
+    `;
   }
 }
 

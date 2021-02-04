@@ -1,7 +1,4 @@
 {
-  "dependencies": [
-    "host"
-  ],
   "modules": [
     "services.js",
     "services-legacy.js",

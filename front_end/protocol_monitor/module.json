@@ -2,7 +2,6 @@
   "dependencies": [
     "platform",
     "ui",
-    "host",
     "components",
     "data_grid",
     "source_frame"

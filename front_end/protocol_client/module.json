@@ -1,7 +1,4 @@
 {
-  "dependencies": [
-    "host"
-  ],
   "modules": [
     "../generated/InspectorBackendCommands.js",
     "protocol_client.js",

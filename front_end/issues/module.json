@@ -12,7 +12,6 @@
   "dependencies": [
     "browser_sdk",
     "components",
-    "host",
     "network",
     "platform",
     "sdk",

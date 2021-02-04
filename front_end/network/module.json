@@ -32,7 +32,6 @@
     "cookie_table",
     "data_grid",
     "har_importer",
-    "host",
     "mobile_throttling",
     "object_ui",
     "perf_ui",

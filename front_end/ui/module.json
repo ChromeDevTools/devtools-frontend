@@ -1,8 +1,7 @@
 {
   "dependencies": [
     "platform",
-    "dom_extension",
-    "host"
+    "dom_extension"
   ],
   "modules": [
     "ui-legacy.js",

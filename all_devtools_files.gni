@@ -147,7 +147,6 @@ all_devtools_files = [
   "front_end/heap_snapshot_worker/module.json",
   "front_end/help/module.json",
   "front_end/help/releaseNote.css",
-  "front_end/host/module.json",
   "front_end/inline_editor/bezierEditor.css",
   "front_end/inline_editor/bezierSwatch.css",
   "front_end/inline_editor/colorSwatch.css",

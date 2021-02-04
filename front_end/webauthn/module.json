@@ -2,8 +2,7 @@
   "dependencies": [
     "data_grid",
     "platform",
-    "ui",
-    "host"
+    "ui"
   ],
   "modules": [
     "webauthn-legacy.js"

@@ -18,8 +18,7 @@
     }
   ],
   "dependencies": [
-    "ui",
-    "host"
+    "ui"
   ],
   "modules": [
     "help-legacy.js"

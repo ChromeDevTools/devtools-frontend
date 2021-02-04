@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "host",
     "platform"
   ],
   "modules": [

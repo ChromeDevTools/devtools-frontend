@@ -8,7 +8,6 @@
   "dependencies": [
     "platform",
     "ui",
-    "host",
     "components"
   ],
   "modules": [

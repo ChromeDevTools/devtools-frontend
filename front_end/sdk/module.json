@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "common",
     "host",
     "platform",
     "protocol_client",

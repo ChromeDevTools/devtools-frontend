@@ -1,8 +1,7 @@
 {
   "dependencies": [
     "components",
-    "browser_sdk",
-    "common"
+    "browser_sdk"
   ],
   "modules": []
 }

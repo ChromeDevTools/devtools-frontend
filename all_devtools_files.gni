@@ -65,7 +65,6 @@ all_devtools_files = [
   "front_end/cm/module.json",
   "front_end/color_picker/module.json",
   "front_end/color_picker/spectrum.css",
-  "front_end/common/module.json",
   "front_end/components/imagePreview.css",
   "front_end/components/jsUtils.css",
   "front_end/components/module.json",

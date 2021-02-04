@@ -7,7 +7,6 @@
     }
   ],
   "dependencies": [
-    "common",
     "data_grid",
     "formatter",
     "host",

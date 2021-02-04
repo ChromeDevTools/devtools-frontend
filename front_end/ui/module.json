@@ -2,7 +2,6 @@
   "dependencies": [
     "platform",
     "dom_extension",
-    "common",
     "host"
   ],
   "modules": [

@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "common",
     "browser_sdk"
   ],
   "modules": []

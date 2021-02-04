@@ -4,7 +4,6 @@
     "ui",
     "i18n",
     "persistence",
-    "common",
     "accessibility",
     "elements"
   ],

@@ -1,7 +1,6 @@
 {
   "modules" : [
     { "name": "browser_sdk", "type": "autostart" },
-    { "name": "common", "type": "autostart" },
     { "name": "components", "type": "autostart"},
     { "name": "console_counters", "type": "autostart" },
     { "name": "dom_extension", "type": "autostart" },

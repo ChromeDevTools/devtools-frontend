@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "ui",
-    "common",
     "components",
     "i18n",
     "sdk",

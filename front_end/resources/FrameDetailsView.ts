@@ -259,39 +259,34 @@ export class FrameDetailsReportView extends HTMLElement {
 
   private async renderOwnerElement(): Promise<LitHtml.TemplateResult|{}> {
     if (this.frame) {
-      const openerFrame = this.frame instanceof SDK.ResourceTreeModel.ResourceTreeFrame ?
-          this.frame :
-          SDK.FrameManager.FrameManager.instance().getFrame(this.frame);
-      if (openerFrame) {
-        const linkTargetDOMNode = await openerFrame.getOwnerDOMNodeOrDocument();
-        if (linkTargetDOMNode) {
-          // Disabled until https://crbug.com/1079231 is fixed.
-          // clang-format off
-          return LitHtml.html`
-            <style>
-               .button-icon-with-text {
-                vertical-align: sub;
-              }
-            </style>
-            <devtools-report-key>${ls`Owner Element`}</devtools-report-key>
-            <devtools-report-value>
-              <button class="link" role="link" tabindex=0 title=${ls`Click to reveal in Elements panel`}
-                @mouseenter=${(): Promise<void> => openerFrame.highlight()}
-                @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
-                @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
-              >
-                <devtools-icon class="button-icon-with-text" .data=${{
-                  iconName: 'elements_panel_icon',
-                  color: 'var(--color-primary)',
-                  width: '16px',
-                  height: '16px',
-                } as Components.Icon.IconData}></devtools-icon>
-                <${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>
-              </a>
-            </devtools-report-value>
-          `;
-          // clang-format on
-        }
+      const linkTargetDOMNode = await this.frame.getOwnerDOMNodeOrDocument();
+      if (linkTargetDOMNode) {
+        // Disabled until https://crbug.com/1079231 is fixed.
+        // clang-format off
+        return LitHtml.html`
+          <style>
+              .button-icon-with-text {
+              vertical-align: sub;
+            }
+          </style>
+          <devtools-report-key>${ls`Owner Element`}</devtools-report-key>
+          <devtools-report-value>
+            <button class="link" role="link" tabindex=0 title=${ls`Click to reveal in Elements panel`}
+              @mouseenter=${(): Promise<void>|undefined => this.frame?.highlight()}
+              @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
+              @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
+            >
+              <devtools-icon class="button-icon-with-text" .data=${{
+                iconName: 'elements_panel_icon',
+                color: 'var(--color-primary)',
+                width: '16px',
+                height: '16px',
+              } as Components.Icon.IconData}></devtools-icon>
+              <${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>
+            </a>
+          </devtools-report-value>
+        `;
+        // clang-format on
       }
     }
     return LitHtml.nothing;

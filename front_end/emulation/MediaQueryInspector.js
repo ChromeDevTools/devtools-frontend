@@ -355,7 +355,6 @@ export class MediaQueryInspector extends UI.Widget.Widget {
       if (!expression) {
         return;
       }
-
       marker
           .createChild(
               'div',
@@ -453,17 +452,17 @@ export class MediaQueryUIModel {
   dimensionsEqual(other) {
     const thisMinWidthExpression = this.minWidthExpression();
     const otherMinWidthExpression = other.minWidthExpression();
-
     const thisMaxWidthExpression = this.maxWidthExpression();
     const otherMaxWidthExpression = other.maxWidthExpression();
 
-    return this.section() === other.section() &&
-        (!thisMinWidthExpression ||
-         (thisMinWidthExpression.computedLength() ===
-          (otherMinWidthExpression ? otherMinWidthExpression.computedLength() : null)) &&
-             (!thisMaxWidthExpression ||
-              (thisMaxWidthExpression.computedLength() ===
-               (otherMaxWidthExpression ? otherMaxWidthExpression.computedLength() : null))));
+    const sectionsEqual = this.section() === other.section();
+    // If there isn't an other min width expression, they aren't equal, so the optional chaining operator is safe to use here.
+    const minWidthEqual = !thisMinWidthExpression ||
+        thisMinWidthExpression.computedLength() === otherMinWidthExpression?.computedLength();
+    const maxWidthEqual = !thisMaxWidthExpression ||
+        thisMaxWidthExpression.computedLength() === otherMaxWidthExpression?.computedLength();
+
+    return sectionsEqual && minWidthEqual && maxWidthEqual;
   }
 
   /**

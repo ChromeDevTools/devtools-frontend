@@ -1,15 +1,6 @@
 {
   "extensions": [
     {
-      "type": "@UI.ContextMenu.Provider",
-      "contextTypes": [
-        "SDK.NetworkRequest",
-        "SDK.Resource",
-        "Workspace.UISourceCode"
-      ],
-      "className": "Network.NetworkPanel.ContextMenuProvider"
-    },
-    {
       "type": "@Common.Revealer",
       "contextTypes": [
         "SDK.NetworkRequest"

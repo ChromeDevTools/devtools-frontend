@@ -5,7 +5,9 @@
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
+import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Persistence from './persistence.js';
@@ -101,4 +103,19 @@ Common.Settings.registerSettingExtension({
       title: i18nString(UIStrings.disableOverrideNetworkRequests),
     },
   ],
+});
+
+UI.ContextMenu.registerProvider({
+  contextTypes() {
+    return [
+      Workspace.UISourceCode.UISourceCode,
+      SDK.Resource.Resource,
+      SDK.NetworkRequest.NetworkRequest,
+    ];
+  },
+  async loadProvider() {
+    const Persistence = await loadPersistenceModule();
+    return Persistence.PersistenceActions.ContextMenuProvider.instance();
+  },
+  experiment: undefined,
 });

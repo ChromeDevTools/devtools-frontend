@@ -4,17 +4,6 @@
     "components",
     "sdk"
   ],
-  "extensions": [
-    {
-      "type": "@UI.ContextMenu.Provider",
-      "contextTypes": [
-        "Workspace.UISourceCode",
-        "SDK.Resource",
-        "SDK.NetworkRequest"
-      ],
-      "className": "Persistence.PersistenceActions.ContextMenuProvider"
-    }
-  ],
   "modules": [
     "persistence.js",
     "persistence-legacy.js",

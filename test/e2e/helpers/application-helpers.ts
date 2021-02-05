@@ -41,9 +41,21 @@ export async function getDataGridData(selector: string, columns: string[]) {
   return dataGridRowValues;
 }
 
+// TODO(crbug.com/1165710): remove after front_end/ui/ReportView.js removal
 export async function getReportValues() {
   const fields = await $$('.report-field-value');
   return Promise.all(fields.map(node => node.evaluate(e => e.textContent)));
+}
+
+// TODO(crbug.com/1165710): rename after front_end/ui/ReportView.js removal
+export async function getCustomComponentReportValues() {
+  const fields = await $$('devtools-report-value');
+  return Promise.all(fields.map(node => node.evaluate(e => {
+    return (e.textContent || '')
+        .trim()
+        .replace(/\n/gm, ' ')    // replace new line character with space
+        .replace(/\s+/gm, ' ');  // replace multiple spaces with single space
+  })));
 }
 
 export async function getFrameTreeTitles() {

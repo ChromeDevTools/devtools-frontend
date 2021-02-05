@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/no_underscored_properties */
-
 import type * as Components from '../ui/components/components.js';
 
 import * as Bindings from '../bindings/bindings.js';
@@ -19,40 +17,18 @@ import {ls} from '../platform/platform.js';
 
 export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   private readonly reportView = new FrameDetailsReportView();
-
-  _protocolMonitorExperimentEnabled: boolean;
-  _frame: SDK.ResourceTreeModel.ResourceTreeFrame;
-  _reportView: UI.ReportView.ReportView;
-  _additionalInfo: UI.ReportView.Section|undefined;
+  private readonly frame: SDK.ResourceTreeModel.ResourceTreeFrame;
 
   constructor(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super();
-    this._protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
-    this.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
-    this._frame = frame;
-    this.contentElement.classList.add('frame-details-container');
-
+    this.frame = frame;
+    this.contentElement.classList.add('overflow-auto');
     this.contentElement.appendChild(this.reportView);
-
-    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-    this._reportView = new UI.ReportView.ReportView();
-    this._reportView.registerRequiredCSS('resources/frameDetailsReportView.css', {enableLegacyPatching: false});
-    this._reportView.show(this.contentElement);
-    this._reportView.element.classList.add('frame-details-report-container');
-
-    if (this._protocolMonitorExperimentEnabled) {
-      this._additionalInfo = this._reportView.appendSection(ls`Additional Information`);
-      this._additionalInfo.setTitle(
-          ls`Additional Information`,
-          ls`This additional (debugging) information is shown because the 'Protocol Monitor' experiment is enabled.`);
-      const frameIDField = this._additionalInfo.appendField(ls`Frame ID`);
-      frameIDField.textContent = frame.id;
-    }
     this.update();
   }
 
   async doUpdate(): Promise<void> {
-    this.reportView.data = {frame: this._frame};
+    this.reportView.data = {frame: this.frame};
   }
 }
 
@@ -63,6 +39,11 @@ export interface FrameDetailsReportViewData {
 export class FrameDetailsReportView extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
+  private protocolMonitorExperimentEnabled = false;
+
+  connectedCallback(): void {
+    this.protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
+  }
 
   set data(data: FrameDetailsReportViewData) {
     this.frame = data.frame;
@@ -131,9 +112,10 @@ export class FrameDetailsReportView extends HTMLElement {
         }
       </style>
       <devtools-report .data=${{reportTitle: this.frame.displayName()} as Components.ReportView.ReportData}>
-      ${this.renderDocumentSection()}
-      ${this.renderIsolationSection()}
-      ${this.renderApiAvailabilitySection()}
+        ${this.renderDocumentSection()}
+        ${this.renderIsolationSection()}
+        ${this.renderApiAvailabilitySection()}
+        ${this.protocolMonitorExperimentEnabled ? this.renderAdditionalInfoSection() : LitHtml.nothing}
       </devtools-report>
     `, this.shadow);
     // clang-format on
@@ -494,6 +476,24 @@ export class FrameDetailsReportView extends HTMLElement {
       `;
     }
     return LitHtml.nothing;
+  }
+
+  private renderAdditionalInfoSection(): LitHtml.TemplateResult|{} {
+    if (!this.frame) {
+      return LitHtml.nothing;
+    }
+
+    return LitHtml.html`
+      <devtools-report-section-header
+        title=${
+        ls`This additional (debugging) information is shown because the 'Protocol Monitor' experiment is enabled.`}
+      >${ls`Additional Information`}</devtools-report-section-header>
+      <devtools-report-key>${ls`Frame ID`}</devtools-report-key>
+      <devtools-report-value>
+        <div class="text-ellipsis" title=${this.frame.id}>${this.frame.id}</div>
+      </devtools-report-value>
+      <devtools-report-divider></devtools-report-divider>
+    `;
   }
 }
 

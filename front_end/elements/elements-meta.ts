@@ -302,7 +302,7 @@ Common.Settings.registerSettingExtension({
 });
 
 UI.ContextMenu.registerProvider({
-  async contextTypes() {
+  contextTypes() {
     return [
       SDK.RemoteObject.RemoteObject,
       SDK.DOMModel.DOMNode,
@@ -313,6 +313,7 @@ UI.ContextMenu.registerProvider({
     const Elements = await loadElementsModule();
     return Elements.ElementsPanel.ContextMenuProvider.instance();
   },
+  experiment: undefined,
 });
 
 UI.ViewManager.registerLocationResolver({

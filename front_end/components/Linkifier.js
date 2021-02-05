@@ -942,9 +942,25 @@ LinkDecorator.Events = {
 };
 
 /**
+ * @type {LinkContextMenuProvider}
+ */
+let linkContextMenuProviderInstance;
+
+/**
  * @implements {UI.ContextMenu.Provider}
  */
 export class LinkContextMenuProvider {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!linkContextMenuProviderInstance || forceNew) {
+      linkContextMenuProviderInstance = new LinkContextMenuProvider();
+    }
+
+    return linkContextMenuProviderInstance;
+  }
   /**
    * @override
    * @param {!Event} event
@@ -1055,9 +1071,26 @@ function listenForNewComponentLinkifierEvents() {
 listenForNewComponentLinkifierEvents();
 
 /**
+ * @type {ContentProviderContextMenuProvider}
+ */
+let contentProviderContextMenuProviderInstance;
+
+/**
  * @implements {UI.ContextMenu.Provider}
  */
 export class ContentProviderContextMenuProvider {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!contentProviderContextMenuProviderInstance || forceNew) {
+      contentProviderContextMenuProviderInstance = new ContentProviderContextMenuProvider();
+    }
+
+    return contentProviderContextMenuProviderInstance;
+  }
+
   /**
    * @override
    * @param {!Event} event

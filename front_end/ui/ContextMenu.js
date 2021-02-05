@@ -667,19 +667,22 @@ export function registerProvider(registration) {
  * @return {!Promise<Array<Provider>>} target
  */
 async function loadApplicableRegisteredProviders(target) {
-  const markedIndices = await Promise.all(registeredProviders.map(isProviderApplicableToContextTypes));
   return Promise.all(
-      registeredProviders.filter((_, i) => markedIndices[i]).map(registration => registration.loadProvider()));
+      registeredProviders.filter(isProviderApplicableToContextTypes).map(registration => registration.loadProvider()));
 
   /**
    * @param {!ProviderRegistration} providerRegistration
-   * @return {Promise<boolean>}
+   * @return {boolean}
    */
-  async function isProviderApplicableToContextTypes(providerRegistration) {
+  function isProviderApplicableToContextTypes(providerRegistration) {
+    if (!Root.Runtime.Runtime.isDescriptorEnabled(
+            {experiment: providerRegistration.experiment, condition: undefined})) {
+      return false;
+    }
     if (!providerRegistration.contextTypes) {
       return true;
     }
-    for (const contextType of await providerRegistration.contextTypes()) {
+    for (const contextType of providerRegistration.contextTypes()) {
       if (target instanceof contextType) {
         return true;
       }
@@ -690,8 +693,9 @@ async function loadApplicableRegisteredProviders(target) {
 
 /**
  * @typedef {{
- *  contextTypes: function(): !Promise<!Array<?>>
- *  loadProvider: function(): !Promise<!Provider>
+ *  contextTypes: function(): !Array<?>,
+ *  loadProvider: function(): !Promise<!Provider>,
+ *  experiment: (undefined|Root.Runtime.ExperimentName)
  * }} */
 // @ts-ignore typedef
 export let ProviderRegistration;

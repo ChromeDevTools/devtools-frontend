@@ -129,9 +129,26 @@ export class XLink extends XElement {
 }
 
 /**
+ * @type {ContextMenuProvider}
+ */
+let contextMenuProviderInstance;
+
+/**
  * @implements {Provider}
  */
 export class ContextMenuProvider {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!contextMenuProviderInstance || forceNew) {
+      contextMenuProviderInstance = new ContextMenuProvider();
+    }
+
+    return contextMenuProviderInstance;
+  }
+
   /**
    * @override
    * @param {!Event} event

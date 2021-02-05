@@ -15,13 +15,6 @@
       "color": "rgb(105, 140, 254)"
     },
     {
-      "type": "@UI.ContextMenu.Provider",
-      "contextTypes": [
-        "SDK.DOMNode"
-      ],
-      "className": "BrowserDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider"
-    },
-    {
       "type": "@UI.ContextFlavorListener",
       "contextTypes": [
         "SDK.DebuggerPausedDetails"

@@ -6,7 +6,10 @@ import * as Common from '../common/common.js';
 import type * as Platform from '../platform/platform.js';
 import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
+import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
+import * as Workspace from '../workspace/workspace.js';
+import * as Components from '../components/components.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Main from './main.js';
@@ -553,4 +556,42 @@ UI.ViewManager.registerLocationResolver({
   async loadResolver() {
     return UI.InspectorView.InspectorView.instance();
   },
+});
+
+UI.ContextMenu.registerProvider({
+  contextTypes() {
+    return [
+      Workspace.UISourceCode.UISourceCode,
+      SDK.Resource.Resource,
+      SDK.NetworkRequest.NetworkRequest,
+    ];
+  },
+  async loadProvider() {
+    return Components.Linkifier.ContentProviderContextMenuProvider.instance();
+  },
+  experiment: undefined,
+});
+
+UI.ContextMenu.registerProvider({
+  contextTypes() {
+    return [
+      Node,
+    ];
+  },
+  async loadProvider() {
+    return UI.XLink.ContextMenuProvider.instance();
+  },
+  experiment: undefined,
+});
+
+UI.ContextMenu.registerProvider({
+  contextTypes() {
+    return [
+      Node,
+    ];
+  },
+  async loadProvider() {
+    return Components.Linkifier.LinkContextMenuProvider.instance();
+  },
+  experiment: undefined,
 });

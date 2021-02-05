@@ -35,7 +35,6 @@ ts_library("missing_entrypoints") {
     "../../../../front_end/services:bundle",
     "../../../../front_end/settings:bundle",
     "../../../../front_end/startup:bundle",
-    "../../../../front_end/toolbox_bootstrap:bundle",
     "../../../../front_end/wasmparser_worker:bundle",
     "../../../../front_end/web_audio:bundle",
     "../../../../front_end/webauthn:bundle",

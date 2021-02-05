@@ -407,7 +407,6 @@ grd_files_release_sources = [
   "front_end/timeline_model/timeline_model_module.js",
   "front_end/toolbox.html",
   "front_end/toolbox.js",
-  "front_end/toolbox_bootstrap/toolbox_bootstrap.js",
   "front_end/ui/components/components.js",
   "front_end/ui/ui-legacy.js",
   "front_end/ui/ui.js",

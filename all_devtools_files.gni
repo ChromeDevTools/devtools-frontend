@@ -11,7 +11,6 @@ all_devtools_files = [
   "front_end/js_app.js",
   "front_end/ndb_app.js",
   "front_end/node_app.js",
-  "front_end/toolbox.js",
   "front_end/worker_app.js",
   "front_end/accessibility_test_runner/accessibility_test_runner.js",
   "front_end/accessibility_test_runner/module.json",

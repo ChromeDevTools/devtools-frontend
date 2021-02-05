@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "platform",
     "dom_extension"
   ],
   "modules": [

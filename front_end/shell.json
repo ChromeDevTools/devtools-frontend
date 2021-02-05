@@ -7,7 +7,6 @@
     { "name": "extensions", "type": "autostart" },
     { "name": "main", "type": "autostart" },
     { "name": "persistence", "type": "autostart" },
-    { "name": "platform", "type": "autostart" },
     { "name": "protocol_client", "type": "autostart" },
     { "name": "root", "type": "autostart" },
     { "name": "sdk", "type": "autostart" },

@@ -9,7 +9,6 @@
   "dependencies": [
     "data_grid",
     "formatter",
-    "platform",
     "sdk",
     "source_frame",
     "text_utils",

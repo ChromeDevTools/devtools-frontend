@@ -230,7 +230,6 @@ all_devtools_files = [
   "front_end/persistence/editFileSystemView.css",
   "front_end/persistence/module.json",
   "front_end/persistence/workspaceSettingsTab.css",
-  "front_end/platform/module.json",
   "front_end/profiler/heapProfiler.css",
   "front_end/profiler/liveHeapProfile.css",
   "front_end/profiler/module.json",

@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "platform",
     "protocol_client",
     "text_utils"
   ], "modules": [

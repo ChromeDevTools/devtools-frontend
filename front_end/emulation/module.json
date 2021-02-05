@@ -28,7 +28,6 @@
   ],
   "dependencies": [
     "components",
-    "platform",
     "ui",
     "mobile_throttling"
   ],

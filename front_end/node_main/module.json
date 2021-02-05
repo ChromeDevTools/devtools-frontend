@@ -6,7 +6,6 @@
     }
   ],
   "dependencies": [
-    "platform",
     "ui",
     "components"
   ],

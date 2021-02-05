@@ -1,7 +1,4 @@
 {
-  "dependencies": [
-    "platform"
-  ],
   "modules": [
     "workspace.js",
     "workspace-legacy.js",

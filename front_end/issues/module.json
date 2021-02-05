@@ -13,7 +13,6 @@
     "browser_sdk",
     "components",
     "network",
-    "platform",
     "sdk",
     "ui"
   ],

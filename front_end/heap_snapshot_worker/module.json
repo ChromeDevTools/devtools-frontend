@@ -3,7 +3,6 @@
     "heap_snapshot_worker-legacy.js"
   ],
   "dependencies": [
-    "heap_snapshot_model",
-    "platform"
+    "heap_snapshot_model"
   ]
 }

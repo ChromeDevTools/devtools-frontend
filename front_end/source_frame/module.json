@@ -2,7 +2,6 @@
   "dependencies": [
     "text_editor",
     "ui",
-    "platform",
     "persistence",
     "formatter",
     "object_ui",

@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "platform",
     "ui",
     "components",
     "data_grid",

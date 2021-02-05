@@ -38,11 +38,11 @@ describeWithEnvironment('Adorner', async () => {
     assertIsAdorner(adorner);
 
     const options = {
-      category: Elements.Adorner.AdornerCategories.Layout,
+      category: Elements.AdornerManager.AdornerCategories.Layout,
     };
     const adornerWithOptions = Elements.Adorner.Adorner.create(content, ADORNER_NAME, options);
     assertIsAdorner(adornerWithOptions);
-    assert.strictEqual(adornerWithOptions.category, Elements.Adorner.AdornerCategories.Layout);
+    assert.strictEqual(adornerWithOptions.category, Elements.AdornerManager.AdornerCategories.Layout);
   });
 
   it('can interacts as a toggle button with proper ARIA setup', () => {

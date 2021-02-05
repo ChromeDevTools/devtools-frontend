@@ -41,7 +41,8 @@ import * as TextEditor from '../text_editor/text_editor.js';  // eslint-disable-
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
-import {Adorner, AdornerCategories} from './Adorner.js';
+import {Adorner} from './Adorner.js';
+import {AdornerCategories} from './AdornerManager.js';
 import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
 import {ElementsTreeOutline, MappedCharToEntity, UpdateRecord} from './ElementsTreeOutline.js';  // eslint-disable-line no-unused-vars
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';

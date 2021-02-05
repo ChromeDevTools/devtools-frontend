@@ -13,6 +13,7 @@ devtools_module("elements") {
     "AccessibilityTreeUtils.ts",
     "AccessibilityTreeView.ts",
     "Adorner.js",
+    "AdornerManager.ts",
     "CSSPropertyIconResolver.js",
     "ClassesPaneWidget.js",
     "ColorSwatchPopoverIcon.js",

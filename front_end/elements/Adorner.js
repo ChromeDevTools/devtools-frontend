@@ -6,20 +6,9 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
 
-const ls = Common.ls;
+import {AdornerCategories} from './AdornerManager.js';
 
-/**
- * @enum {string}
- * Use a normal object instead of making it null-prototyped because
- * Closure requires enum initialization to be an object literal.
- * Will be a proper enum class once this file becomes TypeScript.
- */
-export const AdornerCategories = {
-  Security: 'Security',
-  Layout: 'Layout',
-  Default: 'Default',
-};
-Object.freeze(AdornerCategories);
+const ls = Common.ls;
 
 const template = document.createElement('template');
 template.innerHTML = `

@@ -4,6 +4,7 @@ ts_library("elements") {
   testonly = true
   sources = [
     "AccessibilityNode_test.ts",
+    "AdornerManager_test.ts",
     "Adorner_test.ts",
     "CSSPropertyIconResolver_test.ts",
     "ComputedStyleProperty_test.ts",

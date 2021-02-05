@@ -14,7 +14,7 @@ describe('Low contrast issues', async () => {
     await goToResource('elements/low-contrast.html');
     await navigateToIssuesTab();
     await expandIssue();
-    const issueTitle = 'Increase color contrast to improve accessibility';
+    const issueTitle = 'Users may have difficulties reading text content due to insufficient color contrast';
     await assertIssueTitle(issueTitle);
     const issueElement = await getIssueByTitle(issueTitle);
     assertNotNull(issueElement);

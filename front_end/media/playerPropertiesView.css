@@ -25,7 +25,7 @@
 .media-property-renderer-contents {
   position: absolute;
   left: 200px;
-  overflow-x: hidden;
+  overflow: hidden;
   height: 20px;
 }
 
@@ -45,5 +45,5 @@
 
 .media-properties-frame {
   display: block;
-  overflow: hidden;
+  overflow-x: hidden;
 }

@@ -8,7 +8,6 @@ import * as ApplicationPanelSidebar from './ApplicationPanelSidebar.js';
 import * as AppManifestView from './AppManifestView.js';
 import * as BackgroundServiceModel from './BackgroundServiceModel.js';
 import * as BackgroundServiceView from './BackgroundServiceView.js';
-import * as ClearStorageView from './ClearStorageView.js';
 import * as CookieItemsView from './CookieItemsView.js';
 import * as DatabaseModel from './DatabaseModel.js';
 import * as DatabaseQueryView from './DatabaseQueryView.js';
@@ -24,6 +23,7 @@ import * as ServiceWorkerCacheViews from './ServiceWorkerCacheViews.js';
 import * as ServiceWorkersView from './ServiceWorkersView.js';
 import * as ServiceWorkerUpdateCycleHelper from './ServiceWorkerUpdateCycleHelper.js';
 import * as StorageItemsView from './StorageItemsView.js';
+import * as StorageView from './StorageView.js';
 import * as TrustTokensView from './TrustTokensView.js';
 
 export {
@@ -33,7 +33,6 @@ export {
   AppManifestView,
   BackgroundServiceModel,
   BackgroundServiceView,
-  ClearStorageView,
   CookieItemsView,
   DatabaseModel,
   DatabaseQueryView,
@@ -49,5 +48,6 @@ export {
   ServiceWorkersView,
   ServiceWorkerUpdateCycleHelper,
   StorageItemsView,
+  StorageView,
   TrustTokensView,
 };

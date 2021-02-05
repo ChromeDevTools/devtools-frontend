@@ -37,12 +37,12 @@ Resources.BackgroundServiceView = ResourcesModule.BackgroundServiceView.Backgrou
 Resources.BackgroundServiceView.ActionDelegate = ResourcesModule.BackgroundServiceView.ActionDelegate;
 
 /** @constructor */
-Resources.ClearStorageView = ResourcesModule.ClearStorageView.ClearStorageView;
+Resources.StorageView = ResourcesModule.StorageView.StorageView;
 
-Resources.ClearStorageView.AllStorageTypes = ResourcesModule.ClearStorageView.AllStorageTypes;
+Resources.StorageView.AllStorageTypes = ResourcesModule.StorageView.AllStorageTypes;
 
 /** @constructor */
-Resources.ClearStorageView.ActionDelegate = ResourcesModule.ClearStorageView.ActionDelegate;
+Resources.StorageView.ActionDelegate = ResourcesModule.StorageView.ActionDelegate;
 
 /** @constructor */
 Resources.CookieItemsView = ResourcesModule.CookieItemsView.CookieItemsView;

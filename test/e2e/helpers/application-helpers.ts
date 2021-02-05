@@ -96,3 +96,35 @@ export async function selectCookieByName(name: string) {
   });
   cell.click();
 }
+
+export async function waitForQuotaUsage(p: (quota: number) => boolean) {
+  await waitForFunction(async () => {
+    const storageRow = await waitFor('.quota-usage-row');
+    const quotaString = await storageRow.evaluate(el => el.textContent || '');
+    const [usedQuotaText, modifier] =
+        quotaString.replace(/^\D*([\d.]+)\D*(kM?)B.used.out.of\D*\d+\D*.?B.*$/, '$1 $2').split(' ');
+    let usedQuota = Number.parseInt(usedQuotaText, 10);
+    if (modifier === 'k') {
+      usedQuota *= 1000;
+    } else if (modifier === 'M') {
+      usedQuota *= 1000000;
+    }
+    return p(usedQuota);
+  });
+}
+
+export async function getPieChartLegendRows() {
+  const pieChartLegend = await waitFor('.pie-chart-legend');
+  const rows = await pieChartLegend.evaluate(legend => {
+    const rows = [];
+    for (const tableRow of legend.children) {
+      const row = [];
+      for (const cell of tableRow.children) {
+        row.push(cell.textContent);
+      }
+      rows.push(row);
+    }
+    return rows;
+  });
+  return rows;
+}

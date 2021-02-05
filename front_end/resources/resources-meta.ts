@@ -47,7 +47,7 @@ UI.ActionRegistration.registerActionExtension({
   title: (): Platform.UIString.LocalizedString => ls`Clear site data`,
   async loadActionDelegate() {
     const Resources = await loadResourcesModule();
-    return Resources.ClearStorageView.ActionDelegate.instance();
+    return Resources.StorageView.ActionDelegate.instance();
   },
 });
 
@@ -57,7 +57,7 @@ UI.ActionRegistration.registerActionExtension({
   title: (): Platform.UIString.LocalizedString => ls`Clear site data (including third-party cookies)`,
   async loadActionDelegate() {
     const Resources = await loadResourcesModule();
-    return Resources.ClearStorageView.ActionDelegate.instance();
+    return Resources.StorageView.ActionDelegate.instance();
   },
 });
 

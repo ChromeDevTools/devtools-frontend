@@ -44,7 +44,6 @@ import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from
 import {AppManifestView} from './AppManifestView.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {BackgroundServiceView} from './BackgroundServiceView.js';
-import {ClearStorageView} from './ClearStorageView.js';
 import {Database as DatabaseModelDatabase, DatabaseModel, Events as DatabaseModelEvents} from './DatabaseModel.js';  // eslint-disable-line no-unused-vars
 import {DatabaseQueryView, Events as DatabaseQueryViewEvents} from './DatabaseQueryView.js';
 import {DatabaseTableView} from './DatabaseTableView.js';
@@ -55,6 +54,7 @@ import {IDBDatabaseView, IDBDataView} from './IndexedDBViews.js';
 import {OpenedWindowDetailsView, WorkerDetailsView} from './OpenedWindowDetailsView.js';
 import {ResourcesPanel} from './ResourcesPanel.js';  // eslint-disable-line no-unused-vars
 import {ServiceWorkersView} from './ServiceWorkersView.js';
+import {StorageView} from './StorageView.js';
 import {TrustTokensTreeElement} from './TrustTokensView.js';
 
 /**
@@ -1062,7 +1062,7 @@ export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     if (!this._view) {
-      this._view = new ClearStorageView();
+      this._view = new StorageView();
     }
     this.showView(this._view);
     return false;

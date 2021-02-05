@@ -4925,13 +4925,13 @@
   "recorder/RecordingFileSystem.ts | linkedToS": {
     "message": "Linked to {PH1}"
   },
-  "resources/ClearStorageView.js | storageQuotaUsed": {
+  "resources/StorageView.ts | storageQuotaUsed": {
     "message": "{PH1} used out of {PH2} storage quota"
   },
-  "resources/ClearStorageView.js | storageQuotaUsedWithBytes": {
+  "resources/StorageView.ts | storageQuotaUsedWithBytes": {
     "message": "{PH1} bytes used out of {PH2} bytes storage quota"
   },
-  "resources/ClearStorageView.js | storageWithCustomMarker": {
+  "resources/StorageView.ts | storageWithCustomMarker": {
     "message": "{PH1} (custom)"
   },
   "screencast/ScreencastApp.ts | toggleScreencast": {

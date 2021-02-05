@@ -9,5 +9,5 @@
 self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 ApplicationTestRunner.isStorageView = function(view) {
-  return view instanceof Resources.ClearStorageView;
+  return view instanceof Resources.StorageView;
 };

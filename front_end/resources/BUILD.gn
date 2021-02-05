@@ -15,7 +15,6 @@ devtools_module("resources") {
     "ApplicationPanelTreeElement.ts",
     "BackgroundServiceModel.js",
     "BackgroundServiceView.js",
-    "ClearStorageView.js",
     "CookieItemsView.js",
     "DOMStorageItemsView.js",
     "DOMStorageModel.js",
@@ -31,6 +30,7 @@ devtools_module("resources") {
     "ServiceWorkerUpdateCycleHelper.ts",
     "ServiceWorkersView.js",
     "StorageItemsView.js",
+    "StorageView.ts",
     "TrustTokensView.ts",
   ]
 

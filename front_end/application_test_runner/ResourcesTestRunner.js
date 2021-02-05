@@ -15,8 +15,7 @@ ApplicationTestRunner.resetState = async function() {
   const targets = self.SDK.targetManager.targets();
   for (const target of targets) {
     const securityOrigin = new Common.ParsedURL(target.inspectedURL()).securityOrigin();
-    await target.storageAgent().clearDataForOrigin(
-        securityOrigin, Resources.ClearStorageView.AllStorageTypes.join(','));
+    await target.storageAgent().clearDataForOrigin(securityOrigin, Resources.StorageView.AllStorageTypes.join(','));
   }
 };
 

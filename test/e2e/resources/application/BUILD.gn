@@ -17,6 +17,7 @@ copy_to_gen("application") {
     "service-worker.js",
     "session-storage.html",
     "set-cookies.rawresponse",
+    "storage-quota.html",
     "websql-database.html",
   ]
 }

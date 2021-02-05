@@ -210,7 +210,8 @@ select {
   height: 9px;
   width: 9px;
   border-radius: 5px;
-  border: 1px solid #ffa500;
+  border: 1px solid #ffa500; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: #ffa500; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   cursor: pointer;
@@ -327,7 +328,8 @@ li.selected {
 li.hovered:not(.always-parent) + ol.children,
 .elements-tree-outline ol.shadow-root,
 li.selected:not(.always-parent) + ol.children {
-  background: linear-gradient(to right, var(--indentation-level-border-color), var(--indentation-level-border-color) 0.5px, transparent 0);
+  background: linear-gradient(to right, var(--indentation-level-border-color), var(--indentation-level-border-color) 0.5px, transparent 0); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-position-x: 5px;
 }
 

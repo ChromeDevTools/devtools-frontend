@@ -90,15 +90,18 @@
 }
 
 .filter-bitset-filter span:hover {
-  background: rgb(0 0 0 / 20%);
+  background: rgb(0 0 0 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .filter-bitset-filter span.selected {
-  background: rgb(0 0 0 / 30%);
+  background: rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .filter-bitset-filter span:active {
-  background: rgb(0 0 0 / 50%);
+  background: rgb(0 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .filter-checkbox-filter {

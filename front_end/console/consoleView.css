@@ -206,7 +206,8 @@
 
 .console-message-wrapper {
   display: flex;
-  border-top: 1px solid var(--message-border-color);
+  border-top: 1px solid var(--message-border-color); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-bottom: 1px solid transparent;
 }
 
@@ -292,14 +293,16 @@
 .console-message-wrapper .nesting-level-marker {
   width: 14px;
   flex: 0 0 auto;
-  border-right: 1px solid #a5a5a5;
+  border-right: 1px solid #a5a5a5; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   position: relative;
   margin-bottom: -1px;
   margin-top: -1px;
 }
 
 .console-message-wrapper .nesting-level-marker::before {
-  border-bottom: 1px solid #a5a5a5;
+  border-bottom: 1px solid #a5a5a5; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   position: absolute;
   top: 0;
   left: 0;

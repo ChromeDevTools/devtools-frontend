@@ -57,7 +57,8 @@
   max-width: 80px;
   max-height: 50px;
   pointer-events: none;
-  box-shadow: 0 0 3px #bbb;
+  box-shadow: 0 0 3px #bbb; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   flex: 0 0 auto;
 }
 

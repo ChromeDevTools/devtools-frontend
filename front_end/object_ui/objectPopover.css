@@ -21,7 +21,8 @@
 }
 
 .object-popover-tree {
-  border-top: 1px solid rgb(184 184 184);
+  border-top: 1px solid rgb(184 184 184); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   overflow: auto;
   width: 100%;
   height: calc(100% - 13px);
@@ -32,7 +33,8 @@
 }
 
 .function-popover-title {
-  border-bottom: 1px solid #aaa;
+  border-bottom: 1px solid #aaa; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-bottom: 3px;
   padding-bottom: 2px;
   display: flex;

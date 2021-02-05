@@ -67,7 +67,8 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
 
 .profile-launcher-target-list {
   margin-bottom: 6px;
-  border: 1px solid #ddd;
+  border: 1px solid #ddd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   flex: 150px 1 0;
 }
 

@@ -22,7 +22,8 @@
   margin-left: -3px;
   background-color: rgb(153 153 153); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border: 1px solid #fff;
+  border: 1px solid #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   z-index: 500;
 }
 
@@ -62,7 +63,8 @@
   height: 100%;
   z-index: 300;
   pointer-events: none;
-  border: 1px none hsl(0deg 0% 70% / 50%);
+  border: 1px none hsl(0deg 0% 70% / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .window-curtain-left {

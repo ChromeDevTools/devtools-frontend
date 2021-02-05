@@ -48,8 +48,10 @@
 .media-inspector-marker-max-width {
   background-color: hsl(207deg 90% 77%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-right: 2px solid hsl(207deg 90% 61%);
-  border-left: 2px solid hsl(207deg 90% 61%);
+  border-right: 2px solid hsl(207deg 90% 61%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border-left: 2px solid hsl(207deg 90% 61%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .media-inspector-marker-inactive .media-inspector-marker-max-width:not(:hover) {
@@ -60,8 +62,10 @@
 .media-inspector-marker-min-max-width {
   background-color: hsl(88deg 50% 76%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-left: 2px solid #689f38;
-  border-right: 2px solid hsl(92deg 48% 42%);
+  border-left: 2px solid #689f38; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border-right: 2px solid hsl(92deg 48% 42%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .media-inspector-marker-min-max-width:hover {
@@ -85,11 +89,13 @@
 }
 
 .media-inspector-marker-min-width-right {
-  border-left: 2px solid hsl(30deg 100% 48%);
+  border-left: 2px solid hsl(30deg 100% 48%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .media-inspector-marker-min-width-left {
-  border-right: 2px solid hsl(30deg 100% 48%);
+  border-right: 2px solid hsl(30deg 100% 48%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 /* Media query labels */
 

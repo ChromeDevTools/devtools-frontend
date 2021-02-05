@@ -9,7 +9,8 @@
   min-width: 160px !important;
   /* NOTE: Keep padding in sync with padding adjustment in SoftContextMenu.js */
   padding: 4px 0 4px 0;
-  border: 1px solid #b9b9b9;
+  border: 1px solid #b9b9b9; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: var(--color-background);
   box-shadow: var(--drop-shadow);
 
@@ -26,12 +27,15 @@
 }
 
 :host:host-context(.platform-mac):host-context(html:not(.-theme-with-dark-background)) .soft-context-menu {
-  border: 1px solid rgb(196 196 196 / 90%);
-  border-top: 1px solid rgb(196 196 196 / 50%);
+  border: 1px solid rgb(196 196 196 / 90%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border-top: 1px solid rgb(196 196 196 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 4px;
   background-color: rgb(240 240 240); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  box-shadow: 0 5px 10px rgb(0 0 0 / 25%);
+  box-shadow: 0 5px 10px rgb(0 0 0 / 25%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 
   --context-menu-hover-color: #fff;
   --context-menu-seperator-color: rgb(222 222 222);
@@ -62,13 +66,16 @@
 .soft-context-menu-separator > .separator-line {
   margin: 0;
   height: 5px;
-  border-bottom: 1px solid var(--context-menu-seperator-color);
+  border-bottom: 1px solid var(--context-menu-seperator-color); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   pointer-events: none;
 }
 
 .soft-context-menu-item-mouse-over {
-  border-top: 1px solid var(--context-menu-hover-bg);
-  border-bottom: 1px solid var(--context-menu-hover-bg);
+  border-top: 1px solid var(--context-menu-hover-bg); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--context-menu-hover-bg); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: var(--context-menu-hover-bg); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   color: var(--context-menu-hover-color); /* stylelint-disable-line plugin/use_theme_colors */
@@ -78,7 +85,8 @@
 :host:host-context(.platform-mac):host-context(html:not(.-theme-with-dark-background)) .soft-context-menu-item-mouse-over {
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
-  background-image: linear-gradient(to right, hsl(214deg 81% 60%), hsl(214deg 100% 56%));
+  background-image: linear-gradient(to right, hsl(214deg 81% 60%), hsl(214deg 100% 56%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 :host:host-context(.platform-mac):host-context(html:not(.-theme-with-dark-background)) .separator-line {

@@ -5,7 +5,8 @@
  */
 
 .tooltip {
-  background: hsl(0deg 0% 95%);
+  background: hsl(0deg 0% 95%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 2px;
   color: hsl(0deg 0% 20%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
@@ -14,7 +15,8 @@
   display: flex;
   align-items: center;
   filter: drop-shadow(0 1px 2px hsl(0deg 0% 0% / 30%));
-  border: 1px solid hsl(0deg 0% 0% / 10%);
+  border: 1px solid hsl(0deg 0% 0% / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-clip: padding-box;
   box-sizing: border-box;
   position: absolute;

@@ -50,7 +50,8 @@
 
 .screenshot-thumb {
   display: flex;
-  border: 1px solid #ccc;
+  border: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin: 2px 4px;
 }
 

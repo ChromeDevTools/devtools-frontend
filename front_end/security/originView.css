@@ -5,7 +5,8 @@
 
 .title-section {
   padding: 16px 0 24px 0;
-  border-bottom: 1px solid rgb(230 230 230);
+  border-bottom: 1px solid rgb(230 230 230); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .title-section-header {
@@ -22,7 +23,8 @@
 }
 
 .security-origin-view .origin-view-section {
-  border-bottom: 1px solid rgb(230 230 230);
+  border-bottom: 1px solid rgb(230 230 230); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 12px 6px 12px  24px;
   font-size: 12px;
 }
@@ -90,7 +92,8 @@
 }
 
 .security-origin-view .sct-details .details-table .details-table-row:last-child div:last-child {
-  border-bottom: 1px solid rgb(230 230 230);
+  border-bottom: 1px solid rgb(230 230 230); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding-bottom: 10px;
 }
 

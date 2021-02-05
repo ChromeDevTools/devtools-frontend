@@ -1,6 +1,7 @@
 .data-grid {
   position: relative;
-  border: 1px solid rgb(204 204 204) !important;
+  border: 1px solid rgb(204 204 204) !important; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   line-height: 120%;
 }
 
@@ -101,7 +102,8 @@
   overflow: hidden;
   line-height: 18px;
   height: 18px;
-  border-left: 1px solid #aaa;
+  border-left: 1px solid #aaa; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 1px 4px;
 }
 
@@ -113,7 +115,8 @@
 .data-grid th {
   text-align: left;
   background-color: var(--toolbar-bg-color);
-  border-bottom: 1px solid #aaa;
+  border-bottom: 1px solid #aaa; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-weight: normal;
   vertical-align: middle;
 }

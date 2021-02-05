@@ -29,7 +29,8 @@
 .panel-section-separator {
   height: 1px;
   margin-bottom: 10px;
-  background: #f0f0f0;
+  background: #f0f0f0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 /* Disable cache */
 

@@ -42,7 +42,8 @@
 
 .expandable-view-title.expanded,
 .expandable-view-title:last-child {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #ddd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .expandable-view-title .toolbar {

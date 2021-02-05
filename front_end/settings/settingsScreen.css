@@ -20,7 +20,8 @@
 }
 
 .settings-footnote {
-  border-top: 1px solid #eee;
+  border-top: 1px solid #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin: 0;
   padding: 12px;
 }
@@ -72,17 +73,21 @@
 
 .settings-key {
   padding: 0.1em 0.6em;
-  border: 1px solid #ccc;
+  border: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-size: 11px;
   background-color: #f7f7f7; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   color: #333; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  box-shadow: 0 1px 0 rgb(0 0 0 / 20%), 0 0 0 2px #fff inset;
+  box-shadow: 0 1px 0 rgb(0 0 0 / 20%), 0 0 0 2px #fff inset; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */ /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 3px;
   display: inline-block;
   margin: 0 0.1em;
-  text-shadow: 0 1px 0 #fff;
+  text-shadow: 0 1px 0 #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   line-height: 1.5;
   white-space: nowrap;
 }
@@ -149,7 +154,8 @@ fieldset {
   bottom: 0;
   overflow: auto;
   padding-top: 9px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .settings-tab.settings-content {

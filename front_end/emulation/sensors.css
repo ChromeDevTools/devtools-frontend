@@ -88,7 +88,8 @@
   perspective-origin: 50% 50%;
   width: 160px;
   height: 150px;
-  background: linear-gradient(#e1f5fe 0%, #e1f5fe 64%, #b0ebf3 64%, #def6f9 100%);
+  background: linear-gradient(#e1f5fe 0%, #e1f5fe 64%, #b0ebf3 64%, #def6f9 100%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   transition: 0.2s ease opacity, 0.2s ease filter;
   overflow: hidden;
   margin-bottom: 10px;
@@ -279,7 +280,8 @@ fieldset.device-orientation-override-section {
 .panel-section-separator {
   height: 2px;
   margin-bottom: 8px;
-  background: #f1f1f1;
+  background: #f1f1f1; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 button.text-button {

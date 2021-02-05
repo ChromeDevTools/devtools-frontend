@@ -9,14 +9,16 @@
   /* See: crbug.com/1152736 for color variable migration. */
   display: flex;
   flex: auto;
-  border-bottom: 1px solid rgb(171 171 171);
+  border-bottom: 1px solid rgb(171 171 171); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   flex-direction: column;
   position: relative;
   padding: 1px 6px 1px;
 }
 
 .infobar:focus {
-  box-shadow: 0 0 0 2px rgb(0 0 0 / 20%) inset;
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 20%) inset; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .infobar-warning {

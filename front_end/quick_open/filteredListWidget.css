@@ -31,7 +31,8 @@
 
 .filtered-list-widget-progress {
   flex: none;
-  background: rgb(0 0 0 / 20%);
+  background: rgb(0 0 0 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   height: 2px;
 }
 
@@ -54,7 +55,8 @@
 .filtered-list-widget > div.container {
   flex: auto;
   overflow-y: auto;
-  background: #fbfbfb;
+  background: #fbfbfb; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .filtered-list-widget-item {
@@ -108,7 +110,8 @@
 }
 
 .filtered-list-widget-item.two-rows {
-  border-bottom: 1px solid rgb(235 235 235);
+  border-bottom: 1px solid rgb(235 235 235); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .tag {
@@ -132,7 +135,8 @@
   font-style: italic;
   color: #888; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  background: #fbfbfb;
+  background: #fbfbfb; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .quickpick-description {

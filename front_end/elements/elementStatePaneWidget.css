@@ -8,7 +8,8 @@
   overflow: hidden;
   padding-left: 2px;
   background-color: var(--toolbar-bg-color);
-  border-bottom: 1px solid rgb(189 189 189);
+  border-bottom: 1px solid rgb(189 189 189); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-top: 0;
   padding-bottom: 2px;
 }

@@ -8,7 +8,8 @@
   position: relative;
   background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding-right: 10px;
 }
 
@@ -21,7 +22,8 @@
 }
 
 .service-worker-cache-data-view .data-grid .data-container tr:nth-last-child(2) td {
-  border-bottom: 1px solid #aaa;
+  border-bottom: 1px solid #aaa; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .service-worker-cache-data-view .data-grid .data-container tr.selected {
@@ -54,7 +56,8 @@
   background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   height: 4px;
-  border-bottom: 1px solid rgb(64% 64% 64%);
+  border-bottom: 1px solid rgb(64% 64% 64%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .cache-storage-summary-bar {
@@ -63,7 +66,8 @@
   padding-left: 5px;
   background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

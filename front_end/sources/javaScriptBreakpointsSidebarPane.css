@@ -8,7 +8,8 @@
   padding: 3px 8px 3px 8px;
   min-height: 18px;
   line-height: 15px;
-  border-top: 1px solid #efefef;
+  border-top: 1px solid #efefef; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .breakpoint-entry:focus {
@@ -42,7 +43,8 @@
 .breakpoint-hit {
   background-color: rgb(255 255 194); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-right: 3px solid rgb(107 97 48);
+  border-right: 3px solid rgb(107 97 48); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 :host-context(.-theme-with-dark-background) .breakpoint-hit {

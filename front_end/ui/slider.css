@@ -40,7 +40,8 @@
 
 .dt-range-input:focus::-webkit-slider-thumb,
 .-theme-preserve {
-  box-shadow: 0 0 0 2px rgb(66 133 244 / 40%);
+  box-shadow: 0 0 0 2px rgb(66 133 244 / 40%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .dt-range-input:disabled::-webkit-slider-thumb {

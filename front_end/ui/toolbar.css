@@ -262,7 +262,8 @@ select.toolbar-item:disabled {
 }
 
 select.toolbar-item:focus-visible {
-  background: rgb(0 0 0 / 8%);
+  background: rgb(0 0 0 / 8%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 2px;
 }
 
@@ -353,7 +354,8 @@ select.toolbar-item:focus-visible > * {
   flex-direction: column;
   height: auto;
   background-color: var(--color-background);
-  border: 1px solid #ccc;
+  border: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-top: -1px;
   width: 28px;
   left: -2px;
@@ -375,7 +377,8 @@ input[is=history-input]:not(:placeholder-shown) {
 }
 
 .toolbar-item.warning {
-  background: hsl(0deg 100% 95%);
+  background: hsl(0deg 100% 95%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 devtools-icon.breaking-change {

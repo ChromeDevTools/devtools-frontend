@@ -41,7 +41,8 @@
 .breakpoint-hit .breakpoint-hit-marker {
   background-color: rgb(255 255 194); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-right: 3px solid rgb(107 97 48);
+  border-right: 3px solid rgb(107 97 48); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   height: 18px;
   left: 0;
   margin-left: -30px;

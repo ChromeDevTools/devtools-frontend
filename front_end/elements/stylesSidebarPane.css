@@ -180,7 +180,8 @@
 }
 
 .styles-sidebar-pane-toolbar {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #eee; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   flex-shrink: 0;
 }
 

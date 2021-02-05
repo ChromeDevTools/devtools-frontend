@@ -8,7 +8,8 @@
   margin: 2px;
   height: 24px;
   font-size: 12px;
-  border: 1px solid rgb(0 0 0 / 20%);
+  border: 1px solid rgb(0 0 0 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 4px;
   padding: 0 12px;
   font-weight: 500;
@@ -26,7 +27,8 @@
 .text-button:not(:disabled):hover,
 .text-button:not(:disabled):active {
   background-color: var(--toolbar-bg-color);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   cursor: pointer;
 }
 
@@ -36,7 +38,8 @@
 }
 
 .text-button:not(:disabled):focus {
-  box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 0 0 2px rgb(66 133 244 / 40%);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 0 0 2px rgb(66 133 244 / 40%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .text-button:not(:disabled):not(.running):focus,

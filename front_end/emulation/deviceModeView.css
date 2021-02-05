@@ -16,7 +16,8 @@
   flex: none;
   background-color: hsl(0deg 0% 98%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -53,7 +54,8 @@
 .device-mode-media-container {
   flex: none;
   overflow: hidden;
-  box-shadow: inset 0 -1px #ccc;
+  box-shadow: inset 0 -1px #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-content-clip:not(.device-mode-outline-visible) .device-mode-media-container {
@@ -71,8 +73,10 @@
   position: relative;
   background-color: hsl(0deg 0% 90%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border: 2px solid hsl(0deg 0% 98%);
-  border-bottom: 2px solid hsl(0deg 0% 98%);
+  border: 2px solid hsl(0deg 0% 98%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 2px solid hsl(0deg 0% 98%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-presets-container:hover {
@@ -88,8 +92,10 @@
 }
 
 .device-mode-preset-bar {
-  border-left: 2px solid hsl(0deg 0% 98%);
-  border-right: 2px solid hsl(0deg 0% 98%);
+  border-left: 2px solid hsl(0deg 0% 98%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border-right: 2px solid hsl(0deg 0% 98%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   pointer-events: auto;
   text-align: center;
   flex: none;
@@ -294,12 +300,15 @@
 }
 
 .device-mode-content-clip.device-mode-outline-visible .device-mode-ruler-top .device-mode-ruler-content {
-  border-top: 1px solid hsl(0deg 0% 50%);
+  border-top: 1px solid hsl(0deg 0% 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-content-clip.device-mode-outline-visible .device-mode-ruler-left .device-mode-ruler-content {
-  border-left: 1px solid hsl(0deg 0% 50%);
-  border-top: 1px solid hsl(0deg 0% 50%);
+  border-left: 1px solid hsl(0deg 0% 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border-top: 1px solid hsl(0deg 0% 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-ruler-inner {
@@ -311,7 +320,8 @@
   bottom: 0;
   left: 20px;
   right: 0;
-  border-bottom: 1px solid hsl(0deg 0% 50%);
+  border-bottom: 1px solid hsl(0deg 0% 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .device-mode-ruler-left .device-mode-ruler-inner {
@@ -319,7 +329,8 @@
   right: 0;
   top: 19px;
   bottom: 0;
-  border-right: 1px solid hsl(0deg 0% 50%);
+  border-right: 1px solid hsl(0deg 0% 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: hsl(0deg 0% 98% / 90%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
@@ -332,7 +343,8 @@
   width: 0;
   height: 5px;
   bottom: 0;
-  border-right: 1px solid hsl(0deg 0% 50%);
+  border-right: 1px solid hsl(0deg 0% 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-right: -1px;
 }
 
@@ -348,7 +360,8 @@
   height: 0;
   width: 5px;
   right: 0;
-  border-bottom: 1px solid hsl(0deg 0% 50%);
+  border-bottom: 1px solid hsl(0deg 0% 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-bottom: -1px;
 }
 

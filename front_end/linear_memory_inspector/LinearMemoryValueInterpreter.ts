@@ -92,8 +92,10 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         .value-interpreter {
           --text-highlight-color: #80868b;
 
-          border: var(--divider-border, 1px solid #d0d0d0);
-          background-color: var(--toolbar-bg-color, #f3f3f3);
+          border: var(--divider-border, 1px solid #d0d0d0); /* stylelint-disable-line plugin/use_theme_colors */
+          /*See: crbug.com/1152736 for color variable migration.*/
+          background-color: var(--toolbar-bg-color, #f3f3f3); /* stylelint-disable-line plugin/use_theme_colors */
+          /*See: crbug.com/1152736 for color variable migration.*/
           overflow: hidden;
           width: 400px;
         }
@@ -134,7 +136,8 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
           display: block;
           height: 1px;
           margin-bottom: 12px;
-          background-color: var(--divider-color, #d0d0d0);
+          background-color: var(--divider-color, #d0d0d0); /* stylelint-disable-line plugin/use_theme_colors */
+          /*See: crbug.com/1152736 for color variable migration.*/
         }
       </style>
       <div class="value-interpreter">

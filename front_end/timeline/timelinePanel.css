@@ -50,7 +50,8 @@
 #timeline-overview-panel {
   flex: none;
   position: relative;
-  border-bottom: 1px solid #bbb;
+  border-bottom: 1px solid #bbb; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 #timeline-overview-grid {
@@ -136,7 +137,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border-bottom: 1px solid hsl(0deg 0% 0% / 6%);
+  border-bottom: 1px solid hsl(0deg 0% 0% / 6%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   z-index: -200;
 }
 
@@ -214,7 +216,8 @@
   flex: 0 0 26px;
   background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #ddd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   justify-content: space-between;
 }
 
@@ -237,7 +240,8 @@
 
 #counter-values-bar {
   flex: 0 0 20px;
-  border-top: solid 1px #d3d3d3;
+  border-top: solid 1px #d3d3d3; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   width: 100%;
   overflow: hidden;
   line-height: 18px;
@@ -265,7 +269,8 @@
 }
 
 .timeline-details-title {
-  border-bottom: 1px solid #b8b8b8;
+  border-bottom: 1px solid #b8b8b8; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-weight: bold;
   padding-bottom: 5px;
   padding-top: 0;
@@ -377,7 +382,8 @@
 .timeline-flamechart-resizer {
   flex: 8px 0 0;
   background-color: var(--toolbar-bg-color);
-  border: 1px #a3a3a3;
+  border: 1px #a3a3a3; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-style: solid none;
   display: flex;
   flex-direction: row;
@@ -401,7 +407,8 @@
 }
 
 .timeline-layers-view-properties td {
-  border: 1px solid #e1e1e1;
+  border: 1px solid #e1e1e1; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   line-height: 22px;
 }
 
@@ -410,7 +417,8 @@
   max-width: 500px;
   max-height: 300px;
   cursor: pointer;
-  border: 1px solid #ddd;
+  border: 1px solid #ddd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-tree-view {
@@ -480,7 +488,8 @@
 .timeline-tree-view .data-grid .name-container .activity-icon {
   width: 12px;
   height: 12px;
-  border: 1px solid rgb(0 0 0 / 5%);
+  border: 1px solid rgb(0 0 0 / 5%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin: 3px 0;
 }
 
@@ -528,7 +537,8 @@
   height: 18px;
   background-color: hsl(43deg 84% 64% / 20%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom: 1px solid hsl(43deg 84% 64%);
+  border-bottom: 1px solid hsl(43deg 84% 64%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .timeline-tree-view .data-grid .selected .background-bar {
@@ -621,7 +631,8 @@
 .timeline-details-chip-title > div {
   width: 12px;
   height: 12px;
-  border: 1px solid rgb(0 0 0 / 20%);
+  border: 1px solid rgb(0 0 0 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: inline-block;
   margin-right: 4px;
   content: " ";

@@ -26,7 +26,8 @@
   margin-left: 0;
   margin-right: 0;
   outline: none !important;
-  border: 1px solid rgb(66% 66% 66%);
+  border: 1px solid rgb(66% 66% 66%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .breakpoint-entry {
@@ -50,7 +51,8 @@
 .breakpoint-hit {
   background-color: rgb(255 255 194); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-right: 3px solid rgb(107 97 48);
+  border-right: 3px solid rgb(107 97 48); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 :host-context(.-theme-with-dark-background) .breakpoint-hit {

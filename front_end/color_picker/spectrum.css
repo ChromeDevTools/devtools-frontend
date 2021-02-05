@@ -32,13 +32,16 @@
   border-radius: 12px;
   height: 12px;
   width: 12px;
-  border: 1px solid #fff;
+  border: 1px solid #fff; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   cursor: pointer;
   position: absolute;
   top: 0;
   left: 0;
-  background: #000;
-  box-shadow: 0 0 2px 0 rgb(0 0 0 / 24%);
+  background: #000; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  box-shadow: 0 0 2px 0 rgb(0 0 0 / 24%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .spectrum-slider {
@@ -50,7 +53,8 @@
   border-radius: 13px;
   background-color: rgb(248 248 248); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 37%);
+  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 37%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .spectrum-color:focus .spectrum-dragger {
@@ -66,7 +70,8 @@
 
 .spectrum-hue {
   top: 16px;
-  background: linear-gradient(to left, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+  background: linear-gradient(to left, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .spectrum-alpha {
@@ -99,12 +104,16 @@
 
 .spectrum-sat,
 .-theme-preserve {
-  background-image: linear-gradient(to right, #fff, rgb(204 154 129 / 0%));
+  background-image: linear-gradient(to right, #fff, rgb(204 154 129 / 0%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */ /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .spectrum-val,
 .-theme-preserve {
-  background-image: linear-gradient(to top, #000, rgb(204 154 129 / 0%));
+  background-image: linear-gradient(to top, #000, rgb(204 154 129 / 0%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */ /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .spectrum-contrast-details {
@@ -179,7 +188,8 @@
   background: 0;
   width: 12px;
   height: 12px;
-  border: 1px solid rgb(0 0 0 / 10%);
+  border: 1px solid rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: inline-block;
   position: relative;
 }
@@ -316,7 +326,8 @@
 }
 
 .swatch-inner-white {
-  border: 1px solid #ddd;
+  border: 1px solid #ddd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .swatch-overlay {
@@ -426,7 +437,8 @@
   margin: 6px;
   cursor: pointer;
   position: relative;
-  border: 1px solid rgb(0 0 0 / 10%);
+  border: 1px solid rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-position: -1px !important;
   z-index: 14;
 }
@@ -456,7 +468,8 @@
   background-color: var(--color-background);
   height: 228px;
   width: 28px;
-  box-shadow: 0 4px 5px 0 rgb(0 0 0 / 14.000000000000002%), 0 1px 10px 0 rgb(0 0 0 / 12%), 0 2px 4px -1px rgb(0 0 0 / 40%);
+  box-shadow: 0 4px 5px 0 rgb(0 0 0 / 14.000000000000002%), 0 1px 10px 0 rgb(0 0 0 / 12%), 0 2px 4px -1px rgb(0 0 0 / 40%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   z-index: 14;
   border-radius: 2px;
   transform-origin: 0 228px;

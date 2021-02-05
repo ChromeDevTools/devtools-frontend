@@ -38,7 +38,8 @@
 }
 
 .console-pin:not(:last-child) {
-  border-bottom: 1px solid #e4e4e4;
+  border-bottom: 1px solid #e4e4e4; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .console-pin.error-level:not(:focus-within) {
@@ -49,8 +50,10 @@
 }
 
 .console-pin:not(:last-child).error-level:not(:focus-within) {
-  border-top: 1px solid var(--error-border-color);
-  border-bottom: 1px solid var(--error-border-color);
+  border-top: 1px solid var(--error-border-color); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px solid var(--error-border-color); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-top: -1px;
 }
 

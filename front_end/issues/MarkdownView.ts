@@ -72,7 +72,8 @@ export class MarkdownView extends HTMLElement {
         font-size: 12px;
         user-select: text;
         cursor: text;
-        background: var(--issue-code);
+        background: var(--issue-code); /* stylelint-disable-line plugin/use_theme_colors */
+        /*See: crbug.com/1152736 for color variable migration.*/
       }
       </style>
       <div class='message'>

@@ -8,7 +8,8 @@
   flex: 0 0 31px;
   background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   display: flex;
   overflow: hidden;
   z-index: 0;
@@ -55,7 +56,8 @@
   height: 20px;
   background-repeat: no-repeat;
   background-position: 4px 7px;
-  border-left: 1px solid rgb(170 170 170);
+  border-left: 1px solid rgb(170 170 170); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   opacity: 30%;
 }
 
@@ -87,7 +89,8 @@
 
 .toolbar-search-control,
 .toolbar-replace-control {
-  border: 1px solid rgb(163 163 163);
+  border: 1px solid rgb(163 163 163); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   height: 22px;
   border-radius: 2px;
   width: 100%;
@@ -101,7 +104,8 @@
 
 .toolbar-search-navigation.toolbar-search-navigation-prev {
   background-image: url(Images/searchPrev.png);
-  border-left: 1px solid rgb(163 163 163);
+  border-left: 1px solid rgb(163 163 163); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 :host-context(.-theme-with-dark-background) .toolbar-search-navigation {
@@ -109,16 +113,19 @@
 }
 
 .toolbar-search-navigation.toolbar-search-navigation-prev.enabled:active {
-  background-image: url(Images/searchPrev.png), #f2f2f2;
+  background-image: url(Images/searchPrev.png), #f2f2f2; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .toolbar-search-navigation.toolbar-search-navigation-next {
   background-image: url(Images/searchNext.png);
-  border-left: 1px solid rgb(230 230 230);
+  border-left: 1px solid rgb(230 230 230); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .toolbar-search-navigation.toolbar-search-navigation-next.enabled:active {
-  background-image: url(Images/searchNext.png), #f2f2f2;
+  background-image: url(Images/searchNext.png), #f2f2f2; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .search-results-matches {

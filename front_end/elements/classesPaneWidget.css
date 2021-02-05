@@ -6,7 +6,8 @@
 
 .styles-element-classes-pane {
   background-color: var(--toolbar-bg-color);
-  border-bottom: 1px solid rgb(189 189 189);
+  border-bottom: 1px solid rgb(189 189 189); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 6px 2px 2px;
 }
 
@@ -28,7 +29,8 @@
   padding-left: 3px;
   padding-right: 3px;
   overflow: hidden;
-  border: 1px solid #ddd;
+  border: 1px solid #ddd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   line-height: 15px;
   margin-left: 3px;
   width: calc(100% - 7px);

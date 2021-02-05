@@ -28,7 +28,8 @@
  */
 
 .network-details-view {
-  background: rgb(203 203 203);
+  background: rgb(203 203 203); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-details-view-tall-header {
@@ -41,7 +42,8 @@
 }
 
 .network-item-preview-toolbar {
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
@@ -69,7 +71,8 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  border-bottom: 1px solid #cdcdcd;
+  border-bottom: 1px solid #cdcdcd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 #network-overview-container canvas {
@@ -105,7 +108,8 @@
 }
 
 .network-film-strip {
-  border-bottom: solid 1px #cdcdcd;
+  border-bottom: solid 1px #cdcdcd; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   flex: none !important;
 }
 

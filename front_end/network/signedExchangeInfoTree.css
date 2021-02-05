@@ -10,7 +10,8 @@
 
 .tree-outline > ol {
   padding-bottom: 5px;
-  border-bottom: solid 1px #e0e0e0;
+  border-bottom: solid 1px #e0e0e0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .tree-outline > .parent {

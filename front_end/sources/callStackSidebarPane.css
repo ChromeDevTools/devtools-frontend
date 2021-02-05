@@ -30,7 +30,8 @@
   text-align: center;
   font-style: italic;
   padding: 4px;
-  border-top: 1px solid #d8d8d8;
+  border-top: 1px solid #d8d8d8; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .call-frame-item {
@@ -52,7 +53,8 @@
 }
 
 .call-frame-item:not(.async-header) {
-  border-top: 1px solid #efefef;
+  border-top: 1px solid #efefef; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .call-frame-item-title,
@@ -91,7 +93,8 @@
 .async-header::before {
   content: " ";
   width: 100%;
-  border-top: 1px solid #d8d8d8;
+  border-top: 1px solid #d8d8d8; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-top: 8px;
   position: absolute;
   left: 0;

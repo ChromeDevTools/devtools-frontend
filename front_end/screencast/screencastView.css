@@ -38,7 +38,8 @@
   flex: 24px 0 0;
   position: relative;
   padding-left: 1px;
-  border-bottom: 1px solid rgb(64% 64% 64%);
+  border-bottom: 1px solid rgb(64% 64% 64%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-origin: padding-box;
   background-clip: padding-box;
 }
@@ -104,7 +105,8 @@
 
 .screencast-viewport {
   display: flex;
-  border: 1px solid #999;
+  border: 1px solid #999; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 20px;
   flex: none;
   padding: 20px;
@@ -116,7 +118,8 @@
 .screencast-canvas-container {
   flex: auto;
   display: flex;
-  border: 1px solid #999;
+  border: 1px solid #999; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   position: relative;
   cursor: -webkit-image-set(url(Images/touchCursor.png) 1x, url(Images/touchCursor_2x.png) 2x), default;
 }

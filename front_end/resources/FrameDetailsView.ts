@@ -405,7 +405,7 @@ export class FrameDetailsReportView extends HTMLElement {
         .span-cols {
           grid-column-start: span 2;
           margin: 0 0 8px 30px;
-          line-height: 28px
+          line-height: 28px;
         }
       </style>
       <devtools-report-section-header>${ls`API availability`}</devtools-report-section-header>

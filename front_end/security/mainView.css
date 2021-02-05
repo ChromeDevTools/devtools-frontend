@@ -138,7 +138,8 @@
 .security-explanations-main {
   margin-top: -5px;
   background-color: var(--color-background);
-  border-bottom: 1px solid rgb(230 230 230);
+  border-bottom: 1px solid rgb(230 230 230); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .security-explanations-extra {

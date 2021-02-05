@@ -698,7 +698,8 @@ export class DataGrid extends HTMLElement {
           th {
             padding: 1px 4px;
             /* Divider between each cell, except the first one (see below) */
-            border-left: 1px solid var(--table-divider-color);
+            border-left: 1px solid var(--table-divider-color); /* stylelint-disable-line plugin/use_theme_colors */
+            /*See: crbug.com/1152736 for color variable migration.*/
             color: var(--color-text-primary);
             line-height: var(--table-row-height);
             height: var(--table-row-height);
@@ -726,7 +727,8 @@ export class DataGrid extends HTMLElement {
           th {
             font-weight: normal;
             text-align: left;
-            border-bottom: 1px solid var(--table-divider-color);
+            border-bottom: 1px solid var(--table-divider-color); /* stylelint-disable-line plugin/use_theme_colors */
+            /*See: crbug.com/1152736 for color variable migration.*/
             position: sticky;
             top: 0;
             z-index: 2;
@@ -755,7 +757,8 @@ export class DataGrid extends HTMLElement {
             content: " ";
             border-left: 0.3em solid transparent;
             border-right: 0.3em solid transparent;
-            border-top: 0.3em solid #000;
+            border-top: 0.3em solid #000; /* stylelint-disable-line plugin/use_theme_colors */
+            /*See: crbug.com/1152736 for color variable migration.*/
             position: absolute;
             right: 0.5em;
             top: 0.6em;
@@ -763,7 +766,8 @@ export class DataGrid extends HTMLElement {
 
           [aria-sort="ascending"]::after {
             content: " ";
-            border-bottom: 0.3em solid #000;
+            border-bottom: 0.3em solid #000; /* stylelint-disable-line plugin/use_theme_colors */
+            /*See: crbug.com/1152736 for color variable migration.*/
             border-left: 0.3em solid transparent;
             border-right: 0.3em solid transparent;
             position: absolute;

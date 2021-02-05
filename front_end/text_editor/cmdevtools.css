@@ -37,7 +37,8 @@
 
 .CodeMirror .source-frame-eval-expression {
   outline: 0;
-  border: 1px solid rgb(163 41 34);
+  border: 1px solid rgb(163 41 34); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-left-width: 0;
   border-right-width: 0;
   background-color: rgb(255 255 194); /* stylelint-disable-line plugin/use_theme_colors */
@@ -65,7 +66,8 @@
 }
 
 .CodeMirror .source-frame-continue-to-location:hover {
-  border: 1px solid rgb(121 141 254);
+  border: 1px solid rgb(121 141 254); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: rgb(171 191 254); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
@@ -118,7 +120,8 @@
 }
 
 .CodeMirror-cursor {
-  border-left: 1px solid #000;
+  border-left: 1px solid #000; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-right: none;
   width: 0;
 }
@@ -355,7 +358,8 @@
 }
 
 .source-frame-eval-expression + .CodeMirror-widget {
-  border: 1px solid rgb(163 41 34);
+  border: 1px solid rgb(163 41 34); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-left-width: 0;
   border-right-width: 0;
   background-color: rgb(255 255 194); /* stylelint-disable-line plugin/use_theme_colors */
@@ -390,13 +394,15 @@
 div.CodeMirror:focus-within span.CodeMirror-matchingbracket {
   background-color: rgb(0 0 0 / 7.000000000000001%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom: 1px solid rgb(0 0 0 / 50%);
+  border-bottom: 1px solid rgb(0 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   background-color: rgb(255 0 0 / 7.000000000000001%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom: 1px solid rgb(255 0 0 / 50%);
+  border-bottom: 1px solid rgb(255 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .-theme-with-dark-background div.CodeMirror:focus-within span.CodeMirror-matchingbracket,
@@ -428,7 +434,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   display: none;
   content: ".";
   color: transparent;
-  border-bottom: 1px solid rgb(175 175 175);
+  border-bottom: 1px solid rgb(175 175 175); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   position: absolute;
   width: 90%;
   bottom: 50%;
@@ -474,7 +481,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .cm-token-highlight::before {
   position: absolute;
-  border: 1px solid #808080;
+  border: 1px solid #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 3px;
   top: 0;
   bottom: -1px;
@@ -509,7 +517,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .cm-search-highlight-full::before {
-  border: 1px solid #808080;
+  border: 1px solid #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 3px;
 }
 
@@ -726,7 +735,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 /* Shown when moving in bi-directional text */
 
 .CodeMirror div.CodeMirror-secondarycursor {
-  border-left: 1px solid #c0c0c0;
+  border-left: 1px solid #c0c0c0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .CodeMirror-composing {

@@ -12,8 +12,10 @@
   height: 17px;
   width: 17px;
   min-width: 17px;
-  border: 1px solid #a5a5a5;
-  background-image: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+  border: 1px solid #a5a5a5; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  background-image: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 8px;
   appearance: none;
   vertical-align: middle;
@@ -21,9 +23,9 @@
 }
 
 ::slotted(input.dt-radio-button:checked) {
-  background:
-    var(--radio-dot) center no-repeat,
-    linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+  /* See: crbug.com/1152736 for color variable migration. */
+  /* stylelint-disable-next-line plugin/use_theme_colors */
+  background: var(--radio-dot) center no-repeat, linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
 }
 
 ::slotted(input.dt-radio-button:focus) {

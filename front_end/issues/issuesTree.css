@@ -59,8 +59,10 @@
   overflow: hidden;
   flex: none;
   transition: background-color 200ms;
-  background: #f3f3f3;
-  border: 1px solid #e5e5e5;
+  background: #f3f3f3; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid #e5e5e5; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-width: 0 0 1px;
 }
 
@@ -113,7 +115,8 @@ p {
 }
 
 .body.children {
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 6px 0;
   position: relative;
   padding-left: calc(var(--issue-indent) + 43px);
@@ -135,7 +138,8 @@ p {
   left: calc(var(--issue-indent) + 23px);
   top: 0;
   bottom: 20px;
-  border-left: 2px solid var(--breaking-change-color);
+  border-left: 2px solid var(--breaking-change-color); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   width: 2px;
 }
 
@@ -166,7 +170,8 @@ devtools-icon.breaking-change {
   font-size: 12px;
   user-select: text;
   cursor: text;
-  background: var(--issue-code);
+  background: var(--issue-code); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .separator::before {
@@ -399,11 +404,13 @@ ul > li.plain-enum::before {
 }
 
 .affected-resources > .parent.expanded {
-  background: var(--affected-resource-background);
+  background: var(--affected-resource-background); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .affected-resources > .children.expanded {
-  background: var(--affected-resource-background);
+  background: var(--affected-resource-background); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 6px 0 9px 5px;
   margin-bottom: 10px;
 }

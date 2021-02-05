@@ -15,7 +15,8 @@ li.storage-group-list-item {
 }
 
 li.storage-group-list-item:not(:first-child) {
-  border-top: 1px solid rgb(230 230 230);
+  border-top: 1px solid rgb(230 230 230); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 li.storage-group-list-item::before {

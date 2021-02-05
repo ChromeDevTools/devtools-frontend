@@ -82,7 +82,8 @@
   background-image: url(Images/toolbarResizerVertical.png);
   background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-bottom: 1px solid rgb(179 179 179);
+  border-bottom: 1px solid rgb(179 179 179); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-repeat: no-repeat;
   background-position: right center, center;
   flex: 0 0 21px;
@@ -166,7 +167,8 @@
 }
 
 #heap-recording-overview-container {
-  border-bottom: 1px solid rgb(0 0 0 / 30%);
+  border-bottom: 1px solid rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   overflow: hidden;
 }
 
@@ -190,7 +192,8 @@
 .heap-allocation-stack .stack-frame {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid rgb(240 240 240);
+  border-bottom: 1px solid rgb(240 240 240); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding: 2px;
 }
 

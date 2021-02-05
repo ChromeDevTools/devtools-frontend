@@ -79,7 +79,8 @@
 
 .lighthouse-progress-bar.errored {
   width: 100%;
-  background: #e50303;
+  background: #e50303; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .lighthouse-progress-bar.loading {

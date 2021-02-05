@@ -35,7 +35,8 @@
   position: absolute;
   height: 88px;
   width: 88px;
-  border: 1px solid rgb(0 0 0 / 14.000000000000002%);
+  border: 1px solid rgb(0 0 0 / 14.000000000000002%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 2px;
 }
 
@@ -54,7 +55,8 @@
   height: 24px;
   padding: 3px 7px;
   line-height: 16px;
-  border: 1px solid rgb(0 0 0 / 14.000000000000002%);
+  border: 1px solid rgb(0 0 0 / 14.000000000000002%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   color: #333; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   background-color: var(--color-background);
@@ -73,7 +75,8 @@
 
 .shadow-editor-button-left:hover,
 .shadow-editor-button-right:hover {
-  box-shadow: 0 1px 1px rgb(0 0 0 / 10%);
+  box-shadow: 0 1px 1px rgb(0 0 0 / 10%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .shadow-editor-button-left:focus,

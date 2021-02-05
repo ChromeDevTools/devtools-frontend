@@ -11,14 +11,15 @@ const RULE_NAME = 'plugin/use_theme_colors';
 
 const CSS_PROPS_TO_CHECK_FOR_COLOR_USAGE = new Set([
   'color', 'box-shadow', 'text-shadow', 'outline-color', 'background-image', 'background-color', 'border-left-color',
-  'border-right-color', 'border-top-color', 'border-bottom-color', '-webkit-border-image', 'fill', 'stroke'
+  'border-right-color', 'border-top-color', 'border-bottom-color', '-webkit-border-image', 'fill', 'stroke',
+  'border-left', 'border-right', 'border-top', 'border-bottom', 'background', 'border'
 ]);
 
 const COLOR_INDICATOR_REGEXES = new Set([
   // We don't have to check for named colors ("blue") as we lint to ban those separately.
-  /^#[a-zA-Z0-9]{3,6}/,
-  /^hsla?/,
-  /^rgba?/,
+  /#[a-zA-Z0-9]{3,6}/,
+  /hsla?/,
+  /rgba?/,
 ]);
 
 const themeColorsPath = path.join(__dirname, '..', '..', '..', 'front_end', 'ui', 'themeColors.css');
@@ -42,40 +43,38 @@ function getRootVariableDeclarationsFromCSSFile(filePath) {
 const DEFINED_THEME_COLOR_VARIABLES = getRootVariableDeclarationsFromCSSFile(themeColorsPath);
 const DEFINED_INSPECTOR_STYLE_VARIABLES = getRootVariableDeclarationsFromCSSFile(inspectorStylesPath);
 
-/**
- *
- * @param {postcss.Rule} rule
- * @returns {Array<postcss.Node>}
- */
-function gatherColorDeclarations(rule) {
-  if (!rule.nodes) {
-    return [];
-  }
-  /**
-   * @type {Array<postcss.Node>}
-   */
-  const declarationsWithColors = [];
-
-  for (const node of rule.nodes) {
-    if (!CSS_PROPS_TO_CHECK_FOR_COLOR_USAGE.has(node.prop)) {
-      continue;
-    }
-
-    declarationsWithColors.push(node);
-  }
-  return declarationsWithColors;
-}
-
-
 module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, context) {
   return function(postcssRoot, postcssResult) {
-    function reportError(declaration) {
-      stylelint.utils.report({
-        message: 'All CSS color declarations should use a variable defined in ui/themeColors.css',
-        ruleName: RULE_NAME,
-        node: declaration,
-        result: postcssResult,
-      });
+    function reportError(declaration, shouldFix) {
+      /**
+       * Unfortunately for this rule there seems to be an issue with stylelint's
+       * built in context.fix flag, in that it doesn't always get set to true
+       * when we would expect, and therefore relying on it to toggle autofixing
+       * isn't what we want to do. Additionally we run our stylelint checks by
+       * default with the --fix flag applied, but for this rule we don't want to
+       * always autofix. So we'll instead rely on an environment variable to
+       * toggle fix mode for this give rule.
+       *
+       * After this rule initially lands and has run on the existing codebase,
+       * we shouldn't be fixing new violations by using stylelint-disable, but
+       * instead changing the colors appropriately to satisfy the conditions of
+       * this rule.
+       */
+      const runningInFixMode = Boolean(process.env.THEME_COLORS_AUTOFIX);
+      if (runningInFixMode && shouldFix) {
+        // Unfortunately if you add crbug.com/X to the same comment as the
+        // stylelint-disable-line, it doesn't work, hence why we add two
+        // comments, one to disable and one with the tracking bug.
+        declaration.after(postcss.comment({text: 'See: crbug.com/1152736 for color variable migration.'}));
+        declaration.after(' /* stylelint-disable-line plugin/use_theme_colors */');
+      } else {
+        stylelint.utils.report({
+          message: 'All CSS color declarations should use a variable defined in ui/themeColors.css',
+          ruleName: RULE_NAME,
+          node: declaration,
+          result: postcssResult,
+        });
+      }
     }
     const sourceFile = postcssResult.opts.from;
     if (sourceFile && !sourceFile.includes('front_end') && sourceFile.includes('inspector_overlay')) {
@@ -93,16 +92,31 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
         return;
       }
 
-      const declarationsToCheck = gatherColorDeclarations(rule);
+      rule.walkDecls(declaration => {
+        if (!CSS_PROPS_TO_CHECK_FOR_COLOR_USAGE.has(declaration.prop)) {
+          return;
+        }
 
-      for (const declaration of declarationsToCheck) {
+        /**
+         * Fix the index of the declaration in its parent and then see if its
+         * immediate sibling node is a comment with the disable-line text in. If
+         * so, this violation is already fixed and we don't need to fix it again
+         * - else every run would add more comments.
+         */
+        const declIndex = declaration.parent.nodes.indexOf(declaration);
+        const nextIndex = declIndex + 1;
+        const nextNode = declaration.parent.nodes[nextIndex];
+        const alreadyFixed =
+            (nextNode && nextNode.type === 'comment' &&
+             nextNode.text.startsWith('stylelint-disable-line plugin/use_theme_colors'));
+
         for (const indicator of COLOR_INDICATOR_REGEXES) {
           if (indicator.test(declaration.value)) {
-            reportError(declaration);
+            reportError(declaration, !alreadyFixed);
           }
         }
 
-        if (declaration.value.startsWith('var')) {
+        if (declaration.value.includes('var(')) {
           const [match, variableName] = /var\((--[\w-]+)/.exec(declaration.value);
           if (!match) {
             throw new Error(`Could not parse CSS variable usage: ${declaration.value}`);
@@ -110,10 +124,10 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
           const variableIsValid =
               DEFINED_INSPECTOR_STYLE_VARIABLES.has(variableName) || DEFINED_THEME_COLOR_VARIABLES.has(variableName);
           if (!variableIsValid) {
-            reportError(declaration);
+            reportError(declaration, !alreadyFixed);
           }
         }
-      }
+      });
     });
   };
 });

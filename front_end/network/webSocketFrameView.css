@@ -18,7 +18,8 @@
 }
 
 .websocket-frame-view-td {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .websocket-frame-view .data-grid tr.selected {

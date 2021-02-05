@@ -28,16 +28,20 @@
 }
 
 .data-grid .selected td .bar {
-  border-top: 1px #fff solid;
-  border-bottom: 1px #fff solid;
+  border-top: 1px #fff solid; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border-bottom: 1px #fff solid; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .data-grid .selected td .bar:last-child {
-  border-right: 1px #fff solid;
+  border-right: 1px #fff solid; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .data-grid .selected td .bar:first-child {
-  border-left: 1px #fff solid;
+  border-left: 1px #fff solid; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .data-grid td .bar-unused-size {

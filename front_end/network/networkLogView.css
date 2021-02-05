@@ -38,7 +38,8 @@
 }
 
 #network-container {
-  border: 1px solid rgb(204 204 204);
+  border: 1px solid rgb(204 204 204); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   overflow: hidden;
 }
 
@@ -52,7 +53,8 @@
   padding-left: 5px;
   background-color: #eee; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -77,7 +79,8 @@
 
 .network-log-grid.data-grid td {
   height: 41px;
-  border-left: 1px solid #e1e1e1;
+  border-left: 1px solid #e1e1e1; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   vertical-align: middle;
 }
 
@@ -91,8 +94,10 @@
 
 .network-waterfall-header,
 .network-log-grid.data-grid th {
-  border-bottom: 1px solid rgb(205 205 205);
-  border-left: 1px solid rgb(205 205 205);
+  border-bottom: 1px solid rgb(205 205 205); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
+  border-left: 1px solid rgb(205 205 205); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .network-log-grid.data-grid table.data th {

@@ -12,7 +12,8 @@
 
 .tree-outline > ol {
   padding-bottom: 5px;
-  border-bottom: solid 1px #e0e0e0;
+  border-bottom: solid 1px #e0e0e0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .tree-outline > .parent {
@@ -135,7 +136,8 @@
 .tree-outline .call-to-action-body {
   padding: 6px 0;
   margin-left: 9.5px;
-  border-left: 2px solid #f29900;
+  border-left: 2px solid #f29900; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   padding-left: 18px;
 }
 

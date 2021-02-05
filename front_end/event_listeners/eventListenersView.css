@@ -13,7 +13,8 @@
 }
 
 .tree-outline-disclosure > li {
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid #f0f0f0; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .tree-outline-disclosure > li:first-of-type {
@@ -54,7 +55,8 @@
   background-color: #f2f2f2; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   border-radius: 3px;
-  border: 1px solid #c3c3c3;
+  border: 1px solid #c3c3c3; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   margin-left: 10px;
   display: block;
   cursor: pointer;

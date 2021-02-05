@@ -90,7 +90,8 @@
 .tabbed-pane-header {
   display: flex;
   flex: 0 0 27px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   overflow: visible;
   width: 100%;
   background-color: var(--toolbar-bg-color);
@@ -155,7 +156,8 @@
 
 .tabbed-pane-header-tab.dragging {
   position: relative;
-  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 37%);
+  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 37%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   background-color: #e5e5e5; /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
@@ -251,7 +253,8 @@
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab.selected {
   color: inherit;
   border: none transparent;
-  border-left: 6px solid #666;
+  border-left: 6px solid #666; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .tabbed-pane-tab-slider {

@@ -35,7 +35,8 @@
 .perfmon-chart-container {
   display: flex;
   flex: 1 1;
-  border-left: 1px solid #ccc;
+  border-left: 1px solid #ccc; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   overflow-y: auto;
 }
 

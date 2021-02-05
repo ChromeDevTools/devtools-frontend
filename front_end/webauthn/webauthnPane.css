@@ -60,7 +60,8 @@
 .authenticator-section {
   display: block;
   padding: 16px 0;
-  border-bottom: 1px solid rgb(230 230 230);
+  border-bottom: 1px solid rgb(230 230 230); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .authenticator-fields {
@@ -91,7 +92,8 @@
 }
 
 .authenticator-section-title.editing-name .authenticator-name-field {
-  border-bottom: 2px solid #808080;
+  border-bottom: 2px solid #808080; /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
   font-weight: normal;
   animation: none;
 }

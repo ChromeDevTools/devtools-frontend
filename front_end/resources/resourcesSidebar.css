@@ -23,7 +23,8 @@ li.storage-group-list-item {
 }
 
 li.storage-group-list-item:not(:first-child) {
-  border-top: 1px solid rgb(230 230 230);
+  border-top: 1px solid rgb(230 230 230); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 li.storage-group-list-item::before {
@@ -36,28 +37,34 @@ li.storage-group-list-item::before {
 }
 
 .navigator-file-tree-item {
-  background: linear-gradient(45deg, hsl(0deg 0% 50%), hsl(0deg 0% 70%));
+  background: linear-gradient(45deg, hsl(0deg 0% 50%), hsl(0deg 0% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .navigator-folder-tree-item {
-  background: linear-gradient(45deg, hsl(210deg 82% 65%), hsl(210deg 82% 80%));
+  background: linear-gradient(45deg, hsl(210deg 82% 65%), hsl(210deg 82% 80%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .navigator-script-tree-item {
-  background: linear-gradient(45deg, hsl(48deg 70% 50%), hsl(48deg 70% 70%));
+  background: linear-gradient(45deg, hsl(48deg 70% 50%), hsl(48deg 70% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .navigator-stylesheet-tree-item {
-  background: linear-gradient(45deg, hsl(256deg 50% 50%), hsl(256deg 50% 70%));
+  background: linear-gradient(45deg, hsl(256deg 50% 50%), hsl(256deg 50% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .navigator-image-tree-item,
 .navigator-font-tree-item {
-  background: linear-gradient(45deg, hsl(109deg 33% 50%), hsl(109deg 33% 70%));
+  background: linear-gradient(45deg, hsl(109deg 33% 50%), hsl(109deg 33% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .resource-tree-item {
-  background: rgb(90 90 90 / 70%);
+  background: rgb(90 90 90 / 70%); /* stylelint-disable-line plugin/use_theme_colors */
+  /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .window-closed .tree-element-title {

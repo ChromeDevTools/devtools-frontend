@@ -240,19 +240,27 @@ export function parseHexa(hexa: string): Array<number> {
   return (hexa.match(/#(\w\w)(\w\w)(\w\w)(\w\w)/) || []).slice(1).map(c => parseInt(c, 16) / 255);
 }
 
-export function formatColor(hexa: string, colorFormat: string): string {
+export function formatRgba(rgba: number[], colorFormat: 'rgb'|'hsl'): string {
   if (colorFormat === 'rgb') {
-    const [r, g, b, a] = parseHexa(hexa);
+    const [r, g, b, a] = rgba;
     // rgb(r g b [ / a])
     return `rgb(${(r * 255).toFixed()} ${(g * 255).toFixed()} ${(b * 255).toFixed()}${
         a === 1 ? '' : ' / ' + Math.round(a * 100) / 100})`;
   }
 
   if (colorFormat === 'hsl') {
-    const [h, s, l, a] = rgbaToHsla(parseHexa(hexa));
+    const [h, s, l, a] = rgbaToHsla(rgba);
     // hsl(hdeg s l [ / a])
     return `hsl(${Math.round(h * 360)}deg ${Math.round(s * 100)} ${Math.round(l * 100)}${
         a === 1 ? '' : ' / ' + Math.round(a * 100) / 100})`;
+  }
+
+  throw new Error('NOT_REACHED');
+}
+
+export function formatColor(hexa: string, colorFormat: string): string {
+  if (colorFormat === 'rgb' || colorFormat === 'hsl') {
+    return formatRgba(parseHexa(hexa), colorFormat);
   }
 
   if (hexa.endsWith('FF')) {

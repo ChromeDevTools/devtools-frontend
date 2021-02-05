@@ -31,7 +31,7 @@
 import {contrastRatio, contrastRatioAPCA, getAPCAThreshold, getContrastThreshold} from '../front_end/common/ColorUtils.js';
 
 import {Bounds, constrainNumber, createChild, createElement, createTextChild, ellipsify, Overlay, PathCommands, ResetData} from './common.js';
-import {buildPath, emptyBounds, formatColor, parseHexa, PathBounds} from './highlight_common.js';
+import {buildPath, emptyBounds, formatColor, formatRgba, parseHexa, PathBounds} from './highlight_common.js';
 import {drawLayoutFlexContainerHighlight, FlexContainerHighlight} from './highlight_flex_common.js';
 import {drawLayoutGridHighlight, GridHighlight} from './highlight_grid_common.js';
 import {PersistentOverlay} from './tool_persistent.js';
@@ -48,6 +48,7 @@ interface ContrastInfo {
   fontSize: string;
   fontWeight: string;
   contrastAlgorithm: 'apca'|'aa'|'aaa';
+  textOpacity: number;
 }
 
 interface ElementInfo {
@@ -477,9 +478,14 @@ function _createElementDescription(elementInfo: ElementInfo, colorFormat: string
   function addContrastRow(fgColor: string, contrast: ContrastInfo) {
     const parsedFgColor = parseHexa(fgColor);
     const parsedBgColor = parseHexa(contrast.backgroundColor);
+    // Merge text opacity into the alpha channel of the color.
+    // TODO(alexrudenko): backward compatibility check and can be removed after the next chromium roll.
+    if (contrast.textOpacity !== undefined) {
+      parsedFgColor[3] *= contrast.textOpacity;
+    }
     const valueElement = addRow('Contrast', '', 'element-info-value-contrast');
     const sampleText = createChild(valueElement, 'div', 'contrast-text');
-    sampleText.style.color = fgColor;
+    sampleText.style.color = formatRgba(parsedFgColor, 'rgb');
     sampleText.style.backgroundColor = contrast.backgroundColor;
     sampleText.textContent = 'Aa';
     const valueSpan = createChild(valueElement, 'span');

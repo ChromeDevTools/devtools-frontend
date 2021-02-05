@@ -1,7 +1,4 @@
 {
-  "dependencies": [
-    "dom_extension"
-  ],
   "modules": [
     "ui-legacy.js",
     "ARIAUtils.js",

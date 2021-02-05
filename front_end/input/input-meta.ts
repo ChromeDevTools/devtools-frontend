@@ -2,13 +2,45 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Input from './input.js';
+
+export const UIStrings = {
+  /**
+    *@description Title of the inputs tool, which records user input.
+    */
+  inputs: 'Inputs',
+  /**
+    *@description Command to pause the replaying of user inputs.
+    */
+  pause: 'Pause',
+  /**
+    *@description Command to resume the replaying of user inputs.
+    */
+  resume: 'Resume',
+  /**
+    *@description Command for showing the inputs tool.
+    */
+  showInputs: 'Show Inputs',
+  /**
+    *@description Command to begin a recording of user input.
+    */
+  startRecording: 'Start recording',
+  /**
+    *@description Command to start replaying the recorded user input.
+    */
+  startReplaying: 'Start replaying',
+  /**
+    *@description Command to stop a recording of user input.
+    */
+  stopRecording: 'Stop recording',
+};
+const str_ = i18n.i18n.registerUIStrings('input/input-meta.ts', UIStrings);
+const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let loadedInputModule: (typeof Input|undefined);
 
@@ -24,8 +56,8 @@ async function loadInputModule(): Promise<typeof Input> {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'Inputs',
-  title: (): Platform.UIString.LocalizedString => ls`Inputs`,
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Inputs`,
+  title: i18nString(UIStrings.inputs),
+  commandPrompt: i18nString(UIStrings.showInputs),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 7,
   async loadView() {
@@ -50,11 +82,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Start recording`,
+      title: i18nString(UIStrings.startRecording),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Stop recording`,
+      title: i18nString(UIStrings.stopRecording),
     },
   ],
 });
@@ -72,7 +104,7 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Start replaying`,
+      title: i18nString(UIStrings.startReplaying),
     },
   ],
 });
@@ -91,11 +123,11 @@ UI.ActionRegistration.registerActionExtension({
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Pause`,
+      title: i18nString(UIStrings.pause),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Resume`,
+      title: i18nString(UIStrings.resume),
     },
   ],
 });

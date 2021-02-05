@@ -133,6 +133,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_16e42544c5087d89f65bd889a0b25da5" desc="Text in App Manifest View of the Application panel">
     Shortcut #<ph name="SHORTCUTINDEX">$1s<ex>1</ex></ph> should include a 96x96 pixel icon
   </message>
+  <message name="IDS_DEVTOOLS_2fae32629d4ef4fc6341f1751b405e45" desc="Title of the 'Security' section of the frame details report">
+    Security
+  </message>
   <message name="IDS_DEVTOOLS_301addf2037879acf2a972b157d2f4a7" desc="Text in Application Panel Sidebar of the Application panel">
     Local Files
   </message>

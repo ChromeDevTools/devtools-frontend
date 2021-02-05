@@ -174,6 +174,9 @@
   <message name="IDS_DEVTOOLS_ea4788705e6873b424c65e91c2846b19" desc="Text to cancel something">
     Cancel
   </message>
+  <message name="IDS_DEVTOOLS_ee611c8b9dfbbc792a9318c9837b2bcd" desc="A title of the 'Inputs' action category">
+    Inputs
+  </message>
   <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="A title of the 'Settings' @UI.ViewLocationResolver category">
     Settings
   </message>

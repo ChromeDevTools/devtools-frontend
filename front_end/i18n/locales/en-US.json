@@ -1391,6 +1391,27 @@
   "inline_editor/FontEditor.js | units": {
     "message": "Units"
   },
+  "input/input-meta.ts | inputs": {
+    "message": "Inputs"
+  },
+  "input/input-meta.ts | pause": {
+    "message": "Pause"
+  },
+  "input/input-meta.ts | resume": {
+    "message": "Resume"
+  },
+  "input/input-meta.ts | showInputs": {
+    "message": "Show Inputs"
+  },
+  "input/input-meta.ts | startRecording": {
+    "message": "Start recording"
+  },
+  "input/input-meta.ts | startReplaying": {
+    "message": "Start replaying"
+  },
+  "input/input-meta.ts | stopRecording": {
+    "message": "Stop recording"
+  },
   "input/InputTimeline.ts | clearAll": {
     "message": "Clear all"
   },
@@ -4990,6 +5011,12 @@
   },
   "search/SearchView.js | useRegularExpression": {
     "message": "Use Regular Expression"
+  },
+  "security/security-meta.ts | security": {
+    "message": "Security"
+  },
+  "security/security-meta.ts | showSecurity": {
+    "message": "Show Security"
   },
   "security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} with {PH2}"

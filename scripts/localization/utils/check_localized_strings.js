@@ -342,6 +342,7 @@ async function parseLocalizableStringsFromFile(filePath) {
     try {
       const tsStrings = await parseLocalizableStringFromTypeScriptFile(filePath);
       tsStrings.forEach(tsString => {
+        checkMigratedDirectory(tsString.filePath);
         addString(tsString.cooked, tsString.code, tsString.filePath, tsString.location, tsString.parsedArguments);
       });
     } catch (e) {

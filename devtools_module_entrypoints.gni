@@ -198,6 +198,7 @@ devtools_module_entrypoint_sources = [
   "timeline/timeline.js",
   "timeline_model/timeline_model-legacy.js",
   "timeline_model/timeline_model.js",
+  "toolbox.js",
   "toolbox_bootstrap/toolbox_bootstrap.js",
   "ui/components/components.js",
   "ui/ui-legacy.js",

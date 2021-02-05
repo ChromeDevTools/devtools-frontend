@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("../scripts/build/ninja/copy.gni")
+import("../scripts/build/ninja/devtools_entrypoint.gni")
 import("../scripts/build/ninja/node.gni")
 import("../scripts/build/ninja/vars.gni")
 import("../third_party/typescript/typescript.gni")
@@ -60,7 +61,6 @@ group("front_end") {
     "third_party/lighthouse",
     "third_party/puppeteer:bundle",
     "timeline_model:bundle",
-    "toolbox_bootstrap:bundle",
     "ui:bundle",
     "ui/components:bundle",
     "wasmparser_worker:worker_entrypoint",
@@ -308,11 +308,14 @@ ts_library("node_app") {
   ]
 }
 
-ts_library("toolbox") {
-  no_emit = true
-  sources = [ "toolbox.js" ]
+devtools_entrypoint("toolbox") {
+  entrypoint = "toolbox.js"
 
-  deps = [ "startup:bundle" ]
+  deps = [
+    "dom_extension:bundle",
+    "platform:bundle",
+    "toolbox_bootstrap:bundle",
+  ]
 }
 
 ts_library("worker_app") {

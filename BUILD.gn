@@ -111,7 +111,6 @@ applications_js = [
   "js_app.js",
   "node_app.js",
   "shell.js",
-  "toolbox.js",
   "worker_app.js",
 ]
 
@@ -229,7 +228,6 @@ devtools_applications = [
   "ndb_app",
   "node_app",
   "shell",
-  "toolbox",
   "worker_app",
 ]
 

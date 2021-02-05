@@ -2,6 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Startup from './startup/startup.js';
-
-Startup.RuntimeInstantiator.startApplication('toolbox');
+import './platform/platform.js';
+import './dom_extension/dom_extension.js';
+import './toolbox_bootstrap/toolbox_bootstrap.js';

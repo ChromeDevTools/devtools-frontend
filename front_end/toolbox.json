@@ -1,5 +1,0 @@
-{
-  "modules": [
-    { "name": "toolbox_bootstrap", "type": "autostart" }
-  ]
-}

@@ -87,21 +87,21 @@ devtools_test_files = [
 ]
 
 devtools_embedder_scripts = [
-  "front_end/devtools_compatibility.js",
-  "front_end/Tests.js",
+  "devtools_compatibility.js",
+  "Tests.js",
 ]
 
 application_templates = [ "front_end/entrypoint_template.html" ]
 
 generated_applications_html = [
-  "$resources_out_dir/devtools_app.html",
-  "$resources_out_dir/inspector.html",
-  "$resources_out_dir/integration_test_runner.html",
-  "$resources_out_dir/js_app.html",
-  "$resources_out_dir/ndb_app.html",
-  "$resources_out_dir/node_app.html",
-  "$resources_out_dir/toolbox.html",
-  "$resources_out_dir/worker_app.html",
+  "devtools_app.html",
+  "inspector.html",
+  "integration_test_runner.html",
+  "js_app.html",
+  "ndb_app.html",
+  "node_app.html",
+  "toolbox.html",
+  "worker_app.html",
 ]
 
 applications_js = [
@@ -264,14 +264,22 @@ action("generate_devtools_grd") {
 
   deps = [ ":devtools_frontend_resources" ]
 
-  grd_files =
-      generated_applications_html + resources_generated_applications_js +
-      resources_non_autostart_non_remote_modules + devtools_embedder_scripts +
-      generated_module_entrypoint_sources + generated_typescript_modules +
-      generated_devtools_locale_files + generated_emulated_device_images +
-      [ "$resources_out_dir/third_party/acorn/package/dist/acorn.mjs" ]
+  _grd_files = []
+  _unique_frontend_files =
+      generated_applications_html + applications_js +
+      non_autostart_non_remote_modules + devtools_embedder_scripts +
+      optimized_emulated_device_images + copied_devtools_locale_files +
+      devtools_module_entrypoint_sources
 
-  inputs = grd_files + front_end_image_files
+  if (is_debug) {
+    _unique_frontend_files += all_typescript_module_sources
+  }
+
+  foreach(_input_file, _unique_frontend_files) {
+    _grd_files += [ "$resources_out_dir/$_input_file" ]
+  }
+
+  inputs = _grd_files + front_end_image_files
 
   # Confirm that the files in the inputs match expectations.
   # There is some path wrangling necessary here because some paths come with
@@ -302,7 +310,7 @@ action("generate_devtools_grd") {
       _missing_files_normalized == [],
       "Files were provided that weren't expected in the GRD inputs: $_missing_files_normalized")
 
-  response_file_contents = rebase_path(grd_files, root_build_dir)
+  response_file_contents = rebase_path(_grd_files, root_build_dir)
   outfile = "$root_gen_dir/devtools/devtools_resources.grd"
   outputs = [ outfile ]
 

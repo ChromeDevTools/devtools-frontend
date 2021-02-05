@@ -11,6 +11,7 @@ import("../third_party/typescript/typescript.gni")
 group("front_end") {
   public_deps = [
     ":devtools_app",
+    ":embedder-scripts",
     ":entrypoint_copy",
     ":html_entrypoints",
     ":inspector",
@@ -71,7 +72,6 @@ group("front_end") {
   ]
 
   data_deps = [
-    ":embedder-scripts",
     ":html_entrypoints",
     ":legacy_css",
   ]

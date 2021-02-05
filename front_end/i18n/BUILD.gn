@@ -29,5 +29,7 @@ devtools_entrypoint("bundle") {
 
 devtools_pre_built("i18n_locales") {
   sources = [ "i18n_locales-tsconfig.json" ]
-  sources += devtools_locale_files
+  foreach(locale, devtools_locale_files) {
+    sources += [ "locales/$locale" ]
+  }
 }

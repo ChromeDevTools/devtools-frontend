@@ -41,7 +41,7 @@ function checkNonAutostartNonRemoteModules() {
     errors.push(`Check that you've included [${missingModules.join(', ')}] modules in: ` + gnVariable);
   }
 
-  // e.g. "$resources_out_dir/lighthouse/lighthouse_module.js" => "lighthouse"
+  // e.g. "lighthouse/lighthouse_module.js" => "lighthouse"
   const mapLineToModuleName = line => line.split('/')[1].split('_module')[0];
 
   const extraneousModules = lines.map(mapLineToModuleName).filter(module => !modules.includes(module));

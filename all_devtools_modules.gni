@@ -820,6 +820,8 @@ all_typescript_module_sources = [
   "ui/components/LinkifierUtils.js",
   "ui/components/ReportView.js",
   "ui/components/SurveyLink.js",
+  "ui/components/TreeOutline.js",
+  "ui/components/TreeOutlineUtils.js",
   "ui/components/components.js",
   "ui/utils/append-style.js",
   "ui/utils/create-shadow-root-with-core-styles.js",

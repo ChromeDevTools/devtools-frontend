@@ -12,6 +12,8 @@ import * as Icon from './Icon.js';
 import * as Linkifier from './Linkifier.js';
 import * as ReportView from './ReportView.js';
 import * as SurveyLink from './SurveyLink.js';
+import * as TreeOutline from './TreeOutline.js';
+import * as TreeOutlineUtils from './TreeOutlineUtils.js';
 
 export {
   CounterButton,
@@ -24,4 +26,6 @@ export {
   Linkifier,
   ReportView,
   SurveyLink,
+  TreeOutline,
+  TreeOutlineUtils,
 };

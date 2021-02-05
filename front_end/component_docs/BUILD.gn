@@ -25,6 +25,7 @@ group("component_docs") {
     "./report",
     "./survey_link",
     "./theme_colors",
+    "./tree_outline",
     "./webvitals",
   ]
 }

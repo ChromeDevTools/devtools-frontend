@@ -1247,6 +1247,8 @@ grd_files_debug_sources = [
   "front_end/ui/components/LinkifierUtils.js",
   "front_end/ui/components/ReportView.js",
   "front_end/ui/components/SurveyLink.js",
+  "front_end/ui/components/TreeOutline.js",
+  "front_end/ui/components/TreeOutlineUtils.js",
   "front_end/ui/utils/append-style.js",
   "front_end/ui/utils/create-shadow-root-with-core-styles.js",
   "front_end/ui/utils/focus-changed.js",

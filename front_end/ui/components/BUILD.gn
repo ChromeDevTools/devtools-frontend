@@ -19,6 +19,8 @@ devtools_module("components") {
     "LinkifierUtils.ts",
     "ReportView.ts",
     "SurveyLink.ts",
+    "TreeOutline.ts",
+    "TreeOutlineUtils.ts",
   ]
   deps = [
     "../../bindings:bundle",

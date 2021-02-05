@@ -275,9 +275,26 @@ export class GutterDecoration {
 export const DiffGutterType = 'CodeMirror-gutter-diff';
 
 /**
+ * @type {ContextMenuProvider}
+ */
+let contextMenuProviderInstance;
+
+/**
  * @implements {UI.ContextMenu.Provider}
  */
 export class ContextMenuProvider {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!contextMenuProviderInstance || forceNew) {
+      contextMenuProviderInstance = new ContextMenuProvider();
+    }
+
+    return contextMenuProviderInstance;
+  }
+
   /**
    * @override
    * @param {!Event} event

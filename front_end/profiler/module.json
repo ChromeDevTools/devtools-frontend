@@ -1,13 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@UI.ContextMenu.Provider",
-      "contextTypes": [
-        "SDK.RemoteObject"
-      ],
-      "className": "Profiler.HeapProfilerPanel"
-    }
-  ],
   "dependencies": [
     "components",
     "perf_ui",

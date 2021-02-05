@@ -1,40 +1,6 @@
 {
   "extensions": [
     {
-      "type": "@UI.ContextMenu.Provider",
-      "contextTypes": [
-        "Workspace.UISourceCode",
-        "Workspace.UILocation",
-        "SDK.RemoteObject",
-        "SDK.NetworkRequest",
-        "Sources.UISourceCodeFrame"
-      ],
-      "className": "Sources.SourcesPanel"
-    },
-    {
-      "type": "@UI.ContextMenu.Provider",
-      "actionId": "sources.add-to-watch",
-      "className": "Sources.WatchExpressionsSidebarPane",
-      "title": "Add to watch",
-      "contextTypes": [
-        "ObjectUI.ObjectPropertyTreeElement"
-      ]
-    },
-    {
-      "type": "@UI.ContextMenu.Provider",
-      "contextTypes": [
-        "TextEditor.CodeMirrorTextEditor"
-      ],
-      "className": "Sources.WatchExpressionsSidebarPane"
-    },
-    {
-      "type": "@UI.ContextMenu.Provider",
-      "contextTypes": [
-        "Workspace.UISourceCode"
-      ],
-      "className": "Sources.GutterDiffPlugin.ContextMenuProvider"
-    },
-    {
       "type": "@QuickOpen.FilteredListWidget.Provider",
       "title": "Open file",
       "prefix": "",
@@ -124,16 +90,6 @@
       "location": "files-navigator-toolbar",
       "showLabel": true,
       "condition": "!sources.hide_add_folder"
-    },
-    {
-      "type": "@UI.ContextMenu.Provider",
-      "actionId": "sources.open-memory-inspector",
-      "className": "Sources.ScopeChainSidebarPane.OpenLinearMemoryInspector",
-      "experiment": "wasmDWARFDebugging",
-      "title": "Open memory inspector",
-      "contextTypes": [
-        "ObjectUI.ObjectPropertyTreeElement"
-      ]
     },
     {
       "type": "@UI.ContextFlavorListener",

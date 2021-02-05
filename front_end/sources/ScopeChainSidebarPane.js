@@ -229,9 +229,26 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
 }
 
 /**
+ * @type {OpenLinearMemoryInspector}
+ */
+let openLinearMemoryInspectorInstance;
+
+/**
  * @implements {UI.ContextMenu.Provider}
  */
 export class OpenLinearMemoryInspector extends UI.Widget.VBox {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!openLinearMemoryInspectorInstance || forceNew) {
+      openLinearMemoryInspectorInstance = new OpenLinearMemoryInspector();
+    }
+
+    return openLinearMemoryInspectorInstance;
+  }
+
   /**
    * @param {!SDK.RemoteObject.RemoteObject} obj
    */

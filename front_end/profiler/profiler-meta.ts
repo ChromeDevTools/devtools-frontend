@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
+import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -192,4 +193,17 @@ Common.Settings.registerSettingExtension({
   settingName: 'showNativeFunctionsInJSProfile',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: true,
+});
+
+UI.ContextMenu.registerProvider({
+  contextTypes() {
+    return [
+      SDK.RemoteObject.RemoteObject,
+    ];
+  },
+  async loadProvider() {
+    const Profiler = await loadProfilerModule();
+    return Profiler.HeapProfilerPanel.HeapProfilerPanel.instance();
+  },
+  experiment: undefined,
 });

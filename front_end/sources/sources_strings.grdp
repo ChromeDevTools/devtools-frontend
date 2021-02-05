@@ -108,9 +108,6 @@
   <message name="IDS_DEVTOOLS_25eeda4a035b17ed5a353480e79dc6fb" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Do not detect indentation
   </message>
-  <message name="IDS_DEVTOOLS_26fff70cf6b5204fa5154fa62f5b7b69" desc="Title of the Context MenuProvider of UI">
-    Add to watch
-  </message>
   <message name="IDS_DEVTOOLS_27cd6a52dd9de75342d5115dc6bca6ba" desc="Text in Debugger Plugin of the Sources panel">
     Associated files are available via file tree or <ph name="UI_SHORTCUTREGISTRY_SHORTCUTTITLEFORACTION__QUICKOPEN_SHOW__">$1s<ex>Ctrl+P Ctrl+O</ex></ph>.
   </message>
@@ -167,9 +164,6 @@
   </message>
   <message name="IDS_DEVTOOLS_3e27fe84bd1fddd585c8d06e6307b67a" desc="Text in Debugger Plugin of the Sources panel">
     Remove all breakpoints in line
-  </message>
-  <message name="IDS_DEVTOOLS_3ef29aa8d40c3af643ed1e06298d116c" desc="Title of the Context MenuProvider for opening the Linear Memory Inspector">
-    Open memory inspector
   </message>
   <message name="IDS_DEVTOOLS_3fd3dddd9661349b90b648bba2748f1b" desc="The UI destination when right clicking an item that can be revealed">
     Sources panel

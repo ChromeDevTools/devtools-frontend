@@ -361,16 +361,6 @@ describe('Color', () => {
         requiredContrast: 68,
       },
       {
-        fgColor: 'grey',
-        bgColor: 'grey',
-        requiredContrast: 68,
-      },
-      {
-        bgColor: 'salmon',
-        fgColor: 'white',
-        requiredContrast: 66,
-      },
-      {
         bgColor: 'lightblue',
         fgColor: 'white',
         requiredContrast: 66,
@@ -394,8 +384,30 @@ describe('Color', () => {
       const result = Common.Color.Color.findFgColorForContrastAPCA(fg, bg, test.requiredContrast);
       assertNotNull(result);
       const absContrast = Math.abs(Common.ColorUtils.contrastRatioAPCA(result.rgba() || [], bg.rgba()));
-      assert.closeTo(absContrast, test.requiredContrast, 0.5);
       assert.isTrue(Math.round(absContrast) >= test.requiredContrast);
+    }
+  });
+
+  it('does not find fg color for certain combinations acoording to APCA', () => {
+    const tests = [
+      {
+        bgColor: 'salmon',
+        fgColor: 'white',
+        requiredContrast: 66,
+      },
+      {
+        fgColor: 'grey',
+        bgColor: 'grey',
+        requiredContrast: 68,
+      },
+    ];
+    for (const test of tests) {
+      const fg = Common.Color.Color.parse(test.fgColor);
+      const bg = Common.Color.Color.parse(test.bgColor);
+      assertNotNull(fg);
+      assertNotNull(bg);
+      const result = Common.Color.Color.findFgColorForContrastAPCA(fg, bg, test.requiredContrast);
+      assert.isNull(result);
     }
   });
 });

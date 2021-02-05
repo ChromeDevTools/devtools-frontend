@@ -41,12 +41,32 @@ it('is able to calculate the contrast ratio (APCA) between two colors', () => {
     {
       fgColor: 'red',
       bgColor: 'blue',
-      expectedContrast: -39.66,
+      expectedContrast: -21.22,
     },
     {
       fgColor: '#333333',
       bgColor: '#444444',
-      expectedContrast: 18.24,
+      expectedContrast: 2.142,
+    },
+    {
+      fgColor: '#888',
+      bgColor: '#FFF',
+      expectedContrast: 66.89346308821438,
+    },
+    {
+      fgColor: '#aaa',
+      bgColor: '#000',
+      expectedContrast: -60.438571788907524,
+    },
+    {
+      fgColor: '#def',
+      bgColor: '#123',
+      expectedContrast: -98.44863435731266,
+    },
+    {
+      fgColor: '#123',
+      bgColor: '#234',
+      expectedContrast: 1.276075977788573,
     },
   ];
   for (const test of tests) {
@@ -65,7 +85,7 @@ it('is able to find APCA threshold by font size and weight', () => {
   assert.deepEqual(Common.ColorUtils.getAPCAThreshold('121px', '100'), 60);
   assert.deepEqual(Common.ColorUtils.getAPCAThreshold('16px', '100'), null);
   assert.deepEqual(Common.ColorUtils.getAPCAThreshold('16px', '400'), 90);
-  assert.deepEqual(Common.ColorUtils.getAPCAThreshold('16px', '900'), 70);
+  assert.deepEqual(Common.ColorUtils.getAPCAThreshold('16px', '900'), 50);
 });
 
 it('is able to find AA/AAA thresholds', () => {

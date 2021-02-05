@@ -104,9 +104,9 @@ export class ContrastRatioLineBuilder {
    * @return {?string}
    */
   drawContrastRatioLine(width, height, level) {
-    const requiredContrast = Root.Runtime.experiments.isEnabled('APCA') ?
-        this._contrastInfo.contrastRatioAPCAThreshold() :
-        this._contrastInfo.contrastRatioThreshold(level);
+    const isAPCA = Root.Runtime.experiments.isEnabled('APCA');
+    const requiredContrast =
+        isAPCA ? this._contrastInfo.contrastRatioAPCAThreshold() : this._contrastInfo.contrastRatioThreshold(level);
     if (!width || !height || requiredContrast === null) {
       return null;
     }
@@ -131,9 +131,15 @@ export class ContrastRatioLineBuilder {
     let blendedRGBA = Common.ColorUtils.blendColors(fgRGBA, bgRGBA);
     const fgLuminance = Common.ColorUtils.luminance(blendedRGBA);
     const fgIsLighter = fgLuminance > bgLuminance;
-    const desiredLuminance = Root.Runtime.experiments.isEnabled('APCA') ?
+    const desiredLuminance = isAPCA ?
         Common.ColorUtils.desiredLuminanceAPCA(bgLuminance, requiredContrast, fgIsLighter) :
         Common.Color.Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
+
+    if (isAPCA &&
+        Math.abs(Math.round(Common.ColorUtils.contrastRatioByLuminanceAPCA(desiredLuminance, bgLuminance))) <
+            requiredContrast) {
+      return null;
+    }
 
     let lastV = fgHSVA[V];
     let currentSlope = 0;

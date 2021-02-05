@@ -29,7 +29,7 @@
 
 import * as Platform from '../platform/platform.js';
 
-import {blendColors, desiredLuminanceAPCA, luminance, luminanceAPCA, rgbaToHsla} from './ColorUtils.js';
+import {blendColors, contrastRatioAPCA, desiredLuminanceAPCA, luminance, luminanceAPCA, rgbaToHsla} from './ColorUtils.js';
 
 /** @type {?Map<string, string>} */
 let _rgbaToNickname;
@@ -428,8 +428,6 @@ export class Color {
       dLuminance = candidateLuminance(candidateHSVA) - desiredLuminance;
     }
 
-    // The loop should always converge or go out of bounds on its own.
-    console.error('Loop exited unexpectedly');
     return null;
   }
 
@@ -500,13 +498,19 @@ export class Color {
     const valueComponentIndex = 2;
 
     if (Color.approachColorValue(candidateHSVA, bgRGBA, valueComponentIndex, desiredLuminance, candidateLuminance)) {
-      return Color.fromHSVA(candidateHSVA);
+      const candidate = Color.fromHSVA(candidateHSVA);
+      if (Math.abs(contrastRatioAPCA(bgColor.rgba(), candidate.rgba())) >= requiredContrast) {
+        return candidate;
+      }
     }
 
     candidateHSVA[valueComponentIndex] = 1;
     if (Color.approachColorValue(
             candidateHSVA, bgRGBA, saturationComponentIndex, desiredLuminance, candidateLuminance)) {
-      return Color.fromHSVA(candidateHSVA);
+      const candidate = Color.fromHSVA(candidateHSVA);
+      if (Math.abs(contrastRatioAPCA(bgColor.rgba(), candidate.rgba())) >= requiredContrast) {
+        return candidate;
+      }
     }
 
     return null;

@@ -87,15 +87,20 @@ export function contrastRatio(fgRGBA, bgRGBA) {
 
 // Constants for basic APCA version.
 // See https://github.com/Myndex/SAPC-APCA
-const sRGBtrc = 2.218;
-const normBgExp = 0.38;
-const normFgExp = 0.43;
-const revBgExp = 0.5;
-const revFgExp = 0.43;
-const blkThrs = 0.02;
-const blkClmp = 1.33;
-const scaleBoW = 161.8;
-const scaleWoB = 161.8;
+const mainTRC = 2.4;
+const normBgExp = 0.55;
+const normFgExp = 0.58;
+const revBgExp = 0.62;
+const revFgExp = 0.57;
+const blkThrs = 0.03;
+const blkClmp = 1.45;
+const scaleBoW = 1.25;
+const scaleWoB = 1.25;
+const deltaLuminanceMin = 0.0005;
+const loConThresh = 0.078;
+const loConFactor = 12.82051282051282;
+const loConOffset = 0.06;
+const loClip = 0.001;
 
 /**
 * Calculate relative luminance of a color.
@@ -104,11 +109,11 @@ const scaleWoB = 161.8;
 * @return {number}
 */
 export function luminanceAPCA([rSRGB, gSRGB, bSRGB]) {
-  const r = Math.pow(rSRGB, sRGBtrc);
-  const g = Math.pow(gSRGB, sRGBtrc);
-  const b = Math.pow(bSRGB, sRGBtrc);
+  const r = Math.pow(rSRGB, mainTRC);
+  const g = Math.pow(gSRGB, mainTRC);
+  const b = Math.pow(bSRGB, mainTRC);
 
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return 0.2126729 * r + 0.7151522 * g + 0.0721750 * b;
 }
 
 /**
@@ -125,19 +130,36 @@ export function contrastRatioAPCA(fgRGBA, bgRGBA) {
 }
 
 /**
+ * @param {number} value
+ */
+function clampLuminance(value) {
+  return value > blkThrs ? value : (value + Math.pow(blkThrs - value, blkClmp));
+}
+
+/**
  * @param {number} fgLuminance
  * @param {number} bgLuminance
  */
 export function contrastRatioByLuminanceAPCA(fgLuminance, bgLuminance) {
-  if (bgLuminance >= fgLuminance) {  // Black text on white.
-    fgLuminance =
-        (fgLuminance > blkThrs) ? fgLuminance : fgLuminance + Math.pow(Math.abs(fgLuminance - blkThrs), blkClmp);
-    return (Math.pow(bgLuminance, normBgExp) - Math.pow(fgLuminance, normFgExp)) * scaleBoW;
+  fgLuminance = clampLuminance(fgLuminance);
+  bgLuminance = clampLuminance(bgLuminance);
+  if (Math.abs(fgLuminance - bgLuminance) < deltaLuminanceMin) {
+    return 0;
   }
-  // White text on black.
-  bgLuminance =
-      (bgLuminance > blkThrs) ? bgLuminance : (bgLuminance + Math.pow(Math.abs(bgLuminance - blkThrs), blkClmp));
-  return (Math.pow(bgLuminance, revBgExp) - Math.pow(fgLuminance, revFgExp)) * scaleWoB;
+  let result = 0;
+  if (bgLuminance >= fgLuminance) {  // Black text on white.
+    result = (Math.pow(bgLuminance, normBgExp) - Math.pow(fgLuminance, normFgExp)) * scaleBoW;
+    result = result < loClip ?
+        0 :
+        (result < loConThresh ? result - result * loConFactor * loConOffset : result - loConOffset);
+  } else {
+    // White text on black.
+    result = (Math.pow(bgLuminance, revBgExp) - Math.pow(fgLuminance, revFgExp)) * scaleWoB;
+    result = result > -loClip ?
+        0 :
+        (result > -loConThresh ? result - result * loConFactor * loConOffset : result + loConOffset);
+  }
+  return result * 100;
 }
 
 /**
@@ -152,13 +174,14 @@ export function contrastRatioByLuminanceAPCA(fgLuminance, bgLuminance) {
  * @return {number} The desired luminance.
  */
 export function desiredLuminanceAPCA(luminance, contrast, lighter) {
+  luminance = clampLuminance(luminance);
+  contrast /= 100;
   function computeLuminance() {
     if (!lighter) {  // Black text on white.
-      return Math.pow(Math.pow(luminance, normBgExp) - contrast / scaleBoW, 1 / normFgExp);
+      return Math.pow(Math.abs(Math.pow(luminance, normBgExp) - (contrast + loConOffset) / scaleBoW), 1 / normFgExp);
     }
     // White text on black.
-    luminance = (luminance > blkThrs) ? luminance : (luminance + Math.pow(Math.abs(luminance - blkThrs), blkClmp));
-    return Math.pow(contrast / scaleWoB + Math.pow(luminance, revBgExp), 1 / revFgExp);
+    return Math.pow(Math.abs(Math.pow(luminance, revBgExp) - (-contrast - loConOffset) / scaleWoB), 1 / revFgExp);
   }
   let desiredLuminance = computeLuminance();
   if (desiredLuminance < 0 || desiredLuminance > 1) {
@@ -172,23 +195,18 @@ export function desiredLuminanceAPCA(luminance, contrast, lighter) {
 const contrastAPCALookupTable = [
   // See https://github.com/Myndex/SAPC-APCA
   // font size in px | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 weights
-  [12, -1, -1, -1, 120, 100, 90, 80, 80, 80],
-  [14, -1, -1, -1, 100, 90, 80, 75, 75, 75],
-  [16, -1, -1, 120, 90, 80, 75, 70, 70, 70],
-  [18, -1, -1, 110, 80, 75, 70, 67, 65, 65],
-  [20, -1, -1, 100, 78, 72, 67, 65, 60, 60],
-  [22, -1, -1, 90, 77, 71, 65, 62, 57, 57],
-  [24, -1, 120, 80, 75, 70, 65, 60, 55, 55],
-  [26, -1, 110, 79, 72, 67, 62, 59, 54, 54],
-  [28, -1, 100, 77, 70, 65, 60, 57, 53, 53],
-  [32, -1, 90, 76, 67, 62, 57, 53, 50, 48],
-  [36, 120, 80, 75, 65, 60, 55, 50, 48, 48],
-  [42, 110, 77, 73, 62, 57, 52, 48, 46, 42],
-  [48, 100, 75, 70, 60, 55, 50, 45, 42, 40],
-  [60, 90, 73, 65, 57, 52, 46, 42, 40, 40],
-  [72, 70, 60, 55, 50, 45, 40, 40, 40, 40],
-  [96, 80, 60, 55, 50, 45, 40, 40, 40, 40],
-  [120, 60, 55, 50, 47, 43, 40, 40, 40, 40],
+  [12, -1, -1, -1, -1, 100, 90, 80, -1, -1],
+  [14, -1, -1, -1, 100, 90, 80, 60, 60, -1],
+  [16, -1, -1, 100, 90, 80, 60, 55, 50, 50],
+  [18, -1, -1, 90, 80, 60, 55, 50, 40, 40],
+  [24, -1, 100, 80, 60, 55, 50, 40, 38, 35],
+  [30, -1, 90, 70, 55, 50, 40, 38, 35, 40],
+  [36, -1, 80, 60, 50, 40, 38, 35, 30, 25],
+  [48, 100, 70, 55, 40, 38, 35, 30, 25, 20],
+  [60, 90, 60, 50, 38, 35, 30, 25, 20, 20],
+  [72, 80, 55, 40, 35, 30, 25, 20, 20, 20],
+  [96, 70, 50, 35, 30, 25, 20, 20, 20, 20],
+  [120, 60, 40, 30, 25, 20, 20, 20, 20, 20],
 ];
 // clang-format on
 

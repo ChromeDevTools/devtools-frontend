@@ -73,6 +73,10 @@ export class XLink extends XElement {
     return XElement.observedAttributes.concat(['href', 'no-click']);
   }
 
+  get href() {
+    return this._href;
+  }
+
   /**
    * @param {string} attr
    * @param {?string} oldValue

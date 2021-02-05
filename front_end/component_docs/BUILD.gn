@@ -20,6 +20,7 @@ group("component_docs") {
     "./linear_memory_inspector",
     "./linkifier",
     "./markdown_image",
+    "./markdown_link",
     "./markdown_view",
     "./perf_piechart",
     "./report",

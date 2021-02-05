@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as UI from '../../../../front_end/ui/ui.js';
 import type * as IssuesModule from '../../../../front_end/issues/issues.js';
 import {assertShadowRoot, renderElementIntoDOM, getElementWithinComponent} from '../helpers/DOMHelpers.js';
 
@@ -18,7 +19,7 @@ describe('MarkdownLink', () => {
     component.data = {key: 'test-link', title: 'Test link'};
     renderElementIntoDOM(component);
     assertShadowRoot(component.shadowRoot);
-    const linkComponent = getElementWithinComponent(component, 'a', HTMLAnchorElement);
+    const linkComponent = getElementWithinComponent(component, 'x-link', UI.XLink.XLink);
     assert.isNotNull(linkComponent);
     assert.strictEqual(linkComponent.textContent, 'Test link');
     assert.strictEqual(linkComponent.href, 'http://examplelink/');

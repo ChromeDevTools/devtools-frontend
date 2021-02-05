@@ -191,9 +191,13 @@ function _getLocaleMessageAndCreateFormatter(locale, icuMessageId, uiStringMessa
     localeMessage = uiStringMessage;
 
     // Warn the user that the UIString message != the `en-US` message ∴ they should update the strings
-    if (!LOCALES['en-US'][icuMessageId] || localeMessage !== LOCALES['en-US'][icuMessageId].message) {
+    if (!LOCALES['en-US'][icuMessageId]) {
+      console.log('i18n', `Message "${icuMessageId}" does not exist in en-US.json.
+          Check that the i18n.registerUIStrings() call has the correct path,
+          and run 'npm run check-loc'`);
+    } else if (localeMessage !== LOCALES['en-US'][icuMessageId].message) {
       console.log('i18n', `Message "${icuMessageId}" does not match its 'en-US' counterpart. ` +
-        `Run 'i18n' to update.`);
+        `Run 'npm run check-loc' to update.`);
     }
   }
   // At this point, there is no reasonable string to show to the user, so throw.

@@ -23,7 +23,7 @@ import devtools_paths
 
 
 def run_tests(chrome_binary, target, no_text_coverage, no_html_coverage,
-              coverage):
+              coverage, expanded_reporting):
     cwd = devtools_paths.devtools_root_path()
     karmaconfig_path = os.path.join(cwd, 'out', target, 'gen', 'test',
                                     'unittests', 'karma.conf.js')
@@ -45,6 +45,8 @@ def run_tests(chrome_binary, target, no_text_coverage, no_html_coverage,
         env['NO_HTML_COVERAGE'] = '1'
     if (coverage is True):
         env['COVERAGE'] = '1'
+    if (expanded_reporting is True):
+        env['EXPANDED_REPORTING'] = '1'
     if (chrome_binary is not None):
         env['CHROME_BIN'] = chrome_binary
     exit_code = test_helpers.popen(exec_command, cwd=cwd, env=env)
@@ -58,6 +60,7 @@ def run_unit_tests_on_ninja_build_target(target,
                                          no_text_coverage=True,
                                          no_html_coverage=True,
                                          coverage=False,
+                                         expanded_reporting=False,
                                          chrome_binary=None):
     if chrome_binary and not test_helpers.check_chrome_binary(chrome_binary):
         print(
@@ -79,7 +82,7 @@ def run_unit_tests_on_ninja_build_target(target,
     print('Using Chromium binary (%s)\n' % chrome_binary)
 
     errors_found = run_tests(chrome_binary, target, no_text_coverage,
-                             no_html_coverage, coverage)
+                             no_html_coverage, coverage, expanded_reporting)
     if errors_found:
         print('ERRORS DETECTED')
         sys.exit(1)
@@ -101,6 +104,11 @@ def main():
                         default=False,
                         dest='coverage',
                         help='Whether to output coverage')
+    parser.add_argument('--expanded-reporting',
+                        action='store_true',
+                        default=False,
+                        dest='expanded_reporting',
+                        help='Whether to output expanded report info')
     parser.add_argument('--chrome-binary',
                         dest='chrome_binary',
                         help='Path to Chromium binary')
@@ -108,6 +116,7 @@ def main():
 
     run_unit_tests_on_ninja_build_target(args.target, args.no_text_coverage,
                                          args.no_html_coverage, args.coverage,
+                                         args.expanded_reporting,
                                          args.chrome_binary)
 
 

@@ -26,6 +26,7 @@ devtools_test_files = [
   "front_end/application_test_runner/ResourcesTestRunner.js",
   "front_end/application_test_runner/ResourceTreeTestRunner.js",
   "front_end/application_test_runner/ServiceWorkersTestRunner.js",
+  "front_end/application_test_runner/StorageTestRunner.js",
   "front_end/lighthouse_test_runner/lighthouse_test_runner.js",
   "front_end/lighthouse_test_runner/module.json",
   "front_end/axe_core_test_runner/axe_core_test_runner.js",

@@ -13,6 +13,7 @@
     "IndexedDBTestRunner.js",
     "ResourceTreeTestRunner.js",
     "ResourcesTestRunner.js",
-    "ServiceWorkersTestRunner.js"
+    "ServiceWorkersTestRunner.js",
+    "StorageTestRunner.js"
   ]
 }

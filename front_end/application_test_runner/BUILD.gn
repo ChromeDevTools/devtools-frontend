@@ -12,6 +12,7 @@ copy_sources_to_resources("bundle") {
     "./ResourceTreeTestRunner.js",
     "./ResourcesTestRunner.js",
     "./ServiceWorkersTestRunner.js",
+    "./StorageTestRunner.js",
     "application_test_runner.js",
   ]
 }

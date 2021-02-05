@@ -15,8 +15,7 @@ const LINEAR_MEMORY_INSPECTOR_TABBED_PANE_TAB_SELECTOR = '.tabbed-pane-header-ta
 const LINEAR_MEMORY_INSPECTOR_TAB_TITLE_SELECTOR = '.tabbed-pane-header-tab-title';
 
 describe('Scope View', async () => {
-  // Flaky on the Mac CQ bot.
-  it.skip('[crbug.com/1166106] opens linear memory inspector', async () => {
+  it('opens linear memory inspector', async () => {
     await enableExperiment('wasmDWARFDebugging');
 
     const {frontend, target} = getBrowserAndPages();
@@ -41,10 +40,12 @@ describe('Scope View', async () => {
 
     await step('expand the module scope', async () => {
       await click('[aria-label="Module"]');
+      await waitFor('[aria-label="Module"][aria-expanded="true"]');
     });
 
     await step('expand the memories list', async () => {
       await click('[data-object-property-name-for-test="memories"]');
+      await waitFor('[data-object-property-name-for-test="memories"][aria-expanded="true"]');
     });
 
     await step('open linear memory inspector from context menu', async () => {
@@ -62,7 +63,7 @@ describe('Scope View', async () => {
       assert.isNotNull(titleElement);
       const title = await frontend.evaluate(x => x.innerText, titleElement);
 
-      assert.strictEqual(title, 'memory.wasm');
+      assert.strictEqual(title, 'Memory(100)');
     });
   });
 

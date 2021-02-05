@@ -46,9 +46,8 @@ export class Report extends HTMLElement {
       <style>
         .content {
           background-color: var(--color-background);
-          overflow: auto;
           display: grid;
-          grid-template-columns: min-content auto;
+          grid-template-columns: min-content 1fr;
         }
 
         .report-title {
@@ -60,11 +59,12 @@ export class Report extends HTMLElement {
           border-bottom: 1px solid var(--color-details-hairline);
           color: var(--color-text-primary);
           background-color: var(--color-background);
+          grid-column-start: span 2;
         }
       </style>
 
-      ${this.reportTitle ? LitHtml.html`<div class="report-title">${this.reportTitle}</div>` : LitHtml.nothing}
       <div class="content">
+        ${this.reportTitle ? LitHtml.html`<div class="report-title">${this.reportTitle}</div>` : LitHtml.nothing}
         <slot></slot>
       </div>
     `, this.shadow);
@@ -129,7 +129,6 @@ export class ReportSectionDivider extends HTMLElement {
         }
 
         .section-divider {
-          margin-top: 12px;
           border-bottom: 1px solid var(--color-details-hairline);
         }
       </style>
@@ -154,7 +153,7 @@ export class ReportKey extends HTMLElement {
       <style>
         :host {
           line-height: 28px;
-          margin: 8px 0 0 0;
+          margin: 0 0 8px 0;
         }
 
         .key {
@@ -184,7 +183,8 @@ export class ReportValue extends HTMLElement {
       <style>
         :host {
           line-height: 28px;
-          margin: 8px 0 0 0;
+          margin: 0 0 8px 0;
+          min-width: 150px;
         }
 
         .value {

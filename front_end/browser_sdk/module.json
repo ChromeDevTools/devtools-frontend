@@ -7,9 +7,6 @@
     "RelatedIssue.js",
     "SourceFrameIssuesManager.js"
   ],
-  "dependencies": [
-    "sdk"
-  ],
   "resources": [
     "../issues/descriptions/cspTrustedTypesSinkViolation.md",
     "../issues/descriptions/cspTrustedTypesPolicyViolation.md"

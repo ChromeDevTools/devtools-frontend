@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "sdk",
     "workspace",
     "ui",
     "main"

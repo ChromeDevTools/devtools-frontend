@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "ui",
-    "sdk",
     "data_grid"
   ],
   "modules": [

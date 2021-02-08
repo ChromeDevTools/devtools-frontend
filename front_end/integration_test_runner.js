@@ -18,6 +18,7 @@ import './har_importer/har_importer-legacy.js';
 import './host/host-legacy.js';
 import './inline_editor/inline_editor-legacy.js';
 import './root/root-legacy.js';
+import './sdk/sdk-legacy.js';
 import * as Startup from './startup/startup.js';
 
 if (self.testRunner) {

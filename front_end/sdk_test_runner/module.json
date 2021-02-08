@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "sdk",
     "test_runner"
   ],
   "modules": [

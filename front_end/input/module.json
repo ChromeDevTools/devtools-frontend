@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "sdk",
     "ui"
   ],
   "modules": [

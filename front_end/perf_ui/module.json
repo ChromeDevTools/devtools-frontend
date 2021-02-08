@@ -19,7 +19,6 @@
   ],
   "dependencies": [
     "ui",
-    "sdk",
     "source_frame",
     "text_editor"
   ],

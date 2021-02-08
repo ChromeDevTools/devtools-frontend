@@ -43,7 +43,6 @@
   ],
   "dependencies": [
     "extensions",
-    "sdk",
     "persistence"
   ],
   "modules": [

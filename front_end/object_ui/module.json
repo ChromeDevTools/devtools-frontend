@@ -10,7 +10,6 @@
   ],
   "dependencies": [
     "ui",
-    "sdk",
     "components",
     "formatter"
   ],

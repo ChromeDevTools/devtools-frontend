@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "components",
-    "sdk",
     "timeline_model",
     "ui",
     "perf_ui"

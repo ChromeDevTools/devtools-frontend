@@ -7,7 +7,6 @@
   "dependencies": [
     "text_utils",
     "ui",
-    "sdk",
     "data_grid"
   ]
 }

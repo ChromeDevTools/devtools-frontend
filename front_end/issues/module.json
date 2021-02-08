@@ -3,7 +3,6 @@
     "browser_sdk",
     "components",
     "network",
-    "sdk",
     "ui"
   ],
   "modules": [

@@ -9,7 +9,6 @@
   ],
   "dependencies": [
     "browser_sdk",
-    "sdk",
     "ui"
   ],
   "modules": [

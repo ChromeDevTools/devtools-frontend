@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "components",
-    "sdk",
     "ui",
     "data_grid",
     "source_frame",

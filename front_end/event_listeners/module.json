@@ -2,7 +2,6 @@
   "dependencies": [
     "ui",
     "components",
-    "sdk",
     "object_ui"
   ],
   "modules": [],

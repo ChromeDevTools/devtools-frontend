@@ -23,8 +23,7 @@ import devtools_paths
 
 
 def run_tests(chrome_binary, target, no_text_coverage, no_html_coverage,
-              coverage, expanded_reporting):
-    cwd = devtools_paths.devtools_root_path()
+              coverage, expanded_reporting, cwd):
     karmaconfig_path = os.path.join(cwd, 'out', target, 'gen', 'test',
                                     'unittests', 'karma.conf.js')
 
@@ -61,7 +60,8 @@ def run_unit_tests_on_ninja_build_target(target,
                                          no_html_coverage=True,
                                          coverage=False,
                                          expanded_reporting=False,
-                                         chrome_binary=None):
+                                         chrome_binary=None,
+                                         cwd=None):
     if chrome_binary and not test_helpers.check_chrome_binary(chrome_binary):
         print(
             'Chrome binary argument path does not exist or is not executable, reverting to downloaded binary'
@@ -82,7 +82,8 @@ def run_unit_tests_on_ninja_build_target(target,
     print('Using Chromium binary (%s)\n' % chrome_binary)
 
     errors_found = run_tests(chrome_binary, target, no_text_coverage,
-                             no_html_coverage, coverage, expanded_reporting)
+                             no_html_coverage, coverage, expanded_reporting,
+                             cwd)
     if errors_found:
         print('ERRORS DETECTED')
         sys.exit(1)
@@ -112,12 +113,16 @@ def main():
     parser.add_argument('--chrome-binary',
                         dest='chrome_binary',
                         help='Path to Chromium binary')
+    parser.add_argument('--cwd',
+                        dest='cwd',
+                        help='Path to the directory containing the out dir',
+                        default=devtools_paths.devtools_root_path())
     args = parser.parse_args(sys.argv[1:])
 
     run_unit_tests_on_ninja_build_target(args.target, args.no_text_coverage,
                                          args.no_html_coverage, args.coverage,
                                          args.expanded_reporting,
-                                         args.chrome_binary)
+                                         args.chrome_binary, args.cwd)
 
 
 if __name__ == '__main__':

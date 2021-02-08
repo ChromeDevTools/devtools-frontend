@@ -35,6 +35,10 @@ export function clearMockConnectionResponseHandler(method: ProtocolCommand) {
   responseMap.delete(method);
 }
 
+export function clearAllMockConnectionResponseHandlers() {
+  responseMap.clear();
+}
+
 export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
     target: SDK.SDKModel.Target, event: E, payload: ProtocolMapping.Events[E][0]) {
   const [domain, method] = event.split('.');

@@ -139,8 +139,6 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.SDKModel.
 
   constructor() {
     super('Media');
-    this.registerRequiredCSS('media/mediaView.css', {enableLegacyPatching: true});
-
     this._detailPanels = new Map();
 
     this._deletedPlayers = new Set();

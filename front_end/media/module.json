@@ -12,7 +12,6 @@
   ],
   "resources": [
     "eventDisplayTable.css",
-    "mediaView.css",
     "playerListView.css",
     "playerPropertiesView.css",
     "playerMessagesView.css"

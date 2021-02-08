@@ -25,6 +25,7 @@ devtools_module("console") {
     "../components:bundle",
     "../data_grid:bundle",
     "../host:bundle",
+    "../i18n:bundle",
     "../object_ui:bundle",
     "../platform:bundle",
     "../sdk:bundle",

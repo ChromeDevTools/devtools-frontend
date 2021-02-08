@@ -103,6 +103,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_0e8dfe937d359c7df31b16ea7e9cca81" desc="Title of a setting under the Performance category in Settings">
     Hide <ph name="LOCKED_1">chrome</ph> frame in Layers view
   </message>
+  <message name="IDS_DEVTOOLS_0eaadb4fcb48a0a0ed7bc9868be9fbaa" desc="Text to indicate an item is a warning">
+    Warning
+  </message>
   <message name="IDS_DEVTOOLS_105078d294d30c978ca2badf7f376934" desc="The action to scroll">
     Scroll
   </message>

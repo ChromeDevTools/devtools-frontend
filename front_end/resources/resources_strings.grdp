@@ -286,6 +286,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_6827a85b76e967f6a129e08f9272e76d" desc="Text in Application Panel Sidebar of the Application panel">
     Local Storage
   </message>
+  <message name="IDS_DEVTOOLS_689202409e48743b914713f96d93947c" desc="Text for the value of something">
+    Value
+  </message>
   <message name="IDS_DEVTOOLS_6b2bfcecfdc437d73d756be2f262945d" desc="Manifest installability error in the Application panel">
     The Play Store app URL and Play Store ID do not match
   </message>

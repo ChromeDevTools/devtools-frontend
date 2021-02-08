@@ -255,6 +255,9 @@
   <message name="IDS_DEVTOOLS_901bc0a4714ff81c24943a50e620de71" desc="Text in Devices Settings Tab of the Device Toolbar">
     User agent string
   </message>
+  <message name="IDS_DEVTOOLS_902b0d55fddef6f8d651fe1035b7d4bd" desc="Text for errors">
+    Error
+  </message>
   <message name="IDS_DEVTOOLS_911f0f24bdce6808f4614d6a263b143b" desc="Text in Sensors View of the Device Toolbar">
     Locale
   </message>

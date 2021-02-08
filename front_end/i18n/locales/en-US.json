@@ -833,6 +833,345 @@
   "console_counters/WarningErrorCounter.js | sWarnings": {
     "message": "{PH1} warnings"
   },
+  "console/console-meta.ts | autocompleteFromHistory": {
+    "message": "Autocomplete from history"
+  },
+  "console/console-meta.ts | clearConsole": {
+    "message": "Clear console"
+  },
+  "console/console-meta.ts | clearConsoleHistory": {
+    "message": "Clear console history"
+  },
+  "console/console-meta.ts | console": {
+    "message": "Console"
+  },
+  "console/console-meta.ts | createLiveExpression": {
+    "message": "Create live expression"
+  },
+  "console/console-meta.ts | doNotAutocompleteFromHistory": {
+    "message": "Do not autocomplete from history"
+  },
+  "console/console-meta.ts | doNotEagerlyEvaluateConsole": {
+    "message": "Do not eagerly evaluate console prompt text"
+  },
+  "console/console-meta.ts | doNotGroupSimilarMessagesIn": {
+    "message": "Do not group similar messages in console"
+  },
+  "console/console-meta.ts | doNotTreatEvaluationAsUser": {
+    "message": "Do not treat evaluation as user activation"
+  },
+  "console/console-meta.ts | eagerEvaluation": {
+    "message": "Eager evaluation"
+  },
+  "console/console-meta.ts | eagerlyEvaluateConsolePromptText": {
+    "message": "Eagerly evaluate console prompt text"
+  },
+  "console/console-meta.ts | evaluateTriggersUserActivation": {
+    "message": "Evaluate triggers user activation"
+  },
+  "console/console-meta.ts | groupSimilarMessagesInConsole": {
+    "message": "Group similar messages in console"
+  },
+  "console/console-meta.ts | hideNetworkMessages": {
+    "message": "Hide network messages"
+  },
+  "console/console-meta.ts | hideTimestamps": {
+    "message": "Hide timestamps"
+  },
+  "console/console-meta.ts | logXmlhttprequests": {
+    "message": "Log XMLHttpRequests"
+  },
+  "console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
+    "message": "Only show messages from the current context (top, iframe, worker, extension)"
+  },
+  "console/console-meta.ts | selectedContextOnly": {
+    "message": "Selected context only"
+  },
+  "console/console-meta.ts | showConsole": {
+    "message": "Show Console"
+  },
+  "console/console-meta.ts | showMessagesFromAllContexts": {
+    "message": "Show messages from all contexts"
+  },
+  "console/console-meta.ts | showNetworkMessages": {
+    "message": "Show network messages"
+  },
+  "console/console-meta.ts | showTimestamps": {
+    "message": "Show timestamps"
+  },
+  "console/console-meta.ts | treatEvaluationAsUserActivation": {
+    "message": "Treat evaluation as user activation"
+  },
+  "console/ConsoleContextSelector.js | extension": {
+    "message": "Extension"
+  },
+  "console/ConsoleContextSelector.js | javascriptContextNotSelected": {
+    "message": "JavaScript context: Not selected"
+  },
+  "console/ConsoleContextSelector.js | javascriptContextS": {
+    "message": "JavaScript context: {PH1}"
+  },
+  "console/ConsolePinPane.js | evaluateAllowingSideEffects": {
+    "message": "Evaluate, allowing side effects"
+  },
+  "console/ConsolePinPane.js | expression": {
+    "message": "Expression"
+  },
+  "console/ConsolePinPane.js | liveExpressionEditor": {
+    "message": "Live expression editor"
+  },
+  "console/ConsolePinPane.js | notAvailable": {
+    "message": "not available"
+  },
+  "console/ConsolePinPane.js | removeAllExpressions": {
+    "message": "Remove all expressions"
+  },
+  "console/ConsolePinPane.js | removeBlankExpression": {
+    "message": "Remove blank expression"
+  },
+  "console/ConsolePinPane.js | removeExpression": {
+    "message": "Remove expression"
+  },
+  "console/ConsolePinPane.js | removeExpressionS": {
+    "message": "Remove expression: {PH1}"
+  },
+  "console/ConsolePrompt.js | consolePrompt": {
+    "message": "Console prompt"
+  },
+  "console/ConsoleSidebar.js | dErrors": {
+    "message": "{PH1} errors"
+  },
+  "console/ConsoleSidebar.js | dInfo": {
+    "message": "{PH1} info"
+  },
+  "console/ConsoleSidebar.js | dMessages": {
+    "message": "{PH1} messages"
+  },
+  "console/ConsoleSidebar.js | dUserMessages": {
+    "message": "{PH1} user messages"
+  },
+  "console/ConsoleSidebar.js | dVerbose": {
+    "message": "{PH1} verbose"
+  },
+  "console/ConsoleSidebar.js | dWarnings": {
+    "message": "{PH1} warnings"
+  },
+  "console/ConsoleSidebar.js | Error": {
+    "message": "1 error"
+  },
+  "console/ConsoleSidebar.js | Info": {
+    "message": "1 info"
+  },
+  "console/ConsoleSidebar.js | Message": {
+    "message": "1 message"
+  },
+  "console/ConsoleSidebar.js | noErrors": {
+    "message": "No errors"
+  },
+  "console/ConsoleSidebar.js | noInfo": {
+    "message": "No info"
+  },
+  "console/ConsoleSidebar.js | noMessages": {
+    "message": "No messages"
+  },
+  "console/ConsoleSidebar.js | noUserMessages": {
+    "message": "No user messages"
+  },
+  "console/ConsoleSidebar.js | noVerbose": {
+    "message": "No verbose"
+  },
+  "console/ConsoleSidebar.js | noWarnings": {
+    "message": "No warnings"
+  },
+  "console/ConsoleSidebar.js | other": {
+    "message": "<other>"
+  },
+  "console/ConsoleSidebar.js | UserMessage": {
+    "message": "1 user message"
+  },
+  "console/ConsoleSidebar.js | Verbose": {
+    "message": "1 verbose"
+  },
+  "console/ConsoleSidebar.js | Warning": {
+    "message": "1 warning"
+  },
+  "console/ConsoleView.js | allLevels": {
+    "message": "All levels"
+  },
+  "console/ConsoleView.js | consoleCleared": {
+    "message": "Console cleared"
+  },
+  "console/ConsoleView.js | consoleSettings": {
+    "message": "Console settings"
+  },
+  "console/ConsoleView.js | consoleSidebar": {
+    "message": "console sidebar"
+  },
+  "console/ConsoleView.js | copyVisibleStyledSelection": {
+    "message": "Copy visible styled selection"
+  },
+  "console/ConsoleView.js | customLevels": {
+    "message": "Custom levels"
+  },
+  "console/ConsoleView.js | default": {
+    "message": "Default"
+  },
+  "console/ConsoleView.js | defaultLevels": {
+    "message": "Default levels"
+  },
+  "console/ConsoleView.js | doNotClearLogOnPageReload": {
+    "message": "Do not clear log on page reload / navigation"
+  },
+  "console/ConsoleView.js | eagerlyEvaluateTextInThePrompt": {
+    "message": "Eagerly evaluate text in the prompt"
+  },
+  "console/ConsoleView.js | egEventdCdnUrlacom": {
+    "message": "e.g. /eventd/ -cdn url:a.com"
+  },
+  "console/ConsoleView.js | errors": {
+    "message": "Errors"
+  },
+  "console/ConsoleView.js | filter": {
+    "message": "Filter"
+  },
+  "console/ConsoleView.js | findStringInLogs": {
+    "message": "Find string in logs"
+  },
+  "console/ConsoleView.js | groupSimilarMessagesInConsole": {
+    "message": "Group similar messages in console"
+  },
+  "console/ConsoleView.js | hideAll": {
+    "message": "Hide all"
+  },
+  "console/ConsoleView.js | hideMessagesFromS": {
+    "message": "Hide messages from {PH1}"
+  },
+  "console/ConsoleView.js | hideNetwork": {
+    "message": "Hide network"
+  },
+  "console/ConsoleView.js | info": {
+    "message": "Info"
+  },
+  "console/ConsoleView.js | logLevels": {
+    "message": "Log levels"
+  },
+  "console/ConsoleView.js | logLevelS": {
+    "message": "Log level: {PH1}"
+  },
+  "console/ConsoleView.js | onlyShowMessagesFromTheCurrentContext": {
+    "message": "Only show messages from the current context (top, iframe, worker, extension)"
+  },
+  "console/ConsoleView.js | overriddenByFilterSidebar": {
+    "message": "Overridden by filter sidebar"
+  },
+  "console/ConsoleView.js | preserveLog": {
+    "message": "Preserve log"
+  },
+  "console/ConsoleView.js | replayXhr": {
+    "message": "Replay XHR"
+  },
+  "console/ConsoleView.js | saveAs": {
+    "message": "Save as..."
+  },
+  "console/ConsoleView.js | searching": {
+    "message": "Searching…"
+  },
+  "console/ConsoleView.js | selectedContextOnly": {
+    "message": "Selected context only"
+  },
+  "console/ConsoleView.js | sHidden": {
+    "message": "{PH1} hidden"
+  },
+  "console/ConsoleView.js | someMessagesHaveBeenMovedToThe": {
+    "message": "Some messages have been moved to the Issues panel."
+  },
+  "console/ConsoleView.js | sOnly": {
+    "message": "{PH1} only"
+  },
+  "console/ConsoleView.js | verbose": {
+    "message": "Verbose"
+  },
+  "console/ConsoleView.js | viewIssues": {
+    "message": "View issues"
+  },
+  "console/ConsoleView.js | warnings": {
+    "message": "Warnings"
+  },
+  "console/ConsoleView.js | writingFile": {
+    "message": "Writing file…"
+  },
+  "console/ConsoleViewMessage.js | assertionFailed": {
+    "message": "Assertion failed: "
+  },
+  "console/ConsoleViewMessage.js | attribute": {
+    "message": "<attribute>"
+  },
+  "console/ConsoleViewMessage.js | clearAllMessagesWithS": {
+    "message": "Clear all messages with {PH1}"
+  },
+  "console/ConsoleViewMessage.js | console": {
+    "message": "Console"
+  },
+  "console/ConsoleViewMessage.js | consoleclearWasPreventedDueTo": {
+    "message": "console.clear() was prevented due to 'Preserve log'"
+  },
+  "console/ConsoleViewMessage.js | consoleWasCleared": {
+    "message": "Console was cleared"
+  },
+  "console/ConsoleViewMessage.js | deprecationS": {
+    "message": "[Deprecation] {PH1}"
+  },
+  "console/ConsoleViewMessage.js | error": {
+    "message": "Error"
+  },
+  "console/ConsoleViewMessage.js | errorS": {
+    "message": "Error {PH1}"
+  },
+  "console/ConsoleViewMessage.js | exception": {
+    "message": "<exception>"
+  },
+  "console/ConsoleViewMessage.js | functionWasResolvedFromBound": {
+    "message": "Function was resolved from bound function."
+  },
+  "console/ConsoleViewMessage.js | index": {
+    "message": "(index)"
+  },
+  "console/ConsoleViewMessage.js | interventionS": {
+    "message": "[Intervention] {PH1}"
+  },
+  "console/ConsoleViewMessage.js | Mxx": {
+    "message": " M<XX>"
+  },
+  "console/ConsoleViewMessage.js | repeatS": {
+    "message": "Repeat {PH1}"
+  },
+  "console/ConsoleViewMessage.js | someEvent": {
+    "message": "<some> event"
+  },
+  "console/ConsoleViewMessage.js | thisValueWasEvaluatedUponFirst": {
+    "message": "This value was evaluated upon first expanding. It may have changed since then."
+  },
+  "console/ConsoleViewMessage.js | thisValueWillNotBeCollectedUntil": {
+    "message": "This value will not be collected until console is cleared."
+  },
+  "console/ConsoleViewMessage.js | tookNms": {
+    "message": "took <N>ms"
+  },
+  "console/ConsoleViewMessage.js | url": {
+    "message": "<URL>"
+  },
+  "console/ConsoleViewMessage.js | value": {
+    "message": "Value"
+  },
+  "console/ConsoleViewMessage.js | violationS": {
+    "message": "[Violation] {PH1}"
+  },
+  "console/ConsoleViewMessage.js | warning": {
+    "message": "Warning"
+  },
+  "console/ConsoleViewMessage.js | warningS": {
+    "message": "Warning {PH1}"
+  },
   "cookie_table/CookiesTable.ts | cookies": {
     "message": "Cookies"
   },

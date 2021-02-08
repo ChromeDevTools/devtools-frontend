@@ -3,11 +3,28 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description Title of toolbar item in console context selector of the console panel
+  */
+  javascriptContextNotSelected: 'JavaScript context: Not selected',
+  /**
+  *@description Text in Console Context Selector of the Console panel
+  */
+  extension: 'Extension',
+  /**
+  *@description Text in Console Context Selector of the Console panel
+  *@example {top} PH1
+  */
+  javascriptContextS: 'JavaScript context: {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('console/ConsoleContextSelector.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * @implements {SDK.SDKModel.SDKModelObserver<!SDK.RuntimeModel.RuntimeModel>}
  * @implements {UI.SoftDropDown.Delegate<!SDK.RuntimeModel.ExecutionContext>}
@@ -21,7 +38,7 @@ export class ConsoleContextSelector {
     this._dropDown.setRowHeight(36);
     this._toolbarItem = new UI.Toolbar.ToolbarItem(this._dropDown.element);
     this._toolbarItem.setEnabled(false);
-    this._toolbarItem.setTitle(ls`JavaScript context: Not selected`);
+    this._toolbarItem.setTitle(i18nString(UIStrings.javascriptContextNotSelected));
     this._items.addEventListener(
         UI.ListModel.Events.ItemsReplaced, () => this._toolbarItem.setEnabled(Boolean(this._items.length)));
 
@@ -266,7 +283,7 @@ export class ConsoleContextSelector {
       frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
     }
     if (executionContext.origin.startsWith('chrome-extension://')) {
-      return Common.UIString.UIString('Extension');
+      return i18nString(UIStrings.extension);
     }
     const sameTargetParentFrame = frame && frame.sameTargetParentFrame();
     // TODO(crbug.com/1159332): Understand why condition involves the sameTargetParentFrame.
@@ -283,7 +300,7 @@ export class ConsoleContextSelector {
         return domain;
       }
     }
-    return Common.UIString.UIString('IFrame');
+    return 'IFrame';
   }
 
   /**
@@ -303,7 +320,8 @@ export class ConsoleContextSelector {
    */
   itemSelected(item) {
     this._toolbarItem.element.classList.toggle('warning', !this._isTopContext(item) && this._hasTopContext());
-    const title = item ? ls`JavaScript context: ${this.titleFor(item)}` : ls`JavaScript context: Not selected`;
+    const title = item ? i18nString(UIStrings.javascriptContextS, {PH1: this.titleFor(item)}) :
+                         i18nString(UIStrings.javascriptContextNotSelected);
     this._toolbarItem.setTitle(title);
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, item);
   }

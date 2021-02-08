@@ -7,9 +7,6 @@
   <message name="IDS_DEVTOOLS_0b484cfcf50c8fabff48c0aad426f544" desc="Text to dock the DevTools to the left of the browser tab">
     Dock to left
   </message>
-  <message name="IDS_DEVTOOLS_0eaadb4fcb48a0a0ed7bc9868be9fbaa" desc="Text to indicate an item is a warning">
-    Warning
-  </message>
   <message name="IDS_DEVTOOLS_1063e38cb53d94d386f21227fcd84717" desc="Label for an item to remove something">
     Remove
   </message>
@@ -65,9 +62,6 @@
   <message name="IDS_DEVTOOLS_63a6a88c066880c5ac42394a22803ca6" desc="Text to refresh the page">
     Refresh
   </message>
-  <message name="IDS_DEVTOOLS_689202409e48743b914713f96d93947c" desc="Text for the value of something">
-    Value
-  </message>
   <message name="IDS_DEVTOOLS_6a0d9eaee314c567fd72fb97ee707a36" desc="Text to record a series of actions for analysis">
     Record
   </message>
@@ -104,9 +98,6 @@
   <message name="IDS_DEVTOOLS_8d9da4bc0e49a50e09ac9f7e56789d39" desc="Text to indicate the network connectivity is offline">
     Offline
   </message>
-  <message name="IDS_DEVTOOLS_902b0d55fddef6f8d651fe1035b7d4bd" desc="Text for errors">
-    Error
-  </message>
   <message name="IDS_DEVTOOLS_90da6f38945a1c7e7ba11e3adcbe6919" desc="Text for pausing the debugger on exceptions">
     Pause on exceptions
   </message>
@@ -118,9 +109,6 @@
   </message>
   <message name="IDS_DEVTOOLS_95bbad55f11c237ed89546e748093ba7" desc="Text for the request animation frame event">
     Request Animation Frame
-  </message>
-  <message name="IDS_DEVTOOLS_9d8c209e49e328528c39c273798e98c9" desc="Text to save content as a specific file type">
-    Save as...
   </message>
   <message name="IDS_DEVTOOLS_a02c83a7dbd96295beaefb72c2bee2de" desc="Text that refers to the main target">
     Main

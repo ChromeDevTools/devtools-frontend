@@ -31,9 +31,9 @@
 import * as Common from '../common/common.js';
 import * as Components from '../components/components.js';
 import * as DataGrid from '../data_grid/data_grid.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
@@ -41,6 +41,113 @@ import * as UI from '../ui/ui.js';
 
 import {ConsoleViewportElement} from './ConsoleViewport.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Message element text content in Console View Message of the Console panel
+  */
+  consoleclearWasPreventedDueTo: '`console.clear()` was prevented due to \'Preserve log\'',
+  /**
+  *@description Message element text content in Console View Message of the Console panel
+  */
+  consoleWasCleared: 'Console was cleared',
+  /**
+  *@description Message element title in Console View Message of the Console panel
+  *@example {Ctrl+L} PH1
+  */
+  clearAllMessagesWithS: 'Clear all messages with {PH1}',
+  /**
+  *@description Message prefix in Console View Message of the Console panel
+  */
+  assertionFailed: 'Assertion failed: ',
+  /**
+  *@description Message text in Console View Message of the Console panel
+  *@example {console.log(1)} PH1
+  */
+  violationS: '[Violation] {PH1}',
+  /**
+  *@description Message text in Console View Message of the Console panel
+  *@example {console.log(1)} PH1
+  */
+  interventionS: '[Intervention] {PH1}',
+  /**
+  *@description Message text in Console View Message of the Console panel
+  *@example {console.log(1)} PH1
+  */
+  deprecationS: '[Deprecation] {PH1}',
+  /**
+  *@description Note title in Console View Message of the Console panel
+  */
+  thisValueWillNotBeCollectedUntil: 'This value will not be collected until console is cleared.',
+  /**
+  *@description Note title in Console View Message of the Console panel
+  */
+  thisValueWasEvaluatedUponFirst: 'This value was evaluated upon first expanding. It may have changed since then.',
+  /**
+  *@description Note title in Console View Message of the Console panel
+  */
+  functionWasResolvedFromBound: 'Function was resolved from bound function.',
+  /**
+  *@description Element text content in Console View Message of the Console panel
+  */
+  exception: '<exception>',
+  /**
+  *@description Text to indicate an item is a warning
+  */
+  warning: 'Warning',
+  /**
+  *@description Text for errors
+  */
+  error: 'Error',
+  /**
+  *@description Text in Console View Message of the Console panel
+  *@example {3} PH1
+  */
+  repeatS: 'Repeat {PH1}',
+  /**
+  *@description Accessible name in Console View Message of the Console panel
+  *@example {Repeat 4} PH1
+  */
+  warningS: 'Warning {PH1}',
+  /**
+  *@description Accessible name in Console View Message of the Console panel
+  *@example {Repeat 4} PH1
+  */
+  errorS: 'Error {PH1}',
+  /**
+  *@description Text in Console View Message of the Console panel
+  */
+  url: '<URL>',
+  /**
+  *@description Text in Console View Message of the Console panel
+  */
+  tookNms: 'took <N>ms',
+  /**
+  *@description Text in Console View Message of the Console panel
+  */
+  someEvent: '<some> event',
+  /**
+  *@description Text in Console View Message of the Console panel
+  */
+  Mxx: ' M<XX>',
+  /**
+  *@description Text in Console View Message of the Console panel
+  */
+  attribute: '<attribute>',
+  /**
+  *@description Text for the index of something
+  */
+  index: '(index)',
+  /**
+  *@description Text for the value of something
+  */
+  value: 'Value',
+  /**
+  *@description Title of the Console tool
+  */
+  console: 'Console',
+};
+const str_ = i18n.i18n.registerUIStrings('console/ConsoleViewMessage.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /** @type {!WeakMap<!Element, !ConsoleViewMessage>} */
 const elementToMessage = new WeakMap();
 
@@ -195,15 +302,14 @@ export class ConsoleViewMessage {
           messageElement = document.createElement('span');
           messageElement.classList.add('console-info');
           if (Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').get()) {
-            messageElement.textContent =
-                Common.UIString.UIString('console.clear() was prevented due to \'Preserve log\'');
+            messageElement.textContent = i18nString(UIStrings.consoleclearWasPreventedDueTo);
           } else {
-            messageElement.textContent = Common.UIString.UIString('Console was cleared');
+            messageElement.textContent = i18nString(UIStrings.consoleWasCleared);
           }
           UI.Tooltip.Tooltip.install(
-              messageElement,
-              ls`Clear all messages with ${
-                  UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('console.clear')}`);
+              messageElement, i18nString(UIStrings.clearAllMessagesWithS, {
+                PH1: UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('console.clear')
+              }));
           break;
         case SDK.ConsoleModel.MessageType.Dir: {
           const obj = this._message.parameters ? this._message.parameters[0] : undefined;
@@ -217,7 +323,7 @@ export class ConsoleViewMessage {
           break;
         default: {
           if (this._message.type === SDK.ConsoleModel.MessageType.Assert) {
-            this._messagePrefix = ls`Assertion failed: `;
+            this._messagePrefix = i18nString(UIStrings.assertionFailed);
           }
           if (this._message.parameters && this._message.parameters.length === 1) {
             const parameter = this._message.parameters[0];
@@ -236,11 +342,11 @@ export class ConsoleViewMessage {
         const messageInParameters =
             this._message.parameters && messageText === /** @type {string} */ (this._message.parameters[0]);
         if (this._message.source === SDK.ConsoleModel.MessageSource.Violation) {
-          messageText = Common.UIString.UIString('[Violation] %s', messageText);
+          messageText = i18nString(UIStrings.violationS, {PH1: messageText});
         } else if (this._message.source === SDK.ConsoleModel.MessageSource.Intervention) {
-          messageText = Common.UIString.UIString('[Intervention] %s', messageText);
+          messageText = i18nString(UIStrings.interventionS, {PH1: messageText});
         } else if (this._message.source === SDK.ConsoleModel.MessageSource.Deprecation) {
-          messageText = Common.UIString.UIString('[Deprecation] %s', messageText);
+          messageText = i18nString(UIStrings.deprecationS, {PH1: messageText});
         }
         const args = this._message.parameters || [messageText];
         if (messageInParameters) {
@@ -617,10 +723,9 @@ export class ConsoleViewMessage {
 
     const note = titleElement.createChild('span', 'object-state-note info-note');
     if (this._message.type === SDK.ConsoleModel.MessageType.QueryObjectResult) {
-      UI.Tooltip.Tooltip.install(note, ls`This value will not be collected until console is cleared.`);
+      UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.thisValueWillNotBeCollectedUntil));
     } else {
-      UI.Tooltip.Tooltip.install(
-          note, ls`This value was evaluated upon first expanding. It may have changed since then.`);
+      UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.thisValueWasEvaluatedUponFirst));
     }
 
     const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(obj, titleElement, this._linkifier);
@@ -655,7 +760,7 @@ export class ConsoleViewMessage {
       result.appendChild(functionElement);
       if (targetFunction !== func) {
         const note = result.createChild('span', 'object-info-state-note');
-        UI.Tooltip.Tooltip.install(note, Common.UIString.UIString('Function was resolved from bound function.'));
+        UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.functionWasResolvedFromBound));
       }
       result.addEventListener('contextmenu', this._contextMenuEventFired.bind(this, targetFunction), false);
       promise.then(() => this._formattedParameterAsFunctionForTest());
@@ -785,7 +890,7 @@ export class ConsoleViewMessage {
       rootElement.removeChildren();
       if (wasThrown) {
         const element = rootElement.createChild('span');
-        element.textContent = Common.UIString.UIString('<exception>');
+        element.textContent = i18nString(UIStrings.exception);
         UI.Tooltip.Tooltip.install(element, /** @type {string} */ (object.description));
       } else if (isArrayEntry) {
         rootElement.appendChild(this._formatAsArrayEntry(object));
@@ -1366,10 +1471,10 @@ export class ConsoleViewMessage {
     let accessibleName = '';
     if (this._message.level === SDK.ConsoleModel.MessageLevel.Warning) {
       iconType = 'smallicon-warning';
-      accessibleName = ls`Warning`;
+      accessibleName = i18nString(UIStrings.warning);
     } else if (this._message.level === SDK.ConsoleModel.MessageLevel.Error) {
       iconType = 'smallicon-error';
-      accessibleName = ls`Error`;
+      accessibleName = i18nString(UIStrings.error);
     }
     if (!this._messageLevelIcon) {
       if (!iconType) {
@@ -1446,11 +1551,11 @@ export class ConsoleViewMessage {
       this.contentElement().classList.add('repeated-message');
     }
     this._repeatCountElement.textContent = `${this._repeatCount}`;
-    let accessibleName = ls`Repeat ${this._repeatCount}`;
+    let accessibleName = i18nString(UIStrings.repeatS, {PH1: this._repeatCount});
     if (this._message.level === SDK.ConsoleModel.MessageLevel.Warning) {
-      accessibleName = ls`Warning ${accessibleName}`;
+      accessibleName = i18nString(UIStrings.warningS, {PH1: accessibleName});
     } else if (this._message.level === SDK.ConsoleModel.MessageLevel.Error) {
-      accessibleName = ls`Error ${accessibleName}`;
+      accessibleName = i18nString(UIStrings.errorS, {PH1: accessibleName});
     }
     UI.ARIAUtils.setAccessibleName(this._repeatCountElement, accessibleName);
   }
@@ -1733,15 +1838,15 @@ export class ConsoleViewMessage {
     const result = tokens.reduce((acc, token) => {
       let text = token.text;
       if (token.type === 'url') {
-        text = Common.UIString.UIString('<URL>');
+        text = i18nString(UIStrings.url);
       } else if (token.type === 'time') {
-        text = Common.UIString.UIString('took <N>ms');
+        text = i18nString(UIStrings.tookNms);
       } else if (token.type === 'event') {
-        text = Common.UIString.UIString('<some> event');
+        text = i18nString(UIStrings.someEvent);
       } else if (token.type === 'milestone') {
-        text = Common.UIString.UIString(' M<XX>');
+        text = i18nString(UIStrings.Mxx);
       } else if (token.type === 'autofill') {
-        text = Common.UIString.UIString('<attribute>');
+        text = i18nString(UIStrings.attribute);
       }
       return acc + text;
     }, '');
@@ -2063,12 +2168,13 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
         flatValues.push(rowValue.get(columnNames[j]));
       }
     }
-    columnNames.unshift(Common.UIString.UIString('(index)'));
+    columnNames.unshift(i18nString(UIStrings.index));
     const columnDisplayNames =
-        columnNames.map(name => name === rawValueColumnSymbol ? Common.UIString.UIString('Value') : name.toString());
+        columnNames.map(name => name === rawValueColumnSymbol ? i18nString(UIStrings.value) : name.toString());
 
     if (flatValues.length) {
-      this._dataGrid = DataGrid.SortableDataGrid.SortableDataGrid.create(columnDisplayNames, flatValues, ls`Console`);
+      this._dataGrid = DataGrid.SortableDataGrid.SortableDataGrid.create(
+          columnDisplayNames, flatValues, i18nString(UIStrings.console));
       if (this._dataGrid) {
         this._dataGrid.setStriped(true);
         this._dataGrid.setFocusable(false);

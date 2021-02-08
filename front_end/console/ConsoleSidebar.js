@@ -3,8 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import * as Platform from '../platform/platform.js';
-import {ls} from '../platform/platform.js';
+import * as i18n from '../i18n/i18n.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';  // eslint-disable-line no-unused-vars
 import * as UI from '../ui/ui.js';
@@ -12,6 +11,92 @@ import * as UI from '../ui/ui.js';
 import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
 import {ConsoleViewMessage} from './ConsoleViewMessage.js';  // eslint-disable-line no-unused-vars
 
+export const UIStrings = {
+  /**
+  *@description Filter name in Console Sidebar of the Console panel
+  */
+  other: '<other>',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there is 1 user message
+  */
+  UserMessage: '1 user message',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there is 1 message
+  */
+  Message: '1 message',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there is 1 error
+  */
+  Error: '1 error',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there is 1 warning
+  */
+  Warning: '1 warning',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there is 1 info
+  */
+  Info: '1 info',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there is 1 verbose message
+  */
+  Verbose: '1 verbose',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there are more than 1 user messages
+  *@example {2} PH1
+  */
+  dUserMessages: '{PH1} user messages',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there are more than 1 messages
+  *@example {2} PH1
+  */
+  dMessages: '{PH1} messages',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there are more than 1 errors
+  *@example {2} PH1
+  */
+  dErrors: '{PH1} errors',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there are more than 1 warnings
+  *@example {2} PH1
+  */
+  dWarnings: '{PH1} warnings',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there are more than 1 info
+  *@example {2} PH1
+  */
+  dInfo: '{PH1} info',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there are more than 1 verbose messages
+  *@example {2} PH1
+  */
+  dVerbose: '{PH1} verbose',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there are no user messages
+  */
+  noUserMessages: 'No user messages',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there are no messages
+  */
+  noMessages: 'No messages',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there are no errors
+  */
+  noErrors: 'No errors',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there are no warnings
+  */
+  noWarnings: 'No warnings',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there is no info
+  */
+  noInfo: 'No info',
+  /**
+  *@description Text in Console Sidebar of the Console panel to show that there is no verbose messages
+  */
+  noVerbose: 'No verbose',
+};
+const str_ = i18n.i18n.registerUIStrings('console/ConsoleSidebar.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ConsoleSidebar extends UI.Widget.VBox {
   constructor() {
     super(true);
@@ -189,13 +274,28 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
     } else if (this._messageCount === 1) {
       this.title = _groupSingularTitleMap.get(this._filter.name) || '';
     } else {
-      this.title =
-          Platform.StringUtilities.sprintf(_groupPluralTitleMap.get(this._filter.name) || '', this._messageCount);
+      this.title = this._updatePluralTitle(this._filter.name, this._messageCount);
     }
 
     this.setExpandable(Boolean(this.childCount()));
   }
 
+  /**
+   * @param {string} filterName
+   * @param {number} messageCount
+   * @return {string}
+   */
+  _updatePluralTitle(filterName, messageCount) {
+    const _groupPluralTitleMap = new Map([
+      [_groupName.ConsoleAPI, i18nString(UIStrings.dUserMessages, {PH1: messageCount})],
+      [_groupName.All, i18nString(UIStrings.dMessages, {PH1: messageCount})],
+      [_groupName.Error, i18nString(UIStrings.dErrors, {PH1: messageCount})],
+      [_groupName.Warning, i18nString(UIStrings.dWarnings, {PH1: messageCount})],
+      [_groupName.Info, i18nString(UIStrings.dInfo, {PH1: messageCount})],
+      [_groupName.Verbose, i18nString(UIStrings.dVerbose, {PH1: messageCount})]
+    ]);
+    return _groupPluralTitleMap.get(filterName) || '';
+  }
   /**
    * @param {!ConsoleViewMessage} viewMessage
    */
@@ -228,7 +328,7 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
     if (urlValue) {
       filter.name = parsedURL ? parsedURL.displayName : urlValue;
     } else {
-      filter.name = Common.UIString.UIString('<other>');
+      filter.name = i18nString(UIStrings.other);
     }
     filter.parsedFilters.push({key: FilterType.Url, text: urlValue, negative: false, regex: undefined});
     child = new URLGroupTreeElement(filter);
@@ -253,18 +353,14 @@ const _groupName = {
 
 /** @const {!Map<string, string>} */
 const _groupSingularTitleMap = new Map([
-  [_groupName.ConsoleAPI, ls`1 user message`], [_groupName.All, ls`1 message`], [_groupName.Error, ls`1 error`],
-  [_groupName.Warning, ls`1 warning`], [_groupName.Info, ls`1 info`], [_groupName.Verbose, ls`1 verbose`]
-]);
-
-/** @const {!Map<string, string>} */
-const _groupPluralTitleMap = new Map([
-  [_groupName.ConsoleAPI, ls`%d user messages`], [_groupName.All, ls`%d messages`], [_groupName.Error, ls`%d errors`],
-  [_groupName.Warning, ls`%d warnings`], [_groupName.Info, ls`%d info`], [_groupName.Verbose, ls`%d verbose`]
+  [_groupName.ConsoleAPI, i18nString(UIStrings.UserMessage)], [_groupName.All, i18nString(UIStrings.Message)],
+  [_groupName.Error, i18nString(UIStrings.Error)], [_groupName.Warning, i18nString(UIStrings.Warning)],
+  [_groupName.Info, i18nString(UIStrings.Info)], [_groupName.Verbose, i18nString(UIStrings.Verbose)]
 ]);
 
 /** @const {!Map<string, string>} */
 const _groupNoMessageTitleMap = new Map([
-  [_groupName.ConsoleAPI, ls`No user messages`], [_groupName.All, ls`No messages`], [_groupName.Error, ls`No errors`],
-  [_groupName.Warning, ls`No warnings`], [_groupName.Info, ls`No info`], [_groupName.Verbose, ls`No verbose`]
+  [_groupName.ConsoleAPI, i18nString(UIStrings.noUserMessages)], [_groupName.All, i18nString(UIStrings.noMessages)],
+  [_groupName.Error, i18nString(UIStrings.noErrors)], [_groupName.Warning, i18nString(UIStrings.noWarnings)],
+  [_groupName.Info, i18nString(UIStrings.noInfo)], [_groupName.Verbose, i18nString(UIStrings.noVerbose)]
 ]);

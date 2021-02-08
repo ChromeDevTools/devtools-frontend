@@ -4,8 +4,8 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -13,6 +13,14 @@ import * as UI from '../ui/ui.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
 
+export const UIStrings = {
+  /**
+  *@description Text in Console Prompt of the Console panel
+  */
+  consolePrompt: 'Console prompt',
+};
+const str_ = i18n.i18n.registerUIStrings('console/ConsolePrompt.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ConsolePrompt extends UI.Widget.Widget {
   constructor() {
     super();
@@ -64,7 +72,7 @@ export class ConsolePrompt extends UI.Widget.Widget {
      */
     function gotFactory(factory) {
       const options = {
-        devtoolsAccessibleName: /** @type {string} */ (ls`Console prompt`),
+        devtoolsAccessibleName: /** @type {string} */ (i18nString(UIStrings.consolePrompt)),
         lineNumbers: false,
         lineWrapping: true,
         mimeType: 'javascript',

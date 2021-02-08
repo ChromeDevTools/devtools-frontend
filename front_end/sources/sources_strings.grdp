@@ -456,6 +456,9 @@
   <message name="IDS_DEVTOOLS_9ce5614862050d067b2fca22f4190d12" desc="Text in Add Source Map URLDialog of the Sources panel">
     Source map URL: '''
   </message>
+  <message name="IDS_DEVTOOLS_9d8c209e49e328528c39c273798e98c9" desc="Text to save content as a specific file type">
+    Save as...
+  </message>
   <message name="IDS_DEVTOOLS_9db6195620a7743228ce74addf1414d8" desc="Text in Debugger Plugin of the Sources panel">
     Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.
   </message>

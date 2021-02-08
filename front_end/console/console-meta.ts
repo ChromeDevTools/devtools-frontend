@@ -2,15 +2,110 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../platform/platform.js';
 import * as Common from '../common/common.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Console from './console.js';
 
+import * as i18n from '../i18n/i18n.js';
+export const UIStrings = {
+  /**
+  *@description Title of the Console tool
+  */
+  console: 'Console',
+  /**
+  *@description Title of an action that shows the console.
+  */
+  showConsole: 'Show Console',
+  /**
+  *@description Text to clear the console
+  */
+  clearConsole: 'Clear console',
+  /**
+  *@description Title of an action in the console tool to clear
+  */
+  clearConsoleHistory: 'Clear console history',
+  /**
+  *@description Title of an action in the console tool to create pin. A live expression is code that the user can enter into the console and it will be pinned in the UI. Live expressions are constantly evaluated as the user interacts with the console (hence 'live').
+  */
+  createLiveExpression: 'Create live expression',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  hideNetworkMessages: 'Hide network messages',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  showNetworkMessages: 'Show network messages',
+  /**
+  *@description Alternative title text of a setting in Console View of the Console panel
+  */
+  selectedContextOnly: 'Selected context only',
+  /**
+  *@description Tooltip text that appears on the setting when hovering over it in Console View of the Console panel
+  */
+  onlyShowMessagesFromTheCurrent: 'Only show messages from the current context (`top`, `iframe`, `worker`, extension)',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  showMessagesFromAllContexts: 'Show messages from all contexts',
+  /**
+  *@description Title of a setting under the Console category in Settings
+  */
+  logXmlhttprequests: 'Log XMLHttpRequests',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  showTimestamps: 'Show timestamps',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  hideTimestamps: 'Hide timestamps',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  autocompleteFromHistory: 'Autocomplete from history',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  doNotAutocompleteFromHistory: 'Do not autocomplete from history',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  groupSimilarMessagesInConsole: 'Group similar messages in console',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  doNotGroupSimilarMessagesIn: 'Do not group similar messages in console',
+  /**
+  *@description Title of a setting under the Console category in Settings
+  */
+  eagerEvaluation: 'Eager evaluation',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  eagerlyEvaluateConsolePromptText: 'Eagerly evaluate console prompt text',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  doNotEagerlyEvaluateConsole: 'Do not eagerly evaluate console prompt text',
+  /**
+  *@description Title of a setting under the Console category in Settings
+  */
+  evaluateTriggersUserActivation: 'Evaluate triggers user activation',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  treatEvaluationAsUserActivation: 'Treat evaluation as user activation',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  doNotTreatEvaluationAsUser: 'Do not treat evaluation as user activation',
+};
+const str_ = i18n.i18n.registerUIStrings('console/console-meta.ts', UIStrings);
+const i18nString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedConsoleModule: (typeof Console|undefined);
 
 async function loadConsoleModule(): Promise<typeof Console> {
@@ -32,8 +127,8 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (consoleModule
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: 'console',
-  title: (): Platform.UIString.LocalizedString => ls`Console`,
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Console`,
+  title: i18nString(UIStrings.console),
+  commandPrompt: i18nString(UIStrings.showConsole),
   order: 20,
   async loadView() {
     const Console = await loadConsoleModule();
@@ -44,8 +139,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'console-view',
-  title: (): Platform.UIString.LocalizedString => ls`Console`,
-  commandPrompt: (): Platform.UIString.LocalizedString => ls`Show Console`,
+  title: i18nString(UIStrings.console),
+  commandPrompt: i18nString(UIStrings.showConsole),
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   order: 0,
   async loadView() {
@@ -57,7 +152,7 @@ UI.ViewManager.registerViewExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'console.show',
   category: UI.ActionRegistration.ActionCategory.CONSOLE,
-  title: (): Platform.UIString.LocalizedString => ls`Show Console`,
+  title: i18nString(UIStrings.showConsole),
   async loadActionDelegate() {
     const Console = await loadConsoleModule();
     return Console.ConsoleView.ActionDelegate.instance();
@@ -76,7 +171,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'console.clear',
   category: UI.ActionRegistration.ActionCategory.CONSOLE,
-  title: (): Platform.UIString.LocalizedString => ls`Clear console`,
+  title: i18nString(UIStrings.clearConsole),
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_CLEAR,
   async loadActionDelegate() {
     const Console = await loadConsoleModule();
@@ -99,7 +194,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'console.clear.history',
   category: UI.ActionRegistration.ActionCategory.CONSOLE,
-  title: (): Platform.UIString.LocalizedString => ls`Clear console history`,
+  title: i18nString(UIStrings.clearConsoleHistory),
   async loadActionDelegate() {
     const Console = await loadConsoleModule();
     return Console.ConsoleView.ActionDelegate.instance();
@@ -109,7 +204,7 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   actionId: 'console.create-pin',
   category: UI.ActionRegistration.ActionCategory.CONSOLE,
-  title: (): Platform.UIString.LocalizedString => ls`Create live expression`,
+  title: i18nString(UIStrings.createLiveExpression),
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_VISIBILITY,
   async loadActionDelegate() {
     const Console = await loadConsoleModule();
@@ -119,44 +214,43 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.CONSOLE,
-  title: (): Platform.UIString.LocalizedString => ls`Hide network messages`,
+  title: i18nString(UIStrings.hideNetworkMessages),
   settingName: 'hideNetworkMessages',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: false,
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Hide network messages`,
+      title: i18nString(UIStrings.hideNetworkMessages),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Show network messages`,
+      title: i18nString(UIStrings.showNetworkMessages),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.CONSOLE,
-  title: (): Platform.UIString.LocalizedString => ls`Selected context only`,
+  title: i18nString(UIStrings.selectedContextOnly),
   settingName: 'selectedContextFilterEnabled',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: false,
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString =>
-          ls`Only show messages from the current context (top, iframe, worker, extension)`,
+      title: i18nString(UIStrings.onlyShowMessagesFromTheCurrent),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Show messages from all contexts`,
+      title: i18nString(UIStrings.showMessagesFromAllContexts),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.CONSOLE,
-  title: (): Platform.UIString.LocalizedString => ls`Log XMLHttpRequests`,
+  title: i18nString(UIStrings.logXmlhttprequests),
   settingName: 'monitoringXHREnabled',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: false,
@@ -164,90 +258,90 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.CONSOLE,
-  title: (): Platform.UIString.LocalizedString => ls`Show timestamps`,
+  title: i18nString(UIStrings.showTimestamps),
   settingName: 'consoleTimestampsEnabled',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: false,
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Show timestamps`,
+      title: i18nString(UIStrings.showTimestamps),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Hide timestamps`,
+      title: i18nString(UIStrings.hideTimestamps),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.CONSOLE,
-  title: (): Platform.UIString.LocalizedString => ls`Autocomplete from history`,
+  title: i18nString(UIStrings.autocompleteFromHistory),
   settingName: 'consoleHistoryAutocomplete',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: true,
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Autocomplete from history`,
+      title: i18nString(UIStrings.autocompleteFromHistory),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Do not autocomplete from history`,
+      title: i18nString(UIStrings.doNotAutocompleteFromHistory),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.CONSOLE,
-  title: (): Platform.UIString.LocalizedString => ls`Group similar messages in console`,
+  title: i18nString(UIStrings.groupSimilarMessagesInConsole),
   settingName: 'consoleGroupSimilar',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: true,
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Group similar messages in console`,
+      title: i18nString(UIStrings.groupSimilarMessagesInConsole),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Do not group similar messages in console`,
+      title: i18nString(UIStrings.doNotGroupSimilarMessagesIn),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.CONSOLE,
-  title: (): Platform.UIString.LocalizedString => ls`Eager evaluation`,
+  title: i18nString(UIStrings.eagerEvaluation),
   settingName: 'consoleEagerEval',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: true,
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Eagerly evaluate console prompt text`,
+      title: i18nString(UIStrings.eagerlyEvaluateConsolePromptText),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Do not eagerly evaluate console prompt text`,
+      title: i18nString(UIStrings.doNotEagerlyEvaluateConsole),
     },
   ],
 });
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategoryObject.CONSOLE,
-  title: (): Platform.UIString.LocalizedString => ls`Evaluate triggers user activation`,
+  title: i18nString(UIStrings.evaluateTriggersUserActivation),
   settingName: 'consoleUserActivationEval',
   settingType: Common.Settings.SettingTypeObject.BOOLEAN,
   defaultValue: true,
   options: [
     {
       value: true,
-      title: (): Platform.UIString.LocalizedString => ls`Treat evaluation as user activation`,
+      title: i18nString(UIStrings.treatEvaluationAsUserActivation),
     },
     {
       value: false,
-      title: (): Platform.UIString.LocalizedString => ls`Do not treat evaluation as user activation`,
+      title: i18nString(UIStrings.doNotTreatEvaluationAsUser),
     },
   ],
 });

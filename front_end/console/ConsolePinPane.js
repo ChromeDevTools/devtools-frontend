@@ -3,13 +3,50 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import * as i18n from '../i18n/i18n.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
-import {ls} from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as SDK from '../sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../ui/ui.js';
 
+export const UIStrings = {
+  /**
+  *@description A context menu item in the Console Pin Pane of the Console panel
+  */
+  removeExpression: 'Remove expression',
+  /**
+  *@description A context menu item in the Console Pin Pane of the Console panel
+  */
+  removeAllExpressions: 'Remove all expressions',
+  /**
+  *@description Screen reader label for delete button on a non-blank live expression
+  *@example {document} PH1
+  */
+  removeExpressionS: 'Remove expression: {PH1}',
+  /**
+  *@description Screen reader label for delete button on a blank live expression
+  */
+  removeBlankExpression: 'Remove blank expression',
+  /**
+  *@description Text in Console Pin Pane of the Console panel
+  */
+  liveExpressionEditor: 'Live expression editor',
+  /**
+  *@description Text in Console Pin Pane of the Console panel
+  */
+  expression: 'Expression',
+  /**
+  *@description Side effect label title in Console Pin Pane of the Console panel
+  */
+  evaluateAllowingSideEffects: 'Evaluate, allowing side effects',
+  /**
+  *@description Text of a DOM element in Console Pin Pane of the Console panel
+  */
+  notAvailable: 'not available',
+};
+const str_ = i18n.i18n.registerUIStrings('console/ConsolePinPane.js', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /** @type {!WeakMap<!Element, !ConsolePin>} */
 const elementToConsolePin = new WeakMap();
@@ -59,12 +96,13 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
       if (targetPinElement) {
         const targetPin = elementToConsolePin.get(targetPinElement);
         if (targetPin) {
-          contextMenu.editSection().appendItem(ls`Remove expression`, this._removePin.bind(this, targetPin));
+          contextMenu.editSection().appendItem(
+              i18nString(UIStrings.removeExpression), this._removePin.bind(this, targetPin));
           targetPin.appendToContextMenu(contextMenu);
         }
       }
     }
-    contextMenu.editSection().appendItem(ls`Remove all expressions`, this._removeAllPins.bind(this));
+    contextMenu.editSection().appendItem(i18nString(UIStrings.removeAllExpressions), this._removeAllPins.bind(this));
     contextMenu.show();
   }
 
@@ -156,9 +194,9 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     deletePinIcon.classList.add('close-button');
     deletePinIcon.setTabbable(true);
     if (expression.length) {
-      deletePinIcon.setAccessibleName(ls`Remove expression: ${expression}`);
+      deletePinIcon.setAccessibleName(i18nString(UIStrings.removeExpressionS, {PH1: expression}));
     } else {
-      deletePinIcon.setAccessibleName(ls`Remove blank expression`);
+      deletePinIcon.setAccessibleName(i18nString(UIStrings.removeBlankExpression));
     }
     self.onInvokeElement(deletePinIcon, event => {
       pinPane._removePin(this);
@@ -204,12 +242,12 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
     */
     const createTextEditor = factory => {
       this._editor = factory.createEditor({
-        devtoolsAccessibleName: ls`Live expression editor`,
+        devtoolsAccessibleName: i18nString(UIStrings.liveExpressionEditor),
         lineNumbers: false,
         lineWrapping: true,
         mimeType: 'javascript',
         autoHeight: true,
-        placeholder: ls`Expression`,
+        placeholder: i18nString(UIStrings.expression),
         bracketMatchingSetting: undefined,
         lineWiseCopyCut: undefined,
         maxHighlightLength: undefined,
@@ -246,9 +284,9 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
         this._committedExpression = trimmedText;
         pinPane._savePins();
         if (this._committedExpression.length) {
-          deletePinIcon.setAccessibleName(ls`Remove expression: ${this._committedExpression}`);
+          deletePinIcon.setAccessibleName(i18nString(UIStrings.removeExpressionS, {PH1: this._committedExpression}));
         } else {
-          deletePinIcon.setAccessibleName(ls`Remove blank expression`);
+          deletePinIcon.setAccessibleName(i18nString(UIStrings.removeBlankExpression));
         }
         this._editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
       });
@@ -333,11 +371,11 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
         const sideEffectLabel =
             /** @type {!HTMLElement} */ (this._pinPreview.createChild('span', 'object-value-calculate-value-button'));
         sideEffectLabel.textContent = '(…)';
-        UI.Tooltip.Tooltip.install(sideEffectLabel, ls`Evaluate, allowing side effects`);
+        UI.Tooltip.Tooltip.install(sideEffectLabel, i18nString(UIStrings.evaluateAllowingSideEffects));
       } else if (previewText) {
         this._pinPreview.appendChild(preview);
       } else if (!isEditing) {
-        UI.UIUtils.createTextChild(this._pinPreview, ls`not available`);
+        UI.UIUtils.createTextChild(this._pinPreview, i18nString(UIStrings.notAvailable));
       }
       UI.Tooltip.Tooltip.install(this._pinPreview, previewText);
     }

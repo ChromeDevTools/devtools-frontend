@@ -3977,12 +3977,13 @@ function collectAllCustomElementsFromICU(icuElements, seenElementsById = new Map
  * Returns a copy of the `values` object, with the values formatted based on how
  * they will be used in the `icuMessage`, e.g. KB or milliseconds. The original
  * object is unchanged.
+ * @param {string} icuMessageId
  * @param {string} icuMessage
  * @param {MessageFormat} messageFormatter
  * @param {Readonly<Record<string, string | number>>} values
  * @return {Record<string, string | number>}
  */
-function _preformatValues(icuMessage, messageFormatter, values) {
+function _preformatValues(icuMessageId, icuMessage, messageFormatter, values) {
   const elementMap = collectAllCustomElementsFromICU(messageFormatter.getAst().elements);
   const argumentElements = [...elementMap.values()];
 
@@ -3992,8 +3993,9 @@ function _preformatValues(icuMessage, messageFormatter, values) {
   for (const {id, format} of argumentElements) {
     // Throw an error if a message's value isn't provided
     if (id && (id in values) === false) {
-      throw new Error(`ICU Message "${icuMessage}" contains a value reference ("${id}") ` +
-        `that wasn't provided`);
+      throw new Error(`ICU Message with ID "${icuMessageId}" contains a value reference ("${id}") ` +
+        `that wasn't provided. Full message text: "${icuMessage}"` + '\n' +
+        new Error().stack);
     }
 
     const value = values[id];
@@ -4095,14 +4097,15 @@ function _getLocaleMessageAndCreateFormatter(locale, icuMessageId, uiStringMessa
 }
 /**
  *
+ * @param {string} icuMessageId
  * @param {string} localeMessage
  * @param {MessageFormat} formatter
  * @param {Record<string, string | number>} [values]
  * @return {{formattedString: string, icuMessage: string}}
  */
-function _formatMessage(localeMessage, formatter, values = {}) {
+function _formatMessage(icuMessageId, localeMessage, formatter, values = {}) {
   // preformat values for the message format like KB and milliseconds
-  const valuesForMessageFormat = _preformatValues(localeMessage, formatter, values);
+  const valuesForMessageFormat = _preformatValues(icuMessageId, localeMessage, formatter, values);
 
   const formattedString = formatter.format(valuesForMessageFormat);
   return {formattedString, icuMessage: localeMessage};
@@ -4199,7 +4202,7 @@ function getFormatted(icuMessageIdOrRawString, locale) {
   if (isIcuMessage(icuMessageIdOrRawString)) {
     const {icuMessageId, icuMessageInstance} = _resolveIcuMessageInstanceId(icuMessageIdOrRawString);
     const {localeMessage, formatter} = _getLocaleMessageAndCreateFormatter(locale, icuMessageId, icuMessageInstance.icuMessage);
-    const {formattedString} = _formatMessage(localeMessage, formatter, icuMessageInstance.values);
+    const {formattedString} = _formatMessage(icuMessageId, localeMessage, formatter, icuMessageInstance.values);
     return formattedString;
   }
 
@@ -4233,7 +4236,7 @@ function getFormattedFromIdAndValues(locale, icuMessageId, values) {
   if (!icuMessageIdRegex.test(icuMessageId)) throw new Error('This is not an ICU message ID');
 
   const {localeMessage, formatter} = _getLocaleMessageAndCreateFormatter(locale, icuMessageId, undefined);
-  const {formattedString} = _formatMessage(localeMessage, formatter, values);
+  const {formattedString} = _formatMessage(icuMessageId, localeMessage, formatter, values);
 
   return formattedString;
 }
@@ -4277,7 +4280,7 @@ function replaceIcuMessageInstanceIds(inputObject, locale) {
       if (typeof value === 'string' && isIcuMessage(value)) {
         const {icuMessageId, icuMessageInstance} = _resolveIcuMessageInstanceId(value);
         const {localeMessage, formatter} = _getLocaleMessageAndCreateFormatter(locale, icuMessageId, icuMessageInstance.icuMessage);
-        const {formattedString} = _formatMessage(localeMessage, formatter, icuMessageInstance.values);
+        const {formattedString} = _formatMessage(icuMessageId, localeMessage, formatter, icuMessageInstance.values);
 
         const messageInstancesInLHR = icuMessagePaths[icuMessageInstance.icuMessageId] || [];
         const currentPathAsString = _formatPathAsString(currentPathInLHR);

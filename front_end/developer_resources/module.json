@@ -5,7 +5,6 @@
     "developerResourcesListView.css"
   ],
   "dependencies": [
-    "text_utils",
     "ui",
     "data_grid"
   ]

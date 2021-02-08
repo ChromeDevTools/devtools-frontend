@@ -10,7 +10,6 @@
     "data_grid",
     "formatter",
     "source_frame",
-    "text_utils",
     "ui",
     "workspace"
   ],

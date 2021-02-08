@@ -7,7 +7,6 @@
     { "name": "main", "type": "autostart" },
     { "name": "persistence", "type": "autostart" },
     { "name": "services", "type": "autostart" },
-    { "name": "text_utils", "type": "autostart" },
     { "name": "theme_support", "type": "autostart" },
     { "name": "ui", "type": "autostart" },
     { "name": "workspace", "type": "autostart" },

@@ -4,7 +4,6 @@
     "sources",
     "workspace",
     "source_frame",
-    "text_utils",
     "text_editor",
     "browser_debugger"
   ],

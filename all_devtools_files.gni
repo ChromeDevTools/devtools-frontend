@@ -343,7 +343,6 @@ all_devtools_files = [
   "front_end/text_editor/cmdevtools.css",
   "front_end/text_editor/cmdevtools.darkmode.css",
   "front_end/text_editor/module.json",
-  "front_end/text_utils/module.json",
   "front_end/theme_support/module.json",
   "front_end/third_party/fabricjs/fabric.js",
   "front_end/third_party/fabricjs/module.json",

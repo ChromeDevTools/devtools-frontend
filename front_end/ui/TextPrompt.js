@@ -136,7 +136,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     this._boundOnMouseWheel = this.onMouseWheel.bind(this);
     this._boundClearAutocomplete = this.clearAutocomplete.bind(this);
     this._proxyElement = /** @type {!HTMLElement} */ (element.ownerDocument.createElement('span'));
-    appendStyle(this._proxyElement, 'ui/textPrompt.css', {enableLegacyPatching: true});
+    appendStyle(this._proxyElement, 'ui/textPrompt.css', {enableLegacyPatching: false});
     this._contentElement = this._proxyElement.createChild('div', 'text-prompt-root');
     this._proxyElement.style.display = this._proxyElementDisplay;
     if (element.parentElement) {

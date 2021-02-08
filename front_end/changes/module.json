@@ -1,14 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "WorkspaceDiff.DiffUILocation"
-      ],
-      "destination": "Changes drawer",
-      "className": "Changes.ChangesView.DiffUILocationRevealer"
-    }
-  ],
   "dependencies": [
     "workspace_diff",
     "text_editor",

@@ -665,9 +665,6 @@
   "changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Ŝḱîṕp̂ín̂ǵ {PH1} m̂át̂ćĥín̂ǵ l̂ín̂éŝ … )"
   },
-  "changes/ModuleUIStrings.ts | changesDrawer": {
-    "message": "Ĉh́âńĝéŝ d́r̂áŵér̂"
-  },
   "color_picker/ContrastDetails.js | aa": {
     "message": "ÂÁ"
   },
@@ -2032,9 +2029,6 @@
   },
   "issues/IssueView.js | warned": {
     "message": "Ŵár̂ńêd́"
-  },
-  "issues/ModuleUIStrings.js | issuesView": {
-    "message": "Îśŝúêś v̂íêẃ"
   },
   "js_profiler/js_profiler-meta.ts | profiler": {
     "message": "P̂ŕôf́îĺêŕ"

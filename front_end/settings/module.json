@@ -1,13 +1,6 @@
 {
   "extensions": [
     {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "Common.Setting"
-      ],
-      "className": "Settings.SettingsScreen.Revealer"
-    },
-    {
       "type": "context-menu-item",
       "location": "mainMenu/footer",
       "actionId": "settings.shortcuts"

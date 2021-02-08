@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
+import * as WorkspaceDiff from '../workspace_diff/workspace_diff.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Changes from './changes.js';
@@ -42,5 +44,18 @@ UI.ViewManager.registerViewExtension({
   async loadView() {
     const Changes = await loadChangesModule();
     return Changes.ChangesView.ChangesView.instance();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      WorkspaceDiff.WorkspaceDiff.DiffUILocation,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.CHANGES_DRAWER,
+  async loadRevealer() {
+    const Changes = await loadChangesModule();
+    return Changes.ChangesView.DiffUILocationRevealer.instance();
   },
 });

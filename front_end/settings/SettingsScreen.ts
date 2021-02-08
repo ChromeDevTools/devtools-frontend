@@ -449,8 +449,17 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     return false;
   }
 }
-
+let revealerInstance: Revealer;
 export class Revealer implements Common.Revealer.Revealer {
+  static instance(opts: {forceNew: boolean} = {forceNew: false}): Revealer {
+    const {forceNew} = opts;
+    if (!revealerInstance || forceNew) {
+      revealerInstance = new Revealer();
+    }
+
+    return revealerInstance;
+  }
+
   reveal(object: Object): Promise<void> {
     console.assert(object instanceof Common.Settings.Setting);
     const setting = object as Common.Settings.Setting<string>;

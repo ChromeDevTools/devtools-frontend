@@ -399,7 +399,17 @@ export const enum RowType {
   Spacer = 'spacer',
 }
 
+let diffUILocationRevealerInstance: DiffUILocationRevealer;
 export class DiffUILocationRevealer implements Common.Revealer.Revealer {
+  static instance(opts: {forceNew: boolean} = {forceNew: false}): DiffUILocationRevealer {
+    const {forceNew} = opts;
+    if (!diffUILocationRevealerInstance || forceNew) {
+      diffUILocationRevealerInstance = new DiffUILocationRevealer();
+    }
+
+    return diffUILocationRevealerInstance;
+  }
+
   async reveal(diffUILocation: Object, omitFocus?: boolean|undefined): Promise<void> {
     if (!(diffUILocation instanceof WorkspaceDiff.WorkspaceDiff.DiffUILocation)) {
       throw new Error('Internal error: not a diff ui location');

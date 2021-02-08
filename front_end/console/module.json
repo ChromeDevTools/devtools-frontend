@@ -1,13 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "Common.Console"
-      ],
-      "className": "Console.ConsolePanel.ConsoleRevealer"
-    }
-  ],
   "dependencies": [
     "components",
     "data_grid",

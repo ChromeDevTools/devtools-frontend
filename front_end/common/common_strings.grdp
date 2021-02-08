@@ -81,11 +81,17 @@
   <message name="IDS_DEVTOOLS_c350bb18c3cdfbd4e5444faa63be6586" desc="Name of a network resource type">
     Stylesheet
   </message>
+  <message name="IDS_DEVTOOLS_ca012662d53a8bde28b4d82722aaff7e" desc="The UI destination when right clicking an item that can be revealed">
+    Changes drawer
+  </message>
   <message name="IDS_DEVTOOLS_d4d96ef85bcd85156baa07069a5fcec8" desc="Name of a network resource type">
     CSPViolationReport
   </message>
   <message name="IDS_DEVTOOLS_da0b472ac86851a3c0b623260d09546c" desc="A title of the 'Persistence' setting category">
     Persistence
+  </message>
+  <message name="IDS_DEVTOOLS_ee02b74d0caebce3dabaf3b3e79b6a65" desc="The UI destination when right clicking an item that can be revealed">
+    Issues view
   </message>
   <message name="IDS_DEVTOOLS_fff0d600f8a0b5e19e88bfb821dd1157" desc="Text that appears in a tooltip for the image types filter.">
     Images

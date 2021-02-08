@@ -7,10 +7,26 @@ import * as SDK from '../sdk/sdk.js';
 import * as UI from '../ui/ui.js';
 import {IssuesPane} from './IssuesPane.js';  // eslint-disable-line no-unused-vars
 
+/** @type {!IssueRevealer} */
+let issueRevealerInstance;
+
 /**
  * @implements {Common.Revealer.Revealer}
  */
 export class IssueRevealer {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!issueRevealerInstance || forceNew) {
+      issueRevealerInstance = new IssueRevealer();
+    }
+
+    return issueRevealerInstance;
+  }
+
+
   /**
    * @override
    * @param {!Object} issue

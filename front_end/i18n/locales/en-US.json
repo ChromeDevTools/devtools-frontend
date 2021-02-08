@@ -665,9 +665,6 @@
   "changes/ChangesView.ts | SkippingDMatchingLines": {
     "message": "( … Skipping {PH1} matching lines … )"
   },
-  "changes/ModuleUIStrings.ts | changesDrawer": {
-    "message": "Changes drawer"
-  },
   "color_picker/ContrastDetails.js | aa": {
     "message": "AA"
   },
@@ -2032,9 +2029,6 @@
   },
   "issues/IssueView.js | warned": {
     "message": "Warned"
-  },
-  "issues/ModuleUIStrings.js | issuesView": {
-    "message": "Issues view"
   },
   "js_profiler/js_profiler-meta.ts | profiler": {
     "message": "Profiler"

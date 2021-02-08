@@ -138,10 +138,25 @@ export class WrapperView extends UI.Widget.VBox {
   }
 }
 
+/** @type {!ConsoleRevealer} */
+let consoleRevealerInstance;
+
 /**
  * @implements {Common.Revealer.Revealer}
  */
 export class ConsoleRevealer {
+  /**
+   * @param {{forceNew: ?boolean}} opts
+   */
+  static instance(opts = {forceNew: null}) {
+    const {forceNew} = opts;
+    if (!consoleRevealerInstance || forceNew) {
+      consoleRevealerInstance = new ConsoleRevealer();
+    }
+
+    return consoleRevealerInstance;
+  }
+
   /**
    * @override
    * @param {!Object} object

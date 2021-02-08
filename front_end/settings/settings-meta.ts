@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 import * as UI from '../ui/ui.js';
@@ -194,4 +195,17 @@ UI.ViewManager.registerLocationResolver({
     const Settings = await loadSettingsModule();
     return Settings.SettingsScreen.SettingsScreen.instance();
   },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
+      Common.Settings.Setting,
+    ];
+  },
+  async loadRevealer() {
+    const Settings = await loadSettingsModule();
+    return Settings.SettingsScreen.Revealer.instance();
+  },
+  destination: undefined,
 });

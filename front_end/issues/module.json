@@ -1,14 +1,4 @@
 {
-  "extensions": [
-    {
-      "type": "@Common.Revealer",
-      "contextTypes": [
-        "SDK.Issue"
-      ],
-      "destination": "Issues view",
-      "className": "Issues.IssueRevealer"
-    }
-  ],
   "dependencies": [
     "browser_sdk",
     "components",

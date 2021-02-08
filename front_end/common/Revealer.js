@@ -113,4 +113,6 @@ export let RevealerRegistration;
 export const RevealerDestination = {
   ELEMENTS_PANEL: ls`Elements panel`,
   STYLES_SIDEBAR: ls`styles sidebar`,
+  CHANGES_DRAWER: ls`Changes drawer`,
+  ISSUES_VIEW: ls`Issues view`,
 };

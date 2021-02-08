@@ -22,6 +22,15 @@ export class TreeOutline extends HTMLElement {
   private hasRenderedAtLeastOnce = false;
   private focusableTreeNode: TreeNode|null = null;
 
+  /**
+   * scheduledRender = render() has been called and scheduled a render.
+   */
+  private scheduledRender = false;
+  /**
+   * enqueuedRender = render() was called mid-way through an existing render.
+   */
+  private enqueuedRender = false;
+
   get data(): TreeOutlineData {
     return {
       tree: this.treeData as TreeNode[],
@@ -117,8 +126,8 @@ export class TreeOutline extends HTMLElement {
       return;
     }
     this.focusableTreeNode = treeNode;
-    await coordinator.write(() => {
-      this.render();
+    await this.render();
+    coordinator.write(() => {
       domNode.focus();
     });
   }
@@ -237,63 +246,82 @@ export class TreeOutline extends HTMLElement {
     `;
     // clang-format on
   }
-  private render(): void {
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    LitHtml.render(LitHtml.html`
-    <style>
-      li {
-        list-style: none;
-      }
+  private async render(): Promise<void> {
+    if (this.scheduledRender) {
+      // If we are already rendering, don't render again immediately, but
+      // enqueue it to be run after we're done on our current render.
+      this.enqueuedRender = true;
+      return;
+    }
 
-      .arrow-icon {
-        display: inline-block;
-        user-select: none;
-        -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
-        -webkit-mask-size: 32px 24px;
-        -webkit-mask-position: 0 0;
-        background-color: var(--color-text-primary);
-        content: "";
-        text-shadow: none;
-        margin-right: -2px;
-        height: 12px;
-        width: 13px;
-        display: inline-block;
-        overflow: hidden;
-      }
-      li:not(.parent) > .arrow-and-key-wrapper > .arrow-icon {
-        -webkit-mask-size: 0;
-      }
-      li.parent.expanded > .arrow-and-key-wrapper > .arrow-icon {
-        -webkit-mask-position: -16px 0;
-      }
+    this.scheduledRender = true;
 
-      .arrow-and-key-wrapper {
-        border: 2px solid transparent;
-      }
-      [role="treeitem"]:focus {
-        outline: 0;
-      }
-      [role="treeitem"]:focus > .arrow-and-key-wrapper {
-       border-color: black;
-      }
-    </style>
-    <div class="wrapping-container">
-     <ul role="tree" @keydown=${this.onTreeKeyDown}>
-       ${this.treeData.map((topLevelNode, index) => {
-         return this.renderNode(topLevelNode, {
-           depth: 0,
-           setSize: this.treeData.length,
-           positionInSet: index,
-         });
-       })}
-     </ul>
-    </div>
-    `, this.shadow, {
-      eventContext: this,
+    await coordinator.write(() => {
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
+      LitHtml.render(LitHtml.html`
+      <style>
+        li {
+          list-style: none;
+        }
+
+        .arrow-icon {
+          display: inline-block;
+          user-select: none;
+          -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
+          -webkit-mask-size: 32px 24px;
+          -webkit-mask-position: 0 0;
+          background-color: var(--color-text-primary);
+          content: "";
+          text-shadow: none;
+          margin-right: -2px;
+          height: 12px;
+          width: 13px;
+          display: inline-block;
+          overflow: hidden;
+        }
+        li:not(.parent) > .arrow-and-key-wrapper > .arrow-icon {
+          -webkit-mask-size: 0;
+        }
+        li.parent.expanded > .arrow-and-key-wrapper > .arrow-icon {
+          -webkit-mask-position: -16px 0;
+        }
+
+        .arrow-and-key-wrapper {
+          border: 2px solid transparent;
+        }
+        [role="treeitem"]:focus {
+          outline: 0;
+        }
+        [role="treeitem"]:focus > .arrow-and-key-wrapper {
+        border-color: black;
+        }
+      </style>
+      <div class="wrapping-container">
+      <ul role="tree" @keydown=${this.onTreeKeyDown}>
+        ${this.treeData.map((topLevelNode, index) => {
+          return this.renderNode(topLevelNode, {
+            depth: 0,
+            setSize: this.treeData.length,
+            positionInSet: index,
+          });
+        })}
+      </ul>
+      </div>
+      `, this.shadow, {
+        eventContext: this,
+      });
     });
     // clang-format on
     this.hasRenderedAtLeastOnce = true;
+    this.scheduledRender = false;
+
+    // If render() was called when we were already mid-render, let's re-render
+    // to ensure we're not rendering any stale UI.
+    if (this.enqueuedRender) {
+      this.enqueuedRender = false;
+      this.render();
+    }
   }
 }
 

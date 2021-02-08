@@ -59,8 +59,6 @@ const component = new Components.TreeOutline.TreeOutline();
 component.data = data;
 
 document.getElementById('container')?.appendChild(component);
-component.expandRecursively();
-
 document.getElementById('recursively-expand')?.addEventListener('click', () => {
   component.expandRecursively();
 });

@@ -1,7 +1,0 @@
-{
-  "modules": [
-    "root-legacy.js",
-    "root.js",
-    "Runtime.js"
-  ]
-}

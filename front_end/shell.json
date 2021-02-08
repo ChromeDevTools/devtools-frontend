@@ -6,7 +6,6 @@
     { "name": "extensions", "type": "autostart" },
     { "name": "main", "type": "autostart" },
     { "name": "persistence", "type": "autostart" },
-    { "name": "root", "type": "autostart" },
     { "name": "sdk", "type": "autostart" },
     { "name": "services", "type": "autostart" },
     { "name": "text_utils", "type": "autostart" },

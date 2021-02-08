@@ -289,7 +289,6 @@ all_devtools_files = [
   "front_end/resources/serviceWorkerCacheViews.css",
   "front_end/resources/serviceWorkersView.css",
   "front_end/resources/serviceWorkerUpdateCycleView.css",
-  "front_end/root/module.json",
   "front_end/screencast/module.json",
   "front_end/screencast/screencastView.css",
   "front_end/sdk_test_runner/module.json",

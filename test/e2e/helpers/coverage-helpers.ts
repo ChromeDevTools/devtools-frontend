@@ -35,3 +35,8 @@ export async function clearCoverageContent() {
   await click('button[aria-label="Clear all"]');
   await waitFor('.coverage-results .landing-page');
 }
+
+export async function getMessageContents() {
+  const messageElement = await waitFor('.coverage-results .landing-page .message');
+  return messageElement.evaluate(node => (node as HTMLElement).innerText);
+}
